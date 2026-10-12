@@ -28,6 +28,43 @@ std::string mk_msg(Database& db, std::string_view conv, std::string_view text, s
 }  // namespace
 
 TEST_SUITE("graph_engine") {
+  TEST_CASE("attempt records reference one content-addressed profile snapshot; old embedded rows still read") {
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "snapshots.db");
+    EventBus bus;
+    auto analyzer = unwrap(SemanticAnalyzer::create());
+    GraphEngine graph(*db, bus, *analyzer);
+    auto profile = unwrap(RuntimeProfile::builtin("graph_ingest"));
+    const auto conv = unwrap(db->create_conv("snapshots"));
+    const std::string text = "Synthetic snapshot message with enough length";
+    std::vector<std::string> ids;
+    for (int i = 0; i < 3; ++i) {
+      const auto mid = mk_msg(*db, conv.id, text);
+      ids.push_back(mid);
+      auto attempt = unwrap(graph.begin_analysis(mid, text, conv.id, profile));
+      LOOM_REQUIRE_OK(graph.fail_analysis(attempt, Error(Errc::Timeout, "synthetic")));
+    }
+    // One stored snapshot for three attempts, keyed by the profile's sha256.
+    CHECK(unwrap(db->get_meta("loom_profile_snapshot:" + profile.hash())).has_value());
+    const auto record = unwrap(db->get_msg(ids[0]))->metadata.at("loom_semantic_attempts")[0];
+    CHECK_FALSE(record.at("graph_profile").contains("values"));
+    CHECK(record.at("graph_profile").at("ref") == "sha256:" + profile.hash());
+    // Smaller than the embedded form by (at least) the serialized profile values.
+    Json embedded = record;
+    embedded["graph_profile"]["values"] = profile.values();
+    embedded["graph_profile"]["sources"] = profile.source_provenance();
+    CHECK(json::dump(record).size() + json::dump(profile.values()).size() <= json::dump(embedded).size());
+    // Readers resolve the reference.
+    const auto history = unwrap(graph.attempt_history(ids[1]));
+    REQUIRE(history.size() == 1);
+    CHECK(history[0].at("graph_profile").at("values") == profile.values());
+    // A historical row with embedded values is returned unchanged.
+    const auto legacy = unwrap(graph.resolve_attempt_profile(embedded.at("graph_profile")));
+    CHECK(legacy == embedded.at("graph_profile"));
+    // Unknown reference is an explicit NotFound, not silent emptiness.
+    CHECK_FALSE(graph.resolve_attempt_profile(Json{{"hash", "deadbeef"}}));
+  }
+
   TEST_CASE("CH-011 live graph completion rolls back storage errors and preserves failure evidence") {
     fsutil::TempDir td;
     const auto path = td.path() / "live-failure.db";

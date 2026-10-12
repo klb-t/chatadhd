@@ -8,6 +8,7 @@
 #pragma once
 
 #include <atomic>
+#include <functional>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -21,9 +22,21 @@
 namespace loom {
 
 class Database;
+struct Message;
 class SemanticLLM;
 class SemanticAnalyzer;
 class RelationRegistry;
+
+// Identity of the process/worker that wrote a claim; used only to report a
+// claim whose owner is gone as "stalled". Defined in graph_engine.cpp.
+Json attempt_owner(std::string_view instance = {});
+// Registers/unregisters a live claim owner (one per SemanticWorker instance).
+void register_attempt_owner(const std::string& instance);
+void unregister_attempt_owner(const std::string& instance);
+// Gone: owner process is dead / its worker no longer exists. Live: a worker of
+// this process still owns it. Unknown: cannot be probed; only the lease decides.
+enum class OwnerState { Gone, Live, Unknown };
+OwnerState attempt_owner_state(const Json& owner);
 
 // A process-local handle to a persisted claim, not permission to retry/adopt.
 struct SemanticAttempt {
@@ -58,11 +71,22 @@ class GraphEngine {
   Result<SemanticAttempt> begin_analysis(std::string_view msg_id, std::string_view expected_text,
       std::string_view expected_conv_id, const RuntimeProfile& graph_profile,
       const Json& provenance = Json::object(), bool reanalyse_completed = false,
-      std::optional<std::string_view> expected_status = std::nullopt);
+      std::optional<std::string_view> expected_status = std::nullopt, std::string_view owner_instance = {});
   Result<bool> complete_analysis(const SemanticAttempt& attempt, const Json& analysis,
                                  bool live_summary = false);
   Status fail_analysis(const SemanticAttempt& attempt, const Error& error,
                        const Json& analysis = nullptr);
+  // Moves one failed or stalled-executing message back to 'pending' inside a
+  // durable transaction. `eligible` is evaluated on the freshly read row; false
+  // leaves everything untouched. Earlier attempt records are kept (the last one
+  // is annotated with `requeued`; an abandoned 'executing' becomes 'stalled').
+  Result<bool> requeue_attempt(std::string_view msg_id, std::string_view reason,
+                               const std::function<bool(const Message&)>& eligible = {});
+  // Attempt records reference their (graph) profile snapshot by sha256 instead of
+  // embedding ~0.7 KB of values per attempt. Readers resolve the reference;
+  // historical rows with embedded values are returned unchanged.
+  Result<Json> resolve_attempt_profile(const Json& graph_profile) const;
+  Result<Json> attempt_history(std::string_view msg_id) const;  // attempts with resolved profiles
   Result<Json> profile_inspection(const Json& overrides = Json::object()) const;
   int reindex_conversation(std::string_view conv_id);
   int reindex_all();

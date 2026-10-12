@@ -577,6 +577,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
       if (k == "model") o.model = s;
       if (k == "reasoning_effort") o.reasoning_effort = s;
       if (k == "system_prompt") o.system_prompt = s;
+    } else if (k == "context_order") {
+      if (!v.is_string()) return bad();
+      o.context_order = v.get<std::string>();
     } else if (k == "attachments") {
       if (!v.is_array()) return bad();
       for (const auto& a : v) {
@@ -773,7 +776,16 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   }
 
   std::string sys_prompt = opts.system_prompt ? *opts.system_prompt : cfg_string(cfg_, "system_prompt");
-  if (!sys_prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
+  // Context classes are collected, then ordered by the chat_context preset
+  // (S0 system, S1 memory, S2 project, S3 history, S4 question-specific graph).
+  Json part_system = Json::array(), part_memory = Json::array(), part_project = Json::array(),
+       part_history = Json::array(), part_graph = Json::array();
+  LOOM_TRY_ASSIGN(auto order_profile, RuntimeProfile::load("chat_context", cfg_.path().parent_path()));
+  std::string order_name = opts.context_order ? *opts.context_order : cfg_string(cfg_, "chat_context_order");
+  if (order_name.empty()) order_name = order_profile.values().at("context_order").get<std::string>();
+  const Json& known_orders = order_profile.values().at("orders");
+  if (!known_orders.contains(order_name)) return Error(Errc::InvalidArgument, "unknown context_order: " + order_name);
+  if (!sys_prompt.empty()) part_system.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
 
   // The configured modern recipe is explicit; historical callers retain their
   // compatible message order. Preview compilation never creates an execution
@@ -790,7 +802,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   if (!unified && memory_ && opts.include_memory) {
     std::string mem_ctx = memory_->get_active_context();
     if (!mem_ctx.empty()) {
-      messages.push_back(Json{{"role", "system"}, {"content", "User's memory/context:\n" + mem_ctx}});
+      part_memory.push_back(Json{{"role", "system"}, {"content", "User's memory/context:\n" + mem_ctx}});
     }
   }
 
@@ -801,7 +813,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       if (opts.context_depth && *opts.context_depth > 0) gopts.depth = *opts.context_depth;
       if (!conv_id.empty()) gopts.current_conv_id = std::string(conv_id);
       std::string graph_ctx = graph_memory_->select_context(current_text, gopts);
-      if (!graph_ctx.empty()) messages.push_back(Json{{"role", "system"}, {"content", graph_ctx}});
+      if (!graph_ctx.empty()) part_graph.push_back(Json{{"role", "system"}, {"content", graph_ctx}});
     } catch (const std::exception& e) {
       log::debug("loom.chat_engine", "Graph memory selection failed: {}", e.what());
     }
@@ -853,10 +865,10 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       if (!selected) return selected.error();
       unified_context = *selected;
       const auto prompt = json::get_string(unified_context, "prompt");
-      if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+      if (!prompt.empty()) part_project.push_back(Json{{"role", "system"}, {"content", prompt}});
     } else {
       const auto prompt = json::get_string(compiled_context, "prompt");
-      if (!prompt.empty()) messages.push_back(Json{{"role", "system"}, {"content", prompt}});
+      if (!prompt.empty()) part_project.push_back(Json{{"role", "system"}, {"content", prompt}});
     }
   }
 
@@ -877,9 +889,16 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       } else if (m.weight < 0.5) {
         content = "[low priority] " + content;
       }
-      messages.push_back(Json{{"role", m.role}, {"content", content}});
+      part_history.push_back(Json{{"role", m.role}, {"content", content}});
       history_ids.push_back(m.id);
     }
+  }
+
+  for (const auto& cls : known_orders.at(order_name)) {
+    const auto name = cls.get<std::string>();
+    const Json& part = name == "system" ? part_system : name == "memory" ? part_memory : name == "project" ? part_project
+                     : name == "history" ? part_history : part_graph;
+    for (const auto& item : part) messages.push_back(item);
   }
 
   if (opts.active_task_spec) {
@@ -890,6 +909,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   messages.push_back(Json{{"role", "user"}, {"content", build_content(current_text, attachments)}});
   if (context_trace) {
     *context_trace = Json{{"kind", "compiled_messages"}, {"version", 1},
+                         {"context_order", {{"name", order_name}, {"classes", known_orders.at(order_name)}}},
                          {"messages", messages}, {"messages_sha256", Sha256::hex(json::dump(messages))},
                          {"history_message_ids", history_ids},
                          {"selection", {{"include_memory", opts.include_memory},

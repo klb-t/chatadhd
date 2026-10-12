@@ -8,6 +8,7 @@
 #include "loom/db.h"
 #include "loom/event_bus.h"
 #include "loom/graph_memory.h"
+#include "loom/memory_engine.h"
 #include "loom/net/http.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/util/fs.h"
@@ -272,5 +273,96 @@ TEST_SUITE("chat_engine") {
     opts.context_depth = 0;
     auto r = unwrap(engine.send("no graph please", opts));
     CHECK(!r.text.empty());
+  }
+
+  // Context order preset: legacy keeps the historical bytes; stable_first puts
+  // slowly changing classes first and the question-specific graph context last.
+  namespace {
+  struct OrderFixture {
+    Env env;
+    MemoryEngine mem{env.td.path() / "memory.json"};
+    GraphMemorySelector gm{*env.db, env.cfg, *env.analyzer};
+    std::string conv_id;
+    OrderFixture() {
+      env.cfg.set("system_prompt", "SYS-S0");
+      env.cfg.set("auto_title", false);
+      unwrap(mem.add_node("MEM-S1 core fact"));
+      auto old_conv = unwrap(env.db->create_conv("Old conversation"));
+      NewMessage nm; nm.conv_id = old_conv.id; nm.text = "we discussed the database and the API design"; nm.role = "assistant";
+      auto old_mid = unwrap(env.db->create_msg(nm));
+      auto topic = unwrap(env.db->get_or_create_node("tech", "topic"));
+      unwrap(env.db->create_link(old_mid, topic, "tagged_with", 0.5));
+      auto cur = unwrap(env.db->create_conv("Current"));
+      conv_id = cur.id;
+      NewMessage h; h.conv_id = cur.id; h.text = "HIST-S3 earlier turn"; h.role = "user";
+      unwrap(env.db->create_msg(h));
+    }
+    Json send_body(const ChatOptions& base) {
+      env.transport.expect("POST", "https://api.test/chat/completions",
+                           net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+      ChatEngine engine(env.cfg, env.secrets, *env.db, env.bus, env.transport, *env.analyzer, &mem, &gm);
+      ChatOptions opts = base;
+      opts.conv_id = conv_id;
+      opts.stream = false;
+      unwrap(engine.send("tell me about the database and API again", opts));
+      auto reqs = env.transport.requests();
+      return unwrap(json::parse(reqs.back().body));
+    }
+  };
+  std::vector<std::string> contents(const Json& body) {
+    std::vector<std::string> out;
+    for (const auto& m : body["messages"]) out.push_back(m["content"].get<std::string>());
+    return out;
+  }
+  }  // namespace
+
+  TEST_CASE("context_order legacy: system, memory, graph, history, question (historical bytes)") {
+    OrderFixture f;
+    auto c = contents(f.send_body(ChatOptions{}));
+    REQUIRE(c.size() == 5);
+    CHECK(c[0] == "SYS-S0");
+    CHECK(c[1].find("MEM-S1") != std::string::npos);
+    CHECK(c[2].find("Relevant context from past conversations:") == 0);
+    CHECK(c[3] == "HIST-S3 earlier turn");
+    CHECK(c[4] == "tell me about the database and API again");
+    // The explicit name is the same as the default preset: identical request body.
+    OrderFixture g;
+    ChatOptions named; named.context_order = "legacy";
+    CHECK(contents(g.send_body(named)) == c);
+  }
+
+  TEST_CASE("context_order stable_first: S0 system, S1 memory, S3 history, S4 graph, S5 question; trace records it") {
+    OrderFixture f;
+    ChatOptions opts; opts.context_order = "stable_first"; opts.trace_context = true;
+    auto body = f.send_body(opts);
+    auto c = contents(body);
+    REQUIRE(c.size() == 5);
+    CHECK(c[0] == "SYS-S0");
+    CHECK(c[1].find("MEM-S1") != std::string::npos);
+    CHECK(c[2] == "HIST-S3 earlier turn");
+    CHECK(c[3].find("Relevant context from past conversations:") == 0);
+    CHECK(c[4] == "tell me about the database and API again");
+    auto msgs = unwrap(f.env.db->get_msgs(f.conv_id));
+    bool traced = false;
+    for (const auto& m : msgs) {
+      if (!m.metadata.contains("context_trace")) continue;
+      traced = true;
+      CHECK(m.metadata["context_trace"]["context_order"]["name"] == "stable_first");
+    }
+    CHECK(traced);
+  }
+
+  TEST_CASE("context_order: config key selects the preset; unknown names are rejected; request JSON parses it") {
+    OrderFixture f;
+    f.env.cfg.set("chat_context_order", "stable_first");
+    auto c = contents(f.send_body(ChatOptions{}));
+    CHECK(c[2] == "HIST-S3 earlier turn");
+    f.env.cfg.set("chat_context_order", "no_such_order");
+    ChatEngine engine(f.env.cfg, f.env.secrets, *f.env.db, f.env.bus, f.env.transport, *f.env.analyzer);
+    ChatOptions o;
+    CHECK_FALSE(engine.build_messages(f.conv_id, "q", {}, o));
+    auto parsed = unwrap(ChatOptions::from_json(Json{{"context_order", "stable_first"}}));
+    CHECK(parsed.context_order == "stable_first");
+    CHECK_FALSE(ChatOptions::from_json(Json{{"context_order", 3}}));
   }
 }

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cstdio>
+#include <set>
 
 #include "loom/config.h"
 #include "loom/db.h"
@@ -12,6 +13,7 @@
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
 #include "loom/usage_policy.h"
+#include "loom/util/ids.h"
 #include "chat/graph_reply.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
@@ -49,6 +51,115 @@ void assign_worker_options(WorkerOptions& opts, const RuntimeProfile& profile) {
   opts.batch_threshold = v.at("batch_threshold").get<std::int64_t>();
   opts.batch_max_messages = v.at("batch_max_messages").get<int>();
   opts.batch_endpoint = v.at("batch_endpoint").get<std::string>();
+}
+
+// ── Queue inspection: failed / stalled items ───────────────────────────
+struct QueueItem {
+  std::string id, conv_id, kind, when, error_class, reason;  // kind: "failed" | "stalled"
+};
+
+struct QueueFilter {
+  bool failed = true, stalled = true, active_only = true;
+  std::string conv_id, error_class;
+  std::optional<timeutil::Clock::time_point> since;
+  std::set<std::string> ids;
+  bool dry_run = false;
+};
+
+Result<QueueFilter> parse_queue_filter(const Json& j) {
+  QueueFilter f;
+  if (j.is_null()) return f;
+  if (!j.is_object()) return Error(Errc::InvalidArgument, "requeue filter must be an object");
+  for (auto it = j.begin(); it != j.end(); ++it) {
+    const auto& k = it.key();
+    const auto& v = it.value();
+    auto bad = [&] { return Error(Errc::InvalidArgument, "invalid requeue filter field: " + k); };
+    if (k == "failed" || k == "stalled" || k == "dry_run") {
+      if (!v.is_boolean()) return bad();
+      (k == "failed" ? f.failed : k == "stalled" ? f.stalled : f.dry_run) = v.get<bool>();
+    } else if (k == "conv_id" || k == "error_class") {
+      if (!v.is_string()) return bad();
+      (k == "conv_id" ? f.conv_id : f.error_class) = v.get<std::string>();
+    } else if (k == "since") {
+      if (!v.is_string()) return bad();
+      f.since = timeutil::parse_iso_utc(v.get<std::string>());
+      if (!f.since) return bad();
+    } else if (k == "ids") {
+      if (!v.is_array()) return bad();
+      for (const auto& e : v) {
+        if (!e.is_string()) return bad();
+        f.ids.insert(e.get<std::string>());
+      }
+    } else {
+      return Error(Errc::InvalidArgument, "unknown requeue filter field: " + k);
+    }
+  }
+  return f;
+}
+
+const Json* last_attempt(const Json& metadata) {
+  const Json* attempts = json::find(metadata, "loom_semantic_attempts");
+  if (!attempts || !attempts->is_array() || attempts->empty() || !attempts->back().is_object()) return nullptr;
+  return &attempts->back();
+}
+
+// nullopt: the executing claim is live (or not old enough to doubt).
+std::optional<std::string> stall_reason(const Json& metadata, std::int64_t lease_ms) {
+  const Json* rec = last_attempt(metadata);
+  if (!rec || json::get_string(*rec, "state") != "executing") return "no_claim_record";
+  const auto owner = rec->contains("owner") ? attempt_owner_state((*rec)["owner"]) : OwnerState::Unknown;
+  if (owner == OwnerState::Gone) return "owner_gone";
+  if (owner == OwnerState::Live) return std::nullopt;
+  auto started = timeutil::parse_iso_utc(json::get_string(*rec, "started"));
+  if (!started) return "no_claim_time";
+  if (timeutil::Clock::now() - *started >= std::chrono::milliseconds(lease_ms)) return "lease_expired";
+  return std::nullopt;
+}
+
+Result<std::vector<QueueItem>> scan_queue(Database& db, std::int64_t lease_ms, const QueueFilter& f) {
+  auto lock = db.lock();
+  std::string sql = "SELECT id, conv_id, semantic_status, metadata FROM messages "
+                    "WHERE semantic_status IN ('failed','executing')";
+  if (f.active_only) sql += " AND status = 'active'";
+  if (!f.conv_id.empty()) sql += " AND conv_id = ?";
+  sql += " ORDER BY created ASC";
+  LOOM_TRY_ASSIGN(auto st, db.conn().prepare(sql));
+  if (!f.conv_id.empty()) st.bind(1, f.conv_id);
+  std::vector<QueueItem> out;
+  while (true) {
+    LOOM_TRY_ASSIGN(bool row, st.step());
+    if (!row) break;
+    QueueItem item;
+    item.id = st.get_text(0);
+    item.conv_id = st.get_text(1);
+    const auto status = st.get_text(2);
+    const auto raw = st.get_opt_text(3);
+    Json metadata = Json::object();
+    if (raw) { auto parsed = json::parse(*raw); if (parsed) metadata = *parsed; }
+    const Json* rec = last_attempt(metadata);
+    if (status == "failed") {
+      item.kind = "failed";
+      if (rec) {
+        item.when = json::get_string(*rec, "finished");
+        if (const Json* err = json::find(*rec, "error"); err && err->is_object()) item.error_class = json::get_string(*err, "code");
+      }
+    } else {
+      auto reason = stall_reason(metadata, lease_ms);
+      if (!reason) continue;  // live claim
+      item.kind = "stalled";
+      item.reason = *reason;
+      if (rec) item.when = json::get_string(*rec, "started");
+    }
+    if ((item.kind == "failed" && !f.failed) || (item.kind == "stalled" && !f.stalled)) continue;
+    if (!f.ids.empty() && !f.ids.count(item.id)) continue;
+    if (!f.error_class.empty() && item.error_class != f.error_class) continue;
+    if (f.since) {
+      auto when = timeutil::parse_iso_utc(item.when);
+      if (!when || *when < *f.since) continue;
+    }
+    out.push_back(std::move(item));
+  }
+  return out;
 }
 
 // ── Anthropic Message Batches (submit / poll / fetch) ───────────────────
@@ -311,6 +422,9 @@ Json WorkerStatus::to_json() const {
   Json out{{"pending", pending},
               {"failed", failed ? Json(*failed) : Json(nullptr)},
               {"executing", executing ? Json(*executing) : Json(nullptr)},
+              {"stalled", stalled ? Json(*stalled) : Json(nullptr)},
+              {"quarantined", quarantined},
+              {"retry_mode", retry_mode},
               {"counts_known", counts_known},
               {"processed", processed},
               {"errors", errors},
@@ -347,10 +461,16 @@ SemanticWorker::SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& grap
       {"batch_max_messages", opts_.batch_max_messages}, {"batch_endpoint", opts_.batch_endpoint}});
   }
   if (!opts && profile_) assign_worker_options(opts_, *profile_);
+  retry_mode_ = profile_ ? profile_->values().value("retry_mode", std::string("explicit_requeue")) : "explicit_requeue";
+  instance_ = gen_id("w_");
+  register_attempt_owner(instance_);
   import_sub_ = ScopedSubscription(bus_, bus_.on(events::kImportDone, [this](std::string_view, const Json&) { wake(); }));
 }
 
-SemanticWorker::~SemanticWorker() { stop(); }
+SemanticWorker::~SemanticWorker() {
+  stop();
+  unregister_attempt_owner(instance_);
+}
 
 void SemanticWorker::start() {
   std::lock_guard lk(mu_);
@@ -406,16 +526,25 @@ WorkerStatus SemanticWorker::status() const {
         s.counts_known = counts->get_int(3) == 0;
       }
     }
+    if (s.counts_known && profile_) {
+      QueueFilter all;
+      all.failed = false;
+      all.active_only = false;
+      auto stalled = scan_queue(db_, profile_->values().at("executing_lease_ms").get<std::int64_t>(), all);
+      if (stalled) s.stalled = static_cast<std::int64_t>(stalled->size());
+    }
   }
   s.processed = processed_.load();
   s.errors = errors_.load();
   s.paused = paused_.load();
   std::lock_guard lk(mu_);
   s.mode = mode_;
+  s.retry_mode = retry_mode_;
+  s.quarantined = static_cast<std::int64_t>(quarantine_.size());
   s.rate = rate_;
   s.batch_id = batch_id_;
   s.batch_submitted = batch_submitted_;
-  s.usage_pending = usage_pending_;
+  s.usage_pending = usage_pending_ ? usage_pending_ : retry_pending_;
   s.running = thread_.joinable();
   return s;
 }
@@ -424,14 +553,23 @@ Result<Json> SemanticWorker::runtime_profile() const { LOOM_TRY(profile_); retur
 
 Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view receipt_id, std::string_view ref) {
   Json pending;
+  bool is_retry = false;
   {
     std::lock_guard lk(mu_);
-    if (!usage_pending_) return Error(Errc::NotFound, "no semantic usage confirmation is pending");
-    if (json::get_string(*usage_pending_, "receipt_id") != receipt_id)
+    if (!usage_pending_ && !retry_pending_) return Error(Errc::NotFound, "no semantic usage confirmation is pending");
+    auto matches = [&](const std::optional<Json>& slot) { return slot && json::get_string(*slot, "receipt_id") == receipt_id; };
+    if (matches(usage_pending_)) {
+      pending = *usage_pending_;
+    } else if (matches(retry_pending_)) {
+      pending = *retry_pending_;
+      is_retry = true;
+    } else {
       return Error(Errc::InvalidArgument, "receipt_id does not match the pending semantic usage receipt");
-    pending = *usage_pending_;
-    if (approved) usage_confirmation_ = Json{{"approved", true}, {"receipt_id", std::string(receipt_id)},
-                                             {"ref", std::string(ref)}};
+    }
+    if (approved) {
+      (is_retry ? retry_confirmation_ : usage_confirmation_) =
+          Json{{"approved", true}, {"receipt_id", std::string(receipt_id)}, {"ref", std::string(ref)}};
+    }
   }
   if (approved) {
     wake();
@@ -441,6 +579,15 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
   LOOM_TRY_ASSIGN(auto options, effective_usage_policy_options(cfg_));
   LOOM_TRY_ASSIGN(auto policy, UsagePolicy::open(cfg_.path().parent_path() / "usage-policy.sqlite", options));
   LOOM_TRY_ASSIGN(auto denied, policy->confirm(json::get_string(pending, "operation_id"), receipt_id, false, ref));
+  if (is_retry) {
+    // The owner declined this automatic resend: do not ask again in a loop.
+    // Automatic retry is a setting; switching it back on is explicit.
+    std::lock_guard lk(mu_);
+    retry_pending_.reset();
+    retry_confirmation_.reset();
+    retry_mode_ = "explicit_requeue";
+    return denied;
+  }
   {
     std::lock_guard lk(mu_);
     usage_pending_.reset();
@@ -450,6 +597,147 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
   return denied;
 }
 
+Status SemanticWorker::set_retry_mode(std::string_view mode) {
+  if (mode != "explicit_requeue" && mode != "automatic")
+    return Error(Errc::InvalidArgument, "retry_mode must be explicit_requeue or automatic");
+  {
+    std::lock_guard lk(mu_);
+    retry_mode_ = std::string(mode);
+    if (mode != "automatic") { retry_pending_.reset(); retry_confirmation_.reset(); }
+  }
+  wake();
+  return {};
+}
+
+Result<Json> SemanticWorker::requeue(const Json& filter) {
+  LOOM_TRY(profile_);
+  LOOM_TRY_ASSIGN(auto f, parse_queue_filter(filter));
+  const auto lease = profile_->values().at("executing_lease_ms").get<std::int64_t>();
+  LOOM_TRY_ASSIGN(auto items, scan_queue(db_, lease, f));
+  Json ids = Json::array(), skipped = Json::array();
+  std::int64_t failed_n = 0, stalled_n = 0;
+  if (!f.dry_run) {
+    for (const auto& item : items) {
+      auto done = graph_.requeue_attempt(item.id, "bulk_requeue", [&](const Message& m) {
+        if (item.kind == "failed") return m.semantic_status == "failed";
+        return m.semantic_status == "executing" && stall_reason(m.metadata, lease).has_value();
+      });
+      if (!done) {
+        skipped.push_back(Json{{"id", item.id}, {"reason", done.error().message}});
+      } else if (!*done) {
+        skipped.push_back(Json{{"id", item.id}, {"reason", "changed since scan"}});
+      } else {
+        ids.push_back(item.id);
+        (item.kind == "failed" ? failed_n : stalled_n)++;
+      }
+    }
+    if (!ids.empty()) wake();
+  } else {
+    for (const auto& item : items) ids.push_back(item.id);
+  }
+  return Json{{"dry_run", f.dry_run}, {"matched", items.size()}, {"requeued", f.dry_run ? 0 : ids.size()},
+              {"failed_requeued", failed_n}, {"stalled_requeued", stalled_n},
+              {"ids", ids}, {"skipped", skipped}, {"history_preserved", true}};
+}
+
+void SemanticWorker::auto_requeue(bool use_llm) {
+  if (!profile_) return;
+  {
+    std::lock_guard lk(mu_);
+    if (retry_mode_ != "automatic") return;
+  }
+  const auto& pv = profile_->values();
+  const auto lease = pv.at("executing_lease_ms").get<std::int64_t>();
+  const auto spacing = std::chrono::milliseconds(pv.at("retry_spacing_ms").get<std::int64_t>());
+  auto scanned = scan_queue(db_, lease, QueueFilter{});
+  if (!scanned) { log::error("loom.semantic_worker", "Automatic retry scan failed: {}", scanned.error().message); return; }
+  const auto now = timeutil::Clock::now();
+  std::vector<QueueItem> due;
+  for (auto& item : *scanned) {
+    auto when = timeutil::parse_iso_utc(item.when);
+    if (!when || now - *when >= spacing) due.push_back(std::move(item));
+  }
+  if (due.empty()) {
+    std::lock_guard lk(mu_);
+    retry_pending_.reset();
+    retry_confirmation_.reset();
+    return;
+  }
+
+  std::optional<chat::ModelUsageGuard> guard;
+  const double declared_cost = static_cast<double>(due.size()) * pv.at("batch_estimate_per_message").get<double>();
+  if (use_llm) {
+    // A resend reaches the provider: same guard as every other automatic call.
+    Json ids = Json::array();
+    for (const auto& item : due) ids.push_back(item.id);
+    net::HttpRequest req;
+    req.method = "POST";
+    req.url = cfg_string(cfg_, "base_url") + "/chat/completions";
+    req.body = json::dump(Json{{"schema", "loom.semantic_retry/1"}, {"ids", ids}});
+    const std::string body_sha = Sha256::hex(req.body);
+    const std::string model = cfg_string(cfg_, "semantic_model");
+    std::string operation_id;
+    Json confirmation = Json::object();
+    {
+      std::lock_guard lk(mu_);
+      if (retry_pending_ && json::get_string(*retry_pending_, "body_sha256") != body_sha) {
+        retry_pending_.reset();  // the item set changed: an old receipt cannot authorize it
+        retry_confirmation_.reset();
+      }
+      if (retry_pending_) {
+        if (!retry_confirmation_) return;  // same item set, still awaiting the owner: do not re-ask
+        operation_id = json::get_string(*retry_pending_, "operation_id");
+        confirmation = *retry_confirmation_;
+      }
+    }
+    Json estimate{{"baseline_key", usage_baseline_key(cfg_, "semantic.retry", req.url, model)},
+        {"resources", Json{{"messages", due.size()}, {"cost_usd", declared_cost}}},
+        {"estimate_provenance", Json{{"cost_usd", "declared"}, {"messages", "counted"}, {"input_bytes", "measured"}}},
+        {"instrument", "loom.semantic.retry"}, {"model", model}, {"endpoint", req.url}};
+    if (!operation_id.empty()) estimate["operation_id"] = operation_id;
+    guard.emplace(cfg_.path().parent_path(), cfg_, false);
+    auto admitted = guard->admit(req, estimate, confirmation);
+    if (!admitted) {
+      log::error("loom.semantic_worker", "Automatic retry usage admission error: {}", admitted.error().message);
+      return;
+    }
+    if (!admitted->value("dispatch_authorized", false)) {
+      const auto status = json::get_string(*admitted, "status", "unavailable");
+      std::lock_guard lk(mu_);
+      retry_confirmation_.reset();
+      if (status == "requires_confirmation") {
+        retry_pending_ = Json{{"schema", "loom.semantic_usage_pending/1"}, {"kind", "retry"}, {"status", status},
+            {"operation_id", admitted->value("operation_id", Json(nullptr))},
+            {"receipt_id", admitted->value("receipt_id", Json(nullptr))},
+            {"baseline_key", admitted->value("baseline_key", Json(nullptr))},
+            {"projected", admitted->value("resources", Json::object())},
+            {"messages", due.size()}, {"body_sha256", body_sha}, {"sent", false}};
+        log::warn("loom.semantic_worker", "Automatic resend of {} items awaits usage confirmation (receipt {})",
+                  due.size(), json::get_string(*admitted, "receipt_id"));
+      } else {
+        retry_pending_.reset();
+        log::warn("loom.semantic_worker", "Automatic resend not admitted: {}", status);
+      }
+      return;
+    }
+    std::lock_guard lk(mu_);
+    retry_pending_.reset();
+    retry_confirmation_.reset();
+  }
+
+  std::size_t requeued = 0;
+  for (const auto& item : due) {
+    auto done = graph_.requeue_attempt(item.id, "automatic", [&](const Message& m) {
+      if (item.kind == "failed") return m.semantic_status == "failed";
+      return m.semantic_status == "executing" && stall_reason(m.metadata, lease).has_value();
+    });
+    if (done && *done) ++requeued;
+    else if (!done) log::warn("loom.semantic_worker", "Automatic requeue of {} failed: {}", item.id, done.error().message);
+  }
+  if (guard) (void)guard->settle(true, 0, Json::object(), Json{{"messages", requeued}, {"cost_usd", declared_cost}});
+  if (requeued) log::info("loom.semantic_worker", "Automatic retry requeued {} items", requeued);
+}
+
 Result<int> SemanticWorker::drain_once() {
   LOOM_TRY(profile_);
   {
@@ -457,7 +745,14 @@ Result<int> SemanticWorker::drain_once() {
     std::lock_guard lk(mu_);
     if (usage_pending_ && !usage_confirmation_) { mode_ = "awaiting_usage_confirmation"; return 0; }
   }
-  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch);
+  const bool use_llm = llm_.enabled() && cfg_bool(cfg_, "semantic_analysis", true);
+  auto_requeue(use_llm);  // no-op in explicit_requeue mode
+  std::set<std::string> excluded;
+  {
+    std::lock_guard lk(mu_);
+    excluded = quarantine_;
+  }
+  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded);
   if (!msgsr) return msgsr.error();
   auto& msgs = *msgsr;
   if (msgs.empty()) return 0;
@@ -476,8 +771,6 @@ Result<int> SemanticWorker::drain_once() {
     LOOM_TRY_ASSIGN(effective_analyzer, SemanticAnalyzer::create_with_profile(analyzer_profile));
   }
   const auto& analyzer = effective_analyzer ? *effective_analyzer : regex_;
-
-  bool use_llm = llm_.enabled() && cfg_bool(cfg_, "semantic_analysis", true);
 
   auto pending_r = db_.count_pending_semantic();
   std::int64_t pending_total = pending_r.value_or(0);
@@ -502,16 +795,38 @@ Result<int> SemanticWorker::drain_once() {
   double t0 = timeutil::monotonic_seconds();
   int count = 0;
 
+  std::string retry_mode_now;
+  {
+    std::lock_guard lk(mu_);
+    retry_mode_now = retry_mode_;
+  }
   for (const auto& m : msgs) {
     {
       std::lock_guard lk(mu_);
       if (stop_ || paused_.load()) break;
     }
+    // A row whose attempt history cannot be extended can never be claimed;
+    // it must not stop the rest of the queue (it stays pending and visible).
+    if (const Json* history = json::find(m.metadata, "loom_semantic_attempts"); history && !history->is_array()) {
+      errors_.fetch_add(1);
+      log::warn("loom.semantic_worker", "Skipping {}: attempt history is not an array (data retained)", m.id);
+      std::lock_guard lk(mu_);
+      quarantine_.insert(m.id);
+      continue;
+    }
     Json provenance{{"consumer", "semantic_worker"}, {"mode", use_llm ? "llm" : "regex"},
                     {"worker_profile_hash", profile_->hash()}, {"llm_rate_limit", opts_.llm_rate_limit},
                     {"failure_recovery", profile_->values().at("failure_recovery")},
                     {"analyzer_profile_hash", analyzer.profile_hash()}};
-    auto claimed = graph_.begin_analysis(m.id, m.text, m.conv_id, *graph_profile, provenance, false, msg_status::kActive);
+    if (retry_mode_now != "explicit_requeue") provenance["retry_mode"] = retry_mode_now;
+    auto claimed = graph_.begin_analysis(m.id, m.text, m.conv_id, *graph_profile, provenance, false, msg_status::kActive,
+                                         instance_);
+    if (!claimed && (claimed.error().code == Errc::Conflict || claimed.error().code == Errc::NotFound)) {
+      // This row changed or vanished under us; others are unaffected.
+      errors_.fetch_add(1);
+      log::warn("loom.semantic_worker", "Skipping {}: {}", m.id, claimed.error().message);
+      continue;
+    }
     if (!claimed) {
       errors_.fetch_add(1);
       // No dispatch occurred. Surface the failure to the existing backoff;

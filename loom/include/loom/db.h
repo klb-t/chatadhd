@@ -27,6 +27,7 @@
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -339,6 +340,8 @@ class Database {
   Result<int> batch_create_msgs(std::string_view conv_id, const std::vector<BatchMessage>& messages,
                                 int batch_size = 1000);
   Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit = 100);
+  // Same queue order, skipping ids the caller has quarantined (rows that cannot be claimed).
+  Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids);
   Result<std::int64_t> count_pending_semantic();
   // Stamps semantic_source/entity_count/topic_count/summary[:200]/sentiment
   // into metadata and flips semantic_status to 'done'. No-op if missing.

@@ -12,6 +12,14 @@
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
 
+#include <mutex>
+#include <set>
+#ifndef _WIN32
+#include <cerrno>
+#include <csignal>
+#include <unistd.h>
+#endif
+
 namespace loom {
 
 namespace {
@@ -112,6 +120,18 @@ Status matches_attempt(const Message& message, const SemanticAttempt& attempt) {
   return {};
 }
 
+// Content-addressed profile snapshots (graph/analyzer profile values are ~0.7 KB):
+// stored once in _meta under the profile's sha256, referenced by attempt records.
+std::string snapshot_key(std::string_view hash) { return "loom_profile_snapshot:" + std::string(hash); }
+
+Status store_profile_snapshot(Database& db, const RuntimeProfile& profile) {
+  const auto key = snapshot_key(profile.hash());
+  LOOM_TRY_ASSIGN(auto existing, db.get_meta(key));
+  if (existing) return {};
+  return db.set_meta(key, json::dump(Json{{"domain", profile.domain()}, {"revision", profile.definition().at("revision")},
+                                          {"values", profile.values()}, {"sources", profile.source_provenance()}}));
+}
+
 Status validate_graph_profile(const RuntimeProfile& profile) {
   if (profile.domain() != "graph_ingest") return Error(Errc::InvalidArgument, "expected graph_ingest profile");
   LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("graph_ingest"));
@@ -120,6 +140,57 @@ Status validate_graph_profile(const RuntimeProfile& profile) {
 }
 
 }  // namespace
+
+namespace {
+std::mutex& owner_mu() { static std::mutex m; return m; }
+std::set<std::string>& owner_set() { static std::set<std::string> s; return s; }
+std::string host_name() {
+#ifndef _WIN32
+  char buf[256] = {0};
+  if (gethostname(buf, sizeof buf - 1) == 0) return buf;
+#endif
+  return {};
+}
+std::int64_t self_pid() {
+#ifndef _WIN32
+  return static_cast<std::int64_t>(getpid());
+#else
+  return 0;
+#endif
+}
+}  // namespace
+
+Json attempt_owner(std::string_view instance) {
+  return Json{{"pid", self_pid()}, {"host", host_name()}, {"instance", std::string(instance)}};
+}
+
+void register_attempt_owner(const std::string& instance) {
+  std::lock_guard lk(owner_mu());
+  owner_set().insert(instance);
+}
+
+void unregister_attempt_owner(const std::string& instance) {
+  std::lock_guard lk(owner_mu());
+  owner_set().erase(instance);
+}
+
+OwnerState attempt_owner_state(const Json& owner) {
+  if (!owner.is_object() || !owner.contains("pid") || !owner["pid"].is_number_integer()) return OwnerState::Unknown;
+  if (json::get_string(owner, "host") != host_name()) return OwnerState::Unknown;  // cannot probe another host
+  const auto pid = owner["pid"].get<std::int64_t>();
+  const auto instance = json::get_string(owner, "instance");
+  if (pid == self_pid()) {
+    if (instance.empty()) return OwnerState::Unknown;  // synchronous graph claim: the lease decides
+    std::lock_guard lk(owner_mu());
+    return owner_set().count(instance) > 0 ? OwnerState::Live : OwnerState::Gone;
+  }
+#ifndef _WIN32
+  if (pid <= 0) return OwnerState::Unknown;
+  return (::kill(static_cast<pid_t>(pid), 0) == 0 || errno == EPERM) ? OwnerState::Unknown : OwnerState::Gone;
+#else
+  return OwnerState::Unknown;
+#endif
+}
 
 GraphEngine::GraphEngine(Database& db, EventBus& bus, const SemanticAnalyzer& regex, SemanticLLM* llm,
                          RelationRegistry* relations, AnalyzerBinding analyzer_binding)
@@ -181,7 +252,7 @@ Status GraphEngine::on_message_checked(const Json& data, const Json& overrides) 
 
 Result<SemanticAttempt> GraphEngine::begin_analysis(std::string_view msg_id, std::string_view expected_text,
     std::string_view expected_conv_id, const RuntimeProfile& profile, const Json& provenance,
-    bool reanalyse_completed, std::optional<std::string_view> expected_status) {
+    bool reanalyse_completed, std::optional<std::string_view> expected_status, std::string_view owner_instance) {
   LOOM_TRY(validate_graph_profile(profile));
   if (!provenance.is_object()) return Error(Errc::InvalidArgument, "semantic provenance must be an object");
   auto lock = db_.lock();
@@ -198,13 +269,15 @@ Result<SemanticAttempt> GraphEngine::begin_analysis(std::string_view msg_id, std
   if (message->semantic_status != "pending" && !(reanalyse_completed && message->semantic_status == "done"))
     return Error(Errc::Conflict, "semantic source is not queued; explicit requeue required");
   LOOM_TRY_ASSIGN(auto metadata, attempt_metadata(*message));
+  LOOM_TRY(store_profile_snapshot(db_, profile));
   SemanticAttempt attempt{gen_id(id_prefix::kTask), message->id, message->conv_id, message->text,
                           source_identity(*message), profile};
   metadata["loom_semantic_attempts"].push_back(Json{
     {"schema", "loom.semantic_attempt/1"}, {"id", attempt.id}, {"state", "executing"},
     {"started", timeutil::utc_now_iso()}, {"source", attempt.source},
     {"graph_profile", {{"hash", profile.hash()}, {"revision", profile.definition().at("revision")},
-                       {"values", profile.values()}, {"sources", profile.source_provenance()}}},
+                       {"ref", "sha256:" + profile.hash()}}},
+    {"owner", attempt_owner(owner_instance)},
     {"provenance", provenance}});
   MsgPatch patch; patch.metadata = std::move(metadata); patch.semantic_status = "executing";
   LOOM_TRY(db_.update_msg(msg_id, patch));
@@ -270,6 +343,33 @@ Status GraphEngine::fail_analysis(const SemanticAttempt& attempt, const Error& e
   return txn.commit();
 }
 
+Result<bool> GraphEngine::requeue_attempt(std::string_view msg_id, std::string_view reason,
+                                          const std::function<bool(const Message&)>& eligible) {
+  auto lock = db_.lock();
+  if (db_.conn().in_transaction()) return Error(Errc::Conflict, "semantic requeue requires a durable transaction boundary");
+  sql::Txn txn(db_.conn());
+  LOOM_TRY(txn.begin_status());
+  LOOM_TRY_ASSIGN(auto message, db_.get_msg(msg_id));
+  if (!message) return Error(Errc::NotFound, "semantic message no longer exists");
+  if (eligible && !eligible(*message)) return false;
+  Json metadata = message->metadata;
+  if (metadata.is_object()) {
+    auto it = metadata.find("loom_semantic_attempts");
+    if (it != metadata.end() && it->is_array() && !it->empty() && it->back().is_object()) {
+      auto& record = it->back();
+      if (json::get_string(record, "state") == "executing") {
+        record["state"] = "stalled";  // the claim's owner is gone; the record stays as history
+        record["stalled_at"] = timeutil::utc_now_iso();
+      }
+      record["requeued"] = Json{{"at", timeutil::utc_now_iso()}, {"reason", std::string(reason)}};
+    }
+  }
+  MsgPatch patch; patch.metadata = std::move(metadata); patch.semantic_status = "pending";
+  LOOM_TRY(db_.update_msg(msg_id, patch));
+  LOOM_TRY(txn.commit());
+  return true;
+}
+
 bool GraphEngine::ingest_analysis(std::string_view msg_id, std::string_view conv_id, const Json& analysis) {
   auto result = ingest_analysis_checked(msg_id, conv_id, analysis);
   if (!result) {
@@ -296,6 +396,36 @@ Result<bool> GraphEngine::ingest_analysis_checked(std::string_view msg_id, std::
   } catch (const std::exception& e) {
     return Error(Errc::Internal, "graph analysis ingestion: " + std::string(e.what()));
   }
+}
+
+Result<Json> GraphEngine::resolve_attempt_profile(const Json& graph_profile) const {
+  if (!graph_profile.is_object()) return Error(Errc::InvalidArgument, "attempt graph_profile must be an object");
+  if (graph_profile.contains("values")) return graph_profile;  // historical row with embedded values
+  const auto hash = json::get_string(graph_profile, "hash");
+  if (hash.empty()) return Error(Errc::InvalidArgument, "attempt graph_profile has neither values nor hash");
+  LOOM_TRY_ASSIGN(auto raw, db_.get_meta(snapshot_key(hash)));
+  if (!raw) return Error(Errc::NotFound, "profile snapshot " + hash + " is not stored");
+  Json out = graph_profile;
+  LOOM_TRY_ASSIGN(auto snap, json::parse(*raw));
+  out["values"] = snap.value("values", Json::object());
+  out["sources"] = snap.value("sources", Json::array());
+  return out;
+}
+
+Result<Json> GraphEngine::attempt_history(std::string_view msg_id) const {
+  LOOM_TRY_ASSIGN(auto message, db_.get_msg(msg_id));
+  if (!message) return Error(Errc::NotFound, "message not found");
+  Json out = Json::array();
+  const Json* attempts = json::find(message->metadata, "loom_semantic_attempts");
+  if (!attempts || !attempts->is_array()) return out;
+  for (Json record : *attempts) {
+    if (record.is_object() && record.contains("graph_profile")) {
+      LOOM_TRY_ASSIGN(auto resolved, resolve_attempt_profile(record.at("graph_profile")));
+      record["graph_profile"] = std::move(resolved);
+    }
+    out.push_back(std::move(record));
+  }
+  return out;
 }
 
 Result<Json> GraphEngine::profile_inspection(const Json& overrides) const {

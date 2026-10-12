@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "worker",
-  "revision": 2,
-  "description": "Worker timing, batching and transport recipe. Input/output generation uses existing semantic prompt, owned by thread1. Cost/message is an estimate placeholder, not actual charge. Per-message failures and interrupted claims require explicit requeue; batch polling remains process-local.",
+  "revision": 3,
+  "description": "Worker timing, batching and transport recipe. Input/output generation uses existing semantic prompt, owned by thread1. Cost/message is an estimate placeholder, not actual charge. Per-message failures and interrupted claims require explicit requeue; batch polling remains process-local. Retry is a mode, not a ceiling: retry_mode explicit_requeue (default preset) never resends on its own; automatic requeues failed and stalled items without any attempt limit, spaced by retry_spacing_ms, and every automatic resend passes the shared usage guard. A claim whose owner is gone, or older than executing_lease_ms, is reported as stalled.",
   "defaults": {
     "drain_batch": 50,
     "idle_poll_ms": 30000,
@@ -31,7 +31,10 @@
       "expired"
     ],
     "submit_error_body_chars": 200,
-    "failure_recovery": "explicit_requeue"
+    "failure_recovery": "explicit_requeue",
+    "retry_mode": "explicit_requeue",
+    "retry_spacing_ms": 60000,
+    "executing_lease_ms": 900000
   },
   "value_schema": {
     "x-setting": "",
@@ -59,7 +62,10 @@
       "batch_estimate_per_message",
       "terminal_statuses",
       "submit_error_body_chars",
-      "failure_recovery"
+      "failure_recovery",
+      "retry_mode",
+      "retry_spacing_ms",
+      "executing_lease_ms"
     ],
     "properties": {
       "drain_batch": {
@@ -214,6 +220,34 @@
         "x-setting": "/failure_recovery",
         "x-consumer": "semantic_worker",
         "description": "Implemented recovery policy for per-message failed/interrupted claims. Resume only unpauses the worker; update_msg semantic_status=pending explicitly requeues."
+      },
+      "retry_mode": {
+        "type": "string",
+        "enum": [
+          "explicit_requeue",
+          "automatic"
+        ],
+        "x-setting": "/retry_mode",
+        "x-consumer": "semantic_worker",
+        "description": "explicit_requeue: failed/stalled items wait for an explicit requeue (update_msg pending or bulk requeue). automatic: they are requeued by the worker with no attempt ceiling; each resend passes the usage guard."
+      },
+      "retry_spacing_ms": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-setting": "/retry_spacing_ms",
+        "x-consumer": "semantic_worker",
+        "x-unit": "milliseconds",
+        "description": "Preset spacing between attempts on one item under automatic retry. Not a limit on how many attempts there are."
+      },
+      "executing_lease_ms": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-setting": "/executing_lease_ms",
+        "x-consumer": "semantic_worker",
+        "x-unit": "milliseconds",
+        "description": "A durable executing claim older than this is reported as stalled even if its owner cannot be probed. Reporting only; nothing is retried by it in explicit_requeue mode."
       }
     },
     "additionalProperties": false

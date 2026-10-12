@@ -39,6 +39,15 @@ extern "C" const char* loom_usage_policy_json(LoomContext* ctx, const char* comm
           json::get_string(command, "receipt_id"), json::get_string(command, "confirmation_ref"));
       return answered ? out(*answered) : out_error(answered.error());
     }
+    if (action == "semantic_requeue") {
+      Json filter = command.contains("filter") ? command["filter"] : Json::object();
+      auto result = ctx->rt->worker().requeue(filter);
+      return result ? out(*result) : out_error(result.error());
+    }
+    if (action == "semantic_retry_mode") {
+      auto set = ctx->rt->worker().set_retry_mode(json::get_string(command, "mode"));
+      return set ? out(ctx->rt->worker().status().to_json()) : out_error(set.error());
+    }
     if (action == "chat_preview") {
       const std::string message = json::get_string(command, "message");
       if (message.empty()) return out_error(missing("message"));

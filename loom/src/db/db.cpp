@@ -2,6 +2,8 @@
 // file; every deviation is commented.
 #include "loom/db.h"
 
+#include <set>
+
 #include <unordered_map>
 
 #include "db_internal.h"
@@ -680,14 +682,26 @@ Result<int> Database::batch_create_msgs(std::string_view conv_id, const std::vec
 }
 
 Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit) {
+  return get_unanalysed_msgs(limit, {});
+}
+
+Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids) {
   auto lk = lock();
-  LOOM_TRY_ASSIGN(auto st, conn_.prepare(
-                               "SELECT id, conv_id, role, text, metadata FROM messages\n"
-                               "                   WHERE semantic_status = 'pending'\n"
-                               "                     AND status = 'active'\n"
-                               "                     AND length(text) >= 20\n"
-                               "                   ORDER BY created ASC LIMIT ?"));
-  st.bind(1, limit);
+  std::string sql =
+      "SELECT id, conv_id, role, text, metadata FROM messages\n"
+      "                   WHERE semantic_status = 'pending'\n"
+      "                     AND status = 'active'\n"
+      "                     AND length(text) >= 20\n";
+  if (!exclude_ids.empty()) {
+    sql += "                     AND id NOT IN (?";
+    for (std::size_t i = 1; i < exclude_ids.size(); ++i) sql += ",?";
+    sql += ")\n";
+  }
+  sql += "                   ORDER BY created ASC LIMIT ?";
+  LOOM_TRY_ASSIGN(auto st, conn_.prepare(sql));
+  int idx = 1;
+  for (const auto& id : exclude_ids) st.bind(idx++, id);
+  st.bind(idx, limit);
   std::vector<PendingMessage> out;
   while (true) {
     LOOM_TRY_ASSIGN(bool row, st.step());

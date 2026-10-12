@@ -484,6 +484,10 @@
           "sha256": "c1d34a47b5f6a5a57bf2d969338bccf7a0065e45df268d896de6e85f49489c67"
         },
         {
+          "path": "loom/data/runtime/chat_context.pack",
+          "sha256": "c8aca362bd027939aa49ddf1074e09cc3d73d9cceb2dd03185e3670f4a6f4d00"
+        },
+        {
           "path": "loom/data/runtime/chat_reasoning.pack",
           "sha256": "3d4fa820e87225e5c0fd5e7221c7bfa64adcdb23b43b6d4ac8bf69b4a5296b6e"
         },
@@ -581,14 +585,14 @@
         },
         {
           "path": "loom/data/runtime/worker.pack",
-          "sha256": "aa424a01c94f9779a9a442adf9ea62a1096ae80f28ffcf0a6bac4b9aa7b53d98"
+          "sha256": "980d6b0a6bac84f49f45421b5ccd554e980c1de36d934ac071cacad7bc62c2ab"
         },
         {
           "path": "loom/data/runtime_sources.pack",
           "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
         }
       ],
-      "output_sha256": "4576fda8474d5e1bfb410dc5cd3fdf5249de66126cf48ead8b7d2e161b8f7d1c",
+      "output_sha256": "8af840035b694f5c36b7a3944dd11ad4ef843f10e74dc088c03e9eb7ffd38840",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

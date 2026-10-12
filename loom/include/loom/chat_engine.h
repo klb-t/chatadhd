@@ -83,6 +83,9 @@ struct ChatOptions {
   std::optional<double> temperature;
   std::optional<int> max_tokens;
   std::optional<std::string> system_prompt;    // replaces config.system_prompt
+  // Name of a chat_context order ("legacy" | "stable_first" | user-defined);
+  // overrides config chat_context_order and the pack's context_order preset.
+  std::optional<std::string> context_order;
   std::optional<int> context_depth;            // graph memory depth (0 = disable graph context)
   std::optional<bool> stream;                  // unset: config.stream; requires on_chunk
   // Shared usage guard (every send is admitted before transport). When a send

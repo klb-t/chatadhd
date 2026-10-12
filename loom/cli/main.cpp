@@ -675,7 +675,25 @@ int cmd_semantic(Runtime& rt, const Args& a) {
   if (sub == "pause") w.pause();
   else if (sub == "resume") w.resume();
   else if (sub == "wake") w.wake();
-  else if (sub == "run") {
+  else if (sub == "requeue") {
+    // loom semantic requeue [--conv ID] [--since ISO] [--error-class CODE] [--failed-only|--stalled-only] [--dry-run] [ID...]
+    Json filter = Json::object();
+    if (a.has("conv")) filter["conv_id"] = a.get("conv");
+    if (a.has("since")) filter["since"] = a.get("since");
+    if (a.has("error-class")) filter["error_class"] = a.get("error-class");
+    if (a.has("failed-only")) filter["stalled"] = false;
+    if (a.has("stalled-only")) filter["failed"] = false;
+    if (a.has("dry-run")) filter["dry_run"] = true;
+    if (a.pos.size() > 1) {
+      Json ids = Json::array();
+      for (std::size_t i = 1; i < a.pos.size(); ++i) ids.push_back(a.pos[i]);
+      filter["ids"] = ids;
+    }
+    print_json(must(w.requeue(filter)));
+    return 0;
+  } else if (sub == "retry-mode") {
+    must(w.set_retry_mode(need(a, 1, "retry mode (explicit_requeue|automatic)")));
+  } else if (sub == "run") {
     int total = 0;
     std::signal(SIGINT, sigint_handler);
     while (!g_cancel.cancelled()) {

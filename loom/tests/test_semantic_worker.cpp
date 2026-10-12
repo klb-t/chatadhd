@@ -601,4 +601,252 @@ TEST_SUITE("semantic_worker") {
     }
     CHECK(true);  // reaching here without hanging is the assertion
   }
+
+  // ── T2 / WP-C: retry modes, bulk requeue, queue jam ───────────────────
+  namespace {
+  void set_done_rejection(Env& env, bool on) {
+    auto lock = env.db->lock();
+    if (on) LOOM_REQUIRE_OK(env.db->conn().exec("CREATE TRIGGER reject_done BEFORE UPDATE OF semantic_status ON messages "
+        "WHEN NEW.semantic_status='done' BEGIN SELECT RAISE(ABORT, 'synthetic done failure'); END"));
+    else LOOM_REQUIRE_OK(env.db->conn().exec("DROP TRIGGER reject_done"));
+  }
+  std::unique_ptr<SemanticWorker> retry_worker(Env& env, Json overrides) {
+    return std::make_unique<SemanticWorker>(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus,
+                                            env.transport, *env.analyzer, nullptr, std::optional<WorkerOptions>{}, overrides);
+  }
+  const std::string kText = "Synthetic retry contact retry@example.invalid analysis";
+  // An executing claim whose owner worker no longer exists (restarted process).
+  void stale_claim(Env& env, const std::string& mid, const std::string& conv_id) {
+    auto profile = unwrap(RuntimeProfile::builtin("graph_ingest"));
+    unwrap(env.graph.begin_analysis(mid, kText, conv_id, profile, Json::object(), false, std::nullopt, "w_dead_worker"));
+  }
+  }  // namespace
+
+  TEST_CASE("T2 explicit_requeue (default preset) never resends a failed item on its own") {
+    Env env;
+    const auto conv = unwrap(env.db->create_conv("explicit"));
+    const auto mid = env.add_pending_msg(conv.id, kText);
+    set_done_rejection(env, true);
+    auto worker = env.worker();
+    CHECK(unwrap(worker->drain_once()) == 0);
+    set_done_rejection(env, false);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(*worker->status().failed == 1);
+    CHECK(worker->status().retry_mode == "explicit_requeue");
+    CHECK(unwrap(env.db->get_msg(mid))->metadata.at("loom_semantic_attempts").size() == 1);
+  }
+
+  TEST_CASE("T2 automatic mode requeues failed items with no ceiling; history is kept; spacing is a preset") {
+    Env env;
+    const auto conv = unwrap(env.db->create_conv("automatic"));
+    const auto mid = env.add_pending_msg(conv.id, kText);
+    set_done_rejection(env, true);
+    auto worker = retry_worker(env, Json{{"retry_mode", "automatic"}, {"retry_spacing_ms", 0}});
+    // Many failing rounds: every one is retried, nothing stops the loop.
+    for (int i = 0; i < 6; ++i) CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(unwrap(env.db->get_msg(mid))->metadata.at("loom_semantic_attempts").size() == 6);
+    set_done_rejection(env, false);
+    CHECK(unwrap(worker->drain_once()) == 1);
+    const auto done = *unwrap(env.db->get_msg(mid));
+    CHECK(done.semantic_status == "done");
+    const auto& attempts = done.metadata.at("loom_semantic_attempts");
+    REQUIRE(attempts.size() == 7);
+    CHECK(attempts[0]["state"] == "failed");
+    CHECK(attempts[0]["requeued"]["reason"] == "automatic");
+    CHECK(attempts[6]["state"] == "done");
+    CHECK(attempts[6]["provenance"]["retry_mode"] == "automatic");
+    CHECK(env.transport.requests().empty());  // regex path: nothing reaches a provider, no guard needed
+
+    // A long spacing preset holds the resend back (no ceiling, just spacing).
+    Env slow;
+    const auto conv2 = unwrap(slow.db->create_conv("spacing"));
+    slow.add_pending_msg(conv2.id, kText);
+    set_done_rejection(slow, true);
+    auto held = retry_worker(slow, Json{{"retry_mode", "automatic"}, {"retry_spacing_ms", 3600000}});
+    CHECK(unwrap(held->drain_once()) == 0);
+    CHECK(unwrap(held->drain_once()) == 0);
+    CHECK(*held->status().failed == 1);
+  }
+
+  TEST_CASE("T2 automatic resend of an LLM item passes the usage guard (x10 growth asks the owner)") {
+    Env env;
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    Json content{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()}};
+    env.transport.set_fallback(net::ScriptedTransport::Reply::json(200,
+        Json{{"choices", Json::array({Json{{"message", Json{{"content", json::dump(content)}}}}})}}));
+    const auto conv = unwrap(env.db->create_conv("guarded")).id;
+    set_done_rejection(env, true);
+    auto worker = retry_worker(env, Json{{"retry_mode", "automatic"}, {"retry_spacing_ms", 0}, {"llm_rate_limit", 0}});
+    env.add_pending_msg(conv, "small baseline message number 0");
+    for (int i = 0; i < 4; ++i) CHECK(unwrap(worker->drain_once()) == 0);  // 3 admitted resends build the baseline
+    CHECK_FALSE(worker->status().usage_pending.has_value());
+    for (int i = 0; i < 60; ++i) env.add_pending_msg(conv, "growth message " + std::to_string(i) + std::string(200, 'g'));
+    for (int i = 0; i < 3 && !worker->status().usage_pending; ++i) CHECK(unwrap(worker->drain_once()) == 0);
+    auto status = worker->status();
+    REQUIRE(status.usage_pending.has_value());
+    CHECK((*status.usage_pending)["kind"] == "retry");
+    CHECK(status.usage_pending->at("status") == "requires_confirmation");
+    const auto failed_before = *status.failed;
+    const auto requests_before = env.transport.requests().size();
+    CHECK(unwrap(worker->drain_once()) == 0);                 // the rest of the queue still drains; nothing is resent
+    status = worker->status();                                // the failed set may have grown: the receipt follows it
+    REQUIRE(status.usage_pending.has_value());
+    const auto receipt = (*status.usage_pending)["receipt_id"].get<std::string>();
+    const auto failed_now = *status.failed;
+    const auto requests_now = env.transport.requests().size();
+    CHECK(unwrap(worker->drain_once()) == 0);                 // unchanged set: no re-ask storm, nothing resent
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK((*worker->status().usage_pending)["receipt_id"] == receipt);
+    CHECK(*worker->status().failed == failed_now);
+    CHECK(env.transport.requests().size() == requests_now);
+    CHECK(failed_now >= failed_before);
+    (void)requests_before;
+    set_done_rejection(env, false);
+    CHECK_FALSE(worker->confirm_usage(true, "wrong-receipt", "t"));
+    auto approved = worker->confirm_usage(true, receipt, "test-approve");
+    const std::string why = approved ? std::string() : approved.error().message;
+    INFO(why);
+    REQUIRE(approved);
+    CHECK(unwrap(worker->drain_once()) > 0);                  // confirmed: requeued and re-analysed
+    CHECK_FALSE(worker->status().usage_pending.has_value());
+  }
+
+  TEST_CASE("T2 declining an automatic resend switches to explicit_requeue and resends nothing") {
+    Env env;
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    Json content{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()}};
+    env.transport.set_fallback(net::ScriptedTransport::Reply::json(200,
+        Json{{"choices", Json::array({Json{{"message", Json{{"content", json::dump(content)}}}}})}}));
+    const auto conv = unwrap(env.db->create_conv("declined")).id;
+    set_done_rejection(env, true);
+    auto worker = retry_worker(env, Json{{"retry_mode", "automatic"}, {"retry_spacing_ms", 0}, {"llm_rate_limit", 0}});
+    env.add_pending_msg(conv, "small baseline message number 0");
+    for (int i = 0; i < 4; ++i) CHECK(unwrap(worker->drain_once()) == 0);
+    for (int i = 0; i < 60; ++i) env.add_pending_msg(conv, "growth message " + std::to_string(i) + std::string(200, 'g'));
+    for (int i = 0; i < 3 && !worker->status().usage_pending; ++i) CHECK(unwrap(worker->drain_once()) == 0);
+    auto status = worker->status();
+    REQUIRE(status.usage_pending.has_value());
+    const auto failed_before = *status.failed;
+    REQUIRE(worker->confirm_usage(false, (*status.usage_pending)["receipt_id"].get<std::string>(), "test-reject"));
+    CHECK(worker->status().retry_mode == "explicit_requeue");
+    CHECK_FALSE(worker->status().usage_pending.has_value());
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(*worker->status().failed == failed_before);
+    CHECK_FALSE(worker->status().paused);  // owner declined a resend, not the worker
+  }
+
+  TEST_CASE("T2 bulk requeue: filters, counts of known numbers, affected ids, history preserved") {
+    Env env;
+    const auto conv_a = unwrap(env.db->create_conv("a")).id;
+    const auto conv_b = unwrap(env.db->create_conv("b")).id;
+    const auto fa = env.add_pending_msg(conv_a, kText);
+    const auto fb = env.add_pending_msg(conv_b, kText);
+    const auto st = env.add_pending_msg(conv_a, kText);
+    set_done_rejection(env, true);
+    auto worker = env.worker();
+    // st is claimed by a dead worker instead of being analysed
+    stale_claim(env, st, conv_a);
+    CHECK(unwrap(worker->drain_once()) == 0);  // fa, fb fail
+    set_done_rejection(env, false);
+    auto status = worker->status();
+    CHECK(*status.failed == 2);
+    CHECK(*status.executing == 1);
+    CHECK(status.counts_known);
+    // Dry run changes nothing.
+    auto dry = unwrap(worker->requeue(Json{{"dry_run", true}}));
+    CHECK(dry["matched"] == 3);
+    CHECK(dry["requeued"] == 0);
+    CHECK(unwrap(env.db->get_msg(fa))->semantic_status == "failed");
+    // Narrow filter: one conversation, only failed.
+    auto one = unwrap(worker->requeue(Json{{"conv_id", conv_a}, {"stalled", false}}));
+    CHECK(one["requeued"] == 1);
+    CHECK(one["failed_requeued"] == 1);
+    CHECK(one["stalled_requeued"] == 0);
+    CHECK(one["ids"] == Json::array({fa}));
+    // error_class that nothing has: matches nothing.
+    CHECK(unwrap(worker->requeue(Json{{"error_class", "timeout"}}))["matched"] == 0);
+    // Everything else (failed fb + stalled st).
+    auto rest = unwrap(worker->requeue());
+    CHECK(rest["requeued"] == 2);
+    CHECK(rest["failed_requeued"] == 1);
+    CHECK(rest["stalled_requeued"] == 1);
+    CHECK(unwrap(worker->requeue())["matched"] == 0);
+    CHECK_FALSE(worker->requeue(Json{{"nonsense", 1}}));
+    // History of the earlier attempts stays, annotated.
+    const auto stalled_row = *unwrap(env.db->get_msg(st));
+    CHECK(stalled_row.semantic_status == "pending");
+    REQUIRE(stalled_row.metadata.at("loom_semantic_attempts").size() == 1);
+    CHECK(stalled_row.metadata.at("loom_semantic_attempts")[0]["state"] == "stalled");
+    CHECK(stalled_row.metadata.at("loom_semantic_attempts")[0]["requeued"]["reason"] == "bulk_requeue");
+    CHECK(unwrap(worker->drain_once()) == 3);
+    for (const auto& id : {fa, fb, st}) CHECK(unwrap(env.db->get_msg(id))->semantic_status == "done");
+    CHECK(unwrap(env.db->get_msg(fa))->metadata.at("loom_semantic_attempts").size() == 2);
+    CHECK(unwrap(env.db->get_msg(fa))->metadata.at("loom_semantic_attempts")[0]["state"] == "failed");
+  }
+
+  TEST_CASE("T2 jam: a stalled executing claim is reported, never silently retried, never blocks the queue") {
+    Env env;
+    const auto conv = unwrap(env.db->create_conv("jam")).id;
+    const auto dead = env.add_pending_msg(conv, kText);
+    stale_claim(env, dead, conv);
+    const auto live = env.add_pending_msg(conv, "Synthetic live contact live@example.invalid analysis");
+    auto worker = env.worker();
+    auto status = worker->status();
+    CHECK(*status.executing == 1);
+    REQUIRE(status.stalled.has_value());
+    CHECK(*status.stalled == 1);
+    CHECK(status.to_json()["stalled"] == 1);
+    CHECK(unwrap(worker->drain_once()) == 1);  // the other item is processed
+    CHECK(unwrap(env.db->get_msg(live))->semantic_status == "done");
+    CHECK(unwrap(env.db->get_msg(dead))->semantic_status == "executing");  // not silently retried
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(*worker->status().stalled == 1);
+    // A fresh claim from the synchronous graph path (owner cannot be probed) is not stalled until its lease expires.
+    auto profile = unwrap(RuntimeProfile::builtin("graph_ingest"));
+    const auto fresh = env.add_pending_msg(conv, "Synthetic fresh claim fresh@example.invalid analysis");
+    unwrap(env.graph.begin_analysis(fresh, "Synthetic fresh claim fresh@example.invalid analysis", conv, profile));
+    CHECK(*worker->status().executing == 2);
+    CHECK(*worker->status().stalled == 1);
+    auto expired = retry_worker(env, Json{{"executing_lease_ms", 0}});
+    CHECK(*expired->status().stalled == 2);
+    // Explicit requeue picks the stalled one up.
+    auto requeued = unwrap(worker->requeue());
+    CHECK(requeued["stalled_requeued"] == 1);
+    CHECK(requeued["ids"] == Json::array({dead}));
+    CHECK(unwrap(worker->drain_once()) == 1);
+    CHECK(unwrap(env.db->get_msg(dead))->semantic_status == "done");
+  }
+
+  TEST_CASE("T2 jam: under automatic mode a stalled claim is requeued like a failed one") {
+    Env env;
+    const auto conv = unwrap(env.db->create_conv("jam auto")).id;
+    const auto dead = env.add_pending_msg(conv, kText);
+    stale_claim(env, dead, conv);
+    auto worker = retry_worker(env, Json{{"retry_mode", "automatic"}, {"retry_spacing_ms", 0}});
+    CHECK(unwrap(worker->drain_once()) == 1);
+    const auto row = *unwrap(env.db->get_msg(dead));
+    CHECK(row.semantic_status == "done");
+    CHECK(row.metadata.at("loom_semantic_attempts")[0]["state"] == "stalled");
+    CHECK(row.metadata.at("loom_semantic_attempts")[0]["requeued"]["reason"] == "automatic");
+  }
+
+  TEST_CASE("T2 jam: a pending row with unreadable attempt history no longer stops the whole drain") {
+    Env env;
+    const auto conv = unwrap(env.db->create_conv("jam corrupt")).id;
+    const auto bad = env.add_pending_msg(conv, "Synthetic oldest row with broken history bad@example.invalid");
+    MsgPatch broken; broken.metadata = Json{{"loom_semantic_attempts", "unrecognized historical data"}, {"keep", 17}};
+    LOOM_REQUIRE_OK(env.db->update_msg(bad, broken));
+    const auto good = env.add_pending_msg(conv, "Synthetic later row good@example.invalid analysis");
+    auto worker = env.worker();
+    CHECK(unwrap(worker->drain_once()) == 1);                 // before: the oldest row aborted every drain with Conflict
+    CHECK(unwrap(env.db->get_msg(good))->semantic_status == "done");
+    const auto kept = *unwrap(env.db->get_msg(bad));
+    CHECK(kept.semantic_status == "pending");                 // data retained, visible, not hidden as done
+    CHECK(kept.metadata.at("keep") == 17);
+    CHECK(worker->status().quarantined == 1);
+    CHECK(unwrap(worker->drain_once()) == 0);                 // and it does not spin
+  }
 }

@@ -1,0 +1,60 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "chat_context",
+  "revision": 1,
+  "description": "Order of context classes in the chat prompt. legacy (default preset) reproduces the historical order byte for byte: system, memory, graph, project, history. stable_first puts the slowly changing classes first so provider prompt prefixes stay reusable: S0 system, S1 memory/core facts, S2 project context, S3 history, S4 question-specific graph/selected context, then the active-task block and S5 the question, which always come last. Orders are data: a user can add their own named order. Presets, not rules.",
+  "defaults": {
+    "context_order": "legacy",
+    "orders": {
+      "legacy": [
+        "system",
+        "memory",
+        "graph",
+        "project",
+        "history"
+      ],
+      "stable_first": [
+        "system",
+        "memory",
+        "project",
+        "history",
+        "graph"
+      ]
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "context_order",
+      "orders"
+    ],
+    "properties": {
+      "context_order": {
+        "type": "string",
+        "x-setting": "/context_order",
+        "x-consumer": "chat_engine",
+        "description": "Name of the active order; must be a key of orders. Per-send option context_order and config key chat_context_order override it."
+      },
+      "orders": {
+        "type": "object",
+        "x-setting": "/orders",
+        "x-consumer": "chat_engine",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "system",
+              "memory",
+              "project",
+              "history",
+              "graph"
+            ]
+          }
+        },
+        "description": "Named orders over the classes system (S0), memory (S1), project (S2), history (S3), graph (S4). Active task and the question (S5) are always last."
+      }
+    }
+  }
+}

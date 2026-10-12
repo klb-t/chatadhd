@@ -15,6 +15,7 @@
 #include <condition_variable>
 #include <mutex>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -54,6 +55,15 @@ struct WorkerStatus {
   std::int64_t pending = 0;
   std::optional<std::int64_t> failed;
   std::optional<std::int64_t> executing;
+  // Subset of `executing`: claims whose owner is gone (restart / dead process)
+  // or older than the preset lease. Unknown (null) when counts are unknown;
+  // unknown is never reported as zero. They are not retried unless requeued
+  // explicitly or retry_mode is "automatic".
+  std::optional<std::int64_t> stalled;
+  // Pending rows this process cannot claim (e.g. unreadable attempt history).
+  // They are skipped so the rest of the queue keeps draining.
+  std::int64_t quarantined = 0;
+  std::string retry_mode = "explicit_requeue";
   bool counts_known = false;
   std::int64_t processed = 0;
   std::int64_t errors = 0;
@@ -92,12 +102,23 @@ class SemanticWorker {
   void resume();
   WorkerStatus status() const;
 
+  // Bulk requeue (one operation, history of earlier attempts preserved).
+  // filter (all optional): failed (bool, default true), stalled (bool, default
+  // true), conv_id, since (ISO time of the last attempt), error_class (error
+  // code of the last attempt), ids (array), dry_run (bool). Returns the
+  // matched/requeued counts (known numbers only) and the affected ids.
+  Result<Json> requeue(const Json& filter = Json::object());
+  // "explicit_requeue" | "automatic" (profile retry_mode is the initial preset).
+  Status set_retry_mode(std::string_view mode);
+
   // One drain pass in the calling thread; returns processed count.
   Result<int> drain_once();
   Result<Json> runtime_profile() const;
 
  private:
   void run();
+  // retry_mode=automatic: requeue due failed/stalled items through the usage guard.
+  void auto_requeue(bool use_llm);
 
   Database& db_;
   SemanticLLM& llm_;
@@ -126,6 +147,11 @@ class SemanticWorker {
   std::int64_t batch_submitted_ = 0;
   std::optional<Json> usage_pending_;       // guarded by mu_
   std::optional<Json> usage_confirmation_;  // guarded by mu_
+  std::optional<Json> retry_pending_;        // automatic resend awaiting the owner; guarded by mu_
+  std::optional<Json> retry_confirmation_;   // guarded by mu_
+  std::string retry_mode_;                   // guarded by mu_
+  std::string instance_;                     // claim-owner identity of this worker
+  std::set<std::string> quarantine_;         // guarded by mu_
   ScopedSubscription import_sub_;
 };
 

@@ -688,6 +688,28 @@ void App::route_semantic() {
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
   });
+  // Bulk requeue of failed and/or stalled items (history of earlier attempts is kept).
+  svr_.Post("/api/semantic/requeue", [this](const httplib::Request& req, httplib::Response& res) {
+    json body = json::object();
+    if (!req.body.empty() && !object_body(req, res, body)) return;
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+    json command{{"action", "semantic_requeue"}, {"filter", body}};
+    send_loom(res, loom_usage_policy_json(ctx_, command.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+#else
+    send_error(res, "unavailable", "Native usage policy is not installed in this build");
+#endif
+  });
+  // retry_mode: explicit_requeue | automatic (a setting, never a limit).
+  svr_.Post("/api/semantic/retry-mode", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+    body["action"] = "semantic_retry_mode";
+    send_loom(res, loom_usage_policy_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+#else
+    send_error(res, "unavailable", "Native usage policy is not installed in this build");
+#endif
+  });
   svr_.Post("/api/semantic/wake", [this](const httplib::Request&, httplib::Response& res) {
     loom_semantic_wake(ctx_);
     send_loom(res, loom_semantic_status(ctx_));
