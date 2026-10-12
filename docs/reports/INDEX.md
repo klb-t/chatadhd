@@ -201,7 +201,7 @@ jest wybór; korpusy syntetyczne zostają jako kontrola — zapisana w `OWNER_RE
 
 | PR | Gałąź | Stan | Co dalej |
 |---|---|---|---|
-| #16 | `claude/chataddhd-cpp-loom-core-IRGRN` | otwarty (draft) — widok postępu S1 | głowa = `main` |
+| #16 | `claude/chataddhd-cpp-loom-core-IRGRN` | scalony (fast-forward `main` 15:37 UTC) | gałąź robocza = `main` |
 | #15 | `claude/t9-ecosystem-synthesis` | scalony na gałąź roboczą 13:41 UTC | — |
 | #14 | `claude/t10-edge-cases` | scalony na gałąź roboczą 13:41 UTC | — |
 | #13 | `gpt/research-jev-validation-2026-10-05` | zamknięty: zastąpiony przez T12 + D3 | treść na archiwum |
