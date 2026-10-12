@@ -162,13 +162,13 @@ Result<std::string> ImportLedger::keep(const FragmentRecord& r) {
       if (size <= inline_threshold_) {
         LOOM_TRY_ASSIGN(loaded, fsutil::read_file(r.file));
         bytes = loaded;
-        text = utf8::is_valid(bytes);
+        text = utf8::is_valid(bytes) && bytes.find('\0') == std::string_view::npos;
       } else {
         text_known = false;
       }
     } else {
       sha = Sha256::hex(bytes);
-      text = utf8::is_valid(bytes);
+      text = utf8::is_valid(bytes) && bytes.find('\0') == std::string_view::npos;
     }
     fingerprint = "fragment:" + sha;
     LOOM_TRY_ASSIGN(prior, find_prior(fingerprint, kFragmentKind, ""));
@@ -206,7 +206,7 @@ Result<std::string> ImportLedger::keep(const FragmentRecord& r) {
       recognition["blob_hash"] = blob->hash;
     } else if (!r.file.empty()) {
       LOOM_TRY_ASSIGN(loaded, fsutil::read_file(r.file));
-      if (utf8::is_valid(loaded)) {
+      if (utf8::is_valid(loaded) && loaded.find('\0') == std::string::npos) {
         options.content = loaded;
         recognition["stored"] = "inline";
       } else {
