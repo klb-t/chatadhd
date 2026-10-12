@@ -8,10 +8,11 @@ function moduleUrl(source) {
   return `data:text/javascript;base64,${Buffer.from(ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.ES2020 } }).outputText).toString("base64")}`;
 }
 const typesUrl = moduleUrl(await readFile(new URL("../src/api/types.ts", import.meta.url), "utf8"));
+const graphEntryUrl = moduleUrl(await readFile(new URL("../src/api/graph-entry.ts", import.meta.url), "utf8"));
 const source = (await readFile(new URL("../src/api/loom-jni.ts", import.meta.url), "utf8")).replace('from "./types";', `from "${typesUrl}";`);
 // The first './types' import is type-only and disappears. Replace the value
 // import as well, without relying on its order.
-const sourceWithTypes = source.replaceAll('from "./types";', `from "${typesUrl}";`);
+const sourceWithTypes = source.replaceAll('from "./types";', `from "${typesUrl}";`).replaceAll('from "./graph-entry";', `from "${graphEntryUrl}";`);
 const { LoomJniApi } = await import(moduleUrl(sourceWithTypes));
 const { isLoomError } = await import(typesUrl);
 
