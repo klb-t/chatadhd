@@ -80,6 +80,7 @@ calls off the render thread.
 | `getEdges(filterJson)` | string? | `loom_get_edges` |
 | `expandGraph(seedIdsJson, depth)` | string, int | `loom_expand_graph` |
 | `getGraphData(convId)` | string? | `loom_get_graph_data` |
+| `graphEntry(requestJson)` | string? | `loom_graph_entry` |
 | `selectContext(text, depth, maxTokens)` | string, int, int | `loom_select_context` |
 | `selectContextEx(requestJson)` | string | `loom_select_context_ex` |
 | `semanticStatus()` | | `loom_semantic_status` |

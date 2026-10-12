@@ -14,12 +14,13 @@ import OperationsPanel from "./components/OperationsPanel";
 import MethodsPanel from "./components/MethodsPanel";
 import AnalysisPanel from "./components/AnalysisPanel";
 import UserProfilePanel from "./components/UserProfilePanel";
+import GraphEntryPanel, { type EntryOpeners } from "./components/GraphEntryPanel";
 import { createUserProfileHost } from "./api/onboarding-host";
 import { api } from "./api";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 
 type Theme = "dark" | "amoled";
-type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge";
+type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge" | "graph-entry";
 
 function readStored(key: string, fallback: string): string {
   try {
@@ -49,6 +50,7 @@ const PANEL_LABELS: Record<PanelId, string> = {
   analysis: "Analysis",
   onboarding: "Onboarding",
   "user-knowledge": "What app knows",
+  "graph-entry": "Entry",
 };
 
 export default function App() {
@@ -95,6 +97,12 @@ export default function App() {
     selectConversation: onSelectConversation, conversationCreated: onConversationCreated,
     openKnowledge: () => setKnowledgeOpen(true), openPanel: (panel: PanelId) => setActivePanel(panel),
   }), [onSelectConversation, onConversationCreated]);
+  // Existing views that can open an entry area's `expand` descriptor.
+  const entryOpeners = useMemo<EntryOpeners>(() => ({
+    "conversations.list": () => { setActivePanel(null); setSidebarOpen(true); },
+    "graph.nodes": () => setActivePanel("graph"),
+    "kb.query": () => { setActivePanel(null); setKnowledgeOpen(true); },
+  }), []);
   const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
   const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);
 
@@ -164,6 +172,7 @@ export default function App() {
               </div>
               <div className="drawer-body">
                 {activePanel === "graph" && <GraphView convId={activeConvId} />}
+                {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}

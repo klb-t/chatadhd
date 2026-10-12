@@ -34,6 +34,7 @@ import type {
 } from "./types";
 import { isLoomError } from "./types";
 import type { KnowledgeApi } from "./knowledge";
+import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 
 interface NativeBridge {
   call(method: string, argsJson: string): string;
@@ -253,6 +254,9 @@ export class LoomJniApi implements LoomApi {
   }
   getGraphData(convId?: string): Promise<GraphData> {
     return this.callAsync("get_graph_data", { conv_id: convId ?? null });
+  }
+  getGraphEntry(options: GraphEntryOptions = {}): Promise<GraphEntryView> {
+    return this.callAsync("graph_entry", { request: JSON.stringify(options) }).then(readGraphEntry);
   }
   reindexGraph(convId?: string): Promise<{ reindexed: number }> {
     return this.callAsync("graph_reindex", { conv_id: convId ?? null });

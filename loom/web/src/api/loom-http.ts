@@ -24,6 +24,7 @@ import type {
 } from "./types";
 import { isLoomError } from "./types";
 import type { KnowledgeApi } from "./knowledge";
+import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
 import { readConversationView, type ConversationReadRequest, type ConversationView } from "./conversation-view";
@@ -320,6 +321,9 @@ export class LoomHttpApi implements LoomApi {
   }
   getGraphData(convId?: string): Promise<GraphData> {
     return this.req("GET", `/api/graph/data${this.qs({ conv_id: convId })}`);
+  }
+  getGraphEntry(options: GraphEntryOptions = {}): Promise<GraphEntryView> {
+    return this.req<unknown>("GET", `/api/graph/entry${this.qs({ lang: options.lang, include_hidden: options.include_hidden ? "true" : undefined })}`).then(readGraphEntry);
   }
   reindexGraph(convId?: string): Promise<{ reindexed: number }> {
     return this.req("POST", "/api/graph/reindex", { conv_id: convId });

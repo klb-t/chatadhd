@@ -1,0 +1,12 @@
+.graph-entry { display: flex; flex-direction: column; gap: 8px; }
+.graph-entry-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.graph-entry-list > li { border: 1px solid var(--border, #444); border-radius: 8px; padding: 8px 12px; }
+.graph-entry-list h4 { margin: 0 0 4px; }
+.graph-entry-counts { margin: 0; display: grid; gap: 2px; }
+.graph-entry-counts > div { display: flex; justify-content: space-between; gap: 12px; }
+.graph-entry-counts dt { color: var(--muted, #999); overflow-wrap: anywhere; }
+.graph-entry-counts dd { margin: 0; text-align: right; }
+.graph-entry-counts dd small { display: block; color: var(--muted, #999); }
+.graph-entry-counts > div[data-known="false"] dd { font-style: italic; color: var(--muted, #999); }
+.graph-entry-slots { margin: 4px 0 0; padding-left: 16px; color: var(--muted, #999); }
+.graph-entry-noexpand { color: var(--muted, #999); }

@@ -13,6 +13,7 @@
     "test:workspace": "node e2e/workspace-state.mjs && node e2e/workspace.mjs",
     "test:context-plan": "node e2e/retrieval-plan-state.mjs",
     "test:chat-context": "node e2e/chat-context.mjs",
+    "test:graph-entry": "node tests/graph-entry/headless.test.mjs",
     "test:usage-pending": "node tests/conversation-view/usage-pending.test.mjs",
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:chat-send-gate": "node tests/conversation-view/send-gate.test.mjs && node e2e/chat-send-gate.mjs",

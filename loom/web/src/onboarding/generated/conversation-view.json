@@ -207,6 +207,61 @@
       "revision": 1,
       "label": "Block sending when linked source history cannot be included",
       "value": false
+    },
+    {
+      "id": "presentation.graph_entry/v1",
+      "key": "presentation.graph_entry",
+      "area": "presentation/graph_entry",
+      "revision": 1,
+      "label": "Texts of the read-only graph entry panel; counts are never invented, unknown stays unknown",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "graph_entry",
+        "locales": {
+          "en": {
+            "title": "Graph entry",
+            "loading": "Loading the graph entry view…",
+            "error": "The graph entry view could not be loaded ({{reason}}).",
+            "areas": "Areas",
+            "seed": "Starting elements",
+            "count.unknown": "unknown",
+            "count.unknown_reason": "unknown ({{reason}})",
+            "count.value": "{{value}}",
+            "count.by": "{{name}}: {{value}}",
+            "expand": "Open",
+            "expand_unavailable": "No view opens this area yet",
+            "origin.cell": "generated from the axes",
+            "hidden": "hidden",
+            "slot.state": "{{label}}: {{state}}",
+            "state.unknown": "unknown",
+            "state.declined": "declined",
+            "state.never": "never",
+            "issues": "{{count}} configuration issues in the entry data",
+            "empty": "No areas are configured."
+          },
+          "pl": {
+            "title": "Wejście do grafu",
+            "loading": "Ładowanie widoku wejściowego grafu…",
+            "error": "Nie udało się wczytać widoku wejściowego grafu ({{reason}}).",
+            "areas": "Obszary",
+            "seed": "Elementy startowe",
+            "count.unknown": "nieznane",
+            "count.unknown_reason": "nieznane ({{reason}})",
+            "count.value": "{{value}}",
+            "count.by": "{{name}}: {{value}}",
+            "expand": "Otwórz",
+            "expand_unavailable": "Żaden widok nie otwiera jeszcze tego obszaru",
+            "origin.cell": "wygenerowany z osi",
+            "hidden": "ukryty",
+            "slot.state": "{{label}}: {{state}}",
+            "state.unknown": "nieznane",
+            "state.declined": "odmówiono",
+            "state.never": "nigdy",
+            "issues": "{{count}} problemów w danych wejścia",
+            "empty": "Nie skonfigurowano żadnych obszarów."
+          }
+        }
+      }
     }
   ]
 }

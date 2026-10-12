@@ -22,6 +22,7 @@ import type {
   Task,
 } from "./types";
 import type { KnowledgeApi } from "./knowledge";
+import type { GraphEntryOptions, GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
 export interface SearchOptions {
@@ -119,6 +120,7 @@ export interface LoomApi {
   getEdges(filter?: { node_id?: string; link_type?: string; limit?: number }): Promise<GraphEdge[]>;
   expandGraph(seedIds: string[], depth: number): Promise<GraphData>;
   getGraphData(convId?: string): Promise<GraphData>;
+  getGraphEntry(options?: GraphEntryOptions): Promise<GraphEntryView>;
   reindexGraph(convId?: string): Promise<{ reindexed: number }>;
   selectContext(req: ContextSelectRequest): Promise<ContextSet>;
 
