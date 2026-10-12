@@ -355,6 +355,84 @@ TEST_SUITE("semantic_worker") {
     CHECK(unwrap(env.db->count_pending_semantic()) == 1);
   }
 
+  // CH-005: the automatic batch submission goes through the shared usage guard.
+  namespace {
+  Json batch_overrides() {
+    return Json{{"batch_threshold", 0}, {"batch_endpoint", "https://offline.invalid/batches"},
+                {"batch_secret_key", "local_batch_key"}};
+  }
+  void prepare_batch_env(Env& env) {
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    env.secrets.set("local_batch_key", "fake-batch-key");
+    for (int i = 0; i < 6; ++i)
+      env.transport.expect("POST", "https://offline.invalid/batches",
+          net::ScriptedTransport::Reply::json(201, Json{{"id", "offline-batch"}}));
+  }
+  std::unique_ptr<SemanticWorker> batch_worker(Env& env) {
+    return std::make_unique<SemanticWorker>(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus,
+                                            env.transport, *env.analyzer, nullptr, std::optional<WorkerOptions>{}, batch_overrides());
+  }
+  void build_batch_baseline(Env& env, const std::string& conv) {
+    env.add_pending_msg(conv, "small baseline message");
+    for (int i = 0; i < 3; ++i) CHECK(unwrap(batch_worker(env)->drain_once()) == 0);
+    REQUIRE(env.transport.requests().size() == 3);
+    for (int i = 0; i < 60; ++i) env.add_pending_msg(conv, "growth message " + std::to_string(i) + std::string(200, 'g'));
+  }
+  }  // namespace
+
+  TEST_CASE("CH-005 first batch submit with an empty ledger is authorized") {
+    Env env;
+    prepare_batch_env(env);
+    env.add_pending_msg(unwrap(env.db->create_conv("first")).id, "the only message in the ledger");
+    auto worker = batch_worker(env);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(env.transport.requests().size() == 1);
+    CHECK(worker->status().batch_id == "offline-batch");
+    CHECK_FALSE(worker->status().usage_pending.has_value());
+  }
+
+  TEST_CASE("CH-005 x10 batch growth awaits confirmation, keeps messages pending, then submits on approval") {
+    Env env;
+    prepare_batch_env(env);
+    const auto conv = unwrap(env.db->create_conv("growth")).id;
+    build_batch_baseline(env, conv);
+    auto worker = batch_worker(env);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    auto status = worker->status();
+    CHECK(status.mode == "awaiting_usage_confirmation");
+    REQUIRE(status.usage_pending.has_value());
+    CHECK(status.to_json()["usage_pending"]["status"] == "requires_confirmation");
+    CHECK(env.transport.requests().size() == 3);  // nothing sent
+    CHECK(unwrap(env.db->count_pending_semantic()) == 61);
+    CHECK(unwrap(worker->drain_once()) == 0);     // no retry storm
+    CHECK(env.transport.requests().size() == 3);
+    const auto receipt = (*status.usage_pending)["receipt_id"].get<std::string>();
+    CHECK_FALSE(worker->confirm_usage(true, "wrong-receipt", "t"));
+    REQUIRE(worker->confirm_usage(true, receipt, "test-approve"));
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(env.transport.requests().size() == 4);
+    status = worker->status();
+    CHECK(status.batch_id == "offline-batch");
+    CHECK_FALSE(status.usage_pending.has_value());
+    CHECK(unwrap(env.db->count_pending_semantic()) == 61);
+  }
+
+  TEST_CASE("CH-005 rejected batch usage pauses the worker and sends nothing") {
+    Env env;
+    prepare_batch_env(env);
+    const auto conv = unwrap(env.db->create_conv("reject")).id;
+    build_batch_baseline(env, conv);
+    auto worker = batch_worker(env);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    const auto receipt = (*worker->status().usage_pending)["receipt_id"].get<std::string>();
+    REQUIRE(worker->confirm_usage(false, receipt, "test-reject"));
+    CHECK(worker->status().paused);
+    CHECK_FALSE(worker->status().usage_pending.has_value());
+    CHECK(env.transport.requests().size() == 3);
+    CHECK(unwrap(env.db->count_pending_semantic()) == 61);
+  }
+
   TEST_CASE("invalid worker overlay prevents processing and transport") {
     Env env;
     auto conv = unwrap(env.db->create_conv("invalid-profile"));
