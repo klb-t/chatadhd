@@ -1,4 +1,20 @@
 # STATE — ChatADHD / Loom
+
+## 2026-10-12 — T5b: zestaw kryptograficzny postkwantowy jako ustawienia (R51)
+
+Gałąź `claude/t5-storage-crypto`. Zaimplementowane i przetestowane (KAT): `CryptoBackend` (`loom/crypto_suite.h`), AES-256-GCM,
+Argon2id (RFC 9106, wendorowany `phc-winner-argon2` 20190702), X25519 + Ed25519 (OpenSSL, a bez niego Monocypher 4.0.3),
+ML-KEM-768 (mlkem-native v2.0.0) i ML-DSA-65 (mldsa-native v2.0.0), hybrydowy KEM X-Wing, podpis hybrydowy
+`loom.sig_hybrid/1` (oba człony muszą się zweryfikować), `loom.sealed/2` (`v:2`, odczyt po `v`; `v:1` bez zmian),
+koperta `loom.credential_envelope/3` (Python `loom/tools/structure/credential_handoff_v3.py` + C++ `envelope_v3_*`; v2 nadal czytelne).
+Wybór zestawu to ustawienie (`crypto.selected_preset`, parametry Argon2id w danych); **domyślnie nadal `legacy`** (v:1) — zmiana
+domyślnej na `pq_hybrid` to decyzja właściciela, nic nie jest szyfrowane ani przepisywane po cichu, a nowy preset dotyczy tylko nowych zapisów.
+Dostawca `crypto.status` zasila obszar „Magazyn i bezpieczeństwo”. Naprawione F3 (`secrets.json` tworzony 0600 od pierwszego bajtu) i F4
+(klucz Google Speech w nagłówku `X-Goog-Api-Key`, błędy redagowane). Wendorowane biblioteki i SHA-256: `loom/third_party/README.md`.
+**Otwarte:** formularz HTML dla koperty v3 (WebCrypto nie ma ML-KEM; potrzebny osadzony, zweryfikowany ML-KEM w JS/WASM przy CSP `connect-src 'none'`);
+akcje C ABI dla KEM/podpisów (dziś tylko wewnątrz kernela i przez `loom_compat_tool`); `keys.custody` i `storage.probe` (szkielety z §8);
+podpis hybrydowy w kopercie po stronie Pythona; zgodność `loom.sig_hybrid/1` z draft-ietf-lamps-pq-composite-sigs;
+AES-GCM bez OpenSSL (Android: wstrzyknięcie przez `set_backend`, implementacja w Kotlinie nie powstała).
 ## 2026-10-09 — zadanie B na gałęzi produktu
 
 Gałąź `gpt/data-graph-engine-2026-10-09`, sprawdzony runtime **6d1231bd**;
