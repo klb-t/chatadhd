@@ -59,7 +59,9 @@ TEST_SUITE("kb_pack") {
     for (const auto& e : std::filesystem::recursive_directory_iterator(data_dir())) {
       on_disk += e.is_regular_file() && e.path().extension() == ".json";
     }
-    CHECK(pack.files().size() + domains["files"].size() == on_disk);
+    std::size_t json_domains = 0;  // `.pack` inventory entries are not KB-pack-scanned `.json` files
+    for (const auto& external : domains["files"]) json_domains += external["path"].get<std::string>().ends_with(".json");
+    CHECK(pack.files().size() + json_domains == on_disk);
     CHECK(pack.ids("project_kinds") == std::vector<std::string>{"film", "legal_case", "music", "research", "software_app"});
     CHECK(pack.ids("facets") == std::vector<std::string>{"agent", "multiplatform", "staged_transformation"});
     CHECK(pack.ids("artifact_types") ==

@@ -117,7 +117,7 @@ TEST_SUITE("graph_entry") {
     CHECK(area(view, "knowledge") == nullptr);
     REQUIRE(area(view, "my_area"));
     CHECK((*area(view, "my_area"))["label"] == "Mine");
-    CHECK((*area(view, "my_area"))["counts"]["data.classes"].is_null());
+    CHECK((*area(view, "my_area"))["counts"]["classes"]["known"] == true);
     CHECK(view["areas"][0]["id"] == "my_area");
     CHECK(view["areas"][view["areas"].size() - 1 - 0]["origin"] == "cell");  // generated cells come last
     CHECK(seed(view, "seed:party") == nullptr);

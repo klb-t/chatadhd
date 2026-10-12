@@ -400,6 +400,11 @@ try:
     stats = js("graph", "stats")
     assert stats["messages"] >= 2
     js("graph", "nodes", "--limit", "5")
+    entry = js("graph", "entry")
+    assert entry["schema"] == "loom.graph_entry/1" and entry["read_only"] is True and len(entry["areas"]) >= 14, entry.keys()
+    corpora = next(area for area in entry["areas"] if area["id"] == "data_corpora")
+    assert corpora["counts"]["db.messages"]["known"] is True and corpora["counts"]["db.messages"]["value"] >= 2
+    assert any(element["id"] == "seed:party" for element in entry["seed"])
     js("context", "SQLite graph")
     mem = js("memory", "add", "User prefers local-first storage")
     assert any(n["id"] == mem["id"] for n in js("memory", "list"))

@@ -333,6 +333,13 @@ def main() -> int:
         r = requests.get(f"{base}/api/graph/data")
         assert r.status_code == 200 and "nodes" in r.json() and "edges" in r.json(), r.text
 
+        r = requests.get(f"{base}/api/graph/entry?lang=pl")
+        assert r.status_code == 200, r.text
+        entry = r.json()
+        assert entry["schema"] == "loom.graph_entry/1" and entry["lang"] == "pl" and len(entry["areas"]) >= 14, r.text
+        assert next(a for a in entry["areas"] if a["id"] == "self_model")["label"] == "Samomodel", r.text
+        assert all(c["known"] is False or "value" in c for a in entry["areas"] for c in a["counts"].values()), r.text
+
         r = requests.get(f"{base}/api/models")
         assert r.status_code == 200, r.text
 
@@ -445,7 +452,8 @@ def test_auth(server_bin: str) -> None:
                              ("GET", "/api/catalog/units"), ("POST", "/api/knowledge/run"),
                              ("POST", "/api/knowledge/judge"), ("POST", "/api/catalog/import"),
                              ("POST", "/api/catalog/scan"), ("POST", "/api/catalog/select"),
-                             ("POST", "/api/context/build"), ("POST", "/api/graph/packets/store")):
+                             ("POST", "/api/context/build"), ("POST", "/api/graph/packets/store"),
+                             ("GET", "/api/graph/entry")):
             r = requests.request(method, base + path, json={}, timeout=5)
             assert r.status_code == 401 and r.json()["error"]["code"] == "auth", (path, r.text)
             assert token not in r.text

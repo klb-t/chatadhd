@@ -5,7 +5,6 @@
 #include <set>
 
 #include "loom/runtime_profile.h"
-#include "loom/util/log.h"
 
 namespace loom::graph_entry {
 

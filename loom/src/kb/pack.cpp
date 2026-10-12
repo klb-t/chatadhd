@@ -1869,16 +1869,31 @@ Status separate_data_domains(const fs::path& dir, std::map<std::string, Json>& d
       if (!ref.is_string() || ref.get<std::string>().empty()) return invalid("invalid validation reference");
     const auto path = entry["path"].get<std::string>();
     const fs::path relative(path);
-    if (relative.is_absolute() || relative.has_root_name() || relative.extension() != ".json" ||
+    if (relative.is_absolute() || relative.has_root_name() ||
+        (relative.extension() != ".json" && relative.extension() != ".pack") ||
         relative.lexically_normal().generic_string() != path || path.find('\\') != std::string::npos)
       return invalid("unsafe file path: " + path);
     for (const auto& component : relative)
       if (component == ".." || component == ".") return invalid("unsafe file path: " + path);
     if (kb_paths.count(path)) return invalid("file overlaps KB pack: " + path);
     if (!external_paths.insert(path).second) return invalid("duplicate file: " + path);
-    const auto found = docs.find(path);
-    if (found == docs.end()) return invalid("declared file is missing: " + path);
-    if (!found->second.is_object() || json::get_string(found->second, "schema") != entry["schema"].get<std::string>())
+    // `.json` files were read with the directory; a `.pack` data file (runtime
+    // style, never a KB document) is read here, once, from its declared path.
+    Json pack_doc;
+    const Json* doc = nullptr;
+    if (relative.extension() == ".pack") {
+      auto loaded = fsutil::read_file(dir / relative);
+      if (!loaded) return invalid("declared file is missing: " + path);
+      auto parsed = json::parse(*loaded);
+      if (!parsed) return invalid("declared file is not JSON: " + path);
+      pack_doc = std::move(*parsed);
+      doc = &pack_doc;
+    } else {
+      const auto found = docs.find(path);
+      if (found == docs.end()) return invalid("declared file is missing: " + path);
+      doc = &found->second;
+    }
+    if (!doc->is_object() || json::get_string(*doc, "schema") != entry["schema"].get<std::string>())
       return invalid("schema mismatch: " + path);
     const auto expected = entry["sha256"].get<std::string>();
     if (expected.size() != 64 || !std::all_of(expected.begin(), expected.end(), [](char c) {
@@ -1895,7 +1910,7 @@ Status separate_data_domains(const fs::path& dir, std::map<std::string, Json>& d
     LOOM_TRY_ASSIGN(auto raw, fsutil::read_file(dir / relative));
     if (Sha256::hex(raw) != expected) return invalid("sha256 mismatch: " + path);
     LOOM_TRY_ASSIGN(auto observed, json::parse(raw));
-    if (json::canonical(observed) != json::canonical(found->second))
+    if (json::canonical(observed) != json::canonical(*doc))
       return invalid("file changed while loading: " + path);
   }
   for (const auto& path : external_paths) docs.erase(path);
