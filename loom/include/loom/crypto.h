@@ -15,11 +15,13 @@
 #include <array>
 #include <cstdint>
 #include <filesystem>
+#include <functional>
 #include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
 
+#include "loom/crypto_suite.h"
 #include "loom/result.h"
 #include "loom/util/json.h"
 
@@ -68,19 +70,25 @@ class CryptoVault {
 
   bool configured() const;
   bool unlocked() const;
+  // Which crypto suite NEW writes use (setup verifier, encrypt_text). Called on every write so a changed
+  // setting applies to new data only; reading always dispatches on the blob's own "v". Unset = legacy
+  // (v:1, byte-identical to core/crypto.py). A provider error fails the write instead of downgrading.
+  using SuiteProvider = std::function<Result<cs::SuiteConfig>()>;
+  void set_suite_provider(SuiteProvider p);
   Status setup(std::string_view password);   // Errc::AlreadyExists when configured
   Status unlock(std::string_view password);  // Errc::Crypto on a wrong password
   void lock();
   Result<std::string> encrypt_text(std::string_view plaintext);  // EncryptedBlob JSON; Errc::Auth when locked
   Result<std::string> decrypt_text(std::string_view blob_json);
-  // {"available","configured","unlocked","kdf":"pbkdf2-sha256","iterations","cipher":"aes-256-gcm"}
+  // {"available","configured","unlocked","kdf","iterations"(legacy only),"cipher","suite","crypto":crypto.status}
   Json status() const;
 
  private:
   std::filesystem::path file_;
-  CryptoEngine engine_;
   mutable std::mutex mu_;
   std::optional<std::string> password_;
+  SuiteProvider suite_provider_;
+  Result<cs::SuiteConfig> suite() const;
 };
 
 }  // namespace loom

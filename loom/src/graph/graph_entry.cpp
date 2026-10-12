@@ -4,7 +4,11 @@
 #include <algorithm>
 #include <set>
 
+<<<<<<< HEAD
 #include "loom/economy.h"
+=======
+#include "loom/crypto_suite.h"
+>>>>>>> 619aae0b (feat(crypto): sealed v2 in CryptoVault, envelope v3, crypto.status provider, F3/F4 fixes, packs implemented [skip ci])
 #include "loom/runtime_profile.h"
 
 namespace loom::graph_entry {
@@ -221,6 +225,22 @@ void register_builtin(Providers& p) {
   p.add("data.items", [](const Context& c, const Json& params) {
     const Json* v = pointer_at(c.values, json::get_string(params, "pointer"));
     return only(v ? known(member_count(*v)) : unknown("pointer_absent"));
+  });
+  // Crypto primitives (value = available count, by = "<primitive>@<backend>" -> 1/0) and the active suite.
+  p.add("crypto.status", [](const Context& c, const Json&) {
+    const cs::CryptoBackend& be = cs::backend();
+    Json by = Json::object();
+    std::int64_t avail = 0;
+    for (cs::Prim pr : cs::all_prims()) {
+      bool a = be.available(pr);
+      avail += a ? 1 : 0;
+      by[std::string(cs::prim_id(pr)) + "@" + be.backend_name(pr)] = a ? 1 : 0;
+    }
+    Json out = Json::object();
+    out[""] = known_by(avail, std::move(by));
+    auto cfg = cs::suite_config_from_profile(c.env.data_dir);
+    out["crypto_active_suite"] = cfg ? known_by(1, Json{{cfg->preset_id, 1}}) : unknown("suite_not_resolved");
+    return out;
   });
   p.add("pack.file", [](const Context& c, const Json& params) {
     std::shared_ptr<const kb::Pack> pack = c.env.pack;

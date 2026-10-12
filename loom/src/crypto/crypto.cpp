@@ -266,33 +266,49 @@ bool CryptoVault::unlocked() const {
   return password_.has_value();
 }
 
+void CryptoVault::set_suite_provider(SuiteProvider p) {
+  std::lock_guard lk(mu_);
+  suite_provider_ = std::move(p);
+}
+
+Result<cs::SuiteConfig> CryptoVault::suite() const {
+  SuiteProvider p;
+  {
+    std::lock_guard lk(mu_);
+    p = suite_provider_;
+  }
+  if (!p) return cs::SuiteConfig{};  // legacy
+  return p();
+}
+
 Status CryptoVault::setup(std::string_view password) {
-  if (!CryptoEngine::available()) {
+  auto cfg = suite();
+  if (!cfg) return cfg.error();
+  if (!cfg->pq() && !CryptoEngine::available()) {
     return Error(Errc::Unavailable, "cryptography backend (OpenSSL) not available - encryption disabled");
   }
   std::lock_guard lk(mu_);
   std::error_code ec;
   if (std::filesystem::exists(file_, ec)) return Error(Errc::AlreadyExists, "crypto is already configured");
-  auto blob = engine_.encrypt(kVerifyMagic, password);
+  auto blob = cs::seal(kVerifyMagic, password, *cfg, cs::SealContext{"crypto_vault", "verifier", 1});
   if (!blob) return blob.error();
   fsutil::AtomicWriteOptions wo;
   wo.owner_only = true;
-  LOOM_TRY(fsutil::atomic_write(file_, blob->to_json(), wo));
+  LOOM_TRY(fsutil::atomic_write(file_, *blob, wo));
   password_ = std::string(password);
   log::info(kLog, "crypto vault configured ({})", file_.string());
   return {};
 }
 
 Status CryptoVault::unlock(std::string_view password) {
-  if (!CryptoEngine::available()) {
-    return Error(Errc::Unavailable, "cryptography backend (OpenSSL) not available - encryption disabled");
-  }
   std::lock_guard lk(mu_);
   auto raw = fsutil::read_file(file_);
   if (!raw) return Error(Errc::NotFound, "crypto is not configured");
-  auto blob = EncryptedBlob::from_json(*raw);
-  if (!blob) return Error(Errc::Crypto, "crypto verifier is corrupt: " + blob.error().message);
-  auto plain = engine_.decrypt(*blob, password);
+  // Dispatches on "v": v:1 (PBKDF2) is read exactly as before; v:2 (Argon2id) needs no OpenSSL KDF.
+  auto plain = cs::open_sealed(*raw, password, cs::SealContext{"crypto_vault", "verifier", 1});
+  if (!plain && plain.error().code == Errc::Parse)
+    return Error(Errc::Crypto, "crypto verifier is corrupt: " + plain.error().message);
+  if (!plain && plain.error().code == Errc::Unavailable) return plain.error();
   if (!plain || !constant_time_equal(*plain, kVerifyMagic)) {
     if (plain) secure_wipe(*plain);
     log::warn(kLog, "crypto unlock failed: wrong password");
@@ -313,16 +329,17 @@ void CryptoVault::lock() {
 }
 
 Result<std::string> CryptoVault::encrypt_text(std::string_view plaintext) {
+  auto cfg = suite();
+  if (!cfg) return cfg.error();
   std::string pw;
   {
     std::lock_guard lk(mu_);
     if (!password_) return Error(Errc::Auth, "crypto vault is locked");
     pw = *password_;
   }
-  auto blob = engine_.encrypt(plaintext, pw);
+  auto blob = cs::seal(plaintext, pw, *cfg, cs::SealContext{"vault_text", "", 1});
   secure_wipe(pw);
-  if (!blob) return blob.error();
-  return blob->to_json();
+  return blob;
 }
 
 Result<std::string> CryptoVault::decrypt_text(std::string_view blob_json) {
@@ -332,23 +349,24 @@ Result<std::string> CryptoVault::decrypt_text(std::string_view blob_json) {
     if (!password_) return Error(Errc::Auth, "crypto vault is locked");
     pw = *password_;
   }
-  auto blob = EncryptedBlob::from_json(blob_json);
-  if (!blob) {
-    secure_wipe(pw);
-    return blob.error();
-  }
-  auto r = engine_.decrypt(*blob, pw);
+  auto r = cs::open_sealed(blob_json, pw, cs::SealContext{"vault_text", "", 1});
   secure_wipe(pw);
   return r;
 }
 
 Json CryptoVault::status() const {
-  return Json{{"available", CryptoEngine::available()},
-              {"configured", configured()},
-              {"unlocked", unlocked()},
-              {"kdf", "pbkdf2-sha256"},
-              {"iterations", CryptoEngine::kKdfIterations},
-              {"cipher", "aes-256-gcm"}};
+  auto cfg = suite();
+  const cs::SuiteConfig* active = cfg ? &*cfg : nullptr;
+  Json out{{"available", CryptoEngine::available() || cs::backend().available(cs::Prim::Aes256Gcm)},
+           {"configured", configured()},
+           {"unlocked", unlocked()},
+           {"kdf", active && active->pq() ? "argon2id" : "pbkdf2-sha256"},
+           {"cipher", "aes-256-gcm"},
+           {"suite", active ? Json(active->preset_id) : Json{{"known", false}, {"reason", cfg.error().message}}}};
+  if (!active || !active->pq()) out["iterations"] = CryptoEngine::kKdfIterations;
+  else out["argon2id"] = Json{{"t", active->argon2.t}, {"m_kib", active->argon2.m_kib}, {"p", active->argon2.p}};
+  out["crypto"] = cs::crypto_status(active);
+  return out;
 }
 
 }  // namespace loom

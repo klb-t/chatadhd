@@ -44,7 +44,7 @@ class RuntimeProfileSourceTests(unittest.TestCase):
         (self.data / 'runtime').mkdir(parents=True)
         (self.data / 'policy').mkdir()
         (self.data / 'graph').mkdir()
-        for relative in ('runtime_sources.pack', 'runtime/usage_policy.pack', 'policy/usage_policy.pack',
+        for relative in ('runtime_sources.pack', 'runtime/usage_policy.pack', 'policy/usage_policy.pack', 'policy/storage_security.pack', 'runtime/storage_security.pack',
                          *(f'graph/{name}.pack' for name in ('axes', 'classes', 'entry', 'parties', 'properties', 'scopes'))):
             shutil.copyfile(LOOM / 'data' / relative, self.data / relative)
         self.output = self.root / 'generated.inc'

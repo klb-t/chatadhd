@@ -153,6 +153,23 @@ Result<std::string> seal(std::string_view plaintext, std::string_view password, 
 // context -> Errc::Crypto.
 Result<std::string> open_sealed(std::string_view blob_json, std::string_view password, const SealContext& ctx = {});
 
+// ── Credential envelope v3 (loom.credential_envelope/3) ───────────────
+// Replaces RSA-OAEP v2 for credential handoff. KEM = X-Wing; key = HKDF-SHA256(ss, info = schema || binding);
+// AEAD = AES-256-GCM with AAD = binding = json.dumps([purpose, session_id, programme_id, expires_at],
+// separators=(",", ":"), ensure_ascii=False) (the same binding as v2).
+struct EnvelopeMeta {
+  std::string session_id;
+  std::string purpose;
+  std::string programme_id;
+  std::optional<std::int64_t> expires_at;  // seconds since epoch; null = no expiry
+};
+inline constexpr std::string_view kEnvelopeV3Schema = "loom.credential_envelope/3";
+inline constexpr std::string_view kEnvelopeV3Algorithm = "XWING-X25519-MLKEM768+HKDF-SHA256+A256GCM";
+std::string envelope_binding(const EnvelopeMeta& m);
+Result<std::string> envelope_v3_seal(std::string_view xwing_pk, const EnvelopeMeta& meta, std::string_view plaintext);
+// `expected` must equal the envelope's own metadata (Errc::Conflict otherwise); wrong key/tamper -> Errc::Crypto.
+Result<std::string> envelope_v3_open(std::string_view xwing_sk, const EnvelopeMeta& expected, std::string_view envelope_json);
+
 // ── crypto.status ────────────────────────────────────────────────────
 // {"schema":"loom.crypto_status/1","primitives":{id:{"available":bool,"backend":str}},
 //  "active_preset":..., "known":true}. `active` empty -> {"known":false,"reason":...} for that field.

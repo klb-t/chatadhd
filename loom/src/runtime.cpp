@@ -206,6 +206,36 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
                                                           impl->provenance.get(), impl->media.get());
   impl->exporter = std::make_unique<ConversationExporter>(*impl->db);
   impl->crypto = std::make_unique<CryptoVault>(p.root / "crypto.json");
+  {
+    // Crypto suite is a setting (storage_security pack + optional <data>/profiles/storage_security.pack
+    // overlay). Re-resolved when the overlay file changes; affects NEW writes only.
+    struct Cache {
+      std::mutex mu;
+      bool have = false;
+      std::filesystem::file_time_type mtime{};
+      std::uintmax_t size = 0;
+      bool exists = false;
+      Result<cs::SuiteConfig> cfg = cs::SuiteConfig{};
+    };
+    auto cache = std::make_shared<Cache>();
+    std::filesystem::path data_root = p.root;
+    impl->crypto->set_suite_provider([cache, data_root]() -> Result<cs::SuiteConfig> {
+      std::error_code ec;
+      auto ov = data_root / "profiles" / "storage_security.pack";
+      bool ex = std::filesystem::exists(ov, ec);
+      auto mt = ex ? std::filesystem::last_write_time(ov, ec) : std::filesystem::file_time_type{};
+      auto sz = ex ? std::filesystem::file_size(ov, ec) : std::uintmax_t{0};
+      std::lock_guard lk(cache->mu);
+      if (!cache->have || cache->exists != ex || cache->mtime != mt || cache->size != sz) {
+        cache->cfg = cs::suite_config_from_profile(data_root);
+        cache->have = true;
+        cache->exists = ex;
+        cache->mtime = mt;
+        cache->size = sz;
+      }
+      return cache->cfg;
+    });
+  }
   impl->github = std::make_unique<GitHubSyncManager>(p.github_sync, *impl->secrets, *impl->http);
 
   // Python ChatEngine resumed the most recent conversation on construction.

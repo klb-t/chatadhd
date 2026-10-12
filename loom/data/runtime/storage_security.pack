@@ -7,7 +7,7 @@
     "schema": "loom.storage_security/1",
     "revision": 1,
     "calibration": true,
-    "description": "Storage, encryption and security (R51), generated from the T5a inventory. Everything here is a preset or an example, not a rule (owner rule: nothing is decided for the user). Default placement equals today's reality, so loading this pack changes no behaviour; crypto.selected_preset stays legacy until the primitives of pq_hybrid are implemented and tested (T5b). Keys are objects keyed by stable id so that profiles/storage_security.pack overlays can merge, hide (hidden:true) or add entries. Locators use {dir} for the data directory. Documents: docs/architecture/STORAGE_SECURITY_{INVENTORY,DESIGN}_2026-10-12.md.",
+    "description": "Storage, encryption and security (R51), generated from the T5a inventory. Everything here is a preset or an example, not a rule (owner rule: nothing is decided for the user). Default placement equals today's reality, so loading this pack changes no behaviour; crypto.selected_preset stays legacy (owner decision); the pq_hybrid primitives are implemented and covered by known-answer tests (T5b). Keys are objects keyed by stable id so that profiles/storage_security.pack overlays can merge, hide (hidden:true) or add entries. Locators use {dir} for the data directory. Documents: docs/architecture/STORAGE_SECURITY_{INVENTORY,DESIGN}_2026-10-12.md.",
     "categories": {
       "conversations": {
         "label": {
@@ -855,7 +855,7 @@
             "en": "Post-quantum hybrid",
             "pl": "Hybryda odporna kwantowo"
           },
-          "status": "planned",
+          "status": "implemented",
           "data": "aes-256-gcm",
           "password_kdf": "argon2id",
           "argon2id_preset": "rfc9106_second",
@@ -895,24 +895,24 @@
           "kind": "kdf_password",
           "standard": "RFC 9106",
           "params_preset": "rfc9106_second",
-          "status": "planned",
-          "library": "phc-winner-argon2 (to vendor)",
+          "status": "implemented",
+          "library": "phc-winner-argon2 20190702 (vendored, reference backend)",
           "enabled": true
         },
         "hkdf-sha256": {
           "kind": "kdf",
           "standard": "RFC 5869",
           "params": {},
-          "status": "planned",
-          "library": "OpenSSL / backend",
+          "status": "implemented",
+          "library": "portable C++ HMAC-SHA256 (RFC 5869)",
           "enabled": true
         },
         "sha3-256": {
           "kind": "hash",
           "standard": "FIPS 202",
           "params": {},
-          "status": "planned",
-          "library": "fips202 from mlkem-native",
+          "status": "implemented",
+          "library": "portable C++ Keccak (FIPS 202)",
           "enabled": true
         },
         "rsa-oaep-3072-sha256": {
@@ -930,8 +930,8 @@
           "kind": "kem_classical",
           "standard": "RFC 7748",
           "params": {},
-          "status": "planned",
-          "library": "Monocypher (to vendor)",
+          "status": "implemented",
+          "library": "OpenSSL when present, else Monocypher 4.0.3 (vendored)",
           "enabled": true
         },
         "ml-kem-768": {
@@ -942,8 +942,8 @@
             "ct_bytes": 1088,
             "ss_bytes": 32
           },
-          "status": "planned",
-          "library": "mlkem-native (to vendor)",
+          "status": "implemented",
+          "library": "mlkem-native v2.0.0 (vendored, portable C)",
           "enabled": true
         },
         "xwing-x25519-mlkem768": {
@@ -952,7 +952,7 @@
           "params": {
             "ct_bytes": 1120
           },
-          "status": "planned",
+          "status": "implemented",
           "library": "composition of the two above",
           "enabled": true
         },
@@ -960,16 +960,16 @@
           "kind": "signature_classical",
           "standard": "RFC 8032",
           "params": {},
-          "status": "planned",
-          "library": "Monocypher (to vendor)",
+          "status": "implemented",
+          "library": "OpenSSL when present, else Monocypher 4.0.3 (vendored)",
           "enabled": true
         },
         "ml-dsa-65": {
           "kind": "signature_pq",
           "standard": "FIPS 204",
           "params": {},
-          "status": "planned",
-          "library": "mldsa-native (to vendor)",
+          "status": "implemented",
+          "library": "mldsa-native v2.0.0 (vendored, portable C)",
           "enabled": true
         },
         "hybrid-ed25519-mldsa65": {
@@ -978,7 +978,7 @@
           "params": {
             "verify": "both"
           },
-          "status": "planned",
+          "status": "implemented",
           "library": "composition of the two above",
           "enabled": true
         }

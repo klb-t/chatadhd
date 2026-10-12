@@ -6,6 +6,7 @@ Unified interface for external services:
 - LLM: OpenRouter (existing)
 """
 import os
+import re
 import json
 import base64
 import logging
@@ -39,6 +40,18 @@ class OCRResult:
 class ProviderError(Exception):
     """Base exception for provider errors."""
     pass
+
+
+_KEY_QUERY_RE = re.compile(r"([?&](?:key|api_key|apikey|access_token)=)[^&\s'\"]+", re.IGNORECASE)
+
+
+def _redact(err: object, *secrets: Optional[str]) -> str:
+    """Exception text safe for UI/LOGBUF: strips known secrets and key-like URL query values."""
+    text = str(err)
+    for sec in secrets:
+        if sec:
+            text = text.replace(sec, "***")
+    return _KEY_QUERY_RE.sub(r"\1***", text)
 
 
 # === ASR PROVIDERS ===
@@ -129,7 +142,7 @@ class GroqASR(ASRProvider):
             )
             
         except requests.exceptions.RequestException as e:
-            raise ProviderError(f"Groq ASR error: {e}")
+            raise ProviderError(f"Groq ASR error: {_redact(e, getattr(self, 'api_key', None))}")
 
 
 class GoogleSpeechASR(ASRProvider):
@@ -176,9 +189,12 @@ class GoogleSpeechASR(ASRProvider):
         }
         
         try:
+            # F4: the key travels in a header, never in the URL (URLs end up in exception
+            # text, logs and proxies).
             resp = requests.post(
-                f"{self.BASE_URL}?key={self.api_key}",
+                self.BASE_URL,
                 json=payload,
+                headers={"X-Goog-Api-Key": self.api_key},
                 timeout=60
             )
             resp.raise_for_status()
@@ -215,7 +231,7 @@ class GoogleSpeechASR(ASRProvider):
             )
             
         except requests.exceptions.RequestException as e:
-            raise ProviderError(f"Google Speech error: {e}")
+            raise ProviderError(f"Google Speech error: {_redact(e, self.api_key)}")
 
 
 # === OCR PROVIDERS ===
@@ -323,7 +339,7 @@ class OCRSpaceProvider(OCRProvider):
             )
             
         except requests.exceptions.RequestException as e:
-            raise ProviderError(f"OCR.space request error: {e}")
+            raise ProviderError(f"OCR.space request error: {_redact(e, getattr(self, 'api_key', None))}")
 
 
 # === PROVIDER MANAGER ===

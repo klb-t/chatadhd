@@ -702,6 +702,7 @@
           "security.categories",
           "security.storages",
           "security.suites",
+          "security.crypto_status",
           "security.threats"
         ]
       }
@@ -869,6 +870,10 @@
           "domain": "storage_security",
           "pointer": "/crypto/suite_presets"
         }
+      },
+      "security.crypto_status": {
+        "provider": "crypto.status",
+        "as": "crypto_primitives"
       },
       "security.threats": {
         "provider": "profile.items",

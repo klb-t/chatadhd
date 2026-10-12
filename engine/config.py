@@ -56,10 +56,15 @@ class _JsonStore:
     def save(self) -> None:
         self._path.parent.mkdir(parents=True, exist_ok=True)
         tmp = self._path.with_suffix(".tmp")
-        tmp.write_text(
-            json.dumps(self._data, indent=2, ensure_ascii=False),
-            encoding="utf-8",
-        )
+        payload = json.dumps(self._data, indent=2, ensure_ascii=False)
+        if self._restrict:
+            # F3: create with owner-only permissions from the start (no window in which
+            # the file exists with the umask-derived mode). Bytes are identical to
+            # write_text(encoding="utf-8"): newline translation is a no-op for "\n" on
+            # POSIX and we write binary here so it is also on Windows.
+            self._write_private(tmp, payload.encode("utf-8"))
+        else:
+            tmp.write_text(payload, encoding="utf-8")
         tmp.replace(self._path)
         if self._restrict:
             self._lock_perms(self._path)
@@ -81,6 +86,23 @@ class _JsonStore:
             log.info("Loaded %s (%d keys)", self._path.name, len(on_disk))
         except Exception:
             log.exception("Failed to load %s — using defaults", self._path.name)
+
+    @staticmethod
+    def _write_private(path: Path, data: bytes) -> None:
+        """Write *data* to *path* creating it 0o600 (best effort where unsupported)."""
+        flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | getattr(os, "O_BINARY", 0)
+        fd = os.open(path, flags, stat.S_IRUSR | stat.S_IWUSR)
+        try:
+            try:
+                os.fchmod(fd, stat.S_IRUSR | stat.S_IWUSR)  # a stale .tmp may predate this fix
+            except (AttributeError, OSError):
+                pass  # Android / Windows may not support fchmod
+            with os.fdopen(fd, "wb") as fh:
+                fd = -1
+                fh.write(data)
+        finally:
+            if fd >= 0:
+                os.close(fd)
 
     @staticmethod
     def _lock_perms(path: Path) -> None:

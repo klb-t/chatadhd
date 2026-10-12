@@ -4,7 +4,9 @@
 #include "doctest/doctest.h"
 #include "loom/crypto.h"
 #include "loom/crypto_suite.h"
+#include "loom/graph_entry.h"
 #include "loom/runtime_profile.h"
+#include "loom/util/base64.h"
 #include "loom/util/fs.h"
 
 namespace fs = std::filesystem;
@@ -458,4 +460,105 @@ TEST_CASE("crypto_pq: injected backend replaces AES-GCM (platform injection)") {
   REQUIRE(back);
   CHECK(*back == "hi");
   set_backend(nullptr);
+}
+
+TEST_CASE("crypto_pq: envelope v3 round trip, binding, tamper") {
+  if (!backend().available(Prim::Aes256Gcm)) return;
+  auto kp = xwing_keygen();
+  REQUIRE(kp);
+  EnvelopeMeta m{"0123456789abcdef0123456789abcdef", "loom.test/3", "programme-ż", 4600};
+  auto env = envelope_v3_seal(kp->pk, m, "fabricated-credential");
+  REQUIRE(env);
+  auto pt = envelope_v3_open(kp->sk, m, *env);
+  REQUIRE(pt);
+  CHECK(*pt == "fabricated-credential");
+  // wrong session metadata, wrong key, tamper
+  EnvelopeMeta other = m;
+  other.programme_id = "x";
+  CHECK_FALSE(envelope_v3_open(kp->sk, other, *env));
+  other = m;
+  other.expires_at.reset();
+  CHECK_FALSE(envelope_v3_open(kp->sk, other, *env));
+  auto kp2 = xwing_keygen();
+  REQUIRE(kp2);
+  CHECK_FALSE(envelope_v3_open(kp2->sk, m, *env));
+  Json j = Json::parse(*env);
+  CHECK(j.at("schema") == "loom.credential_envelope/3");
+  CHECK(j.at("algorithm") == "XWING-X25519-MLKEM768+HKDF-SHA256+A256GCM");
+  CHECK(base64::decode(j.at("kem_ct_b64").get<std::string>(), true)->size() == kXwingCt);
+  for (const char* f : {"kem_ct_b64", "iv_b64", "ciphertext_b64"}) {
+    Json t = j;
+    std::string v = t[f].get<std::string>();
+    v[6] = v[6] == 'A' ? 'B' : 'A';
+    t[f] = v;
+    CHECK_FALSE(envelope_v3_open(kp->sk, m, t.dump()));
+  }
+  // The Python-style binding: json.dumps([...], separators=(",", ":"), ensure_ascii=False)
+  CHECK(envelope_binding(m) == "[\"loom.test/3\",\"0123456789abcdef0123456789abcdef\",\"programme-ż\",4600]");
+  EnvelopeMeta none{"s", "p", "g", std::nullopt};
+  CHECK(envelope_binding(none) == "[\"p\",\"s\",\"g\",null]");
+}
+
+TEST_CASE("crypto_pq: vault writes the selected suite to new data only and reads both") {
+  if (!backend().available(Prim::Aes256Gcm)) return;
+  fsutil::TempDir td;
+  CryptoVault legacy_vault(td.path() / "crypto.json");
+  // no provider: legacy, byte-identical v:1
+  REQUIRE(legacy_vault.setup("pw"));
+  Json st = legacy_vault.status();
+  CHECK(st.at("kdf") == "pbkdf2-sha256");
+  CHECK(st.at("iterations") == 600000);
+  CHECK(st.at("crypto").at("known") == true);
+  auto old_blob = legacy_vault.encrypt_text("old data");
+  REQUIRE(old_blob);
+  CHECK(Json::parse(*old_blob).at("v") == 1);
+
+  // same vault, setting flips to pq: new writes are v:2, old blob still opens
+  Json section = test_crypto_section();
+  std::string sel = "legacy";
+  legacy_vault.set_suite_provider([&]() { return suite_config_from_json(section, sel); });
+  sel = "pq_hybrid";
+  auto new_blob = legacy_vault.encrypt_text("new data");
+  REQUIRE(new_blob);
+  CHECK(Json::parse(*new_blob).at("v") == 2);
+  auto a = legacy_vault.decrypt_text(*old_blob);
+  auto b = legacy_vault.decrypt_text(*new_blob);
+  REQUIRE(a);
+  REQUIRE(b);
+  CHECK(*a == "old data");
+  CHECK(*b == "new data");
+  CHECK(legacy_vault.status().at("kdf") == "argon2id");
+
+  // fresh vault configured under pq_hybrid has a v:2 verifier; wrong password rejected, right one unlocks
+  fsutil::TempDir td2;
+  CryptoVault pq_vault(td2.path() / "crypto.json");
+  pq_vault.set_suite_provider([&]() { return suite_config_from_json(section, "pq_hybrid"); });
+  REQUIRE(pq_vault.setup("pw2"));
+  auto verifier = fsutil::read_file(td2.path() / "crypto.json");
+  REQUIRE(verifier);
+  CHECK(Json::parse(*verifier).at("v") == 2);
+  pq_vault.lock();
+  CHECK_FALSE(pq_vault.unlock("nope"));
+  CHECK(pq_vault.unlock("pw2"));
+  // an unresolvable preset fails the write instead of silently downgrading
+  pq_vault.set_suite_provider([&]() { return suite_config_from_json(section, "missing"); });
+  CHECK_FALSE(pq_vault.encrypt_text("x"));
+}
+
+TEST_CASE("crypto_pq: graph entry reports crypto primitives and the active suite") {
+  fsutil::TempDir td;
+  graph_entry::Env env;
+  env.data_dir = td.path();
+  auto view = graph_entry::compute(env);
+  REQUIRE(view);
+  const Json* area = nullptr;
+  for (const auto& a : (*view)["areas"])
+    if (a.value("id", "") == "storage_security") area = &a;
+  REQUIRE(area);
+  const Json& counts = (*area)["counts"];
+  REQUIRE(counts.contains("crypto_primitives"));
+  CHECK(counts["crypto_primitives"]["known"] == true);
+  CHECK(counts["crypto_primitives"]["by"].contains("ml-kem-768@mlkem-native"));
+  CHECK(counts["crypto_active_suite"]["known"] == true);
+  CHECK(counts["crypto_active_suite"]["by"].contains("legacy"));
 }
