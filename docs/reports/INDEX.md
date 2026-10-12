@@ -170,6 +170,7 @@ Stan kolejki, meldunek dzienny i decyzje: [wp-queue](wp-queue-2026-10-10.md). Pl
 | T2 worker: ponawianie, zator, historia prób, kolejność kontekstu | `8044626`, `c8203a1`, `dbeac2d` | CTest 164/164, guard PASS (163+1 opt-in), web 18/18 |
 | T3 widok wejściowy grafu wg osi | `b7e4a35`…`559ffd0` | CTest 165/165, guard PASS (164+1 opt-in), web 19/19 |
 | T4 raport ekonomii + TOCTOU `access.py` | `25b4437`…`1251333` | CTest 166/166, guard PASS (165+1 opt-in), web 19/19 |
+| T5 magazyn i kryptografia PQ (inwentarz, projekt, preset hybrydowy) | do `097adff2` | CTest 169/169, guard PASS (168+1 opt-in), web 19/19 |
 
 Decyzje techniczne S1 są zapisywane w `wp-queue` (sekcja „Decyzje S1”).
 
