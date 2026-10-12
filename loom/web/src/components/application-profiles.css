@@ -39,3 +39,9 @@
   .app-root[data-sidebar-side="right"] > .app-layout > .sidebar { left: auto; right: 0; }
   .app-root[data-sidebar-side="right"] > .app-layout > .sidebar.collapsed { margin-left: 0; margin-right: 0; transform: translateX(100%); }
 }
+/* Beside the knowledge workbench the chat box is short (R43 phone use): keep the
+   chat body visible and let the chat host be the single scroll container,
+   instead of squeezing the body to zero height under the profile toolbar. */
+.chat-host.beside-workbench > .application-views,
+.chat-host.beside-workbench .application-view-grid { flex: 0 0 auto; min-height: auto; }
+.chat-host.beside-workbench .application-profile-body { min-height: min(60vh, 22rem); }
