@@ -178,7 +178,11 @@ TEST_SUITE("import_presets_binding") {
     REQUIRE(result.export_report["errors"].size() == 1);
     CHECK(result.export_report["errors"][0]["member"] == "broken.json");
     CHECK(result.export_report["errors"][0]["code"] == "import_failed");
-    CHECK(result.export_report["unknown_members"] == Json::array({"unknown.json"}));
+    // R44: the corrupt member is retained verbatim (opaque) as well, so it is
+    // listed beside the unrecognised one.
+    CHECK(result.export_report["unknown_members"] == Json::array({"broken.json", "unknown.json"}));
+    CHECK(result.recognition["counts"]["opaque"] == 1);
+    CHECK(result.recognition["counts"]["unrecognized"] == 1);
     CHECK_FALSE(unwrap(fixture.importer.import_file(path, bounded)).already_imported);
   }
 

@@ -115,7 +115,7 @@ TEST_SUITE("import_recognition") {
 
       auto partial = fx.one("partial", [](const Node&) { return true; });
       REQUIRE(partial);
-      CHECK(partial->content == R"({"extra":{"k":1}})");  // only the unmapped fields
+      CHECK(partial->content == R"({"extra": {"k": 1}})");  // only the unmapped fields (py_dumps spelling)
       CHECK(partial->metadata["source"]["conversation_id"] == r.conversations[0].id);
 
       REQUIRE(r.recognition.is_object());

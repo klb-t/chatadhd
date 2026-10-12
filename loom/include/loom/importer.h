@@ -322,6 +322,7 @@ class ConversationImporter {
   // Set by the whole-file member of a provider export so a caller that keeps
   // the whole member itself is not duplicated by the legacy fragment.
   bool caller_keeps_whole_document_ = false;
+  std::string whole_document_reason_;  // set when that caller must keep the document
   bool html_text_fallback_ = false;
   // Hashes+stores `path` (when record_provenance && blobs_/prov_ are set),
   // fills `ctx.source_id`/`blob_hash`, and registers a loom_sources row

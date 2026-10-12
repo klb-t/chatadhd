@@ -276,7 +276,10 @@ Result<std::vector<Conversation>> ConversationImporter::import_json_data_at(
   };
   auto keep_unknown = [&](const Json& element, std::size_t index, bool use_span, std::string_view reason) -> Status {
     if (!ledger_) return unrecognized_structure();
-    if (cursor_pointer_.empty() && caller_keeps_whole_document_) return {};  // the caller retains the member
+    if (cursor_pointer_.empty() && caller_keeps_whole_document_) {
+      whole_document_reason_ = unrecognized_structure().message;  // the caller retains the member
+      return {};
+    }
     std::string raw;
     if (use_span && index < spans.size()) raw = std::string(text.substr(spans[index].first, spans[index].second - spans[index].first));
     else if (use_span && cursor_pointer_.empty() && !text.empty()) raw = std::string(text);

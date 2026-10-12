@@ -774,6 +774,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         // This branch retains a wholly unrecognised member itself (below).
         const bool saved_whole = caller_keeps_whole_document_;
         caller_keeps_whole_document_ = true;
+        whole_document_reason_.clear();
         auto r = import_file_as(m->abs, mo, "zip_member", m->rel, m->archive_index);
         caller_keeps_whole_document_ = saved_whole;
         if (!r) {
@@ -805,7 +806,9 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         }
         for (auto& c : r->conversations) run.convs.push_back(std::move(c));
         if (r->conversations.empty()) {
-          disp(*m, "unrecognized");
+          if (!whole_document_reason_.empty())
+            disp(*m, "unrecognized", Json{{"code", std::string(errc_name(Errc::Unsupported))}, {"message", whole_document_reason_}});
+          else disp(*m, "unrecognized");
           // The legacy handler already kept its unrecognised pieces (R44); the
           // whole member is retained only when it did not.
           const bool covered = ledger_ && ledger_->kept_total() > kept_before;

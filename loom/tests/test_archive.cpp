@@ -570,6 +570,13 @@ TEST_SUITE("archive.capi") {
     CHECK(take(loom_import_file_ex(ctx, md.c_str(), "{\"force\":true}", nullptr, nullptr))["already_imported"] == false);
     CHECK(take(loom_import_file_ex(ctx, md.c_str(), "{\"x\":1}", nullptr, nullptr))["error"]["code"] ==
           "invalid_argument");
+    // R50: duplicate_policy is accepted, validated, and reflected in the report.
+    Json reused = take(loom_import_file_ex(ctx, md.c_str(), "{\"force\":true,\"duplicate_policy\":\"reuse_prior\"}",
+                                           nullptr, nullptr));
+    CHECK(reused["duplicates"]["policy"] == "reuse_prior");
+    CHECK(reused["duplicates"]["count"].get<int>() >= 1);
+    CHECK(take(loom_import_file_ex(ctx, md.c_str(), "{\"duplicate_policy\":\"forbid\"}", nullptr, nullptr))["error"]["code"] ==
+          "invalid_argument");
     loom_shutdown(ctx);
   }
 }
