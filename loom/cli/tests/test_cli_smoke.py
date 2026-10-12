@@ -393,6 +393,10 @@ try:
 
     # graph / semantic / context / memory
     js("semantic", "run")
+    dry = js("semantic", "requeue", "--dry-run")
+    assert dry["matched"] == 0 and dry["ids"] == [] and dry["history_preserved"] is True
+    assert js("semantic", "retry-mode", "automatic")["retry_mode"] == "automatic"
+    assert js("semantic", "retry-mode", "explicit_requeue")["retry_mode"] == "explicit_requeue"
     stats = js("graph", "stats")
     assert stats["messages"] >= 2
     js("graph", "nodes", "--limit", "5")

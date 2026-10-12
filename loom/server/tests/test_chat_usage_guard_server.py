@@ -43,6 +43,20 @@ class UsageGuardServerTest(Base):
             self.request("POST", "/api/semantic/usage-confirm", {"approved": True, "receipt_id": "none"})
         self.assertGreaterEqual(caught.exception.code, 400)
 
+        # Bulk requeue and retry mode are plain settings/operations of the worker.
+        status = self.request("GET", "/api/semantic/status")
+        self.assertEqual(status["retry_mode"], "explicit_requeue")
+        self.assertIn("stalled", status)
+        done = self.request("POST", "/api/semantic/requeue", {"dry_run": True})
+        self.assertEqual(done["matched"], 0)
+        self.assertEqual(done["ids"], [])
+        with self.assertRaises(urllib.error.HTTPError) as bad:
+            self.request("POST", "/api/semantic/requeue", {"nonsense": 1})
+        self.assertGreaterEqual(bad.exception.code, 400)
+        auto = self.request("POST", "/api/semantic/retry-mode", {"mode": "automatic"})
+        self.assertEqual(auto["retry_mode"], "automatic")
+        self.assertEqual(self.request("POST", "/api/semantic/retry-mode", {"mode": "explicit_requeue"})["retry_mode"], "explicit_requeue")
+
 
 for name in dir(Base):
     if name.startswith("test_"):

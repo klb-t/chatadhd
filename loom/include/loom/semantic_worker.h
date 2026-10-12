@@ -3,8 +3,11 @@
 // Background thread draining messages with semantic_status='pending'.
 // Per-message analysis claims a durable executing state before dispatch and
 // atomically completes graph writes + done, or records failed with evidence.
-// Failed/interrupted attempts require explicit requeue through update_msg;
-// pause/resume is only worker scheduling, never permission to retry.
+// Failed/interrupted attempts require explicit requeue (update_msg or the bulk
+// requeue()) in the default retry_mode "explicit_requeue"; retry_mode
+// "automatic" is a setting without attempt ceiling whose resends pass the
+// shared usage guard. pause/resume is only worker scheduling, never permission
+// to retry. Claims whose owner is gone are reported as stalled, not retried.
 // Existing batch helpers are separate: active batch identity is process-local,
 // and durable batch polling/recovery is not implemented by this worker.
 // stop() is interruptible; drain_once() permits deterministic runtime tests.
