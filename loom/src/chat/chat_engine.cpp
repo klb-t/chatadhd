@@ -1259,7 +1259,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     if (!admitted) return admitted.error();
     if (!admitted->value("dispatch_authorized", false)) {
       const auto status = json::get_string(*admitted, "status", "unavailable");
-      if (status != "requires_confirmation" && status != "cancelled")
+      if (status != "requires_confirmation" && status != "denied" && status != "cancelled")
         return Error(Errc::Paused, "model usage is not admitted: " + status);
       // Nothing was sent. The user's turn is withdrawn from the conversation so
       // the identical confirmed re-send reproduces the identical request.
