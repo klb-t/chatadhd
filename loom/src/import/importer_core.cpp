@@ -730,7 +730,7 @@ Result<Conversation> ConversationImporter::finish_import(const std::string& conv
       if (existing) {
         ledger_->note_conversation();
         LOOM_TRY(ledger_->conversation_reused(*check, *check->prior, source_id));
-        return **existing;
+        return *existing;
       }
     }
   }

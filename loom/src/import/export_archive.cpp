@@ -771,7 +771,11 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         mo.title = opts.title.has_value() ? opts.title : std::optional<std::string>(m->rel);
         mo.progress = nullptr;
         const std::int64_t kept_before = ledger_ ? ledger_->kept_total() : 0;
+        // This branch retains a wholly unrecognised member itself (below).
+        const bool saved_whole = caller_keeps_whole_document_;
+        caller_keeps_whole_document_ = true;
         auto r = import_file_as(m->abs, mo, "zip_member", m->rel, m->archive_index);
+        caller_keeps_whole_document_ = saved_whole;
         if (!r) {
           if (r.error().code == Errc::Unsupported && (fmt == "json" || fmt == "jsonl")) {
             // The legacy reader reports an unknown mapping explicitly. The
@@ -806,6 +810,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
           // whole member is retained only when it did not.
           const bool covered = ledger_ && ledger_->kept_total() > kept_before;
           if ((fmt == "json" || fmt == "jsonl") && !covered) { auto kept = run.unknown_member(*m); if (!kept) rep.partial = true; }
+          else if ((fmt == "json" || fmt == "jsonl") && covered) rep.unknown_members.push_back(m->rel);
         } else {
           disp(*m, "imported_legacy", Json{{"format", fmt}, {"conversations", static_cast<std::int64_t>(r->conversations.size())}});
         }

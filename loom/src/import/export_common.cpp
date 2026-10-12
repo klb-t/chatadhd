@@ -559,7 +559,7 @@ Result<Conversation> write_conversation(Env& env, ConvModel& cm, std::map<std::s
       if (existing) {
         env.ledger->note_conversation();
         LOOM_TRY(env.ledger->conversation_reused(*duplicate_check, *duplicate_check->prior, env.checkpoint_source_id));
-        return **existing;
+        return *existing;
       }
     }
   }

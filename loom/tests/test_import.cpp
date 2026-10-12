@@ -254,7 +254,10 @@ TEST_SUITE("import") {
     CHECK(r.error().code == Errc::Unsupported);
   }
 
-  TEST_CASE("legacy JSON distinguishes unsupported mappings from recognized empty exports") {
+  TEST_CASE("legacy JSON keeps unsupported mappings as annotated nodes and recognized empty exports as empty") {
+    // R44 (deliberate change): an unknown structure no longer fails the import
+    // with Errc::Unsupported; it enters the graph as an `unrecognized` node.
+    // Recognized empty containers stay empty and create no node.
     fsutil::TempDir td;
     auto db = open_db(td.path() / "d.db");
     EventBus bus;
@@ -274,12 +277,14 @@ TEST_SUITE("import") {
       opts.stream_threshold_bytes = threshold;
       for (const auto& source : unknown) {
         LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "unknown.json", source));
-        auto result = imp.import_file(td.path() / "unknown.json", opts);
-        REQUIRE(!result);
-        CHECK(result.error().code == Errc::Unsupported);
+        const auto nodes_before = unwrap(db->list_nodes("import:unrecognized", 100000)).size();
+        auto result = unwrap(imp.import_file(td.path() / "unknown.json", opts));
+        CHECK(result.conversations.empty());
+        CHECK(unwrap(db->list_nodes("import:unrecognized", 100000)).size() > nodes_before);
+        CHECK(result.recognition["counts"]["unrecognized"].get<int>() >= 1);
         CHECK(unwrap(fsutil::read_file(td.path() / "unknown.json")) == source);
-        // Even an unsupported mapping retains the immutable bytes in the
-        // existing source store, independently of conversation projection.
+        // The immutable bytes stay in the source store, independently of the
+        // conversation projection.
         const auto records = unwrap(prov.list_sources());
         REQUIRE(!records.empty());
         bool retained = false;
@@ -287,10 +292,12 @@ TEST_SUITE("import") {
           retained = retained || unwrap(blobs.read(record.blob_hash)) == source;
         CHECK(retained);
       }
+      const auto nodes_before_empty = unwrap(db->list_nodes("import:unrecognized", 100000)).size();
       for (const auto& source : empty) {
         LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "empty.json", source));
         CHECK(unwrap(imp.import_file(td.path() / "empty.json", opts)).conversations.empty());
       }
+      CHECK(unwrap(db->list_nodes("import:unrecognized", 100000)).size() == nodes_before_empty);
     }
     CHECK(unwrap(db->list_convs()).empty());
     CHECK(events.empty());

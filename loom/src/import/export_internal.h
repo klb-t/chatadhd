@@ -97,7 +97,7 @@ struct Env {
   // R44/R50 (null outside an import_file call): the shared ledger and a hook
   // that keeps a fragment with the active source identity.
   ImportLedger* ledger = nullptr;
-  std::function<Status(FragmentRecord&&)> keep;
+  std::function<Status(FragmentRecord&&)> keep = nullptr;
   bool cancelled() const { return opts.cancel && opts.cancel->cancelled(); }
 };
 
