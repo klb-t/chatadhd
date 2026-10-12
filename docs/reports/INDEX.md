@@ -156,3 +156,13 @@ wymaga odzyskania źródłowego SHA/handoff, bez ponownej implementacji. Setup
 draft revision 8 zapis/readback, publikacja/nowa instancja pending. Następnie P4b.1 shared
 ContextEngine/R40 preparation; P4b.2, P5 i generic discovery nadal otwarte.
 Release/TSan/device/live-quality niewykonane, płatnych modeli/CI zero.
+
+## 2026-10-12 — S1 (orkiestrator Opus): wątki T7 → T8
+
+Stan kolejki, meldunek dzienny i decyzje: [wp-queue](wp-queue-2026-10-10.md). Plan: [THREADS_2026-10-11](THREADS_2026-10-11.md).
+
+| Wątek | Commity | Brama |
+|---|---|---|
+| T7 dane w aplikacji Python | `514e249`, `7ea4ecb` | CTest 161/161, guard PASS (160+1 opt-in), web 15/16 — `test:chat-context` czerwony również na bazie `e777592` (P-1) |
+
+Decyzje techniczne S1 są zapisywane w `wp-queue` (sekcja „Decyzje S1”).
