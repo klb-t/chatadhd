@@ -9,6 +9,9 @@
     "json_inline_threshold_bytes": 1000000,
     "generic_inference_max_bytes": 64000000
   },
+  "policies": {
+    "duplicate_policy": "reimport_and_link"
+  },
   "compatibility": {
     "legacy_values_sha256": "8cbdba78941cc8b224f007ed5f089d79b1b6e3c35cf25cae06ef04d7102c8a35",
     "legacy_projection_values_sha256": "264712ab0527df1efb35a08704c44d1ee16a8fa43a887fb0b4453f3f64c02bf0"

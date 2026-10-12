@@ -109,6 +109,24 @@ struct ImportPresetValues {
 
 const ImportPresetValues& default_import_preset();
 
+// R50: duplicates are never forbidden, only detected, reported and (by policy)
+// linked. The default comes from the compiled import pack ("policies").
+//   reimport_and_link  import again; link new nodes/conversations to the prior
+//                      ones (derived_from, relation "duplicate_of")
+//   reuse_prior        create no new copy; the prior one is returned and this
+//                      source is recorded against it
+//   reimport           previous behaviour: import again, no linking
+// A completed identical source is still answered from the immutable-source
+// cache (ImportResult::already_imported) unless `force`; the duplicate is
+// reported either way.
+inline constexpr std::string_view kDuplicateReimportAndLink = "reimport_and_link";
+inline constexpr std::string_view kDuplicateReusePrior = "reuse_prior";
+inline constexpr std::string_view kDuplicateReimport = "reimport";
+bool is_duplicate_policy(std::string_view value) noexcept;
+const std::string& default_duplicate_policy();
+
+class ImportLedger;  // src/import/import_recognition.h (R44 recognition + R50 duplicates)
+
 struct ImportOptions {
   std::optional<std::string> title;
   ExportMode export_mode = ExportMode::Auto;
@@ -143,6 +161,9 @@ struct ImportOptions {
   std::size_t json_max_depth = default_import_preset().json_max_depth;
   std::int64_t json_inline_threshold_bytes = default_import_preset().json_inline_threshold_bytes;
   std::int64_t generic_inference_max_bytes = default_import_preset().generic_inference_max_bytes;  // zero = unlimited
+  // R50 policy for duplicate sources/conversations/fragments; one of the
+  // kDuplicate* values. Not part of source identity (no cache invalidation).
+  std::string duplicate_policy = default_duplicate_policy();
   // Outer import_file execution hooks; stages remain available for offline
   // tools. Preflight runs before hashing/storage; completion follows durable
   // work and also runs for completed-source cache hits.
@@ -168,6 +189,12 @@ struct ImportResult {
   // path ran): provider, member dispositions, counts, asset links, errors,
   // repairs. Shape documented in src/import/export_internal.h.
   Json export_report = nullptr;
+  // R44: recognition annotation report ({"counts":{status:n},"nodes":[...]}),
+  // null unless a recognition-aware handler ran. Only measured counts appear.
+  Json recognition = nullptr;
+  // R50: {"policy","count","items":[{level,...,proposal}]}; null when nothing
+  // was detected as a duplicate.
+  Json duplicates = nullptr;
   // {"conversations":[...],"format","source_id","blob_hash","messages","cancelled","warnings","already_imported"}
   // (+ "export_report" when set)
   Json to_json() const;
@@ -252,6 +279,9 @@ class ConversationImporter {
     std::optional<std::string> json_path;
     std::optional<std::int64_t> archive_index;
   };
+  // Outermost import_file()/with_source() call owns the ledger; nested ZIP
+  // members and stages share it. Null for direct calls of the pure stages.
+  ImportLedger* ledger_ = nullptr;
   class SourceCtxGuard {
    public:
     SourceCtxGuard(ConversationImporter& self, SourceCtx* ctx) : self_(self), prev_(self.current_source_) {

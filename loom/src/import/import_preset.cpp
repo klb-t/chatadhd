@@ -103,6 +103,23 @@ const ImportPresetValues& default_import_preset() {
   return values;
 }
 
+bool is_duplicate_policy(std::string_view value) noexcept {
+  return value == kDuplicateReimportAndLink || value == kDuplicateReusePrior || value == kDuplicateReimport;
+}
+
+const std::string& default_duplicate_policy() {
+  static const std::string value = [] {
+    const auto& document = import_document();
+    if (!document) throw std::runtime_error(document.error().to_string());
+    const Json* policies = json::find(*document, "policies");
+    const Json* policy = policies && policies->is_object() ? json::find(*policies, "duplicate_policy") : nullptr;
+    if (!policy || !policy->is_string() || !is_duplicate_policy(policy->get<std::string>()))
+      throw std::runtime_error("compiled import preset policies.duplicate_policy is missing or invalid");
+    return policy->get<std::string>();
+  }();
+  return value;
+}
+
 Status apply_import_preset_values(ImportOptions& options, const Json& values) {
   LOOM_TRY_ASSIGN(const auto decoded, import_preset_from_values(values));
   options.stream_threshold_bytes = decoded.stream_threshold_bytes;
@@ -125,7 +142,8 @@ Result<Json> inspect_import_preset() {
   return Json{{"schema", (*document)["schema"]}, {"id", (*document)["id"]},
               {"version", (*document)["version"]}, {"source_path", kImportPresetSource},
               {"source_sha256", Sha256::hex(import_source_bytes())},
-              {"raw_source", import_source_bytes()}, {"values", (*document)["values"]}};
+              {"raw_source", import_source_bytes()}, {"values", (*document)["values"]},
+              {"policies", (*document).contains("policies") ? (*document)["policies"] : Json::object()}};
 }
 
 }  // namespace loom
