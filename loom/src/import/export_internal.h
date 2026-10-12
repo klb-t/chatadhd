@@ -36,6 +36,7 @@
 #include <string_view>
 #include <vector>
 
+#include "import/import_recognition.h"
 #include "loom/db.h"
 #include "loom/importer.h"
 #include "loom/provenance.h"
@@ -93,6 +94,10 @@ struct Env {
   std::function<Status(const Conversation&, const std::string& member, int index)> on_conv;
   std::string checkpoint_source_id;
   std::optional<Error> write_error = std::nullopt;
+  // R44/R50 (null outside an import_file call): the shared ledger and a hook
+  // that keeps a fragment with the active source identity.
+  ImportLedger* ledger = nullptr;
+  std::function<Status(FragmentRecord&&)> keep;
   bool cancelled() const { return opts.cancel && opts.cancel->cancelled(); }
 };
 

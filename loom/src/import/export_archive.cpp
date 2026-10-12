@@ -113,6 +113,32 @@ struct Run {
     rep.include_result_metadata = env.opts.include_result_metadata;
   }
 
+  // R44: an element no provider rule recognises is kept verbatim, annotated.
+  void keep_element(const Json& el, const std::string& member, std::int64_t idx, const Loader& loader,
+                    const char* reason) {
+    if (!env.keep) return;
+    FragmentRecord record;
+    record.status = std::string(recognition::kUnrecognized);
+    record.recognizer = "loom.importer.export";
+    record.recognizer_version = std::string(kExportParserVersion);
+    record.reason = reason;
+    const std::string pointer = loader.wrapper ? "/conversations/" + std::to_string(idx)
+        : loader.top_is_array ? "/" + std::to_string(idx) : "";
+    record.label = "unrecognized element " + member + pointer;
+    record.locator = Json{{"member", member}, {"json_pointer", pointer}, {"index", idx}};
+    if (loader.archive_index) record.locator["archive_index"] = *loader.archive_index;
+    const std::string bytes = json::py_dumps(el);
+    record.bytes = bytes;
+    record.attempts = Json::array({Json{{"recognizer", "loom.importer.export"},
+                                         {"version", std::string(kExportParserVersion)},
+                                         {"outcome", "unrecognized"}, {"reason", reason}}});
+    if (auto kept = env.keep(std::move(record)); !kept) {
+      rep.partial = true;
+      rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "fragment_retention_failed"},
+                                {"message", kept.error().message}});
+    }
+  }
+
   // Returns false to stop (cancelled).
   bool element(Json&& el, const std::string& member, std::int64_t idx, const std::string& provider_default,
                const Loader& loader) {
@@ -121,6 +147,7 @@ struct Run {
       rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "unrecognized_element"},
                                 {"message", "conversation element is not a JSON object"}});
       rep.partial = true;
+      keep_element(el, member, idx, loader, "conversation element is not a JSON object");
       return true;
     }
     const bool is_oa = json::find(el, "mapping") != nullptr;
@@ -129,6 +156,7 @@ struct Run {
       rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "unrecognized_element"},
                                {"message", "conversation element has no supported provider structure"}});
       rep.partial = true;
+      keep_element(el, member, idx, loader, "conversation element has no supported provider structure");
       return true;
     }
     std::string prov = is_oa ? "openai" : (is_cl ? "anthropic" : provider_default);
@@ -377,7 +405,8 @@ struct Run {
     }
   }
 
-  Status unknown_member(const Member& m) {
+  // `status_override`/`reason` classify members a legacy handler failed on.
+  Status unknown_member(const Member& m, std::string_view status_override = {}, std::string reason = {}) {
     rep.unknown_members.push_back(m.rel);
     Json md = Json::object();
     Json ex = Json::object();
@@ -394,7 +423,26 @@ struct Run {
       if (auto raw = fsutil::read_file(m.abs); raw && utf8::is_valid(*raw)) content = *raw;
     }
     md["export"] = ex;
-    LOOM_TRY(write_entity(env, "export:member", m.rel, content, md));
+    // R44: the node carries its recognition annotation and locator.
+    const bool textual = file_is_text(m.abs, env.opts.json_read_chunk_bytes);
+    const std::string status = !status_override.empty() ? std::string(status_override)
+        : std::string(textual ? recognition::kUnrecognized : recognition::kOpaque);
+    if (reason.empty()) reason = textual ? "no rule recognises this member" : "binary member; no rule recognises it";
+    Json locator{{"member", m.rel}, {"archive_index", m.archive_index}};
+    md["recognition"] = Json{{"status", status},
+                             {"recognizer", "loom.importer.export"},
+                             {"recognizer_version", std::string(kExportParserVersion)},
+                             {"reason", reason},
+                             {"attempts", Json::array({Json{{"recognizer", "loom.importer.export"},
+                                                            {"version", std::string(kExportParserVersion)},
+                                                            {"outcome", status}, {"reason", reason}}})},
+                             {"sha256", hash},
+                             {"size", m.size},
+                             {"valid_utf8", textual},
+                             {"stored", !content.empty() ? "inline" : (env.blobs ? "blob" : "none")}};
+    md["source"] = Json{{"source_id", env.checkpoint_source_id}, {"locator", locator}};
+    LOOM_TRY_ASSIGN(auto node, write_entity(env, "export:member", m.rel, content, md));
+    if (env.ledger) env.ledger->note_kept(status, node);
     return {};
   }
 };
@@ -414,6 +462,15 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
   }
 
   Env env{db_, blobs_, opts, {}, current_source_ ? current_source_->source_id : ""};
+  env.ledger = ledger_;
+  if (ledger_) {
+    ledger_->measured("zip");
+    env.keep = [this](FragmentRecord&& record) -> Status {
+      auto kept = keep_fragment(std::move(record));
+      if (!kept) return kept.error();
+      return Status{};
+    };
+  }
   env.on_conv = [this](const Conversation& c, const std::string& member, int index) {
     if (!current_source_) return Status{};
     current_source_->conv_index = index;
@@ -685,6 +742,11 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         std::string fmt = detect_format(m->abs);
         if (fmt == "unknown") {
           disp(*m, "unrecognized");
+          auto kept = run.unknown_member(*m);
+          if (!kept) {
+            rep.partial = true;
+            rep.errors.push_back(Json{{"member", m->rel}, {"code", "raw_retention_failed"}, {"message", kept.error().message}});
+          }
           continue;
         }
         if (inference_members.count(m->rel)) {
@@ -708,6 +770,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         ImportOptions mo = opts;
         mo.title = opts.title.has_value() ? opts.title : std::optional<std::string>(m->rel);
         mo.progress = nullptr;
+        const std::int64_t kept_before = ledger_ ? ledger_->kept_total() : 0;
         auto r = import_file_as(m->abs, mo, "zip_member", m->rel, m->archive_index);
         if (!r) {
           if (r.error().code == Errc::Unsupported && (fmt == "json" || fmt == "jsonl")) {
@@ -728,12 +791,21 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
           disp(*m, "import_failed", Json{{"message", r.error().message}});
           rep.errors.push_back(Json{{"member", m->rel}, {"code", "import_failed"}, {"message", r.error().message}});
           rep.partial = true;
+          // R44: the member stays in the graph, verbatim; corrupt JSON is opaque.
+          auto kept = run.unknown_member(*m, r.error().code == Errc::Parse ? recognition::kOpaque : recognition::kUnrecognized,
+                                         "import failed: " + r.error().message);
+          if (!kept) {
+            rep.errors.push_back(Json{{"member", m->rel}, {"code", "raw_retention_failed"}, {"message", kept.error().message}});
+          }
           continue;
         }
         for (auto& c : r->conversations) run.convs.push_back(std::move(c));
         if (r->conversations.empty()) {
           disp(*m, "unrecognized");
-          if (fmt == "json" || fmt == "jsonl") { auto kept = run.unknown_member(*m); if (!kept) rep.partial = true; }
+          // The legacy handler already kept its unrecognised pieces (R44); the
+          // whole member is retained only when it did not.
+          const bool covered = ledger_ && ledger_->kept_total() > kept_before;
+          if ((fmt == "json" || fmt == "jsonl") && !covered) { auto kept = run.unknown_member(*m); if (!kept) rep.partial = true; }
         } else {
           disp(*m, "imported_legacy", Json{{"format", fmt}, {"conversations", static_cast<std::int64_t>(r->conversations.size())}});
         }
@@ -814,6 +886,15 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
                                                                                          const ImportOptions& opts,
                                                                                          Json& report_out) {
   Env env{db_, blobs_, opts, {}, current_source_ ? current_source_->source_id : ""};
+  env.ledger = ledger_;
+  if (ledger_) {
+    ledger_->measured("json");
+    env.keep = [this](FragmentRecord&& record) -> Status {
+      auto kept = keep_fragment(std::move(record));
+      if (!kept) return kept.error();
+      return Status{};
+    };
+  }
   env.on_conv = [this](const Conversation& c, const std::string&, int index) {
     if (current_source_) { current_source_->conv_index = index; return record_provenance(c, "export"); }
     return Status{};

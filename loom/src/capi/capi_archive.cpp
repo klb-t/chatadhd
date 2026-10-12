@@ -31,6 +31,8 @@ LOOM_API const char* loom_import_file_ex(LoomContext* ctx, const char* path, con
         if (v.is_string() && !v.get<std::string>().empty()) opts.title = v.get<std::string>();
       } else if (k == "force" && v.is_boolean()) {
         opts.force = v.get<bool>();
+      } else if (k == "duplicate_policy" && v.is_string() && is_duplicate_policy(v.get<std::string>())) {
+        opts.duplicate_policy = v.get<std::string>();
       } else if (k == "record_provenance" && v.is_boolean()) {
         opts.record_provenance = v.get<bool>();
       } else if (k == "export_mode" && v.is_string() &&

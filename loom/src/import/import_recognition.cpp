@@ -1,5 +1,7 @@
 #include "import/import_recognition.h"
 
+#include <fstream>
+
 #include "importer_internal.h"
 #include "loom/log.h"
 #include "loom/util/base64.h"
@@ -88,6 +90,40 @@ void ImportLedger::note_source_duplicate(Json item) {
 }
 
 // ── R44 ─────────────────────────────────────────────────────────────
+std::int64_t ImportLedger::kept_total() const noexcept {
+  std::int64_t total = 0;
+  for (const auto& [status, count] : counts_) total += count;
+  return total;
+}
+
+bool file_is_text(const std::filesystem::path& path, std::size_t chunk_bytes) {
+  std::ifstream in(path, std::ios::binary);
+  if (!in) return false;
+  std::string buffer(chunk_bytes ? chunk_bytes : 1, '\0');
+  std::string carry;
+  while (in) {
+    in.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+    const auto n = static_cast<std::size_t>(in.gcount());
+    if (!n) break;
+    std::string window = carry + std::string(buffer.data(), n);
+    if (window.find('\0') != std::string::npos) return false;
+    // Hold back an incomplete trailing multi-byte sequence for the next chunk.
+    std::size_t cut = window.size();
+    for (std::size_t back = 1; back <= 3 && back <= window.size(); ++back) {
+      const unsigned char c = static_cast<unsigned char>(window[window.size() - back]);
+      if ((c & 0xC0) == 0x80) continue;
+      if (c >= 0xC0) {
+        const std::size_t need = c >= 0xF0 ? 4 : c >= 0xE0 ? 3 : 2;
+        if (need > back) cut = window.size() - back;
+      }
+      break;
+    }
+    if (!utf8::is_valid(std::string_view(window).substr(0, cut))) return false;
+    carry = window.substr(cut);
+  }
+  return carry.empty();
+}
+
 void ImportLedger::note_kept(std::string_view status, const std::string& node_id) {
   ++counts_[std::string(status)];
   if (!node_id.empty()) node_ids_.push_back(node_id);

@@ -545,6 +545,25 @@ Result<Conversation> write_conversation(Env& env, ConvModel& cm, std::map<std::s
   auto lk = db.lock();
   auto& conn = db.conn();
 
+  // R50: an identical conversation (external id, roles, normalised text) is a
+  // duplicate; it is reported and, by policy, linked or reused - never refused.
+  std::optional<ImportLedger::ConversationCheck> duplicate_check;
+  if (env.ledger && !cm.msgs.empty()) {
+    std::vector<std::pair<std::string, std::string>> turns;
+    turns.reserve(cm.msgs.size());
+    for (const auto& m : cm.msgs) turns.emplace_back(m.role, m.text);
+    LOOM_TRY_ASSIGN(auto found, env.ledger->check_conversation(cm.key, turns));
+    duplicate_check = std::move(found);
+    if (duplicate_check->prior && env.ledger->reuse_prior()) {
+      LOOM_TRY_ASSIGN(auto existing, db.get_conv(*duplicate_check->prior));
+      if (existing) {
+        env.ledger->note_conversation();
+        LOOM_TRY(env.ledger->conversation_reused(*duplicate_check, *duplicate_check->prior, env.checkpoint_source_id));
+        return **existing;
+      }
+    }
+  }
+
   Conversation conv;
   conv.id = gen_id(id_prefix::kConversation);
   conv.title = cm.title;
@@ -585,6 +604,10 @@ Result<Conversation> write_conversation(Env& env, ConvModel& cm, std::map<std::s
     if (key_to_id && !m.key.empty()) (*key_to_id)[m.key] = ids[i];
   }
   LOOM_TRY(txn.commit());
+  if (env.ledger) {
+    env.ledger->note_conversation();
+    if (duplicate_check) { LOOM_TRY(env.ledger->conversation_created(*duplicate_check, conv, env.checkpoint_source_id)); }
+  }
   return conv;
 }
 

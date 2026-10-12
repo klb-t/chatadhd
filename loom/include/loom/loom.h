@@ -283,7 +283,15 @@ LOOM_API const char* loom_import_file(LoomContext* ctx, const char* path, const 
                                       void* ud);
 /* Like loom_import_file with options_json (nullable):
  * {"title"?, "force"?: false, "record_provenance"?: true,
- *  "export_mode"?: "auto"|"off"|"on"}. force re-imports a
+ *  "export_mode"?: "auto"|"off"|"on",
+ *  "duplicate_policy"?: "reimport_and_link"|"reuse_prior"|"reimport"}.
+ * duplicate_policy (R50, default from the import pack) decides what happens
+ * with an already-seen conversation/fragment: link the new copy to the prior
+ * one, reuse the prior one, or only report. Duplicates are never refused; the
+ * result carries "duplicates" ({"policy","count","items":[...]}). Unrecognised
+ * input (R44) is kept as annotated nodes and counted in "recognition"
+ * ({"counts":{recognized,partial,unrecognized,opaque},...}; present only when
+ * the format's handler measures it). force re-imports a
  * file whose bytes were already imported (otherwise the prior conversations
  * are returned with "already_imported": true). export_mode selects the
  * lossless ChatGPT/Claude export interpretation: auto (default) = ZIP archives,

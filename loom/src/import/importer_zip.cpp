@@ -29,36 +29,6 @@ bool safe_zip_relpath(const fs::path& rel) {
   return true;
 }
 
-// Text means: no NUL byte and valid UTF-8 across the whole file (chunk
-// boundaries are carried so a split multi-byte sequence is not misjudged).
-bool member_is_text(const fs::path& path, std::size_t chunk_bytes) {
-  std::ifstream in(path, std::ios::binary);
-  if (!in) return false;
-  std::string buffer(chunk_bytes ? chunk_bytes : 65536, '\0');
-  std::string carry;
-  while (in) {
-    in.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
-    const auto n = static_cast<std::size_t>(in.gcount());
-    if (!n) break;
-    std::string window = carry + std::string(buffer.data(), n);
-    if (window.find('\0') != std::string::npos) return false;
-    // Hold back an incomplete trailing sequence (at most 3 bytes) for the next chunk.
-    std::size_t cut = window.size();
-    for (std::size_t back = 1; back <= 3 && back <= window.size(); ++back) {
-      const unsigned char c = static_cast<unsigned char>(window[window.size() - back]);
-      if ((c & 0xC0) == 0x80) continue;
-      if (c >= 0xC0) {
-        const std::size_t need = c >= 0xF0 ? 4 : c >= 0xE0 ? 3 : 2;
-        if (need > back) cut = window.size() - back;
-      }
-      break;
-    }
-    if (!utf8::is_valid(std::string_view(window).substr(0, cut))) return false;
-    carry = window.substr(cut);
-  }
-  return carry.empty();
-}
-
 }  // namespace
 
 Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path& path, const ImportOptions& opts) {
@@ -162,7 +132,7 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
   for (const auto& e : entries) {
     if (cancelled(opts)) break;
     if (detect_format(e.abs) == "unknown") {
-      const bool text = member_is_text(e.abs, opts.json_read_chunk_bytes);
+      const bool text = file_is_text(e.abs, opts.json_read_chunk_bytes);
       LOOM_TRY(keep_member(e, text ? recognition::kUnrecognized : recognition::kOpaque,
                            text ? "no importer recognises this member's format" : "binary member; no importer recognises its format"));
       continue;

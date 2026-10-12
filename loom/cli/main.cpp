@@ -490,6 +490,11 @@ int cmd_import(Runtime& rt, const Args& a) {
   if (a.has("audit-output-price")) audit.output_price = number("audit-output-price", 0);
   must(validate_import_audit_options(audit));  // invalid planning options never import data first
   if (a.has("title")) o.title = a.get("title");
+  if (a.has("duplicate-policy")) {
+    const std::string policy = a.get("duplicate-policy");
+    if (!is_duplicate_policy(policy)) throw UsageError{"--duplicate-policy must be reimport_and_link, reuse_prior or reimport"};
+    o.duplicate_policy = policy;
+  }
   o.force = a.has("force");
   if (a.has("export-mode")) {
     const std::string m = a.get("export-mode");

@@ -728,6 +728,9 @@ void App::route_import_export() {
     }
     const auto file = req.get_file_value("file");
     std::string title = req.has_param("title") ? req.get_param_value("title") : std::string();
+    // R50: optional duplicate_policy (reimport_and_link | reuse_prior | reimport);
+    // absent = the import pack default.
+    std::string duplicate_policy = req.has_param("duplicate_policy") ? req.get_param_value("duplicate_policy") : std::string();
 
     std::error_code ec;
     fs::path tmp_dir = fs::temp_directory_path(ec) / "loom-server-import";
@@ -745,9 +748,13 @@ void App::route_import_export() {
     LoomContext* ctx = ctx_;
     std::string path_str = tmp_path.string();
     std::string title_copy = title;
-    auto thread_ptr = std::make_shared<std::thread>([ctx, path_str, title_copy, queue]() {
-      const char* result = loom_import_file(
-          ctx, path_str.c_str(), title_copy.empty() ? nullptr : title_copy.c_str(),
+    json options = json::object();
+    if (!title_copy.empty()) options["title"] = title_copy;
+    if (!duplicate_policy.empty()) options["duplicate_policy"] = duplicate_policy;
+    std::string options_json = options.dump();
+    auto thread_ptr = std::make_shared<std::thread>([ctx, path_str, options_json, queue]() {
+      const char* result = loom_import_file_ex(
+          ctx, path_str.c_str(), options_json.c_str(),
           [](int current, int total, const char* status, void* ud) {
             auto* q = static_cast<SseQueue*>(ud);
             json p = {{"type", "progress"}, {"current", current}, {"total", total}, {"status", status ? status : ""}};

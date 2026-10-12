@@ -56,6 +56,9 @@ struct FragmentRecord {
   Json attempts = Json::array();  // earlier recognition attempts (history)
 };
 
+// No NUL byte and valid UTF-8 across the whole file (chunk-safe).
+bool file_is_text(const std::filesystem::path& path, std::size_t chunk_bytes);
+
 class ImportLedger {
  public:
   ImportLedger(Database& db, BlobStore* blobs, ProvenanceStore* prov, const ImportOptions& opts);
@@ -74,6 +77,8 @@ class ImportLedger {
   void note_conversation();  // one conversation record produced
   // A kept record that lives in a node created elsewhere (export:member).
   void note_kept(std::string_view status, const std::string& node_id);
+  // Fragments/members kept so far (any status).
+  std::int64_t kept_total() const noexcept;
 
   // ── R50 ──────────────────────────────────────────────────────────
   struct ConversationCheck {
