@@ -1,0 +1,81 @@
+{
+  "schema": "loom.graph_classes/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Inheritance applies to classes only; setting values do not inherit (they resolve through scopes).",
+  "classes": {
+    "party": {
+      "label": {
+        "en": "Party",
+        "pl": "Podmiot"
+      }
+    },
+    "person": {
+      "label": {
+        "en": "Person",
+        "pl": "Osoba"
+      },
+      "parent": "party",
+      "package": "person"
+    },
+    "group": {
+      "label": {
+        "en": "Group",
+        "pl": "Grupa"
+      },
+      "parent": "party"
+    },
+    "organization": {
+      "label": {
+        "en": "Organization",
+        "pl": "Organizacja"
+      },
+      "parent": "party",
+      "package": "organization"
+    },
+    "collective": {
+      "label": {
+        "en": "Collective",
+        "pl": "Kolektyw"
+      },
+      "parent": "party"
+    },
+    "ai_agent": {
+      "label": {
+        "en": "AI agent",
+        "pl": "Agent AI"
+      },
+      "parent": "party"
+    },
+    "project": {
+      "label": {
+        "en": "Project",
+        "pl": "Projekt"
+      }
+    },
+    "goal": {
+      "label": {
+        "en": "Goal",
+        "pl": "Cel"
+      }
+    },
+    "decision": {
+      "label": {
+        "en": "Decision",
+        "pl": "Decyzja"
+      }
+    },
+    "method": {
+      "label": {
+        "en": "Method",
+        "pl": "Metoda"
+      }
+    },
+    "document": {
+      "label": {
+        "en": "Document",
+        "pl": "Dokument"
+      }
+    }
+  }
+}

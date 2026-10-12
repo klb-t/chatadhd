@@ -1,0 +1,123 @@
+{
+  "schema": "loom.graph_properties/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Each slot carries the slot axes (time, certainty/source, subject state, sensitivity) and exactly one of the value states below until a value is given.",
+  "states": {
+    "unknown": {
+      "label": {
+        "en": "Unknown",
+        "pl": "Nieznane"
+      }
+    },
+    "declined": {
+      "label": {
+        "en": "Declined to say",
+        "pl": "Odmówiono"
+      }
+    },
+    "never": {
+      "label": {
+        "en": "Never / does not apply",
+        "pl": "Nigdy / nie dotyczy"
+      }
+    }
+  },
+  "default_state": "unknown",
+  "slot_axes": [
+    "time",
+    "certainty",
+    "subject_state",
+    "sensitivity"
+  ],
+  "packages": {
+    "person": {
+      "label": {
+        "en": "Person",
+        "pl": "Osoba"
+      },
+      "slots": [
+        {
+          "id": "name",
+          "label": {
+            "en": "Name",
+            "pl": "Imię"
+          },
+          "value_type": "text"
+        },
+        {
+          "id": "location",
+          "label": {
+            "en": "Location",
+            "pl": "Miejsce"
+          },
+          "value_type": "text"
+        },
+        {
+          "id": "occupation",
+          "label": {
+            "en": "Occupation",
+            "pl": "Zawód"
+          },
+          "value_type": "text"
+        },
+        {
+          "id": "language",
+          "label": {
+            "en": "Language",
+            "pl": "Język"
+          },
+          "value_type": "text"
+        },
+        {
+          "id": "goals",
+          "label": {
+            "en": "Goals",
+            "pl": "Cele"
+          },
+          "value_type": "list"
+        },
+        {
+          "id": "health_notes",
+          "label": {
+            "en": "Health notes",
+            "pl": "Notatki zdrowotne"
+          },
+          "value_type": "text"
+        }
+      ]
+    },
+    "organization": {
+      "label": {
+        "en": "Organization",
+        "pl": "Organizacja"
+      },
+      "slots": [
+        {
+          "id": "name",
+          "label": {
+            "en": "Name",
+            "pl": "Nazwa"
+          },
+          "value_type": "text"
+        },
+        {
+          "id": "sector",
+          "label": {
+            "en": "Sector",
+            "pl": "Branża"
+          },
+          "value_type": "text"
+        },
+        {
+          "id": "jurisdiction",
+          "label": {
+            "en": "Jurisdiction",
+            "pl": "Jurysdykcja"
+          },
+          "value_type": "text"
+        }
+      ]
+    }
+  }
+}

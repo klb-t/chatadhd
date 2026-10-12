@@ -476,6 +476,30 @@
       },
       "inputs": [
         {
+          "path": "loom/data/graph/axes.pack",
+          "sha256": "290a3a4bb57ba6da8c53a359e87b15c48d1bb78c1f3f825fbddc6ecf1add9592"
+        },
+        {
+          "path": "loom/data/graph/classes.pack",
+          "sha256": "f43f38f1c8450a72fc502cfdd59462558dc52083d3acd29bf9b2e8135ec0a512"
+        },
+        {
+          "path": "loom/data/graph/entry.pack",
+          "sha256": "5d0da3e1741c20017520a2e14df31ec01116f9ec2422d67b1514f8dc3b2eb9b6"
+        },
+        {
+          "path": "loom/data/graph/parties.pack",
+          "sha256": "a518de41b77c523fb7bf510e832c4689c1a68a9a182dac240ea09cd3d93ec3d0"
+        },
+        {
+          "path": "loom/data/graph/properties.pack",
+          "sha256": "fac12dd46d867d7959dae438e7cf764495d6d33ecf7bb07bc9390da34760ffd7"
+        },
+        {
+          "path": "loom/data/graph/scopes.pack",
+          "sha256": "9dad7d2a2a711e37d6c0afe4d819c845e014ed27abc3ca964179b3e15535c837"
+        },
+        {
           "path": "loom/data/policy/usage_policy.pack",
           "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df"
         },
@@ -589,10 +613,10 @@
         },
         {
           "path": "loom/data/runtime_sources.pack",
-          "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
+          "sha256": "5cd6ba3e4e2729e30f9d4c27ea299a5760b1b6122d1a0b1ea41189b680440f64"
         }
       ],
-      "output_sha256": "8af840035b694f5c36b7a3944dd11ad4ef843f10e74dc088c03e9eb7ffd38840",
+      "output_sha256": "5bd1f5ee778301b0f303455ef9e7769edb5f71f7a79d478e70071e3f39546a91",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

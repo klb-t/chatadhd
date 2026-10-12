@@ -1,0 +1,158 @@
+{
+  "schema": "loom.graph_scopes/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Chain runs from most general to most specific; not every setting uses every scope.",
+  "chain": [
+    {
+      "id": "engine",
+      "label": {
+        "en": "Engine invariants",
+        "pl": "Silnik (niezmienniki)"
+      }
+    },
+    {
+      "id": "app_preset",
+      "label": {
+        "en": "Application preset",
+        "pl": "Preset aplikacji"
+      }
+    },
+    {
+      "id": "installation",
+      "label": {
+        "en": "Installation",
+        "pl": "Instalacja"
+      }
+    },
+    {
+      "id": "organization",
+      "label": {
+        "en": "Organization",
+        "pl": "Organizacja"
+      }
+    },
+    {
+      "id": "group_of_groups",
+      "label": {
+        "en": "Group of groups",
+        "pl": "Grupa grup"
+      }
+    },
+    {
+      "id": "team",
+      "label": {
+        "en": "Team",
+        "pl": "Zespół"
+      }
+    },
+    {
+      "id": "person",
+      "label": {
+        "en": "Person",
+        "pl": "Osoba"
+      }
+    },
+    {
+      "id": "role_in_context",
+      "label": {
+        "en": "Role in context",
+        "pl": "Rola w kontekście"
+      }
+    },
+    {
+      "id": "project",
+      "label": {
+        "en": "Project (branch)",
+        "pl": "Projekt (gałąź)"
+      }
+    },
+    {
+      "id": "conversation",
+      "label": {
+        "en": "Conversation",
+        "pl": "Rozmowa"
+      }
+    },
+    {
+      "id": "turn",
+      "label": {
+        "en": "Turn / single call",
+        "pl": "Tura / wywołanie"
+      }
+    }
+  ],
+  "default_rule": "most_specific_wins",
+  "conflict_rules": [
+    {
+      "id": "most_specific_wins",
+      "label": {
+        "en": "Most specific scope wins",
+        "pl": "Wygrywa najbardziej szczegółowy zakres"
+      }
+    },
+    {
+      "id": "locked_by",
+      "label": {
+        "en": "Pinned by a higher scope",
+        "pl": "Przypięte przez wyższy zakres"
+      }
+    },
+    {
+      "id": "merge",
+      "label": {
+        "en": "Deep merge",
+        "pl": "Scalanie"
+      }
+    },
+    {
+      "id": "intersection",
+      "label": {
+        "en": "Intersection",
+        "pl": "Część wspólna"
+      }
+    },
+    {
+      "id": "min",
+      "label": {
+        "en": "Minimum",
+        "pl": "Minimum"
+      }
+    },
+    {
+      "id": "max",
+      "label": {
+        "en": "Maximum",
+        "pl": "Maksimum"
+      }
+    },
+    {
+      "id": "weighted_vote",
+      "label": {
+        "en": "Weighted vote",
+        "pl": "Głosowanie z wagami"
+      }
+    },
+    {
+      "id": "ask",
+      "label": {
+        "en": "Ask the user",
+        "pl": "Zapytaj użytkownika"
+      }
+    },
+    {
+      "id": "by_context",
+      "label": {
+        "en": "By context predicate",
+        "pl": "Według kontekstu"
+      }
+    },
+    {
+      "id": "first_defined",
+      "label": {
+        "en": "First defined",
+        "pl": "Pierwsza zdefiniowana"
+      }
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "schema": "loom.graph_parties/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Templates are coordinates on the party axes; a family weighing a decision is many/ad_hoc/family/human/decision.",
+  "templates": {
+    "individual": {
+      "label": {
+        "en": "Individual",
+        "pl": "Jednostka"
+      },
+      "coords": {
+        "composition": "one",
+        "permanence": "permanent",
+        "nature": "human"
+      }
+    },
+    "family_decision": {
+      "label": {
+        "en": "Family weighing a decision",
+        "pl": "Rodzina ważąca decyzję"
+      },
+      "coords": {
+        "composition": "many",
+        "permanence": "ad_hoc",
+        "bond": "family",
+        "nature": "human",
+        "acting_context": "decision"
+      }
+    },
+    "organization": {
+      "label": {
+        "en": "Organization",
+        "pl": "Organizacja"
+      },
+      "coords": {
+        "composition": "many",
+        "permanence": "permanent",
+        "bond": "formal",
+        "nature": "institution"
+      }
+    },
+    "ai_agent": {
+      "label": {
+        "en": "AI agent",
+        "pl": "Agent AI"
+      },
+      "coords": {
+        "composition": "one",
+        "nature": "ai"
+      }
+    },
+    "project_team": {
+      "label": {
+        "en": "Project team",
+        "pl": "Zespół projektowy"
+      },
+      "coords": {
+        "composition": "many",
+        "permanence": "ad_hoc",
+        "bond": "project"
+      }
+    }
+  },
+  "distinctions": {
+    "known_about_vs_acting": {
+      "en": "The party the graph knows about differs from the party acting and paying now.",
+      "pl": "Podmiot, o którym graf wie, to nie to samo co podmiot, który działa i płaci."
+    }
+  }
+}

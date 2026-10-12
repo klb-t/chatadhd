@@ -1,0 +1,432 @@
+{
+  "schema": "loom.graph_axes/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Axes generate the space; cells are filled from live registries.",
+  "axes": {
+    "entry": {
+      "about": {
+        "order": 1,
+        "label": {
+          "en": "About",
+          "pl": "O czym"
+        },
+        "values": [
+          {
+            "id": "application",
+            "label": {
+              "en": "Application",
+              "pl": "Aplikacja"
+            }
+          },
+          {
+            "id": "world",
+            "label": {
+              "en": "World",
+              "pl": "Świat"
+            }
+          },
+          {
+            "id": "party",
+            "label": {
+              "en": "Party",
+              "pl": "Podmiot"
+            }
+          }
+        ]
+      },
+      "kind": {
+        "order": 2,
+        "label": {
+          "en": "Kind of thing",
+          "pl": "Jaki byt"
+        },
+        "values": [
+          {
+            "id": "data",
+            "label": {
+              "en": "Data",
+              "pl": "Dane"
+            }
+          },
+          {
+            "id": "method",
+            "label": {
+              "en": "Method",
+              "pl": "Metoda"
+            }
+          },
+          {
+            "id": "setting",
+            "label": {
+              "en": "Setting",
+              "pl": "Ustawienie"
+            }
+          },
+          {
+            "id": "knowledge",
+            "label": {
+              "en": "Knowledge",
+              "pl": "Wiedza"
+            }
+          },
+          {
+            "id": "resource",
+            "label": {
+              "en": "Resource",
+              "pl": "Zasób"
+            }
+          }
+        ]
+      },
+      "time": {
+        "order": 3,
+        "label": {
+          "en": "Time",
+          "pl": "Czas"
+        },
+        "values": [
+          {
+            "id": "state",
+            "label": {
+              "en": "State",
+              "pl": "Stan"
+            }
+          },
+          {
+            "id": "history",
+            "label": {
+              "en": "History",
+              "pl": "Historia"
+            }
+          },
+          {
+            "id": "plan",
+            "label": {
+              "en": "Plan",
+              "pl": "Plan"
+            }
+          }
+        ]
+      }
+    },
+    "party": {
+      "composition": {
+        "order": 1,
+        "label": {
+          "en": "Composition",
+          "pl": "Skład"
+        },
+        "values": [
+          {
+            "id": "one",
+            "label": {
+              "en": "One",
+              "pl": "Jeden"
+            }
+          },
+          {
+            "id": "many",
+            "label": {
+              "en": "Many",
+              "pl": "Wielu"
+            }
+          },
+          {
+            "id": "many_of_many",
+            "label": {
+              "en": "Many of many",
+              "pl": "Wielu z wielu"
+            }
+          }
+        ]
+      },
+      "permanence": {
+        "order": 2,
+        "label": {
+          "en": "Permanence",
+          "pl": "Trwałość"
+        },
+        "values": [
+          {
+            "id": "permanent",
+            "label": {
+              "en": "Permanent",
+              "pl": "Stały"
+            }
+          },
+          {
+            "id": "ad_hoc",
+            "label": {
+              "en": "Ad hoc",
+              "pl": "Doraźny"
+            }
+          }
+        ]
+      },
+      "bond": {
+        "order": 3,
+        "label": {
+          "en": "Bond",
+          "pl": "Forma więzi"
+        },
+        "values": [
+          {
+            "id": "formal",
+            "label": {
+              "en": "Formal",
+              "pl": "Formalna"
+            }
+          },
+          {
+            "id": "family",
+            "label": {
+              "en": "Family",
+              "pl": "Rodzinna"
+            }
+          },
+          {
+            "id": "project",
+            "label": {
+              "en": "Project",
+              "pl": "Projektowa"
+            }
+          },
+          {
+            "id": "casual",
+            "label": {
+              "en": "Casual",
+              "pl": "Przygodna"
+            }
+          }
+        ]
+      },
+      "nature": {
+        "order": 4,
+        "label": {
+          "en": "Nature",
+          "pl": "Natura"
+        },
+        "values": [
+          {
+            "id": "human",
+            "label": {
+              "en": "Human",
+              "pl": "Człowiek"
+            }
+          },
+          {
+            "id": "ai",
+            "label": {
+              "en": "AI",
+              "pl": "AI"
+            }
+          },
+          {
+            "id": "institution",
+            "label": {
+              "en": "Institution",
+              "pl": "Instytucja"
+            }
+          }
+        ]
+      },
+      "acting_context": {
+        "order": 5,
+        "open": true,
+        "label": {
+          "en": "Acting context",
+          "pl": "Kontekst działania"
+        },
+        "values": [
+          {
+            "id": "decision",
+            "label": {
+              "en": "Decision",
+              "pl": "Decyzja"
+            }
+          },
+          {
+            "id": "work",
+            "label": {
+              "en": "Work",
+              "pl": "Praca"
+            }
+          },
+          {
+            "id": "home",
+            "label": {
+              "en": "Home",
+              "pl": "Dom"
+            }
+          },
+          {
+            "id": "payer",
+            "label": {
+              "en": "Acting and paying now",
+              "pl": "Działa i płaci teraz"
+            }
+          },
+          {
+            "id": "subject",
+            "label": {
+              "en": "Known about",
+              "pl": "Ten, o którym graf wie"
+            }
+          }
+        ]
+      }
+    },
+    "slot": {
+      "time": {
+        "order": 1,
+        "label": {
+          "en": "Time of statement",
+          "pl": "Czas"
+        },
+        "values": [
+          {
+            "id": "now",
+            "label": {
+              "en": "Now",
+              "pl": "Teraz"
+            }
+          },
+          {
+            "id": "usually",
+            "label": {
+              "en": "Usually",
+              "pl": "Zwykle"
+            }
+          },
+          {
+            "id": "once",
+            "label": {
+              "en": "Once",
+              "pl": "Kiedyś"
+            }
+          }
+        ]
+      },
+      "certainty": {
+        "order": 2,
+        "label": {
+          "en": "Certainty and source",
+          "pl": "Pewność i źródło"
+        },
+        "values": [
+          {
+            "id": "given",
+            "label": {
+              "en": "Given",
+              "pl": "Podane"
+            }
+          },
+          {
+            "id": "inferred",
+            "label": {
+              "en": "Inferred",
+              "pl": "Wywnioskowane"
+            }
+          },
+          {
+            "id": "confirmed",
+            "label": {
+              "en": "Confirmed",
+              "pl": "Potwierdzone"
+            }
+          },
+          {
+            "id": "declined",
+            "label": {
+              "en": "Declined",
+              "pl": "Odrzucone"
+            }
+          },
+          {
+            "id": "never",
+            "label": {
+              "en": "Never",
+              "pl": "Nigdy"
+            }
+          },
+          {
+            "id": "unknown",
+            "label": {
+              "en": "Unknown",
+              "pl": "Nieznane"
+            }
+          }
+        ]
+      },
+      "subject_state": {
+        "order": 3,
+        "open": true,
+        "label": {
+          "en": "Subject state at statement",
+          "pl": "Stan podmiotu w chwili podania"
+        },
+        "values": [
+          {
+            "id": "unspecified",
+            "label": {
+              "en": "Unspecified",
+              "pl": "Nieokreślony"
+            }
+          },
+          {
+            "id": "focused",
+            "label": {
+              "en": "Focused",
+              "pl": "Skupiony"
+            }
+          },
+          {
+            "id": "overloaded",
+            "label": {
+              "en": "Overloaded",
+              "pl": "Przeciążony"
+            }
+          },
+          {
+            "id": "tired",
+            "label": {
+              "en": "Tired",
+              "pl": "Zmęczony"
+            }
+          }
+        ]
+      },
+      "sensitivity": {
+        "order": 4,
+        "label": {
+          "en": "Sensitivity",
+          "pl": "Wrażliwość"
+        },
+        "values": [
+          {
+            "id": "public",
+            "label": {
+              "en": "Public",
+              "pl": "Publiczne"
+            }
+          },
+          {
+            "id": "personal",
+            "label": {
+              "en": "Personal",
+              "pl": "Osobiste"
+            }
+          },
+          {
+            "id": "sensitive",
+            "label": {
+              "en": "Sensitive",
+              "pl": "Wrażliwe"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

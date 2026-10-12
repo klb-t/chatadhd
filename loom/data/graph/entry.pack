@@ -1,0 +1,490 @@
+{
+  "schema": "loom.graph_entry_areas/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Area ids are stable keys: an overlay may set hidden:true, change order/label/axes, or add new areas by id. A binding names a code provider (mechanism) and optionally cells it fills even when no area occupies the cell.",
+  "areas": {
+    "self_model": {
+      "order": 1,
+      "label": {
+        "en": "Self-model",
+        "pl": "Samomodel"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "knowledge",
+        "time": "state"
+      },
+      "bindings": [
+        "pack.principles",
+        "pack.operators",
+        "pack.rules",
+        "profile.authority_ranks"
+      ],
+      "expand": {
+        "view": "kb.policy",
+        "params": {
+          "name": "philosophy/principles.json"
+        }
+      }
+    },
+    "technologies": {
+      "order": 2,
+      "label": {
+        "en": "Technologies and adapters",
+        "pl": "Technologie i adaptery"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "resource",
+        "time": "state"
+      },
+      "bindings": [
+        "profile.import_formats"
+      ]
+    },
+    "interfaces": {
+      "order": 3,
+      "label": {
+        "en": "Interfaces",
+        "pl": "Interfejsy"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "resource",
+        "time": "plan"
+      },
+      "bindings": [
+        "interfaces.abi"
+      ]
+    },
+    "profiles_settings": {
+      "order": 4,
+      "label": {
+        "en": "Profiles and settings",
+        "pl": "Profile i ustawienia"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "setting",
+        "time": "state"
+      },
+      "bindings": [
+        "profile.domains",
+        "data.scopes",
+        "data.conflict_rules"
+      ]
+    },
+    "parties": {
+      "order": 5,
+      "label": {
+        "en": "Parties",
+        "pl": "Podmioty"
+      },
+      "axes": {
+        "about": "party",
+        "kind": "data",
+        "time": "state"
+      },
+      "bindings": [
+        "data.parties",
+        "kb.entities"
+      ],
+      "expand": {
+        "view": "kb.query",
+        "params": {
+          "what": "entities"
+        }
+      }
+    },
+    "context_projects": {
+      "order": 6,
+      "label": {
+        "en": "Context and projects",
+        "pl": "Kontekst i projekty"
+      },
+      "axes": {
+        "about": "world",
+        "kind": "data",
+        "time": "plan"
+      },
+      "bindings": [
+        "db.conversations"
+      ],
+      "expand": {
+        "view": "conversations.list",
+        "params": {}
+      }
+    },
+    "methods": {
+      "order": 7,
+      "label": {
+        "en": "Methods",
+        "pl": "Metody"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "method",
+        "time": "state"
+      },
+      "bindings": [
+        "methods.registry"
+      ]
+    },
+    "data_corpora": {
+      "order": 8,
+      "label": {
+        "en": "Data and corpora",
+        "pl": "Dane i korpusy"
+      },
+      "axes": {
+        "about": "world",
+        "kind": "data",
+        "time": "state"
+      },
+      "bindings": [
+        "db.conversations",
+        "db.messages",
+        "db.sources",
+        "db.recognition",
+        "db.duplicates"
+      ],
+      "expand": {
+        "view": "graph.nodes",
+        "params": {
+          "kind": "import:unrecognized"
+        }
+      }
+    },
+    "knowledge": {
+      "order": 9,
+      "label": {
+        "en": "Knowledge",
+        "pl": "Wiedza"
+      },
+      "axes": {
+        "about": "world",
+        "kind": "knowledge",
+        "time": "state"
+      },
+      "bindings": [
+        "kb.entities",
+        "kb.claims"
+      ],
+      "expand": {
+        "view": "kb.query",
+        "params": {
+          "what": "claims"
+        }
+      }
+    },
+    "ontology": {
+      "order": 10,
+      "label": {
+        "en": "Ontology",
+        "pl": "Ontologia"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "knowledge",
+        "time": "plan"
+      },
+      "bindings": [
+        "data.classes",
+        "data.properties"
+      ]
+    },
+    "provenance_history": {
+      "order": 11,
+      "label": {
+        "en": "Provenance and history",
+        "pl": "Pochodzenie i historia"
+      },
+      "axes": {
+        "about": "world",
+        "kind": "data",
+        "time": "history"
+      },
+      "bindings": [
+        "db.provenance"
+      ]
+    },
+    "resource_economy": {
+      "order": 12,
+      "label": {
+        "en": "Resource economy",
+        "pl": "Ekonomia zasobów"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "resource",
+        "time": "history"
+      },
+      "bindings": [
+        "usage.ledger"
+      ]
+    },
+    "privacy_consent": {
+      "order": 13,
+      "label": {
+        "en": "Privacy and consent",
+        "pl": "Prywatność i zgody"
+      },
+      "axes": {
+        "about": "party",
+        "kind": "setting",
+        "time": "state"
+      },
+      "bindings": [
+        "layers.privacy"
+      ]
+    },
+    "perspectives": {
+      "order": 14,
+      "label": {
+        "en": "Perspectives and views",
+        "pl": "Perspektywy i widoki"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "setting",
+        "time": "plan"
+      },
+      "bindings": [
+        "perspectives.store",
+        "db.nodes"
+      ],
+      "expand": {
+        "view": "graph.nodes",
+        "params": {}
+      }
+    }
+  },
+  "bindings": {
+    "pack.principles": {
+      "provider": "pack.file",
+      "as": "principles",
+      "params": {
+        "path": "philosophy/principles.json"
+      }
+    },
+    "pack.operators": {
+      "provider": "pack.file",
+      "as": "operators",
+      "params": {
+        "path": "philosophy/operators.json"
+      }
+    },
+    "pack.rules": {
+      "provider": "pack.file",
+      "as": "rules",
+      "params": {
+        "path": "rules/inference_rules.json"
+      }
+    },
+    "profile.domains": {
+      "provider": "profile.domains",
+      "as": "profile_domains"
+    },
+    "profile.import_formats": {
+      "provider": "profile.items",
+      "as": "import_formats",
+      "params": {
+        "domain": "import_formats",
+        "pointer": "/mime_by_format"
+      }
+    },
+    "profile.authority_ranks": {
+      "provider": "profile.items",
+      "as": "authority_ranks",
+      "params": {
+        "domain": "model",
+        "pointer": "/authority_ranks"
+      }
+    },
+    "interfaces.abi": {
+      "provider": "interfaces.enumerate",
+      "as": "interfaces"
+    },
+    "data.scopes": {
+      "provider": "data.items",
+      "as": "scopes",
+      "params": {
+        "pointer": "/scopes/chain"
+      }
+    },
+    "data.conflict_rules": {
+      "provider": "data.items",
+      "as": "conflict_rules",
+      "params": {
+        "pointer": "/scopes/conflict_rules"
+      }
+    },
+    "data.parties": {
+      "provider": "data.items",
+      "as": "party_templates",
+      "params": {
+        "pointer": "/parties/templates"
+      }
+    },
+    "data.classes": {
+      "provider": "data.items",
+      "as": "classes",
+      "params": {
+        "pointer": "/ontology/classes"
+      }
+    },
+    "data.properties": {
+      "provider": "data.items",
+      "as": "property_packages",
+      "params": {
+        "pointer": "/ontology/packages"
+      }
+    },
+    "data.areas": {
+      "provider": "data.items",
+      "as": "entry_areas",
+      "params": {
+        "pointer": "/areas"
+      }
+    },
+    "db.conversations": {
+      "provider": "db.conversations"
+    },
+    "db.messages": {
+      "provider": "db.messages_by_status"
+    },
+    "db.sources": {
+      "provider": "db.sources"
+    },
+    "db.recognition": {
+      "provider": "db.recognition"
+    },
+    "db.duplicates": {
+      "provider": "db.duplicates"
+    },
+    "db.nodes": {
+      "provider": "db.nodes_by_kind"
+    },
+    "db.provenance": {
+      "provider": "db.provenance"
+    },
+    "kb.entities": {
+      "provider": "kb.entities"
+    },
+    "kb.claims": {
+      "provider": "kb.claims"
+    },
+    "kb.runs": {
+      "provider": "kb.runs",
+      "cells": [
+        {
+          "about": "world",
+          "kind": "knowledge",
+          "time": "history"
+        }
+      ]
+    },
+    "usage.ledger": {
+      "provider": "usage.ledger"
+    },
+    "methods.registry": {
+      "provider": "methods.registry"
+    },
+    "perspectives.store": {
+      "provider": "perspectives.store"
+    },
+    "layers.privacy": {
+      "provider": "layers.entries"
+    }
+  },
+  "seed": {
+    "description": "Zero seed (R52): computed from packs with no DB access; each element can be hidden by setting.",
+    "elements": {
+      "self_model": {
+        "order": 1,
+        "kind": "self_model",
+        "label": {
+          "en": "Self-model",
+          "pl": "Samomodel"
+        },
+        "bindings": [
+          "pack.principles",
+          "pack.operators",
+          "pack.rules"
+        ],
+        "lists": []
+      },
+      "ontology": {
+        "order": 2,
+        "kind": "ontology",
+        "label": {
+          "en": "Ontology",
+          "pl": "Ontologia"
+        },
+        "bindings": [
+          "data.classes",
+          "data.properties"
+        ],
+        "lists": [
+          {
+            "as": "classes",
+            "pointer": "/ontology/classes"
+          },
+          {
+            "as": "property_packages",
+            "pointer": "/ontology/packages"
+          }
+        ]
+      },
+      "methods": {
+        "order": 3,
+        "kind": "methods",
+        "label": {
+          "en": "Methods and presets",
+          "pl": "Metody i presety"
+        },
+        "bindings": [
+          "profile.domains",
+          "methods.registry"
+        ],
+        "lists": []
+      },
+      "layers": {
+        "order": 4,
+        "kind": "layers",
+        "label": {
+          "en": "Default layers",
+          "pl": "Warstwy domyślne"
+        },
+        "bindings": [
+          "data.scopes",
+          "data.conflict_rules"
+        ],
+        "lists": [
+          {
+            "as": "scope_chain",
+            "pointer": "/scopes/chain"
+          },
+          {
+            "as": "conflict_rules",
+            "pointer": "/scopes/conflict_rules"
+          }
+        ]
+      },
+      "party": {
+        "order": 5,
+        "kind": "party",
+        "label": {
+          "en": "You (party with unknown slots)",
+          "pl": "Ty (podmiot z nieznanymi slotami)"
+        },
+        "bindings": [],
+        "lists": [],
+        "node": {
+          "class": "person"
+        }
+      }
+    }
+  }
+}

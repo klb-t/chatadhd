@@ -85,6 +85,110 @@
           "target": "/defaults"
         }
       ]
+    },
+    {
+      "output": "runtime/graph_entry.pack",
+      "definition": {
+        "schema": "loom.runtime_profile/1",
+        "domain": "graph_entry",
+        "revision": 1,
+        "description": "Graph entry view (R45/R52/R53): axes generate the area space, calibration areas/bindings/seed/ontology are data. Overlay profiles/graph_entry.pack overrides are recursive: objects keyed by id merge (set hidden:true to hide an area or seed element; add new ids to extend), arrays replace. Providers are code mechanism ids; which areas exist, where and how they are labelled is data. All shipped content is calibration, not a closed list.",
+        "defaults": {
+          "axes": {},
+          "areas": {},
+          "bindings": {},
+          "seed": {},
+          "ontology": {
+            "classes": {},
+            "packages": {},
+            "states": {},
+            "default_state": ""
+          },
+          "parties": {
+            "templates": {}
+          },
+          "scopes": {
+            "chain": [],
+            "conflict_rules": [],
+            "default_rule": ""
+          }
+        },
+        "value_schema": {
+          "type": "object",
+          "required": [
+            "axes",
+            "areas",
+            "bindings",
+            "seed",
+            "ontology",
+            "parties",
+            "scopes"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "projections": [
+        {
+          "source": "graph/axes.pack",
+          "pointer": "/axes",
+          "target": "/defaults/axes"
+        },
+        {
+          "source": "graph/entry.pack",
+          "pointer": "/areas",
+          "target": "/defaults/areas"
+        },
+        {
+          "source": "graph/entry.pack",
+          "pointer": "/bindings",
+          "target": "/defaults/bindings"
+        },
+        {
+          "source": "graph/entry.pack",
+          "pointer": "/seed",
+          "target": "/defaults/seed"
+        },
+        {
+          "source": "graph/classes.pack",
+          "pointer": "/classes",
+          "target": "/defaults/ontology/classes"
+        },
+        {
+          "source": "graph/properties.pack",
+          "pointer": "/packages",
+          "target": "/defaults/ontology/packages"
+        },
+        {
+          "source": "graph/properties.pack",
+          "pointer": "/states",
+          "target": "/defaults/ontology/states"
+        },
+        {
+          "source": "graph/parties.pack",
+          "pointer": "/templates",
+          "target": "/defaults/parties/templates"
+        },
+        {
+          "source": "graph/scopes.pack",
+          "pointer": "/chain",
+          "target": "/defaults/scopes/chain"
+        },
+        {
+          "source": "graph/scopes.pack",
+          "pointer": "/conflict_rules",
+          "target": "/defaults/scopes/conflict_rules"
+        },
+        {
+          "source": "graph/scopes.pack",
+          "pointer": "/default_rule",
+          "target": "/defaults/scopes/default_rule"
+        },
+        {
+          "source": "graph/properties.pack",
+          "pointer": "/default_state",
+          "target": "/defaults/ontology/default_state"
+        }
+      ]
     }
   ]
 }
