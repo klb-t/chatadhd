@@ -171,3 +171,22 @@ Stan kolejki, meldunek dzienny i decyzje: [wp-queue](wp-queue-2026-10-10.md). Pl
 | T3 widok wejściowy grafu wg osi | `b7e4a35`…`559ffd0` | CTest 165/165, guard PASS (164+1 opt-in), web 19/19 |
 
 Decyzje techniczne S1 są zapisywane w `wp-queue` (sekcja „Decyzje S1”).
+
+## 2026-10-12 — S2/S3 (Fable) scalone na gałąź roboczą przez S1
+
+**T9 (S2, gałąź `claude/t9-ecosystem-synthesis`, PR #15, tylko dokumenty):**
+[EVERYTHING_IN_THE_GRAPH](../architecture/EVERYTHING_IN_THE_GRAPH_2026-10-11.md) — paradygmat „wszystkie dane
+systemu są w grafie” jako indeks z pochodzeniem nad magazynami, niezmienniki G1–G10, zgodność z R50/R51, koperta
+`loom.ecosystem_ref/1`. [ECOSYSTEM_INTEGRATION](../architecture/ECOSYSTEM_INTEGRATION_2026-10-11.md) — synteza audytu
+w osiem wzorców, priorytety migracji per repo (U1–U5), fale W1–W4, cykl rozważenie → implementacja → optymalizacja →
+iteracja z regułą stopu, decyzje D-E1…D-E9. [t9-briefs](t9-briefs/README.md) — 20 briefów dla Sonnet z zależnościami
+od T1–T8. Korekta lokatorów THREADS §4: audyt na `origin/gpt/ecosystem-audit-2026-10-09`, `thread-11.md` na
+`origin/gpt/data-profiles-2026-10-04`.
+
+**T10/T14 (S3, gałąź `claude/t10-edge-cases`, PR #14, tylko dokumenty):**
+[EDGE_CASES](../architecture/EDGE_CASES_2026-10-11.md) — 89 przypadków z niezmiennikami i relacjami
+metamorficznymi, brakujące abstrakcje A1–A23, 20 MR, mapowanie na T1–T14.
+[ACCEPTANCE_TESTS 2026-10-11](../architecture/ACCEPTANCE_TESTS_2026-10-11.md) — ścieżki P1–P7 z telefonu, odporność
+na ASR, ślad `loom.acceptance_trace/1`, kryteria 18–31. Raport: [t10-edge-cases-2026-10-11](t10-edge-cases-2026-10-11.md).
+Decyzja właściciela **D3** (2026-10-12): wszystkie dostępne klucze; dane rzeczywiste dozwolone i preferowane tam, gdzie
+jest wybór; korpusy syntetyczne zostają jako kontrola — zapisana w `OWNER_REQUIREMENTS`, `AGENTS.md`, `LOOM_CONCEPTUAL_MODEL` §7.3.
