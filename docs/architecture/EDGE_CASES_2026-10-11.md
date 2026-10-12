@@ -662,3 +662,253 @@ według tej samej gramatyki.
 **Interpretacja.** Ta sama droga co tekst (DUCH §3): wejście → interpretacja → osadzenie z pochodzeniem `user` → propozycje powiązań.
 **Niezmiennik.** Krawędź z UI ma identyczną reprezentację jak krawędź z polecenia tekstowego „połącz rozmowę z projektem Y” (MR: oba wejścia → ten sam zapis bajtowo poza kanałem wejścia); cofnięcie z obu kanałów działa tak samo.
 **Mieści się** (R29–R31); brak testu równoważności kanałów.
+
+### H. Samoodniesienie — graf o sobie
+
+#### EC-H01 — Importuj własne logi (`self_reference`)
+**Scenariusz.** Właściciel importuje `logs/` aplikacji i ten dokument jako źródła.
+**Interpretacja.** Źródło o systemie; twierdzenia o samomodelu (błędy, koszty, wersje) z klasą `observed`, origin `repo`/`system`; dokument projektowy jako artefakt typu `specification` z R-węzłami.
+**W grafie.** Obszar Samomodel zasilany z importu, nie tylko z packa; krawędzie `describes` → operacje, metody.
+**Niezmiennik.** Twierdzenie o systemie z logu nie nadpisuje twierdzenia z packa; sprzeczność (pack mówi „działa”, log mówi „błąd”) → `contested` widoczne w widoku wejściowym; MR-8.
+**Mieści się** (R2 self-discovery); brak klas węzłów samomodelu jako danych (T3).
+
+#### EC-H02 — Eksperyment o eksperymentach (`self_reference` × `scale`)
+**Scenariusz.** „Które z moich eksperymentów z zeszłego miesiąca dały preset, którego potem użyłem?”
+**Interpretacja.** Metadane eksperymentów są zwykłymi danymi grafu; zapytanie strukturalne po krawędziach `produced_by`, `adopted_as`, `used_in`.
+**Niezmiennik.** Odpowiedź policzalna bez modelu (czysto grafowa); zgodna z raportem ekonomii „warte” (EC-F01) na tym samym zbiorze (MR: dwie drogi, jeden wynik).
+**Łamie A6, A15** (krawędzie przyjęcia i użycia).
+
+#### EC-H03 — Dlaczego tak odpowiedziałeś (`self_reference`)
+**Scenariusz.** „Dlaczego odpowiedziałeś tak? Co wysłałeś, co pominąłeś i dlaczego?”
+**Interpretacja.** Cztery przekroje audytu (R26): historia / co obowiązuje / co w grafie / co wysłano; selektor zapisuje powód włączenia i wykluczenia każdego elementu.
+**W grafie.** Ślad przebiegu z `ContextSet` (elementy + powody + budżet) i hash payloadu.
+**Niezmiennik.** Payload odtwarzalny z `ContextSet` (hash zgodny, MR-9); każdy element kontekstu ma powód; „pominięte z budżetu” wymienia najwyżej ocenione pominięte z liczbą; `ContextSet` na ścieżce czatu jest tym, co wysłano (ACCEPTANCE #1).
+**Częściowo** (ContextEngine istnieje, nie na ścieżce czatu).
+
+#### EC-H04 — Własne pomyłki (`self_reference` × `time_shift`)
+**Scenariusz.** Aplikacja scaliła dwie osoby jako jedną; użytkownik rozdziela; „zapamiętaj, że się mylisz w takich przypadkach”.
+**Interpretacja.** Pomyłka jako zdarzenie w samomodelu; profil metody (R37) dostaje przypadek słabości z danymi; kompensacja jako wersjonowany preset, nie reguła w kodzie.
+**W grafie.** Zdarzenie `split` z inicjatorem; krawędź `error_of` → przebieg metody; profil metody z nowym dowodem; propozycja progu/kompensacji.
+**Niezmiennik.** Rozdzielenie odtwarza oba węzły z pełnym pochodzeniem (nic z scalenia nie ginie; MR-11 w obie strony); profil metody zmienia się tylko o ten przypadek; kompensacja jest ablacyjnie testowalna (ACCEPTANCE #17).
+**Mieści się** (R37, I4).
+
+#### EC-H05 — Zalążek zmieniony, pack zaktualizowany (`self_reference` × `time_shift`)
+**Scenariusz.** Użytkownik usunął z zalążka metodę M i zmienił opis klasy „osoba”; aktualizacja aplikacji przynosi nową wersję packa z M i nowymi slotami „osoby”.
+**Interpretacja.** R40: wykluczenie trwałe M przeżywa; nowe sloty to propozycje albo automat według ustawienia; zmiana opisu użytkownika wygrywa z packiem (I4) i jest scalana (`merge`).
+**Niezmiennik.** MR-15 (M nie wraca); liczba nowych propozycji = liczba nowych elementów packa dotykających obszarów bez wykluczenia; opis użytkownika bajtowo zachowany; wyjaśnienie każdego slotu mówi „pack v2” albo „użytkownik”.
+**Mieści się** (R40 + onboarding layers); test aktualizacji packa istnieje dla prezentacji, nie dla ontologii (T3).
+
+#### EC-H06 — Widok wejściowy za duży (`scale` × `self_reference`)
+**Scenariusz.** Po roku widok wejściowy ma 14 obszarów po 10⁶ węzłów; telefon.
+**Interpretacja.** Widok wejściowy to zapytanie z budżetem (R45): liczniki, nie listy; `expand` per obszar; liczniki liczone przyrostowo albo `{known:false, stale_since}`.
+**Niezmiennik.** Rozmiar odpowiedzi widoku niezależny od rozmiaru grafu (stała liczba obszarów × stałe pola); licznik nieaktualny jest oznaczony datą, nie udaje świeżego; MR-7 (×2 danych → liczniki ×2, rozmiar odpowiedzi ten sam).
+**Mieści się** (T3 projekt).
+
+#### EC-H07 — Nowe wymaganie sprzeczne ze starym (`contradict` × `self_reference`)
+**Scenariusz.** Właściciel wypowiada R54 sprzeczne z R20 („jednak zawsze kopiuj, nigdy nie linkuj”).
+**Interpretacja.** R-węzły w samomodelu; sprzeczność to projekcja ewolucji (słowa właściciela przy R43–R50), nie błąd; nowe `supersedes` stare z datą; stare zostaje.
+**Niezmiennik.** Oba węzły istnieją; `supersedes` ma datę i cytat; presety wyprowadzone z R20 dostają status „do przeglądu”, nie zmieniają się same (I4 dotyczy ustawień, R-węzeł to twierdzenie o filozofii).
+**Mieści się** (claims z `supersedes`); R-węzły jako dane (T3).
+
+### I. Instalacje, urządzenia, agenci
+
+#### EC-I01 — Telefon offline tydzień (`split` × `time_shift`)
+**Scenariusz.** Telefon bez sieci przez tydzień: 40 rozmów lokalnych; laptop w tym czasie zmienił ustawienia i zaimportował eksport.
+**Interpretacja.** EC-D04 w czasie: zdarzenia obu instalacji z zegarem logicznym; ustawienia scalane regułą per ustawienie; rozmowy niezależne (brak konfliktu); duplikaty eksportu wobec rozmów telefonu → propozycje.
+**Niezmiennik.** MR-18; żadne ustawienie nie jest nadpisane bez reguły; `known_at` twierdzeń z telefonu = czas lokalny telefonu z kwalifikatorem „offline” (EC-A09).
+**Łamie A18, A1**.
+
+#### EC-I02 — Dwie wersje aplikacji, jeden graf (`split` × `contradict`)
+**Scenariusz.** Laptop ma pack v12, telefon pack v9; obie piszą.
+**Interpretacja.** Wersja packa jest pochodzeniem każdego twierdzenia pochodnego; różnice packów to różne wersje metod; scalanie nie wymaga tej samej wersji.
+**Niezmiennik.** Twierdzenie z v9 i v12 o tym samym wejściu to dwa przebiegi, nie konflikt; wykluczenia trwałe obowiązują niezależnie od wersji (MR-15 między instalacjami); format zdarzeń zgodny wstecz lub jawnie `unrecognized` (R44 dotyczy też własnych danych).
+**Łamie A18**.
+
+#### EC-I03 — Agent zapisał tysiąc propozycji w nocy (`collectivize` × `scale`)
+**Scenariusz.** Agent AI z uprawnieniem `auto` dodał 1000 krawędzi; rano: „cofnij wszystko, co zrobił, i pokaż, co by było bez niego”.
+**Interpretacja.** Agent to podmiot; jego zapisy mają pochodzenie podmiotu; cofnięcie hurtowe po pochodzeniu = kwarantanna podmiotu (EC-A03 na podmiocie); „bez niego” = widok z filtrem pochodzenia.
+**Niezmiennik.** Cofnięcie jest zdarzeniem, nie usunięciem (krawędzie → `retracted`, odtwarzalne); widok „bez agenta” = graf minus domknięcie jego zapisów (MR-14 na podmiocie); polityka `auto` dla agenta zmienia się tylko jawnie.
+**Łamie A2, A4, A5**.
+
+#### EC-I04 — Ta sesja jako podmiot (`self_reference`)
+**Scenariusz.** Decyzje techniczne sesji Claude (CLAUDE.md „Decisions”) mają być w `INDEX.md` i w grafie jako węzły podmiotu `agent:claude-session-…` z „jak cofnąć”.
+**Interpretacja.** Sesja = agent AI (poziom podmiotu); jej decyzje = decyzje z przesłankami (R-węzły) i statusem; dokumenty = źródła.
+**Niezmiennik.** Każda decyzja sesji ma inicjatora (sesja), przesłankę (R-węzeł) i odwrócenie; właściciel może ją `supersede` jednym zdaniem (I4).
+**Mieści się** (decyzja jako węzeł — A16 dla kolektywów; dla pojedynczego agenta wystarczy `decides`).
+
+#### EC-I05 — Instalacja w imieniu organizacji (`collectivize` × `split`)
+**Scenariusz.** Serwer web działa dla firmy; właściciel loguje się prywatnie i służbowo z tej samej instalacji.
+**Interpretacja.** Podmiot działający ≠ instalacja; zakresy organizacja → osoba → rola; płatnik (kto płaci) jako osobna oś pokwitowań (A15); prywatność per rola.
+**Niezmiennik.** Pokwitowanie ma płatnika; rekordy roli prywatnej nie są dostępne z roli służbowej bez reguły (MR-10 per rola); wyjaśnienie wartości nazywa zakres roli.
+**Łamie A2, A3, A15**.
+
+#### EC-I06 — Telefon skradziony (`irreversible` × `split`)
+**Scenariusz.** „Telefon skradziony; unieważnij jego klucze; co z tego, co tam było?”
+**Interpretacja.** Instalacja jako podmiot ze statusem `revoked`; klucze instalacji w łańcuchu kluczy z unieważnieniem; dane w magazynach zewnętrznych bezpieczne, jeśli zaszyfrowane kluczem użytkownika, nie instalacji (ustawienie gestii).
+**W grafie.** Zdarzenie unieważnienia; widok magazynu: co było tylko na telefonie (`stored_at` = tylko ta instalacja) → lista strat z liczbami.
+**Niezmiennik.** Po unieważnieniu żaden magazyn nie przyjmuje zapisów z tej instalacji (test: podpis instalacji odrzucony); lista „tylko na telefonie” policzalna z grafu bez telefonu; nic nie jest zmyślone jako „bezpieczne” bez `{known}`.
+**Łamie A7, A18**.
+
+### J. Ontologia i struktury użytkownika
+
+#### EC-J01 — Własna klasa i własna krawędź (`absurd_setting` ontologii)
+**Scenariusz.** „Mam klasę ‘rytuał’ i krawędź ‘wyzwala’; poranna kawa wyzwala planowanie.”
+**Interpretacja.** DUCH §1: struktury zdefiniowane przez użytkownika są równorzędne z predefiniowanymi i wykrytymi; klasa jako węzeł z pakietem właściwości użytkownika; krawędź z semantyką opisową (dane) i opcjonalnym morfizmem do znanych (`causes`?) jako propozycją.
+**W grafie.** Węzeł `class:rytuał` (pochodzenie `user`); `instance_of`; typ krawędzi `wyzwala` w danych z opisem; morfizm-propozycja.
+**Niezmiennik.** Klasa użytkownika działa w selektorze, widokach i Jev tak samo jak klasa z packa (MR: zamiana klasy packowej na równoważną użytkownika nie zmienia wyników selektora poza etykietą); aktualizacja packa nie dotyka klas użytkownika (MR-15).
+**Łamie A20**.
+
+#### EC-J02 — Osoba i firma naraz (`merge` klas)
+**Scenariusz.** Jednoosobowa działalność: ten sam byt jest osobą i organizacją.
+**Interpretacja.** `instance_of` wielokrotne; pakiety obu klas; sloty wspólne (adres) scalane regułą, sloty sprzeczne (język formalny firmy vs osoby) rozstrzygane kontekstem.
+**Niezmiennik.** Brak duplikacji węzła; pytania onboardingu o sloty wspólne zadane raz; `by_context` rozróżnia role.
+**Łamie A2, A20** (klasy jako węzły z wieloma `instance_of`).
+
+#### EC-J03 — Nie zgadzam się z klasyfikacją (`contradict` × `negate`)
+**Scenariusz.** Model oznaczył rozmowę jako „finanse”; użytkownik: „to nie finanse, to rodzina”.
+**Interpretacja.** Osąd użytkownika wygrywa (I4), inferencja → `rejected` z historią; profil metody dostaje przypadek; przy ponownym przeliczeniu (nowa wersja) osąd jest odtwarzany, nie nadpisywany.
+**Niezmiennik.** MR-9 z osądem: odbudowa + nowa wersja metody → klasyfikacja = „rodzina” (osąd replayowany); odrzucona inferencja widoczna w historii; prywatność zmienia się zgodnie z nową kategorią natychmiast (MR-10).
+**Mieści się** (I4).
+
+#### EC-J04 — Slot zależny od kontekstu i czasu (`split` × `time_shift`)
+**Scenariusz.** „Po polsku w domu teraz, po angielsku w projekcie X od 2025, a w 2023 wszędzie po angielsku.”
+**Interpretacja.** Slot `język` z osią czasu (teraz/zwykle/kiedyś) i zakresem (projekt); historia wartości jako twierdzenia z `valid_from`.
+**Niezmiennik.** Zapytanie „jaki język w projekcie X w 2024” daje „angielski” z wyjaśnieniem; „w domu w 2023” → „angielski (wszędzie)”; zmiana „teraz” nie edytuje historii (MR-8).
+**Łamie A1, A3** (slot z czasem i zakresem).
+
+#### EC-J05 — Slot `never`, a import ma dane do slotu (`negate` × `merge`)
+**Scenariusz.** Slot „stan zdrowia” = `never`; import eksportu zawiera rozmowę z lekarzem.
+**Interpretacja.** `never` = nie pytaj, nie wnioskuj; rozmowa wchodzi do archiwum (R44), kategoria zdrowie; żadna inferencja nie wypełnia slotu; pytanie onboardingu się nie pojawia.
+**Niezmiennik.** Slot pozostaje `never` po imporcie (MR-15 na slocie); twierdzenia klasy `inferred` o zdrowiu podmiotu nie powstają (zbiór pusty; test na ScriptedTransport i regex); rozmowa jest przeszukiwalna lokalnie.
+**Łamie A13**.
+
+#### EC-J06 — Uogólnienie użytkownika tworzy kategorię (`absurd_setting` × `self_reference`)
+**Scenariusz.** „Wszystko, co mówię o finansach, jest poufne.”
+**Interpretacja.** Zasada użytkownika (R10 obszar + uogólnienie): generuje kategorię prywatności dla każdej obserwacji sklasyfikowanej jako finanse, również przyszłej; kandydat `candidate` → zatwierdzony.
+**Niezmiennik.** Każda nowa obserwacja „finanse” dziedziczy regułę bez ponownego pytania; zmiana zasady działa wstecz tylko na projekcje, nie na rejestr egressu (co wysłano, wysłano — EC-E05 pokazuje); MR-10.
+**Mieści się** (R10, R39); kategoria z zasady — A7 (kategoria per obserwacja).
+
+## 3. Brakujące abstrakcje silnika (z luk, nie lista funkcji)
+
+Każda pozycja to pojęcie, bez którego przypadki w kolumnie „Łamią” nie dają
+się wyrazić w bytach DUCH §1–§4. Nie są to funkcje do zaimplementowania, lecz
+**byty i kwalifikatory**, które mają istnieć w danych i w kontrakcie, a dopiero
+potem w kodzie. Kolumna „Dziś” odnosi się do stanu 2026-10-11 (THREADS §2/§8,
+GRAPH_ENTRY §1).
+
+| ID | Abstrakcja | Czego brakuje dziś | Przypadki, które ją łamią | Gdzie wchodzi |
+|---|---|---|---|---|
+| **A1** | **Bitemporalność**: każde twierdzenie ma `valid_from/to` (czas świata) **i** `known_at` (czas poznania); zapytania z cięciem po obu osiach | twierdzenia mają tylko `valid_*`; `created` to czas rekordu, nie wiedzy | A01, A02, A10, I01, J04 | KnowledgeStore, GraphPacket, selektor (tryb „jak na T”) |
+| **A2** | **Podmiot** jako węzeł z poziomami, rolą w kontekście (z czasem), relacjami `decides_with`/`trusts` z wagą per rodzaj, i rozróżnieniem „o którym” / „który działa i płaci” | użytkownik = profil onboardingu; `role=user` w imporcie = właściciel; brak `parties.pack` | B01–B03, B06, B07, B09, E10, I03, I05, J02 | `graph/parties.pack` (T3), importer (podmiot źródła), W2 (płatnik) |
+| **A3** | **Łańcuch zakresów** z regułą konfliktu per ustawienie i wyjaśnieniem wartości efektywnej (R47) | R40: dwie warstwy; brak `by_context`, `locked_by`, `min/max`, wygaśnięcia zakresu tury | B02, B04, B08, F04, F08, G07, I05, J04 | `graph/scopes.pack` (T3), `DefaultLayers` → resolver zakresów (T13) |
+| **A4** | **Kwarantanna epistemiczna**: źródło/podmiot/okres „widoczny, ale nie przesłanka” (osobno od widoczności i usunięcia), odwracalna | statusy wiadomości `active/excluded/version/deleted`; brak „nie ucz się” | A03, A04, I03 | DB (kwalifikator źródła), selektor, worker |
+| **A5** | **Graf zależności pochodnych i przeliczenie przyrostowe**: od `produced_by` do „co ode mnie zależy” (domknięcie), z determinizmem metody jako daną | `produced_by` i ślady przebiegów istnieją; brak domknięcia i „dirty set” | A02, A04, C03, C10, E06, I03 | provenance + MethodRegistry (T2 worker jako wykonawca) |
+| **A6** | **Tor jako dane** (metoda, wersja, model, prompt, parametry, budżet, kryteria) + **eksperyment jako węzeł** (DAG torów, oceny wielokryterialne, przyjęcie presetu na zakresie, `incomplete` z przyczyną) | P5 ExperimentSpec otwarte; brak języka torów | C01, C02, C07, C08, G04, H02 | `presets/experiment*.pack`, T11 (metoda N-torowa), T14 ścieżka P5 |
+| **A7** | **Lokator z magazynem i kategorią per obserwacja**: `stored_at` jako wymiar lokatora, rozmieszczenie/replikacja/egress per kategoria, klucze jako węzły | lokator = źródło + członek + zakres; magazyn niejawny (BlobStore/DB); kategoria per rekord co najwyżej | E01–E04, E06, E07, I06, J06 | T5 (inwentarz → projekt), `storage.pack` |
+| **A8** | **Rejestr egressu**: co (hash/kategorie), komu, kiedy, pod jakim kluczem, z jakiego wyjątku/zgody | W2 rejestruje zużycie i operacje, nie treść/kategorie | E01, E05, G07 | W2 rozszerzony o wymiar treści; T5 |
+| **A9** | **Spektrum tożsamości**: `same_as` / `projection_of` / `same_person_other_account` / `acts_as` / lineage, każde z czasem i wrażliwością | R35 częściowo (lineage); brak `projection_of` dla rozmów i wrażliwości krawędzi tożsamości | B05, D01, D06 | resolve + importer (T1 duplikaty) |
+| **A10** | **Status rozpoznania na rekordzie** z historią prób i mapowaniem lokatorów między próbami | WP-B w toku; brak historii prób i przepięcia adnotacji | D01, D02, D09, D10 | T1 |
+| **A11** | **Wypowiedź z niepewnością**: surowy tekst + n-best + pewność + język + leksykon mowy jako dane; interpretacja jako osobny węzeł `read_as` | wiadomość = jeden napis; ASR w Pythonie zwraca tekst | A07, G03, G05, G06 | DB (metadane wiadomości), `lexicons/asr.pack`, T14 odporność na ASR |
+| **A12** | **Stan podmiotu w chwili podania** jako kwalifikator twierdzeń i slotów (ADHD jako stan) | brak | B10, A03 | pakiety właściwości (T3), selektor |
+| **A13** | **Trwała negacja z zasięgiem**: `never` dla tematu/slotu/podmiotu obejmujące pytanie, inferencję, import, projekcje; marker przeżywa pack i instalacje | R40 wykluczenie tylko dla domyślnych; R39 stany slotów bez zasięgu do inferencji | A05, E10, G07, J05 | onboarding layers → KnowledgeStore (writer respektuje), importer |
+| **A14** | **Bramka jako wynik z inicjatorem** na każdej ścieżce + stan `requires_confirmation` jako stan, nie blokada | R43 zinwentaryzowane; strażnik tylko na odpowiedzi grafowej (T6) | B08, C07, C09, F02, G05 | T6, usage_policy na czacie/wsadzie |
+| **A15** | **Pokwitowanie z osiami** (metoda, podmiot, płatnik, projekt, temat, dostawca, okres) + cennik z datą + „użyte w” | W2: operacja, rezerwacja, baza krocząca | D03, F01, F06, H02, I05 | W2 + T4 raport ekonomii |
+| **A16** | **Decyzja kolektywu**: uczestnicy w rolach@czas, wagi, przesłanki per podmiot, alternatywy, mapa niezgody, konsekwencje | `decides` dla jednego podmiotu | B01, B09 | ontologia (T3), T13 |
+| **A17** | **Zasób ograniczony podmiotu/urządzenia** (uwaga, czas, bateria, miejsce) jako byt wpływający na selektor i bilanse | brak | B10, F07 | pakiety właściwości, T4 bilans |
+| **A18** | **Instalacja jako podmiot**: identyfikator, zegar logiczny, scalanie regułą per kategoria, konflikt jako `contested` | DB jednoprocesowa; GitHub sync bez reguł | D04, D12, E07, I01, I02, I06 | T5 (sync), nowy pakiet |
+| **A19** | **Tryb wyjścia**: graf jako jedyne wyjście; gwarancja MR-20 między liniową a grafową | chat-graph osadza; brak trybu i testu równoważności | C05 | chat engine, web |
+| **A20** | **Klasy użytkownika**: klasa jako węzeł z pakietem, `instance_of` wielokrotne, krawędzie użytkownika z opisem, odporne na pack | `Entity.kind` to etykieta; brak `classes.pack` | J01, J02 | T3 |
+| **A21** | **Wzorzec bez nazwy** jako pełnoprawny węzeł z członkami i propozycjami nazw | brak | C04 | metody strukturalne (R22–R23) |
+| **A22** | **Sprzeczność między podmiotami/torami** jako byt (nie tylko `contested` twierdzenia) | `contested` istnieje dla wartości twierdzenia | B01, C02 | KnowledgeStore (krawędź `contradicts` z podmiotami) |
+| **A23** | **Samomodel wykonywalny**: każda operacja systemu jako węzeł z metodą, parametrami, kosztem, odwróceniem | ślady dla metod analizy; nie dla importu/ustawień/sync | F03 | provenance na wszystkich operacjach |
+
+Zależności między abstrakcjami (kolejność wdrażania wynika z nich, nie z listy
+funkcji): A2 → A3 → A13/A16; A5 → A4/A6/E06; A7 → A8/A18; A1 niezależna, ale
+A4, A6 i A18 bez niej dają niewyjaśnialne wyniki. A11 jest warunkiem T14.
+
+## 4. Katalog relacji metamorficznych (MR)
+
+Każda relacja: transformacja wejścia `T` → wymagana relacja wyników `R`.
+Testy metamorficzne nie potrzebują oracle’a: sprawdzają `R(f(x), f(T(x)))`.
+Reguły pomiaru z notatki 29.09 §16 obowiązują (zamrożone dane, jawne różnice
+wariantów, powtórki nie są niezależnymi przypadkami).
+
+| MR | Transformacja | Wymagana relacja | Przypadki |
+|---|---|---|---|
+| MR-1 | powtórzenie operacji z tym samym wejściem i wersją | graf identyczny bajtowo poza zdarzeniem „powtórzono”; dla metod niedeterministycznych: operacja idempotentna, wynik nie jest zwracany jako nowy | C03, C09, C10, D02, D05, D12 |
+| MR-2 | permutacja kolejności wejść (plików, torów, źródeł, rozmów) | ten sam graf modulo identyfikatory zdarzeń i czas | A09, B01, C08, D01 |
+| MR-3 | podział/scalenie wejścia (jeden ZIP vs dwa; ucięcie w X vs Y) | ten sam zbiór jednostek i twierdzeń; różni się tylko pochodzenie | A07, D01, D03, D06, D07, D09 |
+| MR-4 | szum ASR (diakrytyki, 1–2 literówki, synonim z leksykonu, urwanie) | ta sama intencja i argumenty albo jawne pytanie; nigdy inna akcja bez pytania; surowy tekst zachowany | A07, G03, G05, G06 |
+| MR-5 | cięcie czasu (po `valid`, po `known`, przesunięcie zegara) | zapytanie „jak na T” = replay z grafu zbudowanego ze zdarzeń ≤ T | A01, A02, A08, A10 |
+| MR-6 | nadpisanie w zakresie (dodanie/usunięcie wartości; wygaśnięcie) | wynik efektywny zmienia się tylko w tym zakresie; wyjaśnienie zawiera zakres; usunięcie przywraca poprzedni stan bajtowo | B02, B04, B06, B08, C06, E08, F07, F08, G07 |
+| MR-7 | przeskalowanie (×k kopii, ×k danych) | liczniki ×k; bajty źródła raz (przy link); wyniki analiz niezmienne; rozmiar odpowiedzi widoku stały | D01, D03, D05, D06, D08, H06 |
+| MR-8 | dodanie źródła/gałęzi/klasy | monotoniczność: żadne wcześniejsze twierdzenie nie znika (może stać się `contested`) | A10, C04, D01, D02, D07, H01, J04 |
+| MR-9 | usunięcie stanu pochodnego i odbudowa z przepisów + replay osądów | identyczne wyniki (I5) dla metod deterministycznych; zapisane odpowiedzi dla niedeterministycznych bez nowych wywołań; osądy odtworzone | A04, A06, A09, C03, C08, C12, E03, F03, F06, H03, J03 |
+| MR-10 | zmiana reguły prywatności kategorii/podmiotu/roli | payload/projekcja różni się dokładnie o elementy tej kategorii (na poziomie obserwacji i domknięcia przesłanek) | A05, B05, B07, C02, E01, E02, E06, E10, I05, J03, J06 |
+| MR-11 | zmiana etykiety/aliasu/nazwy wzorca; rozdzielenie scalonych | te same twierdzenia i krawędzie; wyszukiwanie po starej nazwie trafia | B07, C04, H04 |
+| MR-12 | permutacja torów eksperymentu | ocena każdego toru niezmienna | C01, C02, C07, C12 |
+| MR-13 | koszt: sekwencja operacji; przemnożenie kosztów i budżetu przez k | koszt eksperymentu = suma torów; `requires_confirmation` dokładnie przy ×10 względem bazy, niezależnie od ścieżki (czat/wsad/graf/eksperyment) i od k | C01, C03, C07, C08, C09, F01, F02, F05 |
+| MR-14 | kwarantanna źródła/podmiotu/stanu i jej zdjęcie | aktywne inferencje po = przed minus domknięcie przesłanek; obserwacje identyczne; kwarantanna ∘ zdjęcie = identyczność | A03, A04, B10, I03 |
+| MR-15 | aktualizacja packa / wersji aplikacji / instalacji | wykluczenia trwałe i `never` nie wracają; propozycje tylko gdy ustawienie pozwala; klasy użytkownika nietknięte | A05, E10, H05, I02, J01, J05 |
+| MR-16 | wyjaśnienie wartości efektywnej / wpisu dziennika | z wyjaśnienia da się odtworzyć wartość (explain → recompute = wartość) | A06, B04, B08, F03, F04 |
+| MR-17 | przeniesienie kategorii do innego magazynu | każdy lokator kategorii rozwiązuje się do tych samych bajtów (hash); graf niezmieniony poza `stored_at` | E01, E04 |
+| MR-18 | scalanie dwóch instalacji | przemienne i łączne; żadne zdarzenie nie ginie; konflikt = `contested`, nigdy nadpisanie | D04, E07, I01 |
+| MR-19 | zmiana wag/ról/składu po decyzji | zapisana decyzja i jej wyjaśnienie bajtowo bez zmian; nowe decyzje liczą nowe | B01, B03, B09, E03 |
+| MR-20 | odpowiedź grafowa vs liniowa z tego samego przebiegu | każde twierdzenie liniowe ma odpowiednik grafowy z cytatem albo oznaczenie „bez źródła”; różnica zbiorów zgłoszona; pakiet identyczny niezależnie od trybu widoku | C02, C05 |
+
+## 5. Jak to wchodzi do grafu (R53: jako propozycje, nie fakty)
+
+Przypadki są danymi. Proponowany pack (do utworzenia przez agenta po przyjęciu
+tego dokumentu; dokument nie tworzy go sam): `loom/data/validation/edge_cases.pack`,
+schemat `loom.edge_case/1`:
+
+```json
+{
+  "schema": "loom.edge_case/1",
+  "id": "EC-A03",
+  "group": "memory_time",
+  "operators": ["negate"],
+  "scenario": {"pl": "…", "asr_variants": ["…", "…"]},
+  "interpretation": "…",
+  "graph_place": {"nodes": ["source"], "edges": ["learn:false"], "qualifiers": ["initiator", "known_at"]},
+  "governing_settings": [{"key": "learning.source_policy", "scope": "conversation"}],
+  "sought_links": ["same_period_sources", "single_source_preferences"],
+  "invariant": ["source_bytes_unchanged", "fts_hits_unchanged", "no_active_preference_with_sole_premise"],
+  "metamorphic": [{"mr": "MR-14", "transform": "quarantine_then_lift", "relation": "identity_on_observations"}],
+  "breaks": ["A4", "A5"],
+  "status": "proposal",
+  "provenance": {"author": "agent:claude-session-S3", "date": "2026-10-11", "source": "docs/architecture/EDGE_CASES_2026-10-11.md"}
+}
+```
+
+Zasady:
+- każdy wpis ma `status: proposal` do czasu przyjęcia przez właściciela (jedno
+  słowo) albo automatycznie według ustawienia polityki przyjęcia;
+- `breaks` wskazuje abstrakcje z §3, które są osobnymi węzłami (`loom.abstraction/1`)
+  z krawędzią `required_by`;
+- metoda N-torowa (T11) dostaje §1 (operatory) i ten pack jako zalążek i dopisuje
+  nowe wpisy z `provenance.author = model:<id>`, oznaczając zgodność/nowość/sprzeczność
+  wobec istniejących;
+- testy metamorficzne są generowane z pola `metamorphic` (MR + transformacja →
+  szkielet testu doctest/pytest z zamrożonym wejściem), nigdy ręcznie przepisywane
+  z prozy.
+
+## 6. Mapowanie na wątki i co zmienia w briefach
+
+| Wątek | Przypadki do testów w tym wątku | Zmiana w briefie wynikająca z przypadków |
+|---|---|---|
+| T1 WP-B import | D01, D02, D05, D06, D07, D09, D10, D11, B07 | status rozpoznania z **historią prób** (A10); `projection_of` zamiast `same_as` dla rozmów z dwóch eksportów (A9); podmiot źródła ≠ właściciel (A2) |
+| T2 WP-C worker | A04, C03, C10, I03 | przeliczenie po domknięciu zależności (A5), nie po statusie; determinizm metody jako dana |
+| T3 WP-D widok wejściowy + ontologia | A06, B01–B03, H01, H05–H07, J01, J02, J04 | `parties.pack`, `scopes.pack`, `classes.pack` z osi; rola@czas; licznik rozjazdów rekomendacja/ustawienie; liczniki `{known:false, stale_since}` |
+| T4 WP-E ekonomia | D03, D05, F01, F06, F07, H02 | osie pokwitowań (A15); cennik z datą; „użyte w” |
+| T5 WP-F magazyn | E01–E07, E09, E10, I06 | `stored_at` w lokatorze (A7); rejestr egressu (A8); crypto-shredding jako ustawienie; łańcuch kluczy |
+| T6 strażnik ×10 | C09, F02, F05 | MR-13 jako test: identyczne zachowanie na czacie, wsadzie, grafie, eksperymencie; skalowanie przez k |
+| T7 Python | A09, D12, G03 | surowy ASR i metadane zegara zachowane w `messages.metadata` bez zmiany schematu |
+| T11 N-torowa | §1, §5 | operatory przesady jako prompt; wynik jako wpisy packa |
+| T13 onboarding | A05, B04, B10, J05, J06 | zasięg `never` (A13); stan podmiotu (A12); `by_context` |
+| T14 akceptacja | wszystkie z MR-4 i MR-13 | ścieżki z telefonu w `ACCEPTANCE_TESTS_2026-10-11.md` |
+
+Przypadki bez wątku dziś: A01/A02/J04 (A1 bitemporalność), D04/E07/I01/I02
+(A18 instalacje), C05 (A19), F03 (A23). Decyzja (Claude, odwracalna): A1 wchodzi
+do T3 jako kwalifikator ontologii (pole, nie migracja); A18 czeka na T5 (sync);
+A19 i A23 to osobne pakiety po T8.
