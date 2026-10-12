@@ -9,6 +9,7 @@
 // reported.
 #pragma once
 
+#include <filesystem>
 #include <map>
 #include <optional>
 #include <set>
@@ -45,6 +46,13 @@ struct FragmentRecord {
   std::string source_blob_hash;   // blob of the containing source file
   std::string conversation_id;    // partial: the conversation the mapped part became
   std::string_view bytes;         // verbatim content
+  // Alternative to `bytes` for large members: the content is read from this
+  // file (hashed and, past the inline threshold, stored by streaming).
+  std::filesystem::path file;
+  // False when the content could not be obtained at all (unsafe path, corrupt
+  // entry): the node records only what is known (declared size), no sha256.
+  bool bytes_available = true;
+  std::int64_t declared_size = -1;
   Json attempts = Json::array();  // earlier recognition attempts (history)
 };
 
@@ -64,6 +72,8 @@ class ImportLedger {
   // are reported only when something was measured.
   void measured(std::string_view format);
   void note_conversation();  // one conversation record produced
+  // A kept record that lives in a node created elsewhere (export:member).
+  void note_kept(std::string_view status, const std::string& node_id);
 
   // ── R50 ──────────────────────────────────────────────────────────
   struct ConversationCheck {

@@ -58,6 +58,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <functional>
+#include <initializer_list>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -125,7 +126,8 @@ inline constexpr std::string_view kDuplicateReimport = "reimport";
 bool is_duplicate_policy(std::string_view value) noexcept;
 const std::string& default_duplicate_policy();
 
-class ImportLedger;  // src/import/import_recognition.h (R44 recognition + R50 duplicates)
+class ImportLedger;     // src/import/import_recognition.h (R44 recognition + R50 duplicates)
+struct FragmentRecord;  // same header
 
 struct ImportOptions {
   std::optional<std::string> title;
@@ -211,6 +213,7 @@ class JsonArrayStreamer {
   bool finished() const noexcept { return done_; }
   // Bytes of an element that has started but not completed (truncated input).
   std::size_t pending_bytes() const noexcept { return buf_.size(); }
+  std::string_view pending_text() const noexcept { return buf_; }
 
  private:
   std::string buf_;
@@ -296,6 +299,29 @@ class ConversationImporter {
     SourceCtx* prev_;
   };
 
+  // R44: keeps `record` verbatim as an annotated graph node, filling the
+  // source identity from the active SourceCtx. No-op (empty id) without a ledger.
+  Result<std::string> keep_fragment(FragmentRecord&& record);
+  // R44 helpers (importer_json.cpp / importer_html.cpp / importer_zip.cpp).
+  Result<std::vector<Conversation>> import_json_data_at(const Json& data, const std::optional<std::string>& title,
+                                                        const std::string& pointer, std::string_view text);
+  Result<std::vector<Conversation>> parse_whole_json_file(const std::filesystem::path& path,
+                                                          const std::optional<std::string>& title);
+  Result<std::vector<Conversation>> stream_json_array(const std::filesystem::path& path, const ImportOptions& opts,
+                                                      std::int64_t total_size);
+  // Keeps an unrecognised/opaque piece of a JSON-ish source; no-op without a ledger.
+  Status keep_unmapped(std::string_view status, std::string_view recognizer, std::string_view reason,
+                       std::string label, Json locator, std::string_view bytes);
+  // A conversation whose source object carried fields no handler mapped.
+  Status keep_partial(const Json& object, std::initializer_list<const char*> mapped_keys,
+                      std::string_view recognizer, const Conversation& conversation);
+  // Locator context of the element being handled (set by the JSON/JSONL walkers).
+  std::string cursor_pointer_;
+  Json cursor_locator_ = Json::object();
+  // Set by the whole-file member of a provider export so a caller that keeps
+  // the whole member itself is not duplicated by the legacy fragment.
+  bool caller_keeps_whole_document_ = false;
+  bool html_text_fallback_ = false;
   // Hashes+stores `path` (when record_provenance && blobs_/prov_ are set),
   // fills `ctx.source_id`/`blob_hash`, and registers a loom_sources row
   // (kind "file" or "zip_member"). When a prior source with the same hash

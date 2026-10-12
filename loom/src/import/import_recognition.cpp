@@ -3,6 +3,7 @@
 #include "importer_internal.h"
 #include "loom/log.h"
 #include "loom/util/base64.h"
+#include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
 #include "loom/util/utf8.h"
@@ -87,59 +88,104 @@ void ImportLedger::note_source_duplicate(Json item) {
 }
 
 // ── R44 ─────────────────────────────────────────────────────────────
+void ImportLedger::note_kept(std::string_view status, const std::string& node_id) {
+  ++counts_[std::string(status)];
+  if (!node_id.empty()) node_ids_.push_back(node_id);
+}
+
 Result<std::string> ImportLedger::keep(const FragmentRecord& r) {
   LOOM_TRY(ensure_table());
-  const std::string sha = Sha256::hex(r.bytes);
-  const std::string fingerprint = "fragment:" + sha;
-  LOOM_TRY_ASSIGN(auto prior, find_prior(fingerprint, kFragmentKind, ""));
-
   ++counts_[r.status];
   if (!r.conversation_id.empty() && r.status == recognition::kPartial) ++partial_conversations_;
 
-  if (prior && reuse_prior()) {
-    // No new copy: the prior node gains this occurrence as provenance.
-    if (prov_ && !r.source_id.empty()) {
-      ProvenanceRecord occurrence;
-      occurrence.subject_id = *prior;
-      occurrence.subject_kind = "node";
-      occurrence.source_id = r.source_id;
-      occurrence.locator = r.locator;
-      occurrence.transform = "import.reuse_prior@" + std::string(kImporterParserVersion);
-      if (auto added = prov_->add(std::move(occurrence)); !added)
-        log::warn(kLog, "provenance of reused fragment: {}", added.error().message);
-    }
-    add_duplicate(Json{{"level", "fragment"}, {"node_id", *prior}, {"prior_id", *prior}, {"sha256", sha},
-                       {"status", r.status}, {"locator", r.locator}, {"action", "reused"},
-                       {"proposal", proposal(*prior, *prior)}});
-    return *prior;
-  }
-
-  const bool text = utf8::is_valid(r.bytes);
   Json recognition = Json{{"status", r.status},
                           {"recognizer", r.recognizer},
                           {"recognizer_version", r.recognizer_version},
                           {"reason", r.reason},
-                          {"attempts", r.attempts},
-                          {"sha256", sha},
-                          {"size", static_cast<std::int64_t>(r.bytes.size())},
-                          {"valid_utf8", text}};
+                          {"attempts", r.attempts}};
   NodeOptions options;
-  if (text && static_cast<std::int64_t>(r.bytes.size()) <= inline_threshold_) {
-    options.content = std::string(r.bytes);
-    recognition["stored"] = "inline";
-  } else if (blobs_) {
-    // The threshold decides where bytes live, never whether they are kept.
-    auto blob = blobs_->put(r.bytes, "application/octet-stream");
-    if (!blob) return blob.error();
-    recognition["stored"] = "blob";
-    recognition["blob_hash"] = blob->hash;
-  } else if (text) {
-    options.content = std::string(r.bytes);
-    recognition["stored"] = "inline";
-    recognition["no_blob_store"] = true;
+  std::string sha;
+  std::string fingerprint;
+  std::optional<std::string> prior;
+
+  std::string loaded;
+  std::string_view bytes = r.bytes;
+  if (!r.bytes_available) {
+    // Known: what the container declared. Unknown: the bytes, hence no hash.
+    recognition["stored"] = "none";
+    if (r.declared_size >= 0) recognition["declared_size"] = r.declared_size;
   } else {
-    recognition["stored"] = "metadata_base64";
-    recognition["bytes_base64"] = base64::encode(r.bytes);
+    std::int64_t size = static_cast<std::int64_t>(bytes.size());
+    bool text = false;
+    bool text_known = true;
+    if (!r.file.empty()) {
+      LOOM_TRY_ASSIGN(sha, sha256_file_hex(r.file));
+      std::error_code ec;
+      size = static_cast<std::int64_t>(std::filesystem::file_size(r.file, ec));
+      if (ec) return Error(Errc::Io, "cannot stat " + r.file.string());
+      if (size <= inline_threshold_) {
+        LOOM_TRY_ASSIGN(loaded, fsutil::read_file(r.file));
+        bytes = loaded;
+        text = utf8::is_valid(bytes);
+      } else {
+        text_known = false;
+      }
+    } else {
+      sha = Sha256::hex(bytes);
+      text = utf8::is_valid(bytes);
+    }
+    fingerprint = "fragment:" + sha;
+    LOOM_TRY_ASSIGN(prior, find_prior(fingerprint, kFragmentKind, ""));
+
+    if (prior && reuse_prior()) {
+      // No new copy: the prior node gains this occurrence as provenance.
+      if (prov_ && !r.source_id.empty()) {
+        ProvenanceRecord occurrence;
+        occurrence.subject_id = *prior;
+        occurrence.subject_kind = "node";
+        occurrence.source_id = r.source_id;
+        occurrence.locator = r.locator;
+        occurrence.transform = "import.reuse_prior@" + std::string(kImporterParserVersion);
+        if (auto added = prov_->add(std::move(occurrence)); !added)
+          log::warn(kLog, "provenance of reused fragment: {}", added.error().message);
+      }
+      add_duplicate(Json{{"level", "fragment"}, {"node_id", *prior}, {"prior_id", *prior}, {"sha256", sha},
+                         {"status", r.status}, {"locator", r.locator}, {"action", "reused"},
+                         {"proposal", proposal(*prior, *prior)}});
+      return *prior;
+    }
+
+    recognition["sha256"] = sha;
+    recognition["size"] = size;
+    if (text_known) recognition["valid_utf8"] = text;
+    if (text_known && text && size <= inline_threshold_) {
+      options.content = std::string(bytes);
+      recognition["stored"] = "inline";
+    } else if (blobs_) {
+      // The threshold decides where bytes live, never whether they are kept.
+      Result<BlobRef> blob = r.file.empty() ? blobs_->put(bytes, "application/octet-stream")
+                                            : blobs_->put_file(r.file, "application/octet-stream");
+      if (!blob) return blob.error();
+      recognition["stored"] = "blob";
+      recognition["blob_hash"] = blob->hash;
+    } else if (!r.file.empty()) {
+      LOOM_TRY_ASSIGN(loaded, fsutil::read_file(r.file));
+      if (utf8::is_valid(loaded)) {
+        options.content = loaded;
+        recognition["stored"] = "inline";
+      } else {
+        recognition["stored"] = "metadata_base64";
+        recognition["bytes_base64"] = base64::encode(loaded);
+      }
+      recognition["no_blob_store"] = true;
+    } else if (text) {
+      options.content = std::string(bytes);
+      recognition["stored"] = "inline";
+      recognition["no_blob_store"] = true;
+    } else {
+      recognition["stored"] = "metadata_base64";
+      recognition["bytes_base64"] = base64::encode(bytes);
+    }
   }
   Json source = Json{{"source_id", r.source_id}, {"blob_hash", r.source_blob_hash}, {"locator", r.locator}};
   if (!r.conversation_id.empty()) source["conversation_id"] = r.conversation_id;
@@ -147,7 +193,7 @@ Result<std::string> ImportLedger::keep(const FragmentRecord& r) {
 
   LOOM_TRY_ASSIGN(auto node, db_.create_node(r.label, recognition::kNodeKind, options));
   node_ids_.push_back(node);
-  LOOM_TRY(register_subject(fingerprint, node, kFragmentKind, r.source_id));
+  if (!fingerprint.empty()) { LOOM_TRY(register_subject(fingerprint, node, kFragmentKind, r.source_id)); }
 
   if (prov_ && !r.source_id.empty()) {
     ProvenanceRecord provenance;

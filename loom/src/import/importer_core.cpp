@@ -9,6 +9,7 @@
 
 #include "importer_internal.h"
 #include "import_preset_identity.h"
+#include "import/import_recognition.h"
 #include "loom/event_bus.h"
 #include "loom/log.h"
 #include "loom/provenance.h"
@@ -36,6 +37,8 @@ Json ImportResult::to_json() const {
                   {"include_result_metadata", include_result_metadata}, {"warnings", warnings}};
   out["retained_conversation_count"] = conversations.size();
   if (!export_report.is_null()) out["export_report"] = export_report;
+  if (!recognition.is_null()) out["recognition"] = recognition;
+  if (!duplicates.is_null()) out["duplicates"] = duplicates;
   return out;
 }
 
@@ -256,6 +259,10 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
         }
         if (!intact) continue;
         ctx.source_id = s.id;
+        if (ledger_) ledger_->note_source_duplicate(Json{{"prior_source_id", s.id}, {"blob_hash", blob.hash},
+                                                         {"cache_hit", true}, {"action", "reused"},
+                                                         {"proposal", Json{{"action", "pin_immutable_data"},
+                                                                           {"subjects", Json::array({s.id})}}}});
         LOOM_TRY(source_transaction.commit());
         return std::optional<std::vector<Conversation>>(std::move(convs));
       }
@@ -271,6 +278,10 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
       }
       if (!convs.empty()) {
         ctx.source_id = s.id;
+        if (ledger_) ledger_->note_source_duplicate(Json{{"prior_source_id", s.id}, {"blob_hash", blob.hash},
+                                                         {"cache_hit", true}, {"action", "reused"},
+                                                         {"proposal", Json{{"action", "pin_immutable_data"},
+                                                                           {"subjects", Json::array({s.id})}}}});
         LOOM_TRY(source_transaction.commit());
         return std::optional<std::vector<Conversation>>(std::move(convs));
       }
@@ -288,6 +299,20 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
       ctx.resumed = true;
       LOOM_TRY(source_transaction.commit());
       return std::optional<std::vector<Conversation>>{};
+    }
+  }
+
+  if (ledger_) {
+    // Same bytes under the same parser identity were seen before but no cached
+    // result applies (forced, incomplete or no conversations): still a duplicate.
+    LOOM_TRY_ASSIGN(auto earlier, prov_->find_sources_by_hash(blob.hash));
+    for (const auto& s : earlier) {
+      if (s.parser_version != parser_version || !projection_matches(s)) continue;
+      ledger_->note_source_duplicate(Json{{"prior_source_id", s.id}, {"blob_hash", blob.hash},
+                                          {"cache_hit", false}, {"action", "none"},
+                                          {"proposal", Json{{"action", "pin_immutable_data"},
+                                                            {"subjects", Json::array({s.id})}}}});
+      break;
     }
   }
 
@@ -379,6 +404,15 @@ Status ConversationImporter::set_source_outcome(const SourceCtx& ctx, std::strin
 Result<std::vector<Conversation>> ConversationImporter::with_source(
     const fs::path& path, std::string_view fmt, const ImportOptions& opts, std::string_view kind,
     const std::function<Result<std::vector<Conversation>>(const fs::path&)>& body) {
+  std::optional<ImportLedger> owned_ledger;
+  struct LedgerRestore {
+    ConversationImporter& self; ImportLedger* previous;
+    ~LedgerRestore() { self.ledger_ = previous; }
+  } restore{*this, ledger_};
+  if (!ledger_) {
+    owned_ledger.emplace(db_, blobs_, prov_, opts);
+    ledger_ = &*owned_ledger;
+  }
   SourceCtx ctx;
   ctx.source_filename = path.filename().string();
   LOOM_TRY_ASSIGN(auto dup, prepare_source(path, fmt, opts, kind, ctx));
@@ -580,9 +614,84 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
 
 Result<ImportResult> ConversationImporter::import_file(const fs::path& path, const ImportOptions& opts) {
   if (opts.preflight) LOOM_TRY(opts.preflight(path));
+  if (!is_duplicate_policy(opts.duplicate_policy))
+    return Error(Errc::InvalidArgument, "unknown duplicate_policy: " + opts.duplicate_policy);
+  ImportLedger ledger(db_, blobs_, prov_, opts);
+  struct LedgerRestore {
+    ConversationImporter& self; ImportLedger* previous;
+    ~LedgerRestore() { self.ledger_ = previous; }
+  } restore{*this, ledger_};
+  ledger_ = &ledger;
   auto result = import_file_as(path, opts, "file");
+  if (result) ledger.finish(*result);
   if (result && opts.completed) opts.completed(*result);
   return result;
+}
+
+Result<std::string> ConversationImporter::keep_fragment(FragmentRecord&& record) {
+  if (!ledger_) return std::string();
+  if (current_source_) {
+    record.source_id = current_source_->source_id;
+    record.source_blob_hash = current_source_->blob_hash;
+    if (current_source_->zip_member && !record.locator.contains("member"))
+      record.locator["member"] = *current_source_->zip_member;
+    if (current_source_->archive_index && !record.locator.contains("archive_index"))
+      record.locator["archive_index"] = *current_source_->archive_index;
+  }
+  return ledger_->keep(record);
+}
+
+Status ConversationImporter::keep_unmapped(std::string_view status, std::string_view recognizer,
+                                           std::string_view reason, std::string label, Json locator,
+                                           std::string_view bytes) {
+  if (!ledger_) return {};
+  FragmentRecord record;
+  record.status = std::string(status);
+  record.recognizer = std::string(recognizer);
+  record.recognizer_version = std::string(kImporterParserVersion);
+  record.reason = std::string(reason);
+  record.label = std::move(label);
+  record.locator = std::move(locator);
+  record.bytes = bytes;
+  record.attempts = Json::array({Json{{"recognizer", recognizer},
+                                       {"version", std::string(kImporterParserVersion)},
+                                       {"outcome", status},
+                                       {"reason", reason}}});
+  auto kept = keep_fragment(std::move(record));
+  if (!kept) return kept.error();
+  return {};
+}
+
+Status ConversationImporter::keep_partial(const Json& object, std::initializer_list<const char*> mapped_keys,
+                                          std::string_view recognizer, const Conversation& conversation) {
+  if (!ledger_ || !object.is_object()) return {};
+  Json unmapped = Json::object();
+  for (auto it = object.begin(); it != object.end(); ++it) {
+    bool mapped = false;
+    for (const char* key : mapped_keys) mapped = mapped || it.key() == key;
+    if (!mapped) unmapped[it.key()] = it.value();
+  }
+  if (unmapped.empty()) return {};
+  Json keys = Json::array();
+  for (auto it = unmapped.begin(); it != unmapped.end(); ++it) keys.push_back(it.key());
+  FragmentRecord record;
+  record.status = std::string(recognition::kPartial);
+  record.recognizer = std::string(recognizer);
+  record.recognizer_version = std::string(kImporterParserVersion);
+  record.reason = "fields not mapped by the handler are kept verbatim";
+  record.label = "unmapped fields of " + conversation.title;
+  record.locator = cursor_locator_;
+  record.locator["unmapped_keys"] = keys;
+  record.conversation_id = conversation.id;
+  const std::string bytes = json::py_dumps(unmapped);
+  record.bytes = bytes;
+  record.attempts = Json::array({Json{{"recognizer", recognizer},
+                                       {"version", std::string(kImporterParserVersion)},
+                                       {"outcome", "partial"},
+                                       {"reason", record.reason}}});
+  auto kept = keep_fragment(std::move(record));
+  if (!kept) return kept.error();
+  return {};
 }
 
 // ── import_message_list(): the funnel every handler converges on ────
@@ -607,8 +716,30 @@ Result<Conversation> ConversationImporter::import_message_list(const Json& messa
 
 Result<Conversation> ConversationImporter::finish_import(const std::string& conv_title, std::vector<BatchMessage> batch,
                                                           std::string_view handler) {
+  // R50: identical (role, text) sequences are duplicates; never refused.
+  const std::string source_id = current_source_ ? current_source_->source_id : std::string();
+  std::optional<ImportLedger::ConversationCheck> check;
+  if (ledger_ && !batch.empty()) {
+    std::vector<std::pair<std::string, std::string>> turns;
+    turns.reserve(batch.size());
+    for (const auto& message : batch) turns.emplace_back(message.role, message.text);
+    LOOM_TRY_ASSIGN(auto found, ledger_->check_conversation("", turns));
+    check = std::move(found);
+    if (check->prior && ledger_->reuse_prior()) {
+      LOOM_TRY_ASSIGN(auto existing, db_.get_conv(*check->prior));
+      if (existing) {
+        ledger_->note_conversation();
+        LOOM_TRY(ledger_->conversation_reused(*check, *check->prior, source_id));
+        return **existing;
+      }
+    }
+  }
   LOOM_TRY_ASSIGN(Conversation conv, db_.create_conv("[Import] " + conv_title));
   LOOM_TRY_ASSIGN(int count, db_.batch_create_msgs(conv.id, batch));
+  if (ledger_) {
+    ledger_->note_conversation();
+    if (check) { LOOM_TRY(ledger_->conversation_created(*check, conv, source_id)); }
+  }
 
   if (auto recorded = record_provenance(conv, handler); !recorded)
     log::warn(kLog, "provenance: {}", recorded.error().message);
