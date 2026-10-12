@@ -3,11 +3,14 @@
 // logged and skipped, matching engine/importer.py's import_zip().
 #include <algorithm>
 #include <cstring>
+#include <fstream>
 
 #include "importer_internal.h"
+#include "import/import_recognition.h"
 #include "loom/importer.h"
 #include "loom/log.h"
 #include "loom/util/fs.h"
+#include "loom/util/utf8.h"
 #include <miniz.h>
 
 namespace loom {
@@ -24,6 +27,36 @@ bool safe_zip_relpath(const fs::path& rel) {
     if (part == "..") return false;
   }
   return true;
+}
+
+// Text means: no NUL byte and valid UTF-8 across the whole file (chunk
+// boundaries are carried so a split multi-byte sequence is not misjudged).
+bool member_is_text(const fs::path& path, std::size_t chunk_bytes) {
+  std::ifstream in(path, std::ios::binary);
+  if (!in) return false;
+  std::string buffer(chunk_bytes ? chunk_bytes : 65536, '\0');
+  std::string carry;
+  while (in) {
+    in.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+    const auto n = static_cast<std::size_t>(in.gcount());
+    if (!n) break;
+    std::string window = carry + std::string(buffer.data(), n);
+    if (window.find('\0') != std::string::npos) return false;
+    // Hold back an incomplete trailing sequence (at most 3 bytes) for the next chunk.
+    std::size_t cut = window.size();
+    for (std::size_t back = 1; back <= 3 && back <= window.size(); ++back) {
+      const unsigned char c = static_cast<unsigned char>(window[window.size() - back]);
+      if ((c & 0xC0) == 0x80) continue;
+      if (c >= 0xC0) {
+        const std::size_t need = c >= 0xF0 ? 4 : c >= 0xE0 ? 3 : 2;
+        if (need > back) cut = window.size() - back;
+      }
+      break;
+    }
+    if (!utf8::is_valid(std::string_view(window).substr(0, cut))) return false;
+    carry = window.substr(cut);
+  }
+  return carry.empty();
 }
 
 }  // namespace
@@ -44,6 +77,7 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
     std::int64_t archive_index;
   };
   std::vector<Entry> entries;
+  if (ledger_) ledger_->measured("zip");
   mz_uint n = mz_zip_reader_get_num_files(&zip);
   for (mz_uint i = 0; i < n; ++i) {
     if (cancelled(opts)) break;
@@ -54,6 +88,20 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
     fs::path relp(name);
     if (!safe_zip_relpath(relp)) {
       log::warn(kLog, "zip: skipping unsafe entry path {}", name);
+      // Not extracted (zip-slip), but never silently dropped: recorded as opaque.
+      if (ledger_) {
+        FragmentRecord record;
+        record.status = std::string(recognition::kOpaque);
+        record.recognizer = "loom.importer.zip";
+        record.recognizer_version = std::string(kImporterParserVersion);
+        record.reason = "unsafe archive path; not extracted";
+        record.label = "ZIP member " + name;
+        record.locator = Json{{"member", name}, {"archive_index", static_cast<std::int64_t>(i)}};
+        record.bytes_available = false;
+        record.declared_size = static_cast<std::int64_t>(st.m_uncomp_size);
+        auto kept = keep_fragment(std::move(record));
+        if (!kept) { mz_zip_reader_end(&zip); return kept.error(); }
+      }
       continue;
     }
     fs::path dest = td.path() / std::to_string(i) / relp;
@@ -61,6 +109,19 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
     fs::create_directories(dest.parent_path(), ec);
     if (!mz_zip_reader_extract_to_file(&zip, i, dest.string().c_str(), 0)) {
       log::warn(kLog, "zip: failed to extract {}", name);
+      if (ledger_) {
+        FragmentRecord record;
+        record.status = std::string(recognition::kOpaque);
+        record.recognizer = "loom.importer.zip";
+        record.recognizer_version = std::string(kImporterParserVersion);
+        record.reason = "entry could not be extracted (corrupt?)";
+        record.label = "ZIP member " + name;
+        record.locator = Json{{"member", name}, {"archive_index", static_cast<std::int64_t>(i)}};
+        record.bytes_available = false;
+        record.declared_size = static_cast<std::int64_t>(st.m_uncomp_size);
+        auto kept = keep_fragment(std::move(record));
+        if (!kept) { mz_zip_reader_end(&zip); return kept.error(); }
+      }
       continue;
     }
     auto materialized = materialize_zip_member(dest, opts, name, i);
@@ -77,11 +138,35 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
   }
   log::info(kLog, "ZIP contains {} importable files out of {} total", importable_rels.size(), entries.size());
 
+  // R44: a member that cannot be imported is kept verbatim, annotated.
+  auto keep_member = [&](const Entry& e, std::string_view status, std::string reason) -> Status {
+    if (!ledger_) return {};
+    FragmentRecord record;
+    record.status = std::string(status);
+    record.recognizer = "loom.importer.zip";
+    record.recognizer_version = std::string(kImporterParserVersion);
+    record.reason = std::move(reason);
+    record.label = "ZIP member " + e.rel;
+    record.locator = Json{{"member", e.rel}, {"archive_index", e.archive_index}};
+    record.file = e.abs;
+    record.attempts = Json::array({Json{{"recognizer", "loom.importer.zip"},
+                                         {"version", std::string(kImporterParserVersion)},
+                                         {"outcome", std::string(status)}, {"reason", record.reason}}});
+    auto kept = keep_fragment(std::move(record));
+    if (!kept) return kept.error();
+    return {};
+  };
+
   std::vector<Conversation> results;
   std::int64_t done = 0;
   for (const auto& e : entries) {
     if (cancelled(opts)) break;
-    if (detect_format(e.abs) == "unknown") continue;
+    if (detect_format(e.abs) == "unknown") {
+      const bool text = member_is_text(e.abs, opts.json_read_chunk_bytes);
+      LOOM_TRY(keep_member(e, text ? recognition::kUnrecognized : recognition::kOpaque,
+                           text ? "no importer recognises this member's format" : "binary member; no importer recognises its format"));
+      continue;
+    }
 
     ImportOptions member_opts;
     member_opts.title = opts.title.has_value() ? opts.title : std::optional<std::string>(e.rel);
@@ -96,6 +181,8 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
     if (opts.progress) opts.progress(done, static_cast<std::int64_t>(importable_rels.size()), "zip");
     if (!r) {
       log::warn(kLog, "Failed to import {} from ZIP: {}", e.rel, r.error().message);
+      LOOM_TRY(keep_member(e, r.error().code == Errc::Parse ? recognition::kOpaque : recognition::kUnrecognized,
+                           "import failed: " + r.error().message));
       continue;
     }
     for (auto& c : r->conversations) results.push_back(std::move(c));

@@ -633,10 +633,10 @@ Result<std::string> ConversationImporter::keep_fragment(FragmentRecord&& record)
   if (current_source_) {
     record.source_id = current_source_->source_id;
     record.source_blob_hash = current_source_->blob_hash;
-    if (current_source_->zip_member && !record.locator.contains("member"))
-      record.locator["member"] = *current_source_->zip_member;
-    if (current_source_->archive_index && !record.locator.contains("archive_index"))
-      record.locator["archive_index"] = *current_source_->archive_index;
+    // When this source is itself a ZIP member, the locator names the
+    // containing member; the fragment's own position stays in the locator.
+    if (current_source_->zip_member) record.locator["archive_member"] = *current_source_->zip_member;
+    if (current_source_->archive_index) record.locator["archive_index_in_parent"] = *current_source_->archive_index;
   }
   return ledger_->keep(record);
 }

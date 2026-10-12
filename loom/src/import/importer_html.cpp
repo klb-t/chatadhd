@@ -9,6 +9,7 @@
 #include <utility>
 
 #include "importer_internal.h"
+#include "import/import_recognition.h"
 #include "loom/importer.h"
 #include "loom/util/base64.h"
 #include "loom/util/fs.h"
@@ -300,11 +301,13 @@ Json ConversationImporter::extract_messages_regex(std::string_view html) {
 // ── parse_html_conversation / import_html / import_mht ──────────────
 Result<std::optional<Conversation>> ConversationImporter::parse_html_conversation(
     std::string_view html, const std::optional<std::string>& title, const std::optional<fs::path>& source) {
+  html_text_fallback_ = false;
   Json messages = parse_html_messages(html);
   if (messages.empty()) messages = extract_messages_regex(html);
   if (messages.empty()) {
     std::string text = strip_html(html);
     if (!text.empty()) {
+      html_text_fallback_ = true;
       messages = Json::array();
       messages.push_back(Json{{"role", "assistant"}, {"content", std::string(utf8::prefix(text, 50000))}});
     }
@@ -322,10 +325,38 @@ Result<std::vector<Conversation>> ConversationImporter::html_body(const fs::path
   std::string html = utf8::repair(raw);  // Python: open(..., errors='replace')
   const fs::path identity = current_source_ && !current_source_->source_filename.empty()
       ? fs::path(current_source_->source_filename) : path;
+  if (ledger_) ledger_->measured("html");
   LOOM_TRY_ASSIGN(auto conv, parse_html_conversation(html, opts.title, identity));
   std::vector<Conversation> out;
-  if (conv) out.push_back(std::move(*conv));
+  if (conv) {
+    LOOM_TRY(keep_html_fallback(raw, 0, *conv));
+    out.push_back(std::move(*conv));
+  }
   return out;
+}
+
+// R44: when neither HTML parser found a conversation structure the page was
+// imported as one text message; the markup itself is kept verbatim, partial.
+Status ConversationImporter::keep_html_fallback(std::string_view bytes, std::size_t offset,
+                                                const Conversation& conversation) {
+  if (!ledger_ || !html_text_fallback_) return {};
+  html_text_fallback_ = false;
+  FragmentRecord record;
+  record.status = std::string(recognition::kPartial);
+  record.recognizer = "loom.importer.html";
+  record.recognizer_version = std::string(kImporterParserVersion);
+  record.reason = "no conversation structure recognised; the page text was imported as one assistant message";
+  record.label = "unstructured HTML page";
+  record.locator = Json{{"byte_start", static_cast<std::int64_t>(offset)},
+                        {"byte_end", static_cast<std::int64_t>(offset + bytes.size())}};
+  record.conversation_id = conversation.id;
+  record.bytes = bytes;
+  record.attempts = Json::array({Json{{"recognizer", "loom.importer.html"},
+                                       {"version", std::string(kImporterParserVersion)},
+                                       {"outcome", "partial"}, {"reason", record.reason}}});
+  auto kept = keep_fragment(std::move(record));
+  if (!kept) return kept.error();
+  return {};
 }
 
 Result<std::vector<Conversation>> ConversationImporter::import_html(const fs::path& path, const ImportOptions& opts) {
@@ -351,7 +382,10 @@ Result<std::vector<Conversation>> ConversationImporter::mht_body(const fs::path&
   }
 
   std::optional<std::string> html;
+  std::size_t chosen_part = parts.size();
+  std::size_t part_index = 0;
   for (auto part : parts) {
+    struct Advance { std::size_t& i; ~Advance() { ++i; } } advance{part_index};
     std::string_view head = part.substr(0, std::min<std::size_t>(part.size(), 500));
     if (head.find("text/html") == std::string_view::npos) continue;  // case-sensitive, matches Python `b'text/html' in`
 
@@ -360,6 +394,7 @@ Result<std::vector<Conversation>> ConversationImporter::mht_body(const fs::path&
     if (html_start == std::string_view::npos) html_start = part.find("<!DOCTYPE");
     if (html_start != std::string_view::npos) {
       html = utf8::repair(part.substr(html_start));
+      chosen_part = part_index;
       break;
     }
 
@@ -370,6 +405,7 @@ Result<std::vector<Conversation>> ConversationImporter::mht_body(const fs::path&
         std::string b64_data = std::string(utf8::strip(part.substr(b64_start)));
         if (auto decoded = base64::decode(b64_data)) {
           html = utf8::repair(*decoded);
+          chosen_part = part_index;
           break;
         }
       }
@@ -377,11 +413,39 @@ Result<std::vector<Conversation>> ConversationImporter::mht_body(const fs::path&
   }
 
   std::vector<Conversation> out;
+  if (ledger_) ledger_->measured("mht");
   if (html) {
     const fs::path identity = current_source_ && !current_source_->source_filename.empty()
         ? fs::path(current_source_->source_filename) : path;
     LOOM_TRY_ASSIGN(auto conv, parse_html_conversation(*html, opts.title, identity));
-    if (conv) out.push_back(std::move(*conv));
+    if (conv) {
+      LOOM_TRY(keep_html_fallback(*html, static_cast<std::size_t>(parts[chosen_part].data() - content.data()), *conv));
+      out.push_back(std::move(*conv));
+    }
+  }
+  if (ledger_) {
+    // R44: every MIME part the handler did not use (images, styles, preamble,
+    // parts after the page) is kept verbatim with its byte range.
+    for (std::size_t i = 0; i < parts.size(); ++i) {
+      if (i == chosen_part) continue;
+      const std::string_view part = parts[i];
+      if (utf8::strip(part).empty()) continue;
+      const auto start = static_cast<std::int64_t>(part.data() - content.data());
+      std::string content_type;
+      const std::string_view head = part.substr(0, std::min<std::size_t>(part.size(), 500));
+      if (auto at = idt::ifind(head, "content-type:"); at != std::string_view::npos) {
+        const auto from = at + std::string_view("content-type:").size();
+        const auto to = head.find_first_of("\r\n", from);
+        content_type = std::string(utf8::strip(head.substr(from, to == std::string_view::npos ? std::string_view::npos : to - from)));
+      }
+      Json locator{{"part_index", static_cast<std::int64_t>(i)}, {"byte_start", start},
+                   {"byte_end", start + static_cast<std::int64_t>(part.size())}};
+      if (!content_type.empty()) locator["content_type"] = content_type;
+      LOOM_TRY(keep_unmapped(recognition::kUnrecognized, "loom.importer.mht",
+                             html ? "MIME part not used by the MHT handler" : "no text/html part found in the MHT",
+                             "MHT part " + std::to_string(i) + (content_type.empty() ? "" : " (" + content_type + ")"),
+                             std::move(locator), part));
+    }
   }
   return out;
 }

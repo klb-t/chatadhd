@@ -315,6 +315,7 @@ class ConversationImporter {
   // A conversation whose source object carried fields no handler mapped.
   Status keep_partial(const Json& object, std::initializer_list<const char*> mapped_keys,
                       std::string_view recognizer, const Conversation& conversation);
+  Status keep_html_fallback(std::string_view bytes, std::size_t offset, const Conversation& conversation);
   // Locator context of the element being handled (set by the JSON/JSONL walkers).
   std::string cursor_pointer_;
   Json cursor_locator_ = Json::object();
