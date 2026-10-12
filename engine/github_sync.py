@@ -15,6 +15,12 @@ from dataclasses import dataclass, field
 log = logging.getLogger('github_sync')
 
 
+def git_blob_sha(data: bytes) -> str:
+    """Git blob SHA-1 of raw bytes (what GitHub's contents listing reports)."""
+    import hashlib
+    return hashlib.sha1(b"blob %d\0" % len(data) + data).hexdigest()
+
+
 @dataclass
 class GitHubFile:
     """Represents a file in GitHub repo."""
@@ -24,7 +30,7 @@ class GitHubFile:
     content: Optional[str] = None
     url: str = ""
     local_path: Optional[str] = None
-    status: str = "unknown"  # synced, modified_local, modified_remote, new_local, new_remote, conflict
+    status: str = "unknown"  # synced, modified, uncertain (no remote sha), new_local, new_remote
 
 
 @dataclass 
@@ -89,7 +95,7 @@ class GitHubSync:
                     if self._should_include(item["path"]):
                         files.append(GitHubFile(
                             path=item["path"],
-                            sha=item["sha"],
+                            sha=item.get("sha", ""),
                             size=item["size"],
                             url=item.get("download_url", ""),
                         ))
@@ -157,26 +163,33 @@ class GitHubSync:
             local = local_files.get(path)
             
             if remote and local:
-                # Both exist - check for modifications
-                # Simple size check (proper impl would compare content hashes)
-                if remote.size != local.size:
-                    # Need to determine which is newer
-                    # For now, mark as potential conflict
-                    f = GitHubFile(
-                        path=path,
-                        sha=remote.sha,
-                        size=remote.size,
-                        local_path=local.local_path,
-                        status="modified"
-                    )
+                # Both exist. Size alone can never prove equality: compare the
+                # git blob SHA of the local bytes with the remote listing SHA.
+                if not remote.sha:
+                    # Remote gave no SHA: explicitly uncertain, never "synced".
+                    state = "uncertain"
+                elif remote.size != local.size:
+                    state = "modified"
                 else:
-                    f = GitHubFile(
-                        path=path,
-                        sha=remote.sha,
-                        size=remote.size,
-                        local_path=local.local_path,
-                        status="synced"
-                    )
+                    try:
+                        local_sha = git_blob_sha(Path(local.local_path).read_bytes())
+                    except OSError:
+                        log.warning("Cannot read %s for SHA compare", local.local_path,
+                                    exc_info=True)
+                        local_sha = ""
+                    if not local_sha:
+                        state = "uncertain"
+                    elif local_sha == remote.sha:
+                        state = "synced"
+                    else:
+                        state = "modified"
+                f = GitHubFile(
+                    path=path,
+                    sha=remote.sha,
+                    size=remote.size,
+                    local_path=local.local_path,
+                    status=state,
+                )
             elif remote and not local:
                 f = GitHubFile(
                     path=path,
@@ -336,8 +349,8 @@ class GitHubSync:
                 else:
                     results["pushed"]["failed"] += 1
                     
-            elif f.status == "modified":
-                # Conflict - need manual resolution
+            elif f.status in ("modified", "uncertain"):
+                # Conflict / unverifiable - need manual resolution
                 results["conflicts"].append(f.path)
         
         return results
