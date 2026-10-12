@@ -2,7 +2,7 @@
   "schema": "loom.storage_security/1",
   "revision": 1,
   "calibration": true,
-  "description": "Storage, encryption and security (R51), generated from the T5a inventory. Everything here is a preset or an example, not a rule (owner rule: nothing is decided for the user). Default placement equals today's reality, so loading this pack changes no behaviour; crypto.selected_preset stays legacy (owner decision); the pq_hybrid primitives are implemented and covered by known-answer tests (T5b). Keys are objects keyed by stable id so that profiles/storage_security.pack overlays can merge, hide (hidden:true) or add entries. Locators use {dir} for the data directory. Documents: docs/architecture/STORAGE_SECURITY_{INVENTORY,DESIGN}_2026-10-12.md.",
+  "description": "Storage, encryption and security (R51), generated from the T5a inventory. Everything here is a preset or an example, not a rule (owner rule: nothing is decided for the user). Default placement equals today's reality, so loading this pack changes no behaviour; crypto.selected_preset is pq_hybrid for NEW writes when the backend has every required primitive, otherwise the effective suite is legacy with a visible reason (owner decision: docs/reports/THREADS_2026-10-11.md section 6); existing ciphertexts are never touched; set crypto.selected_preset to legacy to turn it off. Keys are objects keyed by stable id so that profiles/storage_security.pack overlays can merge, hide (hidden:true) or add entries. Locators use {dir} for the data directory. Documents: docs/architecture/STORAGE_SECURITY_{INVENTORY,DESIGN}_2026-10-12.md.",
   "categories": {
     "conversations": {
       "label": {
@@ -829,7 +829,7 @@
     "/guard/*": "most_specific_wins"
   },
   "crypto": {
-    "selected_preset": "legacy",
+    "selected_preset": "pq_hybrid",
     "suite_presets": {
       "legacy": {
         "label": {
@@ -857,6 +857,17 @@
         "kem": "xwing-x25519-mlkem768",
         "signature": "hybrid-ed25519-mldsa65",
         "handoff_envelope": "credential_envelope/3",
+        "requires": [
+          "aes-256-gcm",
+          "argon2id",
+          "hkdf-sha256",
+          "sha3-256",
+          "shake256",
+          "x25519",
+          "ml-kem-768",
+          "ed25519",
+          "ml-dsa-65"
+        ],
         "object_key": "hkdf-sha256(category_dek, object_id)",
         "aad": "category|object_id|version|suite"
       }

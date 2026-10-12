@@ -131,8 +131,14 @@ struct SuiteConfig {
   std::string kem;        // informational ids from the pack
   std::string signature;
   std::string handoff_envelope;
+  std::vector<std::string> requires_prims;  // primitive ids the preset needs (pack: "requires")
+  std::string requested_preset;   // what the setting asked for (== preset_id unless fell back)
+  std::string fallback_reason;    // non-empty: effective suite is not the requested one, and why
   bool pq() const { return password_kdf == "argon2id"; }
 };
+// When preset_id is empty the SELECTED preset is used and, if the active backend lacks a primitive the preset
+// `requires`, the effective suite becomes `legacy` with fallback_reason set (visible in crypto.status; never an
+// error, existing ciphertexts stay readable). An explicit preset_id is never substituted.
 // `crypto` is the "crypto" object of the storage_security pack. Empty preset_id = crypto.selected_preset.
 // An unknown preset, or a preset whose Argon2id preset is missing/zero, is an error (no silent defaults).
 Result<SuiteConfig> suite_config_from_json(const Json& crypto, std::string_view preset_id = {});

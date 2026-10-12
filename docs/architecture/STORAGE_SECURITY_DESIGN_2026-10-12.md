@@ -91,7 +91,7 @@ Przenoszenie kategorii: kopiuj → weryfikuj hash → dopiero usuń; w każdej c
 ## 5. Zestaw kryptograficzny jako ustawienia
 
 Każdy algorytm i parametr jest wpisem rejestru `crypto.algorithms` (id, rodzaj, standard, parametry, status `implemented|planned|legacy_readable`, biblioteka).
-Wybór to `crypto.selected_preset` (zakresowe, §3). **Preset domyślny: `legacy`** (dzisiejsze PBKDF2 + AES-GCM) do czasu, aż T5b zaimplementuje i przetestuje prymitywy; `pq_hybrid` jest opisany i zapisany w danych, ale `status: planned`.
+Wybór to `crypto.selected_preset` (zakresowe, §3). **Preset domyślny: `pq_hybrid`** dla NOWYCH zapisów, gdy aktywny backend ma każdy prymityw z `requires` presetu; w przeciwnym razie efektywnym zestawem jest `legacy` z widoczną przyczyną w `crypto.status` (`active.fallback`), nigdy błąd. Decyzja właściciela: `docs/reports/THREADS_2026-10-11.md` §6 (preset hybrydowy bez czekania na akceptację, wszystko jako ustawienia). Istniejące szyfrogramy nie są zmieniane i pozostają czytelne (dispatch po `v`). Dawny stan (`legacy`, dzisiejsze PBKDF2 + AES-GCM) jest dostępny przez `crypto.selected_preset = "legacy"`; `pq_hybrid` jest opisany i zapisany w danych, ale `status: planned`.
 Niczego nie wymuszamy: każda pozycja ma `enabled`, a presety użytkownika dodaje się bez zmiany kodu.
 
 | Funkcja | Preset `legacy` (dziś) | Preset `pq_hybrid` (cel) | Standard |
@@ -135,7 +135,7 @@ Stan „dziś” każdego wpisu pochodzi z INW (np. Android: `not_controlled`; l
 | Zasada | Szczegóły |
 |---|---|
 | Odczyt zawsze po bloku | blob niesie `v`/`suite`; odszyfrowanie dobiera algorytm z bloba, nie z ustawień. `v:1` = dzisiejsze `{v,ct,n,s,i}` (PBKDF2 + AES-GCM) jest czytelne bez końca |
-| Zapis wg ustawień | nowe zapisy używają `crypto.selected_preset` w zakresie danych; `legacy` zostaje domyślny do ukończenia T5b |
+| Zapis wg ustawień | nowe zapisy używają `crypto.selected_preset` w zakresie danych; domyślnie `pq_hybrid` (z awaryjnym `legacy` + przyczyną, gdy brakuje prymitywu); zmiana dotyczy tylko nowych zapisów, Decyzja właściciela: `docs/reports/THREADS_2026-10-11.md` §6 (preset hybrydowy bez czekania na akceptację, wszystko jako ustawienia). |
 | Przeszyfrowanie opcjonalne | tryby: `never` (preset), `on_touch`, `background`, `now`; każdy jawny, z podglądem kosztu; ×10 względem presetu = potwierdzenie raz |
 | Nie ruszamy formatu DB | `schema_version` zostaje `"4"` (niezmiennik kompatybilności); szyfrowanie dotyczy wartości/blobów, metadane (czy szyfrować) to osobne ustawienie (EC-E09) |
 | Koperty | v2 czytelne zawsze; v3 nowe; tabela zgodności w danych |
@@ -164,7 +164,7 @@ Powiązanie danowe T5a (zrobione): obszar `storage_security` + powiązania `secu
 |---|---|
 | Cały obszar z widoku | nakładka `dir/profiles/graph_entry.pack`: `{"schema":"loom.runtime_profile_overlay/1","domain":"graph_entry","overrides":{"areas":{"storage_security":{"hidden":true}}}}` |
 | Wszystkie wartości obszaru do ustawień domyślnych | usuń `dir/profiles/storage_security.pack` |
-| Nowa kryptografia | `crypto.selected_preset = "legacy"` (domyślne); pojedynczy algorytm: `crypto.algorithms.<id>.enabled = false` |
+| Nowa kryptografia | `crypto.selected_preset = "legacy"` (domyślnym jest `pq_hybrid`, `docs/reports/THREADS_2026-10-11.md` §6 (preset hybrydowy bez czekania na akceptację, wszystko jako ustawienia)); pojedynczy algorytm: `crypto.algorithms.<id>.enabled = false` |
 | Hybrydę zamiast klasyki lub odwrotnie | `crypto.suite_presets.<nazwa>.kem` / `.signature` ustawione na dowolną kombinację z rejestru (także klasyczną samą) |
 | Koperty v3 | `handoff.envelope = "v2"` (v2 zawsze czytelne i zapisywalne) |
 | Szyfrowanie danej kategorii | `placement.<kat>[i].encrypt_at_rest = "none"`; blokady czytają stare bloki dalej |
@@ -194,7 +194,7 @@ Wymóg wspólny: kod wendorowany bez modyfikacji (łatki tylko jako pliki `.patc
 
 ## 11. Brief dla T5b
 
-**Cel:** zaimplementować i przetestować prymitywy oraz zestaw `pq_hybrid`, dodać dostawców §8, zmienić preset domyślny na `pq_hybrid` dopiero po zielonych testach i decyzji właściciela (nic nie jest wymuszone).
+**Cel:** zaimplementować i przetestować prymitywy oraz zestaw `pq_hybrid`, dodać dostawców §8, preset domyślny `pq_hybrid` dla nowych zapisów po zielonych testach — decyzja właściciela już istnieje (Decyzja właściciela: `docs/reports/THREADS_2026-10-11.md` §6 (preset hybrydowy bez czekania na akceptację, wszystko jako ustawienia)); nic nie jest wymuszone.
 
 **Pliki (nowe):** `loom/third_party/{mlkem-native,mldsa-native,argon2,monocypher}/` + `README.md` (wersja, licencja, SHA-256); `loom/include/loom/crypto_suite.h`;
 `loom/src/crypto/{backend.cpp,kdf_argon2.cpp,kem_xwing.cpp,sig_hybrid.cpp,sealed.cpp,envelope.cpp}`; `loom/src/capi/capi_crypto_suite.cpp` (+ wpisy w `loom.h`; test `test_abi_compat.py`);
@@ -214,5 +214,5 @@ Wymóg wspólny: kod wendorowany bez modyfikacji (łatki tylko jako pliki `.patc
 10. Aktualizacja `STATE.md`; `gen_runtime_profiles.py --check`.
 
 **Testy zbiorczo:** KAT per prymityw (powyżej) · round-trip hybrydowego KEM · podpis: weryfikacja, odrzucenie podróbki każdej połówki · Argon2id wektory RFC 9106 · koperta v3 round-trip · v2 nadal działa · szyfrogramy legacy nadal działają · ASan/UBSan zielone · dwa przebiegi na różnych platformach dają te same bajty KAT · test kompatybilności `schema_version == "4"` nietknięty.
-**Kryteria akceptacji:** (a) wszystkie KAT przechodzą na `dev`, `asan`, `vendored`; (b) żaden istniejący szyfrogram ani koperta v2 nie przestaje się odszyfrowywać; (c) domyślnie nic nie jest zmieniane ani szyfrowane, dopóki użytkownik nie wybierze presetu; (d) każdy parametr da się ustawić nakładką bez rekompilacji; (e) brak sekretów w logach nowego kodu (test grep na wzorcach + test sinka logów); (f) dokument „Jak to wyłączyć” zgodny z faktycznym zachowaniem (test: nakładka `hidden:true` ukrywa obszar); (g) naprawione F3 (kolejność chmod w Py) i F4 (klucz poza URL) albo zgłoszone właścicielowi z powodem.
+**Kryteria akceptacji:** (a) wszystkie KAT przechodzą na `dev`, `asan`, `vendored`; (b) żaden istniejący szyfrogram ani koperta v2 nie przestaje się odszyfrowywać; (c) istniejące dane nie są zmieniane ani przepisywane; nowe zapisy używają `pq_hybrid`, gdy backend ma wszystkie prymitywy, inaczej `legacy` z widoczną przyczyną; (d) każdy parametr da się ustawić nakładką bez rekompilacji; (e) brak sekretów w logach nowego kodu (test grep na wzorcach + test sinka logów); (f) dokument „Jak to wyłączyć” zgodny z faktycznym zachowaniem (test: nakładka `hidden:true` ukrywa obszar); (g) naprawione F3 (kolejność chmod w Py) i F4 (klucz poza URL) albo zgłoszone właścicielowi z powodem.
 **Poza zakresem T5b bez decyzji właściciela:** domyślne szyfrowanie `chatadhd.db`, zmiana domyślnych wzorców sync GitHub (F7), zmiana modelu współdzielonego storage Androida (F2).

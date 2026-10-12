@@ -12,6 +12,7 @@
 namespace fs = std::filesystem;
 using namespace loom;
 using namespace loom::cs;
+namespace cs = loom::cs;
 
 namespace {
 Bytes hx(std::string_view h) {
@@ -560,5 +561,44 @@ TEST_CASE("crypto_pq: graph entry reports crypto primitives and the active suite
   CHECK(counts["crypto_primitives"]["known"] == true);
   CHECK(counts["crypto_primitives"]["by"].contains("ml-kem-768@mlkem-native"));
   CHECK(counts["crypto_active_suite"]["known"] == true);
-  CHECK(counts["crypto_active_suite"]["by"].contains("legacy"));
+  const bool aes = cs::backend().available(cs::Prim::Aes256Gcm);
+  CHECK(counts["crypto_active_suite"]["by"].contains(aes ? "pq_hybrid" : "legacy"));
+}
+
+TEST_CASE("crypto_pq: default preset is pq_hybrid when every primitive is available, else legacy with a reason") {
+  auto prof = RuntimeProfile::builtin("storage_security");
+  REQUIRE(prof);
+  const Json& c = prof->values().at("crypto");
+  CHECK(c.at("selected_preset") == "pq_hybrid");
+  auto eff = suite_config_from_json(c);
+  REQUIRE(eff);
+  if (backend().available(Prim::Aes256Gcm)) {
+    CHECK(eff->preset_id == "pq_hybrid");
+    CHECK(eff->fallback_reason.empty());
+    CHECK(crypto_status(&*eff).at("active").at("fallback").is_null());
+  } else {
+    CHECK(eff->preset_id == "legacy");
+    CHECK(eff->requested_preset == "pq_hybrid");
+    CHECK(eff->fallback_reason.find("aes-256-gcm") != std::string::npos);
+    CHECK(crypto_status(&*eff).at("active").at("fallback").is_string());
+  }
+  // A backend without AES-GCM (portable only) always falls back, visibly and without an error.
+  set_backend(std::shared_ptr<const CryptoBackend>(&portable_backend(), [](const CryptoBackend*) {}));
+  auto fb = suite_config_from_json(c);
+  set_backend(nullptr);
+  REQUIRE(fb);
+  CHECK(fb->preset_id == "legacy");
+  CHECK(fb->requested_preset == "pq_hybrid");
+  CHECK(fb->fallback_reason.find("aes-256-gcm") != std::string::npos);
+  // The user turns it off: legacy selected explicitly, no fallback note.
+  Json off = c;
+  off["selected_preset"] = "legacy";
+  auto l = suite_config_from_json(off);
+  REQUIRE(l);
+  CHECK(l->preset_id == "legacy");
+  CHECK(l->fallback_reason.empty());
+  // An explicitly requested preset is never substituted.
+  auto ex = suite_config_from_json(c, "pq_hybrid");
+  REQUIRE(ex);
+  CHECK(ex->preset_id == "pq_hybrid");
 }

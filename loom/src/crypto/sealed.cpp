@@ -35,7 +35,29 @@ void wipe_s(std::string& s) {
 }
 }  // namespace
 
+namespace {
+Result<SuiteConfig> resolve_preset(const Json& crypto, std::string_view preset_id);
+}
+
 Result<SuiteConfig> suite_config_from_json(const Json& crypto, std::string_view preset_id) {
+  auto r = resolve_preset(crypto, preset_id);
+  if (!r || !preset_id.empty()) return r;
+  r->requested_preset = r->preset_id;
+  const CryptoBackend& be = backend();
+  std::string missing;
+  for (const auto& id : r->requires_prims)
+    for (Prim p : all_prims())
+      if (prim_id(p) == id && !be.available(p)) missing += (missing.empty() ? "" : ", ") + id;
+  if (missing.empty() || !crypto.contains("suite_presets") || !crypto["suite_presets"].contains("legacy")) return r;
+  auto legacy = resolve_preset(crypto, "legacy");
+  if (!legacy) return r;
+  legacy->requested_preset = r->preset_id;
+  legacy->fallback_reason = "primitives not available in this build/backend: " + missing;
+  return legacy;
+}
+
+namespace {
+Result<SuiteConfig> resolve_preset(const Json& crypto, std::string_view preset_id) {
   if (!crypto.is_object()) return Error(Errc::InvalidArgument, "crypto section missing");
   std::string id(preset_id);
   if (id.empty()) id = json::get_string(crypto, "selected_preset");
@@ -48,6 +70,8 @@ Result<SuiteConfig> suite_config_from_json(const Json& crypto, std::string_view 
   c.kem = json::get_string(*p, "kem");
   c.signature = json::get_string(*p, "signature");
   c.handoff_envelope = json::get_string(*p, "handoff_envelope");
+  if (const Json* rq = json::find(*p, "requires"); rq && rq->is_array())
+    for (const auto& x : *rq) if (x.is_string()) c.requires_prims.push_back(x.get<std::string>());
   if (c.password_kdf == "argon2id") {
     c.argon2_preset = json::get_string(*p, "argon2id_preset");
     const Json* ap = json::find(crypto, "params");
@@ -64,6 +88,7 @@ Result<SuiteConfig> suite_config_from_json(const Json& crypto, std::string_view 
   }
   return c;
 }
+}  // namespace
 
 Result<SuiteConfig> suite_config_from_profile(const std::filesystem::path& data_dir, std::string_view preset_id) {
   auto prof = RuntimeProfile::load("storage_security", data_dir);
@@ -150,7 +175,9 @@ Json crypto_status(const SuiteConfig* active) {
                          {"argon2id_preset", active->argon2_preset},
                          {"kem", active->kem},
                          {"signature", active->signature},
-                         {"handoff_envelope", active->handoff_envelope}};
+                         {"handoff_envelope", active->handoff_envelope},
+                         {"requested_preset", active->requested_preset.empty() ? active->preset_id : active->requested_preset},
+                         {"fallback", active->fallback_reason.empty() ? Json(nullptr) : Json(active->fallback_reason)}};
   } else {
     out["active"] = Json{{"known", false}, {"reason", "suite_not_resolved"}};
   }

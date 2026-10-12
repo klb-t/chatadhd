@@ -4,11 +4,8 @@
 #include <algorithm>
 #include <set>
 
-<<<<<<< HEAD
-#include "loom/economy.h"
-=======
 #include "loom/crypto_suite.h"
->>>>>>> 619aae0b (feat(crypto): sealed v2 in CryptoVault, envelope v3, crypto.status provider, F3/F4 fixes, packs implemented [skip ci])
+#include "loom/economy.h"
 #include "loom/runtime_profile.h"
 
 namespace loom::graph_entry {
