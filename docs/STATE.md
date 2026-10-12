@@ -1,20 +1,28 @@
 # STATE — ChatADHD / Loom
 
-## 2026-10-12 — T5b: zestaw kryptograficzny postkwantowy jako ustawienia (R51)
+## 2026-10-12 — S1: wątki T7, T6, T1–T5 scalone, `main` = gałąź robocza
 
-Gałąź `claude/t5-storage-crypto`. Zaimplementowane i przetestowane (KAT): `CryptoBackend` (`loom/crypto_suite.h`), AES-256-GCM,
-Argon2id (RFC 9106, wendorowany `phc-winner-argon2` 20190702), X25519 + Ed25519 (OpenSSL, a bez niego Monocypher 4.0.3),
-ML-KEM-768 (mlkem-native v2.0.0) i ML-DSA-65 (mldsa-native v2.0.0), hybrydowy KEM X-Wing, podpis hybrydowy
-`loom.sig_hybrid/1` (oba człony muszą się zweryfikować), `loom.sealed/2` (`v:2`, odczyt po `v`; `v:1` bez zmian),
-koperta `loom.credential_envelope/3` (Python `loom/tools/structure/credential_handoff_v3.py` + C++ `envelope_v3_*`; v2 nadal czytelne).
-Wybór zestawu to ustawienie (`crypto.selected_preset`, parametry Argon2id w danych); **domyślnie nadal `legacy`** (v:1) — zmiana
-domyślnej na `pq_hybrid` to decyzja właściciela, nic nie jest szyfrowane ani przepisywane po cichu, a nowy preset dotyczy tylko nowych zapisów.
-Dostawca `crypto.status` zasila obszar „Magazyn i bezpieczeństwo”. Naprawione F3 (`secrets.json` tworzony 0600 od pierwszego bajtu) i F4
-(klucz Google Speech w nagłówku `X-Goog-Api-Key`, błędy redagowane). Wendorowane biblioteki i SHA-256: `loom/third_party/README.md`.
-**Otwarte:** formularz HTML dla koperty v3 (WebCrypto nie ma ML-KEM; potrzebny osadzony, zweryfikowany ML-KEM w JS/WASM przy CSP `connect-src 'none'`);
-akcje C ABI dla KEM/podpisów (dziś tylko wewnątrz kernela i przez `loom_compat_tool`); `keys.custody` i `storage.probe` (szkielety z §8);
-podpis hybrydowy w kopercie po stronie Pythona; zgodność `loom.sig_hybrid/1` z draft-ietf-lamps-pq-composite-sigs;
-AES-GCM bez OpenSSL (Android: wstrzyknięcie przez `set_backend`, implementacja w Kotlinie nie powstała).
+Źródło szczegółów: `docs/reports/wp-queue-2026-10-10.md` (stan, decyzje, otwarte) i `docs/reports/INDEX.md`.
+Ostatnia pełna brama na czubku kodu (worktree T5, GCC Debug dev + serwer): **CTest 169/169, strażnik `verify_ctest.py`
+PASS (168 wykonanych + 1 opt-in `catalog_scale`), skrypty `.github` OK, web build OK, 19/19 skryptów web**.
+Niewykonane w tej sesji: Clang, ASan pełny (tylko testy krypto pod ASan), TSan, release, urządzenie Android, CI hostowane.
+
+| Wątek | Co działa |
+|---|---|
+| T7 | Python: `memory.json`/`models.json` nie tracą pól ani rekordów i nie są nadpisywane po nieudanym odczycie; `github_sync` porównuje SHA bloba |
+| T6 | Zwykły czat i wsadowy worker przez wspólny `ModelUsageGuard`; ×10 → stan `usage_pending` z potwierdzeniem w web/C ABI/HTTP/CLI; podgląd kosztu |
+| P-1 | Czat obok panelu wiedzy na telefonie nie znika (ciało czatu miało 0 px) |
+| T1 | Import: nierozpoznane → węzły z adnotacją i lokatorem; duplikaty raportowane; `duplicate_policy` jako preset/warstwa |
+| T2 | Worker: `retry_mode` explicit/automatic (trwałe ustawienie), masowe ponowienie, `stalled`, naprawiony zator, historia prób bez kopii profilu, `context_order` legacy/stable_first |
+| T3 | `loom.graph_entry/1`: obszary z osi, kalibracja z §3, liczniki z rejestrów albo `{known:false}`, zalążek zerowy z danych |
+| T4 | `loom.economy_report/1` tylko do odczytu; TOCTOU w `access.py` zamknięte (fd-walk `O_NOFOLLOW` + tożsamość) |
+| T5 | Inwentarz magazynów i kluczy (F1–F10), projekt obszaru „Magazyn i bezpieczeństwo”, preset `pq_hybrid` domyślny dla nowych zapisów (THREADS §6), `legacy` z powodem tam, gdzie brak prymitywu; F3/F4 naprawione |
+| T9, T10/T14 | Dokumenty Fable: paradygmat „wszystko w grafie”, integracja ekosystemu + 20 briefów; 89 przypadków granicznych, ścieżki akceptacyjne z telefonu; decyzja D3 |
+
+Najważniejsze otwarte: Android trzyma dane i `secrets.json` w współdzielonym `Documents` bez szyfrowania (F2, decyzja o lokalizacji danych);
+tryb LLM per-wiadomość poza ponowieniami bez strażnika ×10; enumeratory interfejsów/metod/perspektyw dla widoku wejściowego;
+ML-KEM w przeglądarce (koperta v3 w formularzu); akcje C ABI dla KEM/podpisów; tryb `auto` ekonomii.
+
 ## 2026-10-09 — zadanie B na gałęzi produktu
 
 Gałąź `gpt/data-graph-engine-2026-10-09`, sprawdzony runtime **6d1231bd**;

@@ -24,6 +24,17 @@ disabled. It shows the inspectable workflow, not general extraction accuracy.*
   requiring the storage and analysis logic to be reimplemented.
 - **Keep code and user data separate.** Application upgrades replace code;
   persistent stores, attachments and secrets have their own data directory.
+- **Nothing unrecognised is dropped.** Imports keep unknown JSON/HTML/ZIP parts
+  as annotated graph nodes with their source locator; duplicates are reported
+  with a proposal to link, never forbidden.
+- **No silent cost jumps.** Every model call — chat, background batches,
+  automatic retries — goes through one usage ledger; an expected ×10 increase
+  waits for the user's confirmation instead of being sent or refused.
+- **Post-quantum by default for new writes.** A hybrid suite (X25519 + ML-KEM-768,
+  Ed25519 + ML-DSA-65, Argon2id, AES-256-GCM) is a setting, with KAT-tested
+  vendored implementations and a visible fallback where a primitive is missing.
+- **A graph that starts with a self-model.** A parameterless query returns areas
+  generated from data axes, with real counts or an explicit "unknown".
 
 ## Architecture and current scope
 
