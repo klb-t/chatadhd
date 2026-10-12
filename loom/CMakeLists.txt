@@ -102,6 +102,35 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
   target_compile_options(loom_miniz PRIVATE -w)
 endif()
 
+# ── Post-quantum / password-hash / curve25519 (vendored, portable C) ──
+# mlkem-native, mldsa-native (FIPS 203/204), phc-winner-argon2 (RFC 9106) and
+# Monocypher (X25519/Ed25519). No assembly or arch backends: portable C only.
+# Warnings are relaxed for this target only (vendored code is not edited).
+set(LOOM_PQC_SOURCES
+  ${LOOM_TP}/mlkem-native/mlkem/mlkem_native.c
+  ${LOOM_TP}/mldsa-native/mldsa/mldsa_native.c
+  ${LOOM_TP}/argon2/src/argon2.c ${LOOM_TP}/argon2/src/core.c
+  ${LOOM_TP}/argon2/src/encoding.c ${LOOM_TP}/argon2/src/ref.c
+  ${LOOM_TP}/argon2/src/blake2/blake2b.c
+  ${LOOM_TP}/monocypher/monocypher.c ${LOOM_TP}/monocypher/monocypher-ed25519.c
+  ${LOOM_ROOT}/src/crypto/vendor/pq_glue.c)
+add_library(loom_pqc STATIC ${LOOM_PQC_SOURCES})
+set_source_files_properties(${LOOM_TP}/mlkem-native/mlkem/mlkem_native.c PROPERTIES
+  COMPILE_DEFINITIONS "MLK_CONFIG_PARAMETER_SET=768")
+set_source_files_properties(${LOOM_TP}/mldsa-native/mldsa/mldsa_native.c PROPERTIES
+  COMPILE_DEFINITIONS "MLD_CONFIG_PARAMETER_SET=65")
+set_source_files_properties(${LOOM_ROOT}/src/crypto/vendor/pq_glue.c PROPERTIES
+  COMPILE_DEFINITIONS "MLK_CONFIG_PARAMETER_SET=768;MLD_CONFIG_PARAMETER_SET=65")
+target_compile_definitions(loom_pqc PRIVATE ARGON2_NO_THREADS=1)
+target_include_directories(loom_pqc PRIVATE
+  ${LOOM_TP}/mlkem-native/mlkem ${LOOM_TP}/mldsa-native/mldsa
+  ${LOOM_TP}/argon2 ${LOOM_TP}/argon2/src ${LOOM_TP}/monocypher)
+target_include_directories(loom_pqc SYSTEM PUBLIC ${LOOM_TP}/argon2 ${LOOM_TP}/monocypher)
+set_target_properties(loom_pqc PROPERTIES POSITION_INDEPENDENT_CODE ON C_VISIBILITY_PRESET hidden)
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+  target_compile_options(loom_pqc PRIVATE -w)
+endif()
+
 # ── OpenSSL ─────────────────────────────────────────────────────────
 set(LOOM_HAVE_OPENSSL OFF)
 if(NOT LOOM_WITH_OPENSSL STREQUAL "OFF")
@@ -126,7 +155,7 @@ target_include_directories(loom_core SYSTEM PUBLIC ${LOOM_TP}/nlohmann)
 target_include_directories(loom_core SYSTEM PRIVATE ${LOOM_TP}/cpp-httplib)
 target_link_libraries(loom_core
   PUBLIC Threads::Threads
-  PRIVATE loom_warnings loom_sqlite loom_miniz)
+  PRIVATE loom_warnings loom_sqlite loom_miniz loom_pqc)
 target_compile_definitions(loom_core PUBLIC
   LOOM_VERSION_STRING="${PROJECT_VERSION}"
   JSON_USE_IMPLICIT_CONVERSIONS=1)
