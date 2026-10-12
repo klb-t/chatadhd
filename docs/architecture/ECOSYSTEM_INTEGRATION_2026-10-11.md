@@ -249,3 +249,203 @@ na siebie. W obrębie jednej sesji obowiązuje jeden agent naraz (`CLAUDE.md`, `
 Mapowanie na kolejkę audytu: grupa 1 (granice, zgody, utrata) ≈ W1; grupa 2 (dane zmieniają
 działanie) ≈ W2; grupa 3 (receptury) ≈ W2/W3; grupa 4 (graf i UI) ≈ W3; grupa 5 (baseline) = bez
 migracji. Różnice uzasadnione w §1.6 p. 1.
+
+## 3. Plan integracji: cykl rozważenie → implementacja → optymalizacja → iteracja
+
+### 3.1 Cykl jako metoda (R41)
+
+Cykl sam jest metodą: ma wersję, parametry (presety poniżej) i zostawia dowody. Każdy przebieg
+cyklu nad jednym briefem zapisuje w repozytorium, którego dotyczy, **rekord decyzji** (postać
+`decisions.jsonl` z audytu: `id`, `finding_ids`, `sha_before`, `sha_after`, `status`, `reason`,
+`evidence_refs`) i **pokwitowanie** bramy. Po B-ECO-01 oba są importowalne do grafu `chatadhd`
+jako twierdzenia o repo z kopertą; do tego czasu leżą jako pliki w `docs/reports/` repo.
+
+| Faza | Wejście | Działania | Wyjście | Kryterium wyjścia |
+|---|---|---|---|---|
+| **Rozważenie** | brief, lokatory audytu, bieżący SHA `main` repo | (1) sprawdzić każdy lokator: hash zakresu z audytu vs plik na bieżącym SHA; (2) potwierdzić ścieżkę konsumenta (`consuming_paths`) albo zapisać, że znikła; (3) wskazać **istniejący** mechanizm danych w repo (nigdy nowy magazyn); (4) przetłumaczyć kryterium akceptacji audytu na wykonywalny test albo diff przechwyconego żądania; (5) oszacować koszt (pliki, testy); reguła ×10 dla płatnych wywołań — żaden brief T9 ich nie wymaga (transport atrapowany) | brief potwierdzony z SHA; rekord decyzji ze statusem wstępnym | każde ustalenie ma status z słownika audytu (naprawione / przeniesione / zamaskowane / nadal wadliwe / niezweryfikowane) i wykonywalne kryterium, albo jest zdjęte z briefu z powodem |
+| **Implementacja** | brief potwierdzony | kolejność **wymuszona**: (a) fixture rzeczywistego konsumenta z przechwyconym transportem; (b) plik danych z **obecnym zachowaniem jako preset bajt w bajt** (hash legacy jak w `presets/import.pack#/compatibility`); (c) konsument czyta dane, brak danych = jawny błąd albo pack osadzony wygenerowany z danych; (d) test A/B: dwa presety → dwa różne, przewidywane żądania; (e) `produced_by`/hash efektywnego presetu w wyniku; (f) wpisy allowlisty strażnika literałów z kategorią i powodem; (g) migracja istniejących danych użytkownika bez utraty (ryzyka z `migration_risk`) | commity punktów kontrolnych w worktree; testy | brama repo zielona (§3.4); 0 nowych sufitów; 0 osłabionych strażników; preset legacy daje identyczne bajty |
+| **Optymalizacja** | zielona brama | pomiar przed/po (bajty danych, liczba testów, diff żądań); usunięcie ręcznych kopii presetów (lekcja W12: kopia zastąpiona wiązaniami); wspólne dane między repo tylko **przez odniesienie** (katalogi komunikatów, katalogi dostawców → B-ECO); raport ekonomii, gdy T4 istnieje; stabilność prefiksu promptu (R49) | liczby z mianownikami w rekordzie decyzji | żadna liczba bez mianownika; żadna optymalizacja nie zmienia presetu legacy |
+| **Iteracja** | rekordy decyzji fali | nowe wpisy strażników (R42, G5); porcja ścieżek z `coverage-index.json` audytu (728 bez zakresów) → nowe ustalenia tą samą postacią; przeszeregowanie U1–U5; następna fala | zaktualizowana kolejność w `t9-briefs/README.md`; wpis dla S1 do `INDEX.md` | **reguła stopu**: brak pozycji P0/P1 → cykl się zatrzymuje i melduje; dalszy ciąg to decyzja właściciela o pieniądzach (jedyna, która do niego należy, `THREADS` §6) |
+
+Presety cyklu (dane, nie reguły): próg stopu (`no_p0_p1`), rozmiar porcji iteracji (domyślnie 25
+ścieżek z `coverage-index.json`), model agenta (Sonnet 5.5 high do implementacji, Opus 5.5 do
+przeglądu i integracji), granica worktree (jeden brief = jeden worktree).
+
+### 3.2 Zasady wykonania (z `CLAUDE.md`, `AGENTS.md`, `THREADS`; obowiązują każdy brief)
+
+1. Jeden agent naraz w sesji; po limicie wznowić agenta, nie startować od nowa.
+2. Zachowanie obecne = nazwany preset zgodności, bajt w bajt, z hashem; zmiana domyślnego presetu
+   to osobna, jawna decyzja z wpisem.
+3. Nowy magazyn, nowy resolver, nowy silnik workflow — **nigdy**; audyt pass4 sprawdzał właśnie to.
+4. Gotowość danych ≠ aktywacja: brief jest zamknięty dopiero z konsumentem i testem A/B.
+5. Brak packa = jawny błąd albo pack osadzony **wygenerowany z danych** (`gen_*.py --check`).
+6. Żadnych płatnych wywołań modeli; transport atrapowany; żadnych kluczy w commitach.
+7. Nie osłabiać bramy, żeby przeszła; liczby z mianownikami; `[skip ci]` według zwyczaju repo.
+8. Testy i fixtures nie są kodem produktu (R42); wyjątki R42 uzasadniane lokalnie, nigdy nazwą pliku.
+9. Każdy wpis allowlisty strażnika literałów ma kategorię (1–6) i powód.
+10. Sekrety: tylko odniesienia (EITG D-G2).
+
+### 3.3 Zależności od T1–T8 i równoległość
+
+| Brief | Czeka na | Powód |
+|---|---|---|
+| B-ECO-01 | nic | wyłącznie nowe pliki danych i test; bez kolizji |
+| B-CH-01 | T7 | ten sam `engine/config.py` / `loom/src/core/config.cpp` w zasięgu poprawek Python |
+| B-CH-02, B-CH-03 | T2 | `semantic_worker.cpp`, `graph_ingest.pack` dotykane przez worker |
+| B-CH-04 | T2 | preset kolejności kontekstu `legacy`/`stable_first` musi istnieć pierwszy |
+| B-CH-05 | T3 | panel web widoku wejściowego i `graph_perspective.pack` |
+| B-CH-06 | T1, T4 | `catalog/scan.cpp` (relokacja), `tools/resource_graph/*` (T4 łata `access.py`) |
+| B-ECO-02 | T5 | strażnik drugiej pamięci potrzebuje inwentarza magazynów jako allowlisty |
+| B-WD-*, B-CKP-*, B-AG-*, B-LEM-* | nic z T1–T8 | osobne repozytoria |
+
+Równoległość: cztery repozytoria poza `chatadhd` mogą być prowadzone w osobnych sesjach
+równolegle z S1, bo nie dzielą plików. Ograniczeniem są wyłącznie limity planu właściciela
+(`THREADS` §6: jedyna sprawa właściciela). W jednej sesji nadal jeden agent naraz.
+
+### 3.4 Bramy per repozytorium (według raportów audytu; agent potwierdza na bieżącym `main`)
+
+| Repo | Brama | Granica (co nie jest wykonywane) |
+|---|---|---|
+| `chatadhd` | `cd loom && cmake --preset dev && cmake --build --preset dev && ctest --preset dev`; strażnik `.github/scripts/verify_ctest.py`; `npm ci && npm run build` w `loom/web`; `python loom/src/util/product_literal_guard.py` (tryb check); generatory `gen_runtime_profiles.py --check`, `gen_runtime_presets.py --check`, `gen_kb_pack.py --check` | ASan/TSan/release i urządzenie według `STATE.md`; nie czytać `eval/real-holdout-key` |
+| `Watchdog-JH16` | lint/typecheck + istniejące testy (53 w audycie; 644/644 w `STATE.md`) + `tools/ecosystem-audit-2026-10-09/pass4/watchdog/run.py --repo … --sha … --out …` dla A4-WD-* | HTTP/middleware poza testami jednostkowymi |
+| `Custom-Keyboard-Pro` | `validate_profiles.py` (struktura 3 profili); testy Kotlin/JVM na hoście, jeśli kompilator dostępny (w audycie: zablokowane) | Android/urządzenie; test hipotezy CKP-A-012 wymaga fake `AiClient` z opóźnieniem |
+| `AGEDS` | `audit-tools/semantic_probes.py --repo … --output receipt.json` (6 sond) + `pytest` po instalacji `anyio`/`pytest`; `scan.py` audytu dla inwentarza | Android/JVM/urządzenie; ASR rzeczywisty |
+| `LEM-Workbench` | testy JVM na hoście z fake transportem; Gradle, jeśli dostępny | Android, Room na urządzeniu; stare schematy Room wymagają fixture (brak `exportSchema`) |
+
+Każdy brief rozróżnia „test hosta” od „test urządzenia” i nie zalicza jednego za drugie
+(audyt: Android/device nie były uruchamiane w żadnym repo).
+
+## 4. Briefy — indeks
+
+Pliki w `docs/reports/t9-briefs/`; szablon i kolejność w `README.md` tego katalogu. Każdy brief
+ma: zakres (ID ustaleń i grup), pliki (lokatory z audytu, do potwierdzenia na bieżącym SHA),
+mechanizm docelowy (istniejący), kroki w czterech fazach, kryterium (z audytu + niezmiennik G),
+czego nie robić (ryzyka migracji), zależności, model i rozmiar.
+
+| Brief | Repo | Fala | Ustalenia / grupy | Rozmiar |
+|---|---|---|---|---|
+| B-ECO-01 | chatadhd (dane) | W1 | 7 repo jako węzły; audyt jako twierdzenia z kopertą; lineage standalone `loom`; `ar-drafty` jako odniesienie | S |
+| B-ECO-02 | chatadhd (narzędzie), potem każde repo | W3 | strażnik drugiej pamięci G1/G5 (analog strażnika literałów) | M |
+| B-CH-01 | chatadhd | W1 | CH-001 + domeny bootstrapu `config`/`runtime_paths`/`usage_policy` (okablowanie) + lustro Python | M |
+| B-CH-02 | chatadhd | W2 | CH-002, CH-003, DIC-0009…0014 i `open` wątku 1 | L |
+| B-CH-03 | chatadhd | W2 | CH-006, CH-010 (+ odpowiednik LOOM-002) | M |
+| B-CH-04 | chatadhd | W3 | CH-007 + `open` wątku 3 | M |
+| B-CH-05 | chatadhd | W3 | CH-008, CH-009, A4-CH-VIEW001, A3-WEB-001, A4-E-001 + `open` wątku 10 | L |
+| B-CH-06 | chatadhd | W4 | A4-C-001/002, A2-C-001/004, A3-DISC-001, A4-D-001, A4-B-RES001 | M |
+| B-WD-01 | Watchdog-JH16 | W1 | WD-002, A4-WD-002 (+ weryfikacja WD-001/003/011, A4-WD-001/003) | S |
+| B-WD-02 | Watchdog-JH16 | W2 | WD-005, WD-009, WD-003 | M |
+| B-WD-03 | Watchdog-JH16 | W3 | WD-004, WD-006, WD-010 | M |
+| B-CKP-01 | Custom-Keyboard-Pro | W1 | CKP-A-012 (hipoteza najpierw), CKP-A-001, CKP-A-002 | M |
+| B-CKP-02 | Custom-Keyboard-Pro | W2 | CKP-A-003, CKP-A-005, CKP-A-007 | M |
+| B-CKP-03 | Custom-Keyboard-Pro | W3 | CKP-A-004, CKP-A-006, CKP-A-011, A4-CKP-001/002 | L |
+| B-AG-01 | AGEDS | W1 | EA-AGEDS-001/002/003 | M |
+| B-AG-02 | AGEDS | W2 | EA-AGEDS-004/005/009 | M |
+| B-AG-03 | AGEDS | W3 | EA-AGEDS-006/007/008 | M |
+| B-LEM-01 | LEM-Workbench | W1 | LEM-005, LEM-003, A4-LEM-001/002 | S |
+| B-LEM-02 | LEM-Workbench | W2 | LEM-001, LEM-002, LEM-004 | M |
+| B-LEM-03 | LEM-Workbench | W3 | LEM-006, LEM-007 | M |
+
+Rozmiar: S = do 5 plików produktu i jeden test; M = do 15 plików i kilka testów; L = powyżej albo
+migracja istniejących danych użytkownika. To klasy wysiłku, nie liczby tokenów; liczby tokenów
+agent raportuje po fakcie w rekordzie decyzji.
+
+## 5. Mosty między repozytoriami — faza rozważenia (bez briefów implementacji)
+
+`ECOSYSTEM.md` wskazuje kierunki (ChatADHD jako interfejs do AGEDS i WatchDoga, przepływ
+dwukierunkowy z iOmatrix, pamięć bez monopolu czatu). W paradygmacie (EITG §7) most to **adapter
+jako dane** czytający samoopis drugiego repo; warunkiem jest samoadresowalność obu stron. Dlatego
+mosty są tu wyłącznie **rozważone**, a briefy implementacji powstaną po W2, gdy druga strona ma
+profil. Pisanie ich teraz byłoby zgadywaniem o repozytoriach, których ta sesja nie czytała.
+
+Lista kontrolna rozważenia każdego mostu:
+
+1. Obie strony samoadresowalne (profil z rolami z §2.2).
+2. Koperta `loom.ecosystem_ref/1` po obu stronach; hash koperty sprawdzalny.
+3. Które **kategorie danych** mogą przejść i w którą stronę (macierz kategoria × magazyn, EITG §6;
+   dla mostu druga strona jest magazynem klasy `repo` albo `app_server`).
+4. Pułap klasy dowodu: twierdzenie z innego repo wchodzi z `origin=repo` i klasą nie wyższą niż
+   w źródle; nigdy jako obserwacja własna.
+5. Adapter jako dane (pack mapowania typów); kod to uniwersalny czytnik koperty.
+6. Niezmiennik akceptacji (nie oczekiwany wynik): np. „usunięcie mostu nie zmienia żadnego
+   twierdzenia po stronie źródła”, „każde twierdzenie z mostu ma kopertę, która rozwiązuje się do
+   bajtów”.
+7. Koszt i reguła ×10, jeśli most uruchamia płatne analizy.
+
+Kandydaci, w kolejności wartości dla właściciela:
+
+| Most | Kierunek | Dlaczego | Warunek wstępny |
+|---|---|---|---|
+| **M1 AGEDS → ChatADHD** | dowody (nagrania, transkrypcje, dokumenty) jako źródła z łańcuchem opieki | drugi projekt właściciela: postępowanie prawno-dyscyplinarne (R9); ChatADHD ma szukać podstaw prawnych i pilnować terminów nad **tym** materiałem | B-AG-01 (receptura przypięta do zadania — bez tego transkrypcja nie jest cytowalna), B-AG-03 (konfiguracja adresowalna) |
+| **M2 Watchdog ↔ ChatADHD** | wyniki analiz i narracje jako źródła; pytania badawcze z czatu | ChatADHD jako interfejs do kierowania analizą (`ECOSYSTEM` §2) | B-WD-01 (poprawność liczb), B-WD-02 (parametry z pochodzeniem) |
+| **M3 IO Matrix ↔ pamięć podmiotu** | słownik, preferencje, otoczenie użytkownika uczone przez klawiaturę; odczyt preferencji przez klawiaturę | „iOmatrix może zapisywać nauczone rzeczy o użytkowniku” (`ECOSYSTEM` §1); tekst pisany jest **najwrażliwszą kategorią** → preset: tylko `device`, nic do dostawcy bez zgody | B-CKP-01 (dane wysyłane do sieci pod kontrolą), T3/T13 (węzeł podmiotu i zakresy) |
+| **M4 LEM → reprezentacja epistemiczna** | LEM jako warstwa B–C modelu pojęcznego (R13) | długoterminowe; dziś LEM-Workbench jest instrumentem, nie implementacją teorii | brak w tym cyklu |
+| **M5 `ar-drafty`** | tylko odniesienie | prywatne | — |
+
+## 6. Zarządzanie, zasoby, decyzje, krytyka
+
+### 6.1 Kto decyduje
+
+- **Właściciel**: wyłącznie sprawy z DUCH §6 i wydatki (`THREADS` §6). Żaden brief nie czeka na
+  decyzję właściciela. Jedno powiązanie: B-CH-01 utrzymuje lustro Python, bo obecna decyzja to
+  „aplikacja Python żyje równolegle” (DUCH §6); gdyby się zmieniła, lustro odpada bez zmiany
+  reszty briefu.
+- **Sesja orkiestrująca** (S1 albo sesja per repo): kolejność w fali, worktree, bramy, wpisy do
+  `INDEX.md`/`wp-queue` (tylko S1), statusy ustaleń.
+- **Agent** (Sonnet 5.5): decyzje techniczne wewnątrz briefu; każda zapisana w rekordzie decyzji;
+  pytania do orkiestratora tylko, gdy brief jest sprzeczny z bieżącym kodem.
+- **Przegląd** (Opus 5.5): odbiór każdego briefu przed scaleniem; sprawdza punkty 2–5 z §3.2.
+
+### 6.2 Zasoby
+
+Żaden brief nie wymaga płatnych wywołań modeli (transport atrapowany), więc reguła ×10 dotyczy
+wyłącznie tokenów agentów w planie właściciela. Klasy rozmiaru S/M/L w §4 są jedyną prognozą,
+jaką ta sesja może dać uczciwie; liczby tokenów wchodzą do rekordów decyzji po fakcie i staną się
+danymi metody cyklu (R41), z których kolejna fala bierze lepszy szacunek.
+
+### 6.3 Decyzje podjęte w tej sesji (CLAUDE.md: decyduj i zapisuj; odwracalne jednym słowem)
+
+- **D-E1** Priorytet według wpływu na użytkownika (U1–U5), nie według klasy ryzyka audytu;
+  mapowanie w §2.9.
+- **D-E2** Profil per repo = role, nie wspólny schemat; każde repo trzyma dane tam, gdzie już
+  trzyma; wspólna jest koperta i kategorie R42.
+- **D-E3** Brief kończy się na konsumencie i teście A/B, nigdy na pliku danych.
+- **D-E4** Obecne zachowanie zawsze jako preset zgodności bajt w bajt, z hashem.
+- **D-E5** Mosty rozważone, nie zaimplementowane; briefy mostów po W2.
+- **D-E6** Repozytoria poza `chatadhd` mogą iść równolegle z S1 w osobnych sesjach; w sesji jeden
+  agent naraz.
+- **D-E7** `INDEX.md` i `STATE.md` edytuje wyłącznie S1 (`THREADS` §9), mimo że P-F (§5) każe
+  dopisać wpis: S2 zostawia gotowy do wklejenia blok w `t9-briefs/README.md`.
+- **D-E8** Rekordy decyzji i pokwitowania w postaci `decisions.jsonl` audytu; po B-ECO-01
+  importowane do grafu.
+- **D-E9** Standalone `loom` bez migracji; `ar-drafty` bez treści publicznie.
+
+### 6.4 Krytyka założeń zadania (na życzenie właściciela)
+
+1. **„Priorytety migracji danych do profili”** sugeruje, że celem jest przeniesienie danych.
+   Z audytu wynika, że 187 z 213 grup wątku 11 już przeniesiono, a kluczowe ustalenia zostały.
+   Celem jest **konsument czytający dane**; przeniesienie jest środkiem. Plan to odwraca (D-E3).
+2. **„Per repo”** można odczytać jako „jeden profil dla wszystkich repo”. `ECOSYSTEM.md` tego
+   zabrania. Plan daje role i kopertę, nie schemat (D-E2).
+3. **„Plan integracji ekosystemu”** kusi, żeby zaprojektować mosty teraz. Bez samoadresowalnych
+   stron most byłby drugą pamięcią w nowym miejscu. Plan odkłada briefy mostów do W2 (D-E5).
+4. **Cykl „rozważenie → implementacja → optymalizacja → iteracja”** bez reguły stopu jest
+   nieskończony, a nieskończony cykl na płatnych agentach to decyzja o pieniądzach podjęta
+   milcząco. Plan dodaje regułę stopu jako preset (§3.1) i zatrzymuje się na granicy P1.
+5. **Kontekst sesji „nic więcej” (sekcja 4)** był sprzeczny z kompletnością: dwa lokatory sekcji 4
+   nie istniały na gałęzi roboczej, a plan bez zajrzenia do `loom/data` wymieniałby packi, których
+   nie ma (np. `graph/*.pack` z `GRAPH_ENTRY` §3 jeszcze nie istnieje; tworzy je T3). Sesja
+   sprawdziła istnienie ścieżek, nie czytając kodu; to jedyne wyjście poza sekcję 4.
+6. **Fale są propozycją porządku, nie harmonogramem.** Daty nie ma, bo zależy od limitów planu;
+   każda próba podania dat byłaby liczbą bez mianownika.
+
+### 6.5 Przekazanie do S1 (do wklejenia; nie wymaga decyzji)
+
+- Blok do `INDEX.md` i `wp-queue` jest w `docs/reports/t9-briefs/README.md` („Wpis dla S1”).
+- Do T1: A3-IMP-CH004 jako przypadek negatywny; A4-B-RES001 dotyka `catalog/scan.cpp`.
+- Do T3: packi `loom/data/*` jako węzły z rewizją w widoku wejściowym; obszar „Technologie
+  i adaptery” może od razu wyliczać 7 repozytoriów z B-ECO-01.
+- Do T4: A4-D-001 (parametry parsera poza tożsamością metody) sąsiaduje z łatką `access.py`.
+- Do T5: schemat węzła magazynu i macierz kategoria × magazyn z EITG §6; strażnik G5 (B-ECO-02)
+  potrzebuje inwentarza T5 jako allowlisty.
+- Do scalenia po zakończeniu S2: ta gałąź zawiera wyłącznie dokumenty w `docs/architecture/`
+  i `docs/reports/t9-briefs/`; brak kolizji z kodem.
