@@ -215,6 +215,10 @@ class Access:
         No file descriptor is retained. Callers must use a safe open and verify
         the descriptor: this authorization alone is not a race-free read.
         """
+        return self._authorize_local(locator)[0]
+
+    def _authorize_local(self, locator):
+        """Return (path, authorized root or None, os.stat_result recorded now)."""
         if not self.policy["allow_local"]:
             raise AccessFailure("unavailable", "local_access_not_authorized")
         parsed = urllib.parse.urlsplit(str(locator))
@@ -228,20 +232,58 @@ class Access:
             raise AccessFailure("unsupported", "local_transport_scheme")
         path = path.resolve(strict=True)
         roots = [Path(root).resolve(strict=True) for root in self.policy["local_roots"]]
-        if roots and not any(path.is_relative_to(root) for root in roots):
+        root = next((r for r in roots if path.is_relative_to(r)), None)
+        if roots and root is None:
             raise AccessFailure("unavailable", "outside_local_roots")
-        if not stat.S_ISREG(path.stat().st_mode):
+        recorded = path.stat()
+        if not stat.S_ISREG(recorded.st_mode):
             raise AccessFailure("unsupported", "local_source_not_regular_file")
-        return path
+        return path, root, recorded
+
+    def _before_local_open(self, path):
+        """Test seam: runs between authorization and the descriptor-walk open."""
+
+    @staticmethod
+    def _open_no_follow(path, root):
+        """Open ``path`` by walking directory fds from ``root`` without following links.
+
+        Fails closed when the platform cannot refuse symlinks or lacks dir_fd.
+        """
+        nofollow = getattr(os, "O_NOFOLLOW", 0)
+        directory = getattr(os, "O_DIRECTORY", 0)
+        if not nofollow or not directory or os.open not in os.supports_dir_fd:
+            raise AccessFailure("unavailable", "local_no_follow_unsupported")
+        base = Path(root) if root is not None else Path(path.anchor)
+        parts = path.relative_to(base).parts
+        if not parts:
+            raise AccessFailure("unsupported", "local_source_not_regular_file")
+        current = os.open(base, os.O_RDONLY | directory)
+        try:
+            for part in parts[:-1]:
+                following = os.open(part, os.O_RDONLY | directory | nofollow, dir_fd=current)
+                os.close(current)
+                current = following
+            # NONBLOCK means an adversarial FIFO cannot hang before fstat rejects it.
+            return os.open(parts[-1], os.O_RDONLY | nofollow | getattr(os, "O_NONBLOCK", 0),
+                           dir_fd=current)
+        finally:
+            os.close(current)
 
     def _local(self, locator):
-        path = self.authorize_local(locator)
-        # NONBLOCK means an adversarial FIFO cannot hang before fstat rejects it.
-        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NONBLOCK", 0))
+        path, root, recorded = self._authorize_local(locator)
+        self._before_local_open(path)
+        try:
+            descriptor = self._open_no_follow(path, root)
+        except AccessFailure:
+            raise
+        except OSError:
+            raise AccessFailure("unavailable", "local_path_changed_after_authorization")
         with os.fdopen(descriptor, "rb") as source:
             before = os.fstat(source.fileno())
             if not stat.S_ISREG(before.st_mode):
                 raise AccessFailure("unsupported", "local_source_not_regular_file")
+            if (before.st_dev, before.st_ino) != (recorded.st_dev, recorded.st_ino):
+                raise AccessFailure("unavailable", "local_path_changed_after_authorization")
             self._check("max_source_bytes", before.st_size)
             data = source.read(int(self._limit("max_source_bytes")) + 1)
             self._check("max_source_bytes", len(data))

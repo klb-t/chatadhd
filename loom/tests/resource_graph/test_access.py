@@ -117,6 +117,61 @@ class AccessTests(unittest.TestCase):
         self.assertEqual(Access().read(path, ("link",))["status"], "unsupported")
         self.assertEqual(Access().read(path, ("duplicate",))["reason"], "ambiguous_duplicate_member")
 
+    def _race(self, swap):
+        class Racing(Access):
+            def _before_local_open(inner, path):
+                swap()
+        return Racing
+
+    def test_file_swapped_for_symlink_after_authorization_never_leaks(self):
+        outside = tempfile.TemporaryDirectory()
+        self.addCleanup(outside.cleanup)
+        secret = Path(outside.name) / "secret"
+        secret.write_bytes(b"OUTSIDE")
+        inside = Path(self.source(b"inside"))
+
+        def swap():
+            inside.unlink()
+            inside.symlink_to(secret)
+        result = self._race(swap)({"local_roots": [str(self.root)]}).read(str(inside))
+        self.assertNotIn("data", result)
+        self.assertNotEqual(result["status"], "available")
+        self.assertEqual(result["reason"], "local_path_changed_after_authorization")
+
+    def test_file_replaced_by_other_regular_file_is_identity_mismatch(self):
+        inside = Path(self.source(b"inside"))
+
+        def swap():
+            inside.rename(self.root / "kept")  # keeps the old inode from being reused
+            inside.write_bytes(b"replaced")
+        result = self._race(swap)({"local_roots": [str(self.root)]}).read(str(inside))
+        self.assertNotIn("data", result)
+        self.assertEqual(result["reason"], "local_path_changed_after_authorization")
+
+    def test_intermediate_directory_swapped_for_symlink_never_leaks(self):
+        outside = tempfile.TemporaryDirectory()
+        self.addCleanup(outside.cleanup)
+        (Path(outside.name) / "file.bin").write_bytes(b"OUTSIDE")
+        (self.root / "sub").mkdir()
+        inside = self.root / "sub" / "file.bin"
+        inside.write_bytes(b"inside")
+
+        def swap():
+            inside.unlink()
+            (self.root / "sub").rmdir()
+            (self.root / "sub").symlink_to(outside.name, target_is_directory=True)
+        result = self._race(swap)({"local_roots": [str(self.root)]}).read(str(inside))
+        self.assertNotIn("data", result)
+        self.assertEqual(result["reason"], "local_path_changed_after_authorization")
+
+    def test_unswapped_local_read_and_missing_no_follow_support_fails_closed(self):
+        path = self.source(b"plain")
+        self.assertEqual(Access({"local_roots": [str(self.root)]}).read(path)["data"], b"plain")
+        with patch("loom.tools.resource_graph.access.os.supports_dir_fd", set()):
+            result = Access().read(path)
+        self.assertEqual(result["reason"], "local_no_follow_unsupported")
+        self.assertNotIn("data", result)
+
     def test_resource_policy_and_environment_bound_are_reported_separately(self):
         path = self.source(b"12345")
         user = Access({"max_source_bytes": 4}).read(path)
