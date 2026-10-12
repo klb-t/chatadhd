@@ -19,6 +19,7 @@
 #include "loom/net/http.h"
 #include "loom/net/sse.h"
 #include "loom/semantic_analyzer.h"
+#include "loom/usage_policy.h"
 #include "loom/util/base64.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -56,6 +57,69 @@ double cfg_number(const Config& cfg, std::string_view key, double fallback) {
 bool cfg_bool(const Config& cfg, std::string_view key, bool fallback) {
   return json::truthy(cfg.get(key, fallback));
 }
+
+// Cohort name from data (usage policy "baseline_key_templates"); never from caps.
+std::string usage_baseline_key(const Config& cfg, std::string_view kind, std::string_view endpoint,
+                               std::string_view model) {
+  std::string tmpl = std::string(kind) + "|{endpoint}|{model}";
+  if (auto options = effective_usage_policy_options(cfg); options && options->contains("baseline_key_templates")) {
+    const auto& templates = (*options)["baseline_key_templates"];
+    if (templates.is_object() && templates.contains(std::string(kind)) && templates[std::string(kind)].is_string())
+      tmpl = templates[std::string(kind)].get<std::string>();
+  }
+  for (const auto& [name, value] : {std::pair<std::string_view, std::string_view>{"{endpoint}", endpoint},
+                                    std::pair<std::string_view, std::string_view>{"{model}", model}}) {
+    for (std::size_t at = tmpl.find(name); at != std::string::npos; at = tmpl.find(name, at + value.size()))
+      tmpl.replace(at, name.size(), value);
+  }
+  return tmpl;
+}
+
+// Estimate is exact input bytes only; output/cost are unknown (null), never a
+// configured cap such as max_tokens.
+Json chat_usage_estimate(const Config& cfg, std::string_view endpoint, std::string_view model,
+                         std::string_view operation_id) {
+  Json estimate{{"baseline_key", usage_baseline_key(cfg, "chat.send", endpoint, model)},
+      {"resources", Json{{"output_tokens", nullptr}, {"cost_usd", nullptr}}},
+      {"instrument", "loom.chat.send"}, {"model", model},
+      {"estimate_basis", "exact_request_input_bytes_output_and_cost_unknown"}};
+  if (!operation_id.empty()) estimate["operation_id"] = operation_id;
+  return estimate;
+}
+
+Json compose_chat_payload(const Config& cfg, const ChatOptions& opts, const std::string& model, const Json& messages,
+                          bool stream, const chat::ReasoningRecipe& reasoning_recipe) {
+  const double temperature = opts.temperature.value_or(cfg_number(cfg, "temperature", 0.7));
+  const int max_tokens = opts.max_tokens.value_or(static_cast<int>(cfg_number(cfg, "max_tokens", 4096)));
+  Json payload{{"model", model}, {"messages", messages}, {"temperature", temperature},
+              {"max_tokens", max_tokens}, {"stream", stream}};
+  if (opts.web_search || opts.deep_research) {
+    Json plugin{{"id", "web"}};
+    if (opts.deep_research) {
+      plugin["max_results"] = 10;
+      payload["web_search_options"] = Json{{"search_context_size", "high"}};
+    }
+    payload["plugins"] = Json::array({plugin});
+  }
+  chat::apply_reasoning_recipe(payload, model, opts.reasoning_effort, reasoning_recipe);
+  payload["include_reasoning"] = true;
+  return payload;
+}
+
+// Ordinary transport admission/settlement. Settles on every exit once dispatched.
+struct OrdinaryUsage {
+  std::unique_ptr<chat::ModelUsageGuard> guard;
+  bool dispatched = false, attempted = false;
+  std::size_t received = 0;
+  Json usage = Json::object();
+  ~OrdinaryUsage() { if (dispatched) { try { settle(); } catch (...) {} } }
+  void settle() {
+    if (!dispatched) return;
+    dispatched = false;
+    auto settled = guard->settle(attempted, received, usage);
+    if (!settled) log::warn("loom.chat_engine", "usage settlement failed: {}", settled.error().to_string());
+  }
+};
 
 const std::vector<std::string>& image_exts() {
   static const std::vector<std::string> kExts = {".png", ".jpg", ".jpeg", ".gif", ".webp"};
@@ -554,6 +618,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
       auto compiled = chat::compile_active_task_spec(v);
       if (!compiled) return compiled.error();
       o.active_task_spec = v;
+    } else if (k == "usage_confirmation") {
+      if (!v.is_object() || !v.contains("approved") || !v["approved"].is_boolean()) return bad();
+      o.usage_confirmation = v;
     } else if (k == "active_task_bindings") {
       if (!v.is_object()) return bad();
       o.active_task_bindings = v;
@@ -588,7 +655,30 @@ Json ChatResult::to_json() const {
               {"title", new_title ? Json(*new_title) : Json(nullptr)},
               {"cancelled", cancelled}};
   if (!context_trace.is_null()) out["context_trace"] = context_trace;
+  if (usage_pending) out["usage_pending"] = *usage_pending;
   return out;
+}
+
+Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions& opts) {
+  LOOM_TRY_ASSIGN(auto reasoning_recipe, chat::reasoning_recipe(cfg_.get("chat_reasoning", Json::object())));
+  std::string conv_id;
+  {
+    std::lock_guard lk(mu_);
+    if (opts.conv_id) conv_id = *opts.conv_id;
+    else if (conv_) conv_id = conv_->id;
+  }
+  LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
+  const std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
+  const std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
+  const std::string body = json::dump(compose_chat_payload(cfg_, opts, model, messages, stream, reasoning_recipe));
+  Json estimate = chat_usage_estimate(cfg_, base, model, "usage_preview");
+  estimate["resources"]["requests"] = 1;
+  estimate["resources"]["input_bytes"] = body.size();
+  estimate["estimate_basis"] = "compiled_request_body_bytes_without_persisting_output_and_cost_unknown";
+  LOOM_TRY_ASSIGN(auto settings, effective_usage_policy_options(cfg_));
+  LOOM_TRY_ASSIGN(auto policy, UsagePolicy::open(cfg_.path().parent_path() / "usage-policy.sqlite", settings));
+  return policy->preview(estimate);
 }
 
 ChatEngine::ChatEngine(const Config& cfg, const Secrets& secrets, Database& db, EventBus& bus,
@@ -1085,23 +1175,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
   bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true)) && static_cast<bool>(cb.on_chunk);
 
-  double temperature = opts.temperature.value_or(cfg_number(cfg_, "temperature", 0.7));
-  int max_tokens = opts.max_tokens.value_or(static_cast<int>(cfg_number(cfg_, "max_tokens", 4096)));
-
-  Json payload{{"model", model}, {"messages", *msgs_json}, {"temperature", temperature},
-              {"max_tokens", max_tokens}, {"stream", stream}};
-
-  if (opts.web_search || opts.deep_research) {
-    Json plugin{{"id", "web"}};
-    if (opts.deep_research) {
-      plugin["max_results"] = 10;
-      payload["web_search_options"] = Json{{"search_context_size", "high"}};
-    }
-    payload["plugins"] = Json::array({plugin});
-  }
-
-  chat::apply_reasoning_recipe(payload, model, opts.reasoning_effort, reasoning_recipe);
-  payload["include_reasoning"] = true;
+  Json payload = compose_chat_payload(cfg_, opts, model, *msgs_json, stream, reasoning_recipe);
 
   std::unique_ptr<ChatGraphExecution> graph;
   const bool graph_postprocess = graph_mode == "separate_model_afterwards" || graph_mode == "separate-model-postprocess";
@@ -1172,6 +1246,43 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     }
   }
 
+  // Every ordinary transport (including the primary call of a postprocess
+  // graph run, or a graph run whose capability is unavailable) is admitted by
+  // the same shared guard/ledger as the graph reply and settled afterwards.
+  OrdinaryUsage ordinary;
+  if (!(graph && graph->guard)) {
+    const Json confirmation = opts.usage_confirmation.value_or(Json::object());
+    if (!confirmation.is_object()) return Error(Errc::InvalidArgument, "usage_confirmation must be an object");
+    Json estimate = chat_usage_estimate(cfg_, base, model, json::get_string(confirmation, "operation_id"));
+    ordinary.guard = std::make_unique<chat::ModelUsageGuard>(cfg_.path().parent_path(), cfg_);
+    auto admitted = ordinary.guard->admit(req, estimate, confirmation);
+    if (!admitted) return admitted.error();
+    if (!admitted->value("dispatch_authorized", false)) {
+      const auto status = json::get_string(*admitted, "status", "unavailable");
+      if (status != "requires_confirmation" && status != "cancelled")
+        return Error(Errc::Paused, "model usage is not admitted: " + status);
+      // Nothing was sent. The user's turn is withdrawn from the conversation so
+      // the identical confirmed re-send reproduces the identical request.
+      bool retained = true;
+      if (!opts.active_task_spec && db_.set_msg_status(user_mid, "deleted")) retained = false;
+      Json resources = Json::object();
+      if (const auto* r = json::find(*admitted, "resources")) resources = *r;
+      ChatResult paused;
+      paused.conv_id = conv.id;
+      paused.user_message_id = user_mid;
+      paused.model = model;
+      paused.usage_pending = Json{{"schema", "loom.chat_usage_pending/1"}, {"status", status},
+          {"operation_id", admitted->value("operation_id", Json(nullptr))},
+          {"receipt_id", admitted->value("receipt_id", Json(nullptr))},
+          {"baseline_key", admitted->value("baseline_key", Json(nullptr))},
+          {"projected", resources}, {"decisions", ordinary.guard->decisions()},
+          {"sent", false}, {"user_message_retained", retained},
+          {"resend", "repeat the same request with usage_confirmation {approved, receipt_id, ref, operation_id}"}};
+      return paused;
+    }
+    ordinary.dispatched = true;
+  }
+
   std::string full_text, reasoning_text;
   std::string reported_model;
   Json usage = Json::object();
@@ -1229,6 +1340,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       return true;
     };
     sink.on_data = [&](std::string_view chunk) -> bool {
+      ordinary.received += chunk.size();
       // Preserve each exact source chunk before parsing or a cancellation
       // callback. The final full wire source is independent of model content.
       if (graph) graph->capture_chunk(chunk, model);
@@ -1249,6 +1361,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     };
 
     Result<net::HttpResponse> resp = Error(Errc::Internal, "transport not attempted");
+    ordinary.attempted = true;
     if (graph) {
       graph->attempted = true;
       try { resp = http_.send(req, &sink, cancel); }
@@ -1273,6 +1386,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     }
   } else {
     Result<net::HttpResponse> resp = Error(Errc::Internal, "transport not attempted");
+    ordinary.attempted = true;
     if (graph) {
       graph->attempted = true;
       try { resp = http_.send(req, nullptr, cancel); }
@@ -1283,6 +1397,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
         graph->capture_final(model, false, response_status);
       }
     } else resp = http_.send(req, nullptr, cancel);
+    if (resp) ordinary.received = resp->body.size();
     if (!resp) {
       if (resp.error().code == Errc::Cancelled) {
         cancelled = true;
@@ -1316,6 +1431,9 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       }
     }
   }
+
+  ordinary.usage = usage;
+  ordinary.settle();
 
   if (graph) {
     if (stream || graph->first_response.empty()) graph->capture_final(model, cancelled, response_status);

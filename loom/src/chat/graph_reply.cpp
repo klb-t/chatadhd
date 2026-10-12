@@ -387,8 +387,9 @@ Result<Json> graph_reply_fragment(const Json& result, const Json& address, const
 }
 
 struct ModelUsageGuard::Impl {
-  explicit Impl(GraphReplyServices& borrowed) : services(borrowed) {}
-  GraphReplyServices& services;
+  Impl(const std::filesystem::path& data_root, const Config& cfg) : root(data_root), config(cfg) {}
+  std::filesystem::path root;
+  const Config& config;
   Json decisions = Json::array();
   std::string operation;
   std::size_t input_bytes = 0;
@@ -397,7 +398,10 @@ struct ModelUsageGuard::Impl {
   std::unique_ptr<UsagePolicy> policy;
 #endif
 };
-ModelUsageGuard::ModelUsageGuard(GraphReplyServices& services) : impl_(std::make_unique<Impl>(services)) {}
+ModelUsageGuard::ModelUsageGuard(GraphReplyServices& services)
+    : impl_(std::make_unique<Impl>(services.root, services.config)) {}
+ModelUsageGuard::ModelUsageGuard(const std::filesystem::path& root, const Config& config)
+    : impl_(std::make_unique<Impl>(root, config)) {}
 ModelUsageGuard::~ModelUsageGuard() = default;
 const Json& ModelUsageGuard::decisions() const { return impl_->decisions; }
 
@@ -419,8 +423,8 @@ Result<Json> ModelUsageGuard::admit(const net::HttpRequest& request, const Json&
   bound["request_body_sha256"] = Sha256::hex(request.body);
   if (!bound.contains("operation_id")) bound["operation_id"] = "model_usage_" + random_hex(32);
   impl_->operation = json::get_string(bound, "operation_id");
-  LOOM_TRY_ASSIGN(auto settings, effective_usage_policy_options(impl_->services.config));
-  LOOM_TRY_ASSIGN(auto opened, UsagePolicy::open(impl_->services.root / "usage-policy.sqlite", settings));
+  LOOM_TRY_ASSIGN(auto settings, effective_usage_policy_options(impl_->config));
+  LOOM_TRY_ASSIGN(auto opened, UsagePolicy::open(impl_->root / "usage-policy.sqlite", settings));
   impl_->policy = std::move(opened);
   LOOM_TRY_ASSIGN(auto decision, impl_->policy->request(bound));
   record_decision(impl_->decisions, decision);
@@ -437,7 +441,7 @@ Result<Json> ModelUsageGuard::admit(const net::HttpRequest& request, const Json&
     decision["dispatch_status"] = "operation_already_attempted";
     return decision;
   }
-  LOOM_TRY_ASSIGN(auto claim, context::claim_context_usage_operation(impl_->services.root, decision));
+  LOOM_TRY_ASSIGN(auto claim, context::claim_context_usage_operation(impl_->root, decision));
   record_decision(impl_->decisions, claim);
   decision["execution_claim"] = claim;
   decision["dispatch_authorized"] = claim.value("claimed", false);

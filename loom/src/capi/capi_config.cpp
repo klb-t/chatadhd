@@ -1,6 +1,8 @@
 // Usage/configuration API. Execution callers are owned by lanes 3, 4 and 5.
 #include "context.h"
+#include "loom/chat_engine.h"
 #include "loom/config.h"
+#include "loom/runtime.h"
 #include "loom/usage_policy.h"
 
 using namespace loom;
@@ -28,6 +30,16 @@ extern "C" const char* loom_usage_policy_json(LoomContext* ctx, const char* comm
           {"number_representation", "finite_binary64"}, {"growth_requires_confirmation", true},
           {"scope", "explicit_callers"}, {"preset_application", "next_policy_open"}};
       return out(*settings);
+    }
+    if (action == "chat_preview") {
+      const std::string message = json::get_string(command, "message");
+      if (message.empty()) return out_error(missing("message"));
+      Json chat_request = command;
+      chat_request.erase("action");
+      auto opts = ChatOptions::from_json(chat_request);
+      if (!opts) return out_error(opts.error());
+      auto preview = ctx->rt->chat().preview_usage(message, *opts);
+      return preview ? out(*preview) : out_error(preview.error());
     }
     if (action != "preview" && action != "request" && action != "confirm" && action != "complete" &&
         action != "cancel" && action != "inspect")

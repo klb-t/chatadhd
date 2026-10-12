@@ -85,6 +85,11 @@ struct ChatOptions {
   std::optional<std::string> system_prompt;    // replaces config.system_prompt
   std::optional<int> context_depth;            // graph memory depth (0 = disable graph context)
   std::optional<bool> stream;                  // unset: config.stream; requires on_chunk
+  // Shared usage guard (every send is admitted before transport). When a send
+  // paused in requires_confirmation, re-send the same request with
+  // {approved:bool, receipt_id, ref, operation_id} (all copied from the pending
+  // result); approved:false cancels. Absent: first/ordinary admission.
+  std::optional<Json> usage_confirmation;
   // Independent composition controls. Existing callers keep the legacy recipe.
   bool include_memory = true;
   bool include_graph_memory = true;
@@ -124,6 +129,9 @@ struct ChatResult {
   std::optional<std::string> new_title;  // set when auto-title ran
   bool cancelled = false;
   Json context_trace;  // compiled messages/selection, not evidence of provider receipt
+  // Set when the shared usage guard paused the send (requires_confirmation or
+  // an answered rejection). Nothing was sent; no assistant message exists.
+  std::optional<Json> usage_pending;
   Json to_json() const;
 };
 
@@ -155,6 +163,11 @@ class ChatEngine {
   static void configure_reasoning(Json& payload, std::string_view model, const std::optional<std::string>& effort);
 
   std::optional<std::string> last_reasoning() const;
+
+  // Read-only usage preview of a would-be send: compiles the same request body
+  // without persisting anything or contacting the provider, and asks the shared
+  // UsagePolicy for its decision (nothing reserved or recorded).
+  Result<Json> preview_usage(std::string_view text, const ChatOptions& opts = {});
 
  private:
   const Config& cfg_;

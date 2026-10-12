@@ -95,6 +95,12 @@ Json run_chat(LoomContext* ctx, const std::string& message, ChatOptions opts, st
   }
   Json result = r->to_json();
   result["request_id"] = request_id;
+  if (r->usage_pending) {
+    // Paused by the shared usage guard: a state carrying the receipt, not an error.
+    emit_chunk(cb, ud, Json{{"type", "usage_pending"}, {"request_id", request_id}, {"conv_id", r->conv_id},
+                            {"user_message_id", r->user_message_id}, {"usage_pending", *r->usage_pending}}, 1);
+    return result;
+  }
   Json done{{"type", "done"},
             {"request_id", request_id},
             {"message_id", r->assistant_message_id},

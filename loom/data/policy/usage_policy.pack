@@ -4,5 +4,9 @@
   "baseline_window": 32,
   "ledger_busy_timeout_ms": 30000,
   "include_reservations": true,
-  "initial_baselines": {}
+  "initial_baselines": {},
+  "baseline_key_templates": {
+    "chat.send": "chat.send|{endpoint}|{model}",
+    "semantic.batch": "semantic.batch|{endpoint}|{model}"
+  }
 }

@@ -91,6 +91,8 @@ Result<Json> graph_reply_fragment(const Json& reply_result, const Json& address,
 class ModelUsageGuard {
  public:
   explicit ModelUsageGuard(GraphReplyServices& services);
+  // Ordinary (non-graph) transports: only the data root and config are needed.
+  ModelUsageGuard(const std::filesystem::path& root, const Config& config);
   ~ModelUsageGuard();
   ModelUsageGuard(const ModelUsageGuard&) = delete;
   ModelUsageGuard& operator=(const ModelUsageGuard&) = delete;
