@@ -7,6 +7,8 @@
 #ifdef __cplusplus
 #include <filesystem>
 #include <memory>
+#include <string>
+#include <string_view>
 #include "loom/result.h"
 #include "loom/util/json.h"
 
@@ -23,6 +25,12 @@ const Json& usage_policy_defaults();
 Result<Json> usage_policy_preset();
 Status validate_usage_policy_options(const Json& options);
 Result<Json> effective_usage_policy_options(const Config& config);
+
+// Comparison-cohort name for an operation kind ("chat.send", "semantic.batch").
+// Template is data: config key "usage_baseline_key_templates" {kind: template}
+// with {endpoint}/{model} placeholders; absent kinds use "<kind>|{endpoint}|{model}".
+std::string usage_baseline_key(const Config& config, std::string_view kind, std::string_view endpoint,
+                               std::string_view model);
 
 // One configuration snapshot: preset, stored override, effective options and
 // SHA-256 of their canonical JSON (not original file bytes). An optional

@@ -58,23 +58,6 @@ bool cfg_bool(const Config& cfg, std::string_view key, bool fallback) {
   return json::truthy(cfg.get(key, fallback));
 }
 
-// Cohort name from data (usage policy "baseline_key_templates"); never from caps.
-std::string usage_baseline_key(const Config& cfg, std::string_view kind, std::string_view endpoint,
-                               std::string_view model) {
-  std::string tmpl = std::string(kind) + "|{endpoint}|{model}";
-  if (auto options = effective_usage_policy_options(cfg); options && options->contains("baseline_key_templates")) {
-    const auto& templates = (*options)["baseline_key_templates"];
-    if (templates.is_object() && templates.contains(std::string(kind)) && templates[std::string(kind)].is_string())
-      tmpl = templates[std::string(kind)].get<std::string>();
-  }
-  for (const auto& [name, value] : {std::pair<std::string_view, std::string_view>{"{endpoint}", endpoint},
-                                    std::pair<std::string_view, std::string_view>{"{model}", model}}) {
-    for (std::size_t at = tmpl.find(name); at != std::string::npos; at = tmpl.find(name, at + value.size()))
-      tmpl.replace(at, name.size(), value);
-  }
-  return tmpl;
-}
-
 // Estimate is exact input bytes only; output/cost are unknown (null), never a
 // configured cap such as max_tokens.
 Json chat_usage_estimate(const Config& cfg, std::string_view endpoint, std::string_view model,

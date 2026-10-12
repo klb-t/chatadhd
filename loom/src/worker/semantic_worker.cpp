@@ -226,7 +226,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
       if (usage_confirmation) confirmation = *usage_confirmation;
     }
   }
-  Json estimate{{"baseline_key", "semantic.batch|" + batch_endpoint + "|" + model},
+  Json estimate{{"baseline_key", usage_baseline_key(cfg, "semantic.batch", batch_endpoint, model)},
       {"resources", Json{{"messages", batch_requests.size()}, {"cost_usd", declared_cost}}},
       {"estimate_provenance", Json{{"cost_usd", "declared"}, {"messages", "counted"}, {"input_bytes", "measured"}}},
       {"instrument", "loom.semantic.batch"}, {"model", model}, {"endpoint", batch_endpoint}};

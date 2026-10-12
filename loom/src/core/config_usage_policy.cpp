@@ -51,6 +51,21 @@ const Json& usage_policy_defaults() {
 
 Result<Json> usage_policy_preset() { return builtin_preset(); }
 
+std::string usage_baseline_key(const Config& config, std::string_view kind, std::string_view endpoint,
+                               std::string_view model) {
+  std::string tmpl = std::string(kind) + "|{endpoint}|{model}";
+  const Json templates = config.get("usage_baseline_key_templates", Json::object());
+  if (templates.is_object()) {
+    const auto it = templates.find(std::string(kind));
+    if (it != templates.end() && it->is_string()) tmpl = it->get<std::string>();
+  }
+  const std::pair<std::string_view, std::string_view> fields[] = {{"{endpoint}", endpoint}, {"{model}", model}};
+  for (const auto& [name, value] : fields)
+    for (std::size_t at = tmpl.find(name); at != std::string::npos; at = tmpl.find(name, at + value.size()))
+      tmpl.replace(at, name.size(), value);
+  return tmpl;
+}
+
 Status validate_usage_policy_options(const Json& options) {
   if (!options.is_object()) return Error(Errc::InvalidArgument, "usage policy must be an object");
   if (options.contains("schema") && (!options["schema"].is_string() || options["schema"] != "loom.usage_policy/1"))
