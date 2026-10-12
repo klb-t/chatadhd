@@ -397,6 +397,10 @@ try:
     assert dry["matched"] == 0 and dry["ids"] == [] and dry["history_preserved"] is True
     assert js("semantic", "retry-mode", "automatic")["retry_mode"] == "automatic"
     assert js("semantic", "retry-mode", "explicit_requeue")["retry_mode"] == "explicit_requeue"
+    econ = js("economy", "report")
+    assert econ["schema"] == "loom.economy_report/1" and econ["writes"] == 0
+    assert econ["classes"]["6"]["known"] is False
+    assert js("economy", "report", "--mode", "off")["status"] == "disabled"
     stats = js("graph", "stats")
     assert stats["messages"] >= 2
     js("graph", "nodes", "--limit", "5")

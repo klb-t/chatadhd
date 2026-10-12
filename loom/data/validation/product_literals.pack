@@ -517,7 +517,7 @@
         },
         {
           "path": "loom/data/runtime/cli.pack",
-          "sha256": "08e0167f312397d0e5a658ab0e07f7ed2e7e99f0e4c9841be82ab133af23171f"
+          "sha256": "375e92bc5d6608600c821068135826ce7af93a87fa9e71759ba595409f693bba"
         },
         {
           "path": "loom/data/runtime/config.pack",
@@ -621,7 +621,7 @@
         }
       ],
 <<<<<<< HEAD
-      "output_sha256": "0daeb83137b425513a51349ca7b65e51b5376a3cf09f174e6cc7605a17135d3c",
+      "output_sha256": "26cb629516c68c00dbe6086b4d2f9b0faa92e5a85a7822874eafdb5df5c89254",
 =======
       "output_sha256": "88a708decc0010bfcf3db90faa18570dfedf4d2a1e9393f5efc85f58e848b8c2",
 >>>>>>> d370ee49 (feat(economy): economy runtime profile pack (presets for mode, thresholds, cost coefficients) [skip ci])

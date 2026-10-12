@@ -2,6 +2,7 @@
 #include "context.h"
 #include "loom/chat_engine.h"
 #include "loom/config.h"
+#include "loom/economy.h"
 #include "loom/runtime.h"
 #include "loom/semantic_worker.h"
 #include "loom/usage_policy.h"
@@ -18,6 +19,11 @@ extern "C" const char* loom_usage_policy_json(LoomContext* ctx, const char* comm
     const Json& command = *parsed;
     const auto action = json::get_string(command, "action");
     auto ledger_path = ctx->rt->paths().root / "usage-policy.sqlite";
+    if (action == "economy_report") {
+      // Read-only resource-economy report (R50); optional {"overrides": {...}} replaces presets for this call.
+      auto report = economy::report_for_data_dir(ctx->rt->paths().root, ctx->rt->paths().db, command);
+      return report ? out(*report) : out_error(report.error());
+    }
     if (action == "settings" || action == "preview_settings") {
       const Json* proposed_override = nullptr;
       if (action == "preview_settings") {

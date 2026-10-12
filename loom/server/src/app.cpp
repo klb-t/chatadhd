@@ -673,6 +673,17 @@ void App::route_graph_context() {
 // ── Semantic worker ────────────────────────────────────────────────────
 
 void App::route_semantic() {
+  // Read-only resource-economy report (R50). ?mode=off|report|propose overrides the preset for this call.
+  svr_.Get("/api/economy/report", [this](const httplib::Request& req, httplib::Response& res) {
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+    json command{{"action", "economy_report"}};
+    if (req.has_param("mode")) command["overrides"] = json{{"mode", req.get_param_value("mode")}};
+    send_loom(res, loom_usage_policy_json(ctx_, command.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+#else
+    (void)req;
+    send_error(res, "unavailable", "Native usage policy is not installed in this build");
+#endif
+  });
   svr_.Get("/api/semantic/status", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_semantic_status(ctx_));
   });

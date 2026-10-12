@@ -33,6 +33,7 @@
 #include "loom/config.h"
 #include "loom/crypto.h"
 #include "loom/graph_entry.h"
+#include "loom/economy.h"
 #include "loom/db.h"
 #include "loom/graph_engine.h"
 #include "loom/graph_memory.h"
@@ -675,6 +676,16 @@ int cmd_search(Runtime& rt, const Args& a) {
                 << "  " << one_line(h.snippet, cli_width("default")) << "\n";
     }
   }
+  return 0;
+}
+
+int cmd_economy(Runtime& rt, const Args& a) {
+  // loom economy report [--mode off|report|propose]: read-only; never changes the data directory.
+  const std::string sub = need(a, 0, "economy subcommand (report)");
+  if (sub != "report") throw UsageError{"unknown economy subcommand: " + sub};
+  Json command = Json::object();
+  if (a.has("mode")) command["overrides"] = Json{{"mode", a.get("mode")}};
+  print_json(must(economy::report_for_data_dir(rt.paths().root, rt.paths().db, command)));
   return 0;
 }
 
@@ -1462,6 +1473,7 @@ int main(int argc, char** argv) {
       {"context", cmd_context},
       {"search", cmd_search},
       {"semantic", cmd_semantic},
+      {"economy", cmd_economy},
       {"memory", cmd_memory},
       {"config", cmd_config},
       {"secret", cmd_secret},

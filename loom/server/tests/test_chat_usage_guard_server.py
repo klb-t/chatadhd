@@ -57,6 +57,13 @@ class UsageGuardServerTest(Base):
         self.assertEqual(auto["retry_mode"], "automatic")
         self.assertEqual(self.request("POST", "/api/semantic/retry-mode", {"mode": "explicit_requeue"})["retry_mode"], "explicit_requeue")
 
+        # Read-only economy report: schema, classes, unknown classes stay {known:false}.
+        economy = self.request("GET", "/api/economy/report")
+        self.assertEqual(economy["schema"], "loom.economy_report/1")
+        self.assertTrue(economy["read_only"])
+        self.assertFalse(economy["classes"]["4"]["measures"]["prompt_prefix"]["known"])
+        self.assertEqual(self.request("GET", "/api/economy/report?mode=off")["status"], "disabled")
+
 
 for name in dir(Base):
     if name.startswith("test_"):
