@@ -3,6 +3,7 @@
 #include "loom/chat_engine.h"
 #include "loom/config.h"
 #include "loom/runtime.h"
+#include "loom/semantic_worker.h"
 #include "loom/usage_policy.h"
 
 using namespace loom;
@@ -30,6 +31,13 @@ extern "C" const char* loom_usage_policy_json(LoomContext* ctx, const char* comm
           {"number_representation", "finite_binary64"}, {"growth_requires_confirmation", true},
           {"scope", "explicit_callers"}, {"preset_application", "next_policy_open"}};
       return out(*settings);
+    }
+    if (action == "semantic_confirm") {
+      if (!command.contains("approved") || !command["approved"].is_boolean())
+        return out_error(Errc::InvalidArgument, "approved must be boolean");
+      auto answered = ctx->rt->worker().confirm_usage(command["approved"].get<bool>(),
+          json::get_string(command, "receipt_id"), json::get_string(command, "confirmation_ref"));
+      return answered ? out(*answered) : out_error(answered.error());
     }
     if (action == "chat_preview") {
       const std::string message = json::get_string(command, "message");

@@ -16,6 +16,7 @@
 #include <mutex>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <thread>
 
 #include "loom/analyzer_binding.h"
@@ -62,6 +63,9 @@ struct WorkerStatus {
   std::int64_t batch_submitted = 0;
   bool running = false;
   bool paused = false;
+  // Present only while the automatic batch submission awaits the owner's
+  // usage confirmation (mode "awaiting_usage_confirmation"); messages stay pending.
+  std::optional<Json> usage_pending;
   Json to_json() const;  // Python keys; "rate" formatted "%.1f/s"; + "running","paused"
 };
 
@@ -80,6 +84,10 @@ class SemanticWorker {
   void start();   // idempotent
   void stop();    // joins
   void wake();
+  // Answers a batch submission paused by the shared usage guard. Approval is
+  // executed by the next drain; rejection records the denial and pauses the
+  // worker (no retry loop). Messages are never altered.
+  Result<Json> confirm_usage(bool approved, std::string_view receipt_id, std::string_view ref);
   void pause();
   void resume();
   WorkerStatus status() const;
@@ -116,6 +124,8 @@ class SemanticWorker {
   std::string mode_ = "idle";
   std::optional<std::string> batch_id_;
   std::int64_t batch_submitted_ = 0;
+  std::optional<Json> usage_pending_;       // guarded by mu_
+  std::optional<Json> usage_confirmation_;  // guarded by mu_
   ScopedSubscription import_sub_;
 };
 

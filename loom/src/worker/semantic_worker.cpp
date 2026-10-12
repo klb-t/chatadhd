@@ -11,6 +11,9 @@
 #include "loom/net/http.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
+#include "loom/usage_policy.h"
+#include "chat/graph_reply.h"
+#include "loom/util/sha256.h"
 #include "loom/util/time.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
@@ -173,7 +176,8 @@ void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport
 // processed count on the submit path).
 int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, net::HttpTransport& http, std::mutex& mu,
                      std::string& mode, std::optional<std::string>& batch_id, std::int64_t& batch_submitted,
-                     int batch_max_messages, const std::string& batch_endpoint, const RuntimeProfile& profile) {
+                     int batch_max_messages, const std::string& batch_endpoint, const RuntimeProfile& profile,
+                     std::optional<Json>& usage_pending, std::optional<Json>& usage_confirmation) {
   {
     std::lock_guard lk(mu);
     if (batch_id) return 0;
@@ -204,16 +208,75 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
   req.body = json::dump(Json{{"requests", batch_requests}});
   req.timeout_ms = profile.values().at("submit_timeout_ms").get<int>();
 
+  // Shared usage guard: admit before transport, settle after. A paused
+  // receipt keeps the messages pending until the owner answers.
+  const std::string body_sha = Sha256::hex(req.body);
+  const double declared_cost = static_cast<double>(batch_requests.size()) *
+                               profile.values().at("batch_estimate_per_message").get<double>();
+  std::string operation_id;
+  Json confirmation = Json::object();
+  {
+    std::lock_guard lk(mu);
+    if (usage_pending && json::get_string(*usage_pending, "body_sha256") != body_sha) {
+      usage_pending.reset();  // the batch changed: an old receipt cannot authorize it
+      usage_confirmation.reset();
+    }
+    if (usage_pending) {
+      operation_id = json::get_string(*usage_pending, "operation_id");
+      if (usage_confirmation) confirmation = *usage_confirmation;
+    }
+  }
+  Json estimate{{"baseline_key", "semantic.batch|" + batch_endpoint + "|" + model},
+      {"resources", Json{{"messages", batch_requests.size()}, {"cost_usd", declared_cost}}},
+      {"estimate_provenance", Json{{"cost_usd", "declared"}, {"messages", "counted"}, {"input_bytes", "measured"}}},
+      {"instrument", "loom.semantic.batch"}, {"model", model}, {"endpoint", batch_endpoint}};
+  if (!operation_id.empty()) estimate["operation_id"] = operation_id;
+  chat::ModelUsageGuard guard(cfg.path().parent_path(), cfg, false);
+  auto admitted = guard.admit(req, estimate, confirmation);
+  if (!admitted) {
+    log::error("loom.semantic_worker", "Batch usage admission error: {}", admitted.error().message);
+    return 0;
+  }
+  if (!admitted->value("dispatch_authorized", false)) {
+    const auto status = json::get_string(*admitted, "status", "unavailable");
+    std::lock_guard lk(mu);
+    usage_confirmation.reset();
+    if (status == "requires_confirmation") {
+      usage_pending = Json{{"schema", "loom.semantic_usage_pending/1"}, {"status", status},
+          {"operation_id", admitted->value("operation_id", Json(nullptr))},
+          {"receipt_id", admitted->value("receipt_id", Json(nullptr))},
+          {"baseline_key", admitted->value("baseline_key", Json(nullptr))},
+          {"projected", admitted->value("resources", Json::object())},
+          {"messages", batch_requests.size()}, {"body_sha256", body_sha}, {"sent", false}};
+      mode = "awaiting_usage_confirmation";
+      log::warn("loom.semantic_worker", "Batch of {} messages awaits usage confirmation (receipt {})",
+                batch_requests.size(), json::get_string(*admitted, "receipt_id"));
+    } else {
+      usage_pending.reset();
+      log::warn("loom.semantic_worker", "Batch not admitted: {}", status);
+    }
+    return 0;
+  }
+  {
+    std::lock_guard lk(mu);
+    usage_pending.reset();
+    usage_confirmation.reset();
+  }
+
   auto resp = http.send(req);
   if (!resp) {
+    (void)guard.settle(true, 0);
     log::error("loom.semantic_worker", "Batch submit error: {}", resp.error().message);
     return 0;
   }
-  if (resp->status == 200 || resp->status == 201) {
+  const bool accepted = resp->status == 200 || resp->status == 201;
+  (void)guard.settle(true, resp->body.size(), Json::object(),
+                     accepted ? Json{{"messages", batch_requests.size()}, {"cost_usd", declared_cost}} : Json::object());
+  if (accepted) {
     auto j = resp->json();
     std::string id = j ? json::get_string(*j, "id") : std::string();
     std::int64_t submitted = static_cast<std::int64_t>(batch_requests.size());
-    double cost = static_cast<double>(submitted) * profile.values().at("batch_estimate_per_message").get<double>();
+    double cost = declared_cost;
     {
       std::lock_guard lk(mu);
       batch_id = id;
@@ -245,7 +308,7 @@ Result<WorkerOptions> WorkerOptions::from_profile(const RuntimeProfile& profile)
 Json WorkerStatus::to_json() const {
   char rate_buf[32];
   std::snprintf(rate_buf, sizeof rate_buf, "%.1f/s", rate);
-  return Json{{"pending", pending},
+  Json out{{"pending", pending},
               {"failed", failed ? Json(*failed) : Json(nullptr)},
               {"executing", executing ? Json(*executing) : Json(nullptr)},
               {"counts_known", counts_known},
@@ -257,6 +320,8 @@ Json WorkerStatus::to_json() const {
               {"batch_submitted", batch_submitted},
               {"running", running},
               {"paused", paused}};
+  if (usage_pending) out["usage_pending"] = *usage_pending;
+  return out;
 }
 
 SemanticWorker::SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& graph, const Config& cfg,
@@ -350,14 +415,48 @@ WorkerStatus SemanticWorker::status() const {
   s.rate = rate_;
   s.batch_id = batch_id_;
   s.batch_submitted = batch_submitted_;
+  s.usage_pending = usage_pending_;
   s.running = thread_.joinable();
   return s;
 }
 
 Result<Json> SemanticWorker::runtime_profile() const { LOOM_TRY(profile_); return profile_->inspection(); }
 
+Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view receipt_id, std::string_view ref) {
+  Json pending;
+  {
+    std::lock_guard lk(mu_);
+    if (!usage_pending_) return Error(Errc::NotFound, "no semantic usage confirmation is pending");
+    if (json::get_string(*usage_pending_, "receipt_id") != receipt_id)
+      return Error(Errc::InvalidArgument, "receipt_id does not match the pending semantic usage receipt");
+    pending = *usage_pending_;
+    if (approved) usage_confirmation_ = Json{{"approved", true}, {"receipt_id", std::string(receipt_id)},
+                                             {"ref", std::string(ref)}};
+  }
+  if (approved) {
+    wake();
+    return Json{{"status", "confirmation_recorded"}, {"operation_id", pending["operation_id"]},
+                {"receipt_id", pending["receipt_id"]}, {"executes", "next drain"}};
+  }
+  LOOM_TRY_ASSIGN(auto options, effective_usage_policy_options(cfg_));
+  LOOM_TRY_ASSIGN(auto policy, UsagePolicy::open(cfg_.path().parent_path() / "usage-policy.sqlite", options));
+  LOOM_TRY_ASSIGN(auto denied, policy->confirm(json::get_string(pending, "operation_id"), receipt_id, false, ref));
+  {
+    std::lock_guard lk(mu_);
+    usage_pending_.reset();
+    usage_confirmation_.reset();
+  }
+  pause();  // the owner declined: do not re-ask in a loop; resume() is explicit
+  return denied;
+}
+
 Result<int> SemanticWorker::drain_once() {
   LOOM_TRY(profile_);
+  {
+    // Awaiting the owner: nothing is sent, nothing is lost, no retry.
+    std::lock_guard lk(mu_);
+    if (usage_pending_ && !usage_confirmation_) { mode_ = "awaiting_usage_confirmation"; return 0; }
+  }
   auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch);
   if (!msgsr) return msgsr.error();
   auto& msgs = *msgsr;
@@ -386,7 +485,13 @@ Result<int> SemanticWorker::drain_once() {
 
   if (pending_total > opts_.batch_threshold && use_llm && has_batch_key) {
     return submit_batch_api(db_, cfg_, secrets_, http_, mu_, mode_, batch_id_, batch_submitted_,
-                            opts_.batch_max_messages, opts_.batch_endpoint, *profile_);
+                            opts_.batch_max_messages, opts_.batch_endpoint, *profile_, usage_pending_,
+                            usage_confirmation_);
+  }
+  {
+    std::lock_guard lk(mu_);  // the batch path no longer applies: an old receipt is obsolete
+    usage_pending_.reset();
+    usage_confirmation_.reset();
   }
 
   {

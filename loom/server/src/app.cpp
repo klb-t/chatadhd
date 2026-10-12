@@ -455,6 +455,18 @@ void App::route_chat() {
     res.set_header("X-Accel-Buffering", "no");
   });
 
+  // Read-only usage preview for a would-be send (nothing persisted or sent).
+  svr_.Post("/api/chat/usage-preview", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+    body["action"] = "chat_preview";
+    send_loom(res, loom_usage_policy_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+#else
+    send_error(res, "unavailable", "Native usage policy is not installed in this build");
+#endif
+  });
+
   svr_.Post("/api/chat/cancel", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string request_id = body.value("request_id", req.get_param_value("request_id"));
@@ -664,6 +676,17 @@ void App::route_semantic() {
   svr_.Post("/api/semantic/resume", [this](const httplib::Request&, httplib::Response& res) {
     loom_semantic_resume(ctx_);
     send_loom(res, loom_semantic_status(ctx_));
+  });
+  // Answer a batch submission paused by the shared usage guard.
+  svr_.Post("/api/semantic/usage-confirm", [this](const httplib::Request& req, httplib::Response& res) {
+    json body;
+    if (!object_body(req, res, body)) return;
+#ifdef LOOM_SERVER_HAS_USAGE_POLICY
+    body["action"] = "semantic_confirm";
+    send_loom(res, loom_usage_policy_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+#else
+    send_error(res, "unavailable", "Native usage policy is not installed in this build");
+#endif
   });
   svr_.Post("/api/semantic/wake", [this](const httplib::Request&, httplib::Response& res) {
     loom_semantic_wake(ctx_);

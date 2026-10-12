@@ -368,6 +368,11 @@ int cmd_chat(Runtime& rt, const Args& a) {
   if (a.has("effort")) o.reasoning_effort = a.get("effort");
   o.web_search = a.has("web");
   o.deep_research = a.has("deep");
+  // Answer a paused send: --usage-receipt <id> --usage-operation <id> [--usage-ref <text>] [--usage-reject]
+  if (a.has("usage-receipt"))
+    o.usage_confirmation = Json{{"approved", !a.has("usage-reject")}, {"receipt_id", a.get("usage-receipt")},
+        {"operation_id", a.has("usage-operation") ? a.get("usage-operation") : std::string()},
+        {"ref", a.has("usage-ref") ? a.get("usage-ref") : std::string("cli")}};
   bool tty = ::isatty(STDOUT_FILENO);
   bool in_reasoning = false;
   ChatCallbacks cb;
@@ -388,6 +393,15 @@ int cmd_chat(Runtime& rt, const Args& a) {
   std::signal(SIGINT, sigint_handler);
   auto r = rt.chat().send(text, o, cb, &g_cancel);
   if (!r) throw r.error();
+  if (r->usage_pending) {
+    // A state, not an error: nothing was sent. Re-run with the flags below to decide.
+    if (g_json) print_json(r->to_json());
+    else std::cout << "usage paused (" << (*r->usage_pending)["status"].get<std::string>() << "), nothing sent\n"
+                   << "  receipt:   " << (*r->usage_pending)["receipt_id"].dump() << "\n"
+                   << "  operation: " << (*r->usage_pending)["operation_id"].dump() << "\n"
+                   << "  repeat the same command with --usage-receipt/--usage-operation (or --usage-reject)\n";
+    return 0;
+  }
   if (g_json) print_json(r->to_json());
   else std::cout << (r->cancelled ? "\n[cancelled]\n" : "\n");
   return 0;

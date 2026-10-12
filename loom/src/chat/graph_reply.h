@@ -92,14 +92,19 @@ class ModelUsageGuard {
  public:
   explicit ModelUsageGuard(GraphReplyServices& services);
   // Ordinary (non-graph) transports: only the data root and config are needed.
-  ModelUsageGuard(const std::filesystem::path& root, const Config& config);
+  // require_scope=false lets scope-less background callers (e.g. the semantic
+  // worker) use the same ledger; chat sends always run inside a scope.
+  ModelUsageGuard(const std::filesystem::path& root, const Config& config, bool require_scope = true);
   ~ModelUsageGuard();
   ModelUsageGuard(const ModelUsageGuard&) = delete;
   ModelUsageGuard& operator=(const ModelUsageGuard&) = delete;
   Result<Json> admit(const net::HttpRequest& request, const Json& estimate,
                      const Json& confirmation = Json::object());
+  // declared_resources (optional) are recorded with provenance "declared": they
+  // resolve their dimensions but never train the rolling baseline.
   Result<Json> settle(bool request_attempted, std::size_t received_bytes,
-                      const Json& provider_usage = Json::object());
+                      const Json& provider_usage = Json::object(),
+                      const Json& declared_resources = Json::object());
   const Json& decisions() const;
 
  private:

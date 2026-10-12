@@ -387,9 +387,10 @@ Result<Json> graph_reply_fragment(const Json& result, const Json& address, const
 }
 
 struct ModelUsageGuard::Impl {
-  Impl(const std::filesystem::path& data_root, const Config& cfg) : root(data_root), config(cfg) {}
+  Impl(const std::filesystem::path& data_root, const Config& cfg, bool scope) : root(data_root), config(cfg), require_scope(scope) {}
   std::filesystem::path root;
   const Config& config;
+  bool require_scope = true;
   Json decisions = Json::array();
   std::string operation;
   std::size_t input_bytes = 0;
@@ -399,14 +400,15 @@ struct ModelUsageGuard::Impl {
 #endif
 };
 ModelUsageGuard::ModelUsageGuard(GraphReplyServices& services)
-    : impl_(std::make_unique<Impl>(services.root, services.config)) {}
-ModelUsageGuard::ModelUsageGuard(const std::filesystem::path& root, const Config& config)
-    : impl_(std::make_unique<Impl>(root, config)) {}
+    : impl_(std::make_unique<Impl>(services.root, services.config, true)) {}
+ModelUsageGuard::ModelUsageGuard(const std::filesystem::path& root, const Config& config, bool require_scope)
+    : impl_(std::make_unique<Impl>(root, config, require_scope)) {}
 ModelUsageGuard::~ModelUsageGuard() = default;
 const Json& ModelUsageGuard::decisions() const { return impl_->decisions; }
 
 Result<Json> ModelUsageGuard::admit(const net::HttpRequest& request, const Json& estimate, const Json& confirmation) {
-  if (!context::current_context_execution_scope()) return Error(Errc::Unavailable, "model execution scope required");
+  if (impl_->require_scope && !context::current_context_execution_scope())
+    return Error(Errc::Unavailable, "model execution scope required");
 #if LOOM_CHAT_MODEL_USAGE_AVAILABLE
   if (impl_->admitted) return Error(Errc::Conflict, "model usage admission already consumed");
   if (!estimate.is_object() || json::get_string(estimate, "baseline_key").empty() ||
@@ -453,7 +455,8 @@ Result<Json> ModelUsageGuard::admit(const net::HttpRequest& request, const Json&
 #endif
 }
 
-Result<Json> ModelUsageGuard::settle(bool attempted, std::size_t received_bytes, const Json& usage) {
+Result<Json> ModelUsageGuard::settle(bool attempted, std::size_t received_bytes, const Json& usage,
+                                     const Json& declared) {
 #if LOOM_CHAT_MODEL_USAGE_AVAILABLE
   if (!impl_->policy || !impl_->admitted) return Error(Errc::Conflict, "model usage was not dispatched");
   if (!attempted) {
@@ -469,10 +472,16 @@ Result<Json> ModelUsageGuard::settle(bool attempted, std::size_t received_bytes,
       {"output_tokens", quantity(usage, {"completion_tokens", "output_tokens"})},
       {"cost_usd", quantity(usage, {"cost", "cost_usd"})}}}, {"provenance", "provider_reported"}}));
   record_decision(impl_->decisions, reported);
+  if (declared.is_object() && !declared.empty()) {
+    LOOM_TRY_ASSIGN(auto stated, impl_->policy->complete(impl_->operation,
+        Json{{"resources", declared}, {"provenance", "declared"}}));
+    record_decision(impl_->decisions, stated);
+    reported = std::move(stated);
+  }
   impl_->admitted = false;
   return reported;
 #else
-  (void)attempted; (void)received_bytes; (void)usage;
+  (void)attempted; (void)received_bytes; (void)usage; (void)declared;
   return Error(Errc::Unavailable, "shared model usage policy unavailable");
 #endif
 }
