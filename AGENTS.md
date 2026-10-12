@@ -7,6 +7,11 @@ panel (graph completion, pattern discovery, graph reply vs text+JSON) and
 repeats/unseen checks. Plan and cost estimate before each stage and the actual
 cost after it. The key is never committed. Supersedes the earlier USD 2 limit and the
 "no frontier pilot" note in `docs/research/OWNER_CLARIFICATION_2026-09-30.md`.
+**Owner, 2026-10-12 (D3 in `OWNER_REQUIREMENTS`):** use every key available to the
+session; if none works, ask the owner for the next one. Real data is permitted and
+preferred wherever there is a choice; synthetic fixtures stay for mechanism tests
+and where exact ground truth is needed. The ×10 rule and estimate-before /
+actual-after stay.
 
 > **ZASADA WŁAŚCICIELA (2026-09-30), OBOWIĄZUJE ZAWSZE:** NIE PODEJMUJEMY DECYZJI ZA UŻYTKOWNIKA,
 > ZWŁASZCZA OGRANICZAJĄCYCH. WSZYSTKO JEST KONFIGUROWALNE: MODEL, ZAKRES, ROZUMOWANIE, AUTOMATYCZNE

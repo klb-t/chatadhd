@@ -1,5 +1,9 @@
 # Acceptance tests to implement — from the 2026-09-29 note
 
+> **2026-10-11:** extended by `ACCEPTANCE_TESTS_2026-10-11.md` (phone paths P1–P7,
+> ASR resistance, trace format, criteria 18–31) built on `EDGE_CASES_2026-10-11.md`.
+> Rows 0–17 below are unchanged.
+
 Source: `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md` §3, §18, §24 (criteria
 proposed by GPT for Claude to assign to existing requirements and tests
 **without lowering any quality gate**). Status column is the state of the repo on

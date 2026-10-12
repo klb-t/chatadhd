@@ -348,7 +348,10 @@ is a tracked metric.
    not feature names.
 2. **Real lineage and status ground truth**: code lineage of the snapshots and
    the feature-status matrix in `docs/history/ANALIZA_v0.8.3_v0.9.0.md`.
-3. **Synthetic corpora for scale and precision**: generated export archives
+3. **Synthetic corpora for scale and precision** — *owner decision D3 (2026-10-12):
+   where real data is available, the real run is the evidence and the synthetic
+   run is the control; synthetic corpora stay for exact ground truth and scale.*
+   Generated export archives
    (ChatGPT/Claude shapes, multi-GB padding) about a **fictional** owner and
    fictional projects that are structurally isomorphic to the real ones, with
    exact ground truth, plus a held-out corpus by a different author. They never

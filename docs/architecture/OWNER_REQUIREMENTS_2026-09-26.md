@@ -286,6 +286,37 @@ a change may not worsen any tracked test or quality metric (baseline in
 `docs/STATE.md` §4/§5); if something regresses, stop and fix or revert before
 continuing.
 
+## D3 — Real data permitted and preferred; every available key (owner, 2026-10-12)
+> "można użyć wszystkich kluczy jakie są dostępne jak żaden nie działa to poproś o
+> następny i wszystko na danych rzeczywistych dane syntetyczne porzucamy to już było
+> gdzieś ustalone nie znalazły się dokumentacji?"
+>
+> Correction a moment later: "sorry może powiedziałem zbyt ogólnie coś co było w
+> jakimś szczególnym kontekście [...] traktuj to jako zezwolenie na korzystanie
+> z prawdziwych danych a nie porzucenie syntetyków całkowite, tylko tam gdzie jest
+> wybór to korzystanie z prawdziwych"
+
+Answer to the two yes/no questions of `ACCEPTANCE_TESTS_2026-10-11.md` §7
+(money, privacy) and a standing rule, as corrected:
+1. Sessions may use **every API key available** to them (secrets, proxy-injected
+   credentials, the thread-7 key); when none works, ask the owner for the next
+   one. No per-task dollar cap beyond that; the ×10 confirmation rule
+   (`CLAUDE.md`) and estimate-before / actual-after (`AGENTS.md`) stay; keys are
+   never committed.
+2. **Real data is permitted**, including paid model calls on the owner's real
+   exports and sending their fragments to providers reachable through those keys,
+   and **preferred wherever there is a choice** between real and synthetic input.
+3. Synthetic corpora are **not abandoned**: they remain for what needs exact
+   ground truth or must not touch private data (mechanism tests, scale padding,
+   fixtures, `LOOM_CONCEPTUAL_MODEL.md` §7.3). Where both exist, the real run is
+   the evidence and the synthetic run is the control.
+
+The decision had not been recorded before this entry (checked 2026-10-12:
+`OWNER_REQUIREMENTS`, `AGENTS.md`, `STATE.md`, `THREADS`, `LOOM_CONCEPTUAL_MODEL`;
+only indirect traces: T12 "on real exports", STATE "nothing ran on real exports").
+Unchanged: the real hold-out rule of `AGENTS.md` (`eval/real-holdout-key` stays
+unread until the owner says otherwise).
+
 ## Requirements from the 2026-09-29 discussion (GPT note R26–R38)
 
 Source: `NOTATKA_GPT_2026-09-29_KOMPILATOR_INTERAKCJI.md` (written by GPT from the
