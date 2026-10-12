@@ -535,11 +535,10 @@ Result<Json> report(const std::filesystem::path& db_path, const RuntimeProfile& 
   sql::OpenOptions opts;
   opts.create = false;
   opts.read_only = true;
-  // A checkpointed WAL database has no -wal/-shm and no active writer: open it immutable so that even
-  // SQLite's own WAL bookkeeping files are not created. If they exist a writer may be live; open normally.
-  opts.immutable = !std::filesystem::exists(db_path.string() + "-wal") && !std::filesystem::exists(db_path.string() + "-shm");
   LOOM_TRY_ASSIGN(auto conn, sql::Connection::open(db_path, opts));
   LOOM_TRY(conn.exec("PRAGMA query_only=1"));
+  // One read transaction: every measure sees the same consistent snapshot even while the app writes.
+  LOOM_TRY(conn.exec("BEGIN"));
   out["status"] = "ok";
   out["proposals"] = p.mode != "report";
 

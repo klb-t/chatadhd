@@ -89,9 +89,6 @@ class Stmt {
 struct OpenOptions {
   bool create = true;
   bool read_only = false;
-  // With read_only: open the file as immutable (no -wal/-shm created, no locks). Only valid when no
-  // writer can be active, i.e. a checkpointed WAL database with no -wal/-shm files present.
-  bool immutable = false;
   int busy_timeout_ms = 30000;  // Python sqlite3.connect(timeout=30)
 };
 

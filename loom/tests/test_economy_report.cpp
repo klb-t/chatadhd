@@ -61,12 +61,9 @@ fs::path build_fixture(const fs::path& dir) {
   return path;
 }
 
-std::string snapshot(const fs::path& db) {
-  std::string out = unwrap(sha256_file_hex(db));
-  out += fs::exists(db.string() + "-wal") ? "|wal" : "|nowal";
-  out += fs::exists(db.string() + "-shm") ? "|shm" : "|noshm";
-  return out;
-}
+// The invariant is the main database file's bytes. Transient -wal/-shm files that SQLite manages for a
+// reader are allowed (and deliberately not deleted or compared).
+std::string snapshot(const fs::path& db) { return unwrap(sha256_file_hex(db)); }
 
 Json run(const fs::path& dir, const fs::path& db, Json overrides = Json::object()) {
   return unwrap(economy::report_for_data_dir(dir, db, Json{{"overrides", std::move(overrides)}}));
@@ -166,6 +163,20 @@ TEST_SUITE("economy") {
     for (int i = 0; i < 2; ++i) (void)run(td.path(), db);
     CHECK(snapshot(db) == before);
     CHECK(fs::last_write_time(db) == mtime);
+  }
+
+  TEST_CASE("a writer committing between two reports is seen by the second report") {
+    fsutil::TempDir td;
+    const auto path = td.path() / "live.db";
+    auto db = loom::test::open_db(path);  // stays open: a live app writing to the same data dir
+    const std::string conv = unwrap(db->create_conv("live")).id;
+    add_msg(*db, conv, "user", "repeat me " + kLong);
+    add_msg(*db, conv, "user", "repeat me " + kLong);
+    const Json first = run(td.path(), path);
+    CHECK(first["classes"]["1"]["measures"]["duplicate_messages"]["totals"]["copies"] == 2);
+    add_msg(*db, conv, "user", "repeat me " + kLong);
+    const Json second = run(td.path(), path);
+    CHECK(second["classes"]["1"]["measures"]["duplicate_messages"]["totals"]["copies"] == 3);
   }
 
   TEST_CASE("thresholds from an overlay change the result; mode off analyses nothing") {

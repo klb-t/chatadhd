@@ -153,23 +153,7 @@ Result<Connection> Connection::open(const std::filesystem::path& path, const Ope
   int flags = SQLITE_OPEN_FULLMUTEX;
   flags |= opts.read_only ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE;
   if (opts.create && !opts.read_only) flags |= SQLITE_OPEN_CREATE;
-  std::string target = path.string();
-  if (opts.read_only && opts.immutable) {
-    std::string uri = "file:";
-    for (unsigned char ch : target) {
-      if (ch == '%' || ch == '?' || ch == '#') {
-        static const char* hex = "0123456789ABCDEF";
-        uri += '%';
-        uri += hex[ch >> 4];
-        uri += hex[ch & 15];
-      } else {
-        uri += static_cast<char>(ch);
-      }
-    }
-    target = uri + "?immutable=1";
-    flags |= SQLITE_OPEN_URI;
-  }
-  int rc = sqlite3_open_v2(target.c_str(), &db, flags, nullptr);
+  int rc = sqlite3_open_v2(path.c_str(), &db, flags, nullptr);
   if (rc != SQLITE_OK) {
     Error e = sqlite_error(db, rc, "open " + path.string());
     sqlite3_close_v2(db);
