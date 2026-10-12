@@ -165,5 +165,7 @@ Stan kolejki, meldunek dzienny i decyzje: [wp-queue](wp-queue-2026-10-10.md). Pl
 |---|---|---|
 | T7 dane w aplikacji Python | `514e249`, `7ea4ecb` | CTest 161/161, guard PASS (160+1 opt-in), web 15/16 — `test:chat-context` czerwony również na bazie `e777592` (P-1) |
 | T6 strażnik ×10 wszędzie | `d4542a7`…`940b070` | CTest 163/163, guard PASS (162+1 opt-in), web 17/18 (P-1) |
+| P-1 czat obok panelu wiedzy na telefonie | `3b251c6` | 7/7 dotkniętych skryptów web |
+| T1 import: nierozpoznane do grafu + duplikaty | `854868d7`…`da57134d` | CTest 164/164, guard PASS (163+1 opt-in), web 17/17 |
 
 Decyzje techniczne S1 są zapisywane w `wp-queue` (sekcja „Decyzje S1”).
