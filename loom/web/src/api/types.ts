@@ -49,6 +49,7 @@ export interface Message {
 
 export interface ChatRequest {
   message: string;
+  usage_confirmation?: { approved: boolean; receipt_id: string; operation_id: string; ref: string };
   request_id?: string;
   conv_id?: string;
   model?: string;
@@ -141,6 +142,9 @@ export type ChatChunk =
       cancelled?: boolean;
       context_trace?: ChatContextTrace;
     }
+  | { type: "usage_pending"; request_id: string; conv_id: string; user_message_id: string;
+      usage_pending: { status?: string; operation_id?: string | null; receipt_id?: string | null;
+        baseline_key?: string | null; projected?: Record<string, Record<string, unknown>> } }
   | { type: "error"; code: string; message: string };
 
 export interface GraphNode {
@@ -189,6 +193,9 @@ export interface SemanticStatusInfo {
   batch_submitted?: number;
   running: boolean;
   paused: boolean;
+  /** Present while an automatic batch submission awaits the owner's usage confirmation. */
+  usage_pending?: { status?: string; receipt_id?: string | null; operation_id?: string | null;
+    baseline_key?: string | null; messages?: number; projected?: Record<string, Record<string, unknown>> };
 }
 
 export interface MemoryNode {

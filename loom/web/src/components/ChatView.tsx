@@ -6,6 +6,8 @@ import type { UserProfileHost } from "../api/onboarding-host";
 import { conversationViewMessages, messageCan, type ConversationView } from "../api/conversation-view";
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
+import UsagePendingBlock from "./UsagePendingBlock";
+import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import "./chat-context.css";
@@ -85,6 +87,10 @@ function ContextTrace({ trace }: { trace: ChatContextTrace }) {
   );
 }
 
+function safeNotice(feature: Parameters<typeof featureMessage>[0], id: string): string | null {
+  try { return featureMessage(feature, id, {}); } catch { return null; }
+}
+
 export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
   const [stored] = useState(() => readChatSettings(settingsKey));
   const storedString = (key: string, fallback: string) => typeof stored.value[key] === "string" ? stored.value[key] as string : fallback;
@@ -98,6 +104,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [sourceBusy, setSourceBusy] = useState(false);
   const sourceCatalog = useConversationSourcePresentation(profileHost);
   const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
+  const usageCatalog = usePresentationFeature(profileHost, USAGE_PENDING_FEATURE);
+  const [usagePending, setUsagePending] = useState<{ request: ChatRequest; receipt: UsagePendingReceipt; convId: string } | null>(null);
+  const [usageNotice, setUsageNotice] = useState<string | null>(null);
   const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
   // An explicit choice in this view wins; otherwise only an effective layered `true`
   // blocks. A missing, disabled or excluded default has no initiator and never blocks (R43).
@@ -258,15 +267,17 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, stream, pendingUserText]);
 
-  const send = useCallback((mode: "send" | "preview" = "send") => {
+  const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
     const text = input.trim();
     // Only a user choice or a transient integrity condition refuses; the reason is shown (R43).
     if (gate.blocked) { setError(gateTexts.blocked); return; }
     if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
     if (stream || !supports("chat.send")) return;
-    if (!text && !(mode === "send" && requestOverride !== null)) return;
+    if (!text && !forced && !(mode === "send" && requestOverride !== null)) return;
     let request: ChatRequest;
-    if (mode === "send" && requestOverride !== null) {
+    if (forced) {
+      request = forced;
+    } else if (mode === "send" && requestOverride !== null) {
       try {
         const parsed: unknown = JSON.parse(requestOverride);
         if (!parsed || typeof parsed !== "object" || Array.isArray(parsed) ||
@@ -371,6 +382,16 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setPendingUserText(null);
             requestConvId = chunk.conv_id;
             refreshShared();
+          } else if (chunk.type === "usage_pending") {
+            // A state, not a failure: nothing was sent. Keep the text and ask.
+            terminal = true;
+            setStream(null);
+            setPendingUserText(null);
+            setInput((current) => current || request.message);
+            setUsageNotice(null);
+            setUsagePending({ request: { ...request, conv_id: chunk.conv_id }, receipt: chunk.usage_pending, convId: chunk.conv_id });
+            requestConvId = chunk.conv_id;
+            refreshShared();
           } else if (chunk.type === "error") {
             finishError(chunk.message);
           }
@@ -391,6 +412,22 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, [input, stream, convId, model, onConversationCreated, refreshMessages,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
+
+  const confirmUsage = useCallback(() => {
+    if (!usagePending) return;
+    const { request, receipt } = usagePending;
+    setUsagePending(null);
+    send("send", confirmedRequest(request, receipt, true, "web") as ChatRequest);
+  }, [usagePending, send]);
+  const rejectUsage = useCallback(() => {
+    if (!usagePending) return;
+    const { request, receipt } = usagePending;
+    setUsagePending(null);
+    // The ledger records the denial; nothing is sent and the text stays in the composer.
+    try { api.chat(confirmedRequest(request, receipt, false, "web") as ChatRequest, { onChunk: () => undefined, onError: () => undefined, onDone: () => undefined }); }
+    catch (err) { setError(err instanceof Error ? err.message : String(err)); }
+    setUsageNotice(usageCatalog.feature ? safeNotice(usageCatalog.feature, "rejected") : null);
+  }, [usagePending, usageCatalog.feature]);
 
   const cancelStreaming = useCallback(() => {
     const epoch = ++sendEpochRef.current;
@@ -709,6 +746,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             </option>
           ))}
         </select>
+        {(usagePending || usageNotice) && <div style={{ width: "100%" }}>
+          {usagePending && <UsagePendingBlock testId="chat-usage-pending" feature={usageCatalog.feature} receipt={usagePending.receipt}
+            onConfirm={confirmUsage} onReject={rejectUsage} />}
+          {usageNotice && <div className="pill" data-testid="chat-usage-notice">{usageNotice}</div>}
+        </div>}
         <textarea
           value={input}
           placeholder={profile?.composer.placeholder ?? "Message Loom…"}

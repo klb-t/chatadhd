@@ -341,6 +341,10 @@ export class LoomHttpApi implements LoomApi {
   wakeSemantic(): Promise<SemanticStatusInfo> {
     return this.req("POST", "/api/semantic/wake");
   }
+  async confirmSemanticUsage(approved: boolean, receiptId: string, ref: string): Promise<SemanticStatusInfo> {
+    await this.req("POST", "/api/semantic/usage-confirm", { approved, receipt_id: receiptId, confirmation_ref: ref });
+    return this.getSemanticStatus();
+  }
 
   // ── Memory tree ──────────────────────────────────────────────────────
 

@@ -294,6 +294,43 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
           }
         },
         {
+          "id": "presentation.chat_usage/v1",
+          "key": "presentation.chat_usage",
+          "area": "presentation/chat_usage",
+          "revision": 1,
+          "label": "Texts for a send or semantic batch paused by the usage guard; texts only, they do not change what is sent",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "chat_usage",
+            "locales": {
+              "en": {
+                "title": "Requires confirmation",
+                "explanation": "This message has not been sent. Its expected usage is far above your recent baseline for this model, so you are asked first. Nothing is capped; you decide.",
+                "baseline_key": "Comparison group: {{key}}",
+                "resource": "{{name}}: expected {{projected}}, baseline {{baseline}}, growth {{ratio}}",
+                "unknown": "unknown",
+                "confirm": "Confirm and send",
+                "reject": "Reject",
+                "restored": "Your text is back in the composer.",
+                "rejected": "Rejected. Nothing was sent.",
+                "confirm_failed": "The confirmation could not be sent ({{reason}})."
+              },
+              "pl": {
+                "title": "Wymaga potwierdzenia",
+                "explanation": "Ta wiadomość nie została wysłana. Przewidywane zużycie jest znacznie wyższe niż Twoja ostatnia wartość bazowa dla tego modelu, więc najpierw pytamy. Nic nie jest ograniczane; decydujesz Ty.",
+                "baseline_key": "Grupa porównawcza: {{key}}",
+                "resource": "{{name}}: oczekiwane {{projected}}, baza {{baseline}}, wzrost {{ratio}}",
+                "unknown": "nieznane",
+                "confirm": "Potwierdź i wyślij",
+                "reject": "Odrzuć",
+                "restored": "Twój tekst wrócił do pola wiadomości.",
+                "rejected": "Odrzucono. Nic nie wysłano.",
+                "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+              }
+            }
+          }
+        },
+        {
           "id": "chat.send.block_without_source_history/v1",
           "key": "chat.send.block_without_source_history",
           "area": "chat/send",
@@ -1102,6 +1139,43 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
             "setting_help": "Wyłączone: wiadomość jest wysyłana tylko z zapisanymi wiadomościami, a komunikat mówi, czego brakuje. Włączone: wysyłanie pozostaje zablokowane w takich rozmowach, dopóki tego nie wyłączysz.",
             "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
             "unblock": "Wyłącz tę blokadę"
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.chat_usage/v1",
+      "key": "presentation.chat_usage",
+      "area": "presentation/chat_usage",
+      "revision": 1,
+      "label": "Texts for a send or semantic batch paused by the usage guard; texts only, they do not change what is sent",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "chat_usage",
+        "locales": {
+          "en": {
+            "title": "Requires confirmation",
+            "explanation": "This message has not been sent. Its expected usage is far above your recent baseline for this model, so you are asked first. Nothing is capped; you decide.",
+            "baseline_key": "Comparison group: {{key}}",
+            "resource": "{{name}}: expected {{projected}}, baseline {{baseline}}, growth {{ratio}}",
+            "unknown": "unknown",
+            "confirm": "Confirm and send",
+            "reject": "Reject",
+            "restored": "Your text is back in the composer.",
+            "rejected": "Rejected. Nothing was sent.",
+            "confirm_failed": "The confirmation could not be sent ({{reason}})."
+          },
+          "pl": {
+            "title": "Wymaga potwierdzenia",
+            "explanation": "Ta wiadomość nie została wysłana. Przewidywane zużycie jest znacznie wyższe niż Twoja ostatnia wartość bazowa dla tego modelu, więc najpierw pytamy. Nic nie jest ograniczane; decydujesz Ty.",
+            "baseline_key": "Grupa porównawcza: {{key}}",
+            "resource": "{{name}}: oczekiwane {{projected}}, baza {{baseline}}, wzrost {{ratio}}",
+            "unknown": "nieznane",
+            "confirm": "Potwierdź i wyślij",
+            "reject": "Odrzuć",
+            "restored": "Twój tekst wrócił do pola wiadomości.",
+            "rejected": "Odrzucono. Nic nie wysłano.",
+            "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
           }
         }
       }

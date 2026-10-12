@@ -126,6 +126,8 @@ export interface LoomApi {
   pauseSemantic(): Promise<SemanticStatusInfo>;
   resumeSemantic(): Promise<SemanticStatusInfo>;
   wakeSemantic(): Promise<SemanticStatusInfo>;
+  /** Answers a batch submission paused by the usage guard (HTTP host only). */
+  confirmSemanticUsage?(approved: boolean, receiptId: string, ref: string): Promise<SemanticStatusInfo>;
 
   // Memory tree
   listMemory(): Promise<MemoryNode[]>;

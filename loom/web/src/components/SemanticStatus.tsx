@@ -3,7 +3,9 @@ import { api } from "../api";
 import type { UserProfileHost } from "../api/onboarding-host";
 import type { SemanticStatusInfo } from "../api/types";
 import { PresentationFailure } from "../onboarding/presentation-context";
-import { message, PresentationError, resolvePresentation } from "../onboarding/presentation.mjs";
+import UsagePendingBlock from "./UsagePendingBlock";
+import { USAGE_PENDING_FEATURE } from "../context/usage-pending";
+import { message, resolvePresentationFeature, PresentationError, resolvePresentation } from "../onboarding/presentation.mjs";
 
 const POLL_MS = 4000;
 
@@ -73,6 +75,14 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
     }
   }, [status]);
 
+  const answerUsage = useCallback(async (approved: boolean) => {
+    const pending = status?.usage_pending;
+    if (!pending?.receipt_id || !api.confirmSemanticUsage) return;
+    setBusy(true);
+    try { setStatus(await api.confirmSemanticUsage(approved, pending.receipt_id, "web")); setError(null); }
+    catch (cause) { setError(cause); } finally { setBusy(false); }
+  }, [status]);
+
   if (!presentation.value) return <div className="pill warn" data-testid="semantic-status">
     <PresentationFailure error={presentation.error} />
   </div>;
@@ -102,6 +112,9 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
         </summary>
         <pre>{details}</pre>
       </details>
+      {status?.usage_pending && api.confirmSemanticUsage && <UsagePendingBlock testId="semantic-usage-pending" busy={busy}
+        feature={(() => { try { return resolvePresentationFeature(p, USAGE_PENDING_FEATURE); } catch { return null; } })()}
+        receipt={status.usage_pending} onConfirm={() => void answerUsage(true)} onReject={() => void answerUsage(false)} />}
       {status && <button type="button" onClick={togglePause} disabled={busy} data-testid="semantic-toggle-pause">
         {message(p, status.paused ? "session.resume" : "session.pause")}
       </button>}
