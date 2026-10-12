@@ -164,5 +164,6 @@ Stan kolejki, meldunek dzienny i decyzje: [wp-queue](wp-queue-2026-10-10.md). Pl
 | Wątek | Commity | Brama |
 |---|---|---|
 | T7 dane w aplikacji Python | `514e249`, `7ea4ecb` | CTest 161/161, guard PASS (160+1 opt-in), web 15/16 — `test:chat-context` czerwony również na bazie `e777592` (P-1) |
+| T6 strażnik ×10 wszędzie | `d4542a7`…`940b070` | CTest 163/163, guard PASS (162+1 opt-in), web 17/18 (P-1) |
 
 Decyzje techniczne S1 są zapisywane w `wp-queue` (sekcja „Decyzje S1”).
