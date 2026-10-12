@@ -686,6 +686,24 @@
           "view": "graph.nodes",
           "params": {}
         }
+      },
+      "storage_security": {
+        "order": 15,
+        "label": {
+          "en": "Storage and security",
+          "pl": "Magazyn i bezpieczeństwo"
+        },
+        "axes": {
+          "about": "application",
+          "kind": "data",
+          "time": "state"
+        },
+        "bindings": [
+          "security.categories",
+          "security.storages",
+          "security.suites",
+          "security.threats"
+        ]
       }
     },
     "bindings": {
@@ -827,6 +845,38 @@
       },
       "layers.privacy": {
         "provider": "layers.entries"
+      },
+      "security.categories": {
+        "provider": "profile.items",
+        "as": "storage_categories",
+        "params": {
+          "domain": "storage_security",
+          "pointer": "/categories"
+        }
+      },
+      "security.storages": {
+        "provider": "profile.items",
+        "as": "storages",
+        "params": {
+          "domain": "storage_security",
+          "pointer": "/storages"
+        }
+      },
+      "security.suites": {
+        "provider": "profile.items",
+        "as": "crypto_suites",
+        "params": {
+          "domain": "storage_security",
+          "pointer": "/crypto/suite_presets"
+        }
+      },
+      "security.threats": {
+        "provider": "profile.items",
+        "as": "threats",
+        "params": {
+          "domain": "storage_security",
+          "pointer": "/threat_model"
+        }
       }
     },
     "seed": {

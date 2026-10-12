@@ -67,6 +67,7 @@ Ustawienia tego obszaru używają: `app_preset` (domyślne), `installation` (kt�
 | `/key_custody/<klucz>` | `locked_by` albo `ask` | zmiana opieki to zdarzenie z inicjatorem |
 | `/rotation/*` | `min` (okres) | krótszy z zakresów wygrywa |
 
+Reguły są w danych: `settings_conflict_rules` (wzorzec ścieżki → reguła z `scopes.pack`).
 Każda wartość efektywna ma wyjaśnienie (zakresy, reguła, inicjator, czas). Operacje R40 (override/disable/exclude/reenable) działają w każdym zakresie.
 Konflikt **danych** między replikami (nie ustawień): reguły w `sync_rules` (preset `ask`; `keep_both`, `last_writer_wins`, `vector_clock`, `merge_by_kind`). Brak magazynu
 to degradacja, nie blokada: zapis się udaje, jeśli przyjął go co najmniej `write_quorum` magazynów (preset 1), widok pokazuje opóźnione repliki (EC-E07).

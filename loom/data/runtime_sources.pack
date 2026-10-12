@@ -189,6 +189,139 @@
           "target": "/defaults/ontology/default_state"
         }
       ]
+    },
+    {
+      "output": "runtime/storage_security.pack",
+      "definition": {
+        "schema": "loom.runtime_profile/1",
+        "domain": "storage_security",
+        "revision": 1,
+        "description": "Storage, encryption and security area (R51, T5a). Canonical source policy/storage_security.pack; all content is calibration/preset (default placement = today's reality, crypto preset legacy). Overlay profiles/storage_security.pack merges objects keyed by id, arrays replace. Consumers: graph_entry area storage_security (counts via profile.items); T5b providers.",
+        "defaults": null,
+        "value_schema": {
+          "type": "object",
+          "required": [
+            "schema",
+            "categories",
+            "storages",
+            "placement",
+            "allowed_storages",
+            "egress",
+            "sync",
+            "settings_conflict_rules",
+            "crypto",
+            "key_custody",
+            "migration",
+            "threat_model"
+          ],
+          "additionalProperties": true,
+          "x-consumer": "graph_entry/storage_security",
+          "properties": {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "loom.storage_security/1"
+              ]
+            },
+            "categories": {
+              "type": "object",
+              "x-setting": "/categories",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "storages": {
+              "type": "object",
+              "x-setting": "/storages",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "placement": {
+              "type": "object",
+              "x-setting": "/placement",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "allowed_storages": {
+              "type": "object",
+              "x-setting": "/allowed_storages",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "egress": {
+              "type": "object",
+              "x-setting": "/egress",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "sync": {
+              "type": "object",
+              "x-setting": "/sync",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "settings_conflict_rules": {
+              "type": "object",
+              "x-setting": "/settings_conflict_rules",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "crypto": {
+              "type": "object",
+              "required": [
+                "selected_preset",
+                "suite_presets",
+                "algorithms"
+              ],
+              "additionalProperties": true,
+              "x-consumer": "graph_entry/storage_security",
+              "properties": {
+                "selected_preset": {
+                  "type": "string",
+                  "x-setting": "/crypto/selected_preset",
+                  "x-consumer": "graph_entry/storage_security"
+                },
+                "suite_presets": {
+                  "type": "object",
+                  "x-setting": "/crypto/suite_presets",
+                  "x-consumer": "graph_entry/storage_security",
+                  "additionalProperties": true
+                },
+                "algorithms": {
+                  "type": "object",
+                  "x-setting": "/crypto/algorithms",
+                  "x-consumer": "graph_entry/storage_security",
+                  "additionalProperties": true
+                }
+              }
+            },
+            "key_custody": {
+              "type": "object",
+              "x-setting": "/key_custody",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "migration": {
+              "type": "object",
+              "x-setting": "/migration",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            },
+            "threat_model": {
+              "type": "object",
+              "x-setting": "/threat_model",
+              "x-consumer": "graph_entry/storage_security",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "projections": [
+        {
+          "source": "policy/storage_security.pack",
+          "pointer": "",
+          "target": "/defaults"
+        }
+      ]
     }
   ]
 }
