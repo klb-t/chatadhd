@@ -154,6 +154,8 @@ Stan „dziś” każdego wpisu pochodzi z INW (np. Android: `not_controlled`; l
 | `egress.ledger` | wysyłki per dostawca/kategoria/czas/hash | rejestr nie istnieje (INW F9) |
 | `threats.map` | mapa trzech etykiet z `threat_model` × konfiguracja | przebieg obliczeniowy |
 
+Walidacja T5a: `python3 loom/src/model/gen_runtime_profiles.py --check` zielony (schemat i domyślne wartości profilu, osadzenie w `runtime_profiles_embedded.inc`). **Testów natywnych nie uruchomiono** (`nie zweryfikowano`: dysk miał 405 MB wolnego przy buildzie ok. 4 GB; zaległe do T5b: `ctest --preset dev -R 'runtime|profile|literal|graph|entry|domain'`).
+
 Powiązanie danowe T5a (zrobione): obszar `storage_security` + powiązania `security.categories|storages|suites|threats` → `profile.items` (domena `storage_security`).
 
 ## 9. Jak to wyłączyć
