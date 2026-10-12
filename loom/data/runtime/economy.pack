@@ -1,0 +1,249 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "economy",
+  "revision": 1,
+  "description": "Resource-economy report presets (R50, GRAPH_ENTRY_PARTIES_ECONOMY section 9). Every value is a preset the owner may override; nothing here forbids a duplicate. mode: off (no analysis) | report | propose (same read-only findings, flagged as proposals) ; auto is reserved and is NOT implemented - the report never writes. Thresholds (min_*) select what is worth reporting, they never block anything. Cost coefficients feed the balance benefit = (copies-1)*size*storage_cost*horizon [+ saved tokens*price] versus cost = indirection + dedupe compute + independence loss [+ regeneration * expected reads]; a null coefficient means unknown and makes the dependent balance {known:false} rather than zero. independence_loss_usd_per_copy 0 means no price on losing independent copies. max_findings_per_class 0 lists every finding (totals always cover all).",
+  "defaults": {
+    "mode": "report",
+    "message_statuses": [
+      "active",
+      "excluded"
+    ],
+    "min_copies": 2,
+    "min_message_bytes": 64,
+    "min_conversation_messages": 2,
+    "json_columns": [
+      {
+        "table": "messages",
+        "column": "metadata",
+        "id": "id"
+      },
+      {
+        "table": "nodes",
+        "column": "metadata",
+        "id": "id"
+      },
+      {
+        "table": "links",
+        "column": "metadata",
+        "id": "id"
+      },
+      {
+        "table": "loom_artifacts",
+        "column": "metadata",
+        "id": "id"
+      },
+      {
+        "table": "loom_tasks",
+        "column": "params",
+        "id": "id"
+      },
+      {
+        "table": "loom_tasks",
+        "column": "result",
+        "id": "id"
+      }
+    ],
+    "min_block_bytes": 256,
+    "min_block_copies": 3,
+    "min_prefix_bytes": 64,
+    "examples_per_finding": 3,
+    "max_findings_per_class": 100,
+    "storage_cost_usd_per_gb_month": 0.02,
+    "horizon_months": 12,
+    "indirection_cost_usd_per_reference": 1e-06,
+    "dedupe_compute_usd_per_mb": 1e-05,
+    "independence_loss_usd_per_copy": 0,
+    "cold_compression_ratio": null,
+    "chars_per_token": 4,
+    "token_price_usd_per_million": null,
+    "expected_prompt_inclusions": null
+  },
+  "value_schema": {
+    "x-setting": "",
+    "x-consumer": "economy",
+    "type": "object",
+    "required": [
+      "mode",
+      "message_statuses",
+      "min_copies",
+      "min_message_bytes",
+      "min_conversation_messages",
+      "json_columns",
+      "min_block_bytes",
+      "min_block_copies",
+      "min_prefix_bytes",
+      "examples_per_finding",
+      "max_findings_per_class",
+      "storage_cost_usd_per_gb_month",
+      "horizon_months",
+      "indirection_cost_usd_per_reference",
+      "dedupe_compute_usd_per_mb",
+      "independence_loss_usd_per_copy",
+      "cold_compression_ratio",
+      "chars_per_token",
+      "token_price_usd_per_million",
+      "expected_prompt_inclusions"
+    ],
+    "properties": {
+      "mode": {
+        "x-setting": "/mode",
+        "x-consumer": "economy",
+        "type": "string",
+        "enum": [
+          "off",
+          "report",
+          "propose",
+          "auto"
+        ]
+      },
+      "message_statuses": {
+        "x-setting": "/message_statuses",
+        "x-consumer": "economy",
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "min_copies": {
+        "x-setting": "/min_copies",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 2
+      },
+      "min_message_bytes": {
+        "x-setting": "/min_message_bytes",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 0
+      },
+      "min_conversation_messages": {
+        "x-setting": "/min_conversation_messages",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 0
+      },
+      "json_columns": {
+        "x-setting": "/json_columns",
+        "x-consumer": "economy",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "table",
+            "column",
+            "id"
+          ],
+          "properties": {
+            "table": {
+              "type": "string",
+              "minLength": 1
+            },
+            "column": {
+              "type": "string",
+              "minLength": 1
+            },
+            "id": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      },
+      "min_block_bytes": {
+        "x-setting": "/min_block_bytes",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 0
+      },
+      "min_block_copies": {
+        "x-setting": "/min_block_copies",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 2
+      },
+      "min_prefix_bytes": {
+        "x-setting": "/min_prefix_bytes",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 0
+      },
+      "examples_per_finding": {
+        "x-setting": "/examples_per_finding",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 0
+      },
+      "max_findings_per_class": {
+        "x-setting": "/max_findings_per_class",
+        "x-consumer": "economy",
+        "type": "integer",
+        "minimum": 0
+      },
+      "storage_cost_usd_per_gb_month": {
+        "x-setting": "/storage_cost_usd_per_gb_month",
+        "x-consumer": "economy",
+        "type": "number",
+        "minimum": 0
+      },
+      "horizon_months": {
+        "x-setting": "/horizon_months",
+        "x-consumer": "economy",
+        "type": "number",
+        "minimum": 0
+      },
+      "indirection_cost_usd_per_reference": {
+        "x-setting": "/indirection_cost_usd_per_reference",
+        "x-consumer": "economy",
+        "type": "number",
+        "minimum": 0
+      },
+      "dedupe_compute_usd_per_mb": {
+        "x-setting": "/dedupe_compute_usd_per_mb",
+        "x-consumer": "economy",
+        "type": "number",
+        "minimum": 0
+      },
+      "independence_loss_usd_per_copy": {
+        "x-setting": "/independence_loss_usd_per_copy",
+        "x-consumer": "economy",
+        "type": "number",
+        "minimum": 0
+      },
+      "cold_compression_ratio": {
+        "x-setting": "/cold_compression_ratio",
+        "x-consumer": "economy",
+        "type": [
+          "number",
+          "null"
+        ],
+        "minimum": 1
+      },
+      "chars_per_token": {
+        "x-setting": "/chars_per_token",
+        "x-consumer": "economy",
+        "type": "number",
+        "minimum": 0
+      },
+      "token_price_usd_per_million": {
+        "x-setting": "/token_price_usd_per_million",
+        "x-consumer": "economy",
+        "type": [
+          "number",
+          "null"
+        ],
+        "minimum": 0
+      },
+      "expected_prompt_inclusions": {
+        "x-setting": "/expected_prompt_inclusions",
+        "x-consumer": "economy",
+        "type": [
+          "number",
+          "null"
+        ],
+        "minimum": 0
+      }
+    }
+  }
+}

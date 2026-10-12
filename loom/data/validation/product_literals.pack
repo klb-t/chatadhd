@@ -528,6 +528,10 @@
           "sha256": "a53f6e3a046459bd81d447fb551db68319afe38679ad0c7f5b3fa658ebd4ae1b"
         },
         {
+          "path": "loom/data/runtime/economy.pack",
+          "sha256": "24756d280c6a7a936e5eba833bd8ca631bf650650d9d8b960e4ac42462ce9139"
+        },
+        {
           "path": "loom/data/runtime/github.pack",
           "sha256": "2f2d72f6fe94f57ebe11ab90883a530266188180bd803cc72a7697f336a108f3"
         },
@@ -616,7 +620,11 @@
           "sha256": "5cd6ba3e4e2729e30f9d4c27ea299a5760b1b6122d1a0b1ea41189b680440f64"
         }
       ],
-      "output_sha256": "fe71ccdc594f95bc3c0b0104c908d6f2d36929bd14cb775331bfdf7bf8d9903c",
+<<<<<<< HEAD
+      "output_sha256": "0daeb83137b425513a51349ca7b65e51b5376a3cf09f174e6cc7605a17135d3c",
+=======
+      "output_sha256": "88a708decc0010bfcf3db90faa18570dfedf4d2a1e9393f5efc85f58e848b8c2",
+>>>>>>> d370ee49 (feat(economy): economy runtime profile pack (presets for mode, thresholds, cost coefficients) [skip ci])
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],
