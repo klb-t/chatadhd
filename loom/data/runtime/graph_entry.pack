@@ -648,7 +648,8 @@
           "time": "history"
         },
         "bindings": [
-          "usage.ledger"
+          "usage.ledger",
+          "economy.redundant_bytes"
         ]
       },
       "privacy_consent": {
@@ -814,6 +815,9 @@
       },
       "usage.ledger": {
         "provider": "usage.ledger"
+      },
+      "economy.redundant_bytes": {
+        "provider": "economy.report"
       },
       "methods.registry": {
         "provider": "methods.registry"

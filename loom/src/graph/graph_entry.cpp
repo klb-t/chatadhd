@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <set>
 
+#include "loom/economy.h"
 #include "loom/runtime_profile.h"
 
 namespace loom::graph_entry {
@@ -163,6 +164,27 @@ void register_builtin(Providers& p) {
   p.add("kb.runs", [](const Context& c, const Json&) { return only(grouped(c, "loom_kb_runs", "status")); });
   p.add("usage.ledger", [](const Context& c, const Json&) {
     return only(table_total(c, "usage_operations"));
+  });
+  // Redundant bytes found by the read-only economy report (R50); mode off or an unreadable database is unknown.
+  p.add("economy.report", [](const Context& c, const Json&) {
+    if (!c.env.db) return only(unknown("database_unavailable"));
+    auto report = economy::report_for_data_dir(c.env.data_dir, c.env.db->path(), Json::object());
+    if (!report) return only(unknown("economy_report_unavailable"));
+    if (json::get_string(*report, "status") != "ok") return only(unknown("economy_mode_off"));
+    std::int64_t total = 0;
+    Json by = Json::object();
+    for (const auto& klass : (*report)["classes"]) {
+      for (const auto& item : klass["measures"].items()) {
+        const Json& m = item.value();
+        if (!m.value("known", false) || !m.contains("totals")) continue;
+        const std::int64_t bytes = m["totals"].value("redundant_bytes", static_cast<std::int64_t>(0));
+        by[item.key()] = bytes;
+        // Messages are also inside duplicate conversations; the headline counts each measure once but not
+        // the overlapping message view, so the number is a lower bound per class, shown per measure in "by".
+        if (item.key() != "duplicate_messages") total += bytes;
+      }
+    }
+    return only(known_by(total, by));
   });
   // Registries that cannot be enumerated from here stay unknown.
   p.add("methods.registry", [](const Context& c, const Json&) {

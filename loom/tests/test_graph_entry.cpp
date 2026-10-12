@@ -99,6 +99,7 @@ TEST_SUITE("graph_entry") {
     CHECK(c["db.recognition"]["by"]["unrecognized"] == 1);
     CHECK(c["db.recognition"]["by"]["partial"] == 1);
     CHECK((*area(view, "resource_economy"))["counts"]["usage.ledger"]["known"] == true);
+    CHECK((*area(view, "resource_economy"))["counts"]["economy.redundant_bytes"]["known"] == true);
     // The view never writes: a second computation changes nothing.
     CHECK(unwrap(graph_entry::compute(env)) == view);
   }
