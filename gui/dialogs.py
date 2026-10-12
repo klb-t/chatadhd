@@ -528,8 +528,8 @@ class ModelSelectorPopup(Popup):
             for m in sorted(provider_models, key=lambda x: x.get("name", x["id"])):
                 if self._search_text:
                     if (self._search_text not in m["id"].lower() and
-                        self._search_text not in m.get("name", "").lower() and
-                        self._search_text not in m.get("description", "").lower()):
+                        self._search_text not in (m.get("name") or "").lower() and
+                        self._search_text not in (m.get("description") or "").lower()):
                         continue
 
                 is_current = m["id"] == self.current_id

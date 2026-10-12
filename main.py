@@ -88,8 +88,13 @@ class ChatADHDApp(App):
         self.secrets = Secrets(data_dir / "secrets.json")
         self.db = Database(data_dir / "chatadhd.db")
         self.models = ModelRegistry(data_dir / "models.json", self.cfg, self.secrets)
+        if self.models.cache_status == "corrupt":
+            log.warning("Model cache unreadable (left on disk): %s", self.models.cache_reason)
         self.memory = MemoryEngine(data_dir / "memory.json",
                                    semantic_analyzer=analyzer)
+        if self.memory.load_issues:
+            log.warning("memory.json load issues (file preserved): %s",
+                        self.memory.load_issues)
         self.semantic_llm = SemanticLLM(self.cfg, self.secrets)
         self.graph_memory = GraphMemorySelector(self.db, self.cfg)
         self.engine = ChatEngine(self.cfg, self.secrets, self.db,

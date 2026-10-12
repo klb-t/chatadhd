@@ -7,6 +7,7 @@ Supports semantic search and cost analysis.
 """
 import json
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
@@ -23,62 +24,97 @@ class ModelRegistry:
         self._config = config
         self._secrets = secrets
         self._models: list[dict[str, Any]] = []
+        # ok | missing | corrupt (+ human-readable reason) for the GUI.
+        self.cache_status = "missing"
+        self.cache_reason = ""
         self._load()
 
+    @staticmethod
+    def _norm_entry(m: Any) -> Optional[dict[str, Any]]:
+        """Normalize one cached entry, keeping every field (unknown ones too)."""
+        if isinstance(m, dict) and "id" in m:
+            return m
+        if isinstance(m, str):
+            # v0.06.x stored plain model ID strings.
+            return {"id": m, "name": m.split("/")[-1], "context_length": 0}
+        return None
+
     def _load(self) -> None:
+        self.cache_status = "missing"
+        self.cache_reason = ""
         if not self._path.exists():
+            self.cache_reason = "no cache file"
             return
         try:
             raw_text = self._path.read_text(encoding="utf-8")
             if not raw_text.strip():
+                self.cache_reason = "empty cache file"
                 return
             raw = json.loads(raw_text)
 
             models: list[dict[str, Any]] = []
+            wrapper = False
 
             if isinstance(raw, list):
-                for m in raw:
-                    if isinstance(m, dict) and "id" in m:
-                        models.append(m)
-                    elif isinstance(m, str):
-                        # v0.06.x stored plain model ID strings.
-                        models.append({"id": m, "name": m.split("/")[-1],
-                                       "context_length": 0})
-                    # Skip anything else silently.
-
+                items = raw
             elif isinstance(raw, dict):
-                # Raw API response cached by v0.06.x.
-                data = raw.get("data", raw.get("models", []))
-                if isinstance(data, list):
-                    for m in data:
-                        if isinstance(m, dict) and "id" in m:
-                            models.append({
-                                "id": m["id"],
-                                "name": m.get("name", m["id"]),
-                                "context_length": m.get("context_length", 0),
-                            })
+                # Wrapper / raw API response ({"data": [...]}): same field set
+                # as the list form, unknown fields preserved.
+                wrapper = True
+                items = raw.get("data", raw.get("models", []))
+                if not isinstance(items, list):
+                    items = []
+            else:
+                raise ValueError(f"unexpected top-level type {type(raw).__name__}")
+
+            for m in items:
+                e = self._norm_entry(m)
+                if e is None:
+                    log.warning("Skipping unrecognized model cache entry: %r", m)
+                    continue
+                if wrapper:
+                    e = dict(e)
+                    e.setdefault("name", e["id"])
+                    e.setdefault("context_length", 0)
+                models.append(e)
 
             self._models = models
             if models:
+                self.cache_status = "ok"
                 log.info("Loaded %d cached models", len(models))
-                # Re-save in canonical format so next load is clean.
-                self._save()
+                if wrapper:
+                    # Re-save wrapper form in canonical list format (lossless).
+                    self._save()
             else:
+                self.cache_reason = "cache has no models"
                 log.info("Model cache empty or unrecognized — will refresh from API")
-        except Exception:
-            log.warning("Corrupted model cache — removing %s", self._path)
-            try:
-                self._path.unlink()
-            except OSError:
-                pass
+        except Exception as e:
+            # Never delete the cache: its bytes stay on disk untouched.
+            log.warning("Unreadable model cache %s (left untouched)", self._path,
+                        exc_info=True)
+            self.cache_status = "corrupt"
+            self.cache_reason = f"{type(e).__name__}: {e}"
             self._models = []
+
+    def _preserve_corrupt(self) -> None:
+        """Before writing over a corrupt cache, move its bytes aside."""
+        if self.cache_status != "corrupt" or not self._path.exists():
+            return
+        stamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        dst = self._path.with_name(self._path.name + f".corrupt-{stamp}")
+        self._path.replace(dst)
+        log.warning("Moved corrupt model cache to %s", dst.name)
 
     def _save(self) -> None:
         self._path.parent.mkdir(parents=True, exist_ok=True)
+        self._preserve_corrupt()
         self._path.write_text(
             json.dumps(self._models, indent=1, ensure_ascii=False),
             encoding="utf-8",
         )
+        if self.cache_status != "ok":
+            self.cache_status = "ok"
+            self.cache_reason = ""
 
     def update_from_api(self) -> bool:
         """Fetch model list from OpenRouter. Returns True on success."""

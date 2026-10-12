@@ -48,31 +48,106 @@ class MemoryEngine:
         self._path = Path(path)
         self._cache: dict[str, MemoryNode] = {}
         self._analyzer = semantic_analyzer
+        # Unknown record keys (extension bag), by node id; written back after
+        # the known fields.
+        self._extras: dict[str, dict[str, Any]] = {}
+        # File order of records: ("n", node_id) or ("r", raw_json_value) for
+        # malformed records kept verbatim.
+        self._slots: list[tuple[str, Any]] = []
+        # Problems found while loading: [{"index": int|None, "reason": str}]
+        self.load_issues: list[dict[str, Any]] = []
+        # True when the file could not be parsed as a list: never overwritten.
+        self._write_blocked = False
+        self._backup_done = False
         self._load()
 
     # ── Persistence ────────────────────────────────────────────────
+
+    def _issue(self, index: Optional[int], reason: str) -> None:
+        self.load_issues.append({"index": index, "reason": reason})
+        log.warning("memory load issue in %s (record %s): %s",
+                    self._path.name, index, reason)
 
     def _load(self) -> None:
         if not self._path.exists():
             return
         try:
             data = json.loads(self._path.read_text(encoding="utf-8"))
-            for item in data:
+        except Exception as e:
+            log.warning("Failed to parse memory file %s", self._path, exc_info=True)
+            self._issue(None, f"unparseable file: {e}")
+            self._write_blocked = True
+            return
+        if not isinstance(data, list):
+            self._issue(None, "top-level JSON is not a list")
+            self._write_blocked = True
+            return
+        for idx, item in enumerate(data):
+            try:
+                if not isinstance(item, dict):
+                    raise ValueError("record is not an object")
                 filtered = {k: v for k, v in item.items() if k in _KNOWN_FIELDS}
                 node = MemoryNode(**filtered)
-                self._cache[node.id] = node
-            log.info("Loaded %d memory nodes from %s", len(self._cache), self._path.name)
-        except Exception:
-            log.exception("Failed to load memory from %s", self._path)
+                if node.id in self._cache:
+                    raise ValueError(f"duplicate id {node.id!r}")
+            except Exception as e:
+                self._issue(idx, f"{type(e).__name__}: {e}")
+                self._slots.append(("r", item))
+                continue
+            self._cache[node.id] = node
+            self._slots.append(("n", node.id))
+            extra = {k: v for k, v in item.items() if k not in _KNOWN_FIELDS}
+            if extra:
+                self._extras[node.id] = extra
+        log.info("Loaded %d memory nodes from %s (%d issues)",
+                 len(self._cache), self._path.name, len(self.load_issues))
+
+    def _backup_corrupt(self) -> bool:
+        if self._backup_done:
+            return True
+        stamp = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+        dst = self._path.with_name(self._path.name + f".corrupt-{stamp}")
+        try:
+            dst.write_bytes(self._path.read_bytes())
+        except OSError:
+            log.error("Could not back up unreadable memory file %s", self._path,
+                      exc_info=True)
+            return False
+        self._backup_done = True
+        log.warning("Backed up unreadable memory file to %s", dst.name)
+        return True
 
     def _save(self) -> None:
+        if self._write_blocked:
+            self._backup_corrupt()
+            log.warning("memory file %s could not be read; NOT overwriting it "
+                        "(changes are kept in memory only)", self._path)
+            return
         self._path.parent.mkdir(parents=True, exist_ok=True)
-        data = [asdict(n) for n in self._cache.values()]
+        data: list[Any] = []
+        seen = set()
+        for kind, ref in self._slots:
+            if kind == "r":
+                data.append(ref)
+            elif ref in self._cache:
+                seen.add(ref)
+                data.append(self._node_dict(ref))
+        for nid in self._cache:
+            if nid not in seen:
+                self._slots.append(("n", nid))
+                data.append(self._node_dict(nid))
+        self._slots = [s for s in self._slots if s[0] == "r" or s[1] in self._cache]
         tmp = self._path.with_suffix(".tmp")
         tmp.write_text(
             json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8"
         )
         tmp.replace(self._path)
+
+    def _node_dict(self, nid: str) -> dict[str, Any]:
+        d = asdict(self._cache[nid])
+        for k, v in self._extras.get(nid, {}).items():
+            d.setdefault(k, v)
+        return d
 
     # ── CRUD ───────────────────────────────────────────────────────
 
@@ -129,6 +204,7 @@ class MemoryEngine:
             for cid in children:
                 self.delete_node(cid, recursive=True)
         del self._cache[nid]
+        self._extras.pop(nid, None)
         self._save()
         log.debug("Deleted memory node %s (recursive=%s)", nid, recursive)
 
