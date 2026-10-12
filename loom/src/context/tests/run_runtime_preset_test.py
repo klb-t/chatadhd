@@ -213,8 +213,8 @@ def main() -> None:
     parser.add_argument("--mode", choices=("base", "layers", "both"), default="both")
     parser.add_argument("--standalone-utilities", action="store_true",
                         help="compile only actual utility dependencies instead of linking full core; not a full-core gate")
-    parser.add_argument("--w11-ref", default="origin/gpt/data-profiles-2026-10-04")
-    parser.add_argument("--w12-ref", default="origin/gpt/onboarding-2026-10-04")
+    parser.add_argument("--w11-ref", default="origin/archive/2026-10-12/gpt/data-profiles-2026-10-04")
+    parser.add_argument("--w12-ref", default="origin/archive/2026-10-12/gpt/onboarding-2026-10-04")
     parser.add_argument("--evidence-dir", type=Path, help="new directory for complete positive or negative verification artifacts")
     args = parser.parse_args()
     root, build = args.repo.resolve(), args.build_dir.resolve()

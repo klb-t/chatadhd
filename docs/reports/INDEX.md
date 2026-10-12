@@ -192,3 +192,27 @@ metamorficznymi, brakujące abstrakcje A1–A23, 20 MR, mapowanie na T1–T14.
 na ASR, ślad `loom.acceptance_trace/1`, kryteria 18–31. Raport: [t10-edge-cases-2026-10-11](t10-edge-cases-2026-10-11.md).
 Decyzja właściciela **D3** (2026-10-12): wszystkie dostępne klucze; dane rzeczywiste dozwolone i preferowane tam, gdzie
 jest wybór; korpusy syntetyczne zostają jako kontrola — zapisana w `OWNER_REQUIREMENTS`, `AGENTS.md`, `LOOM_CONCEPTUAL_MODEL` §7.3.
+
+## 2026-10-12 — T8: integracja, PR-y, gałęzie
+
+`main` = gałąź robocza = `230fea8` (fast-forward z `2b5e9a1`, po zielonej bramie całości: CTest 169/169, guard PASS, web 19/19).
+
+**PR-y (stan po T8):**
+
+| PR | Gałąź | Stan | Co dalej |
+|---|---|---|---|
+| #16 | `claude/chataddhd-cpp-loom-core-IRGRN` | otwarty (draft) — widok postępu S1 | głowa = `main` |
+| #15 | `claude/t9-ecosystem-synthesis` | scalony na gałąź roboczą 13:41 UTC | — |
+| #14 | `claude/t10-edge-cases` | scalony na gałąź roboczą 13:41 UTC | — |
+| #13 | `gpt/research-jev-validation-2026-10-05` | zamknięty: zastąpiony przez T12 + D3 | treść na archiwum |
+| #12 | `gpt/chat-selector-2026-10-04` | zamknięty: treść na `main` (64/69 plików identycznych, reszta rozwinięta) | — |
+| #11 | `gpt/repo-hygiene-2026-10-04` | zamknięty: 25/25 commitów na `main` jako równoważne łatki | — |
+| #10 | `gpt/usage-policy-2026-10-04` | zamknięty: kod na `main`; raport i dowody tylko na archiwum | — |
+| #7 | `gpt/ecosystem-agent-research-2026-10-01` | zamknięty: zastąpiony przez T9 (`ECOSYSTEM_INTEGRATION`) | treść na archiwum |
+| #1–#6, #8, #9 | — | zamknięte wcześniej | — |
+
+**Gałęzie:** 37 zakończonych gałęzi (`gpt/*`, `claude/t9…`, `claude/t10…`, `claude/wp-a-send-gate`, `wip/worktree-agent-a342…`)
+skopiowano pod `archive/2026-10-12/<nazwa>`; każda kopia wskazuje ten sam commit (sprawdzone). **0 usuniętych treści.**
+Starych nazw nie udało się zdjąć: proxy git tej sesji odrzuca usuwanie refów (HTTP 403), więc stare nazwy nadal są widoczne
+obok kopii archiwalnych. Na miejscu celowo: `main`, gałąź robocza, `eval/real-holdout-key` (nie czytamy). Lokalne gałęzie wątków
+S1 (`claude/t1…t7…`) nie były wypychane — ich commity są na `main`.
