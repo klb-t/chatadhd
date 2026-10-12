@@ -276,7 +276,16 @@ TEST_SUITE("capi") {
 
     CHECK(take(loom_get_models(c.ctx)).is_array());
     CHECK(take(loom_semantic_status(c.ctx)).contains("pending"));
-    CHECK(take(loom_crypto_status(c.ctx))["iterations"] == 600000);
+    {
+      // Status describes the KDF used for new writes: PBKDF2 under `legacy`,
+      // Argon2id under the `pq_hybrid` preset (THREADS §6, T5b).
+      Json st = take(loom_crypto_status(c.ctx));
+      if (st["kdf"] == "pbkdf2-sha256") CHECK(st["iterations"] == 600000);
+      else {
+        CHECK(st["kdf"] == "argon2id");
+        CHECK(st["argon2id"]["m_kib"].is_number_integer());
+      }
+    }
     CHECK(take(loom_media_status(c.ctx)).contains("asr"));
     CHECK(take(loom_detect_format(c.ctx, "/tmp/x.json")).contains("format"));
     for (const char* s : {loom_list_memory(c.ctx), loom_import_file(c.ctx, "/nonexistent.json", nullptr, nullptr, nullptr),

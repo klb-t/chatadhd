@@ -2,6 +2,7 @@
 // (tests/compat/test_*.py). Subcommands self-register (compat_registry.h).
 #include <algorithm>
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 
 #include "compat_registry.h"
@@ -17,7 +18,17 @@ std::vector<Command>& registry() {
 }
 }  // namespace
 
-void register_command(Command cmd) { registry().push_back(std::move(cmd)); }
+// A duplicate name would make dispatch depend on static-initialisation (link)
+// order, so it fails loudly at startup instead of silently picking one.
+void register_command(Command cmd) {
+  for (const auto& existing : registry()) {
+    if (existing.name == cmd.name) {
+      std::fprintf(stderr, "loom_compat_tool: duplicate command %s\n", cmd.name.c_str());
+      std::abort();
+    }
+  }
+  registry().push_back(std::move(cmd));
+}
 const std::vector<Command>& commands() { return registry(); }
 
 void print_json(const Json& j) {

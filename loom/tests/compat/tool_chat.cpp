@@ -65,9 +65,9 @@ LOOM_COMPAT_COMMAND(cmd_chat_send, "chat-send",
   return 0;
 }
 
-LOOM_COMPAT_COMMAND(cmd_semantic_analyse, "semantic-analyse",
+LOOM_COMPAT_COMMAND(cmd_semantic_llm_analyse, "semantic-llm-analyse",
                     "@args.json : {config, secrets, text} -> SemanticLLM.analyse() unified dict") {
-  if (args.empty()) return fail("usage: semantic-analyse @args.json");
+  if (args.empty()) return fail("usage: semantic-llm-analyse @args.json");
   auto parsed = arg_json(args[0]);
   if (!parsed) return fail("bad args json: " + parsed.error().message);
   const Json& a = *parsed;
