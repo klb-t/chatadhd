@@ -47,10 +47,12 @@ To miara produktu (THREADS §7.5). Przekład na test:
   w przeglądarce telefonu** (serwer `loom/server` na osiągalnym hoście); P1 i P2
   dodatkowo na **aplikacji Python/Kivy na Androidzie**, bo właściciel używa jej
   codziennie (THREADS T7). Kolumna „Dziś” mówi, co istnieje na każdej powierzchni.
-- **Dane** (właściciel, 2026-10-12, D3 w `OWNER_REQUIREMENTS`): **wszystko na
-  prawdziwych danych właściciela**, także wysyłki do dostawców w P2–P5; korpusy
-  syntetyczne porzucone jako dowód. `ScriptedTransport` zostaje wyłącznie do
-  testów mechanizmu (MR na zamrożonych odpowiedziach), nie do zaliczania ścieżek.
+- **Dane** (właściciel, 2026-10-12, D3 w `OWNER_REQUIREMENTS`): dane rzeczywiste
+  **dozwolone i preferowane** tam, gdzie jest wybór — ścieżki P1–P7 i wysyłki do
+  dostawców w P2–P5 idą na prawdziwych eksportach właściciela. Korpus syntetyczny
+  i `ScriptedTransport` zostają jako kontrola i do testów mechanizmu (MR na
+  zamrożonych odpowiedziach); nie zaliczają ścieżki, gdy dostępny jest przebieg
+  na danych rzeczywistych.
 - **Klucze** (D3): sesja testowa używa każdego dostępnego klucza (secrets,
   wstrzyknięte przez proxy, klucz wątku 7); gdy żaden nie działa, prosi właściciela
   o następny. ×10 i wycena przed/po pozostają.
@@ -342,7 +344,8 @@ w metadanych) i jako nowy mały pakiet po T3 dla Loom (pack + test MR-4 na
    właściciela: użyć wszystkich dostępnych kluczy; gdy żaden nie działa, poprosić
    o następny. Limit 2 USD nie obowiązuje; obowiązuje ×10 i wycena przed/po.
 2. **Prywatność.** Zadane: „prawdziwy eksport do modeli czy korpus syntetyczny?”.
-   Odpowiedź: wszystko na danych rzeczywistych; dane syntetyczne porzucamy.
+   Odpowiedź (z korektą): prawdziwe dane dozwolone i preferowane, gdy jest wybór;
+   syntetyki zostają jako kontrola, nie są porzucone.
 
 Nic nie czeka na właściciela.
 
@@ -357,6 +360,5 @@ Nic nie czeka na właściciela.
 - Pytania numerowane tak/nie jako jedyna forma pytań w ścieżkach; jedyne pytania,
   których ustawienie nie wyłącza: nieodwracalne, sprzeczne z `never`, ×10.
 - Python: nierozpoznane dane raportuje, nie naprawia (T7 nie rozszerza się o T1).
-- (2026-10-12, po D3) usunięto zapasową ścieżkę „korpus syntetyczny do czasu
-  odpowiedzi”; §1 i §7 zaktualizowane. Decyzja o danych i kluczach jest właściciela,
-  nie sesji.
+- (2026-10-12, po D3) ścieżki idą na danych rzeczywistych; syntetyki jako kontrola.
+  §1 i §7 zaktualizowane. Decyzja o danych i kluczach jest właściciela, nie sesji.
