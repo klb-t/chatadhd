@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { api } from "../api";
 import type { UserProfileHost } from "../api/onboarding-host";
-import type { SemanticStatusInfo } from "../api/types";
+import type { SemanticRequeueResult, SemanticStatusInfo } from "../api/types";
 import { PresentationFailure } from "../onboarding/presentation-context";
 import UsagePendingBlock from "./UsagePendingBlock";
 import { USAGE_PENDING_FEATURE } from "../context/usage-pending";
+import { RETRY_MODES, SEMANTIC_QUEUE_FEATURE, semanticQueueTexts, semanticQueueView } from "../context/semantic-queue";
 import { message, resolvePresentationFeature, PresentationError, resolvePresentation } from "../onboarding/presentation.mjs";
 
 const POLL_MS = 4000;
@@ -19,6 +20,7 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
   const [status, setStatus] = useState<SemanticStatusInfo | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const [note, setNote] = useState<string | null>(null);
 
   useEffect(() => {
     const key = JSON.stringify([identity.userId, identity.viewEpoch]);
@@ -83,6 +85,24 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
     catch (cause) { setError(cause); } finally { setBusy(false); }
   }, [status]);
 
+  const requeueAll = useCallback(async (failedText: (reason: string) => string, doneText: (r: SemanticRequeueResult) => string) => {
+    if (!api.requeueSemantic) return;
+    setBusy(true);
+    try {
+      const result = await api.requeueSemantic();
+      setNote(doneText(result));
+      setStatus(await api.getSemanticStatus());
+      setError(null);
+    } catch (cause) { setNote(failedText(cause instanceof Error ? cause.message : String(cause))); } finally { setBusy(false); }
+  }, []);
+
+  const chooseRetryMode = useCallback(async (mode: string, failedText: (reason: string) => string) => {
+    if (!api.setSemanticRetryMode) return;
+    setBusy(true);
+    try { setStatus(await api.setSemanticRetryMode(mode)); setNote(null); setError(null); }
+    catch (cause) { setNote(failedText(cause instanceof Error ? cause.message : String(cause))); } finally { setBusy(false); }
+  }, []);
+
   if (!presentation.value) return <div className="pill warn" data-testid="semantic-status">
     <PresentationFailure error={presentation.error} />
   </div>;
@@ -115,6 +135,24 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
       {status?.usage_pending && api.confirmSemanticUsage && <UsagePendingBlock testId="semantic-usage-pending" busy={busy}
         feature={(() => { try { return resolvePresentationFeature(p, USAGE_PENDING_FEATURE); } catch { return null; } })()}
         receipt={status.usage_pending} onConfirm={() => void answerUsage(true)} onReject={() => void answerUsage(false)} />}
+      {status && api.requeueSemantic && (() => {
+        const view = semanticQueueView(status);
+        const feature = (() => { try { return resolvePresentationFeature(p, SEMANTIC_QUEUE_FEATURE); } catch { return null; } })();
+        const texts = semanticQueueTexts(feature);
+        return <div data-testid="semantic-queue">
+          <span data-testid="semantic-stalled">{texts.stalled(view.stalled)}</span>{" "}
+          <span data-testid="semantic-quarantined">{texts.quarantined(view.quarantined)}</span>{" "}
+          <button type="button" disabled={busy} data-testid="semantic-requeue"
+            onClick={() => void requeueAll(texts.failed, texts.requeued)}>{texts.requeue ?? "requeue"}</button>
+          {api.setSemanticRetryMode && <label>{texts.retryMode ?? "retry"}{" "}
+            <select value={view.retryMode ?? ""} disabled={busy} data-testid="semantic-retry-mode"
+              onChange={(event) => void chooseRetryMode(event.target.value, texts.failed)}>
+              {view.retryMode === null && <option value="" />}
+              {RETRY_MODES.map(mode => <option key={mode} value={mode}>{texts.mode(mode)}</option>)}
+            </select></label>}
+          {note && <p data-testid="semantic-queue-note">{note}</p>}
+        </div>;
+      })()}
       {status && <button type="button" onClick={togglePause} disabled={busy} data-testid="semantic-toggle-pause">
         {message(p, status.paused ? "session.resume" : "session.pause")}
       </button>}

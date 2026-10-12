@@ -17,6 +17,7 @@ import type {
   Message,
   ModelInfo,
   ProviderInfo,
+  SemanticRequeueResult,
   SemanticStatusInfo,
   Task,
 } from "./types";
@@ -128,6 +129,10 @@ export interface LoomApi {
   wakeSemantic(): Promise<SemanticStatusInfo>;
   /** Answers a batch submission paused by the usage guard (HTTP host only). */
   confirmSemanticUsage?(approved: boolean, receiptId: string, ref: string): Promise<SemanticStatusInfo>;
+  /** Requeues every failed and/or stalled item in one operation (HTTP host only). */
+  requeueSemantic?(filter?: { [key: string]: unknown }): Promise<SemanticRequeueResult>;
+  /** Durable user setting: explicit_requeue | automatic (HTTP host only). */
+  setSemanticRetryMode?(mode: string): Promise<SemanticStatusInfo>;
 
   // Memory tree
   listMemory(): Promise<MemoryNode[]>;

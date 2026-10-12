@@ -113,6 +113,9 @@ class SemanticWorker {
   Result<Json> requeue(const Json& filter = Json::object());
   // "explicit_requeue" | "automatic" (profile retry_mode is the initial preset).
   Status set_retry_mode(std::string_view mode);
+  // Durable user setting (config key semantic_retry_mode); the pack value stays
+  // the preset. Workers read config -> pack on every use, so a change applies at once.
+  static Status persist_retry_mode(Config& cfg, std::string_view mode);
 
   // One drain pass in the calling thread; returns processed count.
   Result<int> drain_once();
@@ -122,6 +125,7 @@ class SemanticWorker {
   void run();
   // retry_mode=automatic: requeue due failed/stalled items through the usage guard.
   void auto_requeue(bool use_llm);
+  std::string effective_retry_mode() const;
 
   Database& db_;
   SemanticLLM& llm_;

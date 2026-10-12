@@ -713,7 +713,7 @@ TEST_SUITE("semantic_worker") {
     CHECK_FALSE(worker->status().usage_pending.has_value());
   }
 
-  TEST_CASE("T2 declining an automatic resend switches to explicit_requeue and resends nothing") {
+  TEST_CASE("T2 declining an automatic resend answers that operation only: setting kept, items noted usage_declined, queue keeps draining") {
     Env env;
     env.cfg.set("semantic_model", "vendor/model");
     env.secrets.set("api_key", "fake-model-key");
@@ -729,13 +729,28 @@ TEST_SUITE("semantic_worker") {
     for (int i = 0; i < 3 && !worker->status().usage_pending; ++i) CHECK(unwrap(worker->drain_once()) == 0);
     auto status = worker->status();
     REQUIRE(status.usage_pending.has_value());
-    const auto failed_before = *status.failed;
+    const std::int64_t declined = status.usage_pending->at("messages").get<std::int64_t>();  // the declined operation
     REQUIRE(worker->confirm_usage(false, (*status.usage_pending)["receipt_id"].get<std::string>(), "test-reject"));
-    CHECK(worker->status().retry_mode == "explicit_requeue");
+    CHECK(worker->status().retry_mode == "automatic");  // a "no" never changes the user's setting
     CHECK_FALSE(worker->status().usage_pending.has_value());
+    CHECK_FALSE(worker->status().paused);
+    set_done_rejection(env, false);
+    const auto fresh = env.add_pending_msg(conv, "Synthetic fresh row fresh@example.invalid analysis");
+    const auto requests_before = env.transport.requests().size();
+    CHECK(unwrap(worker->drain_once()) >= 1);          // everything else keeps being processed
+    CHECK(unwrap(env.db->get_msg(fresh))->semantic_status == "done");
     CHECK(unwrap(worker->drain_once()) == 0);
-    CHECK(*worker->status().failed == failed_before);
-    CHECK_FALSE(worker->status().paused);  // owner declined a resend, not the worker
+    CHECK(*worker->status().failed == declined);        // only the declined items stay failed, not resent
+    CHECK_FALSE(worker->status().usage_pending.has_value());
+    CHECK(env.transport.requests().size() > requests_before);  // other items did reach analysis
+    int noted = 0;
+    for (const auto& m : unwrap(env.db->get_msgs(conv))) {
+      if (m.semantic_status != "failed") continue;
+      if (m.metadata.at("loom_semantic_attempts").back().contains("usage_declined")) ++noted;
+    }
+    CHECK(noted == declined);
+    // Explicit requeue is the user's call and works for declined items.
+    CHECK(unwrap(worker->requeue())["requeued"] == declined);
   }
 
   TEST_CASE("T2 bulk requeue: filters, counts of known numbers, affected ids, history preserved") {

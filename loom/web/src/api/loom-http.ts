@@ -18,6 +18,7 @@ import type {
   Message,
   ModelInfo,
   ProviderInfo,
+  SemanticRequeueResult,
   SemanticStatusInfo,
   Task,
 } from "./types";
@@ -344,6 +345,13 @@ export class LoomHttpApi implements LoomApi {
   async confirmSemanticUsage(approved: boolean, receiptId: string, ref: string): Promise<SemanticStatusInfo> {
     await this.req("POST", "/api/semantic/usage-confirm", { approved, receipt_id: receiptId, confirmation_ref: ref });
     return this.getSemanticStatus();
+  }
+
+  requeueSemantic(filter: { [key: string]: unknown } = {}): Promise<SemanticRequeueResult> {
+    return this.req("POST", "/api/semantic/requeue", filter);
+  }
+  setSemanticRetryMode(mode: string): Promise<SemanticStatusInfo> {
+    return this.req("POST", "/api/semantic/retry-mode", { mode });
   }
 
   // ── Memory tree ──────────────────────────────────────────────────────

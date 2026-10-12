@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "loom/loom.h"
+#include "loom/usage_policy.h"
 #include "loom/util/fs.h"
 #include "loom/util/json.h"
 #include "test_helpers.h"
@@ -487,5 +488,26 @@ TEST_SUITE("capi") {
     for (auto& t : ts) t.join();
     CHECK(errors.load() == 0);
     CHECK(take(loom_list_conversations(c.ctx, 1000)).size() == 100);
+  }
+
+  TEST_CASE("semantic retry mode set through the ABI is durable and read by a new runtime") {
+    loom::fsutil::TempDir dir;
+    const std::string opts = Json{{"data_dir", dir.path().string()}, {"start_workers", false}}.dump();
+    {
+      LoomContext* a = loom_init_ex(opts.c_str(), nullptr);
+      REQUIRE(a != nullptr);
+      CHECK(take(loom_semantic_status(a))["retry_mode"] == "explicit_requeue");
+      auto bad = take(loom_usage_policy_json(a, R"({"action":"semantic_retry_mode","mode":"sometimes"})"));
+      CHECK(is_error(bad));
+      auto set = take(loom_usage_policy_json(a, R"({"action":"semantic_retry_mode","mode":"automatic"})"));
+      CHECK(set["retry_mode"] == "automatic");
+      loom_shutdown(a);
+    }
+    LoomContext* b = loom_init_ex(opts.c_str(), nullptr);
+    REQUIRE(b != nullptr);
+    CHECK(take(loom_semantic_status(b))["retry_mode"] == "automatic");
+    take(loom_usage_policy_json(b, R"({"action":"semantic_retry_mode","mode":"explicit_requeue"})"));
+    CHECK(take(loom_semantic_status(b))["retry_mode"] == "explicit_requeue");
+    loom_shutdown(b);
   }
 }

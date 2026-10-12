@@ -179,11 +179,21 @@ export interface ContextSet {
   truncated: boolean;
 }
 
+export interface SemanticRequeueResult {
+  matched: number; requeued: number; failed_requeued: number; stalled_requeued: number;
+  ids: string[]; skipped: { id: string; reason: string }[]; dry_run: boolean; history_preserved: boolean;
+}
+
 export interface SemanticStatusInfo {
   pending: number;
   /** Durable counts; absent on older hosts means unknown, not zero. */
   executing?: number | null;
   failed?: number | null;
+  /** Executing claims whose owner is gone; null/absent is unknown, never zero. */
+  stalled?: number | null;
+  /** Pending rows this process cannot claim (skipped, data retained). */
+  quarantined?: number | null;
+  retry_mode?: string;
   counts_known?: boolean;
   processed: number;
   errors: number;

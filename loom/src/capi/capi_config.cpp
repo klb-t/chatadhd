@@ -45,7 +45,8 @@ extern "C" const char* loom_usage_policy_json(LoomContext* ctx, const char* comm
       return result ? out(*result) : out_error(result.error());
     }
     if (action == "semantic_retry_mode") {
-      auto set = ctx->rt->worker().set_retry_mode(json::get_string(command, "mode"));
+      auto set = SemanticWorker::persist_retry_mode(ctx->rt->config(), json::get_string(command, "mode"));
+      if (set) ctx->rt->worker().wake();
       return set ? out(ctx->rt->worker().status().to_json()) : out_error(set.error());
     }
     if (action == "chat_preview") {

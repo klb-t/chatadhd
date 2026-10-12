@@ -692,7 +692,7 @@ int cmd_semantic(Runtime& rt, const Args& a) {
     print_json(must(w.requeue(filter)));
     return 0;
   } else if (sub == "retry-mode") {
-    must(w.set_retry_mode(need(a, 1, "retry mode (explicit_requeue|automatic)")));
+    must(SemanticWorker::persist_retry_mode(rt.config(), need(a, 1, "retry mode (explicit_requeue|automatic)")));
   } else if (sub == "run") {
     int total = 0;
     std::signal(SIGINT, sigint_handler);

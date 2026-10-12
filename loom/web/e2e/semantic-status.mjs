@@ -17,7 +17,7 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const directory = process.env.SEMANTIC_STATUS_EVIDENCE_DIR || mkdtempSync(path.join(tmpdir(), "loom-semantic-status-"));
 mkdirSync(directory, { recursive: true });
 assert.equal(existsSync(path.join(directory, "receipt-before.json")), false, "Use a fresh evidence directory; retain earlier receipts.");
-const sources = ["e2e/semantic-status.mjs", "e2e/harness-lifecycle.mjs", "src/App.tsx", "src/components/SemanticStatus.tsx",
+const sources = ["e2e/semantic-status.mjs", "e2e/harness-lifecycle.mjs", "src/App.tsx", "src/components/SemanticStatus.tsx", "src/context/semantic-queue.ts",
   "src/api/types.ts", "src/api/onboarding-host.ts", "src/api/loom-http.ts", "src/onboarding/native-snapshot.ts",
   "src/onboarding/presentation.mjs", "src/onboarding/presentation-context.tsx", "src/onboarding/generated/ui.json",
   "../data/profiles/user.pack", "../data/onboarding/scenario.pack"];
@@ -33,7 +33,7 @@ const initialWorker = { pending: 0, processed: 4, failed: 0, executing: 0, count
 let worker = clone(initialWorker), statusFailure = false, actionFailure = false, profileFailure = false, rejectWrite = false;
 let profileGate = null, releaseProfile = null, nextPresentation = { available: true, status: "effective", value: clone(catalog) };
 const calls = [], records = new Map(), pageErrors = [], outside = [], groups = [];
-const completion = suiteCompletionGuard("semantic-status", 12, groups);
+const completion = suiteCompletionGuard("semantic-status", 13, groups);
 const bundle = await build({ stdin: { contents: `
   import React from "react";
   import { createRoot } from "react-dom/client";
@@ -81,6 +81,13 @@ const server = createServer(async (request, response) => {
     if (actionFailure) { json(response, { error: { code: "fixture_unavailable", message: "authored pause unavailable" } }, 503); return; }
     worker.paused = request.url.endsWith("/pause"); json(response, worker); return;
   }
+  if (request.url === "/api/semantic/requeue") {
+    const matched = worker.failed + worker.stalled;
+    const result = { matched, requeued: matched, failed_requeued: worker.failed, stalled_requeued: worker.stalled,
+      ids: [], skipped: [], dry_run: false, history_preserved: true };
+    worker = { ...worker, pending: worker.pending + matched, failed: 0, stalled: 0 }; json(response, result); return;
+  }
+  if (request.url === "/api/semantic/retry-mode") { worker = { ...worker, retry_mode: command.mode }; json(response, worker); return; }
   if (request.url === "/api/onboarding") {
     if (profileGate) { profileGate.entered(); await profileGate.promise; }
     if (profileFailure || (rejectWrite && command.operation === "apply")) {
@@ -185,6 +192,22 @@ try {
     assert.deepEqual(calls.slice(start).filter(call => call.method === "POST").map(call => call.path),
       ["/api/semantic/pause", "/api/semantic/resume"]);
   });
+  await check("stalled and skipped counts, bulk requeue and retry mode work from a phone without any model call", async () => {
+    worker = { ...initialWorker, failed: 2, stalled: 1, retry_mode: "explicit_requeue" };
+    await remount(); await shownCount("failed", 2);
+    assert.match(await page.getByTestId("semantic-stalled").textContent(), /1/);
+    assert.match(await page.getByTestId("semantic-quarantined").textContent(), /unknown/);  // absent: unknown, not zero
+    const start = calls.length;
+    await page.getByTestId("semantic-requeue").tap();
+    await page.getByTestId("semantic-queue-note").waitFor();
+    assert.match(await page.getByTestId("semantic-queue-note").textContent(), /3.*2 failed.*1 stalled/);
+    await shownCount("failed", 0);
+    await page.getByTestId("semantic-retry-mode").selectOption("automatic");
+    await page.waitForFunction(() => document.querySelector('[data-testid="semantic-retry-mode"]').value === "automatic");
+    const posts = calls.slice(start).filter(call => call.method === "POST");
+    assert.deepEqual(posts.map(call => call.path), ["/api/semantic/requeue", "/api/semantic/retry-mode"]);
+    assert.deepEqual(posts[1].command, { mode: "automatic" });
+  });
   await check("one initial native profile read survives remount and supplies the confirmed Polish catalog", async () => {
     nextPresentation = { available: true, status: "effective", value: clone(catalog) };
     nextPresentation.value.default_locale = "pl";
@@ -245,7 +268,7 @@ try {
     assert.equal(await badge.innerText(), "error.presentation"); assert.equal(await toggle.count(), 0);
     assert.equal(nativeCalls().length, start);
     assert.deepEqual(outside, []); assert.deepEqual(pageErrors, []);
-    assert.equal(calls.some(call => /chat|model|retry|update_msg/.test(call.path)), false);
+    assert.equal(calls.some(call => /chat|model|retry(?!-mode)|update_msg/.test(call.path)), false);
     assert.match(readFileSync(path.join(root, "src/App.tsx"), "utf8"), /<SemanticStatus profileHost=\{userProfileHost\} \/>/);
     assert.deepEqual(receipt(), before, "Measured source inputs must remain unchanged");
   });
@@ -254,9 +277,9 @@ finally {
   if (releaseProfile) releaseProfile();
   if (browser) await browser.close();
   await closeHttpFixture(server);
-  writeFileSync(path.join(directory, "results.json"), JSON.stringify({ passed: groups.length, expected: 12, groups,
+  writeFileSync(path.join(directory, "results.json"), JSON.stringify({ passed: groups.length, expected: 13, groups,
     failure: failure ? String(failure.stack || failure) : null, calls, pageErrors, outside, sources: receipt() }, null, 2));
 }
 if (failure) throw failure;
 completion.complete();
-console.log(`[semantic-status] ${groups.length}/12 groups passed; real component/host/HTTP, authored native-wire responses, zero model calls`);
+console.log(`[semantic-status] ${groups.length}/13 groups passed; real component/host/HTTP, authored native-wire responses, zero model calls`);

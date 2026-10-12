@@ -56,6 +56,7 @@ void assign_worker_options(WorkerOptions& opts, const RuntimeProfile& profile) {
 // ── Queue inspection: failed / stalled items ───────────────────────────
 struct QueueItem {
   std::string id, conv_id, kind, when, error_class, reason;  // kind: "failed" | "stalled"
+  bool declined = false;  // last attempt carries usage_declined: no automatic resend
 };
 
 struct QueueFilter {
@@ -137,6 +138,7 @@ Result<std::vector<QueueItem>> scan_queue(Database& db, std::int64_t lease_ms, c
     Json metadata = Json::object();
     if (raw) { auto parsed = json::parse(*raw); if (parsed) metadata = *parsed; }
     const Json* rec = last_attempt(metadata);
+    item.declined = rec && rec->contains("usage_declined");
     if (status == "failed") {
       item.kind = "failed";
       if (rec) {
@@ -537,9 +539,10 @@ WorkerStatus SemanticWorker::status() const {
   s.processed = processed_.load();
   s.errors = errors_.load();
   s.paused = paused_.load();
+  const std::string retry = effective_retry_mode();
   std::lock_guard lk(mu_);
   s.mode = mode_;
-  s.retry_mode = retry_mode_;
+  s.retry_mode = retry;
   s.quarantined = static_cast<std::int64_t>(quarantine_.size());
   s.rate = rate_;
   s.batch_id = batch_id_;
@@ -580,12 +583,27 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
   LOOM_TRY_ASSIGN(auto policy, UsagePolicy::open(cfg_.path().parent_path() / "usage-policy.sqlite", options));
   LOOM_TRY_ASSIGN(auto denied, policy->confirm(json::get_string(pending, "operation_id"), receipt_id, false, ref));
   if (is_retry) {
-    // The owner declined this automatic resend: do not ask again in a loop.
-    // Automatic retry is a setting; switching it back on is explicit.
+    // A "no" answers this operation only: the setting is untouched, the items
+    // stay failed (noted usage_declined, no further automatic resend until the
+    // owner requeues them) and the worker keeps processing everything else.
+    if (const Json* ids = json::find(pending, "ids"); ids && ids->is_array()) {
+      for (const auto& id : *ids) {
+        auto lock = db_.lock();
+        auto message = db_.get_msg(id.get<std::string>());
+        if (!message || !*message || !(*message)->metadata.is_object()) continue;
+        Json metadata = (*message)->metadata;
+        auto it = metadata.find("loom_semantic_attempts");
+        if (it == metadata.end() || !it->is_array() || it->empty() || !it->back().is_object()) continue;
+        it->back()["usage_declined"] = Json{{"at", timeutil::utc_now_iso()}, {"receipt_id", std::string(receipt_id)},
+                                            {"ref", std::string(ref)}};
+        MsgPatch patch; patch.metadata = std::move(metadata);
+        if (auto st = db_.update_msg(id.get<std::string>(), patch); !st)
+          log::warn("loom.semantic_worker", "usage_declined note not written for {}: {}", id.get<std::string>(), st.error().message);
+      }
+    }
     std::lock_guard lk(mu_);
     retry_pending_.reset();
     retry_confirmation_.reset();
-    retry_mode_ = "explicit_requeue";
     return denied;
   }
   {
@@ -595,6 +613,22 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
   }
   pause();  // the owner declined: do not re-ask in a loop; resume() is explicit
   return denied;
+}
+
+std::string SemanticWorker::effective_retry_mode() const {
+  // config (user setting) -> pack preset; read on every use so a change applies at once
+  const Json configured = cfg_.get("semantic_retry_mode");
+  if (configured.is_string() && (configured == "explicit_requeue" || configured == "automatic"))
+    return configured.get<std::string>();
+  std::lock_guard lk(mu_);
+  return retry_mode_;
+}
+
+Status SemanticWorker::persist_retry_mode(Config& cfg, std::string_view mode) {
+  if (mode != "explicit_requeue" && mode != "automatic")
+    return Error(Errc::InvalidArgument, "retry_mode must be explicit_requeue or automatic");
+  cfg.set("semantic_retry_mode", std::string(mode));
+  return cfg.save();
 }
 
 Status SemanticWorker::set_retry_mode(std::string_view mode) {
@@ -642,9 +676,11 @@ Result<Json> SemanticWorker::requeue(const Json& filter) {
 
 void SemanticWorker::auto_requeue(bool use_llm) {
   if (!profile_) return;
-  {
+  if (effective_retry_mode() != "automatic") {
     std::lock_guard lk(mu_);
-    if (retry_mode_ != "automatic") return;
+    retry_pending_.reset();
+    retry_confirmation_.reset();
+    return;
   }
   const auto& pv = profile_->values();
   const auto lease = pv.at("executing_lease_ms").get<std::int64_t>();
@@ -654,6 +690,7 @@ void SemanticWorker::auto_requeue(bool use_llm) {
   const auto now = timeutil::Clock::now();
   std::vector<QueueItem> due;
   for (auto& item : *scanned) {
+    if (item.declined) continue;
     auto when = timeutil::parse_iso_utc(item.when);
     if (!when || now - *when >= spacing) due.push_back(std::move(item));
   }
@@ -711,7 +748,7 @@ void SemanticWorker::auto_requeue(bool use_llm) {
             {"receipt_id", admitted->value("receipt_id", Json(nullptr))},
             {"baseline_key", admitted->value("baseline_key", Json(nullptr))},
             {"projected", admitted->value("resources", Json::object())},
-            {"messages", due.size()}, {"body_sha256", body_sha}, {"sent", false}};
+            {"messages", due.size()}, {"ids", ids}, {"body_sha256", body_sha}, {"sent", false}};
         log::warn("loom.semantic_worker", "Automatic resend of {} items awaits usage confirmation (receipt {})",
                   due.size(), json::get_string(*admitted, "receipt_id"));
       } else {
@@ -795,11 +832,7 @@ Result<int> SemanticWorker::drain_once() {
   double t0 = timeutil::monotonic_seconds();
   int count = 0;
 
-  std::string retry_mode_now;
-  {
-    std::lock_guard lk(mu_);
-    retry_mode_now = retry_mode_;
-  }
+  const std::string retry_mode_now = effective_retry_mode();
   for (const auto& m : msgs) {
     {
       std::lock_guard lk(mu_);

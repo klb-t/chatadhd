@@ -331,6 +331,41 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
           }
         },
         {
+          "id": "presentation.semantic_queue/v1",
+          "key": "presentation.semantic_queue",
+          "area": "presentation/semantic_queue",
+          "revision": 1,
+          "label": "Texts for the semantic queue controls (stalled/skipped counts, bulk requeue, retry mode); texts only",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "semantic_queue",
+            "locales": {
+              "en": {
+                "stalled": "Stalled: {{count}}",
+                "quarantined": "Skipped: {{count}}",
+                "unknown": "unknown",
+                "requeue": "Requeue failed + stalled",
+                "requeued": "Requeued {{count}} ({{failed}} failed, {{stalled}} stalled).",
+                "retry_mode": "Retry",
+                "mode_explicit_requeue": "Only when I requeue",
+                "mode_automatic": "Automatically",
+                "action_failed": "The request could not be completed ({{reason}})."
+              },
+              "pl": {
+                "stalled": "Zawieszone: {{count}}",
+                "quarantined": "Pominięte: {{count}}",
+                "unknown": "nieznane",
+                "requeue": "Ponów nieudane + zawieszone",
+                "requeued": "Ponowiono {{count}} (nieudane: {{failed}}, zawieszone: {{stalled}}).",
+                "retry_mode": "Ponawianie",
+                "mode_explicit_requeue": "Tylko gdy sam ponowię",
+                "mode_automatic": "Automatycznie",
+                "action_failed": "Nie udało się wykonać żądania ({{reason}})."
+              }
+            }
+          }
+        },
+        {
           "id": "chat.send.block_without_source_history/v1",
           "key": "chat.send.block_without_source_history",
           "area": "chat/send",
@@ -1176,6 +1211,41 @@ static constexpr char kOnboardingPack[] = R"loom_onboard({
             "restored": "Twój tekst wrócił do pola wiadomości.",
             "rejected": "Odrzucono. Nic nie wysłano.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.semantic_queue/v1",
+      "key": "presentation.semantic_queue",
+      "area": "presentation/semantic_queue",
+      "revision": 1,
+      "label": "Texts for the semantic queue controls (stalled/skipped counts, bulk requeue, retry mode); texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "semantic_queue",
+        "locales": {
+          "en": {
+            "stalled": "Stalled: {{count}}",
+            "quarantined": "Skipped: {{count}}",
+            "unknown": "unknown",
+            "requeue": "Requeue failed + stalled",
+            "requeued": "Requeued {{count}} ({{failed}} failed, {{stalled}} stalled).",
+            "retry_mode": "Retry",
+            "mode_explicit_requeue": "Only when I requeue",
+            "mode_automatic": "Automatically",
+            "action_failed": "The request could not be completed ({{reason}})."
+          },
+          "pl": {
+            "stalled": "Zawieszone: {{count}}",
+            "quarantined": "Pominięte: {{count}}",
+            "unknown": "nieznane",
+            "requeue": "Ponów nieudane + zawieszone",
+            "requeued": "Ponowiono {{count}} (nieudane: {{failed}}, zawieszone: {{stalled}}).",
+            "retry_mode": "Ponawianie",
+            "mode_explicit_requeue": "Tylko gdy sam ponowię",
+            "mode_automatic": "Automatycznie",
+            "action_failed": "Nie udało się wykonać żądania ({{reason}})."
           }
         }
       }
