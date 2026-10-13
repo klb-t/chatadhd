@@ -5,12 +5,11 @@
 namespace loom::llm {
 
 SharedUsageGate::SharedUsageGate(const std::filesystem::path& root, const Config& config, bool require_scope,
-                                 Json estimate, Json confirmation, Json declared)
+                                 Json estimate, Json confirmation)
     : owned_(std::make_unique<chat::ModelUsageGuard>(root, config, require_scope)),
       guard_(owned_.get()),
       estimate_(std::move(estimate)),
-      confirmation_(std::move(confirmation)),
-      declared_(std::move(declared)) {}
+      confirmation_(std::move(confirmation)) {}
 
 SharedUsageGate::SharedUsageGate(chat::ModelUsageGuard& guard, Json estimate, Json confirmation, bool settle_inline)
     : guard_(&guard),
@@ -33,7 +32,7 @@ Result<GateDecision> SharedUsageGate::admit(const net::HttpRequest& request, con
 
 void SharedUsageGate::settle(const GateSettlement& s) {
   if (!settle_inline_) return;
-  auto settled = guard_->settle(s.attempted, s.received_bytes, s.usage, declared_);
+  auto settled = guard_->settle(s.attempted, s.received_bytes, s.usage, s.declared);
   if (!settled) log::warn("loom.use_model", "usage settlement failed: {}", settled.error().to_string());
 }
 

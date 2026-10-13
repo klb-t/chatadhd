@@ -357,6 +357,45 @@ TEST_SUITE("semantic_worker") {
     CHECK(unwrap(env.db->count_pending_semantic()) == 1);
   }
 
+  TEST_CASE("golden: worker batch submit, poll and results request bytes are pinned") {
+    Env env;
+    auto conv = unwrap(env.db->create_conv("golden batch"));
+    auto msg_id = env.add_pending_msg(conv.id, "golden batch message");
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    env.secrets.set("anthropic_batch_key", "fake-batch-key");
+    const std::string batches = "https://api.anthropic.com/v1/messages/batches";
+    env.transport.expect("POST", batches, net::ScriptedTransport::Reply::json(200, Json{{"id", "golden-batch"}}));
+    env.transport.expect("GET", batches + "/golden-batch",
+        net::ScriptedTransport::Reply::json(200, Json{{"processing_status", "ended"},
+            {"request_counts", Json{{"succeeded", 0}, {"errored", 0}}}}));
+    env.transport.expect("GET", batches + "/golden-batch/results", net::ScriptedTransport::Reply::text(200, ""));
+    SemanticWorker worker(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer,
+                          nullptr, {}, Json{{"batch_threshold", 0}});
+    CHECK(unwrap(worker.drain_once()) == 0);   // submit
+    worker.start();                            // the loop polls, then ingests the ended batch
+    REQUIRE(wait_until([&] { return env.transport.requests().size() >= 3; }, std::chrono::seconds(5)));
+    worker.stop();
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 3);
+    const Json key_headers = Json::array({Json::array({"x-api-key", "fake-batch-key"}),
+                                          Json::array({"anthropic-version", "2023-06-01"})});
+    Json submit_headers = key_headers;
+    submit_headers.push_back(Json::array({"content-type", "application/json"}));
+    const std::string content = std::string(kAnalysisPrompt) + "golden batch message";
+    CHECK(loom::test::request_json(reqs[0]) ==
+          Json{{"method", "POST"}, {"url", batches}, {"headers", submit_headers},
+               {"body", "{\"requests\":[{\"custom_id\":\"" + msg_id + "\",\"params\":{\"model\":\"model\","
+                        "\"max_tokens\":800,\"messages\":[{\"role\":\"user\",\"content\":" + json::dump(Json(content)) + "}]}}]}"},
+               {"timeout_ms", 120000}, {"stream", false}});
+    CHECK(loom::test::request_json(reqs[1]) ==
+          Json{{"method", "GET"}, {"url", batches + "/golden-batch"}, {"headers", key_headers},
+               {"body", ""}, {"timeout_ms", 30000}, {"stream", false}});
+    CHECK(loom::test::request_json(reqs[2]) ==
+          Json{{"method", "GET"}, {"url", batches + "/golden-batch/results"}, {"headers", key_headers},
+               {"body", ""}, {"timeout_ms", 300000}, {"stream", true}});
+  }
+
   // CH-005: the automatic batch submission goes through the shared usage guard.
   namespace {
   Json batch_overrides() {

@@ -140,7 +140,7 @@ bool route_available(const Services& services, const RouteSelector& selector) {
 }
 
 std::string provider_for_address(const Services& services, std::string_view resource,
-                                 std::string_view capability, std::string_view address) {
+                                 std::string_view capability, std::string_view address, bool any_if_unmatched) {
   std::vector<ProviderManifest> manifests;
   if (services.providers) {
     manifests = services.providers->all();
@@ -159,7 +159,26 @@ std::string provider_for_address(const Services& services, std::string_view reso
     auto url = net::parse_url(m.base_url);
     if (url && !url->host.empty() && address.find(url->host) != std::string_view::npos) return m.id;
   }
+  if (any_if_unmatched) {
+    for (const auto& m : manifests)
+      if (std::any_of(m.capabilities.begin(), m.capabilities.end(),
+                      [&](const Capability& c) { return c.resource == resource && c.name == capability; }))
+        return m.id;
+  }
   return {};
+}
+
+Result<net::HttpRequest> describe_request(const Services& services, const RouteSelector& selector, std::string body) {
+  LOOM_TRY_ASSIGN(Route route, resolve_route(services, selector));
+  auto adapter = make_adapter(route.adapter);
+  if (!adapter) return Error(Errc::NotFound, "unknown model adapter '" + route.adapter + "'");
+  CallSpec spec;
+  LOOM_TRY_ASSIGN(net::HttpRequest built, adapter->build(route, Operation::Complete, spec));
+  net::HttpRequest described;
+  described.method = "POST";
+  described.url = std::move(built.url);
+  described.body = std::move(body);
+  return described;
 }
 
 Status apply_auth(const Route& route, net::HttpRequest& request) {
@@ -233,7 +252,7 @@ std::shared_ptr<UsageGate> make_usage_gate(const Services& services, const Usage
   if (root.empty()) root = services.config.path().parent_path();
   return std::make_shared<SharedUsageGate>(root, services.config, spec.require_scope,
                                            spec.estimate.is_object() ? spec.estimate : Json::object(),
-                                           spec.confirmation, spec.declared);
+                                           spec.confirmation);
 }
 
 namespace {
@@ -431,6 +450,10 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
   r.issues = out.issues;
   settlement.data.received_bytes = r.received_bytes;
   settlement.data.usage = r.usage;
+  settlement.data.declared = request.usage.declared.is_object() ? request.usage.declared : Json::object();
+  if (r.state == State::Ok && request.usage.declared_on_success.is_object())
+    for (auto it = request.usage.declared_on_success.begin(); it != request.usage.declared_on_success.end(); ++it)
+      settlement.data.declared[it.key()] = it.value();
   settlement.settle();
   finalize_provenance(r, call);
   return r;

@@ -14,7 +14,7 @@ class SharedUsageGate final : public UsageGate {
  public:
   // Owns a guard over the ledger in `root`.
   SharedUsageGate(const std::filesystem::path& root, const Config& config, bool require_scope, Json estimate,
-                  Json confirmation, Json declared);
+                  Json confirmation);
   // Borrows a guard whose lifecycle the caller keeps (settle_inline=false: the
   // caller settles it after its own post-processing).
   SharedUsageGate(chat::ModelUsageGuard& guard, Json estimate, Json confirmation, bool settle_inline);
@@ -25,7 +25,7 @@ class SharedUsageGate final : public UsageGate {
  private:
   std::unique_ptr<chat::ModelUsageGuard> owned_;
   chat::ModelUsageGuard* guard_ = nullptr;
-  Json estimate_, confirmation_, declared_ = Json::object();
+  Json estimate_, confirmation_;
   bool settle_inline_ = true;
 };
 

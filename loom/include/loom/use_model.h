@@ -113,7 +113,8 @@ bool route_available(const Services& services, const RouteSelector& selector);
 // `address`, as a manifest id ("" = none).  Where an address picks a protocol
 // mode (native batches vs. plain chat completions) the choice is manifest data.
 std::string provider_for_address(const Services& services, std::string_view resource,
-                                 std::string_view capability, std::string_view address);
+                                 std::string_view capability, std::string_view address,
+                                 bool any_if_unmatched = false);
 
 // ── Request ─────────────────────────────────────────────────────────
 struct ModelSpec {
@@ -155,7 +156,8 @@ struct GateDecision {
 struct GateSettlement {
   bool attempted = false;
   std::size_t received_bytes = 0;
-  Json usage = Json::object();   // provider-reported usage object
+  Json usage = Json::object();      // provider-reported usage object
+  Json declared = Json::object();   // declared resources (UsageSpec::declared[_on_success])
 };
 // The shared usage guard seen from the action.  Callers with a bespoke ledger
 // flow (graph replies, goal typing) supply their own; everyone else gets the
@@ -175,6 +177,7 @@ struct UsageSpec {
   Json confirmation = Json::object();
   bool require_scope = false;                 // chat sends require a context scope
   Json declared = Json::object();             // declared resources recorded on settle
+  Json declared_on_success = Json::object();  // ... added when the call succeeded
   std::shared_ptr<UsageGate> gate;            // overrides the shared guard
 };
 
@@ -258,8 +261,14 @@ Result<ModelOutcome> use_model(const Services& services, ModelRequest request);
 Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& request, std::size_t variant = 0);
 VariantResult execute_call(const Services& services, const ModelRequest& request, PreparedCall& call);
 
-// The shared guard as a gate (root = usage ledger directory).
+// The shared guard as a gate (root = usage ledger directory).  For callers
+// that admit an operation which is not itself a model call (e.g. an automatic
+// resend of many items) and settle it with declared resources.
 std::shared_ptr<UsageGate> make_usage_gate(const Services& services, const UsageSpec& spec);
+// What a call to this route would put on the wire, reduced to what the guard
+// binds: method, URL, and the caller's body (no credential headers).
+Result<net::HttpRequest> describe_request(const Services& services, const RouteSelector& selector,
+                                          std::string body);
 
 // ── Adapters: one per provider API family ───────────────────────────
 struct Parsed {

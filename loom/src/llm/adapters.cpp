@@ -259,7 +259,11 @@ class AnthropicMessagesAdapter final : public Adapter {
         return req;
       case Operation::BatchResults:
         req.method = "GET";
-        req.url = spec.target;
+        // A results URL as the batch status reports it, or a batch id.
+        req.url = spec.target.find("://") != std::string::npos
+                      ? spec.target
+                      : join_url(route.base_url, route.endpoint.empty() ? "/v1/messages/batches" : route.endpoint) +
+                            "/" + spec.target + "/results";
         LOOM_TRY(apply_auth(route, req));
         for (const auto& h : route.default_headers) req.headers.push_back(h);
         req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);

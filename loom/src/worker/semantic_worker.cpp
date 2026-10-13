@@ -14,9 +14,9 @@
 #include "loom/semantic_llm.h"
 #include "loom/usage_policy.h"
 #include "loom/util/ids.h"
-#include "chat/graph_reply.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
+#include "loom/use_model.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
 
@@ -35,11 +35,20 @@ bool cfg_bool(const Config& cfg, std::string_view key, bool fallback) {
 
 Json regex_unified(const SemanticAnalyzer& regex, std::string_view text) { return regex.to_unified_profile(regex.analyse(text)); }
 
-net::Headers batch_headers(const RuntimeProfile& profile, const Secrets& secrets) {
-  net::Headers out{{"x-api-key", secrets.get_string(profile.values().at("batch_secret_key").get<std::string>())}};
-  const auto& headers = profile.values().at("headers");
-  for (auto it = headers.begin(); it != headers.end(); ++it) out.push_back({it.key(), it.value().get<std::string>()});
-  return out;
+// Message Batches route from the worker profile: the profile names the
+// address, the secret and the extra headers; the provider manifest that offers
+// the batch capability at that host supplies the adapter and auth scheme.
+llm::RouteSelector batch_selector(const llm::Services& services, const RuntimeProfile& profile) {
+  llm::RouteSelector selector;
+  selector.endpoint = profile.values().at("batch_endpoint").get<std::string>();
+  selector.provider = llm::provider_for_address(services, "batch", "messages.batches", selector.endpoint, true);
+  selector.secret = profile.values().at("batch_secret_key").get<std::string>();
+  net::Headers headers;
+  const auto& configured = profile.values().at("headers");
+  for (auto it = configured.begin(); it != configured.end(); ++it) headers.push_back({it.key(), it.value().get<std::string>()});
+  selector.headers = std::move(headers);
+  selector.content_type_header = "content-type";
+  return selector;
 }
 
 void assign_worker_options(WorkerOptions& opts, const RuntimeProfile& profile) {
@@ -169,20 +178,14 @@ Result<std::vector<QueueItem>> scan_queue(Database& db, std::int64_t lease_ms, c
 // SemanticWorker; called from member functions with private state passed by
 // reference (allowed: the naming happens inside SemanticWorker's own scope).
 
-void fetch_batch_results(Database& db, const Secrets& secrets, net::HttpTransport& http, EventBus& bus,
-                         GraphEngine& graph, std::mutex& mu, std::string& mode, const std::string& batch_id,
+void fetch_batch_results(Database& db, const Config& cfg, const Secrets& secrets, net::HttpTransport& http,
+                         EventBus& bus, GraphEngine& graph, std::mutex& mu, std::string& mode, const std::string& batch_id,
                          std::atomic<std::int64_t>& processed, const RuntimeProfile& profile) {
   {
     std::lock_guard lk(mu);
     mode = "batch_ingest";
   }
-  net::HttpRequest req;
-  req.method = "GET";
-  req.url = profile.values().at("batch_endpoint").get<std::string>() + "/" + batch_id + "/results";
-  req.headers = batch_headers(profile, secrets);
-  req.timeout_ms = profile.values().at("results_timeout_ms").get<int>();
-  req.stream = true;
-
+  const llm::Services services(cfg, secrets, http);
   int count = 0, errors = 0;
   std::string buf;
   auto handle_line = [&](std::string_view line) {
@@ -223,20 +226,31 @@ void fetch_batch_results(Database& db, const Secrets& secrets, net::HttpTranspor
     }
   };
 
-  net::StreamSink sink;
-  sink.on_data = [&](std::string_view chunk) -> bool {
+  // JSONL: each line is applied as it arrives; nothing is retained.
+  llm::ModelRequest request;
+  request.kind = "semantic.batch.results";
+  request.models = {llm::ModelSpec{}};
+  request.route = batch_selector(services, profile);
+  request.operation = llm::Operation::BatchResults;
+  request.target = batch_id;
+  request.timeout_ms = profile.values().at("results_timeout_ms").get<int>();
+  request.stream = true;
+  request.capture = true;
+  request.retain_body = false;
+  request.usage.guard = false;  // reading results spends nothing
+  request.hooks.on_raw = [&](std::string_view chunk) {
     buf.append(chunk);
     std::size_t pos;
     while ((pos = buf.find('\n')) != std::string::npos) {
       handle_line(std::string_view(buf).substr(0, pos));
       buf.erase(0, pos + 1);
     }
-    return true;
   };
-  auto resp = http.send(req, &sink);
+  auto outcome = llm::use_model(services, std::move(request));
   if (!buf.empty()) handle_line(buf);
-  if (!resp || resp->status != 200) {
-    log::warn("loom.semantic_worker", "Batch results failed: {}", resp ? resp->status : -1);
+  if (!outcome || outcome->last().state != llm::State::Ok) {
+    const bool transport_failed = !outcome || outcome->last().error.has_value();
+    log::warn("loom.semantic_worker", "Batch results failed: {}", transport_failed ? -1 : outcome->last().http_status);
     return;
   }
   log::info("loom.semantic_worker", "Batch ingested: {} ok, {} errors", count, errors);
@@ -244,8 +258,8 @@ void fetch_batch_results(Database& db, const Secrets& secrets, net::HttpTranspor
   bus.emit(events::kSemanticProgress, Json{{"processed", count}, {"pending", pending_r.value_or(0)}, {"mode", "batch"}});
 }
 
-void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport& http, EventBus& bus, GraphEngine& graph,
-                        std::mutex& mu, std::string& mode, std::optional<std::string>& batch_id,
+void check_batch_status(Database& db, const Config& cfg, const Secrets& secrets, net::HttpTransport& http,
+                        EventBus& bus, GraphEngine& graph, std::mutex& mu, std::string& mode, std::optional<std::string>& batch_id,
                         std::int64_t& batch_submitted, std::atomic<std::int64_t>& processed, const RuntimeProfile& profile) {
   std::string bid;
   {
@@ -255,17 +269,22 @@ void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport
     mode = "batch_poll";
   }
 
-  net::HttpRequest req;
-  req.method = "GET";
-  req.url = profile.values().at("batch_endpoint").get<std::string>() + "/" + bid;
-  req.headers = batch_headers(profile, secrets);
-  req.timeout_ms = profile.values().at("poll_timeout_ms").get<int>();
-  auto resp = http.send(req);
-  if (!resp || resp->status != 200) {
-    log::warn("loom.semantic_worker", "Batch poll failed: {}", resp ? resp->status : -1);
+  const llm::Services services(cfg, secrets, http);
+  llm::ModelRequest request;
+  request.kind = "semantic.batch.status";
+  request.models = {llm::ModelSpec{}};
+  request.route = batch_selector(services, profile);
+  request.operation = llm::Operation::BatchStatus;
+  request.target = bid;
+  request.timeout_ms = profile.values().at("poll_timeout_ms").get<int>();
+  request.usage.guard = false;  // polling spends nothing
+  auto outcome = llm::use_model(services, std::move(request));
+  if (!outcome || outcome->last().state != llm::State::Ok) {
+    const bool transport_failed = !outcome || outcome->last().error.has_value();
+    log::warn("loom.semantic_worker", "Batch poll failed: {}", transport_failed ? -1 : outcome->last().http_status);
     return;
   }
-  auto j = resp->json();
+  auto j = json::parse(outcome->last().body);
   if (!j) return;
   std::string status = json::get_string(*j, "processing_status");
   const Json* counts = json::find(*j, "request_counts");
@@ -273,7 +292,7 @@ void check_batch_status(Database& db, const Secrets& secrets, net::HttpTransport
            counts ? json::get_int(*counts, "succeeded", 0) : 0, counts ? json::get_int(*counts, "errored", 0) : 0);
 
   if (status == "ended") {
-    fetch_batch_results(db, secrets, http, bus, graph, mu, mode, bid, processed, profile);
+    fetch_batch_results(db, cfg, secrets, http, bus, graph, mu, mode, bid, processed, profile);
     std::lock_guard lk(mu);
     batch_id.reset();
     batch_submitted = 0;
@@ -313,17 +332,23 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
                              {"content", std::string(kAnalysisPrompt) + std::string(utf8::prefix(m.text, profile.values().at("batch_input_chars").get<std::size_t>()))}}})}}}});
   }
 
-  net::HttpRequest req;
-  req.method = "POST";
-  req.url = batch_endpoint;
-  req.headers = batch_headers(profile, secrets);
-  req.headers.push_back({"content-type", "application/json"});
-  req.body = json::dump(Json{{"requests", batch_requests}});
-  req.timeout_ms = profile.values().at("submit_timeout_ms").get<int>();
+  const llm::Services services(cfg, secrets, http);
+  llm::ModelRequest request;
+  request.kind = "semantic.batch";
+  request.models = {llm::ModelSpec{}};
+  request.route = batch_selector(services, profile);
+  request.operation = llm::Operation::BatchSubmit;
+  request.batch_requests = batch_requests;
+  request.timeout_ms = profile.values().at("submit_timeout_ms").get<int>();
+  auto prepared = llm::prepare_call(services, request);
+  if (!prepared) {
+    log::error("loom.semantic_worker", "Batch submit error: {}", prepared.error().message);
+    return 0;
+  }
 
   // Shared usage guard: admit before transport, settle after. A paused
   // receipt keeps the messages pending until the owner answers.
-  const std::string body_sha = Sha256::hex(req.body);
+  const std::string body_sha = Sha256::hex(prepared->request.body);
   const double declared_cost = static_cast<double>(batch_requests.size()) *
                                profile.values().at("batch_estimate_per_message").get<double>();
   std::string operation_id;
@@ -344,49 +369,48 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
       {"estimate_provenance", Json{{"cost_usd", "declared"}, {"messages", "counted"}, {"input_bytes", "measured"}}},
       {"instrument", "loom.semantic.batch"}, {"model", model}, {"endpoint", batch_endpoint}};
   if (!operation_id.empty()) estimate["operation_id"] = operation_id;
-  chat::ModelUsageGuard guard(cfg.path().parent_path(), cfg, false);
-  auto admitted = guard.admit(req, estimate, confirmation);
-  if (!admitted) {
-    log::error("loom.semantic_worker", "Batch usage admission error: {}", admitted.error().message);
+  request.usage.estimate = std::move(estimate);
+  request.usage.confirmation = confirmation;
+  request.usage.declared_on_success = Json{{"messages", batch_requests.size()}, {"cost_usd", declared_cost}};
+  request.hooks.on_dispatch = [&] {  // admitted: the old receipt is spent
+    std::lock_guard lk(mu);
+    usage_pending.reset();
+    usage_confirmation.reset();
+  };
+  const llm::VariantResult sent = llm::execute_call(services, request, *prepared);
+
+  if (sent.state == llm::State::GateError) {
+    log::error("loom.semantic_worker", "Batch usage admission error: {}", sent.error ? sent.error->message : std::string());
     return 0;
   }
-  if (!admitted->value("dispatch_authorized", false)) {
-    const auto status = json::get_string(*admitted, "status", "unavailable");
+  if (sent.state == llm::State::Held) {
+    const auto status = json::get_string(sent.hold, "status", "unavailable");
+    const Json& admitted = sent.hold["decision"];
     std::lock_guard lk(mu);
     usage_confirmation.reset();
     if (status == "requires_confirmation") {
       usage_pending = Json{{"schema", "loom.semantic_usage_pending/1"}, {"status", status},
-          {"operation_id", admitted->value("operation_id", Json(nullptr))},
-          {"receipt_id", admitted->value("receipt_id", Json(nullptr))},
-          {"baseline_key", admitted->value("baseline_key", Json(nullptr))},
-          {"projected", admitted->value("resources", Json::object())},
+          {"operation_id", admitted.value("operation_id", Json(nullptr))},
+          {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
+          {"baseline_key", admitted.value("baseline_key", Json(nullptr))},
+          {"projected", admitted.value("resources", Json::object())},
           {"messages", batch_requests.size()}, {"body_sha256", body_sha}, {"sent", false}};
       mode = "awaiting_usage_confirmation";
       log::warn("loom.semantic_worker", "Batch of {} messages awaits usage confirmation (receipt {})",
-                batch_requests.size(), json::get_string(*admitted, "receipt_id"));
+                batch_requests.size(), json::get_string(admitted, "receipt_id"));
     } else {
       usage_pending.reset();
       log::warn("loom.semantic_worker", "Batch not admitted: {}", status);
     }
     return 0;
   }
-  {
-    std::lock_guard lk(mu);
-    usage_pending.reset();
-    usage_confirmation.reset();
-  }
-
-  auto resp = http.send(req);
-  if (!resp) {
-    (void)guard.settle(true, 0);
-    log::error("loom.semantic_worker", "Batch submit error: {}", resp.error().message);
+  if (sent.state == llm::State::TransportError || sent.state == llm::State::Cancelled ||
+      sent.state == llm::State::Unavailable) {
+    log::error("loom.semantic_worker", "Batch submit error: {}", sent.error ? sent.error->message : std::string("unavailable"));
     return 0;
   }
-  const bool accepted = resp->status == 200 || resp->status == 201;
-  (void)guard.settle(true, resp->body.size(), Json::object(),
-                     accepted ? Json{{"messages", batch_requests.size()}, {"cost_usd", declared_cost}} : Json::object());
-  if (accepted) {
-    auto j = resp->json();
+  if (sent.state == llm::State::Ok) {
+    auto j = json::parse(sent.body);
     std::string id = j ? json::get_string(*j, "id") : std::string();
     std::int64_t submitted = static_cast<std::int64_t>(batch_requests.size());
     double cost = declared_cost;
@@ -399,7 +423,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
     log::info("loom.semantic_worker", "Batch submitted: {} ({} msgs, ~${:.2f})", id, submitted, cost);
     return 0;
   }
-  log::warn("loom.semantic_worker", "Batch submit failed {}: {}", resp->status, std::string(utf8::prefix(resp->body, profile.values().at("submit_error_body_chars").get<std::size_t>())));
+  log::warn("loom.semantic_worker", "Batch submit failed {}: {}", sent.http_status, std::string(utf8::prefix(sent.body, profile.values().at("submit_error_body_chars").get<std::size_t>())));
   return 0;
 }
 
@@ -701,16 +725,22 @@ void SemanticWorker::auto_requeue(bool use_llm) {
     return;
   }
 
-  std::optional<chat::ModelUsageGuard> guard;
+  std::shared_ptr<llm::UsageGate> gate;
   const double declared_cost = static_cast<double>(due.size()) * pv.at("batch_estimate_per_message").get<double>();
   if (use_llm) {
     // A resend reaches the provider: same guard as every other automatic call.
     Json ids = Json::array();
     for (const auto& item : due) ids.push_back(item.id);
-    net::HttpRequest req;
-    req.method = "POST";
-    req.url = cfg_string(cfg_, "base_url") + "/chat/completions";
-    req.body = json::dump(Json{{"schema", "loom.semantic_retry/1"}, {"ids", ids}});
+    // The guard binds the call this resend leads to: the route's address plus
+    // the item set as the body (the analysis itself is sent later, per item).
+    const llm::Services services(cfg_, secrets_, http_);
+    auto described = llm::describe_request(services, llm::RouteSelector{},
+                                           json::dump(Json{{"schema", "loom.semantic_retry/1"}, {"ids", ids}}));
+    if (!described) {
+      log::error("loom.semantic_worker", "Automatic retry usage admission error: {}", described.error().message);
+      return;
+    }
+    const net::HttpRequest req = std::move(*described);
     const std::string body_sha = Sha256::hex(req.body);
     const std::string model = cfg_string(cfg_, "semantic_model");
     std::string operation_id;
@@ -732,25 +762,29 @@ void SemanticWorker::auto_requeue(bool use_llm) {
         {"estimate_provenance", Json{{"cost_usd", "declared"}, {"messages", "counted"}, {"input_bytes", "measured"}}},
         {"instrument", "loom.semantic.retry"}, {"model", model}, {"endpoint", req.url}};
     if (!operation_id.empty()) estimate["operation_id"] = operation_id;
-    guard.emplace(cfg_.path().parent_path(), cfg_, false);
-    auto admitted = guard->admit(req, estimate, confirmation);
+    llm::UsageSpec usage;
+    usage.estimate = std::move(estimate);
+    usage.confirmation = confirmation;
+    gate = llm::make_usage_gate(services, usage);
+    auto admitted = gate->admit(req, Json{{"schema", llm::kProvenanceSchema}, {"kind", "semantic.retry"},
+                                          {"operation", "requeue"}, {"requested_model", model}});
     if (!admitted) {
       log::error("loom.semantic_worker", "Automatic retry usage admission error: {}", admitted.error().message);
       return;
     }
-    if (!admitted->value("dispatch_authorized", false)) {
-      const auto status = json::get_string(*admitted, "status", "unavailable");
+    if (!admitted->dispatch) {
+      const auto status = admitted->status;
       std::lock_guard lk(mu_);
       retry_confirmation_.reset();
       if (status == "requires_confirmation") {
         retry_pending_ = Json{{"schema", "loom.semantic_usage_pending/1"}, {"kind", "retry"}, {"status", status},
-            {"operation_id", admitted->value("operation_id", Json(nullptr))},
-            {"receipt_id", admitted->value("receipt_id", Json(nullptr))},
-            {"baseline_key", admitted->value("baseline_key", Json(nullptr))},
-            {"projected", admitted->value("resources", Json::object())},
+            {"operation_id", admitted->decision.value("operation_id", Json(nullptr))},
+            {"receipt_id", admitted->decision.value("receipt_id", Json(nullptr))},
+            {"baseline_key", admitted->decision.value("baseline_key", Json(nullptr))},
+            {"projected", admitted->decision.value("resources", Json::object())},
             {"messages", due.size()}, {"ids", ids}, {"body_sha256", body_sha}, {"sent", false}};
         log::warn("loom.semantic_worker", "Automatic resend of {} items awaits usage confirmation (receipt {})",
-                  due.size(), json::get_string(*admitted, "receipt_id"));
+                  due.size(), json::get_string(admitted->decision, "receipt_id"));
       } else {
         retry_pending_.reset();
         log::warn("loom.semantic_worker", "Automatic resend not admitted: {}", status);
@@ -771,7 +805,7 @@ void SemanticWorker::auto_requeue(bool use_llm) {
     if (done && *done) ++requeued;
     else if (!done) log::warn("loom.semantic_worker", "Automatic requeue of {} failed: {}", item.id, done.error().message);
   }
-  if (guard) (void)guard->settle(true, 0, Json::object(), Json{{"messages", requeued}, {"cost_usd", declared_cost}});
+  if (gate) gate->settle(llm::GateSettlement{true, 0, Json::object(), Json{{"messages", requeued}, {"cost_usd", declared_cost}}});
   if (requeued) log::info("loom.semantic_worker", "Automatic retry requeued {} items", requeued);
 }
 
@@ -944,7 +978,7 @@ void SemanticWorker::run() {
         continue;
       }
       if (*processed == 0) {
-        check_batch_status(db_, secrets_, http_, bus_, graph_, mu_, mode_, batch_id_, batch_submitted_, processed_, *profile_);
+        check_batch_status(db_, cfg_, secrets_, http_, bus_, graph_, mu_, mode_, batch_id_, batch_submitted_, processed_, *profile_);
         {
           std::lock_guard lk(mu_);
           mode_ = "idle";
