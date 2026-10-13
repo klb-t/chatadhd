@@ -335,3 +335,14 @@ Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście 
   Akcje magazynu w `data/runtime/actions_storage.pack` (schemat `loom.action_catalogue/1`), tymczasowo — do wchłonięcia przez
   `actions.pack` z S1/P7. Raport: `docs/reports/S2_R3_2026-10-13.md`.
   Cofnięcie: revert scalenia R3 na `claude/s2-parallel`; stare wejścia nie zostały usunięte.
+
+## S2 / R2 — opis każdego pola ustawień: wartość domyślna i zasada edycji (2026-10-13)
+
+- Dane `data/runtime/settings_fields.pack`: cechy pola (typ, czy ma domyślną, opis, `sensitive`) + **zasady** w ogólnym
+  kształcie {zakres, cel = pole, akcja `edit`, skutek} (GRAF_HUB_KOD_SILNIK §5). Brak zasady = edycja fakultatywna (R43).
+  Etykiety: allow→optional, deny→read_only, require_value→required, require_confirmation→requires_confirmation; inne skutki
+  przechodzą jako otwarte napisy. Domyślne wartości czytane z rzeczywistych domyślnych, nie kopiowane.
+- `loom_settings_fields` (C ABI, JNI), `GET /api/settings/fields`, `loom config fields`, tabela w ustawieniach web.
+  Sekrety opisane, wartości nigdy nie zwracane. Blokuje zapis tylko `deny` (dziś wyłącznie `_config_version`).
+- Test kompletności w obie strony względem rzeczywistych domyślnych. Raport: `docs/reports/S2_R2_2026-10-13.md`.
+  Cofnięcie: usunąć zasadę z pliku danych (lub nakładka `profiles/settings_fields.pack`); revert scalenia R2.
