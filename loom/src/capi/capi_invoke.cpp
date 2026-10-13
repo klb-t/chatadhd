@@ -1,5 +1,5 @@
 // C API: loom_invoke — one entry point "perform action" (port, action, json). Ports: "storage" (storage
-// plugins), "github" (GitHub sync), "core" (action "actions" = the action table).
+// plugins), "github" (GitHub sync), "actions" (action "list" = the action catalogue).
 #include "loom/action_table.h"
 #include "context.h"
 #include "loom/storage_command.h"
@@ -19,7 +19,7 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     if (rj->is_null()) *rj = Json::object();
     if (!rj->is_object()) return out_error(Errc::InvalidArgument, "request must be a JSON object");
     const std::string p = port, a = action;
-    if (p == "core" && a == "actions") return out(action_table());
+    if (p == "actions" && a == "list") return out(action_catalogue());
     if (p == "storage") {
       (*rj)["action"] = a.rfind("storage.", 0) == 0 ? a : "storage." + a;
       auto r = storage::run_command(*ctx->rt, *rj);

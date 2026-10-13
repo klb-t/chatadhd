@@ -1,14 +1,16 @@
-// Action table: the single static description of actions reachable through loom_invoke(port, action, json),
-// with the HTTP route each one is served on. The server registers routes from it, loom_invoke("core",
-// "actions") returns it. Adding an action = one row here (+ its handler); defaults are presets, not rules.
+// Action catalogue reader. The data lives in data/runtime/actions_storage.pack (schema
+// loom.action_catalogue/1 entries; TODO(S2-R3): merge into actions.pack after P7 lands). loom_invoke
+// lists it as ("actions","list"); the server registers its routes from action_table().
 #pragma once
 #include "loom/util/json.h"
 
 namespace loom {
 
-// Rows: {"port","action","verb":"GET|POST","path","summary","input":{...notes},"query":[{"name","always"}]}
-// GET rows build the request object from the named query parameters ("always": sent even when absent,
-// as ""); POST rows take the JSON body as the request object.
+// {"catalogue_schema","actions":[{id,port,action,kind,status,description{en,pl},inputs[{name,type,required,
+//   description,has_default,default?,edit}],outputs,required_traits,effects[],http{verb,path,query?}}]}
+const Json& action_catalogue();
+
+// Route rows derived from the catalogue: {"port","action","verb","path","query":[{"name","always"}]}.
 const Json& action_table();
 
 }  // namespace loom
