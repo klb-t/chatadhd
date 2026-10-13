@@ -566,4 +566,118 @@ bool import_anthropic_member(Env& env, AnthropicCtx& cx, const std::string& rel,
   return true;
 }
 
+
+// ── provider table entry (B-MOD-05) ─────────────────────────────────
+namespace {
+class AnthropicRun final : public ProviderRun {
+ public:
+  explicit AnthropicRun(Env& env) : env_(env) {}
+
+  void parse_conversation(const Json& el, int index, const std::string& member, ConvModel& out,
+                          Counts& counts) override {
+    parse_anthropic_conversation(el, index, member, env_, out, counts);
+  }
+  void message_locator(Json& metadata, const MsgModel&, std::size_t,
+                       const std::string& conversation_pointer) const override {
+    metadata["json_pointer"] = conversation_pointer + "/chat_messages/" +
+        std::to_string(json::get_int(metadata, "source_index", -1));
+  }
+  int member_rank(const std::string& rel) const override { return base_of(rel) == "projects.json" ? 0 : 1; }
+  std::optional<std::string> blocked(const std::string& sub, bool) const override {
+    if (projects_failed_ && base_of(sub) == "memories.json")
+      return "project bindings unavailable after projects interpretation failed";
+    return std::nullopt;
+  }
+  Result<bool> import_member(const std::string& sub, const fs::path& abs, Report& rep) override {
+    return import_anthropic_member(env_, an_, sub, abs, rep);
+  }
+  void member_failed(const std::string& sub) override {
+    if (base_of(sub) == "projects.json") projects_failed_ = true;
+  }
+  Json bindings() const override {
+    Json out = Json::object();
+    for (const auto& [uuid, id] : an_.project_db_id) out[uuid] = id;
+    return out;
+  }
+  void set_bindings(const Json& j) override {
+    an_.project_db_id.clear();
+    merge_bindings(j);
+  }
+  void merge_bindings(const Json& j) override {
+    if (!j.is_object()) return;
+    for (auto it = j.begin(); it != j.end(); ++it) an_.project_db_id[it.key()] = it.value().get<std::string>();
+  }
+  Status reconcile_prior(Checkpoint& prior, const Member& member, const std::string& provider_member) override {
+    if (base_of(member.rel) != "memories.json") return {};
+    return repair_project_memory_links(member, prior, provider_member.empty() ? member.rel : provider_member);
+  }
+
+ private:
+  // Provider auxiliary files (accounts, feedback, projects, memories, etc.)
+  // commit together with their member journal. Report deltas and project IDs
+  // are replayed so later auxiliary records retain the same bindings.
+  Status repair_project_memory_links(const Member& member, Checkpoint& checkpoint,
+                                     const std::string& provider_member) {
+    Json saved_projects = checkpoint.metadata.value("projects", Json::object());
+    bool bindings_changed = false;
+    for (const auto& [uuid, id] : an_.project_db_id)
+      if (!id.empty() && json::get_string(saved_projects, uuid) != id) bindings_changed = true;
+    if (!bindings_changed) return {};
+    LoadStats stats;
+    auto document = load_json_doc(member.abs, stats, env_.opts.json_max_depth);
+    if (!document) return Error(Errc::Parse, "cannot replay project memory bindings: " + stats.message);
+    const Json* memories = json::find(*document, "project_memories");
+    if (!memories || !memories->is_object()) return {};
+    Json fields = Json::object();
+    for (auto field = document->begin(); field != document->end(); ++field)
+      if (field.key() != "conversations_memory" && field.key() != "project_memories") fields[field.key()] = field.value();
+    for (auto memory = memories->begin(); memory != memories->end(); ++memory) {
+      const auto project = an_.project_db_id.find(memory.key());
+      if (project == an_.project_db_id.end() || project->second.empty() ||
+          json::get_string(saved_projects, memory.key()) == project->second) continue;
+      const Json record{{"scope", "project"}, {"project_uuid", memory.key()}, {"container_fields", fields}};
+      const std::string expected_record = record.dump();
+      const std::string content = memory.value().is_string() ? memory.value().get<std::string>() : "";
+      LOOM_TRY_ASSIGN(auto candidates, env_.db.conn().prepare(
+          "SELECT id,content,metadata FROM nodes WHERE kind='export:memory' "
+          "AND json_extract(metadata,'$.export.provider')='anthropic' "
+          "AND json_extract(metadata,'$.export.source_id')=? "
+          "AND json_extract(metadata,'$.export.member')=? "
+          "AND json_extract(metadata,'$.export.record.project_uuid')=?"));
+      candidates.bind_all(env_.checkpoint_source_id, provider_member, memory.key());
+      std::vector<std::string> matching;
+      while (true) {
+        LOOM_TRY_ASSIGN(bool row, candidates.step());
+        if (!row) break;
+        LOOM_TRY_ASSIGN(auto metadata, json::parse(candidates.get_text(2)));
+        const Json* export_data = json::find(metadata, "export");
+        const Json* prior_record = export_data ? json::find(*export_data, "record") : nullptr;
+        if (prior_record && prior_record->dump() == expected_record && candidates.get_text(1) == content)
+          matching.push_back(candidates.get_text(0));
+      }
+      if (matching.size() != 1)
+        return Error(Errc::Conflict, "cannot identify one preserved project memory for binding repair: " + memory.key());
+      LOOM_TRY_ASSIGN(auto existing, env_.db.conn().query_int(
+          "SELECT COUNT(*) FROM links WHERE src=? AND dst=? AND link_type='part_of'", matching[0], project->second));
+      if (existing.value_or(0) == 0) {
+        LOOM_TRY(env_.db.create_link(matching[0], project->second, "part_of", 1.0, Json::object()));
+      }
+      saved_projects[memory.key()] = project->second;
+    }
+    checkpoint.metadata["projects"] = std::move(saved_projects);
+    return write_checkpoint(env_, member.rel, member.archive_index, -1, "", checkpoint.metadata);
+  }
+
+
+  Env& env_;
+  AnthropicCtx an_;
+  bool projects_failed_ = false;
+};
+}  // namespace
+
+ProviderHandlers anthropic_provider() {
+  return ProviderHandlers{"anthropic",
+                          [](Env& env) -> std::unique_ptr<ProviderRun> { return std::make_unique<AnthropicRun>(env); }};
+}
+
 }  // namespace loom::xport

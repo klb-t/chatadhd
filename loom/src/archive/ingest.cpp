@@ -625,8 +625,10 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
     ++idx;
     std::string kind = sniff_export_element(e);
     std::string base = blob + "#" + std::to_string(idx);
-    if (kind == "chatgpt" || kind == "claude") {
-      ChatWalk w = kind == "chatgpt" ? walk_chatgpt(e, &policy_) : walk_claude(e, &policy_);
+    const PlatformSpec* platform = find_platform(kind);
+    const std::string_view unit_role = platform ? std::string_view(platform->unit_kind) : std::string_view();
+    if (platform && platform->is_chat()) {
+      ChatWalk w = walk_chat(*platform, e, &policy_);
       if (w.messages.empty()) return true;
       Unit u;
       u.key = "u" + hash_prefix(base);
@@ -674,7 +676,7 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
       }
       inner = store_unit(u, sid, transform, prev);
       ++units;
-    } else if (kind == "claude_projects") {
+    } else if (unit_role == "project") {
       Unit u;
       u.key = "u" + hash_prefix(base);
       std::string name = json::get_string(e, "name", display_text(policy_, "untitled_project"));
@@ -713,7 +715,7 @@ Status Ingestor::ingest_json_file(const fs::path& path, const std::string& uri, 
       }
       inner = store_unit(u, sid, transform, prev);
       ++units;
-    } else if (kind == "claude_memories") {
+    } else if (unit_role == "memory") {
       Unit u;
       u.key = "u" + hash_prefix(base);
       u.title = display_text(policy_, "memory");

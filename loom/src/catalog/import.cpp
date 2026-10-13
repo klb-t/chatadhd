@@ -4,6 +4,7 @@
 // parses conversations with the lossless provider-export parsers, and
 // writes conversations/messages plus one loom_provenance row per message
 // (transform "catalog.import@1"). Idempotent by unit id (loom_cat_imports).
+#include "loom/platforms.h"
 #include "loom/catalog.h"
 
 #include <chrono>
@@ -33,17 +34,12 @@ Result<std::string> copy_conversation(Runtime& runtime, const CatalogUnit& unit,
   xport::Env env{runtime.db(), nullptr, options, {}, ""};
   LOOM_TRY_ASSIGN(auto observed_index, internal::source_index(unit));
   const int mapping_index = observed_index.value_or(0);
-  if (unit.platform == "chatgpt" && document.is_object() && document.contains("mapping") &&
-      document["mapping"].is_object()) {
-    xport::OpenAiCtx context;
-    context.env = &env;
-    xport::parse_openai_conversation(document, mapping_index, unit.unit.locator.member, context, model, counts);
-  } else if (unit.platform == "claude" && document.is_object() && document.contains("chat_messages") &&
-             document["chat_messages"].is_array()) {
-    xport::parse_anthropic_conversation(document, mapping_index, unit.unit.locator.member, env, model, counts);
-  } else {
+  const PlatformSpec* platform = platform_for_unit("conversation", unit.platform);
+  const xport::ProviderHandlers* handlers = platform && !platform->provider.empty()
+      ? xport::ProviderRegistry::instance().find(platform->provider) : nullptr;
+  if (!handlers || !platform->shape_ok(document))
     return Error(Errc::NotImplemented, "catalog conversation has no supported lossless provider mapping");
-  }
+  handlers->make_run(env)->parse_conversation(document, mapping_index, unit.unit.locator.member, model, counts);
   // Older catalog rows have no observed ordinal. Their local parser index
   // must not masquerade as an original source array index.
   model.export_meta["mapping_index_scope"] = observed_index ? "source_array" : "unit_relative";
@@ -384,7 +380,8 @@ Result<Json> Catalog::import_selected(const ImportOptions& opts, const ProgressF
       auto parsed = json::parse(raw);
       Json messages_j = Json::array();
       if (parsed) {
-        ExtractedText et = extract_text(*parsed, cu.unit.kind == "project" ? "claude_projects" : "claude_memories");
+        const PlatformSpec* platform = platform_for_unit(cu.unit.kind, cu.platform);
+        ExtractedText et = extract_text(*parsed, platform ? platform->id : std::string());
         if (!et.prose.empty()) messages_j.push_back(Json{{"role", "document"}, {"text", et.prose}});
       }
       if (!messages_j.empty()) {

@@ -15,6 +15,7 @@
 // the git history for the previous, narrower version of this file). BM25,
 // expansion and linking are sketch-only and do scale with corpus size, not
 // per-unit byte size.
+#include "loom/platforms.h"
 #include "loom/catalog.h"
 
 #include <algorithm>
@@ -173,10 +174,8 @@ double percentile(std::vector<double> values, double pct) {
 // against a profile built after the scan.
 std::string reextract_prose(const CatalogUnit& cu, std::string_view raw) {
   std::string kind;
-  if (cu.unit.kind == "conversation") kind = cu.platform == "chatgpt" ? "chatgpt" : "claude";
-  else if (cu.unit.kind == "project") kind = "claude_projects";
-  else if (cu.unit.kind == "memory") kind = "claude_memories";
-  else if (cu.unit.kind == "record") kind = "record";
+  if (cu.unit.kind == "record") kind = "record";
+  else if (const PlatformSpec* platform = platform_for_unit(cu.unit.kind, cu.platform)) kind = platform->id;
   if (!kind.empty()) {
     if (auto parsed = json::parse(raw)) return extract_text(*parsed, kind).prose;
   }

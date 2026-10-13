@@ -3,6 +3,7 @@
 // here infers (§2.3): every claim points at the observations it was read
 // from. All matching tables are pack data (lexicon.h); the code holds the
 // algorithms. Deterministic.
+#include "loom/platforms.h"
 #include <algorithm>
 #include <cctype>
 #include <chrono>
@@ -539,7 +540,7 @@ void Run::find_named_mentions() {
                        ex_name("extract.names"), conf);
   };
   // Claude project units: the project name.
-  if (ub_.platform == "claude_projects") {
+  if (const PlatformSpec* spec = find_platform(ub_.platform); spec && spec->unit_kind == "project") {
     std::string name = json::get_string(c_.structured, "name");
     auto toks = lex_.norm.tokens(name);
     static const std::set<std::string> kGeneric = {"dev", "app", "project", "projekt", "work", "main", "prod", "notes"};

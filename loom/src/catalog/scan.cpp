@@ -7,6 +7,7 @@
 // so a multi-GB export never sits in RAM at once. Units are committed in
 // stream order (member, then byte offset), so the catalogue is identical for
 // any thread count once true parallelism is added (I5).
+#include "loom/platforms.h"
 #include "loom/catalog.h"
 
 #include <algorithm>
@@ -72,24 +73,19 @@ bool skip_name(const std::string& name) {
 }
 
 std::string platform_of(std::string_view kind) {
-  if (kind == "chatgpt") return "chatgpt";
-  if (kind == "claude" || kind == "claude_projects" || kind == "claude_memories") return "claude";
-  return "file";
+  const PlatformSpec* platform = find_platform(kind);
+  return platform ? platform->vendor : "file";
 }
 
 std::string unit_kind_of(std::string_view kind) {
-  if (kind == "chatgpt" || kind == "claude") return "conversation";
-  if (kind == "claude_projects") return "project";
-  if (kind == "claude_memories") return "memory";
+  if (const PlatformSpec* platform = find_platform(kind)) return platform->unit_kind;
   if (kind == "file") return "file";
   return "record";
 }
 
 std::string ext_id_of(const Json& element, std::string_view kind) {
-  if (kind == "chatgpt") return json::get_string(element, "id");
-  if (kind == "claude" || kind == "claude_projects") return json::get_string(element, "uuid");
-  if (kind == "claude_memories") return "memories";
-  return "";
+  const PlatformSpec* platform = find_platform(kind);
+  return platform ? platform->ext_id(element) : std::string();
 }
 
 Result<std::string> register_source(Database& db, std::string_view source_id, const fs::path& path,

@@ -22,4 +22,8 @@ Result<std::string_view> compiled_import_preset_source(std::string_view resource
 // common layer consumer. This API neither discovers nor stores user layers.
 Result<Json> inspect_import_preset();
 
+// The "platforms" section of the compiled import preset (null when absent).
+// Consumed by loom/platforms.h; throws std::runtime_error on an invalid preset.
+const Json& import_preset_platforms();
+
 }  // namespace loom

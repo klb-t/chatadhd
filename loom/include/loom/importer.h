@@ -65,6 +65,7 @@
 #include <vector>
 
 #include "loom/db.h"
+#include "loom/format_registry.h"
 #include "loom/result.h"
 #include "loom/util/cancel.h"
 #include "loom/util/json.h"
@@ -231,6 +232,9 @@ class ConversationImporter {
                        MediaProviders* media = nullptr);
 
   std::string detect_format(const std::filesystem::path& path) const;
+  // Format table (detect + body per format). Register additional formats here.
+  FormatRegistry& formats() noexcept { return formats_; }
+  const FormatRegistry& formats() const noexcept { return formats_; }
   Result<ImportResult> import_file(const std::filesystem::path& path, const ImportOptions& opts = {});
 
   // Format handlers (Python import_<format>); return created conversations.
@@ -392,6 +396,8 @@ class ConversationImporter {
   BlobStore* blobs_;
   ProvenanceStore* prov_;
   MediaProviders* media_;
+  FormatRegistry formats_;
+  static FormatRegistry builtin_formats();
   SourceCtx* current_source_ = nullptr;
 };
 
