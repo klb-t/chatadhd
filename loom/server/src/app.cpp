@@ -746,12 +746,12 @@ void App::route_graph_context() {
   });
 
   // Storage plugins (P4) and the action/element matching queries (wave 2: /api/actions/for, explain,
-  // propose_chain): routes come from the action table (loom/action_table.h) and go through
+  // propose_chain; R54: /api/actions/run|preview|confirm|cancel|status and /api/chat/route): routes come from the action table (loom/action_table.h) and go through
   // loom_invoke. Rides on rctx(), so with accounts enabled every account sees and changes only its own
   // placement. Responses are the same as the former per-route loom_github_sync calls.
   for (const auto& row : json::parse(loom::action_table().dump())) {
     const std::string row_port = row.value("port", std::string());
-    if (row_port != "storage" && row_port != "actions") continue;
+    if (row_port != "storage" && row_port != "actions" && row_port != "chat") continue;
     const std::string verb = row.value("verb", std::string());
     const std::string path = row.value("path", std::string());
     const std::string port = row.value("port", std::string());

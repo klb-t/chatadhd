@@ -136,6 +136,7 @@ class Engine {
   // Effect flags, groups and the decision tables are read through the catalogue and Decision; the
   // executors (action_run.h) additionally need the scope chain, so it is exposed read-only.
   const Json& decisions() const { return decisions_; }
+  const Json& classes() const { return classes_; }
   // The traits that `names` (trait ids, class ids, bundles) stand for: a class id brings the traits of
   // the class and of its parents.
   std::set<std::string> expand_traits(const std::vector<std::string>& names) const;

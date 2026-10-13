@@ -245,8 +245,14 @@ Result<std::vector<llm::Part>> ElementResolver::content_parts(const ElementSourc
     const std::string line = content ? json::get_string(*content, "conversation_line", "{{role}}: {{text}}") : "{{role}}: {{text}}";
     const std::string separator = content ? json::get_string(*content, "conversation_separator", "\n\n") : "\n\n";
     const Json* roles = content ? json::find(*content, "conversation_roles") : nullptr;
+    std::vector<std::string> skipped;
+    if (content)
+      if (const Json* keys = json::find(*content, "exclude_metadata_keys"); keys && keys->is_array())
+        for (const auto& k : *keys)
+          if (k.is_string()) skipped.push_back(k.get<std::string>());
     std::string transcript;
     for (const auto& m : messages) {
+      if (std::any_of(skipped.begin(), skipped.end(), [&](const std::string& k) { return m.metadata.is_object() && m.metadata.contains(k); })) continue;
       const std::string role = roles ? json::get_string(*roles, m.role, m.role) : m.role;
       LOOM_TRY_ASSIGN(std::string rendered, render_profile_template(line, Json{{"role", role}, {"text", m.text}}));
       if (!transcript.empty()) transcript += separator;

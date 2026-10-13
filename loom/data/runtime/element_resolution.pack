@@ -26,7 +26,8 @@
     "content": {
       "conversation_roles": {"user": "User", "assistant": "Assistant", "system": "System"},
       "conversation_line": "{{role}}: {{text}}",
-      "conversation_separator": "\n\n"
+      "conversation_separator": "\n\n",
+      "exclude_metadata_keys": ["routed", "action_proposal", "action_run"]
     }
   },
   "value_schema": {
@@ -80,8 +81,9 @@
       "content": {
         "type": "object",
         "description": "How the text of a conversation is laid out when it is the input of an action.",
-        "required": ["conversation_roles", "conversation_line", "conversation_separator"],
+        "required": ["conversation_roles", "conversation_line", "conversation_separator", "exclude_metadata_keys"],
         "properties": {
+          "exclude_metadata_keys": {"type": "array", "items": {"type": "string"}, "description": "A message whose metadata has one of these keys is chat-window command traffic (the command, its proposal, the yes) and is not part of the content of the conversation."},
           "conversation_roles": {"type": "object", "additionalProperties": {"type": "string"}},
           "conversation_line": {"type": "string", "minLength": 1},
           "conversation_separator": {"type": "string"}

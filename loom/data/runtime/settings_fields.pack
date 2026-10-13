@@ -175,6 +175,30 @@
         "description": "Retry policy of failed semantic work (explicit_requeue or automatic)."
       },
       {
+        "key": "intent_routing_method",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "How a chat input is told to be a message or a command (R54): heuristic (local and free, preset), model (one guarded model call per input) or off (every input is a message). Runtime profile intent_routing."
+      },
+      {
+        "key": "intent_routing_run",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether a command from the chat waits for the user's yes (propose, preset), runs at once when its plan only reads and the rules ask for nothing (read_only), or runs at once (always). The rules and the x10 usage confirmation apply in every case."
+      },
+      {
+        "key": "intent_routing_model",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Model used for routing when the method is model; empty = the default model."
+      },
+      {
         "key": "context_execution",
         "scope": "config",
         "group": "context",

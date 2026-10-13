@@ -533,7 +533,7 @@
         },
         {
           "path": "loom/data/runtime/cli.pack",
-          "sha256": "2010d2d1af27884c9c0778ac26f9374ae49782184690d0e70a444dea3a64cb86"
+          "sha256": "72a905da7d69ffb5de1203569607d8e27b82176f0f3df91393272a7f4a07ce2d"
         },
         {
           "path": "loom/data/runtime/config.pack",
@@ -549,7 +549,7 @@
         },
         {
           "path": "loom/data/runtime/element_resolution.pack",
-          "sha256": "9b05a23a3bc971764c0a4a712bf2fb7aa2d7a2eb13beff985c691c9d7d5b048f"
+          "sha256": "54c036d84ae7d2b8a01b89767d2cc57e89b81e292aa685a10759be5b7b4fc7f3"
         },
         {
           "path": "loom/data/runtime/github.pack",
@@ -574,6 +574,10 @@
         {
           "path": "loom/data/runtime/import_formats.pack",
           "sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3"
+        },
+        {
+          "path": "loom/data/runtime/intent_routing.pack",
+          "sha256": "db33cf8518a38ba8c4d6516e2f9831fb421832f6392feb67049bd23ad8ac04ea"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",
@@ -633,7 +637,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "64be44dbd12129b728cc335f1f7c972907063587912767a8be890ac2078b765d"
+          "sha256": "a9902d8053861d33df26160c4071c4aabd0ca62114b4a7487d0cb87b9e1f6db3"
         },
         {
           "path": "loom/data/runtime/usage_compaction.pack",
@@ -652,7 +656,7 @@
           "sha256": "248ae11305b037b79af5e7d5896fa5aa8de32ce8bd9dd89dd5708abd38265be6"
         }
       ],
-      "output_sha256": "90c4ea8bb3fb271007f04bb51045bd5902c7696fc1d849864a3b7f7309754ee2",
+      "output_sha256": "67359d7cee11b346a2fada7a33c8322d99d9562aada33e0b11ec44f1955b6a31",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

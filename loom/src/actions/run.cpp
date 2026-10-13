@@ -212,10 +212,14 @@ struct Builder {
   }
 };
 
+// The effects of a whole plan: a flag is set when any action sets it; "reads_only" holds only when every one does.
 Json add_effects(Json acc, const Json& entry) {
   if (const Json* eff = json::find(entry, "effects"))
-    for (auto it = eff->begin(); it != eff->end(); ++it)
-      if (it.value().is_boolean()) acc[it.key()] = json::get_bool(acc, it.key(), false) || it.value().get<bool>();
+    for (auto it = eff->begin(); it != eff->end(); ++it) {
+      if (!it.value().is_boolean()) continue;
+      if (it.key() == "reads_only") acc[it.key()] = json::get_bool(acc, it.key(), true) && it.value().get<bool>();
+      else acc[it.key()] = json::get_bool(acc, it.key(), false) || it.value().get<bool>();
+    }
   return acc;
 }
 
