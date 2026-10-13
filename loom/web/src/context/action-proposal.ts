@@ -15,7 +15,15 @@ interface Meta { [key: string]: unknown }
 export interface ProposalMoney { known?: boolean; low?: number | null; high?: number | null; currency?: string; reason?: string }
 export interface ProposalItem { action?: string; title?: string; cost?: number; implementation?: string }
 export interface ProposalConfirmation { action?: string; title?: string; reason?: unknown; initiator?: string }
+/** A parameter of the action as the router saw it: given by the words (from phrase), by the user (explicit) or a setting, or still open. */
+export interface ProposalParam { name?: string; required?: boolean; given?: boolean; value?: unknown; from?: string; default?: unknown }
+/** A proposal that grows the catalogue (R55): an action, a repeated chain or a group; written to the user's overlay only. */
+export interface ProposalDefinition { kind?: string; id?: string; overlay?: string; node?: string }
 export interface ActionProposal {
+  kind?: string;
+  params?: ProposalParam[];
+  definition?: ProposalDefinition | null;
+  replaces?: boolean;
   status?: string;
   run_id?: string;
   receipt_id?: string;
@@ -114,6 +122,12 @@ export function routeConfirmedRequest(request: { message: string }, receipt: { r
 
 export interface ProposalView {
   answerable: boolean;
+  /** Arguments the words gave (name=value) and optional ones that keep their defaults (name (default)). */
+  args: string[];
+  open: string[];
+  /** The kind and id of a definition the proposal would write; null for an ordinary command. */
+  definition: { kind: string; id: string; overlay: string } | null;
+  replaces: boolean;
   plan: string;
   cost: { cost: string | null; calls: string | null; bytes: string | null } | null;
   /** Null when the proposal says nothing about money; known false = unknown, with the reason. */
@@ -131,8 +145,22 @@ function sum(value: unknown): string | null {
   return value >= 0.01 ? value.toFixed(2) : value.toFixed(4);
 }
 
+function shown(value: unknown): string {
+  return typeof value === "string" ? value : JSON.stringify(value);
+}
+
 export function proposalView(answer: PendingAnswer): ProposalView {
   const proposal = answer.proposal;
+  const args: string[] = [];
+  const open: string[] = [];
+  const params = proposal && proposal.params ? proposal.params : [];
+  for (const param of params) {
+    const name = text(param.name);
+    if (name === "") continue;
+    if (param.given === true) args.push(name + "=" + shown(param.value));
+    else if (param.required !== true && param.default !== undefined && param.default !== null) open.push(name + " (" + shown(param.default) + ")");
+  }
+  const made = proposal && proposal.definition ? proposal.definition : null;
   const titles: string[] = [];
   const items = proposal && proposal.items ? proposal.items : [];
   for (const item of items) titles.push(item.title ? item.title : text(item.action));
@@ -143,6 +171,10 @@ export function proposalView(answer: PendingAnswer): ProposalView {
   const money = cost && cost.money ? cost.money : null;
   return {
     answerable: answer.runId !== "" && answer.receiptId !== "",
+    args,
+    open,
+    definition: made ? { kind: text(made.kind), id: text(made.id), overlay: text(made.overlay) } : null,
+    replaces: proposal !== null && proposal.replaces === true,
     plan: titles.join(" -> "),
     cost: cost ? { cost: amount(cost.declared), calls: amount(cost.model_calls), bytes: amount(cost.input_bytes) } : null,
     money: money === null ? null : {
@@ -155,6 +187,10 @@ export function proposalView(answer: PendingAnswer): ProposalView {
 
 export interface ProposalTexts {
   title: string | null;
+  args: string | null;
+  argsOpen: string | null;
+  definition: string | null;
+  replaces: string | null;
   plan: string | null;
   cost: string | null;
   money: string | null;
@@ -184,8 +220,13 @@ export function proposalTexts(feature: PresentationFeature | null, answer: Pendi
   const unknown = say("unknown") ?? "-";
   const shown = (value: string | null) => (value === null ? unknown : value);
   const cost = view.cost;
+  const made = view.definition;
   return {
-    title: say(answer.kind === "confirmation" ? "title_confirmation" : "title"),
+    title: say(answer.kind === "confirmation" ? "title_confirmation" : made !== null ? "title_definition" : "title"),
+    args: view.args.length === 0 ? null : say("args", { args: view.args.join(", ") }),
+    argsOpen: view.open.length === 0 ? null : say("args_open", { params: view.open.join(", ") }),
+    definition: made === null ? null : say("definition_" + made.kind, { id: made.id, overlay: made.overlay }),
+    replaces: view.replaces ? say("rule_replaces") : null,
     plan: view.plan === "" ? null : say("plan", { plan: view.plan }) ?? view.plan,
     cost: cost === null ? null : say("cost", { cost: shown(cost.cost), calls: shown(cost.calls), bytes: shown(cost.bytes) }),
     money: moneyText(say, view),
