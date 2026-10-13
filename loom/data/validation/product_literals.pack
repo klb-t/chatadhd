@@ -489,7 +489,7 @@
         },
         {
           "path": "loom/data/graph/interfaces.pack",
-          "sha256": "1c755cf365ed73bedb9b659bc64d9122ca1bc188ab751139ec3b6c88e3435028"
+          "sha256": "6fd36d6a93117af8c8f18dcb5f710cddb035a9a4437b76bf9502eb43fc689933"
         },
         {
           "path": "loom/data/graph/parties.pack",
@@ -660,7 +660,7 @@
           "sha256": "16ef3dbfefbae087f72cd7153cc3598eb2e82a7627c5f780136d9d4b5319a098"
         }
       ],
-      "output_sha256": "0478af50a479f13e9b7b37e5665124181fdd7f51c70150a430481b1a58e86c22",
+      "output_sha256": "a557d00ff94496dc98072b227b9add302bf9bf74dadcb2f75c2a49b45dc36470",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],
