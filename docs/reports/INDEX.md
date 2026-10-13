@@ -523,3 +523,13 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5, §8, §9. Decyzje 
   `planned` (transkrypcja, obraz…) nie mają wykonawców (plan z nimi nie startuje, propozycja mówi dlaczego); szacunek w pieniądzach wymaga cennika modelu; leksykon fraz jest
   kalibracją (fałszywe polecenia kosztują jedno „nie”); przebieg trzyma wyniki kroków w dokumencie (duże wyniki wypadałoby składować w blobach); wejście ze skryptu/agenta
   (`script.call`, `agent.call`) i równoległe kroki (§2 „kolejno/wariantowo/równolegle”: jest kolejno i wariantowo) nadal nie istnieją.
+
+## S2 / R9 — urządzenia wejścia/wyjścia jako węzły grafu (2026-10-13)
+
+- Klasy urządzeń z cechami zdolności w `data/graph/classes.pack` (mikrofon, kamera, ekran, głośnik, pliki, schowek,
+  powiadomienia, magazyny, punkty sieciowe: dostawcy modeli, serwer); egzemplarze i dostępność per platforma
+  (web/android/server/cli: dostępne / wymaga zgody / niedostępne) w `data/graph/devices.pack`; magazyny rozwijane z profilu
+  `storage_security`. Widok wejściowy grafu listuje urządzenia; `actions.for` na id urządzenia działa przez dane klas.
+- Mikrofon/kamera bez cech treści (`has_audio`/`has_image`) — mają cechy zdolności; akcje urządzeń (nagraj, zrób zdjęcie,
+  odtwórz, powiadom) i źródło `device` w rozwiązywaniu id przekazane S1. Raport: `docs/reports/S2_R9_2026-10-13.md`.
+  Cofnięcie: revert scalenia R9 (dane w dwóch plikach pakietów).
