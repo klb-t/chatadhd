@@ -23,6 +23,22 @@ std::string join_url(const std::string& base, const std::string& path) {
   return base + (path.front() == '/' ? path : "/" + path);
 }
 
+// The header a route's scheme puts its credential in ("" = none, e.g. a query key).
+std::string_view auth_header_name(std::string_view scheme) {
+  if (scheme == "bearer" || scheme == "token") return "Authorization";
+  if (scheme == "x-api-key") return "x-api-key";
+  return {};
+}
+
+// The caller's complete header recipe, in its order; the route's authentication
+// is appended last unless the recipe already carries it.
+Status apply_wire_headers(const Route& route, const CallSpec& spec, net::HttpRequest& req) {
+  req.headers = *spec.wire_headers;
+  const std::string_view carried = auth_header_name(route.auth_scheme);
+  if (!carried.empty() && !net::header_value(req.headers, carried).empty()) return ok_status();
+  return apply_auth(route, req);
+}
+
 Json base_body(const CallSpec& spec) {
   return Json{{"model", spec.model}, {"messages", spec.messages}};
 }
@@ -104,14 +120,20 @@ class OpenAiChatAdapter final : public Adapter {
     std::string path = route.endpoint;
     if (path.empty()) path = json::get_string(route.metadata, "chat_completions_path", "/chat/completions");
     req.url = join_url(route.base_url, path);
-    LOOM_TRY(apply_auth(route, req));
-    req.headers.emplace_back(route.content_type_header, "application/json");
-    for (const auto& h : route.default_headers) req.headers.push_back(h);
-    if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
-    if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
-    for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    if (spec.wire_headers) {
+      LOOM_TRY(apply_wire_headers(route, spec, req));
+    } else {
+      LOOM_TRY(apply_auth(route, req));
+      req.headers.emplace_back(route.content_type_header, "application/json");
+      for (const auto& h : route.default_headers) req.headers.push_back(h);
+      if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
+      if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
+      for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    }
 
-    if (spec.body.is_object()) {
+    if (!spec.body_bytes.empty()) {
+      req.body = spec.body_bytes;
+    } else if (spec.body.is_object()) {
       req.body = json::dump(spec.body);
     } else {
       Json body = base_body(spec);
@@ -222,12 +244,16 @@ class AnthropicMessagesAdapter final : public Adapter {
       case Operation::Complete: {
         req.method = "POST";
         req.url = join_url(route.base_url, route.endpoint.empty() ? "/v1/messages" : route.endpoint);
-        LOOM_TRY(apply_auth(route, req));
-        for (const auto& h : route.default_headers) req.headers.push_back(h);
-        req.headers.emplace_back(route.content_type_header, "application/json");
-        for (const auto& h : spec.extra_headers) req.headers.push_back(h);
-        if (spec.body.is_object()) {
-          req.body = json::dump(spec.body);
+        if (spec.wire_headers) {
+          LOOM_TRY(apply_wire_headers(route, spec, req));
+        } else {
+          LOOM_TRY(apply_auth(route, req));
+          for (const auto& h : route.default_headers) req.headers.push_back(h);
+          req.headers.emplace_back(route.content_type_header, "application/json");
+          for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+        }
+        if (!spec.body_bytes.empty() || spec.body.is_object()) {
+          req.body = !spec.body_bytes.empty() ? spec.body_bytes : json::dump(spec.body);
           req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
           req.stream = spec.stream;
           return req;
@@ -349,15 +375,19 @@ class OpenAiImagesAdapter final : public Adapter {
     std::string path = route.endpoint;
     if (path.empty()) path = json::get_string(route.metadata, "images_path", "/images/generations");
     req.url = join_url(route.base_url, path);
-    LOOM_TRY(apply_auth(route, req));
-    req.headers.emplace_back(route.content_type_header, "application/json");
-    for (const auto& h : route.default_headers) req.headers.push_back(h);
-    if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
-    if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
-    for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    if (spec.wire_headers) {
+      LOOM_TRY(apply_wire_headers(route, spec, req));
+    } else {
+      LOOM_TRY(apply_auth(route, req));
+      req.headers.emplace_back(route.content_type_header, "application/json");
+      for (const auto& h : route.default_headers) req.headers.push_back(h);
+      if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
+      if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
+      for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    }
     Json body{{"model", spec.model}, {"prompt", prompt}};
     for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
-    req.body = json::dump(body);
+    req.body = spec.body_bytes.empty() ? json::dump(body) : spec.body_bytes;
     req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
     return req;
   }

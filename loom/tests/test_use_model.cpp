@@ -699,4 +699,91 @@ TEST_SUITE("use_model") {
     loom::test::declare_action_status(env.td.path(), "jev.edge_classify", "planned");
     CHECK(unwrap(llm::use_model(env.services(), req)).results[0].state == llm::State::Unavailable);
   }
+
+  TEST_CASE("a caller's complete recipe: exact body bytes and its own header order, authentication last") {
+    Env env;
+    env.transport.expect("POST", "https://api.test/v2/custom", Reply::json(200, chat_reply("ok")));
+    llm::ModelRequest req;
+    req.kind = "test.recipe";
+    req.models = {llm::ModelSpec{"vendor/m1", "", Json::object()}};
+    // Whitespace and a trailing zero that a re-serialisation would normalise away.
+    req.body_bytes = "{\"model\":\"vendor/m1\", \"messages\":[], \"temperature\":1.0}";
+    req.route.endpoint = "https://api.test/v2/custom";
+    req.wire_headers = net::Headers{{"X-Title", "Recipe"}, {"Content-Type", "application/json"}};
+    req.timeout_ms = 777;
+    auto outcome = unwrap(llm::use_model(env.services(), req));
+    REQUIRE(outcome.results.at(0).ok());
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/v2/custom"},
+        {"headers", Json::array({Json::array({"X-Title", "Recipe"}), Json::array({"Content-Type", "application/json"}),
+                                 Json::array({"Authorization", "Bearer sk-secret-test"})})},
+        {"body", "{\"model\":\"vendor/m1\", \"messages\":[], \"temperature\":1.0}"},
+        {"timeout_ms", 777},
+        {"stream", false}};
+    CHECK(loom::test::request_json(reqs[0]) == expected);
+    // The provenance still describes the body (parsed from the bytes) and hashes the exact bytes.
+    const Json& p = outcome.results[0].provenance;
+    CHECK(p["request_sha256"] == Sha256::hex(reqs[0].body));
+    CHECK(p["parameters"] == Json{{"temperature", 1.0}});
+
+    // A recipe that carries its own authentication keeps it where it is.
+    env.transport.expect("POST", "https://api.test/v2/custom", Reply::json(200, chat_reply("ok")));
+    req.wire_headers = net::Headers{{"authorization", "Bearer from-recipe"}, {"X-Title", "Recipe"}};
+    REQUIRE(unwrap(llm::use_model(env.services(), req)).results.at(0).ok());
+    reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 2);
+    CHECK(reqs[1].headers == net::Headers{{"authorization", "Bearer from-recipe"}, {"X-Title", "Recipe"}});
+  }
+
+  TEST_CASE("a route resolved without its credential sends no authentication header") {
+    Env env;
+    env.secrets.set("api_key", "");
+    llm::ModelRequest req = simple("m");
+    req.route.require_credential = false;
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    REQUIRE(unwrap(llm::use_model(env.services(), req)).results.at(0).ok());
+    CHECK(net::header_value(env.transport.requests().at(0).headers, "Authorization").empty());
+    // ... and by default a missing credential is still an unavailable call.
+    llm::ModelRequest strict = simple("m");
+    CHECK(unwrap(llm::use_model(env.services(), strict)).results.at(0).state == llm::State::Unavailable);
+  }
+
+  TEST_CASE("function gates: a caller's own admission, and the preadmitted gate dispatches without asking") {
+    Env env;
+    int admitted = 0, settled = 0;
+    llm::ModelRequest req = simple("m");
+    req.usage.gate = llm::make_function_gate(
+        [&](const net::HttpRequest& r, const Json&) -> Result<llm::GateDecision> {
+          ++admitted;
+          llm::GateDecision d;
+          d.dispatch = r.url.find("chat/completions") != std::string::npos;
+          d.status = d.dispatch ? "allowed" : "denied";
+          return d;
+        },
+        [&](const llm::GateSettlement& s) { settled += s.attempted ? 1 : 0; });
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    REQUIRE(unwrap(llm::use_model(env.services(), req)).results.at(0).ok());
+    CHECK(admitted == 1);
+    CHECK(settled == 1);
+
+    llm::ModelRequest refused = simple("m");
+    refused.usage.gate = llm::make_function_gate(
+        [](const net::HttpRequest&, const Json&) -> Result<llm::GateDecision> {
+          llm::GateDecision d;
+          d.status = "denied";
+          return d;
+        });
+    auto held = unwrap(llm::use_model(env.services(), refused));
+    CHECK(held.results.at(0).state == llm::State::Held);
+    CHECK(env.transport.requests().size() == 1);   // the refused call never left
+
+    llm::ModelRequest pre = simple("m");
+    pre.usage.gate = llm::make_admitted_gate();
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    REQUIRE(unwrap(llm::use_model(env.services(), pre)).results.at(0).ok());
+    CHECK(env.transport.requests().size() == 2);
+  }
 }

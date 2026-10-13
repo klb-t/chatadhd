@@ -185,6 +185,11 @@ struct CallSpec {
   Json batch_requests = Json::array();  // BatchSubmit: [{"custom_id","params":{...}}]
   std::string target;                   // BatchStatus: batch id; BatchResults: results URL
   Json body = nullptr;                  // a complete pre-composed body, used byte for byte
+  std::string body_bytes;               // the same body as exact bytes (wins over `body` on the wire)
+  // A complete header recipe in wire order (replaces the adapter's own
+  // content-type / default / attribution headers; authentication is appended
+  // last unless the list already carries it).
+  std::optional<net::Headers> wire_headers;
   std::vector<Part> parts;              // typed inputs the adapter handles itself (media, files)
 };
 
@@ -245,6 +250,16 @@ struct ModelRequest {
   // (chat, graph replies); model/messages/parameters then only describe it in
   // the provenance record.
   Json body = nullptr;
+  // The same body as exact bytes, for callers that hold it serialized (a
+  // reviewed request, a contract renderer).  Wins over `body` on the wire;
+  // `body` (parsed from these bytes when left null) still describes the call
+  // in the provenance record.
+  std::string body_bytes;
+  // A complete header recipe in wire order, for callers whose recipe fixes the
+  // headers too (contract transport data, a provider manifest's defaults).  It
+  // replaces the adapter's content-type, default and attribution headers;
+  // authentication from the route is appended last unless the list carries it.
+  std::optional<net::Headers> wire_headers;
   // Typed inputs beyond the messages: text and json parts are folded into user
   // messages; other kinds go to the adapter.  `wants` lists the output kinds
   // the caller expects (a model that cannot produce them is rejected, never
@@ -343,6 +358,15 @@ Result<Capabilities> effective_capabilities(const Services& services, const Rout
 // that admit an operation which is not itself a model call (e.g. an automatic
 // resend of many items) and settle it with declared resources.
 std::shared_ptr<UsageGate> make_usage_gate(const Services& services, const UsageSpec& spec);
+// A gate made of functions, for callers whose ledger flow is their own (the
+// semantic ledger's attempt ids, graph replies' pre-send cancellation): `admit`
+// decides, `settle` (optional) accounts after a dispatched call.
+std::shared_ptr<UsageGate> make_function_gate(
+    std::function<Result<GateDecision>(const net::HttpRequest& request, const Json& provenance)> admit,
+    std::function<void(const GateSettlement&)> settle = {});
+// A gate for a call whose operation the caller's own policy already admitted
+// (embeddings admitted by the vector policy): it dispatches, settles nothing.
+std::shared_ptr<UsageGate> make_admitted_gate();
 // What a call to this route would put on the wire, reduced to what the guard
 // binds: method, URL, and the caller's body (no credential headers).
 Result<net::HttpRequest> describe_request(const Services& services, const RouteSelector& selector,
