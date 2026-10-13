@@ -1,0 +1,144 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "server_accounts",
+  "revision": 1,
+  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack.",
+  "defaults": {
+    "registration": "closed",
+    "session_lifetime_seconds": 2592000,
+    "session_idle_seconds": 0,
+    "password_min_length": 8,
+    "argon2id_preset": "rfc9106_second",
+    "session_token_bytes": 32,
+    "accounts_file": "accounts.sqlite",
+    "users_subdir": "users",
+    "cookie": {
+      "name": "loom_session",
+      "http_only": true,
+      "same_site": "Strict",
+      "secure": "auto",
+      "path": "/"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "registration",
+      "session_lifetime_seconds",
+      "session_idle_seconds",
+      "password_min_length",
+      "argon2id_preset",
+      "session_token_bytes",
+      "accounts_file",
+      "users_subdir",
+      "cookie"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "registration": {
+        "type": "string",
+        "enum": [
+          "open",
+          "invite",
+          "closed"
+        ],
+        "description": "Who may create accounts over HTTP.",
+        "x-setting": "/registration",
+        "x-consumer": "server accounts"
+      },
+      "session_lifetime_seconds": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 9223372036854775807,
+        "x-unit": "seconds",
+        "x-setting": "/session_lifetime_seconds",
+        "x-consumer": "server accounts"
+      },
+      "session_idle_seconds": {
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "description": "0 = no idle expiry.",
+        "x-unit": "seconds",
+        "x-setting": "/session_idle_seconds",
+        "x-consumer": "server accounts"
+      },
+      "password_min_length": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 2147483647,
+        "x-setting": "/password_min_length",
+        "x-consumer": "server accounts"
+      },
+      "argon2id_preset": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Id in storage_security crypto.params.argon2id_presets.",
+        "x-setting": "/argon2id_preset",
+        "x-consumer": "server accounts"
+      },
+      "session_token_bytes": {
+        "type": "integer",
+        "minimum": 16,
+        "maximum": 1024,
+        "x-setting": "/session_token_bytes",
+        "x-consumer": "server accounts"
+      },
+      "accounts_file": {
+        "type": "string",
+        "minLength": 1,
+        "x-setting": "/accounts_file",
+        "x-consumer": "server accounts"
+      },
+      "users_subdir": {
+        "type": "string",
+        "minLength": 1,
+        "x-setting": "/users_subdir",
+        "x-consumer": "server accounts"
+      },
+      "cookie": {
+        "type": "object",
+        "required": [
+          "name",
+          "http_only",
+          "same_site",
+          "secure",
+          "path"
+        ],
+        "additionalProperties": false,
+        "x-setting": "/cookie",
+        "x-consumer": "server accounts",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "http_only": {
+            "type": "boolean"
+          },
+          "same_site": {
+            "type": "string",
+            "enum": [
+              "Strict",
+              "Lax",
+              "None"
+            ]
+          },
+          "secure": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ],
+            "description": "auto = Secure when the request arrived over TLS or X-Forwarded-Proto: https."
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}
