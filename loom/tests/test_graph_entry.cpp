@@ -103,7 +103,31 @@ TEST_SUITE("graph_entry") {
     const Json cli = read_json(kLoomDir / "data/runtime/cli.pack");
     const Json& ifc = (*area(view, "interfaces"))["counts"]["interfaces"];
     REQUIRE(ifc["known"] == true);
-    CHECK(ifc["value"] == 3);
+    // The interface count is the registry's own: every key of data/graph/interfaces.pack (c_abi, http, jni, web, cli).
+    const Json registry = read_json(kLoomDir / "data/graph/interfaces.pack");
+    CHECK(ifc["value"].get<std::size_t>() == registry["interfaces"].size());
+    CHECK(registry["interfaces"].size() >= 5);
+    // JNI = JNIEXPORT symbols of the Android bridge; web = "VERB", "/api/..." calls of web/src/api (path params as :id).
+    std::set<std::string> jni;
+    const std::string jni_src = slurp(kLoomDir / "android/app/src/main/cpp/loom_jni.cpp");
+    const std::regex jni_re(R"re(JNIEXPORT\s+\w+\s+JNICALL\s+(Java_\w+)\s*\()re");
+    for (std::sregex_iterator it(jni_src.begin(), jni_src.end(), jni_re), end; it != end; ++it) jni.insert((*it)[1]);
+    std::set<std::string> web;
+    const std::regex web_re(R"re("(GET|POST|PUT|PATCH|DELETE)"\s*,\s*[`"](/api/[^`"]*))re");
+    const std::regex param_re(R"re(\$\{encodeURIComponent\([^)]*\)\})re");
+    for (const auto& f : std::filesystem::directory_iterator(kLoomDir / "web/src/api")) {
+      if (f.path().extension() != ".ts") continue;
+      const std::string text = slurp(f.path());
+      for (std::sregex_iterator it(text.begin(), text.end(), web_re), end; it != end; ++it) {
+        std::string route = std::regex_replace((*it)[2].str(), param_re, ":id");
+        route = route.substr(0, route.find("${"));
+        web.insert((*it)[1].str() + " " + route);
+      }
+    }
+    CHECK(ifc["by"]["jni"].get<std::size_t>() == jni.size());
+    CHECK(ifc["by"]["web"].get<std::size_t>() == web.size());
+    CHECK(jni.size() > 5);
+    CHECK(web.size() > 20);
     CHECK(ifc["by"]["c_abi"].get<std::size_t>() == abi.size());
     CHECK(ifc["by"]["http"].get<std::size_t>() == routes.size());
     CHECK(ifc["by"]["cli"].get<std::size_t>() == cli["defaults"]["commands"].size());
@@ -121,7 +145,8 @@ TEST_SUITE("graph_entry") {
     REQUIRE(ifc["known"] == true);
     CHECK(ifc["by"].contains("http") == false);
     CHECK(ifc["by"]["extra"] == 2);
-    CHECK(ifc["value"] == 3);  // c_abi, cli, extra
+    // registry keys, minus the hidden http, plus the overlay's extra
+    CHECK(ifc["value"].get<std::size_t>() == read_json(kLoomDir / "data/graph/interfaces.pack")["interfaces"].size());
   }
 
   TEST_CASE("empty data dir: the seed and calibration areas exist, unavailable counts are unknown not zero") {

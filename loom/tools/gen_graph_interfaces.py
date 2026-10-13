@@ -4,6 +4,8 @@
 Entries are read from the real sources, never typed by hand:
   c_abi - every LOOM_API function declared in include/loom/loom.h
   http  - every "/api/..." route registered in server/src or from the action catalogue (METHOD path)
+  jni   - every JNIEXPORT symbol of the Android bridge (android/app/src/main/cpp/loom_jni.cpp)
+  web   - every `"VERB", "/api/..."` call of the web transport (web/src/api/*.ts), path parameters as :id
   cli   - not listed here: counted live from the `cli` runtime profile (/commands)
 Usage: gen_graph_interfaces.py [--check]   (--check fails when the pack is stale)
 """
@@ -36,6 +38,22 @@ def http_routes():
     return sorted(found)
 
 
+def jni_exports():
+    text = (ROOT / 'android/app/src/main/cpp/loom_jni.cpp').read_text(encoding='utf-8')
+    return sorted(set(re.findall(r'JNIEXPORT\s+\w+\s+JNICALL\s+(Java_\w+)\s*\(', text)))
+
+
+def web_calls():
+    found = set()
+    call = re.compile(r'"(GET|POST|PUT|PATCH|DELETE)"\s*,\s*[`"](/api/[^`"]*)')
+    for path in sorted((ROOT / 'web/src/api').glob('*.ts')):
+        for m in call.finditer(path.read_text(encoding='utf-8')):
+            route = re.sub(r'\$\{encodeURIComponent\([^)]*\)\}', ':id', m.group(2))
+            route = route.split('${', 1)[0]  # query strings and other computed tails are not part of the route
+            found.add(f'{m.group(1)} {route}')
+    return sorted(found)
+
+
 def build():
     return {
         'schema': 'loom.graph_interfaces/1',
@@ -46,6 +64,8 @@ def build():
         'interfaces': {
             'c_abi': {'label': {'en': 'C ABI (loom.h)', 'pl': 'C ABI (loom.h)'}, 'entries': c_abi()},
             'http': {'label': {'en': 'HTTP API', 'pl': 'API HTTP'}, 'entries': http_routes()},
+            'jni': {'label': {'en': 'Android JNI bridge', 'pl': 'Most JNI (Android)'}, 'entries': jni_exports()},
+            'web': {'label': {'en': 'Web transport calls', 'pl': 'Wywołania transportu webowego'}, 'entries': web_calls()},
             'cli': {'label': {'en': 'Command line', 'pl': 'Wiersz poleceń'},
                     'from': {'domain': 'cli', 'pointer': '/commands'}},
         },

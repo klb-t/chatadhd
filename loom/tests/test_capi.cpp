@@ -592,3 +592,27 @@ TEST_CASE("loom_invoke: storage actions equal the deprecated loom_github_sync al
   CHECK(take(loom_invoke(ctx, "github", "status", "{}")).contains("error"));
   CHECK(take(loom_invoke(ctx, "github", "storage.status", "{}")).contains("error"));
 }
+
+TEST_CASE("loom_invoke: actions list honours the user overlay profiles/actions.pack") {
+  Ctx c;
+  Json before = take(loom_invoke(c.ctx, "actions", "list", nullptr));
+  const auto has = [](const Json& cat, const std::string& id) {
+    for (const auto& a : cat["actions"])
+      if (a.value("id", "") == id) return true;
+    return false;
+  };
+  REQUIRE(has(before, "storage.status"));
+  const auto root = c.dir.path();
+  REQUIRE(loom::fsutil::ensure_dir(root / "profiles"));
+  REQUIRE(loom::fsutil::write_file(
+      root / "profiles/actions.pack",
+      Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "actions"},
+           {"overrides", Json{{"actions", Json{{"storage.status", Json{{"hidden", true}}},
+                                               {"save", Json{{"title", "Zapisz (user)"}}}}}}}}.dump()));
+  Json after = take(loom_invoke(c.ctx, "actions", "list", nullptr));
+  CHECK_FALSE(has(after, "storage.status"));
+  CHECK(has(after, "save"));
+  CHECK(after["actions"].size() == before["actions"].size() - 1);
+  for (const auto& a : after["actions"])
+    if (a.value("id", "") == "save") CHECK(a["title"] == "Zapisz (user)");
+}
