@@ -208,6 +208,25 @@ TEST_SUITE("action_scope") {
     CHECK_FALSE(f.propose_chain(kAudio, kTarget));
   }
 
+  TEST_CASE("a question asked above the installation and a preset named in the call keep the preset's own bounds") {
+    fsutil::TempDir td;
+    user_settings(td.path(), Json{{"extrapolation_preset", "generous"}, {"extrapolation_bounds", Json{{"max_cost", 1.5}}}});
+    Engine e = unwrap(Engine::load(td.path()));
+    // above the installation no baseline is active: the profile's active preset answers, as before values were scoped
+    const Json high = unwrap(e.propose_chain(kAudio, kTarget, Json("app_preset")));
+    CHECK(high.at("preset") == "standard");
+    CHECK(high.at("resolved").at("preset").at("fallback") == true);
+    CHECK(high.at("bounds").at("max_cost") == 10);
+    CHECK(high.at("bounds").at("max_length") == 3);
+    // a preset named in the call is taken as it is: not the user's thresholds, not a rule, at any level
+    const Json called = unwrap(e.propose_chain(kAudio, kTarget, Json(), Json{{"preset", "standard"}}));
+    CHECK(called.at("bounds").at("max_cost") == 10);
+    CHECK(called.at("resolved").at("max_cost").at("source") == "preset:standard");
+    const Json at_installation = unwrap(e.propose_chain(kAudio, kTarget, Json("installation"), Json{{"preset", "standard"}}));
+    CHECK(at_installation.at("bounds").at("max_length") == 3);
+    CHECK(at_installation.at("resolved").at("max_length").at("scope") == "installation");
+  }
+
   TEST_CASE("value rules never take part in the gate or the default of an action") {
     fsutil::TempDir td;
     overlay(td.path(), overrides_of({value_rule("v", "conversation", "c_a", "extrapolation.preset", "generous")}));
