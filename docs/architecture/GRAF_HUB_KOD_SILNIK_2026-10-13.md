@@ -125,3 +125,31 @@ cechy (po stronie elementu), wymagania (po stronie akcji) i zasady (osobno, z za
 
 Wpływ na plan: fala 2 = cechy + wymagania akcji + flagi skutków + zasady + akcja domyślna; fala 2b = ekstrapolacja
 (szukanie łańcuchów z progami). Opis pól ustawień (S2/R2, „zasada edycji”) jest szczególnym przypadkiem zasad.
+
+## 6. Treść i jej postacie (właściciel, 2026-10-13)
+
+Właściciel: „nie tylko wiadomość — wideo, obraz, nawet muzyka mogą w pewnym sensie nieść jednakową treść, tylko
+w innych modalnościach. Takie coś można opisać, streścić, namalować, sparodiować, zaśpiewać i zatańczyć.”
+
+Wniosek (Claude): w grafie **treść** i **postać** to osobne węzły.
+
+| Węzeł | Czym jest | Przykład |
+|---|---|---|
+| **treść** | to, co jest przekazywane, niezależnie od formy | „historia o X”, „argument Y”, „przepis Z” |
+| **postać** | konkretne wyrażenie treści w jakiejś modalności | wiadomość tekstowa, obraz, nagranie, piosenka, nagranie tańca |
+
+Krawędź „postać **wyraża** treść” ma wagę wierności (co zachowano, co zgubiono, co dodano — np. styl). Dwie postacie
+tej samej treści są ze sobą powiązane przez nią, więc wyszukanie treści znajduje ją we wszystkich formach.
+Biblioteki od dziesięcioleci opisują to tak samo (dzieło → wyrażenie → wydanie → egzemplarz, model FRBR/LRM) —
+to sprawdzony punkt kalibracyjny, nie wymysł.
+
+Akcje układają się wtedy na **dwóch osiach**, a nie w listach (R53):
+
+| Oś | Wartości |
+|---|---|
+| co akcja robi z treścią | zachowuje (przepisz, przetłumacz) / skraca (streść) / rozwija (dopowiedz) / zmienia ton lub styl (sparodiuj) / ocenia (skrytykuj) / łączy (zestaw) |
+| skąd i dokąd zmienia postać | odczytaj postać → treść (opisz obraz, transkrybuj, rozpoznaj taniec) / wyraź treść → postać (napisz, namaluj, zaśpiewaj, zatańcz) / bez zmiany postaci |
+
+„Sparodiuj tę piosenkę jako obraz” = odczytaj (piosenka → treść) → zmień styl (parodia) → wyraź (treść → obraz).
+To ten sam mechanizm łańcuchów co w §5: brakująca postać to brakująca cecha, którą silnik umie dorobić.
+Grupy akcji z §5 to właśnie te osie.
