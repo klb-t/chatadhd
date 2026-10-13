@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../api";
 import type { ConfigMap, ModelInfo } from "../api/types";
+import SettingsFields from "./SettingsFields";
 import UsagePolicyPanel from "./UsagePolicyPanel";
 
 function errorText(error: unknown) { return error instanceof Error ? error.message : String(error); }
@@ -147,6 +148,7 @@ export default function SettingsPanel() {
         {loadError && <p role="alert" data-testid="settings-load-error">Configuration refresh failed: {loadError}</p>}
         {saveError && <p role="alert" data-testid="settings-save-error">{saveError}</p>}
       </div>
+      <SettingsFields />
       <div className="section-title">Connection</div>
       <div className="form-row">
         <label htmlFor="cfg-base-url">Base URL</label>

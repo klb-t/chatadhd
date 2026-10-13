@@ -422,6 +422,7 @@ const std::unordered_map<std::string, Fn>& dispatch_table() {
     table["get_logs"] = [](const Json& a) { return take(loom_get_logs(a_int(a, 0, 200))); };
     // -- config / secrets --
     S1("get_config", loom_get_config(g_ctx));
+    S1("settings_fields", loom_settings_fields(g_ctx));
     table["set_config"] = [](const Json& a) {
       std::string k, v;
       const char* kc = a_cstr(a, 0, k);

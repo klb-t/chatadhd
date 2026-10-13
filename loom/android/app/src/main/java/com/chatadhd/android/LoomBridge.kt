@@ -133,6 +133,7 @@ class LoomBridge(webView: WebView) {
 
     // ── config & secrets ──────────────────────────────────────────────
     @JavascriptInterface fun getConfig(): String = invokeArgs("get_config")
+    @JavascriptInterface fun settingsFields(): String = invokeArgs("settings_fields")
     @JavascriptInterface fun setConfig(key: String, value: String): String = invokeArgs("set_config", key, value)
     @JavascriptInterface fun setConfigJson(patchJson: String): String = invokeArgs("set_config_json", patchJson)
     @JavascriptInterface fun setSecret(key: String, value: String): String = invokeArgs("set_secret", key, value)

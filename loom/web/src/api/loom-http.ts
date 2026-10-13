@@ -1,6 +1,7 @@
 // loom-http.ts — LoomApi implementation for the browser: plain fetch for
 // request/response endpoints, fetch + ReadableStream for SSE endpoints
 // (chat, import progress, live events). Talks to loom-server's /api/*.
+import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type { LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import { createOperationsApi } from "./operations";
 import type {
@@ -288,6 +289,9 @@ export class LoomHttpApi implements LoomApi {
 
   // ── Config & secrets ─────────────────────────────────────────────────
 
+  async getSettingsFields(): Promise<SettingsFieldsDoc> {
+    return this.req("GET", "/api/settings/fields");
+  }
   getConfig(): Promise<ConfigMap> {
     return this.req("GET", "/api/config");
   }

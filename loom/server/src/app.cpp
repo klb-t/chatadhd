@@ -639,6 +639,10 @@ void App::route_config_secrets() {
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
   });
+  // Field metadata (default presence + edit rule) of every config/secret key; no secret values.
+  svr_.Get("/api/settings/fields", [this](const httplib::Request&, httplib::Response& res) {
+    send_loom(res, loom_settings_fields(rctx()));
+  });
   svr_.Get("/api/config", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_get_config(rctx()));
   });

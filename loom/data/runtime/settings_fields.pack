@@ -1,0 +1,366 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "settings_fields",
+  "revision": 1,
+  "description": "Settings field traits (type, has_default, description) and edit rules as general rules over (target, action): {scope, target, action, effect}. Effects map to the API label edit (optional|required|read_only|requires_confirmation|open string); no matching rule = allow. Default values are read from the real defaults, never copied here (completeness test checks both directions). Reusable by later waves for other targets and actions.",
+  "defaults": {
+    "effects": [
+      {
+        "id": "allow",
+        "edit": "optional",
+        "label_pl": "fakultatywna",
+        "enforced": false,
+        "meaning": "Default when no rule matches (a block needs an initiator): the field may be left empty or changed freely."
+      },
+      {
+        "id": "require_value",
+        "edit": "required",
+        "label_pl": "obligatoryjna",
+        "enforced": false,
+        "meaning": "A feature does not work until the field is set; deleting it is not blocked."
+      },
+      {
+        "id": "deny",
+        "edit": "read_only",
+        "label_pl": "tylko_odczyt",
+        "enforced": true,
+        "meaning": "Maintained by Loom; writes through config APIs are rejected."
+      },
+      {
+        "id": "require_confirmation",
+        "edit": "requires_confirmation",
+        "label_pl": "wymaga_potwierdzenia",
+        "enforced": false,
+        "meaning": "A change that raises consumption needs the user's explicit confirmation; enforced by the owning action, not by the generic write."
+      }
+    ],
+    "fields": [
+      {
+        "key": "base_url",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": true,
+        "description": "Base URL of the OpenAI-compatible chat API (OpenRouter by default)."
+      },
+      {
+        "key": "default_model",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": true,
+        "description": "Model used for chat when a request names none."
+      },
+      {
+        "key": "semantic_model",
+        "scope": "config",
+        "group": "semantic",
+        "type": "string",
+        "has_default": true,
+        "description": "Model for background semantic analysis; empty string disables the LLM path (regex fallback)."
+      },
+      {
+        "key": "temperature",
+        "scope": "config",
+        "group": "chat",
+        "type": "number",
+        "has_default": true,
+        "description": "Sampling temperature for chat completions."
+      },
+      {
+        "key": "max_tokens",
+        "scope": "config",
+        "group": "chat",
+        "type": "integer",
+        "has_default": true,
+        "description": "Completion token limit sent with chat requests."
+      },
+      {
+        "key": "theme",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": true,
+        "description": "UI theme preset name (dark, amoled)."
+      },
+      {
+        "key": "system_prompt",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": true,
+        "description": "System prompt placed first in every chat request."
+      },
+      {
+        "key": "auto_title",
+        "scope": "config",
+        "group": "chat",
+        "type": "boolean",
+        "has_default": true,
+        "description": "Generate a conversation title automatically after the first reply."
+      },
+      {
+        "key": "stream",
+        "scope": "config",
+        "group": "chat",
+        "type": "boolean",
+        "has_default": true,
+        "description": "Stream chat replies (SSE) instead of waiting for the full answer."
+      },
+      {
+        "key": "semantic_analysis",
+        "scope": "config",
+        "group": "semantic",
+        "type": "boolean",
+        "has_default": true,
+        "description": "Run semantic analysis of messages in the background."
+      },
+      {
+        "key": "graph_memory_depth",
+        "scope": "config",
+        "group": "memory",
+        "type": "integer",
+        "has_default": true,
+        "description": "Graph hops expanded when selecting graph memory for a prompt."
+      },
+      {
+        "key": "graph_memory_max_nodes",
+        "scope": "config",
+        "group": "memory",
+        "type": "integer",
+        "has_default": true,
+        "description": "Node budget of the graph memory section of a prompt."
+      },
+      {
+        "key": "loom_event_log_types",
+        "scope": "config",
+        "group": "loom",
+        "type": "array",
+        "has_default": true,
+        "description": "Event types persisted into the loom_events table."
+      },
+      {
+        "key": "loom_task_workers",
+        "scope": "config",
+        "group": "loom",
+        "type": "integer",
+        "has_default": true,
+        "description": "Worker threads of the task engine."
+      },
+      {
+        "key": "loom_usage_policy",
+        "scope": "config",
+        "group": "usage",
+        "type": "object",
+        "has_default": true,
+        "description": "Usage policy options (growth factor, baselines). Raising expected consumption by an order of magnitude needs the user's confirmation; the confirmation is enforced by the usage-policy actions, not by the config write."
+      },
+      {
+        "key": "_config_version",
+        "scope": "config",
+        "group": "internal",
+        "type": "integer",
+        "has_default": false,
+        "description": "Config format version maintained by the auto-upgrade; writes through the API are rejected."
+      },
+      {
+        "key": "semantic_retry_mode",
+        "scope": "config",
+        "group": "semantic",
+        "type": "string",
+        "has_default": false,
+        "description": "Retry policy of failed semantic work (explicit_requeue or automatic)."
+      },
+      {
+        "key": "context_execution",
+        "scope": "config",
+        "group": "context",
+        "type": "object",
+        "has_default": false,
+        "description": "Execution options of context plans (stored by the context engine)."
+      },
+      {
+        "key": "chat_reasoning",
+        "scope": "config",
+        "group": "chat",
+        "type": "object",
+        "has_default": false,
+        "description": "Overrides of the reasoning request parameters per model family."
+      },
+      {
+        "key": "analysis_prompt_overrides",
+        "scope": "config",
+        "group": "semantic",
+        "type": "object",
+        "has_default": false,
+        "description": "Per-analysis prompt text overrides."
+      },
+      {
+        "key": "analysis_prompt_dir",
+        "scope": "config",
+        "group": "semantic",
+        "type": "string",
+        "has_default": false,
+        "description": "Directory with analysis prompt files overriding the built-in ones."
+      },
+      {
+        "key": "loom_semantic_usage_policy_required",
+        "scope": "config",
+        "group": "usage",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Require a usage-policy admission before semantic LLM calls."
+      },
+      {
+        "key": "github_repo",
+        "scope": "config",
+        "group": "sync",
+        "type": "string",
+        "has_default": false,
+        "description": "owner/name of the repository used by GitHub sync."
+      },
+      {
+        "key": "context_goal_cues",
+        "scope": "config",
+        "group": "context",
+        "type": "object",
+        "has_default": false,
+        "description": "Overrides of the goal cue words used by context goal detection."
+      },
+      {
+        "key": "catalog_semantic_candidates",
+        "scope": "config",
+        "group": "catalog",
+        "type": "object",
+        "has_default": false,
+        "description": "Options of semantic candidate generation in the catalog."
+      },
+      {
+        "key": "usage_baseline_key_templates",
+        "scope": "config",
+        "group": "usage",
+        "type": "object",
+        "has_default": false,
+        "description": "Templates of the baseline keys used by the usage policy."
+      },
+      {
+        "key": "api_key",
+        "scope": "secret",
+        "group": "credentials",
+        "type": "string",
+        "has_default": false,
+        "description": "Chat API key (OpenRouter); chat cannot run without it. Value is never returned.",
+        "sensitive": true
+      },
+      {
+        "key": "anthropic_batch_key",
+        "scope": "secret",
+        "group": "credentials",
+        "type": "string",
+        "has_default": false,
+        "description": "Anthropic Message Batches key for cheaper batch semantic analysis.",
+        "sensitive": true
+      },
+      {
+        "key": "github_token",
+        "scope": "secret",
+        "group": "credentials",
+        "type": "string",
+        "has_default": false,
+        "description": "GitHub token for sync.",
+        "sensitive": true
+      },
+      {
+        "key": "groq_api_key",
+        "scope": "secret",
+        "group": "credentials",
+        "type": "string",
+        "has_default": false,
+        "description": "Groq key for speech recognition.",
+        "sensitive": true
+      },
+      {
+        "key": "google_speech_api_key",
+        "scope": "secret",
+        "group": "credentials",
+        "type": "string",
+        "has_default": false,
+        "description": "Google Speech key for speech recognition.",
+        "sensitive": true
+      },
+      {
+        "key": "ocr_space_api_key",
+        "scope": "secret",
+        "group": "credentials",
+        "type": "string",
+        "has_default": false,
+        "description": "OCR.space key for screenshot OCR.",
+        "sensitive": true
+      }
+    ],
+    "rules": [
+      {
+        "id": "edit:config:loom_usage_policy",
+        "scope": "global",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "config",
+          "key": "loom_usage_policy"
+        },
+        "action": "edit",
+        "effect": "require_confirmation"
+      },
+      {
+        "id": "edit:config:_config_version",
+        "scope": "global",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "config",
+          "key": "_config_version"
+        },
+        "action": "edit",
+        "effect": "deny"
+      },
+      {
+        "id": "edit:secret:api_key",
+        "scope": "global",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "secret",
+          "key": "api_key"
+        },
+        "action": "edit",
+        "effect": "require_value"
+      }
+    ]
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "effects",
+      "fields",
+      "rules"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "effects": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "fields": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      },
+      "rules": {
+        "type": "array",
+        "items": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
