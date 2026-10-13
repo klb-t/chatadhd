@@ -529,18 +529,22 @@ TEST_CASE("loom_invoke: storage actions equal the deprecated loom_github_sync al
   REQUIRE(cat["actions"].is_array());
   int storage_rows = 0;
   for (const auto& row : cat["actions"]) {
-    // every registered action has a complete description
-    for (const char* k : {"id", "port", "action", "kind", "status", "description", "inputs", "outputs",
-                          "required_traits", "effects", "http"})
+    // every registered action has a complete description (one catalogue: actions.pack)
+    for (const char* k : {"id", "kind", "status", "description", "inputs", "outputs", "requires", "effects"})
       CHECK_MESSAGE(row.contains(k), row.value("id", "?"), " lacks ", k);
-    CHECK(row["description"]["en"].is_string());
-    CHECK(row["description"]["pl"].is_string());
-    CHECK_FALSE(row["effects"].empty());
+    CHECK(row["description"].is_string());
+    for (const char* k : {"reads_only", "writes", "sends_off_device", "costs_money", "irreversible",
+                          "touches_private_data"})
+      CHECK_MESSAGE(row["effects"].contains(k), row.value("id", "?"), " effects lack ", k);
+    if (!row.contains("port")) continue;  // not invocable through loom_invoke yet
+    for (const char* k : {"action", "labels", "params", "http"})
+      CHECK_MESSAGE(row.contains(k), row.value("id", "?"), " lacks ", k);
+    CHECK(row["labels"]["pl"].is_string());
     CHECK(row["http"].contains("verb"));
     CHECK(row["http"].contains("path"));
-    for (const auto& in : row["inputs"]) {
+    for (const auto& in : row["params"]) {
       for (const char* k : {"name", "type", "required", "description", "has_default", "edit"})
-        CHECK_MESSAGE(in.contains(k), row["id"], " input lacks ", k);
+        CHECK_MESSAGE(in.contains(k), row["id"], " param lacks ", k);
       CHECK(in["description"]["en"].is_string());
       if (in["has_default"] == true) CHECK(in.contains("default"));
     }

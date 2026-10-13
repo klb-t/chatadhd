@@ -5,10 +5,16 @@
 namespace loom {
 namespace {
 
+// The one catalogue (data/runtime/actions.pack, keyed by id) listed as an array in key order.
 Json load_catalogue() {
-  auto p = RuntimeProfile::builtin("actions_storage");
-  if (!p) return Json{{"catalogue_schema", "loom.action_catalogue/1"}, {"actions", Json::array()}};
-  return p->values();
+  Json out{{"catalogue_schema", "loom.action_catalogue/1"}, {"actions", Json::array()}};
+  auto p = RuntimeProfile::builtin("actions");
+  if (!p) return out;
+  const Json& v = p->values();
+  if (v.contains("schema")) out["catalogue_schema"] = v["schema"];
+  if (v.contains("actions") && v["actions"].is_object())
+    for (const auto& [id, a] : v["actions"].items()) out["actions"].push_back(a);
+  return out;
 }
 
 Json build_table() {

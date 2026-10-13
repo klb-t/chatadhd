@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "actions",
   "revision": 1,
-  "description": "Catalogue of actions: ONE kind of entity. An action is atomic (implemented by code or an adapter: use_model, save, share) or composite (steps of other actions, defined here as data). Both have the same shape: declared typed inputs and outputs, required traits of the input element, effect flags and a status. A call to use_model may name its action; an unknown, planned or non-model action is refused before any send. Matching elements to actions is a later wave.",
+  "description": "Catalogue of actions: ONE kind of entity. An action is atomic (implemented by code or an adapter: use_model, save, share) or composite (steps of other actions, defined here as data). Both have the same shape: declared typed inputs and outputs, required traits of the input element, effect flags and a status. A call to use_model may name its action; an unknown, planned or non-model action is refused before any send. Matching elements to actions is a later wave. Entries with port/action are reachable through loom_invoke(port, action, json); their params carry field descriptions (has_default/default/edit) and http the server route.",
   "defaults": {
     "schema": "loom.action_catalogue/1",
     "actions": {
@@ -542,6 +542,415 @@
           "touches_private_data": true
         },
         "consumer": ""
+      },
+      "storage.status": {
+        "id": "storage.status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Backends, placement and state of every category",
+        "description": "Backends, placement and state of every category",
+        "labels": {
+          "pl": "Magazyny, rozmieszczenie i stan kategorii"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "status",
+        "params": [],
+        "http": {
+          "verb": "GET",
+          "path": "/api/storage/status"
+        }
+      },
+      "storage.probe": {
+        "id": "storage.probe",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Probe every configured backend",
+        "description": "Probe every configured backend",
+        "labels": {
+          "pl": "Sprawdź każdy skonfigurowany magazyn"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "probe",
+        "params": [],
+        "http": {
+          "verb": "GET",
+          "path": "/api/storage/probe"
+        }
+      },
+      "storage.kinds": {
+        "id": "storage.kinds",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Available backend kinds",
+        "description": "Available backend kinds",
+        "labels": {
+          "pl": "Dostępne rodzaje magazynów"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "kinds",
+        "params": [],
+        "http": {
+          "verb": "GET",
+          "path": "/api/storage/kinds"
+        }
+      },
+      "storage.placement": {
+        "id": "storage.placement",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Placement of one or all categories",
+        "description": "Placement of one or all categories",
+        "labels": {
+          "pl": "Rozmieszczenie jednej lub wszystkich kategorii"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "placement",
+        "params": [
+          {
+            "name": "category",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Category id; empty = all",
+              "pl": "Kategoria; puste = wszystkie"
+            },
+            "has_default": true,
+            "edit": "choice:categories",
+            "default": ""
+          }
+        ],
+        "http": {
+          "verb": "GET",
+          "path": "/api/storage/placement",
+          "query": [
+            {
+              "name": "category",
+              "always": false
+            }
+          ]
+        }
+      },
+      "storage.locate": {
+        "id": "storage.locate",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Where the graph says an object is held",
+        "description": "Where the graph says an object is held",
+        "labels": {
+          "pl": "Gdzie według grafu znajduje się obiekt"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "has_hash"
+        ],
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "locate",
+        "params": [
+          {
+            "name": "hash",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Content hash of the object",
+              "pl": "Skrót treści obiektu"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "GET",
+          "path": "/api/storage/locate",
+          "query": [
+            {
+              "name": "hash",
+              "always": true
+            }
+          ]
+        }
+      },
+      "storage.copy": {
+        "id": "storage.copy",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Copy a category to another backend",
+        "description": "Copy a category to another backend",
+        "labels": {
+          "pl": "Skopiuj kategorię do innego magazynu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "copy",
+        "params": [
+          {
+            "name": "category",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Storage category id (see storage.status)",
+              "pl": "Identyfikator kategorii danych (zob. storage.status)"
+            },
+            "has_default": false,
+            "edit": "choice:categories"
+          },
+          {
+            "name": "to",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Target backend id",
+              "pl": "Identyfikator docelowego magazynu"
+            },
+            "has_default": false,
+            "edit": "choice:backends"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Only report what would happen",
+              "pl": "Tylko pokaż, co by się stało"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/storage/copy"
+        }
+      },
+      "storage.move": {
+        "id": "storage.move",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Move a category to another backend",
+        "description": "Move a category to another backend",
+        "labels": {
+          "pl": "Przenieś kategorię do innego magazynu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": true,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "move",
+        "params": [
+          {
+            "name": "category",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Storage category id (see storage.status)",
+              "pl": "Identyfikator kategorii danych (zob. storage.status)"
+            },
+            "has_default": false,
+            "edit": "choice:categories"
+          },
+          {
+            "name": "to",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Target backend id",
+              "pl": "Identyfikator docelowego magazynu"
+            },
+            "has_default": false,
+            "edit": "choice:backends"
+          },
+          {
+            "name": "delete_source",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Remove the data from the source after a verified copy",
+              "pl": "Usuń dane ze źródła po zweryfikowanej kopii"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Only report what would happen",
+              "pl": "Tylko pokaż, co by się stało"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/storage/move"
+        }
+      },
+      "storage.backup": {
+        "id": "storage.backup",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Back up the database to a backend",
+        "description": "Back up the database to a backend",
+        "labels": {
+          "pl": "Kopia zapasowa bazy do magazynu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/capi/capi_invoke.cpp",
+        "port": "storage",
+        "action": "backup",
+        "params": [
+          {
+            "name": "to",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Target backend id",
+              "pl": "Identyfikator docelowego magazynu"
+            },
+            "has_default": false,
+            "edit": "choice:backends"
+          },
+          {
+            "name": "what",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "What to back up",
+              "pl": "Co skopiować"
+            },
+            "has_default": true,
+            "edit": "choice:database",
+            "default": "database"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/storage/backup"
+        }
       }
     }
   },
