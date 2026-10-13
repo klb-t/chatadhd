@@ -116,6 +116,7 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
 
   llm::ModelRequest request;
   request.kind = "semantic.analyse";
+  request.workflow = "semantic.analyse";
   request.models = {llm::ModelSpec{settings.model, "", Json::object()}};
   request.prompt = std::string(kAnalysisPrompt) + analysis_text;
   request.parameters = Json{{"temperature", 0.1}, {"max_tokens", 800}};

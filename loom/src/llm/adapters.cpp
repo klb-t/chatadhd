@@ -126,7 +126,7 @@ class OpenAiChatAdapter final : public Adapter {
 
   bool success(Operation, int http_status) const noexcept override { return http_status == 200; }
 
-  Capabilities capabilities() const override { return {{"text", "json"}, {"text"}, {"stream"}}; }
+  Capabilities capabilities() const override { return {{"text", "json"}, {"text", "json"}, {"stream"}}; }
 
   Result<Parsed> parse(std::string_view body) const override {
     auto j = json::parse(body);
@@ -291,7 +291,7 @@ class AnthropicMessagesAdapter final : public Adapter {
     return http_status == 200;
   }
 
-  Capabilities capabilities() const override { return {{"text", "json"}, {"text"}, {"stream", "batch"}}; }
+  Capabilities capabilities() const override { return {{"text", "json"}, {"text", "json"}, {"stream", "batch"}}; }
 
   Result<Parsed> parse(std::string_view body) const override {
     auto j = json::parse(body);

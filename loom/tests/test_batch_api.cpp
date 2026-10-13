@@ -52,6 +52,24 @@ bool wait_until(const std::function<bool()>& pred, std::chrono::milliseconds tim
 }  // namespace
 
 TEST_SUITE("batch_api") {
+  TEST_CASE("workflow: declaring batch.chat planned stops both batch modes before any send") {
+    Env env;
+    loom::test::declare_workflow_status(env.td.path(), "batch.chat", "planned");
+    env.cfg.set("base_url", "https://api.test");
+    auto conv = unwrap(env.db->create_conv("workflow"));
+    auto mid = env.add_msg(conv.id, "workflow gate batch text");
+    {
+      auto api = env.api();
+      auto id = unwrap(api.submit_anthropic_batch({mid}));
+      REQUIRE(id.has_value());   // the concurrent batch starts; each of its requests is refused
+      CHECK(id->rfind("concurrent_", 0) == 0);
+    }
+    env.cfg.set("base_url", "https://api.anthropic.com");
+    auto native = env.api();
+    CHECK_FALSE(unwrap(native.submit_anthropic_batch({mid})).has_value());
+    CHECK(env.transport.requests().empty());
+  }
+
   TEST_CASE("golden: concurrent chat-completions request bytes are pinned") {
     Env env;
     env.cfg.set("base_url", "https://api.test");

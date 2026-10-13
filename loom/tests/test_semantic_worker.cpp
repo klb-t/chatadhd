@@ -357,6 +357,21 @@ TEST_SUITE("semantic_worker") {
     CHECK(unwrap(env.db->count_pending_semantic()) == 1);
   }
 
+  TEST_CASE("workflow: declaring semantic.batch planned stops the batch submit before any send") {
+    Env env;
+    loom::test::declare_workflow_status(env.td.path(), "semantic.batch", "planned");
+    auto conv = unwrap(env.db->create_conv("workflow batch"));
+    env.add_pending_msg(conv.id, "workflow gate batch message");
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    env.secrets.set("anthropic_batch_key", "fake-batch-key");
+    SemanticWorker worker(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer,
+                          nullptr, {}, Json{{"batch_threshold", 0}});
+    CHECK(unwrap(worker.drain_once()) == 0);
+    CHECK(env.transport.requests().empty());
+    CHECK_FALSE(worker.status().batch_id.has_value());
+  }
+
   TEST_CASE("golden: worker batch submit, poll and results request bytes are pinned") {
     Env env;
     auto conv = unwrap(env.db->create_conv("golden batch"));

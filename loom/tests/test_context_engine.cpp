@@ -249,6 +249,22 @@ TEST_SUITE("context_engine") {
     CHECK(goal2.params.dump().find("sk-test") == std::string::npos);
   }
 
+  TEST_CASE("workflow: declaring goal.typing planned stops the model classification before any send") {
+    Fixture f;
+    loom::test::declare_workflow_status(f.td.path(), "goal.typing", "planned");
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    f.rt->set_http_transport(scripted);
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    context::ContextRequest req;
+    req.text = "asdkjhasd random text matching no cue at all";
+    context::GoalTypingBudget budget{1, 10000, 32, 2000, 4096};
+    auto goal = unwrap(engine.type_goal_with_model(req, budget));
+    CHECK(goal.params["classifier"] == "cue");
+    CHECK(scripted->requests().empty());
+  }
+
   TEST_CASE("golden: goal typing request bytes are pinned") {
     Fixture f;
     auto scripted = std::make_shared<net::ScriptedTransport>();

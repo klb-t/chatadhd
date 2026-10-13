@@ -314,6 +314,22 @@ TEST_SUITE("archive.vocab") {
 }
 
 TEST_SUITE("archive.pipeline") {
+  TEST_CASE("workflow: declaring archive.refine planned stops item refinement before any send") {
+    fsutil::TempDir td;
+    loom::test::declare_workflow_status(td.path() / "data", "archive.refine", "planned");
+    auto rt = open_rt(td.path() / "data");
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    scripted->set_fallback(net::ScriptedTransport::Reply::text(200, "{}"));
+    rt->set_http_transport(scripted);
+    rt->config().set("base_url", "https://api.test");
+    rt->config().set("semantic_model", "cheap/model");
+    rt->secrets().set("api_key", "sk-test");
+    ArchiveConfig cfg = fixture_config(td.path() / "out");
+    cfg.llm = "auto";
+    REQUIRE(unwrap(rt->archive().run(cfg)).status == "done");
+    for (const auto& q : scripted->requests()) CHECK(net::header_value(q.headers, "X-Title") != "ChatADHD-Archive");
+  }
+
   TEST_CASE("golden: item refinement request bytes are pinned") {
     fsutil::TempDir td;
     auto rt = open_rt(td.path() / "data");

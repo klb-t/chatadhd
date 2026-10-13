@@ -48,6 +48,16 @@ net::HttpResponse success_response() {
 }  // namespace
 
 TEST_SUITE("semantic_llm") {
+  TEST_CASE("workflow: declaring semantic.analyse planned stops the site before any send") {
+    Env env;
+    loom::test::declare_workflow_status(env.td.path(), "semantic.analyse", "planned");
+    auto llm = env.llm();
+    auto result = llm.call_llm("workflow gate analysis text");
+    REQUIRE(result);
+    CHECK_FALSE(result->has_value());
+    CHECK(env.transport.requests().empty());
+  }
+
   TEST_CASE("golden: call_llm request bytes are pinned (URL, header order, body, timeout)") {
     Env env;
     env.transport.set_fallback(net::ScriptedTransport::Reply::text(200, success_response().body));

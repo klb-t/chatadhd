@@ -46,6 +46,18 @@ Json openai_reply(std::string content, std::string reasoning = "") {
 }  // namespace
 
 TEST_SUITE("chat_engine") {
+  TEST_CASE("workflow: declaring chat.send planned stops the send before any request") {
+    Env env;
+    loom::test::declare_workflow_status(env.td.path(), "chat.send", "planned");
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    auto r = engine.send("hello", opts);
+    REQUIRE_FALSE(r);
+    CHECK(r.error().message.find("workflow 'chat.send' is planned") != std::string::npos);
+    CHECK(env.transport.requests().empty());
+  }
+
   TEST_CASE("golden: non-streaming chat request bytes are pinned") {
     Env env;
     env.cfg.set("system_prompt", "Golden system prompt.");

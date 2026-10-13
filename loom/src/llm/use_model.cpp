@@ -11,6 +11,7 @@
 #include "loom/log.h"
 #include "loom/providers.h"
 #include "loom/runtime_profile.h"
+#include "loom/semantic_llm.h"
 #include "loom/usage_policy.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
@@ -592,6 +593,19 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
     text.kind = "text";
     text.text = out.text;
     r.outputs.push_back(std::move(text));
+  }
+  // Structured output: the text is the JSON document (code fences tolerated).
+  if (r.state == State::Ok && request.operation == Operation::Complete && !out.text.empty() &&
+      std::find(request.wants.begin(), request.wants.end(), "json") != request.wants.end()) {
+    if (auto parsed = SemanticLLM::parse_response_json(out.text)) {
+      Part structured;
+      structured.kind = "json";
+      structured.value = std::move(*parsed);
+      r.outputs.push_back(std::move(structured));
+    } else {
+      r.state = State::ParseError;
+      r.error = Error(Errc::Parse, "the model output is not valid JSON");
+    }
   }
   for (Part part : out.outputs) {
     if (!part.bytes.empty()) {

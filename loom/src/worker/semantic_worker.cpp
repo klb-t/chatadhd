@@ -229,6 +229,7 @@ void fetch_batch_results(Database& db, const Config& cfg, const Secrets& secrets
   // JSONL: each line is applied as it arrives; nothing is retained.
   llm::ModelRequest request;
   request.kind = "semantic.batch.results";
+  request.workflow = "semantic.batch";
   request.models = {llm::ModelSpec{}};
   request.route = batch_selector(services, profile);
   request.operation = llm::Operation::BatchResults;
@@ -272,6 +273,7 @@ void check_batch_status(Database& db, const Config& cfg, const Secrets& secrets,
   const llm::Services services(cfg, secrets, http);
   llm::ModelRequest request;
   request.kind = "semantic.batch.status";
+  request.workflow = "semantic.batch";
   request.models = {llm::ModelSpec{}};
   request.route = batch_selector(services, profile);
   request.operation = llm::Operation::BatchStatus;
@@ -335,6 +337,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
   const llm::Services services(cfg, secrets, http);
   llm::ModelRequest request;
   request.kind = "semantic.batch";
+  request.workflow = "semantic.batch";
   request.models = {llm::ModelSpec{}};
   request.route = batch_selector(services, profile);
   request.operation = llm::Operation::BatchSubmit;

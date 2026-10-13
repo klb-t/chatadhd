@@ -38,6 +38,7 @@ std::optional<Json> single_request(const llm::Services& services, const std::str
                                    const std::string& model, const std::string& prompt) {
   llm::ModelRequest request;
   request.kind = "batch.concurrent";
+  request.workflow = "batch.chat";
   request.models = {llm::ModelSpec{model, "", Json::object()}};
   request.prompt = prompt;
   request.parameters = Json{{"temperature", 0.1}, {"max_tokens", 800}};
@@ -88,6 +89,7 @@ void run_concurrent_batch(Database& db, const Config& cfg, const Secrets& secret
 Json check_anthropic_batch(const llm::Services& services, const std::string& provider, std::string_view batch_id) {
   llm::ModelRequest request;
   request.kind = "batch.status";
+  request.workflow = "batch.chat";
   request.models = {llm::ModelSpec{}};
   request.route.provider = provider;
   request.route.secret = "api_key";  // this path has always used the chat key
@@ -165,6 +167,7 @@ Result<std::optional<std::string>> SemanticBatchAPI::submit_anthropic_batch(cons
     }
     llm::ModelRequest request;
     request.kind = "batch.submit";
+    request.workflow = "batch.chat";
     request.models = {llm::ModelSpec{}};
     request.route.provider = batch_provider;
     request.route.secret = "api_key";  // this path has always used the chat key
@@ -278,6 +281,7 @@ Result<int> SemanticBatchAPI::collect_results(std::string_view batch_id) {
   // The results are JSONL: lines are applied as they arrive, nothing is retained.
   llm::ModelRequest request;
   request.kind = "batch.results";
+  request.workflow = "batch.chat";
   request.models = {llm::ModelSpec{}};
   request.route.provider = provider;
   request.route.secret = "api_key";
