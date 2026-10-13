@@ -2,6 +2,7 @@
 
 #include <set>
 
+#include "loom/action_rules.h"
 #include "loom/runtime_profile.h"
 
 namespace loom {
@@ -11,39 +12,37 @@ const Json* find_effect(const Json& effects, const std::string& id) {
   for (const auto& e : effects) if (e.value("id", "") == id) return &e;
   return nullptr;
 }
-
-// Effect id of the first global "edit" rule over the settings field; "allow" when none (R43).
-std::string edit_effect(const Json& rules, const std::string& scope, const std::string& key) {
-  for (const auto& r : rules) {
-    if (r.value("action", "") != "edit" || r.value("scope", "global") != "global") continue;
-    const Json& t = r.at("target");
-    if (t.value("kind", "") == "settings_field" && t.value("field_scope", "") == scope && t.value("key", "") == key)
-      return r.value("effect", "allow");
-  }
-  return "allow";
-}
 }  // namespace
 
 Result<Json> settings_fields(const std::filesystem::path& data_dir) {
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("settings_fields", data_dir));
   const Json& v = profile.values();
+  // The edit rules are general rules over (target, action) in the one rule store (action_rules);
+  // a field is an element of class `element_class`, "edit" the action, the installation the scope.
+  LOOM_TRY_ASSIGN(auto engine, actions::Engine::load(data_dir));
+  LOOM_TRY_ASSIGN(auto scope, engine.parse_scope(Json(v.value("rule_scope", ""))));
+  const std::string rule_action = v.value("rule_action", "");
   Json fields = Json::array();
   const Json& cfg = config_defaults();
   const Json& lcfg = loom_config_defaults();
   for (const auto& f : v.at("fields")) {
-    const std::string scope = f.value("scope", ""), key = f.value("key", "");
+    const std::string scope_name = f.value("scope", ""), key = f.value("key", "");
     Json o = f;
     o.erase("has_default");
     const bool has_default = f.value("has_default", false);
     o["default"] = has_default ? "present" : "absent";
-    if (scope == "config" && has_default) {
+    if (scope_name == "config" && has_default) {
       if (cfg.contains(key)) o["default_value"] = cfg.at(key);
       else if (lcfg.contains(key)) o["default_value"] = lcfg.at(key);
     }
-    const std::string effect = edit_effect(v.at("rules"), scope, key);
+    actions::Element element;
+    element.cls = v.value("element_class", "");
+    element.attrs = Json{{"field_scope", scope_name}, {"key", key}};
+    LOOM_TRY_ASSIGN(auto decision, engine.decide(element, rule_action, scope));
+    const std::string& effect = decision.effect;  // "allow" when no rule matches (R43)
     const Json* e = find_effect(v.at("effects"), effect);
     o["edit"] = e ? e->value("edit", effect) : effect;  // open string: unknown effects pass through
-    o["rule"] = Json{{"action", "edit"}, {"effect", effect}};
+    o["rule"] = Json{{"action", rule_action}, {"effect", effect}};
     fields.push_back(std::move(o));
   }
   return Json{{"schema", "loom.settings_fields/1"}, {"edit_rules", v.at("effects")}, {"fields", fields}};

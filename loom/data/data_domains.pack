@@ -117,7 +117,7 @@
     {
       "path": "graph/classes.pack",
       "schema": "loom.graph_classes/1",
-      "sha256": "f43f38f1c8450a72fc502cfdd59462558dc52083d3acd29bf9b2e8135ec0a512",
+      "sha256": "c90b607d4edad0fdc5c57a214ae5896e6ffd68a263b5885b00f5e3b3cefa4b9b",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [
@@ -139,7 +139,7 @@
     {
       "path": "graph/interfaces.pack",
       "schema": "loom.graph_interfaces/1",
-      "sha256": "933ff983bc9a56bdea85fc320a60e904303c8626ba0a0d91aaa35c7ea522cfa5",
+      "sha256": "b807a2bef533ce5a430f2006e2557c0e71c41520d0bda37d22f31db5e4d2760e",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

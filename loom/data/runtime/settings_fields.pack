@@ -2,8 +2,11 @@
   "schema": "loom.runtime_profile/1",
   "domain": "settings_fields",
   "revision": 1,
-  "description": "Settings field traits (type, has_default, description) and edit rules as general rules over (target, action): {scope, target, action, effect}. Effects map to the API label edit (optional|required|read_only|requires_confirmation|open string); no matching rule = allow. Default values are read from the real defaults, never copied here (completeness test checks both directions). Reusable by later waves for other targets and actions.",
+  "description": "Settings field traits (type, has_default, description) and the vocabulary of edit labels. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map to the API label edit (optional|required|read_only|requires_confirmation|open string). Default values are read from the real defaults, never copied here (completeness test checks both directions).",
   "defaults": {
+    "element_class": "settings_field",
+    "rule_action": "edit",
+    "rule_scope": "installation",
     "effects": [
       {
         "id": "allow",
@@ -305,52 +308,34 @@
         "description": "OCR.space key for screenshot OCR.",
         "sensitive": true
       }
-    ],
-    "rules": [
-      {
-        "id": "edit:config:loom_usage_policy",
-        "scope": "global",
-        "target": {
-          "kind": "settings_field",
-          "field_scope": "config",
-          "key": "loom_usage_policy"
-        },
-        "action": "edit",
-        "effect": "require_confirmation"
-      },
-      {
-        "id": "edit:config:_config_version",
-        "scope": "global",
-        "target": {
-          "kind": "settings_field",
-          "field_scope": "config",
-          "key": "_config_version"
-        },
-        "action": "edit",
-        "effect": "deny"
-      },
-      {
-        "id": "edit:secret:api_key",
-        "scope": "global",
-        "target": {
-          "kind": "settings_field",
-          "field_scope": "secret",
-          "key": "api_key"
-        },
-        "action": "edit",
-        "effect": "require_value"
-      }
     ]
   },
   "value_schema": {
     "type": "object",
     "required": [
+      "element_class",
+      "rule_action",
+      "rule_scope",
       "effects",
-      "fields",
-      "rules"
+      "fields"
     ],
     "additionalProperties": false,
     "properties": {
+      "element_class": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Class of a settings field as an element of the graph (graph/classes.pack); the edit rules target it."
+      },
+      "rule_action": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The action the edit rules govern."
+      },
+      "rule_scope": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The level of the scopes chain the field metadata is read at (the API describes the installation)."
+      },
       "effects": {
         "type": "array",
         "items": {
@@ -358,12 +343,6 @@
         }
       },
       "fields": {
-        "type": "array",
-        "items": {
-          "type": "object"
-        }
-      },
-      "rules": {
         "type": "array",
         "items": {
           "type": "object"

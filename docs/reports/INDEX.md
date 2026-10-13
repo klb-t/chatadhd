@@ -386,6 +386,42 @@ Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście 
 - Test kompletności w obie strony względem rzeczywistych domyślnych. Raport: `docs/reports/S2_R2_2026-10-13.md`.
   Cofnięcie: usunąć zasadę z pliku danych (lub nakładka `profiles/settings_fields.pack`); revert scalenia R2.
 
+## P8 / fala 2 — które akcje pasują do którego elementu (2026-10-13)
+
+Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§7, §9. Gałąź `claude/p8-traits-rules`.
+
+- **Cechy na klasach** (`data/graph/classes.pack`, addytywnie, flaga kalibracji zostaje): `traits` dziedziczone po `parent`; id klasy
+  jest też własną cechą (stare `requires: ["message"]` znaczy „jest wiadomością”); węzeł dodaje cechy własne. Klasy `content` i `form`
+  (§6), podklasy postaci wg modalności (tekst, obraz, dźwięk, wideo, muzyka, ruch, kod, tabela), relacja `expresses` (postać → treść,
+  waga = wierność), klasy nazwane dotąd w `requires` (conversation, message, prompt, edge…). Grupy = nazwane pęki cech albo flaga skutku
+  albo oś (`groups`); lista otwarta. Rzutowane do profilu `graph_entry` (`ontology.traits|groups|relations`).
+- **Wymagania akcji** (`actions.pack`): `requires`, `produces`, `content_op` (preserve|condense|expand|restyle|evaluate|combine|none),
+  `form_op` (read|express|none), `cost` (względny, 1 = jedno zwykłe wywołanie modelu, nie pieniądze), `confidence`; wypełnione dla
+  wszystkich wpisów, plus akcje kalibracyjne `planned` (transcribe, describe_image, ocr, summarise, translate, elaborate, parody,
+  critique, combine, depict, narrate) i wpisy `actions.for|explain|propose_chain`. Akcje magazynu i zużycia wymagają cech `storage` /
+  `usage_ledger` (wcześniej `[]` = pasowały do każdego elementu).
+- **Zasady** (`data/runtime/action_rules.pack`, domena `action_rules`): jeden magazyn i jeden kształt {zakres, cel, akcja, skutek} — ten
+  z S2/R2. **Decyzja:** osobny plik zasad, zasady pól ustawień przeniesione z `settings_fields.pack`, `loom_settings_fields` pyta
+  silnik (klasa `settings_field`, akcja `edit`, zakres `installation` – nazwy w danych); wyjście bajt w bajt jak przed zmianą (test z
+  wzorcem). Kontener = obiekt po id (nakładka dodaje/zmienia/wyłącza regułę, `disabled:true`); zasady fabryczne mają prawdziwe zakresy
+  (`engine`, `app_preset`), `global` zostaje aliasem `installation`. Cele: klasa, cecha, pęk, węzeł, `any`, skrót `settings_field`,
+  akcja/grupa akcji; wybór akcji: id, `*`, `{group}`, `{flag}`. Skutki: allow (domyślny, R43), confirm, deny (z powodem i
+  inicjatorem), default_action. Konflikty: wszystkie reguły z `scopes.pack` (most_specific_wins, locked_by, first_defined, merge,
+  intersection, min, max, weighted_vote, ask, by_context); rządzi ta, którą nazwie najogólniejsza pasująca zasada, inaczej domyślna
+  łańcucha. Zasada ×10 zablokowana (`locked` + `locked_by`) przed niższym zakresem.
+  Cofnięcie: przenieść `rules` z powrotem do `settings_fields.pack` i czytać je w `src/core/settings_fields.cpp` (jeden commit);
+  nakładka `profiles/settings_fields.pack` z `rules` nie jest już poprawna → `profiles/action_rules.pack`.
+- **Silnik** (`include/loom/action_rules.h`, `src/actions/`): `actions_for(element, zakres)` → akcje ze statusem (applicable /
+  needs_confirmation / denied + powód / default) i wyjaśnieniem (które cechy, skąd, która zasada); `explain`; `propose_chain`
+  (ekstrapolacja §5): łańcuchy akcji dorabiających brakującą cechę, tylko kroki dokładające cechę potrzebną do celu, każdy krok pod
+  zasadami zakresu, ranking `rank_by` (dane) z pewności/kosztu/długości, progi z presetów `extrapolation` (max_length 3, max_cost 10,
+  min_confidence 0,25, max_results 5; `generous` bez granic; `off` wyłącza; nadpisanie per wywołanie, `null` = bez granicy), a gdy
+  nic się nie mieści – `beyond_bounds` (czego by to wymagało). Tylko propozycje, nic nie jest wykonywane.
+- **Wejścia:** `loom_invoke("actions", "for"|"explain"|"propose_chain", json)` (bez nowych eksportów C), `POST /api/actions/for|explain|
+  propose_chain` (z tabeli akcji, jak magazyn), `loom actions list|for|explain|chain`. Testy: `tests/test_action_rules.cpp`.
+- Otwarte: element po samym id węzła (`m_…`/`c_…` → klasa; dziś element podaje wołający); progi ekstrapolacji per zakres (dziś preset
+  aktywny + nadpisanie w wywołaniu); wykonanie zaakceptowanego łańcucha (interpreter akcji złożonych); akcje kalibracyjne są
+  `planned` – bez implementacji; dopasowanie poleceń z okienka konwersacji (§8) i emergentne grupy (R55) korzystają z tego silnika.
 ## S2 / R4 — widok wejściowy grafu: prawdziwe liczniki + testy w przeglądarce (2026-10-13)
 
 - Liczniki interfejsów, metod i perspektyw policzone z rzeczywistych źródeł (dotąd „nie wiem”): metody = byty `method:method`

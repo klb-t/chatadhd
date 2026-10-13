@@ -475,7 +475,9 @@ LOOM_API const char* loom_github_sync(LoomContext* ctx, const char* request_json
  * backup, see loom/storage_command.h; credentials are never returned), port "github" (same as
  * loom_github_sync), port "actions" action "list" (the self-describing action catalogue: id, port,
  * action, description, inputs with field descriptions/defaults/edit rules, required traits, effects,
- * HTTP verb and path of every action). request_json: JSON object of the action's input, may be
+ * HTTP verb and path of every action); port "actions" actions "for" | "explain" | "propose_chain"
+ * (which actions fit an element, why, and chains of actions that would make one fit; proposals only,
+ * nothing is executed; see loom/action_rules.h). request_json: JSON object of the action's input, may be
  * NULL/"" = {}. Returns caller-freed JSON like every other call; never throws. */
 LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char* action,
                                  const char* request_json);
