@@ -577,3 +577,14 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§6, §9. Każda 
   Domyślne fabryki odtwarzają dotychczasowe okablowanie; dowolną można podmienić bez edycji `runtime.cpp`.
   Rdzeń (config, sekrety, baza, szyna zdarzeń, pliki, pochodzenie, zadania) celowo niewymienny.
 - Raport: `docs/reports/S2_R13_2026-10-13.md`. Cofnięcie: revert scalenia R13.
+
+## S2 / R8 — wspólny rejestr adapterów; ASR/OCR przez `use_model` (2026-10-13)
+
+- `AdapterRegistry<Port,Env>` (`include/loom/adapter_registry.h`): kolejność rejestracji, aliasy, metadane, nieznany adapter
+  → lista znanych. Na nim: magazyny (stare nazwy jako cienkie aliasy), tryby analizy, warstwy wyszukiwania, adaptery LLM,
+  backendy wsadu, ASR i OCR. Rejestry importera (formaty, dostawcy) zostały osobno — inny kształt.
+- ASR/OCR idą przez jedno `use_model`: straż ×10 i pochodzenie `model_use`; bajty żądań ASR/OCR/embeddingów/wsadu bez zmian
+  (test przechwytujący napisany przed zmianą). `operation_id` pokwitowania przy każdym dopuszczonym wywołaniu (prośba S1).
+- Raport: `docs/reports/S2_R8_2026-10-13.md`. Cofnięcie: revert scalenia R8.
+- Otwarte: akcje `transcribe`/`ocr` jako implemented + `request.action` w `media_call.cpp` (obszar S1, przekazane);
+  podłączenie zapisu pochodzenia mediów w środowisku uruchomieniowym (R10, krok 0).
