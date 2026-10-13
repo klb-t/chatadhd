@@ -522,4 +522,4 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5, §8, §9. Decyzje 
 - Otwarte: wyniki tekstowe nie są jeszcze zapisywane jako węzły grafu z krawędzią `derived_from` (wynik jest w dokumencie przebiegu i w rozmowie); `usage.compact` i akcje
   `planned` (transkrypcja, obraz…) nie mają wykonawców (plan z nimi nie startuje, propozycja mówi dlaczego); szacunek w pieniądzach wymaga cennika modelu; leksykon fraz jest
   kalibracją (fałszywe polecenia kosztują jedno „nie”); przebieg trzyma wyniki kroków w dokumencie (duże wyniki wypadałoby składować w blobach); wejście ze skryptu/agenta
-  (`script.call`, `agent.call`) i równoległe kroki z §3 nadal nie istnieją.
+  (`script.call`, `agent.call`) i równoległe kroki (§2 „kolejno/wariantowo/równolegle”: jest kolejno i wariantowo) nadal nie istnieją.
