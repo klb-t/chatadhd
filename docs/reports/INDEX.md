@@ -569,3 +569,11 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§6, §9. Każda 
 - `loom/deploy/` scalony do `deploy/` (skrypty budowania przeniesione), w starym miejscu README z przekierowaniem.
 - `tools/gen_kb_lexicons.py` usunięty (martwy: tabele C++, które wypełniał, już nie istnieją).
 - Raport: `docs/reports/S2_R14_2026-10-13.md`. Cofnięcie: revert odpowiedniego commitu R14.
+
+## S2 / R13 — wymienne części środowiska uruchomieniowego (`RuntimeParts`) (2026-10-13)
+
+- `RuntimeParts` w `runtime.h` (addytywnie): fabryki portów (http, magazyn, modele, dostawcy, analiza semantyczna, pamięć,
+  kontekst, graf, czat, wsad, worker, media, importer, krypto, github, embedding, archiwum, wiedza, akcje — w tym runner akcji P9).
+  Domyślne fabryki odtwarzają dotychczasowe okablowanie; dowolną można podmienić bez edycji `runtime.cpp`.
+  Rdzeń (config, sekrety, baza, szyna zdarzeń, pliki, pochodzenie, zadania) celowo niewymienny.
+- Raport: `docs/reports/S2_R13_2026-10-13.md`. Cofnięcie: revert scalenia R13.
