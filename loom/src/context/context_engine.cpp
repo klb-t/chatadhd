@@ -13,6 +13,7 @@
 #include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "loom/semantic_llm.h"
+#include "loom/use_model.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
@@ -560,10 +561,11 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
       std::string model = typing_options.contains("model") ? typing_options["model"].get<std::string>() : rt_.config().get("semantic_model", "").is_string()
                               ? rt_.config().get("semantic_model", "").get<std::string>()
                               : "";
-      std::string api_key = rt_.secrets().get_string("api_key");
-      if (!model.empty() && !api_key.empty() && !chosen_type.empty()) {
-        Json base_url_j = typing_options.contains("base_url") ? typing_options["base_url"] : rt_.config().get("base_url", "https://openrouter.ai/api/v1");
-        std::string base_url = base_url_j.is_string() ? base_url_j.get<std::string>() : "https://openrouter.ai/api/v1";
+      const llm::Services services(rt_.config(), rt_.secrets(), rt_.http());
+      llm::RouteSelector typing_route;
+      if (const auto* base = json::find(typing_options, "base_url"); base && base->is_string())
+        typing_route.base_url = base->get<std::string>();
+      if (!model.empty() && llm::route_available(services, typing_route) && !chosen_type.empty()) {
         std::string prompt =
             "Classify the following prompt into exactly one goal type id. Reply with strict JSON only: "
             "{\"goal_type\": \"<id>\", \"confidence\": <0..1>}.\nGoal types:\n";
@@ -576,64 +578,54 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
           attempt["status"] = "input_limit";
           attempt["input_bytes"] = prompt.size();
         } else {
-          net::HttpRequest hreq;
-          hreq.method = "POST";
-          hreq.url = base_url + "/chat/completions";
-          hreq.headers = {{"Authorization", "Bearer " + api_key},
-                          {"Content-Type", "application/json"},
-                          {"HTTP-Referer", "https://github.com/chatadhd"},
-                          {"X-Title", "ChatADHD-Context"}};
-          hreq.body = json::dump(Json{{"model", model},
-                                      {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})},
-                                      {"temperature", typing_options.value("temperature", 0.0)},
-                                      {"max_tokens", budget->max_output_tokens}});
-          hreq.timeout_ms = budget->timeout_ms;
+          llm::ModelRequest mreq;
+          mreq.kind = "context.goal_typing";
+          mreq.models = {llm::ModelSpec{model, "", Json::object()}};
+          mreq.prompt = prompt;
+          mreq.parameters = Json{{"temperature", typing_options.value("temperature", 0.0)},
+                                 {"max_tokens", budget->max_output_tokens}};
+          mreq.route = typing_route;
+          mreq.title = "ChatADHD-Context";
+          mreq.timeout_ms = budget->timeout_ms;
+          mreq.capture = true;  // the exact bytes are retained below
+          mreq.max_response_bytes = budget->max_response_bytes;
+          mreq.contain_exceptions = Error(Errc::Network, "goal typing transport failed");
           attempt["retry_authorized"] = false;
           attempt["model"] = model;
           attempt["input_bytes"] = prompt.size();
           detail::GoalTypingUsage usage;
-          const bool admitted = usage.admit(rt_, typing_options, hreq, prompt.size(), *budget, attempt);
-          if (admitted) {
+          // This site keeps its bespoke ledger flow (execution scope, resume ids,
+          // durable-retention-before-settlement) behind the shared gate interface.
+          mreq.usage.gate = std::make_shared<detail::GoalTypingGate>(rt_, typing_options, prompt.size(), *budget,
+                                                                     attempt, usage);
+          mreq.hooks.on_dispatch = [&] {
             attempt["status"] = "failed";
             attempt["requests"] = 1;
             if (execution_scope) execution_scope->note_goal_typing_request();
-            std::string response_bytes;
-            std::size_t received_response_bytes = 0;
-            bool response_limited = false, received_headers = false;
-            int response_status = 0;
-            net::StreamSink sink;
-            sink.on_headers = [&](int status, const net::Headers&) {
-              received_headers = true;
-              response_status = status;
-              return true;
-            };
-            sink.on_data = [&](std::string_view part) {
-              received_response_bytes += std::min(part.size(), std::numeric_limits<std::size_t>::max() - received_response_bytes);
-              const auto room = budget->max_response_bytes - response_bytes.size();
-              response_bytes.append(part.substr(0, room));
-              if (part.size() > room) {
-                response_limited = true;
-                return false;
-              }
-              return true;
-            };
-            Result<net::HttpResponse> resp = Error(Errc::Network, "goal typing transport failed");
-            try { resp = rt_.http().send(hreq, &sink); }
-            catch (...) { resp = Error(Errc::Network, "goal typing transport failed"); }
-            if (resp) response_status = resp->status;
-            else attempt["transport_error"] = std::string(errc_name(resp.error().code));
+          };
+          auto prepared = llm::prepare_call(services, mreq);
+          llm::VariantResult sent;
+          if (prepared) sent = llm::execute_call(services, mreq, *prepared);
+          if (sent.sent) {
+            std::string& response_bytes = sent.body;
+            const std::size_t received_response_bytes = sent.received_bytes;
+            const bool response_limited = sent.response_limited;
+            const bool received_headers = sent.http_status != 0;
+            const int response_status = sent.http_status;
+            const bool transport_ok = !sent.error.has_value();
+            if (!transport_ok) attempt["transport_error"] = std::string(errc_name(sent.error->code));
             // The provider may echo private prompt contents or credentials. Keep
             // the actual bytes in the canonical raw-source store; a loggable goal
             // trace carries references only. Oversized replies retain an explicitly
             // incomplete prefix and are never interpreted or automatically retried.
             bool response_recorded = false;
-            if (received_headers || resp || !response_bytes.empty()) {
+            if (received_headers || transport_ok || !response_bytes.empty()) {
               auto blob = rt_.blobs().put(response_bytes, "application/json");
               if (!blob) {
                 attempt["status"] = "storage_failure";
                 attempt["storage_error"] = std::string(errc_name(blob.error().code));
                 attempt["response"] = Json{{"status", response_status}, {"source_status", "unavailable"},
-                                            {"complete", resp.has_value() && !response_limited}};
+                                            {"complete", transport_ok && !response_limited}};
               } else {
                 SourceRecord source;
                 source.kind = "api";
@@ -644,10 +636,10 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
                 source.parser = "loom.context.goal_typing";
                 source.parser_version = "1";
                 source.metadata = Json{{"model", model}, {"status", response_status},
-                                       {"complete", resp.has_value() && !response_limited},
+                                       {"complete", transport_ok && !response_limited},
                                        {"response_limit", response_limited}};
                 attempt["response"] = Json{{"blob_hash", blob->hash}, {"bytes", blob->size},
-                                            {"status", response_status}, {"complete", resp.has_value() && !response_limited}};
+                                            {"status", response_status}, {"complete", transport_ok && !response_limited}};
                 auto source_id = rt_.provenance().add_source(std::move(source));
                 if (!source_id) {
                   attempt["status"] = "storage_failure";
@@ -666,7 +658,7 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
             auto usage_body = response_recorded ? json::parse(response_bytes) : Result<Json>(Error(Errc::Unavailable, "raw response not retained"));
             usage.complete(prompt.size(), received_response_bytes, usage_body ? &*usage_body : nullptr, attempt);
             if (response_limited && attempt["status"] != "storage_failure") attempt["status"] = "response_limit";
-            if (resp && resp->ok() && !response_limited && response_recorded) {
+            if (transport_ok && response_status >= 200 && response_status < 300 && !response_limited && response_recorded) {
               auto body = json::parse(response_bytes);
               if (body) {
                 std::string content;

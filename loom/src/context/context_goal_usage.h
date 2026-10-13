@@ -8,6 +8,7 @@
 #include "context_usage_claim.h"
 #include "loom/net/http.h"
 #include "loom/runtime.h"
+#include "loom/use_model.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
 
@@ -156,6 +157,32 @@ class GoalTypingUsage {
   std::unique_ptr<UsagePolicy> policy_;
   std::string operation_;
 #endif
+};
+
+// The goal-typing ledger flow as a use-model gate: admission is
+// GoalTypingUsage::admit (it records its own verdict in `attempt`); settlement
+// stays with the caller, which reconciles only after the raw response is
+// durably retained.
+class GoalTypingGate final : public llm::UsageGate {
+ public:
+  GoalTypingGate(Runtime& rt, const Json& options, std::size_t input_bytes, const GoalTypingBudget& budget,
+                 Json& attempt, GoalTypingUsage& usage)
+      : rt_(rt), options_(options), input_bytes_(input_bytes), budget_(budget), attempt_(attempt), usage_(usage) {}
+  Result<llm::GateDecision> admit(const net::HttpRequest& request, const Json&) override {
+    llm::GateDecision decision;
+    decision.dispatch = usage_.admit(rt_, options_, request, input_bytes_, budget_, attempt_);
+    decision.status = json::get_string(attempt_, "status");
+    return decision;
+  }
+  void settle(const llm::GateSettlement&) override {}
+
+ private:
+  Runtime& rt_;
+  const Json& options_;
+  std::size_t input_bytes_;
+  const GoalTypingBudget& budget_;
+  Json& attempt_;
+  GoalTypingUsage& usage_;
 };
 
 }  // namespace loom::context::detail
