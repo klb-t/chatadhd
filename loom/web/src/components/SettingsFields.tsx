@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
-import { SettingsFieldsDoc, defaultLabel, editLabel } from "../settings/field-meta";
+import { SettingsFieldsDoc, defaultLabel, parseSettingsFields, editLabel } from "../settings/field-meta";
 
 // Read-only reference table: default presence and edit rule of every settings key.
 export default function SettingsFields() {
   const [doc, setDoc] = useState<SettingsFieldsDoc | null>(null);
   const [error, setError] = useState("");
   useEffect(() => {
-    api.getSettingsFields().then(setDoc).catch((cause) => setError(cause instanceof Error ? cause.message : String(cause)));
+    api.getSettingsFields().then((raw) => setDoc(parseSettingsFields(raw))).catch((cause) => setError(cause instanceof Error ? cause.message : String(cause)));
   }, []);
   if (error) return <p role="alert" data-testid="settings-fields-error">Field metadata unavailable: {error}</p>;
   if (!doc) return null;
