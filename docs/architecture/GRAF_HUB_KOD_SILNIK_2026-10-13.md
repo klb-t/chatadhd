@@ -153,3 +153,40 @@ Akcje układają się wtedy na **dwóch osiach**, a nie w listach (R53):
 „Sparodiuj tę piosenkę jako obraz” = odczytaj (piosenka → treść) → zmień styl (parodia) → wyraź (treść → obraz).
 To ten sam mechanizm łańcuchów co w §5: brakująca postać to brakująca cecha, którą silnik umie dorobić.
 Grupy akcji z §5 to właśnie te osie.
+
+## 7. Grupy elementów i ich akcje — lista otwarta (właściciel podał dwie, Claude uzupełnia; R55)
+
+Grupa = zestaw cech, które dają rodzinę akcji (§5). Element może należeć do wielu grup. Lista jest początkiem,
+nie zamkniętym zbiorem; dopisywanie to dane.
+
+| Grupa | Przykłady elementów | Typowe akcje (początek listy) |
+|---|---|---|
+| **Bogate reprezentacje wielowymiarowych treści** (właściciel) | wiadomość, cała rozmowa, dokument, obraz, nagranie, wideo, muzyka, taniec, kod, arkusz, prezentacja, diagram, mapa, model 3D, gra | opisz, streść, przetłumacz, wyraź w innej postaci (namaluj, zaśpiewaj, zatańcz, zakoduj, ułóż w tabelę), sparodiuj, porównaj, połącz, wyodrębnij fakty i osoby, oceń wiarygodność, zacytuj ze wskazaniem miejsca, znajdź podobne, zanonimizuj |
+| **Flow, rutyny, pipeliny, metody** (właściciel) | workflow, przepis analizy, skrypt w aplikacji, agent, harmonogram | zastosuj (do jednego elementu albo zbioru), zoptymalizuj (koszt / jakość / czas), wariantuj, eksperymentuj (porównaj warianty), zmierz, wyjaśnij krok, uruchom krokowo, złóż z innych, rozbij, wersjonuj, cofnij do wersji |
+| Modele i adaptery dostawców | model językowy, model obrazów, rozpoznawanie mowy, OCR, wyszukiwarka | wybierz, porównaj, zmierz koszt i jakość, ustaw jako domyślny dla zakresu, wyłącz, zastąp |
+| Pamięci i magazyny | lokalny, serwer, S3, WebDAV, Google Drive, „ROM” | podłącz, odłącz, przenieś, skopiuj, zaszyfruj, zrób kopię, odtwórz, sprawdź integralność, zdeduplikuj, pokaż zajętość |
+| Ustawienia i zasady | każde pole, profil, zakres | pokaż, zmień, przywróć domyślne, wyjaśnij skąd wartość, porównaj zakresy, wyeksportuj/wczytaj profil |
+| Podmioty | ja, rodzina, zespół, organizacja, agent AI | opisz, nadaj rolę, udostępnij, poproś o zgodę, zważ głosy w decyzji |
+| Decyzje, cele, zadania, projekty | „przeprowadzka”, „wydanie wersji” | zaproponuj opcje, zważ za i przeciw, podejmij, rozbij na zadania, przypomnij, śledź postęp, podsumuj stan |
+| Wiedza | osoba, pojęcie, twierdzenie, obserwacja, źródło | potwierdź, odrzuć, scal duplikaty, pokaż sprzeczności, pokaż pochodzenie, oceń pewność |
+| Rozmowy jako struktura | wątek, gałąź, wersja wiadomości | rozgałęź, scal gałęzie, przenieś wątek, zaimportuj, wyeksportuj, nadaj tytuł, zarchiwizuj |
+| Urządzenia wejścia/wyjścia | mikrofon, aparat, ekran, głośnik, pliki, sieć, powiadomienia | nagraj, rozpoznaj mowę, zrób zdjęcie, odczytaj tekst ze zdjęcia, wyświetl, przeczytaj na głos, powiadom, udostępnij |
+| Koszty i zasoby | zużycie, saldo, duplikaty | oszacuj, porównaj warianty kosztem, potwierdź ×10, pokaż raport duplikatów |
+| Bezpieczeństwo i prywatność | klucze, dostęp, zgody | zaszyfruj, wyklucz z wysyłki, pokaż kto ma dostęp, wymień klucze |
+| Samomodel aplikacji („ROM”) | możliwości, ograniczenia, wersja | wyjaśnij, co umiesz; pokaż ograniczenia; zaproponuj ulepszenie; zgłoś błąd |
+| Czas | przypomnienie, cykl, termin | przypomnij, powtarzaj, przesuń, zaplanuj sesję |
+
+**Rozwijanie, także emergentne (R55):** gdy w rozmowach powtarza się prośba, której katalog nie obsługuje, silnik
+zapisuje **propozycję** nowej grupy, cechy albo akcji (z przykładami z rozmów jako źródłem). Może ją rozwinąć metodą
+wielotorową (R48: kilka modeli, porównanie zgodności, nowości, sprzeczności). Propozycja staje się danymi dopiero
+po przyjęciu przez użytkownika — albo automatycznie, jeśli tak ustawi.
+
+## 8. Wszystko z okienka konwersacji (R54)
+
+Każde wejście w okienku konwersacji przechodzi przez workflow „rozpoznaj zamiar” (w katalogu zastosowań
+„użyj modelu”: `input.route_intent`): **wiadomość** → zwykła odpowiedź; **polecenie** → silnik dopasowuje akcje
+i łańcuchy według §5 (cechy, wymagania, zasady), szacuje koszt i wykonalność, a potem wykonuje albo proponuje
+z potwierdzeniem według zasad. Poziom abstrakcji jest dowolny: „zrób z tej rozmowy obraz” i „ustaw
+`semantic_retry_mode=automatic` dla projektu X” trafiają w ten sam mechanizm. Panele i przyciski są tylko innymi
+widokami tych samych akcji. Kolejność prac: po fali 2 (cechy + wymagania + zasady), bo dopasowanie poleceń
+potrzebuje katalogu akcji z wymaganiami.
