@@ -1017,6 +1017,12 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   const std::string kind = routed.value("kind", "message");
   if (kind == "message") return none;
   if (kind == "pending") {
+    // The re-send after the user's answer goes to this conversation, as a held chat send does.
+    if (conv_id.empty()) {
+      LOOM_TRY_ASSIGN(auto created, rt.db().create_conv("New Chat"));
+      conv_id = created.id;
+      (void)rt.chat().load_conv(conv_id);
+    }
     Outcome out;
     out.handled = true;
     out.conv_id = conv_id;

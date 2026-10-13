@@ -7,6 +7,8 @@ import { conversationViewMessages, messageCan, type ConversationView } from "../
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import UsagePendingBlock from "./UsagePendingBlock";
+import ActionProposalBlock from "./ActionProposalBlock";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, pendingAnswer, proposalState, routeConfirmedRequest, type PendingAnswer } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
@@ -105,6 +107,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const sourceCatalog = useConversationSourcePresentation(profileHost);
   const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
   const usageCatalog = usePresentationFeature(profileHost, USAGE_PENDING_FEATURE);
+  const proposalCatalog = usePresentationFeature(profileHost, ACTION_PROPOSAL_FEATURE);
+  // A command answered in the conversation (R54): the run being answered, and why an answer could not be sent.
+  const [answering, setAnswering] = useState<string | null>(null);
+  const [answerFailure, setAnswerFailure] = useState<{ runId: string; reason: string } | null>(null);
   const [usagePending, setUsagePending] = useState<{ request: ChatRequest; receipt: UsagePendingReceipt; convId: string } | null>(null);
   const [usageNotice, setUsageNotice] = useState<string | null>(null);
   const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
@@ -382,6 +388,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setPendingUserText(null);
             requestConvId = chunk.conv_id;
             refreshShared();
+          } else if (chunk.type === "action_proposal" || chunk.type === "action_result") {
+            // The input was a command: it is answered in the conversation, nothing went to the model.
+            terminal = true;
+            setStream(null);
+            setPendingUserText(null);
+            requestConvId = chunk.conv_id;
+            refreshShared();
           } else if (chunk.type === "usage_pending") {
             // A state, not a failure: nothing was sent. Keep the text and ask.
             terminal = true;
@@ -417,17 +430,34 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     if (!usagePending) return;
     const { request, receipt } = usagePending;
     setUsagePending(null);
-    send("send", confirmedRequest(request, receipt, true, "web") as ChatRequest);
+    const routed = (receipt as { stage?: string }).stage === "route_intent";
+    send("send", (routed ? routeConfirmedRequest(request, receipt, true, "web") : confirmedRequest(request, receipt, true, "web")) as ChatRequest);
   }, [usagePending, send]);
   const rejectUsage = useCallback(() => {
     if (!usagePending) return;
     const { request, receipt } = usagePending;
     setUsagePending(null);
     // The ledger records the denial; nothing is sent and the text stays in the composer.
-    try { api.chat(confirmedRequest(request, receipt, false, "web") as ChatRequest, { onChunk: () => undefined, onError: () => undefined, onDone: () => undefined }); }
+    const routed = (receipt as { stage?: string }).stage === "route_intent";
+    try { api.chat((routed ? routeConfirmedRequest(request, receipt, false, "web") : confirmedRequest(request, receipt, false, "web")) as ChatRequest, { onChunk: () => undefined, onError: () => undefined, onDone: () => undefined }); }
     catch (err) { setError(err instanceof Error ? err.message : String(err)); }
     setUsageNotice(usageCatalog.feature ? safeNotice(usageCatalog.feature, "rejected") : null);
   }, [usagePending, usageCatalog.feature]);
+
+  const answerAction = useCallback(async (answer: PendingAnswer, approved: boolean) => {
+    if (!api.actions) return;
+    setAnswering(answer.runId);
+    setAnswerFailure(null);
+    try {
+      await api.actions.confirm(answerRequest(answer, approved, "web"));
+      if (convId) await refreshMessages(convId);
+      onMessagesChanged?.();
+    } catch (err) {
+      setAnswerFailure({ runId: answer.runId, reason: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setAnswering(null);
+    }
+  }, [convId, refreshMessages, onMessagesChanged]);
 
   const cancelStreaming = useCallback(() => {
     const epoch = ++sendEpochRef.current;
@@ -601,6 +631,25 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               ) : (
                 <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.role === "assistant" ? nativeGraphDisplayText(graphReply, m.text) : m.text)} />
               )}
+              {m.role === "assistant" && api.actions && (() => {
+                const answer = pendingAnswer(m.metadata);
+                const state = proposalState(m.metadata);
+                if (answer && answer.kind === "usage") {
+                  return <UsagePendingBlock testId="chat-run-usage-pending" feature={usageCatalog.feature} busy={answering === answer.runId}
+                    receipt={{ ...(answer.usage ?? {}), receipt_id: answer.receiptId, operation_id: (m.metadata?.action_run as { pending?: { operation_id?: string | null } } | undefined)?.pending?.operation_id ?? null }}
+                    onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
+                }
+                if (answer) {
+                  return <ActionProposalBlock testId="chat-action-proposal" feature={proposalCatalog.feature} answer={answer} busy={answering === answer.runId}
+                    failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
+                    onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
+                }
+                if (state && proposalCatalog.feature) {
+                  const label = safeNotice(proposalCatalog.feature, "status_" + state);
+                  return label ? <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span> : null;
+                }
+                return null;
+              })()}
               <div className="actions">
                 {m.role === "user" && editingId !== m.id && (
                   <button onClick={() => startEdit(m)} data-testid="edit-message" disabled={!supports("message.edit") || !messageCan(m, "edit")}>
