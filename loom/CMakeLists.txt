@@ -59,6 +59,14 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   endif()
   if(LOOM_WERROR)
     target_compile_options(loom_warnings INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-Werror>)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+      # GCC 12-14 at -O2 reports false positives whose location is inside
+      # system headers (nlohmann/json.hpp, <functional>, <string>, <optional>)
+      # after inlining into our code, so SYSTEM include dirs cannot hide them.
+      # Keep every other warning fatal; these two stay visible as warnings.
+      target_compile_options(loom_warnings INTERFACE
+        $<$<COMPILE_LANGUAGE:CXX>:-Wno-error=null-dereference -Wno-error=maybe-uninitialized>)
+    endif()
   endif()
 endif()
 

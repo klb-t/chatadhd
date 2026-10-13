@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /src
 COPY loom/ loom/
 RUN cmake --preset release -S loom -B /out/build -G Ninja \
-      -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_TESTS=OFF -DLOOM_WERROR=OFF \
+      -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_TESTS=OFF -DLOOM_WERROR=ON \
     && cmake --build /out/build --target loom-server -j"$(nproc)"
 # web importuje ../../data, wiec zachowujemy uklad loom/web + loom/data
 RUN cd loom/web && rm -rf dist node_modules && npm ci --no-audit --no-fund && npm run build
