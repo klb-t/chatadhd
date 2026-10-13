@@ -335,7 +335,7 @@ Json StorageService::describe() const {
       for (const char* k : {"endpoint", "bucket", "region", "prefix", "url"}) if (b->contains(k)) e[k] = (*b)[k];
       const std::string ref = json::get_string(*b, "secret_ref", "storage_" + s.key());
       bool creds = false;
-      if (env_.secrets) creds = env_.secrets->has(ref + "_access_key") || env_.secrets->has(ref + "_user") || env_.secrets->has(ref + "_token");
+      if (env_.secrets) creds = env_.secrets->has(ref + "_access_key") || env_.secrets->has(ref + "_refresh_token") || env_.secrets->has(ref + "_user") || env_.secrets->has(ref + "_token");
       e["credentials_present"] = creds;
     }
     e["configured"] = json::get_bool(v, "configured", true);

@@ -9,6 +9,7 @@
 #include <unistd.h>
 
 #include <atomic>
+#include <fstream>
 #include <functional>
 #include <map>
 #include <set>
@@ -158,6 +159,12 @@ constexpr const char* kSecret = "s3cr3t/KEY+never/log/this";
 struct FakeS3 {
   std::map<std::string, std::string> objects, meta_sha;
   std::atomic<int> bad_sigs{0};
+  // multipart bookkeeping
+  struct Upload { std::string key, sha; std::map<int, std::string> parts; };
+  std::map<std::string, Upload> uploads;
+  int created = 0, aborted = 0, completed = 0, plain_puts = 0, fail_part = 0;  // fail_part: part number answered with 500
+  bool complete_error_body = false;
+  std::vector<std::size_t> part_sizes;
   std::unique_ptr<MiniServer> srv;
   FakeS3() { srv = std::make_unique<MiniServer>([this](const Req& r) { return handle(r); }); }
 
@@ -216,7 +223,49 @@ struct FakeS3 {
     }
     if (path.rfind(base, 0) != 0) { o.status = 404; return o; }
     std::string key = path.substr(base.size());
-    if (r.method == "PUT") { objects[key] = r.body; meta_sha[key] = r.h.count("x-amz-meta-sha256") ? r.h.at("x-amz-meta-sha256") : ""; return o; }
+    if (r.method == "POST" && r.query == "uploads=") {
+      std::string id = "UP" + std::to_string(++created) + "/+=";
+      uploads[id] = Upload{key, r.h.count("x-amz-meta-sha256") ? r.h.at("x-amz-meta-sha256") : "", {}};
+      o.body = "<InitiateMultipartUploadResult><Bucket>bkt</Bucket><Key>" + xml_escape(key) + "</Key><UploadId>" + xml_escape(id) +
+               "</UploadId></InitiateMultipartUploadResult>";
+      return o;
+    }
+    if (r.query.find("uploadId=") != std::string::npos) {
+      std::string id, pn;
+      for (std::size_t s = 0; s <= r.query.size();) {
+        auto e = r.query.find('&', s); if (e == std::string::npos) e = r.query.size();
+        std::string kv = r.query.substr(s, e - s); auto eq = kv.find('=');
+        if (eq != std::string::npos) { if (kv.substr(0, eq) == "uploadId") id = pct_decode(kv.substr(eq + 1)); if (kv.substr(0, eq) == "partNumber") pn = kv.substr(eq + 1); }
+        s = e + 1;
+      }
+      auto u = uploads.find(id);
+      if (u == uploads.end() || u->second.key != key) { o.status = 404; o.body = "<Error><Code>NoSuchUpload</Code></Error>"; return o; }
+      if (r.method == "PUT") {
+        int n = std::stoi(pn);
+        if (n == fail_part) { o.status = 500; o.body = "<Error><Code>InternalError</Code></Error>"; return o; }
+        u->second.parts[n] = r.body;
+        part_sizes.push_back(r.body.size());
+        o.h["ETag"] = "\"etag-" + std::to_string(n) + "\"";
+        return o;
+      }
+      if (r.method == "DELETE") { ++aborted; uploads.erase(u); o.status = 204; return o; }
+      if (r.method == "POST") {
+        if (complete_error_body) { o.body = "<Error><Code>InternalError</Code></Error>"; return o; }
+        std::string all;
+        std::size_t pos = 0;
+        int expect = 1;
+        while ((pos = r.body.find("<PartNumber>", pos)) != std::string::npos) {
+          int n = std::stoi(r.body.substr(pos + 12));
+          if (n != expect++ || !u->second.parts.count(n) || r.body.find("&quot;etag-" + std::to_string(n) + "&quot;", pos) == std::string::npos) { o.status = 400; o.body = "<Error><Code>InvalidPart</Code></Error>"; return o; }
+          all += u->second.parts[n];
+          pos += 12;
+        }
+        objects[key] = all; meta_sha[key] = u->second.sha; ++completed; uploads.erase(u);
+        o.body = "<CompleteMultipartUploadResult><Key>" + xml_escape(key) + "</Key></CompleteMultipartUploadResult>";
+        return o;
+      }
+    }
+    if (r.method == "PUT") { ++plain_puts; objects[key] = r.body; meta_sha[key] = r.h.count("x-amz-meta-sha256") ? r.h.at("x-amz-meta-sha256") : ""; return o; }
     if (r.method == "DELETE") { objects.erase(key); o.status = 204; return o; }
     auto f = objects.find(key);
     if (f == objects.end()) { o.status = 404; return o; }
@@ -271,6 +320,124 @@ struct FakeDav {
     if (r.method == "HEAD") { o.h["Content-Length"] = std::to_string(f->second.size()); return o; }
     o.body = f->second;
     return o;
+  }
+};
+
+// ── fake Google Drive + OAuth token endpoint, injected as the HTTP transport ──
+struct FakeDrive final : net::HttpTransport {
+  struct F { std::string name, parent, content, mime, sha; };
+  std::map<std::string, F> files;
+  std::vector<std::string> sent;            // "METHOD url" of every request (no bodies)
+  std::vector<std::string> token_bodies;    // bodies sent to the token endpoint
+  std::string current = "at-0";
+  int issued = 0, resumable_puts = 0, expires_in = 3600, next_id = 0, page = 2;
+  bool refresh_fails = false;
+  std::map<std::string, std::pair<std::string, F>> sessions;  // resumable sessions: location -> (existing id or "", meta)
+  mutable std::mutex mu;
+
+  std::string name() const override { return "fake-drive"; }
+  void revoke() { current = "revoked"; }
+  static Result<net::HttpResponse> reply(int st, std::string body, net::Headers h = {}) {
+    net::HttpResponse r; r.status = st; r.body = std::move(body); r.headers = std::move(h); return r;
+  }
+  Json file_json(const std::string& id, const F& f) const {
+    return Json{{"id", id}, {"name", f.name}, {"size", std::to_string(f.content.size())}, {"mimeType", f.mime}, {"appProperties", Json{{"sha256", f.sha}}}};
+  }
+  static std::string unq(const std::string& s) {
+    std::string o;
+    for (std::size_t i = 0; i < s.size(); ++i) { if (s[i] == '\\' && i + 1 < s.size()) ++i; o += s[i]; }
+    return o;
+  }
+  static std::string param(const std::string& q, const std::string& name) {
+    for (std::size_t s = 0; s <= q.size();) {
+      auto e = q.find('&', s); if (e == std::string::npos) e = q.size();
+      std::string kv = q.substr(s, e - s); auto eq = kv.find('=');
+      if (eq != std::string::npos && kv.substr(0, eq) == name) return pct_decode(kv.substr(eq + 1));
+      s = e + 1;
+    }
+    return "";
+  }
+  void store(const std::string& id, F meta_in, const std::string& content, const std::string& mime) {
+    F& f = files[id];
+    if (!meta_in.name.empty()) f.name = meta_in.name;
+    if (!meta_in.parent.empty()) f.parent = meta_in.parent;
+    if (!meta_in.sha.empty()) f.sha = meta_in.sha;
+    f.content = content; f.mime = mime;
+  }
+  static F meta_of(const std::string& js) {
+    Json m = Json::parse(js);
+    F f; f.name = json::get_string(m, "name");
+    if (m.contains("parents")) f.parent = m["parents"][0].get<std::string>();
+    if (m.contains("appProperties")) f.sha = json::get_string(m["appProperties"], "sha256");
+    return f;
+  }
+
+  Result<net::HttpResponse> send(const net::HttpRequest& req, const net::StreamSink* = nullptr, const CancelToken* = nullptr) override {
+    std::lock_guard lk(mu);
+    sent.push_back(req.method + " " + req.url);
+    if (req.url.rfind("https://oauth2.googleapis.com/token", 0) == 0) {
+      token_bodies.push_back(req.body);
+      if (refresh_fails || param(req.body, "refresh_token") != "RT-secret/1" || param(req.body, "client_id") != "cid-1" ||
+          param(req.body, "client_secret") != "csec-1" || param(req.body, "grant_type") != "refresh_token")
+        return reply(400, R"({"error":"invalid_grant","error_description":"Bad"})");
+      current = "at-" + std::to_string(++issued);
+      return reply(200, json::dump(Json{{"access_token", current}, {"expires_in", expires_in}, {"token_type", "Bearer"}}));
+    }
+    if (net::header_value(req.headers, "Authorization") != "Bearer " + current) return reply(401, R"({"error":{"code":401}})");
+    std::string url = req.url, query;
+    if (auto q = url.find('?'); q != std::string::npos) { query = url.substr(q + 1); url = url.substr(0, q); }
+    const std::string api = "https://www.googleapis.com/drive/v3/files", up = "https://www.googleapis.com/upload/drive/v3/files";
+    if (url.rfind("https://upload.fake/session/", 0) == 0 && req.method == "PUT") {
+      auto s = sessions.find(url);
+      if (s == sessions.end()) return reply(404, "");
+      std::string id = s->second.first.empty() ? "id" + std::to_string(++next_id) : s->second.first;
+      store(id, s->second.second, req.body, net::header_value(req.headers, "Content-Type"));
+      ++resumable_puts;
+      sessions.erase(s);
+      return reply(200, "{\"id\":\"" + id + "\"}");
+    }
+    if (url == up || url.rfind(up + "/", 0) == 0) {
+      const std::string existing = url.size() > up.size() ? url.substr(up.size() + 1) : "";
+      if (param(query, "uploadType") == "resumable") {
+        std::string loc = "https://upload.fake/session/" + std::to_string(++next_id);
+        sessions[loc] = {existing, meta_of(req.body)};
+        return reply(200, "", {{"Location", loc}});
+      }
+      std::string ct = net::header_value(req.headers, "Content-Type");
+      auto bp = ct.find("boundary=");
+      if (bp == std::string::npos) return reply(400, "");
+      std::string d = "--" + ct.substr(bp + 9), b = req.body;
+      std::size_t p1 = b.find(d), h1 = b.find("\r\n\r\n", p1) + 4, p2 = b.find("\r\n" + d, h1);
+      std::size_t h2 = b.find("\r\n\r\n", p2) + 4, p3 = b.rfind("\r\n" + d + "--");
+      std::string part_hdr = b.substr(p2, h2 - p2), mime = part_hdr.substr(part_hdr.find("Content-Type: ") + 14);
+      mime = mime.substr(0, mime.find("\r\n"));
+      std::string id = existing.empty() ? "id" + std::to_string(++next_id) : existing;
+      if (!existing.empty() && !files.count(existing)) return reply(404, "");
+      store(id, meta_of(b.substr(h1, p2 - h1)), b.substr(h2, p3 - h2), mime);
+      return reply(200, "{\"id\":\"" + id + "\"}");
+    }
+    if (url == api && req.method == "GET") {
+      std::string q = param(query, "q"), want_name;
+      bool by_name = q.rfind("name='", 0) == 0;
+      if (by_name) { auto e = q.find("' and '"); want_name = unq(q.substr(6, e - 6)); }
+      std::vector<std::pair<std::string, F>> m;
+      for (auto& [id, f] : files) if (!by_name || f.name == want_name) m.emplace_back(id, f);
+      std::size_t from = param(query, "pageToken").empty() ? 0 : std::stoul(param(query, "pageToken"));
+      std::size_t end = std::min(m.size(), from + static_cast<std::size_t>(page));
+      Json out{{"files", Json::array()}};
+      for (std::size_t i = from; i < end; ++i) out["files"].push_back(file_json(m[i].first, m[i].second));
+      if (end < m.size()) out["nextPageToken"] = std::to_string(end);
+      return reply(200, json::dump(out));
+    }
+    if (url.rfind(api + "/", 0) == 0) {
+      std::string id = url.substr(api.size() + 1);
+      if (id == "root") return reply(200, R"({"id":"root"})");
+      auto f = files.find(id);
+      if (f == files.end()) return reply(404, R"({"error":{"code":404}})");
+      if (req.method == "DELETE") { files.erase(f); return reply(204, ""); }
+      if (req.method == "GET") return reply(200, param(query, "alt") == "media" ? f->second.content : json::dump(file_json(id, f->second)));
+    }
+    return reply(400, "unexpected request");
   }
 };
 
@@ -356,14 +523,17 @@ TEST_SUITE("storage") {
     CHECK(detail::sigv4_signature(in) == "f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41");
   }
 
-  TEST_CASE("registry: builtin kinds, planned gdrive, unknown kind") {
+  TEST_CASE("registry: builtin kinds, planned kind, unknown kind") {
     const auto& reg = BackendRegistry::builtin();
     auto kinds = reg.kinds();
     CHECK(std::count(kinds.begin(), kinds.end(), "local") == 1);
     CHECK(std::count(kinds.begin(), kinds.end(), "s3") == 1);
     CHECK(std::count(kinds.begin(), kinds.end(), "webdav") == 1);
     BackendEnv env;
-    CHECK(reg.create("g", Json{{"kind", "gdrive"}}, env).error().code == Errc::NotImplemented);
+    CHECK(std::count(kinds.begin(), kinds.end(), "gdrive") == 1);
+    BackendRegistry planned;  // a kind declared without an adapter still reports NotImplemented
+    planned.add({"tape", "planned", {}});
+    CHECK(planned.create("g", Json{{"kind", "tape"}}, env).error().code == Errc::NotImplemented);
     CHECK(reg.create("x", Json{{"kind", "tape"}}, env).error().code == Errc::Unsupported);
     BackendRegistry mine;  // a plugin is just a registered factory
     mine.add({"alias", "implemented", detail::make_local});
@@ -392,6 +562,254 @@ TEST_SUITE("storage") {
     CHECK(fake.bad_sigs == 0);
     CHECK(fake.objects.count("loom/p/" + cas_key(Sha256::hex("alpha"))) == 1);  // prefix applied, nothing outside it
     CHECK(unwrap(be->stat(cas_key(Sha256::hex("alpha")))).sha256 == Sha256::hex("alpha"));  // sha256 identity stored as metadata
+  }
+
+  TEST_CASE("registry: gdrive is implemented") {
+    const auto* d = BackendRegistry::builtin().find("gdrive");
+    REQUIRE(d != nullptr);
+    CHECK(d->status == "implemented");
+    BackendEnv env;  // no transport, no secrets: a clean error, never a crash
+    auto be = unwrap(BackendRegistry::builtin().create("g", Json{{"kind", "gdrive"}}, env));
+    CHECK(be->probe().error().code == Errc::Auth);
+  }
+
+  namespace {
+  struct DriveRig {
+    fsutil::TempDir td;
+    Secrets secrets{td.path() / "secrets.json"};
+    std::shared_ptr<FakeDrive> fake = std::make_shared<FakeDrive>();
+    DriveRig() {
+      secrets.set("storage_gd_client_id", "cid-1");
+      secrets.set("storage_gd_client_secret", "csec-1");
+      secrets.set("storage_gd_refresh_token", "RT-secret/1");
+    }
+    std::unique_ptr<StorageBackend> make(Json extra = Json::object()) {
+      Json cfg{{"kind", "gdrive"}};
+      for (auto it = extra.begin(); it != extra.end(); ++it) cfg[it.key()] = it.value();
+      BackendEnv e;
+      e.http = fake;
+      e.secrets = &secrets;
+      e.data_dir = td.path();
+      return unwrap(BackendRegistry::builtin().create("gd", cfg, e));
+    }
+  };
+  }  // namespace
+
+  TEST_CASE("contract: gdrive over a fake transport, one token refresh serves the whole run") {
+    DriveRig rig;
+    auto be = rig.make();
+    run_contract(*be);
+    CHECK(rig.fake->issued == 1);
+    // names are the full keys in the configured folder; sha256 identity is kept
+    bool found = false;
+    for (auto& [id, f] : rig.fake->files) if (f.name == cas_key(Sha256::hex("alpha"))) { found = true; CHECK(f.parent == "root"); CHECK(f.sha == Sha256::hex("alpha")); }
+    CHECK(found);
+    CHECK(unwrap(be->stat(cas_key(Sha256::hex("alpha")))).sha256 == Sha256::hex("alpha"));
+    // overwrite does not create duplicates
+    std::size_t n = rig.fake->files.size();
+    LOOM_REQUIRE_OK(be->put("named/again", "1"));
+    LOOM_REQUIRE_OK(be->put("named/again", "22"));
+    CHECK(rig.fake->files.size() == n + 1);
+    CHECK(unwrap(be->get("named/again")) == "22");
+    // a quote in a key are escaped in the Drive query
+    LOOM_REQUIRE_OK(be->put("q/it's a b", "x"));
+    CHECK(unwrap(be->get("q/it's a b")) == "x");
+    // the folder and endpoints are data
+    auto custom = rig.make(Json{{"root_folder", "folder9"}});
+    LOOM_REQUIRE_OK(custom->put("k/v", "x"));
+    bool in_folder = false;
+    for (auto& [id, f] : rig.fake->files) if (f.name == "k/v") in_folder = f.parent == "folder9";
+    CHECK(in_folder);
+  }
+
+  TEST_CASE("gdrive: resumable session above the configured threshold") {
+    DriveRig rig;
+    auto be = rig.make(Json{{"resumable_threshold", 10}});
+    std::string big(100, 'z');
+    LOOM_REQUIRE_OK(be->put("big/one", big));
+    CHECK(rig.fake->resumable_puts == 1);
+    CHECK(unwrap(be->get("big/one")) == big);
+    LOOM_REQUIRE_OK(be->put("big/one", big + "!"));  // replace through the same path
+    CHECK(rig.fake->resumable_puts == 2);
+    CHECK(unwrap(be->get("big/one")) == big + "!");
+    CHECK(unwrap(be->list("big/")).size() == 1);
+    LOOM_REQUIRE_OK(be->put("small", "tiny"));
+    CHECK(rig.fake->resumable_puts == 2);
+  }
+
+  TEST_CASE("gdrive: access token refreshed on expiry (skew) and on 401, kept in memory only") {
+    {
+      DriveRig rig;
+      rig.fake->expires_in = 30;  // shorter than the 60 s skew preset: always stale
+      auto be = rig.make();
+      LOOM_REQUIRE_OK(be->put("a/b", "x"));
+      int after_put = rig.fake->issued;
+      CHECK(after_put >= 2);  // lookup + upload each needed a fresh token
+      CHECK(unwrap(be->get("a/b")) == "x");
+      CHECK(rig.fake->issued > after_put);
+    }
+    {
+      DriveRig rig;
+      rig.fake->expires_in = 30;
+      auto be = rig.make(Json{{"token_skew_s", 0}});  // skew is a setting: now the token lasts
+      LOOM_REQUIRE_OK(be->put("a/b", "x"));
+      CHECK(unwrap(be->get("a/b")) == "x");
+      CHECK(rig.fake->issued == 1);
+    }
+    DriveRig rig;
+    auto be = rig.make();
+    LOOM_REQUIRE_OK(be->put("a/b", "x"));
+    CHECK(rig.fake->issued == 1);
+    rig.fake->revoke();  // server drops the token before its announced expiry
+    CHECK(unwrap(be->get("a/b")) == "x");
+    CHECK(rig.fake->issued == 2);  // exactly one refresh, request retried once
+    // the token is never written to the secrets file or the data dir
+    std::string on_disk;
+    for (auto& e : std::filesystem::recursive_directory_iterator(rig.td.path())) {
+      if (!e.is_regular_file()) continue;
+      std::ifstream in(e.path(), std::ios::binary);
+      on_disk.append(std::istreambuf_iterator<char>(in), {});
+    }
+    CHECK(on_disk.find("at-1") == std::string::npos);
+    CHECK(on_disk.find("at-2") == std::string::npos);
+  }
+
+  TEST_CASE("gdrive: failures map to codes and the refresh token never appears in outputs or logs") {
+    std::vector<std::string> captured;
+    std::mutex mu;
+    log::Level old = log::level();
+    log::set_level(log::Level::Debug);
+    int tok = log::add_sink([&](const log::Record& r) { std::lock_guard lk(mu); captured.push_back(r.formatted()); });
+    std::string joined;
+    {
+      DriveRig rig;
+      auto be = rig.make();
+      LOOM_REQUIRE_OK(be->put("a/b", "x"));
+      (void)be->get("a/b");
+      auto missing = be->get("nope/x");
+      REQUIRE_FALSE(missing);
+      CHECK(missing.error().code == Errc::NotFound);
+      joined += missing.error().message + json::dump(unwrap(be->stat("a/b")).to_json());
+      // refresh rejected (revoked grant): Auth, with the OAuth error code only
+      rig.fake->refresh_fails = true;
+      rig.fake->revoke();
+      auto bad = be->get("a/b");
+      REQUIRE_FALSE(bad);
+      CHECK(bad.error().code == Errc::Auth);
+      CHECK(bad.error().message.find("invalid_grant") != std::string::npos);
+      joined += bad.error().message;
+      // missing secrets
+      Secrets none(rig.td.path() / "none.json");
+      BackendEnv e;
+      e.http = rig.fake; e.secrets = &none; e.data_dir = rig.td.path();
+      auto nb = unwrap(BackendRegistry::builtin().create("gd", Json{{"kind", "gdrive"}}, e));
+      auto nerr = nb->probe();
+      REQUIRE_FALSE(nerr);
+      CHECK(nerr.error().code == Errc::Auth);
+      joined += nerr.error().message;
+      // the service description and probe never show credentials
+      Json v = unwrap(RuntimeProfile::builtin("storage_security")).values();
+      v["storages"]["drive"] = Json{{"class", "user_cloud"}, {"backend", Json{{"kind", "gdrive"}, {"secret_ref", "storage_gd"}}}};
+      BackendEnv se; se.http = rig.fake; se.secrets = &rig.secrets; se.data_dir = rig.td.path();
+      rig.fake->refresh_fails = false;
+      StorageService svc(v, se);
+      joined += json::dump(svc.describe()) + json::dump(svc.probe_all());
+      // only the token endpoint ever receives the refresh token
+      for (const auto& s : rig.fake->sent) joined += s;
+      for (const auto& t : rig.fake->token_bodies) CHECK(t.find("RT-secret") != std::string::npos);
+      CHECK(rig.fake->token_bodies.size() >= 2);
+    }
+    {
+      std::lock_guard lk(mu);
+      for (auto& l : captured) joined += l;
+    }
+    log::remove_sink(tok);
+    log::set_level(old);
+    for (const char* secret : {"RT-secret", "RT%2Dsecret", "csec-1", "cid-1", "at-1", "at-2", "Bearer"}) {
+      CAPTURE(secret);
+      CHECK(joined.find(secret) == std::string::npos);
+    }
+  }
+
+  TEST_CASE("s3 multipart: part boundaries, completion and the threshold switch") {
+    clear_proxy_env();
+    fsutil::TempDir td;
+    Secrets secrets(td.path() / "secrets.json");
+    secrets.set("storage_s3a_access_key", kAccess);
+    secrets.set("storage_s3a_secret_key", kSecret);
+    FakeS3 fake;
+    Json cfg{{"kind", "s3"}, {"endpoint", fake.srv->url()}, {"bucket", "bkt"}, {"multipart_part_size", 10}};
+    auto be = unwrap(BackendRegistry::builtin().create("s3a", cfg, env_for(td.path(), &secrets)));
+    // at or below the threshold: the unchanged single PUT
+    LOOM_REQUIRE_OK(be->put("small/exact", std::string(10, 'a'), "text/plain"));
+    CHECK(fake.plain_puts == 1);
+    CHECK(fake.created == 0);
+    // above: 25 bytes = 10 + 10 + 5, stitched in order, hash metadata of the whole object
+    std::string data;
+    for (int i = 0; i < 25; ++i) data += static_cast<char>('A' + i);
+    LOOM_REQUIRE_OK(be->put("big/obj one", data, "application/octet-stream"));
+    CHECK(fake.plain_puts == 1);
+    CHECK(fake.created == 1);
+    CHECK(fake.completed == 1);
+    CHECK(fake.aborted == 0);
+    CHECK(fake.part_sizes == std::vector<std::size_t>{10, 10, 5});
+    CHECK(fake.objects["big/obj one"] == data);
+    CHECK(fake.meta_sha["big/obj one"] == Sha256::hex(data));
+    CHECK(unwrap(be->get("big/obj one")) == data);
+    CHECK(unwrap(be->stat("big/obj one")).sha256 == Sha256::hex(data));
+    CHECK(fake.bad_sigs == 0);
+    // an exact multiple has no empty trailing part
+    fake.part_sizes.clear();
+    LOOM_REQUIRE_OK(be->put("big/even", std::string(20, 'e')));
+    CHECK(fake.part_sizes == std::vector<std::size_t>{10, 10});
+    // threshold is separate from the part size; negative turns multipart off
+    auto hi = unwrap(BackendRegistry::builtin().create("s3a", Json{{"kind", "s3"}, {"endpoint", fake.srv->url()}, {"bucket", "bkt"}, {"multipart_part_size", 10}, {"multipart_threshold", 100}}, env_for(td.path(), &secrets)));
+    int created = fake.created;
+    LOOM_REQUIRE_OK(hi->put("mid/obj", std::string(50, 'm')));
+    CHECK(fake.created == created);
+    auto off = unwrap(BackendRegistry::builtin().create("s3a", Json{{"kind", "s3"}, {"endpoint", fake.srv->url()}, {"bucket", "bkt"}, {"multipart_part_size", 10}, {"multipart_threshold", -1}}, env_for(td.path(), &secrets)));
+    LOOM_REQUIRE_OK(off->put("off/obj", std::string(500, 'o')));
+    CHECK(fake.created == created);
+  }
+
+  TEST_CASE("s3 multipart: a failing part aborts the upload and leaves no object") {
+    clear_proxy_env();
+    fsutil::TempDir td;
+    Secrets secrets(td.path() / "secrets.json");
+    secrets.set("storage_s3a_access_key", kAccess);
+    secrets.set("storage_s3a_secret_key", kSecret);
+    FakeS3 fake;
+    Json cfg{{"kind", "s3"}, {"endpoint", fake.srv->url()}, {"bucket", "bkt"}, {"multipart_part_size", 10}};
+    auto be = unwrap(BackendRegistry::builtin().create("s3a", cfg, env_for(td.path(), &secrets)));
+    fake.fail_part = 2;
+    auto st = be->put("big/fail", std::string(35, 'f'));
+    REQUIRE_FALSE(st);
+    CHECK(st.error().code == Errc::Http);
+    CHECK(fake.created == 1);
+    CHECK(fake.aborted == 1);
+    CHECK(fake.uploads.empty());
+    CHECK(fake.objects.count("big/fail") == 0);
+    // an <Error> inside a 200 completion is a failure too, also aborted
+    fake.fail_part = 0;
+    fake.complete_error_body = true;
+    auto st2 = be->put("big/fail2", std::string(35, 'f'));
+    REQUIRE_FALSE(st2);
+    CHECK(fake.aborted == 2);
+    CHECK(fake.objects.count("big/fail2") == 0);
+    CHECK(json::dump(Json(st2.error().message)).find(kSecret) == std::string::npos);
+  }
+
+  TEST_CASE("s3 multipart: part size grows to respect the 10000 part limit") {
+    clear_proxy_env();
+    fsutil::TempDir td;
+    Secrets secrets(td.path() / "secrets.json");
+    secrets.set("storage_s3a_access_key", kAccess);
+    secrets.set("storage_s3a_secret_key", kSecret);
+    FakeS3 fake;
+    auto be = unwrap(BackendRegistry::builtin().create("s3a", Json{{"kind", "s3"}, {"endpoint", fake.srv->url()}, {"bucket", "bkt"}, {"multipart_part_size", 1}, {"multipart_threshold", 0}}, env_for(td.path(), &secrets)));
+    LOOM_REQUIRE_OK(be->put("lim/obj", std::string(10001, 'x')));
+    CHECK(fake.part_sizes.size() <= 10000);
+    CHECK(fake.objects["lim/obj"].size() == 10001);
   }
 
   TEST_CASE("contract: webdav over a fake server") {
@@ -648,8 +1066,9 @@ TEST_SUITE("storage") {
     for (auto& b : p["backends"]) by[b["id"].get<std::string>()] = b;
     CHECK(by["cloud"]["reachable"]["ok"] == true);
     CHECK(by["cloud"]["credentials_present"] == true);
-    CHECK(by["drive"]["adapter"] == "planned");
-    CHECK(by["drive"]["reachable"]["known"] == false);
+    CHECK(by["drive"]["adapter"] == "implemented");
+    CHECK(by["drive"]["reachable"]["known"] == true);
+    CHECK(by["drive"]["reachable"]["ok"] == false);  // no OAuth secrets set: a reported failure, not a crash
     CHECK(by["browser"]["reachable"]["known"] == false);
     CHECK(json::dump(p).find(kSecret) == std::string::npos);
     CHECK(json::dump(p).find(kAccess) == std::string::npos);
