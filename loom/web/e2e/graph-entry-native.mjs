@@ -93,7 +93,7 @@ try {
   });
 
   await check("panel hides and shows; an overlay hides an area (user configuration)", async () => {
-    await page.getByTestId("nav-graph-entry").click();
+    await page.getByTestId("close-panel").click();
     await page.getByTestId("graph-entry-panel").waitFor({ state: "detached" });
     await page.getByTestId("nav-graph-entry").click();
     await page.getByTestId("graph-entry-panel").waitFor();

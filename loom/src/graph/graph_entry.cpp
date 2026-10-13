@@ -7,6 +7,7 @@
 
 #include "loom/crypto_suite.h"
 #include "loom/economy.h"
+#include "loom/onboarding_store.h"
 #include "loom/runtime_profile.h"
 #include "loom/storage_backend.h"
 
@@ -218,27 +219,26 @@ void register_builtin(Providers& p) {
     }
     return only(known_by(static_cast<std::int64_t>(seen.size()), by));
   });
-  // Perspective registry: the shipped perspective presets (a data file named by params.path / params.pointer);
-  // by = {preset id: 1}. Saved user perspectives are not counted here. A host may override the count.
+  // Perspective registry: the perspective settings declared in the builtin default-layers pack (every entry whose
+  // area is params.area, e.g. "graph/perspectives": structure, resolution, traversal, ...); by = {key: 1}.
+  // Saved user perspectives are not counted here. A host may override the count.
   p.add("perspectives.store", [](const Context& c, const Json& params) {
     const Json* h = pointer_at(c.env.host_counts, "/perspectives");
     if (h && h->is_number_integer()) return only(known(h->get<std::int64_t>()));
-    std::shared_ptr<const kb::Pack> pack = c.env.pack;
-    if (!pack) {
-      auto loaded = kb::Pack::load_builtin();
-      if (!loaded) return only(unknown("pack_unavailable"));
-      pack = *loaded;
-    }
-    const Json& doc = pack->file(json::get_string(params, "path"));
-    if (doc.is_null()) return only(unknown("pack_file_absent"));
-    const Json* items = pointer_at(doc, json::get_string(params, "pointer"));
-    if (!items || !items->is_array()) return only(unknown("pointer_absent"));
+    const std::string wanted = json::get_string(params, "area");
+    if (wanted.empty()) return only(unknown("area_not_configured"));
+    auto pack = onboarding::builtin_pack();
+    if (!pack) return only(unknown("pack_unavailable"));
     Json by = Json::object();
-    for (const auto& item : *items) {
-      const std::string id = item.is_object() ? json::get_string(item, "id") : std::string();
-      if (!id.empty()) by[id] = 1;
-    }
-    return only(known_by(static_cast<std::int64_t>(items->size()), by));
+    std::function<void(const Json&)> collect = [&](const Json& doc) {
+      if (const Json* entries = json::find(doc, "entries"); entries && entries->is_array())
+        for (const auto& entry : *entries)
+          if (entry.is_object() && json::get_string(entry, "area") == wanted) by[json::get_string(entry, "key")] = 1;
+      if (const Json* nested = json::find(doc, "entry_packs"); nested && nested->is_array())
+        for (const auto& child : *nested) collect(child);
+    };
+    collect(*pack);
+    return only(known_by(static_cast<std::int64_t>(by.size()), by));
   });
   p.add("layers.entries", [](const Context& c, const Json&) {
     const Json* h = pointer_at(c.env.host_counts, "/layers");

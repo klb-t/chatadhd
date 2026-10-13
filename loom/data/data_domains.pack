@@ -128,7 +128,7 @@
     {
       "path": "graph/entry.pack",
       "schema": "loom.graph_entry_areas/1",
-      "sha256": "85f0db9f017a3c5ef231bdbcb8475c92a0603ee57d1ea9b4e6519226d2d2098b",
+      "sha256": "17c1e9da654909d64d04852f4289c2bccda89d0ac0078df63970bf50a8c2cc26",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

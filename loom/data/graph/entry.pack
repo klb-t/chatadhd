@@ -424,8 +424,7 @@
     "perspectives.store": {
       "provider": "perspectives.store",
       "params": {
-        "path": "graph_perspectives/catalog.json",
-        "pointer": "/presets"
+        "area": "graph/perspectives"
       }
     },
     "layers.privacy": {
