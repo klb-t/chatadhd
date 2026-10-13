@@ -1,0 +1,7 @@
+# DOMAIN=prawdziwa.domena -> Let's Encrypt; localhost -> certyfikat wewnetrzny
+{$DOMAIN:localhost} {
+  reverse_proxy chatadhd:8787 {
+    header_up X-Forwarded-Proto {scheme}
+    header_up X-Forwarded-For {remote_host}
+  }
+}

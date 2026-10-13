@@ -1,0 +1,25 @@
+# cd deploy && DOMAIN=chat.example.com docker compose up -d --build
+# Uzytkownik:  docker compose exec -it chatadhd loom-server user add LOGIN
+# Rejestracja: CHATADHD_REGISTRATION=invite docker compose up -d
+services:
+  chatadhd:
+    build: { context: .., dockerfile: deploy/Dockerfile }
+    restart: unless-stopped
+    environment:
+      CHATADHD_REGISTRATION: ${CHATADHD_REGISTRATION:-closed}
+    volumes:
+      - ${CHATADHD_DATA_DIR:-chatadhd_data}:/data   # DANE poza obrazem
+    expose: ["8787"]
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    volumes:
+      - ./Caddyfile.compose:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [chatadhd]
+volumes:
+  chatadhd_data:
+  caddy_data:
