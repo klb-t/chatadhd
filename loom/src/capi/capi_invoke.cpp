@@ -19,7 +19,11 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     if (rj->is_null()) *rj = Json::object();
     if (!rj->is_object()) return out_error(Errc::InvalidArgument, "request must be a JSON object");
     const std::string p = port, a = action;
-    if (p == "actions" && a == "list") return out(action_catalogue());
+    if (p == "actions" && a == "list") {
+      auto cat = action_catalogue(ctx->rt->paths().root);
+      if (!cat) return out_error(cat.error());
+      return out(*cat);
+    }
     if (p == "storage") {
       (*rj)["action"] = a.rfind("storage.", 0) == 0 ? a : "storage." + a;
       auto r = storage::run_command(*ctx->rt, *rj);
