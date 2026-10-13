@@ -297,6 +297,41 @@ operation identity, request receipt, confirmation reference, actual measurement
 and retained first/provider response references together in the caller's
 execution provenance.
 
+## Ledger compaction
+
+Each admitted call writes its record (the estimate, with the call's provenance, bound to a receipt) and
+two or more events into `usage-policy.sqlite`; measured here at several KB per call. Compaction folds
+completed operations older than a preset age into per-cohort aggregates while preserving the rolling
+baseline the growth guard reads.
+
+* **What is folded.** For an eligible operation the record and its events are removed. A tombstone
+  (`usage_folded_operations`: id, cohort, status, SHA-256 of the estimate) keeps the identity, so
+  `request(id, same estimate)` still answers `completed` (`"compacted": true`) and a different estimate is a
+  conflict. Measured samples of folded operations that lie beyond `baseline_window` are summed into one row per
+  cohort and resource (`usage_fold_samples`: count, sum, min, max). With `baseline_window: null` no sample is
+  summed (all history is the baseline).
+* **What is never folded.** `allowed` and `unresolved` (they hold reservations), `requires_confirmation`,
+  `denied`, every operation that carries an owner `confirmation`, and the receipts of all of these. Validation
+  rejects any attempt to name those statuses as foldable.
+* **Baseline.** The newest `baseline_window` samples of a cohort and resource are never folded, so the windowed
+  mean, the ratio and the receipt of every later decision are identical before and after (tested on a seeded
+  ledger). The summed rows only stand in when the window is later raised beyond what is kept (approximation:
+  the folded samples' mean fills the missing slots) or when the window becomes `null`.
+* **Setting (all values are presets).** Runtime profile `usage_compaction`
+  ([`data/runtime/usage_compaction.pack`](../../data/runtime/usage_compaction.pack), user overlay
+  `<data>/profiles/usage_compaction.pack`), then the config key `usage_ledger_compaction`, then the `override` of
+  an explicit command; top-level fields replace. `mode`: `off` (nothing, unless an override changes the mode),
+  `manual` (only the explicit command), `auto` (also when a runtime with workers starts, at most once per
+  `auto_interval_hours`, and only if the ledger already exists). `older_than_days`, `statuses`
+  (`completed`, `cancelled`), `fold_samples_beyond_window`, `reclaim_space` (VACUUM + WAL truncate so the file
+  shrinks), `auto_interval_hours`. It is deliberately **not** a field of `loom_usage_policy`: those options are
+  bound into every receipt, and housekeeping must not invalidate a pending confirmation.
+* **Entry points.** `compact_usage_ledger()` / `UsagePolicy::compact()`; the JSON command `loom_usage_policy_json`
+  with `{"action":"compact","dry_run":bool,"as_of":"YYYY-MM-DD HH:MM:SS","override":{...}}` and
+  `{"action":"compaction_settings"}`; CLI `loom usage compact [--older-than-days N] [--mode M] [--statuses a,b]
+  [--dry-run] [--as-of T]` and `loom usage compaction`; action `usage.compact` in the action catalogue.
+  `inspect(baseline_key)` shows a `folded` summary of what a cohort lost to compaction.
+
 ## Static-kernel JSON C API
 
 Include `loom/usage_policy.h` and link `libloom_core.a` to call
