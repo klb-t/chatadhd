@@ -70,7 +70,7 @@ class LocalBackend final : public StorageBackend {
     std::error_code ec;
     if (sfs::is_directory(root_, ec)) return {};
     if (sfs::exists(root_, ec)) return Error(Errc::Io, "storage root is not a directory");
-    return Error(Errc::NotFound, "storage root does not exist yet (created on first write)");
+    return {};  // an absent root is an empty store; it is created on the first write
   }
 
  private:

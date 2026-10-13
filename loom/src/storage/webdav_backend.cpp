@@ -45,7 +45,8 @@ class WebDavBackend final : public StorageBackend {
   }
   Result<std::vector<ObjectStat>> list(std::string_view prefix) const override {
     std::vector<ObjectStat> out;
-    const std::string root = join_key(prefix_, "");
+    std::string root = join_key(prefix_, "");
+    while (!root.empty() && root.back() == '/') root.pop_back();
     std::vector<std::string> todo{root};  // collection paths relative to base, "" = base
     std::set<std::string> seen;
     while (!todo.empty()) {
