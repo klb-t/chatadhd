@@ -220,7 +220,10 @@ Result<std::unique_ptr<UsagePolicy>> UsagePolicy::open(const std::filesystem::pa
   sql_options.busy_timeout_ms = impl->options["ledger_busy_timeout_ms"].get<int>();
   LOOM_TRY_ASSIGN(auto connection, sql::Connection::open(path, sql_options));
   impl->db = std::move(connection);
-  LOOM_TRY(impl->db.exec("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;"));
+  // Several callers may create the ledger at once; the WAL switch needs a retry
+  // (see Connection::enter_wal_mode). The busy timeout is the budget.
+  LOOM_TRY(impl->db.enter_wal_mode(sql_options.busy_timeout_ms));
+  LOOM_TRY(impl->db.exec("PRAGMA synchronous=FULL;"));
   sql::Txn txn(impl->db);
   LOOM_TRY(txn.begin_status());
   LOOM_TRY(impl->db.exec(

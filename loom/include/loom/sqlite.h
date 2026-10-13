@@ -109,6 +109,13 @@ class Connection {
 
   // Executes one or more statements (sqlite3_exec).
   Status exec(std::string_view sql);
+  // Puts the database into WAL journal mode.  Switching a not-yet-WAL database
+  // fails with an immediate SQLITE_BUSY ("database is locked") when another
+  // connection is switching it too: SQLite does not consult the busy handler
+  // for that statement.  The switch is idempotent, so a busy answer is retried
+  // with a short backoff until `budget_ms` has elapsed (the caller's busy
+  // timeout); an already-WAL database is not touched.
+  Status enter_wal_mode(int budget_ms);
   Result<Stmt> prepare(std::string_view sql);
 
   // Convenience: prepare + bind + run.

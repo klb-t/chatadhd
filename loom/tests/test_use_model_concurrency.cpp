@@ -86,4 +86,88 @@ TEST_SUITE("use_model_concurrency") {
     for (const auto& f : failures) MESSAGE(f);
     CHECK(failures.empty());
   }
+
+  TEST_CASE("a busy ledger: 8 threads x 10 guarded calls on one data directory all succeed") {
+    fsutil::TempDir td;
+    Config cfg{td.path() / "config.json"};
+    Secrets secrets{td.path() / "secrets.json"};
+    cfg.set("base_url", "https://api.test");
+    secrets.set("api_key", "sk-test");
+    net::ScriptedTransport transport;
+    transport.set_fallback(Reply::json(200, chat_reply()));
+    const llm::Services services(cfg, secrets, transport);
+    constexpr int kThreads = 8, kCalls = 10;
+    std::atomic<int> ok{0};
+    std::mutex mu;
+    std::vector<std::string> failures;
+    std::barrier start(kThreads);
+    std::vector<std::thread> threads;
+    for (int t = 0; t < kThreads; ++t)
+      threads.emplace_back([&, t] {
+        start.arrive_and_wait();
+        for (int i = 0; i < kCalls; ++i) {
+          llm::ModelRequest request;
+          request.kind = "stress.busy";
+          request.models = {llm::ModelSpec{"m", "", Json::object()}};
+          request.prompt = "thread " + std::to_string(t) + " call " + std::to_string(i);
+          request.parameters = Json{{"max_tokens", 5}};
+          auto outcome = llm::use_model(services, std::move(request));
+          if (outcome && outcome->ok()) {
+            ok.fetch_add(1);
+          } else {
+            std::lock_guard lk(mu);
+            failures.push_back(outcome ? outcome->last().error.has_value() ? outcome->last().error->to_string() : std::string("held")
+                                       : outcome.error().to_string());
+          }
+        }
+      });
+    for (auto& th : threads) th.join();
+    for (const auto& f : failures) MESSAGE(f);
+    CHECK(ok.load() == kThreads * kCalls);
+    CHECK(transport.requests().size() == static_cast<std::size_t>(kThreads * kCalls));
+  }
+
+  TEST_CASE("the worker's resend-style admission (describe_request + shared gate) is safe under the same first-use race") {
+    constexpr int kThreads = 8;
+    const int rounds = iterations();
+    std::vector<std::string> failures;
+    for (int round = 0; round < rounds; ++round) {
+      fsutil::TempDir td;
+      Config cfg{td.path() / "config.json"};
+      Secrets secrets{td.path() / "secrets.json"};
+      cfg.set("base_url", "https://api.test");
+      secrets.set("api_key", "sk-test");
+      net::ScriptedTransport transport;
+      const llm::Services services(cfg, secrets, transport);
+      std::barrier start(kThreads);
+      std::mutex mu;
+      std::vector<std::thread> threads;
+      for (int t = 0; t < kThreads; ++t)
+        threads.emplace_back([&, t] {
+          auto described = llm::describe_request(services, llm::RouteSelector{},
+                                                 json::dump(Json{{"schema", "stress.resend"}, {"ids", Json::array({t})}}));
+          std::string why;
+          if (!described) {
+            why = described.error().to_string();
+          } else {
+            llm::UsageSpec usage;
+            usage.estimate = Json{{"baseline_key", "stress.resend"}, {"resources", Json{{"messages", 1}}},
+                                  {"instrument", "stress"}, {"model", "m"}, {"endpoint", "e"}};
+            auto gate = llm::make_usage_gate(services, usage);
+            start.arrive_and_wait();
+            auto admitted = gate->admit(*described, Json::object());
+            if (!admitted) why = admitted.error().to_string();
+            else if (!admitted->dispatch) why = "not dispatched: " + admitted->status;
+            else gate->settle(llm::GateSettlement{true, 0, Json::object(), Json{{"messages", 1}}});
+          }
+          if (!why.empty()) {
+            std::lock_guard lk(mu);
+            failures.push_back("round " + std::to_string(round) + " thread " + std::to_string(t) + " -> " + why);
+          }
+        });
+      for (auto& th : threads) th.join();
+    }
+    for (const auto& f : failures) MESSAGE(f);
+    CHECK(failures.empty());
+  }
 }
