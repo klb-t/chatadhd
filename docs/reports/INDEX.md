@@ -260,3 +260,12 @@ Decyzje techniczne (odwracalne):
   chwilowo (rdzeń czyta go raz przy starcie i zapisuje cały przy `set_secret`; sprawdzone na prawdziwym rdzeniu). Jawny plik wygrywa
   (migracja, awaria), brak klucza nie kasuje pliku (`.unreadable`). Opcja wyłączalna. Zaszyfrowanie reszty danych: nie (poza zakresem).
 - Otwarte: pierwsza kompilacja Kotlina i uruchomienie na urządzeniu; release signing; wznawianie przerwanego kopiowania.
+
+## S2 / R3 — jedno wejście „wykonaj akcję” (2026-10-13)
+
+- `loom_invoke(ctx, port, action, json)` w C ABI (addytywnie) + JNI; porty `storage`, `github`, `actions/list` (katalog akcji
+  z opisami: wejścia z `default`/`edit`, wymagane cechy, flagi skutków, trasa HTTP). Trasy `/api/storage/*` serwera z katalogu.
+  `loom_github_sync` robi tylko GitHub; `storage.*` tam to przestarzały alias przekazujący do `loom_invoke`.
+  Akcje magazynu w `data/runtime/actions_storage.pack` (schemat `loom.action_catalogue/1`), tymczasowo — do wchłonięcia przez
+  `actions.pack` z S1/P7. Raport: `docs/reports/S2_R3_2026-10-13.md`.
+  Cofnięcie: revert scalenia R3 na `claude/s2-parallel`; stare wejścia nie zostały usunięte.
