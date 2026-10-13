@@ -2,6 +2,7 @@
 // not (explain), and the dispatch behind loom_invoke port "actions".
 #include <algorithm>
 
+#include "loom/action_element.h"
 #include "loom/action_rules.h"
 
 namespace loom::actions {
@@ -197,22 +198,42 @@ Result<Json> Engine::propose_chain(const Json& element_json_in, const Json& targ
 // ── loom_invoke port "actions" ─────────────────────────────────────
 
 Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request) {
+  return invoke(data_dir, action, request, nullptr);
+}
+
+Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
+                    const ElementSources* sources) {
   if (!request.is_object()) return Error(Errc::InvalidArgument, "request must be a JSON object");
-  const Json* element = json::find(request, "element");
-  if (!element) return Error(Errc::InvalidArgument, "element is required");
+  const Json* given = json::find(request, "element");
+  if (!given) return Error(Errc::InvalidArgument, "element is required");
   LOOM_TRY_ASSIGN(auto engine, Engine::load(data_dir));
+  Json resolved_element = *given;
+  if (sources) {
+    LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(data_dir));
+    LOOM_TRY_ASSIGN(resolved_element, resolver.resolve(*sources, *given, [&](std::string_view c) { return engine.has_class(c); }));
+  }
+  const Json* element = &resolved_element;
+  // Where the element came from is not part of the matching; it rides along in the answer.
+  auto annotate = [&](Result<Json> answer) -> Result<Json> {
+    if (!answer || !resolved_element.is_object()) return answer;
+    Json* out_element = json::find(*answer, "element") ? &(*answer)["element"] : nullptr;
+    if (out_element && out_element->is_object())
+      for (const char* k : {"source", "label"})
+        if (const Json* v = json::find(resolved_element, k)) (*out_element)[k] = *v;
+    return answer;
+  };
   const Json* scope = json::find(request, "scope");
   const Json no_scope;
   if (action == "for") {
     Json options = Json::object();
     for (const char* k : {"include_unmatched", "implemented_only"})
       if (const Json* v = json::find(request, k)) options[k] = *v;
-    return engine.actions_for(*element, scope ? *scope : no_scope, options);
+    return annotate(engine.actions_for(*element, scope ? *scope : no_scope, options));
   }
   if (action == "explain") {
     const std::string id = json::get_string(request, "action");
     if (id.empty()) return Error(Errc::InvalidArgument, "action is required");
-    return engine.explain(*element, id, scope ? *scope : no_scope);
+    return annotate(engine.explain(*element, id, scope ? *scope : no_scope));
   }
   if (action == "propose_chain") {
     const std::string trait = json::get_string(request, "target_trait");
@@ -223,7 +244,7 @@ Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view acti
     for (const char* k : {"preset", "max_length", "max_cost", "min_confidence", "max_results"})
       if (const Json* v = json::find(request, k)) options[k] = *v;
     const Json target = trait.empty() ? Json{{"action", target_action}} : Json{{"trait", trait}};
-    return engine.propose_chain(*element, target, scope ? *scope : no_scope, options);
+    return annotate(engine.propose_chain(*element, target, scope ? *scope : no_scope, options));
   }
   return Error(Errc::InvalidArgument, "unknown actions action '" + std::string(action) + "'");
 }

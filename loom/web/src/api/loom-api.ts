@@ -4,6 +4,8 @@
 // used when the app is embedded). src/api/index.ts picks one at runtime.
 import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type {
+  ActionAnswer,
+  ActionRun,
   ChatChunk,
   ChatRequest,
   ConfigMap,
@@ -62,6 +64,16 @@ export type Unsubscribe = () => void;
 
 export interface NativeUiRequestOptions { signal?: AbortSignal; }
 
+/** Running actions (R54): the same actions the chat window proposes, reachable without it. */
+export interface ActionsApi {
+  run(request: Record<string, unknown>): Promise<ActionRun>;
+  /** Answer the question a run is paused on; the receipt must be the pending one. */
+  confirm(answer: ActionAnswer): Promise<ActionRun>;
+  cancel(request: { run_id: string; ref?: string }): Promise<ActionRun>;
+  status(request: { run_id?: string; list?: boolean; status?: string; conv_id?: string; limit?: number }): Promise<ActionRun>;
+  route(request: { text: string; conv_id?: string; method?: string; lang?: string }): Promise<Record<string, unknown>>;
+}
+
 export interface LoomApi {
   // Server-owned static-kernel bridges. Older embedded hosts omit capabilities
   // until their actual native dispatch is available.
@@ -73,6 +85,8 @@ export interface LoomApi {
   usagePolicy?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
   packet?(command: Record<string, unknown>): Promise<Record<string, unknown>>;
   readonly operations?: import("./operations").OperationsApi;
+  // Additive capability (loom_invoke ports actions and chat); older hosts leave it unavailable.
+  readonly actions?: ActionsApi;
   // Additive capability; older embedded hosts can leave it unavailable.
   readonly knowledge?: KnowledgeApi;
   // Optional: older native embedded hosts do not dispatch this ABI yet.

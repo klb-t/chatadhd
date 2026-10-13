@@ -267,6 +267,31 @@ void register_builtin(Providers& p) {
     if (by.empty()) return only(unknown("no_interface_registry"));
     return only(known_by(static_cast<std::int64_t>(by.size()), by));
   });
+  // Input/output devices (graph/devices.pack, values at params.pointer): value = number of device nodes; by = {class: nodes}.
+  // An entry with `instances` {from:{domain,pointer}, class} expands into one node per item of that profile (configured
+  // storages...). Descriptions only: no hardware is touched.
+  p.add("devices.enumerate", [](const Context& c, const Json& params) {
+    const Json* reg = pointer_at(c.values, json::get_string(params, "pointer"));
+    if (!reg || !reg->is_object()) return only(unknown("no_device_registry"));
+    Json by = Json::object();
+    std::int64_t total = 0;
+    for (const auto& item : reg->items()) {
+      const Json& def = item.value();
+      if (!def.is_object() || json::get_bool(def, "hidden", false)) continue;
+      std::int64_t n = 1;
+      if (const Json* inst = json::find(def, "instances"); inst && inst->is_object()) {
+        n = 0;
+        const Json* from = json::find(*inst, "from");
+        auto profile = from && from->is_object() ? RuntimeProfile::load(json::get_string(*from, "domain"), c.env.data_dir)
+                                                 : Result<RuntimeProfile>(Error(Errc::InvalidArgument, "no source"));
+        const Json* v = profile ? pointer_at(profile->values(), json::get_string(*from, "pointer")) : nullptr;
+        if (v) n = static_cast<std::int64_t>(member_count(*v));
+      }
+      by[json::get_string(def, "class", item.key())] = by.value(json::get_string(def, "class", item.key()), static_cast<std::int64_t>(0)) + n;
+      total += n;
+    }
+    return only(known_by(total, by));
+  });
   p.add("profile.domains", [](const Context&, const Json&) {
     return only(known(static_cast<std::int64_t>(RuntimeProfile::domains().size())));
   });
@@ -434,6 +459,9 @@ Json list_view(const Json& values, const std::string& pointer, const std::string
   auto add = [&](const std::string& id, const Json& item) {
     Json node{{"id", id}, {"label", label_of(item.is_object() ? item.value("label", Json()) : Json(), lang, id)}};
     if (item.is_object() && item.contains("parent")) node["parent"] = item["parent"];
+    // Devices (graph/devices.pack): the class (traits come from classes.pack) and the availability per platform.
+    if (item.is_object() && item.contains("class")) node["class"] = item["class"];
+    if (item.is_object() && item.contains("availability")) node["availability"] = item["availability"];
     out.push_back(node);
   };
   if (v->is_object()) {

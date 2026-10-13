@@ -2,7 +2,7 @@
 // request/response endpoints, fetch + ReadableStream for SSE endpoints
 // (chat, import progress, live events). Talks to loom-server's /api/*.
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import type { LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { ActionsApi, LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import { createOperationsApi } from "./operations";
 import type {
   ChatChunk,
@@ -73,6 +73,13 @@ export class LoomHttpApi implements LoomApi {
   usagePolicy(command: Record<string, unknown>): Promise<Record<string, unknown>> {
     return this.req("POST", "/api/usage-policy", command);
   }
+  readonly actions: ActionsApi = {
+    run: (request) => this.req("POST", "/api/actions/run", request),
+    confirm: (answer) => this.req("POST", "/api/actions/confirm", answer),
+    cancel: (request) => this.req("POST", "/api/actions/cancel", request),
+    status: (request) => this.req("POST", "/api/actions/status", request),
+    route: (request) => this.req("POST", "/api/chat/route", request),
+  };
   packet(command: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Packet failures contain the immutable first-response capture. Preserve
     // that envelope for inspection even when native validation returns HTTP 400.

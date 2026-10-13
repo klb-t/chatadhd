@@ -1,0 +1,245 @@
+{
+  "schema": "loom.graph_devices/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Input/output devices as graph nodes (GRAF_HUB_KOD_SILNIK §4.3, S2/R9). Each entry has a class (data/graph/classes.pack: class and traits come from there, never from code) and availability per platform: available | permission (usable after a user grant) | unavailable. Descriptions only: no hardware is accessed. Device ids equal their class id (also for the kinds that expand into instances), so `actions.for {element: \"microphone\"}` resolves them through the class traits. Entries with `instances` expand into one node per configured item (storages, ...). Calibration: the owner may add, hide or change entries through the graph_entry overlay.",
+  "platforms": {
+    "web": {
+      "en": "Web (browser)",
+      "pl": "Web (przeglądarka)"
+    },
+    "android": {
+      "en": "Android",
+      "pl": "Android"
+    },
+    "server": {
+      "en": "Server",
+      "pl": "Serwer"
+    },
+    "cli": {
+      "en": "Command line",
+      "pl": "Wiersz poleceń"
+    }
+  },
+  "availability_values": {
+    "available": {
+      "en": "Usable",
+      "pl": "Dostępne"
+    },
+    "permission": {
+      "en": "Usable after the user grants permission",
+      "pl": "Dostępne po zgodzie użytkownika"
+    },
+    "unavailable": {
+      "en": "Not available on this platform",
+      "pl": "Niedostępne na tej platformie"
+    }
+  },
+  "devices": {
+    "microphone": {
+      "class": "microphone",
+      "label": {
+        "en": "Microphone",
+        "pl": "Mikrofon"
+      },
+      "availability": {
+        "web": "permission",
+        "android": "permission",
+        "server": "unavailable",
+        "cli": "unavailable"
+      },
+      "note": {
+        "en": "Browser getUserMedia / Android RECORD_AUDIO; a server or CLI has no capture device unless a host provides one.",
+        "pl": "Przeglądarka getUserMedia / Android RECORD_AUDIO; serwer i CLI nie mają urządzenia, chyba że udostępni je host."
+      }
+    },
+    "camera": {
+      "class": "camera",
+      "label": {
+        "en": "Camera",
+        "pl": "Aparat"
+      },
+      "availability": {
+        "web": "permission",
+        "android": "permission",
+        "server": "unavailable",
+        "cli": "unavailable"
+      }
+    },
+    "screen": {
+      "class": "screen",
+      "label": {
+        "en": "Screen",
+        "pl": "Ekran"
+      },
+      "availability": {
+        "web": "available",
+        "android": "available",
+        "server": "unavailable",
+        "cli": "available"
+      },
+      "note": {
+        "en": "CLI: terminal output.",
+        "pl": "CLI: wyjście terminala."
+      }
+    },
+    "speaker": {
+      "class": "speaker",
+      "label": {
+        "en": "Speaker",
+        "pl": "Głośnik"
+      },
+      "availability": {
+        "web": "available",
+        "android": "available",
+        "server": "unavailable",
+        "cli": "unavailable"
+      }
+    },
+    "file_access": {
+      "class": "file_access",
+      "label": {
+        "en": "Files",
+        "pl": "Pliki"
+      },
+      "availability": {
+        "web": "permission",
+        "android": "permission",
+        "server": "available",
+        "cli": "available"
+      },
+      "note": {
+        "en": "Web: file picker; Android: storage access; server/CLI: the process file system.",
+        "pl": "Web: wybierak plików; Android: dostęp do pamięci; serwer/CLI: system plików procesu."
+      }
+    },
+    "clipboard": {
+      "class": "clipboard",
+      "label": {
+        "en": "Clipboard",
+        "pl": "Schowek"
+      },
+      "availability": {
+        "web": "permission",
+        "android": "available",
+        "server": "unavailable",
+        "cli": "unavailable"
+      }
+    },
+    "notifications": {
+      "class": "notifications",
+      "label": {
+        "en": "Notifications",
+        "pl": "Powiadomienia"
+      },
+      "availability": {
+        "web": "permission",
+        "android": "permission",
+        "server": "unavailable",
+        "cli": "available"
+      },
+      "note": {
+        "en": "CLI: terminal bell/line.",
+        "pl": "CLI: dzwonek/linia terminala."
+      }
+    },
+    "storage_backend": {
+      "class": "storage_backend",
+      "label": {
+        "en": "Configured storage backends",
+        "pl": "Skonfigurowane magazyny"
+      },
+      "availability": {
+        "web": "available",
+        "android": "available",
+        "server": "available",
+        "cli": "available"
+      },
+      "instances": {
+        "from": {
+          "domain": "storage_security",
+          "pointer": "/storages"
+        },
+        "class": "storage_backend",
+        "availability_key": "available_on",
+        "platform_map": {
+          "web": [
+            "web",
+            "all"
+          ],
+          "android": [
+            "android",
+            "all"
+          ],
+          "server": [
+            "server",
+            "linux",
+            "macos",
+            "windows",
+            "all"
+          ],
+          "cli": [
+            "linux",
+            "macos",
+            "windows",
+            "all"
+          ]
+        }
+      },
+      "note": {
+        "en": "One node per storage in the storage_security profile; their availability is that profile's available_on (OS names), mapped to platforms here.",
+        "pl": "Jeden węzeł na magazyn z profilu storage_security; dostępność z jego pola available_on (nazwy systemów), tu mapowana na platformy."
+      }
+    },
+    "model_provider": {
+      "class": "model_provider",
+      "label": {
+        "en": "Model providers",
+        "pl": "Dostawcy modeli"
+      },
+      "availability": {
+        "web": "available",
+        "android": "available",
+        "server": "available",
+        "cli": "available"
+      },
+      "secret_keys": [
+        "api_key",
+        "anthropic_batch_key",
+        "groq_api_key",
+        "google_speech_api_key",
+        "ocr_space_api_key"
+      ],
+      "config_keys": [
+        "base_url"
+      ],
+      "note": {
+        "en": "Chat (base_url + api_key), batch (anthropic_batch_key), speech (Groq, Google), OCR (ocr.space). Reachable only with a key and network.",
+        "pl": "Czat (base_url + api_key), batch (anthropic_batch_key), mowa (Groq, Google), OCR (ocr.space). Dostępne tylko z kluczem i siecią."
+      }
+    },
+    "server_endpoint": {
+      "class": "server_endpoint",
+      "label": {
+        "en": "Server and sync",
+        "pl": "Serwer i synchronizacja"
+      },
+      "availability": {
+        "web": "available",
+        "android": "available",
+        "server": "available",
+        "cli": "available"
+      },
+      "secret_keys": [
+        "github_token"
+      ],
+      "config_keys": [
+        "github_repo"
+      ],
+      "note": {
+        "en": "Loom HTTP server and GitHub sync endpoint.",
+        "pl": "Serwer HTTP Loom i punkt synchronizacji GitHub."
+      }
+    }
+  }
+}

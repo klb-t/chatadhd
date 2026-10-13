@@ -59,6 +59,9 @@ class GitHubSyncManager;
 namespace net {
 class HttpTransport;
 }
+namespace actions {
+class ActionRunner;
+}
 namespace archive {
 class ArchiveIntelligence;
 }
@@ -120,6 +123,7 @@ class Runtime {
   GitHubSyncManager& github();
   archive::ArchiveIntelligence& archive();  // Project Compiler (archive.h)
   knowledge::KnowledgeEngine& knowledge();  // knowledge pipeline (knowledge.h)
+  actions::ActionRunner& actions();         // runs actions: the interpreter bound to this runtime (action_runner.h)
 
   // Explicit source I/O boundary. Existing get_msgs/get_messages remain storage
   // reads. options = {read_options?: resource_read overrides}; grant belongs to
