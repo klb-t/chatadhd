@@ -279,9 +279,9 @@
       "graph_native.reply": {
         "id": "graph_native.reply",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Graph-native reply",
-        "description": "A graph-native message in a conversation: the reply is a graph packet compiled by a method.",
+        "description": "A graph-native message in a conversation: the reply is a graph packet compiled by a method. The separate-model postprocess is its model step (the primary chat call is chat.send).",
         "steps": [
           {
             "action": "use_model"

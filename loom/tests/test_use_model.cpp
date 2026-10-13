@@ -587,8 +587,9 @@ TEST_SUITE("use_model") {
     }
     CHECK(catalogue["share"]["effects"]["irreversible"] == true);
     CHECK(catalogue["save"]["effects"]["writes"] == true);
-    // composite: steps of other actions; the six migrated sites
-    for (const char* name : {"chat.send", "semantic.analyse", "semantic.batch", "batch.chat", "archive.refine", "goal.typing"}) {
+    // composite: steps of other actions; every migrated site
+    for (const char* name : {"chat.send", "semantic.analyse", "semantic.batch", "batch.chat", "archive.refine", "goal.typing",
+                             "knowledge.propose_semantics", "graph_native.reply"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));
       const Json& a = catalogue[name];
@@ -605,7 +606,7 @@ TEST_SUITE("use_model") {
     CHECK(catalogue["chat.send"]["requires"] == Json::array({"conversation"}));
     CHECK(catalogue["semantic.analyse"]["effects"]["reads_only"] == true);
     CHECK(catalogue["chat.send"]["effects"]["writes"] == true);
-    for (const char* name : {"graph_native.reply", "jev.edge_classify", "input.route_intent", "script.call", "agent.call",
+    for (const char* name : {"jev.edge_classify", "input.route_intent", "script.call", "agent.call",
                              "media.generate_image", "media.generate_video", "media.generate_music"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));

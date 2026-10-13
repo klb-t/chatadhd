@@ -10,6 +10,7 @@
 #include "loom/providers.h"
 #include "loom/provenance.h"
 #include "loom/net/sse.h"
+#include "loom/use_model.h"
 #include "loom/util/base64.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
@@ -523,60 +524,82 @@ Json run_graph_reply_postprocess(GraphReplyServices& services, const GraphReplyP
     if (!auth.contains(manifest->auth_scheme)) { result["error"]["code"] = "postprocess_auth_adapter_unavailable"; return result; }
     const auto key = services.secrets.get_string(manifest->auth_secret);
     if (!manifest->auth_secret.empty() && key.empty()) { result["error"]["code"] = "postprocess_credential_unavailable"; return result; }
-    net::HttpRequest request;
-    request.method = "POST";
-    request.url = manifest->base_url;
-    while (!request.url.empty() && request.url.back() == '/') request.url.pop_back();
     const auto* endpoint = json::find(options, "endpoint_path");
     if (!endpoint) endpoint = json::find(manifest->metadata, "chat_completions_path");
     if (!endpoint || !endpoint->is_string() || endpoint->get<std::string>().empty()) {
       result["error"]["code"] = "postprocess_endpoint_data_required"; return result;
     }
-    const auto path = endpoint->get<std::string>();
-    request.url += path.front() == '/' ? path : "/" + path;
-    request.body = json::dump(payload);
-    request.timeout_ms = timeout->get<int>();
-    request.stream = stream;
+    // The manifest's defaults, then the content type; the route's authentication
+    // follows (the order the request has always had on the wire).
+    net::Headers recipe_headers;
     for (auto header = manifest->default_headers.begin(); header != manifest->default_headers.end(); ++header) {
       if (!header->is_string()) { result["error"]["code"] = "postprocess_manifest_header_invalid"; return result; }
-      request.headers.emplace_back(header.key(), header->get<std::string>());
+      recipe_headers.emplace_back(header.key(), header->get<std::string>());
     }
-    request.headers.emplace_back("Content-Type", "application/json");
-    if (manifest->auth_scheme == "bearer") request.headers.emplace_back("Authorization", "Bearer " + key);
-    else if (manifest->auth_scheme == "token") request.headers.emplace_back("Authorization", "token " + key);
-    else if (manifest->auth_scheme == "x-api-key") request.headers.emplace_back("x-api-key", key);
-    else if (manifest->auth_scheme == "query:key") request.url = net::with_query(request.url, {{"key", key}});
+    recipe_headers.emplace_back("Content-Type", "application/json");
     const auto* estimate = json::find(options, "usage_estimate");
     if (!estimate) { result["error"]["code"] = "postprocess_usage_estimate_data_required"; return result; }
+
+    // The postprocess is the graph-native reply's model step: one use-model call
+    // with the recipe payload byte for byte, admitted by the shared guard.
+    llm::Services model_services(services.config, services.secrets, services.http);
+    model_services.providers = services.providers;
+    model_services.data_root = services.root;
+    llm::ModelRequest mreq;
+    mreq.kind = "graph_reply.postprocess";
+    mreq.action = "graph_native.reply";
+    mreq.models = {llm::ModelSpec{json::get_string(payload, "model"), "", Json::object()}};
+    mreq.body = payload;
+    mreq.route.provider = manifest->id;
+    mreq.route.base_url = manifest->base_url;
+    mreq.route.endpoint = endpoint->get<std::string>();
+    mreq.wire_headers = std::move(recipe_headers);
+    mreq.timeout_ms = timeout->get<int>();
+    mreq.capture = true;  // the exact wire bytes, SSE included, are retained below
+    mreq.cancel = cancel;
+    mreq.contain_exceptions = Error(Errc::Network, "postprocess_transport_failed");
     ModelUsageGuard guard(services);
-    auto admission = guard.admit(request, *estimate, options.value("confirmation", Json::object()));
-    result["execution_usage"] = guard.decisions();
-    if (!admission) { result["error"]["code"] = std::string(errc_name(admission.error().code)); return result; }
-    result["usage_admission"] = *admission;
-    if (!admission->value("dispatch_authorized", false)) { result["status"] = "usage_held"; return result; }
-    if (cancel && cancel->cancelled()) {
-      auto settlement = guard.settle(false, 0);
-      result["status"] = "cancelled";
+    bool usage_held = false;
+    mreq.usage.gate = llm::make_function_gate([&](const net::HttpRequest& wire, const Json&) -> Result<llm::GateDecision> {
+      auto admission = guard.admit(wire, *estimate, options.value("confirmation", Json::object()));
       result["execution_usage"] = guard.decisions();
-      if (!settlement) result["error"]["code"] = "preflight_cancellation_accounting_error";
+      if (!admission) return admission.error();
+      result["usage_admission"] = *admission;
+      llm::GateDecision admitted;
+      admitted.decision = *admission;
+      admitted.status = json::get_string(*admission, "status", "unavailable");
+      if (!admission->value("dispatch_authorized", false)) { usage_held = true; return admitted; }
+      if (cancel && cancel->cancelled()) {
+        auto settlement = guard.settle(false, 0);
+        result["status"] = "cancelled";
+        result["execution_usage"] = guard.decisions();
+        if (!settlement) result["error"]["code"] = "preflight_cancellation_accounting_error";
+        return admitted;
+      }
+      admitted.dispatch = true;
+      return admitted;
+    });
+    auto call = llm::prepare_call(model_services, mreq);
+    if (!call) { result["error"]["code"] = std::string(errc_name(call.error().code)); return result; }
+    call->request.stream = stream;  // a hint only: the raw bytes are decoded below
+    auto sent = llm::execute_call(model_services, mreq, *call);
+    const net::HttpRequest& request = call->request;
+    if (sent.state == llm::State::GateError) { result["error"]["code"] = std::string(errc_name(sent.error->code)); return result; }
+    if (sent.state == llm::State::Held) {
+      if (usage_held) result["status"] = "usage_held";
       return result;
     }
-    std::string bytes;
-    int status = 0;
-    bool received_headers = false;
-    net::StreamSink sink;
-    sink.on_headers = [&](int code, const net::Headers&) { status = code; received_headers = true; return true; };
-    sink.on_data = [&](std::string_view chunk) { bytes.append(chunk); return !(cancel && cancel->cancelled()); };
-    Result<net::HttpResponse> response = Error(Errc::Network, "postprocess_transport_failed");
-    try { response = services.http.send(request, &sink, cancel); }
-    catch (...) { response = Error(Errc::Network, "postprocess_transport_failed"); }
-    if (response) { status = response->status; if (bytes.empty()) bytes = response->body; }
+    std::string bytes = sent.body;
+    const int status = sent.http_status;
+    const bool received_headers = sent.http_status != 0;
+    const bool transport_ok = !sent.error.has_value();
+    const bool http_ok = transport_ok && status >= 200 && status < 300;
     Json source_ref = nullptr;
-    if (received_headers || response || !bytes.empty()) {
+    if (received_headers || transport_ok || !bytes.empty()) {
       auto source = retain_graph_reply_bytes(services, bytes, Json{{"channel", "http_wire"}, {"status", status},
-          {"complete", static_cast<bool>(response)}, {"provider_id", manifest->id},
+          {"complete", transport_ok}, {"provider_id", manifest->id},
           {"requested_model", payload["model"]}, {"request_sha256", Sha256::hex(request.body)},
-          {"model_origin", "model"}, {"transport_error", response ? Json(nullptr) : Json(std::string(errc_name(response.error().code)))}});
+          {"model_origin", "model"}, {"transport_error", transport_ok ? Json(nullptr) : Json(std::string(errc_name(sent.error->code)))}});
       if (!source) {
         auto unknown = guard.settle(true, bytes.size());
         result["execution_usage"] = guard.decisions();
@@ -599,9 +622,9 @@ Json run_graph_reply_postprocess(GraphReplyServices& services, const GraphReplyP
     auto settlement = guard.settle(true, bytes.size(), parsed_usage);
     result["execution_usage"] = guard.decisions();
     if (!settlement) { result["status"] = "accounting_error"; result["error"]["code"] = std::string(errc_name(settlement.error().code)); return result; }
-    if (!response || !response->ok()) {
+    if (!http_ok) {
       result["status"] = "postprocess_error";
-      result["error"]["code"] = response ? "http" : std::string(errc_name(response.error().code));
+      result["error"]["code"] = transport_ok ? "http" : std::string(errc_name(sent.error->code));
       return result;
     }
     if (!parsed) { result["status"] = "schema_error"; result["error"]["code"] = "postprocess_response_json_invalid"; return result; }
