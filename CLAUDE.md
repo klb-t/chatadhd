@@ -37,6 +37,8 @@ cannot be resumed at all, so their work is lost.
   decisions already taken) is cheaper than resuming a very large context.
 - Keep contexts small: targeted reads (grep, line ranges), no dumps of large
   files or logs; native builds serialized and run once per change.
+- **Owner, 2026-10-13:** the parallel session S2 (`docs/reports/PLAN_S2_2026-10-13.md`) may run
+  several agents at once (preset 4; the owner raises it in one word). S1 stays single-track.
 
 ## Project Overview
 
