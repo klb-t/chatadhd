@@ -458,3 +458,12 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§7, §9. Gałą�
   dwa tryby mogą dzielić jeden przebieg. Tryb `llm` przez istniejące `use_model`. Wyszukiwanie: lista warstw zamiast numeru,
   pierwsza używalna odpowiada, awaria przekazuje do następnej; stary numeryczny konstruktor jako adapter.
 - Domyślne zachowanie bez zmian. Raport: `docs/reports/S2_R6_2026-10-13.md`. Cofnięcie: revert scalenia R6 lub kolejność w profilu.
+
+## S2 / R7 — drobne zaległości po R2–R4 (2026-10-13)
+
+- `loom_invoke("actions","list")` uwzględnia nakładkę użytkownika `profiles/actions.pack` (`hidden:true` ukrywa wpis na liście;
+  trasy serwera nadal z wbudowanego katalogu — to okablowanie kodu). Pomoc CLI zawiera `config fields`. Rejestr interfejsów
+  ma też `jni` (eksporty mostka) i `web` (wywołania API aplikacji web); liczba interfejsów z rejestru, nie wpisana na sztywno.
+- Raport: `docs/reports/S2_R7_2026-10-13.md`. Cofnięcie: revert scalenia R7.
+- Otwarte: wywołania web spoza wzorca `"VERB","/api/..."` (import, eksport, wysyłka plików) poza rejestrem; skróty w
+  `data_domains.pack` bez generatora (liczone skryptem jednorazowym przy każdej zmianie).
