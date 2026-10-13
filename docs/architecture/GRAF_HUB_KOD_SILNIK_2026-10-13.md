@@ -20,6 +20,22 @@ Uzupełnia `DUCH_GRAFU_2026-10-11.md` i `EVERYTHING_IN_THE_GRAPH_2026-10-11.md`;
 - **Pamięci (dowolna kombinacja) to zdecydowana większość grafu, ale nie cały graf.** Model samego siebie
   i podstawowe przepływy leżą w plikach programu, nie w magazynie — „taki niby ROM”.
 
+### Doprecyzowanie właściciela (2026-10-13): „użyj modelu” to bardzo ogólna rutyna
+
+Obejmuje między innymi (to tylko oczywiste przykłady):
+- wysłanie wiadomości do konwersacji; wiadomość grafowa (graph native) w konwersacji;
+- analizę strukturalną i semantyczną — różne przepływy;
+- użycie przez skrypt wewnętrzny uruchamiany w aplikacji albo przez agenta;
+- klasyfikację i ważenie krawędzi przez Jev;
+- analizę wejścia użytkownika: czy to wiadomość, czy polecenie do interfejsu; jeśli polecenie — analizę
+  możliwości wykonania, kosztów itd.;
+- typowe zastosowania innych modeli: wygeneruj wideo, muzykę, obraz.
+
+Wniosek techniczny: akcja „użyj modelu” nie zna czatu ani tekstu. Przyjmuje węzły dowolnego rodzaju (tekst, obraz,
+dźwięk, wideo, dane strukturalne), zwraca węzły dowolnego rodzaju (z plikami w magazynie i pochodzeniem), a model
+deklaruje w grafie, co przyjmuje i co zwraca. Każde zastosowanie z listy to osobny workflow w grafie, który tę
+akcję wywołuje — nowe zastosowanie = nowy workflow (dane), nie nowy kod.
+
 ## 2. Jak to czytam technicznie (Claude)
 
 Jedno zdanie: **silnik wykonuje tylko jedną rzecz — „weź te węzły, zastosuj do nich akcję wskazaną w grafie,
