@@ -286,6 +286,7 @@ void ActionRunner::install_executors(ExecutorTable& table) {
 Result<ActionRunner::Loaded> ActionRunner::load() {
   const auto& root = rt_.paths().root;
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
+  engine.set_user_values(rt_.config().all());  // the user's settings are the person level of scoped values
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   Json settings = Json::object();
   if (auto profile = RuntimeProfile::load("action_run", root)) settings = profile->values();
@@ -425,7 +426,7 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
-  return actions::invoke(rt_.paths().root, action, request, &sources);
+  return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config());
 }
 
 }  // namespace loom::actions

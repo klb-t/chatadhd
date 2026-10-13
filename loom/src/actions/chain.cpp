@@ -91,17 +91,51 @@ Result<Json> Engine::chains(const Prepared& p, const Json& target, const Scope& 
     if (!goal_entry) return Error(Errc::NotFound, "unknown action '" + goal_action + "'");
   }
 
-  // Preset, then per-call overrides.
-  const std::string preset_name = options.is_object() && json::find(options, "preset") ? json::get_string(options, "preset")
-                                                                                       : json::get_string(extrapolation_, "active");
+  // The preset and every bound come through the scope chain (R47, the same one the rules use): the installation's
+  // preset (data), the user's settings, then rules of any level; the most specific scope wins and the answer
+  // says which scope set each value. A present key in the call overrides all of it.
+  Json resolved = Json::object();
+  const std::string preset_setting = json::get_string(extrapolation_, "setting");
+  const std::string bounds_setting = json::get_string(extrapolation_, "bounds_setting");
+  const bool has_person = !level_name("person").empty();
+  const std::string deepest = json::get_string(scope_chain_.empty() ? Json::object() : scope_chain_.back(), "id");
+  std::string preset_name;
+  std::string preset_level = "installation";
+  std::string preset_scope_id;
+  if (options.is_object() && json::find(options, "preset")) {
+    preset_name = json::get_string(options, "preset");
+    preset_level = deepest.empty() ? "installation" : deepest;
+    resolved["preset"] = Json{{"value", preset_name}, {"defined", true}, {"scope", preset_level}, {"source", "call"}};
+  } else {
+    std::vector<Baseline> bl;
+    if (const std::string active = json::get_string(extrapolation_, "active"); !active.empty() && !level_name("installation").empty())
+      bl.push_back({"installation", active, "profile:action_rules.extrapolation.active", 0});
+    if (has_person && !preset_setting.empty())
+      if (const Json* u = json::find(user_values_, preset_setting); u && u->is_string() && !u->get<std::string>().empty())
+        bl.push_back({"person", *u, "setting:" + preset_setting, 0});
+    LOOM_TRY_ASSIGN(ScopedValue sv, resolve_value("extrapolation.preset", scope, bl));
+    if (sv.defined && sv.value.is_string()) preset_name = sv.value.get<std::string>();
+    if (sv.defined) {
+      preset_level = sv.scope;
+      preset_scope_id = sv.scope_id;
+    }
+    resolved["preset"] = sv.to_json();
+  }
   const Json* presets = json::find(extrapolation_, "presets");
   const Json* preset = presets ? json::find(*presets, preset_name) : nullptr;
-  if (!preset) return Error(Errc::InvalidArgument, "unknown extrapolation preset '" + preset_name + "'");
+  if (!preset) {
+    std::string by = " (no preset is set)";
+    if (const Json* r = json::find(resolved, "preset"); r && json::get_string(*r, "source") != "")
+      by = " (set by " + json::get_string(*r, "source") + (json::get_string(*r, "scope").empty() ? "" : " at " + json::get_string(*r, "scope")) + ")";
+    return Error(Errc::InvalidArgument, "unknown extrapolation preset '" + preset_name + "'" + by);
+  }
   Json out = Json::object();
   out["schema"] = "loom.actions_chain/1";
   out["proposal_only"] = true;  // chains are proposals; nothing is executed
   out["preset"] = preset_name;
   out["target"] = target;
+  out["scope"] = scope_json(scope);
+  out["resolved"] = resolved;
   if (!json::get_bool(*preset, "enabled", true)) {
     out["enabled"] = false;
     out["chains"] = Json::array();
@@ -110,19 +144,38 @@ Result<Json> Engine::chains(const Prepared& p, const Json& target, const Scope& 
   out["enabled"] = true;
   Bounds bounds;
   {
-    std::optional<double> len, cost, conf, results;
-    for (const Json* source : {preset, static_cast<const Json*>(&options)}) {
-      if (!source->is_object()) continue;
-      LOOM_TRY(read_bound(*source, "max_length", true, len));
-      LOOM_TRY(read_bound(*source, "max_cost", false, cost));
-      LOOM_TRY(read_bound(*source, "min_confidence", false, conf));
-      LOOM_TRY(read_bound(*source, "max_results", true, results));
+    struct BoundSpec {
+      const char* name;
+      bool integer;
+    };
+    for (const BoundSpec spec : {BoundSpec{"max_length", true}, BoundSpec{"max_cost", false}, BoundSpec{"min_confidence", false},
+                                 BoundSpec{"max_results", true}}) {
+      std::vector<Baseline> bl;
+      if (const Json* pv = json::find(*preset, spec.name); !level_name(preset_level).empty() && pv)
+        bl.push_back({preset_level, *pv, "preset:" + preset_name, 0, preset_scope_id});
+      if (has_person && !bounds_setting.empty())
+        if (const Json* u = json::find(user_values_, bounds_setting); u && u->is_object())
+          if (const Json* uv = json::find(*u, spec.name)) bl.push_back({"person", *uv, "setting:" + bounds_setting, 1});
+      LOOM_TRY_ASSIGN(ScopedValue sv, resolve_value(std::string("extrapolation.") + spec.name, scope, bl));
+      std::optional<double> v;
+      if (sv.defined) {
+        LOOM_TRY(read_bound(Json{{spec.name, sv.value}}, spec.name, spec.integer, v));
+        Json r = sv.to_json();
+        if (sv.source.rfind("preset:", 0) == 0) r["preset"] = preset_name;
+        resolved[spec.name] = r;
+      }
+      if (options.is_object())
+        if (const Json* c = json::find(options, spec.name)) {
+          LOOM_TRY(read_bound(options, spec.name, spec.integer, v));
+          resolved[spec.name] = Json{{"value", *c}, {"defined", true}, {"scope", deepest}, {"source", "call"}};
+        }
+      if (std::string(spec.name) == "max_length") { if (v) bounds.max_length = static_cast<long>(*v); }
+      else if (std::string(spec.name) == "max_cost") bounds.max_cost = v;
+      else if (std::string(spec.name) == "min_confidence") bounds.min_confidence = v;
+      else if (v) bounds.max_results = static_cast<long>(*v);
     }
-    if (len) bounds.max_length = static_cast<long>(*len);
-    bounds.max_cost = cost;
-    bounds.min_confidence = conf;
-    if (results) bounds.max_results = static_cast<long>(*results);
   }
+  out["resolved"] = resolved;
   out["bounds"] = bounds_json(bounds);
 
   std::set<std::string> start;

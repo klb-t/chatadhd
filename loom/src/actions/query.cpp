@@ -4,6 +4,7 @@
 
 #include "loom/action_element.h"
 #include "loom/action_rules.h"
+#include "loom/config.h"
 
 namespace loom::actions {
 
@@ -198,15 +199,21 @@ Result<Json> Engine::propose_chain(const Json& element_json_in, const Json& targ
 // ── loom_invoke port "actions" ─────────────────────────────────────
 
 Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request) {
-  return invoke(data_dir, action, request, nullptr);
+  return invoke(data_dir, action, request, nullptr, nullptr);
 }
 
 Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
                     const ElementSources* sources) {
+  return invoke(data_dir, action, request, sources, nullptr);
+}
+
+Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
+                    const ElementSources* sources, const Config* config) {
   if (!request.is_object()) return Error(Errc::InvalidArgument, "request must be a JSON object");
   const Json* given = json::find(request, "element");
   if (!given) return Error(Errc::InvalidArgument, "element is required");
   LOOM_TRY_ASSIGN(auto engine, Engine::load(data_dir));
+  if (config) engine.set_user_values(config->all());  // the live settings, not only what is saved
   Json resolved_element = *given;
   if (sources) {
     LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(data_dir));

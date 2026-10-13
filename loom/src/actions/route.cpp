@@ -52,6 +52,7 @@ Result<Data> load_data(Runtime& rt) {
   const auto root = rt.paths().root;
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("intent_routing", root));
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
+  engine.set_user_values(rt.config().all());  // the user's settings are the person level of scoped values
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   std::set<std::string> keys;
   if (auto fields = settings_fields(root))
@@ -539,18 +540,21 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::
       if (json::get_bool(p, "required", false) && !c.args.contains(name) && name != element_arg) missing_args.push_back(name);
     }
   if (!missing_args.empty()) return infeasible(Json{{"code", "missing_args"}, {"args", missing_args}});
+  // The scope of the question (R47): this conversation and the turn, so rules and thresholds bound to the conversation apply.
+  const Json scope = conv.id.empty() ? Json(nullptr) : Json{{"conversation", conv.id}, {"turn", ""}};
   // Fit: the action fits when the element has the traits it requires; else a chain may supply them.
-  auto view = d.engine.actions_for(element_json, Json(nullptr), Json{{"include_unmatched", true}});
+  auto view = d.engine.actions_for(element_json, scope, Json{{"include_unmatched", true}});
   if (!view) return infeasible(Json{{"code", "error"}, {"message", view.error().message}});
   Json row = nullptr;
   for (const auto& r : (*view)["actions"])
     if (json::get_string(r, "action") == c.action) row = r;
   const bool fits = !row.is_null() && json::get_string(row, "status") != "not_applicable";
   Json request = Json{{"element", element_json}, {"args", c.args}};
+  if (!scope.is_null()) request["scope"] = scope;
   if (fits) {
     request["action"] = c.action;
   } else {
-    auto chains = d.engine.propose_chain(element_json, Json{{"action", c.action}}, Json(nullptr), Json::object());
+    auto chains = d.engine.propose_chain(element_json, Json{{"action", c.action}}, scope, Json::object());
     if (!chains || !(*chains)["chains"].is_array() || (*chains)["chains"].empty()) {
       Json reason{{"code", "unfit"}, {"missing", row.is_null() ? Json::array() : row.value("missing", Json::array())}};
       if (chains && chains->contains("beyond_bounds")) reason["beyond_bounds"] = (*chains)["beyond_bounds"];
