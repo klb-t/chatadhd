@@ -216,6 +216,43 @@ class ActiveTaskServerTest(unittest.TestCase):
         print("Analysis response limit HTTP admission: exact JSON integer boundaries, unchanged type rejection, "
               "0 provider calls, no usage reservation. Effective size is checked separately in native bridge.")
 
+    def test_analysis_prepared_request_bytes_are_pinned(self):
+        # Golden: URL, header order, exact body bytes, timeout and stream flag of a
+        # prepared analysis request; credential values are redacted in the view.
+        contract = {"schema": "loom.analysis_prompt/1", "id": "synthetic.golden", "version": 1,
+                    "messages": [{"role": "user", "content": [{"binding": "text"}]}],
+                    "request_parameters": {"temperature": 0, "max_tokens": 64},
+                    "transport": {"method": "POST", "path": "/chat/completions", "timeout_ms": 31000,
+                                  "stream": False,
+                                  "headers": {"Content-Type": "application/json", "X-Title": "Golden"}},
+                    "analysis_parameters": {"limits": {"max_response_bytes": 4096}},
+                    "output_schema": {"type": "object"}, "validation_mode": "strict"}
+        provider = f"http://127.0.0.1:{self.provider.server_port}"
+        command = {"operation": "prepare", "prompt_snapshot": contract, "model": "synthetic/local",
+                   "provider": provider, "bindings": {"text": "Golden \u0105 analysis text"}}
+
+        def pinned(prepared, body, headers):
+            request = prepared["request"]
+            self.assertEqual(request["method"], "POST")
+            self.assertEqual(request["url"], provider + "/chat/completions")
+            self.assertEqual(list(request["headers"].items()), headers)
+            self.assertEqual(request["body_bytes"], body)
+            self.assertEqual(request["timeout_ms"], 31000)
+            self.assertFalse(request["stream"])
+            self.assertEqual(self.calls, [])   # preparing never dispatches
+            self.request("POST", "/api/analysis", {"operation": "discard", "prepared_id": prepared["prepared_id"]})
+
+        body = ('{"model":"synthetic/local","temperature":0,"max_tokens":64,"messages":'
+                '[{"role":"user","content":"Golden \u0105 analysis text"}]}')
+        with_key = [("Content-Type", "application/json"), ("X-Title", "Golden"), ("Authorization", "[redacted]")]
+        pinned(self.request("POST", "/api/analysis", command), body, with_key)
+        # Caller-supplied body bytes are used exactly as written.
+        exact = '{"model":"synthetic/local", "messages":[{"role":"user","content":"x"}], "temperature":1.0}'
+        pinned(self.request("POST", "/api/analysis", dict(command, body_bytes=exact)), exact, with_key)
+        # Without a stored key the request simply carries no authentication.
+        self.request("POST", "/api/secrets/api_key", {"value": ""})
+        pinned(self.request("POST", "/api/analysis", command), body, with_key[:2])
+
     def test_revision_rejection_and_trace_off_failure_survive_server_restart(self):
         self.accepted(self.chat("SOURCE_SERVER_ORIGINAL: write the report."))
         original = self.rows()
