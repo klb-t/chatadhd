@@ -395,3 +395,13 @@ Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście 
 - e2e: `test:graph-entry-browser` (panel na prawdziwym serwerze, nakładka ukrywa obszar), `test:usage-pending-browser`
   (blok ×10: potwierdź / odrzuć). Raport: `docs/reports/S2_R4_2026-10-13.md`.
   Cofnięcie: usunąć wiązanie `interfaces` w `entry.pack` albo `hidden:true` w nakładce; revert scalenia R4.
+
+## S2 / R1 — rejestr formatów importu i dostawców eksportu, platformy jako dane (2026-10-13)
+
+- `importer_core`: jeden wpis `ImportFormat` na format (rozszerzenia, rozpoznanie treści, mime, ciało importu); nowy format =
+  jeden wpis (test `test_import_format_registry.cpp`). `export_archive` nie zna nazw dostawców: `ProviderRegistry`, OpenAI
+  i Anthropic we własnych plikach. Nazwy platform (chatgpt/claude/…) w presecie `data/presets/import.pack` (`platforms`),
+  API `include/loom/platforms.h`. `grep '== "openai"\|== "claude"' loom/src` = 0. Wyniki importu bez zmian.
+- Raport: `docs/reports/S2_R1_2026-10-13.md`. Cofnięcie: revert trzech commitów R1 (kolejno) i regeneracja `import_presets.inc`.
+- Otwarte: rejestr dostawców jest globalny (testy muszą go przywracać); nowa platforma o znanej strukturze = wpis presetu,
+  nowa struktura = adapter w kodzie.
