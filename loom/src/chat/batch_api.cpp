@@ -9,6 +9,8 @@
 #include "loom/net/http.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
+#include "loom/usage_policy.h"
+#include "loom/use_model.h"
 #include "loom/util/time.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
@@ -32,33 +34,40 @@ struct BatchItem {
   std::string prompt;
 };
 
-std::optional<Json> single_request(net::HttpTransport& http, const std::string& base_url, const std::string& api_key,
+std::optional<Json> single_request(const llm::Services& services, const std::string& base_url,
                                    const std::string& model, const std::string& prompt) {
-  Json body{{"model", model},
-            {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})},
-            {"temperature", 0.1},
-            {"max_tokens", 800}};
-  net::HttpRequest req;
-  req.method = "POST";
-  req.url = base_url + "/chat/completions";
-  req.headers = {{"Authorization", "Bearer " + api_key}, {"Content-Type", "application/json"}};
-  req.body = json::dump(body);
-  req.timeout_ms = 30000;
-  auto resp = http.send(req);
-  if (!resp || resp->status != 200) return std::nullopt;
-  auto j = resp->json();
-  if (!j) return std::nullopt;
-  std::string raw;
-  try {
-    raw = j->at("choices").at(0).at("message").at("content").get<std::string>();
-  } catch (const std::exception&) {
+  llm::ModelRequest request;
+  request.kind = "batch.concurrent";
+  request.action = "batch.chat";
+  request.models = {llm::ModelSpec{model, "", Json::object()}};
+  request.prompt = prompt;
+  request.parameters = Json{{"temperature", 0.1}, {"max_tokens", 800}};
+  request.route.base_url = base_url;
+  request.referer = false;  // this path never sent attribution headers
+  request.timeout_ms = 30000;
+  auto outcome = llm::use_model(services, std::move(request));
+  if (!outcome) {
+    log::warn("loom.batch_api", "Concurrent batch request not made: {} ({})", outcome.error().message,
+              errc_name(outcome.error().code));
     return std::nullopt;
   }
-  return SemanticBatchAPI::parse_analysis(raw);
+  if (!outcome->ok()) {
+    const llm::VariantResult& failed = outcome->last();
+    log::warn("loom.batch_api", "Concurrent batch request failed: {} ({}){}", llm::to_string(failed.state),
+              failed.error ? std::string(errc_name(failed.error->code)) : "no error code",
+              failed.error ? ": " + failed.error->message
+              : failed.state == llm::State::HttpError ? ": HTTP " + std::to_string(failed.http_status) : std::string());
+    return std::nullopt;
+  }
+  auto analysis = SemanticBatchAPI::parse_analysis(outcome->last().text);
+  if (!analysis) log::warn("loom.batch_api", "Concurrent batch request returned no usable analysis JSON");
+  return analysis;
 }
 
-void run_concurrent_batch(Database& db, net::HttpTransport& http, std::mutex& mu, Json& batches, std::string batch_id,
-                          std::vector<BatchItem> items, std::string base_url, std::string api_key, std::string model) {
+void run_concurrent_batch(Database& db, const Config& cfg, const Secrets& secrets, net::HttpTransport& http,
+                          std::mutex& mu, Json& batches, std::string batch_id, std::vector<BatchItem> items,
+                          std::string base_url, std::string model) {
+  const llm::Services services(cfg, secrets, http);
   std::atomic<std::size_t> next{0};
   std::atomic<int> applied{0};
   const std::size_t n = items.size();
@@ -67,7 +76,7 @@ void run_concurrent_batch(Database& db, net::HttpTransport& http, std::mutex& mu
     while (true) {
       std::size_t i = next.fetch_add(1);
       if (i >= n) break;
-      if (auto analysis = single_request(http, base_url, api_key, model, items[i].prompt)) {
+      if (auto analysis = single_request(services, base_url, model, items[i].prompt)) {
         (void)db.mark_analysed(items[i].msg_id, *analysis);
         applied.fetch_add(1);
       }
@@ -90,15 +99,21 @@ void run_concurrent_batch(Database& db, net::HttpTransport& http, std::mutex& mu
   log::info("loom.batch_api", "Concurrent batch {}: applied {}/{}", batch_id, applied.load(), n);
 }
 
-Json check_anthropic_batch(const Secrets& secrets, net::HttpTransport& http, std::string_view batch_id) {
-  net::HttpRequest req;
-  req.method = "GET";
-  req.url = "https://api.anthropic.com/v1/messages/batches/" + std::string(batch_id);
-  req.headers = {{"x-api-key", secrets.get_string("api_key")}, {"anthropic-version", "2023-06-01"}};
-  req.timeout_ms = 30000;
-  auto resp = http.send(req);
-  if (resp && resp->status == 200) {
-    if (auto j = resp->json()) {
+// Native batch status through the batch provider's adapter (no spend: no guard).
+Json check_anthropic_batch(const llm::Services& services, const std::string& provider, std::string_view batch_id) {
+  llm::ModelRequest request;
+  request.kind = "batch.status";
+  request.action = "batch.chat";
+  request.models = {llm::ModelSpec{}};
+  request.route.provider = provider;
+  request.route.secret = "api_key";  // this path has always used the chat key
+  request.operation = llm::Operation::BatchStatus;
+  request.target = std::string(batch_id);
+  request.timeout_ms = 30000;
+  request.usage.guard = false;
+  auto outcome = llm::use_model(services, std::move(request));
+  if (outcome && outcome->last().state == llm::State::Ok) {
+    if (auto j = json::parse(outcome->last().body)) {
       std::string status = json::get_string(*j, "processing_status", "unknown");
       const Json* counts = json::find(*j, "request_counts");
       std::int64_t succeeded = counts ? json::get_int(*counts, "succeeded", 0) : 0;
@@ -133,10 +148,10 @@ SemanticBatchAPI::~SemanticBatchAPI() {
 
 Result<std::optional<std::string>> SemanticBatchAPI::submit_anthropic_batch(const std::vector<std::string>& msg_ids,
                                                                             std::string_view model_in) {
-  std::string key = secrets_.get_string("api_key");
+  const llm::Services services(cfg_, secrets_, http_);
   std::string model(model_in);
   if (model.empty()) model = cfg_string(cfg_, "semantic_model");
-  if (key.empty() || model.empty()) {
+  if (!llm::route_available(services, llm::RouteSelector{}) || model.empty()) {
     log::warn("loom.batch_api", "Batch API: missing API key or model");
     return std::optional<std::string>(std::nullopt);
   }
@@ -151,9 +166,11 @@ Result<std::optional<std::string>> SemanticBatchAPI::submit_anthropic_batch(cons
   if (items.empty()) return std::optional<std::string>(std::nullopt);
 
   std::string base_url = rstrip_slash(cfg_string(cfg_, "base_url"));
-  bool is_anthropic_direct = base_url.find("anthropic.com") != std::string::npos;
+  // The address picks the mode: a native Message Batches provider (a manifest
+  // offering batch/messages.batches at that host) or concurrent chat requests.
+  const std::string batch_provider = llm::provider_for_address(services, "batch", "messages.batches", base_url);
 
-  if (is_anthropic_direct) {
+  if (!batch_provider.empty()) {
     Json requests_list = Json::array();
     for (const auto& it : items) {
       requests_list.push_back(
@@ -162,30 +179,45 @@ Result<std::optional<std::string>> SemanticBatchAPI::submit_anthropic_batch(cons
                              {"max_tokens", 800},
                              {"messages", Json::array({Json{{"role", "user"}, {"content", it.prompt}}})}}}});
     }
-    net::HttpRequest req;
-    req.method = "POST";
-    req.url = "https://api.anthropic.com/v1/messages/batches";
-    req.headers = {{"x-api-key", key}, {"anthropic-version", "2023-06-01"}, {"Content-Type", "application/json"}};
-    req.body = json::dump(Json{{"requests", requests_list}});
-    req.timeout_ms = 60000;
-    auto resp = http_.send(req);
-    if (!resp) {
-      log::error("loom.batch_api", "Anthropic batch submit error: {}", resp.error().message);
+    llm::ModelRequest request;
+    request.kind = "batch.submit";
+    request.action = "batch.chat";
+    request.models = {llm::ModelSpec{}};
+    request.route.provider = batch_provider;
+    request.route.secret = "api_key";  // this path has always used the chat key
+    request.operation = llm::Operation::BatchSubmit;
+    request.batch_requests = std::move(requests_list);
+    request.timeout_ms = 60000;
+    request.usage.estimate = Json{{"baseline_key", usage_baseline_key(cfg_, "batch.submit", base_url, model)},
+                                  {"resources", Json{{"messages", items.size()}}},
+                                  {"instrument", "loom.batch_api"}, {"model", model}, {"endpoint", base_url}};
+    auto outcome = llm::use_model(services, std::move(request));
+    if (!outcome) return outcome.error();
+    const llm::VariantResult& sent = outcome->last();
+    if (sent.state == llm::State::Held) {
+      log::warn("loom.batch_api", "Anthropic batch held by the usage guard: {}", json::get_string(sent.hold, "status"));
       return std::optional<std::string>(std::nullopt);
     }
-    if (resp->status == 200 || resp->status == 201) {
-      auto j = resp->json();
+    if (sent.state == llm::State::GateError || sent.state == llm::State::TransportError ||
+        sent.state == llm::State::Unavailable) {
+      log::error("loom.batch_api", "Anthropic batch submit error: {}",
+                 sent.error ? sent.error->message : std::string("unavailable"));
+      return std::optional<std::string>(std::nullopt);
+    }
+    if (sent.state == llm::State::Ok) {
+      auto j = json::parse(sent.body);
       if (!j) return std::optional<std::string>(std::nullopt);
       std::string id = json::get_string(*j, "id");
       {
         std::lock_guard lk(mu_);
-        batches_[id] = Json{{"type", "anthropic"}, {"count", items.size()}, {"status", "processing"}};
+        batches_[id] = Json{{"type", "anthropic"}, {"provider", batch_provider}, {"count", items.size()},
+                            {"status", "processing"}};
       }
       log::info("loom.batch_api", "Anthropic batch submitted: {} ({} requests)", id, items.size());
       return std::optional<std::string>(id);
     }
-    log::warn("loom.batch_api", "Anthropic batch submit failed {}: {}", resp->status,
-             std::string(utf8::prefix(resp->body, 200)));
+    log::warn("loom.batch_api", "Anthropic batch submit failed {}: {}", sent.http_status,
+             std::string(utf8::prefix(sent.body, 200)));
     return std::optional<std::string>(std::nullopt);
   }
 
@@ -196,8 +228,8 @@ Result<std::optional<std::string>> SemanticBatchAPI::submit_anthropic_batch(cons
   }
   {
     std::lock_guard lk(mu_);
-    workers_.emplace_back(run_concurrent_batch, std::ref(db_), std::ref(http_), std::ref(mu_), std::ref(batches_),
-                          batch_id, std::move(items), base_url, key, model);
+    workers_.emplace_back(run_concurrent_batch, std::ref(db_), std::cref(cfg_), std::cref(secrets_), std::ref(http_),
+                          std::ref(mu_), std::ref(batches_), batch_id, std::move(items), base_url, model);
   }
   return std::optional<std::string>(batch_id);
 }
@@ -211,7 +243,8 @@ Json SemanticBatchAPI::check_batch(std::string_view batch_id) {
     info = *it;
   }
   std::string type = json::get_string(info, "type");
-  if (type == "anthropic") return check_anthropic_batch(secrets_, http_, batch_id);
+  if (type == "anthropic")
+    return check_anthropic_batch(llm::Services(cfg_, secrets_, http_), json::get_string(info, "provider"), batch_id);
   if (type == "concurrent") return info;
   return Json{{"status", "unknown"}};
 }
@@ -227,19 +260,16 @@ Result<int> SemanticBatchAPI::collect_results(std::string_view batch_id) {
     return static_cast<int>(json::get_int(info, "applied", 0));
   }
 
-  Json status = check_anthropic_batch(secrets_, http_, batch_id);
+  const llm::Services services(cfg_, secrets_, http_);
+  std::string provider = json::get_string(info, "provider");
+  if (provider.empty())  // a batch id from an earlier process: the address still names the provider
+    provider = llm::provider_for_address(services, "batch", "messages.batches", cfg_string(cfg_, "base_url"));
+  Json status = check_anthropic_batch(services, provider, batch_id);
   const Json* ru = json::find(status, "results_url");
   if (!ru || !ru->is_string() || ru->get_ref<const std::string&>().empty()) {
     log::warn("loom.batch_api", "No results URL for batch {}", batch_id);
     return 0;
   }
-
-  net::HttpRequest req;
-  req.method = "GET";
-  req.url = ru->get<std::string>();
-  req.headers = {{"x-api-key", secrets_.get_string("api_key")}, {"anthropic-version", "2023-06-01"}};
-  req.timeout_ms = 120000;
-  req.stream = true;
 
   int applied = 0;
   std::string buf;
@@ -262,20 +292,33 @@ Result<int> SemanticBatchAPI::collect_results(std::string_view batch_id) {
     }
   };
 
-  net::StreamSink sink;
-  sink.on_data = [&](std::string_view chunk) -> bool {
+  // The results are JSONL: lines are applied as they arrive, nothing is retained.
+  llm::ModelRequest request;
+  request.kind = "batch.results";
+  request.action = "batch.chat";
+  request.models = {llm::ModelSpec{}};
+  request.route.provider = provider;
+  request.route.secret = "api_key";
+  request.operation = llm::Operation::BatchResults;
+  request.target = ru->get<std::string>();
+  request.timeout_ms = 120000;
+  request.stream = true;
+  request.capture = true;
+  request.retain_body = false;
+  request.usage.guard = false;
+  request.hooks.on_raw = [&](std::string_view chunk) {
     buf.append(chunk);
     std::size_t pos;
     while ((pos = buf.find('\n')) != std::string::npos) {
       process_line(std::string_view(buf).substr(0, pos));
       buf.erase(0, pos + 1);
     }
-    return true;
   };
-  auto resp = http_.send(req, &sink);
+  auto outcome = llm::use_model(services, std::move(request));
   if (!buf.empty()) process_line(buf);
-  if (!resp) {
-    log::error("loom.batch_api", "Failed to collect batch results: {}", resp.error().message);
+  if (!outcome || outcome->last().error) {
+    log::error("loom.batch_api", "Failed to collect batch results: {}",
+               outcome ? outcome->last().error->message : outcome.error().message);
     return 0;
   }
   log::info("loom.batch_api", "Batch {}: applied {} results", batch_id, applied);

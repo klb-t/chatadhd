@@ -76,6 +76,7 @@ constexpr std::string_view kBuiltinManifestsJson = R"JSON(
     "display_name": "OpenRouter",
     "auth_secret": "api_key",
     "auth_scheme": "bearer",
+    "metadata": {"adapter": "openai_chat", "base_url_setting": "base_url"},
     "capabilities": [
       {"resource": "llm", "name": "chat.completions"},
       {"resource": "llm", "name": "chat.stream"},
@@ -91,6 +92,8 @@ constexpr std::string_view kBuiltinManifestsJson = R"JSON(
     "base_url": "https://api.anthropic.com",
     "auth_secret": "anthropic_batch_key",
     "auth_scheme": "x-api-key",
+    "default_headers": {"anthropic-version": "2023-06-01"},
+    "metadata": {"adapter": "anthropic_messages"},
     "capabilities": [
       {"resource": "batch", "name": "messages.batches"}
     ]
@@ -405,11 +408,15 @@ Status ProviderRegistry::load_builtin() {
   if (!parsed) return Error(Errc::Internal, "builtin provider manifests are invalid JSON");
   if (auto st = load(*parsed); !st) return st;
 
-  std::string base = cfg_string(cfg_, "base_url");
-  if (!base.empty()) {
+  // A manifest may name the setting that holds its address
+  // (metadata "base_url_setting"); the value, when set, replaces base_url.
+  {
     std::lock_guard lk(mu_);
     for (auto& m : manifests_) {
-      if (m.id == "openrouter") m.base_url = base;
+      const std::string setting = json::get_string(m.metadata, "base_url_setting");
+      if (setting.empty()) continue;
+      const std::string base = cfg_string(cfg_, setting);
+      if (!base.empty()) m.base_url = base;
     }
   }
   return ok_status();

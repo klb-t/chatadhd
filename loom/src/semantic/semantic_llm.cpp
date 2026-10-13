@@ -5,20 +5,13 @@
 #include "loom/log.h"
 #include "loom/net/http.h"
 #include "loom/semantic_analyzer.h"
+#include "loom/use_model.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 #include "stub.h"
 
 namespace loom {
 
-namespace {
-
-std::string rstrip_slash(std::string s) {
-  while (!s.empty() && s.back() == '/') s.pop_back();
-  return s;
-}
-
-}  // namespace
 
 // Exact copy of engine/semantic_llm.py _ANALYSIS_PROMPT (== batch_api's copy).
 constexpr std::string_view kAnalysisPromptText = R"PROMPT(Analyse the following chat message. Return ONLY valid JSON (no markdown, no backticks).
@@ -56,9 +49,14 @@ bool SemanticLLM::enabled() const {
 SemanticLLM::Settings SemanticLLM::settings_locked() const {
   Json config = cfg_.all();
   const Json* active = json::find(config, "semantic_analysis");
-  return Settings{active ? json::truthy(*active) : true,
-                  json::get_string(config, "semantic_model"),
-                  rstrip_slash(json::get_string(config, "base_url")), secrets_.get_string("api_key")};
+  Settings settings{active ? json::truthy(*active) : true, json::get_string(config, "semantic_model"), "", ""};
+  // Address and credential come from the provider the settings select; a
+  // provider without a stored credential leaves them empty (not enabled).
+  if (auto route = llm::resolve_route(llm::Services(cfg_, secrets_, http_), llm::RouteSelector{})) {
+    settings.base = route->base_url;
+    settings.key = route->credential;
+  }
+  return settings;
 }
 
 void SemanticLLM::refresh_identity_locked(const Settings& settings) const {
@@ -116,45 +114,44 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
 
   std::string analysis_text(utf8::prefix(text, kMaxAnalysisChars));
 
-  Json body{{"model", settings.model},
-            {"messages", Json::array({Json{{"role", "user"}, {"content", std::string(kAnalysisPrompt) + analysis_text}}})},
-            {"temperature", 0.1},
-            {"max_tokens", 800}};
+  llm::ModelRequest request;
+  request.kind = "semantic.analyse";
+  request.action = "semantic.analyse";
+  request.models = {llm::ModelSpec{settings.model, "", Json::object()}};
+  request.prompt = std::string(kAnalysisPrompt) + analysis_text;
+  request.parameters = Json{{"temperature", 0.1}, {"max_tokens", 800}};
+  request.route.base_url = settings.base;
+  request.title = "ChatADHD-Semantic";
+  request.timeout_ms = 30000;
+  auto outcome = llm::use_model(llm::Services(cfg_, secrets_, http_), std::move(request));
+  if (!outcome) return outcome.error();
+  const llm::VariantResult& result = outcome->last();
 
-  net::HttpRequest req;
-  req.method = "POST";
-  req.url = settings.base + "/chat/completions";
-  req.headers = {
-      {"Authorization", "Bearer " + settings.key},
-      {"Content-Type", "application/json"},
-      {"HTTP-Referer", "https://github.com/chatadhd"},
-      {"X-Title", "ChatADHD-Semantic"},
-  };
-  req.body = json::dump(body);
-  req.timeout_ms = 30000;
-
-  auto resp = http_.send(req);
-  if (!resp) return resp.error();
-
-  if (resp->status != 200) {
-    std::string detail;
-    if (auto j = resp->json()) {
-      const Json* err = json::find(*j, "error");
-      detail = json::dump(err ? *err : *j);
+  switch (result.state) {
+    case llm::State::Ok: break;
+    case llm::State::Held:
+      // The owner has not answered the usage guard: nothing was sent, and this
+      // is not a model failure.
+      return Error(Errc::Paused, "semantic analysis held by the usage guard: " + json::get_string(result.hold, "status"));
+    case llm::State::GateError:
+    case llm::State::TransportError:
+    case llm::State::Cancelled:
+      return result.error ? *result.error : Error(Errc::Network, "semantic LLM call failed");
+    case llm::State::HttpError: {
+      std::string detail;
+      if (auto j = json::parse(result.body)) {
+        const Json* err = json::find(*j, "error");
+        detail = json::dump(err ? *err : *j);
+      }
+      log::warn("loom.semantic_llm", "Semantic LLM error {}: {}", result.http_status, std::string(utf8::prefix(detail, 120)));
+      return std::optional<Json>(std::nullopt);
     }
-    log::warn("loom.semantic_llm", "Semantic LLM error {}: {}", resp->status, std::string(utf8::prefix(detail, 120)));
-    return std::optional<Json>(std::nullopt);
+    case llm::State::Unavailable:
+    case llm::State::ParseError:
+      return std::optional<Json>(std::nullopt);
   }
 
-  auto j = resp->json();
-  if (!j) return std::optional<Json>(std::nullopt);
-  std::string raw;
-  try {
-    raw = j->at("choices").at(0).at("message").at("content").get<std::string>();
-  } catch (const std::exception&) {
-    return std::optional<Json>(std::nullopt);
-  }
-
+  const std::string& raw = result.text;
   auto parsed = parse_response_json(raw);
   if (!parsed) {
     log::debug("loom.semantic_llm", "Semantic LLM returned invalid JSON: {}", std::string(utf8::prefix(raw, 100)));
@@ -189,6 +186,8 @@ Json SemanticLLM::analyse(std::string_view text, const SemanticAnalyzer& analyze
 
   if (!result) {
     log::debug("loom.semantic_llm", "LLM semantic analysis failed — using regex: {}", result.error().message);
+    // Held by the usage guard is a pause, not a failure: no latch, no count.
+    if (result.error().code == Errc::Paused) return analyzer.to_unified_profile(regex_result);
   }
 
   record_result(generation, false);

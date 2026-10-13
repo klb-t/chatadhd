@@ -314,6 +314,59 @@ TEST_SUITE("archive.vocab") {
 }
 
 TEST_SUITE("archive.pipeline") {
+  TEST_CASE("action: declaring archive.refine planned stops item refinement before any send") {
+    fsutil::TempDir td;
+    loom::test::declare_action_status(td.path() / "data", "archive.refine", "planned");
+    auto rt = open_rt(td.path() / "data");
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    scripted->set_fallback(net::ScriptedTransport::Reply::text(200, "{}"));
+    rt->set_http_transport(scripted);
+    rt->config().set("base_url", "https://api.test");
+    rt->config().set("semantic_model", "cheap/model");
+    rt->secrets().set("api_key", "sk-test");
+    ArchiveConfig cfg = fixture_config(td.path() / "out");
+    cfg.llm = "auto";
+    REQUIRE(unwrap(rt->archive().run(cfg)).status == "done");
+    for (const auto& q : scripted->requests()) CHECK(net::header_value(q.headers, "X-Title") != "ChatADHD-Archive");
+  }
+
+  TEST_CASE("golden: item refinement request bytes are pinned") {
+    fsutil::TempDir td;
+    auto rt = open_rt(td.path() / "data");
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    scripted->set_fallback(net::ScriptedTransport::Reply::text(200, "{}"));
+    rt->set_http_transport(scripted);
+    rt->config().set("base_url", "https://api.test");
+    rt->config().set("semantic_model", "cheap/model");
+    rt->secrets().set("api_key", "sk-test");
+    ArchiveConfig cfg = fixture_config(td.path() / "out");
+    cfg.llm = "auto";
+    auto r = unwrap(rt->archive().run(cfg));
+    REQUIRE(r.status == "done");
+    // The run also issues per-message analysis calls; the refinement one carries the archive title.
+    std::optional<net::HttpRequest> refinement;
+    for (const auto& q : scripted->requests())
+      if (net::header_value(q.headers, "X-Title") == "ChatADHD-Archive") refinement = q;
+    REQUIRE(refinement.has_value());
+    const std::string prompt =
+        "Classify each numbered sentence from a project archive as one of: idea, decision, rejected_option, "
+        "open_question, implementation, bug, requirement, invariant, rationale, none. Sentences may be Polish or "
+        "English. Reply with only a JSON array of objects {\"i\": <number>, \"type\": <label>}.\n\n"
+        "0. Decision: we drop Kivy and use Compose Multiplatform for the mobile UI instead.\n"
+        "1. Odrzucamy pomys\xC5\x82 osobnego serwera grafu, bo aplikacja ChatADHD ma dzia\xC5\x82""a\xC4\x87 offline.\n";
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/chat/completions"},
+        {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test"}),
+                                 Json::array({"Content-Type", "application/json"}),
+                                 Json::array({"X-Title", "ChatADHD-Archive"})})},
+        {"body", "{\"model\":\"cheap/model\",\"messages\":[{\"role\":\"user\",\"content\":" + json::dump(Json(prompt)) +
+                 "}],\"temperature\":0,\"max_tokens\":1500}"},
+        {"timeout_ms", 60000},
+        {"stream", false}};
+    CHECK(loom::test::request_json(*refinement) == expected);
+  }
+
   TEST_CASE("fixture corpus: planted fork, supersession, open questions, gaps") {
     fsutil::TempDir td;
     auto rt = open_rt(td.path() / "data");

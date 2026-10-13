@@ -9,6 +9,7 @@
 #include "loom/db.h"
 #include "loom/net/http.h"
 #include "loom/semantic_analyzer.h"
+#include "loom/semantic_llm.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -51,6 +52,49 @@ bool wait_until(const std::function<bool()>& pred, std::chrono::milliseconds tim
 }  // namespace
 
 TEST_SUITE("batch_api") {
+  TEST_CASE("action: declaring batch.chat planned stops both batch modes before any send") {
+    Env env;
+    loom::test::declare_action_status(env.td.path(), "batch.chat", "planned");
+    env.cfg.set("base_url", "https://api.test");
+    auto conv = unwrap(env.db->create_conv("workflow"));
+    auto mid = env.add_msg(conv.id, "workflow gate batch text");
+    {
+      auto api = env.api();
+      auto id = unwrap(api.submit_anthropic_batch({mid}));
+      REQUIRE(id.has_value());   // the concurrent batch starts; each of its requests is refused
+      CHECK(id->rfind("concurrent_", 0) == 0);
+    }
+    env.cfg.set("base_url", "https://api.anthropic.com");
+    auto native = env.api();
+    CHECK_FALSE(unwrap(native.submit_anthropic_batch({mid})).has_value());
+    CHECK(env.transport.requests().empty());
+  }
+
+  TEST_CASE("golden: concurrent chat-completions request bytes are pinned") {
+    Env env;
+    env.cfg.set("base_url", "https://api.test");
+    env.transport.set_fallback(net::ScriptedTransport::Reply::text(200, "{}"));
+    auto conv = unwrap(env.db->create_conv("golden")).id;
+    auto mid = env.add_msg(conv, "golden batch text");
+    {
+      auto api = env.api();
+      REQUIRE(unwrap(api.submit_anthropic_batch({mid})).has_value());
+    }  // ~SemanticBatchAPI joins the worker threads
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    const std::string content = std::string(kAnalysisPrompt) + "golden batch text";
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/chat/completions"},
+        {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test"}),
+                                 Json::array({"Content-Type", "application/json"})})},
+        {"body", "{\"model\":\"cheap/model\",\"messages\":[{\"role\":\"user\",\"content\":" +
+                     json::dump(Json(content)) + "}],\"temperature\":0.1,\"max_tokens\":800}"},
+        {"timeout_ms", 30000},
+        {"stream", false}};
+    CHECK(loom::test::request_json(reqs[0]) == expected);
+  }
+
   TEST_CASE("parse_analysis strips fences and stamps source=llm") {
     auto a = SemanticBatchAPI::parse_analysis("```json\n{\"entities\":[]}\n```");
     REQUIRE(a.has_value());
@@ -181,6 +225,51 @@ TEST_SUITE("batch_api") {
     auto m = unwrap(env.db->get_msg(m1));
     REQUIRE(m.has_value());
     CHECK(m->semantic_status == "done");
+  }
+
+  TEST_CASE("golden: native batch submit, status and results request bytes are pinned") {
+    Env env;
+    env.cfg.set("base_url", "https://api.anthropic.com");
+    auto conv = unwrap(env.db->create_conv("golden"));
+    std::string m1 = env.add_msg(conv.id, "golden native text");
+    env.transport.expect("POST", "https://api.anthropic.com/v1/messages/batches",
+                         net::ScriptedTransport::Reply::json(200, Json{{"id", "batch_g"}}));
+    auto api = env.api();
+    auto id = unwrap(api.submit_anthropic_batch({m1}));
+    REQUIRE(id.has_value());
+    Json poll_reply{{"processing_status", "ended"},
+                    {"request_counts", Json{{"succeeded", 1}, {"errored", 0}, {"processing", 0}}},
+                    {"results_url", "https://api.anthropic.com/v1/messages/batches/batch_g/results"}};
+    env.transport.expect("GET", "https://api.anthropic.com/v1/messages/batches/batch_g",
+                         net::ScriptedTransport::Reply::json(200, poll_reply));
+    env.transport.expect("GET", "https://api.anthropic.com/v1/messages/batches/batch_g/results",
+                         net::ScriptedTransport::Reply::text(200, ""));
+    api.check_batch(*id);
+    env.transport.expect("GET", "https://api.anthropic.com/v1/messages/batches/batch_g",
+                         net::ScriptedTransport::Reply::json(200, poll_reply));
+    unwrap(api.collect_results(*id));
+
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 4);
+    const Json key_headers = Json::array({Json::array({"x-api-key", "sk-test"}),
+                                          Json::array({"anthropic-version", "2023-06-01"})});
+    const std::string content = std::string(kAnalysisPrompt) + "golden native text";
+    CHECK(loom::test::request_json(reqs[0]) ==
+          Json{{"method", "POST"},
+               {"url", "https://api.anthropic.com/v1/messages/batches"},
+               {"headers", Json::array({Json::array({"x-api-key", "sk-test"}),
+                                        Json::array({"anthropic-version", "2023-06-01"}),
+                                        Json::array({"Content-Type", "application/json"})})},
+               {"body", "{\"requests\":[{\"custom_id\":\"" + m1 + "\",\"params\":{\"model\":\"cheap/model\","
+                        "\"max_tokens\":800,\"messages\":[{\"role\":\"user\",\"content\":" + json::dump(Json(content)) + "}]}}]}"},
+               {"timeout_ms", 60000},
+               {"stream", false}});
+    CHECK(loom::test::request_json(reqs[1]) ==
+          Json{{"method", "GET"}, {"url", "https://api.anthropic.com/v1/messages/batches/batch_g"},
+               {"headers", key_headers}, {"body", ""}, {"timeout_ms", 30000}, {"stream", false}});
+    CHECK(loom::test::request_json(reqs[3]) ==
+          Json{{"method", "GET"}, {"url", "https://api.anthropic.com/v1/messages/batches/batch_g/results"},
+               {"headers", key_headers}, {"body", ""}, {"timeout_ms", 120000}, {"stream", true}});
   }
 
   TEST_CASE("submit_anthropic_batch fails gracefully without a model or key") {

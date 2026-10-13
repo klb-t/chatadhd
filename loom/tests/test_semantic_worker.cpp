@@ -13,7 +13,9 @@
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
 #include "loom/semantic_worker.h"
+#include "loom/usage_policy.h"
 #include "loom/util/fs.h"
+#include "loom/util/sha256.h"
 #include "test_helpers.h"
 
 using namespace loom;
@@ -353,6 +355,60 @@ TEST_SUITE("semantic_worker") {
     CHECK(content.find("abcdefghijklmnopqrstuvwxyz") == std::string::npos);
     CHECK(worker.status().batch_id == "offline-batch");
     CHECK(unwrap(env.db->count_pending_semantic()) == 1);
+  }
+
+  TEST_CASE("action: declaring semantic.batch planned stops the batch submit before any send") {
+    Env env;
+    loom::test::declare_action_status(env.td.path(), "semantic.batch", "planned");
+    auto conv = unwrap(env.db->create_conv("workflow batch"));
+    env.add_pending_msg(conv.id, "workflow gate batch message");
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    env.secrets.set("anthropic_batch_key", "fake-batch-key");
+    SemanticWorker worker(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer,
+                          nullptr, {}, Json{{"batch_threshold", 0}});
+    CHECK(unwrap(worker.drain_once()) == 0);
+    CHECK(env.transport.requests().empty());
+    CHECK_FALSE(worker.status().batch_id.has_value());
+  }
+
+  TEST_CASE("golden: worker batch submit, poll and results request bytes are pinned") {
+    Env env;
+    auto conv = unwrap(env.db->create_conv("golden batch"));
+    auto msg_id = env.add_pending_msg(conv.id, "golden batch message");
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    env.secrets.set("anthropic_batch_key", "fake-batch-key");
+    const std::string batches = "https://api.anthropic.com/v1/messages/batches";
+    env.transport.expect("POST", batches, net::ScriptedTransport::Reply::json(200, Json{{"id", "golden-batch"}}));
+    env.transport.expect("GET", batches + "/golden-batch",
+        net::ScriptedTransport::Reply::json(200, Json{{"processing_status", "ended"},
+            {"request_counts", Json{{"succeeded", 0}, {"errored", 0}}}}));
+    env.transport.expect("GET", batches + "/golden-batch/results", net::ScriptedTransport::Reply::text(200, ""));
+    SemanticWorker worker(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer,
+                          nullptr, {}, Json{{"batch_threshold", 0}});
+    CHECK(unwrap(worker.drain_once()) == 0);   // submit
+    worker.start();                            // the loop polls, then ingests the ended batch
+    REQUIRE(wait_until([&] { return env.transport.requests().size() >= 3; }, std::chrono::seconds(5)));
+    worker.stop();
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 3);
+    const Json key_headers = Json::array({Json::array({"x-api-key", "fake-batch-key"}),
+                                          Json::array({"anthropic-version", "2023-06-01"})});
+    Json submit_headers = key_headers;
+    submit_headers.push_back(Json::array({"content-type", "application/json"}));
+    const std::string content = std::string(kAnalysisPrompt) + "golden batch message";
+    CHECK(loom::test::request_json(reqs[0]) ==
+          Json{{"method", "POST"}, {"url", batches}, {"headers", submit_headers},
+               {"body", "{\"requests\":[{\"custom_id\":\"" + msg_id + "\",\"params\":{\"model\":\"model\","
+                        "\"max_tokens\":800,\"messages\":[{\"role\":\"user\",\"content\":" + json::dump(Json(content)) + "}]}}]}"},
+               {"timeout_ms", 120000}, {"stream", false}});
+    CHECK(loom::test::request_json(reqs[1]) ==
+          Json{{"method", "GET"}, {"url", batches + "/golden-batch"}, {"headers", key_headers},
+               {"body", ""}, {"timeout_ms", 30000}, {"stream", false}});
+    CHECK(loom::test::request_json(reqs[2]) ==
+          Json{{"method", "GET"}, {"url", batches + "/golden-batch/results"}, {"headers", key_headers},
+               {"body", ""}, {"timeout_ms", 300000}, {"stream", true}});
   }
 
   // CH-005: the automatic batch submission goes through the shared usage guard.
@@ -711,6 +767,34 @@ TEST_SUITE("semantic_worker") {
     REQUIRE(approved);
     CHECK(unwrap(worker->drain_once()) > 0);                  // confirmed: requeued and re-analysed
     CHECK_FALSE(worker->status().usage_pending.has_value());
+  }
+
+  TEST_CASE("golden: automatic resend guard request identity is pinned") {
+    Env env;
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    Json content{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()}};
+    env.transport.set_fallback(net::ScriptedTransport::Reply::json(200,
+        Json{{"choices", Json::array({Json{{"message", Json{{"content", json::dump(content)}}}}})}}));
+    const auto conv = unwrap(env.db->create_conv("golden")).id;
+    set_done_rejection(env, true);
+    auto worker = retry_worker(env, Json{{"retry_mode", "automatic"}, {"retry_spacing_ms", 0}, {"llm_rate_limit", 0}});
+    const auto mid = env.add_pending_msg(conv, "golden resend message number 0");
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    auto policy = unwrap(UsagePolicy::open(env.td.path() / "usage-policy.sqlite",
+                                           unwrap(effective_usage_policy_options(env.cfg))));
+    const std::string key = "semantic.retry|https://openrouter.ai/api/v1/chat/completions|vendor/model";
+    auto cohort = unwrap(policy->inspect(key));
+    REQUIRE(cohort["operations"].size() == 1);
+    // The guard binds method, URL, header list, body, timeout and stream flag.
+    const Json identity{{"method", "POST"}, {"url", "https://openrouter.ai/api/v1/chat/completions"},
+                        {"headers", Json::array()},
+                        {"body", json::dump(Json{{"schema", "loom.semantic_retry/1"}, {"ids", Json::array({mid})}})},
+                        {"timeout_ms", net::builtin_http_timeout_ms()}, {"stream", false}};
+    const auto& estimate = cohort["operations"][0]["estimate"];
+    CHECK(estimate["request_identity_sha256"] == Sha256::hex(json::canonical(identity)));
+    CHECK(estimate["request_body_sha256"] == Sha256::hex(identity["body"].get<std::string>()));
   }
 
   TEST_CASE("T2 declining an automatic resend answers that operation only: setting kept, items noted usage_declined, queue keeps draining") {

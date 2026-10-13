@@ -19,9 +19,11 @@
 //      jpg -> image/jpeg) + text files (_TEXT_EXTS, first 15000 chars, decoded
 //      with errors="replace") as {"type":"text","text":"\n--- FILE: <name>
 //      ---\n<text>\n--- END FILE ---"}; missing files skipped with a warning
-//   5. POST {base_url}/chat/completions, headers Authorization Bearer
-//      api_key, Content-Type json, HTTP-Referer https://github.com/chatadhd,
-//      X-Title ChatADHD; payload {model, messages, temperature, max_tokens,
+//   5. one llm::use_model call (use_model.h; the settings' provider supplies
+//      address, credential and adapter - default preset: POST
+//      {base_url}/chat/completions, headers Authorization Bearer api_key,
+//      Content-Type json, HTTP-Referer https://github.com/chatadhd, X-Title
+//      ChatADHD, pinned by golden tests); payload {model, messages, temperature, max_tokens,
 //      stream} + plugins [{"id":"web"}] for web_search (deep_research adds
 //      "max_results":10 and web_search_options {"search_context_size":
 //      "high"}) + configure_reasoning() + "include_reasoning": true; timeout

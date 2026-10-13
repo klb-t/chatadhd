@@ -48,6 +48,38 @@ net::HttpResponse success_response() {
 }  // namespace
 
 TEST_SUITE("semantic_llm") {
+  TEST_CASE("action: declaring semantic.analyse planned stops the site before any send") {
+    Env env;
+    loom::test::declare_action_status(env.td.path(), "semantic.analyse", "planned");
+    auto llm = env.llm();
+    auto result = llm.call_llm("workflow gate analysis text");
+    REQUIRE(result);
+    CHECK_FALSE(result->has_value());
+    CHECK(env.transport.requests().empty());
+  }
+
+  TEST_CASE("golden: call_llm request bytes are pinned (URL, header order, body, timeout)") {
+    Env env;
+    env.transport.set_fallback(net::ScriptedTransport::Reply::text(200, success_response().body));
+    auto llm = env.llm();
+    REQUIRE(llm.call_llm("golden analysis text"));
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    const std::string content = std::string(kAnalysisPrompt) + "golden analysis text";
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/chat/completions"},
+        {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test"}),
+                                 Json::array({"Content-Type", "application/json"}),
+                                 Json::array({"HTTP-Referer", "https://github.com/chatadhd"}),
+                                 Json::array({"X-Title", "ChatADHD-Semantic"})})},
+        {"body", "{\"model\":\"cheap/model\",\"messages\":[{\"role\":\"user\",\"content\":" +
+                     json::dump(Json(content)) + "}],\"temperature\":0.1,\"max_tokens\":800}"},
+        {"timeout_ms", 30000},
+        {"stream", false}};
+    CHECK(loom::test::request_json(reqs[0]) == expected);
+  }
+
   TEST_CASE("enabled() requires semantic_analysis, semantic_model and api_key") {
     Env env;
     auto llm = env.llm();

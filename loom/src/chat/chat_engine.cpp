@@ -20,6 +20,8 @@
 #include "loom/net/sse.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/usage_policy.h"
+#include "loom/use_model.h"
+#include "llm/shared_gate.h"
 #include "loom/util/base64.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -39,10 +41,6 @@ namespace loom {
 
 namespace {
 
-std::string rstrip_slash(std::string s) {
-  while (!s.empty() && s.back() == '/') s.pop_back();
-  return s;
-}
 
 std::string cfg_string(const Config& cfg, std::string_view key, std::string fallback = "") {
   Json v = cfg.get(key);
@@ -88,21 +86,6 @@ Json compose_chat_payload(const Config& cfg, const ChatOptions& opts, const std:
   payload["include_reasoning"] = true;
   return payload;
 }
-
-// Ordinary transport admission/settlement. Settles on every exit once dispatched.
-struct OrdinaryUsage {
-  std::unique_ptr<chat::ModelUsageGuard> guard;
-  bool dispatched = false, attempted = false;
-  std::size_t received = 0;
-  Json usage = Json::object();
-  ~OrdinaryUsage() { if (dispatched) { try { settle(); } catch (...) {} } }
-  void settle() {
-    if (!dispatched) return;
-    dispatched = false;
-    auto settled = guard->settle(attempted, received, usage);
-    if (!settled) log::warn("loom.chat_engine", "usage settlement failed: {}", settled.error().to_string());
-  }
-};
 
 const std::vector<std::string>& image_exts() {
   static const std::vector<std::string> kExts = {".png", ".jpg", ".jpeg", ".gif", ".webp"};
@@ -656,7 +639,10 @@ Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions&
   LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
   const std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
   const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
-  const std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
+  llm::RouteSelector preview_route;
+  preview_route.require_credential = false;  // a preview spends nothing and needs no key
+  LOOM_TRY_ASSIGN(auto route, llm::resolve_route(llm::Services(cfg_, secrets_, http_), preview_route));
+  const std::string base = route.base_url;
   const std::string body = json::dump(compose_chat_payload(cfg_, opts, model, messages, stream, reasoning_recipe));
   Json estimate = chat_usage_estimate(cfg_, base, model, "usage_preview");
   estimate["resources"]["requests"] = 1;
@@ -1171,11 +1157,14 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
 
   std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
 
-  // 5. Call the API.
-  std::string key = secrets_.get_string("api_key");
-  if (key.empty()) return Error(Errc::Auth, "No API key configured - open Settings");
-
-  std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
+  // 5. Call the API (through the one use-model action).
+  const llm::Services services(cfg_, secrets_, http_);
+  auto route = llm::resolve_route(services, llm::RouteSelector{});
+  if (!route) {
+    if (route.error().code == Errc::Auth) return Error(Errc::Auth, "No API key configured - open Settings");
+    return route.error();
+  }
+  const std::string base = route->base_url;
   bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true)) && static_cast<bool>(cb.on_chunk);
 
   Json payload = compose_chat_payload(cfg_, opts, model, *msgs_json, stream, reasoning_recipe);
@@ -1210,18 +1199,20 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     }
   }
 
-  net::HttpRequest req;
-  req.method = "POST";
-  req.url = base + "/chat/completions";
-  req.headers = {
-      {"Authorization", "Bearer " + key},
-      {"Content-Type", "application/json"},
-      {"HTTP-Referer", "https://github.com/chatadhd"},
-      {"X-Title", "ChatADHD"},
-  };
-  req.body = json::dump(payload);
-  req.timeout_ms = 180000;
-  req.stream = stream;
+  llm::ModelRequest mreq;
+  mreq.kind = "chat.send";
+  mreq.action = "chat.send";
+  mreq.models = {llm::ModelSpec{model, "", Json::object()}};
+  mreq.body = payload;  // the complete recipe payload, sent byte for byte
+  mreq.stream = stream;
+  mreq.title = "ChatADHD";
+  mreq.timeout_ms = 180000;
+  mreq.cancel = cancel;
+  if (graph) mreq.contain_exceptions = Error(Errc::Internal, "graph reply transport callback failed");
+  auto call = llm::prepare_call(services, mreq);
+  if (!call) return call.error();
+  net::HttpRequest& req = call->request;
+
   if (graph && graph->prepared && graph->prepared->capability.value("available", false) && !graph_postprocess) {
     const Json transport = graph_options.value("transport", Json::object());
     if (!transport.is_object() || transport.value("calls_authorized", Json(false)) != Json(true)) {
@@ -1237,206 +1228,109 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     graph->prepared->request_bytes = req.body;
     graph->prepared->binding_origin = graph_options.value("run_context", Json::object()).value("origin", Json(nullptr));
     graph->guard = std::make_unique<chat::ModelUsageGuard>(graph->services);
-    auto admitted = graph->guard->admit(req, transport.value("usage_estimate", Json::object()),
-        transport.value("confirmation", Json::object()));
-    if (!admitted || !admitted->value("dispatch_authorized", false)) {
-      graph->issue("usage_policy_pending", admitted ? json::get_string(*admitted, "status", "unavailable") :
-          std::string(errc_name(admitted.error().code)));
-      graph->result["execution_usage"] = graph->guard->decisions();
-      if (admitted) graph->result["usage_decision"] = *admitted;
-      if (record_context) { context_trace["graph_reply"] = graph->result; LOOM_TRY(retain_request_metadata()); }
-      return Error(Errc::Paused, "graph reply model usage is not admitted; inspect retained context trace");
-    }
+    // The graph reply keeps its own guard and settles it after its own
+    // post-processing; the action only admits through it.
+    mreq.usage.gate = std::make_shared<llm::SharedUsageGate>(*graph->guard, transport.value("usage_estimate", Json::object()),
+        transport.value("confirmation", Json::object()), false);
   }
 
   // Every ordinary transport (including the primary call of a postprocess
   // graph run, or a graph run whose capability is unavailable) is admitted by
   // the same shared guard/ledger as the graph reply and settled afterwards.
-  OrdinaryUsage ordinary;
   if (!(graph && graph->guard)) {
     const Json confirmation = opts.usage_confirmation.value_or(Json::object());
     if (!confirmation.is_object()) return Error(Errc::InvalidArgument, "usage_confirmation must be an object");
-    Json estimate = chat_usage_estimate(cfg_, base, model, json::get_string(confirmation, "operation_id"));
-    ordinary.guard = std::make_unique<chat::ModelUsageGuard>(cfg_.path().parent_path(), cfg_);
-    auto admitted = ordinary.guard->admit(req, estimate, confirmation);
-    if (!admitted) return admitted.error();
-    if (!admitted->value("dispatch_authorized", false)) {
-      const auto status = json::get_string(*admitted, "status", "unavailable");
-      if (status != "requires_confirmation" && status != "denied" && status != "cancelled")
-        return Error(Errc::Paused, "model usage is not admitted: " + status);
-      // Nothing was sent. The user's turn is withdrawn from the conversation so
-      // the identical confirmed re-send reproduces the identical request.
-      bool retained = true;
-      if (!opts.active_task_spec && db_.set_msg_status(user_mid, "deleted")) retained = false;
-      Json resources = Json::object();
-      if (const auto* r = json::find(*admitted, "resources")) resources = *r;
-      ChatResult paused;
-      paused.conv_id = conv.id;
-      paused.user_message_id = user_mid;
-      paused.model = model;
-      paused.usage_pending = Json{{"schema", "loom.chat_usage_pending/1"}, {"status", status},
-          {"operation_id", admitted->value("operation_id", Json(nullptr))},
-          {"receipt_id", admitted->value("receipt_id", Json(nullptr))},
-          {"baseline_key", admitted->value("baseline_key", Json(nullptr))},
-          {"projected", resources}, {"decisions", ordinary.guard->decisions()},
-          {"sent", false}, {"user_message_retained", retained},
-          {"resend", "repeat the same request with usage_confirmation {approved, receipt_id, ref, operation_id}"}};
-      return paused;
-    }
-    ordinary.dispatched = true;
+    mreq.usage.estimate = chat_usage_estimate(cfg_, base, model, json::get_string(confirmation, "operation_id"));
+    mreq.usage.confirmation = confirmation;
+    mreq.usage.require_scope = true;
   }
 
-  std::string full_text, reasoning_text;
-  std::string reported_model;
-  Json usage = Json::object();
+  mreq.hooks.on_dispatch = [&] { if (graph) graph->attempted = true; };
+  mreq.hooks.on_raw = [&](std::string_view chunk) { if (graph) graph->capture_chunk(chunk, model); };
+  mreq.hooks.on_text = [&](std::string_view part) { if (cb.on_chunk) cb.on_chunk(part); };
+  mreq.hooks.on_reasoning = [&](std::string_view part) { if (cb.on_reasoning) cb.on_reasoning(part); };
+  llm::VariantResult sent = llm::execute_call(services, mreq, *call);
+
+  if (graph && graph->guard && (sent.state == llm::State::GateError || sent.state == llm::State::Held)) {
+    graph->issue("usage_policy_pending", sent.state == llm::State::Held ? json::get_string(sent.hold, "status", "unavailable") :
+        std::string(errc_name(sent.error->code)));
+    graph->result["execution_usage"] = graph->guard->decisions();
+    if (sent.state == llm::State::Held) graph->result["usage_decision"] = sent.hold["decision"];
+    if (record_context) { context_trace["graph_reply"] = graph->result; LOOM_TRY(retain_request_metadata()); }
+    return Error(Errc::Paused, "graph reply model usage is not admitted; inspect retained context trace");
+  }
+  if (sent.state == llm::State::GateError) return *sent.error;
+  if (sent.state == llm::State::Held) {
+    const auto status = json::get_string(sent.hold, "status", "unavailable");
+    if (status != "requires_confirmation" && status != "denied" && status != "cancelled")
+      return Error(Errc::Paused, "model usage is not admitted: " + status);
+    // Nothing was sent. The user's turn is withdrawn from the conversation so
+    // the identical confirmed re-send reproduces the identical request.
+    bool retained = true;
+    if (!opts.active_task_spec && db_.set_msg_status(user_mid, "deleted")) retained = false;
+    const Json& admitted = sent.hold["decision"];
+    Json resources = Json::object();
+    if (const auto* r = json::find(admitted, "resources")) resources = *r;
+    ChatResult paused;
+    paused.conv_id = conv.id;
+    paused.user_message_id = user_mid;
+    paused.model = model;
+    paused.usage_pending = Json{{"schema", "loom.chat_usage_pending/1"}, {"status", status},
+        {"operation_id", admitted.value("operation_id", Json(nullptr))},
+        {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
+        {"baseline_key", admitted.value("baseline_key", Json(nullptr))},
+        {"projected", resources}, {"decisions", sent.hold["decisions"]},
+        {"sent", false}, {"user_message_retained", retained},
+        {"resend", "repeat the same request with usage_confirmation {approved, receipt_id, ref, operation_id}"}};
+    return paused;
+  }
+
+  std::string full_text = sent.text, reasoning_text = sent.reasoning;
+  std::string reported_model = sent.reported_model;
+  Json usage = sent.usage;
   bool cancelled = false;
-  int response_status = 0;
+  const int response_status = sent.http_status;
 
-  auto handle_event = [&](const net::SseEvent& evt) {
-    if (cancel && cancel->cancelled()) return;
-    if (evt.is_done()) return;
-    auto parsed = json::parse(evt.data);
-    if (!parsed) {
-      if (graph) graph->transport_issue = "parse";
-      log::debug("loom.chat_engine", "Skipped malformed SSE chunk: {}", std::string(utf8::prefix(evt.data, 100)));
-      return;
+  // Issues the decoders noted while reading, in order (graph runs only act on them).
+  if (graph)
+    for (const auto& issue : sent.issues) {
+      if (issue == "malformed_chunk") graph->transport_issue = "parse";
+      else if (issue == "model_invalid") graph->transport_issue = "provider_model_invalid";
+      else if (issue == "model_changed") graph->transport_issue = "provider_model_changed";
+      else graph->transport_issue = issue;
     }
-    if (graph) {
-      if (const auto* name = json::find(*parsed, "model"); name && !name->is_null()) {
-        if (!name->is_string()) graph->transport_issue = "provider_model_invalid";
-        else if (!reported_model.empty() && reported_model != name->get<std::string>())
-          graph->transport_issue = "provider_model_changed";
-        else reported_model = name->get<std::string>();
-      }
-    }
-    const Json* choices = json::find(*parsed, "choices");
-    if (choices && choices->is_array() && !choices->empty()) {
-      const Json* delta = json::find((*choices)[0], "delta");
-      if (delta) {
-        std::string chunk_text = json::get_string(*delta, "content");
-        if (!chunk_text.empty()) {
-          full_text += chunk_text;
-          if (cb.on_chunk) cb.on_chunk(chunk_text);
-          if (cancel && cancel->cancelled()) return;
-        }
-        std::string r = json::get_string(*delta, "reasoning");
-        if (!r.empty()) {
-          reasoning_text += r;
-          if (cb.on_reasoning) cb.on_reasoning(r);
-          if (cancel && cancel->cancelled()) return;
-        }
-      }
-    }
-    if (const Json* u = json::find(*parsed, "usage"); u && u->is_object() && !u->empty()) usage = *u;
-  };
-
-  if (stream) {
-    net::SseParser parser;
-    net::StreamSink sink;
-    int status = 0;
-    bool aborted = false;
-    std::string err_body;
-
-    sink.on_headers = [&](int s, const net::Headers&) {
-      status = s;
-      response_status = s;
-      return true;
-    };
-    sink.on_data = [&](std::string_view chunk) -> bool {
-      ordinary.received += chunk.size();
-      // Preserve each exact source chunk before parsing or a cancellation
-      // callback. The final full wire source is independent of model content.
-      if (graph) graph->capture_chunk(chunk, model);
-      if (cancel && cancel->cancelled()) {
-        aborted = true;
-        return false;
-      }
-      if (status != 200) {
-        err_body.append(chunk);
-        return true;
-      }
-      parser.feed(chunk, handle_event);
-      if (cancel && cancel->cancelled()) {
-        aborted = true;
-        return false;
-      }
-      return true;
-    };
-
-    Result<net::HttpResponse> resp = Error(Errc::Internal, "transport not attempted");
-    ordinary.attempted = true;
-    if (graph) {
-      graph->attempted = true;
-      try { resp = http_.send(req, &sink, cancel); }
-      catch (...) { resp = Error(Errc::Internal, "graph reply transport callback failed"); }
-    } else resp = http_.send(req, &sink, cancel);
-    bool was_cancelled = aborted || (cancel && cancel->cancelled()) || (!resp && resp.error().code == Errc::Cancelled);
-    if (was_cancelled) {
-      cancelled = true;
-    } else if (!resp) {
-      if (!graph) return resp.error();
-      graph->transport_issue = std::string(errc_name(resp.error().code));
-    } else if (status != 200) {
-      if (!graph) return Error(Errc::Http, "API error " + std::to_string(status) + ": " + std::string(utf8::prefix(err_body, 500)));
-      graph->transport_issue = "http";
-      if (full_text.empty()) full_text = err_body;
-    } else {
-      if (graph) {
-        try { parser.finish(handle_event); }
-        catch (...) { graph->transport_issue = "callback_exception"; }
-      } else parser.finish(handle_event);
-      if (cancel && cancel->cancelled()) cancelled = true;
-    }
-  } else {
-    Result<net::HttpResponse> resp = Error(Errc::Internal, "transport not attempted");
-    ordinary.attempted = true;
-    if (graph) {
-      graph->attempted = true;
-      try { resp = http_.send(req, nullptr, cancel); }
-      catch (...) { resp = Error(Errc::Internal, "graph reply transport callback failed"); }
-      if (resp) {
-        response_status = resp->status;
-        graph->capture_chunk(resp->body, model);
-        graph->capture_final(model, false, response_status);
-      }
-    } else resp = http_.send(req, nullptr, cancel);
-    if (resp) ordinary.received = resp->body.size();
-    if (!resp) {
-      if (resp.error().code == Errc::Cancelled) {
-        cancelled = true;
-      } else {
-        if (!graph) return resp.error();
-        graph->transport_issue = std::string(errc_name(resp.error().code));
-      }
-    } else if (resp->status != 200) {
-      if (!graph) return Error(Errc::Http, "API error " + std::to_string(resp->status) + ": " + std::string(utf8::prefix(resp->body, 500)));
-      graph->transport_issue = "http";
-      full_text = resp->body;
-    } else {
-      auto j = resp->json();
-      const Json* choices = j ? json::find(*j, "choices") : nullptr;
-      const Json* message = choices && choices->is_array() && !choices->empty() ? json::find((*choices)[0], "message") : nullptr;
-      if (!j || !message) {
-        if (!graph) return Error(Errc::Parse, !j ? "invalid JSON response from chat completions" :
-            (!choices || !choices->is_array() || choices->empty()) ? "response missing choices" : "response missing message");
-        graph->transport_issue = "parse";
-        full_text = resp->body;
-      } else {
-        if (graph) {
-          if (const auto* name = json::find(*j, "model"); name && !name->is_null()) {
-            if (!name->is_string()) graph->transport_issue = "provider_model_invalid";
-            else reported_model = name->get<std::string>();
-          }
-        }
-        full_text = json::get_string(*message, "content");
-        reasoning_text = json::get_string(*message, "reasoning");
-        if (const Json* u = json::find(*j, "usage"); u && u->is_object()) usage = *u;
-      }
-    }
+  const bool got_response = sent.state == llm::State::Ok || sent.state == llm::State::HttpError ||
+                            sent.state == llm::State::ParseError;  // the transport itself succeeded
+  if (graph && !stream && got_response) {
+    graph->capture_chunk(sent.body, model);
+    graph->capture_final(model, false, response_status);
   }
 
-  ordinary.usage = usage;
-  ordinary.settle();
+  switch (sent.state) {
+    case llm::State::Ok:
+      break;
+    case llm::State::Cancelled:
+      cancelled = true;
+      break;
+    case llm::State::TransportError:
+      if (!graph) return *sent.error;
+      graph->transport_issue = std::string(errc_name(sent.error->code));
+      break;
+    case llm::State::HttpError:
+      if (!graph) return Error(Errc::Http, "API error " + std::to_string(sent.http_status) + ": " + std::string(utf8::prefix(sent.body, 500)));
+      graph->transport_issue = "http";
+      full_text = sent.body;
+      break;
+    case llm::State::ParseError:
+      if (!graph) return *sent.error;
+      graph->transport_issue = "parse";
+      full_text = sent.body;
+      break;
+    case llm::State::Unavailable:
+    case llm::State::GateError:
+    case llm::State::Held:
+      return sent.error ? *sent.error : Error(Errc::Unavailable, "model call unavailable");
+  }
 
   if (graph) {
     if (stream || graph->first_response.empty()) graph->capture_final(model, cancelled, response_status);

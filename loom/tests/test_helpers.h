@@ -7,6 +7,7 @@
 #include <string>
 
 #include "loom/db.h"
+#include "loom/net/http.h"
 #include "loom/result.h"
 #include "loom/util/fs.h"
 
@@ -19,6 +20,25 @@ namespace loom::test {
     INFO((loom_t_r_ ? std::string("ok") : loom_t_r_.error().to_string()));            \
     REQUIRE(static_cast<bool>(loom_t_r_));                                            \
   } while (0)
+
+// One HttpRequest as ordered JSON (method, url, headers in wire order, body,
+// timeout, stream flag): the golden-bytes view the use-model migration pins.
+inline Json request_json(const net::HttpRequest& r) {
+  Json headers = Json::array();
+  for (const auto& [name, value] : r.headers) headers.push_back(Json::array({name, value}));
+  return Json{{"method", r.method}, {"url", r.url}, {"headers", headers},
+              {"body", r.body}, {"timeout_ms", r.timeout_ms}, {"stream", r.stream}};
+}
+
+// Declares an action's status through the user overlay of the actions profile.
+inline void declare_action_status(const std::filesystem::path& data_dir, const std::string& name,
+                                    const std::string& status) {
+  std::filesystem::create_directories(data_dir / "profiles");
+  Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "actions"},
+               {"overrides", Json{{"actions", Json{{name, Json{{"status", status}}}}}}}};
+  auto written = fsutil::write_file(data_dir / "profiles" / "actions.pack", overlay.dump());
+  if (!written) FAIL("write overlay failed: " << written.error().to_string());
+}
 
 // Unwrap a Result<T> or fail the test.
 template <class T>

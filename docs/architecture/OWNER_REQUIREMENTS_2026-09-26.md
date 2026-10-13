@@ -680,6 +680,28 @@ contradiction) whose results enter the graph as proposals, never as facts. Each
 such operation runs transparently or under full user control, as a setting.
 (paraphrase; correction of Claude's earlier closed lists)
 
+## R54 — Everything from the conversation window, at any level of abstraction and competence (owner, 2026-10-13)
+> "jedna zasada, która mi się przypomniała nt. ChatADHD: wszystko użytkownik powinien być w stanie zrobić
+> z okienka konwersacji, komunikując się na dowolnym poziomie abstrakcji i kompetencji"
+
+Every action, setting, flow and storage operation is reachable by talking in the conversation window, whether the
+user says it as a vague wish or as an exact technical command. Panels and buttons are additional views of the same
+actions, never the only way. (paraphrase)
+
+## R55 — Content vs its forms; groups of actions; the list is open and grows from conversations (owner, 2026-10-13)
+> "nie tylko wiadomość — wideo, obraz, nawet muzyka mogą nieść jednakową treść, tylko w innych modalach. Takie coś
+> można opisać, streścić, namalować, parodiować, zaśpiewać i zatańczyć … cała rozmowa też może być namalowana;
+> kot w Pythonie albo arkusz Excela to już troszkę mocniej trzeba kombinować"
+>
+> "grupę flow, rutyny, pipeliny można zastosować, zoptymalizować, wariantować, eksperymentować … jak ci podaję
+> kilka przykładów, to jest kilka oczywistych z bardzo długiej listy, którą masz uzupełnić i obsłużyć rozwijanie
+> w przyszłości, w tym w szczególności emergentne na podstawie konversacji"
+
+Groups such as "rich representations of multidimensional content" and "flows / routines / pipelines" carry their
+own families of actions; the given examples are the start of a long list Claude completes, and new groups and
+actions emerge from conversations as proposals. Design: `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`
+§5–§7. (paraphrase)
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

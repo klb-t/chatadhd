@@ -21,6 +21,7 @@ in [`docs/CODEX_HANDOFF_2026-09-28.md`](https://github.com/klb-t/chatadhd/blob/a
 | `event_bus.h`, `config.h`, `provenance.h`, `tasks.h`, `relations.h`, `runtime.h` | implemented |
 | `re/regex.h`, `semantic_analyzer.h`, `semantic_llm.h`, `graph_engine.h`, `graph_memory.h`, `selector.h`, `memory_engine.h` | implemented |
 | `net/http.h`, `net/sse.h`, `providers.h`, `chat_engine.h`, `batch_api.h`, `semantic_worker.h` | implemented |
+| `use_model.h` (the one "use model" action: adapters `openai_chat`/`openai_images`/`anthropic_messages`, typed parts, capabilities as data, variants, shared usage guard, provenance, action catalogue `data/runtime/actions.pack`; every model call goes through it) | implemented |
 | `importer.h`, `crypto.h`, `media_providers.h`, `github_sync.h` | implemented |
 | `archive.h` — Archive Intelligence / Project Compiler | implemented (this README, [below](#archive-intelligence)) |
 | `loom.h` — C ABI (archive, artifacts, `loom_import_file_ex` added) | implemented |

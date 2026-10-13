@@ -261,6 +261,72 @@ Decyzje techniczne (odwracalne):
   (migracja, awaria), brak klucza nie kasuje pliku (`.unreadable`). Opcja wyłączalna. Zaszyfrowanie reszty danych: nie (poza zakresem).
 - Otwarte: pierwsza kompilacja Kotlina i uruchomienie na urządzeniu; release signing; wznawianie przerwanego kopiowania.
 
+## P7 fala 1: jedna akcja „użyj modelu” (2026-10-13, branch `claude/p7-use-model-action`)
+
+Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście `llm::use_model()` (`loom/use_model.h`,
+`src/llm/`) zamiast kopii wywołania modelu. Decyzje techniczne (odwracalne; wszystko jest danymi):
+
+- **Żądanie = dane:** `models` (jeden, albo lista wariantów), `mode` (`single` / `sequential` zwraca wynik każdego wariantu /
+  `first_success` zatrzymuje się na pierwszym udanym), `parameters` (uporządkowane, dopisywane po `model` i `messages`),
+  kontekst (gotowe `messages` albo odwołanie rozwiązywane przez `Services::resolve_context`), `prompt`, wybór dostawcy,
+  haki strumienia, token anulowania. Warianty tylko na wniosek; bez nich zachowanie jak dotąd (te same bajty żądania).
+- **Dostawca z ustawień:** klucz `llm_provider` (preset `openrouter`) → manifest w `ProviderRegistry` (wbudowane + opcjonalna
+  tablica `provider_manifests` w config). Manifest daje adres (`base_url`, albo ustawienie wskazane w `metadata.base_url_setting`),
+  sekret (`auth_secret`, schemat `auth_scheme`), nagłówki i **adapter** (`metadata.adapter`). Kod wołający nie zna już ścieżki
+  `/chat/completions`, nagłówków auth ani nazw sekretów; zniknął `if (m.id == "openrouter")` z `providers.cpp`.
+- **Adaptery** (`AdapterRegistry`, rodzina → fabryka; nowa rodzina = jeden `register_adapter`): `openai_chat` (OpenAI-zgodne,
+  w tym OpenRouter) i `anthropic_messages` (Messages + Message Batches jako operacje `BatchSubmit/Status/Results` tego samego adaptera).
+- **Bezpiecznik ×10 w każdym wywołaniu:** każde wydające wywołanie przechodzi przez wspólną bramkę (`UsageGate` nad
+  `chat::ModelUsageGuard`) przed wysłaniem i jest rozliczane po; wstrzymane wywołanie wraca jako `State::Held` i **nic nie wychodzi**.
+  Łańcuch wariantów zatrzymuje się na wstrzymanym (nie obchodzi pytania do właściciela). Własne przepływy zostały za tym samym
+  interfejsem: strojenie celu (`GoalTypingGate`), odpowiedź grafowa (pożyczona bramka), ponowne wysłanie workera.
+- **Proweniencja:** każdy wynik ma rekord `loom.model_use/1` (model zażądany/zgłoszony, dostawca, adapter, punkt końcowy bez
+  sekretów, parametry + ich sha256, sha256 żądania i wyjścia, status, użycie) – w wyniku, w `Services::on_provenance`, a w
+  szacunku dla księgi tam, gdzie szacunek wyprowadza akcja.
+- **Zmigrowane miejsca (po jednym commicie, bajty żądania te same – testy „golden” dodane przed migracją):** analiza semantyczna
+  (`semantic_llm`), współbieżny batch i natywne Message Batches (`batch_api`), udoskonalanie elementów archiwum
+  (`archive/pipeline`), strojenie celu (`context_engine`), batch workera (zgłoszenie/odpytanie/wyniki) i bramka ponownego wysłania
+  (`semantic_worker`), czat (`chat_engine`, strumień i bufor, ścieżka grafowa).
+- **Świadome różnice (domyślnie niewidoczne):** adres jest zawsze bez końcowego `/` (strojenie celu go nie obcinało);
+  `enabled()` analizy semantycznej wymaga teraz rozwiązywalnego dostawcy (pusty `base_url` = wyłączona); wstrzymanie bramką w
+  analizie semantycznej to pauza (wynik regex, bez zliczania błędu), a w `batch_api` zwraca „brak id” z ostrzeżeniem – **nie ma
+  jeszcze ekranu potwierdzenia dla tych kohort** (czat i worker go mają).
+- **Modalności (doprecyzowanie właściciela, 2026-10-13):** `use_model` nie zna czatu ani tekstu. Wejścia i wyjścia to **typowane
+  części** (`text`, `json`, `image`, `audio`, `video`, `embedding`, `file_ref`; odwołują się do węzłów grafu / blobów); wiadomość
+  czatu to jeden z kształtów wejścia. Duże wyjścia (media) trafiają przez `OutputStore` do `BlobStore` (rozmieszczenie z rejestru
+  magazynów P4) jako blob + węzeł grafu `kind=blob` + rekord artefaktu z proweniencją; w wyniku jest tylko odwołanie.
+- **Możliwości jako dane:** adapter deklaruje domyślnie, co przyjmuje / zwraca / jakie ma tryby (`stream`, `batch`); warstwy danych
+  nadpisują pola po kolei: manifest dostawcy (`metadata.capabilities`) → config `model_capabilities` → `ModelSpec::capabilities`.
+  Niezgodność (np. wejście audio do `openai_chat`, obraz z modelu tekstowego, strumień dla obrazów, brak magazynu wyjść) jest
+  odrzucana **przed wysłaniem** z podanym powodem (`Errc::Unsupported`) – nigdy po cichu z innym modelem. W `first_success`
+  odrzucony wariant jest raportowany, a łańcuch idzie dalej.
+- **Jeden rodzaj bytu: akcja** (`loom/data/runtime/actions.pack`, profil `actions`, schemat wartości `loom.action_catalogue/1`).
+  Akcja jest *atomowa* (zrealizowana w kodzie/adapterze: `use_model`, `save`, `share`) albo *złożona* (kroki innych akcji jako
+  dane); oba kształty są takie same: `id`, `kind`, `status` (`implemented|planned`), `steps` (złożona), typowane `inputs`/`outputs`,
+  `requires` (wolne cechy elementu wejściowego), `effects` (`reads_only`, `writes`, `sends_off_device`, `costs_money`,
+  `irreversible`, `touches_private_data`). Sześć zmigrowanych miejsc to akcje złożone z krokiem `use_model`: `chat.send`,
+  `semantic.analyse`, `semantic.batch`, `batch.chat`, `archive.refine`, `goal.typing`; deklarowane (planned): `graph_native.reply`,
+  `jev.edge_classify`, `input.route_intent`, `script.call`, `agent.call`, `media.generate_image|video|music`, `save`, `share`.
+  Wołający podaje id akcji (`ModelRequest::action`), proweniencja je zapisuje; nieznana, `planned` albo niebędąca wołaniem modelu
+  akcja jest odrzucana przed wysłaniem. Nową akcję dopisuje się nakładką `<dane>/profiles/actions.pack` (dane, nie kod). Dopasowywanie
+  elementów do akcji i silnik reguł: fala 2 (nic z tego jeszcze nie istnieje).
+- **Adapter obrazów (dowód kształtu):** `openai_images` (`/images/generations`, `b64_json` albo `url`), sprawdzony wyłącznie na
+  fałszywym transporcie (bez sieci i płatnych wywołań); wyjście obraz → blob + węzeł. Akcja `media.generate_image` zostaje `planned`,
+  dopóki nikt jej nie woła. Wyjście `json` to tekst sparsowany (z tolerancją płotków ```), błędny JSON = osobny błąd.
+- **Przypięcia:** wpis `generated_outputs` w `loom/data/validation/product_literals.pack` odświeżony (był nieaktualny już na
+  `a047df88`: brakowało trzech paczek, hasze generatora/wyjścia się nie zgadzały); strażnik wylicza teraz `verified_generated_files: 1`.
+- Cofnięcie: przywróć poprzednie commity miejsc wywołania (każdy osobno); `use_model` można zostawić – nic innego go nie woła.
+  Usunięcie `actions.pack` (i wpisu w `.inc` generatorem) wyłącza tylko sprawdzanie nazw akcji – bez `action` w żądaniu nic się nie zmienia.
+- **Koszt bramki dla wołań masowych (zmierzone, do decyzji):** każde wołanie przez wspólną bramkę dopisuje do księgi
+  `usage-policy.sqlite` ok. 9,5 KB i w buildzie debug trwa ok. 175 ms (200 wołań = 1,9 MB, 35 s). Dla czatu to nic, ale dla
+  `semantic.analyse` i `batch.chat` (jedno wołanie na wiadomość) daje ok. 1 GB księgi na 100 tys. wiadomości. Wybór: zostawić (jak
+  teraz, zgodnie z „każde wołanie przechodzi przez bramkę”), bramkować całe przebiegi jednym wpisem (tak jak batch i ponowne wysłanie
+  workera), albo współdzielić otwarty uchwyt księgi (zmiana w `ModelUsageGuard`). Nie podjąłem tej decyzji za Ciebie.
+- Otwarte (nie zmigrowane): analiza kontraktowa `extract/semantic.cpp` + `server/src/analysis-ui-routes.h` (żądanie z kontraktu
+  promptu, własna księga), postprocess odpowiedzi grafowej (`graph_reply.cpp`, własny builder z manifestu), `embedding.cpp`
+  (to nie wywołanie modelu czatu), `ModelRegistry::update_from_api` (`/models`); ekran potwierdzenia ×10 dla analizy/batcha;
+  wpisanie wyboru dostawcy do węzłów grafu (fala 2); katalog akcji nie ma jeszcze dopasowania ani reguł (fala 2); wywołanie obrazów
+  nie ma jeszcze żadnego wołającego ani ekranu.
 ## S2 / R3 — jedno wejście „wykonaj akcję” (2026-10-13)
 
 - `loom_invoke(ctx, port, action, json)` w C ABI (addytywnie) + JNI; porty `storage`, `github`, `actions/list` (katalog akcji

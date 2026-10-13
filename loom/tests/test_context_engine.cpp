@@ -249,6 +249,64 @@ TEST_SUITE("context_engine") {
     CHECK(goal2.params.dump().find("sk-test") == std::string::npos);
   }
 
+  TEST_CASE("action: declaring goal.typing planned stops the model classification before any send") {
+    Fixture f;
+    loom::test::declare_action_status(f.td.path(), "goal.typing", "planned");
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    f.rt->set_http_transport(scripted);
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    context::ContextRequest req;
+    req.text = "asdkjhasd random text matching no cue at all";
+    context::GoalTypingBudget budget{1, 10000, 32, 2000, 4096};
+    auto goal = unwrap(engine.type_goal_with_model(req, budget));
+    CHECK(goal.params["classifier"] == "cue");
+    CHECK(scripted->requests().empty());
+  }
+
+  TEST_CASE("golden: goal typing request bytes are pinned") {
+    Fixture f;
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    f.rt->set_http_transport(scripted);
+    context::ContextEngine engine(*f.rt, *f.ks, f.pack);
+    f.rt->config().set("semantic_model", "test-model");
+    f.rt->secrets().set("api_key", "sk-test");
+    scripted->expect(
+        "POST", "https://openrouter.ai/api/v1",
+        net::ScriptedTransport::Reply::json(
+            200, Json{{"choices", Json::array({Json{{"message", Json{{"content", "{\"goal_type\": \"verify_claim\", \"confidence\": 0.9}"}}}}})}}));
+    context::ContextRequest req;
+    req.text = "asdkjhasd random text matching no cue at all";
+    context::GoalTypingBudget budget{1, 10000, 32, 2000, 4096};
+    unwrap(engine.type_goal_with_model(req, budget));
+    REQUIRE(scripted->requests().size() == 1);
+    std::string prompt =
+        "Classify the following prompt into exactly one goal type id. Reply with strict JSON only: "
+        "{\"goal_type\": \"<id>\", \"confidence\": <0..1>}.\nGoal types:\n"
+        "- answer_question: a question about the project or its history\n"
+        "- brainstorm: open exploration: options, areas, generalizations\n"
+        "- compute_deadline: a procedural deadline from dated events and its legal basis (conservative)\n"
+        "- extend_scene: creative continuation of a part of a film or piece of music\n"
+        "- implement_part: write or change a module / component / feature\n"
+        "- review_decision: re-examine a decision: alternatives, affected values, principles, constraints\n"
+        "- verify_claim: check a claim against its evidence and counter-evidence\n"
+        "- write_artifact: produce a document of the project's kind (spec, pleading, screenplay, letter)\n"
+        "\nPrompt:\nasdkjhasd random text matching no cue at all";
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://openrouter.ai/api/v1/chat/completions"},
+        {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test"}),
+                                 Json::array({"Content-Type", "application/json"}),
+                                 Json::array({"HTTP-Referer", "https://github.com/chatadhd"}),
+                                 Json::array({"X-Title", "ChatADHD-Context"})})},
+        {"body", "{\"model\":\"test-model\",\"messages\":[{\"role\":\"user\",\"content\":" + json::dump(Json(prompt)) +
+                 "}],\"temperature\":0.0,\"max_tokens\":32}"},
+        {"timeout_ms", 2000},
+        {"stream", false}};
+    CHECK(loom::test::request_json(scripted->requests().front()) == expected);
+  }
+
   TEST_CASE("native goal typing: exhausted and invalid budgets never call the transport") {
     Fixture f;
     auto scripted = std::make_shared<net::ScriptedTransport>();

@@ -2,6 +2,10 @@
 
 #include <sqlite3.h>
 
+#include <algorithm>
+#include <chrono>
+#include <thread>
+
 #include "loom/util/ids.h"
 
 namespace loom::sql {
@@ -186,6 +190,20 @@ Status Connection::exec(std::string_view sql) {
     return Error(code, "exec: " + msg);
   }
   return {};
+}
+
+Status Connection::enter_wal_mode(int budget_ms) {
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(std::max(budget_ms, 0));
+  auto backoff = std::chrono::milliseconds(2);
+  for (;;) {
+    auto mode = query_text("PRAGMA journal_mode");
+    if (mode && mode->has_value() && **mode == "wal") return {};
+    Status switched = (mode || mode.error().code == Errc::Busy) ? exec("PRAGMA journal_mode=WAL") : Status(mode.error());
+    if (switched) return {};
+    if (switched.error().code != Errc::Busy || std::chrono::steady_clock::now() >= deadline) return switched;
+    std::this_thread::sleep_for(backoff);
+    backoff = std::min(backoff * 2, std::chrono::milliseconds(50));
+  }
 }
 
 Result<Stmt> Connection::prepare(std::string_view sql) {

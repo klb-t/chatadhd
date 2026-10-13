@@ -46,6 +46,75 @@ Json openai_reply(std::string content, std::string reasoning = "") {
 }  // namespace
 
 TEST_SUITE("chat_engine") {
+  TEST_CASE("action: declaring chat.send planned stops the send before any request") {
+    Env env;
+    loom::test::declare_action_status(env.td.path(), "chat.send", "planned");
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    auto r = engine.send("hello", opts);
+    REQUIRE_FALSE(r);
+    CHECK(r.error().message.find("action 'chat.send' is planned") != std::string::npos);
+    CHECK(env.transport.requests().empty());
+  }
+
+  TEST_CASE("golden: non-streaming chat request bytes are pinned") {
+    Env env;
+    env.cfg.set("system_prompt", "Golden system prompt.");
+    env.transport.expect("POST", "https://api.test/chat/completions",
+                         net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    REQUIRE(engine.send("golden question", opts));
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/chat/completions"},
+        {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test-key"}),
+                                 Json::array({"Content-Type", "application/json"}),
+                                 Json::array({"HTTP-Referer", "https://github.com/chatadhd"}),
+                                 Json::array({"X-Title", "ChatADHD"})})},
+        {"body", "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"Golden system prompt.\"},"
+                 "{\"role\":\"user\",\"content\":\"golden question\"}],\"temperature\":0.7,\"max_tokens\":4096,"
+                 "\"stream\":false,\"include_reasoning\":true}"},
+        {"timeout_ms", 180000},
+        {"stream", false}};
+    CHECK(loom::test::request_json(reqs[0]) == expected);
+  }
+
+  TEST_CASE("golden: streaming chat request bytes are pinned") {
+    Env env;
+    env.cfg.set("system_prompt", "Golden system prompt.");
+    env.transport.expect("POST", "https://api.test/chat/completions",
+        net::ScriptedTransport::Reply::sse({R"({"choices":[{"delta":{"content":"he"}}]})",
+                                            R"({"choices":[{"delta":{"content":"llo"}}]})", "[DONE]"}));
+    auto engine = env.engine();
+    ChatOptions opts;
+    ChatCallbacks cb;
+    std::string seen;
+    cb.on_chunk = [&](std::string_view c) { seen += std::string(c); };
+    auto r = engine.send("golden question", opts, cb);
+    REQUIRE(r);
+    CHECK(seen == "hello");
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/chat/completions"},
+        {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test-key"}),
+                                 Json::array({"Content-Type", "application/json"}),
+                                 Json::array({"HTTP-Referer", "https://github.com/chatadhd"}),
+                                 Json::array({"X-Title", "ChatADHD"})})},
+        {"body", "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"Golden system prompt.\"},"
+                 "{\"role\":\"user\",\"content\":\"golden question\"}],\"temperature\":0.7,\"max_tokens\":4096,"
+                 "\"stream\":true,\"include_reasoning\":true}"},
+        {"timeout_ms", 180000},
+        {"stream", true}};
+    CHECK(loom::test::request_json(reqs[0]) == expected);
+  }
+
   TEST_CASE("build_content: no attachments returns the plain string") {
     Env env;
     auto engine = env.engine();
