@@ -115,13 +115,18 @@ class StorageService {
 
   // Object operations of a category. Key = "<category>/<key>" in the backend.
   // put: succeeds when >= write_quorum targets accepted; an unreachable one degrades, never blocks.
-  Status put(std::string_view category, std::string_view key, std::string_view bytes, std::string_view mime = "");
+  // `skip_storage`: a target another component serves itself (BlobStore keeps "local_dir" for its own layout).
+  Status put(std::string_view category, std::string_view key, std::string_view bytes, std::string_view mime = "",
+             std::string_view skip_storage = "");
   // Tries targets in read preference order; a hit on a later target is a fallback.
-  Result<std::string> get(std::string_view category, std::string_view key) const;
-  bool has(std::string_view category, std::string_view key) const;
+  Result<std::string> get(std::string_view category, std::string_view key, std::string_view skip_storage = "") const;
+  bool has(std::string_view category, std::string_view key, std::string_view skip_storage = "") const;
+  bool placed_on(std::string_view category, std::string_view storage_id) const;
 
   // CAS convenience (key = cas_key(hash)); records provenance links when a Database is attached.
   Result<std::string> put_cas(std::string_view category, std::string_view bytes, std::string_view mime = "");
+  // Provenance only: records "blob:<sha> stored_in <storage>" for every target that holds the object.
+  void note_stored(std::string_view category, std::string_view sha256, std::int64_t size);
 
   struct MoveOptions {
     std::string category;

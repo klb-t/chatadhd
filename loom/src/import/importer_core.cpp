@@ -420,7 +420,7 @@ Result<std::vector<Conversation>> ConversationImporter::with_source(
   SourceCtxGuard guard(*this, &ctx);
   // A copied SQLite main file omits live WAL sidecars. Preserve the original
   // database connection path until a consistent backup source is available.
-  return body(fmt != "sqlite" && blobs_ && !ctx.blob_hash.empty() ? blobs_->path_for(ctx.blob_hash) : path);
+  return body(fmt != "sqlite" && blobs_ && !ctx.blob_hash.empty() ? blobs_->local_path(ctx.blob_hash) : path);
 }
 
 Status ConversationImporter::record_provenance(const Conversation& conv, std::string_view handler) {
@@ -554,7 +554,7 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   // identity. SQLite retains its live original path so committed WAL rows
   // remain visible; the main-file blob alone is not a database snapshot.
   const fs::path input_path = fmt != "sqlite" && blobs_ && !ctx.blob_hash.empty()
-      ? blobs_->path_for(ctx.blob_hash) : path;
+      ? blobs_->local_path(ctx.blob_hash) : path;
   Json export_report = nullptr;
   Result<std::vector<Conversation>> convs = [&]() -> Result<std::vector<Conversation>> {
     if (use_export && fmt == "zip") return export_zip_body(input_path, opts, export_report);

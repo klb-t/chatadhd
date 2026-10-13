@@ -48,6 +48,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/semantic_worker.h"
 #include "loom/tasks.h"
+#include "loom/storage_command.h"
 #include "loom/usage_policy.h"
 #include "loom/util/cancel.h"
 #include "loom/util/fs.h"
@@ -574,6 +575,25 @@ int cmd_export(Runtime& rt, const Args& a) {
   } else {
     std::cout << s;
   }
+  return 0;
+}
+
+int cmd_storage(Runtime& rt, const Args& a) {
+  const std::string sub = need(a, 0, "storage subcommand");
+  Json req{{"action", "storage." + sub}};
+  if (sub == "placement" && a.pos.size() > 1) req["category"] = a.pos[1];
+  if (sub == "locate") req["hash"] = need(a, 1, "object hash");
+  if (sub == "copy" || sub == "move") {
+    req["category"] = a.get("category");
+    req["to"] = a.get("to");
+    if (a.has("dry-run")) req["dry_run"] = true;
+    if (a.has("delete-source")) req["delete_source"] = true;
+  } else if (sub == "backup") {
+    req["to"] = a.get("to");
+  } else if (sub != "status" && sub != "probe" && sub != "kinds" && sub != "placement" && sub != "locate") {
+    throw UsageError{"unknown storage subcommand: " + sub};
+  }
+  print_json(must(storage::run_command(rt, req)));  // secrets are never part of a result
   return 0;
 }
 
@@ -1485,6 +1505,7 @@ int main(int argc, char** argv) {
       {"archive", cmd_archive},
       {"catalog", cmd_catalog},
       {"knowledge", cmd_knowledge},
+      {"storage", cmd_storage},
       {"crypto", cmd_crypto} };
     if (auto handler = handlers.find(cmd); handler != handlers.end()) return handler->second(rt, args);
     std::cerr << "unknown command: " << cmd << "\n(see loom --help)\n";

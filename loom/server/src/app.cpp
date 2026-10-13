@@ -740,6 +740,39 @@ void App::route_graph_context() {
     send_loom(res, loom_graph_entry(rctx(), request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
+  // Storage plugins (P4): backends, per-category placement, copy/move between backends, backups.
+  // Rides on rctx(), so with accounts enabled every account sees and changes only its own placement.
+  auto storage_call = [this](httplib::Response& res, json body, const char* action) {
+    body["action"] = action;
+    send_loom(res, loom_github_sync(rctx(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+  };
+  svr_.Get("/api/storage/status", [storage_call](const httplib::Request&, httplib::Response& res) {
+    storage_call(res, json::object(), "storage.status");
+  });
+  svr_.Get("/api/storage/probe", [storage_call](const httplib::Request&, httplib::Response& res) {
+    storage_call(res, json::object(), "storage.probe");
+  });
+  svr_.Get("/api/storage/kinds", [storage_call](const httplib::Request&, httplib::Response& res) {
+    storage_call(res, json::object(), "storage.kinds");
+  });
+  svr_.Get("/api/storage/placement", [storage_call](const httplib::Request& req, httplib::Response& res) {
+    json b = json::object();
+    if (req.has_param("category")) b["category"] = req.get_param_value("category");
+    storage_call(res, b, "storage.placement");
+  });
+  svr_.Get("/api/storage/locate", [storage_call](const httplib::Request& req, httplib::Response& res) {
+    storage_call(res, json{{"hash", req.get_param_value("hash")}}, "storage.locate");
+  });
+  svr_.Post("/api/storage/copy", [this, storage_call](const httplib::Request& req, httplib::Response& res) {
+    storage_call(res, parse_body(req), "storage.copy");
+  });
+  svr_.Post("/api/storage/move", [this, storage_call](const httplib::Request& req, httplib::Response& res) {
+    storage_call(res, parse_body(req), "storage.move");
+  });
+  svr_.Post("/api/storage/backup", [this, storage_call](const httplib::Request& req, httplib::Response& res) {
+    storage_call(res, parse_body(req), "storage.backup");
+  });
+
   svr_.Post("/api/graph/reindex", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string conv_id = body.value("conv_id", std::string());

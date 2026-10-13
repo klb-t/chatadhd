@@ -16,6 +16,7 @@
 namespace loom {
 
 class Database;
+namespace storage { class StorageService; }
 
 // ── BlobStore ───────────────────────────────────────────────────────
 // Files live at <root>/<h[0:2]>/<h[2:4]>/<sha256-hex>. A blob is written to a
@@ -44,12 +45,24 @@ class BlobStore {
   Status verify(std::string_view hash) const;
   const std::filesystem::path& root() const noexcept { return root_; }
 
+  // Placement of the "blobs" category (P4). Default placement (one local_dir target) leaves every code path
+  // below exactly as before. With other targets: writes are replicated (local stays the working layout while
+  // local_dir is a target), reads fall back to the other targets in read-preference order and hydrate the
+  // local copy. `svc` is not owned and must outlive the store.
+  void set_placement(storage::StorageService* svc, std::string category = "blobs");
+  // Like path_for, but fetches the blob into the local layout first when only another target holds it.
+  std::filesystem::path local_path(std::string_view hash) const;
+
   static bool is_valid_hash(std::string_view hash) noexcept;
 
  private:
   Status register_blob(const BlobRef& ref, std::string_view mime);
+  bool placed() const;
+  Status replicate(const BlobRef& ref, std::string_view bytes, std::string_view mime) const;
   std::filesystem::path root_;
   Database& db_;
+  storage::StorageService* svc_ = nullptr;
+  std::string category_ = "blobs";
 };
 
 // ── Sources / provenance / artifacts ────────────────────────────────

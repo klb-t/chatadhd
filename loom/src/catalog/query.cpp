@@ -380,7 +380,7 @@ Result<std::string> Catalog::read_unit(std::string_view unit_id) {
   const std::string source_hash = cu.unit.source.starts_with("sha256:") ? cu.unit.source.substr(7) : std::string();
   if (rt_.blobs().has(source_hash)) {
     LOOM_TRY(rt_.blobs().verify(source_hash));
-    path = rt_.blobs().path_for(source_hash);
+    path = rt_.blobs().local_path(source_hash);
   }
 
   std::string bytes;

@@ -15,6 +15,11 @@
 #include <thread>
 
 #include "loom/config.h"
+#include "loom/graph_entry.h"
+#include "loom/loom.h"
+#include "loom/provenance.h"
+#include "loom/runtime.h"
+#include "loom/storage_command.h"
 #include "loom/log.h"
 #include "loom/net/http.h"
 #include "loom/runtime_profile.h"
@@ -648,5 +653,90 @@ TEST_SUITE("storage") {
     CHECK(by["browser"]["reachable"]["known"] == false);
     CHECK(json::dump(p).find(kSecret) == std::string::npos);
     CHECK(json::dump(p).find(kAccess) == std::string::npos);
+  }
+
+  TEST_CASE("BlobStore through the registry: replicate, fall back, hydrate, remote-only") {
+    fsutil::TempDir td, usb;
+    auto db = open_db(td.path() / "p.db");
+    auto prof = unwrap(RuntimeProfile::builtin("storage_security"));
+    Json v = prof.values();
+    v["storages"]["usb"] = Json{{"class", "local"}, {"path", usb.path().string()}};
+    auto both = Json::array({Json{{"storage", "local_dir"}, {"role", "primary"}}, Json{{"storage", "usb"}, {"role", "replica"}}});
+    v["placement"]["blobs"] = both;
+    StorageService svc(v, env_for(td.path()));
+    svc.set_database(db.get());
+    BlobStore blobs(td.path() / "blobs", *db);
+    blobs.set_placement(&svc);
+    auto ref = unwrap(blobs.put("hello world", "text/plain"));
+    CHECK(ref.hash == "b94d27b9934d3e08a52e52d7da7dabfac484efe37a5380ee9088f7ace2efcde9");
+    CHECK(std::filesystem::exists(blobs.path_for(ref.hash)));                     // local layout unchanged
+    CHECK(std::filesystem::exists(usb.path() / "blobs" / cas_key(ref.hash)));      // replica
+    CHECK(svc.locate(ref.hash).size() == 2);
+    // local copy lost: still addressable by hash, hydrated on read
+    std::filesystem::permissions(blobs.path_for(ref.hash), std::filesystem::perms::owner_write, std::filesystem::perm_options::add);
+    std::filesystem::remove(blobs.path_for(ref.hash));
+    CHECK(blobs.has(ref.hash));
+    CHECK(unwrap(blobs.read(ref.hash)) == "hello world");
+    CHECK(std::filesystem::exists(blobs.path_for(ref.hash)));
+    LOOM_REQUIRE_OK(blobs.verify(ref.hash));
+    // streamed file is replicated too
+    unwrap(fsutil::atomic_write(td.path() / "f.bin", "file payload"));
+    auto fr = unwrap(blobs.put_file(td.path() / "f.bin"));
+    CHECK(std::filesystem::exists(usb.path() / "blobs" / cas_key(fr.hash)));
+    // corrupted replica is detected, not served
+    std::filesystem::remove(blobs.path_for(fr.hash));
+    unwrap(fsutil::atomic_write(usb.path() / "blobs" / cas_key(fr.hash), "tampered"));
+    CHECK(blobs.read(fr.hash).error().code == Errc::Conflict);
+
+    // remote-only: local_dir is not a target, nothing is written to the local layout
+    v["placement"]["blobs"] = Json::array({Json{{"storage", "usb"}, {"role", "primary"}}});
+    StorageService only(v, env_for(td.path()));
+    BlobStore rblobs(td.path() / "rblobs", *db);
+    rblobs.set_placement(&only);
+    auto rr = unwrap(rblobs.put("remote only"));
+    CHECK_FALSE(std::filesystem::exists(rblobs.path_for(rr.hash)));
+    CHECK(std::filesystem::exists(usb.path() / "blobs" / cas_key(rr.hash)));
+    CHECK(rblobs.has(rr.hash));
+    CHECK(unwrap(rblobs.read(rr.hash)) == "remote only");
+    CHECK(std::filesystem::exists(rblobs.local_path(rr.hash)));
+  }
+
+  TEST_CASE("graph entry: storage.probe reports local reachability and leaves network stores unprobed") {
+    fsutil::TempDir td;
+    graph_entry::Env env;
+    env.data_dir = td.path();
+    auto entry = unwrap(graph_entry::compute(env));
+    const std::string dumped = json::dump(entry);
+    CHECK(dumped.find("storage_backends_reachable") != std::string::npos);
+    CHECK(dumped.find("storage_backends_unprobed") != std::string::npos);
+  }
+
+  TEST_CASE("command surface: Runtime + the existing C ABI JSON entry; per-data-dir; no secrets in results") {
+    fsutil::TempDir td, usb;
+    unwrap(fsutil::ensure_dir(td.path() / "profiles"));
+    unwrap(fsutil::atomic_write(td.path() / "profiles" / "storage_security.pack",
+        json::dump(Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "storage_security"},
+                        {"overrides", Json{{"storages", Json{{"usb", Json{{"class", "local"}, {"path", usb.path().string()}}}}}}}})));
+    std::string opts = Json{{"data_dir", td.path().string()}, {"start_workers", false}}.dump();
+    const char* err = nullptr;
+    LoomContext* ctx = loom_init_ex(opts.c_str(), &err);
+    REQUIRE(ctx != nullptr);
+    auto call = [&](const Json& req) {
+      const char* out = loom_github_sync(ctx, req.dump().c_str());
+      Json j = Json::parse(out ? out : "null", nullptr, false);
+      loom_free_string(out);
+      return j;
+    };
+    auto st = call({{"action", "storage.status"}});
+    bool saw_usb = false;
+    for (auto& b : st["backends"]) saw_usb = saw_usb || b["id"] == "usb";
+    CHECK(saw_usb);
+    auto probe = call({{"action", "storage.probe"}});
+    CHECK(probe["backends"].size() >= 3);
+    CHECK(call({{"action", "storage.copy"}, {"category", "blobs"}, {"to", "usb"}, {"dry_run", true}})["dry_run"] == true);
+    auto bad = call({{"action", "storage.copy"}, {"category", "blobs"}, {"to", "nowhere"}});
+    CHECK(bad.dump().find("nowhere") != std::string::npos);
+    CHECK(call({{"action", "storage.placement"}, {"category", "blobs"}})["default_placement"] == true);
+    loom_shutdown(ctx);
   }
 }

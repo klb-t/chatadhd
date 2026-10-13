@@ -85,7 +85,13 @@ Result<std::shared_ptr<StorageBackend>> StorageService::backend(const std::strin
   return sp;
 }
 
-Status StorageService::put(std::string_view category, std::string_view key, std::string_view bytes, std::string_view mime) {
+bool StorageService::placed_on(std::string_view category, std::string_view sid) const {
+  for (const auto& t : placement(category)) if (t.storage == sid) return true;
+  return false;
+}
+
+Status StorageService::put(std::string_view category, std::string_view key, std::string_view bytes, std::string_view mime,
+                           std::string_view skip) {
   auto targets = placement(category);
   if (targets.empty()) return Error(Errc::NotFound, "no placement for category '" + std::string(category) + "'");
   const std::string full = std::string(category) + "/" + std::string(key);
@@ -93,7 +99,7 @@ Status StorageService::put(std::string_view category, std::string_view key, std:
   int ok = 0;
   Error last(Errc::Unavailable, "no target accepted the write");
   for (const auto& t : targets) {
-    if (t.role == "egress") continue;
+    if (t.role == "egress" || t.storage == skip) continue;
     auto be = backend(t.storage);
     Status st = be ? (*be)->put(full, bytes, mime) : Status(be.error());
     if (st) { ++ok; continue; }
@@ -104,11 +110,12 @@ Status StorageService::put(std::string_view category, std::string_view key, std:
   return last;
 }
 
-Result<std::string> StorageService::get(std::string_view category, std::string_view key) const {
+Result<std::string> StorageService::get(std::string_view category, std::string_view key, std::string_view skip) const {
   auto targets = placement(category);
   const std::string full = std::string(category) + "/" + std::string(key);
   Error last(Errc::NotFound, "object not found: " + full);
   for (const auto& t : targets) {
+    if (t.storage == skip) continue;
     auto be = backend(t.storage);
     if (!be) { last = be.error(); continue; }
     auto r = (*be)->get(full);
@@ -119,9 +126,10 @@ Result<std::string> StorageService::get(std::string_view category, std::string_v
   return last;
 }
 
-bool StorageService::has(std::string_view category, std::string_view key) const {
+bool StorageService::has(std::string_view category, std::string_view key, std::string_view skip) const {
   const std::string full = std::string(category) + "/" + std::string(key);
   for (const auto& t : placement(category)) {
+    if (t.storage == skip) continue;
     auto be = backend(t.storage);
     if (be && (*be)->stat(full)) return true;
   }
@@ -144,13 +152,19 @@ Result<std::string> StorageService::put_cas(std::string_view category, std::stri
   const std::string hash = Sha256::hex(bytes);
   const std::string key = cas_key(hash);
   LOOM_TRY(put(category, key, bytes, mime));
+  note_stored(category, hash, static_cast<std::int64_t>(bytes.size()));
+  return hash;
+}
+
+void StorageService::note_stored(std::string_view category, std::string_view sha, std::int64_t size) {
+  if (!db_) return;
+  const std::string key = cas_key(sha);
   for (const auto& t : placement(category)) {
     auto be = backend(t.storage);
     if (!be || !(*be)->stat(std::string(category) + "/" + key)) continue;
-    if (auto st = record_location(category, key, t.storage, hash, static_cast<std::int64_t>(bytes.size())); !st)
+    if (auto st = record_location(category, key, t.storage, sha, size); !st)
       log::debug(kLog, "location record failed: {}", st.error().message);
   }
-  return hash;
 }
 
 Result<std::vector<std::string>> StorageService::list_category_keys(std::string_view category, const std::string& sid) const {
@@ -324,6 +338,7 @@ Json StorageService::describe() const {
       if (env_.secrets) creds = env_.secrets->has(ref + "_access_key") || env_.secrets->has(ref + "_user") || env_.secrets->has(ref + "_token");
       e["credentials_present"] = creds;
     }
+    e["configured"] = json::get_bool(v, "configured", true);
     backends.push_back(std::move(e));
   }
   Json cats = Json::array();
@@ -342,6 +357,10 @@ Json StorageService::probe_all() const {
   Json out = describe();
   for (auto& b : out["backends"]) {
     const std::string sid = b["id"].get<std::string>();
+    if (!json::get_bool(b, "configured", true)) {
+      b["reachable"] = Json{{"known", false}, {"reason", "template, not configured"}};
+      continue;
+    }
     auto be = backend(sid);
     if (!be) {
       b["reachable"] = Json{{"known", false}, {"reason", be.error().message}};

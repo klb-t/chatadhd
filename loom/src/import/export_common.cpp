@@ -717,7 +717,7 @@ std::string AssetIndex::blob_hash(Env& env, const std::string& member) {
 
 std::string AssetIndex::readable_path(Env& env, const std::string& member) {
   std::string h = blob_hash(env, member);
-  if (!h.empty() && env.blobs) return env.blobs->path_for(h).string();
+  if (!h.empty() && env.blobs) return env.blobs->local_path(h).string();
   return member;
 }
 

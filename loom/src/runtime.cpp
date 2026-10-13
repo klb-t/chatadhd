@@ -1,5 +1,6 @@
 // Composition root. See runtime.h for the wiring order.
 #include "loom/runtime.h"
+#include "loom/storage_backend.h"
 
 #include <atomic>
 #include <mutex>
@@ -120,6 +121,7 @@ struct Runtime::Impl {
   std::unique_ptr<EventBus> bus;
   std::unique_ptr<EventLog> event_log;
   std::unique_ptr<BlobStore> blobs;
+  std::unique_ptr<storage::StorageService> storage;
   std::unique_ptr<ProvenanceStore> provenance;
   std::unique_ptr<TaskEngine> tasks;
   std::unique_ptr<RelationRegistry> relations;
@@ -182,6 +184,24 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(impl->analyzer, SemanticAnalyzer::create_from_data_dir(p.root));
   impl->http = std::make_shared<ForwardingTransport>(opts.http ? opts.http : net::make_default_transport());
 
+  {
+    storage::BackendEnv senv;
+    senv.http = impl->http;
+    senv.secrets = impl->secrets.get();
+    senv.data_dir = p.root;
+    auto svc = storage::StorageService::load(senv, impl->db.get());
+    if (svc) {
+      impl->storage = std::move(*svc);
+    } else {
+      // A broken overlay must not stop the app, nor silently move data: fall back to the shipped default
+      // placement (today's local layout) and say so.
+      log::error(kLog, "storage placement profile rejected, using default local placement: {}", svc.error().message);
+      auto base = RuntimeProfile::builtin("storage_security");
+      impl->storage = std::make_unique<storage::StorageService>(base ? base->values() : Json::object(), senv);
+      impl->storage->set_database(impl->db.get());
+    }
+    impl->blobs->set_placement(impl->storage.get());
+  }
   impl->models = std::make_unique<ModelRegistry>(p.models, *impl->config, *impl->secrets, *impl->http);
   impl->providers = std::make_unique<ProviderRegistry>(*impl->config, *impl->secrets);
   if (auto st = impl->providers->load_builtin(); !st) {
@@ -332,6 +352,7 @@ Secrets& Runtime::secrets() { return *impl_->secrets; }
 Database& Runtime::db() { return *impl_->db; }
 EventBus& Runtime::bus() { return *impl_->bus; }
 BlobStore& Runtime::blobs() { return *impl_->blobs; }
+storage::StorageService& Runtime::storage() { return *impl_->storage; }
 ProvenanceStore& Runtime::provenance() { return *impl_->provenance; }
 EventLog& Runtime::event_log() { return *impl_->event_log; }
 TaskEngine& Runtime::tasks() { return *impl_->tasks; }

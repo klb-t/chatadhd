@@ -33,6 +33,7 @@ namespace loom {
 class Database;
 class EventBus;
 class BlobStore;
+namespace storage { class StorageService; }
 class ProvenanceStore;
 class EventLog;
 class TaskEngine;
@@ -94,6 +95,8 @@ class Runtime {
   Database& db();
   EventBus& bus();
   BlobStore& blobs();
+  // Backends + per-category placement (storage_security pack + profiles overlay). Never null.
+  storage::StorageService& storage();
   ProvenanceStore& provenance();
   EventLog& event_log();
   TaskEngine& tasks();

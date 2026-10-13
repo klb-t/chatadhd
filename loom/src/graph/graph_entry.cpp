@@ -7,6 +7,7 @@
 #include "loom/crypto_suite.h"
 #include "loom/economy.h"
 #include "loom/runtime_profile.h"
+#include "loom/storage_backend.h"
 
 namespace loom::graph_entry {
 
@@ -237,6 +238,32 @@ void register_builtin(Providers& p) {
     out[""] = known_by(avail, std::move(by));
     auto cfg = cs::suite_config_from_profile(c.env.data_dir);
     out["crypto_active_suite"] = cfg ? known_by(1, Json{{cfg->preset_id, 1}}) : unknown("suite_not_resolved");
+    return out;
+  });
+  // Object-store backends: value = configured backends whose reachability this provider can establish offline
+  // (local kinds); by = {storage id: 1 reachable | 0 not}. Network backends are not contacted from an entry view;
+  // they are reported as storage_backends_unprobed (probe them explicitly: loom storage probe).
+  p.add("storage.probe", [](const Context& c, const Json&) {
+    storage::BackendEnv env;
+    env.data_dir = c.env.data_dir;
+    auto svc = storage::StorageService::load(env, nullptr);
+    if (!svc) return only(unknown("storage_profile_unavailable"));
+    Json by = Json::object();
+    std::int64_t ok = 0, unprobed = 0;
+    for (const auto& b : (*svc)->describe()["backends"]) {
+      if (!b.value("configured", true) || b["kind"].is_null()) continue;
+      if (b["kind"] == "local") {
+        auto be = (*svc)->backend(b["id"].get<std::string>());
+        const bool up = be && (*be)->probe();
+        by[b["id"].get<std::string>()] = up ? 1 : 0;
+        ok += up ? 1 : 0;
+      } else {
+        ++unprobed;
+      }
+    }
+    Json out = Json::object();
+    out[""] = known_by(ok, std::move(by));
+    out["storage_backends_unprobed"] = known(unprobed);
     return out;
   });
   p.add("pack.file", [](const Context& c, const Json& params) {

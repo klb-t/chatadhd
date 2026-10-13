@@ -353,7 +353,7 @@
           "known": false
         },
         "configured": false,
-        "note": "no adapter exists; adding one is data plus a provider"
+        "note": "any other provider: register a backend kind (BackendRegistry) and describe it here as data; s3 and webdav kinds cover most services"
       },
       "browser": {
         "class": "device",
@@ -437,6 +437,122 @@
         "jurisdiction": {
           "known": false
         }
+      },
+      "s3_example": {
+        "class": "user_cloud",
+        "label": {
+          "en": "S3-compatible bucket (AWS, MinIO, R2, B2) - template",
+          "pl": "Bucket zgodny z S3 (AWS, MinIO, R2, B2) - szablon"
+        },
+        "path": "",
+        "access": "bucket credentials from secrets storage_s3_example_access_key / _secret_key",
+        "encryption": {
+          "algorithm": "none",
+          "key_custody": "none",
+          "rotation": "none"
+        },
+        "sync": {
+          "rule": "none",
+          "conflict": "ask"
+        },
+        "capabilities": [
+          "read",
+          "write",
+          "list"
+        ],
+        "available_on": [
+          "linux",
+          "macos",
+          "windows",
+          "android"
+        ],
+        "jurisdiction": {
+          "known": false
+        },
+        "backend": {
+          "kind": "s3",
+          "endpoint": "https://s3.example.com",
+          "bucket": "chatadhd",
+          "region": "us-east-1",
+          "prefix": "",
+          "secret_ref": "storage_s3_example"
+        },
+        "configured": false,
+        "note": "template: copy into profiles/storage_security.pack with real endpoint values and set the credentials as secrets <secret_ref>_*; never put credentials here"
+      },
+      "webdav_example": {
+        "class": "user_cloud",
+        "label": {
+          "en": "WebDAV (Nextcloud and others) - template",
+          "pl": "WebDAV (Nextcloud i inne) - szablon"
+        },
+        "path": "",
+        "access": "credentials from secrets storage_webdav_example_user / _password, or _token",
+        "encryption": {
+          "algorithm": "none",
+          "key_custody": "none",
+          "rotation": "none"
+        },
+        "sync": {
+          "rule": "none",
+          "conflict": "ask"
+        },
+        "capabilities": [
+          "read",
+          "write",
+          "list"
+        ],
+        "available_on": [
+          "linux",
+          "macos",
+          "windows",
+          "android"
+        ],
+        "jurisdiction": {
+          "known": false
+        },
+        "backend": {
+          "kind": "webdav",
+          "url": "https://cloud.example.com/remote.php/dav/files/user",
+          "prefix": "chatadhd",
+          "secret_ref": "storage_webdav_example"
+        },
+        "configured": false,
+        "note": "template: copy into profiles/storage_security.pack with real endpoint values and set the credentials as secrets <secret_ref>_*; never put credentials here"
+      },
+      "gdrive_example": {
+        "class": "user_cloud",
+        "label": {
+          "en": "Google Drive - template (adapter planned)",
+          "pl": "Google Drive - szablon (adapter planowany)"
+        },
+        "path": "",
+        "access": "OAuth tokens as secrets (adapter not implemented yet)",
+        "encryption": {
+          "algorithm": "none",
+          "key_custody": "none",
+          "rotation": "none"
+        },
+        "sync": {
+          "rule": "none",
+          "conflict": "ask"
+        },
+        "capabilities": [],
+        "available_on": [
+          "linux",
+          "macos",
+          "windows",
+          "android"
+        ],
+        "jurisdiction": {
+          "known": false
+        },
+        "backend": {
+          "kind": "gdrive",
+          "secret_ref": "storage_gdrive_example"
+        },
+        "configured": false,
+        "note": "template: copy into profiles/storage_security.pack with real endpoint values and set the credentials as secrets <secret_ref>_*; never put credentials here"
       }
     },
     "placement": {

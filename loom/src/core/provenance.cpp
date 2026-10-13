@@ -8,6 +8,7 @@
 
 #include "loom/db.h"
 #include "loom/log.h"
+#include "loom/storage_backend.h"
 #include "loom/util/fs.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
@@ -69,10 +70,39 @@ sfs::path BlobStore::path_for(std::string_view hash) const {
   return root_ / h.substr(0, 2) / h.substr(2, 2) / h;
 }
 
+void BlobStore::set_placement(storage::StorageService* svc, std::string category) {
+  svc_ = svc;
+  category_ = std::move(category);
+}
+
+// True when the category has a non-default placement (the only case that needs the registry at all).
+bool BlobStore::placed() const { return svc_ && !svc_->is_default_local(category_); }
+
+Status BlobStore::replicate(const BlobRef& ref, std::string_view bytes, std::string_view mime) const {
+  const std::string key = storage::cas_key(ref.hash);
+  if (!svc_->has(category_, key, "local_dir")) {
+    // The local copy (when local_dir is a target) already succeeded, so an unreachable replica degrades.
+    if (auto st = svc_->put(category_, key, bytes, mime, "local_dir"); !st) {
+      if (!svc_->placed_on(category_, "local_dir")) return st;
+      log::warn(kLog, "replication of {} degraded: {}", ref.hash, st.error().message);
+      return {};
+    }
+  }
+  svc_->note_stored(category_, ref.hash, ref.size);
+  return {};
+}
+
 bool BlobStore::has(std::string_view hash) const {
   if (!is_valid_hash(hash)) return false;
   std::error_code ec;
-  return sfs::exists(path_for(hash), ec);
+  if (sfs::exists(path_for(hash), ec)) return true;
+  return placed() && svc_->has(category_, storage::cas_key(hash), "local_dir");
+}
+
+sfs::path BlobStore::local_path(std::string_view hash) const {
+  std::error_code ec;
+  if (is_valid_hash(hash) && placed() && !sfs::exists(path_for(hash), ec)) (void)read(hash);  // hydrates
+  return path_for(hash);
 }
 
 Status BlobStore::register_blob(const BlobRef& ref, std::string_view mime) {
@@ -87,6 +117,12 @@ Result<BlobRef> BlobStore::put(std::string_view bytes, std::string_view mime) {
   ref.size = static_cast<std::int64_t>(bytes.size());
   sfs::path dst = path_for(ref.hash);
   std::error_code ec;
+  if (placed() && !svc_->placed_on(category_, "local_dir")) {  // local_dir is not a target: remote only
+    ref.existed = svc_->has(category_, storage::cas_key(ref.hash), "local_dir");
+    LOOM_TRY(replicate(ref, bytes, mime));
+    LOOM_TRY(register_blob(ref, mime));
+    return ref;
+  }
   if (sfs::exists(dst, ec)) {
     ref.existed = true;
   } else {
@@ -105,10 +141,15 @@ Result<BlobRef> BlobStore::put(std::string_view bytes, std::string_view mime) {
     }
   }
   LOOM_TRY(register_blob(ref, mime));
+  if (placed()) LOOM_TRY(replicate(ref, bytes, mime));
   return ref;
 }
 
 Result<BlobRef> BlobStore::put_file(const sfs::path& file, std::string_view mime) {
+  if (placed() && !svc_->placed_on(category_, "local_dir")) {  // remote-only: no local layout to stream into
+    LOOM_TRY_ASSIGN(std::string whole, fsutil::read_file(file));
+    return put(whole, mime);
+  }
   std::ifstream in(file, std::ios::binary);
   if (!in) return Error(Errc::Io, "cannot open " + file.string());
   sfs::path tmpdir = root_ / "tmp";
@@ -152,18 +193,38 @@ Result<BlobRef> BlobStore::put_file(const sfs::path& file, std::string_view mime
     }
   }
   LOOM_TRY(register_blob(ref, mime));
+  if (placed()) {
+    LOOM_TRY_ASSIGN(std::string whole, fsutil::read_file(dst));
+    LOOM_TRY(replicate(ref, whole, mime));
+  }
   return ref;
 }
 
 Result<std::string> BlobStore::read(std::string_view hash) const {
   if (!is_valid_hash(hash)) return Error(Errc::InvalidArgument, "invalid blob hash");
-  if (!has(hash)) return Error(Errc::NotFound, "blob not found: " + std::string(hash));
+  std::error_code ec;
+  if (!sfs::exists(path_for(hash), ec)) {
+    if (placed()) {
+      auto r = svc_->get(category_, storage::cas_key(hash), "local_dir");  // read preference order
+      if (r) {
+        if (Sha256::hex(*r) != hash) return Error(Errc::Conflict, "blob content does not match its hash: " + std::string(hash));
+        // hydrate the local layout (best effort)
+        sfs::path dst = path_for(hash);
+        if (fsutil::ensure_dir(dst.parent_path())) {
+          if (fsutil::atomic_write(dst, *r)) (void)fsutil::make_read_only(dst);
+        }
+        return std::move(*r);
+      }
+      if (r.error().code != Errc::NotFound) return r.error();
+    }
+    return Error(Errc::NotFound, "blob not found: " + std::string(hash));
+  }
   return fsutil::read_file(path_for(hash));
 }
 
 Status BlobStore::verify(std::string_view hash) const {
   if (!has(hash)) return Error(Errc::NotFound, "blob not found: " + std::string(hash));
-  LOOM_TRY_ASSIGN(std::string actual, sha256_file_hex(path_for(hash)));
+  LOOM_TRY_ASSIGN(std::string actual, sha256_file_hex(local_path(hash)));
   if (actual != hash) return Error(Errc::Conflict, "blob content does not match its hash: " + std::string(hash));
   return {};
 }

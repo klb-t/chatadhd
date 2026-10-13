@@ -274,6 +274,7 @@
       "bindings": [
         "security.categories",
         "security.storages",
+        "security.backends",
         "security.suites",
         "security.crypto_status",
         "security.threats"
@@ -455,6 +456,10 @@
         "domain": "storage_security",
         "pointer": "/threat_model"
       }
+    },
+    "security.backends": {
+      "provider": "storage.probe",
+      "as": "storage_backends_reachable"
     }
   },
   "seed": {

@@ -7,6 +7,7 @@
 #include "loom/github_sync.h"
 #include "loom/media_providers.h"
 #include "loom/net/http.h"
+#include "loom/storage_command.h"
 
 using namespace loom;
 using namespace loom::capi;
@@ -128,6 +129,11 @@ LOOM_API const char* loom_github_sync(LoomContext* ctx, const char* request_json
     if (!rj) return out_error(rj.error());
     if (!rj->is_object()) return out_error(Errc::InvalidArgument, "request must be a JSON object");
     std::string action = json::get_string(*rj, "action");
+    if (storage::is_storage_action(action)) {  // storage plugins share this JSON entry (no extra export)
+      auto r = storage::run_command(*ctx->rt, *rj);
+      if (!r) return out_error(r.error());
+      return out(*r);
+    }
     SyncConfig cfg;
     cfg.repo = json::get_string(*rj, "repo");
     if (cfg.repo.empty()) {  // the Python GitHub panel stores the last repo in config.github_repo

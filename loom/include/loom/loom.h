@@ -458,7 +458,9 @@ LOOM_API const char* loom_media_status(LoomContext* ctx);
 
 /* request_json: {"action":"test|status|pull|push|sync", "repo", "branch"?,
  * "local_path"?, "direction"?, "files"?:[paths]} (token from secrets
- * github_token) -> action-specific result JSON. */
+ * github_token) -> action-specific result JSON.
+ * The same entry carries the storage plugins: "action":"storage.status|probe|kinds|placement|
+ * locate|copy|move|backup" (see loom/storage_command.h); credentials are never returned. */
 LOOM_API const char* loom_github_sync(LoomContext* ctx, const char* request_json);
 
 #ifdef __cplusplus
