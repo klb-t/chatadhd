@@ -24,6 +24,35 @@
         "always": {"label": {"en": "Run at once (rules and the x10 confirmation still apply)", "pl": "Od razu (zasady i potwierdzenie ×10 nadal obowiązują)"}}
       }
     },
+    "emergent": {
+      "setting": "emergent_actions",
+      "active": "propose",
+      "presets": {
+        "off": {"label": {"en": "Off: the catalogue never grows from conversations", "pl": "Wyłączone: katalog nie rośnie z rozmów"}},
+        "propose": {"label": {"en": "Propose: new actions, sequences and groups are offered, never made silently", "pl": "Propozycje: nowe akcje, sekwencje i grupy są proponowane, nigdy po cichu"}}
+      },
+      "command_shape": {
+        "max_tokens": 16,
+        "min_lead_chars": 4,
+        "lead_skip": ["prosze", "teraz", "moglbys", "mozesz", "moze", "please", "now", "could", "can", "would", "you", "just", "hey", "ok", "okay"],
+        "not_leads": ["jak", "jaki", "jaka", "jakie", "co", "czemu", "dlaczego", "czy", "kto", "kiedy", "gdzie", "ile", "ktory", "ktora", "chce", "chcialbym", "chcialabym", "mam", "musze", "powiedz", "what", "why", "how", "who", "when", "where", "which", "does", "should", "will", "this", "that", "there", "here", "what's", "i'm", "i'd", "i'll", "let's", "tell", "want", "need", "think", "wonder", "maybe"],
+        "forbid_question_mark": true
+      },
+      "naming": {"prefix": "", "max_chars": 24},
+      "requires_from": ["has_text", "has_image", "has_audio", "has_video", "has_code", "has_table"],
+      "definition": {
+        "system": {
+          "en": "You carry out an instruction about the text that follows it. Do what the instruction says, faithfully and completely; add nothing it does not ask for. Answer in the language of the instruction unless it asks for another.",
+          "pl": "Wykonujesz polecenie dotyczące poniższego tekstu. Zrób dokładnie to, co polecenie mówi, wiernie i w całości; nie dodawaj niczego, o co nie prosi. Odpowiadaj w języku polecenia, chyba że prosi o inny."
+        },
+        "parameters": {"temperature": 0.5},
+        "cost": 1.0,
+        "confidence": 0.6
+      },
+      "sequences": {"repeat": 3, "max_length": 3, "gap_seconds": 900, "window_runs": 200, "joiner": "_then_"},
+      "groups": {"min_classes": 2, "suffix": "_targets"},
+      "node": {"kind": "proposal", "link": "derived_from"}
+    },
     "default_language": "en",
     "message_request_fields": ["attachments", "usage_confirmation", "active_task_spec", "knowledge_context", "web_search", "deep_research"],
     "heuristic": {
@@ -119,6 +148,14 @@
            "regex": "^[\\s,]*(?:wylacz|usun|zdejmij)\\s+regule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
           {"id": "disable.en", "action": "rules.disable", "lang": "en",
            "regex": "^[\\s,]*(?:disable|remove|switch\\s+off|turn\\s+off)\\s+(?:the\\s+)?rule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
+          {"id": "remove_action.pl", "action": "actions.remove", "lang": "pl",
+           "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+akcje\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
+          {"id": "remove_action.en", "action": "actions.remove", "lang": "en",
+           "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?action\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
+          {"id": "remove_group.pl", "action": "groups.remove", "lang": "pl",
+           "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+grupe\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
+          {"id": "remove_group.en", "action": "groups.remove", "lang": "en",
+           "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?group\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
           {"id": "list.pl", "action": "rules.list", "lang": "pl",
            "regex": "^[\\s,]*(?:pokaz|wylistuj|wypisz)\\s+(?:moje\\s+|wszystkie\\s+)?(?:zasady|reguly)\\s*[.!?]*\\s*$", "args": []},
           {"id": "list.en", "action": "rules.list", "lang": "en",
@@ -222,6 +259,19 @@
         "proposal_note": "Note: {{note}}.",
         "rule_note_consumer": "nothing reads this value per scope yet, so it will not change anything until a part of the application does",
         "rule_replaces": "It replaces the rule you set before for the same thing.",
+        "define_title": "I do not know the command \"{{verb}}\". Shall I define it as a new action?",
+        "define_what": "Name: {{id}}. It sends the text of the element to the model with your own instruction: \"{{instruction}}\". It works on elements that have: {{requires}}.",
+        "define_then": "Then it runs on {{element}}.",
+        "define_where": "It is written to your own overlay ({{overlay}}), not to the shipped data; \"remove action {{id}}\" takes it back.",
+        "define_ask": "Reply \"yes\" to define it, or \"no\" to drop it.",
+        "sequence_title": "You have run {{sequence}} on {{class}} {{count}} times in a row. Shall I save it as one action \"{{id}}\"?",
+        "sequence_what": "It runs {{steps}} one after another, the result of each feeding the next.",
+        "group_title": "\"{{action}}\" has been used on {{classes}}, which share: {{traits}}. Shall I define a group \"{{id}}\" for what they have in common?",
+        "group_what": "A group is a named bundle of traits that rules and actions can refer to. It is written to your own overlay ({{overlay}}); \"remove group {{id}}\" takes it back.",
+        "defined_group_label": "What \"{{action}}\" works on",
+        "defined_done": "Defined the action \"{{id}}\" in your own overlay ({{overlay}}). Take it back with: remove action {{id}}.",
+        "defined_group_done": "Defined the group \"{{id}}\" in your own overlay ({{overlay}}). Take it back with: remove group {{id}}.",
+        "removed_done": "Removed \"{{id}}\" from your own overlay.",
         "proposal_error": "I could not plan this: {{message}}",
         "proposal_chain": "It would need a chain: {{chain}}.",
         "proposal_alternatives": "Other readings: {{alternatives}}.",
@@ -267,6 +317,19 @@
         "proposal_note": "Uwaga: {{note}}.",
         "rule_note_consumer": "żadna część aplikacji nie czyta jeszcze tej wartości per zakres, więc nic się nie zmieni, dopóki któraś jej nie zacznie czytać",
         "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie.",
+        "define_title": "Nie znam polecenia „{{verb}}”. Zdefiniować je jako nową akcję?",
+        "define_what": "Nazwa: {{id}}. Wysyła tekst elementu do modelu z Twoim własnym poleceniem: „{{instruction}}”. Działa na elementach, które mają: {{requires}}.",
+        "define_then": "Potem wykonuje się na: {{element}}.",
+        "define_where": "Zapisuje się w Twojej własnej nakładce ({{overlay}}), nie w danych dostarczonych z aplikacją; „usuń akcję {{id}}” to cofa.",
+        "define_ask": "Odpowiedz „tak”, żeby zdefiniować, albo „nie”, żeby odrzucić.",
+        "sequence_title": "Wykonałeś {{sequence}} na: {{class}} {{count}} razy z rzędu. Zapisać to jako jedną akcję „{{id}}”?",
+        "sequence_what": "Wykonuje {{steps}} jedno po drugim, wynik każdego idzie do następnego.",
+        "group_title": "„{{action}}” użyto na: {{classes}}, a te mają wspólne: {{traits}}. Zdefiniować grupę „{{id}}” dla tego, co mają wspólnego?",
+        "group_what": "Grupa to nazwany zestaw cech, do którego mogą się odwoływać reguły i akcje. Zapisuje się w Twojej własnej nakładce ({{overlay}}); „usuń grupę {{id}}” to cofa.",
+        "defined_group_label": "Na czym działa „{{action}}”",
+        "defined_done": "Zdefiniowano akcję „{{id}}” w Twojej własnej nakładce ({{overlay}}). Cofniesz to poleceniem: usuń akcję {{id}}.",
+        "defined_group_done": "Zdefiniowano grupę „{{id}}” w Twojej własnej nakładce ({{overlay}}). Cofniesz to poleceniem: usuń grupę {{id}}.",
+        "removed_done": "Usunięto „{{id}}” z Twojej własnej nakładki.",
         "proposal_error": "Nie udało się tego zaplanować: {{message}}",
         "proposal_chain": "Potrzebny byłby łańcuch: {{chain}}.",
         "proposal_alternatives": "Inne odczytania: {{alternatives}}.",
@@ -295,7 +358,7 @@
   },
   "value_schema": {
     "type": "object",
-    "required": ["method", "execution", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
+    "required": ["method", "execution", "emergent", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
     "properties": {
       "method": {
         "type": "object",
@@ -316,6 +379,31 @@
           "setting": {"type": "string", "minLength": 1},
           "active": {"type": "string", "minLength": 1},
           "presets": {"type": "object", "additionalProperties": {"type": "object"}}
+        },
+        "additionalProperties": false
+      },
+      "emergent": {
+        "type": "object",
+        "description": "The catalogue grows from conversations (R55), always as proposals and never silently. `setting`/`active`/`presets`: off | propose. command_shape: an input that matches no action but has the shape of a command (a verb-like lead word, an element, no question) is offered as the definition of a new action (a composite with one use_model step whose prompt is the user's own instruction; requires inferred from the element's traits among requires_from; the phrase joins the lexicon). sequences: the same chain of actions, each run on the result of the one before, on elements of one class `repeat` times in a row (consecutive within gap_seconds, at most max_length long, read from the last window_runs runs) is offered as one composite. groups: a user-defined action used on min_classes classes that share traits is offered a group (named trait bundle) of what they share. Accepting writes only user overlays; every proposal leaves a node of `node.kind` with links `node.link` to the messages it emerged from.",
+        "required": ["setting", "active", "presets", "command_shape", "naming", "requires_from", "definition", "sequences", "groups", "node"],
+        "properties": {
+          "setting": {"type": "string", "minLength": 1},
+          "active": {"type": "string", "minLength": 1},
+          "presets": {"type": "object", "additionalProperties": {"type": "object"}},
+          "command_shape": {"type": "object", "required": ["max_tokens", "min_lead_chars", "lead_skip", "not_leads", "forbid_question_mark"], "properties": {
+            "max_tokens": {"type": "integer", "minimum": 1}, "min_lead_chars": {"type": "integer", "minimum": 1},
+            "lead_skip": {"type": "array", "items": {"type": "string"}}, "not_leads": {"type": "array", "items": {"type": "string"}},
+            "forbid_question_mark": {"type": "boolean"}}, "additionalProperties": false},
+          "naming": {"type": "object", "required": ["prefix", "max_chars"], "properties": {"prefix": {"type": "string"}, "max_chars": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+          "requires_from": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "definition": {"type": "object", "required": ["system", "parameters", "cost", "confidence"], "properties": {
+            "system": {"type": "object", "additionalProperties": {"type": "string"}}, "parameters": {"type": "object"},
+            "cost": {"type": "number", "minimum": 0}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}, "additionalProperties": false},
+          "sequences": {"type": "object", "required": ["repeat", "max_length", "gap_seconds", "window_runs", "joiner"], "properties": {
+            "repeat": {"type": "integer", "minimum": 1}, "max_length": {"type": "integer", "minimum": 2}, "gap_seconds": {"type": "integer", "minimum": 0},
+            "window_runs": {"type": "integer", "minimum": 1}, "joiner": {"type": "string", "minLength": 1}}, "additionalProperties": false},
+          "groups": {"type": "object", "required": ["min_classes", "suffix"], "properties": {"min_classes": {"type": "integer", "minimum": 2}, "suffix": {"type": "string"}}, "additionalProperties": false},
+          "node": {"type": "object", "required": ["kind", "link"], "properties": {"kind": {"type": "string", "minLength": 1}, "link": {"type": "string", "minLength": 1}}, "additionalProperties": false}
         },
         "additionalProperties": false
       },

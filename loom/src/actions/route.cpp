@@ -6,6 +6,7 @@
 #include <set>
 
 #include "loom/action_element.h"
+#include "loom/action_emergent.h"
 #include "loom/action_overlay.h"
 #include "loom/action_result.h"
 #include "loom/action_run.h"
@@ -14,6 +15,7 @@
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
+#include "loom/log.h"
 #include "loom/provenance.h"
 #include "loom/re/regex.h"
 #include "loom/runtime.h"
@@ -31,6 +33,7 @@ using actions::ActionRunner;
 using actions::ElementResolver;
 using actions::ElementSources;
 using actions::Engine;
+namespace emergent = actions::emergent;
 
 constexpr std::string_view kProposalSchema = "loom.action_proposal/1";
 
@@ -188,6 +191,7 @@ struct Cand {
   Json args = Json::object();
   Json element = nullptr;  // {"id": ...} | {"resolve": "current_conversation" | "last_message"} | null
   double score = 0;
+  Json emergent = nullptr;  // a definition the catalogue could grow by (action_emergent.h); the command writes it
 };
 
 struct Conv {
@@ -763,6 +767,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   cmd["score"] = std::round(c.score * 1000) / 1000;
   cmd["action"] = c.action;
   cmd["args"] = c.args;
+  if (!c.emergent.is_null()) cmd["emergent"] = c.emergent;
   cmd["feasible"] = false;
   auto infeasible = [&](Json reason) {
     cmd["reason"] = std::move(reason);
@@ -974,6 +979,32 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   if (auto rule_cands = parse_rule_commands(d, text); !rule_cands.empty()) {
     cands.erase(std::remove_if(cands.begin(), cands.end(), [](const Cand& x) { return x.source == "pattern" && x.action == "settings.set"; }), cands.end());
     for (auto& r : rule_cands) cands.push_back(std::move(r));
+  }
+  // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55).
+  if (cands.empty() && method != "model") {
+    const auto ref = find_reference(d, text, word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))));
+    if (!ref.is_null()) {
+      if (auto element = resolve_ref(rt, d, ref, conv)) {
+        const emergent::Context ctx{rt, d.cfg, d.engine, d.resolver};
+        if (auto def = emergent::from_command(ctx, text, lang, *element)) {
+          Cand c;
+          c.source = "emergent";
+          c.matched = json::get_string(def->at("summary"), "verb");
+          c.lang = lang;
+          c.action = json::get_string(*def, "writer");
+          c.args = def->at("args");
+          c.element = Json{{"id", "application"}};
+          c.score = 0.9;
+          c.emergent = *def;
+          if (const Json* then = json::find(*def, "then_run")) {
+            c.emergent["then_run"]["element"]["class"] = json::get_string(*element, "class");
+            c.emergent["then_run"]["element"]["label"] = json::get_string(*element, "label");
+            (void)then;
+          }
+          cands.push_back(std::move(c));
+        }
+      }
+    }
   }
   if (cands.empty()) return out;
   std::stable_sort(cands.begin(), cands.end(), [](const Cand& a, const Cand& b) { return a.score > b.score; });
@@ -1358,6 +1389,193 @@ Outcome finish(const std::string& conv_id, const std::string& user_id, const std
   return out;
 }
 
+// ── the catalogue grows from conversations: proposals ───────────────
+
+struct Reply {
+  std::string assistant_id, text, type;
+  Json payload = Json::object();
+  Json meta = Json::object();
+};
+
+std::string overlay_file_of(const std::string& kind) {
+  return kind == "define_group" ? "profiles/graph_entry.pack" : "profiles/actions.pack";
+}
+
+// The words of a proposal to define an action, a sequence or a group (texts are data).
+std::string render_emergent(const Data& d, const Engine& engine, const Json& cmd, const Json& proposal, const std::string& lang) {
+  const Json def = cmd.at("emergent");
+  const std::string kind = def.value("kind", "");
+  const Json sum = def.value("summary", Json::object());
+  std::vector<std::string> lines;
+  if (kind == "define_action") {
+    lines.push_back(say(d.cfg, lang, "define_title", Json{{"verb", sum.value("verb", "")}}));
+    lines.push_back(say(d.cfg, lang, "define_what", Json{{"id", sum.value("id", "")}, {"instruction", sum.value("instruction", "")}, {"requires", sum.value("requires", "")}}));
+    if (const Json* then = json::find(def, "then_run")) {
+      const Json el = then->value("element", Json::object());
+      std::string cls = el.value("class", "");
+      std::string where = cls;
+      if (const Json* k = json::find(engine.classes(), cls))
+        if (const Json* l = json::find(*k, "label")) where = localized(*l, lang);
+      if (!el.value("label", "").empty()) where += " \"" + el.value("label", "") + "\"";
+      lines.push_back(say(d.cfg, lang, "define_then", Json{{"element", where.empty() ? say(d.cfg, lang, "no_element") : where}}));
+    }
+    lines.push_back(say(d.cfg, lang, "define_where", Json{{"overlay", overlay_file_of(kind)}, {"id", sum.value("id", "")}}));
+  } else if (kind == "define_sequence") {
+    std::string cls = sum.value("class", "");
+    if (const Json* k = json::find(engine.classes(), cls))
+      if (const Json* l = json::find(*k, "label")) cls = localized(*l, lang);
+    lines.push_back(say(d.cfg, lang, "sequence_title", Json{{"sequence", sum.value("sequence", "")}, {"class", cls}, {"count", sum.value("count", 0)}, {"id", sum.value("id", "")}}));
+    lines.push_back(say(d.cfg, lang, "sequence_what", Json{{"steps", sum.value("steps", "")}}));
+    lines.push_back(say(d.cfg, lang, "define_where", Json{{"overlay", overlay_file_of(kind)}, {"id", sum.value("id", "")}}));
+  } else {
+    lines.push_back(say(d.cfg, lang, "group_title", Json{{"action", sum.value("action", "")}, {"classes", sum.value("classes", "")}, {"traits", sum.value("traits", "")}, {"id", sum.value("id", "")}}));
+    lines.push_back(say(d.cfg, lang, "group_what", Json{{"overlay", overlay_file_of(kind)}, {"id", sum.value("id", "")}}));
+  }
+  const Json denied = cmd.value("denied", Json::array());
+  if (!denied.empty()) {
+    lines.push_back(say(d.cfg, lang, "proposal_denied", Json{{"reason", gate_reasons(d, denied, lang)}, {"initiator", initiator_suffix(d, denied[0], lang)}}));
+    return join(lines, "\n");
+  }
+  if (!proposal.value("needs_confirmation", Json::array()).empty())
+    lines.push_back(say(d.cfg, lang, "proposal_confirm", Json{{"what", gate_reasons(d, cmd.value("needs_confirmation", Json::array()), lang)}}));
+  lines.push_back(say(d.cfg, lang, "define_ask"));
+  return join(lines, "\n");
+}
+
+// The answer to a command in the conversation: the proposal, or - when the setting says so, or the user has said yes already - its result.
+// `user_said_yes`: the plan is confirmed up front where the rules ask nothing (the follow-up of a definition the user has just accepted).
+Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id, const std::string& user_id, const std::string& text, const Json& cmd,
+                               const std::string& method, const std::string& lang, bool user_said_yes) {
+  Json route_doc{{"method", method}};
+  Json proposal = build_proposal(d, cmd, route_doc, lang);
+  const bool grows = cmd.contains("emergent");  // a definition the catalogue could grow by: always waits for the user's yes
+  std::string assistant_text = grows ? render_emergent(d, d.engine, cmd, proposal, lang) : render_proposal(d, cmd, proposal, lang);
+  const bool usable = cmd.value("feasible", false) && cmd.value("runnable", false) && cmd.value("denied", Json::array()).empty();
+  Reply reply;
+  reply.type = "action_proposal";
+  Json& meta = reply.meta;
+  std::string early_id;  // the proposal message, when it had to be stored before the run (auto-run)
+  std::string node;
+  Json definition = nullptr;
+  if (grows) {
+    // Where it emerged from: a node with `derived_from` links to the messages (the user's own, the element, the runs it repeats).
+    definition = cmd["emergent"];
+    std::vector<std::string> from{user_id};
+    for (const auto& x : definition.value("sources", Json::array()))
+      if (x.is_string()) from.push_back(x.get<std::string>());
+    if (auto made = emergent::record(rt, d.cfg, definition, conv_id, from)) node = *made;
+    proposal["kind"] = definition.value("kind", "");
+    Json shown{{"kind", definition.value("kind", "")}, {"id", definition.value("id", "")}, {"title", definition.value("title", "")}, {"summary", definition.value("summary", Json::object())},
+               {"args", definition.value("args", Json::object())}, {"node", node}, {"overlay", overlay_file_of(definition.value("kind", ""))}};
+    if (const Json* then = json::find(definition, "then_run")) shown["then_run"] = *then;
+    proposal["definition"] = shown;
+  }
+  if (!usable) {
+    proposal["status"] = !cmd.value("denied", Json::array()).empty() ? "denied" : "unavailable";
+    if (grows) emergent::settle(rt, node, proposal.value("status", "unavailable"));
+    meta["action_proposal"] = proposal;
+    reply.payload["proposal"] = proposal;
+  } else {
+    Json run_request = cmd["request"];
+    run_request["propose"] = true;
+    if (run_request.contains("args") && run_request["args"].contains("provenance") && run_request["args"]["provenance"].is_object())
+      run_request["args"]["provenance"]["message_id"] = user_id;  // a rule written from here remembers which message asked for it
+    if (grows) {
+      Json from = Json::array({user_id});
+      for (const auto& x : definition.value("sources", Json::array())) from.push_back(x);
+      run_request["args"]["provenance"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_ids", from}, {"node", node}};
+    }
+    run_request["ref"] = "chat:" + user_id;
+    run_request["context"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_id", user_id}, {"text", text}, {"source", cmd.value("source", "")}, {"lang", lang}};
+    auto run = rt.actions().run(run_request);
+    if (!run) {
+      proposal["status"] = "unavailable";
+      assistant_text = say(d.cfg, lang, "proposal_error", Json{{"message", run.error().message}});
+    } else if (run->value("status", "") == "denied") {
+      proposal["status"] = "denied";
+      assistant_text = say(d.cfg, lang, "result_denied", Json{{"message", gate_reasons(d, run->value("error", Json::object()).value("gates", Json::array()), lang)}});
+    } else {
+      proposal["run_id"] = (*run)["id"];
+      proposal["receipt_id"] = run->value("pending", Json::object()).value("receipt_id", "");
+      // The setting decides whether the user's yes is needed: a plan that only reads (or any plan) may run at once;
+      // whatever the rules ask to confirm is still asked.
+      const std::string mode = [&] {
+        if (user_said_yes) return std::string("always");
+        const Json v = rt.config().get(json::get_string(d.cfg.at("execution"), "setting"));
+        return v.is_string() ? v.get<std::string>() : json::get_string(d.cfg.at("execution"), "active");
+      }();
+      const bool reads_only = json::get_bool(cmd["plan"].value("effects", Json::object()), "reads_only", false);
+      const bool no_questions = cmd.value("needs_confirmation", Json::array()).empty();
+      if (!grows && no_questions && (mode == "always" || (mode == "read_only" && reads_only))) {
+        // The proposal is said first: the result (a message of its own when the target says so) comes after it, in the order it happened.
+        proposal["status"] = "running";
+        LOOM_TRY_ASSIGN(early_id, add_message(rt, conv_id, "assistant", assistant_text, Json{{"action_proposal", proposal}, {"routed", "proposal"}}, "loom:actions"));
+        auto done = rt.actions().confirm(Json{{"run_id", (*run)["id"]}, {"approved", true}, {"receipt_id", proposal["receipt_id"]},
+                                              {"ref", user_said_yes ? "chat:" + user_id : "auto:" + json::get_string(d.cfg.at("execution"), "setting") + "=" + mode}});
+        if (done) {
+          Report rep = report_of(rt, d, *done, proposal.value("title", ""), lang);
+          const std::string st = json::get_string(*done, "status");
+          proposal["status"] = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" ? "waiting" : st;
+          assistant_text = rep.text;
+          if (!posted_message(*done).empty()) assistant_text = say(d.cfg, lang, "result_completed", Json{{"title", proposal.value("title", "")}});
+          meta["action_run"] = rep.meta;
+          reply.type = "action_result";
+        } else {
+          assistant_text = say(d.cfg, lang, "proposal_error", Json{{"message", done.error().message}});
+          proposal["status"] = "stale";
+        }
+      }
+    }
+    meta["action_proposal"] = proposal;
+    reply.payload["proposal"] = proposal;
+    if (meta.contains("action_run")) reply.payload["run"] = meta["action_run"];
+  }
+  meta["routed"] = "proposal";
+  reply.assistant_id = early_id;
+  if (early_id.empty()) {
+    LOOM_TRY_ASSIGN(reply.assistant_id, add_message(rt, conv_id, "assistant", assistant_text, meta, "loom:actions"));
+  } else {
+    MsgPatch patch;  // the proposal message says how it ended
+    patch.text = assistant_text;
+    patch.metadata = meta;
+    LOOM_TRY(rt.db().update_msg(early_id, patch));
+  }
+  if (meta.contains("action_run")) {
+    if (auto linked = link_presented(rt, d, reply.assistant_id, meta["action_run"].value("produced", Json(nullptr)), meta["action_run"].value("run_id", "")); !linked)
+      LOOM_TRY(set_metadata(rt, reply.assistant_id, [&](Json& m) { m["action_run"]["link_error"] = linked.error().message; }));
+  }
+  reply.text = assistant_text;
+  return reply;
+}
+
+// After a command has run: has the conversation just shown the catalogue a way to grow? A user-defined action used on several classes (a group),
+// the same chain of actions repeated (a sequence). Offered as one more proposal message, never made.
+Json offer_growth(Runtime& rt, Data& d, const std::string& conv_id, const std::string& user_id, const std::string& action_run, const std::string& lang) {
+  if (emergent::preset(rt, d.cfg) != "propose") return Json(nullptr);
+  const emergent::Context ctx{rt, d.cfg, d.engine, d.resolver};
+  std::optional<Json> def = emergent::from_group(ctx, action_run);
+  if (!def) def = emergent::from_sequence(ctx, conv_id);
+  if (!def) return Json(nullptr);
+  Cand c;
+  c.source = "emergent";
+  c.matched = def->value("id", "");
+  c.lang = lang;
+  c.action = json::get_string(*def, "writer");
+  c.args = def->at("args");
+  c.element = Json{{"id", "application"}};
+  c.score = 0.9;
+  c.emergent = *def;
+  const Conv conv = conv_of(rt, conv_id);
+  Json cmd = evaluate(rt, d, c, conv, lang, std::string());
+  if (!cmd.value("feasible", false)) return Json(nullptr);
+  auto reply = reply_to_command(rt, d, conv_id, user_id, std::string(), cmd, "emergent", lang, false);
+  if (!reply) {
+    log::write(log::Level::Debug, "loom.chat_route", "growth proposal failed: " + reply.error().message);
+    return Json(nullptr);
+  }
+  return Json{{"message_id", reply->assistant_id}, {"proposal", reply->payload.value("proposal", Json(nullptr))}};
+}
+
 // The user answered a pending proposal with a yes or a no.
 Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, const std::string& answer,
                                 const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
@@ -1384,10 +1602,50 @@ Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id
     const std::string st = json::get_string(*run, "status");
     new_status = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" ? "waiting" : st;
   }
+  // A proposal to grow the catalogue: what was written is said, and the node that records its origin follows the answer.
+  const Json definition = proposal.value("definition", Json(nullptr));
+  const std::string grow_kind = definition.is_object() ? definition.value("kind", "") : std::string();
+  const std::string node = definition.is_object() ? definition.value("node", "") : std::string();
+  if (!grow_kind.empty()) {
+    if (new_status == "executed") {
+      const Json written = run->value("result", Json::object()).value("data", Json::object());
+      std::vector<std::string> overlays;
+      for (const auto& o : written.value("overlays", Json::array())) overlays.push_back(o.get<std::string>());
+      rep.text = say(d.cfg, lang, grow_kind == "define_group" ? "defined_group_done" : "defined_done",
+                     Json{{"id", definition.value("id", "")}, {"overlay", overlays.empty() ? overlay_file_of(grow_kind) : join(overlays, ", ")}});
+    } else if (new_status == "rejected" || new_status == "stale") {
+      emergent::settle(rt, node, new_status);
+    }
+  }
   LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) { m["action_proposal"]["status"] = new_status; }));
   LOOM_TRY_ASSIGN(std::string assistant_id, answer_message(rt, d, conv_id, run ? &*run : nullptr, rep));
   Json payload{{"run", rep.meta}, {"proposal_message_id", proposal_msg.id}, {"proposal_status", new_status}};
-  return finish(conv_id, user_id, assistant_id, rep.text, "action_result", payload);
+  std::string out_text = rep.text, out_type = "action_result";
+
+  if (grow_kind == "define_action" && new_status == "executed") {
+    // The user said yes to the definition and to the command it came from: the new action runs on the element the words were about.
+    payload["defined"] = Json{{"id", definition.value("id", "")}, {"message_id", assistant_id}, {"kind", grow_kind}};
+    if (const Json* then = json::find(definition, "then_run")) {
+      LOOM_TRY_ASSIGN(Data fresh, load_data(rt));  // the catalogue has changed
+      Cand c;
+      c.source = "emergent";
+      c.matched = definition.value("id", "");
+      c.lang = lang;
+      c.action = definition.value("id", "");
+      c.element = Json{{"id", then->value("element", Json::object()).value("id", "")}};
+      c.score = 0.9;
+      const Json cmd = evaluate(rt, fresh, c, conv_of(rt, conv_id), lang, std::string());
+      LOOM_TRY_ASSIGN(Reply next, reply_to_command(rt, fresh, conv_id, user_id, std::string(), cmd, "emergent", lang, true));
+      assistant_id = next.assistant_id;
+      out_text = next.text;
+      out_type = next.type;
+      for (auto it = next.payload.begin(); it != next.payload.end(); ++it) payload[it.key()] = it.value();
+    }
+  } else if (grow_kind.empty() && new_status == "executed") {
+    const std::string action = run->value("request", Json::object()).value("action", "");
+    if (Json follow = offer_growth(rt, d, conv_id, user_id, action, lang); !follow.is_null()) payload["follow_up"] = follow;
+  }
+  return finish(conv_id, user_id, assistant_id, out_text, out_type, payload);
 }
 
 }  // namespace
@@ -1456,82 +1714,13 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "command"}}));
   if (emit_start) emit_start(conv_id, user_id);
 
-  Json proposal = build_proposal(d, cmd, routed, lang);
-  std::string assistant_text = render_proposal(d, cmd, proposal, lang);
-  const bool usable = cmd.value("feasible", false) && cmd.value("runnable", false) && cmd.value("denied", Json::array()).empty();
-  Json meta = Json::object();
-  std::string type = "action_proposal";
-  Json payload = Json::object();
-  std::string early_id;  // the proposal message, when it had to be stored before the run (auto-run)
-  if (!usable) {
-    proposal["status"] = !cmd.value("denied", Json::array()).empty() ? "denied" : "unavailable";
-    meta["action_proposal"] = proposal;
-    payload["proposal"] = proposal;
-  } else {
-    Json run_request = cmd["request"];
-    run_request["propose"] = true;
-    if (run_request.contains("args") && run_request["args"].contains("provenance") && run_request["args"]["provenance"].is_object())
-      run_request["args"]["provenance"]["message_id"] = user_id;  // a rule written from here remembers which message asked for it
-    run_request["ref"] = "chat:" + user_id;
-    run_request["context"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_id", user_id}, {"text", text}, {"source", cmd.value("source", "")}, {"lang", lang}};
-    auto run = rt.actions().run(run_request);
-    if (!run) {
-      proposal["status"] = "unavailable";
-      assistant_text = say(d.cfg, lang, "proposal_error", Json{{"message", run.error().message}});
-    } else if (run->value("status", "") == "denied") {
-      proposal["status"] = "denied";
-      assistant_text = say(d.cfg, lang, "result_denied", Json{{"message", gate_reasons(d, run->value("error", Json::object()).value("gates", Json::array()), lang)}});
-    } else {
-      proposal["run_id"] = (*run)["id"];
-      proposal["receipt_id"] = run->value("pending", Json::object()).value("receipt_id", "");
-      // The setting decides whether the user's yes is needed: a plan that only reads (or any plan) may run at once;
-      // whatever the rules ask to confirm is still asked.
-      const std::string mode = [&] {
-        const Json v = rt.config().get(json::get_string(d.cfg.at("execution"), "setting"));
-        return v.is_string() ? v.get<std::string>() : json::get_string(d.cfg.at("execution"), "active");
-      }();
-      const bool reads_only = json::get_bool(cmd["plan"].value("effects", Json::object()), "reads_only", false);
-      const bool no_questions = cmd.value("needs_confirmation", Json::array()).empty();
-      if (no_questions && (mode == "always" || (mode == "read_only" && reads_only))) {
-        // The proposal is said first: the result (a message of its own when the target says so) comes after it, in the order it happened.
-        proposal["status"] = "running";
-        LOOM_TRY_ASSIGN(early_id, add_message(rt, conv_id, "assistant", assistant_text, Json{{"action_proposal", proposal}, {"routed", "proposal"}}, "loom:actions"));
-        auto done = rt.actions().confirm(Json{{"run_id", (*run)["id"]}, {"approved", true}, {"receipt_id", proposal["receipt_id"]},
-                                              {"ref", "auto:" + json::get_string(d.cfg.at("execution"), "setting") + "=" + mode}});
-        if (done) {
-          Report rep = report_of(rt, d, *done, proposal.value("title", ""), lang);
-          const std::string st = json::get_string(*done, "status");
-          proposal["status"] = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" ? "waiting" : st;
-          assistant_text = rep.text;
-          if (!posted_message(*done).empty()) assistant_text = say(d.cfg, lang, "result_completed", Json{{"title", proposal.value("title", "")}});
-          meta["action_run"] = rep.meta;
-          type = "action_result";
-        } else {
-          assistant_text = say(d.cfg, lang, "proposal_error", Json{{"message", done.error().message}});
-          proposal["status"] = "stale";
-        }
-      }
-    }
-    meta["action_proposal"] = proposal;
-    payload["proposal"] = proposal;
-    if (meta.contains("action_run")) payload["run"] = meta["action_run"];
-  }
-  meta["routed"] = "proposal";
-  std::string assistant_id = early_id;
-  if (early_id.empty()) {
-    LOOM_TRY_ASSIGN(assistant_id, add_message(rt, conv_id, "assistant", assistant_text, meta, "loom:actions"));
-  } else {
-    MsgPatch patch;  // the proposal message says how it ended
-    patch.text = assistant_text;
-    patch.metadata = meta;
-    LOOM_TRY(rt.db().update_msg(early_id, patch));
-  }
-  if (meta.contains("action_run")) {
-    if (auto linked = link_presented(rt, d, assistant_id, meta["action_run"].value("produced", Json(nullptr)), meta["action_run"].value("run_id", "")); !linked)
-      LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["action_run"]["link_error"] = linked.error().message; }));
+  LOOM_TRY_ASSIGN(Reply reply, reply_to_command(rt, d, conv_id, user_id, text, cmd, routed.value("method", ""), lang, false));
+  Json payload = reply.payload;
+  if (reply.meta.contains("action_run") && reply.meta["action_run"].value("status", "") == "completed") {
+    if (Json follow = offer_growth(rt, d, conv_id, user_id, cmd.value("action", ""), lang); !follow.is_null()) payload["follow_up"] = follow;
   }
   title_first_exchange(rt, conv_id, text);
-  return finish(conv_id, user_id, assistant_id, assistant_text, type, payload);
+  return finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
 }
 
 }  // namespace loom::chat_route

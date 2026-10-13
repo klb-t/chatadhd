@@ -3428,6 +3428,431 @@
           "path": "/api/rules/list"
         }
       },
+      "actions.define": {
+        "id": "actions.define",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Define an action",
+        "description": "Writes a new action of your own into the user overlay profiles/actions.pack (never into the shipped data): a composite with one use_model step whose prompt is your instruction (instruction), or one that chains actions of the catalogue (steps, each step's result feeding the next). The phrases that call it join the lexicon (profiles/intent_routing.pack). It is offered, never made silently: from a command no action understands, from a sequence you keep repeating. Undo: actions.remove.",
+        "labels": {
+          "pl": "Zdefiniuj akcję"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "actions.define",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the action (a-z, 0-9, _ . -); from your own words.",
+              "pl": "Nazwa akcji (a-z, 0-9, _ . -); z Twoich własnych słów."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "instruction",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The instruction the action sends to the model with the element's text (one use_model step).",
+              "pl": "Polecenie, które akcja wysyła do modelu z tekstem elementu (jeden krok use_model)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "steps",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "Instead of instruction: the steps, each {\"action\": id}; every action must exist and be implemented.",
+              "pl": "Zamiast instruction: kroki, każdy {\"action\": id}; każda akcja musi istnieć i być zaimplementowana."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Title (default: the id).",
+              "pl": "Tytuł (domyślnie id)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "requires",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "Traits the element must have (default: has_text, or those of the first step).",
+              "pl": "Cechy, które element musi mieć (domyślnie has_text albo cechy pierwszego kroku)."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "phrases",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Words that call it: {\"pl\": [\"rozpisz\"], \"en\": [\"spell out\"]}.",
+              "pl": "Słowa, które ją wywołują: {\"pl\": [\"rozpisz\"], \"en\": [\"spell out\"]}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "lang",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the instruction (pl or en), for the label and the prompt.",
+              "pl": "Język polecenia (pl lub en), dla etykiety i promptu."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "provenance",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Where it emerged from: {origin, conv_id, message_ids, node}.",
+              "pl": "Skąd się wzięła: {origin, conv_id, message_ids, node}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/define"
+        }
+      },
+      "actions.remove": {
+        "id": "actions.remove",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Remove an action of your own",
+        "description": "Takes an action you defined (or accepted) back out of the user overlay, with its phrases; the node that records where it came from stays as history. A shipped action cannot be removed (switch it off with an overlay), and neither can one that another action of yours uses.",
+        "labels": {
+          "pl": "Usuń własną akcję"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "actions.remove",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the action.",
+              "pl": "Nazwa akcji."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/remove"
+        }
+      },
+      "groups.define": {
+        "id": "groups.define",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Define a group",
+        "description": "Writes a group (a named bundle of traits that rules and actions can refer to) into the user overlay profiles/graph_entry.pack. It is offered when an action of yours is used on several classes that share traits. Undo: groups.remove.",
+        "labels": {
+          "pl": "Zdefiniuj grupę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "groups.define",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the group.",
+              "pl": "Nazwa grupy."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "traits",
+            "type": "array",
+            "required": true,
+            "description": {
+              "en": "The traits of the bundle (known traits or class ids).",
+              "pl": "Cechy zestawu (znane cechy lub id klas)."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "label",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "{\"en\": ..., \"pl\": ...}",
+              "pl": "{\"en\": ..., \"pl\": ...}"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "element_match",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "all (default) or any.",
+              "pl": "all (domyślnie) albo any."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "provenance",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Where it emerged from: {origin, conv_id, message_ids, node}.",
+              "pl": "Skąd się wzięła: {origin, conv_id, message_ids, node}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/groups/define"
+        }
+      },
+      "groups.remove": {
+        "id": "groups.remove",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Remove a group of your own",
+        "description": "Takes a group you defined back out of the user overlay.",
+        "labels": {
+          "pl": "Usuń własną grupę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "groups.remove",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the group.",
+              "pl": "Nazwa grupy."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/groups/remove"
+        }
+      },
       "chat.route": {
         "id": "chat.route",
         "kind": "atomic",

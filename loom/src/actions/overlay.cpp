@@ -379,10 +379,214 @@ Result<Json> rules_list(const fs::path& root, const Json& request) {
   return Json{{"schema", "loom.rules_list/1"}, {"rules", rules}};
 }
 
-// (the emergent catalogue, R55: actions.define / actions.remove / groups.define / groups.remove; written below)
-Result<Json> actions_define(const fs::path&, const Json&) { return Error(Errc::NotImplemented, "actions.define"); }
-Result<Json> actions_remove(const fs::path&, const Json&) { return Error(Errc::NotImplemented, "actions.remove"); }
-Result<Json> groups_define(const fs::path&, const Json&) { return Error(Errc::NotImplemented, "groups.define"); }
-Result<Json> groups_remove(const fs::path&, const Json&) { return Error(Errc::NotImplemented, "groups.remove"); }
+// ── the emergent catalogue (R55) ────────────────────────────────────
+
+namespace {
+
+bool valid_name(const std::string& id) {
+  if (id.empty() || id.size() > 64) return false;
+  if (!(std::islower(static_cast<unsigned char>(id[0])) || std::isdigit(static_cast<unsigned char>(id[0])))) return false;
+  return std::all_of(id.begin(), id.end(), [](char c) {
+    return std::islower(static_cast<unsigned char>(c)) || std::isdigit(static_cast<unsigned char>(c)) || c == '_' || c == '.' || c == '-';
+  });
+}
+
+Json provenance_of(const Json& request) {
+  Json out = Json::object();
+  if (const Json* p = json::find(request, "provenance"); p && p->is_object()) out = *p;
+  return out;
+}
+
+Json origin_of(const Json& request) {
+  Json origin = provenance_of(request);
+  origin["kind"] = "emergent";
+  origin["defined"] = timeutil::utc_now_iso();
+  return origin;
+}
+
+}  // namespace
+
+Result<Json> actions_define(const fs::path& root, const Json& request) {
+  const std::string id = json::get_string(request, "id");
+  if (!valid_name(id)) return invalid("id must be a name of a-z, 0-9, _ . - (got '" + id + "')");
+  const bool dry_run = json::get_bool(request, "dry_run", false);
+  const std::string instruction = json::get_string(request, "instruction");
+  const Json* steps_in = json::find(request, "steps");
+  const bool has_steps = steps_in && steps_in->is_array() && !steps_in->empty();
+  if (instruction.empty() == !has_steps) return invalid("give either instruction (one model step) or steps (actions of the catalogue), not both and not neither");
+
+  LOOM_TRY_ASSIGN(auto catalogue, RuntimeProfile::load("actions", root));
+  LOOM_TRY_ASSIGN(auto shipped, RuntimeProfile::builtin("actions"));
+  LOOM_TRY_ASSIGN(auto routing, RuntimeProfile::load("intent_routing", root));
+  const Json actions = catalogue.values().value("actions", Json::object());
+  const Json shipped_actions = shipped.values().value("actions", Json::object());
+  if (json::find(shipped_actions, id)) return Error(Errc::Conflict, "an action named '" + id + "' ships with the application; choose another name");
+  OverlayStore overlay(root);
+  LOOM_TRY_ASSIGN(Json mine, overlay.entry("actions", {"actions", id}));
+  const bool replaces = !mine.is_null();
+  if (replaces && json::get_string(mine.value("origin", Json::object()), "kind") != "emergent")
+    return Error(Errc::Conflict, "'" + id + "' is an entry you wrote by hand; it is not replaced from a conversation");
+  const Json emergent = routing.values().value("emergent", Json::object());
+  const Json cfg = emergent.value("definition", Json::object());
+
+  Json entry = Json::object();
+  entry["id"] = id;
+  entry["kind"] = "composite";
+  entry["status"] = "implemented";
+  entry["title"] = json::get_string(request, "title", id);
+  const std::string lang = json::get_string(request, "lang");
+  if (!lang.empty() && lang != "en") entry["labels"] = Json{{lang, entry["title"]}};
+  Json effects{{"reads_only", true}, {"writes", false}, {"sends_off_device", true}, {"costs_money", true}, {"irreversible", false}, {"touches_private_data", true}};
+  if (!instruction.empty()) {
+    entry["description"] = "Defined from your own words in a conversation: " + instruction;
+    Json with = Json::object();
+    with["system"] = Json{{"$localized", cfg.value("system", Json::object())}};
+    with["prompt"] = instruction;
+    with["parameters"] = cfg.value("parameters", Json::object());
+    entry["steps"] = Json::array({Json{{"action", "use_model"}, {"with", with}}});
+    entry["inputs"] = Json::array({"text"});
+    entry["outputs"] = Json::array({"text"});
+    entry["requires"] = request.value("requires", Json::array({"has_text"}));
+    entry["produces"] = Json::array({"has_text"});
+    entry["content_op"] = "none";
+    entry["cost"] = json::get_number(cfg, "cost", 1.0);
+    entry["confidence"] = json::get_number(cfg, "confidence", 0.6);
+  } else {
+    Json steps = Json::array();
+    std::string described;
+    double cost = 0, confidence = 1;
+    Json first, last;
+    effects = Json{{"reads_only", true}, {"writes", false}, {"sends_off_device", false}, {"costs_money", false}, {"irreversible", false}, {"touches_private_data", false}};
+    for (const auto& st : *steps_in) {
+      const std::string action = st.is_string() ? st.get<std::string>() : json::get_string(st, "action");
+      const Json* used = json::find(actions, action);
+      if (!used) return Error(Errc::NotFound, "no action '" + action + "' in the catalogue");
+      if (json::get_string(*used, "status") != "implemented") return invalid("the action '" + action + "' is only declared, not implemented: it cannot be a step yet");
+      steps.push_back(Json{{"action", action}});
+      described += (described.empty() ? "" : " -> ") + action;
+      cost += json::get_number(*used, "cost", 1.0);
+      confidence *= json::get_number(*used, "confidence", 1.0);
+      if (first.is_null()) first = *used;
+      last = *used;
+      effects["reads_only"] = effects.value("reads_only", true) && json::get_bool(used->value("effects", Json::object()), "reads_only", true);
+      for (const auto& flag : {"writes", "sends_off_device", "costs_money", "irreversible", "touches_private_data"})
+        effects[flag] = effects.value(flag, false) || json::get_bool(used->value("effects", Json::object()), flag, false);
+    }
+    entry["description"] = "A chain you kept repeating, saved as one action: " + described + ".";
+    entry["steps"] = steps;
+    entry["inputs"] = first.value("inputs", Json::array());
+    entry["outputs"] = last.value("outputs", Json::array());
+    entry["requires"] = request.contains("requires") ? request["requires"] : first.value("requires", Json::array());
+    entry["produces"] = last.value("produces", Json::array());
+    entry["content_op"] = json::get_string(last, "content_op", "none");
+    entry["cost"] = cost;
+    entry["confidence"] = confidence;
+  }
+  entry["form_op"] = "none";
+  entry["effects"] = effects;
+  entry["consumer"] = "";
+  entry["origin"] = origin_of(request);
+
+  Json phrases = Json::object();
+  if (const Json* p = json::find(request, "phrases"); p && p->is_object())
+    for (auto it = p->begin(); it != p->end(); ++it) {
+      Json list = Json::array();
+      if (it.value().is_array())
+        for (const auto& x : it.value())
+          if (x.is_string() && !x.get<std::string>().empty()) list.push_back(x);
+      if (!list.empty()) phrases[it.key()] = list;
+    }
+
+  Json out{{"schema", "loom.action_defined/1"}, {"id", id}, {"entry", entry}, {"phrases", phrases}, {"replaced", replaces}, {"written", !dry_run},
+           {"overlays", Json::array({"profiles/actions.pack"})}};
+  if (!phrases.empty()) out["overlays"].push_back("profiles/intent_routing.pack");
+  if (dry_run) return out;
+  LOOM_TRY(overlay.put("actions", {"actions", id}, entry));
+  if (!phrases.empty()) {
+    if (auto st = overlay.put("intent_routing", {"heuristic", "phrases", id}, phrases); !st) {
+      (void)overlay.remove("actions", {"actions", id});  // both or neither
+      return st.error();
+    }
+  }
+  return out;
+}
+
+Result<Json> actions_remove(const fs::path& root, const Json& request) {
+  const std::string id = json::get_string(request, "id");
+  if (id.empty()) return invalid("id is required (the action to remove)");
+  const bool dry_run = json::get_bool(request, "dry_run", false);
+  LOOM_TRY_ASSIGN(auto shipped, RuntimeProfile::builtin("actions"));
+  OverlayStore overlay(root);
+  LOOM_TRY_ASSIGN(Json mine, overlay.entry("actions", {"actions", id}));
+  if (mine.is_null()) {
+    if (json::find(shipped.values().value("actions", Json::object()), id))
+      return Error(Errc::Conflict, "'" + id + "' ships with the application and cannot be removed; switch it off with an overlay (status planned)");
+    return Error(Errc::NotFound, "you have no action '" + id + "'");
+  }
+  LOOM_TRY_ASSIGN(Json all_mine, overlay.entry("actions", {"actions"}));
+  for (auto it = all_mine.begin(); it != all_mine.end(); ++it) {
+    if (it.key() == id) continue;
+    for (const auto& st : it.value().value("steps", Json::array()))
+      if (json::get_string(st, "action") == id) return Error(Errc::Conflict, "the action '" + it.key() + "' of yours uses '" + id + "'; remove that one first");
+  }
+  Json out{{"schema", "loom.action_removed/1"}, {"id", id}, {"origin", mine.value("origin", Json::object())}, {"removed", true}, {"written", !dry_run}};
+  if (dry_run) return out;
+  LOOM_TRY(overlay.remove("actions", {"actions", id}));
+  LOOM_TRY(overlay.remove("intent_routing", {"heuristic", "phrases", id}));
+  return out;
+}
+
+Result<Json> groups_define(const fs::path& root, const Json& request) {
+  const std::string id = json::get_string(request, "id");
+  if (!valid_name(id)) return invalid("id must be a name of a-z, 0-9, _ . - (got '" + id + "')");
+  const bool dry_run = json::get_bool(request, "dry_run", false);
+  const Json* traits_in = json::find(request, "traits");
+  if (!traits_in || !traits_in->is_array() || traits_in->empty()) return invalid("traits is required (the traits of the bundle)");
+  LOOM_TRY_ASSIGN(auto entry_profile, RuntimeProfile::load("graph_entry", root));
+  LOOM_TRY_ASSIGN(auto shipped, RuntimeProfile::builtin("graph_entry"));
+  const Json ontology = entry_profile.values().value("ontology", Json::object());
+  const Json known_traits = ontology.value("traits", Json::object());
+  const Json known_classes = ontology.value("classes", Json::object());
+  Json traits = Json::array();
+  for (const auto& t : *traits_in) {
+    const std::string name = t.is_string() ? t.get<std::string>() : std::string();
+    if (name.empty() || (!json::find(known_traits, name) && !json::find(known_classes, name))) return invalid("'" + name + "' is no trait or class of the ontology");
+    traits.push_back(name);
+  }
+  if (json::find(shipped.values().value("ontology", Json::object()).value("groups", Json::object()), id))
+    return Error(Errc::Conflict, "a group named '" + id + "' ships with the application; choose another name");
+  OverlayStore overlay(root);
+  LOOM_TRY_ASSIGN(Json mine, overlay.entry("graph_entry", {"ontology", "groups", id}));
+  const bool replaces = !mine.is_null();
+  if (replaces && json::get_string(mine.value("origin", Json::object()), "kind") != "emergent")
+    return Error(Errc::Conflict, "'" + id + "' is a group you wrote by hand; it is not replaced from a conversation");
+  Json group = Json::object();
+  group["label"] = request.contains("label") && request["label"].is_object() ? request["label"] : Json{{"en", id}};
+  group["traits"] = traits;
+  group["element_match"] = json::get_string(request, "element_match", "all");
+  group["origin"] = origin_of(request);
+  Json out{{"schema", "loom.group_defined/1"}, {"id", id}, {"group", group}, {"replaced", replaces}, {"written", !dry_run}, {"overlays", Json::array({"profiles/graph_entry.pack"})}};
+  if (dry_run) return out;
+  LOOM_TRY(overlay.put("graph_entry", {"ontology", "groups", id}, group));
+  return out;
+}
+
+Result<Json> groups_remove(const fs::path& root, const Json& request) {
+  const std::string id = json::get_string(request, "id");
+  if (id.empty()) return invalid("id is required (the group to remove)");
+  const bool dry_run = json::get_bool(request, "dry_run", false);
+  LOOM_TRY_ASSIGN(auto shipped, RuntimeProfile::builtin("graph_entry"));
+  OverlayStore overlay(root);
+  LOOM_TRY_ASSIGN(Json mine, overlay.entry("graph_entry", {"ontology", "groups", id}));
+  if (mine.is_null()) {
+    if (json::find(shipped.values().value("ontology", Json::object()).value("groups", Json::object()), id))
+      return Error(Errc::Conflict, "the group '" + id + "' ships with the application and cannot be removed");
+    return Error(Errc::NotFound, "you have no group '" + id + "'");
+  }
+  Json out{{"schema", "loom.group_removed/1"}, {"id", id}, {"origin", mine.value("origin", Json::object())}, {"removed", true}, {"written", !dry_run}};
+  if (dry_run) return out;
+  LOOM_TRY(overlay.remove("graph_entry", {"ontology", "groups", id}));
+  return out;
+}
 
 }  // namespace loom::actions

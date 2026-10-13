@@ -757,6 +757,12 @@
         "pl": "Przebieg akcji"
       }
     },
+    "emergent_proposal": {
+      "label": {
+        "en": "Proposal from a conversation (new action, sequence, group)",
+        "pl": "Propozycja z rozmowy (nowa akcja, sekwencja, grupa)"
+      }
+    },
     "application": {
       "label": {
         "en": "Application (self-model)",

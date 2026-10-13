@@ -1301,6 +1301,12 @@
             "pl": "Przebieg akcji"
           }
         },
+        "emergent_proposal": {
+          "label": {
+            "en": "Proposal from a conversation (new action, sequence, group)",
+            "pl": "Propozycja z rozmowy (nowa akcja, sekwencja, grupa)"
+          }
+        },
         "application": {
           "label": {
             "en": "Application (self-model)",
@@ -2422,10 +2428,12 @@
           "PATCH /api/config",
           "POST /api/actions/cancel",
           "POST /api/actions/confirm",
+          "POST /api/actions/define",
           "POST /api/actions/explain",
           "POST /api/actions/for",
           "POST /api/actions/preview",
           "POST /api/actions/propose_chain",
+          "POST /api/actions/remove",
           "POST /api/actions/run",
           "POST /api/actions/status",
           "POST /api/analysis",
@@ -2446,6 +2454,8 @@
           "POST /api/graph/expand",
           "POST /api/graph/packets/store",
           "POST /api/graph/reindex",
+          "POST /api/groups/define",
+          "POST /api/groups/remove",
           "POST /api/import",
           "POST /api/knowledge/cancel",
           "POST /api/knowledge/run",

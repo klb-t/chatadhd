@@ -1,6 +1,7 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+#include "loom/action_emergent.h"
 #include "loom/action_overlay.h"
 
 #include <algorithm>
@@ -95,7 +96,16 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   if (req.prompt.empty() && req.inputs.empty() && req.messages.empty())
     return failed(Error(Errc::InvalidArgument, "nothing to send: the step has no prompt, messages or input"));
   req.kind = c.root_action;
-  req.action = c.root_action;
+  // A model call is declared under a composite that has a use_model step of its own: the root when it does, else the composite
+  // whose step it is (a chain of composites, a sequence saved as one action).
+  req.action = c.owner_action.empty() ? c.root_action : c.owner_action;
+  if (!c.root_action.empty() && !c.owner_action.empty() && c.root_action != c.owner_action) {
+    if (auto profile = RuntimeProfile::load("actions", rt.paths().root))
+      if (const Json* actions = json::find(profile->values(), "actions"))
+        if (const Json* root_entry = json::find(*actions, c.root_action))
+          for (const auto& st : root_entry->value("steps", Json::array()))
+            if (json::get_string(st, "action") == "use_model") req.action = c.root_action;
+  }
   req.title = json::get_string(with, "title", json::get_string(um, "title", "ChatADHD"));
   req.timeout_ms = static_cast<int>(json::get_int(with, "timeout_ms", json::get_int(um, "timeout_ms", 180000)));
   req.cancel = c.cancel;
@@ -500,11 +510,20 @@ Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& re
   if (action == "rules.set") return rules_set(root, request);
   if (action == "rules.disable") return rules_disable(root, request);
   if (action == "rules.list") return rules_list(root, request);
-  if (action == "actions.define") return actions_define(root, request);
-  if (action == "actions.remove") return actions_remove(root, request);
-  if (action == "groups.define") return groups_define(root, request);
-  if (action == "groups.remove") return groups_remove(root, request);
-  return Error(Errc::NotFound, "unknown action '" + std::string(action) + "'");
+  const bool define = action == "actions.define" || action == "groups.define";
+  const bool remove = action == "actions.remove" || action == "groups.remove";
+  if (!define && !remove) return Error(Errc::NotFound, "unknown action '" + std::string(action) + "'");
+  Result<Json> done = action == "actions.define"   ? actions_define(root, request)
+                      : action == "groups.define"  ? groups_define(root, request)
+                      : action == "actions.remove" ? actions_remove(root, request)
+                                                   : groups_remove(root, request);
+  // The node that recorded where the proposal came from says what became of it.
+  if (done && json::get_bool(*done, "written", true)) {
+    const std::string node = define ? json::get_string(request.value("provenance", Json::object()), "node")
+                                    : json::get_string(done->value("origin", Json::object()), "node");
+    emergent::settle(rt_, node, define ? "accepted" : "undone", *done);
+  }
+  return done;
 }
 
 Result<Json> ActionRunner::run_gated(std::string_view action, const Json& request) {
