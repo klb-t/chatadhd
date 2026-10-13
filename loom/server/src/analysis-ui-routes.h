@@ -517,10 +517,11 @@ inline loom::Result<Json> dispatch(LoomContext* context, State& state, const Jso
 }
 }  // namespace analysis_ui_detail
 
-inline void register_analysis_ui_routes(httplib::Server& server, LoomContext* context) {
+inline void register_analysis_ui_routes(httplib::Server& server, std::function<LoomContext*()> context_of) {
   auto state = std::make_shared<analysis_ui_detail::State>();
-  server.Post("/api/analysis", [context, state](const httplib::Request& request, httplib::Response& response) {
+  server.Post("/api/analysis", [context_of, state](const httplib::Request& request, httplib::Response& response) {
     native_ui::protect(response, [&] {
+      LoomContext* context = context_of();
       auto body = native_ui::parse(request);
       if (!body) { native_ui::fail(response, body.error()); return; }
       auto result = analysis_ui_detail::dispatch(context, *state, *body);

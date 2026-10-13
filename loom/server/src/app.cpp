@@ -8,6 +8,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <optional>
 #include <sstream>
 #include <thread>
 
@@ -156,6 +157,24 @@ bool constant_time_equal(std::string_view a, std::string_view b) {
   return diff == 0;
 }
 
+// Session token: Authorization: Bearer <token>, else the named cookie.
+std::string session_token_of(const httplib::Request& req, const std::string& cookie_name) {
+  const std::string auth = req.get_header_value("Authorization");
+  if (auth.rfind("Bearer ", 0) == 0) return auth.substr(7);
+  const std::string cookies = req.get_header_value("Cookie");
+  std::size_t pos = 0;
+  while (pos < cookies.size()) {
+    while (pos < cookies.size() && (cookies[pos] == ' ' || cookies[pos] == ';')) ++pos;
+    auto end = cookies.find(';', pos);
+    if (end == std::string::npos) end = cookies.size();
+    auto eq = cookies.find('=', pos);
+    if (eq != std::string::npos && eq < end && cookies.compare(pos, eq - pos, cookie_name) == 0)
+      return cookies.substr(eq + 1, end - eq - 1);
+    pos = end;
+  }
+  return {};
+}
+
 std::string next_request_id() {
   static std::atomic<uint64_t> counter{0};
   auto now = std::chrono::steady_clock::now().time_since_epoch().count();
@@ -193,14 +212,49 @@ std::string ext_for_export_format(const std::string& fmt) {
 
 App::App(ServerOptions opts) : opts_(std::move(opts)) {}
 
+namespace {
+// Set by the pre-routing handler of the worker thread that is about to run the route handler (httplib runs
+// both on one thread) and cleared at the start of every request.
+thread_local LoomContext* t_request_ctx = nullptr;
+thread_local std::optional<loom::accounts::User> t_user;
+thread_local std::string t_session_token;
+}  // namespace
+
+LoomContext* App::rctx() const { return accounts_ ? t_request_ctx : ctx_; }
+
 App::~App() {
   if (ctx_) loom_shutdown(ctx_);
+  for (auto& [id, c] : user_ctx_) loom_shutdown(c);
+}
+
+LoomContext* App::context_for_user(const std::string& user_id) {
+  std::lock_guard lk(pool_mu_);
+  auto it = user_ctx_.find(user_id);
+  if (it != user_ctx_.end()) return it->second;
+  const auto dir = accounts_->user_dir(user_id).string();
+  LoomContext* c = loom_init(dir.c_str());
+  if (c) user_ctx_[user_id] = c;
+  return c;
 }
 
 bool App::init() {
-  const char* data_dir = opts_.data_dir.empty() ? nullptr : opts_.data_dir.c_str();
-  ctx_ = loom_init(data_dir);
-  if (!ctx_) return false;
+  if (!opts_.accounts_root.empty()) {
+    auto settings = loom::accounts::load_settings(opts_.accounts_root);
+    if (!settings) {
+      std::cerr << "loom-server: accounts settings: " << settings.error().message << std::endl;
+      return false;
+    }
+    auto store = loom::accounts::AccountStore::open(opts_.accounts_root, std::move(*settings));
+    if (!store) {
+      std::cerr << "loom-server: accounts store: " << store.error().message << std::endl;
+      return false;
+    }
+    accounts_ = std::move(*store);
+  } else {
+    const char* data_dir = opts_.data_dir.empty() ? nullptr : opts_.data_dir.c_str();
+    ctx_ = loom_init(data_dir);
+    if (!ctx_) return false;
+  }
 
   svr_.set_payload_max_length(opts_.max_body_bytes);
   svr_.set_keep_alive_max_count(100);
@@ -247,10 +301,36 @@ void App::stop() {
 }
 
 void App::register_middleware() {
-  // Bearer token auth for every /api/ route, when configured. Off by
-  // default (matches "bind 127.0.0.1, no auth" for local/dev use).
+  // Auth for every /api/ route. Single-user mode: optional static bearer token (off by default, "bind
+  // 127.0.0.1, no auth" for local use). Accounts mode (P1): a session token, from the HttpOnly cookie or an
+  // Authorization: Bearer header, selects the user and that user's own data directory; the static token is
+  // not used then.
   svr_.set_pre_routing_handler([this](const httplib::Request& req, httplib::Response& res) {
-    if (!opts_.bearer_token.empty() && req.path.rfind("/api/", 0) == 0) {
+    t_request_ctx = nullptr;
+    t_user.reset();
+    t_session_token.clear();
+    if (req.path.rfind("/api/", 0) != 0) return httplib::Server::HandlerResponse::Unhandled;
+    if (accounts_) {
+      std::string token = session_token_of(req, accounts_->settings().cookie.name);
+      if (!token.empty()) {
+        auto u = accounts_->find_session(token);
+        if (u && *u) {
+          t_user = **u;
+          t_session_token = token;
+          t_request_ctx = context_for_user((*u)->id);
+        }
+      }
+      const bool is_public =
+          (req.method == "GET" && (req.path == "/api/auth/me" || req.path == "/api/healthz")) ||
+          (req.method == "POST" && (req.path == "/api/auth/login" || req.path == "/api/auth/register"));
+      if (!is_public && !t_request_ctx) {
+        res.set_header("Connection", "close");
+        send_error(res, "auth", "sign in required", 401);
+        return httplib::Server::HandlerResponse::Handled;
+      }
+      return httplib::Server::HandlerResponse::Unhandled;
+    }
+    if (!opts_.bearer_token.empty()) {
       std::string want = "Bearer " + opts_.bearer_token;
       if (!constant_time_equal(req.get_header_value("Authorization"), want)) {
         // This early handler runs before request-body consumption. Close the
@@ -292,6 +372,7 @@ void App::register_middleware() {
 }
 
 void App::register_routes() {
+  route_auth();
   route_conversations();
   route_messages();
   route_search();
@@ -306,9 +387,9 @@ void App::register_routes() {
   route_logs_misc();
   route_archive_placeholder();
   route_knowledge();
-  register_onboarding_ui_routes(svr_, ctx_);
-  register_method_ui_routes(svr_, ctx_);
-  register_analysis_ui_routes(svr_, ctx_);
+  register_onboarding_ui_routes(svr_, [this] { return rctx(); });
+  register_method_ui_routes(svr_, [this] { return rctx(); });
+  register_analysis_ui_routes(svr_, [this] { return rctx(); });
 }
 
 // ── Conversations ──────────────────────────────────────────────────────
@@ -316,26 +397,26 @@ void App::register_routes() {
 void App::route_conversations() {
   svr_.Get("/api/conversations", [this](const httplib::Request& req, httplib::Response& res) {
     int limit = req.has_param("limit") ? std::atoi(req.get_param_value("limit").c_str()) : 50;
-    send_loom(res, loom_list_conversations(ctx_, limit));
+    send_loom(res, loom_list_conversations(rctx(), limit));
   });
 
   svr_.Post("/api/conversations", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string title = body.value("title", std::string());
-    send_loom(res, loom_create_conversation(ctx_, title.empty() ? nullptr : title.c_str()), 201);
+    send_loom(res, loom_create_conversation(rctx(), title.empty() ? nullptr : title.c_str()), 201);
   });
 
   svr_.Get(R"(/api/conversations/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    send_loom(res, loom_get_conversation(ctx_, req.matches[1].str().c_str()));
+    send_loom(res, loom_get_conversation(rctx(), req.matches[1].str().c_str()));
   });
 
   svr_.Patch(R"(/api/conversations/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_update_conversation(ctx_, req.matches[1].str().c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_update_conversation(rctx(), req.matches[1].str().c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Delete(R"(/api/conversations/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    int rc = loom_delete_conversation(ctx_, req.matches[1].str().c_str());
+    int rc = loom_delete_conversation(rctx(), req.matches[1].str().c_str());
     send_rc(res, rc, {{"deleted", true}});
   });
 }
@@ -345,7 +426,7 @@ void App::route_conversations() {
 void App::route_messages() {
   svr_.Get(R"(/api/conversations/([^/]+)/view)", [this](const httplib::Request& req, httplib::Response& res) {
     res.set_header("Cache-Control", "no-store");
-    send_loom(res, loom_read_conversation_view(ctx_, req.matches[1].str().c_str(), "{}", 0));
+    send_loom(res, loom_read_conversation_view(rctx(), req.matches[1].str().c_str(), "{}", 0));
   });
   svr_.Post(R"(/api/conversations/([^/]+)/view)", [this](const httplib::Request& req, httplib::Response& res) {
     res.set_header("Cache-Control", "no-store");
@@ -353,49 +434,49 @@ void App::route_messages() {
     if (!object_body(req, res, body)) return;
     // Existing host auth middleware admits this explicit local-read request.
     // Neither JSON nor source metadata supplies the grant; no egress is granted.
-    send_loom(res, loom_read_conversation_view(ctx_, req.matches[1].str().c_str(), body.dump().c_str(), 1));
+    send_loom(res, loom_read_conversation_view(rctx(), req.matches[1].str().c_str(), body.dump().c_str(), 1));
   });
   svr_.Get(R"(/api/conversations/([^/]+)/messages)", [this](const httplib::Request& req, httplib::Response& res) {
     std::string conv_id = req.matches[1].str();
     bool all = req.has_param("all") && req.get_param_value("all") != "0" && req.get_param_value("all") != "false";
-    send_loom(res, all ? loom_get_messages_ex(ctx_, conv_id.c_str(), 1) : loom_get_messages(ctx_, conv_id.c_str()));
+    send_loom(res, all ? loom_get_messages_ex(rctx(), conv_id.c_str(), 1) : loom_get_messages(rctx(), conv_id.c_str()));
   });
 
   svr_.Get(R"(/api/messages/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    send_loom(res, loom_get_message(ctx_, req.matches[1].str().c_str()));
+    send_loom(res, loom_get_message(rctx(), req.matches[1].str().c_str()));
   });
 
   svr_.Post(R"(/api/messages/([^/]+)/edit)", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string text = body.value("text", std::string());
-    send_loom(res, loom_edit_message(ctx_, req.matches[1].str().c_str(), text.c_str()));
+    send_loom(res, loom_edit_message(rctx(), req.matches[1].str().c_str(), text.c_str()));
   });
 
   svr_.Post(R"(/api/messages/([^/]+)/restore)", [this](const httplib::Request& req, httplib::Response& res) {
-    int rc = loom_restore_version(ctx_, req.matches[1].str().c_str());
+    int rc = loom_restore_version(rctx(), req.matches[1].str().c_str());
     send_rc(res, rc, {{"restored", true}});
   });
 
   svr_.Get(R"(/api/messages/([^/]+)/versions)", [this](const httplib::Request& req, httplib::Response& res) {
-    send_loom(res, loom_get_versions(ctx_, req.matches[1].str().c_str()));
+    send_loom(res, loom_get_versions(rctx(), req.matches[1].str().c_str()));
   });
 
   svr_.Post(R"(/api/messages/([^/]+)/status)", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string status = body.value("status", std::string());
-    int rc = loom_set_message_status(ctx_, req.matches[1].str().c_str(), status.c_str());
+    int rc = loom_set_message_status(rctx(), req.matches[1].str().c_str(), status.c_str());
     send_rc(res, rc, {{"status", status}});
   });
 
   svr_.Patch(R"(/api/messages/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string id = req.matches[1].str();
-    int rc = loom_update_message(ctx_, id.c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
+    int rc = loom_update_message(rctx(), id.c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str());
     if (rc != LOOM_OK) {
       send_rc(res, rc, json::object());
       return;
     }
-    send_loom(res, loom_get_message(ctx_, id.c_str()));
+    send_loom(res, loom_get_message(rctx(), id.c_str()));
   });
 }
 
@@ -411,7 +492,7 @@ void App::route_search() {
       opts["include_inactive"] = req.get_param_value("include_inactive") == "1" ||
                                   req.get_param_value("include_inactive") == "true";
     if (req.has_param("mode")) opts["mode"] = req.get_param_value("mode");
-    send_loom(res, loom_search(ctx_, q.c_str(), opts.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_search(rctx(), q.c_str(), opts.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 }
 
@@ -430,7 +511,7 @@ void App::route_chat() {
     std::string request_json = body.dump(-1, ' ', false, json::error_handler_t::replace);
 
     auto queue = std::make_shared<SseQueue>();
-    LoomContext* ctx = ctx_;
+    LoomContext* ctx = rctx();
     auto thread_ptr = std::make_shared<std::thread>([ctx, request_json, queue]() {
       const char* result = loom_chat_ex(
           ctx, request_json.c_str(),
@@ -461,7 +542,7 @@ void App::route_chat() {
     if (!object_body(req, res, body)) return;
 #ifdef LOOM_SERVER_HAS_USAGE_POLICY
     body["action"] = "chat_preview";
-    send_loom(res, loom_usage_policy_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_usage_policy_json(rctx(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
 #else
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
@@ -474,7 +555,7 @@ void App::route_chat() {
       send_error(res, "invalid_argument", "\"request_id\" is required", 400);
       return;
     }
-    int rc = loom_chat_cancel(ctx_, request_id.c_str());
+    int rc = loom_chat_cancel(rctx(), request_id.c_str());
     send_rc(res, rc, {{"cancelled", true}});
   });
 }
@@ -483,7 +564,7 @@ void App::route_chat() {
 
 void App::route_models_providers() {
   svr_.Get("/api/media/status", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_media_status(ctx_));
+    send_loom(res, loom_media_status(rctx()));
   });
   svr_.Post("/api/media/transcribe", [this](const httplib::Request& req, httplib::Response& res) {
     if (!req.has_file("file")) {
@@ -525,16 +606,16 @@ void App::route_models_providers() {
       }
     }
     const auto encoded = options.dump();
-    send_loom(res, loom_transcribe(ctx_, path.string().c_str(), encoded.c_str()));
+    send_loom(res, loom_transcribe(rctx(), path.string().c_str(), encoded.c_str()));
   });
   svr_.Get("/api/models", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_get_models(ctx_));
+    send_loom(res, loom_get_models(rctx()));
   });
   svr_.Post("/api/models/refresh", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_refresh_models(ctx_));
+    send_loom(res, loom_refresh_models(rctx()));
   });
   svr_.Get("/api/providers", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_get_providers(ctx_));
+    send_loom(res, loom_get_providers(rctx()));
   });
 }
 
@@ -544,7 +625,8 @@ void App::route_config_secrets() {
   // Static-kernel command adapter. No parallel HTTP ledger or approval engine.
   // Capture the context only in builds that contain the native policy adapter.
 #ifdef LOOM_SERVER_HAS_USAGE_POLICY
-  svr_.Post("/api/usage-policy", [ctx = ctx_](const httplib::Request& req, httplib::Response& res) {
+  svr_.Post("/api/usage-policy", [this](const httplib::Request& req, httplib::Response& res) {
+    [[maybe_unused]] LoomContext* ctx = rctx();
 #else
   svr_.Post("/api/usage-policy", [](const httplib::Request& req, httplib::Response& res) {
 #endif
@@ -557,7 +639,7 @@ void App::route_config_secrets() {
 #endif
   });
   svr_.Get("/api/config", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_get_config(ctx_));
+    send_loom(res, loom_get_config(rctx()));
   });
 
   // Merge-patch: {"key": value, ...} -> loom_set_config_json.
@@ -568,12 +650,12 @@ void App::route_config_secrets() {
     // Validation must not reorder opaque method/profile DTOs before the
     // native ordered-json config reader sees them.
     const std::string patch_bytes = req.body.empty() ? "{}" : req.body;
-    int rc = loom_set_config_json(ctx_, patch_bytes.c_str());
+    int rc = loom_set_config_json(rctx(), patch_bytes.c_str());
     if (rc != LOOM_OK) {
       send_rc(res, rc, json::object());
       return;
     }
-    send_loom(res, loom_get_config(ctx_));
+    send_loom(res, loom_get_config(rctx()));
   });
 
   // Single-key set: PUT /api/config/:key {"value": <json or raw text>}.
@@ -588,26 +670,26 @@ void App::route_config_secrets() {
     const auto ordered_body = nlohmann::ordered_json::parse(req.body);
     const nlohmann::ordered_json patch = {{key, ordered_body["value"]}};
     std::lock_guard config_guard(native_ui::config_mutex());
-    const int rc = loom_set_config_json(ctx_, patch.dump(-1, ' ', false, nlohmann::ordered_json::error_handler_t::replace).c_str());
+    const int rc = loom_set_config_json(rctx(), patch.dump(-1, ' ', false, nlohmann::ordered_json::error_handler_t::replace).c_str());
     if (rc < 0) {
       send_error(res, errc_name_for_rc(rc), "Configuration value was rejected");
       return;
     }
-    send_loom(res, loom_get_config(ctx_));
+    send_loom(res, loom_get_config(rctx()));
   });
 
   // Secrets are write-only: values never round-trip back to the client.
   svr_.Get("/api/secrets", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_list_secret_keys(ctx_));
+    send_loom(res, loom_list_secret_keys(rctx()));
   });
   svr_.Post(R"(/api/secrets/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string value = body.value("value", std::string());
-    int rc = loom_set_secret(ctx_, req.matches[1].str().c_str(), value.c_str());
+    int rc = loom_set_secret(rctx(), req.matches[1].str().c_str(), value.c_str());
     send_rc(res, rc, {{"set", true}});
   });
   svr_.Get(R"(/api/secrets/([^/]+)/has)", [this](const httplib::Request& req, httplib::Response& res) {
-    int rc = loom_has_secret(ctx_, req.matches[1].str().c_str());
+    int rc = loom_has_secret(rctx(), req.matches[1].str().c_str());
     if (rc < 0) {
       send_rc(res, rc, json::object());
       return;
@@ -615,7 +697,7 @@ void App::route_config_secrets() {
     res.set_content(json{{"has", rc == 1}}.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
   });
   svr_.Delete(R"(/api/secrets/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    int rc = loom_delete_secret(ctx_, req.matches[1].str().c_str());
+    int rc = loom_delete_secret(rctx(), req.matches[1].str().c_str());
     send_rc(res, rc, {{"deleted", true}});
   });
 }
@@ -628,7 +710,7 @@ void App::route_graph_context() {
     if (req.has_param("kind")) filter["kind"] = req.get_param_value("kind");
     if (req.has_param("label")) filter["label"] = req.get_param_value("label");
     if (req.has_param("limit")) filter["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_get_nodes(ctx_, filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_get_nodes(rctx(), filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Get("/api/graph/edges", [this](const httplib::Request& req, httplib::Response& res) {
@@ -636,37 +718,37 @@ void App::route_graph_context() {
     if (req.has_param("node_id")) filter["node_id"] = req.get_param_value("node_id");
     if (req.has_param("link_type")) filter["link_type"] = req.get_param_value("link_type");
     if (req.has_param("limit")) filter["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_get_edges(ctx_, filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_get_edges(rctx(), filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Post("/api/graph/expand", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     json seeds = body.value("seed_ids", json::array());
     int depth = body.value("depth", 1);
-    send_loom(res, loom_expand_graph(ctx_, seeds.dump(-1, ' ', false, json::error_handler_t::replace).c_str(), depth));
+    send_loom(res, loom_expand_graph(rctx(), seeds.dump(-1, ' ', false, json::error_handler_t::replace).c_str(), depth));
   });
 
   svr_.Get("/api/graph/data", [this](const httplib::Request& req, httplib::Response& res) {
     std::string conv_id = req.get_param_value("conv_id");
-    send_loom(res, loom_get_graph_data(ctx_, conv_id.empty() ? nullptr : conv_id.c_str()));
+    send_loom(res, loom_get_graph_data(rctx(), conv_id.empty() ? nullptr : conv_id.c_str()));
   });
 
   svr_.Get("/api/graph/entry", [this](const httplib::Request& req, httplib::Response& res) {
     json request = json::object();
     if (req.has_param("lang")) request["lang"] = req.get_param_value("lang");
     if (req.has_param("include_hidden")) request["include_hidden"] = req.get_param_value("include_hidden") == "true";
-    send_loom(res, loom_graph_entry(ctx_, request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_graph_entry(rctx(), request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Post("/api/graph/reindex", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
     std::string conv_id = body.value("conv_id", std::string());
-    send_loom(res, loom_graph_reindex(ctx_, conv_id.empty() ? nullptr : conv_id.c_str()));
+    send_loom(res, loom_graph_reindex(rctx(), conv_id.empty() ? nullptr : conv_id.c_str()));
   });
 
   svr_.Post("/api/context/select", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_select_context_ex(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_select_context_ex(rctx(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 }
 
@@ -678,22 +760,22 @@ void App::route_semantic() {
 #ifdef LOOM_SERVER_HAS_USAGE_POLICY
     json command{{"action", "economy_report"}};
     if (req.has_param("mode")) command["overrides"] = json{{"mode", req.get_param_value("mode")}};
-    send_loom(res, loom_usage_policy_json(ctx_, command.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_usage_policy_json(rctx(), command.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
 #else
     (void)req;
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
   });
   svr_.Get("/api/semantic/status", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_semantic_status(ctx_));
+    send_loom(res, loom_semantic_status(rctx()));
   });
   svr_.Post("/api/semantic/pause", [this](const httplib::Request&, httplib::Response& res) {
-    loom_semantic_pause(ctx_);
-    send_loom(res, loom_semantic_status(ctx_));
+    loom_semantic_pause(rctx());
+    send_loom(res, loom_semantic_status(rctx()));
   });
   svr_.Post("/api/semantic/resume", [this](const httplib::Request&, httplib::Response& res) {
-    loom_semantic_resume(ctx_);
-    send_loom(res, loom_semantic_status(ctx_));
+    loom_semantic_resume(rctx());
+    send_loom(res, loom_semantic_status(rctx()));
   });
   // Answer a batch submission paused by the shared usage guard.
   svr_.Post("/api/semantic/usage-confirm", [this](const httplib::Request& req, httplib::Response& res) {
@@ -701,7 +783,7 @@ void App::route_semantic() {
     if (!object_body(req, res, body)) return;
 #ifdef LOOM_SERVER_HAS_USAGE_POLICY
     body["action"] = "semantic_confirm";
-    send_loom(res, loom_usage_policy_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_usage_policy_json(rctx(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
 #else
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
@@ -712,7 +794,7 @@ void App::route_semantic() {
     if (!req.body.empty() && !object_body(req, res, body)) return;
 #ifdef LOOM_SERVER_HAS_USAGE_POLICY
     json command{{"action", "semantic_requeue"}, {"filter", body}};
-    send_loom(res, loom_usage_policy_json(ctx_, command.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_usage_policy_json(rctx(), command.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
 #else
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
@@ -723,14 +805,14 @@ void App::route_semantic() {
     if (!object_body(req, res, body)) return;
 #ifdef LOOM_SERVER_HAS_USAGE_POLICY
     body["action"] = "semantic_retry_mode";
-    send_loom(res, loom_usage_policy_json(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_usage_policy_json(rctx(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
 #else
     send_error(res, "unavailable", "Native usage policy is not installed in this build");
 #endif
   });
   svr_.Post("/api/semantic/wake", [this](const httplib::Request&, httplib::Response& res) {
-    loom_semantic_wake(ctx_);
-    send_loom(res, loom_semantic_status(ctx_));
+    loom_semantic_wake(rctx());
+    send_loom(res, loom_semantic_status(rctx()));
   });
 }
 
@@ -738,23 +820,23 @@ void App::route_semantic() {
 
 void App::route_memory() {
   svr_.Get("/api/memory", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_list_memory(ctx_));
+    send_loom(res, loom_list_memory(rctx()));
   });
   svr_.Post("/api/memory", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_create_memory(ctx_, body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()), 201);
+    send_loom(res, loom_create_memory(rctx(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()), 201);
   });
   svr_.Patch(R"(/api/memory/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    send_loom(res, loom_update_memory(ctx_, req.matches[1].str().c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_update_memory(rctx(), req.matches[1].str().c_str(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
   svr_.Delete(R"(/api/memory/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    int rc = loom_delete_memory(ctx_, req.matches[1].str().c_str());
+    int rc = loom_delete_memory(rctx(), req.matches[1].str().c_str());
     send_rc(res, rc, {{"deleted", true}});
   });
   svr_.Get("/api/memory/context", [this](const httplib::Request& req, httplib::Response& res) {
     int max_chars = req.has_param("max_chars") ? std::atoi(req.get_param_value("max_chars").c_str()) : 0;
-    send_loom(res, loom_get_memory_context(ctx_, max_chars));
+    send_loom(res, loom_get_memory_context(rctx(), max_chars));
   });
 }
 
@@ -785,7 +867,7 @@ void App::route_import_export() {
     }
 
     auto queue = std::make_shared<SseQueue>();
-    LoomContext* ctx = ctx_;
+    LoomContext* ctx = rctx();
     std::string path_str = tmp_path.string();
     std::string title_copy = title;
     json options = json::object();
@@ -830,7 +912,7 @@ void App::route_import_export() {
   svr_.Get(R"(/api/conversations/([^/]+)/export)", [this](const httplib::Request& req, httplib::Response& res) {
     std::string conv_id = req.matches[1].str();
     std::string fmt = req.has_param("format") ? req.get_param_value("format") : "json";
-    std::string raw = own_and_free(loom_export_conversation(ctx_, conv_id.c_str(), fmt.c_str()));
+    std::string raw = own_and_free(loom_export_conversation(rctx(), conv_id.c_str(), fmt.c_str()));
     json parsed = parse_or_empty(raw);
     if (parsed.is_object() && parsed.contains("error")) {
       res.status = status_for_error_code(parsed["error"].value("code", std::string("internal")));
@@ -850,11 +932,11 @@ void App::route_import_export() {
 void App::route_provenance_events_tasks() {
   svr_.Get("/api/sources", [this](const httplib::Request& req, httplib::Response& res) {
     int limit = req.has_param("limit") ? std::atoi(req.get_param_value("limit").c_str()) : 100;
-    send_loom(res, loom_list_sources(ctx_, limit));
+    send_loom(res, loom_list_sources(rctx(), limit));
   });
 
   svr_.Get(R"(/api/provenance/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    send_loom(res, loom_get_provenance(ctx_, req.matches[1].str().c_str()));
+    send_loom(res, loom_get_provenance(rctx(), req.matches[1].str().c_str()));
   });
 
   // One-shot poll.
@@ -864,14 +946,14 @@ void App::route_provenance_events_tasks() {
     if (req.has_param("type")) q["type"] = req.get_param_value("type");
     if (req.has_param("subject_id")) q["subject_id"] = req.get_param_value("subject_id");
     if (req.has_param("limit")) q["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_query_events(ctx_, q.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_query_events(rctx(), q.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   // Live SSE feed via loom_subscribe.
   svr_.Get("/api/events/stream", [this](const httplib::Request& req, httplib::Response& res) {
     std::string event = req.has_param("event") ? req.get_param_value("event") : "*";
     auto queue = std::make_shared<SseQueue>();
-    LoomContext* ctx = ctx_;
+    LoomContext* ctx = rctx();
 
     // loom_subscribe's callback runs synchronously on the emitting thread,
     // so it must stay cheap: just hand the payload to the SSE queue.
@@ -911,19 +993,19 @@ void App::route_provenance_events_tasks() {
     if (req.has_param("status")) filter["status"] = req.get_param_value("status");
     if (req.has_param("parent_id")) filter["parent_id"] = req.get_param_value("parent_id");
     if (req.has_param("limit")) filter["limit"] = std::atoi(req.get_param_value("limit").c_str());
-    send_loom(res, loom_list_tasks(ctx_, filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    send_loom(res, loom_list_tasks(rctx(), filter.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Get(R"(/api/tasks/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    send_loom(res, loom_get_task(ctx_, req.matches[1].str().c_str()));
+    send_loom(res, loom_get_task(rctx(), req.matches[1].str().c_str()));
   });
 
   svr_.Post("/api/tasks/resume", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_resume_tasks(ctx_));
+    send_loom(res, loom_resume_tasks(rctx()));
   });
 
   svr_.Post(R"(/api/tasks/([^/]+)/cancel)", [this](const httplib::Request& req, httplib::Response& res) {
-    int rc = loom_cancel_task(ctx_, req.matches[1].str().c_str());
+    int rc = loom_cancel_task(rctx(), req.matches[1].str().c_str());
     send_rc(res, rc, {{"cancelled", true}});
   });
 }
@@ -939,7 +1021,7 @@ void App::route_logs_misc() {
     send_loom(res, loom_version());
   });
   svr_.Get("/api/info", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_info(ctx_));
+    send_loom(res, loom_info(rctx()));
   });
   svr_.Get("/api/healthz", [](const httplib::Request&, httplib::Response& res) {
     res.set_content(json{{"ok", true}}.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
@@ -973,12 +1055,12 @@ void App::route_archive_placeholder() {
         send_error(res, "invalid_argument", "out_dir must be a plain name (written under exports/archive/)", 400);
         return;
       }
-      json info = parse_or_empty(own_and_free(loom_info(ctx_)));
+      json info = parse_or_empty(own_and_free(loom_info(rctx())));
       std::string data_dir = info.value("data_dir", std::string());
       body["out_dir"] = (fs::path(data_dir) / "exports" / "archive" / name).string();
     }
     auto queue = std::make_shared<SseQueue>();
-    LoomContext* ctx = ctx_;
+    LoomContext* ctx = rctx();
     std::string cfg = body.dump(-1, ' ', false, json::error_handler_t::replace);
     struct Ud {
       LoomContext* ctx;
@@ -1025,7 +1107,7 @@ void App::route_archive_placeholder() {
   });
 
   svr_.Post("/api/archive/cancel", [this](const httplib::Request&, httplib::Response& res) {
-    int rc = loom_archive_cancel(ctx_);
+    int rc = loom_archive_cancel(rctx());
     if (rc == LOOM_E_NOT_FOUND) {
       send_error(res, "not_found", "no archive run in progress", 404);
       return;
@@ -1035,7 +1117,7 @@ void App::route_archive_placeholder() {
 
   svr_.Get("/api/archive/status", [this](const httplib::Request& req, httplib::Response& res) {
     std::string run = req.has_param("run_id") ? req.get_param_value("run_id") : std::string();
-    send_loom(res, loom_archive_status(ctx_, run.empty() ? nullptr : run.c_str()));
+    send_loom(res, loom_archive_status(rctx(), run.empty() ? nullptr : run.c_str()));
   });
 
   svr_.Get("/api/artifacts", [this](const httplib::Request& req, httplib::Response& res) {
@@ -1044,19 +1126,19 @@ void App::route_archive_placeholder() {
     if (req.has_param("run_id")) f["run_id"] = req.get_param_value("run_id");
     if (req.has_param("limit")) f["limit"] = std::atoi(req.get_param_value("limit").c_str());
     std::string fs_ = f.dump(-1, ' ', false, json::error_handler_t::replace);
-    send_loom(res, loom_list_artifacts(ctx_, fs_.c_str()));
+    send_loom(res, loom_list_artifacts(rctx(), fs_.c_str()));
   });
 
   svr_.Get(R"(/api/artifacts/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
     std::string id = req.matches[1];
     bool content = req.has_param("content") && req.get_param_value("content") != "0";
-    send_loom(res, loom_get_artifact(ctx_, id.c_str(), content ? 1 : 0));
+    send_loom(res, loom_get_artifact(rctx(), id.c_str(), content ? 1 : 0));
   });
 
   // Raw artifact bytes with the artifact's MIME type (for download links).
   svr_.Get(R"(/api/artifacts/([^/]+)/raw)", [this](const httplib::Request& req, httplib::Response& res) {
     std::string id = req.matches[1];
-    json j = parse_or_empty(own_and_free(loom_get_artifact(ctx_, id.c_str(), 1)));
+    json j = parse_or_empty(own_and_free(loom_get_artifact(rctx(), id.c_str(), 1)));
     if (j.is_object() && j.contains("error")) {
       std::string code = j["error"].value("code", std::string("internal"));
       send_error(res, code, j["error"].value("message", std::string()), code == "not_found" ? 404 : 400);
@@ -1079,7 +1161,7 @@ void App::route_knowledge() {
       json body;
       if (!object_body(req, res, body)) return;
       const std::string payload = body.dump();
-      send_loom(res, call(ctx_, payload.c_str()));
+      send_loom(res, call(rctx(), payload.c_str()));
     });
   };
   auto post_progress = [this](const char* path,
@@ -1088,21 +1170,21 @@ void App::route_knowledge() {
       json body;
       if (!object_body(req, res, body)) return;
       const std::string payload = body.dump();
-      send_loom(res, call(ctx_, payload.c_str(), nullptr, nullptr));
+      send_loom(res, call(rctx(), payload.c_str(), nullptr, nullptr));
     });
   };
 
   svr_.Get("/api/knowledge/pack", [this](const httplib::Request&, httplib::Response& res) {
-    send_loom(res, loom_kb_pack(ctx_));
+    send_loom(res, loom_kb_pack(rctx()));
   });
   svr_.Get("/api/knowledge/policy", [this](const httplib::Request& req, httplib::Response& res) {
     const auto name = req.get_param_value("name");
-    send_loom(res, loom_kb_policy(ctx_, name.c_str()));
+    send_loom(res, loom_kb_policy(rctx(), name.c_str()));
   });
   svr_.Get("/api/knowledge/runs", [this](const httplib::Request& req, httplib::Response& res) {
     int limit = 50;
     if (!integer_param(req, res, "limit", limit, 1)) return;
-    send_loom(res, loom_kb_runs(ctx_, limit));
+    send_loom(res, loom_kb_runs(rctx(), limit));
   });
   post_json("/api/knowledge/query", loom_kb_query);
   // Explicit selection/acceptance and immutable receipt read/replay retain
@@ -1111,7 +1193,7 @@ void App::route_knowledge() {
   svr_.Post("/api/graph/packets/store", [this](const httplib::Request& req, httplib::Response& res) {
     json body;
     if (!object_body(req, res, body)) return;
-    send_loom(res, loom_graph_packet_store(ctx_, req.body.c_str()));
+    send_loom(res, loom_graph_packet_store(rctx(), req.body.c_str()));
   });
   // Keep exact embedded reply bytes; strict parser rejects duplicate keys.
   svr_.Post("/api/packet", [this](const httplib::Request& req, httplib::Response& res) {
@@ -1120,7 +1202,7 @@ void App::route_knowledge() {
       send_error(res, "parse", "packet request contains literal NUL");
       return;
     }
-    send_loom(res, loom_packet(ctx_, req.body.c_str()));
+    send_loom(res, loom_packet(rctx(), req.body.c_str()));
     const auto value = json::parse(res.body, nullptr, false);
     if (value.is_object() && value.contains("error") && value["error"].is_object())
       res.status = status_for_error_code(value["error"].value("code", std::string("internal")));
@@ -1148,7 +1230,7 @@ void App::route_knowledge() {
           send_error(res, "invalid_argument", "out_dir must be a plain name (written under exports/knowledge/)");
           return;
         }
-        const auto info = parse_or_empty(own_and_free(loom_info(ctx_)));
+        const auto info = parse_or_empty(own_and_free(loom_info(rctx())));
         const auto data_dir = info.value("data_dir", std::string());
         if (data_dir.empty()) {
           send_error(res, "internal", "data directory unavailable");
@@ -1161,14 +1243,14 @@ void App::route_knowledge() {
     // Synchronous JSON, as in the C ABI; status/cancel remain available on
     // other HTTP threads while this request runs. A RunResult with status
     // failed/paused is preserved rather than mislabeled as a successful run.
-    send_loom(res, loom_knowledge_run(ctx_, payload.c_str(), nullptr, nullptr));
+    send_loom(res, loom_knowledge_run(rctx(), payload.c_str(), nullptr, nullptr));
   });
   svr_.Get("/api/knowledge/status", [this](const httplib::Request& req, httplib::Response& res) {
     const auto task = req.get_param_value("task_id");
-    send_loom(res, loom_knowledge_status(ctx_, task.empty() ? nullptr : task.c_str()));
+    send_loom(res, loom_knowledge_status(rctx(), task.empty() ? nullptr : task.c_str()));
   });
   svr_.Post("/api/knowledge/cancel", [this](const httplib::Request&, httplib::Response& res) {
-    const int rc = loom_knowledge_cancel(ctx_);
+    const int rc = loom_knowledge_cancel(rctx());
     if (rc == LOOM_E_NOT_FOUND) {
       send_error(res, "not_found", "no knowledge run in progress");
       return;
@@ -1186,7 +1268,7 @@ void App::route_knowledge() {
       return;
     }
     const auto run = body.value("run_id", std::string());
-    send_loom(res, loom_catalog_select(ctx_, run.empty() ? nullptr : run.c_str()));
+    send_loom(res, loom_catalog_select(rctx(), run.empty() ? nullptr : run.c_str()));
   });
   post_progress("/api/catalog/import", loom_catalog_import);
   post_json("/api/catalog/query", loom_catalog_query);
@@ -1211,11 +1293,108 @@ void App::route_knowledge() {
       query["selected"] = value == "true" || value == "1";
     }
     const std::string payload = query.dump();
-    send_loom(res, loom_catalog_query(ctx_, payload.c_str()));
+    send_loom(res, loom_catalog_query(rctx(), payload.c_str()));
   });
   svr_.Get(R"(/api/catalog/units/([^/]+))", [this](const httplib::Request& req, httplib::Response& res) {
-    send_loom(res, loom_catalog_preview(ctx_, req.matches[1].str().c_str()));
+    send_loom(res, loom_catalog_preview(rctx(), req.matches[1].str().c_str()));
   });
+}
+
+
+// ── Accounts (P1) ──────────────────────────────────────────────────────
+
+namespace {
+std::string cookie_header(const loom::accounts::CookieSettings& c, const std::string& value, std::int64_t max_age,
+                          bool secure) {
+  std::string h = c.name + "=" + value + "; Path=" + c.path + "; Max-Age=" + std::to_string(max_age) +
+                  "; SameSite=" + c.same_site;
+  if (c.http_only) h += "; HttpOnly";
+  if (secure) h += "; Secure";
+  return h;
+}
+bool wants_secure(const loom::accounts::CookieSettings& c, const httplib::Request& req) {
+  if (c.secure == "always") return true;
+  if (c.secure == "never") return false;
+  return req.get_header_value("X-Forwarded-Proto") == "https";
+}
+json user_json(const loom::accounts::User& u) { return {{"id", u.id}, {"login", u.login}}; }
+}  // namespace
+
+void App::route_auth() {
+  // Single-user mode: the endpoint exists so the web UI can tell the two modes apart.
+  svr_.Get("/api/auth/me", [this](const httplib::Request&, httplib::Response& res) {
+    json out = {{"accounts", accounts_ != nullptr}};
+    if (accounts_) {
+      out["authenticated"] = t_user.has_value();
+      out["registration"] = accounts_->settings().registration;
+      if (t_user) out["user"] = user_json(*t_user);
+    }
+    res.set_content(out.dump(), "application/json");
+  });
+  {
+    auto start_session = [this](const httplib::Request& req, httplib::Response& res,
+                                const loom::accounts::User& u, int status) {
+      auto s = accounts_->create_session(u.id);
+      if (!s) {
+        send_error(res, "internal", "cannot create session", 500);
+        return;
+      }
+      const auto& cs = accounts_->settings().cookie;
+      res.set_header("Set-Cookie", cookie_header(cs, s->token, accounts_->settings().session_lifetime_seconds,
+                                                 wants_secure(cs, req)));
+      res.status = status;
+      res.set_content(json{{"user", user_json(u)}, {"token", s->token}, {"expires", s->expires}}.dump(),
+                      "application/json");
+    };
+    svr_.Post("/api/auth/login", [this, start_session](const httplib::Request& req, httplib::Response& res) {
+      if (!accounts_) { send_error(res, "not_found", "accounts are not enabled", 404); return; }
+      json body;
+      if (!object_body(req, res, body)) return;
+      auto u = accounts_->verify_password(body.value("login", std::string()), body.value("password", std::string()));
+      if (!u) {
+        if (u.error().code == loom::Errc::Auth) send_error(res, "auth", "invalid login or password", 401);
+        else send_error(res, "internal", "login failed", 500);
+        return;
+      }
+      start_session(req, res, *u, 200);
+    });
+    svr_.Post("/api/auth/register", [this, start_session](const httplib::Request& req, httplib::Response& res) {
+      if (!accounts_) { send_error(res, "not_found", "accounts are not enabled", 404); return; }
+      json body;
+      if (!object_body(req, res, body)) return;
+      const std::string mode = accounts_->settings().registration;
+      if (mode == "closed") { send_error(res, "auth", "registration is closed", 403); return; }
+      const std::string login = body.value("login", std::string());
+      if (mode == "invite") {
+        auto ok = accounts_->consume_invite(body.value("invite", std::string()), login);
+        if (!ok) { send_error(res, "auth", "invalid or used invite code", 403); return; }
+      }
+      auto u = accounts_->create_user(login, body.value("password", std::string()));
+      if (!u) {
+        send_error(res, std::string(loom::errc_name(u.error().code)), u.error().message);
+        return;
+      }
+      start_session(req, res, *u, 201);
+    });
+    svr_.Post("/api/auth/logout", [this](const httplib::Request& req, httplib::Response& res) {
+      if (!accounts_) { send_error(res, "not_found", "accounts are not enabled", 404); return; }
+      (void)accounts_->revoke_session(t_session_token);
+      const auto& cs = accounts_->settings().cookie;
+      res.set_header("Set-Cookie", cookie_header(cs, "", 0, wants_secure(cs, req)));
+      res.set_content(json{{"ok", true}}.dump(), "application/json");
+    });
+    svr_.Post("/api/auth/password", [this, start_session](const httplib::Request& req, httplib::Response& res) {
+      if (!accounts_ || !t_user) { send_error(res, "auth", "sign in required", 401); return; }
+      json body;
+      if (!object_body(req, res, body)) return;
+      auto ok = accounts_->verify_password(t_user->login, body.value("current", std::string()));
+      if (!ok) { send_error(res, "auth", "current password is wrong", 401); return; }
+      auto st = accounts_->set_password(t_user->login, body.value("new", std::string()));
+      if (!st) { send_error(res, std::string(loom::errc_name(st.error().code)), st.error().message); return; }
+      (void)accounts_->revoke_user_sessions(t_user->id);  // every old session ends; this one is replaced
+      start_session(req, res, *t_user, 200);
+    });
+  }
 }
 
 }  // namespace loom_server

@@ -126,9 +126,10 @@ inline loom::Result<Json> dispatch(LoomContext* ctx, const Json& body) {
 // Explicit private-runtime bridge for the owner UI. Store validation, privacy,
 // pack resolution, graph transactions and concurrency remain in the kernel.
 // model_request prepares data only; this route never completes provider calls.
-inline void register_onboarding_ui_routes(httplib::Server& server, LoomContext* ctx) {
-  server.Post("/api/onboarding", [ctx](const httplib::Request& req, httplib::Response& res) {
+inline void register_onboarding_ui_routes(httplib::Server& server, std::function<LoomContext*()> ctx_of) {
+  server.Post("/api/onboarding", [ctx_of](const httplib::Request& req, httplib::Response& res) {
     native_ui::protect(res, [&] {
+      LoomContext* ctx = ctx_of();
       auto body = native_ui::parse(req);
       if (!body) { native_ui::fail(res, body.error()); return; }
       auto result = onboarding_ui_detail::dispatch(ctx, *body);

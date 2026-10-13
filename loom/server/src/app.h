@@ -2,10 +2,15 @@
 #pragma once
 
 #include <atomic>
+#include <functional>
+#include <memory>
+#include <mutex>
 #include <string>
+#include <unordered_map>
 
 #include <httplib.h>
 
+#include "loom/accounts.h"
 #include "loom/loom.h"
 
 namespace loom_server {
@@ -16,6 +21,9 @@ struct ServerOptions {
   std::string data_dir;      // empty -> loom's own default resolution
   std::string static_dir;    // empty -> static serving disabled
   std::string bearer_token;  // empty -> no auth required
+  // Non-empty: accounts mode (P1). Users live in <accounts_root>/<accounts_file>, each with its own
+  // data dir <accounts_root>/<users_subdir>/<id>/. Empty: single-user mode exactly as before.
+  std::string accounts_root;
   size_t max_body_bytes = 64u * 1024 * 1024;
 };
 
@@ -40,11 +48,17 @@ class App {
   // thread; makes run() return.
   void stop();
 
-  LoomContext* ctx() const { return ctx_; }
+  // The context of the request being handled (accounts mode: the signed-in user's), else the single one.
+  LoomContext* rctx() const;
+  LoomContext* ctx() const { return rctx(); }
+  bool accounts_mode() const { return accounts_ != nullptr; }
 
  private:
   void register_routes();
   void register_middleware();
+  // POST /api/auth/{login,logout,register,password}, GET /api/auth/me.
+  void route_auth();
+  LoomContext* context_for_user(const std::string& user_id);
 
   // Route groups (implemented in app.cpp), split only for readability -
   // all register handlers on svr_.
@@ -69,7 +83,10 @@ class App {
   void route_knowledge();
 
   ServerOptions opts_;
-  LoomContext* ctx_ = nullptr;
+  LoomContext* ctx_ = nullptr;  // single-user mode only
+  std::unique_ptr<loom::accounts::AccountStore> accounts_;
+  std::mutex pool_mu_;
+  std::unordered_map<std::string, LoomContext*> user_ctx_;  // lazily opened, kept for the process lifetime
   httplib::Server svr_;
   std::atomic<bool> running_{false};
 };

@@ -660,15 +660,17 @@ inline Result<Json> fragment(loom::Runtime& runtime, const Json& command) {
 }  // namespace loom_server::method_ui
 
 namespace loom_server {
-inline void register_method_ui_routes(httplib::Server& server, LoomContext* context) {
-  server.Get("/api/methods/chat-settings", [context](const httplib::Request&, httplib::Response& response) {
+inline void register_method_ui_routes(httplib::Server& server, std::function<LoomContext*()> context_of) {
+  server.Get("/api/methods/chat-settings", [context_of](const httplib::Request&, httplib::Response& response) {
     native_ui::protect(response, [&] {
+      LoomContext* context = context_of();
       if (!loom::capi::live(context)) { native_ui::fail(response, {loom::Errc::Unavailable, "native runtime is unavailable"}); return; }
       native_ui::reply(response, method_ui::chat_settings(*context->rt));
     });
   });
-  server.Post("/api/methods", [context](const httplib::Request& request, httplib::Response& response) {
+  server.Post("/api/methods", [context_of](const httplib::Request& request, httplib::Response& response) {
     native_ui::protect(response, [&] {
+      LoomContext* context = context_of();
       if (!loom::capi::live(context)) { native_ui::fail(response, {loom::Errc::Unavailable, "native runtime is unavailable"}); return; }
       auto body = method_ui::parse_command(request);
       if (!body) { native_ui::fail(response, body.error()); return; }
@@ -676,8 +678,9 @@ inline void register_method_ui_routes(httplib::Server& server, LoomContext* cont
       if (!result) native_ui::fail(response, result.error()); else native_ui::reply(response, *result);
     });
   });
-  server.Post("/api/graph-reply", [context](const httplib::Request& request, httplib::Response& response) {
+  server.Post("/api/graph-reply", [context_of](const httplib::Request& request, httplib::Response& response) {
     native_ui::protect(response, [&] {
+      LoomContext* context = context_of();
       if (!loom::capi::live(context)) { native_ui::fail(response, {loom::Errc::Unavailable, "native runtime is unavailable"}); return; }
       auto body = method_ui::parse_command(request);
       if (!body) { native_ui::fail(response, body.error()); return; }
