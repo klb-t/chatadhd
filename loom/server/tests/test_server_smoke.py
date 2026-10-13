@@ -309,7 +309,17 @@ def main() -> int:
         r = requests.patch(f"{base}/api/config", json={"default_model": "smoke/model"})
         assert r.status_code == 200 and r.json()["default_model"] == "smoke/model", r.text
 
+        r = requests.get(f"{base}/api/settings/fields")
+        assert r.status_code == 200, r.text
+        fields = {f["key"]: f for f in r.json()["fields"]}
+        assert fields["theme"]["default"] == "present" and fields["theme"]["default_value"] == "dark", fields["theme"]
+        assert fields["api_key"]["scope"] == "secret" and fields["api_key"]["default"] == "absent"
+        assert fields["_config_version"]["edit"] == "read_only"
+        r = requests.patch(f"{base}/api/config", json={"_config_version": 9})
+        assert r.status_code == 400, r.text
+
         r = requests.post(f"{base}/api/secrets/api_key", json={"value": "sk-smoke"})
+        assert "sk-smoke" not in requests.get(f"{base}/api/settings/fields").text
         assert r.status_code == 200 and r.json()["set"] is True, r.text
 
         r = requests.get(f"{base}/api/secrets/api_key/has")

@@ -13,6 +13,7 @@
 // invokes `window.__loomCallbacks[callbackId](chunkJson, done)` for every
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
+import { parseSettingsFields, type SettingsFieldsDoc } from "../settings/field-meta";
 import type { LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import type {
   ChatChunk,
@@ -217,6 +218,9 @@ export class LoomJniApi implements LoomApi {
 
   // ── Config & secrets ─────────────────────────────────────────────────
 
+  async getSettingsFields(): Promise<SettingsFieldsDoc> {
+    return parseSettingsFields(await this.callAsync("settings_fields"));
+  }
   getConfig(): Promise<ConfigMap> {
     return this.callAsync("get_config");
   }

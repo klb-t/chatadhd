@@ -31,6 +31,7 @@
 #include "loom/catalog.h"
 #include "loom/chat_engine.h"
 #include "loom/config.h"
+#include "loom/settings_fields.h"
 #include "loom/crypto.h"
 #include "loom/graph_entry.h"
 #include "loom/economy.h"
@@ -786,8 +787,11 @@ int cmd_config(Runtime& rt, const Args& a) {
   if (sub == "get") {
     if (a.pos.size() > 1) print_json(c.get(a.pos[1]));
     else print_json(c.all());
+  } else if (sub == "fields") {
+    print_json(must(settings_fields(rt.paths().root)));
   } else if (sub == "set") {
     std::string key = need(a, 1, "key"), raw = need(a, 2, "value");
+    must(check_config_write(key, rt.paths().root));
     auto parsed = json::parse(raw);
     c.set(key, parsed ? *parsed : Json(raw));
     must(c.save());

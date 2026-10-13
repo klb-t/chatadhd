@@ -221,6 +221,12 @@ LOOM_API int loom_can(LoomContext* ctx, const char* resource, const char* capabi
 /* ── Config & secrets ──────────────────────────────────────────────── */
 
 LOOM_API const char* loom_get_config(LoomContext* ctx);
+/* Field metadata of every config and secret key (data: runtime/settings_fields.pack):
+ * {"schema","edit_rules":[{"id","enforced",...}],"fields":[{"key","scope":"config|secret",
+ * "group","type","default":"present|absent","default_value"?(config only),"edit":<open string:
+ * optional|required|read_only|requires_confirmation|...>,"description","sensitive"?}]}.
+ * Secret values are never returned. Only read_only is enforced on config writes. */
+LOOM_API const char* loom_settings_fields(LoomContext* ctx);
 /* value is JSON text ("0.5", "true", "\"x\""); text that is not valid JSON is
  * stored as a string. Saved to config.json immediately. */
 LOOM_API void loom_set_config(LoomContext* ctx, const char* key, const char* value);

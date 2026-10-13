@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "e2e": "node e2e/run.mjs",
+    "test:settings-fields": "node e2e/settings-fields.mjs",
     "test:transport": "node e2e/native-contract.mjs",
     "test:workspace-state": "node e2e/workspace-state.mjs",
     "test:workspace": "node e2e/workspace-state.mjs && node e2e/workspace.mjs",

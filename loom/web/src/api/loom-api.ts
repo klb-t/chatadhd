@@ -2,6 +2,7 @@
 // implementations satisfy it: loom-http.ts (fetch + SSE, used on the web,
 // talking to loom-server) and loom-jni.ts (Android WebView -> window.LoomBridge,
 // used when the app is embedded). src/api/index.ts picks one at runtime.
+import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type {
   ChatChunk,
   ChatRequest,
@@ -108,6 +109,7 @@ export interface LoomApi {
 
   // Config & secrets
   getConfig(): Promise<ConfigMap>;
+  getSettingsFields(): Promise<SettingsFieldsDoc>;
   setConfig(patch: ConfigMap): Promise<ConfigMap>;
   setConfigKey(key: string, value: unknown): Promise<ConfigMap>;
   listSecretKeys(): Promise<string[]>;

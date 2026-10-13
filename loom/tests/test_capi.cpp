@@ -160,6 +160,28 @@ TEST_SUITE("capi") {
     CHECK(is_error(take(loom_search(c.ctx, "x", R"({"mode":"nope"})")), "invalid_argument"));
   }
 
+  TEST_CASE("settings fields: metadata for every key, secrets without values, read_only enforced") {
+    Ctx c;
+    Json doc = take(loom_settings_fields(c.ctx));
+    CHECK(doc["schema"] == "loom.settings_fields/1");
+    Json by_key = Json::object();
+    for (const auto& f : doc["fields"]) by_key[f["scope"].get<std::string>() + ":" + f["key"].get<std::string>()] = f;
+    CHECK(by_key["config:theme"]["default"] == "present");
+    CHECK(by_key["config:theme"]["default_value"] == "dark");
+    CHECK(by_key["config:max_tokens"]["default_value"] == 4096);
+    CHECK(by_key["config:loom_task_workers"]["default_value"] == 1);
+    CHECK(by_key["secret:api_key"]["default"] == "absent");
+    CHECK(by_key["secret:api_key"]["edit"] == "required");
+    CHECK(!by_key["secret:api_key"].contains("default_value"));
+    CHECK(by_key["config:_config_version"]["edit"] == "read_only");
+    loom_set_secret(c.ctx, "api_key", "sk-secret-fields");
+    CHECK(std::string(loom_settings_fields(c.ctx)).find("sk-secret-fields") == std::string::npos);
+    CHECK(loom_set_config_json(c.ctx, R"({"_config_version": 9})") == LOOM_E_INVALID_ARGUMENT);
+    loom_set_config(c.ctx, "_config_version", "9");
+    CHECK(take(loom_get_config(c.ctx)).value("_config_version", 0) != 9);
+    CHECK(loom_set_config_json(c.ctx, R"({"theme": "amoled", "not_described_key": 1})") == LOOM_OK);
+  }
+
   TEST_CASE("config and secrets (values never exposed)") {
     Ctx c;
     Json cfg = take(loom_get_config(c.ctx));
