@@ -264,6 +264,25 @@ Result<std::vector<llm::Part>> ElementResolver::content_parts(const ElementSourc
   if (source == "node") {
     LOOM_TRY_ASSIGN(auto n, sources.db->get_node(id));
     if (!n) return Error(Errc::NotFound, "no node '" + id + "'");
+    // A result of an action keeps its bytes (or a long text) in the blob store and the reference in its metadata.
+    const std::string hash = json::get_string(n->metadata, "blob_hash");
+    if (n->content.empty() && !hash.empty()) {
+      const std::string mime = json::get_string(n->metadata, "mime");
+      const std::string kind = json::get_string(mime_element(mime), "part", "file_ref");
+      if (kind == "text") {
+        if (!sources.blobs) return Error(Errc::Unavailable, "the blob store is not available to read '" + hash + "'");
+        LOOM_TRY_ASSIGN(std::string bytes, sources.blobs->read(hash));
+        parts.push_back(text_part(std::move(bytes), id));
+        return parts;
+      }
+      llm::Part p;
+      p.kind = kind;
+      p.blob_hash = hash;
+      p.mime = mime;
+      p.node_id = id;
+      parts.push_back(std::move(p));
+      return parts;
+    }
     parts.push_back(text_part(n->content.empty() ? n->label : n->content, id));
     return parts;
   }

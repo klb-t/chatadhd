@@ -215,6 +215,14 @@
         "description": "The user's own thresholds of chain proposals: an object with any of max_length, max_cost, min_confidence, max_results (null = no bound); each member overrides the preset at the user's level and is itself overridden by a more specific scope. Default: none (the preset's bounds)."
       },
       {
+        "key": "action_result_target",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Where the result of an action run goes: graph (preset: a form node linked to its source element and to the run), run_only (the result stays in the run document) or conversation_message (the text is also posted as a message of the conversation and linked in the graph). Runtime profile action_results. This is the user's level of a value that the scope chain resolves: a rule on a conversation or a project may set another one. Text above the profile's inline_max_bytes goes to the blob store whatever the target is. Default: graph."
+      },
+      {
         "key": "context_execution",
         "scope": "config",
         "group": "context",

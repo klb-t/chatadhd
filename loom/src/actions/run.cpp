@@ -1011,6 +1011,13 @@ Result<Json> Interpreter::drive(Json run, const CancelToken* cancel, const Json&
         if (v.contains("data") && !result.contains("data")) result["data"] = v["data"];
   }
   run["result"] = result;
+  if (deps_.on_result) {
+    run["status"] = "completed";  // the hook sees the run as it will be stored
+    if (auto stored = deps_.on_result(run); !stored) {
+      run["result"]["produced"] = Json{{"schema", "loom.action_produced/1"}, {"items", Json::array()},
+                                       {"issues", Json::array({Json{{"code", "store_failed"}, {"message", stored.error().message}}})}};
+    }
+  }
   LOOM_TRY(checkpoint("completed"));
   return run;
 }

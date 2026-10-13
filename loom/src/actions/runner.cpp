@@ -5,6 +5,7 @@
 #include <algorithm>
 
 #include "loom/action_element.h"
+#include "loom/action_result.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
@@ -249,6 +250,7 @@ struct ActionRunner::Loaded {
   Engine engine;
   ElementResolver resolver;
   Json settings;
+  Json results;  // runtime profile action_results: where the results of a run go
   ExecutorTable executors;
 };
 
@@ -290,7 +292,9 @@ Result<ActionRunner::Loaded> ActionRunner::load() {
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   Json settings = Json::object();
   if (auto profile = RuntimeProfile::load("action_run", root)) settings = profile->values();
-  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), {}};
+  Json results = Json::object();
+  if (auto profile = RuntimeProfile::load("action_results", root)) results = profile->values();
+  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), std::move(results), {}};
   install_executors(loaded.executors);
   return loaded;
 }
@@ -309,6 +313,15 @@ Interpreter ActionRunner::make_interpreter(const Loaded& loaded) const {
   deps.on_step = [rt](const Json& record) {
     (void)rt->event_log().append("action.step", json::get_string(record, "run_id"), record);
   };
+  // The results of a completed run land in the graph (or stay in the run, as the target says).
+  ResultServices services;
+  services.db = &rt_.db();
+  services.blobs = &rt_.blobs();
+  services.config = &rt_.config();
+  services.engine = &loaded.engine;
+  services.bus = &rt_.bus();
+  services.profile = loaded.results;
+  deps.on_result = [services](Json& run) { return store_run_results(services, run); };
   return Interpreter(deps);
 }
 

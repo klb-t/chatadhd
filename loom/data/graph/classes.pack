@@ -2,7 +2,7 @@
   "schema": "loom.graph_classes/1",
   "revision": 1,
   "calibration": true,
-  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Inheritance applies to classes only; setting values do not inherit (they resolve through scopes). Wave 2 (GRAF_HUB_KOD_SILNIK §5-§7): classes declare `traits` (inherited along `parent`; a class id is also a trait of its own, so `requires: [\"message\"]` means \"is a message\"); a node may add traits of its own. Actions never appear here: an action fits an element when the element has the traits the action requires (data/runtime/actions.pack). `content` and `form` are separate nodes (§6): a form expresses a content (relation `expresses`, weight = fidelity); forms are subclassed per modality. `groups` are named trait bundles; the list is open.",
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Inheritance applies to classes only; setting values do not inherit (they resolve through scopes). Wave 2 (GRAF_HUB_KOD_SILNIK §5-§7): classes declare `traits` (inherited along `parent`; a class id is also a trait of its own, so `requires: [\"message\"]` means \"is a message\"); a node may add traits of its own. Actions never appear here: an action fits an element when the element has the traits the action requires (data/runtime/actions.pack). `content` and `form` are separate nodes (§6): a form expresses a content (relation `expresses`, weight = fidelity); forms are subclassed per modality. `groups` are named trait bundles; the list is open. `action_run` is the node of one run of an action; results hang on it (relation produced_by).",
   "traits": {
     "has_text": {
       "label": {
@@ -359,6 +359,24 @@
           "pl": "Jak wiernie postać niesie treść: 1 = nic nie zgubiono, 0 = nic nie zachowano. Co zachowano, zgubiono lub dodano (np. styl) trafia do kluczy metadanych krawędzi kept, lost, added."
         }
       }
+    },
+    "derived_from": {
+      "label": {
+        "en": "Derived from",
+        "pl": "Pochodzi z"
+      },
+      "from": "form",
+      "to": "any",
+      "description": "A result was made from this source element (a message, a conversation, a node, a stored file). Written for every result of an action run that has a source element."
+    },
+    "produced_by": {
+      "label": {
+        "en": "Produced by",
+        "pl": "Wytworzone przez"
+      },
+      "from": "form",
+      "to": "action_run",
+      "description": "The action run that made a result; the run node carries the action id, run id, step, model / adapter and usage receipts (references only, never secrets or bytes)."
     }
   },
   "classes": {
@@ -637,6 +655,12 @@
       "label": {
         "en": "Usage ledger",
         "pl": "Rejestr zużycia"
+      }
+    },
+    "action_run": {
+      "label": {
+        "en": "Action run",
+        "pl": "Przebieg akcji"
       }
     },
     "application": {
