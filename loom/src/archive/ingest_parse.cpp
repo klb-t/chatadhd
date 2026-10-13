@@ -875,14 +875,14 @@ ChatWalk walk_claude(const Json& conv, const ArchiveProfile* profile) {
 }
 
 std::string sniff_export_element(const Json& e) {
-  if (!e.is_object()) return "";
-  if (json::find(e, "mapping")) return "chatgpt";
-  if (json::find(e, "chat_messages")) return "claude";
-  if ((json::find(e, "docs") || json::find(e, "prompt_template")) && (json::find(e, "name") || json::find(e, "uuid"))) {
-    return "claude_projects";
-  }
-  if (json::find(e, "conversations_memory") || json::find(e, "project_memories")) return "claude_memories";
-  return "";
+  const PlatformSpec* platform = sniff_platform(e);
+  return platform ? platform->id : std::string();
+}
+
+ChatWalk walk_chat(const PlatformSpec& platform, const Json& conv, const ArchiveProfile* profile) {
+  if (platform.walker == "mapping") return walk_chatgpt(conv, profile);
+  if (platform.walker == "chat_messages") return walk_claude(conv, profile);
+  return ChatWalk{};
 }
 
 }  // namespace loom::archive

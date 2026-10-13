@@ -146,4 +146,14 @@ Result<Json> inspect_import_preset() {
               {"policies", (*document).contains("policies") ? (*document)["policies"] : Json::object()}};
 }
 
+const Json& import_preset_platforms() {
+  static const Json platforms = [] {
+    const auto& document = import_document();
+    if (!document) throw std::runtime_error(document.error().to_string());
+    const Json* section = json::find(*document, "platforms");
+    return section ? *section : Json(nullptr);
+  }();
+  return platforms;
+}
+
 }  // namespace loom

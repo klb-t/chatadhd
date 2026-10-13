@@ -5,6 +5,7 @@
 // code count as stronger evidence, proposal_scale.md §5.3 `code_evidence`).
 // Reuses the archive area's structural walkers (archive_internal.h) instead
 // of re-parsing ChatGPT/Claude JSON shapes from scratch.
+#include "loom/platforms.h"
 #include "catalog_internal.h"
 
 #include "archive/archive_internal.h"
@@ -65,8 +66,10 @@ void collect_strings(const Json& j, std::string& out, int depth, std::int64_t& b
 
 ExtractedText extract_text(const Json& element, std::string_view kind) {
   ExtractedText out;
-  if (kind == "chatgpt" || kind == "claude") {
-    archive::ChatWalk w = kind == "chatgpt" ? archive::walk_chatgpt(element) : archive::walk_claude(element);
+  const PlatformSpec* platform = find_platform(kind);
+  const std::string_view unit_role = platform ? std::string_view(platform->unit_kind) : std::string_view();
+  if (platform && platform->is_chat()) {
+    archive::ChatWalk w = archive::walk_chat(*platform, element);
     out.title = w.title;
     out.date = w.date;
     out.n_msgs = static_cast<int>(w.messages.size());
@@ -77,7 +80,7 @@ ExtractedText extract_text(const Json& element, std::string_view kind) {
     }
     return out;
   }
-  if (kind == "claude_projects") {
+  if (unit_role == "project") {
     out.title = json::get_string(element, "name");
     out.date = archive::normalize_date(json::get_string(element, "created_at"));
     std::string desc = json::get_string(element, "description");
@@ -92,7 +95,7 @@ ExtractedText extract_text(const Json& element, std::string_view kind) {
     }
     return out;
   }
-  if (kind == "claude_memories") {
+  if (unit_role == "memory") {
     std::string cm = json::get_string(element, "conversations_memory");
     if (!cm.empty()) out.prose.append(cm).push_back('\n');
     if (const Json* pm = json::find(element, "project_memories"); pm && pm->is_object()) {

@@ -41,6 +41,7 @@
 #include "loom/db.h"
 #include "loom/importer.h"
 #include "loom/provenance.h"
+#include "loom/platforms.h"
 #include "loom/result.h"
 #include "loom/util/json.h"
 
@@ -289,9 +290,9 @@ struct ProviderRun {
 };
 
 struct ProviderHandlers {
-  std::string name;                          // report "provider" / source "import:<name>"
-  std::vector<std::string> element_keys;     // an object holding any of these keys is this provider's conversation
-  std::string shard_prefix;                  // conversation files "<prefix>NNN.json" belong to this provider ("" = none)
+  // Report "provider" / source "import:<name>". Which elements and shard file
+  // names belong to a provider is preset data (loom/platforms.h, "provider").
+  std::string name;
   std::function<std::unique_ptr<ProviderRun>(Env&)> make_run;
 };
 

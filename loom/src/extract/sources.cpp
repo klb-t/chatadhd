@@ -1,6 +1,7 @@
 // Reading files into units for the extractor (read_units / text_unit).
 // Sources are content-addressed ("sha256:<hex of the raw file>", I1); a unit
 // is located by member + JSON pointer. Deterministic order.
+#include "loom/platforms.h"
 #include <algorithm>
 
 #include "archive/archive_internal.h"
@@ -40,22 +41,24 @@ UnitContent make_unit(const std::string& source, const std::string& member, cons
 void from_json_doc(const std::string& source, const std::string& member, const Json& doc, std::vector<UnitContent>& out) {
   auto one = [&](const Json& e, const std::string& pointer) {
     std::string shape = archive::sniff_export_element(e);
-    if (shape == "chatgpt" || shape == "claude") {
-      archive::ChatWalk w = shape == "chatgpt" ? archive::walk_chatgpt(e) : archive::walk_claude(e);
+    const PlatformSpec* spec = find_platform(shape);
+    const std::string_view unit_role = spec ? std::string_view(spec->unit_kind) : std::string_view();
+    if (spec && spec->is_chat()) {
+      archive::ChatWalk w = archive::walk_chat(*spec, e);
       UnitContent u = make_unit(source, member, pointer, "conversation", w.title, w.date,
                                 static_cast<std::int64_t>(json::dump(e).size()));
       u.structured = e;
       u.unit.attrs = Json{{"platform", shape},
-                          {"ext_id", json::get_string(e, shape == "chatgpt" ? "id" : "uuid")}};
+                          {"ext_id", spec->ext_id(e)}};
       out.push_back(std::move(u));
-    } else if (shape == "claude_projects") {
+    } else if (unit_role == "project") {
       UnitContent u = make_unit(source, member, pointer, "project", json::get_string(e, "name"),
                                 archive::normalize_date(json::get_string(e, "created_at")),
                                 static_cast<std::int64_t>(json::dump(e).size()));
       u.structured = e;
       u.unit.attrs = Json{{"platform", shape}, {"ext_id", json::get_string(e, "uuid")}};
       out.push_back(std::move(u));
-    } else if (shape == "claude_memories") {
+    } else if (unit_role == "memory") {
       UnitContent u = make_unit(source, member, pointer, "memory", "memories", "", static_cast<std::int64_t>(json::dump(e).size()));
       u.structured = e;
       u.unit.attrs = Json{{"platform", shape}};

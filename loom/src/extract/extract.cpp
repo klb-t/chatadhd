@@ -1,6 +1,7 @@
 // extract.h — detection, segmentation into located observations, and the
 // Extractor facade (the extractors themselves live in extractors.cpp).
 // Deterministic: no clock, no randomness; ids are content-derived (I5).
+#include "loom/platforms.h"
 #include "loom/extract.h"
 
 #include <algorithm>
@@ -123,10 +124,12 @@ UnitBlocks unit_blocks(const UnitContent& c) {
   std::string platform = e.is_object() ? archive::sniff_export_element(e) : "";
   if (platform.empty() && e.is_object() && json::find(e, "hash") && json::find(e, "files")) platform = "git_commit";
   ub.platform = platform.empty() ? (c.text.empty() ? "empty" : "text") : platform;
-  if (platform == "chatgpt" || platform == "claude") {
-    archive::ChatWalk w = platform == "chatgpt" ? archive::walk_chatgpt(e) : archive::walk_claude(e);
+  const PlatformSpec* spec = find_platform(platform);
+  const std::string_view unit_role = spec ? std::string_view(spec->unit_kind) : std::string_view();
+  if (spec && spec->is_chat()) {
+    archive::ChatWalk w = archive::walk_chat(*spec, e);
     std::map<std::string, std::size_t> claude_index;
-    if (platform == "claude") {
+    if (spec->walker == "chat_messages") {
       if (const Json* ms = json::find(e, "chat_messages"); ms && ms->is_array()) {
         for (std::size_t i = 0; i < ms->size(); ++i) {
           std::string id = json::get_string((*ms)[i], "uuid");
@@ -140,7 +143,7 @@ UnitBlocks unit_blocks(const UnitContent& c) {
       Block b;
       b.text = json::get_string(m, "text");
       std::string node = json::get_string(m, "node");
-      if (platform == "chatgpt") {
+      if (spec->walker == "mapping") {
         b.pointer = "/mapping/" + escape_pointer(node) + "/message/content/parts/0";
       } else {
         auto it = claude_index.find(node);
@@ -160,7 +163,7 @@ UnitBlocks unit_blocks(const UnitContent& c) {
     return ub;
   }
   const std::string date = c.unit.date;
-  if (platform == "claude_projects") {
+  if (unit_role == "project") {
     add_string_block(ub, e, "name", "", date);
     add_string_block(ub, e, "description", "", date);
     add_string_block(ub, e, "prompt_template", "", date);
@@ -171,7 +174,7 @@ UnitBlocks unit_blocks(const UnitContent& c) {
     }
     return ub;
   }
-  if (platform == "claude_memories") {
+  if (unit_role == "memory") {
     add_string_block(ub, e, "conversations_memory", "", date);
     if (const Json* pm = json::find(e, "project_memories"); pm && pm->is_object()) {
       for (auto it = pm->begin(); it != pm->end(); ++it) {

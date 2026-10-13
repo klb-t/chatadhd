@@ -676,7 +676,7 @@ class AnthropicRun final : public ProviderRun {
 }  // namespace
 
 ProviderHandlers anthropic_provider() {
-  return ProviderHandlers{"anthropic", {"chat_messages"}, "",
+  return ProviderHandlers{"anthropic",
                           [](Env& env) -> std::unique_ptr<ProviderRun> { return std::make_unique<AnthropicRun>(env); }};
 }
 

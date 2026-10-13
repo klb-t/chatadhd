@@ -6,6 +6,7 @@
 // generates random ids.
 #pragma once
 
+#include "loom/platforms.h"
 #include <cstdint>
 #include <filesystem>
 #include <map>
@@ -152,7 +153,11 @@ ChatWalk walk_chatgpt(const Json& conv);
 ChatWalk walk_chatgpt(const Json& conv, const ArchiveProfile* profile);
 ChatWalk walk_claude(const Json& conv);
 ChatWalk walk_claude(const Json& conv, const ArchiveProfile* profile);
-// "chatgpt" | "claude" | "claude_projects" | "claude_memories" | "" for one
+// Message walker named by a platform's preset "walker" (the element key that
+// holds its messages); an empty ChatWalk for an unknown walker.
+ChatWalk walk_chat(const PlatformSpec& platform, const Json& conv, const ArchiveProfile* profile = nullptr);
+// Platform id from the compiled import preset (data/presets/import.pack
+// "platforms", e.g. conversation / project / memory shapes) or "" for one
 // element (or top-level object) of an export file.
 std::string sniff_export_element(const Json& element);
 

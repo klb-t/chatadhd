@@ -32,17 +32,13 @@ const ProviderHandlers* ProviderRegistry::find(std::string_view name) const {
 }
 
 const ProviderHandlers* ProviderRegistry::claim_element(const Json& element) const {
-  if (!element.is_object()) return nullptr;
-  for (const auto& h : handlers_)
-    for (const auto& key : h.element_keys)
-      if (json::find(element, key)) return &h;
-  return nullptr;
+  const PlatformSpec* platform = sniff_platform(element);
+  return platform && !platform->provider.empty() ? find(platform->provider) : nullptr;
 }
 
 const ProviderHandlers* ProviderRegistry::claim_shard(std::string_view base) const {
-  for (const auto& h : handlers_)
-    if (!h.shard_prefix.empty() && base.rfind(h.shard_prefix, 0) == 0) return &h;
-  return nullptr;
+  const PlatformSpec* platform = platform_for_shard(base);
+  return platform && !platform->provider.empty() ? find(platform->provider) : nullptr;
 }
 
 std::string pointer_token(std::string_view key) {

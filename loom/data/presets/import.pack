@@ -12,6 +12,43 @@
   "policies": {
     "duplicate_policy": "reimport_and_link"
   },
+  "platforms": [
+    {
+      "id": "chatgpt",
+      "vendor": "chatgpt",
+      "provider": "openai",
+      "unit_kind": "conversation",
+      "walker": "mapping",
+      "id_field": "id",
+      "shard_prefix": "conversations-",
+      "match": [["mapping"]],
+      "shape": {"mapping": "object"}
+    },
+    {
+      "id": "claude",
+      "vendor": "claude",
+      "provider": "anthropic",
+      "unit_kind": "conversation",
+      "walker": "chat_messages",
+      "id_field": "uuid",
+      "match": [["chat_messages"]],
+      "shape": {"chat_messages": "array"}
+    },
+    {
+      "id": "claude_projects",
+      "vendor": "claude",
+      "unit_kind": "project",
+      "id_field": "uuid",
+      "match": [["docs", "prompt_template"], ["name", "uuid"]]
+    },
+    {
+      "id": "claude_memories",
+      "vendor": "claude",
+      "unit_kind": "memory",
+      "id_literal": "memories",
+      "match": [["conversations_memory", "project_memories"]]
+    }
+  ],
   "compatibility": {
     "legacy_values_sha256": "8cbdba78941cc8b224f007ed5f089d79b1b6e3c35cf25cae06ef04d7102c8a35",
     "legacy_projection_values_sha256": "264712ab0527df1efb35a08704c44d1ee16a8fa43a887fb0b4453f3f64c02bf0"

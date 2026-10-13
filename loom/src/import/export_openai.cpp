@@ -1017,7 +1017,7 @@ class OpenAiRun final : public ProviderRun {
 }  // namespace
 
 ProviderHandlers openai_provider() {
-  return ProviderHandlers{"openai", {"mapping"}, "conversations-",
+  return ProviderHandlers{"openai",
                           [](Env& env) -> std::unique_ptr<ProviderRun> { return std::make_unique<OpenAiRun>(env); }};
 }
 
