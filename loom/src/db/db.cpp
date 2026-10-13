@@ -299,8 +299,10 @@ Result<std::unique_ptr<Database>> Database::open(const std::filesystem::path& pa
   LOOM_TRY_ASSIGN(db->conn_, sql::Connection::open(path, oo));
   {
     auto lk = db->lock();
-    // WAL can fail on read-only media; Python ignores the result as well.
-    LOOM_TRY(db->conn_.exec("PRAGMA journal_mode=WAL"));
+    // WAL can fail on read-only media; Python ignores the result as well. A concurrent first
+    // switch by another process answers SQLITE_BUSY without the busy handler, so retry within
+    // the busy timeout (Connection::enter_wal_mode).
+    LOOM_TRY(db->conn_.enter_wal_mode(opts.busy_timeout_ms));
     LOOM_TRY(db->conn_.exec("PRAGMA synchronous=NORMAL"));
     LOOM_TRY(db->conn_.exec("PRAGMA foreign_keys=ON"));
     LOOM_TRY(db->init_schema());
