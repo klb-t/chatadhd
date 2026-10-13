@@ -84,10 +84,13 @@ try {
     }
     // Registry sizes equal the sources: C ABI functions and CLI commands behind the interface breakdown.
     const by = view.areas.find(a => a.id === "interfaces").counts.interfaces.by;
-    assert.deepEqual(Object.keys(by).sort(), ["c_abi", "cli", "http"]);
+    assert.deepEqual(Object.keys(by).sort(), ["c_abi", "cli", "http", "jni", "web"]);
     assert.ok(by.c_abi > 100 && by.http > 50 && by.cli > 10);
     const header = await import("node:fs").then(fs => fs.readFileSync(path.join(loomRoot, "include/loom/loom.h"), "utf8"));
     assert.equal(by.c_abi, new Set([...header.matchAll(/LOOM_API\s+[^;(]*?\b(loom_\w+)\s*\(/g)].map(m => m[1])).size);
+    const jniSrc = await import("node:fs").then(fs => fs.readFileSync(path.join(loomRoot, "android/app/src/main/cpp/loom_jni.cpp"), "utf8"));
+    assert.equal(by.jni, new Set([...jniSrc.matchAll(/JNIEXPORT\s+\w+\s+JNICALL\s+(Java_\w+)\s*\(/g)].map(m => m[1])).size);
+    assert.ok(by.web > 20);
     const interfacesText = await area(page, "interfaces").innerText();
     assert.match(interfacesText, /c_abi: \d+/);
   });
