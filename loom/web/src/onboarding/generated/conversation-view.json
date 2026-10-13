@@ -262,6 +262,59 @@
           }
         }
       }
+    },
+    {
+      "id": "presentation.accounts/v1",
+      "key": "presentation.accounts",
+      "area": "presentation/accounts",
+      "revision": 1,
+      "label": "Texts of the sign-in screen and the sign-out button shown when the server runs with accounts; texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "accounts",
+        "locales": {
+          "en": {
+            "title": "Sign in to Loom",
+            "title_register": "Create an account",
+            "login_label": "Login",
+            "password_label": "Password",
+            "invite_label": "Invite code",
+            "sign_in": "Sign in",
+            "register": "Create account",
+            "working": "Please wait…",
+            "to_register": "No account yet? Create one",
+            "to_login": "Already have an account? Sign in",
+            "registration_closed": "New accounts are created by the operator of this server.",
+            "registration_invite": "Creating an account needs an invite code from the operator of this server.",
+            "loading": "Checking the session…",
+            "signed_in_as": "Signed in as {{login}}",
+            "logout": "Sign out",
+            "error.auth": "Wrong login or password.",
+            "error.failed": "The server answered with an error ({{reason}}).",
+            "error.unreachable": "The server could not be reached ({{reason}})."
+          },
+          "pl": {
+            "title": "Zaloguj się do Loom",
+            "title_register": "Załóż konto",
+            "login_label": "Login",
+            "password_label": "Hasło",
+            "invite_label": "Kod zaproszenia",
+            "sign_in": "Zaloguj",
+            "register": "Załóż konto",
+            "working": "Chwileczkę…",
+            "to_register": "Nie masz konta? Załóż je",
+            "to_login": "Masz już konto? Zaloguj się",
+            "registration_closed": "Nowe konta zakłada operator tego serwera.",
+            "registration_invite": "Założenie konta wymaga kodu zaproszenia od operatora tego serwera.",
+            "loading": "Sprawdzam sesję…",
+            "signed_in_as": "Zalogowano jako {{login}}",
+            "logout": "Wyloguj",
+            "error.auth": "Zły login lub hasło.",
+            "error.failed": "Serwer odpowiedział błędem ({{reason}}).",
+            "error.unreachable": "Nie udało się połączyć z serwerem ({{reason}})."
+          }
+        }
+      }
     }
   ]
 }

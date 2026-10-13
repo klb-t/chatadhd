@@ -23,6 +23,7 @@ import type {
   Task,
 } from "./types";
 import { isLoomError } from "./types";
+import { AUTH_REQUIRED_EVENT } from "./auth";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
@@ -125,6 +126,7 @@ export class LoomHttpApi implements LoomApi {
       body: body !== undefined ? JSON.stringify(body) : undefined,
       signal, cache,
     });
+    if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT));
     const text = await res.text();
     let parsed: unknown;
     try { parsed = text ? JSON.parse(text) : {}; }

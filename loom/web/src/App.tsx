@@ -17,6 +17,7 @@ import UserProfilePanel from "./components/UserProfilePanel";
 import GraphEntryPanel, { type EntryOpeners } from "./components/GraphEntryPanel";
 import { createUserProfileHost } from "./api/onboarding-host";
 import { api } from "./api";
+import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 
 type Theme = "dark" | "amoled";
@@ -54,6 +55,7 @@ const PANEL_LABELS: Record<PanelId, string> = {
 };
 
 export default function App() {
+  const account = useAccountSession();
   const [theme, setTheme] = useState<Theme>(() => (readStored("loom.theme", "dark") as Theme) || "dark");
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(() =>
     typeof window !== "undefined" ? window.innerWidth > 720 : true,
@@ -137,6 +139,11 @@ export default function App() {
         <button data-testid="toggle-theme" onClick={toggleTheme} title="Toggle theme">
           {theme === "dark" ? "Dark" : "AMOLED"}
         </button>
+        {account && (
+          <button data-testid="account-logout" onClick={account.logout} title={account.signedInAs}>
+            {account.logoutLabel}
+          </button>
+        )}
       </header>
 
       <div className="app-layout">

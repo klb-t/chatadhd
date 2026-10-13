@@ -198,3 +198,13 @@ textarea { resize: vertical; }
   .drawer { width: 100vw; }
   .msg { max-width: 92%; }
 }
+
+.auth-screen {
+  max-width: 360px;
+  margin: 12vh auto 0;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.auth-screen label { display: flex; flex-direction: column; gap: 4px; }
