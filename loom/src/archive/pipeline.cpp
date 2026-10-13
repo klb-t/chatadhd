@@ -22,6 +22,7 @@
 #include "loom/runtime.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
+#include "loom/use_model.h"
 #include "loom/tasks.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -257,9 +258,7 @@ Result<Json> get_json(Runtime& rt, std::string_view hash) {
 // Optional LLM refinement of low-confidence items (never required; changes
 // the output, so only when llm = "auto" and a key + model are configured).
 int refine_items_llm(Runtime& rt, std::vector<Item>& items, const ArchiveProfile& policy) {
-  std::string key = rt.secrets().get_string("api_key");
-  Json base_j = rt.config().get("base_url");
-  std::string base = base_j.is_string() ? base_j.get<std::string>() : "";
+  const llm::Services services(rt.config(), rt.secrets(), rt.http());
   std::string model;
   for (const auto& key_name : policy.value("/refinement/model_keys")) {
     const auto& k = key_name.get_ref<const std::string&>();
@@ -269,8 +268,7 @@ int refine_items_llm(Runtime& rt, std::vector<Item>& items, const ArchiveProfile
       break;
     }
   }
-  if (key.empty() || base.empty() || model.empty()) return 0;
-  while (!base.empty() && base.back() == '/') base.pop_back();
+  if (model.empty() || !llm::route_available(services, llm::RouteSelector{})) return 0;
   std::vector<std::size_t> low;
   for (std::size_t i = 0; i < items.size(); ++i) {
     if (items[i].confidence < policy.number("/refinement/confidence_threshold") && !policy.contains("/refinement/excluded_types", items[i].type)) low.push_back(i);
@@ -281,29 +279,30 @@ int refine_items_llm(Runtime& rt, std::vector<Item>& items, const ArchiveProfile
     for (std::size_t k = b; k < low.size() && k < b + static_cast<std::size_t>(policy.integer("/refinement/batch_size")) && k < static_cast<std::size_t>(policy.integer("/refinement/max_items")); ++k) {
       prompt += std::to_string(k) + ". " + clip(items[low[k]].text, static_cast<std::size_t>(policy.integer("/refinement/max_item_codepoints"))) + "\n";
     }
-    net::HttpRequest req;
-    req.method = "POST";
-    req.url = base + "/chat/completions";
-    req.headers = {{"Authorization", "Bearer " + key}, {"Content-Type", "application/json"},
-                   {"X-Title", policy.text("/refinement/title")}};
-    req.body = json::dump(Json{{"model", model},
-                               {"messages", Json::array({Json{{"role", "user"}, {"content", prompt}}})},
-                               {"temperature", policy.value("/refinement/temperature")},
-                               {"max_tokens", policy.integer("/refinement/max_tokens")}});
-    req.timeout_ms = policy.integer("/refinement/timeout_ms");
-    auto resp = rt.http().send(req);
-    if (!resp || resp->status != 200) {
-      log::warn(kLog, "item refinement skipped: {}", resp ? "HTTP " + std::to_string(resp->status) : resp.error().message);
+    llm::ModelRequest request;
+    request.kind = "archive.refine";
+    request.models = {llm::ModelSpec{model, "", Json::object()}};
+    request.prompt = prompt;
+    request.parameters = Json{{"temperature", policy.value("/refinement/temperature")},
+                              {"max_tokens", policy.integer("/refinement/max_tokens")}};
+    request.title = policy.text("/refinement/title");
+    request.referer = false;  // the archive pass never sent the project referer
+    request.timeout_ms = static_cast<int>(policy.integer("/refinement/timeout_ms"));
+    auto outcome = llm::use_model(services, std::move(request));
+    if (!outcome) {
+      log::warn(kLog, "item refinement skipped: {}", outcome.error().message);
       break;
     }
-    auto j = resp->json();
-    if (!j) break;
-    std::string raw;
-    try {
-      raw = j->at("choices").at(0).at("message").at("content").get<std::string>();
-    } catch (const std::exception&) {
+    const llm::VariantResult& reply = outcome->last();
+    if (!reply.ok()) {
+      log::warn(kLog, "item refinement skipped: {}",
+                reply.state == llm::State::HttpError ? "HTTP " + std::to_string(reply.http_status)
+                : reply.state == llm::State::Held    ? std::string("held by the usage guard")
+                : reply.error                        ? reply.error->message
+                                                     : std::string(llm::to_string(reply.state)));
       break;
     }
+    const std::string& raw = reply.text;
     auto parsed = SemanticLLM::parse_response_json(raw);
     if (!parsed || !parsed->is_array()) continue;
     for (const auto& e : *parsed) {
