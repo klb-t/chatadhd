@@ -2246,7 +2246,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Explain one action for an element",
-        "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them.",
+        "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them. The thresholds of those proposals come through the scope chain (installation, user, conversation like the rules) and the answer says which scope set each (extrapolation.resolved).",
         "labels": {
           "pl": "Wyjaśnij jedną akcję dla elementu"
         },
@@ -2320,7 +2320,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Propose a chain of actions",
-        "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed.",
+        "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed. The preset and every threshold resolve through the same scope chain as the rules (installation preset, the user's settings extrapolation_preset / extrapolation_bounds, rules with effect set_value on a conversation or a project); the answer carries `resolved` (which scope, rule and initiator set each value) and `scope`.",
         "labels": {
           "pl": "Zaproponuj łańcuch akcji"
         },
@@ -2399,8 +2399,8 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "Extrapolation preset (off disables proposals); default: the active preset",
-              "pl": "Preset ekstrapolacji (off wyłącza propozycje); domyślnie aktywny"
+              "en": "Extrapolation preset (off disables proposals); absent = the preset the scope chain resolves (installation, user, conversation)",
+              "pl": "Preset ekstrapolacji (off wyłącza propozycje); brak = preset, który wyznacza łańcuch zakresów (instalacja, użytkownik, rozmowa)"
             },
             "has_default": false,
             "edit": "choice:extrapolation_presets"
@@ -2460,7 +2460,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Run an action",
-        "description": "Runs an action (or a chain from actions.propose_chain) on an element: the rules of the scope are asked for every action of the plan, a confirmation pauses the run with a receipt, the usage guard's x10 hold pauses the step with its receipt, every step leaves a record with provenance. propose: true stores the plan and waits for the user's go. Answer: the run document (loom.action_run/1).",
+        "description": "Runs an action (or a chain from actions.propose_chain) on an element: the rules of the scope are asked for every action of the plan, a confirmation pauses the run with a receipt, the usage guard's x10 hold pauses the step with its receipt, every step leaves a record with provenance. propose: true stores the plan and waits for the user's go. Answer: the run document (loom.action_run/1). A completed run stores its result as graph data (a form node of the result's modality, a content node shared per source element, an action_run node) where the setting action_result_target says (graph, run_only, conversation_message; scoped like the rules); long text goes to the blob store. The document tells the nodes in result.produced.",
         "labels": {
           "pl": "Wykonaj akcję"
         },
@@ -2585,8 +2585,8 @@
             "type": "object",
             "required": false,
             "description": {
-              "en": "Where the request came from (conv_id, message_id ...); stored with the run",
-              "pl": "Skąd pochodzi żądanie (conv_id, message_id ...); zapisywane z przebiegiem"
+              "en": "Where the request came from (conv_id, message_id, lang ...); stored with the run. conv_id scopes the rules and the result target to that conversation; lang picks the language of the prompts",
+              "pl": "Skąd pochodzi żądanie (conv_id, message_id, lang ...); zapisywane z przebiegiem. conv_id wyznacza zakres reguł i celu wyniku, lang wybiera język promptów"
             },
             "has_default": false,
             "edit": "json"
@@ -2602,7 +2602,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Preview a run",
-        "description": "The plan of a run without storing or executing anything: steps, gates (allowed / needs confirmation / denied with the rule's reason and initiator), declared cost, effects, what cannot run yet.",
+        "description": "The plan of a run without storing or executing anything: steps, gates (allowed / needs confirmation / denied with the rule's reason and initiator), declared cost, effects, what cannot run yet. The answer carries `estimate`: tokens, and money where the model registry lists the price (unknown, never zero, where it does not).",
         "labels": {
           "pl": "Podgląd wykonania"
         },
