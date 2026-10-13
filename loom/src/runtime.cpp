@@ -356,6 +356,16 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   ctx.worker = impl->worker.get();
   LOOM_TRY_ASSIGN(impl->media, build_part("media", parts.media, ctx));
   ctx.media = impl->media.get();
+  // ASR/OCR model_use records go to the provenance store (subject = the usage receipt when there is one).
+  impl->media->set_provenance_sink([prov = impl->provenance.get()](const Json& record) {
+    ProvenanceRecord rec;
+    rec.subject_id = json::get_string(record, "operation_id");
+    if (rec.subject_id.empty()) rec.subject_id = json::get_string(record, "request_sha256");
+    rec.subject_kind = "model_use";
+    rec.transform = json::get_string(record, "kind", "model_use") + "@1";
+    rec.locator = record;
+    if (auto r = prov->add(std::move(rec)); !r) log::debug(kLog, "media provenance not recorded: {}", r.error().message);
+  });
   LOOM_TRY_ASSIGN(impl->importer, build_part("importer", parts.importer, ctx));
   ctx.importer = impl->importer.get();
   impl->exporter = std::make_unique<ConversationExporter>(*impl->db);
