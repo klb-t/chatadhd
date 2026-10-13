@@ -6,13 +6,15 @@
          through LoomHttp.kt (see loom/android/README.md). -->
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- The data directory (/storage/emulated/0/Documents/ChatADHD, shared
-         with the desktop app; engine/paths.py / loom/include/loom/config.h)
-         is outside app-specific storage by design (KOD != DANE: it must
-         survive an uninstall/reinstall and be reachable by other apps that
-         sync it, e.g. a file manager or a sync client). That needs the
-         legacy permissions below API 30 and All Files Access from API 30
-         on; MainActivity requests it at first run. -->
+    <!-- Where the data directory lives is a SETTING (see StorageActivity and
+         loom/android/README.md "Data directory"). New installs use the app's
+         private storage, which needs none of the permissions below. They are
+         declared for the shared option (/storage/emulated/0/Documents/ChatADHD:
+         survives uninstall, other apps can sync it, but every app with the same
+         access can read it) that existing installs keep and users may still
+         choose. That needs the legacy permissions below API 30 and All Files
+         Access from API 30 on; MainActivity asks for it only when the chosen
+         location needs it. -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
@@ -36,6 +38,11 @@
 
         <activity
             android:name=".ConnectionActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ChatADHD" />
+
+        <activity
+            android:name=".StorageActivity"
             android:exported="false"
             android:theme="@style/Theme.ChatADHD" />
 

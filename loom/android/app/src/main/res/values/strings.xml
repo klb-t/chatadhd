@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ChatADHD</string>
-    <string name="storage_permission_rationale">ChatADHD stores its conversations in Documents/ChatADHD so they survive
-        reinstalls and stay readable by the desktop app. Grant \"All files access\" to continue.</string>
+    <string name="storage_permission_rationale">Your data folder is Documents/ChatADHD (shared storage: it survives reinstalls and other tools can sync it). That needs All files access. Grant it to continue, or change the location in Connection > Data location.</string>
     <string name="storage_permission_open_settings">Open settings</string>
     <string name="menu_connection">Connection</string>
     <string name="conn_title">Connection</string>
@@ -19,4 +18,54 @@
     <string name="conn_err_http_not_lan">Plain HTTP is allowed only for LAN addresses (192.168.x.x, 10.x.x.x, *.local…).</string>
     <string name="conn_err_unreachable">Cannot reach the server: %1$s</string>
     <string name="conn_err_not_loom">This address does not look like a Loom server (HTTP %1$d).</string>
+    <!-- F2: data location (a setting), warning for shared storage, move with verification, Keystore-sealed API keys -->
+    <string name="storage_open">Data location…</string>
+    <string name="storage_banner_shared">Your data is in shared storage and other apps can read it. Tap to change.</string>
+    <string name="storage_warn_shared">Warning: this folder is in shared storage. Any app with All files access can read your conversations; API keys are protected only while the Keystore option below is on. The folder survives uninstalling the app. You can keep it or move it to private storage.</string>
+    <string name="storage_move_to_private">Move to private storage</string>
+    <string name="storage_current">Data is now in:\n%1$s\n(%2$s)</string>
+    <string name="storage_exposure_private">private to this app</string>
+    <string name="storage_exposure_app_external">app folder on the shared volume</string>
+    <string name="storage_exposure_shared">shared storage, readable by other apps</string>
+    <string name="storage_loc_private">Private storage of this app (default). Other apps cannot read it. Removed when the app is uninstalled.</string>
+    <string name="storage_loc_app_external">App folder on the shared volume (Android/data). More space. Removed on uninstall. On Android 10 and older other apps with storage access may read it.</string>
+    <string name="storage_loc_shared">Shared Documents/ChatADHD. Survives uninstall and other tools can sync it. Every app with All files access can read it.</string>
+    <string name="storage_loc_custom">Another folder:</string>
+    <string name="storage_custom_hint">Absolute path, e.g. /storage/emulated/0/MyFolder</string>
+    <string name="storage_secrets_wrap">Seal API keys with the Android Keystore. The key stays inside the system, so the sealed file is useless on another phone or after reinstalling (you enter the keys again).</string>
+    <string name="storage_apply">Save location</string>
+    <string name="storage_cancel">Cancel</string>
+    <string name="storage_cancel_copy">Cancel copying</string>
+    <string name="storage_move_title">Change data location</string>
+    <string name="storage_confirm_move">Copy all data from\n%1$s\nto\n%2$s\nand check every file (SHA-256) before switching. The old copy stays until you delete it. Keep the app open; large imports take a while.</string>
+    <string name="storage_move_copy">Copy and switch</string>
+    <string name="storage_use_empty">Use without copying</string>
+    <string name="storage_confirm_use_empty">There is nothing to copy. Start using\n%1$s\n?</string>
+    <string name="storage_confirm_use_existing">ChatADHD data already exists in\n%1$s\nNothing there will be overwritten. Switch to it?</string>
+    <string name="storage_use_existing">Switch to it</string>
+    <string name="storage_switched">Location changed. Go back to continue.</string>
+    <string name="storage_preparing">Stopping the database and preparing the copy…</string>
+    <string name="storage_copying">Copying and verifying %1$d of %2$d: %3$s</string>
+    <string name="storage_move_done">Done: %1$d files copied and verified, now in use. The old copy was left untouched. Delete it below when you are sure.</string>
+    <string name="storage_move_failed">Not moved: %1$s %2$s The old data was not changed and is still in use.</string>
+    <string name="storage_err_source_missing">the current data folder is missing</string>
+    <string name="storage_err_nested">the two folders contain each other</string>
+    <string name="storage_err_destination_invalid">the destination folder cannot be used</string>
+    <string name="storage_err_destination_not_empty">the destination is not empty (nothing was overwritten)</string>
+    <string name="storage_err_verify_failed">a copied file did not match the original</string>
+    <string name="storage_err_source_changed">a file changed while it was copied</string>
+    <string name="storage_err_cancelled">cancelled</string>
+    <string name="storage_err_copy_failed">copying failed</string>
+    <string name="storage_err_custom_empty">Enter the folder path.</string>
+    <string name="storage_err_custom_relative">The path must start with /</string>
+    <string name="storage_err_unavailable">This location is not available on this phone.</string>
+    <string name="storage_old_copy">Old copy still on this phone: %1$s</string>
+    <string name="storage_delete_old">Delete old copy</string>
+    <string name="storage_delete_old_confirm">Delete %1$s with everything in it? The data in use now is a verified copy. This cannot be undone.</string>
+    <string name="storage_deleting">Deleting…</string>
+    <string name="storage_deleted">Old copy deleted.</string>
+    <string name="storage_delete_failed">Could not delete the old copy completely.</string>
+    <string name="storage_need_all_files">This location needs All files access. Grant it in the settings that just opened, then press the button again.</string>
+    <string name="secrets_unreadable">API keys could not be unsealed (the Keystore key is gone, e.g. after reinstalling). Enter them again in Settings.</string>
+    <string name="secrets_seal_failed">API keys could not be sealed with the Keystore and stay in a plain file.</string>
 </resources>

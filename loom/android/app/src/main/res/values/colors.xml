@@ -6,4 +6,7 @@
     <color name="loom_background">#0F0F14</color>
     <color name="loom_icon_bg">#1A1D24</color>
     <color name="loom_icon_fg">#7C9CFF</color>
+    <!-- Warning that the data directory is readable by other apps (shared storage). -->
+    <color name="loom_warning_bg">#5C1A1A</color>
+    <color name="loom_warning_fg">#FFD9D4</color>
 </resources>

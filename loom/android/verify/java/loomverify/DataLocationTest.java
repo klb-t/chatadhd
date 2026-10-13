@@ -85,6 +85,9 @@ public final class DataLocationTest {
             Files.write(new File(files, ".chatadhd_data").toPath(), "x".getBytes());
             eq(DataLocationPolicy.isSafeToDeleteOldCopy(files, live), false, "ancestor of live is refused");
             eq(DataLocationPolicy.isSafeToDeleteOldCopy(null, live), false, "null old");
+            eq(DataLocationPolicy.isSame(live, new File(files, "ChatADHD/../ChatADHD")), true, "isSame through ..");
+            eq(DataLocationPolicy.isSame(live, files), false, "isSame: parent is not the same");
+            eq(DataLocationPolicy.sameOrNested(live, files), true, "sameOrNested: parent counts");
         } finally {
             deleteAll(root);
         }

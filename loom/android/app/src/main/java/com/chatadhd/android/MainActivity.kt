@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
@@ -13,6 +14,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.webkit.WebViewAssetLoader
 import com.google.android.material.snackbar.Snackbar
 
@@ -36,6 +38,10 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var bridge: LoomBridge
+    private lateinit var banner: android.widget.TextView
+    private lateinit var dataLocation: DataLocation
+    /** Keeps secrets.json sealed with the Keystore between uses (see SecretsVaultCore). */
+    private var vault: SecretsVaultCore? = null
 
     private val requestManageStorage =
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) {
@@ -45,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        dataLocation = DataLocation(this)
 
         webView = WebView(this).apply {
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -57,8 +64,25 @@ class MainActivity : AppCompatActivity() {
             setPadding(24, 8, 24, 8)
             setOnClickListener { requestConnection.launch(Intent(this@MainActivity, ConnectionActivity::class.java)) }
         }
+        // Visible warning while the data directory is in shared storage; tap = open the location screen.
+        banner = android.widget.TextView(this).apply {
+            visibility = View.GONE
+            setText(R.string.storage_banner_shared)
+            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.loom_warning_fg))
+            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.loom_warning_bg))
+            setPadding(24, 16, 24, 16)
+            setOnClickListener { requestConnection.launch(Intent(this@MainActivity, StorageActivity::class.java)) }
+        }
+        val column = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            addView(banner, android.widget.LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            addView(webView, android.widget.LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
+        }
         setContentView(android.widget.FrameLayout(this).apply {
-            addView(webView)
+            addView(column, android.widget.FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             addView(gear, android.widget.FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                 android.view.Gravity.BOTTOM or android.view.Gravity.END))
@@ -131,15 +155,16 @@ class MainActivity : AppCompatActivity() {
     private var serverBase: String? = null
 
     /**
-     * The shared data directory (/storage/emulated/0/Documents/ChatADHD,
-     * see loom/include/loom/config.h and engine/paths.py) lives outside
-     * app-specific storage on purpose, so it needs All Files Access from
-     * API 30 on. The older-device runtime read/write permission request is
-     * still a documented gap. Once this flow completes, loadApp initialises
-     * the native context before mounting the web app.
+     * Where the data lives is a setting (see [DataLocation]): the app's private storage by
+     * default, or the shared Documents/ChatADHD (kept for installs that already use it, and
+     * selectable on purpose). Only a location outside the app's own storage needs All Files
+     * Access from API 30 on, so a new install is never asked for it. The older-device runtime
+     * read/write permission request is still a documented gap. Once this flow completes,
+     * loadApp initialises the native context before mounting the web app.
      */
     private fun ensureStoragePermissionThenLoad() {
-        val needsAllFiles = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()
+        val needsAllFiles = DataLocationPolicy.needsAllFilesAccess(dataLocation.exposure(dataLocation.currentDir())) &&
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()
         if (!needsAllFiles) {
             loadApp()
             return
@@ -155,17 +180,46 @@ class MainActivity : AppCompatActivity() {
     private fun loadApp() {
         // The web client queries its backend as soon as it mounts. Initialise
         // it first; the asset handler maps /assets/web/... to assets/web/....
-        val result = org.json.JSONObject(bridge.init(null, null))
+        val dir = dataLocation.currentDir()
+        val v = dataLocation.vault(dir)
+        vault = v
+        // The core reads secrets.json once, at start: make it available if only the sealed copy exists.
+        val unseal = v.beforeInit()
+        val result = org.json.JSONObject(bridge.init(dir.absolutePath, null))
         if (!result.optBoolean("ok")) {
+            v.afterChange()
             Snackbar.make(webView, result.optJSONObject("error")?.optString("message")
                 ?: "Could not open ChatADHD data", Snackbar.LENGTH_INDEFINITE).show()
             return
         }
+        // The core now holds the secrets in memory: seal the file again, and keep doing so
+        // after every call that may save a secret.
+        val seal = v.afterChange()
+        bridge.onSecretsMayHaveChanged = { v.afterChange() }
+        showStorageNotices(dir, unseal, seal)
         webView.loadUrl(LOCAL_URL)
+    }
+
+    private fun showStorageNotices(dir: java.io.File, unseal: SecretsVaultCore.Outcome, seal: SecretsVaultCore.Outcome) {
+        banner.visibility =
+            if (DataLocationPolicy.needsWarning(dataLocation.exposure(dir))) View.VISIBLE else View.GONE
+        val message = when {
+            unseal == SecretsVaultCore.Outcome.UNSEAL_FAILED -> R.string.secrets_unreadable
+            seal == SecretsVaultCore.Outcome.SEAL_FAILED -> R.string.secrets_seal_failed
+            else -> null
+        }
+        if (message != null) Snackbar.make(webView, message, Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun onStop() {
+        // Safety net for secrets the core saved on its own (not through a bridge call we watch).
+        vault?.afterChange()
+        super.onStop()
     }
 
     override fun onDestroy() {
         if (::bridge.isInitialized) bridge.shutdown()
+        vault?.afterChange()
         super.onDestroy()
     }
 

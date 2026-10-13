@@ -124,6 +124,11 @@ public final class DataLocationPolicy {
         return !sameOrNested(old, live);
     }
 
+    /** True if both paths are the same directory (canonical comparison). */
+    public static boolean isSame(File a, File b) {
+        return isBelow(a, b) && isBelow(b, a);
+    }
+
     /** True if a == b or either is inside the other (canonical comparison). */
     public static boolean sameOrNested(File a, File b) {
         return isBelow(a, b) || isBelow(b, a);

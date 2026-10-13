@@ -35,6 +35,17 @@ class LoomBridge(webView: WebView) {
     private val executor: ExecutorService = Executors.newFixedThreadPool(4)
     private val cancellations = ConcurrentHashMap<String, () -> Unit>()
 
+    /**
+     * Set by MainActivity: called after any call that can save or delete a secret, so the
+     * Keystore-sealed copy is refreshed and the plain secrets.json goes away again (see
+     * SecretsVaultCore). Called on whichever thread made the bridge call.
+     */
+    @Volatile var onSecretsMayHaveChanged: (() -> Unit)? = null
+
+    private fun noteIfSecret(method: String) {
+        if (method == "set_secret" || method == "delete_secret") onSecretsMayHaveChanged?.invoke()
+    }
+
     init {
         LoomCallbacks.attach(webView)
     }
@@ -58,12 +69,14 @@ class LoomBridge(webView: WebView) {
 
     /** Escape hatch: any loom.h call this class has no named wrapper for yet. */
     @JavascriptInterface
-    fun invoke(method: String, argsJson: String): String = LoomNative.nativeInvoke(method, argsJson)
+    fun invoke(method: String, argsJson: String): String =
+        LoomNative.nativeInvoke(method, argsJson).also { noteIfSecret(method) }
 
     /** Web client's canonical named-argument protocol. Native also accepts
      * the positional arrays used by the older named Kotlin wrappers. */
     @JavascriptInterface
-    fun call(method: String, argsJson: String): String = LoomNative.nativeInvoke(method, argsJson)
+    fun call(method: String, argsJson: String): String =
+        LoomNative.nativeInvoke(method, argsJson).also { noteIfSecret(method) }
 
     @JavascriptInterface
     fun startStream(method: String, argsJson: String, callbackId: String) {
@@ -252,7 +265,8 @@ class LoomBridge(webView: WebView) {
     }
 
     // ── helpers ────────────────────────────────────────────────────────
-    private fun invokeArgs(method: String, vararg args: Any?): String = LoomNative.nativeInvoke(method, jsonArgs(*args))
+    private fun invokeArgs(method: String, vararg args: Any?): String =
+        LoomNative.nativeInvoke(method, jsonArgs(*args)).also { noteIfSecret(method) }
 
     private fun jsonArgs(vararg args: Any?): String {
         val arr = JSONArray()

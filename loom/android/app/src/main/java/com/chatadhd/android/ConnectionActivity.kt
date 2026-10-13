@@ -1,9 +1,11 @@
 package com.chatadhd.android
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -14,9 +16,15 @@ import kotlin.concurrent.thread
  * Connection chooser: local (data on the phone) or a Loom server account.
  * Server URL is validated with [ConnectionPolicy] and probed with
  * GET /api/auth/me (200 = signed in, 401 = server reachable, sign-in needed).
- * Local data is never touched here.
+ * Local data is never touched here. The "Data location" button opens [StorageActivity].
  */
 class ConnectionActivity : AppCompatActivity() {
+    /** The data location screen; a change there ends this screen too, so the caller restarts the local session. */
+    private val storage =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { r ->
+            if (r.resultCode == Activity.RESULT_OK) { setResult(Activity.RESULT_OK); finish() }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val prefs = ConnectionPrefs(this)
@@ -36,7 +44,11 @@ class ConnectionActivity : AppCompatActivity() {
         val status = TextView(this)
         val save = Button(this).apply { setText(R.string.conn_save) }
         val note = TextView(this).apply { setText(R.string.conn_switch_note) }
-        listOf(group, url, http, save, status, note).forEach {
+        val location = Button(this).apply {
+            setText(R.string.storage_open)
+            setOnClickListener { storage.launch(Intent(this@ConnectionActivity, StorageActivity::class.java)) }
+        }
+        listOf(group, url, http, save, status, note, location).forEach {
             root.addView(it, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
         setContentView(ScrollView(this).apply { addView(root) })

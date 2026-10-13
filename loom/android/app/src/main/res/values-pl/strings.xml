@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">ChatADHD</string>
-    <string name="storage_permission_rationale">ChatADHD przechowuje rozmowy w Documents/ChatADHD, więc przetrwają
-        reinstalację i są dostępne dla aplikacji na komputerze. Przyznaj \"Dostęp do wszystkich plików\", aby kontynuować.</string>
+    <string name="storage_permission_rationale">Katalog danych to Documents/ChatADHD (pamięć współdzielona: przetrwa reinstalację, inne narzędzia mogą go synchronizować). Wymaga to dostępu do wszystkich plików. Przyznaj go, aby kontynuować, albo zmień lokalizację w Połączenie > Lokalizacja danych.</string>
     <string name="storage_permission_open_settings">Otwórz ustawienia</string>
     <string name="menu_connection">Połączenie</string>
     <string name="conn_title">Połączenie</string>
@@ -19,4 +18,54 @@
     <string name="conn_err_http_not_lan">Zwykły HTTP jest dozwolony tylko dla adresów sieci lokalnej (192.168.x.x, 10.x.x.x, *.local…).</string>
     <string name="conn_err_unreachable">Nie można połączyć z serwerem: %1$s</string>
     <string name="conn_err_not_loom">Ten adres nie wygląda na serwer Loom (HTTP %1$d).</string>
+    <!-- F2: lokalizacja danych (ustawienie), ostrzeżenie dla pamięci współdzielonej, przenoszenie z weryfikacją, klucze API w Keystore -->
+    <string name="storage_open">Lokalizacja danych…</string>
+    <string name="storage_banner_shared">Twoje dane są we współdzielonej pamięci i mogą je czytać inne aplikacje. Dotknij, aby zmienić.</string>
+    <string name="storage_warn_shared">Uwaga: ten katalog jest we współdzielonej pamięci. Każda aplikacja z dostępem do wszystkich plików może czytać Twoje rozmowy; klucze API są chronione tylko przy włączonej opcji Keystore poniżej. Katalog przetrwa odinstalowanie aplikacji. Możesz go zostawić albo przenieść do prywatnego katalogu.</string>
+    <string name="storage_move_to_private">Przenieś do prywatnego katalogu</string>
+    <string name="storage_current">Dane są teraz w:\n%1$s\n(%2$s)</string>
+    <string name="storage_exposure_private">prywatny katalog aplikacji</string>
+    <string name="storage_exposure_app_external">katalog aplikacji na woluminie współdzielonym</string>
+    <string name="storage_exposure_shared">pamięć współdzielona, czytelna dla innych aplikacji</string>
+    <string name="storage_loc_private">Prywatny katalog tej aplikacji (domyślnie). Inne aplikacje go nie odczytają. Znika po odinstalowaniu aplikacji.</string>
+    <string name="storage_loc_app_external">Katalog aplikacji na woluminie współdzielonym (Android/data). Więcej miejsca. Znika po odinstalowaniu. Na Androidzie 10 i starszym inne aplikacje z dostępem do pamięci mogą go czytać.</string>
+    <string name="storage_loc_shared">Współdzielony Documents/ChatADHD. Przetrwa odinstalowanie, inne narzędzia mogą go synchronizować. Każda aplikacja z dostępem do wszystkich plików może go czytać.</string>
+    <string name="storage_loc_custom">Inny katalog:</string>
+    <string name="storage_custom_hint">Ścieżka bezwzględna, np. /storage/emulated/0/MojKatalog</string>
+    <string name="storage_secrets_wrap">Zabezpiecz klucze API w Android Keystore. Klucz zostaje w systemie, więc zabezpieczony plik jest bezużyteczny na innym telefonie i po reinstalacji (klucze wpisujesz wtedy ponownie).</string>
+    <string name="storage_apply">Zapisz lokalizację</string>
+    <string name="storage_cancel">Anuluj</string>
+    <string name="storage_cancel_copy">Anuluj kopiowanie</string>
+    <string name="storage_move_title">Zmiana lokalizacji danych</string>
+    <string name="storage_confirm_move">Skopiuję wszystkie dane z\n%1$s\ndo\n%2$s\ni sprawdzę każdy plik (SHA-256) przed przełączeniem. Stara kopia zostaje, dopóki jej nie usuniesz. Nie zamykaj aplikacji; duże importy trwają dłużej.</string>
+    <string name="storage_move_copy">Skopiuj i przełącz</string>
+    <string name="storage_use_empty">Użyj bez kopiowania</string>
+    <string name="storage_confirm_use_empty">Nie ma czego kopiować. Zacząć używać\n%1$s\n?</string>
+    <string name="storage_confirm_use_existing">W\n%1$s\nsą już dane ChatADHD. Nic tam nie zostanie nadpisane. Przełączyć na nie?</string>
+    <string name="storage_use_existing">Przełącz na nie</string>
+    <string name="storage_switched">Lokalizacja zmieniona. Wróć, aby kontynuować.</string>
+    <string name="storage_preparing">Zatrzymuję bazę i przygotowuję kopię…</string>
+    <string name="storage_copying">Kopiowanie i weryfikacja %1$d z %2$d: %3$s</string>
+    <string name="storage_move_done">Gotowe: %1$d plików skopiowano i sprawdzono, są teraz używane. Stara kopia nie została ruszona. Usuń ją poniżej, gdy będziesz pewien.</string>
+    <string name="storage_move_failed">Nie przeniesiono: %1$s %2$s Stare dane nie zostały zmienione i nadal są używane.</string>
+    <string name="storage_err_source_missing">brak obecnego katalogu danych</string>
+    <string name="storage_err_nested">jeden katalog zawiera drugi</string>
+    <string name="storage_err_destination_invalid">katalog docelowy nie nadaje się do użycia</string>
+    <string name="storage_err_destination_not_empty">katalog docelowy nie jest pusty (nic nie nadpisano)</string>
+    <string name="storage_err_verify_failed">skopiowany plik nie zgadza się z oryginałem</string>
+    <string name="storage_err_source_changed">plik zmienił się w trakcie kopiowania</string>
+    <string name="storage_err_cancelled">anulowano</string>
+    <string name="storage_err_copy_failed">kopiowanie nie powiodło się</string>
+    <string name="storage_err_custom_empty">Podaj ścieżkę katalogu.</string>
+    <string name="storage_err_custom_relative">Ścieżka musi zaczynać się od /</string>
+    <string name="storage_err_unavailable">Ta lokalizacja nie jest dostępna na tym telefonie.</string>
+    <string name="storage_old_copy">Stara kopia nadal na tym telefonie: %1$s</string>
+    <string name="storage_delete_old">Usuń starą kopię</string>
+    <string name="storage_delete_old_confirm">Usunąć %1$s razem z zawartością? Dane w użyciu to sprawdzona kopia. Tego nie da się cofnąć.</string>
+    <string name="storage_deleting">Usuwanie…</string>
+    <string name="storage_deleted">Stara kopia usunięta.</string>
+    <string name="storage_delete_failed">Nie udało się usunąć starej kopii w całości.</string>
+    <string name="storage_need_all_files">Ta lokalizacja wymaga dostępu do wszystkich plików. Przyznaj go w otwartych ustawieniach i naciśnij przycisk ponownie.</string>
+    <string name="secrets_unreadable">Nie udało się odczytać kluczy API (klucza Keystore już nie ma, np. po reinstalacji). Wpisz je ponownie w Ustawieniach.</string>
+    <string name="secrets_seal_failed">Nie udało się zabezpieczyć kluczy API w Keystore; zostają w zwykłym pliku.</string>
 </resources>

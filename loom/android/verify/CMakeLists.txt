@@ -109,3 +109,14 @@ foreach(_t DataLocationTest DataMigrationTest SecretsVaultTest)
     COMMAND ${LOOM_JAVA_EXE} -cp "${LOOM_VERIFY_CLASSES_DIR}" loomverify.${_t})
   set_tests_properties(android_${_t} PROPERTIES TIMEOUT 120)
 endforeach()
+
+# F2 end to end against the real core: sealing around a running context, and moving a live
+# data directory (SQLite database included) with the app's own DataMigration.
+add_test(NAME android_DataLifecycleTest
+  COMMAND ${LOOM_JAVA_EXE} -Dfile.encoding=UTF-8
+    -Djava.library.path=$<TARGET_FILE_DIR:loom_jni_host>
+    -cp "${LOOM_VERIFY_CLASSES_DIR}"
+    loomverify.DataLifecycleTest $<TARGET_FILE:loom_jni_host>)
+set_tests_properties(android_DataLifecycleTest PROPERTIES
+  ENVIRONMENT "LD_LIBRARY_PATH=${LOOM_LIBRARY_DIR}"
+  TIMEOUT 120)
