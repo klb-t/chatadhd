@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# loom/deploy/build-android.sh — builds the Loom Android shell (loom/android).
+# deploy/build-android.sh — builds the Loom Android shell (loom/android).
 #
 # Requires an Android SDK + NDK, which this sandbox does not have (see
 # loom/android/README.md's "Verification without an Android SDK" for what
@@ -27,12 +27,12 @@
 #
 # Usage:
 #   ANDROID_HOME=~/Android/Sdk JAVA_HOME=/usr/lib/jvm/java-17-openjdk \
-#     loom/deploy/build-android.sh
+#     deploy/build-android.sh
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-android_dir="$(cd -- "${script_dir}/../android" >/dev/null 2>&1 && pwd)"
-web_dist="${script_dir}/../web/dist"
+android_dir="$(cd -- "${script_dir}/../loom/android" >/dev/null 2>&1 && pwd)"
+web_dist="${script_dir}/../loom/web/dist"
 
 sdk_root="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-}}"
 if [[ -z "${sdk_root}" ]]; then

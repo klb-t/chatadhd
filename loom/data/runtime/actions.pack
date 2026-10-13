@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "actions",
   "revision": 1,
-  "description": "Catalogue of actions: ONE kind of entity. An action is atomic (implemented by code or an adapter: use_model, save, share) or composite (steps of other actions, defined here as data). Both have the same shape: declared typed inputs and outputs, effect flags and a status, plus what the matching engine (loom/include/loom/action_rules.h) needs: `requires` (traits the input element must have; a class id is a trait of its own), `produces` (traits of the output element), the two axes of GRAF_HUB_KOD_SILNIK §6 (`content_op`: what the action does to the content, `form_op`: whether it reads a form into content or expresses content in a form) and the declared `cost` (relative: 1 = one ordinary model call, not money) and `confidence` (0..1) used to rank chains. A new action fits every existing class whose traits meet its `requires` without editing the class. Which of the fitting actions are default, need confirmation or are denied is decided by the rules (data/runtime/action_rules.pack). A call to use_model may name its action; an unknown, planned or non-model action is refused before any send. Entries with port/action are reachable through loom_invoke(port, action, json); their params carry field descriptions (has_default/default/edit) and http the server route. All numbers and ops are calibration, editable in the overlay.",
+  "description": "Catalogue of actions: ONE kind of entity. An action is atomic (implemented by code or an adapter: use_model, save, share) or composite (steps of other actions, defined here as data). Both have the same shape: declared typed inputs and outputs, effect flags and a status, plus what the matching engine (loom/include/loom/action_rules.h) needs: `requires` (traits the input element must have; a class id is a trait of its own), `produces` (traits of the output element), the two axes of GRAF_HUB_KOD_SILNIK §6 (`content_op`: what the action does to the content, `form_op`: whether it reads a form into content or expresses content in a form) and the declared `cost` (relative: 1 = one ordinary model call, not money) and `confidence` (0..1) used to rank chains. A new action fits every existing class whose traits meet its `requires` without editing the class. Which of the fitting actions are default, need confirmation or are denied is decided by the rules (data/runtime/action_rules.pack). A call to use_model may name its action; an unknown, planned or non-model action is refused before any send. Entries with port/action are reachable through loom_invoke(port, action, json); their params carry field descriptions (has_default/default/edit) and http the server route. All numbers and ops are calibration, editable in the overlay. Interpreted composites (consumer empty) are run by the interpreter (include/loom/action_run.h): their steps carry the prompts, models, variants and conditions as data.",
   "defaults": {
     "schema": "loom.action_catalogue/1",
     "actions": {
@@ -413,9 +413,9 @@
       "input.route_intent": {
         "id": "input.route_intent",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Route user input",
-        "description": "Decides whether user input is a message or an interface command; for a command, analyses feasibility and cost.",
+        "description": "Decides whether user input is a message or an interface command; for a command, finds the action and the element and analyses feasibility, cost and what needs confirmation. Method is a setting (intent_routing_method): heuristic (local and free: explicit command syntax and a phrase lexicon from data, no model call), model (one use_model call with the configured model, guarded like any other) or off. Data: runtime/intent_routing.pack; the phrases of an action are on the action (`phrases`).",
         "steps": [
           {
             "action": "use_model"
@@ -446,7 +446,7 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "loom/src/actions/route.cpp"
       },
       "script.call": {
         "id": "script.call",
@@ -690,6 +690,16 @@
         "http": {
           "verb": "GET",
           "path": "/api/storage/status"
+        },
+        "phrases": {
+          "en": [
+            "storage status",
+            "show storage"
+          ],
+          "pl": [
+            "stan magazyn*",
+            "pokaż magazyn*"
+          ]
         }
       },
       "storage.probe": {
@@ -962,6 +972,14 @@
         "http": {
           "verb": "POST",
           "path": "/api/storage/copy"
+        },
+        "phrases": {
+          "en": [
+            "copy category"
+          ],
+          "pl": [
+            "skopiuj kategori*"
+          ]
         }
       },
       "storage.move": {
@@ -1113,6 +1131,18 @@
         "http": {
           "verb": "POST",
           "path": "/api/storage/backup"
+        },
+        "phrases": {
+          "en": [
+            "back up",
+            "backup"
+          ],
+          "pl": [
+            "kopia zapasowa",
+            "zrób kopię",
+            "zrob kopie",
+            "backup"
+          ]
         }
       },
       "knowledge.propose_semantics": {
@@ -1290,7 +1320,22 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "transcribe",
+            "transcript"
+          ],
+          "pl": [
+            "transkrybuj*",
+            "transkrypcj*",
+            "przepisz nagranie"
+          ]
+        },
+        "planned_reason": {
+          "en": "Needs a speech-recognition adapter in use_model; it is being added separately (speech recognition through use_model).",
+          "pl": "Wymaga adaptera rozpoznawania mowy w use_model; powstaje osobno (rozpoznawanie mowy przez use_model)."
+        }
       },
       "describe_image": {
         "id": "describe_image",
@@ -1331,7 +1376,24 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "describe image",
+            "describe picture",
+            "describe photo"
+          ],
+          "pl": [
+            "opisz obraz*",
+            "opisz zdjęcie",
+            "opisz zdjecie",
+            "opisz rysunek"
+          ]
+        },
+        "planned_reason": {
+          "en": "No adapter of use_model accepts an image as input yet (the chat adapters take text and json parts only), so a model cannot be shown the picture.",
+          "pl": "Żaden adapter use_model nie przyjmuje jeszcze obrazu na wejściu (adaptery czatu biorą tylko części tekstowe i json), więc modelowi nie da się pokazać obrazu."
+        }
       },
       "ocr": {
         "id": "ocr",
@@ -1366,12 +1428,29 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "ocr",
+            "read text from image",
+            "extract text from image"
+          ],
+          "pl": [
+            "ocr",
+            "odczytaj tekst",
+            "wyciągnij tekst",
+            "wyciagnij tekst"
+          ]
+        },
+        "planned_reason": {
+          "en": "Needs an OCR adapter in use_model; the OCR providers exist only for screenshot import.",
+          "pl": "Wymaga adaptera OCR w use_model; dostawcy OCR istnieją tylko dla importu zrzutów ekranu."
+        }
       },
       "summarise": {
         "id": "summarise",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Summarise",
         "description": "Condense a text content, keeping what matters.",
         "labels": {
@@ -1379,7 +1458,14 @@
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": "You condense texts faithfully: keep what matters, drop what does not, add nothing of your own. Answer in the language of the text.",
+              "prompt": "Summarise the text above.",
+              "parameters": {
+                "temperature": 0.3
+              }
+            }
           }
         ],
         "inputs": [
@@ -1407,20 +1493,69 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "summarise",
+            "summarize",
+            "sum up",
+            "tldr",
+            "condense",
+            "recap"
+          ],
+          "pl": [
+            "streść",
+            "streść*",
+            "streszcz*",
+            "podsumuj*",
+            "podsumow*",
+            "skróć",
+            "skróc*"
+          ]
+        }
       },
       "translate": {
         "id": "translate",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Translate",
-        "description": "Carry a text content into another language.",
+        "description": "Carry a text content into another language, keeping its meaning, tone and formatting. The target language is the argument target_language (default: the language the command was written in).",
         "labels": {
           "pl": "Przetłumacz"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You are a precise translator. Translate faithfully: keep the meaning, tone, formatting, names and numbers. Output only the translation, with no commentary.",
+                  "pl": "Jesteś precyzyjnym tłumaczem. Tłumacz wiernie: zachowaj sens, ton, formatowanie, nazwy własne i liczby. Podaj samo tłumaczenie, bez komentarzy."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Translate the text above into {language}.",
+                    "pl": "Przetłumacz powyższy tekst na język: {language}."
+                  }
+                },
+                "vars": {
+                  "language": {
+                    "$arg": "target_language",
+                    "default": {
+                      "$localized": {
+                        "en": "English",
+                        "pl": "polski"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.2
+              }
+            }
           }
         ],
         "inputs": [
@@ -1447,7 +1582,29 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "translate"
+          ],
+          "pl": [
+            "przetłumacz*",
+            "przetlumacz*",
+            "tłumacz*"
+          ]
+        },
+        "params": [
+          {
+            "name": "target_language",
+            "type": "string",
+            "required": false,
+            "default": "the language of the command (English or Polish)",
+            "description": {
+              "en": "Language to translate into, in words (\"German\", \"niemiecki\").",
+              "pl": "Język, na który przetłumaczyć, słowami („niemiecki”, „German”)."
+            }
+          }
+        ]
       },
       "elaborate": {
         "id": "elaborate",
@@ -1487,20 +1644,62 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "elaborate",
+            "expand on",
+            "flesh out"
+          ],
+          "pl": [
+            "rozwiń",
+            "rozwin*",
+            "dopowiedz*"
+          ]
+        }
       },
       "parody": {
         "id": "parody",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Parody",
-        "description": "Change the tone or style of a text content while keeping its subject.",
+        "description": "Change the tone or style of a text content while keeping its subject and recognisable structure. The style is the argument style.",
         "labels": {
           "pl": "Sparodiuj"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You write parodies. Keep the subject and the recognisable structure of the original, exaggerate its manner in the requested style for comic effect, and add no commentary. Answer in the language of the text.",
+                  "pl": "Piszesz parodie. Zachowaj temat i rozpoznawalną strukturę oryginału, wyolbrzymiaj jego manierę w zadanym stylu dla efektu komicznego i nie dodawaj komentarzy. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Write a parody of the text above in this style: {style}.",
+                    "pl": "Napisz parodię powyższego tekstu w tym stylu: {style}."
+                  }
+                },
+                "vars": {
+                  "style": {
+                    "$arg": "style",
+                    "default": {
+                      "$localized": {
+                        "en": "light, good-natured satire",
+                        "pl": "lekka, życzliwa satyra"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.9
+              }
+            }
           }
         ],
         "inputs": [
@@ -1527,7 +1726,30 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "parody",
+            "parodise",
+            "parodize"
+          ],
+          "pl": [
+            "sparodiuj*",
+            "parodi*"
+          ]
+        },
+        "params": [
+          {
+            "name": "style",
+            "type": "string",
+            "required": false,
+            "default": "light, good-natured satire",
+            "description": {
+              "en": "The style to parody in (\"a pirate\", \"corporate speak\").",
+              "pl": "Styl parodii („pirat”, „korpomowa”)."
+            }
+          }
+        ]
       },
       "critique": {
         "id": "critique",
@@ -1568,7 +1790,20 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "critique",
+            "criticise",
+            "criticize"
+          ],
+          "pl": [
+            "skrytykuj*",
+            "krytyk*",
+            "oceń",
+            "ocen*"
+          ]
+        }
       },
       "combine": {
         "id": "combine",
@@ -1609,26 +1844,94 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "combine",
+            "merge",
+            "put together"
+          ],
+          "pl": [
+            "połącz*",
+            "polacz*",
+            "zestaw*"
+          ]
+        }
       },
       "depict": {
         "id": "depict",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Depict as an image",
-        "description": "Express a text content as an image.",
+        "description": "Express a text content as an image: a chat model first writes an image prompt that depicts the text (in the style given), then the image model paints it (the openai_images adapter). Needs an image model and the provider that serves it: arguments model and provider, or the settings image_model and image_provider.",
         "labels": {
           "pl": "Namaluj"
         },
         "steps": [
           {
-            "action": "use_model"
+            "id": "scene",
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You write prompts for an image generator. Describe ONE concrete scene that depicts the text: subject, setting, composition, lighting, mood and the requested style. At most 120 words. Output only the prompt, in English.",
+                  "pl": "Piszesz prompty dla generatora obrazów. Opisz JEDNĄ konkretną scenę przedstawiającą tekst: temat, miejsce, kompozycję, światło, nastrój i zadany styl. Najwyżej 120 słów. Podaj sam prompt, po angielsku."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Write an image prompt that depicts the text above. Style: {style}.",
+                    "pl": "Napisz prompt obrazu przedstawiający powyższy tekst. Styl: {style}."
+                  }
+                },
+                "vars": {
+                  "style": {
+                    "$arg": "style",
+                    "default": "a clear, detailed illustration"
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.7
+              }
+            },
+            "estimate": {
+              "output_tokens": {
+                "low": 40,
+                "high": 300
+              }
+            }
+          },
+          {
+            "id": "paint",
+            "action": "use_model",
+            "with": {
+              "model": {
+                "$arg": "model"
+              },
+              "provider": {
+                "$arg": "provider"
+              },
+              "wants": [
+                "image"
+              ],
+              "parameters": {
+                "n": 1,
+                "size": {
+                  "$arg": "size",
+                  "default": "1024x1024"
+                },
+                "response_format": "b64_json"
+              }
+            }
           }
         ],
         "inputs": [
           "text"
         ],
         "outputs": [
+          "text",
           "image"
         ],
         "requires": [
@@ -1649,26 +1952,144 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "draw",
+            "paint",
+            "depict",
+            "make image",
+            "make picture",
+            "create image",
+            "generate image",
+            "turn image"
+          ],
+          "pl": [
+            "narysuj*",
+            "namaluj*",
+            "zrób obraz*",
+            "zrób rysunek",
+            "wygeneruj obraz*",
+            "stwórz obraz*",
+            "przedstaw*"
+          ]
+        },
+        "params": [
+          {
+            "name": "model",
+            "type": "string",
+            "required": true,
+            "setting": "image_model",
+            "description": {
+              "en": "The image model.",
+              "pl": "Model obrazów."
+            }
+          },
+          {
+            "name": "provider",
+            "type": "string",
+            "required": true,
+            "setting": "image_provider",
+            "description": {
+              "en": "The provider (manifest id, adapter openai_images) that serves the image model.",
+              "pl": "Dostawca (id manifestu, adapter openai_images) obsługujący model obrazów."
+            }
+          },
+          {
+            "name": "style",
+            "type": "string",
+            "required": false,
+            "default": "a clear, detailed illustration",
+            "description": {
+              "en": "The style of the image (\"watercolour\", \"pixel art\").",
+              "pl": "Styl obrazu („akwarela”, „pixel art”)."
+            }
+          },
+          {
+            "name": "size",
+            "type": "string",
+            "required": false,
+            "default": "1024x1024",
+            "description": {
+              "en": "Image size as the provider names it.",
+              "pl": "Rozmiar obrazu w nazwach dostawcy."
+            }
+          }
+        ]
       },
       "narrate": {
         "id": "narrate",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Read aloud",
-        "description": "Express a text content as speech.",
+        "description": "Express a text content as speech: first the text is rewritten as a narration for reading aloud (text), then, when a speech model is set (argument or setting speech_model, with speech_provider), that narration is spoken (audio). Without a speech model the result is the narration text; no speech adapter is registered by default.",
         "labels": {
           "pl": "Przeczytaj na głos"
         },
         "steps": [
           {
-            "action": "use_model"
+            "id": "script",
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You prepare texts for reading aloud. Rewrite the text as a spoken narration: short sentences, no markup or lists, numbers and abbreviations written out in words, a clear rhythm. Keep the meaning and the language. Output only the narration.",
+                  "pl": "Przygotowujesz teksty do czytania na głos. Przepisz tekst jako narrację mówioną: krótkie zdania, bez znaczników i list, liczby i skróty zapisane słowami, wyraźny rytm. Zachowaj sens i język. Podaj samą narrację."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Prepare the text above for narration. Tone: {tone}.",
+                    "pl": "Przygotuj powyższy tekst do narracji. Ton: {tone}."
+                  }
+                },
+                "vars": {
+                  "tone": {
+                    "$arg": "tone",
+                    "default": {
+                      "$localized": {
+                        "en": "calm and clear",
+                        "pl": "spokojny i wyraźny"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.5
+              }
+            }
+          },
+          {
+            "id": "speak",
+            "action": "use_model",
+            "when": {
+              "arg": "speech_model"
+            },
+            "with": {
+              "model": {
+                "$arg": "speech_model"
+              },
+              "provider": {
+                "$arg": "speech_provider",
+                "default": ""
+              },
+              "wants": [
+                "audio"
+              ],
+              "parameters": {
+                "$arg": "speech_parameters",
+                "default": {}
+              }
+            }
           }
         ],
         "inputs": [
           "text"
         ],
         "outputs": [
+          "text",
           "audio"
         ],
         "requires": [
@@ -1689,7 +2110,61 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "phrases": {
+          "en": [
+            "read aloud",
+            "read out",
+            "narrate"
+          ],
+          "pl": [
+            "przeczytaj na głos",
+            "przeczytaj naglos",
+            "opowiedz*",
+            "narracj*"
+          ]
+        },
+        "params": [
+          {
+            "name": "tone",
+            "type": "string",
+            "required": false,
+            "default": "calm and clear",
+            "description": {
+              "en": "Tone of the narration.",
+              "pl": "Ton narracji."
+            }
+          },
+          {
+            "name": "speech_model",
+            "type": "string",
+            "required": false,
+            "setting": "speech_model",
+            "description": {
+              "en": "A model that speaks (needs an adapter that produces audio). Without it the result is the narration text.",
+              "pl": "Model, który mówi (wymaga adaptera dającego dźwięk). Bez niego wynikiem jest tekst narracji."
+            }
+          },
+          {
+            "name": "speech_provider",
+            "type": "string",
+            "required": false,
+            "setting": "speech_provider",
+            "description": {
+              "en": "The provider (manifest id) of the speech model.",
+              "pl": "Dostawca (id manifestu) modelu mowy."
+            }
+          },
+          {
+            "name": "speech_parameters",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Extra parameters of the speech request (voice, format ...), as the provider names them.",
+              "pl": "Dodatkowe parametry żądania mowy (głos, format ...) w nazwach dostawcy."
+            }
+          }
+        ]
       },
       "actions.for": {
         "id": "actions.for",
@@ -1771,7 +2246,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Explain one action for an element",
-        "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them.",
+        "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them. The thresholds of those proposals come through the scope chain (installation, user, conversation like the rules) and the answer says which scope set each (extrapolation.resolved).",
         "labels": {
           "pl": "Wyjaśnij jedną akcję dla elementu"
         },
@@ -1845,7 +2320,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Propose a chain of actions",
-        "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed.",
+        "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed. The preset and every threshold resolve through the same scope chain as the rules (installation preset, the user's settings extrapolation_preset / extrapolation_bounds, rules with effect set_value on a conversation or a project); the answer carries `resolved` (which scope, rule and initiator set each value) and `scope`.",
         "labels": {
           "pl": "Zaproponuj łańcuch akcji"
         },
@@ -1924,8 +2399,8 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "Extrapolation preset (off disables proposals); default: the active preset",
-              "pl": "Preset ekstrapolacji (off wyłącza propozycje); domyślnie aktywny"
+              "en": "Extrapolation preset (off disables proposals); absent = the preset the scope chain resolves (installation, user, conversation)",
+              "pl": "Preset ekstrapolacji (off wyłącza propozycje); brak = preset, który wyznacza łańcuch zakresów (instalacja, użytkownik, rozmowa)"
             },
             "has_default": false,
             "edit": "choice:extrapolation_presets"
@@ -1979,6 +2454,709 @@
           "verb": "POST",
           "path": "/api/actions/propose_chain"
         }
+      },
+      "actions.run": {
+        "id": "actions.run",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Run an action",
+        "description": "Runs an action (or a chain from actions.propose_chain) on an element: the rules of the scope are asked for every action of the plan, a confirmation pauses the run with a receipt, the usage guard's x10 hold pauses the step with its receipt, every step leaves a record with provenance. propose: true stores the plan and waits for the user's go. Answer: the run document (loom.action_run/1). A completed run stores its result as graph data (a form node of the result's modality, a content node shared per source element, an action_run node) where the setting action_result_target says (graph, run_only, conversation_message; scoped like the rules); long text goes to the blob store. The document tells the nodes in result.produced.",
+        "labels": {
+          "pl": "Wykonaj akcję"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "port": "actions",
+        "action": "run",
+        "params": [
+          {
+            "name": "action",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The action to run (exactly one of action and chain)",
+              "pl": "Akcja do wykonania (dokładnie jedno z: action, chain)"
+            },
+            "has_default": false,
+            "edit": "choice:actions"
+          },
+          {
+            "name": "chain",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "A chain of steps [{\"action\", \"with\"?}] or a chain object from actions.propose_chain",
+              "pl": "Łańcuch kroków [{\"action\", \"with\"?}] albo obiekt łańcucha z actions.propose_chain"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "element",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "The element: a bare id (m_..., c_..., a blob hash, a settings key), a class id, or {\"class\", \"traits\", \"attrs\", \"id\"}",
+              "pl": "Element: goły identyfikator (m_..., c_..., skrót blobu, klucz ustawienia), id klasy albo {\"class\", \"traits\", \"attrs\", \"id\"}"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "args",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Arguments of the action ({\"$arg\": name} in its steps)",
+              "pl": "Argumenty akcji ({\"$arg\": nazwa} w jej krokach)"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Scope level of the scopes chain, or an object {level: instance id}; default: the most specific level",
+              "pl": "Poziom łańcucha zakresów albo obiekt {poziom: id}; domyślnie najbardziej szczegółowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "propose",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Store the plan and execute nothing until the user says yes",
+              "pl": "Zapisz plan i nic nie wykonuj, dopóki użytkownik nie zatwierdzi"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "The caller accepts the confirmations the rules ask for in this plan (x10 usage confirmations are never covered)",
+              "pl": "Wywołujący akceptuje potwierdzenia wymagane przez zasady w tym planie (potwierdzenia ×10 nigdy nie są objęte)"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "ref",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Who or what confirms (recorded in the run)",
+              "pl": "Kto lub co potwierdza (zapisywane w przebiegu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Where the request came from (conv_id, message_id, lang ...); stored with the run. conv_id scopes the rules and the result target to that conversation; lang picks the language of the prompts",
+              "pl": "Skąd pochodzi żądanie (conv_id, message_id, lang ...); zapisywane z przebiegiem. conv_id wyznacza zakres reguł i celu wyniku, lang wybiera język promptów"
+            },
+            "has_default": false,
+            "edit": "json"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/run"
+        }
+      },
+      "actions.preview": {
+        "id": "actions.preview",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Preview a run",
+        "description": "The plan of a run without storing or executing anything: steps, gates (allowed / needs confirmation / denied with the rule's reason and initiator), declared cost, effects, what cannot run yet. The answer carries `estimate`: tokens, and money where the model registry lists the price (unknown, never zero, where it does not).",
+        "labels": {
+          "pl": "Podgląd wykonania"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "port": "actions",
+        "action": "preview",
+        "params": [
+          {
+            "name": "action",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The action",
+              "pl": "Akcja"
+            },
+            "has_default": false,
+            "edit": "choice:actions"
+          },
+          {
+            "name": "chain",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "A chain of steps",
+              "pl": "Łańcuch kroków"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "element",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "The element: a bare id (m_..., c_..., a blob hash, a settings key), a class id, or {\"class\", \"traits\", \"attrs\", \"id\"}",
+              "pl": "Element: goły identyfikator (m_..., c_..., skrót blobu, klucz ustawienia), id klasy albo {\"class\", \"traits\", \"attrs\", \"id\"}"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "args",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Arguments of the action ({\"$arg\": name} in its steps)",
+              "pl": "Argumenty akcji ({\"$arg\": nazwa} w jej krokach)"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Scope level of the scopes chain, or an object {level: instance id}; default: the most specific level",
+              "pl": "Poziom łańcucha zakresów albo obiekt {poziom: id}; domyślnie najbardziej szczegółowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/preview"
+        }
+      },
+      "actions.confirm": {
+        "id": "actions.confirm",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Answer a pending question of a run",
+        "description": "Answers the question a run is paused on (a proposal, a confirmation the rules ask for, or the usage guard's x10 hold). The receipt must be the pending one (pending.receipt_id); a stale or invented receipt is refused. approved: true continues the run, false drops it (and records the refusal with the usage guard).",
+        "labels": {
+          "pl": "Odpowiedz na pytanie wstrzymanego przebiegu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "port": "actions",
+        "action": "confirm",
+        "params": [
+          {
+            "name": "run_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the run (ar_...)",
+              "pl": "Identyfikator przebiegu (ar_...)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "approved",
+            "type": "boolean",
+            "required": true,
+            "description": {
+              "en": "Yes or no",
+              "pl": "Tak albo nie"
+            },
+            "has_default": false,
+            "edit": "toggle"
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The pending receipt of the run",
+              "pl": "Oczekujące pokwitowanie przebiegu"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "ref",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Who answered (recorded)",
+              "pl": "Kto odpowiedział (zapisywane)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/confirm"
+        }
+      },
+      "actions.cancel": {
+        "id": "actions.cancel",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Cancel a run",
+        "description": "Stops a run: a proposed or paused run becomes cancelled and nothing more runs; a running one stops at the next step boundary or inside its model call.",
+        "labels": {
+          "pl": "Anuluj przebieg"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "port": "actions",
+        "action": "cancel",
+        "params": [
+          {
+            "name": "run_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the run (ar_...)",
+              "pl": "Identyfikator przebiegu (ar_...)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "ref",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Who cancelled (recorded)",
+              "pl": "Kto anulował (zapisywane)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/cancel"
+        }
+      },
+      "actions.status": {
+        "id": "actions.status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Status of a run",
+        "description": "A run document (steps, outputs, provenance, pending question) by id, or a list of runs: {list: true, status?, conv_id?, limit?}.",
+        "labels": {
+          "pl": "Stan przebiegu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "port": "actions",
+        "action": "status",
+        "params": [
+          {
+            "name": "run_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Id of the run (or use list)",
+              "pl": "Identyfikator przebiegu (albo list)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "list",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "List recent runs instead",
+              "pl": "Wypisz ostatnie przebiegi"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "status",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With list: only runs in this status",
+              "pl": "Z list: tylko przebiegi w tym stanie"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With list: only runs started from this conversation",
+              "pl": "Z list: tylko przebiegi z tej rozmowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "With list: how many",
+              "pl": "Z list: ile"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/status"
+        }
+      },
+      "chat.route": {
+        "id": "chat.route",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Route a chat input",
+        "description": "Decides whether a chat input is a message or a command to the interface (R54) and, for a command, which action on which element, with the plan, cost estimate and what needs confirmation. Nothing is stored or executed. The same decision is made for every input of the chat window before it is sent.",
+        "labels": {
+          "pl": "Rozpoznaj wejście z okienka rozmowy"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "user_input"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/route.cpp",
+        "port": "chat",
+        "action": "route",
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The input",
+              "pl": "Wejście"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation it is typed in (\"this conversation\" refers to it)",
+              "pl": "Rozmowa, w której je wpisano (\"ta rozmowa\" odnosi się do niej)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "method",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Override the routing method for this call: off, heuristic or model",
+              "pl": "Nadpisz metodę rozpoznawania dla tego wywołania: off, heuristic albo model"
+            },
+            "has_default": false,
+            "edit": "choice:intent_routing_methods"
+          },
+          {
+            "name": "lang",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the texts (en, pl); default: the language of the input",
+              "pl": "Język tekstów (en, pl); domyślnie język wejścia"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/chat/route"
+        }
+      },
+      "settings.set": {
+        "id": "settings.set",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Change a setting",
+        "description": "Sets one setting (config.json, or secrets.json for a credential). The value is read as the setting's type. The edit rules of the field apply as for any edit (a deny rule refuses, a confirmation rule asks) and so does the rule that keeps credentials out of the conversation; the x10 usage policy keeps its own confirmation.",
+        "labels": {
+          "pl": "Zmień ustawienie"
+        },
+        "phrases": {
+          "en": [
+            "set",
+            "change",
+            "update",
+            "switch"
+          ],
+          "pl": [
+            "ustaw*",
+            "zmień",
+            "zmien*",
+            "przełącz*",
+            "przelacz*"
+          ]
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "settings_field"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "gate_as": [
+          "edit"
+        ],
+        "element_from_arg": "key",
+        "params": [
+          {
+            "name": "key",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The setting (see settings fields)",
+              "pl": "Ustawienie (zob. pola ustawień)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The new value (JSON for objects, arrays, numbers and booleans)",
+              "pl": "Nowa wartość (JSON dla obiektów, tablic, liczb i wartości logicznych)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ]
+      },
+      "settings.get": {
+        "id": "settings.get",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show a setting",
+        "description": "The value of one setting with its default and edit rule. A credential is reported as set or not set, never shown.",
+        "labels": {
+          "pl": "Pokaż ustawienie"
+        },
+        "phrases": {
+          "en": [
+            "show",
+            "what is",
+            "get",
+            "display"
+          ],
+          "pl": [
+            "pokaż",
+            "pokaz*",
+            "jaka jest",
+            "jakie jest",
+            "sprawdź",
+            "sprawdz*"
+          ]
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "settings_field"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "element_from_arg": "key",
+        "params": [
+          {
+            "name": "key",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The setting",
+              "pl": "Ustawienie"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ]
       }
     }
   },
@@ -2040,16 +3218,46 @@
             },
             "steps": {
               "type": "array",
-              "description": "Composite only: the actions run in order.",
+              "description": "Composite only: the steps, run in order. Step: {id?, action, with?, when?, variants?, variant_mode?, on_failure?}; see runtime/action_run.pack for the placeholders and conditions.",
               "items": {
                 "type": "object",
                 "required": [
                   "action"
                 ],
                 "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
                   "action": {
                     "type": "string",
                     "minLength": 1
+                  },
+                  "with": {
+                    "type": "object"
+                  },
+                  "when": {
+                    "type": "object"
+                  },
+                  "variants": {
+                    "type": "array",
+                    "items": {
+                      "type": "object"
+                    }
+                  },
+                  "variant_mode": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "first_success"
+                    ]
+                  },
+                  "on_failure": {
+                    "type": "string",
+                    "enum": [
+                      "stop",
+                      "continue"
+                    ]
                   }
                 },
                 "additionalProperties": true
@@ -2155,6 +3363,39 @@
             "consumer": {
               "type": "string",
               "description": "Where the action is called from today."
+            },
+            "gate_as": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Further action names whose rules also apply to this action (the most restrictive decision wins): settings.set is gated as `edit`, so the edit rules of a settings field apply to it."
+            },
+            "element_from_arg": {
+              "type": "string",
+              "description": "The argument that is the element when the caller names none (settings.set: `key` is the settings field)."
+            },
+            "result_from": {
+              "type": "string",
+              "description": "Composite only: the id of the step whose output is the result (default: the last step)."
+            },
+            "phrases": {
+              "type": "object",
+              "description": "Words that name this action in a chat input, per language: {en: [...], pl: [...]}. A phrase is space-separated words, all of which must occur near the start of the input (any order); a word ending in * matches any continuation. Used by input.route_intent; a new action brings its own phrases."
+            },
+            "planned_reason": {
+              "type": "object",
+              "description": "Planned only: why it is not callable yet, per language {en, pl}; shown instead of a bare \"planned\".",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "params": {
+              "type": "array",
+              "description": "The arguments of the action: {name, type, required?, default?, setting?, description {en, pl}}. An argument the caller leaves out is filled from the config key `setting` (when it is set), and a required one that is still missing makes the plan unfeasible, saying which; `default` here documents the default that the steps carry.",
+              "items": {
+                "type": "object"
+              }
             }
           },
           "additionalProperties": true

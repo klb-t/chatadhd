@@ -332,6 +332,63 @@ R"loom_onboard({
           }
         },
         {
+          "id": "presentation.action_proposal/v1",
+          "key": "presentation.action_proposal",
+          "area": "presentation/action_proposal",
+          "revision": 1,
+          "label": "Texts of a command proposed in the conversation window (R54): the controls under the proposal message and the states of an answered one; texts only, they do not change what runs",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "action_proposal",
+            "locales": {
+              "en": {
+                "title": "Command waiting for your answer",
+                "title_confirmation": "The rules ask you to confirm",
+                "plan": "Plan: {{plan}}",
+                "cost": "Estimate: {{cost}} (relative, 1 = one ordinary model call), model calls: {{calls}}, bytes sent: {{bytes}}",
+                "confirm_needed": "Needs confirmation: {{what}}",
+                "unknown": "unknown",
+                "confirm": "Run it",
+                "reject": "Drop it",
+                "usage_hint": "The model call is held by the usage guard; confirm it below.",
+                "answer_failed": "The answer could not be sent ({{reason}}).",
+                "rejected": "Dropped. Nothing was executed.",
+                "status_executed": "Done",
+                "status_rejected": "Dropped",
+                "status_denied": "Not allowed by the rules",
+                "status_unavailable": "Cannot run yet",
+                "status_waiting": "Waiting for an answer",
+                "status_stale": "No longer valid",
+                "cost_money": "Money: about {{low}} to {{high}} {{currency}} (from the size of the input and the model's listed price; not a limit)",
+                "cost_money_unknown": "Money: unknown ({{reason}}); do not read it as free",
+                "produced": "Saved in the graph ({{target}}): {{nodes}}"
+              },
+              "pl": {
+                "title": "Polecenie czeka na Twoją odpowiedź",
+                "title_confirmation": "Zasady każą Cię zapytać o potwierdzenie",
+                "plan": "Plan: {{plan}}",
+                "cost": "Szacunek: {{cost}} (względny, 1 = jedno zwykłe wywołanie modelu), wywołań modelu: {{calls}}, wysłanych bajtów: {{bytes}}",
+                "confirm_needed": "Wymaga potwierdzenia: {{what}}",
+                "unknown": "nieznane",
+                "confirm": "Wykonaj",
+                "reject": "Odrzuć",
+                "usage_hint": "Wywołanie modelu wstrzymał strażnik zużycia; potwierdź je poniżej.",
+                "answer_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+                "rejected": "Odrzucone. Nic nie wykonano.",
+                "status_executed": "Gotowe",
+                "status_rejected": "Odrzucone",
+                "status_denied": "Zasady na to nie pozwalają",
+                "status_unavailable": "Nie można jeszcze wykonać",
+                "status_waiting": "Czeka na odpowiedź",
+                "status_stale": "Nieaktualne",
+                "cost_money": "Pieniądze: ok. {{low}} do {{high}} {{currency}} (z rozmiaru wejścia i ceny modelu z cennika; nie limit)",
+                "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
+                "produced": "Zapisano w grafie ({{target}}): {{nodes}}"
+              }
+            }
+          }
+        },
+        {
           "id": "presentation.semantic_queue/v1",
           "key": "presentation.semantic_queue",
           "area": "presentation/semantic_queue",
@@ -1172,7 +1229,8 @@ R"loom_onboard({
       "revision": 1,
       "label": "Local source view labels; local reading does not authorize model disclosure",
       "value": {
-        "schema": "loom.presentation_feature/1",
+)loom_onboard",
+R"loom_onboard(        "schema": "loom.presentation_feature/1",
         "feature": "conversation_view",
         "locales": {
           "en": {
@@ -1215,8 +1273,7 @@ R"loom_onboard({
             "local_read": "Odczytaj źródła lokalnie",
             "reading": "Odczytywanie źródeł…",
             "read_scope": "Ta czynność odczytuje dołączone źródło na potrzeby lokalnego widoku. Nie udziela zgody na wysłanie treści do modelu ani innej usługi. Adapter może odczytać cały kontener.",
-)loom_onboard",
-R"loom_onboard(            "readonly": "Ta wiadomość jest widokiem źródła przypiętym do wersji, tylko do odczytu. Edycja, odtwarzanie zapisanej wersji i wysyłanie historii źródła są niedostępne.",
+            "readonly": "Ta wiadomość jest widokiem źródła przypiętym do wersji, tylko do odczytu. Edycja, odtwarzanie zapisanej wersji i wysyłanie historii źródła są niedostępne.",
             "egress_unavailable": "Wysyłanie historii źródła jest niedostępne: lokalny odczyt nie ustanawia zgody na ujawnienie modelowi.",
             "details": "Wersje źródeł, wyniki dostępu i dowody odczytu",
             "unavailable": "Widok źródła jest niedostępny. Zapisane wiadomości i jawne statusy źródeł pozostają widoczne.",
@@ -1321,6 +1378,63 @@ R"loom_onboard(            "readonly": "Ta wiadomość jest widokiem źródła p
             "restored": "Twój tekst wrócił do pola wiadomości.",
             "rejected": "Odrzucono. Nic nie wysłano.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.action_proposal/v1",
+      "key": "presentation.action_proposal",
+      "area": "presentation/action_proposal",
+      "revision": 1,
+      "label": "Texts of a command proposed in the conversation window (R54): the controls under the proposal message and the states of an answered one; texts only, they do not change what runs",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "action_proposal",
+        "locales": {
+          "en": {
+            "title": "Command waiting for your answer",
+            "title_confirmation": "The rules ask you to confirm",
+            "plan": "Plan: {{plan}}",
+            "cost": "Estimate: {{cost}} (relative, 1 = one ordinary model call), model calls: {{calls}}, bytes sent: {{bytes}}",
+            "confirm_needed": "Needs confirmation: {{what}}",
+            "unknown": "unknown",
+            "confirm": "Run it",
+            "reject": "Drop it",
+            "usage_hint": "The model call is held by the usage guard; confirm it below.",
+            "answer_failed": "The answer could not be sent ({{reason}}).",
+            "rejected": "Dropped. Nothing was executed.",
+            "status_executed": "Done",
+            "status_rejected": "Dropped",
+            "status_denied": "Not allowed by the rules",
+            "status_unavailable": "Cannot run yet",
+            "status_waiting": "Waiting for an answer",
+            "status_stale": "No longer valid",
+            "cost_money": "Money: about {{low}} to {{high}} {{currency}} (from the size of the input and the model's listed price; not a limit)",
+            "cost_money_unknown": "Money: unknown ({{reason}}); do not read it as free",
+            "produced": "Saved in the graph ({{target}}): {{nodes}}"
+          },
+          "pl": {
+            "title": "Polecenie czeka na Twoją odpowiedź",
+            "title_confirmation": "Zasady każą Cię zapytać o potwierdzenie",
+            "plan": "Plan: {{plan}}",
+            "cost": "Szacunek: {{cost}} (względny, 1 = jedno zwykłe wywołanie modelu), wywołań modelu: {{calls}}, wysłanych bajtów: {{bytes}}",
+            "confirm_needed": "Wymaga potwierdzenia: {{what}}",
+            "unknown": "nieznane",
+            "confirm": "Wykonaj",
+            "reject": "Odrzuć",
+            "usage_hint": "Wywołanie modelu wstrzymał strażnik zużycia; potwierdź je poniżej.",
+            "answer_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+            "rejected": "Odrzucone. Nic nie wykonano.",
+            "status_executed": "Gotowe",
+            "status_rejected": "Odrzucone",
+            "status_denied": "Zasady na to nie pozwalają",
+            "status_unavailable": "Nie można jeszcze wykonać",
+            "status_waiting": "Czeka na odpowiedź",
+            "status_stale": "Nieaktualne",
+            "cost_money": "Pieniądze: ok. {{low}} do {{high}} {{currency}} (z rozmiaru wejścia i ceny modelu z cennika; nie limit)",
+            "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
+            "produced": "Zapisano w grafie ({{target}}): {{nodes}}"
           }
         }
       }

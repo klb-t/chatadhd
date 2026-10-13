@@ -1,0 +1,136 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "action_results",
+  "revision": 1,
+  "description": "Where the result of an action run goes (GRAF_HUB_KOD_SILNIK §5-§6, include/loom/action_result.h). The graph is the hub: a result is a FORM node of the class that matches its modality (classes.pack: text_form, image_form, audio_form, video_form), linked `expresses` to ONE content node per source element (reused by every later run on the same source, never rewritten), `derived_from` the source element and `produced_by` an action_run node (action id, run id, step, model / adapter, usage receipts: references and hashes, never secrets and never bytes). target: the setting `action_result_target` is the user's level of a value that resolves through the scope chain (R47) like the rules do (installation preset -> user -> conversation: a rule with effect set_value on action_results.target); each preset is a set of switches, so a user preset in <data>/profiles/action_results.pack is one more entry, not code: `graph` writes the nodes and links, `message` additionally posts the text result as a message of the conversation the run belongs to (the message is then the form node), neither = the result stays in the run document only. inline_max_bytes: text results above it go to the blob store and the run document keeps a reference (hash, size, preview); null = never. steps: `result` stores the result of the run, `all` every step that produced a storable part. fidelity: the weight of `expresses` (how faithfully a form carries the content, GRAF_HUB_KOD_SILNIK §6) and what was kept, lost or added, by the content_op of the action; calibration, editable in the overlay. Everything is a preset: nothing here is a limit.",
+  "defaults": {
+    "target": {
+      "key": "action_results.target",
+      "setting": "action_result_target",
+      "active": "graph",
+      "presets": {
+        "graph": {"graph": true, "message": false, "label": {"en": "Graph: the result is a node linked to its source and its run", "pl": "Graf: wynik jest węzłem powiązanym ze źródłem i przebiegiem"}},
+        "run_only": {"graph": false, "message": false, "label": {"en": "Run only: the result stays in the run document", "pl": "Tylko przebieg: wynik zostaje w dokumencie przebiegu"}},
+        "conversation_message": {"graph": true, "message": true, "label": {"en": "Conversation message: the result is posted as a message and linked in the graph", "pl": "Wiadomość w rozmowie: wynik trafia jako wiadomość i jest powiązany w grafie"}}
+      }
+    },
+    "inline_max_bytes": 2048,
+    "steps": "result",
+    "preview_codepoints": 160,
+    "label_codepoints": 80,
+    "blob_mime": "text/plain",
+    "classes": {
+      "content": "content",
+      "run": "action_run",
+      "by_part": {"text": "text_form", "image": "image_form", "audio": "audio_form", "video": "video_form"}
+    },
+    "links": {
+      "expresses": "expresses",
+      "derived_from": "derived_from",
+      "produced_by": "produced_by",
+      "stored_as": "stored_as",
+      "presented_as": "references"
+    },
+    "message": {"role": "assistant", "model": "loom:actions"},
+    "fidelity": {
+      "preserve": {"fidelity": 0.95, "kept": ["meaning", "facts", "structure"], "lost": ["original wording"], "added": []},
+      "condense": {"fidelity": 0.6, "kept": ["main points"], "lost": ["detail"], "added": []},
+      "expand": {"fidelity": 0.8, "kept": ["meaning"], "lost": [], "added": ["elaboration"]},
+      "restyle": {"fidelity": 0.7, "kept": ["subject", "structure"], "lost": ["original tone"], "added": ["style"]},
+      "evaluate": {"fidelity": 0.3, "kept": ["subject"], "lost": [], "added": ["judgement"]},
+      "combine": {"fidelity": 0.5, "kept": ["parts"], "lost": [], "added": ["arrangement"]},
+      "none": {"fidelity": 0.5, "kept": [], "lost": [], "added": []}
+    },
+    "unknown_fidelity": {"fidelity": 0.5, "kept": [], "lost": [], "added": []}
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["target", "inline_max_bytes", "steps", "preview_codepoints", "label_codepoints", "blob_mime", "classes", "links", "message", "fidelity", "unknown_fidelity"],
+    "additionalProperties": false,
+    "properties": {
+      "target": {
+        "type": "object",
+        "description": "Where results go. key: the scoped value that resolves it; setting: the config key of the user's level; active: the installation's preset; presets: preset id -> switches (graph: write the nodes and links; message: also post the text as a message of the conversation) and a label.",
+        "required": ["key", "setting", "active", "presets"],
+        "properties": {
+          "key": {"type": "string", "minLength": 1},
+          "setting": {"type": "string", "minLength": 1},
+          "active": {"type": "string", "minLength": 1},
+          "presets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": ["graph", "message"],
+              "properties": {
+                "graph": {"type": "boolean"},
+                "message": {"type": "boolean"},
+                "label": {"type": "object"}
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "inline_max_bytes": {"type": ["integer", "null"], "minimum": 0, "description": "Text results above this size go to the blob store; null = never."},
+      "steps": {"type": "string", "enum": ["result", "all"], "description": "result: the run's result; all: every step that produced a storable part."},
+      "preview_codepoints": {"type": "integer", "minimum": 0, "description": "Length of the preview kept in the run document for a result that went to a blob."},
+      "label_codepoints": {"type": "integer", "minimum": 1, "description": "Length of the label of a form node (the start of its text)."},
+      "blob_mime": {"type": "string", "minLength": 1, "description": "MIME type recorded for a text result in the blob store."},
+      "classes": {
+        "type": "object",
+        "required": ["content", "run", "by_part"],
+        "properties": {
+          "content": {"type": "string", "minLength": 1, "description": "Class (node kind) of the content node."},
+          "run": {"type": "string", "minLength": 1, "description": "Class (node kind) of the run node."},
+          "by_part": {"type": "object", "description": "Kind of typed part -> the form class that matches its modality; a kind not listed is not stored in the graph.", "additionalProperties": {"type": "string"}}
+        },
+        "additionalProperties": false
+      },
+      "links": {
+        "type": "object",
+        "required": ["expresses", "derived_from", "produced_by", "stored_as", "presented_as"],
+        "properties": {
+          "expresses": {"type": "string", "minLength": 1},
+          "derived_from": {"type": "string", "minLength": 1},
+          "produced_by": {"type": "string", "minLength": 1},
+          "stored_as": {"type": "string", "minLength": 1, "description": "Form node -> the blob node that holds its bytes."},
+          "presented_as": {"type": "string", "minLength": 1, "description": "Result message of the chat -> the form node it presents."}
+        },
+        "additionalProperties": false
+      },
+      "message": {
+        "type": "object",
+        "required": ["role", "model"],
+        "properties": {"role": {"type": "string", "minLength": 1}, "model": {"type": "string"}},
+        "additionalProperties": false
+      },
+      "fidelity": {
+        "type": "object",
+        "description": "content_op -> {fidelity 0..1, kept, lost, added}.",
+        "additionalProperties": {
+          "type": "object",
+          "required": ["fidelity"],
+          "properties": {
+            "fidelity": {"type": "number", "minimum": 0, "maximum": 1},
+            "kept": {"type": "array", "items": {"type": "string"}},
+            "lost": {"type": "array", "items": {"type": "string"}},
+            "added": {"type": "array", "items": {"type": "string"}}
+          },
+          "additionalProperties": false
+        }
+      },
+      "unknown_fidelity": {
+        "type": "object",
+        "required": ["fidelity"],
+        "properties": {
+          "fidelity": {"type": "number", "minimum": 0, "maximum": 1},
+          "kept": {"type": "array", "items": {"type": "string"}},
+          "lost": {"type": "array", "items": {"type": "string"}},
+          "added": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

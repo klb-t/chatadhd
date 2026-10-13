@@ -1,8 +1,11 @@
 // C API: loom_invoke — one entry point "perform action" (port, action, json). Ports: "storage" (storage
 // plugins), "github" (GitHub sync), "actions" (action "list" = the action catalogue; "for", "explain" and
-// "propose_chain" ask the action/element matching engine, loom/action_rules.h).
-#include "loom/action_rules.h"
+// "propose_chain" ask the action/element matching engine, loom/action_rules.h; "run", "confirm", "cancel",
+// "status" and "preview" run actions through the interpreter, loom/action_runner.h), "chat" ("route" decides
+// message or command for a chat input, loom/chat_route.h).
+#include "loom/action_runner.h"
 #include "loom/action_table.h"
+#include "loom/chat_route.h"
 #include "context.h"
 #include "loom/storage_command.h"
 
@@ -23,7 +26,13 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     const std::string p = port, a = action;
     if (p == "actions" && a == "list") return out(action_list(ctx->rt->paths().root));
     if (p == "actions") {
-      auto r = actions::invoke(ctx->rt->paths().root, a, *rj);
+      auto r = ctx->rt->actions().invoke(a, *rj);
+      if (!r) return out_error(r.error());
+      return out(*r);
+    }
+    if (p == "chat") {
+      if (a != "route") return out_error(Errc::InvalidArgument, "unknown chat action '" + a + "'");
+      auto r = chat_route::route(*ctx->rt, *rj);
       if (!r) return out_error(r.error());
       return out(*r);
     }

@@ -140,7 +140,7 @@ build_all() {
   log "build serwera (preset release) -> $TMP/build"
   # shellcheck disable=SC2086
   cmake --preset release -S "$SRC/loom" -B "$TMP/build" -G Ninja \
-    -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_TESTS=OFF -DLOOM_WERROR=OFF $CMAKE_EXTRA
+    -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_TESTS=OFF -DLOOM_WERROR=ON $CMAKE_EXTRA
   cmake --build "$TMP/build" --target loom-server -j"$(nproc)"
   log "build web"
   # praca na kopii, zeby nie zasmiecac drzewa zrodel

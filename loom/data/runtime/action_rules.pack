@@ -115,6 +115,14 @@
           "en": "Default action of the element",
           "pl": "Domyślna akcja elementu"
         }
+      },
+      "value": {
+        "dimension": "value",
+        "status": "valued",
+        "label": {
+          "en": "Sets a value of a setting in its scope",
+          "pl": "Ustawia wartość ustawienia w jego zakresie"
+        }
       }
     },
     "effects": {
@@ -141,10 +149,15 @@
       "require_confirmation": {
         "decision": "confirm",
         "meaning": "Settings: a change that raises consumption needs the user's explicit confirmation."
+      },
+      "set_value": {
+        "decision": "value",
+        "meaning": "Scoped values (R47): the rule sets the value of the setting named by its target {kind: setting, key} in its scope; the most specific scope wins unless a conflict rule says otherwise. Chain thresholds (extrapolation.preset, extrapolation.max_length ...) and the place where action results go (action_results.target) resolve this way."
       }
     },
     "scope_aliases": {
-      "global": "installation"
+      "global": "installation",
+      "user": "person"
     },
     "rules": {
       "edit:config:loom_usage_policy": {
@@ -225,10 +238,27 @@
         "action": "describe_image",
         "effect": "default_action",
         "initiator": "application preset"
+      },
+      "deny:settings.set:secret": {
+        "id": "deny:settings.set:secret",
+        "scope": "engine",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "secret"
+        },
+        "action": "settings.set",
+        "effect": "deny",
+        "initiator": "engine",
+        "reason": {
+          "en": "A credential typed into the conversation would be stored in the conversation history and sent to the model provider; set it in Settings instead.",
+          "pl": "Poświadczenie wpisane w rozmowie zostałoby zapisane w historii rozmowy i wysłane dostawcy modelu; ustaw je w Ustawieniach."
+        }
       }
     },
     "extrapolation": {
       "active": "standard",
+      "setting": "extrapolation_preset",
+      "bounds_setting": "extrapolation_bounds",
       "presets": {
         "off": {
           "enabled": false,
@@ -300,7 +330,7 @@
       },
       "decisions": {
         "type": "object",
-        "description": "What a decision is: dimension gate (allow, confirm, deny; restrictiveness orders them; status is the word the engine reports) or default (names the default action).",
+        "description": "What a decision is: dimension gate (allow, confirm, deny; restrictiveness orders them; status is the word the engine reports), default (names the default action) or value (a scoped value of a setting: rules with effect set_value).",
         "additionalProperties": {
           "type": "object"
         }
@@ -325,7 +355,7 @@
       },
       "rules": {
         "type": "object",
-        "description": "Rule id -> rule {id, scope, scope_id?, target, action?, effect, reason?, initiator?, locked?, weight?, conflict?, when?, disabled?}. One store and one shape for every kind of rule: settings field edit rules (target kind settings_field, action edit) and rules over classes, traits, trait bundles, nodes and action groups. No rule matching = allow (R43: a block needs an initiator). Overlay: profiles/action_rules.pack merges by id; disabled:true switches a rule off.",
+        "description": "Rule id -> rule {id, scope, scope_id?, target, action?, effect, value?, reason?, initiator?, locked?, weight?, conflict?, when?, disabled?}. One store and one shape for every kind of rule: settings field edit rules (target kind settings_field, action edit) and rules over classes, traits, trait bundles, nodes and action groups. No rule matching = allow (R43: a block needs an initiator). Overlay: profiles/action_rules.pack merges by id; disabled:true switches a rule off. Scoped values (R47): effect set_value with target {kind: setting, key} and value; the installation baseline is data, the user's setting is the person level (alias user), a rule may sit at any level (a conversation: scope + scope_id).",
         "additionalProperties": {
           "type": "object",
           "required": [
@@ -392,6 +422,17 @@
             },
             "disabled": {
               "type": "boolean"
+            },
+            "value": {
+              "type": [
+                "string",
+                "number",
+                "boolean",
+                "object",
+                "array",
+                "null"
+              ],
+              "description": "Dimension value only: the value the rule sets for the setting named by its target key (null is a value, e.g. \"no bound\")."
             }
           },
           "additionalProperties": true
@@ -475,6 +516,14 @@
               },
               "additionalProperties": true
             }
+          },
+          "setting": {
+            "type": "string",
+            "description": "Config key of the user's preset: it is the person-level value of extrapolation.preset (resolved through the scope chain like rules)."
+          },
+          "bounds_setting": {
+            "type": "string",
+            "description": "Config key (an object {max_length, max_cost, min_confidence, max_results}) of the user's thresholds: the person-level values of extrapolation.<bound>."
           }
         },
         "additionalProperties": true,

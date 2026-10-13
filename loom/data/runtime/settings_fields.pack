@@ -175,6 +175,86 @@
         "description": "Retry policy of failed semantic work (explicit_requeue or automatic)."
       },
       {
+        "key": "intent_routing_method",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "How a chat input is told to be a message or a command (R54): heuristic (local and free, preset), model (one guarded model call per input) or off (every input is a message). Runtime profile intent_routing."
+      },
+      {
+        "key": "intent_routing_run",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether a command from the chat waits for the user's yes (propose, preset), runs at once when its plan only reads and the rules ask for nothing (read_only), or runs at once (always). The rules and the x10 usage confirmation apply in every case."
+      },
+      {
+        "key": "intent_routing_model",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Model used for routing when the method is model; empty = the default model."
+      },
+      {
+        "key": "extrapolation_preset",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Preset of the chain proposals the engine makes when an element lacks what an action needs (off, standard or generous; presets are runtime/action_rules.pack). This is the user's level of a value that the scope chain resolves: a rule on a conversation or a project may set another one, and propose_chain / explain say which scope set the value. Default: the profile's active preset (standard)."
+      },
+      {
+        "key": "extrapolation_bounds",
+        "scope": "config",
+        "group": "chat",
+        "type": "object",
+        "has_default": false,
+        "description": "The user's own thresholds of chain proposals: an object with any of max_length, max_cost, min_confidence, max_results (null = no bound); each member overrides the preset at the user's level and is itself overridden by a more specific scope. Default: none (the preset's bounds)."
+      },
+      {
+        "key": "action_result_target",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Where the result of an action run goes: graph (preset: a form node linked to its source element and to the run), run_only (the result stays in the run document) or conversation_message (the text is also posted as a message of the conversation and linked in the graph). Runtime profile action_results. This is the user's level of a value that the scope chain resolves: a rule on a conversation or a project may set another one. Text above the profile's inline_max_bytes goes to the blob store whatever the target is. Default: graph."
+      },
+      {
+        "key": "image_model",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Model that paints images for the action depict (served by an openai_images provider, see image_provider). Empty = the action asks for one. Default: none."
+      },
+      {
+        "key": "image_provider",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Id of the provider manifest (config provider_manifests, adapter openai_images) that serves image_model. Empty = the action asks for one. Default: none."
+      },
+      {
+        "key": "speech_model",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Model that speaks for the action narrate (needs a provider whose adapter produces audio, see speech_provider). Empty = narrate returns the narration text only. Default: none."
+      },
+      {
+        "key": "speech_provider",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Id of the provider manifest that serves speech_model. Default: none."
+      },
+      {
         "key": "context_execution",
         "scope": "config",
         "group": "context",

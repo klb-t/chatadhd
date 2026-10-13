@@ -115,7 +115,9 @@
             "conflict_rules": [],
             "default_rule": ""
           },
-          "interfaces": {}
+          "interfaces": {},
+          "devices": {},
+          "device_platforms": {}
         },
         "value_schema": {
           "type": "object",
@@ -211,6 +213,16 @@
           "source": "graph/interfaces.pack",
           "pointer": "/interfaces",
           "target": "/defaults/interfaces"
+        },
+        {
+          "source": "graph/devices.pack",
+          "pointer": "/devices",
+          "target": "/defaults/devices"
+        },
+        {
+          "source": "graph/devices.pack",
+          "pointer": "/platforms",
+          "target": "/defaults/device_platforms"
         }
       ]
     },

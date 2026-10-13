@@ -606,7 +606,9 @@ TEST_SUITE("use_model") {
     CHECK(catalogue["chat.send"]["requires"] == Json::array({"conversation"}));
     CHECK(catalogue["semantic.analyse"]["effects"]["reads_only"] == true);
     CHECK(catalogue["chat.send"]["effects"]["writes"] == true);
-    for (const char* name : {"jev.edge_classify", "input.route_intent", "script.call", "agent.call",
+    CHECK(catalogue["input.route_intent"]["status"] == "implemented");  // R54: every chat input goes through it
+    CHECK(catalogue["input.route_intent"]["kind"] == "composite");
+    for (const char* name : {"jev.edge_classify", "script.call", "agent.call",
                              "media.generate_image", "media.generate_video", "media.generate_music"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));

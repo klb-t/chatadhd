@@ -145,7 +145,7 @@ TEST_SUITE("kb_pack") {
     CHECK(!kb::Pack::load_with_overlay(td.path()));
   }
 
-  TEST_CASE("item cue lexicon mirrors the archive classifier (run tools/gen_kb_lexicons.py)") {
+  TEST_CASE("item cue lexicon is loaded from the data pack") {
     auto pack = unwrap(kb::Pack::load_dir(data_dir()));
     const Json& cues = pack->lexicon("item_cues");
     CHECK(cues["cues"].size() > 150);

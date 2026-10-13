@@ -153,6 +153,11 @@ def main() -> None:
                     "-isystem", str(loom / "third_party/doctest"), "-isystem", str(loom / "third_party/nlohmann"),
                     *map(str, sources), *map(str, objects), "-o", str(executable), str(build / "libloom_core.a"),
                     str(build / "libloom_miniz.a")]
+        # Vendored crypto (argon2/monocypher/ML-KEM/ML-DSA) is a separate static
+        # library since the crypto backend landed; libloom_core.a needs it.
+        pqc = build / "libloom_pqc.a"
+        if pqc.exists():
+            command.append(str(pqc))
         vendor = build / "libloom_sqlite3_amalgamation.a"
         command += [str(vendor)] if vendor.exists() else ["-lsqlite3"]
         command += ["-fuse-ld=gold", "-Wl,--no-map-whole-files", "-lssl", "-lcrypto", "-pthread", "-ldl", "-lm"]
