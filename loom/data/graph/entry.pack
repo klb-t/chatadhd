@@ -43,6 +43,21 @@
         "profile.import_formats"
       ]
     },
+    "rom": {
+      "order": 0,
+      "label": {
+        "en": "ROM (read-only memory)",
+        "pl": "ROM (pamięć tylko do odczytu)"
+      },
+      "axes": {
+        "about": "application",
+        "kind": "knowledge",
+        "time": "state"
+      },
+      "bindings": [
+        "rom.catalogue"
+      ]
+    },
     "interfaces": {
       "order": 3,
       "label": {
@@ -321,6 +336,13 @@
       "params": {
         "domain": "model",
         "pointer": "/authority_ranks"
+      }
+    },
+    "rom.catalogue": {
+      "provider": "rom.catalogue",
+      "as": "rom_items",
+      "params": {
+        "pointer": "/rom/items"
       }
     },
     "interfaces.abi": {

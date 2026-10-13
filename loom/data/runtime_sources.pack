@@ -115,7 +115,11 @@
             "conflict_rules": [],
             "default_rule": ""
           },
-          "interfaces": {}
+          "interfaces": {},
+          "rom": {
+            "mount": {},
+            "items": {}
+          }
         },
         "value_schema": {
           "type": "object",
@@ -211,6 +215,16 @@
           "source": "graph/interfaces.pack",
           "pointer": "/interfaces",
           "target": "/defaults/interfaces"
+        },
+        {
+          "source": "graph/rom.pack",
+          "pointer": "/mount",
+          "target": "/defaults/rom/mount"
+        },
+        {
+          "source": "graph/rom.pack",
+          "pointer": "/items",
+          "target": "/defaults/rom/items"
         }
       ]
     },

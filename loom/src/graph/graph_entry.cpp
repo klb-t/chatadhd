@@ -267,6 +267,22 @@ void register_builtin(Providers& p) {
     if (by.empty()) return only(unknown("no_interface_registry"));
     return only(known_by(static_cast<std::int64_t>(by.size()), by));
   });
+  // ROM catalogue (data: values at params.pointer, default /rom/items): value = items not hidden by the overlay;
+  // by = {status: count} with status present | partial | missing (a missing item is counted, never dropped).
+  p.add("rom.catalogue", [](const Context& c, const Json& params) {
+    const std::string pointer = json::get_string(params, "pointer", "/rom/items");
+    const Json* items = pointer_at(c.values, pointer);
+    if (!items || !items->is_object() || items->empty()) return only(unknown("rom_catalogue_absent"));
+    Json by = Json::object();
+    std::int64_t total = 0;
+    for (const auto& item : items->items()) {
+      if (!item.value().is_object() || json::get_bool(item.value(), "hidden", false)) continue;
+      const std::string status = json::get_string(item.value(), "status", "unknown");
+      by[status] = by.contains(status) ? by[status].get<std::int64_t>() + 1 : 1;
+      ++total;
+    }
+    return only(known_by(total, std::move(by)));
+  });
   p.add("profile.domains", [](const Context&, const Json&) {
     return only(known(static_cast<std::int64_t>(RuntimeProfile::domains().size())));
   });
