@@ -6,6 +6,7 @@
 #include <set>
 
 #include "loom/action_element.h"
+#include "loom/action_overlay.h"
 #include "loom/action_result.h"
 #include "loom/action_run.h"
 #include "loom/action_runner.h"
@@ -484,6 +485,104 @@ std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
   return out;
 }
 
+// ── scoped rules and values from what is said ───────────────────────
+// Data: heuristic.rules (scope phrases, command patterns). "w tej rozmowie ustaw X=Y", "dla mnie zawsze pytaj przed depict",
+// "for this conversation never run depict without asking" become a proposal to run rules.set (rules.disable, rules.list).
+
+// The catalogue id a word stands for: an id, or a phrase of exactly one action. A word that names none, or several, names nothing.
+std::string resolve_action_word(const Data& d, const std::string& word) {
+  if (word.empty()) return std::string();
+  if (entry_of(d, word)) return word;
+  const Json& h = d.cfg.at("heuristic");
+  std::vector<std::string> found;
+  for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
+    if (json::find(it.value(), "element_from_arg")) continue;
+    std::vector<std::string> phrases;
+    if (const Json* own = json::find(it.value(), "phrases"); own && own->is_object())
+      for (auto l = own->begin(); l != own->end(); ++l)
+        for (const auto& x : strings_of(&l.value())) phrases.push_back(x);
+    if (const Json* extra = json::find(h, "phrases"); extra && extra->is_object())
+      if (const Json* more = json::find(*extra, it.key()); more && more->is_object())
+        for (auto l = more->begin(); l != more->end(); ++l)
+          for (const auto& x : strings_of(&l.value())) phrases.push_back(x);
+    for (const auto& phrase : phrases)
+      if (word_matches(word, fold(phrase, h.at("fold")))) {
+        found.push_back(it.key());
+        break;
+      }
+  }
+  return found.size() == 1 ? found[0] : std::string();
+}
+
+std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text) {
+  std::vector<Cand> out;
+  const Json& h = d.cfg.at("heuristic");
+  const Json* rules = json::find(h, "rules");
+  if (!rules || !rules->is_object()) return out;
+  std::u32string folded = utf8::decode(fold(text, h.at("fold")));
+  std::u32string original = utf8::decode(std::string(text));
+  if (original.size() != folded.size()) original = folded;
+  // The scope phrase: the longest one found as whole words; it is blanked out (same length) so the command reads what is left.
+  std::string scope;
+  std::size_t best_len = 0;
+  std::size_t best_at = 0;
+  auto is_word = [](char32_t c) { return unicode::is_word(c); };
+  for (const auto& entry : rules->value("scopes", Json::array()))
+    for (auto l = entry.at("phrases").begin(); l != entry.at("phrases").end(); ++l)
+      for (const auto& phrase : strings_of(&l.value())) {
+        const std::u32string needle = utf8::decode(fold(phrase, h.at("fold")));
+        if (needle.empty() || needle.size() <= best_len) continue;
+        for (std::size_t at = folded.find(needle); at != std::u32string::npos; at = folded.find(needle, at + 1)) {
+          const bool left = at == 0 || !is_word(folded[at - 1]);
+          const bool right = at + needle.size() >= folded.size() || !is_word(folded[at + needle.size()]);
+          if (left && right) {
+            scope = json::get_string(entry, "scope");
+            best_len = needle.size();
+            best_at = at;
+            break;
+          }
+        }
+      }
+  if (best_len > 0) {
+    for (std::size_t i = best_at; i < best_at + best_len; ++i) folded[i] = original[i] = U' ';
+  }
+  for (const auto& command : rules->value("commands", Json::array())) {
+    if (json::get_bool(command, "needs_scope", false) && scope.empty()) continue;
+    auto rx = re::Regex::compile(json::get_string(command, "regex"));
+    if (!rx) continue;
+    auto m = rx->search(folded);
+    if (!m) continue;
+    const auto names = strings_of(json::find(command, "args"));
+    const auto from_original = strings_of(json::find(command, "original"));
+    const auto to_resolve = strings_of(json::find(command, "resolve"));
+    Cand c;
+    c.source = "rule_command";
+    c.matched = json::get_string(command, "id");
+    c.lang = json::get_string(command, "lang");
+    c.action = json::get_string(command, "action");
+    c.score = 1.05;  // a scoped statement outranks the plain settings patterns that would swallow its tail
+    if (const std::string effect = json::get_string(command, "effect"); !effect.empty()) c.args["effect"] = effect;
+    if (!scope.empty()) c.args["scope"] = scope;
+    bool ok = true;
+    for (std::size_t i = 0; i < names.size() && ok; ++i) {
+      if (!m->matched(i + 1)) continue;
+      std::string value = m->group_utf8(i + 1);
+      if (std::find(from_original.begin(), from_original.end(), names[i]) != from_original.end())
+        value = trim_value(utf8::encode(original.substr(static_cast<std::size_t>(m->start(i + 1)), static_cast<std::size_t>(m->end(i + 1) - m->start(i + 1)))));
+      if (std::find(to_resolve.begin(), to_resolve.end(), names[i]) != to_resolve.end()) {
+        value = resolve_action_word(d, value);
+        if (value.empty()) ok = false;  // the word names no action: nothing is guessed
+      }
+      c.args[names[i]] = value;
+    }
+    if (!ok) continue;
+    c.element = Json{{"id", "application"}};
+    out.push_back(std::move(c));
+    break;
+  }
+  return out;
+}
+
 // ── the model method ────────────────────────────────────────────────
 
 struct ModelRoute {
@@ -679,6 +778,25 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
       }
     }
   if (!missing_args.empty()) return infeasible(Json{{"code", "missing_args"}, {"args", missing_args}, {"settings", missing_settings}});
+  // A rule written from the conversation: "this conversation" is this one; a rule pinned by a higher scope is refused here,
+  // with its reason, before the user is asked anything.
+  if (c.action == "rules.set" || c.action == "rules.disable") {
+    if (c.action == "rules.set") {
+      const std::string level = d.engine.level_name(json::get_string(c.args, "scope", "person"));
+      if (level == "conversation" && !c.args.contains("scope_id")) {
+        if (conv.id.empty()) return infeasible(Json{{"code", "element_not_found"}, {"message", "there is no conversation yet"}});
+        c.args["scope_id"] = conv.id;
+      }
+    }
+    c.args["provenance"] = Json{{"origin", "chat"}, {"conv_id", conv.id}};
+    cmd["args"] = c.args;
+    auto draft = actions::rules_preview(d.root, c.action, c.args);
+    if (!draft) return infeasible(Json{{"code", "error"}, {"message", draft.error().message}});
+    if (!draft->value("ok", false)) return infeasible(Json{{"code", "refused"}, {"pin", draft->value("pin", Json::object())}});
+    cmd["rule"] = draft->value("rule", Json(nullptr));
+    cmd["rule_note"] = draft->value("note", Json(nullptr));
+    cmd["replaces"] = draft->value("replaced", false);
+  }
   // The scope of the question (R47): this conversation and the turn, so rules and thresholds bound to the conversation apply.
   const Json scope = conv.id.empty() ? Json(nullptr) : Json{{"conversation", conv.id}, {"turn", ""}};
   // Fit: the action fits when the element has the traits it requires; else a chain may supply them.
@@ -818,6 +936,11 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     for (auto& p : parse_patterns(d, text)) cands.push_back(std::move(p));
     for (auto& l : parse_lexicon(d, text)) cands.push_back(std::move(l));
   }
+  // Rules and scoped values from what is said (the model method does not know them; they are read locally either way).
+  if (auto rule_cands = parse_rule_commands(d, text); !rule_cands.empty()) {
+    cands.erase(std::remove_if(cands.begin(), cands.end(), [](const Cand& x) { return x.source == "pattern" && x.action == "settings.set"; }), cands.end());
+    for (auto& r : rule_cands) cands.push_back(std::move(r));
+  }
   if (cands.empty()) return out;
   std::stable_sort(cands.begin(), cands.end(), [](const Cand& a, const Cand& b) { return a.score > b.score; });
   for (auto& c : cands)
@@ -944,6 +1067,8 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
   p["args"] = cmd.value("args", Json::object());
   if (cmd.contains("element")) p["element"] = cmd["element"];
   p["args_read"] = cmd.value("args_read", Json::array());
+  if (cmd.contains("rule")) p["rule"] = cmd["rule"];
+  if (cmd.contains("replaces")) p["replaces"] = cmd["replaces"];
   p["params"] = cmd.value("params", Json::array());
   Json items = Json::array();
   if (cmd.contains("plan"))
@@ -1000,12 +1125,18 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
       }
     }
     if (!given.empty()) lines.push_back(say(d.cfg, lang, "proposal_args", Json{{"args", join(given, ", ")}}));
+    if (const Json note = cmd.value("rule_note", Json(nullptr)); note.is_object() && note.contains("consumer"))
+      lines.push_back(say(d.cfg, lang, "proposal_note", Json{{"note", say(d.cfg, lang, "rule_note_consumer")}}));
+    if (cmd.value("replaces", false)) lines.push_back(say(d.cfg, lang, "rule_replaces"));
     if (!open.empty()) lines.push_back(say(d.cfg, lang, "proposal_args_open", Json{{"params", join(open, ", ")}}));
   }
   const Json reason = cmd.value("reason", Json(nullptr));
   if (!cmd.value("feasible", false)) {
     const std::string code = reason.is_object() ? json::get_string(reason, "code") : std::string();
-    if (code == "unfit") {
+    if (code == "refused") {
+      const Json pin = reason.value("pin", Json::object());
+      lines.push_back(say(d.cfg, lang, "proposal_refused", Json{{"reason", localized(pin.value("reason", Json("")), lang)}, {"initiator", initiator_suffix(d, pin, lang)}}));
+    } else if (code == "unfit") {
       lines.push_back(say(d.cfg, lang, "proposal_unfit", Json{{"missing", join(strings_of(json::find(reason, "missing")), ", ")}}));
     } else if (code == "missing_args") {
       std::string hint;
@@ -1302,6 +1433,8 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   } else {
     Json run_request = cmd["request"];
     run_request["propose"] = true;
+    if (run_request.contains("args") && run_request["args"].contains("provenance") && run_request["args"]["provenance"].is_object())
+      run_request["args"]["provenance"]["message_id"] = user_id;  // a rule written from here remembers which message asked for it
     run_request["ref"] = "chat:" + user_id;
     run_request["context"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_id", user_id}, {"text", text}, {"source", cmd.value("source", "")}, {"lang", lang}};
     auto run = rt.actions().run(run_request);

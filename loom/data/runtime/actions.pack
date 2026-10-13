@@ -2939,6 +2939,368 @@
           "path": "/api/actions/status"
         }
       },
+      "rules.set": {
+        "id": "rules.set",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Set a rule",
+        "description": "Writes a scoped rule or value into the user overlay profiles/action_rules.pack: set_value (a setting's value in a scope), confirm / require_confirmation, deny (with a reason), allow, at conversation, person, installation or any other level of the scope chain. A new rule for the same scope and subject replaces the old one. A rule pinned by a higher scope (locked) refuses with its reason. Writing is an action like any other: the rules of the scope apply and the preset asks you to confirm each write. Undo: rules.disable.",
+        "labels": {
+          "pl": "Zapisz regułę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "rules.set",
+        "params": [
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Level of the scope chain: conversation, person (alias user), installation, project ... Default: person.",
+              "pl": "Poziom łańcucha zakresów: conversation, person (alias user), installation, project ... Domyślnie: person."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "scope_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The instance of the level (a conversation id for conversation). Defaults to the conversation the call comes from.",
+              "pl": "Instancja poziomu (id rozmowy dla conversation). Domyślnie rozmowa, z której idzie wywołanie."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "effect",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "set_value | confirm | require_confirmation | deny | allow (or any effect of the rules table). With key and value: set_value.",
+              "pl": "set_value | confirm | require_confirmation | deny | allow (albo dowolny efekt z tabeli reguł). Z key i value: set_value."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "key",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "set_value: the setting whose value the rule sets (e.g. action_result_target).",
+              "pl": "set_value: ustawienie, którego wartość ustawia reguła (np. action_result_target)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "set_value: the value (JSON for numbers, booleans and objects).",
+              "pl": "set_value: wartość (JSON dla liczb, wartości logicznych i obiektów)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "confirm / deny / allow: the action id the rule is about (default: every action).",
+              "pl": "confirm / deny / allow: id akcji, której dotyczy reguła (domyślnie każda)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "target",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Which elements: {\"kind\":\"class\",\"id\":...}, {\"kind\":\"trait\",...}, {\"kind\":\"any\"} (default).",
+              "pl": "Które elementy: {\"kind\":\"class\",\"id\":...}, {\"kind\":\"trait\",...}, {\"kind\":\"any\"} (domyślnie)."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "reason",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Why (deny needs one; default: \"Set by you.\").",
+              "pl": "Dlaczego (deny wymaga; domyślnie: „Ustawione przez Ciebie.”)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "initiator",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Who stands behind the rule (default: user).",
+              "pl": "Kto stoi za regułą (domyślnie: user)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Pin the rule: a lower scope cannot override it.",
+              "pl": "Przypnij regułę: niższy zakres jej nie nadpisze."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Id of the rule (default: made from scope, dimension and subject).",
+              "pl": "Id reguły (domyślnie z zakresu, wymiaru i przedmiotu)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/rules/set"
+        }
+      },
+      "rules.disable": {
+        "id": "rules.disable",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Switch a rule off",
+        "description": "Switches a rule off: a shipped rule by an override in the user overlay, an own rule in place (the record stays). A locked rule refuses with its reason and initiator. restore: true takes the switch-off back.",
+        "labels": {
+          "pl": "Wyłącz regułę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "rules.disable",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the rule (see rules.list).",
+              "pl": "Id reguły (zob. rules.list)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "restore",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Take the switch-off back.",
+              "pl": "Cofnij wyłączenie."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/rules/disable"
+        }
+      },
+      "rules.list": {
+        "id": "rules.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Rules in force",
+        "description": "The rules in force (shipped data plus the user overlay), each with where it comes from (shipped, overlay, shipped+overlay) and whether it is switched off.",
+        "labels": {
+          "pl": "Reguły w mocy"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "rules.list",
+        "params": [
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only rules of this level.",
+              "pl": "Tylko reguły tego poziomu."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "scope_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only rules of this instance (a conversation id).",
+              "pl": "Tylko reguły tej instancji (id rozmowy)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "user_only",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Only the rules the user wrote or changed.",
+              "pl": "Tylko reguły zapisane lub zmienione przez użytkownika."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "include_disabled",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Include switched-off rules (default true).",
+              "pl": "Uwzględnij wyłączone reguły (domyślnie tak)."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": true
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/rules/list"
+        }
+      },
       "chat.route": {
         "id": "chat.route",
         "kind": "atomic",

@@ -124,6 +124,59 @@ int Engine::restrictiveness(std::string_view decision) const {
   return d ? static_cast<int>(json::get_int(*d, "restrictiveness", 0)) : 0;
 }
 
+namespace {
+
+bool selectors_overlap(const Json& a, const Json& b) {
+  auto wild = [](const Json& x) { return x.is_null() || (x.is_string() && (x.get<std::string>().empty() || x.get<std::string>() == "*")); };
+  return wild(a) || wild(b) || a == b;
+}
+
+bool targets_overlap(const Json& a, const Json& b) {
+  const std::string ka = json::get_string(a, "kind"), kb = json::get_string(b, "kind");
+  if (ka.empty() || ka == "any" || kb.empty() || kb == "any") return true;
+  if (ka != kb) return true;  // different kinds can still meet on one element (a class and a trait of it): treat as overlapping
+  const std::string ia = json::get_string(a, "id"), ib = json::get_string(b, "id");
+  if (!ia.empty() && !ib.empty() && ia != ib) return false;
+  for (auto it = a.begin(); it != a.end(); ++it) {
+    if (it.key() == "kind" || it.key() == "id") continue;
+    if (const Json* other = json::find(b, it.key()); other && *other != it.value()) return false;
+  }
+  return true;
+}
+
+}  // namespace
+
+std::optional<Json> Engine::locked_against(const Json& rule) const {
+  const std::size_t rank = level_index(json::get_string(rule, "scope"));
+  if (rank == static_cast<std::size_t>(-1)) return std::nullopt;
+  const std::string effect = json::get_string(rule, "effect");
+  const std::string decision = effect_decision(effects_, effect);
+  const Json* dec = json::find(decisions_, decision);
+  const std::string dimension = dec ? json::get_string(*dec, "dimension", "gate") : std::string("gate");
+  const Json target = rule.value("target", Json::object());
+  const Json action = rule.value("action", Json(nullptr));
+  for (const Rule& r : rules_) {
+    if (!r.locked || r.rank > rank || r.dimension != dimension) continue;
+    if (r.id == json::get_string(rule, "id")) continue;  // a rule is never pinned against itself
+    if (!targets_overlap(r.target, target)) continue;
+    if (dimension == "value") {
+      if (json::get_string(r.target, "key") != json::get_string(target, "key")) continue;
+      const Json* v = json::find(rule, "value");
+      if (r.has_value && v && r.value == *v) continue;
+    } else if (dimension == "gate") {
+      if (!selectors_overlap(r.action, action) || r.decision == decision) continue;
+    } else {
+      continue;
+    }
+    Json out{{"rule", r.id}, {"scope", r.scope}, {"conflict", r.conflict.empty() ? "locked_by" : r.conflict}};
+    if (!r.scope_id.empty()) out["scope_id"] = r.scope_id;
+    if (!r.reason.is_null()) out["reason"] = r.reason;
+    if (!r.initiator.empty()) out["initiator"] = r.initiator;
+    return out;
+  }
+  return std::nullopt;
+}
+
 std::size_t Engine::level_index(std::string_view name, std::string* resolved) const {
   std::string level(name);
   if (const Json* a = json::find(aliases_, level); a && a->is_string()) level = a->get<std::string>();

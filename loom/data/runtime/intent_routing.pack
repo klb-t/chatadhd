@@ -72,6 +72,49 @@
         {"id": "conversation", "words": ["rozmow*", "konwersacj*", "czat*", "chat", "conversation", "thread", "dyskusj*", "wątek", "watek", "wątku", "watku"], "resolve": "current_conversation"},
         {"id": "message", "words": ["wiadomo*", "message", "odpowied*", "reply", "answer"], "resolve": "last_message"}
       ],
+      "rules": {
+        "scopes": [
+          {"scope": "conversation", "phrases": {
+            "pl": ["w tej rozmowie", "w tym czacie", "w tym wątku", "dla tej rozmowy", "dla tego czatu", "dla tego wątku", "tylko tutaj", "tylko w tej rozmowie"],
+            "en": ["in this conversation", "for this conversation", "in this chat", "for this chat", "in this thread", "for this thread", "only here", "only in this conversation"]}},
+          {"scope": "person", "phrases": {
+            "pl": ["dla mnie", "u mnie", "na stałe dla mnie", "osobiście"],
+            "en": ["for me", "for myself", "personally", "on my account"]}},
+          {"scope": "installation", "phrases": {
+            "pl": ["w całej instalacji", "w tej instalacji", "dla wszystkich", "dla wszystkich rozmów", "wszędzie", "globalnie"],
+            "en": ["in this installation", "in the whole installation", "for everyone", "for all conversations", "everywhere", "globally"]}}
+        ],
+        "commands": [
+          {"id": "set_value.pl", "action": "rules.set", "effect": "set_value", "needs_scope": true, "lang": "pl",
+           "regex": "^[\\s,]*(?:ustaw|zmien|przelacz)\\s+([a-z][a-z0-9_.]*)\\s*(?:=|na)\\s*(.+?)\\s*[.!]*\\s*$", "args": ["key", "value"], "original": ["value"]},
+          {"id": "set_value.en", "action": "rules.set", "effect": "set_value", "needs_scope": true, "lang": "en",
+           "regex": "^[\\s,]*(?:set|change|switch)\\s+(?:the\\s+)?(?:setting\\s+)?([a-z][a-z0-9_.]*)\\s*(?:=|to)\\s*(.+?)\\s*[.!]*\\s*$", "args": ["key", "value"], "original": ["value"]},
+          {"id": "confirm.ask_before.pl", "action": "rules.set", "effect": "confirm", "lang": "pl",
+           "regex": "^[\\s,]*(?:zawsze\\s+)?(?:pytaj|zapytaj)\\s+(?:mnie\\s+)?(?:przed|o)\\s+(?:uruchomieniem\\s+|wykonaniem\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "confirm.never_without_asking.pl", "action": "rules.set", "effect": "confirm", "lang": "pl",
+           "regex": "^[\\s,]*nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)\\s+([a-z][a-z0-9_.]*)\\s+bez\\s+pytania\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "confirm.never_without_asking.en", "action": "rules.set", "effect": "confirm", "lang": "en",
+           "regex": "^[\\s,]*never\\s+(?:run|execute|start)\\s+([a-z][a-z0-9_.]*)\\s+without\\s+(?:asking|confirmation|confirming)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "confirm.ask_before.en", "action": "rules.set", "effect": "confirm", "lang": "en",
+           "regex": "^[\\s,]*(?:always\\s+)?ask\\s+(?:me\\s+)?before\\s+(?:running\\s+|executing\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "deny.never.pl", "action": "rules.set", "effect": "deny", "lang": "pl",
+           "regex": "^[\\s,]*(?:nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)|zabron\\w*|zablokuj)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "deny.never.en", "action": "rules.set", "effect": "deny", "lang": "en",
+           "regex": "^[\\s,]*(?:never\\s+(?:run|execute|start)|forbid|ban|block)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "allow.pl", "action": "rules.set", "effect": "allow", "lang": "pl",
+           "regex": "^[\\s,]*(?:(?:zawsze\\s+)?(?:pozwalaj|zezwalaj)\\s+na|nie\\s+pytaj\\s+(?:mnie\\s+)?(?:o|przed))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "allow.en", "action": "rules.set", "effect": "allow", "lang": "en",
+           "regex": "^[\\s,]*(?:(?:always\\s+)?allow|(?:stop\\s+asking|don't\\s+ask|do\\s+not\\s+ask)\\s+(?:me\\s+)?(?:about|before))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "disable.pl", "action": "rules.disable", "lang": "pl",
+           "regex": "^[\\s,]*(?:wylacz|usun|zdejmij)\\s+regule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
+          {"id": "disable.en", "action": "rules.disable", "lang": "en",
+           "regex": "^[\\s,]*(?:disable|remove|switch\\s+off|turn\\s+off)\\s+(?:the\\s+)?rule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
+          {"id": "list.pl", "action": "rules.list", "lang": "pl",
+           "regex": "^[\\s,]*(?:pokaz|wylistuj|wypisz)\\s+(?:moje\\s+|wszystkie\\s+)?(?:zasady|reguly)\\s*[.!?]*\\s*$", "args": []},
+          {"id": "list.en", "action": "rules.list", "lang": "en",
+           "regex": "^[\\s,]*(?:show|list)\\s+(?:me\\s+)?(?:my\\s+|all\\s+|the\\s+)?rules\\s*[.!?]*\\s*$", "args": []}
+        ]
+      },
       "languages": [
         {"code": "en", "label": {"en": "English", "pl": "angielski"}, "names": ["english", "angielsk*"]},
         {"code": "pl", "label": {"en": "Polish", "pl": "polski"}, "names": ["polish", "polsk*"]},
@@ -165,6 +208,10 @@
         "proposal_missing_args": "I still need: {{args}}. Say it as /{{action}} with {{args}} filled in, or ask in other words.",
         "proposal_args": "Arguments I read from your words: {{args}}.",
         "proposal_args_open": "Not given (the defaults apply): {{params}}.",
+        "proposal_refused": "This is refused: {{reason}}{{initiator}}.",
+        "proposal_note": "Note: {{note}}.",
+        "rule_note_consumer": "nothing reads this value per scope yet, so it will not change anything until a part of the application does",
+        "rule_replaces": "It replaces the rule you set before for the same thing.",
         "proposal_error": "I could not plan this: {{message}}",
         "proposal_chain": "It would need a chain: {{chain}}.",
         "proposal_alternatives": "Other readings: {{alternatives}}.",
@@ -205,6 +252,10 @@
         "proposal_missing_args": "Brakuje jeszcze: {{args}}. Podaj to jako /{{action}} z uzupełnionymi wartościami albo powiedz inaczej.",
         "proposal_args": "Argumenty odczytane z Twoich słów: {{args}}.",
         "proposal_args_open": "Niepodane (obowiązują wartości domyślne): {{params}}.",
+        "proposal_refused": "To jest odrzucone: {{reason}}{{initiator}}.",
+        "proposal_note": "Uwaga: {{note}}.",
+        "rule_note_consumer": "żadna część aplikacji nie czyta jeszcze tej wartości per zakres, więc nic się nie zmieni, dopóki któraś jej nie zacznie czytać",
+        "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie.",
         "proposal_error": "Nie udało się tego zaplanować: {{message}}",
         "proposal_chain": "Potrzebny byłby łańcuch: {{chain}}.",
         "proposal_alternatives": "Inne odczytania: {{alternatives}}.",
@@ -315,6 +366,19 @@
               },
               "additionalProperties": false
             }
+          },
+          "rules": {
+            "type": "object",
+            "description": "Scoped settings and rules from what is said (R54): \"w tej rozmowie ustaw X=Y\", \"dla mnie zawsze pytaj przed depict\", \"for this conversation never run depict without asking\". `scopes`: the phrases that name a level of the scope chain (cut out of the text before the commands are read; none named = the default scope of the action_rules profile). `commands`: regexes matched against the folded text with the scope phrase blanked out; group order = `args`; `original` args are read from the text as typed, `resolve` args are action words turned into catalogue ids (an unknown word makes the input a message, nothing is guessed); `needs_scope`: only when a scope phrase was said (without it the plain settings patterns apply). The result is a proposal to run rules.set / rules.disable / rules.list.",
+            "required": ["scopes", "commands"],
+            "properties": {
+              "scopes": {"type": "array", "items": {"type": "object", "required": ["scope", "phrases"], "properties": {"scope": {"type": "string", "minLength": 1}, "phrases": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}}}, "additionalProperties": false}},
+              "commands": {"type": "array", "items": {"type": "object", "required": ["id", "action", "regex", "args"], "properties": {
+                "id": {"type": "string", "minLength": 1}, "action": {"type": "string", "minLength": 1}, "effect": {"type": "string"}, "lang": {"type": "string"},
+                "needs_scope": {"type": "boolean"}, "regex": {"type": "string", "minLength": 1},
+                "args": {"type": "array", "items": {"type": "string"}}, "original": {"type": "array", "items": {"type": "string"}}, "resolve": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}}
+            },
+            "additionalProperties": false
           },
           "phrases": {
             "type": "object",
