@@ -47,7 +47,6 @@ Result<net::HttpResponse> send(net::HttpTransport& http, const std::shared_ptr<M
   request.wants = {"text"};
   request.referer = false;
   request.timeout_ms = call.timeout_ms;
-  request.capture = true;  // the answer is read by the provider, in the media vocabulary
   // The descriptor's address: origin = route base (usage cohort), the rest = path.
   const auto scheme = call.endpoint.find("://");
   const auto slash = scheme == std::string::npos ? std::string::npos : call.endpoint.find('/', scheme + 3);
@@ -64,6 +63,7 @@ Result<net::HttpResponse> send(net::HttpTransport& http, const std::shared_ptr<M
   if (!outcome) return Error(outcome.error().code, prefix + outcome.error().message);
   const llm::VariantResult& r = outcome->last();
   switch (r.state) {
+    case llm::State::ParseError:  // the family's text could not be read: the provider words its own parse error
     case llm::State::Ok: {
       net::HttpResponse resp;
       resp.status = r.http_status;
