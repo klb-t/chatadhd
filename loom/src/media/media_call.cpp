@@ -40,8 +40,7 @@ Result<net::HttpResponse> send(net::HttpTransport& http, const std::shared_ptr<M
   }
 
   llm::ModelRequest request;
-  request.kind = call.action;
-  request.action = call.action;
+  request.kind = call.action;  // the operation kind (guard cohort, provenance); no catalogue action: see S2_R8
   request.models = {llm::ModelSpec{call.model, "", Json::object()}};
   request.parameters = call.parameters;
   request.inputs = {call.input};

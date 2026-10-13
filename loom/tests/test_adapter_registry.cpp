@@ -156,7 +156,7 @@ TEST_SUITE("adapter registry") {
     CHECK(gone.error().message.find("known: groq_whisper, google_speech") != std::string::npos);
   }
 
-  TEST_CASE("media: ASR and OCR are the model action - provenance recorded, no secret in it, action can be switched off") {
+  TEST_CASE("media: ASR and OCR are the model action - provenance recorded, no secret in it, guard ledger written") {
     fsutil::TempDir td;
     Secrets secrets(td.path() / "secrets.json");
     secrets.set("groq_api_key", "gk-secret");
@@ -171,11 +171,11 @@ TEST_SUITE("adapter registry") {
     LOOM_REQUIRE_OK(mp.ocr_bytes("img", "png"));
     REQUIRE(records.size() == 2);
     CHECK(records[0]["schema"] == "loom.model_use/1");
-    CHECK(records[0]["action"] == "media.asr");
+    CHECK(records[0]["kind"] == "media.asr");
     CHECK(records[0]["adapter"] == "openai_transcriptions");
     CHECK(records[0]["provider"] == "groq");
     CHECK(records[0]["status"] == "ok");
-    CHECK(records[1]["action"] == "media.ocr");
+    CHECK(records[1]["kind"] == "media.ocr");
     CHECK(records[1]["adapter"] == "ocr_space_form");
     for (const auto& r : records) {
       const std::string text = r.dump();
@@ -185,13 +185,11 @@ TEST_SUITE("adapter registry") {
     }
     // The usage ledger of the data directory admitted both calls.
     CHECK(std::filesystem::exists(td.path() / "usage-policy.sqlite"));
-
-    // The action catalogue is data: switched off, nothing is sent.
-    loom::test::declare_action_status(td.path(), "media.asr", "planned");
-    const auto before = http.requests().size();
-    auto off = mp.transcribe_bytes("abc", "mp3", std::string("groq"));
-    REQUIRE_FALSE(off);
-    CHECK(off.error().code == Errc::Unsupported);
-    CHECK(http.requests().size() == before);
+    // A normal admitted call carries its usage receipt id (not only a held one), and the ledger holds that entry.
+    const std::string op = records[0]["operation_id"].get<std::string>();
+    CHECK(op.rfind("model_usage_", 0) == 0);
+    auto ledger = unwrap(fsutil::read_file(td.path() / "usage-policy.sqlite"));
+    auto wal = fsutil::read_file(td.path() / "usage-policy.sqlite-wal");
+    CHECK((ledger.find(op) != std::string::npos || (wal && wal->find(op) != std::string::npos)));
   }
 }

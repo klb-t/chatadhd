@@ -315,6 +315,7 @@ struct VariantResult {
   std::string body;                           // buffered or captured body; the error body on HttpError
   std::size_t received_bytes = 0;
   bool response_limited = false;
+  std::string operation_id;                   // usage receipt of the admission (held or dispatched); "" = unguarded
   Json hold = nullptr;                        // Held: {status, decision, decisions}
   Json provenance = Json::object();
   bool ok() const noexcept { return state == State::Ok; }

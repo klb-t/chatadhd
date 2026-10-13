@@ -14,7 +14,7 @@
 namespace loom::media_detail {
 
 struct WireCall {
-  std::string action;      // action id: "media.asr" | "media.ocr"
+  std::string action;      // operation kind: "media.asr" | "media.ocr"
   std::string manifest;    // provider manifest id
   std::string adapter;     // wire family (llm adapter)
   std::string endpoint;    // absolute URL from the descriptor

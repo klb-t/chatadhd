@@ -503,7 +503,8 @@ void finalize_provenance(VariantResult& r, const PreparedCall& call) {
     }
     p["outputs"] = std::move(outs);
   }
-  if (r.hold.is_object() && r.hold["decision"].is_object())
+  if (!r.operation_id.empty()) p["operation_id"] = r.operation_id;
+  else if (r.hold.is_object() && r.hold["decision"].is_object())
     p["operation_id"] = r.hold["decision"].value("operation_id", Json(nullptr));
   p["recorded_at"] = timeutil::utc_now_iso();
   r.provenance = std::move(p);
@@ -541,6 +542,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
       finalize_provenance(r, call);
       return r;
     }
+    if (admitted->decision.is_object()) r.operation_id = json::get_string(admitted->decision, "operation_id");
     if (!admitted->dispatch) {
       r.state = State::Held;
       r.hold = Json{{"status", admitted->status}, {"decision", admitted->decision}, {"decisions", admitted->decisions}};
