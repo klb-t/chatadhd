@@ -896,6 +896,14 @@
       "security.backends": {
         "provider": "storage.probe",
         "as": "storage_backends_reachable"
+      },
+      "data.devices": {
+        "provider": "devices.enumerate",
+        "as": "devices",
+        "params": {
+          "pointer": "/devices",
+          "platforms_pointer": "/device_platforms"
+        }
       }
     },
     "seed": {
@@ -984,6 +992,27 @@
           "node": {
             "class": "person"
           }
+        },
+        "devices": {
+          "order": 6,
+          "kind": "devices",
+          "label": {
+            "en": "Input/output devices",
+            "pl": "Urządzenia wejścia/wyjścia"
+          },
+          "bindings": [
+            "data.devices"
+          ],
+          "lists": [
+            {
+              "as": "devices",
+              "pointer": "/devices"
+            },
+            {
+              "as": "platforms",
+              "pointer": "/device_platforms"
+            }
+          ]
         }
       }
     },
@@ -1274,6 +1303,150 @@
           "traits": [
             "self_model"
           ]
+        },
+        "device": {
+          "label": {
+            "en": "Device",
+            "pl": "Urządzenie"
+          },
+          "traits": [
+            "device"
+          ]
+        },
+        "input_device": {
+          "label": {
+            "en": "Input device",
+            "pl": "Urządzenie wejścia"
+          },
+          "parent": "device",
+          "traits": [
+            "input_device"
+          ]
+        },
+        "output_device": {
+          "label": {
+            "en": "Output device",
+            "pl": "Urządzenie wyjścia"
+          },
+          "parent": "device",
+          "traits": [
+            "output_device"
+          ]
+        },
+        "microphone": {
+          "label": {
+            "en": "Microphone",
+            "pl": "Mikrofon"
+          },
+          "parent": "input_device",
+          "traits": [
+            "captures_audio",
+            "needs_permission"
+          ]
+        },
+        "camera": {
+          "label": {
+            "en": "Camera",
+            "pl": "Aparat"
+          },
+          "parent": "input_device",
+          "traits": [
+            "captures_image",
+            "captures_video",
+            "needs_permission"
+          ]
+        },
+        "screen": {
+          "label": {
+            "en": "Screen",
+            "pl": "Ekran"
+          },
+          "parent": "output_device",
+          "traits": [
+            "displays_visual"
+          ]
+        },
+        "speaker": {
+          "label": {
+            "en": "Speaker",
+            "pl": "Głośnik"
+          },
+          "parent": "output_device",
+          "traits": [
+            "plays_audio"
+          ]
+        },
+        "file_access": {
+          "label": {
+            "en": "File access",
+            "pl": "Dostęp do plików"
+          },
+          "parent": "device",
+          "traits": [
+            "input_device",
+            "output_device"
+          ]
+        },
+        "clipboard": {
+          "label": {
+            "en": "Clipboard",
+            "pl": "Schowek"
+          },
+          "parent": "device",
+          "traits": [
+            "input_device",
+            "output_device",
+            "holds_clipboard"
+          ]
+        },
+        "notifications": {
+          "label": {
+            "en": "Notifications",
+            "pl": "Powiadomienia"
+          },
+          "parent": "output_device",
+          "traits": [
+            "notifies",
+            "needs_permission"
+          ]
+        },
+        "storage_backend": {
+          "label": {
+            "en": "Storage backend",
+            "pl": "Magazyn"
+          },
+          "parent": "storage",
+          "traits": [
+            "device",
+            "input_device",
+            "output_device"
+          ]
+        },
+        "network_endpoint": {
+          "label": {
+            "en": "Network endpoint",
+            "pl": "Punkt sieciowy"
+          },
+          "parent": "device",
+          "traits": [
+            "input_device",
+            "output_device",
+            "remote"
+          ]
+        },
+        "model_provider": {
+          "label": {
+            "en": "Model provider",
+            "pl": "Dostawca modeli"
+          },
+          "parent": "network_endpoint"
+        },
+        "server_endpoint": {
+          "label": {
+            "en": "Server",
+            "pl": "Serwer"
+          },
+          "parent": "network_endpoint"
         }
       },
       "traits": {
@@ -1444,6 +1617,90 @@
             "pl": "Propozycja wiedzy"
           },
           "description": "Produced: proposed semantic knowledge, not yet accepted."
+        },
+        "device": {
+          "label": {
+            "en": "Device",
+            "pl": "Urządzenie"
+          },
+          "description": "An input/output device or endpoint of the application (microphone, screen, storage, network endpoint...). A description plus platform availability; no hardware access is implied."
+        },
+        "input_device": {
+          "label": {
+            "en": "Input device",
+            "pl": "Urządzenie wejścia"
+          },
+          "description": "Brings data into the application."
+        },
+        "output_device": {
+          "label": {
+            "en": "Output device",
+            "pl": "Urządzenie wyjścia"
+          },
+          "description": "Takes data out of the application."
+        },
+        "captures_audio": {
+          "label": {
+            "en": "Captures audio",
+            "pl": "Rejestruje dźwięk"
+          },
+          "description": "Can record sound (not the recording itself: that is has_audio)."
+        },
+        "captures_image": {
+          "label": {
+            "en": "Captures images",
+            "pl": "Rejestruje obraz"
+          },
+          "description": "Can capture still images."
+        },
+        "captures_video": {
+          "label": {
+            "en": "Captures video",
+            "pl": "Rejestruje wideo"
+          },
+          "description": "Can capture moving images."
+        },
+        "plays_audio": {
+          "label": {
+            "en": "Plays audio",
+            "pl": "Odtwarza dźwięk"
+          },
+          "description": "Can play sound."
+        },
+        "displays_visual": {
+          "label": {
+            "en": "Displays visuals",
+            "pl": "Wyświetla obraz"
+          },
+          "description": "Can show text, images or video to the user."
+        },
+        "holds_clipboard": {
+          "label": {
+            "en": "Holds clipboard",
+            "pl": "Ma schowek"
+          },
+          "description": "Reads or writes the system clipboard."
+        },
+        "notifies": {
+          "label": {
+            "en": "Notifies",
+            "pl": "Powiadamia"
+          },
+          "description": "Can raise a notification for the user."
+        },
+        "needs_permission": {
+          "label": {
+            "en": "Needs permission",
+            "pl": "Wymaga zgody"
+          },
+          "description": "Use is gated by an operating-system or browser permission granted by the user."
+        },
+        "remote": {
+          "label": {
+            "en": "Remote",
+            "pl": "Zdalne"
+          },
+          "description": "Reached over the network; data sent to it leaves the device."
         }
       },
       "groups": {
@@ -1610,6 +1867,16 @@
           "form_ops": [
             "express"
           ]
+        },
+        "devices": {
+          "label": {
+            "en": "Input/output devices and endpoints",
+            "pl": "Urządzenia wejścia/wyjścia i punkty końcowe"
+          },
+          "traits": [
+            "device"
+          ],
+          "element_match": "any"
         }
       },
       "relations": {
@@ -2291,6 +2558,231 @@
           "domain": "cli",
           "pointer": "/commands"
         }
+      }
+    },
+    "devices": {
+      "microphone": {
+        "class": "microphone",
+        "label": {
+          "en": "Microphone",
+          "pl": "Mikrofon"
+        },
+        "availability": {
+          "web": "permission",
+          "android": "permission",
+          "server": "unavailable",
+          "cli": "unavailable"
+        },
+        "note": {
+          "en": "Browser getUserMedia / Android RECORD_AUDIO; a server or CLI has no capture device unless a host provides one.",
+          "pl": "Przeglądarka getUserMedia / Android RECORD_AUDIO; serwer i CLI nie mają urządzenia, chyba że udostępni je host."
+        }
+      },
+      "camera": {
+        "class": "camera",
+        "label": {
+          "en": "Camera",
+          "pl": "Aparat"
+        },
+        "availability": {
+          "web": "permission",
+          "android": "permission",
+          "server": "unavailable",
+          "cli": "unavailable"
+        }
+      },
+      "screen": {
+        "class": "screen",
+        "label": {
+          "en": "Screen",
+          "pl": "Ekran"
+        },
+        "availability": {
+          "web": "available",
+          "android": "available",
+          "server": "unavailable",
+          "cli": "available"
+        },
+        "note": {
+          "en": "CLI: terminal output.",
+          "pl": "CLI: wyjście terminala."
+        }
+      },
+      "speaker": {
+        "class": "speaker",
+        "label": {
+          "en": "Speaker",
+          "pl": "Głośnik"
+        },
+        "availability": {
+          "web": "available",
+          "android": "available",
+          "server": "unavailable",
+          "cli": "unavailable"
+        }
+      },
+      "file_access": {
+        "class": "file_access",
+        "label": {
+          "en": "Files",
+          "pl": "Pliki"
+        },
+        "availability": {
+          "web": "permission",
+          "android": "permission",
+          "server": "available",
+          "cli": "available"
+        },
+        "note": {
+          "en": "Web: file picker; Android: storage access; server/CLI: the process file system.",
+          "pl": "Web: wybierak plików; Android: dostęp do pamięci; serwer/CLI: system plików procesu."
+        }
+      },
+      "clipboard": {
+        "class": "clipboard",
+        "label": {
+          "en": "Clipboard",
+          "pl": "Schowek"
+        },
+        "availability": {
+          "web": "permission",
+          "android": "available",
+          "server": "unavailable",
+          "cli": "unavailable"
+        }
+      },
+      "notifications": {
+        "class": "notifications",
+        "label": {
+          "en": "Notifications",
+          "pl": "Powiadomienia"
+        },
+        "availability": {
+          "web": "permission",
+          "android": "permission",
+          "server": "unavailable",
+          "cli": "available"
+        },
+        "note": {
+          "en": "CLI: terminal bell/line.",
+          "pl": "CLI: dzwonek/linia terminala."
+        }
+      },
+      "storage_backends": {
+        "class": "storage_backend",
+        "label": {
+          "en": "Configured storage backends",
+          "pl": "Skonfigurowane magazyny"
+        },
+        "availability": {
+          "web": "available",
+          "android": "available",
+          "server": "available",
+          "cli": "available"
+        },
+        "instances": {
+          "from": {
+            "domain": "storage_security",
+            "pointer": "/storages"
+          },
+          "class": "storage_backend",
+          "availability_key": "available_on",
+          "platform_map": {
+            "web": [
+              "web",
+              "all"
+            ],
+            "android": [
+              "android",
+              "all"
+            ],
+            "server": [
+              "server",
+              "linux",
+              "macos",
+              "windows",
+              "all"
+            ],
+            "cli": [
+              "linux",
+              "macos",
+              "windows",
+              "all"
+            ]
+          }
+        },
+        "note": {
+          "en": "One node per storage in the storage_security profile; their availability is that profile's available_on (OS names), mapped to platforms here.",
+          "pl": "Jeden węzeł na magazyn z profilu storage_security; dostępność z jego pola available_on (nazwy systemów), tu mapowana na platformy."
+        }
+      },
+      "model_providers": {
+        "class": "model_provider",
+        "label": {
+          "en": "Model providers",
+          "pl": "Dostawcy modeli"
+        },
+        "availability": {
+          "web": "available",
+          "android": "available",
+          "server": "available",
+          "cli": "available"
+        },
+        "secret_keys": [
+          "api_key",
+          "anthropic_batch_key",
+          "groq_api_key",
+          "google_speech_api_key",
+          "ocr_space_api_key"
+        ],
+        "config_keys": [
+          "base_url"
+        ],
+        "note": {
+          "en": "Chat (base_url + api_key), batch (anthropic_batch_key), speech (Groq, Google), OCR (ocr.space). Reachable only with a key and network.",
+          "pl": "Czat (base_url + api_key), batch (anthropic_batch_key), mowa (Groq, Google), OCR (ocr.space). Dostępne tylko z kluczem i siecią."
+        }
+      },
+      "sync_server": {
+        "class": "server_endpoint",
+        "label": {
+          "en": "Server and sync",
+          "pl": "Serwer i synchronizacja"
+        },
+        "availability": {
+          "web": "available",
+          "android": "available",
+          "server": "available",
+          "cli": "available"
+        },
+        "secret_keys": [
+          "github_token"
+        ],
+        "config_keys": [
+          "github_repo"
+        ],
+        "note": {
+          "en": "Loom HTTP server and GitHub sync endpoint.",
+          "pl": "Serwer HTTP Loom i punkt synchronizacji GitHub."
+        }
+      }
+    },
+    "device_platforms": {
+      "web": {
+        "en": "Web (browser)",
+        "pl": "Web (przeglądarka)"
+      },
+      "android": {
+        "en": "Android",
+        "pl": "Android"
+      },
+      "server": {
+        "en": "Server",
+        "pl": "Serwer"
+      },
+      "cli": {
+        "en": "Command line",
+        "pl": "Wiersz poleceń"
       }
     }
   },

@@ -2,7 +2,7 @@
   "schema": "loom.graph_classes/1",
   "revision": 1,
   "calibration": true,
-  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Inheritance applies to classes only; setting values do not inherit (they resolve through scopes). Wave 2 (GRAF_HUB_KOD_SILNIK §5-§7): classes declare `traits` (inherited along `parent`; a class id is also a trait of its own, so `requires: [\"message\"]` means \"is a message\"); a node may add traits of its own. Actions never appear here: an action fits an element when the element has the traits the action requires (data/runtime/actions.pack). `content` and `form` are separate nodes (§6): a form expresses a content (relation `expresses`, weight = fidelity); forms are subclassed per modality. `groups` are named trait bundles; the list is open.",
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Inheritance applies to classes only; setting values do not inherit (they resolve through scopes). Wave 2 (GRAF_HUB_KOD_SILNIK §5-§7): classes declare `traits` (inherited along `parent`; a class id is also a trait of its own, so `requires: [\"message\"]` means \"is a message\"); a node may add traits of its own. Actions never appear here: an action fits an element when the element has the traits the action requires (data/runtime/actions.pack). `content` and `form` are separate nodes (§6): a form expresses a content (relation `expresses`, weight = fidelity); forms are subclassed per modality. `groups` are named trait bundles; the list is open. Devices (GRAF_HUB_KOD_SILNIK §4.3, S2/R9): the class `device` and its subclasses describe input/output devices; their instances and platform availability are in data/graph/devices.pack.",
   "traits": {
     "has_text": {
       "label": {
@@ -171,6 +171,90 @@
         "pl": "Propozycja wiedzy"
       },
       "description": "Produced: proposed semantic knowledge, not yet accepted."
+    },
+    "device": {
+      "label": {
+        "en": "Device",
+        "pl": "Urządzenie"
+      },
+      "description": "An input/output device or endpoint of the application (microphone, screen, storage, network endpoint...). A description plus platform availability; no hardware access is implied."
+    },
+    "input_device": {
+      "label": {
+        "en": "Input device",
+        "pl": "Urządzenie wejścia"
+      },
+      "description": "Brings data into the application."
+    },
+    "output_device": {
+      "label": {
+        "en": "Output device",
+        "pl": "Urządzenie wyjścia"
+      },
+      "description": "Takes data out of the application."
+    },
+    "captures_audio": {
+      "label": {
+        "en": "Captures audio",
+        "pl": "Rejestruje dźwięk"
+      },
+      "description": "Can record sound (not the recording itself: that is has_audio)."
+    },
+    "captures_image": {
+      "label": {
+        "en": "Captures images",
+        "pl": "Rejestruje obraz"
+      },
+      "description": "Can capture still images."
+    },
+    "captures_video": {
+      "label": {
+        "en": "Captures video",
+        "pl": "Rejestruje wideo"
+      },
+      "description": "Can capture moving images."
+    },
+    "plays_audio": {
+      "label": {
+        "en": "Plays audio",
+        "pl": "Odtwarza dźwięk"
+      },
+      "description": "Can play sound."
+    },
+    "displays_visual": {
+      "label": {
+        "en": "Displays visuals",
+        "pl": "Wyświetla obraz"
+      },
+      "description": "Can show text, images or video to the user."
+    },
+    "holds_clipboard": {
+      "label": {
+        "en": "Holds clipboard",
+        "pl": "Ma schowek"
+      },
+      "description": "Reads or writes the system clipboard."
+    },
+    "notifies": {
+      "label": {
+        "en": "Notifies",
+        "pl": "Powiadamia"
+      },
+      "description": "Can raise a notification for the user."
+    },
+    "needs_permission": {
+      "label": {
+        "en": "Needs permission",
+        "pl": "Wymaga zgody"
+      },
+      "description": "Use is gated by an operating-system or browser permission granted by the user."
+    },
+    "remote": {
+      "label": {
+        "en": "Remote",
+        "pl": "Zdalne"
+      },
+      "description": "Reached over the network; data sent to it leaves the device."
     }
   },
   "groups": {
@@ -337,6 +421,16 @@
       "form_ops": [
         "express"
       ]
+    },
+    "devices": {
+      "label": {
+        "en": "Input/output devices and endpoints",
+        "pl": "Urządzenia wejścia/wyjścia i punkty końcowe"
+      },
+      "traits": [
+        "device"
+      ],
+      "element_match": "any"
     }
   },
   "relations": {
@@ -647,6 +741,150 @@
       "traits": [
         "self_model"
       ]
+    },
+    "device": {
+      "label": {
+        "en": "Device",
+        "pl": "Urządzenie"
+      },
+      "traits": [
+        "device"
+      ]
+    },
+    "input_device": {
+      "label": {
+        "en": "Input device",
+        "pl": "Urządzenie wejścia"
+      },
+      "parent": "device",
+      "traits": [
+        "input_device"
+      ]
+    },
+    "output_device": {
+      "label": {
+        "en": "Output device",
+        "pl": "Urządzenie wyjścia"
+      },
+      "parent": "device",
+      "traits": [
+        "output_device"
+      ]
+    },
+    "microphone": {
+      "label": {
+        "en": "Microphone",
+        "pl": "Mikrofon"
+      },
+      "parent": "input_device",
+      "traits": [
+        "captures_audio",
+        "needs_permission"
+      ]
+    },
+    "camera": {
+      "label": {
+        "en": "Camera",
+        "pl": "Aparat"
+      },
+      "parent": "input_device",
+      "traits": [
+        "captures_image",
+        "captures_video",
+        "needs_permission"
+      ]
+    },
+    "screen": {
+      "label": {
+        "en": "Screen",
+        "pl": "Ekran"
+      },
+      "parent": "output_device",
+      "traits": [
+        "displays_visual"
+      ]
+    },
+    "speaker": {
+      "label": {
+        "en": "Speaker",
+        "pl": "Głośnik"
+      },
+      "parent": "output_device",
+      "traits": [
+        "plays_audio"
+      ]
+    },
+    "file_access": {
+      "label": {
+        "en": "File access",
+        "pl": "Dostęp do plików"
+      },
+      "parent": "device",
+      "traits": [
+        "input_device",
+        "output_device"
+      ]
+    },
+    "clipboard": {
+      "label": {
+        "en": "Clipboard",
+        "pl": "Schowek"
+      },
+      "parent": "device",
+      "traits": [
+        "input_device",
+        "output_device",
+        "holds_clipboard"
+      ]
+    },
+    "notifications": {
+      "label": {
+        "en": "Notifications",
+        "pl": "Powiadomienia"
+      },
+      "parent": "output_device",
+      "traits": [
+        "notifies",
+        "needs_permission"
+      ]
+    },
+    "storage_backend": {
+      "label": {
+        "en": "Storage backend",
+        "pl": "Magazyn"
+      },
+      "parent": "storage",
+      "traits": [
+        "device",
+        "input_device",
+        "output_device"
+      ]
+    },
+    "network_endpoint": {
+      "label": {
+        "en": "Network endpoint",
+        "pl": "Punkt sieciowy"
+      },
+      "parent": "device",
+      "traits": [
+        "input_device",
+        "output_device",
+        "remote"
+      ]
+    },
+    "model_provider": {
+      "label": {
+        "en": "Model provider",
+        "pl": "Dostawca modeli"
+      },
+      "parent": "network_endpoint"
+    },
+    "server_endpoint": {
+      "label": {
+        "en": "Server",
+        "pl": "Serwer"
+      },
+      "parent": "network_endpoint"
     }
   }
 }
