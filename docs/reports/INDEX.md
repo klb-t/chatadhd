@@ -441,3 +441,20 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§7, §9. Gałą�
 - Raport: `docs/reports/S2_R1_2026-10-13.md`. Cofnięcie: revert trzech commitów R1 (kolejno) i regeneracja `import_presets.inc`.
 - Otwarte: rejestr dostawców jest globalny (testy muszą go przywracać); nowa platforma o znanej strukturze = wpis presetu,
   nowa struktura = adapter w kodzie.
+
+## S2 / R5 — magazyn Google Drive i wysyłanie S3 w częściach (2026-10-13)
+
+- Google Drive jako kolejny magazyn w rejestrze magazynów: OAuth, `client_id`/`client_secret`/`refresh_token` jako sekrety,
+  token dostępu tylko w pamięci, odświeżany przed wygaśnięciem i raz po 401. Płaska przestrzeń nazw (nazwa pliku = klucz,
+  jeden folder). Adresy, folder, próg wysyłki wznawialnej — ustawienia (presety).
+- S3: duże obiekty w częściach (`multipart_part_size` preset 8 MiB, `multipart_threshold`, <0 wyłącza); błąd = przerwanie
+  wysyłki; jedyny limit to 10 000 części z protokołu (część rośnie, by się zmieścić). Małe pliki bez zmian.
+- Testy tylko na atrapach (bez sieci). Raport: `docs/reports/S2_R5_2026-10-13.md`. Cofnięcie: revert scalenia R5.
+- Otwarte: brak próby na prawdziwym Google/S3; obrócony `refresh_token` nie jest zapisywany z powrotem.
+
+## S2 / R6 — tryby analizy i warstwy wyszukiwania jako dane (2026-10-13)
+
+- Tryby `regex`/`llm`/`batch` to wpisy rejestru; kolejność w `worker.pack` (`analysis_modes`, domyślnie batch, llm, regex);
+  dwa tryby mogą dzielić jeden przebieg. Tryb `llm` przez istniejące `use_model`. Wyszukiwanie: lista warstw zamiast numeru,
+  pierwsza używalna odpowiada, awaria przekazuje do następnej; stary numeryczny konstruktor jako adapter.
+- Domyślne zachowanie bez zmian. Raport: `docs/reports/S2_R6_2026-10-13.md`. Cofnięcie: revert scalenia R6 lub kolejność w profilu.
