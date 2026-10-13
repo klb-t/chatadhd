@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "actions",
   "revision": 1,
-  "description": "Catalogue of actions: ONE kind of entity. An action is atomic (implemented by code or an adapter: use_model, save, share) or composite (steps of other actions, defined here as data). Both have the same shape: declared typed inputs and outputs, required traits of the input element, effect flags and a status. A call to use_model may name its action; an unknown, planned or non-model action is refused before any send. Matching elements to actions is a later wave. Entries with port/action are reachable through loom_invoke(port, action, json); their params carry field descriptions (has_default/default/edit) and http the server route.",
+  "description": "Catalogue of actions: ONE kind of entity. An action is atomic (implemented by code or an adapter: use_model, save, share) or composite (steps of other actions, defined here as data). Both have the same shape: declared typed inputs and outputs, effect flags and a status, plus what the matching engine (loom/include/loom/action_rules.h) needs: `requires` (traits the input element must have; a class id is a trait of its own), `produces` (traits of the output element), the two axes of GRAF_HUB_KOD_SILNIK §6 (`content_op`: what the action does to the content, `form_op`: whether it reads a form into content or expresses content in a form) and the declared `cost` (relative: 1 = one ordinary model call, not money) and `confidence` (0..1) used to rank chains. A new action fits every existing class whose traits meet its `requires` without editing the class. Which of the fitting actions are default, need confirmation or are denied is decided by the rules (data/runtime/action_rules.pack). A call to use_model may name its action; an unknown, planned or non-model action is refused before any send. Entries with port/action are reachable through loom_invoke(port, action, json); their params carry field descriptions (has_default/default/edit) and http the server route. All numbers and ops are calibration, editable in the overlay.",
   "defaults": {
     "schema": "loom.action_catalogue/1",
     "actions": {
@@ -31,6 +31,11 @@
           "file_ref"
         ],
         "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": false,
           "writes": false,
@@ -58,6 +63,11 @@
         ],
         "outputs": [],
         "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -85,6 +95,11 @@
         ],
         "outputs": [],
         "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": false,
           "writes": false,
@@ -116,6 +131,13 @@
         "requires": [
           "conversation"
         ],
+        "produces": [
+          "message"
+        ],
+        "content_op": "expand",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -146,6 +168,13 @@
         "requires": [
           "message"
         ],
+        "produces": [
+          "semantic_analysis"
+        ],
+        "content_op": "none",
+        "form_op": "read",
+        "cost": 0.2,
+        "confidence": 0.8,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -176,6 +205,13 @@
         "requires": [
           "message"
         ],
+        "produces": [
+          "semantic_analysis"
+        ],
+        "content_op": "none",
+        "form_op": "read",
+        "cost": 0.1,
+        "confidence": 0.8,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -206,6 +242,13 @@
         "requires": [
           "message"
         ],
+        "produces": [
+          "message"
+        ],
+        "content_op": "expand",
+        "form_op": "none",
+        "cost": 0.5,
+        "confidence": 0.9,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -236,6 +279,13 @@
         "requires": [
           "archive_item"
         ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "preserve",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.8,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -266,6 +316,13 @@
         "requires": [
           "prompt"
         ],
+        "produces": [
+          "classification"
+        ],
+        "content_op": "evaluate",
+        "form_op": "none",
+        "cost": 0.2,
+        "confidence": 0.85,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -298,6 +355,13 @@
         "requires": [
           "conversation"
         ],
+        "produces": [
+          "message"
+        ],
+        "content_op": "expand",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -329,6 +393,13 @@
         "requires": [
           "edge"
         ],
+        "produces": [
+          "classification"
+        ],
+        "content_op": "evaluate",
+        "form_op": "none",
+        "cost": 0.2,
+        "confidence": 0.8,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -360,6 +431,13 @@
         "requires": [
           "user_input"
         ],
+        "produces": [
+          "classification"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.2,
+        "confidence": 0.85,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -400,6 +478,11 @@
           "file_ref"
         ],
         "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.8,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -440,6 +523,11 @@
           "file_ref"
         ],
         "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 3.0,
+        "confidence": 0.7,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -471,6 +559,13 @@
         "requires": [
           "prompt"
         ],
+        "produces": [
+          "image_form"
+        ],
+        "content_op": "preserve",
+        "form_op": "express",
+        "cost": 3.0,
+        "confidence": 0.6,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -502,6 +597,13 @@
         "requires": [
           "prompt"
         ],
+        "produces": [
+          "video_form"
+        ],
+        "content_op": "preserve",
+        "form_op": "express",
+        "cost": 10.0,
+        "confidence": 0.5,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -533,6 +635,13 @@
         "requires": [
           "prompt"
         ],
+        "produces": [
+          "music_form"
+        ],
+        "content_op": "preserve",
+        "form_op": "express",
+        "cost": 5.0,
+        "confidence": 0.5,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -558,7 +667,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "storage"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -591,7 +707,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "storage"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -624,7 +747,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "storage"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -657,7 +787,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "storage"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -712,6 +849,11 @@
         "requires": [
           "has_hash"
         ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -762,7 +904,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "storage"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -830,7 +979,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "storage"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -910,7 +1066,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "storage"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -973,6 +1136,13 @@
         "requires": [
           "observation"
         ],
+        "produces": [
+          "knowledge_proposal"
+        ],
+        "content_op": "none",
+        "form_op": "read",
+        "cost": 1.0,
+        "confidence": 0.7,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -1003,6 +1173,13 @@
         "requires": [
           "text"
         ],
+        "produces": [
+          "has_embedding"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.05,
+        "confidence": 0.95,
         "effects": {
           "reads_only": true,
           "writes": false,
@@ -1035,6 +1212,13 @@
         "requires": [
           "analysis_contract"
         ],
+        "produces": [
+          "analysis_result"
+        ],
+        "content_op": "evaluate",
+        "form_op": "none",
+        "cost": 2.0,
+        "confidence": 0.8,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -1055,7 +1239,14 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "usage_ledger"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
         "effects": {
           "reads_only": false,
           "writes": true,
@@ -1065,6 +1256,729 @@
           "touches_private_data": true
         },
         "consumer": "loom/src/policy/usage_policy.cpp"
+      },
+      "transcribe": {
+        "id": "transcribe",
+        "kind": "atomic",
+        "status": "planned",
+        "title": "Transcribe a recording",
+        "description": "Read a sound recording into text (speech recognition); the text is a rendering of the same content.",
+        "labels": {
+          "pl": "Zapisz nagranie jako tekst"
+        },
+        "inputs": [
+          "audio"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_audio"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "preserve",
+        "form_op": "read",
+        "cost": 1.0,
+        "confidence": 0.85,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "describe_image": {
+        "id": "describe_image",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Describe an image",
+        "description": "Read an image into a text description of what it shows.",
+        "labels": {
+          "pl": "Opisz obraz"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "image",
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_image"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "preserve",
+        "form_op": "read",
+        "cost": 1.0,
+        "confidence": 0.75,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "ocr": {
+        "id": "ocr",
+        "kind": "atomic",
+        "status": "planned",
+        "title": "Read text from an image",
+        "description": "Recognise the text printed or written in an image.",
+        "labels": {
+          "pl": "Odczytaj tekst ze zdjęcia"
+        },
+        "inputs": [
+          "image"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_image"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "preserve",
+        "form_op": "read",
+        "cost": 0.3,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "summarise": {
+        "id": "summarise",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Summarise",
+        "description": "Condense a text content, keeping what matters.",
+        "labels": {
+          "pl": "Streść"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text",
+          "summary"
+        ],
+        "content_op": "condense",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "translate": {
+        "id": "translate",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Translate",
+        "description": "Carry a text content into another language.",
+        "labels": {
+          "pl": "Przetłumacz"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "preserve",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "elaborate": {
+        "id": "elaborate",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Elaborate",
+        "description": "Develop a text content: add detail, examples, the missing steps.",
+        "labels": {
+          "pl": "Dopowiedz"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "expand",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "parody": {
+        "id": "parody",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Parody",
+        "description": "Change the tone or style of a text content while keeping its subject.",
+        "labels": {
+          "pl": "Sparodiuj"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "restyle",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.7,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "critique": {
+        "id": "critique",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Critique",
+        "description": "Evaluate a text content: strengths, weaknesses, credibility.",
+        "labels": {
+          "pl": "Skrytykuj"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text",
+          "critique"
+        ],
+        "content_op": "evaluate",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "combine": {
+        "id": "combine",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Combine",
+        "description": "Put several contents side by side and join them into one.",
+        "labels": {
+          "pl": "Zestaw"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text",
+          "json"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "combine",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "depict": {
+        "id": "depict",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Depict as an image",
+        "description": "Express a text content as an image.",
+        "labels": {
+          "pl": "Namaluj"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "image"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "image_form"
+        ],
+        "content_op": "preserve",
+        "form_op": "express",
+        "cost": 3.0,
+        "confidence": 0.6,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "narrate": {
+        "id": "narrate",
+        "kind": "composite",
+        "status": "planned",
+        "title": "Read aloud",
+        "description": "Express a text content as speech.",
+        "labels": {
+          "pl": "Przeczytaj na głos"
+        },
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "audio"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "audio_form"
+        ],
+        "content_op": "preserve",
+        "form_op": "express",
+        "cost": 1.0,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": ""
+      },
+      "actions.for": {
+        "id": "actions.for",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Actions that fit an element",
+        "description": "Which actions fit the element: traits it has against the traits each action requires, then the rules of the scope. Each row: status (applicable, needs_confirmation, denied with reason, default) and the explanation.",
+        "labels": {
+          "pl": "Akcje pasujące do elementu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/action_rules.cpp",
+        "port": "actions",
+        "action": "for",
+        "params": [
+          {
+            "name": "element",
+            "type": "object",
+            "required": true,
+            "description": {
+              "en": "The element: {\"class\": class id, \"traits\": [extra traits], \"attrs\": {...}, \"id\": optional}",
+              "pl": "Element: {\"class\": id klasy, \"traits\": [dodatkowe cechy], \"attrs\": {...}, \"id\": opcjonalnie}"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Scope level of the scopes chain, or an object {level: instance id}; default: the most specific level",
+              "pl": "Poziom łańcucha zakresów albo obiekt {poziom: id}; domyślnie najbardziej szczegółowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "include_unmatched",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Also list actions whose requirements the element does not meet (status not_applicable, with the missing traits)",
+              "pl": "Wypisz także akcje, których wymagań element nie spełnia (status not_applicable, z brakującymi cechami)"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/for"
+        }
+      },
+      "actions.explain": {
+        "id": "actions.explain",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Explain one action for an element",
+        "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them.",
+        "labels": {
+          "pl": "Wyjaśnij jedną akcję dla elementu"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/action_rules.cpp",
+        "port": "actions",
+        "action": "explain",
+        "params": [
+          {
+            "name": "element",
+            "type": "object",
+            "required": true,
+            "description": {
+              "en": "The element: {\"class\": class id, \"traits\": [extra traits], \"attrs\": {...}, \"id\": optional}",
+              "pl": "Element: {\"class\": id klasy, \"traits\": [dodatkowe cechy], \"attrs\": {...}, \"id\": opcjonalnie}"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Action id from the catalogue",
+              "pl": "Identyfikator akcji z katalogu"
+            },
+            "has_default": false,
+            "edit": "choice:actions"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Scope level of the scopes chain, or an object {level: instance id}; default: the most specific level",
+              "pl": "Poziom łańcucha zakresów albo obiekt {poziom: id}; domyślnie najbardziej szczegółowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/explain"
+        }
+      },
+      "actions.propose_chain": {
+        "id": "actions.propose_chain",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Propose a chain of actions",
+        "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed.",
+        "labels": {
+          "pl": "Zaproponuj łańcuch akcji"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/action_rules.cpp",
+        "port": "actions",
+        "action": "propose_chain",
+        "params": [
+          {
+            "name": "element",
+            "type": "object",
+            "required": true,
+            "description": {
+              "en": "The element: {\"class\": class id, \"traits\": [extra traits], \"attrs\": {...}, \"id\": optional}",
+              "pl": "Element: {\"class\": id klasy, \"traits\": [dodatkowe cechy], \"attrs\": {...}, \"id\": opcjonalnie}"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "target_trait",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The trait the element should get",
+              "pl": "Cecha, którą element ma zyskać"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "target_action",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The action the element should become fit for",
+              "pl": "Akcja, do której element ma się nadać"
+            },
+            "has_default": false,
+            "edit": "choice:actions"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Scope level of the scopes chain, or an object {level: instance id}; default: the most specific level",
+              "pl": "Poziom łańcucha zakresów albo obiekt {poziom: id}; domyślnie najbardziej szczegółowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "preset",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Extrapolation preset (off disables proposals); default: the active preset",
+              "pl": "Preset ekstrapolacji (off wyłącza propozycje); domyślnie aktywny"
+            },
+            "has_default": false,
+            "edit": "choice:extrapolation_presets"
+          },
+          {
+            "name": "max_length",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "Longest chain; absent = the preset value, null = no bound",
+              "pl": "Najdłuższy łańcuch; brak = wartość presetu, null = bez ograniczenia"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "max_cost",
+            "type": "number",
+            "required": false,
+            "description": {
+              "en": "Largest total declared cost; absent = the preset value, null = no bound",
+              "pl": "Największy łączny koszt; brak = wartość presetu, null = bez ograniczenia"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "min_confidence",
+            "type": "number",
+            "required": false,
+            "description": {
+              "en": "Lowest total confidence; absent = the preset value, null = no bound",
+              "pl": "Najniższa łączna pewność; brak = wartość presetu, null = bez ograniczenia"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "max_results",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many chains to return; absent = the preset value, null = all",
+              "pl": "Ile łańcuchów zwrócić; brak = wartość presetu, null = wszystkie"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/propose_chain"
+        }
       }
     }
   },
@@ -1175,10 +2089,36 @@
             },
             "requires": {
               "type": "array",
-              "description": "Free-form traits the input element must have.",
+              "description": "Traits the input element must have (all of them). A class id is a trait of its own; classes declare further traits in graph/classes.pack.",
               "items": {
                 "type": "string"
               }
+            },
+            "produces": {
+              "type": "array",
+              "description": "Traits of the output element (a produced class id stands for the traits of that class).",
+              "items": {
+                "type": "string"
+              }
+            },
+            "content_op": {
+              "type": "string",
+              "description": "What the action does to the content: preserve, condense, expand, restyle, evaluate, combine or none (open list, see action_rules axes)."
+            },
+            "form_op": {
+              "type": "string",
+              "description": "read (form to content), express (content to form) or none (open list)."
+            },
+            "cost": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Declared relative cost (1 = one ordinary model call); ranks chain proposals, never a limit."
+            },
+            "confidence": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1,
+              "description": "Declared confidence that the result keeps what the caller meant (0..1); ranks chain proposals."
             },
             "effects": {
               "type": "object",
