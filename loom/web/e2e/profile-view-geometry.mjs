@@ -90,6 +90,8 @@ const server = createServer(async (req, res) => {
       { type: "done", conv_id: conv, assistant_message_id: `${id}-reply` }]) res.write(`data: ${JSON.stringify(chunk)}\n\n`);
     res.end(); return;
   }
+  // P1: the app asks whether the server runs accounts; this fixture is a single-user server.
+  if (url.pathname === "/api/auth/me") return json({ accounts: false });
   if (url.pathname.startsWith("/api/")) {
     failures.push(`${req.method} ${url.pathname}`); res.writeHead(404).end(JSON.stringify({ error: { message: "Unsupported fixture endpoint" } })); return;
   }

@@ -21,8 +21,13 @@ test('single-user server: nothing to sign in to; accounts server: signed out or 
   assert.equal(a.showsApp(a.authStateFromMe({ accounts: true, authenticated: false, registration: 'closed' })), false);
 });
 
-test('a malformed answer is an error and never opens the app; unknown registration is treated as closed', () => {
-  for (const bad of [null, [], 'x', {}, { accounts: 'yes' }]) assert.equal(a.authStateFromMe(bad).phase, 'error');
+test('a malformed or missing answer degrades to unverified (app shown, server still enforces sessions; R43); unknown registration is treated as closed', () => {
+  for (const bad of [null, [], 'x', {}, { accounts: 'yes' }]) {
+    const st = a.authStateFromMe(bad);
+    assert.equal(st.phase, 'unverified');
+    assert.equal(a.showsApp(st), true);
+    assert.equal(a.authReduce(st, { type: 'unauthorized' }).phase, 'signed_out');
+  }
   assert.equal(a.authStateFromMe({ accounts: true, authenticated: false, registration: 'weird' }).registration, 'closed');
   assert.equal(a.authStateFromMe({ accounts: true, authenticated: true, registration: 'open', user: { id: 1 } }).phase, 'signed_out');
 });
@@ -33,7 +38,7 @@ test('401 while signed in returns to the sign-in screen; logout too; a single-us
   assert.deepEqual(a.authReduce(inState, { type: 'unauthorized' }), { phase: 'signed_out', registration: 'closed' });
   assert.deepEqual(a.authReduce(inState, { type: 'signed_out' }), { phase: 'signed_out', registration: 'closed' });
   assert.deepEqual(a.authReduce({ phase: 'open' }, { type: 'unauthorized' }), { phase: 'open' });
-  assert.equal(a.authReduce({ phase: 'loading' }, { type: 'me_failed', reason: 'down' }).phase, 'error');
+  assert.equal(a.authReduce({ phase: 'loading' }, { type: 'me_failed', reason: 'down' }).phase, 'unverified');
 });
 
 test('texts come from the accounts catalog; a missing catalog falls back to ids', () => {

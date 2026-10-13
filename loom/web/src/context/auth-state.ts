@@ -14,7 +14,11 @@ export type AuthState =
   | { phase: "open" }
   | { phase: "signed_out"; registration: Registration }
   | { phase: "signed_in"; registration: Registration; user: AccountUser }
-  | { phase: "error"; reason: string };
+  | { phase: "error"; reason: string }
+  /** /api/auth/me unavailable (older or single-user server, fixture, network): the app is shown
+   *  (R43: a missing capability degrades, never blocks); the server still enforces sessions, and
+   *  the first 401 switches to the sign-in screen. */
+  | { phase: "unverified"; reason: string };
 
 function record(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -22,7 +26,7 @@ function record(value: unknown): value is Record<string, unknown> {
 
 /** Classifies a GET /api/auth/me body. A malformed body is an error, never "open". */
 export function authStateFromMe(me: unknown): AuthState {
-  if (!record(me) || typeof me.accounts !== "boolean") return { phase: "error", reason: "auth_me_invalid" };
+  if (!record(me) || typeof me.accounts !== "boolean") return { phase: "unverified", reason: "auth_me_invalid" };
   if (!me.accounts) return { phase: "open" };
   const registration = me.registration === "open" || me.registration === "invite" || me.registration === "closed"
     ? me.registration : "closed";
@@ -42,8 +46,9 @@ export type AuthEvent =
 export function authReduce(state: AuthState, event: AuthEvent): AuthState {
   switch (event.type) {
     case "me": return authStateFromMe(event.body);
-    case "me_failed": return { phase: "error", reason: event.reason };
+    case "me_failed": return { phase: "unverified", reason: event.reason };
     case "unauthorized":
+      if (state.phase === "unverified") return { phase: "signed_out", registration: "closed" };
       return state.phase === "signed_in" ? { phase: "signed_out", registration: state.registration } : state;
     case "signed_out":
       return state.phase === "signed_in" ? { phase: "signed_out", registration: state.registration } : state;
@@ -52,7 +57,7 @@ export function authReduce(state: AuthState, event: AuthEvent): AuthState {
 
 /** The UI shows the app for `open` and `signed_in`; the sign-in screen only for `signed_out`. */
 export function showsApp(state: AuthState): boolean {
-  return state.phase === "open" || state.phase === "signed_in";
+  return state.phase === "open" || state.phase === "signed_in" || state.phase === "unverified";
 }
 
 export type AccountsTextId =
