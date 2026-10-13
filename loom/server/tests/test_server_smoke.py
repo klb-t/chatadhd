@@ -288,6 +288,19 @@ def main() -> int:
         r = requests.get(f"{base}/api/healthz")
         assert r.status_code == 200 and r.json().get("ok") is True, r.text
 
+        # storage routes are generated from the action table; responses equal the former per-route calls
+        st = requests.get(f"{base}/api/storage/status")
+        assert st.status_code == 200 and "categories" in st.json(), st.text
+        cats = requests.get(f"{base}/api/storage/placement").json()
+        assert cats == {"categories": st.json()["categories"]}, cats
+        assert requests.get(f"{base}/api/storage/kinds").json() == st.json()["kinds"]
+        assert requests.get(f"{base}/api/storage/probe").status_code == 200
+        assert requests.get(f"{base}/api/storage/placement", params={"category": "nope"}).status_code == 404
+        assert requests.get(f"{base}/api/storage/locate").status_code == 400
+        assert requests.get(f"{base}/api/storage/locate", params={"hash": "ab"}).json()["hash"] == "ab"
+        for verb in ("copy", "move", "backup"):
+            assert requests.post(f"{base}/api/storage/{verb}", json={}).status_code == 400, verb
+
         r = requests.get(f"{base}/api/version")
         assert r.status_code == 200 and "version" in r.json(), r.text
 

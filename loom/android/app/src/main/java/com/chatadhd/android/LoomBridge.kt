@@ -250,6 +250,11 @@ class LoomBridge(webView: WebView) {
     @JavascriptInterface
     fun githubSync(requestJson: String, callbackId: String): String = runAsync(callbackId) { invokeArgs("github_sync", requestJson) }
 
+    // ── perform action (loom_invoke): port "storage" | "github" | "core" ───────
+    @JavascriptInterface
+    fun invoke(port: String, action: String, requestJson: String, callbackId: String): String =
+        runAsync(callbackId) { invokeArgs("invoke", port, action, requestJson) }
+
     // ── events ─────────────────────────────────────────────────────────
     /** Delivers {"event":name,"payload":...} through [LoomCallbacks] until [unsubscribe]. */
     @JavascriptInterface

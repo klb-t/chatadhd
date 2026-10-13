@@ -520,3 +520,49 @@ TEST_SUITE("capi") {
     loom_shutdown(b);
   }
 }
+
+TEST_CASE("loom_invoke: storage actions equal the deprecated loom_github_sync alias; table; errors") {
+  // fixture mirrors the other C ABI tests: a fresh context in a temp dir
+  Ctx c;
+  LoomContext* ctx = c.ctx;
+  Json cat = take(loom_invoke(ctx, "actions", "list", nullptr));
+  REQUIRE(cat["actions"].is_array());
+  int storage_rows = 0;
+  for (const auto& row : cat["actions"]) {
+    // every registered action has a complete description
+    for (const char* k : {"id", "port", "action", "kind", "status", "description", "inputs", "outputs",
+                          "required_traits", "effects", "http"})
+      CHECK_MESSAGE(row.contains(k), row.value("id", "?"), " lacks ", k);
+    CHECK(row["description"]["en"].is_string());
+    CHECK(row["description"]["pl"].is_string());
+    CHECK_FALSE(row["effects"].empty());
+    CHECK(row["http"].contains("verb"));
+    CHECK(row["http"].contains("path"));
+    for (const auto& in : row["inputs"]) {
+      for (const char* k : {"name", "type", "required", "description", "has_default", "edit"})
+        CHECK_MESSAGE(in.contains(k), row["id"], " input lacks ", k);
+      CHECK(in["description"]["en"].is_string());
+      if (in["has_default"] == true) CHECK(in.contains("default"));
+    }
+    if (row["port"] != "storage") continue;
+    ++storage_rows;
+    const std::string action = row["action"].get<std::string>();
+    if (row["http"]["verb"] != "GET" || action == "locate") continue;  // locate needs an input; checked below
+    std::string via_invoke = Json(take(loom_invoke(ctx, "storage", action.c_str(), "{}"))).dump();
+    std::string old = Json(take(loom_github_sync(ctx, Json{{"action", "storage." + action}}.dump().c_str()))).dump();
+    CHECK(via_invoke == old);
+    CHECK_FALSE(Json::parse(via_invoke).contains("error"));
+  }
+  CHECK(storage_rows == 8);
+  Json loc = take(loom_invoke(ctx, "storage", "locate", R"({"hash":"ab"})"));
+  CHECK(loc["hash"] == "ab");
+  CHECK(take(loom_invoke(ctx, "storage", "locate", "{}")).contains("error"));
+  CHECK(take(loom_invoke(ctx, "storage", "nope", "{}")).contains("error"));
+  CHECK(take(loom_invoke(ctx, "nope", "x", "{}")).contains("error"));
+  CHECK(take(loom_invoke(ctx, nullptr, "x", "{}")).contains("error"));
+  CHECK(take(loom_invoke(nullptr, "storage", "status", "{}")).contains("error"));
+  CHECK(take(loom_invoke(ctx, "storage", "status", "[1]")).contains("error"));
+  // loom_github_sync itself is GitHub-only: unknown/missing repo error, not a storage answer
+  CHECK(take(loom_invoke(ctx, "github", "status", "{}")).contains("error"));
+  CHECK(take(loom_invoke(ctx, "github", "storage.status", "{}")).contains("error"));
+}

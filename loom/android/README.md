@@ -146,6 +146,7 @@ before invoking these.
 | `transcribe(audioPath, optionsJson, callbackId)` | string, string?, string | one chunk: `loom_transcribe`'s result (done=true) |
 | `ocr(imagePath, optionsJson, callbackId)` | string, string?, string | one chunk: `loom_ocr`'s result (done=true) |
 | `githubSync(requestJson, callbackId)` | string, string | one chunk: `loom_github_sync`'s result (done=true) |
+| `invoke(port, action, requestJson, callbackId)` | string, string, string, string | one chunk: `loom_invoke`'s result (done=true); ports `storage`, `github`, `core` |
 | `subscribe(event, callbackId)` | string, string | `{"event":name,"payload":...}` repeatedly (done=false) until `unsubscribe(token)`; returns `{"token":n}` synchronously |
 
 ### The streaming contract, precisely

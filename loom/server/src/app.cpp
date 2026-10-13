@@ -14,6 +14,7 @@
 
 #include <nlohmann/json.hpp>
 
+#include "loom/action_table.h"
 #include "sse_stream.h"
 #include "onboarding-ui-routes.h"
 #include "method-ui-routes.h"
@@ -740,38 +741,33 @@ void App::route_graph_context() {
     send_loom(res, loom_graph_entry(rctx(), request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
-  // Storage plugins (P4): backends, per-category placement, copy/move between backends, backups.
-  // Rides on rctx(), so with accounts enabled every account sees and changes only its own placement.
-  auto storage_call = [this](httplib::Response& res, json body, const char* action) {
-    body["action"] = action;
-    send_loom(res, loom_github_sync(rctx(), body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
-  };
-  svr_.Get("/api/storage/status", [storage_call](const httplib::Request&, httplib::Response& res) {
-    storage_call(res, json::object(), "storage.status");
-  });
-  svr_.Get("/api/storage/probe", [storage_call](const httplib::Request&, httplib::Response& res) {
-    storage_call(res, json::object(), "storage.probe");
-  });
-  svr_.Get("/api/storage/kinds", [storage_call](const httplib::Request&, httplib::Response& res) {
-    storage_call(res, json::object(), "storage.kinds");
-  });
-  svr_.Get("/api/storage/placement", [storage_call](const httplib::Request& req, httplib::Response& res) {
-    json b = json::object();
-    if (req.has_param("category")) b["category"] = req.get_param_value("category");
-    storage_call(res, b, "storage.placement");
-  });
-  svr_.Get("/api/storage/locate", [storage_call](const httplib::Request& req, httplib::Response& res) {
-    storage_call(res, json{{"hash", req.get_param_value("hash")}}, "storage.locate");
-  });
-  svr_.Post("/api/storage/copy", [this, storage_call](const httplib::Request& req, httplib::Response& res) {
-    storage_call(res, parse_body(req), "storage.copy");
-  });
-  svr_.Post("/api/storage/move", [this, storage_call](const httplib::Request& req, httplib::Response& res) {
-    storage_call(res, parse_body(req), "storage.move");
-  });
-  svr_.Post("/api/storage/backup", [this, storage_call](const httplib::Request& req, httplib::Response& res) {
-    storage_call(res, parse_body(req), "storage.backup");
-  });
+  // Storage plugins (P4): routes come from the action table (loom/action_table.h) and go through
+  // loom_invoke. Rides on rctx(), so with accounts enabled every account sees and changes only its own
+  // placement. Responses are the same as the former per-route loom_github_sync calls.
+  for (const auto& row : json::parse(loom::action_table().dump())) {
+    if (row.value("port", std::string()) != "storage") continue;
+    const std::string verb = row.value("verb", std::string());
+    const std::string path = row.value("path", std::string());
+    const std::string port = row.value("port", std::string());
+    const std::string action = row.value("action", std::string());
+    json query = row.value("query", json::array());
+    auto handler = [this, port, action, verb, query](const httplib::Request& req, httplib::Response& res) {
+      json body = json::object();
+      if (verb == "POST") {
+        body = parse_body(req);
+      } else {
+        for (const auto& q : query) {
+          const std::string name = q.value("name", std::string());
+          if (req.has_param(name)) body[name] = req.get_param_value(name);
+          else if (q.value("always", false)) body[name] = std::string();
+        }
+      }
+      send_loom(res, loom_invoke(rctx(), port.c_str(), action.c_str(),
+                                 body.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+    };
+    if (verb == "POST") svr_.Post(path, handler);
+    else svr_.Get(path, handler);
+  }
 
   svr_.Post("/api/graph/reindex", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
