@@ -109,6 +109,11 @@ struct Route {
 Result<Route> resolve_route(const Services& services, const RouteSelector& selector);
 // True when resolve_route would succeed (provider known and credential stored).
 bool route_available(const Services& services, const RouteSelector& selector);
+// The provider offering (resource, capability) whose host appears in
+// `address`, as a manifest id ("" = none).  Where an address picks a protocol
+// mode (native batches vs. plain chat completions) the choice is manifest data.
+std::string provider_for_address(const Services& services, std::string_view resource,
+                                 std::string_view capability, std::string_view address);
 
 // ── Request ─────────────────────────────────────────────────────────
 struct ModelSpec {
@@ -193,6 +198,7 @@ struct ModelRequest {
   // Read the body through a StreamSink and keep the raw bytes in the result
   // (also implied by `stream`); `max_response_bytes` stops reading past it.
   bool capture = false;
+  bool retain_body = true;   // false: success-status bytes reach hooks.on_raw only (large JSONL)
   std::optional<std::size_t> max_response_bytes;
   const CancelToken* cancel = nullptr;
   StreamHooks hooks;

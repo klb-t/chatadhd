@@ -139,6 +139,29 @@ bool route_available(const Services& services, const RouteSelector& selector) {
   return static_cast<bool>(resolve_route(services, selector));
 }
 
+std::string provider_for_address(const Services& services, std::string_view resource,
+                                 std::string_view capability, std::string_view address) {
+  std::vector<ProviderManifest> manifests;
+  if (services.providers) {
+    manifests = services.providers->all();
+  } else {
+    ProviderRegistry local(services.config, services.secrets);
+    if (!local.load_builtin()) return {};
+    Json extra = services.config.get("provider_manifests");
+    if (extra.is_array() && !local.load(extra)) return {};
+    manifests = local.all();
+  }
+  for (const auto& m : manifests) {
+    const bool offers = std::any_of(m.capabilities.begin(), m.capabilities.end(), [&](const Capability& c) {
+      return c.resource == resource && c.name == capability;
+    });
+    if (!offers) continue;
+    auto url = net::parse_url(m.base_url);
+    if (url && !url->host.empty() && address.find(url->host) != std::string_view::npos) return m.id;
+  }
+  return {};
+}
+
 Status apply_auth(const Route& route, net::HttpRequest& request) {
   const std::string& scheme = route.auth_scheme;
   if (scheme.empty() || scheme == "none") return ok_status();
@@ -339,6 +362,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
       }
       if (!decoder || !adapter->success(op, status)) {
         // Captured or error bytes: keep them, up to the caller's ceiling.
+        if (!request.retain_body && adapter->success(op, status)) return true;
         if (request.max_response_bytes) {
           const std::size_t room = *request.max_response_bytes - std::min(*request.max_response_bytes, r.body.size());
           r.body.append(chunk.substr(0, room));
