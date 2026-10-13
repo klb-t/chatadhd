@@ -92,3 +92,36 @@ Wszystko spoza tej listy (ustawienia, konta, dostawcy, akcje użytkownika, rozmo
 5. Fala 4: **ROM jako pamięć tylko do odczytu** z katalogiem — obecne pliki danych w `loom/data/` stają się jej
    zawartością, montowaną jako pierwsza; nakładki użytkownika jak dziś.
 6. Każda fala: jeden agent naraz, brama, zapis w `docs/reports/PLAN_2026-10-13.md`.
+
+## 5. Jakie akcje wolno wykonać na jakim elemencie (właściciel pyta, Claude proponuje, 2026-10-13)
+
+Właściciel: na elementach wykonuje się nie tylko „użyj modelu”, ale **każdy flow adresowalny w grafie** — dostępny
+dosłownie albo łatwy do ekstrapolacji (co to znaczy, jakie progi — też w grafie); stosowanie według zasad.
+Pytanie: czy klasa ma wyliczać dozwolone akcje (w grupach), czy akcje mają flagi, a klasa mówi, jakie flagi
+akceptuje, wymaga, olewa?
+
+**Propozycja: klasa nie wylicza akcji.** Lista akcji nigdy nie będzie znana z góry, więc wyliczanie zawsze będzie
+niepełne. Zamiast tego cztery rzeczy, każda w grafie:
+
+| Co | Gdzie | Przykład |
+|---|---|---|
+| **Cechy** (to, czym element jest i co ma) | na klasie, dziedziczone; węzeł może dodać własne | „jest wiadomością”, „ma tekst”, „ma plik audio”, „należy do konwersacji”, „edytowalny” |
+| **Wymagania akcji** (czego akcja potrzebuje i co daje) | na akcji | „podsumuj”: wymaga „ma tekst”, daje „podsumowanie”; „transkrybuj”: wymaga „ma audio”, daje „ma tekst” |
+| **Flagi skutków akcji** | na akcji | tylko czyta / zapisuje / wysyła poza urządzenie / kosztuje / nieodwracalna / dane prywatne |
+| **Zasady** | w grafie, z zakresami (użytkownik, projekt, konwersacja — R47) | „akcje wysyłające poza urządzenie dla klasy »dziennik« — pytaj”; „dla wiadomości domyślna akcja = odpowiedz modelem X”; „nigdy »usuń« dla klasy »dowód«” |
+
+Reguła silnika: **akcja pasuje do elementu, jeśli element ma cechy, których akcja wymaga.** Nowa akcja od razu
+pasuje do wszystkich istniejących klas, które spełniają jej wymagania — bez ruszania definicji klas. Zasady potem
+mówią, co z pasujących akcji jest domyślne, co wymaga potwierdzenia, a co jest wyłączone. Bez zasady akcja jest
+dozwolona (R43: blokada musi mieć inicjatora); potwierdzenie ×10 i inne bezpieczniki z „ROM” obowiązują zawsze.
+
+**„Łatwe do ekstrapolowania”** = silnik szuka łańcucha akcji, który dorobi brakującą cechę (np. nagranie →
+„transkrybuj” → tekst → „podsumuj”). Progi — najdłuższy łańcuch, największy koszt, najniższa pewność — są
+ustawieniami w grafie (presety, nie limity). Taki łańcuch silnik **proponuje** z kosztem; nie wykonuje go po cichu.
+
+**Grupy akcji** służą do przeglądania (menu) i do zasad hurtem („wszystko, co wysyła poza urządzenie”), a nie do
+decydowania, co pasuje. Twoje „flagi” to dokładnie flagi skutków; „akceptuje / wymaga / olewa” rozkłada się na
+cechy (po stronie elementu), wymagania (po stronie akcji) i zasady (osobno, z zakresami).
+
+Wpływ na plan: fala 2 = cechy + wymagania akcji + flagi skutków + zasady + akcja domyślna; fala 2b = ekstrapolacja
+(szukanie łańcuchów z progami). Opis pól ustawień (S2/R2, „zasada edycji”) jest szczególnym przypadkiem zasad.
