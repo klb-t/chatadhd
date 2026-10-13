@@ -51,3 +51,13 @@ docker compose exec -it chatadhd loom-server user add anna
 Dane są w wolumenie `chatadhd_data` (lub `CHATADHD_DATA_DIR=/sciezka`). Rejestracja:
 `CHATADHD_REGISTRATION=invite docker compose up -d`.
 Uwaga: ta ścieżka nie została jeszcze zbudowana w testach (patrz raport P2).
+
+## Telefon (Android): połączenie z serwerem
+
+1. Zainstaluj aplikację ChatADHD. Przy pierwszym uruchomieniu wybierz „Konto na serwerze”
+   (później: ikona ⚙ w prawym dolnym rogu).
+2. Wpisz adres, np. `chat.twoja.domena`. Aplikacja sprawdza `/api/auth/me` i pokazuje powód błędu.
+3. Zaloguj się kontem z serwera. Sesja zostaje zapamiętana.
+4. Wymagany jest HTTPS. Zwykły HTTP tylko po zaznaczeniu opcji i tylko dla adresu w sieci lokalnej
+   (hasło idzie wtedy bez szyfrowania).
+5. Powrót do trybu „Lokalnie” nie kasuje żadnych danych; dane lokalne i serwerowe są osobne.

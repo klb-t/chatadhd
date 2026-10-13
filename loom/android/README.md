@@ -388,3 +388,25 @@ which this test is what proved it.
 - **No instrumented/Espresso tests** — out of scope for a host-only
   sandbox; the host JNI smoke test is the closest available substitute for
   the native/bridge layer.
+
+## Connection mode: local or server account (P3)
+
+The app has a per-device setting (SharedPreferences `connection`, not the
+data dir): `local` (default; bundled web + `window.LoomBridge`, data on the
+phone) or `server` (WebView loads the Loom server's URL; no bridge, so the
+web app uses HTTP transport and the P1 sign-in screen; the session cookie is
+kept by Android's CookieManager). Switching never deletes local data.
+
+- First run shows `ConnectionActivity`; later via the gear in the bottom-right corner.
+- The URL is checked by `ConnectionPolicy` (pure Java, no android imports) and
+  probed with `GET /api/auth/me` (200/401 + JSON = Loom server); the failure
+  reason is shown.
+- HTTPS required. Plain HTTP only if the user ticks the option AND the host is
+  LAN/loopback (password and cookie travel unencrypted). The manifest allows
+  cleartext only so that this opt-in can work; the policy is the gate.
+- **Security:** `LoomBridge` is injected only in local mode for the bundled
+  origin (`ConnectionPolicy.shouldInjectBridge`); never for a remote page.
+- Tests: `verify/java/loomverify/ConnectionPolicyTest.java` (CTest
+  `connection_policy_test`; `verify/.../ConnectionPolicy.java` is a copy of the app file, keep in sync).
+- Not built here: no Android SDK on the dev machine, so the APK and the Kotlin
+  files were not compiled.
