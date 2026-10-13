@@ -559,6 +559,9 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§6, §9. Każda 
 - W3 (`chat_graph_integration.verify.cc`, uruchamiany `loom/src/chat/verify_selector.py`, poza CTest): runner nie linkował
   (`libloom_pqc.a`) — naprawione; 109/110. **Otwarte:** przypadek :243 („explicit off” nie tworzy `context_execution_claims/`)
   pada, bo od integracji polityki zużycia każde zwykłe wysłanie zapisuje trwałe pokwitowanie. Asercji nie zmieniono.
+  **Decyzja S1:** intencja = przy `off` nie wykonuje się żadna metoda kontekstu; asercja ma sprawdzać brak wpisów rodzaju
+  „wykonanie metody kontekstu” (pokwitowania zużycia dozwolone), a gdy rodzaju nie da się rozróżnić — liczba wpisów `off` ==
+  liczba w zwykłym przebiegu (≤1). Wykonanie zmiany asercji: S1.
 - Release `-Werror` na GCC 13: dwa fałszywe alarmy z nlohmann po wstawieniu (`null-dereference`, `maybe-uninitialized`)
   zostają ostrzeżeniami, reszta błędem; instalator i Dockerfile znów z `LOOM_WERROR=ON`.
 - `loom/deploy/` scalony do `deploy/` (skrypty budowania przeniesione), w starym miejscu README z przekierowaniem.
