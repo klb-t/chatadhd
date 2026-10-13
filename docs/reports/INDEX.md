@@ -553,3 +553,14 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§6, §9. Każda 
 - Mikrofon/kamera bez cech treści (`has_audio`/`has_image`) — mają cechy zdolności; akcje urządzeń (nagraj, zrób zdjęcie,
   odtwórz, powiadom) i źródło `device` w rozwiązywaniu id przekazane S1. Raport: `docs/reports/S2_R9_2026-10-13.md`.
   Cofnięcie: revert scalenia R9 (dane w dwóch plikach pakietów).
+
+## S2 / R14 — drobne zaległości (2026-10-13)
+
+- W3 (`chat_graph_integration.verify.cc`, uruchamiany `loom/src/chat/verify_selector.py`, poza CTest): runner nie linkował
+  (`libloom_pqc.a`) — naprawione; 109/110. **Otwarte:** przypadek :243 („explicit off” nie tworzy `context_execution_claims/`)
+  pada, bo od integracji polityki zużycia każde zwykłe wysłanie zapisuje trwałe pokwitowanie. Asercji nie zmieniono.
+- Release `-Werror` na GCC 13: dwa fałszywe alarmy z nlohmann po wstawieniu (`null-dereference`, `maybe-uninitialized`)
+  zostają ostrzeżeniami, reszta błędem; instalator i Dockerfile znów z `LOOM_WERROR=ON`.
+- `loom/deploy/` scalony do `deploy/` (skrypty budowania przeniesione), w starym miejscu README z przekierowaniem.
+- `tools/gen_kb_lexicons.py` usunięty (martwy: tabele C++, które wypełniał, już nie istnieją).
+- Raport: `docs/reports/S2_R14_2026-10-13.md`. Cofnięcie: revert odpowiedniego commitu R14.
