@@ -20,6 +20,7 @@
     "test:usage-pending-browser": "node e2e/usage-pending-ui.mjs",
     "test:graph-entry-browser": "node e2e/graph-entry-native.mjs",
     "test:action-proposal": "node tests/conversation-view/action-proposal.test.mjs",
+    "test:action-proposal-browser": "node e2e/action-proposal-ui.mjs",
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:chat-send-gate": "node tests/conversation-view/send-gate.test.mjs && node e2e/chat-send-gate.mjs",
     "test:application-profiles": "node e2e/application-profile-state.mjs && node e2e/application-profile-adapter.mjs",
