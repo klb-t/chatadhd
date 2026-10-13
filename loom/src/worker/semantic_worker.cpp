@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <set>
 
+#include "loom/analysis_mode.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/graph_engine.h"
@@ -33,7 +34,6 @@ bool cfg_bool(const Config& cfg, std::string_view key, bool fallback) {
   return json::truthy(cfg.get(key, fallback));
 }
 
-Json regex_unified(const SemanticAnalyzer& regex, std::string_view text) { return regex.to_unified_profile(regex.analyse(text)); }
 
 // Message Batches route from the worker profile: the profile names the
 // address, the secret and the extra headers; the provider manifest that offers
@@ -491,6 +491,13 @@ SemanticWorker::SemanticWorker(Database& db, SemanticLLM& llm, GraphEngine& grap
   }
   if (!opts && profile_) assign_worker_options(opts_, *profile_);
   retry_mode_ = profile_ ? profile_->values().value("retry_mode", std::string("explicit_requeue")) : "explicit_requeue";
+  if (profile_) {
+    std::vector<std::string> order;
+    for (const auto& n : profile_->values().at("analysis_modes")) order.push_back(n.get<std::string>());
+    std::vector<std::string> unknown;
+    modes_ = make_analysis_modes(order, AnalysisModeContext{&llm_}, &unknown);
+    for (const auto& n : unknown) log::warn("loom.semantic_worker", "analysis_modes: '{}' is not a registered mode (ignored)", n);
+  }
   instance_ = gen_id("w_");
   register_attempt_owner(instance_);
   import_sub_ = ScopedSubscription(bus_, bus_.on(events::kImportDone, [this](std::string_view, const Json&) { wake(); }));
@@ -701,7 +708,7 @@ Result<Json> SemanticWorker::requeue(const Json& filter) {
               {"ids", ids}, {"skipped", skipped}, {"history_preserved", true}};
 }
 
-void SemanticWorker::auto_requeue(bool use_llm) {
+void SemanticWorker::auto_requeue(bool reaches_provider) {
   if (!profile_) return;
   if (effective_retry_mode() != "automatic") {
     std::lock_guard lk(mu_);
@@ -730,7 +737,7 @@ void SemanticWorker::auto_requeue(bool use_llm) {
 
   std::shared_ptr<llm::UsageGate> gate;
   const double declared_cost = static_cast<double>(due.size()) * pv.at("batch_estimate_per_message").get<double>();
-  if (use_llm) {
+  if (reaches_provider) {
     // A resend reaches the provider: same guard as every other automatic call.
     Json ids = Json::array();
     for (const auto& item : due) ids.push_back(item.id);
@@ -819,8 +826,11 @@ Result<int> SemanticWorker::drain_once() {
     std::lock_guard lk(mu_);
     if (usage_pending_ && !usage_confirmation_) { mode_ = "awaiting_usage_confirmation"; return 0; }
   }
-  const bool use_llm = llm_.enabled() && cfg_bool(cfg_, "semantic_analysis", true);
-  auto_requeue(use_llm);  // no-op in explicit_requeue mode
+  AnalysisCapabilities caps;
+  caps.llm_ready = llm_.enabled() && cfg_bool(cfg_, "semantic_analysis", true);
+  // Whether this pass can reach a provider: the leading per-message mode decides.
+  const AnalysisMode* lead = pick_message_mode(modes_, caps, "");
+  auto_requeue(lead && lead->sends_to_provider());  // no-op in explicit_requeue mode
   std::set<std::string> excluded;
   {
     std::lock_guard lk(mu_);
@@ -850,10 +860,18 @@ Result<int> SemanticWorker::drain_once() {
   std::int64_t pending_total = pending_r.value_or(0);
   bool has_batch_key = !secrets_.get_string(profile_->values().at("batch_secret_key").get<std::string>()).empty();
 
-  if (pending_total > opts_.batch_threshold && use_llm && has_batch_key) {
-    return submit_batch_api(db_, cfg_, secrets_, http_, mu_, mode_, batch_id_, batch_submitted_,
-                            opts_.batch_max_messages, opts_.batch_endpoint, *profile_, usage_pending_,
-                            usage_confirmation_);
+  caps.batch_ready = pending_total > opts_.batch_threshold && has_batch_key;
+  if (AnalysisMode* bulk = pick_bulk_mode(modes_, caps)) {
+    struct Host final : AnalysisBulkHost {
+      SemanticWorker& w;
+      explicit Host(SemanticWorker& worker) : w(worker) {}
+      Result<int> submit_batch() override {
+        return submit_batch_api(w.db_, w.cfg_, w.secrets_, w.http_, w.mu_, w.mode_, w.batch_id_, w.batch_submitted_,
+                                w.opts_.batch_max_messages, w.opts_.batch_endpoint, *w.profile_, w.usage_pending_,
+                                w.usage_confirmation_);
+      }
+    } host(*this);
+    return bulk->run_bulk(host);
   }
   {
     std::lock_guard lk(mu_);  // the batch path no longer applies: an old receipt is obsolete
@@ -861,9 +879,10 @@ Result<int> SemanticWorker::drain_once() {
     usage_confirmation_.reset();
   }
 
+  std::vector<std::string> used_modes;  // names in order of first use this pass
   {
     std::lock_guard lk(mu_);
-    mode_ = use_llm ? "llm" : "regex";
+    mode_ = lead ? std::string(lead->name()) : "idle";
   }
 
   double t0 = timeutil::monotonic_seconds();
@@ -884,7 +903,22 @@ Result<int> SemanticWorker::drain_once() {
       quarantine_.insert(m.id);
       continue;
     }
-    Json provenance{{"consumer", "semantic_worker"}, {"mode", use_llm ? "llm" : "regex"},
+    AnalysisMode* chosen = pick_message_mode(modes_, caps, m.text);
+    if (!chosen) {
+      errors_.fetch_add(1);
+      return Error(Errc::Unavailable, "no analysis mode is available (worker profile analysis_modes)");
+    }
+    const std::string chosen_name(chosen->name());
+    if (std::find(used_modes.begin(), used_modes.end(), chosen_name) == used_modes.end()) {
+      used_modes.push_back(chosen_name);
+      if (used_modes.size() > 1) {
+        std::string joined;
+        for (const auto& n : used_modes) joined += (joined.empty() ? "" : "+") + n;
+        std::lock_guard lk(mu_);
+        mode_ = joined;
+      }
+    }
+    Json provenance{{"consumer", "semantic_worker"}, {"mode", chosen_name},
                     {"worker_profile_hash", profile_->hash()}, {"llm_rate_limit", opts_.llm_rate_limit},
                     {"failure_recovery", profile_->values().at("failure_recovery")},
                     {"analyzer_profile_hash", analyzer.profile_hash()}};
@@ -906,7 +940,7 @@ Result<int> SemanticWorker::drain_once() {
     Json analysis = nullptr;
     Status outcome;
     try {
-      analysis = use_llm ? llm_.analyse(claimed->text, analyzer) : regex_unified(analyzer, claimed->text);
+      analysis = chosen->analyse(claimed->text, analyzer);
       if (!analyzer_profile.is_builtin()) analysis["analyzer_profile_hash"] = analyzer_profile.hash();
       auto complete = graph_.complete_analysis(*claimed, analysis);
       if (!complete) outcome = complete.error();
@@ -922,7 +956,7 @@ Result<int> SemanticWorker::drain_once() {
       ++count;
       processed_.fetch_add(1);
     }
-    if (use_llm && opts_.llm_rate_limit > 0) {
+    if (chosen->sends_to_provider() && opts_.llm_rate_limit > 0) {
       // Resolve the durable outcome before waiting: stop must not discard an
       // already received result or cause a new dispatch after restart.
       std::unique_lock lk(mu_);

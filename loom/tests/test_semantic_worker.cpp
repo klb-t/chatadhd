@@ -5,6 +5,7 @@
 #include <limits>
 #include <thread>
 
+#include "loom/analysis_mode.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
@@ -536,6 +537,76 @@ TEST_SUITE("semantic_worker") {
     for (const auto& m : msgs) {
       CHECK(m.semantic_status == "done");
     }
+  }
+
+  TEST_CASE("analysis modes: built-ins are registry entries with data-driven availability") {
+    auto& reg = AnalysisModeRegistry::instance();
+    for (const char* n : {"regex", "llm", "batch"}) CHECK(reg.create(n, AnalysisModeContext{}) != nullptr);
+    CHECK(reg.create("no-such-mode", AnalysisModeContext{}) == nullptr);
+    Env env;
+    auto regex = reg.create("regex", AnalysisModeContext{&env.llm});
+    auto llm = reg.create("llm", AnalysisModeContext{&env.llm});
+    auto batch = reg.create("batch", AnalysisModeContext{&env.llm});
+    AnalysisCapabilities none, ready;
+    ready.llm_ready = true;
+    CHECK(regex->available(none));
+    CHECK_FALSE(llm->available(none));
+    CHECK(llm->available(ready));
+    CHECK(llm->sends_to_provider());
+    CHECK_FALSE(regex->sends_to_provider());
+    CHECK(batch->bulk());
+    CHECK_FALSE(batch->available(ready));  // needs the batch key and queue above the threshold
+    ready.batch_ready = true;
+    CHECK(batch->available(ready));
+    std::vector<std::unique_ptr<AnalysisMode>> order;
+    order.push_back(std::move(batch));
+    order.push_back(std::move(llm));
+    order.push_back(std::move(regex));
+    CHECK(pick_bulk_mode(order, ready)->name() == "batch");
+    CHECK(pick_message_mode(order, ready, "x")->name() == "llm");
+    CHECK(pick_message_mode(order, none, "x")->name() == "regex");
+  }
+
+  TEST_CASE("analysis modes: the profile order drops a mode, and two modes mix in one run") {
+    struct EvenMode final : AnalysisMode {
+      std::string_view name() const override { return "even"; }
+      bool available(const AnalysisCapabilities&) const override { return true; }
+      bool sends_to_provider() const override { return false; }
+      bool accepts(std::string_view text) const override { return text.size() % 2 == 0; }
+      Json analyse(std::string_view text, const SemanticAnalyzer& a) override {
+        return a.to_unified_profile(a.analyse(text));
+      }
+    };
+    AnalysisModeRegistry::instance().add("even", [](const AnalysisModeContext&) { return std::make_unique<EvenMode>(); });
+    Env env;
+    auto conv = unwrap(env.db->create_conv("c"));
+    env.add_pending_msg(conv.id, "four");        // even length -> mode "even"
+    env.add_pending_msg(conv.id, "five!");       // odd length  -> catch-all "regex"
+    env.add_pending_msg(conv.id, "sixsix");      // even
+    SemanticWorker w(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer, nullptr,
+                     std::nullopt, Json{{"analysis_modes", Json::array({"even", "regex"})}});
+    CHECK(unwrap(w.drain_once()) == 3);
+    CHECK(w.status().mode == "even+regex");
+    int even = 0, regex = 0;
+    for (const auto& m : unwrap(env.db->get_msgs(conv.id))) {
+      CHECK(m.semantic_status == "done");
+      const auto dump = m.metadata.dump();
+      if (dump.find("\"mode\":\"even\"") != std::string::npos) ++even;
+      if (dump.find("\"mode\":\"regex\"") != std::string::npos) ++regex;
+    }
+    CHECK(even == 2);
+    CHECK(regex == 1);
+    AnalysisModeRegistry::instance().remove("even");
+  }
+
+  TEST_CASE("analysis modes: an order with no available mode reports an error and keeps messages pending") {
+    Env env;
+    auto conv = unwrap(env.db->create_conv("c"));
+    env.add_pending_msg(conv.id, "message one is long enough");
+    SemanticWorker w(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer, nullptr,
+                     std::nullopt, Json{{"analysis_modes", Json::array({"llm"})}});  // llm is not ready here
+    CHECK_FALSE(w.drain_once().has_value());
+    CHECK(unwrap(env.db->count_pending_semantic()) == 1);
   }
 
   TEST_CASE("drain_once on an empty queue is a fast no-op") {

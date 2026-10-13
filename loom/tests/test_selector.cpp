@@ -26,6 +26,50 @@ class RecipeEmbedding final : public EmbeddingProvider {
 }
 
 TEST_SUITE("selector") {
+  TEST_CASE("composition: tiers are registry entries and match the numeric adapter") {
+    const std::vector<std::string> docs{"the cat sat", "dogs bark loudly", "cat and dog"};
+    for (const char* name : {"keyword", "tfidf"}) {
+      SelectorEngine composed(std::vector<SearchTier>{name});
+      SelectorEngine legacy(std::string(name) == "tfidf" ? SelectorEngine::kTierTfIdf : SelectorEngine::kTierKeyword);
+      CHECK(composed.active_tier() == name);
+      CHECK(composed.index(docs).has_value());
+      CHECK(legacy.index(docs).has_value());
+      auto a = composed.search("cat");
+      auto b = legacy.search("cat");
+      REQUIRE(a.size() == b.size());
+      for (std::size_t i = 0; i < a.size(); ++i) {
+        CHECK(a[i].id == b[i].id);
+        CHECK(a[i].score == b[i].score);
+      }
+    }
+  }
+
+  TEST_CASE("composition: an unusable or failing embedding tier hands over to the next entry") {
+    SelectorEngine no_provider({"embedding", "keyword"});
+    CHECK(no_provider.active_tier() == "keyword");
+    auto provider = std::make_shared<RecipeEmbedding>();
+    provider->fail = true;
+    SelectorEngine failing({"embedding", "tfidf"}, provider);
+    CHECK(failing.active_tier() == "embedding");
+    CHECK(failing.index({"alpha beta", "gamma"}).has_value());
+    CHECK(failing.active_tier() == "tfidf");
+    SelectorEngine unknown({"no-such-tier"});
+    CHECK_FALSE(unknown.index({"x"}).has_value());
+  }
+
+  TEST_CASE("composition: a tier registered by name can be composed") {
+    struct Constant final : SearchTierBackend {
+      std::size_t n = 0;
+      std::string_view name() const override { return "constant"; }
+      Status index(const std::vector<std::string>& c) override { n = c.size(); return {}; }
+      Result<std::vector<double>> score(std::string_view) const override { return std::vector<double>(n, 1.0); }
+    };
+    SearchTierRegistry::instance().add("constant", [](const SearchTierContext&) { return std::make_unique<Constant>(); });
+    SelectorEngine sel({"constant"});
+    CHECK(sel.index({"a", "b"}).has_value());
+    CHECK(sel.search("anything").size() == 2);
+  }
+
   TEST_CASE("embedding shape errors preserve the old index and recipe") {
     auto provider = std::make_shared<RecipeEmbedding>();
     SelectorEngine engine(SelectorEngine::kTierEmbedding, provider);
@@ -52,7 +96,7 @@ TEST_SUITE("selector") {
 
   TEST_CASE("keyword tier: substring scoring, ranking, top_k, score<=0 cutoff") {
     SelectorEngine sel(SelectorEngine::kTierKeyword);
-    CHECK(sel.tier() == SelectorEngine::kTierKeyword);
+    CHECK(sel.active_tier() == "keyword");
     std::vector<std::string> corpus = {
         "the quick brown fox",
         "jumps over the lazy dog",
@@ -84,7 +128,7 @@ TEST_SUITE("selector") {
 
   TEST_CASE("TF-IDF tier: exact match ranks above partial") {
     SelectorEngine sel(SelectorEngine::kTierTfIdf);
-    CHECK(sel.tier() == SelectorEngine::kTierTfIdf);
+    CHECK(sel.active_tier() == "tfidf");
     std::vector<std::string> corpus = {
         "graph memory selector implementation",
         "the graph engine builds nodes and edges",
@@ -100,7 +144,7 @@ TEST_SUITE("selector") {
 
   TEST_CASE("default tier is TF-IDF without an embedder (Loom deviation)") {
     SelectorEngine sel;
-    CHECK(sel.tier() == SelectorEngine::kTierTfIdf);
+    CHECK(sel.active_tier() == "tfidf");
   }
 
   TEST_CASE("empty corpus / empty query are handled") {

@@ -34,7 +34,12 @@
     "failure_recovery": "explicit_requeue",
     "retry_mode": "explicit_requeue",
     "retry_spacing_ms": 60000,
-    "executing_lease_ms": 900000
+    "executing_lease_ms": 900000,
+    "analysis_modes": [
+      "batch",
+      "llm",
+      "regex"
+    ]
   },
   "value_schema": {
     "x-setting": "",
@@ -65,7 +70,8 @@
       "failure_recovery",
       "retry_mode",
       "retry_spacing_ms",
-      "executing_lease_ms"
+      "executing_lease_ms",
+      "analysis_modes"
     ],
     "properties": {
       "drain_batch": {
@@ -248,6 +254,17 @@
         "x-consumer": "semantic_worker",
         "x-unit": "milliseconds",
         "description": "A durable executing claim older than this is reported as stalled even if its owner cannot be probed. Reporting only; nothing is retried by it in explicit_requeue mode."
+      },
+      "analysis_modes": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "x-setting": "/analysis_modes",
+        "x-consumer": "semantic_worker",
+        "description": "Preference order of registered analysis modes (built in: batch, llm, regex; embedders can register more). Each drain uses the first available bulk mode for the whole queue, otherwise every message goes to the first available per-message mode that accepts it, so modes can be mixed in one run. Availability still follows config (semantic_model, semantic_analysis, the batch key). Drop a name to disable that mode; keep regex last as the catch-all."
       }
     },
     "additionalProperties": false
