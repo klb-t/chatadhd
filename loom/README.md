@@ -22,6 +22,7 @@ in [`docs/CODEX_HANDOFF_2026-09-28.md`](https://github.com/klb-t/chatadhd/blob/a
 | `re/regex.h`, `semantic_analyzer.h`, `semantic_llm.h`, `graph_engine.h`, `graph_memory.h`, `selector.h`, `memory_engine.h` | implemented |
 | `net/http.h`, `net/sse.h`, `providers.h`, `chat_engine.h`, `batch_api.h`, `semantic_worker.h` | implemented |
 | `use_model.h` (the one "use model" action: adapters `openai_chat`/`openai_images`/`anthropic_messages`, typed parts, capabilities as data, variants, shared usage guard, provenance, action catalogue `data/runtime/actions.pack`; every model call goes through it) | implemented |
+| `action_rules.h` (which actions fit which element: traits on classes `data/graph/classes.pack`, `requires`/`produces`/`content_op`/`form_op`/effect flags on actions, scoped rules and extrapolation presets `data/runtime/action_rules.pack`; `loom_invoke("actions", "for"\|"explain"\|"propose_chain")`, `POST /api/actions/*`, `loom actions`) | implemented; chains are proposals, never executed |
 | `importer.h`, `crypto.h`, `media_providers.h`, `github_sync.h` | implemented |
 | `archive.h` — Archive Intelligence / Project Compiler | implemented (this README, [below](#archive-intelligence)) |
 | `loom.h` — C ABI (archive, artifacts, `loom_import_file_ex` added) | implemented |
@@ -143,6 +144,7 @@ replace) or **platform detail** (an adapter).
 
 | Decision | Class |
 |---|---|
+| An action fits an element when the element has the traits the action requires; classes never list actions, so a new action fits every class that meets its requirements (rules decide default / confirm / deny; no rule = allow, a deny states its reason; field edit rules of `loom_settings_fields` are rules of the same store) | policy/default (data) |
 | Runtime profile embedding uses generated static chunks joined before the existing parser; definitions and provenance retain exact bytes, with no profile/storage migration or diagnostic suppression | platform detail |
 | Shared on-disk format with the Python app (schema v4 DDL, IDs, timestamps, `json.dumps` formatting, file names, data-dir resolution) | invariant |
 | Loom state only in `loom_*` tables; no triggers or virtual tables in the main DB | invariant |
