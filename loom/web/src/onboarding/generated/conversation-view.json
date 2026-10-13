@@ -192,7 +192,10 @@
             "status_denied": "Not allowed by the rules",
             "status_unavailable": "Cannot run yet",
             "status_waiting": "Waiting for an answer",
-            "status_stale": "No longer valid"
+            "status_stale": "No longer valid",
+            "cost_money": "Money: about {{low}} to {{high}} {{currency}} (from the size of the input and the model's listed price; not a limit)",
+            "cost_money_unknown": "Money: unknown ({{reason}}); do not read it as free",
+            "produced": "Saved in the graph ({{target}}): {{nodes}}"
           },
           "pl": {
             "title": "Polecenie czeka na Twoją odpowiedź",
@@ -211,7 +214,10 @@
             "status_denied": "Zasady na to nie pozwalają",
             "status_unavailable": "Nie można jeszcze wykonać",
             "status_waiting": "Czeka na odpowiedź",
-            "status_stale": "Nieaktualne"
+            "status_stale": "Nieaktualne",
+            "cost_money": "Pieniądze: ok. {{low}} do {{high}} {{currency}} (z rozmiaru wejścia i ceny modelu z cennika; nie limit)",
+            "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
+            "produced": "Zapisano w grafie ({{target}}): {{nodes}}"
           }
         }
       }

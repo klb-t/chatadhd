@@ -133,9 +133,17 @@ TEST_SUITE("chat_route") {
     CHECK(image.at("kind") == "command");
     CHECK(action_of(image) == "depict");
     CHECK(image.at("command").at("element").at("class") == "conversation");
-    CHECK(image.at("command").at("feasible") == true);
-    CHECK(image.at("command").at("runnable") == false);  // depict is declared, not implemented: said, not hidden
-    CHECK(image.at("command").at("not_runnable").at(0).at("why") == "planned");
+    // depict is implemented, but it paints with an image model the user has not chosen: said, not guessed.
+    CHECK(image.at("command").at("feasible") == false);
+    CHECK(image.at("command").at("reason").at("code") == "missing_args");
+    CHECK(image.at("command").at("reason").at("args") == Json::array({"model", "provider"}));
+    CHECK(image.at("command").at("reason").at("settings") == Json{{"model", "image_model"}, {"provider", "image_provider"}});
+    f.rt->config().set("image_model", "image-1");
+    f.rt->config().set("image_provider", "img");
+    const Json ready = f.route("zrób z tej rozmowy obraz");
+    CHECK(ready.at("command").at("feasible") == true);
+    CHECK(ready.at("command").at("runnable") == true);
+    CHECK(ready.at("command").at("plan").at("cost").at("model_calls") == 2);  // the image prompt, then the image
     CHECK(f.route("draw this conversation as an image").at("command").at("action") == "depict");
     const Json set = f.route("ustaw semantic_retry_mode=automatic");
     CHECK(set.at("kind") == "command");

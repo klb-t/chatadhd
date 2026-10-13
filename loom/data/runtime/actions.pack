@@ -1331,6 +1331,10 @@
             "transkrypcj*",
             "przepisz nagranie"
           ]
+        },
+        "planned_reason": {
+          "en": "Needs a speech-recognition adapter in use_model; it is being added separately (speech recognition through use_model).",
+          "pl": "Wymaga adaptera rozpoznawania mowy w use_model; powstaje osobno (rozpoznawanie mowy przez use_model)."
         }
       },
       "describe_image": {
@@ -1385,6 +1389,10 @@
             "opisz zdjecie",
             "opisz rysunek"
           ]
+        },
+        "planned_reason": {
+          "en": "No adapter of use_model accepts an image as input yet (the chat adapters take text and json parts only), so a model cannot be shown the picture.",
+          "pl": "Żaden adapter use_model nie przyjmuje jeszcze obrazu na wejściu (adaptery czatu biorą tylko części tekstowe i json), więc modelowi nie da się pokazać obrazu."
         }
       },
       "ocr": {
@@ -1433,6 +1441,10 @@
             "wyciągnij tekst",
             "wyciagnij tekst"
           ]
+        },
+        "planned_reason": {
+          "en": "Needs an OCR adapter in use_model; the OCR providers exist only for screenshot import.",
+          "pl": "Wymaga adaptera OCR w use_model; dostawcy OCR istnieją tylko dla importu zrzutów ekranu."
         }
       },
       "summarise": {
@@ -1505,15 +1517,45 @@
       "translate": {
         "id": "translate",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Translate",
-        "description": "Carry a text content into another language.",
+        "description": "Carry a text content into another language, keeping its meaning, tone and formatting. The target language is the argument target_language (default: the language the command was written in).",
         "labels": {
           "pl": "Przetłumacz"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You are a precise translator. Translate faithfully: keep the meaning, tone, formatting, names and numbers. Output only the translation, with no commentary.",
+                  "pl": "Jesteś precyzyjnym tłumaczem. Tłumacz wiernie: zachowaj sens, ton, formatowanie, nazwy własne i liczby. Podaj samo tłumaczenie, bez komentarzy."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Translate the text above into {language}.",
+                    "pl": "Przetłumacz powyższy tekst na język: {language}."
+                  }
+                },
+                "vars": {
+                  "language": {
+                    "$arg": "target_language",
+                    "default": {
+                      "$localized": {
+                        "en": "English",
+                        "pl": "polski"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.2
+              }
+            }
           }
         ],
         "inputs": [
@@ -1550,7 +1592,19 @@
             "przetlumacz*",
             "tłumacz*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "target_language",
+            "type": "string",
+            "required": false,
+            "default": "the language of the command (English or Polish)",
+            "description": {
+              "en": "Language to translate into, in words (\"German\", \"niemiecki\").",
+              "pl": "Język, na który przetłumaczyć, słowami („niemiecki”, „German”)."
+            }
+          }
+        ]
       },
       "elaborate": {
         "id": "elaborate",
@@ -1607,15 +1661,45 @@
       "parody": {
         "id": "parody",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Parody",
-        "description": "Change the tone or style of a text content while keeping its subject.",
+        "description": "Change the tone or style of a text content while keeping its subject and recognisable structure. The style is the argument style.",
         "labels": {
           "pl": "Sparodiuj"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You write parodies. Keep the subject and the recognisable structure of the original, exaggerate its manner in the requested style for comic effect, and add no commentary. Answer in the language of the text.",
+                  "pl": "Piszesz parodie. Zachowaj temat i rozpoznawalną strukturę oryginału, wyolbrzymiaj jego manierę w zadanym stylu dla efektu komicznego i nie dodawaj komentarzy. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Write a parody of the text above in this style: {style}.",
+                    "pl": "Napisz parodię powyższego tekstu w tym stylu: {style}."
+                  }
+                },
+                "vars": {
+                  "style": {
+                    "$arg": "style",
+                    "default": {
+                      "$localized": {
+                        "en": "light, good-natured satire",
+                        "pl": "lekka, życzliwa satyra"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.9
+              }
+            }
           }
         ],
         "inputs": [
@@ -1653,7 +1737,19 @@
             "sparodiuj*",
             "parodi*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "style",
+            "type": "string",
+            "required": false,
+            "default": "light, good-natured satire",
+            "description": {
+              "en": "The style to parody in (\"a pirate\", \"corporate speak\").",
+              "pl": "Styl parodii („pirat”, „korpomowa”)."
+            }
+          }
+        ]
       },
       "critique": {
         "id": "critique",
@@ -1765,21 +1861,77 @@
       "depict": {
         "id": "depict",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Depict as an image",
-        "description": "Express a text content as an image.",
+        "description": "Express a text content as an image: a chat model first writes an image prompt that depicts the text (in the style given), then the image model paints it (the openai_images adapter). Needs an image model and the provider that serves it: arguments model and provider, or the settings image_model and image_provider.",
         "labels": {
           "pl": "Namaluj"
         },
         "steps": [
           {
-            "action": "use_model"
+            "id": "scene",
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You write prompts for an image generator. Describe ONE concrete scene that depicts the text: subject, setting, composition, lighting, mood and the requested style. At most 120 words. Output only the prompt, in English.",
+                  "pl": "Piszesz prompty dla generatora obrazów. Opisz JEDNĄ konkretną scenę przedstawiającą tekst: temat, miejsce, kompozycję, światło, nastrój i zadany styl. Najwyżej 120 słów. Podaj sam prompt, po angielsku."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Write an image prompt that depicts the text above. Style: {style}.",
+                    "pl": "Napisz prompt obrazu przedstawiający powyższy tekst. Styl: {style}."
+                  }
+                },
+                "vars": {
+                  "style": {
+                    "$arg": "style",
+                    "default": "a clear, detailed illustration"
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.7
+              }
+            },
+            "estimate": {
+              "output_tokens": {
+                "low": 40,
+                "high": 300
+              }
+            }
+          },
+          {
+            "id": "paint",
+            "action": "use_model",
+            "with": {
+              "model": {
+                "$arg": "model"
+              },
+              "provider": {
+                "$arg": "provider"
+              },
+              "wants": [
+                "image"
+              ],
+              "parameters": {
+                "n": 1,
+                "size": {
+                  "$arg": "size",
+                  "default": "1024x1024"
+                },
+                "response_format": "b64_json"
+              }
+            }
           }
         ],
         "inputs": [
           "text"
         ],
         "outputs": [
+          "text",
           "image"
         ],
         "requires": [
@@ -1821,26 +1973,123 @@
             "stwórz obraz*",
             "przedstaw*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "model",
+            "type": "string",
+            "required": true,
+            "setting": "image_model",
+            "description": {
+              "en": "The image model.",
+              "pl": "Model obrazów."
+            }
+          },
+          {
+            "name": "provider",
+            "type": "string",
+            "required": true,
+            "setting": "image_provider",
+            "description": {
+              "en": "The provider (manifest id, adapter openai_images) that serves the image model.",
+              "pl": "Dostawca (id manifestu, adapter openai_images) obsługujący model obrazów."
+            }
+          },
+          {
+            "name": "style",
+            "type": "string",
+            "required": false,
+            "default": "a clear, detailed illustration",
+            "description": {
+              "en": "The style of the image (\"watercolour\", \"pixel art\").",
+              "pl": "Styl obrazu („akwarela”, „pixel art”)."
+            }
+          },
+          {
+            "name": "size",
+            "type": "string",
+            "required": false,
+            "default": "1024x1024",
+            "description": {
+              "en": "Image size as the provider names it.",
+              "pl": "Rozmiar obrazu w nazwach dostawcy."
+            }
+          }
+        ]
       },
       "narrate": {
         "id": "narrate",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Read aloud",
-        "description": "Express a text content as speech.",
+        "description": "Express a text content as speech: first the text is rewritten as a narration for reading aloud (text), then, when a speech model is set (argument or setting speech_model, with speech_provider), that narration is spoken (audio). Without a speech model the result is the narration text; no speech adapter is registered by default.",
         "labels": {
           "pl": "Przeczytaj na głos"
         },
         "steps": [
           {
-            "action": "use_model"
+            "id": "script",
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You prepare texts for reading aloud. Rewrite the text as a spoken narration: short sentences, no markup or lists, numbers and abbreviations written out in words, a clear rhythm. Keep the meaning and the language. Output only the narration.",
+                  "pl": "Przygotowujesz teksty do czytania na głos. Przepisz tekst jako narrację mówioną: krótkie zdania, bez znaczników i list, liczby i skróty zapisane słowami, wyraźny rytm. Zachowaj sens i język. Podaj samą narrację."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Prepare the text above for narration. Tone: {tone}.",
+                    "pl": "Przygotuj powyższy tekst do narracji. Ton: {tone}."
+                  }
+                },
+                "vars": {
+                  "tone": {
+                    "$arg": "tone",
+                    "default": {
+                      "$localized": {
+                        "en": "calm and clear",
+                        "pl": "spokojny i wyraźny"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.5
+              }
+            }
+          },
+          {
+            "id": "speak",
+            "action": "use_model",
+            "when": {
+              "arg": "speech_model"
+            },
+            "with": {
+              "model": {
+                "$arg": "speech_model"
+              },
+              "provider": {
+                "$arg": "speech_provider",
+                "default": ""
+              },
+              "wants": [
+                "audio"
+              ],
+              "parameters": {
+                "$arg": "speech_parameters",
+                "default": {}
+              }
+            }
           }
         ],
         "inputs": [
           "text"
         ],
         "outputs": [
+          "text",
           "audio"
         ],
         "requires": [
@@ -1874,7 +2123,48 @@
             "opowiedz*",
             "narracj*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "tone",
+            "type": "string",
+            "required": false,
+            "default": "calm and clear",
+            "description": {
+              "en": "Tone of the narration.",
+              "pl": "Ton narracji."
+            }
+          },
+          {
+            "name": "speech_model",
+            "type": "string",
+            "required": false,
+            "setting": "speech_model",
+            "description": {
+              "en": "A model that speaks (needs an adapter that produces audio). Without it the result is the narration text.",
+              "pl": "Model, który mówi (wymaga adaptera dającego dźwięk). Bez niego wynikiem jest tekst narracji."
+            }
+          },
+          {
+            "name": "speech_provider",
+            "type": "string",
+            "required": false,
+            "setting": "speech_provider",
+            "description": {
+              "en": "The provider (manifest id) of the speech model.",
+              "pl": "Dostawca (id manifestu) modelu mowy."
+            }
+          },
+          {
+            "name": "speech_parameters",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Extra parameters of the speech request (voice, format ...), as the provider names them.",
+              "pl": "Dodatkowe parametry żądania mowy (głos, format ...) w nazwach dostawcy."
+            }
+          }
+        ]
       },
       "actions.for": {
         "id": "actions.for",
@@ -1956,7 +2246,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Explain one action for an element",
-        "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them.",
+        "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them. The thresholds of those proposals come through the scope chain (installation, user, conversation like the rules) and the answer says which scope set each (extrapolation.resolved).",
         "labels": {
           "pl": "Wyjaśnij jedną akcję dla elementu"
         },
@@ -2030,7 +2320,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Propose a chain of actions",
-        "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed.",
+        "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed. The preset and every threshold resolve through the same scope chain as the rules (installation preset, the user's settings extrapolation_preset / extrapolation_bounds, rules with effect set_value on a conversation or a project); the answer carries `resolved` (which scope, rule and initiator set each value) and `scope`.",
         "labels": {
           "pl": "Zaproponuj łańcuch akcji"
         },
@@ -2109,8 +2399,8 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "Extrapolation preset (off disables proposals); default: the active preset",
-              "pl": "Preset ekstrapolacji (off wyłącza propozycje); domyślnie aktywny"
+              "en": "Extrapolation preset (off disables proposals); absent = the preset the scope chain resolves (installation, user, conversation)",
+              "pl": "Preset ekstrapolacji (off wyłącza propozycje); brak = preset, który wyznacza łańcuch zakresów (instalacja, użytkownik, rozmowa)"
             },
             "has_default": false,
             "edit": "choice:extrapolation_presets"
@@ -2170,7 +2460,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Run an action",
-        "description": "Runs an action (or a chain from actions.propose_chain) on an element: the rules of the scope are asked for every action of the plan, a confirmation pauses the run with a receipt, the usage guard's x10 hold pauses the step with its receipt, every step leaves a record with provenance. propose: true stores the plan and waits for the user's go. Answer: the run document (loom.action_run/1).",
+        "description": "Runs an action (or a chain from actions.propose_chain) on an element: the rules of the scope are asked for every action of the plan, a confirmation pauses the run with a receipt, the usage guard's x10 hold pauses the step with its receipt, every step leaves a record with provenance. propose: true stores the plan and waits for the user's go. Answer: the run document (loom.action_run/1). A completed run stores its result as graph data (a form node of the result's modality, a content node shared per source element, an action_run node) where the setting action_result_target says (graph, run_only, conversation_message; scoped like the rules); long text goes to the blob store. The document tells the nodes in result.produced.",
         "labels": {
           "pl": "Wykonaj akcję"
         },
@@ -2295,8 +2585,8 @@
             "type": "object",
             "required": false,
             "description": {
-              "en": "Where the request came from (conv_id, message_id ...); stored with the run",
-              "pl": "Skąd pochodzi żądanie (conv_id, message_id ...); zapisywane z przebiegiem"
+              "en": "Where the request came from (conv_id, message_id, lang ...); stored with the run. conv_id scopes the rules and the result target to that conversation; lang picks the language of the prompts",
+              "pl": "Skąd pochodzi żądanie (conv_id, message_id, lang ...); zapisywane z przebiegiem. conv_id wyznacza zakres reguł i celu wyniku, lang wybiera język promptów"
             },
             "has_default": false,
             "edit": "json"
@@ -2312,7 +2602,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Preview a run",
-        "description": "The plan of a run without storing or executing anything: steps, gates (allowed / needs confirmation / denied with the rule's reason and initiator), declared cost, effects, what cannot run yet.",
+        "description": "The plan of a run without storing or executing anything: steps, gates (allowed / needs confirmation / denied with the rule's reason and initiator), declared cost, effects, what cannot run yet. The answer carries `estimate`: tokens, and money where the model registry lists the price (unknown, never zero, where it does not).",
         "labels": {
           "pl": "Podgląd wykonania"
         },
@@ -3092,6 +3382,20 @@
             "phrases": {
               "type": "object",
               "description": "Words that name this action in a chat input, per language: {en: [...], pl: [...]}. A phrase is space-separated words, all of which must occur near the start of the input (any order); a word ending in * matches any continuation. Used by input.route_intent; a new action brings its own phrases."
+            },
+            "planned_reason": {
+              "type": "object",
+              "description": "Planned only: why it is not callable yet, per language {en, pl}; shown instead of a bare \"planned\".",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "params": {
+              "type": "array",
+              "description": "The arguments of the action: {name, type, required?, default?, setting?, description {en, pl}}. An argument the caller leaves out is filled from the config key `setting` (when it is set), and a required one that is still missing makes the plan unfeasible, saying which; `default` here documents the default that the steps carry.",
+              "items": {
+                "type": "object"
+              }
             }
           },
           "additionalProperties": true

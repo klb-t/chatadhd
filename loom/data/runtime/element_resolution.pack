@@ -14,7 +14,7 @@
       {"id": "blob", "hex_length": 64, "source": "blob"}
     ],
     "setting": {"class": "settings_field", "source": "setting"},
-    "node_kind_classes": {"blob": "file", "message": "message"},
+    "node_kind_classes": {"blob": "file", "message": "message", "text_form": "text_form", "image_form": "image_form", "audio_form": "audio_form", "video_form": "video_form", "content": "content", "action_run": "action_run"},
     "mime_rules": [
       {"prefix": "image/", "class": "image_form", "traits": ["has_file", "has_hash"], "part": "image"},
       {"prefix": "audio/", "class": "audio_form", "traits": ["has_file", "has_hash"], "part": "audio"},

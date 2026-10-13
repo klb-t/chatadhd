@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "loom/action_element.h"
+#include "loom/action_result.h"
 #include "loom/action_runner.h"
 #include "loom/chat_route.h"
 #include "loom/action_rules.h"
@@ -811,7 +812,7 @@ Json cli_args(const Args& a) {
   return args;
 }
 
-void print_run(const Json& run) {
+void print_run(Runtime& rt, const Json& run) {
   std::cout << "run     " << run.value("id", "") << "  " << run.value("status", "") << "\n";
   for (const auto& s : run.value("steps", Json::array()))
     std::cout << "  step  " << s.value("id", "") << "  " << s.value("action", "") << "  " << s.value("status", "") << "\n";
@@ -824,9 +825,20 @@ void print_run(const Json& run) {
   }
   if (run.contains("error") && run["error"].is_object())
     std::cout << "error   " << run["error"].value("message", "") << "\n";
-  if (run.contains("result") && run["result"].is_object())
+  if (run.contains("result") && run["result"].is_object()) {
+    // A long text was moved to the blob store by the result sink; the reference is read back here.
     for (const auto& part : run["result"].value("parts", Json::array()))
-      if (part.value("kind", "") == "text") std::cout << "\n" << part.value("text", "") << "\n";
+      if (part.value("kind", "") == "text") {
+        auto text = actions::part_text(&rt.blobs(), part);
+        std::cout << "\n" << (text ? *text : part.value("preview", "")) << "\n";
+      }
+    if (const Json* made = json::find(run["result"], "produced"); made && made->is_object()) {
+      for (const auto& item : made->value("items", Json::array()))
+        std::cout << "stored  " << item.value("form", "") << "  " << item.value("class", "") << "  (" << made->value("target", "") << ")\n";
+      if (made->contains("content") && made->at("content").is_string())
+        std::cout << "content " << made->at("content").get<std::string>() << "  run " << made->value("run_node", Json(nullptr)).dump() << "\n";
+    }
+  }
 }
 
 int cmd_actions_run(Runtime& rt, const Args& a, const std::string& sub) {
@@ -866,7 +878,7 @@ int cmd_actions_run(Runtime& rt, const Args& a, const std::string& sub) {
     std::cout << (result.value("runnable", false) ? "runnable" : "not runnable yet") << "; nothing was executed\n";
     return 0;
   }
-  print_run(result);
+  print_run(rt, result);
   const std::string status = result.value("status", "");
   return status == "failed" || status == "denied" ? 1 : status == "cancelled" ? 130 : 0;
 }
@@ -898,7 +910,7 @@ int cmd_actions_run_control(Runtime& rt, const Args& a, const std::string& sub) 
                 << (r.contains("actions") ? r["actions"].dump() : std::string()) << "\n";
     return 0;
   }
-  print_run(result);
+  print_run(rt, result);
   return 0;
 }
 

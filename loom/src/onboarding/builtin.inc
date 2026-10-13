@@ -358,7 +358,10 @@ R"loom_onboard({
                 "status_denied": "Not allowed by the rules",
                 "status_unavailable": "Cannot run yet",
                 "status_waiting": "Waiting for an answer",
-                "status_stale": "No longer valid"
+                "status_stale": "No longer valid",
+                "cost_money": "Money: about {{low}} to {{high}} {{currency}} (from the size of the input and the model's listed price; not a limit)",
+                "cost_money_unknown": "Money: unknown ({{reason}}); do not read it as free",
+                "produced": "Saved in the graph ({{target}}): {{nodes}}"
               },
               "pl": {
                 "title": "Polecenie czeka na Twoją odpowiedź",
@@ -377,7 +380,10 @@ R"loom_onboard({
                 "status_denied": "Zasady na to nie pozwalają",
                 "status_unavailable": "Nie można jeszcze wykonać",
                 "status_waiting": "Czeka na odpowiedź",
-                "status_stale": "Nieaktualne"
+                "status_stale": "Nieaktualne",
+                "cost_money": "Pieniądze: ok. {{low}} do {{high}} {{currency}} (z rozmiaru wejścia i ceny modelu z cennika; nie limit)",
+                "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
+                "produced": "Zapisano w grafie ({{target}}): {{nodes}}"
               }
             }
           }
@@ -1223,7 +1229,8 @@ R"loom_onboard({
       "revision": 1,
       "label": "Local source view labels; local reading does not authorize model disclosure",
       "value": {
-        "schema": "loom.presentation_feature/1",
+)loom_onboard",
+R"loom_onboard(        "schema": "loom.presentation_feature/1",
         "feature": "conversation_view",
         "locales": {
           "en": {
@@ -1231,8 +1238,7 @@ R"loom_onboard({
             "local_read": "Read linked sources locally",
             "reading": "Reading linked sources…",
             "read_scope": "This action reads the attached source for this local view. It does not authorize sending source content to a model or another service. The adapter may read the whole container.",
-)loom_onboard",
-R"loom_onboard(            "readonly": "This source message is a version-pinned, read-only view. Editing, restoring a stored version and source-history sending are unavailable.",
+            "readonly": "This source message is a version-pinned, read-only view. Editing, restoring a stored version and source-history sending are unavailable.",
             "egress_unavailable": "Source-history sending is unavailable: local read has no model-disclosure binding.",
             "details": "Source versions, access results and read evidence",
             "unavailable": "The source view is unavailable. Stored messages and explicit source statuses remain visible.",
@@ -1403,7 +1409,10 @@ R"loom_onboard(            "readonly": "This source message is a version-pinned,
             "status_denied": "Not allowed by the rules",
             "status_unavailable": "Cannot run yet",
             "status_waiting": "Waiting for an answer",
-            "status_stale": "No longer valid"
+            "status_stale": "No longer valid",
+            "cost_money": "Money: about {{low}} to {{high}} {{currency}} (from the size of the input and the model's listed price; not a limit)",
+            "cost_money_unknown": "Money: unknown ({{reason}}); do not read it as free",
+            "produced": "Saved in the graph ({{target}}): {{nodes}}"
           },
           "pl": {
             "title": "Polecenie czeka na Twoją odpowiedź",
@@ -1422,7 +1431,10 @@ R"loom_onboard(            "readonly": "This source message is a version-pinned,
             "status_denied": "Zasady na to nie pozwalają",
             "status_unavailable": "Nie można jeszcze wykonać",
             "status_waiting": "Czeka na odpowiedź",
-            "status_stale": "Nieaktualne"
+            "status_stale": "Nieaktualne",
+            "cost_money": "Pieniądze: ok. {{low}} do {{high}} {{currency}} (z rozmiaru wejścia i ceny modelu z cennika; nie limit)",
+            "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
+            "produced": "Zapisano w grafie ({{target}}): {{nodes}}"
           }
         }
       }

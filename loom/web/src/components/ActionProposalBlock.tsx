@@ -16,6 +16,7 @@ export default function ActionProposalBlock({ feature, answer, busy, failure, on
       <strong>{texts.title ?? answer.kind}</strong>
       {texts.plan && <p data-testid={testId + "-plan"}>{texts.plan}</p>}
       {texts.cost && <p data-testid={testId + "-cost"}>{texts.cost}</p>}
+      {texts.money && <p data-testid={testId + "-money"}>{texts.money}</p>}
       {texts.confirmNeeded && <p data-testid={testId + "-confirm-needed"}>{texts.confirmNeeded}</p>}
       <button type="button" className="primary" disabled={busy || !view.answerable} onClick={onConfirm}
         data-testid={testId + "-confirm"}>{texts.confirm ?? answer.receiptId}</button>

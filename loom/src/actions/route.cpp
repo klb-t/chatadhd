@@ -6,6 +6,7 @@
 #include <set>
 
 #include "loom/action_element.h"
+#include "loom/action_result.h"
 #include "loom/action_run.h"
 #include "loom/action_runner.h"
 #include "loom/chat_engine.h"
@@ -46,18 +47,22 @@ struct Data {
   ElementResolver resolver;
   std::set<std::string> setting_keys;
   std::filesystem::path root;
+  Json results = Json::object();  // runtime profile action_results (link names, ...)
 };
 
 Result<Data> load_data(Runtime& rt) {
   const auto root = rt.paths().root;
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("intent_routing", root));
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
+  engine.set_user_values(rt.config().all());  // the user's settings are the person level of scoped values
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   std::set<std::string> keys;
   if (auto fields = settings_fields(root))
     if (const Json* list = json::find(*fields, "fields"); list && list->is_array())
       for (const auto& f : *list) keys.insert(json::get_string(f, "key"));
-  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root};
+  Json results = Json::object();
+  if (auto p = RuntimeProfile::load("action_results", root)) results = p->values();
+  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results)};
 }
 
 ElementSources sources_of(Runtime& rt) { return ElementSources{&rt.db(), &rt.blobs(), rt.paths().root}; }
@@ -532,25 +537,33 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::
   cmd["element"] = element_summary(d, element_json, lang);
   // Missing arguments.
   Json missing_args = Json::array();
+  Json missing_settings = Json::object();  // argument -> the setting that would supply it
   const std::string element_arg = json::get_string(*entry, "element_from_arg");
+  const Json bound = rt.actions().bind_params(*entry, c.args);  // what the settings already say counts as said
   if (const Json* params = json::find(*entry, "params"); params && params->is_array())
     for (const auto& p : *params) {
       const std::string name = json::get_string(p, "name");
-      if (json::get_bool(p, "required", false) && !c.args.contains(name) && name != element_arg) missing_args.push_back(name);
+      if (json::get_bool(p, "required", false) && !bound.contains(name) && name != element_arg) {
+        missing_args.push_back(name);
+        if (const std::string setting = json::get_string(p, "setting"); !setting.empty()) missing_settings[name] = setting;
+      }
     }
-  if (!missing_args.empty()) return infeasible(Json{{"code", "missing_args"}, {"args", missing_args}});
+  if (!missing_args.empty()) return infeasible(Json{{"code", "missing_args"}, {"args", missing_args}, {"settings", missing_settings}});
+  // The scope of the question (R47): this conversation and the turn, so rules and thresholds bound to the conversation apply.
+  const Json scope = conv.id.empty() ? Json(nullptr) : Json{{"conversation", conv.id}, {"turn", ""}};
   // Fit: the action fits when the element has the traits it requires; else a chain may supply them.
-  auto view = d.engine.actions_for(element_json, Json(nullptr), Json{{"include_unmatched", true}});
+  auto view = d.engine.actions_for(element_json, scope, Json{{"include_unmatched", true}});
   if (!view) return infeasible(Json{{"code", "error"}, {"message", view.error().message}});
   Json row = nullptr;
   for (const auto& r : (*view)["actions"])
     if (json::get_string(r, "action") == c.action) row = r;
   const bool fits = !row.is_null() && json::get_string(row, "status") != "not_applicable";
   Json request = Json{{"element", element_json}, {"args", c.args}};
+  if (!scope.is_null()) request["scope"] = scope;
   if (fits) {
     request["action"] = c.action;
   } else {
-    auto chains = d.engine.propose_chain(element_json, Json{{"action", c.action}}, Json(nullptr), Json::object());
+    auto chains = d.engine.propose_chain(element_json, Json{{"action", c.action}}, scope, Json::object());
     if (!chains || !(*chains)["chains"].is_array() || (*chains)["chains"].empty()) {
       Json reason{{"code", "unfit"}, {"missing", row.is_null() ? Json::array() : row.value("missing", Json::array())}};
       if (chains && chains->contains("beyond_bounds")) reason["beyond_bounds"] = (*chains)["beyond_bounds"];
@@ -570,6 +583,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::
   cmd["denied"] = preview->at("denied");
   cmd["not_runnable"] = preview->at("not_runnable");
   cmd["runnable"] = preview->at("runnable");
+  cmd["estimate"] = preview->value("estimate", Json(nullptr));
   cmd["feasible"] = true;
   // What would be sent: the exact size of the content the model steps take (money cost stays unknown).
   std::int64_t bytes = 0;
@@ -806,8 +820,13 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
                            {"cost", item.value("cost", 0.0)}, {"implementation", item.value("implementation", "")}});
   p["items"] = items;
   if (cmd.contains("plan")) {
+    const Json estimate = cmd.value("estimate", Json(nullptr));
+    // Money is a range where the model registry knows the price, else unknown with the reason: never a zero.
+    Json money = estimate.is_object() ? estimate.value("money", Json(nullptr)) : Json(nullptr);
+    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}};
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
-                     {"input_bytes", cmd.value("input_bytes", 0)}, {"money", nullptr}};
+                     {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
+                     {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
     p["effects"] = effects_of(cmd.at("plan"));
   }
   Json confirm = Json::array();
@@ -819,6 +838,13 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
   if (cmd.contains("candidates")) p["alternatives"] = cmd["candidates"];
   (void)d;
   return p;
+}
+
+// A sum of money for people: enough digits to tell a hundredth of a cent from nothing.
+std::string money_text(double v) {
+  char buf[48];
+  std::snprintf(buf, sizeof buf, v >= 0.01 ? "%.2f" : "%.4f", v);
+  return buf;
 }
 
 std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal, const std::string& lang) {
@@ -834,7 +860,13 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
     if (code == "unfit") {
       lines.push_back(say(d.cfg, lang, "proposal_unfit", Json{{"missing", join(strings_of(json::find(reason, "missing")), ", ")}}));
     } else if (code == "missing_args") {
-      lines.push_back(say(d.cfg, lang, "proposal_missing_args", Json{{"args", join(strings_of(json::find(reason, "args")), ", ")}, {"action", cmd.value("action", "")}}));
+      std::string hint;
+      if (const Json* settings = json::find(reason, "settings"); settings && settings->is_object() && !settings->empty()) {
+        std::vector<std::string> keys;
+        for (auto it = settings->begin(); it != settings->end(); ++it) keys.push_back(it.value().get<std::string>());
+        hint = say(d.cfg, lang, "missing_args_settings", Json{{"settings", join(keys, ", ")}});
+      }
+      lines.push_back(say(d.cfg, lang, "proposal_missing_args", Json{{"args", join(strings_of(json::find(reason, "args")), ", ")}, {"action", cmd.value("action", "")}}) + hint);
     } else {
       lines.push_back(say(d.cfg, lang, "proposal_error", Json{{"message", reason.is_object() ? json::get_string(reason, "message") : std::string("?")}}));
     }
@@ -845,6 +877,13 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   lines.push_back(say(d.cfg, lang, "proposal_plan", Json{{"plan", join(plan, " -> ")}}));
   if (const Json* cost = json::find(proposal, "cost")) {
     lines.push_back(say(d.cfg, lang, "proposal_cost", Json{{"cost", cost->value("declared", 0.0)}, {"calls", cost->value("model_calls", 0)}, {"bytes", cost->value("input_bytes", 0)}}));
+    if (cost->value("model_calls", 0) > 0) {
+      const Json money = cost->value("money", Json(nullptr));
+      if (money.is_object() && json::get_bool(money, "known", false))
+        lines.push_back(say(d.cfg, lang, "proposal_money_known", Json{{"low", money_text(money.value("low", 0.0))}, {"high", money_text(money.value("high", 0.0))}, {"currency", money.value("currency", "USD")}}));
+      else
+        lines.push_back(say(d.cfg, lang, "proposal_money_unknown", Json{{"why", money.is_object() ? money.value("reason", "") : std::string()}}));
+    }
   }
   if (const Json* effects = json::find(proposal, "effects"))
     lines.push_back(say(d.cfg, lang, "proposal_effects", Json{{"effects", effects_sentence(d, *effects, lang)}}));
@@ -856,7 +895,11 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   const Json not_runnable = cmd.value("not_runnable", Json::array());
   if (!not_runnable.empty()) {
     std::vector<std::string> why;
-    for (const auto& n : not_runnable) why.push_back(n.value("action", "") + " (" + n.value("why", "") + ")");
+    for (const auto& n : not_runnable) {
+      std::string line = n.value("action", "") + " (" + n.value("why", "");
+      if (const Json* r = json::find(n, "reason")) line += ": " + localized(*r, lang);
+      why.push_back(line + ")");
+    }
     lines.push_back(say(d.cfg, lang, "proposal_not_runnable", Json{{"why", join(why, ", ")}}));
     return join(lines, "\n");
   }
@@ -866,12 +909,16 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   return join(lines, "\n");
 }
 
-std::string body_of(const Json& run) {
+std::string body_of(Runtime& rt, const Json& run) {
   std::string out;
   const Json* result = json::find(run, "result");
   if (result && result->is_object()) {
     for (const auto& part : result->value("parts", Json::array()))
-      if (json::get_string(part, "kind") == "text") out += (out.empty() ? "" : "\n\n") + json::get_string(part, "text");
+      if (json::get_string(part, "kind") == "text") {
+        // A long text was moved to the blob store by the result sink; the reference is read back here.
+        auto text = actions::part_text(&rt.blobs(), part);
+        out += (out.empty() ? "" : "\n\n") + (text ? *text : json::get_string(part, "preview"));
+      }
     if (out.empty())
       if (const Json* data = json::find(*result, "data")) out = "```json\n" + json::dump(*data, 2) + "\n```";
   }
@@ -883,13 +930,37 @@ struct Report {
   Json meta;
 };
 
-Report report_of(const Data& d, const Json& run, const std::string& title, const std::string& lang) {
+// What the result sink produced for a completed run: the form nodes, the content node, the run node.
+Json produced_of(const Json& run) {
+  const Json* result = json::find(run, "result");
+  const Json* produced = result ? json::find(*result, "produced") : nullptr;
+  if (!produced || !produced->is_object()) return Json(nullptr);
+  Json forms = Json::array();
+  for (const auto& item : produced->value("items", Json::array()))
+    if (!json::get_string(item, "form").empty()) forms.push_back(item.at("form"));
+  if (forms.empty()) return Json(nullptr);
+  return Json{{"target", produced->value("target", "")}, {"forms", forms}, {"content", produced->value("content", Json(nullptr))},
+              {"run_node", produced->value("run_node", Json(nullptr))}};
+}
+
+// The message the sink posted (target conversation_message): it is the result, no second message says it again.
+std::string posted_message(const Json& run) {
+  const Json* result = json::find(run, "result");
+  const Json* produced = result ? json::find(*result, "produced") : nullptr;
+  if (!produced || !produced->is_object()) return std::string();
+  for (const auto& item : produced->value("items", Json::array()))
+    if (!json::get_string(item, "message_id").empty()) return json::get_string(item, "message_id");
+  return std::string();
+}
+
+Report report_of(Runtime& rt, const Data& d, const Json& run, const std::string& title, const std::string& lang) {
   Report r;
   const std::string status = json::get_string(run, "status");
   r.meta = Json{{"run_id", json::get_string(run, "id")}, {"status", status}};
   if (status == "completed") {
+    if (Json produced = produced_of(run); !produced.is_null()) r.meta["produced"] = produced;
     r.text = say(d.cfg, lang, "result_completed", Json{{"title", title}});
-    const std::string body = body_of(run);
+    const std::string body = body_of(rt, run);
     r.text += "\n\n" + (body.empty() ? say(d.cfg, lang, "result_no_text") : body);
   } else if (status == "failed") {
     const Json err = run.value("error", Json::object());
@@ -908,6 +979,35 @@ Report report_of(const Data& d, const Json& run, const std::string& title, const
     r.meta["pending"] = run.value("pending", Json(nullptr));
   }
   return r;
+}
+
+// The chat message that says a result links to the nodes it presents (graph targets), so the node and the message find each other.
+Status link_presented(Runtime& rt, const Data& d, const std::string& message_id, const Json& produced, const std::string& run_id) {
+  if (!produced.is_object()) return {};
+  const std::string type = json::get_string(d.results.value("links", Json::object()), "presented_as", "references");
+  for (const auto& f : produced.value("forms", Json::array())) {
+    const std::string form = f.get<std::string>();
+    if (form == message_id) continue;
+    auto made = rt.db().create_link(message_id, form, type, 1.0, Json{{"run_id", run_id}, {"role", "result_message"}});
+    if (!made) return made.error();
+  }
+  return {};
+}
+
+// The router's message about a run. When the target posted the result as a message of its own, that message is the
+// answer (and no second one repeats it); otherwise a report message that links to what the run produced.
+Result<std::string> answer_message(Runtime& rt, const Data& d, const std::string& conv_id, const Json* run, Report& rep) {
+  const std::string posted = run ? posted_message(*run) : std::string();
+  if (!posted.empty()) {
+    rep.text = body_of(rt, *run);
+    return posted;
+  }
+  LOOM_TRY_ASSIGN(std::string id, add_message(rt, conv_id, "assistant", rep.text, Json{{"action_run", rep.meta}, {"routed", "result"}}, "loom:actions"));
+  if (auto linked = link_presented(rt, d, id, rep.meta.value("produced", Json(nullptr)), rep.meta.value("run_id", ""));
+      !linked) {
+    LOOM_TRY(set_metadata(rt, id, [&](Json& m) { m["action_run"]["link_error"] = linked.error().message; }));
+  }
+  return id;
 }
 
 std::string classify_answer(const Data& d, const std::string& text) {
@@ -965,12 +1065,12 @@ Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id
     rep.meta = Json{{"run_id", proposal.value("run_id", "")}, {"status", json::get_string(*run, "status")}};
     new_status = "rejected";
   } else {
-    rep = report_of(d, *run, proposal.value("title", ""), lang);
+    rep = report_of(rt, d, *run, proposal.value("title", ""), lang);
     const std::string st = json::get_string(*run, "status");
     new_status = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" ? "waiting" : st;
   }
   LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) { m["action_proposal"]["status"] = new_status; }));
-  LOOM_TRY_ASSIGN(std::string assistant_id, add_message(rt, conv_id, "assistant", rep.text, Json{{"action_run", rep.meta}, {"routed", "result"}}, "loom:actions"));
+  LOOM_TRY_ASSIGN(std::string assistant_id, answer_message(rt, d, conv_id, run ? &*run : nullptr, rep));
   Json payload{{"run", rep.meta}, {"proposal_message_id", proposal_msg.id}, {"proposal_status", new_status}};
   return finish(conv_id, user_id, assistant_id, rep.text, "action_result", payload);
 }
@@ -1055,7 +1155,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     Json run_request = cmd["request"];
     run_request["propose"] = true;
     run_request["ref"] = "chat:" + user_id;
-    run_request["context"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_id", user_id}, {"text", text}, {"source", cmd.value("source", "")}};
+    run_request["context"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_id", user_id}, {"text", text}, {"source", cmd.value("source", "")}, {"lang", lang}};
     auto run = rt.actions().run(run_request);
     if (!run) {
       proposal["status"] = "unavailable";
@@ -1078,10 +1178,11 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
         auto done = rt.actions().confirm(Json{{"run_id", (*run)["id"]}, {"approved", true}, {"receipt_id", proposal["receipt_id"]},
                                               {"ref", "auto:" + json::get_string(d.cfg.at("execution"), "setting") + "=" + mode}});
         if (done) {
-          Report rep = report_of(d, *done, proposal.value("title", ""), lang);
+          Report rep = report_of(rt, d, *done, proposal.value("title", ""), lang);
           const std::string st = json::get_string(*done, "status");
           proposal["status"] = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" ? "waiting" : st;
           assistant_text = rep.text;
+          if (!posted_message(*done).empty()) assistant_text = say(d.cfg, lang, "result_completed", Json{{"title", proposal.value("title", "")}});
           meta["action_run"] = rep.meta;
           type = "action_result";
         } else {
@@ -1096,6 +1197,10 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   }
   meta["routed"] = "proposal";
   LOOM_TRY_ASSIGN(std::string assistant_id, add_message(rt, conv_id, "assistant", assistant_text, meta, "loom:actions"));
+  if (meta.contains("action_run")) {
+    if (auto linked = link_presented(rt, d, assistant_id, meta["action_run"].value("produced", Json(nullptr)), meta["action_run"].value("run_id", "")); !linked)
+      LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["action_run"]["link_error"] = linked.error().message; }));
+  }
   title_first_exchange(rt, conv_id, text);
   return finish(conv_id, user_id, assistant_id, assistant_text, type, payload);
 }

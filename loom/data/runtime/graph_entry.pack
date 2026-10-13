@@ -1295,6 +1295,12 @@
             "pl": "Rejestr zużycia"
           }
         },
+        "action_run": {
+          "label": {
+            "en": "Action run",
+            "pl": "Przebieg akcji"
+          }
+        },
         "application": {
           "label": {
             "en": "Application (self-model)",
@@ -1899,6 +1905,24 @@
               "pl": "Jak wiernie postać niesie treść: 1 = nic nie zgubiono, 0 = nic nie zachowano. Co zachowano, zgubiono lub dodano (np. styl) trafia do kluczy metadanych krawędzi kept, lost, added."
             }
           }
+        },
+        "derived_from": {
+          "label": {
+            "en": "Derived from",
+            "pl": "Pochodzi z"
+          },
+          "from": "form",
+          "to": "any",
+          "description": "A result was made from this source element (a message, a conversation, a node, a stored file). Written for every result of an action run that has a source element."
+        },
+        "produced_by": {
+          "label": {
+            "en": "Produced by",
+            "pl": "Wytworzone przez"
+          },
+          "from": "form",
+          "to": "action_run",
+          "description": "The action run that made a result; the run node carries the action id, run id, step, model / adapter and usage receipts (references only, never secrets or bytes)."
         }
       },
       "packages": {
