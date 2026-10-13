@@ -238,3 +238,25 @@ Decyzje techniczne (odwracalne; wszystko jest danymi):
   `loom storage ...`, provider `storage.probe` (sieciowe magazyny nie są kontaktowane z widoku wejścia → `storage_backends_unprobed`).
 - Cofnięcie: usuń `profiles/storage_security.pack` (przywraca lokalne rozmieszczenie; dane w innych magazynach zostają).
 - Otwarte: Google Drive; wieloczęściowy upload S3 dla bardzo dużych obiektów (dziś cały obiekt w pamięci); `encrypt_at_rest` per magazyn (T5b).
+
+## P6: pakiet przez GitHub Actions + F2 (2026-10-13, branch `claude/p6-android-package`)
+
+Decyzje techniczne (odwracalne):
+
+- **Workflow `.github/workflows/package.yml`:** tylko `workflow_dispatch` (minuty płaci właściciel). Dwa zadania: `android`
+  (artefakt `chatadhd-android-apk`) i `server` (artefakt `chatadhd-server-linux-x64`). Domyślnie jedna ABI `arm64-v8a` i rdzeń
+  `Release` (telefon; `x86_64` dla emulatora i `Debug` dla szybkiej budowy to wejścia workflow). Wersje NDK/`compileSdk` czytane
+  z `app/build.gradle.kts`; CMake z SDK: najnowszy 3.x (projekt wymaga ≥ 3.24). Cofnięcie: usuń plik workflow.
+- **Podpis APK:** *debug*, ale klucz przypięty (sekret `ANDROID_DEBUG_KEYSTORE_B64`, bez niego cache Actions), bo świeży klucz
+  na każdym runnerze blokuje aktualizację, a odinstalowanie kasuje teraz prywatne dane. **Release z Twoim keystore: otwarte.**
+- **Serwer:** `deploy/install.sh --package DIR` buduje tym samym kodem co instalacja (jedna funkcja `build_all`), a
+  `--from-tarball` instaluje gotowe archiwum (bez kompilatora i node); `deploy/verify-package.sh` uruchamia serwer z archiwum i go
+  odpytuje. Budowa na Ubuntu 24.04 ⇒ cel potrzebuje glibc ≥ 2.38. Cofnięcie: instalacja ze źródeł działa bez zmian.
+- **F2, lokalizacja danych = ustawienie** (`SharedPreferences "storage"`): nowa instalacja `private` (`getFilesDir()`), istniejące dane
+  w `Documents/ChatADHD` zostają + pasek ostrzeżenia + „Przenieś do prywatnego katalogu”; `shared`, `app_external` i dowolna ścieżka
+  zawsze do wyboru. Przeniesienie: kopia → SHA-256 każdego pliku → przełączenie → stara kopia zostaje do ręcznego usunięcia.
+  Cofnięcie: wybierz poprzednią lokalizację w ekranie „Lokalizacja danych”.
+- **F2, klucze API:** `secrets.json` pieczętowany kluczem AES-GCM z Android Keystore (`secrets.json.keystore`); jawny plik tylko
+  chwilowo (rdzeń czyta go raz przy starcie i zapisuje cały przy `set_secret`; sprawdzone na prawdziwym rdzeniu). Jawny plik wygrywa
+  (migracja, awaria), brak klucza nie kasuje pliku (`.unreadable`). Opcja wyłączalna. Zaszyfrowanie reszty danych: nie (poza zakresem).
+- Otwarte: pierwsza kompilacja Kotlina i uruchomienie na urządzeniu; release signing; wznawianie przerwanego kopiowania.

@@ -144,11 +144,11 @@ class StorageActivity : AppCompatActivity() {
         }
     }
 
-    private fun setBusy(b: Boolean) {
+    private fun setBusy(b: Boolean, copying: Boolean = false) {
         busy = b
         listOf<View>(moveToPrivate, group, custom, wrap, applyBtn).forEach { it.isEnabled = !b }
         for (i in 0 until group.childCount) group.getChildAt(i).isEnabled = !b
-        cancelCopy.visibility = if (b) View.VISIBLE else View.GONE
+        cancelCopy.visibility = if (b && copying) View.VISIBLE else View.GONE
         if (!b) custom.isEnabled = group.checkedRadioButtonId == R_CUSTOM
     }
 
@@ -204,7 +204,7 @@ class StorageActivity : AppCompatActivity() {
 
     private fun startMove(kind: String, customPath: String?, target: File) {
         cancelRequested = false
-        setBusy(true)
+        setBusy(true, copying = true)
         status.setText(R.string.storage_preparing)
         thread {
             val r = loc.migrate(kind, customPath, target) { i, n, rel ->
