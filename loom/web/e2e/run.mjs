@@ -417,11 +417,14 @@ async function main() {
       const sourceFields = workbench.getByTestId("kb-inspector").locator("details").filter({ has: page.getByText("All model fields", { exact: true }) });
       await sourceFields.locator("summary").focus();
       await sourceFields.locator("summary").press("Enter");
-      await page.waitForFunction((fields) => {
-        try { return typeof JSON.parse(fields.querySelector("pre")?.textContent ?? "null")?.preview?.resource?.current === "boolean"; }
-        catch { return false; }
-      }, await sourceFields.elementHandle());
-      const inspected = JSON.parse(await sourceFields.locator("pre").innerText());
+      // Return the parsed fields from the same poll that saw them complete: the inspector may
+      // re-render between a separate wait and a later read.
+      const inspected = await (await page.waitForFunction((fields) => {
+        try {
+          const value = JSON.parse(fields.querySelector("pre")?.textContent ?? "null");
+          return typeof value?.preview?.resource?.current === "boolean" ? value : false;
+        } catch { return false; }
+      }, await sourceFields.elementHandle())).jsonValue();
       assert(inspected.preview.resource.current === true, "keyboard selection reads the verified external resource through the real endpoint");
       assert(inspected.preview.resource.last_successful.nodes.some((node) => node.kind === "export:message"), "source interior exposes message graph nodes, not only a link or sketch");
       await catalog.getByText("Review and import catalog content", { exact: true }).click();
