@@ -39,6 +39,32 @@ std::string usage_baseline_key(const Config& config, std::string_view kind, std:
 Result<Json> usage_policy_settings(const Config& config,
                                   const Json* proposed_override = nullptr);
 
+// ── Ledger compaction (housekeeping; not part of the receipt-bound options) ──
+// Completed operations older than a preset age are folded into per-cohort
+// aggregates: the operation's record and events are removed, a small
+// tombstone keeps its identity and the hash of its estimate (a repeated
+// operation id stays idempotent), and the measured samples of folded
+// operations beyond the policy's baseline window are summed into one row per
+// cohort and resource.  The rolling baseline the growth guard compares
+// against is preserved exactly.  allowed / unresolved / requires_confirmation
+// / denied operations, owner-confirmed ones and every receipt of those are
+// never folded.
+// The preset is the runtime profile "usage_compaction" (with its user overlay
+// profiles/usage_compaction.pack); the config key "usage_ledger_compaction"
+// replaces its top-level fields, and an explicit command's override replaces
+// those.  Mode: off | manual | auto.
+Status validate_usage_compaction_settings(const Json& settings);
+Result<Json> usage_compaction_settings(const Config& config, const std::filesystem::path& data_root,
+                                       const Json* override_settings = nullptr);
+// Explicit compaction of <data_root>/usage-policy.sqlite.  command:
+// {"override": {...settings}, "dry_run": bool, "as_of": "YYYY-MM-DD[ HH:MM:SS]"}.
+// Mode "off" folds nothing (status "off") unless the override changes the mode.
+Result<Json> compact_usage_ledger(const Config& config, const std::filesystem::path& data_root,
+                                  const Json& command);
+// The automatic run: only in mode "auto", at most once per auto_interval_hours,
+// and never creates a ledger.  Status "skipped" says why nothing happened.
+Result<Json> auto_compact_usage_ledger(const Config& config, const std::filesystem::path& data_root);
+
 // Durable local ledger, independent of core/knowledge schema migrations.
 // All admission/lifecycle writes serialize through a SQLite transaction;
 // reservations survive restart and must be explicitly completed/cancelled.
@@ -79,6 +105,12 @@ class UsagePolicy {
   Result<Json> cancel(std::string_view operation_id, std::string_view reason);
   Result<Json> inspect(std::string_view baseline_key);
 
+  // Folds eligible operations under `settings` (see above); dry_run reports
+  // without writing.  `as_of` ("" = now) is the reference time of the age.
+  Result<Json> compact(const Json& settings, bool dry_run = false, std::string_view as_of = {});
+  // True when no compaction ran in the last `hours` (or none ever).
+  Result<bool> compaction_due(double hours);
+
  private:
   struct Impl;
   explicit UsagePolicy(std::unique_ptr<Impl> impl);
@@ -95,7 +127,9 @@ extern "C" {
 // Returns malloc-owned JSON (loom_free_string), including normal
 // requires_confirmation receipts; errors use the existing C ABI envelope.
 // Actions: settings, preview_settings, preview, request, confirm, complete,
-// cancel, inspect. preview_settings takes an "override" object.
+// cancel, inspect, compact, compaction_settings. preview_settings takes an
+// "override" object; compact takes {"override","dry_run","as_of"} (see
+// compact_usage_ledger).
 const char* loom_usage_policy_json(LoomContext* ctx, const char* command_json);
 
 #ifdef __cplusplus

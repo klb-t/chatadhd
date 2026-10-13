@@ -88,6 +88,7 @@ std::string_view to_string(Operation op) noexcept {
     case Operation::BatchSubmit: return "batch_submit";
     case Operation::BatchStatus: return "batch_status";
     case Operation::BatchResults: return "batch_results";
+    case Operation::ListModels: return "list_models";
   }
   return "complete";
 }
@@ -214,6 +215,9 @@ Result<net::HttpRequest> describe_request(const Services& services, const RouteS
 Status apply_auth(const Route& route, net::HttpRequest& request) {
   const std::string& scheme = route.auth_scheme;
   if (scheme.empty() || scheme == "none") return ok_status();
+  // A route resolved without requiring its credential (an analysis preview to
+  // a local endpoint) sends no authentication rather than an empty one.
+  if (route.credential.empty()) return ok_status();
   if (scheme == "bearer") request.headers.emplace_back("Authorization", "Bearer " + route.credential);
   else if (scheme == "token") request.headers.emplace_back("Authorization", "token " + route.credential);
   else if (scheme == "x-api-key") request.headers.emplace_back("x-api-key", route.credential);
@@ -323,6 +327,14 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
   spec.batch_requests = request.batch_requests;
   spec.target = request.target;
   spec.messages = request.messages.is_array() ? request.messages : Json::array();
+  spec.body_bytes = request.body_bytes;
+  spec.wire_headers = request.wire_headers;
+  // The body as a description: given, or parsed from the exact bytes.
+  Json described_body = request.body;
+  if (!described_body.is_object() && !request.body_bytes.empty()) {
+    auto parsed = json::parse(request.body_bytes);
+    if (parsed && parsed->is_object()) described_body = std::move(*parsed);
+  }
   if (!request.context.is_null()) {
     if (!services.resolve_context)
       return Error(Errc::InvalidArgument, "a context reference needs Services::resolve_context");
@@ -339,14 +351,25 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
     else spec.parts.push_back(part);
   }
   if (!request.prompt.empty()) spec.messages.push_back(Json{{"role", "user"}, {"content", request.prompt}});
-  if (!spec.messages.empty() || request.body.is_object() || !request.batch_requests.empty()) needed.insert("text");
-  if (request.body.is_object()) {
+  if (!spec.messages.empty() || described_body.is_object() || !request.batch_requests.empty()) needed.insert("text");
+  if (described_body.is_object()) {
     // Described for provenance only; the adapter sends the body as given.
-    spec.body = request.body;
+    spec.body = described_body;
     spec.parameters = Json::object();
-    for (auto it = request.body.begin(); it != request.body.end(); ++it) {
+    for (auto it = described_body.begin(); it != described_body.end(); ++it) {
       if (it.key() == "model") { if (spec.model.empty() && it->is_string()) spec.model = it->get<std::string>(); }
       else if (it.key() == "messages") spec.messages = it.value();
+      else if (it.key() == "input") {
+        // The input of an embeddings body: described as user messages (hashed
+        // in the record), never copied into the parameters.
+        if (spec.messages.empty()) {
+          const auto as_message = [](const Json& v) {
+            return Json{{"role", "user"}, {"content", v.is_string() ? v : Json(json::dump(v))}};
+          };
+          if (it->is_array()) for (const auto& e : *it) spec.messages.push_back(as_message(e));
+          else spec.messages.push_back(as_message(*it));
+        }
+      }
       else spec.parameters[it.key()] = it.value();
     }
     if (request.stream) spec.stream = true;
@@ -384,6 +407,42 @@ std::shared_ptr<UsageGate> make_usage_gate(const Services& services, const Usage
   return std::make_shared<SharedUsageGate>(root, services.config, spec.require_scope,
                                            spec.estimate.is_object() ? spec.estimate : Json::object(),
                                            spec.confirmation);
+}
+
+namespace {
+
+class FunctionGate final : public UsageGate {
+ public:
+  FunctionGate(std::function<Result<GateDecision>(const net::HttpRequest&, const Json&)> admit,
+               std::function<void(const GateSettlement&)> settle)
+      : admit_(std::move(admit)), settle_(std::move(settle)) {}
+  Result<GateDecision> admit(const net::HttpRequest& request, const Json& provenance) override {
+    return admit_(request, provenance);
+  }
+  void settle(const GateSettlement& settlement) override {
+    if (settle_) settle_(settlement);
+  }
+
+ private:
+  std::function<Result<GateDecision>(const net::HttpRequest&, const Json&)> admit_;
+  std::function<void(const GateSettlement&)> settle_;
+};
+
+}  // namespace
+
+std::shared_ptr<UsageGate> make_function_gate(
+    std::function<Result<GateDecision>(const net::HttpRequest&, const Json&)> admit,
+    std::function<void(const GateSettlement&)> settle) {
+  return std::make_shared<FunctionGate>(std::move(admit), std::move(settle));
+}
+
+std::shared_ptr<UsageGate> make_admitted_gate() {
+  return make_function_gate([](const net::HttpRequest&, const Json&) -> Result<GateDecision> {
+    GateDecision decision;
+    decision.dispatch = true;
+    decision.status = "admitted_by_caller";
+    return decision;
+  });
 }
 
 namespace {
@@ -432,6 +491,8 @@ void finalize_provenance(VariantResult& r, const PreparedCall& call) {
     for (const auto& part : r.outputs) {
       Json o = part.to_json();
       o.erase("text");  // the text itself is in the result; the record keeps references and hashes
+      if (part.kind == "embedding" && part.value.is_array())
+        o["value"] = Json{{"dimensions", part.value.size()}, {"sha256", Sha256::hex(json::canonical(part.value))}};
       outs.push_back(std::move(o));
     }
     p["outputs"] = std::move(outs);
@@ -588,6 +649,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
     r.state = State::Ok;
     if (op == Operation::Complete) {
       if (auto parsed = adapter->parse(r.body)) buffered = std::move(*parsed);
+      else r.parse_error = parsed.error();
     }
   }
 

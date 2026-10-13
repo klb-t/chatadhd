@@ -179,6 +179,14 @@ TEST_SUITE("knowledge_semantic") {
     CHECK(f.count("loom_kb_candidates") == 2);
   }
 
+  TEST_CASE("golden: semantic proposal request bytes are pinned (URL, header order, body, timeout)") {
+    Fixture f;
+    f.reply(Json::array({f.proposal()}));
+    unwrap(f.call());
+    REQUIRE(f.http->requests().size() == 1);
+    CHECK(loom::test::request_json(f.http->requests()[0]) == loom::test::golden_request("semantic_proposal_request"));
+  }
+
   TEST_CASE("off, missing configuration and disabled semantics never request a provider") {
     Fixture f;
     f.cfg.llm = "off";

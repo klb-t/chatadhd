@@ -115,6 +115,8 @@ class ProviderRegistry {
                                      const Json& constraints = Json::object()) const;
   std::optional<ProviderManifest> get(std::string_view id) const;
   std::vector<ProviderManifest> all() const;
+  // The settings this registry resolves addresses from (for borrowed services).
+  const Config& config() const noexcept { return cfg_; }
   // {"providers":[{"id","available","capabilities":[...]}]} — never includes secrets.
   Json status() const;
 

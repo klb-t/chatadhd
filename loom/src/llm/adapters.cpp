@@ -4,6 +4,8 @@
 // resolved by use_model.cpp.
 #include <map>
 #include <mutex>
+#include <optional>
+#include <vector>
 
 #include "loom/log.h"
 #include "loom/net/sse.h"
@@ -21,6 +23,22 @@ std::string join_url(const std::string& base, const std::string& path) {
   if (path.find("://") != std::string::npos) return path;
   if (path.empty()) return base;
   return base + (path.front() == '/' ? path : "/" + path);
+}
+
+// The header a route's scheme puts its credential in ("" = none, e.g. a query key).
+std::string_view auth_header_name(std::string_view scheme) {
+  if (scheme == "bearer" || scheme == "token") return "Authorization";
+  if (scheme == "x-api-key") return "x-api-key";
+  return {};
+}
+
+// The caller's complete header recipe, in its order; the route's authentication
+// is appended last unless the recipe already carries it.
+Status apply_wire_headers(const Route& route, const CallSpec& spec, net::HttpRequest& req) {
+  req.headers = *spec.wire_headers;
+  const std::string_view carried = auth_header_name(route.auth_scheme);
+  if (!carried.empty() && !net::header_value(req.headers, carried).empty()) return ok_status();
+  return apply_auth(route, req);
 }
 
 Json base_body(const CallSpec& spec) {
@@ -96,22 +114,42 @@ class OpenAiChatAdapter final : public Adapter {
  public:
   std::string_view family() const noexcept override { return "openai_chat"; }
 
+  std::string default_endpoint(Operation op, const Json& metadata) const override {
+    if (op == Operation::ListModels) return json::get_string(metadata, "models_path", "/models");
+    return json::get_string(metadata, "chat_completions_path", "/chat/completions");
+  }
+
   Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
+    if (op == Operation::ListModels) {
+      // The provider's model catalogue: a plain authenticated read.
+      net::HttpRequest req;
+      req.method = "GET";
+      req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint);
+      LOOM_TRY(apply_auth(route, req));
+      req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
+      return req;
+    }
     if (op != Operation::Complete)
       return Error(Errc::Unsupported, "adapter openai_chat has no batch operations");
     net::HttpRequest req;
     req.method = "POST";
     std::string path = route.endpoint;
-    if (path.empty()) path = json::get_string(route.metadata, "chat_completions_path", "/chat/completions");
+    if (path.empty()) path = default_endpoint(op, route.metadata);
     req.url = join_url(route.base_url, path);
-    LOOM_TRY(apply_auth(route, req));
-    req.headers.emplace_back(route.content_type_header, "application/json");
-    for (const auto& h : route.default_headers) req.headers.push_back(h);
-    if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
-    if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
-    for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    if (spec.wire_headers) {
+      LOOM_TRY(apply_wire_headers(route, spec, req));
+    } else {
+      LOOM_TRY(apply_auth(route, req));
+      req.headers.emplace_back(route.content_type_header, "application/json");
+      for (const auto& h : route.default_headers) req.headers.push_back(h);
+      if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
+      if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
+      for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    }
 
-    if (spec.body.is_object()) {
+    if (!spec.body_bytes.empty()) {
+      req.body = spec.body_bytes;
+    } else if (spec.body.is_object()) {
       req.body = json::dump(spec.body);
     } else {
       Json body = base_body(spec);
@@ -216,18 +254,28 @@ class AnthropicMessagesAdapter final : public Adapter {
  public:
   std::string_view family() const noexcept override { return "anthropic_messages"; }
 
+  std::string default_endpoint(Operation op, const Json&) const override {
+    return op == Operation::Complete ? "/v1/messages" : "/v1/messages/batches";
+  }
+
   Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
     net::HttpRequest req;
+    if (op == Operation::ListModels) return Error(Errc::Unsupported, "adapter anthropic_messages has no model listing");
     switch (op) {
+      case Operation::ListModels: break;
       case Operation::Complete: {
         req.method = "POST";
-        req.url = join_url(route.base_url, route.endpoint.empty() ? "/v1/messages" : route.endpoint);
-        LOOM_TRY(apply_auth(route, req));
-        for (const auto& h : route.default_headers) req.headers.push_back(h);
-        req.headers.emplace_back(route.content_type_header, "application/json");
-        for (const auto& h : spec.extra_headers) req.headers.push_back(h);
-        if (spec.body.is_object()) {
-          req.body = json::dump(spec.body);
+        req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint);
+        if (spec.wire_headers) {
+          LOOM_TRY(apply_wire_headers(route, spec, req));
+        } else {
+          LOOM_TRY(apply_auth(route, req));
+          for (const auto& h : route.default_headers) req.headers.push_back(h);
+          req.headers.emplace_back(route.content_type_header, "application/json");
+          for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+        }
+        if (!spec.body_bytes.empty() || spec.body.is_object()) {
+          req.body = !spec.body_bytes.empty() ? spec.body_bytes : json::dump(spec.body);
           req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
           req.stream = spec.stream;
           return req;
@@ -256,7 +304,7 @@ class AnthropicMessagesAdapter final : public Adapter {
       }
       case Operation::BatchSubmit:
         req.method = "POST";
-        req.url = join_url(route.base_url, route.endpoint.empty() ? "/v1/messages/batches" : route.endpoint);
+        req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint);
         LOOM_TRY(apply_auth(route, req));
         for (const auto& h : route.default_headers) req.headers.push_back(h);
         req.headers.emplace_back(route.content_type_header, "application/json");
@@ -265,7 +313,7 @@ class AnthropicMessagesAdapter final : public Adapter {
         return req;
       case Operation::BatchStatus:
         req.method = "GET";
-        req.url = join_url(route.base_url, route.endpoint.empty() ? "/v1/messages/batches" : route.endpoint) + "/" + spec.target;
+        req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint) + "/" + spec.target;
         LOOM_TRY(apply_auth(route, req));
         for (const auto& h : route.default_headers) req.headers.push_back(h);
         req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
@@ -275,7 +323,7 @@ class AnthropicMessagesAdapter final : public Adapter {
         // A results URL as the batch status reports it, or a batch id.
         req.url = spec.target.find("://") != std::string::npos
                       ? spec.target
-                      : join_url(route.base_url, route.endpoint.empty() ? "/v1/messages/batches" : route.endpoint) +
+                      : join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint) +
                             "/" + spec.target + "/results";
         LOOM_TRY(apply_auth(route, req));
         for (const auto& h : route.default_headers) req.headers.push_back(h);
@@ -329,6 +377,10 @@ class OpenAiImagesAdapter final : public Adapter {
 
   Capabilities capabilities() const override { return {{"text"}, {"image"}, {}}; }
 
+  std::string default_endpoint(Operation, const Json& metadata) const override {
+    return json::get_string(metadata, "images_path", "/images/generations");
+  }
+
   // Inline base64 is the only way media bytes arrive; "url" replies are references.
   bool needs_output_store(const CallSpec& spec) const override {
     return json::get_string(spec.parameters, "response_format") == "b64_json";
@@ -347,17 +399,21 @@ class OpenAiImagesAdapter final : public Adapter {
     net::HttpRequest req;
     req.method = "POST";
     std::string path = route.endpoint;
-    if (path.empty()) path = json::get_string(route.metadata, "images_path", "/images/generations");
+    if (path.empty()) path = default_endpoint(op, route.metadata);
     req.url = join_url(route.base_url, path);
-    LOOM_TRY(apply_auth(route, req));
-    req.headers.emplace_back(route.content_type_header, "application/json");
-    for (const auto& h : route.default_headers) req.headers.push_back(h);
-    if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
-    if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
-    for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    if (spec.wire_headers) {
+      LOOM_TRY(apply_wire_headers(route, spec, req));
+    } else {
+      LOOM_TRY(apply_auth(route, req));
+      req.headers.emplace_back(route.content_type_header, "application/json");
+      for (const auto& h : route.default_headers) req.headers.push_back(h);
+      if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
+      if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
+      for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    }
     Json body{{"model", spec.model}, {"prompt", prompt}};
     for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
-    req.body = json::dump(body);
+    req.body = spec.body_bytes.empty() ? json::dump(body) : spec.body_bytes;
     req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
     return req;
   }
@@ -390,6 +446,103 @@ class OpenAiImagesAdapter final : public Adapter {
   std::unique_ptr<StreamDecoder> stream_decoder(const StreamHooks&, const CancelToken*) const override { return nullptr; }
 };
 
+// ── openai_embeddings: OpenAI-compatible embeddings ────────────────────
+// An embedding is one more kind of output: each input text yields one
+// "embedding" part (the vector, in input order).
+class OpenAiEmbeddingsAdapter final : public Adapter {
+ public:
+  std::string_view family() const noexcept override { return "openai_embeddings"; }
+
+  Capabilities capabilities() const override { return {{"text"}, {"embedding"}, {}}; }
+
+  std::string default_endpoint(Operation, const Json& metadata) const override {
+    auto path = json::get_string(metadata, "embedding_path", "/embeddings");
+    if (path.empty() || path.front() != '/') path.insert(path.begin(), '/');
+    return path;
+  }
+
+  Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
+    if (op != Operation::Complete) return Error(Errc::Unsupported, "adapter openai_embeddings has no batch operations");
+    net::HttpRequest req;
+    req.method = "POST";
+    std::string path = route.endpoint;
+    if (path.empty()) path = default_endpoint(op, route.metadata);
+    req.url = join_url(route.base_url, path);
+    if (spec.wire_headers) {
+      req.headers = *spec.wire_headers;
+    } else {
+      for (const auto& h : route.default_headers) req.headers.push_back(h);
+      req.headers.emplace_back(route.content_type_header, "application/json");
+      if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
+      if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
+      for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    }
+    // Authentication follows the other headers on this wire.
+    const std::string_view carried = auth_header_name(route.auth_scheme);
+    if (carried.empty() || net::header_value(req.headers, carried).empty()) LOOM_TRY(apply_auth(route, req));
+    if (!spec.body_bytes.empty()) {
+      req.body = spec.body_bytes;
+    } else if (spec.body.is_object()) {
+      req.body = json::dump(spec.body);
+    } else {
+      Json input = Json::array();
+      for (const auto& m : spec.messages)
+        if (json::get_string(m, "role") == "user" && m.contains("content") && m["content"].is_string())
+          input.push_back(m["content"]);
+      Json body{{"model", spec.model}, {"input", input}};
+      for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
+      req.body = json::dump(body);
+    }
+    req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
+    return req;
+  }
+
+  bool success(Operation, int http_status) const noexcept override { return http_status == 200; }
+
+  Result<Parsed> parse(std::string_view body) const override {
+    auto j = json::parse(body);
+    if (!j || !j->is_object()) return Error(Errc::Parse, "embedding response is not a JSON object");
+    const Json* data = json::find(*j, "data");
+    if (!data || !data->is_array()) return Error(Errc::Parse, "embedding response count mismatch");
+    Parsed out;
+    if (const auto* reported = json::find(*j, "model"); reported && !reported->is_null()) {
+      if (!reported->is_string() || reported->get_ref<const std::string&>().empty())
+        return Error(Errc::Parse, "embedding reported model invalid");
+      out.reported_model = reported->get<std::string>();
+    }
+    // Rows carry their index; the parts come out in input order.
+    std::vector<Json> rows(data->size());
+    std::vector<bool> seen(data->size(), false);
+    std::optional<std::size_t> dimensions;
+    for (const auto& row : *data) {
+      const auto* index = json::find(row, "index");
+      const auto* vector = json::find(row, "embedding");
+      if (!index || !index->is_number_integer() ||
+          (!index->is_number_unsigned() && index->get<std::int64_t>() < 0) ||
+          index->get<std::uint64_t>() >= data->size() || !vector || !vector->is_array() || vector->empty())
+        return Error(Errc::Parse, "embedding response index/vector invalid");
+      const auto position = index->get<std::size_t>();
+      if (seen[position]) return Error(Errc::Parse, "embedding response duplicate index");
+      seen[position] = true;
+      if (dimensions && *dimensions != vector->size()) return Error(Errc::Parse, "embedding vector dimension mismatch");
+      dimensions = vector->size();
+      for (const auto& value : *vector)
+        if (!value.is_number()) return Error(Errc::Parse, "embedding vector contains nonnumber");
+      rows[position] = *vector;
+    }
+    for (auto& row : rows) {
+      Part part;
+      part.kind = "embedding";
+      part.value = std::move(row);
+      out.outputs.push_back(std::move(part));
+    }
+    if (const Json* u = json::find(*j, "usage"); u && u->is_object()) out.usage = *u;
+    return out;
+  }
+
+  std::unique_ptr<StreamDecoder> stream_decoder(const StreamHooks&, const CancelToken*) const override { return nullptr; }
+};
+
 struct AdapterTable {
   std::mutex mu;
   std::map<std::string, AdapterFactory, std::less<>> factories;
@@ -397,6 +550,7 @@ struct AdapterTable {
     factories["openai_chat"] = [] { return std::make_unique<OpenAiChatAdapter>(); };
     factories["anthropic_messages"] = [] { return std::make_unique<AnthropicMessagesAdapter>(); };
     factories["openai_images"] = [] { return std::make_unique<OpenAiImagesAdapter>(); };
+    factories["openai_embeddings"] = [] { return std::make_unique<OpenAiEmbeddingsAdapter>(); };
   }
 };
 
@@ -423,6 +577,17 @@ std::unique_ptr<Adapter> make_adapter(std::string_view family) {
     factory = it->second;
   }
   return factory();
+}
+
+std::string default_endpoint(std::string_view family, Operation op, const Json& route_metadata) {
+  auto adapter = make_adapter(family);
+  return adapter ? adapter->default_endpoint(op, route_metadata) : std::string();
+}
+
+std::string embedding_url(std::string_view base_url, const Json& route_metadata) {
+  std::string base(base_url);
+  while (!base.empty() && base.back() == '/') base.pop_back();
+  return base + default_endpoint("openai_embeddings", Operation::Complete, route_metadata);
 }
 
 std::vector<std::string> adapter_families() {

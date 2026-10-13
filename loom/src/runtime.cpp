@@ -30,6 +30,7 @@
 #include "loom/semantic_worker.h"
 #include "loom/sqlite.h"
 #include "loom/tasks.h"
+#include "loom/usage_policy.h"
 #include "loom/util/unicode.h"
 
 #ifndef LOOM_VERSION_STRING
@@ -270,6 +271,9 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     log::warn(kLog, "task recovery failed: {}", rec.error().message);
   }
   if (opts.start_workers) {
+    // Housekeeping of the usage ledger (preset mode "auto"): never creates it, runs at most once per interval.
+    if (auto compacted = auto_compact_usage_ledger(*impl->config, root); !compacted)
+      log::warn(kLog, "usage ledger compaction failed: {}", compacted.error().message);
     Json workers = impl->config->get("loom_task_workers");
     impl->tasks->start(workers.is_number_integer() ? workers.get<int>() : 1);
     impl->worker->start();

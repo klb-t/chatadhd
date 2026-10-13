@@ -244,6 +244,14 @@
         "description": "Templates of the baseline keys used by the usage policy."
       },
       {
+        "key": "usage_ledger_compaction",
+        "scope": "config",
+        "group": "usage",
+        "type": "object",
+        "has_default": false,
+        "description": "Overrides of the usage ledger's compaction preset (runtime profile usage_compaction): mode off|manual|auto, older_than_days, statuses, fold_samples_beyond_window, reclaim_space, auto_interval_hours. Housekeeping of old completed operations, never a spending limit; pending, confirmed and denied operations are not folded."
+      },
+      {
         "key": "api_key",
         "scope": "secret",
         "group": "credentials",

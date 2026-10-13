@@ -587,8 +587,9 @@ TEST_SUITE("use_model") {
     }
     CHECK(catalogue["share"]["effects"]["irreversible"] == true);
     CHECK(catalogue["save"]["effects"]["writes"] == true);
-    // composite: steps of other actions; the six migrated sites
-    for (const char* name : {"chat.send", "semantic.analyse", "semantic.batch", "batch.chat", "archive.refine", "goal.typing"}) {
+    // composite: steps of other actions; every migrated site
+    for (const char* name : {"chat.send", "semantic.analyse", "semantic.batch", "batch.chat", "archive.refine", "goal.typing",
+                             "knowledge.propose_semantics", "graph_native.reply", "embedding.embed", "analysis.run"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));
       const Json& a = catalogue[name];
@@ -605,7 +606,7 @@ TEST_SUITE("use_model") {
     CHECK(catalogue["chat.send"]["requires"] == Json::array({"conversation"}));
     CHECK(catalogue["semantic.analyse"]["effects"]["reads_only"] == true);
     CHECK(catalogue["chat.send"]["effects"]["writes"] == true);
-    for (const char* name : {"graph_native.reply", "jev.edge_classify", "input.route_intent", "script.call", "agent.call",
+    for (const char* name : {"jev.edge_classify", "input.route_intent", "script.call", "agent.call",
                              "media.generate_image", "media.generate_video", "media.generate_music"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));
@@ -698,5 +699,157 @@ TEST_SUITE("use_model") {
     // and the reverse: marking an implemented site planned stops it
     loom::test::declare_action_status(env.td.path(), "jev.edge_classify", "planned");
     CHECK(unwrap(llm::use_model(env.services(), req)).results[0].state == llm::State::Unavailable);
+  }
+
+  TEST_CASE("a caller's complete recipe: exact body bytes and its own header order, authentication last") {
+    Env env;
+    env.transport.expect("POST", "https://api.test/v2/custom", Reply::json(200, chat_reply("ok")));
+    llm::ModelRequest req;
+    req.kind = "test.recipe";
+    req.models = {llm::ModelSpec{"vendor/m1", "", Json::object()}};
+    // Whitespace and a trailing zero that a re-serialisation would normalise away.
+    req.body_bytes = "{\"model\":\"vendor/m1\", \"messages\":[], \"temperature\":1.0}";
+    req.route.endpoint = "https://api.test/v2/custom";
+    req.wire_headers = net::Headers{{"X-Title", "Recipe"}, {"Content-Type", "application/json"}};
+    req.timeout_ms = 777;
+    auto outcome = unwrap(llm::use_model(env.services(), req));
+    REQUIRE(outcome.results.at(0).ok());
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/v2/custom"},
+        {"headers", Json::array({Json::array({"X-Title", "Recipe"}), Json::array({"Content-Type", "application/json"}),
+                                 Json::array({"Authorization", "Bearer sk-secret-test"})})},
+        {"body", "{\"model\":\"vendor/m1\", \"messages\":[], \"temperature\":1.0}"},
+        {"timeout_ms", 777},
+        {"stream", false}};
+    CHECK(loom::test::request_json(reqs[0]) == expected);
+    // The provenance still describes the body (parsed from the bytes) and hashes the exact bytes.
+    const Json& p = outcome.results[0].provenance;
+    CHECK(p["request_sha256"] == Sha256::hex(reqs[0].body));
+    CHECK(p["parameters"] == Json{{"temperature", 1.0}});
+
+    // A recipe that carries its own authentication keeps it where it is.
+    env.transport.expect("POST", "https://api.test/v2/custom", Reply::json(200, chat_reply("ok")));
+    req.wire_headers = net::Headers{{"authorization", "Bearer from-recipe"}, {"X-Title", "Recipe"}};
+    REQUIRE(unwrap(llm::use_model(env.services(), req)).results.at(0).ok());
+    reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 2);
+    CHECK(reqs[1].headers == net::Headers{{"authorization", "Bearer from-recipe"}, {"X-Title", "Recipe"}});
+  }
+
+  TEST_CASE("a route resolved without its credential sends no authentication header") {
+    Env env;
+    env.secrets.set("api_key", "");
+    llm::ModelRequest req = simple("m");
+    req.route.require_credential = false;
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    REQUIRE(unwrap(llm::use_model(env.services(), req)).results.at(0).ok());
+    CHECK(net::header_value(env.transport.requests().at(0).headers, "Authorization").empty());
+    // ... and by default a missing credential is still an unavailable call.
+    llm::ModelRequest strict = simple("m");
+    CHECK(unwrap(llm::use_model(env.services(), strict)).results.at(0).state == llm::State::Unavailable);
+  }
+
+  TEST_CASE("function gates: a caller's own admission, and the preadmitted gate dispatches without asking") {
+    Env env;
+    int admitted = 0, settled = 0;
+    llm::ModelRequest req = simple("m");
+    req.usage.gate = llm::make_function_gate(
+        [&](const net::HttpRequest& r, const Json&) -> Result<llm::GateDecision> {
+          ++admitted;
+          llm::GateDecision d;
+          d.dispatch = r.url.find("chat/completions") != std::string::npos;
+          d.status = d.dispatch ? "allowed" : "denied";
+          return d;
+        },
+        [&](const llm::GateSettlement& s) { settled += s.attempted ? 1 : 0; });
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    REQUIRE(unwrap(llm::use_model(env.services(), req)).results.at(0).ok());
+    CHECK(admitted == 1);
+    CHECK(settled == 1);
+
+    llm::ModelRequest refused = simple("m");
+    refused.usage.gate = llm::make_function_gate(
+        [](const net::HttpRequest&, const Json&) -> Result<llm::GateDecision> {
+          llm::GateDecision d;
+          d.status = "denied";
+          return d;
+        });
+    auto held = unwrap(llm::use_model(env.services(), refused));
+    CHECK(held.results.at(0).state == llm::State::Held);
+    CHECK(env.transport.requests().size() == 1);   // the refused call never left
+
+    llm::ModelRequest pre = simple("m");
+    pre.usage.gate = llm::make_admitted_gate();
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    REQUIRE(unwrap(llm::use_model(env.services(), pre)).results.at(0).ok());
+    CHECK(env.transport.requests().size() == 2);
+  }
+
+  TEST_CASE("embeddings are one more output kind: vectors come back as typed parts, the record keeps hashes") {
+    Env env;
+    llm::ModelRequest req;
+    req.kind = "test.embed";
+    req.models = {llm::ModelSpec{"emb/m", "", Json::object()}};
+    req.route.adapter = "openai_embeddings";
+    req.wants = {"embedding"};
+    req.referer = false;
+    req.parameters = Json{{"dimensions", 2}};
+    for (const char* text : {"one", "two"}) {
+      llm::Part part;
+      part.kind = "text";
+      part.text = text;
+      req.inputs.push_back(part);
+    }
+    // Rows may arrive in any order; the parts follow the inputs.
+    env.transport.expect("POST", "https://api.test/embeddings",
+        Reply::json(200, Json{{"model", "emb/m"}, {"usage", Json{{"prompt_tokens", 2}}},
+                              {"data", Json::array({Json{{"index", 1}, {"embedding", Json::array({0.25, 0.5})}},
+                                                     Json{{"index", 0}, {"embedding", Json::array({1.0, 2.0})}}})}}));
+    auto outcome = unwrap(llm::use_model(env.services(), req));
+    const auto& r = outcome.results.at(0);
+    REQUIRE(r.ok());
+    CHECK(r.adapter == "openai_embeddings");
+    REQUIRE(r.outputs.size() == 2);
+    CHECK(r.outputs[0].kind == "embedding");
+    CHECK(r.outputs[0].value == Json::array({1.0, 2.0}));
+    CHECK(r.outputs[1].value == Json::array({0.25, 0.5}));
+    CHECK(r.usage["prompt_tokens"] == 2);
+    CHECK(r.reported_model == "emb/m");
+    const auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    CHECK(loom::test::request_json(reqs[0]) ==
+          Json{{"method", "POST"}, {"url", "https://api.test/embeddings"},
+               {"headers", Json::array({Json::array({"Content-Type", "application/json"}),
+                                        Json::array({"Authorization", "Bearer sk-secret-test"})})},
+               {"body", R"({"model":"emb/m","input":["one","two"],"dimensions":2})"},
+               {"timeout_ms", 120000}, {"stream", false}});
+    // The record names the vectors by shape and hash, not by value.
+    REQUIRE(r.provenance["outputs"].size() == 2);
+    CHECK(r.provenance["outputs"][0]["value"]["dimensions"] == 2);
+    CHECK(r.provenance["outputs"][0]["value"]["sha256"] == Sha256::hex(json::canonical(Json::array({1.0, 2.0}))));
+    CHECK(r.provenance.dump().find("0.25") == std::string::npos);
+
+    // A malformed answer is a result of its own, never half a vector.
+    env.transport.expect("POST", "https://api.test/embeddings",
+        Reply::json(200, Json{{"data", Json::array({Json{{"index", 0}, {"embedding", Json::array({1.0})}}})}}));
+    llm::ModelRequest one = req;
+    one.inputs.resize(1);
+    auto ok = unwrap(llm::use_model(env.services(), one));
+    CHECK(ok.results.at(0).ok());
+    env.transport.expect("POST", "https://api.test/embeddings", Reply::json(200, Json{{"data", Json::array({Json{{"index", 3}, {"embedding", Json::array({1.0})}}})}}));
+    auto broken = unwrap(llm::use_model(env.services(), one));
+    CHECK(broken.results.at(0).state == llm::State::ParseError);
+    CHECK(broken.results.at(0).error->message == "embedding response index/vector invalid");
+
+    // The chat adapter cannot produce vectors: refused before any send, with the reason.
+    llm::ModelRequest chat = one;
+    chat.route.adapter = "openai_chat";
+    auto refused = unwrap(llm::use_model(env.services(), chat));
+    CHECK(refused.results.at(0).state == llm::State::Unavailable);
+    CHECK(refused.results.at(0).error->message.find("cannot produce embedding") != std::string::npos);
+    CHECK(env.transport.requests().size() == 3);
   }
 }

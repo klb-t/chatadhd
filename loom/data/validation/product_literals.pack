@@ -509,7 +509,7 @@
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "14fe09ab1bf33be77d60765bb06ea9441afa45b02128fee633f76005eca5631a"
+          "sha256": "9e504a5fac2d05fee728b0887b8015c9586482424052611b2fcba05054e4d39d"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -525,7 +525,7 @@
         },
         {
           "path": "loom/data/runtime/cli.pack",
-          "sha256": "32fb68c0bff809ce7f0814147224b5a85c47593a8ebfc030c3b4088f2487fac1"
+          "sha256": "c4322d6935e194f3e8416489fd3b73cfbf97ee14bd52eb1fdecae4fdd1ac88cf"
         },
         {
           "path": "loom/data/runtime/config.pack",
@@ -618,6 +618,10 @@
         {
           "path": "loom/data/runtime/server_accounts.pack",
           "sha256": "77f8940eea6f8aa8163fea5d92d5e008804d1a7d115c1c72d2575df261ba0b8e"
+        },
+        {
+          "path": "loom/data/runtime/usage_compaction.pack",
+          "sha256": "560547e13783cc62a8aaca51b73b6795a636795babf78a667726c5c6225e14c0"
         },
         {
           "path": "loom/data/runtime/util.pack",

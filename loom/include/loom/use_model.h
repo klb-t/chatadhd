@@ -123,7 +123,7 @@ struct Services {
 };
 
 // ── Routing (settings -> provider manifest -> adapter) ──────────────
-enum class Operation { Complete, BatchSubmit, BatchStatus, BatchResults };
+enum class Operation { Complete, BatchSubmit, BatchStatus, BatchResults, ListModels };
 std::string_view to_string(Operation op) noexcept;
 
 struct RouteSelector {
@@ -185,6 +185,11 @@ struct CallSpec {
   Json batch_requests = Json::array();  // BatchSubmit: [{"custom_id","params":{...}}]
   std::string target;                   // BatchStatus: batch id; BatchResults: results URL
   Json body = nullptr;                  // a complete pre-composed body, used byte for byte
+  std::string body_bytes;               // the same body as exact bytes (wins over `body` on the wire)
+  // A complete header recipe in wire order (replaces the adapter's own
+  // content-type / default / attribution headers; authentication is appended
+  // last unless the list already carries it).
+  std::optional<net::Headers> wire_headers;
   std::vector<Part> parts;              // typed inputs the adapter handles itself (media, files)
 };
 
@@ -245,6 +250,16 @@ struct ModelRequest {
   // (chat, graph replies); model/messages/parameters then only describe it in
   // the provenance record.
   Json body = nullptr;
+  // The same body as exact bytes, for callers that hold it serialized (a
+  // reviewed request, a contract renderer).  Wins over `body` on the wire;
+  // `body` (parsed from these bytes when left null) still describes the call
+  // in the provenance record.
+  std::string body_bytes;
+  // A complete header recipe in wire order, for callers whose recipe fixes the
+  // headers too (contract transport data, a provider manifest's defaults).  It
+  // replaces the adapter's content-type, default and attribution headers;
+  // authentication from the route is appended last unless the list carries it.
+  std::optional<net::Headers> wire_headers;
   // Typed inputs beyond the messages: text and json parts are folded into user
   // messages; other kinds go to the adapter.  `wants` lists the output kinds
   // the caller expects (a model that cannot produce them is rejected, never
@@ -289,6 +304,9 @@ struct VariantResult {
   bool sent = false;
   int http_status = 0;
   std::optional<Error> error;                 // Unavailable / GateError / TransportError / ParseError
+  // Capture mode keeps the state Ok whatever the body says; this is why the
+  // adapter could not read an answer the transport delivered (outputs are then empty).
+  std::optional<Error> parse_error;
   std::string text, reasoning, reported_model;
   Json usage = Json::object();
   std::vector<std::string> issues;            // "malformed_chunk" | "model_invalid" | "model_changed"
@@ -343,6 +361,15 @@ Result<Capabilities> effective_capabilities(const Services& services, const Rout
 // that admit an operation which is not itself a model call (e.g. an automatic
 // resend of many items) and settle it with declared resources.
 std::shared_ptr<UsageGate> make_usage_gate(const Services& services, const UsageSpec& spec);
+// A gate made of functions, for callers whose ledger flow is their own (the
+// semantic ledger's attempt ids, graph replies' pre-send cancellation): `admit`
+// decides, `settle` (optional) accounts after a dispatched call.
+std::shared_ptr<UsageGate> make_function_gate(
+    std::function<Result<GateDecision>(const net::HttpRequest& request, const Json& provenance)> admit,
+    std::function<void(const GateSettlement&)> settle = {});
+// A gate for a call whose operation the caller's own policy already admitted
+// (embeddings admitted by the vector policy): it dispatches, settles nothing.
+std::shared_ptr<UsageGate> make_admitted_gate();
 // What a call to this route would put on the wire, reduced to what the guard
 // binds: method, URL, and the caller's body (no credential headers).
 Result<net::HttpRequest> describe_request(const Services& services, const RouteSelector& selector,
@@ -372,6 +399,9 @@ class Adapter {
   virtual bool success(Operation op, int http_status) const noexcept = 0;
   // The family's defaults; data layers on top (see Capabilities).
   virtual Capabilities capabilities() const = 0;
+  // The path this family calls when the route names none; provider metadata
+  // (e.g. "chat_completions_path") may replace it.  The one place a path default lives.
+  virtual std::string default_endpoint(Operation op, const Json& route_metadata) const = 0;
   // True when a call with this spec yields media bytes that need Services::outputs.
   virtual bool needs_output_store(const CallSpec&) const { return false; }
   // Buffered 2xx body -> text/usage (Errc::Parse with the caller-visible message).
@@ -386,6 +416,11 @@ using AdapterFactory = std::function<std::unique_ptr<Adapter>()>;
 void register_adapter(std::string family, AdapterFactory factory);
 std::unique_ptr<Adapter> make_adapter(std::string_view family);   // nullptr when unknown
 std::vector<std::string> adapter_families();
+// The default path of a family's operation ("" for an unknown family).
+std::string default_endpoint(std::string_view family, Operation op, const Json& route_metadata = Json::object());
+// The URL a route's embeddings call goes to, without authentication: what the
+// identity of a cached vector space binds.  `base_url` is the provider address.
+std::string embedding_url(std::string_view base_url, const Json& route_metadata);
 
 // Auth for a route's scheme: adds the header (or the query parameter) and
 // returns Errc::Unsupported for a scheme this layer cannot express.

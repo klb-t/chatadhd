@@ -30,6 +30,18 @@ inline Json request_json(const net::HttpRequest& r) {
               {"body", r.body}, {"timeout_ms", r.timeout_ms}, {"stream", r.stream}};
 }
 
+#ifdef LOOM_TEST_FIXTURES
+// A pinned request from tests/fixtures/golden/<name>.json, in request_json()'s shape.
+inline Json golden_request(const std::string& name) {
+  const auto path = std::filesystem::path(LOOM_TEST_FIXTURES) / "golden" / (name + ".json");
+  auto text = fsutil::read_file(path);
+  if (!text) FAIL("golden fixture missing: " << path.string());
+  auto parsed = json::parse(*text);
+  if (!parsed) FAIL("golden fixture is not JSON: " << path.string());
+  return *parsed;
+}
+#endif
+
 // Declares an action's status through the user overlay of the actions profile.
 inline void declare_action_status(const std::filesystem::path& data_dir, const std::string& name,
                                     const std::string& status) {

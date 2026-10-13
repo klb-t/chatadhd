@@ -1,9 +1,12 @@
 #include "loom/usage_policy.h"
 
 #include <cmath>
+#include <cstdio>
 #include <limits>
+#include <map>
 #include <mutex>
 #include <set>
+#include <system_error>
 
 #include "loom/sqlite.h"
 #include "loom/util/fs.h"
@@ -83,7 +86,25 @@ Result<Json> decode_record(std::string_view raw) {
 struct UsagePolicy::Impl {
   sql::Connection db;
   Json options;
+  std::filesystem::path path;
   std::mutex mu;
+
+  // The tombstone a compaction left for an operation id, if any.
+  Result<std::optional<Json>> folded(std::string_view id) {
+    LOOM_TRY_ASSIGN(auto st, db.prepare("SELECT baseline_key,status,estimate_sha256,folded_at FROM usage_folded_operations WHERE id=?"));
+    st.bind_all(id);
+    LOOM_TRY_ASSIGN(bool row, st.step());
+    if (!row) return std::optional<Json>{};
+    return std::optional<Json>(Json{{"operation_id", std::string(id)}, {"baseline_key", st.get_text(0)},
+                                    {"status", st.get_text(1)}, {"estimate_sha256", st.get_text(2)},
+                                    {"folded_at", st.get_text(3)}});
+  }
+  // An operation that is absent from the ledger: unknown, or folded by a compaction.
+  Error missing(std::string_view id) {
+    auto tomb = folded(id);
+    if (tomb && *tomb) return Error(Errc::Conflict, "usage operation was folded by ledger compaction");
+    return Error(Errc::NotFound, "usage operation not found");
+  }
 
   Result<std::optional<Json>> operation(std::string_view id) {
     LOOM_TRY_ASSIGN(auto raw, db.query_text("SELECT record FROM usage_operations WHERE id=?", id));
@@ -116,6 +137,25 @@ struct UsagePolicy::Impl {
         return Error(Errc::Parse, "invalid stored usage measurement");
       sum += static_cast<long double>(value);
       ++count;
+    }
+    // Samples a compaction summed away: they stand in for the missing part of the
+    // window (never while the window is full), or join the all-history mean.
+    if (window < 0 || count < window) {
+      LOOM_TRY_ASSIGN(auto folded_row, db.prepare("SELECT samples,sample_sum FROM usage_fold_samples WHERE baseline_key=? AND resource=?"));
+      folded_row.bind_all(key, resource);
+      LOOM_TRY_ASSIGN(bool has_fold, folded_row.step());
+      if (has_fold && folded_row.get_int(0) > 0) {
+        const std::int64_t folded_count = folded_row.get_int(0);
+        const long double folded_sum = folded_row.get_double(1);
+        if (window < 0) {
+          sum += folded_sum;
+          count += folded_count;
+        } else {
+          const std::int64_t fill = std::min(window - count, folded_count);
+          sum += (folded_sum / static_cast<long double>(folded_count)) * static_cast<long double>(fill);
+          count += fill;
+        }
+      }
     }
     if (count) {
       LOOM_TRY_ASSIGN(double mean, narrow(sum / count));
@@ -214,6 +254,7 @@ Result<std::unique_ptr<UsagePolicy>> UsagePolicy::open(const std::filesystem::pa
   if (path.empty()) return Error(Errc::InvalidArgument, "ledger path is required");
   if (path.has_parent_path()) LOOM_TRY(fsutil::ensure_dir(path.parent_path()));
   auto impl = std::make_unique<Impl>();
+  impl->path = path;
   impl->options = std::move(preset);
   for (auto it = options.begin(); it != options.end(); ++it) impl->options[it.key()] = it.value();
   sql::OpenOptions sql_options;
@@ -238,7 +279,15 @@ Result<std::unique_ptr<UsagePolicy>> UsagePolicy::open(const std::filesystem::pa
       "resource TEXT NOT NULL,value REAL NOT NULL,provenance TEXT NOT NULL,UNIQUE(operation_id,resource));"
       "CREATE INDEX IF NOT EXISTS usage_sample_cohort ON usage_samples(baseline_key,resource,sequence);"
       "CREATE TABLE IF NOT EXISTS usage_events(sequence INTEGER PRIMARY KEY,operation_id TEXT NOT NULL,kind TEXT NOT NULL,payload TEXT NOT NULL,"
-      "recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);"));
+      "recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);"
+      "CREATE INDEX IF NOT EXISTS usage_event_operation ON usage_events(operation_id,sequence);"
+      // Compaction (additive; a ledger that was never compacted keeps these empty).
+      "CREATE TABLE IF NOT EXISTS usage_folded_operations(id TEXT PRIMARY KEY,baseline_key TEXT NOT NULL,status TEXT NOT NULL,"
+      "estimate_sha256 TEXT NOT NULL,folded_at TEXT NOT NULL);"
+      "CREATE INDEX IF NOT EXISTS usage_folded_cohort ON usage_folded_operations(baseline_key);"
+      "CREATE TABLE IF NOT EXISTS usage_fold_samples(baseline_key TEXT NOT NULL,resource TEXT NOT NULL,samples INTEGER NOT NULL,"
+      "sample_sum REAL NOT NULL,sample_min REAL NOT NULL,sample_max REAL NOT NULL,PRIMARY KEY(baseline_key,resource));"
+      "CREATE TABLE IF NOT EXISTS usage_compaction_state(id INTEGER PRIMARY KEY CHECK(id=1),last_run_at TEXT NOT NULL);"));
   LOOM_TRY(txn.commit());
   return std::unique_ptr<UsagePolicy>(new UsagePolicy(std::move(impl)));
 }
@@ -259,6 +308,20 @@ Result<Json> UsagePolicy::request(const Json& estimate) {
   sql::Txn txn(impl_->db);
   LOOM_TRY(txn.begin_status());
   LOOM_TRY_ASSIGN(auto previous, impl_->operation(json::get_string(estimate, "operation_id")));
+  if (!previous) {
+    // An operation a compaction folded keeps its identity: the same estimate
+    // answers as the completed operation it was, a different one conflicts.
+    LOOM_TRY_ASSIGN(auto tomb, impl_->folded(json::get_string(estimate, "operation_id")));
+    if (tomb) {
+      if ((*tomb)["estimate_sha256"] != Sha256::hex(json::canonical(estimate)))
+        return Error(Errc::Conflict, "operation ID already has a different estimate");
+      LOOM_TRY(txn.commit());
+      return Json{{"schema", "loom.usage_decision/1"}, {"operation_id", estimate["operation_id"]},
+                  {"baseline_key", (*tomb)["baseline_key"]}, {"estimate", estimate}, {"status", (*tomb)["status"]},
+                  {"authorized", false}, {"compacted", true}, {"folded_at", (*tomb)["folded_at"]},
+                  {"remaining", Json::object()}, {"actual", Json::object()}, {"resources", Json::object()}};
+    }
+  }
   if (previous) {
     if (!same((*previous)["estimate"], estimate)) return Error(Errc::Conflict, "operation ID already has a different estimate");
     if (json::get_string(*previous, "status") != "requires_confirmation") {
@@ -288,7 +351,7 @@ Result<Json> UsagePolicy::confirm(std::string_view id, std::string_view receipt_
   sql::Txn txn(impl_->db);
   LOOM_TRY(txn.begin_status());
   LOOM_TRY_ASSIGN(auto stored, impl_->operation(id));
-  if (!stored) return Error(Errc::NotFound, "usage operation not found");
+  if (!stored) return impl_->missing(id);
   Json result = *stored;
   if (result["receipt_id"] != receipt_id) return Error(Errc::Conflict, "confirmation receipt does not match");
   if (result.contains("confirmation")) {
@@ -325,7 +388,7 @@ Result<Json> UsagePolicy::complete(std::string_view id, const Json& actual) {
   sql::Txn txn(impl_->db);
   LOOM_TRY(txn.begin_status());
   LOOM_TRY_ASSIGN(auto stored, impl_->operation(id));
-  if (!stored) return Error(Errc::NotFound, "usage operation not found");
+  if (!stored) return impl_->missing(id);
   Json result = *stored;
   auto status = json::get_string(result, "status");
   if (status != "allowed" && status != "unresolved" && status != "completed")
@@ -371,7 +434,7 @@ Result<Json> UsagePolicy::cancel(std::string_view id, std::string_view reason) {
   sql::Txn txn(impl_->db);
   LOOM_TRY(txn.begin_status());
   LOOM_TRY_ASSIGN(auto stored, impl_->operation(id));
-  if (!stored) return Error(Errc::NotFound, "usage operation not found");
+  if (!stored) return impl_->missing(id);
   Json result = *stored;
   if (result["status"] == "cancelled") {
     if (result["cancellation_reason"] != reason) return Error(Errc::Conflict, "different cancellation already recorded");
@@ -409,6 +472,17 @@ Result<Json> UsagePolicy::inspect(std::string_view key) {
     for (auto it = record["actual"].begin(); it != record["actual"].end(); ++it) dimensions.insert(it.key());
     result["operations"].push_back(record);
   }
+  {
+    // Measured resources stay visible when the operations that measured them were folded.
+    LOOM_TRY_ASSIGN(auto measured_rows, impl_->db.prepare("SELECT DISTINCT resource FROM usage_samples WHERE baseline_key=? "
+                                                           "UNION SELECT resource FROM usage_fold_samples WHERE baseline_key=?"));
+    measured_rows.bind_all(key, key);
+    for (;;) {
+      LOOM_TRY_ASSIGN(bool row, measured_rows.step());
+      if (!row) break;
+      dimensions.insert(measured_rows.get_text(0));
+    }
+  }
   if (impl_->options["initial_baselines"].contains(key))
     for (auto it = impl_->options["initial_baselines"][key].begin(); it != impl_->options["initial_baselines"][key].end(); ++it) dimensions.insert(it.key());
   for (const auto& dimension : dimensions) {
@@ -425,7 +499,189 @@ Result<Json> UsagePolicy::inspect(std::string_view key) {
     result["events"].push_back(Json{{"sequence", events.get_int(0)}, {"operation_id", events.get_text(1)},
                                       {"kind", events.get_text(2)}, {"payload", payload}, {"recorded_at", events.get_text(4)}});
   }
+  // What compaction folded away from this cohort (absent when nothing was).
+  LOOM_TRY_ASSIGN(auto folded_operations, impl_->db.query_int("SELECT COUNT(*) FROM usage_folded_operations WHERE baseline_key=?", key));
+  LOOM_TRY_ASSIGN(auto folded_rows, impl_->db.prepare("SELECT resource,samples,sample_sum,sample_min,sample_max FROM usage_fold_samples "
+                                                       "WHERE baseline_key=? ORDER BY resource"));
+  folded_rows.bind_all(key);
+  Json folded_samples = Json::object();
+  for (;;) {
+    LOOM_TRY_ASSIGN(bool row, folded_rows.step());
+    if (!row) break;
+    folded_samples[folded_rows.get_text(0)] = Json{{"samples", folded_rows.get_int(1)}, {"sum", folded_rows.get_double(2)},
+                                                   {"min", folded_rows.get_double(3)}, {"max", folded_rows.get_double(4)}};
+  }
+  if ((folded_operations && *folded_operations) || !folded_samples.empty())
+    result["folded"] = Json{{"operations", folded_operations.value_or(0)}, {"samples", folded_samples}};
   LOOM_TRY(txn.commit());
   return result;
+}
+
+Result<bool> UsagePolicy::compaction_due(double hours) {
+  if (!std::isfinite(hours) || hours < 0) return Error(Errc::InvalidArgument, "interval must be a finite nonnegative number of hours");
+  char modifier[64];
+  std::snprintf(modifier, sizeof modifier, "-%.3f seconds", hours * 3600.0);
+  std::lock_guard lock(impl_->mu);
+  LOOM_TRY_ASSIGN(auto due, impl_->db.query_int(
+      "SELECT CASE WHEN last_run_at <= datetime('now', ?) THEN 1 ELSE 0 END FROM usage_compaction_state WHERE id=1", std::string(modifier)));
+  return !due || *due != 0;
+}
+
+Result<Json> UsagePolicy::compact(const Json& settings, bool dry_run, std::string_view as_of) {
+  LOOM_TRY(validate_usage_compaction_settings(settings));
+  std::lock_guard lock(impl_->mu);
+  auto& db = impl_->db;
+  const double days = settings["older_than_days"].get<double>();
+  std::set<std::string> foldable;
+  for (const auto& status : settings["statuses"]) foldable.insert(status.get<std::string>());
+  const bool reclaim = settings["reclaim_space"].get<bool>();
+  std::int64_t window = -1;  // -1: all history is the baseline, so no sample may be summed away
+  if (!impl_->options["baseline_window"].is_null()) window = impl_->options["baseline_window"].get<std::int64_t>();
+  const bool fold_samples = settings["fold_samples_beyond_window"].get<bool>() && window >= 0;
+
+  char modifier[64];
+  std::snprintf(modifier, sizeof modifier, "-%.3f seconds", days * 86400.0);
+  std::optional<std::string> reference;
+  if (!as_of.empty()) reference = std::string(as_of);
+  LOOM_TRY_ASSIGN(auto cutoff, db.query_text("SELECT datetime(COALESCE(?, 'now'), ?)", reference, std::string(modifier)));
+  if (!cutoff) return Error(Errc::InvalidArgument, "as_of or older_than_days is not a representable time");
+
+  const auto ledger_bytes = [&] {
+    std::uintmax_t total = 0;
+    for (const char* suffix : {"", "-wal"}) {
+      std::error_code ec;
+      const auto size = std::filesystem::file_size(std::filesystem::path(impl_->path.string() + suffix), ec);
+      if (!ec) total += size;
+    }
+    return total;
+  };
+  const auto bytes_before = ledger_bytes();
+
+  // Selection and removal share one write transaction, so an operation cannot
+  // change between being chosen and being folded.
+  sql::Txn txn(db, !dry_run);
+  LOOM_TRY(txn.begin_status());
+  LOOM_TRY_ASSIGN(auto operations_before, db.query_int("SELECT COUNT(*) FROM usage_operations"));
+  struct Fold { std::string id, key, status, estimate_sha; };
+  std::vector<Fold> folds;
+  std::int64_t owner_confirmed = 0, status_not_foldable = 0, unreadable = 0;
+  {
+    LOOM_TRY_ASSIGN(auto st, db.prepare(
+        "SELECT o.id,o.baseline_key,o.record FROM usage_operations o WHERE o.active=0 AND "
+        "(SELECT MAX(e.recorded_at) FROM usage_events e WHERE e.operation_id=o.id)<? ORDER BY o.id"));
+    st.bind_all(*cutoff);
+    for (;;) {
+      LOOM_TRY_ASSIGN(bool row, st.step());
+      if (!row) break;
+      auto record = decode_record(st.get_text(2));
+      if (!record) { ++unreadable; continue; }  // a damaged record is left exactly as found
+      const auto status = json::get_string(*record, "status");
+      if (!foldable.contains(status)) { ++status_not_foldable; continue; }
+      if (record->contains("confirmation")) { ++owner_confirmed; continue; }  // the owner's decision stays
+      folds.push_back({st.get_text(0), st.get_text(1), status, Sha256::hex(json::canonical((*record)["estimate"]))});
+    }
+  }
+  std::set<std::string> cohorts;
+  for (const auto& fold : folds) cohorts.insert(fold.key);
+
+  struct Aggregate { std::int64_t samples = 0; long double sum = 0; double min = 0, max = 0; };
+  std::map<std::pair<std::string, std::string>, Aggregate> summed;
+  std::vector<std::int64_t> sample_rows;
+  if (!dry_run) {
+    for (const auto& fold : folds) {
+      LOOM_TRY(db.run("INSERT OR IGNORE INTO usage_folded_operations(id,baseline_key,status,estimate_sha256,folded_at) "
+                      "VALUES(?,?,?,?,datetime('now'))", fold.id, fold.key, fold.status, fold.estimate_sha));
+      LOOM_TRY(db.run("DELETE FROM usage_events WHERE operation_id=?", fold.id));
+      LOOM_TRY(db.run("DELETE FROM usage_operations WHERE id=?", fold.id));
+    }
+  }
+  if (fold_samples) {
+    // The newest `window` measurements of a cohort and resource are what the
+    // baseline reads; older ones of folded operations are summed into one row.
+    // In a dry run the operations are not yet tombstoned, so the folds count.
+    LOOM_TRY_ASSIGN(auto st, db.prepare(
+        "SELECT sequence,operation_id,baseline_key,resource,value FROM ("
+        " SELECT s.sequence,s.operation_id,s.baseline_key,s.resource,s.value,"
+        "  ROW_NUMBER() OVER (PARTITION BY s.baseline_key,s.resource ORDER BY s.sequence DESC) AS position"
+        " FROM usage_samples s) WHERE position>?"));
+    st.bind_all(window);
+    std::set<std::string> folding;
+    if (dry_run) for (const auto& fold : folds) folding.insert(fold.id);
+    LOOM_TRY_ASSIGN(auto tombstone, db.prepare("SELECT 1 FROM usage_folded_operations WHERE id=?"));
+    for (;;) {
+      LOOM_TRY_ASSIGN(bool row, st.step());
+      if (!row) break;
+      const std::string operation = st.get_text(1);
+      bool folded_operation = folding.contains(operation);
+      if (!folded_operation) {
+        tombstone.reset();
+        tombstone.bind_all(operation);
+        LOOM_TRY_ASSIGN(folded_operation, tombstone.step());
+      }
+      if (!folded_operation) continue;
+      auto& aggregate = summed[{st.get_text(2), st.get_text(3)}];
+      const double value = st.get_double(4);
+      if (aggregate.samples == 0) aggregate.min = aggregate.max = value;
+      aggregate.min = std::min(aggregate.min, value);
+      aggregate.max = std::max(aggregate.max, value);
+      aggregate.sum += static_cast<long double>(value);
+      ++aggregate.samples;
+      sample_rows.push_back(st.get_int(0));
+    }
+  }
+  std::int64_t samples_folded = static_cast<std::int64_t>(sample_rows.size());
+  if (!dry_run) {
+    for (const auto& [group, aggregate] : summed) {
+      std::int64_t samples = aggregate.samples;
+      long double total = aggregate.sum;
+      double low = aggregate.min, high = aggregate.max;
+      LOOM_TRY_ASSIGN(auto existing, db.prepare("SELECT samples,sample_sum,sample_min,sample_max FROM usage_fold_samples WHERE baseline_key=? AND resource=?"));
+      existing.bind_all(group.first, group.second);
+      LOOM_TRY_ASSIGN(bool had, existing.step());
+      if (had) {
+        samples += existing.get_int(0);
+        total += static_cast<long double>(existing.get_double(1));
+        low = std::min(low, existing.get_double(2));
+        high = std::max(high, existing.get_double(3));
+      }
+      LOOM_TRY_ASSIGN(double narrowed, narrow(total));
+      LOOM_TRY(db.run("INSERT OR REPLACE INTO usage_fold_samples(baseline_key,resource,samples,sample_sum,sample_min,sample_max) VALUES(?,?,?,?,?,?)",
+                      group.first, group.second, samples, narrowed, low, high));
+    }
+    for (const auto sequence : sample_rows) LOOM_TRY(db.run("DELETE FROM usage_samples WHERE sequence=?", sequence));
+    LOOM_TRY(db.run("INSERT INTO usage_compaction_state(id,last_run_at) VALUES(1,datetime('now')) "
+                    "ON CONFLICT(id) DO UPDATE SET last_run_at=excluded.last_run_at"));
+  }
+  const std::int64_t before_count = operations_before.value_or(0);
+  LOOM_TRY(txn.commit());
+
+  bool reclaimed = false;
+  Json reclaim_error = nullptr;
+  if (!dry_run && reclaim && (!folds.empty() || samples_folded)) {
+    // The freed pages only leave the file with a VACUUM, and the WAL with a truncating checkpoint.
+    for (const char* statement : {"PRAGMA wal_checkpoint(TRUNCATE);", "VACUUM;", "PRAGMA wal_checkpoint(TRUNCATE);"}) {
+      if (auto done = db.exec(statement); !done) {
+        reclaim_error = done.error().message;
+        break;
+      }
+    }
+    reclaimed = reclaim_error.is_null();
+  }
+  return Json{{"schema", "loom.usage_compaction/1"},
+              {"dry_run", dry_run},
+              {"as_of", reference ? Json(*reference) : Json(nullptr)},
+              {"cutoff", *cutoff},
+              {"settings", settings},
+              {"operations_before", before_count},
+              {"operations_after", before_count - (dry_run ? 0 : static_cast<std::int64_t>(folds.size()))},
+              {"folded_operations", folds.size()},
+              {"folded_samples", samples_folded},
+              {"cohorts", cohorts.size()},
+              {"retained", Json{{"owner_confirmed", owner_confirmed}, {"status_not_foldable", status_not_foldable},
+                                {"unreadable", unreadable}}},
+              {"bytes_before", bytes_before},
+              {"bytes_after", ledger_bytes()},
+              {"space_reclaimed", reclaimed},
+              {"reclaim_error", reclaim_error}};
 }
 }  // namespace loom

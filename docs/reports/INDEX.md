@@ -322,11 +322,50 @@ Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście 
   `semantic.analyse` i `batch.chat` (jedno wołanie na wiadomość) daje ok. 1 GB księgi na 100 tys. wiadomości. Wybór: zostawić (jak
   teraz, zgodnie z „każde wołanie przechodzi przez bramkę”), bramkować całe przebiegi jednym wpisem (tak jak batch i ponowne wysłanie
   workera), albo współdzielić otwarty uchwyt księgi (zmiana w `ModelUsageGuard`). Nie podjąłem tej decyzji za Ciebie.
-- Otwarte (nie zmigrowane): analiza kontraktowa `extract/semantic.cpp` + `server/src/analysis-ui-routes.h` (żądanie z kontraktu
-  promptu, własna księga), postprocess odpowiedzi grafowej (`graph_reply.cpp`, własny builder z manifestu), `embedding.cpp`
-  (to nie wywołanie modelu czatu), `ModelRegistry::update_from_api` (`/models`); ekran potwierdzenia ×10 dla analizy/batcha;
+- Otwarte (nie zmigrowane w tej sekcji; dalsze miejsca patrz „P7 fala 1, reszta” niżej): ekran potwierdzenia ×10 dla analizy/batcha;
   wpisanie wyboru dostawcy do węzłów grafu (fala 2); katalog akcji nie ma jeszcze dopasowania ani reguł (fala 2); wywołanie obrazów
   nie ma jeszcze żadnego wołającego ani ekranu.
+
+## P7 fala 1, reszta: pozostałe miejsca wywołania modelu i zwijanie księgi zużycia (2026-10-13, branch `claude/p7b-use-model-rest`)
+
+- **Zmigrowane (po jednym commicie, test „golden” bajtów żądania przed migracją):** `extract/semantic.cpp` (akcja
+  `knowledge.propose_semantics`; własna pętla księgi semantycznej i punkt kontrolny siedzą w `make_function_gate`), trasa analizy
+  serwera (`analysis.run`: `prepare` przez `prepare_call`, `execute` przez `execute_call` za bramką ze wspólnego strażnika; surowe
+  bajty odpowiedzi i rozliczenie zostają w trasie), postprocess odpowiedzi grafowej (`graph_native.reply` jest teraz `implemented`),
+  embeddingi (`embedding.embed`: adapter `openai_embeddings`, wektor to część typowana `embedding`, a nie osobna ścieżka; polityka
+  wektorów admituje sama, więc `make_admitted_gate`) i odczyt katalogu modeli `/models` (operacja `ListModels` adaptera `openai_chat`).
+  Ścieżki domyślne (`/chat/completions`, `/embeddings`, `/models`, `/v1/messages`…) żyją już tylko w adapterach
+  (`Adapter::default_endpoint`); `grep -rn "chat/completions\|/embeddings\|Authorization" loom/src` pokazuje adaptery
+  (`src/llm`) oraz adaptery innych rodzajów: ASR/OCR (`media_providers.cpp`, multipart, Groq/Google/OCR.space), magazyny S3/WebDAV i GitHub.
+- **Dodatki do żądania:** `body_bytes` (dokładne bajty ciała), `wire_headers` (kompletna receptura nagłówków w kolejności; uwierzytelnienie
+  trasy dopisane na końcu, jeśli receptura go nie niesie – to zachowuje kolejność nagłówków każdego miejsca), `make_function_gate`,
+  `make_admitted_gate`; `apply_auth` nie wysyła pustego nagłówka dla trasy bez poświadczenia (analiza bez klucza jak dotąd: bez nagłówka).
+- **Świadome różnice:** analiza i wnioskowanie semantyczne biorą sekret i schemat z dostawcy z ustawień (`llm_provider`, preset
+  `openrouter` = ten sam `api_key`), a nie z wpisanej nazwy sekretu; odpowiedź 2xx inna niż 200 jest błędem HTTP w tych miejscach (wcześniej
+  przechodziła); w embeddingach przy kilku błędach naraz kolejność zgłoszenia jest inna (błędy wiersza przed niezgodnością liczby), a
+  rekord proweniencji niesie kształt i sha256 wektora zamiast wartości.
+- **Zwijanie księgi zużycia** (zmierzone: 122 operacje = 4,5 MB z WAL, po zwinięciu 127 KB; ok. 37 KB/operację w teście, bo log WAL
+  dubluje strony): ustawienie z presetem w danych – profil `usage_compaction` (`data/runtime/usage_compaction.pack`, nakładka
+  `<dane>/profiles/usage_compaction.pack`), potem klucz config `usage_ledger_compaction`, potem jawne `override` komendy.
+  Preset: `mode: auto`, `older_than_days: 30`, `statuses: [completed]`, `fold_samples_beyond_window: true`, `reclaim_space: true`,
+  `auto_interval_hours: 24`; `off` i `manual` dozwolone. **Nie** wchodzi do `loom_usage_policy` (paczka `usage_policy.pack` zostaje
+  przypięta, a opcje polityki są związane z paragonami potwierdzeń – ustawienie porządkowe nie może unieważniać oczekujących paragonów).
+  Zwinięcie: rekord i zdarzenia ukończonej operacji znikają, zostaje nagrobek (id, kohorta, status, sha256 szacunku – ponowne żądanie
+  tego samego id odpowiada „completed”, inne szacunek = konflikt), a próbki poza oknem bazowym (`baseline_window`) sumują się w jeden
+  wiersz na kohortę i zasób (`usage_fold_samples`); baseline w oknie jest identyczny co do bitu, a dla `baseline_window: null` próbek
+  się nie zwija. Nigdy nie są zwijane: `allowed`, `unresolved`, `requires_confirmation`, `denied`, operacje z decyzją właściciela
+  (`confirmation`) i ich paragony. `compact` jest akcją `usage.compact` w `actions.pack`; wejścia: `loom_usage_policy_json`
+  (`compact`, `compaction_settings`; `dry_run`, `as_of`, `override`), CLI `loom usage compact|compaction`, automatycznie przy starcie
+  runtime z workerami (tylko gdy księga istnieje; raz na `auto_interval_hours`). Test: decyzje ×10 (łącznie z paragonami) przed/po
+  identyczne na zasianej księdze, plik maleje, potwierdzenia nietknięte (`tests/test_usage_compaction.cpp`).
+  Cofnięcie: `loom config set usage_ledger_compaction '{"mode":"off"}'` (albo `manual`); usunięcie nagrobków nie jest potrzebne – tabele są addytywne.
+  Ograniczenie: po zwinięciu poszerzenie `baseline_window` uzupełnia brakującą część okna średnią zwiniętych próbek (przybliżenie).
+- Otwarte: ASR/OCR (`media_providers`) jako wejścia typowane `audio`/`image` use_model (potrzebuje ciała multipart w `CallSpec`); ekran
+  potwierdzenia ×10 dla analizy kontraktowej; automatyczne zwijanie działa przy starcie (długo działający serwer zwija po restarcie,
+  nie w tle); jedyny nieprzechodzący przypadek zestawu W3 (`chat graph wiring: explicit off…` w `chat_graph_integration.verify.cc`, poza ctest;
+  110 przypadków, 109 przechodzi) dotyczy ścieżki czatu, której ta gałąź nie zmieniała (katalog `context_execution_claims` powstaje przy
+  wysyłce przez wspólną bramkę z fali 1) – nie sprawdzałem go na gałęzi bazowej.
+
 ## S2 / R3 — jedno wejście „wykonaj akcję” (2026-10-13)
 
 - `loom_invoke(ctx, port, action, json)` w C ABI (addytywnie) + JNI; porty `storage`, `github`, `actions/list` (katalog akcji

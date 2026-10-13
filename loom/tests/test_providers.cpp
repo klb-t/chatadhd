@@ -125,6 +125,25 @@ TEST_SUITE("providers.models") {
     auto reqs = env.transport.requests();
     CHECK(net::header_value(reqs[0].headers, "Authorization") == "Bearer sk-test");
     CHECK(std::filesystem::exists(env.models_path()));
+    // Golden: the catalogue read is a bare authenticated GET.
+    CHECK(loom::test::request_json(reqs[0]) ==
+          Json{{"method", "GET"}, {"url", "https://api.test/models"},
+               {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test"})})},
+               {"body", ""}, {"timeout_ms", 15000}, {"stream", false}});
+  }
+
+  TEST_CASE("update_from_api: provider and transport failures keep their error shapes") {
+    Env env;
+    ModelRegistry reg(env.models_path(), env.cfg, env.secrets, env.transport);
+    env.transport.expect("GET", "https://api.test/models", net::ScriptedTransport::Reply::text(401, "bad key"));
+    auto http_error = reg.update_from_api();
+    REQUIRE(!http_error);
+    CHECK(http_error.error().code == Errc::Http);
+    CHECK(http_error.error().message == "API error 401: bad key");
+    env.transport.expect("GET", "https://api.test/models", net::ScriptedTransport::Reply::fail(Errc::Timeout, "slow"));
+    CHECK(reg.update_from_api().error().code == Errc::Timeout);
+    env.transport.expect("GET", "https://api.test/models", net::ScriptedTransport::Reply::text(200, "not json"));
+    CHECK(reg.update_from_api().error().code == Errc::Parse);
   }
 
   TEST_CASE("update_from_api without a key is Unavailable") {

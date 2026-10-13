@@ -279,9 +279,9 @@
       "graph_native.reply": {
         "id": "graph_native.reply",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Graph-native reply",
-        "description": "A graph-native message in a conversation: the reply is a graph packet compiled by a method.",
+        "description": "A graph-native message in a conversation: the reply is a graph packet compiled by a method. The separate-model postprocess is its model step (the primary chat call is chat.send).",
         "steps": [
           {
             "action": "use_model"
@@ -951,6 +951,120 @@
           "verb": "POST",
           "path": "/api/storage/backup"
         }
+      },
+      "knowledge.propose_semantics": {
+        "id": "knowledge.propose_semantics",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Propose semantic structure for source observations",
+        "description": "The knowledge pipeline's model step: located, grounded proposals (relations, generalizations, candidate graph bundles) for chunks of source observations, from a prompt contract; nothing is accepted without validation.",
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text",
+          "json"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "observation"
+        ],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/extract/semantic.cpp"
+      },
+      "embedding.embed": {
+        "id": "embedding.embed",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Embed texts",
+        "description": "One vector per input text from an embedding model; an embedding is just another output kind of the one model action. The caller's vector policy admits the operation before the call.",
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "embedding"
+        ],
+        "requires": [
+          "text"
+        ],
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/providers/embedding.cpp"
+      },
+      "analysis.run": {
+        "id": "analysis.run",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Run a reviewed analysis request",
+        "description": "A prepared analysis contract request (prompt contract, exact body bytes, reviewed by the owner) executed once, admitted by the usage policy, its first response retained before decoding and bound to a method version in the graph.",
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text",
+          "json"
+        ],
+        "outputs": [
+          "text",
+          "json"
+        ],
+        "requires": [
+          "analysis_contract"
+        ],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/server/src/analysis-ui-routes.h"
+      },
+      "usage.compact": {
+        "id": "usage.compact",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Compact the usage ledger",
+        "description": "Folds completed operations older than the preset age into per-cohort aggregates; the baseline the growth guard compares against is preserved, pending, confirmed and denied operations and their receipts are never folded. Entry points: loom_usage_policy_json action compact, CLI usage compact.",
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": true,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/policy/usage_policy.cpp"
       }
     }
   },
