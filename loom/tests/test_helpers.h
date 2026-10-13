@@ -30,13 +30,13 @@ inline Json request_json(const net::HttpRequest& r) {
               {"body", r.body}, {"timeout_ms", r.timeout_ms}, {"stream", r.stream}};
 }
 
-// Declares a use-case's status through the user overlay of the model_workflows profile.
-inline void declare_workflow_status(const std::filesystem::path& data_dir, const std::string& name,
+// Declares an action's status through the user overlay of the actions profile.
+inline void declare_action_status(const std::filesystem::path& data_dir, const std::string& name,
                                     const std::string& status) {
   std::filesystem::create_directories(data_dir / "profiles");
-  Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "model_workflows"},
-               {"overrides", Json{{"workflows", Json{{name, Json{{"status", status}}}}}}}};
-  auto written = fsutil::write_file(data_dir / "profiles" / "model_workflows.pack", overlay.dump());
+  Json overlay{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "actions"},
+               {"overrides", Json{{"actions", Json{{name, Json{{"status", status}}}}}}}};
+  auto written = fsutil::write_file(data_dir / "profiles" / "actions.pack", overlay.dump());
   if (!written) FAIL("write overlay failed: " << written.error().to_string());
 }
 

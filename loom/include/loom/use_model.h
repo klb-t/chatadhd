@@ -251,9 +251,10 @@ struct ModelRequest {
   // silently replaced).
   std::vector<Part> inputs;
   std::vector<std::string> wants = {"text"};
-  // Name in the model_workflows catalogue (runtime profile).  Recorded in the
-  // provenance; unknown or `planned` names are rejected before any send.
-  std::string workflow;
+  // Id of the action this call serves, from the action catalogue (runtime
+  // profile "actions").  Recorded in the provenance; an unknown, planned or
+  // non-model action is rejected before any send.
+  std::string action;
   RouteSelector route;
   Operation operation = Operation::Complete;
   Json batch_requests = Json::array();
@@ -327,10 +328,13 @@ Result<ModelOutcome> use_model(const Services& services, ModelRequest request);
 Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& request, std::size_t variant = 0);
 VariantResult execute_call(const Services& services, const ModelRequest& request, PreparedCall& call);
 
-// The named use-cases (runtime profile "model_workflows"): {name: {status,
-// title, description, accepts, produces, consumer}}.  Overlay
-// <data>/profiles/model_workflows.pack adds or changes entries.
-Result<Json> workflow_catalogue(const Services& services);
+// The action catalogue (runtime profile "actions"): ONE kind of entity.  An
+// action is atomic (implemented in code: use_model, save, share) or composite
+// (steps of other actions, as data); both declare typed inputs/outputs, the
+// traits required of the input element, effect flags and a status.  Overlay
+// <data>/profiles/actions.pack adds or changes entries.
+// Returns {action_id: declaration}.
+Result<Json> action_catalogue(const Services& services);
 // Capabilities of one variant after all data layers (no network).
 Result<Capabilities> effective_capabilities(const Services& services, const Route& route,
                                             const ModelSpec& model);

@@ -1201,7 +1201,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
 
   llm::ModelRequest mreq;
   mreq.kind = "chat.send";
-  mreq.workflow = "chat.send";
+  mreq.action = "chat.send";
   mreq.models = {llm::ModelSpec{model, "", Json::object()}};
   mreq.body = payload;  // the complete recipe payload, sent byte for byte
   mreq.stream = stream;

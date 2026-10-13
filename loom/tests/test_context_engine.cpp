@@ -249,9 +249,9 @@ TEST_SUITE("context_engine") {
     CHECK(goal2.params.dump().find("sk-test") == std::string::npos);
   }
 
-  TEST_CASE("workflow: declaring goal.typing planned stops the model classification before any send") {
+  TEST_CASE("action: declaring goal.typing planned stops the model classification before any send") {
     Fixture f;
-    loom::test::declare_workflow_status(f.td.path(), "goal.typing", "planned");
+    loom::test::declare_action_status(f.td.path(), "goal.typing", "planned");
     auto scripted = std::make_shared<net::ScriptedTransport>();
     f.rt->set_http_transport(scripted);
     context::ContextEngine engine(*f.rt, *f.ks, f.pack);

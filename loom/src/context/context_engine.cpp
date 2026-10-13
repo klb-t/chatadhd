@@ -580,7 +580,7 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
         } else {
           llm::ModelRequest mreq;
           mreq.kind = "context.goal_typing";
-          mreq.workflow = "goal.typing";
+          mreq.action = "goal.typing";
           mreq.models = {llm::ModelSpec{model, "", Json::object()}};
           mreq.prompt = prompt;
           mreq.parameters = Json{{"temperature", typing_options.value("temperature", 0.0)},

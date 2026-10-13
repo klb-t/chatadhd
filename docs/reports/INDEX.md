@@ -291,8 +291,34 @@ Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście 
   `enabled()` analizy semantycznej wymaga teraz rozwiązywalnego dostawcy (pusty `base_url` = wyłączona); wstrzymanie bramką w
   analizie semantycznej to pauza (wynik regex, bez zliczania błędu), a w `batch_api` zwraca „brak id” z ostrzeżeniem – **nie ma
   jeszcze ekranu potwierdzenia dla tych kohort** (czat i worker go mają).
+- **Modalności (doprecyzowanie właściciela, 2026-10-13):** `use_model` nie zna czatu ani tekstu. Wejścia i wyjścia to **typowane
+  części** (`text`, `json`, `image`, `audio`, `video`, `embedding`, `file_ref`; odwołują się do węzłów grafu / blobów); wiadomość
+  czatu to jeden z kształtów wejścia. Duże wyjścia (media) trafiają przez `OutputStore` do `BlobStore` (rozmieszczenie z rejestru
+  magazynów P4) jako blob + węzeł grafu `kind=blob` + rekord artefaktu z proweniencją; w wyniku jest tylko odwołanie.
+- **Możliwości jako dane:** adapter deklaruje domyślnie, co przyjmuje / zwraca / jakie ma tryby (`stream`, `batch`); warstwy danych
+  nadpisują pola po kolei: manifest dostawcy (`metadata.capabilities`) → config `model_capabilities` → `ModelSpec::capabilities`.
+  Niezgodność (np. wejście audio do `openai_chat`, obraz z modelu tekstowego, strumień dla obrazów, brak magazynu wyjść) jest
+  odrzucana **przed wysłaniem** z podanym powodem (`Errc::Unsupported`) – nigdy po cichu z innym modelem. W `first_success`
+  odrzucony wariant jest raportowany, a łańcuch idzie dalej.
+- **Jeden rodzaj bytu: akcja** (`loom/data/runtime/actions.pack`, profil `actions`, schemat wartości `loom.action_catalogue/1`).
+  Akcja jest *atomowa* (zrealizowana w kodzie/adapterze: `use_model`, `save`, `share`) albo *złożona* (kroki innych akcji jako
+  dane); oba kształty są takie same: `id`, `kind`, `status` (`implemented|planned`), `steps` (złożona), typowane `inputs`/`outputs`,
+  `requires` (wolne cechy elementu wejściowego), `effects` (`reads_only`, `writes`, `sends_off_device`, `costs_money`,
+  `irreversible`, `touches_private_data`). Sześć zmigrowanych miejsc to akcje złożone z krokiem `use_model`: `chat.send`,
+  `semantic.analyse`, `semantic.batch`, `batch.chat`, `archive.refine`, `goal.typing`; deklarowane (planned): `graph_native.reply`,
+  `jev.edge_classify`, `input.route_intent`, `script.call`, `agent.call`, `media.generate_image|video|music`, `save`, `share`.
+  Wołający podaje id akcji (`ModelRequest::action`), proweniencja je zapisuje; nieznana, `planned` albo niebędąca wołaniem modelu
+  akcja jest odrzucana przed wysłaniem. Nową akcję dopisuje się nakładką `<dane>/profiles/actions.pack` (dane, nie kod). Dopasowywanie
+  elementów do akcji i silnik reguł: fala 2 (nic z tego jeszcze nie istnieje).
+- **Adapter obrazów (dowód kształtu):** `openai_images` (`/images/generations`, `b64_json` albo `url`), sprawdzony wyłącznie na
+  fałszywym transporcie (bez sieci i płatnych wywołań); wyjście obraz → blob + węzeł. Akcja `media.generate_image` zostaje `planned`,
+  dopóki nikt jej nie woła. Wyjście `json` to tekst sparsowany (z tolerancją płotków ```), błędny JSON = osobny błąd.
+- **Przypięcia:** wpis `generated_outputs` w `loom/data/validation/product_literals.pack` odświeżony (był nieaktualny już na
+  `a047df88`: brakowało trzech paczek, hasze generatora/wyjścia się nie zgadzały); strażnik wylicza teraz `verified_generated_files: 1`.
 - Cofnięcie: przywróć poprzednie commity miejsc wywołania (każdy osobno); `use_model` można zostawić – nic innego go nie woła.
+  Usunięcie `actions.pack` (i wpisu w `.inc` generatorem) wyłącza tylko sprawdzanie nazw akcji – bez `action` w żądaniu nic się nie zmienia.
 - Otwarte (nie zmigrowane): analiza kontraktowa `extract/semantic.cpp` + `server/src/analysis-ui-routes.h` (żądanie z kontraktu
   promptu, własna księga), postprocess odpowiedzi grafowej (`graph_reply.cpp`, własny builder z manifestu), `embedding.cpp`
   (to nie wywołanie modelu czatu), `ModelRegistry::update_from_api` (`/models`); ekran potwierdzenia ×10 dla analizy/batcha;
-  wpisanie wyboru dostawcy do węzłów grafu (fala 2).
+  wpisanie wyboru dostawcy do węzłów grafu (fala 2); katalog akcji nie ma jeszcze dopasowania ani reguł (fala 2); wywołanie obrazów
+  nie ma jeszcze żadnego wołającego ani ekranu.

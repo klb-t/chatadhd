@@ -48,9 +48,9 @@ net::HttpResponse success_response() {
 }  // namespace
 
 TEST_SUITE("semantic_llm") {
-  TEST_CASE("workflow: declaring semantic.analyse planned stops the site before any send") {
+  TEST_CASE("action: declaring semantic.analyse planned stops the site before any send") {
     Env env;
-    loom::test::declare_workflow_status(env.td.path(), "semantic.analyse", "planned");
+    loom::test::declare_action_status(env.td.path(), "semantic.analyse", "planned");
     auto llm = env.llm();
     auto result = llm.call_llm("workflow gate analysis text");
     REQUIRE(result);

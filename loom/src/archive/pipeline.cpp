@@ -281,7 +281,7 @@ int refine_items_llm(Runtime& rt, std::vector<Item>& items, const ArchiveProfile
     }
     llm::ModelRequest request;
     request.kind = "archive.refine";
-    request.workflow = "archive.refine";
+    request.action = "archive.refine";
     request.models = {llm::ModelSpec{model, "", Json::object()}};
     request.prompt = prompt;
     request.parameters = Json{{"temperature", policy.value("/refinement/temperature")},

@@ -357,9 +357,9 @@ TEST_SUITE("semantic_worker") {
     CHECK(unwrap(env.db->count_pending_semantic()) == 1);
   }
 
-  TEST_CASE("workflow: declaring semantic.batch planned stops the batch submit before any send") {
+  TEST_CASE("action: declaring semantic.batch planned stops the batch submit before any send") {
     Env env;
-    loom::test::declare_workflow_status(env.td.path(), "semantic.batch", "planned");
+    loom::test::declare_action_status(env.td.path(), "semantic.batch", "planned");
     auto conv = unwrap(env.db->create_conv("workflow batch"));
     env.add_pending_msg(conv.id, "workflow gate batch message");
     env.cfg.set("semantic_model", "vendor/model");

@@ -222,13 +222,13 @@ Status apply_auth(const Route& route, net::HttpRequest& request) {
   return ok_status();
 }
 
-// ── Capabilities and workflows as data ──────────────────────────────
-Result<Json> workflow_catalogue(const Services& services) {
+// ── Capabilities and actions as data ──────────────────────────────
+Result<Json> action_catalogue(const Services& services) {
   std::filesystem::path root = services.data_root;
   if (root.empty()) root = services.config.path().parent_path();
-  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("model_workflows", root));
-  const Json* workflows = json::find(profile.values(), "workflows");
-  return workflows && workflows->is_object() ? *workflows : Json::object();
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("actions", root));
+  const Json* actions = json::find(profile.values(), "actions");
+  return actions && actions->is_object() ? *actions : Json::object();
 }
 
 Result<Capabilities> effective_capabilities(const Services& services, const Route& route, const ModelSpec& model) {
@@ -267,22 +267,31 @@ Status check_request(const Services& services, const ModelRequest& request, cons
     if (adapter.needs_output_store(spec) && !services.outputs)
       return unsupported(who + " returns media bytes but no output store is configured (Services::outputs)");
   }
-  if (!request.workflow.empty()) {
-    LOOM_TRY_ASSIGN(Json catalogue, workflow_catalogue(services));
-    const Json* w = json::find(catalogue, request.workflow);
-    if (!w) return unsupported("unknown workflow '" + request.workflow + "'; declare it in the model_workflows profile");
-    const std::string status = json::get_string(*w, "status", "planned");
-    if (status != "implemented")
-      return unsupported("workflow '" + request.workflow + "' is " + status + ", not implemented");
+  if (!request.action.empty()) {
+    const std::string& id = request.action;
+    LOOM_TRY_ASSIGN(Json catalogue, action_catalogue(services));
+    const Json* a = json::find(catalogue, id);
+    if (!a) return unsupported("unknown action '" + id + "'; declare it in the actions profile");
+    const std::string status = json::get_string(*a, "status", "planned");
+    if (status != "implemented") return unsupported("action '" + id + "' is " + status + ", not implemented");
+    // A model call serves an action that is use_model itself or a composite
+    // with a use_model step; any other action is not a model call.
+    const std::string kind = json::get_string(*a, "kind");
+    bool calls_model = id == "use_model";
+    if (kind == "composite")
+      if (const Json* steps = json::find(*a, "steps"); steps && steps->is_array())
+        for (const auto& step : *steps)
+          if (json::get_string(step, "action") == "use_model") calls_model = true;
+    if (!calls_model) return unsupported("action '" + id + "' (" + kind + ") has no use_model step; it is not a model call");
     if (spends) {
-      const auto accepts = strings_of(w->value("accepts", Json::array()));
-      const auto produces = strings_of(w->value("produces", Json::array()));
-      for (const auto& kind : needed)
-        if (!accepts.empty() && !contains(accepts, kind))
-          return unsupported("workflow '" + request.workflow + "' does not accept " + kind + " input; it accepts: " + list_text(accepts));
-      for (const auto& kind : request.wants)
-        if (!produces.empty() && !contains(produces, kind))
-          return unsupported("workflow '" + request.workflow + "' does not produce " + kind + "; it produces: " + list_text(produces));
+      const auto inputs = strings_of(a->value("inputs", Json::array()));
+      const auto outputs = strings_of(a->value("outputs", Json::array()));
+      for (const auto& need : needed)
+        if (!inputs.empty() && !contains(inputs, need))
+          return unsupported("action '" + id + "' does not take " + need + " input; it takes: " + list_text(inputs));
+      for (const auto& kind_wanted : request.wants)
+        if (!outputs.empty() && !contains(outputs, kind_wanted))
+          return unsupported("action '" + id + "' does not return " + kind_wanted + "; it returns: " + list_text(outputs));
     }
   }
   return ok_status();
@@ -361,7 +370,7 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
       {"parameters_sha256", Sha256::hex(json::canonical(spec.parameters))},
       {"messages_sha256", Sha256::hex(json::dump(spec.messages))},
       {"request_sha256", Sha256::hex(call.request.body)},
-      {"workflow", request.workflow.empty() ? Json(nullptr) : Json(request.workflow)},
+      {"action", request.action.empty() ? Json(nullptr) : Json(request.action)},
       {"input_kinds", Json(std::vector<std::string>(needed.begin(), needed.end()))},
       {"wants", request.wants}};
   return call;

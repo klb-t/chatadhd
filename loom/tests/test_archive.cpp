@@ -314,9 +314,9 @@ TEST_SUITE("archive.vocab") {
 }
 
 TEST_SUITE("archive.pipeline") {
-  TEST_CASE("workflow: declaring archive.refine planned stops item refinement before any send") {
+  TEST_CASE("action: declaring archive.refine planned stops item refinement before any send") {
     fsutil::TempDir td;
-    loom::test::declare_workflow_status(td.path() / "data", "archive.refine", "planned");
+    loom::test::declare_action_status(td.path() / "data", "archive.refine", "planned");
     auto rt = open_rt(td.path() / "data");
     auto scripted = std::make_shared<net::ScriptedTransport>();
     scripted->set_fallback(net::ScriptedTransport::Reply::text(200, "{}"));

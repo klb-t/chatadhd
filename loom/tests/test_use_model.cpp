@@ -571,73 +571,119 @@ TEST_SUITE("use_model") {
     CHECK(referenced.results[0].outputs.at(0).blob_hash.empty());
   }
 
-  TEST_CASE("use-cases as data: the catalogue names the migrated sites and the owner's planned examples") {
+  TEST_CASE("one kind of entity: the action catalogue holds atomic and composite actions in one shape") {
     Env env;
-    const Json catalogue = unwrap(llm::workflow_catalogue(env.services()));
+    const Json catalogue = unwrap(llm::action_catalogue(env.services()));
+    // atomic: implemented in code
+    REQUIRE(catalogue.contains("use_model"));
+    CHECK(catalogue["use_model"]["kind"] == "atomic");
+    CHECK(catalogue["use_model"]["status"] == "implemented");
+    CHECK_FALSE(catalogue["use_model"].contains("steps"));
+    for (const char* name : {"save", "share"}) {
+      INFO(name);
+      REQUIRE(catalogue.contains(name));
+      CHECK(catalogue[name]["kind"] == "atomic");
+      CHECK(catalogue[name]["status"] == "planned");
+    }
+    CHECK(catalogue["share"]["effects"]["irreversible"] == true);
+    CHECK(catalogue["save"]["effects"]["writes"] == true);
+    // composite: steps of other actions; the six migrated sites
     for (const char* name : {"chat.send", "semantic.analyse", "semantic.batch", "batch.chat", "archive.refine", "goal.typing"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));
-      CHECK(catalogue[name]["status"] == "implemented");
-      CHECK_FALSE(catalogue[name]["consumer"].get<std::string>().empty());
+      const Json& a = catalogue[name];
+      CHECK(a["id"] == name);
+      CHECK(a["kind"] == "composite");
+      CHECK(a["status"] == "implemented");
+      CHECK(a["steps"] == Json::array({Json{{"action", "use_model"}}}));
+      CHECK(a["effects"]["sends_off_device"] == true);
+      CHECK(a["effects"]["costs_money"] == true);
+      CHECK(a["effects"]["touches_private_data"] == true);
+      CHECK(a["requires"].is_array());
+      CHECK_FALSE(a["consumer"].get<std::string>().empty());
     }
+    CHECK(catalogue["chat.send"]["requires"] == Json::array({"conversation"}));
+    CHECK(catalogue["semantic.analyse"]["effects"]["reads_only"] == true);
+    CHECK(catalogue["chat.send"]["effects"]["writes"] == true);
     for (const char* name : {"graph_native.reply", "jev.edge_classify", "input.route_intent", "script.call", "agent.call",
                              "media.generate_image", "media.generate_video", "media.generate_music"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));
       CHECK(catalogue[name]["status"] == "planned");
+      CHECK(catalogue[name]["kind"] == "composite");
     }
-    CHECK(catalogue["media.generate_image"]["produces"] == Json::array({"image"}));
+    CHECK(catalogue["media.generate_image"]["outputs"] == Json::array({"image"}));
+    // every entry has the same shape
+    for (auto it = catalogue.begin(); it != catalogue.end(); ++it)
+      for (const char* field : {"id", "kind", "status", "inputs", "outputs", "requires", "effects"}) {
+        INFO(it.key() << "." << field);
+        CHECK(it.value().contains(field));
+      }
   }
 
-  TEST_CASE("a call names its workflow: recorded in the provenance; unknown and planned names are refused before sending") {
+  TEST_CASE("a call names its action: recorded in the provenance; unknown, planned and non-model names are refused before sending") {
     Env env;
     env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
     llm::ModelRequest named = simple("m");
-    named.workflow = "semantic.analyse";
+    named.action = "semantic.analyse";
     auto ok = unwrap(llm::use_model(env.services(), named));
     REQUIRE(ok.results[0].ok());
-    CHECK(ok.results[0].provenance["workflow"] == "semantic.analyse");
+    CHECK(ok.results[0].provenance["action"] == "semantic.analyse");
     CHECK(ok.results[0].provenance["input_kinds"] == Json::array({"text"}));
+
+    // use_model is itself an action (atomic)
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    llm::ModelRequest atomic = simple("m");
+    atomic.action = "use_model";
+    CHECK(unwrap(llm::use_model(env.services(), atomic)).results[0].provenance["action"] == "use_model");
 
     llm::ModelRequest adhoc = simple("m");
     env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
-    CHECK(unwrap(llm::use_model(env.services(), adhoc)).results[0].provenance["workflow"].is_null());
+    CHECK(unwrap(llm::use_model(env.services(), adhoc)).results[0].provenance["action"].is_null());
 
     llm::ModelRequest unknown = simple("m");
-    unknown.workflow = "not.declared";
+    unknown.action = "not.declared";
     auto refused = unwrap(llm::use_model(env.services(), unknown));
     CHECK(refused.results[0].state == llm::State::Unavailable);
-    CHECK(refused.results[0].error->message.find("unknown workflow 'not.declared'") != std::string::npos);
+    CHECK(refused.results[0].error->message.find("unknown action 'not.declared'") != std::string::npos);
 
     llm::ModelRequest planned = simple("m");
-    planned.workflow = "jev.edge_classify";
+    planned.action = "jev.edge_classify";
     auto not_yet = unwrap(llm::use_model(env.services(), planned));
     CHECK(not_yet.results[0].state == llm::State::Unavailable);
     CHECK(not_yet.results[0].error->message.find("planned, not implemented") != std::string::npos);
 
-    // The workflow's own declaration limits what it takes (goal.typing: text only).
+    // An action that is not a model call is no use_model purpose, even when implemented.
+    loom::test::declare_action_status(env.td.path(), "save", "implemented");
+    llm::ModelRequest save = simple("m");
+    save.action = "save";
+    auto not_model = unwrap(llm::use_model(env.services(), save));
+    CHECK(not_model.results[0].error->message.find("has no use_model step") != std::string::npos);
+    loom::test::declare_action_status(env.td.path(), "save", "planned");
+
+    // The action's own declaration limits what it takes (goal.typing: text only).
     llm::ModelRequest strict = simple("m");
-    strict.workflow = "goal.typing";
+    strict.action = "goal.typing";
     llm::Part j;
     j.kind = "json";
     j.value = Json{{"a", 1}};
     strict.inputs = {j};
     auto narrow = unwrap(llm::use_model(env.services(), strict));
-    CHECK(narrow.results[0].error->message.find("workflow 'goal.typing' does not accept json input") != std::string::npos);
-    CHECK(env.transport.requests().size() == 2);   // only the two accepted calls were sent
+    CHECK(narrow.results[0].error->message.find("action 'goal.typing' does not take json input") != std::string::npos);
+    CHECK(env.transport.requests().size() == 3);   // only the three accepted calls were sent
   }
 
-  TEST_CASE("a new use-case is data: the user overlay promotes a planned workflow, no code involved") {
+  TEST_CASE("a new use-case is data: the user overlay promotes a planned action, no code involved") {
     Env env;
-    loom::test::declare_workflow_status(env.td.path(), "jev.edge_classify", "implemented");
+    loom::test::declare_action_status(env.td.path(), "jev.edge_classify", "implemented");
     env.transport.expect("POST", "https://api.test/chat/completions",
                          Reply::json(200, chat_reply("```json\n{\"weight\":0.4}\n```")));
     llm::ModelRequest req = simple("m");
-    req.workflow = "jev.edge_classify";
-    req.wants = {"json"};   // the workflow declares structured output
+    req.action = "jev.edge_classify";
+    req.wants = {"json"};   // the action declares structured output
     auto outcome = unwrap(llm::use_model(env.services(), req));
     REQUIRE(outcome.results[0].ok());
-    CHECK(outcome.results[0].provenance["workflow"] == "jev.edge_classify");
+    CHECK(outcome.results[0].provenance["action"] == "jev.edge_classify");
     REQUIRE(outcome.results[0].outputs.size() == 2);   // the text, and the parsed document
     CHECK(outcome.results[0].outputs[1].kind == "json");
     CHECK(outcome.results[0].outputs[1].value == Json{{"weight", 0.4}});
@@ -650,7 +696,7 @@ TEST_SUITE("use_model") {
     CHECK(broken.results[0].state == llm::State::ParseError);
     CHECK(broken.results[0].error->message.find("not valid JSON") != std::string::npos);
     // and the reverse: marking an implemented site planned stops it
-    loom::test::declare_workflow_status(env.td.path(), "jev.edge_classify", "planned");
+    loom::test::declare_action_status(env.td.path(), "jev.edge_classify", "planned");
     CHECK(unwrap(llm::use_model(env.services(), req)).results[0].state == llm::State::Unavailable);
   }
 }
