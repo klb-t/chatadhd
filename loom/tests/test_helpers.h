@@ -7,6 +7,7 @@
 #include <string>
 
 #include "loom/db.h"
+#include "loom/net/http.h"
 #include "loom/result.h"
 #include "loom/util/fs.h"
 
@@ -19,6 +20,15 @@ namespace loom::test {
     INFO((loom_t_r_ ? std::string("ok") : loom_t_r_.error().to_string()));            \
     REQUIRE(static_cast<bool>(loom_t_r_));                                            \
   } while (0)
+
+// One HttpRequest as ordered JSON (method, url, headers in wire order, body,
+// timeout, stream flag): the golden-bytes view the use-model migration pins.
+inline Json request_json(const net::HttpRequest& r) {
+  Json headers = Json::array();
+  for (const auto& [name, value] : r.headers) headers.push_back(Json::array({name, value}));
+  return Json{{"method", r.method}, {"url", r.url}, {"headers", headers},
+              {"body", r.body}, {"timeout_ms", r.timeout_ms}, {"stream", r.stream}};
+}
 
 // Unwrap a Result<T> or fail the test.
 template <class T>

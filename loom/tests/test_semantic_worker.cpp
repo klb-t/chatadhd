@@ -13,7 +13,9 @@
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
 #include "loom/semantic_worker.h"
+#include "loom/usage_policy.h"
 #include "loom/util/fs.h"
+#include "loom/util/sha256.h"
 #include "test_helpers.h"
 
 using namespace loom;
@@ -711,6 +713,34 @@ TEST_SUITE("semantic_worker") {
     REQUIRE(approved);
     CHECK(unwrap(worker->drain_once()) > 0);                  // confirmed: requeued and re-analysed
     CHECK_FALSE(worker->status().usage_pending.has_value());
+  }
+
+  TEST_CASE("golden: automatic resend guard request identity is pinned") {
+    Env env;
+    env.cfg.set("semantic_model", "vendor/model");
+    env.secrets.set("api_key", "fake-model-key");
+    Json content{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()}};
+    env.transport.set_fallback(net::ScriptedTransport::Reply::json(200,
+        Json{{"choices", Json::array({Json{{"message", Json{{"content", json::dump(content)}}}}})}}));
+    const auto conv = unwrap(env.db->create_conv("golden")).id;
+    set_done_rejection(env, true);
+    auto worker = retry_worker(env, Json{{"retry_mode", "automatic"}, {"retry_spacing_ms", 0}, {"llm_rate_limit", 0}});
+    const auto mid = env.add_pending_msg(conv, "golden resend message number 0");
+    CHECK(unwrap(worker->drain_once()) == 0);
+    CHECK(unwrap(worker->drain_once()) == 0);
+    auto policy = unwrap(UsagePolicy::open(env.td.path() / "usage-policy.sqlite",
+                                           unwrap(effective_usage_policy_options(env.cfg))));
+    const std::string key = "semantic.retry|https://openrouter.ai/api/v1/chat/completions|vendor/model";
+    auto cohort = unwrap(policy->inspect(key));
+    REQUIRE(cohort["operations"].size() == 1);
+    // The guard binds method, URL, header list, body, timeout and stream flag.
+    const Json identity{{"method", "POST"}, {"url", "https://openrouter.ai/api/v1/chat/completions"},
+                        {"headers", Json::array()},
+                        {"body", json::dump(Json{{"schema", "loom.semantic_retry/1"}, {"ids", Json::array({mid})}})},
+                        {"timeout_ms", net::builtin_http_timeout_ms()}, {"stream", false}};
+    const auto& estimate = cohort["operations"][0]["estimate"];
+    CHECK(estimate["request_identity_sha256"] == Sha256::hex(json::canonical(identity)));
+    CHECK(estimate["request_body_sha256"] == Sha256::hex(identity["body"].get<std::string>()));
   }
 
   TEST_CASE("T2 declining an automatic resend answers that operation only: setting kept, items noted usage_declined, queue keeps draining") {

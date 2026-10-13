@@ -9,6 +9,7 @@
 #include "loom/db.h"
 #include "loom/net/http.h"
 #include "loom/semantic_analyzer.h"
+#include "loom/semantic_llm.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -51,6 +52,31 @@ bool wait_until(const std::function<bool()>& pred, std::chrono::milliseconds tim
 }  // namespace
 
 TEST_SUITE("batch_api") {
+  TEST_CASE("golden: concurrent chat-completions request bytes are pinned") {
+    Env env;
+    env.cfg.set("base_url", "https://api.test");
+    env.transport.set_fallback(net::ScriptedTransport::Reply::text(200, "{}"));
+    auto conv = unwrap(env.db->create_conv("golden")).id;
+    auto mid = env.add_msg(conv, "golden batch text");
+    {
+      auto api = env.api();
+      REQUIRE(unwrap(api.submit_anthropic_batch({mid})).has_value());
+    }  // ~SemanticBatchAPI joins the worker threads
+    auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    const std::string content = std::string(kAnalysisPrompt) + "golden batch text";
+    const Json expected{
+        {"method", "POST"},
+        {"url", "https://api.test/chat/completions"},
+        {"headers", Json::array({Json::array({"Authorization", "Bearer sk-test"}),
+                                 Json::array({"Content-Type", "application/json"})})},
+        {"body", "{\"model\":\"cheap/model\",\"messages\":[{\"role\":\"user\",\"content\":" +
+                     json::dump(Json(content)) + "}],\"temperature\":0.1,\"max_tokens\":800}"},
+        {"timeout_ms", 30000},
+        {"stream", false}};
+    CHECK(loom::test::request_json(reqs[0]) == expected);
+  }
+
   TEST_CASE("parse_analysis strips fences and stamps source=llm") {
     auto a = SemanticBatchAPI::parse_analysis("```json\n{\"entities\":[]}\n```");
     REQUIRE(a.has_value());
