@@ -13,6 +13,7 @@
 #include <filesystem>
 #include <functional>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -51,6 +52,14 @@ class ElementResolver {
   // Errc::NotFound when the id has a known form but nothing stored under it.
   Result<Json> resolve(const ElementSources& sources, const Json& element,
                        const std::function<bool(std::string_view)>& known_class) const;
+
+  // Several elements as one input (combine): each member is resolved as `resolve` does. One member is that member itself; several make
+  //   {"id":"", "class": the class they share or "", "traits": what they all have when their classes differ, "source":"group",
+  //    "members":[resolved...], "label"?, "attrs":{"count":n}}
+  // so the engine fits an action to the group by what all of them are, and the content is the members' contents one after another.
+  // `traits_of(class)` is the traits a class stands for (Engine::expand_traits).
+  Result<Json> group(const ElementSources& sources, const Json& members, const std::function<bool(std::string_view)>& known_class,
+                     const std::function<std::set<std::string>(std::string_view)>& traits_of) const;
 
   // The element's content as typed parts: text of a message / node / text blob, the transcript of a
   // conversation, the bytes reference of a media blob. Empty for elements that carry no content.

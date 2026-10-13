@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <iterator>
 
 #include "loom/db.h"
 #include "loom/provenance.h"
@@ -11,6 +12,16 @@
 #include "loom/settings_fields.h"
 
 namespace loom::actions {
+
+namespace {
+std::vector<std::string> strings_of_json(const Json* v) {
+  std::vector<std::string> out;
+  if (v && v->is_array())
+    for (const auto& x : *v)
+      if (x.is_string()) out.push_back(x.get<std::string>());
+  return out;
+}
+}  // namespace
 
 namespace {
 
@@ -220,10 +231,59 @@ Result<Json> ElementResolver::resolve(const ElementSources& sources, const Json&
   return element;
 }
 
+Result<Json> ElementResolver::group(const ElementSources& sources, const Json& members, const std::function<bool(std::string_view)>& known_class,
+                                    const std::function<std::set<std::string>(std::string_view)>& traits_of) const {
+  if (!members.is_array() || members.empty()) return Error(Errc::InvalidArgument, "a group of elements needs at least one member");
+  std::vector<Json> resolved;
+  for (const auto& m : members) {
+    LOOM_TRY_ASSIGN(Json r, resolve(sources, m, known_class));
+    if (r.is_string()) r = Json{{"class", r}};
+    if (!r.is_object()) return Error(Errc::InvalidArgument, "a member of a group of elements is not something I can act on");
+    resolved.push_back(std::move(r));
+  }
+  if (resolved.size() == 1) return resolved[0];
+  std::string common = json::get_string(resolved[0], "class");
+  for (const auto& r : resolved)
+    if (json::get_string(r, "class") != common) common.clear();
+  std::set<std::string> shared;
+  if (common.empty() && traits_of) {
+    bool first = true;
+    for (const auto& r : resolved) {
+      std::set<std::string> own = traits_of(json::get_string(r, "class"));
+      for (const auto& t : strings_of_json(json::find(r, "traits"))) own.insert(t);
+      if (first) shared = std::move(own);
+      else {
+        std::set<std::string> both;
+        std::set_intersection(shared.begin(), shared.end(), own.begin(), own.end(), std::inserter(both, both.begin()));
+        shared = std::move(both);
+      }
+      first = false;
+    }
+  }
+  Json out = Json::object();
+  out["id"] = "";
+  out["class"] = common;
+  out["traits"] = Json::array();
+  for (const auto& t : shared) out["traits"].push_back(t);
+  out["source"] = "group";
+  out["attrs"] = Json{{"count", resolved.size()}};
+  out["members"] = Json::array();
+  for (auto& r : resolved) out["members"].push_back(std::move(r));
+  return out;
+}
+
 Result<std::vector<llm::Part>> ElementResolver::content_parts(const ElementSources& sources, const Json& resolved) const {
   std::vector<llm::Part> parts;
   const std::string source = json::get_string(resolved, "source");
   const std::string id = json::get_string(resolved, "id");
+  if (source == "group") {  // the members' contents, one after another
+    if (const Json* members = json::find(resolved, "members"); members && members->is_array())
+      for (const auto& m : *members) {
+        LOOM_TRY_ASSIGN(auto one, content_parts(sources, m));
+        for (auto& p : one) parts.push_back(std::move(p));
+      }
+    return parts;
+  }
   auto text_part = [&](std::string text, const std::string& node) {
     llm::Part p;
     p.kind = "text";

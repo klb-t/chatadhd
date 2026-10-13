@@ -389,7 +389,16 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
   }
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   const Engine& engine = loaded.engine;
-  LOOM_TRY_ASSIGN(Json resolved, loaded.resolver.resolve(sources, element, [&](std::string_view c) { return engine.has_class(c); }));
+  auto known_class = [&](std::string_view c) { return engine.has_class(c); };
+  // Several elements as one input (combine): a list of ids, or {"members": [...]}.
+  if (element.is_array()) element = Json{{"members", element}};
+  Json resolved;
+  if (element.is_object() && element.contains("members") && element["members"].is_array() && !element.contains("source")) {
+    LOOM_TRY_ASSIGN(resolved, loaded.resolver.group(sources, element["members"], known_class,
+                                                    [&](std::string_view cls) { return engine.expand_traits({std::string(cls)}); }));
+  } else {
+    LOOM_TRY_ASSIGN(resolved, loaded.resolver.resolve(sources, element, known_class));
+  }
   if (resolved.is_string()) resolved = Json{{"class", resolved}};
   r.element = std::move(resolved);
   return r;

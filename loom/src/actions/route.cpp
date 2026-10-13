@@ -435,6 +435,17 @@ Json find_reference(const Data& d, const std::string& text, const std::vector<st
   return Json(nullptr);
 }
 
+// Every id in the words, in the order said (for an action that takes several elements). One id or none: nothing to combine.
+Json find_references_many(const Data& d, const std::string& text) {
+  Json many = Json::array();
+  for (const auto& raw : whitespace_tokens(text)) {
+    const std::string bare = strip_punct(raw);
+    if (!bare.empty() && d.resolver.is_id(bare) && std::none_of(many.begin(), many.end(), [&](const Json& x) { return x.value("id", "") == bare; }))
+      many.push_back(Json{{"id", bare}});
+  }
+  return many;
+}
+
 std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
   std::vector<Cand> out;
   const Json& h = d.cfg.at("heuristic");
@@ -476,6 +487,8 @@ std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
         c.lang = lang.key();
         c.action = it.key();
         c.element = element;
+        if (json::get_bool(entry, "element_many", false))
+          if (Json many = find_references_many(d, text); many.size() > 1) c.element = Json{{"many", many}};
         c.score = score;
         best = std::move(c);
       }
@@ -685,7 +698,22 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
 
 // ── evaluation of a candidate ───────────────────────────────────────
 
+Result<Json> resolve_ref(Runtime& rt, Data& d, const Json& ref, const Conv& conv);
+
+// Several elements as one: each reference is resolved, the group is what they have in common (ElementResolver::group).
+Result<Json> resolve_many(Runtime& rt, Data& d, const Json& many, const Conv& conv) {
+  Json members = Json::array();
+  for (const auto& ref : many) {
+    LOOM_TRY_ASSIGN(Json one, resolve_ref(rt, d, ref, conv));
+    members.push_back(std::move(one));
+  }
+  const Engine& engine = d.engine;
+  return d.resolver.group(sources_of(rt), members, [&](std::string_view c) { return engine.has_class(c); },
+                          [&](std::string_view cls) { return engine.expand_traits({std::string(cls)}); });
+}
+
 Result<Json> resolve_ref(Runtime& rt, Data& d, const Json& ref, const Conv& conv) {
+  if (const Json* many = json::find(ref, "many"); many && many->is_array()) return resolve_many(rt, d, *many, conv);
   std::string id = json::get_string(ref, "id");
   const std::string kind = json::get_string(ref, "resolve");
   if (kind == "current_conversation") {
@@ -718,6 +746,12 @@ Json element_summary(const Data& d, const Json& el, const std::string& lang) {
   out["class_label"] = class_label;
   out["label"] = json::get_string(el, "label");
   out["source"] = json::get_string(el, "source");
+  if (json::get_string(el, "source") == "group") {  // several elements as one input
+    Json ids = Json::array();
+    for (const auto& m : el.value("members", Json::array())) ids.push_back(json::get_string(m, "id"));
+    out["members"] = ids;
+    out["label"] = say(d.cfg, lang, "group_label", Json{{"count", ids.size()}});
+  }
   return out;
 }
 
@@ -1109,6 +1143,8 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   lines.push_back(say(d.cfg, lang, "proposal_title", Json{{"title", proposal.value("title", "")}}));
   const Json element = proposal.value("element", Json::object());
   std::string where = element.value("label", "").empty() ? element.value("class_label", "") : element.value("class_label", "") + " \"" + element.value("label", "") + "\"";
+  if (element.value("source", "") == "group")
+    where = element.value("label", "") + (element.value("class_label", "").empty() ? std::string() : " (" + element.value("class_label", "") + ")");
   if (where.empty()) where = say(d.cfg, lang, "no_element");
   lines.push_back(say(d.cfg, lang, "proposal_element", Json{{"element", where}}));
   // What the words gave to the declared parameters, and which optional ones keep their defaults.
@@ -1426,6 +1462,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   Json meta = Json::object();
   std::string type = "action_proposal";
   Json payload = Json::object();
+  std::string early_id;  // the proposal message, when it had to be stored before the run (auto-run)
   if (!usable) {
     proposal["status"] = !cmd.value("denied", Json::array()).empty() ? "denied" : "unavailable";
     meta["action_proposal"] = proposal;
@@ -1456,6 +1493,9 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
       const bool reads_only = json::get_bool(cmd["plan"].value("effects", Json::object()), "reads_only", false);
       const bool no_questions = cmd.value("needs_confirmation", Json::array()).empty();
       if (no_questions && (mode == "always" || (mode == "read_only" && reads_only))) {
+        // The proposal is said first: the result (a message of its own when the target says so) comes after it, in the order it happened.
+        proposal["status"] = "running";
+        LOOM_TRY_ASSIGN(early_id, add_message(rt, conv_id, "assistant", assistant_text, Json{{"action_proposal", proposal}, {"routed", "proposal"}}, "loom:actions"));
         auto done = rt.actions().confirm(Json{{"run_id", (*run)["id"]}, {"approved", true}, {"receipt_id", proposal["receipt_id"]},
                                               {"ref", "auto:" + json::get_string(d.cfg.at("execution"), "setting") + "=" + mode}});
         if (done) {
@@ -1477,7 +1517,15 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     if (meta.contains("action_run")) payload["run"] = meta["action_run"];
   }
   meta["routed"] = "proposal";
-  LOOM_TRY_ASSIGN(std::string assistant_id, add_message(rt, conv_id, "assistant", assistant_text, meta, "loom:actions"));
+  std::string assistant_id = early_id;
+  if (early_id.empty()) {
+    LOOM_TRY_ASSIGN(assistant_id, add_message(rt, conv_id, "assistant", assistant_text, meta, "loom:actions"));
+  } else {
+    MsgPatch patch;  // the proposal message says how it ended
+    patch.text = assistant_text;
+    patch.metadata = meta;
+    LOOM_TRY(rt.db().update_msg(early_id, patch));
+  }
   if (meta.contains("action_run")) {
     if (auto linked = link_presented(rt, d, assistant_id, meta["action_run"].value("produced", Json(nullptr)), meta["action_run"].value("run_id", "")); !linked)
       LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["action_run"]["link_error"] = linked.error().message; }));

@@ -72,6 +72,16 @@
         {"id": "conversation", "words": ["rozmow*", "konwersacj*", "czat*", "chat", "conversation", "thread", "dyskusj*", "wątek", "watek", "wątku", "watku"], "resolve": "current_conversation"},
         {"id": "message", "words": ["wiadomo*", "message", "odpowied*", "reply", "answer"], "resolve": "last_message"}
       ],
+      "phrases": {
+        "rephrase": {
+          "en": ["rephrase", "reword", "rewrite", "paraphrase", "say it differently", "put it differently"],
+          "pl": ["przeredaguj*", "przeformułuj*", "przeformuluj*", "sparafrazuj*", "napisz inaczej", "powiedz inaczej", "ujmij inaczej"]
+        },
+        "explain_simply": {
+          "en": ["explain simply", "explain it simply", "explain this simply", "simplify", "eli5", "explain like", "make it simpler"],
+          "pl": ["wytłumacz prościej", "wyjaśnij prościej", "wytlumacz prosciej", "wyjasnij prosciej", "uprość*", "uprosc*", "wytłumacz jak"]
+        }
+      },
       "rules": {
         "scopes": [
           {"scope": "conversation", "phrases": {
@@ -224,6 +234,7 @@
         "effect_private": "touches private data",
         "effect_none": "has no side effects",
         "no_element": "this conversation",
+        "group_label": "{{count}} elements",
         "result_completed": "Done: {{title}}.",
         "result_failed": "It failed at {{step}}: {{message}}",
         "result_denied": "The rules do not allow it: {{message}}",
@@ -268,6 +279,7 @@
         "effect_private": "dotyka danych prywatnych",
         "effect_none": "nie ma skutków ubocznych",
         "no_element": "tej rozmowie",
+        "group_label": "elementy: {{count}}",
         "result_completed": "Gotowe: {{title}}.",
         "result_failed": "Nie udało się w kroku {{step}}: {{message}}",
         "result_denied": "Zasady na to nie pozwalają: {{message}}",

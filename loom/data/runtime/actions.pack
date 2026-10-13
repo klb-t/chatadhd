@@ -1609,15 +1609,45 @@
       "elaborate": {
         "id": "elaborate",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Elaborate",
-        "description": "Develop a text content: add detail, examples, the missing steps.",
+        "description": "Develop a text content: add detail, examples, the missing steps. What to dwell on is the argument focus.",
         "labels": {
-          "pl": "Dopowiedz"
+          "pl": "Rozwiń"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You develop texts. Keep the author's voice and claims; add detail, concrete examples and the steps that are missing; do not contradict the text and do not present invented facts as the author's. Answer in the language of the text.",
+                  "pl": "Rozwijasz teksty. Zachowaj głos i tezy autora; dodaj szczegóły, konkretne przykłady i brakujące kroki; nie przeczą tekstowi i nie podawaj zmyślonych faktów jako słów autora. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Elaborate on the text above. Dwell on: {focus}.",
+                    "pl": "Rozwiń powyższy tekst. Skup się na: {focus}."
+                  }
+                },
+                "vars": {
+                  "focus": {
+                    "$arg": "focus",
+                    "default": {
+                      "$localized": {
+                        "en": "whatever needs the most detail",
+                        "pl": "tym, co najbardziej wymaga rozwinięcia"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.6
+              }
+            }
           }
         ],
         "inputs": [
@@ -1656,7 +1686,19 @@
             "rozwin*",
             "dopowiedz*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "focus",
+            "type": "string",
+            "required": false,
+            "default": "whatever needs the most detail",
+            "description": {
+              "en": "Which part to develop (\"the examples\", \"the second paragraph\").",
+              "pl": "Którą część rozwinąć („przykłady”, „drugi akapit”)."
+            }
+          }
+        ]
       },
       "parody": {
         "id": "parody",
@@ -1755,15 +1797,45 @@
       "critique": {
         "id": "critique",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Critique",
-        "description": "Evaluate a text content: strengths, weaknesses, credibility.",
+        "description": "Evaluate a text content: strengths, weaknesses, credibility, clarity. What to judge it by is the argument criteria.",
         "labels": {
           "pl": "Skrytykuj"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You are a fair, rigorous critic. Judge the text on its merits: strengths, weaknesses, gaps in the reasoning, credibility of the claims, clarity. Be specific, quote briefly where it helps, and end with the one improvement that matters most. Do not rewrite the text. Answer in the language of the text.",
+                  "pl": "Jesteś rzetelnym, wymagającym krytykiem. Oceń tekst po jego wartości: mocne strony, słabe strony, luki w rozumowaniu, wiarygodność twierdzeń, jasność. Bądź konkretny, cytuj krótko, gdy to pomaga, i zakończ jedną poprawką, która liczy się najbardziej. Nie przepisuj tekstu. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Critique the text above. Judge it by: {criteria}.",
+                    "pl": "Oceń krytycznie powyższy tekst. Kryteria: {criteria}."
+                  }
+                },
+                "vars": {
+                  "criteria": {
+                    "$arg": "criteria",
+                    "default": {
+                      "$localized": {
+                        "en": "strengths, weaknesses, credibility and clarity",
+                        "pl": "mocne strony, słabe strony, wiarygodność i jasność"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.3
+              }
+            }
           }
         ],
         "inputs": [
@@ -1804,20 +1876,62 @@
             "oceń",
             "ocen*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "criteria",
+            "type": "string",
+            "required": false,
+            "default": "strengths, weaknesses, credibility and clarity",
+            "description": {
+              "en": "What to judge the text by (\"the argument\", \"the tone\").",
+              "pl": "Czym oceniać tekst („argumentacja”, „ton”)."
+            }
+          }
+        ]
       },
       "combine": {
         "id": "combine",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Combine",
-        "description": "Put several contents side by side and join them into one.",
+        "description": "Put several contents side by side and join them into one text: every important point of each kept, repetition removed, disagreements named. Name the elements (ids) to combine; the argument shape says what to make of them.",
         "labels": {
-          "pl": "Zestaw"
+          "pl": "Połącz"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You combine several texts into one coherent text. Keep every important point of each source, remove repetition, resolve overlaps and add nothing of your own. If the sources disagree, say so plainly instead of choosing silently. Answer in the language of the sources.",
+                  "pl": "Łączysz kilka tekstów w jeden spójny. Zachowaj każdą ważną myśl z każdego źródła, usuń powtórzenia, uporządkuj nakładanie się treści i nie dodawaj nic od siebie. Gdy źródła się różnią, powiedz to wprost zamiast wybierać po cichu. Odpowiadaj w języku źródeł."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Combine the texts above into one: {shape}.",
+                    "pl": "Połącz powyższe teksty w jeden: {shape}."
+                  }
+                },
+                "vars": {
+                  "shape": {
+                    "$arg": "shape",
+                    "default": {
+                      "$localized": {
+                        "en": "a coherent text",
+                        "pl": "spójny tekst"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.3
+              }
+            }
           }
         ],
         "inputs": [
@@ -1857,7 +1971,20 @@
             "polacz*",
             "zestaw*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "shape",
+            "type": "string",
+            "required": false,
+            "default": "a coherent text",
+            "description": {
+              "en": "What to make of them (\"a summary\", \"a list\", \"an email\").",
+              "pl": "Co z nich zrobić („streszczenie”, „lista”, „e-mail”)."
+            }
+          }
+        ],
+        "element_many": true
       },
       "depict": {
         "id": "depict",
@@ -3520,6 +3647,189 @@
             "edit": "free_text"
           }
         ]
+      },
+      "rephrase": {
+        "id": "rephrase",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Rephrase",
+        "description": "Say the same thing in another tone or at another level of language, keeping the meaning, facts, names and numbers. The tone is the argument tone, the level the argument level.",
+        "labels": {
+          "pl": "Przeredaguj"
+        },
+        "steps": [
+          {
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You rewrite texts. Keep the meaning, the facts, the names and the numbers; change only the way it is said: the tone, the register, the level of language. Output only the rewritten text, with no commentary. Answer in the language of the text.",
+                  "pl": "Przepisujesz teksty. Zachowaj sens, fakty, nazwy własne i liczby; zmień tylko sposób powiedzenia: ton, rejestr, poziom języka. Podaj samo przepisanie, bez komentarzy. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Rewrite the text above. Tone: {tone}. Level: {level}.",
+                    "pl": "Przeredaguj powyższy tekst. Ton: {tone}. Poziom: {level}."
+                  }
+                },
+                "vars": {
+                  "tone": {
+                    "$arg": "tone",
+                    "default": {
+                      "$localized": {
+                        "en": "plain and neutral",
+                        "pl": "prosty i neutralny"
+                      }
+                    }
+                  },
+                  "level": {
+                    "$arg": "level",
+                    "default": {
+                      "$localized": {
+                        "en": "everyday language",
+                        "pl": "język codzienny"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.5
+              }
+            }
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "restyle",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.85,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "params": [
+          {
+            "name": "tone",
+            "type": "string",
+            "required": false,
+            "default": "plain and neutral",
+            "description": {
+              "en": "The tone to say it in (\"formal\", \"warm\", \"blunt\").",
+              "pl": "Ton, w jakim to powiedzieć („formalny”, „ciepły”, „dosadny”)."
+            }
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false,
+            "default": "everyday language",
+            "description": {
+              "en": "The level of language (\"academic\", \"for teenagers\").",
+              "pl": "Poziom języka („akademicki”, „dla nastolatków”)."
+            }
+          }
+        ]
+      },
+      "explain_simply": {
+        "id": "explain_simply",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Explain simply",
+        "description": "Explain a text content for a stated level of competence: short sentences, everyday words, a concrete example, nothing false. Any level, down to a beginner and up to an expert: the audience is the argument audience.",
+        "labels": {
+          "pl": "Wytłumacz prościej"
+        },
+        "steps": [
+          {
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You explain things simply and correctly. Explain the text above for the stated audience: short sentences, everyday words, a concrete example or comparison, no jargon unless you explain it. Never talk down and never change what is true. Answer in the language of the text.",
+                  "pl": "Tłumaczysz rzeczy prosto i poprawnie. Wyjaśnij powyższy tekst wskazanemu odbiorcy: krótkie zdania, codzienne słowa, konkretny przykład lub porównanie, żadnego żargonu bez wyjaśnienia. Nie traktuj odbiorcy protekcjonalnie i nie zmieniaj tego, co prawdziwe. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Explain the text above simply, for this audience: {audience}.",
+                    "pl": "Wyjaśnij prosto powyższy tekst dla tego odbiorcy: {audience}."
+                  }
+                },
+                "vars": {
+                  "audience": {
+                    "$arg": "audience",
+                    "default": {
+                      "$localized": {
+                        "en": "someone who is new to the subject",
+                        "pl": "ktoś, kto dopiero poznaje temat"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.4
+              }
+            }
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "restyle",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "params": [
+          {
+            "name": "audience",
+            "type": "string",
+            "required": false,
+            "default": "someone who is new to the subject",
+            "description": {
+              "en": "Who it is for, at any level (\"a beginner\", \"a ten-year-old\", \"an expert in another field\").",
+              "pl": "Dla kogo, na dowolnym poziomie („początkujący”, „dziesięciolatek”, „ekspert z innej dziedziny”)."
+            }
+          }
+        ]
       }
     }
   },
@@ -3759,6 +4069,10 @@
               "items": {
                 "type": "object"
               }
+            },
+            "element_many": {
+              "type": "boolean",
+              "description": "The action takes several elements as one input (combine): the router reads every id in the words, and a request may give element as a list of ids; the contents reach the steps one after another."
             }
           },
           "additionalProperties": true
