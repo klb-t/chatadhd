@@ -1,0 +1,290 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "intent_routing",
+  "revision": 1,
+  "description": "Everything from the conversation window (R54, GRAF_HUB_KOD_SILNIK §8): every chat input goes through input.route_intent, which decides message or command and, for a command, resolves it against the action catalogue and the rules and answers IN the conversation with a proposal. This profile is the data of that decision. method: heuristic (local and free: explicit command syntax, patterns, and the phrases that actions carry in the catalogue; no model call), model (one use_model call with the configured model, guarded like every other), off (every input is a message). The method is a setting: config key `intent_routing_method`, then the preset below; the call may override it. execution: whether a proposal waits for the user's yes (propose, the preset), runs at once when the whole plan only reads and the rules ask for nothing (read_only), or runs at once whatever it does (always); the rules and the x10 usage confirmation apply in every case. Confirmation is a reply that is exactly one of the yes / no words below. A phrase on an action is space-separated words, all of which must occur within `window_tokens` of the start with at least one within `lead_tokens`; a word ending in * matches any continuation; text is lower-cased and the letters in `fold` are replaced before matching. A chat input is a command only when it names an action AND an element (an id, or a word that refers to the conversation or a message); otherwise it is a message and continues on the chat path unchanged. All numbers here are calibration, not limits: the user's overlay <data>/profiles/intent_routing.pack changes any of them.",
+  "defaults": {
+    "method": {
+      "setting": "intent_routing_method",
+      "active": "heuristic",
+      "presets": {
+        "off": {"label": {"en": "Off: every input is a message", "pl": "Wyłączone: każde wejście jest wiadomością"}},
+        "heuristic": {"label": {"en": "Local: explicit syntax and phrases, no model call", "pl": "Lokalnie: jawna składnia i frazy, bez wywołania modelu"}},
+        "model": {"label": {"en": "Model: one model call per input (guarded like every other)", "pl": "Model: jedno wywołanie modelu na wejście (pod tym samym zabezpieczeniem)"}}
+      },
+      "model_setting": "intent_routing_model",
+      "model_fallback_setting": "default_model"
+    },
+    "execution": {
+      "setting": "intent_routing_run",
+      "active": "propose",
+      "presets": {
+        "propose": {"label": {"en": "Propose first, run after the user's yes", "pl": "Najpierw propozycja, wykonanie po „tak”"}},
+        "read_only": {"label": {"en": "Run at once when the plan only reads and the rules ask for nothing", "pl": "Od razu, gdy plan tylko czyta, a zasady o nic nie pytają"}},
+        "always": {"label": {"en": "Run at once (rules and the x10 confirmation still apply)", "pl": "Od razu (zasady i potwierdzenie ×10 nadal obowiązują)"}}
+      }
+    },
+    "default_language": "en",
+    "message_request_fields": ["attachments", "usage_confirmation", "active_task_spec", "knowledge_context", "web_search", "deep_research"],
+    "heuristic": {
+      "language_hints": {
+        "pl": ["ustaw", "zmien", "przelacz", "pokaz", "sprawdz", "jaka", "jakie", "streszcz", "podsumuj", "narysuj", "zrob", "tak", "nie", "prosze", "dziekuje", "rozmowe", "rozmowy", "wiadomosc"]
+      },
+      "fold": {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z"},
+      "window_tokens": 12,
+      "lead_tokens": 4,
+      "scoring": {"base": 0.6, "per_word": 0.1, "lead_penalty": 0.05, "min_score": 0.5},
+      "explicit": {
+        "prefixes": ["/"],
+        "run_verbs": ["run", "uruchom"],
+        "aliases": {"set": "settings.set", "ustaw": "settings.set", "get": "settings.get", "show": "settings.get", "pokaz": "settings.get", "pokaż": "settings.get"},
+        "arg_pattern": "^([A-Za-z_][A-Za-z0-9_.]*)=(.*)$",
+        "element_markers": ["on", "na", "for", "dla"],
+        "default_element": "current_conversation"
+      },
+      "patterns": [
+        {
+          "id": "set_equals",
+          "action": "settings.set",
+          "regex": "^(?:(?:set|change|ustaw|zmień|zmien)\\s+)?([A-Za-z][A-Za-z0-9_]*)\\s*=\\s*(.+?)\\s*$",
+          "args": ["key", "value"],
+          "element_arg": "key",
+          "requires_element": true
+        },
+        {
+          "id": "set_to",
+          "action": "settings.set",
+          "regex": "^(?:set|change|switch|ustaw|zmień|zmien|przełącz|przelacz)\\s+(?:the\\s+)?(?:setting\\s+)?([A-Za-z][A-Za-z0-9_]*)\\s+(?:to|na|=)\\s+(.+?)\\s*$",
+          "args": ["key", "value"],
+          "element_arg": "key",
+          "requires_element": true
+        },
+        {
+          "id": "show_setting",
+          "action": "settings.get",
+          "regex": "^(?:show|get|display|what is|what's|pokaż|pokaz|sprawdź|sprawdz|jaka jest|jakie jest)\\s+(?:the\\s+)?(?:setting\\s+|value of\\s+|ustawienie\\s+|wartość\\s+|wartosc\\s+)?([A-Za-z][A-Za-z0-9_]*)\\s*\\??$",
+          "args": ["key"],
+          "element_arg": "key",
+          "requires_element": true
+        }
+      ],
+      "references": [
+        {"id": "conversation", "words": ["rozmow*", "konwersacj*", "czat*", "chat", "conversation", "thread", "dyskusj*", "wątek", "watek", "wątku", "watku"], "resolve": "current_conversation"},
+        {"id": "message", "words": ["wiadomo*", "message", "odpowied*", "reply", "answer"], "resolve": "last_message"}
+      ]
+    },
+    "confirmation": {
+      "yes": {
+        "en": ["yes", "y", "yep", "yeah", "ok", "okay", "sure", "confirm", "confirmed", "go ahead", "do it", "proceed", "run it"],
+        "pl": ["tak", "t", "ok", "okej", "dobrze", "jasne", "potwierdzam", "potwierdź", "potwierdz", "zrób to", "zrob to", "działaj", "dzialaj", "dalej", "wykonaj"]
+      },
+      "no": {
+        "en": ["no", "n", "nope", "cancel", "stop", "never mind", "nevermind", "drop it", "don't", "do not"],
+        "pl": ["nie", "anuluj", "odrzuć", "odrzuc", "odrzucam", "zostaw", "zostaw to", "nie rób tego", "nie rob tego", "stop"]
+      }
+    },
+    "model": {
+      "system": "You decide whether a user's input to a chat application is an ordinary message for the language model, or a command to the application itself (run one of its actions on something). Answer with one JSON object only: {\"kind\": \"message\" | \"command\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command names something the application can do to an existing element (for example summarise this conversation, set a setting). Questions, requests for the model to write or explain, and anything unclear are messages. Use only action ids from the list.",
+      "catalogue_line": "- {{id}}: {{title}} (needs: {{requires}})",
+      "user": "Actions:\n{{actions}}\n\nInput:\n{{text}}",
+      "parameters": {"temperature": 0, "max_tokens": 300},
+      "title": "ChatADHD-Route",
+      "timeout_ms": 30000,
+      "min_confidence": 0.5
+    },
+    "texts": {
+      "en": {
+        "proposal_title": "I read this as a command: {{title}}.",
+        "proposal_element": "On: {{element}}.",
+        "proposal_plan": "It will run: {{plan}}.",
+        "proposal_cost": "Estimate: {{cost}} (relative cost, 1 = one ordinary model call), {{calls}} model call(s), about {{bytes}} bytes sent to the model.",
+        "proposal_money_known": "Money: about {{low}} to {{high}} {{currency}}, from the size of the input and the model's listed price (an estimate, not a limit).",
+        "proposal_money_unknown": "Money: unknown ({{why}}); do not read it as free.",
+        "missing_args_settings": " (or set: {{settings}})",
+        "proposal_effects": "It {{effects}}.",
+        "proposal_confirm": "The rules ask you to confirm: {{what}}.",
+        "proposal_ask": "Reply \"yes\" to run it or \"no\" to drop it.",
+        "proposal_not_runnable": "I cannot run this yet: {{why}}.",
+        "proposal_denied": "The rules do not allow this: {{reason}}{{initiator}}.",
+        "proposal_unfit": "This does not fit that element: it needs {{missing}}.",
+        "proposal_missing_args": "I still need: {{args}}. Say it as /{{action}} with {{args}} filled in, or ask in other words.",
+        "proposal_error": "I could not plan this: {{message}}",
+        "proposal_chain": "It would need a chain: {{chain}}.",
+        "proposal_alternatives": "Other readings: {{alternatives}}.",
+        "initiator_by": " (set by {{who}})",
+        "effect_reads": "only reads",
+        "effect_writes": "changes data",
+        "effect_sends": "sends data off this device",
+        "effect_money": "costs money",
+        "effect_irreversible": "cannot be undone",
+        "effect_private": "touches private data",
+        "effect_none": "has no side effects",
+        "no_element": "this conversation",
+        "result_completed": "Done: {{title}}.",
+        "result_failed": "It failed at {{step}}: {{message}}",
+        "result_denied": "The rules do not allow it: {{message}}",
+        "result_rejected": "Dropped. Nothing was executed.",
+        "result_cancelled": "Cancelled.",
+        "result_waiting": "It is waiting for your answer: {{kind}}.",
+        "result_usage": "The model call is held by the usage guard: its expected usage is far above your recent baseline. Nothing was sent. Confirm it here or in the usage prompt.",
+        "result_no_text": "It produced no text.",
+        "ack_no": "Dropped. Nothing was executed.",
+        "route_failed": "Routing with the model failed ({{message}}); the local method decided instead."
+      },
+      "pl": {
+        "proposal_title": "Rozumiem to jako polecenie: {{title}}.",
+        "proposal_element": "Na: {{element}}.",
+        "proposal_plan": "Wykonam: {{plan}}.",
+        "proposal_cost": "Szacunek: {{cost}} (koszt względny, 1 = jedno zwykłe wywołanie modelu), wywołań modelu: {{calls}}, do modelu pójdzie ok. {{bytes}} bajtów.",
+        "proposal_money_known": "Pieniądze: ok. {{low}} do {{high}} {{currency}}, z rozmiaru wejścia i ceny modelu z cennika (szacunek, nie limit).",
+        "proposal_money_unknown": "Pieniądze: nieznane ({{why}}); nie czytaj tego jako za darmo.",
+        "missing_args_settings": " (albo ustaw: {{settings}})",
+        "proposal_effects": "To {{effects}}.",
+        "proposal_confirm": "Zasady każą Cię zapytać o potwierdzenie: {{what}}.",
+        "proposal_ask": "Odpowiedz „tak”, żeby wykonać, albo „nie”, żeby odrzucić.",
+        "proposal_not_runnable": "Nie mogę tego jeszcze wykonać: {{why}}.",
+        "proposal_denied": "Zasady na to nie pozwalają: {{reason}}{{initiator}}.",
+        "proposal_unfit": "To nie pasuje do tego elementu: potrzebuje {{missing}}.",
+        "proposal_missing_args": "Brakuje jeszcze: {{args}}. Podaj to jako /{{action}} z uzupełnionymi wartościami albo powiedz inaczej.",
+        "proposal_error": "Nie udało się tego zaplanować: {{message}}",
+        "proposal_chain": "Potrzebny byłby łańcuch: {{chain}}.",
+        "proposal_alternatives": "Inne odczytania: {{alternatives}}.",
+        "initiator_by": " (ustawił: {{who}})",
+        "effect_reads": "tylko czyta",
+        "effect_writes": "zmienia dane",
+        "effect_sends": "wysyła dane poza to urządzenie",
+        "effect_money": "kosztuje pieniądze",
+        "effect_irreversible": "jest nieodwracalne",
+        "effect_private": "dotyka danych prywatnych",
+        "effect_none": "nie ma skutków ubocznych",
+        "no_element": "tej rozmowie",
+        "result_completed": "Gotowe: {{title}}.",
+        "result_failed": "Nie udało się w kroku {{step}}: {{message}}",
+        "result_denied": "Zasady na to nie pozwalają: {{message}}",
+        "result_rejected": "Odrzucone. Nic nie wykonano.",
+        "result_cancelled": "Anulowano.",
+        "result_waiting": "Czeka na Twoją odpowiedź: {{kind}}.",
+        "result_usage": "Wywołanie modelu wstrzymał strażnik zużycia: przewidywane zużycie jest dużo wyższe niż ostatnia wartość bazowa. Nic nie wysłano. Potwierdź tutaj albo w oknie zużycia.",
+        "result_no_text": "Nie powstał żaden tekst.",
+        "ack_no": "Odrzucone. Nic nie wykonano.",
+        "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna."
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["method", "execution", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
+    "properties": {
+      "method": {
+        "type": "object",
+        "required": ["setting", "active", "presets"],
+        "properties": {
+          "setting": {"type": "string", "minLength": 1},
+          "active": {"type": "string", "minLength": 1},
+          "presets": {"type": "object", "additionalProperties": {"type": "object"}},
+          "model_setting": {"type": "string"},
+          "model_fallback_setting": {"type": "string"}
+        },
+        "additionalProperties": false
+      },
+      "execution": {
+        "type": "object",
+        "required": ["setting", "active", "presets"],
+        "properties": {
+          "setting": {"type": "string", "minLength": 1},
+          "active": {"type": "string", "minLength": 1},
+          "presets": {"type": "object", "additionalProperties": {"type": "object"}}
+        },
+        "additionalProperties": false
+      },
+      "default_language": {"type": "string", "minLength": 1},
+      "message_request_fields": {"type": "array", "items": {"type": "string"}, "description": "A chat request that carries one of these (non-empty) is an explicit chat feature: it is a message and never routed."},
+      "heuristic": {
+        "type": "object",
+        "required": ["fold", "language_hints", "window_tokens", "lead_tokens", "scoring", "explicit", "patterns", "references"],
+        "properties": {
+          "fold": {"type": "object", "additionalProperties": {"type": "string"}},
+          "language_hints": {"type": "object", "description": "Words (folded) that tell the language of an input that has no distinguishing letters; the language of a matched phrase wins over them.", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+          "window_tokens": {"type": "integer", "minimum": 1},
+          "lead_tokens": {"type": "integer", "minimum": 1},
+          "scoring": {
+            "type": "object",
+            "required": ["base", "per_word", "lead_penalty", "min_score"],
+            "properties": {
+              "base": {"type": "number"}, "per_word": {"type": "number"}, "lead_penalty": {"type": "number"}, "min_score": {"type": "number"}
+            },
+            "additionalProperties": false
+          },
+          "explicit": {
+            "type": "object",
+            "required": ["prefixes", "run_verbs", "aliases", "arg_pattern", "element_markers", "default_element"],
+            "properties": {
+              "prefixes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+              "run_verbs": {"type": "array", "items": {"type": "string"}},
+              "aliases": {"type": "object", "additionalProperties": {"type": "string"}},
+              "arg_pattern": {"type": "string", "minLength": 1},
+              "element_markers": {"type": "array", "items": {"type": "string"}},
+              "default_element": {"type": "string", "enum": ["current_conversation", "last_message", ""]}
+            },
+            "additionalProperties": false
+          },
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "action", "regex", "args"],
+              "properties": {
+                "id": {"type": "string", "minLength": 1},
+                "action": {"type": "string", "minLength": 1},
+                "regex": {"type": "string", "minLength": 1},
+                "args": {"type": "array", "items": {"type": "string"}},
+                "element_arg": {"type": "string"},
+                "requires_element": {"type": "boolean"}
+              },
+              "additionalProperties": false
+            }
+          },
+          "references": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["id", "words", "resolve"],
+              "properties": {
+                "id": {"type": "string", "minLength": 1},
+                "words": {"type": "array", "items": {"type": "string"}},
+                "resolve": {"type": "string", "enum": ["current_conversation", "last_message"]}
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "confirmation": {
+        "type": "object",
+        "required": ["yes", "no"],
+        "properties": {
+          "yes": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+          "no": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
+        },
+        "additionalProperties": false
+      },
+      "model": {
+        "type": "object",
+        "required": ["system", "catalogue_line", "user", "parameters", "title", "timeout_ms", "min_confidence"],
+        "properties": {
+          "system": {"type": "string"},
+          "catalogue_line": {"type": "string"},
+          "user": {"type": "string"},
+          "parameters": {"type": "object"},
+          "title": {"type": "string"},
+          "timeout_ms": {"type": "integer", "minimum": 1},
+          "min_confidence": {"type": "number"}
+        },
+        "additionalProperties": false
+      },
+      "texts": {"type": "object", "description": "Per language: the sentences of proposals and results ({{name}} placeholders).", "additionalProperties": {"type": "object", "additionalProperties": {"type": "string"}}}
+    },
+    "additionalProperties": false
+  }
+}

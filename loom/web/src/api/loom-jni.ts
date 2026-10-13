@@ -14,7 +14,7 @@
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import type { LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { ActionsApi, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import type {
   ChatChunk,
   ChatRequest,
@@ -74,6 +74,14 @@ export class LoomJniApi implements LoomApi {
     catalogPreview: (unit_id) => this.callAsync("catalog_preview", { unit_id }),
     catalogOverride: (override) => this.callAsync("catalog_override", { override }),
     catalogImport: (options) => this.background("catalog_import", { options }),
+  };
+  // R54: running actions through the one entry point (loom_invoke, ports actions and chat).
+  readonly actions: ActionsApi = {
+    run: (request) => this.callAsync("invoke", { port: "actions", action: "run", request }),
+    confirm: (answer) => this.callAsync("invoke", { port: "actions", action: "confirm", request: answer }),
+    cancel: (request) => this.callAsync("invoke", { port: "actions", action: "cancel", request }),
+    status: (request) => this.callAsync("invoke", { port: "actions", action: "status", request }),
+    route: (request) => this.callAsync("invoke", { port: "chat", action: "route", request }),
   };
   private bridge(): NativeBridge {
     if (!window.LoomBridge) throw new Error("LoomBridge is not installed (not running inside the Android shell)");

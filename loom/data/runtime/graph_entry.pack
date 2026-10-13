@@ -1266,6 +1266,12 @@
             "pl": "Rejestr zużycia"
           }
         },
+        "action_run": {
+          "label": {
+            "en": "Action run",
+            "pl": "Przebieg akcji"
+          }
+        },
         "application": {
           "label": {
             "en": "Application (self-model)",
@@ -1632,6 +1638,24 @@
               "pl": "Jak wiernie postać niesie treść: 1 = nic nie zgubiono, 0 = nic nie zachowano. Co zachowano, zgubiono lub dodano (np. styl) trafia do kluczy metadanych krawędzi kept, lost, added."
             }
           }
+        },
+        "derived_from": {
+          "label": {
+            "en": "Derived from",
+            "pl": "Pochodzi z"
+          },
+          "from": "form",
+          "to": "any",
+          "description": "A result was made from this source element (a message, a conversation, a node, a stored file). Written for every result of an action run that has a source element."
+        },
+        "produced_by": {
+          "label": {
+            "en": "Produced by",
+            "pl": "Wytworzone przez"
+          },
+          "from": "form",
+          "to": "action_run",
+          "description": "The action run that made a result; the run node carries the action id, run id, step, model / adapter and usage receipts (references only, never secrets or bytes)."
         }
       },
       "packages": {
@@ -2129,9 +2153,14 @@
           "GET /api/tasks",
           "GET /api/version",
           "PATCH /api/config",
+          "POST /api/actions/cancel",
+          "POST /api/actions/confirm",
           "POST /api/actions/explain",
           "POST /api/actions/for",
+          "POST /api/actions/preview",
           "POST /api/actions/propose_chain",
+          "POST /api/actions/run",
+          "POST /api/actions/status",
           "POST /api/analysis",
           "POST /api/archive/cancel",
           "POST /api/archive/run",
@@ -2142,6 +2171,7 @@
           "POST /api/catalog/select",
           "POST /api/chat",
           "POST /api/chat/cancel",
+          "POST /api/chat/route",
           "POST /api/chat/usage-preview",
           "POST /api/context/select",
           "POST /api/conversations",
@@ -2239,6 +2269,10 @@
           "PATCH /api/conversations/:id",
           "PATCH /api/memory/:id",
           "PATCH /api/messages/:id",
+          "POST /api/actions/cancel",
+          "POST /api/actions/confirm",
+          "POST /api/actions/run",
+          "POST /api/actions/status",
           "POST /api/analysis",
           "POST /api/auth/login",
           "POST /api/auth/logout",
@@ -2251,6 +2285,7 @@
           "POST /api/catalog/select",
           "POST /api/chat",
           "POST /api/chat/cancel",
+          "POST /api/chat/route",
           "POST /api/context/build",
           "POST /api/context/select",
           "POST /api/conversations",

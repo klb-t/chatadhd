@@ -477,7 +477,13 @@ LOOM_API const char* loom_github_sync(LoomContext* ctx, const char* request_json
  * action, description, inputs with field descriptions/defaults/edit rules, required traits, effects,
  * HTTP verb and path of every action); port "actions" actions "for" | "explain" | "propose_chain"
  * (which actions fit an element, why, and chains of actions that would make one fit; proposals only,
- * nothing is executed; see loom/action_rules.h). request_json: JSON object of the action's input, may be
+ * nothing is executed; see loom/action_rules.h; the element may be a bare id: m_..., c_..., a blob hash,
+ * a settings key); port "actions" actions "run" | "confirm" | "cancel" | "status" | "preview" (run an
+ * action or a chain through the interpreter: every action goes through the rules, a confirmation or the
+ * usage guard's x10 hold pauses the run with a receipt that the answer must carry; see
+ * loom/action_runner.h); port "chat" action "route" (is a chat input a message or a command, and for a
+ * command which action on which element with what plan; nothing is stored or executed; see
+ * loom/chat_route.h). request_json: JSON object of the action's input, may be
  * NULL/"" = {}. Returns caller-freed JSON like every other call; never throws. */
 LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char* action,
                                  const char* request_json);

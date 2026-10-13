@@ -27,7 +27,13 @@
 #include "loom/result.h"
 #include "loom/util/json.h"
 
+namespace loom {
+class Config;
+}
+
 namespace loom::actions {
+
+struct ElementSources;  // action_element.h: what a bare id is resolved against
 
 // The element an action is applied to, as far as the engine needs to know it.
 struct Element {
@@ -43,6 +49,33 @@ struct Scope {
   std::size_t depth = 0;
   std::string level;
   Json context = Json::object();
+};
+
+// A value that the scope chain resolves (R47): the installation's baseline (data), the user's setting and
+// the rules of dimension `value` (effect set_value, target {kind: setting, key}), the most specific scope
+// winning unless a conflict rule says otherwise. The answer says which scope set the value and why.
+struct Baseline {
+  Baseline(std::string level_, Json value_, std::string source_, int order_ = 0, std::string scope_id_ = {})
+      : level(std::move(level_)), value(std::move(value_)), source(std::move(source_)), order(order_), scope_id(std::move(scope_id_)) {}
+  std::string level;        // level of the chain (or alias) the value belongs to: installation, person ...
+  Json value;               // may be null ("no bound")
+  std::string source;       // where it comes from: "profile:...", "setting:<key>", "preset:<name>"
+  int order = 0;            // among baselines of one level: the larger wins
+  std::string scope_id;     // instance of the level it was set for (a preset a conversation chose), "" = every
+};
+
+struct ScopedValue {
+  Json value = nullptr;
+  bool defined = false;              // some baseline or rule set it
+  std::string scope;                 // level that set it
+  std::string scope_id;              // instance of the level ("" = every instance)
+  std::string source;                // "rule" or the baseline's source
+  std::string rule;                  // id of the deciding rule ("baseline:<level>" for a baseline)
+  std::string initiator;
+  std::string conflict_rule;         // the conflict rule that resolved competing values ("" = none competed)
+  bool asked = false;                // the conflict rule `ask`: the scopes disagree
+  Json considered = Json::array();   // every candidate with its role (decided | overridden | inactive)
+  Json to_json() const;              // {value, scope, scope_id?, source, rule, initiator?, conflict_rule?}
 };
 
 // Outcome of resolving the rules for one (element, action) pair.
@@ -77,6 +110,8 @@ class Engine {
     double weight = 1;
     std::string conflict;
     Json when;
+    Json value;                       // dimension value: the value the rule sets (null is a value: "no bound")
+    bool has_value = false;
     std::size_t order = 0;            // definition order
   };
   // One element with its traits expanded (trait -> where it came from) and class lineage.
@@ -98,6 +133,16 @@ class Engine {
   Result<Element> parse_element(const Json& element) const;
   // Scope: null (the most specific level), a level id, or {level: instance id, ...}.
   Result<Scope> parse_scope(const Json& scope) const;
+
+  // The value of setting `key` in `scope` (R47). Rules of dimension `value` that target the key take part
+  // with the baselines; unknown levels in a baseline are an error, a baseline below the asked scope is inactive.
+  Result<ScopedValue> resolve_value(std::string_view key, const Scope& scope, const std::vector<Baseline>& baselines) const;
+  // The user's settings (config.json) as the `person` baselines see them: a flat {setting key: value} object.
+  // Engine::load reads <data_dir>/config.json once; a caller with a live Config passes its values.
+  void set_user_values(Json values) { user_values_ = std::move(values); }
+  const Json& user_values() const { return user_values_; }
+  // The chain level a name (or alias) denotes ("" when unknown).
+  std::string level_name(std::string_view name) const;
 
   // Gate decision of the rules for (element, action). The action need not be in the catalogue
   // (settings fields use the action "edit").
@@ -127,6 +172,17 @@ class Engine {
   Json issues() const;
 
   const Json& catalogue() const { return actions_; }
+  // True when `id` is a class of the ontology (a bare string that is one stays a class id).
+  bool has_class(std::string_view id) const { return classes_.contains(std::string(id)); }
+  // The decision table entry of a gate decision (allow | confirm | deny): its restrictiveness, 0 = none.
+  int restrictiveness(std::string_view decision) const;
+  // Effect flags, groups and the decision tables are read through the catalogue and Decision; the
+  // executors (action_run.h) additionally need the scope chain, so it is exposed read-only.
+  const Json& decisions() const { return decisions_; }
+  const Json& classes() const { return classes_; }
+  // The traits that `names` (trait ids, class ids, bundles) stand for: a class id brings the traits of
+  // the class and of its parents.
+  std::set<std::string> expand_traits(const std::vector<std::string>& names) const;
 
  private:
   Prepared prepare(const Element& element) const;
@@ -160,12 +216,21 @@ class Engine {
   Json effects_ = Json::object();
   Json aliases_ = Json::object();
   Json extrapolation_ = Json::object();
+  Json user_values_ = Json::object();
   std::vector<Rule> rules_;
   std::vector<Json> rule_issues_;
 };
 
 // loom_invoke port "actions": action "for" | "explain" | "propose_chain" with the request objects
 // described at actions.for / actions.explain / actions.propose_chain in the action catalogue.
+// With `sources`, an element given as a bare id (m_..., c_..., a blob hash, a settings key) is
+// resolved against the stores first (action_element.h); without, only class ids and explicit
+// elements are understood.
 Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request);
+Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
+                    const ElementSources* sources);
+// With the live settings (the person level of scoped values: extrapolation_preset, extrapolation_bounds ...).
+Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
+                    const ElementSources* sources, const Config* config);
 
 }  // namespace loom::actions
