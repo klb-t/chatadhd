@@ -108,17 +108,19 @@ if [ "$DO_BUILD" = 1 ]; then
   log "build serwera (preset release) -> $TMP/build"
   # shellcheck disable=SC2086
   cmake --preset release -S "$SRC/loom" -B "$TMP/build" -G Ninja \
-    -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_TESTS=OFF $CMAKE_EXTRA
+    -DLOOM_BUILD_SERVER=ON -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_TESTS=OFF -DLOOM_WERROR=OFF $CMAKE_EXTRA
   cmake --build "$TMP/build" --target loom-server -j"$(nproc)"
   log "build web"
   # praca na kopii, zeby nie zasmiecac drzewa zrodel
-  mkdir -p "$TMP/web"; cp -a "$SRC/loom/web/." "$TMP/web/"; rm -rf "$TMP/web/dist" "$TMP/web/node_modules"
-  (cd "$TMP/web" && npm ci --no-audit --no-fund && npm run build)
+  # (web importuje ../../data, wiec kopiujemy loom/web i loom/data w tym samym ukladzie)
+  mkdir -p "$TMP/w/web"; cp -a "$SRC/loom/web/." "$TMP/w/web/"; cp -a "$SRC/loom/data" "$TMP/w/data"
+  rm -rf "$TMP/w/web/dist" "$TMP/w/web/node_modules"
+  (cd "$TMP/w/web" && npm ci --no-audit --no-fund && npm run build)
   log "instalacja do $DEST"
   $SUDO mkdir -p "$DEST/bin"
   $SUDO install -m 0755 "$TMP/build/server/loom-server" "$DEST/bin/loom-server" 2>/dev/null \
     || $SUDO install -m 0755 "$(find "$TMP/build" -name loom-server -type f | head -1)" "$DEST/bin/loom-server"
-  $SUDO rm -rf "$DEST/web"; $SUDO cp -a "$TMP/web/dist" "$DEST/web"
+  $SUDO rm -rf "$DEST/web"; $SUDO cp -a "$TMP/w/web/dist" "$DEST/web"
 else
   [ -x "$DEST/bin/loom-server" ] || die "--no-build, a $DEST/bin/loom-server nie istnieje"
 fi
