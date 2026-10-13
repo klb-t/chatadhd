@@ -254,17 +254,25 @@ class EmbeddingTier final : public SearchTierBackend {
 
 // ── Registry ────────────────────────────────────────────────────────────────
 
+namespace {
+AdapterDescriptor<SearchTierBackend, SearchTierContext> tier_entry(std::string name, SearchTierFactory f) {
+  return {std::move(name), "implemented",
+          [f = std::move(f)](const std::string&, const Json&, const SearchTierContext& c)
+              -> Result<std::unique_ptr<SearchTierBackend>> { return f(c); }};
+}
+}  // namespace
+
 SearchTierRegistry::SearchTierRegistry() {
-  entries_.emplace_back("embedding", [](const SearchTierContext& c) -> std::unique_ptr<SearchTierBackend> {
+  reg_.add(tier_entry("embedding", [](const SearchTierContext& c) -> std::unique_ptr<SearchTierBackend> {
     if (!c.embedder) return nullptr;
     return std::make_unique<EmbeddingTier>(c.embedder);
-  });
-  entries_.emplace_back("tfidf", [](const SearchTierContext& c) -> std::unique_ptr<SearchTierBackend> {
+  }));
+  reg_.add(tier_entry("tfidf", [](const SearchTierContext& c) -> std::unique_ptr<SearchTierBackend> {
     return std::make_unique<TfIdfTier>(c.settings);
-  });
-  entries_.emplace_back("keyword", [](const SearchTierContext& c) -> std::unique_ptr<SearchTierBackend> {
+  }));
+  reg_.add(tier_entry("keyword", [](const SearchTierContext& c) -> std::unique_ptr<SearchTierBackend> {
     return std::make_unique<KeywordTier>(c.settings);
-  });
+  }));
 }
 
 SearchTierRegistry& SearchTierRegistry::instance() {
@@ -274,33 +282,28 @@ SearchTierRegistry& SearchTierRegistry::instance() {
 
 void SearchTierRegistry::add(std::string name, SearchTierFactory factory) {
   std::lock_guard lk(mu_);
-  for (auto& e : entries_)
-    if (e.first == name) { e.second = std::move(factory); return; }
-  entries_.emplace_back(std::move(name), std::move(factory));
+  reg_.add(tier_entry(std::move(name), std::move(factory)));
 }
 
 std::unique_ptr<SearchTierBackend> SearchTierRegistry::create(std::string_view name, const SearchTierContext& ctx) const {
-  SearchTierFactory f;
+  AdapterDescriptor<SearchTierBackend, SearchTierContext>::Factory f;
   {
     std::lock_guard lk(mu_);
-    for (const auto& e : entries_)
-      if (e.first == name) { f = e.second; break; }
+    if (const auto* d = reg_.find(name)) f = d->factory;
   }
-  return f ? f(ctx) : nullptr;
+  if (!f) return nullptr;
+  auto made = f(std::string(name), Json::object(), ctx);
+  return made ? std::move(*made) : nullptr;
 }
 
 bool SearchTierRegistry::contains(std::string_view name) const {
   std::lock_guard lk(mu_);
-  for (const auto& e : entries_)
-    if (e.first == name) return true;
-  return false;
+  return reg_.contains(name);
 }
 
 std::vector<std::string> SearchTierRegistry::names() const {
   std::lock_guard lk(mu_);
-  std::vector<std::string> out;
-  for (const auto& e : entries_) out.push_back(e.first);
-  return out;
+  return reg_.names();
 }
 
 Json SelectorHit::to_json() const { return Json{{"id", id}, {"text", text}, {"score", score}}; }

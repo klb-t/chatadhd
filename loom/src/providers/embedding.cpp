@@ -14,11 +14,10 @@
 namespace loom::providers {
 namespace {
 
-// The adapter family the manifest names for embeddings (data); "openai" is the
-// shorthand of the OpenAI-compatible wire shape.
+// The adapter family the manifest names for embeddings (data); the registry
+// resolves the family's shorthand and the default when the manifest names none.
 std::string adapter_family(const ProviderManifest& manifest) {
-  const auto named = json::get_string(manifest.metadata, "embedding_adapter", "openai");
-  return named == "openai" ? "openai_embeddings" : named;
+  return llm::adapter_family_for("embedding", json::get_string(manifest.metadata, "embedding_adapter", ""));
 }
 
 Result<ProviderManifest> manifest_for(const ProviderRegistry& registry,

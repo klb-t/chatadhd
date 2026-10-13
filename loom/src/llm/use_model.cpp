@@ -144,6 +144,7 @@ Result<Route> resolve_route(const Services& services, const RouteSelector& selec
   r.base_url = rstrip_slash(r.base_url);
   r.endpoint = selector.endpoint;
   r.auth_secret = selector.secret.empty() ? m.auth_secret : selector.secret;
+  const bool given_credential = !selector.credential.empty();
   r.auth_scheme = m.auth_scheme;
   r.content_type_header = selector.content_type_header;
   r.metadata = m.metadata;
@@ -158,7 +159,9 @@ Result<Route> resolve_route(const Services& services, const RouteSelector& selec
   if (!make_adapter(r.adapter)) return Error(Errc::NotFound, "unknown model adapter '" + r.adapter + "'");
   if (r.base_url.empty() && r.endpoint.find("://") == std::string::npos)
     return Error(Errc::Unavailable, "no address configured for model provider '" + r.provider_id + "'");
-  if (!r.auth_secret.empty()) {
+  if (given_credential) {
+    r.credential = selector.credential;
+  } else if (!r.auth_secret.empty()) {
     r.credential = services.secrets.get_string(r.auth_secret);
     if (r.credential.empty() && selector.require_credential)
       return Error(Errc::Auth, "no credential '" + r.auth_secret + "' stored for model provider '" + r.provider_id + "'");
@@ -215,6 +218,9 @@ Result<net::HttpRequest> describe_request(const Services& services, const RouteS
 Status apply_auth(const Route& route, net::HttpRequest& request) {
   const std::string& scheme = route.auth_scheme;
   if (scheme.empty() || scheme == "none") return ok_status();
+  // "form:<field>": the key travels in the request body, which the adapter of the
+  // family composes (it is the only code that knows the form).
+  if (scheme.rfind("form:", 0) == 0) return ok_status();
   // A route resolved without requiring its credential (an analysis preview to
   // a local endpoint) sends no authentication rather than an empty one.
   if (route.credential.empty()) return ok_status();
@@ -497,7 +503,8 @@ void finalize_provenance(VariantResult& r, const PreparedCall& call) {
     }
     p["outputs"] = std::move(outs);
   }
-  if (r.hold.is_object() && r.hold["decision"].is_object())
+  if (!r.operation_id.empty()) p["operation_id"] = r.operation_id;
+  else if (r.hold.is_object() && r.hold["decision"].is_object())
     p["operation_id"] = r.hold["decision"].value("operation_id", Json(nullptr));
   p["recorded_at"] = timeutil::utc_now_iso();
   r.provenance = std::move(p);
@@ -535,6 +542,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
       finalize_provenance(r, call);
       return r;
     }
+    if (admitted->decision.is_object()) r.operation_id = json::get_string(admitted->decision, "operation_id");
     if (!admitted->dispatch) {
       r.state = State::Held;
       r.hold = Json{{"status", admitted->status}, {"decision", admitted->decision}, {"decisions", admitted->decisions}};

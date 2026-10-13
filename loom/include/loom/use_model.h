@@ -130,6 +130,7 @@ struct RouteSelector {
   std::string provider;      // manifest id; "" = config "llm_provider", else "openrouter"
   std::string base_url;      // "" = the provider's own (for the settings provider: config key)
   std::string secret;        // "" = the manifest's auth_secret
+  std::string credential;    // "" = read `secret` from the secrets; else this exact value (a key the caller already holds)
   std::string endpoint;      // "" = adapter default path; a path or an absolute URL
   std::string adapter;       // "" = manifest metadata "adapter", else openai_chat
   std::optional<net::Headers> headers;  // replaces the manifest's default headers when set
@@ -314,6 +315,7 @@ struct VariantResult {
   std::string body;                           // buffered or captured body; the error body on HttpError
   std::size_t received_bytes = 0;
   bool response_limited = false;
+  std::string operation_id;                   // usage receipt of the admission (held or dispatched); "" = unguarded
   Json hold = nullptr;                        // Held: {status, decision, decisions}
   Json provenance = Json::object();
   bool ok() const noexcept { return state == State::Ok; }
@@ -412,10 +414,17 @@ class Adapter {
 
 // family -> factory.  Built-ins are registered on first use; a new family is
 // one register_adapter() call and no edit to any call site.
+// `meta` is data about the family (shown, never interpreted by the registry);
+// "shorthand" names the spelling a manifest may use for the family's default
+// output kind (see adapter_family_for).
 using AdapterFactory = std::function<std::unique_ptr<Adapter>()>;
-void register_adapter(std::string family, AdapterFactory factory);
+void register_adapter(std::string family, AdapterFactory factory, Json meta = Json::object());
 std::unique_ptr<Adapter> make_adapter(std::string_view family);   // nullptr when unknown
 std::vector<std::string> adapter_families();
+// The family a manifest names for producing `output_kind` (embedding, ...): the
+// named family itself, or - when `named` is empty or the registered shorthand of a
+// family that produces that kind - that family.  "" when nothing produces the kind.
+std::string adapter_family_for(std::string_view output_kind, std::string_view named);
 // The default path of a family's operation ("" for an unknown family).
 std::string default_endpoint(std::string_view family, Operation op, const Json& route_metadata = Json::object());
 // The URL a route's embeddings call goes to, without authentication: what the

@@ -37,6 +37,7 @@
 #include <thread>
 #include <vector>
 
+#include "loom/adapter_registry.h"
 #include "loom/result.h"
 #include "loom/util/json.h"
 
@@ -51,6 +52,43 @@ namespace net {
 class HttpTransport;
 }
 
+namespace llm {
+struct Services;
+}
+
+struct BatchItem {
+  std::string msg_id;
+  std::string prompt;
+};
+
+// What a batch backend may use of the API that owns it.
+struct BatchHost {
+  const Config& cfg;
+  const Secrets& secrets;
+  Database& db;
+  net::HttpTransport& http;
+  std::mutex& mu;                   // guards `batches`
+  Json& batches;                    // id -> record ({"type": backend name, "status", ...})
+  std::vector<std::thread>& workers;
+};
+struct BatchHostRef {  // the registry's environment type (cheap to copy)
+  BatchHost* host = nullptr;
+};
+
+// One way to run a batch of analysis requests.  The registry key is the record's
+// "type"; a backend is chosen by the address (serves) and later found again by the
+// type stored in its record.
+class BatchBackend {
+ public:
+  virtual ~BatchBackend() = default;
+  virtual bool serves(const llm::Services& services, const std::string& base_url) = 0;
+  virtual Result<std::optional<std::string>> submit(const llm::Services& services, const std::vector<BatchItem>& items,
+                                                    const std::string& base_url, const std::string& model) = 0;
+  virtual Json check(const llm::Services& services, const Json& info, std::string_view batch_id) = 0;
+  virtual Result<int> collect(const llm::Services& services, const Json& info, std::string_view batch_id) = 0;
+};
+using BatchBackendRegistry = AdapterRegistry<BatchBackend, BatchHostRef>;
+
 class SemanticBatchAPI {
  public:
   SemanticBatchAPI(const Config& cfg, const Secrets& secrets, Database& db, net::HttpTransport& http,
@@ -64,6 +102,9 @@ class SemanticBatchAPI {
   Result<int> batch_regex(int limit = 5000);
   static std::optional<Json> parse_analysis(std::string_view raw);
   Json active_batches() const;
+  // Registration order is the order backends are asked to serve an address; entries
+  // whose meta has "catch_all": true (the built-in "concurrent") are asked last.
+  static BatchBackendRegistry& backends();
 
  private:
   const Config& cfg_;
@@ -75,6 +116,7 @@ class SemanticBatchAPI {
   mutable std::mutex mu_;
   Json batches_ = Json::object();  // id -> info
   std::vector<std::thread> workers_;
+  BatchHost host_;
 };
 
 }  // namespace loom

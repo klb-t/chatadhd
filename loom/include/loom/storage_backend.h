@@ -22,6 +22,7 @@
 #include <string_view>
 #include <vector>
 
+#include "loom/adapter_registry.h"
 #include "loom/result.h"
 #include "loom/util/json.h"
 
@@ -71,23 +72,16 @@ struct BackendEnv {
 using BackendFactory = std::function<Result<std::unique_ptr<StorageBackend>>(
     const std::string& id, const Json& cfg, const BackendEnv& env)>;
 
-struct KindDescriptor {
-  std::string kind;
-  std::string status;  // "implemented" | "planned"
-  BackendFactory factory;  // empty for planned kinds
-};
+// Storage is the first user of AdapterRegistry<Port>: the names below are the
+// thin aliases that keep the storage vocabulary (kind, KindDescriptor) intact.
+// A descriptor is {kind, status ("implemented" | "planned"), factory}.
+using KindDescriptor = AdapterDescriptor<StorageBackend, BackendEnv>;
 
-class BackendRegistry {
+class BackendRegistry : public AdapterRegistry<StorageBackend, BackendEnv> {
  public:
+  BackendRegistry() : AdapterRegistry("kind", "storage backend kind") {}
   static const BackendRegistry& builtin();  // local, s3, webdav, gdrive
-  void add(KindDescriptor d);
-  const KindDescriptor* find(std::string_view kind) const;
-  std::vector<std::string> kinds() const;
-  Result<std::unique_ptr<StorageBackend>> create(const std::string& id, const Json& cfg,
-                                                 const BackendEnv& env) const;
-
- private:
-  std::map<std::string, KindDescriptor, std::less<>> kinds_;
+  std::vector<std::string> kinds() const { return names(); }
 };
 
 // ── Placement + service ─────────────────────────────────────────────
