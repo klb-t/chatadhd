@@ -317,6 +317,11 @@ Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście 
   `a047df88`: brakowało trzech paczek, hasze generatora/wyjścia się nie zgadzały); strażnik wylicza teraz `verified_generated_files: 1`.
 - Cofnięcie: przywróć poprzednie commity miejsc wywołania (każdy osobno); `use_model` można zostawić – nic innego go nie woła.
   Usunięcie `actions.pack` (i wpisu w `.inc` generatorem) wyłącza tylko sprawdzanie nazw akcji – bez `action` w żądaniu nic się nie zmienia.
+- **Koszt bramki dla wołań masowych (zmierzone, do decyzji):** każde wołanie przez wspólną bramkę dopisuje do księgi
+  `usage-policy.sqlite` ok. 9,5 KB i w buildzie debug trwa ok. 175 ms (200 wołań = 1,9 MB, 35 s). Dla czatu to nic, ale dla
+  `semantic.analyse` i `batch.chat` (jedno wołanie na wiadomość) daje ok. 1 GB księgi na 100 tys. wiadomości. Wybór: zostawić (jak
+  teraz, zgodnie z „każde wołanie przechodzi przez bramkę”), bramkować całe przebiegi jednym wpisem (tak jak batch i ponowne wysłanie
+  workera), albo współdzielić otwarty uchwyt księgi (zmiana w `ModelUsageGuard`). Nie podjąłem tej decyzji za Ciebie.
 - Otwarte (nie zmigrowane): analiza kontraktowa `extract/semantic.cpp` + `server/src/analysis-ui-routes.h` (żądanie z kontraktu
   promptu, własna księga), postprocess odpowiedzi grafowej (`graph_reply.cpp`, własny builder z manifestu), `embedding.cpp`
   (to nie wywołanie modelu czatu), `ModelRegistry::update_from_api` (`/models`); ekran potwierdzenia ×10 dla analizy/batcha;
