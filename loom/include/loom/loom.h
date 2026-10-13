@@ -459,9 +459,19 @@ LOOM_API const char* loom_media_status(LoomContext* ctx);
 /* request_json: {"action":"test|status|pull|push|sync", "repo", "branch"?,
  * "local_path"?, "direction"?, "files"?:[paths]} (token from secrets
  * github_token) -> action-specific result JSON.
- * The same entry carries the storage plugins: "action":"storage.status|probe|kinds|placement|
- * locate|copy|move|backup" (see loom/storage_command.h); credentials are never returned. */
+ * GitHub only. DEPRECATED alias: "storage.*" actions are still accepted and forwarded to
+ * loom_invoke("storage", ...); new callers use loom_invoke. */
 LOOM_API const char* loom_github_sync(LoomContext* ctx, const char* request_json);
+
+/* ── Perform action ────────────────────────────────────────────────── */
+
+/* One entry point for actions: port "storage" (action status|probe|kinds|placement|locate|copy|move|
+ * backup, see loom/storage_command.h; credentials are never returned), port "github" (same as
+ * loom_github_sync), port "core" action "actions" (the action table: port, action, input notes,
+ * HTTP verb and path of every action). request_json: JSON object of the action's input, may be
+ * NULL/"" = {}. Returns caller-freed JSON like every other call; never throws. */
+LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char* action,
+                                 const char* request_json);
 
 #ifdef __cplusplus
 } /* extern "C" */

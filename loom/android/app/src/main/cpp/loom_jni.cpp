@@ -388,7 +388,7 @@ Json positional_args(const std::string& method, const Json& args) {
       {"crypto_setup", {"password"}}, {"crypto_unlock", {"password"}},
       {"crypto_encrypt", {"plaintext"}}, {"crypto_decrypt", {"blob"}},
       {"transcribe", {"path", "options"}}, {"ocr", {"path", "options"}},
-      {"github_sync", {"request"}}, {"get_logs", {"max_lines"}},
+      {"github_sync", {"request"}}, {"invoke", {"port", "action", "request"}}, {"get_logs", {"max_lines"}},
       {"kb_policy", {"name"}}, {"kb_runs", {"limit"}}, {"kb_query", {"query"}},
       {"kb_judge", {"judgement"}}, {"knowledge_run", {"config"}},
       {"knowledge_status", {"task_id"}}, {"catalog_scan", {"config"}},
@@ -693,6 +693,14 @@ const std::unordered_map<std::string, Fn>& dispatch_table() {
     table["github_sync"] = [](const Json& a) {
       std::string r;
       return take(loom_github_sync(g_ctx, a_cstr(a, 0, r)));
+    };
+    // -- perform action (storage / github / core ports) --
+    table["invoke"] = [](const Json& a) {
+      std::string p, ac, r;
+      const char* pc = a_cstr(a, 0, p);
+      const char* ac_c = a_cstr(a, 1, ac);
+      const char* rc = a_cstr(a, 2, r);
+      return take(loom_invoke(g_ctx, pc, ac_c, rc));
     };
     return table;
   }();
