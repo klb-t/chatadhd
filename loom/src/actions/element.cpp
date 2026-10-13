@@ -136,8 +136,67 @@ Result<Json> ElementResolver::resolve_setting(const ElementSources& sources, std
   return Json(nullptr);
 }
 
+// A device by its id (device:<entry or instance>): the entries of graph_entry /devices, with `instances` expanded from the profile they
+// name (the storages of storage_security ...). The element is its class (the traits come from classes.pack) with the availability per platform
+// as attributes; nothing is touched, descriptions only.
+Result<Json> ElementResolver::resolve_device(const ElementSources& sources, const Form& form, std::string_view raw_id) const {
+  const std::string key = std::string(raw_id).substr(form.prefix.size());
+  LOOM_TRY_ASSIGN(auto entry, RuntimeProfile::load("graph_entry", sources.data_dir));
+  const Json* devices = json::find(entry.values(), "devices");
+  if (!devices || !devices->is_object()) return Error(Errc::NotFound, "this installation describes no devices");
+  auto label_of = [](const Json& def, const std::string& fallback) {
+    const Json* l = json::find(def, "label");
+    return l && l->is_object() ? json::get_string(*l, "en", fallback) : fallback;
+  };
+  for (auto it = devices->begin(); it != devices->end(); ++it) {
+    const Json& def = it.value();
+    if (!def.is_object() || json::get_bool(def, "hidden", false)) continue;
+    const std::string cls = json::get_string(def, "class", it.key());
+    if (it.key() == key && !json::find(def, "instances")) {
+      Json attrs{{"device", it.key()}, {"availability", def.value("availability", Json::object())}};
+      return element_object(std::string(raw_id), cls, Json::array(), attrs, form.source, label_of(def, it.key()));
+    }
+    const Json* inst = json::find(def, "instances");
+    if (!inst || !inst->is_object()) continue;
+    const Json* from = json::find(*inst, "from");
+    if (!from || !from->is_object()) continue;
+    auto source = RuntimeProfile::load(json::get_string(*from, "domain"), sources.data_dir);
+    if (!source) continue;
+    const Json* members = &source->values();
+    std::string pointer = json::get_string(*from, "pointer");
+    for (std::size_t pos = 0; members && pos < pointer.size();) {  // an RFC 6901 pointer into the profile
+      const std::size_t next = pointer.find('/', pos + 1);
+      std::string token = pointer.substr(pos + 1, next == std::string::npos ? std::string::npos : next - pos - 1);
+      members = members->is_object() ? json::find(*members, token) : nullptr;
+      pos = next == std::string::npos ? pointer.size() : next;
+    }
+    const Json* one = members && members->is_object() ? json::find(*members, key) : nullptr;
+    if (!one) continue;
+    // availability: the instance's own list of systems, mapped to the platforms by the entry's map
+    Json availability = Json::object();
+    const Json map = inst->value("platform_map", Json::object());
+    std::vector<std::string> systems;
+    if (const Json* have = json::find(*one, json::get_string(*inst, "availability_key")); have && have->is_array())
+      for (const auto& x : *have)
+        if (x.is_string()) systems.push_back(x.get<std::string>());
+    for (auto p = map.begin(); p != map.end(); ++p) {
+      bool any = false;
+      if (p.value().is_array())
+        for (const auto& os : p.value())
+          if (os.is_string() && std::find(systems.begin(), systems.end(), os.get<std::string>()) != systems.end()) any = true;
+      availability[p.key()] = any ? "available" : "unavailable";
+    }
+    Json attrs{{"device", it.key()}, {"instance", key}, {"availability", availability}};
+    for (const char* k : {"capabilities", "path"})
+      if (const Json* v = json::find(*one, k)) attrs[k] = *v;
+    return element_object(std::string(raw_id), json::get_string(*inst, "class", cls), Json::array(), attrs, form.source, label_of(*one, key));
+  }
+  return Error(Errc::NotFound, "no device '" + key + "'");
+}
+
 Result<Json> ElementResolver::resolve_form(const ElementSources& sources, const Form& form, std::string_view raw_id) const {
   std::string id(raw_id);
+  if (form.source == "device") return resolve_device(sources, form, raw_id);
   if (form.source == "blob") {
     std::string hash = id;
     if (!form.prefix.empty()) hash = id.substr(form.prefix.size());
@@ -291,7 +350,7 @@ Result<std::vector<llm::Part>> ElementResolver::content_parts(const ElementSourc
     p.node_id = node;
     return p;
   };
-  if (source.empty()) return parts;
+  if (source.empty() || source == "device") return parts;  // a device has no content of its own
   if (!sources.db && source != "blob") return Error(Errc::Unavailable, "content of '" + id + "' needs a database");
   if (source == "message" || source == "version_group") {
     LOOM_TRY_ASSIGN(auto m, sources.db->get_msg(id));

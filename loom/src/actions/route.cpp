@@ -435,7 +435,10 @@ Json find_reference(const Data& d, const std::string& text, const std::vector<st
   for (const auto& tok : folded_tokens)
     for (const auto& r : refs)
       for (const auto& w : strings_of(json::find(r, "words")))
-        if (word_matches(tok, fold(w, d.cfg.at("heuristic").at("fold")))) return Json{{"resolve", json::get_string(r, "resolve")}};
+        if (word_matches(tok, fold(w, d.cfg.at("heuristic").at("fold")))) {
+          if (json::get_string(r, "resolve") == "element") return Json{{"id", json::get_string(r, "element")}};  // a device, an element by its id
+          return Json{{"resolve", json::get_string(r, "resolve")}};
+        }
   return Json(nullptr);
 }
 

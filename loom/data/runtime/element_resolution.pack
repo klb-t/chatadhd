@@ -11,7 +11,8 @@
       {"id": "node", "prefix": "n_", "source": "node"},
       {"id": "link", "prefix": "l_", "source": "link", "class": "edge"},
       {"id": "blob_node", "prefix": "blob:", "source": "blob"},
-      {"id": "blob", "hex_length": 64, "source": "blob"}
+      {"id": "blob", "hex_length": 64, "source": "blob"},
+      {"id": "device", "prefix": "device:", "source": "device"}
     ],
     "setting": {"class": "settings_field", "source": "setting"},
     "node_kind_classes": {"blob": "file", "message": "message", "text_form": "text_form", "image_form": "image_form", "audio_form": "audio_form", "video_form": "video_form", "content": "content", "action_run": "action_run", "proposal": "emergent_proposal"},
@@ -44,7 +45,7 @@
             "id": {"type": "string", "minLength": 1},
             "prefix": {"type": "string"},
             "hex_length": {"type": "integer", "minimum": 1},
-            "source": {"type": "string", "enum": ["message", "conversation", "version_group", "node", "link", "blob"]},
+            "source": {"type": "string", "enum": ["message", "conversation", "version_group", "node", "link", "blob", "device"]},
             "class": {"type": "string"}
           },
           "additionalProperties": false

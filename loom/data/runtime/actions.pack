@@ -3853,6 +3853,602 @@
           "path": "/api/groups/remove"
         }
       },
+      "device.record_audio": {
+        "id": "device.record_audio",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Record audio",
+        "description": "Record sound with a device that captures audio (a microphone). The recording becomes an audio form; transcribe turns it into text.",
+        "labels": {
+          "pl": "Nagraj dźwięk"
+        },
+        "inputs": [],
+        "outputs": [
+          "audio"
+        ],
+        "requires": [
+          "captures_audio"
+        ],
+        "produces": [
+          "has_audio"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "record audio",
+            "record sound",
+            "record my voice",
+            "start recording"
+          ],
+          "pl": [
+            "nagraj dźwięk",
+            "nagraj dzwiek",
+            "nagraj głos",
+            "nagraj glos",
+            "nagraj audio"
+          ]
+        },
+        "params": [
+          {
+            "name": "seconds",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How long to record (default: until stopped).",
+              "pl": "Jak długo nagrywać (domyślnie: do zatrzymania)."
+            }
+          }
+        ]
+      },
+      "device.capture_image": {
+        "id": "device.capture_image",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Take a photo",
+        "description": "Take a still picture with a device that captures images (a camera). The picture becomes an image form; ocr and describe_image read it.",
+        "labels": {
+          "pl": "Zrób zdjęcie"
+        },
+        "inputs": [],
+        "outputs": [
+          "image"
+        ],
+        "requires": [
+          "captures_image"
+        ],
+        "produces": [
+          "has_image"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "take a photo",
+            "take a picture",
+            "take a snapshot",
+            "capture an image"
+          ],
+          "pl": [
+            "zrób zdjęcie",
+            "zrob zdjecie",
+            "zrób fotkę",
+            "zrób fotografię"
+          ]
+        }
+      },
+      "device.capture_video": {
+        "id": "device.capture_video",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Record video",
+        "description": "Record video with a device that captures video (a camera).",
+        "labels": {
+          "pl": "Nagraj film"
+        },
+        "inputs": [],
+        "outputs": [
+          "video"
+        ],
+        "requires": [
+          "captures_video"
+        ],
+        "produces": [
+          "has_video"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "record video",
+            "record a video",
+            "film this"
+          ],
+          "pl": [
+            "nagraj film",
+            "nagraj wideo"
+          ]
+        },
+        "params": [
+          {
+            "name": "seconds",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How long to record (default: until stopped).",
+              "pl": "Jak długo nagrywać (domyślnie: do zatrzymania)."
+            }
+          }
+        ]
+      },
+      "device.play_audio": {
+        "id": "device.play_audio",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Play audio",
+        "description": "Play a recording on a device that plays audio (a speaker). Name the recording in the argument audio.",
+        "labels": {
+          "pl": "Odtwórz dźwięk"
+        },
+        "inputs": [
+          "audio"
+        ],
+        "outputs": [],
+        "requires": [
+          "plays_audio"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "play audio",
+            "play sound",
+            "play the recording"
+          ],
+          "pl": [
+            "odtwórz*",
+            "odtworz*",
+            "odegraj*"
+          ]
+        },
+        "params": [
+          {
+            "name": "audio",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the audio element (a blob hash or a node) to play.",
+              "pl": "Id elementu audio (skrót bloba albo węzeł), który odtworzyć."
+            }
+          }
+        ]
+      },
+      "device.display": {
+        "id": "device.display",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Show on the screen",
+        "description": "Show a text or an image on a device that displays (the screen; on the command line, the terminal).",
+        "labels": {
+          "pl": "Pokaż na ekranie"
+        },
+        "inputs": [
+          "text",
+          "image"
+        ],
+        "outputs": [],
+        "requires": [
+          "displays_visual"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "show on screen",
+            "display on screen"
+          ],
+          "pl": [
+            "wyświetl*",
+            "wyswietl*",
+            "pokaż na ekranie",
+            "pokaz na ekranie"
+          ]
+        },
+        "params": [
+          {
+            "name": "content",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the element to show.",
+              "pl": "Id elementu do pokazania."
+            }
+          }
+        ]
+      },
+      "device.clipboard_write": {
+        "id": "device.clipboard_write",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Copy to the clipboard",
+        "description": "Put a text on the clipboard.",
+        "labels": {
+          "pl": "Skopiuj do schowka"
+        },
+        "inputs": [
+          "text"
+        ],
+        "outputs": [],
+        "requires": [
+          "holds_clipboard"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "copy to clipboard",
+            "copy to the clipboard",
+            "put on the clipboard"
+          ],
+          "pl": [
+            "skopiuj do schowka",
+            "wrzuć do schowka",
+            "wrzuc do schowka"
+          ]
+        },
+        "params": [
+          {
+            "name": "content",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the element whose text to copy.",
+              "pl": "Id elementu, którego tekst skopiować."
+            }
+          }
+        ]
+      },
+      "device.clipboard_read": {
+        "id": "device.clipboard_read",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Read the clipboard",
+        "description": "Read what is on the clipboard as a text.",
+        "labels": {
+          "pl": "Odczytaj schowek"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "holds_clipboard"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "paste from clipboard",
+            "read the clipboard",
+            "paste the clipboard"
+          ],
+          "pl": [
+            "wklej ze schowka",
+            "odczytaj schowek"
+          ]
+        }
+      },
+      "device.notify": {
+        "id": "device.notify",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Notify",
+        "description": "Raise a notification on a device that notifies (system notifications; on the command line, a line and the bell).",
+        "labels": {
+          "pl": "Powiadom"
+        },
+        "inputs": [
+          "text"
+        ],
+        "outputs": [],
+        "requires": [
+          "notifies"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "notify me",
+            "send a notification",
+            "send me a notification"
+          ],
+          "pl": [
+            "powiadom*",
+            "wyślij powiadomienie",
+            "wyslij powiadomienie"
+          ]
+        },
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What the notification says.",
+              "pl": "Co mówi powiadomienie."
+            }
+          }
+        ]
+      },
+      "device.pick_file": {
+        "id": "device.pick_file",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Pick a file",
+        "description": "Let the user pick a file (the browser file picker, Android storage access, the process file system).",
+        "labels": {
+          "pl": "Wybierz plik"
+        },
+        "inputs": [],
+        "outputs": [
+          "file_ref"
+        ],
+        "requires": [
+          "file_access"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "pick a file",
+            "choose a file",
+            "open a file"
+          ],
+          "pl": [
+            "wybierz plik",
+            "otwórz plik",
+            "otworz plik"
+          ]
+        }
+      },
+      "device.request_permission": {
+        "id": "device.request_permission",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Ask for permission",
+        "description": "Ask the system for the permission a device needs (microphone, camera, notifications ...) before it is used.",
+        "labels": {
+          "pl": "Poproś o zgodę"
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "needs_permission"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "ask permission",
+            "request permission",
+            "ask for access"
+          ],
+          "pl": [
+            "poproś o zgodę",
+            "poproś o dostęp",
+            "popros o zgode",
+            "popros o dostep"
+          ]
+        }
+      },
+      "net.test_endpoint": {
+        "id": "net.test_endpoint",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Test a connection",
+        "description": "Check that a network endpoint (a model provider, a server) answers. Reports the answer only; nothing is sent beyond a probe.",
+        "labels": {
+          "pl": "Sprawdź połączenie"
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "remote"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "test the connection",
+            "check the connection",
+            "ping"
+          ],
+          "pl": [
+            "sprawdź połączenie",
+            "sprawdz polaczenie",
+            "przetestuj połączenie"
+          ]
+        }
+      },
       "chat.route": {
         "id": "chat.route",
         "kind": "atomic",

@@ -73,6 +73,7 @@ class ElementResolver {
   const Form* form_of(std::string_view text) const;
   Result<Json> resolve_form(const ElementSources& sources, const Form& form, std::string_view id) const;
   Result<Json> resolve_blob(const ElementSources& sources, std::string_view hash) const;
+  Result<Json> resolve_device(const ElementSources& sources, const Form& form, std::string_view id) const;
   Result<Json> resolve_setting(const ElementSources& sources, std::string_view key) const;
   Json mime_element(std::string_view mime) const;
 
