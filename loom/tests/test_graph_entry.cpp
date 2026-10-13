@@ -1,5 +1,11 @@
 #include <doctest/doctest.h>
 
+#include <fstream>
+#include <functional>
+#include <regex>
+#include <set>
+#include <sstream>
+
 #include "loom/graph_entry.h"
 #include "loom/loom.h"
 #include "loom/runtime_profile.h"
@@ -25,9 +31,87 @@ void write_overlay(const std::filesystem::path& dir, const Json& overrides) {
       json::dump(Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "graph_entry"}, {"overrides", overrides}})));
 }
 
+const std::filesystem::path kLoomDir = std::filesystem::path(__FILE__).parent_path().parent_path();
+
+std::string slurp(const std::filesystem::path& p) {
+  std::ifstream in(p, std::ios::binary);
+  REQUIRE(in.good());
+  std::ostringstream ss;
+  ss << in.rdbuf();
+  return ss.str();
+}
+Json read_json(const std::filesystem::path& p) { return Json::parse(slurp(p)); }
+
 }  // namespace
 
 TEST_SUITE("graph_entry") {
+  TEST_CASE("interface, method and perspective counters equal the size of their source registries") {
+    fsutil::TempDir td;
+    graph_entry::Env env;
+    env.data_dir = td.path();
+    auto view = unwrap(graph_entry::compute(env));
+
+    // Perspectives: the shipped perspective presets file, counted independently here.
+    const Json catalog = read_json(kLoomDir / "data/graph_perspectives/catalog.json");
+    const Json& persp = (*area(view, "perspectives"))["counts"]["perspectives.store"];
+    REQUIRE(persp["known"] == true);
+    CHECK(persp["value"].get<std::int64_t>() == static_cast<std::int64_t>(catalog["presets"].size()));
+    CHECK(persp["value"].get<std::int64_t>() > 0);
+    CHECK(persp["by"].size() == catalog["presets"].size());
+
+    // Methods: distinct entities of kind method:method across all runtime profile sources.
+    std::set<std::string> methods;
+    std::function<void(const Json&)> walk = [&](const Json& n) {
+      if (n.is_object()) {
+        if (n.value("kind", "") == "method:method" && n.contains("id")) methods.insert(n["id"].get<std::string>());
+        for (const auto& it : n.items()) walk(it.value());
+      } else if (n.is_array()) {
+        for (const auto& it : n) walk(it);
+      }
+    };
+    for (const auto& f : std::filesystem::directory_iterator(kLoomDir / "data/runtime")) walk(read_json(f.path()));
+    const Json& meth = (*area(view, "methods"))["counts"]["methods.registry"];
+    REQUIRE(meth["known"] == true);
+    CHECK(meth["value"].get<std::int64_t>() == static_cast<std::int64_t>(methods.size()));
+    CHECK(meth["value"].get<std::int64_t>() > 0);
+
+    // Interfaces: C ABI = LOOM_API functions in loom.h, HTTP = /api routes in server/src, CLI = cli commands.
+    const std::string header = slurp(kLoomDir / "include/loom/loom.h");
+    std::set<std::string> abi;
+    for (std::sregex_iterator it(header.begin(), header.end(), std::regex(R"(LOOM_API\s+[^;(]*?\b(loom_\w+)\s*\()")), end;
+         it != end; ++it)
+      abi.insert((*it)[1]);
+    std::set<std::string> routes;
+    for (const auto& f : std::filesystem::directory_iterator(kLoomDir / "server/src")) {
+      const std::string text = slurp(f.path());
+      for (std::sregex_iterator it(text.begin(), text.end(), std::regex(R"(\.(Get|Post|Put|Patch|Delete)\(\s*"(/api/[^"]*)")")), end;
+           it != end; ++it)
+        routes.insert((*it)[1].str() + " " + (*it)[2].str());
+    }
+    const Json cli = read_json(kLoomDir / "data/runtime/cli.pack");
+    const Json& ifc = (*area(view, "interfaces"))["counts"]["interfaces"];
+    REQUIRE(ifc["known"] == true);
+    CHECK(ifc["value"] == 3);
+    CHECK(ifc["by"]["c_abi"].get<std::size_t>() == abi.size());
+    CHECK(ifc["by"]["http"].get<std::size_t>() == routes.size());
+    CHECK(ifc["by"]["cli"].get<std::size_t>() == cli["defaults"]["commands"].size());
+    CHECK(abi.size() > 100);
+  }
+
+  TEST_CASE("the interface registry is data: the overlay hides or adds an interface") {
+    fsutil::TempDir td;
+    write_overlay(td.path(), Json{{"interfaces", Json{{"http", Json{{"hidden", true}}},
+                                                      {"extra", Json{{"entries", Json::array({"a", "b"})}}}}}});
+    graph_entry::Env env;
+    env.data_dir = td.path();
+    auto view = unwrap(graph_entry::compute(env));
+    const Json& ifc = (*area(view, "interfaces"))["counts"]["interfaces"];
+    REQUIRE(ifc["known"] == true);
+    CHECK(ifc["by"].contains("http") == false);
+    CHECK(ifc["by"]["extra"] == 2);
+    CHECK(ifc["value"] == 3);  // c_abi, cli, extra
+  }
+
   TEST_CASE("empty data dir: the seed and calibration areas exist, unavailable counts are unknown not zero") {
     fsutil::TempDir td;
     graph_entry::Env env;  // no database at all
@@ -43,7 +127,8 @@ TEST_SUITE("graph_entry") {
     CHECK(corpora["db.messages"]["known"] == false);
     // Counts that come from data stay known with no database.
     CHECK((*area(view, "ontology"))["counts"]["classes"]["known"] == true);
-    CHECK((*area(view, "methods"))["counts"]["methods.registry"]["known"] == false);
+    // Registries enumerated from the shipped data/code are real counts, not unknown (see the registry test below).
+    CHECK((*area(view, "methods"))["counts"]["methods.registry"]["known"] == true);
     // Zero seed (R52): computed from packs.
     for (const char* id : {"seed:self_model", "seed:ontology", "seed:methods", "seed:layers", "seed:party"})
       CHECK(seed(view, id) != nullptr);

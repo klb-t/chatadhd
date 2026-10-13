@@ -128,12 +128,24 @@
     {
       "path": "graph/entry.pack",
       "schema": "loom.graph_entry_areas/1",
-      "sha256": "477873051a2ab23aa0b801caeb25779dd6e8c60a50f50be32d4e633e77c95446",
+      "sha256": "85f0db9f017a3c5ef231bdbcb8475c92a0603ee57d1ea9b4e6519226d2d2098b",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [
         "loom/tests/test_graph_entry.cpp",
         "loom/web/tests/graph-entry"
+      ]
+    },
+    {
+      "path": "graph/interfaces.pack",
+      "schema": "loom.graph_interfaces/1",
+      "sha256": "809a79f032ecbd619d2995d6d72d832c6aff0c6fb44ec98678d22f8b2b285a62",
+      "domain": "graph_entry",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/test_graph_entry.cpp",
+        "loom/web/tests/graph-entry",
+        "loom/tools/gen_graph_interfaces.py"
       ]
     },
     {

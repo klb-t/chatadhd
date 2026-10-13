@@ -111,7 +111,8 @@
             "chain": [],
             "conflict_rules": [],
             "default_rule": ""
-          }
+          },
+          "interfaces": {}
         },
         "value_schema": {
           "type": "object",
@@ -187,6 +188,11 @@
           "source": "graph/properties.pack",
           "pointer": "/default_state",
           "target": "/defaults/ontology/default_state"
+        },
+        {
+          "source": "graph/interfaces.pack",
+          "pointer": "/interfaces",
+          "target": "/defaults/interfaces"
         }
       ]
     },

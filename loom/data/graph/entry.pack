@@ -325,7 +325,10 @@
     },
     "interfaces.abi": {
       "provider": "interfaces.enumerate",
-      "as": "interfaces"
+      "as": "interfaces",
+      "params": {
+        "pointer": "/interfaces"
+      }
     },
     "data.scopes": {
       "provider": "data.items",
@@ -413,10 +416,17 @@
       "provider": "economy.report"
     },
     "methods.registry": {
-      "provider": "methods.registry"
+      "provider": "methods.registry",
+      "params": {
+        "entity_kind": "method:method"
+      }
     },
     "perspectives.store": {
-      "provider": "perspectives.store"
+      "provider": "perspectives.store",
+      "params": {
+        "path": "graph_perspectives/catalog.json",
+        "pointer": "/presets"
+      }
     },
     "layers.privacy": {
       "provider": "layers.entries"
