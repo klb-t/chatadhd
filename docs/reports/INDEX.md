@@ -467,3 +467,59 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§7, §9. Gałą�
 - Raport: `docs/reports/S2_R7_2026-10-13.md`. Cofnięcie: revert scalenia R7.
 - Otwarte: wywołania web spoza wzorca `"VERB","/api/..."` (import, eksport, wysyłka plików) poza rejestrem; skróty w
   `data_domains.pack` bez generatora (liczone skryptem jednorazowym przy każdej zmianie).
+
+
+## P9 — wykonywanie akcji złożonych i „wszystko z okienka konwersacji” (R54) (2026-10-13, branch `claude/p9-composite-routing`)
+
+Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5, §8, §9. Decyzje techniczne (odwracalne; wszystko jest danymi):
+
+- **Element po samym id** (`include/loom/action_element.h`, dane `runtime/element_resolution.pack`): `m_`, `c_`, `vg_`, `n_`, `l_`, skrót blobu
+  (64 hex albo `blob:`/węzeł `kind=blob`), klucz ustawienia → klasa, cechy własne (typ MIME blobu → klasa i cechy) i atrybuty dla zasad.
+  Ciąg będący id klasy zostaje klasą; ciąg bez pasującej postaci przechodzi bez zmian (silnik zgłasza `class_unknown` jak dotąd); id znanej
+  postaci, którego nie ma w magazynie → `not_found`, nigdy zgadywanie. `actions.for|explain|propose_chain` (C ABI, HTTP, CLI) przyjmują goły id.
+- **Interpreter** (`include/loom/action_run.h`, `src/actions/run.cpp`): kroki złożonej akcji to dane (`steps` w `actions.pack`: `id`, `action`, `with`,
+  `when`, `variants`, `variant_mode` = `all`|`first_success`, `on_failure`); złożone w złożonych są spłaszczane do jednego planu (cykl i głębokość
+  odrzucane), części typowane (`llm::Part`) płyną z kroku do kroku (`inputs: [{from: input|<krok>, variant?}]`, domyślnie wynik poprzedniego
+  kroku), `$arg` i `$text` w `with`, warunki `trait|step|output|arg|not|all|any`. Złożona akcja z niepustym `consumer` (czat, analiza semantyczna…)
+  jest wykonywana przez swojego konsumenta i interpreter ją odrzuca; interpretowane są te z pustym `consumer` (np. `summarise`, teraz `implemented`
+  z krokiem `use_model` i promptem w danych). **Każda akcja planu przechodzi przez zasady** zakresu *przed* startem: `deny` zatrzymuje cały plan z
+  powodem i inicjatorem reguły, `confirm` wstrzymuje przebieg z pokwitowaniem (`arr_…`, wiąże plan i bramki; odpowiedź bez właściwego
+  pokwitowania jest odrzucana), wstrzymanie ×10 wstrzymuje krok z pokwitowaniem strażnika (`usage_…`) i nie jest nigdy pokryte potwierdzeniem
+  z propozycji ani `confirmed:true`. `gate_as` na akcji dolicza zasady innych nazw (`settings.set` jest też bramkowane jako `edit`, więc działają reguły
+  pól ustawień). Wynik kroku zapisuje rekord `loom.action_step/1` (decyzja, skróty wejść i wyjść, proweniencja wywołań modelu `loom.model_use/1`), zdarzenie
+  `action.step` trafia do dziennika zdarzeń; każdy checkpoint przebiegu to zdarzenie `action.run` (dokument `loom.action_run/1`), więc pauza przeżywa
+  restart. Anulowanie: token między krokami i wewnątrz wywołania modelu, `actions.cancel` dla wstrzymanego przebiegu. Łańcuch z `propose_chain` jest
+  przyjmowany jako `chain` i idzie tym samym interpreterem; łańcuch z akcją tylko zadeklarowaną (`planned`) nie rusza (nic nie jest wysłane).
+- **Wykonawcy** (`src/actions/runner.cpp`, `Runtime::actions()`): `use_model` (przez `llm::use_model` i wspólną bramkę ×10; model z kroku albo
+  `default_model`), akcje z portem w katalogu (`storage.*`, `actions.*`), `settings.set`/`settings.get` (typ wartości wg pola, `check_config_write`,
+  walidacja polityki zużycia i `semantic_retry_mode` jak dotąd). Reguła `deny:settings.set:secret` (inicjator `engine`) nie wpuszcza poświadczeń do
+  rozmowy; przebieg na poświadczeniu nigdy nie zapisuje podanych wartości i nie może czekać na odpowiedź.
+- **Wejścia:** `loom_invoke("actions", "run"|"confirm"|"cancel"|"status"|"preview")`, `loom_invoke("chat", "route")`, `POST /api/actions/run|preview|confirm|cancel|status`,
+  `POST /api/chat/route`, `loom actions run|preview|confirm|cancel|status|route` (nowe flagi `--propose --yes --no --list` w `cli.pack`), API web `actions`.
+- **Rozpoznanie zamiaru** (R54; `include/loom/chat_route.h`, `src/actions/route.cpp`, dane `runtime/intent_routing.pack` + `phrases` na akcjach katalogu):
+  `input.route_intent` jest `implemented`. Każde wejście okienka (`loom_chat_ex`, `loom chat`) przechodzi przez `handle()` przed wysłaniem. Metoda to ustawienie
+  (`intent_routing_method`; preset **heuristic**; `model` na życzenie; `off`): *heuristic* = lokalnie i za darmo — jawna składnia (`/summarise`, `/set k v`, `/run akcja on id`),
+  wzorce (`ustaw k=v`, `set k to v`, `show k`) z danych, leksykon fraz akcji (PL+EN, polskie litery zwijane, słowo kończące się `*` to przedrostek, fraza = wszystkie słowa w
+  pierwszych 12 tokenach, jedno w pierwszych 4); *model* = jedno wywołanie `use_model` (akcja `input.route_intent`, katalog akcji w prompcie, odpowiedź `json`) pod tą samą bramką
+  ×10 — wstrzymanie wraca jako `usage_pending` z `stage: route_intent` i jest potwierdzane polem `route_usage_confirmation` (nie `usage_confirmation` czatu), a błąd modelu jest
+  zgłaszany w `issues` i decyduje metoda lokalna. **Polecenie wymaga akcji ORAZ elementu** (id w tekście albo słowo odnoszące się do rozmowy/wiadomości; „streść mi, jak
+  działa TCP” bez elementu to wiadomość). Wiadomość idzie dalej ścieżką czatu z tym samym żądaniem co przedtem (test „golden”); wejście z załącznikami, `usage_confirmation`,
+  wyszukiwaniem w sieci itd. jest wiadomością z definicji (`message_request_fields`). Polecenie: `actions.for` na elemencie, a gdy brakuje cechy — łańcuch z `propose_chain`;
+  odpowiedź **w rozmowie** (wiadomość użytkownika + wiadomość asystenta z `metadata.action_proposal`): co zostanie wykonane, na czym, szacunek (koszt względny, liczba wywołań
+  modelu, dokładna liczba bajtów wysyłanych do modelu; koszt w pieniądzach **nieznany**, nie zero), co zasady każą potwierdzić albo dlaczego nie można (zasada z powodem i
+  inicjatorem, akcja `planned`, brak cechy, brakujące argumenty). Teksty PL/EN są w danych. „tak/yes” (słowa z danych, cała wiadomość) jako odpowiedź na propozycję będącą
+  ostatnią rzeczą powiedzianą wykonuje zapisany przebieg (z pokwitowaniem z metadanych), „nie/no” go odrzuca; starsza propozycja nie jest wykonywana po cichu, ale można ją potwierdzić
+  jawnie `actions.confirm`. Ustawienie `intent_routing_run`: **propose** (preset), `read_only` (od razu, gdy plan tylko czyta i zasady o nic nie pytają) albo `always` (od razu; zasady
+  i ×10 nadal pytają). Wiadomości ruchu poleceń (`metadata.routed`, `action_proposal`, `action_run`) nie wchodzą do treści rozmowy podawanej akcjom (np. streszczeniu) i nie są analizowane
+  semantycznie (`semantic_status = done` ustawiane przy zapisie), ale zostają w historii wysyłanej do modelu kolejnych zwykłych wiadomości jak każda wiadomość asystenta.
+- **Web:** blok propozycji (`ActionProposalBlock`) z przyciskami potwierdź/odrzuć wg wzorca `usage_pending`; teksty w `conversation_view.pack` (`presentation.action_proposal`, pl/en,
+  `gen_onboarding_pack.py --check` czysty), logika w skanowalnym leksykalnie `context/action-proposal.ts`, test jednostkowy z renderem bloku (`npm run test:action-proposal`).
+- Nowe ustawienia (opisane w `settings_fields.pack`, golden zaktualizowany): `intent_routing_method`, `intent_routing_run`, `intent_routing_model`.
+- Cofnięcie: `loom config set intent_routing_method off` wyłącza rozpoznawanie (każde wejście jest wiadomością); `input.route_intent` można zadeklarować `planned` nakładką
+  `profiles/actions.pack` (wtedy ścieżka modelu odmówi, heurystyka dalej działa — wyłącz metodą); interpreter nie jest wołany przez nic poza `actions.run`/routerem,
+  więc revert commitów `feat(chat)`/`feat(actions)` tej gałęzi wystarcza; dane nowych profili (`element_resolution`, `action_run`, `intent_routing`) można usunąć razem z `.inc`
+  generatorem.
+- Otwarte: wyniki tekstowe nie są jeszcze zapisywane jako węzły grafu z krawędzią `derived_from` (wynik jest w dokumencie przebiegu i w rozmowie); `usage.compact` i akcje
+  `planned` (transkrypcja, obraz…) nie mają wykonawców (plan z nimi nie startuje, propozycja mówi dlaczego); szacunek w pieniądzach wymaga cennika modelu; leksykon fraz jest
+  kalibracją (fałszywe polecenia kosztują jedno „nie”); przebieg trzyma wyniki kroków w dokumencie (duże wyniki wypadałoby składować w blobach); wejście ze skryptu/agenta
+  (`script.call`, `agent.call`) i równoległe kroki z §3 nadal nie istnieją.
