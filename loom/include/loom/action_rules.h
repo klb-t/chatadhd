@@ -29,6 +29,8 @@
 
 namespace loom::actions {
 
+struct ElementSources;  // action_element.h: what a bare id is resolved against
+
 // The element an action is applied to, as far as the engine needs to know it.
 struct Element {
   std::string id;                  // optional node id (for rules that target one node)
@@ -127,6 +129,13 @@ class Engine {
   Json issues() const;
 
   const Json& catalogue() const { return actions_; }
+  // True when `id` is a class of the ontology (a bare string that is one stays a class id).
+  bool has_class(std::string_view id) const { return classes_.contains(std::string(id)); }
+  // The decision table entry of a gate decision (allow | confirm | deny): its restrictiveness, 0 = none.
+  int restrictiveness(std::string_view decision) const;
+  // Effect flags, groups and the decision tables are read through the catalogue and Decision; the
+  // executors (action_run.h) additionally need the scope chain, so it is exposed read-only.
+  const Json& decisions() const { return decisions_; }
 
  private:
   Prepared prepare(const Element& element) const;
@@ -166,6 +175,11 @@ class Engine {
 
 // loom_invoke port "actions": action "for" | "explain" | "propose_chain" with the request objects
 // described at actions.for / actions.explain / actions.propose_chain in the action catalogue.
+// With `sources`, an element given as a bare id (m_..., c_..., a blob hash, a settings key) is
+// resolved against the stores first (action_element.h); without, only class ids and explicit
+// elements are understood.
 Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request);
+Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
+                    const ElementSources* sources);
 
 }  // namespace loom::actions

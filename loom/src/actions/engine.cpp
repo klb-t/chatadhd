@@ -98,6 +98,11 @@ Result<Engine> Engine::from_values(const Json& graph_entry, const Json& actions,
   return e;
 }
 
+int Engine::restrictiveness(std::string_view decision) const {
+  const Json* d = json::find(decisions_, decision);
+  return d ? static_cast<int>(json::get_int(*d, "restrictiveness", 0)) : 0;
+}
+
 std::size_t Engine::level_index(std::string_view name, std::string* resolved) const {
   std::string level(name);
   if (const Json* a = json::find(aliases_, level); a && a->is_string()) level = a->get<std::string>();

@@ -27,6 +27,7 @@
 #include <string>
 #include <vector>
 
+#include "loom/action_element.h"
 #include "loom/action_rules.h"
 #include "loom/action_table.h"
 #include "loom/archive.h"
@@ -817,7 +818,8 @@ int cmd_actions(Runtime& rt, const Args& a) {
   } else {
     throw UsageError{"unknown actions subcommand: " + sub};
   }
-  const Json result = must(actions::invoke(rt.paths().root, port_action, request));
+  const actions::ElementSources sources{&rt.db(), &rt.blobs(), rt.paths().root};
+  const Json result = must(actions::invoke(rt.paths().root, port_action, request, &sources));
   if (g_json || sub == "explain") {
     print_json(result);
     return 0;

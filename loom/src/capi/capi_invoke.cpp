@@ -1,7 +1,9 @@
 // C API: loom_invoke — one entry point "perform action" (port, action, json). Ports: "storage" (storage
 // plugins), "github" (GitHub sync), "actions" (action "list" = the action catalogue; "for", "explain" and
 // "propose_chain" ask the action/element matching engine, loom/action_rules.h).
+#include "loom/action_element.h"
 #include "loom/action_rules.h"
+#include "loom/provenance.h"
 #include "loom/action_table.h"
 #include "context.h"
 #include "loom/storage_command.h"
@@ -23,7 +25,8 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     const std::string p = port, a = action;
     if (p == "actions" && a == "list") return out(action_list(ctx->rt->paths().root));
     if (p == "actions") {
-      auto r = actions::invoke(ctx->rt->paths().root, a, *rj);
+      const actions::ElementSources sources{&ctx->rt->db(), &ctx->rt->blobs(), ctx->rt->paths().root};
+      auto r = actions::invoke(ctx->rt->paths().root, a, *rj, &sources);
       if (!r) return out_error(r.error());
       return out(*r);
     }
