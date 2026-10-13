@@ -405,7 +405,8 @@ Result<RunRequest> RunRequest::from_json(const Json& j) {
 Result<Json> Interpreter::plan_of(const RunRequest& request) const {
   if (!deps_.engine) return Error(Errc::Internal, "the interpreter has no rule engine");
   const Json& catalogue = deps_.engine->catalogue();
-  Builder builder{catalogue, json::get_int(deps_.settings, "max_depth", 8)};
+  const Json* depth_setting = json::find(deps_.settings, "max_depth");
+  Builder builder{catalogue, depth_setting && depth_setting->is_null() ? -1 : json::get_int(deps_.settings, "max_depth", 8)};
   Json items = Json::array();
   Json chain_items = Json::array();
   std::string root_label;
