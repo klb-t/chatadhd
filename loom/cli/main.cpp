@@ -11,6 +11,7 @@
 #include <termios.h>
 #include <time.h>
 
+#include <algorithm>
 #include <atomic>
 #include <csignal>
 #include <cstdint>
@@ -26,6 +27,8 @@
 #include <string>
 #include <vector>
 
+#include "loom/action_rules.h"
+#include "loom/action_table.h"
 #include "loom/archive.h"
 #include "archive/profile.h"
 #include "loom/catalog.h"
@@ -707,6 +710,153 @@ int cmd_economy(Runtime& rt, const Args& a) {
   Json command = Json::object();
   if (a.has("mode")) command["overrides"] = Json{{"mode", a.get("mode")}};
   print_json(must(economy::report_for_data_dir(rt.paths().root, rt.paths().db, command)));
+  return 0;
+}
+
+// ── actions: which actions fit which element (loom/action_rules.h) ────────────
+// An option value for a threshold: a number, or none/null for "no bound".
+Json threshold_value(const std::string& name, const std::string& text) {
+  if (text == "none" || text == "null") return Json(nullptr);
+  try {
+    std::size_t used = 0;
+    const double v = std::stod(text, &used);
+    if (used != text.size()) throw std::invalid_argument(text);
+    return v == std::floor(v) && std::fabs(v) < 1e15 ? Json(static_cast<long long>(v)) : Json(v);
+  } catch (...) {
+    throw UsageError{"--" + name + " needs a number or none"};
+  }
+}
+
+// The element from --element JSON or --class / --trait / --attr K=V / --id.
+Json cli_element(const Args& a) {
+  if (a.has("element")) {
+    auto parsed = json::parse(a.get("element"));
+    if (!parsed) throw UsageError{"--element needs a JSON object"};
+    return *parsed;
+  }
+  Json element = Json::object();
+  if (a.has("class")) element["class"] = a.get("class");
+  if (a.has("id")) element["id"] = a.get("id");
+  if (a.has("trait")) {
+    Json traits = Json::array();
+    for (const auto& t : a.all("trait")) traits.push_back(t);
+    element["traits"] = traits;
+  }
+  if (a.has("attr")) {
+    Json attrs = Json::object();
+    for (const auto& kv : a.all("attr")) {
+      const auto eq = kv.find('=');
+      if (eq == std::string::npos) throw UsageError{"--attr needs KEY=VALUE"};
+      attrs[kv.substr(0, eq)] = kv.substr(eq + 1);
+    }
+    element["attrs"] = attrs;
+  }
+  if (element.empty()) throw UsageError{"name the element: --class C [--trait T]... [--attr K=V]... or --element JSON"};
+  return element;
+}
+
+// --scope LEVEL | level=id,level=id | {"level":"id"}
+Json cli_scope(const Args& a) {
+  if (!a.has("scope")) return Json(nullptr);
+  const std::string text = a.get("scope");
+  if (!text.empty() && text[0] == '{') {
+    auto parsed = json::parse(text);
+    if (!parsed) throw UsageError{"--scope needs a level, level=id pairs or a JSON object"};
+    return *parsed;
+  }
+  if (text.find('=') == std::string::npos) return text;
+  Json scope = Json::object();
+  std::stringstream list(text);
+  for (std::string item; std::getline(list, item, ',');) {
+    const auto eq = item.find('=');
+    if (eq == std::string::npos) throw UsageError{"--scope pairs look like level=id"};
+    scope[item.substr(0, eq)] = item.substr(eq + 1);
+  }
+  return scope;
+}
+
+std::string join_traits(const Json& list) {
+  std::string out;
+  for (const auto& t : list) out += (out.empty() ? "" : ", ") + t.get<std::string>();
+  return out;
+}
+
+int cmd_actions(Runtime& rt, const Args& a) {
+  // loom actions list                                     the action catalogue
+  // loom actions for      ELEMENT [--scope S] [--include-unmatched] [--implemented-only]
+  // loom actions explain  ACTION ELEMENT [--scope S]
+  // loom actions chain    ELEMENT (--to-trait T | --to-action A) [--scope S] [--preset P]
+  //                       [--max-length N|none] [--max-cost X|none] [--min-confidence X|none] [--max-results N|none]
+  // ELEMENT: --class C [--trait T]... [--attr K=V]... [--id ID] or --element JSON.  Proposals are never executed.
+  const std::string sub = need(a, 0, "actions subcommand (list|for|explain|chain)");
+  if (sub == "list") {
+    print_json(action_catalogue());
+    return 0;
+  }
+  Json request = Json::object();
+  request["element"] = cli_element(a);
+  if (a.has("scope")) request["scope"] = cli_scope(a);
+  std::string port_action;
+  if (sub == "for") {
+    port_action = "for";
+    if (a.has("include-unmatched")) request["include_unmatched"] = true;
+    if (a.has("implemented-only")) request["implemented_only"] = true;
+  } else if (sub == "explain") {
+    port_action = "explain";
+    request["action"] = need(a, 1, "action id");
+  } else if (sub == "chain") {
+    port_action = "propose_chain";
+    if (a.has("to-trait")) request["target_trait"] = a.get("to-trait");
+    if (a.has("to-action")) request["target_action"] = a.get("to-action");
+    if (a.has("preset")) request["preset"] = a.get("preset");
+    for (const char* name : {"max-length", "max-cost", "min-confidence", "max-results"}) {
+      std::string key = name;
+      std::replace(key.begin(), key.end(), '-', '_');
+      if (a.has(name)) request[key] = threshold_value(name, a.get(name));
+    }
+  } else {
+    throw UsageError{"unknown actions subcommand: " + sub};
+  }
+  const Json result = must(actions::invoke(rt.paths().root, port_action, request));
+  if (g_json || sub == "explain") {
+    print_json(result);
+    return 0;
+  }
+  if (sub == "for") {
+    const Json& el = result["element"];
+    std::cout << "element " << el.value("class", "") << "  traits: " << join_traits(el["traits"]) << "\n"
+              << "scope   " << result["scope"].value("level", "") << "\n";
+    if (!result["default_action"].is_null()) std::cout << "default " << result["default_action"].get<std::string>() << "\n";
+    for (const auto& r : result["actions"])
+      std::cout << "  " << r.value("status", "") << std::string(r.value("status", "").size() < 18 ? 18 - r.value("status", "").size() : 1, ' ')
+                << r.value("action", "") << "  " << r.value("title", "")
+                << (r.contains("reason") ? "  [" + (r["reason"].is_object() ? r["reason"].value("en", "") : r["reason"].get<std::string>()) + "]" : "")
+                << "\n";
+    return 0;
+  }
+  if (!result.value("enabled", true)) {
+    std::cout << "proposals are off (preset " << result.value("preset", "") << ")\n";
+    return 0;
+  }
+  if (result.value("already_present", false)) std::cout << "the element already has the trait\n";
+  if (result.value("direct", false)) std::cout << "the action fits the element as it is\n";
+  for (const auto& c : result["chains"]) {
+    std::string line;
+    for (const auto& s : c["steps"]) line += (line.empty() ? "" : " -> ") + s.value("action", "");
+    std::cout << line << "   cost " << c["cost"].dump() << "  confidence " << c["confidence"].dump()
+              << (c.value("executable", false) ? "" : "  (not executable yet)")
+              << (c["needs_confirmation"].empty() ? "" : "  confirm: " + join_traits(c["needs_confirmation"])) << "\n";
+  }
+  if (result["chains"].empty() && !result.value("already_present", false)) {
+    std::cout << "no chain within the preset\n";
+    if (result.contains("beyond_bounds")) {
+      std::string line;
+      for (const auto& s : result["beyond_bounds"]["steps"]) line += (line.empty() ? "" : " -> ") + s.value("action", "");
+      std::cout << "  it would take: " << line << "  (exceeds " << join_traits(result["beyond_bounds"]["exceeds"]) << ")\n";
+    }
+  }
+  for (const auto& r : result["rejected"]) std::cout << "  not proposed: " << r.value("action", "") << " is " << r.value("status", "") << "\n";
+  std::cout << "proposals only: nothing was executed\n";
   return 0;
 }
 
@@ -1530,6 +1680,7 @@ int main(int argc, char** argv) {
       {"search", cmd_search},
       {"semantic", cmd_semantic},
       {"economy", cmd_economy},
+      {"actions", cmd_actions},
       {"usage", cmd_usage},
       {"memory", cmd_memory},
       {"config", cmd_config},
