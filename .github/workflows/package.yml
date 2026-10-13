@@ -98,8 +98,16 @@ jobs:
           ls dist/assets/*.js >/dev/null || { echo "::error::no JS bundle in loom/web/dist/assets"; exit 1; }
           du -sh dist
 
-      - name: Set up the Android SDK
-        uses: android-actions/setup-android@v3
+      # The hosted runner ships the Android SDK; android-actions/setup-android@v3 failed on it
+      # ("Failed to find package 'tools'"), so only its sdkmanager is put on PATH.
+      - name: Use the preinstalled Android SDK
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?the runner image has no ANDROID_HOME}"
+          for d in "$ANDROID_HOME"/cmdline-tools/latest/bin "$ANDROID_HOME"/cmdline-tools/*/bin; do
+            if [ -x "$d/sdkmanager" ]; then echo "$d" >> "$GITHUB_PATH"; echo "sdkmanager: $d"; exit 0; fi
+          done
+          echo "::error::no sdkmanager under $ANDROID_HOME/cmdline-tools"; exit 1
 
       - name: Install SDK platform, build-tools, NDK and CMake
         env:
