@@ -71,6 +71,8 @@ Json Engine::row_for(const std::string& id, const Json& action, const Prepared& 
   row["kind"] = json::get_string(action, "kind");
   row["implementation"] = implementation;
   row["callable"] = implementation == "implemented";
+  if (implementation != "implemented")
+    if (const Json* r = json::find(action, "planned_reason")) row["planned_reason"] = *r;
   row["status"] = status;
   row["default"] = is_default;
   if (!d.reason.is_null()) row["reason"] = d.reason;

@@ -537,13 +537,18 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::
   cmd["element"] = element_summary(d, element_json, lang);
   // Missing arguments.
   Json missing_args = Json::array();
+  Json missing_settings = Json::object();  // argument -> the setting that would supply it
   const std::string element_arg = json::get_string(*entry, "element_from_arg");
+  const Json bound = rt.actions().bind_params(*entry, c.args);  // what the settings already say counts as said
   if (const Json* params = json::find(*entry, "params"); params && params->is_array())
     for (const auto& p : *params) {
       const std::string name = json::get_string(p, "name");
-      if (json::get_bool(p, "required", false) && !c.args.contains(name) && name != element_arg) missing_args.push_back(name);
+      if (json::get_bool(p, "required", false) && !bound.contains(name) && name != element_arg) {
+        missing_args.push_back(name);
+        if (const std::string setting = json::get_string(p, "setting"); !setting.empty()) missing_settings[name] = setting;
+      }
     }
-  if (!missing_args.empty()) return infeasible(Json{{"code", "missing_args"}, {"args", missing_args}});
+  if (!missing_args.empty()) return infeasible(Json{{"code", "missing_args"}, {"args", missing_args}, {"settings", missing_settings}});
   // The scope of the question (R47): this conversation and the turn, so rules and thresholds bound to the conversation apply.
   const Json scope = conv.id.empty() ? Json(nullptr) : Json{{"conversation", conv.id}, {"turn", ""}};
   // Fit: the action fits when the element has the traits it requires; else a chain may supply them.
@@ -578,6 +583,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::
   cmd["denied"] = preview->at("denied");
   cmd["not_runnable"] = preview->at("not_runnable");
   cmd["runnable"] = preview->at("runnable");
+  cmd["estimate"] = preview->value("estimate", Json(nullptr));
   cmd["feasible"] = true;
   // What would be sent: the exact size of the content the model steps take (money cost stays unknown).
   std::int64_t bytes = 0;
@@ -814,8 +820,13 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
                            {"cost", item.value("cost", 0.0)}, {"implementation", item.value("implementation", "")}});
   p["items"] = items;
   if (cmd.contains("plan")) {
+    const Json estimate = cmd.value("estimate", Json(nullptr));
+    // Money is a range where the model registry knows the price, else unknown with the reason: never a zero.
+    Json money = estimate.is_object() ? estimate.value("money", Json(nullptr)) : Json(nullptr);
+    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}};
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
-                     {"input_bytes", cmd.value("input_bytes", 0)}, {"money", nullptr}};
+                     {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
+                     {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
     p["effects"] = effects_of(cmd.at("plan"));
   }
   Json confirm = Json::array();
@@ -827,6 +838,13 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
   if (cmd.contains("candidates")) p["alternatives"] = cmd["candidates"];
   (void)d;
   return p;
+}
+
+// A sum of money for people: enough digits to tell a hundredth of a cent from nothing.
+std::string money_text(double v) {
+  char buf[48];
+  std::snprintf(buf, sizeof buf, v >= 0.01 ? "%.2f" : "%.4f", v);
+  return buf;
 }
 
 std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal, const std::string& lang) {
@@ -842,7 +860,13 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
     if (code == "unfit") {
       lines.push_back(say(d.cfg, lang, "proposal_unfit", Json{{"missing", join(strings_of(json::find(reason, "missing")), ", ")}}));
     } else if (code == "missing_args") {
-      lines.push_back(say(d.cfg, lang, "proposal_missing_args", Json{{"args", join(strings_of(json::find(reason, "args")), ", ")}, {"action", cmd.value("action", "")}}));
+      std::string hint;
+      if (const Json* settings = json::find(reason, "settings"); settings && settings->is_object() && !settings->empty()) {
+        std::vector<std::string> keys;
+        for (auto it = settings->begin(); it != settings->end(); ++it) keys.push_back(it.value().get<std::string>());
+        hint = say(d.cfg, lang, "missing_args_settings", Json{{"settings", join(keys, ", ")}});
+      }
+      lines.push_back(say(d.cfg, lang, "proposal_missing_args", Json{{"args", join(strings_of(json::find(reason, "args")), ", ")}, {"action", cmd.value("action", "")}}) + hint);
     } else {
       lines.push_back(say(d.cfg, lang, "proposal_error", Json{{"message", reason.is_object() ? json::get_string(reason, "message") : std::string("?")}}));
     }
@@ -853,6 +877,13 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   lines.push_back(say(d.cfg, lang, "proposal_plan", Json{{"plan", join(plan, " -> ")}}));
   if (const Json* cost = json::find(proposal, "cost")) {
     lines.push_back(say(d.cfg, lang, "proposal_cost", Json{{"cost", cost->value("declared", 0.0)}, {"calls", cost->value("model_calls", 0)}, {"bytes", cost->value("input_bytes", 0)}}));
+    if (cost->value("model_calls", 0) > 0) {
+      const Json money = cost->value("money", Json(nullptr));
+      if (money.is_object() && json::get_bool(money, "known", false))
+        lines.push_back(say(d.cfg, lang, "proposal_money_known", Json{{"low", money_text(money.value("low", 0.0))}, {"high", money_text(money.value("high", 0.0))}, {"currency", money.value("currency", "USD")}}));
+      else
+        lines.push_back(say(d.cfg, lang, "proposal_money_unknown", Json{{"why", money.is_object() ? money.value("reason", "") : std::string()}}));
+    }
   }
   if (const Json* effects = json::find(proposal, "effects"))
     lines.push_back(say(d.cfg, lang, "proposal_effects", Json{{"effects", effects_sentence(d, *effects, lang)}}));
@@ -864,7 +895,11 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   const Json not_runnable = cmd.value("not_runnable", Json::array());
   if (!not_runnable.empty()) {
     std::vector<std::string> why;
-    for (const auto& n : not_runnable) why.push_back(n.value("action", "") + " (" + n.value("why", "") + ")");
+    for (const auto& n : not_runnable) {
+      std::string line = n.value("action", "") + " (" + n.value("why", "");
+      if (const Json* r = json::find(n, "reason")) line += ": " + localized(*r, lang);
+      why.push_back(line + ")");
+    }
     lines.push_back(say(d.cfg, lang, "proposal_not_runnable", Json{{"why", join(why, ", ")}}));
     return join(lines, "\n");
   }
@@ -1120,7 +1155,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     Json run_request = cmd["request"];
     run_request["propose"] = true;
     run_request["ref"] = "chat:" + user_id;
-    run_request["context"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_id", user_id}, {"text", text}, {"source", cmd.value("source", "")}};
+    run_request["context"] = Json{{"origin", "chat"}, {"conv_id", conv_id}, {"message_id", user_id}, {"text", text}, {"source", cmd.value("source", "")}, {"lang", lang}};
     auto run = rt.actions().run(run_request);
     if (!run) {
       proposal["status"] = "unavailable";

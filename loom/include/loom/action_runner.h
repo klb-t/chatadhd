@@ -52,6 +52,10 @@ class ActionRunner {
   // Any invoke port that an atomic action can name in the catalogue (actions, storage).
   Result<Json> invoke_port(std::string_view port, std::string_view action, const Json& request);
 
+  // The arguments with the ones the caller left out filled from the settings that the action's params name
+  // (`params: [{name, setting}]` in the catalogue): the caller's word comes first, an unset setting binds nothing.
+  Json bind_params(const Json& entry, Json args) const;
+
   // The run store (for the chat router, which keeps the id of the run it proposed in the message).
   RunStore& store();
 

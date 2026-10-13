@@ -5,10 +5,12 @@
 #include <algorithm>
 
 #include "loom/action_element.h"
+#include "loom/action_estimate.h"
 #include "loom/action_result.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
+#include "loom/providers.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
 #include "loom/semantic_worker.h"
@@ -76,7 +78,7 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
       if (configured.is_string()) model = configured.get<std::string>();
     }
     if (model.empty()) return failed(Error(Errc::InvalidArgument, "no model: name one in the step or set a default model"));
-    req.models.push_back(llm::ModelSpec{model, "", Json::object()});
+    req.models.push_back(llm::ModelSpec{model, json::get_string(with, "provider"), Json::object()});
   }
   req.mode = json::get_string(with, "mode", req.models.size() > 1 ? "sequential" : "single");
   if (const Json* p = json::find(with, "parameters"); p && p->is_object()) req.parameters = *p;
@@ -325,6 +327,21 @@ Interpreter ActionRunner::make_interpreter(const Loaded& loaded) const {
   return Interpreter(deps);
 }
 
+Json ActionRunner::bind_params(const Json& entry, Json args) const {
+  const Json* params = json::find(entry, "params");
+  if (!params || !params->is_array()) return args;
+  if (!args.is_object()) args = Json::object();
+  for (const auto& p : *params) {
+    const std::string name = json::get_string(p, "name"), setting = json::get_string(p, "setting");
+    if (name.empty() || setting.empty()) continue;
+    if (const Json* have = json::find(args, name); have && !have->is_null()) continue;  // the caller's word comes first
+    const Json value = rt_.config().get(setting);
+    if (value.is_null() || (value.is_string() && value.get<std::string>().empty())) continue;
+    args[name] = value;
+  }
+  return args;
+}
+
 Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& request) const {
   LOOM_TRY_ASSIGN(RunRequest r, RunRequest::from_json(request));
   Json element = request.value("element", Json(nullptr));
@@ -338,6 +355,16 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
     }
   }
   if (element.is_null()) element = Json::object();
+  // Arguments the caller left out come from the settings the catalogue names (a model, a provider ...).
+  if (entry) r.args = bind_params(*entry, r.args);
+  {
+    const Json* steps = r.chain.is_array() ? &r.chain : (r.chain.is_object() ? json::find(r.chain, "steps") : nullptr);
+    if (steps && steps->is_array())
+      for (const auto& step : *steps) {
+        const std::string name = step.is_string() ? step.get<std::string>() : json::get_string(step, "action");
+        if (const Json* e = json::find(loaded.engine.catalogue(), name)) r.args = bind_params(*e, r.args);
+      }
+  }
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   const Engine& engine = loaded.engine;
   LOOM_TRY_ASSIGN(Json resolved, loaded.resolver.resolve(sources, element, [&](std::string_view c) { return engine.has_class(c); }));
@@ -419,7 +446,20 @@ Result<Json> ActionRunner::preview(const Json& request) {
   LOOM_TRY_ASSIGN(auto loaded, load());
   LOOM_TRY_ASSIGN(RunRequest r, prepare(loaded, request));
   auto interpreter = make_interpreter(loaded);
-  return interpreter.preview(r);
+  LOOM_TRY_ASSIGN(Json preview, interpreter.preview(r));
+  // What the plan would cost: tokens, and money where the registry knows the price (never zero for what it does not know).
+  std::int64_t chars = 0;
+  const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
+  if (preview.at("plan").at("cost").value("model_calls", 0) > 0)
+    if (auto parts = loaded.resolver.content_parts(sources, r.element))
+      for (const auto& p : *parts) chars += static_cast<std::int64_t>(utf8::length(p.text));
+  EstimateServices services;
+  services.models = &rt_.models();
+  services.config = &rt_.config();
+  services.settings = loaded.settings;
+  services.catalogue = loaded.engine.catalogue();
+  preview["estimate"] = estimate_plan(services, preview.at("plan"), r.args, chars);
+  return preview;
 }
 
 Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view action, const Json& request) {
