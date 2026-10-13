@@ -346,3 +346,13 @@ Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście 
   Sekrety opisane, wartości nigdy nie zwracane. Blokuje zapis tylko `deny` (dziś wyłącznie `_config_version`).
 - Test kompletności w obie strony względem rzeczywistych domyślnych. Raport: `docs/reports/S2_R2_2026-10-13.md`.
   Cofnięcie: usunąć zasadę z pliku danych (lub nakładka `profiles/settings_fields.pack`); revert scalenia R2.
+
+## S2 / R4 — widok wejściowy grafu: prawdziwe liczniki + testy w przeglądarce (2026-10-13)
+
+- Liczniki interfejsów, metod i perspektyw policzone z rzeczywistych źródeł (dotąd „nie wiem”): metody = byty `method:method`
+  w profilach; perspektywy = ustawienia obszaru `graph/perspectives` w pakiecie warstw domyślnych; interfejsy = nowy rejestr
+  `data/graph/interfaces.pack` (C ABI z `loom.h`, trasy HTTP z serwera **i z katalogu akcji**, polecenia CLI), generator
+  `tools/gen_graph_interfaces.py` (`--check`). Testy porównują liczniki z niezależnie policzonym źródłem.
+- e2e: `test:graph-entry-browser` (panel na prawdziwym serwerze, nakładka ukrywa obszar), `test:usage-pending-browser`
+  (blok ×10: potwierdź / odrzuć). Raport: `docs/reports/S2_R4_2026-10-13.md`.
+  Cofnięcie: usunąć wiązanie `interfaces` w `entry.pack` albo `hidden:true` w nakładce; revert scalenia R4.
