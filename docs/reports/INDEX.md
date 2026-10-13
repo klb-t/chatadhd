@@ -561,7 +561,9 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§6, §9. Każda 
   pada, bo od integracji polityki zużycia każde zwykłe wysłanie zapisuje trwałe pokwitowanie. Asercji nie zmieniono.
   **Decyzja S1:** intencja = przy `off` nie wykonuje się żadna metoda kontekstu; asercja ma sprawdzać brak wpisów rodzaju
   „wykonanie metody kontekstu” (pokwitowania zużycia dozwolone), a gdy rodzaju nie da się rozróżnić — liczba wpisów `off` ==
-  liczba w zwykłym przebiegu (≤1). Wykonanie zmiany asercji: S1.
+  liczba w zwykłym przebiegu (≤1). **W3 przejęte przez S1** (po wejściu R14 na `main`): do `context_execution_claims/` piszą
+  tylko graph_reply, typowanie celu kontekstu i dostawca wektorowy — wpis przy `off` może być prawdziwym błędem (wykonana
+  metoda kontekstu), nie przestarzałą asercją; diagnoza agenta R14 była niepełna. Asercja nie będzie osłabiana.
 - Release `-Werror` na GCC 13: dwa fałszywe alarmy z nlohmann po wstawieniu (`null-dereference`, `maybe-uninitialized`)
   zostają ostrzeżeniami, reszta błędem; instalator i Dockerfile znów z `LOOM_WERROR=ON`.
 - `loom/deploy/` scalony do `deploy/` (skrypty budowania przeniesione), w starym miejscu README z przekierowaniem.
