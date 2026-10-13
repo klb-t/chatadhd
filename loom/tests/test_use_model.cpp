@@ -3,8 +3,11 @@
 #include <doctest/doctest.h>
 
 #include "loom/config.h"
+#include "loom/db.h"
+#include "loom/provenance.h"
 #include "loom/net/http.h"
 #include "loom/use_model.h"
+#include "loom/util/base64.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "test_helpers.h"
@@ -380,5 +383,191 @@ TEST_SUITE("use_model") {
     CHECK(std::find(families.begin(), families.end(), "openai_chat") != families.end());
     CHECK(std::find(families.begin(), families.end(), "anthropic_messages") != families.end());
     CHECK(llm::make_adapter("nope") == nullptr);
+  }
+
+  TEST_CASE("typed parts: text and json inputs fold into user messages; parts round-trip as JSON") {
+    Env env;
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
+    llm::ModelRequest req = simple("m", "");
+    req.prompt.clear();
+    llm::Part text;
+    text.kind = "text";
+    text.text = "describe this";
+    llm::Part structured;
+    structured.kind = "json";
+    structured.value = Json{{"edge", "a->b"}, {"weight", 3}};
+    req.inputs = {text, structured};
+    auto outcome = unwrap(llm::use_model(env.services(), req));
+    REQUIRE(outcome.results[0].ok());
+    Json body = unwrap(json::parse(env.transport.requests().at(0).body));
+    CHECK(body["messages"] == Json::array({Json{{"role", "user"}, {"content", "describe this"}},
+                                           Json{{"role", "user"}, {"content", R"({"edge":"a->b","weight":3})"}}}));
+    // The text result is also a typed output part.
+    REQUIRE(outcome.results[0].outputs.size() == 1);
+    CHECK(outcome.results[0].outputs[0].kind == "text");
+    CHECK(outcome.results[0].outputs[0].text == "ok");
+    CHECK(outcome.results[0].provenance["input_kinds"] == Json::array({"json", "text"}));
+
+    llm::Part image;
+    image.kind = "image";
+    image.blob_hash = std::string(64, 'a');
+    image.mime = "image/png";
+    image.node_id = "n_1";
+    auto round = unwrap(llm::Part::from_json(image.to_json()));
+    CHECK(round.kind == "image");
+    CHECK(round.blob_hash == image.blob_hash);
+    CHECK(round.node_id == "n_1");
+    CHECK_FALSE(llm::Part::from_json(Json{{"kind", "hologram"}}));
+    CHECK(llm::known_part_kind("embedding"));
+  }
+
+  TEST_CASE("capabilities as data: a mismatch is rejected before any send, with the reason") {
+    Env env;
+    llm::ModelRequest audio = simple("m");
+    llm::Part clip;
+    clip.kind = "audio";
+    clip.blob_hash = std::string(64, 'b');
+    audio.inputs = {clip};
+    auto rejected = unwrap(llm::use_model(env.services(), audio));
+    REQUIRE(rejected.results.size() == 1);
+    CHECK(rejected.results[0].state == llm::State::Unavailable);
+    REQUIRE(rejected.results[0].error.has_value());
+    CHECK(rejected.results[0].error->code == Errc::Unsupported);
+    CHECK(rejected.results[0].error->message.find("does not accept audio input") != std::string::npos);
+    CHECK(rejected.results[0].error->message.find("openai_chat") != std::string::npos);
+
+    llm::ModelRequest wants_image = simple("m");
+    wants_image.wants = {"image"};
+    auto no_image = unwrap(llm::use_model(env.services(), wants_image));
+    CHECK(no_image.results[0].state == llm::State::Unavailable);
+    CHECK(no_image.results[0].error->message.find("cannot produce image") != std::string::npos);
+
+    llm::ModelRequest batch = simple("m");
+    batch.operation = llm::Operation::BatchSubmit;
+    auto no_batch = unwrap(llm::use_model(env.services(), batch));
+    CHECK(no_batch.results[0].error->message.find("no batch mode") != std::string::npos);
+    CHECK(env.transport.requests().empty());   // nothing was ever sent
+
+    // The model's own declaration (data) narrows what a request may carry.
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("fine")));
+    llm::ModelRequest structured = simple("m");
+    llm::Part j;
+    j.kind = "json";
+    j.value = Json{{"a", 1}};
+    structured.inputs = {j};
+    CHECK(unwrap(llm::use_model(env.services(), structured)).ok());
+    env.cfg.set("model_capabilities", Json{{"m", Json{{"accepts", Json::array({"text"})}}}});
+    auto narrowed = unwrap(llm::use_model(env.services(), structured));
+    CHECK(narrowed.results[0].state == llm::State::Unavailable);
+    CHECK(narrowed.results[0].error->message.find("does not accept json input") != std::string::npos);
+    // ... and a per-request model declaration wins over the setting.
+    structured.models[0].capabilities = Json{{"accepts", Json::array({"text", "json"})}};
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("again")));
+    CHECK(unwrap(llm::use_model(env.services(), structured)).ok());
+
+    // A rejected variant is reported and the chain goes on (first_success).
+    env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("second")));
+    llm::ModelRequest chain = simple("m");
+    chain.mode = "first_success";
+    chain.models = {llm::ModelSpec{"only-text", "", Json::object(), Json{{"produces", Json::array({"image"})}}},
+                    llm::ModelSpec{"m", "", Json::object()}};
+    auto both = unwrap(llm::use_model(env.services(), chain));
+    REQUIRE(both.results.size() == 2);
+    CHECK(both.results[0].state == llm::State::Unavailable);
+    CHECK(both.results[1].ok());
+  }
+
+  TEST_CASE("image generation adapter: bytes land in the blob store with a node and provenance (fake transport)") {
+    Env env;
+    auto db = loom::test::open_db(env.td.path() / "outputs.db");
+    BlobStore blobs(env.td.path() / "blobs", *db);
+    ProvenanceStore provenance(*db);
+    auto store = llm::make_output_store(blobs, &provenance, db.get());
+    env.cfg.set("provider_manifests", Json::array({Json{
+        {"id", "img"}, {"base_url", "https://img.test/v1"}, {"auth_secret", "img_key"}, {"auth_scheme", "bearer"},
+        {"metadata", Json{{"adapter", "openai_images"}}}}}));
+    env.secrets.set("img_key", "img-secret");
+    const std::string png = std::string("\x89PNG\r\n\x1a\n") + "FAKEPIXELS";
+    env.transport.expect("POST", "https://img.test/v1/images/generations",
+        Reply::json(200, Json{{"created", 1}, {"data", Json::array({Json{{"b64_json", base64::encode(png)}}})}}));
+
+    llm::ModelRequest req;
+    req.kind = "test.image";
+    req.models = {llm::ModelSpec{"image-1", "img", Json::object()}};
+    req.prompt = "a red fox";
+    req.parameters = Json{{"n", 1}, {"size", "256x256"}, {"response_format", "b64_json"}};
+    req.wants = {"image"};
+    req.referer = false;
+    req.timeout_ms = 5000;
+    auto services = env.services();
+    services.outputs = store.get();
+    auto outcome = unwrap(llm::use_model(services, req));
+    REQUIRE(outcome.results.size() == 1);
+    const auto& r = outcome.results[0];
+    INFO((r.error.has_value() ? r.error->message : std::string("no error")));
+    REQUIRE(r.ok());
+    CHECK(r.adapter == "openai_images");
+
+    CHECK(loom::test::request_json(env.transport.requests().at(0)) ==
+          Json{{"method", "POST"}, {"url", "https://img.test/v1/images/generations"},
+               {"headers", Json::array({Json::array({"Authorization", "Bearer img-secret"}),
+                                        Json::array({"Content-Type", "application/json"})})},
+               {"body", R"({"model":"image-1","prompt":"a red fox","n":1,"size":"256x256","response_format":"b64_json"})"},
+               {"timeout_ms", 5000}, {"stream", false}});
+
+    REQUIRE(r.outputs.size() == 1);
+    const llm::Part& out = r.outputs[0];
+    CHECK(out.kind == "image");
+    CHECK(out.mime == "image/png");
+    CHECK(out.bytes.empty());                         // bytes live in the store, not in the result
+    CHECK(out.blob_hash == Sha256::hex(png));
+    CHECK(unwrap(blobs.read(out.blob_hash)) == png);
+    REQUIRE_FALSE(out.node_id.empty());
+    auto node = unwrap(db->get_node(out.node_id));
+    REQUIRE(node.has_value());
+    CHECK(node->kind == "blob");
+    CHECK(node->metadata["blob_hash"] == out.blob_hash);
+    CHECK(node->metadata["produced_by"]["requested_model"] == "image-1");
+    CHECK(node->metadata["produced_by"]["adapter"] == "openai_images");
+    auto artifacts = unwrap(provenance.list_artifacts(10, "model_output"));
+    REQUIRE(artifacts.size() == 1);
+    CHECK(artifacts[0].blob_hash == out.blob_hash);
+    CHECK(r.provenance["outputs"][0]["blob_hash"] == out.blob_hash);
+    CHECK(r.provenance.dump().find("FAKEPIXELS") == std::string::npos);
+    CHECK(r.provenance.dump().find("img-secret") == std::string::npos);
+  }
+
+  TEST_CASE("image generation: refused before sending without an output store, and for text/stream requests") {
+    Env env;
+    env.cfg.set("provider_manifests", Json::array({Json{
+        {"id", "img"}, {"base_url", "https://img.test/v1"}, {"auth_secret", "img_key"}, {"auth_scheme", "bearer"},
+        {"metadata", Json{{"adapter", "openai_images"}}}}}));
+    env.secrets.set("img_key", "img-secret");
+    llm::ModelRequest req;
+    req.models = {llm::ModelSpec{"image-1", "img", Json::object()}};
+    req.prompt = "a red fox";
+    req.parameters = Json{{"response_format", "b64_json"}};
+    req.wants = {"image"};
+    auto no_store = unwrap(llm::use_model(env.services(), req));
+    CHECK(no_store.results[0].state == llm::State::Unavailable);
+    CHECK(no_store.results[0].error->message.find("no output store") != std::string::npos);
+
+    llm::ModelRequest wants_text = req;
+    wants_text.wants = {"text"};
+    CHECK(unwrap(llm::use_model(env.services(), wants_text)).results[0].error->message.find("cannot produce text") != std::string::npos);
+    llm::ModelRequest streamed = req;
+    streamed.stream = true;
+    CHECK(unwrap(llm::use_model(env.services(), streamed)).results[0].error->message.find("no stream mode") != std::string::npos);
+    CHECK(env.transport.requests().empty());
+
+    // A URL reply is a reference: no store needed, nothing is downloaded.
+    env.transport.expect("POST", "https://img.test/v1/images/generations",
+        Reply::json(200, Json{{"data", Json::array({Json{{"url", "https://cdn.test/fox.png"}}})}}));
+    llm::ModelRequest by_url = req;
+    by_url.parameters = Json{{"response_format", "url"}};
+    auto referenced = unwrap(llm::use_model(env.services(), by_url));
+    REQUIRE(referenced.results[0].ok());
+    CHECK(referenced.results[0].outputs.at(0).url == "https://cdn.test/fox.png");
+    CHECK(referenced.results[0].outputs.at(0).blob_hash.empty());
   }
 }

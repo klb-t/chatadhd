@@ -4,11 +4,13 @@
 
 #include <algorithm>
 #include <limits>
+#include <set>
 
 #include "llm/shared_gate.h"
 #include "loom/config.h"
 #include "loom/log.h"
 #include "loom/providers.h"
+#include "loom/runtime_profile.h"
 #include "loom/usage_policy.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
@@ -48,6 +50,33 @@ Json merge_parameters(const Json& shared, const Json& specific) {
   if (specific.is_object())
     for (auto it = specific.begin(); it != specific.end(); ++it) out[it.key()] = it.value();
   return out;
+}
+
+bool contains(const std::vector<std::string>& v, std::string_view s) {
+  return std::find(v.begin(), v.end(), s) != v.end();
+}
+
+std::string list_text(const std::vector<std::string>& v) {
+  if (v.empty()) return "none";
+  std::string out;
+  for (const auto& s : v) out += (out.empty() ? "" : ", ") + s;
+  return out;
+}
+
+std::vector<std::string> strings_of(const Json& j) {
+  std::vector<std::string> out;
+  if (j.is_array())
+    for (const auto& e : j)
+      if (e.is_string()) out.push_back(e.get<std::string>());
+  return out;
+}
+
+// A data layer replaces exactly the fields it names.
+void layer_capabilities(Capabilities& caps, const Json* data) {
+  if (!data || !data->is_object()) return;
+  if (const Json* v = json::find(*data, "accepts")) caps.accepts = strings_of(*v);
+  if (const Json* v = json::find(*data, "produces")) caps.produces = strings_of(*v);
+  if (const Json* v = json::find(*data, "modes")) caps.modes = strings_of(*v);
 }
 
 }  // namespace
@@ -192,6 +221,74 @@ Status apply_auth(const Route& route, net::HttpRequest& request) {
   return ok_status();
 }
 
+// ── Capabilities and workflows as data ──────────────────────────────
+Result<Json> workflow_catalogue(const Services& services) {
+  std::filesystem::path root = services.data_root;
+  if (root.empty()) root = services.config.path().parent_path();
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("model_workflows", root));
+  const Json* workflows = json::find(profile.values(), "workflows");
+  return workflows && workflows->is_object() ? *workflows : Json::object();
+}
+
+Result<Capabilities> effective_capabilities(const Services& services, const Route& route, const ModelSpec& model) {
+  auto adapter = make_adapter(route.adapter);
+  if (!adapter) return Error(Errc::NotFound, "unknown model adapter '" + route.adapter + "'");
+  Capabilities caps = adapter->capabilities();
+  layer_capabilities(caps, json::find(route.metadata, "capabilities"));
+  const Json per_model = services.config.get("model_capabilities");
+  if (per_model.is_object()) layer_capabilities(caps, json::find(per_model, model.model));
+  layer_capabilities(caps, &model.capabilities);
+  return caps;
+}
+
+namespace {
+
+Error unsupported(std::string why) { return Error(Errc::Unsupported, std::move(why)); }
+
+// Rejects a request its model or workflow cannot serve, with the reason, before
+// any byte is sent.  Nothing is substituted silently.
+Status check_request(const Services& services, const ModelRequest& request, const ModelSpec& model, const Route& route,
+                     const Adapter& adapter, const CallSpec& spec, const std::set<std::string>& needed) {
+  const bool spends = request.operation == Operation::Complete || request.operation == Operation::BatchSubmit;
+  if (spends) {
+    LOOM_TRY_ASSIGN(Capabilities caps, effective_capabilities(services, route, model));
+    const std::string who = "model '" + model.model + "' (adapter " + route.adapter + ")";
+    for (const auto& kind : needed)
+      if (!contains(caps.accepts, kind))
+        return unsupported(who + " does not accept " + kind + " input; it accepts: " + list_text(caps.accepts));
+    for (const auto& kind : request.wants)
+      if (!contains(caps.produces, kind))
+        return unsupported(who + " cannot produce " + kind + "; it produces: " + list_text(caps.produces));
+    if (request.stream && !contains(caps.modes, "stream"))
+      return unsupported(who + " has no stream mode; modes: " + list_text(caps.modes));
+    if (request.operation == Operation::BatchSubmit && !contains(caps.modes, "batch"))
+      return unsupported(who + " has no batch mode; modes: " + list_text(caps.modes));
+    if (adapter.needs_output_store(spec) && !services.outputs)
+      return unsupported(who + " returns media bytes but no output store is configured (Services::outputs)");
+  }
+  if (!request.workflow.empty()) {
+    LOOM_TRY_ASSIGN(Json catalogue, workflow_catalogue(services));
+    const Json* w = json::find(catalogue, request.workflow);
+    if (!w) return unsupported("unknown workflow '" + request.workflow + "'; declare it in the model_workflows profile");
+    const std::string status = json::get_string(*w, "status", "planned");
+    if (status != "implemented")
+      return unsupported("workflow '" + request.workflow + "' is " + status + ", not implemented");
+    if (spends) {
+      const auto accepts = strings_of(w->value("accepts", Json::array()));
+      const auto produces = strings_of(w->value("produces", Json::array()));
+      for (const auto& kind : needed)
+        if (!accepts.empty() && !contains(accepts, kind))
+          return unsupported("workflow '" + request.workflow + "' does not accept " + kind + " input; it accepts: " + list_text(accepts));
+      for (const auto& kind : request.wants)
+        if (!produces.empty() && !contains(produces, kind))
+          return unsupported("workflow '" + request.workflow + "' does not produce " + kind + "; it produces: " + list_text(produces));
+    }
+  }
+  return ok_status();
+}
+
+}  // namespace
+
 // ── Preparation ─────────────────────────────────────────────────────
 Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& request, std::size_t variant) {
   if (variant >= request.models.size()) return Error(Errc::InvalidArgument, "model variant out of range");
@@ -223,7 +320,16 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
     if (!resolved.is_array()) return Error(Errc::InvalidArgument, "context resolved to a non-array");
     for (const auto& m : resolved) spec.messages.push_back(m);
   }
+  std::set<std::string> needed;
+  for (const auto& part : request.inputs) {
+    if (!known_part_kind(part.kind)) return Error(Errc::InvalidArgument, "unknown input part kind '" + part.kind + "'");
+    needed.insert(part.kind);
+    if (part.kind == "text") spec.messages.push_back(Json{{"role", "user"}, {"content", part.text}});
+    else if (part.kind == "json") spec.messages.push_back(Json{{"role", "user"}, {"content", json::dump(part.value)}});
+    else spec.parts.push_back(part);
+  }
   if (!request.prompt.empty()) spec.messages.push_back(Json{{"role", "user"}, {"content", request.prompt}});
+  if (!spec.messages.empty() || request.body.is_object() || !request.batch_requests.empty()) needed.insert("text");
   if (request.body.is_object()) {
     // Described for provenance only; the adapter sends the body as given.
     spec.body = request.body;
@@ -236,6 +342,7 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
     if (request.stream) spec.stream = true;
   }
 
+  LOOM_TRY(check_request(services, request, model, call.route, *adapter, spec, needed));
   LOOM_TRY_ASSIGN(call.request, adapter->build(call.route, request.operation, spec));
 
   call.provenance = Json{
@@ -252,7 +359,10 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
       {"parameters", spec.parameters},
       {"parameters_sha256", Sha256::hex(json::canonical(spec.parameters))},
       {"messages_sha256", Sha256::hex(json::dump(spec.messages))},
-      {"request_sha256", Sha256::hex(call.request.body)}};
+      {"request_sha256", Sha256::hex(call.request.body)},
+      {"workflow", request.workflow.empty() ? Json(nullptr) : Json(request.workflow)},
+      {"input_kinds", Json(std::vector<std::string>(needed.begin(), needed.end()))},
+      {"wants", request.wants}};
   return call;
 }
 
@@ -307,6 +417,15 @@ void finalize_provenance(VariantResult& r, const PreparedCall& call) {
   p["response_bytes"] = r.received_bytes;
   if (!r.body.empty()) p["response_sha256"] = Sha256::hex(r.body);
   if (!r.text.empty()) p["output_sha256"] = Sha256::hex(r.text);
+  if (!r.outputs.empty()) {
+    Json outs = Json::array();
+    for (const auto& part : r.outputs) {
+      Json o = part.to_json();
+      o.erase("text");  // the text itself is in the result; the record keeps references and hashes
+      outs.push_back(std::move(o));
+    }
+    p["outputs"] = std::move(outs);
+  }
   if (r.hold.is_object() && r.hold["decision"].is_object())
     p["operation_id"] = r.hold["decision"].value("operation_id", Json(nullptr));
   p["recorded_at"] = timeutil::utc_now_iso();
@@ -468,6 +587,33 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
   r.reported_model = out.reported_model;
   r.usage = out.usage;
   r.issues = out.issues;
+  if (!out.text.empty()) {
+    Part text;
+    text.kind = "text";
+    text.text = out.text;
+    r.outputs.push_back(std::move(text));
+  }
+  for (Part part : out.outputs) {
+    if (!part.bytes.empty()) {
+      if (!services.outputs) {
+        r.state = State::ParseError;
+        r.error = Error(Errc::Unavailable, "the model returned media bytes but no output store is configured");
+        break;
+      }
+      Json where = call.provenance;
+      where["output_kind"] = part.kind;
+      auto stored = services.outputs->store(part.bytes, part.mime, where);
+      if (!stored) {
+        r.state = State::ParseError;
+        r.error = Error(Errc::Io, "storing the model output failed: " + stored.error().message);
+        break;
+      }
+      part.blob_hash = json::get_string(*stored, "blob_hash");
+      part.node_id = json::get_string(*stored, "node_id");
+      part.bytes.clear();
+    }
+    r.outputs.push_back(std::move(part));
+  }
   settlement.data.received_bytes = r.received_bytes;
   settlement.data.usage = r.usage;
   settlement.data.declared = request.usage.declared.is_object() ? request.usage.declared : Json::object();

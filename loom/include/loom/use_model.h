@@ -50,6 +50,9 @@ namespace loom {
 class Config;
 class Secrets;
 class ProviderRegistry;
+class BlobStore;
+class ProvenanceStore;
+class Database;
 }  // namespace loom
 
 namespace loom::llm {
@@ -57,6 +60,48 @@ namespace loom::llm {
 inline constexpr std::string_view kProvenanceSchema = "loom.model_use/1";
 // Attribution sent to OpenAI-compatible gateways that ask for it.
 inline constexpr std::string_view kAppReferer = "https://github.com/chatadhd";
+
+// ── Typed parts: the modality-agnostic shape of inputs and outputs ──
+// A chat message is just one shape of input.  A part is text, structured JSON,
+// an image / audio / video / file reference (a blob in the storage registry or
+// a URL) or an embedding vector, optionally tied to the graph node it came from
+// or was stored as.
+inline constexpr std::string_view kPartKinds[] = {"text", "json", "image", "audio", "video", "embedding", "file_ref"};
+bool known_part_kind(std::string_view kind) noexcept;
+struct Part {
+  std::string kind;        // one of kPartKinds
+  std::string text;        // kind text
+  Json value = nullptr;    // kind json | embedding
+  std::string blob_hash;   // media / file_ref held in the blob store
+  std::string url;         // media / file_ref held elsewhere
+  std::string mime;
+  std::string node_id;     // the graph node this part is / was stored as
+  std::string bytes;       // transient: produced media awaiting the output store (never serialised)
+  Json to_json() const;    // bytes are not included
+  static Result<Part> from_json(const Json& j);
+};
+
+// What a model (through its adapter) accepts and produces, as data.  Resolution
+// order, each field replacing the previous layer's: the adapter's default, the
+// provider manifest (metadata "capabilities"), config "model_capabilities"
+// {model_id: {...}}, the request's ModelSpec::capabilities.
+struct Capabilities {
+  std::vector<std::string> accepts;    // input part kinds
+  std::vector<std::string> produces;   // output part kinds
+  std::vector<std::string> modes;      // "stream", "batch"
+  Json to_json() const;
+};
+
+// Where large outputs (media) go: the storage registry's blob placement, with
+// a graph node and an artifact record carrying the provenance.
+class OutputStore {
+ public:
+  virtual ~OutputStore() = default;
+  // Returns {"blob_hash","size","mime","node_id","artifact_id"}.
+  virtual Result<Json> store(std::string_view bytes, std::string_view mime, const Json& provenance) = 0;
+};
+// db and provenance are optional: without them only the blob is written.
+std::unique_ptr<OutputStore> make_output_store(BlobStore& blobs, ProvenanceStore* provenance, Database* db);
 
 // ── Borrowed services ───────────────────────────────────────────────
 struct Services {
@@ -73,6 +118,8 @@ struct Services {
   std::function<void(const Json&)> on_provenance;
   // Turns a `ModelRequest::context` reference into OpenAI-shaped messages.
   std::function<Result<Json>(const Json& context)> resolve_context;
+  // Receives media outputs (images, audio, video); required for those kinds.
+  OutputStore* outputs = nullptr;
 };
 
 // ── Routing (settings -> provider manifest -> adapter) ──────────────
@@ -122,6 +169,7 @@ struct ModelSpec {
   std::string model;
   std::string provider;                 // "" = the request's route
   Json parameters = Json::object();     // per-variant keys replace/extend the shared ones
+  Json capabilities = nullptr;          // {"accepts":[...],"produces":[...],"modes":[...]} for this model
 };
 
 // What the adapter needs to put one call on the wire.
@@ -137,6 +185,7 @@ struct CallSpec {
   Json batch_requests = Json::array();  // BatchSubmit: [{"custom_id","params":{...}}]
   std::string target;                   // BatchStatus: batch id; BatchResults: results URL
   Json body = nullptr;                  // a complete pre-composed body, used byte for byte
+  std::vector<Part> parts;              // typed inputs the adapter handles itself (media, files)
 };
 
 struct StreamHooks {
@@ -196,6 +245,15 @@ struct ModelRequest {
   // (chat, graph replies); model/messages/parameters then only describe it in
   // the provenance record.
   Json body = nullptr;
+  // Typed inputs beyond the messages: text and json parts are folded into user
+  // messages; other kinds go to the adapter.  `wants` lists the output kinds
+  // the caller expects (a model that cannot produce them is rejected, never
+  // silently replaced).
+  std::vector<Part> inputs;
+  std::vector<std::string> wants = {"text"};
+  // Name in the model_workflows catalogue (runtime profile).  Recorded in the
+  // provenance; unknown or `planned` names are rejected before any send.
+  std::string workflow;
   RouteSelector route;
   Operation operation = Operation::Complete;
   Json batch_requests = Json::array();
@@ -233,6 +291,7 @@ struct VariantResult {
   std::string text, reasoning, reported_model;
   Json usage = Json::object();
   std::vector<std::string> issues;            // "malformed_chunk" | "model_invalid" | "model_changed"
+  std::vector<Part> outputs;                  // typed outputs (text first; media stored via Services::outputs)
   std::string body;                           // buffered or captured body; the error body on HttpError
   std::size_t received_bytes = 0;
   bool response_limited = false;
@@ -268,6 +327,14 @@ Result<ModelOutcome> use_model(const Services& services, ModelRequest request);
 Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& request, std::size_t variant = 0);
 VariantResult execute_call(const Services& services, const ModelRequest& request, PreparedCall& call);
 
+// The named use-cases (runtime profile "model_workflows"): {name: {status,
+// title, description, accepts, produces, consumer}}.  Overlay
+// <data>/profiles/model_workflows.pack adds or changes entries.
+Result<Json> workflow_catalogue(const Services& services);
+// Capabilities of one variant after all data layers (no network).
+Result<Capabilities> effective_capabilities(const Services& services, const Route& route,
+                                            const ModelSpec& model);
+
 // The shared guard as a gate (root = usage ledger directory).  For callers
 // that admit an operation which is not itself a model call (e.g. an automatic
 // resend of many items) and settle it with declared resources.
@@ -282,6 +349,7 @@ struct Parsed {
   std::string text, reasoning, reported_model;
   Json usage = Json::object();
   std::vector<std::string> issues;
+  std::vector<Part> outputs;   // non-text outputs; media carry `bytes` until stored
 };
 
 class StreamDecoder {
@@ -298,6 +366,10 @@ class Adapter {
   virtual std::string_view family() const noexcept = 0;
   virtual Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const = 0;
   virtual bool success(Operation op, int http_status) const noexcept = 0;
+  // The family's defaults; data layers on top (see Capabilities).
+  virtual Capabilities capabilities() const = 0;
+  // True when a call with this spec yields media bytes that need Services::outputs.
+  virtual bool needs_output_store(const CallSpec&) const { return false; }
   // Buffered 2xx body -> text/usage (Errc::Parse with the caller-visible message).
   virtual Result<Parsed> parse(std::string_view body) const = 0;
   virtual std::unique_ptr<StreamDecoder> stream_decoder(const StreamHooks& hooks,

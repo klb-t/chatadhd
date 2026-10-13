@@ -7,6 +7,7 @@
 
 #include "loom/log.h"
 #include "loom/net/sse.h"
+#include "loom/util/base64.h"
 #include "loom/use_model.h"
 #include "loom/util/utf8.h"
 
@@ -124,6 +125,8 @@ class OpenAiChatAdapter final : public Adapter {
   }
 
   bool success(Operation, int http_status) const noexcept override { return http_status == 200; }
+
+  Capabilities capabilities() const override { return {{"text", "json"}, {"text"}, {"stream"}}; }
 
   Result<Parsed> parse(std::string_view body) const override {
     auto j = json::parse(body);
@@ -288,6 +291,8 @@ class AnthropicMessagesAdapter final : public Adapter {
     return http_status == 200;
   }
 
+  Capabilities capabilities() const override { return {{"text", "json"}, {"text"}, {"stream", "batch"}}; }
+
   Result<Parsed> parse(std::string_view body) const override {
     auto j = json::parse(body);
     if (!j) return Error(Errc::Parse, "invalid JSON response from messages");
@@ -309,12 +314,89 @@ class AnthropicMessagesAdapter final : public Adapter {
   }
 };
 
+// ── openai_images: OpenAI-compatible image generation ──────────────────
+std::string sniff_image_mime(std::string_view b) {
+  if (b.substr(0, 4) == "\x89PNG") return "image/png";
+  if (b.size() > 2 && static_cast<unsigned char>(b[0]) == 0xFF && static_cast<unsigned char>(b[1]) == 0xD8) return "image/jpeg";
+  if (b.size() > 12 && b.substr(0, 4) == "RIFF" && b.substr(8, 4) == "WEBP") return "image/webp";
+  if (b.substr(0, 3) == "GIF") return "image/gif";
+  return "image/png";
+}
+
+class OpenAiImagesAdapter final : public Adapter {
+ public:
+  std::string_view family() const noexcept override { return "openai_images"; }
+
+  Capabilities capabilities() const override { return {{"text"}, {"image"}, {}}; }
+
+  // Inline base64 is the only way media bytes arrive; "url" replies are references.
+  bool needs_output_store(const CallSpec& spec) const override {
+    return json::get_string(spec.parameters, "response_format") == "b64_json";
+  }
+
+  Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
+    if (op != Operation::Complete) return Error(Errc::Unsupported, "adapter openai_images has no batch operations");
+    std::string prompt;
+    for (auto it = spec.messages.rbegin(); it != spec.messages.rend(); ++it) {
+      if (json::get_string(*it, "role") == "user" && it->contains("content") && (*it)["content"].is_string()) {
+        prompt = (*it)["content"].get<std::string>();
+        break;
+      }
+    }
+    if (prompt.empty()) return Error(Errc::InvalidArgument, "image generation needs a text prompt");
+    net::HttpRequest req;
+    req.method = "POST";
+    std::string path = route.endpoint;
+    if (path.empty()) path = json::get_string(route.metadata, "images_path", "/images/generations");
+    req.url = join_url(route.base_url, path);
+    LOOM_TRY(apply_auth(route, req));
+    req.headers.emplace_back(route.content_type_header, "application/json");
+    for (const auto& h : route.default_headers) req.headers.push_back(h);
+    if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
+    if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
+    for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    Json body{{"model", spec.model}, {"prompt", prompt}};
+    for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
+    req.body = json::dump(body);
+    req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
+    return req;
+  }
+
+  bool success(Operation, int http_status) const noexcept override { return http_status == 200; }
+
+  Result<Parsed> parse(std::string_view body) const override {
+    auto j = json::parse(body);
+    if (!j) return Error(Errc::Parse, "invalid JSON response from image generation");
+    const Json* data = json::find(*j, "data");
+    if (!data || !data->is_array()) return Error(Errc::Parse, "response missing data");
+    Parsed out;
+    for (const auto& item : *data) {
+      Part part;
+      part.kind = "image";
+      if (const std::string b64 = json::get_string(item, "b64_json"); !b64.empty()) {
+        LOOM_TRY_ASSIGN(part.bytes, base64::decode(b64));
+        part.mime = sniff_image_mime(part.bytes);
+      } else if (const std::string url = json::get_string(item, "url"); !url.empty()) {
+        part.url = url;
+      } else {
+        return Error(Errc::Parse, "image entry has neither b64_json nor url");
+      }
+      out.outputs.push_back(std::move(part));
+    }
+    if (const Json* u = json::find(*j, "usage"); u && u->is_object()) out.usage = *u;
+    return out;
+  }
+
+  std::unique_ptr<StreamDecoder> stream_decoder(const StreamHooks&, const CancelToken*) const override { return nullptr; }
+};
+
 struct AdapterTable {
   std::mutex mu;
   std::map<std::string, AdapterFactory, std::less<>> factories;
   AdapterTable() {
     factories["openai_chat"] = [] { return std::make_unique<OpenAiChatAdapter>(); };
     factories["anthropic_messages"] = [] { return std::make_unique<AnthropicMessagesAdapter>(); };
+    factories["openai_images"] = [] { return std::make_unique<OpenAiImagesAdapter>(); };
   }
 };
 
