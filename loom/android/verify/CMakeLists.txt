@@ -70,6 +70,9 @@ set_target_properties(loom_jni_host PROPERTIES
 
 # ── plain-javac Java sources (LoomNative/LoomCallbacks/LoomHttp mirrors + the test) ──
 file(GLOB_RECURSE LOOM_VERIFY_JAVA_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/java/*.java")
+# The connection policy is security-critical: compile the app's own file, never a copy.
+list(APPEND LOOM_VERIFY_JAVA_SOURCES
+  "${CMAKE_CURRENT_SOURCE_DIR}/../app/src/main/java/com/chatadhd/android/ConnectionPolicy.java")
 set(LOOM_VERIFY_CLASSES_DIR "${CMAKE_CURRENT_BINARY_DIR}/classes")
 add_custom_command(
   OUTPUT "${LOOM_VERIFY_CLASSES_DIR}/.built"
