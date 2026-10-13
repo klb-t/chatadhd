@@ -952,4 +952,73 @@ Status reconcile_openai_member_checkpoint(Env& env, OpenAiCtx& cx, const std::st
   return transaction.commit();
 }
 
+
+// ── provider table entry (B-MOD-05) ─────────────────────────────────
+namespace {
+bool openai_binding_member(const std::string& rel) {
+  const auto base = base_of(rel);
+  return base == "message_feedback.json" || base == "shared_conversations.json" ||
+      (rel.rfind("textdocs/", 0) == 0 && rel.size() >= 5 && rel.compare(rel.size() - 5, 5, ".json") == 0);
+}
+
+class OpenAiRun final : public ProviderRun {
+ public:
+  explicit OpenAiRun(Env& env) : env_(env) { oa_.env = &env; }
+
+  void parse_conversation(const Json& el, int index, const std::string& member, ConvModel& out,
+                          Counts& counts) override {
+    parse_openai_conversation(el, index, member, oa_, out, counts);
+  }
+  void message_locator(Json& metadata, const MsgModel& message, std::size_t message_index,
+                       const std::string& conversation_pointer) const override {
+    metadata["source_key"] = message.key;
+    metadata["traversal_index"] = message_index;
+    metadata["json_pointer"] = conversation_pointer + "/mapping/" + pointer_token(message.key) + "/message";
+  }
+  void conversation_written(const ConvModel& cm, const std::string& db_id) override {
+    if (!cm.key.empty()) oa_.conv_db_id[cm.key] = db_id;
+  }
+  void begin_archive(const std::vector<Member>& entries, const std::string& prefix) override {
+    for (const auto& e : entries) {
+      if (e.rel.rfind(prefix, 0) != 0) continue;
+      const std::string sub = e.rel.substr(prefix.size());
+      if (AssetIndex::is_asset(sub)) assets_.add(sub, e.abs, e.size);
+    }
+    oa_.assets = &assets_;
+  }
+  std::optional<Skip> skip_member(const std::string& rel, const std::string& sub, bool under_prefix) override {
+    if (under_prefix && AssetIndex::is_asset(sub)) return Skip{"asset"};
+    if (base_of(rel) == "chat.html")
+      return Skip{"offline_viewer_skipped",
+                  Json{{"reason", "duplicate rendering of conversations.json; bytes kept in the source archive"}}};
+    return std::nullopt;
+  }
+  std::optional<std::string> blocked(const std::string& sub, bool conversation_bindings_failed) const override {
+    if (conversation_bindings_failed && openai_binding_member(sub))
+      return "conversation bindings unavailable after conversation interpretation failed";
+    return std::nullopt;
+  }
+  Result<bool> import_member(const std::string& sub, const fs::path& abs, Report& rep) override {
+    return import_openai_member(env_, oa_, sub, abs, rep);
+  }
+  Status reconcile_prior(Checkpoint& prior, const Member& member, const std::string& provider_member) override {
+    if (!openai_binding_member(provider_member) || json::get_int(prior.metadata, "binding_version") >= 1) return {};
+    LOOM_TRY(reconcile_openai_member_checkpoint(env_, oa_, provider_member, member.abs));
+    prior.metadata["binding_version"] = 1;
+    return write_checkpoint(env_, member.rel, member.archive_index, -1, "", prior.metadata);
+  }
+  void finish(Report& rep) override { assets_.finish(env_, rep); }
+
+ private:
+  Env& env_;
+  OpenAiCtx oa_;
+  AssetIndex assets_;
+};
+}  // namespace
+
+ProviderHandlers openai_provider() {
+  return ProviderHandlers{"openai", {"mapping"}, "conversations-",
+                          [](Env& env) -> std::unique_ptr<ProviderRun> { return std::make_unique<OpenAiRun>(env); }};
+}
+
 }  // namespace loom::xport

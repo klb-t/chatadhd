@@ -30,6 +30,7 @@
 #include <filesystem>
 #include <functional>
 #include <map>
+#include <memory>
 #include <optional>
 #include <set>
 #include <string>
@@ -239,6 +240,76 @@ struct AnthropicCtx {
   std::map<std::string, std::string> project_db_id;  // project uuid -> node id
 };
 bool import_anthropic_member(Env& env, AnthropicCtx& cx, const std::string& rel, const fs::path& abs, Report& rep);
+
+
+// ── provider table (B-MOD-05) ──
+// One archive member as seen by the provider hooks.
+struct Member {
+  std::string rel;
+  fs::path abs;
+  std::int64_t size = 0;
+  std::int64_t archive_index = 0;
+  Json materialization = Json::object();
+};
+
+
+// Per-run state + behaviour of one provider. The driver (export_archive.cpp)
+// holds one instance per registered provider and only calls these hooks; it
+// never names a provider.
+struct ProviderRun {
+  struct Skip { std::string disposition; Json extra = Json::object(); };
+  virtual ~ProviderRun() = default;
+  virtual void parse_conversation(const Json& el, int index, const std::string& member, ConvModel& out,
+                                  Counts& counts) = 0;
+  // Fills the per-message source locator (metadata is messages.metadata["export"]).
+  virtual void message_locator(Json& metadata, const MsgModel& message, std::size_t message_index,
+                               const std::string& conversation_pointer) const = 0;
+  virtual void conversation_written(const ConvModel&, const std::string& /*db_id*/) {}
+  // Archive start: `prefix` is the directory holding the conversation files.
+  virtual void begin_archive(const std::vector<Member>& /*entries*/, const std::string& /*prefix*/) {}
+  virtual int member_rank(const std::string& /*rel*/) const { return 0; }   // lower runs first (stable)
+  virtual std::optional<Skip> skip_member(const std::string& /*rel*/, const std::string& /*sub*/,
+                                          bool /*under_prefix*/) { return std::nullopt; }
+  // A reason (error text) when the member must not be interpreted now.
+  virtual std::optional<std::string> blocked(const std::string& /*sub*/, bool /*conversation_bindings_failed*/) const {
+    return std::nullopt;
+  }
+  virtual Result<bool> import_member(const std::string& sub, const fs::path& abs, Report& rep) = 0;
+  virtual void member_failed(const std::string& /*sub*/) {}
+  // Cross-member id bindings, journaled with every member checkpoint
+  // (checkpoint metadata key "projects" for compatibility with existing journals).
+  virtual Json bindings() const { return Json::object(); }
+  virtual void set_bindings(const Json&) {}
+  virtual void merge_bindings(const Json&) {}
+  // Forward repair of an older completed member journal.
+  virtual Status reconcile_prior(Checkpoint& /*prior*/, const Member& /*member*/, const std::string& /*provider_member*/) {
+    return {};
+  }
+  virtual void finish(Report& /*rep*/) {}
+};
+
+struct ProviderHandlers {
+  std::string name;                          // report "provider" / source "import:<name>"
+  std::vector<std::string> element_keys;     // an object holding any of these keys is this provider's conversation
+  std::string shard_prefix;                  // conversation files "<prefix>NNN.json" belong to this provider ("" = none)
+  std::function<std::unique_ptr<ProviderRun>(Env&)> make_run;
+};
+
+class ProviderRegistry {
+ public:
+  static ProviderRegistry& instance();     // seeded with the built-in providers
+  void add(ProviderHandlers handlers);     // replaces same name, else appends (detection order)
+  const ProviderHandlers* find(std::string_view name) const;
+  const ProviderHandlers* claim_element(const Json& element) const;
+  const ProviderHandlers* claim_shard(std::string_view base) const;
+  const std::vector<ProviderHandlers>& all() const noexcept { return handlers_; }
+
+ private:
+  std::vector<ProviderHandlers> handlers_;
+};
+ProviderHandlers openai_provider();     // export_openai.cpp
+ProviderHandlers anthropic_provider();  // export_anthropic.cpp
+std::string pointer_token(std::string_view key);  // RFC 6901 escaping
 
 // Heuristic conversation extraction for exports no provider rule knows.
 // Returns the number of conversations created.

@@ -3,6 +3,7 @@
 #include "loom/db.h"
 #include "loom/event_bus.h"
 #include "loom/importer.h"
+#include "import/export_internal.h"
 #include "test_helpers.h"
 
 using namespace loom;
@@ -48,5 +49,16 @@ TEST_SUITE("import") {
     CHECK(imp.formats().mime("zip") == "application/zip");
     CHECK(imp.formats().mime("nope") == "application/octet-stream");
     CHECK(imp.formats().find("nope") == nullptr);
+  }
+
+  TEST_CASE("provider registry: elements and shard names are claimed by table entries") {
+    const auto& reg = xport::ProviderRegistry::instance();
+    REQUIRE(reg.find("openai") != nullptr);
+    REQUIRE(reg.find("anthropic") != nullptr);
+    CHECK(reg.claim_element(Json{{"mapping", Json::object()}})->name == "openai");
+    CHECK(reg.claim_element(Json{{"chat_messages", Json::array()}})->name == "anthropic");
+    CHECK(reg.claim_element(Json{{"x", 1}}) == nullptr);
+    CHECK(reg.claim_shard("conversations-001.json")->name == "openai");
+    CHECK(reg.claim_shard("users.json") == nullptr);
   }
 }

@@ -19,20 +19,8 @@ namespace fs = std::filesystem;
 namespace idt = importer_detail;
 using namespace xport;
 
-namespace xport {
-Status reconcile_openai_member_checkpoint(Env&, OpenAiCtx&, const std::string&, const fs::path&);
-}
-
 namespace {
 constexpr std::string_view kLog = "loom.import.export";
-
-struct Member {
-  std::string rel;
-  fs::path abs;
-  std::int64_t size = 0;
-  std::int64_t archive_index = 0;
-  Json materialization = Json::object();
-};
 
 bool safe_relpath(const fs::path& rel) {
   if (rel.empty() || rel.is_absolute()) return false;
@@ -52,22 +40,6 @@ std::string dir_of(const std::string& rel) {
 }
 int depth_of(const std::string& rel) { return static_cast<int>(std::count(rel.begin(), rel.end(), '/')); }
 bool ends_with(std::string_view s, std::string_view suf) { return s.size() >= suf.size() && s.compare(s.size() - suf.size(), suf.size(), suf) == 0; }
-
-bool openai_binding_member(const std::string& rel) {
-  const auto base = base_of(rel);
-  return base == "message_feedback.json" || base == "shared_conversations.json" ||
-      (rel.rfind("textdocs/", 0) == 0 && ends_with(rel, ".json"));
-}
-
-std::string pointer_token(std::string_view key) {
-  std::string escaped;
-  for (char character : key) {
-    if (character == '~') escaped += "~0";
-    else if (character == '/') escaped += "~1";
-    else escaped += character;
-  }
-  return escaped;
-}
 
 Json member_json(const std::string& name, std::int64_t size, std::string_view disposition, Json extra = Json::object()) {
   extra["name"] = name;
@@ -100,16 +72,16 @@ bool legacy_recognizable(const Json& doc) {
 struct Run {
   Env env;
   Report rep;
-  OpenAiCtx oa;
-  AnthropicCtx an;
-  AssetIndex assets;
+  // One state/behaviour object per registered provider (see ProviderRun).
+  std::map<std::string, std::unique_ptr<ProviderRun>> providers;
   std::vector<Conversation> convs;
   int conv_index = 0;
   std::int64_t seen_conversations = 0;
   bool conversation_bindings_failed = false;
 
   Run(Env e) : env(std::move(e)) {
-    oa.env = &env;
+    for (const auto& handlers : ProviderRegistry::instance().all())
+      providers[handlers.name] = handlers.make_run(env);
     rep.include_result_metadata = env.opts.include_result_metadata;
   }
 
@@ -140,8 +112,7 @@ struct Run {
   }
 
   // Returns false to stop (cancelled).
-  bool element(Json&& el, const std::string& member, std::int64_t idx, const std::string& provider_default,
-               const Loader& loader) {
+  bool element(Json&& el, const std::string& member, std::int64_t idx, const Loader& loader) {
     if (env.cancelled()) return false;
     if (!el.is_object()) {
       rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "unrecognized_element"},
@@ -150,20 +121,18 @@ struct Run {
       keep_element(el, member, idx, loader, "conversation element is not a JSON object");
       return true;
     }
-    const bool is_oa = json::find(el, "mapping") != nullptr;
-    const bool is_cl = json::find(el, "chat_messages") != nullptr;
-    if (!is_oa && !is_cl) {
+    const ProviderHandlers* claimed = ProviderRegistry::instance().claim_element(el);
+    if (!claimed) {
       rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "unrecognized_element"},
                                {"message", "conversation element has no supported provider structure"}});
       rep.partial = true;
       keep_element(el, member, idx, loader, "conversation element has no supported provider structure");
       return true;
     }
-    std::string prov = is_oa ? "openai" : (is_cl ? "anthropic" : provider_default);
+    ProviderRun& provider = *providers.at(claimed->name);
     ConvModel cm;
     Counts c;
-    if (prov == "openai") parse_openai_conversation(el, conv_index, member, oa, cm, c);
-    else parse_anthropic_conversation(el, conv_index, member, env, cm, c);
+    provider.parse_conversation(el, conv_index, member, cm, c);
 
     // Global import/traversal order is not an address in the source member.
     const std::string conversation_pointer = loader.wrapper ? "/conversations/" + std::to_string(idx)
@@ -178,14 +147,7 @@ struct Run {
       auto& metadata = message.export_meta;
       metadata["member"] = member;
       metadata["source_conversation_index"] = idx;
-      if (prov == "openai") {
-        metadata["source_key"] = message.key;
-        metadata["traversal_index"] = message_index;
-        metadata["json_pointer"] = conversation_pointer + "/mapping/" + pointer_token(message.key) + "/message";
-      } else {
-        metadata["json_pointer"] = conversation_pointer + "/chat_messages/" +
-            std::to_string(json::get_int(metadata, "source_index", -1));
-      }
+      provider.message_locator(metadata, message, message_index, conversation_pointer);
     }
 
     auto incomplete = [&](const char* code, const Error& error) {
@@ -228,68 +190,13 @@ struct Run {
     rep.counts.add(c);
     rep.json_leaves += cm.leaves_total;
     rep.leaves_preserved += cm.leaves_kept;
-    if (!cm.key.empty()) oa.conv_db_id[cm.key] = w->id;
+    provider.conversation_written(cm, w->id);
     Conversation returned = *w;
     if (!env.opts.include_result_metadata) returned.metadata = Json::object();
     convs.push_back(std::move(returned));
     if (env.opts.progress) env.opts.progress(static_cast<std::int64_t>(convs.size()), -1, "export");
     ++conv_index;
     return true;
-  }
-
-  // Provider auxiliary files (accounts, feedback, projects, memories, etc.)
-  // commit together with their member journal. Report deltas and project IDs
-  // are replayed so later auxiliary records retain the same bindings.
-  Status repair_project_memory_links(const Member& member, Checkpoint& checkpoint,
-                                    const std::string& provider_member) {
-    Json saved_projects = checkpoint.metadata.value("projects", Json::object());
-    bool bindings_changed = false;
-    for (const auto& [uuid, id] : an.project_db_id)
-      if (!id.empty() && json::get_string(saved_projects, uuid) != id) bindings_changed = true;
-    if (!bindings_changed) return {};
-    LoadStats stats;
-    auto document = load_json_doc(member.abs, stats, env.opts.json_max_depth);
-    if (!document) return Error(Errc::Parse, "cannot replay project memory bindings: " + stats.message);
-    const Json* memories = json::find(*document, "project_memories");
-    if (!memories || !memories->is_object()) return {};
-    Json fields = Json::object();
-    for (auto field = document->begin(); field != document->end(); ++field)
-      if (field.key() != "conversations_memory" && field.key() != "project_memories") fields[field.key()] = field.value();
-    for (auto memory = memories->begin(); memory != memories->end(); ++memory) {
-      const auto project = an.project_db_id.find(memory.key());
-      if (project == an.project_db_id.end() || project->second.empty() ||
-          json::get_string(saved_projects, memory.key()) == project->second) continue;
-      const Json record{{"scope", "project"}, {"project_uuid", memory.key()}, {"container_fields", fields}};
-      const std::string expected_record = record.dump();
-      const std::string content = memory.value().is_string() ? memory.value().get<std::string>() : "";
-      LOOM_TRY_ASSIGN(auto candidates, env.db.conn().prepare(
-          "SELECT id,content,metadata FROM nodes WHERE kind='export:memory' "
-          "AND json_extract(metadata,'$.export.provider')='anthropic' "
-          "AND json_extract(metadata,'$.export.source_id')=? "
-          "AND json_extract(metadata,'$.export.member')=? "
-          "AND json_extract(metadata,'$.export.record.project_uuid')=?"));
-      candidates.bind_all(env.checkpoint_source_id, provider_member, memory.key());
-      std::vector<std::string> matching;
-      while (true) {
-        LOOM_TRY_ASSIGN(bool row, candidates.step());
-        if (!row) break;
-        LOOM_TRY_ASSIGN(auto metadata, json::parse(candidates.get_text(2)));
-        const Json* export_data = json::find(metadata, "export");
-        const Json* prior_record = export_data ? json::find(*export_data, "record") : nullptr;
-        if (prior_record && prior_record->dump() == expected_record && candidates.get_text(1) == content)
-          matching.push_back(candidates.get_text(0));
-      }
-      if (matching.size() != 1)
-        return Error(Errc::Conflict, "cannot identify one preserved project memory for binding repair: " + memory.key());
-      LOOM_TRY_ASSIGN(auto existing, env.db.conn().query_int(
-          "SELECT COUNT(*) FROM links WHERE src=? AND dst=? AND link_type='part_of'", matching[0], project->second));
-      if (existing.value_or(0) == 0) {
-        LOOM_TRY(env.db.create_link(matching[0], project->second, "part_of", 1.0, Json::object()));
-      }
-      saved_projects[memory.key()] = project->second;
-    }
-    checkpoint.metadata["projects"] = std::move(saved_projects);
-    return write_checkpoint(env, member.rel, member.archive_index, -1, "", checkpoint.metadata);
   }
 
   Result<bool> checkpoint_member(const Member& member, const std::function<Result<bool>()>& handle,
@@ -324,13 +231,9 @@ struct Run {
       }
     }
     if (prior) {
-      if (!raw_retention && rep.provider == "anthropic" && base_of(member.rel) == "memories.json")
-        LOOM_TRY(repair_project_memory_links(member, *prior, provider_member.empty() ? member.rel : provider_member));
-      if (!raw_retention && rep.provider == "openai" && openai_binding_member(provider_member) &&
-          json::get_int(prior->metadata, "binding_version") < 1) {
-        LOOM_TRY(reconcile_openai_member_checkpoint(env, oa, provider_member, member.abs));
-        prior->metadata["binding_version"] = 1;
-        LOOM_TRY(write_checkpoint(env, member.rel, member.archive_index, -1, "", prior->metadata));
+      if (!raw_retention) {
+        if (auto active = providers.find(rep.provider); active != providers.end())
+          LOOM_TRY(active->second->reconcile_prior(*prior, member, provider_member));
       }
       const Json& delta = prior->metadata["report"];
       rep.counts.add(Counts::from_json(delta["counts"]));
@@ -340,8 +243,7 @@ struct Run {
       rep.repairs.update(delta["repairs"]);
       rep.partial = rep.partial || delta.value("partial", false);
       if (const Json* projects = json::find(prior->metadata, "projects"); projects && projects->is_object())
-        for (auto project = projects->begin(); project != projects->end(); ++project)
-          an.project_db_id[project.key()] = project.value().get<std::string>();
+        for (auto& [name, state] : providers) state->merge_bindings(*projects);
       ++rep.resumed_members;
       LOOM_TRY(transaction.commit());
       return true;
@@ -349,10 +251,16 @@ struct Run {
     const auto old_counts = rep.counts.to_json();
     const auto old_errors = rep.errors.size(), old_warnings = rep.warnings.size(), old_unknown = rep.unknown_members.size();
     const auto old_repairs = rep.repairs;
-    const auto old_projects = an.project_db_id;
+    const auto bindings_now = [&] {
+      Json all = Json::object();
+      for (auto& [name, state] : providers) all.update(state->bindings());
+      return all;
+    };
+    std::vector<std::pair<ProviderRun*, Json>> old_bindings;
+    for (auto& [name, state] : providers) old_bindings.emplace_back(state.get(), state->bindings());
     auto failed = [&](const Error& error) -> Result<bool> {
       rep.counts = Counts::from_json(old_counts);
-      an.project_db_id = old_projects;
+      for (auto& [state, saved_bindings] : old_bindings) state->set_bindings(saved_bindings);
       return error;
     };
     env.write_error.reset();
@@ -380,7 +288,7 @@ struct Run {
     auto saved = write_checkpoint(env, member.rel, member.archive_index, source_index, "",
                                  Json{{"kind", raw_retention ? "raw_member" : "member"},
                                       {"binding_version", raw_retention ? 0 : 1},
-                                      {"report", delta}, {"projects", an.project_db_id}});
+                                      {"report", delta}, {"projects", bindings_now()}});
     if (!saved) return failed(saved.error());
     auto committed = transaction.commit();
     if (!committed) return failed(committed.error());
@@ -551,7 +459,8 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
   };
 
   // ---------------------------------------------------------------- provider export
-  std::string provider = "unknown";
+  const auto& registry = ProviderRegistry::instance();
+  const ProviderHandlers* active = nullptr;  // provider that owns this archive's conversation files
   if (have_conv_files) {
     std::vector<const Member*> conv_files;
     for (const auto& e : entries) {
@@ -563,33 +472,24 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
       L.read_chunk_bytes = opts.json_read_chunk_bytes; L.max_depth = opts.json_max_depth;
       L.cancelled = [&] { return run.env.cancelled(); };
       L.element = [&](Json&& el, std::int64_t) {
-        if (el.is_object()) {
-          if (json::find(el, "mapping")) provider = "openai";
-          else if (json::find(el, "chat_messages")) provider = "anthropic";
-        }
-        return provider == "unknown";
+        if (const ProviderHandlers* claimed = registry.claim_element(el)) active = claimed;
+        return active == nullptr;
       };
       (void)load_json_file(f->abs, L);
-      if (provider != "unknown") break;
+      if (active) break;
     }
-    if (provider == "unknown") {
+    if (!active) {
       for (const Member* f : conv_files) {
-        std::string b = base_of(f->rel);
-        if (b.rfind("conversations-", 0) == 0) provider = "openai";  // shard naming is ChatGPT-specific
+        if (const ProviderHandlers* claimed = registry.claim_shard(base_of(f->rel))) active = claimed;  // shard naming
       }
     }
   }
 
-  if (provider == "openai" || provider == "anthropic") {
+  if (active) {
+    const std::string provider = active->name;
+    ProviderRun& provider_run = *run.providers.at(provider);
     rep.provider = provider;
-    if (provider == "openai") {
-      for (const auto& e : entries) {
-        if (e.rel.rfind(prefix, 0) != 0) continue;
-        std::string sub = e.rel.substr(prefix.size());
-        if (AssetIndex::is_asset(sub)) run.assets.add(sub, e.abs, e.size);
-      }
-      run.oa.assets = &run.assets;
-    }
+    provider_run.begin_archive(entries, prefix);
     // 1. conversations
     for (const auto& e : entries) {
       if (dir_of(e.rel) != prefix || !is_conversation_file(base_of(e.rel))) continue;
@@ -599,7 +499,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
       L.cancelled = [&] { return run.env.cancelled(); };
       L.archive_index = e.archive_index;
       const std::string member = e.rel;
-      L.element = [&](Json&& el, std::int64_t idx) { return run.element(std::move(el), member, idx, provider, L); };
+      L.element = [&](Json&& el, std::int64_t idx) { return run.element(std::move(el), member, idx, L); };
       L.bad_element = [&](std::int64_t idx, const std::string& why) {
         run.conversation_bindings_failed = true;
         run.rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "invalid_element"}, {"message", why}});
@@ -616,23 +516,15 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
       if (dir_of(e.rel) == prefix && is_conversation_file(base_of(e.rel))) continue;
       rest.push_back(&e);
     }
-    if (provider == "anthropic") {
-      std::stable_sort(rest.begin(), rest.end(), [](const Member* a, const Member* b) {
-        auto rank = [](const std::string& r) { return base_of(r) == "projects.json" ? 0 : 1; };
-        return rank(a->rel) < rank(b->rel);
-      });
-    }
+    std::stable_sort(rest.begin(), rest.end(), [&](const Member* a, const Member* b) {
+      return provider_run.member_rank(a->rel) < provider_run.member_rank(b->rel);
+    });
     std::vector<Json> nested_parts;
-    bool anthropic_projects_failed = false;
     for (const Member* m : rest) {
       if (run.env.cancelled()) break;
       const std::string sub = m->rel.rfind(prefix, 0) == 0 ? m->rel.substr(prefix.size()) : m->rel;
-      if (provider == "openai" && m->rel.rfind(prefix, 0) == 0 && AssetIndex::is_asset(sub)) {
-        disp(*m, "asset");
-        continue;
-      }
-      if (provider == "openai" && base_of(m->rel) == "chat.html") {
-        disp(*m, "offline_viewer_skipped", Json{{"reason", "duplicate rendering of conversations.json; bytes kept in the source archive"}});
+      if (auto skipped = provider_run.skip_member(m->rel, sub, m->rel.rfind(prefix, 0) == 0)) {
+        disp(*m, skipped->disposition, skipped->extra);
         continue;
       }
       bool handled = false;
@@ -641,18 +533,15 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         // A memory's project link is part of its interpretation. Retaining it
         // before a failed projects member recovers must not checkpoint an
         // apparently successful record with its project binding omitted.
-        const bool unavailable_conversation = provider == "openai" && run.conversation_bindings_failed && openai_binding_member(sub);
-        Result<bool> interpreted = unavailable_conversation
-            ? Result<bool>(Error(Errc::Conflict, "conversation bindings unavailable after conversation interpretation failed"))
-            : provider == "anthropic" && anthropic_projects_failed && base_of(sub) == "memories.json"
-            ? Result<bool>(Error(Errc::Conflict, "project bindings unavailable after projects interpretation failed"))
+        const auto unavailable = provider_run.blocked(sub, run.conversation_bindings_failed);
+        Result<bool> interpreted = unavailable
+            ? Result<bool>(Error(Errc::Conflict, *unavailable))
             : run.checkpoint_member(*m, [&]() -> Result<bool> {
-                return provider == "openai" ? import_openai_member(run.env, run.oa, sub, m->abs, run.rep)
-                                             : import_anthropic_member(run.env, run.an, sub, m->abs, run.rep);
+                return provider_run.import_member(sub, m->abs, run.rep);
               }, false, sub);
         if (!interpreted) {
           interpretation_failed = true;
-          if (provider == "anthropic" && base_of(sub) == "projects.json") anthropic_projects_failed = true;
+          provider_run.member_failed(sub);
           rep.errors.push_back(Json{{"member", m->rel}, {"code", "member_checkpoint_failed"}, {"message", interpreted.error().message}});
           rep.partial = true;
         } else handled = *interpreted;
@@ -682,7 +571,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
       auto kept = run.checkpoint_member(*m, [&]() -> Result<bool> { LOOM_TRY(run.unknown_member(*m)); return true; }, true);
       if (!kept) { rep.partial = true; rep.errors.push_back(Json{{"code", "member_checkpoint_failed"}, {"message", kept.error().message}}); }
     }
-    if (provider == "openai") run.assets.finish(run.env, rep);
+    provider_run.finish(rep);
     for (const auto& s : run.rep.unresolved_keys) {
       run.rep.warnings.push_back("asset key not found in the archive: " + s);
     }
@@ -712,7 +601,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
         if (!r->export_report.is_null()) {
           if (r->cancelled || (r->export_report.is_object() && r->export_report.value("partial", false))) rep.partial = true;
           const Json* pv = json::find(r->export_report, "provider");
-          if (pv && pv->is_string() && (pv->get<std::string>() == "openai" || pv->get<std::string>() == "anthropic")) any_provider_part = true;
+          if (pv && pv->is_string() && registry.find(pv->get<std::string>())) any_provider_part = true;
           rep.parts.push_back(Json{{"member", e.rel}, {"source_id", r->source_id}, {"report", r->export_report}});
         }
         for (auto& c : r->conversations) run.convs.push_back(std::move(c));
@@ -919,8 +808,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
   L.cancelled = [&] { return run.env.cancelled(); };
   L.element = [&](Json&& el, std::int64_t idx) {
     if (provider.empty()) {
-      if (el.is_object() && json::find(el, "mapping")) provider = "openai";
-      else if (el.is_object() && json::find(el, "chat_messages")) provider = "anthropic";
+      if (const ProviderHandlers* claimed = ProviderRegistry::instance().claim_element(el)) provider = claimed->name;
       else {
         if (L.top_is_array) {
           run.rep.errors.push_back(Json{{"member", member}, {"index", idx}, {"code", "unrecognized_element"},
@@ -933,7 +821,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::export_js
       }
       run.rep.provider = provider;
     }
-    return run.element(std::move(el), member, idx, provider, L);
+    return run.element(std::move(el), member, idx, L);
   };
   L.bad_element = [&](std::int64_t idx, const std::string& why) {
     // Recognition may happen after a malformed array element. Retain earlier
