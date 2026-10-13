@@ -34,6 +34,9 @@ class Rom {
   Result<Json> read(std::string_view address) const;          // "rom:<id>" or bare id
   // Counts by status: {"present":n,"partial":n,"missing":n}.
   Json status_counts() const;
+  // Catalogue with a live "sha256" on every file, computed from repo_root (the source tree or an unpacked
+  // release). A file that cannot be read gets "sha256": null and "unreadable": true; nothing is pinned in the repo.
+  Json with_hashes(const std::filesystem::path& repo_root) const;
 
   // The ROM is never written. Each returns Errc::Unsupported with reason "rom_read_only: ...".
   Status write(std::string_view address, const Json& value) const;

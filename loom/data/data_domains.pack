@@ -151,7 +151,7 @@
     {
       "path": "graph/rom.pack",
       "schema": "loom.rom_catalogue/1",
-      "sha256": "861e9e59f90f8b4c4f9f70c75c61c43ae73aa1e124793cb850d81e00dc810997",
+      "sha256": "f6699652d2748195d8755fbba40ebded48af7458b0c9c5d6f0b47b941818e3af",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

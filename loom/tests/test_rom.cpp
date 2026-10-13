@@ -38,13 +38,21 @@ TEST_SUITE("rom") {
         for (const auto& f : item["files"]) {
           const auto path = kRepo / f["path"].get<std::string>();
           CHECK_MESSAGE(std::filesystem::is_regular_file(path), path.string());
-          CHECK(f["sha256"].get<std::string>().size() == 64);
+          CHECK_FALSE(f.contains("sha256"));  // nothing is pinned in the repo
         }
       }
     }
     CHECK(unwrap(rom.read("rom:rescue_mode"))["status"] == "missing");  // rescue mode is honestly absent
     CHECK(missing >= 1);
     CHECK(rom.status_counts().contains("missing"));
+  }
+
+  TEST_CASE("hashes are computed on demand from the tree") {
+    auto rom = unwrap(rom::Rom::open());
+    const Json h = rom.with_hashes(kRepo);
+    for (const auto& item : h)
+      for (const auto& f : item["files"]) CHECK(f["sha256"].get<std::string>().size() == 64);
+    CHECK(rom.with_hashes(kRepo / "nowhere")["boot"]["files"][0]["unreadable"] == true);
   }
 
   TEST_CASE("the ROM refuses every write, with a reason") {

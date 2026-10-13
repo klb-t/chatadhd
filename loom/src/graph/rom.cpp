@@ -5,6 +5,7 @@
 
 #include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
+#include "loom/util/sha256.h"
 
 namespace loom::rom {
 
@@ -73,6 +74,20 @@ Json Rom::status_counts() const {
   for (auto it = items_.begin(); it != items_.end(); ++it) {
     const std::string s = json::get_string(it.value(), "status", "unknown");
     out[s] = out.contains(s) ? out[s].get<std::int64_t>() + 1 : 1;
+  }
+  return out;
+}
+
+Json Rom::with_hashes(const std::filesystem::path& repo_root) const {
+  Json out = items_;
+  for (auto& item : out.items()) {
+    auto files = item.value().find("files");
+    if (files == item.value().end() || !files->is_array()) continue;
+    for (auto& f : *files) {
+      auto h = sha256_file_hex(repo_root / json::get_string(f, "path"));
+      if (h) f["sha256"] = *h;
+      else { f["sha256"] = nullptr; f["unreadable"] = true; }
+    }
   }
   return out;
 }

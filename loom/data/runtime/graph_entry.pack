@@ -2344,24 +2344,19 @@
           "status": "partial",
           "files": [
             {
-              "path": "loom/data/pack.json",
-              "sha256": "1f29f136a9f939191dad5b8c7cf2ad86e428c8d56db891806c0d89fa84fd6284"
+              "path": "loom/data/pack.json"
             },
             {
-              "path": "loom/data/runtime/runtime_paths.pack",
-              "sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22"
+              "path": "loom/data/runtime/runtime_paths.pack"
             },
             {
-              "path": "loom/include/loom/config.h",
-              "sha256": "6b8a8cc22bec961e989d30e047b22efea3271f1b9803cd304d005737eaf3ae28"
+              "path": "loom/include/loom/config.h"
             },
             {
-              "path": "loom/src/core/config.cpp",
-              "sha256": "42bbe385964814a555b6cd9399e019ed5df6f70bf92ea935dcf5ad74e753d4b7"
+              "path": "loom/src/core/config.cpp"
             },
             {
-              "path": "loom/src/util/fs.cpp",
-              "sha256": "3a0202d4a38159c4ce28c8c141d2f9a86bccab18e9879c36cc7ea551364594aa"
+              "path": "loom/src/util/fs.cpp"
             }
           ],
           "gaps": [
@@ -2379,28 +2374,22 @@
           "status": "present",
           "files": [
             {
-              "path": "loom/data/graph/axes.pack",
-              "sha256": "290a3a4bb57ba6da8c53a359e87b15c48d1bb78c1f3f825fbddc6ecf1add9592"
+              "path": "loom/data/graph/axes.pack"
             },
             {
-              "path": "loom/data/graph/classes.pack",
-              "sha256": "c90b607d4edad0fdc5c57a214ae5896e6ffd68a263b5885b00f5e3b3cefa4b9b"
+              "path": "loom/data/graph/classes.pack"
             },
             {
-              "path": "loom/data/graph/parties.pack",
-              "sha256": "a518de41b77c523fb7bf510e832c4689c1a68a9a182dac240ea09cd3d93ec3d0"
+              "path": "loom/data/graph/parties.pack"
             },
             {
-              "path": "loom/data/graph/properties.pack",
-              "sha256": "fac12dd46d867d7959dae438e7cf764495d6d33ecf7bb07bc9390da34760ffd7"
+              "path": "loom/data/graph/properties.pack"
             },
             {
-              "path": "loom/data/graph/scopes.pack",
-              "sha256": "9dad7d2a2a711e37d6c0afe4d819c845e014ed27abc3ca964179b3e15535c837"
+              "path": "loom/data/graph/scopes.pack"
             },
             {
-              "path": "loom/data/schema/types.json",
-              "sha256": "7198c1c72571b1edb3ede3d49ff30332a6f3943eabbfb40d16d86f50b0753084"
+              "path": "loom/data/schema/types.json"
             }
           ],
           "gaps": []
@@ -2416,52 +2405,40 @@
           "status": "present",
           "files": [
             {
-              "path": "loom/data/runtime/action_rules.pack",
-              "sha256": "d227c1684702283a601df0c3daeeb14d1b75bcd4910880c5f3a22cdda5ec3d54"
+              "path": "loom/data/runtime/action_rules.pack"
             },
             {
-              "path": "loom/data/runtime/actions.pack",
-              "sha256": "fb7d8f7da07cf9dcc508a1a50224deff7b59483198f0a0e5f7a87b6352f5a85b"
+              "path": "loom/data/runtime/actions.pack"
             },
             {
-              "path": "loom/include/loom/action_rules.h",
-              "sha256": "a712a3b5035465839b026fb95e9a305986d619eab8717b482b71076ab16dbe1a"
+              "path": "loom/include/loom/action_rules.h"
             },
             {
-              "path": "loom/include/loom/action_table.h",
-              "sha256": "6123c11d877a98093c01b1fe7cb53187141e1aafe76efbcc38a6baaf54e6b344"
+              "path": "loom/include/loom/action_table.h"
             },
             {
-              "path": "loom/src/actions/chain.cpp",
-              "sha256": "626325425a6c7d2232157fddb98a827b5eaddb70fcb00591013905443bca09fc"
+              "path": "loom/src/actions/chain.cpp"
             },
             {
-              "path": "loom/src/actions/element.cpp",
-              "sha256": "52a12722b8301b0f4c6ce9c3f57197ffc24ef8069cdfb1658f743aa0d15cbb0f"
+              "path": "loom/src/actions/element.cpp"
             },
             {
-              "path": "loom/src/actions/engine.cpp",
-              "sha256": "f1bdd31f9fab47e7a7ec4b05bfd088e071d758f1757b8dd61d8c82c89bc60ae8"
+              "path": "loom/src/actions/engine.cpp"
             },
             {
-              "path": "loom/src/actions/query.cpp",
-              "sha256": "5de832e2869a48605217fcfb03df3464e93276da68de92162b73628596779ec1"
+              "path": "loom/src/actions/query.cpp"
             },
             {
-              "path": "loom/src/actions/route.cpp",
-              "sha256": "5d61d6a4fc8138bb8127d40e8e9fba96bf063d797d55f7e943b6e6df1d0e3d66"
+              "path": "loom/src/actions/route.cpp"
             },
             {
-              "path": "loom/src/actions/run.cpp",
-              "sha256": "a8c05b11324070e0b57fe51e252c7db118d66bc7abcbc9bfc0c136e10809e30b"
+              "path": "loom/src/actions/run.cpp"
             },
             {
-              "path": "loom/src/actions/run_store.cpp",
-              "sha256": "5ede415207e5712b57c106c6476b6ab52a525e6c98ff6a11aed59a2bca4d15a7"
+              "path": "loom/src/actions/run_store.cpp"
             },
             {
-              "path": "loom/src/actions/runner.cpp",
-              "sha256": "9a5a1e2b402e429822256f1e2aa4c72aa2fd95970f6f3caa908a0136020ef77f"
+              "path": "loom/src/actions/runner.cpp"
             }
           ],
           "gaps": []
@@ -2477,52 +2454,40 @@
           "status": "partial",
           "files": [
             {
-              "path": "loom/src/crypto/backend.cpp",
-              "sha256": "cd619cfe136508c0dc2f661fb05615a3344e91892976b9d9d76f6db897d635ad"
+              "path": "loom/src/crypto/backend.cpp"
             },
             {
-              "path": "loom/src/crypto/crypto.cpp",
-              "sha256": "e79f2105d3b275a85ba969dc5a5f1871cfb89a849cd26e7d3e76eace9c30a738"
+              "path": "loom/src/crypto/crypto.cpp"
             },
             {
-              "path": "loom/src/github/github_sync.cpp",
-              "sha256": "b18dd8d5ec7d6a47b7de6baf4bf468e0f1d874b5a7e8e16ebe98f929a7a2d760"
+              "path": "loom/src/github/github_sync.cpp"
             },
             {
-              "path": "loom/src/llm/adapters.cpp",
-              "sha256": "c692e1c1e3ece558dcb0775a44aea773dd37622fdc65bf201db3fbf1e0d92f52"
+              "path": "loom/src/llm/adapters.cpp"
             },
             {
-              "path": "loom/src/llm/use_model.cpp",
-              "sha256": "6a87e75f066cf840299a58985ad0a709d69f48f0dd67d4e4aa36987685130d36"
+              "path": "loom/src/llm/use_model.cpp"
             },
             {
-              "path": "loom/src/media/media_providers.cpp",
-              "sha256": "592927c283ca413e76825e1479f8dbda023077121578fd6b4483bc0e698c5025"
+              "path": "loom/src/media/media_providers.cpp"
             },
             {
-              "path": "loom/src/providers/providers.cpp",
-              "sha256": "fd64fbcb42c7e92efe8b28f0d42c31184f54937080ba99e66c4f38ae50bde1f5"
+              "path": "loom/src/providers/providers.cpp"
             },
             {
-              "path": "loom/src/storage/gdrive_backend.cpp",
-              "sha256": "82eea7ab52f8d619f114e25fec1a68f1d8d2fe176774d0184b8b6142e0fce649"
+              "path": "loom/src/storage/gdrive_backend.cpp"
             },
             {
-              "path": "loom/src/storage/local_backend.cpp",
-              "sha256": "33b19d9387fc791e8c89d0ef61a299fd02dd16d0054e18e1650b2941cfaf1595"
+              "path": "loom/src/storage/local_backend.cpp"
             },
             {
-              "path": "loom/src/storage/s3_backend.cpp",
-              "sha256": "320e174991a0e20666f248023dfe35bc14c4943d8e1b4a80644b41c3bc8e3b9e"
+              "path": "loom/src/storage/s3_backend.cpp"
             },
             {
-              "path": "loom/src/storage/storage_backend.cpp",
-              "sha256": "8f2a1d0b664dd9a5f1759041900a6bc593135c873a7be79bbde2d739e50ad79a"
+              "path": "loom/src/storage/storage_backend.cpp"
             },
             {
-              "path": "loom/src/storage/webdav_backend.cpp",
-              "sha256": "c72fa2a82ab4246f8d8774ef6e7edd17019cbbbd16e481cef8a26e6423ba7c86"
+              "path": "loom/src/storage/webdav_backend.cpp"
             }
           ],
           "gaps": [
@@ -2540,208 +2505,157 @@
           "status": "partial",
           "files": [
             {
-              "path": "loom/data/context/runtime_preset_layers.pack",
-              "sha256": "ef0037ba511615159473545016d41b7dbd58bb39ed44328377b1608b2ad50ba4"
+              "path": "loom/data/context/runtime_preset_layers.pack"
             },
             {
-              "path": "loom/data/policy/calibration.json",
-              "sha256": "0d5c1b99b57b97f0f707ac270ca60cb3efe65e2085271b6833992bf56dda1f71"
+              "path": "loom/data/policy/calibration.json"
             },
             {
-              "path": "loom/data/policy/candidate_graph.json",
-              "sha256": "8f1fc07eeea427d71ef4f05e646709b23ed744141ff61f4014781ea1f614e736"
+              "path": "loom/data/policy/candidate_graph.json"
             },
             {
-              "path": "loom/data/policy/evidence_encoding.json",
-              "sha256": "17815a292efbb4fa1ff1d39381ae11ef59bfade1b5ebfe464bf8b68419671fc3"
+              "path": "loom/data/policy/evidence_encoding.json"
             },
             {
-              "path": "loom/data/policy/relevance.json",
-              "sha256": "992aa0a4ca657ea4b0ccd32039ea0a93639d228b064f44f0ff81f24de4cb387f"
+              "path": "loom/data/policy/relevance.json"
             },
             {
-              "path": "loom/data/policy/selection_rules.json",
-              "sha256": "b98da5d1c509e8bbafee8f13fc6c5fe4230217bb14300ffc1281803109189685"
+              "path": "loom/data/policy/selection_rules.json"
             },
             {
-              "path": "loom/data/policy/storage_security.pack",
-              "sha256": "31c195ed65b844e8dd4292b21e87b39e98138565567a1953551c2f6b8afe1151"
+              "path": "loom/data/policy/storage_security.pack"
             },
             {
-              "path": "loom/data/policy/thresholds.json",
-              "sha256": "b527c94ca4ff65651f46505420f236f958313524754b611e9a418013bdc72451"
+              "path": "loom/data/policy/thresholds.json"
             },
             {
-              "path": "loom/data/policy/usage_policy.pack",
-              "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df"
+              "path": "loom/data/policy/usage_policy.pack"
             },
             {
-              "path": "loom/data/presets/import.pack",
-              "sha256": "ff95a1127b2402c091b2ea054ea7c3f15df42dd03a6bbbea555d94720c9602af"
+              "path": "loom/data/presets/import.pack"
             },
             {
-              "path": "loom/data/presets/import_audit.pack",
-              "sha256": "588818555edbb33b217cdcf70652fdf75025cd649a31cf056cf89410fc75b6ef"
+              "path": "loom/data/presets/import_audit.pack"
             },
             {
-              "path": "loom/data/presets/import_layers.pack",
-              "sha256": "da6027861d0beae102c94992584967b141d05a30710e23a867f95deb43a682c2"
+              "path": "loom/data/presets/import_layers.pack"
             },
             {
-              "path": "loom/data/presets/import_layers.spec.pack",
-              "sha256": "b5d609eebe2dcdeed002d25bf64935ca8809f234f915cd0cbae7bff313e57733"
+              "path": "loom/data/presets/import_layers.spec.pack"
             },
             {
-              "path": "loom/data/runtime/action_rules.pack",
-              "sha256": "d227c1684702283a601df0c3daeeb14d1b75bcd4910880c5f3a22cdda5ec3d54"
+              "path": "loom/data/runtime/action_rules.pack"
             },
             {
-              "path": "loom/data/runtime/action_run.pack",
-              "sha256": "463c90631554f4b5257b1d4b5fb0274d7728c5709f7091b44cdee469a0b43e15"
+              "path": "loom/data/runtime/action_run.pack"
             },
             {
-              "path": "loom/data/runtime/actions.pack",
-              "sha256": "fb7d8f7da07cf9dcc508a1a50224deff7b59483198f0a0e5f7a87b6352f5a85b"
+              "path": "loom/data/runtime/actions.pack"
             },
             {
-              "path": "loom/data/runtime/archive.pack",
-              "sha256": "c1d34a47b5f6a5a57bf2d969338bccf7a0065e45df268d896de6e85f49489c67"
+              "path": "loom/data/runtime/archive.pack"
             },
             {
-              "path": "loom/data/runtime/chat_context.pack",
-              "sha256": "c8aca362bd027939aa49ddf1074e09cc3d73d9cceb2dd03185e3670f4a6f4d00"
+              "path": "loom/data/runtime/chat_context.pack"
             },
             {
-              "path": "loom/data/runtime/chat_reasoning.pack",
-              "sha256": "3d4fa820e87225e5c0fd5e7221c7bfa64adcdb23b43b6d4ac8bf69b4a5296b6e"
+              "path": "loom/data/runtime/chat_reasoning.pack"
             },
             {
-              "path": "loom/data/runtime/cli.pack",
-              "sha256": "ba497c4eb81aee4bab7c148360f04e98b5343cf90746453f927661b9e4e4ced6"
+              "path": "loom/data/runtime/cli.pack"
             },
             {
-              "path": "loom/data/runtime/config.pack",
-              "sha256": "6f7c11c5ad857e3e3936df7667fcc0c673ddf2e2f652ae5aef8c3d3f4d1c20cd"
+              "path": "loom/data/runtime/config.pack"
             },
             {
-              "path": "loom/data/runtime/context_goal_cues.pack",
-              "sha256": "a53f6e3a046459bd81d447fb551db68319afe38679ad0c7f5b3fa658ebd4ae1b"
+              "path": "loom/data/runtime/context_goal_cues.pack"
             },
             {
-              "path": "loom/data/runtime/economy.pack",
-              "sha256": "24756d280c6a7a936e5eba833bd8ca631bf650650d9d8b960e4ac42462ce9139"
+              "path": "loom/data/runtime/economy.pack"
             },
             {
-              "path": "loom/data/runtime/element_resolution.pack",
-              "sha256": "54c036d84ae7d2b8a01b89767d2cc57e89b81e292aa685a10759be5b7b4fc7f3"
+              "path": "loom/data/runtime/element_resolution.pack"
             },
             {
-              "path": "loom/data/runtime/github.pack",
-              "sha256": "2f2d72f6fe94f57ebe11ab90883a530266188180bd803cc72a7697f336a108f3"
+              "path": "loom/data/runtime/github.pack"
             },
             {
-              "path": "loom/data/runtime/graph_ingest.pack",
-              "sha256": "3860f807fb21dc150a09660d0d6ad452d0cd066e970462b2f4530a1a3c60e987"
+              "path": "loom/data/runtime/graph_ingest.pack"
             },
             {
-              "path": "loom/data/runtime/graph_memory.pack",
-              "sha256": "4224741a5014c5454ef0c24d36304d172fc74fe468afd4f0b0b1f541ca143a23"
+              "path": "loom/data/runtime/graph_memory.pack"
             },
             {
-              "path": "loom/data/runtime/import.pack",
-              "sha256": "0640988c7d9ff76afa9d64481280b939a1f93cc47a9b0235675446db90771af3"
+              "path": "loom/data/runtime/import.pack"
             },
             {
-              "path": "loom/data/runtime/import_audit.pack",
-              "sha256": "7e3abefa4c8dff5e0d696b24c1a4c65b89003a146ce708d2e9148f97fc912c26"
+              "path": "loom/data/runtime/import_audit.pack"
             },
             {
-              "path": "loom/data/runtime/import_formats.pack",
-              "sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3"
+              "path": "loom/data/runtime/import_formats.pack"
             },
             {
-              "path": "loom/data/runtime/intent_routing.pack",
-              "sha256": "db33cf8518a38ba8c4d6516e2f9831fb421832f6392feb67049bd23ad8ac04ea"
+              "path": "loom/data/runtime/intent_routing.pack"
             },
             {
-              "path": "loom/data/runtime/knowledge.pack",
-              "sha256": "ce1516d9fde3aa2bb0145bb9c6c1261e3422628a898cce5273f185e558f912e7"
+              "path": "loom/data/runtime/knowledge.pack"
             },
             {
-              "path": "loom/data/runtime/materialize.pack",
-              "sha256": "4dbb1e4d99a6f2332b45cbb243361cb831bd021e6a744071b3cff8732012a8f3"
+              "path": "loom/data/runtime/materialize.pack"
             },
             {
-              "path": "loom/data/runtime/media.pack",
-              "sha256": "f70e9c6fef0507a731da6074e764e115cf4cb84e3a81690d95258b06395ea0af"
+              "path": "loom/data/runtime/media.pack"
             },
             {
-              "path": "loom/data/runtime/memory.pack",
-              "sha256": "a45496645536944f1f0b5069a4d143693878fa0cdb21c4e2440408058beeaf89"
+              "path": "loom/data/runtime/memory.pack"
             },
             {
-              "path": "loom/data/runtime/model.pack",
-              "sha256": "051e961438dc6c5723860492c4ea03c352c1a880caf6bfdeb30835e26612311b"
+              "path": "loom/data/runtime/model.pack"
             },
             {
-              "path": "loom/data/runtime/net.pack",
-              "sha256": "cf27f54845174d961a05ca40aae5c54f9e2ca5f0387b6a06fb7ec4a424083389"
+              "path": "loom/data/runtime/net.pack"
             },
             {
-              "path": "loom/data/runtime/re.pack",
-              "sha256": "ed6152fd54a830cf20b831e9bb471bf9e52daf89a33c9a23a4d206bd427df508"
+              "path": "loom/data/runtime/re.pack"
             },
             {
-              "path": "loom/data/runtime/resource_method.pack",
-              "sha256": "f58c4fe2d85241ea82df9fba9bfabe019af0720467c55eb98cbe50958dd5c47f"
+              "path": "loom/data/runtime/resource_method.pack"
             },
             {
-              "path": "loom/data/runtime/resource_projection.pack",
-              "sha256": "fef92704d73264c6c086d6c92de3a13fd226799ed99922406a0802a66e9fe8a7"
+              "path": "loom/data/runtime/resource_projection.pack"
             },
             {
-              "path": "loom/data/runtime/resource_read.pack",
-              "sha256": "623bc612e54be06144d444b793aba6ff849c2dda8058fc86d7f616419948f16f"
+              "path": "loom/data/runtime/resource_read.pack"
             },
             {
-              "path": "loom/data/runtime/runtime_paths.pack",
-              "sha256": "b796635d5661d960212045a8981c16b66e5e74e6c688e0eb5cdbc90faf2f3f22"
+              "path": "loom/data/runtime/runtime_paths.pack"
             },
             {
-              "path": "loom/data/runtime/selector.pack",
-              "sha256": "0b9f3345febe2e615431f217697f003b520f64c9ca9d7444ce013ae69b4dfa7e"
+              "path": "loom/data/runtime/selector.pack"
             },
             {
-              "path": "loom/data/runtime/semantic_analyzer.pack",
-              "sha256": "e1855a8646b51903d1b33da6a138773c233f163a5da8b501273f0aa003b08fcb"
+              "path": "loom/data/runtime/semantic_analyzer.pack"
             },
             {
-              "path": "loom/data/runtime/server_accounts.pack",
-              "sha256": "77f8940eea6f8aa8163fea5d92d5e008804d1a7d115c1c72d2575df261ba0b8e"
+              "path": "loom/data/runtime/server_accounts.pack"
             },
             {
-              "path": "loom/data/runtime/settings_fields.pack",
-              "sha256": "a9902d8053861d33df26160c4071c4aabd0ca62114b4a7487d0cb87b9e1f6db3"
+              "path": "loom/data/runtime/settings_fields.pack"
             },
             {
-              "path": "loom/data/runtime/storage_security.pack",
-              "sha256": "386fc81c2cd6789f7eb5ff2b196295699d4a0af76e860e030d4e231c183125bd"
+              "path": "loom/data/runtime/storage_security.pack"
             },
             {
-              "path": "loom/data/runtime/usage_compaction.pack",
-              "sha256": "560547e13783cc62a8aaca51b73b6795a636795babf78a667726c5c6225e14c0"
+              "path": "loom/data/runtime/usage_compaction.pack"
             },
             {
-              "path": "loom/data/runtime/usage_policy.pack",
-              "sha256": "85bea77d6f935c098ef3cb6de7ffc9fc9a07282e065bd9c10834f04b7d957335"
+              "path": "loom/data/runtime/usage_policy.pack"
             },
             {
-              "path": "loom/data/runtime/util.pack",
-              "sha256": "b1b11b72251aa5afa0b90c128e7fc5d6571cde81d964da2e8aa3a2aa0600181f"
+              "path": "loom/data/runtime/util.pack"
             },
             {
-              "path": "loom/data/runtime/worker.pack",
-              "sha256": "f369ff190badf9cc67008738c9faa9551c575e07c6e4153fce270e24a07f1c7f"
+              "path": "loom/data/runtime/worker.pack"
             }
           ],
           "gaps": [
@@ -2759,28 +2673,22 @@
           "status": "partial",
           "files": [
             {
-              "path": "docs/STATE.md",
-              "sha256": "0b994cae2afe89f95f573662f7bdf67b0045ed43f55fdcd6d067d519be569c83"
+              "path": "docs/STATE.md"
             },
             {
-              "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md",
-              "sha256": "f55df391a7365f41dd4de8f0690fe4f91bc5ce3b1c078c1a8c5253672ddcd980"
+              "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md"
             },
             {
-              "path": "loom/data/philosophy/operators.json",
-              "sha256": "00bb69784f3afb3b4ec48567e01af00c173840ec53410b451b1542617c6a08e1"
+              "path": "loom/data/philosophy/operators.json"
             },
             {
-              "path": "loom/data/philosophy/principles.json",
-              "sha256": "a765d02b320e4fe493fe7d34869be31ed7ce90f5abb08ce4986de55e0d2ac40f"
+              "path": "loom/data/philosophy/principles.json"
             },
             {
-              "path": "loom/data/profiles/self.json",
-              "sha256": "338299e23bc6b8974601d72afb543d5bd19d5a7ca9fec4b6e1c4e3ea0cc3b155"
+              "path": "loom/data/profiles/self.json"
             },
             {
-              "path": "loom/data/runtime/economy.pack",
-              "sha256": "24756d280c6a7a936e5eba833bd8ca631bf650650d9d8b960e4ac42462ce9139"
+              "path": "loom/data/runtime/economy.pack"
             }
           ],
           "gaps": [
@@ -2799,20 +2707,16 @@
           "status": "partial",
           "files": [
             {
-              "path": "loom/data/policy/usage_policy.pack",
-              "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df"
+              "path": "loom/data/policy/usage_policy.pack"
             },
             {
-              "path": "loom/data/runtime/usage_policy.pack",
-              "sha256": "85bea77d6f935c098ef3cb6de7ffc9fc9a07282e065bd9c10834f04b7d957335"
+              "path": "loom/data/runtime/usage_policy.pack"
             },
             {
-              "path": "loom/src/policy/usage_policy.cpp",
-              "sha256": "6fef6475f32bdf836e1e788563855e4e2ed41b78cb475750cbf5aacb36de6b12"
+              "path": "loom/src/policy/usage_policy.cpp"
             },
             {
-              "path": "loom/src/policy/usage_policy_preset.inc",
-              "sha256": "c903963a1ea37c555ddf533739faded0ab3e279214176d2ccc910c1caaeafabf"
+              "path": "loom/src/policy/usage_policy_preset.inc"
             }
           ],
           "gaps": [
@@ -2831,24 +2735,19 @@
           "status": "present",
           "files": [
             {
-              "path": "loom/data/validation/product_literals.pack",
-              "sha256": "024121eb99319b7909af036fd76a89d2472840b3380c178c312dc5a4cf1a39fa"
+              "path": "loom/data/validation/product_literals.pack"
             },
             {
-              "path": "loom/src/db/db.cpp",
-              "sha256": "e754eb4b29fc57ef052d618fa7f9519ebfcd9356f8254f0f4a8fd7acf0959cd3"
+              "path": "loom/src/db/db.cpp"
             },
             {
-              "path": "loom/src/db/schema_sql.inc",
-              "sha256": "920f52f18a11b1241412beddcb93d5c51d74c28db517de5bd73cf8f8d6e26bb9"
+              "path": "loom/src/db/schema_sql.inc"
             },
             {
-              "path": "loom/src/model/runtime_profile.cpp",
-              "sha256": "5e816a5124f5c9272017fdd8c3eec75497d4436a308e0b6c9ca79174ff25fdc4"
+              "path": "loom/src/model/runtime_profile.cpp"
             },
             {
-              "path": "loom/src/util/product_literal_guard.py",
-              "sha256": "0ee6bd63fd0b5f4827a1bdce38b6d19943f1db190af47d68b704d8de501b4617"
+              "path": "loom/src/util/product_literal_guard.py"
             }
           ],
           "gaps": []
@@ -2878,36 +2777,28 @@
           "status": "partial",
           "files": [
             {
-              "path": "loom/include/loom/crypto.h",
-              "sha256": "8d0630cd3c1522ca692eb3fc896ba61aab9f8f58f28ffefd9099d1a9355dfd76"
+              "path": "loom/include/loom/crypto.h"
             },
             {
-              "path": "loom/include/loom/crypto_suite.h",
-              "sha256": "b3c35629bd12a546763a7c8e6b142e12d6bf38195e6458f1f1fd920e34f37080"
+              "path": "loom/include/loom/crypto_suite.h"
             },
             {
-              "path": "loom/src/crypto/envelope.cpp",
-              "sha256": "ab31f7af7eb210fdb7398f87a87c52032ccd5b67c8fc1a30819def38e67a90fc"
+              "path": "loom/src/crypto/envelope.cpp"
             },
             {
-              "path": "loom/src/crypto/hash_portable.cpp",
-              "sha256": "0cd92db2ac214ad86b32659db0bbd77f41666ff1f91a8eccdc9a70eab18ea49d"
+              "path": "loom/src/crypto/hash_portable.cpp"
             },
             {
-              "path": "loom/src/crypto/kem_xwing.cpp",
-              "sha256": "f8f0ae3904e936df265e19b75c7c552188b9413cf2b78c93fceae5eb5626f062"
+              "path": "loom/src/crypto/kem_xwing.cpp"
             },
             {
-              "path": "loom/src/crypto/sealed.cpp",
-              "sha256": "6b005626645c8af91c84a0967f0c944caaa5183b1d3a6c849c6aeab806d07e47"
+              "path": "loom/src/crypto/sealed.cpp"
             },
             {
-              "path": "loom/src/crypto/sig_hybrid.cpp",
-              "sha256": "ce918e979b7aedca42adc8e4185bf3e1912c216f3bf4a70106e639514ef1e7db"
+              "path": "loom/src/crypto/sig_hybrid.cpp"
             },
             {
-              "path": "loom/src/util/sha256.cpp",
-              "sha256": "c8d783c4ebaa9d46703a65dc228931fe2e355c2be9ac1fc26dad089f6f0b031c"
+              "path": "loom/src/util/sha256.cpp"
             }
           ],
           "gaps": [
@@ -2925,16 +2816,13 @@
           "status": "present",
           "files": [
             {
-              "path": "loom/include/loom/util/ids.h",
-              "sha256": "63162ffded704ad2b199f519e5ac9828c4a47281108dc3125379ee565a92c876"
+              "path": "loom/include/loom/util/ids.h"
             },
             {
-              "path": "loom/include/loom/util/time.h",
-              "sha256": "51d2363cd0636810e4d73f0a718f8b245857e0c9e1cb4d6843276a270b71dece"
+              "path": "loom/include/loom/util/time.h"
             },
             {
-              "path": "loom/src/util/random_ids_time.cpp",
-              "sha256": "6c214258bbda4b2f55049aea1d7c7a0a538cb076e420d7b55bc420277ac97d33"
+              "path": "loom/src/util/random_ids_time.cpp"
             }
           ],
           "gaps": []
@@ -2950,16 +2838,13 @@
           "status": "partial",
           "files": [
             {
-              "path": "loom/data/onboarding/ui.pack",
-              "sha256": "96c61354ad1447908c6cb564217dafee677b3fb7b7023f81cfcd0a38adef7f2a"
+              "path": "loom/data/onboarding/ui.pack"
             },
             {
-              "path": "loom/data/runtime/cli.pack",
-              "sha256": "ba497c4eb81aee4bab7c148360f04e98b5343cf90746453f927661b9e4e4ced6"
+              "path": "loom/data/runtime/cli.pack"
             },
             {
-              "path": "loom/data/runtime/settings_fields.pack",
-              "sha256": "a9902d8053861d33df26160c4071c4aabd0ca62114b4a7487d0cb87b9e1f6db3"
+              "path": "loom/data/runtime/settings_fields.pack"
             }
           ],
           "gaps": [
@@ -2977,24 +2862,20 @@
           "status": "partial",
           "files": [
             {
-              "path": "loom/include/loom/rom.h",
-              "sha256": "79889dc4f4b3d232fcd0312b0505b718de6cb1e13c620c8a208b333723d371e0"
+              "path": "loom/include/loom/rom.h"
             },
             {
-              "path": "loom/src/graph/rom.cpp",
-              "sha256": "5c57ac9da195cdc5e186189d2800b08fae0bcd13ca89627d7154177efd6dc919"
+              "path": "loom/src/graph/rom.cpp"
             },
             {
-              "path": "loom/tests/test_rom.cpp",
-              "sha256": "326bcb6d08996cd66004b7d041cc4a81d80e8691957ffaccd44d31dc55d11720"
+              "path": "loom/tests/test_rom.cpp"
             },
             {
-              "path": "loom/tools/gen_rom_catalogue.py",
-              "sha256": "029aa7c77ef247b254b6b8b9e9a7271c36fdc98386bfd41aad70071bd71bac17"
+              "path": "loom/tools/gen_rom_catalogue.py"
             }
           ],
           "gaps": [
-            "The catalogue pack does not hash itself; its pin is the data_domains.pack entry."
+            "The catalogue pack is pinned in data_domains.pack."
           ]
         }
       }

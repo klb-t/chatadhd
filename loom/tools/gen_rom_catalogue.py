@@ -2,7 +2,7 @@
 """Generate data/graph/rom.pack: the ROM catalogue (GRAF_HUB_KOD_SILNIK section 3, 13 items).
 
 ROM = the read-only memory shipped with the program, mounted first. This catalogue lists, for each
-of the 13 items, the real program files / data packs that implement it with their sha256. Files are
+of the 13 items, the real program files / data packs that implement it by path (hashes are computed on demand, not pinned). Files are
 resolved from the working tree (globs allowed); an item with no file is listed as "missing", an item
 with a known hole is "partial" and says which hole. Nothing is invented: to claim a file exists, it must.
 Usage: gen_rom_catalogue.py [--check]   (--check fails when the pack is stale)
@@ -84,7 +84,7 @@ ITEMS = [
     ('catalogue', 13, {'en': 'ROM catalogue', 'pl': 'Katalog ROM'},
      'The list of all items above with graph addresses; makes the ROM visible in the graph like any memory.',
      ['loom/tools/gen_rom_catalogue.py', 'loom/include/loom/rom.h', 'loom/src/graph/rom.cpp', 'loom/tests/test_rom.cpp'],
-     ['The catalogue pack does not hash itself; its pin is the data_domains.pack entry.']),
+     ['The catalogue pack is pinned in data_domains.pack.']),
 ]
 
 
@@ -102,7 +102,7 @@ def resolve(patterns):
         for p in sorted(REPO.glob(pattern)):
             if p.is_file() and p.relative_to(REPO).as_posix() not in EXCLUDE:
                 found[p.relative_to(REPO).as_posix()] = p
-    return [{'path': k, 'sha256': sha(v)} for k, v in sorted(found.items())]
+    return [{'path': k} for k in sorted(found)]
 
 
 def build():
@@ -128,6 +128,14 @@ def build():
 
 
 def main():
+    if '--hashes' in sys.argv:
+        out = Path(sys.argv[sys.argv.index('--hashes') + 1])
+        doc = build()
+        for item in doc['items'].values():
+            for f in item['files']:
+                f['sha256'] = sha(REPO / f['path'])
+        out.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+        return 0
     text = json.dumps(build(), indent=2, ensure_ascii=False) + '\n'
     if '--check' in sys.argv:
         if not OUT.exists() or OUT.read_text(encoding='utf-8') != text:
