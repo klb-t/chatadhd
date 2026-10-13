@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChatADHD</string>
+    <string name="storage_permission_rationale">ChatADHD przechowuje rozmowy w Documents/ChatADHD, więc przetrwają
+        reinstalację i są dostępne dla aplikacji na komputerze. Przyznaj \"Dostęp do wszystkich plików\", aby kontynuować.</string>
+    <string name="storage_permission_open_settings">Otwórz ustawienia</string>
+    <string name="menu_connection">Połączenie</string>
+    <string name="conn_title">Połączenie</string>
+    <string name="conn_mode_local">Lokalnie (dane na tym telefonie)</string>
+    <string name="conn_mode_server">Konto na serwerze</string>
+    <string name="conn_url_hint">Adres serwera, np. chat.example.com</string>
+    <string name="conn_allow_http">Zezwól na zwykły HTTP dla adresu w sieci lokalnej (hasło i sesja idą bez szyfrowania; tylko w sieci, którą kontrolujesz)</string>
+    <string name="conn_save">Sprawdź i zapisz</string>
+    <string name="conn_checking">Sprawdzanie…</string>
+    <string name="conn_switch_note">Przełączenie nigdy nie usuwa danych lokalnych.</string>
+    <string name="conn_err_empty">Podaj adres serwera.</string>
+    <string name="conn_err_invalid">To nie jest poprawny adres.</string>
+    <string name="conn_err_https_required">Wymagany jest HTTPS. Zwykły HTTP można dopuścić poniżej, tylko dla adresu w sieci lokalnej.</string>
+    <string name="conn_err_http_not_lan">Zwykły HTTP jest dozwolony tylko dla adresów sieci lokalnej (192.168.x.x, 10.x.x.x, *.local…).</string>
+    <string name="conn_err_unreachable">Nie można połączyć z serwerem: %1$s</string>
+    <string name="conn_err_not_loom">Ten adres nie wygląda na serwer Loom (HTTP %1$d).</string>
+</resources>

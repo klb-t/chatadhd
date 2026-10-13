@@ -4,4 +4,19 @@
     <string name="storage_permission_rationale">ChatADHD stores its conversations in Documents/ChatADHD so they survive
         reinstalls and stay readable by the desktop app. Grant \"All files access\" to continue.</string>
     <string name="storage_permission_open_settings">Open settings</string>
+    <string name="menu_connection">Connection</string>
+    <string name="conn_title">Connection</string>
+    <string name="conn_mode_local">Local (data on this phone)</string>
+    <string name="conn_mode_server">Server account</string>
+    <string name="conn_url_hint">Server address, e.g. chat.example.com</string>
+    <string name="conn_allow_http">Allow plain HTTP for a LAN address (password and session are sent unencrypted; use only on a network you control)</string>
+    <string name="conn_save">Check and save</string>
+    <string name="conn_checking">Checking…</string>
+    <string name="conn_switch_note">Switching never deletes local data.</string>
+    <string name="conn_err_empty">Enter the server address.</string>
+    <string name="conn_err_invalid">This is not a valid address.</string>
+    <string name="conn_err_https_required">HTTPS is required. Plain HTTP can be allowed below, for a LAN address only.</string>
+    <string name="conn_err_http_not_lan">Plain HTTP is allowed only for LAN addresses (192.168.x.x, 10.x.x.x, *.local…).</string>
+    <string name="conn_err_unreachable">Cannot reach the server: %1$s</string>
+    <string name="conn_err_not_loom">This address does not look like a Loom server (HTTP %1$d).</string>
 </resources>

@@ -49,7 +49,20 @@ class MainActivity : AppCompatActivity() {
         webView = WebView(this).apply {
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         }
-        setContentView(webView)
+        // The theme has no action bar, so the connection screen is reached via
+        // a small translucent button over the WebView corner.
+        val gear = android.widget.TextView(this).apply {
+            text = "\u2699"; textSize = 20f; alpha = 0.5f
+            contentDescription = getString(R.string.menu_connection)
+            setPadding(24, 8, 24, 8)
+            setOnClickListener { requestConnection.launch(Intent(this@MainActivity, ConnectionActivity::class.java)) }
+        }
+        setContentView(android.widget.FrameLayout(this).apply {
+            addView(webView)
+            addView(gear, android.widget.FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                android.view.Gravity.BOTTOM or android.view.Gravity.END))
+        })
 
         with(webView.settings) {
             javaScriptEnabled = true
@@ -74,18 +87,48 @@ class MainActivity : AppCompatActivity() {
                 assetLoader.shouldInterceptRequest(request.url)
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-                if (request.url.scheme == "https" && request.url.host == APP_HOST &&
-                    request.url.path?.startsWith("/assets/web/") == true) return false
+                val mode = if (serverBase != null) ConnectionPolicy.MODE_SERVER else ConnectionPolicy.MODE_LOCAL
+                if (ConnectionPolicy.isInAppUrl(mode, request.url.toString(), APP_HOST, serverBase)) return false
                 startActivity(Intent(Intent.ACTION_VIEW, request.url))
                 return true
             }
         }
 
         bridge = LoomBridge(webView)
-        webView.addJavascriptInterface(bridge, "LoomBridge")
-
-        ensureStoragePermissionThenLoad()
+        startForMode()
     }
+
+    private val requestConnection =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) {
+            recreate()
+        }
+
+    /** First run (no saved choice) shows the chooser; otherwise load per mode. */
+    private fun startForMode() {
+        val prefs = ConnectionPrefs(this)
+        if (!getSharedPreferences("connection", MODE_PRIVATE).contains("mode")) {
+            requestConnection.launch(Intent(this, ConnectionActivity::class.java))
+            return
+        }
+        if (prefs.effectiveMode == ConnectionPolicy.MODE_SERVER) {
+            serverBase = prefs.serverUrl
+            // SECURITY: NO addJavascriptInterface here. A remote page must never
+            // reach LoomBridge (local data, secrets, API keys). The web app sees
+            // no window.LoomBridge, so hasNativeBridge() is false and it uses
+            // HTTP transport + the sign-in screen. The session cookie is kept
+            // by CookieManager.
+            android.webkit.CookieManager.getInstance().setAcceptCookie(true)
+            webView.loadUrl(serverBase!!)
+        } else {
+            // Only here, for the bundled local origin (see ConnectionPolicy.shouldInjectBridge).
+            if (ConnectionPolicy.shouldInjectBridge(ConnectionPolicy.MODE_LOCAL, LOCAL_URL, APP_HOST)) {
+                webView.addJavascriptInterface(bridge, "LoomBridge")
+            }
+            ensureStoragePermissionThenLoad()
+        }
+    }
+
+    private var serverBase: String? = null
 
     /**
      * The shared data directory (/storage/emulated/0/Documents/ChatADHD,
@@ -118,11 +161,11 @@ class MainActivity : AppCompatActivity() {
                 ?: "Could not open ChatADHD data", Snackbar.LENGTH_INDEFINITE).show()
             return
         }
-        webView.loadUrl("https://$APP_HOST/assets/web/index.html")
+        webView.loadUrl(LOCAL_URL)
     }
 
     override fun onDestroy() {
-        bridge.shutdown()
+        if (::bridge.isInitialized) bridge.shutdown()
         super.onDestroy()
     }
 
@@ -131,5 +174,6 @@ class MainActivity : AppCompatActivity() {
         // real internet resolves this, so it can never collide with a live
         // origin the way a made-up https hostname could.
         private const val APP_HOST = "appassets.androidx.startup"
+        private const val LOCAL_URL = "https://$APP_HOST/assets/web/index.html"
     }
 }
