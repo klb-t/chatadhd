@@ -6,6 +6,7 @@ reference/pointer implementation or modifying the repository's sources.
 """
 from copy import deepcopy
 import json
+import re
 from pathlib import Path
 import shutil
 import subprocess
@@ -102,10 +103,14 @@ class OnboardingPackGenerationTests(unittest.TestCase):
 
     def embedded(self, name):
         text = self.native.read_text(encoding="utf-8")
-        marker = f'static constexpr char {name}[] = R"loom_onboard('
+        marker = f"static constexpr std::string_view {name}[] = {{\n"
         self.assertEqual(text.count(marker), 1, f"missing or duplicate native declaration: {name}")
-        raw = text.split(marker, 1)[1].split(')loom_onboard";', 1)[0]
-        return json.loads(raw)
+        body = text.split(marker, 1)[1].split("};\n", 1)[0]
+        chunks = re.findall(r'R"loom_onboard\((.*?)\)loom_onboard"', body, flags=re.S)
+        self.assertTrue(chunks)
+        for chunk in chunks:
+            self.assertLessEqual(len(chunk.encode("utf-8")), 65536)
+        return json.loads("".join(chunks))
 
     def invalid_preserves_artifacts(self, expected_message):
         result = self.invoke()

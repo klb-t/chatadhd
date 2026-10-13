@@ -13,6 +13,7 @@ FILES = {
     "kOnboardingPresentation": DATA / "onboarding/ui.pack",
 }
 OUT = Path(__file__).with_name("builtin.inc")
+CHUNK_BYTES = 60000
 WEB_OUT = ROOT / "web/src/onboarding/generated/ui.json"
 WEB_CONVERSATION_VIEW_OUT = ROOT / "web/src/onboarding/generated/conversation-view.json"
 
@@ -141,7 +142,17 @@ def generated():
         raw = serialized(value)
         if ')loom_onboard"' in raw:
             raise ValueError("raw string delimiter collision")
-        lines.append(f'static constexpr char {name}[] = R"loom_onboard({raw})loom_onboard";\n')
+        # Chunks on line boundaries keep every literal under the 65536-byte length
+        # C++ compilers must support (clang -Woverlength-strings).
+        chunks, current = [], ""
+        for line in raw.splitlines(keepends=True):
+            if current and len((current + line).encode("utf-8")) > CHUNK_BYTES:
+                chunks.append(current)
+                current = ""
+            current += line
+        chunks.append(current)
+        body = ",\n".join(f'R"loom_onboard({chunk})loom_onboard"' for chunk in chunks)
+        lines.append(f'static constexpr std::string_view {name}[] = {{\n{body}}};\n')
     ui = serialized(docs["kOnboardingPresentation"])
     return {OUT: "".join(lines), WEB_OUT: ui,
             WEB_CONVERSATION_VIEW_OUT: serialized(read_document(DATA / "profiles/conversation_view.pack"))}

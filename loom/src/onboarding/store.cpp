@@ -1,6 +1,8 @@
 #include "loom/onboarding_store.h"
 
 #include <limits>
+#include <string>
+#include <string_view>
 
 #include "loom/knowledge_store.h"
 #include "loom/onboarding.h"
@@ -235,10 +237,17 @@ Status enforce_layer_retention(Json& state) {
 }
 }  // namespace
 
-Result<Json> builtin_pack() { return json::parse(kOnboardingPack); }
-Result<Json> builtin_scenario() { return json::parse(kOnboardingScenario); }
+template <std::size_t N>
+std::string joined(const std::string_view (&chunks)[N]) {
+  std::string out;
+  for (auto chunk : chunks) out += chunk;
+  return out;
+}
+
+Result<Json> builtin_pack() { return json::parse(joined(kOnboardingPack)); }
+Result<Json> builtin_scenario() { return json::parse(joined(kOnboardingScenario)); }
 Result<Json> builtin_presentation() {
-  LOOM_TRY_ASSIGN(auto catalog, json::parse(kOnboardingPresentation));
+  LOOM_TRY_ASSIGN(auto catalog, json::parse(joined(kOnboardingPresentation)));
   LOOM_TRY(validate_presentation(catalog));
   return catalog;
 }
