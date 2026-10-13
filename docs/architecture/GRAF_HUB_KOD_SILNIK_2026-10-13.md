@@ -86,8 +86,8 @@ Wszystko spoza tej listy (ustawienia, konta, dostawcy, akcje użytkownika, rozmo
    używające dziś modelu (dziś jest 6 osobnych kopii). Akcja przyjmuje: model albo listę modeli (wariantowanie),
    parametry, przepis kontekstu, prompt — wszystko jako odnośniki do węzłów.
 2. Fala 1b: **metadane pól** (domyślna jest/brak, zasada edycji) zwracane przez Loom dla każdego ustawienia.
-3. Fala 2: **link `ma_akcję`** z typów węzłów (wiadomość, konwersacja, plik, urządzenie…) do akcji; silnik wybiera
-   akcję z grafu zamiast z kodu.
+3. Fala 2: dopasowanie akcji do elementów przez cechy, wymagania i zasady (§5) — zastępuje wcześniejszy pomysł
+   stałego linku `ma_akcję` z każdego typu węzła (poprawka po §5 i §9).
 4. Fala 3: **urządzenia wejścia/wyjścia jako węzły** (mikrofon, aparat, ekran, pliki, sieć) z akcjami.
 5. Fala 4: **ROM jako pamięć tylko do odczytu** z katalogiem — obecne pliki danych w `loom/data/` stają się jej
    zawartością, montowaną jako pierwsza; nakładki użytkownika jak dziś.
@@ -190,3 +190,20 @@ z potwierdzeniem według zasad. Poziom abstrakcji jest dowolny: „zrób z tej r
 `semantic_retry_mode=automatic` dla projektu X” trafiają w ten sam mechanizm. Panele i przyciski są tylko innymi
 widokami tych samych akcji. Kolejność prac: po fali 2 (cechy + wymagania + zasady), bo dopasowanie poleceń
 potrzebuje katalogu akcji z wymaganiami.
+
+## 9. Akcja czy flow — jeden byt, nie dwa (właściciel pyta o kontrolę, 2026-10-13)
+
+Właściciel: „są akcje do elementów i są flow… »zapisz« albo »udostępnij« to akcje atomowe, za małe na flow — czy
+usprawiedliwiam błędną decyzję, która nawet nie została podjęta, tylko wyemergowała?”
+
+Odpowiedź (Claude): intuicja słuszna, ale wniosek ma być odwrotny — **nie dwa byty, tylko jeden: akcja.**
+Akcja jest **atomowa** (wykonuje ją kod: adapter albo operacja silnika z „ROM” — zapisz, udostępnij, użyj modelu)
+albo **złożona** (kroki z innych akcji, zapisane w grafie — „odpowiedz na wiadomość” = rozpoznaj zamiar → zbierz
+kontekst → użyj modelu → zapisz → przeanalizuj). Obie mają ten sam kształt: wejścia, wyjścia, wymagane cechy,
+flagi skutków. Wołający nie wie i nie musi wiedzieć, którą wywołuje; akcję atomową można później rozpisać na kroki
+i odwrotnie, bez zmiany u wołających. „Flow, rutyny, pipeliny” z §7 to po prostu akcje złożone, a ich akcje
+(zastosuj, zoptymalizuj, wariantuj, eksperymentuj) to akcje, których wejściem jest inna akcja — działa to samo
+dopasowanie z §5, bo akcja też jest węzłem z cechami. „Grupa” z §7 to nazwany zestaw cech, nie trzeci rodzaj bytu.
+
+Skutek dla kodu: katalog z fali 1 (`model_workflows.pack`) zostaje przerobiony na początek **jednego katalogu akcji**
+(`actions.pack`: atomowe i złożone), zamiast osobnej listy „workflowów wołających model”.
