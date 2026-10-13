@@ -11,6 +11,11 @@
 #if defined(__linux__) || defined(__ANDROID__)
 #include <sys/random.h>
 #endif
+#if defined(__ANDROID__) && __ANDROID_API__ < 28
+// Bionic declares getrandom() only from API 28; the app supports API 26+, so call the
+// syscall directly. Old kernels answer ENOSYS and /dev/urandom below takes over.
+#include <sys/syscall.h>
+#endif
 
 #include "loom/util/ids.h"
 #include "loom/util/random.h"
@@ -27,7 +32,11 @@ void random_bytes(void* out, std::size_t len) noexcept {
 #else
 #if defined(__linux__) || defined(__ANDROID__)
   while (len > 0) {
+#if defined(__ANDROID__) && __ANDROID_API__ < 28
+    ssize_t got = static_cast<ssize_t>(::syscall(SYS_getrandom, p, len, 0));
+#else
     ssize_t got = ::getrandom(p, len, 0);
+#endif
     if (got < 0) break;  // fall through to /dev/urandom
     p += got;
     len -= static_cast<std::size_t>(got);
