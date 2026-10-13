@@ -208,7 +208,8 @@ jobs:
           grep -qE ' assets/web/assets/.+\.js$' apk.lst || { echo "::error::the real web bundle is not in the APK (only the placeholder page)"; exit 1; }
           "$bt/aapt2" dump badging "$apk" | grep -E "^package:|^sdkVersion|^targetSdkVersion|^native-code"
           "$bt/apksigner" verify --print-certs "$apk" | tee certs.txt
-          sha256sum "$apk" | tee "$apk.sha256"
+          # the .sha256 is written next to the APK with a bare file name, so `sha256sum -c` works after unzipping
+          (cd "$(dirname "$apk")" && sha256sum "$(basename "$apk")" > "$(basename "$apk").sha256" && cat "$(basename "$apk").sha256")
           {
             echo "### Android APK"
             echo ""
