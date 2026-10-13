@@ -1,0 +1,485 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "action_rules",
+  "revision": 1,
+  "description": "Which actions fit which element, as data (GRAF_HUB_KOD_SILNIK §5-§7). An action fits an element when the element has the traits the action requires (classes declare traits in graph/classes.pack, actions require them in runtime/actions.pack; neither lists the other). This profile holds the rest: scoped rules {scope, target, action, effect} with their effects and one shape for every kind of rule (the settings field edit rules of S2/R2 live here: target settings_field, action edit), conflict resolution by the rules of graph/scopes.pack, the axes of §6, and the extrapolation presets (max chain length, max cost, min confidence; off allowed). No rule matching = allow (R43). Everything shipped is calibration: presets, not rules.",
+  "defaults": {
+    "axes": {
+      "content_op": [
+        {
+          "id": "preserve",
+          "label": {
+            "en": "Preserve (transcribe, translate)",
+            "pl": "Zachowaj (przepisz, przetłumacz)"
+          }
+        },
+        {
+          "id": "condense",
+          "label": {
+            "en": "Condense (summarise)",
+            "pl": "Skróć (streść)"
+          }
+        },
+        {
+          "id": "expand",
+          "label": {
+            "en": "Expand (elaborate)",
+            "pl": "Rozwiń (dopowiedz)"
+          }
+        },
+        {
+          "id": "restyle",
+          "label": {
+            "en": "Change tone or style (parody)",
+            "pl": "Zmień ton lub styl (sparodiuj)"
+          }
+        },
+        {
+          "id": "evaluate",
+          "label": {
+            "en": "Evaluate (critique)",
+            "pl": "Oceń (skrytykuj)"
+          }
+        },
+        {
+          "id": "combine",
+          "label": {
+            "en": "Combine (put side by side)",
+            "pl": "Połącz (zestaw)"
+          }
+        },
+        {
+          "id": "none",
+          "label": {
+            "en": "Does not act on the content",
+            "pl": "Nie działa na treści"
+          }
+        }
+      ],
+      "form_op": [
+        {
+          "id": "read",
+          "label": {
+            "en": "Read a form into content (describe, transcribe)",
+            "pl": "Odczytaj postać w treść (opisz, transkrybuj)"
+          }
+        },
+        {
+          "id": "express",
+          "label": {
+            "en": "Express content in a form (paint, sing, dance)",
+            "pl": "Wyraź treść w postaci (namaluj, zaśpiewaj, zatańcz)"
+          }
+        },
+        {
+          "id": "none",
+          "label": {
+            "en": "Keeps the form",
+            "pl": "Zachowuje postać"
+          }
+        }
+      ]
+    },
+    "decisions": {
+      "allow": {
+        "dimension": "gate",
+        "restrictiveness": 0,
+        "status": "applicable",
+        "label": {
+          "en": "Allowed",
+          "pl": "Dozwolona"
+        }
+      },
+      "confirm": {
+        "dimension": "gate",
+        "restrictiveness": 1,
+        "status": "needs_confirmation",
+        "label": {
+          "en": "Needs confirmation",
+          "pl": "Wymaga potwierdzenia"
+        }
+      },
+      "deny": {
+        "dimension": "gate",
+        "restrictiveness": 2,
+        "status": "denied",
+        "label": {
+          "en": "Denied (with a stated reason)",
+          "pl": "Zabroniona (z podanym powodem)"
+        }
+      },
+      "default_action": {
+        "dimension": "default",
+        "status": "default",
+        "label": {
+          "en": "Default action of the element",
+          "pl": "Domyślna akcja elementu"
+        }
+      }
+    },
+    "effects": {
+      "allow": {
+        "decision": "allow",
+        "meaning": "The default when no rule matches: nothing is blocked without an initiator (R43)."
+      },
+      "confirm": {
+        "decision": "confirm",
+        "meaning": "The user confirms before the action runs."
+      },
+      "deny": {
+        "decision": "deny",
+        "meaning": "Blocked by the initiator of the rule; the rule states the reason."
+      },
+      "default_action": {
+        "decision": "default_action",
+        "meaning": "The rule names (in its action) the default action for the target element."
+      },
+      "require_value": {
+        "decision": "allow",
+        "meaning": "Settings: a feature does not work until the field is set; nothing is blocked (advisory)."
+      },
+      "require_confirmation": {
+        "decision": "confirm",
+        "meaning": "Settings: a change that raises consumption needs the user's explicit confirmation."
+      }
+    },
+    "scope_aliases": {
+      "global": "installation"
+    },
+    "rules": {
+      "edit:config:loom_usage_policy": {
+        "id": "edit:config:loom_usage_policy",
+        "scope": "engine",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "config",
+          "key": "loom_usage_policy"
+        },
+        "action": "edit",
+        "effect": "require_confirmation",
+        "initiator": "engine",
+        "locked": true,
+        "conflict": "locked_by",
+        "reason": {
+          "en": "Raising expected consumption by an order of magnitude needs the user's confirmation; the usage-policy actions enforce it.",
+          "pl": "Podniesienie spodziewanego zużycia o rząd wielkości wymaga potwierdzenia użytkownika; egzekwują je akcje polityki zużycia."
+        }
+      },
+      "edit:config:_config_version": {
+        "id": "edit:config:_config_version",
+        "scope": "engine",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "config",
+          "key": "_config_version"
+        },
+        "action": "edit",
+        "effect": "deny",
+        "initiator": "engine",
+        "reason": {
+          "en": "Config format version maintained by the auto-upgrade; writes through the API are rejected.",
+          "pl": "Wersja formatu konfiguracji prowadzona przez automatyczną aktualizację; zapisy przez API są odrzucane."
+        }
+      },
+      "edit:secret:api_key": {
+        "id": "edit:secret:api_key",
+        "scope": "app_preset",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "secret",
+          "key": "api_key"
+        },
+        "action": "edit",
+        "effect": "require_value",
+        "initiator": "application preset"
+      },
+      "default:conversation": {
+        "id": "default:conversation",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "conversation"
+        },
+        "action": "chat.send",
+        "effect": "default_action",
+        "initiator": "application preset"
+      },
+      "default:audio_form": {
+        "id": "default:audio_form",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "audio_form"
+        },
+        "action": "transcribe",
+        "effect": "default_action",
+        "initiator": "application preset"
+      },
+      "default:image_form": {
+        "id": "default:image_form",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "image_form"
+        },
+        "action": "describe_image",
+        "effect": "default_action",
+        "initiator": "application preset"
+      }
+    },
+    "extrapolation": {
+      "active": "standard",
+      "presets": {
+        "off": {
+          "enabled": false,
+          "label": {
+            "en": "Off: no chain proposals",
+            "pl": "Wyłączone: bez propozycji łańcuchów"
+          }
+        },
+        "standard": {
+          "enabled": true,
+          "label": {
+            "en": "Standard",
+            "pl": "Standardowy"
+          },
+          "max_length": 3,
+          "max_cost": 10,
+          "min_confidence": 0.25,
+          "max_results": 5
+        },
+        "generous": {
+          "enabled": true,
+          "label": {
+            "en": "Generous: no bounds",
+            "pl": "Hojny: bez ograniczeń"
+          },
+          "max_length": null,
+          "max_cost": null,
+          "min_confidence": null,
+          "max_results": null
+        }
+      },
+      "rank_by": [
+        {
+          "by": "confidence",
+          "order": "desc"
+        },
+        {
+          "by": "cost",
+          "order": "asc"
+        },
+        {
+          "by": "length",
+          "order": "asc"
+        }
+      ]
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "axes",
+      "decisions",
+      "effects",
+      "scope_aliases",
+      "rules",
+      "extrapolation"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "axes": {
+        "type": "object",
+        "description": "Vocabularies of the two action axes (GRAF_HUB_KOD_SILNIK §6); open lists, an unknown value in an action is reported, not refused.",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "decisions": {
+        "type": "object",
+        "description": "What a decision is: dimension gate (allow, confirm, deny; restrictiveness orders them; status is the word the engine reports) or default (names the default action).",
+        "additionalProperties": {
+          "type": "object"
+        }
+      },
+      "effects": {
+        "type": "object",
+        "description": "Effect id -> the decision it means. Open: other fields (settings use require_value and require_confirmation); an unknown effect id is an allow with the id passed through.",
+        "additionalProperties": {
+          "type": "object",
+          "required": [
+            "decision"
+          ],
+          "additionalProperties": true
+        }
+      },
+      "scope_aliases": {
+        "type": "object",
+        "description": "Alias -> a level of the scopes chain (graph/scopes.pack).",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "rules": {
+        "type": "object",
+        "description": "Rule id -> rule {id, scope, scope_id?, target, action?, effect, reason?, initiator?, locked?, weight?, conflict?, when?, disabled?}. One store and one shape for every kind of rule: settings field edit rules (target kind settings_field, action edit) and rules over classes, traits, trait bundles, nodes and action groups. No rule matching = allow (R43: a block needs an initiator). Overlay: profiles/action_rules.pack merges by id; disabled:true switches a rule off.",
+        "additionalProperties": {
+          "type": "object",
+          "required": [
+            "id",
+            "scope",
+            "target",
+            "effect"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "scope": {
+              "type": "string",
+              "minLength": 1,
+              "description": "A level of the scopes chain (engine ... turn) or an alias."
+            },
+            "scope_id": {
+              "type": "string",
+              "description": "The instance of the level the rule belongs to (a project, a conversation...); absent = every instance."
+            },
+            "target": {
+              "type": "object",
+              "description": "Which elements: {kind:\"class\",id}, {kind:\"trait\",id}, {kind:\"bundle\",id} (member of a trait bundle), {kind:\"node\",id}, {kind:\"any\"}, or any other kind = a class id with the remaining keys matched against the element attrs (settings_field + field_scope + key)."
+            },
+            "action": {
+              "type": [
+                "string",
+                "object"
+              ],
+              "description": "Which action: an action id, \"*\" or absent (any), {\"group\":id} or {\"flag\":effect flag}. For default_action: the default action."
+            },
+            "effect": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reason": {
+              "type": [
+                "string",
+                "object"
+              ],
+              "description": "Why (deny needs one: R43); a string or {en, pl}."
+            },
+            "initiator": {
+              "type": "string",
+              "description": "Who stands behind the rule; default: its scope."
+            },
+            "locked": {
+              "type": "boolean",
+              "description": "Pinned: with the conflict rule locked_by a lower scope cannot override it."
+            },
+            "weight": {
+              "type": "number",
+              "description": "Vote weight for the conflict rule weighted_vote (default 1)."
+            },
+            "conflict": {
+              "type": "string",
+              "description": "The conflict rule (graph/scopes.pack) that governs rules in conflict with this one; the most general declaring rule decides, else the chain default."
+            },
+            "when": {
+              "type": "object",
+              "description": "Context predicate: {\"context\":{level:instance id}} must all hold in the query scope."
+            },
+            "disabled": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "extrapolation": {
+        "type": "object",
+        "required": [
+          "active",
+          "presets",
+          "rank_by"
+        ],
+        "properties": {
+          "active": {
+            "type": "string",
+            "minLength": 1
+          },
+          "presets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "enabled"
+              ],
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "max_length": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "max_cost": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "min_confidence": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "max_results": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "rank_by": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "by",
+                "order"
+              ],
+              "properties": {
+                "by": {
+                  "type": "string",
+                  "enum": [
+                    "confidence",
+                    "cost",
+                    "length"
+                  ]
+                },
+                "order": {
+                  "type": "string",
+                  "enum": [
+                    "asc",
+                    "desc"
+                  ]
+                }
+              },
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": true,
+        "description": "Chain proposals (GRAF_HUB_KOD_SILNIK §5, wave 2b). Presets are not limits: null = no bound, the owner chooses; off disables proposals."
+      }
+    }
+  }
+}

@@ -229,6 +229,7 @@
       },
       "traits": [
         "conversation",
+        "message",
         "in_conversation"
       ],
       "element_match": "any"

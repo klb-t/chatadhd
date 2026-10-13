@@ -74,20 +74,22 @@ TEST_SUITE("settings_fields") {
   }
 
   TEST_CASE("user overlay rules change the edit label (open string) and can lift read_only") {
+    // The edit rules live in the one rule store (profile action_rules); the overlay merges by rule id.
     fsutil::TempDir td;
     std::filesystem::create_directories(td.path() / "profiles");
     auto write = [&](const Json& rules) {
-      std::ofstream(td.path() / "profiles" / "settings_fields.pack")
-          << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"},
+      std::ofstream(td.path() / "profiles" / "action_rules.pack")
+          << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "action_rules"},
                   {"overrides", Json{{"rules", rules}}}}.dump();
     };
-    write(Json::array({Json{{"id", "x"}, {"scope", "global"}, {"action", "edit"}, {"effect", "needs_review"},
-                            {"target", Json{{"kind", "settings_field"}, {"field_scope", "config"}, {"key", "theme"}}}}}));
+    write(Json{{"x", Json{{"id", "x"}, {"scope", "global"}, {"action", "edit"}, {"effect", "needs_review"},
+                          {"target", Json{{"kind", "settings_field"}, {"field_scope", "config"}, {"key", "theme"}}}}},
+               {"edit:config:_config_version", Json{{"disabled", true}}}});
     auto doc = settings_fields(td.path());
     REQUIRE(doc);
     for (const auto& f : (*doc)["fields"]) {
       if (f["key"] == "theme") CHECK(f["edit"] == "needs_review");
-      if (f["key"] == "_config_version") CHECK(f["edit"] == "optional");  // no rule = allow
+      if (f["key"] == "_config_version") CHECK(f["edit"] == "optional");  // rule switched off: no rule = allow
     }
     CHECK(check_config_write("_config_version", td.path()));
     CHECK(check_config_write("theme", td.path()));  // unknown effect is not enforced
