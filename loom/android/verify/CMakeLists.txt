@@ -70,9 +70,12 @@ set_target_properties(loom_jni_host PROPERTIES
 
 # ── plain-javac Java sources (LoomNative/LoomCallbacks/LoomHttp mirrors + the test) ──
 file(GLOB_RECURSE LOOM_VERIFY_JAVA_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/java/*.java")
-# The connection policy is security-critical: compile the app's own file, never a copy.
-list(APPEND LOOM_VERIFY_JAVA_SOURCES
-  "${CMAKE_CURRENT_SOURCE_DIR}/../app/src/main/java/com/chatadhd/android/ConnectionPolicy.java")
+# The pure-Java rules are security-relevant: compile the app's OWN files, never copies.
+# (No android.* imports in these; that is what makes them testable here.)
+set(LOOM_APP_JAVA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../app/src/main/java/com/chatadhd/android")
+foreach(_app_java ConnectionPolicy DataLocationPolicy DataMigration SecretsEnvelope SecretsVaultCore)
+  list(APPEND LOOM_VERIFY_JAVA_SOURCES "${LOOM_APP_JAVA_DIR}/${_app_java}.java")
+endforeach()
 set(LOOM_VERIFY_CLASSES_DIR "${CMAKE_CURRENT_BINARY_DIR}/classes")
 add_custom_command(
   OUTPUT "${LOOM_VERIFY_CLASSES_DIR}/.built"
@@ -98,3 +101,11 @@ add_dependencies(loom_jni_host_verify_classes loom_jni_host)
 # P3: connection policy (server URL validation + bridge-injection rule).
 add_test(NAME connection_policy_test
   COMMAND ${LOOM_JAVA_EXE} -cp "${LOOM_VERIFY_CLASSES_DIR}" loomverify.ConnectionPolicyTest)
+
+# F2: data location (private by default, warning for shared), migration with sha256
+# verification, Keystore-sealed secrets (software key stands in for the Keystore here).
+foreach(_t DataLocationTest DataMigrationTest SecretsVaultTest)
+  add_test(NAME android_${_t}
+    COMMAND ${LOOM_JAVA_EXE} -cp "${LOOM_VERIFY_CLASSES_DIR}" loomverify.${_t})
+  set_tests_properties(android_${_t} PROPERTIES TIMEOUT 120)
+endforeach()
