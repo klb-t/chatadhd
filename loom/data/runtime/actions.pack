@@ -951,6 +951,37 @@
           "verb": "POST",
           "path": "/api/storage/backup"
         }
+      },
+      "knowledge.propose_semantics": {
+        "id": "knowledge.propose_semantics",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Propose semantic structure for source observations",
+        "description": "The knowledge pipeline's model step: located, grounded proposals (relations, generalizations, candidate graph bundles) for chunks of source observations, from a prompt contract; nothing is accepted without validation.",
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text",
+          "json"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "observation"
+        ],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/extract/semantic.cpp"
       }
     }
   },

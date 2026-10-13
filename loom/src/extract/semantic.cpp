@@ -29,6 +29,7 @@ coverage records={support:[span],status:"represented|partial|unsupported|ambiguo
 #include "loom/runtime.h"
 #include "loom/semantic_llm.h"
 #include "loom/sqlite.h"
+#include "loom/use_model.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
 #include "extract/prompt_contract.h"
@@ -500,7 +501,7 @@ Json semantic_fingerprint(Runtime& rt, const Json& params, std::string_view mode
 
   j["model"] = cfg_string(rt, "semantic_model");
   j["provider"] = base_url(rt);
-  j["api_key_present"] = !rt.secrets().get_string("api_key").empty();
+  j["api_key_present"] = llm::route_available(llm::Services(rt.config(), rt.secrets(), rt.http()), llm::RouteSelector{});
   j["semantic_analysis"] = json::truthy(rt.config().get("semantic_analysis", true));
   std::string literals;
   for (const auto& message : contract->definition["messages"])
@@ -563,9 +564,11 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       return Error(Errc::InvalidArgument, "invalid candidate graph policy: " + json::canonical(policy_validation));
   }
   const std::string model = json::get_string(identity, "model"), provider = json::get_string(identity, "provider");
-  // Configuration is captured once for this invocation, including the secret.
-  const std::string api_key = ctx.rt.secrets().get_string("api_key");
-  if (!preview && (!json::get_bool(identity, "semantic_analysis") || model.empty() || provider.empty() || api_key.empty())) {
+  // Configuration is captured once for this invocation; the provider route
+  // (settings -> manifest -> adapter) says whether its credential is stored.
+  const llm::Services model_services(ctx.rt.config(), ctx.rt.secrets(), ctx.rt.http());
+  const bool credential_present = llm::route_available(model_services, llm::RouteSelector{});
+  if (!preview && (!json::get_bool(identity, "semantic_analysis") || model.empty() || provider.empty() || !credential_present)) {
     stats["status"] = "unavailable";
     stats["reason"] = !json::get_bool(identity, "semantic_analysis") ? "semantic_analysis_disabled" :
                       model.empty() ? "semantic_model_missing" : provider.empty() ? "provider_missing" : "api_key_missing";
@@ -853,29 +856,31 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
         budget = true;
         continue;
       }
-      net::HttpRequest req;
-      req.method = json::get_string(prepared, "method");
+      // The contract's transport recipe (URL, header order, exact body bytes) goes
+      // through the one use-model action unchanged; the semantic ledger keeps
+      // its own admission flow behind the gate interface.
+      llm::ModelRequest mreq;
+      mreq.kind = "knowledge.semantic";
+      mreq.action = "knowledge.propose_semantics";
+      mreq.models = {llm::ModelSpec{wire_model, "", Json::object()}};
+      mreq.body = prepared["body_json"];
+      mreq.body_bytes = json::get_string(prepared, "body_bytes");
+      mreq.route.endpoint = json::get_string(prepared, "url");
+      net::Headers recipe_headers;
       for (auto header = prepared["headers"].begin(); header != prepared["headers"].end(); ++header)
-        req.headers.emplace_back(header.key(), header.value().get<std::string>());
-      if (net::header_value(req.headers, "Authorization").empty()) req.headers.emplace_back("Authorization", "Bearer " + api_key);
-      req.body = json::get_string(prepared, "body_bytes");
-      req.url = json::get_string(prepared, "url");
-      req.timeout_ms = static_cast<int>(json::get_int(prepared["transport"], "timeout_ms", limits.timeout_ms));
-      req.stream = json::get_bool(prepared["transport"], "stream");
-      std::string response_bytes;
-      bool response_limit_reached = false;
-      net::StreamSink sink;
-      sink.on_data = [&](std::string_view part) {
-        if (ctx.should_stop && ctx.should_stop()) return false;
-        const auto remaining = static_cast<std::size_t>(call_limits.max_response_bytes) - response_bytes.size();
-        if (part.size() > remaining) {
-          response_bytes.append(part.substr(0, remaining));
-          response_limit_reached = true;
-          return false;
-        }
-        response_bytes.append(part);
-        return true;
+        recipe_headers.emplace_back(header.key(), header.value().get<std::string>());
+      mreq.wire_headers = std::move(recipe_headers);
+      mreq.timeout_ms = static_cast<int>(json::get_int(prepared["transport"], "timeout_ms", limits.timeout_ms));
+      mreq.capture = true;  // the exact response bytes are retained by the run checkpoint
+      mreq.max_response_bytes = static_cast<std::size_t>(call_limits.max_response_bytes);
+      CancelToken stop_token;
+      mreq.cancel = &stop_token;
+      mreq.hooks.on_raw = [&](std::string_view) {
+        if (ctx.should_stop && ctx.should_stop()) stop_token.cancel();
       };
+      LOOM_TRY_ASSIGN(auto call, llm::prepare_call(model_services, mreq));
+      call.request.method = json::get_string(prepared, "method");  // the contract names its method
+      call.request.stream = json::get_bool(prepared["transport"], "stream");
       // Record the paid attempt before starting it. A crash/pause after this
       // point can reuse a valid cache but cannot silently issue it again.
       // Each dispatch is its own ledger operation. Repeating an operation ID
@@ -885,38 +890,51 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
       // A pending confirmation or a denial stays bound to its own operation.
       // Resume never reaches here for an attempted request (see `attempted`).
       Json decision;
-      for (std::uint64_t attempt = 0;; ++attempt) {
-        attempt_id = attempt == 0 ? operation_id : operation_id + "#" + std::to_string(attempt);
-        estimate["operation_id"] = attempt_id;
-        LOOM_TRY_ASSIGN(auto answer, usage->request(estimate));
-        decision = std::move(answer);
-        const auto status = json::get_string(decision, "status");
-        if (!usage->available() || (status != "unresolved" && status != "completed" && status != "cancelled")) break;
-      }
-      stats["usage_decisions"].push_back(Json{{"chunk", in.chunk_id}, {"operation_id", attempt_id}, {"decision", decision}});
-      const bool authorized = usage->available() ? json::get_string(decision, "status") == "allowed" && json::get_bool(decision, "authorized") :
-          json::get_bool(decision, "legacy_execution_allowed");
-      if (!authorized) {
+      mreq.usage.gate = llm::make_function_gate([&](const net::HttpRequest&, const Json&) -> Result<llm::GateDecision> {
+        for (std::uint64_t attempt = 0;; ++attempt) {
+          attempt_id = attempt == 0 ? operation_id : operation_id + "#" + std::to_string(attempt);
+          estimate["operation_id"] = attempt_id;
+          LOOM_TRY_ASSIGN(auto answer, usage->request(estimate));
+          decision = std::move(answer);
+          const auto status = json::get_string(decision, "status");
+          if (!usage->available() || (status != "unresolved" && status != "completed" && status != "cancelled")) break;
+        }
+        stats["usage_decisions"].push_back(Json{{"chunk", in.chunk_id}, {"operation_id", attempt_id}, {"decision", decision}});
+        const bool authorized = usage->available() ? json::get_string(decision, "status") == "allowed" && json::get_bool(decision, "authorized") :
+            json::get_bool(decision, "legacy_execution_allowed");
+        llm::GateDecision admitted;
+        admitted.status = json::get_string(decision, "status");
+        admitted.decision = decision;
+        if (!authorized) return admitted;
+        attempted.insert(hash);
+        spent_bytes += static_cast<std::int64_t>(bytes);
+        const auto saved = checkpoint();
+        if (!saved) {
+          LOOM_TRY(usage->cancel(attempt_id, "checkpoint_failed_before_dispatch"));
+          return saved.error();
+        }
+        ++requests;
+        admitted.dispatch = true;
+        return admitted;
+      });
+      auto sent = llm::execute_call(model_services, mreq, call);
+      if (sent.state == llm::State::GateError) return *sent.error;
+      if (sent.state == llm::State::Held) {
         stats["usage_blocked"] = true;
         stats["requires_confirmation"] = json::get_bool(stats, "requires_confirmation") || json::get_string(decision, "status") == "requires_confirmation";
         stats["skipped"].push_back(chunk_reference(chunk, in.chunk_id, "usage_policy_admission"));
         continue;
       }
-      attempted.insert(hash);
-      spent_bytes += static_cast<std::int64_t>(bytes);
-      const auto saved = checkpoint();
-      if (!saved) {
-        LOOM_TRY(usage->cancel(attempt_id, "checkpoint_failed_before_dispatch"));
-        return saved.error();
-      }
-      ++requests;
-      auto response = ctx.rt.http().send(req, &sink);
+      const std::string response_bytes = sent.body;
+      const bool response_limit_reached = sent.response_limited;
+      const bool transport_ok = !sent.error.has_value();
+      const bool http_ok = transport_ok && sent.http_status >= 200 && sent.http_status < 300;
       // Capture source bytes before accounting, decoding or an early return.
       // The run checkpoint retains partial/error responses independently of
       // the reusable checked cache, without promoting them as graph evidence.
       capture_response(Json{{"chunk", in.chunk_id}, {"request_hash", prepared["request_hash"]},
-        {"operation_id", attempt_id}, {"from_cache", false}, {"http_status", response ? Json(response->status) : Json(nullptr)},
-        {"transport_error", response ? Json(nullptr) : Json(response.error().message)},
+        {"operation_id", attempt_id}, {"from_cache", false}, {"http_status", transport_ok ? Json(sent.http_status) : Json(nullptr)},
+        {"transport_error", transport_ok ? Json(nullptr) : Json(sent.error->message)},
         {"body", response_bytes}, {"response_hash", Sha256::hex(response_bytes)}, {"capture_truncated", response_limit_reached}});
       LOOM_TRY(checkpoint());
       auto measured = usage->complete(attempt_id, Json{{"resources", Json{{"requests", 1}, {"input_bytes", bytes},
@@ -927,7 +945,7 @@ Result<Json> propose_semantics(knowledge::StageContext& ctx, const std::vector<m
         stats["usage_decisions"].back()["completion_error"] = measured.error().message;
       }
       if (ctx.should_stop && ctx.should_stop()) return Error(Errc::Paused, "semantic proposal extraction paused during request");
-      if (!response || !response->ok()) {
+      if (!http_ok) {
         ++failed;
         stats["failed_chunk_observations"] = json::get_int(stats, "failed_chunk_observations") + chunk.observations.size();
         stats["rejections"].push_back(Json{{"chunk", in.chunk_id}, {"reason", "transport_or_http_failure"}});
