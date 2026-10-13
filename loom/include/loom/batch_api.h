@@ -5,9 +5,11 @@
 //     config.semantic_model; needs secrets.api_key (Python) — texts via the
 //     message id; each request {"custom_id": id, "params": {"model",
 //     "max_tokens":800, "messages":[{"role":"user","content": kAnalysisPrompt
-//     + text[:3000]}]}}. If config.base_url contains "anthropic.com": POST
+//     + text[:3000]}]}}. If config.base_url names the host of a provider
+//     manifest offering batch/messages.batches (builtin: anthropic): POST
 //     https://api.anthropic.com/v1/messages/batches (x-api-key,
-//     anthropic-version 2023-06-01, timeout 60) -> batch id; else the
+//     anthropic-version 2023-06-01, timeout 60; all built by llm::use_model's
+//     anthropic_messages adapter) -> batch id; else the
 //     "concurrent" path: requests run on 3 worker threads against
 //     {base_url}/chat/completions (temperature 0.1, max_tokens 800, timeout
 //     30) and results are applied with mark_analysed; returns

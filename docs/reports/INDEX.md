@@ -260,3 +260,39 @@ Decyzje techniczne (odwracalne):
   chwilowo (rdzeń czyta go raz przy starcie i zapisuje cały przy `set_secret`; sprawdzone na prawdziwym rdzeniu). Jawny plik wygrywa
   (migracja, awaria), brak klucza nie kasuje pliku (`.unreadable`). Opcja wyłączalna. Zaszyfrowanie reszty danych: nie (poza zakresem).
 - Otwarte: pierwsza kompilacja Kotlina i uruchomienie na urządzeniu; release signing; wznawianie przerwanego kopiowania.
+
+## P7 fala 1: jedna akcja „użyj modelu” (2026-10-13, branch `claude/p7-use-model-action`)
+
+Zgodnie z `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`: jedno wejście `llm::use_model()` (`loom/use_model.h`,
+`src/llm/`) zamiast kopii wywołania modelu. Decyzje techniczne (odwracalne; wszystko jest danymi):
+
+- **Żądanie = dane:** `models` (jeden, albo lista wariantów), `mode` (`single` / `sequential` zwraca wynik każdego wariantu /
+  `first_success` zatrzymuje się na pierwszym udanym), `parameters` (uporządkowane, dopisywane po `model` i `messages`),
+  kontekst (gotowe `messages` albo odwołanie rozwiązywane przez `Services::resolve_context`), `prompt`, wybór dostawcy,
+  haki strumienia, token anulowania. Warianty tylko na wniosek; bez nich zachowanie jak dotąd (te same bajty żądania).
+- **Dostawca z ustawień:** klucz `llm_provider` (preset `openrouter`) → manifest w `ProviderRegistry` (wbudowane + opcjonalna
+  tablica `provider_manifests` w config). Manifest daje adres (`base_url`, albo ustawienie wskazane w `metadata.base_url_setting`),
+  sekret (`auth_secret`, schemat `auth_scheme`), nagłówki i **adapter** (`metadata.adapter`). Kod wołający nie zna już ścieżki
+  `/chat/completions`, nagłówków auth ani nazw sekretów; zniknął `if (m.id == "openrouter")` z `providers.cpp`.
+- **Adaptery** (`AdapterRegistry`, rodzina → fabryka; nowa rodzina = jeden `register_adapter`): `openai_chat` (OpenAI-zgodne,
+  w tym OpenRouter) i `anthropic_messages` (Messages + Message Batches jako operacje `BatchSubmit/Status/Results` tego samego adaptera).
+- **Bezpiecznik ×10 w każdym wywołaniu:** każde wydające wywołanie przechodzi przez wspólną bramkę (`UsageGate` nad
+  `chat::ModelUsageGuard`) przed wysłaniem i jest rozliczane po; wstrzymane wywołanie wraca jako `State::Held` i **nic nie wychodzi**.
+  Łańcuch wariantów zatrzymuje się na wstrzymanym (nie obchodzi pytania do właściciela). Własne przepływy zostały za tym samym
+  interfejsem: strojenie celu (`GoalTypingGate`), odpowiedź grafowa (pożyczona bramka), ponowne wysłanie workera.
+- **Proweniencja:** każdy wynik ma rekord `loom.model_use/1` (model zażądany/zgłoszony, dostawca, adapter, punkt końcowy bez
+  sekretów, parametry + ich sha256, sha256 żądania i wyjścia, status, użycie) – w wyniku, w `Services::on_provenance`, a w
+  szacunku dla księgi tam, gdzie szacunek wyprowadza akcja.
+- **Zmigrowane miejsca (po jednym commicie, bajty żądania te same – testy „golden” dodane przed migracją):** analiza semantyczna
+  (`semantic_llm`), współbieżny batch i natywne Message Batches (`batch_api`), udoskonalanie elementów archiwum
+  (`archive/pipeline`), strojenie celu (`context_engine`), batch workera (zgłoszenie/odpytanie/wyniki) i bramka ponownego wysłania
+  (`semantic_worker`), czat (`chat_engine`, strumień i bufor, ścieżka grafowa).
+- **Świadome różnice (domyślnie niewidoczne):** adres jest zawsze bez końcowego `/` (strojenie celu go nie obcinało);
+  `enabled()` analizy semantycznej wymaga teraz rozwiązywalnego dostawcy (pusty `base_url` = wyłączona); wstrzymanie bramką w
+  analizie semantycznej to pauza (wynik regex, bez zliczania błędu), a w `batch_api` zwraca „brak id” z ostrzeżeniem – **nie ma
+  jeszcze ekranu potwierdzenia dla tych kohort** (czat i worker go mają).
+- Cofnięcie: przywróć poprzednie commity miejsc wywołania (każdy osobno); `use_model` można zostawić – nic innego go nie woła.
+- Otwarte (nie zmigrowane): analiza kontraktowa `extract/semantic.cpp` + `server/src/analysis-ui-routes.h` (żądanie z kontraktu
+  promptu, własna księga), postprocess odpowiedzi grafowej (`graph_reply.cpp`, własny builder z manifestu), `embedding.cpp`
+  (to nie wywołanie modelu czatu), `ModelRegistry::update_from_api` (`/models`); ekran potwierdzenia ×10 dla analizy/batcha;
+  wpisanie wyboru dostawcy do węzłów grafu (fala 2).

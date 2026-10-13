@@ -41,10 +41,6 @@ namespace loom {
 
 namespace {
 
-std::string rstrip_slash(std::string s) {
-  while (!s.empty() && s.back() == '/') s.pop_back();
-  return s;
-}
 
 std::string cfg_string(const Config& cfg, std::string_view key, std::string fallback = "") {
   Json v = cfg.get(key);
@@ -643,7 +639,10 @@ Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions&
   LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
   const std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
   const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
-  const std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
+  llm::RouteSelector preview_route;
+  preview_route.require_credential = false;  // a preview spends nothing and needs no key
+  LOOM_TRY_ASSIGN(auto route, llm::resolve_route(llm::Services(cfg_, secrets_, http_), preview_route));
+  const std::string base = route.base_url;
   const std::string body = json::dump(compose_chat_payload(cfg_, opts, model, messages, stream, reasoning_recipe));
   Json estimate = chat_usage_estimate(cfg_, base, model, "usage_preview");
   estimate["resources"]["requests"] = 1;
@@ -1299,7 +1298,9 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       else if (issue == "model_changed") graph->transport_issue = "provider_model_changed";
       else graph->transport_issue = issue;
     }
-  if (graph && !stream && !sent.error) {
+  const bool got_response = sent.state == llm::State::Ok || sent.state == llm::State::HttpError ||
+                            sent.state == llm::State::ParseError;  // the transport itself succeeded
+  if (graph && !stream && got_response) {
     graph->capture_chunk(sent.body, model);
     graph->capture_final(model, false, response_status);
   }
