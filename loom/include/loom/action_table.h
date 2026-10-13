@@ -20,6 +20,9 @@ const Json& action_catalogue();
 // (action_table) stays derived from the builtin catalogue at startup: routes are code wiring, not user data.
 Result<Json> action_catalogue(const std::filesystem::path& data_root);
 
+// action_catalogue(data_root) as a ready C-ABI answer: the list, or {"error":{"code","message"}} when the overlay is broken.
+Json action_list(const std::filesystem::path& data_root);
+
 // Route rows derived from the catalogue: {"port","action","verb","path","query":[{"name","always"}]}.
 const Json& action_table();
 

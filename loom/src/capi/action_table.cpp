@@ -49,6 +49,12 @@ Result<Json> action_catalogue(const std::filesystem::path& data_root) {
   return list_of(profile);
 }
 
+Json action_list(const std::filesystem::path& data_root) {
+  auto cat = action_catalogue(data_root);
+  if (cat) return *cat;
+  return Json{{"error", Json{{"code", std::string(errc_name(cat.error().code))}, {"message", cat.error().message}}}};
+}
+
 const Json& action_table() {
   static const Json t = build_table();
   return t;
