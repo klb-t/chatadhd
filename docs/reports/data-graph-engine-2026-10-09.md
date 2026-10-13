@@ -1,5 +1,13 @@
 # Zadanie B — DATA / GRAPH / ENGINE — 2026-10-09
 
+## 2026-10-13 — aktualny punkt wznowienia, P4b.1 WIP
+
+Cała opublikowana historia B do18a8428b jest już na main Claude’a. Zachowany
+P4b.1 ma scope29/29 PASS, lecz W4 i pełna integracja z nowym main pozostają
+otwarte. **Nie kontynuować historycznej listy niżej bez aktualnego planu.**
+[Wznowienie, dowody i następny krok](data-graph-engine-2026-10-13-resume.md).
+Watchdog A4-WD-002 opublikowany:03e85b3/fed830c, pełne651/651 PASS.
+
 ## Aktualny punkt kontynuacji — sprawdzony produkt 6d1231bd, 2026-10-09
 
 Ta sekcja zastępuje historyczne „następne kroki” niżej. Gałąź pozostaje

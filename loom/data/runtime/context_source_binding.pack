@@ -1,0 +1,91 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "context_source_binding",
+  "revision": 1,
+  "description": "Identity and installation policy for the optional source-context layer. Runtime composes its value from the canonical context_source defaults; no duplicated policy values or automatic installation.",
+  "defaults": {
+    "schema": "loom.default_layers_pack/1",
+    "pack_id": "loom.product.context_source",
+    "revision": 1,
+    "policy": {
+      "excluded_area_new_defaults": "proposal"
+    },
+    "entry": {
+      "id": "context.source/v1",
+      "key": "context.source",
+      "area": "context",
+      "revision": 1
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "schema",
+      "pack_id",
+      "revision",
+      "policy",
+      "entry"
+    ],
+    "properties": {
+      "schema": {
+        "type": "string",
+        "enum": [
+          "loom.default_layers_pack/1"
+        ]
+      },
+      "pack_id": {
+        "type": "string",
+        "minLength": 1
+      },
+      "revision": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "policy": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "excluded_area_new_defaults"
+        ],
+        "properties": {
+          "excluded_area_new_defaults": {
+            "type": "string",
+            "enum": [
+              "proposal",
+              "direct"
+            ]
+          }
+        }
+      },
+      "entry": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "key",
+          "area",
+          "revision"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "key": {
+            "type": "string",
+            "minLength": 1
+          },
+          "area": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  }
+}

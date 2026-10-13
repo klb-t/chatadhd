@@ -26,6 +26,7 @@
 #include "loom/config.h"
 #include "loom/log.h"
 #include "loom/result.h"
+#include "loom/source_context.h"
 #include "loom/util/json.h"
 
 namespace loom {
@@ -123,6 +124,12 @@ class Runtime {
   // the native host, never to source/descriptor/message data. Always all-status.
   Result<Json> read_conversation_view(std::string_view conversation_id, const Json& options,
                                       bool host_local_read_authorized);
+
+  // Explicit installation uses OnboardingStore::install_entries/CAS. Reading
+  // defaults alone neither activates the entry nor restores an exclusion.
+  static Result<Json> source_context_defaults();
+  Result<PreparedSourceContext> prepare_source_context(
+      const SourceContextRequest& request, bool host_local_read_authorized);
 
   // Swap the HTTP stack at runtime (platform injection). nullptr restores
   // the default transport. In-flight requests finish on the old transport.

@@ -4,14 +4,17 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <limits>
 #include <map>
 #include <set>
 
 #include "loom/config.h"
+#include "loom/db.h"
 #include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/semantic_llm.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
@@ -106,7 +109,16 @@ using model::Resolution;
 // ── rendered content, one struct per RefKind we handle directly ─────
 struct RenderedContent {
   std::string label, summary, full, raw;
+  bool exact_representations = false;
   std::string pick(Resolution r) const {
+    if (exact_representations) {
+      switch (r) {
+        case Resolution::Label: return label;
+        case Resolution::Summary: return summary;
+        case Resolution::Full: return full;
+        case Resolution::Raw: return raw;
+      }
+    }
     switch (r) {
       case Resolution::Label:
         return label;
@@ -505,7 +517,8 @@ Result<model::Goal> ContextEngine::type_goal_with_model(const ContextRequest& re
   return type_goal_impl(req, &budget);
 }
 
-Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, const GoalTypingBudget* budget) {
+Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, const GoalTypingBudget* budget,
+    const Json* cue_options_snapshot) {
   LOOM_TRY_ASSIGN(auto all_types, ctx::list_goal_types(*pack_));
   kb::Normalizer norm(*pack_);
 
@@ -533,8 +546,8 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
     params["classifier"] = "forced";
     params["confidence_basis"] = "explicit_owner_type";
   } else {
-    Json cue_options = rt_.config().get("context_goal_cues", Json::object());
-    if (execution_scope) {
+    Json cue_options = cue_options_snapshot ? *cue_options_snapshot : rt_.config().get("context_goal_cues", Json::object());
+    if (execution_scope && !cue_options_snapshot) {
       if (const auto* typing = json::find(execution_scope->options(), "goal_typing"); typing && typing->is_object())
         if (const auto* cue_override = json::find(*typing, "goal_cues")) cue_options = *cue_override;
     }
@@ -717,7 +730,209 @@ Result<model::Goal> ContextEngine::type_goal_impl(const ContextRequest& req, con
 
 // ── selection ────────────────────────────────────────────────────────
 
+namespace {
+// Hash a closed acquisition identity projection, separately from the receipt
+// of the actual read. Only its digest leaves this helper; external text,
+// arbitrary metadata and fresh method run/packet IDs are never copied into it.
+Result<Json> source_acquisition_identity(const Json& acquisition) {
+  if (!acquisition.is_object() || json::get_string(acquisition, "schema") != "loom.source_context_acquisition/1")
+    return Error(Errc::InvalidArgument, "source acquisition metadata requires its versioned envelope");
+  auto scalar_fields = [](const Json& object, std::initializer_list<const char*> fields) -> Result<Json> {
+    if (!object.is_object()) return Error(Errc::InvalidArgument, "source acquisition identity row must be an object");
+    Json result = Json::object();
+    for (const auto* key : fields) {
+      if (!object.contains(key)) continue;
+      const auto& value = object.at(key);
+      if (!value.is_primitive() || (value.is_number_float() && !std::isfinite(value.get<double>())))
+        return Error(Errc::InvalidArgument, "source acquisition identity field must be a finite scalar");
+      result[key] = value;
+    }
+    return result;
+  };
+  Json identity{{"schema", "loom.source_context_acquisition_identity/1"}};
+  for (const char* collection : {"requested", "sources", "omissions"}) {
+    const auto* rows = json::find(acquisition, collection);
+    if (!rows || !rows->is_array())
+      return Error(Errc::InvalidArgument, "source acquisition identity collections must be arrays");
+    auto& projected = identity[collection];
+    projected = Json::array();
+    for (const auto& row : *rows) {
+      Json entry;
+      if (std::string_view(collection) == "requested") {
+        LOOM_TRY_ASSIGN(entry, scalar_fields(row, {"conversation_id", "unit_id", "expected_version"}));
+        const auto* indices = json::find(row, "message_indices");
+        if (!indices || !indices->is_array())
+          return Error(Errc::InvalidArgument, "source acquisition requested indices must be an array");
+        for (const auto& index : *indices)
+          if (!index.is_number_integer() || index < 0)
+            return Error(Errc::InvalidArgument, "source acquisition requested index must be a nonnegative integer");
+        entry["message_indices"] = *indices;
+      } else if (std::string_view(collection) == "omissions") {
+        LOOM_TRY_ASSIGN(entry, scalar_fields(row, {"conversation_id", "unit_id", "message_index", "reason"}));
+      } else {
+        LOOM_TRY_ASSIGN(entry, scalar_fields(row, {"conversation_id", "unit_id", "source_id", "source", "content_hash",
+            "status", "current", "mapping_status", "mapping_version", "source_index", "mapping_index_scope",
+            "coverage", "version", "error_code"}));
+        if (row.contains("selector")) {
+          LOOM_TRY_ASSIGN(entry["selector"], scalar_fields(row.at("selector"), {"source", "member", "json_pointer",
+              "byte_start", "byte_len", "time_start", "time_end", "line"}));
+        }
+        if (row.contains("read_scope")) {
+          LOOM_TRY_ASSIGN(entry["read_scope"], scalar_fields(row.at("read_scope"), {"unit_bytes", "projection", "container_io"}));
+        }
+        if (row.contains("read_configuration")) {
+          const auto& configuration = row.at("read_configuration");
+          LOOM_TRY_ASSIGN(entry["read_configuration"], scalar_fields(configuration, {"schema", "domain", "revision", "hash"}));
+          if (configuration.contains("values")) {
+            LOOM_TRY_ASSIGN(entry["read_configuration"]["values"], scalar_fields(configuration.at("values"),
+                {"projection_storage", "content_index"}));
+          }
+        }
+      }
+      projected.push_back(std::move(entry));
+    }
+  }
+  return identity;
+}
+} // namespace
+
 Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
+  return select_impl(req, nullptr, nullptr);
+}
+
+Result<SourceContextPreflight> ContextEngine::preflight_source_context(
+    const ContextRequest& req, const RuntimeProfile& source_profile) const {
+  LOOM_TRY(validate_context_extensions(req));
+  if (req.budget_tokens < 0)
+    return Error(Errc::InvalidArgument, "source context budget must be non-negative");
+  if (req.relation_hops < 0 || (req.detail_resolution &&
+      !model::from_string<Resolution>(model::to_string(*req.detail_resolution))))
+    return Error(Errc::InvalidArgument, "source context controls are invalid");
+  if (!req.run.empty() || !req.targets.empty() || !req.project.empty() ||
+      !req.claim_targets.empty() || req.include_counter_evidence || !req.plan.is_null() || req.relation_hops != 0)
+    return Error(Errc::Unavailable, "source-only preparation does not implement stored-graph or plan composition");
+  if (!req.candidate_channels.empty() || req.lexical_shadow ||
+      req.candidate_scan_limit != ContextRequest{}.candidate_scan_limit)
+    return Error(Errc::Unavailable, "source preparation does not implement additional candidate instruments");
+  if (execution_scope)
+    return Error(Errc::Unavailable, "source preparation requires an offline execution boundary");
+  const Json execution = rt_.config().get("context_execution", Json::object());
+  LOOM_TRY(validate_context_execution_options(execution));
+  for (const char* section : {"method_registry", "goal_typing", "embedding", "unified", "graph_reply"}) {
+    const auto* settings = json::find(execution, section);
+    if (settings && settings->value("enabled", false))
+      return Error(Errc::Unavailable, "source preparation cannot execute the configured context strategy");
+  }
+  if (const auto* channels = json::find(execution, "candidate_channels")) {
+    if (!channels->is_array()) return Error(Errc::InvalidArgument, "execution candidate_channels must be an array");
+    if (!channels->empty()) return Error(Errc::Unavailable, "source preparation cannot execute configured candidate instruments");
+  }
+  if (source_profile.domain() != "context_source")
+    return Error(Errc::InvalidArgument, "source preparation requires the context_source profile");
+  LOOM_TRY_ASSIGN(auto builtin, RuntimeProfile::builtin("context_source"));
+  LOOM_TRY_ASSIGN(auto checked, builtin.with_values(source_profile.values()));
+  const auto& values = checked.values();
+  for (const char* name : {"base_relevance", "lexical_weight"}) {
+    if (!std::isfinite(values.at(name).get<double>()))
+      return Error(Errc::InvalidArgument, "source relevance must be finite");
+  }
+  for (const char* name : {"label_prefix_codepoints", "summary_prefix_codepoints"}) {
+    const auto& value = values.at(name);
+    // JSON's mixed signed/unsigned comparison narrows uint64_t to int64_t.
+    // Check the sign first, then compare only nonnegative native integers.
+    if (!value.is_number_integer() || (!value.is_number_unsigned() && value.get<std::int64_t>() < 0) ||
+        value.get<std::uint64_t>() > std::numeric_limits<std::size_t>::max())
+      return Error(Errc::InvalidArgument, "source prefix length exceeds the supported integer representation");
+  }
+  for (const char* name : {"label_operator", "summary_operator"}) {
+    if (values.at(name) != "extractive_prefix")
+      return Error(Errc::Unavailable, "source prefix representation operator is unavailable");
+  }
+  for (const char* name : {"full_operator", "raw_operator"}) {
+    if (values.at(name) != "verbatim")
+      return Error(Errc::Unavailable, "source verbatim representation operator is unavailable");
+  }
+  std::set<std::string> statuses;
+  for (const auto& value : values.at("admitted_statuses")) {
+    const auto status = value.get<std::string>();
+    if (!msg_status::is_valid(status) || !statuses.insert(status).second)
+      return Error(Errc::InvalidArgument, "source status admission requires unique existing message statuses");
+  }
+  LOOM_TRY_ASSIGN(auto types, ctx::list_goal_types(*pack_));
+  Json cue_configuration_hash = nullptr, cue_snapshot_hash = nullptr;
+  if (req.goal_type && !req.goal_type->empty()) {
+    LOOM_TRY(find_goal_type_checked(*pack_, *req.goal_type, types));
+  } else {
+    const Json cue_options = rt_.config().get("context_goal_cues", Json::object());
+    LOOM_TRY_ASSIGN(auto snapshot, resolve_runtime_preset(builtin_context_goal_cues_definition(), cue_options));
+    LOOM_TRY_ASSIGN(auto policy, GoalCuePolicy::from_values(snapshot.values));
+    kb::Normalizer normalizer(*pack_);
+    LOOM_TRY(classify_by_cues(types, normalizer, req.text, policy));
+    cue_configuration_hash = Sha256::hex(json::canonical(cue_options));
+    cue_snapshot_hash = snapshot.hash;
+  }
+  SourceContextPreflight result;
+  result.receipt = Json{{"schema", "loom.source_context_preflight/1"},
+      {"mode", "source_only"}, {"executor", "ContextEngine.source_observations/1"},
+      {"request_sha256", Sha256::hex(json::canonical(req.to_json()))},
+      {"source_profile_sha256", source_profile.hash()}, {"pack_sha256", pack_->hash()},
+      {"execution_configuration_sha256", Sha256::hex(json::canonical(execution))},
+      {"goal_cues_configuration_sha256", cue_configuration_hash}, {"goal_cues_snapshot_sha256", cue_snapshot_hash},
+      {"local_read_authorized", false}, {"egress_authorized", false}};
+  result.binding_sha256 = Sha256::hex(json::canonical(result.receipt));
+  return result;
+}
+
+Result<model::ContextSet> ContextEngine::select(const ContextRequest& req,
+    const SourceContextInput& input, const RuntimeProfile& source_profile) {
+  const Json cue_options = rt_.config().get("context_goal_cues", Json::object());
+  LOOM_TRY_ASSIGN(auto preflight, preflight_source_context(req, source_profile));
+  if (input.preflight_sha256 != preflight.binding_sha256)
+    return Error(Errc::Conflict, "source preparation controls changed since preflight");
+  if ((!req.goal_type || req.goal_type->empty()) &&
+      preflight.receipt.at("goal_cues_configuration_sha256") != Sha256::hex(json::canonical(cue_options)))
+    return Error(Errc::Conflict, "source goal cues changed while binding preparation");
+  LOOM_TRY(source_acquisition_identity(input.acquisition));
+  std::set<std::string> refs, messages;
+  for (const auto& candidate : input.observations) {
+    const auto& observation = candidate.observation;
+    LOOM_TRY(model::Observation::from_json(observation.to_json()));
+    if (observation.id != model::Observation::make_id(observation.unit, observation.locator, observation.text) ||
+        observation.locator.source.empty() || observation.locator.json_pointer.empty() ||
+        candidate.message_ref.empty() || candidate.source_version.empty() || !msg_status::is_valid(candidate.message_status) ||
+        !candidate.source_ref.is_object() || json::get_string(candidate.source_ref, "unit_id").empty() ||
+        json::get_string(candidate.source_ref, "source").empty() ||
+        json::get_string(candidate.source_ref, "version") != candidate.source_version ||
+        !candidate.read_receipt_ref.is_object())
+      return Error(Errc::InvalidArgument, "source observation identity is incomplete or inconsistent");
+    const auto* projection = json::find(candidate.source_ref, "mapping_projection");
+    const auto* index = json::find(candidate.source_ref, "message_index");
+    if (!projection || !projection->is_object() || !index || !index->is_number_integer() || *index < 0 ||
+        *index > std::numeric_limits<int>::max() || observation.ordinal != index->get<int>())
+      return Error(Errc::InvalidArgument, "source observation mapping identity is incomplete");
+    model::Locator root;
+    root.source = observation.locator.source;
+    auto located = root;
+    located.json_pointer = "/messages/" + std::to_string(observation.ordinal) + "/text";
+    if (candidate.message_ref != "refmsg:" + candidate.source_version + ":" + std::to_string(observation.ordinal) ||
+        observation.unit != model::Unit::make_id(root.source, root) ||
+        json::canonical(observation.locator.to_json()) != json::canonical(located.to_json()) ||
+        json::get_string(*projection, "schema") != "loom.source_context_projection/1" ||
+        json::get_string(*projection, "source") != root.source ||
+        json::get_string(*projection, "unit_id") != observation.unit ||
+        json::get_string(*projection, "storage") != "transient" ||
+        json::get_string(*projection, "hash_scope") != "canonical_mapped_projection" ||
+        !projection->contains("locator") ||
+        json::canonical(projection->at("locator")) != json::canonical(located.to_json()))
+      return Error(Errc::InvalidArgument, "source observation locator does not identify its mapped projection");
+    if (!refs.insert(observation.id).second || !messages.insert(candidate.message_ref).second)
+      return Error(Errc::InvalidArgument, "source observation input contains duplicate identities");
+  }
+  return select_impl(req, &input, &source_profile, &cue_options);
+}
+
+Result<model::ContextSet> ContextEngine::select_impl(const ContextRequest& req,
+    const SourceContextInput* source_input, const RuntimeProfile* source_profile, const Json* source_goal_cues) {
   LOOM_TRY(validate_context_extensions(req));
   if (req.relation_hops < 0) return Error(Errc::InvalidArgument, "relation_hops must be non-negative");
   if (req.detail_resolution && !model::from_string<Resolution>(model::to_string(*req.detail_resolution))) {
@@ -725,8 +940,12 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   }
   if (execution_scope) LOOM_TRY(validate_context_execution_options(execution_scope->options()));
   if (!req.plan.is_null()) return select_context_plan(*this, store_, req);
-  LOOM_TRY_ASSIGN(std::string run, ctx::resolve_run(store_, req.run));
+  std::string run;
+  if (!source_input) {
+    LOOM_TRY_ASSIGN(run, ctx::resolve_run(store_, req.run));
+  }
   auto typed = [&]() -> Result<model::Goal> {
+    if (source_input) return type_goal_impl(req, nullptr, source_goal_cues);
     if (execution_scope) {
       const auto settings = detail::goal_typing_options(rt_);
       if (settings.value("enabled", false) && settings.value("calls_authorized", false)) {
@@ -746,7 +965,9 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
         {"detail_resolution", req.detail_resolution ? Json(std::string(model::to_string(*req.detail_resolution))) : Json(nullptr)}};
   }
 
-  int total_budget = req.budget_tokens > 0 ? req.budget_tokens : 4000;
+  // Source preparation treats an explicit zero as a closed item budget.
+  // Preserve the established defaulting behavior of the legacy overload.
+  int total_budget = source_input ? req.budget_tokens : (req.budget_tokens > 0 ? req.budget_tokens : 4000);
   std::string lang = req.lang;
 
   // These are bounded store queries, not an assertion of complete retrieval or
@@ -846,6 +1067,11 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     if (!d.empty() && d > anchor_date) anchor_date = d;
   };
 
+  MethodCandidates methods;
+  ContextCandidates retrieved;
+  ContextEvidence evidence;
+  Json source_selection = nullptr;
+  if (!source_input) {
   // ── principles: stable (invariant + preference) or project (matching level) ──
   auto principle_rows = store_.list_principles(run);
   query_diagnostic("principles", Json::object(), principle_rows, 1000000);
@@ -1121,9 +1347,9 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   const Json method_settings = execution.value("method_registry", Json::object());
   if (method_settings.is_object() && method_settings.value("enabled", false))
     execution["_native_embedding_binding"] = install_provider_vector(*this, rt_, execution, execution_scope != nullptr);
-  LOOM_TRY_ASSIGN(auto methods, gather_method_candidates(rt_, store_, run, pack_, req,
+  LOOM_TRY_ASSIGN(methods, gather_method_candidates(rt_, store_, run, pack_, req,
       gt.evidence, direct_refs, candidate_channels_, execution));
-  const auto retrieved = methods.enabled ? std::move(methods.candidates) :
+  retrieved = methods.enabled ? std::move(methods.candidates) :
       gather_context_candidates(store_, run, pack_, req, gt.evidence, direct_refs, candidate_channels_);
   for (const auto& claim : retrieved.claims) {
     if (known_refs.insert(claim.id).second) add_goal_claim(claim, "", 0);
@@ -1131,7 +1357,6 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   }
   std::set<std::string> direct_ids(direct_refs.begin(), direct_refs.end());
   direct_ids.insert(req.claim_targets.begin(), req.claim_targets.end());
-  ContextEvidence evidence;
   if (!req.claim_targets.empty() || req.include_counter_evidence) {
     evidence = gather_context_evidence(store_, run, req, direct_refs, gt.evidence);
     for (const auto& claim : evidence.claims) {
@@ -1158,8 +1383,6 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
       goal_b.push_back(std::move(c));
     }
   }
-  const bool extended = !req.claim_targets.empty() || req.include_counter_evidence ||
-      !req.candidate_channels.empty() || req.lexical_shadow || methods.enabled;
   for (auto* band : {&project_b, &goal_b}) {
     for (auto& c : *band) {
       if (direct_ids.count(c.ref)) c.extra_factors["direct_goal_candidate"] = true;
@@ -1184,6 +1407,90 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
       }
     }
   }
+  } else {
+    // Real observations enter before the common merge/score/diversity/budget
+    // pipeline. No store query, method packet capture or injected instrument
+    // consumes this corpus. Local access was checked by the Runtime resolver.
+    const auto& policy = source_profile->values();
+    LOOM_TRY_ASSIGN(auto acquisition_identity, source_acquisition_identity(source_input->acquisition));
+    Json inputs = Json::array();
+    source_selection = Json{{"schema", "loom.source_context_selection/1"}, {"mode", "source_only"},
+        {"storage", "transient"}, {"knowledge_run", nullptr},
+        {"preflight_sha256", source_input->preflight_sha256}, {"source_profile_sha256", source_profile->hash()},
+        {"acquisition_sha256", Sha256::hex(json::canonical(source_input->acquisition))},
+        {"acquisition_identity_sha256", Sha256::hex(json::canonical(acquisition_identity))},
+        {"acquisition_identity_hash_scope", "declared_requests_sources_omissions_without_access_receipts"},
+        {"input_hash_scope", "canonical_native_observations_without_access_receipts"},
+        {"considered", Json::array()}, {"selected", Json::array()}, {"omitted", Json::array()},
+        {"method_run_trace", {{"status", "unavailable"}, {"reason", "selection_not_registered"}}}};
+    diagnostics["status"] = "complete";
+    diagnostics["exhaustive"] = true; // only the explicitly supplied observations
+    diagnostics["scope"] = "request_scoped_observations";
+    const auto label_length = policy.at("label_prefix_codepoints").get<std::size_t>();
+    const auto summary_length = policy.at("summary_prefix_codepoints").get<std::size_t>();
+    for (const auto& input : source_input->observations) {
+      const auto& observation = input.observation;
+      const auto text_hash = Sha256::hex(observation.text);
+      Json identity{{"ref", observation.id}, {"message_ref", input.message_ref},
+          {"unit_id", input.source_ref.at("unit_id")}, {"source_version", input.source_version},
+          {"message_status", input.message_status}, {"text_sha256", text_hash}};
+      source_selection["considered"].push_back(identity);
+      inputs.push_back(Json{{"observation", observation.to_json()}, {"message_ref", input.message_ref},
+          {"parent_ref", input.parent_ref ? Json(*input.parent_ref) : Json(nullptr)},
+          {"source_version", input.source_version}, {"message_status", input.message_status}, {"source_ref", input.source_ref}});
+      const auto& admitted = policy.at("admitted_statuses");
+      const auto omit = [&](std::string_view reason) {
+        identity["reason"] = reason;
+        source_selection["omitted"].push_back(identity);
+        excluded(observation.id, "source_observations", reason);
+      };
+      if (std::find(admitted.begin(), admitted.end(), Json(input.message_status)) == admitted.end()) {
+        omit("message_status");
+        continue;
+      }
+      if (!contains_evidence(gt.evidence, model::EvidenceClass::Observed)) {
+        omit("evidence_class");
+        continue;
+      }
+      Candidate candidate;
+      candidate.ref_kind = model::RefKind::Observation;
+      candidate.ref = observation.id;
+      candidate.band = ContextBand::Goal;
+      // Group by the actual source unit, never by an invented per-fragment
+      // subject that would evade the existing diversity operation.
+      candidate.subject = input.source_ref.at("unit_id").get<std::string>();
+      candidate.date = observation.date;
+      candidate.origin = model::Origin::Archive;
+      candidate.evidence = model::EvidenceClass::Observed;
+      candidate.confidence = 1.0; // exact quoted bytes, not truth of the assertion
+      candidate.content.exact_representations = true;
+      candidate.content.label = std::string(utf8::prefix(observation.text, label_length));
+      candidate.content.summary = std::string(utf8::prefix(observation.text, summary_length));
+      candidate.content.full = observation.text;
+      candidate.content.raw = observation.text;
+      RenderedContent searchable;
+      searchable.summary = observation.text; // relevance is independent of view detail
+      candidate.base_relevance = std::clamp(policy.at("base_relevance").get<double>() +
+          policy.at("lexical_weight").get<double>() * lexical_overlap(searchable), 0.0, 1.0);
+      candidate.why = "explicit source observation";
+      candidate.extra_factors = Json{{"source_ref", input.source_ref}, {"source_message_ref", input.message_ref},
+          {"source_version", input.source_version}, {"source_message_status", input.message_status},
+          {"source_parent_ref", input.parent_ref ? Json(*input.parent_ref) : Json(nullptr)},
+          {"read_receipt_ref", input.read_receipt_ref}, {"observation_locator", observation.locator.to_json()},
+          {"text_sha256", text_hash}, {"storage", "transient"}, {"confidence_basis", "quoted_bytes_not_assertion_truth"},
+          {"representations", {{"label", {{"operator", policy.at("label_operator")},
+                                           {"truncated", utf8::length(observation.text) > label_length}}},
+                               {"summary", {{"operator", policy.at("summary_operator")},
+                                             {"truncated", utf8::length(observation.text) > summary_length}}},
+                               {"full", {{"operator", policy.at("full_operator")}}},
+                               {"raw", {{"operator", policy.at("raw_operator")}}}}}};
+      note_date(candidate.date);
+      goal_b.push_back(std::move(candidate));
+    }
+    source_selection["input_sha256"] = Sha256::hex(json::canonical(inputs));
+  }
+  const bool extended = !req.claim_targets.empty() || req.include_counter_evidence ||
+      !req.candidate_channels.empty() || req.lexical_shadow || methods.enabled;
 
   // Merge discovery paths before scoring/budgeting. Dependencies and distinct
   // views of one reference survive even when the graph also finds a slot or
@@ -1295,7 +1602,7 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
     int bi = static_cast<int>(c.band);
     for (int j = bi; j < 3; ++j) {
       int room = band_budget[static_cast<std::size_t>(j)] - used[static_cast<std::size_t>(j)];
-      if (c.tokens <= room && c.tokens <= total_budget - used_total) {
+      if ((!source_input || total_budget > 0) && c.tokens <= room && c.tokens <= total_budget - used_total) {
         used[static_cast<std::size_t>(j)] += c.tokens;
         used_total += c.tokens;
         model::ContextItem item;
@@ -1491,6 +1798,29 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   if (req.include_counter_evidence) goal.params["counter_evidence"] = evidence.counters;
   if (!retrieved.trace.empty()) goal.params["candidate_retrieval"] = retrieved.trace;
   if (methods.enabled) goal.params["method_registry"] = Json{{"resolution", methods.plan}, {"result_graph", methods.graph}};
+  if (source_input) {
+    std::map<std::string, Json> identities;
+    for (const auto& identity : source_selection["considered"])
+      identities.emplace(identity.at("ref").get<std::string>(), identity);
+    for (const auto& item : accepted) {
+      Json row = identities.at(item.ref);
+      row["resolution"] = std::string(model::to_string(item.resolution));
+      row["tokens"] = item.tokens;
+      source_selection["selected"].push_back(std::move(row));
+    }
+    for (const auto& item : dropped) {
+      Json row = identities.at(item.ref);
+      row["reason"] = "budget";
+      row["resolution"] = std::string(model::to_string(item.resolution));
+      row["tokens"] = item.tokens;
+      source_selection["omitted"].push_back(std::move(row));
+    }
+    goal.params["source_context"] = source_selection;
+    goal.params["selector_channels"] = Json::array({
+        Json{{"id", "source_observations"}, {"available", true}, {"source", "native_request"}},
+        Json{{"id", "lexical_overlap"}, {"available", true}, {"source", "offline_builtin"},
+             {"measurement_status", "heuristic_relevance_not_truth"}}});
+  }
 
   model::ContextSet set;
   diagnostics["budget"]["final_band_tokens"] = band_budget;
@@ -1513,6 +1843,14 @@ Result<model::ContextSet> ContextEngine::select(const ContextRequest& req) {
   if (extended) {
     set.id.clear();
     set.id = kb::stable_id("cx_", json::dump(Json{{"request", req.to_json()}, {"run", run}, {"context_set", set.to_json()}}));
+  }
+  if (source_input) {
+    // Content identity excludes fresh access-run/receipt IDs. The separate
+    // acquisition hash still binds this preparation to the actual read proof.
+    set.id = kb::stable_id("cx_", json::canonical(Json{{"base_context_id", set.id},
+        {"preflight_sha256", source_input->preflight_sha256}, {"input_sha256", source_selection["input_sha256"]},
+        {"acquisition_identity_sha256", source_selection["acquisition_identity_sha256"]},
+        {"selected", source_selection["selected"]}, {"omitted", source_selection["omitted"]}}));
   }
   return set;
 }
@@ -1632,12 +1970,18 @@ Json ContextEngine::trace(const model::ContextSet& set) const {
       {"calls_authorized", execution_scope && json::get_bool(settings, "calls_authorized", false)},
       {"execution_scope_active", execution_scope != nullptr},
       {"usage_policy_dependency", LOOM_CONTEXT_HAS_USAGE_POLICY ? "available" : "requires_thread_2_integration"}};
-  return Json{{"goal", set.goal.to_json()},
+  Json result{{"goal", set.goal.to_json()},
               {"budget_tokens", set.budget_tokens},
               {"used_tokens", set.used_tokens},
               {"sections", out_sections},
               {"dropped", dropped}, {"selector_channels", capabilities},
               {"goal_typing_capability", goal_typing_capability}};
+  if (const auto* source = json::find(set.goal.params, "source_context")) {
+    result["source_context"] = *source;
+    result["goal_typing_capability"] = Json{{"available", false}, {"calls_authorized", false},
+        {"reason", "source_preparation_is_offline"}};
+  }
+  return result;
 }
 
 Result<Json> build_context_with_execution(ContextEngine& engine, const ContextRequest& request,

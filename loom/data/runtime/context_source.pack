@@ -1,0 +1,80 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "context_source",
+  "revision": 1,
+  "description": "Explicit source-only context preparation. Reversible extractive presets; no model calls, persistence or disclosure authorization. Install the layer entry explicitly; an excluded entry stays excluded.",
+  "defaults": {
+    "admitted_statuses": [
+      "active"
+    ],
+    "base_relevance": 0.35,
+    "lexical_weight": 0.65,
+    "label_prefix_codepoints": 100,
+    "summary_prefix_codepoints": 160,
+    "label_operator": "extractive_prefix",
+    "summary_operator": "extractive_prefix",
+    "full_operator": "verbatim",
+    "raw_operator": "verbatim"
+  },
+  "value_schema": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "admitted_statuses",
+      "base_relevance",
+      "lexical_weight",
+      "label_prefix_codepoints",
+      "summary_prefix_codepoints",
+      "label_operator",
+      "summary_operator",
+      "full_operator",
+      "raw_operator"
+    ],
+    "properties": {
+      "admitted_statuses": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "active",
+            "excluded",
+            "version",
+            "deleted"
+          ]
+        }
+      },
+      "base_relevance": {
+        "type": "number",
+        "minimum": 0
+      },
+      "lexical_weight": {
+        "type": "number",
+        "minimum": 0
+      },
+      "label_prefix_codepoints": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "summary_prefix_codepoints": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "label_operator": {
+        "type": "string",
+        "minLength": 1
+      },
+      "summary_operator": {
+        "type": "string",
+        "minLength": 1
+      },
+      "full_operator": {
+        "type": "string",
+        "minLength": 1
+      },
+      "raw_operator": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

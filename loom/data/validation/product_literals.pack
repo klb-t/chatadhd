@@ -1,6 +1,6 @@
 {
   "schema": "loom.product_literals/1",
-  "revision": 5,
+  "revision": 6,
   "requirement": {
     "id": "R42",
     "source_commit": "3cd5848e7484d50d00f19f0855bc2cd228ad7f3b",
@@ -500,6 +500,14 @@
           "sha256": "a53f6e3a046459bd81d447fb551db68319afe38679ad0c7f5b3fa658ebd4ae1b"
         },
         {
+          "path": "loom/data/runtime/context_source.pack",
+          "sha256": "5d10a038d8aec56430fe5bdb8b6896b626aafe51484300929c3eb338b6f6678c"
+        },
+        {
+          "path": "loom/data/runtime/context_source_binding.pack",
+          "sha256": "cbf6fecaa4bd98cc2e3ec204e3d79a7af4c8c151374ed1f9412b3df59087fb3b"
+        },
+        {
           "path": "loom/data/runtime/github.pack",
           "sha256": "2f2d72f6fe94f57ebe11ab90883a530266188180bd803cc72a7697f336a108f3"
         },
@@ -588,7 +596,7 @@
           "sha256": "781279229d42b12141dd19bdb6fe55de5142657a1c870e7517dc997964a42099"
         }
       ],
-      "output_sha256": "501f9d01293c7a906d44e48c9962596bf77973b839c2e690b4c56621f15f776b",
+      "output_sha256": "22008cb051a55299ac9712f3d5782081861fe33688deb788b39e20aeca13867d",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

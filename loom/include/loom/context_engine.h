@@ -46,6 +46,7 @@
 namespace loom {
 
 class Runtime;
+class RuntimeProfile;
 
 namespace context {
 
@@ -82,6 +83,35 @@ struct ContextRequest {
   bool lexical_shadow = false;
   static Result<ContextRequest> from_json(const Json& j);
   Json to_json() const;
+};
+
+// Native, content-free compatibility proof. This is not a read/egress grant.
+struct SourceContextPreflight {
+  std::string binding_sha256;
+  Json receipt = Json::object();
+};
+
+// Request-scoped observations prepared by the Runtime source resolver. Their
+// locators address an actual in-memory mapping document, not a guessed pointer
+// into the original archive. source_ref retains that original source identity.
+// Neither this input nor the resulting ContextSet/full trace is a durable DTO.
+struct SourceContextObservation {
+  model::Observation observation;
+  std::string message_ref;
+  std::optional<std::string> parent_ref;
+  std::string source_version;
+  std::string message_status;
+  Json source_ref = Json::object();
+  Json read_receipt_ref = Json::object();
+};
+
+struct SourceContextInput {
+  std::vector<SourceContextObservation> observations;
+  // loom.source_context_acquisition/1: requested/sources/omissions arrays.
+  // Selection retains hashes only: one for stable declared identity/outcomes,
+  // another for the actual access receipts and additional acquisition metadata.
+  Json acquisition = Json::object();
+  std::string preflight_sha256;
 };
 
 // A separate native caller may authorize ONE goal-typing model attempt.
@@ -121,6 +151,16 @@ class ContextEngine {
   // implicit retry or a model result whose first response cannot be verified.
   Result<model::Goal> type_goal_with_model(const ContextRequest& req, const GoalTypingBudget& budget);
   Result<model::ContextSet> select(const ContextRequest& req);
+  // Source-only, offline preparation. Runtime resolves R40 and obtains local
+  // read authority before supplying observations; core does neither source I/O
+  // nor implicit knowledge-run lookup. Invoke preflight before reading bytes.
+  // All additional/injected candidate channels and payload-capturing method
+  // execution are explicitly unavailable in this increment. select repeats
+  // preflight and rejects a changed binding before consuming the observations.
+  Result<SourceContextPreflight> preflight_source_context(
+      const ContextRequest& req, const RuntimeProfile& source_profile) const;
+  Result<model::ContextSet> select(const ContextRequest& req,
+      const SourceContextInput& input, const RuntimeProfile& source_profile);
   // Prompt text in band order with evidence/origin markers.
   Result<std::string> render(const model::ContextSet& set);
   // Sections-as-data (LOOM_CONCEPTUAL_MODEL idea, prompt_compiler.py):
@@ -141,7 +181,11 @@ class ContextEngine {
   static int estimate_tokens(std::string_view text) noexcept;
 
  private:
-  Result<model::Goal> type_goal_impl(const ContextRequest& req, const GoalTypingBudget* budget);
+  Result<model::Goal> type_goal_impl(const ContextRequest& req, const GoalTypingBudget* budget,
+      const Json* cue_options_snapshot = nullptr);
+  Result<model::ContextSet> select_impl(const ContextRequest& req,
+      const SourceContextInput* source_input, const RuntimeProfile* source_profile,
+      const Json* source_goal_cues = nullptr);
   Runtime& rt_;
   kb::KnowledgeStore& store_;
   std::shared_ptr<const kb::Pack> pack_;
