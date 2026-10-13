@@ -91,3 +91,7 @@ set_tests_properties(jni_host_smoke_test PROPERTIES
   ENVIRONMENT "LD_LIBRARY_PATH=${LOOM_LIBRARY_DIR}"
   TIMEOUT 60)
 add_dependencies(loom_jni_host_verify_classes loom_jni_host)
+
+# P3: connection policy (server URL validation + bridge-injection rule).
+add_test(NAME connection_policy_test
+  COMMAND ${LOOM_JAVA_EXE} -cp "${LOOM_VERIFY_CLASSES_DIR}" loomverify.ConnectionPolicyTest)
