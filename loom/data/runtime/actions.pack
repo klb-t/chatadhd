@@ -1171,7 +1171,7 @@
           "embedding"
         ],
         "requires": [
-          "text"
+          "has_text"
         ],
         "produces": [
           "has_embedding"
