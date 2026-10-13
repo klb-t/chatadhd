@@ -46,8 +46,22 @@ std::optional<Json> single_request(const llm::Services& services, const std::str
   request.referer = false;  // this path never sent attribution headers
   request.timeout_ms = 30000;
   auto outcome = llm::use_model(services, std::move(request));
-  if (!outcome || !outcome->ok()) return std::nullopt;
-  return SemanticBatchAPI::parse_analysis(outcome->last().text);
+  if (!outcome) {
+    log::warn("loom.batch_api", "Concurrent batch request not made: {} ({})", outcome.error().message,
+              errc_name(outcome.error().code));
+    return std::nullopt;
+  }
+  if (!outcome->ok()) {
+    const llm::VariantResult& failed = outcome->last();
+    log::warn("loom.batch_api", "Concurrent batch request failed: {} ({}){}", llm::to_string(failed.state),
+              failed.error ? std::string(errc_name(failed.error->code)) : "no error code",
+              failed.error ? ": " + failed.error->message
+              : failed.state == llm::State::HttpError ? ": HTTP " + std::to_string(failed.http_status) : std::string());
+    return std::nullopt;
+  }
+  auto analysis = SemanticBatchAPI::parse_analysis(outcome->last().text);
+  if (!analysis) log::warn("loom.batch_api", "Concurrent batch request returned no usable analysis JSON");
+  return analysis;
 }
 
 void run_concurrent_batch(Database& db, const Config& cfg, const Secrets& secrets, net::HttpTransport& http,
