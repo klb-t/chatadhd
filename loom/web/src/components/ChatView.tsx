@@ -8,7 +8,7 @@ import ConversationSourceView, { useConversationSourcePresentation, useLayeredDe
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import UsagePendingBlock from "./UsagePendingBlock";
 import ActionProposalBlock from "./ActionProposalBlock";
-import { ACTION_PROPOSAL_FEATURE, answerRequest, pendingAnswer, proposalState, routeConfirmedRequest, type PendingAnswer } from "../context/action-proposal";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, type PendingAnswer } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
@@ -649,6 +649,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   return label ? <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span> : null;
                 }
                 return null;
+              })()}
+              {m.role === "assistant" && (() => {
+                const made = producedView(m.metadata, m.id);
+                const label = made ? producedText(proposalCatalog.feature, made) : null;
+                return made && label ? <p className="pill" data-testid="chat-action-produced" data-node={made.forms[0]} data-target={made.target}>{label}</p> : null;
               })()}
               <div className="actions">
                 {m.role === "user" && editingId !== m.id && (

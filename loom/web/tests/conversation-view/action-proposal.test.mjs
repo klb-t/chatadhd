@@ -131,3 +131,53 @@ test('a block that cannot be answered offers disabled buttons', () => {
   const html = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'y', onConfirm: () => undefined, onReject: () => undefined }));
   assert.equal((html.match(/disabled/g) || []).length, 2);
 });
+
+test('money is a range where the price is listed and unknown, with its reason, where it is not: never zero', () => {
+  const known = { ...proposal, cost: { declared: 1, model_calls: 1, input_bytes: 4000, money: { known: true, low: 0.00244, high: 0.008053, currency: 'USD' } } };
+  const answer = a.pendingAnswer({ action_proposal: known });
+  const view = a.proposalView(answer);
+  assert.deepEqual(view.money, { known: true, low: '0.0024', high: '0.0081', currency: 'USD', reason: '' });
+  const texts = a.proposalTexts(feature, answer, view);
+  assert.equal(texts.money, en.cost_money.replace('{{low}}', '0.0024').replace('{{high}}', '0.0081').replace('{{currency}}', 'USD'));
+  const unknownMoney = { ...proposal, cost: { declared: 1, model_calls: 1, input_bytes: 4000, money: { known: false, currency: 'USD', reason: 'the registry lists no price for the model' } } };
+  const unknownAnswer = a.pendingAnswer({ action_proposal: unknownMoney });
+  const unknownView = a.proposalView(unknownAnswer);
+  assert.equal(unknownView.money.known, false);
+  assert.equal(unknownView.money.low, null);
+  const unknownTexts = a.proposalTexts(feature, unknownAnswer, unknownView);
+  assert.match(unknownTexts.money, /unknown/);
+  assert.match(unknownTexts.money, /no price/);
+  assert.doesNotMatch(unknownTexts.money, /\b0\b/);
+  // known:true without numbers is not a known price
+  const broken = a.proposalView(a.pendingAnswer({ action_proposal: { ...proposal, cost: { model_calls: 1, money: { known: true } } } }));
+  assert.equal(broken.money.known, false);
+  // a plan that calls no model says nothing about money; a proposal without the field neither
+  assert.equal(a.proposalTexts(feature, answer, a.proposalView(a.pendingAnswer({ action_proposal: { ...known, cost: { ...known.cost, model_calls: 0 } } }))).money, null);
+  assert.equal(a.proposalView(a.pendingAnswer({ action_proposal: proposal })).money, null);
+  assert.equal(a.proposalTexts(feature, a.pendingAnswer({ action_proposal: proposal }), a.proposalView(a.pendingAnswer({ action_proposal: proposal }))).money, null);
+  const html = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'm', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.match(html, /data-testid="m-money"/);
+  assert.ok(html.includes('0.0024'));
+  const plain = renderToStaticMarkup(createElement(block.default, { feature, answer: a.pendingAnswer({ action_proposal: proposal }), testId: 'm', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.doesNotMatch(plain, /m-money/);
+  assert.ok(pl.cost_money && pl.cost_money_unknown && pl.produced, 'the Polish strings exist');
+});
+
+test('a result message points at the graph nodes it presents', () => {
+  const report = { run_id: 'ar_7', status: 'completed', produced: { target: 'graph', forms: ['n_form1'], content: 'n_content', run_node: 'n_run' } };
+  const view = a.producedView({ action_run: report });
+  assert.deepEqual(view, { target: 'graph', forms: ['n_form1'], content: 'n_content', runNode: 'n_run' });
+  assert.equal(a.producedText(feature, view), en.produced.replace('{{target}}', 'graph').replace('{{nodes}}', 'n_form1'));
+  assert.equal(a.producedText(null, view), null);
+  // a result posted as a message of its own is itself the form node
+  const posted = a.producedView({ action_result: { run_id: 'ar_8', content: 'n_c', run_node: 'n_r' } }, 'm_posted');
+  assert.deepEqual(posted, { target: 'conversation_message', forms: ['m_posted'], content: 'n_c', runNode: 'n_r' });
+  assert.equal(a.producedView({ action_result: { run_id: 'ar_8' } }), null, 'without the message id there is nothing to point at');
+  // a run that produced nothing, a run in progress and an ordinary message point at nothing
+  assert.equal(a.producedView({ action_run: { run_id: 'ar_9', status: 'completed' } }), null);
+  assert.equal(a.producedView({ action_run: { ...report, produced: { target: 'run_only', forms: [] } } }), null);
+  assert.equal(a.producedView({}), null);
+  assert.equal(a.producedView(undefined), null);
+  // the view of a pending question is unaffected
+  assert.equal(a.pendingAnswer({ action_run: report }), null);
+});
