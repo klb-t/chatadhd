@@ -2,6 +2,7 @@
 #pragma once
 
 #include <initializer_list>
+#include <map>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -27,6 +28,14 @@ Result<net::HttpResponse> http_call(const BackendEnv& env, const net::HttpReques
 std::vector<std::string_view> xml_elements(std::string_view xml, std::string_view local);
 std::string xml_text(std::string_view xml, std::string_view local);  // first element's text, unescaped
 std::string xml_unescape(std::string_view s);
+
+// AWS Signature V4 (exposed for the published test vector). `headers` is the exact set of signed
+// headers, lowercase names; canonical_path/query are already URI-encoded.
+struct SigV4In {
+  std::string method, canonical_path, canonical_query, payload_hash, amzdate, region, service = "s3", secret_key;
+  std::map<std::string, std::string> headers;
+};
+std::string sigv4_signature(const SigV4In& in, std::string* signed_headers_out = nullptr);
 
 Result<std::unique_ptr<StorageBackend>> make_local(const std::string& id, const Json& cfg, const BackendEnv& env);
 Result<std::unique_ptr<StorageBackend>> make_s3(const std::string& id, const Json& cfg, const BackendEnv& env);
