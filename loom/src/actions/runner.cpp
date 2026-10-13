@@ -23,13 +23,6 @@ namespace loom::actions {
 
 namespace {
 
-llm::Part text_part(std::string t) {
-  llm::Part p;
-  p.kind = "text";
-  p.text = std::move(t);
-  return p;
-}
-
 llm::Part json_part(Json value) {
   llm::Part p;
   p.kind = "json";
@@ -264,7 +257,7 @@ ActionRunner::~ActionRunner() = default;
 
 RunStore& ActionRunner::store() { return *store_; }
 
-void ActionRunner::install_executors(ExecutorTable& table) const {
+void ActionRunner::install_executors(ExecutorTable& table) {
   Runtime& rt = rt_;
   // `settings` is read when a call happens, so an overlay change applies to the next call.
   table.add("use_model", [&rt](const StepCall& c) {
@@ -290,7 +283,7 @@ void ActionRunner::install_executors(ExecutorTable& table) const {
   });
 }
 
-Result<ActionRunner::Loaded> ActionRunner::load() const {
+Result<ActionRunner::Loaded> ActionRunner::load() {
   const auto& root = rt_.paths().root;
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
@@ -353,6 +346,7 @@ Result<Json> ActionRunner::run(const Json& request, const CancelToken* external)
   auto result = interpreter.start(r, token);
   std::lock_guard lk(mu_);
   live_.erase(r.run_id);
+  if (result) return public_view(*result);
   return result;
 }
 
@@ -371,6 +365,7 @@ Result<Json> ActionRunner::confirm(const Json& request, const CancelToken* exter
   auto result = interpreter.confirm(run_id, request, token);
   std::lock_guard lk(mu_);
   live_.erase(run_id);
+  if (result) return public_view(*result);
   return result;
 }
 

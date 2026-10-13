@@ -225,6 +225,21 @@
         "action": "describe_image",
         "effect": "default_action",
         "initiator": "application preset"
+      },
+      "deny:settings.set:secret": {
+        "id": "deny:settings.set:secret",
+        "scope": "engine",
+        "target": {
+          "kind": "settings_field",
+          "field_scope": "secret"
+        },
+        "action": "settings.set",
+        "effect": "deny",
+        "initiator": "engine",
+        "reason": {
+          "en": "A credential typed into the conversation would be stored in the conversation history and sent to the model provider; set it in Settings instead.",
+          "pl": "Poświadczenie wpisane w rozmowie zostałoby zapisane w historii rozmowy i wysłane dostawcy modelu; ustaw je w Ustawieniach."
+        }
       }
     },
     "extrapolation": {

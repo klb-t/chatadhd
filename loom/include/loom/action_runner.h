@@ -57,10 +57,10 @@ class ActionRunner {
 
  private:
   struct Loaded;
-  Result<Loaded> load() const;
+  Result<Loaded> load();
   Result<RunRequest> prepare(const Loaded& loaded, const Json& request) const;
   Interpreter make_interpreter(const Loaded& loaded) const;
-  void install_executors(ExecutorTable& table) const;
+  void install_executors(ExecutorTable& table);
 
   Runtime& rt_;
   std::unique_ptr<RunStore> store_;

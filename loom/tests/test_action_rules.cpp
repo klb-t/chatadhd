@@ -204,7 +204,8 @@ TEST_SUITE("action_rules") {
     CHECK(missing["missing"] == Json::array({"has_text"}));
     const Json only_implemented = unwrap(e.actions_for(kMessage, Json(), Json{{"implemented_only", true}}));
     CHECK_FALSE(row(only_implemented, "semantic.analyse").is_null());
-    CHECK(row(only_implemented, "summarise").is_null());
+    CHECK_FALSE(row(only_implemented, "summarise").is_null());  // implemented: its use_model step is data the interpreter runs
+    CHECK(row(only_implemented, "depict").is_null());           // still planned
   }
 
   // ── 3. rules ───────────────────────────────────────────────────────

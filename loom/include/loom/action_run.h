@@ -172,6 +172,9 @@ class Interpreter {
   std::set<std::string, std::less<>> claimed_;  // runs being executed right now
 };
 
+// What a caller may be shown of a run: a run on a credential has its arguments and parameters redacted.
+Json public_view(const Json& run);
+
 // The one-line summary of a run for answers and conversation messages.
 Json run_summary(const Json& run);
 

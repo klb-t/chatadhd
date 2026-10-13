@@ -602,12 +602,29 @@ Json run_summary(const Json& run) {
 
 namespace {
 
+// A run on a credential (element attribute sensitive) never stores the values it was given: the saved
+// copy has redacted arguments and step parameters, the in-memory run keeps them until it is done.
+Json redacted(const Json& run) {
+  Json copy = run;
+  if (copy.contains("request") && copy["request"].contains("args")) copy["request"]["args"] = Json{{"redacted", true}};
+  if (copy.contains("plan") && copy["plan"].contains("steps"))
+    for (auto& step : copy["plan"]["steps"])
+      if (step.contains("with")) step["with"] = Json{{"redacted", true}};
+  return copy;
+}
+
+Status persist(RunStore& store, const Json& run) {
+  return json::get_bool(run, "sensitive", false) ? store.save(redacted(run)) : store.save(run);
+}
+
 void stamp(Json& run, const std::string& status) {
   run["status"] = status;
   run["updated"] = timeutil::utc_now_iso();
 }
 
 }  // namespace
+
+Json public_view(const Json& run) { return json::get_bool(run, "sensitive", false) ? redacted(run) : run; }
 
 Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* cancel) {
   if (!deps_.engine || !deps_.store) return Error(Errc::Internal, "the interpreter is not wired");
@@ -660,6 +677,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
   req["context"] = request.context;
   run["request"] = req;
   run["element"] = request.element;
+  if (const Json* attrs = json::find(request.element, "attrs"); attrs && json::get_bool(*attrs, "sensitive", false)) run["sensitive"] = true;
   run["element_traits"] = Json(std::vector<std::string>(base_traits.begin(), base_traits.end()));
   run["plan"] = plan;
   run["gates"] = gates;
@@ -683,7 +701,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     stamp(run, "denied");
     run["error"] = Json{{"code", "denied"}, {"message", "the rules do not allow '" + first.value("action", "") + "' here"},
                         {"gates", denied}};
-    LOOM_TRY(deps_.store->save(run));
+    LOOM_TRY(persist(*deps_.store, run));
     return run;
   }
   if (request.confirmed) {
@@ -703,22 +721,24 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     p["resume"] = "actions.confirm {run_id, approved, receipt_id, ref}";
     return p;
   };
+  if (json::get_bool(run, "sensitive", false) && (request.propose || !to_confirm.empty()))
+    return Error(Errc::InvalidArgument, "a run on a credential cannot wait for an answer: its value is never stored; ask again with confirmed:true");
   if (request.propose) {
     // The user has not said yes to anything yet: whatever the rules would ask is asked together with this.
     Json all = to_confirm;
     stamp(run, "proposed");
     run["pending"] = pending_of("proposal", all);
-    LOOM_TRY(deps_.store->save(run));
+    LOOM_TRY(persist(*deps_.store, run));
     return run;
   }
   if (!to_confirm.empty()) {
     stamp(run, "awaiting_confirmation");
     run["pending"] = pending_of("confirmation", to_confirm);
-    LOOM_TRY(deps_.store->save(run));
+    LOOM_TRY(persist(*deps_.store, run));
     return run;
   }
   stamp(run, "running");
-  LOOM_TRY(deps_.store->save(run));
+  LOOM_TRY(persist(*deps_.store, run));
   return drive(std::move(run), cancel, Json::object());
 }
 
@@ -914,7 +934,7 @@ Result<Json> Interpreter::drive(Json run, const CancelToken* cancel, const Json&
   const Json steps = run.at("plan").at("steps");
   auto checkpoint = [&](const std::string& status) -> Status {
     stamp(run, status);
-    return deps_.store->save(run);
+    return persist(*deps_.store, run);
   };
   bool resumed = false;
   while (static_cast<std::size_t>(json::get_int(run, "cursor", 0)) < steps.size()) {
@@ -1044,19 +1064,19 @@ Result<Json> Interpreter::confirm(std::string_view run_id, const Json& answer, c
       stamp(run, "rejected");
       run["pending"] = nullptr;
       run["error"] = Json{{"code", "rejected"}, {"message", "the usage confirmation was declined; nothing was sent"}};
-      LOOM_TRY(deps_.store->save(run));
+      LOOM_TRY(persist(*deps_.store, run));
       return run;
     }
     run["pending"] = nullptr;
     stamp(run, "running");
-    LOOM_TRY(deps_.store->save(run));
+    LOOM_TRY(persist(*deps_.store, run));
     return drive(std::move(run), cancel, confirmation);
   }
   if (!approved) {
     stamp(run, "rejected");
     run["pending"] = nullptr;
     run["error"] = Json{{"code", "rejected"}, {"message", "declined; nothing was executed"}};
-    LOOM_TRY(deps_.store->save(run));
+    LOOM_TRY(persist(*deps_.store, run));
     return run;
   }
   // Rule confirmations (and the user's go on a proposal) cover the gates that were shown.
@@ -1068,7 +1088,7 @@ Result<Json> Interpreter::confirm(std::string_view run_id, const Json& answer, c
       run["approved"].push_back(g.at("id"));
   run["pending"] = nullptr;
   stamp(run, "running");
-  LOOM_TRY(deps_.store->save(run));
+  LOOM_TRY(persist(*deps_.store, run));
   return drive(std::move(run), cancel, Json::object());
 }
 
@@ -1083,7 +1103,7 @@ Result<Json> Interpreter::cancel(std::string_view run_id, std::string_view ref) 
   run["pending"] = nullptr;
   run["error"] = Json{{"code", "cancelled"}, {"message", "cancelled; later steps did not run"}};
   stamp(run, "cancelled");
-  LOOM_TRY(deps_.store->save(run));
+  LOOM_TRY(persist(*deps_.store, run));
   return run;
 }
 
