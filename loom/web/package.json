@@ -17,6 +17,8 @@
     "test:graph-entry": "node tests/graph-entry/headless.test.mjs",
     "test:auth-state": "node tests/conversation-view/auth-state.test.mjs",
     "test:usage-pending": "node tests/conversation-view/usage-pending.test.mjs",
+    "test:usage-pending-browser": "node e2e/usage-pending-ui.mjs",
+    "test:graph-entry-browser": "node e2e/graph-entry-native.mjs",
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:chat-send-gate": "node tests/conversation-view/send-gate.test.mjs && node e2e/chat-send-gate.mjs",
     "test:application-profiles": "node e2e/application-profile-state.mjs && node e2e/application-profile-adapter.mjs",

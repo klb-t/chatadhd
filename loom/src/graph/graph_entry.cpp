@@ -2,10 +2,12 @@
 #include "loom/graph_entry.h"
 
 #include <algorithm>
+#include <functional>
 #include <set>
 
 #include "loom/crypto_suite.h"
 #include "loom/economy.h"
+#include "loom/onboarding_store.h"
 #include "loom/runtime_profile.h"
 #include "loom/storage_backend.h"
 
@@ -188,28 +190,82 @@ void register_builtin(Providers& p) {
     }
     return only(known_by(total, by));
   });
-  // Registries that cannot be enumerated from here stay unknown.
-  p.add("methods.registry", [](const Context& c, const Json&) {
+  // Method registry: every entity of the declared kind (params.entity_kind) in the effective runtime profiles.
+  // Methods are declared as data (runtime profile entities), so the registry is the union over all profile
+  // domains, de-duplicated by entity id; by = {domain: methods declared there}. A host may override the count.
+  p.add("methods.registry", [](const Context& c, const Json& params) {
     const Json* h = pointer_at(c.env.host_counts, "/methods");
-    return only(h && h->is_number_integer() ? known(h->get<std::int64_t>()) : unknown("registry_not_listable"));
+    if (h && h->is_number_integer()) return only(known(h->get<std::int64_t>()));
+    const std::string kind = json::get_string(params, "entity_kind");
+    if (kind.empty()) return only(unknown("entity_kind_not_configured"));
+    std::set<std::string> seen;
+    Json by = Json::object();
+    for (const std::string& domain : RuntimeProfile::domains()) {
+      auto profile = RuntimeProfile::load(domain, c.env.data_dir);
+      if (!profile) continue;
+      std::int64_t here = 0;
+      std::function<void(const Json&)> walk = [&](const Json& node) {
+        if (node.is_object()) {
+          if (json::get_string(node, "kind") == kind && !json::get_string(node, "id").empty() &&
+              seen.insert(json::get_string(node, "id")).second)
+            ++here;
+          for (const auto& item : node.items()) walk(item.value());
+        } else if (node.is_array()) {
+          for (const auto& item : node) walk(item);
+        }
+      };
+      walk(profile->values());
+      if (here) by[domain] = here;
+    }
+    return only(known_by(static_cast<std::int64_t>(seen.size()), by));
   });
-  p.add("perspectives.store", [](const Context& c, const Json&) {
+  // Perspective registry: the perspective settings declared in the builtin default-layers pack (every entry whose
+  // area is params.area, e.g. "graph/perspectives": structure, resolution, traversal, ...); by = {key: 1}.
+  // Saved user perspectives are not counted here. A host may override the count.
+  p.add("perspectives.store", [](const Context& c, const Json& params) {
     const Json* h = pointer_at(c.env.host_counts, "/perspectives");
-    return only(h && h->is_number_integer() ? known(h->get<std::int64_t>()) : unknown("store_not_wired"));
+    if (h && h->is_number_integer()) return only(known(h->get<std::int64_t>()));
+    const std::string wanted = json::get_string(params, "area");
+    if (wanted.empty()) return only(unknown("area_not_configured"));
+    auto pack = onboarding::builtin_pack();
+    if (!pack) return only(unknown("pack_unavailable"));
+    Json by = Json::object();
+    std::function<void(const Json&)> collect = [&](const Json& doc) {
+      if (const Json* entries = json::find(doc, "entries"); entries && entries->is_array())
+        for (const auto& entry : *entries)
+          if (entry.is_object() && json::get_string(entry, "area") == wanted) by[json::get_string(entry, "key")] = 1;
+      if (const Json* nested = json::find(doc, "entry_packs"); nested && nested->is_array())
+        for (const auto& child : *nested) collect(child);
+    };
+    collect(*pack);
+    return only(known_by(static_cast<std::int64_t>(by.size()), by));
   });
   p.add("layers.entries", [](const Context& c, const Json&) {
     const Json* h = pointer_at(c.env.host_counts, "/layers");
     return only(h && h->is_number_integer() ? known(h->get<std::int64_t>()) : unknown("layers_not_wired"));
   });
-  p.add("interfaces.enumerate", [](const Context& c, const Json&) {
-    const Json* h = pointer_at(c.env.host_counts, "/interfaces");
-    Json out = Json::object();
-    if (h && h->is_object() && !h->empty()) {
-      for (const auto& item : h->items())
-        out[item.key()] = item.value().is_number_integer() ? known(item.value().get<std::int64_t>()) : unknown("not_a_count");
-      return out;
+  // Interface registry (data: values at params.pointer): {id: {entries:[...]} | {from:{domain,pointer}}}.
+  // value = number of registered interfaces; by = {interface id: entries it exposes}. A host may add counts.
+  p.add("interfaces.enumerate", [](const Context& c, const Json& params) {
+    Json by = Json::object();
+    if (const Json* reg = pointer_at(c.values, json::get_string(params, "pointer")); reg && reg->is_object()) {
+      for (const auto& item : reg->items()) {
+        const Json& def = item.value();
+        if (!def.is_object() || json::get_bool(def, "hidden", false)) continue;
+        if (const Json* e = json::find(def, "entries"); e && e->is_array()) {
+          by[item.key()] = static_cast<std::int64_t>(e->size());
+        } else if (const Json* from = json::find(def, "from"); from && from->is_object()) {
+          auto profile = RuntimeProfile::load(json::get_string(*from, "domain"), c.env.data_dir);
+          const Json* v = profile ? pointer_at(profile->values(), json::get_string(*from, "pointer")) : nullptr;
+          if (v) by[item.key()] = member_count(*v);
+        }
+      }
     }
-    return only(unknown("not_enumerable_from_core"));
+    if (const Json* h = pointer_at(c.env.host_counts, "/interfaces"); h && h->is_object())
+      for (const auto& item : h->items())
+        if (item.value().is_number_integer()) by[item.key()] = item.value().get<std::int64_t>();
+    if (by.empty()) return only(unknown("no_interface_registry"));
+    return only(known_by(static_cast<std::int64_t>(by.size()), by));
   });
   p.add("profile.domains", [](const Context&, const Json&) {
     return only(known(static_cast<std::int64_t>(RuntimeProfile::domains().size())));
