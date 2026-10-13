@@ -133,9 +133,17 @@ TEST_SUITE("chat_route") {
     CHECK(image.at("kind") == "command");
     CHECK(action_of(image) == "depict");
     CHECK(image.at("command").at("element").at("class") == "conversation");
-    CHECK(image.at("command").at("feasible") == true);
-    CHECK(image.at("command").at("runnable") == false);  // depict is declared, not implemented: said, not hidden
-    CHECK(image.at("command").at("not_runnable").at(0).at("why") == "planned");
+    // depict is implemented, but it paints with an image model the user has not chosen: said, not guessed.
+    CHECK(image.at("command").at("feasible") == false);
+    CHECK(image.at("command").at("reason").at("code") == "missing_args");
+    CHECK(image.at("command").at("reason").at("args") == Json::array({"model", "provider"}));
+    CHECK(image.at("command").at("reason").at("settings") == Json{{"model", "image_model"}, {"provider", "image_provider"}});
+    f.rt->config().set("image_model", "image-1");
+    f.rt->config().set("image_provider", "img");
+    const Json ready = f.route("zrób z tej rozmowy obraz");
+    CHECK(ready.at("command").at("feasible") == true);
+    CHECK(ready.at("command").at("runnable") == true);
+    CHECK(ready.at("command").at("plan").at("cost").at("model_calls") == 2);  // the image prompt, then the image
     CHECK(f.route("draw this conversation as an image").at("command").at("action") == "depict");
     const Json set = f.route("ustaw semantic_retry_mode=automatic");
     CHECK(set.at("kind") == "command");
@@ -361,6 +369,43 @@ TEST_SUITE("chat_route") {
     CHECK(f.rt->secrets().get_string("api_key") == "sk-test-key");
     for (const auto& e : unwrap(f.rt->event_log().query(EventQuery{0, std::nullopt, std::nullopt, 100000})))
       if (e.type.rfind("action.", 0) == 0) CHECK(e.payload.dump().find("sk-evil") == std::string::npos);
+  }
+
+  TEST_CASE("auto-run with the result as a conversation message: the proposal comes first, then the result (P11)") {
+    Fixture f;
+    f.rt->config().set("intent_routing_run", "always");
+    f.rt->config().set("action_result_target", "conversation_message");
+    f.script(1);
+    const auto out = f.input("Streść tę rozmowę");
+    REQUIRE(out.handled);
+    CHECK(out.chunk.at("type") == "action_result");
+    int command = -1, proposal = -1, result = -1;
+    const auto msgs = unwrap(f.rt->db().get_msgs(f.conv_id));
+    for (std::size_t i = 0; i < msgs.size(); ++i) {
+      const Json& m = msgs[i].metadata;
+      if (m.is_object() && m.value("routed", "") == "command") command = static_cast<int>(i);
+      if (m.is_object() && m.contains("action_proposal")) proposal = static_cast<int>(i);
+      if (m.is_object() && m.contains("action_result")) result = static_cast<int>(i);
+    }
+    REQUIRE(command >= 0);
+    REQUIRE(proposal >= 0);
+    REQUIRE(result >= 0);
+    CHECK(command < proposal);
+    CHECK(proposal < result);                 // the executed proposal, then the result it produced
+    CHECK(msgs[result].text == "A short summary.");
+    CHECK(msgs[proposal].id == out.assistant_message_id);
+    CHECK(msgs[proposal].metadata.at("action_proposal").at("status") == "executed");
+    CHECK(msgs[proposal].text.find("Gotowe") != std::string::npos);
+    CHECK(msgs.size() == 2 + 3);              // the two earlier messages, the command, the proposal, the result: nothing doubled
+    // The same with the result as a node of the graph (the preset): the proposal message carries the report, nothing follows it
+    Fixture g;
+    g.rt->config().set("intent_routing_run", "always");
+    g.script(1);
+    const auto graph = g.input("Streść tę rozmowę");
+    const auto gmsgs = unwrap(g.rt->db().get_msgs(g.conv_id));
+    CHECK(gmsgs.back().id == graph.assistant_message_id);
+    CHECK(gmsgs.back().text.find("A short summary.") != std::string::npos);
+    CHECK(gmsgs.back().metadata.at("action_proposal").at("status") == "executed");
   }
 
   TEST_CASE("the execution setting: propose first (preset), read-only plans at once, or everything at once; rules still ask") {

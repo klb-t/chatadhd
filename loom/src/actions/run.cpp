@@ -151,9 +151,10 @@ struct Builder {
       leaf["item"] = item;
       leaf["action"] = action;
       leaf["root"] = root;
+      leaf["owner"] = path.empty() ? std::string() : path.back();  // the composite whose step this is (a chain of composites nests them)
       leaf["with"] = with_spec.is_object() ? with_spec : Json::object();
       leaf["inputs"] = inputs;
-      for (const char* k : {"when", "variants", "variant_mode", "on_failure"})
+      for (const char* k : {"when", "variants", "variant_mode", "on_failure", "estimate"})
         if (const Json* v = json::find(step_options, k)) leaf[k] = *v;
       steps.push_back(std::move(leaf));
       return id;
@@ -195,7 +196,7 @@ struct Builder {
       }
       Json options = Json::object();
       if (const Json* w = json::find(child, "when")) options["when"] = rewrite_when(*w, map);
-      for (const char* key : {"variants", "variant_mode", "on_failure"})
+      for (const char* key : {"variants", "variant_mode", "on_failure", "estimate"})
         if (const Json* v = json::find(child, key)) options[key] = *v;
       LOOM_TRY_ASSIGN(previous, expand(child_action, child_with, child_inputs, global, depth + 1, path, root, item, options));
       result_of[local] = previous;
@@ -276,15 +277,57 @@ bool holds(const Json& cond, const RunView& v) {
 struct EvalCtx {
   const Json& run;
   const std::function<Result<std::string>(const std::string& ref)>& text_of_ref;
+  std::string default_language = "en";
 };
+
+// The language of a run: the argument `lang`, else the language the asker wrote in (context.lang), else the profile's.
+std::string language_of(const EvalCtx& ctx) {
+  const Json& request = ctx.run.at("request");
+  if (const std::string l = json::get_string(request.at("args"), "lang"); !l.empty()) return l;
+  if (const std::string l = json::get_string(request.value("context", Json::object()), "lang"); !l.empty()) return l;
+  return ctx.default_language;
+}
+
+// {"$localized": {"en": X, "pl": Y}}: the entry of the run's language (a regional tag counts as its language), else the
+// default language, else English, else the first one.
+const Json* localized_pick(const Json& table, const std::string& lang, const std::string& fallback) {
+  if (!table.is_object() || table.empty()) return nullptr;
+  auto base = [](const std::string& tag) { return tag.substr(0, tag.find_first_of("-_")); };
+  for (const std::string& want : {lang, base(lang), fallback, base(fallback), std::string("en")})
+    if (!want.empty())
+      if (const Json* v = json::find(table, want)) return v;
+  return &*table.begin();
+}
+
+Result<Json> evaluate(const Json& node, const EvalCtx& ctx);
+
+std::string stringified(const Json& v) { return v.is_string() ? v.get<std::string>() : json::dump(v); }
 
 Result<Json> evaluate(const Json& node, const EvalCtx& ctx) {
   if (node.is_object()) {
     if (const Json* a = json::find(node, "$arg"); a && a->is_string()) {
       const std::string name = a->get<std::string>();
       if (const Json* given = json::find(ctx.run.at("request").at("args"), name); given && !given->is_null()) return *given;
-      if (const Json* d = json::find(node, "default")) return *d;
+      if (const Json* d = json::find(node, "default")) return evaluate(*d, ctx);
       return Error(Errc::InvalidArgument, "argument '" + name + "' is required");
+    }
+    if (const Json* l = json::find(node, "$localized")) {
+      const Json* picked = localized_pick(*l, language_of(ctx), ctx.default_language);
+      if (!picked) return Error(Errc::InvalidArgument, "$localized needs an object {language: value}");
+      return evaluate(*picked, ctx);
+    }
+    if (const Json* f = json::find(node, "$format")) {
+      LOOM_TRY_ASSIGN(Json templ, evaluate(*f, ctx));
+      if (!templ.is_string()) return Error(Errc::InvalidArgument, "$format needs a text");
+      std::string out = templ.get<std::string>();
+      if (const Json* vars = json::find(node, "vars"); vars && vars->is_object())
+        for (auto it = vars->begin(); it != vars->end(); ++it) {
+          LOOM_TRY_ASSIGN(Json value, evaluate(it.value(), ctx));
+          const std::string token = "{" + it.key() + "}";
+          const std::string with = stringified(value);
+          for (std::size_t at = out.find(token); at != std::string::npos; at = out.find(token, at + with.size())) out.replace(at, token.size(), with);
+        }
+      return Json(out);
     }
     if (const Json* t = json::find(node, "$text"); t && t->is_string()) {
       LOOM_TRY_ASSIGN(std::string text, ctx.text_of_ref(t->get<std::string>()));
@@ -567,14 +610,20 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
     if (g.at("decision") == "deny") denied.push_back(g);
   }
   const Json& catalogue = deps_.engine->catalogue();
+  auto planned = [&](const Json& action) {
+    Json n{{"action", action}, {"why", "planned"}};
+    if (const Json* e = json::find(catalogue, action.get<std::string>()))
+      if (const Json* r = json::find(*e, "planned_reason")) n["reason"] = *r;
+    return n;
+  };
   for (const auto& item : plan.at("items")) {
-    if (item.at("implementation") != "implemented") not_runnable.push_back(Json{{"action", item.at("action")}, {"why", "planned"}});
+    if (item.at("implementation") != "implemented") not_runnable.push_back(planned(item.at("action")));
   }
   for (const auto& step : plan.at("steps")) {
     const Json* entry = json::find(catalogue, json::get_string(step, "action"));
     if (!entry) continue;
     if (json::get_string(*entry, "status") != "implemented")
-      not_runnable.push_back(Json{{"action", step.at("action")}, {"why", "planned"}});
+      not_runnable.push_back(planned(step.at("action")));
     else if (!deps_.executors || !deps_.executors->find(json::get_string(step, "action"), *entry))
       not_runnable.push_back(Json{{"action", step.at("action")}, {"why", "no_executor"}});
   }
@@ -654,14 +703,19 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     }
   }
   // Runnable: implemented, with an executor for every leaf. Nothing starts when part of it cannot.
+  auto why_planned = [&](const std::string& action) {
+    std::string out = "action '" + action + "' is planned, not implemented";
+    if (const Json* e = json::find(catalogue, action))
+      if (const Json* r = json::find(*e, "planned_reason"); r && r->is_object())
+        if (const std::string en = json::get_string(*r, "en"); !en.empty()) out += ": " + en;
+    return out;
+  };
   for (const auto& item : plan.at("items"))
-    if (item.at("implementation") != "implemented")
-      return Error(Errc::Unavailable, "action '" + item.at("action").get<std::string>() + "' is planned, not implemented");
+    if (item.at("implementation") != "implemented") return Error(Errc::Unavailable, why_planned(item.at("action").get<std::string>()));
   for (const auto& step : plan.at("steps")) {
     const std::string action = step.at("action").get<std::string>();
     const Json* entry = json::find(catalogue, action);
-    if (!entry || json::get_string(*entry, "status") != "implemented")
-      return Error(Errc::Unavailable, "action '" + action + "' is planned, not implemented");
+    if (!entry || json::get_string(*entry, "status") != "implemented") return Error(Errc::Unavailable, why_planned(action));
     if (!deps_.executors || !deps_.executors->find(action, *entry))
       return Error(Errc::Unavailable, "action '" + action + "' has no executor in this build");
   }
@@ -831,7 +885,8 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
                 if (!r) return Error(Errc::InvalidArgument, "$text refers to '" + ref + "', which has not run");
                 LOOM_TRY_ASSIGN(auto parts, parts_from(r->value("outputs", Json::array())));
                 return text_of(parts);
-              }};
+              },
+              json::get_string(deps_.settings, "default_language", "en")};
   auto base_with = evaluate(step.value("with", Json::object()), ctx);
   if (!base_with) {
     rec["finished"] = timeutil::utc_now_iso();
@@ -868,6 +923,7 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     call.step_id = id;
     call.action = action;
     call.root_action = step.value("root", "");
+    call.owner_action = step.value("owner", "");
     call.variant = label;
     auto variant_with = evaluate(variant.value("with", Json::object()), ctx);
     if (!variant_with) {
@@ -1011,6 +1067,13 @@ Result<Json> Interpreter::drive(Json run, const CancelToken* cancel, const Json&
         if (v.contains("data") && !result.contains("data")) result["data"] = v["data"];
   }
   run["result"] = result;
+  if (deps_.on_result) {
+    run["status"] = "completed";  // the hook sees the run as it will be stored
+    if (auto stored = deps_.on_result(run); !stored) {
+      run["result"]["produced"] = Json{{"schema", "loom.action_produced/1"}, {"items", Json::array()},
+                                       {"issues", Json::array({Json{{"code", "store_failed"}, {"message", stored.error().message}}})}};
+    }
+  }
   LOOM_TRY(checkpoint("completed"));
   return run;
 }

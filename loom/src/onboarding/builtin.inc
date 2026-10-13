@@ -358,7 +358,17 @@ R"loom_onboard({
                 "status_denied": "Not allowed by the rules",
                 "status_unavailable": "Cannot run yet",
                 "status_waiting": "Waiting for an answer",
-                "status_stale": "No longer valid"
+                "status_stale": "No longer valid",
+                "cost_money": "Money: about {{low}} to {{high}} {{currency}} (from the size of the input and the model's listed price; not a limit)",
+                "cost_money_unknown": "Money: unknown ({{reason}}); do not read it as free",
+                "produced": "Saved in the graph ({{target}}): {{nodes}}",
+                "title_definition": "Proposal to extend what the application can do",
+                "args": "Arguments read from your words: {{args}}",
+                "args_open": "Not given (the defaults apply): {{params}}",
+                "definition_define_action": "A new action \"{{id}}\": written only to your own overlay ({{overlay}}); you can remove it later",
+                "definition_define_sequence": "A chain you keep repeating, saved as the action \"{{id}}\" (your own overlay: {{overlay}})",
+                "definition_define_group": "A group \"{{id}}\" for what your classes have in common (your own overlay: {{overlay}})",
+                "rule_replaces": "Replaces the rule you set before for the same thing"
               },
               "pl": {
                 "title": "Polecenie czeka na Twoją odpowiedź",
@@ -377,7 +387,17 @@ R"loom_onboard({
                 "status_denied": "Zasady na to nie pozwalają",
                 "status_unavailable": "Nie można jeszcze wykonać",
                 "status_waiting": "Czeka na odpowiedź",
-                "status_stale": "Nieaktualne"
+                "status_stale": "Nieaktualne",
+                "cost_money": "Pieniądze: ok. {{low}} do {{high}} {{currency}} (z rozmiaru wejścia i ceny modelu z cennika; nie limit)",
+                "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
+                "produced": "Zapisano w grafie ({{target}}): {{nodes}}",
+                "title_definition": "Propozycja rozszerzenia tego, co aplikacja potrafi",
+                "args": "Argumenty odczytane z Twoich słów: {{args}}",
+                "args_open": "Niepodane (obowiązują wartości domyślne): {{params}}",
+                "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
+                "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
+                "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
+                "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie"
               }
             }
           }
@@ -1163,7 +1183,8 @@ R"loom_onboard({
       "revision": 1,
       "label": "Relations and reach",
       "value": {
-        "relations": [
+)loom_onboard",
+R"loom_onboard(        "relations": [
           "*"
         ],
         "direction": "both",
@@ -1231,8 +1252,7 @@ R"loom_onboard({
             "local_read": "Read linked sources locally",
             "reading": "Reading linked sources…",
             "read_scope": "This action reads the attached source for this local view. It does not authorize sending source content to a model or another service. The adapter may read the whole container.",
-)loom_onboard",
-R"loom_onboard(            "readonly": "This source message is a version-pinned, read-only view. Editing, restoring a stored version and source-history sending are unavailable.",
+            "readonly": "This source message is a version-pinned, read-only view. Editing, restoring a stored version and source-history sending are unavailable.",
             "egress_unavailable": "Source-history sending is unavailable: local read has no model-disclosure binding.",
             "details": "Source versions, access results and read evidence",
             "unavailable": "The source view is unavailable. Stored messages and explicit source statuses remain visible.",
@@ -1403,7 +1423,17 @@ R"loom_onboard(            "readonly": "This source message is a version-pinned,
             "status_denied": "Not allowed by the rules",
             "status_unavailable": "Cannot run yet",
             "status_waiting": "Waiting for an answer",
-            "status_stale": "No longer valid"
+            "status_stale": "No longer valid",
+            "cost_money": "Money: about {{low}} to {{high}} {{currency}} (from the size of the input and the model's listed price; not a limit)",
+            "cost_money_unknown": "Money: unknown ({{reason}}); do not read it as free",
+            "produced": "Saved in the graph ({{target}}): {{nodes}}",
+            "title_definition": "Proposal to extend what the application can do",
+            "args": "Arguments read from your words: {{args}}",
+            "args_open": "Not given (the defaults apply): {{params}}",
+            "definition_define_action": "A new action \"{{id}}\": written only to your own overlay ({{overlay}}); you can remove it later",
+            "definition_define_sequence": "A chain you keep repeating, saved as the action \"{{id}}\" (your own overlay: {{overlay}})",
+            "definition_define_group": "A group \"{{id}}\" for what your classes have in common (your own overlay: {{overlay}})",
+            "rule_replaces": "Replaces the rule you set before for the same thing"
           },
           "pl": {
             "title": "Polecenie czeka na Twoją odpowiedź",
@@ -1422,7 +1452,17 @@ R"loom_onboard(            "readonly": "This source message is a version-pinned,
             "status_denied": "Zasady na to nie pozwalają",
             "status_unavailable": "Nie można jeszcze wykonać",
             "status_waiting": "Czeka na odpowiedź",
-            "status_stale": "Nieaktualne"
+            "status_stale": "Nieaktualne",
+            "cost_money": "Pieniądze: ok. {{low}} do {{high}} {{currency}} (z rozmiaru wejścia i ceny modelu z cennika; nie limit)",
+            "cost_money_unknown": "Pieniądze: nieznane ({{reason}}); nie czytaj tego jako za darmo",
+            "produced": "Zapisano w grafie ({{target}}): {{nodes}}",
+            "title_definition": "Propozycja rozszerzenia tego, co aplikacja potrafi",
+            "args": "Argumenty odczytane z Twoich słów: {{args}}",
+            "args_open": "Niepodane (obowiązują wartości domyślne): {{params}}",
+            "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
+            "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
+            "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
+            "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie"
           }
         }
       }

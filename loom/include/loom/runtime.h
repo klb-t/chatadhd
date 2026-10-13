@@ -19,6 +19,7 @@
 #pragma once
 
 #include <filesystem>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -30,6 +31,7 @@
 
 namespace loom {
 
+class Runtime;
 class Database;
 class EventBus;
 class BlobStore;
@@ -72,6 +74,71 @@ namespace knowledge {
 class KnowledgeEngine;
 }
 
+// Everything already built when a part factory runs. Pointers are null until the part that owns them has been
+// created (construction order = the wiring list above); factories may only use what precedes their own part.
+struct PartsContext {
+  const DataPaths* paths = nullptr;
+  Config* config = nullptr;
+  Secrets* secrets = nullptr;
+  Database* db = nullptr;
+  EventBus* bus = nullptr;
+  EventLog* event_log = nullptr;
+  BlobStore* blobs = nullptr;
+  ProvenanceStore* provenance = nullptr;
+  TaskEngine* tasks = nullptr;
+  RelationRegistry* relations = nullptr;
+  SemanticAnalyzer* analyzer = nullptr;
+  net::HttpTransport* http = nullptr;  // the stable forwarding proxy, never the raw transport
+  std::shared_ptr<net::HttpTransport> http_shared;  // same object, for parts that must keep it alive
+  storage::StorageService* storage = nullptr;
+  ModelRegistry* models = nullptr;
+  ProviderRegistry* providers = nullptr;
+  SemanticLLM* semantic_llm = nullptr;
+  MemoryEngine* memory = nullptr;
+  GraphMemorySelector* graph_memory = nullptr;
+  ContextSelector* context = nullptr;
+  GraphEngine* graph = nullptr;
+  ChatEngine* chat = nullptr;
+  SemanticBatchAPI* batch = nullptr;
+  SemanticWorker* worker = nullptr;
+  MediaProviders* media = nullptr;
+  ConversationImporter* importer = nullptr;
+};
+
+// Injectable composition root. Every empty factory is replaced by the default, which reproduces the wiring
+// Runtime::open always had; a caller (test, server, phone shell) sets only the parts it wants to replace,
+// without editing runtime.cpp. A factory returning null makes open() fail with Errc::Internal.
+// The remaining subsystems (config, secrets, database, bus, event log, blobs, provenance, tasks, relations,
+// exporter) are the kernel itself and are not replaceable.
+struct RuntimeParts {
+  template <class T>
+  using Make = std::function<std::unique_ptr<T>(PartsContext&)>;
+  // Raw HTTP stack under the forwarding proxy (opts.http, when set, wins over the default; this wins over both).
+  std::function<std::shared_ptr<net::HttpTransport>()> http;
+  std::function<Result<std::unique_ptr<SemanticAnalyzer>>(PartsContext&)> analyzer;
+  Make<storage::StorageService> storage;
+  Make<ModelRegistry> models;
+  Make<ProviderRegistry> providers;
+  Make<SemanticLLM> semantic_llm;  // the LLM service used by graph/worker
+  Make<MemoryEngine> memory;
+  Make<GraphMemorySelector> graph_memory;
+  Make<ContextSelector> context;
+  Make<GraphEngine> graph;
+  Make<ChatEngine> chat;
+  Make<SemanticBatchAPI> batch;
+  Make<SemanticWorker> worker;
+  Make<MediaProviders> media;  // ASR / OCR
+  Make<ConversationImporter> importer;
+  Make<CryptoVault> crypto;
+  Make<GitHubSyncManager> github;
+  // Initial embedding provider for SelectorEngine tier 1 (null = none; set_embedding_provider still works).
+  std::function<std::shared_ptr<EmbeddingProvider>(PartsContext&)> embedding;
+  // Built last: they need the finished Runtime.
+  std::function<std::unique_ptr<archive::ArchiveIntelligence>(Runtime&)> archive;
+  std::function<std::unique_ptr<knowledge::KnowledgeEngine>(Runtime&)> knowledge;
+  std::function<std::unique_ptr<actions::ActionRunner>(Runtime&)> actions;
+};
+
 struct RuntimeOptions {
   std::optional<std::string> data_dir;   // default: resolve_data_dir()
   std::optional<PathEnv> path_env;       // tests: injected environment
@@ -79,6 +146,7 @@ struct RuntimeOptions {
   bool enable_fts = true;
   std::shared_ptr<net::HttpTransport> http;  // default: net::make_default_transport()
   std::optional<log::Level> log_level;
+  RuntimeParts parts;  // factory overrides; empty = defaults (see RuntimeParts)
 
   // loom_init_ex options: {"data_dir", "start_workers", "enable_fts",
   // "log_level": "debug|info|warning|error"}. Unknown keys -> InvalidArgument.

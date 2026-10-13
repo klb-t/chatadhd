@@ -2,20 +2,57 @@
   "schema": "loom.runtime_profile/1",
   "domain": "action_run",
   "revision": 1,
-  "description": "Settings of the interpreter that runs actions (include/loom/action_run.h, action_runner.h). max_depth bounds how deep composite actions nest (a composite that contains itself is always refused); null = no bound. use_model: how a `use_model` step is filled in when the step names no model: the config key that holds the default model, the attribution title, the timeout. Everything is a preset: the user's overlay <data>/profiles/action_run.pack changes it. Steps of composite actions live in runtime/actions.pack: {id?, action, with?, when?, variants?, variant_mode?, on_failure?}; `with` may hold {\"$arg\": name, default?} (an argument of the run) and {\"$text\": step id | input} (the text of an earlier step's output, or of the element) placeholders; `with.inputs` lists {from: input | step id, variant?} parts (default: the previous step's output, the element's content for the first); `when` is a condition: {trait}, {step, is: ok|failed|skipped}, {output, kind?}, {arg, equals?}, {not}, {all: []}, {any: []}.",
+  "description": "Settings of the interpreter that runs actions (include/loom/action_run.h, action_runner.h). max_depth bounds how deep composite actions nest (a composite that contains itself is always refused); null = no bound. use_model: how a `use_model` step is filled in when the step names no model: the config key that holds the default model, the attribution title, the timeout. Everything is a preset: the user's overlay <data>/profiles/action_run.pack changes it. Steps of composite actions live in runtime/actions.pack: {id?, action, with?, when?, variants?, variant_mode?, on_failure?}; `with` may hold {\"$arg\": name, default?} (an argument of the run) and {\"$text\": step id | input} (the text of an earlier step's output, or of the element) placeholders; `with.inputs` lists {from: input | step id, variant?} parts (default: the previous step's output, the element's content for the first); `when` is a condition: {trait}, {step, is: ok|failed|skipped}, {output, kind?}, {arg, equals?}, {not}, {all: []}, {any: []}. Two more placeholders make a prompt data in every language: {\"$localized\": {en: X, pl: Y}} is the entry of the run's language (argument lang, else context.lang, else default_language) and {\"$format\": text, vars: {name: value}} fills {name} in the text; both nest, and the default of a {\"$arg\": name, default} is evaluated too.",
   "defaults": {
     "max_depth": 8,
+    "default_language": "en",
     "use_model": {
       "model_setting": "default_model",
       "title": "ChatADHD",
       "timeout_ms": 180000
+    },
+    "estimate": {
+      "chars_per_token": {"low": 4.0, "high": 3.0},
+      "output_ratio": {
+        "preserve": {"low": 0.8, "high": 1.5},
+        "condense": {"low": 0.05, "high": 0.4},
+        "expand": {"low": 1.0, "high": 3.0},
+        "restyle": {"low": 0.8, "high": 1.5},
+        "evaluate": {"low": 0.1, "high": 0.6},
+        "combine": {"low": 0.5, "high": 1.5},
+        "none": {"low": 0.1, "high": 1.0}
+      },
+      "unknown_ratio": {"low": 0.1, "high": 1.0},
+      "output_floor_tokens": 32,
+      "max_tokens_setting": "max_tokens",
+      "pricing": {"input_key": "prompt", "output_key": "completion", "tokens_per_unit": 1, "currency": "USD"}
     }
   },
   "value_schema": {
     "type": "object",
-    "required": ["max_depth", "use_model"],
+    "required": ["max_depth", "default_language", "use_model", "estimate"],
     "properties": {
       "max_depth": {"type": ["integer", "null"], "description": "Deepest nesting of composite actions; null = unbounded (cycles are still refused)."},
+      "default_language": {"type": "string", "minLength": 1, "description": "Language of the prompt templates ({\"$localized\": {en: ..., pl: ...}}) when neither the run's arguments (lang) nor its context (the language the asker wrote in) say one."},
+      "estimate": {
+        "type": "object",
+        "description": "How a plan's token use and money are estimated before it runs (never a limit, never zero for what is unknown). chars_per_token: the band (low = fewer tokens, high = more). output_ratio: by the content_op of the action, the output as a share of the input; unknown_ratio for an action without one. output_floor_tokens: the smallest output assumed. max_tokens_setting: the config key of the completion limit that caps the output estimate (a step's own parameters.max_tokens wins). pricing: where the model registry keeps a price (the OpenRouter models list: USD per token, tokens_per_unit = 1); a model without a price makes the money unknown.",
+        "required": ["chars_per_token", "output_ratio", "unknown_ratio", "output_floor_tokens", "max_tokens_setting", "pricing"],
+        "properties": {
+          "chars_per_token": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "number", "minimum": 0.01}, "high": {"type": "number", "minimum": 0.01}}, "additionalProperties": false},
+          "output_ratio": {"type": "object", "additionalProperties": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}, "additionalProperties": false}},
+          "unknown_ratio": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}, "additionalProperties": false},
+          "output_floor_tokens": {"type": "integer", "minimum": 0},
+          "max_tokens_setting": {"type": "string"},
+          "pricing": {
+            "type": "object",
+            "required": ["input_key", "output_key", "tokens_per_unit", "currency"],
+            "properties": {"input_key": {"type": "string", "minLength": 1}, "output_key": {"type": "string", "minLength": 1}, "tokens_per_unit": {"type": "number", "minimum": 1}, "currency": {"type": "string", "minLength": 1}},
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
       "use_model": {
         "type": "object",
         "required": ["model_setting", "title", "timeout_ms"],

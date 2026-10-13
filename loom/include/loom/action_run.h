@@ -61,6 +61,7 @@ struct StepCall {
   std::string step_id;
   std::string action;          // the atomic action to carry out
   std::string root_action;     // the action the run was started for (cohort / provenance)
+  std::string owner_action;    // the composite whose step this is: the action a model call is declared under
   std::string variant;         // label of the variant ("" = none)
   Json with = Json::object();  // placeholders substituted
   std::vector<llm::Part> inputs;
@@ -133,6 +134,10 @@ struct InterpreterDeps {
   std::function<Result<std::vector<llm::Part>>(const Json& element)> element_content;
   // Receives each step record (loom.action_step/1) as it is written: the audit trail.
   std::function<void(const Json& record)> on_step;
+  // Called once when a run has completed, before its last checkpoint: the place where the result is stored as
+  // graph data and large text moves to the blob store (action_result.h). It may change the run document;
+  // a failure is reported in the document and never fails the run (the model has been paid for).
+  std::function<Status(Json& run)> on_result;
   Json settings = Json::object();  // runtime profile action_run (max_depth, ...)
 };
 

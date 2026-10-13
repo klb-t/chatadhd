@@ -491,6 +491,14 @@
     "security.backends": {
       "provider": "storage.probe",
       "as": "storage_backends_reachable"
+    },
+    "data.devices": {
+      "provider": "devices.enumerate",
+      "as": "devices",
+      "params": {
+        "pointer": "/devices",
+        "platforms_pointer": "/device_platforms"
+      }
     }
   },
   "seed": {
@@ -579,6 +587,27 @@
         "node": {
           "class": "person"
         }
+      },
+      "devices": {
+        "order": 6,
+        "kind": "devices",
+        "label": {
+          "en": "Input/output devices",
+          "pl": "Urządzenia wejścia/wyjścia"
+        },
+        "bindings": [
+          "data.devices"
+        ],
+        "lists": [
+          {
+            "as": "devices",
+            "pointer": "/devices"
+          },
+          {
+            "as": "platforms",
+            "pointer": "/device_platforms"
+          }
+        ]
       }
     }
   }

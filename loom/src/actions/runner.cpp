@@ -1,13 +1,18 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+#include "loom/action_emergent.h"
+#include "loom/action_overlay.h"
 
 #include <algorithm>
 
 #include "loom/action_element.h"
+#include "loom/action_estimate.h"
+#include "loom/action_result.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
+#include "loom/providers.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
 #include "loom/semantic_worker.h"
@@ -75,7 +80,7 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
       if (configured.is_string()) model = configured.get<std::string>();
     }
     if (model.empty()) return failed(Error(Errc::InvalidArgument, "no model: name one in the step or set a default model"));
-    req.models.push_back(llm::ModelSpec{model, "", Json::object()});
+    req.models.push_back(llm::ModelSpec{model, json::get_string(with, "provider"), Json::object()});
   }
   req.mode = json::get_string(with, "mode", req.models.size() > 1 ? "sequential" : "single");
   if (const Json* p = json::find(with, "parameters"); p && p->is_object()) req.parameters = *p;
@@ -91,7 +96,16 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   if (req.prompt.empty() && req.inputs.empty() && req.messages.empty())
     return failed(Error(Errc::InvalidArgument, "nothing to send: the step has no prompt, messages or input"));
   req.kind = c.root_action;
-  req.action = c.root_action;
+  // A model call is declared under a composite that has a use_model step of its own: the root when it does, else the composite
+  // whose step it is (a chain of composites, a sequence saved as one action).
+  req.action = c.owner_action.empty() ? c.root_action : c.owner_action;
+  if (!c.root_action.empty() && !c.owner_action.empty() && c.root_action != c.owner_action) {
+    if (auto profile = RuntimeProfile::load("actions", rt.paths().root))
+      if (const Json* actions = json::find(profile->values(), "actions"))
+        if (const Json* root_entry = json::find(*actions, c.root_action))
+          for (const auto& st : root_entry->value("steps", Json::array()))
+            if (json::get_string(st, "action") == "use_model") req.action = c.root_action;
+  }
   req.title = json::get_string(with, "title", json::get_string(um, "title", "ChatADHD"));
   req.timeout_ms = static_cast<int>(json::get_int(with, "timeout_ms", json::get_int(um, "timeout_ms", 180000)));
   req.cancel = c.cancel;
@@ -143,6 +157,11 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   out.state = StepOutcome::State::Failed;
   if (!out.error) out.error = Error(Errc::Unavailable, "the model call produced no result");
   return out;
+}
+
+bool is_overlay_action(std::string_view action) {
+  return action == "rules.set" || action == "rules.disable" || action == "rules.list" || action == "actions.define" || action == "actions.remove" ||
+         action == "groups.define" || action == "groups.remove";
 }
 
 // ── settings ────────────────────────────────────────────────────────
@@ -249,6 +268,7 @@ struct ActionRunner::Loaded {
   Engine engine;
   ElementResolver resolver;
   Json settings;
+  Json results;  // runtime profile action_results: where the results of a run go
   ExecutorTable executors;
 };
 
@@ -286,10 +306,13 @@ void ActionRunner::install_executors(ExecutorTable& table) {
 Result<ActionRunner::Loaded> ActionRunner::load() {
   const auto& root = rt_.paths().root;
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
+  engine.set_user_values(rt_.config().all());  // the user's settings are the person level of scoped values
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   Json settings = Json::object();
   if (auto profile = RuntimeProfile::load("action_run", root)) settings = profile->values();
-  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), {}};
+  Json results = Json::object();
+  if (auto profile = RuntimeProfile::load("action_results", root)) results = profile->values();
+  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), std::move(results), {}};
   install_executors(loaded.executors);
   return loaded;
 }
@@ -308,7 +331,31 @@ Interpreter ActionRunner::make_interpreter(const Loaded& loaded) const {
   deps.on_step = [rt](const Json& record) {
     (void)rt->event_log().append("action.step", json::get_string(record, "run_id"), record);
   };
+  // The results of a completed run land in the graph (or stay in the run, as the target says).
+  ResultServices services;
+  services.db = &rt_.db();
+  services.blobs = &rt_.blobs();
+  services.config = &rt_.config();
+  services.engine = &loaded.engine;
+  services.bus = &rt_.bus();
+  services.profile = loaded.results;
+  deps.on_result = [services](Json& run) { return store_run_results(services, run); };
   return Interpreter(deps);
+}
+
+Json ActionRunner::bind_params(const Json& entry, Json args) const {
+  const Json* params = json::find(entry, "params");
+  if (!params || !params->is_array()) return args;
+  if (!args.is_object()) args = Json::object();
+  for (const auto& p : *params) {
+    const std::string name = json::get_string(p, "name"), setting = json::get_string(p, "setting");
+    if (name.empty() || setting.empty()) continue;
+    if (const Json* have = json::find(args, name); have && !have->is_null()) continue;  // the caller's word comes first
+    const Json value = rt_.config().get(setting);
+    if (value.is_null() || (value.is_string() && value.get<std::string>().empty())) continue;
+    args[name] = value;
+  }
+  return args;
 }
 
 Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& request) const {
@@ -324,9 +371,44 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
     }
   }
   if (element.is_null()) element = Json::object();
+  // Arguments the caller left out come from the settings the catalogue names (a model, a provider ...). What a composite
+  // action needs and still lacks is said before anything starts: its early steps must not be paid for in vain.
+  std::vector<const Json*> named;
+  if (entry) named.push_back(entry);
+  {
+    const Json* steps = r.chain.is_array() ? &r.chain : (r.chain.is_object() ? json::find(r.chain, "steps") : nullptr);
+    if (steps && steps->is_array())
+      for (const auto& step : *steps) {
+        const std::string name = step.is_string() ? step.get<std::string>() : json::get_string(step, "action");
+        if (const Json* e = json::find(loaded.engine.catalogue(), name)) named.push_back(e);
+      }
+  }
+  for (const Json* e : named) r.args = bind_params(*e, r.args);
+  for (const Json* e : named) {
+    if (json::get_string(*e, "kind") != "composite") continue;
+    const Json* params = json::find(*e, "params");
+    if (!params || !params->is_array()) continue;
+    for (const auto& p : *params) {
+      const std::string name = json::get_string(p, "name");
+      const Json* have = json::find(r.args, name);
+      if (!json::get_bool(p, "required", false) || (have && !have->is_null())) continue;
+      const std::string setting = json::get_string(p, "setting");
+      return Error(Errc::InvalidArgument, "action '" + json::get_string(*e, "id") + "' needs the argument '" + name + "'" +
+                                              (setting.empty() ? std::string() : " (or the setting " + setting + ")"));
+    }
+  }
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   const Engine& engine = loaded.engine;
-  LOOM_TRY_ASSIGN(Json resolved, loaded.resolver.resolve(sources, element, [&](std::string_view c) { return engine.has_class(c); }));
+  auto known_class = [&](std::string_view c) { return engine.has_class(c); };
+  // Several elements as one input (combine): a list of ids, or {"members": [...]}.
+  if (element.is_array()) element = Json{{"members", element}};
+  Json resolved;
+  if (element.is_object() && element.contains("members") && element["members"].is_array() && !element.contains("source")) {
+    LOOM_TRY_ASSIGN(resolved, loaded.resolver.group(sources, element["members"], known_class,
+                                                    [&](std::string_view cls) { return engine.expand_traits({std::string(cls)}); }));
+  } else {
+    LOOM_TRY_ASSIGN(resolved, loaded.resolver.resolve(sources, element, known_class));
+  }
   if (resolved.is_string()) resolved = Json{{"class", resolved}};
   r.element = std::move(resolved);
   return r;
@@ -405,10 +487,63 @@ Result<Json> ActionRunner::preview(const Json& request) {
   LOOM_TRY_ASSIGN(auto loaded, load());
   LOOM_TRY_ASSIGN(RunRequest r, prepare(loaded, request));
   auto interpreter = make_interpreter(loaded);
-  return interpreter.preview(r);
+  LOOM_TRY_ASSIGN(Json preview, interpreter.preview(r));
+  // What the plan would cost: tokens, and money where the registry knows the price (never zero for what it does not know).
+  std::int64_t chars = 0;
+  const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
+  if (preview.at("plan").at("cost").value("model_calls", 0) > 0)
+    if (auto parts = loaded.resolver.content_parts(sources, r.element))
+      for (const auto& p : *parts) chars += static_cast<std::int64_t>(utf8::length(p.text));
+  EstimateServices services;
+  services.models = &rt_.models();
+  services.config = &rt_.config();
+  services.settings = loaded.settings;
+  services.catalogue = loaded.engine.catalogue();
+  preview["estimate"] = estimate_plan(services, preview.at("plan"), r.args, chars);
+  return preview;
+}
+
+// The writes of rules and of the user's own actions: raw (a step of a run has passed the rules already) or gated (a call from
+// loom_invoke, HTTP or the CLI becomes a run, so the rules of the scope and the confirmation apply as for any command).
+Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& request) {
+  const auto& root = rt_.paths().root;
+  if (action == "rules.set") return rules_set(root, request);
+  if (action == "rules.disable") return rules_disable(root, request);
+  if (action == "rules.list") return rules_list(root, request);
+  const bool define = action == "actions.define" || action == "groups.define";
+  const bool remove = action == "actions.remove" || action == "groups.remove";
+  if (!define && !remove) return Error(Errc::NotFound, "unknown action '" + std::string(action) + "'");
+  Result<Json> done = action == "actions.define"   ? actions_define(root, request)
+                      : action == "groups.define"  ? groups_define(root, request)
+                      : action == "actions.remove" ? actions_remove(root, request)
+                                                   : groups_remove(root, request);
+  // The node that recorded where the proposal came from says what became of it.
+  if (done && json::get_bool(*done, "written", true)) {
+    const std::string node = define ? json::get_string(request.value("provenance", Json::object()), "node")
+                                    : json::get_string(done->value("origin", Json::object()), "node");
+    emergent::settle(rt_, node, define ? "accepted" : "undone", *done);
+  }
+  return done;
+}
+
+Result<Json> ActionRunner::run_gated(std::string_view action, const Json& request) {
+  Json args = request;
+  for (const char* control : {"confirmed", "ref", "context", "propose"}) args.erase(control);
+  Json run_request{{"action", std::string(action)}, {"element", Json{{"class", "application"}}}, {"args", args}, {"ref", json::get_string(request, "ref", "api")}};
+  Json context = request.value("context", Json::object());
+  if (!context.is_object()) context = Json::object();
+  if (!context.contains("origin")) context["origin"] = json::get_string(request, "ref", "api");
+  run_request["context"] = context;
+  if (json::get_bool(request, "confirmed", false)) run_request["confirmed"] = true;
+  if (json::get_bool(request, "propose", false)) run_request["propose"] = true;
+  std::string conv = json::get_string(context, "conv_id");
+  if (conv.empty() && json::get_string(request, "scope") == "conversation") conv = json::get_string(request, "scope_id");
+  if (!conv.empty()) run_request["scope"] = Json{{"conversation", conv}, {"turn", ""}};
+  return run(run_request);
 }
 
 Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view action, const Json& request) {
+  if (port == "actions" && is_overlay_action(action)) return write_overlay(action, request);
   if (port == "actions") return invoke(action, request);
   if (port == "storage") {
     Json r = request;
@@ -424,8 +559,10 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "cancel") return cancel(request);
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);
+  if (action == "rules.list") return write_overlay(action, request);
+  if (is_overlay_action(action)) return run_gated(action, request);
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
-  return actions::invoke(rt_.paths().root, action, request, &sources);
+  return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config());
 }
 
 }  // namespace loom::actions

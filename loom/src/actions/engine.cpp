@@ -6,6 +6,7 @@
 
 #include "loom/action_rules.h"
 #include "loom/runtime_profile.h"
+#include "loom/util/fs.h"
 
 namespace loom::actions {
 
@@ -37,7 +38,15 @@ Result<Engine> Engine::load(const std::filesystem::path& data_dir) {
   LOOM_TRY_ASSIGN(auto catalogue, RuntimeProfile::load("actions", data_dir));
   LOOM_TRY_ASSIGN(auto rules, RuntimeProfile::load("action_rules", data_dir));
   const Json* actions = json::find(catalogue.values(), "actions");
-  return from_values(entry.values(), actions ? *actions : Json::object(), rules.values());
+  LOOM_TRY_ASSIGN(Engine engine, from_values(entry.values(), actions ? *actions : Json::object(), rules.values()));
+  // The user's settings are the `person` baselines of scoped values; a caller with a live Config replaces them.
+  if (!data_dir.empty()) {
+    if (auto raw = fsutil::read_file(data_dir / "config.json")) {
+      auto parsed = json::parse(*raw);
+      if (parsed && parsed->is_object()) engine.user_values_ = std::move(*parsed);
+    }
+  }
+  return engine;
 }
 
 Result<Engine> Engine::from_values(const Json& graph_entry, const Json& actions, const Json& action_rules) {
@@ -93,6 +102,10 @@ Result<Engine> Engine::from_values(const Json& graph_entry, const Json& actions,
     rule.weight = json::get_number(r, "weight", 1.0);
     rule.conflict = json::get_string(r, "conflict");
     if (const Json* w = json::find(r, "when"); w && w->is_object()) rule.when = *w;
+    if (const Json* v = json::find(r, "value")) {
+      rule.value = *v;
+      rule.has_value = true;
+    }
     e.rules_.push_back(std::move(rule));
   }
   return e;
@@ -111,6 +124,59 @@ int Engine::restrictiveness(std::string_view decision) const {
   return d ? static_cast<int>(json::get_int(*d, "restrictiveness", 0)) : 0;
 }
 
+namespace {
+
+bool selectors_overlap(const Json& a, const Json& b) {
+  auto wild = [](const Json& x) { return x.is_null() || (x.is_string() && (x.get<std::string>().empty() || x.get<std::string>() == "*")); };
+  return wild(a) || wild(b) || a == b;
+}
+
+bool targets_overlap(const Json& a, const Json& b) {
+  const std::string ka = json::get_string(a, "kind"), kb = json::get_string(b, "kind");
+  if (ka.empty() || ka == "any" || kb.empty() || kb == "any") return true;
+  if (ka != kb) return true;  // different kinds can still meet on one element (a class and a trait of it): treat as overlapping
+  const std::string ia = json::get_string(a, "id"), ib = json::get_string(b, "id");
+  if (!ia.empty() && !ib.empty() && ia != ib) return false;
+  for (auto it = a.begin(); it != a.end(); ++it) {
+    if (it.key() == "kind" || it.key() == "id") continue;
+    if (const Json* other = json::find(b, it.key()); other && *other != it.value()) return false;
+  }
+  return true;
+}
+
+}  // namespace
+
+std::optional<Json> Engine::locked_against(const Json& rule) const {
+  const std::size_t rank = level_index(json::get_string(rule, "scope"));
+  if (rank == static_cast<std::size_t>(-1)) return std::nullopt;
+  const std::string effect = json::get_string(rule, "effect");
+  const std::string decision = effect_decision(effects_, effect);
+  const Json* dec = json::find(decisions_, decision);
+  const std::string dimension = dec ? json::get_string(*dec, "dimension", "gate") : std::string("gate");
+  const Json target = rule.value("target", Json::object());
+  const Json action = rule.value("action", Json(nullptr));
+  for (const Rule& r : rules_) {
+    if (!r.locked || r.rank > rank || r.dimension != dimension) continue;
+    if (r.id == json::get_string(rule, "id")) continue;  // a rule is never pinned against itself
+    if (!targets_overlap(r.target, target)) continue;
+    if (dimension == "value") {
+      if (json::get_string(r.target, "key") != json::get_string(target, "key")) continue;
+      const Json* v = json::find(rule, "value");
+      if (r.has_value && v && r.value == *v) continue;
+    } else if (dimension == "gate") {
+      if (!selectors_overlap(r.action, action) || r.decision == decision) continue;
+    } else {
+      continue;
+    }
+    Json out{{"rule", r.id}, {"scope", r.scope}, {"conflict", r.conflict.empty() ? "locked_by" : r.conflict}};
+    if (!r.scope_id.empty()) out["scope_id"] = r.scope_id;
+    if (!r.reason.is_null()) out["reason"] = r.reason;
+    if (!r.initiator.empty()) out["initiator"] = r.initiator;
+    return out;
+  }
+  return std::nullopt;
+}
+
 std::size_t Engine::level_index(std::string_view name, std::string* resolved) const {
   std::string level(name);
   if (const Json* a = json::find(aliases_, level); a && a->is_string()) level = a->get<std::string>();
@@ -121,6 +187,11 @@ std::size_t Engine::level_index(std::string_view name, std::string* resolved) co
     }
   }
   return static_cast<std::size_t>(-1);
+}
+
+std::string Engine::level_name(std::string_view name) const {
+  std::string level;
+  return level_index(name, &level) == static_cast<std::size_t>(-1) ? std::string() : level;
 }
 
 // ── Elements, traits, groups ─────────────────────────────────────
@@ -587,6 +658,83 @@ std::string Engine::default_action(const Prepared& p, const Scope& scope) const 
   return cands[pk.winner].key;
 }
 
+// ── Scoped values (R47) ───────────────────────────────────────────
+
+Json ScopedValue::to_json() const {
+  Json o = Json::object();
+  o["value"] = value;
+  o["defined"] = defined;
+  o["scope"] = scope;
+  if (!scope_id.empty()) o["scope_id"] = scope_id;
+  o["source"] = source;
+  o["rule"] = rule;
+  if (!initiator.empty()) o["initiator"] = initiator;
+  if (!conflict_rule.empty()) o["conflict_rule"] = conflict_rule;
+  if (asked) o["asked"] = true;
+  return o;
+}
+
+Result<ScopedValue> Engine::resolve_value(std::string_view key, const Scope& scope, const std::vector<Baseline>& baselines) const {
+  constexpr std::size_t kBaselineOrder = 1'000'000;  // explicit rules win ties against baselines of the same level
+  std::vector<Rule> synthetic;
+  synthetic.reserve(baselines.size());
+  std::vector<Cand> cands;
+  Json inactive = Json::array();
+  for (const auto& b : baselines) {
+    Rule r;
+    r.id = "baseline:" + b.level;
+    r.rank = level_index(b.level, &r.scope);
+    if (r.rank == static_cast<std::size_t>(-1)) return Error(Errc::InvalidArgument, "unknown scope level '" + b.level + "' in a baseline of '" + std::string(key) + "'");
+    r.scope_id = b.scope_id;
+    r.effect = "set_value";
+    r.decision = "value";
+    r.dimension = "value";
+    r.initiator = b.source;
+    r.value = b.value;
+    r.has_value = true;
+    r.order = kBaselineOrder - static_cast<std::size_t>(std::max(0, b.order));
+    if (r.rank > scope.depth) {
+      inactive.push_back(rule_summary(r, "inactive"));
+      continue;
+    }
+    synthetic.push_back(std::move(r));
+  }
+  for (const auto& r : synthetic) cands.push_back({&r, 0, json::canonical(r.value), 0});
+  for (const auto& rule : rules_) {
+    if (rule.dimension != "value" || !rule.has_value) continue;
+    if (json::get_string(rule.target, "kind") != "setting" || json::get_string(rule.target, "key") != key) continue;
+    if (!active(rule, scope)) {
+      inactive.push_back(rule_summary(rule, "inactive"));
+      continue;
+    }
+    cands.push_back({&rule, 0, json::canonical(rule.value), 0});
+  }
+  ScopedValue out;
+  if (cands.empty()) {
+    out.considered = inactive;
+    return out;
+  }
+  const Pick pk = resolve(cands, default_conflict_, implemented_conflict_rules());
+  const Cand& w = cands[pk.winner];
+  out.defined = true;
+  out.value = w.rule->value;
+  out.scope = w.rule->scope;
+  out.scope_id = w.rule->scope_id;
+  out.rule = w.rule->id;
+  const bool baseline = w.rule->id.rfind("baseline:", 0) == 0;
+  out.source = baseline ? w.rule->initiator : "rule";
+  out.initiator = baseline ? std::string() : (w.rule->initiator.empty() ? w.rule->scope + (w.rule->scope_id.empty() ? std::string() : "/" + w.rule->scope_id) : w.rule->initiator);
+  out.conflict_rule = pk.conflict;
+  out.asked = pk.asked;
+  for (std::size_t i = 0; i < cands.size(); ++i) {
+    Json s = rule_summary(*cands[i].rule, pk.asked ? "conflict" : (i == pk.winner ? "decided" : "overridden"));
+    s["value"] = cands[i].rule->value;
+    out.considered.push_back(std::move(s));
+  }
+  for (const auto& x : inactive) out.considered.push_back(x);
+  return out;
+}
+
 // ── Data consistency ──────────────────────────────────────────────
 
 Json Engine::issues() const {
@@ -629,6 +777,10 @@ Json Engine::issues() const {
       add(Json{{"code", "deny_without_reason"}, {"owner", "rule:" + r.id}});
     if (r.dimension == "default" && (!r.action.is_string() || !actions_.contains(r.action.get<std::string>())))
       add(Json{{"code", "default_action_unknown"}, {"owner", "rule:" + r.id}});
+    if (r.dimension == "value") {
+      if (kind != "setting" || json::get_string(r.target, "key").empty()) add(Json{{"code", "value_rule_without_key"}, {"owner", "rule:" + r.id}});
+      if (!r.has_value) add(Json{{"code", "value_rule_without_value"}, {"owner", "rule:" + r.id}});
+    }
     if (!r.conflict.empty() && !conflicts.count(r.conflict)) add(Json{{"code", "conflict_rule_unknown"}, {"owner", "rule:" + r.id}, {"conflict", r.conflict}});
     if (!r.conflict.empty() && conflicts.count(r.conflict) && !implemented_conflict_rules().count(r.conflict))
       add(Json{{"code", "conflict_rule_not_implemented"}, {"owner", "rule:" + r.id}, {"conflict", r.conflict}});

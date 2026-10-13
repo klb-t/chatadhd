@@ -119,7 +119,9 @@
           "rom": {
             "mount": {},
             "items": {}
-          }
+          },
+          "devices": {},
+          "device_platforms": {}
         },
         "value_schema": {
           "type": "object",
@@ -225,6 +227,16 @@
           "source": "graph/rom.pack",
           "pointer": "/items",
           "target": "/defaults/rom/items"
+        },
+        {
+          "source": "graph/devices.pack",
+          "pointer": "/devices",
+          "target": "/defaults/devices"
+        },
+        {
+          "source": "graph/devices.pack",
+          "pointer": "/platforms",
+          "target": "/defaults/device_platforms"
         }
       ]
     },

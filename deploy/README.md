@@ -110,3 +110,8 @@ współdzielony `Documents/ChatADHD` i dowolna ścieżka.
   istnieje tylko chwilowo. Klucz Keystore nie przeżywa reinstalacji ani przeniesienia na inny telefon, więc po
   nich wpisz klucze API ponownie. Wyłączysz to w tym samym ekranie. Rozmowy i pamięć zostają jawne; ich
   ochroną jest wybór lokalizacji.
+
+## Skrypty pomocnicze (deweloperskie)
+
+- `deploy/build-linux.sh` — release build jądra Loom + `ctest`, bez Dockera.
+- `deploy/build-android.sh` — budowa powłoki Androida (`loom/android`); wymaga SDK/NDK i JDK 17+.

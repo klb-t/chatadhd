@@ -98,10 +98,22 @@
           "path": "loom/src/actions/element.cpp"
         },
         {
+          "path": "loom/src/actions/emergent.cpp"
+        },
+        {
           "path": "loom/src/actions/engine.cpp"
         },
         {
+          "path": "loom/src/actions/estimate.cpp"
+        },
+        {
+          "path": "loom/src/actions/overlay.cpp"
+        },
+        {
           "path": "loom/src/actions/query.cpp"
+        },
+        {
+          "path": "loom/src/actions/result.cpp"
         },
         {
           "path": "loom/src/actions/route.cpp"
@@ -217,6 +229,9 @@
         },
         {
           "path": "loom/data/presets/import_layers.spec.pack"
+        },
+        {
+          "path": "loom/data/runtime/action_results.pack"
         },
         {
           "path": "loom/data/runtime/action_rules.pack"

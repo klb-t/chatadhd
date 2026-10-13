@@ -481,15 +481,19 @@
         },
         {
           "path": "loom/data/graph/classes.pack",
-          "sha256": "c90b607d4edad0fdc5c57a214ae5896e6ffd68a263b5885b00f5e3b3cefa4b9b"
+          "sha256": "58aafa625755e15b697e906e1066f3add861b6156caae9f2743d32fcd3049eb4"
+        },
+        {
+          "path": "loom/data/graph/devices.pack",
+          "sha256": "77dbeef17ef3c3ecef079a23a366c965dc1ef9a5fbe52382768688ef1e2369e4"
         },
         {
           "path": "loom/data/graph/entry.pack",
-          "sha256": "17c1e9da654909d64d04852f4289c2bccda89d0ac0078df63970bf50a8c2cc26"
+          "sha256": "6cb176d4aa3b3bbcca213297e8efe775c58819e7f5aca6138847bf2ec3dc4884"
         },
         {
           "path": "loom/data/graph/interfaces.pack",
-          "sha256": "6fd36d6a93117af8c8f18dcb5f710cddb035a9a4437b76bf9502eb43fc689933"
+          "sha256": "9d8449a41cd5c17b46d21f19c6c548a7b3deb812f909847ec0daf43c0a8a3272"
         },
         {
           "path": "loom/data/graph/parties.pack",
@@ -512,16 +516,20 @@
           "sha256": "6a576acf69ccc3be7af2b8ccde641977bdb76b8b52e2c76e77895609d76e20df"
         },
         {
+          "path": "loom/data/runtime/action_results.pack",
+          "sha256": "ad401ed05d59c88850ccd0b7a38455077bd64ffa60259db2290693279d04784c"
+        },
+        {
           "path": "loom/data/runtime/action_rules.pack",
-          "sha256": "d227c1684702283a601df0c3daeeb14d1b75bcd4910880c5f3a22cdda5ec3d54"
+          "sha256": "9e965641126a8386f9267f0d16fca3dced4859221c82677bac5d76103fd1635b"
         },
         {
           "path": "loom/data/runtime/action_run.pack",
-          "sha256": "463c90631554f4b5257b1d4b5fb0274d7728c5709f7091b44cdee469a0b43e15"
+          "sha256": "ab2ccdcbd5b5521ce7d4bccccae2bf212f9fd8b0a84c833ee30d8e571deb841a"
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "fb7d8f7da07cf9dcc508a1a50224deff7b59483198f0a0e5f7a87b6352f5a85b"
+          "sha256": "8cd46bc57bd3d53a25361e82c26e76eea2b7b85d96617a7671e84f48346b5885"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -537,7 +545,7 @@
         },
         {
           "path": "loom/data/runtime/cli.pack",
-          "sha256": "ba497c4eb81aee4bab7c148360f04e98b5343cf90746453f927661b9e4e4ced6"
+          "sha256": "444137f6468175ad825854bdd4355699890e6182b3fa4a78062357b28a258aae"
         },
         {
           "path": "loom/data/runtime/config.pack",
@@ -553,7 +561,7 @@
         },
         {
           "path": "loom/data/runtime/element_resolution.pack",
-          "sha256": "54c036d84ae7d2b8a01b89767d2cc57e89b81e292aa685a10759be5b7b4fc7f3"
+          "sha256": "b5107f291199bdd0d44b4203d3f7808e9c6e4d4a9eec1de708f7373671500e0a"
         },
         {
           "path": "loom/data/runtime/github.pack",
@@ -581,7 +589,7 @@
         },
         {
           "path": "loom/data/runtime/intent_routing.pack",
-          "sha256": "db33cf8518a38ba8c4d6516e2f9831fb421832f6392feb67049bd23ad8ac04ea"
+          "sha256": "1f7369da414b77712e08184db1ef1f0192c485afcc2c302e9731867cdb63677a"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",
@@ -641,7 +649,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "a9902d8053861d33df26160c4071c4aabd0ca62114b4a7487d0cb87b9e1f6db3"
+          "sha256": "351cdbfdad781360ebded1d508467d95365aece8b41d60fbad8272f20bc46ac8"
         },
         {
           "path": "loom/data/runtime/usage_compaction.pack",
@@ -657,10 +665,10 @@
         },
         {
           "path": "loom/data/runtime_sources.pack",
-          "sha256": "16ef3dbfefbae087f72cd7153cc3598eb2e82a7627c5f780136d9d4b5319a098"
+          "sha256": "3c0f7e9672574e096f5f06d8b25b4696a69418978a0fd4c6173946e0818049a6"
         }
       ],
-      "output_sha256": "a557d00ff94496dc98072b227b9add302bf9bf74dadcb2f75c2a49b45dc36470",
+      "output_sha256": "67a01c94d4c3b5411afe207f0ab5c940994c04bf5964b06c486e14d786c95949",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

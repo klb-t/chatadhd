@@ -28,6 +28,7 @@
 #include <vector>
 
 #include "loom/action_element.h"
+#include "loom/action_result.h"
 #include "loom/action_runner.h"
 #include "loom/chat_route.h"
 #include "loom/action_rules.h"
@@ -811,7 +812,7 @@ Json cli_args(const Args& a) {
   return args;
 }
 
-void print_run(const Json& run) {
+void print_run(Runtime& rt, const Json& run) {
   std::cout << "run     " << run.value("id", "") << "  " << run.value("status", "") << "\n";
   for (const auto& s : run.value("steps", Json::array()))
     std::cout << "  step  " << s.value("id", "") << "  " << s.value("action", "") << "  " << s.value("status", "") << "\n";
@@ -824,9 +825,20 @@ void print_run(const Json& run) {
   }
   if (run.contains("error") && run["error"].is_object())
     std::cout << "error   " << run["error"].value("message", "") << "\n";
-  if (run.contains("result") && run["result"].is_object())
+  if (run.contains("result") && run["result"].is_object()) {
+    // A long text was moved to the blob store by the result sink; the reference is read back here.
     for (const auto& part : run["result"].value("parts", Json::array()))
-      if (part.value("kind", "") == "text") std::cout << "\n" << part.value("text", "") << "\n";
+      if (part.value("kind", "") == "text") {
+        auto text = actions::part_text(&rt.blobs(), part);
+        std::cout << "\n" << (text ? *text : part.value("preview", "")) << "\n";
+      }
+    if (const Json* made = json::find(run["result"], "produced"); made && made->is_object()) {
+      for (const auto& item : made->value("items", Json::array()))
+        std::cout << "stored  " << item.value("form", "") << "  " << item.value("class", "") << "  (" << made->value("target", "") << ")\n";
+      if (made->contains("content") && made->at("content").is_string())
+        std::cout << "content " << made->at("content").get<std::string>() << "  run " << made->value("run_node", Json(nullptr)).dump() << "\n";
+    }
+  }
 }
 
 int cmd_actions_run(Runtime& rt, const Args& a, const std::string& sub) {
@@ -866,7 +878,7 @@ int cmd_actions_run(Runtime& rt, const Args& a, const std::string& sub) {
     std::cout << (result.value("runnable", false) ? "runnable" : "not runnable yet") << "; nothing was executed\n";
     return 0;
   }
-  print_run(result);
+  print_run(rt, result);
   const std::string status = result.value("status", "");
   return status == "failed" || status == "denied" ? 1 : status == "cancelled" ? 130 : 0;
 }
@@ -898,7 +910,7 @@ int cmd_actions_run_control(Runtime& rt, const Args& a, const std::string& sub) 
                 << (r.contains("actions") ? r["actions"].dump() : std::string()) << "\n";
     return 0;
   }
-  print_run(result);
+  print_run(rt, result);
   return 0;
 }
 
@@ -996,6 +1008,68 @@ int cmd_actions(Runtime& rt, const Args& a) {
   for (const auto& r : result["rejected"]) std::cout << "  not proposed: " << r.value("action", "") << " is " << r.value("status", "") << "\n";
   std::cout << "proposals only: nothing was executed\n";
   return 0;
+}
+
+// loom rules list [--scope S] [--scope-id ID] [--user-only]
+// loom rules set --scope S [--scope-id ID] (--key K --value V | --effect E [--action A] [--class C | --trait T])
+//                [--reason R] [--lock] [--id ID] [--yes] [--propose]
+// loom rules disable RULE_ID [--restore] [--yes]
+// Writing is an action like any other: it goes through the rules of the scope (the preset asks for a confirmation) and a rule
+// pinned by a higher scope refuses with its reason.
+int cmd_rules(Runtime& rt, const Args& a) {
+  const std::string sub = need(a, 0, "rules subcommand (list|set|disable)");
+  Json request = Json::object();
+  if (sub == "list") {
+    if (a.has("scope")) request["scope"] = a.get("scope");
+    if (a.has("scope-id")) request["scope_id"] = a.get("scope-id");
+    if (a.has("user-only")) request["user_only"] = true;
+    const Json result = must(rt.actions().invoke("rules.list", request));
+    if (g_json) {
+      print_json(result);
+      return 0;
+    }
+    for (const auto& r : result["rules"])
+      std::cout << (r.value("disabled", false) ? "off " : "on  ") << r.value("id", "") << "  " << r.value("scope", "")
+                << (r.contains("scope_id") ? "=" + r.value("scope_id", "") : std::string()) << "  " << r.value("effect", "") << "  "
+                << (r.contains("action") ? r["action"].dump() : r.contains("value") ? r["value"].dump() : std::string()) << "  [" << r.value("source", "") << "]\n";
+    return 0;
+  }
+  if (sub == "set") {
+    if (a.has("scope")) request["scope"] = a.get("scope");
+    if (a.has("scope-id")) request["scope_id"] = a.get("scope-id");
+    if (a.has("key")) request["key"] = a.get("key");
+    if (a.has("value")) request["value"] = a.get("value");
+    if (a.has("effect")) request["effect"] = a.get("effect");
+    if (a.has("action")) request["action"] = a.get("action");
+    if (a.has("class")) request["target"] = Json{{"kind", "class"}, {"id", a.get("class")}};
+    if (a.has("trait")) request["target"] = Json{{"kind", "trait"}, {"id", a.get("trait")}};
+    if (a.has("reason")) request["reason"] = a.get("reason");
+    if (a.has("id")) request["id"] = a.get("id");
+    if (a.has("lock")) request["locked"] = true;
+    if (a.has("initiator")) request["initiator"] = a.get("initiator");
+  } else if (sub == "disable") {
+    request["id"] = need(a, 1, "rule id");
+    if (a.has("restore")) request["restore"] = true;
+  } else {
+    throw UsageError{"unknown rules subcommand: " + sub};
+  }
+  request["ref"] = "cli";
+  request["context"] = Json{{"origin", "cli"}};
+  if (a.has("yes")) request["confirmed"] = true;
+  if (a.has("propose")) request["propose"] = true;
+  const Json run = must(rt.actions().invoke(sub == "set" ? "rules.set" : "rules.disable", request));
+  if (g_json) {
+    print_json(run);
+    return run.value("status", "") == "failed" || run.value("status", "") == "denied" ? 1 : 0;
+  }
+  print_run(rt, run);
+  if (run.value("status", "") == "completed" && run.contains("result") && run["result"].contains("data")) {
+    const Json& data = run["result"]["data"];
+    std::cout << (sub == "set" ? "rule    " : "off     ") << data.value("id", "") << (sub == "set" ? "  written to " + data.value("overlay", "") : std::string()) << "\n";
+    if (data.contains("note") && data["note"].contains("consumer")) std::cout << "note    " << data["note"].value("consumer", "") << "\n";
+  }
+  const std::string status = run.value("status", "");
+  return status == "failed" || status == "denied" ? 1 : 0;
 }
 
 int cmd_usage(Runtime& rt, const Args& a) {
@@ -1819,6 +1893,7 @@ int main(int argc, char** argv) {
       {"semantic", cmd_semantic},
       {"economy", cmd_economy},
       {"actions", cmd_actions},
+      {"rules", cmd_rules},
       {"usage", cmd_usage},
       {"memory", cmd_memory},
       {"config", cmd_config},
