@@ -67,10 +67,7 @@ const BackendRegistry& BackendRegistry::builtin() {
     x.add({"local", "implemented", detail::make_local});
     x.add({"s3", "implemented", detail::make_s3});
     x.add({"webdav", "implemented", detail::make_webdav});
-    // Open item: Google Drive needs an OAuth refresh flow (token endpoint, scopes, resumable upload) that does
-    // not fit the key/value contract of the other adapters without its own design; the kind is declared so that
-    // data can already name it and reports "planned".
-    x.add({"gdrive", "planned", {}});
+    x.add({"gdrive", "implemented", detail::make_gdrive});  // OAuth2 refresh token as a secret
     return x;
   }();
   return r;

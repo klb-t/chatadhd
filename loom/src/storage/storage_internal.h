@@ -39,6 +39,7 @@ std::string sigv4_signature(const SigV4In& in, std::string* signed_headers_out =
 
 Result<std::unique_ptr<StorageBackend>> make_local(const std::string& id, const Json& cfg, const BackendEnv& env);
 Result<std::unique_ptr<StorageBackend>> make_s3(const std::string& id, const Json& cfg, const BackendEnv& env);
+Result<std::unique_ptr<StorageBackend>> make_gdrive(const std::string& id, const Json& cfg, const BackendEnv& env);
 Result<std::unique_ptr<StorageBackend>> make_webdav(const std::string& id, const Json& cfg, const BackendEnv& env);
 
 }  // namespace loom::storage::detail

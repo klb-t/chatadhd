@@ -79,7 +79,7 @@ struct KindDescriptor {
 
 class BackendRegistry {
  public:
-  static const BackendRegistry& builtin();  // local, s3, webdav, gdrive (planned)
+  static const BackendRegistry& builtin();  // local, s3, webdav, gdrive
   void add(KindDescriptor d);
   const KindDescriptor* find(std::string_view kind) const;
   std::vector<std::string> kinds() const;

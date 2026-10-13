@@ -523,11 +523,11 @@
       "gdrive_example": {
         "class": "user_cloud",
         "label": {
-          "en": "Google Drive - template (adapter planned)",
-          "pl": "Google Drive - szablon (adapter planowany)"
+          "en": "Google Drive - template",
+          "pl": "Google Drive - szablon"
         },
         "path": "",
-        "access": "OAuth tokens as secrets (adapter not implemented yet)",
+        "access": "OAuth2 refresh token, client id and client secret as secrets <secret_ref>_refresh_token, _client_id, _client_secret",
         "encryption": {
           "algorithm": "none",
           "key_custody": "none",
