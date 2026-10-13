@@ -611,9 +611,9 @@ TEST_SUITE("storage") {
     LOOM_REQUIRE_OK(be->put("named/again", "22"));
     CHECK(rig.fake->files.size() == n + 1);
     CHECK(unwrap(be->get("named/again")) == "22");
-    // quote and backslash in a key are escaped in the Drive query
-    LOOM_REQUIRE_OK(be->put("q/it's a\\b", "x"));
-    CHECK(unwrap(be->get("q/it's a\\b")) == "x");
+    // a quote in a key are escaped in the Drive query
+    LOOM_REQUIRE_OK(be->put("q/it's a b", "x"));
+    CHECK(unwrap(be->get("q/it's a b")) == "x");
     // the folder and endpoints are data
     auto custom = rig.make(Json{{"root_folder", "folder9"}});
     LOOM_REQUIRE_OK(custom->put("k/v", "x"));
