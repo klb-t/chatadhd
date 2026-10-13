@@ -2,11 +2,14 @@
 // only knows the wire shape of its family (paths, auth headers, body, response
 // and stream decoding); which provider, secret and parameters are used is data
 // resolved by use_model.cpp.
+#include <algorithm>
 #include <map>
 #include <mutex>
 #include <optional>
 #include <vector>
 
+#include "llm/media_adapters.h"
+#include "loom/adapter_registry.h"
 #include "loom/log.h"
 #include "loom/net/sse.h"
 #include "loom/util/base64.h"
@@ -543,14 +546,26 @@ class OpenAiEmbeddingsAdapter final : public Adapter {
   std::unique_ptr<StreamDecoder> stream_decoder(const StreamHooks&, const CancelToken*) const override { return nullptr; }
 };
 
+using Entry = AdapterDescriptor<Adapter>;
+
 struct AdapterTable {
   std::mutex mu;
-  std::map<std::string, AdapterFactory, std::less<>> factories;
+  AdapterRegistry<Adapter> registry{"adapter", "model adapter"};
+  static Entry entry(std::string family, AdapterFactory factory, Json meta = Json::object()) {
+    return Entry{std::move(family), "implemented",
+                 [factory = std::move(factory)](const std::string&, const Json&, const NoAdapterEnv&)
+                     -> Result<std::unique_ptr<Adapter>> { return factory(); },
+                 std::move(meta)};
+  }
   AdapterTable() {
-    factories["openai_chat"] = [] { return std::make_unique<OpenAiChatAdapter>(); };
-    factories["anthropic_messages"] = [] { return std::make_unique<AnthropicMessagesAdapter>(); };
-    factories["openai_images"] = [] { return std::make_unique<OpenAiImagesAdapter>(); };
-    factories["openai_embeddings"] = [] { return std::make_unique<OpenAiEmbeddingsAdapter>(); };
+    registry.add(entry("openai_chat", [] { return std::make_unique<OpenAiChatAdapter>(); }));
+    registry.add(entry("anthropic_messages", [] { return std::make_unique<AnthropicMessagesAdapter>(); }));
+    registry.add(entry("openai_images", [] { return std::make_unique<OpenAiImagesAdapter>(); }));
+    registry.add(entry("openai_embeddings", [] { return std::make_unique<OpenAiEmbeddingsAdapter>(); },
+                       Json{{"shorthand", "openai"}}));
+    registry.add(entry("openai_transcriptions", [] { return make_openai_transcriptions_adapter(); }));
+    registry.add(entry("google_speech_v1", [] { return make_google_speech_adapter(); }));
+    registry.add(entry("ocr_space_form", [] { return make_ocr_space_form_adapter(); }));
   }
 };
 
@@ -561,22 +576,22 @@ AdapterTable& table() {
 
 }  // namespace
 
-void register_adapter(std::string family, AdapterFactory factory) {
+void register_adapter(std::string family, AdapterFactory factory, Json meta) {
   auto& t = table();
   std::lock_guard lk(t.mu);
-  t.factories[std::move(family)] = std::move(factory);
+  t.registry.add(AdapterTable::entry(std::move(family), std::move(factory), std::move(meta)));
 }
 
 std::unique_ptr<Adapter> make_adapter(std::string_view family) {
   auto& t = table();
-  AdapterFactory factory;
+  AdapterDescriptor<Adapter>::Factory factory;
   {
     std::lock_guard lk(t.mu);
-    auto it = t.factories.find(family);
-    if (it == t.factories.end()) return nullptr;
-    factory = it->second;
+    if (const auto* d = t.registry.find(family)) factory = d->factory;
   }
-  return factory();
+  if (!factory) return nullptr;
+  auto made = factory(std::string(family), Json::object(), NoAdapterEnv{});
+  return made ? std::move(*made) : nullptr;
 }
 
 std::string default_endpoint(std::string_view family, Operation op, const Json& route_metadata) {
@@ -587,15 +602,34 @@ std::string default_endpoint(std::string_view family, Operation op, const Json& 
 std::string embedding_url(std::string_view base_url, const Json& route_metadata) {
   std::string base(base_url);
   while (!base.empty() && base.back() == '/') base.pop_back();
-  return base + default_endpoint("openai_embeddings", Operation::Complete, route_metadata);
+  return base + default_endpoint(adapter_family_for("embedding", ""), Operation::Complete, route_metadata);
 }
 
 std::vector<std::string> adapter_families() {
   auto& t = table();
   std::lock_guard lk(t.mu);
-  std::vector<std::string> out;
-  for (const auto& [name, _] : t.factories) out.push_back(name);
-  return out;
+  return t.registry.names();
+}
+
+std::string adapter_family_for(std::string_view output_kind, std::string_view named) {
+  std::vector<std::string> families;
+  std::map<std::string, std::string> shorthand;
+  {
+    auto& t = table();
+    std::lock_guard lk(t.mu);
+    for (const auto& e : t.registry.entries()) {
+      families.push_back(e.name);
+      shorthand[e.name] = json::get_string(e.meta, "shorthand");
+    }
+  }
+  for (const auto& f : families) {
+    auto adapter = make_adapter(f);
+    if (!adapter) continue;
+    const auto produces = adapter->capabilities().produces;
+    if (std::find(produces.begin(), produces.end(), output_kind) == produces.end()) continue;
+    if (named.empty() || named == shorthand[f]) return f;
+  }
+  return std::string(named);
 }
 
 }  // namespace loom::llm

@@ -27,6 +27,7 @@
 #pragma once
 
 #include <filesystem>
+#include <functional>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -35,6 +36,7 @@
 #include <string_view>
 #include <vector>
 
+#include "loom/adapter_registry.h"
 #include "loom/result.h"
 #include "loom/runtime_profile.h"
 #include "loom/util/json.h"
@@ -63,6 +65,19 @@ struct OcrResult {
   Json to_json() const;
 };
 
+// Where the calls of the media providers are admitted and recorded.  Every
+// ASR / OCR request is the one model action (loom/use_model.h): the usage guard
+// admits it before a byte leaves (x10 growth asks the owner) and its
+// "loom.model_use/1" record goes to `on_provenance`.
+//   config_path   settings + ledger directory of the data dir; empty (a provider
+//                 made by hand, e.g. in a test): no ledger exists, the call is
+//                 not guarded.
+struct MediaCallContext {
+  std::filesystem::path config_path;
+  std::mutex mu;  // guards on_provenance
+  std::function<void(const Json&)> on_provenance;
+};
+
 class AsrProvider {
  public:
   virtual ~AsrProvider() = default;
@@ -87,7 +102,8 @@ class OcrProvider {
 class GroqAsr final : public AsrProvider {
  public:
   GroqAsr(std::string api_key, net::HttpTransport& http, std::optional<std::string> model = {},
-          std::optional<RuntimeProfile> profile = {}, std::string profile_id = "");
+          std::optional<RuntimeProfile> profile = {}, std::string profile_id = "",
+          std::shared_ptr<MediaCallContext> call = nullptr);
   std::string name() const override;
   Result<AsrResult> transcribe_bytes(std::string_view audio, std::string_view format,
                                      const std::optional<std::string>& language) override;
@@ -97,6 +113,7 @@ class GroqAsr final : public AsrProvider {
  private:
   std::string key_;
   net::HttpTransport& http_;
+  std::shared_ptr<MediaCallContext> call_;
   std::string model_;
   Result<RuntimeProfile> profile_;
   std::string profile_id_;
@@ -105,7 +122,8 @@ class GroqAsr final : public AsrProvider {
 class GoogleSpeechAsr final : public AsrProvider {
  public:
   GoogleSpeechAsr(std::string api_key, net::HttpTransport& http,
-                  std::optional<RuntimeProfile> profile = {}, std::string profile_id = "");
+                  std::optional<RuntimeProfile> profile = {}, std::string profile_id = "",
+                  std::shared_ptr<MediaCallContext> call = nullptr);
   std::string name() const override;
   Result<AsrResult> transcribe_bytes(std::string_view audio, std::string_view format,
                                      const std::optional<std::string>& language) override;
@@ -115,6 +133,7 @@ class GoogleSpeechAsr final : public AsrProvider {
  private:
   std::string key_;
   net::HttpTransport& http_;
+  std::shared_ptr<MediaCallContext> call_;
   Result<RuntimeProfile> profile_;
   std::string profile_id_;
 };
@@ -122,7 +141,8 @@ class GoogleSpeechAsr final : public AsrProvider {
 class OcrSpaceProvider final : public OcrProvider {
  public:
   OcrSpaceProvider(std::string api_key, net::HttpTransport& http, std::optional<int> engine = {},
-                   std::optional<RuntimeProfile> profile = {}, std::string profile_id = "");
+                   std::optional<RuntimeProfile> profile = {}, std::string profile_id = "",
+                   std::shared_ptr<MediaCallContext> call = nullptr);
   std::string name() const override;
   Result<OcrResult> recognize_bytes(std::string_view image, std::string_view format,
                                     const std::optional<std::string>& language) override;
@@ -132,10 +152,27 @@ class OcrSpaceProvider final : public OcrProvider {
  private:
   std::string key_;
   net::HttpTransport& http_;
+  std::shared_ptr<MediaCallContext> call_;
   int engine_;
   Result<RuntimeProfile> profile_;
   std::string profile_id_;
 };
+
+// ── Adapter registries ───────────────────────────────────────────────
+// A media descriptor ("providers" of the media profile) names its adapter in the
+// key "adapter"; these registries turn the name into a provider.  A new ASR / OCR
+// service is one add() (plus a descriptor), no edit to MediaProviders.  Register
+// before MediaProviders::refresh(); the registries are not locked.
+struct MediaAdapterEnv {
+  std::string key;                           // the credential of the descriptor's secret
+  net::HttpTransport* http = nullptr;
+  const RuntimeProfile* profile = nullptr;   // effective media profile
+  std::shared_ptr<MediaCallContext> call;    // admission + provenance of the calls
+};
+using AsrAdapterRegistry = AdapterRegistry<AsrProvider, MediaAdapterEnv>;
+using OcrAdapterRegistry = AdapterRegistry<OcrProvider, MediaAdapterEnv>;
+AsrAdapterRegistry& asr_adapters();  // builtin: groq_whisper, google_speech
+OcrAdapterRegistry& ocr_adapters();  // builtin: ocr_space
 
 // Python ProviderManager.
 class MediaProviders {
@@ -146,6 +183,8 @@ class MediaProviders {
   // Re-reads the secrets (call after loom_set_secret). Python built the
   // provider list once in __init__.
   void refresh();
+  // Receives the "loom.model_use/1" record (no secrets) of every ASR / OCR call.
+  void set_provenance_sink(std::function<void(const Json&)> sink);
   // Platform/on-device providers (e.g. Android SpeechRecognizer) can be added.
   void add_asr_provider(std::shared_ptr<AsrProvider> p);
   void add_ocr_provider(std::shared_ptr<OcrProvider> p);
@@ -169,6 +208,7 @@ class MediaProviders {
   const Secrets& secrets_;
   net::HttpTransport& http_;
   Result<RuntimeProfile> profile_;
+  std::shared_ptr<MediaCallContext> call_;
   mutable std::mutex mu_;
   std::vector<std::shared_ptr<AsrProvider>> asr_;  // preference order
   std::vector<std::shared_ptr<OcrProvider>> ocr_;

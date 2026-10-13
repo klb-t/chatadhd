@@ -38,29 +38,6 @@ Status verify_object(const StorageBackend& b, std::string_view key, std::string_
   return {};
 }
 
-void BackendRegistry::add(KindDescriptor d) {
-  std::string k = d.kind;
-  kinds_[k] = std::move(d);
-}
-const KindDescriptor* BackendRegistry::find(std::string_view kind) const {
-  auto it = kinds_.find(kind);
-  return it == kinds_.end() ? nullptr : &it->second;
-}
-std::vector<std::string> BackendRegistry::kinds() const {
-  std::vector<std::string> out;
-  for (const auto& e : kinds_) out.push_back(e.first);
-  return out;
-}
-Result<std::unique_ptr<StorageBackend>> BackendRegistry::create(const std::string& id, const Json& cfg,
-                                                                const BackendEnv& env) const {
-  const std::string kind = json::get_string(cfg, "kind");
-  const KindDescriptor* d = find(kind);
-  if (!d) return Error(Errc::Unsupported, "unknown storage backend kind '" + kind + "' for " + id);
-  if (!d->factory)
-    return Error(Errc::NotImplemented, "storage backend kind '" + kind + "' is " + d->status + " (no adapter yet)");
-  return d->factory(id, cfg, env);
-}
-
 const BackendRegistry& BackendRegistry::builtin() {
   static const BackendRegistry r = [] {
     BackendRegistry x;

@@ -20,6 +20,8 @@
 // equal scores in corpus order), take top_k, stop at the first score <= 0.
 #pragma once
 
+#include "loom/adapter_registry.h"
+
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -89,7 +91,7 @@ class SearchTierRegistry {
  private:
   SearchTierRegistry();
   mutable std::mutex mu_;
-  std::vector<std::pair<std::string, SearchTierFactory>> entries_;
+  AdapterRegistry<SearchTierBackend, SearchTierContext> reg_{"tier", "search tier"};
 };
 
 class SelectorEngine {

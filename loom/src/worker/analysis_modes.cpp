@@ -44,10 +44,19 @@ class BatchMode final : public AnalysisMode {
 
 }  // namespace
 
+namespace {
+// An analysis mode factory as a registry factory (its context is the environment).
+AdapterDescriptor<AnalysisMode, AnalysisModeContext> mode_entry(std::string name, AnalysisModeFactory f) {
+  return {std::move(name), "implemented",
+          [f = std::move(f)](const std::string&, const Json&, const AnalysisModeContext& c)
+              -> Result<std::unique_ptr<AnalysisMode>> { return f(c); }};
+}
+}  // namespace
+
 AnalysisModeRegistry::AnalysisModeRegistry() {
-  entries_.emplace_back("regex", [](const AnalysisModeContext&) { return std::make_unique<RegexMode>(); });
-  entries_.emplace_back("llm", [](const AnalysisModeContext& c) { return std::make_unique<LlmMode>(c.llm); });
-  entries_.emplace_back("batch", [](const AnalysisModeContext&) { return std::make_unique<BatchMode>(); });
+  reg_.add(mode_entry("regex", [](const AnalysisModeContext&) { return std::make_unique<RegexMode>(); }));
+  reg_.add(mode_entry("llm", [](const AnalysisModeContext& c) { return std::make_unique<LlmMode>(c.llm); }));
+  reg_.add(mode_entry("batch", [](const AnalysisModeContext&) { return std::make_unique<BatchMode>(); }));
 }
 
 AnalysisModeRegistry& AnalysisModeRegistry::instance() {
@@ -57,32 +66,28 @@ AnalysisModeRegistry& AnalysisModeRegistry::instance() {
 
 void AnalysisModeRegistry::add(std::string name, AnalysisModeFactory factory) {
   std::lock_guard lk(mu_);
-  for (auto& e : entries_)
-    if (e.first == name) { e.second = std::move(factory); return; }
-  entries_.emplace_back(std::move(name), std::move(factory));
+  reg_.add(mode_entry(std::move(name), std::move(factory)));
 }
 
 void AnalysisModeRegistry::remove(std::string_view name) {
   std::lock_guard lk(mu_);
-  entries_.erase(std::remove_if(entries_.begin(), entries_.end(), [&](const auto& e) { return e.first == name; }),
-                 entries_.end());
+  reg_.remove(name);
 }
 
 std::unique_ptr<AnalysisMode> AnalysisModeRegistry::create(std::string_view name, const AnalysisModeContext& ctx) const {
-  AnalysisModeFactory f;
+  AdapterDescriptor<AnalysisMode, AnalysisModeContext>::Factory f;
   {
     std::lock_guard lk(mu_);
-    for (const auto& e : entries_)
-      if (e.first == name) { f = e.second; break; }
+    if (const auto* d = reg_.find(name)) f = d->factory;
   }
-  return f ? f(ctx) : nullptr;
+  if (!f) return nullptr;
+  auto made = f(std::string(name), Json::object(), ctx);
+  return made ? std::move(*made) : nullptr;
 }
 
 std::vector<std::string> AnalysisModeRegistry::names() const {
   std::lock_guard lk(mu_);
-  std::vector<std::string> out;
-  for (const auto& e : entries_) out.push_back(e.first);
-  return out;
+  return reg_.names();
 }
 
 std::vector<std::unique_ptr<AnalysisMode>> make_analysis_modes(const std::vector<std::string>& order,

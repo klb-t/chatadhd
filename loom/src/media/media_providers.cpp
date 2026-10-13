@@ -12,6 +12,7 @@
 #include "loom/net/http.h"
 #include "loom/util/base64.h"
 #include "loom/util/fs.h"
+#include "media/media_call.h"
 
 namespace loom {
 
@@ -86,15 +87,6 @@ net::Headers descriptor_headers(const Json& settings) {
   return out;
 }
 
-std::string http_error_message(const net::HttpResponse& resp, std::size_t max_chars) {
-  std::string msg = "HTTP " + std::to_string(resp.status);
-  if (!resp.body.empty()) {
-    msg += ": ";
-    msg += resp.body.substr(0, max_chars);
-  }
-  return msg;
-}
-
 }  // namespace
 
 // ── Result JSON ───────────────────────────────────────────────────────
@@ -114,8 +106,9 @@ Json OcrResult::to_json() const {
 // ── GroqAsr ──────────────────────────────────────────────────────────
 
 GroqAsr::GroqAsr(std::string api_key, net::HttpTransport& http, OptStr model,
-                   std::optional<RuntimeProfile> profile, std::string profile_id)
-    : key_(std::move(api_key)), http_(http), profile_(media_profile(profile)),
+                   std::optional<RuntimeProfile> profile, std::string profile_id,
+                   std::shared_ptr<MediaCallContext> call)
+    : key_(std::move(api_key)), http_(http), call_(std::move(call)), profile_(media_profile(profile)),
       profile_id_(selected_id(profile_, std::move(profile_id), "groq_whisper")) {
   if (model) model_ = *model;
   else if (profile_ && profile_->values().at("providers").contains(profile_id_))
@@ -131,27 +124,27 @@ Result<AsrResult> GroqAsr::transcribe_bytes(std::string_view audio, std::string_
   const std::string fmt = formats.contains(std::string(format)) ? formats.at(std::string(format)).get<std::string>()
                                                               : settings.at("default_format").get<std::string>();
 
-  std::vector<net::MultipartPart> parts;
-  parts.push_back({"file", "audio." + fmt, "audio/" + fmt, std::string(audio)});
-  parts.push_back({"model", "", "", model_});
-  parts.push_back({"response_format", "", "", settings.at("response_format").get<std::string>()});
-  if (language && !language->empty()) parts.push_back({"language", "", "", *language});
-  net::MultipartBody body = net::build_multipart(parts);
+  // The one model action: the adapter of the OpenAI transcription family builds the
+  // multipart body (file, model, then these parameters in order) and the auth header.
+  media_detail::WireCall call;
+  call.action = "media.asr";
+  call.manifest = "groq";
+  call.adapter = "openai_transcriptions";
+  call.endpoint = settings.at("endpoint").get<std::string>();
+  call.credential = key_;
+  call.headers = descriptor_headers(settings);
+  call.model = model_;
+  call.input.kind = "audio";
+  call.input.mime = "audio/" + fmt;
+  call.input.bytes = std::string(audio);
+  call.parameters = Json::object();
+  call.parameters["response_format"] = settings.at("response_format").get<std::string>();
+  if (language && !language->empty()) call.parameters["language"] = *language;
+  call.timeout_ms = settings.at("timeout_ms").get<int>();
 
-  net::HttpRequest req;
-  req.method = "POST";
-  req.url = settings.at("endpoint").get<std::string>();
-  req.headers = {{"Authorization", "Bearer " + key_}, {"Content-Type", body.content_type}};
-  for (const auto& h : descriptor_headers(settings)) req.headers.push_back(h);
-  req.body = std::move(body.body);
-  req.timeout_ms = settings.at("timeout_ms").get<int>();
-
-  auto resp = http_.send(req);
-  if (!resp) return Error(Errc::Network, "Groq ASR error: " + resp.error().message);
-  if (!resp->ok()) {
-    std::string msg = http_error_message(*resp, profile_->values().at("error_body_chars").get<std::size_t>());
-    return Error(Errc::Http, "Groq ASR error: " + msg);
-  }
+  auto resp = media_detail::send(http_, call_, call, "Groq ASR error",
+                                 profile_->values().at("error_body_chars").get<std::size_t>());
+  if (!resp) return resp.error();
   auto j = resp->json();
   if (!j) return Error(Errc::Parse, "Groq ASR: invalid JSON response");
 
@@ -183,8 +176,9 @@ Result<AsrResult> GroqAsr::transcribe(const fs::path& audio_path, const OptStr& 
 // ── GoogleSpeechAsr ──────────────────────────────────────────────────
 
 GoogleSpeechAsr::GoogleSpeechAsr(std::string api_key, net::HttpTransport& http,
-                                   std::optional<RuntimeProfile> profile, std::string profile_id)
-    : key_(std::move(api_key)), http_(http), profile_(media_profile(profile)),
+                                   std::optional<RuntimeProfile> profile, std::string profile_id,
+                                   std::shared_ptr<MediaCallContext> call)
+    : key_(std::move(api_key)), http_(http), call_(std::move(call)), profile_(media_profile(profile)),
       profile_id_(selected_id(profile_, std::move(profile_id), "google_speech")) {}
 
 std::string GoogleSpeechAsr::name() const { return descriptor_name(profile_, profile_id_); }
@@ -196,27 +190,28 @@ Result<AsrResult> GoogleSpeechAsr::transcribe_bytes(std::string_view audio, std:
   const std::string encoding = encodings.contains(std::string(format)) ? encodings.at(std::string(format)).get<std::string>()
                                                                     : settings.at("default_encoding").get<std::string>();
 
-  Json payload{{"config",
-               Json{{"encoding", encoding},
-                    {"languageCode", language && !language->empty() ? *language : settings.at("default_language").get<std::string>()},
-                    {"maxAlternatives", settings.at("max_alternatives")},
-                    {"enableWordConfidence", settings.at("word_confidence")},
-                    {"enableWordTimeOffsets", settings.at("word_time_offsets")}}},
-              {"audio", Json{{"content", base64::encode(audio)}}}};
+  media_detail::WireCall call;
+  call.action = "media.asr";
+  call.manifest = "google_speech";
+  call.adapter = "google_speech_v1";
+  call.endpoint = settings.at("endpoint").get<std::string>();
+  call.credential = key_;
+  call.headers = descriptor_headers(settings);
+  call.model = descriptor_name(profile_, profile_id_);
+  call.input.kind = "audio";
+  call.input.mime = "audio/" + std::string(format);
+  call.input.bytes = std::string(audio);
+  call.parameters = Json{{"config",
+                          Json{{"encoding", encoding},
+                               {"languageCode", language && !language->empty() ? *language : settings.at("default_language").get<std::string>()},
+                               {"maxAlternatives", settings.at("max_alternatives")},
+                               {"enableWordConfidence", settings.at("word_confidence")},
+                               {"enableWordTimeOffsets", settings.at("word_time_offsets")}}}};
+  call.timeout_ms = settings.at("timeout_ms").get<int>();
 
-  net::HttpRequest req;
-  req.method = "POST";
-  req.url = net::with_query(settings.at("endpoint").get<std::string>(), {{"key", key_}});
-  req.headers = descriptor_headers(settings);
-  req.body = json::dump(payload);
-  req.timeout_ms = settings.at("timeout_ms").get<int>();
-
-  auto resp = http_.send(req);
-  if (!resp) return Error(Errc::Network, "Google Speech error: " + resp.error().message);
-  if (!resp->ok()) {
-    std::string msg = http_error_message(*resp, profile_->values().at("error_body_chars").get<std::size_t>());
-    return Error(Errc::Http, "Google Speech error: " + msg);
-  }
+  auto resp = media_detail::send(http_, call_, call, "Google Speech error",
+                                 profile_->values().at("error_body_chars").get<std::size_t>());
+  if (!resp) return resp.error();
   auto j = resp->json();
   if (!j) return Error(Errc::Parse, "Google Speech: invalid JSON response");
 
@@ -249,8 +244,9 @@ Result<AsrResult> GoogleSpeechAsr::transcribe(const fs::path& audio_path, const 
 // ── OcrSpaceProvider ─────────────────────────────────────────────────
 
 OcrSpaceProvider::OcrSpaceProvider(std::string api_key, net::HttpTransport& http, std::optional<int> engine,
-                                     std::optional<RuntimeProfile> profile, std::string profile_id)
-    : key_(std::move(api_key)), http_(http), engine_(0), profile_(media_profile(profile)),
+                                     std::optional<RuntimeProfile> profile, std::string profile_id,
+                                     std::shared_ptr<MediaCallContext> call)
+    : key_(std::move(api_key)), http_(http), call_(std::move(call)), engine_(0), profile_(media_profile(profile)),
       profile_id_(selected_id(profile_, std::move(profile_id), "ocr_space")) {
   if (engine) engine_ = *engine;
   else if (profile_ && profile_->values().at("providers").contains(profile_id_))
@@ -266,29 +262,26 @@ Result<OcrResult> OcrSpaceProvider::recognize_bytes(std::string_view image, std:
   const std::string lang_code = language && languages.contains(*language) ? languages.at(*language).get<std::string>()
                                                                        : settings.at("default_language").get<std::string>();
 
-  std::string b64 = base64::encode(image);
-  std::vector<std::pair<std::string, std::string>> fields = {
-      {"apikey", key_},
-      {"base64Image", "data:image/" + std::string(format) + ";base64," + b64},
-      {"language", lang_code},
-      {"OCREngine", std::to_string(engine_)},
-      {"isTable", settings.at("is_table").get<std::string>()},
-      {"scale", settings.at("scale").get<std::string>()},
-  };
+  media_detail::WireCall call;
+  call.action = "media.ocr";
+  call.manifest = "ocr_space";
+  call.adapter = "ocr_space_form";
+  call.endpoint = settings.at("endpoint").get<std::string>();
+  call.credential = key_;
+  call.headers = descriptor_headers(settings);
+  call.model = descriptor_name(profile_, profile_id_);
+  call.input.kind = "image";
+  call.input.mime = "image/" + std::string(format);
+  call.input.bytes = std::string(image);
+  call.parameters = Json{{"language", lang_code},
+                         {"OCREngine", std::to_string(engine_)},
+                         {"isTable", settings.at("is_table").get<std::string>()},
+                         {"scale", settings.at("scale").get<std::string>()}};
+  call.timeout_ms = settings.at("timeout_ms").get<int>();
 
-  net::HttpRequest req;
-  req.method = "POST";
-  req.url = settings.at("endpoint").get<std::string>();
-  req.headers = descriptor_headers(settings);
-  req.body = net::form_urlencode(fields);
-  req.timeout_ms = settings.at("timeout_ms").get<int>();
-
-  auto resp = http_.send(req);
-  if (!resp) return Error(Errc::Network, "OCR.space request error: " + resp.error().message);
-  if (!resp->ok()) {
-    std::string msg = http_error_message(*resp, profile_->values().at("error_body_chars").get<std::size_t>());
-    return Error(Errc::Http, "OCR.space request error: " + msg);
-  }
+  auto resp = media_detail::send(http_, call_, call, "OCR.space request error",
+                                 profile_->values().at("error_body_chars").get<std::size_t>());
+  if (!resp) return resp.error();
   auto j = resp->json();
   if (!j) return Error(Errc::Parse, "OCR.space: invalid JSON response");
 
@@ -344,8 +337,50 @@ Result<OcrResult> OcrSpaceProvider::recognize(const fs::path& image_path, const 
 
 // ── MediaProviders ───────────────────────────────────────────────────
 
+// ── Adapter registries ───────────────────────────────────────────────
+
+AsrAdapterRegistry& asr_adapters() {
+  static AsrAdapterRegistry r = [] {
+    AsrAdapterRegistry x("adapter", "ASR adapter");
+    x.add({"groq_whisper", "implemented",
+           [](const std::string& id, const Json&, const MediaAdapterEnv& e) -> Result<std::unique_ptr<AsrProvider>> {
+             return std::unique_ptr<AsrProvider>(std::make_unique<GroqAsr>(e.key, *e.http, OptStr{}, *e.profile, id, e.call));
+           }});
+    x.add({"google_speech", "implemented",
+           [](const std::string& id, const Json&, const MediaAdapterEnv& e) -> Result<std::unique_ptr<AsrProvider>> {
+             return std::unique_ptr<AsrProvider>(std::make_unique<GoogleSpeechAsr>(e.key, *e.http, *e.profile, id, e.call));
+           }});
+    return x;
+  }();
+  return r;
+}
+
+OcrAdapterRegistry& ocr_adapters() {
+  static OcrAdapterRegistry r = [] {
+    OcrAdapterRegistry x("adapter", "OCR adapter");
+    x.add({"ocr_space", "implemented",
+           [](const std::string& id, const Json&, const MediaAdapterEnv& e) -> Result<std::unique_ptr<OcrProvider>> {
+             return std::unique_ptr<OcrProvider>(
+                 std::make_unique<OcrSpaceProvider>(e.key, *e.http, std::optional<int>{}, *e.profile, id, e.call));
+           }});
+    return x;
+  }();
+  return r;
+}
+
+// ── MediaProviders ───────────────────────────────────────────────────
+
 MediaProviders::MediaProviders(const Secrets& secrets, net::HttpTransport& http)
-    : secrets_(secrets), http_(http), profile_(RuntimeProfile::load("media", secrets.path().parent_path())) { refresh(); }
+    : secrets_(secrets), http_(http), profile_(RuntimeProfile::load("media", secrets.path().parent_path())),
+      call_(std::make_shared<MediaCallContext>()) {
+  call_->config_path = secrets.path().parent_path() / "config.json";
+  refresh();
+}
+
+void MediaProviders::set_provenance_sink(std::function<void(const Json&)> sink) {
+  std::lock_guard lk(call_->mu);
+  call_->on_provenance = std::move(sink);
+}
 
 Result<Json> MediaProviders::runtime_profile() const {
   std::lock_guard lk(mu_);
@@ -353,34 +388,45 @@ Result<Json> MediaProviders::runtime_profile() const {
   return profile_->inspection();
 }
 
+namespace {
+// One descriptor of an order list -> provider (nullptr: skipped, no key stored).
+template <class Port, class Registry>
+Result<std::shared_ptr<Port>> instantiate(const Registry& registry, const Json& providers, const std::string& id,
+                                          const char* what, const Secrets& secrets, MediaAdapterEnv env) {
+  if (!providers.contains(id)) return Error(Errc::InvalidArgument, std::string("unknown ") + what + " descriptor: " + id);
+  const auto& p = providers.at(id);
+  const std::string adapter = json::get_string(p, "adapter");
+  if (!registry.contains(adapter)) return Error(Errc::Unsupported, registry.unknown_message(adapter, id));
+  env.key = secrets.get_string(p.at("secret_key").get<std::string>());
+  if (env.key.empty()) return std::shared_ptr<Port>();
+  LOOM_TRY_ASSIGN(auto made, registry.create_named(adapter, id, p, env));
+  return std::shared_ptr<Port>(std::move(made));
+}
+}  // namespace
+
 void MediaProviders::refresh() {
   auto profile = RuntimeProfile::load("media", secrets_.path().parent_path());
   std::vector<std::shared_ptr<AsrProvider>> asr;
   std::vector<std::shared_ptr<OcrProvider>> ocr;
   if (profile) {
-    using AsrFactory = std::function<std::shared_ptr<AsrProvider>(std::string, const std::string&)>;
-    const std::map<std::string, AsrFactory> asr_factories{
-      {"groq_whisper", [&](std::string key, const std::string& id) { return std::make_shared<GroqAsr>(std::move(key), http_, OptStr{}, *profile, id); }},
-      {"google_speech", [&](std::string key, const std::string& id) { return std::make_shared<GoogleSpeechAsr>(std::move(key), http_, *profile, id); }}};
+    MediaAdapterEnv env;
+    env.http = &http_;
+    env.profile = &*profile;
+    env.call = call_;
     const auto& values = profile->values();
     const auto& providers = values.at("providers");
+    Status st = ok_status();
     for (const auto& item : values.at("asr_order")) {
-      const auto id = item.get<std::string>();
-      if (!providers.contains(id)) { profile = Error(Errc::InvalidArgument, "unknown ASR descriptor: " + id); break; }
-      const auto& p = providers.at(id);
-      auto factory = asr_factories.find(json::get_string(p, "adapter"));
-      if (factory == asr_factories.end()) { profile = Error(Errc::Unsupported, "unsupported ASR adapter: " + json::get_string(p, "adapter")); break; }
-      const auto key = secrets_.get_string(p.at("secret_key").get<std::string>());
-      if (!key.empty()) asr.push_back(factory->second(key, id));
+      auto made = instantiate<AsrProvider>(asr_adapters(), providers, item.get<std::string>(), "ASR", secrets_, env);
+      if (!made) { st = made.error(); break; }
+      if (*made) asr.push_back(*made);
     }
-    if (profile) for (const auto& item : values.at("ocr_order")) {
-      const auto id = item.get<std::string>();
-      if (!providers.contains(id)) { profile = Error(Errc::InvalidArgument, "unknown OCR descriptor: " + id); break; }
-      const auto& p = providers.at(id);
-      if (json::get_string(p, "adapter") != "ocr_space") { profile = Error(Errc::Unsupported, "unsupported OCR adapter: " + json::get_string(p, "adapter")); break; }
-      const auto key = secrets_.get_string(p.at("secret_key").get<std::string>());
-      if (!key.empty()) ocr.push_back(std::make_shared<OcrSpaceProvider>(key, http_, std::optional<int>{}, *profile, id));
+    if (st) for (const auto& item : values.at("ocr_order")) {
+      auto made = instantiate<OcrProvider>(ocr_adapters(), providers, item.get<std::string>(), "OCR", secrets_, env);
+      if (!made) { st = made.error(); break; }
+      if (*made) ocr.push_back(*made);
     }
+    if (!st) profile = st.error();
   }
   if (!profile) { asr.clear(); ocr.clear(); }
   std::lock_guard lk(mu_);

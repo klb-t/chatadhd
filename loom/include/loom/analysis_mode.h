@@ -10,6 +10,8 @@
 // semantic_analysis, the batch secret) still decide availability.
 #pragma once
 
+#include "loom/adapter_registry.h"
+
 #include <functional>
 #include <memory>
 #include <mutex>
@@ -73,7 +75,7 @@ class AnalysisModeRegistry {
  private:
   AnalysisModeRegistry();
   mutable std::mutex mu_;
-  std::vector<std::pair<std::string, AnalysisModeFactory>> entries_;
+  AdapterRegistry<AnalysisMode, AnalysisModeContext> reg_{"mode", "analysis mode"};
 };
 
 // Instantiates `order` (unknown names are reported through `unknown`, not dropped silently).
