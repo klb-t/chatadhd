@@ -2,6 +2,10 @@
 # ChatADHD / Loom: instalator na VM Debian/Ubuntu. Idempotentny.
 # Kod:  <prefix>/<wersja>  + symlink <prefix>/current   (upgrade = nowy katalog, rollback = przelacz symlink)
 # Dane: <data-dir> (domyslnie /var/lib/chatadhd) - instalator ich nie kasuje ani nie nadpisuje.
+# Trzy sposoby uzycia:
+#   install.sh [opcje]                   buduje ze zrodel i instaluje (domyslnie)
+#   install.sh --package KATALOG         tylko buduje archiwum .tar.gz (bez root, bez instalacji) - robi to workflow "Package"
+#   install.sh --from-tarball PLIK.tar.gz  instaluje gotowe archiwum (bez kompilatora i node na VM)
 set -euo pipefail
 
 SRC="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -15,6 +19,8 @@ REGISTRATION="${CHATADHD_REGISTRATION:-}"      # closed|invite|open; puste = nie
 SERVICE_USER="${CHATADHD_USER:-chatadhd}"
 CMAKE_EXTRA="${CHATADHD_CMAKE_ARGS:-}"
 DO_DEPS=1 DO_BUILD=1 DO_SYSTEMD=1 DO_CADDY=1 SWITCH=1
+PACKAGE_DIR=""    # --package: tylko zbuduj archiwum do tego katalogu
+FROM_TARBALL=""   # --from-tarball: zainstaluj gotowe archiwum zamiast budowac
 
 usage() {
   cat <<USAGE
@@ -28,6 +34,9 @@ Uzycie: sudo deploy/install.sh [opcje]
   --registration TRYB  closed | invite | open (zapis do <data-dir>/profiles)
   --user NAZWA         uzytkownik systemowy uslugi (domyslnie $SERVICE_USER)
   --no-deps  --no-build  --no-systemd  --no-caddy  --no-switch
+  --package KATALOG    tylko zbuduj archiwum chatadhd-server-linux-x64-<wersja>.tar.gz (+ .sha256) w KATALOGU; nic nie instaluje
+  --from-tarball PLIK  zainstaluj gotowe archiwum (z --package lub z GitHub Actions); bez kompilatora i node.
+                       Archiwum z Actions jest budowane na Ubuntu 24.04: potrzebuje glibc >= 2.38 (Ubuntu 24.04+, Debian 13+)
   --rollback WERSJA    tylko przelacz current na istniejaca wersje i zrestartuj
 Srodowisko: CHATADHD_{PREFIX,DATA_DIR,DOMAIN,PORT,VERSION,ADMIN_LOGIN,REGISTRATION,USER,CMAKE_ARGS}
 USAGE
@@ -51,6 +60,8 @@ while [ $# -gt 0 ]; do
     --no-systemd) DO_SYSTEMD=0; shift;;
     --no-caddy) DO_CADDY=0; shift;;
     --no-switch) SWITCH=0; shift;;
+    --package) need "$@"; PACKAGE_DIR="$2"; shift 2;;
+    --from-tarball) need "$@"; FROM_TARBALL="$2"; shift 2;;
     -h|--help) usage; exit 0;;
     *) echo "nieznana opcja: $1" >&2; usage >&2; exit 2;;
   esac
@@ -60,6 +71,16 @@ log() { printf '==> %s\n' "$*" >&2; }
 die() { printf 'BLAD: %s\n' "$*" >&2; exit 1; }
 case "$REGISTRATION" in ""|closed|invite|open) ;; *) die "--registration: closed|invite|open";; esac
 case "$PORT" in ''|*[!0-9]*) die "--port musi byc liczba";; esac
+[ -z "$PACKAGE_DIR" ] || [ -z "$FROM_TARBALL" ] || die "--package i --from-tarball wykluczaja sie"
+if [ -n "$PACKAGE_DIR" ]; then
+  # tylko budowa: bez systemd/Caddy, bez przelaczania, zawsze buduje
+  DO_SYSTEMD=0; DO_CADDY=0; SWITCH=0; DO_BUILD=1
+  [ -z "$REGISTRATION$ADMIN_LOGIN" ] || die "--package nie instaluje: --registration/--admin-login nie maja sensu"
+fi
+if [ -n "$FROM_TARBALL" ]; then
+  [ -f "$FROM_TARBALL" ] || die "brak pliku $FROM_TARBALL"
+  DO_BUILD=0
+fi
 
 SUDO=""
 if [ "$(id -u)" -ne 0 ]; then
@@ -81,6 +102,11 @@ if [ -n "$ROLLBACK" ]; then
   exit 0
 fi
 
+if [ -z "$VERSION" ] && [ -n "$FROM_TARBALL" ]; then
+  # wersja z samego archiwum (plik VERSION zapisany przez --package)
+  VERSION="$(tar -xzOf "$FROM_TARBALL" --wildcards '*/VERSION' 2>/dev/null | head -1 | tr -d '[:space:]' || true)"
+  [ -n "$VERSION" ] || die "archiwum nie ma pliku VERSION; podaj --version"
+fi
 if [ -z "$VERSION" ]; then
   VERSION="$(git -C "$SRC" describe --tags --always --dirty 2>/dev/null || date +%Y%m%d-%H%M%S)"
 fi
@@ -93,8 +119,13 @@ if [ "$DO_DEPS" = 1 ]; then
   log "instalacja zaleznosci (apt)"
   export DEBIAN_FRONTEND=noninteractive
   $SUDO apt-get update -y
-  $SUDO apt-get install -y --no-install-recommends build-essential cmake ninja-build libssl-dev \
-    ca-certificates curl git nodejs npm
+  if [ -n "$FROM_TARBALL" ]; then
+    # gotowe archiwum: tylko to, czego potrzebuje dzialajacy serwer (biblioteki sprawdzamy po rozpakowaniu)
+    $SUDO apt-get install -y --no-install-recommends ca-certificates curl
+  else
+    $SUDO apt-get install -y --no-install-recommends build-essential cmake ninja-build libssl-dev \
+      ca-certificates curl git nodejs npm
+  fi
   if [ "$DO_CADDY" = 1 ] && ! command -v caddy >/dev/null; then
     $SUDO apt-get install -y --no-install-recommends caddy \
       || die "pakiet caddy niedostepny; zainstaluj Caddy recznie albo uzyj --no-caddy"
@@ -103,7 +134,8 @@ fi
 for t in cmake g++ npm; do [ "$DO_BUILD" = 0 ] || command -v "$t" >/dev/null || die "brak: $t"; done
 
 # --- build ------------------------------------------------------------------
-if [ "$DO_BUILD" = 1 ]; then
+# Ustawia BIN_SRC i WEB_SRC (w $TMP). Ten sam kod buduje instalacje i archiwum (--package).
+build_all() {
   TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
   log "build serwera (preset release) -> $TMP/build"
   # shellcheck disable=SC2086
@@ -116,11 +148,75 @@ if [ "$DO_BUILD" = 1 ]; then
   mkdir -p "$TMP/w/web"; cp -a "$SRC/loom/web/." "$TMP/w/web/"; cp -a "$SRC/loom/data" "$TMP/w/data"
   rm -rf "$TMP/w/web/dist" "$TMP/w/web/node_modules"
   (cd "$TMP/w/web" && npm ci --no-audit --no-fund && npm run build)
+  BIN_SRC="$TMP/build/server/loom-server"
+  [ -x "$BIN_SRC" ] || BIN_SRC="$(find "$TMP/build" -name loom-server -type f | head -1)"
+  [ -n "$BIN_SRC" ] && [ -x "$BIN_SRC" ] || die "nie znaleziono zbudowanego loom-server"
+  WEB_SRC="$TMP/w/web/dist"
+  [ -f "$WEB_SRC/index.html" ] || die "web nie zbudowal sie ($WEB_SRC/index.html)"
+}
+
+# Archiwum: <nazwa>/{bin/loom-server, web/, VERSION, BUILD_INFO}. Rozpakowane w $DEST daje dokladnie to,
+# co instalacja ze zrodel (bin/loom-server + web), wiec --from-tarball tylko je rozpakowuje.
+make_package() {
+  local name="chatadhd-server-linux-x64-$VERSION" out stage
+  mkdir -p "$PACKAGE_DIR"; out="$(cd "$PACKAGE_DIR" && pwd)"
+  stage="$TMP/stage/$name"
+  mkdir -p "$stage/bin"
+  install -m 0755 "$BIN_SRC" "$stage/bin/loom-server"
+  cp -a "$WEB_SRC" "$stage/web"
+  printf '%s\n' "$VERSION" > "$stage/VERSION"
+  {
+    echo "version: $VERSION"
+    echo "built: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    echo "commit: $(git -C "$SRC" rev-parse HEAD 2>/dev/null || echo unknown)"
+    echo "machine: $(uname -m)"
+    echo "glibc: $(ldd --version 2>&1 | head -1)"
+    echo "cmake preset: release"
+  } > "$stage/BUILD_INFO"
+  ( cd "$TMP/stage" && tar --sort=name --owner=0 --group=0 --numeric-owner -czf "$out/$name.tar.gz" "$name" )
+  ( cd "$out" && sha256sum "$name.tar.gz" > "$name.tar.gz.sha256" )
+  log "archiwum: $out/$name.tar.gz"
+  cat "$out/$name.tar.gz.sha256" >&2
+}
+
+# Rozpakowanie gotowego archiwum do $DEST (sprawdza sume kontrolna, jesli obok jest .sha256).
+unpack_tarball() {
+  local tb sum listing
+  tb="$(cd "$(dirname "$FROM_TARBALL")" && pwd)/$(basename "$FROM_TARBALL")"
+  if [ -f "$tb.sha256" ]; then
+    log "suma kontrolna: $tb.sha256"
+    (cd "$(dirname "$tb")" && sha256sum -c "$(basename "$tb").sha256") >&2 || die "suma kontrolna archiwum sie nie zgadza"
+  else
+    log "brak $tb.sha256 - pomijam sprawdzenie sumy kontrolnej"
+  fi
+  # lista do zmiennej: "grep -q" w potoku z tar konczy sie SIGPIPE, a przy pipefail to wygladaloby na blad
+  listing="$(tar -tzf "$tb")" || die "nie mozna odczytac archiwum $tb"
+  grep -qE '^[^/]+/bin/loom-server$' <<<"$listing" || die "to nie jest archiwum serwera ChatADHD (brak bin/loom-server)"
+  grep -qE '^[^/]+/web/index.html$' <<<"$listing" || die "to nie jest archiwum serwera ChatADHD (brak web/index.html)"
+  log "rozpakowanie do $DEST"
+  $SUDO rm -rf "$DEST/bin" "$DEST/web"
+  $SUDO mkdir -p "$DEST"
+  $SUDO tar -xzf "$tb" -C "$DEST" --strip-components=1 --no-same-owner
+  [ -x "$DEST/bin/loom-server" ] || die "po rozpakowaniu brak $DEST/bin/loom-server"
+  # biblioteki dynamiczne (np. libssl3) i wersja glibc: lepiej wiedziec teraz niz po restarcie uslugi
+  sum="$(ldd "$DEST/bin/loom-server" 2>&1 | grep -i 'not found' || true)"
+  [ -z "$sum" ] || die "serwer nie uruchomi sie na tej maszynie:
+$sum
+(brakujace biblioteki doinstaluj przez apt, np. libssl3; 'GLIBC_x.y not found' = za stary system: potrzebny Ubuntu 24.04+/Debian 13+ albo budowa ze zrodel bez --from-tarball)"
+}
+
+if [ -n "$PACKAGE_DIR" ]; then
+  build_all
+  make_package
+  exit 0
+elif [ "$DO_BUILD" = 1 ]; then
+  build_all
   log "instalacja do $DEST"
   $SUDO mkdir -p "$DEST/bin"
-  $SUDO install -m 0755 "$TMP/build/server/loom-server" "$DEST/bin/loom-server" 2>/dev/null \
-    || $SUDO install -m 0755 "$(find "$TMP/build" -name loom-server -type f | head -1)" "$DEST/bin/loom-server"
-  $SUDO rm -rf "$DEST/web"; $SUDO cp -a "$TMP/w/web/dist" "$DEST/web"
+  $SUDO install -m 0755 "$BIN_SRC" "$DEST/bin/loom-server"
+  $SUDO rm -rf "$DEST/web"; $SUDO cp -a "$WEB_SRC" "$DEST/web"
+elif [ -n "$FROM_TARBALL" ]; then
+  unpack_tarball
 else
   [ -x "$DEST/bin/loom-server" ] || die "--no-build, a $DEST/bin/loom-server nie istnieje"
 fi

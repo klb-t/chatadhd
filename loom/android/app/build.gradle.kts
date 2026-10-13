@@ -5,6 +5,23 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// ── Packaging knobs (CI: .github/workflows/package.yml) ────────────────
+// All optional; without them the build is exactly what it was before.
+//   -Ploom.versionCode=N     monotonically increasing, so a phone accepts the APK as an update
+//   -Ploom.versionName=X     shown in the system app settings
+//   -Ploom.abis=a,b          ABIs to build (default arm64-v8a,x86_64; phones need only arm64-v8a)
+//   -Ploom.ccache=true       use ccache as the C/C++ compiler launcher (the native build dominates the time)
+//   -Ploom.nativeBuildType=T CMake build type of the native core (Release/RelWithDebInfo/Debug/MinSizeRel);
+//                            default: what Gradle picks for the variant (Debug for assembleDebug, which
+//                            makes the core slow on a phone - the package workflow asks for Release)
+val loomVersionCode = providers.gradleProperty("loom.versionCode").map { it.trim().toInt() }.orElse(1)
+val loomVersionName = providers.gradleProperty("loom.versionName").map { it.trim() }.orElse("0.1.0")
+val loomAbis = providers.gradleProperty("loom.abis")
+    .map { v -> v.split(",").map { it.trim() }.filter { it.isNotEmpty() } }
+    .orElse(listOf("arm64-v8a", "x86_64"))
+val loomCcache = providers.gradleProperty("loom.ccache").map { it.trim() == "true" }.orElse(false)
+val loomNativeBuildType = providers.gradleProperty("loom.nativeBuildType").map { it.trim() }.orElse("")
+
 android {
     namespace = "com.chatadhd.android"
     compileSdk = 34
@@ -14,12 +31,12 @@ android {
         applicationId = "com.chatadhd.android"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = loomVersionCode.get()
+        versionName = loomVersionName.get()
 
         ndk {
             // Matches loom/CMakeLists.txt's target platforms for this shell.
-            abiFilters += listOf("arm64-v8a", "x86_64")
+            abiFilters += loomAbis.get()
         }
 
         externalNativeBuild {
@@ -27,6 +44,13 @@ android {
                 // HTTP is injected from Kotlin (LoomHttp.kt), so the core is
                 // built with OpenSSL off; see app/src/main/cpp/CMakeLists.txt.
                 arguments += listOf("-DANDROID_STL=c++_shared")
+                if (loomNativeBuildType.get().isNotEmpty()) {
+                    // user arguments come after the ones the plugin adds, so this wins over the variant's default
+                    arguments += listOf("-DCMAKE_BUILD_TYPE=${loomNativeBuildType.get()}")
+                }
+                if (loomCcache.get()) {
+                    arguments += listOf("-DCMAKE_C_COMPILER_LAUNCHER=ccache", "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache")
+                }
             }
         }
     }

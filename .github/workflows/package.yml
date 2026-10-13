@@ -1,0 +1,318 @@
+name: Package (Android APK + server)
+
+# Manual only. The owner pays for Actions minutes, so nothing here runs on push or pull_request.
+# Run it from the Actions tab (or `gh workflow run package.yml --ref <branch>`), then download the
+# artifacts from the run page:
+#   chatadhd-android-apk         app-debug.apk  - install on a phone (debug-signed, see loom/android/README.md)
+#   chatadhd-server-linux-x64    chatadhd-server-linux-x64-<version>.tar.gz (+ .sha256)
+#                                - `sudo deploy/install.sh --from-tarball <file> --domain ...` (see deploy/README.md)
+on:
+  workflow_dispatch:
+    inputs:
+      android:
+        description: "Build the Android APK"
+        type: boolean
+        default: true
+      server:
+        description: "Build the server + web archive for deploy/install.sh --from-tarball"
+        type: boolean
+        default: true
+      abis:
+        description: "Android ABIs, comma separated. arm64-v8a = phones. Add x86_64 for emulators (doubles the native build time)."
+        type: string
+        default: "arm64-v8a"
+      native_build_type:
+        description: "CMake build type of the native core inside the APK. Release = fast on the phone, longer build; Debug = quick build, slow app."
+        type: choice
+        options: [ Release, RelWithDebInfo, Debug ]
+        default: Release
+      cmake_version:
+        description: "Android SDK CMake package, e.g. 3.31.5. Empty = the newest 3.x the SDK offers (the project needs >= 3.24)."
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android APK (debug-signed)
+    if: ${{ inputs.android }}
+    runs-on: ubuntu-24.04
+    # Cold native build of the whole kernel on a 2-core runner is slow; a warm ccache cuts it a lot.
+    timeout-minutes: 120
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_MAXSIZE: 1G
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Read the toolchain versions the Gradle project asks for
+        # One source of truth: app/build.gradle.kts. No copy here that could drift.
+        run: |
+          set -euo pipefail
+          g=loom/android/app/build.gradle.kts
+          ndk="$(sed -n 's/^[[:space:]]*ndkVersion = "\([^"]*\)".*/\1/p' "$g")"
+          sdk="$(sed -n 's/^[[:space:]]*compileSdk = \([0-9][0-9]*\).*/\1/p' "$g")"
+          if [ -z "$ndk" ] || [ -z "$sdk" ]; then
+            echo "::error::cannot read ndkVersion / compileSdk from $g"; exit 1
+          fi
+          {
+            echo "NDK_VERSION=$ndk"
+            echo "ANDROID_PLATFORM=$sdk"
+            echo "CCACHE_COMPILERCHECK=string:ndk-$ndk"
+          } >> "$GITHUB_ENV"
+          echo "ndkVersion=$ndk compileSdk=$sdk"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: loom/web/package-lock.json
+
+      # The APK embeds loom/web/dist: the Gradle task copyWebAssets syncs it into
+      # app/src/main/assets/web (and only warns when it is missing, so check here).
+      - name: Build the web bundle the app embeds
+        working-directory: loom/web
+        run: |
+          set -euo pipefail
+          node --version; npm --version
+          npm ci --no-audit --no-fund
+          npm run build
+          test -s dist/index.html || { echo "::error::loom/web/dist/index.html missing after the build"; exit 1; }
+          ls dist/assets/*.js >/dev/null || { echo "::error::no JS bundle in loom/web/dist/assets"; exit 1; }
+          du -sh dist
+
+      - name: Set up the Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK platform, build-tools, NDK and CMake
+        env:
+          CMAKE_VERSION: ${{ inputs.cmake_version }}
+        run: |
+          set -euo pipefail
+          sdkmanager --version
+          if [ -n "$CMAKE_VERSION" ]; then
+            cm="cmake;$CMAKE_VERSION"
+          else
+            # newest 3.x offered by the SDK (loom/CMakeLists.txt needs >= 3.24)
+            cm="$(sdkmanager --list 2>/dev/null | awk -F'|' '{ gsub(/ /, "", $1) } $1 ~ /^cmake;3\.[0-9.]+$/ { print $1 }' | sort -uV | tail -1)"
+          fi
+          if [ -z "$cm" ]; then echo "::error::no cmake;3.x package offered by sdkmanager"; exit 1; fi
+          echo "installing: platforms;android-$ANDROID_PLATFORM build-tools;34.0.0 ndk;$NDK_VERSION $cm"
+          # process substitution, not `yes |`: with pipefail the SIGPIPE to `yes` would fail the step
+          sdkmanager --licenses >/dev/null < <(yes)
+          sdkmanager --install "platforms;android-$ANDROID_PLATFORM" "build-tools;34.0.0" "ndk;$NDK_VERSION" "$cm" >/dev/null
+          sdkmanager --list_installed
+          echo "ANDROID_HOME=$ANDROID_HOME"
+
+      # Every GitHub runner is a fresh machine and Gradle would generate a NEW debug key on each one.
+      # Android refuses to update an installed app signed with a different key, and uninstalling deletes
+      # the app-private data. So the key is pinned: from a secret if there is one, else from the cache.
+      - name: Debug signing key from the ANDROID_DEBUG_KEYSTORE_B64 secret (optional)
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_B64 }}
+        run: |
+          set -euo pipefail
+          if [ -n "$KEYSTORE_B64" ]; then
+            mkdir -p ~/.android
+            printf '%s' "$KEYSTORE_B64" | base64 -d > ~/.android/debug.keystore
+            echo "SIGNING_KEY_SOURCE=secret" >> "$GITHUB_ENV"
+            echo "debug keystore restored from the secret"
+          else
+            echo "SIGNING_KEY_SOURCE=cache" >> "$GITHUB_ENV"
+            echo "no ANDROID_DEBUG_KEYSTORE_B64 secret: the key is kept in the Actions cache"
+          fi
+
+      - name: Debug signing key from the cache
+        id: keycache
+        if: ${{ env.SIGNING_KEY_SOURCE == 'cache' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: android-debug-keystore-v1
+
+      - name: Warn when the signing key is new
+        if: ${{ env.SIGNING_KEY_SOURCE == 'cache' && steps.keycache.outputs.cache-hit != 'true' }}
+        run: |
+          echo "::warning title=New APK signing key::No cached debug key: this APK is signed with a NEW key. An earlier build cannot be updated in place; uninstalling it deletes the app's private data (export or move it to shared storage first). Add the ANDROID_DEBUG_KEYSTORE_B64 secret to pin the key for good (loom/android/README.md)."
+
+      - name: Install ccache
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ccache
+          ccache --version | head -1
+
+      - name: ccache
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-android-${{ github.sha }}
+          restore-keys: ccache-android-
+
+      - name: Zero ccache statistics
+        run: ccache -z
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build the APK
+        working-directory: loom/android
+        env:
+          ABIS: ${{ inputs.abis }}
+          NATIVE_BUILD_TYPE: ${{ inputs.native_build_type }}
+        run: |
+          set -euo pipefail
+          version_name="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          echo "VERSION_NAME=$version_name" >> "$GITHUB_ENV"
+          java -version
+          ./gradlew --version
+          # versionCode = run number: increases with every run, so a phone accepts the next APK as an update
+          ./gradlew assembleDebug --stacktrace \
+            -Ploom.versionCode="$GITHUB_RUN_NUMBER" \
+            -Ploom.versionName="$version_name" \
+            -Ploom.abis="$ABIS" \
+            -Ploom.nativeBuildType="$NATIVE_BUILD_TYPE" \
+            -Ploom.ccache=true
+
+      - name: ccache statistics
+        if: always()
+        run: ccache -s || true
+
+      - name: Check the APK
+        run: |
+          set -euo pipefail
+          apk=loom/android/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$apk" || { echo "::error::$apk was not produced"; exit 1; }
+          bt="$ANDROID_HOME/build-tools/34.0.0"
+          unzip -l "$apk" > apk.lst
+          for abi in ${ABIS//,/ }; do
+            grep -q " lib/$abi/libloom_jni\.so$" apk.lst || { echo "::error::libloom_jni.so for $abi is missing in the APK"; exit 1; }
+          done
+          # the placeholder assets/web/index.html alone would mean copyWebAssets found nothing to copy
+          grep -qE ' assets/web/assets/.+\.js$' apk.lst || { echo "::error::the real web bundle is not in the APK (only the placeholder page)"; exit 1; }
+          "$bt/aapt2" dump badging "$apk" | grep -E "^package:|^sdkVersion|^targetSdkVersion|^native-code"
+          "$bt/apksigner" verify --print-certs "$apk" | tee certs.txt
+          sha256sum "$apk" | tee "$apk.sha256"
+          {
+            echo "### Android APK"
+            echo ""
+            echo "- file: \`app-debug.apk\` ($(du -h "$apk" | cut -f1)), versionName \`$VERSION_NAME\`, ABIs \`$ABIS\`, native build \`$NATIVE_BUILD_TYPE\`"
+            echo "- signing key source: \`$SIGNING_KEY_SOURCE\`"
+            echo "- $(grep -m1 'SHA-256 digest' certs.txt || echo 'certificate digest: see log')"
+            echo "- sha256: \`$(cut -d' ' -f1 "$apk.sha256")\`"
+            echo ""
+            echo "Download the artifact \`chatadhd-android-apk\`, unzip it on the phone and open the .apk"
+            echo "(allow installing from this source when Android asks). New installs keep their data in the app's private storage."
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          ABIS: ${{ inputs.abis }}
+          NATIVE_BUILD_TYPE: ${{ inputs.native_build_type }}
+
+      - name: Upload the APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatadhd-android-apk
+          path: |
+            loom/android/app/build/outputs/apk/debug/app-debug.apk
+            loom/android/app/build/outputs/apk/debug/app-debug.apk.sha256
+          if-no-files-found: error
+
+  server:
+    name: Server + web archive (linux x64)
+    if: ${{ inputs.server }}
+    # Ubuntu 24.04 (glibc 2.39), the same image the Loom workflow builds on. The archive therefore
+    # needs a target with glibc >= 2.38: Ubuntu 24.04+ / Debian 13+. install.sh --from-tarball checks.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_MAXSIZE: 1G
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ninja-build ccache libssl-dev
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: loom/web/package-lock.json
+
+      - name: ccache
+        uses: actions/cache@v4
+        with:
+          path: .ccache
+          key: ccache-server-${{ github.sha }}
+          restore-keys: ccache-server-
+
+      - name: Toolchain versions
+        run: |
+          ccache -z
+          cmake --version | head -1
+          g++ --version | head -1
+          ninja --version
+          node --version
+          npm --version
+          openssl version
+          ldd --version | head -1
+
+      # The same build deploy/install.sh does on a VM (release preset, server + web), but into an archive.
+      - name: Build the archive
+        env:
+          CHATADHD_CMAKE_ARGS: -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        run: |
+          set -euo pipefail
+          version="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          echo "PACKAGE_VERSION=$version" >> "$GITHUB_ENV"
+          bash deploy/install.sh --package "$GITHUB_WORKSPACE/dist-server" --version "$version" --no-deps
+
+      - name: ccache statistics
+        if: always()
+        run: ccache -s || true
+
+      # Start the server FROM the archive and ask it three questions (healthz, web page, auth).
+      - name: Verify the archive
+        run: |
+          set -euo pipefail
+          ls -l dist-server
+          bash deploy/verify-package.sh "dist-server/chatadhd-server-linux-x64-${PACKAGE_VERSION}.tar.gz"
+          {
+            echo "### Server archive"
+            echo ""
+            echo "- \`chatadhd-server-linux-x64-${PACKAGE_VERSION}.tar.gz\` ($(du -h dist-server/*.tar.gz | cut -f1))"
+            echo "- sha256: \`$(cut -d' ' -f1 dist-server/*.sha256)\`"
+            echo ""
+            echo "On the VM: \`sudo deploy/install.sh --from-tarball chatadhd-server-linux-x64-${PACKAGE_VERSION}.tar.gz --domain ... --admin-login ...\`"
+            echo "(needs Ubuntu 24.04+ / Debian 13+; older systems: build from source with \`deploy/install.sh\` without --from-tarball)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatadhd-server-linux-x64
+          path: dist-server/
+          if-no-files-found: error
