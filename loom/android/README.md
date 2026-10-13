@@ -23,12 +23,19 @@ loom/android/
         LoomNative.kt           external fun declarations onto libloom_jni.so
         LoomCallbacks.kt        native -> JS chunk/event delivery
         LoomHttp.kt             HttpURLConnection platform HTTP transport
+        ConnectionActivity.kt   local / server-account chooser (P3)
+        StorageActivity.kt      data location setting, move with verification, delete old copy (F2)
+        DataLocation.kt         the setting (SharedPreferences "storage") + actions on it
+        SecretsVault.kt         Android Keystore AES key for sealing secrets.json
+        ConnectionPolicy.java, DataLocationPolicy.java, DataMigration.java,
+        SecretsEnvelope.java, SecretsVaultCore.java
+                                pure Java rules (no android.* imports) with host tests in verify/
       cpp/
         CMakeLists.txt          add_subdirectory(loom core), builds loom_jni.so
         loom_jni.cpp            the JNI glue (see its own file header)
       assets/web/               `copyWebAssets` Gradle task syncs loom/web/dist here
       res/                      minimal theme/icon (vector, no binary assets)
-  verify/                       host-only JNI smoke test, no Android SDK needed
+  verify/                       host-only JNI smoke test + rule tests, no Android SDK needed
 ```
 
 ## The bridge contract
@@ -177,8 +184,9 @@ the calling background-executor thread).
   within that virtual origin — `shouldOverrideUrlLoading` hands any other
   host to the system browser instead of navigating the WebView there — so
   the interface is never exposed to a third-party page.
-* `mixedContentMode = MIXED_CONTENT_NEVER_ALLOW`, `usesCleartextTraffic =
-  false` in the manifest.
+* `mixedContentMode = MIXED_CONTENT_NEVER_ALLOW`. The manifest allows cleartext
+  traffic only so the explicit "plain HTTP for a LAN server" option can work;
+  `ConnectionPolicy` is the gate (see "Connection mode" below).
 
 ## HTTP: injected from Kotlin, not linked into the native library
 
@@ -209,22 +217,91 @@ linked OpenSSL for crypto aren't mutually exclusive) plus bundling
 `libcrypto.so`/`libssl.so` for both ABIs, which nobody has sized or tested
 here.
 
-## Data directory & permissions
+## Data directory (F2: the location is a setting)
 
-The shared data directory
-(`/storage/emulated/0/Documents/ChatADHD`, `engine/paths.py` /
-`loom/include/loom/config.h`) is outside app-specific storage on purpose —
-it must survive an uninstall/reinstall and stay readable by the desktop
-app. From API 30 that needs the "All files access" special permission
-(`MANAGE_EXTERNAL_STORAGE`); `MainActivity.ensureStoragePermissionThenLoad()`
-checks `Environment.isExternalStorageManager()` and, if needed, shows a
-`Snackbar` that opens the system settings screen for it before loading the
-web UI. Below API 30 the manifest declares legacy `READ/WRITE_EXTERNAL_STORAGE`
-permissions (`android:maxSdkVersion` capped) and `requestLegacyExternalStorage="true"`;
-the runtime permission request remains a gap listed below. `MainActivity.loadApp()`
-calls `LoomBridge.init(null,null)` before loading the React page, so its initial
-backend queries have a context. The public `init(dataDir, optionsJson)` remains
-available for explicit native clients.
+Where the data lives is a **setting**, kept per device in SharedPreferences
+`storage` (not inside the data directory it describes). `StorageActivity`
+(reached from the gear > "Data location...") changes it; nothing is moved or
+deleted without pressing a button there.
+
+| kind | path | other apps | uninstall |
+|---|---|---|---|
+| `private` (default for new installs) | `Context.getFilesDir()/ChatADHD` | cannot read it (system sandbox) | data removed |
+| `app_external` | `getExternalFilesDir()/ChatADHD` (`Android/data/...`) | not readable on Android 11+; Android 10 and older: apps with storage access may | data removed |
+| `shared` | `/storage/emulated/0/Documents/ChatADHD` | every app with "All files access" can read it, `secrets.json` included | **survives**; other tools (sync clients, the desktop app) can use it |
+| `custom` | any absolute path the user types | depends on the path | depends |
+
+* **New installs** use `private` and are never asked for "All files access".
+* **Existing installs** whose data already lives in `Documents/ChatADHD`
+  (detected by the `.chatadhd_data` sentinel) **stay there**: nothing is moved
+  on upgrade. A red banner over the web UI says the data is readable by other
+  apps; tapping it opens `StorageActivity`, which has the button
+  **"Przenieś do prywatnego katalogu" / "Move to private storage"**.
+* **Shared storage stays selectable** (it survives uninstall, which matters
+  to some users). It is never forbidden; the banner and the warning text are the
+  whole consequence. Whether a location counts as shared is decided from the
+  real (canonical) path, so `..` or a symlink cannot disguise one
+  (`DataLocationPolicy.classify`).
+* A saved choice always wins. If preferences are lost and data exists in both
+  places, `private` is taken (it is the migration target).
+
+### Moving the data (copy -> verify -> switch -> keep the old copy)
+
+`DataMigration.copyAndVerify` (pure Java, tested against the real core):
+
+1. the Loom core is shut down first (closes SQLite, checkpoints the WAL);
+2. the destination must be absent or empty (nothing is ever overwritten); a
+   destination that already holds ChatADHD data is only offered as "switch to
+   it";
+3. every file is written as `name.part`, fsync'ed, **re-read from disk and
+   its SHA-256 compared with the digest of the bytes read from the source**,
+   then renamed; the `.chatadhd_data` sentinel is copied **last**, so a
+   half-copied folder is never mistaken for a data directory;
+4. only when all files verified, the setting is switched (`commit()`, not
+   `apply()`); on any error or cancel the destination is emptied again and the
+   old location stays in use;
+5. the **old copy is left untouched** and listed in `StorageActivity` with a
+   "Delete old copy" button (confirmation; refused unless the folder holds the
+   sentinel and is neither the live folder nor its parent/child). Until the user
+   deletes it, the old copy - `secrets.json` included, if it was in a shared
+   folder - is still readable by other apps; the screen says so.
+
+Symbolic links are not copied (reported). `MainActivity` asks for "All files
+access" only when the chosen location is outside the app's own storage.
+
+### API keys: sealed with the Android Keystore
+
+`secrets.json` is the one file the core keeps API keys in. The core reads it
+**once at start** and rewrites the whole file on `set_secret` /
+`delete_secret` (verified by `verify/.../DataLifecycleTest`), so the plain file
+only has to exist briefly. `SecretsVaultCore` (pure Java; key supplied by
+`SecretsVault.kt`) therefore:
+
+* seals the file into `secrets.json.keystore` (`LSK1` | iv | AES-256-GCM, AAD
+  binds magic + purpose) with a non-exportable AES key in the **Android
+  Keystore** (`KeyGenParameterSpec`, GCM, 256 bit, randomized IV, alias
+  `chatadhd.secrets.v1`), reads it back and compares, and only then deletes the
+  plain file;
+* before the core starts, writes the plain `secrets.json` (owner-only, atomic)
+  from the sealed copy; right after start, and after every bridge call that can
+  save a secret (and in `onStop`/`onDestroy`), seals again. While the app runs,
+  the plain file exists only for those moments;
+* **keeps a plain `secrets.json` readable for migration**: a plain file that
+  exists is authoritative (an install from before sealing, or a crash between a
+  save and the re-seal) and is sealed, never overwritten by an older sealed
+  copy;
+* when sealing is impossible the plain file simply stays (the app tells the
+  user); when the key is gone (uninstall + reinstall, restore to another phone)
+  the sealed file is **not deleted**: the app says the keys must be entered
+  again, and an old unreadable file is kept as `secrets.json.keystore.unreadable`;
+* is a setting: "Seal API keys with the Android Keystore" in `StorageActivity`
+  (default on). Turning it off writes one plain copy again. The key is not bound
+  to the lock screen (the background semantic worker must be able to start
+  unattended); binding it is a possible future setting.
+
+What this does **not** do: conversations, memory and config stay plain (the
+core's zero-knowledge encryption is a separate feature, still off on Android,
+see Gaps). The protection of those files is the choice of location above.
 
 ## Building the app
 
@@ -243,6 +320,36 @@ cd loom/android
 #      x86_64 (ndkVersion "27.0.12077973", ANDROID_STL=c++_shared).
 ```
 
+Optional Gradle properties (used by the CI workflow, harmless otherwise):
+`-Ploom.versionCode=N`, `-Ploom.versionName=X`, `-Ploom.abis=arm64-v8a`,
+`-Ploom.nativeBuildType=Release`, `-Ploom.ccache=true`.
+
+### Package built by GitHub Actions (P6)
+
+`.github/workflows/package.yml` (manual `workflow_dispatch` only, so it
+costs minutes only when asked) builds the web bundle, then `./gradlew
+assembleDebug`, and uploads the artifact **`chatadhd-android-apk`**
+(`app-debug.apk` + `.sha256`); it also builds the server archive (artifact
+`chatadhd-server-linux-x64`, see `deploy/README.md`). Inputs: ABIs (default
+`arm64-v8a`; add `x86_64` for emulators), native build type (default
+`Release`: a `Debug` native core is slow on a phone), SDK CMake version
+(default: newest 3.x the SDK offers; the project needs >= 3.24). The NDK and
+`compileSdk` are read from `app/build.gradle.kts`, never duplicated. The job
+fails if a native lib for a requested ABI or the real web bundle is missing
+from the APK, and prints `apksigner` certificate digests.
+
+* **Signing.** The APK is signed with the *debug* key, which is enough to
+  install it. Every GitHub runner is a fresh machine, so a new debug key would
+  be generated each time, and Android refuses to update an app signed with a
+  different key (and uninstalling removes private data!). The workflow
+  therefore pins the key: from the secret `ANDROID_DEBUG_KEYSTORE_B64`
+  (`base64 -w0 ~/.android/debug.keystore`) if set, else from the Actions
+  cache (evicted after 7 days without use; a warning annotation says when a
+  new key was generated). **Release signing is still open**: it needs the
+  owner's keystore as a secret and a `signingConfigs.release` block.
+* `versionCode` = run number, `versionName` = `ci-<run>-<sha7>`.
+* Install: download the artifact on the phone, unzip, open the `.apk`.
+
 `gradlew`/`gradle-wrapper.jar` are checked in and were generated locally with
 `gradle wrapper --gradle-version 8.14.3` from the system Gradle install (no
 network fetch). A full `./gradlew assembleDebug` needs the Android
@@ -251,8 +358,10 @@ below for what was verified without them.
 
 ## Verification without an Android SDK
 
-Two things were run in this environment; both are reproducible without a
-phone, an emulator, or the Android SDK/NDK.
+Three things were run in this environment; all are reproducible without a
+phone, an emulator, or the Android SDK/NDK. (The Kotlin files - including the
+whole of F2's UI - are only syntax-checked here; the first Actions run is
+their first compilation.)
 
 ### 1. Gradle config, offline
 
@@ -340,6 +449,39 @@ UTF-8 codec and uses `nlohmann::json` directly (header-only, no linkage of
 its own) instead — `loom.h` really is the only interface it depends on now,
 which this test is what proved it.
 
+### 3. F2 rules and the real core (`verify/`, CTest `android_*`)
+
+`verify/CMakeLists.txt` compiles the app's own pure-Java files
+(`ConnectionPolicy`, `DataLocationPolicy`, `DataMigration`, `SecretsEnvelope`,
+`SecretsVaultCore`), never copies:
+
+- `android_DataLocationTest`: new install -> private, legacy shared data stays
+  shared, a saved choice wins, `..`/symlink/prefix-lookalike cannot pass for a
+  private folder, "delete old copy" refuses the live folder, its parent and any
+  folder without the sentinel.
+- `android_DataMigrationTest`: per-file SHA-256 (3 MiB random blob, empty
+  file, empty directories), sentinel copied last, the source byte-identical
+  afterwards, an occupied destination is refused untouched, cancel removes
+  what was created and keeps a pre-existing empty folder, `secrets.json`
+  owner-only in the copy, `deleteTree` never follows a link out of the tree.
+- `android_SecretsVaultTest`: envelope round trip, fresh IV, tamper/wrong key/
+  truncated blob rejected; plain file is authoritative after a crash, an
+  unchanged sealed file is not rewritten, a lost key keeps the old file
+  (`.unreadable`), a failing key provider leaves the plain file, switching the
+  option off returns to one plain copy. A software AES key stands in for the
+  Keystore on the host.
+- `android_DataLifecycleTest`: the **real core** through the JNI glue - start
+  on a plain `secrets.json`, seal it while the core runs (the core still knows
+  its keys), `set_secret` makes the core rewrite the whole file, seal again,
+  shut down, **move the directory with `DataMigration`**, start on the copy:
+  conversation (Polish + emoji) and both keys are there; the old copy still
+  starts.
+
+Not verifiable here and therefore first checked on a device: the real Android
+Keystore, `Environment.isExternalStorageManager()`/the settings intent, what
+other apps can actually read on a given Android version, and the layout of
+`StorageActivity`.
+
 ## Gaps
 
 - **Activity lifecycle still performs blocking native work on the UI thread.**
@@ -384,7 +526,19 @@ which this test is what proved it.
   real UI (a `Sync` task, so stale files from an old build are removed too)
   the first time `loom/web` has a production build.
 - **Release signing isn't configured** — `buildTypes.release` has no
-  signing config; `assembleRelease` will produce an unsigned APK.
+  signing config; `assembleRelease` will produce an unsigned APK. The Actions
+  package is debug-signed with a pinned debug key (see "Package built by GitHub
+  Actions"). Needs the owner's keystore as an Actions secret.
+- **F2 was never run on a device.** The sealing/move logic is host-tested
+  against the real core; the Android parts (Keystore, permission intents,
+  `StorageActivity`) are written, not run. Known simplifications: moving is a
+  full copy with no resume - if the process is killed mid-copy the destination
+  is left as a partial folder without the sentinel, the old location was never
+  switched (nothing is lost), and the next attempt refuses that folder as "not
+  empty" until the user deletes it; symbolic links are skipped; and an upgrade
+  whose "All files access" was revoked cannot see its old shared data (it looks
+  like a new install; choose "shared" in `StorageActivity` and grant access to
+  get it back).
 - **No instrumented/Espresso tests** — out of scope for a host-only
   sandbox; the host JNI smoke test is the closest available substitute for
   the native/bridge layer.
@@ -407,6 +561,6 @@ kept by Android's CookieManager). Switching never deletes local data.
 - **Security:** `LoomBridge` is injected only in local mode for the bundled
   origin (`ConnectionPolicy.shouldInjectBridge`); never for a remote page.
 - Tests: `verify/java/loomverify/ConnectionPolicyTest.java` (CTest
-  `connection_policy_test`; `verify/.../ConnectionPolicy.java` is a copy of the app file, keep in sync).
+  `connection_policy_test`; `verify/` compiles the app's own `ConnectionPolicy.java`, never a copy).
 - Not built here: no Android SDK on the dev machine, so the APK and the Kotlin
   files were not compiled.
