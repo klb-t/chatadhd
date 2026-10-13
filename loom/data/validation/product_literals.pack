@@ -509,7 +509,7 @@
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "3ef74a9f66af8678379681780590aee25ebd6470604ff3105f24e83ad5d60481"
+          "sha256": "5131110ea0383275b61706a360c7d2ad8b0f4a06ac37f2de0cbbdbd3d19aab13"
         },
         {
           "path": "loom/data/runtime/archive.pack",

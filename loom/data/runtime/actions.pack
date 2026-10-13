@@ -1012,6 +1012,38 @@
           "touches_private_data": true
         },
         "consumer": "loom/src/providers/embedding.cpp"
+      },
+      "analysis.run": {
+        "id": "analysis.run",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Run a reviewed analysis request",
+        "description": "A prepared analysis contract request (prompt contract, exact body bytes, reviewed by the owner) executed once, admitted by the usage policy, its first response retained before decoding and bound to a method version in the graph.",
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text",
+          "json"
+        ],
+        "outputs": [
+          "text",
+          "json"
+        ],
+        "requires": [
+          "analysis_contract"
+        ],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/server/src/analysis-ui-routes.h"
       }
     }
   },

@@ -589,7 +589,7 @@ TEST_SUITE("use_model") {
     CHECK(catalogue["save"]["effects"]["writes"] == true);
     // composite: steps of other actions; every migrated site
     for (const char* name : {"chat.send", "semantic.analyse", "semantic.batch", "batch.chat", "archive.refine", "goal.typing",
-                             "knowledge.propose_semantics", "graph_native.reply", "embedding.embed"}) {
+                             "knowledge.propose_semantics", "graph_native.reply", "embedding.embed", "analysis.run"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));
       const Json& a = catalogue[name];

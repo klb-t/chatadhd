@@ -20,6 +20,7 @@
 #include "loom/net/sse.h"
 #include "loom/semantic_llm.h"
 #include "loom/model.h"
+#include "loom/use_model.h"
 #include "loom/util/base64.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
@@ -139,6 +140,9 @@ struct Prepared {
   std::mutex mutex;
   prompts::Contract contract;
   loom::net::HttpRequest request;
+  // The reviewed request as the one use-model call that will execute it.
+  loom::llm::ModelRequest model_request;
+  loom::llm::PreparedCall call;
   Json preparation;
   Json execution;
   Json estimate;
@@ -316,21 +320,43 @@ inline loom::Result<Json> prepare(LoomContext* context, State& state, const Json
   prepared->contract = std::move(contract); prepared->preparation = wire;
   prepared->execution = body.value("execution", Json::object());
   prepared->method_ref = body.value("method_ref", Json::object());
-  prepared->request.method = wire["method"].get<std::string>();
-  prepared->request.url = wire["url"].get<std::string>();
-  LOOM_TRY_ASSIGN(auto url, loom::net::parse_url(prepared->request.url));
-  if (url.scheme != "http" && url.scheme != "https") return invalid("analysis transport must use http or https");
-  prepared->request.body = wire["body_bytes"].get<std::string>();
-  prepared->request.stream = wire["transport"].value("stream", false);
-  LOOM_TRY_ASSIGN(prepared->request.timeout_ms, timeout(prepared->execution, wire["transport"].value("timeout_ms", 30000)));
+  LOOM_TRY_ASSIGN(auto parsed_url, loom::net::parse_url(wire["url"].get<std::string>()));
+  if (parsed_url.scheme != "http" && parsed_url.scheme != "https") return invalid("analysis transport must use http or https");
+  int request_timeout = 0;
+  LOOM_TRY_ASSIGN(request_timeout, timeout(prepared->execution, wire["transport"].value("timeout_ms", 30000)));
   LOOM_TRY_ASSIGN(prepared->max_response_bytes, response_limit(prepared->execution, prepared->contract.definition));
   header_secrets(wire["headers"], prepared->secrets);
-  url_secrets(prepared->request.url, prepared->secrets);
+  url_secrets(wire["url"].get<std::string>(), prepared->secrets);
   const auto key = runtime.secrets().get_string("api_key");
   if (!key.empty()) prepared->secrets.push_back(key);
-  for (const auto& header : wire["headers"].items()) prepared->request.headers.emplace_back(header.key(), header.value().get<std::string>());
-  if (loom::net::header_value(prepared->request.headers, "Authorization").empty() && !key.empty())
-    prepared->request.headers.emplace_back("Authorization", "Bearer " + key);
+  // The reviewed request is one use-model call: the contract's transport recipe
+  // (URL, header order, exact body bytes) and the route's authentication, which
+  // is simply absent when no credential is stored.
+  loom::llm::ModelRequest mreq;
+  mreq.kind = "analysis.run";
+  mreq.action = "analysis.run";
+  const auto wire_model_value = wire["body_json"].value("model", model_value);
+  mreq.models = {loom::llm::ModelSpec{wire_model_value.is_string() ? wire_model_value.get<std::string>() : model_value.get<std::string>(),
+                                       "", Json::object()}};
+  mreq.body = wire["body_json"];
+  mreq.body_bytes = wire["body_bytes"].get<std::string>();
+  mreq.route.endpoint = wire["url"].get<std::string>();
+  mreq.route.require_credential = false;
+  loom::net::Headers recipe_headers;
+  for (const auto& header : wire["headers"].items()) recipe_headers.emplace_back(header.key(), header.value().get<std::string>());
+  mreq.wire_headers = std::move(recipe_headers);
+  mreq.timeout_ms = request_timeout;
+  mreq.capture = true;
+  mreq.max_response_bytes = prepared->max_response_bytes;
+  mreq.contain_exceptions = loom::Error(loom::Errc::Internal, "transport threw after the attempt began");
+  loom::llm::Services model_services(runtime.config(), runtime.secrets(), runtime.http());
+  model_services.providers = &runtime.providers();
+  model_services.data_root = runtime.paths().root;
+  LOOM_TRY_ASSIGN(prepared->call, loom::llm::prepare_call(model_services, mreq));
+  prepared->call.request.method = wire["method"].get<std::string>();  // the contract names its method
+  prepared->call.request.stream = wire["transport"].value("stream", false);
+  prepared->request = prepared->call.request;
+  prepared->model_request = std::move(mreq);
   prepared->id = "analysis_" + loom::random_hex(32);
   prepared->identity = request_identity(prepared->request);
   const auto wire_model = wire["body_json"].value("model", model_value);
@@ -409,44 +435,52 @@ inline loom::Result<Json> execute(LoomContext* context, Prepared& prepared, cons
       runtime.http(), &runtime.providers(), runtime.blobs(), runtime.provenance()};
   loom::context::ContextExecutionScope scope(Json::object());
   loom::chat::ModelUsageGuard guard(services);
-  auto admitted = guard.admit(prepared.request, prepared.estimate, body.value("confirmation", Json::object()));
-  if (!admitted) {
-    prepared.result["usage_decisions"] = guard.decisions(); prepared.status = "admission_error";
-    prepared.result["error"] = Json{{"code", std::string(loom::errc_name(admitted.error().code))}, {"message", "usage admission failed; review the current receipt"}};
-    auto result = view(prepared); result["executed"] = false; return result;
-  }
-  prepared.result = Json{{"usage_decision", *admitted}, {"usage_decisions", guard.decisions()}};
-  if (!admitted->value("dispatch_authorized", false)) {
-    prepared.status = admitted->value("dispatch_status", admitted->value("status", std::string("blocked")));
-    auto result = view(prepared); result["executed"] = false; return result;
-  }
+  // The reviewed request is executed as one use-model call, admitted by the shared guard.
+  loom::llm::Services model_services(runtime.config(), runtime.secrets(), runtime.http());
+  model_services.providers = &runtime.providers();
+  model_services.data_root = runtime.paths().root;
+  loom::llm::ModelRequest model_request = prepared.model_request;
+  const Json confirmation = body.value("confirmation", Json::object());
+  model_request.usage.gate = loom::llm::make_function_gate(
+      [&](const loom::net::HttpRequest& wire, const Json&) -> loom::Result<loom::llm::GateDecision> {
+        auto admitted = guard.admit(wire, prepared.estimate, confirmation);
+        if (!admitted) return admitted.error();
+        prepared.result = Json{{"usage_decision", *admitted}, {"usage_decisions", guard.decisions()}};
+        loom::llm::GateDecision decision;
+        decision.dispatch = admitted->value("dispatch_authorized", false);
+        decision.status = admitted->value("status", std::string("unavailable"));
+        decision.decision = *admitted;
+        return decision;
+      });
   // Consumed before entering transport. A lost response never creates a second attempt.
-  prepared.attempted = true; prepared.status = "attempting";
-  std::string bytes;
-  bool truncated = false;
-  int http_status = 0;
-  loom::net::StreamSink sink;
-  sink.on_headers = [&](int status, const loom::net::Headers&) { http_status = status; return true; };
-  sink.on_data = [&](std::string_view part) {
-    const auto remaining = prepared.max_response_bytes - bytes.size();
-    if (part.size() > remaining) { bytes.append(part.substr(0, remaining)); truncated = true; return false; }
-    bytes.append(part); return true;
-  };
-  loom::Result<loom::net::HttpResponse> response = loom::Error(loom::Errc::Internal, "transport outcome unknown");
-  try { response = runtime.http().send(prepared.request, &sink); }
-  catch (...) { response = loom::Error(loom::Errc::Internal, "transport threw after the attempt began"); }
-  if (response) http_status = response->status;
+  model_request.hooks.on_dispatch = [&] { prepared.attempted = true; prepared.status = "attempting"; };
+  auto sent = loom::llm::execute_call(model_services, model_request, prepared.call);
+  if (sent.state == loom::llm::State::GateError) {
+    prepared.result["usage_decisions"] = guard.decisions(); prepared.status = "admission_error";
+    prepared.result["error"] = Json{{"code", std::string(loom::errc_name(sent.error->code))}, {"message", "usage admission failed; review the current receipt"}};
+    auto result = view(prepared); result["executed"] = false; return result;
+  }
+  if (sent.state == loom::llm::State::Held) {
+    const Json admitted = prepared.result["usage_decision"];
+    prepared.status = admitted.value("dispatch_status", admitted.value("status", std::string("blocked")));
+    auto result = view(prepared); result["executed"] = false; return result;
+  }
+  const std::string bytes = sent.body;
+  const bool truncated = sent.response_limited;
+  const int http_status = sent.http_status;
+  const bool response = !sent.error.has_value();
+  const bool response_ok = response && http_status >= 200 && http_status < 300;
   prepared.result["http_status"] = http_status;
   prepared.result["capture_truncated"] = truncated;
   prepared.result["raw_response_bytes"] = loom::utf8::is_valid(bytes) ? Json(bytes) : Json(nullptr);
   if (!loom::utf8::is_valid(bytes)) prepared.result["raw_response_base64"] = loom::base64::encode(bytes);
   prepared.result["response_hash"] = loom::Sha256::hex(bytes);
-  prepared.result["transport_error"] = response ? Json(nullptr) : Json(std::string(loom::errc_name(response.error().code)));
+  prepared.result["transport_error"] = response ? Json(nullptr) : Json(std::string(loom::errc_name(sent.error->code)));
   // First bytes get an immutable native source before decoding or accounting.
   auto source = loom::chat::retain_graph_reply_bytes(services, bytes, Json{{"channel", "analysis_http_wire"},
       {"prepared_id", prepared.id}, {"request_identity_hash", prepared.identity}, {"request_hash", prepared.preparation["request_hash"]},
       {"contract_hash", prepared.contract.hash}, {"method_ref", prepared.method_ref}, {"http_status", http_status},
-      {"complete", static_cast<bool>(response) && !truncated}, {"capture_truncated", truncated},
+      {"complete", response && !truncated}, {"capture_truncated", truncated},
       {"capture_kind", "http_wire"}, {"origin", "native_transport_capture"}, {"content_classification", "pending_decode"}});
   prepared.result["first_response_ref"] = source ? *source : Json{{"source_status", "unavailable"}, {"blob_hash", loom::Sha256::hex(bytes)}, {"bytes", bytes.size()}};
   auto decoded = decode(bytes, prepared.request.stream);
@@ -463,7 +497,7 @@ inline loom::Result<Json> execute(LoomContext* context, Prepared& prepared, cons
       const auto message = choices[0].value("message", Json::object());
       if (message.is_object() && message.contains("content") && message["content"].is_string()) {
         prepared.result["model_content"] = message["content"];
-        prepared.result["model_content_available"] = response && response->ok();
+        prepared.result["model_content_available"] = response_ok;
         auto parsed = loom::SemanticLLM::parse_response_json(message["content"].get<std::string>());
         output = parsed ? *parsed : Json(nullptr);
       }
@@ -476,7 +510,7 @@ inline loom::Result<Json> execute(LoomContext* context, Prepared& prepared, cons
   auto graph_binding = bind_graph(runtime, prepared, bytes, decoded ? *decoded : Json(nullptr));
   prepared.result["graph_binding_status"] = graph_binding ? "native_result_run_version_edges" : "error";
   if (!graph_binding) prepared.result["graph_binding_error"] = Json{{"code", std::string(loom::errc_name(graph_binding.error().code))}, {"message", graph_binding.error().message}};
-  prepared.status = !source ? "storage_error" : !response || !response->ok() ? "transport_error" : truncated ? "response_truncated" :
+  prepared.status = !source ? "storage_error" : !response_ok ? "transport_error" : truncated ? "response_truncated" :
       !decoded ? "decode_error" : !graph_binding ? "graph_binding_error" : !prepared.result["output_validation"].value("valid", false) ? "schema_rejected" : !settled ? "accounting_error" : "completed";
   auto result = view(prepared); result["executed"] = true; result["replayed"] = false; return result;
 }
