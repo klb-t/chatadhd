@@ -490,6 +490,8 @@ void finalize_provenance(VariantResult& r, const PreparedCall& call) {
     for (const auto& part : r.outputs) {
       Json o = part.to_json();
       o.erase("text");  // the text itself is in the result; the record keeps references and hashes
+      if (part.kind == "embedding" && part.value.is_array())
+        o["value"] = Json{{"dimensions", part.value.size()}, {"sha256", Sha256::hex(json::canonical(part.value))}};
       outs.push_back(std::move(o));
     }
     p["outputs"] = std::move(outs);
@@ -646,6 +648,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
     r.state = State::Ok;
     if (op == Operation::Complete) {
       if (auto parsed = adapter->parse(r.body)) buffered = std::move(*parsed);
+      else r.parse_error = parsed.error();
     }
   }
 

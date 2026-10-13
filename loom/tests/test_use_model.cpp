@@ -589,7 +589,7 @@ TEST_SUITE("use_model") {
     CHECK(catalogue["save"]["effects"]["writes"] == true);
     // composite: steps of other actions; every migrated site
     for (const char* name : {"chat.send", "semantic.analyse", "semantic.batch", "batch.chat", "archive.refine", "goal.typing",
-                             "knowledge.propose_semantics", "graph_native.reply"}) {
+                             "knowledge.propose_semantics", "graph_native.reply", "embedding.embed"}) {
       INFO(name);
       REQUIRE(catalogue.contains(name));
       const Json& a = catalogue[name];
@@ -786,5 +786,70 @@ TEST_SUITE("use_model") {
     env.transport.expect("POST", "https://api.test/chat/completions", Reply::json(200, chat_reply("ok")));
     REQUIRE(unwrap(llm::use_model(env.services(), pre)).results.at(0).ok());
     CHECK(env.transport.requests().size() == 2);
+  }
+
+  TEST_CASE("embeddings are one more output kind: vectors come back as typed parts, the record keeps hashes") {
+    Env env;
+    llm::ModelRequest req;
+    req.kind = "test.embed";
+    req.models = {llm::ModelSpec{"emb/m", "", Json::object()}};
+    req.route.adapter = "openai_embeddings";
+    req.wants = {"embedding"};
+    req.referer = false;
+    req.parameters = Json{{"dimensions", 2}};
+    for (const char* text : {"one", "two"}) {
+      llm::Part part;
+      part.kind = "text";
+      part.text = text;
+      req.inputs.push_back(part);
+    }
+    // Rows may arrive in any order; the parts follow the inputs.
+    env.transport.expect("POST", "https://api.test/embeddings",
+        Reply::json(200, Json{{"model", "emb/m"}, {"usage", Json{{"prompt_tokens", 2}}},
+                              {"data", Json::array({Json{{"index", 1}, {"embedding", Json::array({0.25, 0.5})}},
+                                                     Json{{"index", 0}, {"embedding", Json::array({1.0, 2.0})}}})}}));
+    auto outcome = unwrap(llm::use_model(env.services(), req));
+    const auto& r = outcome.results.at(0);
+    REQUIRE(r.ok());
+    CHECK(r.adapter == "openai_embeddings");
+    REQUIRE(r.outputs.size() == 2);
+    CHECK(r.outputs[0].kind == "embedding");
+    CHECK(r.outputs[0].value == Json::array({1.0, 2.0}));
+    CHECK(r.outputs[1].value == Json::array({0.25, 0.5}));
+    CHECK(r.usage["prompt_tokens"] == 2);
+    CHECK(r.reported_model == "emb/m");
+    const auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    CHECK(loom::test::request_json(reqs[0]) ==
+          Json{{"method", "POST"}, {"url", "https://api.test/embeddings"},
+               {"headers", Json::array({Json::array({"Content-Type", "application/json"}),
+                                        Json::array({"Authorization", "Bearer sk-secret-test"})})},
+               {"body", R"({"model":"emb/m","input":["one","two"],"dimensions":2})"},
+               {"timeout_ms", 120000}, {"stream", false}});
+    // The record names the vectors by shape and hash, not by value.
+    REQUIRE(r.provenance["outputs"].size() == 2);
+    CHECK(r.provenance["outputs"][0]["value"]["dimensions"] == 2);
+    CHECK(r.provenance["outputs"][0]["value"]["sha256"] == Sha256::hex(json::canonical(Json::array({1.0, 2.0}))));
+    CHECK(r.provenance.dump().find("0.25") == std::string::npos);
+
+    // A malformed answer is a result of its own, never half a vector.
+    env.transport.expect("POST", "https://api.test/embeddings",
+        Reply::json(200, Json{{"data", Json::array({Json{{"index", 0}, {"embedding", Json::array({1.0})}}})}}));
+    llm::ModelRequest one = req;
+    one.inputs.resize(1);
+    auto ok = unwrap(llm::use_model(env.services(), one));
+    CHECK(ok.results.at(0).ok());
+    env.transport.expect("POST", "https://api.test/embeddings", Reply::json(200, Json{{"data", Json::array({Json{{"index", 3}, {"embedding", Json::array({1.0})}}})}}));
+    auto broken = unwrap(llm::use_model(env.services(), one));
+    CHECK(broken.results.at(0).state == llm::State::ParseError);
+    CHECK(broken.results.at(0).error->message == "embedding response index/vector invalid");
+
+    // The chat adapter cannot produce vectors: refused before any send, with the reason.
+    llm::ModelRequest chat = one;
+    chat.route.adapter = "openai_chat";
+    auto refused = unwrap(llm::use_model(env.services(), chat));
+    CHECK(refused.results.at(0).state == llm::State::Unavailable);
+    CHECK(refused.results.at(0).error->message.find("cannot produce embedding") != std::string::npos);
+    CHECK(env.transport.requests().size() == 3);
   }
 }

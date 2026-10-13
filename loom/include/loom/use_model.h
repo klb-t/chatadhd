@@ -304,6 +304,9 @@ struct VariantResult {
   bool sent = false;
   int http_status = 0;
   std::optional<Error> error;                 // Unavailable / GateError / TransportError / ParseError
+  // Capture mode keeps the state Ok whatever the body says; this is why the
+  // adapter could not read an answer the transport delivered (outputs are then empty).
+  std::optional<Error> parse_error;
   std::string text, reasoning, reported_model;
   Json usage = Json::object();
   std::vector<std::string> issues;            // "malformed_chunk" | "model_invalid" | "model_changed"

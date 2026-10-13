@@ -4,6 +4,8 @@
 // resolved by use_model.cpp.
 #include <map>
 #include <mutex>
+#include <optional>
+#include <vector>
 
 #include "loom/log.h"
 #include "loom/net/sse.h"
@@ -420,6 +422,101 @@ class OpenAiImagesAdapter final : public Adapter {
   std::unique_ptr<StreamDecoder> stream_decoder(const StreamHooks&, const CancelToken*) const override { return nullptr; }
 };
 
+// ── openai_embeddings: OpenAI-compatible embeddings ────────────────────
+// An embedding is one more kind of output: each input text yields one
+// "embedding" part (the vector, in input order).
+class OpenAiEmbeddingsAdapter final : public Adapter {
+ public:
+  std::string_view family() const noexcept override { return "openai_embeddings"; }
+
+  Capabilities capabilities() const override { return {{"text"}, {"embedding"}, {}}; }
+
+  Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
+    if (op != Operation::Complete) return Error(Errc::Unsupported, "adapter openai_embeddings has no batch operations");
+    net::HttpRequest req;
+    req.method = "POST";
+    std::string path = route.endpoint;
+    if (path.empty()) {
+      path = json::get_string(route.metadata, "embedding_path", "/embeddings");
+      if (path.empty() || path.front() != '/') path.insert(path.begin(), '/');
+    }
+    req.url = join_url(route.base_url, path);
+    if (spec.wire_headers) {
+      req.headers = *spec.wire_headers;
+    } else {
+      for (const auto& h : route.default_headers) req.headers.push_back(h);
+      req.headers.emplace_back(route.content_type_header, "application/json");
+      if (spec.referer) req.headers.emplace_back("HTTP-Referer", std::string(kAppReferer));
+      if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
+      for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+    }
+    // Authentication follows the other headers on this wire.
+    const std::string_view carried = auth_header_name(route.auth_scheme);
+    if (carried.empty() || net::header_value(req.headers, carried).empty()) LOOM_TRY(apply_auth(route, req));
+    if (!spec.body_bytes.empty()) {
+      req.body = spec.body_bytes;
+    } else if (spec.body.is_object()) {
+      req.body = json::dump(spec.body);
+    } else {
+      Json input = Json::array();
+      for (const auto& m : spec.messages)
+        if (json::get_string(m, "role") == "user" && m.contains("content") && m["content"].is_string())
+          input.push_back(m["content"]);
+      if (input.empty()) return Error(Errc::InvalidArgument, "embedding needs at least one text input");
+      Json body{{"model", spec.model}, {"input", input}};
+      for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
+      req.body = json::dump(body);
+    }
+    req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
+    return req;
+  }
+
+  bool success(Operation, int http_status) const noexcept override { return http_status == 200; }
+
+  Result<Parsed> parse(std::string_view body) const override {
+    auto j = json::parse(body);
+    if (!j || !j->is_object()) return Error(Errc::Parse, "embedding response is not a JSON object");
+    const Json* data = json::find(*j, "data");
+    if (!data || !data->is_array()) return Error(Errc::Parse, "embedding response count mismatch");
+    Parsed out;
+    if (const auto* reported = json::find(*j, "model"); reported && !reported->is_null()) {
+      if (!reported->is_string() || reported->get_ref<const std::string&>().empty())
+        return Error(Errc::Parse, "embedding reported model invalid");
+      out.reported_model = reported->get<std::string>();
+    }
+    // Rows carry their index; the parts come out in input order.
+    std::vector<Json> rows(data->size());
+    std::vector<bool> seen(data->size(), false);
+    std::optional<std::size_t> dimensions;
+    for (const auto& row : *data) {
+      const auto* index = json::find(row, "index");
+      const auto* vector = json::find(row, "embedding");
+      if (!index || !index->is_number_integer() ||
+          (!index->is_number_unsigned() && index->get<std::int64_t>() < 0) ||
+          index->get<std::uint64_t>() >= data->size() || !vector || !vector->is_array() || vector->empty())
+        return Error(Errc::Parse, "embedding response index/vector invalid");
+      const auto position = index->get<std::size_t>();
+      if (seen[position]) return Error(Errc::Parse, "embedding response duplicate index");
+      seen[position] = true;
+      if (dimensions && *dimensions != vector->size()) return Error(Errc::Parse, "embedding vector dimension mismatch");
+      dimensions = vector->size();
+      for (const auto& value : *vector)
+        if (!value.is_number()) return Error(Errc::Parse, "embedding vector contains nonnumber");
+      rows[position] = *vector;
+    }
+    for (auto& row : rows) {
+      Part part;
+      part.kind = "embedding";
+      part.value = std::move(row);
+      out.outputs.push_back(std::move(part));
+    }
+    if (const Json* u = json::find(*j, "usage"); u && u->is_object()) out.usage = *u;
+    return out;
+  }
+
+  std::unique_ptr<StreamDecoder> stream_decoder(const StreamHooks&, const CancelToken*) const override { return nullptr; }
+};
+
 struct AdapterTable {
   std::mutex mu;
   std::map<std::string, AdapterFactory, std::less<>> factories;
@@ -427,6 +524,7 @@ struct AdapterTable {
     factories["openai_chat"] = [] { return std::make_unique<OpenAiChatAdapter>(); };
     factories["anthropic_messages"] = [] { return std::make_unique<AnthropicMessagesAdapter>(); };
     factories["openai_images"] = [] { return std::make_unique<OpenAiImagesAdapter>(); };
+    factories["openai_embeddings"] = [] { return std::make_unique<OpenAiEmbeddingsAdapter>(); };
   }
 };
 

@@ -982,6 +982,36 @@
           "touches_private_data": true
         },
         "consumer": "loom/src/extract/semantic.cpp"
+      },
+      "embedding.embed": {
+        "id": "embedding.embed",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Embed texts",
+        "description": "One vector per input text from an embedding model; an embedding is just another output kind of the one model action. The caller's vector policy admits the operation before the call.",
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "embedding"
+        ],
+        "requires": [
+          "text"
+        ],
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/providers/embedding.cpp"
       }
     }
   },
