@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "server_accounts",
   "revision": 1,
-  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack.",
+  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy).",
   "defaults": {
     "registration": "closed",
     "session_lifetime_seconds": 2592000,
@@ -18,6 +18,21 @@
       "same_site": "Strict",
       "secure": "auto",
       "path": "/"
+    },
+    "throttle": {
+      "mode": "on",
+      "reset_seconds": 900,
+      "trust_forwarded_for": false,
+      "per_login": {
+        "free_attempts": 5,
+        "base_delay_seconds": 1,
+        "max_delay_seconds": 900
+      },
+      "per_ip": {
+        "free_attempts": 20,
+        "base_delay_seconds": 1,
+        "max_delay_seconds": 900
+      }
     }
   },
   "value_schema": {
@@ -31,7 +46,8 @@
       "session_token_bytes",
       "accounts_file",
       "users_subdir",
-      "cookie"
+      "cookie",
+      "throttle"
     ],
     "additionalProperties": false,
     "properties": {
@@ -136,6 +152,93 @@
           "path": {
             "type": "string",
             "minLength": 1
+          }
+        }
+      },
+      "throttle": {
+        "type": "object",
+        "required": [
+          "mode",
+          "reset_seconds",
+          "trust_forwarded_for",
+          "per_login",
+          "per_ip"
+        ],
+        "additionalProperties": false,
+        "x-setting": "/throttle",
+        "x-consumer": "server accounts login",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "on",
+              "off"
+            ]
+          },
+          "reset_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647,
+            "x-unit": "seconds"
+          },
+          "trust_forwarded_for": {
+            "type": "boolean"
+          },
+          "per_login": {
+            "type": "object",
+            "required": [
+              "free_attempts",
+              "base_delay_seconds",
+              "max_delay_seconds"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "free_attempts": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "base_delay_seconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-unit": "seconds"
+              },
+              "max_delay_seconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-unit": "seconds"
+              }
+            }
+          },
+          "per_ip": {
+            "type": "object",
+            "required": [
+              "free_attempts",
+              "base_delay_seconds",
+              "max_delay_seconds"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "free_attempts": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647
+              },
+              "base_delay_seconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-unit": "seconds"
+              },
+              "max_delay_seconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 2147483647,
+                "x-unit": "seconds"
+              }
+            }
           }
         }
       }

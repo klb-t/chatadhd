@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -28,6 +29,15 @@ struct CookieSettings {
   bool http_only = true;
 };
 
+struct ThrottleLimit {
+  std::int64_t free_attempts = 0, base_delay_seconds = 0, max_delay_seconds = 0;
+};
+struct Throttle {
+  bool on = true, trust_forwarded_for = false;
+  std::int64_t reset_seconds = 0;
+  ThrottleLimit per_login, per_ip;
+};
+
 struct Settings {
   std::string registration;  // open | invite | closed
   std::int64_t session_lifetime_seconds = 0;
@@ -38,6 +48,7 @@ struct Settings {
   std::size_t session_token_bytes = 0;
   std::string accounts_file, users_subdir;
   CookieSettings cookie;
+  Throttle throttle;
 };
 
 // Effective server_accounts profile (+ <root>/profiles overlay) and the named Argon2id preset.
@@ -61,7 +72,9 @@ class AccountStore {
   const std::filesystem::path& root() const noexcept { return root_; }
   std::filesystem::path user_dir(const std::string& user_id) const;
 
-  Result<User> create_user(const std::string& login, const std::string& password);
+  // With a non-empty `invite` the code is checked and consumed in the same transaction as the insert,
+  // so a failed creation never burns it (Errc::Auth for a bad/used code).
+  Result<User> create_user(const std::string& login, const std::string& password, const std::string& invite = {});
   Result<std::optional<User>> find_user(const std::string& login);
   Result<std::vector<User>> list_users();
   Result<std::int64_t> user_count();
@@ -77,9 +90,15 @@ class AccountStore {
   Status revoke_session(const std::string& token);
   Status revoke_user_sessions(const std::string& user_id);
 
+  // Login throttling (settings().throttle). Seconds the caller must wait before another attempt for this
+  // login / client address (0 = may try). Call record_failure after a failed attempt, record_success after
+  // a good one (clears the login's counter).
+  std::int64_t throttle_wait(const std::string& login, const std::string& client);
+  void record_failure(const std::string& login, const std::string& client);
+  void record_success(const std::string& login);
+
   // registration=invite: a code is shown once and stored only as SHA-256; consume = single use.
   Result<std::string> create_invite();
-  Status consume_invite(const std::string& code, const std::string& user_id);
 
  private:
   AccountStore() = default;
@@ -90,6 +109,9 @@ class AccountStore {
   Settings settings_;
   sql::Connection db_;
   std::mutex mu_;
+  struct Fails { std::int64_t count = 0, last = 0; };
+  std::mutex tmu_;
+  std::map<std::string, Fails> login_fails_, ip_fails_;
 };
 
 }  // namespace loom::accounts

@@ -91,6 +91,11 @@ def main() -> int:
             assert requests.get(b + path).status_code == 401, path
         # wrong password / unknown user
         login(b, "alice", "nope-nope-nope", 401)
+        # throttling: after the free attempts a login is refused with 429 + Retry-After, even with the right password
+        for _ in range(6):
+            login(b, "mallory", "guess-guess-1", 401)
+        _, rt = login(b, "mallory", "guess-guess-1", 429)
+        assert int(rt.headers["Retry-After"]) >= 1
         login(b, "ghost", "whatever-1234", 401)
         # registration closed
         r = requests.post(b + "/api/auth/register", json={"login": "eve", "password": "eve-password"})
@@ -111,6 +116,14 @@ def main() -> int:
         assert "alice private" in json.dumps(la) and "alice private" not in json.dumps(lb), (la, lb)
         assert sa.get(b + "/api/secrets/api_key/has").json() == {"has": True}
         assert sb.get(b + "/api/secrets/api_key/has").json() == {"has": False}
+        # prepared analysis handles are per user: B can neither inspect nor discard A's
+        pr = sa.post(b + "/api/analysis", json={"operation": "prepare", "contract_id": "semantic.analysis",
+                                                "model": "x/y", "bindings": {"text": "hello"}})
+        assert pr.status_code == 200, pr.text
+        pid = pr.json()["prepared_id"]
+        for op in ("inspect", "discard"):
+            assert sb.post(b + "/api/analysis", json={"operation": op, "prepared_id": pid}).status_code == 404, op
+        assert sa.post(b + "/api/analysis", json={"operation": "inspect", "prepared_id": pid}).status_code == 200
         ids = [u.split("\t")[0] for u in cli(root, "list").stdout.splitlines()]
         assert len(ids) == 2 and all((root / "users" / i).is_dir() for i in ids)
         assert any((root / "users" / i / "secrets.json").exists() for i in ids)
@@ -158,6 +171,7 @@ def main() -> int:
     try:
         body = {"login": "dan", "password": "dan-password"}
         assert requests.post(srv.base + "/api/auth/register", json=body, timeout=60).status_code == 403
+        assert requests.post(srv.base + "/api/auth/register", json={"login": "dan", "password": "x", "invite": code}, timeout=60).status_code == 400
         assert requests.post(srv.base + "/api/auth/register", json={**body, "invite": code}, timeout=60).status_code == 201
         assert requests.post(srv.base + "/api/auth/register", json={**body, "login": "dan2", "invite": code}, timeout=60).status_code == 403
     finally:

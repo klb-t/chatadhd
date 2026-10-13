@@ -78,8 +78,35 @@ TEST_SUITE("accounts") {
     CHECK_FALSE(unwrap(store->find_session(s.token)).has_value());
 
     auto code = unwrap(store->create_invite());
-    unwrap(store->consume_invite(code, "carol"));
-    CHECK_FALSE(store->consume_invite(code, "carol"));
-    CHECK_FALSE(store->consume_invite("nope", "carol"));
+    // a failed creation (password policy / duplicate login) does not burn the code
+    CHECK_FALSE(store->create_user("dave", "short", code));
+    CHECK_FALSE(store->create_user("carol", "passw0rd!", code));
+    CHECK_FALSE(store->create_user("dave", "passw0rd!", "wrong-code"));
+    CHECK(store->create_user("dave", "passw0rd!", code));
+    CHECK_FALSE(store->create_user("erin", "passw0rd!", code));  // single use
+  }
+
+  TEST_CASE("login throttle: backoff per login and per client, off allowed") {
+    fsutil::TempDir td;
+    auto cfg = fast_settings(td.path());
+    cfg.throttle.per_login = {2, 5, 60};
+    cfg.throttle.per_ip = {3, 1, 60};
+    auto store = unwrap(accounts::AccountStore::open(td.path(), cfg));
+    CHECK(store->throttle_wait("a", "ip1") == 0);
+    store->record_failure("a", "ip1");
+    store->record_failure("a", "ip1");
+    CHECK(store->throttle_wait("a", "ip2") == 0);   // within free attempts
+    store->record_failure("a", "ip1");
+    store->record_failure("a", "ip1");
+    CHECK(store->throttle_wait("A", "ip2") > 0);    // per login (case-insensitive), other address
+    CHECK(store->throttle_wait("b", "ip1") > 0);    // per client, other login
+    CHECK(store->throttle_wait("b", "ip3") == 0);
+    store->record_success("a");
+    CHECK(store->throttle_wait("a", "ip2") == 0);
+    cfg.throttle.on = false;
+    fsutil::TempDir td2;
+    auto off = unwrap(accounts::AccountStore::open(td2.path(), cfg));
+    for (int i = 0; i < 50; ++i) off->record_failure("x", "ip");
+    CHECK(off->throttle_wait("x", "ip") == 0);
   }
 }

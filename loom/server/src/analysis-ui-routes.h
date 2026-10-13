@@ -518,12 +518,17 @@ inline loom::Result<Json> dispatch(LoomContext* context, State& state, const Jso
 }  // namespace analysis_ui_detail
 
 inline void register_analysis_ui_routes(httplib::Server& server, std::function<LoomContext*()> context_of) {
-  auto state = std::make_shared<analysis_ui_detail::State>();
-  server.Post("/api/analysis", [context_of, state](const httplib::Request& request, httplib::Response& response) {
+  // Prepared handles are user data: one State per runtime context, i.e. per account in accounts mode.
+  auto states = std::make_shared<std::pair<std::mutex, std::map<LoomContext*, std::shared_ptr<analysis_ui_detail::State>>>>();
+  server.Post("/api/analysis", [context_of, states](const httplib::Request& request, httplib::Response& response) {
     native_ui::protect(response, [&] {
       LoomContext* context = context_of();
       auto body = native_ui::parse(request);
       if (!body) { native_ui::fail(response, body.error()); return; }
+      std::shared_ptr<analysis_ui_detail::State> state;
+      { std::lock_guard lock(states->first); auto& slot = states->second[context];
+        if (!slot) slot = std::make_shared<analysis_ui_detail::State>();
+        state = slot; }
       auto result = analysis_ui_detail::dispatch(context, *state, *body);
       if (!result) { native_ui::fail(response, result.error()); return; }
       native_ui::reply(response, *result);

@@ -1317,6 +1317,15 @@ bool wants_secure(const loom::accounts::CookieSettings& c, const httplib::Reques
   if (c.secure == "never") return false;
   return req.get_header_value("X-Forwarded-Proto") == "https";
 }
+std::string client_address(const httplib::Request& req, bool trust_forwarded) {
+  if (trust_forwarded) {
+    std::string f = req.get_header_value("X-Forwarded-For");
+    f = f.substr(0, f.find(','));
+    while (!f.empty() && f.front() == ' ') f.erase(f.begin());
+    if (!f.empty()) return f;
+  }
+  return req.remote_addr;
+}
 json user_json(const loom::accounts::User& u) { return {{"id", u.id}, {"login", u.login}}; }
 }  // namespace
 
@@ -1350,8 +1359,17 @@ void App::route_auth() {
       if (!accounts_) { send_error(res, "not_found", "accounts are not enabled", 404); return; }
       json body;
       if (!object_body(req, res, body)) return;
-      auto u = accounts_->verify_password(body.value("login", std::string()), body.value("password", std::string()));
+      const std::string who = body.value("login", std::string());
+      const std::string client = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
+      if (const auto wait = accounts_->throttle_wait(who, client); wait > 0) {
+        res.set_header("Retry-After", std::to_string(wait));
+        send_error(res, "rate_limited", "too many failed attempts; try again in " + std::to_string(wait) + " s", 429);
+        return;
+      }
+      auto u = accounts_->verify_password(who, body.value("password", std::string()));
+      if (u) accounts_->record_success(who);
       if (!u) {
+        if (u.error().code == loom::Errc::Auth) accounts_->record_failure(who, client);
         if (u.error().code == loom::Errc::Auth) send_error(res, "auth", "invalid login or password", 401);
         else send_error(res, "internal", "login failed", 500);
         return;
@@ -1366,12 +1384,13 @@ void App::route_auth() {
       if (mode == "closed") { send_error(res, "auth", "registration is closed", 403); return; }
       const std::string login = body.value("login", std::string());
       if (mode == "invite") {
-        auto ok = accounts_->consume_invite(body.value("invite", std::string()), login);
-        if (!ok) { send_error(res, "auth", "invalid or used invite code", 403); return; }
+        if (body.value("invite", std::string()).empty()) { send_error(res, "auth", "an invite code is required", 403); return; }
       }
-      auto u = accounts_->create_user(login, body.value("password", std::string()));
+      auto u = accounts_->create_user(login, body.value("password", std::string()),
+                                      mode == "invite" ? body.value("invite", std::string()) : std::string());
       if (!u) {
-        send_error(res, std::string(loom::errc_name(u.error().code)), u.error().message);
+        send_error(res, std::string(loom::errc_name(u.error().code)), u.error().message,
+                   u.error().code == loom::Errc::Auth ? 403 : -1);
         return;
       }
       start_session(req, res, *u, 201);
