@@ -1895,6 +1895,12 @@
               "parameters": {
                 "temperature": 0.7
               }
+            },
+            "estimate": {
+              "output_tokens": {
+                "low": 40,
+                "high": 300
+              }
             }
           },
           {
@@ -1925,6 +1931,7 @@
           "text"
         ],
         "outputs": [
+          "text",
           "image"
         ],
         "requires": [

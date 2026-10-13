@@ -355,15 +355,31 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
     }
   }
   if (element.is_null()) element = Json::object();
-  // Arguments the caller left out come from the settings the catalogue names (a model, a provider ...).
-  if (entry) r.args = bind_params(*entry, r.args);
+  // Arguments the caller left out come from the settings the catalogue names (a model, a provider ...). What a composite
+  // action needs and still lacks is said before anything starts: its early steps must not be paid for in vain.
+  std::vector<const Json*> named;
+  if (entry) named.push_back(entry);
   {
     const Json* steps = r.chain.is_array() ? &r.chain : (r.chain.is_object() ? json::find(r.chain, "steps") : nullptr);
     if (steps && steps->is_array())
       for (const auto& step : *steps) {
         const std::string name = step.is_string() ? step.get<std::string>() : json::get_string(step, "action");
-        if (const Json* e = json::find(loaded.engine.catalogue(), name)) r.args = bind_params(*e, r.args);
+        if (const Json* e = json::find(loaded.engine.catalogue(), name)) named.push_back(e);
       }
+  }
+  for (const Json* e : named) r.args = bind_params(*e, r.args);
+  for (const Json* e : named) {
+    if (json::get_string(*e, "kind") != "composite") continue;
+    const Json* params = json::find(*e, "params");
+    if (!params || !params->is_array()) continue;
+    for (const auto& p : *params) {
+      const std::string name = json::get_string(p, "name");
+      const Json* have = json::find(r.args, name);
+      if (!json::get_bool(p, "required", false) || (have && !have->is_null())) continue;
+      const std::string setting = json::get_string(p, "setting");
+      return Error(Errc::InvalidArgument, "action '" + json::get_string(*e, "id") + "' needs the argument '" + name + "'" +
+                                              (setting.empty() ? std::string() : " (or the setting " + setting + ")"));
+    }
   }
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   const Engine& engine = loaded.engine;

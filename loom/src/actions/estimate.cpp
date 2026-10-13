@@ -126,6 +126,7 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
   const double per_unit = std::max(1.0, json::get_number(pricing_cfg, "tokens_per_unit", 1.0));
   const double floor_tokens = json::get_number(est, "output_floor_tokens", 32);
   const Json unknown_ratio = est.value("unknown_ratio", Json{{"low", 0.1}, {"high", 1.0}});
+  const Json ratios = est.value("output_ratio", Json::object());
   const std::string default_model = [&] {
     const std::string key = json::get_string(s.settings.value("use_model", Json::object()), "model_setting", "default_model");
     if (!s.config) return std::string();
@@ -207,7 +208,7 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
         const Json h = hint->at("output_tokens");
         out = Band{json::get_number(h, "low", floor_tokens), json::get_number(h, "high", floor_tokens)};
       } else {
-        const Json* r = json::find(est.value("output_ratio", Json::object()), content_op);
+        const Json* r = json::find(ratios, content_op);
         const Json ratio = r ? *r : unknown_ratio;
         out = Band{std::max(floor_tokens, content.low * json::get_number(ratio, "low", 0.1)), std::max(floor_tokens, content.high * json::get_number(ratio, "high", 1.0))};
       }
