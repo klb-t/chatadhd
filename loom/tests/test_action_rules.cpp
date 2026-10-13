@@ -205,7 +205,9 @@ TEST_SUITE("action_rules") {
     const Json only_implemented = unwrap(e.actions_for(kMessage, Json(), Json{{"implemented_only", true}}));
     CHECK_FALSE(row(only_implemented, "semantic.analyse").is_null());
     CHECK_FALSE(row(only_implemented, "summarise").is_null());  // implemented: its use_model step is data the interpreter runs
-    CHECK(row(only_implemented, "elaborate").is_null());        // still planned
+    CHECK_FALSE(row(only_implemented, "elaborate").is_null());  // implemented (P11): its use_model step is data too
+    for (const auto& [id, a] : e.catalogue().items())            // whatever is still only declared is not listed
+      if (a.value("status", "") == "planned") CHECK(row(only_implemented, id).is_null());
     CHECK_FALSE(row(only_implemented, "depict").is_null());     // implemented: two use_model steps, data
   }
 

@@ -62,6 +62,8 @@ class ActionRunner {
  private:
   struct Loaded;
   Result<Loaded> load();
+  Result<Json> write_overlay(std::string_view action, const Json& request);
+  Result<Json> run_gated(std::string_view action, const Json& request);
   Result<RunRequest> prepare(const Loaded& loaded, const Json& request) const;
   Interpreter make_interpreter(const Loaded& loaded) const;
   void install_executors(ExecutorTable& table);

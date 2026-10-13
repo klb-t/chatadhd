@@ -1,6 +1,8 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+#include "loom/action_emergent.h"
+#include "loom/action_overlay.h"
 
 #include <algorithm>
 
@@ -94,7 +96,16 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   if (req.prompt.empty() && req.inputs.empty() && req.messages.empty())
     return failed(Error(Errc::InvalidArgument, "nothing to send: the step has no prompt, messages or input"));
   req.kind = c.root_action;
-  req.action = c.root_action;
+  // A model call is declared under a composite that has a use_model step of its own: the root when it does, else the composite
+  // whose step it is (a chain of composites, a sequence saved as one action).
+  req.action = c.owner_action.empty() ? c.root_action : c.owner_action;
+  if (!c.root_action.empty() && !c.owner_action.empty() && c.root_action != c.owner_action) {
+    if (auto profile = RuntimeProfile::load("actions", rt.paths().root))
+      if (const Json* actions = json::find(profile->values(), "actions"))
+        if (const Json* root_entry = json::find(*actions, c.root_action))
+          for (const auto& st : root_entry->value("steps", Json::array()))
+            if (json::get_string(st, "action") == "use_model") req.action = c.root_action;
+  }
   req.title = json::get_string(with, "title", json::get_string(um, "title", "ChatADHD"));
   req.timeout_ms = static_cast<int>(json::get_int(with, "timeout_ms", json::get_int(um, "timeout_ms", 180000)));
   req.cancel = c.cancel;
@@ -146,6 +157,11 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   out.state = StepOutcome::State::Failed;
   if (!out.error) out.error = Error(Errc::Unavailable, "the model call produced no result");
   return out;
+}
+
+bool is_overlay_action(std::string_view action) {
+  return action == "rules.set" || action == "rules.disable" || action == "rules.list" || action == "actions.define" || action == "actions.remove" ||
+         action == "groups.define" || action == "groups.remove";
 }
 
 // ── settings ────────────────────────────────────────────────────────
@@ -383,7 +399,16 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
   }
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   const Engine& engine = loaded.engine;
-  LOOM_TRY_ASSIGN(Json resolved, loaded.resolver.resolve(sources, element, [&](std::string_view c) { return engine.has_class(c); }));
+  auto known_class = [&](std::string_view c) { return engine.has_class(c); };
+  // Several elements as one input (combine): a list of ids, or {"members": [...]}.
+  if (element.is_array()) element = Json{{"members", element}};
+  Json resolved;
+  if (element.is_object() && element.contains("members") && element["members"].is_array() && !element.contains("source")) {
+    LOOM_TRY_ASSIGN(resolved, loaded.resolver.group(sources, element["members"], known_class,
+                                                    [&](std::string_view cls) { return engine.expand_traits({std::string(cls)}); }));
+  } else {
+    LOOM_TRY_ASSIGN(resolved, loaded.resolver.resolve(sources, element, known_class));
+  }
   if (resolved.is_string()) resolved = Json{{"class", resolved}};
   r.element = std::move(resolved);
   return r;
@@ -478,7 +503,47 @@ Result<Json> ActionRunner::preview(const Json& request) {
   return preview;
 }
 
+// The writes of rules and of the user's own actions: raw (a step of a run has passed the rules already) or gated (a call from
+// loom_invoke, HTTP or the CLI becomes a run, so the rules of the scope and the confirmation apply as for any command).
+Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& request) {
+  const auto& root = rt_.paths().root;
+  if (action == "rules.set") return rules_set(root, request);
+  if (action == "rules.disable") return rules_disable(root, request);
+  if (action == "rules.list") return rules_list(root, request);
+  const bool define = action == "actions.define" || action == "groups.define";
+  const bool remove = action == "actions.remove" || action == "groups.remove";
+  if (!define && !remove) return Error(Errc::NotFound, "unknown action '" + std::string(action) + "'");
+  Result<Json> done = action == "actions.define"   ? actions_define(root, request)
+                      : action == "groups.define"  ? groups_define(root, request)
+                      : action == "actions.remove" ? actions_remove(root, request)
+                                                   : groups_remove(root, request);
+  // The node that recorded where the proposal came from says what became of it.
+  if (done && json::get_bool(*done, "written", true)) {
+    const std::string node = define ? json::get_string(request.value("provenance", Json::object()), "node")
+                                    : json::get_string(done->value("origin", Json::object()), "node");
+    emergent::settle(rt_, node, define ? "accepted" : "undone", *done);
+  }
+  return done;
+}
+
+Result<Json> ActionRunner::run_gated(std::string_view action, const Json& request) {
+  Json args = request;
+  for (const char* control : {"confirmed", "ref", "context", "propose"}) args.erase(control);
+  Json run_request{{"action", std::string(action)}, {"element", Json{{"class", "application"}}}, {"args", args}, {"ref", json::get_string(request, "ref", "api")}};
+  Json context = request.value("context", Json::object());
+  if (!context.is_object()) context = Json::object();
+  if (!context.contains("origin")) context["origin"] = json::get_string(request, "ref", "api");
+  run_request["context"] = context;
+  if (json::get_bool(request, "confirmed", false)) run_request["confirmed"] = true;
+  if (json::get_bool(request, "propose", false)) run_request["propose"] = true;
+  std::string conv = json::get_string(context, "conv_id");
+  if (conv.empty() && json::get_string(request, "scope") == "conversation") conv = json::get_string(request, "scope_id");
+  if (!conv.empty()) run_request["scope"] = Json{{"conversation", conv}, {"turn", ""}};
+  return run(run_request);
+}
+
 Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view action, const Json& request) {
+  if (port == "actions" && is_overlay_action(action)) return write_overlay(action, request);
   if (port == "actions") return invoke(action, request);
   if (port == "storage") {
     Json r = request;
@@ -494,6 +559,8 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "cancel") return cancel(request);
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);
+  if (action == "rules.list") return write_overlay(action, request);
+  if (is_overlay_action(action)) return run_gated(action, request);
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config());
 }

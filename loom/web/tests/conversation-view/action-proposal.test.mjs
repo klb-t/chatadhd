@@ -181,3 +181,48 @@ test('a result message points at the graph nodes it presents', () => {
   // the view of a pending question is unaffected
   assert.equal(a.pendingAnswer({ action_run: report }), null);
 });
+
+test('the arguments the words gave and the ones that keep their defaults are shown (P11)', () => {
+  const read = { ...proposal, args: { target_language: 'German' }, params: [
+    { name: 'target_language', required: false, given: true, value: 'German', from: 'phrase', default: 'the language of the command' },
+    { name: 'style', required: false, given: false, default: 'light satire' },
+    { name: 'model', required: true, given: false },
+  ] };
+  const answer = a.pendingAnswer({ action_proposal: read });
+  const view = a.proposalView(answer);
+  assert.deepEqual(view.args, ['target_language=German']);
+  assert.deepEqual(view.open, ['style (light satire)']);  // a required parameter that is missing is the router's business, not a default
+  const texts = a.proposalTexts(feature, answer, view);
+  assert.equal(texts.args, en.args.replace('{{args}}', 'target_language=German'));
+  assert.equal(texts.argsOpen, en.args_open.replace('{{params}}', 'style (light satire)'));
+  const html = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'a', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.match(html, /data-testid="a-args"/);
+  assert.match(html, /data-testid="a-args-open"/);
+  assert.ok(html.includes('target_language=German'));
+  // a proposal without parameters says nothing about them
+  const plain = a.proposalTexts(feature, a.pendingAnswer({ action_proposal: proposal }), a.proposalView(a.pendingAnswer({ action_proposal: proposal })));
+  assert.equal(plain.args, null);
+  assert.equal(plain.argsOpen, null);
+  assert.ok(pl.args && pl.args_open && pl.rule_replaces);
+});
+
+test('a proposal that grows the catalogue says what it writes and where, in both languages (P11)', () => {
+  for (const kind of ['define_action', 'define_sequence', 'define_group']) {
+    assert.ok(en['definition_' + kind] && pl['definition_' + kind], kind);
+    const grown = { ...proposal, kind, definition: { kind, id: 'rozpisz', overlay: 'profiles/actions.pack', node: 'n_1' } };
+    const answer = a.pendingAnswer({ action_proposal: grown });
+    const view = a.proposalView(answer);
+    assert.deepEqual(view.definition, { kind, id: 'rozpisz', overlay: 'profiles/actions.pack' });
+    const texts = a.proposalTexts(feature, answer, view);
+    assert.equal(texts.title, en.title_definition);
+    assert.equal(texts.definition, en['definition_' + kind].replace('{{id}}', 'rozpisz').replace('{{overlay}}', 'profiles/actions.pack'));
+    const html = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'g', onConfirm: () => undefined, onReject: () => undefined }));
+    assert.match(html, /data-testid="g-definition"/);
+    assert.ok(html.includes('profiles/actions.pack'));
+    assert.match(html, /data-testid="g-confirm"/);  // still a yes/no: the definition is offered, never made
+  }
+  // an ordinary command has no definition line, and a replacement of an earlier rule is said
+  assert.equal(a.proposalView(a.pendingAnswer({ action_proposal: proposal })).definition, null);
+  const replaces = a.proposalTexts(feature, a.pendingAnswer({ action_proposal: { ...proposal, replaces: true } }), a.proposalView(a.pendingAnswer({ action_proposal: { ...proposal, replaces: true } })));
+  assert.equal(replaces.replaces, en.rule_replaces);
+});

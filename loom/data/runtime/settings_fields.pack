@@ -223,6 +223,14 @@
         "description": "Where the result of an action run goes: graph (preset: a form node linked to its source element and to the run), run_only (the result stays in the run document) or conversation_message (the text is also posted as a message of the conversation and linked in the graph). Runtime profile action_results. This is the user's level of a value that the scope chain resolves: a rule on a conversation or a project may set another one. Text above the profile's inline_max_bytes goes to the blob store whatever the target is. Default: graph."
       },
       {
+        "key": "emergent_actions",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether the catalogue of actions grows from your conversations (R55): propose (preset: a command no action understands, a sequence you keep repeating, or an action used on several classes is offered as a new action or group, never made silently) or off. Accepting writes only your own overlays (profiles/actions.pack, profiles/intent_routing.pack, profiles/graph_entry.pack). Runtime profile intent_routing (emergent). Default: propose."
+      },
+      {
         "key": "image_model",
         "scope": "config",
         "group": "chat",

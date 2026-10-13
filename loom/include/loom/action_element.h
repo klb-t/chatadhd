@@ -13,6 +13,7 @@
 #include <filesystem>
 #include <functional>
 #include <optional>
+#include <set>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -52,6 +53,14 @@ class ElementResolver {
   Result<Json> resolve(const ElementSources& sources, const Json& element,
                        const std::function<bool(std::string_view)>& known_class) const;
 
+  // Several elements as one input (combine): each member is resolved as `resolve` does. One member is that member itself; several make
+  //   {"id":"", "class": the class they share or "", "traits": what they all have when their classes differ, "source":"group",
+  //    "members":[resolved...], "label"?, "attrs":{"count":n}}
+  // so the engine fits an action to the group by what all of them are, and the content is the members' contents one after another.
+  // `traits_of(class)` is the traits a class stands for (Engine::expand_traits).
+  Result<Json> group(const ElementSources& sources, const Json& members, const std::function<bool(std::string_view)>& known_class,
+                     const std::function<std::set<std::string>(std::string_view)>& traits_of) const;
+
   // The element's content as typed parts: text of a message / node / text blob, the transcript of a
   // conversation, the bytes reference of a media blob. Empty for elements that carry no content.
   Result<std::vector<llm::Part>> content_parts(const ElementSources& sources, const Json& resolved_element) const;
@@ -64,6 +73,7 @@ class ElementResolver {
   const Form* form_of(std::string_view text) const;
   Result<Json> resolve_form(const ElementSources& sources, const Form& form, std::string_view id) const;
   Result<Json> resolve_blob(const ElementSources& sources, std::string_view hash) const;
+  Result<Json> resolve_device(const ElementSources& sources, const Form& form, std::string_view id) const;
   Result<Json> resolve_setting(const ElementSources& sources, std::string_view key) const;
   Json mime_element(std::string_view mime) const;
 

@@ -371,6 +371,43 @@ TEST_SUITE("chat_route") {
       if (e.type.rfind("action.", 0) == 0) CHECK(e.payload.dump().find("sk-evil") == std::string::npos);
   }
 
+  TEST_CASE("auto-run with the result as a conversation message: the proposal comes first, then the result (P11)") {
+    Fixture f;
+    f.rt->config().set("intent_routing_run", "always");
+    f.rt->config().set("action_result_target", "conversation_message");
+    f.script(1);
+    const auto out = f.input("Streść tę rozmowę");
+    REQUIRE(out.handled);
+    CHECK(out.chunk.at("type") == "action_result");
+    int command = -1, proposal = -1, result = -1;
+    const auto msgs = unwrap(f.rt->db().get_msgs(f.conv_id));
+    for (std::size_t i = 0; i < msgs.size(); ++i) {
+      const Json& m = msgs[i].metadata;
+      if (m.is_object() && m.value("routed", "") == "command") command = static_cast<int>(i);
+      if (m.is_object() && m.contains("action_proposal")) proposal = static_cast<int>(i);
+      if (m.is_object() && m.contains("action_result")) result = static_cast<int>(i);
+    }
+    REQUIRE(command >= 0);
+    REQUIRE(proposal >= 0);
+    REQUIRE(result >= 0);
+    CHECK(command < proposal);
+    CHECK(proposal < result);                 // the executed proposal, then the result it produced
+    CHECK(msgs[result].text == "A short summary.");
+    CHECK(msgs[proposal].id == out.assistant_message_id);
+    CHECK(msgs[proposal].metadata.at("action_proposal").at("status") == "executed");
+    CHECK(msgs[proposal].text.find("Gotowe") != std::string::npos);
+    CHECK(msgs.size() == 2 + 3);              // the two earlier messages, the command, the proposal, the result: nothing doubled
+    // The same with the result as a node of the graph (the preset): the proposal message carries the report, nothing follows it
+    Fixture g;
+    g.rt->config().set("intent_routing_run", "always");
+    g.script(1);
+    const auto graph = g.input("Streść tę rozmowę");
+    const auto gmsgs = unwrap(g.rt->db().get_msgs(g.conv_id));
+    CHECK(gmsgs.back().id == graph.assistant_message_id);
+    CHECK(gmsgs.back().text.find("A short summary.") != std::string::npos);
+    CHECK(gmsgs.back().metadata.at("action_proposal").at("status") == "executed");
+  }
+
   TEST_CASE("the execution setting: propose first (preset), read-only plans at once, or everything at once; rules still ask") {
     Fixture f;
     // preset: even a read goes through a proposal

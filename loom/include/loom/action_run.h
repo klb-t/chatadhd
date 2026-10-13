@@ -61,6 +61,7 @@ struct StepCall {
   std::string step_id;
   std::string action;          // the atomic action to carry out
   std::string root_action;     // the action the run was started for (cohort / provenance)
+  std::string owner_action;    // the composite whose step this is: the action a model call is declared under
   std::string variant;         // label of the variant ("" = none)
   Json with = Json::object();  // placeholders substituted
   std::vector<llm::Part> inputs;

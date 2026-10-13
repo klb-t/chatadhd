@@ -253,6 +253,96 @@
           "en": "A credential typed into the conversation would be stored in the conversation history and sent to the model provider; set it in Settings instead.",
           "pl": "Poświadczenie wpisane w rozmowie zostałoby zapisane w historii rozmowy i wysłane dostawcy modelu; ustaw je w Ustawieniach."
         }
+      },
+      "confirm:rules.set": {
+        "id": "confirm:rules.set",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "rules.set",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Writing a rule changes how the application behaves from now on; you confirm each one.",
+          "pl": "Zapisanie reguły zmienia od teraz zachowanie aplikacji; każdą potwierdzasz sam."
+        }
+      },
+      "confirm:rules.disable": {
+        "id": "confirm:rules.disable",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "rules.disable",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Switching a rule off changes how the application behaves from now on; you confirm each one.",
+          "pl": "Wyłączenie reguły zmienia od teraz zachowanie aplikacji; każdą potwierdzasz sam."
+        }
+      },
+      "confirm:actions.define": {
+        "id": "confirm:actions.define",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "actions.define",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Defining an action adds to what the application can do from now on; you confirm each one.",
+          "pl": "Zdefiniowanie akcji powiększa od teraz to, co aplikacja potrafi; każde potwierdzasz sam."
+        }
+      },
+      "confirm:actions.remove": {
+        "id": "confirm:actions.remove",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "actions.remove",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Removing an action takes away what you added; you confirm each one.",
+          "pl": "Usunięcie akcji odbiera to, co dodałeś; każde potwierdzasz sam."
+        }
+      },
+      "confirm:groups.define": {
+        "id": "confirm:groups.define",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "groups.define",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Defining a group adds a name that rules and actions can refer to; you confirm each one.",
+          "pl": "Zdefiniowanie grupy dodaje nazwę, do której mogą się odwoływać reguły i akcje; każde potwierdzasz sam."
+        }
+      },
+      "confirm:groups.remove": {
+        "id": "confirm:groups.remove",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "groups.remove",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Removing a group takes away a name your rules may refer to; you confirm each one.",
+          "pl": "Usunięcie grupy odbiera nazwę, do której mogą się odwoływać Twoje reguły; każde potwierdzasz sam."
+        }
       }
     },
     "extrapolation": {
@@ -304,6 +394,72 @@
           "order": "asc"
         }
       ]
+    },
+    "user_rules": {
+      "id_prefix": "user",
+      "default_initiator": "user",
+      "default_scope": "person",
+      "default_reason": {
+        "en": "Set by you.",
+        "pl": "Ustawione przez Ciebie."
+      },
+      "instance_levels": [
+        "role_in_context",
+        "project",
+        "conversation",
+        "turn"
+      ],
+      "overlay": "action_rules"
+    },
+    "scoped_values": {
+      "keys": {
+        "action_results.target": {
+          "setting": "action_result_target",
+          "label": {
+            "en": "Where the results of actions go",
+            "pl": "Dokąd trafiają wyniki akcji"
+          }
+        },
+        "extrapolation.preset": {
+          "setting": "extrapolation_preset",
+          "label": {
+            "en": "Preset of chain proposals",
+            "pl": "Preset propozycji łańcuchów"
+          }
+        },
+        "extrapolation.max_length": {
+          "setting": "extrapolation_bounds",
+          "field": "max_length",
+          "label": {
+            "en": "Longest proposed chain",
+            "pl": "Najdłuższy proponowany łańcuch"
+          }
+        },
+        "extrapolation.max_cost": {
+          "setting": "extrapolation_bounds",
+          "field": "max_cost",
+          "label": {
+            "en": "Highest cost of a proposed chain",
+            "pl": "Najwyższy koszt proponowanego łańcucha"
+          }
+        },
+        "extrapolation.min_confidence": {
+          "setting": "extrapolation_bounds",
+          "field": "min_confidence",
+          "label": {
+            "en": "Lowest confidence of a proposed chain",
+            "pl": "Najniższa pewność proponowanego łańcucha"
+          }
+        },
+        "extrapolation.max_results": {
+          "setting": "extrapolation_bounds",
+          "field": "max_results",
+          "label": {
+            "en": "How many chains are proposed",
+            "pl": "Ile łańcuchów proponować"
+          }
+        }
+      }
     }
   },
   "value_schema": {
@@ -528,6 +684,79 @@
         },
         "additionalProperties": true,
         "description": "Chain proposals (GRAF_HUB_KOD_SILNIK §5, wave 2b). Presets are not limits: null = no bound, the owner chooses; off disables proposals."
+      },
+      "user_rules": {
+        "type": "object",
+        "description": "Rules the user writes by saying so (rules.set from the conversation, the CLI or the API), kept in the overlay profiles/action_rules.pack. id_prefix starts the id of such a rule (the rest names scope, dimension and subject, so a new rule for the same subject replaces the old one); default_scope is where a rule lands when the words name none; default_reason fills a rule that gives no reason (deny needs one, R43); instance_levels are the levels that need a scope_id (a conversation, a project ...).",
+        "required": [
+          "id_prefix",
+          "default_initiator",
+          "default_scope",
+          "default_reason",
+          "instance_levels"
+        ],
+        "properties": {
+          "id_prefix": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default_initiator": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default_scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "default_reason": {
+            "type": [
+              "string",
+              "object"
+            ]
+          },
+          "instance_levels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "overlay": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "scoped_values": {
+        "type": "object",
+        "description": "Settings the scope chain resolves (R47): the key a set_value rule targets, the user's setting that is its person-level baseline, and for a setting that holds an object which field of it. A rule on a setting the table does not list is written all the same, and the answer says that nothing reads it per scope yet.",
+        "required": [
+          "keys"
+        ],
+        "properties": {
+          "keys": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "setting"
+              ],
+              "properties": {
+                "setting": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "field": {
+                  "type": "string"
+                },
+                "label": {
+                  "type": "object"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
       }
     }
   }

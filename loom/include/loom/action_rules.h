@@ -19,6 +19,7 @@
 
 #include <filesystem>
 #include <map>
+#include <optional>
 #include <set>
 #include <string>
 #include <string_view>
@@ -176,6 +177,10 @@ class Engine {
   bool has_class(std::string_view id) const { return classes_.contains(std::string(id)); }
   // The decision table entry of a gate decision (allow | confirm | deny): its restrictiveness, 0 = none.
   int restrictiveness(std::string_view decision) const;
+  // A rule of the store's shape that is pinned against `rule`: a locked rule of the same or a more general scope that targets the
+  // same elements and actions with another decision (or another value of the same key). The pinned rule wins whatever is written
+  // below it, so writing `rule` would change nothing. {rule, scope, scope_id?, reason?, initiator?, conflict} or nothing.
+  std::optional<Json> locked_against(const Json& rule) const;
   // Effect flags, groups and the decision tables are read through the catalogue and Decision; the
   // executors (action_run.h) additionally need the scope chain, so it is exposed read-only.
   const Json& decisions() const { return decisions_; }

@@ -1609,15 +1609,45 @@
       "elaborate": {
         "id": "elaborate",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Elaborate",
-        "description": "Develop a text content: add detail, examples, the missing steps.",
+        "description": "Develop a text content: add detail, examples, the missing steps. What to dwell on is the argument focus.",
         "labels": {
-          "pl": "Dopowiedz"
+          "pl": "Rozwiń"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You develop texts. Keep the author's voice and claims; add detail, concrete examples and the steps that are missing; do not contradict the text and do not present invented facts as the author's. Answer in the language of the text.",
+                  "pl": "Rozwijasz teksty. Zachowaj głos i tezy autora; dodaj szczegóły, konkretne przykłady i brakujące kroki; nie przeczą tekstowi i nie podawaj zmyślonych faktów jako słów autora. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Elaborate on the text above. Dwell on: {focus}.",
+                    "pl": "Rozwiń powyższy tekst. Skup się na: {focus}."
+                  }
+                },
+                "vars": {
+                  "focus": {
+                    "$arg": "focus",
+                    "default": {
+                      "$localized": {
+                        "en": "whatever needs the most detail",
+                        "pl": "tym, co najbardziej wymaga rozwinięcia"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.6
+              }
+            }
           }
         ],
         "inputs": [
@@ -1656,7 +1686,19 @@
             "rozwin*",
             "dopowiedz*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "focus",
+            "type": "string",
+            "required": false,
+            "default": "whatever needs the most detail",
+            "description": {
+              "en": "Which part to develop (\"the examples\", \"the second paragraph\").",
+              "pl": "Którą część rozwinąć („przykłady”, „drugi akapit”)."
+            }
+          }
+        ]
       },
       "parody": {
         "id": "parody",
@@ -1734,6 +1776,7 @@
             "parodize"
           ],
           "pl": [
+            "sparoduj*",
             "sparodiuj*",
             "parodi*"
           ]
@@ -1754,15 +1797,45 @@
       "critique": {
         "id": "critique",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Critique",
-        "description": "Evaluate a text content: strengths, weaknesses, credibility.",
+        "description": "Evaluate a text content: strengths, weaknesses, credibility, clarity. What to judge it by is the argument criteria.",
         "labels": {
           "pl": "Skrytykuj"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You are a fair, rigorous critic. Judge the text on its merits: strengths, weaknesses, gaps in the reasoning, credibility of the claims, clarity. Be specific, quote briefly where it helps, and end with the one improvement that matters most. Do not rewrite the text. Answer in the language of the text.",
+                  "pl": "Jesteś rzetelnym, wymagającym krytykiem. Oceń tekst po jego wartości: mocne strony, słabe strony, luki w rozumowaniu, wiarygodność twierdzeń, jasność. Bądź konkretny, cytuj krótko, gdy to pomaga, i zakończ jedną poprawką, która liczy się najbardziej. Nie przepisuj tekstu. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Critique the text above. Judge it by: {criteria}.",
+                    "pl": "Oceń krytycznie powyższy tekst. Kryteria: {criteria}."
+                  }
+                },
+                "vars": {
+                  "criteria": {
+                    "$arg": "criteria",
+                    "default": {
+                      "$localized": {
+                        "en": "strengths, weaknesses, credibility and clarity",
+                        "pl": "mocne strony, słabe strony, wiarygodność i jasność"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.3
+              }
+            }
           }
         ],
         "inputs": [
@@ -1803,20 +1876,62 @@
             "oceń",
             "ocen*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "criteria",
+            "type": "string",
+            "required": false,
+            "default": "strengths, weaknesses, credibility and clarity",
+            "description": {
+              "en": "What to judge the text by (\"the argument\", \"the tone\").",
+              "pl": "Czym oceniać tekst („argumentacja”, „ton”)."
+            }
+          }
+        ]
       },
       "combine": {
         "id": "combine",
         "kind": "composite",
-        "status": "planned",
+        "status": "implemented",
         "title": "Combine",
-        "description": "Put several contents side by side and join them into one.",
+        "description": "Put several contents side by side and join them into one text: every important point of each kept, repetition removed, disagreements named. Name the elements (ids) to combine; the argument shape says what to make of them.",
         "labels": {
-          "pl": "Zestaw"
+          "pl": "Połącz"
         },
         "steps": [
           {
-            "action": "use_model"
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You combine several texts into one coherent text. Keep every important point of each source, remove repetition, resolve overlaps and add nothing of your own. If the sources disagree, say so plainly instead of choosing silently. Answer in the language of the sources.",
+                  "pl": "Łączysz kilka tekstów w jeden spójny. Zachowaj każdą ważną myśl z każdego źródła, usuń powtórzenia, uporządkuj nakładanie się treści i nie dodawaj nic od siebie. Gdy źródła się różnią, powiedz to wprost zamiast wybierać po cichu. Odpowiadaj w języku źródeł."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Combine the texts above into one: {shape}.",
+                    "pl": "Połącz powyższe teksty w jeden: {shape}."
+                  }
+                },
+                "vars": {
+                  "shape": {
+                    "$arg": "shape",
+                    "default": {
+                      "$localized": {
+                        "en": "a coherent text",
+                        "pl": "spójny tekst"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.3
+              }
+            }
           }
         ],
         "inputs": [
@@ -1856,7 +1971,20 @@
             "polacz*",
             "zestaw*"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "shape",
+            "type": "string",
+            "required": false,
+            "default": "a coherent text",
+            "description": {
+              "en": "What to make of them (\"a summary\", \"a list\", \"an email\").",
+              "pl": "Co z nich zrobić („streszczenie”, „lista”, „e-mail”)."
+            }
+          }
+        ],
+        "element_many": true
       },
       "depict": {
         "id": "depict",
@@ -2938,6 +3066,1389 @@
           "path": "/api/actions/status"
         }
       },
+      "rules.set": {
+        "id": "rules.set",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Set a rule",
+        "description": "Writes a scoped rule or value into the user overlay profiles/action_rules.pack: set_value (a setting's value in a scope), confirm / require_confirmation, deny (with a reason), allow, at conversation, person, installation or any other level of the scope chain. A new rule for the same scope and subject replaces the old one. A rule pinned by a higher scope (locked) refuses with its reason. Writing is an action like any other: the rules of the scope apply and the preset asks you to confirm each write. Undo: rules.disable.",
+        "labels": {
+          "pl": "Zapisz regułę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "rules.set",
+        "params": [
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Level of the scope chain: conversation, person (alias user), installation, project ... Default: person.",
+              "pl": "Poziom łańcucha zakresów: conversation, person (alias user), installation, project ... Domyślnie: person."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "scope_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The instance of the level (a conversation id for conversation). Defaults to the conversation the call comes from.",
+              "pl": "Instancja poziomu (id rozmowy dla conversation). Domyślnie rozmowa, z której idzie wywołanie."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "effect",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "set_value | confirm | require_confirmation | deny | allow (or any effect of the rules table). With key and value: set_value.",
+              "pl": "set_value | confirm | require_confirmation | deny | allow (albo dowolny efekt z tabeli reguł). Z key i value: set_value."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "key",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "set_value: the setting whose value the rule sets (e.g. action_result_target).",
+              "pl": "set_value: ustawienie, którego wartość ustawia reguła (np. action_result_target)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "value",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "set_value: the value (JSON for numbers, booleans and objects).",
+              "pl": "set_value: wartość (JSON dla liczb, wartości logicznych i obiektów)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "action",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "confirm / deny / allow: the action id the rule is about (default: every action).",
+              "pl": "confirm / deny / allow: id akcji, której dotyczy reguła (domyślnie każda)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "target",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Which elements: {\"kind\":\"class\",\"id\":...}, {\"kind\":\"trait\",...}, {\"kind\":\"any\"} (default).",
+              "pl": "Które elementy: {\"kind\":\"class\",\"id\":...}, {\"kind\":\"trait\",...}, {\"kind\":\"any\"} (domyślnie)."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "reason",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Why (deny needs one; default: \"Set by you.\").",
+              "pl": "Dlaczego (deny wymaga; domyślnie: „Ustawione przez Ciebie.”)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "initiator",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Who stands behind the rule (default: user).",
+              "pl": "Kto stoi za regułą (domyślnie: user)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "locked",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Pin the rule: a lower scope cannot override it.",
+              "pl": "Przypnij regułę: niższy zakres jej nie nadpisze."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Id of the rule (default: made from scope, dimension and subject).",
+              "pl": "Id reguły (domyślnie z zakresu, wymiaru i przedmiotu)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/rules/set"
+        }
+      },
+      "rules.disable": {
+        "id": "rules.disable",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Switch a rule off",
+        "description": "Switches a rule off: a shipped rule by an override in the user overlay, an own rule in place (the record stays). A locked rule refuses with its reason and initiator. restore: true takes the switch-off back.",
+        "labels": {
+          "pl": "Wyłącz regułę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "rules.disable",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the rule (see rules.list).",
+              "pl": "Id reguły (zob. rules.list)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "restore",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Take the switch-off back.",
+              "pl": "Cofnij wyłączenie."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/rules/disable"
+        }
+      },
+      "rules.list": {
+        "id": "rules.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Rules in force",
+        "description": "The rules in force (shipped data plus the user overlay), each with where it comes from (shipped, overlay, shipped+overlay) and whether it is switched off.",
+        "labels": {
+          "pl": "Reguły w mocy"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "rules.list",
+        "params": [
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only rules of this level.",
+              "pl": "Tylko reguły tego poziomu."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "scope_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only rules of this instance (a conversation id).",
+              "pl": "Tylko reguły tej instancji (id rozmowy)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "user_only",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Only the rules the user wrote or changed.",
+              "pl": "Tylko reguły zapisane lub zmienione przez użytkownika."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "include_disabled",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Include switched-off rules (default true).",
+              "pl": "Uwzględnij wyłączone reguły (domyślnie tak)."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": true
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/rules/list"
+        }
+      },
+      "actions.define": {
+        "id": "actions.define",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Define an action",
+        "description": "Writes a new action of your own into the user overlay profiles/actions.pack (never into the shipped data): a composite with one use_model step whose prompt is your instruction (instruction), or one that chains actions of the catalogue (steps, each step's result feeding the next). The phrases that call it join the lexicon (profiles/intent_routing.pack). It is offered, never made silently: from a command no action understands, from a sequence you keep repeating. Undo: actions.remove.",
+        "labels": {
+          "pl": "Zdefiniuj akcję"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "actions.define",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the action (a-z, 0-9, _ . -); from your own words.",
+              "pl": "Nazwa akcji (a-z, 0-9, _ . -); z Twoich własnych słów."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "instruction",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The instruction the action sends to the model with the element's text (one use_model step).",
+              "pl": "Polecenie, które akcja wysyła do modelu z tekstem elementu (jeden krok use_model)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "steps",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "Instead of instruction: the steps, each {\"action\": id}; every action must exist and be implemented.",
+              "pl": "Zamiast instruction: kroki, każdy {\"action\": id}; każda akcja musi istnieć i być zaimplementowana."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Title (default: the id).",
+              "pl": "Tytuł (domyślnie id)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "requires",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "Traits the element must have (default: has_text, or those of the first step).",
+              "pl": "Cechy, które element musi mieć (domyślnie has_text albo cechy pierwszego kroku)."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "phrases",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Words that call it: {\"pl\": [\"rozpisz\"], \"en\": [\"spell out\"]}.",
+              "pl": "Słowa, które ją wywołują: {\"pl\": [\"rozpisz\"], \"en\": [\"spell out\"]}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "lang",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the instruction (pl or en), for the label and the prompt.",
+              "pl": "Język polecenia (pl lub en), dla etykiety i promptu."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "provenance",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Where it emerged from: {origin, conv_id, message_ids, node}.",
+              "pl": "Skąd się wzięła: {origin, conv_id, message_ids, node}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/define"
+        }
+      },
+      "actions.remove": {
+        "id": "actions.remove",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Remove an action of your own",
+        "description": "Takes an action you defined (or accepted) back out of the user overlay, with its phrases; the node that records where it came from stays as history. A shipped action cannot be removed (switch it off with an overlay), and neither can one that another action of yours uses.",
+        "labels": {
+          "pl": "Usuń własną akcję"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "actions.remove",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the action.",
+              "pl": "Nazwa akcji."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/remove"
+        }
+      },
+      "groups.define": {
+        "id": "groups.define",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Define a group",
+        "description": "Writes a group (a named bundle of traits that rules and actions can refer to) into the user overlay profiles/graph_entry.pack. It is offered when an action of yours is used on several classes that share traits. Undo: groups.remove.",
+        "labels": {
+          "pl": "Zdefiniuj grupę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "groups.define",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the group.",
+              "pl": "Nazwa grupy."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "traits",
+            "type": "array",
+            "required": true,
+            "description": {
+              "en": "The traits of the bundle (known traits or class ids).",
+              "pl": "Cechy zestawu (znane cechy lub id klas)."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "label",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "{\"en\": ..., \"pl\": ...}",
+              "pl": "{\"en\": ..., \"pl\": ...}"
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "element_match",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "all (default) or any.",
+              "pl": "all (domyślnie) albo any."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "provenance",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Where it emerged from: {origin, conv_id, message_ids, node}.",
+              "pl": "Skąd się wzięła: {origin, conv_id, message_ids, node}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/groups/define"
+        }
+      },
+      "groups.remove": {
+        "id": "groups.remove",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Remove a group of your own",
+        "description": "Takes a group you defined back out of the user overlay.",
+        "labels": {
+          "pl": "Usuń własną grupę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/overlay.cpp",
+        "port": "actions",
+        "action": "groups.remove",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Name of the group.",
+              "pl": "Nazwa grupy."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Check and say whether it would be refused; write nothing.",
+              "pl": "Sprawdź i powiedz, czy zostałaby odrzucona; nic nie zapisuj."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          },
+          {
+            "name": "confirmed",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
+              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/groups/remove"
+        }
+      },
+      "device.record_audio": {
+        "id": "device.record_audio",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Record audio",
+        "description": "Record sound with a device that captures audio (a microphone). The recording becomes an audio form; transcribe turns it into text.",
+        "labels": {
+          "pl": "Nagraj dźwięk"
+        },
+        "inputs": [],
+        "outputs": [
+          "audio"
+        ],
+        "requires": [
+          "captures_audio"
+        ],
+        "produces": [
+          "has_audio"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "record audio",
+            "record sound",
+            "record my voice",
+            "start recording"
+          ],
+          "pl": [
+            "nagraj dźwięk",
+            "nagraj dzwiek",
+            "nagraj głos",
+            "nagraj glos",
+            "nagraj audio"
+          ]
+        },
+        "params": [
+          {
+            "name": "seconds",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How long to record (default: until stopped).",
+              "pl": "Jak długo nagrywać (domyślnie: do zatrzymania)."
+            }
+          }
+        ]
+      },
+      "device.capture_image": {
+        "id": "device.capture_image",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Take a photo",
+        "description": "Take a still picture with a device that captures images (a camera). The picture becomes an image form; ocr and describe_image read it.",
+        "labels": {
+          "pl": "Zrób zdjęcie"
+        },
+        "inputs": [],
+        "outputs": [
+          "image"
+        ],
+        "requires": [
+          "captures_image"
+        ],
+        "produces": [
+          "has_image"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "take a photo",
+            "take a picture",
+            "take a snapshot",
+            "capture an image"
+          ],
+          "pl": [
+            "zrób zdjęcie",
+            "zrob zdjecie",
+            "zrób fotkę",
+            "zrób fotografię"
+          ]
+        }
+      },
+      "device.capture_video": {
+        "id": "device.capture_video",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Record video",
+        "description": "Record video with a device that captures video (a camera).",
+        "labels": {
+          "pl": "Nagraj film"
+        },
+        "inputs": [],
+        "outputs": [
+          "video"
+        ],
+        "requires": [
+          "captures_video"
+        ],
+        "produces": [
+          "has_video"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "record video",
+            "record a video",
+            "film this"
+          ],
+          "pl": [
+            "nagraj film",
+            "nagraj wideo"
+          ]
+        },
+        "params": [
+          {
+            "name": "seconds",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How long to record (default: until stopped).",
+              "pl": "Jak długo nagrywać (domyślnie: do zatrzymania)."
+            }
+          }
+        ]
+      },
+      "device.play_audio": {
+        "id": "device.play_audio",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Play audio",
+        "description": "Play a recording on a device that plays audio (a speaker). Name the recording in the argument audio.",
+        "labels": {
+          "pl": "Odtwórz dźwięk"
+        },
+        "inputs": [
+          "audio"
+        ],
+        "outputs": [],
+        "requires": [
+          "plays_audio"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "play audio",
+            "play sound",
+            "play the recording"
+          ],
+          "pl": [
+            "odtwórz*",
+            "odtworz*",
+            "odegraj*"
+          ]
+        },
+        "params": [
+          {
+            "name": "audio",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the audio element (a blob hash or a node) to play.",
+              "pl": "Id elementu audio (skrót bloba albo węzeł), który odtworzyć."
+            }
+          }
+        ]
+      },
+      "device.display": {
+        "id": "device.display",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Show on the screen",
+        "description": "Show a text or an image on a device that displays (the screen; on the command line, the terminal).",
+        "labels": {
+          "pl": "Pokaż na ekranie"
+        },
+        "inputs": [
+          "text",
+          "image"
+        ],
+        "outputs": [],
+        "requires": [
+          "displays_visual"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "show on screen",
+            "display on screen"
+          ],
+          "pl": [
+            "wyświetl*",
+            "wyswietl*",
+            "pokaż na ekranie",
+            "pokaz na ekranie"
+          ]
+        },
+        "params": [
+          {
+            "name": "content",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the element to show.",
+              "pl": "Id elementu do pokazania."
+            }
+          }
+        ]
+      },
+      "device.clipboard_write": {
+        "id": "device.clipboard_write",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Copy to the clipboard",
+        "description": "Put a text on the clipboard.",
+        "labels": {
+          "pl": "Skopiuj do schowka"
+        },
+        "inputs": [
+          "text"
+        ],
+        "outputs": [],
+        "requires": [
+          "holds_clipboard"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "copy to clipboard",
+            "copy to the clipboard",
+            "put on the clipboard"
+          ],
+          "pl": [
+            "skopiuj do schowka",
+            "wrzuć do schowka",
+            "wrzuc do schowka"
+          ]
+        },
+        "params": [
+          {
+            "name": "content",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the element whose text to copy.",
+              "pl": "Id elementu, którego tekst skopiować."
+            }
+          }
+        ]
+      },
+      "device.clipboard_read": {
+        "id": "device.clipboard_read",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Read the clipboard",
+        "description": "Read what is on the clipboard as a text.",
+        "labels": {
+          "pl": "Odczytaj schowek"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "holds_clipboard"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "paste from clipboard",
+            "read the clipboard",
+            "paste the clipboard"
+          ],
+          "pl": [
+            "wklej ze schowka",
+            "odczytaj schowek"
+          ]
+        }
+      },
+      "device.notify": {
+        "id": "device.notify",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Notify",
+        "description": "Raise a notification on a device that notifies (system notifications; on the command line, a line and the bell).",
+        "labels": {
+          "pl": "Powiadom"
+        },
+        "inputs": [
+          "text"
+        ],
+        "outputs": [],
+        "requires": [
+          "notifies"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "notify me",
+            "send a notification",
+            "send me a notification"
+          ],
+          "pl": [
+            "powiadom*",
+            "wyślij powiadomienie",
+            "wyslij powiadomienie"
+          ]
+        },
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What the notification says.",
+              "pl": "Co mówi powiadomienie."
+            }
+          }
+        ]
+      },
+      "device.pick_file": {
+        "id": "device.pick_file",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Pick a file",
+        "description": "Let the user pick a file (the browser file picker, Android storage access, the process file system).",
+        "labels": {
+          "pl": "Wybierz plik"
+        },
+        "inputs": [],
+        "outputs": [
+          "file_ref"
+        ],
+        "requires": [
+          "file_access"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "pick a file",
+            "choose a file",
+            "open a file"
+          ],
+          "pl": [
+            "wybierz plik",
+            "otwórz plik",
+            "otworz plik"
+          ]
+        }
+      },
+      "device.request_permission": {
+        "id": "device.request_permission",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Ask for permission",
+        "description": "Ask the system for the permission a device needs (microphone, camera, notifications ...) before it is used.",
+        "labels": {
+          "pl": "Poproś o zgodę"
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "needs_permission"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "ask permission",
+            "request permission",
+            "ask for access"
+          ],
+          "pl": [
+            "poproś o zgodę",
+            "poproś o dostęp",
+            "popros o zgode",
+            "popros o dostep"
+          ]
+        }
+      },
+      "net.test_endpoint": {
+        "id": "net.test_endpoint",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "The device belongs to the client that owns it (the browser or the Android app); this runtime has no driver for it and no client is attached to it. The action is declared so that chains and rules can speak about it.",
+          "pl": "Urządzenie należy do klienta, który je ma (przeglądarki albo aplikacji na Androida); ten runtime nie ma do niego sterownika i nie jest do niego podłączony żaden klient. Akcja jest zadeklarowana, żeby łańcuchy i reguły mogły o niej mówić."
+        },
+        "title": "Test a connection",
+        "description": "Check that a network endpoint (a model provider, a server) answers. Reports the answer only; nothing is sent beyond a probe.",
+        "labels": {
+          "pl": "Sprawdź połączenie"
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "remote"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "client",
+        "phrases": {
+          "en": [
+            "test the connection",
+            "check the connection",
+            "ping"
+          ],
+          "pl": [
+            "sprawdź połączenie",
+            "sprawdz polaczenie",
+            "przetestuj połączenie"
+          ]
+        }
+      },
       "chat.route": {
         "id": "chat.route",
         "kind": "atomic",
@@ -3155,6 +4666,189 @@
             },
             "has_default": false,
             "edit": "free_text"
+          }
+        ]
+      },
+      "rephrase": {
+        "id": "rephrase",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Rephrase",
+        "description": "Say the same thing in another tone or at another level of language, keeping the meaning, facts, names and numbers. The tone is the argument tone, the level the argument level.",
+        "labels": {
+          "pl": "Przeredaguj"
+        },
+        "steps": [
+          {
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You rewrite texts. Keep the meaning, the facts, the names and the numbers; change only the way it is said: the tone, the register, the level of language. Output only the rewritten text, with no commentary. Answer in the language of the text.",
+                  "pl": "Przepisujesz teksty. Zachowaj sens, fakty, nazwy własne i liczby; zmień tylko sposób powiedzenia: ton, rejestr, poziom języka. Podaj samo przepisanie, bez komentarzy. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Rewrite the text above. Tone: {tone}. Level: {level}.",
+                    "pl": "Przeredaguj powyższy tekst. Ton: {tone}. Poziom: {level}."
+                  }
+                },
+                "vars": {
+                  "tone": {
+                    "$arg": "tone",
+                    "default": {
+                      "$localized": {
+                        "en": "plain and neutral",
+                        "pl": "prosty i neutralny"
+                      }
+                    }
+                  },
+                  "level": {
+                    "$arg": "level",
+                    "default": {
+                      "$localized": {
+                        "en": "everyday language",
+                        "pl": "język codzienny"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.5
+              }
+            }
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "restyle",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.85,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "params": [
+          {
+            "name": "tone",
+            "type": "string",
+            "required": false,
+            "default": "plain and neutral",
+            "description": {
+              "en": "The tone to say it in (\"formal\", \"warm\", \"blunt\").",
+              "pl": "Ton, w jakim to powiedzieć („formalny”, „ciepły”, „dosadny”)."
+            }
+          },
+          {
+            "name": "level",
+            "type": "string",
+            "required": false,
+            "default": "everyday language",
+            "description": {
+              "en": "The level of language (\"academic\", \"for teenagers\").",
+              "pl": "Poziom języka („akademicki”, „dla nastolatków”)."
+            }
+          }
+        ]
+      },
+      "explain_simply": {
+        "id": "explain_simply",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Explain simply",
+        "description": "Explain a text content for a stated level of competence: short sentences, everyday words, a concrete example, nothing false. Any level, down to a beginner and up to an expert: the audience is the argument audience.",
+        "labels": {
+          "pl": "Wytłumacz prościej"
+        },
+        "steps": [
+          {
+            "action": "use_model",
+            "with": {
+              "system": {
+                "$localized": {
+                  "en": "You explain things simply and correctly. Explain the text above for the stated audience: short sentences, everyday words, a concrete example or comparison, no jargon unless you explain it. Never talk down and never change what is true. Answer in the language of the text.",
+                  "pl": "Tłumaczysz rzeczy prosto i poprawnie. Wyjaśnij powyższy tekst wskazanemu odbiorcy: krótkie zdania, codzienne słowa, konkretny przykład lub porównanie, żadnego żargonu bez wyjaśnienia. Nie traktuj odbiorcy protekcjonalnie i nie zmieniaj tego, co prawdziwe. Odpowiadaj w języku tekstu."
+                }
+              },
+              "prompt": {
+                "$format": {
+                  "$localized": {
+                    "en": "Explain the text above simply, for this audience: {audience}.",
+                    "pl": "Wyjaśnij prosto powyższy tekst dla tego odbiorcy: {audience}."
+                  }
+                },
+                "vars": {
+                  "audience": {
+                    "$arg": "audience",
+                    "default": {
+                      "$localized": {
+                        "en": "someone who is new to the subject",
+                        "pl": "ktoś, kto dopiero poznaje temat"
+                      }
+                    }
+                  }
+                }
+              },
+              "parameters": {
+                "temperature": 0.4
+              }
+            }
+          }
+        ],
+        "inputs": [
+          "text"
+        ],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "has_text"
+        ],
+        "produces": [
+          "has_text"
+        ],
+        "content_op": "restyle",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "params": [
+          {
+            "name": "audience",
+            "type": "string",
+            "required": false,
+            "default": "someone who is new to the subject",
+            "description": {
+              "en": "Who it is for, at any level (\"a beginner\", \"a ten-year-old\", \"an expert in another field\").",
+              "pl": "Dla kogo, na dowolnym poziomie („początkujący”, „dziesięciolatek”, „ekspert z innej dziedziny”)."
+            }
           }
         ]
       }
@@ -3396,6 +5090,10 @@
               "items": {
                 "type": "object"
               }
+            },
+            "element_many": {
+              "type": "boolean",
+              "description": "The action takes several elements as one input (combine): the router reads every id in the words, and a request may give element as a list of ids; the contents reach the steps one after another."
             }
           },
           "additionalProperties": true

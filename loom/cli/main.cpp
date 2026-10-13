@@ -1010,6 +1010,68 @@ int cmd_actions(Runtime& rt, const Args& a) {
   return 0;
 }
 
+// loom rules list [--scope S] [--scope-id ID] [--user-only]
+// loom rules set --scope S [--scope-id ID] (--key K --value V | --effect E [--action A] [--class C | --trait T])
+//                [--reason R] [--lock] [--id ID] [--yes] [--propose]
+// loom rules disable RULE_ID [--restore] [--yes]
+// Writing is an action like any other: it goes through the rules of the scope (the preset asks for a confirmation) and a rule
+// pinned by a higher scope refuses with its reason.
+int cmd_rules(Runtime& rt, const Args& a) {
+  const std::string sub = need(a, 0, "rules subcommand (list|set|disable)");
+  Json request = Json::object();
+  if (sub == "list") {
+    if (a.has("scope")) request["scope"] = a.get("scope");
+    if (a.has("scope-id")) request["scope_id"] = a.get("scope-id");
+    if (a.has("user-only")) request["user_only"] = true;
+    const Json result = must(rt.actions().invoke("rules.list", request));
+    if (g_json) {
+      print_json(result);
+      return 0;
+    }
+    for (const auto& r : result["rules"])
+      std::cout << (r.value("disabled", false) ? "off " : "on  ") << r.value("id", "") << "  " << r.value("scope", "")
+                << (r.contains("scope_id") ? "=" + r.value("scope_id", "") : std::string()) << "  " << r.value("effect", "") << "  "
+                << (r.contains("action") ? r["action"].dump() : r.contains("value") ? r["value"].dump() : std::string()) << "  [" << r.value("source", "") << "]\n";
+    return 0;
+  }
+  if (sub == "set") {
+    if (a.has("scope")) request["scope"] = a.get("scope");
+    if (a.has("scope-id")) request["scope_id"] = a.get("scope-id");
+    if (a.has("key")) request["key"] = a.get("key");
+    if (a.has("value")) request["value"] = a.get("value");
+    if (a.has("effect")) request["effect"] = a.get("effect");
+    if (a.has("action")) request["action"] = a.get("action");
+    if (a.has("class")) request["target"] = Json{{"kind", "class"}, {"id", a.get("class")}};
+    if (a.has("trait")) request["target"] = Json{{"kind", "trait"}, {"id", a.get("trait")}};
+    if (a.has("reason")) request["reason"] = a.get("reason");
+    if (a.has("id")) request["id"] = a.get("id");
+    if (a.has("lock")) request["locked"] = true;
+    if (a.has("initiator")) request["initiator"] = a.get("initiator");
+  } else if (sub == "disable") {
+    request["id"] = need(a, 1, "rule id");
+    if (a.has("restore")) request["restore"] = true;
+  } else {
+    throw UsageError{"unknown rules subcommand: " + sub};
+  }
+  request["ref"] = "cli";
+  request["context"] = Json{{"origin", "cli"}};
+  if (a.has("yes")) request["confirmed"] = true;
+  if (a.has("propose")) request["propose"] = true;
+  const Json run = must(rt.actions().invoke(sub == "set" ? "rules.set" : "rules.disable", request));
+  if (g_json) {
+    print_json(run);
+    return run.value("status", "") == "failed" || run.value("status", "") == "denied" ? 1 : 0;
+  }
+  print_run(rt, run);
+  if (run.value("status", "") == "completed" && run.contains("result") && run["result"].contains("data")) {
+    const Json& data = run["result"]["data"];
+    std::cout << (sub == "set" ? "rule    " : "off     ") << data.value("id", "") << (sub == "set" ? "  written to " + data.value("overlay", "") : std::string()) << "\n";
+    if (data.contains("note") && data["note"].contains("consumer")) std::cout << "note    " << data["note"].value("consumer", "") << "\n";
+  }
+  const std::string status = run.value("status", "");
+  return status == "failed" || status == "denied" ? 1 : 0;
+}
+
 int cmd_usage(Runtime& rt, const Args& a) {
   // loom usage compact [--older-than-days N] [--mode off|manual|auto] [--statuses completed,cancelled]
   //                    [--dry-run] [--as-of TIME]     fold old completed operations into per-cohort aggregates
@@ -1831,6 +1893,7 @@ int main(int argc, char** argv) {
       {"semantic", cmd_semantic},
       {"economy", cmd_economy},
       {"actions", cmd_actions},
+      {"rules", cmd_rules},
       {"usage", cmd_usage},
       {"memory", cmd_memory},
       {"config", cmd_config},
