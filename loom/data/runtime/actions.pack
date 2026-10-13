@@ -1044,6 +1044,27 @@
           "touches_private_data": true
         },
         "consumer": "loom/server/src/analysis-ui-routes.h"
+      },
+      "usage.compact": {
+        "id": "usage.compact",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Compact the usage ledger",
+        "description": "Folds completed operations older than the preset age into per-cohort aggregates; the baseline the growth guard compares against is preserved, pending, confirmed and denied operations and their receipts are never folded. Entry points: loom_usage_policy_json action compact, CLI usage compact.",
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [],
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": true,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/policy/usage_policy.cpp"
       }
     }
   },

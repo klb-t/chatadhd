@@ -1,0 +1,63 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "usage_compaction",
+  "revision": 1,
+  "description": "Compaction of the usage ledger (usage-policy.sqlite). Completed operations older than a preset age are folded into per-cohort aggregates: the operation's record and events are removed, a small tombstone keeps its identity (so a repeated operation id stays idempotent), and measured samples beyond the baseline window are summed into one aggregate row per cohort and resource. The rolling baseline the growth guard compares against is preserved exactly. Pending, requires_confirmation, denied, still-reserved and owner-confirmed operations (and their receipts) are never folded. Every value is a preset: the user overlay profiles/usage_compaction.pack, the config key usage_ledger_compaction and an explicit compact command (override) replace them in that order. This is housekeeping, not a spending limit, and it is not part of the receipt-bound usage policy options.",
+  "defaults": {
+    "mode": "auto",
+    "older_than_days": 30,
+    "statuses": ["completed"],
+    "fold_samples_beyond_window": true,
+    "reclaim_space": true,
+    "auto_interval_hours": 24
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["mode", "older_than_days", "statuses", "fold_samples_beyond_window", "reclaim_space", "auto_interval_hours"],
+    "additionalProperties": true,
+    "properties": {
+      "mode": {
+        "type": "string",
+        "enum": ["off", "manual", "auto"],
+        "description": "off: nothing is folded unless an explicit compact command overrides the mode; manual: only the explicit compact command folds; auto: the ledger is also compacted when the runtime starts, at most once per auto_interval_hours.",
+        "x-setting": "/mode",
+        "x-consumer": "UsagePolicy::compact"
+      },
+      "older_than_days": {
+        "type": "number",
+        "minimum": 0,
+        "description": "Only operations whose last recorded event is older than this many days are folded (0 folds every eligible operation).",
+        "x-setting": "/older_than_days",
+        "x-unit": "days",
+        "x-consumer": "UsagePolicy::compact"
+      },
+      "statuses": {
+        "type": "array",
+        "items": {"type": "string", "enum": ["completed", "cancelled"]},
+        "description": "Terminal statuses that may be folded. allowed, unresolved, requires_confirmation and denied are never foldable, whatever is written here.",
+        "x-setting": "/statuses",
+        "x-consumer": "UsagePolicy::compact"
+      },
+      "fold_samples_beyond_window": {
+        "type": "boolean",
+        "description": "Sum the measured samples of folded operations that lie beyond the policy's baseline_window into one aggregate row per cohort and resource. Ignored when baseline_window is null (all history is the baseline).",
+        "x-setting": "/fold_samples_beyond_window",
+        "x-consumer": "UsagePolicy::compact"
+      },
+      "reclaim_space": {
+        "type": "boolean",
+        "description": "Run VACUUM and truncate the write-ahead log after folding so the ledger file shrinks. Takes the ledger exclusively for the duration.",
+        "x-setting": "/reclaim_space",
+        "x-consumer": "UsagePolicy::compact"
+      },
+      "auto_interval_hours": {
+        "type": "number",
+        "minimum": 0,
+        "description": "Minimum time between two automatic runs (mode auto).",
+        "x-setting": "/auto_interval_hours",
+        "x-unit": "hours",
+        "x-consumer": "auto_compact_usage_ledger"
+      }
+    }
+  }
+}

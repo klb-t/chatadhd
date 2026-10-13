@@ -710,6 +710,38 @@ int cmd_economy(Runtime& rt, const Args& a) {
   return 0;
 }
 
+int cmd_usage(Runtime& rt, const Args& a) {
+  // loom usage compact [--older-than-days N] [--mode off|manual|auto] [--statuses completed,cancelled]
+  //                    [--dry-run] [--as-of TIME]     fold old completed operations into per-cohort aggregates
+  // loom usage compaction                              the effective compaction settings
+  const std::string sub = need(a, 0, "usage subcommand (compact|compaction)");
+  Json override_settings = Json::object();
+  if (a.has("older-than-days")) {
+    try {
+      override_settings["older_than_days"] = std::stod(a.get("older-than-days"));
+    } catch (...) {
+      throw UsageError{"--older-than-days needs a number"};
+    }
+  }
+  if (a.has("mode")) override_settings["mode"] = a.get("mode");
+  if (a.has("statuses")) {
+    Json statuses = Json::array();
+    std::stringstream list(a.get("statuses"));
+    for (std::string item; std::getline(list, item, ',');) statuses.push_back(item);
+    override_settings["statuses"] = statuses;
+  }
+  if (sub == "compaction") {
+    print_json(must(usage_compaction_settings(rt.config(), rt.paths().root, &override_settings)));
+    return 0;
+  }
+  if (sub != "compact") throw UsageError{"unknown usage subcommand: " + sub};
+  Json command{{"override", override_settings}};
+  if (a.has("dry-run")) command["dry_run"] = true;
+  if (a.has("as-of")) command["as_of"] = a.get("as-of");
+  print_json(must(compact_usage_ledger(rt.config(), rt.paths().root, command)));
+  return 0;
+}
+
 int cmd_semantic(Runtime& rt, const Args& a) {
   std::string sub = need(a, 0, "semantic subcommand");
   auto& w = rt.worker();
@@ -1498,6 +1530,7 @@ int main(int argc, char** argv) {
       {"search", cmd_search},
       {"semantic", cmd_semantic},
       {"economy", cmd_economy},
+      {"usage", cmd_usage},
       {"memory", cmd_memory},
       {"config", cmd_config},
       {"secret", cmd_secret},

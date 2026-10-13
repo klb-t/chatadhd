@@ -38,6 +38,18 @@ extern "C" const char* loom_usage_policy_json(LoomContext* ctx, const char* comm
           {"scope", "explicit_callers"}, {"preset_application", "next_policy_open"}};
       return out(*settings);
     }
+    if (action == "compact") {
+      // Folds old completed operations into per-cohort aggregates (see usage_policy.h).
+      auto report = compact_usage_ledger(ctx->rt->config(), ctx->rt->paths().root, command);
+      return report ? out(*report) : out_error(report.error());
+    }
+    if (action == "compaction_settings") {
+      const Json* proposed = command.contains("override") ? &command["override"] : nullptr;
+      auto effective = usage_compaction_settings(ctx->rt->config(), ctx->rt->paths().root, proposed);
+      if (!effective) return out_error(effective.error());
+      return out(Json{{"schema", "loom.usage_compaction_settings/1"}, {"effective", *effective},
+                      {"ledger_path", ledger_path.string()}, {"preset_application", "next_compaction"}});
+    }
     if (action == "semantic_confirm") {
       if (!command.contains("approved") || !command["approved"].is_boolean())
         return out_error(Errc::InvalidArgument, "approved must be boolean");

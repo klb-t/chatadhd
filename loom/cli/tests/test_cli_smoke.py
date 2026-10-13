@@ -401,6 +401,22 @@ try:
     assert econ["schema"] == "loom.economy_report/1" and econ["writes"] == 0
     assert econ["classes"]["6"]["known"] is False
     assert js("economy", "report", "--mode", "off")["status"] == "disabled"
+    # usage ledger compaction: the preset is data, a missing ledger is never created, the override is validated
+    fresh = os.path.join(tmp, "usage_data")
+
+    def usage(*args, code=0):
+        p = subprocess.run([LOOM, "--data-dir", fresh, "--json", "--quiet", "usage", *args], capture_output=True, text=True, timeout=240)
+        assert p.returncode == code, (args, p.returncode, p.stdout, p.stderr)
+        return json.loads(p.stdout) if code == 0 else None
+
+    comp = usage("compaction")
+    assert comp["mode"] == "auto" and comp["older_than_days"] == 30 and comp["statuses"] == ["completed"], comp
+    assert usage("compaction", "--older-than-days", "3", "--mode", "manual")["older_than_days"] == 3
+    assert usage("compact", "--dry-run")["status"] == "no_ledger"
+    assert usage("compact", "--mode", "off")["status"] == "off"
+    usage("compact", "--statuses", "denied", code=1)
+    usage("nonsense", code=2)
+    assert not os.path.exists(os.path.join(fresh, "usage-policy.sqlite"))
     stats = js("graph", "stats")
     assert stats["messages"] >= 2
     js("graph", "nodes", "--limit", "5")
