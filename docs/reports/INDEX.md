@@ -216,3 +216,25 @@ skopiowano pod `archive/2026-10-12/<nazwa>`; każda kopia wskazuje ten sam commi
 Starych nazw nie udało się zdjąć: proxy git tej sesji odrzuca usuwanie refów (HTTP 403), więc stare nazwy nadal są widoczne
 obok kopii archiwalnych. Na miejscu celowo: `main`, gałąź robocza, `eval/real-holdout-key` (nie czytamy). Lokalne gałęzie wątków
 S1 (`claude/t1…t7…`) nie były wypychane — ich commity są na `main`.
+
+## P4: magazyny jako wtyczki (2026-10-13, branch `claude/p4-storage-plugins`)
+
+Decyzje techniczne (odwracalne; wszystko jest danymi):
+- **Interfejs:** `loom/storage_backend.h` (put/get/stat/list/remove/probe po kluczach względnych; tożsamość = sha256),
+  rejestr rodzajów `BackendRegistry` (id → fabryka). Rodzaje: `local`, `s3` (SigV4 po `HttpTransport`; MinIO/R2/B2 – styl ścieżkowy),
+  `webdav`; `gdrive` zadeklarowany jako `planned` (wymaga przepływu OAuth z odświeżaniem — pozycja otwarta).
+- **Dane:** magazyn = wpis `storages.<id>` z `backend:{kind,...}` w `policy/storage_security.pack`; użytkownik dopisuje własne w
+  `<data>/profiles/storage_security.pack`. Szablony `s3_example`, `webdav_example`, `gdrive_example` mają `configured:false`.
+  Poświadczenia tylko w `secrets.json` pod `<secret_ref>_access_key/_secret_key` lub `_user/_password/_token`; nigdy w wynikach ani logach.
+- **Rozmieszczenie:** `placement.<kategoria>` = kolejność odczytu; role `primary|replica`; domyślnie bez zmian (`local_dir`, układ
+  `blobs/aa/bb/<sha>` bajt w bajt). Zapis: kworum 1 (`sync_rules.write_quorum`), niedostępna replika degraduje, nie blokuje.
+- **BlobStore** przechodzi przez rejestr tylko przy nie-domyślnym rozmieszczeniu; lokalny katalog zostaje układem roboczym
+  (hydratacja przy odczycie; nie-lokalny `primary` = zapis tylko zdalny). Odczyt z repliki jest weryfikowany sha256.
+- **SQLite zostaje lokalne** (WAL przez sieć/klienta synchronizacji jest niebezpieczny); kopia: `storage backup` (VACUUM INTO → dowolny magazyn).
+- **Migracja:** `storage copy|move --category C --to S`: kopia → weryfikacja sha256 na celu → dopiero potem przełączenie
+  rozmieszczenia (nakładka profilu); błąd = wycofanie skopiowanych obiektów, rozmieszczenie bez zmian; źródło kasuje tylko `--delete-source` (z `move`).
+- **Proweniencja:** link `blob:<sha> -stored_in-> węzeł(kind=storage)` w tabelach `nodes`/`links` (schemat bez zmian).
+- **Powierzchnie:** akcje `storage.*` w istniejącym wejściu JSON `loom_github_sync` (zero nowych eksportów), `/api/storage/*`,
+  `loom storage ...`, provider `storage.probe` (sieciowe magazyny nie są kontaktowane z widoku wejścia → `storage_backends_unprobed`).
+- Cofnięcie: usuń `profiles/storage_security.pack` (przywraca lokalne rozmieszczenie; dane w innych magazynach zostają).
+- Otwarte: Google Drive; wieloczęściowy upload S3 dla bardzo dużych obiektów (dziś cały obiekt w pamięci); `encrypt_at_rest` per magazyn (T5b).
