@@ -82,6 +82,132 @@ std::vector<std::string> event_log_types(const Config& cfg) {
   return out;
 }
 
+template <class T>
+Result<std::unique_ptr<T>> build_part(std::string_view name, const RuntimeParts::Make<T>& make, PartsContext& ctx) {
+  std::unique_ptr<T> part = make(ctx);
+  if (!part) return Error(Errc::Internal, "runtime part factory returned null: " + std::string(name));
+  return part;
+}
+
+std::shared_ptr<EmbeddingProvider> no_embedding(PartsContext&) { return nullptr; }
+
+std::unique_ptr<storage::StorageService> default_storage(PartsContext& c) {
+  storage::BackendEnv senv;
+  senv.http = c.http_shared;
+  senv.secrets = c.secrets;
+  senv.data_dir = c.paths->root;
+  auto svc = storage::StorageService::load(senv, c.db);
+  if (svc) return std::move(*svc);
+  // A broken overlay must not stop the app, nor silently move data: fall back to the shipped default
+  // placement (today's local layout) and say so.
+  log::error(kLog, "storage placement profile rejected, using default local placement: {}", svc.error().message);
+  auto base = RuntimeProfile::builtin("storage_security");
+  auto out = std::make_unique<storage::StorageService>(base ? base->values() : Json::object(), senv);
+  out->set_database(c.db);
+  return out;
+}
+
+std::unique_ptr<CryptoVault> default_crypto(PartsContext& c) {
+  auto vault = std::make_unique<CryptoVault>(c.paths->root / "crypto.json");
+  // Crypto suite is a setting (storage_security pack + optional <data>/profiles/storage_security.pack
+  // overlay). Re-resolved when the overlay file changes; affects NEW writes only.
+  struct Cache {
+    std::mutex mu;
+    bool have = false;
+    std::filesystem::file_time_type mtime{};
+    std::uintmax_t size = 0;
+    bool exists = false;
+    Result<cs::SuiteConfig> cfg = cs::SuiteConfig{};
+  };
+  auto cache = std::make_shared<Cache>();
+  std::filesystem::path data_root = c.paths->root;
+  vault->set_suite_provider([cache, data_root]() -> Result<cs::SuiteConfig> {
+    std::error_code ec;
+    auto ov = data_root / "profiles" / "storage_security.pack";
+    bool ex = std::filesystem::exists(ov, ec);
+    auto mt = ex ? std::filesystem::last_write_time(ov, ec) : std::filesystem::file_time_type{};
+    auto sz = ex ? std::filesystem::file_size(ov, ec) : std::uintmax_t{0};
+    std::lock_guard lk(cache->mu);
+    if (!cache->have || cache->exists != ex || cache->mtime != mt || cache->size != sz) {
+      cache->cfg = cs::suite_config_from_profile(data_root);
+      cache->have = true;
+      cache->exists = ex;
+      cache->mtime = mt;
+      cache->size = sz;
+    }
+    return cache->cfg;
+  });
+  return vault;
+}
+
+// Today's wiring, one factory per part. Empty slots of `p` are filled; set ones are kept.
+void fill_default_parts(RuntimeParts& p, std::shared_ptr<net::HttpTransport> opts_http) {
+  if (!p.http)
+    p.http = [opts_http] { return opts_http ? opts_http : net::make_default_transport(); };
+  if (!p.analyzer)
+    p.analyzer = [](PartsContext& c) { return SemanticAnalyzer::create_from_data_dir(c.paths->root); };
+  if (!p.storage) p.storage = default_storage;
+  if (!p.models)
+    p.models = [](PartsContext& c) {
+      return std::make_unique<ModelRegistry>(c.paths->models, *c.config, *c.secrets, *c.http);
+    };
+  if (!p.providers)
+    p.providers = [](PartsContext& c) {
+      auto reg = std::make_unique<ProviderRegistry>(*c.config, *c.secrets);
+      if (auto st = reg->load_builtin(); !st) log::warn(kLog, "provider manifests not loaded: {}", st.error().message);
+      return reg;
+    };
+  if (!p.semantic_llm)
+    p.semantic_llm = [](PartsContext& c) {
+      return std::make_unique<SemanticLLM>(*c.config, *c.secrets, *c.http, *c.analyzer);
+    };
+  if (!p.memory)
+    p.memory = [](PartsContext& c) { return std::make_unique<MemoryEngine>(c.paths->memory, c.analyzer); };
+  if (!p.graph_memory)
+    p.graph_memory = [](PartsContext& c) {
+      return std::make_unique<GraphMemorySelector>(*c.db, *c.config, *c.analyzer);
+    };
+  if (!p.context)
+    p.context = [](PartsContext& c) {
+      return std::make_unique<ContextSelector>(*c.db, *c.config, *c.graph_memory, c.memory);
+    };
+  if (!p.graph)
+    p.graph = [](PartsContext& c) {
+      return std::make_unique<GraphEngine>(*c.db, *c.bus, *c.analyzer, c.semantic_llm, c.relations,
+                                           AnalyzerBinding::RuntimeProfile);
+    };
+  if (!p.chat)
+    p.chat = [](PartsContext& c) {
+      return std::make_unique<ChatEngine>(*c.config, *c.secrets, *c.db, *c.bus, *c.http, *c.analyzer, c.memory,
+                                          c.graph_memory);
+    };
+  if (!p.batch)
+    p.batch = [](PartsContext& c) {
+      return std::make_unique<SemanticBatchAPI>(*c.config, *c.secrets, *c.db, *c.http, *c.analyzer, c.tasks);
+    };
+  if (!p.worker)
+    p.worker = [](PartsContext& c) {
+      return std::make_unique<SemanticWorker>(*c.db, *c.semantic_llm, *c.graph, *c.config, *c.secrets, *c.bus,
+                                              *c.http, *c.analyzer, c.tasks, std::nullopt, Json::object(),
+                                              AnalyzerBinding::RuntimeProfile);
+    };
+  if (!p.media)
+    p.media = [](PartsContext& c) { return std::make_unique<MediaProviders>(*c.secrets, *c.http); };
+  if (!p.importer)
+    p.importer = [](PartsContext& c) {
+      return std::make_unique<ConversationImporter>(*c.db, *c.bus, c.blobs, c.provenance, c.media);
+    };
+  if (!p.crypto) p.crypto = default_crypto;
+  if (!p.github)
+    p.github = [](PartsContext& c) {
+      return std::make_unique<GitHubSyncManager>(c.paths->github_sync, *c.secrets, *c.http);
+    };
+  if (!p.embedding) p.embedding = no_embedding;
+  if (!p.archive) p.archive = [](Runtime& rt) { return std::make_unique<archive::ArchiveIntelligence>(rt); };
+  if (!p.knowledge) p.knowledge = [](Runtime& rt) { return std::make_unique<knowledge::KnowledgeEngine>(rt); };
+  if (!p.actions) p.actions = [](Runtime& rt) { return std::make_unique<actions::ActionRunner>(rt); };
+}
+
 }  // namespace
 
 std::string_view version() noexcept { return LOOM_VERSION_STRING; }
@@ -184,82 +310,58 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->relations = std::make_unique<RelationRegistry>(*impl->db);
   LOOM_TRY(impl->relations->seed_builtin());
 
-  LOOM_TRY_ASSIGN(impl->analyzer, SemanticAnalyzer::create_from_data_dir(p.root));
-  impl->http = std::make_shared<ForwardingTransport>(opts.http ? opts.http : net::make_default_transport());
+  RuntimeParts parts = opts.parts;
+  fill_default_parts(parts, opts.http);
+  PartsContext ctx;
+  ctx.paths = &impl->paths;
+  ctx.config = impl->config.get();
+  ctx.secrets = impl->secrets.get();
+  ctx.db = impl->db.get();
+  ctx.bus = impl->bus.get();
+  ctx.event_log = impl->event_log.get();
+  ctx.blobs = impl->blobs.get();
+  ctx.provenance = impl->provenance.get();
+  ctx.tasks = impl->tasks.get();
+  ctx.relations = impl->relations.get();
 
-  {
-    storage::BackendEnv senv;
-    senv.http = impl->http;
-    senv.secrets = impl->secrets.get();
-    senv.data_dir = p.root;
-    auto svc = storage::StorageService::load(senv, impl->db.get());
-    if (svc) {
-      impl->storage = std::move(*svc);
-    } else {
-      // A broken overlay must not stop the app, nor silently move data: fall back to the shipped default
-      // placement (today's local layout) and say so.
-      log::error(kLog, "storage placement profile rejected, using default local placement: {}", svc.error().message);
-      auto base = RuntimeProfile::builtin("storage_security");
-      impl->storage = std::make_unique<storage::StorageService>(base ? base->values() : Json::object(), senv);
-      impl->storage->set_database(impl->db.get());
-    }
-    impl->blobs->set_placement(impl->storage.get());
-  }
-  impl->models = std::make_unique<ModelRegistry>(p.models, *impl->config, *impl->secrets, *impl->http);
-  impl->providers = std::make_unique<ProviderRegistry>(*impl->config, *impl->secrets);
-  if (auto st = impl->providers->load_builtin(); !st) {
-    log::warn(kLog, "provider manifests not loaded: {}", st.error().message);
-  }
-  impl->semantic_llm = std::make_unique<SemanticLLM>(*impl->config, *impl->secrets, *impl->http, *impl->analyzer);
-  impl->memory = std::make_unique<MemoryEngine>(p.memory, impl->analyzer.get());
-  impl->graph_memory = std::make_unique<GraphMemorySelector>(*impl->db, *impl->config, *impl->analyzer);
-  impl->context =
-      std::make_unique<ContextSelector>(*impl->db, *impl->config, *impl->graph_memory, impl->memory.get());
-  impl->graph = std::make_unique<GraphEngine>(*impl->db, *impl->bus, *impl->analyzer, impl->semantic_llm.get(),
-                                              impl->relations.get(), AnalyzerBinding::RuntimeProfile);
-  impl->chat = std::make_unique<ChatEngine>(*impl->config, *impl->secrets, *impl->db, *impl->bus, *impl->http,
-                                            *impl->analyzer, impl->memory.get(), impl->graph_memory.get());
-  impl->batch = std::make_unique<SemanticBatchAPI>(*impl->config, *impl->secrets, *impl->db, *impl->http,
-                                                   *impl->analyzer, impl->tasks.get());
-  impl->worker = std::make_unique<SemanticWorker>(*impl->db, *impl->semantic_llm, *impl->graph, *impl->config,
-                                                  *impl->secrets, *impl->bus, *impl->http, *impl->analyzer,
-                                                  impl->tasks.get(), std::nullopt, Json::object(), AnalyzerBinding::RuntimeProfile);
-  impl->media = std::make_unique<MediaProviders>(*impl->secrets, *impl->http);
-  impl->importer = std::make_unique<ConversationImporter>(*impl->db, *impl->bus, impl->blobs.get(),
-                                                          impl->provenance.get(), impl->media.get());
+  LOOM_TRY_ASSIGN(impl->analyzer, parts.analyzer(ctx));
+  if (!impl->analyzer) return Error(Errc::Internal, "runtime part factory returned null: analyzer");
+  ctx.analyzer = impl->analyzer.get();
+  impl->http = std::make_shared<ForwardingTransport>(parts.http());
+  ctx.http = impl->http.get();
+  ctx.http_shared = impl->http;
+
+  LOOM_TRY_ASSIGN(impl->storage, build_part("storage", parts.storage, ctx));
+  ctx.storage = impl->storage.get();
+  impl->blobs->set_placement(impl->storage.get());
+  LOOM_TRY_ASSIGN(impl->models, build_part("models", parts.models, ctx));
+  ctx.models = impl->models.get();
+  LOOM_TRY_ASSIGN(impl->providers, build_part("providers", parts.providers, ctx));
+  ctx.providers = impl->providers.get();
+  LOOM_TRY_ASSIGN(impl->semantic_llm, build_part("semantic_llm", parts.semantic_llm, ctx));
+  ctx.semantic_llm = impl->semantic_llm.get();
+  LOOM_TRY_ASSIGN(impl->memory, build_part("memory", parts.memory, ctx));
+  ctx.memory = impl->memory.get();
+  LOOM_TRY_ASSIGN(impl->graph_memory, build_part("graph_memory", parts.graph_memory, ctx));
+  ctx.graph_memory = impl->graph_memory.get();
+  LOOM_TRY_ASSIGN(impl->context, build_part("context", parts.context, ctx));
+  ctx.context = impl->context.get();
+  LOOM_TRY_ASSIGN(impl->graph, build_part("graph", parts.graph, ctx));
+  ctx.graph = impl->graph.get();
+  LOOM_TRY_ASSIGN(impl->chat, build_part("chat", parts.chat, ctx));
+  ctx.chat = impl->chat.get();
+  LOOM_TRY_ASSIGN(impl->batch, build_part("batch", parts.batch, ctx));
+  ctx.batch = impl->batch.get();
+  LOOM_TRY_ASSIGN(impl->worker, build_part("worker", parts.worker, ctx));
+  ctx.worker = impl->worker.get();
+  LOOM_TRY_ASSIGN(impl->media, build_part("media", parts.media, ctx));
+  ctx.media = impl->media.get();
+  LOOM_TRY_ASSIGN(impl->importer, build_part("importer", parts.importer, ctx));
+  ctx.importer = impl->importer.get();
   impl->exporter = std::make_unique<ConversationExporter>(*impl->db);
-  impl->crypto = std::make_unique<CryptoVault>(p.root / "crypto.json");
-  {
-    // Crypto suite is a setting (storage_security pack + optional <data>/profiles/storage_security.pack
-    // overlay). Re-resolved when the overlay file changes; affects NEW writes only.
-    struct Cache {
-      std::mutex mu;
-      bool have = false;
-      std::filesystem::file_time_type mtime{};
-      std::uintmax_t size = 0;
-      bool exists = false;
-      Result<cs::SuiteConfig> cfg = cs::SuiteConfig{};
-    };
-    auto cache = std::make_shared<Cache>();
-    std::filesystem::path data_root = p.root;
-    impl->crypto->set_suite_provider([cache, data_root]() -> Result<cs::SuiteConfig> {
-      std::error_code ec;
-      auto ov = data_root / "profiles" / "storage_security.pack";
-      bool ex = std::filesystem::exists(ov, ec);
-      auto mt = ex ? std::filesystem::last_write_time(ov, ec) : std::filesystem::file_time_type{};
-      auto sz = ex ? std::filesystem::file_size(ov, ec) : std::uintmax_t{0};
-      std::lock_guard lk(cache->mu);
-      if (!cache->have || cache->exists != ex || cache->mtime != mt || cache->size != sz) {
-        cache->cfg = cs::suite_config_from_profile(data_root);
-        cache->have = true;
-        cache->exists = ex;
-        cache->mtime = mt;
-        cache->size = sz;
-      }
-      return cache->cfg;
-    });
-  }
-  impl->github = std::make_unique<GitHubSyncManager>(p.github_sync, *impl->secrets, *impl->http);
+  LOOM_TRY_ASSIGN(impl->crypto, build_part("crypto", parts.crypto, ctx));
+  LOOM_TRY_ASSIGN(impl->github, build_part("github", parts.github, ctx));
+  impl->embedder = parts.embedding(ctx);
 
   // Python ChatEngine resumed the most recent conversation on construction.
   if (auto st = impl->chat->resume_last(); !st && st.error().code != Errc::NotImplemented) {
@@ -283,9 +385,11 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   log::info(kLog, "Loom {} runtime ready (data: {})", version(), root.string());
   auto rt = std::make_unique<Runtime>(std::move(impl));
   // Registers the archive.* task handlers (resumable by the task workers).
-  rt->impl_->archive = std::make_unique<archive::ArchiveIntelligence>(*rt);
-  rt->impl_->knowledge = std::make_unique<knowledge::KnowledgeEngine>(*rt);
-  rt->impl_->actions = std::make_unique<actions::ActionRunner>(*rt);
+  rt->impl_->archive = parts.archive(*rt);
+  rt->impl_->knowledge = parts.knowledge(*rt);
+  rt->impl_->actions = parts.actions(*rt);
+  if (!rt->impl_->archive || !rt->impl_->knowledge || !rt->impl_->actions)
+    return Error(Errc::Internal, "runtime part factory returned null: archive/knowledge/actions");
   rt->tasks().register_handler("catalog.read_resource", [runtime = rt.get()](TaskContext& task) -> Status {
     const auto& params = task.params();
     if (!params.is_object() || !params.contains("unit_id") ||

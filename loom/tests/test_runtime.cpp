@@ -9,6 +9,9 @@
 #include "loom/net/http.h"
 #include "loom/relations.h"
 #include "loom/runtime.h"
+#include "loom/action_runner.h"
+#include "loom/media_providers.h"
+#include "loom/storage_backend.h"
 #include "loom/selector.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
@@ -273,6 +276,63 @@ TEST_SUITE("runtime") {
     rt->set_http_transport(nullptr);
     CHECK(rt->http().name() != "scripted");
     CHECK(!rt->tasks().running());
+  }
+
+  TEST_CASE("RuntimeParts: replaced factories are used without touching runtime.cpp") {
+    fsutil::TempDir td;
+    RuntimeOptions o;
+    o.data_dir = td.path().string();
+    o.start_workers = false;
+    auto scripted = std::make_shared<net::ScriptedTransport>();
+    int storage_calls = 0, llm_calls = 0, action_calls = 0;
+    net::HttpTransport* seen_http = nullptr;
+    storage::StorageService* made_storage = nullptr;
+    actions::ActionRunner* made_runner = nullptr;
+    o.parts.http = [scripted] { return scripted; };  // fake LLM transport
+    o.parts.storage = [&](PartsContext& c) {         // fake (counted) storage with the shipped placement
+      ++storage_calls;
+      storage::BackendEnv env;
+      env.http = c.http_shared;
+      env.secrets = c.secrets;
+      env.data_dir = c.paths->root;
+      auto base = RuntimeProfile::builtin("storage_security");
+      auto svc = std::make_unique<storage::StorageService>(base ? base->values() : Json::object(), env);
+      svc->set_database(c.db);
+      made_storage = svc.get();
+      return svc;
+    };
+    o.parts.semantic_llm = [&](PartsContext& c) {
+      ++llm_calls;
+      seen_http = c.http;
+      return std::make_unique<SemanticLLM>(*c.config, *c.secrets, *c.http, *c.analyzer);
+    };
+    o.parts.actions = [&](Runtime& rt) {
+      ++action_calls;
+      auto runner = std::make_unique<actions::ActionRunner>(rt);
+      made_runner = runner.get();
+      return runner;
+    };
+    auto rt = unwrap(Runtime::open(o));
+    CHECK(rt->http().name() == "scripted");
+    CHECK(storage_calls == 1);
+    CHECK(llm_calls == 1);
+    CHECK(action_calls == 1);
+    CHECK(&rt->storage() == made_storage);
+    CHECK(&rt->actions() == made_runner);
+    CHECK(seen_http == &rt->http());
+    // Untouched parts are the defaults.
+    CHECK(rt->bus().handler_count(events::kMsgCreated) == 1);
+  }
+
+  TEST_CASE("RuntimeParts: a null factory result fails open() with Internal") {
+    fsutil::TempDir td;
+    RuntimeOptions o;
+    o.data_dir = td.path().string();
+    o.start_workers = false;
+    o.parts.media = [](PartsContext&) { return std::unique_ptr<MediaProviders>(); };
+    auto rt = Runtime::open(o);
+    REQUIRE(!rt);
+    CHECK(rt.error().code == Errc::Internal);
   }
 
   TEST_CASE("options from JSON") {
