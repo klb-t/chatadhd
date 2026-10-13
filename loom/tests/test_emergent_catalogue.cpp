@@ -96,7 +96,8 @@ TEST_SUITE("emergent_catalogue") {
     Fixture f;
     const std::string shipped_actions = hash_of("actions"), shipped_routing = hash_of("intent_routing"), shipped_entry = hash_of("graph_entry");
     // not a command: a question, no element, a short thanks, an explicit chat feature
-    for (const char* text : {"Jak działa ta rozmowa?", "Rozpisz to", "Dziękuję", "Co sądzisz o tej rozmowie z szefem?", "I think we should discuss this conversation"})
+    for (const char* text : {"Jak działa ta rozmowa?", "Rozpisz to", "Dziękuję", "Co sądzisz o tej rozmowie z szefem?", "I think we should discuss this conversation",
+                             "Write a poem about this conversation", "Napisz wiersz o tej rozmowie", "Wyjaśnij mi dokładnie, jak działa ta rozmowa"})
       CHECK(f.route(text).at("kind") == "message");
     const Json routed = f.route("Rozpisz tę wiadomość na kroki");
     REQUIRE(routed.at("kind") == "command");

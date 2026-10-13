@@ -127,6 +127,32 @@ std::optional<Json> from_command(const Context& c, const std::string& text, cons
   if (std::find(not_leads.begin(), not_leads.end(), verb) != not_leads.end()) return std::nullopt;
   if (std::isdigit(static_cast<unsigned char>(verb[0])) || c.resolver.is_id(verb) || c.engine.has_class(verb)) return std::nullopt;
   if (!element.is_object()) return std::nullopt;
+  // The element is the object of the command: named within a few words of the verb ("rozpisz tę wiadomość ..."), not somewhere in a request
+  // for the model that merely mentions it ("napisz wiersz o tej rozmowie").
+  {
+    const auto raw_tokens = [&] {
+      std::vector<std::string> out;
+      std::istringstream split(text);
+      for (std::string w; split >> w;) out.push_back(bare(w));
+      return out;
+    }();
+    std::vector<std::string> reference_words;
+    for (const auto& r : c.routing.at("heuristic").value("references", Json::array()))
+      for (const auto& w : strings_of(json::find(r, "words"))) reference_words.push_back(fold(w, fold_map));
+    const std::size_t within = static_cast<std::size_t>(json::get_int(shape, "element_within", 3));
+    bool near = false;
+    for (std::size_t k = idx + 1; k < tokens.size() && k <= idx + within && !near; ++k) {
+      if (k < raw_tokens.size() && c.resolver.is_id(raw_tokens[k])) near = true;
+      for (const auto& w : reference_words) {
+        const bool prefix = !w.empty() && w.back() == '*';
+        if (prefix ? tokens[k].rfind(w.substr(0, w.size() - 1), 0) == 0 : tokens[k] == w) near = true;
+      }
+    }
+    // ids are separated by punctuation in some texts: the whitespace tokens are checked as well
+    for (std::size_t k = 0; k < raw_tokens.size() && !near; ++k)
+      if (k > idx && k <= idx + within && c.resolver.is_id(raw_tokens[k])) near = true;
+    if (!near) return std::nullopt;
+  }
 
   // The name comes from the user's word; a name that is taken gets a number.
   const Json naming = cfg.value("naming", Json::object());

@@ -34,6 +34,7 @@
       "command_shape": {
         "max_tokens": 16,
         "min_lead_chars": 4,
+        "element_within": 3,
         "lead_skip": ["prosze", "teraz", "moglbys", "mozesz", "moze", "please", "now", "could", "can", "would", "you", "just", "hey", "ok", "okay"],
         "not_leads": ["jak", "jaki", "jaka", "jakie", "co", "czemu", "dlaczego", "czy", "kto", "kiedy", "gdzie", "ile", "ktory", "ktora", "chce", "chcialbym", "chcialabym", "mam", "musze", "powiedz", "what", "why", "how", "who", "when", "where", "which", "does", "should", "will", "this", "that", "there", "here", "what's", "i'm", "i'd", "i'll", "let's", "tell", "want", "need", "think", "wonder", "maybe"],
         "forbid_question_mark": true
@@ -397,8 +398,8 @@
           "setting": {"type": "string", "minLength": 1},
           "active": {"type": "string", "minLength": 1},
           "presets": {"type": "object", "additionalProperties": {"type": "object"}},
-          "command_shape": {"type": "object", "required": ["max_tokens", "min_lead_chars", "lead_skip", "not_leads", "forbid_question_mark"], "properties": {
-            "max_tokens": {"type": "integer", "minimum": 1}, "min_lead_chars": {"type": "integer", "minimum": 1},
+          "command_shape": {"type": "object", "required": ["max_tokens", "min_lead_chars", "element_within", "lead_skip", "not_leads", "forbid_question_mark"], "properties": {
+            "max_tokens": {"type": "integer", "minimum": 1}, "min_lead_chars": {"type": "integer", "minimum": 1}, "element_within": {"type": "integer", "minimum": 1},
             "lead_skip": {"type": "array", "items": {"type": "string"}}, "not_leads": {"type": "array", "items": {"type": "string"}},
             "forbid_question_mark": {"type": "boolean"}}, "additionalProperties": false},
           "naming": {"type": "object", "required": ["prefix", "max_chars"], "properties": {"prefix": {"type": "string"}, "max_chars": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
