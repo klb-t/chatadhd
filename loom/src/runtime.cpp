@@ -5,6 +5,8 @@
 #include <atomic>
 #include <mutex>
 
+#include "loom/action_runner.h"
+#include "loom/rom.h"
 #include "loom/archive.h"
 #include "loom/knowledge.h"
 #include "loom/catalog.h"
@@ -145,6 +147,8 @@ struct Runtime::Impl {
   std::unique_ptr<GitHubSyncManager> github;
   std::unique_ptr<archive::ArchiveIntelligence> archive;  // needs the Runtime; created last
   std::unique_ptr<knowledge::KnowledgeEngine> knowledge;  // needs the Runtime; registers knowledge.* handlers
+  rom::MountRegistry mounts;                              // ROM first, then the data dir
+  std::unique_ptr<actions::ActionRunner> actions;         // needs the Runtime; destroyed first
 
   mutable std::mutex embed_mu;
   std::shared_ptr<EmbeddingProvider> embedder;
@@ -164,6 +168,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(fs::path root, resolve_data_dir(override_dir, opts.path_env.value_or(PathEnv::from_process())));
   impl->paths = DataPaths::for_root(root);
   const DataPaths& p = impl->paths;
+  impl->mounts = rom::MountRegistry::standard(p.root);
 
   impl->config = std::make_unique<Config>(p.config);
   impl->secrets = std::make_unique<Secrets>(p.secrets);
@@ -283,6 +288,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   // Registers the archive.* task handlers (resumable by the task workers).
   rt->impl_->archive = std::make_unique<archive::ArchiveIntelligence>(*rt);
   rt->impl_->knowledge = std::make_unique<knowledge::KnowledgeEngine>(*rt);
+  rt->impl_->actions = std::make_unique<actions::ActionRunner>(*rt);
   rt->tasks().register_handler("catalog.read_resource", [runtime = rt.get()](TaskContext& task) -> Status {
     const auto& params = task.params();
     if (!params.is_object() || !params.contains("unit_id") ||
@@ -351,6 +357,7 @@ void Runtime::shutdown() {
 }
 
 const DataPaths& Runtime::paths() const { return impl_->paths; }
+const rom::MountRegistry& Runtime::mounts() const { return impl_->mounts; }
 Config& Runtime::config() { return *impl_->config; }
 Secrets& Runtime::secrets() { return *impl_->secrets; }
 Database& Runtime::db() { return *impl_->db; }
@@ -380,6 +387,7 @@ CryptoVault& Runtime::crypto() { return *impl_->crypto; }
 GitHubSyncManager& Runtime::github() { return *impl_->github; }
 archive::ArchiveIntelligence& Runtime::archive() { return *impl_->archive; }
 knowledge::KnowledgeEngine& Runtime::knowledge() { return *impl_->knowledge; }
+actions::ActionRunner& Runtime::actions() { return *impl_->actions; }
 
 void Runtime::set_http_transport(std::shared_ptr<net::HttpTransport> transport) {
   impl_->http->set(transport ? std::move(transport) : net::make_default_transport());

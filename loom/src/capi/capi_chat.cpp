@@ -4,6 +4,7 @@
 // SemanticWorker are implemented.
 #include "context.h"
 #include "loom/chat_engine.h"
+#include "loom/chat_route.h"
 #include "loom/providers.h"
 #include "loom/semantic_worker.h"
 #include "loom/util/ids.h"
@@ -52,7 +53,7 @@ void emit_chunk(LoomStreamCallback cb, void* ud, const Json& chunk, int done) {
 // Shared by loom_chat and loom_chat_ex. Always delivers exactly one final
 // chunk (done=1) and returns the final JSON (result or error).
 Json run_chat(LoomContext* ctx, const std::string& message, ChatOptions opts, std::string request_id,
-              LoomStreamCallback cb, void* ud) {
+              LoomStreamCallback cb, void* ud, const Json& request = Json::object()) {
   if (request_id.empty()) request_id = gen_id("rq_");
   CancelToken token;
   bool already_in_flight = false;
@@ -82,6 +83,25 @@ Json run_chat(LoomContext* ctx, const std::string& message, ChatOptions opts, st
     emit_chunk(cb, ud, Json{{"type", "reasoning"}, {"text", std::string(text)}}, 0);
   };
   if (!cb) opts.stream = false;
+  // R54: every chat input goes through input.route_intent. A message returns here untouched and continues on
+  // the chat path below with the very same request; a command is answered in the conversation instead.
+  {
+    auto routed = chat_route::handle(*ctx->rt, message, opts, request, [&](const std::string& conv_id, const std::string& user_message_id) {
+      emit_chunk(cb, ud, Json{{"type", "start"}, {"request_id", request_id}, {"conv_id", conv_id}, {"user_message_id", user_message_id}}, 0);
+    });
+    if (!routed) {
+      // A broken routing profile must not take the chat down: the input is sent as a message, and the reason is logged.
+      log::warn("loom.capi", "input routing failed, sending as a message: {}", routed.error().message);
+    } else if (routed->handled) {
+      registration.reset();
+      Json result = routed->result;
+      result["request_id"] = request_id;
+      Json chunk = routed->chunk;
+      chunk["request_id"] = request_id;
+      emit_chunk(cb, ud, chunk, 1);
+      return result;
+    }
+  }
   auto r = ctx->rt->chat().send(message, opts, cbs, &token);
   registration.reset();
   if (!r) {
@@ -155,7 +175,7 @@ LOOM_API const char* loom_chat_ex(LoomContext* ctx, const char* request_json, Lo
     auto opts = ChatOptions::from_json(*rj);
     if (!opts) return fail(opts.error());
     return out(run_chat(ctx, message, std::move(opts).value(), json::get_string(*rj, "request_id"), callback,
-                        user_data));
+                        user_data, *rj));
   });
 }
 

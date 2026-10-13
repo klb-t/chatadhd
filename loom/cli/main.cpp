@@ -27,6 +27,9 @@
 #include <string>
 #include <vector>
 
+#include "loom/action_element.h"
+#include "loom/action_runner.h"
+#include "loom/chat_route.h"
 #include "loom/action_rules.h"
 #include "loom/action_table.h"
 #include "loom/archive.h"
@@ -398,6 +401,12 @@ int cmd_chat(Runtime& rt, const Args& a) {
     std::cout << s << std::flush;
   };
   std::signal(SIGINT, sigint_handler);
+  // R54: the input goes through input.route_intent first; a message continues below unchanged.
+  if (auto routed = chat_route::handle(rt, text, o, Json::object(), nullptr); routed && routed->handled) {
+    if (g_json) print_json(routed->result);
+    else std::cout << routed->result.value("text", "") << "\n";
+    return 0;
+  }
   auto r = rt.chat().send(text, o, cb, &g_cancel);
   if (!r) throw r.error();
   if (r->usage_pending) {
@@ -728,7 +737,7 @@ Json threshold_value(const std::string& name, const std::string& text) {
 }
 
 // The element from --element JSON or --class / --trait / --attr K=V / --id.
-Json cli_element(const Args& a) {
+Json cli_element(const Args& a, std::size_t pos = static_cast<std::size_t>(-1)) {
   if (a.has("element")) {
     auto parsed = json::parse(a.get("element"));
     if (!parsed) throw UsageError{"--element needs a JSON object"};
@@ -751,7 +760,9 @@ Json cli_element(const Args& a) {
     }
     element["attrs"] = attrs;
   }
-  if (element.empty()) throw UsageError{"name the element: --class C [--trait T]... [--attr K=V]... or --element JSON"};
+  if (pos != static_cast<std::size_t>(-1) && a.pos.size() > pos && !a.has("class") && !a.has("id") && !a.has("trait") && !a.has("attr"))
+    return Json(a.pos[pos]);  // a bare id, class id or settings key: the engine resolves it
+  if (element.empty()) throw UsageError{"name the element: an id, or --class C [--trait T]... [--attr K=V]... or --element JSON"};
   return element;
 }
 
@@ -781,20 +792,147 @@ std::string join_traits(const Json& list) {
   return out;
 }
 
+// The element of the actions commands: --element JSON, --class/--trait/--attr/--id, or the positional
+// argument at index `pos` (an id, a class id or a settings key: resolved by the engine).
+Json cli_element_or_null(const Args& a, std::size_t pos) {
+  if (a.has("element") || a.has("class") || a.has("trait") || a.has("attr")) return cli_element(a);
+  if (a.has("id") && a.pos.size() <= pos) return cli_element(a);
+  if (a.pos.size() > pos) return Json(a.pos[pos]);
+  return Json(nullptr);
+}
+
+Json cli_args(const Args& a) {
+  Json args = Json::object();
+  for (const auto& kv : a.all("arg")) {
+    const auto eq = kv.find('=');
+    if (eq == std::string::npos) throw UsageError{"--arg needs KEY=VALUE"};
+    args[kv.substr(0, eq)] = kv.substr(eq + 1);
+  }
+  return args;
+}
+
+void print_run(const Json& run) {
+  std::cout << "run     " << run.value("id", "") << "  " << run.value("status", "") << "\n";
+  for (const auto& s : run.value("steps", Json::array()))
+    std::cout << "  step  " << s.value("id", "") << "  " << s.value("action", "") << "  " << s.value("status", "") << "\n";
+  if (run.contains("pending") && run["pending"].is_object()) {
+    const Json& p = run["pending"];
+    std::cout << "waiting for an answer (" << p.value("kind", "") << "), receipt " << p.value("receipt_id", Json(nullptr)).dump() << "\n";
+    for (const auto& g : p.value("gates", Json::array()))
+      std::cout << "  asks  " << g.value("action", "") << "  " << g.value("status", "") << "\n";
+    std::cout << "  answer: loom actions confirm " << run.value("id", "") << " --receipt " << p.value("receipt_id", std::string()) << " [--no]\n";
+  }
+  if (run.contains("error") && run["error"].is_object())
+    std::cout << "error   " << run["error"].value("message", "") << "\n";
+  if (run.contains("result") && run["result"].is_object())
+    for (const auto& part : run["result"].value("parts", Json::array()))
+      if (part.value("kind", "") == "text") std::cout << "\n" << part.value("text", "") << "\n";
+}
+
+int cmd_actions_run(Runtime& rt, const Args& a, const std::string& sub) {
+  Json request = Json::object();
+  if (a.has("chain")) {
+    Json chain = Json::array();
+    std::stringstream list(a.get("chain"));
+    for (std::string item; std::getline(list, item, ',');) chain.push_back(Json{{"action", item}});
+    request["chain"] = chain;
+  } else {
+    request["action"] = need(a, 1, "action id");
+  }
+  const std::size_t element_pos = a.has("chain") ? 1 : 2;
+  if (Json e = cli_element_or_null(a, element_pos); !e.is_null()) request["element"] = e;
+  if (a.has("arg")) request["args"] = cli_args(a);
+  if (a.has("scope")) request["scope"] = cli_scope(a);
+  if (sub == "run") {
+    if (a.has("propose")) request["propose"] = true;
+    if (a.has("yes")) request["confirmed"] = true;
+    request["ref"] = "cli";
+    request["context"] = Json{{"origin", "cli"}};
+  }
+  const Json result = must(sub == "run" ? rt.actions().run(request, &g_cancel) : rt.actions().preview(request));
+  if (g_json) {
+    print_json(result);
+    return result.value("status", "") == "failed" || result.value("status", "") == "denied" ? 1 : 0;
+  }
+  if (sub == "preview") {
+    std::string line;
+    for (const auto& item : result["plan"]["items"]) line += (line.empty() ? "" : " -> ") + item.value("action", "");
+    std::cout << "plan    " << line << "\n"
+              << "cost    " << result["plan"]["cost"]["declared"].dump() << " (relative: 1 = one ordinary model call), model calls "
+              << result["plan"]["cost"]["model_calls"].dump() << "\n";
+    for (const auto& g : result["gates"])
+      std::cout << "  gate  " << g.value("action", "") << "  " << g.value("status", "")
+                << (g.contains("reason") ? "  [" + (g["reason"].is_object() ? g["reason"].value("en", "") : g["reason"].get<std::string>()) + "]" : "") << "\n";
+    std::cout << (result.value("runnable", false) ? "runnable" : "not runnable yet") << "; nothing was executed\n";
+    return 0;
+  }
+  print_run(result);
+  const std::string status = result.value("status", "");
+  return status == "failed" || status == "denied" ? 1 : status == "cancelled" ? 130 : 0;
+}
+
+int cmd_actions_run_control(Runtime& rt, const Args& a, const std::string& sub) {
+  Json request = Json::object();
+  if (sub == "status" && (a.has("list") || a.pos.size() < 2)) {
+    request["list"] = true;
+    if (a.has("limit")) request["limit"] = a.get_int("limit", 20);
+  } else {
+    request["run_id"] = need(a, 1, "run id");
+  }
+  if (sub == "confirm") {
+    request["approved"] = !a.has("no");
+    request["receipt_id"] = a.get("receipt");
+    request["ref"] = "cli";
+  }
+  if (sub == "cancel") request["ref"] = "cli";
+  const Json result = must(sub == "confirm" ? rt.actions().confirm(request, &g_cancel)
+                           : sub == "cancel" ? rt.actions().cancel(request)
+                                             : rt.actions().status(request));
+  if (g_json) {
+    print_json(result);
+    return 0;
+  }
+  if (result.contains("runs")) {
+    for (const auto& r : result["runs"])
+      std::cout << r.value("id", "") << "  " << r.value("status", "") << "  " << r.value("updated", "") << "  "
+                << (r.contains("actions") ? r["actions"].dump() : std::string()) << "\n";
+    return 0;
+  }
+  print_run(result);
+  return 0;
+}
+
+int cmd_actions_route(Runtime& rt, const Args& a) {
+  std::string text;
+  for (std::size_t i = 1; i < a.pos.size(); ++i) text += (text.empty() ? "" : " ") + a.pos[i];
+  if (text.empty()) throw UsageError{"missing the chat input"};
+  Json request{{"text", text}};
+  if (a.has("conv")) request["conv_id"] = a.get("conv");
+  if (a.has("method")) request["method"] = a.get("method");
+  const Json result = must(chat_route::route(rt, request));
+  print_json(result);
+  return 0;
+}
+
 int cmd_actions(Runtime& rt, const Args& a) {
   // loom actions list                                     the action catalogue
   // loom actions for      ELEMENT [--scope S] [--include-unmatched] [--implemented-only]
   // loom actions explain  ACTION ELEMENT [--scope S]
   // loom actions chain    ELEMENT (--to-trait T | --to-action A) [--scope S] [--preset P]
   //                       [--max-length N|none] [--max-cost X|none] [--min-confidence X|none] [--max-results N|none]
-  // ELEMENT: --class C [--trait T]... [--attr K=V]... [--id ID] or --element JSON.  Proposals are never executed.
-  const std::string sub = need(a, 0, "actions subcommand (list|for|explain|chain)");
+  // loom actions run|preview ACTION [ELEMENT] [--arg K=V]... [--chain A,B] [--propose] [--yes]
+  // loom actions confirm RUN_ID --receipt R [--no] | cancel RUN_ID | status [RUN_ID] [--list] | route TEXT...
+  // ELEMENT: an id / class id positional, or --class C [--trait T]... [--attr K=V]... [--id ID], or --element JSON.
+  const std::string sub = need(a, 0, "actions subcommand (list|for|explain|chain|run|preview|confirm|cancel|status|route)");
   if (sub == "list") {
     print_json(action_catalogue());
     return 0;
   }
+  if (sub == "run" || sub == "preview") return cmd_actions_run(rt, a, sub);
+  if (sub == "confirm" || sub == "cancel" || sub == "status") return cmd_actions_run_control(rt, a, sub);
+  if (sub == "route") return cmd_actions_route(rt, a);
   Json request = Json::object();
-  request["element"] = cli_element(a);
+  request["element"] = cli_element(a, sub == "explain" ? 2 : 1);
   if (a.has("scope")) request["scope"] = cli_scope(a);
   std::string port_action;
   if (sub == "for") {
@@ -817,7 +955,7 @@ int cmd_actions(Runtime& rt, const Args& a) {
   } else {
     throw UsageError{"unknown actions subcommand: " + sub};
   }
-  const Json result = must(actions::invoke(rt.paths().root, port_action, request));
+  const Json result = must(rt.actions().invoke(port_action, request));
   if (g_json || sub == "explain") {
     print_json(result);
     return 0;

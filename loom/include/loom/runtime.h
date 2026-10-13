@@ -59,6 +59,12 @@ class GitHubSyncManager;
 namespace net {
 class HttpTransport;
 }
+namespace actions {
+class ActionRunner;
+}
+namespace rom {
+class MountRegistry;
+}
 namespace archive {
 class ArchiveIntelligence;
 }
@@ -90,6 +96,7 @@ class Runtime {
   void shutdown();
 
   const DataPaths& paths() const;
+  const rom::MountRegistry& mounts() const;  // memories in mount order: the read-only ROM first, then the data dir
   Config& config();
   Secrets& secrets();
   Database& db();
@@ -120,6 +127,7 @@ class Runtime {
   GitHubSyncManager& github();
   archive::ArchiveIntelligence& archive();  // Project Compiler (archive.h)
   knowledge::KnowledgeEngine& knowledge();  // knowledge pipeline (knowledge.h)
+  actions::ActionRunner& actions();         // runs actions: the interpreter bound to this runtime (action_runner.h)
 
   // Explicit source I/O boundary. Existing get_msgs/get_messages remain storage
   // reads. options = {read_options?: resource_read overrides}; grant belongs to

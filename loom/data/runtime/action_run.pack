@@ -1,0 +1,32 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "action_run",
+  "revision": 1,
+  "description": "Settings of the interpreter that runs actions (include/loom/action_run.h, action_runner.h). max_depth bounds how deep composite actions nest (a composite that contains itself is always refused); null = no bound. use_model: how a `use_model` step is filled in when the step names no model: the config key that holds the default model, the attribution title, the timeout. Everything is a preset: the user's overlay <data>/profiles/action_run.pack changes it. Steps of composite actions live in runtime/actions.pack: {id?, action, with?, when?, variants?, variant_mode?, on_failure?}; `with` may hold {\"$arg\": name, default?} (an argument of the run) and {\"$text\": step id | input} (the text of an earlier step's output, or of the element) placeholders; `with.inputs` lists {from: input | step id, variant?} parts (default: the previous step's output, the element's content for the first); `when` is a condition: {trait}, {step, is: ok|failed|skipped}, {output, kind?}, {arg, equals?}, {not}, {all: []}, {any: []}.",
+  "defaults": {
+    "max_depth": 8,
+    "use_model": {
+      "model_setting": "default_model",
+      "title": "ChatADHD",
+      "timeout_ms": 180000
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["max_depth", "use_model"],
+    "properties": {
+      "max_depth": {"type": ["integer", "null"], "description": "Deepest nesting of composite actions; null = unbounded (cycles are still refused)."},
+      "use_model": {
+        "type": "object",
+        "required": ["model_setting", "title", "timeout_ms"],
+        "properties": {
+          "model_setting": {"type": "string", "minLength": 1, "description": "Config key that holds the model used by a step that names none."},
+          "title": {"type": "string", "description": "Attribution title sent with model calls of actions."},
+          "timeout_ms": {"type": "integer", "minimum": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

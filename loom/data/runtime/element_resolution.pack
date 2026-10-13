@@ -1,0 +1,96 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "element_resolution",
+  "revision": 1,
+  "description": "How a bare id becomes an element (GRAF_HUB_KOD_SILNIK §5, §8): the id forms of the graph/DB (prefix or hash length -> where the engine reads it and which class it gets), how a stored blob's MIME type maps to a class and traits, how a node kind maps to a class, and what text a conversation or message contributes as content. The engine only knows the SOURCES (message, conversation, version_group, node, link, blob, setting); which prefix means which source, and which class follows, is calibration here and editable in the overlay <data>/profiles/element_resolution.pack. A bare string that is a class id stays a class id; a string that matches no form falls through unchanged (the matching engine then reports the class as unknown).",
+  "defaults": {
+    "id_forms": [
+      {"id": "message", "prefix": "m_", "source": "message", "class": "message"},
+      {"id": "conversation", "prefix": "c_", "source": "conversation", "class": "conversation"},
+      {"id": "version_group", "prefix": "vg_", "source": "version_group", "class": "message"},
+      {"id": "node", "prefix": "n_", "source": "node"},
+      {"id": "link", "prefix": "l_", "source": "link", "class": "edge"},
+      {"id": "blob_node", "prefix": "blob:", "source": "blob"},
+      {"id": "blob", "hex_length": 64, "source": "blob"}
+    ],
+    "setting": {"class": "settings_field", "source": "setting"},
+    "node_kind_classes": {"blob": "file", "message": "message"},
+    "mime_rules": [
+      {"prefix": "image/", "class": "image_form", "traits": ["has_file", "has_hash"], "part": "image"},
+      {"prefix": "audio/", "class": "audio_form", "traits": ["has_file", "has_hash"], "part": "audio"},
+      {"prefix": "video/", "class": "video_form", "traits": ["has_file", "has_hash"], "part": "video"},
+      {"prefix": "text/", "class": "text_form", "traits": ["has_file", "has_hash"], "part": "text"},
+      {"exact": "application/json", "class": "text_form", "traits": ["has_file", "has_hash"], "part": "text"},
+      {"prefix": "", "class": "file", "traits": [], "part": "file_ref"}
+    ],
+    "content": {
+      "conversation_roles": {"user": "User", "assistant": "Assistant", "system": "System"},
+      "conversation_line": "{{role}}: {{text}}",
+      "conversation_separator": "\n\n",
+      "exclude_metadata_keys": ["routed", "action_proposal", "action_run"]
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["id_forms", "setting", "node_kind_classes", "mime_rules", "content"],
+    "properties": {
+      "id_forms": {
+        "type": "array",
+        "description": "Ordered id forms: the first that matches wins. prefix: the id starts with it; hex_length: the id is that many lowercase hex digits.",
+        "items": {
+          "type": "object",
+          "required": ["id", "source"],
+          "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "prefix": {"type": "string"},
+            "hex_length": {"type": "integer", "minimum": 1},
+            "source": {"type": "string", "enum": ["message", "conversation", "version_group", "node", "link", "blob"]},
+            "class": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "setting": {
+        "type": "object",
+        "description": "A bare string that names a settings field (data/runtime/settings_fields.pack) is that field: element class and source.",
+        "required": ["class", "source"],
+        "properties": {"class": {"type": "string"}, "source": {"type": "string"}},
+        "additionalProperties": false
+      },
+      "node_kind_classes": {
+        "type": "object",
+        "description": "Node kind -> class; a kind that is itself a known class is used as it is, any other kind leaves the class empty (own traits only).",
+        "additionalProperties": {"type": "string"}
+      },
+      "mime_rules": {
+        "type": "array",
+        "description": "First rule whose prefix (or exact type) matches the stored MIME type: class, extra traits and the kind of typed part the bytes make.",
+        "items": {
+          "type": "object",
+          "required": ["class", "part"],
+          "properties": {
+            "prefix": {"type": "string"},
+            "exact": {"type": "string"},
+            "class": {"type": "string"},
+            "traits": {"type": "array", "items": {"type": "string"}},
+            "part": {"type": "string"}
+          },
+          "additionalProperties": false
+        }
+      },
+      "content": {
+        "type": "object",
+        "description": "How the text of a conversation is laid out when it is the input of an action.",
+        "required": ["conversation_roles", "conversation_line", "conversation_separator", "exclude_metadata_keys"],
+        "properties": {
+          "exclude_metadata_keys": {"type": "array", "items": {"type": "string"}, "description": "A message whose metadata has one of these keys is chat-window command traffic (the command, its proposal, the yes) and is not part of the content of the conversation."},
+          "conversation_roles": {"type": "object", "additionalProperties": {"type": "string"}},
+          "conversation_line": {"type": "string", "minLength": 1},
+          "conversation_separator": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "additionalProperties": false
+  }
+}

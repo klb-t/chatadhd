@@ -92,15 +92,15 @@
       "files": [
         {
           "path": "loom/data/runtime/action_rules.pack",
-          "sha256": "f92da61ca53d8e9a98dd027b307dbc500145df8f8fc8fc84ca85029f0a4abb82"
+          "sha256": "d227c1684702283a601df0c3daeeb14d1b75bcd4910880c5f3a22cdda5ec3d54"
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "1c43ff482f4e83acec82bdcea051f81d778238933b35e2875dd49a254031897f"
+          "sha256": "fb7d8f7da07cf9dcc508a1a50224deff7b59483198f0a0e5f7a87b6352f5a85b"
         },
         {
           "path": "loom/include/loom/action_rules.h",
-          "sha256": "5ce8a1574e4b2dffb698dccf826a25995f951ce5e703d66551a78397deab1b1f"
+          "sha256": "a712a3b5035465839b026fb95e9a305986d619eab8717b482b71076ab16dbe1a"
         },
         {
           "path": "loom/include/loom/action_table.h",
@@ -111,12 +111,32 @@
           "sha256": "626325425a6c7d2232157fddb98a827b5eaddb70fcb00591013905443bca09fc"
         },
         {
+          "path": "loom/src/actions/element.cpp",
+          "sha256": "52a12722b8301b0f4c6ce9c3f57197ffc24ef8069cdfb1658f743aa0d15cbb0f"
+        },
+        {
           "path": "loom/src/actions/engine.cpp",
-          "sha256": "cce5815c95da8451551fef54fb492af46348f93f4dbd49463e523f9f06bfdf89"
+          "sha256": "f1bdd31f9fab47e7a7ec4b05bfd088e071d758f1757b8dd61d8c82c89bc60ae8"
         },
         {
           "path": "loom/src/actions/query.cpp",
-          "sha256": "8afb48460b434e96310adbe26ed12f7283359cc19097a1f8586cd4da98a27ac1"
+          "sha256": "5de832e2869a48605217fcfb03df3464e93276da68de92162b73628596779ec1"
+        },
+        {
+          "path": "loom/src/actions/route.cpp",
+          "sha256": "5d61d6a4fc8138bb8127d40e8e9fba96bf063d797d55f7e943b6e6df1d0e3d66"
+        },
+        {
+          "path": "loom/src/actions/run.cpp",
+          "sha256": "a8c05b11324070e0b57fe51e252c7db118d66bc7abcbc9bfc0c136e10809e30b"
+        },
+        {
+          "path": "loom/src/actions/run_store.cpp",
+          "sha256": "5ede415207e5712b57c106c6476b6ab52a525e6c98ff6a11aed59a2bca4d15a7"
+        },
+        {
+          "path": "loom/src/actions/runner.cpp",
+          "sha256": "9a5a1e2b402e429822256f1e2aa4c72aa2fd95970f6f3caa908a0136020ef77f"
         }
       ],
       "gaps": []
@@ -248,11 +268,15 @@
         },
         {
           "path": "loom/data/runtime/action_rules.pack",
-          "sha256": "f92da61ca53d8e9a98dd027b307dbc500145df8f8fc8fc84ca85029f0a4abb82"
+          "sha256": "d227c1684702283a601df0c3daeeb14d1b75bcd4910880c5f3a22cdda5ec3d54"
+        },
+        {
+          "path": "loom/data/runtime/action_run.pack",
+          "sha256": "463c90631554f4b5257b1d4b5fb0274d7728c5709f7091b44cdee469a0b43e15"
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "1c43ff482f4e83acec82bdcea051f81d778238933b35e2875dd49a254031897f"
+          "sha256": "fb7d8f7da07cf9dcc508a1a50224deff7b59483198f0a0e5f7a87b6352f5a85b"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -268,7 +292,7 @@
         },
         {
           "path": "loom/data/runtime/cli.pack",
-          "sha256": "94ff79c9e8d1f5ec608de41ebb53ae5e4bdf16389cb4cb0d1b916fe5110ed316"
+          "sha256": "ba497c4eb81aee4bab7c148360f04e98b5343cf90746453f927661b9e4e4ced6"
         },
         {
           "path": "loom/data/runtime/config.pack",
@@ -281,6 +305,10 @@
         {
           "path": "loom/data/runtime/economy.pack",
           "sha256": "24756d280c6a7a936e5eba833bd8ca631bf650650d9d8b960e4ac42462ce9139"
+        },
+        {
+          "path": "loom/data/runtime/element_resolution.pack",
+          "sha256": "54c036d84ae7d2b8a01b89767d2cc57e89b81e292aa685a10759be5b7b4fc7f3"
         },
         {
           "path": "loom/data/runtime/github.pack",
@@ -305,6 +333,10 @@
         {
           "path": "loom/data/runtime/import_formats.pack",
           "sha256": "294ebc7ce789c079662ec322d4517935f57270296841dc3737e625164de5d8c3"
+        },
+        {
+          "path": "loom/data/runtime/intent_routing.pack",
+          "sha256": "db33cf8518a38ba8c4d6516e2f9831fb421832f6392feb67049bd23ad8ac04ea"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",
@@ -364,7 +396,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "64be44dbd12129b728cc335f1f7c972907063587912767a8be890ac2078b765d"
+          "sha256": "a9902d8053861d33df26160c4071c4aabd0ca62114b4a7487d0cb87b9e1f6db3"
         },
         {
           "path": "loom/data/runtime/storage_security.pack",
@@ -475,7 +507,7 @@
       "files": [
         {
           "path": "loom/data/validation/product_literals.pack",
-          "sha256": "4ff383a2dbbf7fa7f4477282b7304e20cbaeae838a4132512b90f1b053b69c0a"
+          "sha256": "024121eb99319b7909af036fd76a89d2472840b3380c178c312dc5a4cf1a39fa"
         },
         {
           "path": "loom/src/db/db.cpp",
@@ -598,11 +630,11 @@
         },
         {
           "path": "loom/data/runtime/cli.pack",
-          "sha256": "94ff79c9e8d1f5ec608de41ebb53ae5e4bdf16389cb4cb0d1b916fe5110ed316"
+          "sha256": "ba497c4eb81aee4bab7c148360f04e98b5343cf90746453f927661b9e4e4ced6"
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "64be44dbd12129b728cc335f1f7c972907063587912767a8be890ac2078b765d"
+          "sha256": "a9902d8053861d33df26160c4071c4aabd0ca62114b4a7487d0cb87b9e1f6db3"
         }
       ],
       "gaps": [
@@ -629,7 +661,7 @@
         },
         {
           "path": "loom/tests/test_rom.cpp",
-          "sha256": "1c66612aa29f59b99daa15998321e13d5c4f8192401acb7415aee15105d73a17"
+          "sha256": "326bcb6d08996cd66004b7d041cc4a81d80e8691957ffaccd44d31dc55d11720"
         },
         {
           "path": "loom/tools/gen_rom_catalogue.py",

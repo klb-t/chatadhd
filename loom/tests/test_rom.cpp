@@ -117,3 +117,16 @@ TEST_SUITE("rom") {
     for (const auto& a : view2["areas"]) if (a["id"] == "rom") CHECK(a["counts"]["rom_items"]["value"] == 12);
   }
 }
+
+#include "loom/runtime.h"
+TEST_CASE("rom: the Runtime mounts the ROM first") {
+  fsutil::TempDir td;
+  RuntimeOptions o;
+  o.data_dir = td.path().string();
+  o.start_workers = false;
+  auto rt = unwrap(Runtime::open(o));
+  REQUIRE(rt->mounts().mounts().size() == 2);
+  CHECK(rt->mounts().mounts()[0].name == "rom");
+  CHECK_FALSE(rt->mounts().mounts()[0].writable);
+  CHECK(unwrap(rt->mounts().read("rom:boot"))["source"] == "rom");
+}

@@ -50,6 +50,8 @@ export interface Message {
 export interface ChatRequest {
   message: string;
   usage_confirmation?: { approved: boolean; receipt_id: string; operation_id: string; ref: string };
+  /** Answer to the model router's own usage hold (stage route_intent); the chat itself is not confirmed by it. */
+  route_usage_confirmation?: { approved: boolean; receipt_id: string; operation_id: string; ref: string };
   request_id?: string;
   conv_id?: string;
   model?: string;
@@ -143,8 +145,11 @@ export type ChatChunk =
       context_trace?: ChatContextTrace;
     }
   | { type: "usage_pending"; request_id: string; conv_id: string; user_message_id: string;
-      usage_pending: { status?: string; operation_id?: string | null; receipt_id?: string | null;
+      usage_pending: { status?: string; operation_id?: string | null; receipt_id?: string | null; stage?: string;
         baseline_key?: string | null; projected?: Record<string, Record<string, unknown>> } }
+  | { type: "action_proposal" | "action_result"; request_id: string; conv_id: string; user_message_id: string;
+      message_id: string; text: string; proposal?: Record<string, unknown>; run?: Record<string, unknown>;
+      proposal_message_id?: string; proposal_status?: string }
   | { type: "error"; code: string; message: string };
 
 export interface GraphNode {
@@ -254,3 +259,16 @@ export interface LoomEventEnvelope {
 }
 
 export type ConfigMap = Record<string, unknown>;
+
+/** A run of an action (loom.action_run/1), loosely typed: the interpreter's document. */
+export interface ActionRun {
+  id: string;
+  status: string;
+  steps?: Record<string, unknown>[];
+  result?: { parts?: Record<string, unknown>[]; data?: unknown } | null;
+  pending?: { kind?: string; receipt_id?: string | null; operation_id?: string | null } | null;
+  error?: { code?: string; message?: string } | null;
+  [key: string]: unknown;
+}
+
+export interface ActionAnswer { run_id: string; approved: boolean; receipt_id: string; ref?: string }
