@@ -617,3 +617,9 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§9. Właściciel
 - Luki (uczciwie „brak”): tryb ratunkowy, klucz weryfikacji aktualizacji, osobny bezpiecznik „nie nadpisuj nieprzeczytanego”.
   Otwarte: funkcje `loom_rom_*` w C ABI; inne ładowarki niż profile nie pytają jeszcze rejestru montowań.
 - Raport: `docs/reports/S2_R11_2026-10-13.md`. Cofnięcie: revert scalenia R11.
+
+## S1 — W3: przypadek `chat_graph_integration.verify.cc:243` (2026-10-13)
+
+| Co | Decyzja | Jak cofnąć |
+|---|---|---|
+| Asercja „przy `off` nie istnieje `context_execution_claims/`” była fałszywa od fali 1 | Przyczyna: `ModelUsageGuard::admit` (`src/chat/graph_reply.cpp`) zapisuje trwałe roszczenie wykonania przy **każdym** dopuszczonym wywołaniu modelu, także zwykłej wiadomości — ochrona przed podwójnym wysłaniem. Pomiar: w przebiegu zwykłym i `off` po jednym roszczeniu `model_usage_…`, żadnego od metod kontekstu. Asercja doprecyzowana, nie osłabiona: przy `off` roszczeń jest dokładnie tyle, ile żądań do transportu, i tyle samo co w przebiegu zwykłym (dodatkowa metoda kontekstu dałaby dodatkowe żądanie i roszczenie). Runner W3: 110/110. Pierwsza diagnoza S1 („to może być metoda kontekstu”) była błędna; diagnoza S2 była trafna co do przyczyny. | przywrócić `CHECK_FALSE(exists(... "context_execution_claims"))` — tylko jeśli roszczenia przeniesie się poza ten katalog |
