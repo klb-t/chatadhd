@@ -49,10 +49,6 @@ bool icontains(std::string_view haystack, std::string_view needle) noexcept;
 std::size_t ifind(std::string_view haystack, std::string_view needle, std::size_t from = 0) noexcept;
 bool istarts_with(std::string_view s, std::string_view prefix) noexcept;
 
-// MIME type recorded on the blob for a detected importer format (best
-// effort; not read back by anything, only stored for humans/tools).
-std::string mime_for_format(std::string_view fmt);
-
 // `dict.get(key)` presence check (not truthiness): returns the value
 // stringified with py_str() when `key` is present with any JSON type, or
 // nullopt when the key is absent. Several Python handlers chain these

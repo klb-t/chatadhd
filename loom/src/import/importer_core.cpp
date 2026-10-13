@@ -115,38 +115,96 @@ bool JsonArrayStreamer::feed(std::string_view chunk, const ElementFn& on_element
 }
 
 // ── Construction / format detection ─────────────────────────────────
+// Built-in formats: one entry each (extensions, sniff, mime, body). Detection
+// order = order here. Content sniffs run only when no extension matched.
+FormatRegistry ConversationImporter::builtin_formats() {
+  using Convs = Result<std::vector<Conversation>>;
+  using C = ConversationImporter;
+  FormatRegistry r;
+  {
+    ImportFormat f;
+    f.name = "zip"; f.mime = "application/zip"; f.extensions = {".zip"};
+    f.sniff = [](std::string_view h) { return h.size() >= 4 && h.compare(0, 4, "PK\x03\x04") == 0; };
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.zip_body(p, o); };
+    f.export_body = [](C& c, const fs::path& p, const ImportOptions& o, Json& rep)
+        -> Result<std::optional<std::vector<Conversation>>> {
+      auto v = c.export_zip_body(p, o, rep);
+      if (!v) return v.error();
+      return std::optional<std::vector<Conversation>>(std::move(*v));
+    };
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "sqlite"; f.mime = "application/vnd.sqlite3"; f.extensions = {".db"};
+    f.sniff = [](std::string_view h) { return h.find("SQLite format") != std::string_view::npos; };
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.sqlite_body(p, o); };
+    f.live_original = true;
+    f.warning = "SQLite reads the original database, including WAL. A captured main-file blob excludes WAL bytes "
+                "and does not bind the live query rows.";
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "json"; f.mime = "application/json"; f.extensions = {".json"};
+    f.sniff = [](std::string_view h) {
+      std::size_t i = 0;
+      while (i < h.size() && std::isspace(static_cast<unsigned char>(h[i]))) ++i;
+      return i < h.size() && (h[i] == '{' || h[i] == '[');
+    };
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.json_body(p, o); };
+    f.export_body = [](C& c, const fs::path& p, const ImportOptions& o, Json& rep) {
+      return c.export_json_body(p, o, rep);
+    };
+    f.export_requires_on = true;
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "jsonl"; f.mime = "application/x-ndjson"; f.extensions = {".jsonl", ".ndjson"};
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.jsonl_body(p, o); };
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "html"; f.mime = "text/html"; f.extensions = {".html", ".htm"};
+    f.sniff = [](std::string_view h) { return idt::icontains(h, "<html") || idt::icontains(h, "<!doctype"); };
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.html_body(p, o); };
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "mht"; f.mime = "message/rfc822"; f.extensions = {".mht", ".mhtml"};
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.mht_body(p, o); };
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "screenshot"; f.mime = "image/*"; f.extensions = {".png", ".jpg", ".jpeg", ".webp"};
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.screenshot_body(p, o); };
+    f.declared_image_format = true;
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "markdown"; f.mime = "text/markdown"; f.extensions = {".md"};
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.markdown_body(p, o); };
+    r.add(std::move(f));
+  }
+  {
+    ImportFormat f;
+    f.name = "text"; f.mime = "text/plain"; f.extensions = {".txt", ".log"};
+    f.body = [](C& c, const fs::path& p, const ImportOptions& o) -> Convs { return c.text_body(p, o); };
+    r.add(std::move(f));
+  }
+  return r;
+}
+
 ConversationImporter::ConversationImporter(Database& db, EventBus& bus, BlobStore* blobs, ProvenanceStore* prov,
                                            MediaProviders* media)
-    : db_(db), bus_(bus), blobs_(blobs), prov_(prov), media_(media) {}
+    : db_(db), bus_(bus), blobs_(blobs), prov_(prov), media_(media), formats_(builtin_formats()) {}
 
-std::string ConversationImporter::detect_format(const fs::path& path) const {
-  std::string ext = path.extension().string();
-  for (auto& c : ext) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-
-  if (ext == ".zip") return "zip";
-  if (ext == ".db") return "sqlite";
-  if (ext == ".json") return "json";
-  if (ext == ".jsonl" || ext == ".ndjson") return "jsonl";
-  if (ext == ".html" || ext == ".htm") return "html";
-  if (ext == ".mht" || ext == ".mhtml") return "mht";
-  if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".webp") return "screenshot";
-  if (ext == ".md") return "markdown";
-  if (ext == ".txt" || ext == ".log") return "text";
-
-  std::ifstream f(path, std::ios::binary);
-  if (f) {
-    std::string header(200, '\0');
-    f.read(header.data(), static_cast<std::streamsize>(header.size()));
-    header.resize(static_cast<std::size_t>(std::max<std::streamsize>(0, f.gcount())));
-    if (header.size() >= 4 && header.compare(0, 4, "PK\x03\x04") == 0) return "zip";
-    if (header.find("SQLite format") != std::string::npos) return "sqlite";
-    std::size_t i = 0;
-    while (i < header.size() && std::isspace(static_cast<unsigned char>(header[i]))) ++i;
-    if (i < header.size() && (header[i] == '{' || header[i] == '[')) return "json";
-    if (idt::icontains(header, "<html") || idt::icontains(header, "<!doctype")) return "html";
-  }
-  return "unknown";
-}
+std::string ConversationImporter::detect_format(const fs::path& path) const { return formats_.detect(path); }
 
 // ── Provenance / blob bookkeeping ───────────────────────────────────
 Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_source(
@@ -171,12 +229,14 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   // A declared image format accompanies the captured bytes, independently of
   // the hash-only blob filename. This preserves existing OCR extension rules.
   std::string image_format;
-  if (fmt == "screenshot") {
+  const ImportFormat* format_entry = formats_.find(fmt);
+  const bool declared_image = format_entry && format_entry->declared_image_format;
+  if (declared_image) {
     image_format = path.extension().string();
     if (!image_format.empty() && image_format.front() == '.') image_format.erase(0, 1);
     for (auto& c : image_format) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
   }
-  const std::string mime = image_format.empty() ? idt::mime_for_format(fmt) : "image/" + image_format;
+  const std::string mime = image_format.empty() ? formats_.mime(fmt) : "image/" + image_format;
   LOOM_TRY_ASSIGN(BlobRef blob, blobs_->put_file(path, mime));
   if (outer_binding && opts.expected_source_hash && blob.hash != *opts.expected_source_hash)
     return Error(Errc::Conflict, "source snapshot hash differs from admission");
@@ -322,7 +382,7 @@ Result<std::optional<std::vector<Conversation>>> ConversationImporter::prepare_s
   rec.blob_hash = blob.hash;
   rec.size = blob.size;
   rec.format = std::string(fmt);
-  if (fmt == "screenshot") {
+  if (declared_image) {
     rec.mime = mime;
     rec.metadata["declared_image_format"] = image_format;
   }
@@ -348,7 +408,7 @@ Result<Json> ConversationImporter::materialize_zip_member(const fs::path& path, 
                                                             std::string_view member, std::int64_t archive_index) {
   if (!opts.record_provenance || !blobs_ || !prov_ || !current_source_) return Json::object();
   const auto& parent = *current_source_;
-  LOOM_TRY_ASSIGN(auto blob, blobs_->put_file(path, idt::mime_for_format(detect_format(path))));
+  LOOM_TRY_ASSIGN(auto blob, blobs_->put_file(path, formats_.mime(detect_format(path))));
   Json locator{{"source", "sha256:" + parent.blob_hash}, {"member", member}, {"archive_index", archive_index}};
   SourceRecord source;
   source.kind = "zip_member";
@@ -507,16 +567,15 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   ImportResult result;
   result.format = fmt;
   result.include_result_metadata = opts.include_result_metadata;
-  if (fmt == "sqlite") result.warnings.push_back(
-      "SQLite reads the original database, including WAL. A captured main-file blob excludes WAL bytes "
-      "and does not bind the live query rows.");
-  if (fmt == "unknown") return Error(Errc::Unsupported, "Unknown format: " + path.string());
+  const ImportFormat* entry = formats_.find(fmt);
+  if (!entry) return Error(Errc::Unsupported, "Unknown format: " + path.string());
+  if (!entry->warning.empty()) result.warnings.push_back(entry->warning);
 
   // Provider-export path: every ZIP (unless ExportMode::Off), and bare .json
   // files only with ExportMode::On. Distinct parser version so a prior legacy
   // import of the same bytes does not short-circuit the lossless one.
-  const bool use_export = opts.export_mode != ExportMode::Off &&
-                          (fmt == "zip" || (fmt == "json" && opts.export_mode == ExportMode::On));
+  const bool use_export = opts.export_mode != ExportMode::Off && entry->export_body &&
+                          (!entry->export_requires_on || opts.export_mode == ExportMode::On);
 
   SourceCtx ctx;
   ctx.source_filename = path.filename().string();
@@ -553,27 +612,17 @@ Result<ImportResult> ConversationImporter::import_file_as(const fs::path& path, 
   // Ordinary files parse the immutable bytes that established their source
   // identity. SQLite retains its live original path so committed WAL rows
   // remain visible; the main-file blob alone is not a database snapshot.
-  const fs::path input_path = fmt != "sqlite" && blobs_ && !ctx.blob_hash.empty()
+  const fs::path input_path = !entry->live_original && blobs_ && !ctx.blob_hash.empty()
       ? blobs_->local_path(ctx.blob_hash) : path;
   Json export_report = nullptr;
   Result<std::vector<Conversation>> convs = [&]() -> Result<std::vector<Conversation>> {
-    if (use_export && fmt == "zip") return export_zip_body(input_path, opts, export_report);
-    if (use_export && fmt == "json") {
-      auto r = export_json_body(input_path, opts, export_report);
+    if (use_export) {
+      auto r = entry->export_body(*this, input_path, opts, export_report);
       if (!r) return r.error();
       if (*r) return std::move(**r);
-      return json_body(input_path, opts);  // not a provider export: legacy flattening
+      // not a provider export: legacy flattening
     }
-    if (fmt == "zip") return zip_body(input_path, opts);
-    if (fmt == "jsonl") return jsonl_body(input_path, opts);
-    if (fmt == "sqlite") return sqlite_body(input_path, opts);
-    if (fmt == "json") return json_body(input_path, opts);
-    if (fmt == "html") return html_body(input_path, opts);
-    if (fmt == "mht") return mht_body(input_path, opts);
-    if (fmt == "screenshot") return screenshot_body(input_path, opts);
-    if (fmt == "markdown") return markdown_body(input_path, opts);
-    if (fmt == "text") return text_body(input_path, opts);
-    return Error(Errc::Unsupported, "Unknown format: " + path.string());
+    return entry->body(*this, input_path, opts);
   }();
   if (!convs) {
     if (use_export) {

@@ -232,17 +232,4 @@ std::optional<std::string> get_present_str(const Json& obj, std::string_view key
   return py_str(*v);
 }
 
-std::string mime_for_format(std::string_view fmt) {
-  if (fmt == "zip") return "application/zip";
-  if (fmt == "sqlite") return "application/vnd.sqlite3";
-  if (fmt == "json") return "application/json";
-  if (fmt == "jsonl") return "application/x-ndjson";
-  if (fmt == "html") return "text/html";
-  if (fmt == "mht") return "message/rfc822";
-  if (fmt == "markdown") return "text/markdown";
-  if (fmt == "text") return "text/plain";
-  if (fmt == "screenshot") return "image/*";
-  return "application/octet-stream";
-}
-
 }  // namespace loom::importer_detail
