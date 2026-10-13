@@ -22,7 +22,9 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <vector>
 
+#include "loom/analysis_mode.h"
 #include "loom/analyzer_binding.h"
 #include "loom/event_bus.h"
 #include "loom/result.h"
@@ -38,6 +40,7 @@ class Config;
 class Secrets;
 class SemanticAnalyzer;
 class TaskEngine;
+class AnalysisMode;
 namespace net {
 class HttpTransport;
 }
@@ -124,7 +127,7 @@ class SemanticWorker {
  private:
   void run();
   // retry_mode=automatic: requeue due failed/stalled items through the usage guard.
-  void auto_requeue(bool use_llm);
+  void auto_requeue(bool reaches_provider);
   std::string effective_retry_mode() const;
 
   Database& db_;
@@ -139,6 +142,7 @@ class SemanticWorker {
   TaskEngine* tasks_;
   Result<RuntimeProfile> profile_;
   WorkerOptions opts_;
+  std::vector<std::unique_ptr<AnalysisMode>> modes_;  // preference order from profile analysis_modes
 
   mutable std::mutex mu_;
   std::condition_variable cv_;

@@ -1,4 +1,5 @@
 // OWNER: wave 2 semantic/graph. Exact port of engine/graph_engine.py.
+#include "loom/analysis_mode.h"
 #include "loom/graph_engine.h"
 
 #include "loom/db.h"
@@ -229,14 +230,26 @@ Status GraphEngine::on_message_checked(const Json& data, const Json& overrides) 
     LOOM_TRY_ASSIGN(effective_analyzer, SemanticAnalyzer::create_with_profile(semantic_profile));
   }
   const auto& analyzer = effective_analyzer ? *effective_analyzer : regex_;
-  const bool use_llm = llm_ && llm_->enabled();
-  Json provenance{{"consumer", "graph.on_message"}, {"mode", use_llm ? "llm" : "regex"},
+  // Same registry and preference order as the worker's built-in preset; the live
+  // path is per message, so bulk modes never apply here.
+  static const std::vector<std::string> kLiveOrder = [] {
+    std::vector<std::string> order;
+    if (auto worker = RuntimeProfile::builtin("worker"))
+      for (const auto& n : worker->values().at("analysis_modes")) order.push_back(n.get<std::string>());
+    return order;
+  }();
+  const auto live_modes = make_analysis_modes(kLiveOrder, AnalysisModeContext{llm_});
+  AnalysisCapabilities live_caps;
+  live_caps.llm_ready = llm_ && llm_->enabled();
+  AnalysisMode* live_mode = pick_message_mode(live_modes, live_caps, text);
+  if (!live_mode) return Error(Errc::Unavailable, "no analysis mode is available");
+  Json provenance{{"consumer", "graph.on_message"}, {"mode", std::string(live_mode->name())},
                   {"analyzer_profile_hash", analyzer.profile_hash()}};
   LOOM_TRY_ASSIGN(auto attempt, begin_analysis(mid, text, conv_id, profile, provenance, true));
   Json analysis = nullptr;
   Status outcome;
   try {
-    analysis = use_llm ? llm_->analyse(attempt.text, analyzer) : analyzer.to_unified_profile(analyzer.analyse(attempt.text));
+    analysis = live_mode->analyse(attempt.text, analyzer);
     if (!profile.is_builtin()) analysis["runtime_profile_hash"] = profile.hash();
     if (!semantic_profile.is_builtin()) analysis["analyzer_profile_hash"] = semantic_profile.hash();
     auto completed = complete_analysis(attempt, analysis, true);
