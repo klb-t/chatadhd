@@ -18,9 +18,8 @@ SharedUsageGate::SharedUsageGate(chat::ModelUsageGuard& guard, Json estimate, Js
       settle_inline_(settle_inline) {}
 
 Result<GateDecision> SharedUsageGate::admit(const net::HttpRequest& request, const Json& provenance) {
-  Json estimate = estimate_;
-  if (estimate.is_object() && !estimate.contains("model_use")) estimate["model_use"] = provenance;
-  auto admitted = guard_->admit(request, estimate, confirmation_);
+  (void)provenance;  // caller-supplied estimates are bound to receipts as given; derived ones already carry it
+  auto admitted = guard_->admit(request, estimate_, confirmation_);
   if (!admitted) return admitted.error();
   GateDecision d;
   d.dispatch = admitted->value("dispatch_authorized", false);

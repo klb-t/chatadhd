@@ -87,6 +87,7 @@ struct RouteSelector {
   std::string adapter;       // "" = manifest metadata "adapter", else openai_chat
   std::optional<net::Headers> headers;  // replaces the manifest's default headers when set
   std::string content_type_header = "Content-Type";  // wire spelling of that header
+  bool require_credential = true;   // false: resolve address/adapter only (previews)
 };
 
 struct Route {
@@ -135,6 +136,7 @@ struct CallSpec {
   net::Headers extra_headers;           // appended last, in order
   Json batch_requests = Json::array();  // BatchSubmit: [{"custom_id","params":{...}}]
   std::string target;                   // BatchStatus: batch id; BatchResults: results URL
+  Json body = nullptr;                  // a complete pre-composed body, used byte for byte
 };
 
 struct StreamHooks {
@@ -189,6 +191,11 @@ struct ModelRequest {
   Json messages = Json::array();
   Json context = nullptr;
   std::string prompt;
+  // A complete request body in the adapter's family shape, sent byte for byte
+  // (key order included).  For callers whose recipe fixes the whole payload
+  // (chat, graph replies); model/messages/parameters then only describe it in
+  // the provenance record.
+  Json body = nullptr;
   RouteSelector route;
   Operation operation = Operation::Complete;
   Json batch_requests = Json::array();

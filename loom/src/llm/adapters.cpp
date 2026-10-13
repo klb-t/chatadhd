@@ -110,10 +110,14 @@ class OpenAiChatAdapter final : public Adapter {
     if (!spec.title.empty()) req.headers.emplace_back("X-Title", spec.title);
     for (const auto& h : spec.extra_headers) req.headers.push_back(h);
 
-    Json body = base_body(spec);
-    for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
-    if (spec.stream && !body.contains("stream")) body["stream"] = true;
-    req.body = json::dump(body);
+    if (spec.body.is_object()) {
+      req.body = json::dump(spec.body);
+    } else {
+      Json body = base_body(spec);
+      for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
+      if (spec.stream && !body.contains("stream")) body["stream"] = true;
+      req.body = json::dump(body);
+    }
     req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
     req.stream = spec.stream;
     return req;
@@ -219,6 +223,12 @@ class AnthropicMessagesAdapter final : public Adapter {
         for (const auto& h : route.default_headers) req.headers.push_back(h);
         req.headers.emplace_back(route.content_type_header, "application/json");
         for (const auto& h : spec.extra_headers) req.headers.push_back(h);
+        if (spec.body.is_object()) {
+          req.body = json::dump(spec.body);
+          req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
+          req.stream = spec.stream;
+          return req;
+        }
         if (!spec.parameters.contains("max_tokens"))
           return Error(Errc::InvalidArgument, "anthropic_messages needs the max_tokens parameter");
         Json messages = Json::array();

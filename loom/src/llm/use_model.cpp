@@ -129,7 +129,7 @@ Result<Route> resolve_route(const Services& services, const RouteSelector& selec
     return Error(Errc::Unavailable, "no address configured for model provider '" + r.provider_id + "'");
   if (!r.auth_secret.empty()) {
     r.credential = services.secrets.get_string(r.auth_secret);
-    if (r.credential.empty())
+    if (r.credential.empty() && selector.require_credential)
       return Error(Errc::Auth, "no credential '" + r.auth_secret + "' stored for model provider '" + r.provider_id + "'");
   }
   return r;
@@ -224,6 +224,17 @@ Result<PreparedCall> prepare_call(const Services& services, const ModelRequest& 
     for (const auto& m : resolved) spec.messages.push_back(m);
   }
   if (!request.prompt.empty()) spec.messages.push_back(Json{{"role", "user"}, {"content", request.prompt}});
+  if (request.body.is_object()) {
+    // Described for provenance only; the adapter sends the body as given.
+    spec.body = request.body;
+    spec.parameters = Json::object();
+    for (auto it = request.body.begin(); it != request.body.end(); ++it) {
+      if (it.key() == "model") { if (spec.model.empty() && it->is_string()) spec.model = it->get<std::string>(); }
+      else if (it.key() == "messages") spec.messages = it.value();
+      else spec.parameters[it.key()] = it.value();
+    }
+    if (request.stream) spec.stream = true;
+  }
 
   LOOM_TRY_ASSIGN(call.request, adapter->build(call.route, request.operation, spec));
 
@@ -278,7 +289,8 @@ Json derived_estimate(const Services& services, const ModelRequest& request, con
                 {"resources", Json::object()},
                 {"instrument", "loom.model." + request.kind},
                 {"model", model},
-                {"endpoint", std::string(cut_query(call.request.url))}};
+                {"endpoint", std::string(cut_query(call.request.url))},
+                {"model_use", call.provenance}};
   // A confirmed re-send answers the operation that was held.
   const std::string operation = json::get_string(request.usage.confirmation, "operation_id");
   if (!operation.empty()) estimate["operation_id"] = operation;
@@ -424,7 +436,15 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
   } else if (!adapter->success(op, status)) {
     r.state = State::HttpError;
   } else if (decoder) {
-    decoder->finish();
+    if (request.contain_exceptions) {
+      try { decoder->finish(); }
+      catch (...) {
+        r.issues.emplace_back("callback_exception");
+        if (request.hooks.on_issue) request.hooks.on_issue("callback_exception");
+      }
+    } else {
+      decoder->finish();
+    }
     r.state = cancelled() ? State::Cancelled : State::Ok;
   } else if (op == Operation::Complete && !request.capture) {
     auto parsed = adapter->parse(r.body);
