@@ -1045,12 +1045,582 @@
           "label": {
             "en": "Method",
             "pl": "Metoda"
-          }
+          },
+          "traits": [
+            "executable"
+          ]
         },
         "document": {
           "label": {
             "en": "Document",
             "pl": "Dokument"
+          },
+          "parent": "text_form",
+          "traits": [
+            "editable"
+          ]
+        },
+        "content": {
+          "label": {
+            "en": "Content",
+            "pl": "Treść"
+          },
+          "traits": [
+            "has_text",
+            "expressible"
+          ]
+        },
+        "form": {
+          "label": {
+            "en": "Form",
+            "pl": "Postać"
+          },
+          "traits": [
+            "expresses_content"
+          ]
+        },
+        "text_form": {
+          "label": {
+            "en": "Text form",
+            "pl": "Postać tekstowa"
+          },
+          "parent": "form",
+          "traits": [
+            "has_text"
+          ]
+        },
+        "image_form": {
+          "label": {
+            "en": "Image",
+            "pl": "Obraz"
+          },
+          "parent": "form",
+          "traits": [
+            "has_image"
+          ]
+        },
+        "audio_form": {
+          "label": {
+            "en": "Audio recording",
+            "pl": "Nagranie dźwiękowe"
+          },
+          "parent": "form",
+          "traits": [
+            "has_audio"
+          ]
+        },
+        "video_form": {
+          "label": {
+            "en": "Video",
+            "pl": "Wideo"
+          },
+          "parent": "form",
+          "traits": [
+            "has_video"
+          ]
+        },
+        "music_form": {
+          "label": {
+            "en": "Music",
+            "pl": "Muzyka"
+          },
+          "parent": "audio_form",
+          "traits": [
+            "musical"
+          ]
+        },
+        "motion_form": {
+          "label": {
+            "en": "Motion / dance",
+            "pl": "Ruch / taniec"
+          },
+          "parent": "form",
+          "traits": [
+            "has_motion"
+          ]
+        },
+        "code_form": {
+          "label": {
+            "en": "Code",
+            "pl": "Kod"
+          },
+          "parent": "text_form",
+          "traits": [
+            "has_code"
+          ]
+        },
+        "table_form": {
+          "label": {
+            "en": "Table",
+            "pl": "Tabela"
+          },
+          "parent": "form",
+          "traits": [
+            "has_table"
+          ]
+        },
+        "conversation": {
+          "label": {
+            "en": "Conversation",
+            "pl": "Rozmowa"
+          },
+          "parent": "text_form",
+          "traits": [
+            "editable"
+          ]
+        },
+        "message": {
+          "label": {
+            "en": "Message",
+            "pl": "Wiadomość"
+          },
+          "parent": "text_form",
+          "traits": [
+            "in_conversation",
+            "editable",
+            "versioned"
+          ]
+        },
+        "prompt": {
+          "label": {
+            "en": "Prompt",
+            "pl": "Prompt"
+          },
+          "parent": "text_form"
+        },
+        "user_input": {
+          "label": {
+            "en": "User input",
+            "pl": "Wejście użytkownika"
+          },
+          "parent": "text_form"
+        },
+        "edge": {
+          "label": {
+            "en": "Edge",
+            "pl": "Krawędź"
+          }
+        },
+        "observation": {
+          "label": {
+            "en": "Observation",
+            "pl": "Obserwacja"
+          },
+          "traits": [
+            "has_text"
+          ]
+        },
+        "analysis_contract": {
+          "label": {
+            "en": "Analysis contract",
+            "pl": "Kontrakt analizy"
+          }
+        },
+        "archive_item": {
+          "label": {
+            "en": "Archive item",
+            "pl": "Element archiwum"
+          },
+          "traits": [
+            "has_text",
+            "has_file"
+          ]
+        },
+        "file": {
+          "label": {
+            "en": "File",
+            "pl": "Plik"
+          },
+          "traits": [
+            "has_file",
+            "has_hash"
+          ]
+        },
+        "storage": {
+          "label": {
+            "en": "Memory / storage",
+            "pl": "Pamięć / magazyn"
+          }
+        },
+        "settings_field": {
+          "label": {
+            "en": "Settings field",
+            "pl": "Pole ustawień"
+          },
+          "traits": [
+            "editable"
+          ]
+        },
+        "usage_ledger": {
+          "label": {
+            "en": "Usage ledger",
+            "pl": "Rejestr zużycia"
+          }
+        },
+        "application": {
+          "label": {
+            "en": "Application (self-model)",
+            "pl": "Aplikacja (samomodel)"
+          },
+          "traits": [
+            "self_model"
+          ]
+        }
+      },
+      "traits": {
+        "has_text": {
+          "label": {
+            "en": "Has text",
+            "pl": "Ma tekst"
+          },
+          "description": "Carries text (its own, or a canonical description)."
+        },
+        "has_image": {
+          "label": {
+            "en": "Has image",
+            "pl": "Ma obraz"
+          },
+          "description": "Carries a still image."
+        },
+        "has_audio": {
+          "label": {
+            "en": "Has audio",
+            "pl": "Ma dźwięk"
+          },
+          "description": "Carries a sound recording."
+        },
+        "has_video": {
+          "label": {
+            "en": "Has video",
+            "pl": "Ma wideo"
+          },
+          "description": "Carries moving images."
+        },
+        "has_code": {
+          "label": {
+            "en": "Has code",
+            "pl": "Ma kod"
+          },
+          "description": "Carries source code."
+        },
+        "has_table": {
+          "label": {
+            "en": "Has table",
+            "pl": "Ma tabelę"
+          },
+          "description": "Carries tabular data."
+        },
+        "has_motion": {
+          "label": {
+            "en": "Has motion",
+            "pl": "Ma ruch"
+          },
+          "description": "Carries movement (dance, motion capture)."
+        },
+        "musical": {
+          "label": {
+            "en": "Musical",
+            "pl": "Muzyczny"
+          },
+          "description": "Has musical structure."
+        },
+        "has_file": {
+          "label": {
+            "en": "Has file",
+            "pl": "Ma plik"
+          },
+          "description": "Backed by a stored file."
+        },
+        "has_hash": {
+          "label": {
+            "en": "Has content hash",
+            "pl": "Ma skrót zawartości"
+          },
+          "description": "Content-addressed: the stored bytes have a hash."
+        },
+        "in_conversation": {
+          "label": {
+            "en": "In a conversation",
+            "pl": "W konwersacji"
+          },
+          "description": "Belongs to a conversation."
+        },
+        "editable": {
+          "label": {
+            "en": "Editable",
+            "pl": "Edytowalny"
+          },
+          "description": "May be edited."
+        },
+        "versioned": {
+          "label": {
+            "en": "Has versions",
+            "pl": "Ma wersje"
+          },
+          "description": "Edits keep earlier versions as branches."
+        },
+        "executable": {
+          "label": {
+            "en": "Executable",
+            "pl": "Wykonywalny"
+          },
+          "description": "A method, flow or routine that can be applied."
+        },
+        "expresses_content": {
+          "label": {
+            "en": "Expresses a content",
+            "pl": "Wyraża treść"
+          },
+          "description": "A form: a concrete expression of a content in some modality."
+        },
+        "expressible": {
+          "label": {
+            "en": "Expressible",
+            "pl": "Wyrażalna"
+          },
+          "description": "A content that can be expressed in any form."
+        },
+        "self_model": {
+          "label": {
+            "en": "Self-model",
+            "pl": "Samomodel"
+          },
+          "description": "The application describing itself."
+        },
+        "summary": {
+          "label": {
+            "en": "Summary",
+            "pl": "Streszczenie"
+          },
+          "description": "Produced: a condensed rendering of a content."
+        },
+        "semantic_analysis": {
+          "label": {
+            "en": "Semantic analysis",
+            "pl": "Analiza semantyczna"
+          },
+          "description": "Produced: entities, topics and relations."
+        },
+        "classification": {
+          "label": {
+            "en": "Classification",
+            "pl": "Klasyfikacja"
+          },
+          "description": "Produced: a class, type or intent assigned to an element."
+        },
+        "critique": {
+          "label": {
+            "en": "Critique",
+            "pl": "Ocena"
+          },
+          "description": "Produced: an evaluation of a content."
+        },
+        "has_embedding": {
+          "label": {
+            "en": "Has embedding",
+            "pl": "Ma wektor"
+          },
+          "description": "Produced: a vector representation."
+        },
+        "analysis_result": {
+          "label": {
+            "en": "Analysis result",
+            "pl": "Wynik analizy"
+          },
+          "description": "Produced: the result of an analysis contract."
+        },
+        "knowledge_proposal": {
+          "label": {
+            "en": "Knowledge proposal",
+            "pl": "Propozycja wiedzy"
+          },
+          "description": "Produced: proposed semantic knowledge, not yet accepted."
+        }
+      },
+      "groups": {
+        "rich_content": {
+          "label": {
+            "en": "Rich representations of multidimensional content",
+            "pl": "Bogate reprezentacje wielowymiarowych treści"
+          },
+          "traits": [
+            "has_text",
+            "has_image",
+            "has_audio",
+            "has_video",
+            "has_code",
+            "has_table",
+            "has_motion",
+            "expresses_content"
+          ],
+          "element_match": "any"
+        },
+        "flows": {
+          "label": {
+            "en": "Flows, routines, pipelines, methods",
+            "pl": "Flow, rutyny, pipeliny, metody"
+          },
+          "traits": [
+            "executable"
+          ],
+          "element_match": "any"
+        },
+        "memories": {
+          "label": {
+            "en": "Memories and stores",
+            "pl": "Pamięci i magazyny"
+          },
+          "traits": [
+            "storage",
+            "has_hash"
+          ],
+          "element_match": "any"
+        },
+        "settings": {
+          "label": {
+            "en": "Settings and rules",
+            "pl": "Ustawienia i zasady"
+          },
+          "traits": [
+            "settings_field"
+          ],
+          "element_match": "any"
+        },
+        "conversation_structure": {
+          "label": {
+            "en": "Conversations as structure",
+            "pl": "Rozmowy jako struktura"
+          },
+          "traits": [
+            "conversation",
+            "in_conversation"
+          ],
+          "element_match": "any"
+        },
+        "knowledge": {
+          "label": {
+            "en": "Knowledge",
+            "pl": "Wiedza"
+          },
+          "traits": [
+            "observation",
+            "semantic_analysis",
+            "knowledge_proposal"
+          ],
+          "element_match": "any"
+        },
+        "costs": {
+          "label": {
+            "en": "Costs and resources",
+            "pl": "Koszty i zasoby"
+          },
+          "traits": [
+            "usage_ledger"
+          ],
+          "element_match": "any"
+        },
+        "self_model": {
+          "label": {
+            "en": "Application self-model",
+            "pl": "Samomodel aplikacji"
+          },
+          "traits": [
+            "self_model"
+          ],
+          "element_match": "any"
+        },
+        "off_device": {
+          "label": {
+            "en": "Everything that leaves the device",
+            "pl": "Wszystko, co wysyła poza urządzenie"
+          },
+          "effect_flags": [
+            "sends_off_device"
+          ]
+        },
+        "irreversible": {
+          "label": {
+            "en": "Irreversible actions",
+            "pl": "Akcje nieodwracalne"
+          },
+          "effect_flags": [
+            "irreversible"
+          ]
+        },
+        "spends_money": {
+          "label": {
+            "en": "Actions that cost money",
+            "pl": "Akcje kosztujące"
+          },
+          "effect_flags": [
+            "costs_money"
+          ]
+        },
+        "private_data": {
+          "label": {
+            "en": "Actions touching private data",
+            "pl": "Akcje dotykające danych prywatnych"
+          },
+          "effect_flags": [
+            "touches_private_data"
+          ]
+        },
+        "condensing": {
+          "label": {
+            "en": "Condense content",
+            "pl": "Skracanie treści"
+          },
+          "content_ops": [
+            "condense"
+          ]
+        },
+        "restyling": {
+          "label": {
+            "en": "Change tone or style",
+            "pl": "Zmiana tonu lub stylu"
+          },
+          "content_ops": [
+            "restyle"
+          ]
+        },
+        "reading_forms": {
+          "label": {
+            "en": "Read a form into content",
+            "pl": "Odczytanie postaci w treść"
+          },
+          "form_ops": [
+            "read"
+          ]
+        },
+        "expressing_forms": {
+          "label": {
+            "en": "Express content in a form",
+            "pl": "Wyrażenie treści w postaci"
+          },
+          "form_ops": [
+            "express"
+          ]
+        }
+      },
+      "relations": {
+        "expresses": {
+          "label": {
+            "en": "Expresses",
+            "pl": "Wyraża"
+          },
+          "from": "form",
+          "to": "content",
+          "description": "A form expresses a content (FRBR/LRM work-expression, a calibration point). Two forms of one content are linked through it, so a search for the content finds it in every form.",
+          "weight": {
+            "name": "fidelity",
+            "range": [
+              0,
+              1
+            ],
+            "meaning": {
+              "en": "How faithfully the form carries the content: 1 = nothing lost, 0 = nothing preserved. What was kept, lost or added (e.g. style) goes into the link metadata keys kept, lost, added.",
+              "pl": "Jak wiernie postać niesie treść: 1 = nic nie zgubiono, 0 = nic nie zachowano. Co zachowano, zgubiono lub dodano (np. styl) trafia do kluczy metadanych krawędzi kept, lost, added."
+            }
           }
         }
       },

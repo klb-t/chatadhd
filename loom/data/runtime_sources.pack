@@ -100,6 +100,9 @@
           "seed": {},
           "ontology": {
             "classes": {},
+            "traits": {},
+            "groups": {},
+            "relations": {},
             "packages": {},
             "states": {},
             "default_state": ""
@@ -152,6 +155,21 @@
           "source": "graph/classes.pack",
           "pointer": "/classes",
           "target": "/defaults/ontology/classes"
+        },
+        {
+          "source": "graph/classes.pack",
+          "pointer": "/traits",
+          "target": "/defaults/ontology/traits"
+        },
+        {
+          "source": "graph/classes.pack",
+          "pointer": "/groups",
+          "target": "/defaults/ontology/groups"
+        },
+        {
+          "source": "graph/classes.pack",
+          "pointer": "/relations",
+          "target": "/defaults/ontology/relations"
         },
         {
           "source": "graph/properties.pack",
