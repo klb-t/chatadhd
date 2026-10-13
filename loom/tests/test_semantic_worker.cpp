@@ -580,9 +580,9 @@ TEST_SUITE("semantic_worker") {
     AnalysisModeRegistry::instance().add("even", [](const AnalysisModeContext&) { return std::make_unique<EvenMode>(); });
     Env env;
     auto conv = unwrap(env.db->create_conv("c"));
-    env.add_pending_msg(conv.id, "four");        // even length -> mode "even"
-    env.add_pending_msg(conv.id, "five!");       // odd length  -> catch-all "regex"
-    env.add_pending_msg(conv.id, "sixsix");      // even
+    env.add_pending_msg(conv.id, "alpha message with even length");  // 30 chars: mode "even" -> mode "even"
+    env.add_pending_msg(conv.id, "alpha message with odd length");  // 29 chars: catch-all "regex"
+    env.add_pending_msg(conv.id, "another even length message ok");  // 30 chars
     SemanticWorker w(*env.db, env.llm, env.graph, env.cfg, env.secrets, env.bus, env.transport, *env.analyzer, nullptr,
                      std::nullopt, Json{{"analysis_modes", Json::array({"even", "regex"})}});
     CHECK(unwrap(w.drain_once()) == 3);
