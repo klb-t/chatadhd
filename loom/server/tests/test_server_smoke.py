@@ -218,6 +218,43 @@ def graph_packet_profile_request() -> dict:
                "explicitly_accepted": True}
 
 
+def test_actions_and_routing(base: str) -> None:
+    """R54: bare ids in action queries, running actions, and the chat router, through the invoke routes."""
+    def post(path: str, body: dict, status: int = 200):
+        r = requests.post(base + path, json=body, timeout=30)
+        assert r.status_code == status, (path, r.status_code, r.text)
+        return r.json()
+
+    fits = post("/api/actions/for", {"element": "semantic_retry_mode"})
+    assert fits["element"]["class"] == "settings_field" and fits["element"]["source"] == "setting", fits["element"]
+    assert any(a["action"] == "settings.set" for a in fits["actions"])
+    assert post("/api/actions/for", {"element": "m_000000000000"}, 404)["error"]["code"] == "not_found"
+
+    route = post("/api/chat/route", {"text": "/set max_tokens 2048"})
+    assert route["kind"] == "command" and route["command"]["action"] == "settings.set", route
+    assert route["command"]["args"] == {"key": "max_tokens", "value": "2048"}, route["command"]["args"]
+    assert post("/api/chat/route", {"text": "How does TCP work?"})["kind"] == "message"
+    assert post("/api/chat/route", {"text": "ustaw semantic_retry_mode=automatic"})["command"]["action"] == "settings.set"
+    assert post("/api/chat/route", {"text": ""}, 400)["error"]["code"] == "invalid_argument"
+
+    got = post("/api/actions/run", {"action": "settings.get", "args": {"key": "max_tokens"}})
+    assert got["status"] == "completed" and got["result"]["data"]["key"] == "max_tokens", got
+    assert post("/api/actions/status", {"run_id": got["id"]})["status"] == "completed"
+    assert any(r["id"] == got["id"] for r in post("/api/actions/status", {"list": True})["runs"])
+    denied = post("/api/actions/run", {"action": "settings.set", "args": {"key": "api_key", "value": "sk-nope"}})
+    assert denied["status"] == "denied" and "sk-nope" not in json.dumps(denied), denied
+    proposed = post("/api/actions/run", {"action": "settings.set", "args": {"key": "max_tokens", "value": "1000"}, "propose": True})
+    assert proposed["status"] == "proposed" and proposed["pending"]["receipt_id"].startswith("arr_"), proposed
+    assert post("/api/actions/confirm", {"run_id": proposed["id"], "approved": True, "receipt_id": "arr_wrong"}, 409)["error"]["code"] == "conflict"
+    done = post("/api/actions/confirm", {"run_id": proposed["id"], "approved": True,
+                                          "receipt_id": proposed["pending"]["receipt_id"], "ref": "test"})
+    assert done["status"] == "completed", done
+    cancelled = post("/api/actions/run", {"action": "settings.set", "args": {"key": "max_tokens", "value": "999"}, "propose": True})
+    assert post("/api/actions/cancel", {"run_id": cancelled["id"]})["status"] == "cancelled"
+    assert post("/api/actions/preview", {"action": "settings.get", "args": {"key": "max_tokens"}})["runnable"] is True
+    assert post("/api/actions/run", {"action": "summarise"}, 400)["error"]["code"] == "invalid_argument"
+
+
 def test_graph_packets(base: str, data_dir: str) -> None:
     """The HTTP facade keeps native acceptance, immutable receipts and drift."""
     def digest(value):
@@ -371,6 +408,7 @@ def main() -> int:
 
         test_knowledge(base, data_dir)
         test_graph_packets(base, data_dir)
+        test_actions_and_routing(base)
 
         # SSE chat: no upstream configured, so this must fail cleanly with a
         # well-formed "error" chunk rather than hang or crash the server.

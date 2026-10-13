@@ -332,6 +332,57 @@ R"loom_onboard({
           }
         },
         {
+          "id": "presentation.action_proposal/v1",
+          "key": "presentation.action_proposal",
+          "area": "presentation/action_proposal",
+          "revision": 1,
+          "label": "Texts of a command proposed in the conversation window (R54): the controls under the proposal message and the states of an answered one; texts only, they do not change what runs",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "action_proposal",
+            "locales": {
+              "en": {
+                "title": "Command waiting for your answer",
+                "title_confirmation": "The rules ask you to confirm",
+                "plan": "Plan: {{plan}}",
+                "cost": "Estimate: {{cost}} (relative, 1 = one ordinary model call), model calls: {{calls}}, bytes sent: {{bytes}}",
+                "confirm_needed": "Needs confirmation: {{what}}",
+                "unknown": "unknown",
+                "confirm": "Run it",
+                "reject": "Drop it",
+                "usage_hint": "The model call is held by the usage guard; confirm it below.",
+                "answer_failed": "The answer could not be sent ({{reason}}).",
+                "rejected": "Dropped. Nothing was executed.",
+                "status_executed": "Done",
+                "status_rejected": "Dropped",
+                "status_denied": "Not allowed by the rules",
+                "status_unavailable": "Cannot run yet",
+                "status_waiting": "Waiting for an answer",
+                "status_stale": "No longer valid"
+              },
+              "pl": {
+                "title": "Polecenie czeka na Twoją odpowiedź",
+                "title_confirmation": "Zasady każą Cię zapytać o potwierdzenie",
+                "plan": "Plan: {{plan}}",
+                "cost": "Szacunek: {{cost}} (względny, 1 = jedno zwykłe wywołanie modelu), wywołań modelu: {{calls}}, wysłanych bajtów: {{bytes}}",
+                "confirm_needed": "Wymaga potwierdzenia: {{what}}",
+                "unknown": "nieznane",
+                "confirm": "Wykonaj",
+                "reject": "Odrzuć",
+                "usage_hint": "Wywołanie modelu wstrzymał strażnik zużycia; potwierdź je poniżej.",
+                "answer_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+                "rejected": "Odrzucone. Nic nie wykonano.",
+                "status_executed": "Gotowe",
+                "status_rejected": "Odrzucone",
+                "status_denied": "Zasady na to nie pozwalają",
+                "status_unavailable": "Nie można jeszcze wykonać",
+                "status_waiting": "Czeka na odpowiedź",
+                "status_stale": "Nieaktualne"
+              }
+            }
+          }
+        },
+        {
           "id": "presentation.semantic_queue/v1",
           "key": "presentation.semantic_queue",
           "area": "presentation/semantic_queue",
@@ -1180,7 +1231,8 @@ R"loom_onboard({
             "local_read": "Read linked sources locally",
             "reading": "Reading linked sources…",
             "read_scope": "This action reads the attached source for this local view. It does not authorize sending source content to a model or another service. The adapter may read the whole container.",
-            "readonly": "This source message is a version-pinned, read-only view. Editing, restoring a stored version and source-history sending are unavailable.",
+)loom_onboard",
+R"loom_onboard(            "readonly": "This source message is a version-pinned, read-only view. Editing, restoring a stored version and source-history sending are unavailable.",
             "egress_unavailable": "Source-history sending is unavailable: local read has no model-disclosure binding.",
             "details": "Source versions, access results and read evidence",
             "unavailable": "The source view is unavailable. Stored messages and explicit source statuses remain visible.",
@@ -1215,8 +1267,7 @@ R"loom_onboard({
             "local_read": "Odczytaj źródła lokalnie",
             "reading": "Odczytywanie źródeł…",
             "read_scope": "Ta czynność odczytuje dołączone źródło na potrzeby lokalnego widoku. Nie udziela zgody na wysłanie treści do modelu ani innej usługi. Adapter może odczytać cały kontener.",
-)loom_onboard",
-R"loom_onboard(            "readonly": "Ta wiadomość jest widokiem źródła przypiętym do wersji, tylko do odczytu. Edycja, odtwarzanie zapisanej wersji i wysyłanie historii źródła są niedostępne.",
+            "readonly": "Ta wiadomość jest widokiem źródła przypiętym do wersji, tylko do odczytu. Edycja, odtwarzanie zapisanej wersji i wysyłanie historii źródła są niedostępne.",
             "egress_unavailable": "Wysyłanie historii źródła jest niedostępne: lokalny odczyt nie ustanawia zgody na ujawnienie modelowi.",
             "details": "Wersje źródeł, wyniki dostępu i dowody odczytu",
             "unavailable": "Widok źródła jest niedostępny. Zapisane wiadomości i jawne statusy źródeł pozostają widoczne.",
@@ -1321,6 +1372,57 @@ R"loom_onboard(            "readonly": "Ta wiadomość jest widokiem źródła p
             "restored": "Twój tekst wrócił do pola wiadomości.",
             "rejected": "Odrzucono. Nic nie wysłano.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.action_proposal/v1",
+      "key": "presentation.action_proposal",
+      "area": "presentation/action_proposal",
+      "revision": 1,
+      "label": "Texts of a command proposed in the conversation window (R54): the controls under the proposal message and the states of an answered one; texts only, they do not change what runs",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "action_proposal",
+        "locales": {
+          "en": {
+            "title": "Command waiting for your answer",
+            "title_confirmation": "The rules ask you to confirm",
+            "plan": "Plan: {{plan}}",
+            "cost": "Estimate: {{cost}} (relative, 1 = one ordinary model call), model calls: {{calls}}, bytes sent: {{bytes}}",
+            "confirm_needed": "Needs confirmation: {{what}}",
+            "unknown": "unknown",
+            "confirm": "Run it",
+            "reject": "Drop it",
+            "usage_hint": "The model call is held by the usage guard; confirm it below.",
+            "answer_failed": "The answer could not be sent ({{reason}}).",
+            "rejected": "Dropped. Nothing was executed.",
+            "status_executed": "Done",
+            "status_rejected": "Dropped",
+            "status_denied": "Not allowed by the rules",
+            "status_unavailable": "Cannot run yet",
+            "status_waiting": "Waiting for an answer",
+            "status_stale": "No longer valid"
+          },
+          "pl": {
+            "title": "Polecenie czeka na Twoją odpowiedź",
+            "title_confirmation": "Zasady każą Cię zapytać o potwierdzenie",
+            "plan": "Plan: {{plan}}",
+            "cost": "Szacunek: {{cost}} (względny, 1 = jedno zwykłe wywołanie modelu), wywołań modelu: {{calls}}, wysłanych bajtów: {{bytes}}",
+            "confirm_needed": "Wymaga potwierdzenia: {{what}}",
+            "unknown": "nieznane",
+            "confirm": "Wykonaj",
+            "reject": "Odrzuć",
+            "usage_hint": "Wywołanie modelu wstrzymał strażnik zużycia; potwierdź je poniżej.",
+            "answer_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+            "rejected": "Odrzucone. Nic nie wykonano.",
+            "status_executed": "Gotowe",
+            "status_rejected": "Odrzucone",
+            "status_denied": "Zasady na to nie pozwalają",
+            "status_unavailable": "Nie można jeszcze wykonać",
+            "status_waiting": "Czeka na odpowiedź",
+            "status_stale": "Nieaktualne"
           }
         }
       }

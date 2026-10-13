@@ -2396,9 +2396,14 @@
           "GET /api/tasks",
           "GET /api/version",
           "PATCH /api/config",
+          "POST /api/actions/cancel",
+          "POST /api/actions/confirm",
           "POST /api/actions/explain",
           "POST /api/actions/for",
+          "POST /api/actions/preview",
           "POST /api/actions/propose_chain",
+          "POST /api/actions/run",
+          "POST /api/actions/status",
           "POST /api/analysis",
           "POST /api/archive/cancel",
           "POST /api/archive/run",
@@ -2409,6 +2414,7 @@
           "POST /api/catalog/select",
           "POST /api/chat",
           "POST /api/chat/cancel",
+          "POST /api/chat/route",
           "POST /api/chat/usage-preview",
           "POST /api/context/select",
           "POST /api/conversations",
@@ -2506,6 +2512,10 @@
           "PATCH /api/conversations/:id",
           "PATCH /api/memory/:id",
           "PATCH /api/messages/:id",
+          "POST /api/actions/cancel",
+          "POST /api/actions/confirm",
+          "POST /api/actions/run",
+          "POST /api/actions/status",
           "POST /api/analysis",
           "POST /api/auth/login",
           "POST /api/auth/logout",
@@ -2518,6 +2528,7 @@
           "POST /api/catalog/select",
           "POST /api/chat",
           "POST /api/chat/cancel",
+          "POST /api/chat/route",
           "POST /api/context/build",
           "POST /api/context/select",
           "POST /api/conversations",
@@ -2668,7 +2679,7 @@
           "pl": "CLI: dzwonek/linia terminala."
         }
       },
-      "storage_backends": {
+      "storage_backend": {
         "class": "storage_backend",
         "label": {
           "en": "Configured storage backends",
@@ -2716,7 +2727,7 @@
           "pl": "Jeden węzeł na magazyn z profilu storage_security; dostępność z jego pola available_on (nazwy systemów), tu mapowana na platformy."
         }
       },
-      "model_providers": {
+      "model_provider": {
         "class": "model_provider",
         "label": {
           "en": "Model providers",
@@ -2743,7 +2754,7 @@
           "pl": "Czat (base_url + api_key), batch (anthropic_batch_key), mowa (Groq, Google), OCR (ocr.space). Dostępne tylko z kluczem i siecią."
         }
       },
-      "sync_server": {
+      "server_endpoint": {
         "class": "server_endpoint",
         "label": {
           "en": "Server and sync",
