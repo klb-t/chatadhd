@@ -1,4 +1,5 @@
 #include "extract/prompt_contract.h"
+#include "loom/use_model.h"
 
 #include <algorithm>
 #include <cmath>
@@ -416,7 +417,7 @@ Result<Json> prepare_request(const Contract& contract, std::string_view model, s
   }
   std::string base(provider);
   while (!base.empty() && base.back() == '/') base.pop_back();
-  const std::string url = json::get_string(transport, "url", base + json::get_string(transport, "path", "/chat/completions"));
+  const std::string url = json::get_string(transport, "url", base + json::get_string(transport, "path", llm::default_endpoint("openai_chat", llm::Operation::Complete)));
   Json headers = transport.value("headers", Json::object());
   const std::string bytes = json::dump(body);
   Json request{{"method", json::get_string(transport, "method", "POST")}, {"url", url}, {"headers", headers},

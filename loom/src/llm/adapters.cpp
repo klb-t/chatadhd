@@ -114,13 +114,27 @@ class OpenAiChatAdapter final : public Adapter {
  public:
   std::string_view family() const noexcept override { return "openai_chat"; }
 
+  std::string default_endpoint(Operation op, const Json& metadata) const override {
+    if (op == Operation::ListModels) return json::get_string(metadata, "models_path", "/models");
+    return json::get_string(metadata, "chat_completions_path", "/chat/completions");
+  }
+
   Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
+    if (op == Operation::ListModels) {
+      // The provider's model catalogue: a plain authenticated read.
+      net::HttpRequest req;
+      req.method = "GET";
+      req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint);
+      LOOM_TRY(apply_auth(route, req));
+      req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
+      return req;
+    }
     if (op != Operation::Complete)
       return Error(Errc::Unsupported, "adapter openai_chat has no batch operations");
     net::HttpRequest req;
     req.method = "POST";
     std::string path = route.endpoint;
-    if (path.empty()) path = json::get_string(route.metadata, "chat_completions_path", "/chat/completions");
+    if (path.empty()) path = default_endpoint(op, route.metadata);
     req.url = join_url(route.base_url, path);
     if (spec.wire_headers) {
       LOOM_TRY(apply_wire_headers(route, spec, req));
@@ -240,12 +254,18 @@ class AnthropicMessagesAdapter final : public Adapter {
  public:
   std::string_view family() const noexcept override { return "anthropic_messages"; }
 
+  std::string default_endpoint(Operation op, const Json&) const override {
+    return op == Operation::Complete ? "/v1/messages" : "/v1/messages/batches";
+  }
+
   Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
     net::HttpRequest req;
+    if (op == Operation::ListModels) return Error(Errc::Unsupported, "adapter anthropic_messages has no model listing");
     switch (op) {
+      case Operation::ListModels: break;
       case Operation::Complete: {
         req.method = "POST";
-        req.url = join_url(route.base_url, route.endpoint.empty() ? "/v1/messages" : route.endpoint);
+        req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint);
         if (spec.wire_headers) {
           LOOM_TRY(apply_wire_headers(route, spec, req));
         } else {
@@ -284,7 +304,7 @@ class AnthropicMessagesAdapter final : public Adapter {
       }
       case Operation::BatchSubmit:
         req.method = "POST";
-        req.url = join_url(route.base_url, route.endpoint.empty() ? "/v1/messages/batches" : route.endpoint);
+        req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint);
         LOOM_TRY(apply_auth(route, req));
         for (const auto& h : route.default_headers) req.headers.push_back(h);
         req.headers.emplace_back(route.content_type_header, "application/json");
@@ -293,7 +313,7 @@ class AnthropicMessagesAdapter final : public Adapter {
         return req;
       case Operation::BatchStatus:
         req.method = "GET";
-        req.url = join_url(route.base_url, route.endpoint.empty() ? "/v1/messages/batches" : route.endpoint) + "/" + spec.target;
+        req.url = join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint) + "/" + spec.target;
         LOOM_TRY(apply_auth(route, req));
         for (const auto& h : route.default_headers) req.headers.push_back(h);
         req.timeout_ms = spec.timeout_ms.value_or(kDefaultTimeoutMs);
@@ -303,7 +323,7 @@ class AnthropicMessagesAdapter final : public Adapter {
         // A results URL as the batch status reports it, or a batch id.
         req.url = spec.target.find("://") != std::string::npos
                       ? spec.target
-                      : join_url(route.base_url, route.endpoint.empty() ? "/v1/messages/batches" : route.endpoint) +
+                      : join_url(route.base_url, route.endpoint.empty() ? default_endpoint(op, route.metadata) : route.endpoint) +
                             "/" + spec.target + "/results";
         LOOM_TRY(apply_auth(route, req));
         for (const auto& h : route.default_headers) req.headers.push_back(h);
@@ -357,6 +377,10 @@ class OpenAiImagesAdapter final : public Adapter {
 
   Capabilities capabilities() const override { return {{"text"}, {"image"}, {}}; }
 
+  std::string default_endpoint(Operation, const Json& metadata) const override {
+    return json::get_string(metadata, "images_path", "/images/generations");
+  }
+
   // Inline base64 is the only way media bytes arrive; "url" replies are references.
   bool needs_output_store(const CallSpec& spec) const override {
     return json::get_string(spec.parameters, "response_format") == "b64_json";
@@ -375,7 +399,7 @@ class OpenAiImagesAdapter final : public Adapter {
     net::HttpRequest req;
     req.method = "POST";
     std::string path = route.endpoint;
-    if (path.empty()) path = json::get_string(route.metadata, "images_path", "/images/generations");
+    if (path.empty()) path = default_endpoint(op, route.metadata);
     req.url = join_url(route.base_url, path);
     if (spec.wire_headers) {
       LOOM_TRY(apply_wire_headers(route, spec, req));
@@ -431,15 +455,18 @@ class OpenAiEmbeddingsAdapter final : public Adapter {
 
   Capabilities capabilities() const override { return {{"text"}, {"embedding"}, {}}; }
 
+  std::string default_endpoint(Operation, const Json& metadata) const override {
+    auto path = json::get_string(metadata, "embedding_path", "/embeddings");
+    if (path.empty() || path.front() != '/') path.insert(path.begin(), '/');
+    return path;
+  }
+
   Result<net::HttpRequest> build(const Route& route, Operation op, const CallSpec& spec) const override {
     if (op != Operation::Complete) return Error(Errc::Unsupported, "adapter openai_embeddings has no batch operations");
     net::HttpRequest req;
     req.method = "POST";
     std::string path = route.endpoint;
-    if (path.empty()) {
-      path = json::get_string(route.metadata, "embedding_path", "/embeddings");
-      if (path.empty() || path.front() != '/') path.insert(path.begin(), '/');
-    }
+    if (path.empty()) path = default_endpoint(op, route.metadata);
     req.url = join_url(route.base_url, path);
     if (spec.wire_headers) {
       req.headers = *spec.wire_headers;
@@ -462,7 +489,6 @@ class OpenAiEmbeddingsAdapter final : public Adapter {
       for (const auto& m : spec.messages)
         if (json::get_string(m, "role") == "user" && m.contains("content") && m["content"].is_string())
           input.push_back(m["content"]);
-      if (input.empty()) return Error(Errc::InvalidArgument, "embedding needs at least one text input");
       Json body{{"model", spec.model}, {"input", input}};
       for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it) body[it.key()] = it.value();
       req.body = json::dump(body);
@@ -551,6 +577,17 @@ std::unique_ptr<Adapter> make_adapter(std::string_view family) {
     factory = it->second;
   }
   return factory();
+}
+
+std::string default_endpoint(std::string_view family, Operation op, const Json& route_metadata) {
+  auto adapter = make_adapter(family);
+  return adapter ? adapter->default_endpoint(op, route_metadata) : std::string();
+}
+
+std::string embedding_url(std::string_view base_url, const Json& route_metadata) {
+  std::string base(base_url);
+  while (!base.empty() && base.back() == '/') base.pop_back();
+  return base + default_endpoint("openai_embeddings", Operation::Complete, route_metadata);
 }
 
 std::vector<std::string> adapter_families() {

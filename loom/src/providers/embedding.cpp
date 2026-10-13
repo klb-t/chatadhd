@@ -56,11 +56,7 @@ Result<ProviderManifest> manifest_for(const ProviderRegistry& registry,
 }
 
 std::string endpoint(const ProviderManifest& manifest) {
-  auto base = manifest.base_url;
-  while (!base.empty() && base.back() == '/') base.pop_back();
-  auto path = json::get_string(manifest.metadata, "embedding_path", "/embeddings");
-  if (path.empty() || path.front() != '/') path.insert(path.begin(), '/');
-  return base + path;
+  return llm::embedding_url(manifest.base_url, manifest.metadata);
 }
 
 std::string identity_for(const ProviderManifest& manifest, std::string_view credential,

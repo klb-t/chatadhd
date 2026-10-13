@@ -88,6 +88,7 @@ std::string_view to_string(Operation op) noexcept {
     case Operation::BatchSubmit: return "batch_submit";
     case Operation::BatchStatus: return "batch_status";
     case Operation::BatchResults: return "batch_results";
+    case Operation::ListModels: return "list_models";
   }
   return "complete";
 }

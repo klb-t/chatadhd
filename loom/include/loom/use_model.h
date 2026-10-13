@@ -123,7 +123,7 @@ struct Services {
 };
 
 // ── Routing (settings -> provider manifest -> adapter) ──────────────
-enum class Operation { Complete, BatchSubmit, BatchStatus, BatchResults };
+enum class Operation { Complete, BatchSubmit, BatchStatus, BatchResults, ListModels };
 std::string_view to_string(Operation op) noexcept;
 
 struct RouteSelector {
@@ -399,6 +399,9 @@ class Adapter {
   virtual bool success(Operation op, int http_status) const noexcept = 0;
   // The family's defaults; data layers on top (see Capabilities).
   virtual Capabilities capabilities() const = 0;
+  // The path this family calls when the route names none; provider metadata
+  // (e.g. "chat_completions_path") may replace it.  The one place a path default lives.
+  virtual std::string default_endpoint(Operation op, const Json& route_metadata) const = 0;
   // True when a call with this spec yields media bytes that need Services::outputs.
   virtual bool needs_output_store(const CallSpec&) const { return false; }
   // Buffered 2xx body -> text/usage (Errc::Parse with the caller-visible message).
@@ -413,6 +416,11 @@ using AdapterFactory = std::function<std::unique_ptr<Adapter>()>;
 void register_adapter(std::string family, AdapterFactory factory);
 std::unique_ptr<Adapter> make_adapter(std::string_view family);   // nullptr when unknown
 std::vector<std::string> adapter_families();
+// The default path of a family's operation ("" for an unknown family).
+std::string default_endpoint(std::string_view family, Operation op, const Json& route_metadata = Json::object());
+// The URL a route's embeddings call goes to, without authentication: what the
+// identity of a cached vector space binds.  `base_url` is the provider address.
+std::string embedding_url(std::string_view base_url, const Json& route_metadata);
 
 // Auth for a route's scheme: adds the header (or the query parameter) and
 // returns Errc::Unsupported for a scheme this layer cannot express.

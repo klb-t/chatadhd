@@ -1,6 +1,7 @@
 // OWNER: wave 2 net/chat/worker. Port of engine/models.py (ModelRegistry) and
 // the capability-based ProviderRegistry (MEGA MASTER 2.D, 4.5).
 #include "loom/providers.h"
+#include "loom/use_model.h"
 
 #include <algorithm>
 #include <cmath>
@@ -20,11 +21,6 @@ namespace {
 std::string cfg_string(const Config& cfg, std::string_view key, std::string fallback = "") {
   Json v = cfg.get(key);
   return v.is_string() ? v.get<std::string>() : std::move(fallback);
-}
-
-std::string rstrip_slash(std::string s) {
-  while (!s.empty() && s.back() == '/') s.pop_back();
-  return s;
 }
 
 std::string last_segment(std::string_view id) {
@@ -192,24 +188,26 @@ Status ModelRegistry::reload() {
 }
 
 Status ModelRegistry::update_from_api() {
-  std::string key = secrets_.get_string("api_key");
-  std::string base = rstrip_slash(cfg_string(cfg_, "base_url"));
-  if (key.empty() || base.empty()) {
+  // The provider's catalogue read goes through the same route and adapter as a
+  // model call; it spends nothing, so it needs no admission.
+  const llm::Services services(cfg_, secrets_, http_);
+  llm::ModelRequest list;
+  list.kind = "models.list";
+  list.operation = llm::Operation::ListModels;
+  list.models = {llm::ModelSpec{}};
+  list.timeout_ms = 15000;
+  list.usage.guard = false;
+  auto call = llm::prepare_call(services, list);
+  if (!call) {
     log::warn("loom.models", "Cannot refresh models — no API key or base URL");
     return Error(Errc::Unavailable, "no API key or base URL configured");
   }
-
-  net::HttpRequest req;
-  req.method = "GET";
-  req.url = base + "/models";
-  req.headers = {{"Authorization", "Bearer " + key}};
-  req.timeout_ms = 15000;
-  auto resp = http_.send(req);
-  if (!resp) return resp.error();
-  if (!resp->ok()) {
-    return Error(Errc::Http, "API error " + std::to_string(resp->status) + ": " + std::string(utf8::prefix(resp->body, 500)));
+  const auto sent = llm::execute_call(services, list, *call);
+  if (sent.error) return *sent.error;
+  if (sent.state != llm::State::Ok) {
+    return Error(Errc::Http, "API error " + std::to_string(sent.http_status) + ": " + std::string(utf8::prefix(sent.body, 500)));
   }
-  auto j = resp->json();
+  auto j = json::parse(sent.body);
   if (!j) return Error(Errc::Parse, "invalid JSON from /models");
 
   Json models = Json::array();
