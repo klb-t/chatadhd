@@ -71,6 +71,61 @@
       "references": [
         {"id": "conversation", "words": ["rozmow*", "konwersacj*", "czat*", "chat", "conversation", "thread", "dyskusj*", "wątek", "watek", "wątku", "watku"], "resolve": "current_conversation"},
         {"id": "message", "words": ["wiadomo*", "message", "odpowied*", "reply", "answer"], "resolve": "last_message"}
+      ],
+      "languages": [
+        {"code": "en", "label": {"en": "English", "pl": "angielski"}, "names": ["english", "angielsk*"]},
+        {"code": "pl", "label": {"en": "Polish", "pl": "polski"}, "names": ["polish", "polsk*"]},
+        {"code": "de", "label": {"en": "German", "pl": "niemiecki"}, "names": ["german", "deutsch", "niemieck*"]},
+        {"code": "fr", "label": {"en": "French", "pl": "francuski"}, "names": ["french", "francais", "francusk*"]},
+        {"code": "es", "label": {"en": "Spanish", "pl": "hiszpański"}, "names": ["spanish", "espanol", "hiszpansk*"]},
+        {"code": "it", "label": {"en": "Italian", "pl": "włoski"}, "names": ["italian", "italiano", "wlosk*"]},
+        {"code": "pt", "label": {"en": "Portuguese", "pl": "portugalski"}, "names": ["portuguese", "portugues", "portugalsk*"]},
+        {"code": "ru", "label": {"en": "Russian", "pl": "rosyjski"}, "names": ["russian", "rosyjsk*"]},
+        {"code": "uk", "label": {"en": "Ukrainian", "pl": "ukraiński"}, "names": ["ukrainian", "ukrainsk*"]},
+        {"code": "cs", "label": {"en": "Czech", "pl": "czeski"}, "names": ["czech", "czesk*"]},
+        {"code": "sk", "label": {"en": "Slovak", "pl": "słowacki"}, "names": ["slovak", "slowack*"]},
+        {"code": "sl", "label": {"en": "Slovenian", "pl": "słoweński"}, "names": ["slovenian", "slowensk*"]},
+        {"code": "hr", "label": {"en": "Croatian", "pl": "chorwacki"}, "names": ["croatian", "chorwack*"]},
+        {"code": "bg", "label": {"en": "Bulgarian", "pl": "bułgarski"}, "names": ["bulgarian", "bulgarsk*"]},
+        {"code": "nl", "label": {"en": "Dutch", "pl": "niderlandzki"}, "names": ["dutch", "nederlands", "niderlandzk*", "holendersk*"]},
+        {"code": "sv", "label": {"en": "Swedish", "pl": "szwedzki"}, "names": ["swedish", "svenska", "szwedzk*"]},
+        {"code": "no", "label": {"en": "Norwegian", "pl": "norweski"}, "names": ["norwegian", "norsk", "norwesk*"]},
+        {"code": "da", "label": {"en": "Danish", "pl": "duński"}, "names": ["danish", "dansk", "dunsk*"]},
+        {"code": "fi", "label": {"en": "Finnish", "pl": "fiński"}, "names": ["finnish", "suomi", "finsk*"]},
+        {"code": "hu", "label": {"en": "Hungarian", "pl": "węgierski"}, "names": ["hungarian", "wegiersk*"]},
+        {"code": "ro", "label": {"en": "Romanian", "pl": "rumuński"}, "names": ["romanian", "rumunsk*"]},
+        {"code": "el", "label": {"en": "Greek", "pl": "grecki"}, "names": ["greek", "greck*"]},
+        {"code": "lt", "label": {"en": "Lithuanian", "pl": "litewski"}, "names": ["lithuanian", "litewsk*"]},
+        {"code": "lv", "label": {"en": "Latvian", "pl": "łotewski"}, "names": ["latvian", "lotewsk*"]},
+        {"code": "et", "label": {"en": "Estonian", "pl": "estoński"}, "names": ["estonian", "estonsk*"]},
+        {"code": "tr", "label": {"en": "Turkish", "pl": "turecki"}, "names": ["turkish", "turecki", "turecku", "turk*"]},
+        {"code": "ja", "label": {"en": "Japanese", "pl": "japoński"}, "names": ["japanese", "japonsk*"]},
+        {"code": "zh", "label": {"en": "Chinese", "pl": "chiński"}, "names": ["chinese", "chinsk*"]},
+        {"code": "ko", "label": {"en": "Korean", "pl": "koreański"}, "names": ["korean", "koreansk*"]},
+        {"code": "ar", "label": {"en": "Arabic", "pl": "arabski"}, "names": ["arabic", "arabsk*"]},
+        {"code": "he", "label": {"en": "Hebrew", "pl": "hebrajski"}, "names": ["hebrew", "hebrajsk*"]},
+        {"code": "hi", "label": {"en": "Hindi", "pl": "hindi"}, "names": ["hindi"]},
+        {"code": "la", "label": {"en": "Latin", "pl": "łaciński"}, "names": ["latin", "lacin*"]}
+      ],
+      "arguments": [
+        {"id": "target_language.pl", "param": "target_language", "lang": "pl", "kind": "language", "regex": "\\b(?:na|po|do)\\s+(?:jezyk\\w*\\s+)?(\\w+)"},
+        {"id": "target_language.en", "param": "target_language", "lang": "en", "kind": "language", "regex": "\\b(?:into|to|in)\\s+(?:the\\s+)?(?:language\\s+)?(\\w+)"},
+        {"id": "style.pl", "param": "style", "lang": "pl", "kind": "text", "regex": "\\bw\\s+stylu\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "style.pl.manner", "param": "style", "lang": "pl", "kind": "text", "regex": "\\bw\\s+manierze\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "style.en", "param": "style", "lang": "en", "kind": "text", "regex": "\\bin\\s+the\\s+style\\s+of\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "style.en.adjective", "param": "style", "lang": "en", "kind": "text", "regex": "\\bin\\s+(?:an?\\s+)?(\\w+)\\s+style\\b"},
+        {"id": "tone.pl.adjective", "param": "tone", "lang": "pl", "kind": "text", "regex": "\\bw\\s+(\\w+)\\s+tonie\\b"},
+        {"id": "tone.pl", "param": "tone", "lang": "pl", "kind": "text", "regex": "\\bw\\s+tonie\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "tone.en", "param": "tone", "lang": "en", "kind": "text", "regex": "\\bin\\s+(?:an?\\s+|the\\s+)?(\\w+)\\s+tone\\b"},
+        {"id": "level.pl", "param": "level", "lang": "pl", "kind": "text", "regex": "\\bna\\s+poziomie\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "level.en", "param": "level", "lang": "en", "kind": "text", "regex": "\\bat\\s+(?:an?\\s+|the\\s+)?(\\w+(?:\\s+\\w+)?)\\s+level\\b"},
+        {"id": "audience.pl", "param": "audience", "lang": "pl", "kind": "text", "regex": "\\b(?:jak\\s+)?dla\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "audience.en.like", "param": "audience", "lang": "en", "kind": "text", "regex": "\\b(like\\s+i(?:'|\u2019)?m\\s+\\w+)\\s*[.!?]*\\s*$"},
+        {"id": "audience.en", "param": "audience", "lang": "en", "kind": "text", "regex": "\\bfor\\s+(?:an?\\s+|the\\s+)?(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "size.pl.by", "param": "size", "lang": "pl", "kind": "text", "template": "{1}x{2}", "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\s*[x\u00d7]\\s*(\\d{2,5})"},
+        {"id": "size.pl", "param": "size", "lang": "pl", "kind": "text", "template": "{1}x{1}", "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\b"},
+        {"id": "size.en.by", "param": "size", "lang": "en", "kind": "text", "template": "{1}x{2}", "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\s*[x\u00d7]\\s*(\\d{2,5})"},
+        {"id": "size.en", "param": "size", "lang": "en", "kind": "text", "template": "{1}x{1}", "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\b"}
       ]
     },
     "confirmation": {
@@ -108,6 +163,8 @@
         "proposal_denied": "The rules do not allow this: {{reason}}{{initiator}}.",
         "proposal_unfit": "This does not fit that element: it needs {{missing}}.",
         "proposal_missing_args": "I still need: {{args}}. Say it as /{{action}} with {{args}} filled in, or ask in other words.",
+        "proposal_args": "Arguments I read from your words: {{args}}.",
+        "proposal_args_open": "Not given (the defaults apply): {{params}}.",
         "proposal_error": "I could not plan this: {{message}}",
         "proposal_chain": "It would need a chain: {{chain}}.",
         "proposal_alternatives": "Other readings: {{alternatives}}.",
@@ -146,6 +203,8 @@
         "proposal_denied": "Zasady na to nie pozwalają: {{reason}}{{initiator}}.",
         "proposal_unfit": "To nie pasuje do tego elementu: potrzebuje {{missing}}.",
         "proposal_missing_args": "Brakuje jeszcze: {{args}}. Podaj to jako /{{action}} z uzupełnionymi wartościami albo powiedz inaczej.",
+        "proposal_args": "Argumenty odczytane z Twoich słów: {{args}}.",
+        "proposal_args_open": "Niepodane (obowiązują wartości domyślne): {{params}}.",
         "proposal_error": "Nie udało się tego zaplanować: {{message}}",
         "proposal_chain": "Potrzebny byłby łańcuch: {{chain}}.",
         "proposal_alternatives": "Inne odczytania: {{alternatives}}.",
@@ -253,6 +312,42 @@
                 "id": {"type": "string", "minLength": 1},
                 "words": {"type": "array", "items": {"type": "string"}},
                 "resolve": {"type": "string", "enum": ["current_conversation", "last_message"]}
+              },
+              "additionalProperties": false
+            }
+          },
+          "phrases": {
+            "type": "object",
+            "description": "The lexicon of commands next to the `phrases` of the catalogue's own actions: action id -> language -> phrases (a word ending in * is a prefix). Phrases the user's own conversations add live here (overlay profiles/intent_routing.pack); an action's own `phrases` stay where they are.",
+            "additionalProperties": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}}
+          },
+          "languages": {
+            "type": "array",
+            "description": "Names of languages as people say them (folded, lower case; a trailing * is a prefix): what a phrase such as \"na niemiecki\" or \"into German\" may name. The value given to an action is label.en. An unknown name is never guessed.",
+            "items": {
+              "type": "object",
+              "required": ["code", "label", "names"],
+              "properties": {
+                "code": {"type": "string", "minLength": 1},
+                "label": {"type": "object", "additionalProperties": {"type": "string"}},
+                "names": {"type": "array", "items": {"type": "string", "minLength": 1}}
+              },
+              "additionalProperties": false
+            }
+          },
+          "arguments": {
+            "type": "array",
+            "description": "Arguments from loose phrases. Each pattern fills the declared parameter `param` of the chosen action (an action that does not declare it is not touched; an argument already given is never overwritten). `regex` is matched against the folded, lower-cased text (Polish letters without diacritics); group 1 (and 2 ...) is read from the original text, so the user's own words are kept. kind text: the captured words, or `template` ({1}, {2} = groups); kind language: the captured word must be one of `languages`, else nothing is extracted. First match per parameter wins; patterns of the language of the input come first.",
+            "items": {
+              "type": "object",
+              "required": ["id", "param", "kind", "regex"],
+              "properties": {
+                "id": {"type": "string", "minLength": 1},
+                "param": {"type": "string", "minLength": 1},
+                "lang": {"type": "string"},
+                "kind": {"type": "string", "enum": ["text", "language"]},
+                "regex": {"type": "string", "minLength": 1},
+                "template": {"type": "string"}
               },
               "additionalProperties": false
             }

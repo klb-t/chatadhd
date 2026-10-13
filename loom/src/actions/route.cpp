@@ -195,6 +195,114 @@ struct Conv {
 
 const Json* entry_of(const Data& d, const std::string& action) { return json::find(d.engine.catalogue(), action); }
 
+// ── arguments from loose phrases ────────────────────────────────────
+// Data: heuristic.arguments (patterns) and heuristic.languages. A pattern fills a parameter the chosen action declares;
+// what no pattern reads stays unextracted (the proposal says so), nothing is guessed.
+
+struct ArgHit {
+  std::string param, value, matched, pattern;
+};
+
+std::string trim_value(std::string v) {
+  static const std::string drop = " \t\r\n.,;:!?\"'`";
+  while (!v.empty() && drop.find(v.front()) != std::string::npos) v.erase(v.begin());
+  while (!v.empty() && drop.find(v.back()) != std::string::npos) v.pop_back();
+  return v;
+}
+
+// The label (English) of the language a folded word names; "" when the word names none that the data knows.
+std::string language_label(const Data& d, const std::string& word) {
+  const Json& h = d.cfg.at("heuristic");
+  const Json* languages = json::find(h, "languages");
+  if (!languages || !languages->is_array() || word.empty()) return std::string();
+  for (const auto& l : *languages)
+    for (const auto& name : strings_of(json::find(l, "names")))
+      if (word_matches(word, fold(name, h.at("fold")))) return json::get_string(l.value("label", Json::object()), "en");
+  return std::string();
+}
+
+std::vector<ArgHit> extract_args(const Data& d, const Json& entry, const std::string& text, const std::string& lang, const Json& have) {
+  std::vector<ArgHit> hits;
+  const Json* params = json::find(entry, "params");
+  const Json& h = d.cfg.at("heuristic");
+  const Json* patterns = json::find(h, "arguments");
+  if (!params || !params->is_array() || !patterns || !patterns->is_array()) return hits;
+  std::set<std::string> declared;
+  for (const auto& p : *params) declared.insert(json::get_string(p, "name"));
+  const std::u32string subject = utf8::decode(fold(text, h.at("fold")));
+  std::u32string original = utf8::decode(std::string(text));
+  if (original.size() != subject.size()) original = subject;  // the folding changed the length: read the folded words
+  std::vector<const Json*> ordered;
+  for (const auto& p : *patterns)
+    if (json::get_string(p, "lang") == lang) ordered.push_back(&p);
+  for (const auto& p : *patterns)
+    if (json::get_string(p, "lang") != lang) ordered.push_back(&p);
+  std::set<std::string> done;
+  for (const Json* p : ordered) {
+    const std::string param = json::get_string(*p, "param");
+    if (!declared.count(param) || done.count(param)) continue;
+    if (const Json* given = json::find(have, param); given && !given->is_null()) continue;  // the caller's word comes first
+    auto rx = re::Regex::compile(json::get_string(*p, "regex"));
+    if (!rx) continue;
+    const std::string kind = json::get_string(*p, "kind", "text");
+    for (const auto& m : rx->finditer(subject)) {
+      auto original_group = [&](std::size_t g) {
+        if (!m.matched(g)) return std::string();
+        return utf8::encode(original.substr(static_cast<std::size_t>(m.start(g)), static_cast<std::size_t>(m.end(g) - m.start(g))));
+      };
+      std::string value;
+      if (kind == "language") {
+        value = language_label(d, m.group_utf8(1));
+      } else if (const std::string tpl = json::get_string(*p, "template"); !tpl.empty()) {
+        for (std::size_t i = 0; i < tpl.size(); ++i) {
+          if (tpl[i] == '{' && i + 2 < tpl.size() && std::isdigit(static_cast<unsigned char>(tpl[i + 1])) && tpl[i + 2] == '}') {
+            value += original_group(static_cast<std::size_t>(tpl[i + 1] - '0'));
+            i += 2;
+          } else {
+            value += tpl[i];
+          }
+        }
+      } else {
+        value = trim_value(original_group(1));
+      }
+      if (value.empty()) continue;
+      hits.push_back(ArgHit{param, value, trim_value(utf8::encode(original.substr(static_cast<std::size_t>(m.start(0)), static_cast<std::size_t>(m.end(0) - m.start(0))))),
+                            json::get_string(*p, "id")});
+      done.insert(param);
+      break;
+    }
+  }
+  return hits;
+}
+
+// What the action declares and what the words (or the settings) gave: the proposal shows it.
+Json params_view(const Json& entry, const Json& said, const Json& bound, const std::vector<ArgHit>& hits, const std::string& lang) {
+  Json out = Json::array();
+  const Json* params = json::find(entry, "params");
+  if (!params || !params->is_array()) return out;
+  const std::string element_arg = json::get_string(entry, "element_from_arg");
+  for (const auto& p : *params) {
+    const std::string name = json::get_string(p, "name");
+    if (name.empty() || name == element_arg) continue;
+    Json row = Json::object();
+    row["name"] = name;
+    row["required"] = json::get_bool(p, "required", false);
+    const Json* value = json::find(bound, name);
+    row["given"] = value && !value->is_null();
+    if (row["given"].get<bool>()) {
+      row["value"] = *value;
+      const bool from_phrase = std::any_of(hits.begin(), hits.end(), [&](const ArgHit& x) { return x.param == name; });
+      const Json* spoken = json::find(said, name);
+      row["from"] = from_phrase ? "phrase" : (spoken && !spoken->is_null()) ? "explicit" : "setting";
+    }
+    if (const Json* dflt = json::find(p, "default")) row["default"] = *dflt;
+    if (const std::string setting = json::get_string(p, "setting"); !setting.empty()) row["setting"] = setting;
+    if (const Json* desc = json::find(p, "description")) row["description"] = localized(*desc, lang);
+    out.push_back(std::move(row));
+  }
+  return out;
+}
+
 std::string other_required_param(const Json& entry, const std::string& element_arg) {
   if (const Json* params = json::find(entry, "params"); params && params->is_array())
     for (const auto& p : *params)
@@ -339,8 +447,19 @@ std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
   for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
     const Json& entry = it.value();
     if (json::find(entry, "element_from_arg")) continue;  // settings are named by their key: the patterns handle them
-    const Json* phrases = json::find(entry, "phrases");
-    if (!phrases || !phrases->is_object()) continue;
+    // The phrases of the action itself plus the lexicon of the routing profile (heuristic.phrases: action -> language -> phrases),
+    // where the phrases the user's own conversations added live.
+    Json merged = Json::object();
+    if (const Json* own = json::find(entry, "phrases"); own && own->is_object()) merged = *own;
+    if (const Json* extra = json::find(h, "phrases"); extra && extra->is_object())
+      if (const Json* more = json::find(*extra, it.key()); more && more->is_object())
+        for (auto l = more->begin(); l != more->end(); ++l) {
+          if (!merged.contains(l.key()) || !merged[l.key()].is_array()) merged[l.key()] = Json::array();
+          for (const auto& x : l.value())
+            if (x.is_string()) merged[l.key()].push_back(x);
+        }
+    if (merged.empty()) continue;
+    const Json* phrases = &merged;
     std::optional<Cand> best;
     for (auto lang = phrases->begin(); lang != phrases->end(); ++lang) {
       for (const auto& phrase : strings_of(&lang.value())) {
@@ -503,7 +622,8 @@ Json element_summary(const Data& d, const Json& el, const std::string& lang) {
   return out;
 }
 
-Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::string& lang) {
+Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const std::string& lang, const std::string& text) {
+  Cand c = c_in;
   Json cmd = Json::object();
   cmd["source"] = c.source;
   cmd["matched"] = c.matched;
@@ -519,6 +639,15 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::
   if (!entry) return infeasible(Json{{"code", "unknown_action"}, {"message", "no action '" + c.action + "'"}});
   cmd["title"] = localized(entry->value("labels", Json::object()), lang).empty() ? json::get_string(*entry, "title", c.action)
                                                                                  : localized(entry->value("labels", Json::object()), lang);
+  // Arguments the words carry ("na niemiecki", "w stylu Szekspira"): read by the data's patterns, only for what the action declares.
+  std::vector<ArgHit> hits;
+  if (c.source == "lexicon" || c.source == "model") {
+    hits = extract_args(d, *entry, text, c.lang.empty() ? lang : c.lang, c.args);
+    for (const auto& hit : hits) c.args[hit.param] = hit.value;
+    cmd["args"] = c.args;
+  }
+  cmd["args_read"] = Json::array();
+  for (const auto& hit : hits) cmd["args_read"].push_back(Json{{"param", hit.param}, {"value", hit.value}, {"matched", hit.matched}, {"pattern", hit.pattern}});
   // The element.
   Json element_json = nullptr;
   if (!c.element.is_null()) {
@@ -540,6 +669,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c, const Conv& conv, const std::
   Json missing_settings = Json::object();  // argument -> the setting that would supply it
   const std::string element_arg = json::get_string(*entry, "element_from_arg");
   const Json bound = rt.actions().bind_params(*entry, c.args);  // what the settings already say counts as said
+  cmd["params"] = params_view(*entry, c.args, bound, hits, lang);
   if (const Json* params = json::find(*entry, "params"); params && params->is_array())
     for (const auto& p : *params) {
       const std::string name = json::get_string(p, "name");
@@ -697,7 +827,7 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   Json chosen = nullptr;
   Json first = nullptr;
   for (const auto& c : cands) {
-    Json cmd = evaluate(rt, d, c, conv, lang);
+    Json cmd = evaluate(rt, d, c, conv, lang, text);
     // "this conversation" with no conversation, or an id that is nothing: words that merely sound like a command.
     if (c.source != "explicit" && c.source != "pattern" && !cmd.value("feasible", false) &&
         cmd.value("reason", Json::object()).value("code", "") == "element_not_found")
@@ -813,6 +943,8 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
   if (cmd.contains("chain")) p["chain"] = cmd["chain"];
   p["args"] = cmd.value("args", Json::object());
   if (cmd.contains("element")) p["element"] = cmd["element"];
+  p["args_read"] = cmd.value("args_read", Json::array());
+  p["params"] = cmd.value("params", Json::array());
   Json items = Json::array();
   if (cmd.contains("plan"))
     for (const auto& item : cmd.at("plan").value("items", Json::array()))
@@ -854,6 +986,22 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   std::string where = element.value("label", "").empty() ? element.value("class_label", "") : element.value("class_label", "") + " \"" + element.value("label", "") + "\"";
   if (where.empty()) where = say(d.cfg, lang, "no_element");
   lines.push_back(say(d.cfg, lang, "proposal_element", Json{{"element", where}}));
+  // What the words gave to the declared parameters, and which optional ones keep their defaults.
+  {
+    std::vector<std::string> given, open;
+    for (const auto& row : cmd.value("params", Json::array())) {
+      const std::string name = row.value("name", "");
+      if (row.value("given", false)) {
+        const Json& v = row.at("value");
+        given.push_back(name + "=" + (v.is_string() ? v.get<std::string>() : json::dump(v)));
+      } else if (!row.value("required", false) && row.contains("default") && !row.at("default").is_null()) {
+        const Json& v = row.at("default");
+        open.push_back(name + " (" + (v.is_string() ? v.get<std::string>() : json::dump(v)) + ")");
+      }
+    }
+    if (!given.empty()) lines.push_back(say(d.cfg, lang, "proposal_args", Json{{"args", join(given, ", ")}}));
+    if (!open.empty()) lines.push_back(say(d.cfg, lang, "proposal_args_open", Json{{"params", join(open, ", ")}}));
+  }
   const Json reason = cmd.value("reason", Json(nullptr));
   if (!cmd.value("feasible", false)) {
     const std::string code = reason.is_object() ? json::get_string(reason, "code") : std::string();
