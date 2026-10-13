@@ -6,12 +6,15 @@
 //   analyse(text):
 //     1. regex = analyzer.analyse(text) (always, first)
 //     2. if !enabled() or len(text) < 20 (code points): return convert_regex
-//     3. call_llm(text): POST {base_url}/chat/completions
-//          headers Authorization: Bearer <api_key>, Content-Type json,
-//                  HTTP-Referer https://github.com/chatadhd, X-Title ChatADHD-Semantic
+//     3. call_llm(text): one llm::use_model call (use_model.h) - provider,
+//          address and credential come from the settings' provider manifest
+//          (default preset: base_url + api_key over chat completions, headers
+//          Authorization Bearer, Content-Type json, HTTP-Referer, X-Title
+//          ChatADHD-Semantic; pinned by the golden test in test_semantic_llm)
 //          body {"model": semantic_model, "messages":[{"role":"user",
 //                "content": kAnalysisPrompt + text[:3000]}], "temperature":0.1,
-//                "max_tokens":800}, timeout 30 s
+//                "max_tokens":800}, timeout 30 s; admitted by the shared usage
+//          guard (a held call is a pause: regex result, no failure counted)
 //        non-200 -> nullopt (logged); content -> strip ``` fences -> JSON
 //     4. success -> reset failures, return merge(llm, regex)
 //        failure/exception -> ++consecutive_failures; >= 5 -> disabled
