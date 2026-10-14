@@ -4,7 +4,6 @@
 
 #include <algorithm>
 #include <chrono>
-#include <map>
 #include <mutex>
 #include <thread>
 
@@ -136,17 +135,12 @@ std::string Stmt::get_blob(int col) const {
 // ── Connection ─────────────────────────────────────────────────────
 Connection::~Connection() { close(); }
 
-Connection::Connection(Connection&& other) noexcept
-    : db_(other.db_), file_key_(std::move(other.file_key_)), busy_budget_ms_(other.busy_budget_ms_) {
-  other.db_ = nullptr;
-}
+Connection::Connection(Connection&& other) noexcept : db_(other.db_) { other.db_ = nullptr; }
 
 Connection& Connection::operator=(Connection&& other) noexcept {
   if (this != &other) {
     close();
     db_ = other.db_;
-    file_key_ = std::move(other.file_key_);
-    busy_budget_ms_ = other.busy_budget_ms_;
     other.db_ = nullptr;
   }
   return *this;
@@ -177,14 +171,7 @@ Result<Connection> Connection::open(const std::filesystem::path& path, const Ope
   }
   sqlite3_extended_result_codes(db, 1);
   sqlite3_busy_timeout(db, opts.busy_timeout_ms);
-  Connection c(db);
-  if (!opts.read_only) {
-    std::error_code ec;
-    auto canon = std::filesystem::weakly_canonical(path, ec);
-    c.file_key_ = (ec ? path : canon).string();
-    c.busy_budget_ms_ = opts.busy_timeout_ms;
-  }
-  return c;
+  return Connection(db);
 }
 
 Result<Connection> Connection::open_memory() {
@@ -278,39 +265,15 @@ bool Connection::has_fts5() {
 std::string Connection::last_error() const { return db_ ? sqlite3_errmsg(db_) : "closed"; }
 
 // ── Txn ────────────────────────────────────────────────────────────
-namespace {
-// SQLite's busy handler is a sleep-and-poll loop with no fairness: with many threads of one process
-// writing the same file, an unlucky one can be starved past the whole busy timeout ("database is
-// locked" although every writer is short).  Writers of one process therefore queue on a per-file
-// mutex first (FIFO-ish, no polling); SQLite's own lock and busy timeout still arbitrate between
-// processes.  The wait is bounded by the connection's busy budget, so two connections nested in
-// one thread degrade to the old behaviour (SQLite answers busy) instead of deadlocking.
-std::timed_mutex& write_queue(const std::string& key) {
-  static std::mutex registry_mu;
-  static std::map<std::string, std::unique_ptr<std::timed_mutex>> registry;
-  std::lock_guard lk(registry_mu);
-  auto& slot = registry[key];
-  if (!slot) slot = std::make_unique<std::timed_mutex>();
-  return *slot;
-}
-}  // namespace
-
 Txn::Txn(Connection& c, bool immediate) : c_(c) {
   if (c_.in_transaction()) {
     nested_ = true;
     savepoint_ = "loom_sp_" + random_hex(8);
     begin_ = c_.exec("SAVEPOINT " + savepoint_);
   } else {
-    if (immediate && !c_.file_key_.empty()) {
-      queue_ = std::unique_lock<std::timed_mutex>(write_queue(c_.file_key_), std::defer_lock);
-      (void)queue_.try_lock_for(std::chrono::milliseconds(std::max(c_.busy_budget_ms_, 0)));
-    }
     begin_ = c_.exec(immediate ? "BEGIN IMMEDIATE" : "BEGIN");
   }
-  if (!begin_) {
-    done_ = true;
-    if (queue_.owns_lock()) queue_.unlock();
-  }
+  if (!begin_) done_ = true;
 }
 
 Txn::~Txn() {
@@ -325,7 +288,6 @@ Status Txn::commit() {
     return st;
   }
   done_ = true;
-  if (queue_.owns_lock()) queue_.unlock();
   return {};
 }
 
@@ -338,7 +300,6 @@ void Txn::rollback() noexcept {
   } else if (c_.in_transaction()) {
     (void)c_.exec("ROLLBACK");
   }
-  if (queue_.owns_lock()) queue_.unlock();
 }
 
 std::string library_version() { return sqlite3_libversion(); }
