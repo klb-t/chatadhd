@@ -318,7 +318,18 @@ struct Runtime::Impl {
 
 Runtime::Runtime(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 
-Runtime::~Runtime() { shutdown(); }
+Runtime::~Runtime() {
+  shutdown();
+  // Parts built from the Runtime reach the other parts through rt.bus(), rt.event_log() ... in their destructors, i.e. through impl_.
+  // std::unique_ptr in libc++ (the Android NDK) nulls impl_ BEFORE it deletes the Impl, so letting ~Impl destroy them reads impl_->bus
+  // through a null pointer (SIGSEGV, fault addr = offsetof(Impl, bus) = 0x148). Destroy them here, while impl_ is still valid, in
+  // reverse construction order.
+  if (impl_) {
+    impl_->actions.reset();
+    impl_->knowledge.reset();
+    impl_->archive.reset();
+  }
+}
 
 Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   if (opts.log_level) log::set_level(*opts.log_level);
