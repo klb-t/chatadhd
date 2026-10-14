@@ -29,6 +29,10 @@ struct ServerOptions {
   // streamed to disk, so 0 (= no limit) for them does not grow memory. 0 for JSON means no limit either.
   size_t max_body_bytes = 64u * 1024 * 1024;
   size_t max_upload_bytes = 0;
+  // R23: after an upload passes max_upload_bytes, up to this many further bytes are read and discarded so the 413 reaches
+  // the client (closing a socket with unread bytes sends a reset that can destroy the answer); past it the connection is
+  // cut. 0 = drain without limit.
+  size_t upload_drain_bytes = 64u * 1024 * 1024;
   // An idle event feed (SSE) writes a comment this often so a client that went away is noticed and its thread freed (0 = never).
   size_t sse_keepalive_ms = 5000;
   // Threads that serve requests (0 = the library's own count, at least 8). Every open page holds one for its event feed (P14 4) and

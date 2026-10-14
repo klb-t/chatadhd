@@ -248,7 +248,7 @@ fs::path upload_dir_for(LoomContext* ctx) {
 // Streams the multipart part "file" into `dir`/<random name> as it arrives. Other parts are collected as
 // strings up to `field_limit` bytes each (they are options, not payload).
 bool receive_upload(const httplib::Request& req, const httplib::ContentReader& reader, const fs::path& dir,
-                    std::size_t field_limit, std::size_t total_limit, Upload& up) {
+                    std::size_t field_limit, std::size_t total_limit, std::size_t drain_limit, Upload& up) {
   if (!req.is_multipart_form_data()) {
     up.error = "multipart/form-data with a field \"file\" is required";
     return false;
@@ -278,7 +278,7 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
         // Over the limit: keep reading and discard the rest of the body instead of aborting. Closing a socket
         // that still has unread bytes makes the kernel send a RST, which can destroy the 413 before the client
         // reads it (and a client that retries then resends an already consumed body, i.e. an empty one -> 400).
-        if (up.too_large) return true;
+        if (up.too_large) return drain_limit == 0 || total - total_limit <= drain_limit;  // bounded by --upload-drain-bytes
         if (total_limit != 0 && total > total_limit) {
           failed = true;
           up.too_large = true;
@@ -759,7 +759,7 @@ void App::route_models_providers() {
       fs::path path;
       ~Cleanup() { std::error_code ignored; if (!path.empty()) fs::remove(path, ignored); }
     } cleanup;
-    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up);
+    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, up);
     cleanup.path = up.path;
     if (!received) {
       res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
@@ -792,7 +792,7 @@ void App::route_models_providers() {
       fs::path path;
       ~Cleanup() { std::error_code ignored; if (!path.empty()) fs::remove(path, ignored); }
     } cleanup;
-    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up);
+    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, up);
     cleanup.path = up.path;
     if (!received) {
       res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
@@ -1108,7 +1108,7 @@ void App::route_import_export() {
                                    const httplib::ContentReader& reader) {
     LoomContext* ctx = rctx();
     Upload up;
-    if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up)) {
+    if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, opts_.upload_drain_bytes, up)) {
       res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
       send_error(res, "invalid_argument", up.error, up.too_large ? 413 : 400);
       return;
