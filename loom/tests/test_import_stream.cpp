@@ -97,11 +97,26 @@ std::size_t generate_large_chatgpt_export(const std::filesystem::path& path, std
   return n;
 }
 
+// Hang guard of the 200 MB case. Sanitizers slow the streaming parse and the per-row inserts by an order of
+// magnitude (measured on 2 shared cores: ~25 s plain, ~165 s ASan+UBSan, >350 s TSan), so the guard scales with them;
+// the assertions and the workload are the same in every build.
+#if defined(__SANITIZE_THREAD__) || defined(__SANITIZE_ADDRESS__)
+constexpr double kBigImportTimeoutS = 1500;
+#elif defined(__has_feature)
+#if __has_feature(thread_sanitizer) || __has_feature(address_sanitizer)
+constexpr double kBigImportTimeoutS = 1500;
+#else
+constexpr double kBigImportTimeoutS = 300;
+#endif
+#else
+constexpr double kBigImportTimeoutS = 300;
+#endif
+
 }  // namespace
 
 TEST_SUITE("import.stream") {
   TEST_CASE("importing a ~200MB generated JSON export keeps peak RSS bounded"
-           * doctest::timeout(300)) {
+           * doctest::timeout(kBigImportTimeoutS)) {
     fsutil::TempDir td("loom_import_mem_");
     std::filesystem::path json_path = td.path() / "huge_conversations.json";
 
