@@ -685,3 +685,20 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 - Otwarte: `ActionRunScope` w `src/actions/run.cpp` (S1, jedna linia) — bez niej `part_of` nie powstaje; obszar „ports”
   w widoku grafu; magazyn nie zapisuje jeszcze przebiegów; wersja profilu na przebiegu.
 - Raport: `docs/reports/S2_R12_2026-10-13.md`. Cofnięcie: revert scalenia R12.
+
+## S2 / R16 — wstrzymanie ×10 w mowie i OCR jako pauza do wznowienia (2026-10-14)
+
+- `MediaProviders::transcribe_bytes_resumable` / `ocr_bytes_resumable`: wstrzymanie strażnika zużycia wraca jako pauza
+  z pokwitowaniem (`loom.action_usage_pending/1`), nie jako błąd dostawcy; **bez** przechodzenia do zapasowego dostawcy.
+  Wznowienie tym samym wywołaniem z potwierdzeniem (jak czat): wysyła raz, tylko do dostawcy, który wstrzymał; odrzucenie
+  nic nie wysyła. Naprawiony błąd: losowa granica multipart zmieniała skrót żądania między wstrzymaniem a wznowieniem.
+- Do zrobienia przez S1: `run_media` w `src/actions/runner.cpp` → wersje `*_resumable` + krok Held. Raport:
+  `docs/reports/S2_R16_2026-10-14.md`. Cofnięcie: revert scalenia R16.
+
+## S2 / R17 — paczka serwera dla starszych systemów i ARM (2026-10-14)
+
+- Serwer budowany na Ubuntu 22.04 (glibc 2.35) z GCC 13 z PPA, `libstdc++`/`libgcc` statycznie (przez `LDFLAGS`); zostają
+  tylko glibc i libssl3. Dwie paczki: `chatadhd-server-linux-x64` i `-arm64` (runner `ubuntu-22.04-arm`).
+- Sprawdzone na GitHubie (run 38504332914): obie paczki uruchomione i przetestowane w `debian:12`, `ubuntu:22.04`,
+  `ubuntu:24.04`, `debian:13`. `loom-server --version`; instalator odmawia paczki na inny procesor. Opis po polsku w
+  `deploy/README.md`. Raport: `docs/reports/S2_R17_2026-10-14.md`. Cofnięcie: `runs-on: ubuntu-24.04`, bez PPA i flag statycznych.

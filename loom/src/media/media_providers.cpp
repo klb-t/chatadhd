@@ -468,10 +468,14 @@ std::vector<std::string> MediaProviders::get_ocr_providers() const {
 }
 
 namespace {
+// `once`: the call answers one held request (a confirmation was given): only the provider that held it is tried,
+// so a resume neither spends elsewhere nor repeats on a second provider.
+// A hold (Errc::Paused) is not a provider failure: no other provider is tried after it.
 template <class Provider, class ResultT, class Fn>
 Result<ResultT> try_providers(const std::vector<std::shared_ptr<Provider>>& primary,
                               const std::vector<std::shared_ptr<Provider>>& extra, const OptStr& provider,
-                              std::string_view unconfigured_msg, std::string_view all_failed_msg, Fn&& call) {
+                              std::string_view unconfigured_msg, std::string_view all_failed_msg, Fn&& call,
+                              bool once = false) {
   if (primary.empty() && extra.empty()) return Error(Errc::Unavailable, std::string(unconfigured_msg));
   if (provider) {
     for (const auto& p : primary) {
@@ -484,12 +488,36 @@ Result<ResultT> try_providers(const std::vector<std::shared_ptr<Provider>>& prim
   }
   std::vector<std::shared_ptr<Provider>> order(primary);
   order.insert(order.end(), extra.begin(), extra.end());
-  return compose::fallback<ResultT>(
-      order, [&](const std::shared_ptr<Provider>& p) -> std::optional<Result<ResultT>> { return call(*p); },
+  if (once && order.size() > 1) order.resize(1);
+  std::optional<Error> paused;
+  auto out = compose::fallback<ResultT>(
+      order,
+      [&](const std::shared_ptr<Provider>& p) -> std::optional<Result<ResultT>> {
+        if (paused) return std::nullopt;  // held: nothing is sent through the next provider
+        auto r = call(*p);
+        if (!r && r.error().code == Errc::Paused) paused = r.error();
+        return r;
+      },
       Error(Errc::Unavailable, std::string(all_failed_msg)),
       [](const std::shared_ptr<Provider>& p, const Error& e, Error&) {
         log::warn(kLog, "provider {} failed: {}", p->name(), e.message);
       });
+  if (paused) return *paused;
+  return out;
+}
+
+template <class T>
+Result<MediaReply<T>> reply_of(Result<T> r, const media_detail::HoldScope& scope) {
+  MediaReply<T> reply;
+  if (r) {
+    reply.value = std::move(*r);
+    return reply;
+  }
+  if (r.error().code == Errc::Paused && !scope.pending().is_null()) {
+    reply.pending = scope.pending();
+    return reply;
+  }
+  return r.error();
 }
 }  // namespace
 
@@ -547,6 +575,45 @@ Result<OcrResult> MediaProviders::ocr_bytes(std::string_view image, std::string_
                                                "No OCR providers configured. Add ocr_space_api_key to secrets.",
                                                "All OCR providers failed",
                                                [&](OcrProvider& p) { return p.recognize_bytes(image, format, language); });
+}
+
+Result<MediaReply<AsrResult>> MediaProviders::transcribe_bytes_resumable(std::string_view audio, std::string_view format,
+                                                                         const OptStr& provider, const OptStr& language,
+                                                                         const Json& usage_confirmation) {
+  std::vector<std::shared_ptr<AsrProvider>> primary, extra;
+  {
+    std::lock_guard lk(mu_);
+    LOOM_TRY(profile_);
+    primary = asr_;
+    extra = extra_asr_;
+  }
+  media_detail::HoldScope scope(usage_confirmation);
+  return reply_of<AsrResult>(
+      try_providers<AsrProvider, AsrResult>(
+          primary, extra, provider, "No ASR providers configured. Add groq_api_key or google_speech_api_key to secrets.",
+          "All ASR providers failed", [&](AsrProvider& p) { return p.transcribe_bytes(audio, format, language); },
+          scope.confirming()),
+      scope);
+}
+
+Result<MediaReply<OcrResult>> MediaProviders::ocr_bytes_resumable(std::string_view image, std::string_view format,
+                                                                  const OptStr& provider, const OptStr& language,
+                                                                  const Json& usage_confirmation) {
+  std::vector<std::shared_ptr<OcrProvider>> primary, extra;
+  {
+    std::lock_guard lk(mu_);
+    LOOM_TRY(profile_);
+    primary = ocr_;
+    extra = extra_ocr_;
+  }
+  media_detail::HoldScope scope(usage_confirmation);
+  return reply_of<OcrResult>(
+      try_providers<OcrProvider, OcrResult>(primary, extra, provider,
+                                            "No OCR providers configured. Add ocr_space_api_key to secrets.",
+                                            "All OCR providers failed",
+                                            [&](OcrProvider& p) { return p.recognize_bytes(image, format, language); },
+                                            scope.confirming()),
+      scope);
 }
 
 Json MediaProviders::status() const {
