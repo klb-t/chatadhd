@@ -606,3 +606,14 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§9. Właściciel
 - Raport: `docs/reports/S2_R8_2026-10-13.md`. Cofnięcie: revert scalenia R8.
 - Otwarte: akcje `transcribe`/`ocr` jako implemented + `request.action` w `media_call.cpp` (obszar S1, przekazane);
   podłączenie zapisu pochodzenia mediów w środowisku uruchomieniowym (R10, krok 0).
+
+## S2 / R11 — „ROM”: pamięć tylko do odczytu montowana pierwsza (2026-10-13)
+
+- Katalog ROM (13 pozycji `GRAF_HUB_KOD_SILNIK` §3) generowany z plików programu: `tools/gen_rom_catalogue.py` →
+  `data/graph/rom.pack` (struktura: pozycje, status jest/częściowo/brak, ścieżki, luki). Skróty plików liczone na żądanie
+  (`Rom::with_hashes`, `--hashes`), nie przypięte w repo — zwykła zmiana kodu nie czerwieni bramy.
+- `rom::Rom`: zapis/usunięcie → odmowa z powodem „rom_read_only” i wskazaniem nakładki; nakładka użytkownika dozwolona.
+  `MountRegistry`: ROM zawsze na pozycji 0; `Runtime::mounts()`. Widok wejściowy grafu ma obszar „rom”.
+- Luki (uczciwie „brak”): tryb ratunkowy, klucz weryfikacji aktualizacji, osobny bezpiecznik „nie nadpisuj nieprzeczytanego”.
+  Otwarte: funkcje `loom_rom_*` w C ABI; inne ładowarki niż profile nie pytają jeszcze rejestru montowań.
+- Raport: `docs/reports/S2_R11_2026-10-13.md`. Cofnięcie: revert scalenia R11.
