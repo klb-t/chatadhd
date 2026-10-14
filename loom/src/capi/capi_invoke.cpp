@@ -52,7 +52,7 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
         };
         if (auto st = add("asr", port_graph::adapters_of(asr_adapters())); !st) return out_error(st.error());
         if (auto st = add("ocr", port_graph::adapters_of(ocr_adapters())); !st) return out_error(st.error());
-        if (auto st = add("storage", port_graph::adapters_of(BackendRegistry::builtin())); !st) return out_error(st.error());
+        if (auto st = add("storage", port_graph::adapters_of(storage::BackendRegistry::builtin())); !st) return out_error(st.error());
         if (auto st = add("batch", port_graph::adapters_of(SemanticBatchAPI::backends())); !st) return out_error(st.error());
         const std::string cid = json::get_string(*rj, "conversation_id");
         Json meta = Json::object();

@@ -6,6 +6,7 @@
 #include "loom/media_providers.h"
 #include "loom/port_compose.h"
 #include "loom/port_graph.h"
+#include "loom/config.h"
 #include "loom/port_profile.h"
 #include "loom/storage_backend.h"
 #include "loom/util/fs.h"
@@ -53,8 +54,8 @@ TEST_SUITE("port_graph") {
     CHECK(again == ids);
     CHECK(unwrap(db->list_nodes("adapter")).size() == ids.size());
     // Storage backends are one more port.
-    auto st = unwrap(port_graph::record_adapters(*db, "storage", port_graph::adapters_of(BackendRegistry::builtin())));
-    CHECK(st.size() == BackendRegistry::builtin().names().size());
+    auto st = unwrap(port_graph::record_adapters(*db, "storage", port_graph::adapters_of(storage::BackendRegistry::builtin())));
+    CHECK(st.size() == storage::BackendRegistry::builtin().names().size());
     CHECK(label_of(*db, st[0]).rfind("adapter:storage:", 0) == 0);
   }
 
