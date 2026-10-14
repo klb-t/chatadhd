@@ -4,6 +4,7 @@
 #include <set>
 
 #include "impl.h"
+#include "loom/annotation_layer.h"
 #include "loom/chat_route.h"
 #include "loom/log.h"
 #include "loom/use_model.h"
@@ -79,47 +80,113 @@ Method Guardian::Impl::method(const Data& d, const std::string& override_name) {
 
 // ── detection ───────────────────────────────────────────────────────────────────────────────
 
-std::vector<Signal> Guardian::Impl::detect_heuristic(const Data& d, const Message& m, bool has_goal) {
-  const auto toks = text::tokenize(utf8::decode(m.text), d.fold);
-  Signal best;
-  double best_key = 0;
+std::vector<Signal> Guardian::Impl::detect_heuristic(const Data& d, const Message& m, bool has_goal, const std::set<std::string>& skip_kinds) {
+  const auto cps = utf8::decode(m.text);
+  const auto toks = text::tokenize(cps, d.fold);
   const Json& kinds = d.p.at("kinds");
+  const Json& conf = d.p.at("signal_confidence");
+  std::vector<Signal> found;
   for (auto it = kinds.begin(); it != kinds.end(); ++it) {
+    if (skip_kinds.count(it.key())) continue;
     const Json& detect = it.value().value("detect", Json::object());
     const Json* h = json::find(detect, "heuristic");
     if (!h) continue;
     if (json::get_bool(detect, "needs_goal", false) && !has_goal) continue;
     const auto hits = text::find(toks, text::compile(all_phrases(h->value("markers", Json::object())), d.fold));
-    double score = 0;
+    if (hits.empty()) continue;
     const std::size_t window = static_cast<std::size_t>(json::get_int(*h, "start_window", 5));
-    for (const auto& hit : hits) score += hit.first < window ? json::get_number(*h, "start_weight", 1.0) : json::get_number(*h, "anywhere_weight", 0.6);
-    if (score < json::get_number(*h, "min_score", 0.6)) continue;
-    const double key = score * 10 + json::get_number(it.value(), "priority", 0);
-    if (key > best_key) {
-      best_key = key;
-      best = Signal{};
-      best.kind = it.key();
-      best.score = score;
-      best.by = "heuristic";
+    // One segment per cluster of markers that share a clause: a message can hold several segments of one kind.
+    struct Cluster { std::size_t from, to, first_hit, last_hit; double score; int n; bool at_start; };
+    std::vector<Cluster> clusters;
+    for (const auto& hit : hits) {
+      const auto [a, b] = text::clause(cps, toks, hit.first, hit.last);
+      const bool at_start = hit.first < window;
+      const double w = at_start ? json::get_number(*h, "start_weight", 1.0) : json::get_number(*h, "anywhere_weight", 0.6);
+      if (!clusters.empty() && a <= clusters.back().to) {
+        auto& c = clusters.back();
+        c.to = std::max(c.to, b);
+        c.last_hit = hit.last;
+        c.score += w;
+        ++c.n;
+        c.at_start = c.at_start || at_start;
+      } else {
+        clusters.push_back(Cluster{a, b, hit.first, hit.last, w, 1, at_start});
+      }
+    }
+    int index = 0;
+    for (const auto& c : clusters) {
+      if (c.score < json::get_number(*h, "min_score", 0.6)) continue;
+      Signal s;
+      s.kind = it.key();
+      s.score = c.score;
+      s.by = "heuristic";
+      s.start = static_cast<std::int64_t>(c.from);
+      s.end = static_cast<std::int64_t>(c.to);
+      s.cluster = index++;
+      s.confidence = std::min(json::get_number(conf, "max", 0.95), (c.at_start ? json::get_number(conf, "start", 0.9) : json::get_number(conf, "anywhere", 0.65)) + json::get_number(conf, "per_extra_hit", 0.05) * (c.n - 1));
+      s.segment = utf8::encode(std::u32string_view(cps).substr(c.from, c.to - c.from));
+      s.method_version = annotations::method_version(it.value().value("detect", Json::object()).dump());
+      if (json::get_bool(detect, "claim_after_marker", false)) {
+        // The user states the rule himself: what follows the marker, to the end of the sentence, is the claim.
+        std::size_t from = toks[c.last_hit].end, to = from;
+        while (to < cps.size() && cps[to] != U'.' && cps[to] != U'!' && cps[to] != U'?' && cps[to] != U'\n') ++to;
+        s.subject = clip_text(utf8::encode(std::u32string_view(cps).substr(from, to - from)), 400);
+        while (!s.subject.empty() && (s.subject.front() == ',' || s.subject.front() == ':' || s.subject.front() == ' ')) s.subject.erase(s.subject.begin());
+        if (s.subject.empty()) continue;
+        s.end = static_cast<std::int64_t>(to);
+      }
+      // A segment that quotes or imagines what it says is annotated with that qualifier and is not evidence.
+      std::size_t sentence_first = c.first_hit;
+      while (sentence_first > 0 && !text::sentence_start(cps, toks, sentence_first)) --sentence_first;
+      std::vector<text::Tok> before(toks.begin() + static_cast<std::ptrdiff_t>(sentence_first), toks.begin() + static_cast<std::ptrdiff_t>(c.first_hit));
+      const Json& quals = d.p.at("qualifiers");
+      for (auto q = quals.begin(); q != quals.end(); ++q) {
+        if (!q.value().is_object() || !q.value().contains("markers")) continue;
+        if (text::find(before, text::compile(all_phrases(q.value().at("markers")), d.fold)).empty()) continue;
+        s.qualifier = q.key();
+        s.counts = json::get_bool(q.value(), "counts_as_evidence", false);
+        break;
+      }
+      found.push_back(std::move(s));
     }
   }
-  if (best.kind.empty()) return {};
+  // A kind that yields to another found in the same message gives way (a correction already says "also ...").
+  std::vector<Signal> kept;
+  for (auto& s : found) {
+    bool yields = false;
+    for (const auto& to : text::strings_of(json::find(kinds.at(s.kind), "yields_to")))
+      for (const auto& o : found) yields = yields || (o.kind == to && o.qualifier.empty());
+    if (!yields) kept.push_back(std::move(s));
+  }
+  if (kept.empty()) return {};
+  std::sort(kept.begin(), kept.end(), [](const Signal& a, const Signal& b) { return a.start < b.start; });
   // What the message adds: tone, a repeated demand, a scope, exceptions.
   const std::string lowered = utf8::to_lower(m.text);
   const Json& esc = d.p.at("escalation");
   const auto tone = text::compile(all_phrases(esc.at("tone").at("markers")), d.fold);
   const auto repeat = text::compile(all_phrases(esc.at("repeat").at("markers")), d.fold);
-  best.tone = !text::find(toks, tone).empty() || text::contains_raw(lowered, tone);
-  best.repeat = !text::find(toks, repeat).empty() || text::contains_raw(lowered, repeat);
+  const bool has_tone = !text::find(toks, tone).empty() || text::contains_raw(lowered, tone);
+  const bool has_repeat = !text::find(toks, repeat).empty() || text::contains_raw(lowered, repeat);
+  const std::string lang = guess_lang(d, m.text);
+  for (auto& s : kept) {
+    s.tone = has_tone;
+    s.repeat = has_repeat;
+    s.lang = lang;
+  }
+  // An explicit scope belongs to the segment it stands in (the only segment of the message owns any).
   for (const std::string scope : {"person", "conversation", "message"}) {
     const Json* markers = json::find(d.p.at("scopes").at("markers"), scope);
-    if (markers && !text::find(toks, text::compile(all_phrases(*markers), d.fold)).empty()) {
-      best.scope = scope;
-      break;
-    }
+    if (!markers) continue;
+    const auto sh = text::find(toks, text::compile(all_phrases(*markers), d.fold));
+    if (sh.empty()) continue;
+    const auto pos = static_cast<std::int64_t>(toks[sh.front().first].start);
+    Signal* owner = nullptr;
+    for (auto& s : kept)
+      if (s.start <= pos && pos < s.end && s.scope.empty()) owner = &s;
+    if (!owner && kept.size() == 1 && kept.front().scope.empty()) owner = &kept.front();
+    if (owner) owner->scope = scope;
   }
   const Json& ex = d.p.at("exceptions");
-  const auto cps = utf8::decode(m.text);
   for (const auto& hit : text::find(toks, text::compile(all_phrases(ex.at("markers")), d.fold))) {
     std::size_t from = toks[hit.last].end, to = from;
     std::size_t words = 0;
@@ -131,13 +198,18 @@ std::vector<Signal> Guardian::Impl::detect_heuristic(const Data& d, const Messag
       to = toks[i].end;
       ++words;
     }
-    if (to > from) {
-      const std::string phrase = clip_text(utf8::encode(std::u32string_view(cps).substr(from, to - from)), 200);
-      if (!phrase.empty()) best.exceptions.push_back(phrase);
-    }
+    if (to <= from) continue;
+    const std::string phrase = clip_text(utf8::encode(std::u32string_view(cps).substr(from, to - from)), 200);
+    if (phrase.empty()) continue;
+    // The exception belongs to the nearest segment before it (the first when it stands at the start).
+    const auto at = static_cast<std::int64_t>(toks[hit.first].start);
+    Signal* owner = &kept.front();
+    for (auto& s : kept)
+      if (s.end <= at || (s.start <= at && at < s.end)) owner = &s;
+    owner->exceptions.push_back(phrase);
+    owner->exception_spans.emplace_back(static_cast<std::int64_t>(toks[hit.first].start), static_cast<std::int64_t>(to));
   }
-  best.lang = guess_lang(d, m.text);
-  return {best};
+  return kept;
 }
 
 Result<std::optional<Signal>> Guardian::Impl::detect_model(const Data& d, const Message& m, Json& issues) {
@@ -199,6 +271,10 @@ Result<std::optional<Signal>> Guardian::Impl::detect_model(const Data& d, const 
   Json answer = nullptr;
   for (const auto& part : r.outputs)
     if (part.kind == "json") answer = part.value;
+  // The reading has a cost and a receipt; the receipt is kept even when the model finds nothing, so nobody asks again.
+  const Json cost{{"calls", 1}, {"input_bytes", system.size() + user.size()}, {"output_bytes", r.text.size()}, {"receipt", r.operation_id}, {"model", r.model}};
+  const std::string version = annotations::method_version(system);
+  (void)annotations::record_run(rt.db(), policy_of(d), m.id, "guardian_model", version, text::strings_of(nullptr), cost);
   if (!answer.is_object()) {
     issues.push_back("the model did not return a JSON object");
     return std::optional<Signal>();
@@ -210,6 +286,8 @@ Result<std::optional<Signal>> Guardian::Impl::detect_model(const Data& d, const 
   s.kind = kind;
   s.score = std::min(1.0, confidence);
   s.by = "model";
+  s.cost = cost;
+  s.method_version = version;
   s.subject = clip_text(json::get_string(answer, "subject"), 400);
   s.tone = json::get_string(answer, "tone") == "sharp";
   s.scope = json::get_string(answer, "scope");
@@ -290,11 +368,11 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
   const std::string hyp_kind = json::get_string(d.p.at("nodes"), "hypothesis", "guardian_hypothesis");
   const Json& kcfg = d.p.at("kinds").at(s.kind);
   const Json hcfg = kcfg.value("hypothesis", Json::object());
-  const std::string occ_label = "occ:" + m.id + ":" + s.kind;
+  const std::string occ_label = "occ:" + m.id + ":" + s.kind + (s.cluster > 0 ? ":" + std::to_string(s.start) : std::string());
   LOOM_TRY_ASSIGN(auto prior, db.find_node(occ_label, occ_kind));
   if (prior) return Json{{"occurrence", prior->id}, {"hypothesis", prior->metadata.value("hypothesis", "")}, {"kind", s.kind}, {"duplicate", true}};
 
-  const std::string claim_text = s.subject.empty() ? clip_text(m.text, 400) : s.subject;
+  const std::string claim_text = !s.subject.empty() ? s.subject : clip_text(m.text, 400);
   const auto tokens = subject_tokens(d, claim_text);
   const bool neg = negative(d, claim_text);
   const double min_overlap = json::get_number(d.p.at("weighting"), "overlap_min", 0.5);
@@ -477,14 +555,12 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
     out["skipped"] = "not_user_content";
     return out;
   }
+  const annotations::Policy pol = policy_of(d);
   // The shared annotation layer and the levels first: cheap, local, and the same for every method.
   if (!structural) {
     auto written = annotate_message(db, d, m);
     if (written) out["annotations_written"] = *written;
     else out["issues"].push_back(written.error().message);
-    auto levels = build_levels(db, d, m);
-    if (levels) out["levels"] = (*levels)["levels"];
-    else out["issues"].push_back(levels.error().message);
   }
 
   std::vector<Signal> signals;
@@ -511,29 +587,43 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
     s.lang = guess_lang(d, m.text);
     signals.push_back(s);
   } else {
-    // An annotation of another producer (the semantic analyzer) already says what the message is: no second reading, no model call.
-    auto anns = annotations_of(db, d, m.id);
+    // What other producers (the semantic analyzer ...) already say about the message is read from the layer: a consumer knows categories and
+    // confidences, not producers. A kind they cover is not read again, and a message a model has already read is not sent to a model a second time.
+    std::set<std::string> covered;
+    bool model_read = false;
+    auto anns = annotations::list(db, pol, m.id);
     if (anns) {
+      const Json& kinds = d.p.at("kinds");
       for (const auto& a : *anns) {
-        if (a.value("producer", "") == "guardian_heuristic") continue;
-        const Json& kinds = d.p.at("kinds");
+        const std::string producer = a.value("producer", "");
+        if (producer.rfind("guardian", 0) == 0 || producer == "user") continue;
+        if (a.value("origin", "") == "model") model_read = true;
         for (auto it = kinds.begin(); it != kinds.end(); ++it) {
           const auto methods = text::strings_of(json::find(it.value().value("detect", Json::object()), "methods"));
           if (std::find(methods.begin(), methods.end(), "structural") != methods.end()) continue;
-          if (json::get_string(it.value(), "annotation_category") == a.value("category", "")) {
-            Signal s;
-            s.kind = it.key();
-            s.by = "annotation";
-            s.score = a.value("confidence", 1.0);
-            s.lang = guess_lang(d, m.text);
-            signals.push_back(s);
-            break;
-          }
+          if (json::get_string(it.value(), "annotation_category") != a.value("category", "")) continue;
+          Signal s;
+          s.kind = it.key();
+          s.by = "annotation";
+          s.score = a.value("confidence", 1.0);
+          s.confidence = a.value("confidence", 1.0);
+          s.start = a.value("start_char", 0);
+          s.end = a.value("end_char", 0);
+          s.qualifier = a.value("qualifier", "");
+          if (!s.qualifier.empty()) s.counts = json::get_bool(d.p.at("qualifiers").value(s.qualifier, Json::object()), "counts_as_evidence", false);
+          s.segment = a.value("excerpt", "");
+          s.lang = guess_lang(d, m.text);
+          covered.insert(it.key());
+          signals.push_back(std::move(s));
+          break;
         }
-        if (!signals.empty()) break;
       }
     }
-    if (signals.empty() && meth.heuristic) {
+    if (auto runs = annotations::runs_of(db, pol, m.id)) {
+      for (const auto& r : *runs)
+        if (json::get_int(r.value("cost", Json::object()), "calls", 0) > 0) model_read = true;
+    }
+    if (meth.heuristic) {
       bool has_goal = false;
       if (auto msgs = db.get_msgs(m.conv_id)) {
         const std::size_t min_words = static_cast<std::size_t>(json::get_int(d.p.at("transforms").at("compile_refinements"), "goal_min_words", 4));
@@ -545,9 +635,10 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
           }
         }
       }
-      signals = detect_heuristic(d, m, has_goal);
+      for (auto& s : detect_heuristic(d, m, has_goal, covered)) signals.push_back(std::move(s));
     }
-    if (signals.empty() && meth.model && (meth.ask_model_when.empty() || meth.ask_model_when == "no_signal")) want_model = true;
+    if (signals.empty() && meth.model && !model_read && (meth.ask_model_when.empty() || meth.ask_model_when == "no_signal")) want_model = true;
+    if (model_read && signals.empty()) out["model_reading"] = "reused";
     if (signals.empty() && want_model) {
       if (json::get_bool(opts, "sync_model", false)) {
         auto ms = detect_model(d, m, out["issues"]);
@@ -563,39 +654,31 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
       }
     }
   }
+  if (!structural) {
+    auto levels = build_levels(db, d, m);
+    if (levels) out["levels"] = (*levels)["levels"];
+    else out["issues"].push_back(levels.error().message);
+  }
   for (const auto& s : signals) {
+    // The signal is a segment annotation of the layer (the layer the selector and the analyzer read) whether or not it counts as evidence.
+    if (s.by != "annotation" && !structural) {
+      auto written = write_signal(d, m, s);
+      if (!written) out["issues"].push_back(written.error().message);
+    }
+    if (!s.counts) {
+      out["signals"].push_back(Json{{"kind", s.kind}, {"qualifier", s.qualifier}, {"counted", false}});
+      continue;
+    }
+    if (d.p.at("kinds").at(s.kind).value("hypothesis", Json::object()).value("promotes", "") == "annotation") {
+      out["signals"].push_back(Json{{"kind", s.kind}, {"annotation_only", true}});
+      continue;
+    }
     auto rec = record(d, m, s);
     if (!rec) {
       out["issues"].push_back(rec.error().message);
       continue;
     }
     out["signals"].push_back(*rec);
-    // The signal is a segment annotation too (the layer the selector and the analyzer read), once per category.
-    if (s.by != "annotation") {
-      const std::string category = json::get_string(d.p.at("kinds").at(s.kind), "annotation_category");
-      auto existing = annotations_of(db, d, m.id);
-      bool have = false;
-      if (existing)
-        for (const auto& a : *existing) have = have || (a.value("category", "") == category && a.value("producer", "") == "guardian_heuristic");
-      if (!category.empty() && !have && !structural) {
-        const Json& ac = d.p.at("annotations");
-        NodeOptions no;
-        no.metadata = Json{{"schema", "loom.annotation_category/1"}, {"category", category}};
-        auto node = db.get_or_create_node(json::get_string(ac, "label_prefix", "annotation:") + category, json::get_string(ac, "node_kind", "annotation_category"), no);
-        if (node) {
-          NewMessageAnnotation n;
-          n.message_id = m.id;
-          n.node_id = *node;
-          n.start_char = 0;
-          n.end_char = static_cast<std::int64_t>(utf8::length(m.text));
-          n.origin = s.by == "user" ? "user" : (s.by == "model" ? "model" : "recorded");
-          n.metadata = Json{{"schema", json::get_string(ac, "schema")}, {"category", category}, {"producer", "guardian_heuristic"}, {"confidence", s.score}, {"signal", s.kind}};
-          n.expected_text_hash = sha256_hex(m.text);
-          auto made = db.create_message_annotation(n);
-          if (!made) out["issues"].push_back(made.error().message);
-        }
-      }
-    }
   }
   if (json::get_bool(opts, "post", false)) {
     auto posted = post_pending(d, m.conv_id);
@@ -603,6 +686,39 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
     else out["issues"].push_back(posted.error().message);
   }
   return out;
+}
+
+// A signal as an annotation of the message: the segment, the category of its kind, the confidence it was computed with, the cost of reading it.
+Result<std::string> Guardian::Impl::write_signal(const Data& d, const Message& m, const Signal& s) {
+  Database& db = rt.db();
+  const annotations::Policy pol = policy_of(d);
+  const std::string category = json::get_string(d.p.at("kinds").at(s.kind), "annotation_category");
+  if (category.empty()) return std::string();
+  annotations::Claim c;
+  c.message_id = m.id;
+  c.category = category;
+  c.start_char = s.start < 0 ? 0 : s.start;
+  c.end_char = s.end < 0 ? -1 : s.end;
+  c.producer = s.by == "user" ? "user" : (s.by == "model" ? "guardian_model" : "guardian_heuristic");
+  c.method = s.by;
+  c.method_version = s.method_version.empty() ? annotations::method_version(d.p.at("kinds").at(s.kind).dump()) : s.method_version;
+  c.confidence = s.confidence;
+  c.origin = s.by == "user" ? "user" : (s.by == "model" ? "model" : "recorded");
+  c.qualifier = s.qualifier;
+  c.cost = s.cost;
+  c.extra = Json{{"signal", s.kind}};
+  LOOM_TRY_ASSIGN(auto w, annotations::write(db, pol, c));
+  // Where the user excepts something, that is a segment too.
+  for (const auto& [from, to] : s.exception_spans) {
+    annotations::Claim e = c;
+    e.category = "exception";
+    e.start_char = from;
+    e.end_char = to;
+    e.extra = Json{{"signal", s.kind}};
+    LOOM_TRY_ASSIGN(auto we, annotations::write(db, pol, e));
+    (void)we;
+  }
+  return w.id;
 }
 
 void Guardian::Impl::on_event(const Json& e) {

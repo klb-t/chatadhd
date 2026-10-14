@@ -3,6 +3,7 @@
 #include <set>
 
 #include "impl.h"
+#include "loom/annotation_layer.h"
 #include "loom/action_overlay.h"
 #include "loom/chat_route.h"
 #include "loom/log.h"
@@ -295,6 +296,20 @@ Result<Json> Guardian::Impl::status(const Data& d, const Json& request) {
                                         {"selector_rule", json::get_string(rep->metadata, "selector_rule")}};
   LOOM_TRY_ASSIGN(auto selection, select(db, rt.config(), conv));
   out["selector"] = Json{{"preset", selection.preset}, {"substitutions", selection.substitutions.size()}, {"compiled", selection.spec.has_value()}, {"notes", selection.notes}};
+  // The segments the layer holds for the conversation (signals only; the noise is in guardian.levels): what was noticed, where, how sure, by whom.
+  LOOM_TRY_ASSIGN(auto msgs, db.get_msgs(conv));
+  Json segments = Json::array();
+  const annotations::Policy pol = policy_of(d);
+  for (const auto& msg : msgs) {
+    if (msg.status != msg_status::kActive || msg.role != "user" || is_traffic(d, msg)) continue;
+    LOOM_TRY_ASSIGN(Json anns, annotations::list(db, pol, msg.id));
+    for (const auto& a : anns) {
+      if (a.value("class", "") != "signal" && a.value("class", "") != "structure") continue;
+      segments.push_back(Json{{"message_id", msg.id}, {"id", a["id"]}, {"category", a["category"]}, {"polarity", a["polarity"]}, {"excerpt", a["excerpt"]}, {"confidence", a["confidence"]},
+                              {"producer", a["producer"]}, {"qualifier", a["qualifier"]}, {"start_char", a["start_char"]}, {"end_char", a["end_char"]}, {"cost", a["cost"]}});
+    }
+  }
+  out["segments"] = segments;
   out["text"] = text.empty() ? say(d, lang, "status_empty") : text;
   return out;
 }

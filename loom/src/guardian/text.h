@@ -41,7 +41,13 @@ struct Span {
   std::string category;
   std::size_t start = 0, end = 0;
   std::string matched;
+  double confidence = 1.0;  // computed from the context of the span (levels.noise.confidence), never a constant of the code
 };
+
+// The clause around tokens first..last: [start, end) codepoints between boundary characters (comma, semicolon, full stop, dash ...), blanks trimmed.
+std::pair<std::size_t, std::size_t> clause(const std::u32string& text, const std::vector<Tok>& toks, std::size_t first, std::size_t last);
+// Is there a sentence boundary (not a comma) between token i-1 and token i, or is i the first token?
+bool sentence_start(const std::u32string& text, const std::vector<Tok>& toks, std::size_t i);
 
 // The cheap noise categories of the shared annotation layer, from the data (profile guardian, levels.noise): filler, repetition, restart.
 std::vector<Span> noise_spans(const std::u32string& text, const Json& levels_noise, const Json& fold_map);

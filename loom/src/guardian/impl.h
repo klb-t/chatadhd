@@ -5,6 +5,7 @@
 #include <condition_variable>
 #include <deque>
 #include <mutex>
+#include <set>
 #include <thread>
 
 #include "internal.h"
@@ -21,6 +22,16 @@ struct Signal {
   std::vector<std::string> exceptions;
   std::string subject;         // what the claim says ("" = the user's own words)
   std::string lang = "en";
+  // The segment the signal stands on (codepoints; -1 = the whole message), its computed confidence, and the kind of statement it is.
+  std::int64_t start = -1, end = -1;
+  double confidence = 1.0;
+  std::string qualifier;       // quoted | hypothetical | "" (a qualified segment is annotated but does not count as evidence)
+  bool counts = true;
+  int cluster = 0;             // the n-th segment of this kind in the message (0 = the first)
+  std::string segment;         // the text of the segment
+  std::vector<std::pair<std::int64_t, std::int64_t>> exception_spans;  // where the exceptions stand (annotated as `exception`)
+  Json cost = Json::object();  // what making the signal cost (a model reading)
+  std::string method_version;  // of the reading that made it
 };
 
 struct Method {
@@ -46,8 +57,9 @@ struct Guardian::Impl {
   // observation
   void on_event(const Json& event);
   Result<Json> observe(const std::string& message_id, const Json& opts);
-  std::vector<Signal> detect_heuristic(const detail::Data& d, const Message& m, bool has_goal);
+  std::vector<Signal> detect_heuristic(const detail::Data& d, const Message& m, bool has_goal, const std::set<std::string>& skip_kinds);
   Result<std::optional<Signal>> detect_model(const detail::Data& d, const Message& m, Json& issues);
+  Result<std::string> write_signal(const detail::Data& d, const Message& m, const Signal& s);
   Result<Json> record(const detail::Data& d, const Message& m, const Signal& s);
   void run_worker();
 

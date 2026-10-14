@@ -459,7 +459,10 @@
               ]
             }
           }
-        }
+        },
+        "yields_to": [
+          "course_correction"
+        ]
       },
       "proposal_rejection": {
         "title": {
@@ -488,6 +491,158 @@
             "structural"
           ],
           "structural": "rejected_proposal"
+        }
+      },
+      "preference_statement": {
+        "title": {
+          "en": "Stated preference",
+          "pl": "Wyrażona preferencja"
+        },
+        "strength": 1.0,
+        "priority": 1,
+        "annotation_category": "preference",
+        "polarity": "positive",
+        "hypothesis": {
+          "scope": "conversation",
+          "promotes": "rule",
+          "rule_kind": "preference",
+          "claim": {
+            "en": "The user prefers: {{text}}",
+            "pl": "Użytkownik woli: {{text}}"
+          },
+          "statement_kind": "style",
+          "negative_statement_kind": "prohibition"
+        },
+        "detect": {
+          "methods": [
+            "heuristic",
+            "model"
+          ],
+          "needs_goal": false,
+          "heuristic": {
+            "min_score": 0.6,
+            "start_window": 4,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.7,
+            "markers": {
+              "pl": [
+                "zawsze",
+                "od teraz",
+                "wole",
+                "preferuje",
+                "na przyszlosc",
+                "nigdy wiecej",
+                "nigdy"
+              ],
+              "en": [
+                "always",
+                "from now on",
+                "i prefer",
+                "in the future",
+                "never again",
+                "never"
+              ]
+            }
+          }
+        }
+      },
+      "acceptance": {
+        "title": {
+          "en": "Acceptance",
+          "pl": "Akceptacja"
+        },
+        "strength": 0.5,
+        "priority": 0,
+        "annotation_category": "acceptance",
+        "polarity": "positive",
+        "hypothesis": {
+          "promotes": "annotation"
+        },
+        "note": {
+          "en": "A positive signal: written to the annotation layer (what went well), no hypothesis of its own; it keeps a rule that was just applied alive.",
+          "pl": "Sygnał pozytywny: trafia do warstwy adnotacji (co się udało), bez własnej hipotezy; podtrzymuje przy życiu regułę, która właśnie zadziałała."
+        },
+        "detect": {
+          "methods": [
+            "heuristic"
+          ],
+          "needs_goal": false,
+          "heuristic": {
+            "min_score": 0.8,
+            "start_window": 3,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.5,
+            "markers": {
+              "pl": [
+                "swietnie",
+                "dokladnie tak",
+                "tak trzymaj",
+                "idealnie",
+                "wlasnie tak",
+                "o to mi chodzilo",
+                "super"
+              ],
+              "en": [
+                "perfect",
+                "exactly",
+                "great",
+                "keep doing that",
+                "thats what i wanted",
+                "that's what i wanted",
+                "just like that",
+                "well done"
+              ]
+            }
+          }
+        }
+      },
+      "rule_statement": {
+        "title": {
+          "en": "A rule stated by the user",
+          "pl": "Reguła podana przez użytkownika"
+        },
+        "strength": 2.0,
+        "priority": 3,
+        "annotation_category": "rule_statement",
+        "polarity": "positive",
+        "hypothesis": {
+          "scope": "conversation",
+          "promotes": "rule",
+          "rule_kind": "stated",
+          "named": true,
+          "claim": {
+            "en": "{{text}}",
+            "pl": "{{text}}"
+          },
+          "statement_kind": "style",
+          "negative_statement_kind": "prohibition"
+        },
+        "detect": {
+          "methods": [
+            "heuristic"
+          ],
+          "needs_goal": false,
+          "claim_after_marker": true,
+          "heuristic": {
+            "min_score": 0.9,
+            "start_window": 4,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.0,
+            "markers": {
+              "pl": [
+                "zapamietaj ze",
+                "zapamietaj",
+                "przyjmij ze",
+                "ustalmy ze"
+              ],
+              "en": [
+                "remember that",
+                "please remember",
+                "let's agree that",
+                "lets agree that"
+              ]
+            }
+          }
         }
       }
     },
@@ -702,18 +857,43 @@
               "forget what i just said"
             ]
           }
+        },
+        "confidence": {
+          "filler": {
+            "sentence_start": 0.9,
+            "inside": 0.5
+          },
+          "repetition": {
+            "single_word": 0.3,
+            "multi_word": 0.9
+          },
+          "restart": {
+            "default": 0.9
+          }
         }
       }
     },
     "annotations": {
-      "schema": "loom.segment_annotation/1",
+      "schema": "loom.segment_annotation/2",
       "node_kind": "annotation_category",
       "label_prefix": "annotation:",
       "producers": {
         "guardian_heuristic": {
           "status": "implemented",
           "origin": "recorded",
-          "cost": "none"
+          "cost": "none",
+          "categories_written": [
+            "filler",
+            "repetition",
+            "restart",
+            "correction",
+            "refinement",
+            "preference",
+            "acceptance",
+            "exception",
+            "rule_statement"
+          ],
+          "method": "heuristic"
         },
         "semantic_regex": {
           "status": "planned",
@@ -738,19 +918,85 @@
             "en": "As semantic_llm, through the batch API.",
             "pl": "Jak semantic_llm, przez API wsadowe."
           }
+        },
+        "guardian_model": {
+          "status": "implemented",
+          "origin": "model",
+          "cost": "one guarded model call per message not read by another model producer",
+          "method": "model",
+          "categories_written": [
+            "correction",
+            "refinement",
+            "preference",
+            "exception",
+            "rule_statement"
+          ]
         }
       },
       "categories": [
         "instruction",
         "correction",
         "refinement",
+        "preference",
+        "acceptance",
+        "exception",
+        "rule_statement",
         "digression",
         "joke",
         "filler",
         "repetition",
         "restart",
         "thread"
-      ]
+      ],
+      "classes": {
+        "signal": [
+          "correction",
+          "refinement",
+          "instruction",
+          "preference",
+          "acceptance",
+          "exception",
+          "rule_statement"
+        ],
+        "droppable": [
+          "filler",
+          "repetition",
+          "restart",
+          "digression",
+          "joke"
+        ],
+        "structure": [
+          "thread"
+        ]
+      },
+      "polarity": {
+        "positive": [
+          "acceptance",
+          "preference",
+          "rule_statement"
+        ],
+        "negative": [
+          "correction",
+          "restart",
+          "digression"
+        ]
+      },
+      "conflicts": {
+        "order": [
+          "user",
+          "confidence",
+          "newer"
+        ],
+        "shield": {
+          "signal_over": "droppable",
+          "min_confidence": 0.5,
+          "whole_message_shields": false,
+          "meaning": {
+            "en": "A signal protects the segment it covers from being dropped as noise (signal beats noise). A signal that spans the whole message describes the message and shields nothing.",
+            "pl": "Sygnał chroni pokryty przez siebie segment przed odrzuceniem jako szum (sygnał przed szumem). Sygnał obejmujący całą wiadomość opisuje wiadomość i niczego nie chroni."
+          }
+        }
+      }
     },
     "representation": {
       "setting": "chat_representation",
@@ -882,6 +1128,68 @@
         "task_kind": "tego rodzaju zadań",
         "person": "wszystkiego, co robisz",
         "global": "wszędzie"
+      }
+    },
+    "signal_confidence": {
+      "start": 0.9,
+      "anywhere": 0.65,
+      "per_extra_hit": 0.05,
+      "max": 0.95,
+      "meaning": {
+        "en": "Confidence of a heuristic signal, computed from where the marker stands (at the start of the message or anywhere) and how many markers the segment holds.",
+        "pl": "Pewność sygnału heurystycznego, liczona z miejsca znacznika (początek wiadomości lub gdziekolwiek) i liczby znaczników w segmencie."
+      }
+    },
+    "qualifiers": {
+      "quoted": {
+        "counts_as_evidence": false,
+        "markers": {
+          "pl": [
+            "on mowil",
+            "ona mowila",
+            "mowil mi",
+            "powiedzial mi",
+            "powiedziala mi",
+            "mowi ze",
+            "ktos powiedzial",
+            "cytuje",
+            "napisal ze"
+          ],
+          "en": [
+            "he said",
+            "she said",
+            "they said",
+            "he told me",
+            "she told me",
+            "they told me",
+            "someone said",
+            "quote",
+            "wrote that"
+          ]
+        }
+      },
+      "hypothetical": {
+        "counts_as_evidence": false,
+        "markers": {
+          "pl": [
+            "gdyby",
+            "jesli bym",
+            "co jesli",
+            "na przyklad",
+            "powiedzmy"
+          ],
+          "en": [
+            "what if",
+            "suppose",
+            "supposing",
+            "for example",
+            "say i"
+          ]
+        }
+      },
+      "meaning": {
+        "en": "A segment that quotes or imagines a correction is not a correction: it is annotated with a qualifier and does not count as evidence (data: counts_as_evidence).",
+        "pl": "Segment, który cytuje lub wyobraża sobie korektę, nie jest korektą: dostaje kwalifikator i nie liczy się jako dowód (dane: counts_as_evidence)."
       }
     }
   },

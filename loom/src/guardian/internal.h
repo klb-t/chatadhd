@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "loom/annotation_layer.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/guardian.h"
@@ -26,6 +27,12 @@ Result<Data> load_data(const Config& cfg, const std::filesystem::path& root);
 // The text id in a language (English when the language has none), {{name}} substituted.
 std::string say(const Data& d, const std::string& lang, const std::string& id, const Json& params = Json::object());
 std::string scope_name(const Data& d, const std::string& lang, const std::string& scope);
+// The annotation layer's policy: the `annotations` section of the profile.
+inline annotations::Policy policy_of(const Data& d) {
+  annotations::Policy p;
+  p.p = d.p.at("annotations");
+  return p;
+}
 // A setting over the profile's preset: the value of `section.setting` when it names a preset, else section.unknown / section.active.
 std::string choose(const Config& cfg, const Json& section);
 // A message that is the system's own traffic (commands, proposals, answers, the guardian's notices): not the user's content.

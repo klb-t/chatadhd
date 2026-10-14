@@ -125,7 +125,7 @@ TEST_SUITE("guardian") {
     const Json row = lv.at("messages")[0];
     CHECK(row.at("raw") == raw);
     REQUIRE(row.at("levels").contains("L1"));
-    CHECK(row.at("levels").at("L1").at("text") == "I want, a list of tasks for Friday");
+    CHECK(row.at("levels").at("L1").at("text") == "I want, a list of of tasks for Friday");  // a doubled single word may be emphasis: confidence 0.3, kept
     std::set<std::string> categories;
     for (const auto& d : row.at("levels").at("L1").at("dropped")) categories.insert(d.at("category"));
     CHECK(categories == std::set<std::string>{"filler", "repetition"});
@@ -139,7 +139,7 @@ TEST_SUITE("guardian") {
       if (a.at("category") == "filler" && a.at("excerpt") == "yyy") filler_annotation = a.at("id");
     REQUIRE_FALSE(filler_annotation.empty());
     const Json undone = f.invoke("guardian.undo", Json{{"annotation", filler_annotation}});
-    CHECK(undone.at("levels").at("L1").at("text") == "yyy I want, a list of tasks for Friday");
+    CHECK(undone.at("levels").at("L1").at("text") == "yyy I want, a list of of tasks for Friday");
     CHECK(unwrap(f.rt->db().get_msg(mid))->text == raw);
     // A message with nothing to drop has no level at all.
     const std::string clean = f.user("Write the report for Friday");
@@ -579,7 +579,49 @@ TEST_SUITE("guardian") {
     f.user("Write a summary of the quarterly report");
     f.assistant();
     f.user("nie chodziło mi o tabelę, zrób listę, zawsze");
-    CHECK(f.hypothesis("course_correction").at("scope") == "person");
-    CHECK(f.hypothesis("course_correction").at("status") == "observing");  // one occurrence, whatever the scope
+    CHECK(f.hypothesis("preference_statement").at("scope") == "person");  // the marker stands in the clause of the stated preference
+    CHECK(f.hypothesis("course_correction").at("scope") == "conversation");
+    CHECK(f.hypothesis("preference_statement").at("status") == "observing");  // one occurrence, whatever the scope
+  }
+
+  TEST_CASE("P23.1: one message holds a correction, a stated preference and an exception - three annotations, three things in status, and L1 keeps \"nie, nie\"") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    const std::string raw = "nie, nie tak \xE2\x80\x94 kr\xC3\xB3\x63zej, ale zawsze po polsku, opr\xC3\xB3\x63z nazw plik\xC3\xB3w";
+    const std::string mid = f.user(raw);
+    const Json st = f.status();
+    std::map<std::string, Json> by;
+    for (const auto& seg : st.at("segments")) by[seg.at("category")] = seg;
+    REQUIRE(by.count("correction"));
+    REQUIRE(by.count("preference"));
+    REQUIRE(by.count("exception"));
+    CHECK(by["correction"].at("excerpt") == "nie, nie tak");
+    CHECK(by["preference"].at("excerpt") == "ale zawsze po polsku");
+    CHECK(by["exception"].at("excerpt") == "opr\xC3\xB3\x63z nazw plik\xC3\xB3w");
+    CHECK(by["preference"].at("polarity") == "positive");
+    CHECK(by["correction"].at("producer") == "guardian_heuristic");
+    const double conf = by["preference"].at("confidence");
+    CHECK(conf > 0.0);
+    CHECK(conf < 1.0);  // computed from where the marker stands, not a constant 1.0
+    // Two hypotheses (the correction, the preference of the person) and the exception on the preference it follows.
+    const Json correction = f.hypothesis("course_correction"), preference = f.hypothesis("preference_statement");
+    REQUIRE_FALSE(correction.is_null());
+    REQUIRE_FALSE(preference.is_null());
+    CHECK(correction.at("exceptions").empty());
+    REQUIRE(preference.at("exceptions").size() == 1);
+    CHECK(preference.at("exceptions")[0].at("text") == "nazw plik\xC3\xB3w");
+    // The noise layer does not cut the emphasis: a doubled "nie" is a single-word repetition of low confidence ...
+    Json row = f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}}).at("messages")[0];
+    CHECK(row.at("levels").empty());
+    // ... and even where the user accepts low-confidence drops, the correction (a signal) protects the segment it covers.
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "guardian.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "guardian"}, {"overrides", Json{{"levels", Json{{"min_confidence", 0.2}}}}}}.dump();
+    row = f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}}).at("messages")[0];
+    CHECK(row.at("levels").empty());
+    bool repetition_listed = false;
+    for (const auto& a : row.at("annotations")) repetition_listed = repetition_listed || a.at("category") == "repetition";
+    CHECK_FALSE(repetition_listed);  // in the contract's reading the covered noise is not in force
   }
 }
