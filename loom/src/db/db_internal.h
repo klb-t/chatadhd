@@ -17,6 +17,9 @@ struct Database::FtsState {
   std::filesystem::path path;
   std::set<std::string> dirty_ids;
   bool scan_new = false;
+  // With scan_new: only messages with rowid > new_from can lack an index entry (0 = scan them all). A bulk insert
+  // sets it to the old max rowid, so the next search no longer probes every message of a 1M-message store.
+  std::int64_t new_from = 0;
   bool scan_deleted = false;
   bool scan_changed = true;  // first use after open: full reconcile
   std::int64_t last_data_version = -1;

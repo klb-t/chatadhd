@@ -82,6 +82,7 @@ def main():
                 + open(a.import_file, "rb").read() + ("\r\n--%s--\r\n" % bd).encode())
         step("import", "POST", "/api/import", raw=body, headers={"Content-Type": "multipart/form-data; boundary=" + bd})
         m["import"]["tail"] = _tail(m)
+        step("search_after_import", "GET", "/api/search?limit=20&q=" + urllib.request.quote("graph memory"))
         step("conv_list_50_after_import", "GET", "/api/conversations?limit=50")
     out["steps"] = m; out["peak_rss_mb"] = hwm(pid)
     srv.terminate(); srv.communicate()
