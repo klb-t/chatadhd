@@ -20,9 +20,16 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
-    <!-- Voice input attachments (media_providers.h ASR) read local audio
-         files the user picked; no microphone capture is wired into this
-         shell yet (see loom/android/README.md "Gaps"). -->
+    <!-- Devices of the page (P13): the web UI declares the microphone and the camera it can use
+         (client.declare) and records or takes pictures itself (getUserMedia in the WebView). The
+         WebView hands them over only through MainActivity's WebChromeClient, for the page this app
+         loaded (DevicePermissionPolicy), and only after Android's own runtime permission.
+         Notifications are the shell's (the WebView has no Notification API): Android 13 asks. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <!-- usesCleartextTraffic is true only so a LAN server can be used when the
          user explicitly allows plain HTTP in the connection screen;

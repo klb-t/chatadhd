@@ -1,7 +1,11 @@
 import type { DeviceHost, RecorderLike, StreamLike } from "./client-device";
 
 /** The Android shell's JavaScript interface, when the page runs inside it (notifications are the shell's, not the WebView's). */
-interface ShellBridge { notify?: (title: string, body: string) => void }
+interface ShellBridge {
+  notify?: (title: string, body: string) => boolean;
+  notificationState?: () => string;
+  requestNotifications?: () => void;
+}
 
 /** Opens the file chooser of the page and waits for the choice: null when it is closed without one. */
 function chooseFile(accept: string, capture: string): Promise<File | null> {
@@ -83,7 +87,13 @@ export function browserHost(): DeviceHost {
   const shell = (window as unknown as { LoomBridge?: ShellBridge }).LoomBridge;
   if (shell && typeof shell.notify === "function") {
     const notify = shell.notify.bind(shell);
-    host.nativeNotify = (title, body) => notify(title, body);
+    const state = typeof shell.notificationState === "function" ? shell.notificationState.bind(shell) : () => "granted";
+    const ask = typeof shell.requestNotifications === "function" ? shell.requestNotifications.bind(shell) : () => {};
+    host.nativeNotify = {
+      state: () => state(),
+      request: () => ask(),
+      show: (title, body) => notify(title, body),
+    };
   }
   if (typeof Audio !== "undefined") host.play = playBlob;
   if (typeof document !== "undefined") {

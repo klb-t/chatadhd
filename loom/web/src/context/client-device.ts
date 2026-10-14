@@ -59,8 +59,9 @@ export interface DeviceHost {
   takePicture?: () => Promise<Blob | null>;
   /** The page has a document at all (a file chooser can be opened). */
   hasDocument?: boolean;
-  /** Notifications through the native shell instead of the Notification API. */
-  nativeNotify?: (title: string, body: string) => void;
+  /** Notifications through the native shell instead of the Notification API (the Android WebView has none): the permission state
+   *  (granted | prompt), asking for it (Android shows its own dialog; the answer comes later), and showing one (false: refused). */
+  nativeNotify?: { state(): string; request(): void; show(title: string, body: string): boolean };
 }
 
 /** Browser permission names per capability (the Permissions API). */
@@ -107,7 +108,7 @@ export async function detectCapabilities(host: DeviceHost): Promise<{ [capabilit
     const asked = host.notifications.permission();
     found.shows_notifications = { permission: asked === "granted" ? "granted" : asked === "denied" ? "denied" : "prompt", via: "Notification" };
   } else if (host.nativeNotify) {
-    found.shows_notifications = { permission: "granted", via: "native shell" };
+    found.shows_notifications = { permission: host.nativeNotify.state() === "granted" ? "granted" : "prompt", via: "native shell" };
   }
   if (host.pickFile) found.picks_files = { permission: "granted", via: "file chooser" };
   if (host.mediaDevices || host.notifications) found.requests_permission = { permission: "granted", via: "Permissions API" };
@@ -283,7 +284,11 @@ export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: Blob
           if (granted !== "granted") throw new DeviceError("declined", "notifications are not allowed");
           host.notifications.show(text(spec.title), body);
         } else if (host.nativeNotify) {
-          host.nativeNotify(text(spec.title), body);
+          if (host.nativeNotify.state() !== "granted") {
+            host.nativeNotify.request();
+            throw new DeviceError("declined", "allow notifications in the system dialog, then do it again");
+          }
+          if (!host.nativeNotify.show(text(spec.title), body)) throw new DeviceError("declined", "the system did not show the notification");
         } else {
           throw new DeviceError("unavailable", "no notifications");
         }

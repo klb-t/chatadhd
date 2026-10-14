@@ -82,8 +82,10 @@ test('capabilities follow what the browser has, with the permission state it rep
   assert.deepEqual(await device.detectCapabilities({}), {});
   const noRecorder = await device.detectCapabilities(host({ MediaRecorder: undefined }));
   assert.equal('captures_audio' in noRecorder, false);
-  const shell = await device.detectCapabilities(host({ notifications: undefined, nativeNotify: () => {} }));
+  const shell = await device.detectCapabilities(host({ notifications: undefined, nativeNotify: { state: () => 'granted', request: () => {}, show: () => true } }));
   assert.deepEqual(shell.shows_notifications, { permission: 'granted', via: 'native shell' });
+  const asking = await device.detectCapabilities(host({ notifications: undefined, nativeNotify: { state: () => 'prompt', request: () => {}, show: () => false } }));
+  assert.equal(asking.shows_notifications.permission, 'prompt', 'Android 13 has not been asked yet');
   // the body of client.declare
   assert.deepEqual(await device.declaration(host(), 'web-1', 'web', 'Test browser'), {
     client_id: 'web-1', client: { kind: 'web', label: 'Test browser' }, capabilities: found });
@@ -174,8 +176,14 @@ test('a notification asks for the permission when the browser has not been asked
   const refused = host({ notifications: { permission: () => 'denied', request: async () => 'denied', show: () => assert.fail('must not show') } });
   assert.equal((await device.runStep(refused, step('device.notify', { with: { text: 'x' } }), load)).state, 'declined');
   const shell = [];
-  assert.equal((await device.runStep(host({ notifications: undefined, nativeNotify: (t, b) => shell.push([t, b]) }), step('device.notify', { title: 'T', with: { text: 'B' } }), load)).state, 'ok');
+  const native = (state, shown = true) => ({ state: () => state, request: () => shell.push('asked'), show: (t, b) => { shell.push([t, b]); return shown; } });
+  assert.equal((await device.runStep(host({ notifications: undefined, nativeNotify: native('granted') }), step('device.notify', { title: 'T', with: { text: 'B' } }), load)).state, 'ok');
   assert.deepEqual(shell, [['T', 'B']]);
+  shell.length = 0;
+  const asked = await device.runStep(host({ notifications: undefined, nativeNotify: native('prompt') }), step('device.notify', { with: { text: 'B' } }), load);
+  assert.equal(asked.state, 'declined', 'the system dialog comes first; the person does it again');
+  assert.deepEqual(shell, ['asked']);
+  assert.equal((await device.runStep(host({ notifications: undefined, nativeNotify: native('granted', false) }), step('device.notify', { with: { text: 'B' } }), load)).state, 'declined');
 });
 
 test('files: a chosen text arrives as text, a chosen recording as audio with its bytes; closing the chooser declines; a picture can come from the chooser', async () => {
@@ -308,7 +316,7 @@ test('the declaration the Android shell sends has the shape the kernel reads: ca
   globalThis.window = { LoomBridge: { call: (method, json) => { sent.push(JSON.parse(json)); return JSON.stringify({ client_id: 'web-9', capabilities: {}, runnable_actions: [], refused: {} }); } } };
   try {
     const api = new LoomJniApi();
-    const session = new sessionModule.ClientSession({ actions: api.actions, host: host({ notifications: undefined, nativeNotify: () => {} }), id: 'web-9', label: 'Android WebView' });
+    const session = new sessionModule.ClientSession({ actions: api.actions, host: host({ notifications: undefined, nativeNotify: { state: () => 'granted', request: () => {}, show: () => true } }), id: 'web-9', label: 'Android WebView' });
     assert.equal(await session.ensure(), 'web-9');
     const request = sent.at(-1).request;
     assert.deepEqual(Object.keys(request).sort(), ['capabilities', 'client', 'client_id']);
