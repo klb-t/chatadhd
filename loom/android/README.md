@@ -515,12 +515,18 @@ other apps can actually read on a given Android version, and the layout of
 - **Never run on a device or emulator** — no Android SDK/NDK in this
   environment. Everything above is host-side verification of the same
   code, not an on-device run.
-- **No microphone capture wired up.** `loom_transcribe`/`media_providers.h`
-  expect a file path; nothing in this shell records audio to one yet
-  (`RECORD_AUDIO` isn't even in the manifest). `transcribe()` works for a
-  file the user picked some other way (e.g. a share-sheet import).
-  Recording UI is a `loom/web` + a small additional bridge concern, not
-  started here.
+- **Devices of the page (P13) are wired but not run on a device.** The web UI is a *client* of the kernel: it declares
+  per session which devices it can drive (`loom_invoke("actions", "client.declare", ...)`, the same call as over HTTP;
+  `loom/web/src/api/loom-jni.ts` marks the transport `clientKind: "android"`) and carries out the device steps of a paused
+  run itself (`actions.client_result` over `loom_invoke`). Inside the WebView that needs three things from this shell,
+  all in `MainActivity`/`LoomBridge` and the manifest: `RECORD_AUDIO`/`CAMERA` and a `WebChromeClient.onPermissionRequest`
+  that hands the microphone and the camera to the page this app loaded (the rule is the pure-Java
+  `DevicePermissionPolicy`, checked on the host by `DevicePermissionTest`), `onShowFileChooser` for the file chooser, and
+  `LoomBridge.notify` / `notificationState` / `requestNotifications` for notifications (the WebView has no Notification
+  API; Android 13 asks at runtime). The declaration and `client_result` path through the real JNI glue is checked on the
+  host by `HostSmokeTest`. What is not checked: the Kotlin (no SDK here), the system permission dialogs, the recording itself
+  on a phone. In server mode the bridge is not injected, so a remote page gets the WebView's own devices but no shell
+  notifications.
 - **`assets/web/index.html` is a placeholder.** It only smoke-tests
   `window.LoomBridge` (open it and click through the buttons once
   `loom/web/dist` isn't there yet). `copyWebAssets` overwrites it with the

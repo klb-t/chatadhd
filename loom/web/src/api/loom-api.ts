@@ -87,8 +87,44 @@ export interface DefineGroupRequest extends OverlayWriteOptions {
 /** Takes one of the user's own definitions back out of the overlay (actions.remove, groups.remove). */
 export interface RemoveRequest extends OverlayWriteOptions { id: string }
 
+/** What a client says about itself and the devices it can drive right now (client.declare). A capability is a name the catalogue's
+ *  device actions need (captures_audio, plays_audio, shows_notifications, clipboard_read ...), with its permission state
+ *  (granted | prompt | denied) and how the client does it. */
+export interface ClientDeclareRequest {
+  client_id?: string;
+  client?: { kind?: string; platform?: string; label?: string };
+  capabilities: Record<string, string | { permission: string; via?: string; detail?: string }>;
+}
+export interface ClientDeclaration {
+  client_id: string;
+  capabilities: Record<string, { permission: string; runnable: boolean; actions: string[]; via?: string }>;
+  runnable_actions: string[];
+  refused: Record<string, string>;
+  [key: string]: unknown;
+}
+/** The answer of a client to the step a run is paused on (actions.client_result). Media come as data_base64 (stored in the blob store). */
+export interface ClientResultPart { kind: string; mime?: string; data_base64?: string; blob_hash?: string; text?: string; name?: string }
+export interface ClientResult {
+  run_id: string;
+  receipt_id: string;
+  state: "ok" | "failed" | "declined" | "unavailable";
+  parts?: ClientResultPart[];
+  data?: unknown;
+  error?: { code?: string; message: string };
+  ref?: string;
+}
+
 /** Running actions (R54): the same actions the chat window proposes, reachable without it. */
 export interface ActionsApi {
+  /** The kind of client this transport is (web page, Android shell): what client.declare says about it. */
+  readonly clientKind?: string;
+  /** Declare the devices this client can drive; the kernel keeps it for this client only (device actions become runnable for it). */
+  clientDeclare?(request: ClientDeclareRequest): Promise<ClientDeclaration>;
+  clientCapabilities?(request: { client_id?: string }): Promise<Record<string, unknown>>;
+  /** Answer the client step a run is paused on; the run continues with the next step. */
+  clientResult?(result: ClientResult): Promise<ActionRun>;
+  /** A stored blob (a recording to play): {hash, mime, size, data_base64}. */
+  clientBlob?(request: { hash: string }): Promise<{ hash: string; mime: string; size: number; data_base64: string }>;
   run(request: Record<string, unknown>): Promise<ActionRun>;
   /** Answer the question a run is paused on; the receipt must be the pending one. */
   confirm(answer: ActionAnswer): Promise<ActionRun>;

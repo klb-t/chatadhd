@@ -34,9 +34,9 @@ Uzycie: sudo deploy/install.sh [opcje]
   --registration TRYB  closed | invite | open (zapis do <data-dir>/profiles)
   --user NAZWA         uzytkownik systemowy uslugi (domyslnie $SERVICE_USER)
   --no-deps  --no-build  --no-systemd  --no-caddy  --no-switch
-  --package KATALOG    tylko zbuduj archiwum chatadhd-server-linux-x64-<wersja>.tar.gz (+ .sha256) w KATALOGU; nic nie instaluje
+  --package KATALOG    tylko zbuduj archiwum chatadhd-server-linux-<x64|arm64>-<wersja>.tar.gz (+ .sha256) w KATALOGU; nic nie instaluje
   --from-tarball PLIK  zainstaluj gotowe archiwum (z --package lub z GitHub Actions); bez kompilatora i node.
-                       Archiwum z Actions jest budowane na Ubuntu 24.04: potrzebuje glibc >= 2.38 (Ubuntu 24.04+, Debian 13+)
+                       Archiwum z Actions jest budowane na Ubuntu 22.04: dziala na Ubuntu 22.04+ i Debian 12+ (glibc >= 2.35; plus libssl3)
   --rollback WERSJA    tylko przelacz current na istniejaca wersje i zrestartuj
 Srodowisko: CHATADHD_{PREFIX,DATA_DIR,DOMAIN,PORT,VERSION,ADMIN_LOGIN,REGISTRATION,USER,CMAKE_ARGS}
 USAGE
@@ -158,7 +158,9 @@ build_all() {
 # Archiwum: <nazwa>/{bin/loom-server, web/, VERSION, BUILD_INFO}. Rozpakowane w $DEST daje dokladnie to,
 # co instalacja ze zrodel (bin/loom-server + web), wiec --from-tarball tylko je rozpakowuje.
 make_package() {
-  local name="chatadhd-server-linux-x64-$VERSION" out stage
+  local arch name out stage
+  case "$(uname -m)" in aarch64|arm64) arch=arm64;; x86_64|amd64) arch=x64;; *) arch="$(uname -m)";; esac
+  name="chatadhd-server-linux-$arch-$VERSION"
   mkdir -p "$PACKAGE_DIR"; out="$(cd "$PACKAGE_DIR" && pwd)"
   stage="$TMP/stage/$name"
   mkdir -p "$stage/bin"
@@ -198,11 +200,16 @@ unpack_tarball() {
   $SUDO mkdir -p "$DEST"
   $SUDO tar -xzf "$tb" -C "$DEST" --strip-components=1 --no-same-owner
   [ -x "$DEST/bin/loom-server" ] || die "po rozpakowaniu brak $DEST/bin/loom-server"
+  # architektura: archiwum x64 nie ruszy na ARM i odwrotnie
+  if [ -f "$DEST/BUILD_INFO" ]; then
+    sum="$(sed -n 's/^machine: //p' "$DEST/BUILD_INFO" | head -1)"
+    [ -z "$sum" ] || [ "$sum" = "$(uname -m)" ] || die "archiwum jest dla procesora $sum, a ta maszyna ma $(uname -m) - pobierz archiwum x64/arm64 pasujace do maszyny"
+  fi
   # biblioteki dynamiczne (np. libssl3) i wersja glibc: lepiej wiedziec teraz niz po restarcie uslugi
   sum="$(ldd "$DEST/bin/loom-server" 2>&1 | grep -i 'not found' || true)"
   [ -z "$sum" ] || die "serwer nie uruchomi sie na tej maszynie:
 $sum
-(brakujace biblioteki doinstaluj przez apt, np. libssl3; 'GLIBC_x.y not found' = za stary system: potrzebny Ubuntu 24.04+/Debian 13+ albo budowa ze zrodel bez --from-tarball)"
+(brakujace biblioteki doinstaluj przez apt, np. libssl3; 'GLIBC_x.y not found' = za stary system: potrzebny Ubuntu 22.04+/Debian 12+ albo budowa ze zrodel bez --from-tarball)"
 }
 
 if [ -n "$PACKAGE_DIR" ]; then

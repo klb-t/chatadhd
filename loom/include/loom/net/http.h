@@ -178,6 +178,8 @@ struct MultipartBody {
   std::string body;
 };
 // Python requests `files=` + `data=`.
-MultipartBody build_multipart(const std::vector<MultipartPart>& parts);
+// `deterministic`: the boundary is derived from the parts (sha256), so the same parts always give the same bytes - a request
+// that is held and later re-sent after confirmation must be byte-identical (its hash is part of the usage receipt).
+MultipartBody build_multipart(const std::vector<MultipartPart>& parts, bool deterministic = false);
 
 }  // namespace loom::net

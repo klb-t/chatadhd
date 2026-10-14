@@ -74,6 +74,7 @@
       "window_tokens": 12,
       "lead_tokens": 4,
       "scoring": {"base": 0.6, "per_word": 0.1, "lead_penalty": 0.05, "min_score": 0.5},
+      "sequence": {"connectors": ["i", "oraz", "potem", "nastepnie", "and", "then"], "bonus": 0.05},
       "explicit": {
         "prefixes": ["/"],
         "run_verbs": ["run", "uruchom"],
@@ -313,6 +314,8 @@
         "result_rejected": "Dropped. Nothing was executed.",
         "result_cancelled": "Cancelled.",
         "result_waiting": "It is waiting for your answer: {{kind}}.",
+        "result_client": "Waiting for your device: {{prompt}}",
+        "proposal_client": "On your device: {{steps}}. Your browser or app carries these steps out itself and asks you when they start.",
         "result_usage": "The model call is held by the usage guard: its expected usage is far above your recent baseline. Nothing was sent. Confirm it here or in the usage prompt.",
         "result_no_text": "It produced no text.",
         "ack_no": "Dropped. Nothing was executed.",
@@ -375,6 +378,8 @@
         "result_rejected": "Odrzucone. Nic nie wykonano.",
         "result_cancelled": "Anulowano.",
         "result_waiting": "Czeka na Twoją odpowiedź: {{kind}}.",
+        "result_client": "Czekam na Twoje urządzenie: {{prompt}}",
+        "proposal_client": "Na Twoim urządzeniu: {{steps}}. Przeglądarka albo aplikacja wykonuje te kroki sama i zapyta Cię, gdy się zaczną.",
         "result_usage": "Wywołanie modelu wstrzymał strażnik zużycia: przewidywane zużycie jest dużo wyższe niż ostatnia wartość bazowa. Nic nie wysłano. Potwierdź tutaj albo w oknie zużycia.",
         "result_no_text": "Nie powstał żaden tekst.",
         "ack_no": "Odrzucone. Nic nie wykonano.",
@@ -461,6 +466,7 @@
           "language_hints": {"type": "object", "description": "Words (folded) that tell the language of an input that has no distinguishing letters; the language of a matched phrase wins over them.", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
           "window_tokens": {"type": "integer", "minimum": 1},
           "lead_tokens": {"type": "integer", "minimum": 1},
+          "sequence": {"type": "object", "description": "Two actions in one sentence (\"nagraj notatkę głosową i ją streść\"): the second acts on what the first brings. connectors: words (folded) that join them; bonus: added to the score of the first so the pair beats it alone.", "properties": {"connectors": {"type": "array", "items": {"type": "string", "minLength": 1}}, "bonus": {"type": "number"}}, "additionalProperties": false},
           "scoring": {
             "type": "object",
             "required": ["base", "per_word", "lead_penalty", "min_score"],

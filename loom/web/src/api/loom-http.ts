@@ -74,6 +74,11 @@ export class LoomHttpApi implements LoomApi {
     return this.req("POST", "/api/usage-policy", command);
   }
   readonly actions: ActionsApi = {
+    clientKind: "web",
+    clientDeclare: (request) => this.req("POST", "/api/client/declare", request),
+    clientCapabilities: (request) => this.req("POST", "/api/client/capabilities", request),
+    clientResult: (result) => this.req("POST", "/api/actions/client_result", result),
+    clientBlob: (request) => this.req("POST", "/api/client/blob", request),
     run: (request) => this.req("POST", "/api/actions/run", request),
     confirm: (answer) => this.req("POST", "/api/actions/confirm", answer),
     cancel: (request) => this.req("POST", "/api/actions/cancel", request),

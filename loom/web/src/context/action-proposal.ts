@@ -1,5 +1,6 @@
 import { featureMessage, type PresentationFeature } from "../onboarding/presentation.mjs";
 import type { JsonValue } from "../onboarding/types";
+import type { ClientStepSpec } from "./client-device";
 
 /** Presentation feature holding the texts (`presentation.action_proposal`). */
 export const ACTION_PROPOSAL_FEATURE = "action_proposal";
@@ -46,13 +47,15 @@ export interface ActionRunPending {
   kind?: string;
   receipt_id?: string | null;
   operation_id?: string | null;
+  /** A run paused on a device action of this client (kind client_step): what the client has to do. */
+  client_step?: ClientStepSpec;
   usage_pending?: { status?: string; receipt_id?: string | null; operation_id?: string | null; baseline_key?: string | null; projected?: { [name: string]: { [field: string]: unknown } } };
 }
 /** What a completed run left in the graph: the form nodes of its result, the content node they express, the run node. */
 export interface ProducedMeta { target?: string; forms?: string[]; content?: string | null; run_node?: string | null }
 export interface ActionRunMeta { run_id?: string; status?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
 
-export type AnswerKind = "proposal" | "confirmation" | "usage";
+export type AnswerKind = "proposal" | "confirmation" | "usage" | "client";
 /** What a message of the conversation asks the user to answer, if anything. */
 export interface PendingAnswer {
   kind: AnswerKind;
@@ -62,6 +65,8 @@ export interface PendingAnswer {
   proposal: ActionProposal | null;
   /** The usage guard's receipt (kind usage only): shown by the usage block. */
   usage: ActionRunPending["usage_pending"] | null;
+  /** The step this client carries out (kind client only). */
+  clientStep: ClientStepSpec | null;
 }
 
 function text(value: unknown): string {
@@ -73,15 +78,18 @@ export function pendingAnswer(metadata: Meta | undefined): PendingAnswer | null 
   if (!metadata) return null;
   const proposal = metadata.action_proposal as ActionProposal | undefined;
   if (proposal && proposal.status === "pending" && text(proposal.run_id) !== "" && text(proposal.receipt_id) !== "") {
-    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null };
+    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null, clientStep: null };
   }
   const run = metadata.action_run as ActionRunMeta | undefined;
   const pending = run && run.pending ? run.pending : null;
   if (run && pending && text(run.run_id) !== "" && text(pending.receipt_id) !== "") {
     if (pending.kind === "usage") {
-      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null };
+      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null, clientStep: null };
     }
-    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null };
+    if (pending.kind === "client_step" && pending.client_step) {
+      return { kind: "client", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: pending.client_step };
+    }
+    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: null };
   }
   return null;
 }
@@ -136,8 +144,9 @@ export function writtenView(metadata: Meta | undefined): WrittenView | null {
   };
 }
 
-/** Which removal takes a definition back: a group has its own, an action and a repeated chain are both actions. */
-export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" {
+/** Which call takes what was written back: a rule is switched off, a group has its own removal, an action and a repeated chain are both actions. */
+export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" | "rulesDisable" {
+  if (view.kind === "rule") return "rulesDisable";
   return view.kind === "define_group" ? "groupsRemove" : "actionsRemove";
 }
 
@@ -343,10 +352,10 @@ export function writtenTexts(feature: PresentationFeature | null, view: WrittenV
     catch { return null; }
   };
   return {
-    written: say("written", { id: view.id, overlay: view.overlays.join(", ") }),
+    written: say(view.kind === "rule" ? "written_rule" : "written", { id: view.id, overlay: view.overlays.join(", ") }),
     entry: say("written_entry"),
     undo: say("undo"),
-    undone: say("undone"),
+    undone: say(view.kind === "rule" ? "undone_rule" : "undone"),
     failed: (reason) => say("undo_failed", { reason }) ?? reason,
   };
 }

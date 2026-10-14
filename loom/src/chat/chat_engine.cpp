@@ -590,8 +590,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
     } else if (k == "send_as_message") {
       if (!v.is_string()) return bad();
       o.send_as_message = v.get<std::string>();
-    } else if (k == "intent_routing_method" || k == "lang" || k == "route_usage_confirmation") {
+    } else if (k == "intent_routing_method" || k == "lang" || k == "route_usage_confirmation" || k == "client_id") {
       // Read by the conversation window (chat_route.h) from the request itself; not a chat option.
+      // client_id: the client that declared its devices (client_devices.h).
     } else if (k == "usage_confirmation") {
       if (!v.is_object() || !v.contains("approved") || !v["approved"].is_boolean()) return bad();
       o.usage_confirmation = v;

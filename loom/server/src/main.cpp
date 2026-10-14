@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 #include "loom/accounts.h"
+#include "loom/loom.h"
 
 #include "app.h"
 
@@ -28,7 +29,7 @@ std::string env_or(const char* name, const std::string& fallback) {
 
 void print_usage(const char* argv0) {
   std::cerr << "Usage: " << argv0
-            << " [--host H] [--port P] [--data-dir DIR] [--static-dir DIR] [--token TOKEN]\n"
+            << " [--version] [--host H] [--port P] [--data-dir DIR] [--static-dir DIR] [--token TOKEN]\n"
                "       [--accounts-root DIR] [--allow-unauthenticated-public]\n"
                "       [--max-body-bytes N (JSON routes, 0 = no limit)] [--max-upload-bytes N (import/transcribe, 0 = no limit)]\n"
                "       " << argv0 << " user add|passwd|disable|enable|invite|list --accounts-root DIR [LOGIN]\n"
@@ -162,6 +163,12 @@ int main(int argc, char** argv) {
       opts.max_upload_bytes = std::strtoull(next("--max-upload-bytes"), nullptr, 10);
     } else if (arg == "--allow-unauthenticated-public") {
       allow_public = true;
+    } else if (arg == "--version") {
+      // Build info as JSON (same body as GET /api/version); lets a package be smoke-tested on any OS image.
+      const char* v = loom_version();
+      std::cout << (v ? v : "{}") << "\n";
+      if (v) loom_free_string(v);
+      return 0;
     } else if (arg == "-h" || arg == "--help") {
       print_usage(argv[0]);
       return 0;
