@@ -449,7 +449,7 @@
     },
     {
       "path": "loom/src/core/config.cpp",
-      "source_sha256": "bf334640e6f7a66bc1b5e7ca77d75fa1043716d67888178f5114deb9a949790b",
+      "source_sha256": "b9eb395f6d680945432929762340fce86f8e6c38775d95144e3f3647aac4ecf8",
       "byte_start": 751,
       "byte_end": 766,
       "literal_sha256": "b3a378b9f50e9048763c0a11f3317204e40a60aacbef506c67e73ee55ef91380",
@@ -669,7 +669,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "dcf27476a2d5de6362a5a8264eb62dce2366bda7a37f509c189db2647f106a49"
+          "sha256": "498c0ccc9fb40e48305dee62e8b64a2664f4bab7b680ce1f25683eb5c8fa52e6"
         },
         {
           "path": "loom/data/runtime/usage_compaction.pack",

@@ -240,8 +240,8 @@ struct DbOptions {
   std::optional<std::filesystem::path> fts_path;
   int busy_timeout_ms = 30000;
   // Rows indexed per transaction while (re)building the FTS index; the DB lock is released between chunks.
-  // Preset 50000 (config loom_fts_chunk_rows); 0 = one transaction for everything (the old behaviour).
-  int fts_chunk_rows = 50000;
+  // Preset 10000 (config loom_fts_chunk_rows); 0 = one transaction for everything (the old behaviour).
+  int fts_chunk_rows = 10000;
 };
 
 // Immutable full-message source, deduplicated by message ID + full record hash.
