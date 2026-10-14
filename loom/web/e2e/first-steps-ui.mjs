@@ -262,7 +262,7 @@ try {
     console.log("[first-steps-ui] answered after " + took.join("; "));
   });
 
-  await check("layout: the composer with Send, and a proposal with its two answers, fit the viewport at 320, 390, 720, 721, 1100 and 1920 px", async () => {
+  await check("layout: the composer with Send, and a proposal with its two answers, fit the viewport at 320, 390, 720, 721, 1100 and 1920 px, and so does the header (P17: no sideways scroll, no control off the screen)", async () => {
     for (const width of [320, 390, 720, 721, 1100, 1920]) {
       const person = `layout-${width}-${Math.random().toString(16).slice(2, 6)}`;
       await provision(person);
@@ -281,11 +281,37 @@ try {
             scroll: scroll ? { scroll: scroll.scrollWidth, client: scroll.clientWidth } : null,
             send: box('[data-testid="send-chat"]'), input: box('[data-testid="chat-input"]'), composer: box(".composer"),
             confirm: box('[data-testid="chat-action-proposal-confirm"]'), reject: box('[data-testid="chat-action-proposal-reject"]'),
-            proposal: box('[data-testid="chat-action-proposal"]') };
+            proposal: box('[data-testid="chat-action-proposal"]'),
+            // P17 5: the header is one piece: it does not scroll sideways and none of its controls leaves the screen (it wraps or collapses into a menu)
+            header: (() => { const h = document.querySelector(".app-header"); if (!h) return null; const r = h.getBoundingClientRect();
+              const controls = [...h.querySelectorAll("button, h1, [data-testid=semantic-status]")].filter((n) => n.offsetParent !== null).map((n) => { const b = n.getBoundingClientRect(); return { name: n.getAttribute("data-testid") || n.tagName, left: b.left, right: b.right, top: b.top, bottom: b.bottom }; });
+              return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, scroll: h.scrollWidth, client: h.clientWidth, controls }; })() };
         });
         const inside = (name, r, m) => { assert.ok(r, `${width}: ${name} is there`); assert.ok(r.left >= -0.5 && r.right <= m.width + 0.5, `${width}: ${name} fits the width (${Math.round(r.left)}..${Math.round(r.right)} of ${m.width})`); };
         let seen = await measure();
         for (const name of ["send", "input", "composer"]) inside(name, seen[name], seen);
+        const headerFits = (m) => {
+          assert.ok(m.header, `${width}: the header is there`);
+          assert.ok(m.header.scroll <= m.header.client + 1, `${width}: the header does not scroll sideways (${m.header.scroll} > ${m.header.client})`);
+          for (const c of m.header.controls) assert.ok(c.left >= -0.5 && c.right <= m.width + 0.5, `${width}: header control ${c.name} fits the width (${Math.round(c.left)}..${Math.round(c.right)} of ${m.width})`);
+          assert.ok(m.header.bottom <= m.height * 0.5, `${width}: the header leaves the page its room (${Math.round(m.header.bottom)} of ${m.height})`);
+        };
+        headerFits(seen);
+        if (width <= 720) {
+          // below the breakpoint the navigation is a menu: closed it hides its buttons, open it shows all of them inside the screen
+          assert.equal(await page.getByTestId("nav-settings").isVisible(), false, `${width}: the navigation is a menu while it is closed`);
+          await page.getByTestId("toggle-nav").click();
+          const open = await measure();
+          headerFits(open);
+          for (const id of ["nav-knowledge", "nav-graph", "nav-settings", "toggle-theme"]) assert.equal(await page.getByTestId(id).isVisible(), true, `${width}: ${id} is in the open menu`);
+          const menu = await page.evaluate(() => { const r = document.querySelector(".app-nav").getBoundingClientRect(); return { left: r.left, right: r.right, bottom: r.bottom, height: window.innerHeight }; });
+          assert.ok(menu.left >= -0.5 && menu.right <= open.width + 0.5 && menu.bottom <= menu.height + 0.5, `${width}: the open menu fits the screen (${Math.round(menu.left)}..${Math.round(menu.right)}, bottom ${Math.round(menu.bottom)} of ${menu.height})`);
+          await page.keyboard.press("Escape");
+          assert.equal(await page.getByTestId("nav-settings").isVisible(), false, `${width}: Escape closes the menu`);
+        } else {
+          assert.equal(await page.getByTestId("toggle-nav").isVisible(), false, `${width}: a wide screen has no menu button, the navigation is in the header`);
+          assert.equal(await page.getByTestId("nav-settings").isVisible(), true, `${width}: the navigation is in the header`);
+        }
         assert.ok(seen.page <= seen.width, `${width}: the page does not scroll sideways (${seen.page})`);
         // a proposal whose lines are long (the money line says why a price is unknown): it wraps, its answers stay on the screen
         await page.fill('[data-testid="chat-input"]', "pokaż temperature");
@@ -295,6 +321,7 @@ try {
         for (const name of ["send", "input", "composer", "proposal", "confirm", "reject"]) inside(name, seen[name], seen);
         assert.ok(seen.scroll.scroll <= seen.scroll.client, `${width}: the messages do not scroll sideways (${seen.scroll.scroll} > ${seen.scroll.client})`);
         assert.ok(seen.page <= seen.width, `${width}: the page does not scroll sideways after the proposal (${seen.page})`);
+        headerFits(seen);
         // and the person can answer without scrolling the page sideways
         await page.getByTestId("chat-action-proposal-reject").click();
         await page.getByTestId("chat-action-proposal").waitFor({ state: "detached" }).catch(async error => {

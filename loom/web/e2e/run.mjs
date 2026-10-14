@@ -573,11 +573,15 @@ async function main() {
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-02-sidebar.png") });
       await phonePage.click('[data-testid="toggle-sidebar"]');
 
+      // P17 5: on a phone the navigation is a menu under the header (it closes after a choice)
+      await phonePage.click('[data-testid="toggle-nav"]');
       await phonePage.click('[data-testid="nav-graph"]');
       await phonePage.waitForSelector('[data-testid="graph-canvas"]');
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-03-graph.png") });
       await phonePage.click('[data-testid="close-panel"]');
+      await phonePage.click('[data-testid="toggle-nav"]');
       await phonePage.click('[data-testid="nav-knowledge"]');
+      await phonePage.click('[data-testid="toggle-nav"]');
       await phonePage.getByRole("button", { name: "Hide chat", exact: true }).click();
       await phonePage.waitForSelector('[data-testid="kb-pane-entities"] .kb-record');
       assert(await phonePage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "knowledge layout does not overflow the phone viewport");
