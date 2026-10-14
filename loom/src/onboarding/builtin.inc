@@ -373,6 +373,27 @@ R"loom_onboard({
           }
         },
         {
+          "id": "presentation.app_shell/v1",
+          "key": "presentation.app_shell",
+          "area": "presentation/app_shell",
+          "revision": 1,
+          "label": "Words of the application shell (the header): the button that opens the navigation on a phone; texts only",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "app_shell",
+            "locales": {
+              "en": {
+                "menu": "Menu",
+                "menu_label": "Open the menu"
+              },
+              "pl": {
+                "menu": "Menu",
+                "menu_label": "Otwórz menu"
+              }
+            }
+          }
+        },
+        {
           "id": "presentation.open_settings/v1",
           "key": "presentation.open_settings",
           "area": "presentation/open_settings",
@@ -1084,7 +1105,8 @@ R"loom_onboard({
             "session.pause": "Przerwij",
             "session.sections": "Części kreatora",
             "session.section_label": "{{title}} · {{status}}",
-            "conversation.help": "Prześlij odpowiedzi poniżej. Metoda kreatora podsumuje je i może zadać dalsze pytania; potwierdź lub popraw każdy proponowany fakt przed zapisaniem.",
+)loom_onboard",
+R"loom_onboard(            "conversation.help": "Prześlij odpowiedzi poniżej. Metoda kreatora podsumuje je i może zadać dalsze pytania; potwierdź lub popraw każdy proponowany fakt przed zapisaniem.",
             "conversation.model": "Model kreatora",
             "conversation.provider": "Dostawca",
             "conversation.continue": "Poproś model o podsumowanie i dalsze pytania",
@@ -1092,8 +1114,7 @@ R"loom_onboard({
             "conversation.understood": "Co model zrozumiał",
             "conversation.confirm_help": "Potwierdź proponowane fakty poniżej, popraw je lub odrzuć.",
             "section.confirmed": "Potwierdź tę część i kontynuuj",
-)loom_onboard",
-R"loom_onboard(            "section.corrected": "Ta część wymaga poprawki",
+            "section.corrected": "Ta część wymaga poprawki",
             "section.rejected": "Odrzuć podsumowanie tej części",
             "section.skip": "Pomiń tę część",
             "section.repeat": "Powtórz tę część",
@@ -1625,6 +1646,27 @@ R"loom_onboard(            "section.corrected": "Ta część wymaga poprawki",
           "pl": {
             "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
             "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.app_shell/v1",
+      "key": "presentation.app_shell",
+      "area": "presentation/app_shell",
+      "revision": 1,
+      "label": "Words of the application shell (the header): the button that opens the navigation on a phone; texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "app_shell",
+        "locales": {
+          "en": {
+            "menu": "Menu",
+            "menu_label": "Open the menu"
+          },
+          "pl": {
+            "menu": "Menu",
+            "menu_label": "Otwórz menu"
           }
         }
       }

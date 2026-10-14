@@ -207,6 +207,27 @@
       }
     },
     {
+      "id": "presentation.app_shell/v1",
+      "key": "presentation.app_shell",
+      "area": "presentation/app_shell",
+      "revision": 1,
+      "label": "Words of the application shell (the header): the button that opens the navigation on a phone; texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "app_shell",
+        "locales": {
+          "en": {
+            "menu": "Menu",
+            "menu_label": "Open the menu"
+          },
+          "pl": {
+            "menu": "Menu",
+            "menu_label": "Otwórz menu"
+          }
+        }
+      }
+    },
+    {
       "id": "presentation.open_settings/v1",
       "key": "presentation.open_settings",
       "area": "presentation/open_settings",

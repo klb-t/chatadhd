@@ -18,6 +18,8 @@ import UserProfilePanel from "./components/UserProfilePanel";
 import GraphEntryPanel, { type EntryOpeners } from "./components/GraphEntryPanel";
 import { createUserProfileHost } from "./api/onboarding-host";
 import { api } from "./api";
+import { usePresentationFeature } from "./components/ConversationSourceView";
+import { featureMessage } from "./onboarding/presentation.mjs";
 import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 
@@ -118,6 +120,12 @@ export default function App() {
     "graph.nodes": () => setActivePanel("graph"),
     "kb.query": () => { setActivePanel(null); setKnowledgeOpen(true); },
   }), []);
+  // The words of the shell come from data (presentation.app_shell, PL/EN); without a catalog the machine names are shown.
+  const shellCatalog = usePresentationFeature(userProfileHost, "app_shell");
+  const shellText = (id: string): string => {
+    if (!shellCatalog.feature) return id;
+    try { return featureMessage(shellCatalog.feature, id); } catch { return id; }
+  };
   const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
   const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);
 
@@ -135,9 +143,9 @@ export default function App() {
         </button>
         <h1>Loom</h1>
         <div className="spacer" />
-        <button className="nav-toggle" aria-label="Menu" aria-expanded={navOpen} aria-controls="app-nav" data-testid="toggle-nav"
+        <button className="nav-toggle" aria-label={shellText("menu_label")} aria-expanded={navOpen} aria-controls="app-nav" data-testid="toggle-nav"
           onClick={() => setNavOpen((v) => !v)}>
-          Menu
+          {shellText("menu")}
         </button>
         <nav className={navOpen ? "app-nav open" : "app-nav"} id="app-nav" data-testid="app-nav">
           <SemanticStatus profileHost={userProfileHost} />
