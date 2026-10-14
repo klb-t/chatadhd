@@ -67,6 +67,18 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
       target_compile_options(loom_warnings INTERFACE
         $<$<COMPILE_LANGUAGE:CXX>:-Wno-error=null-dereference -Wno-error=maybe-uninitialized>)
     endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      # nlohmann/json 3.11.3 (pinned) probes is_comparable<std::equal_to<>, string, json_pointer> for
+      # at()/contains()/operator[] with a json_pointer. libc++ evaluates equal_to<>'s noexcept-spec there, which selects
+      # json_pointer's own deprecated operator==(json_pointer, string) overload and reports it at <__functional/operations.h>
+      # (libstdc++ never does). The warning is inside the library's trait probe, not in our code, and the vendored
+      # header is pinned by sha256, so it stays a visible warning instead of a hard error. Every other warning stays fatal.
+      include(CheckCXXSourceCompiles)
+      check_cxx_source_compiles("#include <cstddef>\n#ifndef _LIBCPP_VERSION\n#error not libc++\n#endif\nint main(){}" LOOM_USING_LIBCXX)
+      if(LOOM_USING_LIBCXX)
+        target_compile_options(loom_warnings INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-Wno-error=deprecated-declarations>)
+      endif()
+    endif()
   endif()
 endif()
 
