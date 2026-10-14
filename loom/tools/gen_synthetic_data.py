@@ -106,11 +106,15 @@ def build_db(a):
     nconv, nmsg = a.conversations, a.messages
     conv_ids = [g.hid("c_") for _ in range(nconv)]
     per, extra = divmod(nmsg, nconv)
-    # a few big conversations and a long tail, like real exports: weights 1..(1+skew)
-    sizes = [per] * nconv
-    for i in range(extra):
-        sizes[i] += 1
-    batch, done, mi = [], 0, 0
+    sizes = [per + (1 if i < extra else 0) for i in range(nconv)]
+    # one long conversation (like a real months-long chat): --big-conv messages, taken evenly from the others
+    big = min(a.big_conv, max(0, nmsg - 2 * nconv)) if nconv > 1 else 0
+    if big:
+        share = big // (nconv - 1) + 1
+        for i in range(1, nconv):
+            sizes[i] = max(2, sizes[i] - share)
+        sizes[0] = nmsg - sum(sizes[1:])
+    batch, mi = [], 0
     rows = []
     for ci, cid in enumerate(conv_ids):
         rows.append((cid, "Rozmowa %d: %s" % (ci, g.text(2, 6)[:60]), g.ts(ci), g.ts(ci + sizes[ci]),
@@ -206,6 +210,7 @@ def main():
     p.add_argument("data_dir", nargs="?")
     p.add_argument("--conversations", type=int, default=1000)
     p.add_argument("--messages", type=int, default=20000)
+    p.add_argument("--big-conv", type=int, default=0, help="messages in the first (long) conversation, taken from the others")
     p.add_argument("--nodes", type=int)
     p.add_argument("--links", type=int)
     p.add_argument("--tasks", type=int)
