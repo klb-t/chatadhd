@@ -3,6 +3,7 @@ package com.chatadhd.android
 import android.annotation.SuppressLint
 import android.Manifest
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -83,6 +84,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataLocation = DataLocation(this)
+
+        // Debug builds only: the page can be inspected and driven over the WebView DevTools socket
+        // (chrome://inspect, and loom/android/smoke/drive.mjs in CI). A release build never opens it.
+        if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) WebView.setWebContentsDebuggingEnabled(true)
 
         webView = WebView(this).apply {
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
