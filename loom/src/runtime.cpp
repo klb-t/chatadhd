@@ -6,6 +6,7 @@
 #include <mutex>
 
 #include "loom/action_runner.h"
+#include "loom/rom.h"
 #include "loom/archive.h"
 #include "loom/knowledge.h"
 #include "loom/catalog.h"
@@ -272,6 +273,7 @@ struct Runtime::Impl {
   std::unique_ptr<GitHubSyncManager> github;
   std::unique_ptr<archive::ArchiveIntelligence> archive;  // needs the Runtime; created last
   std::unique_ptr<knowledge::KnowledgeEngine> knowledge;  // needs the Runtime; registers knowledge.* handlers
+  rom::MountRegistry mounts;                              // ROM first, then the data dir
   std::unique_ptr<actions::ActionRunner> actions;         // needs the Runtime; destroyed first
 
   mutable std::mutex embed_mu;
@@ -292,6 +294,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(fs::path root, resolve_data_dir(override_dir, opts.path_env.value_or(PathEnv::from_process())));
   impl->paths = DataPaths::for_root(root);
   const DataPaths& p = impl->paths;
+  impl->mounts = rom::MountRegistry::standard(p.root);
 
   impl->config = std::make_unique<Config>(p.config);
   impl->secrets = std::make_unique<Secrets>(p.secrets);
@@ -458,6 +461,7 @@ void Runtime::shutdown() {
 }
 
 const DataPaths& Runtime::paths() const { return impl_->paths; }
+const rom::MountRegistry& Runtime::mounts() const { return impl_->mounts; }
 Config& Runtime::config() { return *impl_->config; }
 Secrets& Runtime::secrets() { return *impl_->secrets; }
 Database& Runtime::db() { return *impl_->db; }

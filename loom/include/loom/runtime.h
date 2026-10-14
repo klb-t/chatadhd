@@ -64,6 +64,9 @@ class HttpTransport;
 namespace actions {
 class ActionRunner;
 }
+namespace rom {
+class MountRegistry;
+}
 namespace archive {
 class ArchiveIntelligence;
 }
@@ -161,6 +164,7 @@ class Runtime {
   void shutdown();
 
   const DataPaths& paths() const;
+  const rom::MountRegistry& mounts() const;  // memories in mount order: the read-only ROM first, then the data dir
   Config& config();
   Secrets& secrets();
   Database& db();

@@ -116,6 +116,10 @@
             "default_rule": ""
           },
           "interfaces": {},
+          "rom": {
+            "mount": {},
+            "items": {}
+          },
           "devices": {},
           "device_platforms": {}
         },
@@ -213,6 +217,16 @@
           "source": "graph/interfaces.pack",
           "pointer": "/interfaces",
           "target": "/defaults/interfaces"
+        },
+        {
+          "source": "graph/rom.pack",
+          "pointer": "/mount",
+          "target": "/defaults/rom/mount"
+        },
+        {
+          "source": "graph/rom.pack",
+          "pointer": "/items",
+          "target": "/defaults/rom/items"
         },
         {
           "source": "graph/devices.pack",

@@ -128,7 +128,7 @@
     {
       "path": "graph/entry.pack",
       "schema": "loom.graph_entry_areas/1",
-      "sha256": "6cb176d4aa3b3bbcca213297e8efe775c58819e7f5aca6138847bf2ec3dc4884",
+      "sha256": "eac7e4a4ff34cd5355197d59835e44a7bfb891fef18f3fe7b3eb4c25a1a7cd67",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [
@@ -157,6 +157,17 @@
         "loom/tests/test_graph_entry.cpp",
         "loom/web/tests/graph-entry",
         "loom/tools/gen_graph_interfaces.py"
+      ]
+    },
+    {
+      "path": "graph/rom.pack",
+      "schema": "loom.rom_catalogue/1",
+      "sha256": "150d661190a06b796ba768f5e2f8a8a19db3cadcb82282abd26b92fa1eaa4617",
+      "domain": "graph_entry",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/test_rom.cpp",
+        "loom/tools/gen_rom_catalogue.py"
       ]
     },
     {

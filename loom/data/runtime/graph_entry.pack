@@ -470,6 +470,21 @@
           "profile.import_formats"
         ]
       },
+      "rom": {
+        "order": 0,
+        "label": {
+          "en": "ROM (read-only memory)",
+          "pl": "ROM (pamięć tylko do odczytu)"
+        },
+        "axes": {
+          "about": "application",
+          "kind": "knowledge",
+          "time": "state"
+        },
+        "bindings": [
+          "rom.catalogue"
+        ]
+      },
       "interfaces": {
         "order": 3,
         "label": {
@@ -748,6 +763,13 @@
         "params": {
           "domain": "model",
           "pointer": "/authority_ranks"
+        }
+      },
+      "rom.catalogue": {
+        "provider": "rom.catalogue",
+        "as": "rom_items",
+        "params": {
+          "pointer": "/rom/items"
         }
       },
       "interfaces.abi": {
@@ -2605,6 +2627,575 @@
         "from": {
           "domain": "cli",
           "pointer": "/commands"
+        }
+      }
+    },
+    "rom": {
+      "mount": {
+        "name": "rom",
+        "order": 0,
+        "writable": false
+      },
+      "items": {
+        "boot": {
+          "number": 1,
+          "label": {
+            "en": "Boot",
+            "pl": "Rozruch"
+          },
+          "why": "Finds and opens memories (data-dir resolution order, code != data) before any memory can be read.",
+          "address": "rom:boot",
+          "status": "partial",
+          "files": [
+            {
+              "path": "loom/data/pack.json"
+            },
+            {
+              "path": "loom/data/runtime/runtime_paths.pack"
+            },
+            {
+              "path": "loom/include/loom/config.h"
+            },
+            {
+              "path": "loom/src/core/config.cpp"
+            },
+            {
+              "path": "loom/src/util/fs.cpp"
+            }
+          ],
+          "gaps": [
+            "Memory mounting beyond the data directory is not wired into Runtime yet (see rom.h MountRegistry; Runtime owns the data dir)."
+          ]
+        },
+        "meta_ontology": {
+          "number": 2,
+          "label": {
+            "en": "Meta-ontology",
+            "pl": "Meta-ontologia"
+          },
+          "why": "What a node, edge, action, field, provenance and version are; base types the engine must read in any graph.",
+          "address": "rom:meta_ontology",
+          "status": "present",
+          "files": [
+            {
+              "path": "loom/data/graph/axes.pack"
+            },
+            {
+              "path": "loom/data/graph/classes.pack"
+            },
+            {
+              "path": "loom/data/graph/parties.pack"
+            },
+            {
+              "path": "loom/data/graph/properties.pack"
+            },
+            {
+              "path": "loom/data/graph/scopes.pack"
+            },
+            {
+              "path": "loom/data/schema/types.json"
+            }
+          ],
+          "gaps": []
+        },
+        "action_interpreter": {
+          "number": 3,
+          "label": {
+            "en": "Action interpreter",
+            "pl": "Interpreter akcji"
+          },
+          "why": "The universal engine: apply the action named in the graph to the given nodes.",
+          "address": "rom:action_interpreter",
+          "status": "present",
+          "files": [
+            {
+              "path": "loom/data/runtime/action_rules.pack"
+            },
+            {
+              "path": "loom/data/runtime/actions.pack"
+            },
+            {
+              "path": "loom/include/loom/action_rules.h"
+            },
+            {
+              "path": "loom/include/loom/action_table.h"
+            },
+            {
+              "path": "loom/src/actions/chain.cpp"
+            },
+            {
+              "path": "loom/src/actions/element.cpp"
+            },
+            {
+              "path": "loom/src/actions/emergent.cpp"
+            },
+            {
+              "path": "loom/src/actions/engine.cpp"
+            },
+            {
+              "path": "loom/src/actions/estimate.cpp"
+            },
+            {
+              "path": "loom/src/actions/overlay.cpp"
+            },
+            {
+              "path": "loom/src/actions/query.cpp"
+            },
+            {
+              "path": "loom/src/actions/result.cpp"
+            },
+            {
+              "path": "loom/src/actions/route.cpp"
+            },
+            {
+              "path": "loom/src/actions/run.cpp"
+            },
+            {
+              "path": "loom/src/actions/run_store.cpp"
+            },
+            {
+              "path": "loom/src/actions/runner.cpp"
+            }
+          ],
+          "gaps": []
+        },
+        "drivers": {
+          "number": 4,
+          "label": {
+            "en": "Drivers and adapters",
+            "pl": "Sterowniki i adaptery"
+          },
+          "why": "Executable adapters: provider APIs, storage backends, file formats, devices, cryptography.",
+          "address": "rom:drivers",
+          "status": "partial",
+          "files": [
+            {
+              "path": "loom/src/crypto/backend.cpp"
+            },
+            {
+              "path": "loom/src/crypto/crypto.cpp"
+            },
+            {
+              "path": "loom/src/github/github_sync.cpp"
+            },
+            {
+              "path": "loom/src/llm/adapters.cpp"
+            },
+            {
+              "path": "loom/src/llm/use_model.cpp"
+            },
+            {
+              "path": "loom/src/media/media_providers.cpp"
+            },
+            {
+              "path": "loom/src/providers/providers.cpp"
+            },
+            {
+              "path": "loom/src/storage/gdrive_backend.cpp"
+            },
+            {
+              "path": "loom/src/storage/local_backend.cpp"
+            },
+            {
+              "path": "loom/src/storage/s3_backend.cpp"
+            },
+            {
+              "path": "loom/src/storage/storage_backend.cpp"
+            },
+            {
+              "path": "loom/src/storage/webdav_backend.cpp"
+            }
+          ],
+          "gaps": [
+            "Input/output devices (microphone, camera, screen) are not drivers in the core; they live in clients."
+          ]
+        },
+        "factory_presets": {
+          "number": 5,
+          "label": {
+            "en": "Factory presets",
+            "pl": "Ustawienia fabryczne"
+          },
+          "why": "Starting point and \"restore defaults\": preset packs and default runtime profiles/flows.",
+          "address": "rom:factory_presets",
+          "status": "partial",
+          "files": [
+            {
+              "path": "loom/data/context/runtime_preset_layers.pack"
+            },
+            {
+              "path": "loom/data/policy/calibration.json"
+            },
+            {
+              "path": "loom/data/policy/candidate_graph.json"
+            },
+            {
+              "path": "loom/data/policy/evidence_encoding.json"
+            },
+            {
+              "path": "loom/data/policy/relevance.json"
+            },
+            {
+              "path": "loom/data/policy/selection_rules.json"
+            },
+            {
+              "path": "loom/data/policy/storage_security.pack"
+            },
+            {
+              "path": "loom/data/policy/thresholds.json"
+            },
+            {
+              "path": "loom/data/policy/usage_policy.pack"
+            },
+            {
+              "path": "loom/data/presets/import.pack"
+            },
+            {
+              "path": "loom/data/presets/import_audit.pack"
+            },
+            {
+              "path": "loom/data/presets/import_layers.pack"
+            },
+            {
+              "path": "loom/data/presets/import_layers.spec.pack"
+            },
+            {
+              "path": "loom/data/runtime/action_results.pack"
+            },
+            {
+              "path": "loom/data/runtime/action_rules.pack"
+            },
+            {
+              "path": "loom/data/runtime/action_run.pack"
+            },
+            {
+              "path": "loom/data/runtime/actions.pack"
+            },
+            {
+              "path": "loom/data/runtime/archive.pack"
+            },
+            {
+              "path": "loom/data/runtime/chat_context.pack"
+            },
+            {
+              "path": "loom/data/runtime/chat_reasoning.pack"
+            },
+            {
+              "path": "loom/data/runtime/cli.pack"
+            },
+            {
+              "path": "loom/data/runtime/config.pack"
+            },
+            {
+              "path": "loom/data/runtime/context_goal_cues.pack"
+            },
+            {
+              "path": "loom/data/runtime/economy.pack"
+            },
+            {
+              "path": "loom/data/runtime/element_resolution.pack"
+            },
+            {
+              "path": "loom/data/runtime/github.pack"
+            },
+            {
+              "path": "loom/data/runtime/graph_ingest.pack"
+            },
+            {
+              "path": "loom/data/runtime/graph_memory.pack"
+            },
+            {
+              "path": "loom/data/runtime/import.pack"
+            },
+            {
+              "path": "loom/data/runtime/import_audit.pack"
+            },
+            {
+              "path": "loom/data/runtime/import_formats.pack"
+            },
+            {
+              "path": "loom/data/runtime/intent_routing.pack"
+            },
+            {
+              "path": "loom/data/runtime/knowledge.pack"
+            },
+            {
+              "path": "loom/data/runtime/materialize.pack"
+            },
+            {
+              "path": "loom/data/runtime/media.pack"
+            },
+            {
+              "path": "loom/data/runtime/memory.pack"
+            },
+            {
+              "path": "loom/data/runtime/model.pack"
+            },
+            {
+              "path": "loom/data/runtime/net.pack"
+            },
+            {
+              "path": "loom/data/runtime/re.pack"
+            },
+            {
+              "path": "loom/data/runtime/resource_method.pack"
+            },
+            {
+              "path": "loom/data/runtime/resource_projection.pack"
+            },
+            {
+              "path": "loom/data/runtime/resource_read.pack"
+            },
+            {
+              "path": "loom/data/runtime/runtime_paths.pack"
+            },
+            {
+              "path": "loom/data/runtime/selector.pack"
+            },
+            {
+              "path": "loom/data/runtime/semantic_analyzer.pack"
+            },
+            {
+              "path": "loom/data/runtime/server_accounts.pack"
+            },
+            {
+              "path": "loom/data/runtime/settings_fields.pack"
+            },
+            {
+              "path": "loom/data/runtime/storage_security.pack"
+            },
+            {
+              "path": "loom/data/runtime/usage_compaction.pack"
+            },
+            {
+              "path": "loom/data/runtime/usage_policy.pack"
+            },
+            {
+              "path": "loom/data/runtime/util.pack"
+            },
+            {
+              "path": "loom/data/runtime/worker.pack"
+            }
+          ],
+          "gaps": [
+            "runtime/graph_entry.pack embeds this catalogue and is therefore not hashed here (circular); it is pinned in data_domains.pack."
+          ]
+        },
+        "self_model": {
+          "number": 6,
+          "label": {
+            "en": "Self-model",
+            "pl": "Model samego siebie"
+          },
+          "why": "What the application knows about itself regardless of the user: philosophy, requirements, state, costs (R52).",
+          "address": "rom:self_model",
+          "status": "partial",
+          "files": [
+            {
+              "path": "docs/STATE.md"
+            },
+            {
+              "path": "docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md"
+            },
+            {
+              "path": "loom/data/philosophy/operators.json"
+            },
+            {
+              "path": "loom/data/philosophy/principles.json"
+            },
+            {
+              "path": "loom/data/profiles/self.json"
+            },
+            {
+              "path": "loom/data/runtime/economy.pack"
+            }
+          ],
+          "gaps": [
+            "Version/capabilities come from loom_version at run time; there is no pinned machine-readable capability/limits manifest.",
+            "R1-R53 exist as prose in docs, not as a data pack."
+          ]
+        },
+        "safety_fuses": {
+          "number": 7,
+          "label": {
+            "en": "Safety fuses",
+            "pl": "Bezpieczniki"
+          },
+          "why": "Confirmation at x10 growth in usage and other guards that must not be switched off by accident.",
+          "address": "rom:safety_fuses",
+          "status": "partial",
+          "files": [
+            {
+              "path": "loom/data/policy/usage_policy.pack"
+            },
+            {
+              "path": "loom/data/runtime/usage_policy.pack"
+            },
+            {
+              "path": "loom/src/policy/usage_policy.cpp"
+            },
+            {
+              "path": "loom/src/policy/usage_policy_preset.inc"
+            }
+          ],
+          "gaps": [
+            "The x10 guard is a configurable preset (overlay can change it), not pinned in code; the owner rule makes this intentional.",
+            "No dedicated \"never overwrite an unread file\" guard module: only point checks in storage backends and importers."
+          ]
+        },
+        "validators_migrations": {
+          "number": 8,
+          "label": {
+            "en": "Validators and migrations",
+            "pl": "Walidatory i migracje"
+          },
+          "why": "How to read old formats and move data between versions.",
+          "address": "rom:validators_migrations",
+          "status": "present",
+          "files": [
+            {
+              "path": "loom/data/validation/product_literals.pack"
+            },
+            {
+              "path": "loom/src/db/db.cpp"
+            },
+            {
+              "path": "loom/src/db/schema_sql.inc"
+            },
+            {
+              "path": "loom/src/model/runtime_profile.cpp"
+            },
+            {
+              "path": "loom/src/util/product_literal_guard.py"
+            }
+          ],
+          "gaps": []
+        },
+        "rescue_mode": {
+          "number": 9,
+          "label": {
+            "en": "Rescue mode",
+            "pl": "Tryb ratunkowy"
+          },
+          "why": "Minimal interface to settings and memories when everything else failed.",
+          "address": "rom:rescue_mode",
+          "status": "missing",
+          "files": [],
+          "gaps": [
+            "No rescue mode exists: no minimal settings/memory interface that works with a broken configuration or memory."
+          ]
+        },
+        "roots_of_trust": {
+          "number": 10,
+          "label": {
+            "en": "Roots of trust",
+            "pl": "Korzenie zaufania"
+          },
+          "why": "Cryptographic algorithms and keys that verify updates and signatures; must not come from the data they verify.",
+          "address": "rom:roots_of_trust",
+          "status": "partial",
+          "files": [
+            {
+              "path": "loom/include/loom/crypto.h"
+            },
+            {
+              "path": "loom/include/loom/crypto_suite.h"
+            },
+            {
+              "path": "loom/src/crypto/envelope.cpp"
+            },
+            {
+              "path": "loom/src/crypto/hash_portable.cpp"
+            },
+            {
+              "path": "loom/src/crypto/kem_xwing.cpp"
+            },
+            {
+              "path": "loom/src/crypto/sealed.cpp"
+            },
+            {
+              "path": "loom/src/crypto/sig_hybrid.cpp"
+            },
+            {
+              "path": "loom/src/util/sha256.cpp"
+            }
+          ],
+          "gaps": [
+            "Algorithms only: there is no embedded update/signature verification key and no update verifier."
+          ]
+        },
+        "id_time": {
+          "number": 11,
+          "label": {
+            "en": "Identity and time generators",
+            "pl": "Generatory tożsamości i czasu"
+          },
+          "why": "Identifier format, clock and versioning, so addresses stay consistent across the ecosystem.",
+          "address": "rom:id_time",
+          "status": "present",
+          "files": [
+            {
+              "path": "loom/include/loom/util/ids.h"
+            },
+            {
+              "path": "loom/include/loom/util/time.h"
+            },
+            {
+              "path": "loom/src/util/random_ids_time.cpp"
+            }
+          ],
+          "gaps": []
+        },
+        "ui_texts": {
+          "number": 12,
+          "label": {
+            "en": "Base UI texts",
+            "pl": "Podstawowe teksty interfejsu"
+          },
+          "why": "Texts (pl, en) the application needs before any memory is loaded.",
+          "address": "rom:ui_texts",
+          "status": "partial",
+          "files": [
+            {
+              "path": "loom/data/onboarding/ui.pack"
+            },
+            {
+              "path": "loom/data/runtime/cli.pack"
+            },
+            {
+              "path": "loom/data/runtime/settings_fields.pack"
+            }
+          ],
+          "gaps": [
+            "Web UI strings are compiled into the web bundle (loom/web/src), not a shared data pack."
+          ]
+        },
+        "catalogue": {
+          "number": 13,
+          "label": {
+            "en": "ROM catalogue",
+            "pl": "Katalog ROM"
+          },
+          "why": "The list of all items above with graph addresses; makes the ROM visible in the graph like any memory.",
+          "address": "rom:catalogue",
+          "status": "partial",
+          "files": [
+            {
+              "path": "loom/include/loom/rom.h"
+            },
+            {
+              "path": "loom/src/graph/rom.cpp"
+            },
+            {
+              "path": "loom/tests/test_rom.cpp"
+            },
+            {
+              "path": "loom/tools/gen_rom_catalogue.py"
+            }
+          ],
+          "gaps": [
+            "The catalogue pack is pinned in data_domains.pack."
+          ]
         }
       }
     },
