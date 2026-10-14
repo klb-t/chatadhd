@@ -3,8 +3,7 @@
 ## Current checkpoint — relational recognition, 2026-10-14
 
 Both product increments are complete at their scoped gate. First: `79187377`
-(project-kind alternatives / transfer evidence). Second: the commit containing
-this section (data-defined relational recognition, source receipts and recovery).
+(project-kind alternatives / transfer evidence). Second: `298b429b` (data-defined relational recognition, source receipts and recovery).
 Branch: `gpt/implicit-structures-2026-10-14`; main is unchanged.
 
 Current composed scoped result: **34/34 CTest entries, 286 native cases,
@@ -181,3 +180,17 @@ test; it now uses a declared, different relation. All failed logs are retained.
 Run the expanded scoped gates, publish the relation increment, then run current
 full dev/guard and the serialized compiler/sanitizer/web matrix. Record precise
 counts and environmental limits here before handing the branch to Claude.
+
+## Full-matrix follow-up
+
+The first complete dev run on `298b429b` selected 204 entries and failed two:
+`unit.test_pack_model` still expected the prior exact three-facet catalog;
+`research.structure` rejected the TMPDIR Git ancestry in the restricted
+filesystem. Neither is a PASS. The pack-model expectation is updated to the
+exact four facets, with explicit candidate/no-invented-slot checks. For the
+rerun, local tests use `/var/tmp` through platform-reviewed execution so the
+credential fixtures have a genuinely writable location outside Git. No marker,
+negative case, timeout or secret protection is removed. Full evidence remains
+in `full-dev/`; subsequent current gates receive new directories.
+
+The follow-up scope (`pack-model/`) passed 2/2 CTest entries, 15 native cases / 1040 assertions, execution guard PASS. The opt-in catalog-scale entry in the full manifest remains explicitly unexecuted.
