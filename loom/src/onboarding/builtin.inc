@@ -276,7 +276,9 @@ R"loom_onboard({
                 "setting_label": "Block sending when linked source history cannot be included",
                 "setting_help": "Off: the message is sent with the stored messages only and a notice says what is missing. On: sending stays disabled in such conversations until you turn this off.",
                 "blocked_by_setting": "Sending is blocked by your setting “{{setting}}”. Turn it off to send with the stored messages only.",
-                "unblock": "Turn off this block"
+                "unblock": "Turn off this block",
+                "queued_waiting": "Waiting for the conversation to load… your message will be sent as soon as it is there.",
+                "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field."
               },
               "pl": {
                 "source_history_omitted": "Historia połączonych źródeł nie zostanie dołączona do tej wiadomości. Wysyłane są tylko wiadomości zapisane w tej rozmowie.",
@@ -289,7 +291,9 @@ R"loom_onboard({
                 "setting_label": "Blokuj wysyłanie, gdy nie można dołączyć historii połączonych źródeł",
                 "setting_help": "Wyłączone: wiadomość jest wysyłana tylko z zapisanymi wiadomościami, a komunikat mówi, czego brakuje. Włączone: wysyłanie pozostaje zablokowane w takich rozmowach, dopóki tego nie wyłączysz.",
                 "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
-                "unblock": "Wyłącz tę blokadę"
+                "unblock": "Wyłącz tę blokadę",
+                "queued_waiting": "Czekam na wczytanie rozmowy… wiadomość zostanie wysłana, gdy tylko będzie gotowa.",
+                "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu."
               }
             }
           }
@@ -1085,12 +1089,12 @@ R"loom_onboard({
             "error.presentation": "Prezentacja kreatora jest niedostępna: {{reason}}",
             "value.raw_identifier": "{{id}}",
             "layer.missing": "Dla tego klucza nie ma bieżącej wartości domyślnej ani wartości użytkownika.",
-            "layer.excluded": "Trwałe wykluczenie użytkownika blokuje ten stabilny identyfikator także po aktualizacji packa.",
+)loom_onboard",
+R"loom_onboard(            "layer.excluded": "Trwałe wykluczenie użytkownika blokuje ten stabilny identyfikator także po aktualizacji packa.",
             "layer.disabled": "Użytkownik zachował tę wartość domyślną, ale wyłączył jej użycie.",
             "layer.user": "Jawna wartość użytkownika nadpisuje wbudowaną warstwę grafu.",
             "layer.proposal": "Nowa wartość domyślna dotyczy wykluczonego obszaru i czeka na akceptację użytkownika.",
-)loom_onboard",
-R"loom_onboard(            "layer.builtin": "Wbudowana wartość domyślna grafu obowiązuje, ponieważ użytkownik jej nie wyłączył ani nie nadpisał.",
+            "layer.builtin": "Wbudowana wartość domyślna grafu obowiązuje, ponieważ użytkownik jej nie wyłączył ani nie nadpisał.",
             "status.unknown": "nieznane",
             "status.known": "znane",
             "status.declined": "odmowa",
@@ -1470,7 +1474,9 @@ R"loom_onboard(            "layer.builtin": "Wbudowana wartość domyślna grafu
             "setting_label": "Block sending when linked source history cannot be included",
             "setting_help": "Off: the message is sent with the stored messages only and a notice says what is missing. On: sending stays disabled in such conversations until you turn this off.",
             "blocked_by_setting": "Sending is blocked by your setting “{{setting}}”. Turn it off to send with the stored messages only.",
-            "unblock": "Turn off this block"
+            "unblock": "Turn off this block",
+            "queued_waiting": "Waiting for the conversation to load… your message will be sent as soon as it is there.",
+            "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field."
           },
           "pl": {
             "source_history_omitted": "Historia połączonych źródeł nie zostanie dołączona do tej wiadomości. Wysyłane są tylko wiadomości zapisane w tej rozmowie.",
@@ -1483,7 +1489,9 @@ R"loom_onboard(            "layer.builtin": "Wbudowana wartość domyślna grafu
             "setting_label": "Blokuj wysyłanie, gdy nie można dołączyć historii połączonych źródeł",
             "setting_help": "Wyłączone: wiadomość jest wysyłana tylko z zapisanymi wiadomościami, a komunikat mówi, czego brakuje. Włączone: wysyłanie pozostaje zablokowane w takich rozmowach, dopóki tego nie wyłączysz.",
             "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
-            "unblock": "Wyłącz tę blokadę"
+            "unblock": "Wyłącz tę blokadę",
+            "queued_waiting": "Czekam na wczytanie rozmowy… wiadomość zostanie wysłana, gdy tylko będzie gotowa.",
+            "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu."
           }
         }
       }

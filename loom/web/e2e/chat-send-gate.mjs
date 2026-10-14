@@ -18,7 +18,7 @@ const REASON = "source_egress_not_bound", VIEW_FAILURE = "authored view failure"
 const omitted = formatTemplate(en.reason, { reason: REASON, explanation: en[`reason.${REASON}`] });
 const blockedText = formatTemplate(en.blocked_by_setting, { setting: en.setting_label });
 const groups = [], chatRequests = [], viewRequests = [], unexpected = [], pageErrors = [], eventFeeds = [];
-const complete = suiteCompletionGuard("chat-send-gate", 5, groups);
+const complete = suiteCompletionGuard("chat-send-gate", 6, groups);
 
 const bundle = await build({ stdin: { contents: `
   import React from "react";
@@ -176,18 +176,47 @@ try {
     await notice.waitFor();
   });
 
-  await check("view request in flight: Send waits with a data explanation, then opens", async () => {
+  await check("view request in flight: Send is queued with a data note, nothing is sent, and the message goes out once, with the usual bytes, when the view arrives", async () => {
     hold("GET slow");
     await mount("slow");
     await page.getByTestId("chat-input").fill("GATE_WAITS_FOR_VIEW");
-    assert.equal(await send().isDisabled(), true);
+    assert.equal(await send().isEnabled(), true, "a send during the loading of the view is accepted, not refused");
     assert.equal(await send().getAttribute("data-gate-initiator"), "invariant:integrity");
     assert.equal(await send().getAttribute("data-gate-reason"), "conversation_view_loading");
-    assert.equal(await send().getAttribute("title"), en.view_loading);
+    const before = chatRequests.length;
+    await send().click();
+    const note = page.getByTestId("send-queued");
+    await note.waitFor();
+    assert.equal(await note.innerText(), en.queued_waiting);
+    assert.equal(await note.getAttribute("data-state"), "waiting");
+    assert.equal(await page.getByTestId("chat-input").inputValue(), "GATE_WAITS_FOR_VIEW", "the text stays visibly in the field while it waits");
+    await page.getByTestId("chat-input").press("Enter");  // a second ask changes nothing: the message goes once
+    await new Promise(resolve => setTimeout(resolve, 150));
+    assert.equal(chatRequests.length, before, "nothing is sent while the view loads");
     release("GET slow");
-    await page.waitForFunction(() => !document.querySelector('[data-testid="send-chat"]').disabled);
-    assert.equal(await send().getAttribute("title"), null);
+    await waitFor(() => chatRequests.length === before + 1, "the queued chat request");
+    assert.deepEqual(chatRequests.at(-1), { message: "GATE_WAITS_FOR_VIEW", conv_id: "slow" }, "the request bytes are those of a direct send");
+    await page.getByTestId("send-queued").waitFor({ state: "detached" });
+    await new Promise(resolve => setTimeout(resolve, 200));
+    assert.equal(chatRequests.length, before + 1, "exactly one request");
+    assert.equal(await page.getByTestId("chat-input").inputValue(), "", "the field is emptied when the message goes");
     await sendAndSettle("GATE_AFTER_VIEW_LOADED", "slow");
+  });
+
+  await check("a queued send whose view fails says so and keeps the text; the person can send it afterwards", async () => {
+    hold("GET failing");
+    await mount("failing");
+    await page.getByTestId("chat-input").fill("GATE_QUEUED_VIEW_FAILS");
+    await send().click();
+    await page.getByTestId("send-queued").waitFor();
+    const before = chatRequests.length;
+    release("GET failing");
+    await page.locator('[data-testid="send-queued"][data-state="failed"]').waitFor();
+    assert.equal(await page.getByTestId("send-queued").innerText(), en.queued_failed);
+    assert.equal(await page.getByTestId("chat-input").inputValue(), "GATE_QUEUED_VIEW_FAILS", "the text stays in the field");
+    await new Promise(resolve => setTimeout(resolve, 150));
+    assert.equal(chatRequests.length, before, "nothing was sent");
+    await sendAndSettle("GATE_QUEUED_VIEW_FAILS", "failing");  // the failed view does not stop a send the person asks for again
   });
 
   await check("local source read in flight: transient integrity gate with explanation, reopened after the read", async () => {
@@ -208,11 +237,11 @@ try {
   });
   assert.deepEqual(pageErrors, []);
   assert.deepEqual(unexpected, []);
-  assert.equal(mounts, 7);
+  assert.equal(mounts, 8);
   assert.deepEqual(eventFeeds, Array(mounts).fill("GET ?event=action%3Aclient_step"), "one event feed per mount of the chat view, refused by this backend and not asked for again");
 } finally {
   await browser?.close();
   await closeHttpFixture(server);
 }
 complete.complete();
-console.log(`[chat-send-gate] ${groups.length}/5 groups passed; ${chatRequests.length} fixture chat requests; zero model calls`);
+console.log(`[chat-send-gate] ${groups.length}/6 groups passed; ${chatRequests.length} fixture chat requests; zero model calls`);

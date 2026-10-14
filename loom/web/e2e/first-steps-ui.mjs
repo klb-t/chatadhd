@@ -3,11 +3,15 @@
 //   1. The sign-in screen: the Login field takes the same theme tokens as the other inputs (it had a light background in the dark theme).
 //   2. The first message of a page at the width of a phone (390x800): after the sign-in the very first send is answered. One run is one
 //      new browser context (no cookies, no storage: the first send of a page, with its lazy device declaration); FIRST_SEND_RUNS runs.
-// The model is the SSE test double of the e2e fixtures (mock_llm_server.py). Nothing leaves the machine.
+//   3. "New conversation", then Send at once (the conversation is still being made, or its view still loads): the message is not dropped
+//      and not sent into another conversation; the provider gets exactly one request and the answer shows. Desktop and 390x800.
+//   4. A declaration of the devices that is refused, fails or never answers does not hold the first send back.
+// The model is an SSE test double that counts its requests (the e2e fixture's mock_llm_server.py streams the same text). Nothing leaves the machine.
 //
 // Prereqs: loom-server built (LOOM_BUILD_SERVER=ON) and `npm run build` in loom/web.
 import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
+import { createServer as createHttpServer } from "node:http";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import { tmpdir } from "node:os";
@@ -28,8 +32,9 @@ const expectedAnswer = "Streaming works end to end";
 const login = "tester", password = "correct horse battery";
 
 const groups = [];
-const complete = suiteCompletionGuard("first-steps-ui", 3, groups);
+const complete = suiteCompletionGuard("first-steps-ui", 5, groups);
 let mock, server, browser;
+const providerRequests = [];
 let serverLog = "";
 const root = mkdtempSync(path.join(tmpdir(), "loom-first-steps-"));
 
@@ -63,7 +68,17 @@ try {
   const mockPort = await freePort();
   const port = await freePort();
   const base = "http://127.0.0.1:" + port;
-  mock = spawn("python3", [path.join(web, "e2e/mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });
+  // The model double: every chat request is kept; the answer streams in two deltas like the e2e fixture's.
+  mock = createHttpServer(async (request, response) => {
+    const chunks = []; for await (const chunk of request) chunks.push(chunk);
+    if (request.method === "POST") providerRequests.push(JSON.parse(Buffer.concat(chunks).toString() || "{}"));
+    if (request.method !== "POST") { response.writeHead(200, { "Content-Type": "application/json" }).end('{"data":[]}'); return; }
+    response.writeHead(200, { "Content-Type": "text/event-stream" });
+    for (const delta of [{ role: "assistant" }, { content: "Hello from the mock model! " }, { content: "Streaming works end to end." }, {}])
+      response.write("data: " + JSON.stringify({ id: "1", choices: [{ delta, ...(Object.keys(delta).length ? {} : { finish_reason: "stop" }) }] }) + "\n\n");
+    response.end("data: [DONE]\n\n");
+  });
+  await new Promise(resolve => mock.listen(mockPort, "127.0.0.1", resolve));
 
   // The account: made the way an operator makes it (loom-server user add ...).
   const accounts = path.join(root, "accounts");
@@ -170,11 +185,81 @@ try {
     console.log(`[first-steps-ui] first answers after ${took.join(", ")} ms (limit ${answerWithinMs})`);
   });
 
+  // One walk: a new account, the sign-in, "New conversation", then Send at once. `slow` delays what the page waits for (the creation of the
+  // conversation, or its view), so the click lands inside that wait on any machine; `declare` says what the kernel does with the declaration.
+  async function walk({ width, height, slow, declare = "ok", label }) {
+    const person = `immediate-${label}-${Math.random().toString(16).slice(2, 8)}`;
+    await provision(person);
+    const context = await browser.newContext({ viewport: { width, height }, isMobile: width < 500, hasTouch: width < 500 });
+    const page = await context.newPage();
+    const failures = [];
+    page.on("pageerror", error => failures.push("page error: " + error.message));
+    const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+    if (slow === "creation") await page.route(url => url.pathname === "/api/conversations", async route => { if (route.request().method() === "POST") await delay(900); await route.continue(); });
+    if (slow === "view") await page.route(url => /^\/api\/conversations\/[^/]+\/view$/.test(url.pathname), async route => { await delay(900); await route.continue(); });
+    if (declare === "refused") await page.route("**/api/client/declare", route => route.fulfill({ status: 403, contentType: "application/json", body: JSON.stringify({ error: { code: "forbidden", message: "refused" } }) }));
+    if (declare === "failed") await page.route("**/api/client/declare", route => route.abort("connectionreset"));
+    if (declare === "silent") await page.route("**/api/client/declare", () => new Promise(() => undefined));  // never answered
+    const chats = [];
+    page.on("request", request => { if (new URL(request.url()).pathname === "/api/chat") chats.push(request.postDataJSON()); });
+    try {
+      await page.goto(base, { waitUntil: "domcontentloaded" });
+      await page.getByTestId("auth-login").fill(person);
+      await page.getByTestId("auth-password").fill(password);
+      await page.getByTestId("auth-submit").click();
+      await page.getByTestId("chat-view").waitFor();
+      if (width < 500) await page.getByTestId("toggle-sidebar").click();  // the list is behind the menu button on a phone
+      const before = providerRequests.length;
+      const message = `Immediate send ${label}`;
+      await page.getByTestId("new-conversation").click();
+      if (width < 500) await page.getByTestId("toggle-sidebar").click();
+      await page.fill('[data-testid="chat-input"]', message);
+      const started = Date.now();
+      await page.click('[data-testid="send-chat"]');
+      const answered = page.locator('[data-testid="message"][data-role="assistant"] .body').filter({ hasText: expectedAnswer });
+      await answered.first().waitFor({ timeout: answerWithinMs }).catch(async error => {
+        throw new Error(`${label}: no answer within ${answerWithinMs} ms (${error.message.split("\n")[0]}); chat requests ${JSON.stringify(chats)}; ${failures.join("; ")}; note: ${await page.getByTestId("send-queued").count() ? await page.getByTestId("send-queued").innerText() : "none"}; field: ${JSON.stringify(await page.inputValue('[data-testid="chat-input"]'))}; send enabled: ${await page.getByTestId("send-chat").isEnabled().catch(() => "n/a")}`);
+      });
+      await delay(300);  // a second request would have shown by now
+      assert.equal(providerRequests.length, before + 1, `${label}: the provider gets exactly one request`);
+      assert.equal(chats.length, 1, `${label}: one chat request leaves the page`);
+      const conversations = await (await context.request.get(base + "/api/conversations")).json();
+      assert.equal(conversations.length, 1, `${label}: the message went into the conversation just made, not into another or a new one`);
+      assert.equal(chats[0].conv_id, conversations[0].id, `${label}: the request names that conversation`);
+      assert.equal(chats[0].message, message, `${label}: the text as typed`);
+      if (declare !== "ok") assert.equal("client_id" in chats[0], false, `${label}: without a declaration the send goes without a client id`);
+      const messages = await (await context.request.get(`${base}/api/conversations/${conversations[0].id}/messages`)).json();
+      assert.deepEqual(messages.map(row => row.role), ["user", "assistant"], `${label}: the person's message once, one answer`);
+      assert.equal((await page.locator('[data-testid="message"][data-role="user"]').count()), 1, `${label}: shown once`);
+      assert.equal(await page.getByTestId("send-queued").count(), 0, `${label}: the waiting note is gone`);
+      assert.deepEqual(failures, [], `${label}: no page errors`);
+      return Date.now() - started;
+    } finally {
+      await context.close();
+    }
+  }
+
+  await check("New conversation, then Send at once: a message typed while the conversation is made, or while its view loads, goes once, into it (desktop and 390x800)", async () => {
+    const took = [];
+    for (const [width, height] of [[1280, 800], [390, 800]])
+      for (const slow of ["creation", "view", "none"])
+        took.push(`${width}/${slow}: ${await walk({ width, height, slow, label: `${width}-${slow}` })} ms`);
+    console.log("[first-steps-ui] answered after " + took.join("; "));
+  });
+
+  await check("a declaration of the devices that is refused, fails or never answers does not hold the first send back (390x800)", async () => {
+    const took = [];
+    for (const declare of ["refused", "failed", "silent"])
+      took.push(`${declare}: ${await walk({ width: 390, height: 800, slow: "none", declare, label: `declaration-${declare}` })} ms`);
+    console.log("[first-steps-ui] answered after " + took.join("; "));
+  });
+
   complete.complete();
-  console.log(`[first-steps-ui] ${groups.length}/3 groups passed`);
+  console.log(`[first-steps-ui] ${groups.length}/5 groups passed`);
 } finally {
   if (browser) await browser.close().catch(() => undefined);
   await stopChild(server).catch(() => undefined);
-  mock?.kill("SIGTERM");
+  mock?.close();
+  mock?.closeAllConnections?.();
   rmSync(root, { recursive: true, force: true });
 }

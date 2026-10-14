@@ -25,6 +25,9 @@ export function clientIdentity(store?: KeyValueStore): string {
   return made;
 }
 
+/** How long a send waits for the declaration of the devices before it goes without one (ms). A preset: the constructor takes another. */
+export const DECLARE_TIMEOUT_MS = 4000;
+
 /** The declaration of this client to the kernel, made lazily: only when something the person started may need the devices (the first
  *  chat send of the page), and again only when what the browser can do has changed since (the payload differs - a permission was
  *  given or taken away) or the kernel's validity of the last one has run out. Never in the background: opening the page, a profile,
@@ -35,13 +38,16 @@ export class ClientSession {
   private readonly kind: string;
   private readonly label: string;
   private readonly now: () => number;
+  /** How long a send waits for the declaration (ms); after that it goes without a client id. 0 waits without a bound. */
+  private readonly declareTimeoutMs: number;
   private chain: PendingText | null = null;
   /** The payload of the last declaration the kernel answered (accepted or refused); an unanswered one (offline) is tried again. */
   private sent = "";
   readonly id: string;
   last: ClientDeclaration | null = null;
 
-  constructor(options: { actions: ActionsApi | undefined; host: DeviceHost; id: string; label?: string; now?: () => number }) {
+  constructor(options: { actions: ActionsApi | undefined; host: DeviceHost; id: string; label?: string; now?: () => number; declareTimeoutMs?: number }) {
+    this.declareTimeoutMs = options.declareTimeoutMs ?? DECLARE_TIMEOUT_MS;
     this.actions = options.actions;
     this.host = options.host;
     this.id = options.id;
@@ -55,11 +61,21 @@ export class ClientSession {
   ensure(force = false): PendingText {
     const previous = this.chain;
     const run = (async () => {
-      if (previous) await previous;
-      return this.declareIfChanged(force);
+      if (previous) await this.bounded(previous);
+      return this.bounded(this.declareIfChanged(force));
     })();
     this.chain = run;
     return run;
+  }
+
+  /** The declaration never holds a send back: when it does not answer in time (or fails) the answer is "" - no client id - and the
+   *  send goes on; a late answer still settles the session for the next send. */
+  private bounded(work: PendingText): PendingText {
+    if (!(this.declareTimeoutMs > 0)) return work.catch(() => "");
+    return new Promise<string>((resolve) => {
+      const timer = setTimeout(() => resolve(""), this.declareTimeoutMs);
+      work.then((value) => { clearTimeout(timer); resolve(value); }, () => { clearTimeout(timer); resolve(""); });
+    });
   }
 
   private expired(): boolean {

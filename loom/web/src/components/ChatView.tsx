@@ -6,6 +6,7 @@ import type { UserProfileHost } from "../api/onboarding-host";
 import { conversationViewMessages, messageCan, type ConversationView } from "../api/conversation-view";
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
+import { queueReason, queueStep, useCreationInFlight, VIEW_LOADING_REASON, type QueuedSend } from "../context/send-queue";
 import UsagePendingBlock from "./UsagePendingBlock";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
 import ClientStepBlock from "./ClientStepBlock";
@@ -149,6 +150,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   [convId, conversationView, viewFailure, sourceBusy, blockWithoutSourceHistory]);
   const gateTexts = useMemo(() => sendGateTexts(sendCatalog.feature, gate), [sendCatalog.feature, gate]);
   const gateDescriptionId = useId();
+  // A send typed while the conversation is still being made, or while its view loads, waits and is sent once when it can be; it is never
+  // dropped. The text stays in the field the whole time; a conversation that does not load says so and keeps the text.
+  const creating = useCreationInFlight();
+  const queuedRef = useRef<QueuedSend | null>(null);
+  const [queuedNote, setQueuedNote] = useState<"waiting" | "failed" | null>(null);
   const [channels, setChannels] = useState(() => storedString("channels", "[]"));
   const [scanLimit, setScanLimit] = useState(() => storedString("scanLimit", "10000"));
   const [counterEvidence, setCounterEvidence] = useState(() => storedBool("counterEvidence", false));
@@ -306,6 +312,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
     const text = input.trim();
+    if (mode === "send" && !forced && requestOverride === null && text !== "" && !stream) {
+      if (queuedRef.current) return;  // already waiting: the text goes once
+      if (queueReason({ convId, creating, gate }) !== null) {
+        queuedRef.current = { convId };
+        setQueuedNote("waiting");
+        return;
+      }
+    }
     // Only a user choice or a transient integrity condition refuses; the reason is shown (R43).
     if (gate.blocked) { setError(gateTexts.blocked); return; }
     if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
@@ -390,6 +404,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       refreshShared();
     };
     setInput("");
+    setQueuedNote(null);
     setRequestOverride(null);
     setRouteNotes([]);
     currentUserIdRef.current = null;
@@ -464,14 +479,30 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     // that records, takes a picture ...), and again only when what the browser can do has changed: nothing is sent in the background.
     // A request the user wrote by hand (the one-call override) or a re-send of one is sent exactly as it is.
     const composed = !forced && requestOverride === null;
-    void clientSession.ensure().then((id) => {
+    // A declaration that fails, is refused or does not answer never holds the send back: it goes without a client id.
+    void clientSession.ensure().catch(() => "").then((id) => {
       if (!isCurrent()) return;
       if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
-  }, [input, stream, convId, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature,
+  }, [input, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
+
+  // The queued send, each time what it waits for changes: sent once when nothing waits any more, said and kept when the conversation did not load,
+  // dropped (the text stays) when the person went to another conversation.
+  useEffect(() => {
+    const queued = queuedRef.current;
+    if (!queued) return;
+    const step = queueStep(queued, { convId, creating, gate });
+    if (step === "wait") {
+      if (queued.convId === null && convId !== null) queuedRef.current = { convId };  // the conversation was made: this is the one it goes into
+      return;
+    }
+    queuedRef.current = null;
+    if (step === "send") { send("send"); return; }
+    setQueuedNote(step === "failed" ? "failed" : null);
+  }, [convId, creating, gate, send, queuedNote]);
 
   const confirmUsage = useCallback(() => {
     if (!usagePending) return;
@@ -929,6 +960,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </>}
       </details>
 
+      {queuedNote !== null && <p className="send-gate-notice" role="status" data-testid="send-queued" data-state={queuedNote}>
+        {queuedNote === "waiting" ? gateTexts.queuedWaiting ?? VIEW_LOADING_REASON : gateTexts.queuedFailed ?? gate.viewFailure ?? VIEW_LOADING_REASON}</p>}
       {gateTexts.viewFailure !== null && <p className="send-gate-notice" role="status" data-testid="send-notice-view-unavailable"
         data-reason={gate.viewFailure ?? undefined}>{gateTexts.viewFailure}</p>}
       {gateTexts.sourceHistory !== null && <div className="send-gate-notice" role="status" data-testid="send-notice-source-history"
@@ -966,7 +999,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           placeholder={profile?.composer.placeholder ?? "Message Loom…"}
           rows={1}
           data-testid="chat-input"
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => { setInput(e.target.value); setQueuedNote((note) => (note === "failed" ? null : note)); }}
           onKeyDown={(e) => {
             if (supports("chat.send") && shouldSubmit(profile?.composer.submit ?? "enter", { key: e.key, shiftKey: e.shiftKey,
               ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey, isComposing: e.nativeEvent.isComposing })) {
@@ -980,7 +1013,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             Stop
           </button>
         ) : (
-          <button className="primary" onClick={() => send()} data-testid="send-chat" disabled={!!branchLeaf || Boolean(gate.blocked) || (requestOverride === null && !input.trim()) || !supports("chat.send")}
+          <button className="primary" onClick={() => send()} data-testid="send-chat" aria-busy={queuedNote === "waiting" || undefined}
+            disabled={!!branchLeaf || (Boolean(gate.blocked) && gate.blocked?.reason !== VIEW_LOADING_REASON) || (requestOverride === null && !input.trim()) || !supports("chat.send") || queuedNote === "waiting"}
             title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}
             data-gate-initiator={gate.blocked?.initiator} data-gate-reason={gate.blocked?.reason}>
             Send
