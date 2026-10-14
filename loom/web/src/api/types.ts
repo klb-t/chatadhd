@@ -69,6 +69,8 @@ export interface ChatRequest {
   include_history?: boolean;
   trace_context?: boolean;
   stream?: boolean;
+  /** Takes the offer a rejected proposal made: the sentence it came from is sent as an ordinary message. Value: the proposal's message id. */
+  send_as_message?: string;
 }
 
 // Only fields supported by the native ContextRequest. Omitting text uses the

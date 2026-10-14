@@ -19,8 +19,12 @@ export interface ProposalConfirmation { action?: string; title?: string; reason?
 export interface ProposalParam { name?: string; required?: boolean; given?: boolean; value?: unknown; from?: string; default?: unknown }
 /** A proposal that grows the catalogue (R55): an action, a repeated chain or a group; written to the user's overlay only. */
 export interface ProposalDefinition { kind?: string; id?: string; overlay?: string; node?: string }
+/** What a "no" leaves of the user's sentence: it can still go to the model as an ordinary message (setting intent_routing_on_reject).
+ *  status: open (waiting for the choice), sent (taken), declined (closed); mode: the preset that made the offer. */
+export interface ProposalOffer { action?: string; status?: string; message_id?: string; mode?: string }
 export interface ActionProposal {
   kind?: string;
+  offer?: ProposalOffer | null;
   params?: ProposalParam[];
   definition?: ProposalDefinition | null;
   replaces?: boolean;
@@ -83,6 +87,31 @@ export function proposalState(metadata: Meta | undefined): string | null {
   const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
   if (!proposal || !proposal.status || proposal.status === "pending") return null;
   return proposal.status;
+}
+
+/** An open offer to send a rejected command's sentence as a message: the proposal message that carries it, the sentence's message,
+ *  and whether the setting asks the client to send it at once. */
+export interface OfferView { proposalId: string; sentenceId: string; auto: boolean }
+
+/** The open offer a proposal message carries, or null (answered otherwise, closed, or none was made). */
+export function openOffer(metadata: Meta | undefined, messageId: string): OfferView | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const offer = proposal && proposal.status === "rejected" && proposal.offer ? proposal.offer : null;
+  if (!offer || offer.status !== "open" || text(offer.message_id) === "" || messageId === "") return null;
+  return { proposalId: messageId, sentenceId: text(offer.message_id), auto: offer.mode === "send_as_message" };
+}
+
+/** How an offer ended, for a small line under the proposal: sent or declined; null while open or without an offer. */
+export function offerState(metadata: Meta | undefined): string | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const status = proposal && proposal.offer ? text(proposal.offer.status) : "";
+  return status === "sent" || status === "declined" ? status : null;
+}
+
+/** The chat request that takes an offer. The engine reads the sentence from the conversation; `message` is the same sentence,
+ *  for the transports that require one. */
+export function offerRequest(offer: OfferView, sentence: string, convId: string) {
+  return { message: sentence, conv_id: convId, send_as_message: offer.proposalId };
 }
 
 export interface ProducedView { target: string; forms: string[]; content: string; runNode: string }
@@ -237,5 +266,29 @@ export function proposalTexts(feature: PresentationFeature | null, answer: Pendi
     rejected: say("rejected"),
     failed: (reason) => say("answer_failed", { reason }) ?? reason,
     status: (state) => say("status_" + state),
+  };
+}
+
+export interface OfferTexts {
+  /** The button: send the sentence as a message. */
+  send: string | null;
+  hint: string | null;
+  failed: (reason: string) => string;
+  /** The line for an offer that ended: sent or declined. */
+  state: (state: string) => string | null;
+}
+
+/** The words of the offer, from the catalog; without one the machine names are shown. */
+export function offerTexts(feature: PresentationFeature | null): OfferTexts {
+  const say = (id: string, parameters: Row = {}): string | null => {
+    if (!feature) return null;
+    try { return featureMessage(feature, id, parameters); }
+    catch { return null; }
+  };
+  return {
+    send: say("offer"),
+    hint: say("offer_hint"),
+    failed: (reason) => say("offer_failed", { reason }) ?? reason,
+    state: (state) => say("offer_" + state),
   };
 }

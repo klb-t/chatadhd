@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { PresentationFeature } from "../onboarding/presentation.mjs";
-import { proposalTexts, proposalView, type PendingAnswer } from "../context/action-proposal";
+import { offerTexts, proposalTexts, proposalView, type OfferView, type PendingAnswer } from "../context/action-proposal";
 
 /** A command from the conversation window waiting for the user's answer (R54): what will run, the estimate,
  *  what the rules ask, and the two ways to answer. Never an error state; nothing has been executed. */
@@ -26,6 +26,24 @@ export default function ActionProposalBlock({ feature, answer, busy, failure, on
         data-testid={testId + "-confirm"}>{texts.confirm ?? answer.receiptId}</button>
       <button type="button" disabled={busy || !view.answerable} onClick={onReject}
         data-testid={testId + "-reject"}>{texts.reject ?? answer.runId}</button>
+      {failure && <p role="alert" data-testid={testId + "-failure"}>{texts.failed(failure)}</p>}
+    </div>
+  );
+}
+
+/** What a "no" leaves of the user's sentence: nothing went to the model, and one choice sends it as an ordinary message.
+ *  Shown under the dropped proposal, in the message of the proposal itself. */
+export function ProposalOffer({ feature, offer, busy, failure, onSend, testId }: {
+  feature: PresentationFeature | null; offer: OfferView; busy?: boolean; failure?: string | null;
+  onSend: () => void; testId: string;
+}) {
+  const texts = useMemo(() => offerTexts(feature), [feature]);
+  return (
+    <div className="pill warn" role="group" data-testid={testId} aria-live="polite"
+      data-proposal-id={offer.proposalId} data-sentence-id={offer.sentenceId}>
+      {texts.hint && <p data-testid={testId + "-hint"}>{texts.hint}</p>}
+      <button type="button" className="primary" disabled={busy} onClick={onSend}
+        data-testid={testId + "-send"}>{texts.send ?? offer.proposalId}</button>
       {failure && <p role="alert" data-testid={testId + "-failure"}>{texts.failed(failure)}</p>}
     </div>
   );

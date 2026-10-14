@@ -226,3 +226,56 @@ test('a proposal that grows the catalogue says what it writes and where, in both
   const replaces = a.proposalTexts(feature, a.pendingAnswer({ action_proposal: { ...proposal, replaces: true } }), a.proposalView(a.pendingAnswer({ action_proposal: { ...proposal, replaces: true } })));
   assert.equal(replaces.replaces, en.rule_replaces);
 });
+
+test('a rejected command offers its sentence as a message: one open offer, one request, the states that follow (P12)', () => {
+  const rejected = { ...proposal, status: 'rejected', offer: { action: 'send_as_message', status: 'open', message_id: 'm_sentence', mode: 'offer' } };
+  assert.equal(a.pendingAnswer({ action_proposal: rejected }), null, 'a dropped command asks nothing');
+  const open = a.openOffer({ action_proposal: rejected }, 'm_proposal');
+  assert.deepEqual(open, { proposalId: 'm_proposal', sentenceId: 'm_sentence', auto: false });
+  assert.deepEqual(a.openOffer({ action_proposal: { ...rejected, offer: { ...rejected.offer, mode: 'send_as_message' } } }, 'm_proposal'),
+    { proposalId: 'm_proposal', sentenceId: 'm_sentence', auto: true });
+  // sent, declined, none, or a proposal that is not rejected: nothing to take
+  for (const offer of [{ ...rejected.offer, status: 'sent' }, { ...rejected.offer, status: 'declined' }, null, undefined, { status: 'open' }]) {
+    assert.equal(a.openOffer({ action_proposal: { ...rejected, offer } }, 'm_proposal'), null);
+  }
+  assert.equal(a.openOffer({ action_proposal: { ...rejected, status: 'executed' } }, 'm_proposal'), null);
+  assert.equal(a.openOffer({ action_proposal: rejected }, ''), null);
+  assert.equal(a.openOffer(undefined, 'm'), null);
+  assert.equal(a.offerState({ action_proposal: { ...rejected, offer: { ...rejected.offer, status: 'sent' } } }), 'sent');
+  assert.equal(a.offerState({ action_proposal: { ...rejected, offer: { ...rejected.offer, status: 'declined' } } }), 'declined');
+  assert.equal(a.offerState({ action_proposal: rejected }), null, 'an open offer is not an ended one');
+  assert.equal(a.offerState({}), null);
+  // the request takes the offer by the proposal's message id; the engine reads the sentence from the conversation
+  assert.deepEqual(a.offerRequest(open, 'Streść tę rozmowę', 'c_1'), { message: 'Streść tę rozmowę', conv_id: 'c_1', send_as_message: 'm_proposal' });
+});
+
+test('the offer has words in both languages, and a machine-name fallback without a catalog', () => {
+  assert.ok(en.offer && pl.offer && en.offer_hint && pl.offer_hint && en.offer_sent && pl.offer_sent && en.offer_declined && pl.offer_declined && en.offer_failed && pl.offer_failed);
+  const texts = a.offerTexts(feature);
+  assert.equal(texts.send, en.offer);
+  assert.equal(texts.hint, en.offer_hint);
+  assert.equal(texts.state('sent'), en.offer_sent);
+  assert.equal(texts.state('declined'), en.offer_declined);
+  assert.equal(texts.state('open'), null);
+  assert.equal(texts.failed('offline'), en.offer_failed.replace('{{reason}}', 'offline'));
+  const bare = a.offerTexts(null);
+  assert.equal(bare.send, null);
+  assert.equal(bare.failed('offline'), 'offline');
+});
+
+test('the offer block is a button in the proposal message; busy disables it; a failure is shown', () => {
+  const offer = { proposalId: 'm_proposal', sentenceId: 'm_sentence', auto: false };
+  const html = renderToStaticMarkup(createElement(block.ProposalOffer, { feature, offer, testId: 'o', onSend: () => undefined }));
+  assert.match(html, /data-testid="o"/);
+  assert.match(html, /data-proposal-id="m_proposal"/);
+  assert.match(html, /data-sentence-id="m_sentence"/);
+  assert.match(html, new RegExp('data-testid="o-send"[^>]*>' + en.offer));
+  assert.ok(html.includes(en.offer_hint));
+  assert.doesNotMatch(html, /disabled/);
+  const busy = renderToStaticMarkup(createElement(block.ProposalOffer, { feature, offer, busy: true, failure: 'offline', testId: 'o', onSend: () => undefined }));
+  assert.equal((busy.match(/disabled/g) || []).length, 1);
+  assert.match(busy, /role="alert"/);
+  assert.ok(busy.includes('offline'));
+  const bare = renderToStaticMarkup(createElement(block.ProposalOffer, { feature: null, offer, testId: 'o', onSend: () => undefined }));
+  assert.ok(bare.includes('m_proposal'));
+});
