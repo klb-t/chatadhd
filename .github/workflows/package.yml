@@ -309,7 +309,10 @@ jobs:
       # The same build deploy/install.sh does on a VM (release preset, server + web), but into an archive.
       - name: Build the archive
         env:
-          CHATADHD_CMAKE_ARGS: -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache "-DCMAKE_EXE_LINKER_FLAGS=-static-libstdc++ -static-libgcc"
+          CHATADHD_CMAKE_ARGS: -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          # install.sh word-splits CHATADHD_CMAKE_ARGS, so a flag list with spaces goes through LDFLAGS,
+          # which CMake reads into CMAKE_EXE_LINKER_FLAGS on the first configure.
+          LDFLAGS: -static-libstdc++ -static-libgcc
         run: |
           set -euo pipefail
           version="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
