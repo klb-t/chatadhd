@@ -34,7 +34,9 @@ trap finish EXIT
 
 # the APK must carry the emulator's ABI (package.yml builds arm64-v8a only unless asked for x86_64)
 abi="$(adb shell getprop ro.product.cpu.abi | tr -d '\r')"
-if ! unzip -l "$APK" | grep -q " lib/$abi/libloom_jni\.so$"; then
+# Read the whole listing first: with pipefail, `unzip | grep -q` fails when grep exits early and unzip gets SIGPIPE.
+apk_listing="$(unzip -l "$APK")"
+if ! grep -q " lib/$abi/libloom_jni\.so$" <<<"$apk_listing"; then
   echo "ERROR: $APK has no lib/$abi/libloom_jni.so (the emulator is $abi). Build the APK with -Ploom.abis including $abi." >&2
   unzip -l "$APK" | grep "libloom_jni" >&2 || true
   exit 3
@@ -43,9 +45,14 @@ log "install"
 adb install -r -g "$APK" || { echo "ERROR: adb install failed" >&2; exit 3; }
 adb shell pm grant "$PKG" android.permission.POST_NOTIFICATIONS 2>/dev/null || true
 
-# the phone must see the host server before the app is blamed
-adb shell "printf 'GET /api/healthz HTTP/1.0\\r\\n\\r\\n' | nc -w 5 10.0.2.2 $SMOKE_PORT" > "$OUT/phone-healthz.txt" 2>&1 || true
-log "phone -> server healthz: $(head -c 100 "$OUT/phone-healthz.txt")"
+# the phone must reach the host server before the app is blamed (the network of a fresh emulator can come up late):
+# poll a TCP connect to 10.0.2.2 until it works, up to 90 s; only logged, the driver decides what is fatal
+reach=1
+for _ in $(seq 1 45); do
+  if adb shell "nc -w 2 10.0.2.2 $SMOKE_PORT </dev/null >/dev/null 2>&1; echo \$?" | tr -d '\r' | grep -qx 0; then reach=0; break; fi
+  sleep 2
+done
+log "phone -> 10.0.2.2:$SMOKE_PORT tcp connect: $([ "$reach" = 0 ] && echo ok || echo FAILED)"
 
 log "drive the app"
 node "$HERE/drive.mjs"

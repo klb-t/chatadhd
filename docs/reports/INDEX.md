@@ -918,3 +918,8 @@ CTest 223/223 (dev + serwer, Debug); `npm run build`, wszystkie 35 skryptów web
 - `receive_upload`: po przekroczeniu `--max-upload-bytes` reszta ciała jest czytana i odrzucana (plik tymczasowy usunięty), potem 413 — bez RST, który niszczył odpowiedź. Cofnięcie: revert `9dfc02ae`.
 - Ustawienie `--upload-drain-bytes` / `LOOM_SERVER_UPLOAD_DRAIN_BYTES` (preset 64 MiB, 0 = bez limitu): ile bajtów ponad limit serwer dociąga; dalej połączenie jest cięte. Cofnięcie: revert `cd35619a` (dociąganie bez limitu).
 - `server.security`: komunikat asercji z `r.text`, 10 prób na sesji bez retry. Raport: `docs/reports/S2_R23_2026-10-14.md`.
+
+### S2 / R24 + R25 — telefon w emulatorze, podpis kluczem właściciela (2026-10-14)
+
+- R24: `.github/workflows/android-smoke.yml` (ręczny): emulator API 34, serwer z kontami i atrapą przez `10.0.2.2`, logowanie, wiadomość, „streść tę rozmowę” → „tak”, zrzuty + logi jako artefakt. `MainActivity.kt`: debugowanie WebView tylko w buildzie debuggable (potrzebne do sterowania). Cofnięcie: usunąć workflow i `loom/android/smoke/`, cofnąć linię w `MainActivity.kt`. Raport: `docs/reports/S2_R24_2026-10-14.md`.
+- R25: `package.yml` podpisuje APK kluczem wydania, gdy są 4 sekrety `ANDROID_*`; bez nich klucz testowy i artefakt `…-TEST-KEY`; część sekretów = błąd. Klucza nie generujemy za właściciela. Instrukcja w `docs/PIERWSZE_KROKI.md` krok 4. Cofnięcie: usunąć krok `sign` (wraca sam klucz testowy). Raport: `docs/reports/S2_R25_2026-10-14.md`.

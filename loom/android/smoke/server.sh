@@ -31,7 +31,8 @@ case "$cmd" in
       --no-deps --no-systemd --no-caddy --admin-login "$LOGIN" >"$OUT/install.log" 2>&1 || { tail -n 30 "$OUT/install.log" >&2; die "install.sh failed"; }
     BIN="$PREFIX/current/bin/loom-server"
     [ -x "$BIN" ] || die "no $BIN after install"
-    "$BIN" user list --accounts-root "$DATA" | grep -q "[[:space:]]$LOGIN[[:space:]]" || die "account $LOGIN is not listed"
+    users="$("$BIN" user list --accounts-root "$DATA")"
+    grep -q "[[:space:]]$LOGIN[[:space:]]" <<<"$users" || die "account $LOGIN is not listed"
 
     nohup python3 "$DEPLOY/first-steps-provider.py" "$PPORT" "$OUT/provider.jsonl" >"$OUT/provider.log" 2>&1 &
     echo $! > "$OUT/provider.pid"
@@ -53,7 +54,8 @@ case "$cmd" in
     api -X POST "$BASE/api/auth/login" -d "$(python3 -c 'import json,sys;print(json.dumps({"login":sys.argv[1],"password":sys.argv[2]}))' "$LOGIN" "$PASS")" >/dev/null || die "login of $LOGIN failed"
     api -X PATCH "$BASE/api/config" -d "{\"base_url\":\"http://127.0.0.1:$PPORT\",\"default_model\":\"test/first-steps\",\"stream\":true}" >/dev/null || die "PATCH /api/config failed"
     api -X POST "$BASE/api/secrets/api_key" -d "{\"value\":\"$KEY\"}" >/dev/null || die "saving the provider key failed"
-    api "$BASE/api/secrets/api_key/has" | grep -q true || die "the provider key is not visible as set"
+    has="$(api "$BASE/api/secrets/api_key/has")"
+    grep -q true <<<"$has" || die "the provider key is not visible as set"
     api -X POST "$BASE/api/auth/logout" -d '{}' >/dev/null 2>&1 || true
     rm -f "$JAR"
     cat > "$OUT/smoke.env" <<ENV
