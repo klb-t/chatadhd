@@ -389,6 +389,23 @@ class MemoryRunStore final : public RunStore {
     const std::string id = json::get_string(run, "id");
     if (!docs_.count(id)) order_.push_back(id);
     docs_[id] = run;
+    log_.push_back(Checkpoint{++seq_, run});
+    return {};
+  }
+  Result<std::vector<Checkpoint>> checkpoints_since(std::int64_t after_seq, std::size_t limit) override {
+    std::lock_guard lk(mu_);
+    std::vector<Checkpoint> out;
+    for (const auto& cp : log_)
+      if (cp.seq > after_seq && out.size() < limit) out.push_back(cp);
+    return out;
+  }
+  Result<std::optional<Json>> load_index() override {
+    std::lock_guard lk(mu_);
+    return index_;
+  }
+  Status save_index(const Json& snapshot) override {
+    std::lock_guard lk(mu_);
+    index_ = snapshot;
     return {};
   }
   Result<std::optional<Json>> load(std::string_view run_id) override {
@@ -417,6 +434,9 @@ class MemoryRunStore final : public RunStore {
   std::mutex mu_;
   std::map<std::string, Json> docs_;
   std::vector<std::string> order_;
+  std::vector<Checkpoint> log_;
+  std::int64_t seq_ = 0;
+  std::optional<Json> index_;
 };
 
 }  // namespace

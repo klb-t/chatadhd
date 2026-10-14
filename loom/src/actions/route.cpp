@@ -1359,14 +1359,34 @@ Result<std::string> answer_message(Runtime& rt, const Data& d, const std::string
   return id;
 }
 
+// Is the whole input one of the words of this list of the confirmation lexicon (yes | no | send)?
+bool lexicon_has(const Data& d, const char* which, const std::string& folded) {
+  const Json* list = json::find(d.cfg.at("confirmation"), which);
+  if (!list || !list->is_object()) return false;
+  for (auto lang = list->begin(); lang != list->end(); ++lang)
+    for (const auto& w : strings_of(&lang.value()))
+      if (join(word_tokens(fold(w, d.cfg.at("heuristic").at("fold"))), " ") == folded) return true;
+  return false;
+}
+
+std::string folded_input(const Data& d, const std::string& text) {
+  return join(word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))), " ");
+}
+
 std::string classify_answer(const Data& d, const std::string& text) {
-  const std::string folded = join(word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))), " ");
+  const std::string folded = folded_input(d, text);
   if (folded.empty()) return std::string();
-  const Json& conf = d.cfg.at("confirmation");
   for (const char* which : {"yes", "no"})
-    for (auto lang = conf.at(which).begin(); lang != conf.at(which).end(); ++lang)
-      for (const auto& w : strings_of(&lang.value()))
-        if (join(word_tokens(fold(w, d.cfg.at("heuristic").at("fold"))), " ") == folded) return which;
+    if (lexicon_has(d, which, folded)) return which;
+  return std::string();
+}
+
+// The answer to the offer to send a rejected sentence as a message: "send" (its own words, and the yes words) or "decline" (the no words).
+std::string classify_offer(const Data& d, const std::string& text) {
+  const std::string folded = folded_input(d, text);
+  if (folded.empty()) return std::string();
+  if (lexicon_has(d, "send", folded) || lexicon_has(d, "yes", folded)) return "send";
+  if (lexicon_has(d, "no", folded)) return "decline";
   return std::string();
 }
 
@@ -1451,6 +1471,8 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
                                const std::string& method, const std::string& lang, bool user_said_yes) {
   Json route_doc{{"method", method}};
   Json proposal = build_proposal(d, cmd, route_doc, lang);
+  // The sentence the proposal was read from (a growth offered after a run has none): a no does not lose it (intent_routing_on_reject).
+  if (!text.empty() && !user_id.empty()) proposal["sentence"] = Json{{"message_id", user_id}};
   const bool grows = cmd.contains("emergent");  // a definition the catalogue could grow by: always waits for the user's yes
   std::string assistant_text = grows ? render_emergent(d, d.engine, cmd, proposal, lang) : render_proposal(d, cmd, proposal, lang);
   const bool usable = cmd.value("feasible", false) && cmd.value("runnable", false) && cmd.value("denied", Json::array()).empty();
@@ -1579,19 +1601,91 @@ Json offer_growth(Runtime& rt, Data& d, const std::string& conv_id, const std::s
   return Json{{"message_id", reply->assistant_id}, {"proposal", reply->payload.value("proposal", Json(nullptr))}};
 }
 
-// The user answered a pending proposal with a yes or a no.
-Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, const std::string& answer,
-                                const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
+// ── the sentence behind a rejected proposal (setting intent_routing_on_reject) ───
+
+// offer | send_as_message | drop; a name the profile does not list is its `unknown` preset, no setting is its `active` one.
+std::string on_reject_mode(Runtime& rt, const Data& d) {
+  const Json& cfg = d.cfg.at("on_reject");
+  const Json v = rt.config().get(json::get_string(cfg, "setting"));
+  if (v.is_string() && !v.get<std::string>().empty())
+    return cfg.at("presets").contains(v.get<std::string>()) ? v.get<std::string>() : json::get_string(cfg, "unknown", json::get_string(cfg, "active"));
+  return json::get_string(cfg, "active");
+}
+
+const Message* message_by_id(const std::vector<Message>& msgs, const std::string& id) {
+  for (const auto& m : msgs)
+    if (m.id == id) return &m;
+  return nullptr;
+}
+
+Json offer_of(const Message& proposal) {
+  if (!proposal.metadata.is_object() || !proposal.metadata.contains("action_proposal")) return Json(nullptr);
+  return proposal.metadata["action_proposal"].value("offer", Json(nullptr));
+}
+
+// The messages of one proposal's exchange: the sentence it was read from, the proposal itself, the user's answers to it and
+// the replies that carry its offer. A request that sends the sentence as a message leaves them out of the history.
+std::vector<std::string> exchange_of(const std::vector<Message>& msgs, const std::string& proposal_id, const std::string& source_id) {
+  std::vector<std::string> ids;
+  for (const auto& m : msgs) {
+    bool own = m.id == source_id || m.id == proposal_id;
+    if (!own && m.metadata.is_object())
+      own = json::get_string(m.metadata, "answers") == proposal_id ||
+            json::get_string(m.metadata.value("action_offer", Json::object()), "proposal_message_id") == proposal_id;
+    if (own) ids.push_back(m.id);
+  }
+  return ids;
+}
+
+// The user takes the offer: the sentence is to be sent as an ordinary message. The offer is consumed (status sent), so a second
+// click cannot send it twice; the re-send of the same request after the usage guard held it (`again`) finds it consumed and goes on.
+Result<Resend> take_offer(Runtime& rt, const Data& d, const std::string& conv_id, const std::string& proposal_id, bool again) {
+  LOOM_TRY_ASSIGN(auto msgs, rt.db().get_msgs(conv_id));
+  const Message* proposal = message_by_id(msgs, proposal_id);
+  const Json offer = proposal ? offer_of(*proposal) : Json(nullptr);
+  const std::string lang = proposal ? json::get_string(proposal->metadata.value("action_proposal", Json::object()), "lang", "en") : std::string("en");
+  auto gone = [&](const std::string& why, Errc code) { return Error(code, say(d.cfg, lang, "offer_gone", Json{{"why", why}})); };
+  if (!proposal) return gone("no proposal '" + proposal_id + "' in this conversation", Errc::NotFound);
+  if (!offer.is_object()) return gone("that proposal offers nothing to send", Errc::NotFound);
+  const std::string status = json::get_string(offer, "status");
+  if (status != "open" && !(again && status == "sent")) return gone("the offer is " + status, Errc::AlreadyExists);
+  const std::string source_id = json::get_string(offer, "message_id");
+  const Message* source = message_by_id(msgs, source_id);
+  if (!source || source->text.empty()) return gone("the message '" + source_id + "' is gone", Errc::NotFound);
+  Resend r;
+  r.text = source->text;
+  r.history_skip = exchange_of(msgs, proposal_id, source_id);
+  r.proposal_message_id = proposal_id;
+  r.source_message_id = source_id;
+  if (status == "open")
+    LOOM_TRY(set_metadata(rt, proposal_id, [&](Json& m) { m["action_proposal"]["offer"]["status"] = "sent"; }));
+  return r;
+}
+
+// ── answering a proposal ────────────────────────────────────────────
+
+struct Settled {
+  Json run = nullptr;
+  std::string status;  // the proposal's new status
+  std::string assistant_id, text, type = "action_result";
+  Json payload = Json::object();
+  Json offer = nullptr;
+  bool send_now = false;  // on_reject = send_as_message: the sentence is to be sent as a message now
+};
+
+// Settles the proposal that waits in `proposal_msg` with the answer `run` came back with: its status, the reply (the result, the
+// definition written, or the acknowledgement of a no with the offer to send the sentence as a message), the follow-ups. Shared by the
+// typed yes/no (`user_id` = the user's answer message) and the clients' confirm call (`user_id` empty).
+Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, bool yes, const Result<Json>& run,
+                              const std::string& user_id) {
   Json proposal = proposal_msg.metadata.at("action_proposal");
   const std::string lang = json::get_string(proposal, "lang", "en");
-  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "confirmation"}, {"answers", proposal_msg.id}}));
-  if (emit_start) emit_start(conv_id, user_id);
-  (void)rt.chat().load_conv(conv_id);
-  const bool yes = answer == "yes";
-  Json confirm{{"run_id", proposal.value("run_id", "")}, {"approved", yes}, {"receipt_id", proposal.value("receipt_id", "")}, {"ref", "chat:" + user_id}};
-  auto run = rt.actions().confirm(confirm);
+  const std::string source_id = proposal.value("sentence", Json::object()).value("message_id", "");
+  const std::string cause = user_id.empty() ? source_id : user_id;  // what a definition or a growth offer remembers it came from
   Report rep;
   std::string new_status;
+  Json offer = nullptr;
+  bool send_now = false;
   if (!run) {
     rep.text = say(d.cfg, lang, "proposal_error", Json{{"message", run.error().message}});
     rep.meta = Json{{"run_id", proposal.value("run_id", "")}, {"status", "error"}, {"error", run.error().message}};
@@ -1600,6 +1694,16 @@ Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id
     rep.text = say(d.cfg, lang, "ack_no");
     rep.meta = Json{{"run_id", proposal.value("run_id", "")}, {"status", json::get_string(*run, "status")}};
     new_status = "rejected";
+    // A no drops the command, never the user's sentence: the setting says whether it is offered, sent or left.
+    const std::string mode = on_reject_mode(rt, d);
+    if (!source_id.empty() && mode != "drop") {
+      LOOM_TRY_ASSIGN(auto source, rt.db().get_msg(source_id));
+      if (source && !source->text.empty()) {
+        send_now = mode == "send_as_message";
+        offer = Json{{"action", "send_as_message"}, {"status", "open"}, {"message_id", source_id}, {"mode", mode}};
+        rep.text = say(d.cfg, lang, send_now ? "ack_no_send" : "ack_no_offer");
+      }
+    }
   } else {
     rep = report_of(rt, d, *run, proposal.value("title", ""), lang);
     const std::string st = json::get_string(*run, "status");
@@ -1609,6 +1713,7 @@ Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id
   const Json definition = proposal.value("definition", Json(nullptr));
   const std::string grow_kind = definition.is_object() ? definition.value("kind", "") : std::string();
   const std::string node = definition.is_object() ? definition.value("node", "") : std::string();
+  Json written_view = nullptr;  // what the accepted definition wrote, kept on the proposal so the block can show it and take it back
   if (!grow_kind.empty()) {
     if (new_status == "executed") {
       const Json written = run->value("result", Json::object()).value("data", Json::object());
@@ -1616,14 +1721,28 @@ Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id
       for (const auto& o : written.value("overlays", Json::array())) overlays.push_back(o.get<std::string>());
       rep.text = say(d.cfg, lang, grow_kind == "define_group" ? "defined_group_done" : "defined_done",
                      Json{{"id", definition.value("id", "")}, {"overlay", overlays.empty() ? overlay_file_of(grow_kind) : join(overlays, ", ")}});
+      written_view = Json{{"kind", grow_kind}, {"id", definition.value("id", "")}, {"overlays", overlays.empty() ? Json::array({overlay_file_of(grow_kind)}) : written.value("overlays", Json::array())},
+                          {"entry", grow_kind == "define_group" ? written.value("group", Json(nullptr)) : written.value("entry", Json(nullptr))}};
     } else if (new_status == "rejected" || new_status == "stale") {
       emergent::settle(rt, node, new_status);
     }
   }
-  LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) { m["action_proposal"]["status"] = new_status; }));
+  LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) {
+    m["action_proposal"]["status"] = new_status;
+    if (offer.is_object()) m["action_proposal"]["offer"] = offer;
+    if (written_view.is_object()) m["action_proposal"]["written"] = written_view;
+  }));
   LOOM_TRY_ASSIGN(std::string assistant_id, answer_message(rt, d, conv_id, run ? &*run : nullptr, rep));
+  if (offer.is_object())  // the reply the offer is made in: the words that take it are read while it is the last thing said
+    LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["action_offer"] = Json{{"proposal_message_id", proposal_msg.id}}; }));
   Json payload{{"run", rep.meta}, {"proposal_message_id", proposal_msg.id}, {"proposal_status", new_status}};
-  std::string out_text = rep.text, out_type = "action_result";
+  if (offer.is_object()) payload["offer"] = offer;
+  Settled out;
+  out.run = run ? *run : Json(nullptr);
+  out.status = new_status;
+  out.text = rep.text;
+  out.offer = offer;
+  out.send_now = send_now;
 
   if (grow_kind == "define_action" && new_status == "executed") {
     // The user said yes to the definition and to the command it came from: the new action runs on the element the words were about.
@@ -1638,17 +1757,65 @@ Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id
       c.element = Json{{"id", then->value("element", Json::object()).value("id", "")}};
       c.score = 0.9;
       const Json cmd = evaluate(rt, fresh, c, conv_of(rt, conv_id), lang, std::string());
-      LOOM_TRY_ASSIGN(Reply next, reply_to_command(rt, fresh, conv_id, user_id, std::string(), cmd, "emergent", lang, true));
+      LOOM_TRY_ASSIGN(Reply next, reply_to_command(rt, fresh, conv_id, cause, std::string(), cmd, "emergent", lang, true));
       assistant_id = next.assistant_id;
-      out_text = next.text;
-      out_type = next.type;
+      out.text = next.text;
+      out.type = next.type;
       for (auto it = next.payload.begin(); it != next.payload.end(); ++it) payload[it.key()] = it.value();
     }
   } else if (grow_kind.empty() && new_status == "executed") {
     const std::string action = run->value("request", Json::object()).value("action", "");
-    if (Json follow = offer_growth(rt, d, conv_id, user_id, action, lang); !follow.is_null()) payload["follow_up"] = follow;
+    if (Json follow = offer_growth(rt, d, conv_id, cause, action, lang); !follow.is_null()) payload["follow_up"] = follow;
   }
-  return finish(conv_id, user_id, assistant_id, out_text, out_type, payload);
+  out.assistant_id = assistant_id;
+  out.payload = payload;
+  return out;
+}
+
+// The user answered a pending proposal with a yes or a no.
+Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, const std::string& answer,
+                                const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
+  const Json proposal = proposal_msg.metadata.at("action_proposal");
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "confirmation"}, {"answers", proposal_msg.id}}));
+  if (emit_start) emit_start(conv_id, user_id);
+  (void)rt.chat().load_conv(conv_id);
+  const bool yes = answer == "yes";
+  const auto run = rt.actions().confirm(Json{{"run_id", proposal.value("run_id", "")}, {"approved", yes}, {"receipt_id", proposal.value("receipt_id", "")}, {"ref", "chat:" + user_id}});
+  LOOM_TRY_ASSIGN(Settled settled, settle_answer(rt, d, conv_id, proposal_msg, yes, run, user_id));
+  Outcome out = finish(conv_id, user_id, settled.assistant_id, settled.text, settled.type, settled.payload);
+  if (settled.send_now) {
+    // intent_routing_on_reject = send_as_message: the chat path sends the sentence now, as the message it would have been.
+    auto taken = take_offer(rt, d, conv_id, proposal_msg.id, false);
+    if (taken) {
+      out.handled = false;
+      out.resend = *taken;
+    } else {
+      log::write(log::Level::Debug, "loom.chat_route", "the sentence could not be sent as a message: " + taken.error().message);
+    }
+  }
+  return out;
+}
+
+// The user answered the offer made in the last reply with the words that take it (or close it).
+Result<std::optional<Outcome>> answer_offer(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, const std::string& answer,
+                                            const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "confirmation"}, {"answers", proposal_msg.id}}));
+  if (emit_start) emit_start(conv_id, user_id);
+  (void)rt.chat().load_conv(conv_id);
+  Outcome out;
+  if (answer == "send") {
+    LOOM_TRY_ASSIGN(Resend taken, take_offer(rt, d, conv_id, proposal_msg.id, false));
+    out.conv_id = conv_id;
+    out.user_message_id = user_id;
+    out.resend = std::move(taken);  // handled stays false: the chat path sends it
+    return std::optional<Outcome>(std::move(out));
+  }
+  const std::string lang = json::get_string(proposal_msg.metadata.at("action_proposal"), "lang", "en");
+  LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) { m["action_proposal"]["offer"]["status"] = "declined"; }));
+  const std::string said = say(d.cfg, lang, "offer_declined");
+  LOOM_TRY_ASSIGN(std::string assistant_id, add_message(rt, conv_id, "assistant", said, Json{{"routed", "result"}, {"offer_closed", proposal_msg.id}}, "loom:actions"));
+  return std::optional<Outcome>(finish(conv_id, user_id, assistant_id, said, "action_result",
+                                       Json{{"proposal_message_id", proposal_msg.id}, {"proposal_status", "rejected"}, {"offer", Json{{"status", "declined"}}}}));
 }
 
 }  // namespace
@@ -1657,6 +1824,27 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
                        const std::function<void(const std::string&, const std::string&)>& emit_start) {
   Outcome none;
   LOOM_TRY_ASSIGN(Data d, load_data(rt));
+  std::string conv_id = opts.conv_id.value_or(std::string());
+  if (conv_id.empty())
+    if (auto current = rt.chat().current_conv()) conv_id = current->id;
+
+  // 0. The button of an offer: the sentence of a rejected proposal goes on the chat path as an ordinary message, whatever the routing method.
+  if (!opts.send_as_message.empty()) {
+    auto taken = conv_id.empty() ? Result<Resend>(Error(Errc::NotFound, "no conversation")) : take_offer(rt, d, conv_id, opts.send_as_message, opts.usage_confirmation.has_value());
+    if (!taken) {
+      Outcome failed;
+      failed.handled = true;
+      failed.conv_id = conv_id;
+      const Json err{{"code", std::string(errc_name(taken.error().code))}, {"message", taken.error().message}};
+      failed.chunk = Json{{"type", "error"}, {"code", err["code"]}, {"message", err["message"]}};
+      failed.result = Json{{"error", err}};
+      return failed;
+    }
+    none.conv_id = conv_id;
+    none.resend = std::move(*taken);
+    return none;
+  }
+
   const std::string method = effective_method(rt, d, request);
   if (method == "off") return none;
   // An explicit chat feature (attachments, a re-send with the usage confirmation, ...) is a message.
@@ -1668,11 +1856,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   }
   if (opts.attachments.size() || opts.active_task_spec || opts.knowledge_context || opts.web_search || opts.deep_research || opts.usage_confirmation) return none;
 
-  std::string conv_id = opts.conv_id.value_or(std::string());
-  if (conv_id.empty())
-    if (auto current = rt.chat().current_conv()) conv_id = current->id;
-
-  // 1. The answer to a proposal that waits as the last thing said in this conversation.
+  // 1. The answer to a proposal that waits as the last thing said in this conversation, or to the offer made in the last reply.
   if (!conv_id.empty()) {
     if (auto msgs = rt.db().get_msgs(conv_id); msgs && !msgs->empty()) {
       const Message& last = msgs->back();
@@ -1680,6 +1864,16 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
           json::get_string(last.metadata["action_proposal"], "status") == "pending" && !json::get_string(last.metadata["action_proposal"], "run_id").empty()) {
         const std::string answer = classify_answer(d, text);
         if (!answer.empty()) return answer_proposal(rt, d, conv_id, last, answer, text, emit_start);
+      } else if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("action_offer")) {
+        const Message* proposal = message_by_id(*msgs, json::get_string(last.metadata["action_offer"], "proposal_message_id"));
+        const Json offer = proposal ? offer_of(*proposal) : Json(nullptr);
+        if (offer.is_object() && json::get_string(offer, "status") == "open") {
+          const std::string answer = classify_offer(d, text);
+          if (!answer.empty()) {
+            LOOM_TRY_ASSIGN(std::optional<Outcome> done, answer_offer(rt, d, conv_id, *proposal, answer, text, emit_start));
+            return std::move(*done);
+          }
+        }
       }
     }
   }
@@ -1724,6 +1918,57 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   }
   title_first_exchange(rt, conv_id, text);
   return finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+}
+
+void note_removed(Runtime& rt, const Json& origin) {
+  const std::string conv_id = json::get_string(origin, "conv_id");
+  const std::string node = json::get_string(origin, "node");
+  if (conv_id.empty() || node.empty()) return;
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return;
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("action_proposal")) continue;
+    const Json& p = m.metadata["action_proposal"];
+    if (json::get_string(p, "status") != "executed" || json::get_string(p.value("definition", Json::object()), "node") != node) continue;
+    if (auto st = set_metadata(rt, m.id, [&](Json& meta) {
+          meta["action_proposal"]["status"] = "undone";
+          if (meta["action_proposal"].contains("written")) meta["action_proposal"]["written"]["undone"] = true;
+        }); !st)
+      log::write(log::Level::Debug, "loom.chat_route", "could not mark the proposal as taken back: " + st.error().message);
+  }
+}
+
+Result<Json> confirm(Runtime& rt, const Json& request) {
+  const std::string run_id = json::get_string(request, "run_id");
+  if (run_id.empty()) return rt.actions().confirm(request);
+  // The proposal of a conversation that waits for exactly this run; without one the call is the plain action.
+  auto status = rt.actions().status(Json{{"run_id", run_id}});
+  const std::string conv_id = status ? json::get_string(status->value("request", Json::object()).value("context", Json::object()), "conv_id") : std::string();
+  if (conv_id.empty()) return rt.actions().confirm(request);
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return rt.actions().confirm(request);
+  const Message* waiting = nullptr;
+  for (auto it = msgs->rbegin(); it != msgs->rend() && !waiting; ++it)
+    if (it->role == "assistant" && it->metadata.is_object() && it->metadata.contains("action_proposal") &&
+        json::get_string(it->metadata["action_proposal"], "run_id") == run_id && json::get_string(it->metadata["action_proposal"], "status") == "pending")
+      waiting = &*it;
+  auto loaded = load_data(rt);
+  if (!waiting || !loaded) return rt.actions().confirm(request);
+  Data d = std::move(*loaded);
+  const bool yes = json::get_bool(request, "approved", false);
+  (void)rt.chat().load_conv(conv_id);
+  auto run = rt.actions().confirm(request);
+  if (!run) return run.error();  // a wrong receipt or a run that is gone: the proposal is not settled by a call that did not answer it
+  LOOM_TRY_ASSIGN(Settled settled, settle_answer(rt, d, conv_id, *waiting, yes, run, std::string()));
+  Json out = *run;
+  out["proposal_message_id"] = waiting->id;
+  out["proposal_status"] = settled.status;
+  out["message_id"] = settled.assistant_id;
+  if (settled.offer.is_object()) out["offer"] = settled.offer;
+  if (settled.send_now) out["resend"] = Json{{"proposal_message_id", waiting->id}};
+  if (settled.payload.contains("follow_up")) out["follow_up"] = settled.payload["follow_up"];
+  if (settled.payload.contains("defined")) out["defined"] = settled.payload["defined"];
+  return out;
 }
 
 }  // namespace loom::chat_route

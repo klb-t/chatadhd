@@ -183,6 +183,18 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
         if (const Json* vw = json::find(variants[v], "with"); vw && vw->is_object())
           for (auto it = vw->begin(); it != vw->end(); ++it) merged_with[it.key()] = it.value();
       ++model_calls;
+      if (const std::string family = json::get_string(merged_with, "media"); !family.empty()) {
+        // A recognition call (transcribe, ocr) is priced by its provider by the second or the page; the model registry lists no such price.
+        // Unknown stays unknown: the size of the recording is no count of tokens.
+        reason = "recognition is priced by the provider by duration or by page, which the model registry does not list";
+        Json call{{"step", step.value("id", "")}, {"action", "use_model"}, {"model", nullptr}, {"kind", "media"}, {"media", family}};
+        call["tokens"] = Json{{"input", nullptr}, {"output", nullptr}};
+        call["price"] = Json{{"known", false}, {"why", reason}};
+        call["usd"] = nullptr;
+        money_known = false;
+        calls.push_back(std::move(call));
+        continue;
+      }
       const std::string model = model_of(merged_with, args, default_model);
       const bool text = wants_text_only(merged_with);
       Json call{{"step", step.value("id", "")}, {"action", "use_model"}, {"model", model.empty() ? Json(nullptr) : Json(model)}, {"kind", text ? "text" : "media"}};

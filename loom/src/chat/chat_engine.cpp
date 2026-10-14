@@ -587,6 +587,11 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
       auto compiled = chat::compile_active_task_spec(v);
       if (!compiled) return compiled.error();
       o.active_task_spec = v;
+    } else if (k == "send_as_message") {
+      if (!v.is_string()) return bad();
+      o.send_as_message = v.get<std::string>();
+    } else if (k == "intent_routing_method" || k == "lang" || k == "route_usage_confirmation") {
+      // Read by the conversation window (chat_route.h) from the request itself; not a chat option.
     } else if (k == "usage_confirmation") {
       if (!v.is_object() || !v.contains("approved") || !v["approved"].is_boolean()) return bad();
       o.usage_confirmation = v;
@@ -865,6 +870,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       if (m.status != msg_status::kActive) continue;
       if (capture_native_history) captured_native_history.push_back(native_history_row(m));
       if (!exclude_message_id.empty() && m.id == exclude_message_id) continue;
+      if (!opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), m.id) != opts.history_skip.end()) continue;
       if (refinement_ids.count(m.id)) {
         replaced_ids.push_back(m.id);
         continue;

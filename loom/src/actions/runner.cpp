@@ -5,10 +5,12 @@
 #include "loom/action_overlay.h"
 
 #include <algorithm>
+#include <thread>
 
 #include "loom/action_element.h"
 #include "loom/action_estimate.h"
 #include "loom/action_result.h"
+#include "loom/chat_route.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
@@ -55,7 +57,76 @@ Json usage_pending_of(const llm::VariantResult& r) {
               {"projected", resources}, {"decisions", r.hold.value("decisions", Json(nullptr))}, {"sent", false}};
 }
 
+// A use_model step with `media: asr | ocr` (transcribe, ocr): the recording or the picture of the element goes to the media providers
+// (profile media), which put it on the wire through the one use_model - the adapter of the provider's family, the usage guard, the
+// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the guard holds
+// comes back as the provider's error (the media providers have no way to resume it): the run fails with that reason.
+StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, const std::string& family) {
+  const Json media = settings.value("media", Json::object());
+  const Json kind = media.value(family, Json::object());
+  if (family == "formats" || !kind.is_object() || kind.empty()) return failed(Error(Errc::InvalidArgument, "unknown media kind '" + family + "' in a use_model step"));
+  const std::string part_kind = json::get_string(kind, "part");
+  const llm::Part* input = nullptr;
+  for (const auto& p : c.inputs)
+    if (p.kind == part_kind) { input = &p; break; }
+  if (!input) return failed(Error(Errc::InvalidArgument, "nothing to read: the step takes a " + part_kind + " input"));
+  std::string bytes = input->bytes;
+  if (bytes.empty() && !input->blob_hash.empty()) {
+    auto stored = rt.blobs().read(input->blob_hash);
+    if (!stored) return failed(stored.error());
+    bytes = std::move(*stored);
+  }
+  if (bytes.empty()) return failed(Error(Errc::InvalidArgument, "the " + part_kind + " has no bytes to read"));
+  // The format name the providers know: from the mime type (listed, else its subtype), else the kind's default.
+  std::string format = json::get_string(kind, "default_format");
+  if (!input->mime.empty()) {
+    const std::string mime = input->mime.substr(0, input->mime.find(';'));
+    const std::string listed = json::get_string(media.value("formats", Json::object()), mime);
+    if (!listed.empty()) format = listed;
+    else if (const auto slash = mime.find('/'); slash != std::string::npos && slash + 1 < mime.size()) format = mime.substr(slash + 1);
+  }
+  auto optional_text = [&](const char* key) {
+    const std::string v = json::get_string(c.with, key);
+    return v.empty() ? std::optional<std::string>() : std::optional<std::string>(v);
+  };
+  const auto provider = optional_text("provider");
+  const auto language = optional_text("language");
+
+  Json provenance = Json::array();
+  const std::thread::id caller = std::this_thread::get_id();
+  rt.media().set_provenance_sink([&provenance, caller](const Json& record) {
+    if (std::this_thread::get_id() == caller) provenance.push_back(record);  // another thread's call is not this step's
+  });
+  struct Release {
+    Runtime& rt;
+    ~Release() { rt.media().set_provenance_sink(nullptr); }
+  } release{rt};
+  std::string text;
+  Json data = nullptr;
+  if (family == "asr") {
+    auto done = rt.media().transcribe_bytes(bytes, format, provider, language);
+    if (!done) return failed(done.error());
+    text = done->text;
+    data = done->to_json();
+  } else {
+    auto done = rt.media().ocr_bytes(bytes, format, provider, language);
+    if (!done) return failed(done.error());
+    text = done->text;
+    data = done->to_json();
+  }
+  StepOutcome out;
+  out.state = StepOutcome::State::Ok;
+  llm::Part part;
+  part.kind = "text";
+  part.text = std::move(text);
+  out.parts.push_back(std::move(part));
+  out.data = std::move(data);
+  out.provenance = std::move(provenance);
+  return out;
+}
+
 StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) {
+  if (const std::string media = json::get_string(c.with, "media"); !media.empty()) return run_media(rt, settings, c, media);
   const Json um = settings.value("use_model", Json::object());
   llm::ModelRequest req;
   const Json& with = c.with;
@@ -272,10 +343,11 @@ struct ActionRunner::Loaded {
   ExecutorTable executors;
 };
 
-ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())) {}
+ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_) {}
 ActionRunner::~ActionRunner() = default;
 
 RunStore& ActionRunner::store() { return *store_; }
+SequenceIndex& ActionRunner::sequence_index() { return index_; }
 
 void ActionRunner::install_executors(ExecutorTable& table) {
   Runtime& rt = rt_;
@@ -522,6 +594,7 @@ Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& re
     const std::string node = define ? json::get_string(request.value("provenance", Json::object()), "node")
                                     : json::get_string(done->value("origin", Json::object()), "node");
     emergent::settle(rt_, node, define ? "accepted" : "undone", *done);
+    if (!define) chat_route::note_removed(rt_, done->value("origin", Json::object()));
   }
   return done;
 }

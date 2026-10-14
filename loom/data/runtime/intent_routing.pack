@@ -24,6 +24,16 @@
         "always": {"label": {"en": "Run at once (rules and the x10 confirmation still apply)", "pl": "Od razu (zasady i potwierdzenie ×10 nadal obowiązują)"}}
       }
     },
+    "on_reject": {
+      "setting": "intent_routing_on_reject",
+      "active": "offer",
+      "unknown": "offer",
+      "presets": {
+        "offer": {"label": {"en": "Offer: after a no, ask whether to send the sentence to the model as an ordinary message", "pl": "Propozycja: po „nie” zapytaj, czy wysłać zdanie do modelu jako zwykłą wiadomość"}},
+        "send_as_message": {"label": {"en": "Send: after a no, send the sentence to the model as an ordinary message at once", "pl": "Wyślij: po „nie” od razu wyślij zdanie do modelu jako zwykłą wiadomość"}},
+        "drop": {"label": {"en": "Drop: after a no, the sentence is not sent (it stays in the conversation)", "pl": "Odrzuć: po „nie” zdanie nie jest wysyłane (zostaje w rozmowie)"}}
+      }
+    },
     "emergent": {
       "setting": "emergent_actions",
       "active": "propose",
@@ -50,7 +60,7 @@
         "cost": 1.0,
         "confidence": 0.6
       },
-      "sequences": {"repeat": 3, "max_length": 3, "gap_seconds": 900, "window_runs": 200, "joiner": "_then_"},
+      "sequences": {"repeat": 3, "max_length": 3, "gap_seconds": 900, "window_runs": 200, "joiner": "_then_", "index": {"convs": 64, "snapshot_every": 100, "sources": 16}},
       "groups": {"min_classes": 2, "suffix": "_targets"},
       "node": {"kind": "proposal", "link": "derived_from"}
     },
@@ -234,6 +244,10 @@
       "no": {
         "en": ["no", "n", "nope", "cancel", "stop", "never mind", "nevermind", "drop it", "don't", "do not"],
         "pl": ["nie", "anuluj", "odrzuć", "odrzuc", "odrzucam", "zostaw", "zostaw to", "nie rób tego", "nie rob tego", "stop"]
+      },
+      "send": {
+        "en": ["send as message", "send as a message", "send it as a message", "send it as message", "send as an ordinary message", "send it", "send"],
+        "pl": ["wyślij jako wiadomość", "wyslij jako wiadomosc", "wyślij to jako wiadomość", "wyslij to jako wiadomosc", "wyślij jako zwykłą wiadomość", "wyslij jako zwykla wiadomosc", "wyślij to", "wyslij to", "wyślij", "wyslij"]
       }
     },
     "model": {
@@ -302,6 +316,10 @@
         "result_usage": "The model call is held by the usage guard: its expected usage is far above your recent baseline. Nothing was sent. Confirm it here or in the usage prompt.",
         "result_no_text": "It produced no text.",
         "ack_no": "Dropped. Nothing was executed.",
+        "ack_no_offer": "Dropped. Nothing was executed, and your sentence was not sent to the model. Reply \"send as message\" (or \"yes\") to send it as an ordinary message, or use the button.",
+        "ack_no_send": "Dropped. Nothing was executed. Sending your sentence to the model as an ordinary message.",
+        "offer_declined": "Understood: your sentence stays unsent.",
+        "offer_gone": "That sentence is no longer there to send: {{why}}.",
         "route_failed": "Routing with the model failed ({{message}}); the local method decided instead."
       },
       "pl": {
@@ -360,13 +378,17 @@
         "result_usage": "Wywołanie modelu wstrzymał strażnik zużycia: przewidywane zużycie jest dużo wyższe niż ostatnia wartość bazowa. Nic nie wysłano. Potwierdź tutaj albo w oknie zużycia.",
         "result_no_text": "Nie powstał żaden tekst.",
         "ack_no": "Odrzucone. Nic nie wykonano.",
+        "ack_no_offer": "Odrzucone. Nic nie wykonano, a Twoje zdanie nie poszło do modelu. Odpowiedz „wyślij jako wiadomość” (albo „tak”), żeby wysłać je jako zwykłą wiadomość, albo użyj przycisku.",
+        "ack_no_send": "Odrzucone. Nic nie wykonano. Wysyłam Twoje zdanie do modelu jako zwykłą wiadomość.",
+        "offer_declined": "Rozumiem: Twoje zdanie zostaje niewysłane.",
+        "offer_gone": "Tego zdania nie ma już do wysłania: {{why}}.",
         "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna."
       }
     }
   },
   "value_schema": {
     "type": "object",
-    "required": ["method", "execution", "emergent", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
+    "required": ["method", "execution", "on_reject", "emergent", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
     "properties": {
       "method": {
         "type": "object",
@@ -390,9 +412,21 @@
         },
         "additionalProperties": false
       },
+      "on_reject": {
+        "type": "object",
+        "description": "What the answer \"no\" to a proposal does with the sentence the proposal came from. `setting`/`active`/`presets`: offer (preset: the reply offers to send the sentence to the model as an ordinary message, in the same proposal block and by the words in confirmation.send) | send_as_message (the sentence is sent at once) | drop (it is not sent). `unknown`: the preset used when the setting names none of the presets.",
+        "required": ["setting", "active", "presets"],
+        "properties": {
+          "setting": {"type": "string", "minLength": 1},
+          "active": {"type": "string", "minLength": 1},
+          "unknown": {"type": "string", "minLength": 1},
+          "presets": {"type": "object", "additionalProperties": {"type": "object"}}
+        },
+        "additionalProperties": false
+      },
       "emergent": {
         "type": "object",
-        "description": "The catalogue grows from conversations (R55), always as proposals and never silently. `setting`/`active`/`presets`: off | propose. command_shape: an input that matches no action but has the shape of a command (a verb-like lead word, an element, no question) is offered as the definition of a new action (a composite with one use_model step whose prompt is the user's own instruction; requires inferred from the element's traits among requires_from; the phrase joins the lexicon). sequences: the same chain of actions, each run on the result of the one before, on elements of one class `repeat` times in a row (consecutive within gap_seconds, at most max_length long, read from the last window_runs runs) is offered as one composite. groups: a user-defined action used on min_classes classes that share traits is offered a group (named trait bundle) of what they share. Accepting writes only user overlays; every proposal leaves a node of `node.kind` with links `node.link` to the messages it emerged from.",
+        "description": "The catalogue grows from conversations (R55), always as proposals and never silently. `setting`/`active`/`presets`: off | propose. command_shape: an input that matches no action but has the shape of a command (a verb-like lead word, an element, no question) is offered as the definition of a new action (a composite with one use_model step whose prompt is the user's own instruction; requires inferred from the element's traits among requires_from; the phrase joins the lexicon). sequences: the same chain of actions, each run on the result of the one before, on elements of one class `repeat` times in a row (consecutive within gap_seconds, at most max_length long; the last window_runs occurrences of a chain are counted for each class, kept in an incremental index) is offered as one composite. groups: a user-defined action used on min_classes classes that share traits is offered a group (named trait bundle) of what they share. Accepting writes only user overlays; every proposal leaves a node of `node.kind` with links `node.link` to the messages it emerged from.",
         "required": ["setting", "active", "presets", "command_shape", "naming", "requires_from", "definition", "sequences", "groups", "node"],
         "properties": {
           "setting": {"type": "string", "minLength": 1},
@@ -409,7 +443,9 @@
             "cost": {"type": "number", "minimum": 0}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}, "additionalProperties": false},
           "sequences": {"type": "object", "required": ["repeat", "max_length", "gap_seconds", "window_runs", "joiner"], "properties": {
             "repeat": {"type": "integer", "minimum": 1}, "max_length": {"type": "integer", "minimum": 2}, "gap_seconds": {"type": "integer", "minimum": 0},
-            "window_runs": {"type": "integer", "minimum": 1}, "joiner": {"type": "string", "minLength": 1}}, "additionalProperties": false},
+            "window_runs": {"type": "integer", "minimum": 1}, "joiner": {"type": "string", "minLength": 1},
+            "index": {"type": "object", "description": "The incremental index of completed runs behind the detection (action_index.h): the tail of this many conversations is kept (convs), a snapshot is written to the run log every snapshot_every folded runs (a restart folds only what came after it), and this many messages are remembered per action (sources: what a group offer is derived from).", "properties": {
+              "convs": {"type": "integer", "minimum": 1}, "snapshot_every": {"type": "integer", "minimum": 1}, "sources": {"type": "integer", "minimum": 1}}, "additionalProperties": false}}, "additionalProperties": false},
           "groups": {"type": "object", "required": ["min_classes", "suffix"], "properties": {"min_classes": {"type": "integer", "minimum": 2}, "suffix": {"type": "string"}}, "additionalProperties": false},
           "node": {"type": "object", "required": ["kind", "link"], "properties": {"kind": {"type": "string", "minLength": 1}, "link": {"type": "string", "minLength": 1}}, "additionalProperties": false}
         },
@@ -533,7 +569,8 @@
         "required": ["yes", "no"],
         "properties": {
           "yes": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
-          "no": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
+          "no": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+          "send": {"type": "object", "description": "Words that take an open offer to send the rejected sentence as a message (the yes words do too); the no words close the offer.", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
         },
         "additionalProperties": false
       },

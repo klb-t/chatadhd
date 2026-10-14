@@ -64,6 +64,29 @@ export type Unsubscribe = () => void;
 
 export interface NativeUiRequestOptions { signal?: AbortSignal; }
 
+/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `confirmed` is the user's
+ *  explicit yes to exactly this write (the rules of the scope still apply, a deny is never overridden). */
+export interface OverlayWriteOptions { dry_run?: boolean; confirmed?: boolean; ref?: string; context?: Record<string, unknown> }
+/** A scoped rule or value (rules.set): written only to the user's overlay profiles/action_rules.pack. */
+export interface RuleRequest extends OverlayWriteOptions {
+  scope?: string; scope_id?: string; effect?: string; key?: string; value?: unknown; action?: string;
+  target?: Record<string, unknown>; reason?: string; initiator?: string; locked?: boolean; id?: string;
+}
+export interface RuleDisableRequest extends OverlayWriteOptions { id: string; restore?: boolean }
+export interface RulesListRequest { scope?: string; scope_id?: string; user_only?: boolean; include_disabled?: boolean }
+export interface RulesList { schema?: string; rules: Record<string, unknown>[] }
+/** A new action of the user's own (actions.define): a composite with use_model steps, its phrases and where it came from. */
+export interface DefineActionRequest extends OverlayWriteOptions {
+  id?: string; instruction?: string; steps?: Record<string, unknown>[]; title?: string; requires?: string[];
+  phrases?: Record<string, string[]>; lang?: string; provenance?: Record<string, unknown>;
+}
+/** A named bundle of traits (groups.define). */
+export interface DefineGroupRequest extends OverlayWriteOptions {
+  id?: string; traits?: string[]; label?: unknown; element_match?: unknown; provenance?: Record<string, unknown>;
+}
+/** Takes one of the user's own definitions back out of the overlay (actions.remove, groups.remove). */
+export interface RemoveRequest extends OverlayWriteOptions { id: string }
+
 /** Running actions (R54): the same actions the chat window proposes, reachable without it. */
 export interface ActionsApi {
   run(request: Record<string, unknown>): Promise<ActionRun>;
@@ -72,6 +95,15 @@ export interface ActionsApi {
   cancel(request: { run_id: string; ref?: string }): Promise<ActionRun>;
   status(request: { run_id?: string; list?: boolean; status?: string; conv_id?: string; limit?: number }): Promise<ActionRun>;
   route(request: { text: string; conv_id?: string; method?: string; lang?: string }): Promise<Record<string, unknown>>;
+  /** The user's own rules and definitions (P11). A write is a run that passed the rules of the scope: it may wait for a confirmation
+   *  (answered with `confirm`), and result.data says what was written and where. Only the user's overlays change. */
+  rulesSet(request: RuleRequest): Promise<ActionRun>;
+  rulesDisable(request: RuleDisableRequest): Promise<ActionRun>;
+  rulesList(request?: RulesListRequest): Promise<RulesList>;
+  actionsDefine(request: DefineActionRequest): Promise<ActionRun>;
+  actionsRemove(request: RemoveRequest): Promise<ActionRun>;
+  groupsDefine(request: DefineGroupRequest): Promise<ActionRun>;
+  groupsRemove(request: RemoveRequest): Promise<ActionRun>;
 }
 
 export interface LoomApi {

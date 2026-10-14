@@ -118,7 +118,13 @@ TEST_SUITE("action_results") {
     CHECK(run_n.metadata.at("step") == "a1.s1");
     CHECK(run_n.metadata.at("model") == "test/model");
     CHECK(run_n.metadata.at("adapter") == "openai_chat");
-    CHECK(run_n.metadata.at("usage_receipt_id").is_null());  // nothing was held: no receipt to name
+    // nothing was held, but every admitted call has the number of its usage receipt (operation_id), and the run names the last one
+    const Json call = run_n.metadata.at("steps").at(0).at("calls").at(0);
+    REQUIRE(call.at("operation_id").is_string());
+    CHECK(call.at("operation_id").get<std::string>().rfind("model_usage_", 0) == 0);
+    CHECK(run_n.metadata.at("usage_receipt_id") == call.at("operation_id"));
+    CHECK(run_n.metadata.at("usage_operation_ids") == Json::array({call.at("operation_id")}));
+    CHECK(run_n.metadata.at("usage_receipt_ids").empty());  // the user confirmed nothing
     CHECK(run_n.metadata.at("steps").at(0).at("calls").at(0).at("request_sha256").is_string());
     // References and hashes only: never a secret, never the bytes of a request.
     const std::string everything = run_n.metadata.dump() + form_node.metadata.dump();
