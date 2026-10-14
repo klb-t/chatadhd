@@ -245,7 +245,8 @@ struct TypesVocab {
 };
 // ── expressions (conditions, value ops, predicates) ─────────────────
 template <std::size_t N>
-void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_view (&ops)[N], std::string_view what) {
+void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_view (&ops)[N], std::string_view what,
+                bool target_slot = false) {
   if (!e.is_object() || !e.contains("op")) {
     v.err(ptr, std::string("expected a ") + std::string(what) + " expression {\"op\",\"args\"}");
     return;
@@ -264,11 +265,11 @@ void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_v
     const Json& a = (*args)[i];
     std::string p = idx(ptr + "/args", i);
     if (a.is_object() && a.contains("op")) {
-      check_expr(v, a, p, ops, what);
+      check_expr(v, a, p, ops, what, target_slot);
     } else if (a.is_string()) {
       const std::string s = a.get<std::string>();
       if (!s.empty() && s[0] == '$') {
-        bool ok = false;
+        bool ok = target_slot && s == "$target_slot";
         for (auto pre : kRefPrefixes) ok = ok || s.rfind(pre, 0) == 0;
         if (!ok) v.err(p, "unknown reference '" + s + "'");
       }
@@ -277,7 +278,7 @@ void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_v
         if (it.value().is_string()) {
           const std::string s = it.value().get<std::string>();
           if (!s.empty() && s[0] == '$') {
-            bool ok = false;
+            bool ok = target_slot && s == "$target_slot";
             for (auto pre : kRefPrefixes) ok = ok || s.rfind(pre, 0) == 0;
             if (!ok) v.err(p + "/" + it.key(), "unknown reference '" + s + "'");
           }
@@ -1067,7 +1068,7 @@ void v_morphisms(V& v, const Json& d) {
       v.err(p + "/use", "anchoring morphisms are derived from the domain kinds' roles, not listed");
     }
     for (std::size_t k = 0; k < m->conditions.size(); ++k) check_expr(v, m->conditions[k], idx(p + "/conditions", k), kConditionOps, "condition");
-    if (m->expected) check_expr(v, m->expected->expr, p + "/expected_property/expr", kPredicates, "predicate");
+    if (m->expected) check_expr(v, m->expected->expr, p + "/expected_property/expr", kPredicates, "predicate", true);
   }
 }
 

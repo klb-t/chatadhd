@@ -67,7 +67,7 @@ struct StageContext;
 
 namespace generalize {
 
-inline constexpr std::string_view kGeneralizerVersion = "1";
+inline constexpr std::string_view kGeneralizerVersion = "2";
 
 // A read-only view of one run's epistemic state (what every function works on).
 struct Evidence {
@@ -98,6 +98,8 @@ class ParadigmMatcher {
   // Artifact-type instances for units (brainstorm, specification, ...).
   Result<std::vector<Match>> match_artifacts(const Evidence& ev) const;
   // Cross-subject similarity of filled instances -> analogous_to claims.
+  // All perspective pairs survive with instance identities and the complete
+  // observed-grade evidence used in scoring; a score never chooses a kind.
   Result<std::vector<model::Claim>> analogies(const std::vector<Match>& matches) const;
 
  private:

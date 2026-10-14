@@ -6,6 +6,8 @@
 #include <set>
 
 #include "loom/generalize.h"
+#include "loom/knowledge.h"
+#include "loom/runtime.h"
 #include "test_helpers.h"
 
 using namespace loom;
@@ -135,5 +137,54 @@ TEST_SUITE("generalize_perspectives") {
     ev.entities.push_back(e);
     ev.claims.push_back(check);
     CHECK(unwrap(evaluate_property(*result[0].assessment.expected, result[0], ev)) == model::CheckState::Holds);
+  }
+
+  TEST_CASE("morphism conditions retain their evidence and cannot chain a transfer") {
+    fsutil::TempDir dir;
+    Json morphisms = pack()->file("morphisms/transfer.json");
+    for (auto& m : morphisms["morphisms"]) {
+      if (m["id"] == "m.check.film_music")
+        m["conditions"] = Json::array({Json{{"op", "has_claim"}, {"args", Json::array({"has_purpose"})}}});
+    }
+    LOOM_REQUIRE_OK(fsutil::ensure_dir(dir.path() / "morphisms"));
+    LOOM_REQUIRE_OK(fsutil::write_file(dir.path() / "morphisms/transfer.json", morphisms.dump()));
+    auto configured = unwrap(kb::Pack::load_with_overlay(dir.path()));
+    auto ms = readings();
+    CHECK(unwrap(transfer(*configured, ms)).empty());
+    fill(ms[1], "goal", model::Role::Intent, "has_purpose", "publish a song");
+    auto result = unwrap(transfer(*configured, ms));
+    REQUIRE(result.size() == 1);
+    const auto& premises = result[0].assessment.premises.claims;
+    CHECK(std::find(premises.begin(), premises.end(), ms[1].claims.back().id) != premises.end());
+    ms[1].claims.back().assessment.evidence = model::EvidenceClass::Inferred;
+    ms[1].claims.back().assessment.derivation = model::Derivation{"m.previous", 1, "m.previous", 1};
+    CHECK(unwrap(transfer(*configured, ms)).empty());
+  }
+
+  TEST_CASE("a new pipeline version preserves the older run instead of reusing it") {
+    fsutil::TempDir dir;
+    RuntimeOptions options;
+    options.data_dir = dir.path().string();
+    options.start_workers = false;
+    auto rt = unwrap(Runtime::open(options));
+    knowledge::KnowledgeConfig cfg;
+    cfg.stages = {"generalize"};
+    cfg.llm = "off";
+    Json previous = cfg.fingerprint();
+    previous.erase("pipeline_version");
+    previous["source_contents"] = Json::object();
+    auto old = unwrap(rt->knowledge().store().begin_run(pack()->hash(), previous));
+    LOOM_REQUIRE_OK(rt->knowledge().store().finish_run(old.id, "done", Json{{"historical", true}}));
+    const auto fresh = unwrap(rt->knowledge().run(cfg));
+    REQUIRE(fresh.status == "done");
+    CHECK(fresh.run != old.id);
+    const auto old_after = unwrap(rt->knowledge().store().get_run(old.id));
+    REQUIRE(old_after);
+    CHECK(old_after->inputs == previous);
+    CHECK(old_after->summary == Json{{"historical", true}});
+    const auto repeated = unwrap(rt->knowledge().run(cfg));
+    REQUIRE(repeated.stages.size() == 1);
+    CHECK(repeated.run == fresh.run);
+    CHECK(repeated.stages[0].cache_hit);
   }
 }

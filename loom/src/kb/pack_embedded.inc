@@ -13163,7 +13163,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:continuity_check"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13208,7 +13208,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:mix_check"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13248,7 +13248,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:citation_check"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13293,7 +13293,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:falsifier"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13333,7 +13333,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:render_pass"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13373,7 +13373,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:desired_outcome"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13413,7 +13413,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:screenplay"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13453,13 +13453,13 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:strategy_decision"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
- )LOOMKB",
-    R"LOOMKB(   "confirm_if": [
-     "an observed claim fills the slot"
+    "confirm_if": [
+     "an observed claim fills the )LOOMKB",
+    R"LOOMKB(slot"
     ],
     "refute_if": [
      "the owner states the target does not need it"
@@ -13494,7 +13494,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:section"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13534,7 +13534,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:performer"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13574,7 +13574,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:motif"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13614,7 +13614,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:synthesis"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13654,7 +13654,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:mix"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",
@@ -13694,7 +13694,7 @@ const char* const kPackChunks24[] = {
     "expr": {
      "op": "nonempty",
      "args": [
-      "$slot:track_output"
+      "$target_slot"
      ]
     },
     "rationale": "the target project should have an entity of the analogous kind",

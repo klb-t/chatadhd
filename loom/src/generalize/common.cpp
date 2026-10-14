@@ -935,7 +935,7 @@ bool eval_cond(const Json& expr, const ExprCtx& ctx) {
   }
   if (op == "has_claim") {
     std::string rel = arg(0).is_string() ? arg(0).get<std::string>() : std::string();
-    return !query_claims(ctx, Json{{"predicate", rel}}, false).empty();
+    return !claims_values(query_claims(ctx, Json{{"predicate", rel}}, false), ctx).empty();
   }
   if (op == "has_items") {
     std::string type = arg(0).is_string() ? arg(0).get<std::string>() : std::string();
@@ -944,7 +944,7 @@ bool eval_cond(const Json& expr, const ExprCtx& ctx) {
         if (d.subject == ctx.subject) return true;
       }
     }
-    return !query_claims(ctx, Json{{"predicate", "has_" + type}}, false).empty();
+    return !claims_values(query_claims(ctx, Json{{"predicate", "has_" + type}}, false), ctx).empty();
   }
   if (op == "principle_active") {
     std::string pid = arg(0).is_string() ? arg(0).get<std::string>() : std::string();

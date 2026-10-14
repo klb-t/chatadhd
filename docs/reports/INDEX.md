@@ -652,3 +652,14 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 - Otwarte: odbiorcy (media, analiza, czat) jeszcze nie czytają ról (kolejność ASR/OCR dalej z `media.pack`); zespół dwóch
   modeli analizy niepodłączony; brak widoku w ustawieniach web. Raport: `docs/reports/S2_R10_2026-10-13.md`.
   Cofnięcie: revert scalenia R10.
+# B — unnamed structures / perspectives (2026-10-14, candidate branch)
+
+`gpt/implicit-structures-2026-10-14`, base `6c55d469`: first increment keeps
+alternative project-kind pairs in analogy/transfer, records all contributing
+premises, and binds reverse morphism expectations to their actual destination.
+Pipeline v8 fingerprints new computations separately; old runs are preserved.
+Reversible implementation decisions and current gates are in
+[implicit-structures-2026-10-14.md](implicit-structures-2026-10-14.md).
+Scoped 33/33, 277 native cases / 7697 assertions, guard PASS. Full integration
+matrix pending; main remains Claude's. Revert the product increment to restore
+the earlier computation; never delete historical runs to downgrade.

@@ -341,6 +341,9 @@ Json KnowledgeConfig::fingerprint() const {
   j.erase("out_dir");
   j.erase("force");
   j.erase("stages");
+  // A changed engine must not append new interpretations to an old run with
+  // the same source/pack. Old runs remain queryable under their original IDs.
+  j["pipeline_version"] = kPipelineVersion;
   return j;
 }
 
