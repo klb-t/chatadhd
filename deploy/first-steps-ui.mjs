@@ -3,7 +3,7 @@
 // logowanie, klucz dostawcy w Ustawieniach, piec sprawdzen z okienka rozmowy. Uruchamia go first-steps-check.sh --ui.
 // Wejscie (zmienne srodowiskowe): FS_BASE FS_LOGIN FS_PASS FS_PROVIDER FS_KEY FS_PROVIDER_LOG [FS_SHOTS=katalog na zrzuty]
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, readFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const env = name => process.env[name] ?? (() => { throw new Error("brak " + name); })();
@@ -144,6 +144,7 @@ try {
 } catch (e) {
   await shot("blad").catch(() => {});
   console.error(e);
+  if (shots) writeFileSync(path.join(shots, "blad-zdarzenia.txt"), trace.join("\n") + "\n");
   console.error("--- ostatnie zdarzenia strony ---\n" + trace.slice(-60).join("\n"));
   console.error("--- tekst pola rozmowy ---\n" + await page.getByTestId("chat-input").inputValue().catch(() => "?"));
   console.error("--- przycisk wysylania ---\n" + await page.getByTestId("send-chat").evaluate(b => b.outerHTML).catch(() => "brak (moze 'Stop')") +
