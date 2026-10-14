@@ -58,6 +58,26 @@ TEST_SUITE("chat_engine") {
     CHECK(env.transport.requests().empty());
   }
 
+  TEST_CASE("P16: a send that names no conversation, after the remembered one was deleted, starts a new one instead of failing on a foreign key") {
+    Env env;
+    for (int i = 0; i < 2; ++i)
+      env.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    REQUIRE(engine.send("first", opts));
+    const auto gone = engine.current_conv();
+    REQUIRE(gone);
+    REQUIRE(env.db->delete_conv(gone->id));
+    auto again = engine.send("second", opts);
+    REQUIRE(again);
+    const auto now = engine.current_conv();
+    REQUIRE(now);
+    CHECK(now->id != gone->id);
+    CHECK(unwrap(env.db->get_msgs(now->id)).size() == 2);  // the person's words and the answer, in the new conversation
+    CHECK(unwrap(env.db->get_msgs(now->id)).front().text == "second");
+  }
+
   TEST_CASE("golden: non-streaming chat request bytes are pinned") {
     Env env;
     env.cfg.set("system_prompt", "Golden system prompt.");

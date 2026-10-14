@@ -584,6 +584,30 @@ async function main() {
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-04-knowledge.png") });
     });
     await phone.close();
+
+    // P16: the very first message of a page at the width of a phone (390x800) is answered. A new page is the first send of that page (its lazy
+    // device declaration happens right before it); the reply is the test double's, so the assertion is on the exact text. S2 saw one such
+    // first message go unanswered once; ten runs of this (and thirty in first-steps-ui.mjs) did not reproduce it.
+    await step("phone 390x800: the first message of a page is answered, exactly once, ten times", async () => {
+      for (let run = 1; run <= 10; run += 1) {
+        const narrow = await browser.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
+        try {
+          const narrowPage = await narrow.newPage();
+          await narrowPage.goto(serverBase, { waitUntil: "domcontentloaded" });
+          await narrowPage.waitForSelector('[data-testid="chat-input"]');
+          const before = await narrowPage.locator('[data-testid="message"][data-role="assistant"]').count();
+          await narrowPage.fill('[data-testid="chat-input"]', `Hello from a phone, run ${run}`);
+          await narrowPage.click('[data-testid="send-chat"]');
+          await narrowPage.waitForFunction((count) => document.querySelectorAll('[data-testid="message"][data-role="assistant"]').length === count + 1
+            && !document.querySelector('[data-testid="streaming-message"]'), before, { timeout: 15000 });
+          const reply = await narrowPage.locator('[data-testid="message"][data-role="assistant"]').last().locator(".body").innerText();
+          assert(reply.trim() === "Hello from the mock model! Streaming works end to end.", `run ${run}: the exact reply of the model double, got: ${reply}`);
+          assert(await narrowPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `run ${run}: no horizontal overflow at 390 px`);
+        } finally {
+          await narrow.close();
+        }
+      }
+    });
   } finally {
     if (browser) await browser.close().catch(() => {});
     server.kill("SIGTERM");
