@@ -56,7 +56,7 @@ export function parseNodes(xml) {
     const a = {};
     for (const kv of m[1].matchAll(/([\w:-]+)="([^"]*)"/g)) a[kv[1]] = unesc(kv[2]);
     const b = /\[(\d+),(\d+)\]\[(\d+),(\d+)\]/.exec(a.bounds || "");
-    if (b) { a.cx = (+b[1] + +b[3]) >> 1; a.cy = (+b[2] + +b[4]) >> 1; }
+    if (b) { a.l = +b[1]; a.t = +b[2]; a.r = +b[3]; a.b = +b[4]; a.cx = (+b[1] + +b[3]) >> 1; a.cy = (+b[2] + +b[4]) >> 1; }
     nodes.push(a);
   }
   return nodes;
@@ -83,9 +83,19 @@ async function connectScreen() {
   await until("URL typed into the field", () => find(dump(), n => /EditText/.test(n.class) && n.text === URL_), 15, 500);
   // the soft keyboard may cover the button; BACK closes only the keyboard while it is shown
   if (/mInputShown=true/.test(adb("shell", "dumpsys", "input_method"))) adb("shell", "input", "keyevent", "KEYCODE_BACK");
-  const box = await waitNode("plain-HTTP checkbox", n => /CheckBox/.test(n.class));
-  if (box.checked !== "true") tap(box);
-  await until("plain-HTTP checkbox ticked", () => find(dump(), n => /CheckBox/.test(n.class) && n.checked === "true"), 10, 500);
+  // The checkbox label is long (several lines) and the box is its left edge: tap there, re-dump after every try,
+  // scroll the form when the box is off-screen, and log what the dump says (state, bounds) so a failure explains itself.
+  const [sw, sh] = (/(\d+)x(\d+)/.exec(adb("shell", "wm", "size")) || [0, 1080, 2400]).slice(1).map(Number);
+  let ticked = false;
+  for (let attempt = 1; attempt <= 5 && !ticked; attempt++) {
+    const box = await waitNode("plain-HTTP checkbox", n => /CheckBox/.test(n.class));
+    log(`native: checkbox try ${attempt}: checked=${box.checked} enabled=${box.enabled} bounds=${box.bounds} screen=${sw}x${sh}`);
+    if (box.checked === "true") { ticked = true; break; }
+    if (box.b > sh - 40 || box.t < 0) { adb("shell", "input", "swipe", String(sw >> 1), String((sh * 3) >> 2), String(sw >> 1), String(sh >> 2), "300"); continue; }
+    adb("shell", "input", "tap", String(box.l + Math.min(60, (box.r - box.l) >> 1)), String(Math.min(box.cy, box.t + 60)));
+    ticked = await until("plain-HTTP checkbox ticked", () => find(dump(), n => /CheckBox/.test(n.class) && n.checked === "true"), 4, 500).then(() => true, () => false);
+  }
+  if (!ticked) throw new Error("the plain-HTTP checkbox could not be ticked (see drive.log: bounds/state of every try)");
   shot("connection-filled");
   tap(await waitNode("'Check and save' button", n => /Button/.test(n.class) && /Check and save/i.test(n.text)));
   // success = the chooser finishes and MainActivity shows a WebView; failure = the status text stays on the screen

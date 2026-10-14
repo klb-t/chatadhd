@@ -152,8 +152,9 @@ jobs:
           set -euo pipefail
           apk=loom/android/app/build/outputs/apk/debug/app-debug.apk
           test -s "$apk"
-          unzip -l "$apk" | grep -q " lib/x86_64/libloom_jni\.so$" || { echo "::error::no x86_64 libloom_jni.so in the APK"; exit 1; }
-          unzip -l "$apk" | grep -qE ' assets/web/assets/.+\.js$' || { echo "::error::the real web bundle is not in the APK"; exit 1; }
+          lst="$(unzip -l "$apk")"   # whole listing first: with pipefail an early grep -q would SIGPIPE unzip
+          grep -q " lib/x86_64/libloom_jni\.so$" <<<"$lst" || { echo "::error::no x86_64 libloom_jni.so in the APK"; exit 1; }
+          grep -qE ' assets/web/assets/.+\.js$' <<<"$lst" || { echo "::error::the real web bundle is not in the APK"; exit 1; }
           "$ANDROID_HOME/build-tools/34.0.0/aapt2" dump badging "$apk" | grep -E "^package:|^sdkVersion|^native-code"
 
       - name: Upload the APK
