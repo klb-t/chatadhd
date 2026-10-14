@@ -622,8 +622,11 @@ Result<Json> ActionRunner::client_capabilities(const Json& request) {
   if (declaration.is_null()) {
     auto profile = RuntimeProfile::load("client_devices", rt_.paths().root);
     Json out{{"client_id", id}, {"known", false}};
-    if (profile)
-      if (const Json* t = json::find(profile->values().value("texts", Json::object()), "unknown_client")) out["message"] = *t;
+    if (profile) {
+      // value() returns a copy: bind it before pointing into it (a pointer into the temporary dangles after the initializer)
+      const Json texts = profile->values().value("texts", Json::object());
+      if (const Json* t = json::find(texts, "unknown_client")) out["message"] = *t;
+    }
     return out;
   }
   Json out = declaration;
