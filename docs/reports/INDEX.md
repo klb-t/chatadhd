@@ -862,3 +862,10 @@ Lokalna replika `deploy/first-steps-check.sh` (serwer z kontami, atrapa dostawcy
 - `deploy/first-steps-provider.py` zgłasza zużycie proporcjonalne do rozmiaru żądania (stałe 20 tokenów dawało fałszywe wstrzymanie ×10). Cofnięcie: przywrócić stałe `prompt_tokens`.
 - `deploy/first-steps-ui.mjs`: akceptuje tytuł „Streść”; przy błędzie zapisuje ślad (konsola, żądania /api z odpowiedziami) do `blad-zdarzenia.txt` w katalogu zrzutów. Cofnięcie: usunąć blok śladu.
 - Decyzja: `block_private_hosts` zostaje jak jest (dotyczy tylko trybu kont, odmowa jest widoczna); nie był przyczyną. Raport: `docs/reports/S2_R21_2026-10-14.md`.
+
+### S2 / R15 — macierz CI (2026-10-14, `main` = `516ddc3c`)
+
+- `loom.yml`: ASan `timeout-minutes` 150 (zmierzone: build ok. 25 min + FFI 8 min + CTest ok. 80 min CPU); ccache zapisywany osobnym krokiem także po nieudanym jobie. Cofnięcie: przywrócić 45 i jeden krok `actions/cache`.
+- `loom/tsan.supp` (ładowany przez preset testów `tsan`): tylko procedury WAL-index SQLite i `unixOpen`; wyścigi w kodzie Loom nadal zgłaszane. Cofnięcie: usunąć plik i odwołanie w `CMakePresets.json`.
+- Limity czasu testów pod sanitizerami: `cli.smoke` 900 s, strażnik zawieszenia import_stream skalowany. Cofnięcie: przywrócić 300 s.
+- Raport: `docs/reports/S2_R15_2026-10-14.md`.
