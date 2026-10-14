@@ -27,6 +27,7 @@ coverage records={support:[span],status:"represented|partial|unsupported|ambiguo
 #include "loom/knowledge_candidate_graph.h"
 #include "loom/net/http.h"
 #include "loom/runtime.h"
+#include "loom/path_policy.h"
 #include "loom/semantic_llm.h"
 #include "loom/sqlite.h"
 #include "loom/use_model.h"
@@ -96,6 +97,7 @@ Result<prompts::Contract> resolve_contract(Runtime& rt, const Json& params, bool
   }
   const Json configured_path = rt.config().get("analysis_prompt_dir", (rt.paths().root / "prompts").string());
   if (!configured_path.is_string()) return Error(Errc::InvalidArgument, "analysis_prompt_dir must be a string");
+  LOOM_TRY(rt.path_policy().check(configured_path.get<std::string>(), "analysis_prompt_dir"));
   Json patch = Json::object();
   const Json configured = rt.config().get("analysis_prompt_overrides", Json::object());
   if (!configured.is_object()) return Error(Errc::InvalidArgument, "analysis_prompt_overrides must be an object");

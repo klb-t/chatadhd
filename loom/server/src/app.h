@@ -24,7 +24,11 @@ struct ServerOptions {
   // Non-empty: accounts mode (P1). Users live in <accounts_root>/<accounts_file>, each with its own
   // data dir <accounts_root>/<users_subdir>/<id>/. Empty: single-user mode exactly as before.
   std::string accounts_root;
+  // Largest request body of an ordinary (JSON) route, and of an upload (import, transcribe). Both are checked
+  // against Content-Length before a body byte is read; chunked or unframed bodies are refused. Uploads are
+  // streamed to disk, so 0 (= no limit) for them does not grow memory. 0 for JSON means no limit either.
   size_t max_body_bytes = 64u * 1024 * 1024;
+  size_t max_upload_bytes = 0;
 };
 
 // Owns the LoomContext and the httplib::Server, and wires every /api/*

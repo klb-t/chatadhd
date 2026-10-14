@@ -38,6 +38,12 @@ struct Throttle {
   ThrottleLimit per_login, per_ip;
 };
 
+// Isolation between accounts (R18). See the server_accounts profile for each field.
+struct Isolation {
+  bool confine_paths = true, block_private_hosts = true, csrf_check_origin = true, expose_server_logs = false;
+  std::vector<std::string> path_roots, allow_private_hosts, csrf_allowed_origins;
+};
+
 struct Settings {
   std::string registration;  // open | invite | closed
   std::int64_t session_lifetime_seconds = 0;
@@ -49,6 +55,7 @@ struct Settings {
   std::string accounts_file, users_subdir;
   CookieSettings cookie;
   Throttle throttle;
+  Isolation isolation;
 };
 
 // Effective server_accounts profile (+ <root>/profiles overlay) and the named Argon2id preset.
