@@ -322,6 +322,12 @@ R"loom_onboard({
                 "reject": "Reject",
                 "restored": "Your text is back in the composer.",
                 "rejected": "Rejected. Nothing was sent.",
+                "limit_title": "Spending limit",
+                "limit_explanation": "This message has not been sent: it is held by the spending limit you set. Nothing else is capped; you decide.",
+                "limit_refused_explanation": "This message has not been sent: you set this limit to refuse. Change it in the settings or say \"set a monthly limit ...\".",
+                "limit_confirm": "Send anyway",
+                "limit_dismiss": "OK",
+                "limit_dismissed": "Nothing was sent. Your text is back in the composer.",
                 "confirm_failed": "The confirmation could not be sent ({{reason}})."
               },
               "pl": {
@@ -334,6 +340,12 @@ R"loom_onboard({
                 "reject": "Odrzuć",
                 "restored": "Twój tekst wrócił do pola wiadomości.",
                 "rejected": "Odrzucono. Nic nie wysłano.",
+                "limit_title": "Limit wydatków",
+                "limit_explanation": "Ta wiadomość nie została wysłana: wstrzymał ją ustawiony przez Ciebie limit wydatków. Nic innego nie jest ograniczane; decydujesz Ty.",
+                "limit_refused_explanation": "Ta wiadomość nie została wysłana: ten limit ustawiono tak, by odmawiać. Zmienisz go w ustawieniach albo poleceniem \"ustaw miesięczny limit ...\".",
+                "limit_confirm": "Wyślij mimo to",
+                "limit_dismiss": "OK",
+                "limit_dismissed": "Nic nie wysłano. Twój tekst wrócił do pola wiadomości.",
                 "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
               }
             }
@@ -356,6 +368,27 @@ R"loom_onboard({
               "pl": {
                 "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
                 "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+              }
+            }
+          }
+        },
+        {
+          "id": "presentation.app_shell/v1",
+          "key": "presentation.app_shell",
+          "area": "presentation/app_shell",
+          "revision": 1,
+          "label": "Words of the application shell (the header): the button that opens the navigation on a phone; texts only",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "app_shell",
+            "locales": {
+              "en": {
+                "menu": "Menu",
+                "menu_label": "Open the menu"
+              },
+              "pl": {
+                "menu": "Menu",
+                "menu_label": "Otwórz menu"
               }
             }
           }
@@ -498,6 +531,7 @@ R"loom_onboard({
                 "recording": "Recording: {{seconds}} s",
                 "do_capture_image": "Take the picture",
                 "do_pick_file": "Choose a file",
+                "do_pick_folder": "Choose a folder",
                 "do_clipboard_read": "Read the clipboard",
                 "do_clipboard_write": "Copy to the clipboard",
                 "do_notify": "Show the notification",
@@ -507,6 +541,7 @@ R"loom_onboard({
                 "decline": "Not now",
                 "cancel": "Cancel the run",
                 "sending": "Sending the answer to the kernel...",
+                "uploading": "Sending the files of the folder: {{done}} of {{total}}",
                 "sent": "The answer was sent.",
                 "failed": "The device could not do it ({{reason}}).",
                 "send_failed": "The answer could not be sent ({{reason}}).",
@@ -521,6 +556,7 @@ R"loom_onboard({
                 "recording": "Nagrywanie: {{seconds}} s",
                 "do_capture_image": "Zrób zdjęcie",
                 "do_pick_file": "Wybierz plik",
+                "do_pick_folder": "Wybierz folder",
                 "do_clipboard_read": "Odczytaj schowek",
                 "do_clipboard_write": "Skopiuj do schowka",
                 "do_notify": "Pokaż powiadomienie",
@@ -530,6 +566,7 @@ R"loom_onboard({
                 "decline": "Nie teraz",
                 "cancel": "Anuluj przebieg",
                 "sending": "Wysyłam odpowiedź do jądra...",
+                "uploading": "Wysyłam pliki folderu: {{done}} z {{total}}",
                 "sent": "Odpowiedź wysłana.",
                 "failed": "Urządzenie nie dało rady ({{reason}}).",
                 "send_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
@@ -1068,7 +1105,8 @@ R"loom_onboard({
             "session.pause": "Przerwij",
             "session.sections": "Części kreatora",
             "session.section_label": "{{title}} · {{status}}",
-            "conversation.help": "Prześlij odpowiedzi poniżej. Metoda kreatora podsumuje je i może zadać dalsze pytania; potwierdź lub popraw każdy proponowany fakt przed zapisaniem.",
+)loom_onboard",
+R"loom_onboard(            "conversation.help": "Prześlij odpowiedzi poniżej. Metoda kreatora podsumuje je i może zadać dalsze pytania; potwierdź lub popraw każdy proponowany fakt przed zapisaniem.",
             "conversation.model": "Model kreatora",
             "conversation.provider": "Dostawca",
             "conversation.continue": "Poproś model o podsumowanie i dalsze pytania",
@@ -1099,8 +1137,7 @@ R"loom_onboard({
             "default.disable": "Wyłącz",
             "default.reenable": "Włącz",
             "default.remove_exclusion": "Usuń trwałe wykluczenie",
-)loom_onboard",
-R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
+            "default.exclude": "Wyklucz na stałe",
             "default.clear_override": "Usuń nadpisanie użytkownika",
             "default.accept_proposal": "Przyjmij tę propozycję",
             "default.proposal": "Proponuj nowe domyślne w tym obszarze",
@@ -1563,6 +1600,12 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "reject": "Reject",
             "restored": "Your text is back in the composer.",
             "rejected": "Rejected. Nothing was sent.",
+            "limit_title": "Spending limit",
+            "limit_explanation": "This message has not been sent: it is held by the spending limit you set. Nothing else is capped; you decide.",
+            "limit_refused_explanation": "This message has not been sent: you set this limit to refuse. Change it in the settings or say \"set a monthly limit ...\".",
+            "limit_confirm": "Send anyway",
+            "limit_dismiss": "OK",
+            "limit_dismissed": "Nothing was sent. Your text is back in the composer.",
             "confirm_failed": "The confirmation could not be sent ({{reason}})."
           },
           "pl": {
@@ -1575,6 +1618,12 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "reject": "Odrzuć",
             "restored": "Twój tekst wrócił do pola wiadomości.",
             "rejected": "Odrzucono. Nic nie wysłano.",
+            "limit_title": "Limit wydatków",
+            "limit_explanation": "Ta wiadomość nie została wysłana: wstrzymał ją ustawiony przez Ciebie limit wydatków. Nic innego nie jest ograniczane; decydujesz Ty.",
+            "limit_refused_explanation": "Ta wiadomość nie została wysłana: ten limit ustawiono tak, by odmawiać. Zmienisz go w ustawieniach albo poleceniem \"ustaw miesięczny limit ...\".",
+            "limit_confirm": "Wyślij mimo to",
+            "limit_dismiss": "OK",
+            "limit_dismissed": "Nic nie wysłano. Twój tekst wrócił do pola wiadomości.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
           }
         }
@@ -1597,6 +1646,27 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
           "pl": {
             "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
             "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.app_shell/v1",
+      "key": "presentation.app_shell",
+      "area": "presentation/app_shell",
+      "revision": 1,
+      "label": "Words of the application shell (the header): the button that opens the navigation on a phone; texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "app_shell",
+        "locales": {
+          "en": {
+            "menu": "Menu",
+            "menu_label": "Open the menu"
+          },
+          "pl": {
+            "menu": "Menu",
+            "menu_label": "Otwórz menu"
           }
         }
       }
@@ -1739,6 +1809,7 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "recording": "Recording: {{seconds}} s",
             "do_capture_image": "Take the picture",
             "do_pick_file": "Choose a file",
+            "do_pick_folder": "Choose a folder",
             "do_clipboard_read": "Read the clipboard",
             "do_clipboard_write": "Copy to the clipboard",
             "do_notify": "Show the notification",
@@ -1748,6 +1819,7 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "decline": "Not now",
             "cancel": "Cancel the run",
             "sending": "Sending the answer to the kernel...",
+            "uploading": "Sending the files of the folder: {{done}} of {{total}}",
             "sent": "The answer was sent.",
             "failed": "The device could not do it ({{reason}}).",
             "send_failed": "The answer could not be sent ({{reason}}).",
@@ -1762,6 +1834,7 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "recording": "Nagrywanie: {{seconds}} s",
             "do_capture_image": "Zrób zdjęcie",
             "do_pick_file": "Wybierz plik",
+            "do_pick_folder": "Wybierz folder",
             "do_clipboard_read": "Odczytaj schowek",
             "do_clipboard_write": "Skopiuj do schowka",
             "do_notify": "Pokaż powiadomienie",
@@ -1771,6 +1844,7 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "decline": "Nie teraz",
             "cancel": "Anuluj przebieg",
             "sending": "Wysyłam odpowiedź do jądra...",
+            "uploading": "Wysyłam pliki folderu: {{done}} z {{total}}",
             "sent": "Odpowiedź wysłana.",
             "failed": "Urządzenie nie dało rady ({{reason}}).",
             "send_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",

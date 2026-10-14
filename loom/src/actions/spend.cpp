@@ -1,5 +1,6 @@
 // Spending limits per period for action runs. See include/loom/action_spend.h.
 #include "loom/action_spend.h"
+#include "loom/usage_spend.h"
 
 #include <algorithm>
 #include <cctype>
@@ -58,14 +59,6 @@ const Json* find_by_id(const Json& list, const std::string& id) {
     for (const auto& x : list)
       if (json::get_string(x, "id") == id) return &x;
   return nullptr;
-}
-
-std::string stamp(std::time_t t) {
-  std::tm tm{};
-  gmtime_r(&t, &tm);
-  char buf[32];
-  std::strftime(buf, sizeof(buf), "%Y-%m-%d %H:%M:%S", &tm);
-  return buf;
 }
 
 std::string money_text(double v) {
@@ -351,25 +344,12 @@ Result<Json> clear(Config& config, const Json& data, const std::string& period) 
 }
 
 Window window(const Json& data, const std::string& period, std::time_t now) {
-  if (now == 0) now = std::time(nullptr);
-  std::tm tm{};
-  gmtime_r(&now, &tm);
-  std::tm midnight = tm;
-  midnight.tm_hour = midnight.tm_min = midnight.tm_sec = 0;
   std::string kind = "today";
   if (const Json* p = json::find(data, "periods"); p && p->is_array())
     for (const auto& x : *p)
       if (json::get_string(x, "id") == period) kind = json::get_string(x, "kind", "today");
-  std::time_t from = timegm(&midnight);
-  if (kind == "week") {
-    const int since_monday = (tm.tm_wday + 6) % 7;
-    from -= static_cast<std::time_t>(since_monday) * 86400;
-  } else if (kind == "month") {
-    std::tm first = midnight;
-    first.tm_mday = 1;
-    from = timegm(&first);
-  }
-  return Window{stamp(from), stamp(now + 1)};
+  const UsageSpendWindow w = usage_spend_window(kind, now);
+  return Window{w.from, w.to};
 }
 
 Result<Spent> spent_in(const std::filesystem::path& root, const Window& w) {
@@ -386,6 +366,38 @@ Result<Spent> spent_in(const std::filesystem::path& root, const Window& w) {
     out.cost_known = true;
     out.usd = totals["cost_usd"].get<double>();
   }
+  return out;
+}
+
+Json policy_options(const Config& config, const std::filesystem::path& root) {
+  // The preset is no limit: nothing but the setting is looked at (an overlay of the data may name another period or text, so it counts too).
+  const Json raw = config.get("usage_spend_limits", Json::array());
+  std::error_code ec;
+  const bool overlay = std::filesystem::exists(root / "profiles" / "action_run.pack", ec);
+  if ((!raw.is_array() || raw.empty()) && !overlay) return nullptr;
+  const Json data = data_of(root);
+  if (data.empty()) return nullptr;
+  const Stored s = stored(config, data);
+  if (s.entries.empty()) return nullptr;
+  Json limits = Json::array();
+  const Json periods = data.value("periods", Json::array());
+  Json labels = Json::object();
+  for (const auto& p : periods) labels[json::get_string(p, "id")] = p.value("label", Json::object());
+  for (const auto& e : s.entries) {
+    const Json* p = find_by_id(periods, e.period);
+    Json row = entry_json(e);
+    row["kind"] = p ? json::get_string(*p, "kind", "today") : std::string("today");
+    row["limit_usd"] = e.usd();
+    limits.push_back(std::move(row));
+  }
+  // Only the texts the admission renders (every record of the ledger keeps its options, so what is not needed is not carried).
+  Json texts = Json::object();
+  const Json all_texts = data.value("texts", Json::object());
+  for (const char* id : {"already_over", "use_would_exceed", "use_estimate_unknown", "on_deny", "on_notify"})
+    if (const Json* t = json::find(all_texts, id)) texts[id] = *t;
+  Json out{{"limits", limits}, {"period_labels", labels}, {"texts", texts}};
+  for (const char* key : {"model_use", "cost_resources", "spent_resource"})
+    if (const Json* v = json::find(data, key)) out[key] = *v;
   return out;
 }
 
@@ -470,17 +482,24 @@ Result<Json> gates(const std::filesystem::path& root, const Config& config, cons
     g["spend"] = Json{{"period", e.period}, {"limit", entry_json(e)}, {"limit_usd", e.usd()}, {"spent_usd", spent.usd},
                       {"spent_cost_known", spent.cost_known}, {"estimate_usd", estimate_known ? Json(estimate_usd) : Json(nullptr)},
                       {"projected_usd", projected}, {"already_over", already}, {"estimate_bound", bound}};
-    if (e.on_exceed == "notify") {
+    if (e.on_exceed == "notify" || e.on_exceed == "confirm") {
+      // P18: the preview only tells. notify: the call goes on; confirm: the usage ledger asks at the model call, with a receipt (the hint
+      // says so). Neither binds the plan, and a run that starts does not make this gate again (informational).
       g["decision"] = "allow";
       g["status"] = "applicable";
       g["effect"] = "allow";
+      g["informational"] = true;
       Json notice = Json::object();
       for (auto it = reason.begin(); it != reason.end(); ++it) {
         const Json* t = json::find(texts, "on_notify");
-        notice[it.key()] = t ? render(pick(*t, it.key()), Json{{"what", it->get<std::string>()}}) : it->get<std::string>();
+        std::string what = it->get<std::string>();
+        if (e.on_exceed == "confirm")
+          if (const Json* hint = json::find(texts, "confirm_hint")) what += " " + pick(*hint, it.key());
+        notice[it.key()] = t ? render(pick(*t, it.key()), Json{{"what", what}}) : what;
       }
       g["notice"] = notice;
-      g["volatile"] = Json::array({"notice", "spend"});
+      g["reason"] = reason;
+      g["volatile"] = Json::array({"notice", "reason", "spend"});
     } else {
       g["decision"] = e.on_exceed;
       g["status"] = e.on_exceed == "deny" ? "denied" : "needs_confirmation";

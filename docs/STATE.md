@@ -2,33 +2,39 @@
 
 ## 2026-10-14 — S1+S2
 
-Szczegóły techniczne i decyzje: `docs/reports/INDEX.md` (sekcje P9–P15 i S2/R*), wymagania właściciela: `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` (R54, R55).
+Szczegóły techniczne i decyzje: `docs/reports/INDEX.md` (sekcje P9–P18 i S2/R*), wymagania właściciela: `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` (R54, R55).
 
 **Co działa teraz (słowami właściciela)**
 
+- **Pierwsza wiadomość zawsze dostaje odpowiedź albo widoczny powód.** Nic już nie milknie: dostajesz odpowiedź, pytanie o zgodę, odmowę z powodem albo błąd z treścią, a Twój tekst zostaje w polu, gdy nic nie poszło. Wiadomość wysłana zaraz po „Nowa rozmowa” czeka na rozmowę i idzie dokładnie raz.
+- **Pierwsze kroki działają od zera.** Przewodnik „pierwsze kroki” (`docs/PIERWSZE_KROKI.md`) i jego automatyczne sprawdzenie przechodzą na czystym Debianie na GitHubie: instalacja, konto, klucz, pierwsza rozmowa, polecenie z rozmowy.
 - **Graf jest centrum.** Rozmowy, wiadomości, wyniki akcji, urządzenia, adaptery i wybory modeli są węzłami jednego grafu; widok wejściowy pokazuje prawdziwe liczniki, a nie atrapy.
-- **Jedno „użyj modelu”.** Każde miejsce, które woła model (czat, streszczenie, tłumaczenie, analiza, mowa, obraz), idzie tą samą drogą, z tym samym strażnikiem: wzrost zużycia o rząd wielkości (×10) zawsze pyta Ciebie, a koszt w pieniądzach jest pokazany albo uczciwie „nieznany”, nigdy zero.
+- **Jedno „użyj modelu”.** Każde miejsce, które woła model (czat, rozpoznanie polecenia, streszczenie, tłumaczenie, analiza w tle, mowa, obraz), idzie tą samą drogą, z tym samym strażnikiem: wzrost zużycia o rząd wielkości (×10) zawsze pyta Ciebie, a koszt w pieniądzach jest pokazany albo uczciwie „nieznany”, nigdy zero.
+- **Strażnik ×10 nie zatrzymuje drugiej wiadomości.** Dopóki aplikacja nie zna Twojego zwykłego zużycia, uznaje za zwykłą rozsądną wielkość wiadomości, więc po „cześć” następna zwykła wiadomość idzie bez pytania. Naprawdę duży skok nadal pyta. Próg jest ustawieniem, nie regułą.
+- **Limity wydatków na dzień, tydzień i miesiąc.** Ustawiasz je zdaniem („ustaw limit 20 zł na miesiąc”) i sam wybierasz, co się dzieje po przekroczeniu: aplikacja pyta o zgodę, odmawia (z powodem) albo tylko mówi. Limit dotyczy każdego użycia modelu: zwykłej wiadomości, rozpoznania polecenia, analizy w tle i poleceń z rozmowy; plan pokazany w rozmowie mówi z góry, że przekroczy limit. Bez ustawionego limitu nic się nie zmienia.
 - **Akcje na elementach.** O każdej rzeczy (rozmowa, wiadomość, węzeł, nagranie, ustawienie) aplikacja wie, co można z nią zrobić, ile to kosztuje i czy reguły każą Cię zapytać. Własne reguły zapisują się u Ciebie, nigdy w plikach dostarczanych z aplikacją.
-- **Okienko rozmowy robi wszystko.** To, co robisz z paneli, powiesz też w rozmowie, po polsku albo po angielsku, dokładnie albo ogólnikiem: szukanie rozmów, „co jest powiązane z …”, zapamiętywanie i zapominanie, zakładanie, zmiana nazwy i usuwanie rozmów, poprawianie wiadomości z zachowaniem starej wersji, import i eksport, podłączenie Dysku Google, S3 albo WebDAV, wybór modelu do konkretnej pracy (dla jednej rozmowy albo dla Ciebie), „ile wydałem w tym tygodniu”, limit wzrostu zużycia, odświeżenie listy modeli, praca w tle, dziennik. Zdanie, które coś zmienia, aplikacja najpierw pokazuje i wykonuje po Twoim „tak”. Zapytasz „co mogę tu zrobić?” — dostajesz listę po ludzku; „jak to zrobić: …” — wyjaśnienie bez wykonywania; znający składnię mają `/akcja klucz=wartość`.
-- **Katalog rośnie sam.** Gdy powiesz coś, czego aplikacja nie zna, proponuje nową akcję (po „tak” zapisaną u Ciebie), a powtarzane sekwencje proponuje zapamiętać jako jedną.
-- **Urządzenia robi klient.** Mikrofon, aparat, schowek i wybór pliku obsługuje strona albo aplikacja na Androidzie; serwer tylko prosi i czeka na odpowiedź.
+- **Okienko rozmowy robi wszystko, co potrafią panele.** To, co robisz z paneli, powiesz też w rozmowie, po polsku albo po angielsku: szukanie rozmów, „co jest powiązane z …”, zapamiętywanie i zapominanie, zakładanie, zmiana nazwy i usuwanie rozmów, poprawianie wiadomości z zachowaniem starej wersji, import i eksport, podłączenie Dysku Google, S3 albo WebDAV, wybór modelu do konkretnej pracy, „ile wydałem w tym tygodniu”, limity, odświeżenie listy modeli, praca w tle, dziennik. Zdanie, które coś zmienia, aplikacja najpierw pokazuje i wykonuje po Twoim „tak”. „Co mogę tu zrobić?” daje listę po ludzku; „jak to zrobić: …” — wyjaśnienie bez wykonywania.
+- **Archiwum, wiedza i katalog z rozmowy.** „Przeanalizuj ten folder”, „zbuduj wiedzę z tego folderu”, „przejrzyj ten katalog”: bez ścieżki przeglądarka otwiera wybór folderu, jego pliki idą do programu (nie do modelu), a analiza rusza w tle, lokalnie i za darmo, dopóki sam nie dopuścisz modelu. „Jak idzie analiza?” i „przerwij” też są zdaniami.
+- **Katalog rośnie sam.** Gdy powiesz coś, czego aplikacja nie zna, proponuje nową akcję (po „tak” zapisaną u Ciebie), a powtarzane sekwencje proponuje zapamiętać jako jedną. Zdania, które tylko coś stwierdzają („Ocena tej wiadomości jest niska”), nie są już brane za polecenie.
+- **Urządzenia robi klient.** Mikrofon, aparat, schowek, wybór pliku i wybór folderu obsługuje strona albo aplikacja na Androidzie; serwer tylko prosi i czeka na odpowiedź.
 - **ROM.** Pamięć tylko do odczytu, montowana pierwsza: to, co aplikacja wie o sobie.
 - **Porty.** Który model albo dostawca wykonuje którą pracę (streszczenia, tłumaczenia, rozpoznawanie mowy i tekstu) — wybór zapisuje się na właściwym poziomie.
-- **Bezpieczeństwo serwera z kontami** przejrzane i poprawione; limity serwera są ustawieniami; jest wersja serwera dla starszych systemów i ARM. Klucze i hasła nigdy nie przechodzą przez rozmowę: wpisujesz je w Ustawieniach, a rozmowa mówi, które pole otworzyć.
+- **Telefon w emulatorze Androida działa.** Na GitHubie aplikacja instaluje się w emulatorze, łączy z serwerem, loguje, odpowiada na wiadomość i wykonuje „streść tę rozmowę” po „tak” (przebieg `android-smoke` 38602445745 zielony). To emulator, nie prawdziwy telefon.
+- **Bezpieczeństwo serwera z kontami** przejrzane i poprawione; limity serwera są ustawieniami. Są paczki serwera dla starszych systemów i dla ARM. Klucze i hasła nigdy nie przechodzą przez rozmowę: wpisujesz je w Ustawieniach, a rozmowa mówi, które pole otworzyć.
 - **Pokrycie jest sprawdzane.** Lista wszystkiego, co aplikacja potrafi, jest zapisana jako dane razem z tym, jak to powiedzieć w rozmowie; nowa funkcja bez decyzji „da się z rozmowy / nie z rozmowy, bo …” zatrzymuje bramkę.
 
 **Co otwarte**
 
-- Z rozmowy nie da się jeszcze: pytania strażnika ×10 o analizę w tle (odpowiadasz w jej panelu), potoku archiwum, potoku wiedzy, katalogu zasobów lokalnych, rejestru metod i onboardingu — to wsadowe przebiegi z rozbudowaną konfiguracją, ich mówiona postać nie jest jeszcze zaprojektowana. Logowanie i zmiana hasła są celowo poza rozmową.
-- Limit wydatków na tydzień lub miesiąc („nie więcej niż 10 dolarów”) nie istnieje; jest tylko strażnik wzrostu zużycia (×10, współczynnik do ustawienia z rozmowy).
+- Z rozmowy nie da się jeszcze: oceny, wyboru i nadpisań poszczególnych pozycji katalogu, języka zapytań do wiedzy, rejestru metod i onboardingu — to rozbudowana konfiguracja, której mówiona postać nie jest jeszcze zaprojektowana. Logowanie i zmiana hasła są celowo poza rozmową.
+- Gdy limit odmawia lub pyta przy analizie w tle, pytanie pojawia się w rozmowie (analiza zbiorcza i ponowienia); zwykła analiza wiadomość po wiadomości po prostu przechodzi wtedy na tryb lokalny, bez pytania.
 - Prawdziwa próba z prawdziwym modelem nie była robiona: wszystkie sprawdzenia szły na atrapie serwera modeli.
-- Kod powłoki Androida nie był skompilowany ani uruchomiony na telefonie.
+- Wybór folderu działa w przeglądarce; powłoka Androida go nie ma (wybierasz plik albo wpisujesz ścieżkę). Powłoka Androida buduje się na GitHubie jako paczka APK i przeszła próbę w emulatorze, ale nie była uruchomiona na prawdziwym telefonie.
 
 **Co musisz zrobić Ty**
 
 1. Wstawić ważny klucz OpenRouter do sekretów sieci środowiska — bez niego nie da się sprawdzić niczego z prawdziwym modelem.
-2. Dać prawdziwy telefon na paczkę APK — bez niego nie wiem, czy mikrofon, aparat i wybór pliku działają w powłoce.
-3. Dodać sekret z kluczem podpisu wydania — bez niego paczka Androida nie może być podpisana.
+2. Dodać na GitHubie cztery sekrety z kluczem podpisu wydania (jak to zrobić: `docs/PIERWSZE_KROKI.md`) — bez nich paczka Androida jest podpisana tylko kluczem testowym i nie zainstaluje się jako aktualizacja własnej wersji.
+3. Dać prawdziwy telefon na paczkę APK — emulator nie ma prawdziwego mikrofonu ani aparatu, więc bez telefonu nie wiem, czy mikrofon, aparat i wybór pliku działają w powłoce.
 
 ## 2026-10-12 — S1: wątki T7, T6, T1–T5 scalone, `main` = gałąź robocza
 

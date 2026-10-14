@@ -151,8 +151,11 @@ TEST_SUITE("pipelines_chat") {
       unwrap(policy->complete("op1", Json{{"resources", Json{{"cost_usd", 0.5}}}, {"provenance", "provider_reported"}}));
     }
     f.rt->config().set("usage_spend_limits", Json::array({Json{{"period", "day"}, {"amount", 0.1}, {"currency", "USD"}, {"on_exceed", "deny"}}}));
-    const Json denied = unwrap(f.rt->actions().run(Json{{"action", "archive.run"}, {"element", "application"}, {"args", Json{{"path", f.folder()}, {"llm", "auto"}}}, {"ref", "test"}}));
-    CHECK(denied.at("status") == "denied");
+    // P18: the preview refuses the proposal (nothing would be offered); a run that starts is not gated here - the model calls the pipeline makes
+    // are admitted one by one by the usage ledger, which applies the same limit (the refinement is skipped when it refuses).
+    const Json denied = unwrap(f.rt->actions().preview(Json{{"action", "archive.run"}, {"element", "application"}, {"args", Json{{"path", f.folder()}, {"llm", "auto"}}}}));
+    REQUIRE(denied.at("denied").size() == 1);
+    CHECK(denied.at("denied")[0].at("rule") == "spend_limit:day");
     CHECK(f.rt->actions().pipelines().status("archive").at("state") == "idle");  // nothing started
     const Json local = unwrap(f.rt->actions().preview(Json{{"action", "archive.run"}, {"element", "application"}, {"args", Json{{"path", f.folder()}}}}));
     CHECK(local.at("denied").empty());

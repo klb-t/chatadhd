@@ -3,6 +3,7 @@
 // the engine that does the work (the calls the C ABI makes); what it says back is written from runtime/chat_ops.pack in the language of the run.
 #include "loom/action_ops.h"
 #include "loom/action_spend.h"
+#include "loom/client_blobs.h"
 #include "loom/archive.h"
 #include "loom/catalog.h"
 #include "loom/knowledge.h"
@@ -1219,6 +1220,17 @@ bool pipeline_sources(Ctx& x, Json& out, StepOutcome& failure) {
       }
       out.push_back(one.string());
     }
+    return true;
+  }
+  // The folder the device picked (device.pick_folder, P18): a manifest of the files it uploaded, written as a folder the pipeline can read.
+  for (const auto& part : x.c.inputs) {
+    if (part.kind != "json" || !part.value.is_object() || json::get_string(part.value, "schema") != client_blobs::kFolderManifestSchema) continue;
+    auto folder = client_blobs::materialize_folder(x.rt, part.value);
+    if (!folder) {
+      failure = fail(folder.error());
+      return false;
+    }
+    out.push_back(folder->at("path").get<std::string>());
     return true;
   }
   // The file the device picked: a blob of the store, written where the pipeline can read it (it keeps its own copy; the file stays in tmp/uploads).

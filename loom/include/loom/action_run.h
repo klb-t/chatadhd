@@ -174,8 +174,14 @@ struct InterpreterDeps {
   // Gates beyond those of the rules, made for a plan once it is known (the spending limits of the user: action_spend.h). Same shape as the
   // gates of the rules (decision allow | confirm | deny, status, rule, effect, reason, initiator, id, item, action ...). Keys named in a
   // gate's `volatile` list (numbers that change from minute to minute) are left out of the plan receipt: only the decision is bound.
-  std::function<Result<Json>(const Json& plan, const RunRequest& request)> extra_gates;
+  // `preview` is true when the plan is only being shown (a proposal), false when a run starts: the spending limits are enforced at the
+  // model call by the usage ledger (P18), so they only tell at the preview.
+  std::function<Result<Json>(const Json& plan, const RunRequest& request, bool preview)> extra_gates;
 };
+
+// Whether the condition of a step (`when`) can be told before the run from the arguments alone: 1 it holds, 0 it does not (the step is skipped),
+// -1 it may (it looks at steps, traits or outputs). The plan lists every step; what is shown of it (the steps a device carries out) skips the 0s.
+int condition_decided_by_args(const Json& when, const Json& args);
 
 class Interpreter {
  public:

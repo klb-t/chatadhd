@@ -1,4 +1,4 @@
-import type { DeviceHost, RecorderLike, StreamLike } from "./client-device";
+import type { DeviceHost, PickedFolder, RecorderLike, StreamLike } from "./client-device";
 
 /** The Android shell's JavaScript interface, when the page runs inside it (notifications are the shell's, not the WebView's). */
 interface ShellBridge {
@@ -17,6 +17,37 @@ function chooseFile(accept: string, capture: string): Promise<File | null> {
     input.style.display = "none";
     const done = (file: File | null) => { input.remove(); resolve(file); };
     input.addEventListener("change", () => done(input.files && input.files.length > 0 ? input.files[0] : null));
+    input.addEventListener("cancel", () => done(null));
+    document.body.appendChild(input);
+    input.click();
+  });
+}
+
+/** Whether this browser has a folder chooser: an input with webkitdirectory (Chromium, Firefox, Safari; the Android WebView has none). */
+function hasFolderChooser(): boolean {
+  if (typeof document === "undefined") return false;
+  return "webkitdirectory" in document.createElement("input");
+}
+
+/** Opens the folder chooser of the page and waits for the choice: null when it is closed without one. Paths are relative to the folder. */
+function chooseFolder(): Promise<PickedFolder | null> {
+  return new Promise((resolve) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.setAttribute("webkitdirectory", "");
+    input.style.display = "none";
+    const done = (value: PickedFolder | null) => { input.remove(); resolve(value); };
+    input.addEventListener("change", () => {
+      const list = input.files ? Array.from(input.files) : [];
+      if (list.length === 0) { done(null); return; }
+      const relative = (file: File) => (file as File & { webkitRelativePath?: string }).webkitRelativePath || file.name;
+      const name = relative(list[0]).split("/")[0] || "folder";
+      done({ name, files: list.map((file) => {
+        const full = relative(file);
+        return { path: full.startsWith(name + "/") ? full.slice(name.length + 1) : full, file };
+      }) });
+    });
     input.addEventListener("cancel", () => done(null));
     document.body.appendChild(input);
     input.click();
@@ -99,6 +130,9 @@ export function browserHost(): DeviceHost {
   if (typeof document !== "undefined") {
     host.hasDocument = true;
     host.pickFile = chooseFile;
+    // The Android shell's WebView has the attribute but its file chooser picks files only: there the folder is not declared (the action stays
+    // planned for that client, with its reason, and the sentence asks for a path or an archive file instead).
+    if (hasFolderChooser() && !shell) host.pickFolder = chooseFolder;
   }
   return host;
 }

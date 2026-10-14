@@ -13,6 +13,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "loom/result.h"
 #include "loom/util/json.h"
@@ -40,5 +41,13 @@ Result<Json> read(Runtime& rt, const Json& request);
 // The parts a client brought back with actions.client_result, as typed parts of the run: media name a stored blob (`blob_hash`); text stays
 // text. `origin` says which step of which run asked for them (kept on the graph node and the artifact).
 Result<Json> parts(Runtime& rt, const Json& parts, const Json& origin);
+
+// A folder a client picked (device.pick_folder): the answer is a manifest {schema: loom.folder_manifest/1, name, files: [{path, blob_hash, size?,
+// mime?}]} of files the client uploaded one by one. `materialize_folder` writes them where a pipeline can read them as a folder -
+// <data>/tmp/uploads/folder_<12 hex of the manifest's hash>/<name>/<path> - and answers {path, files, bytes}. Every path of the manifest is
+// relative and stays inside that folder (an absolute path, "..", an empty name or a control character refuses the whole manifest); every
+// blob must be in THIS user's store. Writing it again changes nothing (a file of the same size is kept). No count or size is a limit.
+inline constexpr std::string_view kFolderManifestSchema = "loom.folder_manifest/1";
+Result<Json> materialize_folder(Runtime& rt, const Json& manifest);
 
 }  // namespace loom::actions::client_blobs

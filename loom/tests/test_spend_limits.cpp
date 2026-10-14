@@ -1,6 +1,7 @@
 // P17 2: spending limits per period (the owner's rule: the user decides, a preset is not a rule). The setting `usage_spend_limits` is a list of
-// {period, amount, currency, on_exceed}; the preset is none. Before an action run that calls a model, the runner adds the spend of the period to the
-// estimate of the run and applies `on_exceed`; the x10 guard is separate. The limits are set and read back from the conversation.
+// {period, amount, currency, on_exceed}; the preset is none. P18: the limits are applied by the central admission of the usage ledger to every model
+// use (tests/test_spend_everywhere.cpp); what the action side keeps is the PREVIEW of a plan: the proposal says "this would exceed your limit" (deny:
+// the proposal is refused; confirm and notify: a notice - the asking happens at the model call). The limits are set and read back from the conversation.
 #include <doctest/doctest.h>
 
 #include <ctime>
@@ -166,48 +167,61 @@ TEST_SUITE("spend_limits") {
     CHECK(f.model_calls() == 0);
   }
 
-  TEST_CASE("a limit that is passed becomes a gate of the plan: confirm waits for the yes, deny does not start, notify goes on and says so") {
+  TEST_CASE("a limit that is passed: the preview tells (deny refuses the proposal), the model call is held or refused by the usage ledger") {
     Fixture f;
     f.spend_usd(0.02);
-    // confirm: the day's 0.01 USD is already spent
+    // confirm: the day's 0.01 USD is already spent. The preview only tells (informational: it binds nothing and does not make the run wait)
     f.limits(Json::array({limit("day", 0.01, "confirm")}));
     const Json preview = f.summarise_preview();
     const Json* g = gate_of(preview, "spend:day");
     REQUIRE(g != nullptr);
-    CHECK(g->at("decision") == "confirm");
-    CHECK(g->at("status") == "needs_confirmation");
+    CHECK(g->at("decision") == "allow");
+    CHECK(g->at("status") == "applicable");
+    CHECK(g->at("informational") == true);
     CHECK(g->at("initiator") == "user");
     CHECK(g->at("rule") == "spend_limit:day");
     CHECK(g->at("reason").at("en").get<std::string>().find("already used up") != std::string::npos);
     CHECK(g->at("reason").at("pl").get<std::string>().find("wykorzystany") != std::string::npos);
-    CHECK(preview.at("needs_confirmation").size() == 1);
+    CHECK(g->at("notice").at("en").get<std::string>().find("You will be asked before the model is called") != std::string::npos);
+    CHECK(g->at("notice").at("pl").get<std::string>().find("Zapytam o zgodę") != std::string::npos);
+    CHECK(preview.at("needs_confirmation").empty());
     CHECK(preview.at("runnable") == true);
+    // the run starts; the usage ledger holds its model call with a receipt of its own (reason: the spending limit)
     const Json held = f.summarise_run();
-    CHECK(held.at("status") == "awaiting_confirmation");
+    REQUIRE(held.at("status") == "awaiting_usage");
+    CHECK(held.at("pending").at("kind") == "usage");
+    const Json hold = held.at("pending").at("usage_pending");
+    CHECK(hold.at("status") == "requires_confirmation");
+    CHECK(hold.at("reason_codes") == Json::array({"spend_limit"}));
+    CHECK(hold.at("limits")[0].at("period") == "day");
+    CHECK(hold.at("limits")[0].at("reason").at("en").get<std::string>().find("already used up") != std::string::npos);
     CHECK(f.model_calls() == 0);  // nothing was sent while the limit waits for the user
-    // the yes (with the receipt) goes on
+    // the yes (with the receipt of the hold) goes on
     f.script("A summary.");
-    const Json done = f.summarise_run(Json{{"confirmed", true}, {"receipt_id", preview.at("plan_receipt")}});
+    const Json done = unwrap(f.rt->actions().confirm(Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "test"}}));
     CHECK(done.at("status") == "completed");
     CHECK(f.model_calls() == 1);
 
-    // deny: the run does not start, with the reason and the initiator
+    // deny: the proposal is refused with the reason and the initiator; a run asked for anyway is refused at the model call, nothing is sent
     f.limits(Json::array({limit("day", 0.01, "deny")}));
-    const Json denied = f.summarise_run();
-    CHECK(denied.at("status") == "denied");
-    CHECK(denied.at("error").at("gates").at(0).at("initiator") == "user");
-    CHECK(denied.at("error").at("message").get<std::string>().find("spending limit") != std::string::npos);
+    const Json denied_preview = f.summarise_preview();
+    REQUIRE(denied_preview.at("denied").size() == 1);
+    CHECK(denied_preview.at("denied")[0].at("initiator") == "user");
+    const Json refused = f.summarise_run();
+    CHECK(refused.at("status") == "failed");
+    CHECK(refused.at("error").at("message").get<std::string>().find("spending limit") != std::string::npos);
     CHECK(f.model_calls() == 1);
 
-    // notify: the run goes on, the gate only carries the notice
+    // notify: the run goes on; the preview carries the notice, the decision of the ledger carries it too
     f.limits(Json::array({limit("day", 0.01, "notify")}));
     f.script("Another summary.");
-    const Json noted = f.summarise_run();
-    CHECK(noted.at("status") == "completed");
-    const Json* n = gate_of(noted, "spend:day");
+    const Json noted_preview = f.summarise_preview();
+    const Json* n = gate_of(noted_preview, "spend:day");
     REQUIRE(n != nullptr);
     CHECK(n->at("decision") == "allow");
     CHECK(n->at("notice").at("pl").get<std::string>().find("Uwaga") != std::string::npos);
+    const Json noted = f.summarise_run();
+    CHECK(noted.at("status") == "completed");
     CHECK(f.model_calls() == 2);
   }
 
@@ -267,15 +281,26 @@ TEST_SUITE("spend_limits") {
     }
   }
 
-  TEST_CASE("the receipt binds the decision, not the numbers of the moment: more spend between preview and run does not void the yes") {
+  TEST_CASE("the receipt of the hold binds the decision, not the numbers of the moment: more spend between the hold and the yes does not void it") {
     Fixture f;
     f.spend_usd(0.02);
     f.limits(Json::array({limit("day", 0.01, "confirm")}));
-    const Json preview = f.summarise_preview();
+    const Json held = f.summarise_run();
+    REQUIRE(held.at("status") == "awaiting_usage");
     f.spend_usd(0.01, "op2");  // the ledger moves on
     f.script("A summary.");
-    const Json done = f.summarise_run(Json{{"confirmed", true}, {"receipt_id", preview.at("plan_receipt")}});
+    const Json done = unwrap(f.rt->actions().confirm(Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "test"}}));
     CHECK(done.at("status") == "completed");
+  }
+
+  TEST_CASE("a preview that tells does not change the receipt of a plan that needs the user's yes for another reason") {
+    Fixture f;
+    f.spend_usd(0.02);
+    f.limits(Json::array({limit("day", 0.01, "confirm")}));
+    const Json with_limit = f.summarise_preview();
+    f.limits(Json::array());
+    const Json without = f.summarise_preview();
+    CHECK(with_limit.at("plan_receipt") == without.at("plan_receipt"));
   }
 
   TEST_CASE("from the conversation: set, replace, read back with the spend, clear; the growth limit keeps its sentences") {
@@ -345,8 +370,9 @@ TEST_SUITE("spend_limits") {
     const auto asked = f.input("Summarise this conversation");
     REQUIRE(asked.handled);
     Json p = f.meta(asked).at("action_proposal");
-    CHECK(p.at("needs_confirmation").size() == 1);
+    CHECK(p.at("needs_confirmation").empty());  // it tells; the asking happens at the model call
     CHECK(f.text_of(asked).find("spending limit") != std::string::npos);
+    CHECK(f.text_of(asked).find("asked before the model is called") != std::string::npos);
     f.input("no");
 
     f.limits(Json::array({limit("day", 0.01, "deny")}));

@@ -134,7 +134,8 @@ export default function SemanticStatus({ profileHost }: { profileHost: UserProfi
       </details>
       {status?.usage_pending && api.confirmSemanticUsage && <UsagePendingBlock testId="semantic-usage-pending" busy={busy}
         feature={(() => { try { return resolvePresentationFeature(p, USAGE_PENDING_FEATURE); } catch { return null; } })()}
-        receipt={status.usage_pending} onConfirm={() => void answerUsage(true)} onReject={() => void answerUsage(false)} />}
+        receipt={status.usage_pending} onConfirm={() => void answerUsage(true)}
+        onReject={status.usage_pending.status === "denied" ? undefined : () => void answerUsage(false)} />}
       {status && api.requeueSemantic && (() => {
         const view = semanticQueueView(status);
         const feature = (() => { try { return resolvePresentationFeature(p, SEMANTIC_QUEUE_FEATURE); } catch { return null; } })();

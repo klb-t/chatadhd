@@ -11,6 +11,7 @@
 #include "loom/use_model.h"
 #include "loom/util/base64.h"
 #include "loom/util/ids.h"
+#include "loom/util/sha256.h"
 
 namespace loom::actions::client_blobs {
 
@@ -191,6 +192,83 @@ Result<Json> parts(Runtime& rt, const Json& list, const Json& origin) {
     out.push_back(std::move(part));
   }
   return out;
+}
+
+namespace {
+
+// A path of the manifest as relative segments, or an error: nothing absolute, nothing that climbs, no empty or control-character names.
+Result<std::vector<std::string>> safe_segments(const std::string& raw) {
+  std::string path = raw;
+  std::replace(path.begin(), path.end(), '\\', '/');
+  if (path.empty() || path.front() == '/') return Error(Errc::InvalidArgument, "a path of the folder must be relative: '" + raw + "'");
+  std::vector<std::string> segments;
+  std::size_t start = 0;
+  while (start <= path.size()) {
+    const std::size_t slash = path.find('/', start);
+    const std::string segment = path.substr(start, slash == std::string::npos ? std::string::npos : slash - start);
+    if (segment == "..") return Error(Errc::InvalidArgument, "a path of the folder must stay inside it: '" + raw + "'");
+    if (!segment.empty() && segment != ".") {
+      for (unsigned char c : segment)
+        if (c < 0x20 || c == 0x7f) return Error(Errc::InvalidArgument, "a path of the folder has a control character: '" + raw + "'");
+      segments.push_back(segment);
+    }
+    if (slash == std::string::npos) break;
+    start = slash + 1;
+  }
+  if (segments.empty()) return Error(Errc::InvalidArgument, "a path of the folder is empty: '" + raw + "'");
+  return segments;
+}
+
+// The name of the picked folder as one safe segment ("folder" when it has none).
+std::string folder_name(const std::string& raw) {
+  auto segments = safe_segments(raw.empty() ? std::string("folder") : raw);
+  if (!segments || segments->size() != 1) return "folder";
+  return segments->front();
+}
+
+}  // namespace
+
+Result<Json> materialize_folder(Runtime& rt, const Json& manifest) {
+  if (!manifest.is_object() || json::get_string(manifest, "schema") != kFolderManifestSchema)
+    return Error(Errc::InvalidArgument, "not a folder manifest (" + std::string(kFolderManifestSchema) + ")");
+  const Json* files = json::find(manifest, "files");
+  if (!files || !files->is_array()) return Error(Errc::InvalidArgument, "the folder manifest has no list of files");
+  const std::string hash12 = Sha256::hex(json::canonical(manifest)).substr(0, 12);
+  const fs::path folder = rt.paths().root / "tmp" / "uploads" / ("folder_" + hash12) / folder_name(json::get_string(manifest, "name"));
+  std::int64_t count = 0, bytes = 0;
+  // Check everything before writing anything: a manifest with one bad entry writes nothing.
+  struct Item {
+    fs::path target;
+    std::string hash;
+  };
+  std::vector<Item> items;
+  for (const auto& entry : *files) {
+    if (!entry.is_object()) return Error(Errc::InvalidArgument, "an entry of the folder manifest must be an object");
+    LOOM_TRY_ASSIGN(auto segments, safe_segments(json::get_string(entry, "path")));
+    const std::string hash = json::get_string(entry, "blob_hash");
+    if (!BlobStore::is_valid_hash(hash) || !rt.blobs().has(hash)) return Error(Errc::NotFound, "the blob " + hash + " of '" + json::get_string(entry, "path") + "' is not in the blob store");
+    fs::path target = folder;
+    for (const auto& segment : segments) target /= segment;
+    items.push_back(Item{std::move(target), hash});
+  }
+  std::error_code ec;
+  fs::create_directories(folder, ec);
+  if (ec) return Error(Errc::Io, "cannot create the folder for the picked files: " + ec.message());
+  for (const auto& item : items) {
+    const fs::path source = rt.blobs().local_path(item.hash);
+    const auto size = fs::file_size(source, ec);
+    if (ec) return Error(Errc::Io, "cannot read the blob " + item.hash + ": " + ec.message());
+    fs::create_directories(item.target.parent_path(), ec);
+    if (ec) return Error(Errc::Io, "cannot create a folder for the picked files: " + ec.message());
+    const bool same = fs::is_regular_file(item.target, ec) && fs::file_size(item.target, ec) == size;
+    if (!same) {
+      fs::copy_file(source, item.target, fs::copy_options::overwrite_existing, ec);
+      if (ec) return Error(Errc::Io, "cannot write a picked file: " + ec.message());
+    }
+    ++count;
+    bytes += static_cast<std::int64_t>(size);
+  }
+  return Json{{"path", folder.string()}, {"files", count}, {"bytes", bytes}};
 }
 
 }  // namespace loom::actions::client_blobs

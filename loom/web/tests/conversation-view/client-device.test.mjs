@@ -323,6 +323,59 @@ test('the block shows what the kernel asks, the permission hint, a start control
   assert.match(unknown, /<button[^>]*disabled=""[^>]*data-testid="u-start"/);
 });
 
+// P18: the folder picker. The chooser gives the folder's name and its files with the paths inside it; every file goes up through the blob upload,
+// the answer is one manifest naming them by hash (no bytes in it), and a client without a chooser does not declare the capability.
+test('folders: the capability exists only where the browser has a folder chooser', async () => {
+  const withFolder = await device.detectCapabilities(host({ pickFolder: async () => null }));
+  assert.deepEqual(withFolder.picks_folders, { permission: 'granted', via: 'folder chooser' });
+  assert.equal('picks_folders' in await device.detectCapabilities(host()), false, 'no chooser, no declaration: the action stays planned for this client');
+  assert.equal(device.stepKind({ action: 'device.pick_folder' }), 'folder');
+});
+
+test('folders: every file is uploaded one after the other and the answer is a manifest with hashes, paths and sizes', async () => {
+  const files = [
+    { path: 'plan.md', file: new File(['# plan'], 'plan.md', { type: 'text/markdown' }) },
+    { path: 'sub/deep/ideas.txt', file: new File(['idea'], 'ideas.txt', { type: 'text/plain' }) },
+    { path: 'data.bin', file: new File([new Uint8Array([1, 2, 3])], 'data.bin', { type: '' }) },
+  ];
+  const before = uploads.length;
+  const steps = [];
+  const outcome = await device.runStep(host({ pickFolder: async () => ({ name: 'notes', files }) }), step('device.pick_folder'), load, upload, (done, total) => steps.push([done, total]));
+  assert.equal(outcome.state, 'ok');
+  assert.equal(uploads.length - before, 3, 'one upload per file');
+  assert.deepEqual(uploads.slice(before).map(row => row.name), ['plan.md', 'sub/deep/ideas.txt', 'data.bin'], 'named by the path inside the folder, in order');
+  assert.deepEqual(steps, [[1, 3], [2, 3], [3, 3]], 'the page can say how far it is');
+  assert.equal(outcome.parts.length, 1);
+  assert.equal(outcome.parts[0].kind, 'json');
+  const manifest = outcome.parts[0].value;
+  assert.equal(manifest.schema, device.FOLDER_MANIFEST_SCHEMA);
+  assert.equal(manifest.schema, 'loom.folder_manifest/1');
+  assert.equal(manifest.name, 'notes');
+  assert.deepEqual(manifest.files.map(row => [row.path, row.size, row.mime]), [['plan.md', 6, 'text/markdown'], ['sub/deep/ideas.txt', 4, 'text/plain'], ['data.bin', 3, undefined]]);
+  for (const row of manifest.files) assert.match(row.blob_hash, /^h+/);
+  assert.equal(JSON.stringify(outcome).includes('base64'), false, 'the bytes are not in the answer');
+});
+
+test('folders: closing the chooser declines; a chooser that does not exist is unavailable; a failed upload fails the step with the reason', async () => {
+  assert.equal((await device.runStep(host({ pickFolder: async () => null }), step('device.pick_folder'), load, upload)).state, 'declined');
+  assert.equal((await device.runStep(host({ pickFolder: async () => ({ name: 'empty', files: [] }) }), step('device.pick_folder'), load, upload)).state, 'declined');
+  const none = await device.runStep(host(), step('device.pick_folder'), load, upload);
+  assert.equal(none.state, 'unavailable');
+  const broken = await device.runStep(host({ pickFolder: async () => ({ name: 'x', files: [{ path: 'a.txt', file: new File(['a'], 'a.txt') }] }) }), step('device.pick_folder'), load,
+    async () => { throw new Error('the upload was refused (413)'); });
+  assert.equal(broken.state, 'failed');
+  assert.match(broken.error.message, /413/);
+});
+
+test('folders: the block asks in the words of the catalog, in both languages, and shows how many files are sent', () => {
+  assert.equal(view.clientStepTexts(feature, { action: 'device.pick_folder' }).start, en.do_pick_folder);
+  assert.ok(en.do_pick_folder && pl.do_pick_folder && en.uploading && pl.uploading);
+  assert.notEqual(en.do_pick_folder, pl.do_pick_folder);
+  const texts = view.clientStepTexts(feature, { action: 'device.pick_folder' });
+  assert.equal(texts.uploading(3, 12), en.uploading.replace('{{done}}', '3').replace('{{total}}', '12'));
+  assert.equal(view.clientStepTexts(null, { action: 'device.pick_folder', title: 'Pick a folder' }).start, 'Pick a folder');
+});
+
 // ── the transports ──────────────────────────────────────────────────
 
 const calls = [

@@ -20,6 +20,7 @@
 #include "loom/net/sse.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/usage_policy.h"
+#include "loom/usage_spend.h"
 #include "loom/use_model.h"
 #include "llm/shared_gate.h"
 #include "loom/util/base64.h"
@@ -631,6 +632,7 @@ Json ChatResult::to_json() const {
               {"cancelled", cancelled}};
   if (!context_trace.is_null()) out["context_trace"] = context_trace;
   if (usage_pending) out["usage_pending"] = *usage_pending;
+  if (usage_notices.is_array() && !usage_notices.empty()) out["usage_notices"] = usage_notices;
   return out;
 }
 
@@ -1297,6 +1299,10 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
         {"projected", resources}, {"decisions", sent.hold["decisions"]},
         {"sent", false}, {"user_message_retained", retained},
         {"resend", "repeat the same request with usage_confirmation {approved, receipt_id, ref, operation_id}"}};
+    // P18: a spending limit that holds or refuses has its own reason code and texts (limits, reason_codes); a refusal (denied) cannot be confirmed.
+    const Json limit = usage_limit_reasons(admitted);
+    for (auto it = limit.begin(); it != limit.end(); ++it)
+      if (it.key() != "status") (*paused.usage_pending)[it.key()] = it.value();
     return paused;
   }
 
@@ -1402,6 +1408,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     if (!topics.empty()) metadata["topics"] = topics;
   }
   if (cancelled) metadata["cancelled"] = true;
+  if (sent.notices.is_array() && !sent.notices.empty()) metadata["usage_notices"] = sent.notices;
 
   NewMessage anm;
   anm.conv_id = conv.id;
@@ -1415,6 +1422,8 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
 
   bus_.emit(events::kMsgCreated,
            Json{{"id", asst_mid}, {"text", full_text}, {"conv_id", conv.id}, {"role", "assistant"}});
+  if (sent.notices.is_array() && !sent.notices.empty())
+    bus_.emit(events::kUsageLimitNotice, Json{{"conv_id", conv.id}, {"message_id", asst_mid}, {"notices", sent.notices}});
 
   {
     std::lock_guard lk(mu_);
@@ -1431,6 +1440,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   result.usage = usage;
   result.cancelled = cancelled;
   result.context_trace = std::move(context_trace);
+  result.usage_notices = sent.notices;
 
   // 8. Auto-title from the first exchange.
   auto all_msgs = db_.get_msgs(conv.id);

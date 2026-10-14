@@ -26,6 +26,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/semantic_worker.h"
 #include "loom/settings_fields.h"
+#include "loom/usage_spend.h"
 #include "loom/use_model.h"
 #include "loom/util/time.h"
 #include "loom/util/unicode.h"
@@ -540,6 +541,30 @@ struct Found {
   Hit hit;
 };
 
+// A sentence that says something ABOUT a result ("Ocena tej wiadomości jest niska", "The critique of this message is harsh") is not the command the
+// word in it also names (P18). Data heuristic.statement_guard: `nouns` (the words of the lexicon's stems that are nouns as well as verbs: ocena,
+// krytyka, podsumowanie ...) and `statement_words` (jest, była, wynosi, is, was ...). A phrase that hit on one of those nouns, in a sentence with a
+// statement word, is dropped. A hit on a verb is never dropped ("Oceń tę wiadomość, bo nie jest jasna" is a command), nor a noun that asks for the act
+// ("Zrób ocenę tej wiadomości": no statement word). Lists are languages -> words (folded as the text is); empty lists turn the guard off.
+bool states_something(const Data& d, const std::vector<std::string>& tokens, const Hit& hit) {
+  const Json& h = d.cfg.at("heuristic");
+  const Json* guard = json::find(h, "statement_guard");
+  if (!guard || !guard->is_object() || hit.first >= tokens.size()) return false;
+  const Json& fold_map = h.at("fold");
+  const auto listed = [&](const char* key, const std::string& word) {
+    const Json* lists = json::find(*guard, key);
+    if (!lists || !lists->is_object()) return false;
+    for (auto lang = lists->begin(); lang != lists->end(); ++lang)
+      for (const auto& w : strings_of(&lang.value()))
+        if (fold(w, fold_map) == word) return true;
+    return false;
+  };
+  if (!listed("nouns", tokens[hit.first])) return false;
+  for (std::size_t i = 0; i < tokens.size(); ++i)
+    if (i != hit.first && listed("statement_words", tokens[i])) return true;
+  return false;
+}
+
 std::optional<Found> best_phrase(const Data& d, const std::string& key, const Json& entry, const std::vector<std::string>& tokens) {
   const Json& h = d.cfg.at("heuristic");
   const std::size_t window = static_cast<std::size_t>(json::get_int(h, "window_tokens", 12));
@@ -559,6 +584,7 @@ std::optional<Found> best_phrase(const Data& d, const std::string& key, const Js
     for (const auto& phrase : strings_of(&lang.value())) {
       auto hit = match_phrase(tokens, fold(phrase, h.at("fold")), window, lead);
       if (!hit) continue;
+      if (states_something(d, tokens, *hit)) continue;
       const double score = std::min(1.0, json::get_number(scoring, "base", 0.6) + json::get_number(scoring, "per_word", 0.1) * static_cast<double>(hit->words) -
                                              json::get_number(scoring, "lead_penalty", 0.05) * static_cast<double>(hit->first));
       if (score < json::get_number(scoring, "min_score", 0.5)) continue;
@@ -844,11 +870,27 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   const llm::VariantResult& r = outcome->last();
   if (r.state == llm::State::Held) {
     const Json& admitted = r.hold["decision"];
+    const Json limit = usage_limit_reasons(admitted);
+    // P18: a spending limit that refuses (on_exceed deny) does not stop the message: the routing model is not asked, the local method decides
+    // and the reason is said as a note (the same way as a failed model route). A limit that asks (confirm) holds with a receipt, like x10.
+    if (json::get_string(r.hold, "status") == "denied" && !limit.empty()) {
+      std::string why = "your spending limit does not allow the routing model call";
+      const Json limits = limit.value("limits", Json::array());
+      if (limits.is_array() && !limits.empty()) {
+        const Json reason = limits[0].value("reason", Json::object());  // bound: json::find points into it
+        for (const std::string& key : {lang, std::string("en")})
+          if (const Json* t = json::find(reason, key); t && t->is_string() && !t->get<std::string>().empty()) { why = t->get<std::string>(); break; }
+      }
+      result.error = Error(Errc::Conflict, why);
+      return result;
+    }
     Json resources = Json::object();
     if (const Json* res = json::find(admitted, "resources")) resources = *res;
     result.pending = Json{{"schema", "loom.action_usage_pending/1"}, {"stage", "route_intent"}, {"status", json::get_string(r.hold, "status")},
                           {"operation_id", admitted.value("operation_id", Json(nullptr))}, {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
                           {"baseline_key", admitted.value("baseline_key", Json(nullptr))}, {"projected", resources}, {"sent", false}};
+    for (auto it = limit.begin(); it != limit.end(); ++it)
+      if (it.key() != "status") result.pending[it.key()] = it.value();
     return result;
   }
   if (!r.ok()) {
@@ -1087,6 +1129,8 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   {
     Json client_steps = Json::array();
     for (const auto& step : preview->at("plan").value("steps", Json::array())) {
+      // A step the arguments already switch off (the picker of a file when the sentence asked for a folder) is not one the device will be asked.
+      if (const Json* when = json::find(step, "when"); when && actions::condition_decided_by_args(*when, c.args) == 0) continue;
       const Json* e = entry_of(d, json::get_string(step, "action"));
       if (!e || json::get_string(*e, "runs_on") != "client") continue;
       const std::string label = localized(e->value("labels", Json::object()), lang);
@@ -2432,11 +2476,34 @@ void note_semantic_hold(Runtime& rt, const Json& pending) {
   std::string lang = language_of_conversation(rt, d, conv_id);
   if (lang.empty()) lang = json::get_string(d.cfg, "default_language", "en");
   const std::string kind = json::get_string(pending, "kind", "batch");
+  // P18: a hold or refusal by a spending limit says that, with the limit's own reason in the language of the conversation.
+  std::string limit_reason;
+  if (const Json limits = pending.value("limits", Json::array()); limits.is_array() && !limits.empty()) {
+    const Json reason = limits[0].value("reason", Json::object());
+    for (const std::string& key : {lang, std::string("en")})
+      if (const Json* t = json::find(reason, key); t && t->is_string() && !t->get<std::string>().empty()) { limit_reason = t->get<std::string>(); break; }
+  }
+  if (json::get_string(pending, "status") == "denied" || json::get_bool(pending, "refused", false)) {
+    // Nothing can be answered: the analysis is told as paused (once per receipt) and tries again later.
+    for (const auto& m : *msgs)
+      if (m.role == "assistant" && m.metadata.is_object() && m.metadata.contains("semantic_refusal") &&
+          json::get_string(m.metadata["semantic_refusal"], "receipt_id") == receipt)
+        return;
+    const std::string note = say(d.cfg, lang, "semantic_refused", Json{{"reason", limit_reason}, {"count", pending.value("messages", 0)}});
+    Json refusal{{"schema", "loom.semantic_usage_refusal/1"}, {"lang", lang}, {"kind", kind}, {"receipt_id", receipt},
+                 {"limits", pending.value("limits", Json::array())}, {"reason_codes", pending.value("reason_codes", Json::array())}};
+    auto posted = add_message(rt, conv_id, "assistant", note, Json{{"routed", "semantic_refusal"}, {"semantic_refusal", refusal}}, "loom:actions");
+    if (posted) announce_question(rt, conv_id, *posted, receipt, "closed", "refused");
+    return;
+  }
   const Json ratio = hold_ratio(pending);
-  const std::string text = say(d.cfg, lang, std::string("semantic_question_") + (kind == "retry" ? "retry" : "batch") + (ratio.is_number() ? "" : "_unknown"),
-                               Json{{"ratio", ratio.is_number() ? ratio_words(ratio.get<double>()) : std::string()}, {"count", pending.value("messages", 0)}});
+  const std::string text = !limit_reason.empty()
+      ? say(d.cfg, lang, std::string("semantic_question_limit_") + (kind == "retry" ? "retry" : "batch"), Json{{"reason", limit_reason}, {"count", pending.value("messages", 0)}})
+      : say(d.cfg, lang, std::string("semantic_question_") + (kind == "retry" ? "retry" : "batch") + (ratio.is_number() ? "" : "_unknown"),
+            Json{{"ratio", ratio.is_number() ? ratio_words(ratio.get<double>()) : std::string()}, {"count", pending.value("messages", 0)}});
   Json question{{"schema", "loom.semantic_usage_question/1"}, {"status", "pending"}, {"lang", lang}, {"kind", kind}, {"receipt_id", receipt},
-                {"operation_id", pending.value("operation_id", Json(nullptr))}, {"ratio", ratio}, {"receipt", pending}};
+                {"operation_id", pending.value("operation_id", Json(nullptr))}, {"ratio", ratio}, {"receipt", pending},
+                {"reason_codes", pending.value("reason_codes", Json::array())}};
   auto posted = add_message(rt, conv_id, "assistant", text, Json{{"routed", "semantic_question"}, {"semantic_question", question}}, "loom:actions");
   if (!posted) {
     log::write(log::Level::Debug, "loom.chat_route", "the question of the background analysis could not be posted: " + posted.error().message);

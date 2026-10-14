@@ -2,11 +2,10 @@
 //
 // The user's limits are the setting `usage_spend_limits` (data: runtime profile action_run, `spend_limits`): a list of
 // {period: day|week|month, amount, currency, on_exceed: confirm|deny|notify, rate?}. The preset is an empty list, that is no limit at all.
-// Before an action run that calls a model, the runner adds the spend of the period (what the providers reported, from the usage ledger) to
-// the estimate of the run and compares the sum with each limit; a limit that is passed becomes a gate of the plan: confirm waits for the
-// user's yes like a rule confirmation, deny does not start the run (with the reason and the initiator `user`), notify lets the run go and
-// says so. This is the action side only: the x10 growth guard stays as it is and is not replaced; a plain chat send and the background
-// analysis go through the guard of llm/ and chat/, which this does not touch.
+// P18: the limits are enforced by the central admission of the usage ledger (usage_spend.h), so a plain chat send, the routing model call,
+// the background analysis, embeddings and an action's model call all obey them with the same on_exceed. What stays here is the PREVIEW of a
+// plan: the proposal says "this would exceed your weekly limit" before anything runs (deny: the proposal is refused; confirm and notify: a
+// notice - the asking happens at the model call, with a receipt like the x10 hold). The x10 growth guard is unchanged.
 //
 // The ledger counts what providers report, in USD. A limit in another currency is converted with `rate` (USD per unit): the one the limit
 // carries, else the preset of the data (approximate, dated, and said so when the limit is set).
@@ -63,6 +62,11 @@ std::string period_in(const Json& data, const std::string& folded_text);
 // The label of an id in a language ("miesięczny"), or the id.
 std::string period_label(const Json& data, const std::string& period, const std::string& lang);
 std::string on_exceed_label(const Json& data, const std::string& on_exceed, const std::string& lang);
+
+// The limits in the form the usage policy carries in its options (key `spend_limits`, see usage_spend.h) so that the central admission
+// applies them to every model use: {limits, model_use, cost_resources, spent_resource, texts, period_labels}, or null while the user has set
+// none (the preset) - then nothing is read but the setting.
+Json policy_options(const Config& config, const std::filesystem::path& root);
 
 struct Window {
   std::string from, to;  // [from, to) as the ledger stamps them ("YYYY-MM-DD HH:MM:SS", UTC)

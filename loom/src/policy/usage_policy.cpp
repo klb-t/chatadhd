@@ -9,6 +9,7 @@
 #include <system_error>
 
 #include "loom/sqlite.h"
+#include "loom/usage_spend.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 
@@ -62,10 +63,22 @@ Result<Json> decode_record(std::string_view raw) {
         return Error(Errc::Parse, "invalid usage comparison");
       growth = growth || (*it)["requires_confirmation"].get<bool>();
     }
+    // P18: the spending limits that hold (confirm) or refuse (deny) are part of what the receipt binds; a record without them is as before.
+    bool limit_confirm = false, limit_deny = false;
+    if (record.contains("limits")) {
+      if (!record["limits"].is_array() || record["limits"].empty()) return Error(Errc::Parse, "invalid usage limit record");
+      for (const auto& l : record["limits"]) {
+        const std::string on_exceed = json::get_string(l, "on_exceed");
+        if (on_exceed != "confirm" && on_exceed != "deny") return Error(Errc::Parse, "invalid usage limit record");
+        (on_exceed == "deny" ? limit_deny : limit_confirm) = true;
+      }
+    }
     Json receipt{{"schema", record["schema"]}, {"operation_id", record["operation_id"]},
                  {"baseline_key", record["baseline_key"]}, {"estimate", record["estimate"]},
-                 {"options", record["options"]}, {"status", growth ? "requires_confirmation" : "allowed"},
+                 {"options", record["options"]},
+                 {"status", limit_deny ? "denied" : (growth || limit_confirm) ? "requires_confirmation" : "allowed"},
                  {"authorized", false}, {"resources", record["resources"]}};
+    if (record.contains("limits")) receipt["limits"] = record["limits"];
     if (record["receipt_id"] != "usage_" + Sha256::hex(json::canonical(receipt)))
       return Error(Errc::Parse, "usage receipt integrity failure");
     for (auto it = record["actual"].begin(); it != record["actual"].end(); ++it) {
@@ -227,7 +240,81 @@ struct UsagePolicy::Impl {
     }
     return out;
   }
-  Result<Json> assess(const Json& estimate) {
+  // What was spent in [from, to): the actuals recorded in the window. The caller holds the lock and a transaction.
+  Result<Json> spend(std::string_view from, std::string_view to) {
+    LOOM_TRY_ASSIGN(auto rows, db.prepare("SELECT e.operation_id,e.payload,o.record FROM usage_events e JOIN usage_operations o ON o.id=e.operation_id "
+                                                 "WHERE e.kind='actual' AND e.recorded_at>=? AND e.recorded_at<? ORDER BY e.sequence"));
+    rows.bind_all(from, to);
+    std::set<std::string> operations;
+    Json totals = Json::object();
+    Json models = Json::object();
+    std::map<std::string, std::set<std::string>> model_operations;
+    for (;;) {
+      LOOM_TRY_ASSIGN(bool row, rows.step());
+      if (!row) break;
+      const std::string operation = rows.get_text(0);
+      LOOM_TRY_ASSIGN(auto payload, json::parse(rows.get_text(1)));
+      LOOM_TRY_ASSIGN(auto record, decode_record(rows.get_text(2)));
+      const std::string model = record.value("estimate", Json::object()).value("model", std::string("?"));
+      operations.insert(operation);
+      model_operations[model].insert(operation);
+      if (!payload.contains("resources") || !payload["resources"].is_object()) continue;
+      if (!models.contains(model)) models[model] = Json{{"operations", 0}, {"resources", Json::object()}};
+      for (auto it = payload["resources"].begin(); it != payload["resources"].end(); ++it) {
+        if (!it->is_number()) continue;
+        const double v = it->get<double>();
+        totals[it.key()] = (totals.contains(it.key()) ? totals[it.key()].get<double>() : 0.0) + v;
+        Json& per = models[model]["resources"];
+        per[it.key()] = (per.contains(it.key()) ? per[it.key()].get<double>() : 0.0) + v;
+      }
+    }
+    for (auto& [model, ops] : model_operations) {
+      if (!models.contains(model)) models[model] = Json{{"operations", 0}, {"resources", Json::object()}};
+      models[model]["operations"] = ops.size();
+    }
+    LOOM_TRY_ASSIGN(auto folded, db.query_int("SELECT COUNT(*) FROM usage_folded_operations"));
+    return Json{{"from", std::string(from)}, {"to", std::string(to)}, {"operations", operations.size()}, {"totals", totals}, {"models", models},
+                {"folded_operations", folded.value_or(0)}};
+  }
+  // The cost the providers reported in [from, to) and how many operations did: what a spending limit compares. {usd, known, operations}.
+  // Reads the payloads of the actuals only (no operation record is decoded), so the check stays cheap on a ledger with many operations.
+  Result<Json> cost_between(const std::string& from, const std::string& to, const std::string& resource) {
+    LOOM_TRY_ASSIGN(auto rows, db.prepare("SELECT operation_id,payload FROM usage_events WHERE kind='actual' AND recorded_at>=? AND recorded_at<?"));
+    rows.bind_all(from, to);
+    std::set<std::string> operations;
+    long double usd = 0;
+    bool known = false;
+    for (;;) {
+      LOOM_TRY_ASSIGN(bool row, rows.step());
+      if (!row) break;
+      operations.insert(rows.get_text(0));
+      LOOM_TRY_ASSIGN(auto payload, json::parse(rows.get_text(1)));
+      const Json* resources = json::find(payload, "resources");
+      const Json* cost = resources && resources->is_object() ? json::find(*resources, resource) : nullptr;
+      if (cost && cost->is_number() && std::isfinite(cost->get<double>())) {
+        usd += cost->get<double>();
+        known = true;
+      }
+    }
+    return Json{{"usd", static_cast<double>(usd)}, {"known", known}, {"operations", operations.size()}};
+  }
+  // P18: what the user's spending limits say about this estimate. Computed BEFORE the write transaction of an admission is opened (the caller holds
+  // `mu`, no transaction is open on this connection): its reads run in a transaction of their own on the same connection, under the configured busy
+  // timeout, and end before the IMMEDIATE transaction begins - so the write lock is never held while the period's spend is added up, and a deferred
+  // read never has to be upgraded to a write. Nothing is read when the user has set no limit or the estimate is no model use.
+  Result<SpendCheck> limits_precheck(const Json& estimate) {
+    const Json* sl = json::find(options, "spend_limits");
+    if (!sl || !sl->is_object() || !spend_model_use(*sl, estimate)) return SpendCheck{};
+    const std::string resource = json::get_string(*sl, "spent_resource", "cost_usd");
+    sql::Txn txn(db, false);
+    LOOM_TRY(txn.begin_status());
+    LOOM_TRY_ASSIGN(auto checked, check_spend_limits(*sl, estimate, [&](const std::string& from, const std::string& to) {
+      return cost_between(from, to, resource);
+    }));
+    LOOM_TRY(txn.commit());
+    return checked;
+  }
+  Result<Json> assess(const Json& estimate, const SpendCheck& limits_check) {
     const auto key = json::get_string(estimate, "baseline_key");
     LOOM_TRY_ASSIGN(auto both, reservations(key, json::get_string(estimate, "operation_id")));
     const Json& reserved = both.total;
@@ -279,7 +366,23 @@ struct UsagePolicy::Impl {
           {"baseline_status", baseline_status}, {"requires_confirmation", needs}};
       if (needs) result["status"] = "requires_confirmation";
     }
+    // P18: the user's spending limits of the period, for every caller of the ledger (the options carry them: see usage_spend.h).
+    // The limits that hold or refuse are bound by the receipt; the numbers of the moment and the texts are not.
+    if (!limits_check.holds.empty()) {
+      bool deny = false;
+      for (const auto& h : limits_check.holds) deny = deny || json::get_string(h, "on_exceed") == "deny";
+      result["limits"] = limits_check.holds;
+      result["status"] = deny ? "denied" : "requires_confirmation";
+    }
     result["receipt_id"] = "usage_" + Sha256::hex(json::canonical(result));
+    if (!limits_check.report.empty()) result["limit_report"] = limits_check.report;
+    if (!limits_check.notices.empty()) result["notices"] = limits_check.notices;
+    if (!limits_check.holds.empty()) {
+      bool growth = false;
+      for (auto it = result["resources"].begin(); it != result["resources"].end(); ++it)
+        growth = growth || (*it)["requires_confirmation"].get<bool>();
+      result["reason_codes"] = growth ? Json::array({"spend_limit", "growth"}) : Json::array({"spend_limit"});
+    }
     return result;
   }
 };
@@ -320,6 +423,8 @@ Result<std::unique_ptr<UsagePolicy>> UsagePolicy::open(const std::filesystem::pa
       "CREATE TABLE IF NOT EXISTS usage_events(sequence INTEGER PRIMARY KEY,operation_id TEXT NOT NULL,kind TEXT NOT NULL,payload TEXT NOT NULL,"
       "recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP);"
       "CREATE INDEX IF NOT EXISTS usage_event_operation ON usage_events(operation_id,sequence);"
+      // P18: the spend of a period (spending limits, "how much did I spend") reads the actuals of a window of time, not the whole table.
+      "CREATE INDEX IF NOT EXISTS usage_event_actual ON usage_events(kind,recorded_at);"
       // Compaction (additive; a ledger that was never compacted keeps these empty).
       "CREATE TABLE IF NOT EXISTS usage_folded_operations(id TEXT PRIMARY KEY,baseline_key TEXT NOT NULL,status TEXT NOT NULL,"
       "estimate_sha256 TEXT NOT NULL,folded_at TEXT NOT NULL);"
@@ -334,9 +439,10 @@ Result<std::unique_ptr<UsagePolicy>> UsagePolicy::open(const std::filesystem::pa
 Result<Json> UsagePolicy::preview(const Json& estimate) {
   LOOM_TRY(validate_estimate(estimate));
   std::lock_guard lock(impl_->mu);
+  LOOM_TRY_ASSIGN(auto limits, impl_->limits_precheck(estimate));
   sql::Txn txn(impl_->db, false);
   LOOM_TRY(txn.begin_status());
-  LOOM_TRY_ASSIGN(auto result, impl_->assess(estimate));
+  LOOM_TRY_ASSIGN(auto result, impl_->assess(estimate, limits));
   LOOM_TRY(txn.commit());
   return result;
 }
@@ -344,6 +450,7 @@ Result<Json> UsagePolicy::preview(const Json& estimate) {
 Result<Json> UsagePolicy::request(const Json& estimate) {
   LOOM_TRY(validate_estimate(estimate));
   std::lock_guard lock(impl_->mu);
+  LOOM_TRY_ASSIGN(auto limits, impl_->limits_precheck(estimate));  // P18: before the write lock, see limits_precheck
   sql::Txn txn(impl_->db);
   LOOM_TRY(txn.begin_status());
   LOOM_TRY_ASSIGN(auto previous, impl_->operation(json::get_string(estimate, "operation_id")));
@@ -368,7 +475,7 @@ Result<Json> UsagePolicy::request(const Json& estimate) {
       return *previous;
     }
   }
-  LOOM_TRY_ASSIGN(auto result, impl_->assess(estimate));
+  LOOM_TRY_ASSIGN(auto result, impl_->assess(estimate, limits));
   if (previous && result["receipt_id"] == (*previous)["receipt_id"]) {
     LOOM_TRY(txn.commit());
     return *previous;
@@ -387,6 +494,21 @@ Result<Json> UsagePolicy::confirm(std::string_view id, std::string_view receipt_
                                 std::string_view confirmation_ref) {
   if (confirmation_ref.empty()) return Error(Errc::InvalidArgument, "confirmation_ref is required");
   std::lock_guard lock(impl_->mu);
+  // P18: an approval re-assesses the stored estimate, and the spending limits are read before the write lock is taken (see limits_precheck).
+  SpendCheck limits;
+  if (approved) {
+    std::optional<Json> estimate;
+    {
+      sql::Txn peek(impl_->db, false);
+      LOOM_TRY(peek.begin_status());
+      LOOM_TRY_ASSIGN(auto record, impl_->operation(id));
+      if (record && record->contains("estimate")) estimate = (*record)["estimate"];
+      LOOM_TRY(peek.commit());
+    }
+    if (estimate) {
+      LOOM_TRY_ASSIGN(limits, impl_->limits_precheck(*estimate));
+    }
+  }
   sql::Txn txn(impl_->db);
   LOOM_TRY(txn.begin_status());
   LOOM_TRY_ASSIGN(auto stored, impl_->operation(id));
@@ -402,7 +524,7 @@ Result<Json> UsagePolicy::confirm(std::string_view id, std::string_view receipt_
   }
   if (result["status"] != "requires_confirmation") return Error(Errc::Conflict, "operation is not waiting for confirmation");
   if (approved) {
-    LOOM_TRY_ASSIGN(auto fresh, impl_->assess(result["estimate"]));
+    LOOM_TRY_ASSIGN(auto fresh, impl_->assess(result["estimate"], limits));
     if (fresh["receipt_id"] != result["receipt_id"])
       return Error(Errc::Conflict, "usage projection changed; request a fresh receipt");
   }
@@ -561,40 +683,9 @@ Result<Json> UsagePolicy::spend_between(std::string_view from, std::string_view 
   std::lock_guard lock(impl_->mu);
   sql::Txn txn(impl_->db, false);
   LOOM_TRY(txn.begin_status());
-  LOOM_TRY_ASSIGN(auto rows, impl_->db.prepare("SELECT e.operation_id,e.payload,o.record FROM usage_events e JOIN usage_operations o ON o.id=e.operation_id "
-                                               "WHERE e.kind='actual' AND e.recorded_at>=? AND e.recorded_at<? ORDER BY e.sequence"));
-  rows.bind_all(from, to);
-  std::set<std::string> operations;
-  Json totals = Json::object();
-  Json models = Json::object();
-  std::map<std::string, std::set<std::string>> model_operations;
-  for (;;) {
-    LOOM_TRY_ASSIGN(bool row, rows.step());
-    if (!row) break;
-    const std::string operation = rows.get_text(0);
-    LOOM_TRY_ASSIGN(auto payload, json::parse(rows.get_text(1)));
-    LOOM_TRY_ASSIGN(auto record, decode_record(rows.get_text(2)));
-    const std::string model = record.value("estimate", Json::object()).value("model", std::string("?"));
-    operations.insert(operation);
-    model_operations[model].insert(operation);
-    if (!payload.contains("resources") || !payload["resources"].is_object()) continue;
-    if (!models.contains(model)) models[model] = Json{{"operations", 0}, {"resources", Json::object()}};
-    for (auto it = payload["resources"].begin(); it != payload["resources"].end(); ++it) {
-      if (!it->is_number()) continue;
-      const double v = it->get<double>();
-      totals[it.key()] = (totals.contains(it.key()) ? totals[it.key()].get<double>() : 0.0) + v;
-      Json& per = models[model]["resources"];
-      per[it.key()] = (per.contains(it.key()) ? per[it.key()].get<double>() : 0.0) + v;
-    }
-  }
-  for (auto& [model, ops] : model_operations) {
-    if (!models.contains(model)) models[model] = Json{{"operations", 0}, {"resources", Json::object()}};
-    models[model]["operations"] = ops.size();
-  }
-  LOOM_TRY_ASSIGN(auto folded, impl_->db.query_int("SELECT COUNT(*) FROM usage_folded_operations"));
+  LOOM_TRY_ASSIGN(auto spent, impl_->spend(from, to));
   LOOM_TRY(txn.commit());
-  return Json{{"from", std::string(from)}, {"to", std::string(to)}, {"operations", operations.size()}, {"totals", totals}, {"models", models},
-              {"folded_operations", folded.value_or(0)}};
+  return spent;
 }
 
 Result<bool> UsagePolicy::compaction_due(double hours) {

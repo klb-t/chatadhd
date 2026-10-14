@@ -8,6 +8,7 @@ interface Row { [key: string]: JsonValue }
 const BUTTON_OF: { [kind: string]: string } = {
   photo: "do_capture_image",
   file: "do_pick_file",
+  folder: "do_pick_folder",
   read_clipboard: "do_clipboard_read",
   write_clipboard: "do_clipboard_write",
   notify: "do_notify",
@@ -39,6 +40,8 @@ export interface ClientStepTexts {
   decline: string;
   cancel: string;
   sending: string;
+  /** "Sending the files: 3 of 12" while a folder goes to the kernel. */
+  uploading: (done: number, total: number) => string;
   failed: (reason: string) => string;
   sendFailed: (reason: string) => string;
   unsupported: (reason: string) => string;
@@ -66,6 +69,7 @@ export function clientStepTexts(feature: PresentationFeature | null, spec: Clien
     decline: say("decline") ?? "-",
     cancel: say("cancel") ?? "-",
     sending: say("sending") ?? "-",
+    uploading: (done, total) => say("uploading", { done: String(done), total: String(total) }) ?? done + "/" + total,
     failed: (reason) => say("failed", { reason }) ?? reason,
     sendFailed: (reason) => say("send_failed", { reason }) ?? reason,
     unsupported: (reason) => say("unsupported", { reason }) ?? reason,

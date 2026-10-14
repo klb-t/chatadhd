@@ -95,6 +95,15 @@ struct Fixture {
   }
 };
 
+// P18 1: a spending limit of the user, and what the providers already charged in the period.
+void set_limit(Fixture& f, const char* on_exceed) {
+  f.rt->config().set("usage_spend_limits", Json::array({Json{{"period", "month"}, {"amount", 1.0}, {"currency", "USD"}, {"on_exceed", on_exceed}}}));
+  unwrap(f.rt->config().save());
+  auto policy = unwrap(UsagePolicy::open(f.td.path() / "usage-policy.sqlite", Json::object()));
+  unwrap(policy->request(Json{{"operation_id", "earlier"}, {"baseline_key", "chat.send|test|m"}, {"model", "test/model"}, {"resources", Json{{"cost_usd", nullptr}}}}));
+  unwrap(policy->complete("earlier", Json{{"resources", Json{{"requests", 1}, {"cost_usd", 2.0}}}, {"provenance", "provider_reported"}}));
+}
+
 }  // namespace
 
 TEST_SUITE("semantic_question") {
@@ -247,5 +256,58 @@ TEST_SUITE("semantic_question") {
     CHECK_FALSE(f.question().has_value());
     chat_route::note_semantic_hold(*f.rt, Json{{"receipt_id", "usage_y"}, {"conv_ids", Json::array({"c_gone"})}, {"projected", Json::object()}});
     CHECK_FALSE(f.question().has_value());
+  }
+
+  TEST_CASE("P18: a batch held by a spending limit asks in the conversation with the limit's own words; yes sends it") {
+    Fixture f;  // one message: nowhere near x10 of the baseline, only the limit holds it
+    set_limit(f, "confirm");
+    CHECK(unwrap(f.rt->worker().drain_once()) == 0);
+    const auto pending = f.rt->worker().status().usage_pending;
+    REQUIRE(pending.has_value());
+    CHECK(pending->at("status") == "requires_confirmation");
+    CHECK(pending->at("reason_codes") == Json::array({"spend_limit"}));
+    CHECK(pending->at("limits")[0].at("period") == "month");
+    const auto asked = f.question();
+    REQUIRE(asked.has_value());
+    CHECK(asked->text.find("The background analysis (1 messages) is held by your spending limit: ") == 0);
+    CHECK(asked->text.find("monthly spending limit of 1 USD is already used up") != std::string::npos);
+    CHECK(asked->text.find("times more than usual") == std::string::npos);
+    const Json q = asked->metadata.at("semantic_question");
+    CHECK(q.at("reason_codes") == Json::array({"spend_limit"}));
+    CHECK(q.at("receipt").at("limits")[0].at("on_exceed") == "confirm");
+    CHECK(f.batch_posts() == 0);
+    const auto answered = f.input("yes");
+    REQUIRE(answered.handled);
+    CHECK(unwrap(f.rt->worker().drain_once()) == 0);
+    CHECK(f.batch_posts() == 1);
+  }
+
+  TEST_CASE("P18: a batch refused by a spending limit is told as paused, once; nothing is sent and it is not asked again at once") {
+    Fixture f;
+    set_limit(f, "deny");
+    CHECK(unwrap(f.rt->worker().drain_once()) == 0);
+    CHECK(f.batch_posts() == 0);
+    CHECK_FALSE(f.question().has_value());
+    const auto st = f.rt->worker().status();
+    REQUIRE(st.usage_pending.has_value());
+    CHECK(st.usage_pending->at("status") == "denied");
+    CHECK(st.usage_pending->at("refused") == true);
+    CHECK(st.mode == "blocked_by_spend_limit");
+    std::optional<Message> told;
+    for (auto& m : f.messages())
+      if (m.metadata.is_object() && m.metadata.contains("semantic_refusal")) told = m;
+    REQUIRE(told.has_value());
+    CHECK(told->text.find("The background analysis (1 messages) is paused by your spending limit: ") == 0);
+    CHECK(told->text.find("You set this limit to refuse") != std::string::npos);
+    CHECK(told->semantic_status == "done");  // an answer of the system is not content
+    REQUIRE(f.events.size() == 1);
+    CHECK(f.events[0].at("state") == "closed");
+    CHECK(f.events[0].at("status") == "refused");
+    // another pass does not ask the ledger again and does not repeat the note
+    CHECK(unwrap(f.rt->worker().drain_once()) == 0);
+    int notes = 0;
+    for (const auto& m : f.messages()) notes += m.metadata.is_object() && m.metadata.contains("semantic_refusal");
+    CHECK(notes == 1);
+    CHECK(f.batch_posts() == 0);
   }
 }

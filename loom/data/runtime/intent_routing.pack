@@ -3801,10 +3801,30 @@
           "takes_scope": false
         },
         {
+          "id": "archive.file.pl",
+          "action": "archive.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?archiwum(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "archive.run.pl",
           "action": "archive.run",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?(?:archiwum|folder|projekt|repozytorium)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?(?:folder|projekt|repozytorium)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project",
@@ -3818,10 +3838,30 @@
           "takes_scope": false
         },
         {
+          "id": "archive.file.en",
+          "action": "archive.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?archive(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "archive.run.en",
           "action": "archive.run",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:archive|folder|project|repository|repo)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:folder|project|repository|repo)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project",
@@ -3867,10 +3907,28 @@
           "takes_scope": false
         },
         {
+          "id": "knowledge.file.pl",
+          "action": "knowledge.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:archiwum\\s*)(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "knowledge.run.pl",
           "action": "knowledge.run",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:(?:archiwum|folderu|katalogu|projektu|repozytorium)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:(?:folderu|katalogu|projektu|repozytorium)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project"
@@ -3882,10 +3940,28 @@
           "takes_scope": false
         },
         {
+          "id": "knowledge.file.en",
+          "action": "knowledge.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:archive\\s*)(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "knowledge.run.en",
           "action": "knowledge.run",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:(?:archive|folder|directory|project|repository)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:(?:folder|directory|project|repository)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project"
@@ -4066,6 +4142,99 @@
       "conversation_language": {
         "enabled": true,
         "messages": 12
+      },
+      "statement_guard": {
+        "nouns": {
+          "pl": [
+            "ocena",
+            "oceny",
+            "ocene",
+            "ocenie",
+            "oceną",
+            "ocena",
+            "krytyka",
+            "krytyki",
+            "krytykę",
+            "krytyke",
+            "krytyce",
+            "krytyką",
+            "podsumowanie",
+            "podsumowania",
+            "podsumowaniu",
+            "podsumowaniem",
+            "streszczenie",
+            "streszczenia",
+            "streszczeniu",
+            "streszczeniem",
+            "tłumaczenie",
+            "tłumaczenia",
+            "tłumaczeniu",
+            "tłumaczeniem",
+            "transkrypcja",
+            "transkrypcji",
+            "transkrypcję",
+            "transkrypcje",
+            "narracja",
+            "narracji",
+            "narrację",
+            "narracje",
+            "rozwinięcie",
+            "rozwinięcia",
+            "skrócenie",
+            "skrócenia",
+            "zestaw",
+            "zestawy",
+            "zestawu",
+            "parodia",
+            "parodii",
+            "przedstawienie",
+            "przedstawienia"
+          ],
+          "en": [
+            "critique",
+            "evaluation",
+            "review",
+            "rating",
+            "summary",
+            "translation",
+            "transcription",
+            "narration",
+            "parody"
+          ]
+        },
+        "statement_words": {
+          "pl": [
+            "jest",
+            "była",
+            "było",
+            "był",
+            "były",
+            "są",
+            "będzie",
+            "będą",
+            "wynosi",
+            "wygląda",
+            "wydaje",
+            "okazała",
+            "okazał",
+            "wyszła",
+            "wyszło",
+            "pozostaje",
+            "została"
+          ],
+          "en": [
+            "is",
+            "was",
+            "are",
+            "were",
+            "seems",
+            "looks",
+            "remains",
+            "appears",
+            "became",
+            "becomes"
+          ]
+        }
       }
     },
     "confirmation": {
@@ -4235,6 +4404,9 @@
         "semantic_question_batch_unknown": "The background analysis wants to use many times more than usual ({{count}} messages) - continue?",
         "semantic_question_retry": "Sending the failed analyses again wants to use about {{ratio}} times more than usual ({{count}} messages) - continue?",
         "semantic_question_retry_unknown": "Sending the failed analyses again wants to use many times more than usual ({{count}} messages) - continue?",
+        "semantic_question_limit_batch": "The background analysis ({{count}} messages) is held by your spending limit: {{reason}} - continue anyway?",
+        "semantic_question_limit_retry": "Sending the failed analyses again ({{count}} messages) is held by your spending limit: {{reason}} - continue anyway?",
+        "semantic_refused": "The background analysis ({{count}} messages) is paused by your spending limit: {{reason}} It tries again later; raise the limit to continue now.",
         "semantic_answer_yes": "Right - the background analysis goes on.",
         "semantic_answer_no": "Right - the background analysis is paused. Resume it with \"resume the semantic analysis\".",
         "semantic_answer_no_retry": "Right - those analyses are not sent again.",
@@ -4309,6 +4481,9 @@
         "semantic_question_batch_unknown": "Analiza w tle chce zużyć wielokrotnie więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
         "semantic_question_retry": "Ponowne wysłanie nieudanych analiz chce zużyć ok. {{ratio}} razy więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
         "semantic_question_retry_unknown": "Ponowne wysłanie nieudanych analiz chce zużyć wielokrotnie więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_question_limit_batch": "Analiza w tle ({{count}} wiadomości) została wstrzymana przez Twój limit wydatków: {{reason}} - kontynuować mimo to?",
+        "semantic_question_limit_retry": "Ponowne wysłanie nieudanych analiz ({{count}} wiadomości) zostało wstrzymane przez Twój limit wydatków: {{reason}} - kontynuować mimo to?",
+        "semantic_refused": "Analiza w tle ({{count}} wiadomości) jest wstrzymana przez Twój limit wydatków: {{reason}} Spróbuje ponownie później; podnieś limit, by kontynuować teraz.",
         "semantic_answer_yes": "Dobrze - analiza w tle jedzie dalej.",
         "semantic_answer_no": "Dobrze - analiza w tle jest wstrzymana. Wznowisz ją poleceniem „wznów analizę semantyczną”.",
         "semantic_answer_no_retry": "Dobrze - tych analiz nie wysyłam ponownie.",
@@ -5206,6 +5381,33 @@
               "messages": {
                 "type": "integer",
                 "minimum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "statement_guard": {
+            "type": "object",
+            "description": "P18: a sentence that says something ABOUT a result (\"Ocena tej wiadomości jest niska\", \"The critique of this message is harsh\") is not the command a word in it also names. nouns: languages -> the words of the lexicon's stems that are nouns as well as verbs (ocena, krytyka, podsumowanie ...); statement_words: languages -> the words that make a sentence a statement (jest, była, wynosi, is, was ...). A phrase that hit on one of the nouns, in a sentence that has a statement word, is not a command; a hit on a verb never is dropped, nor a noun that asks for the act (\"Zrób ocenę tej wiadomości\"). Both lists are calibration and are replaced by an overlay; empty lists turn the guard off.",
+            "properties": {
+              "nouns": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "statement_words": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
               }
             },
             "additionalProperties": false
