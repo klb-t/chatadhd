@@ -16,6 +16,8 @@ class UsageGuardServerTest(Base):
         return self.request("POST", "/api/usage-policy", {"action": "inspect", "baseline_key": key})
 
     def test_pause_preview_confirm_and_semantic_route(self):
+        # P17 6: this test is about the x10 hold over a baseline of three tiny sends, so the floor of the baseline is off (as a user who set it would have it).
+        self.request("PATCH", "/api/config", {"loom_usage_policy": {"baseline_min_samples": 0}})
         for index in range(3):
             self.assertEqual(self.chat(f"small {index}")[-1]["type"], "done")
         self.assertEqual(len(self.calls), 3)

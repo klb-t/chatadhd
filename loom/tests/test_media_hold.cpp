@@ -28,6 +28,7 @@ struct Fixture {
     rt->secrets().set("groq_api_key", "gk_test");
     rt->secrets().set("google_speech_api_key", "gsk_test");
     rt->secrets().set("ocr_space_api_key", "ocrkey");
+    loom::test::measured_baseline_only(rt->config());  // P17 6: this test is about the x10 hold over three tiny samples, so the floor of the baseline is off
     rt->media().refresh();
   }
   void asr_ok(int n) {

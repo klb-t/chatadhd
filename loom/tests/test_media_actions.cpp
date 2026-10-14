@@ -57,6 +57,7 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    loom::test::measured_baseline_only(rt->config());  // P17 6: this test is about the x10 hold over three tiny samples, so the floor of the baseline is off
     if (keys) {
       rt->secrets().set("groq_api_key", "gk_test");
       rt->secrets().set("ocr_space_api_key", "ocrkey");

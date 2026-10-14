@@ -431,6 +431,7 @@ TEST_SUITE("semantic_worker") {
                                             env.transport, *env.analyzer, nullptr, std::optional<WorkerOptions>{}, batch_overrides());
   }
   void build_batch_baseline(Env& env, const std::string& conv) {
+    loom::test::measured_baseline_only(env.cfg);  // P17 6: a hold over a baseline of three tiny batches; the floor of the baseline is off
     env.add_pending_msg(conv, "small baseline message");
     for (int i = 0; i < 3; ++i) CHECK(unwrap(batch_worker(env)->drain_once()) == 0);
     REQUIRE(env.transport.requests().size() == 3);
@@ -798,6 +799,7 @@ TEST_SUITE("semantic_worker") {
 
   TEST_CASE("T2 automatic resend of an LLM item passes the usage guard (x10 growth asks the owner)") {
     Env env;
+    loom::test::measured_baseline_only(env.cfg);  // P17 6: a hold over a baseline of three tiny resends; the floor of the baseline is off
     env.cfg.set("semantic_model", "vendor/model");
     env.secrets.set("api_key", "fake-model-key");
     Json content{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()}};
@@ -870,6 +872,7 @@ TEST_SUITE("semantic_worker") {
 
   TEST_CASE("T2 declining an automatic resend answers that operation only: setting kept, items noted usage_declined, queue keeps draining") {
     Env env;
+    loom::test::measured_baseline_only(env.cfg);  // P17 6: a hold over a baseline of three tiny resends; the floor of the baseline is off
     env.cfg.set("semantic_model", "vendor/model");
     env.secrets.set("api_key", "fake-model-key");
     Json content{{"entities", Json::array()}, {"topics", Json::array()}, {"relations", Json::array()}};
