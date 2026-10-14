@@ -111,6 +111,16 @@ Result<Engine> Engine::from_values(const Json& graph_entry, const Json& actions,
   return e;
 }
 
+void Engine::apply_client(const Json& patches) {
+  if (!patches.is_object()) return;
+  for (auto it = patches.begin(); it != patches.end(); ++it) {
+    auto found = actions_.find(it.key());
+    if (found == actions_.end() || !found->is_object() || !it.value().is_object()) continue;
+    for (auto p = it.value().begin(); p != it.value().end(); ++p) (*found)[p.key()] = p.value();
+    if (json::get_string(it.value(), "status") == "implemented") found->erase("planned_reason");
+  }
+}
+
 std::set<std::string> Engine::expand_traits(const std::vector<std::string>& names) const {
   std::map<std::string, std::string> expanded;
   for (const auto& n : names) add_trait(expanded, n, "produced");

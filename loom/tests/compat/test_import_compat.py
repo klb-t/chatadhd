@@ -3,7 +3,9 @@ reference) vs loom::ConversationImporter (C++, via loom_compat_tool), run on
 every fixture under tests/fixtures/import/. Zero diffs is the bar; any
 intentional difference is called out in a comment next to the test.
 """
+import datetime
 import pathlib
+import re
 import shutil
 import sys
 import tempfile
@@ -42,11 +44,27 @@ def import_dump_py(path: pathlib.Path, title: str = ""):
 class ImportCompatTests(CompatTestCase):
     def check(self, name: str, title: str = ""):
         path = FIXTURES / name
+        started = datetime.datetime.now().replace(second=0, microsecond=0)
         py = import_dump_py(path, title)
         cpp = tool("import-dump", str(path), title)
+        finished = datetime.datetime.now()
         cpp.pop("format", None)
         cpp.pop("messages", None)
+        if not title:
+            # A default title carries the local minute it was made in ("Import %Y-%m-%d %H:%M"). The two
+            # sides run one after the other and may straddle a minute boundary, so each stamp must be a
+            # real minute inside this run; only then are both compared with the stamp replaced.
+            for dump in (py, cpp):
+                for conv in dump.get("conversations", []):
+                    conv["title"] = self.stamped_title(conv["title"], started, finished, name)
         self.assertSameJson(py, cpp, msg=name)
+
+    def stamped_title(self, text, started, finished, name):
+        def minute(match):
+            stamp = datetime.datetime.strptime(match.group(0), "%Y-%m-%d %H:%M")
+            self.assertTrue(started <= stamp <= finished, f"{name}: title stamp {match.group(0)} outside the run")
+            return "<minute>"
+        return re.sub(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}", minute, text)
 
     def test_detect_format_matches_every_fixture(self):
         cases = {

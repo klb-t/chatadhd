@@ -51,7 +51,7 @@ const timestamp = "2026-10-04T12:00:00Z";
 const conversations = ["a", "b"].map(id => ({ id, title: `Conversation ${id.toUpperCase()}`, created: timestamp, updated: timestamp }));
 const messages = new Map(conversations.map(conv => [conv.id, [{ id: `${conv.id}-message`, conv_id: conv.id, role: "user",
   text: `Recorded conversation ${conv.id.toUpperCase()}`, status: "active", created: timestamp }]]));
-const requests = [], chatRequests = [], failures = [];
+const requests = [], chatRequests = [], declares = [], failures = [];
 let created = 0;
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, "http://fixture.local");
@@ -77,6 +77,10 @@ const server = createServer(async (req, res) => {
   if (messageMatch) return json(messages.get(decodeURIComponent(messageMatch[1])) ?? []);
   if (url.pathname === "/api/models") return json([{ id: "fixture/one", name: "Fixture one" }, { id: "fixture/two", name: "Fixture two" }]);
   if (url.pathname === "/api/semantic/status") return json({ pending: 0, processed: 0, errors: 0, mode: "off", rate: "off", paused: false });
+  // P13: the page declares its devices right before its first send (never while only viewing); this fixture takes the declaration.
+  if (url.pathname === "/api/client/declare") {
+    declares.push(body); return json({ client_id: body.client_id, capabilities: {}, runnable_actions: [], refused: {} });
+  }
   if (url.pathname === "/api/chat") {
     chatRequests.push(body);
     const conv = body.conv_id;
@@ -115,6 +119,12 @@ try {
     else await route.continue();
   });
   const view = index => page.getByTestId("application-profile-view").nth(index);
+  // After a reload the model picker is filled from the saved layout a moment after the selection; wait for that value
+  // (a value lost for good still fails: the wait times out and the equality below reports what is there).
+  async function pickerValue(index) {
+    await page.waitForFunction(index => document.querySelectorAll('[data-testid="application-profile-view"]')[index]?.querySelector('[data-testid="model-picker"]')?.value, index).catch(() => {});
+    return view(index).getByTestId("model-picker").inputValue();
+  }
   async function waitSelection(index, id) { await page.waitForFunction(({ index, id }) => document.querySelectorAll('[data-testid="application-profile-view"]')[index]?.getAttribute("data-conversation-id") === id, { index, id }); }
   async function chooseInHost(id) { await page.getByTestId("sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
   async function chooseInView(index, id) { await view(index).getByTestId("profile-view-sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
@@ -170,10 +180,13 @@ try {
     assert.equal(await view(1).getByTestId("model-picker").inputValue(), "fixture/two");
     assert.equal(await view(1).getByTestId("include-memory").isChecked(), false);
     assert.equal(await view(0).getByTestId("model-picker").inputValue(), "fixture/one");
+    assert.deepEqual(declares, [], "viewing, layout, selection and settings declare nothing");
     await view(1).getByTestId("chat-input").fill("Geometry fixture send");
     await view(1).getByTestId("send-chat").click();
     await view(1).getByTestId("message").filter({ hasText: "Fixture reply to a" }).waitFor();
     assert.equal(chatRequests.length, 1); assert.equal(chatRequests[0].conv_id, "a");
+    assert.equal(declares.length, 1, "one declaration, right before the first send"); assert.match(declares[0].client_id, /^web-[0-9a-f]{12}$/);
+    assert.equal(chatRequests[0].client_id, declares[0].client_id, "the send carries the id of the client that declared");
     assert.equal(chatRequests[0].model, "fixture/two"); assert.equal(chatRequests[0].include_memory, false);
     await waitSelection(0, "b");
   });
@@ -183,8 +196,8 @@ try {
     const id = saved.views[1].id;
     await page.reload(); await waitSelection(1, "a");
     assert.equal(await view(1).getAttribute("data-profile-view-id"), id);
-    assert.equal(await view(1).getByTestId("model-picker").inputValue(), "fixture/two");
-    assert.equal(await view(0).getByTestId("model-picker").inputValue(), "fixture/one");
+    assert.equal(await pickerValue(1), "fixture/two");
+    assert.equal(await pickerValue(0), "fixture/one");
     await openContext(1); assert.equal(await view(1).getByTestId("include-memory").isChecked(), false);
     assert.equal(await view(1).getByTestId("profile-view-sidebar").evaluate(element => getComputedStyle(element).width), "315px");
     await view(1).locator(".profile-details > summary").click();

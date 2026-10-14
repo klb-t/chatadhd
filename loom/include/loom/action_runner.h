@@ -17,6 +17,7 @@
 
 #include "loom/action_index.h"
 #include "loom/action_run.h"
+#include "loom/client_devices.h"
 #include "loom/result.h"
 #include "loom/util/cancel.h"
 #include "loom/util/json.h"
@@ -40,6 +41,10 @@ class ActionRunner {
   Result<Json> run(const Json& request, const CancelToken* cancel = nullptr);
   // {run_id, approved, receipt_id, ref?}
   Result<Json> confirm(const Json& request, const CancelToken* cancel = nullptr);
+  // {run_id, receipt_id, state, parts?, data?, error?, ref?}: the client's answer to the client_step a run is paused on
+  // (client_devices.h). Media in `parts` come as data_base64 (stored in the blob store, with a graph node) or as the hash of a
+  // blob that is already stored; text as text. The run continues with the next step.
+  Result<Json> client_result(const Json& request, const CancelToken* cancel = nullptr);
   // {run_id, ref?}: a paused run is cancelled; a running one is told to stop (answer: status "cancelling").
   Result<Json> cancel(const Json& request);
   // {run_id} -> the run document; {list: true, status?, conv_id?, limit?} -> {"runs":[summaries]}.
@@ -57,6 +62,16 @@ class ActionRunner {
   // (`params: [{name, setting}]` in the catalogue): the caller's word comes first, an unset setting binds nothing.
   Json bind_params(const Json& entry, Json args) const;
 
+  // The clients (client_devices.h): client.declare {client_id?, client?, capabilities} -> the stored declaration;
+  // client.capabilities {client_id?} -> the declaration, or the ids of the clients known; client.blob {hash}.
+  Result<Json> client_declare(const Json& request);
+  Result<Json> client_capabilities(const Json& request);
+  Result<Json> client_blob(const Json& request);
+  // The declaration the kernel holds for a client (null when unknown or expired) and what it changes in the catalogue
+  // ({action id: patch}, empty for an unknown client): what the router needs to see the catalogue as that client does.
+  Json client_declaration(std::string_view client_id);
+  Json client_patches(std::string_view client_id);
+
   // The run store (for the chat router, which keeps the id of the run it proposed in the message).
   RunStore& store();
   // The incremental index of completed runs behind the detection of repeated chains and of the classes an action is used on
@@ -65,7 +80,7 @@ class ActionRunner {
 
  private:
   struct Loaded;
-  Result<Loaded> load();
+  Result<Loaded> load(std::string_view client_id = "");
   Result<Json> write_overlay(std::string_view action, const Json& request);
   Result<Json> run_gated(std::string_view action, const Json& request);
   Result<RunRequest> prepare(const Loaded& loaded, const Json& request) const;
@@ -75,6 +90,7 @@ class ActionRunner {
   Runtime& rt_;
   std::unique_ptr<RunStore> store_;
   SequenceIndex index_;
+  ClientRegistry clients_;
   std::mutex mu_;
   std::map<std::string, CancelToken, std::less<>> live_;  // runs executing right now
 };

@@ -343,6 +343,62 @@
           "en": "Removing a group takes away a name your rules may refer to; you confirm each one.",
           "pl": "Usunięcie grupy odbiera nazwę, do której mogą się odwoływać Twoje reguły; każde potwierdzasz sam."
         }
+      },
+      "confirm:device.record_audio": {
+        "id": "confirm:device.record_audio",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.record_audio"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Recording sound with a microphone captures what is said around you; you confirm each recording.",
+          "pl": "Nagrywanie mikrofonem rejestruje to, co mówi się wokół Ciebie; każde nagranie potwierdzasz sam."
+        }
+      },
+      "confirm:device.capture_image": {
+        "id": "confirm:device.capture_image",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.capture_image"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Taking a picture with a camera captures what is in front of it; you confirm each one.",
+          "pl": "Zdjęcie aparatem rejestruje to, co jest przed nim; każde potwierdzasz sam."
+        }
+      },
+      "confirm:device.capture_video": {
+        "id": "confirm:device.capture_video",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.capture_video"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Recording video with a camera captures what is in front of it; you confirm each recording.",
+          "pl": "Film z aparatu rejestruje to, co jest przed nim; każde nagranie potwierdzasz sam."
+        }
+      },
+      "confirm:device.clipboard_read": {
+        "id": "confirm:device.clipboard_read",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.clipboard_read"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "The clipboard may hold what you copied from anywhere (passwords included); you confirm each read.",
+          "pl": "Schowek może zawierać to, co skopiowano skądkolwiek (także hasła); każdy odczyt potwierdzasz sam."
+        }
       }
     },
     "extrapolation": {

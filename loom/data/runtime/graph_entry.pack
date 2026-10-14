@@ -2561,6 +2561,7 @@
           "GET /api/version",
           "PATCH /api/config",
           "POST /api/actions/cancel",
+          "POST /api/actions/client_result",
           "POST /api/actions/confirm",
           "POST /api/actions/define",
           "POST /api/actions/explain",
@@ -2582,6 +2583,9 @@
           "POST /api/chat/cancel",
           "POST /api/chat/route",
           "POST /api/chat/usage-preview",
+          "POST /api/client/blob",
+          "POST /api/client/capabilities",
+          "POST /api/client/declare",
           "POST /api/context/select",
           "POST /api/conversations",
           "POST /api/graph-reply",
@@ -2684,6 +2688,7 @@
           "PATCH /api/memory/:id",
           "PATCH /api/messages/:id",
           "POST /api/actions/cancel",
+          "POST /api/actions/client_result",
           "POST /api/actions/confirm",
           "POST /api/actions/define",
           "POST /api/actions/remove",
@@ -2702,6 +2707,9 @@
           "POST /api/chat",
           "POST /api/chat/cancel",
           "POST /api/chat/route",
+          "POST /api/client/blob",
+          "POST /api/client/capabilities",
+          "POST /api/client/declare",
           "POST /api/context/build",
           "POST /api/context/select",
           "POST /api/conversations",
@@ -2841,6 +2849,9 @@
             },
             {
               "path": "loom/src/actions/chain.cpp"
+            },
+            {
+              "path": "loom/src/actions/client_devices.cpp"
             },
             {
               "path": "loom/src/actions/element.cpp"
@@ -3004,6 +3015,9 @@
             },
             {
               "path": "loom/data/runtime/cli.pack"
+            },
+            {
+              "path": "loom/data/runtime/client_devices.pack"
             },
             {
               "path": "loom/data/runtime/config.pack"

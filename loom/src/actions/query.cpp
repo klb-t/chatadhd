@@ -73,6 +73,9 @@ Json Engine::row_for(const std::string& id, const Json& action, const Prepared& 
   row["callable"] = implementation == "implemented";
   if (implementation != "implemented")
     if (const Json* r = json::find(action, "planned_reason")) row["planned_reason"] = *r;
+  // A device action the asking client declared: it runs on that client (client_devices.h).
+  for (const char* k : {"runs_on", "client_permission", "runnable_note"})
+    if (const Json* v = json::find(action, k)) row[k] = *v;
   row["status"] = status;
   row["default"] = is_default;
   if (!d.reason.is_null()) row["reason"] = d.reason;
@@ -164,7 +167,7 @@ Result<Json> Engine::explain(const Json& element_json_in, std::string_view actio
       if (const Json* dec = json::find(decisions_, "default_action")) status = json::get_string(*dec, "status", status);
   }
   Json summary = Json::object();
-  for (const char* k : {"title", "kind", "status", "content_op", "form_op", "cost", "confidence", "effects", "produces"})
+  for (const char* k : {"title", "kind", "status", "content_op", "form_op", "cost", "confidence", "effects", "produces", "runs_on", "client_permission", "runnable_note"})
     if (const Json* v = json::find(*action, k)) summary[k == std::string("status") ? "implementation" : k] = *v;
   summary["id"] = id;
   Json groups = Json::array();
@@ -211,11 +214,17 @@ Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view acti
 
 Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
                     const ElementSources* sources, const Config* config) {
+  return invoke(data_dir, action, request, sources, config, nullptr);
+}
+
+Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
+                    const ElementSources* sources, const Config* config, const Json* client_patches) {
   if (!request.is_object()) return Error(Errc::InvalidArgument, "request must be a JSON object");
   const Json* given = json::find(request, "element");
   if (!given) return Error(Errc::InvalidArgument, "element is required");
   LOOM_TRY_ASSIGN(auto engine, Engine::load(data_dir));
   if (config) engine.set_user_values(config->all());  // the live settings, not only what is saved
+  if (client_patches) engine.apply_client(*client_patches);
   Json resolved_element = *given;
   if (sources) {
     LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(data_dir));

@@ -78,6 +78,8 @@ try {
         omitted_observations: 1, skipped: [{ observation: "obs_omitted", reason: "input_budget" }] } : { representation: "relation_v1", status: "off", accepted: 0, rejected: 0, requests: 0, failed: 0, cache_hits: 0, input_bytes: 0, candidate_ids: [], rejections: [], skipped: [] };
       result = { status: "done", error: "", run, stages: [{ stage: "extract", cache_hit: on, stats: { semantic } }] };
       runs.unshift({ id: run, status: "done" });
+    } else if (url.pathname === "/api/client/declare") {
+      result = { error: { code: "fixture_unsupported", message: url.pathname } };  // the page declares its devices (P13); this backend has no clients
     } else { unexpected.push(`${request.method()} ${url.pathname}`); result = { error: { code: "unexpected_mock_request", message: url.pathname } }; }
     await route.fulfill({ contentType: "application/json", body: JSON.stringify(result) });
   });

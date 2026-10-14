@@ -78,7 +78,8 @@ const server = createServer(async (request, response) => {
       { type: "done", conv_id: body.conv_id, assistant_message_id: `assistant-${n}` }]) response.write(`data: ${JSON.stringify(chunk)}\n\n`);
     response.end(); return;
   }
-  unexpected.push(`${request.method} ${url.pathname}`);
+  // The page declares its devices to the kernel when it opens (P13); this authored backend has no clients, which the page tolerates.
+  if (url.pathname !== "/api/client/declare") unexpected.push(`${request.method} ${url.pathname}`);
   json(response, { error: { code: "fixture_unsupported", message: "Unsupported fixture endpoint" } }, 404);
 });
 await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
