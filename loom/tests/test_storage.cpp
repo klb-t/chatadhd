@@ -445,7 +445,9 @@ struct FakeDrive final : net::HttpTransport {
 void run_contract(StorageBackend& b) {
   CAPTURE(b.kind());
   LOOM_REQUIRE_OK(b.probe());
-  const std::string bin("\x00\x01\xff binary\r\n\x00", 15);
+  // Embedded NULs: size from the array (the literal is 13 bytes; a hard-coded 15 read past it).
+  static constexpr char kBin[] = "\x00\x01\xff binary\r\n\x00";
+  const std::string bin(kBin, sizeof(kBin) - 1);
   const std::string h1 = Sha256::hex("alpha");
   LOOM_REQUIRE_OK(b.put(cas_key(h1), "alpha", "text/plain"));
   LOOM_REQUIRE_OK(b.put("named/doc one & two+x.bin", bin, "application/octet-stream"));
