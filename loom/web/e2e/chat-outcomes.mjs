@@ -103,6 +103,7 @@ async function check(name, run) { await run(); groups.push(name); console.log(`[
 const send = () => page.getByTestId("send-chat");
 async function fresh() {
   await page.goto((base).replace(/\/?$/, "/#warsztat"));
+  await page.reload();  // the same URL with a hash is not a navigation: a fresh page needs the reload
   await page.getByTestId("chat-input").waitFor();
 }
 // Types the words, sends, and waits until the page is at rest: no stream on the screen and no Stop button.

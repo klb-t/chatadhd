@@ -8,7 +8,7 @@ import { createModuleLoader } from '../product-perspective/loader.mjs';
 const loader = await createModuleLoader();
 test.after(() => loader.close());
 const sv = await loader.load('src/shell/start-view.ts');
-const dis = await loader.load('src/shell/disclosure.ts');
+const dis = await loader.load('src/shell/disclosure-state.ts');
 const Disclosure = (await loader.load('src/shell/Disclosure.tsx')).default;
 const anim = await loader.load('src/shell/animation.ts');
 const lang = await loader.load('src/shell/language.ts');

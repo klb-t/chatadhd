@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { disclosureView, type DisclosureLabels } from "./disclosure";
+import { disclosureView, type DisclosureLabels } from "./disclosure-state";
 import "./shell.css";
 
 interface Props {
