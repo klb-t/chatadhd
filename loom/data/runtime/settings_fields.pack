@@ -159,6 +159,30 @@
         "description": "Usage policy options (growth factor, baselines). Raising expected consumption by an order of magnitude needs the user's confirmation; the confirmation is enforced by the usage-policy actions, not by the config write."
       },
       {
+        "key": "loom_zip_max_total_bytes",
+        "scope": "config",
+        "group": "safety",
+        "type": "integer",
+        "has_default": true,
+        "description": "Most bytes one imported ZIP archive may expand to; the import is refused before writing past it (zip bomb guard). 0 = no limit."
+      },
+      {
+        "key": "loom_zip_max_ratio",
+        "scope": "config",
+        "group": "safety",
+        "type": "number",
+        "has_default": true,
+        "description": "Largest uncompressed/compressed ratio of one ZIP entry; a larger one is refused while extracting. 0 = no limit."
+      },
+      {
+        "key": "loom_git_allow_repo_config",
+        "scope": "config",
+        "group": "safety",
+        "type": "boolean",
+        "has_default": true,
+        "description": "false (preset): git run on a repository from your data folder ignores its hooks, fsmonitor and other configured programs. true lets the repository's own configuration run."
+      },
+      {
         "key": "_config_version",
         "scope": "config",
         "group": "internal",

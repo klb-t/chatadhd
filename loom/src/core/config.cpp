@@ -217,6 +217,10 @@ const Json& loom_config_defaults() {
       {"loom_event_log_types", Json::array({"conv:created", "import:done", "graph:changed"})},
       {"loom_task_workers", 1},
       {"loom_usage_policy", usage_policy_defaults()},
+      // R20 safety settings (src/util/safety.h); 0 = no limit.
+      {"loom_zip_max_total_bytes", std::int64_t(64) * 1024 * 1024 * 1024},
+      {"loom_zip_max_ratio", 1000},
+      {"loom_git_allow_repo_config", false},
   };
   return kLoomDefaults;
 }

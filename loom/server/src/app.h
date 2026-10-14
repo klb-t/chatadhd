@@ -29,6 +29,10 @@ struct ServerOptions {
   // streamed to disk, so 0 (= no limit) for them does not grow memory. 0 for JSON means no limit either.
   size_t max_body_bytes = 64u * 1024 * 1024;
   size_t max_upload_bytes = 0;
+  // R20: chunked / unframed request bodies are refused (411) by default. When true they are accepted on the two
+  // upload routes only (import, transcribe), streamed to disk and counted against max_upload_bytes; every
+  // other route still needs a Content-Length because its body is held in memory.
+  bool allow_chunked_uploads = false;
 };
 
 // Owns the LoomContext and the httplib::Server, and wires every /api/*

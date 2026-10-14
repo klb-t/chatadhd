@@ -1,5 +1,6 @@
 // C API: extract + resolve (extract.h, resolve.h).
 #include "context.h"
+#include "util/safety.h"
 #include "loom/extract.h"
 #include "loom/knowledge.h"
 #include "loom/resolve.h"
@@ -47,7 +48,7 @@ LOOM_API const char* loom_resolve_lineage(LoomContext* ctx, const char* request_
     if (!s) return out_error(s.error());
     std::vector<std::string> paths;
     for (const auto& [path, c] : s->files) paths.push_back(path);
-    auto hist = resolve::git_revisions(repo, paths);
+    auto hist = resolve::git_revisions(repo, paths, safety::git_allow_repo_config(ctx->rt->paths().root));
     if (!hist) return out_error(hist.error());
     if (hist->empty()) return out_error(Errc::NotFound, "no revision of the repository touches the snapshot's files");
     auto r = resolve::code_lineage(*s, *hist);

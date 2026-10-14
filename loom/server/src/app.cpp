@@ -220,6 +220,7 @@ struct Upload {
   fs::path path;
   std::map<std::string, std::string> fields;  // small non-file multipart fields
   std::string error;
+  bool too_large = false;
 };
 
 // Extension of an untrusted upload name, kept only when it is a plain alphanumeric suffix.
@@ -246,7 +247,7 @@ fs::path upload_dir_for(LoomContext* ctx) {
 // Streams the multipart part "file" into `dir`/<random name> as it arrives. Other parts are collected as
 // strings up to `field_limit` bytes each (they are options, not payload).
 bool receive_upload(const httplib::Request& req, const httplib::ContentReader& reader, const fs::path& dir,
-                    std::size_t field_limit, Upload& up) {
+                    std::size_t field_limit, std::size_t total_limit, Upload& up) {
   if (!req.is_multipart_form_data()) {
     up.error = "multipart/form-data with a field \"file\" is required";
     return false;
@@ -254,6 +255,7 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
   std::ofstream out;
   std::string current;
   bool in_file = false, failed = false;
+  std::size_t total = 0;  // counts every body byte (total_limit 0 = no limit), so chunked bodies are bounded too
   const bool ok = reader(
       [&](const httplib::MultipartFormData& part) {
         current = part.name;
@@ -270,6 +272,13 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
         return true;
       },
       [&](const char* data, std::size_t n) {
+        total += n;
+        if (total_limit != 0 && total > total_limit) {
+          failed = true;
+          up.too_large = true;
+          up.error = "upload is larger than this server accepts (see --max-upload-bytes)";
+          return false;
+        }
         if (in_file) {
           out.write(data, static_cast<std::streamsize>(n));
           if (!out) { failed = true; up.error = "cannot write the upload (disk full?)"; return false; }
@@ -404,6 +413,9 @@ void App::register_middleware() {
   // Authorization: Bearer header, selects the user and that user's own data directory; the static token is
   // not used then.
   auto body_refusal = [this](const httplib::Request& req) -> int {
+    const bool upload = req.method == "POST" && (req.path == "/api/import" || req.path == "/api/media/transcribe");
+    // Setting (allow_chunked_uploads): such a body is streamed to disk and counted by receive_upload.
+    if (opts_.allow_chunked_uploads && upload && !req.has_header("Content-Length")) return 0;
     if (!req.get_header_value("Transfer-Encoding").empty()) return 411;
     const bool writes = req.method == "POST" || req.method == "PUT" || req.method == "PATCH";
     if (!req.has_header("Content-Length")) return writes ? 411 : 0;
@@ -411,7 +423,6 @@ void App::register_middleware() {
     unsigned long long len = 0;
     const auto parsed = std::from_chars(text.data(), text.data() + text.size(), len);
     if (parsed.ec != std::errc{} || parsed.ptr != text.data() + text.size()) return 411;
-    const bool upload = req.method == "POST" && (req.path == "/api/import" || req.path == "/api/media/transcribe");
     const std::size_t limit = upload ? opts_.max_upload_bytes : opts_.max_body_bytes;  // 0 = no limit
     return limit != 0 && len > limit ? 413 : 0;
   };
@@ -730,10 +741,10 @@ void App::route_models_providers() {
       fs::path path;
       ~Cleanup() { std::error_code ignored; if (!path.empty()) fs::remove(path, ignored); }
     } cleanup;
-    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), up);
+    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up);
     cleanup.path = up.path;
     if (!received) {
-      send_error(res, "invalid_argument", up.error);
+      send_error(res, "invalid_argument", up.error, up.too_large ? 413 : 400);
       return;
     }
     if (!up.has_file) {
@@ -1024,8 +1035,8 @@ void App::route_import_export() {
                                    const httplib::ContentReader& reader) {
     LoomContext* ctx = rctx();
     Upload up;
-    if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), up)) {
-      send_error(res, "invalid_argument", up.error, 400);
+    if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up)) {
+      send_error(res, "invalid_argument", up.error, up.too_large ? 413 : 400);
       return;
     }
     if (!up.has_file) {
@@ -1516,6 +1527,15 @@ std::string client_address(const httplib::Request& req, bool trust_forwarded) {
   }
   return req.remote_addr;
 }
+// R20: every password hash is gated (hashing.max_concurrent); a request that found no free slot within
+// hashing.wait_seconds is answered 503 + Retry-After instead of an error of its own.
+bool reply_if_busy(const loom::Error& e, int retry_after, httplib::Response& res) {
+  if (e.code != loom::Errc::Busy) return false;
+  res.set_header("Retry-After", std::to_string(std::max(1, retry_after)));
+  send_error(res, "busy", e.message, 503);
+  return true;
+}
+
 json user_json(const loom::accounts::User& u) { return {{"id", u.id}, {"login", u.login}}; }
 }  // namespace
 
@@ -1550,6 +1570,10 @@ void App::route_auth() {
       json body;
       if (!object_body(req, res, body)) return;
       const std::string who = body.value("login", std::string());
+      if (accounts_->login_too_long(who)) {  // before any throttle bookkeeping
+        send_error(res, "invalid_argument", "login is longer than " + std::to_string(accounts_->settings().login_max_length) + " characters", 400);
+        return;
+      }
       const std::string client = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
       if (const auto wait = accounts_->throttle_wait(who, client); wait > 0) {
         res.set_header("Retry-After", std::to_string(wait));
@@ -1559,6 +1583,7 @@ void App::route_auth() {
       auto u = accounts_->verify_password(who, body.value("password", std::string()));
       if (u) accounts_->record_success(who);
       if (!u) {
+        if (reply_if_busy(u.error(), static_cast<int>(accounts_->settings().hash_wait_seconds), res)) return;
         if (u.error().code == loom::Errc::Auth) accounts_->record_failure(who, client);
         if (u.error().code == loom::Errc::Auth) send_error(res, "auth", "invalid login or password", 401);
         else send_error(res, "internal", "login failed", 500);
@@ -1575,6 +1600,10 @@ void App::route_auth() {
       // Every attempt counts (it costs an Argon2id evaluation and, in invite mode, is a guess at a code), so the
       // login throttle applies to registration under its own key per client address.
       const std::string client = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
+      if (accounts_->login_too_long(body.value("login", std::string()))) {
+        send_error(res, "invalid_argument", "login is longer than " + std::to_string(accounts_->settings().login_max_length) + " characters", 400);
+        return;
+      }
       const std::string key = "register@" + client;
       if (const auto wait = accounts_->throttle_wait(key, client); wait > 0) {
         res.set_header("Retry-After", std::to_string(wait));
@@ -1589,6 +1618,7 @@ void App::route_auth() {
       auto u = accounts_->create_user(login, body.value("password", std::string()),
                                       mode == "invite" ? body.value("invite", std::string()) : std::string());
       if (!u) {
+        if (reply_if_busy(u.error(), static_cast<int>(accounts_->settings().hash_wait_seconds), res)) return;
         send_error(res, std::string(loom::errc_name(u.error().code)), u.error().message,
                    u.error().code == loom::Errc::Auth ? 403 : -1);
         return;
@@ -1614,13 +1644,18 @@ void App::route_auth() {
       }
       auto ok = accounts_->verify_password(t_user->login, body.value("current", std::string()));
       if (!ok) {
+        if (reply_if_busy(ok.error(), static_cast<int>(accounts_->settings().hash_wait_seconds), res)) return;
         accounts_->record_failure(t_user->login, client);
         send_error(res, "auth", "current password is wrong", 401);
         return;
       }
       accounts_->record_success(t_user->login);
       auto st = accounts_->set_password(t_user->login, body.value("new", std::string()));
-      if (!st) { send_error(res, std::string(loom::errc_name(st.error().code)), st.error().message); return; }
+      if (!st) {
+        if (reply_if_busy(st.error(), static_cast<int>(accounts_->settings().hash_wait_seconds), res)) return;
+        send_error(res, std::string(loom::errc_name(st.error().code)), st.error().message);
+        return;
+      }
       (void)accounts_->revoke_user_sessions(t_user->id);  // every old session ends; this one is replaced
       start_session(req, res, *t_user, 200);
     });

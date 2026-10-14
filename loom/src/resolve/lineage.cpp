@@ -11,6 +11,7 @@
 #include <unordered_map>
 
 #include "archive/archive_internal.h"
+#include "util/safety.h"
 #include "loom/resolve.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
@@ -283,13 +284,18 @@ std::string shell_quote(const std::string& s) {
   return out + "'";
 }
 
-Result<std::string> run_git(const fs::path& repo, const std::vector<std::string>& args) {
+Result<std::string> run_git(const fs::path& repo, const std::vector<std::string>& args, bool allow_repo_config) {
 #if defined(_WIN32) || defined(__ANDROID__)
   (void)repo;
   (void)args;
   return Error(Errc::Unsupported, "git history is desktop-only");
 #else
-  std::string cmd = "git -C " + shell_quote(repo.string());
+  // R20: a repository can name programs to run (core.hooksPath, core.fsmonitor, pager, textconv, ...); unless the
+  // setting loom_git_allow_repo_config says otherwise they are switched off for every command.
+  std::string cmd = "GIT_TERMINAL_PROMPT=0 git";
+  if (!allow_repo_config)
+    for (const auto& a : safety::git_hardening_args()) cmd += " " + shell_quote(a);
+  cmd += " -C " + shell_quote(repo.string());
   for (const auto& a : args) cmd += " " + shell_quote(a);
   cmd += " 2>/dev/null";
   FILE* f = ::popen(cmd.c_str(), "r");
@@ -310,10 +316,11 @@ bool text_file(const std::string& bytes) {
 
 }  // namespace
 
-Result<std::vector<Revision>> git_revisions(const fs::path& repo, const std::vector<std::string>& paths) {
+Result<std::vector<Revision>> git_revisions(const fs::path& repo, const std::vector<std::string>& paths,
+                                            bool allow_repo_config) {
   std::vector<std::string> args{"log", "--full-history", "--no-merges", "--format=%H%x1f%h%x1f%aI%x1f%s", "--"};
   for (const auto& p : paths) args.push_back(p);
-  LOOM_TRY_ASSIGN(std::string log, run_git(repo, args));
+  LOOM_TRY_ASSIGN(std::string log, run_git(repo, args, allow_repo_config));
   std::vector<Revision> out;
   std::map<std::string, std::string> blobs;
   std::size_t pos = 0;
@@ -346,7 +353,7 @@ Result<std::vector<Revision>> git_revisions(const fs::path& repo, const std::vec
     r.label = label;
     std::vector<std::string> ls{"ls-tree", "-r", r.id, "--"};
     for (const auto& p : paths) ls.push_back(p);
-    LOOM_TRY_ASSIGN(std::string tree, run_git(repo, ls));
+    LOOM_TRY_ASSIGN(std::string tree, run_git(repo, ls, allow_repo_config));
     std::size_t tp = 0;
     while (tp < tree.size()) {
       std::size_t te = tree.find('\n', tp);
@@ -361,7 +368,7 @@ Result<std::vector<Revision>> git_revisions(const fs::path& repo, const std::vec
       std::string sha = meta.substr(sp2 + 1);
       auto it = blobs.find(sha);
       if (it == blobs.end()) {
-        LOOM_TRY_ASSIGN(std::string content, run_git(repo, {"cat-file", "-p", sha}));
+        LOOM_TRY_ASSIGN(std::string content, run_git(repo, {"cat-file", "-p", sha}, allow_repo_config));
         it = blobs.emplace(sha, std::move(content)).first;
       }
       r.files[path] = it->second;
