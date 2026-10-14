@@ -539,7 +539,10 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
         const std::size_t min_words = static_cast<std::size_t>(json::get_int(d.p.at("transforms").at("compile_refinements"), "goal_min_words", 4));
         for (const auto& x : *msgs) {
           if (x.id == m.id) break;
-          if (x.status == msg_status::kActive && x.role == "user" && !is_traffic(d, x) && text::tokenize(utf8::decode(x.text), d.fold).size() >= min_words) has_goal = true;
+          if (x.status == msg_status::kActive && x.role == "user" && !is_traffic(d, x) && text::tokenize(utf8::decode(x.text), d.fold).size() >= min_words) {
+            has_goal = true;
+            break;
+          }
         }
       }
       signals = detect_heuristic(d, m, has_goal);
