@@ -60,7 +60,7 @@
         "cost": 1.0,
         "confidence": 0.6
       },
-      "sequences": {"repeat": 3, "max_length": 3, "gap_seconds": 900, "window_runs": 200, "joiner": "_then_"},
+      "sequences": {"repeat": 3, "max_length": 3, "gap_seconds": 900, "window_runs": 200, "joiner": "_then_", "index": {"convs": 64, "snapshot_every": 100, "sources": 16}},
       "groups": {"min_classes": 2, "suffix": "_targets"},
       "node": {"kind": "proposal", "link": "derived_from"}
     },
@@ -426,7 +426,7 @@
       },
       "emergent": {
         "type": "object",
-        "description": "The catalogue grows from conversations (R55), always as proposals and never silently. `setting`/`active`/`presets`: off | propose. command_shape: an input that matches no action but has the shape of a command (a verb-like lead word, an element, no question) is offered as the definition of a new action (a composite with one use_model step whose prompt is the user's own instruction; requires inferred from the element's traits among requires_from; the phrase joins the lexicon). sequences: the same chain of actions, each run on the result of the one before, on elements of one class `repeat` times in a row (consecutive within gap_seconds, at most max_length long, read from the last window_runs runs) is offered as one composite. groups: a user-defined action used on min_classes classes that share traits is offered a group (named trait bundle) of what they share. Accepting writes only user overlays; every proposal leaves a node of `node.kind` with links `node.link` to the messages it emerged from.",
+        "description": "The catalogue grows from conversations (R55), always as proposals and never silently. `setting`/`active`/`presets`: off | propose. command_shape: an input that matches no action but has the shape of a command (a verb-like lead word, an element, no question) is offered as the definition of a new action (a composite with one use_model step whose prompt is the user's own instruction; requires inferred from the element's traits among requires_from; the phrase joins the lexicon). sequences: the same chain of actions, each run on the result of the one before, on elements of one class `repeat` times in a row (consecutive within gap_seconds, at most max_length long; the last window_runs occurrences of a chain are counted for each class, kept in an incremental index) is offered as one composite. groups: a user-defined action used on min_classes classes that share traits is offered a group (named trait bundle) of what they share. Accepting writes only user overlays; every proposal leaves a node of `node.kind` with links `node.link` to the messages it emerged from.",
         "required": ["setting", "active", "presets", "command_shape", "naming", "requires_from", "definition", "sequences", "groups", "node"],
         "properties": {
           "setting": {"type": "string", "minLength": 1},
@@ -443,7 +443,9 @@
             "cost": {"type": "number", "minimum": 0}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}, "additionalProperties": false},
           "sequences": {"type": "object", "required": ["repeat", "max_length", "gap_seconds", "window_runs", "joiner"], "properties": {
             "repeat": {"type": "integer", "minimum": 1}, "max_length": {"type": "integer", "minimum": 2}, "gap_seconds": {"type": "integer", "minimum": 0},
-            "window_runs": {"type": "integer", "minimum": 1}, "joiner": {"type": "string", "minLength": 1}}, "additionalProperties": false},
+            "window_runs": {"type": "integer", "minimum": 1}, "joiner": {"type": "string", "minLength": 1},
+            "index": {"type": "object", "description": "The incremental index of completed runs behind the detection (action_index.h): the tail of this many conversations is kept (convs), a snapshot is written to the run log every snapshot_every folded runs (a restart folds only what came after it), and this many messages are remembered per action (sources: what a group offer is derived from).", "properties": {
+              "convs": {"type": "integer", "minimum": 1}, "snapshot_every": {"type": "integer", "minimum": 1}, "sources": {"type": "integer", "minimum": 1}}, "additionalProperties": false}}, "additionalProperties": false},
           "groups": {"type": "object", "required": ["min_classes", "suffix"], "properties": {"min_classes": {"type": "integer", "minimum": 2}, "suffix": {"type": "string"}}, "additionalProperties": false},
           "node": {"type": "object", "required": ["kind", "link"], "properties": {"kind": {"type": "string", "minLength": 1}, "link": {"type": "string", "minLength": 1}}, "additionalProperties": false}
         },

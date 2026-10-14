@@ -273,10 +273,11 @@ struct ActionRunner::Loaded {
   ExecutorTable executors;
 };
 
-ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())) {}
+ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_) {}
 ActionRunner::~ActionRunner() = default;
 
 RunStore& ActionRunner::store() { return *store_; }
+SequenceIndex& ActionRunner::sequence_index() { return index_; }
 
 void ActionRunner::install_executors(ExecutorTable& table) {
   Runtime& rt = rt_;

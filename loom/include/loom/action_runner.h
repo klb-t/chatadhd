@@ -15,6 +15,7 @@
 #include <string>
 #include <string_view>
 
+#include "loom/action_index.h"
 #include "loom/action_run.h"
 #include "loom/result.h"
 #include "loom/util/cancel.h"
@@ -58,6 +59,9 @@ class ActionRunner {
 
   // The run store (for the chat router, which keeps the id of the run it proposed in the message).
   RunStore& store();
+  // The incremental index of completed runs behind the detection of repeated chains and of the classes an action is used on
+  // (action_index.h): detection after a command reads what changed since the last time, not the log.
+  SequenceIndex& sequence_index();
 
  private:
   struct Loaded;
@@ -70,6 +74,7 @@ class ActionRunner {
 
   Runtime& rt_;
   std::unique_ptr<RunStore> store_;
+  SequenceIndex index_;
   std::mutex mu_;
   std::map<std::string, CancelToken, std::less<>> live_;  // runs executing right now
 };
