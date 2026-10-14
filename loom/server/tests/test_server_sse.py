@@ -50,7 +50,7 @@ def start(extra, data):
 def main():
     with tempfile.TemporaryDirectory(prefix="loom-sse-") as data:
         # 1. an idle feed says it is alive
-        process, base = start(["--sse-keepalive-ms", "300"], data)
+        process, base = start(["--sse-keepalive-ms", "300", "--threads", "8"], data)
         try:
             feed = requests.get(base + "/api/events/stream", params={"event": "action:client_step"}, stream=True, timeout=10)
             assert feed.status_code == 200 and feed.headers["Content-Type"].startswith("text/event-stream"), feed.headers

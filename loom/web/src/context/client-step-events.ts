@@ -71,10 +71,12 @@ export function watchClientSteps(source: ClientStepSource, onEvent: (event: Clie
   const open = () => {
     if (stopped) return;
     let ended = false;
-    const lost = () => {
+    const lost = (message?: string) => {
       if (ended || stopped) return;
       ended = true;
       stopFeed = null;
+      // A refusal (HTTP 4xx: no such route, not allowed) will not change by asking again; a feed that ended or broke is opened again.
+      if (typeof message === "string" && message.startsWith("HTTP 4")) return;
       const wait = delay;
       delay = Math.min(reconnect.maxMs, delay * 2);
       cancelWait = reconnect.wait(() => { cancelWait = null; open(); }, wait);
@@ -85,8 +87,8 @@ export function watchClientSteps(source: ClientStepSource, onEvent: (event: Clie
         const event = clientStepEvent(envelope);
         if (event !== null) onEvent(event);
       },
-      onDone: lost,
-      onError: lost,
+      onDone: () => lost(),
+      onError: (message) => lost(message),
     });
   };
   open();

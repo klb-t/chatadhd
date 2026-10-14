@@ -30,7 +30,10 @@ struct ServerOptions {
   size_t max_body_bytes = 64u * 1024 * 1024;
   size_t max_upload_bytes = 0;
   // An idle event feed (SSE) writes a comment this often so a client that went away is noticed and its thread freed (0 = never).
-  size_t sse_keepalive_ms = 15000;
+  size_t sse_keepalive_ms = 5000;
+  // Threads that serve requests (0 = the library's own count, at least 8). Every open page holds one for its event feed (P14 4) and
+  // a closed one holds it until the next probe, so the preset leaves room for many pages.
+  size_t worker_threads = 64;
   // R20: chunked / unframed request bodies are refused (411) by default. When true they are accepted on the two
   // upload routes only (import, transcribe, a device's blob), streamed to disk and counted against max_upload_bytes; every
   // other route still needs a Content-Length because its body is held in memory.

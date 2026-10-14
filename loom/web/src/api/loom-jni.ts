@@ -14,7 +14,6 @@
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import { base64ToBytes, bytesToBase64 } from "./bytes";
 import type { ActionsApi, ClientBlob, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import type {
   ChatChunk,
@@ -58,6 +57,21 @@ export function hasNativeBridge(): boolean {
 let callbackSeq = 0;
 /** One chunk across the string bridge (a multiple of 3, so every chunk but the last is whole base64 groups). */
 const BLOB_CHUNK = 196608;
+
+// Bytes <-> base64 for the one transport that has no other way to move them: the shell's string bridge. Always one bounded chunk.
+/** A binary string of the bytes in slices, so a long chunk does not overflow the argument limit of the call. */
+const SLICE = 0x8000;
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  for (let at = 0; bytes.length > at; at += SLICE) binary += String.fromCharCode(...bytes.subarray(at, at + SLICE));
+  return btoa(binary);
+}
+function base64ToBytes(encoded: string): Uint8Array {
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let at = 0; binary.length > at; at += 1) bytes[at] = binary.charCodeAt(at);
+  return bytes;
+}
 
 function nextCallbackId(): string {
   callbackSeq += 1;

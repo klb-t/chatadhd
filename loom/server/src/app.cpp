@@ -368,6 +368,10 @@ bool App::init() {
   svr_.set_payload_max_length(opts_.max_upload_bytes == 0 ? (std::numeric_limits<size_t>::max)() : opts_.max_upload_bytes);
   svr_.set_keep_alive_max_count(100);
   SseQueue::keepalive_ms().store(static_cast<long>(opts_.sse_keepalive_ms));
+  if (opts_.worker_threads != 0) {
+    const std::size_t threads = opts_.worker_threads;
+    svr_.new_task_queue = [threads] { return new httplib::ThreadPool(threads); };
+  }
 
   register_middleware();
   register_routes();

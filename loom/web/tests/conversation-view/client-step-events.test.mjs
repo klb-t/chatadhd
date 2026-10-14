@@ -75,3 +75,14 @@ test('a feed that ends is opened again after a wait that doubles up to the cap; 
   assert.equal(time.waits[4].cancelled, true);
   assert.equal(opened.length, 5);
 });
+
+test('a refusal of the feed (HTTP 4xx) is not asked again; a server error or a broken connection is', () => {
+  for (const [message, again] of [['HTTP 404', false], ['HTTP 401', false], ['HTTP 405', false], ['HTTP 500', true], ['HTTP 503', true], ['Failed to fetch', true], [undefined, true]]) {
+    const { opened, source } = feed();
+    const time = clock();
+    const stop = e.watchClientSteps(source, () => {}, { firstMs: 100, maxMs: 350, wait: time.wait });
+    opened[0].handlers.onError(message);
+    assert.equal(time.waits.length, again ? 1 : 0, String(message));
+    stop();
+  }
+});
