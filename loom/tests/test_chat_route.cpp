@@ -506,4 +506,108 @@ TEST_SUITE("chat_route") {
     CHECK(confirmed.at("kind") == "message");
     CHECK(f.transport->requests().size() == 4);
   }
+
+  // ── P16 1: the routing preset hybrid ──────────────────────────────────
+
+  TEST_CASE("hybrid: a command the local reading is sure of is never overridden by the model; the model is not even asked") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    const std::string message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.99}";
+    for (const char* text : {"Summarise this conversation", "Streść tę rozmowę", "/summarise"}) {
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+      const Json r = f.route(text);
+      INFO(text);
+      CHECK(r.at("method") == "hybrid");
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == "summarise");
+      CHECK(r.at("command").at("source") != "model");
+      CHECK(r.at("hybrid").at("confident") == true);
+      CHECK(r.at("hybrid").at("asked_model") == false);
+    }
+    CHECK(f.transport->requests().empty());  // three confident commands, a model that would have said "message": no call made
+    // a rule said in the conversation is a command the local reading is sure of too
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+    const Json rule = f.route("For me always ask before summarise");
+    CHECK(rule.at("kind") == "command");
+    CHECK(f.transport->requests().empty());
+  }
+
+  TEST_CASE("hybrid: an input the local reading is unsure of asks the model, and the model's verdict decides") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    const Json weak = f.route("Hey, could you summarise this conversation", "<current>", Json{{"method", "heuristic"}});
+    REQUIRE(weak.at("kind") == "command");  // the local reading alone finds it, with a score below confident_score
+    CHECK(weak.at("command").at("score").get<double>() < 0.7);
+    CHECK(weak.at("command").at("score").get<double>() >= 0.5);
+    const std::string message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.95}";
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+    const Json said_message = f.route("Hey, could you summarise this conversation");
+    CHECK(said_message.at("hybrid").at("confident") == false);
+    CHECK(said_message.at("hybrid").at("asked_model") == true);
+    CHECK(said_message.at("kind") == "message");  // the model arbitrates what the local reading was unsure of
+    REQUIRE(f.transport->requests().size() == 1);
+    CHECK(unwrap(json::parse(f.transport->requests()[0].body)).dump().find("could you summarise this conversation") != std::string::npos);
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"args\":{},\"confidence\":0.9}")));
+    const Json said_command = f.route("Hey, could you summarise this conversation");
+    REQUIRE(said_command.at("kind") == "command");
+    CHECK(action_of(said_command) == "summarise");
+    CHECK(said_command.at("command").at("source") == "model");
+    CHECK(f.transport->requests().size() == 2);
+    // a failed call: said, and the local reading stands
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
+    const Json failed = f.route("Hey, could you summarise this conversation");
+    CHECK(failed.at("issues").at(0).at("code") == "model_route_failed");
+    CHECK(failed.at("kind") == "command");
+    CHECK(failed.at("command").at("source") == "lexicon");
+  }
+
+  TEST_CASE("hybrid: an ordinary message stays a message and costs no routing call; the bytes sent are the golden ones") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    f.rt->config().set("system_prompt", "Golden system prompt.");
+    for (const char* text : {"What is the weather like in Paris?", "Dzień dobry, jak się masz?", "golden question"}) {
+      const Json r = f.route(text);
+      INFO(text);
+      CHECK(r.at("kind") == "message");
+      CHECK(r.at("hybrid").at("asked_model") == false);
+    }
+    CHECK(f.transport->requests().empty());
+    f.script(1, "ok");
+    ChatOptions opts;
+    opts.stream = false;
+    CHECK_FALSE(unwrap(chat_route::handle(*f.rt, "golden question", opts, Json{{"message", "golden question"}}, nullptr)).handled);
+    REQUIRE(f.rt->chat().send("golden question", opts));
+    REQUIRE(f.transport->requests().size() == 1);
+    // the same bytes as with the heuristic method (test "a message continues on the chat path ... (golden)")
+    Fixture g;
+    g.rt->config().set("system_prompt", "Golden system prompt.");
+    g.script(1, "ok");
+    CHECK_FALSE(unwrap(chat_route::handle(*g.rt, "golden question", opts, Json{{"message", "golden question"}}, nullptr)).handled);
+    REQUIRE(g.rt->chat().send("golden question", opts));
+    const Json hybrid_bytes = loom::test::request_json(f.transport->requests().at(0));
+    const Json heuristic_bytes = loom::test::request_json(g.transport->requests().at(0));
+    CHECK(hybrid_bytes == heuristic_bytes);
+    CHECK(hybrid_bytes.at("body") == "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"Golden system prompt.\"},"
+                                    "{\"role\":\"user\",\"content\":\"golden question\"}],\"temperature\":0.7,\"max_tokens\":4096,"
+                                    "\"stream\":false,\"include_reasoning\":true}");
+  }
+
+  TEST_CASE("hybrid: an unknown command shape still gets the definition offer, whatever the model says; ask_when no_candidate is a setting") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    const Json offered = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(offered.at("kind") == "command");
+    CHECK(offered.at("command").at("source") == "emergent");
+    CHECK(f.transport->requests().empty());  // nothing matched locally: not a case for the model by default
+    // the person who wants every unrecognised input put to the model says so in the overlay; the offer survives the verdict
+    f.overlay("intent_routing", Json{{"method", Json{{"presets", Json{{"hybrid", Json{{"ask_when", Json::array({"unsure", "no_candidate"})}}}}}}}});
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.95}")));
+    const Json again = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(again.at("kind") == "command");
+    CHECK(again.at("command").at("source") == "emergent");
+    CHECK(again.at("hybrid").at("asked_model") == true);
+    CHECK(f.transport->requests().size() == 1);
+  }
 }

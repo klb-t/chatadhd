@@ -1691,7 +1691,8 @@
           "pl": [
             "streść tę rozmowę"
           ]
-        }
+        },
+        "default_element": "current_conversation"
       },
       "translate": {
         "id": "translate",
@@ -1791,7 +1792,8 @@
           "pl": [
             "przetłumacz tę wiadomość na niemiecki"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "elaborate": {
         "id": "elaborate",
@@ -1893,7 +1895,8 @@
           "pl": [
             "rozwiń tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "parody": {
         "id": "parody",
@@ -2099,7 +2102,8 @@
           "pl": [
             "skrytykuj tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "combine": {
         "id": "combine",
@@ -2370,7 +2374,8 @@
           "pl": [
             "narysuj tę rozmowę"
           ]
-        }
+        },
+        "default_element": "current_conversation"
       },
       "narrate": {
         "id": "narrate",
@@ -5261,8 +5266,8 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "Override the routing method for this call: off, heuristic or model",
-              "pl": "Nadpisz metodę rozpoznawania dla tego wywołania: off, heuristic albo model"
+              "en": "Override the routing method for this call: off, heuristic, hybrid or model",
+              "pl": "Nadpisz metodę rozpoznawania dla tego wywołania: off, heuristic, hybrid albo model"
             },
             "has_default": false,
             "edit": "choice:intent_routing_methods"
@@ -5542,7 +5547,8 @@
           "pl": [
             "przeredaguj tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "explain_simply": {
         "id": "explain_simply",
@@ -5632,7 +5638,8 @@
           "pl": [
             "wytłumacz prościej tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "help.can_do": {
         "id": "help.can_do",
@@ -8338,6 +8345,11 @@
             "element_many": {
               "type": "boolean",
               "description": "The action takes several elements as one input (combine): the router reads every id in the words, and a request may give element as a list of ids; the contents reach the steps one after another."
+            },
+            "default_element": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The element the action acts on when the sentence names none: a name the router resolves (last_message, current_conversation), or an element id (device:microphone). A sentence that brings its own text to work on (a colon, a quote, more content words than heuristic.payload.max_words) stays an ordinary message."
             }
           },
           "additionalProperties": true

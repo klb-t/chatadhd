@@ -161,15 +161,20 @@ bool word_matches(const std::string& token, const std::string& word) {
   return token == word;
 }
 
+// default_element of an action (data): the element a command acts on when the sentence names none. A name the router resolves
+// (last_message, current_conversation) or an element id (device:microphone).
+bool resolves_default(std::string_view name) { return name == "last_message" || name == "current_conversation"; }
+Json default_element_ref(const std::string& name) { return resolves_default(name) ? Json{{"resolve", name}} : Json{{"id", name}}; }
+
 struct Hit {
-  std::size_t first = 0, words = 0;
+  std::size_t first = 0, words = 0, last = 0;  // the tokens the phrase occupies run from first to last (inclusive)
 };
 
 std::optional<Hit> match_phrase(const std::vector<std::string>& tokens, const std::string& phrase, std::size_t window, std::size_t lead) {
   const auto words = whitespace_tokens(phrase);
   if (words.empty()) return std::nullopt;
   std::set<std::size_t> used;
-  std::size_t first = tokens.size();
+  std::size_t first = tokens.size(), last = 0;
   const std::size_t limit = std::min(window, tokens.size());
   for (const auto& w : words) {
     bool found = false;
@@ -177,12 +182,13 @@ std::optional<Hit> match_phrase(const std::vector<std::string>& tokens, const st
       if (used.count(i) || !word_matches(tokens[i], w)) continue;
       used.insert(i);
       first = std::min(first, i);
+      last = std::max(last, i);
       found = true;
     }
     if (!found) return std::nullopt;
   }
   if (first >= lead) return std::nullopt;
-  return Hit{first, words.size()};
+  return Hit{first, words.size(), last};
 }
 
 std::string say(const Json& cfg, const std::string& lang, const std::string& id, const Json& params = Json::object()) {
@@ -440,7 +446,9 @@ std::optional<Cand> parse_explicit(const Data& d, const std::string& text) {
     // An action of the application as a whole (it requires nothing but `application`) acts on the application, not on the conversation.
     const auto requires_ = entry ? strings_of(json::find(*entry, "requires")) : std::vector<std::string>();
     const std::string dflt = json::get_string(ex, "default_element");
+    const std::string own = entry ? json::get_string(*entry, "default_element") : std::string();
     if (requires_.size() == 1 && requires_[0] == "application") c.element = Json{{"id", "application"}};
+    else if (resolves_default(own)) c.element = default_element_ref(own);  // the action says what it acts on when nothing is named
     else if (!dflt.empty()) c.element = Json{{"resolve", dflt}};
   }
   return c;
@@ -542,6 +550,34 @@ std::optional<Found> best_phrase(const Data& d, const std::string& key, const Js
   return best;
 }
 
+// A sentence that names no element but brings its own text to work on is an ordinary message: the model does the job inline
+// ("przetłumacz na niemiecki: dzień dobry"). Data heuristic.payload: payload_patterns (a colon followed by text, a quoted text,
+// a second line), max_words (content words allowed after the command), filler_words. The words the argument patterns read
+// ("na niemiecki") and the filler words are not content.
+bool carries_payload(const Data& d, const Json& entry, const std::string& text, const std::vector<std::string>& tokens, const Found& found) {
+  const Json* cfg = json::find(d.cfg.at("heuristic"), "payload");
+  if (!cfg || !cfg->is_object()) return false;
+  const std::u32string subject = utf8::decode(text);
+  for (const auto& pattern : strings_of(json::find(*cfg, "payload_patterns"))) {
+    auto rx = compiled(pattern);
+    if (rx && rx->search(subject)) return true;
+  }
+  const Json& fold_map = d.cfg.at("heuristic").at("fold");
+  std::vector<std::string> tail(tokens.begin() + static_cast<std::ptrdiff_t>(std::min(found.hit.last + 1, tokens.size())), tokens.end());
+  const auto drop_one = [&](const std::string& word) {
+    auto at = std::find(tail.begin(), tail.end(), word);
+    if (at != tail.end()) tail.erase(at);
+  };
+  for (const auto& hit : extract_args(d, entry, text, found.cand.lang, Json::object()))
+    for (const auto& w : word_tokens(fold(hit.matched, fold_map))) drop_one(w);
+  std::set<std::string> fillers;
+  for (const auto& w : strings_of(json::find(*cfg, "filler_words"))) fillers.insert(fold(w, fold_map));
+  std::size_t content = 0;
+  for (const auto& w : tail)
+    if (!fillers.count(w)) ++content;
+  return content > static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(*cfg, "max_words", 0)));
+}
+
 std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
   std::vector<Cand> out;
   const Json& h = d.cfg.at("heuristic");
@@ -558,8 +594,9 @@ std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
     if (element.is_null() && implied.empty()) continue;
     auto found = best_phrase(d, it.key(), entry, tokens);
     if (!found) continue;
+    if (element.is_null() && resolves_default(implied) && carries_payload(d, entry, text, tokens, *found)) continue;
     Cand c = found->cand;
-    c.element = element.is_null() ? Json{{"id", implied}} : element;
+    c.element = element.is_null() ? default_element_ref(implied) : element;
     if (json::get_bool(entry, "element_many", false))
       if (Json many = find_references_many(d, text); many.size() > 1) c.element = Json{{"many", many}};
     if (!implied.empty() && json::get_string(c.element, "id").rfind("device:", 0) == 0) {  // a device action on a device: the second action may go on from it
@@ -585,7 +622,7 @@ std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
       std::optional<Found> then;
       for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
         const Json& entry = it.value();
-        if (json::find(entry, "element_from_arg") || !json::get_string(entry, "default_element").empty()) continue;
+        if (json::find(entry, "element_from_arg") || (!json::get_string(entry, "default_element").empty() && !resolves_default(json::get_string(entry, "default_element")))) continue;
         auto found = best_phrase(d, it.key(), entry, tail);
         if (found && (!then || found->cand.score > then->cand.score)) then = std::move(found);
       }
@@ -611,6 +648,11 @@ std::string resolve_action_word(const Data& d, const std::string& word) {
   if (word.empty()) return std::string();
   if (entry_of(d, word)) return word;
   const Json& h = d.cfg.at("heuristic");
+  // Words that stand for one action ("obraz" is depict, not a media action that is only planned): heuristic.rules.action_words, word -> action.
+  if (const Json* rules = json::find(h, "rules"); rules && rules->is_object())
+    if (const Json* words = json::find(*rules, "action_words"); words && words->is_object())
+      for (auto it = words->begin(); it != words->end(); ++it)
+        if (it.value().is_string() && entry_of(d, it.value().get<std::string>()) && word_matches(word, fold(it.key(), h.at("fold")))) return it.value().get<std::string>();
   std::vector<std::string> found;
   for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
     if (json::find(it.value(), "element_from_arg")) continue;
@@ -810,6 +852,8 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   if (ref == "conversation") c.element = Json{{"resolve", "current_conversation"}};
   else if (ref == "message") c.element = Json{{"resolve", "last_message"}};
   else if (!ref.empty()) c.element = Json{{"id", ref}};
+  else if (const Json* own_entry = entry_of(d, action); own_entry && resolves_default(json::get_string(*own_entry, "default_element")))
+    c.element = default_element_ref(json::get_string(*own_entry, "default_element"));  // what the action acts on when nothing is named
   else if (const std::string dflt = json::get_string(d.cfg.at("heuristic").at("explicit"), "default_element"); !dflt.empty())
     c.element = Json{{"resolve", dflt}};
   const Json* entry = entry_of(d, action);
@@ -1092,8 +1136,11 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   const std::string text = json::get_string(request, "text");
   if (utf8::is_blank(text)) return Error(Errc::InvalidArgument, "text is required");
   const std::string method = effective_method(rt, d, request);
-  if (!json::find(d.cfg.at("method").at("presets"), method))
-    return Error(Errc::InvalidArgument, "unknown routing method '" + method + "' (off, heuristic or model)");
+  if (!json::find(d.cfg.at("method").at("presets"), method)) {
+    std::string known;
+    for (auto it = d.cfg.at("method").at("presets").begin(); it != d.cfg.at("method").at("presets").end(); ++it) known += (known.empty() ? "" : ", ") + it.key();
+    return Error(Errc::InvalidArgument, "unknown routing method '" + method + "' (" + known + ")");
+  }
   const std::string lang = detect_language(d, text, json::get_string(request, "lang"));
   Json out = Json::object();
   out["schema"] = "loom.chat_route/1";
@@ -1142,6 +1189,32 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   if (!rule_cands.empty()) {
     cands.erase(std::remove_if(cands.begin(), cands.end(), [](const Cand& x) { return x.source == "pattern" && x.action == "settings.set"; }), cands.end());
     for (auto& r : rule_cands) cands.push_back(std::move(r));
+  }
+  // hybrid: the local reading came first. A command it is sure of (a known action and an element, score at or above confident_score) is never
+  // overridden by a model's "message"; the model is asked only when the local reading is unsure (a candidate between min_score and
+  // confident_score), or, when the preset says so (ask_when: no_candidate), when it found nothing. The model's verdict then replaces the unsure
+  // candidates: "message" makes the input a message, a command is the model's command.
+  if (method == "hybrid") {
+    const Json& preset = d.cfg.at("method").at("presets").at("hybrid");
+    const double confident_score = json::get_number(d.cfg.at("heuristic").at("scoring"), "confident_score", 0.7);
+    const auto ask_when = strings_of(json::find(preset, "ask_when"));
+    const auto asks = [&](const char* when) { return std::find(ask_when.begin(), ask_when.end(), when) != ask_when.end(); };
+    const bool confident = std::any_of(cands.begin(), cands.end(), [&](const Cand& x) { return x.score >= confident_score; });
+    const bool ask = !confident && !inner && (cands.empty() ? asks("no_candidate") : asks("unsure"));
+    out["hybrid"] = Json{{"confident", confident}, {"asked_model", ask}};
+    if (ask) {
+      ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()));
+      if (!routed.pending.is_null()) {
+        out["kind"] = "pending";
+        out["usage_pending"] = routed.pending;
+        return out;
+      }
+      if (routed.error) {
+        out["issues"].push_back(Json{{"code", "model_route_failed"}, {"message", routed.error->message}, {"fallback", "heuristic"}});
+      } else {
+        cands = std::move(routed.cands);
+      }
+    }
   }
   // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55). This is a local
   // check of the words, whatever the method: a model that called the sentence a message, or whose call failed, does not take the offer away
