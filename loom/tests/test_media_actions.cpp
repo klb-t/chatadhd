@@ -210,6 +210,94 @@ TEST_SUITE("media_actions") {
     CHECK(run.at("result").at("parts").at(0).at("text") == "They ship on Friday.");
   }
 
+  // P14: a call the usage guard holds (x10 growth) is a pause with the guard's receipt, not a failed step (R16).
+  TEST_CASE("x10 growth in a transcription pauses the run with the guard's receipt; confirming sends the same request once; the result lands in the graph") {
+    Fixture f;
+    for (int i = 0; i < 3; ++i) {
+      f.expect_asr("small " + std::to_string(i));
+      const std::string tiny = unwrap(f.rt->blobs().put("tiny" + std::to_string(i), "audio/mp4")).hash;
+      REQUIRE(f.run(Json{{"action", "transcribe"}, {"element", tiny}, {"args", Json{{"language", "pl"}}}, {"ref", "test"}}).at("status") == "completed");
+    }
+    REQUIRE(f.transport->requests().size() == 3);
+    const std::string big(60000, 'a');
+    const std::string audio = unwrap(f.rt->blobs().put(big, "audio/mp4")).hash;
+    const Json held = f.run(Json{{"action", "transcribe"}, {"element", audio}, {"args", Json{{"language", "pl"}}}, {"ref", "test"}});
+    INFO(held.dump());
+    REQUIRE(held.at("status") == "awaiting_usage");
+    CHECK(held.at("pending").at("kind") == "usage");
+    CHECK(held.at("pending").at("usage_pending").at("schema") == "loom.action_usage_pending/1");
+    CHECK(held.at("pending").at("usage_pending").at("media") == "media.asr");
+    CHECK(held.at("pending").at("usage_pending").at("sent") == false);
+    CHECK(held.at("pending").at("receipt_id").is_string());
+    CHECK(f.transport->requests().size() == 3);  // nothing left the machine, no other provider was tried
+    // a wrong receipt answers nothing
+    CHECK_FALSE(f.rt->actions().confirm(Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", "arr_made_up"}}));
+    CHECK(f.transport->requests().size() == 3);
+    f.expect_asr("Big recording read.");
+    const Json done = unwrap(f.rt->actions().confirm(
+        Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "web"}}));
+    INFO(done.dump());
+    REQUIRE(done.at("status") == "completed");
+    REQUIRE(f.transport->requests().size() == 4);  // sent once
+    // the very request an unguarded call of the same recording makes (the boundary is derived from the parts)
+    Fixture ref;
+    ref.expect_asr("x");
+    REQUIRE(ref.rt->media().transcribe_bytes(big, "m4a", std::nullopt, std::string("pl")));
+    CHECK(wire(f.transport->requests()[3]) == wire(ref.transport->requests()[0]));
+    CHECK(f.transport->requests()[3].body == ref.transport->requests()[0].body);
+    // the text is the result, in the graph as any other
+    CHECK(done.at("result").at("parts").at(0).at("text") == "Big recording read.");
+    const Json& produced = done.at("result").at("produced");
+    REQUIRE(produced.at("items").size() == 1);
+    const Node form = *unwrap(f.rt->db().get_node(produced.at("items").at(0).at("form").get<std::string>()));
+    CHECK(form.kind == "text_form");
+    CHECK(form.content == "Big recording read.");
+    CHECK(done.at("confirmations").size() == 1);
+    // the step's record carries the call: the receipt of the confirmed admission is on the run node
+    const Node run_node = *unwrap(f.rt->db().get_node(produced.at("run_node").get<std::string>()));
+    CHECK(run_node.metadata.at("usage_receipt_id").is_string());
+  }
+
+  TEST_CASE("declining the held transcription ends the run rejected; nothing is sent") {
+    Fixture f;
+    for (int i = 0; i < 3; ++i) {
+      f.expect_asr("small");
+      const std::string tiny = unwrap(f.rt->blobs().put("tiny" + std::to_string(i), "audio/mp4")).hash;
+      REQUIRE(f.run(Json{{"action", "transcribe"}, {"element", tiny}, {"ref", "test"}}).at("status") == "completed");
+    }
+    const std::string audio = unwrap(f.rt->blobs().put(std::string(60000, 'a'), "audio/mp4")).hash;
+    const Json held = f.run(Json{{"action", "transcribe"}, {"element", audio}, {"ref", "test"}});
+    REQUIRE(held.at("status") == "awaiting_usage");
+    const Json no = unwrap(f.rt->actions().confirm(
+        Json{{"run_id", held.at("id")}, {"approved", false}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "web"}}));
+    CHECK(no.at("status") == "rejected");
+    CHECK(no.at("error").at("code") == "rejected");
+    CHECK(f.transport->requests().size() == 3);
+    // nothing was produced in the graph
+    CHECK(no.at("result").is_null());
+  }
+
+  TEST_CASE("the same for a picture: the held read is a pause, the confirmed one is sent once") {
+    Fixture f;
+    for (int i = 0; i < 3; ++i) {
+      f.expect_ocr("small");
+      const std::string tiny = unwrap(f.rt->blobs().put("PNG" + std::to_string(i), "image/png")).hash;
+      REQUIRE(f.run(Json{{"action", "ocr"}, {"element", tiny}, {"ref", "test"}}).at("status") == "completed");
+    }
+    const std::string picture = unwrap(f.rt->blobs().put(std::string(60000, 'p'), "image/png")).hash;
+    const Json held = f.run(Json{{"action", "ocr"}, {"element", picture}, {"ref", "test"}});
+    INFO(held.dump());
+    REQUIRE(held.at("status") == "awaiting_usage");
+    CHECK(held.at("pending").at("usage_pending").at("media") == "media.ocr");
+    CHECK(f.transport->requests().size() == 3);
+    f.expect_ocr("Words in the big picture");
+    const Json done = unwrap(f.rt->actions().confirm(
+        Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "web"}}));
+    REQUIRE(done.at("status") == "completed");
+    CHECK(f.transport->requests().size() == 4);
+    CHECK(done.at("result").at("parts").at(0).at("text") == "Words in the big picture");
+  }
+
   TEST_CASE("a microphone is a device: recording from it stays declared, with its reason, until a client owns the driver") {
     Fixture f;
     const Json proposal = unwrap(f.rt->actions().invoke("propose_chain", Json{{"element", "device:microphone"}, {"target_trait", "has_text"}}));

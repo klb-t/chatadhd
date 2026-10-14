@@ -60,8 +60,11 @@ Json usage_pending_of(const llm::VariantResult& r) {
 
 // A use_model step with `media: asr | ocr` (transcribe, ocr): the recording or the picture of the element goes to the media providers
 // (profile media), which put it on the wire through the one use_model - the adapter of the provider's family, the usage guard, the
-// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the guard holds
-// comes back as the provider's error (the media providers have no way to resume it): the run fails with that reason.
+// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the usage guard
+// holds (x10 growth) is a pause, not a failure: the providers' resumable calls answer with the hold's receipt, nothing is sent and no
+// other provider is tried, and the step comes back Held with that receipt, as a model call does. The run resumes with the user's
+// confirmation (c.usage_confirmation), and this function is called again with the same recording or picture, provider and language,
+// so the request that was held is the request that is sent (only once, only to the provider that held it).
 StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, const std::string& family) {
   const Json media = settings.value("media", Json::object());
   const Json kind = media.value(family, Json::object());
@@ -109,16 +112,26 @@ StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, cons
   } release{rt, previous};
   std::string text;
   Json data = nullptr;
+  const Json confirmation = c.usage_confirmation.is_object() ? c.usage_confirmation : Json::object();
+  auto held = [&](Json pending) {
+    StepOutcome h;
+    h.state = StepOutcome::State::Held;
+    h.hold = std::move(pending);
+    h.provenance = std::move(provenance);
+    return h;
+  };
   if (family == "asr") {
-    auto done = rt.media().transcribe_bytes(bytes, format, provider, language);
+    auto done = rt.media().transcribe_bytes_resumable(bytes, format, provider, language, confirmation);
     if (!done) return failed(done.error());
-    text = done->text;
-    data = done->to_json();
+    if (done->paused()) return held(std::move(done->pending));
+    text = done->value->text;
+    data = done->value->to_json();
   } else {
-    auto done = rt.media().ocr_bytes(bytes, format, provider, language);
+    auto done = rt.media().ocr_bytes_resumable(bytes, format, provider, language, confirmation);
     if (!done) return failed(done.error());
-    text = done->text;
-    data = done->to_json();
+    if (done->paused()) return held(std::move(done->pending));
+    text = done->value->text;
+    data = done->value->to_json();
   }
   StepOutcome out;
   out.state = StepOutcome::State::Ok;
