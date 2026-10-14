@@ -392,7 +392,8 @@ struct ActionRunner::Loaded {
   ExecutorTable executors;
 };
 
-ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_) {
+ActionRunner::ActionRunner(Runtime& rt)
+    : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_), pipelines_(std::make_unique<pipelines::Jobs>(rt)) {
   // The background analysis held by the x10 guard asks its question in the conversation of the message it analysed, and the question closes when
   // it is answered, from whichever surface (P17 3). The handlers hold the runtime only: the worker is stopped before the runtime is torn down.
   Runtime* runtime = &rt;
@@ -405,6 +406,7 @@ ActionRunner::~ActionRunner() {
 }
 
 RunStore& ActionRunner::store() { return *store_; }
+pipelines::Jobs& ActionRunner::pipelines() { return *pipelines_; }
 SequenceIndex& ActionRunner::sequence_index() { return index_; }
 
 void ActionRunner::install_executors(ExecutorTable& table) {
@@ -745,7 +747,7 @@ Result<Json> ActionRunner::spend_gates(const Loaded& loaded, const Json& plan, c
   const Json data = loaded.settings.value("spend_limits", Json::object());
   // Nothing is estimated, fetched or read while the user has set no limit (the preset), or when the plan calls no model.
   if (spend::stored(rt_.config(), data).entries.empty()) return Json::array();
-  if (plan.value("cost", Json::object()).value("model_calls", 0) <= 0) return Json::array();
+  if (plan.value("cost", Json::object()).value("model_calls", 0) <= 0 && !plan.value("cost", Json::object()).value("pipeline_model_use", false)) return Json::array();
   const Json estimate = estimate_of(loaded, plan, r);
   return spend::gates(rt_.paths().root, rt_.config(), data, plan, estimate);
 }

@@ -1312,6 +1312,243 @@
         }
       },
       {
+        "id": "archive_run",
+        "title": {
+          "en": "Analyse an archive or a folder",
+          "pl": "Przeanalizuj archiwum albo folder"
+        },
+        "via": "action",
+        "action": "archive.run",
+        "surfaces": {
+          "c_abi": [
+            "loom_archive_run"
+          ],
+          "http": [
+            "POST /api/archive/run"
+          ]
+        },
+        "examples": {
+          "pl": "przeanalizuj to archiwum /home/ja/eksporty/2026",
+          "en": "analyse this archive /home/me/exports/2026"
+        },
+        "note": {
+          "en": "Starts the Archive Intelligence pipeline in the background on a path (or the picked file); local and free unless the model is allowed (llm auto), the proposal says which. Over the API it needs the receipt of the proposal like any action.",
+          "pl": "Uruchamia potok Archive Intelligence w tle na ścieżce (albo wybranym pliku); lokalnie i za darmo, chyba że dopuszczono model (llm auto) - propozycja mówi, które. Przez API wymaga pokwitowania propozycji jak każda akcja."
+        }
+      },
+      {
+        "id": "archive_status",
+        "title": {
+          "en": "How the archive analysis goes",
+          "pl": "Jak idzie analiza archiwum"
+        },
+        "via": "action",
+        "action": "archive.status",
+        "surfaces": {
+          "c_abi": [
+            "loom_archive_status"
+          ],
+          "http": [
+            "GET /api/archive/status"
+          ]
+        },
+        "examples": {
+          "pl": "jak idzie analiza archiwum?",
+          "en": "how is the archive analysis going?"
+        },
+        "note": {
+          "en": "Stage, counts, result of the analysis started from a sentence, and the latest run the data holds.",
+          "pl": "Etap, liczby i wynik analizy uruchomionej ze zdania oraz ostatni przebieg w danych."
+        }
+      },
+      {
+        "id": "archive_cancel",
+        "title": {
+          "en": "Stop the archive analysis",
+          "pl": "Przerwij analizę archiwum"
+        },
+        "via": "action",
+        "action": "archive.cancel",
+        "surfaces": {
+          "c_abi": [
+            "loom_archive_cancel"
+          ],
+          "http": [
+            "POST /api/archive/cancel"
+          ]
+        },
+        "examples": {
+          "pl": "przerwij analizę archiwum",
+          "en": "stop the archive analysis"
+        },
+        "note": {
+          "en": "Pauses at the next checkpoint; the same analysis started again resumes.",
+          "pl": "Wstrzymuje w najbliższym punkcie kontrolnym; ta sama analiza uruchomiona ponownie jedzie dalej."
+        }
+      },
+      {
+        "id": "knowledge_run",
+        "title": {
+          "en": "Build knowledge from a folder or an archive",
+          "pl": "Zbuduj wiedzę z folderu albo archiwum"
+        },
+        "via": "action",
+        "action": "knowledge.run",
+        "surfaces": {
+          "c_abi": [
+            "loom_knowledge_run"
+          ],
+          "http": [
+            "POST /api/knowledge/run"
+          ]
+        },
+        "examples": {
+          "pl": "zbuduj wiedzę z /home/ja/eksporty/2026",
+          "en": "build knowledge from /home/me/exports/2026"
+        },
+        "note": {
+          "en": "Starts the knowledge pipeline in the background; the proposal says whether the model is used (llm auto: the cost is not known before it runs, and it is under the usage guard and your spending limits).",
+          "pl": "Uruchamia potok wiedzy w tle; propozycja mówi, czy używany jest model (llm auto: koszt nie jest znany przed uruchomieniem, a potok podlega strażnikowi zużycia i Twoim limitom wydatków)."
+        }
+      },
+      {
+        "id": "knowledge_status",
+        "title": {
+          "en": "How the knowledge build goes",
+          "pl": "Jak idzie budowanie wiedzy"
+        },
+        "via": "action",
+        "action": "knowledge.status",
+        "surfaces": {
+          "c_abi": [
+            "loom_knowledge_status",
+            "loom_kb_runs"
+          ],
+          "http": [
+            "GET /api/knowledge/status",
+            "GET /api/knowledge/runs"
+          ]
+        },
+        "examples": {
+          "pl": "jak idzie budowanie wiedzy?",
+          "en": "how is the knowledge build going?"
+        },
+        "note": {
+          "en": "Stage, counts, result of the build started from a sentence, and the latest knowledge run the data holds.",
+          "pl": "Etap, liczby i wynik budowania uruchomionego ze zdania oraz ostatni przebieg wiedzy w danych."
+        }
+      },
+      {
+        "id": "knowledge_cancel",
+        "title": {
+          "en": "Stop the knowledge build",
+          "pl": "Przerwij budowanie wiedzy"
+        },
+        "via": "action",
+        "action": "knowledge.cancel",
+        "surfaces": {
+          "c_abi": [
+            "loom_knowledge_cancel"
+          ],
+          "http": [
+            "POST /api/knowledge/cancel"
+          ]
+        },
+        "examples": {
+          "pl": "przerwij budowanie wiedzy",
+          "en": "stop the knowledge build"
+        },
+        "note": {
+          "en": "Pauses at the next checkpoint; the same build started again resumes.",
+          "pl": "Wstrzymuje w najbliższym punkcie kontrolnym; to samo budowanie uruchomione ponownie jedzie dalej."
+        }
+      },
+      {
+        "id": "catalog_scan",
+        "title": {
+          "en": "Scan a catalogue of exports and folders",
+          "pl": "Przejrzyj katalog eksportów i folderów"
+        },
+        "via": "action",
+        "action": "catalog.scan",
+        "surfaces": {
+          "c_abi": [
+            "loom_catalog_scan"
+          ],
+          "http": [
+            "POST /api/catalog/scan"
+          ]
+        },
+        "examples": {
+          "pl": "przejrzyj ten katalog /home/ja/eksporty",
+          "en": "scan this catalogue /home/me/exports"
+        },
+        "note": {
+          "en": "Catalogues a path in the background without importing anything; local and free.",
+          "pl": "Katalogowanie ścieżki w tle bez importowania czegokolwiek; lokalnie i za darmo."
+        }
+      },
+      {
+        "id": "catalog_status",
+        "title": {
+          "en": "How the catalogue scan goes",
+          "pl": "Jak idzie przeglądanie katalogu"
+        },
+        "via": "action",
+        "action": "catalog.status",
+        "examples": {
+          "pl": "jak idzie przeglądanie katalogu?",
+          "en": "how is the catalogue scan going?"
+        },
+        "note": {
+          "en": "Stage and counts of the scan started from a sentence, and what the catalogue holds.",
+          "pl": "Etap i liczby przeglądania uruchomionego ze zdania oraz to, co ma katalog."
+        }
+      },
+      {
+        "id": "catalog_cancel",
+        "title": {
+          "en": "Stop the catalogue scan",
+          "pl": "Przerwij przeglądanie katalogu"
+        },
+        "via": "action",
+        "action": "catalog.cancel",
+        "examples": {
+          "pl": "przerwij przeglądanie katalogu",
+          "en": "stop the catalogue scan"
+        },
+        "note": {
+          "en": "Pauses at the next checkpoint.",
+          "pl": "Wstrzymuje w najbliższym punkcie kontrolnym."
+        }
+      },
+      {
+        "id": "catalog_query",
+        "title": {
+          "en": "Search the catalogue",
+          "pl": "Szukaj w katalogu"
+        },
+        "via": "action",
+        "action": "catalog.query",
+        "surfaces": {
+          "c_abi": [
+            "loom_catalog_query"
+          ],
+          "http": [
+            "POST /api/catalog/query",
+            "GET /api/catalog/units"
+          ]
+        },
+        "examples": {
+          "pl": "szukaj w katalogu Atlas",
+          "en": "search the catalogue for Atlas"
+        },
+        "note": {
+          "en": "The units of the catalogue about a word, read only.",
+          "pl": "Jednostki katalogu o danym słowie, tylko odczyt."
+        }
+      },
+      {
         "id": "semantic_requeue",
         "title": {
           "en": "Queue failed analyses again",
@@ -1757,107 +1994,27 @@
             "Java_com_chatadhd_android_LoomNative_nativeVersion"
           ]
         }
-      }
-    ],
-    "open": [
-      {
-        "id": "archive",
-        "title": {
-          "en": "Archive Intelligence (Project Compiler)",
-          "pl": "Inteligencja archiwum (Project Compiler)"
-        },
-        "reason": {
-          "en": "A batch pipeline with a structured configuration (folders on the machine, profiles); the spoken form of that configuration is not designed yet.",
-          "pl": "Potok wsadowy ze strukturalną konfiguracją (foldery na maszynie, profile); mówiona postać tej konfiguracji nie jest jeszcze zaprojektowana."
-        },
-        "plan": {
-          "en": "archive.run {path, name}, archive.status, archive.cancel as actions with the path rules of PathPolicy; the progress as a message.",
-          "pl": "archive.run {path, name}, archive.status, archive.cancel jako akcje z regułami ścieżek PathPolicy; postęp jako wiadomość."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_archive_run",
-            "loom_archive_cancel",
-            "loom_archive_status"
-          ],
-          "http": [
-            "GET /api/archive/status",
-            "POST /api/archive/run",
-            "POST /api/archive/cancel"
-          ]
-        }
       },
       {
-        "id": "knowledge",
-        "title": {
-          "en": "Knowledge pipeline: runs, questions, policy",
-          "pl": "Potok wiedzy: przebiegi, pytania, polityka"
-        },
+        "id": "knowledge_documents",
+        "category": "document",
         "reason": {
-          "en": "A paid, multi-stage pipeline with its own policy documents; a spoken form that shows its cost first still has to be designed.",
-          "pl": "Płatny, wieloetapowy potok z własnymi dokumentami polityki; mówiona postać, która najpierw pokazuje koszt, wymaga jeszcze projektu."
-        },
-        "plan": {
-          "en": "knowledge.status and knowledge.query first (read only), then knowledge.run with the estimate in the proposal.",
-          "pl": "Najpierw knowledge.status i knowledge.query (tylko odczyt), potem knowledge.run z szacunkiem w propozycji."
+          "en": "The data pack manifest and its policy files are documents for the owner UI (a manifest of hashes, JSON policies); a spoken form would read a file aloud, and what they decide is asked through the knowledge actions.",
+          "pl": "Manifest paczki danych i jej pliki polityki to dokumenty dla interfejsu właściciela (manifest skrótów, polityki JSON); mówiona postać czytałaby plik na głos, a to, co rozstrzygają, pyta się przez akcje wiedzy."
         },
         "surfaces": {
           "c_abi": [
-            "loom_knowledge_run",
-            "loom_knowledge_cancel",
-            "loom_knowledge_status",
             "loom_kb_pack",
-            "loom_kb_policy",
-            "loom_kb_query",
-            "loom_kb_runs"
+            "loom_kb_policy"
           ],
           "http": [
             "GET /api/knowledge/pack",
-            "GET /api/knowledge/policy",
-            "GET /api/knowledge/runs",
-            "GET /api/knowledge/status",
-            "POST /api/knowledge/cancel",
-            "POST /api/knowledge/query",
-            "POST /api/knowledge/run"
+            "GET /api/knowledge/policy"
           ]
         }
-      },
-      {
-        "id": "catalog",
-        "title": {
-          "en": "Catalogue of local resources",
-          "pl": "Katalog zasobów lokalnych"
-        },
-        "reason": {
-          "en": "A browser of scanned folders with scoring and overrides; scanning takes paths on the machine and the scoring is structured data.",
-          "pl": "Przeglądarka przeskanowanych folderów z oceną i nadpisaniami; skanowanie bierze ścieżki na maszynie, a ocena to dane strukturalne."
-        },
-        "plan": {
-          "en": "catalog.scan {path}, catalog.query {text}, catalog.select as actions; the units as a list message.",
-          "pl": "catalog.scan {path}, catalog.query {text}, catalog.select jako akcje; jednostki jako wiadomość z listą."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_catalog_import",
-            "loom_catalog_override",
-            "loom_catalog_preview",
-            "loom_catalog_query",
-            "loom_catalog_scan",
-            "loom_catalog_score",
-            "loom_catalog_select"
-          ],
-          "http": [
-            "GET /api/catalog/units",
-            "GET /api/catalog/units/:id",
-            "POST /api/catalog/import",
-            "POST /api/catalog/override",
-            "POST /api/catalog/query",
-            "POST /api/catalog/scan",
-            "POST /api/catalog/score",
-            "POST /api/catalog/select"
-          ]
-        }
-      },
+      }
+    ],
+    "open": [
       {
         "id": "methods",
         "title": {
@@ -1897,6 +2054,60 @@
         "surfaces": {
           "http": [
             "POST /api/onboarding"
+          ]
+        }
+      },
+      {
+        "id": "catalog_review",
+        "title": {
+          "en": "Review the catalogue unit by unit",
+          "pl": "Przegląd katalogu jednostka po jednostce"
+        },
+        "reason": {
+          "en": "Scoring against the self-profile, selection and the owner's include / exclude / pin overrides are decisions per unit; a spoken form needs a way to name a unit and shows the reasons of the score first.",
+          "pl": "Ocena względem profilu własnego, wybór oraz nadpisania właściciela (włącz / wyklucz / przypnij) to decyzje per jednostka; mówiona postać potrzebuje sposobu wskazania jednostki i najpierw pokazuje powody oceny."
+        },
+        "plan": {
+          "en": "catalog.score, catalog.select as read-only answers, catalog.override and catalog.import as proposals that list the units and the bytes before \"yes\".",
+          "pl": "catalog.score, catalog.select jako odpowiedzi tylko do odczytu, catalog.override i catalog.import jako propozycje, które przed „tak” wypisują jednostki i bajty."
+        },
+        "surfaces": {
+          "c_abi": [
+            "loom_catalog_import",
+            "loom_catalog_override",
+            "loom_catalog_preview",
+            "loom_catalog_score",
+            "loom_catalog_select"
+          ],
+          "http": [
+            "GET /api/catalog/units/:id",
+            "POST /api/catalog/import",
+            "POST /api/catalog/override",
+            "POST /api/catalog/score",
+            "POST /api/catalog/select"
+          ]
+        }
+      },
+      {
+        "id": "knowledge_query",
+        "title": {
+          "en": "Ask the built knowledge",
+          "pl": "Zapytaj zbudowaną wiedzę"
+        },
+        "reason": {
+          "en": "A question to the claims, entities and models of a knowledge run is a query language of its own (what, filters); asking it in words needs a mapping from the sentence to that query, shown before it is run.",
+          "pl": "Pytanie do twierdzeń, bytów i modeli przebiegu wiedzy to osobny język zapytań (co, filtry); pytanie słowami wymaga odwzorowania zdania na to zapytanie, pokazanego przed uruchomieniem."
+        },
+        "plan": {
+          "en": "knowledge.query {what, subject} as a read-only answer that prints the query it made.",
+          "pl": "knowledge.query {what, subject} jako odpowiedź tylko do odczytu, która drukuje zrobione zapytanie."
+        },
+        "surfaces": {
+          "c_abi": [
+            "loom_kb_query"
+          ],
+          "http": [
+            "POST /api/knowledge/query"
           ]
         }
       }

@@ -1470,7 +1470,7 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
     if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}, {"reason_code", "no_estimate"}};
     localize_money_reason(d, money, lang);
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
-                     {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
+                     {"pipeline_model_use", cmd.at("plan").at("cost").value("pipeline_model_use", false)}, {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
                      {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
     p["effects"] = effects_of(cmd.at("plan"));
   }
@@ -1551,7 +1551,7 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   }
   if (const Json* cost = json::find(proposal, "cost")) {
     lines.push_back(say(d.cfg, lang, "proposal_cost", Json{{"cost", cost->value("declared", 0.0)}, {"calls", cost->value("model_calls", 0)}, {"bytes", cost->value("input_bytes", 0)}}));
-    if (cost->value("model_calls", 0) > 0) {
+    if (cost->value("model_calls", 0) > 0 || cost->value("pipeline_model_use", false)) {
       const Json money = cost->value("money", Json(nullptr));
       if (money.is_object() && json::get_bool(money, "known", false))
         lines.push_back(say(d.cfg, lang, "proposal_money_known", Json{{"low", money_text(money.value("low", 0.0))}, {"high", money_text(money.value("high", 0.0))}, {"currency", money.value("currency", "USD")}}));

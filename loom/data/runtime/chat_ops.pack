@@ -26,7 +26,8 @@
       "tasks": 20,
       "logs": 30,
       "sources": 20,
-      "snippet_chars": 160
+      "snippet_chars": 160,
+      "catalog": 10
     },
     "default_format": "markdown",
     "formats": {
@@ -676,6 +677,23 @@
           ]
         },
         {
+          "id": "pipelines",
+          "title": {
+            "en": "Long analyses: archives, knowledge, catalogue",
+            "pl": "Długie analizy: archiwa, wiedza, katalog"
+          },
+          "actions": [
+            "archive.run",
+            "knowledge.run",
+            "catalog.scan"
+          ],
+          "prefixes": [
+            "archive.",
+            "knowledge.",
+            "catalog."
+          ]
+        },
+        {
           "id": "background",
           "title": {
             "en": "Background work and the application",
@@ -871,7 +889,38 @@
         "limit_rate_preset": "The rate is an approximate preset. {{note}}",
         "limit_spend_cleared": "The {{period}} spending limit is removed.",
         "limit_spend_none": "There was no {{period}} spending limit.",
-        "limit_period": "Say the period of the limit: day, week or month."
+        "limit_period": "Say the period of the limit: day, week or month.",
+        "pipeline_name_archive": "archive analysis",
+        "pipeline_name_knowledge": "knowledge build",
+        "pipeline_name_catalog": "catalogue scan",
+        "pipeline_project": " as \"{{project}}\"",
+        "pipeline_started_archive": "Started the archive analysis of {{path}}{{project}}. Ask \"how is the archive analysis going?\" to see it; \"stop the archive analysis\" pauses it, and the same analysis started again resumes it.",
+        "pipeline_started_knowledge": "Started the knowledge build from {{path}}{{project}}. Ask \"how is the knowledge build going?\" to see it; \"stop the knowledge build\" pauses it, and the same build started again resumes it.",
+        "pipeline_started_catalog": "Started the scan of the catalogue {{path}}. Ask \"how is the catalogue scan going?\" to see it; \"stop the catalogue scan\" pauses it. Nothing is imported: the units are only catalogued.",
+        "pipeline_llm_off": "No model is used (llm off): it runs on this device and costs nothing.",
+        "pipeline_llm_on": "The model may be called to refine the result (llm on): it costs what your provider charges, and it is under the usage guard and your spending limits.",
+        "pipeline_no_path": "Name what to run it on: a folder or a file, written out (for example /home/me/archive), or pick one.",
+        "pipeline_state": "{{name}}: {{state}}",
+        "pipeline_state_idle": "nothing has run since the application started",
+        "pipeline_state_running": "running",
+        "pipeline_state_done": "done",
+        "pipeline_state_paused": "paused (the same words again resume it)",
+        "pipeline_state_cancelled": "stopped at a checkpoint (the same words again resume it)",
+        "pipeline_state_failed": "failed",
+        "pipeline_progress": "now: {{stage}}{{counts}} - {{message}}",
+        "pipeline_started_at": "started {{at}}",
+        "pipeline_finished_at": "ended {{at}}",
+        "pipeline_result": "result: {{status}}{{what}}",
+        "pipeline_error": "error: {{why}}",
+        "pipeline_latest_archive": "the latest archive run in the data: {{status}}, {{artifacts}} artifact(s)",
+        "pipeline_latest_knowledge": "the latest knowledge run in the data: {{id}}, {{stages}} stage(s)",
+        "pipeline_latest_catalog": "the catalogue holds {{units}} unit(s) from {{sources}} source(s); {{selected}} selected, {{imported}} imported",
+        "pipeline_cancel_ok": "Asked the {{name}} to pause at its next checkpoint.",
+        "pipeline_cancel_none": "No {{name}} is running.",
+        "catalog_head": "The catalogue ({{count}} unit(s)):",
+        "catalog_head_about": "The catalogue, units about \"{{text}}\" ({{count}}):",
+        "catalog_line": "{{title}} ({{platform}}) {{id}}",
+        "catalog_none": "No unit of the catalogue matches \"{{text}}\"."
       },
       "pl": {
         "unknown": "nieznane",
@@ -1020,8 +1069,51 @@
         "limit_rate_preset": "Kurs jest przybliżonym presetem. {{note}}",
         "limit_spend_cleared": "Usunięto limit wydatków {{period}}.",
         "limit_spend_none": "Limit wydatków {{period}} nie był ustawiony.",
-        "limit_period": "Podaj okres limitu: dzień, tydzień albo miesiąc."
+        "limit_period": "Podaj okres limitu: dzień, tydzień albo miesiąc.",
+        "pipeline_name_archive": "analiza archiwum",
+        "pipeline_name_knowledge": "budowanie wiedzy",
+        "pipeline_name_catalog": "przeglądanie katalogu",
+        "pipeline_project": " jako „{{project}}”",
+        "pipeline_started_archive": "Rozpoczęto analizę archiwum {{path}}{{project}}. Zapytaj „jak idzie analiza archiwum?”, żeby zobaczyć postęp; „przerwij analizę archiwum” ją wstrzymuje, a ta sama analiza uruchomiona jeszcze raz jedzie dalej.",
+        "pipeline_started_knowledge": "Rozpoczęto budowanie wiedzy z {{path}}{{project}}. Zapytaj „jak idzie budowanie wiedzy?”, żeby zobaczyć postęp; „przerwij budowanie wiedzy” je wstrzymuje, a to samo budowanie uruchomione jeszcze raz jedzie dalej.",
+        "pipeline_started_catalog": "Rozpoczęto przeglądanie katalogu {{path}}. Zapytaj „jak idzie przeglądanie katalogu?”, żeby zobaczyć postęp; „przerwij przeglądanie katalogu” je wstrzymuje. Nic nie jest importowane: jednostki są tylko katalogowane.",
+        "pipeline_llm_off": "Model nie jest używany (llm wyłączone): działa na tym urządzeniu i nic nie kosztuje.",
+        "pipeline_llm_on": "Model może zostać wywołany do dopracowania wyniku (llm włączone): kosztuje tyle, ile liczy dostawca, i podlega strażnikowi zużycia oraz Twoim limitom wydatków.",
+        "pipeline_no_path": "Podaj, na czym to uruchomić: folder albo plik, wypisane wprost (np. /home/ja/archiwum), albo wybierz.",
+        "pipeline_state": "{{name}}: {{state}}",
+        "pipeline_state_idle": "od uruchomienia aplikacji nic nie szło",
+        "pipeline_state_running": "trwa",
+        "pipeline_state_done": "zakończona",
+        "pipeline_state_paused": "wstrzymana (to samo polecenie jeszcze raz wznawia)",
+        "pipeline_state_cancelled": "zatrzymana w punkcie kontrolnym (to samo polecenie jeszcze raz wznawia)",
+        "pipeline_state_failed": "nieudana",
+        "pipeline_progress": "teraz: {{stage}}{{counts}} - {{message}}",
+        "pipeline_started_at": "start {{at}}",
+        "pipeline_finished_at": "koniec {{at}}",
+        "pipeline_result": "wynik: {{status}}{{what}}",
+        "pipeline_error": "błąd: {{why}}",
+        "pipeline_latest_archive": "ostatni przebieg archiwum w danych: {{status}}, artefaktów: {{artifacts}}",
+        "pipeline_latest_knowledge": "ostatni przebieg wiedzy w danych: {{id}}, etapów: {{stages}}",
+        "pipeline_latest_catalog": "katalog ma jednostek: {{units}} z źródeł: {{sources}}; wybranych {{selected}}, zaimportowanych {{imported}}",
+        "pipeline_cancel_ok": "Poprosiłem: {{name}} wstrzyma się w najbliższym punkcie kontrolnym.",
+        "pipeline_cancel_none": "Nic takiego nie trwa: {{name}}.",
+        "catalog_head": "Katalog (jednostek: {{count}}):",
+        "catalog_head_about": "Katalog, jednostki o „{{text}}” ({{count}}):",
+        "catalog_line": "{{title}} ({{platform}}) {{id}}",
+        "catalog_none": "Żadna jednostka katalogu nie pasuje do „{{text}}”."
       }
+    },
+    "pipelines": {
+      "repo_marker": ".git",
+      "summary_max": 8,
+      "seed_separators": [
+        ",",
+        " ; ",
+        ";",
+        " i ",
+        " oraz ",
+        " and "
+      ]
     }
   },
   "value_schema": {

@@ -17,6 +17,7 @@
 #include <string_view>
 
 #include "loom/action_index.h"
+#include "loom/action_pipelines.h"
 #include "loom/action_run.h"
 #include "loom/client_devices.h"
 #include "loom/result.h"
@@ -82,6 +83,8 @@ class ActionRunner {
 
   // The run store (for the chat router, which keeps the id of the run it proposed in the message).
   RunStore& store();
+  // The long pipelines (archive, knowledge, catalogue scan) as background jobs a conversation starts, asks about and stops (action_pipelines.h).
+  pipelines::Jobs& pipelines();
   // The incremental index of completed runs behind the detection of repeated chains and of the classes an action is used on
   // (action_index.h): detection after a command reads what changed since the last time, not the log.
   SequenceIndex& sequence_index();
@@ -114,6 +117,7 @@ class ActionRunner {
   bool registry_tried_ = false;                           // the automatic fetch of the model list (guarded by mu_)
   std::chrono::steady_clock::time_point registry_tried_at_;
   std::string registry_failure_;
+  std::unique_ptr<pipelines::Jobs> pipelines_;  // last: destroyed first, while the runtime is still whole
 };
 
 }  // namespace loom::actions

@@ -3811,6 +3811,218 @@
             "operation": "test"
           },
           "takes_scope": false
+        },
+        {
+          "id": "archive.run.pl",
+          "action": "archive.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?(?:archiwum|folder|projekt|repozytorium)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.run.en",
+          "action": "archive.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:archive|folder|project|repository|repo)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.status.pl",
+          "action": "archive.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jak\\s+idzie|jaki\\s+jest\\s+stan|pokaz\\s+stan|sprawdz\\s+stan|co\\s+z)\\s+(?:analiz[aey]\\s+)?(?:tego\\s+)?(?:archiwum|folderu|projektu)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.status.en",
+          "action": "archive.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:how\\s+is\\s+the\\s+archive\\s+analysis(?:\\s+going)?|how\\s+is\\s+the\\s+analysis\\s+of\\s+the\\s+archive\\s+going|archive\\s+analysis\\s+status|(?:show|check)\\s+(?:me\\s+)?(?:the\\s+)?archive\\s+analysis\\s+status)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.cancel.pl",
+          "action": "archive.cancel",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przerwij|zatrzymaj|wstrzymaj|anuluj)\\s+analiz[eay]\\s+archiwum\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.cancel.en",
+          "action": "archive.cancel",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:stop|pause|cancel|abort)\\s+(?:the\\s+)?archive\\s+analysis\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.run.pl",
+          "action": "knowledge.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:(?:archiwum|folderu|katalogu|projektu|repozytorium)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.run.en",
+          "action": "knowledge.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:(?:archive|folder|directory|project|repository)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.status.pl",
+          "action": "knowledge.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jak\\s+idzie|jaki\\s+jest\\s+stan|pokaz\\s+stan|sprawdz\\s+stan)\\s+(?:budowani[ae]\\s+)?wiedzy\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.status.en",
+          "action": "knowledge.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:how\\s+is\\s+the\\s+knowledge\\s+(?:build\\s+)?going|knowledge\\s+build\\s+status|(?:show|check)\\s+(?:me\\s+)?(?:the\\s+)?knowledge\\s+build\\s+status)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.cancel.pl",
+          "action": "knowledge.cancel",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przerwij|zatrzymaj|wstrzymaj|anuluj)\\s+budowani[ea]\\s+wiedzy\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.cancel.en",
+          "action": "knowledge.cancel",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:stop|pause|cancel|abort)\\s+(?:the\\s+)?knowledge\\s+build\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.scan.pl",
+          "action": "catalog.scan",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przejrzyj|przeskanuj|skataloguj|przegladaj)\\s+(?:ten\\s+|ta\\s+|moj\\s+)?katalog(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.scan.en",
+          "action": "catalog.scan",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:scan|browse|review)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:catalogue|catalog|directory)|(?:catalogue|catalog)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:folder|directory|archive))(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.status.pl",
+          "action": "catalog.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jak\\s+idzie|jaki\\s+jest\\s+stan|pokaz\\s+stan)\\s+(?:przegladani[ae]|skanowani[ae])\\s+katalogu\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.status.en",
+          "action": "catalog.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:how\\s+is\\s+the\\s+catalog(?:ue)?\\s+scan\\s+going|catalog(?:ue)?\\s+scan\\s+status)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.cancel.pl",
+          "action": "catalog.cancel",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przerwij|zatrzymaj|wstrzymaj|anuluj)\\s+przegladani[ea]\\s+katalogu\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.cancel.en",
+          "action": "catalog.cancel",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:stop|pause|cancel|abort)\\s+(?:the\\s+)?catalog(?:ue)?\\s+scan\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.query.pl",
+          "action": "catalog.query",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:szukaj|znajdz|wyszukaj)\\s+w\\s+katalogu\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.query.en",
+          "action": "catalog.query",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:search|find\\s+in)\\s+(?:the\\s+)?catalog(?:ue)?\\s+(?:for\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
         }
       ],
       "payload": {

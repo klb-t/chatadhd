@@ -428,7 +428,7 @@ Result<Json> gates(const std::filesystem::path& root, const Config& config, cons
     log::write(log::Level::Debug, "loom.spend", "a spending limit is not usable: " + issue.value("reason", ""));
   if (s.entries.empty()) return out;
   // A plan that calls no model spends nothing: a limit never stands in the way of reading, of editing a setting or of raising the limit.
-  if (plan.value("cost", Json::object()).value("model_calls", 0) <= 0) return out;
+  if (plan.value("cost", Json::object()).value("model_calls", 0) <= 0 && !plan.value("cost", Json::object()).value("pipeline_model_use", false)) return out;
   const Json items = plan.value("items", Json::array());
   const std::string item_id = items.empty() ? std::string() : json::get_string(items[0], "id");
   const std::string action = items.empty() ? std::string() : json::get_string(items[0], "action");

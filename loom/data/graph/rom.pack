@@ -119,6 +119,9 @@
           "path": "loom/src/actions/overlay.cpp"
         },
         {
+          "path": "loom/src/actions/pipelines.cpp"
+        },
+        {
           "path": "loom/src/actions/query.cpp"
         },
         {

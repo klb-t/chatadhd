@@ -505,7 +505,7 @@
         },
         {
           "path": "loom/data/graph/rom.pack",
-          "sha256": "3f089d686cb2978c8efae392075da535b5f7e99b78a7e49a8856f6e0f783d3a6"
+          "sha256": "e4d87da1d6af756e6e55c7ab57be0d24b031843da2be429000d85f9e957934e1"
         },
         {
           "path": "loom/data/graph/scopes.pack",
@@ -529,11 +529,11 @@
         },
         {
           "path": "loom/data/runtime/action_run.pack",
-          "sha256": "592a3645151e272a998f46ff014e02dfefd005da30d9a272a40f7eaea703d8e0"
+          "sha256": "d112b9ae4bb8d15cdeacd160c701b8f1a0d9a5c63cc84198f95b30c3a1c3f8fa"
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "b0e63ecac0f2ad24f94a38236ae81a6a09a2a9d1ccb01485549a6b23a834782b"
+          "sha256": "2d6da9c6031210255e24228921a487b0c111a332323830749cd8a324cb5c5570"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -545,11 +545,11 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "95e22224f86c685a62e896452b5333dc93fffef8624cc3dcf2ba8c1ebac9ea0d"
+          "sha256": "e60575762eecc452e37ff2eed663e7faf60cce4ba69e0015487e41d8754d5772"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
-          "sha256": "401996e7eca43918c8b001a13bfab6f8052732d21b44164201cb68a93509cb0e"
+          "sha256": "dfa445a62eda4752ab2910caef7f18c89a38d7105ef923abebea633934e02ecc"
         },
         {
           "path": "loom/data/runtime/chat_reasoning.pack",
@@ -605,7 +605,7 @@
         },
         {
           "path": "loom/data/runtime/intent_routing.pack",
-          "sha256": "c5e1c4ab287303c0391d5dd25d34a19109db2c896d16766402711b93e6959050"
+          "sha256": "3fb0d124752b199bcb77e52af18b88e8707b627d3793e33e143b834839767cd0"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",
@@ -688,7 +688,7 @@
           "sha256": "e43f04bd6a01f3015fe6ce5b6d857c9ac7ca606ffcceb05e1ca54158e79d29f9"
         }
       ],
-      "output_sha256": "a8d992bb6c5becee6b0cc59ee9b42415e792ff12529ef5a99ed80be0b4b81fac",
+      "output_sha256": "f373381d18b621af5d53382e53b5ba18de27881f8be2e806c27302b6048599f2",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

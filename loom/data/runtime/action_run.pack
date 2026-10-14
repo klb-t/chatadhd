@@ -52,6 +52,7 @@
         "recognition_priced_by_provider": {"en": "recognition is priced by the provider by duration or by page, which the model registry does not list", "pl": "rozpoznawanie jest rozliczane przez dostawcę za czas nagrania lub za stronę, czego rejestr modeli nie podaje"},
         "media_output_not_per_token": {"en": "media output is not priced per token", "pl": "wynik medialny nie jest wyceniany za token"},
         "output_not_text": {"en": "the output is not text and its price is not listed per token", "pl": "wynik nie jest tekstem, a jego cena nie jest podana za token"},
+        "pipeline_model_use": {"en": "the pipeline may call the model to refine its result and how many calls depends on the data, so the cost is only known when it runs (llm off: it makes none)", "pl": "potok może wywołać model, żeby dopracować wynik, a liczba wywołań zależy od danych, więc koszt będzie znany dopiero w trakcie (llm off: nie wywołuje żadnego)"},
         "no_model": {"en": "no model is named for this step", "pl": "dla tego kroku nie wskazano modelu"},
         "no_price": {"en": "the registry lists no price for the model", "pl": "rejestr nie podaje ceny tego modelu"},
         "registry_empty": {"en": "the model registry is empty, so no price is known (refresh the model list, or leave the setting model_registry_autorefresh on on_demand)", "pl": "rejestr modeli jest pusty, więc żadna cena nie jest znana (odśwież listę modeli albo zostaw ustawienie model_registry_autorefresh na on_demand)"},

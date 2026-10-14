@@ -286,8 +286,23 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
     previous_out = step_out;
   }
 
+  // A pipeline that may call the model (archive, knowledge with llm: auto) makes calls whose number depends on the data: the cost is not known, and
+  // it is not zero. The plan says whether it may (plan.cost.pipeline_model_use); the reason is data (reasons.pipeline_model_use).
+  const bool pipeline_model = plan.value("cost", Json::object()).value("pipeline_model_use", false);
+  if (pipeline_model) {
+    money_known = false;
+    reason_code = "pipeline_model_use";
+    reason_params = Json::object();
+    std::string model;  // the pipelines refine with the semantic model
+    if (s.config) {
+      const Json semantic = s.config->get("semantic_model");
+      if (semantic.is_string()) model = semantic.get<std::string>();
+    }
+    calls.push_back(Json{{"kind", "pipeline"}, {"model", model.empty() ? Json(nullptr) : Json(model)}, {"tokens", Json{{"input", nullptr}, {"output", nullptr}}},
+                         {"price", Json{{"known", false}, {"why", why(reason_code)}, {"why_code", reason_code}}}, {"usd", nullptr}});
+  }
   Json money;
-  if (model_calls == 0) {
+  if (model_calls == 0 && !pipeline_model) {
     money = Json{{"known", true}, {"currency", currency}, {"low", 0.0}, {"high", 0.0}, {"note", why("no_model_called")}, {"note_code", "no_model_called"}};
   } else if (money_known) {
     money = Json{{"known", true}, {"currency", currency}, {"low", rounded(usd.low)}, {"high", rounded(usd.high)}};

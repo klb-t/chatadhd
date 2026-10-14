@@ -534,6 +534,7 @@ Result<Json> Interpreter::plan_of(const RunRequest& request) const {
   std::string previous_result;
   double cost = 0;
   std::int64_t model_calls = 0;
+  bool pipeline_model_use = false;
   Json effects = Json::object();
   for (std::size_t i = 0; i < chain_items.size(); ++i) {
     const Json& ci = chain_items[i];
@@ -573,6 +574,16 @@ Result<Json> Interpreter::plan_of(const RunRequest& request) const {
         const Json* variants = json::find(leaf, "variants");
         model_calls += variants && variants->is_array() && !variants->empty() ? static_cast<std::int64_t>(variants->size()) : 1;
       }
+      // A pipeline started from a sentence (archive, knowledge) calls the model only when the argument that decides says so (llm: auto); how many
+      // calls it makes depends on the data, so the plan says "may" and the estimate says why the cost is not known.
+      if (le)
+        if (const Json* use = json::find(*le, "model_use"); use && use->is_object()) {
+          const std::string arg = json::get_string(*use, "arg");
+          const Json said = request.args.is_object() && request.args.contains(arg) ? request.args[arg] : Json(nullptr);
+          const std::string value = said.is_string() && !said.get<std::string>().empty() ? said.get<std::string>() : json::get_string(*use, "default");
+          for (const auto& v : strings_of(json::find(*use, "values")))
+            if (v == value) pipeline_model_use = true;
+        }
       effects = add_effects(effects, le ? *le : Json::object());
     }
     if (!leaves.empty()) builder.steps[builder.steps.size() - 1]["result"] = true;
@@ -593,7 +604,7 @@ Result<Json> Interpreter::plan_of(const RunRequest& request) const {
   plan["root"] = root_label;
   plan["items"] = items;
   plan["steps"] = builder.steps;
-  plan["cost"] = Json{{"declared", std::round(cost * 1e6) / 1e6}, {"unit", "relative"}, {"model_calls", model_calls}};
+  plan["cost"] = Json{{"declared", std::round(cost * 1e6) / 1e6}, {"unit", "relative"}, {"model_calls", model_calls}, {"pipeline_model_use", pipeline_model_use}};
   plan["effects"] = effects;
   return plan;
 }

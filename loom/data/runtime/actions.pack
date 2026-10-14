@@ -8434,6 +8434,847 @@
             "zsynchronizuj z GitHubem"
           ]
         }
+      },
+      "archive.start": {
+        "id": "archive.start",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Start the archive analysis",
+        "description": "Starts the Archive Intelligence pipeline (ingest, retrieve, expand, graph, cluster, timeline, items, synthesis) on a path, in the background; ask how it goes, stop it, or start it again to resume. With llm off nothing leaves the device and nothing costs.",
+        "labels": {
+          "pl": "Rozpocznij analizę archiwum"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "project",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A name for the result",
+              "pl": "Nazwa wyniku"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "seeds",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Terms to start from, separated by commas",
+              "pl": "Hasła, od których zacząć, oddzielone przecinkami"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "llm",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "off (preset: local, free) or auto (the model may refine; it costs and is under the usage guard and your limits)",
+              "pl": "off (preset: lokalnie, za darmo) albo auto (model może dopracować wynik; kosztuje i podlega strażnikowi zużycia oraz Twoim limitom)"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "off"
+          }
+        ],
+        "model_use": {
+          "arg": "llm",
+          "values": [
+            "auto"
+          ],
+          "default": "off",
+          "reason": "pipeline_model_use"
+        }
+      },
+      "archive.run": {
+        "id": "archive.run",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Analyse an archive",
+        "labels": {
+          "pl": "Przeanalizuj archiwum"
+        },
+        "description": "Analyses a folder, an archive or a repository: the path said, or the file the device lets you pick. It runs in the background (ask \"how is the archive analysis going\"), local and free unless you allow the model (llm auto).",
+        "steps": [
+          {
+            "id": "pick",
+            "action": "device.pick_file",
+            "when": {
+              "not": {
+                "arg": "path"
+              }
+            }
+          },
+          {
+            "id": "start",
+            "action": "archive.start",
+            "with": {
+              "path": {
+                "$arg": "path",
+                "default": ""
+              },
+              "project": {
+                "$arg": "project",
+                "default": ""
+              },
+              "seeds": {
+                "$arg": "seeds",
+                "default": ""
+              },
+              "llm": {
+                "$arg": "llm",
+                "default": ""
+              }
+            }
+          }
+        ],
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "project",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A name for the result",
+              "pl": "Nazwa wyniku"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "seeds",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Terms to start from, separated by commas",
+              "pl": "Hasła, od których zacząć, oddzielone przecinkami"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "llm",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "off (preset: local, free) or auto (the model may refine; it costs and is under the usage guard and your limits)",
+              "pl": "off (preset: lokalnie, za darmo) albo auto (model może dopracować wynik; kosztuje i podlega strażnikowi zużycia oraz Twoim limitom)"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "off"
+          }
+        ],
+        "examples": {
+          "en": [
+            "analyse this archive /home/me/exports/2026",
+            "analyse this folder /home/me/project as Atlas"
+          ],
+          "pl": [
+            "przeanalizuj to archiwum /home/ja/eksporty/2026",
+            "przeanalizuj ten folder /home/ja/projekt jako Atlas"
+          ]
+        },
+        "positional_arg": "path",
+        "model_use": {
+          "arg": "llm",
+          "values": [
+            "auto"
+          ],
+          "default": "off",
+          "reason": "pipeline_model_use"
+        }
+      },
+      "archive.status": {
+        "id": "archive.status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "How the archive analysis goes",
+        "description": "The state of the archive analysis started from a sentence (stage, counts, result), and the latest run the data holds.",
+        "labels": {
+          "pl": "Jak idzie analiza archiwum"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "examples": {
+          "en": [
+            "how is the archive analysis going"
+          ],
+          "pl": [
+            "jak idzie analiza archiwum"
+          ]
+        }
+      },
+      "archive.cancel": {
+        "id": "archive.cancel",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Stop the archive analysis",
+        "description": "Asks the running archive analysis to pause at its next checkpoint; the same analysis started again resumes it.",
+        "labels": {
+          "pl": "Przerwij analizę archiwum"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "examples": {
+          "en": [
+            "stop the archive analysis"
+          ],
+          "pl": [
+            "przerwij analizę archiwum"
+          ]
+        }
+      },
+      "knowledge.start": {
+        "id": "knowledge.start",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Start the knowledge build",
+        "description": "Starts the knowledge pipeline (catalogue, extract, resolve, assess, generalize, materialize) on a path, in the background. With llm off it runs on this device and costs nothing; with llm auto the model may extract candidates, which costs.",
+        "labels": {
+          "pl": "Rozpocznij budowanie wiedzy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "project",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A name for the result",
+              "pl": "Nazwa wyniku"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "llm",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "off (preset: local, free) or auto (the model may refine; it costs and is under the usage guard and your limits)",
+              "pl": "off (preset: lokalnie, za darmo) albo auto (model może dopracować wynik; kosztuje i podlega strażnikowi zużycia oraz Twoim limitom)"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "off"
+          }
+        ],
+        "model_use": {
+          "arg": "llm",
+          "values": [
+            "auto"
+          ],
+          "default": "off",
+          "reason": "pipeline_model_use"
+        }
+      },
+      "knowledge.run": {
+        "id": "knowledge.run",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Build knowledge",
+        "labels": {
+          "pl": "Zbuduj wiedzę"
+        },
+        "description": "Builds the knowledge of a folder, an archive or a repository: the path said, or the file the device lets you pick. It runs in the background (ask \"how is the knowledge build going\"); the proposal says whether the model is used.",
+        "steps": [
+          {
+            "id": "pick",
+            "action": "device.pick_file",
+            "when": {
+              "not": {
+                "arg": "path"
+              }
+            }
+          },
+          {
+            "id": "start",
+            "action": "knowledge.start",
+            "with": {
+              "path": {
+                "$arg": "path",
+                "default": ""
+              },
+              "project": {
+                "$arg": "project",
+                "default": ""
+              },
+              "llm": {
+                "$arg": "llm",
+                "default": ""
+              }
+            }
+          }
+        ],
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "project",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A name for the result",
+              "pl": "Nazwa wyniku"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "llm",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "off (preset: local, free) or auto (the model may refine; it costs and is under the usage guard and your limits)",
+              "pl": "off (preset: lokalnie, za darmo) albo auto (model może dopracować wynik; kosztuje i podlega strażnikowi zużycia oraz Twoim limitom)"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "off"
+          }
+        ],
+        "examples": {
+          "en": [
+            "build knowledge from /home/me/exports/2026",
+            "build the knowledge from this folder /home/me/project as Atlas"
+          ],
+          "pl": [
+            "zbuduj wiedzę z /home/ja/eksporty/2026",
+            "zbuduj wiedzę z tego folderu /home/ja/projekt jako Atlas"
+          ]
+        },
+        "positional_arg": "path",
+        "model_use": {
+          "arg": "llm",
+          "values": [
+            "auto"
+          ],
+          "default": "off",
+          "reason": "pipeline_model_use"
+        }
+      },
+      "knowledge.status": {
+        "id": "knowledge.status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "How the knowledge build goes",
+        "description": "The state of the knowledge build started from a sentence (stage, counts, result), and the latest knowledge run the data holds.",
+        "labels": {
+          "pl": "Jak idzie budowanie wiedzy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "examples": {
+          "en": [
+            "how is the knowledge build going"
+          ],
+          "pl": [
+            "jak idzie budowanie wiedzy"
+          ]
+        }
+      },
+      "knowledge.cancel": {
+        "id": "knowledge.cancel",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Stop the knowledge build",
+        "description": "Asks the running knowledge build to pause at its next checkpoint; the same build started again resumes it.",
+        "labels": {
+          "pl": "Przerwij budowanie wiedzy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "examples": {
+          "en": [
+            "stop the knowledge build"
+          ],
+          "pl": [
+            "przerwij budowanie wiedzy"
+          ]
+        }
+      },
+      "catalog.start": {
+        "id": "catalog.start",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Start the catalogue scan",
+        "description": "Starts the scan of the catalogue on a path, in the background: every export, folder or archive is streamed into units with sketches; nothing is imported and nothing leaves the device.",
+        "labels": {
+          "pl": "Rozpocznij przeglądanie katalogu"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ]
+      },
+      "catalog.scan": {
+        "id": "catalog.scan",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Scan a catalogue",
+        "labels": {
+          "pl": "Przejrzyj katalog"
+        },
+        "description": "Catalogues a folder, an archive or an export without importing it: the path said, or the file the device lets you pick. It runs in the background (ask \"how is the catalogue scan going\"); local and free.",
+        "steps": [
+          {
+            "id": "pick",
+            "action": "device.pick_file",
+            "when": {
+              "not": {
+                "arg": "path"
+              }
+            }
+          },
+          {
+            "id": "start",
+            "action": "catalog.start",
+            "with": {
+              "path": {
+                "$arg": "path",
+                "default": ""
+              }
+            }
+          }
+        ],
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "scan this catalogue /home/me/exports"
+          ],
+          "pl": [
+            "przejrzyj ten katalog /home/ja/eksporty"
+          ]
+        },
+        "positional_arg": "path"
+      },
+      "catalog.status": {
+        "id": "catalog.status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "How the catalogue scan goes",
+        "description": "The state of the catalogue scan started from a sentence, and what the catalogue holds.",
+        "labels": {
+          "pl": "Jak idzie przeglądanie katalogu"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "examples": {
+          "en": [
+            "how is the catalogue scan going"
+          ],
+          "pl": [
+            "jak idzie przeglądanie katalogu"
+          ]
+        }
+      },
+      "catalog.cancel": {
+        "id": "catalog.cancel",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Stop the catalogue scan",
+        "description": "Asks the running catalogue scan to pause at its next checkpoint.",
+        "labels": {
+          "pl": "Przerwij przeglądanie katalogu"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "examples": {
+          "en": [
+            "stop the catalogue scan"
+          ],
+          "pl": [
+            "przerwij przeglądanie katalogu"
+          ]
+        }
+      },
+      "catalog.query": {
+        "id": "catalog.query",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Search the catalogue",
+        "description": "The units of the catalogue about a word (title, first message, terms); read only.",
+        "labels": {
+          "pl": "Szukaj w katalogu"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "What to look for",
+              "pl": "Czego szukać"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many units to show",
+              "pl": "Ile jednostek pokazać"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "search the catalogue for Atlas"
+          ],
+          "pl": [
+            "szukaj w katalogu Atlas"
+          ]
+        },
+        "positional_arg": "text"
       }
     }
   },
@@ -8707,6 +9548,11 @@
                 "type": "string",
                 "minLength": 1
               }
+            },
+            "model_use": {
+              "type": "object",
+              "description": "For an action that starts a pipeline: when the model is used, so the estimate of the proposal can say so instead of counting a plan with no model step as free. `arg` is the argument that decides (llm), `values` the values that mean the model is used (auto), `default` the value when the argument is not said (off), `reason` the code of the text in the profile action_run (estimate.reasons) that says why the cost is not known.",
+              "additionalProperties": true
             }
           },
           "additionalProperties": true
