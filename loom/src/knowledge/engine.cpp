@@ -93,6 +93,7 @@ Result<Json> source_snapshot(const KnowledgeConfig& cfg, const std::filesystem::
       for (auto it = fs::recursive_directory_iterator(path, fs::directory_options::skip_permission_denied, ec);
            !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
         std::error_code entry_error;
+        if (confine.confined() && it->is_symlink(entry_error)) continue;  // R20: never follow a link out of the folders
         if (it->is_directory(entry_error)) {
           if (catalog::internal::skip_source_directory(it->path(), active_data)) it.disable_recursion_pending();
         } else if (!entry_error && !hidden(it->path()) && it->is_regular_file(entry_error)) {
@@ -106,7 +107,8 @@ Result<Json> source_snapshot(const KnowledgeConfig& cfg, const std::filesystem::
       paths.push_back(path);
     }
     for (const auto& file : paths) {
-      LOOM_TRY_ASSIGN(auto hash, sha256_file_hex(file));
+      LOOM_TRY_ASSIGN(auto opened, confine.open_read(file, "source file"));  // R20: hash the file that was checked
+      LOOM_TRY_ASSIGN(auto hash, sha256_file_hex(opened.path()));
       files[file.string()] = std::move(hash);
     }
     // Repository analysis also consumes commit/lineage metadata. A new
@@ -121,6 +123,8 @@ Result<Json> source_snapshot(const KnowledgeConfig& cfg, const std::filesystem::
         git_dir = (path / target).lexically_normal();
       }
     }
+    // A `.git` file or commondir may name any folder: it must stay inside the allowed ones too.
+    LOOM_TRY(confine.check(git_dir, "git directory of '" + root + "'"));
     if (fs::is_regular_file(git_dir / "HEAD", ec)) {
       LOOM_TRY_ASSIGN(auto head, fsutil::read_file(git_dir / "HEAD"));
       auto common = git_dir;

@@ -9,6 +9,8 @@
 #include "loom/importer.h"
 #include "loom/provenance.h"
 #include "loom/path_policy.h"
+#include "loom/runtime.h"
+#include "loom/storage_backend.h"
 #include "loom/util/fs.h"
 #include "../third_party/miniz/miniz.h"
 #include "test_helpers.h"
@@ -158,5 +160,55 @@ TEST_SUITE("safety") {
     std::filesystem::create_symlink(out / "secret.txt", in / "f.txt");
     CHECK(slurp(ok.path()) == "mine");
     CHECK_FALSE(policy.open_read(in / "f.txt"));  // by name it is now refused
+  }
+
+  TEST_CASE("operator ceilings: an account can tighten its zip/git settings but not loosen them") {
+    fsutil::TempDir td;
+    RuntimeOptions o;
+    o.data_dir = (td.path() / "u_a").string();
+    o.start_workers = false;
+    o.zip_max_total_bytes = 1000;
+    o.zip_max_ratio = 50;
+    o.git_allow_repo_config = false;
+    auto rt = unwrap(Runtime::open(o));
+    const auto dir = td.path() / "u_a";
+    write_text(dir / "config.json", R"({"loom_zip_max_total_bytes": 0, "loom_zip_max_ratio": 0, "loom_git_allow_repo_config": true})");
+    auto l = safety::zip_limits(dir);
+    CHECK(l.max_total_bytes == 1000);  // 0 (= unlimited) in the user's file does not lift the ceiling
+    CHECK(l.max_ratio == 50);
+    CHECK_FALSE(safety::git_allow_repo_config(dir));
+    write_text(dir / "config.json", R"({"loom_zip_max_total_bytes": 500, "loom_zip_max_ratio": 10})");
+    l = safety::zip_limits(dir);
+    CHECK(l.max_total_bytes == 500);
+    CHECK(l.max_ratio == 10);
+    write_text(dir / "config.json", R"({"loom_zip_max_total_bytes": 999999, "loom_zip_max_ratio": 99999})");
+    l = safety::zip_limits(dir);
+    CHECK(l.max_total_bytes == 1000);
+    CHECK(l.max_ratio == 50);
+    // another (single-user) data dir has no ceiling
+    write_text(td.path() / "own" / "config.json", R"({"loom_git_allow_repo_config": true, "loom_zip_max_ratio": 0})");
+    CHECK(safety::git_allow_repo_config(td.path() / "own"));
+    CHECK(safety::zip_limits(td.path() / "own").max_ratio == 0);
+  }
+
+  TEST_CASE("confined local storage refuses links at the moment of use") {
+    fsutil::TempDir td;
+    const auto a = td.path() / "u_a", other = td.path() / "other";
+    write_text(other / "secret", "secret");
+    storage::BackendEnv env;
+    env.data_dir = a;
+    auto policy = std::make_shared<PathPolicy>();
+    policy->confine({a});
+    env.path_policy = policy;
+    auto backend = unwrap(storage::BackendRegistry::builtin().create("s", Json{{"kind", "local"}, {"path", "{dir}/store"}}, env));
+    REQUIRE(backend->put("k", "mine", "text/plain"));
+    CHECK(unwrap(backend->get("k")) == "mine");
+    std::filesystem::create_symlink(other / "secret", a / "store" / "evil");
+    CHECK_FALSE(backend->get("evil"));
+    CHECK_FALSE(backend->stat("evil"));
+    std::filesystem::remove_all(a / "store");  // the folder itself swapped for a link
+    std::filesystem::create_directory_symlink(other, a / "store");
+    CHECK_FALSE(backend->put("k2", "x", "text/plain"));
+    CHECK_FALSE(std::filesystem::exists(other / "k2"));
   }
 }

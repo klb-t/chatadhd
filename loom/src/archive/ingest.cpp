@@ -984,7 +984,20 @@ Status Ingestor::ingest_db() {
   return {};
 }
 
-Status Ingestor::process_file(const PlannedFile& f) {
+Status Ingestor::process_file(const PlannedFile& planned) {
+  // R20: a confined account reads the file that passed the path check, not whatever the name points to by
+  // now: open it under the policy and work on a private copy (keeps the name, so format detection by
+  // extension is unchanged).
+  PlannedFile f = planned;
+  fsutil::TempDir hold("loom_archive_file_");
+  if (rt_.path_policy().confined()) {
+    LOOM_TRY_ASSIGN(auto opened, rt_.path_policy().open_read(planned.path, "archive file '" + planned.uri + "'"));
+    if (!hold.valid()) return Error(Errc::Io, "could not create a temp dir for the archive file");
+    f.path = (hold.path() / fs::path(planned.path).filename()).string();
+    std::error_code ec;
+    fs::copy_file(opened.path(), f.path, fs::copy_options::overwrite_existing, ec);
+    if (ec) return Error(Errc::Io, "cannot read " + planned.uri + ": " + ec.message());
+  }
   if (f.adapter == "import") return ingest_import(f.path, f.uri);
   LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put_file(f.path));
   if (ref.hash != f.hash) {

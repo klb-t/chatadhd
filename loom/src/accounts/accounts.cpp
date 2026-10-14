@@ -104,6 +104,11 @@ Result<Settings> load_settings(const std::filesystem::path& root) {
   s.isolation.block_private_hosts = v.value("block_private_hosts", true);
   s.isolation.allow_private_hosts = strings(v, "allow_private_hosts");
   s.isolation.expose_server_logs = v.value("expose_server_logs", false);
+  if (v.contains("zip") && v["zip"].is_object()) {
+    s.isolation.zip_max_total_bytes = v["zip"].value("max_total_bytes", std::int64_t(0));
+    s.isolation.zip_max_ratio = v["zip"].value("max_ratio", 0.0);
+  }
+  if (v.contains("git") && v["git"].is_object()) s.isolation.git_allow_repo_config = v["git"].value("allow_repo_config", false);
   if (v.contains("csrf") && v["csrf"].is_object()) {
     s.isolation.csrf_check_origin = v["csrf"].value("check_origin", true);
     s.isolation.csrf_allowed_origins = strings(v["csrf"], "allowed_origins");
