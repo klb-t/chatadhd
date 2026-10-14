@@ -610,4 +610,109 @@ TEST_SUITE("chat_route") {
     CHECK(again.at("hybrid").at("asked_model") == true);
     CHECK(f.transport->requests().size() == 1);
   }
+
+  // ── P16 3: the default element of an action ───────────────────────────
+
+  TEST_CASE("a bare command acts on the element its action names by default; a sentence with its own text stays a message (PL)") {
+    Fixture f;
+    const std::string last = f.last_message().at("id");
+    // no element named: translate acts on the last message, summarise on the conversation
+    const Json bare = f.route("przetłumacz na niemiecki");
+    REQUIRE(bare.at("kind") == "command");
+    CHECK(action_of(bare) == "translate");
+    CHECK(bare.at("command").at("element").at("id") == last);
+    CHECK(bare.at("command").at("element").at("class") == "message");
+    CHECK(bare.at("command").at("args").at("target_language") == "German");
+    const Json plain = f.route("przetłumacz to na niemiecki, proszę");  // filler words are not content
+    REQUIRE(plain.at("kind") == "command");
+    CHECK(action_of(plain) == "translate");
+    const Json sum = f.route("streść");
+    REQUIRE(sum.at("kind") == "command");
+    CHECK(action_of(sum) == "summarise");
+    CHECK(sum.at("command").at("element").at("id") == f.conv_id);
+    for (const char* text : {"przeredaguj", "wytłumacz prościej", "skrytykuj", "rozwiń"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(r.at("command").at("element").at("id") == last);
+    }
+    // the sentence carries its own text: after a colon, quoted, on a second line, or as more content words than the data allows
+    for (const char* text : {"przetłumacz na niemiecki: dzień dobry", "przetłumacz na niemiecki:dzień dobry", "przetłumacz \"dzień dobry\" na niemiecki",
+                             "przetłumacz „dzień dobry” na niemiecki", "przetłumacz na niemiecki\ndzień dobry", "przetłumacz dzień dobry na niemiecki",
+                             "streść artykuł o grzybach", "Streść poniższy tekst: Ala ma kota"}) {
+      INFO(text);
+      CHECK(f.route(text).at("kind") == "message");
+    }
+    // a named element is as before
+    const Json named = f.route("przetłumacz tę rozmowę na niemiecki");
+    REQUIRE(named.at("kind") == "command");
+    CHECK(named.at("command").at("element").at("id") == f.conv_id);
+    // "przetłumacz na niemiecki: dzień dobry" is answered by the model: the chat window does not handle it, the bytes are the message's
+    ChatOptions opts;
+    opts.stream = false;
+    CHECK_FALSE(unwrap(chat_route::handle(*f.rt, "przetłumacz na niemiecki: dzień dobry", opts, Json{{"message", "x"}}, nullptr)).handled);
+    // and the bare one is proposed in the conversation
+    const auto proposed = f.input("przetłumacz na niemiecki");
+    CHECK(proposed.handled);
+  }
+
+  TEST_CASE("a bare command acts on the element its action names by default; a sentence with its own text stays a message (EN)") {
+    Fixture f;
+    const std::string last = f.last_message().at("id");
+    const Json bare = f.route("translate to German");
+    REQUIRE(bare.at("kind") == "command");
+    CHECK(action_of(bare) == "translate");
+    CHECK(bare.at("command").at("element").at("id") == last);
+    CHECK(bare.at("command").at("args").at("target_language") == "German");
+    CHECK(action_of(f.route("Please translate it to German")) == "translate");
+    CHECK(action_of(f.route("summarise")) == "summarise");
+    for (const char* text : {"rephrase", "explain simply", "critique", "elaborate"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(r.at("command").at("element").at("id") == last);
+    }
+    for (const char* text : {"translate to German: good morning", "translate \"good morning\" to German", "translate good morning to German",
+                             "Summarise the plot of Hamlet", "translate to German\ngood morning"}) {
+      INFO(text);
+      CHECK(f.route(text).at("kind") == "message");
+    }
+    // the allowed number of content words is data: with two allowed, "good morning" is still the command
+    f.overlay("intent_routing", Json{{"heuristic", Json{{"payload", Json{{"max_words", 2}}}}}});
+    const Json loose = f.route("translate good morning to German");
+    REQUIRE(loose.at("kind") == "command");
+    CHECK(action_of(loose) == "translate");
+    CHECK(f.route("translate to German: good morning").at("kind") == "message");  // a colon is a payload whatever the number
+    // /translate with no element: the action's own default
+    const Json explicit_ = f.route("/translate target_language=German");
+    REQUIRE(explicit_.at("kind") == "command");
+    CHECK(explicit_.at("command").at("element").at("id") == last);
+    // a conversation without a message has nothing to translate: the words are a message
+    Fixture empty;
+    empty.conv_id = unwrap(empty.rt->db().create_conv("Empty")).id;
+    CHECK(empty.route("translate to German").at("kind") == "message");
+  }
+
+  TEST_CASE("image phrases mean depict, in a command and in a rule; never a media action that is only planned") {
+    Fixture f;
+    for (const char* text : {"zrób obraz tej rozmowy", "zrób obraz", "narysuj tę rozmowę", "make an image of this conversation", "draw this conversation", "make image"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == "depict");
+      CHECK(r.at("command").at("element").at("id") == f.conv_id);
+      for (const auto& c : r.at("command").at("candidates")) CHECK(c.at("action").get<std::string>().rfind("media.", 0) != 0);
+    }
+    // a sentence about a subject is the model's to answer
+    CHECK(f.route("zrób obraz kota").at("kind") == "message");
+    for (const char* text : {"pytaj przed obrazem", "zawsze pytaj przed obrazem", "dla mnie zawsze pytaj przed obrazem", "w tej rozmowie pytaj przed obrazem",
+                             "ask before image", "for me always ask before image", "for this conversation never run image without asking", "ask before picture",
+                             "zabroń obrazu", "never run image without asking"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == "rules.set");
+      CHECK(r.at("command").at("args").at("action") == "depict");
+    }
+  }
 }
