@@ -400,16 +400,34 @@ TEST_SUITE("action_run") {
     const Json no = unwrap(it2.confirm(rid(p2), Json{{"approved", false}, {"receipt_id", p2.at("pending").at("receipt_id")}}));
     CHECK(no.at("status") == "rejected");
     CHECK(env2.calls.empty());
-    // confirmed:true in the request accepts the rule confirmations up front (the caller's explicit yes)
+    // confirmed:true in the request accepts the rule confirmations up front (the caller's explicit yes) - with the receipt of this plan (P14 7)
     Env env3(rule_overlay(Json{{"id", "ask_before_sending"}, {"scope", "installation"}, {"target", Json{{"kind", "class"}, {"id", "message"}}},
                                {"action", Json{{"flag", "sends_off_device"}}}, {"effect", "confirm"}}));
     auto it3 = env3.interpreter();
     RunRequest r3 = env3.request("t.sends_chain");
     r3.confirmed = true;
     r3.ref = "cli";
+    // a bare confirmed:true is not the yes of someone who saw the plan: the plan is proposed, nothing runs
+    const Json bare = unwrap(it3.start(r3));
+    CHECK(bare.at("status") == "proposed");
+    CHECK(bare.at("confirmation_refused").at("reason") == "receipt_required");
+    CHECK(bare.at("pending").at("kind") == "proposal");
+    CHECK(env3.calls.empty());
+    // the receipt of another plan is not this plan's
+    r3.receipt_id = "arp_" + std::string(24, '0');
+    const Json mismatch = unwrap(it3.start(r3));
+    CHECK(mismatch.at("status") == "proposed");
+    CHECK(mismatch.at("confirmation_refused").at("reason") == "receipt_mismatch");
+    CHECK(env3.calls.empty());
+    // the receipt that a preview gives for exactly this request is
+    const Json shown = unwrap(it3.preview(r3));
+    CHECK(shown.at("plan_receipt") == bare.at("plan_receipt"));
+    r3.receipt_id = shown.at("plan_receipt");
     const Json yes = unwrap(it3.start(r3));
     CHECK(yes.at("status") == "completed");
+    CHECK_FALSE(yes.contains("confirmation_refused"));
     CHECK(yes.at("confirmations").at(0).at("ref") == "cli");
+    CHECK(yes.at("confirmations").at(0).at("receipt_id") == shown.at("plan_receipt"));
   }
 
   TEST_CASE("propose: the plan is stored and nothing runs until the user's go; the go also covers the confirmations that were shown") {

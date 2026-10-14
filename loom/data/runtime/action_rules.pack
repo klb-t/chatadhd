@@ -399,6 +399,76 @@
           "en": "The clipboard may hold what you copied from anywhere (passwords included); you confirm each read.",
           "pl": "Schowek może zawierać to, co skopiowano skądkolwiek (także hasła); każdy odczyt potwierdzasz sam."
         }
+      },
+      "confirm:conversation.delete": {
+        "id": "confirm:conversation.delete",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "conversation.delete"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Deleting a conversation removes it with all its messages and cannot be undone; you confirm each one.",
+          "pl": "Usunięcie rozmowy usuwa ją razem ze wszystkimi wiadomościami i nie da się go cofnąć; każde potwierdzasz sam."
+        }
+      },
+      "confirm:memory.forget": {
+        "id": "confirm:memory.forget",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "memory.forget"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Forgetting removes a memory entry for good; you confirm each one.",
+          "pl": "Zapomnienie usuwa wpis pamięci na stałe; każde potwierdzasz sam."
+        }
+      },
+      "confirm:usage.compact": {
+        "id": "confirm:usage.compact",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "usage.compact"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Compacting folds the ledger of the usage for good; you confirm each one.",
+          "pl": "Kompaktowanie na stałe zwija rejestr zużycia; każde potwierdzasz sam."
+        }
+      },
+      "confirm:storage.connect": {
+        "id": "confirm:storage.connect",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "storage.connect"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Connecting a storage adds a place your data can be sent to; you confirm each one.",
+          "pl": "Podłączenie magazynu dodaje miejsce, dokąd mogą trafiać Twoje dane; każde potwierdzasz sam."
+        }
+      },
+      "confirm:github.sync": {
+        "id": "confirm:github.sync",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "github.sync"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Syncing sends your data folder to GitHub and brings changes back; you confirm each one.",
+          "pl": "Synchronizacja wysyła folder danych na GitHub i sprowadza zmiany z powrotem; każdą potwierdzasz sam."
+        }
       }
     },
     "extrapolation": {

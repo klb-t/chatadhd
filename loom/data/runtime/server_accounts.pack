@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "server_accounts",
-  "revision": 1,
-  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy).",
+  "revision": 4,
+  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy). Isolation (R18, security review): confine_paths = every filesystem path a request supplies (catalog/archive/knowledge sources, a repo, a local storage target, a prompt folder) must lie inside the user's own data directory or one of path_roots, so one account cannot read another's data or the accounts database; false lifts it (single-operator installs). block_private_hosts = outbound requests of an account to loopback/private/link-local addresses are refused (stops using the server as a proxy into its own network) except to the hosts in allow_private_hosts (e.g. a local model server). csrf.check_origin = a state-changing request that carries an Origin (or Sec-Fetch-Site: cross-site) naming another site than the one it was sent to is refused, unless that origin is in csrf.allowed_origins. expose_server_logs = /api/logs shows the process-wide log, which mixes all users, so it is off for accounts. Hashing (R20): hashing.max_concurrent = how many Argon2id evaluations (login, register, password change) may run at the same time, because each takes its full memory (rfc9106_second = 64 MiB): -1 = number of CPUs (preset), 0 = unlimited, N = at most N. A request that finds every slot taken waits up to hashing.wait_seconds (preset 5) and is then answered 503 with Retry-After; 0 = refuse at once. login_max_length (R20): the longest login (counted in characters) that register and login accept; 0 = no limit. Longer names are refused with 400 before any hashing or throttle bookkeeping, so one request cannot grow the account tables or the throttle memory. Operator ceilings (R20 follow-up): zip.max_total_bytes / zip.max_ratio (0 = no ceiling) and git.allow_repo_config bound what an account may set in its own config.json (loom_zip_*, loom_git_allow_repo_config): the effective value is the more restrictive of the two, so a user can tighten but not loosen; they protect the server's disk and the server's processes. Single-user and local runtimes have no ceiling.",
   "defaults": {
     "registration": "closed",
     "session_lifetime_seconds": 2592000,
@@ -33,6 +33,27 @@
         "base_delay_seconds": 1,
         "max_delay_seconds": 900
       }
+    },
+    "confine_paths": true,
+    "path_roots": [],
+    "block_private_hosts": true,
+    "allow_private_hosts": [],
+    "csrf": {
+      "check_origin": true,
+      "allowed_origins": []
+    },
+    "expose_server_logs": false,
+    "hashing": {
+      "max_concurrent": -1,
+      "wait_seconds": 5
+    },
+    "login_max_length": 128,
+    "zip": {
+      "max_total_bytes": 68719476736,
+      "max_ratio": 1000
+    },
+    "git": {
+      "allow_repo_config": false
     }
   },
   "value_schema": {
@@ -47,7 +68,17 @@
       "accounts_file",
       "users_subdir",
       "cookie",
-      "throttle"
+      "throttle",
+      "confine_paths",
+      "path_roots",
+      "block_private_hosts",
+      "allow_private_hosts",
+      "csrf",
+      "expose_server_logs",
+      "hashing",
+      "login_max_length",
+      "zip",
+      "git"
     ],
     "additionalProperties": false,
     "properties": {
@@ -239,6 +270,133 @@
                 "x-unit": "seconds"
               }
             }
+          }
+        }
+      },
+      "confine_paths": {
+        "type": "boolean",
+        "description": "Request-supplied filesystem paths must be inside the user's data dir or path_roots.",
+        "x-setting": "/confine_paths",
+        "x-consumer": "server accounts"
+      },
+      "path_roots": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Extra absolute folders every account may read (e.g. a shared library). Empty = only the user's own data dir.",
+        "x-setting": "/path_roots",
+        "x-consumer": "server accounts"
+      },
+      "block_private_hosts": {
+        "type": "boolean",
+        "description": "Refuse outbound requests to loopback/private/link-local addresses.",
+        "x-setting": "/block_private_hosts",
+        "x-consumer": "server accounts"
+      },
+      "allow_private_hosts": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Host names or IP literals exempt from block_private_hosts.",
+        "x-setting": "/allow_private_hosts",
+        "x-consumer": "server accounts"
+      },
+      "csrf": {
+        "type": "object",
+        "required": [
+          "check_origin",
+          "allowed_origins"
+        ],
+        "additionalProperties": false,
+        "x-setting": "/csrf",
+        "x-consumer": "server accounts",
+        "properties": {
+          "check_origin": {
+            "type": "boolean"
+          },
+          "allowed_origins": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Origins such as https://app.example.org that may send cookie-authenticated requests cross-site."
+          }
+        }
+      },
+      "expose_server_logs": {
+        "type": "boolean",
+        "description": "Serve the process-wide /api/logs to signed-in users (it mixes every user's lines).",
+        "x-setting": "/expose_server_logs",
+        "x-consumer": "server accounts"
+      },
+      "hashing": {
+        "type": "object",
+        "required": [
+          "max_concurrent",
+          "wait_seconds"
+        ],
+        "additionalProperties": false,
+        "x-setting": "/hashing",
+        "x-consumer": "server accounts",
+        "properties": {
+          "max_concurrent": {
+            "type": "integer",
+            "minimum": -1,
+            "description": "Concurrent Argon2id evaluations: -1 = number of CPUs, 0 = unlimited, N = at most N."
+          },
+          "wait_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "How long a request waits for a free slot before it gets 503 + Retry-After; 0 = refuse at once."
+          }
+        }
+      },
+      "login_max_length": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Longest login in characters; 0 = no limit.",
+        "x-setting": "/login_max_length",
+        "x-consumer": "server accounts"
+      },
+      "zip": {
+        "type": "object",
+        "required": [
+          "max_total_bytes",
+          "max_ratio"
+        ],
+        "additionalProperties": false,
+        "x-setting": "/zip",
+        "x-consumer": "server accounts",
+        "properties": {
+          "max_total_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Ceiling on bytes one imported archive may expand to for any account; 0 = no ceiling."
+          },
+          "max_ratio": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Ceiling on the expansion ratio of one archive entry; 0 = no ceiling."
+          }
+        }
+      },
+      "git": {
+        "type": "object",
+        "required": [
+          "allow_repo_config"
+        ],
+        "additionalProperties": false,
+        "x-setting": "/git",
+        "x-consumer": "server accounts",
+        "properties": {
+          "allow_repo_config": {
+            "type": "boolean",
+            "description": "true lets accounts opt in (loom_git_allow_repo_config) to running git with a repository's own hooks and configuration; false forbids it."
           }
         }
       }

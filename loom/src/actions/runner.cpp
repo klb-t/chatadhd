@@ -3,6 +3,7 @@
 #include "loom/action_runner.h"
 #include "loom/action_emergent.h"
 #include "loom/action_overlay.h"
+#include "loom/action_ops.h"
 
 #include <algorithm>
 #include <thread>
@@ -11,6 +12,7 @@
 #include "loom/action_estimate.h"
 #include "loom/action_result.h"
 #include "loom/chat_route.h"
+#include "loom/client_blobs.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
@@ -25,6 +27,7 @@
 #include "loom/util/ids.h"
 #include "loom/util/utf8.h"
 #include "loom/media_providers.h"
+#include "loom/port_profile.h"
 #include "loom/use_model.h"
 
 namespace loom::actions {
@@ -45,6 +48,20 @@ StepOutcome failed(Error e) {
   return o;
 }
 
+// The choice the user made for a job in the ports profile (the role: this conversation first, then the user's overlay); nothing when only the
+// shipped preset speaks, so a person who chose nothing sees no change.
+std::optional<Json> chosen_role(Runtime& rt, const StepCall& c, const std::string& role) {
+  auto profile = PortProfile::load(rt.paths().root);
+  if (!profile) return std::nullopt;
+  Json meta = Json::object();
+  const std::string conv = json::get_string(c.context, "conv_id");
+  if (!conv.empty())
+    if (auto cv = rt.db().get_conv(conv); cv && *cv) meta = (*cv)->metadata.value("ports", Json::object());
+  auto resolved = profile->resolve(role, meta, conv, rt.config().all());
+  if (!resolved || !resolved->value("defined", false) || json::get_string(*resolved, "scope") == "installation") return std::nullopt;
+  return *resolved;
+}
+
 // ── use_model ───────────────────────────────────────────────────────
 
 Json usage_pending_of(const llm::VariantResult& r) {
@@ -60,8 +77,11 @@ Json usage_pending_of(const llm::VariantResult& r) {
 
 // A use_model step with `media: asr | ocr` (transcribe, ocr): the recording or the picture of the element goes to the media providers
 // (profile media), which put it on the wire through the one use_model - the adapter of the provider's family, the usage guard, the
-// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the guard holds
-// comes back as the provider's error (the media providers have no way to resume it): the run fails with that reason.
+// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the usage guard
+// holds (x10 growth) is a pause, not a failure: the providers' resumable calls answer with the hold's receipt, nothing is sent and no
+// other provider is tried, and the step comes back Held with that receipt, as a model call does. The run resumes with the user's
+// confirmation (c.usage_confirmation), and this function is called again with the same recording or picture, provider and language,
+// so the request that was held is the request that is sent (only once, only to the provider that held it).
 StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, const std::string& family) {
   const Json media = settings.value("media", Json::object());
   const Json kind = media.value(family, Json::object());
@@ -90,7 +110,13 @@ StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, cons
     const std::string v = json::get_string(c.with, key);
     return v.empty() ? std::optional<std::string>() : std::optional<std::string>(v);
   };
-  const auto provider = optional_text("provider");
+  auto provider = optional_text("provider");
+  // The provider the user chose for this job (role asr / ocr of the ports profile: "for transcription use groq").
+  if (!provider)
+    if (auto chosen = chosen_role(rt, c, family)) {
+      const Json members = chosen->value("members", chosen->value("entry", Json::object()).value("members", Json::array()));
+      if (members.is_array() && !members.empty() && members[0].is_string()) provider = members[0].get<std::string>();
+    }
   const auto language = optional_text("language");
 
   Json provenance = Json::array();
@@ -109,16 +135,26 @@ StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, cons
   } release{rt, previous};
   std::string text;
   Json data = nullptr;
+  const Json confirmation = c.usage_confirmation.is_object() ? c.usage_confirmation : Json::object();
+  auto held = [&](Json pending) {
+    StepOutcome h;
+    h.state = StepOutcome::State::Held;
+    h.hold = std::move(pending);
+    h.provenance = std::move(provenance);
+    return h;
+  };
   if (family == "asr") {
-    auto done = rt.media().transcribe_bytes(bytes, format, provider, language);
+    auto done = rt.media().transcribe_bytes_resumable(bytes, format, provider, language, confirmation);
     if (!done) return failed(done.error());
-    text = done->text;
-    data = done->to_json();
+    if (done->paused()) return held(std::move(done->pending));
+    text = done->value->text;
+    data = done->value->to_json();
   } else {
-    auto done = rt.media().ocr_bytes(bytes, format, provider, language);
+    auto done = rt.media().ocr_bytes_resumable(bytes, format, provider, language, confirmation);
     if (!done) return failed(done.error());
-    text = done->text;
-    data = done->to_json();
+    if (done->paused()) return held(std::move(done->pending));
+    text = done->value->text;
+    data = done->value->to_json();
   }
   StepOutcome out;
   out.state = StepOutcome::State::Ok;
@@ -152,6 +188,10 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   }
   if (req.models.empty()) {
     std::string model = json::get_string(with, "model");
+    // The model the user chose for this job (role action.<id> of the ports profile: "for summaries use model X").
+    if (model.empty())
+      if (auto chosen = chosen_role(rt, c, "action." + (c.owner_action.empty() ? c.root_action : c.owner_action)))
+        model = chosen->value("params", Json::object()).value("model", "");
     if (model.empty()) {
       const Json configured = rt.config().get(json::get_string(um, "model_setting", "default_model"));
       if (configured.is_string()) model = configured.get<std::string>();
@@ -365,6 +405,8 @@ void ActionRunner::install_executors(ExecutorTable& table) {
   });
   // The device actions a client declared are carried out by that client: the step pauses the run (client_devices.h).
   table.set_client_executor(make_client_step_executor());
+  // The operations of the application (search, memory, conversations, ports, usage, help ...): action_ops.h.
+  install_chat_ops(table, rt);
   table.add("settings.set", [&rt](const StepCall& c) { return run_settings_set(rt, c); });
   table.add("settings.get", [&rt](const StepCall& c) { return run_settings_get(rt, c); });
   table.set_port_executor([this](const StepCall& c) {
@@ -382,6 +424,14 @@ void ActionRunner::install_executors(ExecutorTable& table) {
     out.parts.push_back(json_part(*result));
     return out;
   });
+}
+
+bool ActionRunner::runnable(const Json& entry) {
+  if (json::get_string(entry, "status") != "implemented") return false;
+  if (json::get_string(entry, "kind") == "composite") return json::get_string(entry, "consumer").empty();
+  ExecutorTable table;
+  install_executors(table);
+  return table.find(json::get_string(entry, "id"), entry) != nullptr;
 }
 
 Json ActionRunner::client_declaration(std::string_view client_id) { return clients_.find(client_id); }
@@ -575,70 +625,6 @@ Result<Json> ActionRunner::client_capabilities(const Json& request) {
   return out;
 }
 
-Result<Json> ActionRunner::client_blob(const Json& request) {
-  const std::string hash = json::get_string(request, "hash");
-  if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "hash must be a blob hash (64 hex)");
-  if (!rt_.blobs().has(hash)) return Error(Errc::NotFound, "no blob " + hash);
-  LOOM_TRY_ASSIGN(std::string bytes, rt_.blobs().read(hash));
-  std::string mime;
-  if (auto row = rt_.db().find_node("blob:" + hash, "blob"); row && *row) mime = json::get_string((*row)->metadata, "mime");
-  return Json{{"hash", hash}, {"mime", mime}, {"size", static_cast<std::int64_t>(bytes.size())}, {"data_base64", base64::encode(bytes)}};
-}
-
-namespace {
-
-// The parts a client brought back, as typed parts of the run: media given as data_base64 go to the blob store (with a graph node
-// and an artifact record that say where they came from), a part naming a stored blob is checked, text stays text.
-Result<Json> stored_client_parts(Runtime& rt, const Json& parts, const Json& origin) {
-  Json out = Json::array();
-  if (!parts.is_array()) return out;
-  for (const auto& p : parts) {
-    if (!p.is_object()) return Error(Errc::InvalidArgument, "a part must be an object");
-    const std::string kind = json::get_string(p, "kind");
-    if (!llm::known_part_kind(kind)) return Error(Errc::InvalidArgument, "unknown part kind '" + kind + "'");
-    Json part = Json{{"kind", kind}};
-    if (const std::string mime = json::get_string(p, "mime"); !mime.empty()) part["mime"] = mime;
-    if (kind == "text" || kind == "json" || kind == "embedding") {
-      if (const std::string text = json::get_string(p, "text"); !text.empty()) part["text"] = text;
-      if (const Json* v = json::find(p, "value")) part["value"] = *v;
-      out.push_back(std::move(part));
-      continue;
-    }
-    std::string hash = json::get_string(p, "blob_hash");
-    if (const std::string b64 = json::get_string(p, "data_base64"); !b64.empty()) {
-      LOOM_TRY_ASSIGN(std::string bytes, base64::decode(b64, true));
-      if (bytes.empty()) return Error(Errc::InvalidArgument, "a " + kind + " part has no bytes");
-      LOOM_TRY_ASSIGN(BlobRef ref, rt.blobs().put(bytes, json::get_string(p, "mime")));
-      hash = ref.hash;
-      part["size"] = ref.size;
-      NodeOptions o;
-      o.tags = Json::array({"blob", "client_capture", kind});
-      Json meta{{"blob_hash", hash}, {"size", ref.size}, {"mime", json::get_string(p, "mime")}, {"output_kind", kind}, {"produced_by", origin}};
-      if (const std::string name = json::get_string(p, "name"); !name.empty()) meta["name"] = name;
-      o.metadata = std::move(meta);
-      LOOM_TRY_ASSIGN(std::string node, rt.db().get_or_create_node("blob:" + hash, "blob", o));
-      part["node_id"] = node;
-      ArtifactRecord artifact;
-      artifact.kind = "client_capture";
-      artifact.title = kind + " from " + json::get_string(origin, "action");
-      artifact.blob_hash = hash;
-      artifact.mime = json::get_string(p, "mime");
-      artifact.metadata = origin;
-      if (auto made = rt.provenance().add_artifact(std::move(artifact))) part["artifact_id"] = *made;
-    } else if (!hash.empty()) {
-      if (!BlobStore::is_valid_hash(hash) || !rt.blobs().has(hash)) return Error(Errc::NotFound, "the blob " + hash + " is not in the blob store");
-    } else if (json::get_string(p, "url").empty()) {
-      return Error(Errc::InvalidArgument, "a " + kind + " part needs data_base64, blob_hash or url");
-    }
-    if (!hash.empty()) part["blob_hash"] = hash;
-    if (const std::string url = json::get_string(p, "url"); !url.empty()) part["url"] = url;
-    out.push_back(std::move(part));
-  }
-  return out;
-}
-
-}  // namespace
-
 Result<Json> ActionRunner::client_result(const Json& request, const CancelToken* external) {
   const std::string run_id = json::get_string(request, "run_id");
   if (run_id.empty()) return Error(Errc::InvalidArgument, "run_id is required");
@@ -655,7 +641,7 @@ Result<Json> ActionRunner::client_result(const Json& request, const CancelToken*
     Json origin{{"schema", "loom.client_capture/1"}, {"run_id", run_id}, {"step", json::get_string(pending, "step")},
                 {"action", json::get_string(pending, "action")}, {"client_id", current.value("client", Json::object()).value("client_id", "")},
                 {"ref", json::get_string(request, "ref")}, {"output_kind", spec.value("expects", Json::array()).empty() ? "media" : spec["expects"][0]}};
-    LOOM_TRY_ASSIGN(answer["parts"], stored_client_parts(rt_, request.value("parts", Json::array()), origin));
+    LOOM_TRY_ASSIGN(answer["parts"], client_blobs::parts(rt_, request.value("parts", Json::array()), origin));
   }
   CancelToken own;
   const CancelToken* token = external ? external : &own;
@@ -719,8 +705,48 @@ Result<Json> ActionRunner::preview(const Json& request) {
   services.config = &rt_.config();
   services.settings = loaded.settings;
   services.catalogue = loaded.engine.catalogue();
-  preview["estimate"] = estimate_plan(services, preview.at("plan"), r.args, chars);
+  Json estimate = estimate_plan(services, preview.at("plan"), r.args, chars);
+  // A price the registry cannot give because it is empty (a fresh data directory): fetch the list once, then estimate again.
+  bool empty_registry = false;
+  for (const auto& call : estimate.value("calls", Json::array()))
+    if (json::get_string(call.value("price", Json::object()), "why_code") == "registry_empty") empty_registry = true;
+  if (empty_registry) {
+    services.registry_failure = fill_registry_for_estimate(loaded.settings);
+    estimate = estimate_plan(services, preview.at("plan"), r.args, chars);
+  }
+  preview["estimate"] = std::move(estimate);
   return preview;
+}
+
+std::string ActionRunner::fill_registry_for_estimate(const Json& run_settings) {
+  const Json cfg = run_settings.value("estimate", Json::object()).value("registry_refresh", Json::object());
+  const Json* presets = json::find(cfg, "presets");
+  if (!presets || !presets->is_object()) return std::string();
+  // The user's choice (a preset name), else the installation's; a name that is not a preset means the one the data names for it.
+  std::string chosen = json::get_string(cfg, "active", "on_demand");
+  const Json set = rt_.config().get(json::get_string(cfg, "setting", "model_registry_autorefresh"));
+  if (set.is_string() && !set.get<std::string>().empty()) chosen = set.get<std::string>();
+  const Json* preset = json::find(*presets, chosen);
+  if (!preset) preset = json::find(*presets, json::get_string(cfg, "unknown", "on_demand"));
+  if (!preset || !json::get_bool(*preset, "fetch", false)) return std::string();
+  const Json retry = cfg.value("retry_after_seconds", Json(nullptr));
+  {
+    std::lock_guard lk(mu_);
+    if (registry_tried_) {
+      // Tried before and the registry is still empty: again only after the retry window (null: every time).
+      const double waited = std::chrono::duration<double>(std::chrono::steady_clock::now() - registry_tried_at_).count();
+      if (retry.is_number() && waited < retry.get<double>()) return registry_failure_;
+    }
+    registry_tried_ = true;  // set before the call so a second estimate at the same time does not fetch again
+    registry_tried_at_ = std::chrono::steady_clock::now();
+    registry_failure_.clear();
+  }
+  std::string failure;
+  if (auto st = rt_.models().update_from_api(); !st) failure = st.error().message;
+  else if (rt_.models().size() == 0) failure = "the provider's list has no models";
+  std::lock_guard lk(mu_);
+  registry_failure_ = failure;
+  return failure;
 }
 
 // The writes of rules and of the user's own actions: raw (a step of a run has passed the rules already) or gated (a call from
@@ -754,13 +780,14 @@ Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& re
 
 Result<Json> ActionRunner::run_gated(std::string_view action, const Json& request) {
   Json args = request;
-  for (const char* control : {"confirmed", "ref", "context", "propose"}) args.erase(control);
+  for (const char* control : {"confirmed", "receipt_id", "ref", "context", "propose"}) args.erase(control);
   Json run_request{{"action", std::string(action)}, {"element", Json{{"class", "application"}}}, {"args", args}, {"ref", json::get_string(request, "ref", "api")}};
   Json context = request.value("context", Json::object());
   if (!context.is_object()) context = Json::object();
   if (!context.contains("origin")) context["origin"] = json::get_string(request, "ref", "api");
   run_request["context"] = context;
   if (json::get_bool(request, "confirmed", false)) run_request["confirmed"] = true;
+  if (const std::string receipt = json::get_string(request, "receipt_id"); !receipt.empty()) run_request["receipt_id"] = receipt;
   if (json::get_bool(request, "propose", false)) run_request["propose"] = true;
   std::string conv = json::get_string(context, "conv_id");
   if (conv.empty() && json::get_string(request, "scope") == "conversation") conv = json::get_string(request, "scope_id");
@@ -785,7 +812,12 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "client_result") return client_result(request);
   if (action == "client.declare") return client_declare(request);
   if (action == "client.capabilities") return client_capabilities(request);
-  if (action == "client.blob") return client_blob(request);
+  if (action == "client.blob_put") return client_blobs::put(rt_, request);
+  if (action == "client.blob_path") return client_blobs::path(rt_, request);
+  if (action == "client.blob_begin") return client_blobs::begin(rt_, request);
+  if (action == "client.blob_append") return client_blobs::append(rt_, request);
+  if (action == "client.blob_commit") return client_blobs::commit(rt_, request);
+  if (action == "client.blob_read") return client_blobs::read(rt_, request);
   if (action == "cancel") return cancel(request);
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);

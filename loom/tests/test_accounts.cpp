@@ -1,6 +1,8 @@
 #include <doctest/doctest.h>
 
+#include <atomic>
 #include <chrono>
+#include <vector>
 #include <thread>
 
 #include "loom/accounts.h"
@@ -26,6 +28,67 @@ TEST_SUITE("accounts") {
     CHECK(s.cookie.same_site == "Strict");
     CHECK(s.cookie.http_only);
     CHECK(s.argon2.m_kib == 65536);  // rfc9106_second preset
+  }
+
+  TEST_CASE("login length is a setting (preset 128 characters, 0 = no limit)") {
+    fsutil::TempDir td;
+    auto cfg = fast_settings(td.path());
+    CHECK(cfg.login_max_length == 128);
+    cfg.login_max_length = 5;
+    auto store = unwrap(accounts::AccountStore::open(td.path(), cfg));
+    CHECK(store->create_user("abcde", "correct horse"));
+    CHECK_FALSE(store->create_user("abcdef", "correct horse"));
+    CHECK(store->create_user("\xC5\xBC\xC3\xB3\xC5\x82w", "correct horse"));  // 4 characters, 7 bytes
+    CHECK(store->login_too_long("abcdef"));
+    CHECK_FALSE(store->verify_password("abcdef", "correct horse"));
+    CHECK(store->verify_password("abcde", "correct horse"));
+    auto cfg0 = fast_settings(td.path());
+    cfg0.login_max_length = 0;
+    auto open = unwrap(accounts::AccountStore::open(td.path() / "x", cfg0));
+    CHECK(open->create_user(std::string(1000, 'a'), "correct horse"));
+  }
+
+  TEST_CASE("concurrent Argon2id hashes are bounded (hashing.max_concurrent), excess gets Busy") {
+    fsutil::TempDir td;
+    auto cfg = fast_settings(td.path());
+    CHECK(cfg.hash_max_concurrent == -1);  // preset: number of CPUs
+    cfg.argon2 = {3, 65536, 1};            // slow enough to overlap
+    cfg.hash_max_concurrent = 1;
+    cfg.hash_wait_seconds = 0;
+    auto store = unwrap(accounts::AccountStore::open(td.path(), cfg));
+    std::atomic<int> ok{0}, busy{0}, other{0};
+    std::vector<std::thread> ts;
+    for (int i = 0; i < 6; ++i)
+      ts.emplace_back([&, i] {
+        auto r = store->create_user("user" + std::to_string(i), "correct horse");
+        if (r) ++ok;
+        else if (r.error().code == Errc::Busy) ++busy;
+        else ++other;
+      });
+    for (auto& t : ts) t.join();
+    CHECK(other == 0);
+    CHECK(ok >= 1);
+    CHECK(busy >= 1);
+    // waiting instead of refusing: nobody is refused when the wait is long enough
+    auto cfg2 = cfg;
+    cfg2.hash_wait_seconds = 60;
+    auto store2 = unwrap(accounts::AccountStore::open(td.path() / "w", cfg2));
+    std::atomic<int> refused{0};
+    ts.clear();
+    for (int i = 0; i < 4; ++i)
+      ts.emplace_back([&, i] { if (!store2->create_user("w" + std::to_string(i), "correct horse")) ++refused; });
+    for (auto& t : ts) t.join();
+    CHECK(refused == 0);
+    // 0 = unlimited
+    auto cfg3 = cfg;
+    cfg3.hash_max_concurrent = 0;
+    auto store3 = unwrap(accounts::AccountStore::open(td.path() / "u", cfg3));
+    refused = 0;
+    ts.clear();
+    for (int i = 0; i < 4; ++i)
+      ts.emplace_back([&, i] { if (!store3->create_user("n" + std::to_string(i), "correct horse")) ++refused; });
+    for (auto& t : ts) t.join();
+    CHECK(refused == 0);
   }
 
   TEST_CASE("users, passwords, sessions") {

@@ -2,7 +2,7 @@
 // request/response endpoints, fetch + ReadableStream for SSE endpoints
 // (chat, import progress, live events). Talks to loom-server's /api/*.
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import type { ActionsApi, LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { ActionsApi, ClientBlob, LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import { createOperationsApi } from "./operations";
 import type {
   ChatChunk,
@@ -78,7 +78,23 @@ export class LoomHttpApi implements LoomApi {
     clientDeclare: (request) => this.req("POST", "/api/client/declare", request),
     clientCapabilities: (request) => this.req("POST", "/api/client/capabilities", request),
     clientResult: (result) => this.req("POST", "/api/actions/client_result", result),
-    clientBlob: (request) => this.req("POST", "/api/client/blob", request),
+    clientBlobUpload: async (blob, options) => {
+      // Multipart, streamed to disk by the server: the bytes are not base64 and not JSON, and are not read into the page's memory twice.
+      const form = new FormData();
+      form.append("mime", blob.type || "application/octet-stream");
+      form.append("file", blob, options?.name || "blob");
+      const res = await fetch("/api/client/blob/upload", { method: "POST", headers: this.headers(), body: form });
+      if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT));
+      const parsed = (await res.json().catch(() => ({}))) as unknown;
+      if (!res.ok || isLoomError(parsed)) throw new HttpError(res.status, isLoomError(parsed) ? parsed.error.message : `HTTP ${res.status}`);
+      return parsed as ClientBlob;
+    },
+    clientBlobFetch: async (hash) => {
+      const res = await fetch(`/api/client/blob/${encodeURIComponent(hash)}/raw`, { headers: this.headers() });
+      if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT));
+      if (!res.ok) throw new HttpError(res.status, `HTTP ${res.status}`);
+      return res.blob();
+    },
     run: (request) => this.req("POST", "/api/actions/run", request),
     confirm: (answer) => this.req("POST", "/api/actions/confirm", answer),
     cancel: (request) => this.req("POST", "/api/actions/cancel", request),
@@ -203,12 +219,33 @@ export class LoomHttpApi implements LoomApi {
           signal: controller.signal,
         });
         if (!res.ok || !res.body) {
-          handlers.onError?.(`HTTP ${res.status}`);
+          // The server says why in its error envelope; the status alone is the fallback.
+          let reason = `HTTP ${res.status}`;
+          try {
+            const parsed: unknown = JSON.parse(await res.text());
+            if (isLoomError(parsed)) reason = parsed.error.message;
+          } catch { /* not JSON: the status stands */ }
+          handlers.onError?.(reason);
           return;
         }
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buf = "";
+        let events = 0;
+        // One event of the stream; false when it holds no data line (a comment, a keep-alive).
+        const take = (rawEvent: string): boolean => {
+          const line = rawEvent.split("\n").find((l) => l.startsWith("data:"));
+          if (!line) return false;
+          const jsonText = line.slice(5).trim();
+          if (!jsonText) return false;
+          try {
+            handlers.onChunk?.(JSON.parse(jsonText) as TChunk);
+            events += 1;
+          } catch {
+            // Malformed chunk - skip it rather than killing the stream.
+          }
+          return true;
+        };
         for (;;) {
           const { value, done } = await reader.read();
           if (done) break;
@@ -217,16 +254,17 @@ export class LoomHttpApi implements LoomApi {
           while ((sep = buf.indexOf("\n\n")) !== -1) {
             const rawEvent = buf.slice(0, sep);
             buf = buf.slice(sep + 2);
-            const line = rawEvent.split("\n").find((l) => l.startsWith("data:"));
-            if (!line) continue;
-            const jsonText = line.slice(5).trim();
-            if (!jsonText) continue;
-            try {
-              handlers.onChunk?.(JSON.parse(jsonText) as TChunk);
-            } catch {
-              // Malformed chunk - skip it rather than killing the stream.
-            }
+            take(rawEvent);
           }
+        }
+        buf += decoder.decode();
+        // The last event may end the body without its blank line: it is still an event. A body that is no stream at all but an error
+        // envelope (a 200 that carries a refusal) is the refusal, said.
+        if (buf.trim() !== "" && !take(buf) && events === 0) {
+          try {
+            const parsed: unknown = JSON.parse(buf);
+            if (isLoomError(parsed)) { handlers.onError?.(parsed.error.message); return; }
+          } catch { /* not JSON either: the end of the stream is reported by the caller */ }
         }
         handlers.onDone?.();
       } catch (err) {

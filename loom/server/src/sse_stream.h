@@ -4,6 +4,7 @@
 #pragma once
 
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <deque>
 #include <mutex>
@@ -46,11 +47,44 @@ class SseQueue {
   void cancel() { cancelled_.store(true); }
   bool cancelled() const { return cancelled_.load(); }
 
+  // A feed that nobody writes to (the page's event feed between events) still holds a server thread. Without a write there is no way to
+  // notice that the client went away, so an idle feed writes an SSE comment (": keep-alive", which every SSE reader ignores) every
+  // `keepalive_ms` (0 = never, as before) and ends when the write fails; a stopping server ends every feed within one tick.
+  static std::atomic<long>& keepalive_ms() {
+    static std::atomic<long> value{15000};
+    return value;
+  }
+  static std::atomic<bool>& stopping() {
+    static std::atomic<bool> value{false};
+    return value;
+  }
+
   // httplib ContentProviderWithoutLength body. Returns false to end the
   // stream (either normal completion or a write failure / disconnect).
   bool provide(size_t /*offset*/, httplib::DataSink& sink) {
     std::unique_lock<std::mutex> lk(mu_);
-    cv_.wait(lk, [&] { return !items_.empty() || closed_; });
+    const long keepalive = keepalive_ms().load();
+    constexpr auto kTick = std::chrono::milliseconds(500);
+    const bool ready = cv_.wait_for(lk, kTick, [&] { return !items_.empty() || closed_ || stopping().load(); });
+    if (!ready) {
+      // Idle tick: nothing to send. The feed is kept, and probed when a keep-alive is due.
+      idle_ms_ += static_cast<long>(kTick.count());
+      if (keepalive <= 0 || idle_ms_ < keepalive) return true;
+      idle_ms_ = 0;
+      lk.unlock();
+      static const char kComment[] = ": keep-alive\n\n";
+      if (!sink.write(kComment, sizeof(kComment) - 1)) {
+        cancel();
+        return false;
+      }
+      return true;
+    }
+    idle_ms_ = 0;
+    if (items_.empty() && !closed_ && stopping().load()) {
+      lk.unlock();
+      sink.done();
+      return false;
+    }
     while (!items_.empty()) {
       std::string item = std::move(items_.front());
       items_.pop_front();
@@ -75,6 +109,7 @@ class SseQueue {
   std::deque<std::string> items_;
   bool closed_ = false;
   std::atomic<bool> cancelled_{false};
+  long idle_ms_ = 0;  // only the one thread that provides touches it
 };
 
 }  // namespace loom_server

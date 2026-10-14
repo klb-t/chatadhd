@@ -53,7 +53,7 @@ export interface ActionRunPending {
 }
 /** What a completed run left in the graph: the form nodes of its result, the content node they express, the run node. */
 export interface ProducedMeta { target?: string; forms?: string[]; content?: string | null; run_node?: string | null }
-export interface ActionRunMeta { run_id?: string; status?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
+export interface ActionRunMeta { run_id?: string; status?: string; lang?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
 
 export type AnswerKind = "proposal" | "confirmation" | "usage" | "client";
 /** What a message of the conversation asks the user to answer, if anything. */
@@ -92,6 +92,15 @@ export function pendingAnswer(metadata: Meta | undefined): PendingAnswer | null 
     return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: null };
   }
   return null;
+}
+
+/** The language a message of the router was written in (its proposal's, else its run's), or null: every line the page adds to that
+ *  message (title, buttons, status) is said in it, so one answer is in one language. */
+export function messageLanguage(metadata: Meta | undefined): string | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const run = metadata ? (metadata.action_run as ActionRunMeta | undefined) : undefined;
+  const lang = text(proposal ? proposal.lang : undefined) || text(run ? run.lang : undefined);
+  return lang === "" ? null : lang;
 }
 
 /** The terminal state a message reports, for a small badge (executed, rejected, denied ...). */
@@ -150,9 +159,17 @@ export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" | 
   return view.kind === "define_group" ? "groupsRemove" : "actionsRemove";
 }
 
-/** The body of the removal: the click is the user's explicit yes to exactly this removal (the rules of the scope still apply). */
+/** The first call of taking something back: the removal is proposed and nothing is removed yet; the kernel answers with the proposal and its receipt. */
 export function undoRequest(view: WrittenView) {
-  return { id: view.id, confirmed: true, ref: "web" };
+  return { id: view.id, propose: true, ref: "web" };
+}
+
+/** The answer of the click: the user's explicit yes to exactly the removal that was proposed, with the receipt of that proposal (the rules of the
+ *  scope still apply). null when the kernel's answer is no proposal that can be answered (a denial, a failure). */
+export function undoConfirmation(proposed: { id?: string; status?: string; pending?: { receipt_id?: string | null } | null }) {
+  const receipt = proposed.pending && typeof proposed.pending.receipt_id === "string" ? proposed.pending.receipt_id : "";
+  if (proposed.status !== "proposed" || typeof proposed.id !== "string" || proposed.id === "" || receipt === "") return null;
+  return { run_id: proposed.id, approved: true, receipt_id: receipt, ref: "web" };
 }
 
 export interface ProducedView { target: string; forms: string[]; content: string; runNode: string }

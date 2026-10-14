@@ -19,10 +19,12 @@
 #include "loom/log.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/path_policy.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 #include "miniz.h"
+#include "util/safety.h"
 
 namespace loom::archive {
 namespace fs = std::filesystem;
@@ -145,13 +147,17 @@ Plan Plan::from_json(const Json& j) {
   return p;
 }
 
-Result<std::string> run_git(const std::string& repo, const std::vector<std::string>& args) {
+Result<std::string> run_git(const std::string& repo, const std::vector<std::string>& args, bool allow_repo_config) {
 #if defined(_WIN32) || defined(__ANDROID__)
   (void)repo;
   (void)args;
   return Error(Errc::Unsupported, "git adapter is desktop-only");
 #else
-  std::string cmd = "git -C " + shell_quote(repo);
+  // R20: hooks, fsmonitor and other repository-named programs are off unless loom_git_allow_repo_config is true.
+  std::string cmd = "GIT_TERMINAL_PROMPT=0 git";
+  if (!allow_repo_config)
+    for (const auto& a : safety::git_hardening_args()) cmd += " " + shell_quote(a);
+  cmd += " -C " + shell_quote(repo);
   for (const auto& a : args) cmd += " " + shell_quote(a);
   cmd += " 2>/dev/null";
   FILE* f = ::popen(cmd.c_str(), "r");
@@ -175,13 +181,17 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfi
   std::error_code ec;
   if (cfg.repo && !cfg.repo->empty()) {
     repo = fs::weakly_canonical(fsutil::expand_user(*cfg.repo), ec);
+    LOOM_TRY(rt.path_policy().check(repo, "repo"));
     if (ec || !fs::is_directory(repo)) return Error(Errc::InvalidArgument, "repo is not a directory: " + *cfg.repo);
     plan.repo_path = repo.string();
     plan.repo_name = repo.filename().string();
     if (plan.repo_name.empty()) plan.repo_name = "repo";
   }
   fs::path out_dir;
-  if (!cfg.out_dir.empty()) out_dir = fs::weakly_canonical(fsutil::expand_user(cfg.out_dir), ec);
+  if (!cfg.out_dir.empty()) {
+    out_dir = fs::weakly_canonical(fsutil::expand_user(cfg.out_dir), ec);
+    LOOM_TRY(rt.path_policy().check(out_dir, "out_dir"));
+  }
 
   struct Cand {
     fs::path path;
@@ -241,6 +251,7 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfi
 
   for (const auto& s : cfg.sources) {
     fs::path p = fs::weakly_canonical(fsutil::expand_user(s), ec);
+    LOOM_TRY(rt.path_policy().check(p, "source '" + s + "'"));
     if (ec || !fs::exists(p)) return Error(Errc::NotFound, "source not found: " + s);
     if (fs::is_directory(p)) {
       walk(p, true);
@@ -281,7 +292,7 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfi
                    [](const PlannedFile& a, const PlannedFile& b) { return a.uri < b.uri; });
 
   if (!repo.empty() && cfg.git) {
-    auto head = run_git(plan.repo_path, {"rev-parse", "HEAD"});
+    auto head = run_git(plan.repo_path, {"rev-parse", "HEAD"}, safety::git_allow_repo_config(rt.paths().root));
     if (head) {
       plan.git = true;
       plan.git_head = std::string(utf8::strip(*head));
@@ -820,6 +831,7 @@ Status Ingestor::ingest_zip(const PlannedFile& f, const std::string& blob) {
   }
   std::sort(members.begin(), members.end(), [](const Member& a, const Member& b) { return a.name < b.name; });
   fsutil::TempDir tmp("loom_archive_zip_");
+  safety::ZipBudget budget(safety::zip_limits(rt_.paths().root));  // R20: zip bomb guard
   bool any_export = false;
   std::vector<Member> others;
   Status st;
@@ -830,8 +842,15 @@ Status Ingestor::ingest_zip(const PlannedFile& f, const std::string& blob) {
     if (base.empty() || base[0] == '.' || m.name.find("__MACOSX") != std::string::npos) continue;
     fs::path out = tmp.path() / ("m" + std::to_string(m.index) + ext);
     std::string uri = f.uri + "!" + m.name;
+    mz_zip_archive_file_stat mst;
+    if (mz_zip_reader_file_stat(&zip, m.index, &mst) && (ext == ".json" || is_doc_ext(ext, policy_))) {
+      if (auto admitted = budget.admit(mst); !admitted) { st = admitted.error(); break; }
+    }
     if (ext == ".json") {
-      if (!mz_zip_reader_extract_to_file(&zip, m.index, out.c_str(), 0)) continue;
+      if (auto got = budget.extract_to_file(zip, m.index, out); !got) {
+        if (budget.refused()) { st = got.error(); break; }
+        continue;
+      }
       LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put_file(out, "application/json"));
       bool handled = false;
       st = ingest_json_file(out, uri, ref.hash, "zip_member", &handled);
@@ -842,11 +861,13 @@ Status Ingestor::ingest_zip(const PlannedFile& f, const std::string& blob) {
         others.push_back(m);
       }
     } else if (is_doc_ext(ext, policy_)) {
-      std::size_t sz = 0;
-      void* p = mz_zip_reader_extract_to_heap(&zip, m.index, &sz, 0);
-      if (!p) continue;
-      std::string content(static_cast<const char*>(p), sz);
-      mz_free(p);
+      auto got = budget.extract_to_string(zip, m.index);
+      if (!got) {
+        if (budget.refused()) { st = got.error(); break; }
+        continue;
+      }
+      std::string content = std::move(*got);
+      const std::size_t sz = content.size();
       LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put(content, "text/plain"));
       PlannedFile pf{"", uri, "text", ref.hash, static_cast<std::int64_t>(sz)};
       st = ingest_text(pf, content, ref.hash, "doc");
@@ -866,7 +887,8 @@ Status Ingestor::ingest_git() {
   // chronological (oldest first) so ordinals follow history
   LOOM_TRY_ASSIGN(std::string raw, run_git(plan_.repo_path, {"-c", "core.quotepath=off", "log", "--no-color",
                                                             "--format=" + std::string(kGitLogFormat),
-                                                            "--name-status"}));
+                                                            "--name-status"},
+                                                  safety::git_allow_repo_config(rt_.paths().root)));
   auto commits = parse_git_log(raw, &policy_);
   std::reverse(commits.begin(), commits.end());
   LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put(raw, "text/plain"));
@@ -962,7 +984,20 @@ Status Ingestor::ingest_db() {
   return {};
 }
 
-Status Ingestor::process_file(const PlannedFile& f) {
+Status Ingestor::process_file(const PlannedFile& planned) {
+  // R20: a confined account reads the file that passed the path check, not whatever the name points to by
+  // now: open it under the policy and work on a private copy (keeps the name, so format detection by
+  // extension is unchanged).
+  PlannedFile f = planned;
+  fsutil::TempDir hold("loom_archive_file_");
+  if (rt_.path_policy().confined()) {
+    LOOM_TRY_ASSIGN(auto opened, rt_.path_policy().open_read(planned.path, "archive file '" + planned.uri + "'"));
+    if (!hold.valid()) return Error(Errc::Io, "could not create a temp dir for the archive file");
+    f.path = (hold.path() / fs::path(planned.path).filename()).string();
+    std::error_code ec;
+    fs::copy_file(opened.path(), f.path, fs::copy_options::overwrite_existing, ec);
+    if (ec) return Error(Errc::Io, "cannot read " + planned.uri + ": " + ec.message());
+  }
   if (f.adapter == "import") return ingest_import(f.path, f.uri);
   LOOM_TRY_ASSIGN(BlobRef ref, rt_.blobs().put_file(f.path));
   if (ref.hash != f.hash) {
@@ -988,7 +1023,8 @@ Status Ingestor::run() {
   std::string git_raw_err;
   if (plan_.git) {
     auto raw = run_git(plan_.repo_path, {"-c", "core.quotepath=off", "log", "--no-color",
-                                         "--format=" + std::string(kGitLogFormat), "--name-status"});
+                                         "--format=" + std::string(kGitLogFormat), "--name-status"},
+                       safety::git_allow_repo_config(rt_.paths().root));
     if (raw) {
       auto commits = parse_git_log(*raw, &policy_);
       for (auto it = commits.rbegin(); it != commits.rend(); ++it) {

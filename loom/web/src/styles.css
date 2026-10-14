@@ -65,7 +65,8 @@ button.primary { background: var(--accent); border-color: var(--accent); color: 
 button.icon-btn { padding: 8px; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; }
 button.danger { border-color: var(--err); color: var(--err); }
 
-input[type="text"], input[type="password"], input[type="number"], input[type="search"], textarea, select {
+/* An input with no type attribute is a text input too: the sign-in Login and every typeless field take the same tokens as the typed ones. */
+input:not([type]), input[type="text"], input[type="password"], input[type="number"], input[type="search"], input[type="email"], input[type="url"], input[type="tel"], textarea, select {
   background: var(--input-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -103,7 +104,7 @@ textarea { resize: vertical; }
 .sidebar.collapsed { margin-left: -280px; }
 
 .main-panel { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-.chat-host { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.chat-host { flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; }
 .chat-host[hidden] { display: none; }
 .chat-host.beside-workbench { flex: 0 0 32%; min-height: 180px; max-height: 65%; resize: vertical; overflow: auto; border-bottom: 1px solid var(--border); }
 
@@ -135,9 +136,25 @@ textarea { resize: vertical; }
 .pill.warn { color: var(--warn); border-color: var(--warn); }
 .pill.ok { color: var(--ok); border-color: var(--ok); }
 .pill button { all: unset; cursor: pointer; }
+/* A block that holds sentences and its answers (a proposal, a usage hold, a client step, an offer): it wraps inside the message at any width
+   instead of running off the screen on one line, and its buttons are buttons. */
+.pill[role="group"] {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  white-space: normal; border-radius: var(--radius); max-width: 100%; min-width: 0; box-sizing: border-box;
+  overflow-wrap: anywhere; color: var(--text);
+}
+.pill[role="group"].warn { color: var(--warn); }
+.pill[role="group"] p { margin: 0; }
+.pill[role="group"] pre, .pill[role="group"] details { max-width: 100%; overflow-x: auto; }
+.pill[role="group"] button {
+  all: unset; box-sizing: border-box; cursor: pointer; background: var(--card); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 12px; font-size: 13px; margin-right: 6px;
+}
+.pill[role="group"] button.primary { background: var(--accent); border-color: var(--accent); color: #06121f; font-weight: 600; }
+.pill[role="group"] button:disabled { opacity: 0.5; cursor: default; }
 
-.chat-view { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.chat-scroll { flex: 1; overflow-y: auto; padding: var(--gutter); display: flex; flex-direction: column; gap: 12px; }
+.chat-view { flex: 1; display: flex; flex-direction: column; min-height: 0; min-width: 0; max-width: 100%; }
+.chat-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; min-width: 0; padding: var(--gutter); display: flex; flex-direction: column; gap: 12px; }
 
 .msg { max-width: 80%; border-radius: var(--radius); padding: 10px 14px; position: relative; }
 .msg.user { align-self: flex-end; background: var(--user); }
@@ -167,7 +184,8 @@ textarea { resize: vertical; }
   display: flex; gap: 8px; align-items: flex-end;
   flex-shrink: 0;
 }
-.composer textarea { flex: 1; min-height: 40px; max-height: 200px; }
+.composer textarea { flex: 1; min-width: 0; min-height: 40px; max-height: 200px; }
+.composer button { flex-shrink: 0; }
 
 .version-switcher { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--dim); }
 .version-switcher button { padding: 2px 6px; font-size: 11px; }

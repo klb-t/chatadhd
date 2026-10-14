@@ -365,6 +365,13 @@ std::string receipt_of(const Json& run, const std::string& kind, const Json& ids
                       .substr(0, 20);
 }
 
+// The receipt of what was shown: the plan and its gates, the element, the arguments and the scope. It does not depend on the run, so a
+// preview (which stores nothing) can give it and the run that follows can check it; anything that changes between the two changes the receipt.
+std::string plan_receipt_of(const Json& plan, const Json& gates, const RunRequest& request) {
+  const Json bound{{"plan", plan}, {"gates", gates}, {"element", request.element}, {"args", request.args}, {"scope", request.scope}};
+  return "arp_" + Sha256::hex(json::canonical(bound)).substr(0, 24);
+}
+
 std::set<std::string> trait_set(const Json& run) {
   std::set<std::string> out;
   for (const auto& t : strings_of(json::find(run, "element_traits"))) out.insert(t);
@@ -482,6 +489,7 @@ Result<RunRequest> RunRequest::from_json(const Json& j) {
   }
   r.propose = json::get_bool(j, "propose", false);
   r.confirmed = json::get_bool(j, "confirmed", false);
+  r.receipt_id = json::get_string(j, "receipt_id");
   r.ref = json::get_string(j, "ref");
   return r;
 }
@@ -639,6 +647,37 @@ Result<Json> Interpreter::gate_plan(const Json& plan, const Json& element_json, 
   return gates;
 }
 
+namespace {
+
+// Can the condition be told before the run from the arguments alone? 1 holds, 0 does not, -1 may (it looks at steps, traits or outputs).
+int decided_by_args(const Json& cond, const Json& args) {
+  if (!cond.is_object() || cond.empty()) return 1;
+  if (const Json* c = json::find(cond, "not")) {
+    const int inner = decided_by_args(*c, args);
+    return inner < 0 ? -1 : 1 - inner;
+  }
+  auto fold = [&](const char* key, bool all) {
+    int result = all ? 1 : 0;
+    for (const auto& x : cond.at(key)) {
+      const int v = decided_by_args(x, args);
+      if (v < 0) return -1;
+      if (all && v == 0) return 0;
+      if (!all && v == 1) return 1;
+    }
+    return result;
+  };
+  if (json::find(cond, "all")) return fold("all", true);
+  if (json::find(cond, "any")) return fold("any", false);
+  if (const Json* a = json::find(cond, "arg")) {
+    const Json* given = a->is_string() ? json::find(args, a->get<std::string>()) : nullptr;
+    if (const Json* eq = json::find(cond, "equals")) return given && *given == *eq ? 1 : 0;
+    return given != nullptr && !given->is_null() ? 1 : 0;
+  }
+  return -1;
+}
+
+}  // namespace
+
 Result<Json> Interpreter::preview(const RunRequest& request) const {
   LOOM_TRY_ASSIGN(Json plan, plan_of(request));
   LOOM_TRY_ASSIGN(auto base_traits, element_traits(request.element, request.scope));
@@ -661,6 +700,8 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
   for (const auto& step : plan.at("steps")) {
     const Json* entry = json::find(catalogue, json::get_string(step, "action"));
     if (!entry) continue;
+    // A step the arguments already skip (the device picks a file only when no path was said) does not stand in the way.
+    if (const Json* when = json::find(step, "when"); when && decided_by_args(*when, request.args) == 0) continue;
     if (json::get_string(*entry, "status") != "implemented")
       not_runnable.push_back(planned(step.at("action")));
     else if (!deps_.executors || !deps_.executors->find(json::get_string(step, "action"), *entry))
@@ -674,6 +715,7 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
   out["denied"] = denied;
   out["not_runnable"] = not_runnable;
   out["runnable"] = denied.empty() && not_runnable.empty();
+  out["plan_receipt"] = plan_receipt_of(plan, gates, request);
   return out;
 }
 
@@ -698,6 +740,7 @@ namespace {
 // copy has redacted arguments and step parameters, the in-memory run keeps them until it is done.
 Json redacted(const Json& run) {
   Json copy = run;
+  copy.erase("plan_receipt");  // a hash over the values that are not kept
   if (copy.contains("request") && copy["request"].contains("args")) copy["request"]["args"] = Json{{"redacted", true}};
   if (copy.contains("plan") && copy["plan"].contains("steps"))
     for (auto& step : copy["plan"]["steps"])
@@ -753,6 +796,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     if (item.at("implementation") != "implemented") return Error(Errc::Unavailable, why_planned(item.at("action").get<std::string>()));
   for (const auto& step : plan.at("steps")) {
     const std::string action = step.at("action").get<std::string>();
+    if (const Json* when = json::find(step, "when"); when && decided_by_args(*when, request.args) == 0) continue;  // skipped by the arguments
     const Json* entry = json::find(catalogue, action);
     if (!entry || json::get_string(*entry, "status") != "implemented") return Error(Errc::Unavailable, why_planned(action));
     if (!deps_.executors || !deps_.executors->find(action, *entry))
@@ -802,10 +846,25 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     LOOM_TRY(persist(*deps_.store, run));
     return run;
   }
-  if (request.confirmed) {
+  const std::string plan_receipt = plan_receipt_of(plan, gates, request);
+  run["plan_receipt"] = plan_receipt;
+  bool propose = request.propose;
+  if (request.confirmed && !to_confirm.empty() && request.receipt_id != plan_receipt) {
+    // A bare confirmed:true - or the receipt of another plan - is not the yes of someone who saw this plan: the plan is proposed instead.
+    const std::string why = request.receipt_id.empty() ? "receipt_required" : "receipt_mismatch";
+    if (json::get_bool(run, "sensitive", false))
+      return Error(Errc::InvalidArgument, "a run on a credential cannot wait for an answer: its value is never stored; ask again with confirmed:true and "
+                                          "receipt_id = the plan_receipt that actions.preview gives for the same request (" + why + ")");
+    run["confirmation_refused"] = Json{{"reason", why},
+                                       {"message", why == "receipt_required" ? "confirmed:true is honoured only with the plan_receipt of a preview or proposal of this plan; "
+                                                                               "the plan is proposed instead (answer with actions.confirm and the receipt of the proposal)"
+                                                                             : "the receipt is not the receipt of this plan (it changed, or it is another plan's); "
+                                                                               "the plan is proposed instead (answer with actions.confirm and the receipt of the proposal)"}};
+    propose = true;
+  } else if (request.confirmed) {
     for (const auto& g : to_confirm) run["approved"].push_back(g.at("id"));
     run["confirmations"].push_back(Json{{"at", timeutil::utc_now_iso()}, {"ref", request.ref}, {"approved", true},
-                                        {"kind", "request"}, {"gates", run["approved"]}});
+                                        {"kind", "request"}, {"gates", run["approved"]}, {"receipt_id", request.receipt_id}});
     to_confirm = Json::array();
   }
   auto pending_of = [&](const std::string& kind, const Json& list) {
@@ -816,12 +875,14 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     p["kind"] = kind;
     p["receipt_id"] = receipt_of(run, kind, ids);
     p["gates"] = list;
+    p["plan_receipt"] = plan_receipt;
     p["resume"] = "actions.confirm {run_id, approved, receipt_id, ref}";
     return p;
   };
-  if (json::get_bool(run, "sensitive", false) && (request.propose || !to_confirm.empty()))
-    return Error(Errc::InvalidArgument, "a run on a credential cannot wait for an answer: its value is never stored; ask again with confirmed:true");
-  if (request.propose) {
+  if (json::get_bool(run, "sensitive", false) && (propose || !to_confirm.empty()))
+    return Error(Errc::InvalidArgument, "a run on a credential cannot wait for an answer: its value is never stored; ask again with confirmed:true and "
+                                        "receipt_id = the plan_receipt that actions.preview gives for the same request");
+  if (propose) {
     // The user has not said yes to anything yet: whatever the rules would ask is asked together with this.
     Json all = to_confirm;
     stamp(run, "proposed");
@@ -1017,6 +1078,8 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     call.inputs = *inputs;
     call.element = run.at("element");
     call.args = run.at("request").at("args");
+    call.lang = language_of(ctx);
+    call.context = run.at("request").value("context", Json::object());
     call.entry = entry;
     call.cancel = cancel;
     if (j == first_variant && rec.value("status", "") == "held") call.usage_confirmation = usage_confirmation;
@@ -1043,6 +1106,8 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     vrec["parts"] = parts_json(out.parts);
     if (!out.data.is_null()) vrec["data"] = out.data;
     vrec["provenance"] = out.provenance;
+    // The port-run nodes this step made (ActionRunScope); the run node is linked to exactly these when it is written (result.cpp).
+    if (!scope.recorded_nodes().empty()) vrec["port_run_nodes"] = scope.recorded_nodes();
     if (out.error) vrec["error"] = error_json(*out.error);
     if (out.state == StepOutcome::State::Held) {
       rec["next_variant"] = j;

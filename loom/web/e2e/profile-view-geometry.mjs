@@ -51,7 +51,7 @@ const timestamp = "2026-10-04T12:00:00Z";
 const conversations = ["a", "b"].map(id => ({ id, title: `Conversation ${id.toUpperCase()}`, created: timestamp, updated: timestamp }));
 const messages = new Map(conversations.map(conv => [conv.id, [{ id: `${conv.id}-message`, conv_id: conv.id, role: "user",
   text: `Recorded conversation ${conv.id.toUpperCase()}`, status: "active", created: timestamp }]]));
-const requests = [], chatRequests = [], declares = [], failures = [];
+const requests = [], chatRequests = [], declares = [], failures = [], eventFeeds = [];
 let created = 0;
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, "http://fixture.local");
@@ -96,6 +96,8 @@ const server = createServer(async (req, res) => {
   }
   // P1: the app asks whether the server runs accounts; this fixture is a single-user server.
   if (url.pathname === "/api/auth/me") return json({ accounts: false });
+  // P14 4: every chat view opens the kernel's event feed; this fixture has none (404), which the page does not ask for again.
+  if (url.pathname === "/api/events/stream") { eventFeeds.push(url.search); res.writeHead(404).end(JSON.stringify({ error: { message: "no event feed in this fixture" } })); return; }
   if (url.pathname.startsWith("/api/")) {
     failures.push(`${req.method} ${url.pathname}`); res.writeHead(404).end(JSON.stringify({ error: { message: "Unsupported fixture endpoint" } })); return;
   }
@@ -221,6 +223,7 @@ try {
     assert.equal(await page.evaluate(key => localStorage.getItem(key), storageKey), bytes);
   });
   assert.deepEqual(errors, []); assert.deepEqual(external, []); assert.deepEqual(failures, []);
+  assert.ok(eventFeeds.length > 0 && eventFeeds.every(search => search === "?event=action%3Aclient_step"), "the only feed a page opens is the kernel's client-step feed");
   if (process.env.PROFILE_GEOMETRY_EVIDENCE_DIR) {
     const directory = process.env.PROFILE_GEOMETRY_EVIDENCE_DIR; mkdirSync(directory, { recursive: true });
     const filename = path.join(directory, "profile-view-geometry-results.json");

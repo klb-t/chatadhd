@@ -6,15 +6,19 @@ import type { UserProfileHost } from "../api/onboarding-host";
 import { conversationViewMessages, messageCan, type ConversationView } from "../api/conversation-view";
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
+import { queueReason, queueStep, useCreationInFlight, VIEW_LOADING_REASON, type QueuedSend } from "../context/send-queue";
 import UsagePendingBlock from "./UsagePendingBlock";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
 import ClientStepBlock from "./ClientStepBlock";
-import { CLIENT_STEP_FEATURE, type BlobLoader } from "../context/client-device";
+import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
-import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, messageLanguage, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
-import { featureMessage } from "../onboarding/presentation.mjs";
+import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
+import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTexts, requestOpenPanel } from "../context/open-settings";
+import { watchClientSteps } from "../context/client-step-events";
+import { featureInLanguage, featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
 import "./chat-context.css";
@@ -112,6 +116,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const sourceCatalog = useConversationSourcePresentation(profileHost);
   const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
   const usageCatalog = usePresentationFeature(profileHost, USAGE_PENDING_FEATURE);
+  const routeIssueCatalog = usePresentationFeature(profileHost, ROUTE_ISSUE_FEATURE);
+  const openSettingsCatalog = usePresentationFeature(profileHost, OPEN_SETTINGS_FEATURE);
   const proposalCatalog = usePresentationFeature(profileHost, ACTION_PROPOSAL_FEATURE);
   const clientStepCatalog = usePresentationFeature(profileHost, CLIENT_STEP_FEATURE);
   // This page as a client of the kernel (P13): the devices it can drive are declared, so the device actions are runnable for it.
@@ -130,6 +136,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [undoFailure, setUndoFailure] = useState<{ id: string; reason: string } | null>(null);
   const [usagePending, setUsagePending] = useState<{ request: ChatRequest; receipt: UsagePendingReceipt; convId: string } | null>(null);
   const [usageNotice, setUsageNotice] = useState<string | null>(null);
+  // Routing the last input had a problem it worked around (the model route failed, the local rules decided): a quiet note, nothing was lost.
+  const [routeNotes, setRouteNotes] = useState<string[]>([]);
   const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
   // An explicit choice in this view wins; otherwise only an effective layered `true`
   // blocks. A missing, disabled or excluded default has no initiator and never blocks (R43).
@@ -142,6 +150,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   [convId, conversationView, viewFailure, sourceBusy, blockWithoutSourceHistory]);
   const gateTexts = useMemo(() => sendGateTexts(sendCatalog.feature, gate), [sendCatalog.feature, gate]);
   const gateDescriptionId = useId();
+  // A send typed while the conversation is still being made, or while its view loads, waits and is sent once when it can be; it is never
+  // dropped. The text stays in the field the whole time; a conversation that does not load says so and keeps the text.
+  const creating = useCreationInFlight();
+  const queuedRef = useRef<QueuedSend | null>(null);
+  const [queuedNote, setQueuedNote] = useState<"waiting" | "failed" | null>(null);
   const [channels, setChannels] = useState(() => storedString("channels", "[]"));
   const [scanLimit, setScanLimit] = useState(() => storedString("scanLimit", "10000"));
   const [counterEvidence, setCounterEvidence] = useState(() => storedBool("counterEvidence", false));
@@ -185,6 +198,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const currentUserIdRef = useRef<string | null>(null);
   const currentConvIdRef = useRef<string | null>(null);
   const selectedConvRef = useRef(convId);
+  const errorForRef = useRef<string | null>(null);
   selectedConvRef.current = convId;
   const mountedRef = useRef(true);
   const sendEpochRef = useRef(0);
@@ -206,6 +220,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft, blockChoice]);
 
   useEffect(() => { setBranchLeaf(null); }, [convId, refreshKey]);
+  // The notes of a send that made this very conversation belong to it: moving the page into it does not wipe them.
+  const notesForRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (notesForRef.current !== null && notesForRef.current === convId) return;
+    notesForRef.current = null;
+    setRouteNotes([]);
+  }, [convId]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -251,6 +272,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     }
   }, []);
 
+  // A question for this device (or its closing) that comes from elsewhere - another tab, another client, the CLI - reaches the open conversation
+  // as an event from the kernel: the messages are read again. One feed for the page, no polling.
+  useEffect(() => {
+    return watchClientSteps(api, (event) => { void refreshMessages(event.convId); }) ?? undefined;
+  }, [refreshMessages]);
+
   const readSources = useCallback(async (options: Record<string, unknown>) => {
     if (!convId || !api.readConversationView || sourceBusy || !sourceCatalog.feature) return;
     const id = convId, epoch = ++fetchEpochRef.current;
@@ -277,7 +304,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setViewFailure(null);
     setEditingId(null);
     setVersionsById({});
-    setError(null);
+    // An error of the send that made this very conversation belongs to it: moving the page into it does not wipe what that send said.
+    if (errorForRef.current !== null && errorForRef.current === convId) { /* keep */ } else { errorForRef.current = null; setError(null); }
     fetchEpochRef.current++;
   }, [convId]);
 
@@ -292,6 +320,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
     const text = input.trim();
+    if (mode === "send" && !forced && requestOverride === null && text !== "" && !stream) {
+      if (queuedRef.current) return;  // already waiting: the text goes once
+      if (queueReason({ convId, creating, gate }) !== null) {
+        queuedRef.current = { convId };
+        setQueuedNote("waiting");
+        return;
+      }
+    }
     // Only a user choice or a transient integrity condition refuses; the reason is shown (R43).
     if (gate.blocked) { setError(gateTexts.blocked); return; }
     if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
@@ -363,6 +399,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     const isCurrent = () => mountedRef.current && epoch === sendEpochRef.current;
     let terminal = false;
     let requestConvId = request.conv_id ?? null;
+    // started: the kernel stored the person's message (the start chunk came). produced: words of an answer arrived.
+    let started = false;
+    let produced = false;
+    let notesAwaitStart = false;  // the route notes came before the conversation was known (a message on a blank page): they follow it
     const refreshShared = () => {
       if (requestConvId) void refreshMessages(requestConvId);
       onMessagesChanged?.();
@@ -372,11 +412,18 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       terminal = true;
       setStream(null);
       setPendingUserText(null);
-      if (message && selectedConvRef.current === requestConvId) setError(message);
+      // Nothing was stored: the words go back into the field, so a failed send loses nothing and can be sent again.
+      if (message && !started) setInput((current) => current || request.message);
+      // The error is said in the conversation the message went to. That is the one on the screen unless the person has gone to another
+      // one; a conversation this very send created is not yet selected when an error follows its start at once.
+      const here = selectedConvRef.current;
+      if (message && (here === requestConvId || here === null || requestConvId === null)) { errorForRef.current = requestConvId; setError(message); }
       refreshShared();
     };
     setInput("");
+    setQueuedNote(null);
     setRequestOverride(null);
+    setRouteNotes([]);
     currentUserIdRef.current = null;
     currentConvIdRef.current = requestConvId;
     setPendingUserText({ text: request.message, convId: requestConvId });
@@ -387,6 +434,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         onChunk: (chunk: ChatChunk) => {
           if (!isCurrent() || terminal) return;
           if (chunk.type === "start") {
+            started = true;
+            if (notesAwaitStart) { notesForRef.current = chunk.conv_id; notesAwaitStart = false; }
             currentUserIdRef.current = chunk.user_message_id;
             currentConvIdRef.current = chunk.conv_id;
             requestConvId = chunk.conv_id;
@@ -394,22 +443,32 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setPendingUserText((s) => s ? { ...s, convId: chunk.conv_id } : s);
             if (!convId && selectedConvRef.current === null) onConversationCreated(chunk.conv_id);
             onMessagesChanged?.();
+          } else if (chunk.type === "route_issue") {
+            notesForRef.current = requestConvId;
+            notesAwaitStart = requestConvId === null;
+            setRouteNotes(routeIssueNotes(routeIssueCatalog.feature, routeIssues(chunk.issues)));
           } else if (chunk.type === "reasoning") {
             setStream((s) => (s ? { ...s, reasoning: s.reasoning + chunk.text } : s));
           } else if (chunk.type === "delta") {
+            if (chunk.text) produced = true;
             setStream((s) => (s ? { ...s, text: s.text + chunk.text } : s));
           } else if (chunk.type === "done") {
             terminal = true;
+
             if (chunk.context_trace) setLastTrace({ convId: chunk.conv_id, userId: currentUserIdRef.current, trace: chunk.context_trace });
             setStream(null);
             setPendingUserText(null);
             requestConvId = chunk.conv_id;
+            // An answer with no words is said, not left as an empty bubble.
+            if (!produced && chunk.text === "" && !chunk.cancelled) { errorForRef.current = requestConvId; setError(gateTexts.emptyAnswer ?? "empty_answer"); }
             refreshShared();
           } else if (chunk.type === "action_proposal" || chunk.type === "action_result") {
             // The input was a command: it is answered in the conversation, nothing went to the model.
             terminal = true;
             setStream(null);
             setPendingUserText(null);
+            // The answer is in another conversation when the command deleted the one it was asked in: the page goes there.
+            if (chunk.conv_id && requestConvId && chunk.conv_id !== requestConvId) onConversationCreated(chunk.conv_id);
             requestConvId = chunk.conv_id;
             refreshShared();
           } else if (chunk.type === "usage_pending") {
@@ -427,7 +486,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           }
         },
         onError: (msg: string) => finishError(msg),
-        onDone: () => finishError("Chat stream ended before a done result."),
+        onDone: () => finishError(gateTexts.streamEnded ?? "stream_ended"),
       };
     const dispatch = () => {
       if (runProfileOperation) {
@@ -445,14 +504,30 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     // that records, takes a picture ...), and again only when what the browser can do has changed: nothing is sent in the background.
     // A request the user wrote by hand (the one-call override) or a re-send of one is sent exactly as it is.
     const composed = !forced && requestOverride === null;
-    void clientSession.ensure().then((id) => {
+    // A declaration that fails, is refused or does not answer never holds the send back: it goes without a client id.
+    void clientSession.ensure().catch(() => "").then((id) => {
       if (!isCurrent()) return;
       if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
-  }, [input, stream, convId, model, onConversationCreated, refreshMessages, clientSession,
+  }, [input, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
-    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
+    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked, gateTexts.emptyAnswer, gateTexts.streamEnded]);
+
+  // The queued send, each time what it waits for changes: sent once when nothing waits any more, said and kept when the conversation did not load,
+  // dropped (the text stays) when the person went to another conversation.
+  useEffect(() => {
+    const queued = queuedRef.current;
+    if (!queued) return;
+    const step = queueStep(queued, { convId, creating, gate });
+    if (step === "wait") {
+      if (queued.convId === null && convId !== null) queuedRef.current = { convId };  // the conversation was made: this is the one it goes into
+      return;
+    }
+    queuedRef.current = null;
+    if (step === "send") { send("send"); return; }
+    setQueuedNote(step === "failed" ? "failed" : null);
+  }, [convId, creating, gate, send, queuedNote]);
 
   const confirmUsage = useCallback(() => {
     if (!usagePending) return;
@@ -487,7 +562,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setUndoing(written.id);
     setUndoFailure(null);
     try {
-      const run = await api.actions[undoCall(written)](undoRequest(written));
+      // First the receipt (the removal is proposed, nothing is removed), then the click's yes with that receipt.
+      const proposed = await api.actions[undoCall(written)](undoRequest(written));
+      const answer = undoConfirmation(proposed);
+      if (!answer) throw new Error(proposed.error && proposed.error.message ? proposed.error.message : String(proposed.status));
+      const run = await api.actions.confirm(answer);
       if (run.status !== "completed") throw new Error(run.error && run.error.message ? run.error.message : String(run.status));
       if (convId) await refreshMessages(convId);
       onMessagesChanged?.();
@@ -521,10 +600,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   // A recording stored in the kernel, as the page can play it.
   const loadBlob = useCallback<BlobLoader>(async (hash) => {
-    if (!api.actions || !api.actions.clientBlob) throw new Error("this transport has no blob access");
-    const stored = await api.actions.clientBlob({ hash });
-    const bytes = Uint8Array.from(atob(stored.data_base64), (c) => c.charCodeAt(0));
-    return new Blob([bytes], { type: stored.mime });
+    if (!api.actions || !api.actions.clientBlobFetch) throw new Error("this transport has no blob access");
+    return api.actions.clientBlobFetch(hash);
+  }, []);
+  // What a device step brought (a recording, a picture, a file) goes to the kernel as bytes; the answer then names it by its hash.
+  const uploadBlob = useCallback<BlobUploader>(async (blob, name) => {
+    if (!api.actions || !api.actions.clientBlobUpload) throw new Error("this transport cannot hand bytes to the kernel");
+    return api.actions.clientBlobUpload(blob, { name });
   }, []);
 
   // The answer of this device to the step a run is paused on: the run continues in the kernel and the conversation hears the result.
@@ -733,33 +815,35 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               {m.role === "assistant" && api.actions && (() => {
                 const answer = pendingAnswer(m.metadata);
                 const state = proposalState(m.metadata);
+                const spoken = messageLanguage(m.metadata);  // one language per answer: the page adds its lines in the language of the message
+                const proposalFeature = featureInLanguage(proposalCatalog.feature, spoken);
                 if (answer && answer.kind === "usage") {
-                  return <UsagePendingBlock testId="chat-run-usage-pending" feature={usageCatalog.feature} busy={answering === answer.runId}
+                  return <UsagePendingBlock testId="chat-run-usage-pending" feature={featureInLanguage(usageCatalog.feature, spoken)} busy={answering === answer.runId}
                     receipt={{ ...(answer.usage ?? {}), receipt_id: answer.receiptId, operation_id: (m.metadata?.action_run as { pending?: { operation_id?: string | null } } | undefined)?.pending?.operation_id ?? null }}
                     onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
                 }
                 if (answer && answer.kind === "client" && answer.clientStep) {
-                  return <ClientStepBlock testId="chat-client-step" feature={clientStepCatalog.feature} step={answer.clientStep} runId={answer.runId}
-                    receiptId={answer.receiptId} host={clientHost} load={loadBlob} clientRef={"web:" + clientSession.id} busy={answering === answer.runId}
+                  return <ClientStepBlock testId="chat-client-step" feature={featureInLanguage(clientStepCatalog.feature, spoken)} step={answer.clientStep} runId={answer.runId}
+                    receiptId={answer.receiptId} host={clientHost} load={loadBlob} upload={uploadBlob} clientRef={"web:" + clientSession.id} busy={answering === answer.runId}
                     failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
                     onAnswer={(result) => answerClient(answer.runId, result)} onCancel={() => void cancelRun(answer.runId)} />;
                 }
                 if (answer) {
-                  return <ActionProposalBlock testId="chat-action-proposal" feature={proposalCatalog.feature} answer={answer} busy={answering === answer.runId}
+                  return <ActionProposalBlock testId="chat-action-proposal" feature={proposalFeature} answer={answer} busy={answering === answer.runId}
                     failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
                     onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
                 }
-                if (state && proposalCatalog.feature) {
-                  const label = safeNotice(proposalCatalog.feature, "status_" + state);
+                if (state && proposalFeature) {
+                  const label = safeNotice(proposalFeature, "status_" + state);
                   const written = writtenView(m.metadata);
                   const offer = openOffer(m.metadata, m.id);
                   const ended = offerState(m.metadata);
-                  const endedLabel = ended ? offerTexts(proposalCatalog.feature).state(ended) : null;
+                  const endedLabel = ended ? offerTexts(proposalFeature).state(ended) : null;
                   return (<>
                     {label && <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span>}
-                    {written && <ProposalWritten testId="chat-action-written" feature={proposalCatalog.feature} written={written} busy={undoing === written.id}
+                    {written && <ProposalWritten testId="chat-action-written" feature={proposalFeature} written={written} busy={undoing === written.id}
                       failure={undoFailure && undoFailure.id === written.id ? undoFailure.reason : null} onUndo={() => void undoWritten(written)} />}
-                    {offer && <ProposalOffer testId="chat-action-offer" feature={proposalCatalog.feature} offer={offer} busy={Boolean(stream)}
+                    {offer && <ProposalOffer testId="chat-action-offer" feature={proposalFeature} offer={offer} busy={Boolean(stream)}
                       failure={offerFailure && offerFailure.proposalId === offer.proposalId ? offerFailure.reason : null} onSend={() => takeOffer(offer)} />}
                     {endedLabel && <span className="pill" data-testid="chat-action-offer-state" data-state={ended ?? ""}>{endedLabel}</span>}
                   </>);
@@ -768,8 +852,17 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               })()}
               {m.role === "assistant" && (() => {
                 const made = producedView(m.metadata, m.id);
-                const label = made ? producedText(proposalCatalog.feature, made) : null;
+                const label = made ? producedText(featureInLanguage(proposalCatalog.feature, messageLanguage(m.metadata)), made) : null;
                 return made && label ? <p className="pill" data-testid="chat-action-produced" data-node={made.forms[0]} data-target={made.target}>{label}</p> : null;
+              })()}
+              {m.role === "assistant" && (() => {
+                const hint = openSettingsHint(m.metadata);
+                if (!hint) return null;
+                const words = openSettingsTexts(openSettingsCatalog.feature, hint);
+                return (<p className="pill" data-testid="chat-open-settings" data-keys={hint.keys.join(",")}>
+                  <span>{words.note}</span>{" "}
+                  <button onClick={() => requestOpenPanel(SETTINGS_PANEL)} data-testid="chat-open-settings-button">{words.button}</button>
+                </p>);
               })()}
               <div className="actions">
                 {m.role === "user" && editingId !== m.id && (
@@ -892,6 +985,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </>}
       </details>
 
+      {queuedNote !== null && <p className="send-gate-notice" role="status" data-testid="send-queued" data-state={queuedNote}>
+        {queuedNote === "waiting" ? gateTexts.queuedWaiting ?? VIEW_LOADING_REASON : gateTexts.queuedFailed ?? gate.viewFailure ?? VIEW_LOADING_REASON}</p>}
       {gateTexts.viewFailure !== null && <p className="send-gate-notice" role="status" data-testid="send-notice-view-unavailable"
         data-reason={gate.viewFailure ?? undefined}>{gateTexts.viewFailure}</p>}
       {gateTexts.sourceHistory !== null && <div className="send-gate-notice" role="status" data-testid="send-notice-source-history"
@@ -916,6 +1011,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             </option>
           ))}
         </select>
+        {routeNotes.length > 0 && <div style={{ width: "100%" }}>
+          {routeNotes.map((note, i) => <div className="pill" role="status" key={i} data-testid="chat-route-note">{note}</div>)}
+        </div>}
         {(usagePending || usageNotice) && <div style={{ width: "100%" }}>
           {usagePending && <UsagePendingBlock testId="chat-usage-pending" feature={usageCatalog.feature} receipt={usagePending.receipt}
             onConfirm={confirmUsage} onReject={rejectUsage} />}
@@ -926,7 +1024,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           placeholder={profile?.composer.placeholder ?? "Message Loom…"}
           rows={1}
           data-testid="chat-input"
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => { setInput(e.target.value); setQueuedNote((note) => (note === "failed" ? null : note)); }}
           onKeyDown={(e) => {
             if (supports("chat.send") && shouldSubmit(profile?.composer.submit ?? "enter", { key: e.key, shiftKey: e.shiftKey,
               ctrlKey: e.ctrlKey, metaKey: e.metaKey, altKey: e.altKey, isComposing: e.nativeEvent.isComposing })) {
@@ -940,7 +1038,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             Stop
           </button>
         ) : (
-          <button className="primary" onClick={() => send()} data-testid="send-chat" disabled={!!branchLeaf || Boolean(gate.blocked) || (requestOverride === null && !input.trim()) || !supports("chat.send")}
+          <button className="primary" onClick={() => send()} data-testid="send-chat" aria-busy={queuedNote === "waiting" || undefined}
+            disabled={!!branchLeaf || (Boolean(gate.blocked) && gate.blocked?.reason !== VIEW_LOADING_REASON) || (requestOverride === null && !input.trim()) || !supports("chat.send") || queuedNote === "waiting"}
             title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}
             data-gate-initiator={gate.blocked?.initiator} data-gate-reason={gate.blocked?.reason}>
             Send

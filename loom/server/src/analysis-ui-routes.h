@@ -130,6 +130,7 @@ inline loom::Result<prompts::Contract> effective_contract(loom::Runtime& runtime
   const auto id = body.value("contract_id", std::string("semantic.analysis"));
   const auto directory = runtime.config().get("analysis_prompt_dir", (runtime.paths().root / "prompts").string());
   if (!directory.is_string()) return invalid("analysis_prompt_dir must be a string");
+  if (auto allowed = runtime.path_policy().check(directory.get<std::string>(), "analysis_prompt_dir"); !allowed) return allowed.error();
   const auto overrides = runtime.config().get("analysis_prompt_overrides", Json::object());
   if (!overrides.is_object()) return invalid("analysis_prompt_overrides must be an object");
   const auto configured = overrides.contains(id) ? overrides[id] : Json::object();

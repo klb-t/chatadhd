@@ -4,6 +4,7 @@
 // a source dependency on its authoritative context declaration, not a new C ABI
 // export or a second runtime/database. Embedded hosts remain capability-driven.
 #include "../../src/capi/context.h"
+#include "loom/path_policy.h"
 
 #include <httplib.h>
 #include <exception>

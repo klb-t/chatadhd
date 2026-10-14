@@ -30,6 +30,7 @@ export function errorPresentation(error: unknown, presentation?: Presentation): 
 
 export function layerExplanation(presentation: Presentation, entry: EffectiveDefault): string | null;
 
-export interface PresentationFeature { feature: string; locale: string; catalog: Record<string, string> }
+export interface PresentationFeature { feature: string; locale: string; catalog: Record<string, string>; locales?: Record<string, Record<string, string>> }
 export function resolvePresentationFeature(presentation: Presentation, feature: string, effective?: EffectiveDefault | null): PresentationFeature;
 export function featureMessage(feature: PresentationFeature, id: string, parameters?: Record<string, JsonValue>): string;
+export function featureInLanguage<T extends PresentationFeature | null>(feature: T, language: string | null | undefined): T;

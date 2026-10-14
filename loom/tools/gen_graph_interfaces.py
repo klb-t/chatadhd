@@ -3,7 +3,8 @@
 
 Entries are read from the real sources, never typed by hand:
   c_abi - every LOOM_API function declared in include/loom/loom.h
-  http  - every "/api/..." route registered in server/src or from the action catalogue (METHOD path)
+  http  - every "/api/..." route registered in server/src (literal or regular-expression path, parameters as :id / :hash)
+          or from the action catalogue (METHOD path)
   jni   - every JNIEXPORT symbol of the Android bridge (android/app/src/main/cpp/loom_jni.cpp)
   web   - every `"VERB", "/api/..."` call of the web transport (web/src/api/*.ts), path parameters as :id
   cli   - not listed here: counted live from the `cli` runtime profile (/commands)
@@ -27,8 +28,13 @@ def c_abi():
 def http_routes():
     found = set()
     for path in sorted((ROOT / 'server/src').glob('*.[ch]*')):
-        for m in re.finditer(r'\.(Get|Post|Put|Patch|Delete)\(\s*"(/api/[^"]*)"', path.read_text(encoding='utf-8')):
+        text = path.read_text(encoding='utf-8')
+        for m in re.finditer(r'\.(Get|Post|Put|Patch|Delete)\(\s*"(/api/[^"]*)"', text):
             found.add(f'{m.group(1).upper()} {m.group(2)}')
+        # Routes registered with a regular expression (path parameters as capture groups): R"(/api/x/([^/]+)/y)".
+        for m in re.finditer(r'\.(Get|Post|Put|Patch|Delete)\(\s*R"\((/api/[^"]*?)\)"\s*,', text):
+            route = m.group(2).replace('([^/]+)', ':id').replace('([0-9a-fA-F]{64})', ':hash')
+            found.add(f'{m.group(1).upper()} {route}')
     # Routes the server registers from the action catalogue (entries with "http").
     catalogue = json.loads((ROOT / 'data/runtime/actions.pack').read_text(encoding='utf-8'))
     for action in catalogue['defaults']['actions'].values():

@@ -47,6 +47,8 @@ export interface Recording {
 
 /** Reads a stored recording for `device.play_audio`: from the argument `audio` (a blob hash) or the audio that flowed in. */
 export interface BlobLoader { (hash: string): Promise<Blob> }
+/** Hands the bytes of a recording, a picture or a file to the kernel; the answer of the step names what was stored by its hash. */
+export interface BlobUploader { (blob: Blob, name: string): Promise<{ hash: string }> }
 
 
 /** Promises of the results of the logic module, named so its signatures need no generics. */

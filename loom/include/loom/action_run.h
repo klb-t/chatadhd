@@ -73,6 +73,8 @@ struct StepCall {
   Json element = Json::object();
   Json args = Json::object();
   Json usage_confirmation = Json::object();  // set when resuming this step after the usage guard's hold
+  std::string lang;                          // the language of the run (argument lang, else context.lang, else the profile's): the language an answer is written in
+  Json context = Json::object();             // where the run came from: {origin, conv_id, message_id, text, lang, ...} (the request's context)
   const Json* entry = nullptr;               // the catalogue entry of `action` (valid during the call)
   const CancelToken* cancel = nullptr;
 };
@@ -146,7 +148,10 @@ struct RunRequest {
   Json args = Json::object();    // arguments of the action ({"$arg": name} in the steps)
   Json context = Json::object(); // who asked and where (conv_id, message_id, ref, text ...): stored, not interpreted
   bool propose = false;          // store the plan and wait for the user's go; execute nothing
-  bool confirmed = false;        // the caller accepts the rule confirmations of this plan up front
+  bool confirmed = false;        // the caller accepts the rule confirmations of this plan up front - only together with `receipt_id`:
+  std::string receipt_id;        //   the `plan_receipt` of an earlier preview or proposal of exactly this plan (action, element, args, scope,
+                                 //   plan and gates as they were shown). A confirmed request without it, or with the receipt of another plan,
+                                 //   is not run: it comes back as a proposal (status "proposed") that says why (`confirmation_refused`).
   std::string ref;               // who/what confirms (web, cli, chat:<message id> ...)
   std::string run_id;            // optional: assigned by the caller (to register a cancel token first)
   Json client = nullptr;         // the client that asked ({client_id, kind, label}): shown in the run, tells who carries out client steps

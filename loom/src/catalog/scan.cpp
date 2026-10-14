@@ -9,6 +9,8 @@
 // any thread count once true parallelism is added (I5).
 #include "loom/platforms.h"
 #include "loom/catalog.h"
+#include "loom/path_policy.h"
+#include "loom/runtime.h"
 
 #include <algorithm>
 #include <cctype>
@@ -489,6 +491,7 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
     if (cancel && cancel->cancelled()) break;
     fs::path p = fsutil::resolve_path(src);
     if (p == rt_.paths().root) return Error(Errc::InvalidArgument, "source cannot be the active data directory");
+    LOOM_TRY(rt_.path_policy().check(p, "source '" + src + "'"));
     std::error_code ec;
     if (!fs::exists(p, ec)) {
       stats.warnings.push_back("source not found: " + src);
@@ -503,6 +506,8 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
            !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
         const auto& entry = *it;
         std::error_code fec;
+        // R20: a confined account never follows a link out of its folders (a symlink planted in a shared root)
+        if (rt_.path_policy().confined() && entry.is_symlink(fec)) continue;
         if (entry.is_directory(fec)) {
           if (internal::skip_source_directory(entry.path(), rt_.paths().root)) {
             it.disable_recursion_pending();
@@ -519,21 +524,29 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
 
     for (const auto& file : files) {
       if (cancel && cancel->cancelled()) break;
-      LOOM_TRY_ASSIGN(std::string bytes_hex, sha256_file_hex(file));
+      // R20: open once under the path policy and read through that descriptor, so a name swapped for a
+      // symlink after the check cannot redirect the read (no-op when the runtime is not confined).
+      auto opened = rt_.path_policy().open_read(file, "source file");
+      if (!opened) {
+        stats.warnings.push_back(file.string() + ": " + opened.error().message);
+        continue;
+      }
+      const fs::path read_path = opened->path();
+      LOOM_TRY_ASSIGN(std::string bytes_hex, sha256_file_hex(read_path));
       std::string source_id = "sha256:" + bytes_hex;
       std::error_code sec;
-      std::int64_t fsize = static_cast<std::int64_t>(fs::file_size(file, sec));
+      std::int64_t fsize = static_cast<std::int64_t>(fs::file_size(read_path, sec));
       std::string ext = lower_ext(file);
       LOOM_TRY(register_source(rt_.db(), source_id, file, fsize, ext == ".zip" ? "zip" : "file"));
       if (ext == ".zip") {
-        LOOM_TRY(scan_zip_source(rt_.db(), idx, norm, cfg.sketch, source_id, file, cfg.force, stats, cancel));
+        LOOM_TRY(scan_zip_source(rt_.db(), idx, norm, cfg.sketch, source_id, read_path, cfg.force, stats, cancel));
         continue;
       }
       if (!cfg.force) {
         LOOM_TRY_ASSIGN(bool done, checkpoint_done(rt_.db(), source_id, "", stats.input_hash));
         if (done) continue;
       }
-      auto reader = [&](const std::function<void(std::string_view)>& on_chunk) { return stream_file_chunks(file, on_chunk); };
+      auto reader = [&](const std::function<void(std::string_view)>& on_chunk) { return stream_file_chunks(read_path, on_chunk); };
       const auto warnings_before = stats.warnings.size();
       Status st = (ext == ".json" || ext == ".jsonl")
                       ? scan_json_stream(rt_.db(), idx, norm, cfg.sketch, source_id, "", reader, stats)

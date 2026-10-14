@@ -9,6 +9,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer as createHttpServer } from "node:http";
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import { tmpdir } from "node:os";
@@ -25,10 +26,10 @@ assert.ok(existsSync(serverBin) && existsSync(path.join(dist, "index.html")), "B
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 
 const groups = [];
-const complete = suiteCompletionGuard("client-devices-native", 5, groups);
+const complete = suiteCompletionGuard("client-devices-native", 7, groups);
 const transcript = "We ship on Friday if the tests pass.";
 const summary = "Ship Friday, tests permitting.";
-const speech = [], chats = [], pageErrors = [];
+const speech = [], chats = [], pageErrors = [], messageReads = [], eventFeeds = [], bytesCalls = [], uploadAnswers = [];
 let server, browser, serverLog = "";
 
 function freePort() {
@@ -96,7 +97,19 @@ try {
     args: ["--use-fake-device-for-media-stream", "--use-fake-ui-for-media-stream", "--autoplay-policy=no-user-gesture-required"] });
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, permissions: ["microphone"] });
   const page = await context.newPage();
+  page.setDefaultTimeout(20000);
   page.on("pageerror", error => pageErrors.push(error.message));
+  page.on("response", async response => {
+    if (new URL(response.url()).pathname === "/api/client/blob/upload") uploadAnswers.push({ status: response.status(), body: await response.json() });
+  });
+  page.on("request", request => {
+    const url = new URL(request.url());
+    if (/\/api\/conversations\/[^/]+\/(messages|view)$/.test(url.pathname)) messageReads.push(url.pathname);
+    if (url.pathname === "/api/events/stream") eventFeeds.push(url.search);
+    if (url.pathname === "/api/client/blob/upload" || url.pathname === "/api/actions/client_result" || url.pathname.startsWith("/api/client/blob"))
+      bytesCalls.push({ path: url.pathname, method: request.method(), type: request.headers()["content-type"] ?? "", request,
+        body: url.pathname === "/api/actions/client_result" ? request.postData() ?? "" : "" });
+  });
   await page.goto(base, { waitUntil: "domcontentloaded" });
   await page.getByTestId("chat-view").waitFor();
   await page.click('[data-testid="new-conversation"]');
@@ -144,7 +157,7 @@ try {
     const step = page.getByTestId("chat-client-step");
     await step.waitFor();
     assert.equal(await step.getAttribute("data-action"), "device.record_audio");
-    assert.match(await step.getByTestId("chat-client-step-prompt").innerText(), /microphone/i);
+    assert.match(await step.getByTestId("chat-client-step-prompt").innerText(), /mikrofon/i, "the conversation is Polish, so the step is asked in Polish (one language per answer)");
     assert.equal(speech.length, 0, "the kernel waits for the device");
     await step.getByTestId("chat-client-step-start").click();
     await step.getByTestId("chat-client-step-recording").waitFor();
@@ -152,6 +165,37 @@ try {
     await page.waitForTimeout(1500);  // the fake microphone has something to record
     await step.getByTestId("chat-client-step-stop").click();
     await until(() => speech.length === 1, "the transcription request");
+  });
+
+  await check("the recording crossed as a multipart upload; the answer to the kernel names it by hash and carries no bytes", async () => {
+    const uploaded = bytesCalls.filter(call => call.path === "/api/client/blob/upload");
+    assert.equal(uploaded.length, 1, "one upload for one recording");
+    assert.equal(uploaded[0].method, "POST");
+    assert.match(uploaded[0].type, /^multipart\/form-data; boundary=/);
+    await until(() => uploadAnswers.length === 1, "the answer to the upload");
+    assert.equal(uploadAnswers[0].status, 200);
+    assert.ok(uploadAnswers[0].body.size > 1000, "the upload is the audio itself (" + uploadAnswers[0].body.size + " bytes)");
+    assert.match(uploadAnswers[0].body.mime, /^audio\/webm/);
+    const answers = bytesCalls.filter(call => call.path === "/api/actions/client_result");
+    assert.equal(answers.length, 1);
+    const answer = JSON.parse(answers[0].body);
+    assert.equal(answer.state, "ok");
+    assert.equal(answer.parts.length, 1);
+    assert.deepEqual(Object.keys(answer.parts[0]).sort(), ["blob_hash", "kind", "mime"], "a part of the answer is a kind, a type and a hash");
+    assert.equal(answer.parts[0].kind, "audio");
+    assert.match(answer.parts[0].blob_hash, /^[0-9a-f]{64}$/);
+    assert.ok(answers[0].body.length < 600, "the answer is small, there are no bytes in it (" + answers[0].body.length + " characters)");
+    assert.ok(!answers[0].body.includes("base64"));
+    // the kernel holds exactly the bytes that were uploaded, and gives them back as a stream
+    const raw = await fetch(base + "/api/client/blob/" + answer.parts[0].blob_hash + "/raw");
+    assert.equal(raw.status, 200);
+    assert.match(raw.headers.get("content-type"), /^audio\/webm/);
+    const stored = Buffer.from(await raw.arrayBuffer());
+    assert.equal(stored.length, uploadAnswers[0].body.size, "the kernel gives back as many bytes as it was given");
+    assert.equal(answer.parts[0].blob_hash, uploadAnswers[0].body.hash, "the answer names the blob that was uploaded");
+    assert.equal(createHash("sha256").update(stored).digest("hex"), answer.parts[0].blob_hash, "and the hash is the sha-256 of the bytes");
+    assert.equal((await fetch(base + "/api/client/blob/" + "0".repeat(64) + "/raw")).status, 404);
+    assert.equal((await fetch(base + "/api/client/blob", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ hash: answer.parts[0].blob_hash }) })).status, 404, "the base64 route is gone");
   });
 
   await check("the kernel sent the recording to the speech provider, the transcript to the model, and the conversation shows the summary", async () => {
@@ -179,11 +223,48 @@ try {
     const texts = await rows("/api/graph/nodes?kind=text_form");
     assert.ok(texts.some(node => (node.content ?? "").includes(summary)), "the summary is a text form");
   });
+
+  await check("a step started elsewhere reaches the open page by an event of the kernel - no refresh by hand, no polling; its closing too", async () => {
+    assert.equal(eventFeeds.length, 1, "one event feed for the whole life of the page");
+    assert.match(decodeURIComponent(eventFeeds[0]), /event=action:client_step/);
+    await page.fill('[data-testid="chat-input"]', "Nagraj notatkę głosową i ją streść");
+    await page.click('[data-testid="send-chat"]');
+    await page.getByTestId("chat-action-proposal").last().waitFor();
+    assert.equal(await page.getByTestId("chat-client-step").count(), 0, "nothing asks the device yet");
+    // the proposal of this page's conversation, answered from outside the page (another tab, another client, the CLI)
+    const conversations = await api("GET", "/api/conversations");
+    const conv = conversations.find(row => row.id).id;
+    const messages = await api("GET", "/api/conversations/" + conv + "/messages");
+    const proposal = [...messages].reverse().find(row => row.metadata?.action_proposal?.status === "pending").metadata.action_proposal;
+    assert.match(proposal.run_id, /^ar_/);
+    await page.waitForTimeout(1200);  // the page's own reads after its send are over
+    const sentBefore = chats.length;
+    const readsBefore = messageReads.length;
+    const answered = await api("POST", "/api/actions/confirm", { run_id: proposal.run_id, approved: true, receipt_id: proposal.receipt_id, ref: "cli" });
+    assert.equal(answered.status, "awaiting_client");
+    // the block appears in the open page; the page asked for nothing but the messages the event told it to read
+    const step = page.getByTestId("chat-client-step");
+    await step.waitFor();
+    assert.equal(await step.getAttribute("data-action"), "device.record_audio");
+    assert.ok(messageReads.length > readsBefore, "the page read the messages again when the event came");
+    await page.waitForTimeout(1500);
+    const settled = messageReads.length;
+    await page.waitForTimeout(1500);
+    assert.equal(messageReads.length, settled, "no polling: nothing is read while nothing happens");
+    assert.equal(eventFeeds.length, 1);
+    assert.equal(chats.length, sentBefore, "nothing went to the model");
+    // cancelled elsewhere: the question goes from the page the same way
+    const cancelled = await api("POST", "/api/actions/cancel", { run_id: proposal.run_id, ref: "cli" });
+    assert.equal(cancelled.status, "cancelled");
+    await step.waitFor({ state: "detached" });
+    assert.equal(speech.length, 1, "no second recording was ever sent");
+  });
   assert.deepEqual(pageErrors, []);
   complete.complete();
-  console.log("[client-devices-native] " + groups.length + "/5 groups passed");
+  console.log("[client-devices-native] " + groups.length + "/7 groups passed");
 } catch (error) {
   console.error(serverLog.split("\n").slice(-30).join("\n"));
+  console.error(error?.stack ?? String(error));
   throw error;
 } finally {
   await browser?.close();

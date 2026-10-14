@@ -290,7 +290,12 @@ test('an accepted definition shows what it wrote and can be taken back; the stat
   assert.equal(a.undoCall(view), 'actionsRemove');
   assert.equal(a.undoCall({ ...view, kind: 'define_sequence' }), 'actionsRemove', 'a repeated chain is an action too');
   assert.equal(a.undoCall({ ...view, kind: 'define_group' }), 'groupsRemove');
-  assert.deepEqual(a.undoRequest(view), { id: 'rozpisz', confirmed: true, ref: 'web' });
+  assert.deepEqual(a.undoRequest(view), { id: 'rozpisz', propose: true, ref: 'web' }, 'first the removal is proposed: nothing is removed, the kernel gives the receipt');
+  const proposed = { id: 'ar_9', status: 'proposed', pending: { kind: 'proposal', receipt_id: 'arr_abc', plan_receipt: 'arp_def' } };
+  assert.deepEqual(a.undoConfirmation(proposed), { run_id: 'ar_9', approved: true, receipt_id: 'arr_abc', ref: 'web' }, 'the click is the yes of the proposal it was shown');
+  assert.equal(a.undoConfirmation({ id: 'ar_9', status: 'denied', pending: null }), null, 'a denial is not answered');
+  assert.equal(a.undoConfirmation({ id: 'ar_9', status: 'proposed', pending: { kind: 'proposal' } }), null, 'no receipt, no yes');
+  assert.equal(a.undoConfirmation({ status: 'proposed', pending: { receipt_id: 'arr_abc' } }), null, 'no run to answer');
   // taken back: by the flag or by the proposal's own state
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'executed', written: { ...written, undone: true } } }).undone, true);
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written } }).undone, true);
@@ -340,7 +345,7 @@ test('a rule written from the conversation is shown as written and taken back by
   assert.equal(view.kind, 'rule');
   assert.deepEqual(JSON.parse(view.entry), rule, 'the rule is shown as it stands in the overlay');
   assert.equal(a.undoCall(view), 'rulesDisable', 'a rule is switched off, not removed');
-  assert.deepEqual(a.undoRequest(view), { id: rule.id, confirmed: true, ref: 'web' }, 'the click is the yes to exactly this switch-off');
+  assert.deepEqual(a.undoRequest(view), { id: rule.id, propose: true, ref: 'web' }, 'the switch-off is proposed first, the click then answers it with its receipt');
   assert.ok(en.written_rule && pl.written_rule && en.undone_rule && pl.undone_rule && en.status_cancelled && pl.status_cancelled);
   const texts = a.writtenTexts(feature, view);
   assert.equal(texts.written, en.written_rule.replace('{{overlay}}', 'profiles/action_rules.pack').replace('{{id}}', rule.id));
@@ -348,4 +353,64 @@ test('a rule written from the conversation is shown as written and taken back by
   assert.equal(texts.undo, en.undo);
   // switched off from anywhere: the proposal says so (status undone, written.undone)
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written: { ...written, undone: true } } }).undone, true);
+});
+
+test('one language per answer: a Polish proposal, its state badge, its offer and what it wrote are Polish whatever the interface language', () => {
+  const polish = { ...proposal, lang: 'pl', title: 'Streść',
+    items: [{ action: 'transcribe', title: 'Transkrybuj', cost: 1 }, { action: 'summarise', title: 'Streść', cost: 1 }],
+    needs_confirmation: [{ action: 'share', title: 'Udostępnij', reason: 'zapytam najpierw', initiator: 'owner' }] };
+  const metadata = { action_proposal: polish };
+  assert.equal(a.messageLanguage(metadata), 'pl');
+  assert.equal(a.messageLanguage({ action_run: { run_id: 'ar_2', status: 'completed', lang: 'pl' } }), 'pl', 'a result message says the language of its run');
+  assert.equal(a.messageLanguage({ action_proposal: { ...polish, lang: '' } }), null);
+  assert.equal(a.messageLanguage({}), null);
+  assert.equal(a.messageLanguage(undefined), null);
+  const spoken = p.featureInLanguage(feature, a.messageLanguage(metadata));
+  assert.equal(feature.locale, 'en', 'the interface stays English');
+  assert.equal(spoken.locale, 'pl');
+  assert.equal(spoken.catalog.confirm, pl.confirm);
+  // a language the catalog does not have, or no language, changes nothing
+  assert.equal(p.featureInLanguage(feature, 'de'), feature);
+  assert.equal(p.featureInLanguage(feature, null), feature);
+  assert.equal(p.featureInLanguage(null, 'pl'), null);
+
+  const answer = a.pendingAnswer(metadata);
+  const html = renderToStaticMarkup(createElement(block.default, { feature: spoken, answer, testId: 'pl', onConfirm: () => undefined, onReject: () => undefined }));
+  // every line of the block is the Polish one: the words of the catalog and the titles of the proposal
+  for (const key of ['title', 'confirm', 'reject']) {
+    assert.ok(html.includes(pl[key]), 'Polish ' + key);
+    assert.ok(!html.includes(en[key]), 'no English ' + key);
+  }
+  assert.ok(html.includes('Plan: Transkrybuj -&gt; Streść'));
+  assert.ok(html.includes('Wymaga potwierdzenia: Udostępnij'));
+  assert.ok(html.includes('Szacunek:'));
+  assert.ok(!html.includes('Estimate:') && !html.includes('Needs confirmation') && !html.includes('Transcribe') && !html.includes('Summarise') && !html.includes('Share'));
+  // the same message in an English interface without the language (the page of an older server) keeps the interface language
+  const plain = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'en', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(plain.includes(en.title) && plain.includes(en.confirm));
+
+  // the badge a finished proposal leaves, the offer under a dropped one, and the line of what was written
+  assert.equal(a.proposalTexts(spoken, answer, a.proposalView(answer)).status('executed'), pl.status_executed);
+  assert.equal(a.offerTexts(spoken).send, pl.offer);
+  assert.equal(a.offerTexts(spoken).hint, pl.offer_hint);
+  assert.equal(a.offerTexts(spoken).state('sent'), pl.offer_sent);
+  const written = a.writtenView({ action_proposal: { ...polish, status: 'executed', written: { kind: 'rule', id: 'rule_1', overlays: ['profiles/action_rules.pack'], entry: { id: 'rule_1' } } } });
+  const writtenHtml = renderToStaticMarkup(createElement(block.ProposalWritten, { feature: spoken, written, testId: 'w', onUndo: () => undefined }));
+  assert.ok(writtenHtml.includes(pl.undo) && !writtenHtml.includes(en.undo));
+  assert.ok(writtenHtml.includes('Reguła zapisana w Twojej własnej nakładce'));
+  assert.ok(!writtenHtml.includes('Rule written to'));
+  const offerHtml = renderToStaticMarkup(createElement(block.ProposalOffer, { feature: spoken, offer: { proposalId: 'm_p', sentenceId: 'm_s', auto: false }, testId: 'o', onSend: () => undefined }));
+  assert.ok(offerHtml.includes(pl.offer) && !offerHtml.includes(en.offer));
+  assert.ok(a.producedText(spoken, { target: 'graph', forms: ['n_1'], content: null, runNode: null }).startsWith('Zapisano w grafie'));
+});
+
+test('a run that was declined, denied or failed is data, not a failed request: answering "no" closes the proposal', async () => {
+  const types = await loader.load('src/api/types.ts');
+  const declined = { schema: 'loom.action_run/1', id: 'ar_1', status: 'rejected', error: { code: 'rejected', message: 'declined; nothing was executed' } };
+  assert.equal(types.isLoomError(declined), false, 'the run of a "no" carries an error of its own and is returned to the page');
+  assert.equal(types.isLoomError({ ...declined, schema: 'loom.action_run/2' }), false);
+  // the envelope of a request that failed is still one
+  assert.equal(types.isLoomError({ error: { code: 'invalid_argument', message: 'no run' } }), true);
+  assert.equal(types.isLoomError({ schema: 'loom.other/1', error: { code: 'x', message: 'y' } }), true);
+  assert.equal(types.isLoomError({ id: 'ar_1', error: '' }), false);
 });

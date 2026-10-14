@@ -94,6 +94,16 @@ TEST_SUITE("graph_entry") {
         for (auto& ch : verb) ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
         routes.insert(verb + " " + (*it)[2].str());
       }
+      // Routes registered with a regular expression (path parameters as capture groups): R"(/api/x/([^/]+)/y)".
+      const std::regex regex_route_re(R"re(\.(Get|Post|Put|Patch|Delete)\(\s*R"\((/api/[^"]*?)\)"\s*,)re");
+      for (std::sregex_iterator it(text.begin(), text.end(), regex_route_re), end; it != end; ++it) {
+        std::string verb = (*it)[1].str();
+        for (auto& ch : verb) ch = static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
+        std::string path = (*it)[2].str();
+        for (const auto& [group, name] : {std::pair<std::string, std::string>{"([^/]+)", ":id"}, {"([0-9a-fA-F]{64})", ":hash"}})
+          for (auto at = path.find(group); at != std::string::npos; at = path.find(group, at + name.size())) path.replace(at, group.size(), name);
+        routes.insert(verb + " " + path);
+      }
     }
     // Routes registered from the action catalogue (R3).
     const Json catalogue = read_json(kLoomDir / "data/runtime/actions.pack");

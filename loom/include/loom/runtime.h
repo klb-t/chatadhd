@@ -23,6 +23,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include "loom/config.h"
 #include "loom/log.h"
@@ -32,6 +33,7 @@
 namespace loom {
 
 class Runtime;
+class PathPolicy;
 class Database;
 class EventBus;
 class BlobStore;
@@ -91,6 +93,7 @@ struct PartsContext {
   net::HttpTransport* http = nullptr;  // the stable forwarding proxy, never the raw transport
   std::shared_ptr<net::HttpTransport> http_shared;  // same object, for parts that must keep it alive
   storage::StorageService* storage = nullptr;
+  std::shared_ptr<const PathPolicy> path_policy;  // never null once Runtime::open built it
   ModelRegistry* models = nullptr;
   ProviderRegistry* providers = nullptr;
   SemanticLLM* semantic_llm = nullptr;
@@ -144,6 +147,19 @@ struct RuntimeOptions {
   std::optional<PathEnv> path_env;       // tests: injected environment
   bool start_workers = true;             // SemanticWorker + TaskEngine pool
   bool enable_fts = true;
+  // Account runtimes of loom-server (R18): request-supplied filesystem paths must lie inside the data dir or
+  // one of `path_roots` (path_policy.h). Default false = the owner's own runtime, unconfined.
+  bool confine_paths = false;
+  std::vector<std::string> path_roots;
+  // Account runtimes (R18): outbound requests to private/local addresses are refused (net/host_guard.h) except
+  // to the hosts in allow_hosts. Default false.
+  bool block_private_hosts = false;
+  std::vector<std::string> allow_hosts;
+  // Operator ceilings for an account runtime (server_accounts zip/git): the effective zip and git setting is the
+  // more restrictive of these and the account's config.json. Unset = no ceiling (single-user runtime).
+  std::optional<std::int64_t> zip_max_total_bytes;
+  std::optional<double> zip_max_ratio;
+  std::optional<bool> git_allow_repo_config;
   std::shared_ptr<net::HttpTransport> http;  // default: net::make_default_transport()
   std::optional<log::Level> log_level;
   RuntimeParts parts;  // factory overrides; empty = defaults (see RuntimeParts)
@@ -164,6 +180,8 @@ class Runtime {
   void shutdown();
 
   const DataPaths& paths() const;
+  // Which request-supplied filesystem paths this runtime may touch (unconfined unless opened with confine_paths).
+  const PathPolicy& path_policy() const;
   const rom::MountRegistry& mounts() const;  // memories in mount order: the read-only ROM first, then the data dir
   Config& config();
   Secrets& secrets();

@@ -276,7 +276,11 @@ R"loom_onboard({
                 "setting_label": "Block sending when linked source history cannot be included",
                 "setting_help": "Off: the message is sent with the stored messages only and a notice says what is missing. On: sending stays disabled in such conversations until you turn this off.",
                 "blocked_by_setting": "Sending is blocked by your setting “{{setting}}”. Turn it off to send with the stored messages only.",
-                "unblock": "Turn off this block"
+                "unblock": "Turn off this block",
+                "queued_waiting": "Waiting for the conversation to load… your message will be sent as soon as it is there.",
+                "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field.",
+                "stream_ended": "The answer stream ended before a result arrived. Nothing more will come for this message; send it again if you need an answer.",
+                "empty_answer": "The model answered with no text."
               },
               "pl": {
                 "source_history_omitted": "Historia połączonych źródeł nie zostanie dołączona do tej wiadomości. Wysyłane są tylko wiadomości zapisane w tej rozmowie.",
@@ -289,7 +293,11 @@ R"loom_onboard({
                 "setting_label": "Blokuj wysyłanie, gdy nie można dołączyć historii połączonych źródeł",
                 "setting_help": "Wyłączone: wiadomość jest wysyłana tylko z zapisanymi wiadomościami, a komunikat mówi, czego brakuje. Włączone: wysyłanie pozostaje zablokowane w takich rozmowach, dopóki tego nie wyłączysz.",
                 "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
-                "unblock": "Wyłącz tę blokadę"
+                "unblock": "Wyłącz tę blokadę",
+                "queued_waiting": "Czekam na wczytanie rozmowy… wiadomość zostanie wysłana, gdy tylko będzie gotowa.",
+                "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu.",
+                "stream_ended": "Strumień odpowiedzi skończył się, zanim doszedł wynik. Dla tej wiadomości nic więcej nie przyjdzie; wyślij ją jeszcze raz, jeśli potrzebujesz odpowiedzi.",
+                "empty_answer": "Model odpowiedział bez tekstu."
               }
             }
           }
@@ -327,6 +335,48 @@ R"loom_onboard({
                 "restored": "Twój tekst wrócił do pola wiadomości.",
                 "rejected": "Odrzucono. Nic nie wysłano.",
                 "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+              }
+            }
+          }
+        },
+        {
+          "id": "presentation.route_issue/v1",
+          "key": "presentation.route_issue",
+          "area": "presentation/route_issue",
+          "revision": 1,
+          "label": "Quiet note when routing a chat input had a problem it worked around (the model route failed and the local rules decided); texts only, nothing is blocked and nothing is lost",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "route_issue",
+            "locales": {
+              "en": {
+                "model_route_failed": "The model could not route this message ({{message}}); the local rules read it instead. Nothing was lost.",
+                "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
+              },
+              "pl": {
+                "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+                "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+              }
+            }
+          }
+        },
+        {
+          "id": "presentation.open_settings/v1",
+          "key": "presentation.open_settings",
+          "area": "presentation/open_settings",
+          "revision": 1,
+          "label": "Button under a message that asks the person to enter secrets (keys, tokens) in Settings: an action that connects a storage never takes them from the conversation; texts only",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "open_settings",
+            "locales": {
+              "en": {
+                "button": "Open Settings",
+                "note": "The secrets are entered in Settings, never in the conversation: {{keys}}."
+              },
+              "pl": {
+                "button": "Otwórz Ustawienia",
+                "note": "Sekrety wpisuje się w Ustawieniach, nigdy w rozmowie: {{keys}}."
               }
             }
           }
@@ -1038,7 +1088,8 @@ R"loom_onboard({
             "error.rule_object": "Wprowadź obiekt reguły.",
             "error.native_type": "Natywny kreator: {{label}} musi mieć typ {{expected}}.",
             "error.missing_field": "Pytanie natywnego scenariusza wskazuje brakujące pole {{field}}.",
-            "error.failure": "Operacja nie powiodła się. Otwórz szczegóły diagnostyczne, aby sprawdzić pierwotny błąd.",
+)loom_onboard",
+R"loom_onboard(            "error.failure": "Operacja nie powiodła się. Otwórz szczegóły diagnostyczne, aby sprawdzić pierwotny błąd.",
             "error.diagnostics": "Szczegóły diagnostyczne",
             "error.presentation": "Prezentacja kreatora jest niedostępna: {{reason}}",
             "value.raw_identifier": "{{id}}",
@@ -1084,8 +1135,7 @@ R"loom_onboard({
             "review_state.rejected": "odrzucone",
             "error.template_syntax": "Nieprawidłowa składnia szablonu prezentacji.",
             "field.label_prefix": "{{label}} ",
-)loom_onboard",
-R"loom_onboard(            "field.state": "({{status}}{{suffix}})",
+            "field.state": "({{status}}{{suffix}})",
             "error.template_parameters": "Parametry szablonu muszą być obiektem.",
             "graph.prompt": "{{id}} prompt",
             "graph.parameters": "{{id}} parametry",
@@ -1428,7 +1478,11 @@ R"loom_onboard(            "field.state": "({{status}}{{suffix}})",
             "setting_label": "Block sending when linked source history cannot be included",
             "setting_help": "Off: the message is sent with the stored messages only and a notice says what is missing. On: sending stays disabled in such conversations until you turn this off.",
             "blocked_by_setting": "Sending is blocked by your setting “{{setting}}”. Turn it off to send with the stored messages only.",
-            "unblock": "Turn off this block"
+            "unblock": "Turn off this block",
+            "queued_waiting": "Waiting for the conversation to load… your message will be sent as soon as it is there.",
+            "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field.",
+            "stream_ended": "The answer stream ended before a result arrived. Nothing more will come for this message; send it again if you need an answer.",
+            "empty_answer": "The model answered with no text."
           },
           "pl": {
             "source_history_omitted": "Historia połączonych źródeł nie zostanie dołączona do tej wiadomości. Wysyłane są tylko wiadomości zapisane w tej rozmowie.",
@@ -1441,7 +1495,11 @@ R"loom_onboard(            "field.state": "({{status}}{{suffix}})",
             "setting_label": "Blokuj wysyłanie, gdy nie można dołączyć historii połączonych źródeł",
             "setting_help": "Wyłączone: wiadomość jest wysyłana tylko z zapisanymi wiadomościami, a komunikat mówi, czego brakuje. Włączone: wysyłanie pozostaje zablokowane w takich rozmowach, dopóki tego nie wyłączysz.",
             "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
-            "unblock": "Wyłącz tę blokadę"
+            "unblock": "Wyłącz tę blokadę",
+            "queued_waiting": "Czekam na wczytanie rozmowy… wiadomość zostanie wysłana, gdy tylko będzie gotowa.",
+            "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu.",
+            "stream_ended": "Strumień odpowiedzi skończył się, zanim doszedł wynik. Dla tej wiadomości nic więcej nie przyjdzie; wyślij ją jeszcze raz, jeśli potrzebujesz odpowiedzi.",
+            "empty_answer": "Model odpowiedział bez tekstu."
           }
         }
       }
@@ -1479,6 +1537,48 @@ R"loom_onboard(            "field.state": "({{status}}{{suffix}})",
             "restored": "Twój tekst wrócił do pola wiadomości.",
             "rejected": "Odrzucono. Nic nie wysłano.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.route_issue/v1",
+      "key": "presentation.route_issue",
+      "area": "presentation/route_issue",
+      "revision": 1,
+      "label": "Quiet note when routing a chat input had a problem it worked around (the model route failed and the local rules decided); texts only, nothing is blocked and nothing is lost",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "route_issue",
+        "locales": {
+          "en": {
+            "model_route_failed": "The model could not route this message ({{message}}); the local rules read it instead. Nothing was lost.",
+            "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
+          },
+          "pl": {
+            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+            "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.open_settings/v1",
+      "key": "presentation.open_settings",
+      "area": "presentation/open_settings",
+      "revision": 1,
+      "label": "Button under a message that asks the person to enter secrets (keys, tokens) in Settings: an action that connects a storage never takes them from the conversation; texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "open_settings",
+        "locales": {
+          "en": {
+            "button": "Open Settings",
+            "note": "The secrets are entered in Settings, never in the conversation: {{keys}}."
+          },
+          "pl": {
+            "button": "Otwórz Ustawienia",
+            "note": "Sekrety wpisuje się w Ustawieniach, nigdy w rozmowie: {{keys}}."
           }
         }
       }

@@ -10,6 +10,9 @@ export interface LoomError {
 
 export function isLoomError(v: unknown): v is LoomError {
   if (!v || typeof v !== "object" || !("error" in v)) return false;
+  // A run document carries an `error` of its own when it was declined, denied or failed: that is the run's state, not a failed request.
+  const schema = (v as { schema?: unknown }).schema;
+  if (typeof schema === "string" && schema.startsWith("loom.action_run/")) return false;
   const error = (v as { error: unknown }).error;
   // Pipeline results also carry an `error` string (empty on success).
   // Only the C ABI error envelope means the request itself failed.
@@ -154,6 +157,7 @@ export type ChatChunk =
   | { type: "action_proposal" | "action_result"; request_id: string; conv_id: string; user_message_id: string;
       message_id: string; text: string; proposal?: Record<string, unknown>; run?: Record<string, unknown>;
       proposal_message_id?: string; proposal_status?: string }
+  | { type: "route_issue"; request_id?: string; issues: Array<{ code: string; message?: string; fallback?: string }> }
   | { type: "error"; code: string; message: string };
 
 export interface GraphNode {

@@ -118,6 +118,16 @@ std::string content_op_of(const Engine* engine, const Json& run) {
   return entry ? json::get_string(*entry, "content_op", "none") : std::string();
 }
 
+// An answer to a question (the list of conversations, a spend report, what can be done here) is said in the conversation and is
+// not content: an action that declares `stores_result: false` leaves no form or content node behind.
+bool stores_result(const Engine* engine, const Json& run) {
+  if (!engine) return true;
+  const Json items = run.value("plan", Json::object()).value("items", Json::array());
+  if (items.empty()) return true;
+  const Json* entry = json::find(engine->catalogue(), items[items.size() - 1].value("action", ""));
+  return !entry || json::get_bool(*entry, "stores_result", true);
+}
+
 Json fidelity_of(const Json& profile, const std::string& content_op) {
   const Json* table = json::find(profile, "fidelity");
   if (table && !content_op.empty())
@@ -184,6 +194,7 @@ Result<std::string> part_text(BlobStore* blobs, const Json& part) {
 Status store_run_results(const ResultServices& s, Json& run) {
   if (!s.profile.is_object() || json::get_bool(run, "sensitive", false)) return {};
   if (!run.contains("result") || !run["result"].is_object()) return {};
+  if (!stores_result(s.engine, run)) return {};
   const Json& profile = s.profile;
   const Json by_part = profile.value("classes", Json::object()).value("by_part", Json::object());
   const std::int64_t inline_max = [&] {
@@ -430,8 +441,18 @@ Status store_run_results(const ResultServices& s, Json& run) {
     }
     produced["run_node"] = run_node.empty() ? Json(nullptr) : Json(run_node);
     // The port runs the steps made were written before this node existed: they name the run, and are linked to it now (port_graph.h).
-    if (!run_node.empty() && !run_meta.value("usage_operation_ids", Json::array()).empty())
-      if (auto linked = port_graph::reconcile_action_runs(db); !linked) issue("port_run_links", linked.error().message);
+    // Each step recorded the node ids of its own port runs (ActionRunScope::recorded_nodes(), run.cpp), so only those nodes and the run
+    // node are read: no label or table scan, whatever the size of the history.
+    if (!run_node.empty()) {
+      std::vector<std::string> port_runs;
+      for (const auto& rec : run.value("steps", Json::array()))
+        for (const auto& v : rec.value("variants", Json::array()))
+          for (const auto& id : v.value("port_run_nodes", Json::array()))
+            if (id.is_string() && std::find(port_runs.begin(), port_runs.end(), id.get<std::string>()) == port_runs.end())
+              port_runs.push_back(id.get<std::string>());
+      if (!port_runs.empty())
+        if (auto linked = port_graph::reconcile_action_run(db, run_id, port_runs); !linked) issue("port_run_links", linked.error().message);
+    }
 
     // The conversation a message goes to.
     const std::string conv_id = [&] {

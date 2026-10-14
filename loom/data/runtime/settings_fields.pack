@@ -159,6 +159,30 @@
         "description": "Usage policy options (growth factor, baselines). Raising expected consumption by an order of magnitude needs the user's confirmation; the confirmation is enforced by the usage-policy actions, not by the config write."
       },
       {
+        "key": "loom_zip_max_total_bytes",
+        "scope": "config",
+        "group": "safety",
+        "type": "integer",
+        "has_default": true,
+        "description": "Most bytes one imported ZIP archive may expand to; the import is refused before writing past it (zip bomb guard). 0 = no limit."
+      },
+      {
+        "key": "loom_zip_max_ratio",
+        "scope": "config",
+        "group": "safety",
+        "type": "number",
+        "has_default": true,
+        "description": "Largest uncompressed/compressed ratio of one ZIP entry; a larger one is refused while extracting. 0 = no limit."
+      },
+      {
+        "key": "loom_git_allow_repo_config",
+        "scope": "config",
+        "group": "safety",
+        "type": "boolean",
+        "has_default": true,
+        "description": "false (preset): git run on a repository from your data folder ignores its hooks, fsmonitor and other configured programs. true lets the repository's own configuration run."
+      },
+      {
         "key": "_config_version",
         "scope": "config",
         "group": "internal",
@@ -180,7 +204,7 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
-        "description": "How a chat input is told to be a message or a command (R54): heuristic (local and free, preset), model (one guarded model call per input) or off (every input is a message). Runtime profile intent_routing."
+        "description": "How a chat input is told to be a message or a command (R54): heuristic (local and free, preset), hybrid (the local reading first, the model asked only about what it is unsure of: a command the local reading is sure of is never turned into a message by the model; recommended once a provider key exists), model (one guarded model call per input) or off (every input is a message). Runtime profile intent_routing (heuristic.scoring.min_score and confident_score, method.presets.hybrid.ask_when)."
       },
       {
         "key": "intent_routing_run",
@@ -237,6 +261,14 @@
         "type": "string",
         "has_default": false,
         "description": "Whether the catalogue of actions grows from your conversations (R55): propose (preset: a command no action understands, a sequence you keep repeating, or an action used on several classes is offered as a new action or group, never made silently) or off. Accepting writes only your own overlays (profiles/actions.pack, profiles/intent_routing.pack, profiles/graph_entry.pack). Runtime profile intent_routing (emergent). Default: propose."
+      },
+      {
+        "key": "model_registry_autorefresh",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether an estimate may fetch the provider's public model list when it needs a price and the model registry (models.json) is empty, which it is on a fresh data directory until the list is refreshed: on_demand (preset: the list is fetched once, no user data is sent; if the fetch fails the price stays unknown with the reason, and the next automatic attempt waits the profile's retry_after_seconds) or off (the registry is filled only by refreshing the model list yourself; an estimate without a price says so). Runtime profile action_run (estimate.registry_refresh). A name that is not a preset means on_demand. Default: on_demand."
       },
       {
         "key": "image_model",
@@ -349,6 +381,14 @@
         "type": "object",
         "has_default": false,
         "description": "Overrides of the usage ledger's compaction preset (runtime profile usage_compaction): mode off|manual|auto, older_than_days, statuses, fold_samples_beyond_window, reclaim_space, auto_interval_hours. Housekeeping of old completed operations, never a spending limit; pending, confirmed and denied operations are not folded."
+      },
+      {
+        "key": "cleanup",
+        "scope": "config",
+        "group": "storage",
+        "type": "object",
+        "has_default": false,
+        "description": "Housekeeping when the runtime starts (loom/cleanup.h); every value is a preset, none limits use. upload_part_max_age_hours (preset 24, 0 = keep forever): abandoned <data>/tmp/uploads/up_*.part files older than this are removed. orphan_blob_max_age_days (preset 0 = off): blobs older than this that no node, link, run, source, artifact or other database row and no top-level JSON file names by hash become candidates. orphan_blob_dry_run (preset true): candidates are only logged and reported; false deletes them. A blob that is named anywhere is never removed."
       },
       {
         "key": "api_key",
