@@ -12,6 +12,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/util/base64.h"
 #include "loom/util/ids.h"
+#include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
 
 namespace loom::net {
@@ -217,8 +218,22 @@ std::string with_query(std::string_view url, const std::vector<std::pair<std::st
   return out;
 }
 
-MultipartBody build_multipart(const std::vector<MultipartPart>& parts) {
+MultipartBody build_multipart(const std::vector<MultipartPart>& parts, bool deterministic) {
   std::string boundary = "loom" + random_hex(24);
+  if (deterministic) {
+    Sha256 h;
+    for (const auto& p : parts)
+      for (const std::string* f : {&p.name, &p.filename, &p.content_type, &p.data}) {
+        const std::string len = std::to_string(f->size()) + ":";
+        h.update(len);
+        h.update(*f);
+      }
+    boundary = "loom" + h.finish_hex().substr(0, 24);
+    auto clashes = [&] {
+      return std::any_of(parts.begin(), parts.end(), [&](const MultipartPart& p) { return p.data.find(boundary) != std::string::npos; });
+    };
+    for (int n = 0; clashes(); ++n) boundary = "loom" + Sha256::hex(boundary + std::to_string(n)).substr(0, 24);
+  }
   MultipartBody mb;
   mb.content_type = "multipart/form-data; boundary=" + boundary;
   for (const auto& p : parts) {

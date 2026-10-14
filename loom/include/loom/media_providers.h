@@ -78,6 +78,16 @@ struct MediaCallContext {
   std::function<void(const Json&)> on_provenance;
 };
 
+// The answer of a resumable media call: either the result, or the usage guard's hold of it.
+//   pending  "loom.action_usage_pending/1" {status, operation_id, receipt_id, baseline_key, projected, decisions,
+//            media, provider, sent:false} - nothing was sent. status: requires_confirmation | denied | cancelled | ...
+template <class T>
+struct MediaReply {
+  std::optional<T> value;
+  Json pending = nullptr;
+  bool paused() const noexcept { return !value.has_value(); }
+};
+
 class AsrProvider {
  public:
   virtual ~AsrProvider() = default;
@@ -201,6 +211,21 @@ class MediaProviders {
   Result<OcrResult> ocr_bytes(std::string_view image, std::string_view format = "png",
                               const std::optional<std::string>& provider = {},
                               const std::optional<std::string>& language = {});
+  // Resumable forms of transcribe_bytes / ocr_bytes (the action runner's media step).  A call the usage guard holds
+  // (x10 growth) is NOT a provider failure: no other provider is tried, and the reply carries the hold (`pending`,
+  // value empty).  To resume, call again with the identical arguments and
+  // `usage_confirmation` = {approved, receipt_id, ref, operation_id} copied from the pending (the shape chat takes):
+  // approved:true sends the identical request once (only the provider that held it is tried); approved:false sends
+  // nothing and returns a pending with status "cancelled".  The multipart boundary is random per call; every other
+  // byte of the request is the same.  The legacy forms above return Errc::Paused for a hold (no fallback either).
+  Result<MediaReply<AsrResult>> transcribe_bytes_resumable(std::string_view audio, std::string_view format = "wav",
+                                                           const std::optional<std::string>& provider = {},
+                                                           const std::optional<std::string>& language = {},
+                                                           const Json& usage_confirmation = Json::object());
+  Result<MediaReply<OcrResult>> ocr_bytes_resumable(std::string_view image, std::string_view format = "png",
+                                                    const std::optional<std::string>& provider = {},
+                                                    const std::optional<std::string>& language = {},
+                                                    const Json& usage_confirmation = Json::object());
   // {"asr":{"available":[...],"configured":bool},"ocr":{...}}
   Json status() const;
 
