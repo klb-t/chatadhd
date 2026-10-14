@@ -883,3 +883,10 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 ### Bramka P17 (na czubku gałęzi, po scaleniu `origin/main` = `516ddc3c`)
 
 CTest 220/220 (dev + serwer, Debug); `npm run build`, wszystkie skrypty `test:*` (33, w tym nowe `test:semantic-question`) i `e2e` w Chromium: PASS (34/34); piątka generatorów `--check` czysta (`gen_runtime_profiles.py`, `gen_onboarding_pack.py`, `tools/gen_graph_interfaces.py`, `tools/gen_rom_catalogue.py`, `src/policy/gen_usage_policy.py`); piny `product_literals.pack` odświeżone funkcjami strażnika (`generated_inputs`, `sha`), skróty `data_domains.pack` przeliczone z plików, golden `settings_fields.json` odtworzony z `loom_settings_fields`; zrzut `loom/web/e2e/screenshots` przywrócony. **ASan+UBSan** (`cmake --preset asan`, ctest na `client_devices`, `action_*`, `chat_*`, `confirm_*`, `emergent_catalogue`, `spend_limits`, `pipelines_chat`, `semantic_question`, `usage_baseline_floor`): 22/22 bez błędów. Testy, których asercje zmieniłem z powodu P17: `e2e/run.mjs` (telefon otwiera menu przed `nav-*`), `e2e/workspace.mjs` (to samo), `e2e/first-steps-ui.mjs` (nagłówek), testy wstrzymania ×10 (jawny preset, patrz pkt 6) oraz przypięte skróty profilu `usage_policy` (`test_runtime_profile.cpp`, `compat/test_runtime_profile_sources.py`) i test presetu (`test_runtime_bootstrap_profiles.cpp`).
+
+### S2 / R15 — macierz CI (2026-10-14, `main` = `516ddc3c`)
+
+- `loom.yml`: ASan `timeout-minutes` 150 (zmierzone: build ok. 25 min + FFI 8 min + CTest ok. 80 min CPU); ccache zapisywany osobnym krokiem także po nieudanym jobie. Cofnięcie: przywrócić 45 i jeden krok `actions/cache`.
+- `loom/tsan.supp` (ładowany przez preset testów `tsan`): tylko procedury WAL-index SQLite i `unixOpen`; wyścigi w kodzie Loom nadal zgłaszane. Cofnięcie: usunąć plik i odwołanie w `CMakePresets.json`.
+- Limity czasu testów pod sanitizerami: `cli.smoke` 900 s, strażnik zawieszenia import_stream skalowany. Cofnięcie: przywrócić 300 s.
+- Raport: `docs/reports/S2_R15_2026-10-14.md`.

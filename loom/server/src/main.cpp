@@ -32,6 +32,7 @@ void print_usage(const char* argv0) {
             << " [--version] [--host H] [--port P] [--data-dir DIR] [--static-dir DIR] [--token TOKEN]\n"
                "       [--accounts-root DIR] [--allow-unauthenticated-public]\n"
                "       [--max-body-bytes N (JSON routes, 0 = no limit)] [--max-upload-bytes N (import/transcribe, 0 = no limit)]\n"
+               "       [--upload-drain-bytes N (bytes of a too-large upload read and discarded so the 413 arrives; 0 = no limit; preset 64 MiB)]\n"
                "       [--sse-keepalive-ms N (idle event feeds probe their client this often, 0 = never; preset 5000)]\n"
                "       [--threads N (threads that serve requests; every open page holds one for its event feed; 0 = library default; preset 64)]\n"
                "       [--allow-chunked-uploads (accept chunked/unframed import/transcribe bodies, streamed to disk)]\n"
@@ -137,6 +138,7 @@ int main(int argc, char** argv) {
   opts.accounts_root = env_or("LOOM_ACCOUNTS_ROOT", "");
   if (auto v = env_or("LOOM_SERVER_MAX_BODY_BYTES", ""); !v.empty()) opts.max_body_bytes = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_MAX_UPLOAD_BYTES", ""); !v.empty()) opts.max_upload_bytes = std::strtoull(v.c_str(), nullptr, 10);
+  if (auto v = env_or("LOOM_SERVER_UPLOAD_DRAIN_BYTES", ""); !v.empty()) opts.upload_drain_bytes = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_SSE_KEEPALIVE_MS", ""); !v.empty()) opts.sse_keepalive_ms = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_THREADS", ""); !v.empty()) opts.worker_threads = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_ALLOW_CHUNKED_UPLOADS", ""); !v.empty()) opts.allow_chunked_uploads = v != "0" && v != "false";
@@ -167,6 +169,8 @@ int main(int argc, char** argv) {
       opts.max_body_bytes = std::strtoull(next("--max-body-bytes"), nullptr, 10);
     } else if (arg == "--max-upload-bytes") {
       opts.max_upload_bytes = std::strtoull(next("--max-upload-bytes"), nullptr, 10);
+    } else if (arg == "--upload-drain-bytes") {
+      opts.upload_drain_bytes = std::strtoull(next("--upload-drain-bytes"), nullptr, 10);
     } else if (arg == "--sse-keepalive-ms") {
       opts.sse_keepalive_ms = std::strtoull(next("--sse-keepalive-ms"), nullptr, 10);
     } else if (arg == "--threads") {
