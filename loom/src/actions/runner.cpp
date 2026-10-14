@@ -11,6 +11,7 @@
 #include "loom/action_estimate.h"
 #include "loom/action_result.h"
 #include "loom/chat_route.h"
+#include "loom/client_blobs.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
@@ -588,70 +589,6 @@ Result<Json> ActionRunner::client_capabilities(const Json& request) {
   return out;
 }
 
-Result<Json> ActionRunner::client_blob(const Json& request) {
-  const std::string hash = json::get_string(request, "hash");
-  if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "hash must be a blob hash (64 hex)");
-  if (!rt_.blobs().has(hash)) return Error(Errc::NotFound, "no blob " + hash);
-  LOOM_TRY_ASSIGN(std::string bytes, rt_.blobs().read(hash));
-  std::string mime;
-  if (auto row = rt_.db().find_node("blob:" + hash, "blob"); row && *row) mime = json::get_string((*row)->metadata, "mime");
-  return Json{{"hash", hash}, {"mime", mime}, {"size", static_cast<std::int64_t>(bytes.size())}, {"data_base64", base64::encode(bytes)}};
-}
-
-namespace {
-
-// The parts a client brought back, as typed parts of the run: media given as data_base64 go to the blob store (with a graph node
-// and an artifact record that say where they came from), a part naming a stored blob is checked, text stays text.
-Result<Json> stored_client_parts(Runtime& rt, const Json& parts, const Json& origin) {
-  Json out = Json::array();
-  if (!parts.is_array()) return out;
-  for (const auto& p : parts) {
-    if (!p.is_object()) return Error(Errc::InvalidArgument, "a part must be an object");
-    const std::string kind = json::get_string(p, "kind");
-    if (!llm::known_part_kind(kind)) return Error(Errc::InvalidArgument, "unknown part kind '" + kind + "'");
-    Json part = Json{{"kind", kind}};
-    if (const std::string mime = json::get_string(p, "mime"); !mime.empty()) part["mime"] = mime;
-    if (kind == "text" || kind == "json" || kind == "embedding") {
-      if (const std::string text = json::get_string(p, "text"); !text.empty()) part["text"] = text;
-      if (const Json* v = json::find(p, "value")) part["value"] = *v;
-      out.push_back(std::move(part));
-      continue;
-    }
-    std::string hash = json::get_string(p, "blob_hash");
-    if (const std::string b64 = json::get_string(p, "data_base64"); !b64.empty()) {
-      LOOM_TRY_ASSIGN(std::string bytes, base64::decode(b64, true));
-      if (bytes.empty()) return Error(Errc::InvalidArgument, "a " + kind + " part has no bytes");
-      LOOM_TRY_ASSIGN(BlobRef ref, rt.blobs().put(bytes, json::get_string(p, "mime")));
-      hash = ref.hash;
-      part["size"] = ref.size;
-      NodeOptions o;
-      o.tags = Json::array({"blob", "client_capture", kind});
-      Json meta{{"blob_hash", hash}, {"size", ref.size}, {"mime", json::get_string(p, "mime")}, {"output_kind", kind}, {"produced_by", origin}};
-      if (const std::string name = json::get_string(p, "name"); !name.empty()) meta["name"] = name;
-      o.metadata = std::move(meta);
-      LOOM_TRY_ASSIGN(std::string node, rt.db().get_or_create_node("blob:" + hash, "blob", o));
-      part["node_id"] = node;
-      ArtifactRecord artifact;
-      artifact.kind = "client_capture";
-      artifact.title = kind + " from " + json::get_string(origin, "action");
-      artifact.blob_hash = hash;
-      artifact.mime = json::get_string(p, "mime");
-      artifact.metadata = origin;
-      if (auto made = rt.provenance().add_artifact(std::move(artifact))) part["artifact_id"] = *made;
-    } else if (!hash.empty()) {
-      if (!BlobStore::is_valid_hash(hash) || !rt.blobs().has(hash)) return Error(Errc::NotFound, "the blob " + hash + " is not in the blob store");
-    } else if (json::get_string(p, "url").empty()) {
-      return Error(Errc::InvalidArgument, "a " + kind + " part needs data_base64, blob_hash or url");
-    }
-    if (!hash.empty()) part["blob_hash"] = hash;
-    if (const std::string url = json::get_string(p, "url"); !url.empty()) part["url"] = url;
-    out.push_back(std::move(part));
-  }
-  return out;
-}
-
-}  // namespace
-
 Result<Json> ActionRunner::client_result(const Json& request, const CancelToken* external) {
   const std::string run_id = json::get_string(request, "run_id");
   if (run_id.empty()) return Error(Errc::InvalidArgument, "run_id is required");
@@ -668,7 +605,7 @@ Result<Json> ActionRunner::client_result(const Json& request, const CancelToken*
     Json origin{{"schema", "loom.client_capture/1"}, {"run_id", run_id}, {"step", json::get_string(pending, "step")},
                 {"action", json::get_string(pending, "action")}, {"client_id", current.value("client", Json::object()).value("client_id", "")},
                 {"ref", json::get_string(request, "ref")}, {"output_kind", spec.value("expects", Json::array()).empty() ? "media" : spec["expects"][0]}};
-    LOOM_TRY_ASSIGN(answer["parts"], stored_client_parts(rt_, request.value("parts", Json::array()), origin));
+    LOOM_TRY_ASSIGN(answer["parts"], client_blobs::parts(rt_, request.value("parts", Json::array()), origin));
   }
   CancelToken own;
   const CancelToken* token = external ? external : &own;
@@ -839,7 +776,12 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "client_result") return client_result(request);
   if (action == "client.declare") return client_declare(request);
   if (action == "client.capabilities") return client_capabilities(request);
-  if (action == "client.blob") return client_blob(request);
+  if (action == "client.blob_put") return client_blobs::put(rt_, request);
+  if (action == "client.blob_path") return client_blobs::path(rt_, request);
+  if (action == "client.blob_begin") return client_blobs::begin(rt_, request);
+  if (action == "client.blob_append") return client_blobs::append(rt_, request);
+  if (action == "client.blob_commit") return client_blobs::commit(rt_, request);
+  if (action == "client.blob_read") return client_blobs::read(rt_, request);
   if (action == "cancel") return cancel(request);
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);

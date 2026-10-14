@@ -149,30 +149,49 @@ test('a client session declares lazily: nothing on its own, once at the first as
 
 // ── recording ───────────────────────────────────────────────────────
 
-test('a recording starts and stops: the sound comes back as base64 with its mime type, the microphone is closed', async () => {
+// The kernel's side of an upload, as a double: it keeps what it was given and names it by a hash of the bytes (the real one is sha-256).
+const uploads = [];
+const upload = async (blob, name) => {
+  const bytes = [...new Uint8Array(await blob.arrayBuffer())];
+  uploads.push({ bytes, type: blob.type, name });
+  return { hash: 'h'.repeat(60) + String(bytes.join('')).slice(0, 4).padEnd(4, '0') };
+};
+
+test('a recording starts and stops: the sound goes to the kernel as bytes and the answer names it by hash; the microphone is closed', async () => {
   const h = host();
-  const recording = await device.startRecording(h);
+  uploads.length = 0;
+  const recording = await device.startRecording(h, upload);
   assert.deepEqual(h.opened[0], { audio: true });
   assert.equal(FakeRecorder.starts, 1);
   const outcome = await recording.stop();
   assert.equal(outcome.state, 'ok');
-  assert.deepEqual(outcome.parts, [{ kind: 'audio', mime: 'audio/webm;codecs=opus', data_base64: btoa(String.fromCharCode(1, 2, 3, 4)) }]);
+  assert.deepEqual(uploads, [{ bytes: [1, 2, 3, 4], type: 'audio/webm;codecs=opus', name: 'recording' }]);
+  assert.deepEqual(outcome.parts, [{ kind: 'audio', mime: 'audio/webm;codecs=opus', blob_hash: 'h'.repeat(60) + '1234' }]);
+  assert.equal(JSON.stringify(outcome).includes('base64'), false, 'no bytes in the answer');
   assert.deepEqual(h.opened[1].stopped, [true], 'the tracks are stopped: the microphone light goes out');
   assert.equal((await recording.stop()).state, 'failed', 'a recording ends once');
 });
 
 test('a microphone the person refused is declined, one that is missing is unavailable, a silent recording fails; abort closes it', async () => {
   const refuse = name => host({ mediaDevices: { getUserMedia: async () => { const e = new Error('Permission denied'); e.name = name; throw e; } } });
-  await assert.rejects(device.startRecording(refuse('NotAllowedError')), error => error.state === 'declined' && /Permission denied/.test(error.message));
-  await assert.rejects(device.startRecording(refuse('NotFoundError')), error => error.state === 'unavailable');
-  await assert.rejects(device.startRecording(refuse('NotReadableError')), error => error.state === 'failed');
-  await assert.rejects(device.startRecording({}), error => error.state === 'unavailable');
+  await assert.rejects(device.startRecording(refuse('NotAllowedError'), upload), error => error.state === 'declined' && /Permission denied/.test(error.message));
+  await assert.rejects(device.startRecording(refuse('NotFoundError'), upload), error => error.state === 'unavailable');
+  await assert.rejects(device.startRecording(refuse('NotReadableError'), upload), error => error.state === 'failed');
+  await assert.rejects(device.startRecording({}, upload), error => error.state === 'unavailable');
   class Silent extends FakeRecorder { stop() { queueMicrotask(() => this.onstop?.()); } }
-  const silent = await device.startRecording(host({ MediaRecorder: Silent }));
+  const silent = await device.startRecording(host({ MediaRecorder: Silent }), upload);
   assert.deepEqual((await silent.stop()).state, 'failed');
   const h = host();
-  const dropped = await device.startRecording(h);
+  const dropped = await device.startRecording(h, upload);
   dropped.abort();
+  assert.deepEqual(h.opened[1].stopped, [true]);
+});
+
+test('a recording the kernel could not take is a failed step with the reason, not a lost answer; the microphone is closed all the same', async () => {
+  const h = host();
+  const recording = await device.startRecording(h, async () => { throw new Error('HTTP 413'); });
+  const outcome = await recording.stop();
+  assert.deepEqual(outcome, { state: 'failed', error: { message: 'HTTP 413' } });
   assert.deepEqual(h.opened[1].stopped, [true]);
 });
 
@@ -183,48 +202,50 @@ const step = (action, over = {}) => ({ action, title: action, with: {}, inputs: 
 
 test('the clipboard: read brings the text, write puts the text that flowed in or was named', async () => {
   const h = host();
-  assert.deepEqual(await device.runStep(h, step('device.clipboard_read'), load), { state: 'ok', parts: [{ kind: 'text', text: 'from the clipboard' }] });
-  assert.equal((await device.runStep(h, step('device.clipboard_write', { inputs: [{ kind: 'text', text: 'one' }, { kind: 'text', text: 'two' }] }), load)).state, 'ok');
+  assert.deepEqual(await device.runStep(h, step('device.clipboard_read'), load, upload), { state: 'ok', parts: [{ kind: 'text', text: 'from the clipboard' }] });
+  assert.equal((await device.runStep(h, step('device.clipboard_write', { inputs: [{ kind: 'text', text: 'one' }, { kind: 'text', text: 'two' }] }), load, upload)).state, 'ok');
   assert.deepEqual(h.opened.at(-1), { copied: 'one\n\ntwo' });
-  await device.runStep(h, step('device.clipboard_write', { with: { text: 'named' }, inputs: [{ kind: 'text', text: 'ignored' }] }), load);
+  await device.runStep(h, step('device.clipboard_write', { with: { text: 'named' }, inputs: [{ kind: 'text', text: 'ignored' }] }), load, upload);
   assert.deepEqual(h.opened.at(-1), { copied: 'named' });
   const denied = host({ clipboard: { readText: async () => { const e = new Error('Read permission denied.'); e.name = 'NotAllowedError'; throw e; } } });
-  const outcome = await device.runStep(denied, step('device.clipboard_read'), load);
+  const outcome = await device.runStep(denied, step('device.clipboard_read'), load, upload);
   assert.equal(outcome.state, 'declined');
-  assert.equal((await device.runStep({}, step('device.clipboard_read'), load)).state, 'unavailable');
+  assert.equal((await device.runStep({}, step('device.clipboard_read'), load, upload)).state, 'unavailable');
 });
 
 test('a notification asks for the permission when the browser has not been asked, and respects a refusal', async () => {
   const h = host();
-  const ok = await device.runStep(h, step('device.notify', { title: 'Loom', with: { text: 'Done' } }), load);
+  const ok = await device.runStep(h, step('device.notify', { title: 'Loom', with: { text: 'Done' } }), load, upload);
   assert.equal(ok.state, 'ok');
   assert.deepEqual(h.opened.at(-1), { title: 'Loom', body: 'Done' });
   const refused = host({ notifications: { permission: () => 'denied', request: async () => 'denied', show: () => assert.fail('must not show') } });
-  assert.equal((await device.runStep(refused, step('device.notify', { with: { text: 'x' } }), load)).state, 'declined');
+  assert.equal((await device.runStep(refused, step('device.notify', { with: { text: 'x' } }), load, upload)).state, 'declined');
   const shell = [];
   const native = (state, shown = true) => ({ state: () => state, request: () => shell.push('asked'), show: (t, b) => { shell.push([t, b]); return shown; } });
-  assert.equal((await device.runStep(host({ notifications: undefined, nativeNotify: native('granted') }), step('device.notify', { title: 'T', with: { text: 'B' } }), load)).state, 'ok');
+  assert.equal((await device.runStep(host({ notifications: undefined, nativeNotify: native('granted') }), step('device.notify', { title: 'T', with: { text: 'B' } }), load, upload)).state, 'ok');
   assert.deepEqual(shell, [['T', 'B']]);
   shell.length = 0;
-  const asked = await device.runStep(host({ notifications: undefined, nativeNotify: native('prompt') }), step('device.notify', { with: { text: 'B' } }), load);
+  const asked = await device.runStep(host({ notifications: undefined, nativeNotify: native('prompt') }), step('device.notify', { with: { text: 'B' } }), load, upload);
   assert.equal(asked.state, 'declined', 'the system dialog comes first; the person does it again');
   assert.deepEqual(shell, ['asked']);
-  assert.equal((await device.runStep(host({ notifications: undefined, nativeNotify: native('granted', false) }), step('device.notify', { with: { text: 'B' } }), load)).state, 'declined');
+  assert.equal((await device.runStep(host({ notifications: undefined, nativeNotify: native('granted', false) }), step('device.notify', { with: { text: 'B' } }), load, upload)).state, 'declined');
 });
 
 test('files: a chosen text arrives as text, a chosen recording as audio with its bytes; closing the chooser declines; a picture can come from the chooser', async () => {
   const h = host();
-  const text = await device.runStep(h, step('device.pick_file'), load);
+  const text = await device.runStep(h, step('device.pick_file'), load, upload);
   assert.deepEqual(text, { state: 'ok', parts: [{ kind: 'text', text: 'hello', name: 'note.txt' }] });
-  const audio = await device.runStep(host({ pickFile: async () => new File([new Uint8Array([5, 6])], 'a.m4a', { type: 'audio/mp4' }) }), step('device.pick_file'), load);
-  assert.deepEqual(audio.parts, [{ kind: 'audio', mime: 'audio/mp4', data_base64: btoa(String.fromCharCode(5, 6)), name: 'a.m4a' }]);
-  const other = await device.runStep(host({ pickFile: async () => new File(['x'], 'a.bin', { type: '' }) }), step('device.pick_file'), load);
+  const audio = await device.runStep(host({ pickFile: async () => new File([new Uint8Array([5, 6])], 'a.m4a', { type: 'audio/mp4' }) }), step('device.pick_file'), load, upload);
+  assert.deepEqual(uploads.at(-1), { bytes: [5, 6], type: 'audio/mp4', name: 'a.m4a' });
+  assert.deepEqual(audio.parts, [{ kind: 'audio', mime: 'audio/mp4', blob_hash: 'h'.repeat(60) + '5600', name: 'a.m4a' }]);
+  const other = await device.runStep(host({ pickFile: async () => new File(['x'], 'a.bin', { type: '' }) }), step('device.pick_file'), load, upload);
   assert.equal(other.parts[0].kind, 'file_ref');
-  assert.equal((await device.runStep(host({ pickFile: async () => null }), step('device.pick_file'), load)).state, 'declined');
-  const picture = await device.runStep(h, step('device.capture_image'), load);
-  assert.deepEqual(picture.parts, [{ kind: 'image', mime: 'image/jpeg', data_base64: btoa(String.fromCharCode(9, 9)), name: '' }]);
+  assert.equal((await device.runStep(host({ pickFile: async () => null }), step('device.pick_file'), load, upload)).state, 'declined');
+  const picture = await device.runStep(h, step('device.capture_image'), load, upload);
+  assert.deepEqual(uploads.at(-1), { bytes: [9, 9], type: 'image/jpeg', name: '' });
+  assert.deepEqual(picture.parts, [{ kind: 'image', mime: 'image/jpeg', blob_hash: 'h'.repeat(60) + '9900', name: '' }]);
   const fallback = host({ takePicture: undefined, mediaDevices: undefined });
-  await device.runStep(fallback, step('device.capture_image'), load);
+  await device.runStep(fallback, step('device.capture_image'), load, upload);
   assert.deepEqual(fallback.opened.at(-1), { accept: 'image/*', capture: 'environment' }, 'no camera API: the chooser with capture opens the camera app');
 });
 
@@ -232,21 +253,21 @@ test('playback takes the recording the step names (an argument or the audio that
   const h = host();
   const asked = [];
   const track = async hash => { asked.push(hash); return load(hash); };
-  assert.equal((await device.runStep(h, step('device.play_audio', { with: { audio: 'a'.repeat(64) } }), track)).state, 'ok');
-  assert.equal((await device.runStep(h, step('device.play_audio', { inputs: [{ kind: 'audio', blob_hash: 'b'.repeat(64) }] }), track)).state, 'ok');
+  assert.equal((await device.runStep(h, step('device.play_audio', { with: { audio: 'a'.repeat(64) } }), track, upload)).state, 'ok');
+  assert.equal((await device.runStep(h, step('device.play_audio', { inputs: [{ kind: 'audio', blob_hash: 'b'.repeat(64) }] }), track, upload)).state, 'ok');
   assert.deepEqual(asked, ['a'.repeat(64), 'b'.repeat(64)]);
   assert.deepEqual(h.opened.at(-1), { played: 7, type: 'audio/mp4' });
-  assert.equal((await device.runStep(h, step('device.play_audio'), track)).state, 'failed', 'nothing named to play');
+  assert.equal((await device.runStep(h, step('device.play_audio'), track, upload)).state, 'failed', 'nothing named to play');
 });
 
 test('asking for a permission answers with its state; an action this client has no executor for is unavailable', async () => {
   const h = host();
-  assert.deepEqual((await device.runStep(h, step('device.request_permission', { with: { permission: 'microphone' } }), load)).data, { permission: 'microphone', state: 'granted' });
+  assert.deepEqual((await device.runStep(h, step('device.request_permission', { with: { permission: 'microphone' } }), load, upload)).data, { permission: 'microphone', state: 'granted' });
   assert.deepEqual(h.opened[1].stopped, [true], 'the stream opened for the question is closed at once');
   const refuse = host({ mediaDevices: { getUserMedia: async () => { const e = new Error('no'); e.name = 'NotAllowedError'; throw e; } } });
-  assert.deepEqual((await device.runStep(refuse, step('device.request_permission', { with: { permission: 'camera' } }), load)).data, { permission: 'camera', state: 'denied' });
-  assert.equal((await device.runStep(h, step('device.request_permission', { with: { permission: 'notifications' } }), load)).data.state, 'granted');
-  assert.equal((await device.runStep(h, step('device.capture_video'), load)).state, 'unavailable');
+  assert.deepEqual((await device.runStep(refuse, step('device.request_permission', { with: { permission: 'camera' } }), load, upload)).data, { permission: 'camera', state: 'denied' });
+  assert.equal((await device.runStep(h, step('device.request_permission', { with: { permission: 'notifications' } }), load, upload)).data.state, 'granted');
+  assert.equal((await device.runStep(h, step('device.capture_video'), load, upload)).state, 'unavailable');
   assert.equal(device.stepKind(step('device.capture_video')), 'unsupported');
 });
 
@@ -274,7 +295,7 @@ test('a run paused on a device step is a question of kind client, with the step;
 });
 
 test('the block shows what the kernel asks, the permission hint, a start control and the ways out - in the language of the catalog', () => {
-  const html = renderToStaticMarkup(createElement(block.default, { feature, step: spec, runId: 'ar_9', receiptId: 'arr_9', host: host(), load, clientRef: 'web:web-1',
+  const html = renderToStaticMarkup(createElement(block.default, { feature, step: spec, runId: 'ar_9', receiptId: 'arr_9', host: host(), load, upload, clientRef: 'web:web-1',
     onAnswer: async () => {}, onCancel: () => {}, testId: 'chat-client-step' }));
   assert.match(html, /data-testid="chat-client-step"/);
   assert.match(html, /data-run-id="ar_9"/);
@@ -297,7 +318,7 @@ test('the block shows what the kernel asks, the permission hint, a start control
   // without a catalog the machine names are shown, not nothing
   assert.equal(view.clientStepTexts(null, { action: 'device.pick_file', title: 'Pick a file' }).start, 'Pick a file');
   // an action this client does not know cannot be started, only declined
-  const unknown = renderToStaticMarkup(createElement(block.default, { feature, step: { action: 'device.capture_video' }, runId: 'ar_9', receiptId: 'arr_9', host: host(), load, clientRef: 'x',
+  const unknown = renderToStaticMarkup(createElement(block.default, { feature, step: { action: 'device.capture_video' }, runId: 'ar_9', receiptId: 'arr_9', host: host(), load, upload, clientRef: 'x',
     onAnswer: async () => {}, onCancel: () => {}, testId: 'u' }));
   assert.match(unknown, /<button[^>]*disabled=""[^>]*data-testid="u-start"/);
 });
@@ -307,8 +328,7 @@ test('the block shows what the kernel asks, the permission hint, a start control
 const calls = [
   ['clientDeclare', { client_id: 'web-1', client: { kind: 'web' }, capabilities: { captures_audio: { permission: 'prompt', via: 'MediaRecorder' } } }, '/api/client/declare', 'client.declare'],
   ['clientCapabilities', { client_id: 'web-1' }, '/api/client/capabilities', 'client.capabilities'],
-  ['clientResult', { run_id: 'ar_1', receipt_id: 'arr_1', state: 'ok', parts: [{ kind: 'audio', mime: 'audio/webm', data_base64: 'AAAA' }], ref: 'web:web-1' }, '/api/actions/client_result', 'client_result'],
-  ['clientBlob', { hash: 'a'.repeat(64) }, '/api/client/blob', 'client.blob'],
+  ['clientResult', { run_id: 'ar_1', receipt_id: 'arr_1', state: 'ok', parts: [{ kind: 'audio', mime: 'audio/webm', blob_hash: 'a'.repeat(64) }], ref: 'web:web-1' }, '/api/actions/client_result', 'client_result'],
 ];
 
 test('over HTTP the client calls are POSTs of their request; over the native bridge they are loom_invoke on the actions port', async () => {
@@ -352,5 +372,103 @@ test('the declaration the Android shell sends has the shape the kernel reads: ca
       assert.equal(typeof c.via, 'string', name);
     }
     assert.deepEqual(request.capabilities.shows_notifications, { permission: 'granted', via: 'native shell' });
+  } finally { delete globalThis.window; }
+});
+
+// ── bytes: uploaded and fetched, never inside the JSON (P14 6) ──────────────────────────────
+
+const HASH = 'c'.repeat(64);
+
+test('over HTTP a recording is a multipart upload of the file with its type, answered with the blob; a blob is fetched as the bytes of a GET', async () => {
+  const original = globalThis.fetch;
+  const seen = [];
+  const bytes = new Uint8Array([0, 1, 2, 253, 254, 255]);
+  globalThis.fetch = async (url, options = {}) => {
+    seen.push({ url, options });
+    if (url === '/api/client/blob/upload') return new Response(JSON.stringify({ hash: HASH, size: 6, mime: 'audio/webm' }));
+    if (url === `/api/client/blob/${HASH}/raw`) return new Response(bytes, { headers: { 'Content-Type': 'audio/webm' } });
+    return new Response(JSON.stringify({ error: { code: 'not_found', message: 'no blob' } }), { status: 404 });
+  };
+  try {
+    const api = new LoomHttpApi();
+    const stored = await api.actions.clientBlobUpload(new Blob([bytes], { type: 'audio/webm' }), { name: 'rec.webm' });
+    assert.deepEqual(stored, { hash: HASH, size: 6, mime: 'audio/webm' });
+    assert.equal(seen[0].options.method, 'POST');
+    const form = seen[0].options.body;
+    assert.ok(form instanceof FormData, 'multipart, not JSON');
+    assert.equal(form.get('mime'), 'audio/webm');
+    const file = form.get('file');
+    assert.equal(file.name, 'rec.webm');
+    assert.equal(file.type, 'audio/webm');
+    assert.deepEqual([...new Uint8Array(await file.arrayBuffer())], [...bytes]);
+    assert.equal(seen[0].options.headers['Content-Type'], undefined, 'the browser sets the boundary');
+    const fetched = await api.actions.clientBlobFetch(HASH);
+    assert.equal(seen[1].url, `/api/client/blob/${HASH}/raw`);
+    assert.equal(seen[1].options.method, undefined, 'a GET');
+    assert.equal(fetched.type, 'audio/webm');
+    assert.deepEqual([...new Uint8Array(await fetched.arrayBuffer())], [...bytes]);
+    await assert.rejects(api.actions.clientBlobFetch('d'.repeat(64)), error => error.status === 404);
+    globalThis.fetch = async () => new Response(JSON.stringify({ error: { code: 'invalid_argument', message: 'multipart field file is required' } }), { status: 400 });
+    await assert.rejects(api.actions.clientBlobUpload(new Blob(['x'])), /multipart field file is required/);
+  } finally { globalThis.fetch = original; }
+});
+
+// The kernel of the native shell, as a double behind the bridge: the actions that build an upload from chunks and read a blob in chunks.
+function bridgeKernel(blobBytes = new Uint8Array(0)) {
+  const log = [];
+  const parts = [];
+  const bridge = { call: (method, json) => {
+    const { action, request } = JSON.parse(json).action ? JSON.parse(json) : { action: '', request: {} };
+    log.push({ action, request });
+    if (action === 'client.blob_begin') return JSON.stringify({ upload_id: 'up_000000000001' });
+    if (action === 'client.blob_append') {
+      if (request.data_base64 === 'FAIL') return JSON.stringify({ error: { code: 'io', message: 'disk full' } });
+      parts.push(Uint8Array.from(atob(request.data_base64), c => c.charCodeAt(0)));
+      return JSON.stringify({ upload_id: request.upload_id, size: parts.reduce((n, p) => n + p.length, 0) });
+    }
+    if (action === 'client.blob_commit') return JSON.stringify(request.abort ? { upload_id: request.upload_id, aborted: true } : { hash: HASH, size: parts.reduce((n, p) => n + p.length, 0), mime: request.mime });
+    if (action === 'client.blob_read') {
+      const length = Math.min(request.length, blobBytes.length - request.offset);
+      const chunk = blobBytes.subarray(request.offset, request.offset + length);
+      return JSON.stringify({ hash: request.hash, size: blobBytes.length, mime: 'audio/mp4', offset: request.offset, length, eof: request.offset + length >= blobBytes.length, data_base64: btoa(Array.from(chunk, c => String.fromCharCode(c)).join('')) });
+    }
+    return JSON.stringify({});
+  } };
+  return { bridge, log, parts };
+}
+
+test('over the native bridge the bytes cross in bounded chunks into an upload the kernel stores by hash, and come back in chunks', async () => {
+  const chunk = 196608;
+  const bytes = new Uint8Array(chunk * 2 + 10).map((_, i) => i % 251);
+  const kernel = bridgeKernel(bytes);
+  globalThis.window = { LoomBridge: kernel.bridge };
+  try {
+    const api = new LoomJniApi();
+    const stored = await api.actions.clientBlobUpload(new Blob([bytes], { type: 'audio/mp4' }), { name: 'a.m4a' });
+    assert.deepEqual(stored, { hash: HASH, size: bytes.length, mime: 'audio/mp4' });
+    assert.deepEqual(kernel.log.map(row => row.action), ['client.blob_begin', 'client.blob_append', 'client.blob_append', 'client.blob_append', 'client.blob_commit']);
+    assert.deepEqual(kernel.parts.map(part => part.length), [chunk, chunk, 10], 'a bounded chunk at a time');
+    assert.deepEqual(kernel.log.at(-1).request, { upload_id: 'up_000000000001', mime: 'audio/mp4' });
+    assert.deepEqual([...new Uint8Array(await new Blob(kernel.parts).arrayBuffer())], [...bytes], 'the kernel got every byte in order');
+    // reading back: the same bytes, chunk by chunk, until the kernel says it is the end
+    kernel.log.length = 0;
+    const fetched = await api.actions.clientBlobFetch(HASH);
+    assert.deepEqual(kernel.log.map(row => [row.action, row.request.offset, row.request.length]),
+      [['client.blob_read', 0, chunk], ['client.blob_read', chunk, chunk], ['client.blob_read', chunk * 2, chunk]]);
+    assert.equal(fetched.type, 'audio/mp4');
+    assert.deepEqual([...new Uint8Array(await fetched.arrayBuffer())], [...bytes]);
+  } finally { delete globalThis.window; }
+});
+
+test('a chunk the kernel refuses ends the upload: it is aborted and the reason reaches the caller', async () => {
+  const kernel = bridgeKernel();
+  const original = kernel.bridge.call;
+  kernel.bridge.call = (method, json) => { const answer = original(method, json); return JSON.parse(json).action === 'client.blob_append' ? JSON.stringify({ error: { code: 'io', message: 'disk full' } }) : answer; };
+  globalThis.window = { LoomBridge: kernel.bridge };
+  try {
+    const api = new LoomJniApi();
+    await assert.rejects(api.actions.clientBlobUpload(new Blob([new Uint8Array(5)], { type: 'audio/mp4' })), /disk full/);
+    assert.deepEqual(kernel.log.map(row => row.action), ['client.blob_begin', 'client.blob_append', 'client.blob_commit']);
+    assert.deepEqual(kernel.log.at(-1).request, { upload_id: 'up_000000000001', abort: true });
   } finally { delete globalThis.window; }
 });

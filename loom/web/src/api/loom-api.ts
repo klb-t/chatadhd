@@ -104,8 +104,11 @@ export interface ClientDeclaration {
   refused: Record<string, string>;
   [key: string]: unknown;
 }
-/** The answer of a client to the step a run is paused on (actions.client_result). Media come as data_base64 (stored in the blob store). */
-export interface ClientResultPart { kind: string; mime?: string; data_base64?: string; blob_hash?: string; text?: string; name?: string }
+/** The answer of a client to the step a run is paused on (actions.client_result). Media name a blob that was uploaded before
+ *  (`clientBlobUpload`); bytes never travel inside this JSON. */
+export interface ClientResultPart { kind: string; mime?: string; blob_hash?: string; text?: string; name?: string }
+/** A blob the kernel keeps for this user. */
+export interface ClientBlob { hash: string; size: number; mime: string }
 export interface ClientResult {
   run_id: string;
   receipt_id: string;
@@ -125,8 +128,11 @@ export interface ActionsApi {
   clientCapabilities?(request: { client_id?: string }): Promise<Record<string, unknown>>;
   /** Answer the client step a run is paused on; the run continues with the next step. */
   clientResult?(result: ClientResult): Promise<ActionRun>;
-  /** A stored blob (a recording to play): {hash, mime, size, data_base64}. */
-  clientBlob?(request: { hash: string }): Promise<{ hash: string; mime: string; size: number; data_base64: string }>;
+  /** Hands bytes to the kernel (a recording, a picture, a file): streamed to disk on the web, in bounded chunks on the native shell; the
+   *  answer names the blob by its hash. */
+  clientBlobUpload?(blob: Blob, options?: { name?: string }): Promise<ClientBlob>;
+  /** The bytes of a stored blob of this user (a recording to play). */
+  clientBlobFetch?(hash: string): Promise<Blob>;
   run(request: Record<string, unknown>): Promise<ActionRun>;
   /** Answer the question a run is paused on; the receipt must be the pending one. */
   confirm(answer: ActionAnswer): Promise<ActionRun>;

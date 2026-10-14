@@ -2583,7 +2583,7 @@
           "POST /api/chat/cancel",
           "POST /api/chat/route",
           "POST /api/chat/usage-preview",
-          "POST /api/client/blob",
+          "POST /api/client/blob/upload",
           "POST /api/client/capabilities",
           "POST /api/client/declare",
           "POST /api/context/select",
@@ -2707,7 +2707,6 @@
           "POST /api/chat",
           "POST /api/chat/cancel",
           "POST /api/chat/route",
-          "POST /api/client/blob",
           "POST /api/client/capabilities",
           "POST /api/client/declare",
           "POST /api/context/build",
@@ -2849,6 +2848,9 @@
             },
             {
               "path": "loom/src/actions/chain.cpp"
+            },
+            {
+              "path": "loom/src/actions/client_blobs.cpp"
             },
             {
               "path": "loom/src/actions/client_devices.cpp"

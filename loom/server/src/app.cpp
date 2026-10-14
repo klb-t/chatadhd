@@ -217,6 +217,7 @@ std::string ext_for_export_format(const std::string& fmt) {
 struct Upload {
   bool has_file = false;
   std::string filename;
+  std::string content_type;                   // of the file part, as the sender declared it
   fs::path path;
   std::map<std::string, std::string> fields;  // small non-file multipart fields
   std::string error;
@@ -261,6 +262,7 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
         if (in_file) {
           up.has_file = true;
           up.filename = part.filename;
+          up.content_type = part.content_type;
           up.path = dir / (next_request_id() + safe_extension(part.filename));
           out.open(up.path, std::ios::binary);
           if (!out) { failed = true; up.error = "cannot write the upload"; return false; }
@@ -413,7 +415,7 @@ void App::register_middleware() {
     unsigned long long len = 0;
     const auto parsed = std::from_chars(text.data(), text.data() + text.size(), len);
     if (parsed.ec != std::errc{} || parsed.ptr != text.data() + text.size()) return 411;
-    const bool upload = req.method == "POST" && (req.path == "/api/import" || req.path == "/api/media/transcribe");
+    const bool upload = req.method == "POST" && (req.path == "/api/import" || req.path == "/api/media/transcribe" || req.path == "/api/client/blob/upload");
     const std::size_t limit = upload ? opts_.max_upload_bytes : opts_.max_body_bytes;  // 0 = no limit
     return limit != 0 && len > limit ? 413 : 0;
   };
@@ -752,6 +754,59 @@ void App::route_models_providers() {
     }
     const auto encoded = options.dump();
     send_loom(res, loom_transcribe(ctx, up.path.string().c_str(), encoded.c_str()));
+  });
+  // Client blobs (P14 6): the recording or picture of a device step reaches the kernel as an upload streamed to disk (never base64 in JSON)
+  // and is handed back as a stream of the stored file. The bytes of a blob are named by their hash in the user's own store; the kernel's
+  // client.blob_* actions (client_blobs.h) do the checks, these routes only move bytes.
+  svr_.Post("/api/client/blob/upload", [this](const httplib::Request& req, httplib::Response& res,
+                                              const httplib::ContentReader& reader) {
+    LoomContext* ctx = rctx();
+    Upload up;
+    struct Cleanup {
+      fs::path path;
+      ~Cleanup() { std::error_code ignored; if (!path.empty()) fs::remove(path, ignored); }
+    } cleanup;
+    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), up);
+    cleanup.path = up.path;
+    if (!received) {
+      send_error(res, "invalid_argument", up.error);
+      return;
+    }
+    if (!up.has_file) {
+      send_error(res, "invalid_argument", "multipart field file is required");
+      return;
+    }
+    std::string mime = up.fields.count("mime") ? up.fields["mime"] : up.content_type;
+    if (mime.empty()) mime = "application/octet-stream";
+    const json request = {{"path", up.path.string()}, {"mime", mime}};
+    send_loom(res, loom_invoke(ctx, "actions", "client.blob_put", request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
+  });
+  svr_.Get(R"(/api/client/blob/([0-9a-fA-F]{64})/raw)", [this](const httplib::Request& req, httplib::Response& res) {
+    const json request = {{"hash", req.matches[1].str()}};
+    const std::string raw = own_and_free(loom_invoke(rctx(), "actions", "client.blob_path", request.dump().c_str()));
+    json found = parse_or_empty(raw);
+    if (found.is_object() && found.contains("error")) {
+      res.status = status_for_error_code(found["error"].value("code", std::string("internal")));
+      res.set_content(raw, "application/json");
+      return;
+    }
+    auto file = std::make_shared<std::ifstream>(found.value("path", std::string()), std::ios::binary);
+    if (!*file) {
+      send_error(res, "not_found", "the blob has no readable file", 404);
+      return;
+    }
+    const std::string mime = found.value("mime", std::string());
+    // What a device brought is bytes to play or show, never a page of this origin: whatever its type says, it runs no script here.
+    res.set_header("Content-Security-Policy", "sandbox; default-src 'none'");
+    res.set_content_provider(found.value("size", static_cast<std::size_t>(0)), mime.empty() ? "application/octet-stream" : mime,
+                             [file](std::size_t offset, std::size_t length, httplib::DataSink& sink) {
+                               std::vector<char> buffer((std::min)(length, static_cast<std::size_t>(1) << 16));
+                               file->clear();
+                               file->seekg(static_cast<std::streamoff>(offset));
+                               file->read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+                               const auto got = static_cast<std::size_t>(file->gcount());
+                               return got != 0 && sink.write(buffer.data(), got);
+                             });
   });
   svr_.Get("/api/models", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_get_models(rctx()));

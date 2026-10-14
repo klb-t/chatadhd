@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PresentationFeature } from "../onboarding/presentation.mjs";
 import type { ClientResult } from "../api/loom-api";
-import { DeviceError, resultOf, runStep, startRecording, type BlobLoader, type ClientStepSpec, type DeviceHost, type Recording, type StepOutcome } from "../context/client-device";
+import { DeviceError, resultOf, runStep, startRecording, type BlobLoader, type BlobUploader, type ClientStepSpec, type DeviceHost, type Recording, type StepOutcome } from "../context/client-device";
 import { clientStepTexts } from "../context/client-step";
 
 /** A run paused on a step of this device (P13): what the kernel asks, the control that does it here, and the three ways out - do it
  *  (the answer goes to the kernel and the run continues), decline it on the device, cancel the run. A recording has two acts, start
  *  and stop; every other step is one. The device is only touched by a click of the person: browsers allow it on no other terms. */
-export default function ClientStepBlock({ feature, step, runId, receiptId, host, load, clientRef, onAnswer, onCancel, busy, failure, testId }: {
-  feature: PresentationFeature | null; step: ClientStepSpec; runId: string; receiptId: string; host: DeviceHost; load: BlobLoader; clientRef: string;
+export default function ClientStepBlock({ feature, step, runId, receiptId, host, load, upload, clientRef, onAnswer, onCancel, busy, failure, testId }: {
+  feature: PresentationFeature | null; step: ClientStepSpec; runId: string; receiptId: string; host: DeviceHost; load: BlobLoader; upload: BlobUploader; clientRef: string;
   onAnswer: (answer: ClientResult) => Promise<void>; onCancel: () => void; busy?: boolean; failure?: string | null; testId: string;
 }) {
   const texts = useMemo(() => clientStepTexts(feature, step), [feature, step]);
@@ -56,7 +56,7 @@ export default function ClientStepBlock({ feature, step, runId, receiptId, host,
     if (texts.kind === "record") {
       try {
         setSeconds(0);
-        setRecording(await startRecording(host));
+        setRecording(await startRecording(host, upload));
       } catch (error) {
         const reason = error instanceof DeviceError ? error.message : String(error);
         setProblem(reason);
@@ -65,7 +65,7 @@ export default function ClientStepBlock({ feature, step, runId, receiptId, host,
       return;
     }
     setWorking(true);
-    const outcome = await runStep(host, step, load);
+    const outcome = await runStep(host, step, load, upload);
     setWorking(false);
     if (outcome.state === "ok" || outcome.state === "declined" || outcome.state === "unavailable") await send(outcome);
     else setProblem(outcome.error ? outcome.error.message : outcome.state);

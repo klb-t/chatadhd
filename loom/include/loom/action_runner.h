@@ -67,10 +67,10 @@ class ActionRunner {
   Json bind_params(const Json& entry, Json args) const;
 
   // The clients (client_devices.h): client.declare {client_id?, client?, capabilities} -> the stored declaration;
-  // client.capabilities {client_id?} -> the declaration, or the ids of the clients known; client.blob {hash}.
+  // client.capabilities {client_id?} -> the declaration, or the ids of the clients known. The bytes a client brings or takes are
+  // client.blob_put | blob_path | blob_begin | blob_append | blob_commit | blob_read (client_blobs.h), reached through invoke().
   Result<Json> client_declare(const Json& request);
   Result<Json> client_capabilities(const Json& request);
-  Result<Json> client_blob(const Json& request);
   // The declaration the kernel holds for a client (null when unknown or expired) and what it changes in the catalogue
   // ({action id: patch}, empty for an unknown client): what the router needs to see the catalogue as that client does.
   Json client_declaration(std::string_view client_id);

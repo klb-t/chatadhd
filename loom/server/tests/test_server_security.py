@@ -3,6 +3,7 @@
 caller's own runtime; two users A/B cannot see or change each other's runs, rules, conversations, files;
 request-supplied paths cannot leave the caller's data dir; cross-site cookie requests are refused;
 framing/size limits and throttling hold. Needs the built binary (LOOM_SERVER_BIN) and python `requests`."""
+import hashlib
 import json
 import os
 import socket
@@ -206,11 +207,34 @@ def main() -> int:
         assert call(sa, b, "POST", "/api/client/capabilities", {"client_id": cl}, 200).json()["known"] is True
         assert call(sb, b, "POST", "/api/client/capabilities", {"client_id": cl}, 200).json()["known"] is False
         assert cl not in call(sb, b, "POST", "/api/client/capabilities", {}, 200).text
+        # blobs go by upload and by stream, never as base64 in JSON (P14 6); a hash names a blob of the caller's own store
         bh = done[0]["blob_hash"]
-        assert call(sa, b, "POST", "/api/client/blob", {"hash": bh}, 200).json()["hash"] == bh
-        assert call(sb, b, "POST", "/api/client/blob", {"hash": bh}).status_code == 404
-        assert call(sb, b, "POST", "/api/client/blob", {"hash": "../../etc/passwd"}).status_code == 400
+        raw_a = sa.get(b + f"/api/client/blob/{bh}/raw", timeout=30)
+        assert raw_a.status_code == 200 and hashlib.sha256(raw_a.content).hexdigest() == bh, raw_a.status_code
+        assert sb.get(b + f"/api/client/blob/{bh}/raw", timeout=30).status_code == 404
+        assert sb.get(b + "/api/client/blob/../../etc/passwd/raw", timeout=30).status_code in (400, 404)
+        assert sb.get(b + "/api/client/blob/" + "z" * 64 + "/raw", timeout=30).status_code in (400, 404)
+        assert call(sa, b, "POST", "/api/client/blob", {"hash": bh}).status_code in (404, 405), "the base64 route is gone"
+        payload = bytes(range(256)) * 40  # not text; larger than a JSON body this server would take in the limit test below
+        up = sa.post(b + "/api/client/blob/upload", files={"file": ("rec.webm", payload, "audio/webm")}, timeout=60)
+        assert up.status_code == 200, up.text
+        stored = up.json()
+        assert stored["hash"] == hashlib.sha256(payload).hexdigest() and stored["size"] == len(payload) and stored["mime"] == "audio/webm", stored
+        assert not any((dir_a / "tmp" / "uploads").glob("*")), "the upload file is gone once stored"
+        again = sa.get(b + f"/api/client/blob/{stored['hash']}/raw", timeout=30)
+        assert again.content == payload and again.headers["Content-Type"].startswith("audio/webm"), again.headers
+        assert "sandbox" in again.headers.get("Content-Security-Policy", ""), again.headers
+        part = sa.get(b + f"/api/client/blob/{stored['hash']}/raw", headers={"Range": "bytes=10-19"}, timeout=30)
+        assert part.status_code == 206 and part.content == payload[10:20], (part.status_code, len(part.content))
+        # B cannot see A's upload, and an upload that is not multipart or has no file part is a 400
+        assert sb.get(b + f"/api/client/blob/{stored['hash']}/raw", timeout=30).status_code == 404
+        assert sa.post(b + "/api/client/blob/upload", json={"file": "x"}, timeout=30).status_code == 400
+        assert sa.post(b + "/api/client/blob/upload", data={"mime": "x"}, files={"other": ("o", b"o")}, timeout=30).status_code == 400
+        # the answer of a device names the blob; bytes in it are refused; B cannot answer A's run, nor name A's blob
         assert call(sb, b, "POST", "/api/actions/client_result", {"run_id": rid, "parts": []}).status_code >= 400
+        r = call(sa, b, "POST", "/api/actions/client_result", {"run_id": rid, "receipt_id": "x", "state": "ok",
+                                                               "parts": [{"kind": "audio", "data_base64": "QQ=="}]})
+        assert r.status_code >= 400, r.text
         # an upload that is not multipart, or has no file part, is a 400 and leaves nothing behind
         assert sa.post(b + "/api/import", json={"file": "x"}, timeout=30).status_code == 400
         assert sa.post(b + "/api/import", data={"title": "x"}, files={"other": ("o.txt", b"o")}, timeout=30).status_code == 400
@@ -318,6 +342,12 @@ def main() -> int:
         assert len(big) > 100_000
         r = sa.post(b + "/api/import", files={"file": ("big.md", big, "text/markdown")}, data={"title": "big"}, timeout=120)
         assert r.status_code == 200 and any(e.get("type") == "done" for e in sse_events(r)), r.text[:300]
+        # a device's recording is an upload too (P14 6): streamed to disk, stored by hash, whatever the JSON limit
+        recording = bytes(range(256)) * 400
+        assert len(recording) > 100_000
+        r = sa.post(b + "/api/client/blob/upload", files={"file": ("rec.webm", recording, "audio/webm")}, timeout=60)
+        assert r.status_code == 200 and r.json()["size"] == len(recording), r.text
+        assert sa.get(b + f"/api/client/blob/{r.json()['hash']}/raw", timeout=30).content == recording
     finally:
         srv.stop()
 

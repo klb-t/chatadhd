@@ -9,7 +9,7 @@ import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts,
 import UsagePendingBlock from "./UsagePendingBlock";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
 import ClientStepBlock from "./ClientStepBlock";
-import { CLIENT_STEP_FEATURE, type BlobLoader } from "../context/client-device";
+import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
 import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
@@ -540,10 +540,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   // A recording stored in the kernel, as the page can play it.
   const loadBlob = useCallback<BlobLoader>(async (hash) => {
-    if (!api.actions || !api.actions.clientBlob) throw new Error("this transport has no blob access");
-    const stored = await api.actions.clientBlob({ hash });
-    const bytes = Uint8Array.from(atob(stored.data_base64), (c) => c.charCodeAt(0));
-    return new Blob([bytes], { type: stored.mime });
+    if (!api.actions || !api.actions.clientBlobFetch) throw new Error("this transport has no blob access");
+    return api.actions.clientBlobFetch(hash);
+  }, []);
+  // What a device step brought (a recording, a picture, a file) goes to the kernel as bytes; the answer then names it by its hash.
+  const uploadBlob = useCallback<BlobUploader>(async (blob, name) => {
+    if (!api.actions || !api.actions.clientBlobUpload) throw new Error("this transport cannot hand bytes to the kernel");
+    return api.actions.clientBlobUpload(blob, { name });
   }, []);
 
   // The answer of this device to the step a run is paused on: the run continues in the kernel and the conversation hears the result.
@@ -759,7 +762,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 }
                 if (answer && answer.kind === "client" && answer.clientStep) {
                   return <ClientStepBlock testId="chat-client-step" feature={clientStepCatalog.feature} step={answer.clientStep} runId={answer.runId}
-                    receiptId={answer.receiptId} host={clientHost} load={loadBlob} clientRef={"web:" + clientSession.id} busy={answering === answer.runId}
+                    receiptId={answer.receiptId} host={clientHost} load={loadBlob} upload={uploadBlob} clientRef={"web:" + clientSession.id} busy={answering === answer.runId}
                     failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
                     onAnswer={(result) => answerClient(answer.runId, result)} onCancel={() => void cancelRun(answer.runId)} />;
                 }
