@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "server_accounts",
   "revision": 1,
-  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy).",
+  "description": "loom-server accounts (P1). All values are presets, not rules (owner rule). registration: open = anyone may create an account, invite = only with a code made by 'loom-server user invite', closed = accounts are created by the operator CLI only. Sessions are random tokens stored only as SHA-256. Argon2id parameters come from the named preset of the storage_security pack (crypto.params.argon2id_presets); stored hashes carry their own parameters, so changing the preset never invalidates existing passwords. Overlay: <accounts_root>/profiles/server_accounts.pack. throttle (R43, security reason: stops online password guessing, which Argon2id cost alone only slows): after free_attempts failed logins for one login (per_login) or from one client address (per_ip) further attempts are refused with 429 for base_delay_seconds * 2^(failures - free_attempts), capped at max_delay_seconds; failures are forgotten after reset_seconds without a new one. mode off disables it. The address is the TCP peer unless trust_forwarded_for is true (set it only behind your own reverse proxy). Isolation (R18, security review): confine_paths = every filesystem path a request supplies (catalog/archive/knowledge sources, a repo, a local storage target, a prompt folder) must lie inside the user's own data directory or one of path_roots, so one account cannot read another's data or the accounts database; false lifts it (single-operator installs). block_private_hosts = outbound requests of an account to loopback/private/link-local addresses are refused (stops using the server as a proxy into its own network) except to the hosts in allow_private_hosts (e.g. a local model server). csrf.check_origin = a state-changing request that carries an Origin (or Sec-Fetch-Site: cross-site) naming another site than the one it was sent to is refused, unless that origin is in csrf.allowed_origins. expose_server_logs = /api/logs shows the process-wide log, which mixes all users, so it is off for accounts.",
   "defaults": {
     "registration": "closed",
     "session_lifetime_seconds": 2592000,
@@ -33,7 +33,16 @@
         "base_delay_seconds": 1,
         "max_delay_seconds": 900
       }
-    }
+    },
+    "confine_paths": true,
+    "path_roots": [],
+    "block_private_hosts": true,
+    "allow_private_hosts": [],
+    "csrf": {
+      "check_origin": true,
+      "allowed_origins": []
+    },
+    "expose_server_logs": false
   },
   "value_schema": {
     "type": "object",
@@ -47,7 +56,13 @@
       "accounts_file",
       "users_subdir",
       "cookie",
-      "throttle"
+      "throttle",
+      "confine_paths",
+      "path_roots",
+      "block_private_hosts",
+      "allow_private_hosts",
+      "csrf",
+      "expose_server_logs"
     ],
     "additionalProperties": false,
     "properties": {
@@ -241,6 +256,67 @@
             }
           }
         }
+      },
+      "confine_paths": {
+        "type": "boolean",
+        "description": "Request-supplied filesystem paths must be inside the user's data dir or path_roots.",
+        "x-setting": "/confine_paths",
+        "x-consumer": "server accounts"
+      },
+      "path_roots": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Extra absolute folders every account may read (e.g. a shared library). Empty = only the user's own data dir.",
+        "x-setting": "/path_roots",
+        "x-consumer": "server accounts"
+      },
+      "block_private_hosts": {
+        "type": "boolean",
+        "description": "Refuse outbound requests to loopback/private/link-local addresses.",
+        "x-setting": "/block_private_hosts",
+        "x-consumer": "server accounts"
+      },
+      "allow_private_hosts": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Host names or IP literals exempt from block_private_hosts.",
+        "x-setting": "/allow_private_hosts",
+        "x-consumer": "server accounts"
+      },
+      "csrf": {
+        "type": "object",
+        "required": [
+          "check_origin",
+          "allowed_origins"
+        ],
+        "additionalProperties": false,
+        "x-setting": "/csrf",
+        "x-consumer": "server accounts",
+        "properties": {
+          "check_origin": {
+            "type": "boolean"
+          },
+          "allowed_origins": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Origins such as https://app.example.org that may send cookie-authenticated requests cross-site."
+          }
+        }
+      },
+      "expose_server_logs": {
+        "type": "boolean",
+        "description": "Serve the process-wide /api/logs to signed-in users (it mixes every user's lines).",
+        "x-setting": "/expose_server_logs",
+        "x-consumer": "server accounts"
       }
     }
   }

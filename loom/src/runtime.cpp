@@ -1,5 +1,7 @@
 // Composition root. See runtime.h for the wiring order.
 #include "loom/runtime.h"
+#include "loom/path_policy.h"
+#include "loom/net/host_guard.h"
 #include "loom/storage_backend.h"
 
 #include <atomic>
@@ -57,8 +59,14 @@ class ForwardingTransport final : public net::HttpTransport {
     std::lock_guard lk(mu_);
     return target_;
   }
+  // Outbound guard (accounts mode, R18): refuses requests to private/local addresses.
+  void set_guard(std::vector<std::string> allow_hosts) {
+    guard_ = true;
+    allow_hosts_ = std::move(allow_hosts);
+  }
   Result<net::HttpResponse> send(const net::HttpRequest& req, const net::StreamSink* sink,
                                  const CancelToken* cancel) override {
+    if (guard_) LOOM_TRY(net::check_public_url(req.url, allow_hosts_));
     auto t = get();
     if (!t) return Error(Errc::Unavailable, "no HTTP transport configured");
     return t->send(req, sink, cancel);
@@ -71,6 +79,8 @@ class ForwardingTransport final : public net::HttpTransport {
  private:
   mutable std::mutex mu_;
   std::shared_ptr<net::HttpTransport> target_;
+  bool guard_ = false;
+  std::vector<std::string> allow_hosts_;
 };
 
 std::vector<std::string> event_log_types(const Config& cfg) {
@@ -98,6 +108,7 @@ std::unique_ptr<storage::StorageService> default_storage(PartsContext& c) {
   senv.http = c.http_shared;
   senv.secrets = c.secrets;
   senv.data_dir = c.paths->root;
+  senv.path_policy = c.path_policy;
   auto svc = storage::StorageService::load(senv, c.db);
   if (svc) return std::move(*svc);
   // A broken overlay must not stop the app, nor silently move data: fall back to the shipped default
@@ -228,6 +239,20 @@ Result<RuntimeOptions> RuntimeOptions::from_json(const Json& j) {
       o.start_workers = v.get<bool>();
     } else if (k == "enable_fts" && v.is_boolean()) {
       o.enable_fts = v.get<bool>();
+    } else if (k == "block_private_hosts" && v.is_boolean()) {
+      o.block_private_hosts = v.get<bool>();
+    } else if (k == "allow_hosts" && v.is_array()) {
+      for (const auto& r : v) {
+        if (!r.is_string()) return Error(Errc::InvalidArgument, "allow_hosts must be an array of strings");
+        o.allow_hosts.push_back(r.get<std::string>());
+      }
+    } else if (k == "confine_paths" && v.is_boolean()) {
+      o.confine_paths = v.get<bool>();
+    } else if (k == "path_roots" && v.is_array()) {
+      for (const auto& r : v) {
+        if (!r.is_string()) return Error(Errc::InvalidArgument, "path_roots must be an array of strings");
+        o.path_roots.push_back(r.get<std::string>());
+      }
     } else if (k == "log_level" && v.is_string()) {
       std::string s = v.get<std::string>();
       if (s == "debug") o.log_level = log::Level::Debug;
@@ -245,6 +270,7 @@ Result<RuntimeOptions> RuntimeOptions::from_json(const Json& j) {
 struct Runtime::Impl {
   // Declaration order == construction order == reverse destruction order.
   DataPaths paths;
+  std::shared_ptr<PathPolicy> path_policy = std::make_shared<PathPolicy>();
   std::unique_ptr<Config> config;
   std::unique_ptr<Secrets> secrets;
   std::unique_ptr<Database> db;
@@ -296,6 +322,11 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->paths = DataPaths::for_root(root);
   const DataPaths& p = impl->paths;
   impl->mounts = rom::MountRegistry::standard(p.root);
+  if (opts.confine_paths) {
+    std::vector<fs::path> roots{p.root};
+    for (const auto& r : opts.path_roots) roots.emplace_back(r);
+    impl->path_policy->confine(std::move(roots));
+  }
 
   impl->config = std::make_unique<Config>(p.config);
   impl->secrets = std::make_unique<Secrets>(p.secrets);
@@ -318,6 +349,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   fill_default_parts(parts, opts.http);
   PartsContext ctx;
   ctx.paths = &impl->paths;
+  ctx.path_policy = impl->path_policy;
   ctx.config = impl->config.get();
   ctx.secrets = impl->secrets.get();
   ctx.db = impl->db.get();
@@ -331,7 +363,9 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(impl->analyzer, parts.analyzer(ctx));
   if (!impl->analyzer) return Error(Errc::Internal, "runtime part factory returned null: analyzer");
   ctx.analyzer = impl->analyzer.get();
-  impl->http = std::make_shared<ForwardingTransport>(parts.http());
+  auto forwarding = std::make_shared<ForwardingTransport>(parts.http());
+  if (opts.block_private_hosts) forwarding->set_guard(opts.allow_hosts);
+  impl->http = forwarding;
   ctx.http = impl->http.get();
   ctx.http_shared = impl->http;
 
@@ -481,6 +515,7 @@ void Runtime::shutdown() {
 }
 
 const DataPaths& Runtime::paths() const { return impl_->paths; }
+const PathPolicy& Runtime::path_policy() const { return *impl_->path_policy; }
 const rom::MountRegistry& Runtime::mounts() const { return impl_->mounts; }
 Config& Runtime::config() { return *impl_->config; }
 Secrets& Runtime::secrets() { return *impl_->secrets; }

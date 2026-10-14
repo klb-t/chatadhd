@@ -28,6 +28,7 @@
 
 namespace loom {
 class Database;
+class PathPolicy;
 class Secrets;
 namespace net { class HttpTransport; }
 }  // namespace loom
@@ -67,6 +68,7 @@ struct BackendEnv {
   std::shared_ptr<net::HttpTransport> http;  // nullptr: network kinds report Errc::Unavailable
   const Secrets* secrets = nullptr;          // credentials by reference (cfg "secret_ref")
   std::filesystem::path data_dir;            // expands {dir} in local paths
+  std::shared_ptr<const PathPolicy> path_policy;  // nullptr: unconfined; else a "local" path must satisfy it
 };
 
 using BackendFactory = std::function<Result<std::unique_ptr<StorageBackend>>(

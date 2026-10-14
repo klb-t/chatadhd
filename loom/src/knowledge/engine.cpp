@@ -2,6 +2,7 @@
 // TaskEngine stages (same contract as the archive pipeline: input hashes,
 // cache hits, checkpoints, pause/resume, crash recovery).
 #include "loom/knowledge.h"
+#include "loom/path_policy.h"
 
 #include <algorithm>
 #include <chrono>
@@ -41,7 +42,7 @@ Json str_array(const std::vector<std::string>& v) {
 // Hashing is streaming even for multi-GB exports. Generated output folders
 // carry the same marker understood by the catalogue walker.
 Result<Json> source_snapshot(const KnowledgeConfig& cfg, const std::filesystem::path& active_data,
-                             const Json& filters) {
+                             const Json& filters, const PathPolicy& confine) {
   namespace fs = std::filesystem;
   std::vector<std::string> roots = cfg.sources;
   if (cfg.repo) roots.push_back(*cfg.repo);
@@ -77,6 +78,7 @@ Result<Json> source_snapshot(const KnowledgeConfig& cfg, const std::filesystem::
   for (const auto& root : roots) {
     const auto path = fsutil::resolve_path(root);
     if (path == active_data) return Error(Errc::InvalidArgument, "source cannot be the active data directory");
+    LOOM_TRY(confine.check(path, "source '" + root + "'"));
     std::error_code ec;
     if (!fs::exists(path, ec)) {
       files[path.string()] = "missing";
@@ -659,6 +661,7 @@ Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& requested, const P
   (void)rt_.tasks().recover_interrupted();
   if (!cfg.out_dir.empty()) {
     const auto output = fsutil::resolve_path(cfg.out_dir);
+    LOOM_TRY(rt_.path_policy().check(output, "out_dir"));
     for (const auto& source : cfg.sources) {
       if (fsutil::resolve_path(source) == output) return Error(Errc::InvalidArgument, "output directory cannot replace a source");
     }
@@ -667,7 +670,7 @@ Result<RunResult> KnowledgeEngine::run(const KnowledgeConfig& requested, const P
     }
     LOOM_TRY(fsutil::atomic_write(fsutil::expand_user(cfg.out_dir) / ".loom-archive", "knowledge\n"));
   }
-  LOOM_TRY_ASSIGN(auto inputs, source_snapshot(cfg, rt_.paths().root, policy.at("source_filters")));
+  LOOM_TRY_ASSIGN(auto inputs, source_snapshot(cfg, rt_.paths().root, policy.at("source_filters"), rt_.path_policy()));
   Json fingerprint = cfg.fingerprint();
   stamp_runtime_profile(fingerprint, profile);
   stamp_runtime_profile(fingerprint, materialize_profile);

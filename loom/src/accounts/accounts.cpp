@@ -84,6 +84,22 @@ Result<Settings> load_settings(const std::filesystem::path& root) {
   };
   lim("per_login", s.throttle.per_login);
   lim("per_ip", s.throttle.per_ip);
+  auto strings = [](const Json& j, const char* k) {
+    std::vector<std::string> out;
+    if (j.contains(k) && j[k].is_array())
+      for (const auto& e : j[k])
+        if (e.is_string()) out.push_back(e.get<std::string>());
+    return out;
+  };
+  s.isolation.confine_paths = v.value("confine_paths", true);
+  s.isolation.path_roots = strings(v, "path_roots");
+  s.isolation.block_private_hosts = v.value("block_private_hosts", true);
+  s.isolation.allow_private_hosts = strings(v, "allow_private_hosts");
+  s.isolation.expose_server_logs = v.value("expose_server_logs", false);
+  if (v.contains("csrf") && v["csrf"].is_object()) {
+    s.isolation.csrf_check_origin = v["csrf"].value("check_origin", true);
+    s.isolation.csrf_allowed_origins = strings(v["csrf"], "allowed_origins");
+  }
   // File names must stay inside the accounts root.
   for (const auto& p : {s.accounts_file, s.users_subdir})
     if (p.find('/') != std::string::npos || p.find('\\') != std::string::npos || p == ".." || p == ".")
