@@ -20,7 +20,7 @@ Workflow „Package (Android APK + server)” (`.github/workflows/package.yml`) 
 
 - `chatadhd-server-linux-x64` (zwykłe serwery, Intel/AMD) i `chatadhd-server-linux-arm64` (np. Oracle/Hetzner ARM, Raspberry Pi 64-bit):
   `chatadhd-server-linux-<x64 albo arm64>-<wersja>.tar.gz` + `.sha256` (serwer + web). Wybierz ten, który pasuje do Twojej maszyny (`uname -m`: `x86_64` = x64, `aarch64` = arm64). Wariant arm64 jest dodatkowy: jeśli GitHub nie ma dla niego maszyny, workflow i tak daje x64,
-- `chatadhd-android-apk`: `app-debug.apk` (patrz „Telefon” niżej).
+- `chatadhd-android-apk-release` (podpisany Twoim kluczem, gdy są 4 sekrety `ANDROID_KEYSTORE_*`/`ANDROID_KEY_*`) albo `chatadhd-android-apk-TEST-KEY` (klucz testowy, bez sekretów): patrz „Telefon” niżej.
 
 Jak pobrać: Actions → Package → wybrana uruchomiona pozycja → na dole strony „Artifacts” → kliknij nazwę artefaktu (pobierze się .zip, w środku jest .tar.gz i .sha256); wgraj oba pliki na VM.
 
@@ -90,12 +90,18 @@ Uwaga: ta ścieżka nie została jeszcze zbudowana w testach (patrz raport P2).
 
 1. Actions → „Package (Android APK + server)” → Run workflow (domyślnie tylko `arm64-v8a`, czyli telefony;
    `x86_64` dodaj dla emulatora). Pierwsza budowa trwa długo (kompiluje cały rdzeń C++), kolejne są szybsze (ccache).
-2. Z zakończonego przebiegu pobierz artefakt `chatadhd-android-apk`, rozpakuj na telefonie i otwórz `app-debug.apk`
+2. Z zakończonego przebiegu pobierz artefakt `chatadhd-android-apk-release` (albo `chatadhd-android-apk-TEST-KEY`,
+   gdy sekretów podpisu nie ma), rozpakuj na telefonie i otwórz `.apk`
    (Android zapyta o zgodę na instalację z tego źródła).
-3. APK jest podpisany kluczem *debug*. Workflow przypina ten klucz (sekret `ANDROID_DEBUG_KEYSTORE_B64`, a bez
-   niego pamięć podręczna Actions), żeby kolejne wersje instalowały się **na** poprzednią. Gdy klucz się zmieni
-   (adnotacja „New APK signing key” w przebiegu), Android odmówi aktualizacji, a odinstalowanie usuwa prywatne
-   dane aplikacji. Wtedy najpierw przenieś dane (niżej). Podpis wydania (release) czeka na Twój keystore jako sekret.
+3. Klucz podpisu. Gdy w repozytorium są wszystkie cztery sekrety `ANDROID_KEYSTORE_BASE64`,
+   `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`, APK jest podpisany Twoim kluczem
+   wydania (artefakt `...-release`; w podsumowaniu przebiegu jest skrót SHA-256 certyfikatu). Gdy nie ma żadnego,
+   zostaje klucz *debug* (artefakt `...-TEST-KEY`); workflow przypina go (sekret `ANDROID_DEBUG_KEYSTORE_B64`, a bez
+   niego pamięć podręczna Actions), żeby kolejne wersje instalowały się **na** poprzednią. Gdy jest tylko część
+   sekretów, przebieg kończy się błędem. Jak wygenerować klucz i gdzie wkleić sekrety: `docs/PIERWSZE_KROKI.md`, krok 4.
+   Zmiana klucza (test -> release albo adnotacja „New APK signing key”) oznacza, że Android odmówi aktualizacji,
+   a odinstalowanie usuwa prywatne dane aplikacji. Wtedy najpierw przenieś dane (niżej). Zgubiony klucz wydania =
+   brak możliwości aktualizacji tej samej aplikacji.
 
 ### Gdzie aplikacja trzyma dane (ustawienie, nic bez Twojej zgody)
 

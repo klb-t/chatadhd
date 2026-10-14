@@ -346,8 +346,13 @@ from the APK, and prints `apksigner` certificate digests.
   therefore pins the key: from the secret `ANDROID_DEBUG_KEYSTORE_B64`
   (`base64 -w0 ~/.android/debug.keystore`) if set, else from the Actions
   cache (evicted after 7 days without use; a warning annotation says when a
-  new key was generated). **Release signing is still open**: it needs the
-  owner's keystore as a secret and a `signingConfigs.release` block.
+  new key was generated). **Release signing** is done in the workflow, not in
+  Gradle: with all four secrets `ANDROID_KEYSTORE_BASE64`,
+  `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` it
+  runs `assembleRelease`, then zipalign + apksigner (keystore in `RUNNER_TEMP`,
+  passwords via env, deleted at the end) and uploads
+  `chatadhd-android-apk-release`; with none it builds the debug APK as
+  `chatadhd-android-apk-TEST-KEY`; some but not all fails the run.
 * `versionCode` = run number, `versionName` = `ci-<run>-<sha7>`.
 * Install: download the artifact on the phone, unzip, open the `.apk`.
 
