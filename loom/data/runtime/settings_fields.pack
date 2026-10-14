@@ -383,6 +383,14 @@
         "description": "Overrides of the usage ledger's compaction preset (runtime profile usage_compaction): mode off|manual|auto, older_than_days, statuses, fold_samples_beyond_window, reclaim_space, auto_interval_hours. Housekeeping of old completed operations, never a spending limit; pending, confirmed and denied operations are not folded."
       },
       {
+        "key": "cleanup",
+        "scope": "config",
+        "group": "storage",
+        "type": "object",
+        "has_default": false,
+        "description": "Housekeeping when the runtime starts (loom/cleanup.h); every value is a preset, none limits use. upload_part_max_age_hours (preset 24, 0 = keep forever): abandoned <data>/tmp/uploads/up_*.part files older than this are removed. orphan_blob_max_age_days (preset 0 = off): blobs older than this that no node, link, run, source, artifact or other database row and no top-level JSON file names by hash become candidates. orphan_blob_dry_run (preset true): candidates are only logged and reported; false deletes them. A blob that is named anywhere is never removed."
+      },
+      {
         "key": "api_key",
         "scope": "secret",
         "group": "credentials",
