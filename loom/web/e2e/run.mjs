@@ -173,7 +173,13 @@ async function main() {
       await page.fill('[data-testid="secret-api_key"]', "sk-e2e-mock-key");
       await page.click('[data-testid="secret-api_key-save"]');
       await page.waitForSelector('[data-testid="secret-api_key"]', { state: "attached" });
-      const cfg = await fetch(`${serverBase}/api/config`).then((r) => r.json());
+      // The fields save on blur without awaiting; poll until the PATCH has landed (still fails if it never does).
+      let cfg = {};
+      for (const deadline = Date.now() + 15000; Date.now() < deadline;) {
+        cfg = await fetch(`${serverBase}/api/config`).then((r) => r.json());
+        if (cfg.default_model === "mock/e2e-model") break;
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
       assert(cfg.default_model === "mock/e2e-model", `default_model persisted, got ${cfg.default_model}`);
       const hasKey = await fetch(`${serverBase}/api/secrets/api_key/has`).then((r) => r.json());
       assert(hasKey.has === true, "api_key secret set");
