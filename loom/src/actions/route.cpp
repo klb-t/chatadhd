@@ -53,6 +53,7 @@ struct Data {
   std::filesystem::path root;
   Json results = Json::object();  // runtime profile action_results (link names, ...)
   std::string client_id;          // the client that asks (client_devices.h): the device actions it declared are runnable in what it is shown
+  Json estimate_reasons = Json::object();  // profile action_run, estimate.reasons: why money is unknown, by code, per language
 };
 
 Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()) {
@@ -68,7 +69,11 @@ Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()
       for (const auto& f : *list) keys.insert(json::get_string(f, "key"));
   Json results = Json::object();
   if (auto p = RuntimeProfile::load("action_results", root)) results = p->values();
-  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results), client_id};
+  Json reasons = Json::object();
+  if (auto p = RuntimeProfile::load("action_run", root))
+    if (const Json* est = json::find(p->values(), "estimate"))
+      if (const Json* r = json::find(*est, "reasons"); r && r->is_object()) reasons = *r;
+  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results), client_id, std::move(reasons)};
 }
 
 ElementSources sources_of(Runtime& rt) { return ElementSources{&rt.db(), &rt.blobs(), rt.paths().root}; }
@@ -184,6 +189,19 @@ std::string localized(const Json& v, const std::string& lang) {
       if (const Json* s = json::find(v, k); s && s->is_string()) return s->get<std::string>();
   }
   return std::string();
+}
+
+// Why the money of an estimate is unknown, in the language of the proposal: the estimate returns a code (and parameters), the texts per
+// language are data (action_run: estimate.reasons). A code the data does not know keeps the estimate's own (English) words.
+void localize_money_reason(const Data& d, Json& money, const std::string& lang) {
+  if (!money.is_object()) return;
+  const std::string code = json::get_string(money, "reason_code");
+  const Json* texts = code.empty() ? nullptr : json::find(d.estimate_reasons, code);
+  if (!texts) return;
+  std::string text = localized(*texts, lang);
+  if (text.empty()) return;
+  if (auto rendered = render_profile_template(text, money.value("reason_params", Json::object()))) text = *rendered;
+  money["reason"] = text;
 }
 
 // ── candidates ──────────────────────────────────────────────────────
@@ -1227,7 +1245,8 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
     const Json estimate = cmd.value("estimate", Json(nullptr));
     // Money is a range where the model registry knows the price, else unknown with the reason: never a zero.
     Json money = estimate.is_object() ? estimate.value("money", Json(nullptr)) : Json(nullptr);
-    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}};
+    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}, {"reason_code", "no_estimate"}};
+    localize_money_reason(d, money, lang);
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
                      {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
                      {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
@@ -1241,7 +1260,6 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
   if (cmd.contains("client_steps") && !cmd["client_steps"].empty()) p["client_steps"] = cmd["client_steps"];
   p["runnable"] = cmd.value("runnable", false) && cmd.value("feasible", false);
   if (cmd.contains("candidates")) p["alternatives"] = cmd["candidates"];
-  (void)d;
   return p;
 }
 

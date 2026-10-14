@@ -732,8 +732,48 @@ Result<Json> ActionRunner::preview(const Json& request) {
   services.config = &rt_.config();
   services.settings = loaded.settings;
   services.catalogue = loaded.engine.catalogue();
-  preview["estimate"] = estimate_plan(services, preview.at("plan"), r.args, chars);
+  Json estimate = estimate_plan(services, preview.at("plan"), r.args, chars);
+  // A price the registry cannot give because it is empty (a fresh data directory): fetch the list once, then estimate again.
+  bool empty_registry = false;
+  for (const auto& call : estimate.value("calls", Json::array()))
+    if (json::get_string(call.value("price", Json::object()), "why_code") == "registry_empty") empty_registry = true;
+  if (empty_registry) {
+    services.registry_failure = fill_registry_for_estimate(loaded.settings);
+    estimate = estimate_plan(services, preview.at("plan"), r.args, chars);
+  }
+  preview["estimate"] = std::move(estimate);
   return preview;
+}
+
+std::string ActionRunner::fill_registry_for_estimate(const Json& run_settings) {
+  const Json cfg = run_settings.value("estimate", Json::object()).value("registry_refresh", Json::object());
+  const Json* presets = json::find(cfg, "presets");
+  if (!presets || !presets->is_object()) return std::string();
+  // The user's choice (a preset name), else the installation's; a name that is not a preset means the one the data names for it.
+  std::string chosen = json::get_string(cfg, "active", "on_demand");
+  const Json set = rt_.config().get(json::get_string(cfg, "setting", "model_registry_autorefresh"));
+  if (set.is_string() && !set.get<std::string>().empty()) chosen = set.get<std::string>();
+  const Json* preset = json::find(*presets, chosen);
+  if (!preset) preset = json::find(*presets, json::get_string(cfg, "unknown", "on_demand"));
+  if (!preset || !json::get_bool(*preset, "fetch", false)) return std::string();
+  const Json retry = cfg.value("retry_after_seconds", Json(nullptr));
+  {
+    std::lock_guard lk(mu_);
+    if (registry_tried_) {
+      // Tried before and the registry is still empty: again only after the retry window (null: every time).
+      const double waited = std::chrono::duration<double>(std::chrono::steady_clock::now() - registry_tried_at_).count();
+      if (retry.is_number() && waited < retry.get<double>()) return registry_failure_;
+    }
+    registry_tried_ = true;  // set before the call so a second estimate at the same time does not fetch again
+    registry_tried_at_ = std::chrono::steady_clock::now();
+    registry_failure_.clear();
+  }
+  std::string failure;
+  if (auto st = rt_.models().update_from_api(); !st) failure = st.error().message;
+  else if (rt_.models().size() == 0) failure = "the provider's list has no models";
+  std::lock_guard lk(mu_);
+  registry_failure_ = failure;
+  return failure;
 }
 
 // The writes of rules and of the user's own actions: raw (a step of a run has passed the rules already) or gated (a call from

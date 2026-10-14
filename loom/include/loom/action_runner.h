@@ -8,6 +8,7 @@
 // running runs have a cancel token so another thread (or request) can stop them.
 #pragma once
 
+#include <chrono>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -86,6 +87,10 @@ class ActionRunner {
   Result<RunRequest> prepare(const Loaded& loaded, const Json& request) const;
   Interpreter make_interpreter(const Loaded& loaded) const;
   void install_executors(ExecutorTable& table);
+  // The model registry is empty on a fresh data directory, so no price is known. When an estimate needs one, the provider's public model
+  // list is fetched once (setting model_registry_autorefresh, profile action_run: estimate.registry_refresh). Returns why the registry is
+  // still empty after the attempt (empty: it was not needed, not allowed, or it worked).
+  std::string fill_registry_for_estimate(const Json& run_settings);
 
   Runtime& rt_;
   std::unique_ptr<RunStore> store_;
@@ -93,6 +98,9 @@ class ActionRunner {
   ClientRegistry clients_;
   std::mutex mu_;
   std::map<std::string, CancelToken, std::less<>> live_;  // runs executing right now
+  bool registry_tried_ = false;                           // the automatic fetch of the model list (guarded by mu_)
+  std::chrono::steady_clock::time_point registry_tried_at_;
+  std::string registry_failure_;
 };
 
 }  // namespace loom::actions

@@ -9,6 +9,7 @@
 
 #include "loom/config.h"
 #include "loom/providers.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/utf8.h"
 
 namespace loom::actions {
@@ -96,6 +97,16 @@ std::string model_of(const Json& with, const Json& args, const std::string& fall
   return fallback;
 }
 
+// Why something is unknown, by code: the English text from the profile (action_run, estimate.reasons), parameters filled in. The codes
+// travel with the estimate; the chat shows the text in the language of the proposal.
+std::string reason_text(const Json& reasons, const std::string& code, const Json& params = Json::object()) {
+  const Json* r = json::find(reasons, code);
+  const Json* en = r ? json::find(*r, "en") : nullptr;
+  const std::string text = en && en->is_string() ? en->get<std::string>() : code;
+  auto rendered = render_profile_template(text, params);
+  return rendered ? *rendered : text;
+}
+
 bool wants_text_only(const Json& with) {
   const Json* wants = json::find(with, "wants");
   if (!wants || !wants->is_array()) return true;
@@ -127,6 +138,8 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
   const double floor_tokens = json::get_number(est, "output_floor_tokens", 32);
   const Json unknown_ratio = est.value("unknown_ratio", Json{{"low", 0.1}, {"high", 1.0}});
   const Json ratios = est.value("output_ratio", Json::object());
+  const Json reasons = est.value("reasons", Json::object());
+  auto why = [&](const std::string& code, const Json& params = Json::object()) { return reason_text(reasons, code, params); };
   const std::string default_model = [&] {
     const std::string key = json::get_string(s.settings.value("use_model", Json::object()), "model_setting", "default_model");
     if (!s.config) return std::string();
@@ -145,7 +158,8 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
   Band usd;
   bool money_known = true;
   std::set<std::string> unpriced;
-  std::string reason;
+  std::string reason_code;  // why the money is unknown (the last step that could not be priced)
+  Json reason_params = Json::object();
   std::int64_t model_calls = 0;
   Band previous_out{-1, -1};  // output of the previous model step, in tokens (-1: none yet)
 
@@ -156,7 +170,7 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
     if (json::get_string(step, "action") != "use_model") continue;
     const Json with = step.value("with", Json::object());
     if (skipped_before_run(step.value("when", Json(nullptr)), args)) {
-      calls.push_back(Json{{"step", step.value("id", "")}, {"action", "use_model"}, {"skipped", true}, {"why", "its condition is not met by the arguments"}});
+      calls.push_back(Json{{"step", step.value("id", "")}, {"action", "use_model"}, {"skipped", true}, {"why", why("condition_not_met")}, {"why_code", "condition_not_met"}});
       continue;
     }
     // The input of the step: the content of the element, or the output of an earlier model step.
@@ -186,10 +200,11 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
       if (const std::string family = json::get_string(merged_with, "media"); !family.empty()) {
         // A recognition call (transcribe, ocr) is priced by its provider by the second or the page; the model registry lists no such price.
         // Unknown stays unknown: the size of the recording is no count of tokens.
-        reason = "recognition is priced by the provider by duration or by page, which the model registry does not list";
+        reason_code = "recognition_priced_by_provider";
+        reason_params = Json::object();
         Json call{{"step", step.value("id", "")}, {"action", "use_model"}, {"model", nullptr}, {"kind", "media"}, {"media", family}};
         call["tokens"] = Json{{"input", nullptr}, {"output", nullptr}};
-        call["price"] = Json{{"known", false}, {"why", reason}};
+        call["price"] = Json{{"known", false}, {"why", why(reason_code)}, {"why_code", reason_code}};
         call["usd"] = nullptr;
         money_known = false;
         calls.push_back(std::move(call));
@@ -205,10 +220,11 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
         tokens_in.low += in.low;
         tokens_in.high += in.high;
         call["tokens"] = Json{{"input", band_json(in)}, {"output", nullptr}};
-        call["price"] = Json{{"known", false}, {"why", "media output is not priced per token"}};
+        call["price"] = Json{{"known", false}, {"why", why("media_output_not_per_token")}, {"why_code", "media_output_not_per_token"}};
         call["usd"] = nullptr;
         money_known = false;
-        reason = "the output is not text and its price is not listed per token";
+        reason_code = "output_not_text";
+        reason_params = Json::object();
         if (!model.empty()) unpriced.insert(model);
         calls.push_back(std::move(call));
         continue;
@@ -252,8 +268,17 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
       } else {
         money_known = false;
         if (!model.empty()) unpriced.insert(model);
-        reason = model.empty() ? "no model is named for this step" : "the registry lists no price for the model";
-        call["price"] = Json{{"known", false}, {"why", reason}};
+        // An empty registry is the fresh data directory (the list is not fetched yet, or the fetch failed): not "this model has no price".
+        const bool empty_registry = s.models && s.models->size() == 0;
+        reason_params = Json::object();
+        if (model.empty()) reason_code = "no_model";
+        else if (!empty_registry) reason_code = "no_price";
+        else if (s.registry_failure.empty()) reason_code = "registry_empty";
+        else {
+          reason_code = "registry_fetch_failed";
+          reason_params = Json{{"why", s.registry_failure}};
+        }
+        call["price"] = Json{{"known", false}, {"why", why(reason_code, reason_params)}, {"why_code", reason_code}};
         call["usd"] = nullptr;
       }
       calls.push_back(std::move(call));
@@ -263,12 +288,14 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
 
   Json money;
   if (model_calls == 0) {
-    money = Json{{"known", true}, {"currency", currency}, {"low", 0.0}, {"high", 0.0}, {"note", "no model is called"}};
+    money = Json{{"known", true}, {"currency", currency}, {"low", 0.0}, {"high", 0.0}, {"note", why("no_model_called")}, {"note_code", "no_model_called"}};
   } else if (money_known) {
     money = Json{{"known", true}, {"currency", currency}, {"low", rounded(usd.low)}, {"high", rounded(usd.high)}};
   } else {
     // Unknown stays unknown: nothing here is a zero.
-    money = Json{{"known", false}, {"currency", currency}, {"reason", reason}, {"models", Json(std::vector<std::string>(unpriced.begin(), unpriced.end()))}};
+    money = Json{{"known", false}, {"currency", currency}, {"reason", why(reason_code, reason_params)}, {"reason_code", reason_code},
+                 {"models", Json(std::vector<std::string>(unpriced.begin(), unpriced.end()))}};
+    if (!reason_params.empty()) money["reason_params"] = reason_params;
   }
   Json out;
   out["schema"] = std::string(kEstimateSchema);
