@@ -189,6 +189,17 @@ def main() -> int:
         assert call(sb, b, "DELETE", f"/api/conversations/{cid}").status_code in (404, 200)
         assert "SECRET-ALICE" in call(sa, b, "GET", f"/api/conversations/{cid}/messages", None, 200).text
         assert not any((dir_a / "tmp" / "uploads").glob("*")) if (dir_a / "tmp" / "uploads").exists() else True
+        # 4b. client device declarations and blobs (P13) live in the caller's runtime only
+        dec = call(sa, b, "POST", "/api/client/declare", {"capabilities": ["plays_audio"]}, 200).json()
+        cl = dec["client_id"]
+        assert call(sa, b, "POST", "/api/client/capabilities", {"client_id": cl}, 200).json()["known"] is True
+        assert call(sb, b, "POST", "/api/client/capabilities", {"client_id": cl}, 200).json()["known"] is False
+        assert cl not in call(sb, b, "POST", "/api/client/capabilities", {}, 200).text
+        bh = done[0]["blob_hash"]
+        assert call(sa, b, "POST", "/api/client/blob", {"hash": bh}, 200).json()["hash"] == bh
+        assert call(sb, b, "POST", "/api/client/blob", {"hash": bh}).status_code == 404
+        assert call(sb, b, "POST", "/api/client/blob", {"hash": "../../etc/passwd"}).status_code == 400
+        assert call(sb, b, "POST", "/api/actions/client_result", {"run_id": rid, "parts": []}).status_code >= 400
         # an upload that is not multipart, or has no file part, is a 400 and leaves nothing behind
         assert sa.post(b + "/api/import", json={"file": "x"}, timeout=30).status_code == 400
         assert sa.post(b + "/api/import", data={"title": "x"}, files={"other": ("o.txt", b"o")}, timeout=30).status_code == 400
