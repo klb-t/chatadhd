@@ -2037,6 +2037,10 @@ void note_removed(Runtime& rt, const Json& origin) {
   }
 }
 
+namespace {
+Result<Json> after_pause(Runtime& rt, Json run);  // below, with the client step's answer
+}
+
 Result<Json> confirm(Runtime& rt, const Json& request) {
   const std::string run_id = json::get_string(request, "run_id");
   if (run_id.empty()) return rt.actions().confirm(request);
@@ -2052,7 +2056,14 @@ Result<Json> confirm(Runtime& rt, const Json& request) {
         json::get_string(it->metadata["action_proposal"], "run_id") == run_id && json::get_string(it->metadata["action_proposal"], "status") == "pending")
       waiting = &*it;
   auto loaded = load_data(rt);
-  if (!waiting || !loaded) return rt.actions().confirm(request);
+  if (!waiting || !loaded) {
+    // No proposal waits for this run, but the run may be paused on a question the conversation showed (the usage guard's x10 hold, a rule's
+    // confirmation): the answer ends the pause and the conversation hears how it went, as it does after the typed "yes".
+    const std::string before = status ? json::get_string(*status, "status") : std::string();
+    auto answered = rt.actions().confirm(request);
+    if (!answered || (before != "awaiting_usage" && before != "awaiting_confirmation")) return answered;
+    return after_pause(rt, std::move(*answered));
+  }
   Data d = std::move(*loaded);
   const bool yes = json::get_bool(request, "approved", false);
   (void)rt.chat().load_conv(conv_id);
