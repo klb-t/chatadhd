@@ -545,7 +545,7 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "1fde358eada31540b3275766580b56c4d3fcf4c3a3e770d3571a51408777a669"
+          "sha256": "9b6a51768089179834e2e97de13c794e5e7408e25f5ca1c1a7f2e6f0d771106e"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
@@ -669,7 +669,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "5dc61e118e8f8595f0a12e0853aa868e56b0c576c4a7b24245fec14fbdb56326"
+          "sha256": "2a7f13b076182fac35c912935010103af788a46cb4a59c36218e29691bd35ab7"
         },
         {
           "path": "loom/data/runtime/usage_compaction.pack",
@@ -688,7 +688,7 @@
           "sha256": "5244ad441199a0a27524b4a121a74921da698aa35044d950cbf8647703b7a7f5"
         }
       ],
-      "output_sha256": "cd0bd8a49d07911a7d9f710c331416344d9fce24402814c3c159eac4cee8f9d1",
+      "output_sha256": "b12d12b87242bb52fa174fa7a102a066072b67238ec6ea063b10222c91553d65",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

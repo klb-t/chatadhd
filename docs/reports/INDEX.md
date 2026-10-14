@@ -845,3 +845,9 @@ Lokalna replika `deploy/first-steps-check.sh` (serwer z kontami, atrapa dostawcy
   nigdy nie jest usuwany; gdy którejś tabeli nie da się przeczytać — nic nie jest usuwane.
 - Otwarte: pliki wysyłek multipart serwera; kopie w zdalnych magazynach. Raport: `docs/reports/S2_R22_2026-10-14.md`.
   Cofnięcie: usunąć klucz `cleanup` albo `upload_part_max_age_hours: 0`.
+
+## S1 — integracja R22 w P16 (2026-10-14)
+
+| Co | Decyzja | Jak cofnąć |
+|---|---|---|
+| Przebiegi przez porty w akcji → węzeł przebiegu | Każdy krok zapisuje w swoim wariancie `port_run_nodes` (`ActionRunScope::recorded_nodes()`, `run.cpp`); `result.cpp` po zapisaniu węzła przebiegu woła `port_graph::reconcile_action_run(db, run_id, te_id)` — czyta tylko te węzły i węzeł przebiegu, bez skanu etykiet ani tabeli (zastępuje pętlę po `port_run:<operation>` z P14). Golden `settings_fields.json` odtworzony z `loom_settings_fields` po scaleniu (doszło pole `cleanup` z R22). | przywrócić pętlę po etykietach `port_run:<operation>` w `result.cpp` i usunąć `port_run_nodes` z `run.cpp` |
