@@ -371,6 +371,8 @@ std::string plan_receipt_of(const Json& plan, const Json& gates, const RunReques
   // A gate may name keys that are numbers of the moment (`volatile`: the spend of the period): the decision is bound, not they.
   Json stable = Json::array();
   for (const auto& g : gates) {
+    // A gate that only tells (a spending limit at the preview, P18) binds nothing: the run that follows does not make it again.
+    if (g.is_object() && json::get_bool(g, "informational", false)) continue;
     Json copy = g;
     if (copy.is_object() && copy.contains("volatile")) {
       for (const auto& k : strings_of(json::find(copy, "volatile"))) copy.erase(k);
@@ -704,7 +706,7 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
   LOOM_TRY_ASSIGN(auto base_traits, element_traits(request.element, request.scope));
   LOOM_TRY_ASSIGN(Json gates, gate_plan(plan, request.element, request.scope, base_traits));
   if (deps_.extra_gates) {
-    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request));
+    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request, true));
     for (auto& g : extra) gates.push_back(std::move(g));
   }
   Json confirm = Json::array(), denied = Json::array(), not_runnable = Json::array();
@@ -830,7 +832,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
 
   LOOM_TRY_ASSIGN(Json gates, gate_plan(plan, request.element, request.scope, base_traits));
   if (deps_.extra_gates) {
-    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request));
+    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request, false));
     for (auto& g : extra) gates.push_back(std::move(g));
   }
 

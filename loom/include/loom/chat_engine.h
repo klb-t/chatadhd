@@ -145,6 +145,9 @@ struct ChatResult {
   // Set when the shared usage guard paused the send (requires_confirmation or
   // an answered rejection). Nothing was sent; no assistant message exists.
   std::optional<Json> usage_pending;
+  // P18: what the usage ledger only told while admitting the send (a spending limit with on_exceed notify): [{code, period, text: {lang: text}}].
+  // Also kept in the assistant message's metadata (usage_notices). Null when there was nothing to tell.
+  Json usage_notices = nullptr;
   Json to_json() const;
 };
 

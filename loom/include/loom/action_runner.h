@@ -104,7 +104,7 @@ class ActionRunner {
   // What a plan would cost (action_estimate.h), for the preview and for the spending limits (action_spend.h).
   Json estimate_of(const Loaded& loaded, const Json& plan, const RunRequest& request);
   // The gates of the user's spending limits for a plan (none without limits, without a model call, or without a passed limit).
-  Result<Json> spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& request);
+  Result<Json> spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& request, bool preview);
 
   Runtime& rt_;
   std::uint64_t semantic_hold_sub_ = 0;    // EventBus::SubscriptionId of the question of the background analysis

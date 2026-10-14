@@ -174,7 +174,9 @@ struct InterpreterDeps {
   // Gates beyond those of the rules, made for a plan once it is known (the spending limits of the user: action_spend.h). Same shape as the
   // gates of the rules (decision allow | confirm | deny, status, rule, effect, reason, initiator, id, item, action ...). Keys named in a
   // gate's `volatile` list (numbers that change from minute to minute) are left out of the plan receipt: only the decision is bound.
-  std::function<Result<Json>(const Json& plan, const RunRequest& request)> extra_gates;
+  // `preview` is true when the plan is only being shown (a proposal), false when a run starts: the spending limits are enforced at the
+  // model call by the usage ledger (P18), so they only tell at the preview.
+  std::function<Result<Json>(const Json& plan, const RunRequest& request, bool preview)> extra_gates;
 };
 
 class Interpreter {

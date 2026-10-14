@@ -2,6 +2,7 @@
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
 #include "loom/action_spend.h"
+#include "loom/usage_spend.h"
 #include "loom/action_emergent.h"
 #include "loom/action_overlay.h"
 #include "loom/action_ops.h"
@@ -70,11 +71,29 @@ Json usage_pending_of(const llm::VariantResult& r) {
   const Json& admitted = r.hold["decision"];
   Json resources = Json::object();
   if (const Json* res = json::find(admitted, "resources")) resources = *res;
-  return Json{{"schema", "loom.action_usage_pending/1"}, {"status", json::get_string(r.hold, "status")},
+  Json pending{{"schema", "loom.action_usage_pending/1"}, {"status", json::get_string(r.hold, "status")},
               {"operation_id", admitted.value("operation_id", Json(nullptr))},
               {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
               {"baseline_key", admitted.value("baseline_key", Json(nullptr))},
               {"projected", resources}, {"decisions", r.hold.value("decisions", Json(nullptr))}, {"sent", false}};
+  // P18: a spending limit that holds has its own reason code and texts (limits, reason_codes).
+  const Json limit = usage_limit_reasons(admitted);
+  for (auto it = limit.begin(); it != limit.end(); ++it)
+    if (it.key() != "status") pending[it.key()] = it.value();
+  return pending;
+}
+
+// A spending limit with on_exceed deny refuses the model call (the ledger's status `denied`): the step fails with the reason in the language of
+// the run, nothing was sent and there is no receipt to answer. Empty when the hold is not such a refusal.
+std::string limit_refusal(const llm::VariantResult& r, const std::string& lang) {
+  if (json::get_string(r.hold, "status") != "denied") return std::string();
+  const Json reasons = usage_limit_reasons(r.hold.value("decision", Json::object()));
+  const Json limits = reasons.value("limits", Json::array());
+  if (!limits.is_array() || limits.empty()) return std::string();
+  const Json reason = limits[0].value("reason", Json::object());
+  for (const std::string& key : {lang, std::string("en")})
+    if (const Json* t = json::find(reason, key); t && t->is_string() && !t->get<std::string>().empty()) return t->get<std::string>();
+  return "your spending limit does not allow this model call";
 }
 
 // A use_model step with `media: asr | ocr` (transcribe, ocr): the recording or the picture of the element goes to the media providers
@@ -247,6 +266,7 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
       const std::string status = json::get_string(r.hold, "status");
       if (status != "requires_confirmation" && status != "denied" && status != "cancelled")
         return failed(Error(Errc::Paused, "model usage is not admitted: " + status));
+      if (const std::string refusal = limit_refusal(r, c.lang); !refusal.empty()) return failed(Error(Errc::Conflict, refusal));
       out.state = StepOutcome::State::Held;
       out.hold = usage_pending_of(r);
       out.parts.clear();
@@ -498,7 +518,7 @@ Interpreter ActionRunner::make_interpreter(const Loaded& loaded) {
   services.profile = loaded.results;
   deps.on_result = [services](Json& run) { return store_run_results(services, run); };
   // The user's spending limits (setting usage_spend_limits) are gates of the plan, like the rules' confirmations.
-  deps.extra_gates = [this, &loaded](const Json& plan, const RunRequest& request) { return spend_gates(loaded, plan, request); };
+  deps.extra_gates = [this, &loaded](const Json& plan, const RunRequest& request, bool preview) { return spend_gates(loaded, plan, request, preview); };
   return Interpreter(deps);
 }
 
@@ -743,7 +763,9 @@ Json ActionRunner::estimate_of(const Loaded& loaded, const Json& plan, const Run
   return estimate;
 }
 
-Result<Json> ActionRunner::spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& r) {
+Result<Json> ActionRunner::spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& r, bool preview) {
+  // A run that starts is not gated here: the model call is admitted by the usage ledger, which applies the limits to every caller (P18).
+  if (!preview) return Json::array();
   const Json data = loaded.settings.value("spend_limits", Json::object());
   // Nothing is estimated, fetched or read while the user has set no limit (the preset), or when the plan calls no model.
   if (spend::stored(rt_.config(), data).entries.empty()) return Json::array();

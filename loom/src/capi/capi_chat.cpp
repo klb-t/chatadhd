@@ -143,6 +143,10 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
                             {"user_message_id", r->user_message_id}, {"usage_pending", *r->usage_pending}}, 1);
     return result;
   }
+  if (r->usage_notices.is_array() && !r->usage_notices.empty()) {
+    // The usage ledger only told (a spending limit with on_exceed notify): the send went on and the notice is said before the end.
+    emit_chunk(cb, ud, Json{{"type", "usage_notice"}, {"request_id", request_id}, {"conv_id", r->conv_id}, {"notices", r->usage_notices}}, 0);
+  }
   Json done{{"type", "done"},
             {"request_id", request_id},
             {"message_id", r->assistant_message_id},
