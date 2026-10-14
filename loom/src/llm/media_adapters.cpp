@@ -83,7 +83,7 @@ class OpenAiTranscriptions final : public MediaAdapter {
     parts.push_back({"model", "", "", spec.model});
     for (auto it = spec.parameters.begin(); it != spec.parameters.end(); ++it)
       parts.push_back({it.key(), "", "", it.value().is_string() ? it.value().get<std::string>() : json::dump(it.value())});
-    net::MultipartBody body = net::build_multipart(parts);
+    net::MultipartBody body = net::build_multipart(parts, true);  // deterministic: a held call re-sent after confirmation is the same bytes
     LOOM_TRY(apply_auth(route, req));
     req.headers.emplace_back("Content-Type", body.content_type);
     add_defaults(route, req);

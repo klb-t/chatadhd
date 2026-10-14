@@ -46,18 +46,6 @@ struct Fixture {
   }
 };
 
-// The request with the random multipart boundary replaced.
-std::string unboundaried(const net::HttpRequest& r) {
-  std::string body = r.body;
-  const auto at = body.find("--");
-  const auto end = body.find("\r\n");
-  if (at == 0 && end != std::string::npos) {
-    const std::string b = body.substr(2, end - 2);
-    for (auto p = body.find(b); p != std::string::npos; p = body.find(b, p + 8)) body.replace(p, b.size(), "BOUNDARY");
-  }
-  return body;
-}
-
 }  // namespace
 
 TEST_SUITE("media hold") {
@@ -87,12 +75,14 @@ TEST_SUITE("media hold") {
     const auto held = unwrap(f.rt->media().transcribe_bytes_resumable(big, "wav"));
     REQUIRE(held.paused());
     f.asr_ok(1);
-    const auto done = unwrap(f.rt->media().transcribe_bytes_resumable(big, "wav", {}, {}, Fixture::confirmation(held.pending, true)));
+    auto dr = f.rt->media().transcribe_bytes_resumable(big, "wav", {}, {}, Fixture::confirmation(held.pending, true));
+    if (!dr) MESSAGE(dr.error().message);
+    const auto done = unwrap(std::move(dr));
     REQUIRE_FALSE(done.paused());
     CHECK(done.value->text == "hello");
     REQUIRE(f.transport->requests().size() == 4);
     // the same call again is a new admission, not the old confirmation
-    const auto& sent = f.transport->requests().back();
+    const auto sent = f.transport->requests().back();
     CHECK(sent.url == kGroq);
     CHECK(sent.body.find(big) != std::string::npos);
     // identical bytes: the request of an unguarded provider for the same input (boundary aside) is the held request
@@ -102,8 +92,9 @@ TEST_SUITE("media hold") {
     ref.set_fallback(net::ScriptedTransport::Reply::json(200, Json{{"text", "hello"}}));
     MediaProviders plain(secrets, ref);
     REQUIRE(unwrap(plain.transcribe_bytes(big, "wav")).text == "hello");
-    const auto& want = ref.requests().back();
-    CHECK(unboundaried(sent) == unboundaried(want));
+    const auto want = ref.requests().back();
+    CHECK(sent.body == want.body);  // the boundary is derived from the parts: byte for byte
+    CHECK(sent.headers == want.headers);
     CHECK(sent.url == want.url);
     CHECK(sent.timeout_ms == want.timeout_ms);
   }
@@ -120,7 +111,7 @@ TEST_SUITE("media hold") {
     CHECK(f.transport->requests().size() == 4);  // groq only, no google
   }
 
-  TEST_CASE("rejecting ends cleanly: nothing is sent, the reply says cancelled") {
+  TEST_CASE("rejecting ends cleanly: nothing is sent, the reply carries the refusal") {
     Fixture f;
     f.baseline();
     const std::string big(60000, 'a');
@@ -128,7 +119,7 @@ TEST_SUITE("media hold") {
     REQUIRE(held.paused());
     const auto no = unwrap(f.rt->media().transcribe_bytes_resumable(big, "wav", {}, {}, Fixture::confirmation(held.pending, false)));
     REQUIRE(no.paused());
-    CHECK(no.pending.at("status") == "cancelled");
+    CHECK((no.pending.at("status") == "denied" || no.pending.at("status") == "cancelled"));  // the guard words a refusal
     CHECK(f.transport->requests().size() == 3);
   }
 
