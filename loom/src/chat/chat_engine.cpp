@@ -1422,6 +1422,8 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
 
   bus_.emit(events::kMsgCreated,
            Json{{"id", asst_mid}, {"text", full_text}, {"conv_id", conv.id}, {"role", "assistant"}});
+  if (sent.notices.is_array() && !sent.notices.empty())
+    bus_.emit(events::kUsageLimitNotice, Json{{"conv_id", conv.id}, {"message_id", asst_mid}, {"notices", sent.notices}});
 
   {
     std::lock_guard lk(mu_);

@@ -26,6 +26,12 @@
 
 namespace loom {
 
+namespace events {
+// A model call went through while a spending limit with on_exceed notify was passed: {conv_id?, message_id?, notices: [{code, period, text: {lang: text}}]}.
+// The same notices are in the decision of the ledger (and so in its event record), on the answer (chat) and in the stream (`usage_notice`).
+inline constexpr std::string_view kUsageLimitNotice = "usage:limit_notice";
+}  // namespace events
+
 // The window of a period in the timestamps of the ledger ("YYYY-MM-DD HH:MM:SS", UTC): kind `today` (since midnight), `week` (since
 // Monday), `month` (since the 1st). `now` 0 is the present.
 struct UsageSpendWindow {

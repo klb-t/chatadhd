@@ -12,6 +12,7 @@
 #include "loom/chat_engine.h"
 #include "loom/config.h"
 #include "loom/db.h"
+#include "loom/event_bus.h"
 #include "loom/loom.h"
 #include "loom/net/http.h"
 #include "loom/runtime.h"
@@ -251,6 +252,8 @@ TEST_SUITE("spend_everywhere") {
       f.limits(Json::array({limit("month", 1.0, "notify")}));
       spend_usd(f.td.path(), 2.0);
       f.script("went through");
+      std::vector<Json> notice_events;
+      f.rt->bus().on(std::string(events::kUsageLimitNotice), [&](std::string_view, const Json& d) { notice_events.push_back(d); });
       auto told = f.rt->chat().send("hello", f.plain());
       REQUIRE(told);
       CHECK_FALSE(told->usage_pending.has_value());
@@ -265,6 +268,11 @@ TEST_SUITE("spend_everywhere") {
       REQUIRE(stored.has_value());
       CHECK(stored->metadata.at("usage_notices")[0].at("period") == "month");
       CHECK(f.model_calls() == 1);
+      // the bus is told too (ids and the notices), once
+      REQUIRE(notice_events.size() == 1);
+      CHECK(notice_events[0].at("conv_id") == told->conv_id);
+      CHECK(notice_events[0].at("message_id") == told->assistant_message_id);
+      CHECK(notice_events[0].at("notices")[0].at("code") == "spend_limit_notice");
     }
     {
       Fixture f;

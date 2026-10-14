@@ -418,6 +418,8 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
     log::error("loom.semantic_worker", "Batch usage admission error: {}", sent.error ? sent.error->message : std::string());
     return 0;
   }
+  if (sent.notices.is_array() && !sent.notices.empty())  // a spending limit that only tells: the batch goes on, the notice is in the ledger's decision
+    log::warn("loom.semantic_worker", "Batch admitted over a spending limit (on_exceed notify): {}", json::dump(sent.notices));
   if (sent.state == llm::State::Held) {
     const auto status = json::get_string(sent.hold, "status", "unavailable");
     const Json& admitted = sent.hold["decision"];
