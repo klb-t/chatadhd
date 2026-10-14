@@ -1,4 +1,6 @@
-import type { ClientDeclareRequest, ClientResultPart } from "../api/loom-api";
+import type { BlobLoader, CapabilityTable, DeviceHost, PendingCapabilities, PendingOutcome, PendingPart, PendingRecording, PendingRequest, PendingText, StepOutcome, StreamLike } from "./device-host";
+
+export type { BlobLoader, DeviceHost, Recording, StepOutcome, StreamLike, RecorderLike } from "./device-host";
 
 /** Presentation feature holding the texts (`presentation.client_step`). */
 export const CLIENT_STEP_FEATURE = "client_step";
@@ -17,14 +19,6 @@ export interface ClientStepSpec {
   inputs?: ClientStepInput[];
 }
 
-/** What this client did with the step, in the kernel's words (state, the parts it produced, why it could not). */
-export interface StepOutcome {
-  state: "ok" | "failed" | "declined" | "unavailable";
-  parts?: ClientResultPart[];
-  data?: unknown;
-  error?: { message: string };
-}
-
 /** Why a device could not be used: declined (the person or the system said no), unavailable (there is no such device), failed. */
 export class DeviceError extends Error {
   readonly state: "failed" | "declined" | "unavailable";
@@ -32,36 +26,6 @@ export class DeviceError extends Error {
     super(message);
     this.state = state;
   }
-}
-
-/** The browser, reduced to what the devices need. Every member is optional: what is missing is not declared. The page builds it
- *  from the real globals (browser-host.ts); the tests build it from fakes. */
-export interface StreamLike { getTracks(): Array<{ stop(): void }> }
-export interface RecorderLike {
-  mimeType: string;
-  ondataavailable: ((event: { data: Blob }) => void) | null;
-  onstop: (() => void) | null;
-  onerror: ((event: unknown) => void) | null;
-  start(): void;
-  stop(): void;
-}
-export interface DeviceHost {
-  mediaDevices?: { getUserMedia(constraints: { audio?: boolean; video?: boolean }): Promise<StreamLike> };
-  MediaRecorder?: new (stream: StreamLike) => RecorderLike;
-  permissions?: { query(descriptor: { name: string }): Promise<{ state: string }> };
-  notifications?: { permission(): string; request(): Promise<string>; show(title: string, body: string): void };
-  clipboard?: { readText?(): Promise<string>; writeText?(text: string): Promise<void> };
-  /** Plays a recording (resolves when it has played). */
-  play?: (blob: Blob) => Promise<void>;
-  /** Opens the file chooser (an input element); null when the person closed it without a choice. */
-  pickFile?: (accept: string, capture: string) => Promise<File | null>;
-  /** Takes a still picture with the camera; null when the camera is not there. */
-  takePicture?: () => Promise<Blob | null>;
-  /** The page has a document at all (a file chooser can be opened). */
-  hasDocument?: boolean;
-  /** Notifications through the native shell instead of the Notification API (the Android WebView has none): the permission state
-   *  (granted | prompt), asking for it (Android shows its own dialog; the answer comes later), and showing one (false: refused). */
-  nativeNotify?: { state(): string; request(): void; show(title: string, body: string): boolean };
 }
 
 /** Browser permission names per capability (the Permissions API). */
@@ -79,7 +43,7 @@ function state(value: string): string {
   return STATES.indexOf(value) >= 0 ? value : "prompt";
 }
 
-async function permissionState(host: DeviceHost, capability: string, fallback: string): Promise<string> {
+async function permissionState(host: DeviceHost, capability: string, fallback: string): PendingText {
   const name = PERMISSION_OF[capability];
   if (!name || !host.permissions) return fallback;
   try {
@@ -91,8 +55,8 @@ async function permissionState(host: DeviceHost, capability: string, fallback: s
 }
 
 /** The capabilities this browser has right now, with their permission state: feature detection and the Permissions API. */
-export async function detectCapabilities(host: DeviceHost): Promise<{ [capability: string]: { permission: string; via: string } }> {
-  const found: { [capability: string]: { permission: string; via: string } } = {};
+export async function detectCapabilities(host: DeviceHost): PendingCapabilities {
+  const found: CapabilityTable = {};
   if (host.mediaDevices && host.MediaRecorder) {
     found.captures_audio = { permission: await permissionState(host, "captures_audio", "prompt"), via: "MediaRecorder" };
   }
@@ -116,7 +80,7 @@ export async function detectCapabilities(host: DeviceHost): Promise<{ [capabilit
 }
 
 /** The body of client.declare for this browser. */
-export async function declaration(host: DeviceHost, clientId: string, kind: string, label: string): Promise<ClientDeclareRequest> {
+export async function declaration(host: DeviceHost, clientId: string, kind: string, label: string): PendingRequest {
   const capabilities = await detectCapabilities(host);
   return { client_id: clientId, client: { kind, label }, capabilities };
 }
@@ -158,10 +122,10 @@ export function stepText(spec: ClientStepSpec): string {
 /** A binary string of the bytes in slices, so a long recording does not overflow the argument limit of the call. */
 const SLICE = 0x8000;
 
-export async function toBase64(blob: Blob): Promise<string> {
+export async function toBase64(blob: Blob): PendingText {
   const bytes = new Uint8Array(await blob.arrayBuffer());
   let binary = "";
-  for (let at = 0; at < bytes.length; at += SLICE) binary += String.fromCharCode(...bytes.subarray(at, at + SLICE));
+  for (let at = 0; bytes.length > at; at += SLICE) binary += String.fromCharCode(...bytes.subarray(at, at + SLICE));
   return btoa(binary);
 }
 
@@ -174,14 +138,8 @@ function failure(error: unknown): DeviceError {
   return new DeviceError("failed", message);
 }
 
-/** A recording in progress: stop() ends it and answers with the sound; abort() drops it. */
-export interface Recording {
-  stop(): Promise<StepOutcome>;
-  abort(): void;
-}
-
 /** Opens the microphone and starts recording. A refused or missing microphone is a DeviceError (declined / unavailable). */
-export async function startRecording(host: DeviceHost): Promise<Recording> {
+export async function startRecording(host: DeviceHost): PendingRecording {
   if (!host.mediaDevices || !host.MediaRecorder) throw new DeviceError("unavailable", "no microphone API");
   let stream: StreamLike;
   try {
@@ -191,8 +149,8 @@ export async function startRecording(host: DeviceHost): Promise<Recording> {
   }
   const chunks: Blob[] = [];
   const recorder = new host.MediaRecorder(stream);
-  const ended = new Promise<void>((resolve, reject) => {
-    recorder.onstop = () => resolve();
+  const ended = new Promise((resolve, reject) => {
+    recorder.onstop = () => resolve(true);
     recorder.onerror = (event) => reject(failure(event));
   });
   recorder.ondataavailable = (event) => { if (event.data && event.data.size > 0) chunks.push(event.data); };
@@ -234,14 +192,11 @@ function mediaKind(mime: string): string {
   return "file_ref";
 }
 
-async function partOf(blob: Blob, name: string): Promise<ClientResultPart> {
+async function partOf(blob: Blob, name: string): PendingPart {
   const mime = blob.type || "application/octet-stream";
   if (mime.startsWith("text/")) return { kind: "text", text: await blob.text(), name };
   return { kind: mediaKind(mime), mime, data_base64: await toBase64(blob), name };
 }
-
-/** Reads a stored recording for `device.play_audio`: from the argument `audio` (a blob hash) or the audio that flowed in. */
-export interface BlobLoader { (hash: string): Promise<Blob> }
 
 function audioHash(spec: ClientStepSpec): string {
   const named = spec.with ? text(spec.with.audio) : "";
@@ -251,7 +206,7 @@ function audioHash(spec: ClientStepSpec): string {
 }
 
 /** Carries out a step that is a single act (everything but the recording, which has two: start and stop). */
-export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: BlobLoader): Promise<StepOutcome> {
+export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: BlobLoader): PendingOutcome {
   try {
     switch (stepKind(spec)) {
       case "photo": {
@@ -315,7 +270,7 @@ export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: Blob
 }
 
 /** Asks the system for a permission by its browser name; the answer is its state afterwards. */
-export async function askPermission(host: DeviceHost, name: string): Promise<string> {
+export async function askPermission(host: DeviceHost, name: string): PendingText {
   if (name === "microphone" || name === "camera") {
     if (!host.mediaDevices) throw new DeviceError("unavailable", "no media devices");
     try {

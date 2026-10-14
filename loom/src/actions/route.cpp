@@ -2147,8 +2147,11 @@ Result<Json> client_result(Runtime& rt, const Json& request) {
 }
 
 Result<Json> cancel(Runtime& rt, const Json& request) {
+  // Only a run paused on the client's step has a question in the conversation to close; every other cancel is the plain action.
+  auto before = rt.actions().status(Json{{"run_id", json::get_string(request, "run_id")}});
+  const bool on_client = before && json::get_string(*before, "status") == "awaiting_client";
   LOOM_TRY_ASSIGN(Json answer, rt.actions().cancel(request));
-  if (json::get_string(answer, "status") == "cancelling") return answer;  // a running run stops by itself; there is no question to close
+  if (!on_client || json::get_string(answer, "status") == "cancelling") return answer;
   return after_pause(rt, std::move(answer));
 }
 

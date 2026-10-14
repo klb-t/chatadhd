@@ -1,5 +1,6 @@
 import type { ActionsApi, ClientDeclaration } from "../api/loom-api";
-import { declaration, type DeviceHost } from "./client-device";
+import { declaration } from "./client-device";
+import type { DeviceHost, PendingDeclaration } from "./device-host";
 
 /** Where the id of this client is kept so a reload of the tab is the same client for the kernel. */
 const ID_KEY = "loom.client_id";
@@ -37,7 +38,7 @@ export class ClientSession {
   private readonly now: () => number;
   private readonly freshMs: number;
   private declaredAt = 0;
-  private inFlight: Promise<ClientDeclaration | null> | null = null;
+  private inFlight: PendingDeclaration | null = null;
   readonly id: string;
   last: ClientDeclaration | null = null;
 
@@ -52,10 +53,10 @@ export class ClientSession {
   }
 
   /** Declares (again) when the declaration is older than the freshness; returns the id to send with requests, "" without support. */
-  async ensure(force = false): Promise<string> {
+  async ensure(force = false) {
     const actions = this.actions;
     if (!actions || !actions.clientDeclare) return "";
-    if (!force && this.last && this.now() - this.declaredAt < this.freshMs) return this.id;
+    if (!force && this.last && this.freshMs > this.now() - this.declaredAt) return this.id;
     if (!this.inFlight) {
       this.inFlight = (async () => {
         try {
