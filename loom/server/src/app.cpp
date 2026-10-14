@@ -960,8 +960,18 @@ void App::route_graph_context() {
   });
 
   svr_.Get("/api/graph/data", [this](const httplib::Request& req, httplib::Response& res) {
+    // conv_id; R27 additive paging: limit (message nodes; 0 = whole conversation; absent = config
+    // loom_graph_data_limit) and before (message id cursor, from the previous page's next_before).
     std::string conv_id = req.get_param_value("conv_id");
-    send_loom(res, loom_get_graph_data(rctx(), conv_id.empty() ? nullptr : conv_id.c_str()));
+    if (conv_id.empty() || (!req.has_param("limit") && !req.has_param("before"))) {
+      send_loom(res, loom_get_graph_data(rctx(), conv_id.empty() ? nullptr : conv_id.c_str()));
+      return;
+    }
+    json request = json::object();
+    request["conv_id"] = conv_id;
+    if (req.has_param("limit")) request["limit"] = std::atoi(req.get_param_value("limit").c_str());
+    if (req.has_param("before")) request["before"] = req.get_param_value("before");
+    send_loom(res, loom_get_graph_data(rctx(), request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
   svr_.Get("/api/graph/entry", [this](const httplib::Request& req, httplib::Response& res) {

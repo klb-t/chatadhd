@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 // Android smoke, phone side. Drives the installed ChatADHD debug APK on an emulator, no dependencies (Node 22):
+//   * first start = LOCAL full-screen chat (P20): attach CDP, menu -> "connection" (LoomBridge.openConnection) opens the
+//     native connection screen (ConnectionActivity is not exported, so adb cannot start it); after saving, re-attach;
 //   * the native connection screen with adb + UI Automator (`uiautomator dump` gives the widget tree and bounds,
 //     `input tap` / `input text` act on it);
 //   * the web app inside the WebView over the WebView DevTools socket (adb forward -> Chrome DevTools Protocol;
@@ -73,7 +75,7 @@ const tap = n => adb("shell", "input", "tap", String(n.cx), String(n.cy));
 const textOf = n => `${n.text || ""} ${n["content-desc"] || ""}`;
 
 async function connectScreen() {
-  log("native: connection screen (first run opens it by itself)");
+  log("native: connection screen (opened from the local chat menu)");
   const radio = await waitNode("'Server account' radio", n => /RadioButton/.test(n.class) && /Server account/i.test(n.text), 60);
   shot("connection-screen");
   tap(radio);
@@ -111,28 +113,33 @@ async function connectScreen() {
     if (err) throw new Error("connection screen refused the address: " + err.text);
     return nodes.some(n => n.class === "android.webkit.WebView");
   }, 60, 750);
-  log("native: server mode saved, WebView is up");
+  log("native: server mode saved, WebView is up (the activity may have restarted)");
   shot("webview-up");
 }
 
 // ---------- Chrome DevTools Protocol over the WebView socket ----------
 const PORT = 9222;
-async function openPage() {
-  if (!CDP_ONLY) await attachSocket();
+// The app opens in LOCAL mode (full-screen chat, page served from the APK assets); after "Check and save" the same
+// WebView shows the server page. `prefix` is the URL the wanted page starts with. With `reattach` the socket is detected
+// again on every poll: the activity restarts after saving and the socket name carries the pid (it can change).
+const LOCAL_URL = process.env.SMOKE_LOCAL_URL || "https://appassets.androidx.startup/assets/web/index.html";
+async function openPage(prefix = URL_, reattach = false) {
+  if (!CDP_ONLY && !reattach) await attachSocket();
   const base = CDP_ONLY || `http://127.0.0.1:${PORT}`;
-  const target = await until(`a page at ${URL_}`, async () => {
+  const target = await until(`a page at ${prefix}`, async () => {
+    if (!CDP_ONLY && reattach) await attachSocket(3);
     const list = await (await fetch(`${base}/json`)).json();
-    return list.find(t => t.type === "page" && t.url.startsWith(URL_) && t.webSocketDebuggerUrl);
+    return list.find(t => t.type === "page" && t.url.startsWith(prefix) && t.webSocketDebuggerUrl);
   }, 60, 500);
   return connect(target);
 }
-async function attachSocket() {
+async function attachSocket(timeoutS = 60) {
   const sock = await until("the WebView DevTools socket", () => {
     const pid = adb("shell", "pidof", PKG).trim().split(/\s+/)[0];
     const unix = adb("shell", "cat", "/proc/net/unix");
     const m = pid && new RegExp(`@(webview_devtools_remote_${pid})\\b`).exec(unix);
     return m && m[1];
-  }, 60, 500);
+  }, timeoutS, 500);
   adb("forward", `tcp:${PORT}`, `localabstract:${sock}`);
 }
 async function connect(target) {
@@ -211,15 +218,43 @@ async function step(name, fn) {
 
 try {
   if (!CDP_ONLY) adb("shell", "am", "start", "-W", "-n", `${PKG}/.MainActivity`);
-  if (!CDP_ONLY) await step("1 native: choose server account (http://10.0.2.2, plain HTTP for LAN)", connectScreen);
-  await step("2 attach to the WebView", async () => { page = await openPage(); await waitTid("auth-form", 60); shot("login-form"); });
-  await step("3 log in to the account", async () => {
+  if (!CDP_ONLY) {
+    await step("1 attach to the local chat in the WebView", async () => {
+      page = await openPage(LOCAL_URL);
+      await waitTid("shell-menu-toggle", 60);
+      shot("local-chat");
+    });
+    await step("2 menu -> connection (LoomBridge.openConnection)", async () => {
+      await click("shell-menu-toggle");
+      await waitTid("shell-menu", 10);
+      // the entry is listed only when LoomBridge.openConnection exists (layouts.json: when=android_shell)
+      await waitTid("shell-menu-connection", 10);
+      await click("shell-menu-connection");
+      page.close(); page = undefined;  // the native screen takes over; the old page goes away when the app reloads
+    });
+    await step("3 native: choose server account (http://10.0.2.2, plain HTTP for LAN)", connectScreen);
+    await step("4 re-attach to the WebView (server page)", async () => { page = await openPage(URL_, true); await waitTid("auth-form", 60); shot("login-form"); });
+  } else {
+    // desktop check: there is no LoomBridge. If the page shows the shell menu, the toggle must open it; the connection
+    // entry is listed only when LoomBridge exists, so its absence is the expected state here.
+    await step("1 attach (desktop Chromium)", async () => {
+      page = await openPage();
+      await until("auth form or local chat", async () => (await has("auth-form")) || (await has("shell-menu-toggle")), 60);
+      if (await has("shell-menu-toggle")) {
+        await click("shell-menu-toggle");
+        await waitTid("shell-menu", 10);
+        log("desktop: connection menu entry " + ((await has("shell-menu-connection")) ? "present" : "absent (no LoomBridge, expected)"));
+        await click("shell-menu-toggle");
+      }
+    });
+  }
+  await step("5 log in to the account", async () => {
     await setVal("auth-login", LOGIN); await setVal("auth-password", PASS);
     await click("auth-submit");
     await waitTid("chat-view", 60);
     shot("logged-in");
   });
-  await step("4 conversation ready", async () => {
+  await step("6 conversation ready", async () => {
     // a phone is narrow: the conversation list is hidden, a fresh conversation needs the sidebar
     if (!(await until("chat input (soft)", () => has("chat-input"), 8).then(() => true, () => false))) {
       const narrowToggle = await has("toggle-sidebar");
@@ -228,12 +263,12 @@ try {
       await waitTid("chat-input");
     }
   });
-  await step("5 send a message and see the reply", async () => {
+  await step("7 send a message and see the reply", async () => {
     await send("Zespol Acme planuje wydac wersje 2.0 w piatek, jesli testy przejda. Odpowiedz dwoma zdaniami.");
     await until("the assistant reply", () => assistantSays("Odpowiedz testowego dostawcy"), 90, 300);
     shot("reply");
   });
-  await step("6 'streść tę rozmowę' -> proposal -> 'tak' -> summary", async () => {
+  await step("8 'streść tę rozmowę' -> proposal -> 'tak' -> summary", async () => {
     await send("streść tę rozmowę");
     await waitTid("chat-action-proposal", 90);
     const shown = await until("proposal text", () => page.ev(`(${q("chat-action-proposal")}?.innerText||'')`).then(t => /summar|stresz|Streść/i.test(t) && t), 20, 200);
@@ -245,7 +280,7 @@ try {
     if (await has("chat-error")) throw new Error("chat-error is visible: " + await page.ev(`${q("chat-error")}.innerText`));
     shot("summary");
   });
-  await step("7 the provider got the key from the account settings", async () => {
+  await step("9 the provider got the key from the account settings", async () => {
     const calls = readFileSync(path.join(OUT, "provider.jsonl"), "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l));
     if (!calls.some(c => c.authorization === "Bearer " + KEY)) throw new Error(`no provider call with the key (${calls.length} calls)`);
   });

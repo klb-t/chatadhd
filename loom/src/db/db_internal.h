@@ -24,6 +24,8 @@ struct Database::FtsState {
   bool scan_changed = true;  // first use after open: full reconcile
   std::int64_t last_data_version = -1;
   std::int64_t rebuilds = 0;
+  int chunk_rows = 0;  // rows per transaction of a (re)build; 0 = one transaction
+  bool more = false;   // build incomplete: further chunks pending
 };
 
 }  // namespace loom
