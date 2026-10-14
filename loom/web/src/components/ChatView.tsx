@@ -7,8 +7,8 @@ import { conversationViewMessages, messageCan, type ConversationView } from "../
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import UsagePendingBlock from "./UsagePendingBlock";
-import ActionProposalBlock, { ProposalOffer } from "./ActionProposalBlock";
-import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, type OfferView, type PendingAnswer } from "../context/action-proposal";
+import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
@@ -113,6 +113,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [answerFailure, setAnswerFailure] = useState<{ runId: string; reason: string } | null>(null);
   // The offer to send a rejected command's sentence as a message: why it could not be taken.
   const [offerFailure, setOfferFailure] = useState<{ proposalId: string; reason: string } | null>(null);
+  // A definition the user accepted can be taken back from the proposal that wrote it: the one being removed, and why it could not be.
+  const [undoing, setUndoing] = useState<string | null>(null);
+  const [undoFailure, setUndoFailure] = useState<{ id: string; reason: string } | null>(null);
   const [usagePending, setUsagePending] = useState<{ request: ChatRequest; receipt: UsagePendingReceipt; convId: string } | null>(null);
   const [usageNotice, setUsageNotice] = useState<string | null>(null);
   const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
@@ -456,6 +459,22 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setInput(draft);  // what the user was typing is not the sentence being sent
   }, [convId, messages, send, input]);
 
+  const undoWritten = useCallback(async (written: WrittenView) => {
+    if (!api.actions) return;
+    setUndoing(written.id);
+    setUndoFailure(null);
+    try {
+      const run = await api.actions[undoCall(written)](undoRequest(written));
+      if (run.status !== "completed") throw new Error(run.error && run.error.message ? run.error.message : String(run.status));
+      if (convId) await refreshMessages(convId);
+      onMessagesChanged?.();
+    } catch (err) {
+      setUndoFailure({ id: written.id, reason: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setUndoing(null);
+    }
+  }, [convId, refreshMessages, onMessagesChanged]);
+
   const answerAction = useCallback(async (answer: PendingAnswer, approved: boolean) => {
     if (!api.actions) return;
     setAnswering(answer.runId);
@@ -664,11 +683,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 }
                 if (state && proposalCatalog.feature) {
                   const label = safeNotice(proposalCatalog.feature, "status_" + state);
+                  const written = writtenView(m.metadata);
                   const offer = openOffer(m.metadata, m.id);
                   const ended = offerState(m.metadata);
                   const endedLabel = ended ? offerTexts(proposalCatalog.feature).state(ended) : null;
                   return (<>
                     {label && <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span>}
+                    {written && <ProposalWritten testId="chat-action-written" feature={proposalCatalog.feature} written={written} busy={undoing === written.id}
+                      failure={undoFailure && undoFailure.id === written.id ? undoFailure.reason : null} onUndo={() => void undoWritten(written)} />}
                     {offer && <ProposalOffer testId="chat-action-offer" feature={proposalCatalog.feature} offer={offer} busy={Boolean(stream)}
                       failure={offerFailure && offerFailure.proposalId === offer.proposalId ? offerFailure.reason : null} onSend={() => takeOffer(offer)} />}
                     {endedLabel && <span className="pill" data-testid="chat-action-offer-state" data-state={ended ?? ""}>{endedLabel}</span>}

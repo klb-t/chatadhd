@@ -22,9 +22,13 @@ export interface ProposalDefinition { kind?: string; id?: string; overlay?: stri
 /** What a "no" leaves of the user's sentence: it can still go to the model as an ordinary message (setting intent_routing_on_reject).
  *  status: open (waiting for the choice), sent (taken), declined (closed); mode: the preset that made the offer. */
 export interface ProposalOffer { action?: string; status?: string; message_id?: string; mode?: string }
+/** What an accepted definition wrote: the overlay file(s) and the entry itself (user overlay only), kept on the proposal.
+ *  `undone` is set once the definition was taken back. */
+export interface ProposalWritten { kind?: string; id?: string; overlays?: string[]; entry?: unknown; undone?: boolean }
 export interface ActionProposal {
   kind?: string;
   offer?: ProposalOffer | null;
+  written?: ProposalWritten | null;
   params?: ProposalParam[];
   definition?: ProposalDefinition | null;
   replaces?: boolean;
@@ -112,6 +116,34 @@ export function offerState(metadata: Meta | undefined): string | null {
  *  for the transports that require one. */
 export function offerRequest(offer: OfferView, sentence: string, convId: string) {
   return { message: sentence, conv_id: convId, send_as_message: offer.proposalId };
+}
+
+export interface WrittenView { kind: string; id: string; overlays: string[]; entry: string; undone: boolean }
+
+/** What an accepted definition wrote, as the block shows it (the overlay entry as formatted JSON); null for any other message. */
+export function writtenView(metadata: Meta | undefined): WrittenView | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const written = proposal && proposal.written ? proposal.written : null;
+  if (!written || text(written.id) === "") return null;
+  const overlays: string[] = [];
+  if (Array.isArray(written.overlays)) {
+    for (const file of written.overlays) if (typeof file === "string" && file !== "") overlays.push(file);
+  }
+  return {
+    kind: text(written.kind), id: text(written.id), overlays,
+    entry: written.entry === undefined || written.entry === null ? "" : JSON.stringify(written.entry, null, 2),
+    undone: written.undone === true || (proposal !== undefined && proposal.status === "undone"),
+  };
+}
+
+/** Which removal takes a definition back: a group has its own, an action and a repeated chain are both actions. */
+export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" {
+  return view.kind === "define_group" ? "groupsRemove" : "actionsRemove";
+}
+
+/** The body of the removal: the click is the user's explicit yes to exactly this removal (the rules of the scope still apply). */
+export function undoRequest(view: WrittenView) {
+  return { id: view.id, confirmed: true, ref: "web" };
 }
 
 export interface ProducedView { target: string; forms: string[]; content: string; runNode: string }
@@ -290,5 +322,31 @@ export function offerTexts(feature: PresentationFeature | null): OfferTexts {
     hint: say("offer_hint"),
     failed: (reason) => say("offer_failed", { reason }) ?? reason,
     state: (state) => say("offer_" + state),
+  };
+}
+
+export interface WrittenTexts {
+  /** The line that says what was written and where. */
+  written: string | null;
+  /** The label over the entry itself. */
+  entry: string | null;
+  undo: string | null;
+  undone: string | null;
+  failed: (reason: string) => string;
+}
+
+/** The words of the written definition, from the catalog; without one the machine names are shown. */
+export function writtenTexts(feature: PresentationFeature | null, view: WrittenView): WrittenTexts {
+  const say = (id: string, parameters: Row = {}): string | null => {
+    if (!feature) return null;
+    try { return featureMessage(feature, id, parameters); }
+    catch { return null; }
+  };
+  return {
+    written: say("written", { id: view.id, overlay: view.overlays.join(", ") }),
+    entry: say("written_entry"),
+    undo: say("undo"),
+    undone: say("undone"),
+    failed: (reason) => say("undo_failed", { reason }) ?? reason,
   };
 }

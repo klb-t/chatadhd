@@ -66,6 +66,10 @@ struct Outcome {
 // client to send the sentence now - the client does it with a chat request carrying send_as_message.
 Result<Json> confirm(Runtime& rt, const Json& request);
 
+// A definition of the user's own (action, sequence, group) was taken back: the proposal in the conversation that wrote it says so
+// (status "undone", written.undone). `origin` is the removed entry's origin ({conv_id, node, ...}); no conversation, nothing to mark.
+void note_removed(Runtime& rt, const Json& origin);
+
 // The chat window's entry. `request` is the client's request object (its explicit chat features make an
 // input a message); `emit_start(conv_id, user_message_id)` is called once the user's message is stored.
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,

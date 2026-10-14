@@ -279,3 +279,54 @@ test('the offer block is a button in the proposal message; busy disables it; a f
   const bare = renderToStaticMarkup(createElement(block.ProposalOffer, { feature: null, offer, testId: 'o', onSend: () => undefined }));
   assert.ok(bare.includes('m_proposal'));
 });
+
+test('an accepted definition shows what it wrote and can be taken back; the state follows (P12)', () => {
+  const entry = { kind: 'composite', steps: [{ action: 'use_model', with: { prompt: 'Rozpisz tę wiadomość na kroki' } }] };
+  const written = { kind: 'define_action', id: 'rozpisz', overlays: ['profiles/actions.pack', 'profiles/intent_routing.pack'], entry };
+  const metadata = { action_proposal: { ...proposal, status: 'executed', written } };
+  const view = a.writtenView(metadata);
+  assert.deepEqual({ ...view, entry: undefined }, { kind: 'define_action', id: 'rozpisz', overlays: ['profiles/actions.pack', 'profiles/intent_routing.pack'], entry: undefined, undone: false });
+  assert.deepEqual(JSON.parse(view.entry), entry, 'the overlay entry is shown as it was written');
+  assert.equal(a.undoCall(view), 'actionsRemove');
+  assert.equal(a.undoCall({ ...view, kind: 'define_sequence' }), 'actionsRemove', 'a repeated chain is an action too');
+  assert.equal(a.undoCall({ ...view, kind: 'define_group' }), 'groupsRemove');
+  assert.deepEqual(a.undoRequest(view), { id: 'rozpisz', confirmed: true, ref: 'web' });
+  // taken back: by the flag or by the proposal's own state
+  assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'executed', written: { ...written, undone: true } } }).undone, true);
+  assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written } }).undone, true);
+  assert.equal(a.proposalState({ action_proposal: { ...proposal, status: 'undone', written } }), 'undone');
+  // nothing written: no block
+  assert.equal(a.writtenView({ action_proposal: proposal }), null);
+  assert.equal(a.writtenView({ action_proposal: { ...proposal, written: { kind: 'define_action' } } }), null);
+  assert.equal(a.writtenView(undefined), null);
+  // an entry that is absent is not shown as the word null
+  assert.equal(a.writtenView({ action_proposal: { ...proposal, written: { id: 'x', kind: 'define_group' } } }).entry, '');
+});
+
+test('the written block: the line, the entry, one undo; undone and busy and failed states; both languages', () => {
+  assert.ok(en.written && pl.written && en.written_entry && pl.written_entry && en.undo && pl.undo && en.undone && pl.undone && en.undo_failed && pl.undo_failed && en.status_undone && pl.status_undone);
+  const written = { kind: 'define_action', id: 'rozpisz', overlays: ['profiles/actions.pack'], entry: '{\n  "kind": "composite"\n}', undone: false };
+  const texts = a.writtenTexts(feature, written);
+  assert.equal(texts.written, en.written.replace('{{overlay}}', 'profiles/actions.pack').replace('{{id}}', 'rozpisz'));
+  assert.equal(texts.undo, en.undo);
+  assert.equal(texts.failed('offline'), en.undo_failed.replace('{{reason}}', 'offline'));
+  const html = renderToStaticMarkup(createElement(block.ProposalWritten, { feature, written, testId: 'w', onUndo: () => undefined }));
+  assert.match(html, /data-testid="w"/);
+  assert.match(html, /data-id="rozpisz"/);
+  assert.match(html, /data-undone="false"/);
+  assert.match(html, /data-testid="w-entry"/);
+  assert.ok(html.includes('profiles/actions.pack'));
+  assert.ok(html.includes('&quot;kind&quot;: &quot;composite&quot;'));
+  assert.match(html, new RegExp('data-testid="w-undo"[^>]*>' + en.undo));
+  assert.doesNotMatch(html, /disabled/);
+  const busy = renderToStaticMarkup(createElement(block.ProposalWritten, { feature, written, busy: true, failure: 'offline', testId: 'w', onUndo: () => undefined }));
+  assert.equal((busy.match(/disabled/g) || []).length, 1);
+  assert.match(busy, /role="alert"/);
+  const undone = renderToStaticMarkup(createElement(block.ProposalWritten, { feature, written: { ...written, undone: true }, testId: 'w', onUndo: () => undefined }));
+  assert.match(undone, /data-undone="true"/);
+  assert.match(undone, /data-testid="w-undone"/);
+  assert.doesNotMatch(undone, /w-undo"/, 'a definition that is gone has nothing to take back');
+  const bare = renderToStaticMarkup(createElement(block.ProposalWritten, { feature: null, written: { ...written, entry: '' }, testId: 'w', onUndo: () => undefined }));
+  assert.ok(bare.includes('rozpisz'));
+  assert.doesNotMatch(bare, /w-entry/);
+});

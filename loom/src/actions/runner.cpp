@@ -9,6 +9,7 @@
 #include "loom/action_element.h"
 #include "loom/action_estimate.h"
 #include "loom/action_result.h"
+#include "loom/chat_route.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
@@ -522,6 +523,7 @@ Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& re
     const std::string node = define ? json::get_string(request.value("provenance", Json::object()), "node")
                                     : json::get_string(done->value("origin", Json::object()), "node");
     emergent::settle(rt_, node, define ? "accepted" : "undone", *done);
+    if (!define) chat_route::note_removed(rt_, done->value("origin", Json::object()));
   }
   return done;
 }

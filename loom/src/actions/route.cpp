@@ -1713,6 +1713,7 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
   const Json definition = proposal.value("definition", Json(nullptr));
   const std::string grow_kind = definition.is_object() ? definition.value("kind", "") : std::string();
   const std::string node = definition.is_object() ? definition.value("node", "") : std::string();
+  Json written_view = nullptr;  // what the accepted definition wrote, kept on the proposal so the block can show it and take it back
   if (!grow_kind.empty()) {
     if (new_status == "executed") {
       const Json written = run->value("result", Json::object()).value("data", Json::object());
@@ -1720,6 +1721,8 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
       for (const auto& o : written.value("overlays", Json::array())) overlays.push_back(o.get<std::string>());
       rep.text = say(d.cfg, lang, grow_kind == "define_group" ? "defined_group_done" : "defined_done",
                      Json{{"id", definition.value("id", "")}, {"overlay", overlays.empty() ? overlay_file_of(grow_kind) : join(overlays, ", ")}});
+      written_view = Json{{"kind", grow_kind}, {"id", definition.value("id", "")}, {"overlays", overlays.empty() ? Json::array({overlay_file_of(grow_kind)}) : written.value("overlays", Json::array())},
+                          {"entry", grow_kind == "define_group" ? written.value("group", Json(nullptr)) : written.value("entry", Json(nullptr))}};
     } else if (new_status == "rejected" || new_status == "stale") {
       emergent::settle(rt, node, new_status);
     }
@@ -1727,6 +1730,7 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
   LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) {
     m["action_proposal"]["status"] = new_status;
     if (offer.is_object()) m["action_proposal"]["offer"] = offer;
+    if (written_view.is_object()) m["action_proposal"]["written"] = written_view;
   }));
   LOOM_TRY_ASSIGN(std::string assistant_id, answer_message(rt, d, conv_id, run ? &*run : nullptr, rep));
   if (offer.is_object())  // the reply the offer is made in: the words that take it are read while it is the last thing said
@@ -1914,6 +1918,24 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   }
   title_first_exchange(rt, conv_id, text);
   return finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+}
+
+void note_removed(Runtime& rt, const Json& origin) {
+  const std::string conv_id = json::get_string(origin, "conv_id");
+  const std::string node = json::get_string(origin, "node");
+  if (conv_id.empty() || node.empty()) return;
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return;
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("action_proposal")) continue;
+    const Json& p = m.metadata["action_proposal"];
+    if (json::get_string(p, "status") != "executed" || json::get_string(p.value("definition", Json::object()), "node") != node) continue;
+    if (auto st = set_metadata(rt, m.id, [&](Json& meta) {
+          meta["action_proposal"]["status"] = "undone";
+          if (meta["action_proposal"].contains("written")) meta["action_proposal"]["written"]["undone"] = true;
+        }); !st)
+      log::write(log::Level::Debug, "loom.chat_route", "could not mark the proposal as taken back: " + st.error().message);
+  }
 }
 
 Result<Json> confirm(Runtime& rt, const Json& request) {

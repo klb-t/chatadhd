@@ -331,4 +331,28 @@ TEST_SUITE("reject_offer") {
     CHECK_FALSE(no.chunk.contains("offer"));
     CHECK(no.chunk.at("text") == "Odrzucone. Nic nie wykonano.");
   }
+
+  TEST_CASE("an accepted definition keeps what it wrote on the proposal; taking it back marks the proposal (P12 2)") {
+    Fixture f;
+    const auto asked = f.input("Rozpisz tę wiadomość na kroki");
+    REQUIRE(asked.handled);
+    const Json p = f.proposal(asked.assistant_message_id);
+    f.script();
+    const Json done = unwrap(chat_route::confirm(*f.rt, Json{{"run_id", p.at("run_id")}, {"approved", true}, {"receipt_id", p.at("receipt_id")}, {"ref", "web"}}));
+    CHECK(done.at("proposal_status") == "executed");
+    CHECK(done.at("defined").at("id") == "rozpisz");
+    const Json written = f.proposal(asked.assistant_message_id).at("written");
+    CHECK(written.at("kind") == "define_action");
+    CHECK(written.at("id") == "rozpisz");
+    CHECK(written.at("overlays").at(0) == "profiles/actions.pack");
+    CHECK(written.at("entry").at("kind") == "composite");
+    CHECK(written.at("entry").at("steps").at(0).at("with").at("prompt") == "Rozpisz tę wiadomość na kroki");
+    CHECK(written.at("entry").at("origin").at("conv_id") == f.conv_id);
+    CHECK_FALSE(written.contains("undone"));
+    // take it back through the transport call (a gated action: the explicit confirmation of the click)
+    const Json removed = unwrap(f.rt->actions().invoke("actions.remove", Json{{"id", "rozpisz"}, {"confirmed", true}, {"ref", "web"}}));
+    CHECK(removed.at("status") == "completed");
+    CHECK(f.proposal(asked.assistant_message_id).at("status") == "undone");
+    CHECK(f.proposal(asked.assistant_message_id).at("written").at("undone") == true);
+  }
 }

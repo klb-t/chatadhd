@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { PresentationFeature } from "../onboarding/presentation.mjs";
-import { offerTexts, proposalTexts, proposalView, type OfferView, type PendingAnswer } from "../context/action-proposal";
+import { offerTexts, proposalTexts, proposalView, writtenTexts, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 
 /** A command from the conversation window waiting for the user's answer (R54): what will run, the estimate,
  *  what the rules ask, and the two ways to answer. Never an error state; nothing has been executed. */
@@ -44,6 +44,28 @@ export function ProposalOffer({ feature, offer, busy, failure, onSend, testId }:
       {texts.hint && <p data-testid={testId + "-hint"}>{texts.hint}</p>}
       <button type="button" className="primary" disabled={busy} onClick={onSend}
         data-testid={testId + "-send"}>{texts.send ?? offer.proposalId}</button>
+      {failure && <p role="alert" data-testid={testId + "-failure"}>{texts.failed(failure)}</p>}
+    </div>
+  );
+}
+
+/** What an accepted definition wrote: the line, the overlay entry itself, and the one click that takes it back. */
+export function ProposalWritten({ feature, written, busy, failure, onUndo, testId }: {
+  feature: PresentationFeature | null; written: WrittenView; busy?: boolean; failure?: string | null;
+  onUndo: () => void; testId: string;
+}) {
+  const texts = useMemo(() => writtenTexts(feature, written), [feature, written]);
+  return (
+    <div className="pill" role="group" data-testid={testId} aria-live="polite"
+      data-id={written.id} data-kind={written.kind} data-undone={written.undone ? "true" : "false"}>
+      <p data-testid={testId + "-line"}>{texts.written ?? written.id}</p>
+      {written.entry !== "" && <details data-testid={testId + "-entry"}>
+        <summary>{texts.entry ?? written.id}</summary>
+        <pre>{written.entry}</pre>
+      </details>}
+      {written.undone
+        ? <p data-testid={testId + "-undone"}>{texts.undone ?? written.id}</p>
+        : <button type="button" disabled={busy} onClick={onUndo} data-testid={testId + "-undo"}>{texts.undo ?? written.id}</button>}
       {failure && <p role="alert" data-testid={testId + "-failure"}>{texts.failed(failure)}</p>}
     </div>
   );
