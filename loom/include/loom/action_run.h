@@ -104,6 +104,17 @@ class RunStore {
   virtual Result<std::optional<Json>> load(std::string_view run_id) = 0;
   // Latest document of each run, newest first. filter: {"status"?, "conv_id"?, "limit"?}.
   virtual Result<std::vector<Json>> list(const Json& filter) = 0;
+
+  // The stream of checkpoints and the snapshots of the index built from it (action_index.h). `seq` strictly increases with every save.
+  struct Checkpoint {
+    std::int64_t seq = 0;
+    Json run;
+  };
+  // The checkpoints saved after `after_seq` (0 = all), oldest first, at most `limit`.
+  virtual Result<std::vector<Checkpoint>> checkpoints_since(std::int64_t after_seq, std::size_t limit) = 0;
+  // The newest snapshot of the sequence index (none yet: nullopt), and a new one, kept next to the checkpoints.
+  virtual Result<std::optional<Json>> load_index() = 0;
+  virtual Status save_index(const Json& snapshot) = 0;
 };
 std::unique_ptr<RunStore> make_memory_run_store();
 // Checkpoints are append-only events of type "action.run" (subject = run id): the audit trail and the

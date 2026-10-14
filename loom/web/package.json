@@ -21,6 +21,7 @@
     "test:graph-entry-browser": "node e2e/graph-entry-native.mjs",
     "test:action-proposal": "node tests/conversation-view/action-proposal.test.mjs",
     "test:action-proposal-browser": "node e2e/action-proposal-ui.mjs",
+    "test:rules-transport": "node tests/conversation-view/rules-transport.test.mjs",
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:chat-send-gate": "node tests/conversation-view/send-gate.test.mjs && node e2e/chat-send-gate.mjs",
     "test:application-profiles": "node e2e/application-profile-state.mjs && node e2e/application-profile-adapter.mjs",
@@ -31,7 +32,7 @@
     "test:application-profile-graph": "node e2e/application-profile-graph.mjs",
     "test:interface-2": "node e2e/harness-lifecycle-test.mjs && node e2e/source-views.mjs && node e2e/chat-settings-state.mjs && node e2e/profile-view-geometry.mjs && node e2e/workflow-snapshot.mjs --browser && node e2e/workflow-checkpoint.mjs && node e2e/operations-panel.mjs && node e2e/usage-policy-ui.mjs && node e2e/graph-reply-ui.mjs && node e2e/resource-controls.mjs && node e2e/chat-send-gate.mjs",
     "test:interface-2-native": "node e2e/interface-2-native-runner.mjs",
-    "test:product-integration": "node tests/graph-perspectives/headless.test.mjs && node tests/graph-perspectives/native-layers.test.mjs && node tests/graph-perspectives/adapters.test.mjs && node tests/graph-perspectives/compatibility.test.mjs && node tests/product-perspective/headless.test.mjs && node e2e/onboarding-host.mjs && node e2e/semantic-status.mjs && node tests/conversation-view/headless.test.mjs && node tests/conversation-view/send-gate.test.mjs && node tests/conversation-view/usage-pending.test.mjs && node tests/conversation-view/action-proposal.test.mjs && node tests/conversation-view/semantic-queue.test.mjs && node e2e/conversation-view-native.mjs"
+    "test:product-integration": "node tests/graph-perspectives/headless.test.mjs && node tests/graph-perspectives/native-layers.test.mjs && node tests/graph-perspectives/adapters.test.mjs && node tests/graph-perspectives/compatibility.test.mjs && node tests/product-perspective/headless.test.mjs && node e2e/onboarding-host.mjs && node e2e/semantic-status.mjs && node tests/conversation-view/headless.test.mjs && node tests/conversation-view/send-gate.test.mjs && node tests/conversation-view/usage-pending.test.mjs && node tests/conversation-view/action-proposal.test.mjs && node tests/conversation-view/rules-transport.test.mjs && node tests/conversation-view/semantic-queue.test.mjs && node e2e/conversation-view-native.mjs"
   },
   "dependencies": {
     "dompurify": "^3.2.4",

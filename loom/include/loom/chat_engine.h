@@ -106,6 +106,14 @@ struct ChatOptions {
   std::optional<Json> active_task_spec;
   Json active_task_bindings = Json::object(); // event_id -> {message_id, text_sha256}
   std::string active_task_history = "replace_refinement"; // or "append"
+  // Messages of the conversation left out of the history this request is compiled from. Set by the conversation
+  // window when the sentence of a rejected proposal is sent as an ordinary message (chat_route.h): the exchange of
+  // the proposal is not part of what the model reads, so the request is that of an ordinary message. Not a wire
+  // field (from_json never sets it); empty = nothing is left out.
+  std::vector<std::string> history_skip;
+  // The proposal message whose offer to send the rejected sentence as a message the user takes (chat request field
+  // send_as_message; chat_route.h). The conversation window reads it; the engine ignores it.
+  std::string send_as_message;
 
   // {"conv_id","model","attachments":[...],"web_search","deep_research",
   //  "reasoning_effort","temperature","max_tokens","system_prompt",

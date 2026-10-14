@@ -550,7 +550,7 @@ TEST_SUITE("action_rules") {
     CHECK(chain["cost"] == 2.0);
     CHECK(chain["confidence"] == doctest::Approx(0.765));
     CHECK(chain["effects"]["sends_off_device"] == true);
-    CHECK(chain["executable"] == false);  // both steps are still planned: a proposal, never executed
+    CHECK(chain["executable"] == true);  // transcribe is implemented since P12 (the media providers behind a use_model step)
     CHECK(chain["needs_confirmation"].empty());
 
     // a trait as the target

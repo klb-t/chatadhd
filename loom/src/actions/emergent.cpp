@@ -8,10 +8,12 @@
 #include <sstream>
 
 #include "loom/action_element.h"
+#include "loom/action_index.h"
 #include "loom/action_rules.h"
 #include "loom/action_runner.h"
 #include "loom/config.h"
 #include "loom/db.h"
+#include "loom/log.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
 #include "loom/util/unicode.h"
@@ -207,17 +209,6 @@ std::optional<Json> from_command(const Context& c, const std::string& text, cons
 
 namespace {
 
-struct Item {
-  std::string run_id, action, cls, element_id, conv, message_id, created, updated;
-  std::set<std::string> produced;  // ids of what the run made: result nodes and posted messages
-};
-
-std::optional<std::int64_t> seconds_of(const std::string& iso) {
-  auto tp = timeutil::parse_iso_utc(iso);
-  if (!tp) return std::nullopt;
-  return std::chrono::duration_cast<std::chrono::seconds>(tp->time_since_epoch()).count();
-}
-
 // Interpreted composites are the actions that work on content; the writers and the settings are not part of a sequence.
 bool content_action(const Engine& engine, const std::string& id) {
   const Json* e = json::find(engine.catalogue(), id);
@@ -225,36 +216,20 @@ bool content_action(const Engine& engine, const std::string& id) {
          e->contains("steps") && !(*e)["steps"].empty();
 }
 
-std::vector<Item> items_of(const Context& c, const std::string& only_action = std::string()) {
-  const Json seq = emergent_cfg(c.routing).value("sequences", Json::object());
-  auto runs = c.rt.actions().store().list(Json{{"status", "completed"}, {"limit", json::get_int(seq, "window_runs", 200)}});
-  std::vector<Item> out;
-  if (!runs) return out;
-  for (auto it = runs->rbegin(); it != runs->rend(); ++it) {  // oldest first
-    const Json& run = *it;
-    const Json request = run.value("request", Json::object());
-    const std::string action = json::get_string(request, "action");
-    if (action.empty() || !content_action(c.engine, action)) continue;
-    if (!only_action.empty() && action != only_action) continue;
-    const Json element = run.value("element", Json::object());
-    Item item;
-    item.run_id = json::get_string(run, "id");
-    item.action = action;
-    item.cls = json::get_string(element, "class");
-    item.element_id = json::get_string(element, "id");
-    const Json context = request.value("context", Json::object());
-    item.conv = json::get_string(context, "conv_id", json::get_string(context, "origin"));
-    item.message_id = json::get_string(context, "message_id");
-    item.created = json::get_string(run, "created");
-    item.updated = json::get_string(run, "updated", item.created);
-    if (const Json* result = json::find(run, "result"); result && result->is_object())
-      if (const Json* produced = json::find(*result, "produced"); produced && produced->is_object())
-        for (const auto& row : produced->value("items", Json::array()))
-          for (const char* k : {"form", "message_id"})
-            if (const std::string v = json::get_string(row, k); !v.empty()) item.produced.insert(v);
-    out.push_back(std::move(item));
+// The index of completed runs, brought up to date: it folds in only the checkpoints written since the last detection (action_index.h).
+IndexSettings settings_of(const Context& c) {
+  return IndexSettings::from_routing(emergent_cfg(c.routing).value("sequences", Json::object()));
+}
+
+SequenceIndex* fresh_index(const Context& c) {
+  SequenceIndex& index = c.rt.actions().sequence_index();
+  const Engine& engine = c.engine;
+  auto status = index.refresh([&engine](const std::string& action) { return content_action(engine, action); }, settings_of(c));
+  if (!status) {
+    log::write(log::Level::Debug, "loom.emergent", "the sequence index could not be brought up to date: " + status.error().message);
+    return nullptr;
   }
-  return out;
+  return &index;
 }
 
 }  // namespace
@@ -263,43 +238,23 @@ std::optional<Json> from_sequence(const Context& c, const std::string& conv_id) 
   if (preset(c.rt, c.routing) != "propose") return std::nullopt;
   const Json& cfg = emergent_cfg(c.routing);
   const Json seq = cfg.value("sequences", Json::object());
+  const IndexSettings settings = settings_of(c);
   const std::size_t repeat = static_cast<std::size_t>(json::get_int(seq, "repeat", 3));
-  const std::size_t max_len = static_cast<std::size_t>(json::get_int(seq, "max_length", 3));
-  const std::int64_t gap = json::get_int(seq, "gap_seconds", 900);
-  const std::vector<Item> items = items_of(c);
-  std::map<std::string, std::vector<Item>> by_conv;
-  for (const auto& item : items) by_conv[item.conv].push_back(item);
-  auto pipeline = [&](const std::vector<Item>& list, std::size_t from, std::size_t len) {
-    if (from + len > list.size() || list[from].cls.empty()) return false;
-    for (std::size_t k = from; k + 1 < from + len; ++k) {
-      const Item& a = list[k];
-      const Item& b = list[k + 1];
-      if (!a.produced.count(b.element_id)) return false;  // the next one works on what the one before made
-      if (a.action == b.action) return false;
-      auto after = seconds_of(a.updated), before = seconds_of(b.created);
-      if (after && before && *before - *after > gap) return false;
-    }
-    return true;
-  };
-  auto signature = [&](const std::vector<Item>& list, std::size_t from, std::size_t len) {
-    std::vector<std::string> names;
-    for (std::size_t k = from; k < from + len; ++k) names.push_back(list[k].action);
-    return list[from].cls + "|" + join(names, "+");
-  };
-  std::map<std::string, std::size_t> count;
-  for (const auto& [conv, list] : by_conv)
-    for (std::size_t len = 2; len <= max_len; ++len)
-      for (std::size_t from = 0; from + len <= list.size(); ++from)
-        if (pipeline(list, from, len)) ++count[signature(list, from, len)];
-  const auto here = by_conv.find(conv_id);
-  if (here == by_conv.end()) return std::nullopt;
-  const std::vector<Item>& list = here->second;
+  const std::size_t max_len = settings.max_len;
+  // The index holds the last runs of each conversation and how many times each chain was run: nothing is read from the log but what is new.
+  SequenceIndex* index = fresh_index(c);
+  if (!index) return std::nullopt;
+  const std::vector<SequenceItem> list = index->tail(conv_id);
+  if (list.empty()) return std::nullopt;
+  auto pipeline = [&](const std::vector<SequenceItem>& l, std::size_t from, std::size_t len) { return is_pipeline(l, from, len, settings.gap_seconds); };
+  auto signature = [&](const std::vector<SequenceItem>& l, std::size_t from, std::size_t len) { return chain_signature(l, from, len); };
   const std::string node_kind = cfg.value("node", Json::object()).value("kind", "proposal");
   for (std::size_t len = std::min(max_len, list.size()); len >= 2; --len) {  // the longest repeated one first
     const std::size_t from = list.size() - len;
     if (!pipeline(list, from, len)) continue;
     const std::string sig = signature(list, from, len);
-    if (count[sig] < repeat) continue;
+    const std::size_t times = index->count(sig);
+    if (times < repeat) continue;
     if (auto seen = c.rt.db().find_node("sequence:" + sig, node_kind); seen && *seen) return std::nullopt;  // offered before: not asked again
     std::vector<std::string> names;
     Json steps = Json::array();
@@ -340,7 +295,7 @@ std::optional<Json> from_sequence(const Context& c, const std::string& conv_id) 
     def["title"] = join(names, " + ");
     def["args"] = args;
     def["sources"] = sources;
-    def["summary"] = Json{{"sequence", join(names, " -> ")}, {"steps", join(names, " -> ")}, {"class", list[from].cls}, {"count", count[sig]}, {"id", id}};
+    def["summary"] = Json{{"sequence", join(names, " -> ")}, {"steps", join(names, " -> ")}, {"class", list[from].cls}, {"count", times}, {"id", id}};
     return def;
   }
   return std::nullopt;
@@ -355,9 +310,9 @@ std::optional<Json> from_group(const Context& c, const std::string& action) {
   const Json& cfg = emergent_cfg(c.routing);
   const Json groups_cfg = cfg.value("groups", Json::object());
   const std::size_t min_classes = static_cast<std::size_t>(json::get_int(groups_cfg, "min_classes", 2));
-  std::vector<std::string> classes;
-  for (const auto& item : items_of(c, action))
-    if (!item.cls.empty() && std::find(classes.begin(), classes.end(), item.cls) == classes.end()) classes.push_back(item.cls);
+  SequenceIndex* index = fresh_index(c);
+  if (!index) return std::nullopt;
+  const std::vector<std::string> classes = index->classes_of(action);
   if (classes.size() < min_classes) return std::nullopt;
   // What all of those classes have in common (a class id is a trait of its own; they are named only when nothing else is shared).
   std::set<std::string> shared;
@@ -412,8 +367,7 @@ std::optional<Json> from_group(const Context& c, const std::string& action) {
   def["title"] = id;
   def["args"] = args;
   def["sources"] = Json::array();
-  for (const auto& item : items_of(c, action))
-    if (!item.message_id.empty()) def["sources"].push_back(item.message_id);
+  for (const auto& message_id : index->messages_of(action)) def["sources"].push_back(message_id);
   def["summary"] = Json{{"action", action}, {"classes", join(class_names, ", ")}, {"traits", join(traits, ", ")}, {"id", id}};
   return def;
 }

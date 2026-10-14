@@ -368,7 +368,18 @@ R"loom_onboard({
                 "definition_define_action": "A new action \"{{id}}\": written only to your own overlay ({{overlay}}); you can remove it later",
                 "definition_define_sequence": "A chain you keep repeating, saved as the action \"{{id}}\" (your own overlay: {{overlay}})",
                 "definition_define_group": "A group \"{{id}}\" for what your classes have in common (your own overlay: {{overlay}})",
-                "rule_replaces": "Replaces the rule you set before for the same thing"
+                "rule_replaces": "Replaces the rule you set before for the same thing",
+                "offer": "Send my sentence as a message",
+                "offer_hint": "Nothing was sent to the model. Your sentence can still go to it as an ordinary message.",
+                "offer_sent": "Your sentence was sent as a message",
+                "offer_declined": "Your sentence stays unsent",
+                "offer_failed": "The sentence could not be sent ({{reason}}).",
+                "status_undone": "Taken back",
+                "written": "Written to your own overlay ({{overlay}}) as \"{{id}}\"",
+                "written_entry": "The entry that was written",
+                "undo": "Take it back",
+                "undone": "Taken back: removed from your own overlay",
+                "undo_failed": "It could not be taken back ({{reason}})."
               },
               "pl": {
                 "title": "Polecenie czeka na Twoją odpowiedź",
@@ -397,7 +408,18 @@ R"loom_onboard({
                 "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
                 "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
                 "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
-                "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie"
+                "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie",
+                "offer": "Wyślij moje zdanie jako wiadomość",
+                "offer_hint": "Nic nie poszło do modelu. Twoje zdanie może jeszcze do niego trafić jako zwykła wiadomość.",
+                "offer_sent": "Twoje zdanie poszło jako wiadomość",
+                "offer_declined": "Twoje zdanie zostaje niewysłane",
+                "offer_failed": "Nie udało się wysłać zdania ({{reason}}).",
+                "status_undone": "Wycofane",
+                "written": "Zapisane w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
+                "written_entry": "Zapisany wpis",
+                "undo": "Wycofaj",
+                "undone": "Wycofane: usunięte z Twojej własnej nakładki",
+                "undo_failed": "Nie udało się wycofać ({{reason}})."
               }
             }
           }
@@ -1133,7 +1155,8 @@ R"loom_onboard({
             "--onboarding-space": "10px",
             "--onboarding-section-space": "20px",
             "--onboarding-label-top": "8px",
-            "--onboarding-label-bottom": "4px",
+)loom_onboard",
+R"loom_onboard(            "--onboarding-label-bottom": "4px",
             "--onboarding-button-space": "6px",
             "--onboarding-padding": "12px",
             "--onboarding-radius": "10px",
@@ -1183,8 +1206,7 @@ R"loom_onboard({
       "revision": 1,
       "label": "Relations and reach",
       "value": {
-)loom_onboard",
-R"loom_onboard(        "relations": [
+        "relations": [
           "*"
         ],
         "direction": "both",
@@ -1433,7 +1455,18 @@ R"loom_onboard(        "relations": [
             "definition_define_action": "A new action \"{{id}}\": written only to your own overlay ({{overlay}}); you can remove it later",
             "definition_define_sequence": "A chain you keep repeating, saved as the action \"{{id}}\" (your own overlay: {{overlay}})",
             "definition_define_group": "A group \"{{id}}\" for what your classes have in common (your own overlay: {{overlay}})",
-            "rule_replaces": "Replaces the rule you set before for the same thing"
+            "rule_replaces": "Replaces the rule you set before for the same thing",
+            "offer": "Send my sentence as a message",
+            "offer_hint": "Nothing was sent to the model. Your sentence can still go to it as an ordinary message.",
+            "offer_sent": "Your sentence was sent as a message",
+            "offer_declined": "Your sentence stays unsent",
+            "offer_failed": "The sentence could not be sent ({{reason}}).",
+            "status_undone": "Taken back",
+            "written": "Written to your own overlay ({{overlay}}) as \"{{id}}\"",
+            "written_entry": "The entry that was written",
+            "undo": "Take it back",
+            "undone": "Taken back: removed from your own overlay",
+            "undo_failed": "It could not be taken back ({{reason}})."
           },
           "pl": {
             "title": "Polecenie czeka na Twoją odpowiedź",
@@ -1462,7 +1495,18 @@ R"loom_onboard(        "relations": [
             "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
             "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
             "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
-            "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie"
+            "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie",
+            "offer": "Wyślij moje zdanie jako wiadomość",
+            "offer_hint": "Nic nie poszło do modelu. Twoje zdanie może jeszcze do niego trafić jako zwykła wiadomość.",
+            "offer_sent": "Twoje zdanie poszło jako wiadomość",
+            "offer_declined": "Twoje zdanie zostaje niewysłane",
+            "offer_failed": "Nie udało się wysłać zdania ({{reason}}).",
+            "status_undone": "Wycofane",
+            "written": "Zapisane w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
+            "written_entry": "Zapisany wpis",
+            "undo": "Wycofaj",
+            "undone": "Wycofane: usunięte z Twojej własnej nakładki",
+            "undo_failed": "Nie udało się wycofać ({{reason}})."
           }
         }
       }
