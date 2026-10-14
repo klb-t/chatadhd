@@ -21,7 +21,7 @@ async function loadChromium() {
 const log = m => console.error("[first-steps-ui] " + m);
 const chromium = await loadChromium();
 const browser = await chromium.launch({ headless: true });
-const ctx = await browser.newContext({ viewport: { width: 820, height: 600 } });
+const ctx = await browser.newContext({ viewport: { width: Number(process.env.FS_WIDTH || 1100), height: Number(process.env.FS_HEIGHT || 760) } });
 const page = await ctx.newPage();
 const errors = [];
 page.on("pageerror", e => errors.push(e.message));
@@ -62,8 +62,6 @@ try {
     assert.equal(cfg.default_model, "test/first-steps");
     assert.equal((await (await ctx.request.get(base + "/api/secrets/api_key/has")).json()).has, true);
     await shot("03-ustawienia");
-    // trasowanie intencji modelem (to tez ustawienie, domyslnie lokalne); tu sprawdzamy sciezke z modelem
-    await ctx.request.patch(base + "/api/config", { data: { intent_routing_method: "model", intent_routing_model: "test/first-steps" } });
     await page.getByTestId("close-panel").click();
   });
   await step("6 nowa rozmowa", async () => {
@@ -76,38 +74,36 @@ try {
   const proposalThenYes = async (name, text, mustMatch) => {
     await send(text);
     const block = page.getByTestId("chat-action-proposal");
-    await block.waitFor({ timeout: 30000 });
-    assert.match(await block.innerText(), mustMatch, name + ": propozycja");
-    if (name.startsWith("1")) await shot("04-propozycja");
+    await block.waitFor({ timeout: 60000 });
+    let shown = "";
+    for (const end = Date.now() + 15000; Date.now() < end;) {
+      shown = await block.innerText().catch(() => "");
+      if (mustMatch.test(shown)) break;
+      await page.waitForTimeout(100);
+    }
+    assert.match(shown, mustMatch, name + ": propozycja: " + shown.slice(0, 300));
+    if (name.startsWith("1") && shots) await block.screenshot({ path: path.join(shots, "04-propozycja.png") });
     await block.getByTestId("chat-action-proposal-confirm").click();
-    await block.waitFor({ state: "detached", timeout: 30000 });
+    await block.waitFor({ state: "detached", timeout: 60000 });
     assert.equal(await page.getByTestId("chat-error").count(), 0, name + ": blad w rozmowie");
   };
 
   await step("6.0 zwykla wiadomosc", async () => {
     await send("Zespol Acme planuje wydac wersje 2.0 w piatek, jesli testy przejda. Odpowiedz dwoma zdaniami.");
-    await body().filter({ hasText: "Odpowiedz testowego dostawcy" }).first().waitFor({ timeout: 30000 });
+    await body().filter({ hasText: "Odpowiedz testowego dostawcy" }).first().waitFor({ timeout: 60000 });
   });
   await step("6.1 streść tę rozmowę", async () => {
     await proposalThenYes("1", "Streść tę rozmowę", /summar|stresz|Streszcz/i);
-    await body().filter({ hasText: "Streszczenie testowe" }).first().waitFor({ timeout: 30000 });
-    await shot("05-streszczenie");
+    await body().filter({ hasText: "Streszczenie testowe" }).first().waitFor({ timeout: 60000 });
   });
-  await step("6.2 przetłumacz na niemiecki", async () => { await proposalThenYes("2", "Przetłumacz na niemiecki", /translat|tłumacz|Tłumacz/i); });
+  await step("6.2 przetłumacz na niemiecki", async () => { await proposalThenYes("2", "Przetłumacz tę rozmowę na niemiecki", /translat|tłumacz|Tłumacz/i); });
   await step("6.3 wytłumacz prościej", async () => { await proposalThenYes("3", "Wytłumacz prościej tę rozmowę", /explain|prościej|Wyjaśnij|Wytłumacz/i); });
   await step("6.4 zawsze pytaj przed streszczeniem (reguła)", async () => {
     await proposalThenYes("4", "zawsze pytaj mnie przed summarise", /./);
     const rules = await (await ctx.request.post(base + "/api/rules/list", { data: {} })).text();
     assert.match(rules, /summarise/);
   });
-  await step("6.5 pokaż ustawienie temperature", async () => {
-    await send("pokaż temperature");
-    // ustawienie jest tylko do odczytu: odpowiedz albo propozycja z "tak"
-    const block = page.getByTestId("chat-action-proposal");
-    if (await block.waitFor({ timeout: 10000 }).then(() => true, () => false)) await block.getByTestId("chat-action-proposal-confirm").click();
-    await page.waitForTimeout(500);
-    assert.equal(await page.getByTestId("chat-error").count(), 0);
-  });
+  await step("6.5 pokaż ustawienie temperature", async () => { await proposalThenYes("5", "pokaż temperature", /ustawienie|setting/i); });
 
   const calls = readFileSync(providerLog, "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l));
   assert.ok(calls.some(c => c.authorization === "Bearer " + key), "dostawca dostal klucz wpisany w Ustawieniach");

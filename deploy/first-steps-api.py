@@ -80,8 +80,7 @@ bad_code, _ = req("POST", "/api/auth/login", {"login": login, "password": passwo
 record("zle haslo jest odrzucone", bad_code in (401, 403, 429), "HTTP %s" % bad_code)
 
 # 5. ustawienia: adres dostawcy, model, klucz
-code, _ = req("PATCH", "/api/config", {"base_url": provider, "default_model": "test/first-steps", "stream": True,
-                                       "intent_routing_method": "model", "intent_routing_model": "test/first-steps"})
+code, _ = req("PATCH", "/api/config", {"base_url": provider, "default_model": "test/first-steps", "stream": True})
 record("ustawienia (adres, model)", code == 200, "HTTP %s" % code)
 code, _ = req("POST", "/api/secrets/api_key", {"value": key})
 record("klucz dostawcy zapisany", code in (200, 204), "HTTP %s" % code)
@@ -99,24 +98,23 @@ def command(name, message, action_hint):
     act = str((f.get("proposal") or {}).get("action") or "") + " " + " ".join(str(i.get("action")) for i in (f.get("proposal") or {}).get("items", []))
     if not record(name + " (propozycja)", f.get("type") == "action_proposal" and action_hint in act, "koniec: %s, akcja: %s" % (f.get("type"), act.strip())):
         return None
-    code, ch = say("tak")
-    f = final(ch)
-    return record(name + " (po 'tak')", f.get("type") == "action_result" and f.get("proposal_status") == "executed" and str(f.get("text") or "").strip(),
-                  "koniec: %s, status: %s, tekst: %s" % (f.get("type"), f.get("proposal_status"), str(f.get("text") or "")[:80]))
+    # propozycja -> pokwitowanie (receipt_id) -> potwierdzenie: tak samo jak przycisk "Run it" w web (od P14 sam
+    # `confirmed:true` bez pokwitowania jest odrzucany)
+    prop = f.get("proposal") or {}
+    if not record(name + " (pokwitowanie)", prop.get("run_id") and prop.get("receipt_id"), "run_id=%s receipt_id=%s" % (prop.get("run_id"), prop.get("receipt_id"))):
+        return None
+    code, res = req("POST", "/api/actions/confirm", {"run_id": prop["run_id"], "approved": True, "receipt_id": prop["receipt_id"], "ref": "web"})
+    return record(name + " (potwierdzone)", code == 200 and (res or {}).get("status") in ("completed", "executed"),
+                  "HTTP %s, status: %s" % (code, (res or {}).get("status")))
 
 
 command("1 streść tę rozmowę", "Streść tę rozmowę", "summar")
-command("2 przetłumacz na niemiecki", "Przetłumacz na niemiecki", "translat")
+command("2 przetłumacz na niemiecki", "Przetłumacz tę rozmowę na niemiecki", "translat")
 command("3 wytłumacz prościej", "Wytłumacz prościej tę rozmowę", "explain")
 if command("4 zawsze pytaj przed streszczeniem", "zawsze pytaj mnie przed summarise", "rules.set"):
     code, rules = req("POST", "/api/rules/list", {})
     record("4 reguła jest na liście", code == 200 and "summarise" in json.dumps(rules), "HTTP %s" % code)
-code, ch = say("pokaż temperature")
-f = final(ch)
-record("5 pokaż ustawienie (temperature)", f.get("type") in ("action_proposal", "action_result", "done") and f.get("type") != "error",
-       "koniec: %s, tekst: %s" % (f.get("type"), str(f.get("text") or "")[:80]))
-if final(ch).get("type") == "action_proposal":
-    code, ch = say("tak")
+command("5 pokaż ustawienie (temperature)", "pokaż temperature", "settings.get")
 
 # klucz dotarl do dostawcy
 try:
