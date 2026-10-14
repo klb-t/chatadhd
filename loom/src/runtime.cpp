@@ -345,7 +345,15 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   DbOptions dbo;
   dbo.enable_fts = opts.enable_fts;
   dbo.fts_path = p.fts_index;
+  {
+    Json cr = impl->config->get("loom_fts_chunk_rows");
+    if (cr.is_number_integer()) dbo.fts_chunk_rows = static_cast<int>(std::max<std::int64_t>(0, cr.get<std::int64_t>()));
+  }
   LOOM_TRY_ASSIGN(impl->db, Database::open(p.db, dbo));
+  if (opts.start_workers && opts.enable_fts) {
+    Json bg = impl->config->get("loom_fts_background_build");
+    if (!bg.is_boolean() || bg.get<bool>()) impl->db->fts_start_background();
+  }
 
   impl->bus = std::make_unique<EventBus>();
   impl->event_log = std::make_unique<EventLog>(*impl->db);
