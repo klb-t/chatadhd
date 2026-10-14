@@ -34,7 +34,9 @@ trap finish EXIT
 
 # the APK must carry the emulator's ABI (package.yml builds arm64-v8a only unless asked for x86_64)
 abi="$(adb shell getprop ro.product.cpu.abi | tr -d '\r')"
-if ! unzip -l "$APK" | grep -q " lib/$abi/libloom_jni\.so$"; then
+# Read the whole listing first: with pipefail, `unzip | grep -q` fails when grep exits early and unzip gets SIGPIPE.
+apk_listing="$(unzip -l "$APK")"
+if ! grep -q " lib/$abi/libloom_jni\.so$" <<<"$apk_listing"; then
   echo "ERROR: $APK has no lib/$abi/libloom_jni.so (the emulator is $abi). Build the APK with -Ploom.abis including $abi." >&2
   unzip -l "$APK" | grep "libloom_jni" >&2 || true
   exit 3
