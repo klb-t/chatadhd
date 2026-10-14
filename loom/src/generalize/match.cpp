@@ -195,7 +195,12 @@ Result<double> anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op,
   std::string name = json::get_string(op, "op");
   double s = 0.0;
   Json measured;
-  if (name == "claim_count") {
+  if (name == "relation_pattern") {
+    LOOM_TRY_ASSIGN(auto result, detail::match_relation_pattern(ix, e, op));
+    s = result.at("matches").empty() ? 0.0 : 1.0;
+    measured = std::move(result);
+    measured["status"] = "candidate";
+  } else if (name == "claim_count") {
     double min = std::max(1.0, json::get_number(op, "min", 1));
     s = std::min(1.0, count_claims(ix, e.id, json::get_string(op, "rel")) / min);
   } else if (name == "kind_hint") {
@@ -655,7 +660,11 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
         }
       }
     }
-    if (!reject) kept.push_back(std::move(m));
+    if (!reject) {
+      m.instance.recognition = Json{{"status", "candidate"}, {"method", "generalize.match"},
+                                   {"version", kGeneralizerVersion}, {"pack_hash", pack.hash()}, {"reasons", m.reasons}};
+      kept.push_back(std::move(m));
+    }
   }
   std::sort(kept.begin(), kept.end(), [](const Match& a, const Match& b) { return a.instance.id < b.instance.id; });
   return kept;

@@ -1,5 +1,13 @@
 # Indeks wątków — 2026-10-05 wieczór
 
+2026-10-14 B implementation decision (candidate branch): relational recognition
+uses the existing pack anchor/matcher and additive Instance receipt; filters,
+patterns, alternatives and budgets are data. Revert the facet/pack descriptor to
+disable it; old runs and source bytes remain. Owner's perspective clarification
+means views of the **same** project, separately from interpretation alternatives.
+See [current report](implicit-structures-2026-10-14.md). No new owner requirement.
+
+
 **Od 2026-10-05 ~18:00 integrację prowadzi Claude.** Wątki GPT skończyły tokeny;
 właściciel: „GPT już nam nie pomoże, przyjmij jego wyniki”. Poprzednia wersja tego
 indeksu (integrator 9, kolejka i wszystkie dowody) jest w

@@ -858,6 +858,9 @@ struct Instance {
   Json coverage = Json::object();   // {"<evidence class>": n, "required_filled": n, "required": n}
   std::string model;                // competing model id ("" = default model)
   std::vector<SlotValue> slots;
+  // Optional, additive recognition receipt. An absent field in older records
+  // means no persisted receipt, not an empty or validated recognition.
+  Json recognition = Json();
   static std::string make_id(std::string_view paradigm, std::string_view subject);
   Json to_json() const;
   static Result<Instance> from_json(const Json& j);

@@ -1,7 +1,7 @@
 {
  "schema": "loom.kb.pack/1",
  "id": "builtin",
- "version": 2,
+ "version": 3,
  "description": "Loom knowledge-layer data pack (LOOM_CONCEPTUAL_MODEL: open sets as DATA, I6; MEGA MASTER §2.B). Every file is listed here with its schema; the loader rejects unlisted JSON files, missing files and schema mismatches. The build embeds this directory (src/kb/pack_embedded.inc, regenerate with tools/gen_kb_pack.py); <data_dir>/kb/ may hold an overlay pack (same layout, files replace built-in ones) written by promotion. Layout: schema/ (open vocabularies), lexicons/, profiles/, philosophy/ (principles, operators: priors), rules/ (operators that produce claims, checks), policy/, goals/, morphisms/ (anchoring meta-model, transfer), project_kinds/, facets/, artifact_types/.",
  "files": [
   {
@@ -167,6 +167,10 @@
   {
    "path": "artifact_types/pleading.json",
    "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "facets/feedback_execution.json",
+   "schema": "loom.kb.facet/1"
   }
  ]
 }

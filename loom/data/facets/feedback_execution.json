@@ -1,0 +1,111 @@
+{
+ "schema": "loom.kb.facet/1",
+ "id": "feedback_execution",
+ "version": 1,
+ "title": {
+  "en": "Tool execution with verification and feedback",
+  "pl": "Wykonanie narzędzi ze sprawdzaniem i informacją zwrotną"
+ },
+ "description": "Recognizes an unnamed connected execution pattern. This is a candidate interpretation, not proof of autonomous agency, implementation completeness, or permission to execute. A word list alone supplies no edges.",
+ "origin": "model_knowledge",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/reports/implicit-structures-2026-10-14.md",
+   "date": "2026-10-14",
+   "section": "Relational recognition (reversible implementation decision)"
+  }
+ ],
+ "applies_to": [
+  "software_app"
+ ],
+ "anchors": {
+  "all": [
+   {
+    "op": "relation_pattern",
+    "root": "project",
+    "nodes": {
+     "project": "project",
+     "executor": "component",
+     "reviewer": "component",
+     "tool": "tool"
+    },
+    "edges": [
+     {
+      "from": "project",
+      "rel": "has_component",
+      "to": "executor"
+     },
+     {
+      "from": "project",
+      "rel": "has_component",
+      "to": "reviewer"
+     },
+     {
+      "from": "executor",
+      "rel": "uses_tool",
+      "to": "tool"
+     },
+     {
+      "from": "reviewer",
+      "rel": "verifies",
+      "to": "executor"
+     },
+     {
+      "from": "executor",
+      "rel": "has_input",
+      "to": "reviewer"
+     }
+    ],
+    "distinct": [
+     [
+      "executor",
+      "reviewer"
+     ]
+    ],
+    "same_qualifiers": [
+     "branch",
+     "version"
+    ],
+    "evidence": [
+     "observed",
+     "derived",
+     "user"
+    ],
+    "statuses": [
+     "active"
+    ],
+    "max_steps": 100000,
+    "max_matches": 64,
+    "interpretations": {
+     "agent_harness": {
+      "en": "Possible agent harness; autonomous control is not established by these relations.",
+      "pl": "Możliwy harness agenta; te relacje nie dowodzą samodzielnego sterowania."
+     },
+     "supervised_workbench": {
+      "en": "Possible workbench supervised by a person; the initiator is not established.",
+      "pl": "Możliwy warsztat nadzorowany przez człowieka; inicjator pozostaje nieustalony."
+     }
+    },
+    "claim_qualifiers": {
+     "polarity": {
+      "allow_missing": true,
+      "values": [
+       "positive"
+      ]
+     },
+     "assertion_context": {
+      "allow_missing": true,
+      "values": [
+       "asserted"
+      ]
+     }
+    }
+   }
+  ],
+  "min_score": 1.0
+ },
+ "domain_kinds": [],
+ "constraints": [],
+ "rules": []
+}

@@ -61,6 +61,7 @@ Index::Index(const Evidence& e) : ev(e) {
   for (const auto& c : ev.claims) {
     claim.emplace(c.id, &c);
     by_subject[c.subject].push_back(&c);
+    if (!c.object.empty()) by_object[c.object].push_back(&c);
     for (const auto& s : c.assessment.support) {
       if (auto it = obs.find(s.observation); it != obs.end()) {
         subject_units[c.subject].insert(it->second->unit);
@@ -70,6 +71,9 @@ Index::Index(const Evidence& e) : ev(e) {
     if (c.predicate == "mentioned_in" && c.value.is_string()) subject_units[c.subject].insert(c.value.get<std::string>());
   }
   for (auto& [s, v] : by_subject) {
+    std::sort(v.begin(), v.end(), [](const Claim* a, const Claim* b) { return a->id < b->id; });
+  }
+  for (auto& [s, v] : by_object) {
     std::sort(v.begin(), v.end(), [](const Claim* a, const Claim* b) { return a->id < b->id; });
   }
   for (const auto& d : ev.decisions) {

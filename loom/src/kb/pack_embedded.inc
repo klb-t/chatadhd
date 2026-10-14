@@ -5,7 +5,7 @@ const char* const kPackChunks0[] = {
     R"LOOMKB({
  "schema": "loom.kb.pack/1",
  "id": "builtin",
- "version": 2,
+ "version": 3,
  "description": "Loom knowledge-layer data pack (LOOM_CONCEPTUAL_MODEL: open sets as DATA, I6; MEGA MASTER §2.B). Every file is listed here with its schema; the loader rejects unlisted JSON files, missing files and schema mismatches. The build embeds this directory (src/kb/pack_embedded.inc, regenerate with tools/gen_kb_pack.py); <data_dir>/kb/ may hold an overlay pack (same layout, files replace built-in ones) written by promotion. Layout: schema/ (open vocabularies), lexicons/, profiles/, philosophy/ (principles, operators: priors), rules/ (operators that produce claims, checks), policy/, goals/, morphisms/ (anchoring meta-model, transfer), project_kinds/, facets/, artifact_types/.",
  "files": [
   {
@@ -171,6 +171,10 @@ const char* const kPackChunks0[] = {
   {
    "path": "artifact_types/pleading.json",
    "schema": "loom.kb.artifact_type/1"
+  },
+  {
+   "path": "facets/feedback_execution.json",
+   "schema": "loom.kb.facet/1"
   }
  ]
 }
@@ -7533,7 +7537,13 @@ const char* const kPackChunks10[] = {
     {"id": "rp.introduced_in.pl", "lang": "pl", "rel": "introduced_in", "template": "(w|we) {obj:version} (dodałem|dodaliśmy|doszedł|doszła|doszło|nowy|nowa|nowe) {subj:component}", "confidence": 0.8},
     {"id": "rp.introduced_in.pl2", "lang": "pl", "rel": "introduced_in", "template": "{subj:component} (od|w) (wersji|wersja) {obj:version}", "confidence": 0.7},
     {"id": "rp.purpose.en", "lang": "en", "rel": "has_purpose", "template": "{subj:project} is (a|an) {obj:text}", "confidence": 0.5},
-    {"id": "rp.purpose.pl", "lang": "pl", "rel": "has_purpose", "template": "{subj:project} (to|jest|służy do) {obj:text}", "confidence": 0.5}
+    {"id": "rp.purpose.pl", "lang": "pl", "rel": "has_purpose", "template": "{subj:project} (to|jest|służy do) {obj:text}", "confidence": 0.5},
+    {"id": "rp.has_component.en", "lang": "en", "rel": "has_component", "template": "{subj:project} (has component|contains component) {obj:component}", "confidence": 0.75},
+    {"id": "rp.has_component.pl", "lang": "pl", "rel": "has_component", "template": "{subj:project} (ma moduł|ma komponent|zawiera komponent) {obj:component}", "confidence": 0.75},
+    {"id": "rp.verifies.component.en", "lang": "en", "rel": "verifies", "template": "{subj:component} (verifies|checks|tests) {obj:component}", "confidence": 0.75},
+    {"id": "rp.verifies.component.pl", "lang": "pl", "rel": "verifies", "template": "{subj:component} (sprawdza|weryfikuje|testuje) {obj:component}", "confidence": 0.75},
+    {"id": "rp.feedback.component.en", "lang": "en", "rel": "has_input", "template": "{obj:component} (returns feedback to|returns results to) {subj:component}", "confidence": 0.75},
+    {"id": "rp.feedback.component.pl", "lang": "pl", "rel": "has_input", "template": "{obj:component} (przekazuje wynik do|przekazuje wyniki do) {subj:component}", "confidence": 0.75}
   ]
 }
 )LOOMKB",
@@ -13724,7 +13734,7 @@ const char* const kPackChunks25[] = {
     R"LOOMKB({
  "schema": "loom.kb.project_kind/1",
  "id": "software_app",
- "version": 1,
+ "version": 2,
  "title": {
   "en": "Software application",
   "pl": "Aplikacja"
@@ -13758,7 +13768,8 @@ const char* const kPackChunks25[] = {
  "facets": [
   "multiplatform",
   "agent",
-  "staged_transformation"
+  "staged_transformation",
+  "feedback_execution"
  ],
  "anchors": {
   "any": [
@@ -14192,10 +14203,10 @@ const char* const kPackChunks25[] = {
     }
    ],
    "anchors": {
-    "lexicon": [
+    "lexic)LOOMKB",
+    R"LOOMKB(on": [
      "protocol",
-)LOOMKB",
-    R"LOOMKB(     "format"
+     "format"
     ]
    }
   },
@@ -18843,6 +18854,120 @@ const char* const kPackChunks41[] = {
 }
 )LOOMKB",
     nullptr};
+const char* const kPackChunks42[] = {
+    R"LOOMKB({
+ "schema": "loom.kb.facet/1",
+ "id": "feedback_execution",
+ "version": 1,
+ "title": {
+  "en": "Tool execution with verification and feedback",
+  "pl": "Wykonanie narzędzi ze sprawdzaniem i informacją zwrotną"
+ },
+ "description": "Recognizes an unnamed connected execution pattern. This is a candidate interpretation, not proof of autonomous agency, implementation completeness, or permission to execute. A word list alone supplies no edges.",
+ "origin": "model_knowledge",
+ "validation_status": "candidate",
+ "sources": [
+  {
+   "doc": "docs/reports/implicit-structures-2026-10-14.md",
+   "date": "2026-10-14",
+   "section": "Relational recognition (reversible implementation decision)"
+  }
+ ],
+ "applies_to": [
+  "software_app"
+ ],
+ "anchors": {
+  "all": [
+   {
+    "op": "relation_pattern",
+    "root": "project",
+    "nodes": {
+     "project": "project",
+     "executor": "component",
+     "reviewer": "component",
+     "tool": "tool"
+    },
+    "edges": [
+     {
+      "from": "project",
+      "rel": "has_component",
+      "to": "executor"
+     },
+     {
+      "from": "project",
+      "rel": "has_component",
+      "to": "reviewer"
+     },
+     {
+      "from": "executor",
+      "rel": "uses_tool",
+      "to": "tool"
+     },
+     {
+      "from": "reviewer",
+      "rel": "verifies",
+      "to": "executor"
+     },
+     {
+      "from": "executor",
+      "rel": "has_input",
+      "to": "reviewer"
+     }
+    ],
+    "distinct": [
+     [
+      "executor",
+      "reviewer"
+     ]
+    ],
+    "same_qualifiers": [
+     "branch",
+     "version"
+    ],
+    "evidence": [
+     "observed",
+     "derived",
+     "user"
+    ],
+    "statuses": [
+     "active"
+    ],
+    "max_steps": 100000,
+    "max_matches": 64,
+    "interpretations": {
+     "agent_harness": {
+      "en": "Possible agent harness; autonomous control is not established by these relations.",
+      "pl": "Możliwy harness agenta; te relacje nie dowodzą samodzielnego sterowania."
+     },
+     "supervised_workbench": {
+      "en": "Possible workbench supervised by a person; the initiator is not established.",
+      "pl": "Możliwy warsztat nadzorowany przez człowieka; inicjator pozostaje nieustalony."
+     }
+    },
+    "claim_qualifiers": {
+     "polarity": {
+      "allow_missing": true,
+      "values": [
+       "positive"
+      ]
+     },
+     "assertion_context": {
+      "allow_missing": true,
+      "values": [
+       "asserted"
+      ]
+     }
+    }
+   }
+  ],
+  "min_score": 1.0
+ },
+ "domain_kinds": [],
+ "constraints": [],
+ "rules": []
+}
+)LOOMKB",
+    nullptr};
 struct EmbeddedPackFile {
   const char* path;
   const char* const* chunks;
@@ -18890,5 +19015,6 @@ const EmbeddedPackFile kEmbeddedPack[] = {
     {"artifact_types/recording_transcript.json", kPackChunks39},
     {"artifact_types/screenplay.json", kPackChunks40},
     {"artifact_types/pleading.json", kPackChunks41},
+    {"facets/feedback_execution.json", kPackChunks42},
 };
 // NOLINTEND
