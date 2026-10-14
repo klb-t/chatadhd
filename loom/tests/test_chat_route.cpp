@@ -11,6 +11,7 @@
 #include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -714,5 +715,118 @@ TEST_SUITE("chat_route") {
       CHECK(action_of(r) == "rules.set");
       CHECK(r.at("command").at("args").at("action") == "depict");
     }
+  }
+
+  // ── P16 2: one language per answer ────────────────────────────────────
+
+  TEST_CASE("data: every action has a title and a result text in both languages") {
+    Fixture f;
+    const Json actions = unwrap(RuntimeProfile::load("actions", f.rt->paths().root)).values().at("actions");
+    REQUIRE(actions.size() > 100);
+    std::size_t data_results = 0;
+    for (auto it = actions.begin(); it != actions.end(); ++it) {
+      const Json& a = it.value();
+      INFO("action " << it.key());
+      CHECK_FALSE(a.value("title", "").empty());                                 // English title
+      CHECK_FALSE(a.value("labels", Json::object()).value("pl", "").empty());   // Polish title
+      const auto outputs = a.value("outputs", Json::array());
+      if (std::find(outputs.begin(), outputs.end(), "text") != outputs.end()) continue;  // words: in the language of the text it works on
+      // not words: the sentence that says what came out, in both languages, naming only arguments the action requires
+      ++data_results;
+      const Json texts = a.value("result_text", Json::object());
+      for (const char* lang : {"en", "pl"}) {
+        const std::string text = texts.value(lang, "");
+        INFO("result_text." << lang);
+        REQUIRE_FALSE(text.empty());
+        for (std::size_t at = text.find("{{"); at != std::string::npos; at = text.find("{{", at + 2)) {
+          const std::string name = text.substr(at + 2, text.find("}}", at) - at - 2);
+          bool declared = name == "title";
+          for (const auto& p : a.value("params", Json::array()))
+            if (p.value("name", "") == name && p.value("required", false)) declared = true;
+          INFO("placeholder " << name);
+          CHECK(declared);
+        }
+      }
+    }
+    CHECK(data_results >= 40);
+    // the texts of the router and of the operations: every sentence in both languages
+    for (const char* domain : {"intent_routing", "chat_ops"}) {
+      const Json texts = unwrap(RuntimeProfile::load(domain, f.rt->paths().root)).values().at("texts");
+      INFO(domain);
+      for (auto it = texts.at("en").begin(); it != texts.at("en").end(); ++it) CHECK_MESSAGE(texts.at("pl").contains(it.key()), "pl lacks " << it.key());
+      for (auto it = texts.at("pl").begin(); it != texts.at("pl").end(); ++it) CHECK_MESSAGE(texts.at("en").contains(it.key()), "en lacks " << it.key());
+    }
+  }
+
+  TEST_CASE("a Polish conversation is answered in Polish only: proposal, what asks first, result; an input that shows no language follows the conversation") {
+    Fixture f;
+    f.add("user", "Dzień dobry, mam pytanie o plan wydania.");
+    f.overlay("action_rules", Json{{"rules", Json{{"ask_summaries", Json{{"id", "ask_summaries"}, {"scope", "installation"},
+        {"target", Json{{"kind", "class"}, {"id", "conversation"}}}, {"action", "summarise"}, {"effect", "confirm"}, {"initiator", "owner"},
+        {"reason", Json{{"en", "summaries are asked about first"}, {"pl", "o streszczenia pytam najpierw"}}}}}}}});
+    const auto asked = f.input("Streść tę rozmowę");
+    REQUIRE(asked.handled);
+    const std::string proposal = asked.chunk.at("text");
+    CHECK(proposal.find("Rozumiem to jako polecenie: Streść.") != std::string::npos);
+    CHECK(proposal.find("o streszczenia pytam najpierw") != std::string::npos);
+    CHECK(proposal.find("Streść - o streszczenia") != std::string::npos);  // the title of what asks first is Polish too
+    CHECK(proposal.find("Summarise") == std::string::npos);
+    CHECK(proposal.find("Use a model") == std::string::npos);
+    f.script(1, "Krótkie streszczenie.");
+    const auto done = f.input("tak");
+    REQUIRE(done.handled);
+    CHECK(done.chunk.at("text").get<std::string>().find("Gotowe: Streść.") != std::string::npos);
+    CHECK(done.chunk.at("text").get<std::string>().find("Done:") == std::string::npos);
+    // an input whose words show no language: the answer follows the conversation, not the default
+    const auto bare = f.input("/rules.list");
+    REQUIRE(bare.handled);
+    CHECK(bare.chunk.at("proposal").at("lang") == "pl");
+    const std::string asked_list = bare.chunk.at("text");
+    CHECK(asked_list.find("Rozumiem to jako polecenie: Reguły w mocy.") != std::string::npos);
+    CHECK(asked_list.find("I read this as a command") == std::string::npos);
+    const auto listed = f.input("tak");
+    REQUIRE(listed.handled);
+    const std::string result = listed.chunk.at("text");
+    CHECK(result.find("Gotowe: Reguły w mocy.") != std::string::npos);
+    CHECK(result.find("Reguły w mocy:") != std::string::npos);  // the sentence that says what the data is
+    CHECK(result.find("Done:") == std::string::npos);
+    CHECK(result.find("Rules in force") == std::string::npos);
+    // the rule written from the conversation: Polish title and Polish sentence
+    const auto rule = f.input("zawsze pytaj przed obrazem");
+    REQUIRE(rule.handled);
+    CHECK(rule.chunk.at("proposal").at("lang") == "pl");
+    CHECK(rule.chunk.at("proposal").at("title") == "Zapisz regułę");
+    const auto saved = f.input("tak");
+    REQUIRE(saved.handled);
+    CHECK(saved.chunk.at("text").get<std::string>().find("Gotowe: Zapisz regułę.") != std::string::npos);
+    CHECK(saved.chunk.at("text").get<std::string>().find("Reguła została zapisana:") != std::string::npos);
+    CHECK(saved.chunk.at("text").get<std::string>().find("Set a rule") == std::string::npos);
+    // the message that holds the result says its language, for the clients
+    CHECK(unwrap(f.rt->db().get_msg(saved.assistant_message_id))->metadata.at("action_run").at("lang") == "pl");
+  }
+
+  TEST_CASE("an English conversation is answered in English only, and a Polish input in it gets Polish (the words win over the conversation)") {
+    Fixture f;
+    const auto bare = f.input("/rules.list");
+    REQUIRE(bare.handled);
+    CHECK(bare.chunk.at("proposal").at("lang") == "en");
+    const auto listed = f.input("yes");
+    REQUIRE(listed.handled);
+    const std::string result = listed.chunk.at("text");
+    CHECK(result.find("Done: Rules in force.") != std::string::npos);
+    CHECK(result.find("Rules in force:") != std::string::npos);
+    CHECK(result.find("Gotowe") == std::string::npos);
+    const auto polish = f.input("Streść tę rozmowę");
+    REQUIRE(polish.handled);
+    CHECK(polish.chunk.at("proposal").at("lang") == "pl");
+    // and the conversation has now spoken Polish last: the input that shows no language follows it
+    const auto after = f.input("/rules.list");
+    REQUIRE(after.handled);
+    CHECK(after.chunk.at("proposal").at("lang") == "pl");
+    // the feature is data
+    f.overlay("intent_routing", Json{{"heuristic", Json{{"conversation_language", Json{{"enabled", false}}}}}});
+    const auto plain = f.input("/rules.list");
+    REQUIRE(plain.handled);
+    CHECK(plain.chunk.at("proposal").at("lang") == "en");
   }
 }

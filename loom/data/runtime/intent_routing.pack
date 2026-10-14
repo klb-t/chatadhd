@@ -309,7 +309,104 @@
           "magazyny",
           "pamiec",
           "zrodla",
-          "logi"
+          "logi",
+          "zawsze",
+          "nigdy",
+          "pytaj",
+          "zapytaj",
+          "przed",
+          "bez",
+          "pytania",
+          "wylacz",
+          "wlacz",
+          "napisz",
+          "przetlumacz",
+          "wytlumacz",
+          "rozwin",
+          "skrytykuj",
+          "przeredaguj",
+          "sparafrazuj",
+          "dla",
+          "mnie",
+          "tych",
+          "moj",
+          "moja",
+          "czy",
+          "jak",
+          "gdzie",
+          "kiedy",
+          "dlaczego",
+          "tylko",
+          "regule",
+          "zasade",
+          "obrazem",
+          "obrazu",
+          "obraz",
+          "tlumacz",
+          "niemiecki",
+          "angielski",
+          "polski"
+        ],
+        "en": [
+          "the",
+          "this",
+          "that",
+          "these",
+          "those",
+          "please",
+          "what",
+          "how",
+          "why",
+          "where",
+          "when",
+          "which",
+          "set",
+          "show",
+          "summarise",
+          "summarize",
+          "translate",
+          "ask",
+          "before",
+          "always",
+          "never",
+          "run",
+          "without",
+          "asking",
+          "draw",
+          "make",
+          "image",
+          "picture",
+          "conversation",
+          "message",
+          "rule",
+          "for",
+          "me",
+          "my",
+          "with",
+          "can",
+          "could",
+          "you",
+          "your",
+          "explain",
+          "simply",
+          "rephrase",
+          "critique",
+          "elaborate",
+          "list",
+          "find",
+          "search",
+          "remember",
+          "forget",
+          "undo",
+          "enable",
+          "disable",
+          "turn",
+          "does",
+          "are",
+          "was",
+          "have",
+          "has",
+          "yes"
         ]
       },
       "fold": {
@@ -3179,6 +3276,10 @@
           "dzięki",
           "dziekuje"
         ]
+      },
+      "conversation_language": {
+        "enabled": true,
+        "messages": 12
       }
     },
     "confirmation": {
@@ -3341,7 +3442,9 @@
         "ack_no_send": "Dropped. Nothing was executed. Sending your sentence to the model as an ordinary message.",
         "offer_declined": "Understood: your sentence stays unsent.",
         "offer_gone": "That sentence is no longer there to send: {{why}}.",
-        "route_failed": "Routing with the model failed ({{message}}); the local method decided instead."
+        "route_failed": "Routing with the model failed ({{message}}); the local method decided instead.",
+        "why_planned": "not available yet",
+        "why_no_executor": "nothing in this installation runs it"
       },
       "pl": {
         "proposal_title": "Rozumiem to jako polecenie: {{title}}.",
@@ -3405,7 +3508,9 @@
         "ack_no_send": "Odrzucone. Nic nie wykonano. Wysyłam Twoje zdanie do modelu jako zwykłą wiadomość.",
         "offer_declined": "Rozumiem: Twoje zdanie zostaje niewysłane.",
         "offer_gone": "Tego zdania nie ma już do wysłania: {{why}}.",
-        "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna."
+        "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna.",
+        "why_planned": "jeszcze niedostępne",
+        "why_no_executor": "nic w tej instalacji tego nie wykonuje"
       }
     }
   },
@@ -4224,6 +4329,20 @@
                   "type": "string",
                   "minLength": 1
                 }
+              }
+            },
+            "additionalProperties": false
+          },
+          "conversation_language": {
+            "type": "object",
+            "description": "When the words of an input show no language (\"undo\", \"ok\"), the answer is in the language of the conversation: that of its latest proposal, else of its latest message of the person that shows one. messages: how many of the latest messages are looked at; enabled false: the default language.",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "messages": {
+                "type": "integer",
+                "minimum": 1
               }
             },
             "additionalProperties": false

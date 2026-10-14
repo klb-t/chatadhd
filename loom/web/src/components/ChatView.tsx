@@ -12,12 +12,12 @@ import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
-import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, messageLanguage, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
 import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTexts, requestOpenPanel } from "../context/open-settings";
 import { watchClientSteps } from "../context/client-step-events";
-import { featureMessage } from "../onboarding/presentation.mjs";
+import { featureInLanguage, featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
 import "./chat-context.css";
@@ -759,33 +759,35 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               {m.role === "assistant" && api.actions && (() => {
                 const answer = pendingAnswer(m.metadata);
                 const state = proposalState(m.metadata);
+                const spoken = messageLanguage(m.metadata);  // one language per answer: the page adds its lines in the language of the message
+                const proposalFeature = featureInLanguage(proposalCatalog.feature, spoken);
                 if (answer && answer.kind === "usage") {
-                  return <UsagePendingBlock testId="chat-run-usage-pending" feature={usageCatalog.feature} busy={answering === answer.runId}
+                  return <UsagePendingBlock testId="chat-run-usage-pending" feature={featureInLanguage(usageCatalog.feature, spoken)} busy={answering === answer.runId}
                     receipt={{ ...(answer.usage ?? {}), receipt_id: answer.receiptId, operation_id: (m.metadata?.action_run as { pending?: { operation_id?: string | null } } | undefined)?.pending?.operation_id ?? null }}
                     onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
                 }
                 if (answer && answer.kind === "client" && answer.clientStep) {
-                  return <ClientStepBlock testId="chat-client-step" feature={clientStepCatalog.feature} step={answer.clientStep} runId={answer.runId}
+                  return <ClientStepBlock testId="chat-client-step" feature={featureInLanguage(clientStepCatalog.feature, spoken)} step={answer.clientStep} runId={answer.runId}
                     receiptId={answer.receiptId} host={clientHost} load={loadBlob} upload={uploadBlob} clientRef={"web:" + clientSession.id} busy={answering === answer.runId}
                     failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
                     onAnswer={(result) => answerClient(answer.runId, result)} onCancel={() => void cancelRun(answer.runId)} />;
                 }
                 if (answer) {
-                  return <ActionProposalBlock testId="chat-action-proposal" feature={proposalCatalog.feature} answer={answer} busy={answering === answer.runId}
+                  return <ActionProposalBlock testId="chat-action-proposal" feature={proposalFeature} answer={answer} busy={answering === answer.runId}
                     failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
                     onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
                 }
-                if (state && proposalCatalog.feature) {
-                  const label = safeNotice(proposalCatalog.feature, "status_" + state);
+                if (state && proposalFeature) {
+                  const label = safeNotice(proposalFeature, "status_" + state);
                   const written = writtenView(m.metadata);
                   const offer = openOffer(m.metadata, m.id);
                   const ended = offerState(m.metadata);
-                  const endedLabel = ended ? offerTexts(proposalCatalog.feature).state(ended) : null;
+                  const endedLabel = ended ? offerTexts(proposalFeature).state(ended) : null;
                   return (<>
                     {label && <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span>}
-                    {written && <ProposalWritten testId="chat-action-written" feature={proposalCatalog.feature} written={written} busy={undoing === written.id}
+                    {written && <ProposalWritten testId="chat-action-written" feature={proposalFeature} written={written} busy={undoing === written.id}
                       failure={undoFailure && undoFailure.id === written.id ? undoFailure.reason : null} onUndo={() => void undoWritten(written)} />}
-                    {offer && <ProposalOffer testId="chat-action-offer" feature={proposalCatalog.feature} offer={offer} busy={Boolean(stream)}
+                    {offer && <ProposalOffer testId="chat-action-offer" feature={proposalFeature} offer={offer} busy={Boolean(stream)}
                       failure={offerFailure && offerFailure.proposalId === offer.proposalId ? offerFailure.reason : null} onSend={() => takeOffer(offer)} />}
                     {endedLabel && <span className="pill" data-testid="chat-action-offer-state" data-state={ended ?? ""}>{endedLabel}</span>}
                   </>);
@@ -794,7 +796,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               })()}
               {m.role === "assistant" && (() => {
                 const made = producedView(m.metadata, m.id);
-                const label = made ? producedText(proposalCatalog.feature, made) : null;
+                const label = made ? producedText(featureInLanguage(proposalCatalog.feature, messageLanguage(m.metadata)), made) : null;
                 return made && label ? <p className="pill" data-testid="chat-action-produced" data-node={made.forms[0]} data-target={made.target}>{label}</p> : null;
               })()}
               {m.role === "assistant" && (() => {
