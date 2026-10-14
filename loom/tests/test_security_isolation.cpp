@@ -17,6 +17,7 @@
 
 using namespace loom;
 using namespace loom::archive;
+using namespace loom::catalog;
 using loom::test::unwrap;
 namespace fs = std::filesystem;
 

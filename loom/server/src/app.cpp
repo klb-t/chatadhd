@@ -1204,7 +1204,7 @@ void App::route_logs_misc() {
   svr_.Get("/api/info", [this](const httplib::Request&, httplib::Response& res) {
     if (accounts_) {  // the server's directory layout is not the account's business
       json info = parse_or_empty(own_and_free(loom_info(rctx())));
-      if (info.is_object()) info.erase("data_dir");
+      if (info.is_object()) { info.erase("data_dir"); info.erase("paths"); }
       res.set_content(info.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
       return;
     }
