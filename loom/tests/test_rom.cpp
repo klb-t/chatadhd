@@ -14,7 +14,7 @@ using namespace loom;
 using loom::test::unwrap;
 
 namespace {
-const std::filesystem::path kRepo = std::filesystem::path(__FILE__).parent_path().parent_path().parent_path();
+const std::filesystem::path kRepo = std::filesystem::weakly_canonical(std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / ".." / "..");
 }
 
 TEST_SUITE("rom") {
