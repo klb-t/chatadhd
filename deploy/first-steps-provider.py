@@ -51,7 +51,9 @@ class H(http.server.BaseHTTPRequestHandler):
                 f.write(json.dumps({"path": self.path, "authorization": self.headers.get("Authorization", ""),
                                     "stream": bool(body.get("stream")), "classify": classify,
                                     "last": last[-120:]}, ensure_ascii=False) + "\n")
-        usage = {"prompt_tokens": 20, "completion_tokens": 8, "cost": 0.00001}
+        # Zuzycie ma byc wiarygodne: rozmiar zapytania / 4. Stale "20 tokenow" tworzylo mikroskopijny punkt odniesienia, wiec
+        # kolejne, dluzsze zapytanie (rosnaca historia) przekraczalo x10 i serwer slusznie czekal na potwierdzenie (usage_pending).
+        usage = {"prompt_tokens": max(1, len(text) // 4), "completion_tokens": 8, "cost": 0.00001}
         if body.get("stream"):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")

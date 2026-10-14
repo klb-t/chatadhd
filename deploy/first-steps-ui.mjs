@@ -32,7 +32,13 @@ const t0 = Date.now();
 const note = m => trace.push(String(((Date.now() - t0) / 1000).toFixed(1)).padStart(6) + "s " + m);
 page.on("console", m => { if (m.type() === "error" || m.type() === "warning") note("console." + m.type() + ": " + m.text().slice(0, 300)); });
 page.on("request", r => { if (r.url().includes("/api/")) note("-> " + r.method() + " " + r.url().replace(base, "")); });
-page.on("response", r => { if (r.url().includes("/api/")) note("<- " + r.status() + " " + r.url().replace(base, "")); });
+page.on("response", r => {
+  if (!r.url().includes("/api/")) return;
+  note("<- " + r.status() + " " + r.url().replace(base, ""));
+  // tresc odpowiedzi na wysylanie i akcje (SSE: pierwsze zdarzenia), zeby bylo widac, czemu nic sie nie dzieje
+  if (/\/api\/(chat|actions\/|client\/declare)/.test(r.url()))
+    r.text().then(t => note("   body " + r.url().replace(base, "") + ": " + t.replace(/\s+/g, " ").slice(0, 700)), () => {});
+});
 page.on("requestfailed", r => note("!! " + r.method() + " " + r.url().replace(base, "") + " " + (r.failure()?.errorText ?? "")));
 const shot = async name => { if (shots) await page.screenshot({ path: path.join(shots, name + ".png") }); };
 const step = async (name, fn) => { await fn(); log("OK " + name); };
@@ -95,6 +101,13 @@ try {
         await page.waitForTimeout(50);
       }
       await button.click({ timeout: 5000 }).catch(() => {});
+      // "Czeka na potwierdzenie" (usage_pending): to stan, nie blad; tekst zostaje w polu, a uzytkownik klika Confirm.
+      const pending = page.getByTestId("chat-usage-pending");
+      if (await pending.waitFor({ timeout: 1500 }).then(() => true, () => false)) {
+        note("usage_pending widoczne: " + (await pending.innerText()).replace(/\s+/g, " ").slice(0, 300));
+        await page.getByTestId("chat-usage-pending-confirm").click();
+        await pending.waitFor({ state: "detached", timeout: 30000 }).catch(() => {});
+      }
       for (const end = Date.now() + 3000; Date.now() < end;) {
         if ((await input.inputValue()) === "") return;
         await page.waitForTimeout(50);
@@ -152,6 +165,7 @@ try {
   console.error("--- ostatnie klikniecia (cel w DOM) ---\n" + (await page.evaluate(() => window.__clicks.slice(-8).join("\n")).catch(() => "?")));
   const box = await page.getByTestId("send-chat").boundingBox().catch(() => null);
   console.error("--- pole Send: " + JSON.stringify(box) + " viewport " + JSON.stringify(page.viewportSize()));
+  console.error("--- usage_pending: " + await page.getByTestId("chat-usage-pending").count().catch(() => "?"));
   console.error("--- widoczny blad ---\n" + await page.getByTestId("chat-error").allInnerTexts().catch(() => "?"));
   process.exitCode = 1;
 } finally {
