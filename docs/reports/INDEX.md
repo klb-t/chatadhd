@@ -617,3 +617,14 @@ Wg `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md` §5–§9. Właściciel
 - Luki (uczciwie „brak”): tryb ratunkowy, klucz weryfikacji aktualizacji, osobny bezpiecznik „nie nadpisuj nieprzeczytanego”.
   Otwarte: funkcje `loom_rom_*` w C ABI; inne ładowarki niż profile nie pytają jeszcze rejestru montowań.
 - Raport: `docs/reports/S2_R11_2026-10-13.md`. Cofnięcie: revert scalenia R11.
+
+## S2 / R10 — profil `ports` i operatory złożeń (2026-10-14)
+
+- `data/runtime/ports.pack`: rola → adapter + parametry (chat.default, analysis.fast, embed.default, asr, ocr, format.*);
+  rozstrzyganie przez silnik zasad S1 (`Engine::resolve_value`): instalacja → osoba (`profiles/ports.pack`) → rozmowa
+  (`conversations.metadata.ports`); `explain` pokazuje warstwy i zwycięzcę. `loom_invoke("ports", resolve|explain|roles)`.
+- Operatory fallback / mirror / chain / ensemble nad `AdapterRegistry`; media i magazyn ich używają (zachowanie bez zmian);
+  `use_model` nietknięty — jedyne miejsce „kolejno modeli”. Pochodzenie ASR/OCR zapisywane w działającym programie.
+- Otwarte: odbiorcy (media, analiza, czat) jeszcze nie czytają ról (kolejność ASR/OCR dalej z `media.pack`); zespół dwóch
+  modeli analizy niepodłączony; brak widoku w ustawieniach web. Raport: `docs/reports/S2_R10_2026-10-13.md`.
+  Cofnięcie: revert scalenia R10.
