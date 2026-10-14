@@ -266,7 +266,7 @@ if (process.argv.includes("--browser")) {
     browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] });
     const page = await browser.newPage();
     page.on("pageerror", error => pageErrors.push(error.message));
-    await page.goto((url).replace(/\/?$/, "/#warsztat"));
+    await page.goto(url);
     try { await page.getByTestId("workflow-recovery-panel").locator("summary").first().click(); }
     catch (error) { throw Error(`${error.message}\nBrowser errors: ${JSON.stringify(pageErrors)}`); }
     await check("browser panel performs no implicit reads/dispatch and read-only unknown recovery is explicit", async () => {
