@@ -2,7 +2,7 @@
   "schema": "loom.graph_classes/1",
   "revision": 1,
   "calibration": true,
-  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Inheritance applies to classes only; setting values do not inherit (they resolve through scopes). Wave 2 (GRAF_HUB_KOD_SILNIK §5-§7): classes declare `traits` (inherited along `parent`; a class id is also a trait of its own, so `requires: [\"message\"]` means \"is a message\"); a node may add traits of its own. Actions never appear here: an action fits an element when the element has the traits the action requires (data/runtime/actions.pack). `content` and `form` are separate nodes (§6): a form expresses a content (relation `expresses`, weight = fidelity); forms are subclassed per modality. `groups` are named trait bundles; the list is open. Devices (GRAF_HUB_KOD_SILNIK §4.3, S2/R9): the class `device` and its subclasses describe input/output devices; their instances and platform availability are in data/graph/devices.pack. `action_run` is the node of one run of an action; results hang on it (relation produced_by).",
+  "description": "Calibration example (R53, DUCH_GRAFU 0): a starting point the owner may reorder, hide, extend or replace through the graph_entry runtime-profile overlay; it is not a closed list. Inheritance applies to classes only; setting values do not inherit (they resolve through scopes). Wave 2 (GRAF_HUB_KOD_SILNIK §5-§7): classes declare `traits` (inherited along `parent`; a class id is also a trait of its own, so `requires: [\"message\"]` means \"is a message\"); a node may add traits of its own. Actions never appear here: an action fits an element when the element has the traits the action requires (data/runtime/actions.pack). `content` and `form` are separate nodes (§6): a form expresses a content (relation `expresses`, weight = fidelity); forms are subclassed per modality. `groups` are named trait bundles; the list is open. Devices (GRAF_HUB_KOD_SILNIK §4.3, S2/R9): the class `device` and its subclasses describe input/output devices; their instances and platform availability are in data/graph/devices.pack. `action_run` is the node of one run of an action; results hang on it (relation produced_by). Ports (GRAF_HUB_KOD_SILNIK §4, S2/R12): `port` is an abstract interface (asr, ocr, storage, llm ...), `adapter` one registered implementation of a port, `role_choice` the result of resolving a role of the `ports` profile (role, adapter, scope, source), `port_run` one real run through a port (ASR/OCR call, storage operation, ensemble outcome). Links: adapter `implements` port; role_choice `chose` adapter; port_run `produced_by` adapter, `derived_from` its inputs, `part_of` the action_run it happened in. Secrets appear only as references (secret key names), never as values.",
   "traits": {
     "has_text": {
       "label": {
@@ -255,6 +255,41 @@
         "pl": "Zdalne"
       },
       "description": "Reached over the network; data sent to it leaves the device."
+    },
+    "port": {
+      "label": {
+        "en": "Port",
+        "pl": "Port"
+      },
+      "description": "An abstract interface that adapters implement (asr, ocr, storage, llm ...)."
+    },
+    "adapter": {
+      "label": {
+        "en": "Adapter",
+        "pl": "Adapter"
+      },
+      "description": "One registered implementation of a port; carries a secret key name at most, never a secret."
+    },
+    "role_choice": {
+      "label": {
+        "en": "Role choice",
+        "pl": "Wybór roli"
+      },
+      "description": "The adapter (or composition) a role of the ports profile resolved to, with the scope and source of the choice."
+    },
+    "port_run": {
+      "label": {
+        "en": "Port run",
+        "pl": "Przebieg portu"
+      },
+      "description": "One real run through a port; result of a model call, storage operation or ensemble."
+    },
+    "port_artifact": {
+      "label": {
+        "en": "Port artifact",
+        "pl": "Element portów"
+      },
+      "description": "A node that describes the port layer (port, adapter, role choice, port run); references only, never secrets or bytes."
     }
   },
   "groups": {
@@ -431,6 +466,16 @@
         "device"
       ],
       "element_match": "any"
+    },
+    "ports": {
+      "label": {
+        "en": "Ports, adapters and their runs",
+        "pl": "Porty, adaptery i ich przebiegi"
+      },
+      "traits": [
+        "port_artifact"
+      ],
+      "element_match": "any"
     }
   },
   "relations": {
@@ -471,6 +516,33 @@
       "from": "form",
       "to": "action_run",
       "description": "The action run that made a result; the run node carries the action id, run id, step, model / adapter and usage receipts (references only, never secrets or bytes)."
+    },
+    "implements": {
+      "label": {
+        "en": "Implements",
+        "pl": "Implementuje"
+      },
+      "from": "adapter",
+      "to": "port",
+      "description": "The adapter is one registered implementation of the port."
+    },
+    "chose": {
+      "label": {
+        "en": "Chose",
+        "pl": "Wybrał"
+      },
+      "from": "role_choice",
+      "to": "adapter",
+      "description": "The role resolved to this adapter (a composition links every member)."
+    },
+    "part_of": {
+      "label": {
+        "en": "Part of",
+        "pl": "Część"
+      },
+      "from": "port_run",
+      "to": "action_run",
+      "description": "A port run that happened inside an action run (the run id is in the execution context)."
     }
   },
   "classes": {
@@ -915,6 +987,46 @@
         "pl": "Serwer"
       },
       "parent": "network_endpoint"
+    },
+    "port": {
+      "label": {
+        "en": "Port",
+        "pl": "Port"
+      },
+      "traits": [
+        "port",
+        "port_artifact"
+      ]
+    },
+    "adapter": {
+      "label": {
+        "en": "Adapter",
+        "pl": "Adapter"
+      },
+      "traits": [
+        "adapter",
+        "port_artifact"
+      ]
+    },
+    "role_choice": {
+      "label": {
+        "en": "Role choice",
+        "pl": "Wybór roli"
+      },
+      "traits": [
+        "role_choice",
+        "port_artifact"
+      ]
+    },
+    "port_run": {
+      "label": {
+        "en": "Port run",
+        "pl": "Przebieg portu"
+      },
+      "traits": [
+        "port_run",
+        "port_artifact"
+      ]
     }
   }
 }
