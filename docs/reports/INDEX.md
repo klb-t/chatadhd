@@ -652,3 +652,14 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 - Otwarte: odbiorcy (media, analiza, czat) jeszcze nie czytają ról (kolejność ASR/OCR dalej z `media.pack`); zespół dwóch
   modeli analizy niepodłączony; brak widoku w ustawieniach web. Raport: `docs/reports/S2_R10_2026-10-13.md`.
   Cofnięcie: revert scalenia R10.
+
+## S2 / R12 — adaptery, wybory ról i przebiegi przez port jako węzły grafu (2026-10-14)
+
+- Klasy `port`, `adapter`, `role_choice`, `port_run` (`data/graph/classes.pack`); relacje `implements`, `chose`, `part_of`.
+  `include/loom/port_graph.h`: węzły adapterów z `AdapterRegistry`, wyborów ról z `PortProfile::resolve`, przebiegów z
+  `produced_by` → adapter, `derived_from` → wejścia, `part_of` → `run:<id>` (styk z S1/P10); łączenie z `model_use` po
+  `operation_id`. Sekrety tylko jako nazwy odniesień (`redact()`). ASR/OCR zapisują przebieg (wyłączne: `port_graph_runs=false`);
+  `loom_invoke("ports","graph")` zapisuje adaptery i wybory ról.
+- Otwarte: `ActionRunScope` w `src/actions/run.cpp` (S1, jedna linia) — bez niej `part_of` nie powstaje; obszar „ports”
+  w widoku grafu; magazyn nie zapisuje jeszcze przebiegów; wersja profilu na przebiegu.
+- Raport: `docs/reports/S2_R12_2026-10-13.md`. Cofnięcie: revert scalenia R12.
