@@ -62,7 +62,7 @@ TEST_SUITE("port_graph") {
   TEST_CASE("role choices from PortProfile::resolve: role, adapter, scope, source; composition links every member") {
     fsutil::TempDir td;
     auto db = fresh_db(td);
-    port_graph::record_adapters(*db, "asr", {{"groq", "implemented", Json::object()}, {"google", "implemented", Json::object()}});
+    (void)port_graph::record_adapters(*db, "asr", {{"groq", "implemented", Json::object()}, {"google", "implemented", Json::object()}});
     auto prof = unwrap(PortProfile::load(td.path()));
     auto resolved = unwrap(prof.resolve("asr"));
     const std::string choice = unwrap(port_graph::record_role_choice(*db, resolved));
@@ -207,8 +207,8 @@ TEST_SUITE("port_graph") {
     Secrets secrets(td.path() / "secrets.json");
     secrets.set("groq_api_key", secret);
     // The records the media path produces carry no key; the graph records them plus the profile's key NAMES.
-    port_graph::record_adapters(*db, "asr", port_graph::adapters_of(asr_adapters()));
-    port_graph::record_role_choices(*db, unwrap(PortProfile::load(td.path())));
+    (void)port_graph::record_adapters(*db, "asr", port_graph::adapters_of(asr_adapters()));
+    (void)port_graph::record_role_choices(*db, unwrap(PortProfile::load(td.path())));
     port_graph::PortRun run;
     run.port = "asr"; run.adapter = "groq_whisper"; run.operation_id = "op_t";
     unwrap(port_graph::record_port_run(*db, run));
