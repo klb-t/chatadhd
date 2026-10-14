@@ -799,6 +799,18 @@ Do tego odkryte przy audycie: generator `tools/gen_graph_interfaces.py` nie widz
 ### Bramka (końcowa, na czubku gałęzi)
 
 CTest 215/215 (dev + serwer, Debug); `npm run build`, wszystkie skrypty `test:*` (30) i `e2e` w Chromium: PASS; cztery generatory `--check` czyste (`gen_runtime_profiles.py`, `gen_onboarding_pack.py`, `gen_graph_interfaces.py`, `gen_rom_catalogue.py`), piny `product_literals.pack` i `data_domains.pack` odświeżone funkcjami strażnika i sumami plików. Próba negatywna audytu: dopisanie fałszywej trasy, funkcji C ABI i operacji `loom_invoke` wywala `test_chat_coverage` z nazwą każdej z nich. `main` bez zmian od `e9b2aa70` (nic do scalenia). Nie sprawdzone: Clang, ASan/TSan, release, Android na telefonie, prawdziwy model.
+## S2 / R21 — „Pierwsze kroki” dla właściciela (2026-10-14)
+
+- `docs/PIERWSZE_KROKI.md` (po polsku, 7 kroków, każdy oznaczony „sprawdzone” / „nie sprawdzone”), link w `README.md`.
+  Skrypt `deploy/first-steps-check.sh` przechodzi kroki naprawdę: instalacja paczki do świeżych katalogów, konto, serwer,
+  logowanie, klucz atrapy dostawcy, pięć poleceń z czatu (propozycja → paragon → potwierdzenie), opcjonalnie w Chromium.
+  Zadanie `first-steps` w `package.yml` (kontener `debian:12` + Chromium), nieblokujące.
+- Działa dziś: „streść / przetłumacz / wytłumacz prościej tę rozmowę”, zasada „zawsze pytaj mnie przed …”, „pokaż …”.
+  Nie działa jeszcze: notatka głosowa i „pytaj przed obrazem” (akcje `planned`), „przetłumacz na niemiecki” bez „tę rozmowę”.
+- Usterki dla S1/UI: trasowanie metodą `model` na prostym dostawcy; web po angielsku obok polskich wyników akcji; brak odpowiedzi
+  przy 390 px (raz); jasne tło pola loginu. Naprawione w S2: instalator nie ukrywa już nieudanego założenia konta (kod 3).
+- Raport: `docs/reports/S2_R21_2026-10-14.md`. Cofnięcie: usunąć zadanie `first-steps` / skrypty.
+
 
 ## P16 — pierwsze kroki: preset `hybrid`, jeden język odpowiedzi, element domyślny akcji, pole logowania w ciemnym motywie, pierwsza wiadomość 390 px (R54) (2026-10-14, branch `claude/p16-first-steps-fixes`)
 

@@ -9,6 +9,8 @@ HTTP server and React workbench run today. The Python/Kivy prototype is retained
 Android has a JNI bridge but still needs device validation. This is not yet a
 packaged consumer release.
 
+**Chcesz zacząć?** [Pierwsze kroki (po polsku)](docs/PIERWSZE_KROKI.md): serwer na VPS, konto, web, telefon, klucz, pięć prób.
+
 ![Knowledge workbench with fictional entities, claims and linked graph views](docs/images/knowledge-workbench.png)
 
 *Synthetic offline demonstration against the native server, with LLM analysis

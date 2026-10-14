@@ -320,10 +320,17 @@ fi
 if [ -n "$ADMIN_LOGIN" ]; then
   log "tworzenie uzytkownika '$ADMIN_LOGIN' (haslo zostanie zapytane)"
   if [ "$(id -u)" -eq 0 ] && [ "$DO_SYSTEMD" = 1 ]; then
-    "$HELPER" add "$ADMIN_LOGIN" || log "uzytkownik juz istnieje lub blad - patrz wyzej"
+    "$HELPER" add "$ADMIN_LOGIN" || ADMIN_FAILED=1
   else
-    "$PREFIX/current/bin/loom-server" user add "$ADMIN_LOGIN" --accounts-root "$DATA_DIR" || true
+    "$PREFIX/current/bin/loom-server" user add "$ADMIN_LOGIN" --accounts-root "$DATA_DIR" || ADMIN_FAILED=1
   fi
 fi
 
 log "gotowe: $DEST (current -> $(readlink "$PREFIX/current" 2>/dev/null || echo '?'))"
+# Program is installed either way; a failed first account is reported and makes the exit code non-zero
+# (it used to be swallowed), so scripts and the owner notice it.
+if [ "${ADMIN_FAILED:-0}" = 1 ]; then
+  log "UWAGA: nie udalo sie utworzyc uzytkownika '$ADMIN_LOGIN' (moze juz istnieje - patrz komunikat wyzej)."
+  log "Sprobuj ponownie: loom-server user add '$ADMIN_LOGIN' --accounts-root '$DATA_DIR'"
+  exit 3
+fi
