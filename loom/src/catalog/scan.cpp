@@ -9,6 +9,8 @@
 // any thread count once true parallelism is added (I5).
 #include "loom/platforms.h"
 #include "loom/catalog.h"
+#include "loom/path_policy.h"
+#include "loom/runtime.h"
 
 #include <algorithm>
 #include <cctype>
@@ -489,6 +491,7 @@ Result<Json> Catalog::scan(const ScanConfig& cfg, const ProgressFn& progress, co
     if (cancel && cancel->cancelled()) break;
     fs::path p = fsutil::resolve_path(src);
     if (p == rt_.paths().root) return Error(Errc::InvalidArgument, "source cannot be the active data directory");
+    LOOM_TRY(rt_.path_policy().check(p, "source '" + src + "'"));
     std::error_code ec;
     if (!fs::exists(p, ec)) {
       stats.warnings.push_back("source not found: " + src);

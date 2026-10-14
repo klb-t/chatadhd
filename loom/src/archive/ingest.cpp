@@ -19,6 +19,7 @@
 #include "loom/log.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/path_policy.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
@@ -175,13 +176,17 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfi
   std::error_code ec;
   if (cfg.repo && !cfg.repo->empty()) {
     repo = fs::weakly_canonical(fsutil::expand_user(*cfg.repo), ec);
+    LOOM_TRY(rt.path_policy().check(repo, "repo"));
     if (ec || !fs::is_directory(repo)) return Error(Errc::InvalidArgument, "repo is not a directory: " + *cfg.repo);
     plan.repo_path = repo.string();
     plan.repo_name = repo.filename().string();
     if (plan.repo_name.empty()) plan.repo_name = "repo";
   }
   fs::path out_dir;
-  if (!cfg.out_dir.empty()) out_dir = fs::weakly_canonical(fsutil::expand_user(cfg.out_dir), ec);
+  if (!cfg.out_dir.empty()) {
+    out_dir = fs::weakly_canonical(fsutil::expand_user(cfg.out_dir), ec);
+    LOOM_TRY(rt.path_policy().check(out_dir, "out_dir"));
+  }
 
   struct Cand {
     fs::path path;
@@ -241,6 +246,7 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfi
 
   for (const auto& s : cfg.sources) {
     fs::path p = fs::weakly_canonical(fsutil::expand_user(s), ec);
+    LOOM_TRY(rt.path_policy().check(p, "source '" + s + "'"));
     if (ec || !fs::exists(p)) return Error(Errc::NotFound, "source not found: " + s);
     if (fs::is_directory(p)) {
       walk(p, true);

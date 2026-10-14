@@ -8,6 +8,8 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <limits>
+#include <map>
 #include <optional>
 #include <sstream>
 #include <thread>
@@ -209,6 +211,85 @@ std::string ext_for_export_format(const std::string& fmt) {
   return ".json";
 }
 
+
+// ── Uploads: streamed to disk, never held in memory (R18) ─────────────────
+
+struct Upload {
+  bool has_file = false;
+  std::string filename;
+  fs::path path;
+  std::map<std::string, std::string> fields;  // small non-file multipart fields
+  std::string error;
+};
+
+// Extension of an untrusted upload name, kept only when it is a plain alphanumeric suffix.
+std::string safe_extension(const std::string& filename) {
+  std::string ext = fs::path(filename).extension().string();
+  if (ext.size() < 2 || ext.size() > 17) return {};
+  for (std::size_t i = 1; i < ext.size(); ++i)
+    if (!std::isalnum(static_cast<unsigned char>(ext[i]))) return {};
+  return ext;
+}
+
+// Per-user scratch folder (owner-only) inside the data dir: uploads never land in a shared /tmp.
+fs::path upload_dir_for(LoomContext* ctx) {
+  json info = parse_or_empty(own_and_free(loom_info(ctx)));
+  const std::string data_dir = info.value("data_dir", std::string());
+  std::error_code ec;
+  fs::path dir = data_dir.empty() ? fs::temp_directory_path(ec) / "loom-server-uploads"
+                                  : fs::path(data_dir) / "tmp" / "uploads";
+  fs::create_directories(dir, ec);
+  fs::permissions(dir, fs::perms::owner_all, fs::perm_options::replace, ec);
+  return dir;
+}
+
+// Streams the multipart part "file" into `dir`/<random name> as it arrives. Other parts are collected as
+// strings up to `field_limit` bytes each (they are options, not payload).
+bool receive_upload(const httplib::Request& req, const httplib::ContentReader& reader, const fs::path& dir,
+                    std::size_t field_limit, Upload& up) {
+  if (!req.is_multipart_form_data()) {
+    up.error = "multipart/form-data with a field \"file\" is required";
+    return false;
+  }
+  std::ofstream out;
+  std::string current;
+  bool in_file = false, failed = false;
+  const bool ok = reader(
+      [&](const httplib::MultipartFormData& part) {
+        current = part.name;
+        in_file = part.name == "file" && !up.has_file;
+        if (in_file) {
+          up.has_file = true;
+          up.filename = part.filename;
+          up.path = dir / (next_request_id() + safe_extension(part.filename));
+          out.open(up.path, std::ios::binary);
+          if (!out) { failed = true; up.error = "cannot write the upload"; return false; }
+        } else {
+          up.fields[current];
+        }
+        return true;
+      },
+      [&](const char* data, std::size_t n) {
+        if (in_file) {
+          out.write(data, static_cast<std::streamsize>(n));
+          if (!out) { failed = true; up.error = "cannot write the upload (disk full?)"; return false; }
+          return true;
+        }
+        auto& f = up.fields[current];
+        if (f.size() + n > field_limit) { failed = true; up.error = "form field too large"; return false; }
+        f.append(data, n);
+        return true;
+      });
+  out.close();
+  if (!ok || failed) {
+    if (up.error.empty()) up.error = "malformed multipart body";
+    std::error_code ec;
+    if (!up.path.empty()) fs::remove(up.path, ec);
+    return false;
+  }
+  return true;
+}
+
 }  // namespace
 
 App::App(ServerOptions opts) : opts_(std::move(opts)) {}
@@ -232,8 +313,22 @@ LoomContext* App::context_for_user(const std::string& user_id) {
   std::lock_guard lk(pool_mu_);
   auto it = user_ctx_.find(user_id);
   if (it != user_ctx_.end()) return it->second;
-  const auto dir = accounts_->user_dir(user_id).string();
-  LoomContext* c = loom_init(dir.c_str());
+  // Each account's runtime is confined (R18): request-supplied paths stay in the account's own data dir (plus
+  // the operator's path_roots) and outbound requests cannot reach the server's private network.
+  const auto& iso = accounts_->settings().isolation;
+  json options = {{"data_dir", accounts_->user_dir(user_id).string()}};
+  if (iso.confine_paths) {
+    options["confine_paths"] = true;
+    options["path_roots"] = iso.path_roots;
+  }
+  if (iso.block_private_hosts) {
+    options["block_private_hosts"] = true;
+    options["allow_hosts"] = iso.allow_private_hosts;
+  }
+  const char* err = nullptr;
+  LoomContext* c = loom_init_ex(options.dump().c_str(), &err);
+  if (!c) std::cerr << "loom-server: cannot open the data directory of " << user_id << ": " << own_and_free(err) << std::endl;
+  else if (err) loom_free_string(err);
   if (c) user_ctx_[user_id] = c;
   return c;
 }
@@ -257,7 +352,9 @@ bool App::init() {
     if (!ctx_) return false;
   }
 
-  svr_.set_payload_max_length(opts_.max_body_bytes);
+  // httplib enforces this only for bodies that announce a Content-Length; the middleware below rejects every
+  // other framing and applies the per-route limits before a body is read.
+  svr_.set_payload_max_length(opts_.max_upload_bytes == 0 ? (std::numeric_limits<size_t>::max)() : opts_.max_upload_bytes);
   svr_.set_keep_alive_max_count(100);
 
   register_middleware();
@@ -306,10 +403,52 @@ void App::register_middleware() {
   // 127.0.0.1, no auth" for local use). Accounts mode (P1): a session token, from the HttpOnly cookie or an
   // Authorization: Bearer header, selects the user and that user's own data directory; the static token is
   // not used then.
-  svr_.set_pre_routing_handler([this](const httplib::Request& req, httplib::Response& res) {
+  auto body_refusal = [this](const httplib::Request& req) -> int {
+    if (!req.get_header_value("Transfer-Encoding").empty()) return 411;
+    const bool writes = req.method == "POST" || req.method == "PUT" || req.method == "PATCH";
+    if (!req.has_header("Content-Length")) return writes ? 411 : 0;
+    const std::string text = req.get_header_value("Content-Length");
+    unsigned long long len = 0;
+    const auto parsed = std::from_chars(text.data(), text.data() + text.size(), len);
+    if (parsed.ec != std::errc{} || parsed.ptr != text.data() + text.size()) return 411;
+    const bool upload = req.method == "POST" && (req.path == "/api/import" || req.path == "/api/media/transcribe");
+    const std::size_t limit = upload ? opts_.max_upload_bytes : opts_.max_body_bytes;  // 0 = no limit
+    return limit != 0 && len > limit ? 413 : 0;
+  };
+  auto cross_site = [this](const httplib::Request& req) -> bool {
+    if (req.method == "GET" || req.method == "HEAD" || req.method == "OPTIONS") return false;
+    if (!req.get_header_value("Authorization").empty()) return false;
+    const auto& iso = accounts_->settings().isolation;
+    const std::string origin = req.get_header_value("Origin");
+    if (origin.empty()) return req.get_header_value("Sec-Fetch-Site") == "cross-site";
+    if (origin == "null") return true;
+    for (const auto& allowed : iso.csrf_allowed_origins)
+      if (allowed == origin) return false;
+    const auto scheme = origin.find("://");
+    std::string origin_host = scheme == std::string::npos ? origin : origin.substr(scheme + 3);
+    std::string host = req.get_header_value("Host");
+    if (accounts_->settings().throttle.trust_forwarded_for && !req.get_header_value("X-Forwarded-Host").empty())
+      host = req.get_header_value("X-Forwarded-Host");
+    auto lower = [](std::string v) {
+      std::transform(v.begin(), v.end(), v.begin(), [](unsigned char c) { return std::tolower(c); });
+      return v;
+    };
+    return lower(origin_host) != lower(host);
+  };
+  svr_.set_pre_routing_handler([this, body_refusal, cross_site](const httplib::Request& req, httplib::Response& res) {
     t_request_ctx = nullptr;
     t_user.reset();
     t_session_token.clear();
+    // Request framing and size are judged before any body byte is read, for every path (a rejected request
+    // closes the connection so unread body bytes cannot be taken for the next request).
+    if (const int refused = body_refusal(req); refused != 0) {
+      res.set_header("Connection", "close");
+      send_error(res, refused == 411 ? "invalid_argument" : "invalid_argument",
+                 refused == 411 ? "send a Content-Length; chunked or unframed request bodies are not accepted"
+                                : "request body is larger than this server accepts (see --max-body-bytes / --max-upload-bytes)",
+                 refused);
+      return httplib::Server::HandlerResponse::Handled;
+    }
     if (req.path.rfind("/api/", 0) != 0) return httplib::Server::HandlerResponse::Unhandled;
     if (accounts_) {
       std::string token = session_token_of(req, accounts_->settings().cookie.name);
@@ -324,6 +463,13 @@ void App::register_middleware() {
       const bool is_public =
           (req.method == "GET" && (req.path == "/api/auth/me" || req.path == "/api/healthz")) ||
           (req.method == "POST" && (req.path == "/api/auth/login" || req.path == "/api/auth/register"));
+      // CSRF: a cookie is attached by the browser to whatever site asks; a request that names a foreign
+      // origin never acts with it. Bearer-token requests carry no ambient credential and are exempt.
+      if (accounts_->settings().isolation.csrf_check_origin && cross_site(req)) {
+        res.set_header("Connection", "close");
+        send_error(res, "auth", "cross-site request refused", 403);
+        return httplib::Server::HandlerResponse::Handled;
+      }
       if (!is_public && !t_request_ctx) {
         res.set_header("Connection", "close");
         send_error(res, "auth", "sign in required", 401);
@@ -342,6 +488,15 @@ void App::register_middleware() {
       }
     }
     return httplib::Server::HandlerResponse::Unhandled;
+  });
+
+  // Every response: no sniffing, no framing, no referrer, and API answers (sessions, config, secrets lists)
+  // are never cached by a browser or an intermediary.
+  svr_.set_post_routing_handler([](const httplib::Request& req, httplib::Response& res) {
+    res.set_header("X-Content-Type-Options", "nosniff");
+    res.set_header("X-Frame-Options", "DENY");
+    res.set_header("Referrer-Policy", "no-referrer");
+    if (req.path.rfind("/api/", 0) == 0 && !res.has_header("Cache-Control")) res.set_header("Cache-Control", "no-store");
   });
 
   // CORS is off by default: no Access-Control-* headers are ever added, so
@@ -567,47 +722,34 @@ void App::route_models_providers() {
   svr_.Get("/api/media/status", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_media_status(rctx()));
   });
-  svr_.Post("/api/media/transcribe", [this](const httplib::Request& req, httplib::Response& res) {
-    if (!req.has_file("file")) {
+  svr_.Post("/api/media/transcribe", [this](const httplib::Request& req, httplib::Response& res,
+                                             const httplib::ContentReader& reader) {
+    LoomContext* ctx = rctx();
+    Upload up;
+    struct Cleanup {
+      fs::path path;
+      ~Cleanup() { std::error_code ignored; if (!path.empty()) fs::remove(path, ignored); }
+    } cleanup;
+    const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), up);
+    cleanup.path = up.path;
+    if (!received) {
+      send_error(res, "invalid_argument", up.error);
+      return;
+    }
+    if (!up.has_file) {
       send_error(res, "invalid_argument", "multipart field file is required");
       return;
     }
     json options = json::object();
-    if (req.has_file("options")) {
-      options = json::parse(req.get_file_value("options").content, nullptr, false);
+    if (up.fields.count("options")) {
+      options = json::parse(up.fields["options"], nullptr, false);
       if (options.is_discarded() || !options.is_object()) {
         send_error(res, "invalid_argument", "options must be a JSON object");
         return;
       }
     }
-    const auto file = req.get_file_value("file");
-    std::error_code ec;
-    const auto directory = fs::temp_directory_path(ec) / ("loom-media-" + next_request_id());
-    if (ec || !fs::create_directory(directory, ec) || ec) {
-      send_error(res, "io", "Cannot create temporary audio directory");
-      return;
-    }
-    fs::permissions(directory, fs::perms::owner_all, fs::perm_options::replace, ec);
-    if (ec) {
-      fs::remove_all(directory, ec);
-      send_error(res, "io", "Cannot restrict temporary audio directory permissions");
-      return;
-    }
-    // Never incorporate the untrusted upload filename into the directory.
-    const auto path = directory / ("audio" + fs::path(file.filename).extension().string());
-    struct Cleanup {
-      fs::path directory;
-      ~Cleanup() { std::error_code ignored; fs::remove_all(directory, ignored); }
-    } cleanup{directory};
-    {
-      std::ofstream out(path, std::ios::binary);
-      if (!out.write(file.content.data(), static_cast<std::streamsize>(file.content.size()))) {
-        send_error(res, "io", "Cannot write uploaded audio");
-        return;
-      }
-    }
     const auto encoded = options.dump();
-    send_loom(res, loom_transcribe(rctx(), path.string().c_str(), encoded.c_str()));
+    send_loom(res, loom_transcribe(ctx, up.path.string().c_str(), encoded.c_str()));
   });
   svr_.Get("/api/models", [this](const httplib::Request&, httplib::Response& res) {
     send_loom(res, loom_get_models(rctx()));
@@ -878,31 +1020,30 @@ void App::route_memory() {
 // ── Import / export ────────────────────────────────────────────────────
 
 void App::route_import_export() {
-  svr_.Post("/api/import", [this](const httplib::Request& req, httplib::Response& res) {
-    if (!req.has_file("file")) {
+  svr_.Post("/api/import", [this](const httplib::Request& req, httplib::Response& res,
+                                   const httplib::ContentReader& reader) {
+    LoomContext* ctx = rctx();
+    Upload up;
+    if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), up)) {
+      send_error(res, "invalid_argument", up.error, 400);
+      return;
+    }
+    if (!up.has_file) {
       send_error(res, "invalid_argument", "multipart field \"file\" is required", 400);
       return;
     }
-    const auto file = req.get_file_value("file");
-    std::string title = req.has_param("title") ? req.get_param_value("title") : std::string();
+    auto field = [&](const char* name) {
+      if (req.has_param(name)) return req.get_param_value(name);
+      auto it = up.fields.find(name);
+      return it == up.fields.end() ? std::string() : it->second;
+    };
+    std::string title = field("title");
     // R50: optional duplicate_policy (reimport_and_link | reuse_prior | reimport);
     // absent = the import pack default.
-    std::string duplicate_policy = req.has_param("duplicate_policy") ? req.get_param_value("duplicate_policy") : std::string();
-
-    std::error_code ec;
-    fs::path tmp_dir = fs::temp_directory_path(ec) / "loom-server-import";
-    if (ec) tmp_dir = fs::path("/tmp/loom-server-import");
-    fs::create_directories(tmp_dir, ec);
-
-    std::string ext = fs::path(file.filename).extension().string();
-    fs::path tmp_path = tmp_dir / (next_request_id() + ext);
-    {
-      std::ofstream out(tmp_path, std::ios::binary);
-      out.write(file.content.data(), static_cast<std::streamsize>(file.content.size()));
-    }
+    std::string duplicate_policy = field("duplicate_policy");
+    fs::path tmp_path = up.path;
 
     auto queue = std::make_shared<SseQueue>();
-    LoomContext* ctx = rctx();
     std::string path_str = tmp_path.string();
     std::string title_copy = title;
     json options = json::object();
@@ -1048,7 +1189,12 @@ void App::route_provenance_events_tasks() {
 // ── Logs & misc ────────────────────────────────────────────────────────
 
 void App::route_logs_misc() {
-  svr_.Get("/api/logs", [](const httplib::Request& req, httplib::Response& res) {
+  svr_.Get("/api/logs", [this](const httplib::Request& req, httplib::Response& res) {
+    // The log buffer is process-wide: with accounts it holds every user's lines (paths, ids, errors).
+    if (accounts_ && !accounts_->settings().isolation.expose_server_logs) {
+      send_error(res, "auth", "the server log is not available to accounts (server_accounts: expose_server_logs)", 403);
+      return;
+    }
     int max_lines = req.has_param("max_lines") ? std::atoi(req.get_param_value("max_lines").c_str()) : 200;
     send_loom(res, loom_get_logs(max_lines));
   });
@@ -1056,6 +1202,12 @@ void App::route_logs_misc() {
     send_loom(res, loom_version());
   });
   svr_.Get("/api/info", [this](const httplib::Request&, httplib::Response& res) {
+    if (accounts_) {  // the server's directory layout is not the account's business
+      json info = parse_or_empty(own_and_free(loom_info(rctx())));
+      if (info.is_object()) { info.erase("data_dir"); info.erase("paths"); }
+      res.set_content(info.dump(-1, ' ', false, json::error_handler_t::replace), "application/json");
+      return;
+    }
     send_loom(res, loom_info(rctx()));
   });
   svr_.Get("/api/healthz", [](const httplib::Request&, httplib::Response& res) {
@@ -1181,6 +1333,9 @@ void App::route_archive_placeholder() {
     }
     std::string mime = j["artifact"].value("mime", std::string("application/octet-stream"));
     if (mime.rfind("text/", 0) == 0) mime += "; charset=utf-8";
+    // Artifact bytes come from imported archives, not from this app: served as inert data (an html/svg
+    // artifact must not run script with the session of whoever opens it).
+    res.set_header("Content-Security-Policy", "sandbox; default-src 'none'; style-src 'unsafe-inline'; img-src data:");
     res.set_content(j.value("content", std::string()), mime);
   });
 }
@@ -1417,6 +1572,16 @@ void App::route_auth() {
       if (!object_body(req, res, body)) return;
       const std::string mode = accounts_->settings().registration;
       if (mode == "closed") { send_error(res, "auth", "registration is closed", 403); return; }
+      // Every attempt counts (it costs an Argon2id evaluation and, in invite mode, is a guess at a code), so the
+      // login throttle applies to registration under its own key per client address.
+      const std::string client = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
+      const std::string key = "register@" + client;
+      if (const auto wait = accounts_->throttle_wait(key, client); wait > 0) {
+        res.set_header("Retry-After", std::to_string(wait));
+        send_error(res, "rate_limited", "too many registration attempts; try again in " + std::to_string(wait) + " s", 429);
+        return;
+      }
+      accounts_->record_failure(key, client);
       const std::string login = body.value("login", std::string());
       if (mode == "invite") {
         if (body.value("invite", std::string()).empty()) { send_error(res, "auth", "an invite code is required", 403); return; }
@@ -1441,8 +1606,19 @@ void App::route_auth() {
       if (!accounts_ || !t_user) { send_error(res, "auth", "sign in required", 401); return; }
       json body;
       if (!object_body(req, res, body)) return;
+      const std::string client = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
+      if (const auto wait = accounts_->throttle_wait(t_user->login, client); wait > 0) {
+        res.set_header("Retry-After", std::to_string(wait));
+        send_error(res, "rate_limited", "too many failed attempts; try again in " + std::to_string(wait) + " s", 429);
+        return;
+      }
       auto ok = accounts_->verify_password(t_user->login, body.value("current", std::string()));
-      if (!ok) { send_error(res, "auth", "current password is wrong", 401); return; }
+      if (!ok) {
+        accounts_->record_failure(t_user->login, client);
+        send_error(res, "auth", "current password is wrong", 401);
+        return;
+      }
+      accounts_->record_success(t_user->login);
       auto st = accounts_->set_password(t_user->login, body.value("new", std::string()));
       if (!st) { send_error(res, std::string(loom::errc_name(st.error().code)), st.error().message); return; }
       (void)accounts_->revoke_user_sessions(t_user->id);  // every old session ends; this one is replaced

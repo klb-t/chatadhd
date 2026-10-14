@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <filesystem>
 
+#include "loom/path_policy.h"
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "storage_internal.h"
@@ -81,7 +82,10 @@ class LocalBackend final : public StorageBackend {
 
 Result<std::unique_ptr<StorageBackend>> make_local(const std::string& id, const Json& cfg, const BackendEnv& env) {
   std::string path = json::get_string(cfg, "path", "{dir}");
-  return std::unique_ptr<StorageBackend>(new LocalBackend(id, sfs::path(expand_dir(path, env.data_dir))));
+  sfs::path root(expand_dir(path, env.data_dir));
+  // Accounts (R18): a user's placement overlay must not aim a local target at another user's data or the server.
+  if (env.path_policy) LOOM_TRY(env.path_policy->check(root, "storage target '" + id + "' path"));
+  return std::unique_ptr<StorageBackend>(new LocalBackend(id, std::move(root)));
 }
 
 }  // namespace loom::storage::detail

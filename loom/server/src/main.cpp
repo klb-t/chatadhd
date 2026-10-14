@@ -31,6 +31,7 @@ void print_usage(const char* argv0) {
   std::cerr << "Usage: " << argv0
             << " [--version] [--host H] [--port P] [--data-dir DIR] [--static-dir DIR] [--token TOKEN]\n"
                "       [--accounts-root DIR] [--allow-unauthenticated-public]\n"
+               "       [--max-body-bytes N (JSON routes, 0 = no limit)] [--max-upload-bytes N (import/transcribe, 0 = no limit)]\n"
                "       " << argv0 << " user add|passwd|disable|enable|invite|list --accounts-root DIR [LOGIN]\n"
                "         (password: --password-stdin, or prompted on a terminal)\n"
                "Environment: LOOM_SERVER_HOST, LOOM_SERVER_PORT, CHATADHD_DATA,\n"
@@ -131,6 +132,8 @@ int main(int argc, char** argv) {
   opts.static_dir = env_or("LOOM_SERVER_STATIC_DIR", "");
   opts.bearer_token = env_or("LOOM_SERVER_TOKEN", "");
   opts.accounts_root = env_or("LOOM_ACCOUNTS_ROOT", "");
+  if (auto v = env_or("LOOM_SERVER_MAX_BODY_BYTES", ""); !v.empty()) opts.max_body_bytes = std::strtoull(v.c_str(), nullptr, 10);
+  if (auto v = env_or("LOOM_SERVER_MAX_UPLOAD_BYTES", ""); !v.empty()) opts.max_upload_bytes = std::strtoull(v.c_str(), nullptr, 10);
   bool allow_public = false;
 
   for (int i = 1; i < argc; ++i) {
@@ -154,6 +157,10 @@ int main(int argc, char** argv) {
       opts.bearer_token = next("--token");
     } else if (arg == "--accounts-root") {
       opts.accounts_root = next("--accounts-root");
+    } else if (arg == "--max-body-bytes") {
+      opts.max_body_bytes = std::strtoull(next("--max-body-bytes"), nullptr, 10);
+    } else if (arg == "--max-upload-bytes") {
+      opts.max_upload_bytes = std::strtoull(next("--max-upload-bytes"), nullptr, 10);
     } else if (arg == "--allow-unauthenticated-public") {
       allow_public = true;
     } else if (arg == "--version") {

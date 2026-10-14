@@ -702,3 +702,21 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 - Sprawdzone na GitHubie (run 38504332914): obie paczki uruchomione i przetestowane w `debian:12`, `ubuntu:22.04`,
   `ubuntu:24.04`, `debian:13`. `loom-server --version`; instalator odmawia paczki na inny procesor. Opis po polsku w
   `deploy/README.md`. Raport: `docs/reports/S2_R17_2026-10-14.md`. Cofnięcie: `runs-on: ubuntu-24.04`, bez PPA i flag statycznych.
+
+## S2 / R18 — przegląd bezpieczeństwa serwera z kontami (2026-10-14)
+
+- Naprawione (od najpoważniejszego): **ucieczka ścieżek** w trybie kont (`sources`/`repo`/`out_dir` w katalogu, archiwum,
+  wiedzy; cel magazynu `local`; `analysis_prompt_dir`) — nowe `PathPolicy`; `/api/logs` z logiem wszystkich użytkowników
+  (teraz 403 dla kont); CSRF (Origin/`Sec-Fetch-Site` przy zmianach, Bearer zwolniony); SSRF przez adresy dostawców
+  (blokada adresów prywatnych dla kont); pamięć na żądanie (bez długości → 411, za duże → 413 przed odczytem, wysyłki
+  strumieniowo na dysk); dławienie rejestracji i zmiany hasła; `../` z GitHuba; CSP dla surowych artefaktów; nagłówki
+  bezpieczeństwa; `/api/info` bez ścieżek; `BlobStore` nie wychodzi poza swój katalog.
+- Trasy P13 (`/api/client/*`, `/api/actions/client_result`): izolowane per użytkownik (rejestr w runtime użytkownika).
+- Ustawienia (presety, nakładka `profiles/server_accounts.pack`): `confine_paths`, `path_roots`, `block_private_hosts`,
+  `allow_private_hosts`, `csrf.*`, `expose_server_logs`; flagi `--max-body-bytes` (64 MiB, 0 = bez limitu),
+  `--max-upload-bytes` (0 = bez limitu).
+- Testy: `test_security_isolation.cpp`, `server.security` (A/B, ścieżki, CSRF, sesje, rozmiary, dławienie).
+- Dla S1: bloby klienta jako base64 w JSON (pamięć ~2,5×) → strumieniowe trasy; `confirmed:true` z ciała HTTP tylko
+  z `receipt_id` z wcześniejszej propozycji. Otwarte w S2: odrzucanie ciał chunked bez ustawienia; równoległe Argon2id,
+  bomby zip, haki git w repo użytkownika, wyścig symlinków, długość loginu.
+- Raport: `docs/reports/S2_R18_2026-10-14.md`. Cofnięcie: revert scalenia R18 albo ustawienia w nakładce.

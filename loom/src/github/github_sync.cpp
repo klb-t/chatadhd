@@ -405,6 +405,14 @@ Status GitHubSync::pull_file(const GitHubFile& file) {
   LOOM_TRY_ASSIGN(std::string content, fetch_file_content(file));
   if (content.empty() && file.size > 0) return Error(Errc::Http, "empty content for non-empty file " + file.path);
 
+  // The path comes from the remote repository's tree: it must stay relative and inside local_path (R18).
+  {
+    const fs::path rel(file.path);
+    bool bad = file.path.empty() || rel.is_absolute() || rel.has_root_name() || file.path.find('\0') != std::string::npos;
+    for (const auto& part : rel)
+      if (part == "..") bad = true;
+    if (bad) return Error(Errc::InvalidArgument, "refusing to write outside the sync folder: " + file.path);
+  }
   fs::path local_path = fs::path(cfg_.local_path) / file.path;
   LOOM_TRY(fsutil::ensure_dir(local_path.parent_path()));
   LOOM_TRY(fsutil::write_file(local_path, content));
