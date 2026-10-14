@@ -366,6 +366,9 @@
           "path": "loom/data/runtime/storage_security.pack"
         },
         {
+          "path": "loom/data/runtime/ui_animation.pack"
+        },
+        {
           "path": "loom/data/runtime/usage_compaction.pack"
         },
         {
