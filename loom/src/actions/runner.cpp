@@ -723,7 +723,12 @@ Result<Json> ActionRunner::preview(const Json& request) {
 Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& request) {
   const auto& root = rt_.paths().root;
   if (action == "rules.set") return rules_set(root, request);
-  if (action == "rules.disable") return rules_disable(root, request);
+  if (action == "rules.disable") {
+    auto done = rules_disable(root, request);
+    if (done && json::get_bool(*done, "written", true) && json::get_bool(*done, "changed", true))
+      chat_route::note_rule_switched(rt_, json::get_string(*done, "id"), json::get_bool(*done, "disabled", true));
+    return done;
+  }
   if (action == "rules.list") return rules_list(root, request);
   const bool define = action == "actions.define" || action == "groups.define";
   const bool remove = action == "actions.remove" || action == "groups.remove";

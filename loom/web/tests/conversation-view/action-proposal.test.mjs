@@ -330,3 +330,22 @@ test('the written block: the line, the entry, one undo; undone and busy and fail
   assert.ok(bare.includes('rozpisz'));
   assert.doesNotMatch(bare, /w-entry/);
 });
+
+test('a rule written from the conversation is shown as written and taken back by switching it off (P13)', () => {
+  const rule = { id: 'user:conversation:c_1:gate:summarise', scope: 'conversation', scope_id: 'c_1', effect: 'confirm', action: 'summarise', initiator: 'user',
+    provenance: { origin: 'chat', conv_id: 'c_1' } };
+  const written = { kind: 'rule', id: rule.id, overlays: ['profiles/action_rules.pack'], entry: rule };
+  const metadata = { action_proposal: { ...proposal, action: 'rules.set', status: 'executed', written } };
+  const view = a.writtenView(metadata);
+  assert.equal(view.kind, 'rule');
+  assert.deepEqual(JSON.parse(view.entry), rule, 'the rule is shown as it stands in the overlay');
+  assert.equal(a.undoCall(view), 'rulesDisable', 'a rule is switched off, not removed');
+  assert.deepEqual(a.undoRequest(view), { id: rule.id, confirmed: true, ref: 'web' }, 'the click is the yes to exactly this switch-off');
+  assert.ok(en.written_rule && pl.written_rule && en.undone_rule && pl.undone_rule && en.status_cancelled && pl.status_cancelled);
+  const texts = a.writtenTexts(feature, view);
+  assert.equal(texts.written, en.written_rule.replace('{{overlay}}', 'profiles/action_rules.pack').replace('{{id}}', rule.id));
+  assert.equal(texts.undone, en.undone_rule);
+  assert.equal(texts.undo, en.undo);
+  // switched off from anywhere: the proposal says so (status undone, written.undone)
+  assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written: { ...written, undone: true } } }).undone, true);
+});

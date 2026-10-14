@@ -144,8 +144,9 @@ export function writtenView(metadata: Meta | undefined): WrittenView | null {
   };
 }
 
-/** Which removal takes a definition back: a group has its own, an action and a repeated chain are both actions. */
-export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" {
+/** Which call takes what was written back: a rule is switched off, a group has its own removal, an action and a repeated chain are both actions. */
+export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" | "rulesDisable" {
+  if (view.kind === "rule") return "rulesDisable";
   return view.kind === "define_group" ? "groupsRemove" : "actionsRemove";
 }
 
@@ -351,10 +352,10 @@ export function writtenTexts(feature: PresentationFeature | null, view: WrittenV
     catch { return null; }
   };
   return {
-    written: say("written", { id: view.id, overlay: view.overlays.join(", ") }),
+    written: say(view.kind === "rule" ? "written_rule" : "written", { id: view.id, overlay: view.overlays.join(", ") }),
     entry: say("written_entry"),
     undo: say("undo"),
-    undone: say("undone"),
+    undone: say(view.kind === "rule" ? "undone_rule" : "undone"),
     failed: (reason) => say("undo_failed", { reason }) ?? reason,
   };
 }

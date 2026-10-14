@@ -74,6 +74,10 @@ Result<Json> client_result(Runtime& rt, const Json& request);
 // actions.cancel the same way: a paused run is cancelled and the conversation that showed its question closes it.
 Result<Json> cancel(Runtime& rt, const Json& request);
 
+// A rule written from a conversation was switched off (or switched on again, `disabled` false): the proposal that wrote it says so
+// (written.undone, status undone / executed). A rule that did not come from a conversation has no message to tell.
+void note_rule_switched(Runtime& rt, const std::string& rule_id, bool disabled);
+
 // A definition of the user's own (action, sequence, group) was taken back: the proposal in the conversation that wrote it says so
 // (status "undone", written.undone). `origin` is the removed entry's origin ({conv_id, node, ...}); no conversation, nothing to mark.
 void note_removed(Runtime& rt, const Json& origin);

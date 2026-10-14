@@ -1819,6 +1819,13 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
       emergent::settle(rt, node, new_status);
     }
   }
+  // A rule written from the conversation is shown the same way and taken back with one click (rules.disable).
+  if (grow_kind.empty() && new_status == "executed" && proposal.value("action", "") == "rules.set") {
+    const Json written = run->value("result", Json::object()).value("data", Json::object());
+    if (!written.value("id", "").empty())
+      written_view = Json{{"kind", "rule"}, {"id", written.value("id", "")}, {"overlays", Json::array({written.value("overlay", "profiles/action_rules.pack")})},
+                          {"entry", written.value("rule", Json(nullptr))}};
+  }
   LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) {
     m["action_proposal"]["status"] = new_status;
     if (offer.is_object()) m["action_proposal"]["offer"] = offer;
@@ -2113,6 +2120,26 @@ Result<Json> after_pause(Runtime& rt, Json run) {
 }
 
 }  // namespace
+
+void note_rule_switched(Runtime& rt, const std::string& rule_id, bool disabled) {
+  auto profile = RuntimeProfile::load("action_rules", rt.paths().root);
+  if (!profile || !profile->values().contains("rules")) return;
+  const Json* rule = json::find(profile->values().at("rules"), rule_id);
+  const std::string conv_id = rule ? json::get_string(rule->value("provenance", Json::object()), "conv_id") : std::string();
+  if (conv_id.empty()) return;  // not written from a conversation: nothing there says so
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return;
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("action_proposal")) continue;
+    const Json proposal = m.metadata["action_proposal"];
+    const Json written = proposal.value("written", Json::object());
+    if (json::get_string(written, "kind") != "rule" || json::get_string(written, "id") != rule_id) continue;
+    (void)set_metadata(rt, m.id, [&](Json& meta) {
+      meta["action_proposal"]["written"]["undone"] = disabled;
+      meta["action_proposal"]["status"] = disabled ? "undone" : "executed";
+    });
+  }
+}
 
 Result<Json> client_result(Runtime& rt, const Json& request) {
   LOOM_TRY_ASSIGN(Json run, rt.actions().client_result(request));
