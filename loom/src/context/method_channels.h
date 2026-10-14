@@ -3,6 +3,8 @@
 #include <map>
 #include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 #include "loom/context_retrieval.h"
 
@@ -12,6 +14,12 @@ namespace loom::context {
 // supplies every method identity, version, selection, parameter and preset.
 Json method_channel_capabilities();
 Json method_fusion_capabilities();
+
+// Fuse several score sets (weight, ref -> score) with a fusion descriptor
+// {operation: sum|max|min|mean|rrf, signal: raw_score|reciprocal_rank, constant?}. The same arithmetic the
+// method combination uses; the ensemble port operator (port_compose.h) delegates to it.
+Result<std::map<std::string, double>> fuse_score_sets(
+    const std::vector<std::pair<double, std::map<std::string, double>>>& sets, const Json& fusion);
 
 // Native operation IDs, not method/profile IDs or a default method catalogue.
 // lexical/tfidf delegate to the existing offline instruments. bm25 requires

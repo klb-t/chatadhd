@@ -2,10 +2,12 @@
 // plugins), "github" (GitHub sync), "actions" (action "list" = the action catalogue; "for", "explain" and
 // "propose_chain" ask the action/element matching engine, loom/action_rules.h; "run", "confirm", "cancel",
 // "status" and "preview" run actions through the interpreter, loom/action_runner.h), "chat" ("route" decides
-// message or command for a chat input, loom/chat_route.h).
+// message or command for a chat input, loom/chat_route.h), "ports" (read-only: "resolve", "explain" and
+// "roles" of the ports profile, loom/port_profile.h; request {role, conversation_id?}).
 #include "loom/action_runner.h"
 #include "loom/action_table.h"
 #include "loom/chat_route.h"
+#include "loom/port_profile.h"
 #include "context.h"
 #include "loom/storage_command.h"
 
@@ -27,6 +29,25 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     if (p == "actions" && a == "list") return out(action_list(ctx->rt->paths().root));
     if (p == "actions") {
       auto r = ctx->rt->actions().invoke(a, *rj);
+      if (!r) return out_error(r.error());
+      return out(*r);
+    }
+    if (p == "ports") {
+      if (a != "resolve" && a != "explain" && a != "roles") return out_error(Errc::InvalidArgument, "unknown ports action '" + a + "'");
+      auto prof = PortProfile::load(ctx->rt->paths().root);
+      if (!prof) return out_error(prof.error());
+      if (a == "roles") return out(prof->roles());
+      const std::string role = json::get_string(*rj, "role");
+      const std::string cid = json::get_string(*rj, "conversation_id");
+      Json meta = Json::object();
+      if (!cid.empty()) {
+        auto conv = ctx->rt->db().get_conv(cid);
+        if (!conv) return out_error(conv.error());
+        if (!*conv) return out_error(Errc::NotFound, "conversation not found: " + cid);
+        meta = (*conv)->metadata.value("ports", Json::object());
+      }
+      auto r = a == "resolve" ? prof->resolve(role, meta, cid, ctx->rt->config().all())
+                              : prof->explain(role, meta, cid, ctx->rt->config().all());
       if (!r) return out_error(r.error());
       return out(*r);
     }
