@@ -5,6 +5,7 @@
 set -uo pipefail
 APK="${1:?apk}"; OUT="${2:?outdir}"
 HERE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+[ -z "${ANDROID_HOME:-}" ] || export PATH="$ANDROID_HOME/platform-tools:$PATH"
 PKG=com.chatadhd.android
 # shellcheck disable=SC1091
 . "$OUT/smoke.env"

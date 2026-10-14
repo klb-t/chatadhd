@@ -1,0 +1,334 @@
+name: Android smoke (emulator)
+
+# Manual only (the owner pays for Actions minutes, nothing here runs on push). Run it from the Actions tab or
+#   gh workflow run android-smoke.yml --ref <branch>
+# What it proves: the debug APK installs and runs on a real Android emulator (KVM, x86_64), connects to a
+# loom-server in accounts mode on the same runner, logs in, sends a message, gets the reply, and runs the
+# "streść tę rozmowę" -> proposal -> "tak" -> summary round trip against the fake provider of the
+# first-steps walk-through (deploy/first-steps-provider.py). Screenshots, logcat and the server log are uploaded.
+#
+# The APK and the server archive are built here (same recipes as package.yml) unless a run id of an earlier
+# run is given; the APK of a package.yml run must have been built with abis=x86_64 (the default there is arm64 only).
+# Every action is pinned to a full commit SHA (the comment names the release).
+on:
+  workflow_dispatch:
+    inputs:
+      apk_run_id:
+        description: "Reuse the chatadhd-android-apk artifact of this earlier run (package.yml or this workflow; needs the x86_64 ABI). Empty = build it here."
+        type: string
+        default: ""
+      server_run_id:
+        description: "Reuse the chatadhd-server-linux-x64 artifact of this earlier run. Empty = build it here."
+        type: string
+        default: ""
+      native_build_type:
+        description: "CMake build type of the native core inside the APK (Release = what a phone gets; Debug = quick build, slow app)."
+        type: choice
+        options: [ Release, RelWithDebInfo, Debug ]
+        default: Release
+      api_level:
+        description: "Android API level of the emulator image (google_apis, x86_64)."
+        type: string
+        default: "34"
+      speed_factor:
+        description: "Multiplier of every wait in the UI driver (raise it when the runner is slow)."
+        type: string
+        default: "1"
+      cmake_version:
+        description: "Android SDK CMake package, e.g. 3.31.5. Empty = the newest 3.x the SDK offers."
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  actions: read   # download-artifact from an earlier run
+
+concurrency:
+  group: android-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: Build the debug APK (x86_64)
+    if: ${{ inputs.apk_run_id == '' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_MAXSIZE: 1G
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Read the toolchain versions the Gradle project asks for
+        run: |
+          set -euo pipefail
+          g=loom/android/app/build.gradle.kts
+          ndk="$(sed -n 's/^[[:space:]]*ndkVersion = "\([^"]*\)".*/\1/p' "$g")"
+          sdk="$(sed -n 's/^[[:space:]]*compileSdk = \([0-9][0-9]*\).*/\1/p' "$g")"
+          if [ -z "$ndk" ] || [ -z "$sdk" ]; then echo "::error::cannot read ndkVersion / compileSdk from $g"; exit 1; fi
+          { echo "NDK_VERSION=$ndk"; echo "ANDROID_PLATFORM=$sdk"; echo "CCACHE_COMPILERCHECK=string:ndk-$ndk"; } >> "$GITHUB_ENV"
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4.9.1
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: loom/web/package-lock.json
+
+      - name: Build the web bundle the app embeds
+        working-directory: loom/web
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npm run build
+          test -s dist/index.html
+
+      - name: Use the preinstalled Android SDK
+        run: |
+          set -euo pipefail
+          : "${ANDROID_HOME:?the runner image has no ANDROID_HOME}"
+          for d in "$ANDROID_HOME"/cmdline-tools/latest/bin "$ANDROID_HOME"/cmdline-tools/*/bin; do
+            if [ -x "$d/sdkmanager" ]; then echo "$d" >> "$GITHUB_PATH"; exit 0; fi
+          done
+          echo "::error::no sdkmanager under $ANDROID_HOME/cmdline-tools"; exit 1
+
+      - name: Install SDK platform, build-tools, NDK and CMake
+        env:
+          CMAKE_VERSION: ${{ inputs.cmake_version }}
+        run: |
+          set -euo pipefail
+          if [ -n "$CMAKE_VERSION" ]; then cm="cmake;$CMAKE_VERSION"
+          else cm="$(sdkmanager --list 2>/dev/null | awk -F'|' '{ gsub(/ /, "", $1) } $1 ~ /^cmake;3\.[0-9.]+$/ { print $1 }' | sort -uV | tail -1)"; fi
+          if [ -z "$cm" ]; then echo "::error::no cmake;3.x package offered by sdkmanager"; exit 1; fi
+          sdkmanager --licenses >/dev/null < <(yes)
+          sdkmanager --install "platforms;android-$ANDROID_PLATFORM" "build-tools;34.0.0" "ndk;$NDK_VERSION" "$cm" >/dev/null
+          sdkmanager --list_installed
+
+      # No signing-key pinning here: the emulator is fresh every run, nothing is updated in place.
+      - name: Install ccache
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ccache
+
+      - name: ccache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .ccache
+          key: ccache-android-smoke-${{ github.sha }}
+          restore-keys: |
+            ccache-android-smoke-
+            ccache-android-
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@748248ddd2a24f49513d8f472f81c3a07d4d50e1 # v4.4.4
+
+      - name: Build the APK
+        working-directory: loom/android
+        env:
+          NATIVE_BUILD_TYPE: ${{ inputs.native_build_type }}
+        run: |
+          set -euo pipefail
+          ccache -z
+          ./gradlew assembleDebug --stacktrace \
+            -Ploom.versionCode="$GITHUB_RUN_NUMBER" \
+            -Ploom.versionName="smoke-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}" \
+            -Ploom.abis=x86_64 \
+            -Ploom.nativeBuildType="$NATIVE_BUILD_TYPE" \
+            -Ploom.ccache=true
+          ccache -s || true
+
+      - name: Check the APK
+        run: |
+          set -euo pipefail
+          apk=loom/android/app/build/outputs/apk/debug/app-debug.apk
+          test -s "$apk"
+          unzip -l "$apk" | grep -q " lib/x86_64/libloom_jni\.so$" || { echo "::error::no x86_64 libloom_jni.so in the APK"; exit 1; }
+          unzip -l "$apk" | grep -qE ' assets/web/assets/.+\.js$' || { echo "::error::the real web bundle is not in the APK"; exit 1; }
+          "$ANDROID_HOME/build-tools/34.0.0/aapt2" dump badging "$apk" | grep -E "^package:|^sdkVersion|^native-code"
+
+      - name: Upload the APK
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: chatadhd-android-apk
+          path: loom/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+  server:
+    name: Build the server archive (linux x64)
+    if: ${{ inputs.server_run_id == '' }}
+    # Ubuntu 22.04 + GCC 13 (PPA) with libstdc++ linked statically: the same archive package.yml builds.
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    env:
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_MAXSIZE: 1G
+      CC: gcc-13
+      CXX: g++-13
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Install build dependencies (GCC 13 from the toolchain PPA)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends software-properties-common
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc-13 g++-13 ninja-build ccache libssl-dev
+
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: loom/web/package-lock.json
+
+      - name: ccache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .ccache
+          key: ccache-server-x64-${{ github.sha }}
+          restore-keys: ccache-server-x64-
+
+      - name: Build the archive
+        env:
+          CHATADHD_CMAKE_ARGS: -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          LDFLAGS: -static-libstdc++ -static-libgcc
+        run: |
+          set -euo pipefail
+          ccache -z
+          bash deploy/install.sh --package "$GITHUB_WORKSPACE/dist-server" --version "smoke-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}" --no-deps
+          ccache -s || true
+          ls -l dist-server
+
+      - name: Upload the archive
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: chatadhd-server-linux-x64
+          path: dist-server/
+          if-no-files-found: error
+
+  smoke:
+    name: Emulator smoke (API ${{ inputs.api_level }}, x86_64)
+    needs: [ apk, server ]
+    # a skipped build job (artifact reused from an earlier run) is fine, a failed one is not
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      OUT: ${{ github.workspace }}/smoke-out
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Download the APK
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: chatadhd-android-apk
+          path: apk
+          run-id: ${{ inputs.apk_run_id || github.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Download the server archive
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: chatadhd-server-linux-x64
+          path: dist-server
+          run-id: ${{ inputs.server_run_id || github.run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Set up Node (the UI driver)
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+
+      # The emulator needs /dev/kvm to be usable by the runner user (standard step for hosted Linux runners).
+      - name: Enable KVM
+        run: |
+          set -euo pipefail
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+          ls -l /dev/kvm
+
+      - name: Syntax of the smoke scripts
+        run: |
+          set -euo pipefail
+          bash -n loom/android/smoke/server.sh
+          bash -n loom/android/smoke/run.sh
+          node --check loom/android/smoke/drive.mjs
+          ls -l apk dist-server
+
+      # Server in accounts mode on 127.0.0.1 of the runner (= 10.0.2.2 for the emulator), the account, the fake
+      # provider, and the provider key/address stored in the account: the phone only has to log in.
+      - name: Start the server and the fake provider
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUT"
+          bash loom/android/smoke/server.sh start "$(ls "$GITHUB_WORKSPACE"/dist-server/chatadhd-server-linux-x64-*.tar.gz)" "$OUT"
+          cat "$OUT/smoke.env"
+
+      - name: Run the app on the emulator
+        id: emulator
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        env:
+          SMOKE_TIMEOUT_S: ${{ inputs.speed_factor }}
+        with:
+          api-level: ${{ inputs.api_level }}
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          script: bash loom/android/smoke/run.sh ${{ github.workspace }}/apk/app-debug.apk ${{ github.workspace }}/smoke-out
+
+      - name: Stop the server
+        if: ${{ always() }}
+        run: bash loom/android/smoke/server.sh stop "$OUT" || true
+
+      - name: Summary
+        if: ${{ always() }}
+        run: |
+          {
+            echo "### Android smoke (API ${{ inputs.api_level }}, x86_64)"
+            echo ""
+            if [ -f "$OUT/results.json" ]; then
+              python3 - "$OUT/results.json" <<'PY'
+          import json, sys
+          for r in json.load(open(sys.argv[1])):
+              print("- %s %s%s" % ("OK  " if r["ok"] else "FAIL", r["step"], "" if r["ok"] else ": " + r.get("why", "")))
+          PY
+            else
+              echo "No results.json: the emulator or the app never got as far as the scenario (see logcat / the job log)."
+            fi
+            echo ""
+            echo "Artifact \`android-smoke\`: shots/ (screenshots), logcat.txt, server.log, provider.log, drive.log."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload screenshots, logcat and server log
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: android-smoke
+          # not the installed server (opt/) and not the account data: logs, screenshots and results only
+          path: |
+            smoke-out/
+            !smoke-out/opt/**
+            !smoke-out/data/**
+            !smoke-out/cookies.txt
+          if-no-files-found: warn
