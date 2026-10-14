@@ -427,6 +427,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             terminal = true;
             setStream(null);
             setPendingUserText(null);
+            // The answer is in another conversation when the command deleted the one it was asked in: the page goes there.
+            if (chunk.conv_id && requestConvId && chunk.conv_id !== requestConvId) onConversationCreated(chunk.conv_id);
             requestConvId = chunk.conv_id;
             refreshShared();
           } else if (chunk.type === "usage_pending") {

@@ -528,6 +528,37 @@ TEST_SUITE("chat_ops") {
     CHECK(proposals >= 80);
   }
 
+  TEST_CASE("any level of abstraction: the model method names an action of the application without an element, and the same words reach it as a command") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    // a vague wish: the model picks the action and the argument; the action needs only the application, which is the element it gets
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"command\",\"action\":\"search.find\",\"reference\":null,\"args\":{\"query\":\"holidays\"},\"confidence\":0.9}")));
+    const Json routed = f.route("I vaguely remember we talked about my holidays somewhere, can you dig that up?");
+    CHECK(routed.at("kind") == "command");
+    CHECK(routed.at("command").at("action") == "search.find");
+    CHECK(routed.at("command").at("source") == "model");
+    CHECK(routed.at("command").at("feasible") == true);
+    CHECK(routed.at("command").at("element").at("class") == "application");
+    // a storage question: the element is the class of storage the action asks for
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"command\",\"action\":\"storage.status\",\"reference\":null,\"args\":{},\"confidence\":0.9}")));
+    const Json storage = f.route("where are my things kept right now?");
+    CHECK(storage.at("command").at("action") == "storage.status");
+    CHECK(storage.at("command").at("feasible") == true);
+    // the model failing does not leave the words unread: the local reading finds the same command
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
+    const Json local = f.route("find conversations about holidays");
+    CHECK(local.at("issues").at(0).at("code") == "model_route_failed");
+    CHECK(local.at("command").at("action") == "search.find");
+    CHECK(local.at("command").at("args").at("query") == "holidays");
+    // the expert says it exactly
+    f.rt->config().set("intent_routing_method", "heuristic");
+    const Json exact = f.route("/search.find query=holidays");
+    CHECK(exact.at("command").at("action") == "search.find");
+    CHECK(exact.at("command").at("source") == "explicit");
+  }
+
   TEST_CASE("tasks, logs, sources, provenance, about, GitHub without a repository") {
     Fixture f;
     f.say_and_confirm("show the background tasks", "tasks.list", "yes");

@@ -767,8 +767,16 @@ StepOutcome storage_connect(Ctx& x) {
 
 // ── ports (the model or provider of a job) ──────────────────────────
 
-const Json* role_row(Ctx& x, const std::string& word) {
+const Json* role_row(Ctx& x, const std::string& word, Json& synthesized) {
   const std::string w = x.fold(trim_quotes(word));
+  // Any action that calls a model can have its own model: "action.<id>" (the id of a catalogue action) is a job without being listed.
+  if (w.rfind("action.", 0) == 0) {
+    if (auto profile = RuntimeProfile::load("actions", x.rt.paths().root))
+      if (const Json* actions = json::find(profile->values(), "actions"); actions && json::find(*actions, w.substr(7))) {
+        synthesized = Json{{"role", w}, {"kind", "model"}};
+        return &synthesized;
+      }
+  }
   const Json* roles = json::find(x.cfg, "roles");
   if (!roles || !roles->is_array()) return nullptr;
   for (const auto& row : *roles) {
@@ -792,7 +800,8 @@ StepOutcome ports_show(Ctx& x) {
                                                                            {"model", it.value().value("params", Json::object()).value("model", "")}}));
     return answer(x.say("roles_head") + "\n" + join_lines(lines), Json{{"roles", roles}});
   }
-  const Json* row = role_row(x, word);
+  Json synthesized;
+  const Json* row = role_row(x, word, synthesized);
   const std::string role = row ? row->value("role", "") : trim_quotes(word);
   Json meta = Json::object();
   const std::string conv = x.conv_id();
@@ -814,7 +823,8 @@ StepOutcome ports_set(Ctx& x) {
   const std::string word = x.str("role_word", x.str("role"));
   const std::string value = trim_quotes(x.str("model", x.str("provider")));
   if (word.empty() || value.empty()) return fail(Errc::InvalidArgument, "say for which job and which model or provider");
-  const Json* row = role_row(x, word);
+  Json synthesized;
+  const Json* row = role_row(x, word, synthesized);
   if (!row) return fail(Errc::NotFound, x.say("role_unknown", Json{{"word", word}}));
   const std::string role = row->value("role", "");
   const std::string kind = row->value("kind", "model");
@@ -945,6 +955,9 @@ Period period_of(Ctx& x, const std::string& words_in) {
 
 StepOutcome usage_spend(Ctx& x) {
   const Period p = period_of(x, x.str("period"));
+  // A question never creates the ledger: without one nothing was recorded.
+  if (!std::filesystem::exists(x.rt.paths().root / "usage-policy.sqlite"))
+    return answer(x.say("spend_head", Json{{"period", x.say("period_" + p.id)}}) + "\n• " + x.say("spend_ops", Json{{"count", 0}}), Json{{"operations", 0}, {"totals", Json::object()}, {"period", Json{{"id", p.id}, {"from", p.from}, {"to", p.to}}}});
   auto policy = UsagePolicy::open(x.rt.paths().root / "usage-policy.sqlite", Json::object());
   if (!policy) return fail(policy.error());
   auto spent = (*policy)->spend_between(p.from, p.to);
