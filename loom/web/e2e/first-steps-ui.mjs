@@ -46,6 +46,13 @@ function freePort() {
     probe.listen(0, "127.0.0.1", () => { const { port } = probe.address(); probe.close(() => resolve(port)); });
   });
 }
+/** A read through the browser context's request API; the server closes idle connections after 5 s, so a reused socket may hang up once. */
+async function read(context, url) {
+  for (let attempt = 1; ; attempt += 1) {
+    try { return await (await context.request.get(url)).json(); }
+    catch (error) { if (attempt >= 3 || !/socket hang up|ECONNRESET/.test(String(error.message))) throw error; }
+  }
+}
 async function until(predicate, label, ms = 15000) {
   const deadline = Date.now() + ms;
   for (;;) {
@@ -224,12 +231,12 @@ try {
       await delay(300);  // a second request would have shown by now
       assert.equal(providerRequests.length, before + 1, `${label}: the provider gets exactly one request`);
       assert.equal(chats.length, 1, `${label}: one chat request leaves the page`);
-      const conversations = await (await context.request.get(base + "/api/conversations")).json();
+      const conversations = await read(context, base + "/api/conversations");
       assert.equal(conversations.length, 1, `${label}: the message went into the conversation just made, not into another or a new one`);
       assert.equal(chats[0].conv_id, conversations[0].id, `${label}: the request names that conversation`);
       assert.equal(chats[0].message, message, `${label}: the text as typed`);
       if (declare !== "ok") assert.equal("client_id" in chats[0], false, `${label}: without a declaration the send goes without a client id`);
-      const messages = await (await context.request.get(`${base}/api/conversations/${conversations[0].id}/messages`)).json();
+      const messages = await read(context, `${base}/api/conversations/${conversations[0].id}/messages`);
       assert.deepEqual(messages.map(row => row.role), ["user", "assistant"], `${label}: the person's message once, one answer`);
       assert.equal((await page.locator('[data-testid="message"][data-role="user"]').count()), 1, `${label}: shown once`);
       assert.equal(await page.getByTestId("send-queued").count(), 0, `${label}: the waiting note is gone`);

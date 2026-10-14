@@ -95,7 +95,7 @@ test('gate texts are localized pack data and degrade to machine codes without a 
   assert.equal(polishTexts.setting, pl.setting_label);
   const machine = g.sendGateTexts(null, gate);
   assert.deepEqual(machine, { blocked: 'source_egress_not_bound', sourceHistory: 'source_egress_not_bound', sourceReason: null,
-    viewFailure: null, setting: null, settingHelp: null, unblock: null });
+    viewFailure: null, setting: null, settingHelp: null, unblock: null, queuedWaiting: null, queuedFailed: null, streamEnded: null, emptyAnswer: null });
   assert.equal(g.sendGateTexts(null, g.chatSendGate(input({ view: null, failure: { conversationId: 'c', reason: 'raw', lastKnown: null } }))).viewFailure, 'raw');
   const unknown = linked(); unknown.capabilities.source_history_send.reason = 'future_reason';
   assert.equal(g.sendGateTexts(english, g.chatSendGate(input({ view: unknown }))).sourceReason, omittedReason(en, 'future_reason'));

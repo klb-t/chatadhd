@@ -460,7 +460,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setPendingUserText(null);
             requestConvId = chunk.conv_id;
             // An answer with no words is said, not left as an empty bubble.
-            if (!produced && !chunk.text && !chunk.cancelled) { errorForRef.current = requestConvId; setError(gateTexts.emptyAnswer ?? "empty_answer"); }
+            if (!produced && chunk.text === "" && !chunk.cancelled) { errorForRef.current = requestConvId; setError(gateTexts.emptyAnswer ?? "empty_answer"); }
             refreshShared();
           } else if (chunk.type === "action_proposal" || chunk.type === "action_result") {
             // The input was a command: it is answered in the conversation, nothing went to the model.
