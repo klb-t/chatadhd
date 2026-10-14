@@ -2,6 +2,7 @@
 // message.*, export/import, storage.connect, ports.*, usage.*, models.*, semantic.*, tasks.*, help.* and the rest. Each is a thin layer over
 // the engine that does the work (the calls the C ABI makes); what it says back is written from runtime/chat_ops.pack in the language of the run.
 #include "loom/action_ops.h"
+#include "loom/action_spend.h"
 
 #include <algorithm>
 #include <cmath>
@@ -953,11 +954,17 @@ Period period_of(Ctx& x, const std::string& words_in) {
   return p;
 }
 
+std::vector<std::string> spend_limit_lines(Ctx& x, Json* data_out);
+
 StepOutcome usage_spend(Ctx& x) {
   const Period p = period_of(x, x.str("period"));
   // A question never creates the ledger: without one nothing was recorded.
-  if (!std::filesystem::exists(x.rt.paths().root / "usage-policy.sqlite"))
-    return answer(x.say("spend_head", Json{{"period", x.say("period_" + p.id)}}) + "\n• " + x.say("spend_ops", Json{{"count", 0}}), Json{{"operations", 0}, {"totals", Json::object()}, {"period", Json{{"id", p.id}, {"from", p.from}, {"to", p.to}}}});
+  if (!std::filesystem::exists(x.rt.paths().root / "usage-policy.sqlite")) {
+    Json state = nullptr;
+    const auto limit_lines = spend_limit_lines(x, &state);
+    return answer(x.say("spend_head", Json{{"period", x.say("period_" + p.id)}}) + "\n• " + x.say("spend_ops", Json{{"count", 0}}) + (limit_lines.empty() ? "" : "\n" + join_lines(limit_lines)),
+                  Json{{"operations", 0}, {"totals", Json::object()}, {"period", Json{{"id", p.id}, {"from", p.from}, {"to", p.to}}}, {"limits", state}});
+  }
   auto policy = UsagePolicy::open(x.rt.paths().root / "usage-policy.sqlite", Json::object());
   if (!policy) return fail(policy.error());
   auto spent = (*policy)->spend_between(p.from, p.to);
@@ -980,10 +987,87 @@ StepOutcome usage_spend(Ctx& x) {
   if (spent->value("folded_operations", 0) > 0) lines.push_back("• " + x.say("spend_folded", Json{{"count", spent->value("folded_operations", 0)}}));
   Json data = *spent;
   data["period"] = Json{{"id", p.id}, {"from", p.from}, {"to", p.to}};
+  // The limits the user set, with what their periods have spent (P17).
+  Json state = nullptr;
+  for (const auto& l : spend_limit_lines(x, &state)) lines.push_back(l);
+  data["limits"] = state;
   return answer(x.say("spend_head", Json{{"period", x.say("period_" + p.id)}}) + "\n" + join_lines(lines), data);
 }
 
+// ── spending limits per period (P17) ───────────────────────────────
+
+std::string spend_amount_text(double v) {
+  char buf[48];
+  std::snprintf(buf, sizeof(buf), "%.2f", v);
+  if (v > 0 && std::string(buf) == "0.00") std::snprintf(buf, sizeof(buf), "%.4f", v);
+  return buf;
+}
+
+// The limits as lines for the answer of "how much did I spend": each limit with what the period has spent, or the way to set one.
+std::vector<std::string> spend_limit_lines(Ctx& x, Json* data_out) {
+  std::vector<std::string> lines;
+  const Json data = spend::data_of(x.rt.paths().root);
+  if (data.empty()) return lines;
+  const Json state = spend::status(x.rt.paths().root, x.rt.config(), data);
+  if (data_out) *data_out = state;
+  const Json limits = state.value("limits", Json::array());
+  if (limits.empty() && state.value("issues", Json::array()).empty()) {
+    lines.push_back(x.say("limits_none"));
+    return lines;
+  }
+  lines.push_back(x.say("limits_head"));
+  for (const auto& l : limits) {
+    const Json vars{{"period", spend::period_label(data, json::get_string(l, "period"), x.lang)},
+                    {"amount", number_text(l.value("amount", 0.0))},
+                    {"currency", json::get_string(l, "currency")},
+                    {"what", spend::on_exceed_label(data, json::get_string(l, "on_exceed"), x.lang)},
+                    {"spent", l["spent"].is_number() ? spend_amount_text(l["spent"].get<double>()) : std::string()},
+                    {"share", l["share"].is_number() ? number_text(std::round(l["share"].get<double>() * 100)) : std::string()}};
+    lines.push_back("• " + x.say(l["spent"].is_number() ? "limit_line" : "limit_line_unknown", vars));
+  }
+  for (const auto& issue : state.value("issues", Json::array())) lines.push_back("• " + x.say("limit_issue", Json{{"why", issue.value("reason", "")}}));
+  return lines;
+}
+
+StepOutcome usage_set_spend_limit(Ctx& x) {
+  const Json data = spend::data_of(x.rt.paths().root);
+  if (data.empty()) return fail(Errc::Unavailable, "the spending limits are not available in this build");
+  const std::string setting = json::get_string(data, "setting", "usage_spend_limits");
+  if (auto ok = check_config_write(setting, x.rt.paths().root); !ok) return fail(ok.error());
+  const bool clearing = x.arg("clear").is_boolean() && x.arg("clear").get<bool>();
+  const std::string period_text = x.fold(x.str("period"));
+  if (clearing) {
+    const std::string period = spend::period_in(data, period_text);
+    if (period.empty()) return fail(Errc::InvalidArgument, x.say("limit_period"));
+    auto done = spend::clear(x.rt.config(), data, period);
+    if (!done) return fail(done.error());
+    const Json vars{{"period", spend::period_label(data, period, x.lang)}};
+    return answer(x.say(done->value("removed", false) ? "limit_spend_cleared" : "limit_spend_none", vars), *done);
+  }
+  Json args = Json::object();
+  args["amount"] = x.arg("amount");
+  args["period"] = period_text;
+  args["currency"] = x.fold(x.str("currency"));
+  args["on_exceed"] = x.fold(x.str("on_exceed"));
+  if (x.arg("rate").is_number()) args["rate"] = x.arg("rate");
+  auto entry = spend::entry_from(data, args);
+  if (!entry) return fail(entry.error());
+  auto done = spend::put(x.rt.config(), data, *entry);
+  if (!done) return fail(done.error());
+  const Json vars{{"period", spend::period_label(data, entry->period, x.lang)}, {"amount", number_text(entry->amount)}, {"currency", entry->currency},
+                  {"usd", spend_amount_text(entry->usd())}, {"rate", number_text(entry->rate)}, {"what", spend::on_exceed_label(data, entry->on_exceed, x.lang)}};
+  std::string text = x.say("limit_spend_set", vars);
+  if (entry->rate_source == "preset") text += " " + x.say("limit_rate_preset", Json{{"note", x.pick(data.value("rates_note", Json::object()))}});
+  if (!done->value("previous", Json(nullptr)).is_null()) {
+    const Json prev = (*done)["previous"];
+    text += " " + x.say("limit_spend_replaced", Json{{"amount", number_text(prev.value("amount", 0.0))}, {"currency", json::get_string(prev, "currency")}});
+  }
+  return answer(text, *done);
+}
+
 StepOutcome usage_set_limit(Ctx& x) {
+  // A spending limit of a period (amount / period / clear) or the growth factor of the usage policy.
+  if (x.has("amount") || x.has("clear") || (x.has("period") && !x.has("growth_factor"))) return usage_set_spend_limit(x);
   // The growth factor of the usage policy: how many times above the usual consumption an operation may grow before the user is asked.
   // The write is the setting loom_usage_policy and goes through the same rules as any edit of it: the x10 confirmation is not bypassed.
   double factor = 0;

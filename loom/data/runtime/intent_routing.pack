@@ -3223,6 +3223,140 @@
           "element_from_arg": true
         },
         {
+          "id": "usage.spend_limit.pl",
+          "action": "usage.set_limit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:ustaw|ustal|zmien|wprowadz)\\s+(?:(dzienny|tygodniowy|miesieczny)\\s+)?limit\\s+(?:wydatkow\\s+|kosztow\\s+|zuzycia\\s+)?(?:(dzienny|tygodniowy|miesieczny)\\s+)?(?:na\\s+|do\\s+|w\\s+wysokosci\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:na|w|per|za|co)\\s+(dzien|tydzien|miesiac)|(dziennie|tygodniowo|miesiecznie)))?(?:\\s*[,;.]?\\s*(?:i\\s+)?(odmawiaj|blokuj|zablokuj|pytaj|potwierdzaj|ostrzegaj|powiadamiaj|tylko\\s+ostrzegaj))?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.cap.pl",
+          "action": "usage.set_limit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:ogranicz|limituj)\\s+(?:moje\\s+)?(?:wydatki|koszty|zuzycie)\\s+(?:do\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:na|w|per|za|co)\\s+(dzien|tydzien|miesiac)|(dziennie|tygodniowo|miesiecznie)))?(?:\\s*[,;.]?\\s*(?:i\\s+)?(odmawiaj|blokuj|zablokuj|pytaj|potwierdzaj|ostrzegaj|powiadamiaj|tylko\\s+ostrzegaj))?\\s*[.!]*\\s*$",
+          "args": [
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.clear.pl",
+          "action": "usage.set_limit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:usun|wylacz|skasuj|zdejmij|zrezygnuj\\s+z)\\s+(?:(dzienny|tygodniowy|miesieczny)\\s+)?limit(?:\\s+wydatkow)?\\s*(?:(dzienny|tygodniowy|miesieczny)\\s*)?(?:(?:(?:na|w|per|za|co)\\s+(dzien|tydzien|miesiac)|(dziennie|tygodniowo|miesiecznie)))?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "period",
+            "period"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits",
+            "clear": true
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:set|change|make)\\s+(?:a\\s+|an\\s+|the\\s+|my\\s+)?(?:(daily|weekly|monthly)\\s+)?(?:spending\\s+|spend\\s+|usage\\s+|cost\\s+)?limit\\s*(?:(daily|weekly|monthly)\\s*)?(?:of\\s+|to\\s+|at\\s+|for\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:a|per|each|every|in\\s+a|for\\s+a|for\\s+the|in\\s+the|per\\s+each)\\s+(day|week|month)|(daily|weekly|monthly)))?(?:\\s*[,;.]?\\s*(?:and\\s+)?(deny|refuse|block|ask|confirm|notify|warn|just\\s+warn|only\\s+warn)(?:\\s+me)?(?:\\s+first)?)?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.adj.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:set|change|make)\\s+(?:a\\s+|an\\s+|the\\s+|my\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(daily|weekly|monthly)\\s+(?:spending\\s+|spend\\s+|usage\\s+|cost\\s+)?limit(?:\\s*[,;.]?\\s*(?:and\\s+)?(deny|refuse|block|ask|confirm|notify|warn|just\\s+warn|only\\s+warn)(?:\\s+me)?(?:\\s+first)?)?\\s*[.!]*\\s*$",
+          "args": [
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.cap.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:limit|cap)\\s+(?:my\\s+)?(?:spending|spend|usage|costs?)\\s+(?:to|at)\\s+([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:a|per|each|every|in\\s+a|for\\s+a|for\\s+the|in\\s+the|per\\s+each)\\s+(day|week|month)|(daily|weekly|monthly)))?(?:\\s*[,;.]?\\s*(?:and\\s+)?(deny|refuse|block|ask|confirm|notify|warn|just\\s+warn|only\\s+warn)(?:\\s+me)?(?:\\s+first)?)?\\s*[.!]*\\s*$",
+          "args": [
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.clear.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:remove|clear|delete|drop|turn\\s+off|cancel)\\s+(?:the\\s+|my\\s+)?(?:(daily|weekly|monthly)\\s+)?(?:spending\\s+|spend\\s+|usage\\s+|cost\\s+)?limit\\s*(?:(daily|weekly|monthly)\\s*)?(?:(?:(?:a|per|each|every|in\\s+a|for\\s+a|for\\s+the|in\\s+the|per\\s+each)\\s+(day|week|month)|(daily|weekly|monthly)))?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "period",
+            "period"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits",
+            "clear": true
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
           "id": "usage.compact.pl",
           "action": "usage.compact",
           "lang": "pl",

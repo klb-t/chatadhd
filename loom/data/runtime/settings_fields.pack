@@ -159,6 +159,14 @@
         "description": "Usage policy options (growth factor, baselines). Raising expected consumption by an order of magnitude needs the user's confirmation; the confirmation is enforced by the usage-policy actions, not by the config write."
       },
       {
+        "key": "usage_spend_limits",
+        "scope": "config",
+        "group": "usage",
+        "type": "array",
+        "has_default": false,
+        "description": "Your spending limits per period (the preset is none, so nothing is limited until you say so): a list of {period: day|week|month, amount, currency, on_exceed: confirm|deny|notify, rate?}. Before an action run that calls a model, the spend of the period (the cost the providers reported, from the usage ledger) plus the estimate of the run is compared with each limit; when it is passed, confirm makes the run wait for your yes, deny does not start it (with the reason), notify lets it go and says so. rate is USD per unit of the currency (an approximate preset is used when it is left out and the limit says so). Say it in the conversation: \"set a monthly limit of 20 PLN\", \"ustaw limit 20 zł na miesiąc\"; \"how much did I spend\" reads the limits back. It does not replace the x10 growth guard (loom_usage_policy) and covers action runs only; a plain chat send and the background analysis answer to the growth guard alone. Runtime profile action_run (spend_limits). Default: none."
+      },
+      {
         "key": "loom_zip_max_total_bytes",
         "scope": "config",
         "group": "safety",

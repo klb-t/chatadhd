@@ -2919,6 +2919,9 @@
             },
             {
               "path": "loom/src/actions/sequence_index.cpp"
+            },
+            {
+              "path": "loom/src/actions/spend.cpp"
             }
           ],
           "gaps": []

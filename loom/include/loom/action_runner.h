@@ -92,12 +92,16 @@ class ActionRunner {
   Result<Json> write_overlay(std::string_view action, const Json& request);
   Result<Json> run_gated(std::string_view action, const Json& request);
   Result<RunRequest> prepare(const Loaded& loaded, const Json& request) const;
-  Interpreter make_interpreter(const Loaded& loaded) const;
+  Interpreter make_interpreter(const Loaded& loaded);
   void install_executors(ExecutorTable& table);
   // The model registry is empty on a fresh data directory, so no price is known. When an estimate needs one, the provider's public model
   // list is fetched once (setting model_registry_autorefresh, profile action_run: estimate.registry_refresh). Returns why the registry is
   // still empty after the attempt (empty: it was not needed, not allowed, or it worked).
   std::string fill_registry_for_estimate(const Json& run_settings);
+  // What a plan would cost (action_estimate.h), for the preview and for the spending limits (action_spend.h).
+  Json estimate_of(const Loaded& loaded, const Json& plan, const RunRequest& request);
+  // The gates of the user's spending limits for a plan (none without limits, without a model call, or without a passed limit).
+  Result<Json> spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& request);
 
   Runtime& rt_;
   std::unique_ptr<RunStore> store_;

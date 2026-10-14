@@ -368,7 +368,17 @@ std::string receipt_of(const Json& run, const std::string& kind, const Json& ids
 // The receipt of what was shown: the plan and its gates, the element, the arguments and the scope. It does not depend on the run, so a
 // preview (which stores nothing) can give it and the run that follows can check it; anything that changes between the two changes the receipt.
 std::string plan_receipt_of(const Json& plan, const Json& gates, const RunRequest& request) {
-  const Json bound{{"plan", plan}, {"gates", gates}, {"element", request.element}, {"args", request.args}, {"scope", request.scope}};
+  // A gate may name keys that are numbers of the moment (`volatile`: the spend of the period): the decision is bound, not they.
+  Json stable = Json::array();
+  for (const auto& g : gates) {
+    Json copy = g;
+    if (copy.is_object() && copy.contains("volatile")) {
+      for (const auto& k : strings_of(json::find(copy, "volatile"))) copy.erase(k);
+      copy.erase("volatile");
+    }
+    stable.push_back(std::move(copy));
+  }
+  const Json bound{{"plan", plan}, {"gates", stable}, {"element", request.element}, {"args", request.args}, {"scope", request.scope}};
   return "arp_" + Sha256::hex(json::canonical(bound)).substr(0, 24);
 }
 
@@ -682,6 +692,10 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
   LOOM_TRY_ASSIGN(Json plan, plan_of(request));
   LOOM_TRY_ASSIGN(auto base_traits, element_traits(request.element, request.scope));
   LOOM_TRY_ASSIGN(Json gates, gate_plan(plan, request.element, request.scope, base_traits));
+  if (deps_.extra_gates) {
+    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request));
+    for (auto& g : extra) gates.push_back(std::move(g));
+  }
   Json confirm = Json::array(), denied = Json::array(), not_runnable = Json::array();
   for (const auto& g : gates) {
     if (g.at("decision") == "confirm") confirm.push_back(g);
@@ -804,6 +818,10 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
   }
 
   LOOM_TRY_ASSIGN(Json gates, gate_plan(plan, request.element, request.scope, base_traits));
+  if (deps_.extra_gates) {
+    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request));
+    for (auto& g : extra) gates.push_back(std::move(g));
+  }
 
   Json run = Json::object();
   run["schema"] = std::string(kRunSchema);
@@ -841,7 +859,10 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
   if (!denied.empty()) {
     const Json& first = denied[0];
     stamp(run, "denied");
-    run["error"] = Json{{"code", "denied"}, {"message", "the rules do not allow '" + first.value("action", "") + "' here"},
+    const bool by_limit = json::get_string(first, "rule").rfind("spend_limit:", 0) == 0;
+    run["error"] = Json{{"code", "denied"},
+                        {"message", by_limit ? "your spending limit (" + json::get_string(first, "rule") + ") does not allow this run"
+                                             : "the rules do not allow '" + first.value("action", "") + "' here"},
                         {"gates", denied}};
     LOOM_TRY(persist(*deps_.store, run));
     return run;

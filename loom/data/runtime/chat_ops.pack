@@ -860,7 +860,18 @@
         "howto_confirm": "the rules ask you to confirm before it runs",
         "howto_costs": "it calls a model, so it costs something; the proposal shows the estimate before you say yes",
         "howto_syntax": "exact syntax: {{syntax}}",
-        "howto_nothing_run": "Nothing was run."
+        "howto_nothing_run": "Nothing was run.",
+        "limits_none": "Spending limit: none set (say, for example, \"set a monthly limit of 20 PLN\").",
+        "limits_head": "Spending limits:",
+        "limit_line": "{{period}} limit {{amount}} {{currency}} - spent {{spent}} {{currency}} ({{share}}%), when passed: {{what}}",
+        "limit_line_unknown": "{{period}} limit {{amount}} {{currency}} - spent: unknown (the providers reported no cost), when passed: {{what}}",
+        "limit_issue": "a limit in the setting cannot be used: {{why}}",
+        "limit_spend_set": "Spending limit set: {{period}} {{amount}} {{currency}} (about {{usd}} USD at {{rate}} USD per {{currency}}); when passed: {{what}}.",
+        "limit_spend_replaced": "It replaces the earlier limit of {{amount}} {{currency}}.",
+        "limit_rate_preset": "The rate is an approximate preset. {{note}}",
+        "limit_spend_cleared": "The {{period}} spending limit is removed.",
+        "limit_spend_none": "There was no {{period}} spending limit.",
+        "limit_period": "Say the period of the limit: day, week or month."
       },
       "pl": {
         "unknown": "nieznane",
@@ -998,7 +1009,18 @@
         "howto_confirm": "reguły każą Cię zapytać przed wykonaniem",
         "howto_costs": "wywołuje model, więc coś kosztuje; propozycja pokaże szacunek, zanim powiesz „tak”",
         "howto_syntax": "dokładna składnia: {{syntax}}",
-        "howto_nothing_run": "Nic nie zostało wykonane."
+        "howto_nothing_run": "Nic nie zostało wykonane.",
+        "limits_none": "Limit wydatków: nie ustawiono (powiedz np. „ustaw limit 20 zł na miesiąc”).",
+        "limits_head": "Limity wydatków:",
+        "limit_line": "limit {{period}} {{amount}} {{currency}} - wydano {{spent}} {{currency}} ({{share}}%), po przekroczeniu: {{what}}",
+        "limit_line_unknown": "limit {{period}} {{amount}} {{currency}} - wydano: nieznane (dostawcy nie zgłosili kosztu), po przekroczeniu: {{what}}",
+        "limit_issue": "limit w ustawieniu nie nadaje się do użycia: {{why}}",
+        "limit_spend_set": "Ustawiono limit wydatków {{period}}: {{amount}} {{currency}} (ok. {{usd}} USD po kursie {{rate}} USD za {{currency}}); po przekroczeniu: {{what}}.",
+        "limit_spend_replaced": "Zastępuje poprzedni limit {{amount}} {{currency}}.",
+        "limit_rate_preset": "Kurs jest przybliżonym presetem. {{note}}",
+        "limit_spend_cleared": "Usunięto limit wydatków {{period}}.",
+        "limit_spend_none": "Limit wydatków {{period}} nie był ustawiony.",
+        "limit_period": "Podaj okres limitu: dzień, tydzień albo miesiąc."
       }
     }
   },

@@ -360,6 +360,20 @@ Json params_view(const Json& entry, const Json& said, const Json& bound, const s
   return out;
 }
 
+// An action whose element is one of its arguments (a setting) may say, in its data, which element an argument it was given stands for
+// (`element_arg_defaults`: usage.set_limit - an `amount` is about usage_spend_limits, a `growth_factor` about loom_usage_policy).
+void default_element_arg(const Json& entry, Json& args) {
+  const std::string from = json::get_string(entry, "element_from_arg");
+  if (from.empty() || !args.is_object() || args.contains(from)) return;
+  const Json* defaults = json::find(entry, "element_arg_defaults");
+  if (!defaults || !defaults->is_object()) return;
+  for (auto it = defaults->begin(); it != defaults->end(); ++it)
+    if (it->is_string() && args.contains(it.key()) && !args[it.key()].is_null()) {
+      args[from] = *it;
+      return;
+    }
+}
+
 std::string other_required_param(const Json& entry, const std::string& element_arg) {
   if (const Json* params = json::find(entry, "params"); params && params->is_array())
     for (const auto& p : *params)
@@ -448,6 +462,7 @@ std::optional<Cand> parse_explicit(const Data& d, const std::string& text) {
     const std::string positional_arg = json::get_string(*entry, "positional_arg");
     if (!positional_arg.empty() && !c.args.contains(positional_arg) && !positional.empty()) c.args[positional_arg] = join(positional, " ");
   }
+  if (entry && element_token.empty()) default_element_arg(*entry, c.args);
   if (!element_token.empty()) {
     c.element = Json{{"id", element_token}};
   } else if (element_arg.empty() || !c.args.contains(element_arg)) {
@@ -965,6 +980,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   cmd["args_read"] = Json::array();
   for (const auto& hit : hits) cmd["args_read"].push_back(Json{{"param", hit.param}, {"value", hit.value}, {"matched", hit.matched}, {"pattern", hit.pattern}});
   // The element.
+  default_element_arg(*entry, c.args);
   Json element_json = nullptr;
   if (!c.element.is_null()) {
     auto el = resolve_ref(rt, d, c.element, conv);
@@ -989,7 +1005,10 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   if (const Json* params = json::find(*entry, "params"); params && params->is_array())
     for (const auto& p : *params) {
       const std::string name = json::get_string(p, "name");
-      if (json::get_bool(p, "required", false) && !bound.contains(name) && name != element_arg) {
+      bool required = json::get_bool(p, "required", false);
+      for (const auto& other : strings_of(json::find(p, "required_unless")))
+        if (bound.contains(other) && !bound[other].is_null()) required = false;
+      if (required && !bound.contains(name) && name != element_arg) {
         missing_args.push_back(name);
         if (const std::string setting = json::get_string(p, "setting"); !setting.empty()) missing_settings[name] = setting;
       }
@@ -1558,6 +1577,9 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   }
   if (!proposal.value("needs_confirmation", Json::array()).empty())
     lines.push_back(say(d.cfg, lang, "proposal_confirm", Json{{"what", gate_reasons(d, cmd.value("needs_confirmation", Json::array()), lang)}}));
+  // A limit of the user that only tells (spending limit with on_exceed notify): the run goes on and the proposal says so.
+  for (const auto& g : cmd.value("gates", Json::array()))
+    if (g.contains("notice")) lines.push_back(localized(g["notice"], lang));
   lines.push_back(say(d.cfg, lang, "proposal_ask"));
   return join(lines, "\n");
 }
@@ -1795,6 +1817,9 @@ std::string render_emergent(const Data& d, const Engine& engine, const Json& cmd
   }
   if (!proposal.value("needs_confirmation", Json::array()).empty())
     lines.push_back(say(d.cfg, lang, "proposal_confirm", Json{{"what", gate_reasons(d, cmd.value("needs_confirmation", Json::array()), lang)}}));
+  // A limit of the user that only tells (spending limit with on_exceed notify): the run goes on and the proposal says so.
+  for (const auto& g : cmd.value("gates", Json::array()))
+    if (g.contains("notice")) lines.push_back(localized(g["notice"], lang));
   lines.push_back(say(d.cfg, lang, "define_ask"));
   return join(lines, "\n");
 }

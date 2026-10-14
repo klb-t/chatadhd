@@ -1,6 +1,7 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+#include "loom/action_spend.h"
 #include "loom/action_emergent.h"
 #include "loom/action_overlay.h"
 #include "loom/action_ops.h"
@@ -461,7 +462,7 @@ Result<ActionRunner::Loaded> ActionRunner::load(std::string_view client_id) {
   return loaded;
 }
 
-Interpreter ActionRunner::make_interpreter(const Loaded& loaded) const {
+Interpreter ActionRunner::make_interpreter(const Loaded& loaded) {
   InterpreterDeps deps;
   deps.engine = &loaded.engine;
   deps.executors = &loaded.executors;
@@ -484,6 +485,8 @@ Interpreter ActionRunner::make_interpreter(const Loaded& loaded) const {
   services.bus = &rt_.bus();
   services.profile = loaded.results;
   deps.on_result = [services](Json& run) { return store_run_results(services, run); };
+  // The user's spending limits (setting usage_spend_limits) are gates of the plan, like the rules' confirmations.
+  deps.extra_gates = [this, &loaded](const Json& plan, const RunRequest& request) { return spend_gates(loaded, plan, request); };
   return Interpreter(deps);
 }
 
@@ -512,6 +515,9 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
     const std::string from = json::get_string(*entry, "element_from_arg");
     if (!from.empty()) {
       if (const Json* v = json::find(r.args, from)) element = *v;
+      else if (const Json* defaults = json::find(*entry, "element_arg_defaults"); defaults && defaults->is_object())
+        for (auto it = defaults->begin(); it != defaults->end() && element.is_null(); ++it)  // the first argument given names the setting (data)
+          if (it->is_string() && r.args.is_object() && r.args.contains(it.key()) && !r.args[it.key()].is_null()) element = *it;
     }
   }
   if (element.is_null()) element = Json::object();
@@ -695,9 +701,14 @@ Result<Json> ActionRunner::preview(const Json& request) {
   auto interpreter = make_interpreter(loaded);
   LOOM_TRY_ASSIGN(Json preview, interpreter.preview(r));
   // What the plan would cost: tokens, and money where the registry knows the price (never zero for what it does not know).
+  preview["estimate"] = estimate_of(loaded, preview.at("plan"), r);
+  return preview;
+}
+
+Json ActionRunner::estimate_of(const Loaded& loaded, const Json& plan, const RunRequest& r) {
   std::int64_t chars = 0;
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
-  if (preview.at("plan").at("cost").value("model_calls", 0) > 0)
+  if (plan.at("cost").value("model_calls", 0) > 0)
     if (auto parts = loaded.resolver.content_parts(sources, r.element))
       for (const auto& p : *parts) chars += static_cast<std::int64_t>(utf8::length(p.text));
   EstimateServices services;
@@ -705,17 +716,25 @@ Result<Json> ActionRunner::preview(const Json& request) {
   services.config = &rt_.config();
   services.settings = loaded.settings;
   services.catalogue = loaded.engine.catalogue();
-  Json estimate = estimate_plan(services, preview.at("plan"), r.args, chars);
+  Json estimate = estimate_plan(services, plan, r.args, chars);
   // A price the registry cannot give because it is empty (a fresh data directory): fetch the list once, then estimate again.
   bool empty_registry = false;
   for (const auto& call : estimate.value("calls", Json::array()))
     if (json::get_string(call.value("price", Json::object()), "why_code") == "registry_empty") empty_registry = true;
   if (empty_registry) {
     services.registry_failure = fill_registry_for_estimate(loaded.settings);
-    estimate = estimate_plan(services, preview.at("plan"), r.args, chars);
+    estimate = estimate_plan(services, plan, r.args, chars);
   }
-  preview["estimate"] = std::move(estimate);
-  return preview;
+  return estimate;
+}
+
+Result<Json> ActionRunner::spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& r) {
+  const Json data = loaded.settings.value("spend_limits", Json::object());
+  // Nothing is estimated, fetched or read while the user has set no limit (the preset), or when the plan calls no model.
+  if (spend::stored(rt_.config(), data).entries.empty()) return Json::array();
+  if (plan.value("cost", Json::object()).value("model_calls", 0) <= 0) return Json::array();
+  const Json estimate = estimate_of(loaded, plan, r);
+  return spend::gates(rt_.paths().root, rt_.config(), data, plan, estimate);
 }
 
 std::string ActionRunner::fill_registry_for_estimate(const Json& run_settings) {
