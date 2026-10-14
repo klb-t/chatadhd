@@ -1,6 +1,10 @@
 #include "util/safety.h"
 
+#include <algorithm>
 #include <fstream>
+#include <map>
+#include <mutex>
+#include <optional>
 
 #include "loom/config.h"
 #include "loom/util/fs.h"
@@ -21,18 +25,49 @@ Json setting(const Json& cfg, const char* key) {
 }
 }  // namespace
 
+namespace {
+std::mutex g_ceiling_mu;
+std::map<std::filesystem::path, OperatorCeiling>& ceilings() {
+  static std::map<std::filesystem::path, OperatorCeiling> m;
+  return m;
+}
+std::optional<OperatorCeiling> ceiling_for(const std::filesystem::path& dir) {
+  std::error_code ec;
+  const auto key = std::filesystem::weakly_canonical(dir, ec);
+  std::lock_guard lk(g_ceiling_mu);
+  auto it = ceilings().find(ec ? dir : key);
+  if (it == ceilings().end()) return std::nullopt;
+  return it->second;
+}
+}  // namespace
+
+void set_operator_ceiling(const std::filesystem::path& data_dir, OperatorCeiling c) {
+  std::error_code ec;
+  const auto key = std::filesystem::weakly_canonical(data_dir, ec);
+  std::lock_guard lk(g_ceiling_mu);
+  ceilings()[ec ? data_dir : key] = c;
+}
+
 ZipLimits zip_limits(const std::filesystem::path& data_dir) {
   const Json cfg = config_json(data_dir);
   ZipLimits l;
   const Json total = setting(cfg, "loom_zip_max_total_bytes"), ratio = setting(cfg, "loom_zip_max_ratio");
   if (total.is_number() && total.get<double>() > 0) l.max_total_bytes = static_cast<std::uint64_t>(total.get<double>());
   if (ratio.is_number() && ratio.get<double>() > 0) l.max_ratio = ratio.get<double>();
+  if (auto c = ceiling_for(data_dir)) {  // the user can tighten, not loosen
+    if (c->zip_max_total_bytes > 0)
+      l.max_total_bytes = l.max_total_bytes ? std::min<std::uint64_t>(l.max_total_bytes, c->zip_max_total_bytes)
+                                            : static_cast<std::uint64_t>(c->zip_max_total_bytes);
+    if (c->zip_max_ratio > 0) l.max_ratio = l.max_ratio > 0 ? std::min(l.max_ratio, c->zip_max_ratio) : c->zip_max_ratio;
+  }
   return l;
 }
 
 bool git_allow_repo_config(const std::filesystem::path& data_dir) {
   const Json v = setting(config_json(data_dir), "loom_git_allow_repo_config");
-  return v.is_boolean() && v.get<bool>();
+  const bool user = v.is_boolean() && v.get<bool>();
+  const auto c = ceiling_for(data_dir);
+  return user && (!c || c->git_allow_repo_config);
 }
 
 std::vector<std::string> git_hardening_args() {

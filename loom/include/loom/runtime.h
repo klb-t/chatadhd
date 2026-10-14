@@ -155,6 +155,11 @@ struct RuntimeOptions {
   // to the hosts in allow_hosts. Default false.
   bool block_private_hosts = false;
   std::vector<std::string> allow_hosts;
+  // Operator ceilings for an account runtime (server_accounts zip/git): the effective zip and git setting is the
+  // more restrictive of these and the account's config.json. Unset = no ceiling (single-user runtime).
+  std::optional<std::int64_t> zip_max_total_bytes;
+  std::optional<double> zip_max_ratio;
+  std::optional<bool> git_allow_repo_config;
   std::shared_ptr<net::HttpTransport> http;  // default: net::make_default_transport()
   std::optional<log::Level> log_level;
   RuntimeParts parts;  // factory overrides; empty = defaults (see RuntimeParts)

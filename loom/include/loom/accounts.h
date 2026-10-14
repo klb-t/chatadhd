@@ -43,6 +43,10 @@ struct Throttle {
 struct Isolation {
   bool confine_paths = true, block_private_hosts = true, csrf_check_origin = true, expose_server_logs = false;
   std::vector<std::string> path_roots, allow_private_hosts, csrf_allowed_origins;
+  // Operator ceilings over the account's own config.json (more restrictive wins); 0 = none.
+  std::int64_t zip_max_total_bytes = 0;
+  double zip_max_ratio = 0;
+  bool git_allow_repo_config = false;
 };
 
 struct Settings {

@@ -1,4 +1,5 @@
 // Composition root. See runtime.h for the wiring order.
+#include "util/safety.h"
 #include "loom/runtime.h"
 #include "loom/path_policy.h"
 #include "loom/net/host_guard.h"
@@ -246,6 +247,12 @@ Result<RuntimeOptions> RuntimeOptions::from_json(const Json& j) {
         if (!r.is_string()) return Error(Errc::InvalidArgument, "allow_hosts must be an array of strings");
         o.allow_hosts.push_back(r.get<std::string>());
       }
+    } else if (k == "zip_max_total_bytes" && v.is_number()) {
+      o.zip_max_total_bytes = v.get<std::int64_t>();
+    } else if (k == "zip_max_ratio" && v.is_number()) {
+      o.zip_max_ratio = v.get<double>();
+    } else if (k == "git_allow_repo_config" && v.is_boolean()) {
+      o.git_allow_repo_config = v.get<bool>();
     } else if (k == "confine_paths" && v.is_boolean()) {
       o.confine_paths = v.get<bool>();
     } else if (k == "path_roots" && v.is_array()) {
@@ -322,6 +329,9 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->paths = DataPaths::for_root(root);
   const DataPaths& p = impl->paths;
   impl->mounts = rom::MountRegistry::standard(p.root);
+  if (opts.zip_max_total_bytes || opts.zip_max_ratio || opts.git_allow_repo_config)
+    safety::set_operator_ceiling(p.root, {opts.zip_max_total_bytes.value_or(0), opts.zip_max_ratio.value_or(0),
+                                          opts.git_allow_repo_config.value_or(true)});
   if (opts.confine_paths) {
     std::vector<fs::path> roots{p.root};
     for (const auto& r : opts.path_roots) roots.emplace_back(r);

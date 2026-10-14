@@ -22,6 +22,15 @@ struct ZipLimits {
   double max_ratio = 0;               // 0 = no limit
 };
 
+// Operator ceiling of an account runtime (server_accounts zip/git): registered per data dir when the runtime
+// opens; the effective setting is the more restrictive of ceiling and config.json. 0 = no ceiling.
+struct OperatorCeiling {
+  std::int64_t zip_max_total_bytes = 0;
+  double zip_max_ratio = 0;
+  bool git_allow_repo_config = true;
+};
+void set_operator_ceiling(const std::filesystem::path& data_dir, OperatorCeiling c);
+
 // <data_dir>/config.json keys over the presets; a missing or unreadable file means the presets.
 ZipLimits zip_limits(const std::filesystem::path& data_dir);
 bool git_allow_repo_config(const std::filesystem::path& data_dir);

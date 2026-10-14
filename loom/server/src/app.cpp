@@ -332,6 +332,9 @@ LoomContext* App::context_for_user(const std::string& user_id) {
     options["confine_paths"] = true;
     options["path_roots"] = iso.path_roots;
   }
+  options["zip_max_total_bytes"] = iso.zip_max_total_bytes;
+  options["zip_max_ratio"] = iso.zip_max_ratio;
+  options["git_allow_repo_config"] = iso.git_allow_repo_config;
   if (iso.block_private_hosts) {
     options["block_private_hosts"] = true;
     options["allow_hosts"] = iso.allow_private_hosts;
