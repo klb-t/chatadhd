@@ -13,8 +13,8 @@ if(LOOM_BUILD_TESTS)
       ENVIRONMENT "LOOM_CLI=$<TARGET_FILE:loom_cli>;LOOM_FIXTURES=${LOOM_ROOT}/tests/fixtures;PYTHONDONTWRITEBYTECODE=1"
       # This suite starts more than 100 CLI processes. Instrumented startup
       # competes with other suites on constrained runners; give it exclusive
-      # test resources while preserving its assertions and hang timeout.
-      RUN_SERIAL TRUE TIMEOUT 300)
+      # test resources while preserving its assertions; measured 280-300+ s under ASan+UBSan on 2 shared cores.
+      RUN_SERIAL TRUE TIMEOUT 900)
     add_test(NAME eval.harness COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/tools/eval/test_eval.py)
     set_tests_properties(eval.harness PROPERTIES
       ENVIRONMENT "PYTHONDONTWRITEBYTECODE=1"
