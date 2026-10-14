@@ -32,6 +32,10 @@ import ConversationBranches, { conversationBranchPath } from "./ConversationBran
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
 import GraphReplyWorkbench from "./GraphReplyWorkbench";
 import GraphChatSettings from "../graph/GraphChatSettings";
+import Disclosure from "../shell/Disclosure";
+import { needsProviderKey, useShellText } from "../shell/text";
+import { requestOpenPanel as requestPanel } from "../context/open-settings";
+import { createPortal } from "react-dom";
 import { nativeFragmentPrompt, nativeGraphDisplayText, recordedGraphReply } from "../graph/chat-graph";
 
 marked.setOptions({ breaks: true });
@@ -73,6 +77,8 @@ interface Props {
   availableOperations?: string[];
   refreshKey?: number;
   onMessagesChanged?: () => void;
+  /** "chat": the full-screen chat app (R56); "workshop" (default): every control as before. */
+  variant?: "chat" | "workshop";
 }
 
 interface StreamState {
@@ -103,7 +109,14 @@ function safeNotice(feature: Parameters<typeof featureMessage>[0], id: string): 
   try { return featureMessage(feature, id, {}); } catch { return null; }
 }
 
-export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged }: Props) {
+export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" }: Props) {
+  const chat = variant === "chat";
+  const t = useShellText();
+  const [hasKey, setHasKey] = useState<boolean | null>(null);
+  const [actionsFor, setActionsFor] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+  const regenerate = useRef(false);
+  const pressTimer = useRef<number | null>(null);
   const [stored] = useState(() => readChatSettings(settingsKey));
   const storedString = (key: string, fallback: string) => typeof stored.value[key] === "string" ? stored.value[key] as string : fallback;
   const storedBool = (key: string, fallback: boolean) => typeof stored.value[key] === "boolean" ? stored.value[key] as boolean : fallback;
@@ -771,6 +784,20 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports, messages, versionsById],
   );
 
+  const showActionsAlways = false;
+  const regenerateFrom = useCallback((m: Message) => {
+    const at = messages.findIndex(x => x.id === m.id);
+    const prior = [...messages.slice(0, at)].reverse().find(x => x.role === "user");
+    if (!prior) return;
+    regenerate.current = true; setInput(prior.text);
+  }, [messages]);
+  useEffect(() => { if (regenerate.current && input.trim() && !stream) { regenerate.current = false; send(); } }, [input, stream, send]);
+  useEffect(() => { if (chat) api.hasSecret("api_key").then(setHasKey, () => setHasKey(null)); }, [chat, error, convId]);
+  useEffect(() => {
+    if (!chat) return;
+    for (const m of messages) if (m.version_group_id && !versionsById[m.version_group_id] && (m.version_num ?? 1) > 1) void loadVersions(m);
+  }, [chat, messages, versionsById, loadVersions]);
+
   const visibleMessages = useMemo(() => branchLeaf
     ? conversationBranchPath(branchMessages, branchLeaf).messages
     : (conversationView ? conversationViewMessages(conversationView, showAllMessages) : messages.filter(row => showAllMessages || row.status === "active"))
@@ -780,8 +807,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   return (
     <div className="chat-view" data-testid="chat-view">
-      <label className="profile-workspace-controls"><input type="checkbox" checked={showAllMessages} onChange={e => setShowAllMessages(e.target.checked)} data-testid="show-all-messages" />Show excluded messages and saved versions</label>
-      <label className="profile-workspace-controls"><input type="checkbox" checked={showBranches} onChange={e => { setShowBranches(e.target.checked); setBranchLeaf(null); }} data-testid="show-conversation-branches" />Browse retained descendant branches</label>
+      {!chat && <label className="profile-workspace-controls"><input type="checkbox" checked={showAllMessages} onChange={e => setShowAllMessages(e.target.checked)} data-testid="show-all-messages" />Show excluded messages and saved versions</label>}
+      {!chat && <label className="profile-workspace-controls"><input type="checkbox" checked={showBranches} onChange={e => { setShowBranches(e.target.checked); setBranchLeaf(null); }} data-testid="show-conversation-branches" />Browse retained descendant branches</label>}
       {showBranches && <ConversationBranches messages={branchMessages} selectedId={branchLeaf} onSelect={message => setBranchLeaf(message.id)} />}
       {branchLeaf && <p role="status">Ancestor path projection <button onClick={() => setBranchLeaf(null)} data-testid="return-current-branch">Return to current conversation</button></p>}
       {settingsError && <p role="alert">{settingsError}</p>}
@@ -792,14 +819,24 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         profileHost={profileHost} catalog={sourceCatalog} busy={sourceBusy} onRead={readSources} onReload={() => { if (convId) void refreshMessages(convId); }} />}
       <div className="chat-scroll" ref={scrollRef}>
         {visibleMessages.length === 0 && !displayedPending && !displayedStream && !gate.viewLoading && gate.viewFailure === null && !conversationView?.resources.length && (
-          <div className="empty-state">Say something to start the conversation.</div>
+          chat ? <div className="shell-empty" data-testid="shell-empty">
+            {needsProviderKey(hasKey) && <div className="shell-card" data-testid="first-run-card" role="status">
+              <strong>{t("first_run_title")}</strong><span>{t("first_run_body")}</span>
+              <button className="primary" data-testid="first-run-open-settings" onClick={() => requestPanel("settings")}>{t("first_run_button")}</button>
+            </div>}
+            <h2>{t("empty_title")}</h2>
+            <div className="shell-starters">{[1, 2, 3, 4].map(n => <button key={n} data-testid="shell-starter" onClick={() => setInput(t("starter_" + n))}>{t("starter_" + n)}</button>)}</div>
+          </div> : <div className="empty-state">Say something to start the conversation.</div>
         )}
         {visibleMessages.map((m) => {
           const versions = m.version_group_id ? versionsById[m.version_group_id] : undefined;
           const trace = recordedContext(m.metadata?.context_trace);
           const graphReply = recordedGraphReply(m.metadata);
           return (
-            <div key={m.id} className={`msg ${m.role}`} data-testid="message" data-role={m.role} data-status={m.status} data-storage={m.storage ?? "native"}>
+            <div key={m.id} className={`msg ${m.role}`} data-testid="message" onContextMenu={chat ? (e) => { e.preventDefault(); setActionsFor(m.id); } : undefined}
+              onPointerDown={chat ? () => { pressTimer.current = window.setTimeout(() => setActionsFor(m.id), 450); } : undefined}
+              onPointerUp={chat ? () => { if (pressTimer.current) window.clearTimeout(pressTimer.current); } : undefined}
+              onPointerLeave={chat ? () => { if (pressTimer.current) window.clearTimeout(pressTimer.current); } : undefined} data-role={m.role} data-status={m.status} data-storage={m.storage ?? "native"}>
               <div className="meta">
                 <span>{m.role}</span>
                 {m.model && <span>· {m.model}</span>}
@@ -912,7 +949,21 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   <button onClick={() => requestOpenPanel(SETTINGS_PANEL)} data-testid="chat-open-settings-button">{words.button}</button>
                 </p>);
               })()}
-              <div className="actions">
+              {chat && editingId !== m.id && <div className="shell-msg-actions" data-testid="shell-msg-actions" hidden={actionsFor !== m.id && !showActionsAlways}>
+                <button onClick={() => { void navigator.clipboard?.writeText(m.text); setCopied(m.id); }} data-testid="msg-copy">{copied === m.id ? t("copied") : t("copy")}</button>
+                {m.role === "user" && <button onClick={() => startEdit(m)} data-testid="msg-edit" disabled={!supports("message.edit") || !messageCan(m, "edit")}>{t("edit")}</button>}
+                {m.role === "assistant" && <button onClick={() => regenerateFrom(m)} data-testid="msg-regenerate" disabled={!!stream}>{t("regenerate")}</button>}
+                {versions && versions.length > 1 && (() => {
+                  const at = versions.findIndex(v => v.id === m.id);
+                  return <span className="version-switcher" data-testid="shell-versions">
+                    <button aria-label={t("prev_version")} disabled={at <= 0} onClick={() => switchVersion(versions[at - 1].id)}>◀</button>
+                    <span>{at + 1}/{versions.length}</span>
+                    <button aria-label={t("next_version")} disabled={at < 0 || at >= versions.length - 1} onClick={() => switchVersion(versions[at + 1].id)}>▶</button>
+                  </span>;
+                })()}
+                <button onClick={() => toggleExclude(m)} data-testid="msg-exclude" disabled={!supports("message.exclude") || !messageCan(m, "set_status") || m.status === "version" || m.status === "deleted"}>{m.status === "excluded" ? t("restore") : t("exclude")}</button>
+              </div>}
+              {!chat && <div className="actions">
                 {m.role === "user" && editingId !== m.id && (
                   <button onClick={() => startEdit(m)} data-testid="edit-message" disabled={!supports("message.edit") || !messageCan(m, "edit")}>
                     Edit
@@ -921,14 +972,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 <button onClick={() => toggleExclude(m)} data-testid="toggle-exclude" disabled={!supports("message.exclude") || !messageCan(m, "set_status") || m.status === "version" || m.status === "deleted"}>
                   {m.status === "excluded" ? "Restore" : "Exclude"}
                 </button>
-              </div>
+              </div>}
               {m.storage === "reference" && sourceCatalog.feature && <details data-testid="source-message-reference">
                 <summary>{featureMessage(sourceCatalog.feature, "source_message")}</summary>
                 <p>{featureMessage(sourceCatalog.feature, "readonly")}</p>
                 <pre>{JSON.stringify({ source_ref: m.source_ref, capabilities: m.capabilities }, null, sourceCatalog.base?.defaults.json_indent)}</pre>
               </details>}
-              {trace && <ContextTrace trace={trace} />}
-              {m.storage !== "reference" && (m.role === "assistant" || graphReply) && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
+              {!chat && trace && <ContextTrace trace={trace} />}
+              {!chat && m.storage !== "reference" && (m.role === "assistant" || graphReply) && <details className="chat-context-controls"><summary>Graph reply · inspect and address fragments</summary>
                 <GraphReplyWorkbench packet={api.packet?.bind(api)} usagePolicy={api.usagePolicy?.bind(api)}
                   responseText={m.role === "assistant" ? m.text : typeof graphReply?.retained_text === "string" ? graphReply.retained_text : ""} recordedReply={graphReply} graphReply={api.graphReply?.bind(api)}
                   onNativeAddressFragment={(action, fragment) => { setInput(nativeFragmentPrompt(action, fragment)); setRequestOverride(null); }}
@@ -951,7 +1002,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         {displayedStream && (
           <div className="msg assistant" data-testid="streaming-message">
             {displayedStream.reasoning && (
-              <details className="reasoning" open>
+              chat ? <Disclosure testId="shell-reasoning" className="reasoning" labels={{ show: t("show_thinking"), hide: t("hide_thinking") }} defaultOpen>
+                <div className="reasoning-text">{displayedStream.reasoning}</div>
+              </Disclosure> : <details className="reasoning" open>
                 <summary>Reasoning</summary>
                 <div className="reasoning-text">{displayedStream.reasoning}</div>
               </details>
@@ -970,8 +1023,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </div>
       )}
 
-      <GraphChatSettings transport={api} disabled={!!stream} />
-      <details className="chat-context-controls" data-testid="chat-context-controls">
+      {!chat && <GraphChatSettings transport={api} disabled={!!stream} />}
+      {!chat && <details className="chat-context-controls" data-testid="chat-context-controls">
         <summary>Context for next message{useKnowledge ? " · knowledge enabled" : ""}</summary>
         <fieldset disabled={!!stream}>
           <legend>Sources included in the request</legend>
@@ -1020,9 +1073,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           </label>
           <p>Recording saves the exact assembled messages and selection with the turn for later inspection.</p>
         </fieldset>
-      </details>
+      </details>}
 
-      <details className="chat-context-controls" data-testid="expert-chat-request"><summary>Expert · inspect or edit one request</summary>
+      {!chat && <details className="chat-context-controls" data-testid="expert-chat-request"><summary>Expert · inspect or edit one request</summary>
         <p>This is the client request sent to Loom. Compiled provider messages are inspected in the recorded context after execution.</p>
         <button onClick={() => send("preview")} disabled={!!stream || !!branchLeaf || Boolean(gate.blocked) || !input.trim()} data-testid="preview-chat-request"
           title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}>Prepare client request</button>
@@ -1031,7 +1084,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           <p>The next Send uses this exact JSON once. Profile, saved context and later calls keep their settings.</p>
           <button onClick={() => setRequestOverride(null)} data-testid="discard-one-call-request">Discard override</button>
         </>}
-      </details>
+      </details>}
 
       {queuedNote !== null && <p className="send-gate-notice" role="status" data-testid="send-queued" data-state={queuedNote}>
         {queuedNote === "waiting" ? gateTexts.queuedWaiting ?? VIEW_LOADING_REASON : gateTexts.queuedFailed ?? gate.viewFailure ?? VIEW_LOADING_REASON}</p>}
@@ -1045,11 +1098,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           onClick={() => setBlockChoice(false)} data-testid="send-gate-unblock">{gateTexts.unblock}</button>}
       </div>}
       {gate.blocked && <span id={gateDescriptionId} hidden data-testid="send-gate-explanation">{gateTexts.blocked}</span>}
-      <div className="composer">
-        <select
+      <div className={chat ? "composer shell-composer" : "composer"}>
+        {chat && <button type="button" aria-label={t("attach")} title={t("attach")} data-testid="shell-attach" onClick={() => requestPanel("import")}>+</button>}
+        {(() => { const picker = <select
           value={model}
           onChange={(e) => setModel(e.target.value)}
-          style={{ width: 150, flexShrink: 0 }}
+          style={chat ? { width: "auto", maxWidth: "38vw", borderRadius: 999, minHeight: 32, fontSize: 12, padding: "2px 8px" } : { width: 150, flexShrink: 0 }}
+          aria-label={t("model_label")}
           data-testid="model-picker"
         >
           <option value="">default model</option>
@@ -1058,7 +1113,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               {m.name ?? m.id}
             </option>
           ))}
-        </select>
+        </select>;
+          if (!chat) return picker;
+          const slot = document.getElementById("shell-model-slot");
+          return slot ? createPortal(picker, slot) : null; })()}
         {routeNotes.length > 0 && <div style={{ width: "100%" }}>
           {routeNotes.map((note, i) => <div className="pill" role="status" key={i} data-testid="chat-route-note">{note}</div>)}
         </div>}
@@ -1069,7 +1127,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </div>}
         <textarea
           value={input}
-          placeholder={profile?.composer.placeholder ?? "Message Loom…"}
+          placeholder={chat ? t("composer_placeholder") : profile?.composer.placeholder ?? "Message Loom…"}
           rows={1}
           data-testid="chat-input"
           onChange={(e) => { setInput(e.target.value); setQueuedNote((note) => (note === "failed" ? null : note)); }}
@@ -1083,14 +1141,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         />
         {stream ? (
           <button className="danger" onClick={cancelStreaming} data-testid="cancel-chat">
-            Stop
+            {chat ? t("stop") : "Stop"}
           </button>
         ) : (
           <button className="primary" onClick={() => send()} data-testid="send-chat" aria-busy={queuedNote === "waiting" || undefined}
             disabled={!!branchLeaf || (Boolean(gate.blocked) && gate.blocked?.reason !== VIEW_LOADING_REASON) || (requestOverride === null && !input.trim()) || !supports("chat.send") || queuedNote === "waiting"}
             title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}
             data-gate-initiator={gate.blocked?.initiator} data-gate-reason={gate.blocked?.reason}>
-            Send
+            {chat ? t("send") : "Send"}
           </button>
         )}
       </div>

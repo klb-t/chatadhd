@@ -104,20 +104,52 @@
         "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (floating and dockable windows; planned, not implemented yet: until it is, the workbench opens). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56)."
       },
       {
+        "key": "animation_styles",
+        "scope": "config",
+        "group": "ui",
+        "section": "Interfejs i wyświetlanie",
+        "subsection": "Animacje",
+        "type": "object",
+        "has_default": false,
+        "description": "Your own animation styles, an overlay on the shipped ones (runtime/ui_animation.pack: none, fade, slide, grow, scale, grow+fade): {name: {kind: none|fade|slide|grow|scale|grow+fade, direction?: left|right|up|down, duration: {value, unit: ms|s|frames}, easing: a named easing or a cubic-bezier(...)}}. A style of the same name replaces the shipped one. Default: none (only the shipped styles)."
+      },
+      {
+        "key": "animations",
+        "scope": "config",
+        "group": "ui",
+        "section": "Interfejs i wyświetlanie",
+        "subsection": "Animacje",
+        "type": "object",
+        "has_default": false,
+        "description": "Which animation style each kind of UI element uses: {disclosure, drawer, menu, dialog, notice, message, proposal, view: a style name}. Only the elements you list change. Presets: disclosure grow+fade (150 ms), drawer slide, every other element fade. Chat phrases such as \"animacje wolniej\" or \"wyłącz animacje\" set it through settings.set. Default: the presets."
+      },
+      {
+        "key": "animation_reduced_motion",
+        "scope": "config",
+        "group": "ui",
+        "section": "Interfejs i wyświetlanie",
+        "subsection": "Animacje",
+        "type": "string",
+        "has_default": false,
+        "description": "The style used for every element when the system asks for reduced motion (prefers-reduced-motion). Preset: none. Name another style to keep some motion. Default: none."
+      },
+      {
+        "key": "animation_refresh_hz",
+        "scope": "config",
+        "group": "ui",
+        "section": "Interfejs i wyświetlanie",
+        "subsection": "Animacje",
+        "type": "number",
+        "has_default": false,
+        "description": "Display refresh rate in Hz, used to convert a duration given in frames into time (frames / Hz). Preset: 60. Default: 60."
+      },
+      {
         "key": "ui_language",
         "scope": "config",
         "group": "ui",
         "type": "string",
         "has_default": false,
         "description": "Language of the shell labels (chat screen, drawer, menus, first-run card): a language code present in the catalogs (pl, en), or empty / auto to follow the browser. Default: auto."
-      },
-      {
-        "key": "disclosure_ms",
-        "scope": "config",
-        "group": "ui",
-        "type": "integer",
-        "has_default": false,
-        "description": "Duration of the expand and collapse animation of disclosures, in milliseconds (the preset is 150; 0 turns the animation off; prefers-reduced-motion always turns it off). Default: 150."
       },
       {
         "key": "system_prompt",

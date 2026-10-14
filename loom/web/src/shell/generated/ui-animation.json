@@ -1,0 +1,72 @@
+{
+  "refresh_hz": 60,
+  "reduced_motion_style": "none",
+  "easings": {
+    "linear": "linear",
+    "ease": "ease",
+    "ease-out": "cubic-bezier(0, 0, 0.2, 1)",
+    "ease-in": "cubic-bezier(0.4, 0, 1, 1)",
+    "ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)"
+  },
+  "styles": {
+    "none": {
+      "kind": "none",
+      "duration": {
+        "value": 0,
+        "unit": "ms"
+      },
+      "easing": "linear"
+    },
+    "fade": {
+      "kind": "fade",
+      "duration": {
+        "value": 150,
+        "unit": "ms"
+      },
+      "easing": "ease-out"
+    },
+    "slide": {
+      "kind": "slide",
+      "direction": "left",
+      "duration": {
+        "value": 180,
+        "unit": "ms"
+      },
+      "easing": "ease-out"
+    },
+    "grow": {
+      "kind": "grow",
+      "duration": {
+        "value": 150,
+        "unit": "ms"
+      },
+      "easing": "ease-out"
+    },
+    "scale": {
+      "kind": "scale",
+      "duration": {
+        "value": 150,
+        "unit": "ms"
+      },
+      "easing": "ease-out"
+    },
+    "grow+fade": {
+      "kind": "grow+fade",
+      "duration": {
+        "value": 150,
+        "unit": "ms"
+      },
+      "easing": "ease-out"
+    }
+  },
+  "elements": {
+    "disclosure": "grow+fade",
+    "drawer": "slide",
+    "menu": "fade",
+    "dialog": "fade",
+    "notice": "fade",
+    "message": "fade",
+    "proposal": "fade",
+    "view": "fade"
+  }
+}
