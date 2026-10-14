@@ -18,6 +18,10 @@ on:
         description: "Build the server + web archive for deploy/install.sh --from-tarball"
         type: boolean
         default: true
+      first_steps:
+        description: "After the server archive: walk docs/PIERWSZE_KROKI.md for real (install, account, login, provider key, five chat checks) in a debian:12 container and in Chromium"
+        type: boolean
+        default: true
       abis:
         description: "Android ABIs, comma separated. arm64-v8a = phones. Add x86_64 for emulators (doubles the native build time)."
         type: string
@@ -370,3 +374,61 @@ jobs:
           name: chatadhd-server-linux-${{ matrix.arch }}
           path: dist-server/
           if-no-files-found: error
+
+  # Optional: the owner's "first steps" guide (docs/PIERWSZE_KROKI.md) walked for real on the archive the
+  # server job just built, with nothing outside the runner: a fake provider on 127.0.0.1 stands in for the
+  # model. Part 1 runs in a bare debian:12 container (install.sh --from-tarball without root/systemd,
+  # first account, login, provider key, five chat checks over HTTP). Part 2 repeats it in headless
+  # Chromium on the runner (login screen, Settings, the chat window). Failing here never blocks the archive.
+  first-steps:
+    name: First steps walk-through (debian:12 + Chromium)
+    needs: server
+    if: ${{ inputs.server && inputs.first_steps }}
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Download the x64 archive
+        uses: actions/download-artifact@v4
+        with:
+          name: chatadhd-server-linux-x64
+          path: dist-server
+
+      - name: Part 1 - bare debian:12 container (install, account, login, key, five checks over HTTP)
+        run: |
+          set -euo pipefail
+          tb="$(ls dist-server/chatadhd-server-linux-x64-*.tar.gz)"
+          docker run --rm -e DEBIAN_FRONTEND=noninteractive -v "$GITHUB_WORKSPACE:/w:ro" debian:12 bash -ec '
+            apt-get update -qq
+            apt-get install -y -qq --no-install-recommends ca-certificates curl libssl3 python3 >/dev/null
+            . /etc/os-release; echo "os: $PRETTY_NAME"
+            bash /w/deploy/first-steps-check.sh /w/'"$tb"'
+          '
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: loom/web/package-lock.json
+
+      - name: Part 2 - the same in Chromium (screenshots are kept as an artifact)
+        working-directory: loom/web
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          bash "$GITHUB_WORKSPACE/deploy/first-steps-check.sh" "$(ls "$GITHUB_WORKSPACE"/dist-server/chatadhd-server-linux-x64-*.tar.gz)" --ui --shots "$GITHUB_WORKSPACE/first-steps-shots"
+
+      - name: Upload the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-steps-screenshots
+          path: first-steps-shots/
+          if-no-files-found: ignore
