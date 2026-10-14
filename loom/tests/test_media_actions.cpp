@@ -12,6 +12,7 @@
 #include "loom/db.h"
 #include "loom/media_providers.h"
 #include "loom/net/http.h"
+#include "loom/port_graph.h"
 #include "loom/runtime.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
@@ -296,6 +297,37 @@ TEST_SUITE("media_actions") {
     REQUIRE(done.at("status") == "completed");
     CHECK(f.transport->requests().size() == 4);
     CHECK(done.at("result").at("parts").at(0).at("text") == "Words in the big picture");
+  }
+
+  // P14 5: finishing a run links the port runs of ITS calls, found by operation id; it does not read the port runs of every run (R12's reconcile).
+  TEST_CASE("a finished run links its own port runs to its node and reads no others") {
+    Fixture f;
+    // a history: port runs of other runs, one of them with its run node already written (a link that is missing there is not this run's business)
+    for (int i = 0; i < 40; ++i) {
+      port_graph::PortRun decoy;
+      decoy.port = "asr";
+      decoy.adapter = "openai_transcriptions";
+      decoy.operation_id = "model_usage_decoy_" + std::to_string(i);
+      decoy.action_run_id = "ar_other_" + std::to_string(i % 2);
+      (void)unwrap(port_graph::record_port_run(f.rt->db(), decoy));
+    }
+    (void)unwrap(f.rt->db().get_or_create_node("run:ar_other_0", "action_run"));
+    f.expect_asr("Hello from the recording.");
+    const Json run = f.run(Json{{"action", "transcribe"}, {"element", f.recording()}, {"ref", "test"}});
+    REQUIRE(run.at("status") == "completed");
+    const std::string run_node = run.at("result").at("produced").at("run_node");
+    const std::string operation = run.at("steps").at(0).at("variants").at(0).at("provenance").at(0).at("operation_id");
+    const Node own = *unwrap(f.rt->db().find_node("port_run:" + operation, "port_run"));
+    const auto own_links = f.links(own.id, "part_of");
+    REQUIRE(own_links.size() == 1);
+    CHECK(own_links[0].src == own.id);
+    CHECK(own_links[0].dst == run_node);
+    CHECK(own_links[0].metadata.at("run_id") == run.at("id"));
+    // the others stay as they were: no part_of anywhere else, not even for the run whose node exists
+    std::size_t part_of = 0;
+    for (const auto& n : unwrap(f.rt->db().list_nodes("port_run", 1000)))
+      part_of += f.links(n.id, "part_of").size();
+    CHECK(part_of == 1);
   }
 
   TEST_CASE("a microphone is a device: recording from it stays declared, with its reason, until a client owns the driver") {

@@ -8,7 +8,6 @@
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
-#include "loom/port_graph.h"
 #include "loom/provenance.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
@@ -429,9 +428,21 @@ Status store_run_results(const ResultServices& s, Json& run) {
       else issue("run_node", made.error().message);
     }
     produced["run_node"] = run_node.empty() ? Json(nullptr) : Json(run_node);
-    // The port runs the steps made were written before this node existed: they name the run, and are linked to it now (port_graph.h).
-    if (!run_node.empty() && !run_meta.value("usage_operation_ids", Json::array()).empty())
-      if (auto linked = port_graph::reconcile_action_runs(db); !linked) issue("port_run_links", linked.error().message);
+    // The port runs the steps made were written before this node existed: they name the run, and are linked to it now (port_graph.h). Only
+    // this run's own calls are looked up, by the label their operation id gives them ("port_run:<operation id>"). port_graph::
+    // reconcile_action_runs would read every port run of the data directory and look up an action run for each of them, on every run that
+    // made a call; the nodes table has an index on `kind` only, so that cost grows with the history (see the P14 report).
+    if (!run_node.empty())
+      for (const auto& operation : run_meta.value("usage_operation_ids", Json::array())) {
+        const std::string label = "port_run:" + operation.get<std::string>();
+        auto found = db.find_node(label, "port_run");
+        if (!found) {
+          issue("port_run_links", found.error().message);
+          continue;
+        }
+        if (!*found || json::get_string((*found)->metadata, "action_run_id") != run_id) continue;  // another run's call is not linked here
+        if (auto linked = db.create_link((*found)->id, run_node, "part_of", 1.0, Json{{"run_id", run_id}}); !linked) issue("port_run_links", linked.error().message);
+      }
 
     // The conversation a message goes to.
     const std::string conv_id = [&] {
