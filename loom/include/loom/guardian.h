@@ -48,14 +48,19 @@ struct Selection {
   Json bindings = Json::object();                      // event id -> {message_id, text_sha256}
   std::string history = "replace_refinement";          // or "append" (preset mixed)
   std::map<std::string, std::string> substitutions;    // message id -> its text at the chosen level (L1, L2)
+  std::string rules;                                   // the standing rules about the person that may go with this request (normalized text only), "" = none
   std::vector<std::string> skip;                       // messages of another topic thread (setting chat_thread_filter), left out of this request only
   Json notes = Json::array();                          // what was left raw and why (a changed message, no goal ...)
-  bool empty() const { return !spec && substitutions.empty() && skip.empty(); }
+  bool empty() const { return !spec && substitutions.empty() && skip.empty() && rules.empty(); }
 };
 
 // The selector's reading. Cheap when nothing is chosen (no rule, no representation, setting raw). Errors never stop a send: the caller
 // uses the raw messages.
 Result<Selection> select(Database& db, const Config& cfg, const std::string& conv_id);
+
+// Has the user refused this proposal (by its title) so often in this conversation that the router should not offer it again? The consumer of the
+// do_not_propose rules the guardian records from rejected proposals (data: kinds.proposal_rejection.suppress_at).
+bool do_not_propose(Database& db, const Config& cfg, const std::string& conv_id, const std::string& proposal_title);
 
 // Names of the actions the guardian serves (runtime/actions.pack, port actions).
 bool is_guardian_action(std::string_view action);

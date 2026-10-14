@@ -712,4 +712,227 @@ TEST_SUITE("guardian") {
     f.rt->config().set("chat_thread_filter", "off");
     CHECK(has_text(f.sent("One more thing"), "contract clause"));
   }
+
+  TEST_CASE("P23.3: three corrections worded differently are one hypothesis and one proposal that reads as a rule; a no separates a doubtful join") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    f.user("nie tak, krócej proszę");
+    f.user("to nie to \xE2\x80\x94 za długie");
+    f.user("nie chodziło mi o tyle tekstu, skróć to");
+    f.assistant();
+    const Json st = f.status();
+    int corrections = 0;
+    for (const auto& h : st.at("hypotheses"))
+      if (h.at("signal") == "course_correction") ++corrections;
+    CHECK(corrections == 1);
+    const Json h = f.hypothesis("course_correction");
+    CHECK(h.at("count") == 3);
+    CHECK(h.at("claim").at("named") == true);
+    CHECK(h.at("claim").at("source") == "concept");
+    CHECK(h.at("claim").at("text") == "Pisz krótko i zwięźle.");
+    CHECK(h.at("claim").at("quotes").size() == 3);  // the evidence stays apart from the content
+    REQUIRE_FALSE(h.at("merged").empty());          // a join by shared concept, not by the same words, is recorded with its confidence and method
+    CHECK(h.at("merged")[0].at("merge").at("method") == "overlap");
+    int proposals = 0;
+    Json proposal;
+    for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv)))
+      if (m.metadata.is_object() && m.metadata.contains("action_proposal")) {
+        ++proposals;
+        proposal = m.to_json();
+      }
+    CHECK(proposals == 1);
+    const std::string text = proposal.at("text");
+    CHECK(text.find("Pisz krótko i zwięźle.") != std::string::npos);  // it reads as a rule ...
+    CHECK(text.find("krócej proszę") == std::string::npos);            // ... not as a quotation
+    // One "no": the proposal is refused and the doubtful join (the one the method was not sure of) is separated, nothing is lost.
+    f.input("nie");
+    INFO(f.status().dump());
+    int total = 0, rejected = 0;
+    const Json after = f.status();
+    for (const auto& x : after.at("hypotheses"))
+      if (x.at("signal") == "course_correction") {
+        ++total;
+        rejected += x.at("status") == "rejected" ? 1 : 0;
+      }
+    CHECK(total == 2);
+    CHECK(rejected == 1);
+  }
+
+  TEST_CASE("P23.3: the match method is swappable - the model method asks one question and records the join; unmerge separates it") {
+    Fixture f;
+    f.rt->config().set("guardian_match_method", "model");
+    f.rt->config().set("guardian_model", "test/guard");
+    const std::string a = f.say("user", "make it terse", false);
+    const std::string b = f.say("user", "fewer words please", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", a}, {"kind", "course_correction"}, {"subject", "make it terse"}, {"post", false}});
+    f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"same":true,"confidence":0.9})")));
+    (void)f.invoke("guardian.observe", Json{{"message_id", b}, {"kind", "course_correction"}, {"subject", "fewer words please"}, {"post", false}});
+    CHECK(f.transport->requests().size() == 1);
+    const Json h = f.hypothesis("course_correction");
+    CHECK(h.at("count") == 2);
+    REQUIRE(h.at("merged").size() == 1);
+    CHECK(h.at("merged")[0].at("merge").at("method") == "model");
+    CHECK(h.at("merged")[0].at("merge").at("confidence").get<double>() == doctest::Approx(0.9));
+    CHECK(f.links(h.at("merged")[0].at("occurrence"), "same_as") == 1);
+    const Json out = f.invoke("guardian.unmerge", Json{{"hypothesis", h.at("id")}});
+    CHECK(out.at("split") == 1);
+    INFO(f.status().dump());
+    int n = 0;
+    const Json after = f.status();
+    for (const auto& x : after.at("hypotheses")) n += x.at("signal") == "course_correction" ? 1 : 0;
+    CHECK(n == 2);
+  }
+
+  TEST_CASE("P23.3: the user can state a rule himself - it is named, counts as one strong occurrence and is proposed as he said it") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    f.user("Zapamiętaj, że odpowiedzi mają być po polsku.");
+    const Json h = f.hypothesis("rule_statement");
+    REQUIRE_FALSE(h.is_null());
+    CHECK(h.at("claim").at("text") == "odpowiedzi mają być po polsku");
+    CHECK(h.at("claim").at("source") == "stated");
+    CHECK(h.at("status") == "ready");
+    f.assistant();
+    CHECK(f.last().at("text").get<std::string>().find("odpowiedzi mają być po polsku") != std::string::npos);
+  }
+
+  TEST_CASE("P23.4: six corrections in one conversation are not a rule about the person; two conversations are - as a question, with the reason") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    for (int i = 0; i < 6; ++i) {
+      f.assistant();
+      f.user("nie tak, krócej proszę");
+    }
+    f.assistant();
+    Json h = f.hypothesis("course_correction");
+    CHECK(h.at("scope_candidate") == "conversation");
+    Json asked;
+    for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv)))
+      if (m.metadata.is_object() && m.metadata.contains("guardian") && m.metadata["guardian"].contains("hypothesis") && m.metadata.contains("action_proposal")) asked = m.metadata["guardian"];
+    REQUIRE_FALSE(asked.is_null());
+    CHECK(asked.at("scope") == "conversation");
+    // The same thing in another conversation: evidence of diversity.
+    const std::string first = f.conv;
+    f.conv = unwrap(f.rt->db().create_conv("Other")).id;
+    f.user("Przygotuj plan podróży");
+    f.assistant();
+    f.user("krócej, nie tak");
+    h = f.hypothesis("course_correction");
+    CHECK(h.at("scope_candidate") == "person");
+    CHECK(h.at("siblings").size() == 1);
+    CHECK(h.at("scope") == "conversation");  // nothing is decided by counting
+    (void)first;
+  }
+
+  TEST_CASE("P23.4: a rule about the person is saved as normalized text only, is sent in other conversations unless the scope chain says no, and is remembered on request") {
+    Fixture f;
+    f.rt->config().set("guardian_promotion", "propose");
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    f.user("nie tak, krócej proszę");
+    f.assistant();
+    const std::string a = f.conv;
+    f.conv = unwrap(f.rt->db().create_conv("Other")).id;
+    f.user("Przygotuj plan podróży");
+    f.assistant();
+    f.user("krócej, nie tak");
+    f.assistant();
+    const Json proposal = f.last();
+    REQUIRE(proposal.at("metadata").contains("guardian"));
+    CHECK(proposal.at("metadata").at("guardian").at("scope") == "person");
+    CHECK(proposal.at("text").get<std::string>().find("2") != std::string::npos);
+    f.input("tak");
+    const Json overlay = f.overlay_doc();
+    const Json rules = overlay.at("overrides").at("rules");
+    REQUIRE(rules.size() == 1);
+    const Json rule = rules.begin().value();
+    CHECK(rule.at("scope") == "person");
+    CHECK(rule.at("text") == "Pisz krótko i zwięźle.");
+    CHECK_FALSE(rule.contains("evidence"));             // the conversations it was heard in are edges of the graph, not part of the rule
+    CHECK(rule.at("evidence_count") == 2);
+    CHECK(rule.dump().find("proszę") == std::string::npos);
+    CHECK(rule.contains("review_after"));
+    // The sibling in the first conversation is covered: it does not ask again.
+    f.conv = a;
+    CHECK(f.hypothesis("course_correction").at("status") == "covered");
+    // A third conversation: the request carries the rule's text, and nothing of the quotes.
+    f.conv = unwrap(f.rt->db().create_conv("Third")).id;
+    Json messages = f.sent("Opisz pogodę");
+    CHECK(has_text(messages, "Pisz krótko i zwięźle."));
+    CHECK_FALSE(has_text(messages, "krócej proszę"));
+    // The scope chain (R47) decides per conversation: off there, and the request is the plain one.
+    f.rt->config().set("guardian_person_rules", "off");
+    CHECK_FALSE(has_text(f.sent("Opisz jeszcze pogodę"), "Pisz krótko i zwięźle."));
+    f.rt->config().set("guardian_person_rules", "send");
+    // "What do you remember about me?"
+    const Json mem = f.invoke("guardian.remembered", Json{{"lang", "pl"}});
+    REQUIRE(mem.at("rules").size() == 1);
+    CHECK(mem.at("text").get<std::string>().find("Pisz krótko i zwięźle.") != std::string::npos);
+    // Undo takes it back from the overlay; the request is plain again.
+    (void)f.invoke("guardian.undo", Json{{"rule", mem.at("rules")[0].at("id")}});
+    CHECK_FALSE(has_text(f.sent("A teraz?"), "Pisz krótko i zwięźle."));
+  }
+
+  TEST_CASE("P23.4: a rule beyond the conversation must have a name of its own; an unnamed one keeps its quotes in the conversation") {
+    Fixture f;
+    const std::string m = f.say("user", "do it differently", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", m}, {"kind", "course_correction"}, {"post", false}});
+    const Json h = f.hypothesis("course_correction");
+    CHECK(h.at("claim").at("named") == false);
+    auto bad = f.rt->guardian().invoke("guardian.promote", Json{{"hypothesis", h.at("id")}, {"scope", "person"}});
+    CHECK_FALSE(bad.has_value());
+    auto ok = f.rt->guardian().invoke("guardian.promote", Json{{"hypothesis", h.at("id")}, {"scope", "person"}, {"text", "Vary the structure."}});
+    REQUIRE(ok.has_value());
+    const Json rule = f.overlay_doc().at("overrides").at("rules").begin().value();
+    CHECK(rule.at("text") == "Vary the structure.");
+    CHECK_FALSE(rule.contains("evidence"));
+  }
+
+  TEST_CASE("P23.4: a rule lives - a correction against it proposes switching it off; a review asks after a while; an expired rule stops applying; nothing is deleted") {
+    Fixture f;
+    const std::string a = f.say("user", "Use tables for the data in every answer", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", a}, {"kind", "course_correction"}, {"subject", "use tables for the data"}, {"post", false}});
+    const Json h = f.hypothesis("course_correction");
+    (void)f.invoke("guardian.promote", Json{{"hypothesis", h.at("id")}});
+    const std::string b = f.say("user", "Do not use tables for the data", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", b}, {"kind", "course_correction"}, {"subject", "do not use tables for the data"}, {"post", false}});
+    f.assistant();
+    const Json p = f.last();
+    INFO(unwrap(f.rt->db().get_node(std::string(h.at("id").get<std::string>())))->metadata.dump());
+    REQUIRE(p.at("metadata").contains("action_proposal"));
+    CHECK(p.at("metadata").at("action_proposal").at("action") == "guardian.undo");
+    f.input("tak");
+    CHECK(f.overlay_doc().value("overrides", Json::object()).value("rules", Json::object()).empty());
+    // The hypothesis is still there, as history.
+    CHECK(f.hypothesis("course_correction").at("status") == "undone");
+  }
+
+  TEST_CASE("P23.4: a rule is reviewed after a while without confirmation (no keeps it) and an expired rule stops applying but stays in the overlay") {
+    Fixture f;
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "guardian.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "guardian"}, {"overrides", Json{{"lifecycle", Json{{"review_after_days", 1e-9}}}}}}.dump();
+    const std::string a = f.say("user", "do it differently", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", a}, {"kind", "course_correction"}, {"post", false}});
+    const Json h = f.hypothesis("course_correction");
+    (void)f.invoke("guardian.promote", Json{{"hypothesis", h.at("id")}, {"scope", "person"}, {"text", "Vary the structure."}});
+    f.assistant();
+    const Json p = f.last();
+    REQUIRE(p.at("metadata").contains("action_proposal"));
+    CHECK(p.at("metadata").at("action_proposal").at("action") == "guardian.undo");
+    CHECK(p.at("metadata").at("guardian").at("lifecycle") == "review");
+    f.input("nie");  // keep it
+    f.assistant();
+    CHECK(f.last().at("metadata").contains("action_proposal") == false);  // not asked again within the review period
+    CHECK(f.overlay_doc().at("overrides").at("rules").size() == 1);
+    // Expiry: a rule whose date has passed is not sent; it is still there.
+    Json doc = f.overlay_doc();
+    for (auto& r : doc["overrides"]["rules"]) r["expires"] = "2000-01-01T00:00:00Z";
+    std::ofstream(f.overlay()) << doc.dump();
+    f.conv = unwrap(f.rt->db().create_conv("Other")).id;
+    CHECK_FALSE(has_text(f.sent("Hello there"), "Vary the structure."));
+    CHECK(f.overlay_doc().at("overrides").at("rules").size() == 1);
+  }
 }

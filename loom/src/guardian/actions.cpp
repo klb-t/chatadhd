@@ -136,6 +136,7 @@ Result<Json> Guardian::Impl::post_pending(const Data& d, const std::string& conv
       meta["disable_proposed_weight"] = json::get_number(meta, "disable_weight", 0);
       LOOM_TRY(save_meta(db, h.id, meta));
       if (offered) posted.push_back(Json{{"hypothesis", h.id}, {"message_id", json::get_string(*offered, "message_id")}, {"lifecycle", "disable"}});
+      else log::write(log::Level::Warning, kLog, "disable proposal not posted: " + offered.error().message);
       continue;
     }
     if (status != "ready" || posted.size() >= limit) continue;
@@ -290,6 +291,7 @@ Result<Json> Guardian::Impl::promote_node(const Data& d, const std::string& hyp_
     const std::string rule_id = "g:" + h.label.substr(h.label.rfind(':') + 1);
     Json evidence = Json::array();
     for (const auto& o : meta.value("occurrences", Json::array())) evidence.push_back(o.value("message_id", ""));
+    const std::int64_t evidence_total = evidence_of(d, h).count;
     Json exc = Json::array();
     for (const auto& e : meta.value("exceptions", Json::array())) exc.push_back(wide ? Json{{"text", e.value("text", "")}} : e);
     const Json& lc = d.p.at("lifecycle");
@@ -298,7 +300,7 @@ Result<Json> Guardian::Impl::promote_node(const Data& d, const std::string& hyp_
     Json record{{"id", rule_id}, {"hypothesis", hyp_id}, {"signal", signal}, {"rule_kind", d.p.at("kinds").at(signal).at("hypothesis").value("rule_kind", "")}, {"scope", scope},
                 {"scope_id", json::get_string(meta, "scope_id")}, {"text", claim}, {"named", json::get_bool(meta.value("claim", Json::object()), "named", false)}, {"exceptions", exc},
                 {"conv_id", conv}, {"created", timeutil::utc_now_iso()}, {"confirmed_at", timeutil::utc_now_iso()}, {"lang", lang}, {"visible_in", wide ? "all" : "origin"},
-                {"evidence_count", static_cast<std::int64_t>(evidence.size())}};
+                {"evidence_count", evidence_total}};
     // A rule about the person carries its normalized text and nothing of the conversations it was heard in: the evidence stays in the graph, as edges.
     if (!wide) record["evidence"] = evidence;
     if (const std::string r = in_days(json::get_number(lc, "review_after_days", 0)); !r.empty()) record["review_after"] = r;

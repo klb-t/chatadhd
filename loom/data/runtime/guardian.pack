@@ -488,8 +488,8 @@
           "rule_kind": "do_not_propose",
           "statement_kind": "prohibition",
           "note": {
-            "en": "Recorded and weighed; shown by guardian.status. No consumer of a do-not-propose rule exists yet, so nothing is proposed to the user for it.",
-            "pl": "Zapisywana i ważona; widoczna w guardian.status. Nie ma jeszcze odbiorcy reguły „nie proponuj”, więc użytkownikowi nic się o niej nie proponuje."
+            "en": "Weighed, shown by guardian.status and consumed by the action router: once the weight reaches kinds.proposal_rejection.suppress_at (two refusals), the same proposal is no longer offered in that conversation; the sentence is sent as a message.",
+            "pl": "Ważona, widoczna w guardian.status i używana przez router akcji: gdy waga osiągnie kinds.proposal_rejection.suppress_at (dwa odmowy), ta sama propozycja nie jest już składana w tej rozmowie; zdanie idzie jako wiadomość."
           },
           "claim": {
             "en": "Do not propose again: {{text}}",
@@ -501,7 +501,8 @@
             "structural"
           ],
           "structural": "rejected_proposal"
-        }
+        },
+        "suppress_at": 1.0
       },
       "preference_statement": {
         "title": {

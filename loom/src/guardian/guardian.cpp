@@ -341,10 +341,13 @@ Status Guardian::Impl::lifecycle_against(const Data& d, const std::string& rule_
   LOOM_TRY_ASSIGN(Node r, get_node_or(db, rule_hyp));
   if (json::get_string(r.metadata, "status") != "promoted") return ok_status();
   LOOM_TRY_ASSIGN(Node a, get_node_or(db, against_hyp));
-  const double w = json::get_number(a.metadata, "weight", 0);
+  // What the claim against it holds on its own (before it is weighed against the rule it contradicts).
+  double w = 0;
+  for (const auto& o : a.metadata.value("occurrences", Json::array()))
+    if (!o.value("undone", false)) w += o.value("strength", 1.0) * o.value("factor", 1.0) * decay(d, o.value("created", ""));
   const double need = json::get_number(d.p.at("lifecycle"), "disable_threshold", 1.0);
   const double declined = json::get_number(r.metadata, "disable_declined_weight", 0);
-  if (w < need || (declined > 0 && w < json::get_number(d.p.at("weighting"), "reask_factor", 2.0) * declined)) return ok_status();
+  if (w + 0.01 < need || (declined > 0 && w < json::get_number(d.p.at("weighting"), "reask_factor", 2.0) * declined)) return ok_status();
   Json meta = r.metadata;
   meta["disable_suggested"] = true;
   meta["disable_against"] = against_hyp;
