@@ -7,6 +7,7 @@ import { createModuleLoader } from '../product-perspective/loader.mjs';
 const loader = await createModuleLoader();
 const q = await loader.load('src/context/semantic-question.ts');
 const u = await loader.load('src/context/usage-pending.ts');
+const c = await loader.load('src/context/client-step-events.ts');
 const p = await loader.load('src/onboarding/presentation.mjs');
 test.after(() => loader.close());
 const pack = JSON.parse(await readFile(new URL('../../../data/profiles/conversation_view.pack', import.meta.url), 'utf8'));
@@ -67,30 +68,25 @@ test('the lines the page adds are in the language of the question', () => {
   assert.equal(q.semanticFailedText(null, 'HTTP 409'), 'HTTP 409');
 });
 
-test('the kernel event names ids only; other events and payloads without ids are not questions', () => {
-  assert.equal(q.SEMANTIC_QUESTION_EVENT, 'semantic:question');
-  const envelope = (payload, event = 'semantic:question') => ({ event, payload });
-  const waiting = { conv_id: 'c_1', message_id: 'm_9', receipt_id: 'usage_abc', state: 'waiting' };
-  assert.deepEqual(q.semanticQuestionEvent(envelope(waiting)), { convId: 'c_1', messageId: 'm_9', receiptId: 'usage_abc', state: 'waiting' });
-  assert.deepEqual(q.semanticQuestionEvent(envelope({ ...waiting, state: 'closed', status: 'approved' })), { convId: 'c_1', messageId: 'm_9', receiptId: 'usage_abc', state: 'closed' });
-  assert.equal(q.semanticQuestionEvent(envelope(waiting, 'action:client_step')), null);
-  assert.equal(q.semanticQuestionEvent(envelope({ conv_id: 'c_1' })), null);
-  assert.equal(q.semanticQuestionEvent(envelope(null)), null);
-  assert.equal(q.semanticQuestionEvent(null), null);
+test('the question rides the one feed of the page: the kernel tells it on the client-step event, ids only, with the run id "semantic:<receipt>"', () => {
+  assert.equal(q.SEMANTIC_QUESTION_RUN_PREFIX, 'semantic:');
+  const envelope = (payload, event = 'action:client_step') => ({ event, payload });
+  const waiting = { conv_id: 'c_1', message_id: 'm_9', run_id: 'semantic:usage_abc', receipt_id: 'usage_abc', question: 'semantic', state: 'waiting' };
+  assert.deepEqual(c.clientStepEvent(envelope(waiting)), { convId: 'c_1', messageId: 'm_9', runId: 'semantic:usage_abc', state: 'waiting' });
+  assert.deepEqual(c.clientStepEvent(envelope({ ...waiting, state: 'closed', status: 'approved' })), { convId: 'c_1', messageId: 'm_9', runId: 'semantic:usage_abc', state: 'closed' });
+  assert.equal(c.clientStepEvent(envelope(waiting, 'semantic:question')), null, 'no second feed: another event name is not read');
 });
 
-test('one feed, the question event only; a transport without a feed is not watched', () => {
-  assert.equal(q.watchSemanticQuestions({}, () => assert.fail('no feed')), null);
+test('the same feed refreshes the conversation for a question of the analysis as for a step of a run', () => {
   const opened = [];
   const source = { subscribeEvents: (event, handlers) => { const row = { event, handlers, closed: false }; opened.push(row); return () => { row.closed = true; }; } };
   const seen = [];
-  const stop = q.watchSemanticQuestions(source, (event) => seen.push(event.state));
+  const stop = c.watchClientSteps(source, (event) => seen.push(event.convId + ':' + event.state));
   assert.equal(opened.length, 1);
-  assert.equal(opened[0].event, 'semantic:question');
-  opened[0].handlers.onChunk({ event: 'semantic:question', payload: { conv_id: 'c_1', message_id: 'm_1', receipt_id: 'r', state: 'waiting' } });
-  opened[0].handlers.onChunk({ event: 'action:client_step', payload: { conv_id: 'c_1', message_id: 'm_1', run_id: 'ar_1', state: 'waiting' } });
-  opened[0].handlers.onChunk({ event: 'semantic:question', payload: { conv_id: 'c_1', message_id: 'm_1', receipt_id: 'r', state: 'closed' } });
-  assert.deepEqual(seen, ['waiting', 'closed']);
+  assert.equal(opened[0].event, 'action:client_step');
+  opened[0].handlers.onChunk({ event: 'action:client_step', payload: { conv_id: 'c_1', message_id: 'm_1', run_id: 'semantic:r', receipt_id: 'r', question: 'semantic', state: 'waiting' } });
+  opened[0].handlers.onChunk({ event: 'action:client_step', payload: { conv_id: 'c_1', message_id: 'm_1', run_id: 'semantic:r', receipt_id: 'r', question: 'semantic', state: 'closed', status: 'stale' } });
+  assert.deepEqual(seen, ['c_1:waiting', 'c_1:closed']);
   stop();
   assert.equal(opened[0].closed, true);
 });

@@ -41,7 +41,9 @@ try {
   const panes=()=>page.locator("[data-view-id]");
   const graph=()=>page.getByTestId("kb-pane-graph");
   const snapshot=()=>page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
-  async function open(){await page.getByTestId("nav-knowledge").click(); const hide=page.getByRole("button",{name:"Hide chat",exact:true});if(await hide.count())await hide.click();await graph().first().locator(".kb-node").first().waitFor();}
+  // P17 5: on a phone the navigation is a menu under the header
+  async function menu(){const t=page.getByTestId("toggle-nav"); if(await t.isVisible() && !await page.getByTestId("app-nav").isVisible())await t.click();}
+  async function open(){await menu(); await page.getByTestId("nav-knowledge").click(); await menu(); const hide=page.getByRole("button",{name:"Hide chat",exact:true});if(await hide.count())await hide.click();await graph().first().locator(".kb-node").first().waitFor();}
   async function settings(pane){const d=pane.locator(".kb-view-settings");if(!await d.getAttribute("open")) { if(!(await d.evaluate(e=>e.open)))await d.locator(":scope > summary").click(); }}
   await page.goto(base); await open();
   let referenceId, ids, saved;

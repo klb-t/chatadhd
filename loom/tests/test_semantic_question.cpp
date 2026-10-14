@@ -60,7 +60,7 @@ struct Fixture {
     }
     conv_id = unwrap(rt->db().create_conv("Planning")).id;
     add("user", sample_text);
-    rt->bus().on("semantic:question", [this](std::string_view, const Json& d) { events.push_back(d); });
+    rt->bus().on(std::string(events::kActionClientStep), [this](std::string_view, const Json& d) { events.push_back(d); });
   }
   std::string add(const std::string& role, const std::string& text) {
     NewMessage m;
@@ -127,6 +127,8 @@ TEST_SUITE("semantic_question") {
     CHECK(f.events[0].at("state") == "waiting");
     CHECK(f.events[0].at("conv_id") == f.conv_id);
     CHECK(f.events[0].at("message_id") == asked->id);
+    CHECK(f.events[0].at("question") == "semantic");
+    CHECK(f.events[0].at("run_id").get<std::string>() == "semantic:" + pending->at("receipt_id").get<std::string>());
     CHECK_FALSE(f.events[0].contains("text"));
     // the question is not content: it is not analysed itself
     CHECK(asked->semantic_status == "done");

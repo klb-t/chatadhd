@@ -18,7 +18,7 @@ import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } fro
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
 import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTexts, requestOpenPanel } from "../context/open-settings";
 import { watchClientSteps } from "../context/client-step-events";
-import { SEMANTIC_ANSWER_REF, SEMANTIC_QUESTION_FEATURE, semanticAnsweredText, semanticFailedText, semanticQuestion, semanticQuestionOpen, watchSemanticQuestions, type SemanticQuestion } from "../context/semantic-question";
+import { SEMANTIC_ANSWER_REF, SEMANTIC_QUESTION_FEATURE, semanticAnsweredText, semanticFailedText, semanticQuestion, semanticQuestionOpen, type SemanticQuestion } from "../context/semantic-question";
 import { featureInLanguage, featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
@@ -278,14 +278,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, []);
 
   // A question for this device (or its closing) that comes from elsewhere - another tab, another client, the CLI - reaches the open conversation
-  // as an event from the kernel: the messages are read again. One feed for the page, no polling.
+  // as an event from the kernel: the messages are read again. One feed for the page, no polling; the question of the background analysis held by
+  // the x10 guard comes on the same feed (run id "semantic:<receipt>").
   useEffect(() => {
     return watchClientSteps(api, (event) => { void refreshMessages(event.convId); }) ?? undefined;
-  }, [refreshMessages]);
-
-  // The background analysis held by the x10 guard asks in the conversation of the message it analysed (or the question closes elsewhere): same feed.
-  useEffect(() => {
-    return watchSemanticQuestions(api, (event) => { void refreshMessages(event.convId); }) ?? undefined;
   }, [refreshMessages]);
 
   const readSources = useCallback(async (options: Record<string, unknown>) => {

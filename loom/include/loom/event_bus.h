@@ -46,7 +46,9 @@ inline constexpr std::string_view kTaskProgress = "task:progress";  // {id, curr
 inline constexpr std::string_view kImportProgress = "import:progress";
 // A run of a conversation is paused on a step the client carries out (its question is a message of that conversation), or the question was
 // answered / closed: {conv_id, message_id, run_id, state: "waiting" | "closed", receipt_id?, step?, action?, status?}. No content, only ids:
-// a page that shows the conversation refreshes its messages (no polling).
+// a page that shows the conversation refreshes its messages (no polling). The question of the background analysis held by the x10 guard (P17) is
+// told the same way, so a page keeps one feed for every question a conversation asks: its run_id is "semantic:<receipt>" and it carries
+// question: "semantic" (state "closed" has status approved | declined | stale).
 inline constexpr std::string_view kActionClientStep = "action:client_step";
 // The semantic worker is held by the x10 usage guard (or an automatic resend is): the pending question with its receipt, once per receipt
 // ({schema: loom.semantic_usage_pending/1, kind?, status, operation_id, receipt_id, baseline_key, projected, messages, conv_ids?, ids?}); and the
@@ -54,9 +56,6 @@ inline constexpr std::string_view kActionClientStep = "action:client_step";
 // question (action/route.cpp note_semantic_hold) and closes it when the answer comes.
 inline constexpr std::string_view kSemanticUsagePending = "semantic:usage_pending";
 inline constexpr std::string_view kSemanticUsageAnswered = "semantic:usage_answered";
-// The conversation shows the question of the background analysis (state "waiting": a new message), or no longer asks it ("closed": approved, declined or
-// out of date): {conv_id, message_id, receipt_id, state, status?}. Ids only: a page that shows the conversation reads its messages again.
-inline constexpr std::string_view kSemanticQuestion = "semantic:question";
 inline constexpr std::string_view kWildcard = "*";
 }  // namespace events
 

@@ -57,12 +57,11 @@ export const DEFAULT_RECONNECT: ClientStepReconnect = {
 };
 
 /**
- * Listens to one event of the kernel on the live feed, so what happens elsewhere reaches the page without a refresh and without polling. `parse`
- * turns an envelope of the feed into the event the page wants (null: not for it). Returns the stop function, or null when the transport has no
- * event feed (then the page sees the change after a refresh, as before). A feed that ends is opened again after a wait; stopping cancels the wait.
+ * Listens for new client steps of the conversations shown, so a step started or answered elsewhere reaches the page without a refresh and
+ * without polling. Returns the stop function, or null when the transport has no event feed (then the page sees a step after a refresh, as before).
+ * A feed that ends is opened again after a wait; stopping cancels the wait.
  */
-export function watchEventFeed<T>(source: ClientStepSource, eventName: string, parse: (envelope: unknown) => T | null, onEvent: (event: T) => void,
-  reconnect: ClientStepReconnect = DEFAULT_RECONNECT): (() => void) | null {
+export function watchClientSteps(source: ClientStepSource, onEvent: (event: ClientStepEvent) => void, reconnect: ClientStepReconnect = DEFAULT_RECONNECT): (() => void) | null {
   const subscribe = source.subscribeEvents;
   if (typeof subscribe !== "function") return null;
   let stopped = false;
@@ -82,10 +81,10 @@ export function watchEventFeed<T>(source: ClientStepSource, eventName: string, p
       delay = Math.min(reconnect.maxMs, delay * 2);
       cancelWait = reconnect.wait(() => { cancelWait = null; open(); }, wait);
     };
-    stopFeed = subscribe.call(source, eventName, {
+    stopFeed = subscribe.call(source, CLIENT_STEP_EVENT, {
       onChunk: (envelope) => {
         delay = reconnect.firstMs;
-        const event = parse(envelope);
+        const event = clientStepEvent(envelope);
         if (event !== null) onEvent(event);
       },
       onDone: () => lost(),
@@ -100,9 +99,4 @@ export function watchEventFeed<T>(source: ClientStepSource, eventName: string, p
     stopFeed = null;
     cancelWait = null;
   };
-}
-
-/** Listens for new client steps of the conversations shown (the generic feed above, the kernel's client-step event). */
-export function watchClientSteps(source: ClientStepSource, onEvent: (event: ClientStepEvent) => void, reconnect: ClientStepReconnect = DEFAULT_RECONNECT): (() => void) | null {
-  return watchEventFeed(source, CLIENT_STEP_EVENT, clientStepEvent, onEvent, reconnect);
 }

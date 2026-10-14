@@ -2404,10 +2404,11 @@ std::string conversation_of_hold(Runtime& rt, const Json& pending) {
   return std::string();
 }
 
+// The question is told on the one event every question of a conversation uses (events::kActionClientStep): ids only.
 void announce_question(Runtime& rt, const std::string& conv_id, const std::string& message_id, const std::string& receipt, const char* state, const std::string& status = std::string()) {
-  Json payload{{"conv_id", conv_id}, {"message_id", message_id}, {"receipt_id", receipt}, {"state", state}};
+  Json payload{{"conv_id", conv_id}, {"message_id", message_id}, {"run_id", "semantic:" + receipt}, {"receipt_id", receipt}, {"question", "semantic"}, {"state", state}};
   if (!status.empty()) payload["status"] = status;
-  rt.bus().emit(events::kSemanticQuestion, payload);
+  rt.bus().emit(events::kActionClientStep, payload);
 }
 }  // namespace
 
