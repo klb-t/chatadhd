@@ -856,3 +856,9 @@ Lokalna replika `deploy/first-steps-check.sh` (serwer z kontami, atrapa dostawcy
 - `chat_coverage.pack`: `group:storage` (ustawienie `cleanup`) osiągalne przez `settings.set`. Cofnięcie: usunąć wpis (test pokrycia wymaga wtedy innej decyzji dla grupy).
 - `server.security` krok 14: ogranicznik prób (`throttle.mode = off`) wyłączony tylko w kroku slotów haszowania; test ogranicznika rejestracji nie zależy od tego kroku. Cofnięcie: usunąć `throttle=no_throttle` (wraca zależny od czasu 429).
 - Serwer: odrzucony upload (`/api/import`, `/api/media/transcribe`, `/api/client/blob/upload`) odpowiada z `Connection: close`, żeby nieprzeczytana reszta ciała nie stała się następnym żądaniem keep-alive. Cofnięcie: usunąć trzy `set_header("Connection", "close")` w `server/src/app.cpp` (wraca pusta 400 na kolejnym żądaniu tego samego połączenia).
+
+### S2 / R21 — zakończenie (2026-10-14)
+
+- `deploy/first-steps-provider.py` zgłasza zużycie proporcjonalne do rozmiaru żądania (stałe 20 tokenów dawało fałszywe wstrzymanie ×10). Cofnięcie: przywrócić stałe `prompt_tokens`.
+- `deploy/first-steps-ui.mjs`: akceptuje tytuł „Streść”; przy błędzie zapisuje ślad (konsola, żądania /api z odpowiedziami) do `blad-zdarzenia.txt` w katalogu zrzutów. Cofnięcie: usunąć blok śladu.
+- Decyzja: `block_private_hosts` zostaje jak jest (dotyczy tylko trybu kont, odmowa jest widoczna); nie był przyczyną. Raport: `docs/reports/S2_R21_2026-10-14.md`.
