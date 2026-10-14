@@ -9,7 +9,9 @@
 //     reconcile: deletions, changed texts (length + 64-bit signature), new rows.
 //   * Any FTS error, a format mismatch or a docs/index count mismatch drops and
 //     rebuilds the index (self-healing). If FTS5 is missing we fall back to LIKE.
+#include <chrono>
 #include <set>
+#include <thread>
 
 #include <sqlite3.h>
 
@@ -212,6 +214,7 @@ Status Database::fts_open() {
     }
     fts_->rebuilds++;
   }
+  fts_->chunk_rows = opts_.fts_chunk_rows;
   fts_->available = true;
   fts_->scan_changed = true;
   fts_->scan_new = true;
@@ -267,17 +270,33 @@ Status Database::fts_reconcile_locked(bool full) {
     }
     LOOM_TRY(fts_index_ids_locked(changed));
   }
+  bool more = false;
+  std::int64_t next_from = 0;
   if (full || f.scan_new) {
+    // Chunked: at most chunk_rows new documents per transaction (0 = all at once). The scan resumes from the last
+    // message rowid indexed (new_from), so a first build of a huge store is a series of short transactions.
+    const std::int64_t chunk = f.chunk_rows > 0 ? f.chunk_rows : -1;
     LOOM_TRY_ASSIGN(auto maxdoc, conn_.query_int("SELECT COALESCE(MAX(docid), 0) FROM fts.loom_fts_docs"));
     LOOM_TRY(conn_.run(
         "INSERT INTO fts.loom_fts_docs(msg_id, text_len, text_sig) "
         "SELECT m.id, length(CAST(m.text AS BLOB)), loom_sig(m.text) FROM main.messages m "
-        "WHERE m.rowid > ?1 AND NOT EXISTS (SELECT 1 FROM fts.loom_fts_docs d WHERE d.msg_id = m.id) ORDER BY m.rowid",
-        full ? std::int64_t{0} : f.new_from));
+        "WHERE m.rowid > ?1 AND NOT EXISTS (SELECT 1 FROM fts.loom_fts_docs d WHERE d.msg_id = m.id) "
+        "ORDER BY m.rowid LIMIT ?2",
+        full ? std::int64_t{0} : f.new_from, chunk));
     LOOM_TRY(conn_.run(
         "INSERT INTO fts.loom_fts(rowid, text) SELECT d.docid, m.text FROM fts.loom_fts_docs d "
         "JOIN main.messages m ON m.id = d.msg_id WHERE d.docid > ?",
         maxdoc.value_or(0)));
+    if (chunk > 0) {
+      LOOM_TRY_ASSIGN(auto cst, conn_.prepare("SELECT COUNT(*), COALESCE(MAX(m.rowid), 0) FROM fts.loom_fts_docs d "
+                                              "JOIN main.messages m ON m.id = d.msg_id WHERE d.docid > ?"));
+      cst.bind(1, maxdoc.value_or(0));
+      LOOM_TRY_ASSIGN(bool row, cst.step());
+      if (row && cst.get_int(0) >= chunk) {
+        more = true;
+        next_from = cst.get_int(1);
+      }
+    }
   }
   if (!f.dirty_ids.empty()) {
     std::vector<std::string> ids(f.dirty_ids.begin(), f.dirty_ids.end());
@@ -285,8 +304,10 @@ Status Database::fts_reconcile_locked(bool full) {
   }
   LOOM_TRY(txn.commit());
   f.dirty_ids.clear();
-  f.scan_new = f.scan_deleted = false;
-  f.new_from = 0;
+  f.scan_deleted = false;
+  f.scan_new = more;  // more chunks to go: resume after the last rowid indexed
+  f.new_from = more ? next_from : 0;
+  f.more = more;
   if (full) f.scan_changed = false;
   return {};
 }
@@ -323,15 +344,44 @@ Status Database::fts_ensure_synced_locked() {
   return {};
 }
 
+// Brings the index up to date one chunk (one transaction) at a time and releases the DB lock between chunks, so
+// other DB users are only ever blocked for the length of a single chunk. Returns when nothing is pending (or on stop).
 Status Database::fts_sync() {
+  while (true) {
+    bool more = false;
+    int chunk = 0;
+    {
+      auto lk = lock();
+      LOOM_TRY(fts_ensure_synced_locked());
+      more = fts_ && fts_->available && fts_->more;
+      chunk = fts_ ? fts_->chunk_rows : 0;
+    }
+    if (!more || fts_stop_.load()) return {};
+    if (chunk > 0) std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+}
+
+void Database::fts_start_background() {
   auto lk = lock();
-  return fts_ensure_synced_locked();
+  if (!fts_ || !fts_->available || fts_thread_.joinable()) return;
+  fts_thread_ = std::thread([this] {
+    Status st = fts_sync();
+    if (!st) log::warn(kLog, "background FTS build failed: {}", st.error().message);
+  });
+}
+
+void Database::fts_join_background() {
+  fts_stop_.store(true);
+  if (fts_thread_.joinable()) fts_thread_.join();
 }
 
 Status Database::fts_rebuild() {
-  auto lk = lock();
-  if (!fts_ || !fts_->available) return Error(Errc::Unavailable, "FTS5 index not available");
-  return fts_rebuild_locked();
+  {
+    auto lk = lock();
+    if (!fts_ || !fts_->available) return Error(Errc::Unavailable, "FTS5 index not available");
+    LOOM_TRY(fts_rebuild_locked());
+  }
+  return fts_sync();
 }
 
 FtsStatus Database::fts_status() {
@@ -343,6 +393,7 @@ FtsStatus Database::fts_status() {
     s.path = fts_->path.string();
     s.rebuilds = fts_->rebuilds;
     s.dirty = !fts_->dirty_ids.empty() || fts_->scan_new || fts_->scan_deleted;
+    s.building = fts_->more;
     if (s.available) {
       auto n = conn_.query_int("SELECT COUNT(*) FROM fts.loom_fts_docs");
       if (n && *n) s.indexed = **n;
@@ -363,7 +414,13 @@ Result<SearchResult> Database::search_messages(std::string_view query, const Sea
     res.mode = (fts_ && fts_->available) ? "fts5" : "like";
     return res;
   }
+  // An incomplete index never yields partial results: this search finishes the build first (chunk by chunk, DB
+  // lock released between chunks) - see fts_sync(). The loop below only covers a write racing in between.
+  lk.unlock();
+  (void)fts_sync();
+  lk.lock();
   (void)fts_ensure_synced_locked();
+  while (fts_ && fts_->available && fts_->more) (void)fts_ensure_synced_locked();
   bool use_fts = fts_ && fts_->available && opts.mode != FtsMode::Like;
   if (opts.mode == FtsMode::Fts5 && !use_fts) return Error(Errc::Unavailable, "FTS5 index not available");
 

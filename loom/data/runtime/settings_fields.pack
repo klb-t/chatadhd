@@ -143,6 +143,30 @@
         "description": "Event types persisted into the loom_events table."
       },
       {
+        "key": "loom_fts_chunk_rows",
+        "scope": "config",
+        "group": "loom",
+        "type": "integer",
+        "has_default": true,
+        "description": "Rows indexed per transaction while the full-text index is built or rebuilt; the database lock is released between chunks so other users are not blocked. Preset 50000. 0 = one transaction (the old behaviour)."
+      },
+      {
+        "key": "loom_fts_background_build",
+        "scope": "config",
+        "group": "loom",
+        "type": "boolean",
+        "has_default": true,
+        "description": "Build and sync the full-text index on a background thread at startup so the first search does not pay for the build. Preset true. A search issued before the build ends finishes it itself and then answers from the complete index."
+      },
+      {
+        "key": "loom_graph_data_limit",
+        "scope": "config",
+        "group": "loom",
+        "type": "integer",
+        "has_default": true,
+        "description": "Message nodes per page of GET /api/graph/data?conv_id= when the request gives no limit param. Preset 5000 (newest messages; the response then carries truncated and next_before). 0 = no limit (the whole conversation)."
+      },
+      {
         "key": "loom_task_workers",
         "scope": "config",
         "group": "loom",

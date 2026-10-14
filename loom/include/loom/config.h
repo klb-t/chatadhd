@@ -108,6 +108,8 @@ const Json& config_defaults();
 // what the Python app writes).
 //   loom_event_log_types: event types persisted into loom_events
 //   loom_task_workers:    TaskEngine worker threads
+//   loom_fts_chunk_rows (50000, 0 = one transaction) / loom_fts_background_build (true) / loom_graph_data_limit
+//                         (5000 message nodes per conv graph page, 0 = no limit): R27 scale settings
 //   loom_zip_max_total_bytes / loom_zip_max_ratio / loom_git_allow_repo_config: R20 safety settings,
 //                         see src/util/safety.h (0 = no limit; false = hooks and repo config disabled)
 const Json& loom_config_defaults();
