@@ -75,6 +75,7 @@ TEST_SUITE("port_graph") {
     CHECK(n.metadata["entry"]["compose"] == "fallback");
     std::set<std::string> labels;
     for (const auto& id : targets(*db, choice, "chose")) labels.insert(label_of(*db, id));
+    INFO(Json(std::vector<std::string>(labels.begin(), labels.end())).dump());
     CHECK(labels == std::set<std::string>{"adapter:asr:groq", "adapter:asr:google"});
     // same choice = same node; a user overlay = another node with scope "person"
     CHECK(unwrap(port_graph::record_role_choice(*db, resolved)) == choice);

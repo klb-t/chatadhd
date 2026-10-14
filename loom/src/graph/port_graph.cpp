@@ -45,7 +45,7 @@ Json redact_impl(const Json& v, const std::string& key) {
     for (const auto& x : v) a.push_back(redact_impl(x, key));
     return a;
   }
-  if (!key.empty() && looks_secret_key(key) && !is_reference_key(key)) return v.is_null() ? v : Json("[redacted]");
+  if (!key.empty() && looks_secret_key(key) && !is_reference_key(key) && !v.is_null() && !v.is_number() && !v.is_boolean()) return Json("[redacted]");  // counts such as "tokens": 5 are not secrets
   if (v.is_string() && looks_secret_value(v.get<std::string>())) return "[redacted]";
   return v;
 }
@@ -121,9 +121,11 @@ Result<std::string> record_role_choice(Database& db, const Json& resolved, const
   const std::string port = port_in.empty() ? role_port(role) : port_in;
   const std::string scope = json::get_string(resolved, "scope");
   const std::string scope_id = json::get_string(resolved, "scope_id");
+  // PortProfile::resolve() carries the whole role entry under "entry" (members, quorum, fuse ...).
   Json entry = Json::object();
+  if (const Json* e = json::find(resolved, "entry"); e && e->is_object()) entry = *e;
   for (const char* k : {"adapter", "compose", "members", "quorum", "fuse", "params", "setting"})
-    if (const Json* x = json::find(resolved, k)) entry[k] = *x;
+    if (const Json* x = json::find(resolved, k); x && !entry.contains(k)) entry[k] = *x;
   entry = redact(entry);
   // The same choice is the same node; a changed choice (another adapter, params, scope) is a new one.
   const std::string digest = Sha256::hex(json::canonical(entry)).substr(0, 12);
@@ -134,7 +136,7 @@ Result<std::string> record_role_choice(Database& db, const Json& resolved, const
   if (const std::string f = json::get_string(resolved, "file"); !f.empty()) meta["file"] = f;
   LOOM_TRY_ASSIGN(const std::string id, node(db, label, "role_choice", "", std::move(meta)));
   std::vector<std::string> names;
-  member_names(resolved, names);
+  member_names(entry, names);
   for (const auto& n : names) {
     LOOM_TRY_ASSIGN(const std::string a, named_adapter(db, port, n));
     LOOM_TRY(link(db, id, a, "chose", Json{{"role", role}, {"scope", scope}}));
