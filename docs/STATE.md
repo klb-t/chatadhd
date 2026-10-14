@@ -19,25 +19,22 @@ Szczegóły techniczne i decyzje: `docs/reports/INDEX.md` (sekcje P9–P18 i S2/
 - **Urządzenia robi klient.** Mikrofon, aparat, schowek, wybór pliku i wybór folderu obsługuje strona albo aplikacja na Androidzie; serwer tylko prosi i czeka na odpowiedź.
 - **ROM.** Pamięć tylko do odczytu, montowana pierwsza: to, co aplikacja wie o sobie.
 - **Porty.** Który model albo dostawca wykonuje którą pracę (streszczenia, tłumaczenia, rozpoznawanie mowy i tekstu) — wybór zapisuje się na właściwym poziomie.
+- **Telefon w emulatorze Androida działa.** Na GitHubie aplikacja instaluje się w emulatorze, łączy z serwerem, loguje, odpowiada na wiadomość i wykonuje „streść tę rozmowę” po „tak” (przebieg `android-smoke` 38602445745 zielony). To emulator, nie prawdziwy telefon.
 - **Bezpieczeństwo serwera z kontami** przejrzane i poprawione; limity serwera są ustawieniami. Są paczki serwera dla starszych systemów i dla ARM. Klucze i hasła nigdy nie przechodzą przez rozmowę: wpisujesz je w Ustawieniach, a rozmowa mówi, które pole otworzyć.
 - **Pokrycie jest sprawdzane.** Lista wszystkiego, co aplikacja potrafi, jest zapisana jako dane razem z tym, jak to powiedzieć w rozmowie; nowa funkcja bez decyzji „da się z rozmowy / nie z rozmowy, bo …” zatrzymuje bramkę.
-
-**Co w toku**
-
-- **Próba telefonu w emulatorze Androida: w toku.** Przygotowany jest przebieg na GitHubie (emulator, aplikacja, serwer i sztuczny dostawca modelu), ale jego pierwszy wynik jeszcze nie jest zapisany; do tego czasu nie wiem, czy aplikacja na Androidzie loguje się, odpowiada i wykonuje polecenie.
 
 **Co otwarte**
 
 - Z rozmowy nie da się jeszcze: oceny, wyboru i nadpisań poszczególnych pozycji katalogu, języka zapytań do wiedzy, rejestru metod i onboardingu — to rozbudowana konfiguracja, której mówiona postać nie jest jeszcze zaprojektowana. Logowanie i zmiana hasła są celowo poza rozmową.
 - Gdy limit odmawia lub pyta przy analizie w tle, pytanie pojawia się w rozmowie (analiza zbiorcza i ponowienia); zwykła analiza wiadomość po wiadomości po prostu przechodzi wtedy na tryb lokalny, bez pytania.
 - Prawdziwa próba z prawdziwym modelem nie była robiona: wszystkie sprawdzenia szły na atrapie serwera modeli.
-- Wybór folderu działa w przeglądarce; powłoka Androida go nie ma (wybierasz plik albo wpisujesz ścieżkę). Powłoka Androida buduje się na GitHubie jako paczka APK, ale nie była uruchomiona na telefonie.
+- Wybór folderu działa w przeglądarce; powłoka Androida go nie ma (wybierasz plik albo wpisujesz ścieżkę). Powłoka Androida buduje się na GitHubie jako paczka APK i przeszła próbę w emulatorze, ale nie była uruchomiona na prawdziwym telefonie.
 
 **Co musisz zrobić Ty**
 
 1. Wstawić ważny klucz OpenRouter do sekretów sieci środowiska — bez niego nie da się sprawdzić niczego z prawdziwym modelem.
 2. Dodać na GitHubie cztery sekrety z kluczem podpisu wydania (jak to zrobić: `docs/PIERWSZE_KROKI.md`) — bez nich paczka Androida jest podpisana tylko kluczem testowym i nie zainstaluje się jako aktualizacja własnej wersji.
-3. Dać prawdziwy telefon na paczkę APK — bez niego nie wiem, czy mikrofon, aparat i wybór pliku działają w powłoce.
+3. Dać prawdziwy telefon na paczkę APK — emulator nie ma prawdziwego mikrofonu ani aparatu, więc bez telefonu nie wiem, czy mikrofon, aparat i wybór pliku działają w powłoce.
 
 ## 2026-10-12 — S1: wątki T7, T6, T1–T5 scalone, `main` = gałąź robocza
 
