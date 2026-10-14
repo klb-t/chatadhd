@@ -3,7 +3,11 @@ name: Package (Android APK + server)
 # Manual only. The owner pays for Actions minutes, so nothing here runs on push or pull_request.
 # Run it from the Actions tab (or `gh workflow run package.yml --ref <branch>`), then download the
 # artifacts from the run page:
-#   chatadhd-android-apk         app-debug.apk  - install on a phone (debug-signed, see loom/android/README.md)
+#   chatadhd-android-apk-release  app-release.apk - signed with the owner's release key; produced only when ALL FOUR
+#                                repo secrets ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS,
+#                                ANDROID_KEY_PASSWORD exist (some but not all = the run fails on purpose)
+#   chatadhd-android-apk-TEST-KEY app-debug.apk  - without those secrets: debug/test key, only for trying the app
+#                                (install on a phone; see loom/android/README.md and docs/PIERWSZE_KROKI.md step 4)
 #   chatadhd-server-linux-x64 / -arm64   chatadhd-server-linux-<arch>-<version>.tar.gz (+ .sha256)
 #                                (Ubuntu 22.04+ / Debian 12+; arm64 entry is optional)
 #                                - `sudo deploy/install.sh --from-tarball <file> --domain ...` (see deploy/README.md)
@@ -45,7 +49,7 @@ concurrency:
 
 jobs:
   android:
-    name: Android APK (debug-signed)
+    name: Android APK (release key if the secrets exist, else test key)
     if: ${{ inputs.android }}
     runs-on: ubuntu-24.04
     # Cold native build of the whole kernel on a 2-core runner is slow; a warm ccache cuts it a lot.
@@ -134,10 +138,44 @@ jobs:
           sdkmanager --list_installed
           echo "ANDROID_HOME=$ANDROID_HOME"
 
+      # Release signing is all-or-nothing. Secrets cannot be read in `if:`, so they are mapped to env of THIS
+      # step only (not the whole job, not the Gradle step) and the verdict is passed on as step outputs.
+      - name: Decide the signing mode (release key or test key)
+        id: sign
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          have=(); missing=()
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -n "${!name:-}" ]; then have+=("$name"); else missing+=("$name"); fi
+          done
+          if [ "${#have[@]}" -eq 4 ]; then
+            echo "mode=release" >> "$GITHUB_OUTPUT"
+            echo "artifact=chatadhd-android-apk-release" >> "$GITHUB_OUTPUT"
+            echo "gradle_task=assembleRelease" >> "$GITHUB_OUTPUT"
+            echo "apk_dir=release" >> "$GITHUB_OUTPUT"
+            echo "SIGNING_KEY_SOURCE=release-secrets" >> "$GITHUB_ENV"
+            echo "all four release-signing secrets are set: the APK will be signed with the release key"
+          elif [ "${#have[@]}" -eq 0 ]; then
+            echo "mode=test" >> "$GITHUB_OUTPUT"
+            echo "artifact=chatadhd-android-apk-TEST-KEY" >> "$GITHUB_OUTPUT"
+            echo "gradle_task=assembleDebug" >> "$GITHUB_OUTPUT"
+            echo "apk_dir=debug" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Test key::No release-signing secrets: the APK is signed with the debug/TEST key (artifact name ends in TEST-KEY)."
+          else
+            echo "::error title=Release signing secrets are incomplete::Set: ${have[*]}. Missing: ${missing[*]}. Add the missing ones (Settings > Secrets and variables > Actions) or delete all four to build with the test key."
+            exit 1
+          fi
+
       # Every GitHub runner is a fresh machine and Gradle would generate a NEW debug key on each one.
       # Android refuses to update an installed app signed with a different key, and uninstalling deletes
       # the app-private data. So the key is pinned: from a secret if there is one, else from the cache.
       - name: Debug signing key from the ANDROID_DEBUG_KEYSTORE_B64 secret (optional)
+        if: ${{ steps.sign.outputs.mode == 'test' }}
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_B64 }}
         run: |
@@ -154,7 +192,7 @@ jobs:
 
       - name: Debug signing key from the cache
         id: keycache
-        if: ${{ env.SIGNING_KEY_SOURCE == 'cache' }}
+        if: ${{ steps.sign.outputs.mode == 'test' && env.SIGNING_KEY_SOURCE == 'cache' }}
         uses: actions/cache@v4
         with:
           path: ~/.android/debug.keystore
@@ -189,6 +227,7 @@ jobs:
         env:
           ABIS: ${{ inputs.abis }}
           NATIVE_BUILD_TYPE: ${{ inputs.native_build_type }}
+          GRADLE_TASK: ${{ steps.sign.outputs.gradle_task }}
         run: |
           set -euo pipefail
           version_name="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
@@ -196,7 +235,7 @@ jobs:
           java -version
           ./gradlew --version
           # versionCode = run number: increases with every run, so a phone accepts the next APK as an update
-          ./gradlew assembleDebug --stacktrace \
+          ./gradlew "$GRADLE_TASK" --stacktrace \
             -Ploom.versionCode="$GITHUB_RUN_NUMBER" \
             -Ploom.versionName="$version_name" \
             -Ploom.abis="$ABIS" \
@@ -207,10 +246,37 @@ jobs:
         if: always()
         run: ccache -s || true
 
+      # assembleRelease leaves app-release-unsigned.apk. The keystore lives in RUNNER_TEMP (outside the
+      # workspace, so it can never end up in an artifact) and is deleted in the last step with `if: always()`.
+      # Passwords go through env (apksigner `env:` source), never on a command line.
+      - name: Sign the APK with the release key (zipalign + apksigner)
+        if: ${{ steps.sign.outputs.mode == 'release' }}
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          bt="$ANDROID_HOME/build-tools/34.0.0"
+          d=loom/android/app/build/outputs/apk/release
+          in="$d/app-release-unsigned.apk"
+          test -s "$in" || { echo "::error::$in was not produced"; exit 1; }
+          ks="$RUNNER_TEMP/release.keystore"
+          (umask 077; printf '%s' "$KS_B64" | base64 -d > "$ks")
+          test -s "$ks" || { echo "::error::ANDROID_KEYSTORE_BASE64 decoded to an empty file"; exit 1; }
+          # zipalign must come BEFORE apksigner (v2+ signatures cover the alignment)
+          "$bt/zipalign" -p -f 4 "$in" "$RUNNER_TEMP/aligned.apk"
+          "$bt/apksigner" sign --ks "$ks" --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass env:KS_PASS --key-pass env:KEY_PASS \
+            --out "$d/app-release.apk" "$RUNNER_TEMP/aligned.apk"
+          rm -f "$RUNNER_TEMP/aligned.apk" "$d/app-release.apk.idsig"
+          echo "signed: $d/app-release.apk"
+
       - name: Check the APK
         run: |
           set -euo pipefail
-          apk=loom/android/app/build/outputs/apk/debug/app-debug.apk
+          apk=loom/android/app/build/outputs/apk/${APK_DIR}/app-${APK_DIR}.apk
           test -s "$apk" || { echo "::error::$apk was not produced"; exit 1; }
           bt="$ANDROID_HOME/build-tools/34.0.0"
           unzip -l "$apk" > apk.lst
@@ -220,32 +286,50 @@ jobs:
           # the placeholder assets/web/index.html alone would mean copyWebAssets found nothing to copy
           grep -qE ' assets/web/assets/.+\.js$' apk.lst || { echo "::error::the real web bundle is not in the APK (only the placeholder page)"; exit 1; }
           "$bt/aapt2" dump badging "$apk" | grep -E "^package:|^sdkVersion|^targetSdkVersion|^native-code"
-          "$bt/apksigner" verify --print-certs "$apk" | tee certs.txt
+          "$bt/zipalign" -c 4 "$apk"
+          # print only the certificate SHA-256 (not the subject, not the rest)
+          "$bt/apksigner" verify --print-certs "$apk" > certs.txt
+          grep -m1 'certificate SHA-256 digest' certs.txt || { echo "::error::apksigner verify gave no certificate digest"; exit 1; }
+          if [ "$SIGN_MODE" = release ] && grep -q 'Android Debug' certs.txt; then
+            echo "::error::the release APK carries the debug certificate"; exit 1
+          fi
           # the .sha256 is written next to the APK with a bare file name, so `sha256sum -c` works after unzipping
           (cd "$(dirname "$apk")" && sha256sum "$(basename "$apk")" > "$(basename "$apk").sha256" && cat "$(basename "$apk").sha256")
           {
             echo "### Android APK"
             echo ""
-            echo "- file: \`app-debug.apk\` ($(du -h "$apk" | cut -f1)), versionName \`$VERSION_NAME\`, ABIs \`$ABIS\`, native build \`$NATIVE_BUILD_TYPE\`"
+            echo "- file: \`$(basename "$apk")\` ($(du -h "$apk" | cut -f1)), versionName \`$VERSION_NAME\`, ABIs \`$ABIS\`, native build \`$NATIVE_BUILD_TYPE\`"
             echo "- signing key source: \`$SIGNING_KEY_SOURCE\`"
-            echo "- $(grep -m1 'SHA-256 digest' certs.txt || echo 'certificate digest: see log')"
+            echo "- $(grep -m1 'certificate SHA-256 digest' certs.txt || echo 'certificate digest: see log')"
+            if [ "$SIGN_MODE" = release ]; then
+              echo "- signed with the **release key** (secrets set)"
+            else
+              echo "- **TEST KEY**: signed with the debug key because the four ANDROID_KEYSTORE_* / ANDROID_KEY_* secrets are not set. The first switch to the release key needs a one-time uninstall of this app."
+            fi
             echo "- sha256: \`$(cut -d' ' -f1 "$apk.sha256")\`"
             echo ""
-            echo "Download the artifact \`chatadhd-android-apk\`, unzip it on the phone and open the .apk"
+            echo "Download the artifact \`$ARTIFACT\`, unzip it on the phone and open the .apk"
             echo "(allow installing from this source when Android asks). New installs keep their data in the app's private storage."
           } >> "$GITHUB_STEP_SUMMARY"
         env:
           ABIS: ${{ inputs.abis }}
           NATIVE_BUILD_TYPE: ${{ inputs.native_build_type }}
+          SIGN_MODE: ${{ steps.sign.outputs.mode }}
+          APK_DIR: ${{ steps.sign.outputs.apk_dir }}
+          ARTIFACT: ${{ steps.sign.outputs.artifact }}
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4
         with:
-          name: chatadhd-android-apk
+          name: ${{ steps.sign.outputs.artifact }}
           path: |
-            loom/android/app/build/outputs/apk/debug/app-debug.apk
-            loom/android/app/build/outputs/apk/debug/app-debug.apk.sha256
+            loom/android/app/build/outputs/apk/${{ steps.sign.outputs.apk_dir }}/app-${{ steps.sign.outputs.apk_dir }}.apk
+            loom/android/app/build/outputs/apk/${{ steps.sign.outputs.apk_dir }}/app-${{ steps.sign.outputs.apk_dir }}.apk.sha256
           if-no-files-found: error
+
+      - name: Delete the release keystore
+        if: ${{ always() }}
+        run: rm -f "$RUNNER_TEMP/release.keystore" "$RUNNER_TEMP/aligned.apk"
 
   server:
     name: Server + web archive (${{ matrix.label }})
