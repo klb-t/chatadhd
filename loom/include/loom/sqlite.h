@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <memory>
 #include <optional>
+#include <mutex>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -161,6 +162,10 @@ class Connection {
  private:
   explicit Connection(sqlite3* db) : db_(db) {}
   sqlite3* db_ = nullptr;
+  // In-process write queue (see Txn): the file this connection serves and its busy budget.
+  std::string file_key_;
+  int busy_budget_ms_ = 0;
+  friend class Txn;
 };
 
 // RAII transaction. Top-level: BEGIN IMMEDIATE (avoids the WAL read->write
@@ -184,6 +189,8 @@ class Txn {
   bool nested_ = false;
   bool done_ = false;
   std::string savepoint_;
+  // Holds the process-wide write queue of the file for the life of a top-level IMMEDIATE transaction.
+  std::unique_lock<std::timed_mutex> queue_;
 };
 
 // Human-readable SQLite library version ("3.47.2").
