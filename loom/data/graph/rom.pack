@@ -258,6 +258,9 @@
           "path": "loom/data/runtime/chat_context.pack"
         },
         {
+          "path": "loom/data/runtime/chat_coverage.pack"
+        },
+        {
           "path": "loom/data/runtime/chat_reasoning.pack"
         },
         {

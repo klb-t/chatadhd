@@ -62,6 +62,10 @@ class ActionRunner {
   // Any invoke port that an atomic action can name in the catalogue (actions, storage).
   Result<Json> invoke_port(std::string_view port, std::string_view action, const Json& request);
 
+  // Can the interpreter carry this catalogue entry out? implemented, and either a composite of steps (no consumer of its own) or an
+  // atomic action some executor handles (a port, a client step, a named executor). The coverage audit uses it.
+  bool runnable(const Json& entry);
+
   // The arguments with the ones the caller left out filled from the settings that the action's params name
   // (`params: [{name, setting}]` in the catalogue): the caller's word comes first, an unset setting binds nothing.
   Json bind_params(const Json& entry, Json args) const;

@@ -398,6 +398,14 @@ void ActionRunner::install_executors(ExecutorTable& table) {
   });
 }
 
+bool ActionRunner::runnable(const Json& entry) {
+  if (json::get_string(entry, "status") != "implemented") return false;
+  if (json::get_string(entry, "kind") == "composite") return json::get_string(entry, "consumer").empty();
+  ExecutorTable table;
+  install_executors(table);
+  return table.find(json::get_string(entry, "id"), entry) != nullptr;
+}
+
 Json ActionRunner::client_declaration(std::string_view client_id) { return clients_.find(client_id); }
 
 Json ActionRunner::client_patches(std::string_view client_id) {

@@ -2521,12 +2521,23 @@
           "pl": "API HTTP"
         },
         "entries": [
+          "DELETE /api/conversations/:id",
+          "DELETE /api/memory/:id",
+          "DELETE /api/secrets/:id",
           "GET /api/archive/status",
           "GET /api/artifacts",
+          "GET /api/artifacts/:id",
+          "GET /api/artifacts/:id/raw",
           "GET /api/auth/me",
           "GET /api/catalog/units",
+          "GET /api/catalog/units/:id",
+          "GET /api/client/blob/:hash/raw",
           "GET /api/config",
           "GET /api/conversations",
+          "GET /api/conversations/:id",
+          "GET /api/conversations/:id/export",
+          "GET /api/conversations/:id/messages",
+          "GET /api/conversations/:id/view",
           "GET /api/economy/report",
           "GET /api/events",
           "GET /api/events/stream",
@@ -2544,11 +2555,15 @@
           "GET /api/media/status",
           "GET /api/memory",
           "GET /api/memory/context",
+          "GET /api/messages/:id",
+          "GET /api/messages/:id/versions",
           "GET /api/methods/chat-settings",
           "GET /api/models",
+          "GET /api/provenance/:id",
           "GET /api/providers",
           "GET /api/search",
           "GET /api/secrets",
+          "GET /api/secrets/:id/has",
           "GET /api/semantic/status",
           "GET /api/settings/fields",
           "GET /api/sources",
@@ -2558,8 +2573,12 @@
           "GET /api/storage/probe",
           "GET /api/storage/status",
           "GET /api/tasks",
+          "GET /api/tasks/:id",
           "GET /api/version",
           "PATCH /api/config",
+          "PATCH /api/conversations/:id",
+          "PATCH /api/memory/:id",
+          "PATCH /api/messages/:id",
           "POST /api/actions/cancel",
           "POST /api/actions/client_result",
           "POST /api/actions/confirm",
@@ -2588,6 +2607,7 @@
           "POST /api/client/declare",
           "POST /api/context/select",
           "POST /api/conversations",
+          "POST /api/conversations/:id/view",
           "POST /api/graph-reply",
           "POST /api/graph/expand",
           "POST /api/graph/packets/store",
@@ -2599,6 +2619,9 @@
           "POST /api/knowledge/run",
           "POST /api/media/transcribe",
           "POST /api/memory",
+          "POST /api/messages/:id/edit",
+          "POST /api/messages/:id/restore",
+          "POST /api/messages/:id/status",
           "POST /api/methods",
           "POST /api/models/refresh",
           "POST /api/onboarding",
@@ -2606,6 +2629,7 @@
           "POST /api/rules/disable",
           "POST /api/rules/list",
           "POST /api/rules/set",
+          "POST /api/secrets/:id",
           "POST /api/semantic/pause",
           "POST /api/semantic/requeue",
           "POST /api/semantic/resume",
@@ -2615,8 +2639,10 @@
           "POST /api/storage/backup",
           "POST /api/storage/copy",
           "POST /api/storage/move",
+          "POST /api/tasks/:id/cancel",
           "POST /api/tasks/resume",
-          "POST /api/usage-policy"
+          "POST /api/usage-policy",
+          "PUT /api/config/:id"
         ]
       },
       "jni": {
@@ -3011,6 +3037,9 @@
             },
             {
               "path": "loom/data/runtime/chat_context.pack"
+            },
+            {
+              "path": "loom/data/runtime/chat_coverage.pack"
             },
             {
               "path": "loom/data/runtime/chat_reasoning.pack"
