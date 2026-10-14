@@ -115,6 +115,12 @@ try {
     else await route.continue();
   });
   const view = index => page.getByTestId("application-profile-view").nth(index);
+  // After a reload the model picker is filled from the saved layout a moment after the selection; wait for that value
+  // (a value lost for good still fails: the wait times out and the equality below reports what is there).
+  async function pickerValue(index) {
+    await page.waitForFunction(index => document.querySelectorAll('[data-testid="application-profile-view"]')[index]?.querySelector('[data-testid="model-picker"]')?.value, index).catch(() => {});
+    return view(index).getByTestId("model-picker").inputValue();
+  }
   async function waitSelection(index, id) { await page.waitForFunction(({ index, id }) => document.querySelectorAll('[data-testid="application-profile-view"]')[index]?.getAttribute("data-conversation-id") === id, { index, id }); }
   async function chooseInHost(id) { await page.getByTestId("sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
   async function chooseInView(index, id) { await view(index).getByTestId("profile-view-sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
@@ -183,8 +189,8 @@ try {
     const id = saved.views[1].id;
     await page.reload(); await waitSelection(1, "a");
     assert.equal(await view(1).getAttribute("data-profile-view-id"), id);
-    assert.equal(await view(1).getByTestId("model-picker").inputValue(), "fixture/two");
-    assert.equal(await view(0).getByTestId("model-picker").inputValue(), "fixture/one");
+    assert.equal(await pickerValue(1), "fixture/two");
+    assert.equal(await pickerValue(0), "fixture/one");
     await openContext(1); assert.equal(await view(1).getByTestId("include-memory").isChecked(), false);
     assert.equal(await view(1).getByTestId("profile-view-sidebar").evaluate(element => getComputedStyle(element).width), "315px");
     await view(1).locator(".profile-details > summary").click();
