@@ -77,7 +77,7 @@ TEST_SUITE("ports") {
     CHECK(tried == std::vector<int>{1, 2});
     auto none = compose::fallback<int>(std::vector<int>{1}, [](int) -> std::optional<Result<int>> {
       return Result<int>(Error(Errc::Unavailable, "x")); }, Error(Errc::Unavailable, "all failed"));
-    CHECK(none.error().message == "all failed");
+    CHECK(none.error().message == "x");  // default: the last member error
     auto skipped = compose::fallback<int>(std::vector<int>{1}, [](int) -> std::optional<Result<int>> { return std::nullopt; },
                                           Error(Errc::NotFound, "none"));
     CHECK(skipped.error().code == Errc::NotFound);
@@ -145,7 +145,7 @@ TEST_SUITE("ports") {
       [](int m) { return "model" + std::to_string(m); }));
     std::vector<std::pair<double, Scores>> sets;
     for (auto& v : out.values) sets.emplace_back(1.0, v);
-    auto fused = unwrap(context::fuse_score_sets(sets, Json{{"operation", "rrf"}, {"signal", "reciprocal_rank"}, {"constant", 60}}));
+    auto fused = unwrap(context::fuse_score_sets(sets, Json{{"operation", "rrf"}, {"signal", "reciprocal_rank"}, {"rrf_constant", 60}}));
     CHECK(fused.at("a") == doctest::Approx(fused.at("b")));  // symmetric ranks
     CHECK(out.produced_by.size() == 2);
     CHECK_FALSE(context::fuse_score_sets(sets, Json{{"operation", "bogus"}, {"signal", "raw_score"}}));
