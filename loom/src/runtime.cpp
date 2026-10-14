@@ -328,6 +328,7 @@ Runtime::~Runtime() {
   // reverse construction order.
   if (impl_) {
     impl_->actions.reset();
+    impl_->guardian.reset();  // stopped in shutdown(); its message:created subscription is already gone
     impl_->knowledge.reset();
     impl_->archive.reset();
   }
