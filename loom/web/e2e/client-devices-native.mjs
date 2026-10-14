@@ -100,7 +100,7 @@ try {
   page.on("pageerror", error => pageErrors.push(error.message));
   page.on("request", request => {
     const url = new URL(request.url());
-    if (/\/api\/conversations\/[^/]+\/messages/.test(url.pathname)) messageReads.push(url.pathname);
+    if (/\/api\/conversations\/[^/]+\/(messages|view)$/.test(url.pathname)) messageReads.push(url.pathname);
     if (url.pathname === "/api/events/stream") eventFeeds.push(url.search);
   });
   await page.goto(base, { waitUntil: "domcontentloaded" });

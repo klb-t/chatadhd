@@ -356,6 +356,7 @@ bool App::init() {
   // other framing and applies the per-route limits before a body is read.
   svr_.set_payload_max_length(opts_.max_upload_bytes == 0 ? (std::numeric_limits<size_t>::max)() : opts_.max_upload_bytes);
   svr_.set_keep_alive_max_count(100);
+  SseQueue::keepalive_ms().store(static_cast<long>(opts_.sse_keepalive_ms));
 
   register_middleware();
   register_routes();
@@ -395,6 +396,7 @@ void App::run() {
 }
 
 void App::stop() {
+  SseQueue::stopping().store(true);  // the idle event feeds end within a tick, so the server's threads can be joined
   if (running_.exchange(false)) svr_.stop();
 }
 

@@ -29,6 +29,8 @@ struct ServerOptions {
   // streamed to disk, so 0 (= no limit) for them does not grow memory. 0 for JSON means no limit either.
   size_t max_body_bytes = 64u * 1024 * 1024;
   size_t max_upload_bytes = 0;
+  // An idle event feed (SSE) writes a comment this often so a client that went away is noticed and its thread freed (0 = never).
+  size_t sse_keepalive_ms = 15000;
 };
 
 // Owns the LoomContext and the httplib::Server, and wires every /api/*
