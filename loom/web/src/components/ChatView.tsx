@@ -32,6 +32,7 @@ import ConversationBranches, { conversationBranchPath } from "./ConversationBran
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
 import GraphReplyWorkbench from "./GraphReplyWorkbench";
 import GraphChatSettings from "../graph/GraphChatSettings";
+import MicButton from "../shell/MicButton";
 import Disclosure from "../shell/Disclosure";
 import { needsProviderKey, useShellText } from "../shell/text";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
@@ -809,6 +810,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     <div className="chat-view" data-testid="chat-view">
       {!chat && <label className="profile-workspace-controls"><input type="checkbox" checked={showAllMessages} onChange={e => setShowAllMessages(e.target.checked)} data-testid="show-all-messages" />Show excluded messages and saved versions</label>}
       {!chat && <label className="profile-workspace-controls"><input type="checkbox" checked={showBranches} onChange={e => { setShowBranches(e.target.checked); setBranchLeaf(null); }} data-testid="show-conversation-branches" />Browse retained descendant branches</label>}
+      {chat && messages.some(m => m.status !== "active") && <Disclosure testId="shell-excluded" open={showAllMessages} onToggle={setShowAllMessages}
+        labels={{ show: t("show_excluded"), hide: t("hide_excluded") }}><p>{t("hidden_count", { n: String(messages.filter(m => m.status !== "active").length) })}</p></Disclosure>}
       {showBranches && <ConversationBranches messages={branchMessages} selectedId={branchLeaf} onSelect={message => setBranchLeaf(message.id)} />}
       {branchLeaf && <p role="status">Ancestor path projection <button onClick={() => setBranchLeaf(null)} data-testid="return-current-branch">Return to current conversation</button></p>}
       {settingsError && <p role="alert">{settingsError}</p>}
@@ -1139,6 +1142,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             }
           }}
         />
+        {chat && <MicButton onText={(x) => setInput(c => c ? c + " " + x : x)} />}
         {stream ? (
           <button className="danger" onClick={cancelStreaming} data-testid="cancel-chat">
             {chat ? t("stop") : "Stop"}

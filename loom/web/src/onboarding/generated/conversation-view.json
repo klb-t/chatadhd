@@ -678,7 +678,8 @@
             "code_copy": "Copy code",
             "workshop_back": "Chat",
             "options": "Conversation options",
-            "advanced": "Advanced for this message"
+            "advanced": "Advanced for this message",
+            "hidden_count": "{{n}} hidden (excluded messages or saved versions)."
           },
           "pl": {
             "menu_open": "Menu",
@@ -748,7 +749,8 @@
             "code_copy": "Kopiuj kod",
             "workshop_back": "Czat",
             "options": "Opcje rozmowy",
-            "advanced": "Zaawansowane dla tej wiadomości"
+            "advanced": "Zaawansowane dla tej wiadomości",
+            "hidden_count": "Ukryte: {{n}} (wykluczone wiadomości lub zapisane wersje)."
           }
         }
       }

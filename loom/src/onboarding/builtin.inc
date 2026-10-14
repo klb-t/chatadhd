@@ -844,7 +844,8 @@ R"loom_onboard({
                 "code_copy": "Copy code",
                 "workshop_back": "Chat",
                 "options": "Conversation options",
-                "advanced": "Advanced for this message"
+                "advanced": "Advanced for this message",
+                "hidden_count": "{{n}} hidden (excluded messages or saved versions)."
               },
               "pl": {
                 "menu_open": "Menu",
@@ -914,7 +915,8 @@ R"loom_onboard({
                 "code_copy": "Kopiuj kod",
                 "workshop_back": "Czat",
                 "options": "Opcje rozmowy",
-                "advanced": "Zaawansowane dla tej wiadomości"
+                "advanced": "Zaawansowane dla tej wiadomości",
+                "hidden_count": "Ukryte: {{n}} (wykluczone wiadomości lub zapisane wersje)."
               }
             }
           }
@@ -1137,11 +1139,11 @@ R"loom_onboard({
             "default.history": "Layer history",
             "knowledge.title": "What the application knows about me",
             "knowledge.filter": "Find a field, category or default",
-            "knowledge.recorded": "Recorded information",
+)loom_onboard",
+R"loom_onboard(            "knowledge.recorded": "Recorded information",
             "knowledge.pending": "Pending confirmations",
             "knowledge.defaults": "Defaults and user layers",
-)loom_onboard",
-R"loom_onboard(            "knowledge.layer_help": "Each effective value includes its source layer and the reason it applies. Permanent exclusions remain until you explicitly remove them.",
+            "knowledge.layer_help": "Each effective value includes its source layer and the reason it applies. Permanent exclusions remain until you explicitly remove them.",
             "knowledge.layer_unavailable": "The host has not connected the native layer editor.",
             "knowledge.inspection_unavailable": "Layer inspection is waiting for the host adapter.",
             "knowledge.history": "Change history, including rejected proposals and deletions",
@@ -2263,10 +2265,10 @@ R"loom_onboard(            "knowledge.layer_help": "Each effective value include
             "show_thinking": "Show thinking",
             "hide_thinking": "Hide thinking",
             "show_excluded": "Show excluded messages and saved versions",
-            "hide_excluded": "Hide excluded messages and saved versions",
-            "first_run_title": "A provider key is needed",
 )loom_onboard",
-R"loom_onboard(            "first_run_body": "To chat, the app needs a key from a model provider (for example OpenRouter). The key is entered in Settings, never in the conversation.",
+R"loom_onboard(            "hide_excluded": "Hide excluded messages and saved versions",
+            "first_run_title": "A provider key is needed",
+            "first_run_body": "To chat, the app needs a key from a model provider (for example OpenRouter). The key is entered in Settings, never in the conversation.",
             "first_run_button": "Open Settings at the key",
             "status_ok": "Background analysis: idle",
             "status_busy": "Background analysis: working",
@@ -2276,7 +2278,8 @@ R"loom_onboard(            "first_run_body": "To chat, the app needs a key from 
             "code_copy": "Copy code",
             "workshop_back": "Chat",
             "options": "Conversation options",
-            "advanced": "Advanced for this message"
+            "advanced": "Advanced for this message",
+            "hidden_count": "{{n}} hidden (excluded messages or saved versions)."
           },
           "pl": {
             "menu_open": "Menu",
@@ -2346,7 +2349,8 @@ R"loom_onboard(            "first_run_body": "To chat, the app needs a key from 
             "code_copy": "Kopiuj kod",
             "workshop_back": "Czat",
             "options": "Opcje rozmowy",
-            "advanced": "Zaawansowane dla tej wiadomości"
+            "advanced": "Zaawansowane dla tej wiadomości",
+            "hidden_count": "Ukryte: {{n}} (wykluczone wiadomości lub zapisane wersje)."
           }
         }
       }
