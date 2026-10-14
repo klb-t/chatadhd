@@ -400,4 +400,25 @@ TEST_SUITE("runtime") {
     CHECK(hr.method == "POST");
     CHECK(net::header_value({{"Content-Type", "x"}}, "content-type") == "x");
   }
+
+  TEST_CASE("runtime media ASR/OCR model_use records reach the provenance store") {
+    fsutil::TempDir td;
+    auto http = std::make_shared<net::ScriptedTransport>();
+    http->set_fallback(net::ScriptedTransport::Reply::json(200, Json{{"text", "hello"}}));
+    RuntimeOptions o;
+    o.data_dir = (td.path() / "data").string();
+    o.start_workers = false;
+    o.http = http;
+    auto rt = unwrap(Runtime::open(o));
+    rt->secrets().set("groq_api_key", "gk-secret");
+    rt->media().refresh();
+    CHECK(unwrap(rt->media().transcribe_bytes("abc", "mp3")).text == "hello");
+    auto lock = rt->db().lock();
+    auto rows = unwrap(rt->db().conn().prepare("SELECT transform, locator FROM loom_provenance WHERE subject_kind='model_use'"));
+    REQUIRE(unwrap(rows.step()));
+    CHECK(rows.get_text(0) == "media.asr@1");
+    CHECK(rows.get_text(1).find("gk-secret") == std::string::npos);
+    CHECK(rows.get_text(1).find("openai_transcriptions") != std::string::npos);
+    CHECK_FALSE(unwrap(rows.step()));
+  }
 }

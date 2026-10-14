@@ -242,6 +242,16 @@ Result<Scores> evaluate(const Node& node) {
 
 }  // namespace
 
+Result<std::map<std::string, double>> fuse_score_sets(
+    const std::vector<std::pair<double, std::map<std::string, double>>>& sets, const Json& fusion_descriptor) {
+  try {
+    LOOM_TRY_ASSIGN(auto spec, fusion(fusion_descriptor));
+    return aggregate(sets, spec);
+  } catch (const std::exception& e) {
+    return invalid(e.what());
+  }
+}
+
 Json method_channel_capabilities() {
   Json result = Json::object();
   for (const auto* id : {"lexical", "tfidf", "regex", "bm25", "graph_pool"}) {

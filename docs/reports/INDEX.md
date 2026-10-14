@@ -641,3 +641,14 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 
 - **Granice:** poza `src/actions/*`, `include/loom/action_*.h`, `chat_route.h`, własnymi `runtime/*.pack`, `settings_fields.pack` + golden, `product_literals.pack` (pin), `web/src/*` i testami dotknąłem: `include/loom/chat_engine.h` + `src/chat/chat_engine.cpp` (pole `history_skip`, `send_as_message` w `from_json`), `src/capi/capi_chat.cpp`, `src/capi/capi_invoke.cpp` (wysłanie zdania, settle), **`src/media/media_call.cpp` (jedna linia, uzgodniona)**. Nie ruszyłem `runtime.cpp/h`, `storage/*`, `providers/*`, `llm/*`, `adapter_registry.h`, ROM ani `graph_entry*.cpp` (wygenerowane `graph_entry.pack`/`interfaces.pack` odświeżone generatorami, bo web woła nowe trasy).
 - **Otwarte:** (1) wywołanie ASR/OCR wstrzymane przez strażnika ×10 wraca jako błąd dostawcy — `MediaProviders` nie ma ścieżki wznowienia; krok kończy się porażką z powodem. (2) Rekordy pochodzenia kroku medialnego zbiera tymczasowy `set_provenance_sink` na czas kroku (filtr po wątku); gdy S2 podepnie sink na poziomie `Runtime` (R10 krok 0), krok powinien go tylko dopisywać. (3) Wymiana propozycji zostaje w historii **kolejnych** zwykłych wiadomości (jak wcześniej); `history_skip` dotyczy tylko żądania z wysłanym zdaniem. (4) E2E w przeglądarce (`npm run test:action-proposal-browser`) nie uruchomione — w środowisku brak Chromium; fixture nie ma jeszcze grupy dla oferty. (5) Blok propozycji nie pokazuje wpisu ani cofnięcia dla zasad `rules.*`.
+
+## S2 / R10 — profil `ports` i operatory złożeń (2026-10-14)
+
+- `data/runtime/ports.pack`: rola → adapter + parametry (chat.default, analysis.fast, embed.default, asr, ocr, format.*);
+  rozstrzyganie przez silnik zasad S1 (`Engine::resolve_value`): instalacja → osoba (`profiles/ports.pack`) → rozmowa
+  (`conversations.metadata.ports`); `explain` pokazuje warstwy i zwycięzcę. `loom_invoke("ports", resolve|explain|roles)`.
+- Operatory fallback / mirror / chain / ensemble nad `AdapterRegistry`; media i magazyn ich używają (zachowanie bez zmian);
+  `use_model` nietknięty — jedyne miejsce „kolejno modeli”. Pochodzenie ASR/OCR zapisywane w działającym programie.
+- Otwarte: odbiorcy (media, analiza, czat) jeszcze nie czytają ról (kolejność ASR/OCR dalej z `media.pack`); zespół dwóch
+  modeli analizy niepodłączony; brak widoku w ustawieniach web. Raport: `docs/reports/S2_R10_2026-10-13.md`.
+  Cofnięcie: revert scalenia R10.

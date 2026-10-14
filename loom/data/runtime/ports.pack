@@ -1,0 +1,42 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "ports",
+  "revision": 1,
+  "description": "Role -> adapter + parameters (B-MOD-03). The installation layer is this preset; <data_dir>/profiles/ports.pack overrides it for the person; a conversation overrides both in conversations.metadata.ports. Resolution goes through the scope chain of the action engine (most specific scope wins unless a conflict rule says otherwise) and `ports explain` names the layer and file of the choice. A role entry is {adapter, params, setting?} or a composition {compose: chain|fallback|ensemble|mirror, members, quorum?, fuse?} (include/loom/port_compose.h). `setting` names the config.json key that supplies params.model. A role ending in .* matches every role with that prefix. Defaults equal the behaviour before the profile existed; the runtime ASR/OCR path still reads media.pack asr_order/ocr_order until it consumes the role.",
+  "defaults": {
+    "roles": {
+      "chat.default": {"adapter": "openai_chat", "params": {}, "setting": "default_model"},
+      "analysis.fast": {"adapter": "openai_chat", "params": {}, "setting": "semantic_model"},
+      "embed.default": {"adapter": "openai_embeddings", "params": {}},
+      "asr": {"compose": "fallback", "members": ["groq", "google"]},
+      "ocr": {"compose": "fallback", "members": ["ocr.space"]},
+      "format.*": {"adapter": "auto", "params": {}}
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": ["roles"],
+    "properties": {
+      "roles": {
+        "type": "object",
+        "description": "Role name -> adapter entry or composition. No role is required and none is capped.",
+        "x-setting": "/roles",
+        "x-consumer": "loom::PortProfile",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "adapter": {"type": "string"},
+            "params": {"type": "object"},
+            "setting": {"type": "string"},
+            "compose": {"type": "string", "enum": ["chain", "fallback", "ensemble", "mirror"]},
+            "members": {"type": "array", "minItems": 1},
+            "quorum": {"type": "integer", "minimum": 0},
+            "fuse": {"type": "object"}
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}
