@@ -198,6 +198,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const currentUserIdRef = useRef<string | null>(null);
   const currentConvIdRef = useRef<string | null>(null);
   const selectedConvRef = useRef(convId);
+  const errorForRef = useRef<string | null>(null);
   selectedConvRef.current = convId;
   const mountedRef = useRef(true);
   const sendEpochRef = useRef(0);
@@ -219,7 +220,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft, blockChoice]);
 
   useEffect(() => { setBranchLeaf(null); }, [convId, refreshKey]);
-  useEffect(() => { setRouteNotes([]); }, [convId]);
+  // The notes of a send that made this very conversation belong to it: moving the page into it does not wipe them.
+  const notesForRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (notesForRef.current !== null && notesForRef.current === convId) return;
+    notesForRef.current = null;
+    setRouteNotes([]);
+  }, [convId]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -297,7 +304,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setViewFailure(null);
     setEditingId(null);
     setVersionsById({});
-    setError(null);
+    // An error of the send that made this very conversation belongs to it: moving the page into it does not wipe what that send said.
+    if (errorForRef.current !== null && errorForRef.current === convId) { /* keep */ } else { errorForRef.current = null; setError(null); }
     fetchEpochRef.current++;
   }, [convId]);
 
@@ -391,6 +399,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     const isCurrent = () => mountedRef.current && epoch === sendEpochRef.current;
     let terminal = false;
     let requestConvId = request.conv_id ?? null;
+    // started: the kernel stored the person's message (the start chunk came). produced: words of an answer arrived.
+    let started = false;
+    let produced = false;
+    let notesAwaitStart = false;  // the route notes came before the conversation was known (a message on a blank page): they follow it
     const refreshShared = () => {
       if (requestConvId) void refreshMessages(requestConvId);
       onMessagesChanged?.();
@@ -400,7 +412,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       terminal = true;
       setStream(null);
       setPendingUserText(null);
-      if (message && selectedConvRef.current === requestConvId) setError(message);
+      // Nothing was stored: the words go back into the field, so a failed send loses nothing and can be sent again.
+      if (message && !started) setInput((current) => current || request.message);
+      // The error is said in the conversation the message went to. That is the one on the screen unless the person has gone to another
+      // one; a conversation this very send created is not yet selected when an error follows its start at once.
+      const here = selectedConvRef.current;
+      if (message && (here === requestConvId || here === null || requestConvId === null)) { errorForRef.current = requestConvId; setError(message); }
       refreshShared();
     };
     setInput("");
@@ -417,6 +434,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         onChunk: (chunk: ChatChunk) => {
           if (!isCurrent() || terminal) return;
           if (chunk.type === "start") {
+            started = true;
+            if (notesAwaitStart) { notesForRef.current = chunk.conv_id; notesAwaitStart = false; }
             currentUserIdRef.current = chunk.user_message_id;
             currentConvIdRef.current = chunk.conv_id;
             requestConvId = chunk.conv_id;
@@ -425,17 +444,23 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             if (!convId && selectedConvRef.current === null) onConversationCreated(chunk.conv_id);
             onMessagesChanged?.();
           } else if (chunk.type === "route_issue") {
+            notesForRef.current = requestConvId;
+            notesAwaitStart = requestConvId === null;
             setRouteNotes(routeIssueNotes(routeIssueCatalog.feature, routeIssues(chunk.issues)));
           } else if (chunk.type === "reasoning") {
             setStream((s) => (s ? { ...s, reasoning: s.reasoning + chunk.text } : s));
           } else if (chunk.type === "delta") {
+            if (chunk.text) produced = true;
             setStream((s) => (s ? { ...s, text: s.text + chunk.text } : s));
           } else if (chunk.type === "done") {
             terminal = true;
+
             if (chunk.context_trace) setLastTrace({ convId: chunk.conv_id, userId: currentUserIdRef.current, trace: chunk.context_trace });
             setStream(null);
             setPendingUserText(null);
             requestConvId = chunk.conv_id;
+            // An answer with no words is said, not left as an empty bubble.
+            if (!produced && !chunk.text && !chunk.cancelled) { errorForRef.current = requestConvId; setError(gateTexts.emptyAnswer ?? "empty_answer"); }
             refreshShared();
           } else if (chunk.type === "action_proposal" || chunk.type === "action_result") {
             // The input was a command: it is answered in the conversation, nothing went to the model.
@@ -461,7 +486,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           }
         },
         onError: (msg: string) => finishError(msg),
-        onDone: () => finishError("Chat stream ended before a done result."),
+        onDone: () => finishError(gateTexts.streamEnded ?? "stream_ended"),
       };
     const dispatch = () => {
       if (runProfileOperation) {
@@ -487,7 +512,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     });
   }, [input, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
-    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
+    contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked, gateTexts.emptyAnswer, gateTexts.streamEnded]);
 
   // The queued send, each time what it waits for changes: sent once when nothing waits any more, said and kept when the conversation did not load,
   // dropped (the text stays) when the person went to another conversation.

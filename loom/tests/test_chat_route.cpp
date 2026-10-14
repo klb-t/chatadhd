@@ -829,4 +829,28 @@ TEST_SUITE("chat_route") {
     REQUIRE(plain.handled);
     CHECK(plain.chunk.at("proposal").at("lang") == "en");
   }
+
+  TEST_CASE("P16: an ordinary message never waits for the model registry; only a proposal's estimate may fetch it, once, and unknown stays unknown") {
+    Fixture f;
+    f.rt->config().set("model_registry_autorefresh", "on_demand");  // the preset
+    // an ordinary message (heuristic routing, and hybrid with a confident or no local reading) sends and fetches nothing while it is routed
+    for (const char* method : {"heuristic", "hybrid"}) {
+      f.rt->config().set("intent_routing_method", method);
+      ChatOptions opts;
+      opts.stream = false;
+      CHECK_FALSE(unwrap(chat_route::handle(*f.rt, "What is the weather like in Paris?", opts, Json{{"message", "What is the weather like in Paris?"}}, nullptr)).handled);
+      CHECK(f.transport->requests().empty());
+    }
+    // a proposal needs a price: the public list is fetched once; a provider that lists nothing leaves the money unknown, with the reason
+    f.rt->config().set("intent_routing_method", "heuristic");
+    f.transport->expect("GET", "https://api.test/models", net::ScriptedTransport::Reply::json(200, Json{{"data", Json::array()}}));
+    const auto out = f.input("Summarise this conversation");
+    REQUIRE(out.handled);
+    CHECK(out.chunk.at("proposal").at("cost").at("money").at("known") == false);
+    REQUIRE(f.transport->requests().size() == 1);
+    CHECK(f.transport->requests()[0].url == "https://api.test/models");
+    // the next proposal inside the retry window does not fetch again
+    f.input("Streść tę rozmowę");
+    CHECK(f.transport->requests().size() == 1);
+  }
 }

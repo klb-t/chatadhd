@@ -72,6 +72,9 @@ export interface SendGateTexts {
   /** A send that waits for the conversation (it is sent once it is there) and one that did not (the text stays in the field). */
   queuedWaiting: string | null;
   queuedFailed: string | null;
+  /** A stream that ends with no result, and an answer with no words: said in the conversation, never a silent end. */
+  streamEnded: string | null;
+  emptyAnswer: string | null;
 }
 /** User-visible gate texts come from the `chat_send` presentation catalog. Without a
  * usable catalog (older profile, suppressed or malformed entry) the machine reason is
@@ -96,5 +99,6 @@ export function sendGateTexts(feature: PresentationFeature | null, gate: SendGat
     viewFailure: gate.viewFailure === null ? null : text("view_unavailable", { reason: gate.viewFailure }) ?? gate.viewFailure,
     setting, settingHelp: text("setting_help"), unblock: text("unblock"),
     queuedWaiting: text("queued_waiting"), queuedFailed: text("queued_failed"),
+    streamEnded: text("stream_ended"), emptyAnswer: text("empty_answer"),
   };
 }

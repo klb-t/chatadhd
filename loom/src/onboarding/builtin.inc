@@ -278,7 +278,9 @@ R"loom_onboard({
                 "blocked_by_setting": "Sending is blocked by your setting “{{setting}}”. Turn it off to send with the stored messages only.",
                 "unblock": "Turn off this block",
                 "queued_waiting": "Waiting for the conversation to load… your message will be sent as soon as it is there.",
-                "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field."
+                "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field.",
+                "stream_ended": "The answer stream ended before a result arrived. Nothing more will come for this message; send it again if you need an answer.",
+                "empty_answer": "The model answered with no text."
               },
               "pl": {
                 "source_history_omitted": "Historia połączonych źródeł nie zostanie dołączona do tej wiadomości. Wysyłane są tylko wiadomości zapisane w tej rozmowie.",
@@ -293,7 +295,9 @@ R"loom_onboard({
                 "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
                 "unblock": "Wyłącz tę blokadę",
                 "queued_waiting": "Czekam na wczytanie rozmowy… wiadomość zostanie wysłana, gdy tylko będzie gotowa.",
-                "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu."
+                "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu.",
+                "stream_ended": "Strumień odpowiedzi skończył się, zanim doszedł wynik. Dla tej wiadomości nic więcej nie przyjdzie; wyślij ją jeszcze raz, jeśli potrzebujesz odpowiedzi.",
+                "empty_answer": "Model odpowiedział bez tekstu."
               }
             }
           }
@@ -1084,13 +1088,13 @@ R"loom_onboard({
             "error.rule_object": "Wprowadź obiekt reguły.",
             "error.native_type": "Natywny kreator: {{label}} musi mieć typ {{expected}}.",
             "error.missing_field": "Pytanie natywnego scenariusza wskazuje brakujące pole {{field}}.",
-            "error.failure": "Operacja nie powiodła się. Otwórz szczegóły diagnostyczne, aby sprawdzić pierwotny błąd.",
+)loom_onboard",
+R"loom_onboard(            "error.failure": "Operacja nie powiodła się. Otwórz szczegóły diagnostyczne, aby sprawdzić pierwotny błąd.",
             "error.diagnostics": "Szczegóły diagnostyczne",
             "error.presentation": "Prezentacja kreatora jest niedostępna: {{reason}}",
             "value.raw_identifier": "{{id}}",
             "layer.missing": "Dla tego klucza nie ma bieżącej wartości domyślnej ani wartości użytkownika.",
-)loom_onboard",
-R"loom_onboard(            "layer.excluded": "Trwałe wykluczenie użytkownika blokuje ten stabilny identyfikator także po aktualizacji packa.",
+            "layer.excluded": "Trwałe wykluczenie użytkownika blokuje ten stabilny identyfikator także po aktualizacji packa.",
             "layer.disabled": "Użytkownik zachował tę wartość domyślną, ale wyłączył jej użycie.",
             "layer.user": "Jawna wartość użytkownika nadpisuje wbudowaną warstwę grafu.",
             "layer.proposal": "Nowa wartość domyślna dotyczy wykluczonego obszaru i czeka na akceptację użytkownika.",
@@ -1476,7 +1480,9 @@ R"loom_onboard(            "layer.excluded": "Trwałe wykluczenie użytkownika b
             "blocked_by_setting": "Sending is blocked by your setting “{{setting}}”. Turn it off to send with the stored messages only.",
             "unblock": "Turn off this block",
             "queued_waiting": "Waiting for the conversation to load… your message will be sent as soon as it is there.",
-            "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field."
+            "queued_failed": "The conversation did not load, so nothing was sent. Your text is still in the field.",
+            "stream_ended": "The answer stream ended before a result arrived. Nothing more will come for this message; send it again if you need an answer.",
+            "empty_answer": "The model answered with no text."
           },
           "pl": {
             "source_history_omitted": "Historia połączonych źródeł nie zostanie dołączona do tej wiadomości. Wysyłane są tylko wiadomości zapisane w tej rozmowie.",
@@ -1491,7 +1497,9 @@ R"loom_onboard(            "layer.excluded": "Trwałe wykluczenie użytkownika b
             "blocked_by_setting": "Wysyłanie blokuje Twoje ustawienie „{{setting}}”. Wyłącz je, aby wysłać wiadomość tylko z zapisanymi wiadomościami.",
             "unblock": "Wyłącz tę blokadę",
             "queued_waiting": "Czekam na wczytanie rozmowy… wiadomość zostanie wysłana, gdy tylko będzie gotowa.",
-            "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu."
+            "queued_failed": "Rozmowa nie wczytała się, więc nic nie wysłano. Twój tekst został w polu.",
+            "stream_ended": "Strumień odpowiedzi skończył się, zanim doszedł wynik. Dla tej wiadomości nic więcej nie przyjdzie; wyślij ją jeszcze raz, jeśli potrzebujesz odpowiedzi.",
+            "empty_answer": "Model odpowiedział bez tekstu."
           }
         }
       }
