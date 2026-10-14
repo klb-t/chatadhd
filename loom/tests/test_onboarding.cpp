@@ -12,7 +12,7 @@ using loom::test::unwrap;
 
 namespace {
 Json scenario_fixture() {
-  auto path = std::filesystem::path(__FILE__).parent_path().parent_path() / "data/onboarding/scenario.pack";
+  auto path = std::filesystem::weakly_canonical(std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / "..") / "data/onboarding/scenario.pack";
   std::ifstream input(path);
   std::stringstream text; text << input.rdbuf();
   return unwrap(json::parse(text.str()));

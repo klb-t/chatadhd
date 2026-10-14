@@ -32,7 +32,7 @@ void write_overlay(const std::filesystem::path& dir, const Json& overrides) {
       json::dump(Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "graph_entry"}, {"overrides", overrides}})));
 }
 
-const std::filesystem::path kLoomDir = std::filesystem::path(__FILE__).parent_path().parent_path();
+const std::filesystem::path kLoomDir = std::filesystem::weakly_canonical(std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / "..");
 
 std::string slurp(const std::filesystem::path& p) {
   std::ifstream in(p, std::ios::binary);

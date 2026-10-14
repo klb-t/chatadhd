@@ -347,7 +347,10 @@ void register_builtin(Providers& p) {
     if (!svc) return only(unknown("storage_profile_unavailable"));
     Json by = Json::object();
     std::int64_t ok = 0, unprobed = 0;
-    for (const auto& b : (*svc)->describe()["backends"]) {
+    // Keep the described document alive: range-for over `describe()["backends"]` would iterate a
+    // reference into a destroyed temporary (heap-use-after-free, found by ASan).
+    const Json described = (*svc)->describe();
+    for (const auto& b : described["backends"]) {
       if (!b.value("configured", true) || b["kind"].is_null()) continue;
       if (b["kind"] == "local") {
         auto be = (*svc)->backend(b["id"].get<std::string>());

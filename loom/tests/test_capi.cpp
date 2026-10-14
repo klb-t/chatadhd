@@ -175,7 +175,7 @@ TEST_SUITE("capi") {
     CHECK(!by_key["secret:api_key"].contains("default_value"));
     CHECK(by_key["config:_config_version"]["edit"] == "read_only");
     loom_set_secret(c.ctx, "api_key", "sk-secret-fields");
-    CHECK(std::string(loom_settings_fields(c.ctx)).find("sk-secret-fields") == std::string::npos);
+    CHECK(take(loom_settings_fields(c.ctx)).dump().find("sk-secret-fields") == std::string::npos);
     CHECK(loom_set_config_json(c.ctx, R"({"_config_version": 9})") == LOOM_E_INVALID_ARGUMENT);
     loom_set_config(c.ctx, "_config_version", "9");
     CHECK(take(loom_get_config(c.ctx)).value("_config_version", 0) != 9);

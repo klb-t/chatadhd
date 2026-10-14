@@ -18,7 +18,7 @@ using loom::test::unwrap;
 
 namespace {
 
-const std::filesystem::path kLoomDir = std::filesystem::path(__FILE__).parent_path().parent_path();
+const std::filesystem::path kLoomDir = std::filesystem::weakly_canonical(std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / "..");
 
 Json read_json(const std::filesystem::path& p) {
   std::ifstream in(p, std::ios::binary);
