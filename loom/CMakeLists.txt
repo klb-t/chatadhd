@@ -221,6 +221,22 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME unit.${_name} COMMAND loom_tests --source-file=*/${_name}.cpp --no-intro=true)
   endforeach()
 
+  # C-ABI lifecycle probe (init/subscribe/shutdown loop) in plain C against the public header only. Runs in every
+  # preset: against libloom.so when it is built, else against loom_core (same code, static). It exists because a
+  # destruction-order bug (R30) crashed only under libc++, the Android standard library; see the `libcxx` preset.
+  add_executable(loom_shutdown_probe ${LOOM_ROOT}/tests/shutdown_cabi_probe.c)
+  target_include_directories(loom_shutdown_probe PRIVATE ${LOOM_ROOT}/include)
+  set_target_properties(loom_shutdown_probe PROPERTIES LINKER_LANGUAGE CXX)
+  if(LOOM_SHARED)
+    target_link_libraries(loom_shutdown_probe PRIVATE loom)
+  else()
+    target_link_libraries(loom_shutdown_probe PRIVATE loom_core loom_sqlite)
+  endif()
+  add_test(NAME capi.shutdown_cycle
+    COMMAND ${CMAKE_COMMAND} -DPROBE=$<TARGET_FILE:loom_shutdown_probe> -DDIR=${CMAKE_CURRENT_BINARY_DIR}/capi_shutdown_data
+      -P ${LOOM_ROOT}/tests/run_shutdown_probe.cmake)
+  set_tests_properties(capi.shutdown_cycle PROPERTIES TIMEOUT 120)
+
   file(GLOB LOOM_COMPAT_SOURCES CONFIGURE_DEPENDS ${LOOM_ROOT}/tests/compat/*.cpp)
   list(FILTER LOOM_COMPAT_SOURCES EXCLUDE REGEX "/candidate_graph_native_tool\\.cpp$")
   add_executable(loom_compat_tool ${LOOM_COMPAT_SOURCES})
