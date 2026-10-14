@@ -72,6 +72,9 @@ class MountRegistry;
 namespace archive {
 class ArchiveIntelligence;
 }
+namespace guardian {
+class Guardian;
+}
 namespace knowledge {
 class KnowledgeEngine;
 }
@@ -213,6 +216,7 @@ class Runtime {
   GitHubSyncManager& github();
   archive::ArchiveIntelligence& archive();  // Project Compiler (archive.h)
   knowledge::KnowledgeEngine& knowledge();  // knowledge pipeline (knowledge.h)
+  guardian::Guardian& guardian();           // the context guardian: a secretary building the representation of conversations (guardian.h)
   actions::ActionRunner& actions();         // runs actions: the interpreter bound to this runtime (action_runner.h)
 
   // Explicit source I/O boundary. Existing get_msgs/get_messages remain storage

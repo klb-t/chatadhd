@@ -400,6 +400,46 @@
         "description": "Id of the provider manifest that serves speech_model. Default: none."
       },
       {
+        "key": "guardian_method",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "How the context guardian recognises signals in your messages (corrections, clarifications): heuristic (preset: word lists and structure, local and free), model (one guarded model call per message that no existing annotation already describes), hybrid (the local reading first, the model only where it found nothing) or off. The guardian is a secretary: it builds a representation of the conversation beside the raw messages and never changes them. Runtime profile guardian (method). Default: heuristic."
+      },
+      {
+        "key": "guardian_promotion",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "What the guardian does when a hypothesis about you gathers enough weight: ask (ask at the first occurrence), propose (preset: propose a rule with its evidence at the threshold) or apply (write the rule at the higher threshold and say so; always reversible). The thresholds, the escalation curve and the weights are data in the runtime profile guardian. Default: propose."
+      },
+      {
+        "key": "guardian_model",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "Model used by the guardian when its method asks one; empty = the default model. The call goes through use_model and the usage guards (x10, spending limits). Default: none."
+      },
+      {
+        "key": "guardian_levels",
+        "scope": "config",
+        "group": "context",
+        "type": "object",
+        "has_default": false,
+        "description": "Your own definition of the lossy levels of the guardian's representation, merged over the profile guardian (levels.defs): {L1: {drop_categories: [filler, repetition, restart]}, L2: {drop_categories: [digression, joke]}, ...}; a level you name that the profile does not know is added. Categories and thresholds are yours to choose; the original text is never touched and every drop records its category and span. Default: the profile."
+      },
+      {
+        "key": "chat_representation",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "What the context selector sends of a conversation: raw (preset: the messages as they are, request bytes unchanged), denoised (your messages at level L1, without fillers, repetitions and restarts), lean (level L2), guardian (L1 and a run of clarifications replaced by one compiled instruction) or mixed (the raw messages followed by the compiled instruction); or a preset of your own in the profile guardian (representation.presets). A value that the scope chain resolves: accepting a proposal of the guardian sets guardian for that conversation as a rule you can switch off. The compatibility mode (system prompt and raw conversation only) is unaffected. Default: raw."
+      },
+      {
         "key": "context_execution",
         "scope": "config",
         "group": "context",

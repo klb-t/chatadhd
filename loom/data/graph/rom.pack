@@ -303,6 +303,9 @@
           "path": "loom/data/runtime/graph_memory.pack"
         },
         {
+          "path": "loom/data/runtime/guardian.pack"
+        },
+        {
           "path": "loom/data/runtime/import.pack"
         },
         {

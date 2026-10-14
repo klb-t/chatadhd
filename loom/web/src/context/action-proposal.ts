@@ -55,6 +55,13 @@ export interface ActionRunPending {
 export interface ProducedMeta { target?: string; forms?: string[]; content?: string | null; run_node?: string | null }
 export interface ActionRunMeta { run_id?: string; status?: string; lang?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
 
+/** What the context guardian adds to a proposal of its own (metadata.guardian): the claim, its scope and weight, the evidence, the exceptions and,
+ *  for a run of clarifications, the one instruction that would stand in for it. */
+export interface GuardianMeta {
+  traffic?: boolean; hypothesis?: string; signal?: string; claim?: string; scope?: string; weight?: number; count?: number; promotes?: string;
+  mode?: string; instruction?: string; evidence?: unknown[]; exceptions?: { text?: string; explicit?: boolean }[];
+}
+
 export type AnswerKind = "proposal" | "confirmation" | "usage" | "client";
 /** What a message of the conversation asks the user to answer, if anything. */
 export interface PendingAnswer {
@@ -67,6 +74,8 @@ export interface PendingAnswer {
   usage: ActionRunPending["usage_pending"] | null;
   /** The step this client carries out (kind client only). */
   clientStep: ClientStepSpec | null;
+  /** The guardian's own details of the proposal (kind proposal only), or null. */
+  guardian: GuardianMeta | null;
 }
 
 function text(value: unknown): string {
@@ -78,18 +87,19 @@ export function pendingAnswer(metadata: Meta | undefined): PendingAnswer | null 
   if (!metadata) return null;
   const proposal = metadata.action_proposal as ActionProposal | undefined;
   if (proposal && proposal.status === "pending" && text(proposal.run_id) !== "" && text(proposal.receipt_id) !== "") {
-    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null, clientStep: null };
+    const guardian = metadata.guardian && typeof metadata.guardian === "object" ? metadata.guardian as GuardianMeta : null;
+    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null, clientStep: null, guardian };
   }
   const run = metadata.action_run as ActionRunMeta | undefined;
   const pending = run && run.pending ? run.pending : null;
   if (run && pending && text(run.run_id) !== "" && text(pending.receipt_id) !== "") {
     if (pending.kind === "usage") {
-      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null, clientStep: null };
+      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null, clientStep: null, guardian: null };
     }
     if (pending.kind === "client_step" && pending.client_step) {
-      return { kind: "client", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: pending.client_step };
+      return { kind: "client", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: pending.client_step, guardian: null };
     }
-    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: null };
+    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: null, guardian: null };
   }
   return null;
 }
@@ -220,6 +230,8 @@ export interface ProposalView {
   /** Null when the proposal says nothing about money; known false = unknown, with the reason. */
   money: { known: boolean; low: string | null; high: string | null; currency: string; reason: string } | null;
   confirmations: string[];
+  /** The guardian's details of its own proposal; null for any other. */
+  guardian: { claim: string; scope: string; weight: string; count: string; evidence: string; exceptions: string[]; instruction: string } | null;
 }
 
 function amount(value: unknown): string | null {
@@ -269,6 +281,19 @@ export function proposalView(answer: PendingAnswer): ProposalView {
       low: sum(money.low), high: sum(money.high), currency: text(money.currency), reason: text(money.reason),
     },
     confirmations,
+    guardian: guardianOf(answer.guardian),
+  };
+}
+
+function guardianOf(meta: GuardianMeta | null): ProposalView["guardian"] {
+  if (!meta || text(meta.hypothesis) === "") return null;
+  const exceptions: string[] = [];
+  if (Array.isArray(meta.exceptions)) {
+    for (const e of meta.exceptions) if (e && text(e.text) !== "") exceptions.push(text(e.text));
+  }
+  return {
+    claim: text(meta.claim), scope: text(meta.scope), weight: typeof meta.weight === "number" ? meta.weight.toFixed(2) : "", count: amount(meta.count) ?? "",
+    evidence: Array.isArray(meta.evidence) ? String(meta.evidence.length) : "", exceptions, instruction: text(meta.instruction),
   };
 }
 
@@ -282,6 +307,11 @@ export interface ProposalTexts {
   cost: string | null;
   money: string | null;
   confirmNeeded: string | null;
+  guardianClaim: string | null;
+  guardianScope: string | null;
+  guardianExceptions: string | null;
+  guardianInstruction: string | null;
+  guardianNote: string | null;
   confirm: string | null;
   reject: string | null;
   usageHint: string | null;
@@ -308,8 +338,14 @@ export function proposalTexts(feature: PresentationFeature | null, answer: Pendi
   const shown = (value: string | null) => (value === null ? unknown : value);
   const cost = view.cost;
   const made = view.definition;
+  const g = view.guardian;
   return {
-    title: say(answer.kind === "confirmation" ? "title_confirmation" : made !== null ? "title_definition" : "title"),
+    title: say(answer.kind === "confirmation" ? "title_confirmation" : g !== null ? "title_guardian" : made !== null ? "title_definition" : "title"),
+    guardianClaim: g === null || g.claim === "" ? null : say("guardian_claim", { claim: g.claim }),
+    guardianScope: g === null ? null : say("guardian_scope", { scope: say("guardian_scope_" + g.scope) ?? g.scope, weight: g.weight, count: g.count, evidence: g.evidence }),
+    guardianExceptions: g === null || g.exceptions.length === 0 ? null : say("guardian_exceptions", { list: g.exceptions.join("; ") }),
+    guardianInstruction: g === null || g.instruction === "" ? null : say("guardian_instruction", { instruction: g.instruction }),
+    guardianNote: g === null ? null : say("guardian_note"),
     args: view.args.length === 0 ? null : say("args", { args: view.args.join(", ") }),
     argsOpen: view.open.length === 0 ? null : say("args_open", { params: view.open.join(", ") }),
     definition: made === null ? null : say("definition_" + made.kind, { id: made.id, overlay: made.overlay }),

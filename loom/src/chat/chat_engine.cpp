@@ -31,6 +31,7 @@
 #include "loom/util/utf8.h"
 #include "stub.h"
 #include "active_task_spec.h"
+#include "loom/guardian.h"
 #include "active_task_acceptance.h"
 #include "context/context_execution.h"
 #include "context/unified_context.h"
@@ -636,14 +637,46 @@ Json ChatResult::to_json() const {
   return out;
 }
 
-Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions& opts) {
+ChatOptions ChatEngine::select_representation(const ChatOptions& in, const std::string& conv_id) {
+  if (conv_id.empty() || !in.include_history || in.active_task_spec) return in;
+  auto sel = guardian::select(db_, cfg_, conv_id);
+  if (!sel) {
+    log::debug("loom.chat_engine", "guardian selection ignored: {}", sel.error().message);
+    return in;
+  }
+  if (sel->empty()) return in;
+  ChatOptions out = in;
+  out.history_text = sel->substitutions;
+  if (sel->spec) {
+    out.active_task_spec = *sel->spec;
+    out.active_task_bindings = sel->bindings;
+    out.active_task_history = sel->history;
+    // The compiled instruction must be acceptable as it stands; if it is not (a message changed, an ancestor moved), the raw messages go.
+    std::map<std::string, Json> in_flight;
+    {
+      auto lock = db_.lock();
+      in_flight = active_task_in_flight_;
+    }
+    auto lock = db_.lock();
+    if (auto check = prepare_active_task(db_, conv_id, out, in_flight); !check) {
+      log::debug("loom.chat_engine", "guardian representation left raw: {}", check.error().message);
+      out.active_task_spec.reset();
+      out.active_task_bindings = Json::object();
+      out.active_task_history = "replace_refinement";
+    }
+  }
+  return out;
+}
+
+Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions& opts_in) {
   LOOM_TRY_ASSIGN(auto reasoning_recipe, chat::reasoning_recipe(cfg_.get("chat_reasoning", Json::object())));
   std::string conv_id;
   {
     std::lock_guard lk(mu_);
-    if (opts.conv_id) conv_id = *opts.conv_id;
+    if (opts_in.conv_id) conv_id = *opts_in.conv_id;
     else if (conv_) conv_id = conv_->id;
   }
+  const ChatOptions opts = select_representation(opts_in, conv_id);
   LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
   const std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
   const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
@@ -873,12 +906,16 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       if (m.status != msg_status::kActive) continue;
       if (capture_native_history) captured_native_history.push_back(native_history_row(m));
       if (!exclude_message_id.empty() && m.id == exclude_message_id) continue;
+      // The guardian's own exchange (a proposal, the answer to it, a notice) is traffic of the application, not conversation content.
+      if (m.metadata.is_object() && m.metadata.contains("guardian") && json::get_bool(m.metadata["guardian"], "traffic", false)) continue;
       if (!opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), m.id) != opts.history_skip.end()) continue;
       if (refinement_ids.count(m.id)) {
         replaced_ids.push_back(m.id);
         continue;
       }
       std::string content = m.text;
+      if (!opts.history_text.empty())
+        if (auto level = opts.history_text.find(m.id); level != opts.history_text.end()) content = level->second;
       if (m.weight > 1.5) {
         content = "[IMPORTANT] " + content;
       } else if (m.weight < 0.5) {
@@ -936,8 +973,14 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
   return last_reasoning_;
 }
 
-Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts, const ChatCallbacks& cb,
+Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts_in, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
+  std::string selector_conv;
+  {
+    std::lock_guard lk(mu_);
+    selector_conv = opts_in.conv_id ? *opts_in.conv_id : (conv_ ? conv_->id : std::string());
+  }
+  const ChatOptions opts = select_representation(opts_in, selector_conv);
   const Json execution = cfg_.get("context_execution", Json::object());
   LOOM_TRY(context::validate_context_execution_options(execution));
   const Json reasoning_options = cfg_.get("chat_reasoning", Json::object());

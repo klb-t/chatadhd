@@ -94,6 +94,18 @@ void note_semantic_hold(Runtime& rt, const Json& pending);
 // The question was answered, by whichever surface (events::kSemanticUsageAnswered): the message that asks it records the answer and stops asking.
 void note_semantic_answer(Runtime& rt, const Json& answer);
 
+// A proposal made by the system itself (the context guardian): the action `action` with `args`, shown in the conversation as the
+// message `texts` (language -> text) with the usual proposal block; the user's yes (or actions.confirm) runs it with its receipt,
+// a no drops it. `meta` is merged into the message metadata (the guardian marks it as its own traffic there). The result is
+// {"message_id", "proposal"}; an action the rules deny or the catalogue lacks is an error and nothing is posted.
+struct OfferRequest {
+  std::string conv_id, action, lang = "en";
+  Json args = Json::object();
+  Json texts = Json::object();
+  Json meta = Json::object();
+};
+Result<Json> offer(Runtime& rt, const OfferRequest& request);
+
 // The chat window's entry. `request` is the client's request object (its explicit chat features make an
 // input a message); `emit_start(conv_id, user_message_id)` is called once the user's message is stored.
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,

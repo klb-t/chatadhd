@@ -414,3 +414,27 @@ test('a run that was declined, denied or failed is data, not a failed request: a
   assert.equal(types.isLoomError({ schema: 'loom.other/1', error: { code: 'x', message: 'y' } }), true);
   assert.equal(types.isLoomError({ id: 'ar_1', error: '' }), false);
 });
+
+test('a proposal of the context guardian renders in the same block, with its claim, scope, exceptions and the instruction, in both languages', () => {
+  const guardian = { traffic: true, hypothesis: 'n_h1', signal: 'refinement', claim: 'The task was clarified 3 times', scope: 'conversation', weight: 3.06, count: 3, promotes: 'transform',
+    instruction: '[goal] Write the report', evidence: ['m_1', 'm_2', 'm_3'], exceptions: [{ text: 'the appendix', explicit: true }] };
+  const guarded = { ...proposal, action: 'guardian.promote', needs_confirmation: [], items: [] };
+  const answer = a.pendingAnswer({ action_proposal: guarded, guardian });
+  assert.equal(answer.kind, 'proposal');
+  assert.equal(answer.guardian.hypothesis, 'n_h1');
+  const view = a.proposalView(answer);
+  assert.equal(view.guardian.evidence, '3');
+  assert.deepEqual(view.guardian.exceptions, ['the appendix']);
+  const html = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'g1', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(html.includes(en.title_guardian) && html.includes('The task was clarified 3 times'));
+  assert.ok(html.includes('this conversation') && html.includes('weight 3.06'));
+  assert.ok(html.includes('Exceptions: the appendix') && html.includes('[goal] Write the report'));
+  assert.ok(html.includes('data-testid="g1-guardian-instruction"') && html.includes('g1-confirm') && html.includes('g1-reject'));
+  const spoken = p.featureInLanguage(feature, 'pl');
+  const polish = renderToStaticMarkup(createElement(block.default, { feature: spoken, answer, testId: 'g2', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(polish.includes(pl.title_guardian) && polish.includes('tej rozmowy') && polish.includes('Wyjątki: the appendix'));
+  assert.ok(!polish.includes(en.title_guardian));
+  // an ordinary proposal shows none of it
+  const plain = renderToStaticMarkup(createElement(block.default, { feature, answer: a.pendingAnswer({ action_proposal: proposal }), testId: 'g3', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(!plain.includes('guardian'));
+});
