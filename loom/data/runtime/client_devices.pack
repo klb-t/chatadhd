@@ -1,0 +1,135 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "client_devices",
+  "revision": 1,
+  "description": "Device capabilities declared by a CLIENT (P13, GRAF_HUB_KOD_SILNIK §4 pt 3, R54): the web page, the Android shell or the command line says per session which devices it can drive right now (captures_audio, plays_audio, shows_notifications, clipboard ...) and in what permission state. The kernel keeps a declaration in memory for that client only - never in shipped data - and with it the device actions of the catalogue (the ones with a `client` member in actions.pack) are runnable for that client: the step is paused as a client_step (receipt, durable) and the client answers it with actions.client_result. Without a declaration they stay planned, with their reason. Everything here is a preset: add a permission state, an alias, a time to live or a text through the overlay profiles/client_devices.pack.",
+  "defaults": {
+    "schema": "loom.client_devices/1",
+    "default_permission": "granted",
+    "permissions": {
+      "granted": {
+        "runnable": true,
+        "label": {
+          "en": "Allowed",
+          "pl": "Zezwolono"
+        }
+      },
+      "prompt": {
+        "runnable": true,
+        "asks": true,
+        "label": {
+          "en": "The device will ask when it is used",
+          "pl": "Urządzenie zapyta przy użyciu"
+        }
+      },
+      "denied": {
+        "runnable": false,
+        "label": {
+          "en": "Denied on the device",
+          "pl": "Odmówiono na urządzeniu"
+        }
+      }
+    },
+    "aliases": {
+      "clipboard": [
+        "clipboard_read",
+        "clipboard_write"
+      ],
+      "notifications": [
+        "shows_notifications"
+      ]
+    },
+    "ttl_seconds": 43200,
+    "client_id": {
+      "prefix": "cl_",
+      "pattern": "^[A-Za-z0-9_.:-]{1,128}$"
+    },
+    "step": {
+      "wait": {
+        "en": "Waiting for your device: {prompt}",
+        "pl": "Czekam na Twoje urządzenie: {prompt}"
+      },
+      "declined": {
+        "en": "Declined on the device; nothing more was done.",
+        "pl": "Odmówiono na urządzeniu; nic więcej nie wykonano."
+      },
+      "no_output": {
+        "en": "The device returned nothing for '{action}'.",
+        "pl": "Urządzenie nic nie zwróciło dla '{action}'."
+      }
+    },
+    "texts": {
+      "runnable": {
+        "en": "Runs on this device: your browser or app does it.",
+        "pl": "Wykonuje to to urządzenie: Twoja przeglądarka albo aplikacja."
+      },
+      "will_ask": {
+        "en": "Runs on this device; the device asks for permission when it starts.",
+        "pl": "Wykonuje to to urządzenie; urządzenie poprosi o zgodę przy starcie."
+      },
+      "denied": {
+        "en": "This device declared the permission as denied; allow it in the browser or system settings and declare again.",
+        "pl": "To urządzenie zgłosiło odmowę zgody; zezwól w ustawieniach przeglądarki lub systemu i zgłoś ponownie."
+      },
+      "unknown_client": {
+        "en": "The client id is not known (never declared, or the declaration expired); declare again.",
+        "pl": "Nie znam tego klienta (nie zgłosił się albo zgłoszenie wygasło); zgłoś się ponownie."
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "schema",
+      "default_permission",
+      "permissions",
+      "aliases",
+      "ttl_seconds",
+      "client_id",
+      "step",
+      "texts"
+    ],
+    "additionalProperties": true,
+    "properties": {
+      "schema": {
+        "type": "string",
+        "enum": [
+          "loom.client_devices/1"
+        ]
+      },
+      "default_permission": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The permission state of a capability a client names without one (a list of names)."
+      },
+      "permissions": {
+        "type": "object",
+        "description": "Permission state -> {runnable: whether a device action of that capability can run on the client, asks: the device asks the person on use, label}."
+      },
+      "aliases": {
+        "type": "object",
+        "description": "A name a client may declare -> the capabilities it stands for (clipboard = clipboard_read + clipboard_write)."
+      },
+      "ttl_seconds": {
+        "type": [
+          "integer",
+          "null"
+        ],
+        "minimum": 1,
+        "description": "How long a declaration stays valid without being repeated; null = until the kernel restarts."
+      },
+      "client_id": {
+        "type": "object",
+        "description": "prefix of ids the kernel makes, pattern that an id chosen by the client must match."
+      },
+      "step": {
+        "type": "object",
+        "description": "Texts of a run paused on a step the client carries out."
+      },
+      "texts": {
+        "type": "object",
+        "description": "Texts shown next to a device action that is runnable on, or denied on, a client."
+      }
+    }
+  }
+}

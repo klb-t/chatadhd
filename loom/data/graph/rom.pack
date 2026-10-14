@@ -95,6 +95,9 @@
           "path": "loom/src/actions/chain.cpp"
         },
         {
+          "path": "loom/src/actions/client_devices.cpp"
+        },
+        {
           "path": "loom/src/actions/element.cpp"
         },
         {
@@ -256,6 +259,9 @@
         },
         {
           "path": "loom/data/runtime/cli.pack"
+        },
+        {
+          "path": "loom/data/runtime/client_devices.pack"
         },
         {
           "path": "loom/data/runtime/config.pack"

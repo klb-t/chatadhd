@@ -29,7 +29,10 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     if (p == "actions" && a == "list") return out(action_list(ctx->rt->paths().root));
     if (p == "actions") {
       // The clients' answer to a run settles the proposal of the conversation that waits for it (chat_route.h).
-      auto r = a == "confirm" ? chat_route::confirm(*ctx->rt, *rj) : ctx->rt->actions().invoke(a, *rj);
+      auto r = a == "confirm"          ? chat_route::confirm(*ctx->rt, *rj)
+               : a == "client_result" ? chat_route::client_result(*ctx->rt, *rj)
+               : a == "cancel"        ? chat_route::cancel(*ctx->rt, *rj)
+                                      : ctx->rt->actions().invoke(a, *rj);
       if (!r) return out_error(r.error());
       return out(*r);
     }

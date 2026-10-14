@@ -3134,6 +3134,302 @@
           "path": "/api/actions/status"
         }
       },
+      "client.declare": {
+        "id": "client.declare",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Declare what this client can do",
+        "description": "A client (the web page, the Android shell, the command line) declares which device capabilities it can carry out right now - captures_audio, captures_image, plays_audio, shows_notifications, clipboard, picks_files ... - each with its permission state (granted | prompt | denied). The kernel keeps the declaration for this client only (in memory, never in shipped data) and uses it so that the device actions of the catalogue are runnable FOR THIS CLIENT: the step is then carried out by the client itself (a client_step the client answers with actions.client_result). A client that declares nothing sees the device actions as planned, as before. Declaring again replaces the previous declaration; the answer carries client_id for the later calls (actions.run, preview, for, explain, propose_chain, chat.route and the chat request take client_id).",
+        "labels": {
+          "pl": "Zadeklaruj, co potrafi ten klient"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/client_devices.cpp",
+        "port": "actions",
+        "action": "client.declare",
+        "params": [
+          {
+            "name": "client_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The id the client chose for itself (kept for this client); the kernel makes one when it is left out.",
+              "pl": "Identyfikator, który klient wybrał dla siebie (zapamiętany dla tego klienta); jądro tworzy go, gdy go brak."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "client",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Who the client is: {kind: web | android | cli, platform?, label?}.",
+              "pl": "Kim jest klient: {kind: web | android | cli, platform?, label?}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "capabilities",
+            "type": "object",
+            "required": true,
+            "description": {
+              "en": "What the client can do: {capability: \"granted\" | \"prompt\" | \"denied\" | {permission, via?, detail?}} (a list of names means granted).",
+              "pl": "Co klient potrafi: {zdolność: \"granted\" | \"prompt\" | \"denied\" | {permission, via?, detail?}} (lista nazw oznacza: przyznane)."
+            },
+            "has_default": false,
+            "edit": "json"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/client/declare"
+        }
+      },
+      "client.capabilities": {
+        "id": "client.capabilities",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What a client declared",
+        "description": "The declaration the kernel holds for a client (capabilities with their permission state, the device actions each makes runnable) and, without client_id, the ids of the clients it knows. A declaration older than the time to live of the client_devices profile is forgotten.",
+        "labels": {
+          "pl": "Co zadeklarował klient"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/client_devices.cpp",
+        "port": "actions",
+        "action": "client.capabilities",
+        "params": [
+          {
+            "name": "client_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The client to describe; without it the clients known are listed.",
+              "pl": "Klient do opisania; bez tego wypisani są znani klienci."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/client/capabilities"
+        }
+      },
+      "actions.client_result": {
+        "id": "actions.client_result",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Answer a step the client carries out",
+        "description": "Answers the client_step a run is paused on (a device action the client declared: record, take a picture, pick a file, read the clipboard ...): the receipt must be the pending one. state ok brings the produced parts - media as data_base64 (stored in the blob store, with a graph node, like any produced media), text as text - and the run continues with the next step (record_audio -> transcribe -> summarise); failed and unavailable fail the step with the reason; declined (the person did not allow it) ends the run as rejected. A client that never answers leaves the run paused, not failed; actions.cancel stops it.",
+        "labels": {
+          "pl": "Odpowiedz na krok wykonywany przez klienta"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "port": "actions",
+        "action": "client_result",
+        "params": [
+          {
+            "name": "run_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the run (ar_...)",
+              "pl": "Identyfikator przebiegu (ar_...)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The pending receipt of the run (pending.receipt_id)",
+              "pl": "Oczekujące pokwitowanie przebiegu (pending.receipt_id)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "state",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "ok | failed | declined | unavailable",
+              "pl": "ok | failed | declined | unavailable"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "parts",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "What the step produced: [{kind: audio | image | video | file_ref | text, mime?, data_base64? | blob_hash? | text?, name?}].",
+              "pl": "Co krok wytworzył: [{kind: audio | image | video | file_ref | text, mime?, data_base64? | blob_hash? | text?, name?}]."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "data",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "Structured result of the step, when it has one.",
+              "pl": "Wynik strukturalny kroku, jeśli go ma."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "error",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "With failed or unavailable: {code?, message}.",
+              "pl": "Z failed lub unavailable: {code?, message}."
+            },
+            "has_default": false,
+            "edit": "json"
+          },
+          {
+            "name": "ref",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Who answered (recorded)",
+              "pl": "Kto odpowiedział (zapisywane)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/actions/client_result"
+        }
+      },
+      "client.blob": {
+        "id": "client.blob",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Read a stored blob for the client",
+        "description": "The bytes of a blob in the blob store as {hash, mime, size, data_base64}: how a client fetches what a device step has to play or show (device.play_audio takes the hash of a recording).",
+        "labels": {
+          "pl": "Odczytaj zapisany blob dla klienta"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/runner.cpp",
+        "port": "actions",
+        "action": "client.blob",
+        "params": [
+          {
+            "name": "hash",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The blob hash (64 hex).",
+              "pl": "Skrót bloba (64 znaki hex)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/client/blob"
+        }
+      },
       "rules.set": {
         "id": "rules.set",
         "kind": "atomic",
@@ -3957,6 +4253,19 @@
           "touches_private_data": true
         },
         "consumer": "client",
+        "client": {
+          "capability": "captures_audio",
+          "permission": "microphone",
+          "prompt": {
+            "en": "Record with the microphone of this device; stop when you are done.",
+            "pl": "Nagraj mikrofonem tego urządzenia; zatrzymaj, gdy skończysz."
+          },
+          "expects": [
+            "audio"
+          ]
+        },
+        "default_element": "device:microphone",
+        "keeps_output": true,
         "phrases": {
           "en": [
             "record audio",
@@ -4020,6 +4329,19 @@
           "touches_private_data": true
         },
         "consumer": "client",
+        "client": {
+          "capability": "captures_image",
+          "permission": "camera",
+          "prompt": {
+            "en": "Take a picture with the camera of this device.",
+            "pl": "Zrób zdjęcie aparatem tego urządzenia."
+          },
+          "expects": [
+            "image"
+          ]
+        },
+        "default_element": "device:camera",
+        "keeps_output": true,
         "phrases": {
           "en": [
             "take a photo",
@@ -4128,6 +4450,15 @@
           "touches_private_data": false
         },
         "consumer": "client",
+        "client": {
+          "capability": "plays_audio",
+          "prompt": {
+            "en": "Play the recording on this device.",
+            "pl": "Odtwórz nagranie na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "default_element": "device:speaker",
         "phrases": {
           "en": [
             "play audio",
@@ -4245,6 +4576,16 @@
           "touches_private_data": true
         },
         "consumer": "client",
+        "client": {
+          "capability": "clipboard_write",
+          "permission": "clipboard-write",
+          "prompt": {
+            "en": "Put the text on the clipboard of this device.",
+            "pl": "Wstaw tekst do schowka tego urządzenia."
+          },
+          "expects": []
+        },
+        "default_element": "device:clipboard",
         "phrases": {
           "en": [
             "copy to clipboard",
@@ -4305,6 +4646,18 @@
           "touches_private_data": true
         },
         "consumer": "client",
+        "client": {
+          "capability": "clipboard_read",
+          "permission": "clipboard-read",
+          "prompt": {
+            "en": "Read the clipboard of this device.",
+            "pl": "Odczytaj schowek tego urządzenia."
+          },
+          "expects": [
+            "text"
+          ]
+        },
+        "default_element": "device:clipboard",
         "phrases": {
           "en": [
             "paste from clipboard",
@@ -4351,6 +4704,16 @@
           "touches_private_data": false
         },
         "consumer": "client",
+        "client": {
+          "capability": "shows_notifications",
+          "permission": "notifications",
+          "prompt": {
+            "en": "Show a notification on this device.",
+            "pl": "Pokaż powiadomienie na tym urządzeniu."
+          },
+          "expects": []
+        },
+        "default_element": "device:notifications",
         "phrases": {
           "en": [
             "notify me",
@@ -4409,6 +4772,22 @@
           "touches_private_data": true
         },
         "consumer": "client",
+        "client": {
+          "capability": "picks_files",
+          "prompt": {
+            "en": "Pick a file on this device.",
+            "pl": "Wybierz plik na tym urządzeniu."
+          },
+          "expects": [
+            "file_ref",
+            "audio",
+            "image",
+            "video",
+            "text"
+          ]
+        },
+        "default_element": "device:file_access",
+        "keeps_output": true,
         "phrases": {
           "en": [
             "pick a file",
@@ -4456,6 +4835,16 @@
           "touches_private_data": false
         },
         "consumer": "client",
+        "client": {
+          "capability": "requests_permission",
+          "prompt": {
+            "en": "Ask this device for the permission.",
+            "pl": "Poproś to urządzenie o zgodę."
+          },
+          "expects": [
+            "json"
+          ]
+        },
         "phrases": {
           "en": [
             "ask permission",
@@ -4468,7 +4857,18 @@
             "popros o zgode",
             "popros o dostep"
           ]
-        }
+        },
+        "params": [
+          {
+            "name": "permission",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Which permission to ask for: microphone, camera, notifications, clipboard-read or clipboard-write.",
+              "pl": "O jaką zgodę poprosić: microphone, camera, notifications, clipboard-read albo clipboard-write."
+            }
+          }
+        ]
       },
       "net.test_endpoint": {
         "id": "net.test_endpoint",
