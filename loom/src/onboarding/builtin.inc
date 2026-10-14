@@ -353,6 +353,27 @@ R"loom_onboard({
           }
         },
         {
+          "id": "presentation.open_settings/v1",
+          "key": "presentation.open_settings",
+          "area": "presentation/open_settings",
+          "revision": 1,
+          "label": "Button under a message that asks the person to enter secrets (keys, tokens) in Settings: an action that connects a storage never takes them from the conversation; texts only",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "open_settings",
+            "locales": {
+              "en": {
+                "button": "Open Settings",
+                "note": "The secrets are entered in Settings, never in the conversation: {{keys}}."
+              },
+              "pl": {
+                "button": "Otwórz Ustawienia",
+                "note": "Sekrety wpisuje się w Ustawieniach, nigdy w rozmowie: {{keys}}."
+              }
+            }
+          }
+        },
+        {
           "id": "presentation.action_proposal/v1",
           "key": "presentation.action_proposal",
           "area": "presentation/action_proposal",
@@ -1068,7 +1089,8 @@ R"loom_onboard({
             "layer.disabled": "Użytkownik zachował tę wartość domyślną, ale wyłączył jej użycie.",
             "layer.user": "Jawna wartość użytkownika nadpisuje wbudowaną warstwę grafu.",
             "layer.proposal": "Nowa wartość domyślna dotyczy wykluczonego obszaru i czeka na akceptację użytkownika.",
-            "layer.builtin": "Wbudowana wartość domyślna grafu obowiązuje, ponieważ użytkownik jej nie wyłączył ani nie nadpisał.",
+)loom_onboard",
+R"loom_onboard(            "layer.builtin": "Wbudowana wartość domyślna grafu obowiązuje, ponieważ użytkownik jej nie wyłączył ani nie nadpisał.",
             "status.unknown": "nieznane",
             "status.known": "znane",
             "status.declined": "odmowa",
@@ -1086,8 +1108,7 @@ R"loom_onboard({
             "session_status.unknown": "nieznane",
             "layer_name.builtin": "wbudowana",
             "layer_name.user": "użytkownika",
-)loom_onboard",
-R"loom_onboard(            "layer_name.user_exclusion": "wykluczenie użytkownika",
+            "layer_name.user_exclusion": "wykluczenie użytkownika",
             "layer_name.user_disabled": "wyłączenie użytkownika",
             "layer_name.pack_proposal": "propozycja packa",
             "layer_name.none": "brak",
@@ -1521,6 +1542,27 @@ R"loom_onboard(            "layer_name.user_exclusion": "wykluczenie użytkownik
           "pl": {
             "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
             "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.open_settings/v1",
+      "key": "presentation.open_settings",
+      "area": "presentation/open_settings",
+      "revision": 1,
+      "label": "Button under a message that asks the person to enter secrets (keys, tokens) in Settings: an action that connects a storage never takes them from the conversation; texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "open_settings",
+        "locales": {
+          "en": {
+            "button": "Open Settings",
+            "note": "The secrets are entered in Settings, never in the conversation: {{keys}}."
+          },
+          "pl": {
+            "button": "Otwórz Ustawienia",
+            "note": "Sekrety wpisuje się w Ustawieniach, nigdy w rozmowie: {{keys}}."
           }
         }
       }

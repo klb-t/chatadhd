@@ -15,6 +15,7 @@ import { clientIdentity, pageClientSession } from "../context/client-session";
 import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
+import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTexts, requestOpenPanel } from "../context/open-settings";
 import { watchClientSteps } from "../context/client-step-events";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
@@ -115,6 +116,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
   const usageCatalog = usePresentationFeature(profileHost, USAGE_PENDING_FEATURE);
   const routeIssueCatalog = usePresentationFeature(profileHost, ROUTE_ISSUE_FEATURE);
+  const openSettingsCatalog = usePresentationFeature(profileHost, OPEN_SETTINGS_FEATURE);
   const proposalCatalog = usePresentationFeature(profileHost, ACTION_PROPOSAL_FEATURE);
   const clientStepCatalog = usePresentationFeature(profileHost, CLIENT_STEP_FEATURE);
   // This page as a client of the kernel (P13): the devices it can drive are declared, so the device actions are runnable for it.
@@ -425,6 +427,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             terminal = true;
             setStream(null);
             setPendingUserText(null);
+            // The answer is in another conversation when the command deleted the one it was asked in: the page goes there.
+            if (chunk.conv_id && requestConvId && chunk.conv_id !== requestConvId) onConversationCreated(chunk.conv_id);
             requestConvId = chunk.conv_id;
             refreshShared();
           } else if (chunk.type === "usage_pending") {
@@ -792,6 +796,15 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 const made = producedView(m.metadata, m.id);
                 const label = made ? producedText(proposalCatalog.feature, made) : null;
                 return made && label ? <p className="pill" data-testid="chat-action-produced" data-node={made.forms[0]} data-target={made.target}>{label}</p> : null;
+              })()}
+              {m.role === "assistant" && (() => {
+                const hint = openSettingsHint(m.metadata);
+                if (!hint) return null;
+                const words = openSettingsTexts(openSettingsCatalog.feature, hint);
+                return (<p className="pill" data-testid="chat-open-settings" data-keys={hint.keys.join(",")}>
+                  <span>{words.note}</span>{" "}
+                  <button onClick={() => requestOpenPanel(SETTINGS_PANEL)} data-testid="chat-open-settings-button">{words.button}</button>
+                </p>);
               })()}
               <div className="actions">
                 {m.role === "user" && editingId !== m.id && (

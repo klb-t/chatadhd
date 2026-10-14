@@ -4,6 +4,7 @@ import { profileAvailability, registerProfile, type ApplicationProfile } from ".
 import ConversationList from "./components/ConversationList";
 import GraphView from "./components/GraphView";
 import SettingsPanel from "./components/SettingsPanel";
+import { OPEN_PANEL_EVENT, panelOfRequest } from "./context/open-settings";
 import ContextSlider from "./components/ContextSlider";
 import SemanticStatus from "./components/SemanticStatus";
 import ImportPanel from "./components/ImportPanel";
@@ -70,6 +71,16 @@ export default function App() {
   const sidebarActivity = useCallback((delta: number) => { sidebarOperations.current += delta; }, []);
   const userProfileHost = useMemo(() => createUserProfileHost(api, { onActivity: sidebarActivity }), [sidebarActivity]);
   const canRestoreWorkspace = useCallback(() => sidebarOperations.current === 0, []);
+
+  // A message can ask for a panel (the secrets of a storage are entered in Settings): the page does not know the shell, it sends an event.
+  useEffect(() => {
+    const onRequest = (event: Event) => {
+      const panel = panelOfRequest(event);
+      if (panel !== null && Object.prototype.hasOwnProperty.call(PANEL_LABELS, panel)) setActivePanel(panel as PanelId);
+    };
+    window.addEventListener(OPEN_PANEL_EVENT, onRequest);
+    return () => window.removeEventListener(OPEN_PANEL_EVENT, onRequest);
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);

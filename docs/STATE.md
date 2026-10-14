@@ -1,5 +1,35 @@
 # STATE — ChatADHD / Loom
 
+## 2026-10-14 — S1+S2
+
+Szczegóły techniczne i decyzje: `docs/reports/INDEX.md` (sekcje P9–P15 i S2/R*), wymagania właściciela: `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` (R54, R55).
+
+**Co działa teraz (słowami właściciela)**
+
+- **Graf jest centrum.** Rozmowy, wiadomości, wyniki akcji, urządzenia, adaptery i wybory modeli są węzłami jednego grafu; widok wejściowy pokazuje prawdziwe liczniki, a nie atrapy.
+- **Jedno „użyj modelu”.** Każde miejsce, które woła model (czat, streszczenie, tłumaczenie, analiza, mowa, obraz), idzie tą samą drogą, z tym samym strażnikiem: wzrost zużycia o rząd wielkości (×10) zawsze pyta Ciebie, a koszt w pieniądzach jest pokazany albo uczciwie „nieznany”, nigdy zero.
+- **Akcje na elementach.** O każdej rzeczy (rozmowa, wiadomość, węzeł, nagranie, ustawienie) aplikacja wie, co można z nią zrobić, ile to kosztuje i czy reguły każą Cię zapytać. Własne reguły zapisują się u Ciebie, nigdy w plikach dostarczanych z aplikacją.
+- **Okienko rozmowy robi wszystko.** To, co robisz z paneli, powiesz też w rozmowie, po polsku albo po angielsku, dokładnie albo ogólnikiem: szukanie rozmów, „co jest powiązane z …”, zapamiętywanie i zapominanie, zakładanie, zmiana nazwy i usuwanie rozmów, poprawianie wiadomości z zachowaniem starej wersji, import i eksport, podłączenie Dysku Google, S3 albo WebDAV, wybór modelu do konkretnej pracy (dla jednej rozmowy albo dla Ciebie), „ile wydałem w tym tygodniu”, limit wzrostu zużycia, odświeżenie listy modeli, praca w tle, dziennik. Zdanie, które coś zmienia, aplikacja najpierw pokazuje i wykonuje po Twoim „tak”. Zapytasz „co mogę tu zrobić?” — dostajesz listę po ludzku; „jak to zrobić: …” — wyjaśnienie bez wykonywania; znający składnię mają `/akcja klucz=wartość`.
+- **Katalog rośnie sam.** Gdy powiesz coś, czego aplikacja nie zna, proponuje nową akcję (po „tak” zapisaną u Ciebie), a powtarzane sekwencje proponuje zapamiętać jako jedną.
+- **Urządzenia robi klient.** Mikrofon, aparat, schowek i wybór pliku obsługuje strona albo aplikacja na Androidzie; serwer tylko prosi i czeka na odpowiedź.
+- **ROM.** Pamięć tylko do odczytu, montowana pierwsza: to, co aplikacja wie o sobie.
+- **Porty.** Który model albo dostawca wykonuje którą pracę (streszczenia, tłumaczenia, rozpoznawanie mowy i tekstu) — wybór zapisuje się na właściwym poziomie.
+- **Bezpieczeństwo serwera z kontami** przejrzane i poprawione; limity serwera są ustawieniami; jest wersja serwera dla starszych systemów i ARM. Klucze i hasła nigdy nie przechodzą przez rozmowę: wpisujesz je w Ustawieniach, a rozmowa mówi, które pole otworzyć.
+- **Pokrycie jest sprawdzane.** Lista wszystkiego, co aplikacja potrafi, jest zapisana jako dane razem z tym, jak to powiedzieć w rozmowie; nowa funkcja bez decyzji „da się z rozmowy / nie z rozmowy, bo …” zatrzymuje bramkę.
+
+**Co otwarte**
+
+- Z rozmowy nie da się jeszcze: pytania strażnika ×10 o analizę w tle (odpowiadasz w jej panelu), potoku archiwum, potoku wiedzy, katalogu zasobów lokalnych, rejestru metod i onboardingu — to wsadowe przebiegi z rozbudowaną konfiguracją, ich mówiona postać nie jest jeszcze zaprojektowana. Logowanie i zmiana hasła są celowo poza rozmową.
+- Limit wydatków na tydzień lub miesiąc („nie więcej niż 10 dolarów”) nie istnieje; jest tylko strażnik wzrostu zużycia (×10, współczynnik do ustawienia z rozmowy).
+- Prawdziwa próba z prawdziwym modelem nie była robiona: wszystkie sprawdzenia szły na atrapie serwera modeli.
+- Kod powłoki Androida nie był skompilowany ani uruchomiony na telefonie.
+
+**Co musisz zrobić Ty**
+
+1. Wstawić ważny klucz OpenRouter do sekretów sieci środowiska — bez niego nie da się sprawdzić niczego z prawdziwym modelem.
+2. Dać prawdziwy telefon na paczkę APK — bez niego nie wiem, czy mikrofon, aparat i wybór pliku działają w powłoce.
+3. Dodać sekret z kluczem podpisu wydania — bez niego paczka Androida nie może być podpisana.
+
 ## 2026-10-12 — S1: wątki T7, T6, T1–T5 scalone, `main` = gałąź robocza
 
 Źródło szczegółów: `docs/reports/wp-queue-2026-10-10.md` (stan, decyzje, otwarte) i `docs/reports/INDEX.md`.

@@ -187,6 +187,27 @@
       }
     },
     {
+      "id": "presentation.open_settings/v1",
+      "key": "presentation.open_settings",
+      "area": "presentation/open_settings",
+      "revision": 1,
+      "label": "Button under a message that asks the person to enter secrets (keys, tokens) in Settings: an action that connects a storage never takes them from the conversation; texts only",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "open_settings",
+        "locales": {
+          "en": {
+            "button": "Open Settings",
+            "note": "The secrets are entered in Settings, never in the conversation: {{keys}}."
+          },
+          "pl": {
+            "button": "Otwórz Ustawienia",
+            "note": "Sekrety wpisuje się w Ustawieniach, nigdy w rozmowie: {{keys}}."
+          }
+        }
+      }
+    },
+    {
       "id": "presentation.action_proposal/v1",
       "key": "presentation.action_proposal",
       "area": "presentation/action_proposal",

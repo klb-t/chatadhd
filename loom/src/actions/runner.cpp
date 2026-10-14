@@ -3,6 +3,7 @@
 #include "loom/action_runner.h"
 #include "loom/action_emergent.h"
 #include "loom/action_overlay.h"
+#include "loom/action_ops.h"
 
 #include <algorithm>
 #include <thread>
@@ -26,6 +27,7 @@
 #include "loom/util/ids.h"
 #include "loom/util/utf8.h"
 #include "loom/media_providers.h"
+#include "loom/port_profile.h"
 #include "loom/use_model.h"
 
 namespace loom::actions {
@@ -44,6 +46,20 @@ StepOutcome failed(Error e) {
   o.state = StepOutcome::State::Failed;
   o.error = std::move(e);
   return o;
+}
+
+// The choice the user made for a job in the ports profile (the role: this conversation first, then the user's overlay); nothing when only the
+// shipped preset speaks, so a person who chose nothing sees no change.
+std::optional<Json> chosen_role(Runtime& rt, const StepCall& c, const std::string& role) {
+  auto profile = PortProfile::load(rt.paths().root);
+  if (!profile) return std::nullopt;
+  Json meta = Json::object();
+  const std::string conv = json::get_string(c.context, "conv_id");
+  if (!conv.empty())
+    if (auto cv = rt.db().get_conv(conv); cv && *cv) meta = (*cv)->metadata.value("ports", Json::object());
+  auto resolved = profile->resolve(role, meta, conv, rt.config().all());
+  if (!resolved || !resolved->value("defined", false) || json::get_string(*resolved, "scope") == "installation") return std::nullopt;
+  return *resolved;
 }
 
 // ── use_model ───────────────────────────────────────────────────────
@@ -94,7 +110,13 @@ StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, cons
     const std::string v = json::get_string(c.with, key);
     return v.empty() ? std::optional<std::string>() : std::optional<std::string>(v);
   };
-  const auto provider = optional_text("provider");
+  auto provider = optional_text("provider");
+  // The provider the user chose for this job (role asr / ocr of the ports profile: "for transcription use groq").
+  if (!provider)
+    if (auto chosen = chosen_role(rt, c, family)) {
+      const Json members = chosen->value("members", chosen->value("entry", Json::object()).value("members", Json::array()));
+      if (members.is_array() && !members.empty() && members[0].is_string()) provider = members[0].get<std::string>();
+    }
   const auto language = optional_text("language");
 
   Json provenance = Json::array();
@@ -166,6 +188,10 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   }
   if (req.models.empty()) {
     std::string model = json::get_string(with, "model");
+    // The model the user chose for this job (role action.<id> of the ports profile: "for summaries use model X").
+    if (model.empty())
+      if (auto chosen = chosen_role(rt, c, "action." + (c.owner_action.empty() ? c.root_action : c.owner_action)))
+        model = chosen->value("params", Json::object()).value("model", "");
     if (model.empty()) {
       const Json configured = rt.config().get(json::get_string(um, "model_setting", "default_model"));
       if (configured.is_string()) model = configured.get<std::string>();
@@ -379,6 +405,8 @@ void ActionRunner::install_executors(ExecutorTable& table) {
   });
   // The device actions a client declared are carried out by that client: the step pauses the run (client_devices.h).
   table.set_client_executor(make_client_step_executor());
+  // The operations of the application (search, memory, conversations, ports, usage, help ...): action_ops.h.
+  install_chat_ops(table, rt);
   table.add("settings.set", [&rt](const StepCall& c) { return run_settings_set(rt, c); });
   table.add("settings.get", [&rt](const StepCall& c) { return run_settings_get(rt, c); });
   table.set_port_executor([this](const StepCall& c) {
@@ -396,6 +424,14 @@ void ActionRunner::install_executors(ExecutorTable& table) {
     out.parts.push_back(json_part(*result));
     return out;
   });
+}
+
+bool ActionRunner::runnable(const Json& entry) {
+  if (json::get_string(entry, "status") != "implemented") return false;
+  if (json::get_string(entry, "kind") == "composite") return json::get_string(entry, "consumer").empty();
+  ExecutorTable table;
+  install_executors(table);
+  return table.find(json::get_string(entry, "id"), entry) != nullptr;
 }
 
 Json ActionRunner::client_declaration(std::string_view client_id) { return clients_.find(client_id); }

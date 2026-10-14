@@ -647,6 +647,37 @@ Result<Json> Interpreter::gate_plan(const Json& plan, const Json& element_json, 
   return gates;
 }
 
+namespace {
+
+// Can the condition be told before the run from the arguments alone? 1 holds, 0 does not, -1 may (it looks at steps, traits or outputs).
+int decided_by_args(const Json& cond, const Json& args) {
+  if (!cond.is_object() || cond.empty()) return 1;
+  if (const Json* c = json::find(cond, "not")) {
+    const int inner = decided_by_args(*c, args);
+    return inner < 0 ? -1 : 1 - inner;
+  }
+  auto fold = [&](const char* key, bool all) {
+    int result = all ? 1 : 0;
+    for (const auto& x : cond.at(key)) {
+      const int v = decided_by_args(x, args);
+      if (v < 0) return -1;
+      if (all && v == 0) return 0;
+      if (!all && v == 1) return 1;
+    }
+    return result;
+  };
+  if (json::find(cond, "all")) return fold("all", true);
+  if (json::find(cond, "any")) return fold("any", false);
+  if (const Json* a = json::find(cond, "arg")) {
+    const Json* given = a->is_string() ? json::find(args, a->get<std::string>()) : nullptr;
+    if (const Json* eq = json::find(cond, "equals")) return given && *given == *eq ? 1 : 0;
+    return given != nullptr && !given->is_null() ? 1 : 0;
+  }
+  return -1;
+}
+
+}  // namespace
+
 Result<Json> Interpreter::preview(const RunRequest& request) const {
   LOOM_TRY_ASSIGN(Json plan, plan_of(request));
   LOOM_TRY_ASSIGN(auto base_traits, element_traits(request.element, request.scope));
@@ -669,6 +700,8 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
   for (const auto& step : plan.at("steps")) {
     const Json* entry = json::find(catalogue, json::get_string(step, "action"));
     if (!entry) continue;
+    // A step the arguments already skip (the device picks a file only when no path was said) does not stand in the way.
+    if (const Json* when = json::find(step, "when"); when && decided_by_args(*when, request.args) == 0) continue;
     if (json::get_string(*entry, "status") != "implemented")
       not_runnable.push_back(planned(step.at("action")));
     else if (!deps_.executors || !deps_.executors->find(json::get_string(step, "action"), *entry))
@@ -763,6 +796,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     if (item.at("implementation") != "implemented") return Error(Errc::Unavailable, why_planned(item.at("action").get<std::string>()));
   for (const auto& step : plan.at("steps")) {
     const std::string action = step.at("action").get<std::string>();
+    if (const Json* when = json::find(step, "when"); when && decided_by_args(*when, request.args) == 0) continue;  // skipped by the arguments
     const Json* entry = json::find(catalogue, action);
     if (!entry || json::get_string(*entry, "status") != "implemented") return Error(Errc::Unavailable, why_planned(action));
     if (!deps_.executors || !deps_.executors->find(action, *entry))
@@ -1044,6 +1078,8 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     call.inputs = *inputs;
     call.element = run.at("element");
     call.args = run.at("request").at("args");
+    call.lang = language_of(ctx);
+    call.context = run.at("request").value("context", Json::object());
     call.entry = entry;
     call.cancel = cancel;
     if (j == first_variant && rec.value("status", "") == "held") call.usage_confirmation = usage_confirmation;

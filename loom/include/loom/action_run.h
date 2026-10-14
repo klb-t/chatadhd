@@ -73,6 +73,8 @@ struct StepCall {
   Json element = Json::object();
   Json args = Json::object();
   Json usage_confirmation = Json::object();  // set when resuming this step after the usage guard's hold
+  std::string lang;                          // the language of the run (argument lang, else context.lang, else the profile's): the language an answer is written in
+  Json context = Json::object();             // where the run came from: {origin, conv_id, message_id, text, lang, ...} (the request's context)
   const Json* entry = nullptr;               // the catalogue entry of `action` (valid during the call)
   const CancelToken* cancel = nullptr;
 };

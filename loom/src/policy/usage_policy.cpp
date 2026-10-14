@@ -517,6 +517,46 @@ Result<Json> UsagePolicy::inspect(std::string_view key) {
   return result;
 }
 
+Result<Json> UsagePolicy::spend_between(std::string_view from, std::string_view to) {
+  std::lock_guard lock(impl_->mu);
+  sql::Txn txn(impl_->db, false);
+  LOOM_TRY(txn.begin_status());
+  LOOM_TRY_ASSIGN(auto rows, impl_->db.prepare("SELECT e.operation_id,e.payload,o.record FROM usage_events e JOIN usage_operations o ON o.id=e.operation_id "
+                                               "WHERE e.kind='actual' AND e.recorded_at>=? AND e.recorded_at<? ORDER BY e.sequence"));
+  rows.bind_all(from, to);
+  std::set<std::string> operations;
+  Json totals = Json::object();
+  Json models = Json::object();
+  std::map<std::string, std::set<std::string>> model_operations;
+  for (;;) {
+    LOOM_TRY_ASSIGN(bool row, rows.step());
+    if (!row) break;
+    const std::string operation = rows.get_text(0);
+    LOOM_TRY_ASSIGN(auto payload, json::parse(rows.get_text(1)));
+    LOOM_TRY_ASSIGN(auto record, decode_record(rows.get_text(2)));
+    const std::string model = record.value("estimate", Json::object()).value("model", std::string("?"));
+    operations.insert(operation);
+    model_operations[model].insert(operation);
+    if (!payload.contains("resources") || !payload["resources"].is_object()) continue;
+    if (!models.contains(model)) models[model] = Json{{"operations", 0}, {"resources", Json::object()}};
+    for (auto it = payload["resources"].begin(); it != payload["resources"].end(); ++it) {
+      if (!it->is_number()) continue;
+      const double v = it->get<double>();
+      totals[it.key()] = (totals.contains(it.key()) ? totals[it.key()].get<double>() : 0.0) + v;
+      Json& per = models[model]["resources"];
+      per[it.key()] = (per.contains(it.key()) ? per[it.key()].get<double>() : 0.0) + v;
+    }
+  }
+  for (auto& [model, ops] : model_operations) {
+    if (!models.contains(model)) models[model] = Json{{"operations", 0}, {"resources", Json::object()}};
+    models[model]["operations"] = ops.size();
+  }
+  LOOM_TRY_ASSIGN(auto folded, impl_->db.query_int("SELECT COUNT(*) FROM usage_folded_operations"));
+  LOOM_TRY(txn.commit());
+  return Json{{"from", std::string(from)}, {"to", std::string(to)}, {"operations", operations.size()}, {"totals", totals}, {"models", models},
+              {"folded_operations", folded.value_or(0)}};
+}
+
 Result<bool> UsagePolicy::compaction_due(double hours) {
   if (!std::isfinite(hours) || hours < 0) return Error(Errc::InvalidArgument, "interval must be a finite nonnegative number of hours");
   char modifier[64];
