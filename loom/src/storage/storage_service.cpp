@@ -1,3 +1,4 @@
+#include <utility>
 #include <algorithm>
 #include <set>
 
@@ -5,6 +6,7 @@
 #include "loom/db.h"
 #include "loom/log.h"
 #include "loom/net/http.h"
+#include "loom/port_compose.h"
 #include "loom/runtime_profile.h"
 #include "loom/storage_backend.h"
 #include "loom/util/fs.h"
@@ -96,34 +98,38 @@ Status StorageService::put(std::string_view category, std::string_view key, std:
   if (targets.empty()) return Error(Errc::NotFound, "no placement for category '" + std::string(category) + "'");
   const std::string full = std::string(category) + "/" + std::string(key);
   int quorum = static_cast<int>(json::get_int(obj_at(obj_at(values_, "sync_rules"), "write_quorum"), "preset", 1));
-  int ok = 0;
-  Error last(Errc::Unavailable, "no target accepted the write");
-  for (const auto& t : targets) {
-    if (t.role == "egress" || t.storage == skip) continue;
-    auto be = backend(t.storage);
-    Status st = be ? (*be)->put(full, bytes, mime) : Status(be.error());
-    if (st) { ++ok; continue; }
-    last = st.error();
-    log::warn(kLog, "write to {} degraded: {}", t.storage, st.error().message);  // unreachable target degrades, never blocks
-  }
-  if (ok >= std::max(1, quorum)) return {};
-  return last;
+  return compose::mirror(
+      targets,
+      [&](const Target& t) -> std::optional<Status> {
+        if (t.role == "egress" || t.storage == skip) return std::nullopt;
+        auto be = backend(t.storage);
+        return be ? (*be)->put(full, bytes, mime) : Status(be.error());
+      },
+      quorum, Error(Errc::Unavailable, "no target accepted the write"),
+      [](const Target& t, const Error& e) {
+        log::warn(kLog, "write to {} degraded: {}", t.storage, e.message);  // unreachable target degrades, never blocks
+      });
 }
 
 Result<std::string> StorageService::get(std::string_view category, std::string_view key, std::string_view skip) const {
   auto targets = placement(category);
   const std::string full = std::string(category) + "/" + std::string(key);
-  Error last(Errc::NotFound, "object not found: " + full);
-  for (const auto& t : targets) {
-    if (t.storage == skip) continue;
-    auto be = backend(t.storage);
-    if (!be) { last = be.error(); continue; }
-    auto r = (*be)->get(full);
-    if (r) return r;
-    if (r.error().code != Errc::NotFound) log::warn(kLog, "read from {} failed, trying next: {}", t.storage, r.error().message);
-    if (r.error().code != Errc::NotFound) last = r.error();
-  }
-  return last;
+  bool backend_unavailable = false;  // a target whose backend cannot be built always counts as the last error
+  return compose::fallback<std::string>(
+      targets,
+      [&](const Target& t) -> std::optional<Result<std::string>> {
+        if (t.storage == skip) return std::nullopt;
+        auto be = backend(t.storage);
+        if (!be) { backend_unavailable = true; return Result<std::string>(be.error()); }
+        return (*be)->get(full);
+      },
+      Error(Errc::NotFound, "object not found: " + full),
+      [&](const Target& t, const Error& e, Error& last) {
+        if (std::exchange(backend_unavailable, false)) { last = e; return; }
+        if (e.code == Errc::NotFound) return;
+        log::warn(kLog, "read from {} failed, trying next: {}", t.storage, e.message);
+        last = e;
+      });
 }
 
 bool StorageService::has(std::string_view category, std::string_view key, std::string_view skip) const {

@@ -1,6 +1,7 @@
 // Port of engine/providers.py: ASR (Groq Whisper, Google Speech) and OCR
 // (ocr.space) providers behind a common ProviderManager-equivalent.
 #include "loom/media_providers.h"
+#include "loom/port_compose.h"
 
 #include <algorithm>
 #include <cctype>
@@ -476,17 +477,14 @@ Result<ResultT> try_providers(const std::vector<std::shared_ptr<Provider>>& prim
     }
     return Error(Errc::NotFound, "provider '" + *provider + "' not available");
   }
-  for (const auto& p : primary) {
-    auto r = call(*p);
-    if (r) return r;
-    log::warn(kLog, "provider {} failed: {}", p->name(), r.error().message);
-  }
-  for (const auto& p : extra) {
-    auto r = call(*p);
-    if (r) return r;
-    log::warn(kLog, "provider {} failed: {}", p->name(), r.error().message);
-  }
-  return Error(Errc::Unavailable, std::string(all_failed_msg));
+  std::vector<std::shared_ptr<Provider>> order(primary);
+  order.insert(order.end(), extra.begin(), extra.end());
+  return compose::fallback<ResultT>(
+      order, [&](const std::shared_ptr<Provider>& p) -> std::optional<Result<ResultT>> { return call(*p); },
+      Error(Errc::Unavailable, std::string(all_failed_msg)),
+      [](const std::shared_ptr<Provider>& p, const Error& e, Error&) {
+        log::warn(kLog, "provider {} failed: {}", p->name(), e.message);
+      });
 }
 }  // namespace
 
