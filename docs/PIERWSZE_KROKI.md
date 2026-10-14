@@ -42,9 +42,23 @@ jest okienko rozmowy, a u góry zakładki („Graph”, „Memory”, „Import�
 
 ## 4. Telefon (nie sprawdzone: nie miałem telefonu)
 
-1. W Actions pobierz artefakt `chatadhd-android-apk`, rozpakuj na telefonie, otwórz `app-debug.apk` (zezwól na
-   instalację z tego źródła). APK jest podpisany kluczem debug; kolejne wersje instalują się na poprzednią tylko
-   przy tym samym kluczu (patrz `deploy/README.md`, „Instalacja APK”).
+1. W Actions pobierz artefakt, rozpakuj na telefonie i otwórz `.apk` (zezwól na instalację z tego źródła).
+   Artefakt `chatadhd-android-apk-TEST-KEY` to klucz testowy (tylko do spróbowania), a `chatadhd-android-apk-release`
+   to Twój klucz wydania. Kolejne wersje instalują się na poprzednią tylko przy tym samym kluczu (patrz
+   `deploy/README.md`, „Instalacja APK”).
+   - **Własny klucz wydania (raz).** Na swoim komputerze (potrzebny Java/`keytool`):
+     `keytool -genkeypair -v -keystore chatadhd-release.jks -alias chatadhd -keyalg RSA -keysize 4096 -validity 10000`
+     (wymyśl hasło i zapisz je). Zamień plik na tekst: `base64 -w0 chatadhd-release.jks` (na macOS: `base64 -i chatadhd-release.jks`).
+     Na GitHubie: repo → Settings → Secrets and variables → Actions → New repository secret, cztery sekrety:
+     `ANDROID_KEYSTORE_BASE64` (ten tekst), `ANDROID_KEYSTORE_PASSWORD` (hasło pliku),
+     `ANDROID_KEY_ALIAS` (`chatadhd`), `ANDROID_KEY_PASSWORD` (hasło klucza; to samo, jeśli nie podałeś innego).
+     Gdy są wszystkie cztery, workflow podpisuje APK Twoim kluczem; bez żadnego z nich zostaje klucz testowy;
+     gdy jest tylko część, przebieg kończy się błędem z listą brakujących.
+   - **Nie zgub pliku `.jks` ani haseł** (kopia w menedżerze haseł i na dysku offline). Bez nich nie da się podpisać
+     aktualizacji tym samym kluczem i telefon nie zainstaluje nowej wersji na starą: zostaje odinstalować (to kasuje dane aplikacji).
+     Nigdy nie wkładaj pliku do repozytorium.
+   - **Pierwsze przejście z klucza testowego na własny** wymaga jednorazowego odinstalowania aplikacji z kluczem
+     testowym (Android nie zmieni klucza „w miejscu”). Najpierw przenieś dane (patrz `deploy/README.md`).
 2. Przy pierwszym uruchomieniu wybierz „Konto na serwerze” (później: ikona ⚙ w prawym dolnym rogu).
 3. Wpisz adres (`chat.twoja.domena`), „Sprawdź i zapisz”: aplikacja pyta serwer i pokazuje powód, jeśli się nie da.
 4. Zaloguj się kontem z kroku 2. Wymagany jest HTTPS; zwykły HTTP tylko po zaznaczeniu opcji i tylko w sieci lokalnej.
