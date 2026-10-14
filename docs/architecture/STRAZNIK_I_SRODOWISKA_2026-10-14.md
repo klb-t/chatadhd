@@ -12,6 +12,8 @@ Nadrzędny względem planów wykonawczych; podrzędny wobec `GRAF_HUB_KOD_SILNIK
 
 > „strażnik czystości to bardziej go widzę jako takiego sekretarza, stenografa, który równolegle do bezpośredniej listy wiadomości buduje jej najbardziej oszczędną i precyzyjną reprezentację. kontekst selektor to co innego”
 
+> „pierwszy robi kompresję stratną z niskim progiem istotności - usuwa cichy jest ale skomplikowany szum o dużej entropii. w zależności od ustawień użytkownika może wszelkie dygresje i żarty usuwać, może tylko yyy aaa, powtórzenia, i takie rzeczy usuwać które nic poza wagą w tokenach nie wnoszą, może kaskadowo różne poziomy robić. ale tutaj znów się nakładają funkcjonalności trochę z analizatorem semantycznym”
+
 > „sposób podejścia twojego jest zbyt szczegółowy pamiętaj że podaję tylko przykłady, jak przęsła mostu który ty masz zbudować”
 
 Przykłady właściciela są **przypadkami** mechanizmów poniżej, nie ich zakresem.
@@ -35,6 +37,12 @@ obserwacja (zdarzenie w rozmowie)
 - **Eskalacja** — narastanie sygnału (kolejna poprawka tego samego, ostrzejszy ton, „mówiłem już”) podnosi wagę i skraca drogę do zasady. Krzywa i progi to dane.
 - **Awans** hipotezy do zasady: `pytaj` / `proponuj` / `stosuj` — ustawienie z presetem (R1: decyduje użytkownik).
 - **Reprezentacje** (zamiast „przekształceń kontekstu”) — tym samym cyklem: skompilowane polecenie zastępujące serię doprecyzowań (istniejąca specyfikacja zadania), oznaczenie nieaktualnego lub sprzecznego, oznaczenie dygresji i ruchu technicznego. Każda reprezentacja jest węzłem ze śladem, da się ją cofnąć; surowe wiadomości nigdy nie znikają ani nie są zmieniane. Selektor kontekstu decyduje, czy jej użyć.
+
+### Kaskada poziomów stratnych i wspólna warstwa adnotacji (decyzja 2026-10-14)
+
+Reprezentacja strażnika to **kaskada poziomów** na wiadomość lub segment, każdy jako węzeł pochodny powiązany ze źródłem (surowy tekst nietknięty). Poziomy to dane (otwarta lista); presety: **L0** surowy; **L1** bez szumu (wypełniacze „yyy/aaa”, powtórzenia, falstarty i samopoprawki w jednej wypowiedzi, wszystko, co kosztuje tylko tokeny); **L2** bez dygresji, żartów i dopowiedzeń wg ustawień użytkownika (które kategorie się liczą); **L3** skondensowane znaczenie: skompilowane polecenie i decyzje (istniejąca specyfikacja zadania dla serii doprecyzowań). Każdy poziom zapisuje, co odrzucił (kategoria, zakres), więc odrzucenie można obejrzeć i cofnąć.
+
+Nakładanie się z analizatorem semantycznym rozwiązuje **jedna wspólna warstwa adnotacji segmentów** (zakres → kategoria: instrukcja, poprawka, doprecyzowanie, dygresja, żart, wypełniacz, powtórzenie, wątek tematyczny…), produkowana raz — to istniejące adnotacje wiadomość→węzeł z zakresem znaków (`origin` recorded|model|user), a kategoria jest węzłem. Heurystyka daje tanie kategorie (wypełniacze, powtórzenia), analizator (regex/LLM/batch) dodaje kategorie jakości modelu i wątki tematyczne. Czytają ją trzej odbiorcy: analizator (graf), strażnik (poziomy stratne, cykl poprawek) i selektor kontekstu (wybiera poziom na segment, pomija inne wątki). Jeśli analizator już zazazadał adnotacje wiadomości, strażnik je wykorzystuje i nie robi drugiego wywołania modelu; wywołania modelu idą przez `use_model` i strażników (×10, limity wydatków). Strażnik może działać wyłącznie heurystycznie (preset dla L1, koszt zero). Wybór poziomu na segment w selektorze to dane i ustawienie; preset: L0 (bajty żądania bez zmian), tryb zgodności bez zmian.
 
 ## 2. Środowiska działania — jeden mechanizm
 
