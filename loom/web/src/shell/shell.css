@@ -45,3 +45,7 @@
 .shell-composer textarea { flex: 1; min-height: 44px; }
 .shell-composer button { min-width: 44px; min-height: 44px; }
 @media (min-width: 721px) { .shell-drawer { position: static; width: 280px; box-shadow: none; } }
+
+/* Message actions: on hover or keyboard focus (pointer devices), on long-press or context menu (touch). */
+.shell-msg-actions:not([data-open]) { display: none; }
+@media (hover: hover) { .msg:hover .shell-msg-actions, .msg:focus-within .shell-msg-actions { display: flex; } }

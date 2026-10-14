@@ -21,24 +21,29 @@ const freePort = () => new Promise((res, rej) => { const s = net.createServer();
 async function waitUp(url) { for (const end = Date.now() + 20000; Date.now() < end;) { try { if ((await fetch(url)).ok) return; } catch {} await new Promise(r => setTimeout(r, 150)); } throw new Error("never up " + url); }
 async function chromium() { try { return (await import("playwright")).chromium; } catch { return (await import("/opt/node22/lib/node_modules/playwright/index.mjs")).chromium; } }
 
-const mockPort = await freePort(), port = await freePort();
+const mockPort = await freePort();
 const mock = spawn("python3", [path.join(here, "mock_llm_server.py"), String(mockPort)], { stdio: "ignore" });
-const server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-chat-first-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
-const base = `http://127.0.0.1:${port}`;
+let server, base = "";
+// A fresh data directory (and server) per viewport: the first screen of a new installation.
+async function freshServer() {
+  server?.kill("SIGTERM");
+  const port = await freePort();
+  server = spawn(SERVER_BIN, ["--host", "127.0.0.1", "--port", String(port), "--data-dir", mkdtempSync(path.join(tmpdir(), "loom-chat-first-")), "--static-dir", DIST], { stdio: "ignore", cwd: LOOM });
+  base = `http://127.0.0.1:${port}`;
+  await waitUp(`${base}/api/healthz`);
+}
 let browser, failed = false;
 const step = async (name, fn) => { try { await fn(); console.log(`[chat-first] PASS ${name}`); } catch (e) { failed = true; console.error(`[chat-first] FAIL ${name}\n${e.stack}`); } };
 const api = (m, p, b) => fetch(base + p, { method: m, headers: { "content-type": "application/json" }, body: b ? JSON.stringify(b) : undefined });
 
 try {
-  await waitUp(`${base}/api/healthz`);
   const launch = await chromium();
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));
   for (const [name, viewport, shot] of [["phone 390x844", { width: 390, height: 844 }, "phone"], ["desktop 1280x800", { width: 1280, height: 800 }, "desktop"]]) {
+    await freshServer();
     const context = await browser.newContext({ viewport });
     const page = await context.newPage();
     const png = (n) => page.screenshot({ path: path.join(SHOTS, `chat-first-${shot}-${n}.png`) });
-    // A fresh data directory per viewport: no key yet.
-    await api("DELETE", "/api/secrets/api_key");
 
     await step(`${name}: the start screen is only the chat shell`, async () => {
       await page.goto(base, { waitUntil: "domcontentloaded" });
@@ -138,7 +143,7 @@ try {
     await context.close();
   }
 } finally {
-  await browser?.close(); server.kill("SIGTERM"); mock.kill("SIGTERM");
+  await browser?.close(); server?.kill("SIGTERM"); mock.kill("SIGTERM");
 }
 if (failed) process.exit(1);
 console.log("[chat-first] PASS all");

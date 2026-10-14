@@ -785,7 +785,6 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports, messages, versionsById],
   );
 
-  const showActionsAlways = false;
   const regenerateFrom = useCallback((m: Message) => {
     const at = messages.findIndex(x => x.id === m.id);
     const prior = [...messages.slice(0, at)].reverse().find(x => x.role === "user");
@@ -952,7 +951,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   <button onClick={() => requestOpenPanel(SETTINGS_PANEL)} data-testid="chat-open-settings-button">{words.button}</button>
                 </p>);
               })()}
-              {chat && editingId !== m.id && <div className="shell-msg-actions" data-testid="shell-msg-actions" hidden={actionsFor !== m.id && !showActionsAlways}>
+              {chat && editingId !== m.id && <div className="shell-msg-actions" data-testid="shell-msg-actions" data-open={actionsFor === m.id ? "" : undefined}>
                 <button onClick={() => { void navigator.clipboard?.writeText(m.text); setCopied(m.id); }} data-testid="msg-copy">{copied === m.id ? t("copied") : t("copy")}</button>
                 {m.role === "user" && <button onClick={() => startEdit(m)} data-testid="msg-edit" disabled={!supports("message.edit") || !messageCan(m, "edit")}>{t("edit")}</button>}
                 {m.role === "assistant" && <button onClick={() => regenerateFrom(m)} data-testid="msg-regenerate" disabled={!!stream}>{t("regenerate")}</button>}
