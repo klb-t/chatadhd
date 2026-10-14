@@ -6,6 +6,7 @@
 
 #include "export_internal.h"
 #include "importer_internal.h"
+#include "util/safety.h"
 #include "loom/log.h"
 #include "loom/sqlite.h"
 #include "loom/util/fs.h"
@@ -369,6 +370,7 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
     return Error(Errc::Parse, "invalid zip archive: " + path.string());
   }
 
+  safety::ZipBudget budget(safety::zip_limits(db_.path().parent_path()));  // R20: zip bomb guard
   Env env{db_, blobs_, opts, {}, current_source_ ? current_source_->source_id : ""};
   env.ledger = ledger_;
   if (ledger_) {
@@ -415,7 +417,9 @@ Result<std::vector<Conversation>> ConversationImporter::export_zip_body(const fs
     fs::path dest = td.path() / std::to_string(i) / relp;
     std::error_code ec;
     fs::create_directories(dest.parent_path(), ec);
-    if (!mz_zip_reader_extract_to_file(&zip, i, dest.string().c_str(), 0)) {
+    if (auto admitted = budget.admit(st); !admitted) { mz_zip_reader_end(&zip); return admitted.error(); }
+    if (auto extracted = budget.extract_to_file(zip, i, dest); !extracted) {
+      if (budget.refused()) { mz_zip_reader_end(&zip); return extracted.error(); }
       rep.members.push_back(member_json(name, static_cast<std::int64_t>(st.m_uncomp_size), "extract_failed"));
       rep.errors.push_back(Json{{"member", name}, {"code", "extract_failed"}, {"message", "could not extract (corrupt entry?)"}});
       rep.partial = true;

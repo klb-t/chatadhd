@@ -91,7 +91,7 @@ class AccountStore {
   Result<std::int64_t> user_count();
   // Errc::Auth for an unknown login, a wrong password or a disabled account (one message for all three).
   // True when the login exceeds settings().login_max_length characters (0 = no limit).
-  Status check_login(const std::string& login) const;
+  bool login_too_long(const std::string& login) const;
   Result<User> verify_password(const std::string& login, const std::string& password);
   Status set_password(const std::string& login, const std::string& password);
   // Disabling also revokes every session of the user.
