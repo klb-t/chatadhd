@@ -519,7 +519,7 @@ std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
     c.element = element.is_null() ? Json{{"id", implied}} : element;
     if (json::get_bool(entry, "element_many", false))
       if (Json many = find_references_many(d, text); many.size() > 1) c.element = Json{{"many", many}};
-    if (element.is_null()) {
+    if (!implied.empty() && json::get_string(c.element, "id").rfind("device:", 0) == 0) {  // a device action on a device: the second action may go on from it
       found->cand = c;
       device_hits.push_back(*found);
     }
@@ -528,7 +528,7 @@ std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
   // Two actions in one sentence ("nagraj notatkę głosową i ją streść"): the second acts on what the first brings. The device
   // action names the element; the action after the connector (heuristic.sequence.connectors) is the target of a chain from it.
   const Json* sequence = json::find(h, "sequence");
-  if (sequence && element.is_null() && !device_hits.empty()) {
+  if (sequence && !device_hits.empty()) {
     std::vector<std::string> connectors;
     for (const auto& w : strings_of(json::find(*sequence, "connectors"))) connectors.push_back(fold(w, h.at("fold")));
     const Found* first = &device_hits[0];

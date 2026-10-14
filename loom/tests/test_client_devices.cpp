@@ -474,6 +474,8 @@ TEST_SUITE("client_devices_chat") {
     // the words of the English reading, and one action alone (the microphone is implied by the action)
     const Json english = f.route("record a voice note and summarise it");
     CHECK(english.at("command").at("chain") == Json::array({"device.record_audio", "transcribe", "summarise"}));
+    // the microphone named in the words, then a second action: the same chain
+    CHECK(f.route("Nagraj dźwięk z mikrofonu i streść go").at("command").at("chain") == Json::array({"device.record_audio", "transcribe", "summarise"}));
     CHECK(f.route("Nagraj dźwięk").at("command").at("action") == "device.record_audio");
     CHECK(f.route("Nagraj dźwięk").at("command").at("element").at("id") == "device:microphone");
     // a client that declared nothing is told it cannot, as before
