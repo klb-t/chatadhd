@@ -869,3 +869,9 @@ Lokalna replika `deploy/first-steps-check.sh` (serwer z kontami, atrapa dostawcy
 - `loom/tsan.supp` (ładowany przez preset testów `tsan`): tylko procedury WAL-index SQLite i `unixOpen`; wyścigi w kodzie Loom nadal zgłaszane. Cofnięcie: usunąć plik i odwołanie w `CMakePresets.json`.
 - Limity czasu testów pod sanitizerami: `cli.smoke` 900 s, strażnik zawieszenia import_stream skalowany. Cofnięcie: przywrócić 300 s.
 - Raport: `docs/reports/S2_R15_2026-10-14.md`.
+
+### S2 / R23 — 413 przy zbyt dużym uploadzie nie ginie (2026-10-14)
+
+- `receive_upload`: po przekroczeniu `--max-upload-bytes` reszta ciała jest czytana i odrzucana (plik tymczasowy usunięty), potem 413 — bez RST, który niszczył odpowiedź. Cofnięcie: revert `9dfc02ae`.
+- Ustawienie `--upload-drain-bytes` / `LOOM_SERVER_UPLOAD_DRAIN_BYTES` (preset 64 MiB, 0 = bez limitu): ile bajtów ponad limit serwer dociąga; dalej połączenie jest cięte. Cofnięcie: revert `cd35619a` (dociąganie bez limitu).
+- `server.security`: komunikat asercji z `r.text`, 10 prób na sesji bez retry. Raport: `docs/reports/S2_R23_2026-10-14.md`.
