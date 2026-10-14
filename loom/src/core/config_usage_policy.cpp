@@ -24,7 +24,8 @@ const Result<Json>& builtin_preset() {
     LOOM_TRY_ASSIGN(auto data, json::parse(preset_text()));
     LOOM_TRY(validate_usage_policy_options(data));
     for (const auto* field : {"schema", "growth_factor", "baseline_window", "ledger_busy_timeout_ms",
-                              "include_reservations", "initial_baselines"}) {
+                              "include_reservations", "initial_baselines", "baseline_min_samples",
+                              "baseline_floor_tokens", "baseline_floor_chars_per_token", "baseline_floor"}) {
       if (!data.contains(field))
         return Error(Errc::InvalidArgument, std::string("missing usage preset field: ") + field);
     }
@@ -90,6 +91,35 @@ Status validate_usage_policy_options(const Json& options) {
         v.get<std::uint64_t>() > static_cast<std::uint64_t>(std::numeric_limits<int>::max())) ||
         v.get<std::int64_t>() < 0 || v.get<std::int64_t>() > std::numeric_limits<int>::max())
       return Error(Errc::InvalidArgument, "ledger_busy_timeout_ms must fit the SQLite nonnegative int timeout");
+  }
+  // P17: what normal usage looks like before the measured baseline is trusted (a floor of the baseline, never a limit).
+  if (options.contains("baseline_min_samples")) {
+    const auto& v = options["baseline_min_samples"];
+    if (!v.is_number_integer() || (v.is_number_unsigned() &&
+        v.get<std::uint64_t>() > static_cast<std::uint64_t>(std::numeric_limits<std::int64_t>::max())) ||
+        v.get<std::int64_t>() < 0)
+      return Error(Errc::InvalidArgument, "baseline_min_samples must be a nonnegative int64");
+  }
+  if (options.contains("baseline_floor_tokens")) {
+    const auto& tokens = options["baseline_floor_tokens"];
+    if (!tokens.is_object()) return Error(Errc::InvalidArgument, "baseline_floor_tokens must be an object");
+    for (auto it = tokens.begin(); it != tokens.end(); ++it) {
+      if ((it.key() != "input" && it.key() != "output") || !it->is_number() || !std::isfinite(it->get<double>()) || it->get<double>() < 0)
+        return Error(Errc::InvalidArgument, "baseline_floor_tokens holds finite nonnegative input and output token counts");
+    }
+  }
+  if (options.contains("baseline_floor_chars_per_token")) {
+    const auto& v = options["baseline_floor_chars_per_token"];
+    if (!v.is_number() || !std::isfinite(v.get<double>()) || v.get<double>() <= 0)
+      return Error(Errc::InvalidArgument, "baseline_floor_chars_per_token must be finite and positive");
+  }
+  if (options.contains("baseline_floor")) {
+    const auto& floors = options["baseline_floor"];
+    if (!floors.is_object()) return Error(Errc::InvalidArgument, "baseline_floor must be an object");
+    for (auto it = floors.begin(); it != floors.end(); ++it) {
+      if (it.key().empty() || (!it->is_null() && (!it->is_number() || !std::isfinite(it->get<double>()) || it->get<double>() < 0)))
+        return Error(Errc::InvalidArgument, "baseline_floor holds finite nonnegative quantities or null per resource");
+    }
   }
   if (options.contains("initial_baselines")) {
     const auto& seeds = options["initial_baselines"];

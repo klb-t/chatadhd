@@ -6,12 +6,24 @@
 #include <memory>
 #include <string>
 
+#include "loom/config.h"
 #include "loom/db.h"
 #include "loom/net/http.h"
 #include "loom/result.h"
 #include "loom/util/fs.h"
 
 namespace loom::test {
+
+// P17 6: until a cohort has `baseline_min_samples` samples its baseline is the larger of the measured mean and the floor (the size of an ordinary
+// request), so a few tiny samples no longer make an ordinary message look like x10 growth. A test of the x10 mechanism itself - a hold over a
+// baseline of three tiny samples - asks for the measured baseline only, the way a user who turned the floor off would.
+inline void measured_baseline_only(Config& cfg) {
+  Json options = cfg.get("loom_usage_policy", Json::object());
+  if (!options.is_object()) options = Json::object();
+  options["baseline_min_samples"] = 0;
+  cfg.set("loom_usage_policy", options);
+  (void)cfg.save();  // the media calls read config.json per call
+}
 
 // REQUIRE that a Result/Status succeeded, printing the error otherwise.
 #define LOOM_REQUIRE_OK(expr)                                                         \

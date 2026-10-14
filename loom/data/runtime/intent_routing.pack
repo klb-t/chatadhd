@@ -116,7 +116,7 @@
       },
       "command_shape": {
         "max_tokens": 16,
-        "min_lead_chars": 4,
+        "min_lead_chars": 3,
         "element_within": 3,
         "lead_skip": [
           "prosze",
@@ -182,7 +182,447 @@
           "wonder",
           "maybe"
         ],
-        "forbid_question_mark": true
+        "forbid_question_mark": true,
+        "verbs": {
+          "pl": [
+            "rozpisz",
+            "rozpisac",
+            "uporzadkuj",
+            "uporzadkowac",
+            "wypisz",
+            "wypisac",
+            "wylistuj",
+            "wylistowac",
+            "zrob",
+            "zrobic",
+            "napisz",
+            "napisac",
+            "przepisz",
+            "przepisac",
+            "przeformatuj",
+            "przeformatowac",
+            "sformatuj",
+            "sformatowac",
+            "skroc",
+            "skrocic",
+            "rozszerz",
+            "rozszerzyc",
+            "rozwin",
+            "rozwinac",
+            "uprosc",
+            "uproscic",
+            "wyjasnij",
+            "wyjasnic",
+            "objasnij",
+            "objasnic",
+            "opisz",
+            "opisac",
+            "zdefiniuj",
+            "zdefiniowac",
+            "okresl",
+            "okreslic",
+            "podziel",
+            "podzielic",
+            "polacz",
+            "polaczyc",
+            "scal",
+            "scalic",
+            "zgrupuj",
+            "zgrupowac",
+            "posortuj",
+            "posortowac",
+            "skategoryzuj",
+            "skategoryzowac",
+            "sklasyfikuj",
+            "sklasyfikowac",
+            "oznacz",
+            "oznaczyc",
+            "otaguj",
+            "otagowac",
+            "podkresl",
+            "podkreslic",
+            "wyroznij",
+            "wyroznic",
+            "wyciagnij",
+            "wyciagnac",
+            "wyodrebnij",
+            "wyodrebnic",
+            "wyekstrahuj",
+            "wyekstrahowac",
+            "wyszczegolnij",
+            "wyszczegolnic",
+            "przeanalizuj",
+            "przeanalizowac",
+            "ocen",
+            "ocenic",
+            "sprawdz",
+            "sprawdzic",
+            "zweryfikuj",
+            "zweryfikowac",
+            "przejrzyj",
+            "przejrzec",
+            "porownaj",
+            "porownac",
+            "zinterpretuj",
+            "zinterpretowac",
+            "skomentuj",
+            "skomentowac",
+            "uzupelnij",
+            "uzupelnic",
+            "dokoncz",
+            "dokonczyc",
+            "kontynuuj",
+            "kontynuowac",
+            "popraw",
+            "poprawic",
+            "skoryguj",
+            "skorygowac",
+            "wygladz",
+            "wygladzic",
+            "dopracuj",
+            "dopracowac",
+            "ulepsz",
+            "ulepszyc",
+            "zmien",
+            "zmienic",
+            "przerob",
+            "przerobic",
+            "przeksztalc",
+            "przeksztalcic",
+            "skonwertuj",
+            "skonwertowac",
+            "zamien",
+            "zamienic",
+            "sparafrazuj",
+            "sparafrazowac",
+            "powtorz",
+            "powtorzyc",
+            "zacytuj",
+            "zacytowac",
+            "wytnij",
+            "wyciac",
+            "skopiuj",
+            "skopiowac",
+            "wklej",
+            "wkleic",
+            "wyczysc",
+            "wyczyscic",
+            "zanonimizuj",
+            "zanonimizowac",
+            "zakoduj",
+            "zakodowac",
+            "zdekoduj",
+            "zdekodowac",
+            "zaszyfruj",
+            "zaszyfrowac",
+            "odszyfruj",
+            "odszyfrowac",
+            "skompresuj",
+            "skompresowac",
+            "odczytaj",
+            "odczytac",
+            "przeczytaj",
+            "przeczytac",
+            "zilustruj",
+            "zilustrowac",
+            "naszkicuj",
+            "naszkicowac",
+            "zwizualizuj",
+            "zwizualizowac",
+            "zmapuj",
+            "zmapowac",
+            "ponumeruj",
+            "ponumerowac",
+            "wylicz",
+            "wyliczyc",
+            "zestawic",
+            "zaindeksuj",
+            "zaindeksowac",
+            "zadokumentuj",
+            "zadokumentowac",
+            "przedstaw",
+            "przedstawic",
+            "podaj",
+            "podac",
+            "wskaz",
+            "wskazac",
+            "wypunktuj",
+            "wypunktowac",
+            "rozbij",
+            "rozbic",
+            "rozloz",
+            "rozlozyc",
+            "zaplanuj",
+            "zaplanowac",
+            "przygotuj",
+            "przygotowac",
+            "sporzadz",
+            "sporzadzic",
+            "wygeneruj",
+            "wygenerowac",
+            "uloz",
+            "ulozyc",
+            "przestaw",
+            "przestawic",
+            "zredaguj",
+            "zredagowac",
+            "przeredaguj",
+            "przeredagowac",
+            "przetlumacz",
+            "przetlumaczyc",
+            "stresc",
+            "strescic",
+            "podsumuj",
+            "podsumowac",
+            "zaproponuj",
+            "zaproponowac",
+            "przedyskutuj",
+            "przedyskutowac",
+            "omow",
+            "omowic",
+            "rozwaz",
+            "rozwazyc",
+            "zbadaj",
+            "zbadac",
+            "wyszukaj",
+            "wyszukac",
+            "wyluskaj",
+            "wyluskac",
+            "odfiltruj",
+            "odfiltrowac",
+            "zaznacz",
+            "zaznaczyc",
+            "opatrz",
+            "opatrzyc",
+            "dodaj",
+            "dodac",
+            "usun",
+            "usunac",
+            "wymien",
+            "wymienic",
+            "zamknij",
+            "zamknac",
+            "zapisz",
+            "zapisac",
+            "odtworz",
+            "odtworzyc",
+            "odpowiedziec",
+            "skondensuj",
+            "skondensowac"
+          ],
+          "en": [
+            "outline",
+            "list",
+            "draft",
+            "rewrite",
+            "rephrase",
+            "reword",
+            "tidy",
+            "organise",
+            "organize",
+            "sort",
+            "group",
+            "cluster",
+            "categorise",
+            "categorize",
+            "classify",
+            "label",
+            "tag",
+            "annotate",
+            "highlight",
+            "extract",
+            "split",
+            "merge",
+            "join",
+            "combine",
+            "condense",
+            "shorten",
+            "lengthen",
+            "expand",
+            "elaborate",
+            "simplify",
+            "clarify",
+            "improve",
+            "polish",
+            "fix",
+            "correct",
+            "proofread",
+            "check",
+            "verify",
+            "review",
+            "rate",
+            "score",
+            "grade",
+            "rank",
+            "compare",
+            "contrast",
+            "analyse",
+            "analyze",
+            "interpret",
+            "evaluate",
+            "assess",
+            "audit",
+            "inspect",
+            "examine",
+            "describe",
+            "explain",
+            "define",
+            "detail",
+            "break",
+            "decompose",
+            "structure",
+            "format",
+            "reformat",
+            "restructure",
+            "reorder",
+            "rearrange",
+            "convert",
+            "transform",
+            "turn",
+            "change",
+            "adapt",
+            "localise",
+            "localize",
+            "paraphrase",
+            "abbreviate",
+            "bullet",
+            "enumerate",
+            "index",
+            "catalogue",
+            "catalog",
+            "document",
+            "quote",
+            "cite",
+            "paste",
+            "copy",
+            "cut",
+            "trim",
+            "prune",
+            "clean",
+            "redact",
+            "anonymise",
+            "anonymize",
+            "mask",
+            "censor",
+            "sanitize",
+            "sanitise",
+            "encode",
+            "decode",
+            "encrypt",
+            "decrypt",
+            "compress",
+            "summarise",
+            "summarize",
+            "scan",
+            "parse",
+            "read",
+            "recite",
+            "narrate",
+            "transcribe",
+            "translate",
+            "illustrate",
+            "sketch",
+            "diagram",
+            "map",
+            "chart",
+            "plot",
+            "visualise",
+            "visualize",
+            "render",
+            "depict",
+            "draw",
+            "continue",
+            "finish",
+            "complete",
+            "append",
+            "prepend",
+            "insert",
+            "replace",
+            "swap",
+            "mark",
+            "flag",
+            "bookmark",
+            "write",
+            "create",
+            "generate",
+            "prepare",
+            "compose",
+            "build",
+            "rework",
+            "revise",
+            "edit",
+            "refine",
+            "tighten",
+            "flesh",
+            "unpack",
+            "enhance",
+            "critique",
+            "discuss",
+            "propose",
+            "suggest",
+            "filter",
+            "underline",
+            "tabulate",
+            "itemise",
+            "itemize",
+            "isolate",
+            "arrange"
+          ]
+        },
+        "statement": {
+          "after_lead": [
+            "of",
+            "for",
+            "from",
+            "is",
+            "are",
+            "was",
+            "were",
+            "be",
+            "been",
+            "has",
+            "have",
+            "had",
+            "will",
+            "would",
+            "should",
+            "does",
+            "did",
+            "s",
+            "jest",
+            "sa",
+            "byl",
+            "byla",
+            "bylo",
+            "byly",
+            "bedzie",
+            "beda",
+            "zostal",
+            "zostala",
+            "zostalo",
+            "zostaly"
+          ],
+          "label_chars": [
+            ":"
+          ],
+          "subjects": [
+            "you"
+          ],
+          "modals": [
+            "can",
+            "could",
+            "would",
+            "will"
+          ],
+          "reason": {
+            "en": "A noun phrase or a statement, not an order",
+            "pl": "Fraza rzeczownikowa albo stwierdzenie, nie polecenie"
+          }
+        },
+        "verbs_extra": {
+          "pl": [],
+          "en": []
+        }
       },
       "naming": {
         "prefix": "",
@@ -2771,6 +3211,140 @@
           "element_from_arg": true
         },
         {
+          "id": "usage.spend_limit.pl",
+          "action": "usage.set_limit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:ustaw|ustal|zmien|wprowadz)\\s+(?:(dzienny|tygodniowy|miesieczny)\\s+)?limit\\s+(?:wydatkow\\s+|kosztow\\s+|zuzycia\\s+)?(?:(dzienny|tygodniowy|miesieczny)\\s+)?(?:na\\s+|do\\s+|w\\s+wysokosci\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:na|w|per|za|co)\\s+(dzien|tydzien|miesiac)|(dziennie|tygodniowo|miesiecznie)))?(?:\\s*[,;.]?\\s*(?:i\\s+)?(odmawiaj|blokuj|zablokuj|pytaj|potwierdzaj|ostrzegaj|powiadamiaj|tylko\\s+ostrzegaj))?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.cap.pl",
+          "action": "usage.set_limit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:ogranicz|limituj)\\s+(?:moje\\s+)?(?:wydatki|koszty|zuzycie)\\s+(?:do\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:na|w|per|za|co)\\s+(dzien|tydzien|miesiac)|(dziennie|tygodniowo|miesiecznie)))?(?:\\s*[,;.]?\\s*(?:i\\s+)?(odmawiaj|blokuj|zablokuj|pytaj|potwierdzaj|ostrzegaj|powiadamiaj|tylko\\s+ostrzegaj))?\\s*[.!]*\\s*$",
+          "args": [
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.clear.pl",
+          "action": "usage.set_limit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:usun|wylacz|skasuj|zdejmij|zrezygnuj\\s+z)\\s+(?:(dzienny|tygodniowy|miesieczny)\\s+)?limit(?:\\s+wydatkow)?\\s*(?:(dzienny|tygodniowy|miesieczny)\\s*)?(?:(?:(?:na|w|per|za|co)\\s+(dzien|tydzien|miesiac)|(dziennie|tygodniowo|miesiecznie)))?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "period",
+            "period"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits",
+            "clear": true
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:set|change|make)\\s+(?:a\\s+|an\\s+|the\\s+|my\\s+)?(?:(daily|weekly|monthly)\\s+)?(?:spending\\s+|spend\\s+|usage\\s+|cost\\s+)?limit\\s*(?:(daily|weekly|monthly)\\s*)?(?:of\\s+|to\\s+|at\\s+|for\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:a|per|each|every|in\\s+a|for\\s+a|for\\s+the|in\\s+the|per\\s+each)\\s+(day|week|month)|(daily|weekly|monthly)))?(?:\\s*[,;.]?\\s*(?:and\\s+)?(deny|refuse|block|ask|confirm|notify|warn|just\\s+warn|only\\s+warn)(?:\\s+me)?(?:\\s+first)?)?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.adj.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:set|change|make)\\s+(?:a\\s+|an\\s+|the\\s+|my\\s+)?([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(daily|weekly|monthly)\\s+(?:spending\\s+|spend\\s+|usage\\s+|cost\\s+)?limit(?:\\s*[,;.]?\\s*(?:and\\s+)?(deny|refuse|block|ask|confirm|notify|warn|just\\s+warn|only\\s+warn)(?:\\s+me)?(?:\\s+first)?)?\\s*[.!]*\\s*$",
+          "args": [
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.cap.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?=.*(?:[\\$€£]|\\b(?:usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|dzien|dziennie|dzienny|tydzien|tygodniowo|tygodniowy|miesiac|miesiecznie|miesieczny|day|daily|week|weekly|month|monthly)\\b))(?:limit|cap)\\s+(?:my\\s+)?(?:spending|spend|usage|costs?)\\s+(?:to|at)\\s+([\\$€£])?\\s*([0-9]+(?:[.,][0-9]+)?)\\s*(usd|pln|eur|gbp|chf|czk|sek|nok|dkk|cad|aud|jpy|uah|huf|zl|zlot[a-z]*|dolar[a-z]*|dollar[a-z]*|euro|funt[a-z]*|pound[a-z]*|frank[a-z]*|koron[a-z]*|yen|jen|hrywn[a-z]*|forint[a-z]*|kc|\\$|€|£)?\\s*(?:(?:(?:a|per|each|every|in\\s+a|for\\s+a|for\\s+the|in\\s+the|per\\s+each)\\s+(day|week|month)|(daily|weekly|monthly)))?(?:\\s*[,;.]?\\s*(?:and\\s+)?(deny|refuse|block|ask|confirm|notify|warn|just\\s+warn|only\\s+warn)(?:\\s+me)?(?:\\s+first)?)?\\s*[.!]*\\s*$",
+          "args": [
+            "currency",
+            "amount",
+            "currency",
+            "period",
+            "period",
+            "on_exceed"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.spend_limit.clear.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:remove|clear|delete|drop|turn\\s+off|cancel)\\s+(?:the\\s+|my\\s+)?(?:(daily|weekly|monthly)\\s+)?(?:spending\\s+|spend\\s+|usage\\s+|cost\\s+)?limit\\s*(?:(daily|weekly|monthly)\\s*)?(?:(?:(?:a|per|each|every|in\\s+a|for\\s+a|for\\s+the|in\\s+the|per\\s+each)\\s+(day|week|month)|(daily|weekly|monthly)))?\\s*[.!]*\\s*$",
+          "args": [
+            "period",
+            "period",
+            "period",
+            "period"
+          ],
+          "set": {
+            "setting_key": "usage_spend_limits",
+            "clear": true
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
           "id": "usage.compact.pl",
           "action": "usage.compact",
           "lang": "pl",
@@ -3225,6 +3799,218 @@
             "operation": "test"
           },
           "takes_scope": false
+        },
+        {
+          "id": "archive.run.pl",
+          "action": "archive.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?(?:archiwum|folder|projekt|repozytorium)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.run.en",
+          "action": "archive.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:archive|folder|project|repository|repo)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.status.pl",
+          "action": "archive.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jak\\s+idzie|jaki\\s+jest\\s+stan|pokaz\\s+stan|sprawdz\\s+stan|co\\s+z)\\s+(?:analiz[aey]\\s+)?(?:tego\\s+)?(?:archiwum|folderu|projektu)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.status.en",
+          "action": "archive.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:how\\s+is\\s+the\\s+archive\\s+analysis(?:\\s+going)?|how\\s+is\\s+the\\s+analysis\\s+of\\s+the\\s+archive\\s+going|archive\\s+analysis\\s+status|(?:show|check)\\s+(?:me\\s+)?(?:the\\s+)?archive\\s+analysis\\s+status)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.cancel.pl",
+          "action": "archive.cancel",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przerwij|zatrzymaj|wstrzymaj|anuluj)\\s+analiz[eay]\\s+archiwum\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "archive.cancel.en",
+          "action": "archive.cancel",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:stop|pause|cancel|abort)\\s+(?:the\\s+)?archive\\s+analysis\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.run.pl",
+          "action": "knowledge.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:(?:archiwum|folderu|katalogu|projektu|repozytorium)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.run.en",
+          "action": "knowledge.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:(?:archive|folder|directory|project|repository)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.status.pl",
+          "action": "knowledge.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jak\\s+idzie|jaki\\s+jest\\s+stan|pokaz\\s+stan|sprawdz\\s+stan)\\s+(?:budowani[ae]\\s+)?wiedzy\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.status.en",
+          "action": "knowledge.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:how\\s+is\\s+the\\s+knowledge\\s+(?:build\\s+)?going|knowledge\\s+build\\s+status|(?:show|check)\\s+(?:me\\s+)?(?:the\\s+)?knowledge\\s+build\\s+status)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.cancel.pl",
+          "action": "knowledge.cancel",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przerwij|zatrzymaj|wstrzymaj|anuluj)\\s+budowani[ea]\\s+wiedzy\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "knowledge.cancel.en",
+          "action": "knowledge.cancel",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:stop|pause|cancel|abort)\\s+(?:the\\s+)?knowledge\\s+build\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.scan.pl",
+          "action": "catalog.scan",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przejrzyj|przeskanuj|skataloguj|przegladaj)\\s+(?:ten\\s+|ta\\s+|moj\\s+)?katalog(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.scan.en",
+          "action": "catalog.scan",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:scan|browse|review)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:catalogue|catalog|directory)|(?:catalogue|catalog)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:folder|directory|archive))(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.status.pl",
+          "action": "catalog.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jak\\s+idzie|jaki\\s+jest\\s+stan|pokaz\\s+stan)\\s+(?:przegladani[ae]|skanowani[ae])\\s+katalogu\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.status.en",
+          "action": "catalog.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:how\\s+is\\s+the\\s+catalog(?:ue)?\\s+scan\\s+going|catalog(?:ue)?\\s+scan\\s+status)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.cancel.pl",
+          "action": "catalog.cancel",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przerwij|zatrzymaj|wstrzymaj|anuluj)\\s+przegladani[ea]\\s+katalogu\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.cancel.en",
+          "action": "catalog.cancel",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:stop|pause|cancel|abort)\\s+(?:the\\s+)?catalog(?:ue)?\\s+scan\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.query.pl",
+          "action": "catalog.query",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:szukaj|znajdz|wyszukaj)\\s+w\\s+katalogu\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "catalog.query.en",
+          "action": "catalog.query",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:search|find\\s+in)\\s+(?:the\\s+)?catalog(?:ue)?\\s+(?:for\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "takes_scope": false
         }
       ],
       "payload": {
@@ -3444,7 +4230,15 @@
         "offer_gone": "That sentence is no longer there to send: {{why}}.",
         "route_failed": "Routing with the model failed ({{message}}); the local method decided instead.",
         "why_planned": "not available yet",
-        "why_no_executor": "nothing in this installation runs it"
+        "why_no_executor": "nothing in this installation runs it",
+        "semantic_question_batch": "The background analysis wants to use about {{ratio}} times more than usual ({{count}} messages) - continue?",
+        "semantic_question_batch_unknown": "The background analysis wants to use many times more than usual ({{count}} messages) - continue?",
+        "semantic_question_retry": "Sending the failed analyses again wants to use about {{ratio}} times more than usual ({{count}} messages) - continue?",
+        "semantic_question_retry_unknown": "Sending the failed analyses again wants to use many times more than usual ({{count}} messages) - continue?",
+        "semantic_answer_yes": "Right - the background analysis goes on.",
+        "semantic_answer_no": "Right - the background analysis is paused. Resume it with \"resume the semantic analysis\".",
+        "semantic_answer_no_retry": "Right - those analyses are not sent again.",
+        "semantic_answer_gone": "That question is no longer current ({{why}})."
       },
       "pl": {
         "proposal_title": "Rozumiem to jako polecenie: {{title}}.",
@@ -3510,7 +4304,15 @@
         "offer_gone": "Tego zdania nie ma już do wysłania: {{why}}.",
         "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna.",
         "why_planned": "jeszcze niedostępne",
-        "why_no_executor": "nic w tej instalacji tego nie wykonuje"
+        "why_no_executor": "nic w tej instalacji tego nie wykonuje",
+        "semantic_question_batch": "Analiza w tle chce zużyć ok. {{ratio}} razy więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_question_batch_unknown": "Analiza w tle chce zużyć wielokrotnie więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_question_retry": "Ponowne wysłanie nieudanych analiz chce zużyć ok. {{ratio}} razy więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_question_retry_unknown": "Ponowne wysłanie nieudanych analiz chce zużyć wielokrotnie więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_answer_yes": "Dobrze - analiza w tle jedzie dalej.",
+        "semantic_answer_no": "Dobrze - analiza w tle jest wstrzymana. Wznowisz ją poleceniem „wznów analizę semantyczną”.",
+        "semantic_answer_no_retry": "Dobrze - tych analiz nie wysyłam ponownie.",
+        "semantic_answer_gone": "To pytanie nie jest już aktualne ({{why}})."
       }
     }
   },
@@ -3661,7 +4463,9 @@
               "element_within",
               "lead_skip",
               "not_leads",
-              "forbid_question_mark"
+              "forbid_question_mark",
+              "verbs",
+              "statement"
             ],
             "properties": {
               "max_tokens": {
@@ -3690,6 +4494,65 @@
               },
               "forbid_question_mark": {
                 "type": "boolean"
+              },
+              "verbs": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "description": "P17: the lead of a command must be a verb from the list of the sentence's language (folded: lower case, no diacritics; PL imperative and infinitive, EN imperative). A language without a list accepts any list. A sentence that begins with anything else (\"First message of run 1\") is a statement, never a command, so it is not offered as a new action."
+              },
+              "verbs_extra": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "description": "Verbs added to `verbs` without replacing the list (an overlay replaces arrays, so the shipped list stays and these are united with it)."
+              },
+              "statement": {
+                "type": "object",
+                "properties": {
+                  "after_lead": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Words that, directly after the lead, make the sentence a noun phrase or a statement (\"outline of this conversation\", \"list is long\")."
+                  },
+                  "subjects": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Subject words that, among the skipped lead words, make the sentence a statement (\"you outline ...\") unless a modal stands right before them (\"can you outline ...\")."
+                  },
+                  "modals": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "label_chars": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "A lead directly followed by one of these characters is a label (\"Note: this message ...\"), not an order."
+                  },
+                  "reason": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "additionalProperties": false

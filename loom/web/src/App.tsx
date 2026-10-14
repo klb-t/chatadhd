@@ -66,6 +66,8 @@ export default function App() {
   const [convRefreshKey, setConvRefreshKey] = useState(0);
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
   const [chatVisible, setChatVisible] = useState(true);
+  // P17 5: on a narrow screen the navigation is a menu under the header; on a wide one it is part of the header and wraps. Same buttons either way.
+  const [navOpen, setNavOpen] = useState(false);
   const [primaryProfile, setPrimaryProfile] = useState<ApplicationProfile | null>(null);
   const sidebarOperations = useRef(0);
   const sidebarActivity = useCallback((delta: number) => { sidebarOperations.current += delta; }, []);
@@ -91,7 +93,7 @@ export default function App() {
     setTheme((t) => (t === "dark" ? "amoled" : "dark"));
   }, []);
 
-  const openPanel = useCallback((p: PanelId) => setActivePanel((cur) => (cur === p ? null : p)), []);
+  const openPanel = useCallback((p: PanelId) => { setActivePanel((cur) => (cur === p ? null : p)); setNavOpen(false); }, []);
   const closePanel = useCallback(() => setActivePanel(null), []);
 
   const onConversationCreated = useCallback((id: string) => {
@@ -122,7 +124,7 @@ export default function App() {
   return (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
-      <header className="app-header">
+      <header className="app-header" onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }}>
         <button
           className="icon-btn"
           aria-label="Toggle conversation list"
@@ -132,29 +134,35 @@ export default function App() {
           ≡
         </button>
         <h1>Loom</h1>
-        <SemanticStatus profileHost={userProfileHost} />
         <div className="spacer" />
-        <button data-testid="nav-knowledge" aria-pressed={knowledgeOpen} onClick={() => setKnowledgeOpen((value) => !value)}>Knowledge</button>
-        {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => setChatVisible((value) => !value)}>{chatVisible ? "Hide chat" : "Show chat"}</button>}
-        {(Object.keys(PANEL_LABELS) as PanelId[]).map((p) => (
-          <button
-            key={p}
-            data-testid={`nav-${p}`}
-            aria-pressed={activePanel === p}
-            onClick={() => openPanel(p)}
-            style={activePanel === p ? { borderColor: "var(--accent)", color: "var(--accent)" } : undefined}
-          >
-            {PANEL_LABELS[p]}
-          </button>
-        ))}
-        <button data-testid="toggle-theme" onClick={toggleTheme} title="Toggle theme">
-          {theme === "dark" ? "Dark" : "AMOLED"}
+        <button className="nav-toggle" aria-label="Menu" aria-expanded={navOpen} aria-controls="app-nav" data-testid="toggle-nav"
+          onClick={() => setNavOpen((v) => !v)}>
+          Menu
         </button>
-        {account && (
-          <button data-testid="account-logout" onClick={account.logout} title={account.signedInAs}>
-            {account.logoutLabel}
+        <nav className={navOpen ? "app-nav open" : "app-nav"} id="app-nav" data-testid="app-nav">
+          <SemanticStatus profileHost={userProfileHost} />
+          <button data-testid="nav-knowledge" aria-pressed={knowledgeOpen} onClick={() => { setKnowledgeOpen((value) => !value); setNavOpen(false); }}>Knowledge</button>
+          {knowledgeOpen && <button aria-pressed={chatVisible} onClick={() => { setChatVisible((value) => !value); setNavOpen(false); }}>{chatVisible ? "Hide chat" : "Show chat"}</button>}
+          {(Object.keys(PANEL_LABELS) as PanelId[]).map((p) => (
+            <button
+              key={p}
+              data-testid={`nav-${p}`}
+              aria-pressed={activePanel === p}
+              onClick={() => openPanel(p)}
+              style={activePanel === p ? { borderColor: "var(--accent)", color: "var(--accent)" } : undefined}
+            >
+              {PANEL_LABELS[p]}
+            </button>
+          ))}
+          <button data-testid="toggle-theme" onClick={toggleTheme} title="Toggle theme">
+            {theme === "dark" ? "Dark" : "AMOLED"}
           </button>
-        )}
+          {account && (
+            <button data-testid="account-logout" onClick={account.logout} title={account.signedInAs}>
+              {account.logoutLabel}
+            </button>
+          )}
+        </nav>
       </header>
 
       <div className="app-layout">

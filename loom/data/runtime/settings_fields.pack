@@ -156,7 +156,15 @@
         "group": "usage",
         "type": "object",
         "has_default": true,
-        "description": "Usage policy options (growth factor, baselines). Raising expected consumption by an order of magnitude needs the user's confirmation; the confirmation is enforced by the usage-policy actions, not by the config write."
+        "description": "Usage policy options (growth factor, baselines). Raising expected consumption by an order of magnitude needs the user's confirmation; the confirmation is enforced by the usage-policy actions, not by the config write. P17: baseline_min_samples (preset 5): until a cohort has this many measured samples its baseline is the larger of the measured mean and a floor, so one short first message does not make the next ordinary one look like a tenfold growth (0 turns the floor off; a cohort with no sample keeps the old behaviour). baseline_floor_tokens (preset {input: 4000, output: 1000}): the size of an ordinary request the floor is derived from - input_tokens and output_tokens as they are, input_bytes as input x baseline_floor_chars_per_token (preset 4.0, the low end of the band the cost estimates use), cost_usd and money_usd priced with the model's price when the caller knows it. baseline_floor: explicit floors per resource that replace the derived ones (null = none). These are presets of what normal usage is, not limits; they are edited like the growth factor, with the same confirmation."
+      },
+      {
+        "key": "usage_spend_limits",
+        "scope": "config",
+        "group": "usage",
+        "type": "array",
+        "has_default": false,
+        "description": "Your spending limits per period (the preset is none, so nothing is limited until you say so): a list of {period: day|week|month, amount, currency, on_exceed: confirm|deny|notify, rate?}. Before an action run that calls a model, the spend of the period (the cost the providers reported, from the usage ledger) plus the estimate of the run is compared with each limit; when it is passed, confirm makes the run wait for your yes, deny does not start it (with the reason), notify lets it go and says so. rate is USD per unit of the currency (an approximate preset is used when it is left out and the limit says so). Say it in the conversation: \"set a monthly limit of 20 PLN\", \"ustaw limit 20 zł na miesiąc\"; \"how much did I spend\" reads the limits back. It does not replace the x10 growth guard (loom_usage_policy) and covers action runs only; a plain chat send and the background analysis answer to the growth guard alone. Runtime profile action_run (spend_limits). Default: none."
       },
       {
         "key": "loom_zip_max_total_bytes",

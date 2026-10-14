@@ -2,6 +2,10 @@
 // message.*, export/import, storage.connect, ports.*, usage.*, models.*, semantic.*, tasks.*, help.* and the rest. Each is a thin layer over
 // the engine that does the work (the calls the C ABI makes); what it says back is written from runtime/chat_ops.pack in the language of the run.
 #include "loom/action_ops.h"
+#include "loom/action_spend.h"
+#include "loom/archive.h"
+#include "loom/catalog.h"
+#include "loom/knowledge.h"
 
 #include <algorithm>
 #include <cmath>
@@ -9,6 +13,7 @@
 #include <filesystem>
 #include <fstream>
 #include <set>
+#include <sstream>
 
 #include "loom/action_overlay.h"
 #include "loom/action_runner.h"
@@ -953,11 +958,17 @@ Period period_of(Ctx& x, const std::string& words_in) {
   return p;
 }
 
+std::vector<std::string> spend_limit_lines(Ctx& x, Json* data_out);
+
 StepOutcome usage_spend(Ctx& x) {
   const Period p = period_of(x, x.str("period"));
   // A question never creates the ledger: without one nothing was recorded.
-  if (!std::filesystem::exists(x.rt.paths().root / "usage-policy.sqlite"))
-    return answer(x.say("spend_head", Json{{"period", x.say("period_" + p.id)}}) + "\n• " + x.say("spend_ops", Json{{"count", 0}}), Json{{"operations", 0}, {"totals", Json::object()}, {"period", Json{{"id", p.id}, {"from", p.from}, {"to", p.to}}}});
+  if (!std::filesystem::exists(x.rt.paths().root / "usage-policy.sqlite")) {
+    Json state = nullptr;
+    const auto limit_lines = spend_limit_lines(x, &state);
+    return answer(x.say("spend_head", Json{{"period", x.say("period_" + p.id)}}) + "\n• " + x.say("spend_ops", Json{{"count", 0}}) + (limit_lines.empty() ? "" : "\n" + join_lines(limit_lines)),
+                  Json{{"operations", 0}, {"totals", Json::object()}, {"period", Json{{"id", p.id}, {"from", p.from}, {"to", p.to}}}, {"limits", state}});
+  }
   auto policy = UsagePolicy::open(x.rt.paths().root / "usage-policy.sqlite", Json::object());
   if (!policy) return fail(policy.error());
   auto spent = (*policy)->spend_between(p.from, p.to);
@@ -980,10 +991,87 @@ StepOutcome usage_spend(Ctx& x) {
   if (spent->value("folded_operations", 0) > 0) lines.push_back("• " + x.say("spend_folded", Json{{"count", spent->value("folded_operations", 0)}}));
   Json data = *spent;
   data["period"] = Json{{"id", p.id}, {"from", p.from}, {"to", p.to}};
+  // The limits the user set, with what their periods have spent (P17).
+  Json state = nullptr;
+  for (const auto& l : spend_limit_lines(x, &state)) lines.push_back(l);
+  data["limits"] = state;
   return answer(x.say("spend_head", Json{{"period", x.say("period_" + p.id)}}) + "\n" + join_lines(lines), data);
 }
 
+// ── spending limits per period (P17) ───────────────────────────────
+
+std::string spend_amount_text(double v) {
+  char buf[48];
+  std::snprintf(buf, sizeof(buf), "%.2f", v);
+  if (v > 0 && std::string(buf) == "0.00") std::snprintf(buf, sizeof(buf), "%.4f", v);
+  return buf;
+}
+
+// The limits as lines for the answer of "how much did I spend": each limit with what the period has spent, or the way to set one.
+std::vector<std::string> spend_limit_lines(Ctx& x, Json* data_out) {
+  std::vector<std::string> lines;
+  const Json data = spend::data_of(x.rt.paths().root);
+  if (data.empty()) return lines;
+  const Json state = spend::status(x.rt.paths().root, x.rt.config(), data);
+  if (data_out) *data_out = state;
+  const Json limits = state.value("limits", Json::array());
+  if (limits.empty() && state.value("issues", Json::array()).empty()) {
+    lines.push_back(x.say("limits_none"));
+    return lines;
+  }
+  lines.push_back(x.say("limits_head"));
+  for (const auto& l : limits) {
+    const Json vars{{"period", spend::period_label(data, json::get_string(l, "period"), x.lang)},
+                    {"amount", number_text(l.value("amount", 0.0))},
+                    {"currency", json::get_string(l, "currency")},
+                    {"what", spend::on_exceed_label(data, json::get_string(l, "on_exceed"), x.lang)},
+                    {"spent", l["spent"].is_number() ? spend_amount_text(l["spent"].get<double>()) : std::string()},
+                    {"share", l["share"].is_number() ? number_text(std::round(l["share"].get<double>() * 100)) : std::string()}};
+    lines.push_back("• " + x.say(l["spent"].is_number() ? "limit_line" : "limit_line_unknown", vars));
+  }
+  for (const auto& issue : state.value("issues", Json::array())) lines.push_back("• " + x.say("limit_issue", Json{{"why", issue.value("reason", "")}}));
+  return lines;
+}
+
+StepOutcome usage_set_spend_limit(Ctx& x) {
+  const Json data = spend::data_of(x.rt.paths().root);
+  if (data.empty()) return fail(Errc::Unavailable, "the spending limits are not available in this build");
+  const std::string setting = json::get_string(data, "setting", "usage_spend_limits");
+  if (auto ok = check_config_write(setting, x.rt.paths().root); !ok) return fail(ok.error());
+  const bool clearing = x.arg("clear").is_boolean() && x.arg("clear").get<bool>();
+  const std::string period_text = x.fold(x.str("period"));
+  if (clearing) {
+    const std::string period = spend::period_in(data, period_text);
+    if (period.empty()) return fail(Errc::InvalidArgument, x.say("limit_period"));
+    auto done = spend::clear(x.rt.config(), data, period);
+    if (!done) return fail(done.error());
+    const Json vars{{"period", spend::period_label(data, period, x.lang)}};
+    return answer(x.say(done->value("removed", false) ? "limit_spend_cleared" : "limit_spend_none", vars), *done);
+  }
+  Json args = Json::object();
+  args["amount"] = x.arg("amount");
+  args["period"] = period_text;
+  args["currency"] = x.fold(x.str("currency"));
+  args["on_exceed"] = x.fold(x.str("on_exceed"));
+  if (x.arg("rate").is_number()) args["rate"] = x.arg("rate");
+  auto entry = spend::entry_from(data, args);
+  if (!entry) return fail(entry.error());
+  auto done = spend::put(x.rt.config(), data, *entry);
+  if (!done) return fail(done.error());
+  const Json vars{{"period", spend::period_label(data, entry->period, x.lang)}, {"amount", number_text(entry->amount)}, {"currency", entry->currency},
+                  {"usd", spend_amount_text(entry->usd())}, {"rate", number_text(entry->rate)}, {"what", spend::on_exceed_label(data, entry->on_exceed, x.lang)}};
+  std::string text = x.say("limit_spend_set", vars);
+  if (entry->rate_source == "preset") text += " " + x.say("limit_rate_preset", Json{{"note", x.pick(data.value("rates_note", Json::object()))}});
+  if (!done->value("previous", Json(nullptr)).is_null()) {
+    const Json prev = (*done)["previous"];
+    text += " " + x.say("limit_spend_replaced", Json{{"amount", number_text(prev.value("amount", 0.0))}, {"currency", json::get_string(prev, "currency")}});
+  }
+  return answer(text, *done);
+}
+
 StepOutcome usage_set_limit(Ctx& x) {
+  // A spending limit of a period (amount / period / clear) or the growth factor of the usage policy.
+  if (x.has("amount") || x.has("clear") || (x.has("period") && !x.has("growth_factor"))) return usage_set_spend_limit(x);
   // The growth factor of the usage policy: how many times above the usual consumption an operation may grow before the user is asked.
   // The write is the setting loom_usage_policy and goes through the same rules as any edit of it: the x10 confirmation is not bypassed.
   double factor = 0;
@@ -1106,6 +1194,216 @@ StepOutcome settings_list(Ctx& x) {
   }
   if (lines.empty()) return answer(x.say("settings_none", Json{{"group", group}}), Json{{"items", items}});
   return answer(x.say("settings_head", Json{{"count", lines.size()}, {"group", group.empty() ? x.say("settings_all") : group}}) + "\n" + join_lines(lines), Json{{"items", items}});
+}
+
+// ── the long pipelines from a sentence (P17 4) ─────────────────────
+
+// The paths the sentence (or the picked file) names, as the pipelines take them: one path, or a list.
+bool pipeline_sources(Ctx& x, Json& out, StepOutcome& failure) {
+  out = Json::array();
+  std::vector<std::string> given;
+  const Json path = x.arg("path");
+  if (path.is_array()) {
+    for (const auto& p : path)
+      if (p.is_string() && !p.get<std::string>().empty()) given.push_back(p.get<std::string>());
+  } else if (path.is_string() && !path.get<std::string>().empty()) {
+    given.push_back(path.get<std::string>());
+  }
+  if (!given.empty()) {
+    for (const auto& raw : given) {
+      const std::filesystem::path one = trim_quotes(raw);
+      // A path typed in the conversation obeys the same policy as every path that comes from a request.
+      if (auto ok = x.rt.path_policy().check(one, "path"); !ok) {
+        failure = fail(ok.error());
+        return false;
+      }
+      out.push_back(one.string());
+    }
+    return true;
+  }
+  // The file the device picked: a blob of the store, written where the pipeline can read it (it keeps its own copy; the file stays in tmp/uploads).
+  for (const auto& part : x.c.inputs) {
+    if (part.blob_hash.empty()) continue;
+    auto bytes = x.rt.blobs().read(part.blob_hash);
+    if (!bytes) {
+      failure = fail(bytes.error());
+      return false;
+    }
+    const std::filesystem::path dir = x.rt.paths().root / "tmp" / "uploads";
+    std::error_code ec;
+    std::filesystem::create_directories(dir, ec);
+    const std::filesystem::path file = dir / ("chat_" + part.blob_hash.substr(0, 12) + mime_extension(x, part.mime));
+    std::ofstream o(file, std::ios::binary);
+    o.write(bytes->data(), static_cast<std::streamsize>(bytes->size()));
+    if (!o.good()) {
+      failure = fail(Errc::Io, "cannot write the picked file for the pipeline");
+      return false;
+    }
+    out.push_back(file.string());
+    return true;
+  }
+  failure = fail(Errc::InvalidArgument, x.say("pipeline_no_path"));
+  return false;
+}
+
+// "a, b; c and d" -> [a, b, c, d]: the separators are data (chat_ops.pack pipelines.seed_separators).
+Json split_terms(Ctx& x, const std::string& text) {
+  std::string work = text;
+  for (const auto& sep : x.cfg.value("pipelines", Json::object()).value("seed_separators", Json::array())) {
+    if (!sep.is_string() || sep.get<std::string>().empty()) continue;
+    const std::string needle = sep.get<std::string>();
+    std::string lowered = utf8::to_lower(work);
+    std::string rebuilt;
+    std::size_t at = 0;
+    for (std::size_t hit = lowered.find(needle); hit != std::string::npos; hit = lowered.find(needle, at)) {
+      rebuilt += work.substr(at, hit - at) + "\n";
+      at = hit + needle.size();
+    }
+    rebuilt += work.substr(at);
+    work = rebuilt;
+  }
+  Json out = Json::array();
+  std::istringstream split(work);
+  for (std::string line; std::getline(split, line);) {
+    const std::string term = trim_quotes(line);
+    if (!term.empty()) out.push_back(term);
+  }
+  return out;
+}
+
+std::string pipeline_name(Ctx& x, const std::string& kind) { return x.say("pipeline_name_" + kind); }
+
+// The configuration of a pipeline from the sentence: the sources, the project name, the terms to start from, and whether the model may refine
+// (off unless said: a pipeline started from a sentence is local and free until the user says otherwise).
+StepOutcome pipeline_start(Ctx& x, const std::string& kind) {
+  Json sources;
+  StepOutcome failure;
+  if (!pipeline_sources(x, sources, failure)) return failure;
+  Json config = Json::object();
+  config["sources"] = sources;
+  if (kind != "catalog") {
+    if (const std::string project = trim_quotes(x.str("project")); !project.empty()) config["project"] = project;
+    if (x.has("llm") && !x.str("llm").empty()) config["llm"] = x.fold(trim_quotes(x.str("llm")));
+    // A folder that is a repository is also read as one (code and history): the marker is data.
+    const std::string marker = x.cfg.value("pipelines", Json::object()).value("repo_marker", "");
+    if (!marker.empty() && sources.size() == 1) {
+      std::error_code ec;
+      if (std::filesystem::exists(std::filesystem::path(sources[0].get<std::string>()) / marker, ec)) config["repo"] = sources[0];
+    }
+  }
+  if (kind == "archive")
+    if (const std::string seeds = x.str("seeds"); !seeds.empty()) config["seed_terms"] = split_terms(x, seeds);
+  auto started = x.rt.actions().pipelines().start(kind, config);
+  if (!started) return fail(started.error());
+  const std::string project = config.value("project", "");
+  std::string where;
+  for (const auto& p : sources) where += (where.empty() ? "" : ", ") + p.get<std::string>();
+  std::string text = x.say("pipeline_started_" + kind, Json{{"path", where}, {"project", project.empty() ? std::string() : x.say("pipeline_project", Json{{"project", project}})}});
+  if (kind != "catalog") text += " " + x.say(config.value("llm", "off") == "off" ? "pipeline_llm_off" : "pipeline_llm_on");
+  return answer(text, *started);
+}
+
+// The number of things a summary counts, as "key=value" for the plain numbers and "key: n" for lists, in the order the pipeline gave them.
+std::string summary_text(Ctx& x, const Json& summary) {
+  const std::size_t cap = static_cast<std::size_t>(x.integer("summary_max", x.cfg.value("pipelines", Json::object()).value("summary_max", 8)));
+  std::vector<std::string> parts;
+  if (summary.is_object())
+    for (auto it = summary.begin(); it != summary.end() && parts.size() < cap; ++it) {
+      if (it->is_number()) parts.push_back(it.key() + "=" + number_text(it->get<double>()));
+      else if (it->is_array()) parts.push_back(it.key() + ": " + std::to_string(it->size()));
+      else if (it->is_string() && it->get<std::string>().size() <= 40 && !it->get<std::string>().empty()) parts.push_back(it.key() + "=" + it->get<std::string>());
+    }
+  std::string out;
+  for (const auto& part : parts) out += (out.empty() ? "" : ", ") + part;
+  return out;
+}
+
+StepOutcome pipeline_status(Ctx& x, const std::string& kind) {
+  const Json st = x.rt.actions().pipelines().status(kind);
+  const std::string state = json::get_string(st, "state", "idle");
+  std::vector<std::string> lines;
+  lines.push_back(x.say("pipeline_state", Json{{"name", pipeline_name(x, kind)}, {"state", x.say("pipeline_state_" + state)}}));
+  if (const Json* p = json::find(st, "progress"); p && p->is_object() && state == "running") {
+    const std::string counts = p->value("total", Json(nullptr)).is_number()
+                                   ? " (" + std::to_string(p->value("current", 0)) + "/" + std::to_string(p->value("total", 0)) + ")"
+                                   : (p->value("current", 0) > 0 ? " (" + std::to_string(p->value("current", 0)) + ")" : std::string());
+    lines.push_back("• " + x.say("pipeline_progress", Json{{"stage", json::get_string(*p, "stage")}, {"counts", counts}, {"message", json::get_string(*p, "message")}}));
+  }
+  if (st.contains("started")) lines.push_back("• " + x.say("pipeline_started_at", Json{{"at", json::get_string(st, "started")}}));
+  if (st.contains("finished")) lines.push_back("• " + x.say("pipeline_finished_at", Json{{"at", json::get_string(st, "finished")}}));
+  if (const Json* r = json::find(st, "result"); r && r->is_object()) {
+    const std::string what = summary_text(x, r->value("summary", Json::object()));
+    lines.push_back("• " + x.say("pipeline_result", Json{{"status", json::get_string(*r, "status")}, {"what", what.empty() ? std::string() : ", " + what}}));
+  }
+  if (const Json* e = json::find(st, "error"); e && e->is_object()) lines.push_back("• " + x.say("pipeline_error", Json{{"why", json::get_string(*e, "message")}}));
+  // What the kernel itself has of the latest run (also after a restart, when this process ran none).
+  Json latest = nullptr;
+  if (kind == "archive") {
+    if (auto k = x.rt.archive().status("")) {
+      latest = *k;
+      const Json run = k->value("run", Json(nullptr));
+      if (run.is_object()) lines.push_back("• " + x.say("pipeline_latest_archive", Json{{"status", json::get_string(run, "status")}, {"artifacts", k->value("artifacts", Json::array()).size()}}));
+    }
+  } else if (kind == "knowledge") {
+    if (auto k = x.rt.knowledge().status("")) {
+      latest = *k;
+      const Json run = k->value("run", Json(nullptr));
+      if (run.is_object()) lines.push_back("• " + x.say("pipeline_latest_knowledge", Json{{"id", json::get_string(run, "task_id")}, {"stages", k->value("stages", Json::array()).size()}}));
+    }
+  } else if (auto pack = x.rt.knowledge().pack()) {
+    catalog::Catalog cat(x.rt, *pack);
+    if (auto k = cat.status()) {
+      latest = *k;
+      lines.push_back("• " + x.say("pipeline_latest_catalog", Json{{"units", k->value("units", 0)}, {"sources", k->value("sources", 0)}, {"selected", k->value("selected", 0)}, {"imported", k->value("imported", 0)}}));
+    }
+  }
+  Json data = st;
+  data["latest"] = latest;
+  return answer(join_lines(lines), data);
+}
+
+StepOutcome pipeline_cancel(Ctx& x, const std::string& kind) {
+  auto done = x.rt.actions().pipelines().cancel(kind);
+  if (!done) {
+    if (done.error().code == Errc::NotFound) return answer(x.say("pipeline_cancel_none", Json{{"name", pipeline_name(x, kind)}}), Json{{"kind", kind}, {"state", "idle"}});
+    return fail(done.error());
+  }
+  return answer(x.say("pipeline_cancel_ok", Json{{"name", pipeline_name(x, kind)}}), *done);
+}
+
+StepOutcome archive_start(Ctx& x) { return pipeline_start(x, "archive"); }
+StepOutcome archive_status(Ctx& x) { return pipeline_status(x, "archive"); }
+StepOutcome archive_cancel(Ctx& x) { return pipeline_cancel(x, "archive"); }
+StepOutcome knowledge_start(Ctx& x) { return pipeline_start(x, "knowledge"); }
+StepOutcome knowledge_status(Ctx& x) { return pipeline_status(x, "knowledge"); }
+StepOutcome knowledge_cancel(Ctx& x) { return pipeline_cancel(x, "knowledge"); }
+StepOutcome catalog_start(Ctx& x) { return pipeline_start(x, "catalog"); }
+StepOutcome catalog_status(Ctx& x) { return pipeline_status(x, "catalog"); }
+StepOutcome catalog_cancel(Ctx& x) { return pipeline_cancel(x, "catalog"); }
+
+// What the catalogue holds about a word: its units by title, head and terms (read only; the scan filled it).
+StepOutcome catalog_query(Ctx& x) {
+  auto pack = x.rt.knowledge().pack();
+  if (!pack) return fail(pack.error());
+  catalog::UnitQuery q;
+  const std::string text = trim_quotes(x.str("text"));
+  if (!text.empty()) q.text = text;
+  q.limit = static_cast<int>(x.integer("limit", x.limit("catalog", 10)));
+  catalog::Catalog cat(x.rt, *pack);
+  auto units = cat.query(q);
+  if (!units) return fail(units.error());
+  if (units->empty()) return answer(x.say("catalog_none", Json{{"text", text}}), Json{{"units", Json::array()}});
+  std::vector<std::string> lines;
+  Json items = Json::array();
+  lines.push_back(x.say(text.empty() ? "catalog_head" : "catalog_head_about", Json{{"count", units->size()}, {"text", text}}));
+  for (const auto& u : *units) {
+    const Json row = u.to_json();
+    const Json unit = row.value("unit", Json::object());
+    const std::string title = json::get_string(unit, "title", json::get_string(row, "head", json::get_string(unit, "id")));
+    lines.push_back("• " + x.say("catalog_line", Json{{"title", clip(title, 80)}, {"platform", json::get_string(row, "platform")}, {"id", json::get_string(unit, "id")}}));
+    items.push_back(Json{{"id", json::get_string(unit, "id")}, {"title", title}, {"platform", json::get_string(row, "platform")}});
+  }
+  return answer(join_lines(lines), Json{{"units", items}, {"text", text}});
 }
 
 // ── background work ─────────────────────────────────────────────────
@@ -1416,7 +1714,16 @@ const std::map<std::string, Op>& table() {
       {"providers.list", providers_list}, {"settings.list", settings_list}, {"semantic.status", semantic_status}, {"semantic.pause", semantic_pause},
       {"semantic.resume", semantic_resume}, {"semantic.wake", semantic_wake}, {"semantic.requeue", semantic_requeue}, {"tasks.list", tasks_list},
       {"tasks.resume", tasks_resume}, {"tasks.cancel", tasks_cancel}, {"logs.show", logs_show}, {"provenance.show", provenance_show},
-      {"sources.list", sources_list}, {"app.info", app_info}, {"github.sync", github_sync}, {"help.can_do", help_can_do}, {"help.how_to", help_how_to}};
+      {"sources.list", sources_list}, {"app.info", app_info}, {"github.sync", github_sync}, {"help.can_do", help_can_do}, {"help.how_to", help_how_to},
+      {"archive.status", archive_status}, {"archive.cancel", archive_cancel}, {"knowledge.status", knowledge_status}, {"knowledge.cancel", knowledge_cancel},
+      {"catalog.status", catalog_status}, {"catalog.cancel", catalog_cancel}, {"catalog.query", catalog_query}};
+  return t;
+}
+
+// The executors of the actions that start a pipeline: each is the second step of a composite (archive.run, knowledge.run, catalog.scan) whose first step
+// picks the file when no path was said, so no sentence of its own reaches them and they are not among the ids the chat tests walk.
+const std::map<std::string, Op>& starters() {
+  static const std::map<std::string, Op> t = {{"archive.start", archive_start}, {"knowledge.start", knowledge_start}, {"catalog.start", catalog_start}};
   return t;
 }
 
@@ -1432,7 +1739,9 @@ const std::vector<std::string>& chat_op_ids() {
 }
 
 void install_chat_ops(ExecutorTable& executors, Runtime& rt) {
-  for (const auto& [id, op] : table()) {
+  std::vector<std::pair<std::string, Op>> all(table().begin(), table().end());
+  all.insert(all.end(), starters().begin(), starters().end());
+  for (const auto& [id, op] : all) {
     const Op fn = op;
     Runtime* runtime = &rt;
     executors.add(id, [fn, runtime](const StepCall& c) {

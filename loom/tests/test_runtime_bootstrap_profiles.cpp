@@ -57,11 +57,13 @@ std::vector<fs::path> candidates(const RuntimeProfile& profile, const PathEnv& e
 }  // namespace
 
 TEST_SUITE("runtime_bootstrap_profiles") {
-  TEST_CASE("usage preset equals the historical six fields and retains floating identity") {
+  TEST_CASE("usage preset equals the historical six fields plus the P17 floor of the baseline, and retains floating identity") {
     const auto profile = unwrap(RuntimeProfile::builtin("usage_policy"));
     const Json expected{{"schema", "loom.usage_policy/1"}, {"growth_factor", 10.0},
                         {"baseline_window", 32}, {"ledger_busy_timeout_ms", 30000},
-                        {"include_reservations", true}, {"initial_baselines", Json::object()}};
+                        {"include_reservations", true}, {"initial_baselines", Json::object()},
+                        {"baseline_min_samples", 5}, {"baseline_floor_tokens", Json{{"input", 4000}, {"output", 1000}}},
+                        {"baseline_floor_chars_per_token", 4.0}, {"baseline_floor", Json::object()}};
     CHECK(profile.values() == expected);
     CHECK(profile.values().dump() == expected.dump());
     CHECK(profile.values().at("growth_factor").is_number_float());

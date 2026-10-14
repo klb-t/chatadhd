@@ -78,18 +78,25 @@ textarea { resize: vertical; }
 
 .app-root { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
 
+/* The header never scrolls sideways and none of its controls leaves the screen (P17 5): on a wide screen the navigation is part of the header and wraps
+   onto further rows; on a narrow one (below) it is a menu under the header. */
 .app-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 6px 8px;
   padding: 8px var(--gutter);
   border-bottom: 1px solid var(--border);
   background: var(--card);
   flex-shrink: 0;
-  overflow-x: auto;
+  position: relative;
+  min-width: 0;
 }
 .app-header h1 { font-size: 16px; margin: 0 8px 0 0; white-space: nowrap; }
 .app-header .spacer { flex: 1; }
+.app-nav { display: contents; }
+.nav-toggle { display: none; }
+.app-nav .pill { white-space: normal; flex-wrap: wrap; max-width: 100%; }
 
 .app-layout { flex: 1; display: flex; min-height: 0; position: relative; }
 
@@ -211,6 +218,16 @@ textarea { resize: vertical; }
 .empty-state { color: var(--dim); font-size: 13px; padding: var(--gutter); text-align: center; }
 
 @media (max-width: 720px) {
+  .app-header { flex-wrap: nowrap; }
+  .nav-toggle { display: inline-flex; align-items: center; }
+  .app-nav { display: none; }
+  .app-nav.open {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px;
+    position: absolute; top: 100%; left: 0; right: 0; z-index: 18;
+    padding: 8px var(--gutter) 12px; max-height: calc(100dvh - 49px); overflow-y: auto;
+    background: var(--card); border-bottom: 1px solid var(--border); box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  }
+  .app-nav.open .pill { grid-column: 1 / -1; }
   .sidebar { position: fixed; top: 49px; bottom: 0; left: 0; z-index: 15; box-shadow: 4px 0 16px rgba(0,0,0,0.4); }
   .sidebar.collapsed { margin-left: -280px; }
   .drawer { width: 100vw; }

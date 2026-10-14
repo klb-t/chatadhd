@@ -121,7 +121,33 @@ struct UsagePolicy::Impl {
   Status event(std::string_view id, std::string_view kind, const Json& payload) {
     return db.run("INSERT INTO usage_events(operation_id,kind,payload) VALUES(?,?,?)", id, kind, json::dump(payload));
   }
-  Result<Json> baseline(std::string_view key, std::string_view resource) {
+  // P17: the floor of the baseline of one resource, from the options (the size of an ordinary request) or the user's own number. nullopt = none.
+  std::optional<double> baseline_floor(std::string_view resource, const Json* estimate) const {
+    const Json& explicit_floors = options["baseline_floor"];
+    if (explicit_floors.is_object()) {
+      const auto it = explicit_floors.find(std::string(resource));
+      if (it != explicit_floors.end()) {
+        if (!it->is_number()) return std::nullopt;
+        return it->get<double>();
+      }
+    }
+    const Json& tokens = options["baseline_floor_tokens"];
+    if (!tokens.is_object()) return std::nullopt;
+    const double in = tokens.value("input", 0.0), out = tokens.value("output", 0.0);
+    if (resource == "input_tokens") return in;
+    if (resource == "output_tokens") return out;
+    if (resource == "input_bytes") {
+      if (!options["baseline_floor_chars_per_token"].is_number()) return std::nullopt;
+      return in * options["baseline_floor_chars_per_token"].get<double>();
+    }
+    if ((resource == "cost_usd" || resource == "money_usd") && estimate && estimate->contains("price") && (*estimate)["price"].is_object()) {
+      const Json& price = (*estimate)["price"];
+      if (price.value("input", Json(nullptr)).is_number() && price.value("output", Json(nullptr)).is_number())
+        return in * price["input"].get<double>() + out * price["output"].get<double>();
+    }
+    return std::nullopt;
+  }
+  Result<Json> baseline(std::string_view key, std::string_view resource, const Json* estimate = nullptr) {
     std::int64_t window = -1;
     if (!options["baseline_window"].is_null()) window = options["baseline_window"].get<std::int64_t>();
     LOOM_TRY_ASSIGN(auto st, db.prepare("SELECT value FROM usage_samples WHERE baseline_key=? AND resource=? "
@@ -159,6 +185,12 @@ struct UsagePolicy::Impl {
     }
     if (count) {
       LOOM_TRY_ASSIGN(double mean, narrow(sum / count));
+      // Until the cohort has baseline_min_samples samples its baseline is not yet "normal usage": the larger of the mean and the floor.
+      const auto min_samples = options["baseline_min_samples"].is_number_integer() ? options["baseline_min_samples"].get<std::int64_t>() : std::int64_t{0};
+      if (count < min_samples) {
+        if (const auto floor = baseline_floor(resource, estimate); floor && *floor > mean)
+          return Json{{"value", *floor}, {"samples", count}, {"source", "floor"}, {"measured_mean", mean}, {"floor", *floor}};
+      }
       return Json{{"value", mean}, {"samples", count}, {"source", "measured"}};
     }
     const Json& seeds = options["initial_baselines"];
@@ -202,7 +234,7 @@ struct UsagePolicy::Impl {
     if (options["include_reservations"].get<bool>())
       for (auto it = reserved.begin(); it != reserved.end(); ++it) dimensions.insert(it.key());
     for (const auto& dimension : dimensions) {
-      LOOM_TRY_ASSIGN(auto base, baseline(key, dimension));
+      LOOM_TRY_ASSIGN(auto base, baseline(key, dimension, &estimate));
       Json amount = estimate["resources"].value(dimension, Json(0.0));
       Json outstanding = options["include_reservations"].get<bool>() ? reserved.value(dimension, Json(0.0)) : Json(0.0);
       double known_outstanding = options["include_reservations"].get<bool>() ? known_reserved.value(dimension, 0.0) : 0.0;

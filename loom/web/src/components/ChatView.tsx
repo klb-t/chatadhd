@@ -18,6 +18,7 @@ import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } fro
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
 import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTexts, requestOpenPanel } from "../context/open-settings";
 import { watchClientSteps } from "../context/client-step-events";
+import { SEMANTIC_ANSWER_REF, SEMANTIC_QUESTION_FEATURE, semanticAnsweredText, semanticFailedText, semanticQuestion, semanticQuestionOpen, type SemanticQuestion } from "../context/semantic-question";
 import { featureInLanguage, featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
@@ -120,6 +121,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const openSettingsCatalog = usePresentationFeature(profileHost, OPEN_SETTINGS_FEATURE);
   const proposalCatalog = usePresentationFeature(profileHost, ACTION_PROPOSAL_FEATURE);
   const clientStepCatalog = usePresentationFeature(profileHost, CLIENT_STEP_FEATURE);
+  const semanticCatalog = usePresentationFeature(profileHost, SEMANTIC_QUESTION_FEATURE);
+  // The question of the background analysis being answered (its receipt), and why an answer did not go through.
+  const [semanticAnswering, setSemanticAnswering] = useState<string | null>(null);
+  const [semanticFailure, setSemanticFailure] = useState<{ receiptId: string; reason: string } | null>(null);
   // This page as a client of the kernel (P13): the devices it can drive are declared, so the device actions are runnable for it.
   const clientHost = useMemo(() => browserHost(), []);
   const clientSession = useMemo(() => pageClientSession({
@@ -273,7 +278,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, []);
 
   // A question for this device (or its closing) that comes from elsewhere - another tab, another client, the CLI - reaches the open conversation
-  // as an event from the kernel: the messages are read again. One feed for the page, no polling.
+  // as an event from the kernel: the messages are read again. One feed for the page, no polling; the question of the background analysis held by
+  // the x10 guard comes on the same feed (run id "semantic:<receipt>").
   useEffect(() => {
     return watchClientSteps(api, (event) => { void refreshMessages(event.convId); }) ?? undefined;
   }, [refreshMessages]);
@@ -577,6 +583,22 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     }
   }, [convId, refreshMessages, onMessagesChanged]);
 
+  // The answer to the question of the background analysis goes to the worker's own usage confirmation, with the receipt the question carries.
+  const answerSemantic = useCallback(async (question: SemanticQuestion, approved: boolean) => {
+    if (!api.confirmSemanticUsage) return;
+    setSemanticAnswering(question.receiptId);
+    setSemanticFailure(null);
+    try {
+      await api.confirmSemanticUsage(approved, question.receiptId, SEMANTIC_ANSWER_REF);
+      if (convId) await refreshMessages(convId);
+      onMessagesChanged?.();
+    } catch (err) {
+      setSemanticFailure({ receiptId: question.receiptId, reason: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setSemanticAnswering(null);
+    }
+  }, [convId, refreshMessages, onMessagesChanged]);
+
   const answerAction = useCallback(async (answer: PendingAnswer, approved: boolean) => {
     if (!api.actions) return;
     setAnswering(answer.runId);
@@ -812,6 +834,21 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               ) : (
                 <div className="body" dangerouslySetInnerHTML={renderMarkdown(m.role === "assistant" ? nativeGraphDisplayText(graphReply, m.text) : m.text)} />
               )}
+              {m.role === "assistant" && (() => {
+                const question = semanticQuestion(m.metadata);
+                if (!question) return null;
+                const feature = featureInLanguage(semanticCatalog.feature, question.lang);
+                if (semanticQuestionOpen(question) && api.confirmSemanticUsage) {
+                  return (<>
+                    <UsagePendingBlock testId="chat-semantic-question" feature={feature} busy={semanticAnswering === question.receiptId} receipt={question.receipt}
+                      onConfirm={() => void answerSemantic(question, true)} onReject={() => void answerSemantic(question, false)} />
+                    {semanticFailure && semanticFailure.receiptId === question.receiptId &&
+                      <p className="pill warn" data-testid="chat-semantic-failure">{semanticFailedText(feature, semanticFailure.reason)}</p>}
+                  </>);
+                }
+                const label = semanticAnsweredText(feature, question);
+                return label ? <span className="pill" data-testid="chat-semantic-state" data-state={question.status}>{label}</span> : null;
+              })()}
               {m.role === "assistant" && api.actions && (() => {
                 const answer = pendingAnswer(m.metadata);
                 const state = proposalState(m.metadata);

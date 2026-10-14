@@ -324,6 +324,11 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
   if (profile.values().at("strip_model_provider").get<bool>())
     if (auto p = model.find('/'); p != std::string::npos) model = model.substr(p + 1);
 
+  // The conversations whose messages the batch holds, the one with the newest message first (the messages come oldest first): the one that shows the
+  // question if the guard holds the batch.
+  Json conv_ids = Json::array();
+  for (auto it = msgsr->rbegin(); it != msgsr->rend(); ++it)
+    if (!it->conv_id.empty() && std::find(conv_ids.begin(), conv_ids.end(), Json(it->conv_id)) == conv_ids.end()) conv_ids.push_back(it->conv_id);
   Json batch_requests = Json::array();
   for (const auto& m : *msgsr) {
     batch_requests.push_back(
@@ -397,7 +402,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
           {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
           {"baseline_key", admitted.value("baseline_key", Json(nullptr))},
           {"projected", admitted.value("resources", Json::object())},
-          {"messages", batch_requests.size()}, {"body_sha256", body_sha}, {"sent", false}};
+          {"messages", batch_requests.size()}, {"body_sha256", body_sha}, {"sent", false}, {"conv_ids", conv_ids}};
       mode = "awaiting_usage_confirmation";
       log::warn("loom.semantic_worker", "Batch of {} messages awaits usage confirmation (receipt {})",
                 batch_requests.size(), json::get_string(admitted, "receipt_id"));
@@ -588,6 +593,24 @@ WorkerStatus SemanticWorker::status() const {
 
 Result<Json> SemanticWorker::runtime_profile() const { LOOM_TRY(profile_); return profile_->inspection(); }
 
+void SemanticWorker::announce_pending() {
+  Json pending;
+  {
+    std::lock_guard lk(mu_);
+    const std::optional<Json>& slot = usage_pending_ ? usage_pending_ : retry_pending_;
+    if (!slot) {
+      announced_receipt_.clear();  // nothing waits: the next hold is a new question
+      return;
+    }
+    const std::string receipt = json::get_string(*slot, "receipt_id");
+    if (receipt.empty() || receipt == announced_receipt_) return;
+    announced_receipt_ = receipt;
+    pending = *slot;
+    if (!pending.contains("kind")) pending["kind"] = "batch";
+  }
+  bus_.emit(events::kSemanticUsagePending, pending);
+}
+
 Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view receipt_id, std::string_view ref) {
   Json pending;
   bool is_retry = false;
@@ -608,7 +631,13 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
           Json{{"approved", true}, {"receipt_id", std::string(receipt_id)}, {"ref", std::string(ref)}};
     }
   }
+  const auto tell = [&] {  // whoever shows the question closes it (events::kSemanticUsageAnswered)
+    bus_.emit(events::kSemanticUsageAnswered, Json{{"receipt_id", std::string(receipt_id)}, {"operation_id", pending.value("operation_id", Json(nullptr))},
+                                                   {"approved", approved}, {"ref", std::string(ref)}, {"kind", is_retry ? "retry" : "batch"},
+                                                   {"conv_ids", pending.value("conv_ids", Json::array())}, {"ids", pending.value("ids", Json::array())}});
+  };
   if (approved) {
+    tell();
     wake();
     return Json{{"status", "confirmation_recorded"}, {"operation_id", pending["operation_id"]},
                 {"receipt_id", pending["receipt_id"]}, {"executes", "next drain"}};
@@ -635,9 +664,12 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
           log::warn("loom.semantic_worker", "usage_declined note not written for {}: {}", id.get<std::string>(), st.error().message);
       }
     }
-    std::lock_guard lk(mu_);
-    retry_pending_.reset();
-    retry_confirmation_.reset();
+    {
+      std::lock_guard lk(mu_);
+      retry_pending_.reset();
+      retry_confirmation_.reset();
+    }
+    tell();
     return denied;
   }
   {
@@ -646,6 +678,7 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
     usage_confirmation_.reset();
   }
   pause();  // the owner declined: do not re-ask in a loop; resume() is explicit
+  tell();
   return denied;
 }
 
@@ -831,6 +864,7 @@ Result<int> SemanticWorker::drain_once() {
   // Whether this pass can reach a provider: the leading per-message mode decides.
   const AnalysisMode* lead = pick_message_mode(modes_, caps, "");
   auto_requeue(lead && lead->sends_to_provider());  // no-op in explicit_requeue mode
+  announce_pending();
   std::set<std::string> excluded;
   {
     std::lock_guard lk(mu_);
@@ -866,9 +900,11 @@ Result<int> SemanticWorker::drain_once() {
       SemanticWorker& w;
       explicit Host(SemanticWorker& worker) : w(worker) {}
       Result<int> submit_batch() override {
-        return submit_batch_api(w.db_, w.cfg_, w.secrets_, w.http_, w.mu_, w.mode_, w.batch_id_, w.batch_submitted_,
-                                w.opts_.batch_max_messages, w.opts_.batch_endpoint, *w.profile_, w.usage_pending_,
-                                w.usage_confirmation_);
+        auto done = submit_batch_api(w.db_, w.cfg_, w.secrets_, w.http_, w.mu_, w.mode_, w.batch_id_, w.batch_submitted_,
+                                     w.opts_.batch_max_messages, w.opts_.batch_endpoint, *w.profile_, w.usage_pending_,
+                                     w.usage_confirmation_);
+        w.announce_pending();
+        return done;
       }
     } host(*this);
     return bulk->run_bulk(host);

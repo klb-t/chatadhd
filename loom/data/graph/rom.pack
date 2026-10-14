@@ -119,6 +119,9 @@
           "path": "loom/src/actions/overlay.cpp"
         },
         {
+          "path": "loom/src/actions/pipelines.cpp"
+        },
+        {
           "path": "loom/src/actions/query.cpp"
         },
         {
@@ -138,6 +141,9 @@
         },
         {
           "path": "loom/src/actions/sequence_index.cpp"
+        },
+        {
+          "path": "loom/src/actions/spend.cpp"
         }
       ],
       "gaps": []

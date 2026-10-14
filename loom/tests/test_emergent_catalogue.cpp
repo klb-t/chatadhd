@@ -125,6 +125,69 @@ TEST_SUITE("emergent_catalogue") {
     CHECK(f.route("Rozpisz tę wiadomość na kroki").at("kind") == "message");
   }
 
+  TEST_CASE("P17 1: an ordinary sentence in a conversation that has messages is never offered as a new action; real commands still are") {
+    Fixture f;
+    // statements, noun phrases and labels that mention a message or the conversation: none of them is an order (PL and EN)
+    const std::vector<std::string> ordinary = {
+        "First message of run 1",
+        "Last message from run 2",
+        "Second message of the test",
+        "Message number 3 works",
+        "The last message was long",
+        "This message is fine",
+        "Outline of this conversation is below",
+        "List of messages in this conversation",
+        "Summary of the last message",
+        "Plan for this conversation",
+        "Draft of the message is saved",
+        "Review for this conversation is pending",
+        "Edit of the last message was saved",
+        "Note: this message is final",
+        "You outline this message badly",
+        "Run 3 message count",
+        "Pierwsza wiadomość z przebiegu 1",
+        "Ostatnia wiadomość z przebiegu 2",
+        "Druga wiadomość testowa",
+        "Wiadomość numer 3 działa",
+        "Ta wiadomość jest za długa",
+        "Rozpiska tej wiadomości jest niska",
+        "Rozpiska tej rozmowy jest poniżej",
+        "Uwaga: ta wiadomość jest ostateczna",
+        "Poprawka tej wiadomości jest gotowa",
+        "Uporządkowanie tej rozmowy jest w toku",
+        "Pierwsza wiadomosc z przebiegu 1",
+        "Zmiana tej wiadomosci jest zapisana",
+    };
+    for (const auto& text : ordinary) {
+      const Json routed = f.route(text);
+      INFO(text);
+      CHECK(routed.at("kind") == "message");
+      CHECK_FALSE(f.input(text).handled);
+    }
+    // the unknown-command offers stay: a verb of the language at the lead, the element as its object, no question, no statement
+    for (const auto& text : std::vector<std::string>{"Rozpisz tę wiadomość na kroki", "Uporządkuj tę wiadomość", "Outline this conversation",
+                                                       "Please outline this message", "Can you outline this message", "Tidy this message",
+                                                       "Fix this message", "Mógłbyś rozpisać tę wiadomość", "Przeanalizuj tę wiadomość",
+                                                       "Proszę rozpisać ostatnią wiadomość"}) {
+      const Json routed = f.route(text);
+      INFO(text);
+      REQUIRE(routed.at("kind") == "command");
+      CHECK(routed.at("command").at("source") == "emergent");
+    }
+    // a question is never an order, with or without the mark
+    for (const auto& text : std::vector<std::string>{"Can you outline this message?", "Czy możesz rozpisać tę wiadomość?"})
+      CHECK(f.route(text).at("kind") == "message");
+    // a verb the list does not know is not guessed; the user adds it in the overlay without replacing the list
+    CHECK(f.route("Frobnicate this message").at("kind") == "message");
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "intent_routing.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "intent_routing"},
+                {"overrides", Json{{"emergent", Json{{"command_shape", Json{{"verbs_extra", Json{{"en", Json::array({"frobnicate"})}}}}}}}}}}
+               .dump();
+    CHECK(f.route("Frobnicate this message").at("kind") == "command");
+    CHECK(f.route("Outline this conversation").at("kind") == "command");  // the shipped list stays
+  }
+
   TEST_CASE("P14 3c: a failed model route falls back to the local method, the definition included, and says so") {
     Fixture f;
     f.rt->config().set("intent_routing_method", "model");

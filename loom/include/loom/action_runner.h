@@ -17,6 +17,7 @@
 #include <string_view>
 
 #include "loom/action_index.h"
+#include "loom/action_pipelines.h"
 #include "loom/action_run.h"
 #include "loom/client_devices.h"
 #include "loom/result.h"
@@ -82,6 +83,8 @@ class ActionRunner {
 
   // The run store (for the chat router, which keeps the id of the run it proposed in the message).
   RunStore& store();
+  // The long pipelines (archive, knowledge, catalogue scan) as background jobs a conversation starts, asks about and stops (action_pipelines.h).
+  pipelines::Jobs& pipelines();
   // The incremental index of completed runs behind the detection of repeated chains and of the classes an action is used on
   // (action_index.h): detection after a command reads what changed since the last time, not the log.
   SequenceIndex& sequence_index();
@@ -92,14 +95,20 @@ class ActionRunner {
   Result<Json> write_overlay(std::string_view action, const Json& request);
   Result<Json> run_gated(std::string_view action, const Json& request);
   Result<RunRequest> prepare(const Loaded& loaded, const Json& request) const;
-  Interpreter make_interpreter(const Loaded& loaded) const;
+  Interpreter make_interpreter(const Loaded& loaded);
   void install_executors(ExecutorTable& table);
   // The model registry is empty on a fresh data directory, so no price is known. When an estimate needs one, the provider's public model
   // list is fetched once (setting model_registry_autorefresh, profile action_run: estimate.registry_refresh). Returns why the registry is
   // still empty after the attempt (empty: it was not needed, not allowed, or it worked).
   std::string fill_registry_for_estimate(const Json& run_settings);
+  // What a plan would cost (action_estimate.h), for the preview and for the spending limits (action_spend.h).
+  Json estimate_of(const Loaded& loaded, const Json& plan, const RunRequest& request);
+  // The gates of the user's spending limits for a plan (none without limits, without a model call, or without a passed limit).
+  Result<Json> spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& request);
 
   Runtime& rt_;
+  std::uint64_t semantic_hold_sub_ = 0;    // EventBus::SubscriptionId of the question of the background analysis
+  std::uint64_t semantic_answer_sub_ = 0;  // ... and of its answer
   std::unique_ptr<RunStore> store_;
   SequenceIndex index_;
   ClientRegistry clients_;
@@ -108,6 +117,7 @@ class ActionRunner {
   bool registry_tried_ = false;                           // the automatic fetch of the model list (guarded by mu_)
   std::chrono::steady_clock::time_point registry_tried_at_;
   std::string registry_failure_;
+  std::unique_ptr<pipelines::Jobs> pipelines_;  // last: destroyed first, while the runtime is still whole
 };
 
 }  // namespace loom::actions

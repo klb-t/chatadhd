@@ -135,7 +135,7 @@ class RuntimeProfileSourceTests(unittest.TestCase):
         canonical = json.dumps({'definition': definition, 'values': definition['defaults']},
                                sort_keys=True, ensure_ascii=False, separators=(',', ':')).encode()
         self.assertEqual(hashlib.sha256(canonical).hexdigest(),
-                         'e8b8d4e5b098213a421b88b1f11db949a8a6056838a2f8c9487303913da5a8bd')
+                         'b224511e168a1514f430bcdcc7afe37bc7fb77eea2c597efb895eba4aa333aa6')
         embedded = unpack_table(outputs[self.output].decode(), 'kRuntimeProfiles')
         self.assertEqual(embedded['usage_policy'], definition)
 

@@ -171,6 +171,10 @@ struct InterpreterDeps {
   // a failure is reported in the document and never fails the run (the model has been paid for).
   std::function<Status(Json& run)> on_result;
   Json settings = Json::object();  // runtime profile action_run (max_depth, ...)
+  // Gates beyond those of the rules, made for a plan once it is known (the spending limits of the user: action_spend.h). Same shape as the
+  // gates of the rules (decision allow | confirm | deny, status, rule, effect, reason, initiator, id, item, action ...). Keys named in a
+  // gate's `volatile` list (numbers that change from minute to minute) are left out of the plan receipt: only the decision is bound.
+  std::function<Result<Json>(const Json& plan, const RunRequest& request)> extra_gates;
 };
 
 class Interpreter {

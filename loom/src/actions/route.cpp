@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -23,8 +24,10 @@
 #include "loom/re/regex.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
+#include "loom/semantic_worker.h"
 #include "loom/settings_fields.h"
 #include "loom/use_model.h"
+#include "loom/util/time.h"
 #include "loom/util/unicode.h"
 #include "loom/util/utf8.h"
 
@@ -360,6 +363,20 @@ Json params_view(const Json& entry, const Json& said, const Json& bound, const s
   return out;
 }
 
+// An action whose element is one of its arguments (a setting) may say, in its data, which element an argument it was given stands for
+// (`element_arg_defaults`: usage.set_limit - an `amount` is about usage_spend_limits, a `growth_factor` about loom_usage_policy).
+void default_element_arg(const Json& entry, Json& args) {
+  const std::string from = json::get_string(entry, "element_from_arg");
+  if (from.empty() || !args.is_object() || args.contains(from)) return;
+  const Json* defaults = json::find(entry, "element_arg_defaults");
+  if (!defaults || !defaults->is_object()) return;
+  for (auto it = defaults->begin(); it != defaults->end(); ++it)
+    if (it->is_string() && args.contains(it.key()) && !args[it.key()].is_null()) {
+      args[from] = *it;
+      return;
+    }
+}
+
 std::string other_required_param(const Json& entry, const std::string& element_arg) {
   if (const Json* params = json::find(entry, "params"); params && params->is_array())
     for (const auto& p : *params)
@@ -448,6 +465,7 @@ std::optional<Cand> parse_explicit(const Data& d, const std::string& text) {
     const std::string positional_arg = json::get_string(*entry, "positional_arg");
     if (!positional_arg.empty() && !c.args.contains(positional_arg) && !positional.empty()) c.args[positional_arg] = join(positional, " ");
   }
+  if (entry && element_token.empty()) default_element_arg(*entry, c.args);
   if (!element_token.empty()) {
     c.element = Json{{"id", element_token}};
   } else if (element_arg.empty() || !c.args.contains(element_arg)) {
@@ -965,6 +983,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   cmd["args_read"] = Json::array();
   for (const auto& hit : hits) cmd["args_read"].push_back(Json{{"param", hit.param}, {"value", hit.value}, {"matched", hit.matched}, {"pattern", hit.pattern}});
   // The element.
+  default_element_arg(*entry, c.args);
   Json element_json = nullptr;
   if (!c.element.is_null()) {
     auto el = resolve_ref(rt, d, c.element, conv);
@@ -989,7 +1008,10 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   if (const Json* params = json::find(*entry, "params"); params && params->is_array())
     for (const auto& p : *params) {
       const std::string name = json::get_string(p, "name");
-      if (json::get_bool(p, "required", false) && !bound.contains(name) && name != element_arg) {
+      bool required = json::get_bool(p, "required", false);
+      for (const auto& other : strings_of(json::find(p, "required_unless")))
+        if (bound.contains(other) && !bound[other].is_null()) required = false;
+      if (required && !bound.contains(name) && name != element_arg) {
         missing_args.push_back(name);
         if (const std::string setting = json::get_string(p, "setting"); !setting.empty()) missing_settings[name] = setting;
       }
@@ -1448,7 +1470,7 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
     if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}, {"reason_code", "no_estimate"}};
     localize_money_reason(d, money, lang);
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
-                     {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
+                     {"pipeline_model_use", cmd.at("plan").at("cost").value("pipeline_model_use", false)}, {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
                      {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
     p["effects"] = effects_of(cmd.at("plan"));
   }
@@ -1529,7 +1551,7 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   }
   if (const Json* cost = json::find(proposal, "cost")) {
     lines.push_back(say(d.cfg, lang, "proposal_cost", Json{{"cost", cost->value("declared", 0.0)}, {"calls", cost->value("model_calls", 0)}, {"bytes", cost->value("input_bytes", 0)}}));
-    if (cost->value("model_calls", 0) > 0) {
+    if (cost->value("model_calls", 0) > 0 || cost->value("pipeline_model_use", false)) {
       const Json money = cost->value("money", Json(nullptr));
       if (money.is_object() && json::get_bool(money, "known", false))
         lines.push_back(say(d.cfg, lang, "proposal_money_known", Json{{"low", money_text(money.value("low", 0.0))}, {"high", money_text(money.value("high", 0.0))}, {"currency", money.value("currency", "USD")}}));
@@ -1558,6 +1580,9 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   }
   if (!proposal.value("needs_confirmation", Json::array()).empty())
     lines.push_back(say(d.cfg, lang, "proposal_confirm", Json{{"what", gate_reasons(d, cmd.value("needs_confirmation", Json::array()), lang)}}));
+  // A limit of the user that only tells (spending limit with on_exceed notify): the run goes on and the proposal says so.
+  for (const auto& g : cmd.value("gates", Json::array()))
+    if (g.contains("notice")) lines.push_back(localized(g["notice"], lang));
   lines.push_back(say(d.cfg, lang, "proposal_ask"));
   return join(lines, "\n");
 }
@@ -1795,6 +1820,9 @@ std::string render_emergent(const Data& d, const Engine& engine, const Json& cmd
   }
   if (!proposal.value("needs_confirmation", Json::array()).empty())
     lines.push_back(say(d.cfg, lang, "proposal_confirm", Json{{"what", gate_reasons(d, cmd.value("needs_confirmation", Json::array()), lang)}}));
+  // A limit of the user that only tells (spending limit with on_exceed notify): the run goes on and the proposal says so.
+  for (const auto& g : cmd.value("gates", Json::array()))
+    if (g.contains("notice")) lines.push_back(localized(g["notice"], lang));
   lines.push_back(say(d.cfg, lang, "define_ask"));
   return join(lines, "\n");
 }
@@ -2177,6 +2205,37 @@ Result<std::optional<Outcome>> answer_offer(Runtime& rt, Data& d, const std::str
                                        Json{{"proposal_message_id", proposal_msg.id}, {"proposal_status", "rejected"}, {"offer", Json{{"status", "declined"}}}}));
 }
 
+// ── the question of the background analysis (P17 3) ─────────────────
+
+// The user answered the question of the background analysis (the last thing said in the conversation) with a yes or a no: the worker's own usage
+// confirmation takes it, with the receipt the question carries.
+Result<Outcome> answer_semantic_question(Runtime& rt, Data& d, const std::string& conv_id, const Message& question_msg, const std::string& answer,
+                                         const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
+  const Json question = question_msg.metadata.at("semantic_question");
+  const std::string lang = json::get_string(question, "lang", "en");
+  const std::string receipt = json::get_string(question, "receipt_id");
+  const bool yes = answer == "yes";
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "confirmation"}, {"answers", question_msg.id}}));
+  if (emit_start) emit_start(conv_id, user_id);
+  (void)rt.chat().load_conv(conv_id);
+  const std::string kind = json::get_string(question, "kind", "batch");
+  auto done = rt.worker().confirm_usage(yes, receipt, "chat:" + user_id);
+  std::string said, status;
+  if (done) {
+    status = yes ? "approved" : "declined";
+    said = say(d.cfg, lang, yes ? "semantic_answer_yes" : (kind == "retry" ? "semantic_answer_no_retry" : "semantic_answer_no"));
+  } else {
+    status = "stale";  // the worker no longer asks it: answered elsewhere, or the batch changed
+    said = say(d.cfg, lang, "semantic_answer_gone", Json{{"why", done.error().message}});
+    note_semantic_answer(rt, Json{{"receipt_id", receipt}, {"approved", Json(nullptr)}, {"conv_ids", Json::array({conv_id})}});
+  }
+  LOOM_TRY_ASSIGN(std::string assistant_id, add_message(rt, conv_id, "assistant", said,
+                                                        Json{{"routed", "result"}, {"semantic_answer", Json{{"receipt_id", receipt}, {"status", status}, {"question_message_id", question_msg.id}}}},
+                                                        "loom:actions"));
+  return finish(conv_id, user_id, assistant_id, said, "action_result",
+                Json{{"semantic_question_message_id", question_msg.id}, {"semantic_status", status}, {"receipt_id", receipt}});
+}
+
 }  // namespace
 
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,
@@ -2219,7 +2278,11 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   if (!conv_id.empty()) {
     if (auto msgs = rt.db().get_msgs(conv_id); msgs && !msgs->empty()) {
       const Message& last = msgs->back();
-      if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("action_proposal") &&
+      if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("semantic_question") &&
+          json::get_string(last.metadata["semantic_question"], "status") == "pending") {
+        const std::string answer = classify_answer(d, text);
+        if (!answer.empty()) return answer_semantic_question(rt, d, conv_id, last, answer, text, emit_start);
+      } else if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("action_proposal") &&
           json::get_string(last.metadata["action_proposal"], "status") == "pending" && !json::get_string(last.metadata["action_proposal"], "run_id").empty()) {
         const std::string answer = classify_answer(d, text);
         if (!answer.empty()) return answer_proposal(rt, d, conv_id, last, answer, text, emit_start);
@@ -2303,6 +2366,105 @@ void note_removed(Runtime& rt, const Json& origin) {
 
 namespace {
 Result<Json> after_pause(Runtime& rt, Json run);  // below, with the client step's answer
+
+// The growth the guard saw: the largest ratio among the resources that asked for the confirmation (null when the guard knows none).
+Json hold_ratio(const Json& pending) {
+  double best = 0;
+  bool any = false;
+  const Json projected = pending.value("projected", Json::object());
+  if (projected.is_object())
+    for (auto it = projected.begin(); it != projected.end(); ++it) {
+      if (!it->is_object() || !json::get_bool(*it, "requires_confirmation", false)) continue;
+      const Json ratio = it->value("ratio", Json(nullptr));
+      if (ratio.is_number() && ratio.get<double>() > best) {
+        best = ratio.get<double>();
+        any = true;
+      }
+    }
+  return any ? Json(best) : Json(nullptr);
+}
+
+// "12" for 12.4, "1.5" for 1.5: the growth as a person says it.
+std::string ratio_words(double ratio) {
+  char buf[32];
+  if (ratio >= 10) std::snprintf(buf, sizeof(buf), "%.0f", ratio);
+  else std::snprintf(buf, sizeof(buf), "%.1f", ratio);
+  return buf;
+}
+
+// The conversation whose message was being analysed: the newest of those the hold names (conv_ids), else the one of the first message it lists (ids).
+std::string conversation_of_hold(Runtime& rt, const Json& pending) {
+  for (const auto& id : pending.value("conv_ids", Json::array()))
+    if (id.is_string() && !id.get<std::string>().empty()) return id.get<std::string>();
+  for (const auto& id : pending.value("ids", Json::array())) {
+    if (!id.is_string()) continue;
+    auto m = rt.db().get_msg(id.get<std::string>());
+    if (m && *m && !(*m)->conv_id.empty()) return (*m)->conv_id;
+  }
+  return std::string();
+}
+
+// The question is told on the one event every question of a conversation uses (events::kActionClientStep): ids only.
+void announce_question(Runtime& rt, const std::string& conv_id, const std::string& message_id, const std::string& receipt, const char* state, const std::string& status = std::string()) {
+  Json payload{{"conv_id", conv_id}, {"message_id", message_id}, {"run_id", "semantic:" + receipt}, {"receipt_id", receipt}, {"question", "semantic"}, {"state", state}};
+  if (!status.empty()) payload["status"] = status;
+  rt.bus().emit(events::kActionClientStep, payload);
+}
+}  // namespace
+
+void note_semantic_hold(Runtime& rt, const Json& pending) {
+  const std::string receipt = json::get_string(pending, "receipt_id");
+  const std::string conv_id = conversation_of_hold(rt, pending);
+  if (receipt.empty() || conv_id.empty()) return;
+  auto msgs = rt.db().get_msgs(conv_id);
+  auto loaded = load_data(rt);
+  if (!msgs || !loaded) return;
+  Data d = std::move(*loaded);
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("semantic_question")) continue;
+    const Json q = m.metadata["semantic_question"];
+    if (json::get_string(q, "receipt_id") == receipt) return;  // shown already
+    if (json::get_string(q, "status") != "pending") continue;
+    // an older question: the guard has a newer one, the old receipt cannot be answered any more
+    if (set_metadata(rt, m.id, [&](Json& meta) { meta["semantic_question"]["status"] = "stale"; }))
+      announce_question(rt, conv_id, m.id, json::get_string(q, "receipt_id"), "closed", "stale");
+  }
+  std::string lang = language_of_conversation(rt, d, conv_id);
+  if (lang.empty()) lang = json::get_string(d.cfg, "default_language", "en");
+  const std::string kind = json::get_string(pending, "kind", "batch");
+  const Json ratio = hold_ratio(pending);
+  const std::string text = say(d.cfg, lang, std::string("semantic_question_") + (kind == "retry" ? "retry" : "batch") + (ratio.is_number() ? "" : "_unknown"),
+                               Json{{"ratio", ratio.is_number() ? ratio_words(ratio.get<double>()) : std::string()}, {"count", pending.value("messages", 0)}});
+  Json question{{"schema", "loom.semantic_usage_question/1"}, {"status", "pending"}, {"lang", lang}, {"kind", kind}, {"receipt_id", receipt},
+                {"operation_id", pending.value("operation_id", Json(nullptr))}, {"ratio", ratio}, {"receipt", pending}};
+  auto posted = add_message(rt, conv_id, "assistant", text, Json{{"routed", "semantic_question"}, {"semantic_question", question}}, "loom:actions");
+  if (!posted) {
+    log::write(log::Level::Debug, "loom.chat_route", "the question of the background analysis could not be posted: " + posted.error().message);
+    return;
+  }
+  announce_question(rt, conv_id, *posted, receipt, "waiting");
+}
+
+void note_semantic_answer(Runtime& rt, const Json& answer) {
+  const std::string receipt = json::get_string(answer, "receipt_id");
+  if (receipt.empty()) return;
+  const Json approved = answer.value("approved", Json(nullptr));
+  const std::string status = approved.is_boolean() ? (approved.get<bool>() ? "approved" : "declined") : "stale";
+  // The question is in the conversation of the message that was analysed: the answer carries the conversations the hold named.
+  const std::string conv_id = conversation_of_hold(rt, answer);
+  if (conv_id.empty()) return;
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return;
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("semantic_question")) continue;
+    const Json q = m.metadata["semantic_question"];
+    if (json::get_string(q, "receipt_id") != receipt || json::get_string(q, "status") != "pending") continue;
+    if (set_metadata(rt, m.id, [&](Json& meta) {
+          meta["semantic_question"]["status"] = status;
+          meta["semantic_question"]["answered"] = Json{{"at", timeutil::utc_now_iso()}, {"ref", json::get_string(answer, "ref")}};
+        }))
+      announce_question(rt, conv_id, m.id, receipt, "closed", status);
+  }
 }
 
 Result<Json> confirm(Runtime& rt, const Json& request) {

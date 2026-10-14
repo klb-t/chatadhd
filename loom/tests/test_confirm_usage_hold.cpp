@@ -31,6 +31,7 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    loom::test::measured_baseline_only(rt->config());  // P17 6: this test is about the x10 hold over three tiny samples, so the floor of the baseline is off
     rt->config().set("model_registry_autorefresh", "off");  // these tests count the transport's requests; fetching the model list for a price is tested in test_estimate_registry
     conv_id = unwrap(rt->db().create_conv("Planning")).id;
     add("user", "We should ship on Friday.");
