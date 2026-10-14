@@ -297,9 +297,7 @@ TEST_SUITE("action_composites") {
     CHECK(preview.at("runnable") == false);
     CHECK(preview.at("not_runnable").at(0).at("why") == "planned");
     CHECK(preview.at("not_runnable").at(0).at("reason").at("en").get<std::string>().find("image") != std::string::npos);
-    // transcribe: the speech-recognition adapter is being added separately
-    const Json transcribe = unwrap(f.rt->actions().preview(Json{{"action", "transcribe"}, {"element", Json{{"class", "audio_form"}}}}));
-    CHECK(transcribe.at("not_runnable").at(0).at("reason").at("en").get<std::string>().find("speech") != std::string::npos);
+    // transcribe and ocr are implemented since P12 (use_model step with the media providers behind it): see test_media_actions.cpp
   }
 
   TEST_CASE("the rules and the x10 usage guard apply to these actions like to every other") {

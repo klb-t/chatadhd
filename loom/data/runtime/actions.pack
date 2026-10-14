@@ -1289,13 +1289,29 @@
       },
       "transcribe": {
         "id": "transcribe",
-        "kind": "atomic",
-        "status": "planned",
+        "kind": "composite",
+        "status": "implemented",
         "title": "Transcribe a recording",
-        "description": "Read a sound recording into text (speech recognition); the text is a rendering of the same content.",
+        "description": "Read a sound recording into text (speech recognition) with the speech-recognition provider that has a key; the text is a rendering of the same content. The call goes through use_model (adapter of the provider's family), under the usage guard.",
         "labels": {
           "pl": "Zapisz nagranie jako tekst"
         },
+        "steps": [
+          {
+            "action": "use_model",
+            "with": {
+              "media": "asr",
+              "provider": {
+                "$arg": "provider",
+                "default": ""
+              },
+              "language": {
+                "$arg": "language",
+                "default": ""
+              }
+            }
+          }
+        ],
         "inputs": [
           "audio"
         ],
@@ -1332,10 +1348,28 @@
             "przepisz nagranie"
           ]
         },
-        "planned_reason": {
-          "en": "Needs a speech-recognition adapter in use_model; it is being added separately (speech recognition through use_model).",
-          "pl": "Wymaga adaptera rozpoznawania mowy w use_model; powstaje osobno (rozpoznawanie mowy przez use_model)."
-        }
+        "params": [
+          {
+            "name": "provider",
+            "type": "string",
+            "required": false,
+            "default": "the first provider with a key, in the order of the media profile",
+            "description": {
+              "en": "Which speech-recognition provider to use (\"groq\", \"google\"); the first one that has a key when not given.",
+              "pl": "Którego dostawcy rozpoznawania mowy użyć („groq”, „google”); gdy nie podano — pierwszego, który ma klucz."
+            }
+          },
+          {
+            "name": "language",
+            "type": "string",
+            "required": false,
+            "default": "the provider's own default",
+            "description": {
+              "en": "Language of the speech or text, as the provider names it (\"pl\", \"en-US\").",
+              "pl": "Język mowy albo tekstu, tak jak nazywa go dostawca („pl”, „en-US”)."
+            }
+          }
+        ]
       },
       "describe_image": {
         "id": "describe_image",
@@ -1397,13 +1431,29 @@
       },
       "ocr": {
         "id": "ocr",
-        "kind": "atomic",
-        "status": "planned",
+        "kind": "composite",
+        "status": "implemented",
         "title": "Read text from an image",
-        "description": "Recognise the text printed or written in an image.",
+        "description": "Recognise the text printed or written in an image with the text-recognition provider that has a key. The call goes through use_model (adapter of the provider's family), under the usage guard.",
         "labels": {
           "pl": "Odczytaj tekst ze zdjęcia"
         },
+        "steps": [
+          {
+            "action": "use_model",
+            "with": {
+              "media": "ocr",
+              "provider": {
+                "$arg": "provider",
+                "default": ""
+              },
+              "language": {
+                "$arg": "language",
+                "default": ""
+              }
+            }
+          }
+        ],
         "inputs": [
           "image"
         ],
@@ -1442,10 +1492,28 @@
             "wyciagnij tekst"
           ]
         },
-        "planned_reason": {
-          "en": "Needs an OCR adapter in use_model; the OCR providers exist only for screenshot import.",
-          "pl": "Wymaga adaptera OCR w use_model; dostawcy OCR istnieją tylko dla importu zrzutów ekranu."
-        }
+        "params": [
+          {
+            "name": "provider",
+            "type": "string",
+            "required": false,
+            "default": "the first provider with a key, in the order of the media profile",
+            "description": {
+              "en": "Which text-recognition provider to use (\"ocr.space\"); the first one that has a key when not given.",
+              "pl": "Którego dostawcy rozpoznawania tekstu użyć („ocr.space”); gdy nie podano — pierwszego, który ma klucz."
+            }
+          },
+          {
+            "name": "language",
+            "type": "string",
+            "required": false,
+            "default": "the provider's own default",
+            "description": {
+              "en": "Language of the speech or text, as the provider names it (\"pl\", \"en-US\").",
+              "pl": "Język mowy albo tekstu, tak jak nazywa go dostawca („pl”, „en-US”)."
+            }
+          }
+        ]
       },
       "summarise": {
         "id": "summarise",

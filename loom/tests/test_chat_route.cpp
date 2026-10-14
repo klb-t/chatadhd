@@ -192,8 +192,7 @@ TEST_SUITE("chat_route") {
     const Json r = f.route("summarise " + audio);
     CHECK(r.at("kind") == "command");
     CHECK(r.at("command").at("chain") == Json::array({"transcribe", "summarise"}));
-    CHECK(r.at("command").at("runnable") == false);  // transcribe is declared, not implemented
-    CHECK(r.at("command").at("not_runnable").at(0).at("action") == "transcribe");
+    CHECK(r.at("command").at("runnable") == true);  // transcribe is implemented (P12 4): both steps can run
   }
 
   TEST_CASE("no conversation, no 'this conversation'; routing off or an explicit chat feature makes every input a message") {

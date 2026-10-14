@@ -90,7 +90,16 @@ Json run_node_metadata(const Json& run, const std::string& result_step) {
     if (json::get_string(c, "kind") == "usage" && json::get_bool(c, "approved", false) && !json::get_string(c, "receipt_id").empty())
       receipts.push_back(c.at("receipt_id"));
   m["usage_receipt_ids"] = receipts;
-  m["usage_receipt_id"] = receipts.empty() ? Json(nullptr) : receipts[receipts.size() - 1];
+  // Every admitted model call carries the number of its usage receipt (operation_id of its provenance record), a call that the guard
+  // held and the user confirmed included. The receipt of the run is the user's confirmation when there was one, else the last call's.
+  Json operations = Json::array();
+  for (const auto& rec : run.value("steps", Json::array()))
+    for (const auto& call : calls_of(rec)) {
+      const Json id = call.value("operation_id", Json(nullptr));
+      if (id.is_string() && !id.get<std::string>().empty() && std::find(operations.begin(), operations.end(), id) == operations.end()) operations.push_back(id);
+    }
+  m["usage_operation_ids"] = operations;
+  m["usage_receipt_id"] = !receipts.empty() ? receipts[receipts.size() - 1] : operations.empty() ? Json(nullptr) : operations[operations.size() - 1];
   if (const Json* ctx = json::find(request, "context"); ctx && ctx->is_object()) {
     for (const char* k : {"origin", "conv_id", "message_id"})
       if (const Json* x = json::find(*ctx, k); x && x->is_string()) m["context"][k] = *x;
