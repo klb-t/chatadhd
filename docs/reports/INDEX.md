@@ -810,3 +810,14 @@ CTest 215/215 (dev + serwer, Debug); `npm run build`, wszystkie skrypty `test:*`
 - Usterki dla S1/UI: trasowanie metodą `model` na prostym dostawcy; web po angielsku obok polskich wyników akcji; brak odpowiedzi
   przy 390 px (raz); jasne tło pola loginu. Naprawione w S2: instalator nie ukrywa już nieudanego założenia konta (kod 3).
 - Raport: `docs/reports/S2_R21_2026-10-14.md`. Cofnięcie: usunąć zadanie `first-steps` / skrypty.
+
+## S2 / R22 — przebiegi portu w akcji bez szukania po etykietach; sprzątanie przy starcie (2026-10-14)
+
+- `port_graph::ActionRunScope::recorded_nodes()` (węzły przebiegów zapisane w zakresie, zagnieżdżenia do najbliższego zakresu
+  tego samego przebiegu) i `port_graph::reconcile_action_run(db, run_id, node_ids)`; bez indeksu `nodes(label)` (DDL bez zmian).
+  Po stronie S1 do zrobienia: `run.cpp` (przekazać `recorded_nodes()`), `result.cpp` (wołać `reconcile_action_run`).
+- Sprzątanie przy starcie (`cleanup` w `config.json`): `upload_part_max_age_hours` 24 (0 = zostaw), `orphan_blob_max_age_days`
+  0 (wyłączone), `orphan_blob_dry_run` true. Blob, do którego odnosi się cokolwiek w bazie lub w JSON w katalogu danych,
+  nigdy nie jest usuwany; gdy którejś tabeli nie da się przeczytać — nic nie jest usuwane.
+- Otwarte: pliki wysyłek multipart serwera; kopie w zdalnych magazynach. Raport: `docs/reports/S2_R22_2026-10-14.md`.
+  Cofnięcie: usunąć klucz `cleanup` albo `upload_part_max_age_hours: 0`.
