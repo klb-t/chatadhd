@@ -32,6 +32,7 @@
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",
     "test:semantic-question": "node tests/conversation-view/semantic-question.test.mjs",
     "test:shell": "node tests/shell/shell.test.mjs",
+    "test:chat-first": "node e2e/chat-first.mjs",
     "test:app-shell": "node tests/conversation-view/app-shell.test.mjs",
     "test:chat-send-gate": "node tests/conversation-view/send-gate.test.mjs && node tests/conversation-view/send-queue.test.mjs && node e2e/chat-send-gate.mjs",
     "test:application-profiles": "node e2e/application-profile-state.mjs && node e2e/application-profile-adapter.mjs",

@@ -527,7 +527,7 @@ other apps can actually read on a given Android version, and the layout of
   all in `MainActivity`/`LoomBridge` and the manifest: `RECORD_AUDIO`/`CAMERA` and a `WebChromeClient.onPermissionRequest`
   that hands the microphone and the camera to the page this app loaded (the rule is the pure-Java
   `DevicePermissionPolicy`, checked on the host by `DevicePermissionTest`), `onShowFileChooser` for the file chooser, and
-  `LoomBridge.notify` / `notificationState` / `requestNotifications` for notifications (the WebView has no Notification
+  `LoomBridge.openConnection` (P20, R56: first run opens local mode straight into the chat; the web overflow menu entry "Połączenie" opens the native Connection screen; the corner gear remains only in server mode, where the page has no bridge), `LoomBridge.notify` / `notificationState` / `requestNotifications` for notifications (the WebView has no Notification
   API; Android 13 asks at runtime). The declaration and `client_result` path through the real JNI glue is checked on the
   host by `HostSmokeTest`. Recordings, pictures and files never travel inside `client_result` (P14 6): the page hands the bytes
   to the kernel in bounded chunks (`client.blob_begin` / `append` / `commit` through the generic `invoke`, so the shell needs no

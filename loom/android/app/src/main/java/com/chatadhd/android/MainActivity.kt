@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var bridge: LoomBridge
     private lateinit var banner: android.widget.TextView
+    private lateinit var gear: android.widget.TextView
     private lateinit var dataLocation: DataLocation
     /** Keeps secrets.json sealed with the Keystore between uses (see SecretsVaultCore). */
     private var vault: SecretsVaultCore? = null
@@ -94,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         }
         // The theme has no action bar, so the connection screen is reached via
         // a small translucent button over the WebView corner.
-        val gear = android.widget.TextView(this).apply {
+        gear = android.widget.TextView(this).apply {
             text = "\u2699"; textSize = 20f; alpha = 0.5f
             contentDescription = getString(R.string.menu_connection)
             setPadding(24, 8, 24, 8)
@@ -190,6 +191,7 @@ class MainActivity : AppCompatActivity() {
         bridge.onRequestNotifications = {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) requestNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+        bridge.onOpenConnection = { runOnUiThread { requestConnection.launch(Intent(this, ConnectionActivity::class.java)) } }
         startForMode()
     }
 
@@ -201,10 +203,9 @@ class MainActivity : AppCompatActivity() {
     /** First run (no saved choice) shows the chooser; otherwise load per mode. */
     private fun startForMode() {
         val prefs = ConnectionPrefs(this)
-        if (!getSharedPreferences("connection", MODE_PRIVATE).contains("mode")) {
-            requestConnection.launch(Intent(this, ConnectionActivity::class.java))
-            return
-        }
+        // R56: no saved choice opens LOCAL mode straight into the chat; the choice is in the chat's overflow menu ("Połączenie").
+        // In local mode the page reaches Connection through LoomBridge.openConnection; a server page has no bridge, so the corner button stays there.
+        gear.visibility = if (prefs.effectiveMode == ConnectionPolicy.MODE_SERVER) View.VISIBLE else View.GONE
         if (prefs.effectiveMode == ConnectionPolicy.MODE_SERVER) {
             serverBase = prefs.serverUrl
             // SECURITY: NO addJavascriptInterface here. A remote page must never
@@ -260,7 +261,7 @@ class MainActivity : AppCompatActivity() {
         if (!result.optBoolean("ok")) {
             v.afterChange()
             Snackbar.make(webView, result.optJSONObject("error")?.optString("message")
-                ?: "Could not open ChatADHD data", Snackbar.LENGTH_INDEFINITE).show()
+                ?: getString(R.string.data_open_failed), Snackbar.LENGTH_INDEFINITE).show()
             return
         }
         // The core now holds the secrets in memory: seal the file again, and keep doing so

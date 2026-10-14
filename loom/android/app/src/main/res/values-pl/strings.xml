@@ -68,4 +68,5 @@
     <string name="storage_need_all_files">Ta lokalizacja wymaga dostępu do wszystkich plików. Przyznaj go w otwartych ustawieniach i naciśnij przycisk ponownie.</string>
     <string name="secrets_unreadable">Nie udało się odczytać kluczy API (klucza Keystore już nie ma, np. po reinstalacji). Wpisz je ponownie w Ustawieniach.</string>
     <string name="secrets_seal_failed">Nie udało się zabezpieczyć kluczy API w Keystore; zostają w zwykłym pliku.</string>
+    <string name="data_open_failed">Nie udało się otworzyć danych ChatADHD</string>
 </resources>

@@ -52,6 +52,14 @@ class LoomBridge(private val webView: WebView) {
     /** Set by MainActivity: asks Android for the permission to show notifications (Android 13 and later). */
     @Volatile var onRequestNotifications: (() -> Unit)? = null
 
+    /** Set by MainActivity: opens the native Connection screen (the web app's overflow menu entry "Połączenie"). */
+    @Volatile var onOpenConnection: (() -> Unit)? = null
+
+    @JavascriptInterface
+    fun openConnection() {
+        onOpenConnection?.invoke()
+    }
+
     // ── notifications of the shell (P13): the WebView has no Notification API ──
     private fun notificationsAllowed(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true

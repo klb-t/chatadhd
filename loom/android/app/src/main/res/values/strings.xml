@@ -68,4 +68,5 @@
     <string name="storage_need_all_files">This location needs All files access. Grant it in the settings that just opened, then press the button again.</string>
     <string name="secrets_unreadable">API keys could not be unsealed (the Keystore key is gone, e.g. after reinstalling). Enter them again in Settings.</string>
     <string name="secrets_seal_failed">API keys could not be sealed with the Keystore and stay in a plain file.</string>
+    <string name="data_open_failed">Could not open ChatADHD data</string>
 </resources>
