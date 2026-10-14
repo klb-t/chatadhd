@@ -15,6 +15,7 @@ import { clientIdentity, pageClientSession } from "../context/client-session";
 import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
+import { watchClientSteps } from "../context/client-step-events";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
@@ -255,6 +256,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       }
     }
   }, []);
+
+  // A question for this device (or its closing) that comes from elsewhere - another tab, another client, the CLI - reaches the open conversation
+  // as an event from the kernel: the messages are read again. One feed for the page, no polling.
+  useEffect(() => {
+    return watchClientSteps(api, (event) => { void refreshMessages(event.convId); }) ?? undefined;
+  }, [refreshMessages]);
 
   const readSources = useCallback(async (options: Record<string, unknown>) => {
     if (!convId || !api.readConversationView || sourceBusy || !sourceCatalog.feature) return;

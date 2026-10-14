@@ -1146,6 +1146,23 @@ Result<Json> route(Runtime& rt, const Json& request) {
 
 namespace {
 
+// A message that shows a question of a run paused on the client's step is a new step for every page that shows the conversation: the
+// event bus says so (events::kActionClientStep), with ids only. `state` "closed": the question was answered or cancelled.
+void announce_client_step(Runtime& rt, const std::string& conv_id, const std::string& message_id, const Json& meta, const std::string& state) {
+  const Json* run = meta.is_object() ? json::find(meta, "action_run") : nullptr;
+  if (!run || !run->is_object()) return;
+  const Json pending = run->value("pending", Json(nullptr));
+  if (state == "waiting" && (!pending.is_object() || json::get_string(pending, "kind") != "client_step")) return;
+  Json payload{{"conv_id", conv_id}, {"message_id", message_id}, {"run_id", json::get_string(*run, "run_id")}, {"state", state}};
+  if (pending.is_object()) {
+    payload["receipt_id"] = pending.value("receipt_id", Json(nullptr));
+    payload["step"] = pending.value("step", Json(nullptr));
+    payload["action"] = pending.value("action", Json(nullptr));
+  }
+  if (state == "closed") payload["status"] = json::get_string(*run, "status");
+  rt.bus().emit(events::kActionClientStep, payload);
+}
+
 Result<std::string> add_message(Runtime& rt, const std::string& conv_id, const std::string& role, const std::string& text, Json metadata,
                                 const std::string& model = std::string()) {
   NewMessage nm;
@@ -1162,6 +1179,7 @@ Result<std::string> add_message(Runtime& rt, const std::string& conv_id, const s
     MsgPatch patch;
     patch.semantic_status = "done";
     LOOM_TRY(rt.db().update_msg(id, patch));
+    announce_client_step(rt, conv_id, id, nm.metadata, "waiting");
   }
   return id;
 }
@@ -1676,6 +1694,7 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
     patch.text = assistant_text;
     patch.metadata = meta;
     LOOM_TRY(rt.db().update_msg(early_id, patch));
+    announce_client_step(rt, conv_id, early_id, meta, "waiting");
   }
   if (meta.contains("action_run")) {
     if (auto linked = link_presented(rt, d, reply.assistant_id, meta["action_run"].value("produced", Json(nullptr)), meta["action_run"].value("run_id", "")); !linked)
@@ -2117,11 +2136,16 @@ void close_questions(Runtime& rt, const std::string& conv_id, const Json& run, c
   for (const auto& m : *msgs) {
     if (m.role != "assistant" || !m.metadata.is_object()) continue;
     if (m.metadata.contains("action_run") && json::get_string(m.metadata["action_run"], "run_id") == run_id &&
-        m.metadata["action_run"].value("pending", Json(nullptr)).is_object())
+        m.metadata["action_run"].value("pending", Json(nullptr)).is_object()) {
+      const bool was_client_step = json::get_string(m.metadata["action_run"]["pending"], "kind") == "client_step";
+      Json closed;
       (void)set_metadata(rt, m.id, [&](Json& meta) {
         meta["action_run"]["pending"] = nullptr;
         meta["action_run"]["status"] = status;
+        closed = meta;
       });
+      if (was_client_step) announce_client_step(rt, conv_id, m.id, closed, "closed");
+    }
     if (m.metadata.contains("action_proposal") && json::get_string(m.metadata["action_proposal"], "run_id") == run_id &&
         json::get_string(m.metadata["action_proposal"], "status") == "waiting" && !proposal_status.empty())
       (void)set_metadata(rt, m.id, [&](Json& meta) { meta["action_proposal"]["status"] = proposal_status; });

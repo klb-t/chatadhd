@@ -11,6 +11,7 @@
 #include "loom/client_devices.h"
 #include "loom/config.h"
 #include "loom/db.h"
+#include "loom/event_bus.h"
 #include "loom/media_providers.h"
 #include "loom/net/http.h"
 #include "loom/provenance.h"
@@ -549,6 +550,38 @@ TEST_SUITE("client_devices_chat") {
                                                       {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", f.audio_b64()}}})}});
     REQUIRE_FALSE(late);
     CHECK(f.transport->requests().empty());
+  }
+
+  // P14 4: the pages that show a conversation learn of a new client step from the event bus (SSE /api/events/stream, JNI subscribe), not by polling.
+  TEST_CASE("a question for the device is announced on the event bus with ids only; answering or cancelling it announces that it is closed") {
+    ChatFixture f;
+    f.declare(Json{{"captures_audio", "granted"}});
+    std::vector<Json> seen;
+    const auto sub = f.rt->bus().on(events::kActionClientStep, [&](std::string_view event, const Json& data) {
+      CHECK(event == "action:client_step");
+      seen.push_back(data);
+    });
+    (void)sub;
+    const auto proposed = f.input("Nagraj notatkę głosową i ją streść");
+    REQUIRE(proposed.handled);
+    CHECK(seen.empty());  // a proposal is not a step of the device
+    const auto yes = f.input("tak");
+    REQUIRE(yes.handled);
+    const Json meta = f.message(yes.assistant_message_id).at("metadata").at("action_run");
+    REQUIRE(meta.at("status") == "awaiting_client");
+    REQUIRE(seen.size() == 1);
+    CHECK(seen[0] == Json{{"conv_id", f.conv_id}, {"message_id", yes.assistant_message_id}, {"run_id", meta.at("run_id")}, {"state", "waiting"},
+                          {"receipt_id", meta.at("pending").at("receipt_id")}, {"step", meta.at("pending").at("step")}, {"action", "device.record_audio"}});
+    // the page that gets it reads the message and finds the question there
+    CHECK(f.message(seen[0].at("message_id")).at("metadata").at("action_run").at("pending").at("kind") == "client_step");
+    // cancelled elsewhere: the question is closed, and the event says so (the page refreshes and the block goes)
+    const Json cancelled = unwrap(chat_route::cancel(*f.rt, Json{{"run_id", meta.at("run_id")}, {"ref", "api"}}));
+    REQUIRE(cancelled.at("status") == "cancelled");
+    REQUIRE(seen.size() == 2);  // the message that says it was cancelled asks nothing: no second waiting event
+    CHECK(seen[1].at("state") == "closed");
+    CHECK(seen[1].at("status") == "cancelled");
+    CHECK(seen[1].at("message_id") == yes.assistant_message_id);
+    CHECK(seen[1].at("run_id") == meta.at("run_id"));
   }
 
   TEST_CASE("the client id rides on the chat request: a request that names a client is not an unknown chat option") {
