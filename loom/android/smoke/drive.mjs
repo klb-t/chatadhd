@@ -81,8 +81,8 @@ async function connectScreen() {
   tap(edit);
   adb("shell", "input", "text", URL_);
   await until("URL typed into the field", () => find(dump(), n => /EditText/.test(n.class) && n.text === URL_), 15, 500);
-  // the soft keyboard may cover the button; BACK closes only the keyboard while it is shown
-  if (/mInputShown=true/.test(adb("shell", "dumpsys", "input_method"))) adb("shell", "input", "keyevent", "KEYCODE_BACK");
+  // No BACK to hide the keyboard: when the keyboard is already gone BACK finishes this screen, the app reopens it in local
+  // mode and the URL field and the checkbox come back disabled. On a 2400 px screen the keyboard covers neither.
   // The checkbox label is long (several lines) and the box is its left edge: tap there, re-dump after every try,
   // scroll the form when the box is off-screen, and log what the dump says (state, bounds) so a failure explains itself.
   const [sw, sh] = (/(\d+)x(\d+)/.exec(adb("shell", "wm", "size")) || [0, 1080, 2400]).slice(1).map(Number);
@@ -91,6 +91,12 @@ async function connectScreen() {
     const box = await waitNode("plain-HTTP checkbox", n => /CheckBox/.test(n.class));
     log(`native: checkbox try ${attempt}: checked=${box.checked} enabled=${box.enabled} bounds=${box.bounds} screen=${sw}x${sh}`);
     if (box.checked === "true") { ticked = true; break; }
+    if (box.enabled !== "true") {  // the screen is in local mode (e.g. it was reopened): choose the server account again
+      tap(await waitNode("'Server account' radio", n => /RadioButton/.test(n.class) && /Server account/i.test(n.text)));
+      const field = await waitNode("enabled URL field", n => /EditText/.test(n.class) && n.enabled === "true");
+      if (field.text !== URL_) { tap(field); adb("shell", "input", "text", URL_); }
+      continue;
+    }
     if (box.b > sh - 40 || box.t < 0) { adb("shell", "input", "swipe", String(sw >> 1), String((sh * 3) >> 2), String(sw >> 1), String(sh >> 2), "300"); continue; }
     adb("shell", "input", "tap", String(box.l + Math.min(60, (box.r - box.l) >> 1)), String(Math.min(box.cy, box.t + 60)));
     ticked = await until("plain-HTTP checkbox ticked", () => find(dump(), n => /CheckBox/.test(n.class) && n.checked === "true"), 4, 500).then(() => true, () => false);
