@@ -59,6 +59,7 @@ struct Settings {
   Isolation isolation;
   // R20: bound on simultaneous Argon2id evaluations (each holds its full memory). -1 = CPU count, 0 = unlimited.
   std::int64_t hash_max_concurrent = -1, hash_wait_seconds = 5;
+  std::int64_t login_max_length = 128;  // R20: characters; 0 = no limit
 };
 
 // Effective server_accounts profile (+ <root>/profiles overlay) and the named Argon2id preset.
@@ -89,6 +90,8 @@ class AccountStore {
   Result<std::vector<User>> list_users();
   Result<std::int64_t> user_count();
   // Errc::Auth for an unknown login, a wrong password or a disabled account (one message for all three).
+  // True when the login exceeds settings().login_max_length characters (0 = no limit).
+  Status check_login(const std::string& login) const;
   Result<User> verify_password(const std::string& login, const std::string& password);
   Status set_password(const std::string& login, const std::string& password);
   // Disabling also revokes every session of the user.

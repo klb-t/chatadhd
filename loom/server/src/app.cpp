@@ -1570,6 +1570,10 @@ void App::route_auth() {
       json body;
       if (!object_body(req, res, body)) return;
       const std::string who = body.value("login", std::string());
+      if (accounts_->login_too_long(who)) {  // before any throttle bookkeeping
+        send_error(res, "invalid_argument", "login is longer than " + std::to_string(accounts_->settings().login_max_length) + " characters", 400);
+        return;
+      }
       const std::string client = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
       if (const auto wait = accounts_->throttle_wait(who, client); wait > 0) {
         res.set_header("Retry-After", std::to_string(wait));
@@ -1596,6 +1600,10 @@ void App::route_auth() {
       // Every attempt counts (it costs an Argon2id evaluation and, in invite mode, is a guess at a code), so the
       // login throttle applies to registration under its own key per client address.
       const std::string client = client_address(req, accounts_->settings().throttle.trust_forwarded_for);
+      if (accounts_->login_too_long(body.value("login", std::string()))) {
+        send_error(res, "invalid_argument", "login is longer than " + std::to_string(accounts_->settings().login_max_length) + " characters", 400);
+        return;
+      }
       const std::string key = "register@" + client;
       if (const auto wait = accounts_->throttle_wait(key, client); wait > 0) {
         res.set_header("Retry-After", std::to_string(wait));

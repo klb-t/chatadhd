@@ -400,6 +400,25 @@ def main() -> int:
             assert {r.status_code for r in pool.map(reg2, range(4))} == {201}
     finally:
         srv.stop()
+    # 15. login length is a setting (login_max_length, preset 128): refused with 400 before hashing or throttling
+    write_profile(root, argon2id_preset="owasp_min", registration="open", login_max_length=16)
+    srv = Server(root)
+    try:
+        b = srv.base
+        r = requests.post(b + "/api/auth/register", json={"login": "x" * 17, "password": "long-long-1"}, timeout=60)
+        assert r.status_code == 400 and "longer" in r.text, (r.status_code, r.text)
+        r = requests.post(b + "/api/auth/login", json={"login": "x" * 17, "password": "long-long-1"}, timeout=60)
+        assert r.status_code == 400, r.status_code
+        assert requests.post(b + "/api/auth/register", json={"login": "x" * 16, "password": "long-long-1"}, timeout=60).status_code == 201
+    finally:
+        srv.stop()
+    write_profile(root, argon2id_preset="owasp_min", registration="open", login_max_length=0)
+    srv = Server(root)
+    try:
+        r = requests.post(srv.base + "/api/auth/register", json={"login": "y" * 500, "password": "long-long-1"}, timeout=60)
+        assert r.status_code == 201, r.status_code
+    finally:
+        srv.stop()
     print("ok")
     return 0
 

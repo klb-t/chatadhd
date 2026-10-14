@@ -34,7 +34,12 @@ std::string normalize_login(std::string s) {
   return s;
 }
 
-Status valid_login(const std::string& login) {
+Status valid_login(const std::string& login, std::int64_t max_chars) {
+  if (max_chars > 0) {
+    std::int64_t chars = 0;
+    for (unsigned char c : login) chars += (c & 0xC0) != 0x80;  // UTF-8 lead bytes
+    if (chars > max_chars) return Error(Errc::InvalidArgument, "login is longer than " + std::to_string(max_chars) + " characters");
+  }
   if (login.empty()) return Error(Errc::InvalidArgument, "login must not be empty");
   for (unsigned char c : login)
     if (c < 0x20 || c == 0x7f) return Error(Errc::InvalidArgument, "login contains control characters");
@@ -65,6 +70,7 @@ Result<Settings> load_settings(const std::filesystem::path& root) {
   s.session_idle_seconds = v.value("session_idle_seconds", std::int64_t(0));
   s.password_min_length = v.value("password_min_length", std::int64_t(0));
   s.argon2id_preset = v.value("argon2id_preset", std::string());
+  s.login_max_length = v.value("login_max_length", std::int64_t(128));
   s.session_token_bytes = v.value("session_token_bytes", std::uint64_t(0));
   s.accounts_file = v.value("accounts_file", std::string());
   s.users_subdir = v.value("users_subdir", std::string());
@@ -231,7 +237,7 @@ Status AccountStore::check_password_policy(const std::string& password) const {
 Result<User> AccountStore::create_user(const std::string& login_in, const std::string& password,
                                        const std::string& invite) {
   const std::string login = normalize_login(login_in);
-  LOOM_TRY(valid_login(login));
+  LOOM_TRY(valid_login(login, settings_.login_max_length));
   LOOM_TRY(check_password_policy(password));
   LOOM_TRY_ASSIGN(std::string h, hash_password(password));
   std::lock_guard lk(mu_);
@@ -285,7 +291,15 @@ Result<std::int64_t> AccountStore::user_count() {
   return n.value_or(0);
 }
 
+bool AccountStore::login_too_long(const std::string& login) const {
+  if (settings_.login_max_length <= 0) return false;
+  std::int64_t chars = 0;
+  for (unsigned char c : login) chars += (c & 0xC0) != 0x80;
+  return chars > settings_.login_max_length;
+}
+
 Result<User> AccountStore::verify_password(const std::string& login, const std::string& password) {
+  if (login_too_long(login)) return Error(Errc::InvalidArgument, "login is too long");
   std::string stored;
   User u;
   bool found = false;
