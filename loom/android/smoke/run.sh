@@ -67,7 +67,7 @@ if [ "$rc" != 0 ]; then
   log "--- focused activity"
   adb shell dumpsys activity activities 2>/dev/null | grep -E "mResumedActivity|topResumedActivity" | head -n 5 || true
   log "--- logcat (app, errors, crashes; last 80 lines)"
-  adb logcat -d -b crash -v brief 2>/dev/null | tail -n 60 || true
+  adb logcat -d -b crash -v brief 2>/dev/null | grep -vE "^F/DEBUG +\( *[0-9]+\): +#([3-9][0-9]|[1-9][0-9]{2}) " | head -n 90 || true
   log "--- logcat (errors, fatals, app; last 80 lines)"
   adb logcat -d -b main,system -v brief 2>/dev/null | grep -E "^[EF]/|chatadhd|ActivityTaskManager|ActivityManager: (Start|Force|Kill|Process)|libc|DEBUG" | grep -v "uiautomator" | tail -n 80 || true
   log "--- server.log (last 40 lines)"
