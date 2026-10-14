@@ -403,3 +403,14 @@ test('one language per answer: a Polish proposal, its state badge, its offer and
   assert.ok(offerHtml.includes(pl.offer) && !offerHtml.includes(en.offer));
   assert.ok(a.producedText(spoken, { target: 'graph', forms: ['n_1'], content: null, runNode: null }).startsWith('Zapisano w grafie'));
 });
+
+test('a run that was declined, denied or failed is data, not a failed request: answering "no" closes the proposal', async () => {
+  const types = await loader.load('src/api/types.ts');
+  const declined = { schema: 'loom.action_run/1', id: 'ar_1', status: 'rejected', error: { code: 'rejected', message: 'declined; nothing was executed' } };
+  assert.equal(types.isLoomError(declined), false, 'the run of a "no" carries an error of its own and is returned to the page');
+  assert.equal(types.isLoomError({ ...declined, schema: 'loom.action_run/2' }), false);
+  // the envelope of a request that failed is still one
+  assert.equal(types.isLoomError({ error: { code: 'invalid_argument', message: 'no run' } }), true);
+  assert.equal(types.isLoomError({ schema: 'loom.other/1', error: { code: 'x', message: 'y' } }), true);
+  assert.equal(types.isLoomError({ id: 'ar_1', error: '' }), false);
+});

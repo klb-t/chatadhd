@@ -6,6 +6,7 @@
 //   3. "New conversation", then Send at once (the conversation is still being made, or its view still loads): the message is not dropped
 //      and not sent into another conversation; the provider gets exactly one request and the answer shows. Desktop and 390x800.
 //   4. A declaration of the devices that is refused, fails or never answers does not hold the first send back.
+//   5. The composer with its Send button, and a proposal with its answers, fit the viewport at every width from 320 to 1920 px.
 // The model is an SSE test double that counts its requests (the e2e fixture's mock_llm_server.py streams the same text). Nothing leaves the machine.
 //
 // Prereqs: loom-server built (LOOM_BUILD_SERVER=ON) and `npm run build` in loom/web.
@@ -32,7 +33,7 @@ const expectedAnswer = "Streaming works end to end";
 const login = "tester", password = "correct horse battery";
 
 const groups = [];
-const complete = suiteCompletionGuard("first-steps-ui", 5, groups);
+const complete = suiteCompletionGuard("first-steps-ui", 6, groups);
 let mock, server, browser;
 const providerRequests = [];
 let serverLog = "";
@@ -254,8 +255,52 @@ try {
     console.log("[first-steps-ui] answered after " + took.join("; "));
   });
 
+  await check("layout: the composer with Send, and a proposal with its two answers, fit the viewport at 320, 390, 720, 721, 1100 and 1920 px", async () => {
+    for (const width of [320, 390, 720, 721, 1100, 1920]) {
+      const person = `layout-${width}-${Math.random().toString(16).slice(2, 6)}`;
+      await provision(person);
+      const context = await browser.newContext({ viewport: { width, height: 800 }, isMobile: width < 500, hasTouch: width < 500 });
+      const page = await context.newPage();
+      try {
+        await page.goto(base, { waitUntil: "domcontentloaded" });
+        await page.getByTestId("auth-login").fill(person);
+        await page.getByTestId("auth-password").fill(password);
+        await page.getByTestId("auth-submit").click();
+        await page.getByTestId("chat-view").waitFor();
+        const measure = () => page.evaluate(() => {
+          const box = (selector) => { const node = document.querySelector(selector); if (!node) return null; const r = node.getBoundingClientRect(); return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }; };
+          const scroll = document.querySelector(".chat-scroll");
+          return { width: window.innerWidth, height: window.innerHeight, page: document.documentElement.scrollWidth,
+            scroll: scroll ? { scroll: scroll.scrollWidth, client: scroll.clientWidth } : null,
+            send: box('[data-testid="send-chat"]'), input: box('[data-testid="chat-input"]'), composer: box(".composer"),
+            confirm: box('[data-testid="chat-action-proposal-confirm"]'), reject: box('[data-testid="chat-action-proposal-reject"]'),
+            proposal: box('[data-testid="chat-action-proposal"]') };
+        });
+        const inside = (name, r, m) => { assert.ok(r, `${width}: ${name} is there`); assert.ok(r.left >= -0.5 && r.right <= m.width + 0.5, `${width}: ${name} fits the width (${Math.round(r.left)}..${Math.round(r.right)} of ${m.width})`); };
+        let seen = await measure();
+        for (const name of ["send", "input", "composer"]) inside(name, seen[name], seen);
+        assert.ok(seen.page <= seen.width, `${width}: the page does not scroll sideways (${seen.page})`);
+        // a proposal whose lines are long (the money line says why a price is unknown): it wraps, its answers stay on the screen
+        await page.fill('[data-testid="chat-input"]', "pokaż temperature");
+        await page.click('[data-testid="send-chat"]');
+        await page.getByTestId("chat-action-proposal").waitFor();
+        seen = await measure();
+        for (const name of ["send", "input", "composer", "proposal", "confirm", "reject"]) inside(name, seen[name], seen);
+        assert.ok(seen.scroll.scroll <= seen.scroll.client, `${width}: the messages do not scroll sideways (${seen.scroll.scroll} > ${seen.scroll.client})`);
+        assert.ok(seen.page <= seen.width, `${width}: the page does not scroll sideways after the proposal (${seen.page})`);
+        // and the person can answer without scrolling the page sideways
+        await page.getByTestId("chat-action-proposal-reject").click();
+        await page.getByTestId("chat-action-proposal").waitFor({ state: "detached" }).catch(async error => {
+          throw new Error(`${width}: the proposal stays after "Drop it": ${(await page.getByTestId("chat-action-proposal").innerText()).replace(/\n+/g, " | ").slice(0, 400)}; ${error.message.split("\n")[0]}`);
+        });
+      } finally {
+        await context.close();
+      }
+    }
+  });
+
   complete.complete();
-  console.log(`[first-steps-ui] ${groups.length}/5 groups passed`);
+  console.log(`[first-steps-ui] ${groups.length}/6 groups passed`);
 } finally {
   if (browser) await browser.close().catch(() => undefined);
   await stopChild(server).catch(() => undefined);
