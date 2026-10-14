@@ -38,7 +38,9 @@ jobs:
   build-test:
     name: ${{ matrix.preset }} (${{ matrix.cxx }})
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    # ASan+UBSan: measured ~80 CPU-minutes of CTest (slowest: onboarding_store 320 s, kb_pack 280 s, cli.smoke 280 s) plus a
+    # ~25 min build; on a 2-core runner that does not fit 45 min (run 38496553311 was cancelled in the Test step).
+    timeout-minutes: ${{ matrix.preset == 'asan' && 150 || 45 }}
     strategy:
       fail-fast: false
       matrix:
