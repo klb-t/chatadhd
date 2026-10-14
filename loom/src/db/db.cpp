@@ -651,6 +651,11 @@ Result<int> Database::batch_create_msgs(std::string_view conv_id, const std::vec
   std::string now = now_iso();
   int total = 0;
   auto lk = lock();
+  std::int64_t old_max_rowid = 0;
+  if (fts_) {
+    LOOM_TRY_ASSIGN(auto mr, conn_.query_int("SELECT COALESCE(MAX(rowid), 0) FROM messages"));
+    old_max_rowid = mr.value_or(0);
+  }
   static constexpr std::string_view kSql =
       "INSERT INTO messages\n"
       "                           (id, conv_id, parent_id, role, text, model, status,\n"
@@ -678,7 +683,10 @@ Result<int> Database::batch_create_msgs(std::string_view conv_id, const std::vec
     total += rows;
   }
   LOOM_TRY(update_conv_locked(conv_id, {}));
-  if (total > 0 && fts_) fts_note_changed({});  // bulk: reconcile new rows
+  if (total > 0 && fts_ && fts_->available) {  // bulk: reconcile the new rows (rowid > old max) only
+    if (fts_->scan_new) fts_->new_from = std::min(fts_->new_from, old_max_rowid);
+    else { fts_->scan_new = true; fts_->new_from = old_max_rowid; }
+  }
   log::info(kLog, "Batch inserted {} messages into {}", total, conv_id);
   return total;
 }
@@ -689,8 +697,13 @@ Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit) {
 
 Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids) {
   auto lk = lock();
+  // Perf (R26): the batch is the first `limit` pending rows in rowid order (idx_msg_semantic walks them in that
+  // order and stops at the limit), then ordered oldest-first by `created` inside the batch. The former plain
+  // ORDER BY created read and sorted EVERY pending row per call (14 ms at 20k pending, ~0.15 s at 200k, with the
+  // database lock held), which made a drain of N pending messages quadratic and stalled import and chat meanwhile.
   std::string sql =
-      "SELECT id, conv_id, role, text, metadata FROM messages\n"
+      "SELECT id, conv_id, role, text, metadata FROM (\n"
+      "  SELECT rowid AS rid, id, conv_id, role, text, metadata, created FROM messages\n"
       "                   WHERE semantic_status = 'pending'\n"
       "                     AND status = 'active'\n"
       "                     AND length(text) >= 20\n";
@@ -699,7 +712,7 @@ Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit, con
     for (std::size_t i = 1; i < exclude_ids.size(); ++i) sql += ",?";
     sql += ")\n";
   }
-  sql += "                   ORDER BY created ASC LIMIT ?";
+  sql += "                   ORDER BY rowid LIMIT ?) ORDER BY created ASC, rid ASC";
   LOOM_TRY_ASSIGN(auto st, conn_.prepare(sql));
   int idx = 1;
   for (const auto& id : exclude_ids) st.bind(idx++, id);

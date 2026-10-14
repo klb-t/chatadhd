@@ -131,6 +131,7 @@ void Database::fts_note_changed(std::string_view msg_id) {
   if (!fts_ || !fts_->available) return;
   if (msg_id.empty()) {
     fts_->scan_new = true;
+    fts_->new_from = 0;
   } else {
     fts_->dirty_ids.emplace(msg_id);
   }
@@ -214,6 +215,7 @@ Status Database::fts_open() {
   fts_->available = true;
   fts_->scan_changed = true;
   fts_->scan_new = true;
+  fts_->new_from = 0;
   fts_->scan_deleted = true;
   return {};
 }
@@ -267,10 +269,11 @@ Status Database::fts_reconcile_locked(bool full) {
   }
   if (full || f.scan_new) {
     LOOM_TRY_ASSIGN(auto maxdoc, conn_.query_int("SELECT COALESCE(MAX(docid), 0) FROM fts.loom_fts_docs"));
-    LOOM_TRY(conn_.exec(
+    LOOM_TRY(conn_.run(
         "INSERT INTO fts.loom_fts_docs(msg_id, text_len, text_sig) "
         "SELECT m.id, length(CAST(m.text AS BLOB)), loom_sig(m.text) FROM main.messages m "
-        "WHERE NOT EXISTS (SELECT 1 FROM fts.loom_fts_docs d WHERE d.msg_id = m.id) ORDER BY m.rowid"));
+        "WHERE m.rowid > ?1 AND NOT EXISTS (SELECT 1 FROM fts.loom_fts_docs d WHERE d.msg_id = m.id) ORDER BY m.rowid",
+        full ? std::int64_t{0} : f.new_from));
     LOOM_TRY(conn_.run(
         "INSERT INTO fts.loom_fts(rowid, text) SELECT d.docid, m.text FROM fts.loom_fts_docs d "
         "JOIN main.messages m ON m.id = d.msg_id WHERE d.docid > ?",
@@ -283,6 +286,7 @@ Status Database::fts_reconcile_locked(bool full) {
   LOOM_TRY(txn.commit());
   f.dirty_ids.clear();
   f.scan_new = f.scan_deleted = false;
+  f.new_from = 0;
   if (full) f.scan_changed = false;
   return {};
 }
