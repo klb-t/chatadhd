@@ -3,6 +3,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <map>
+#include <memory>
+#include <mutex>
 #include <set>
 
 #include "loom/action_element.h"
@@ -42,6 +45,19 @@ std::vector<std::string> strings_of(const Json* v) {
   if (v && v->is_array())
     for (const auto& x : *v)
       if (x.is_string()) out.push_back(x.get<std::string>());
+  return out;
+}
+
+// The expressions of the data are compiled once: the router reads a few hundred of them on every input. nullptr = the pattern does not compile.
+std::shared_ptr<const re::Regex> compiled(const std::string& pattern, re::Flags flags = re::kNone) {
+  static std::mutex mu;
+  static std::map<std::pair<std::string, int>, std::shared_ptr<const re::Regex>> cache;
+  std::lock_guard<std::mutex> lock(mu);
+  auto key = std::make_pair(pattern, static_cast<int>(flags));
+  if (auto it = cache.find(key); it != cache.end()) return it->second;
+  auto made = re::Regex::compile(pattern, flags);
+  std::shared_ptr<const re::Regex> out = made ? std::make_shared<const re::Regex>(std::move(*made)) : nullptr;
+  cache.emplace(std::move(key), out);
   return out;
 }
 
@@ -269,7 +285,7 @@ std::vector<ArgHit> extract_args(const Data& d, const Json& entry, const std::st
     const std::string param = json::get_string(*p, "param");
     if (!declared.count(param) || done.count(param)) continue;
     if (const Json* given = json::find(have, param); given && !given->is_null()) continue;  // the caller's word comes first
-    auto rx = re::Regex::compile(json::get_string(*p, "regex"));
+    auto rx = compiled(json::get_string(*p, "regex"));
     if (!rx) continue;
     const std::string kind = json::get_string(*p, "kind", "text");
     for (const auto& m : rx->finditer(subject)) {
@@ -374,7 +390,7 @@ std::optional<Cand> parse_explicit(const Data& d, const std::string& text) {
   c.score = 1.0;
   const std::string element_arg = entry ? json::get_string(*entry, "element_from_arg") : std::string();
   const std::string other = entry && !element_arg.empty() ? other_required_param(*entry, element_arg) : std::string();
-  auto kv = re::Regex::compile(json::get_string(ex, "arg_pattern"));
+  auto kv = compiled(json::get_string(ex, "arg_pattern"));
   const auto markers = strings_of(json::find(ex, "element_markers"));
   std::vector<std::string> positional;
   std::string element_token;
@@ -434,7 +450,7 @@ std::vector<Cand> parse_patterns(const Data& d, const std::string& text) {
   std::vector<Cand> out;
   const std::u32string subject = utf8::decode(std::string(utf8::strip(text)));
   for (const auto& p : d.cfg.at("heuristic").at("patterns")) {
-    auto rx = re::Regex::compile(json::get_string(p, "regex"), re::kIgnoreCase);
+    auto rx = compiled(json::get_string(p, "regex"), re::kIgnoreCase);
     if (!rx) continue;
     auto m = rx->search(subject);
     if (!m) continue;
@@ -661,7 +677,7 @@ std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text, bo
     const bool takes_scope = command.value("takes_scope", true);  // the scope phrase is part of the sentence only for the commands that take one
     if (json::get_bool(command, "needs_scope", false) && scope.empty()) continue;
     if (inner && !json::get_string(command, "check_arg").empty()) continue;
-    auto rx = re::Regex::compile(json::get_string(command, "regex"));
+    auto rx = compiled(json::get_string(command, "regex"));
     if (!rx) continue;
     const std::u32string& subject = takes_scope ? folded : folded_raw;
     const std::u32string& source = takes_scope ? original : original_raw;

@@ -85,6 +85,10 @@ struct Fixture {
     return out;
   }
   std::filesystem::path overlay_file(const std::string& domain) { return td.path() / "profiles" / (domain + ".pack"); }
+  void overlay_put(const std::string& domain, const Json& overrides) {
+    std::filesystem::create_directories(td.path() / "profiles");
+    std::ofstream(overlay_file(domain)) << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", domain}, {"overrides", overrides}}.dump();
+  }
   Json overlay(const std::string& domain) {
     if (!std::filesystem::exists(overlay_file(domain))) return Json::object();
     std::ifstream in(overlay_file(domain));
@@ -271,6 +275,26 @@ TEST_SUITE("chat_ops") {
     CHECK(f.text_of(kinds).find("gdrive") != std::string::npos);
     CHECK(f.route("back up the database to s3_main").at("command").at("args").at("to") == "s3_main");
     CHECK(f.route("skopiuj blobs do s3_main").at("command").at("args").at("category") == "blobs");
+  }
+
+  TEST_CASE("export to a configured storage: the file is written and a copy goes to the backend that was named") {
+    Fixture f;
+    const auto target = f.td.path() / "cloud";
+    std::filesystem::create_directories(target);
+    f.overlay_put("storage_security", Json{{"storages", Json{{"my_local", Json{{"class", "user_cloud"}, {"label", Json{{"en", "My local cloud"}, {"pl", "Moja chmura"}}}, {"path", ""},
+        {"backend", Json{{"kind", "local"}, {"path", target.string()}}}, {"configured", true}, {"capabilities", Json::array({"read", "write", "list"})}}}}}});
+    if (auto p = RuntimeProfile::load("storage_security", f.td.path())) f.rt->storage().set_values(p->values());
+    f.say_and_confirm("export this conversation to my_local as json", "export.conversation", "yes");
+    bool copied = false;
+    for (const auto& e : std::filesystem::recursive_directory_iterator(target)) copied = copied || (e.is_regular_file() && e.path().extension() == ".json");
+    CHECK(copied);
+    int files = 0;
+    for (const auto& e : std::filesystem::directory_iterator(f.td.path() / "exports")) files += e.path().extension() == ".json" ? 1 : 0;
+    CHECK(files == 1);
+    // a storage nobody configured is said so, nothing is sent
+    Fixture g;
+    const auto missing = g.say_and_confirm("export this conversation to nowhere", "export.conversation", "yes");
+    CHECK(g.text_of(missing).find("nowhere") != std::string::npos);
   }
 
   TEST_CASE("import: a path in the words, and the file the device picks") {
@@ -468,6 +492,40 @@ TEST_SUITE("chat_ops") {
     }
     CHECK(checked >= 40);
     (void)catalogue;
+  }
+
+  TEST_CASE("every example sentence of every new action, in Polish and in English, is answered with a proposal that carries its receipt (a direct answer for help)") {
+    const Json catalogue = unwrap(RuntimeProfile::builtin("actions")).values().at("actions");
+    std::vector<std::string> ids = actions::chat_op_ids();
+    ids.push_back("import.file");
+    ids.push_back("actions.status");
+    int proposals = 0;
+    for (const char* lang : {"pl", "en"}) {
+      Fixture f;  // one conversation per language: a sentence that is a command opens a proposal, the next one does not answer it
+      for (const std::string& id : ids) {
+        const Json& entry = catalogue.at(id);
+        const std::string text = entry.at("examples").at(lang).at(0).get<std::string>();
+        const auto out = f.input(text);
+        REQUIRE_MESSAGE(out.handled, id << " (" << lang << "): \"" << text << "\" is a message, not a command");
+        const Json p = f.meta(out).at("action_proposal");
+        const std::string reached = p.at("action");
+        CHECK_MESSAGE((reached == id || (id == "import.run" && reached == "import.file")), id << " (" << lang << "): \"" << text << "\" reached " << reached);
+        if (id == "help.can_do" || id == "help.how_to") {
+          CHECK_MESSAGE(p.at("status") == "executed", id << ": an answer to a question runs at once");
+          continue;
+        }
+        if (id == "import.file" && text.find('/') == std::string::npos) {
+          // no path and no device that can pick a file: the proposal says it cannot be done here (the picked file is tested with a client)
+          CHECK_MESSAGE(p.at("status") == "unavailable", id << " (" << lang << ")");
+          continue;
+        }
+        CHECK_MESSAGE(p.at("status") == "pending", id << " (" << lang << ")");
+        CHECK_MESSAGE(!p.value("receipt_id", "").empty(), id << " (" << lang << "): the proposal carries its receipt");
+        CHECK_MESSAGE(!p.value("run_id", "").empty(), id << " (" << lang << ")");
+        ++proposals;
+      }
+    }
+    CHECK(proposals >= 80);
   }
 
   TEST_CASE("tasks, logs, sources, provenance, about, GitHub without a repository") {

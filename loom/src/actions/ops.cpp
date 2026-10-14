@@ -620,16 +620,20 @@ StepOutcome export_conversation(Ctx& x) {
   if (!written) return fail(written.error());
   Json data{{"conv_id", conv}, {"format", format}, {"path", written->string()}};
   if (!backend.empty()) {
-    // The storage the words name: its id, or the kind of backend among the configured ones.
+    // The storage the words name: its id, or the kind of backend ("Dysk Google", "s3") among the configured ones.
     std::string storage_id;
     const Json storages = x.rt.storage().values().value("storages", Json::object());
-    for (auto it = storages.begin(); it != storages.end(); ++it)
-      if (it.key() == backend || x.fold(json::get_string(it.value().value("label", Json::object()), "en")).find(x.fold(backend)) != std::string::npos ||
-          x.fold(json::get_string(it.value().value("label", Json::object()), "pl")).find(x.fold(backend)) != std::string::npos)
-        if (it.value().contains("backend") || it.value().value("class", "") == "local") {
-          storage_id = it.key();
-          break;
-        }
+    const std::string said = x.fold(backend);
+    std::string kind;
+    const Json kinds = x.cfg.value("storage_kinds", Json::object());
+    for (auto it = kinds.begin(); it != kinds.end() && kind.empty(); ++it)
+      for (const auto& w : it.value().value("words", Json::array()))
+        if (said.find(x.fold(w.get<std::string>())) != std::string::npos) kind = it.key();
+    for (auto it = storages.begin(); it != storages.end() && storage_id.empty(); ++it) {
+      const Json& st = it.value();
+      if (it.key() == backend) storage_id = it.key();
+      else if (!kind.empty() && st.value("backend", Json::object()).value("kind", "") == kind && st.value("configured", false)) storage_id = it.key();
+    }
     if (storage_id.empty()) return fail(Errc::NotFound, x.say("export_no_storage", Json{{"name", backend}}));
     auto sent = x.rt.storage().backup(*written, storage_id, written->filename().string());
     if (!sent) return fail(sent.error());
@@ -1305,8 +1309,11 @@ StepOutcome help_can_do(Ctx& x) {
     const Json* entry = catalogue_entry(*actions, id);
     if (!entry) continue;
     if (json::get_bool(*entry, "hidden", false)) continue;
+    // Only what can be said and what can be run: the plumbing of the engine (declare a client, explain a rule) has no sentence, and an action that
+    // is carried out by a consumer of its own (the chat send, the analysis) is not something to ask for.
     const std::string say = say_of(x, *entry);
-    if (say.empty() && id.rfind("device.", 0) == 0) continue;
+    if (say.empty()) continue;
+    if (row.value("runs_on", "") != "client" && !x.rt.actions().runnable(*entry)) continue;
     std::size_t at = groups.size();
     for (std::size_t g = 0; g < groups.size(); ++g) {
       const Json& grp = groups[g];
