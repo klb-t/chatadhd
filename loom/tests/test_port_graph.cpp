@@ -180,6 +180,39 @@ TEST_SUITE("port_graph") {
     CHECK(unwrap(port_graph::reconcile_action_runs(*db)) == 0);
   }
 
+  TEST_CASE("ActionRunScope remembers its port runs; reconcile_action_run links one run") {
+    fsutil::TempDir td;
+    auto db = fresh_db(td);
+    port_graph::PortRun run;
+    run.port = "asr"; run.adapter = "groq_whisper"; run.operation_id = "op_a";
+    std::vector<std::string> ids, other;
+    {
+      port_graph::ActionRunScope scope("r_1");
+      unwrap(port_graph::record_port_run(*db, run));
+      run.operation_id = "op_b";
+      {
+        port_graph::ActionRunScope inner("r_2");
+        unwrap(port_graph::record_port_run(*db, run));
+        other = inner.recorded_nodes();
+      }
+      run.operation_id = "op_c";
+      run.action_run_id = "r_1";  // explicit id of an outer scope still lands in that scope
+      unwrap(port_graph::record_port_run(*db, run));
+      ids = scope.recorded_nodes();
+    }
+    CHECK(ids.size() == 2);
+    CHECK(other.size() == 1);
+    CHECK(unwrap(port_graph::reconcile_action_run(*db, "r_1", ids)) == 0);  // run node not written yet
+    const std::string r1 = unwrap(db->get_or_create_node("run:r_1", "action_run"));
+    CHECK(unwrap(port_graph::reconcile_action_run(*db, "r_1", ids)) == 2);
+    CHECK(unwrap(port_graph::reconcile_action_run(*db, "r_1", ids)) == 0);
+    CHECK(targets(*db, ids[0], "part_of") == std::set<std::string>{r1});
+    CHECK(targets(*db, other[0], "part_of").empty());  // another run's node is untouched
+    CHECK(unwrap(port_graph::reconcile_action_run(*db, "r_1", other)) == 0);  // names another run: not linked here
+    unwrap(db->get_or_create_node("run:r_2", "action_run"));
+    CHECK(unwrap(port_graph::reconcile_action_run(*db, "r_2")) == 1);  // scan fallback
+  }
+
   TEST_CASE("no secret value in any node or link; secret key names stay as references") {
     fsutil::TempDir td;
     auto db = fresh_db(td);

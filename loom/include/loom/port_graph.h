@@ -43,6 +43,8 @@ inline constexpr const char* kPortRunSchema = "loom.port_run/1";
 // `secret_ref`, `credential_ref`; everything else becomes "[redacted]".
 Json redact(const Json& value);
 
+struct PortRun;
+
 // The action run the current thread executes in (empty = none). RAII; nests.
 class ActionRunScope {
  public:
@@ -51,9 +53,17 @@ class ActionRunScope {
   ActionRunScope(const ActionRunScope&) = delete;
   ActionRunScope& operator=(const ActionRunScope&) = delete;
   static std::string current();
+  // Node ids of the port runs recorded on this thread while this scope was the innermost one for their run id (in order). The action side
+  // reads them when it writes the run node and links them with reconcile_action_run(db, run_id, ids): no label scan, no table scan.
+  const std::vector<std::string>& recorded_nodes() const { return recorded_; }
+  const std::string& run_id() const { return run_id_; }
 
  private:
+  friend Result<std::string> record_port_run(Database&, const PortRun&);
   std::string previous_;
+  std::string run_id_;
+  ActionRunScope* outer_ = nullptr;
+  std::vector<std::string> recorded_;
 };
 
 struct AdapterInfo {
@@ -108,5 +118,10 @@ Result<std::string> record_port_run(Database& db, const PortRun& run);
 // Links port runs that name an action run (metadata.action_run_id) to its node when that node exists now.
 // Returns how many links were made.
 Result<int> reconcile_action_runs(Database& db);
+
+// Links ONE action run's port runs: the given node ids (ActionRunScope::recorded_nodes()) that name `run_id` and are not yet part_of its
+// node. Reads only those nodes and the run node (by label+kind). With an empty list, falls back to scanning the port_run nodes for this
+// run id only. Returns how many links were made; 0 when the run node does not exist yet.
+Result<int> reconcile_action_run(Database& db, const std::string& run_id, const std::vector<std::string>& node_ids = {});
 
 }  // namespace loom::port_graph
