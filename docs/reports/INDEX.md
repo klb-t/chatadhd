@@ -834,3 +834,14 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 
 CTest 215/215 (dev + serwer, Debug); `npm run build`, wszystkie skrypty `test:*` (33, w tym nowe `test:first-steps-ui` i `test:chat-outcomes`) i `e2e` w Chromium: PASS (`test:product-integration` po usunięciu starego `/home/user/wt/onboarding-host-verification-*`); cztery generatory `--check` czyste; piny `product_literals.pack` odświeżone funkcjami strażnika; zrzut `loom/web/e2e/screenshots` przywrócony. Istniejące testy, których asercje zmieniłem z powodu jednego języka odpowiedzi i kolejki: `e2e/chat-send-gate.mjs` (widok w toku: przycisk działa i kolejkuje; było „wyłączony”), `e2e/client-devices-native.mjs` (krok klienta po polsku w polskiej rozmowie), `e2e/application-profiles.mjs` (tekst końca strumienia z danych), `tests/conversation-view/send-gate.test.mjs` (nowe pola tekstów).
 Lokalna replika `deploy/first-steps-check.sh` (serwer z kontami, atrapa dostawcy S2, ich `first-steps-ui.mjs` ze zmienionym regexem kroku 6.1): 6.0–6.5 przechodzą.
+
+## S2 / R22 — przebiegi portu w akcji bez szukania po etykietach; sprzątanie przy starcie (2026-10-14)
+
+- `port_graph::ActionRunScope::recorded_nodes()` (węzły przebiegów zapisane w zakresie, zagnieżdżenia do najbliższego zakresu
+  tego samego przebiegu) i `port_graph::reconcile_action_run(db, run_id, node_ids)`; bez indeksu `nodes(label)` (DDL bez zmian).
+  Po stronie S1 do zrobienia: `run.cpp` (przekazać `recorded_nodes()`), `result.cpp` (wołać `reconcile_action_run`).
+- Sprzątanie przy starcie (`cleanup` w `config.json`): `upload_part_max_age_hours` 24 (0 = zostaw), `orphan_blob_max_age_days`
+  0 (wyłączone), `orphan_blob_dry_run` true. Blob, do którego odnosi się cokolwiek w bazie lub w JSON w katalogu danych,
+  nigdy nie jest usuwany; gdy którejś tabeli nie da się przeczytać — nic nie jest usuwane.
+- Otwarte: pliki wysyłek multipart serwera; kopie w zdalnych magazynach. Raport: `docs/reports/S2_R22_2026-10-14.md`.
+  Cofnięcie: usunąć klucz `cleanup` albo `upload_part_max_age_hours: 0`.

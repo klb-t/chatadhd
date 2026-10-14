@@ -755,6 +755,7 @@ void App::route_models_providers() {
     const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up);
     cleanup.path = up.path;
     if (!received) {
+      res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
       send_error(res, "invalid_argument", up.error, up.too_large ? 413 : 400);
       return;
     }
@@ -787,6 +788,7 @@ void App::route_models_providers() {
     const bool received = receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up);
     cleanup.path = up.path;
     if (!received) {
+      res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
       send_error(res, "invalid_argument", up.error);
       return;
     }
@@ -1100,6 +1102,7 @@ void App::route_import_export() {
     LoomContext* ctx = rctx();
     Upload up;
     if (!receive_upload(req, reader, upload_dir_for(ctx), opts_.max_body_bytes ? opts_.max_body_bytes : (std::numeric_limits<std::size_t>::max)(), opts_.max_upload_bytes, up)) {
+      res.set_header("Connection", "close");  // the unread rest of the body must not be parsed as the next request
       send_error(res, "invalid_argument", up.error, up.too_large ? 413 : 400);
       return;
     }
