@@ -876,9 +876,11 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
     if (json::get_string(r.hold, "status") == "denied" && !limit.empty()) {
       std::string why = "your spending limit does not allow the routing model call";
       const Json limits = limit.value("limits", Json::array());
-      if (limits.is_array() && !limits.empty())
+      if (limits.is_array() && !limits.empty()) {
+        const Json reason = limits[0].value("reason", Json::object());  // bound: json::find points into it
         for (const std::string& key : {lang, std::string("en")})
-          if (const Json* t = json::find(limits[0].value("reason", Json::object()), key); t && t->is_string() && !t->get<std::string>().empty()) { why = t->get<std::string>(); break; }
+          if (const Json* t = json::find(reason, key); t && t->is_string() && !t->get<std::string>().empty()) { why = t->get<std::string>(); break; }
+      }
       result.error = Error(Errc::Conflict, why);
       return result;
     }

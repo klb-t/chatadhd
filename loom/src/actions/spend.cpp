@@ -390,7 +390,12 @@ Json policy_options(const Config& config, const std::filesystem::path& root) {
     row["limit_usd"] = e.usd();
     limits.push_back(std::move(row));
   }
-  Json out{{"limits", limits}, {"period_labels", labels}, {"texts", data.value("texts", Json::object())}};
+  // Only the texts the admission renders (every record of the ledger keeps its options, so what is not needed is not carried).
+  Json texts = Json::object();
+  const Json all_texts = data.value("texts", Json::object());
+  for (const char* id : {"already_over", "use_would_exceed", "use_estimate_unknown", "on_deny", "on_notify"})
+    if (const Json* t = json::find(all_texts, id)) texts[id] = *t;
+  Json out{{"limits", limits}, {"period_labels", labels}, {"texts", texts}};
   for (const char* key : {"model_use", "cost_resources", "spent_resource"})
     if (const Json* v = json::find(data, key)) out[key] = *v;
   return out;
