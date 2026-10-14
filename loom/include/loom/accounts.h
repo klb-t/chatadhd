@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <condition_variable>
 #include <filesystem>
 #include <map>
 #include <memory>
@@ -56,6 +57,8 @@ struct Settings {
   CookieSettings cookie;
   Throttle throttle;
   Isolation isolation;
+  // R20: bound on simultaneous Argon2id evaluations (each holds its full memory). -1 = CPU count, 0 = unlimited.
+  std::int64_t hash_max_concurrent = -1, hash_wait_seconds = 5;
 };
 
 // Effective server_accounts profile (+ <root>/profiles overlay) and the named Argon2id preset.
@@ -109,13 +112,18 @@ class AccountStore {
 
  private:
   AccountStore() = default;
-  Result<std::string> hash_password(const std::string& password) const;
+  Result<std::string> hash_password(const std::string& password);
   Status check_password_policy(const std::string& password) const;
 
   std::filesystem::path root_;
   Settings settings_;
   sql::Connection db_;
   std::mutex mu_;
+  // Slots for Argon2id evaluations (settings_.hash_max_concurrent); see HashSlot in accounts.cpp.
+  std::mutex hash_mu_;
+  std::condition_variable hash_cv_;
+  std::int64_t hash_active_ = 0;
+  friend class HashSlot;
   struct Fails { std::int64_t count = 0, last = 0; };
   std::mutex tmu_;
   std::map<std::string, Fails> login_fails_, ip_fails_;

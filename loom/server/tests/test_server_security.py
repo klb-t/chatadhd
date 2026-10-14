@@ -310,6 +310,35 @@ def main() -> int:
     finally:
         srv.stop()
 
+    # 11b. chunked / unframed bodies are a setting (--allow-chunked-uploads, preset: refuse): allowed, they are
+    #      accepted on the upload routes only, streamed to disk and counted against --max-upload-bytes
+    srv = Server(root, "--allow-chunked-uploads", "--max-upload-bytes", "30000")
+    try:
+        b = srv.base
+        sa, _ = login(b, "alice", "alice-password")
+        boundary = "r20boundary"
+
+        def multipart(payload: bytes):
+            yield (f"--{boundary}\r\nContent-Disposition: form-data; name=\"title\"\r\n\r\nchunked\r\n"
+                   f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"c.md\"\r\n"
+                   f"Content-Type: text/markdown\r\n\r\n").encode()
+            for i in range(0, len(payload), 1000):
+                yield payload[i:i + 1000]
+            yield f"\r\n--{boundary}--\r\n".encode()
+        hdr = {"Content-Type": f"multipart/form-data; boundary={boundary}"}
+        small = ("# s\n\n" + "user: hello\n\nassistant: hi\n\n" * 20).encode()
+        r = sa.post(b + "/api/import", data=multipart(small), headers=hdr, timeout=120)
+        assert r.status_code == 200 and any(e.get("type") == "done" for e in sse_events(r)), (r.status_code, r.text[:300])
+        r = sa.post(b + "/api/import", data=multipart(b"x" * 100_000), headers=hdr, timeout=120)
+        assert r.status_code == 413, r.status_code
+        def gen2():
+            yield b'{"title":'
+            yield b'"x"}'
+        assert sa.post(b + "/api/conversations", data=gen2(), headers={"Content-Type": "application/json"},
+                       timeout=30).status_code == 411
+    finally:
+        srv.stop()
+
     # 12. throttling covers registration (account flooding, invite guessing) and the password check
     write_profile(root, argon2id_preset="owasp_min", registration="invite")
     srv = Server(root)
@@ -338,6 +367,37 @@ def main() -> int:
         assert sa.get(srv.base + "/api/conversations").status_code == 200
         time.sleep(3.5)
         assert sa.get(srv.base + "/api/conversations").status_code == 401
+    finally:
+        srv.stop()
+    # 14. concurrent Argon2id evaluations are a setting (hashing.max_concurrent, preset = CPU count): with one
+    #     slot and no waiting, simultaneous registrations (each 64 MiB of Argon2id) are answered 503 + Retry-After
+    import concurrent.futures
+    write_profile(root, argon2id_preset="rfc9106_second", registration="open",
+                  hashing={"max_concurrent": 1, "wait_seconds": 0})
+    srv = Server(root)
+    try:
+        b = srv.base
+
+        def reg(i):
+            return requests.post(b + "/api/auth/register", json={"login": f"h{i}", "password": "hash-hash-1"}, timeout=120)
+        with concurrent.futures.ThreadPoolExecutor(6) as pool:
+            rs = list(pool.map(reg, range(6)))
+        codes = sorted(r.status_code for r in rs)
+        assert 201 in codes and 503 in codes and set(codes) <= {201, 503}, codes
+        assert all(int(r.headers["Retry-After"]) >= 1 for r in rs if r.status_code == 503)
+        assert reg(99).status_code == 201  # a free slot again
+    finally:
+        srv.stop()
+    # unlimited (0) never refuses
+    write_profile(root, argon2id_preset="rfc9106_second", registration="open", hashing={"max_concurrent": 0, "wait_seconds": 0})
+    srv = Server(root)
+    try:
+        b = srv.base
+
+        def reg2(i):
+            return requests.post(b + "/api/auth/register", json={"login": f"u{i}", "password": "hash-hash-1"}, timeout=120)
+        with concurrent.futures.ThreadPoolExecutor(4) as pool:
+            assert {r.status_code for r in pool.map(reg2, range(4))} == {201}
     finally:
         srv.stop()
     print("ok")
