@@ -545,6 +545,21 @@ try:
     assert run("--help", code=1).returncode == 1
     os.remove(stored_path)
 
+    # rules: writing a rule is an action like any other (P11): without --yes the preset's confirmation pauses it
+    waiting = js("rules", "set", "--scope", "person", "--key", "extrapolation.max_cost", "--value", "2")
+    assert waiting["status"] == "awaiting_confirmation", waiting
+    assert not os.path.exists(os.path.join(data, "profiles", "action_rules.pack"))
+    written = js("rules", "set", "--scope", "person", "--key", "extrapolation.max_cost", "--value", "2", "--yes")
+    assert written["status"] == "completed" and written["result"]["data"]["id"] == "user:person:value:extrapolation.max_cost", written
+    listed = js("rules", "list", "--user-only")
+    assert [r["id"] for r in listed["rules"]] == ["user:person:value:extrapolation.max_cost"] and listed["rules"][0]["value"] == 2
+    locked = js("rules", "disable", "edit:config:loom_usage_policy", "--yes", code=1)
+    assert locked["status"] == "failed" and "pinned" in locked["error"]["message"], locked
+    off = js("rules", "disable", "user:person:value:extrapolation.max_cost", "--yes")
+    assert off["status"] == "completed"
+    assert js("rules", "list", "--user-only")["rules"][0]["disabled"] is True
+    os.remove(os.path.join(data, "profiles", "action_rules.pack"))
+
     # crypto (password from stdin)
     run("crypto", "setup", stdin="pw-123\n")
     assert js("crypto", "status")["configured"] is True

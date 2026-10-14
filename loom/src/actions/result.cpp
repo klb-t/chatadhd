@@ -312,24 +312,42 @@ Status store_run_results(const ResultServices& s, Json& run) {
     const Json request = run.value("request", Json::object());
     const Json context = request.value("context", Json::object());
 
-    // The source element: a node id the links can point to.
-    std::string source = json::get_string(element, "id");
-    if (json::get_string(element, "source") == "blob" && !source.empty()) {
-      const Json attrs = element.value("attrs", Json::object());
-      std::string node = json::get_string(attrs, "node_id");
-      if (node.empty()) {
-        NodeOptions o;
-        o.metadata = Json{{"blob_hash", json::get_string(attrs, "hash", source)}, {"mime", json::get_string(attrs, "mime")}};
-        auto made = db.get_or_create_node("blob:" + json::get_string(attrs, "hash", source), "blob", o);
-        if (made) node = *made;
-        else issue("source_blob_node", made.error().message);
+    // The source element: a node id the links can point to. A group of elements (combine) has one source per member and no
+    // single source: its content is the group's own, and every member is something the result is derived from.
+    auto source_node = [&](const Json& el) {
+      std::string id = json::get_string(el, "id");
+      if (json::get_string(el, "source") == "blob" && !id.empty()) {
+        const Json attrs = el.value("attrs", Json::object());
+        std::string node = json::get_string(attrs, "node_id");
+        if (node.empty()) {
+          NodeOptions o;
+          o.metadata = Json{{"blob_hash", json::get_string(attrs, "hash", id)}, {"mime", json::get_string(attrs, "mime")}};
+          auto made = db.get_or_create_node("blob:" + json::get_string(attrs, "hash", id), "blob", o);
+          if (made) node = *made;
+          else issue("source_blob_node", made.error().message);
+        }
+        if (!node.empty()) id = node;
       }
-      if (!node.empty()) source = node;
+      return id;
+    };
+    const bool grouped = json::get_string(element, "source") == "group";
+    std::vector<std::string> sources;
+    if (grouped) {
+      for (const auto& m : element.value("members", Json::array()))
+        if (std::string one = source_node(m); !one.empty()) sources.push_back(std::move(one));
+    } else if (std::string one = source_node(element); !one.empty()) {
+      sources.push_back(std::move(one));
     }
+    auto joined = [&](const char* sep) {
+      std::string out;
+      for (const auto& x : sources) out += (out.empty() ? "" : sep) + x;
+      return out;
+    };
+    const std::string source = grouped ? std::string() : (sources.empty() ? std::string() : sources[0]);
 
-    // The content node: one per source element, reused by every later run, never rewritten.
+    // The content node: one per source element (per set of them, for a group), reused by every later run, never rewritten.
     const std::string content_kind = json::get_string(classes, "content", "content");
-    const std::string content_label = "content:" + (source.empty() ? run_id : source);
+    const std::string content_label = "content:" + (grouped ? (sources.empty() ? run_id : joined("+")) : (source.empty() ? run_id : source));
     std::string content_id;
     bool content_reused = false;
     {
@@ -342,7 +360,7 @@ Status store_run_results(const ResultServices& s, Json& run) {
       } else {
         NodeOptions o;
         o.tags = Json::array({"content", "action_result"});
-        o.metadata = Json{{"schema", "loom.action_content/1"}, {"source", source}, {"source_class", json::get_string(element, "class")},
+        o.metadata = Json{{"schema", "loom.action_content/1"}, {"source", grouped ? joined(",") : source}, {"source_class", json::get_string(element, "class")},
                           {"origin", "action_result"}, {"first_run", run_id}};
         auto made = db.create_node(content_label, content_kind, o);
         if (made) content_id = *made;
@@ -351,7 +369,8 @@ Status store_run_results(const ResultServices& s, Json& run) {
     }
     produced["content"] = content_id.empty() ? Json(nullptr) : Json(content_id);
     produced["content_reused"] = content_reused;
-    produced["source"] = source;
+    produced["source"] = grouped ? joined(",") : source;
+    if (grouped) produced["sources"] = sources;
 
     // The source is a form of that content as well (fidelity 1): a search for the content finds it in every form.
     if (!content_id.empty() && !source.empty()) {
@@ -431,7 +450,7 @@ Status store_run_results(const ResultServices& s, Json& run) {
         meta["step"] = it.step;
         meta["part"] = it.index;
         meta["part_kind"] = it.kind;
-        meta["source"] = source;
+        meta["source"] = grouped ? joined(",") : source;
         meta["content"] = content_id;
         if (!it.mime.empty()) meta["mime"] = it.mime;
         if (!it.blob_hash.empty()) meta["blob_hash"] = it.blob_hash;
@@ -460,8 +479,8 @@ Status store_run_results(const ResultServices& s, Json& run) {
         auto made = db.create_link(form, content_id, link_type("expresses"), json::get_number(fidelity, "fidelity", 0.5), meta);
         if (!made) issue("expresses_link", made.error().message);
       }
-      if (!source.empty()) {
-        auto made = db.create_link(form, source, link_type("derived_from"), 1.0, Json{{"run_id", run_id}, {"action", action_id}});
+      for (const auto& from : sources) {
+        auto made = db.create_link(form, from, link_type("derived_from"), 1.0, Json{{"run_id", run_id}, {"action", action_id}});
         if (!made) issue("derived_link", made.error().message);
       }
       if (!run_node.empty()) {

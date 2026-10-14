@@ -24,6 +24,36 @@
         "always": {"label": {"en": "Run at once (rules and the x10 confirmation still apply)", "pl": "Od razu (zasady i potwierdzenie ×10 nadal obowiązują)"}}
       }
     },
+    "emergent": {
+      "setting": "emergent_actions",
+      "active": "propose",
+      "presets": {
+        "off": {"label": {"en": "Off: the catalogue never grows from conversations", "pl": "Wyłączone: katalog nie rośnie z rozmów"}},
+        "propose": {"label": {"en": "Propose: new actions, sequences and groups are offered, never made silently", "pl": "Propozycje: nowe akcje, sekwencje i grupy są proponowane, nigdy po cichu"}}
+      },
+      "command_shape": {
+        "max_tokens": 16,
+        "min_lead_chars": 4,
+        "element_within": 3,
+        "lead_skip": ["prosze", "teraz", "moglbys", "mozesz", "moze", "please", "now", "could", "can", "would", "you", "just", "hey", "ok", "okay"],
+        "not_leads": ["jak", "jaki", "jaka", "jakie", "co", "czemu", "dlaczego", "czy", "kto", "kiedy", "gdzie", "ile", "ktory", "ktora", "chce", "chcialbym", "chcialabym", "mam", "musze", "powiedz", "what", "why", "how", "who", "when", "where", "which", "does", "should", "will", "this", "that", "there", "here", "what's", "i'm", "i'd", "i'll", "let's", "tell", "want", "need", "think", "wonder", "maybe"],
+        "forbid_question_mark": true
+      },
+      "naming": {"prefix": "", "max_chars": 24},
+      "requires_from": ["has_text", "has_image", "has_audio", "has_video", "has_code", "has_table"],
+      "definition": {
+        "system": {
+          "en": "You carry out an instruction about the text that follows it. Do what the instruction says, faithfully and completely; add nothing it does not ask for. Answer in the language of the instruction unless it asks for another.",
+          "pl": "Wykonujesz polecenie dotyczące poniższego tekstu. Zrób dokładnie to, co polecenie mówi, wiernie i w całości; nie dodawaj niczego, o co nie prosi. Odpowiadaj w języku polecenia, chyba że prosi o inny."
+        },
+        "parameters": {"temperature": 0.5},
+        "cost": 1.0,
+        "confidence": 0.6
+      },
+      "sequences": {"repeat": 3, "max_length": 3, "gap_seconds": 900, "window_runs": 200, "joiner": "_then_"},
+      "groups": {"min_classes": 2, "suffix": "_targets"},
+      "node": {"kind": "proposal", "link": "derived_from"}
+    },
     "default_language": "en",
     "message_request_fields": ["attachments", "usage_confirmation", "active_task_spec", "knowledge_context", "web_search", "deep_research"],
     "heuristic": {
@@ -70,7 +100,130 @@
       ],
       "references": [
         {"id": "conversation", "words": ["rozmow*", "konwersacj*", "czat*", "chat", "conversation", "thread", "dyskusj*", "wątek", "watek", "wątku", "watku"], "resolve": "current_conversation"},
-        {"id": "message", "words": ["wiadomo*", "message", "odpowied*", "reply", "answer"], "resolve": "last_message"}
+        {"id": "message", "words": ["wiadomo*", "message", "odpowied*", "reply", "answer"], "resolve": "last_message"},
+        {"id": "microphone", "words": ["mikrofon*", "microphone", "mic"], "resolve": "element", "element": "device:microphone"},
+        {"id": "camera", "words": ["aparat*", "kamer*", "camera"], "resolve": "element", "element": "device:camera"},
+        {"id": "speaker", "words": ["glosnik*", "speaker", "speakers"], "resolve": "element", "element": "device:speaker"},
+        {"id": "screen", "words": ["ekran*", "screen"], "resolve": "element", "element": "device:screen"},
+        {"id": "clipboard", "words": ["schowek", "schowka", "schowku", "clipboard"], "resolve": "element", "element": "device:clipboard"},
+        {"id": "notifications", "words": ["powiadomien*", "notification", "notifications"], "resolve": "element", "element": "device:notifications"},
+        {"id": "files", "words": ["plik", "pliki", "plikow", "file", "files"], "resolve": "element", "element": "device:file_access"}
+      ],
+      "phrases": {
+        "rephrase": {
+          "en": ["rephrase", "reword", "rewrite", "paraphrase", "say it differently", "put it differently"],
+          "pl": ["przeredaguj*", "przeformułuj*", "przeformuluj*", "sparafrazuj*", "napisz inaczej", "powiedz inaczej", "ujmij inaczej"]
+        },
+        "explain_simply": {
+          "en": ["explain simply", "explain it simply", "explain this simply", "simplify", "eli5", "explain like", "make it simpler"],
+          "pl": ["wytłumacz prościej", "wyjaśnij prościej", "wytlumacz prosciej", "wyjasnij prosciej", "uprość*", "uprosc*", "wytłumacz jak"]
+        }
+      },
+      "rules": {
+        "scopes": [
+          {"scope": "conversation", "phrases": {
+            "pl": ["w tej rozmowie", "w tym czacie", "w tym wątku", "dla tej rozmowy", "dla tego czatu", "dla tego wątku", "tylko tutaj", "tylko w tej rozmowie"],
+            "en": ["in this conversation", "for this conversation", "in this chat", "for this chat", "in this thread", "for this thread", "only here", "only in this conversation"]}},
+          {"scope": "person", "phrases": {
+            "pl": ["dla mnie", "u mnie", "na stałe dla mnie", "osobiście"],
+            "en": ["for me", "for myself", "personally", "on my account"]}},
+          {"scope": "installation", "phrases": {
+            "pl": ["w całej instalacji", "w tej instalacji", "dla wszystkich", "dla wszystkich rozmów", "wszędzie", "globalnie"],
+            "en": ["in this installation", "in the whole installation", "for everyone", "for all conversations", "everywhere", "globally"]}}
+        ],
+        "commands": [
+          {"id": "set_value.pl", "action": "rules.set", "effect": "set_value", "needs_scope": true, "lang": "pl",
+           "regex": "^[\\s,]*(?:ustaw|zmien|przelacz)\\s+([a-z][a-z0-9_.]*)\\s*(?:=|na)\\s*(.+?)\\s*[.!]*\\s*$", "args": ["key", "value"], "original": ["value"]},
+          {"id": "set_value.en", "action": "rules.set", "effect": "set_value", "needs_scope": true, "lang": "en",
+           "regex": "^[\\s,]*(?:set|change|switch)\\s+(?:the\\s+)?(?:setting\\s+)?([a-z][a-z0-9_.]*)\\s*(?:=|to)\\s*(.+?)\\s*[.!]*\\s*$", "args": ["key", "value"], "original": ["value"]},
+          {"id": "confirm.ask_before.pl", "action": "rules.set", "effect": "confirm", "lang": "pl",
+           "regex": "^[\\s,]*(?:zawsze\\s+)?(?:pytaj|zapytaj)\\s+(?:mnie\\s+)?(?:przed|o)\\s+(?:uruchomieniem\\s+|wykonaniem\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "confirm.never_without_asking.pl", "action": "rules.set", "effect": "confirm", "lang": "pl",
+           "regex": "^[\\s,]*nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)\\s+([a-z][a-z0-9_.]*)\\s+bez\\s+pytania\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "confirm.never_without_asking.en", "action": "rules.set", "effect": "confirm", "lang": "en",
+           "regex": "^[\\s,]*never\\s+(?:run|execute|start)\\s+([a-z][a-z0-9_.]*)\\s+without\\s+(?:asking|confirmation|confirming)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "confirm.ask_before.en", "action": "rules.set", "effect": "confirm", "lang": "en",
+           "regex": "^[\\s,]*(?:always\\s+)?ask\\s+(?:me\\s+)?before\\s+(?:running\\s+|executing\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "deny.never.pl", "action": "rules.set", "effect": "deny", "lang": "pl",
+           "regex": "^[\\s,]*(?:nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)|zabron\\w*|zablokuj)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "deny.never.en", "action": "rules.set", "effect": "deny", "lang": "en",
+           "regex": "^[\\s,]*(?:never\\s+(?:run|execute|start)|forbid|ban|block)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "allow.pl", "action": "rules.set", "effect": "allow", "lang": "pl",
+           "regex": "^[\\s,]*(?:(?:zawsze\\s+)?(?:pozwalaj|zezwalaj)\\s+na|nie\\s+pytaj\\s+(?:mnie\\s+)?(?:o|przed))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "allow.en", "action": "rules.set", "effect": "allow", "lang": "en",
+           "regex": "^[\\s,]*(?:(?:always\\s+)?allow|(?:stop\\s+asking|don't\\s+ask|do\\s+not\\s+ask)\\s+(?:me\\s+)?(?:about|before))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
+          {"id": "disable.pl", "action": "rules.disable", "lang": "pl",
+           "regex": "^[\\s,]*(?:wylacz|usun|zdejmij)\\s+regule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
+          {"id": "disable.en", "action": "rules.disable", "lang": "en",
+           "regex": "^[\\s,]*(?:disable|remove|switch\\s+off|turn\\s+off)\\s+(?:the\\s+)?rule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
+          {"id": "remove_action.pl", "action": "actions.remove", "lang": "pl",
+           "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+akcje\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
+          {"id": "remove_action.en", "action": "actions.remove", "lang": "en",
+           "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?action\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
+          {"id": "remove_group.pl", "action": "groups.remove", "lang": "pl",
+           "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+grupe\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
+          {"id": "remove_group.en", "action": "groups.remove", "lang": "en",
+           "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?group\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
+          {"id": "list.pl", "action": "rules.list", "lang": "pl",
+           "regex": "^[\\s,]*(?:pokaz|wylistuj|wypisz)\\s+(?:moje\\s+|wszystkie\\s+)?(?:zasady|reguly)\\s*[.!?]*\\s*$", "args": []},
+          {"id": "list.en", "action": "rules.list", "lang": "en",
+           "regex": "^[\\s,]*(?:show|list)\\s+(?:me\\s+)?(?:my\\s+|all\\s+|the\\s+)?rules\\s*[.!?]*\\s*$", "args": []}
+        ]
+      },
+      "languages": [
+        {"code": "en", "label": {"en": "English", "pl": "angielski"}, "names": ["english", "angielsk*"]},
+        {"code": "pl", "label": {"en": "Polish", "pl": "polski"}, "names": ["polish", "polsk*"]},
+        {"code": "de", "label": {"en": "German", "pl": "niemiecki"}, "names": ["german", "deutsch", "niemieck*"]},
+        {"code": "fr", "label": {"en": "French", "pl": "francuski"}, "names": ["french", "francais", "francusk*"]},
+        {"code": "es", "label": {"en": "Spanish", "pl": "hiszpański"}, "names": ["spanish", "espanol", "hiszpansk*"]},
+        {"code": "it", "label": {"en": "Italian", "pl": "włoski"}, "names": ["italian", "italiano", "wlosk*"]},
+        {"code": "pt", "label": {"en": "Portuguese", "pl": "portugalski"}, "names": ["portuguese", "portugues", "portugalsk*"]},
+        {"code": "ru", "label": {"en": "Russian", "pl": "rosyjski"}, "names": ["russian", "rosyjsk*"]},
+        {"code": "uk", "label": {"en": "Ukrainian", "pl": "ukraiński"}, "names": ["ukrainian", "ukrainsk*"]},
+        {"code": "cs", "label": {"en": "Czech", "pl": "czeski"}, "names": ["czech", "czesk*"]},
+        {"code": "sk", "label": {"en": "Slovak", "pl": "słowacki"}, "names": ["slovak", "slowack*"]},
+        {"code": "sl", "label": {"en": "Slovenian", "pl": "słoweński"}, "names": ["slovenian", "slowensk*"]},
+        {"code": "hr", "label": {"en": "Croatian", "pl": "chorwacki"}, "names": ["croatian", "chorwack*"]},
+        {"code": "bg", "label": {"en": "Bulgarian", "pl": "bułgarski"}, "names": ["bulgarian", "bulgarsk*"]},
+        {"code": "nl", "label": {"en": "Dutch", "pl": "niderlandzki"}, "names": ["dutch", "nederlands", "niderlandzk*", "holendersk*"]},
+        {"code": "sv", "label": {"en": "Swedish", "pl": "szwedzki"}, "names": ["swedish", "svenska", "szwedzk*"]},
+        {"code": "no", "label": {"en": "Norwegian", "pl": "norweski"}, "names": ["norwegian", "norsk", "norwesk*"]},
+        {"code": "da", "label": {"en": "Danish", "pl": "duński"}, "names": ["danish", "dansk", "dunsk*"]},
+        {"code": "fi", "label": {"en": "Finnish", "pl": "fiński"}, "names": ["finnish", "suomi", "finsk*"]},
+        {"code": "hu", "label": {"en": "Hungarian", "pl": "węgierski"}, "names": ["hungarian", "wegiersk*"]},
+        {"code": "ro", "label": {"en": "Romanian", "pl": "rumuński"}, "names": ["romanian", "rumunsk*"]},
+        {"code": "el", "label": {"en": "Greek", "pl": "grecki"}, "names": ["greek", "greck*"]},
+        {"code": "lt", "label": {"en": "Lithuanian", "pl": "litewski"}, "names": ["lithuanian", "litewsk*"]},
+        {"code": "lv", "label": {"en": "Latvian", "pl": "łotewski"}, "names": ["latvian", "lotewsk*"]},
+        {"code": "et", "label": {"en": "Estonian", "pl": "estoński"}, "names": ["estonian", "estonsk*"]},
+        {"code": "tr", "label": {"en": "Turkish", "pl": "turecki"}, "names": ["turkish", "turecki", "turecku", "turk*"]},
+        {"code": "ja", "label": {"en": "Japanese", "pl": "japoński"}, "names": ["japanese", "japonsk*"]},
+        {"code": "zh", "label": {"en": "Chinese", "pl": "chiński"}, "names": ["chinese", "chinsk*"]},
+        {"code": "ko", "label": {"en": "Korean", "pl": "koreański"}, "names": ["korean", "koreansk*"]},
+        {"code": "ar", "label": {"en": "Arabic", "pl": "arabski"}, "names": ["arabic", "arabsk*"]},
+        {"code": "he", "label": {"en": "Hebrew", "pl": "hebrajski"}, "names": ["hebrew", "hebrajsk*"]},
+        {"code": "hi", "label": {"en": "Hindi", "pl": "hindi"}, "names": ["hindi"]},
+        {"code": "la", "label": {"en": "Latin", "pl": "łaciński"}, "names": ["latin", "lacin*"]}
+      ],
+      "arguments": [
+        {"id": "target_language.pl", "param": "target_language", "lang": "pl", "kind": "language", "regex": "\\b(?:na|po|do)\\s+(?:jezyk\\w*\\s+)?(\\w+)"},
+        {"id": "target_language.en", "param": "target_language", "lang": "en", "kind": "language", "regex": "\\b(?:into|to|in)\\s+(?:the\\s+)?(?:language\\s+)?(\\w+)"},
+        {"id": "style.pl", "param": "style", "lang": "pl", "kind": "text", "regex": "\\bw\\s+stylu\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "style.pl.manner", "param": "style", "lang": "pl", "kind": "text", "regex": "\\bw\\s+manierze\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "style.en", "param": "style", "lang": "en", "kind": "text", "regex": "\\bin\\s+the\\s+style\\s+of\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "style.en.adjective", "param": "style", "lang": "en", "kind": "text", "regex": "\\bin\\s+(?:an?\\s+)?(\\w+)\\s+style\\b"},
+        {"id": "tone.pl.adjective", "param": "tone", "lang": "pl", "kind": "text", "regex": "\\bw\\s+(\\w+)\\s+tonie\\b"},
+        {"id": "tone.pl", "param": "tone", "lang": "pl", "kind": "text", "regex": "\\bw\\s+tonie\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "tone.en", "param": "tone", "lang": "en", "kind": "text", "regex": "\\bin\\s+(?:an?\\s+|the\\s+)?(\\w+)\\s+tone\\b"},
+        {"id": "level.pl", "param": "level", "lang": "pl", "kind": "text", "regex": "\\bna\\s+poziomie\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "level.en", "param": "level", "lang": "en", "kind": "text", "regex": "\\bat\\s+(?:an?\\s+|the\\s+)?(\\w+(?:\\s+\\w+)?)\\s+level\\b"},
+        {"id": "audience.pl", "param": "audience", "lang": "pl", "kind": "text", "regex": "\\b(?:jak\\s+)?dla\\s+(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "audience.en.like", "param": "audience", "lang": "en", "kind": "text", "regex": "\\b(like\\s+i(?:'|\u2019)?m\\s+\\w+)\\s*[.!?]*\\s*$"},
+        {"id": "audience.en", "param": "audience", "lang": "en", "kind": "text", "regex": "\\bfor\\s+(?:an?\\s+|the\\s+)?(.+?)\\s*[.!?]*\\s*$"},
+        {"id": "size.pl.by", "param": "size", "lang": "pl", "kind": "text", "template": "{1}x{2}", "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\s*[x\u00d7]\\s*(\\d{2,5})"},
+        {"id": "size.pl", "param": "size", "lang": "pl", "kind": "text", "template": "{1}x{1}", "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\b"},
+        {"id": "size.en.by", "param": "size", "lang": "en", "kind": "text", "template": "{1}x{2}", "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\s*[x\u00d7]\\s*(\\d{2,5})"},
+        {"id": "size.en", "param": "size", "lang": "en", "kind": "text", "template": "{1}x{1}", "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\b"}
       ]
     },
     "confirmation": {
@@ -108,6 +261,25 @@
         "proposal_denied": "The rules do not allow this: {{reason}}{{initiator}}.",
         "proposal_unfit": "This does not fit that element: it needs {{missing}}.",
         "proposal_missing_args": "I still need: {{args}}. Say it as /{{action}} with {{args}} filled in, or ask in other words.",
+        "proposal_args": "Arguments I read from your words: {{args}}.",
+        "proposal_args_open": "Not given (the defaults apply): {{params}}.",
+        "proposal_refused": "This is refused: {{reason}}{{initiator}}.",
+        "proposal_note": "Note: {{note}}.",
+        "rule_note_consumer": "nothing reads this value per scope yet, so it will not change anything until a part of the application does",
+        "rule_replaces": "It replaces the rule you set before for the same thing.",
+        "define_title": "I do not know the command \"{{verb}}\". Shall I define it as a new action?",
+        "define_what": "Name: {{id}}. It sends the text of the element to the model with your own instruction: \"{{instruction}}\". It works on elements that have: {{requires}}.",
+        "define_then": "Then it runs on {{element}}.",
+        "define_where": "It is written to your own overlay ({{overlay}}), not to the shipped data; \"remove action {{id}}\" takes it back.",
+        "define_ask": "Reply \"yes\" to define it, or \"no\" to drop it.",
+        "sequence_title": "You have run {{sequence}} on {{class}} {{count}} times in a row. Shall I save it as one action \"{{id}}\"?",
+        "sequence_what": "It runs {{steps}} one after another, the result of each feeding the next.",
+        "group_title": "\"{{action}}\" has been used on {{classes}}, which share: {{traits}}. Shall I define a group \"{{id}}\" for what they have in common?",
+        "group_what": "A group is a named bundle of traits that rules and actions can refer to. It is written to your own overlay ({{overlay}}); \"remove group {{id}}\" takes it back.",
+        "defined_group_label": "What \"{{action}}\" works on",
+        "defined_done": "Defined the action \"{{id}}\" in your own overlay ({{overlay}}). Take it back with: remove action {{id}}.",
+        "defined_group_done": "Defined the group \"{{id}}\" in your own overlay ({{overlay}}). Take it back with: remove group {{id}}.",
+        "removed_done": "Removed \"{{id}}\" from your own overlay.",
         "proposal_error": "I could not plan this: {{message}}",
         "proposal_chain": "It would need a chain: {{chain}}.",
         "proposal_alternatives": "Other readings: {{alternatives}}.",
@@ -120,6 +292,7 @@
         "effect_private": "touches private data",
         "effect_none": "has no side effects",
         "no_element": "this conversation",
+        "group_label": "{{count}} elements",
         "result_completed": "Done: {{title}}.",
         "result_failed": "It failed at {{step}}: {{message}}",
         "result_denied": "The rules do not allow it: {{message}}",
@@ -146,6 +319,25 @@
         "proposal_denied": "Zasady na to nie pozwalają: {{reason}}{{initiator}}.",
         "proposal_unfit": "To nie pasuje do tego elementu: potrzebuje {{missing}}.",
         "proposal_missing_args": "Brakuje jeszcze: {{args}}. Podaj to jako /{{action}} z uzupełnionymi wartościami albo powiedz inaczej.",
+        "proposal_args": "Argumenty odczytane z Twoich słów: {{args}}.",
+        "proposal_args_open": "Niepodane (obowiązują wartości domyślne): {{params}}.",
+        "proposal_refused": "To jest odrzucone: {{reason}}{{initiator}}.",
+        "proposal_note": "Uwaga: {{note}}.",
+        "rule_note_consumer": "żadna część aplikacji nie czyta jeszcze tej wartości per zakres, więc nic się nie zmieni, dopóki któraś jej nie zacznie czytać",
+        "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie.",
+        "define_title": "Nie znam polecenia „{{verb}}”. Zdefiniować je jako nową akcję?",
+        "define_what": "Nazwa: {{id}}. Wysyła tekst elementu do modelu z Twoim własnym poleceniem: „{{instruction}}”. Działa na elementach, które mają: {{requires}}.",
+        "define_then": "Potem wykonuje się na: {{element}}.",
+        "define_where": "Zapisuje się w Twojej własnej nakładce ({{overlay}}), nie w danych dostarczonych z aplikacją; „usuń akcję {{id}}” to cofa.",
+        "define_ask": "Odpowiedz „tak”, żeby zdefiniować, albo „nie”, żeby odrzucić.",
+        "sequence_title": "Wykonałeś {{sequence}} na: {{class}} {{count}} razy z rzędu. Zapisać to jako jedną akcję „{{id}}”?",
+        "sequence_what": "Wykonuje {{steps}} jedno po drugim, wynik każdego idzie do następnego.",
+        "group_title": "„{{action}}” użyto na: {{classes}}, a te mają wspólne: {{traits}}. Zdefiniować grupę „{{id}}” dla tego, co mają wspólnego?",
+        "group_what": "Grupa to nazwany zestaw cech, do którego mogą się odwoływać reguły i akcje. Zapisuje się w Twojej własnej nakładce ({{overlay}}); „usuń grupę {{id}}” to cofa.",
+        "defined_group_label": "Na czym działa „{{action}}”",
+        "defined_done": "Zdefiniowano akcję „{{id}}” w Twojej własnej nakładce ({{overlay}}). Cofniesz to poleceniem: usuń akcję {{id}}.",
+        "defined_group_done": "Zdefiniowano grupę „{{id}}” w Twojej własnej nakładce ({{overlay}}). Cofniesz to poleceniem: usuń grupę {{id}}.",
+        "removed_done": "Usunięto „{{id}}” z Twojej własnej nakładki.",
         "proposal_error": "Nie udało się tego zaplanować: {{message}}",
         "proposal_chain": "Potrzebny byłby łańcuch: {{chain}}.",
         "proposal_alternatives": "Inne odczytania: {{alternatives}}.",
@@ -158,6 +350,7 @@
         "effect_private": "dotyka danych prywatnych",
         "effect_none": "nie ma skutków ubocznych",
         "no_element": "tej rozmowie",
+        "group_label": "elementy: {{count}}",
         "result_completed": "Gotowe: {{title}}.",
         "result_failed": "Nie udało się w kroku {{step}}: {{message}}",
         "result_denied": "Zasady na to nie pozwalają: {{message}}",
@@ -173,7 +366,7 @@
   },
   "value_schema": {
     "type": "object",
-    "required": ["method", "execution", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
+    "required": ["method", "execution", "emergent", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
     "properties": {
       "method": {
         "type": "object",
@@ -194,6 +387,31 @@
           "setting": {"type": "string", "minLength": 1},
           "active": {"type": "string", "minLength": 1},
           "presets": {"type": "object", "additionalProperties": {"type": "object"}}
+        },
+        "additionalProperties": false
+      },
+      "emergent": {
+        "type": "object",
+        "description": "The catalogue grows from conversations (R55), always as proposals and never silently. `setting`/`active`/`presets`: off | propose. command_shape: an input that matches no action but has the shape of a command (a verb-like lead word, an element, no question) is offered as the definition of a new action (a composite with one use_model step whose prompt is the user's own instruction; requires inferred from the element's traits among requires_from; the phrase joins the lexicon). sequences: the same chain of actions, each run on the result of the one before, on elements of one class `repeat` times in a row (consecutive within gap_seconds, at most max_length long, read from the last window_runs runs) is offered as one composite. groups: a user-defined action used on min_classes classes that share traits is offered a group (named trait bundle) of what they share. Accepting writes only user overlays; every proposal leaves a node of `node.kind` with links `node.link` to the messages it emerged from.",
+        "required": ["setting", "active", "presets", "command_shape", "naming", "requires_from", "definition", "sequences", "groups", "node"],
+        "properties": {
+          "setting": {"type": "string", "minLength": 1},
+          "active": {"type": "string", "minLength": 1},
+          "presets": {"type": "object", "additionalProperties": {"type": "object"}},
+          "command_shape": {"type": "object", "required": ["max_tokens", "min_lead_chars", "element_within", "lead_skip", "not_leads", "forbid_question_mark"], "properties": {
+            "max_tokens": {"type": "integer", "minimum": 1}, "min_lead_chars": {"type": "integer", "minimum": 1}, "element_within": {"type": "integer", "minimum": 1},
+            "lead_skip": {"type": "array", "items": {"type": "string"}}, "not_leads": {"type": "array", "items": {"type": "string"}},
+            "forbid_question_mark": {"type": "boolean"}}, "additionalProperties": false},
+          "naming": {"type": "object", "required": ["prefix", "max_chars"], "properties": {"prefix": {"type": "string"}, "max_chars": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
+          "requires_from": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "definition": {"type": "object", "required": ["system", "parameters", "cost", "confidence"], "properties": {
+            "system": {"type": "object", "additionalProperties": {"type": "string"}}, "parameters": {"type": "object"},
+            "cost": {"type": "number", "minimum": 0}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}, "additionalProperties": false},
+          "sequences": {"type": "object", "required": ["repeat", "max_length", "gap_seconds", "window_runs", "joiner"], "properties": {
+            "repeat": {"type": "integer", "minimum": 1}, "max_length": {"type": "integer", "minimum": 2}, "gap_seconds": {"type": "integer", "minimum": 0},
+            "window_runs": {"type": "integer", "minimum": 1}, "joiner": {"type": "string", "minLength": 1}}, "additionalProperties": false},
+          "groups": {"type": "object", "required": ["min_classes", "suffix"], "properties": {"min_classes": {"type": "integer", "minimum": 2}, "suffix": {"type": "string"}}, "additionalProperties": false},
+          "node": {"type": "object", "required": ["kind", "link"], "properties": {"kind": {"type": "string", "minLength": 1}, "link": {"type": "string", "minLength": 1}}, "additionalProperties": false}
         },
         "additionalProperties": false
       },
@@ -252,7 +470,57 @@
               "properties": {
                 "id": {"type": "string", "minLength": 1},
                 "words": {"type": "array", "items": {"type": "string"}},
-                "resolve": {"type": "string", "enum": ["current_conversation", "last_message"]}
+                "resolve": {"type": "string", "enum": ["current_conversation", "last_message", "element"]},
+                "element": {"type": "string", "description": "resolve element: the id of the element the words stand for (device:microphone ...; ids of the data in element_resolution.pack)."}
+              },
+              "additionalProperties": false
+            }
+          },
+          "rules": {
+            "type": "object",
+            "description": "Scoped settings and rules from what is said (R54): \"w tej rozmowie ustaw X=Y\", \"dla mnie zawsze pytaj przed depict\", \"for this conversation never run depict without asking\". `scopes`: the phrases that name a level of the scope chain (cut out of the text before the commands are read; none named = the default scope of the action_rules profile). `commands`: regexes matched against the folded text with the scope phrase blanked out; group order = `args`; `original` args are read from the text as typed, `resolve` args are action words turned into catalogue ids (an unknown word makes the input a message, nothing is guessed); `needs_scope`: only when a scope phrase was said (without it the plain settings patterns apply). The result is a proposal to run rules.set / rules.disable / rules.list.",
+            "required": ["scopes", "commands"],
+            "properties": {
+              "scopes": {"type": "array", "items": {"type": "object", "required": ["scope", "phrases"], "properties": {"scope": {"type": "string", "minLength": 1}, "phrases": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}}}, "additionalProperties": false}},
+              "commands": {"type": "array", "items": {"type": "object", "required": ["id", "action", "regex", "args"], "properties": {
+                "id": {"type": "string", "minLength": 1}, "action": {"type": "string", "minLength": 1}, "effect": {"type": "string"}, "lang": {"type": "string"},
+                "needs_scope": {"type": "boolean"}, "regex": {"type": "string", "minLength": 1},
+                "args": {"type": "array", "items": {"type": "string"}}, "original": {"type": "array", "items": {"type": "string"}}, "resolve": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}}
+            },
+            "additionalProperties": false
+          },
+          "phrases": {
+            "type": "object",
+            "description": "The lexicon of commands next to the `phrases` of the catalogue's own actions: action id -> language -> phrases (a word ending in * is a prefix). Phrases the user's own conversations add live here (overlay profiles/intent_routing.pack); an action's own `phrases` stay where they are.",
+            "additionalProperties": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}}
+          },
+          "languages": {
+            "type": "array",
+            "description": "Names of languages as people say them (folded, lower case; a trailing * is a prefix): what a phrase such as \"na niemiecki\" or \"into German\" may name. The value given to an action is label.en. An unknown name is never guessed.",
+            "items": {
+              "type": "object",
+              "required": ["code", "label", "names"],
+              "properties": {
+                "code": {"type": "string", "minLength": 1},
+                "label": {"type": "object", "additionalProperties": {"type": "string"}},
+                "names": {"type": "array", "items": {"type": "string", "minLength": 1}}
+              },
+              "additionalProperties": false
+            }
+          },
+          "arguments": {
+            "type": "array",
+            "description": "Arguments from loose phrases. Each pattern fills the declared parameter `param` of the chosen action (an action that does not declare it is not touched; an argument already given is never overwritten). `regex` is matched against the folded, lower-cased text (Polish letters without diacritics); group 1 (and 2 ...) is read from the original text, so the user's own words are kept. kind text: the captured words, or `template` ({1}, {2} = groups); kind language: the captured word must be one of `languages`, else nothing is extracted. First match per parameter wins; patterns of the language of the input come first.",
+            "items": {
+              "type": "object",
+              "required": ["id", "param", "kind", "regex"],
+              "properties": {
+                "id": {"type": "string", "minLength": 1},
+                "param": {"type": "string", "minLength": 1},
+                "lang": {"type": "string"},
+                "kind": {"type": "string", "enum": ["text", "language"]},
+                "regex": {"type": "string", "minLength": 1},
+                "template": {"type": "string"}
               },
               "additionalProperties": false
             }

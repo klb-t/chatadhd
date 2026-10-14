@@ -151,6 +151,7 @@ struct Builder {
       leaf["item"] = item;
       leaf["action"] = action;
       leaf["root"] = root;
+      leaf["owner"] = path.empty() ? std::string() : path.back();  // the composite whose step this is (a chain of composites nests them)
       leaf["with"] = with_spec.is_object() ? with_spec : Json::object();
       leaf["inputs"] = inputs;
       for (const char* k : {"when", "variants", "variant_mode", "on_failure", "estimate"})
@@ -922,6 +923,7 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     call.step_id = id;
     call.action = action;
     call.root_action = step.value("root", "");
+    call.owner_action = step.value("owner", "");
     call.variant = label;
     auto variant_with = evaluate(variant.value("with", Json::object()), ctx);
     if (!variant_with) {
