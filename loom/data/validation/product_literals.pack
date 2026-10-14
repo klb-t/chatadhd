@@ -489,7 +489,7 @@
         },
         {
           "path": "loom/data/graph/entry.pack",
-          "sha256": "6cb176d4aa3b3bbcca213297e8efe775c58819e7f5aca6138847bf2ec3dc4884"
+          "sha256": "eac7e4a4ff34cd5355197d59835e44a7bfb891fef18f3fe7b3eb4c25a1a7cd67"
         },
         {
           "path": "loom/data/graph/interfaces.pack",
@@ -502,6 +502,10 @@
         {
           "path": "loom/data/graph/properties.pack",
           "sha256": "fac12dd46d867d7959dae438e7cf764495d6d33ecf7bb07bc9390da34760ffd7"
+        },
+        {
+          "path": "loom/data/graph/rom.pack",
+          "sha256": "150d661190a06b796ba768f5e2f8a8a19db3cadcb82282abd26b92fa1eaa4617"
         },
         {
           "path": "loom/data/graph/scopes.pack",
@@ -665,10 +669,10 @@
         },
         {
           "path": "loom/data/runtime_sources.pack",
-          "sha256": "3c0f7e9672574e096f5f06d8b25b4696a69418978a0fd4c6173946e0818049a6"
+          "sha256": "5244ad441199a0a27524b4a121a74921da698aa35044d950cbf8647703b7a7f5"
         }
       ],
-      "output_sha256": "fa8d5401be8c09569176873992c0d4e7dc364a49bd5b688ce20681318f1be117",
+      "output_sha256": "60f0c1cece062c2b4d2003e0603cfb65f46f3b73a1cc38bebf3ffaa8491c0369",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],
