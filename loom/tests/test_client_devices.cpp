@@ -293,6 +293,15 @@ TEST_SUITE("client_devices") {
     CHECK(unwrap(f.rt->blobs().read(hash)) == "AUDIO");  // the bytes are in the blob store, not in the run document
     CHECK(done.dump().find(f.audio_b64()) == std::string::npos);
     CHECK(unwrap(f.rt->actions().status(Json{{"run_id", done.at("id")}})).dump().find(f.audio_b64()) == std::string::npos);
+    // the transcription made inside the run is a port run of the graph, part of that run (port_graph.h: ActionRunScope + reconcile), and the
+    // runtime's own sink for media calls is still in place after the step
+    const auto port_runs = unwrap(f.rt->db().list_nodes("port_run", 100));
+    REQUIRE(port_runs.size() == 1);
+    CHECK(port_runs[0].metadata.at("action_run_id") == done.at("id"));
+    bool part_of_run = false;
+    for (const auto& l : unwrap(f.rt->db().get_links(port_runs[0].id, "part_of"))) part_of_run = part_of_run || (l.src == port_runs[0].id && l.dst == run_node);
+    CHECK(part_of_run);
+    CHECK(static_cast<bool>(f.rt->media().provenance_sink()));
     // the content is the recording's own, per run (every recording is another content), not "the microphone"
     CHECK(unwrap(f.rt->db().get_node(produced.at("content").get<std::string>()))->label == "content:" + done.at("id").get<std::string>());
   }

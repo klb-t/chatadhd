@@ -8,6 +8,7 @@
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
+#include "loom/port_graph.h"
 #include "loom/provenance.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
@@ -428,6 +429,9 @@ Status store_run_results(const ResultServices& s, Json& run) {
       else issue("run_node", made.error().message);
     }
     produced["run_node"] = run_node.empty() ? Json(nullptr) : Json(run_node);
+    // The port runs the steps made were written before this node existed: they name the run, and are linked to it now (port_graph.h).
+    if (!run_node.empty() && !run_meta.value("usage_operation_ids", Json::array()).empty())
+      if (auto linked = port_graph::reconcile_action_runs(db); !linked) issue("port_run_links", linked.error().message);
 
     // The conversation a message goes to.
     const std::string conv_id = [&] {

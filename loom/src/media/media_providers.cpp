@@ -383,6 +383,11 @@ void MediaProviders::set_provenance_sink(std::function<void(const Json&)> sink) 
   call_->on_provenance = std::move(sink);
 }
 
+std::function<void(const Json&)> MediaProviders::provenance_sink() const {
+  std::lock_guard lk(call_->mu);
+  return call_->on_provenance;
+}
+
 Result<Json> MediaProviders::runtime_profile() const {
   std::lock_guard lk(mu_);
   LOOM_TRY(profile_);

@@ -5,6 +5,7 @@
 #include <cmath>
 
 #include "loom/client_devices.h"
+#include "loom/port_graph.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
@@ -1021,6 +1022,8 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     if (j == first_variant && rec.value("status", "") == "held") call.usage_confirmation = usage_confirmation;
     // The client has answered the step it was paused on: the answer is this variant's outcome, nothing is executed again.
     const bool answered = j == first_variant && rec.value("status", "") == "awaiting_client" && rec.contains("client_answer");
+    // Port runs made inside this step (a transcription, a model call through an adapter) belong to the run: part_of -> run:<id> (port_graph.h).
+    const port_graph::ActionRunScope scope(call.run_id);
     StepOutcome out = answered ? client_outcome(rec.at("client_answer"), entry) : (*executor)(call);
     if (answered) {
       rec.erase("client_answer");

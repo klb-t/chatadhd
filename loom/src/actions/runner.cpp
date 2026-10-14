@@ -95,13 +95,18 @@ StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, cons
 
   Json provenance = Json::array();
   const std::thread::id caller = std::this_thread::get_id();
-  rt.media().set_provenance_sink([&provenance, caller](const Json& record) {
+  // The runtime's own sink (provenance rows, the port run in the graph) keeps hearing every call; this step listens as well, and
+  // puts the runtime's sink back when it is done.
+  const std::function<void(const Json&)> previous = rt.media().provenance_sink();
+  rt.media().set_provenance_sink([&provenance, caller, previous](const Json& record) {
+    if (previous) previous(record);
     if (std::this_thread::get_id() == caller) provenance.push_back(record);  // another thread's call is not this step's
   });
   struct Release {
     Runtime& rt;
-    ~Release() { rt.media().set_provenance_sink(nullptr); }
-  } release{rt};
+    std::function<void(const Json&)> previous;
+    ~Release() { rt.media().set_provenance_sink(previous); }
+  } release{rt, previous};
   std::string text;
   Json data = nullptr;
   if (family == "asr") {

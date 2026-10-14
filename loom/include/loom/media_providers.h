@@ -185,6 +185,8 @@ class MediaProviders {
   void refresh();
   // Receives the "loom.model_use/1" record (no secrets) of every ASR / OCR call.
   void set_provenance_sink(std::function<void(const Json&)> sink);
+  // The sink in place now (empty: none). A caller that wants to listen for a while puts back what it found (action steps: runner.cpp).
+  std::function<void(const Json&)> provenance_sink() const;
   // Platform/on-device providers (e.g. Android SpeechRecognizer) can be added.
   void add_asr_provider(std::shared_ptr<AsrProvider> p);
   void add_ocr_provider(std::shared_ptr<OcrProvider> p);
