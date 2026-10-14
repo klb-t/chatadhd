@@ -8,12 +8,15 @@
 // Every wait is a poll on a condition with a timeout (never a bare sleep). Screenshots: adb screencap.
 // Environment: SMOKE_OUT (output dir), SMOKE_URL (server as the phone sees it), SMOKE_LOGIN, SMOKE_PASS, SMOKE_KEY,
 // optional SMOKE_PKG (default com.chatadhd.android), SMOKE_TIMEOUT_S (scale factor of waits, default 1).
+// SMOKE_CDP=http://127.0.0.1:9333 (local check only): skip adb and the native screen and drive a desktop Chromium
+// started with --remote-debugging-port (page already or soon at SMOKE_URL); used to test the web part off the emulator.
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
 import path from "node:path";
 
 const need = n => process.env[n] || (() => { throw new Error("missing env " + n); })();
 const OUT = need("SMOKE_OUT"), URL_ = need("SMOKE_URL"), LOGIN = need("SMOKE_LOGIN"), PASS = need("SMOKE_PASS"), KEY = need("SMOKE_KEY");
+const CDP_ONLY = process.env.SMOKE_CDP || "";
 const PKG = process.env.SMOKE_PKG || "com.chatadhd.android";
 const SCALE = Number(process.env.SMOKE_TIMEOUT_S || 1);
 const SHOTS = path.join(OUT, "shots");
@@ -26,6 +29,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const adb = (...a) => execFileSync("adb", a, { encoding: "utf8", maxBuffer: 64 << 20, timeout: 60000 });
 let shotN = 0;
 function shot(name) {
+  if (CDP_ONLY) return;
   try {
     const png = execFileSync("adb", ["exec-out", "screencap", "-p"], { maxBuffer: 64 << 20, timeout: 30000 });
     const f = path.join(SHOTS, String(++shotN).padStart(2, "0") + "-" + name + ".png");
@@ -98,6 +102,15 @@ async function connectScreen() {
 // ---------- Chrome DevTools Protocol over the WebView socket ----------
 const PORT = 9222;
 async function openPage() {
+  if (!CDP_ONLY) await attachSocket();
+  const base = CDP_ONLY || `http://127.0.0.1:${PORT}`;
+  const target = await until(`a page at ${URL_}`, async () => {
+    const list = await (await fetch(`${base}/json`)).json();
+    return list.find(t => t.type === "page" && t.url.startsWith(URL_) && t.webSocketDebuggerUrl);
+  }, 60, 500);
+  return connect(target);
+}
+async function attachSocket() {
   const sock = await until("the WebView DevTools socket", () => {
     const pid = adb("shell", "pidof", PKG).trim().split(/\s+/)[0];
     const unix = adb("shell", "cat", "/proc/net/unix");
@@ -105,10 +118,8 @@ async function openPage() {
     return m && m[1];
   }, 60, 500);
   adb("forward", `tcp:${PORT}`, `localabstract:${sock}`);
-  const target = await until(`a page at ${URL_}`, async () => {
-    const list = await (await fetch(`http://127.0.0.1:${PORT}/json`)).json();
-    return list.find(t => t.type === "page" && t.url.startsWith(URL_) && t.webSocketDebuggerUrl);
-  }, 60, 500);
+}
+async function connect(target) {
   const ws = new WebSocket(target.webSocketDebuggerUrl);
   await new Promise((res, rej) => { ws.onopen = res; ws.onerror = () => rej(new Error("DevTools websocket failed")); });
   let id = 0; const pending = new Map();
@@ -177,14 +188,14 @@ async function step(name, fn) {
       writeFileSync(path.join(OUT, "fail-page-text.txt"), String(body));
       writeFileSync(path.join(OUT, "fail-page-html.html"), String(await page.ev(`document.documentElement.outerHTML.slice(0,200000)`).catch(() => "?")));
     }
-    try { writeFileSync(path.join(OUT, "fail-ui.xml"), execFileSync("adb", ["exec-out", "cat", "/sdcard/ui.xml"], { encoding: "utf8" })); } catch { /* none */ }
+    if (!CDP_ONLY) try { writeFileSync(path.join(OUT, "fail-ui.xml"), execFileSync("adb", ["exec-out", "cat", "/sdcard/ui.xml"], { encoding: "utf8" })); } catch { /* none */ }
     throw e;
   }
 }
 
 try {
-  adb("shell", "am", "start", "-W", "-n", `${PKG}/.MainActivity`);
-  await step("1 native: choose server account (http://10.0.2.2, plain HTTP for LAN)", connectScreen);
+  if (!CDP_ONLY) adb("shell", "am", "start", "-W", "-n", `${PKG}/.MainActivity`);
+  if (!CDP_ONLY) await step("1 native: choose server account (http://10.0.2.2, plain HTTP for LAN)", connectScreen);
   await step("2 attach to the WebView", async () => { page = await openPage(); await waitTid("auth-form", 60); shot("login-form"); });
   await step("3 log in to the account", async () => {
     await setVal("auth-login", LOGIN); await setVal("auth-password", PASS);
