@@ -14,6 +14,7 @@ import { browserHost } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
 import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
+import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
@@ -112,6 +113,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const sourceCatalog = useConversationSourcePresentation(profileHost);
   const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
   const usageCatalog = usePresentationFeature(profileHost, USAGE_PENDING_FEATURE);
+  const routeIssueCatalog = usePresentationFeature(profileHost, ROUTE_ISSUE_FEATURE);
   const proposalCatalog = usePresentationFeature(profileHost, ACTION_PROPOSAL_FEATURE);
   const clientStepCatalog = usePresentationFeature(profileHost, CLIENT_STEP_FEATURE);
   // This page as a client of the kernel (P13): the devices it can drive are declared, so the device actions are runnable for it.
@@ -130,6 +132,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [undoFailure, setUndoFailure] = useState<{ id: string; reason: string } | null>(null);
   const [usagePending, setUsagePending] = useState<{ request: ChatRequest; receipt: UsagePendingReceipt; convId: string } | null>(null);
   const [usageNotice, setUsageNotice] = useState<string | null>(null);
+  // Routing the last input had a problem it worked around (the model route failed, the local rules decided): a quiet note, nothing was lost.
+  const [routeNotes, setRouteNotes] = useState<string[]>([]);
   const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
   // An explicit choice in this view wins; otherwise only an effective layered `true`
   // blocks. A missing, disabled or excluded default has no initiator and never blocks (R43).
@@ -206,6 +210,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft, blockChoice]);
 
   useEffect(() => { setBranchLeaf(null); }, [convId, refreshKey]);
+  useEffect(() => { setRouteNotes([]); }, [convId]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -377,6 +382,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     };
     setInput("");
     setRequestOverride(null);
+    setRouteNotes([]);
     currentUserIdRef.current = null;
     currentConvIdRef.current = requestConvId;
     setPendingUserText({ text: request.message, convId: requestConvId });
@@ -394,6 +400,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setPendingUserText((s) => s ? { ...s, convId: chunk.conv_id } : s);
             if (!convId && selectedConvRef.current === null) onConversationCreated(chunk.conv_id);
             onMessagesChanged?.();
+          } else if (chunk.type === "route_issue") {
+            setRouteNotes(routeIssueNotes(routeIssueCatalog.feature, routeIssues(chunk.issues)));
           } else if (chunk.type === "reasoning") {
             setStream((s) => (s ? { ...s, reasoning: s.reasoning + chunk.text } : s));
           } else if (chunk.type === "delta") {
@@ -450,7 +458,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
-  }, [input, stream, convId, model, onConversationCreated, refreshMessages, clientSession,
+  }, [input, stream, convId, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
 
@@ -916,6 +924,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             </option>
           ))}
         </select>
+        {routeNotes.length > 0 && <div style={{ width: "100%" }}>
+          {routeNotes.map((note, i) => <div className="pill" role="status" key={i} data-testid="chat-route-note">{note}</div>)}
+        </div>}
         {(usagePending || usageNotice) && <div style={{ width: "100%" }}>
           {usagePending && <UsagePendingBlock testId="chat-usage-pending" feature={usageCatalog.feature} receipt={usagePending.receipt}
             onConfirm={confirmUsage} onReject={rejectUsage} />}

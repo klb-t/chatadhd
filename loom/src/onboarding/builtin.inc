@@ -332,6 +332,27 @@ R"loom_onboard({
           }
         },
         {
+          "id": "presentation.route_issue/v1",
+          "key": "presentation.route_issue",
+          "area": "presentation/route_issue",
+          "revision": 1,
+          "label": "Quiet note when routing a chat input had a problem it worked around (the model route failed and the local rules decided); texts only, nothing is blocked and nothing is lost",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "route_issue",
+            "locales": {
+              "en": {
+                "model_route_failed": "The model could not route this message ({{message}}); the local rules read it instead. Nothing was lost.",
+                "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
+              },
+              "pl": {
+                "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+                "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+              }
+            }
+          }
+        },
+        {
           "id": "presentation.action_proposal/v1",
           "key": "presentation.action_proposal",
           "area": "presentation/action_proposal",
@@ -1065,7 +1086,8 @@ R"loom_onboard({
             "session_status.unknown": "nieznane",
             "layer_name.builtin": "wbudowana",
             "layer_name.user": "użytkownika",
-            "layer_name.user_exclusion": "wykluczenie użytkownika",
+)loom_onboard",
+R"loom_onboard(            "layer_name.user_exclusion": "wykluczenie użytkownika",
             "layer_name.user_disabled": "wyłączenie użytkownika",
             "layer_name.pack_proposal": "propozycja packa",
             "layer_name.none": "brak",
@@ -1084,8 +1106,7 @@ R"loom_onboard({
             "review_state.rejected": "odrzucone",
             "error.template_syntax": "Nieprawidłowa składnia szablonu prezentacji.",
             "field.label_prefix": "{{label}} ",
-)loom_onboard",
-R"loom_onboard(            "field.state": "({{status}}{{suffix}})",
+            "field.state": "({{status}}{{suffix}})",
             "error.template_parameters": "Parametry szablonu muszą być obiektem.",
             "graph.prompt": "{{id}} prompt",
             "graph.parameters": "{{id}} parametry",
@@ -1479,6 +1500,27 @@ R"loom_onboard(            "field.state": "({{status}}{{suffix}})",
             "restored": "Twój tekst wrócił do pola wiadomości.",
             "rejected": "Odrzucono. Nic nie wysłano.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.route_issue/v1",
+      "key": "presentation.route_issue",
+      "area": "presentation/route_issue",
+      "revision": 1,
+      "label": "Quiet note when routing a chat input had a problem it worked around (the model route failed and the local rules decided); texts only, nothing is blocked and nothing is lost",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "route_issue",
+        "locales": {
+          "en": {
+            "model_route_failed": "The model could not route this message ({{message}}); the local rules read it instead. Nothing was lost.",
+            "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
+          },
+          "pl": {
+            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+            "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
           }
         }
       }

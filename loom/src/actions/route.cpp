@@ -2004,6 +2004,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   if (const Json* c = json::find(request, "route_usage_confirmation")) route_request["route_usage_confirmation"] = *c;
   LOOM_TRY_ASSIGN(Json routed, route_with(rt, d, route_request));
   const std::string kind = routed.value("kind", "message");
+  none.issues = routed.value("issues", Json::array());
   if (kind == "message") return none;
   if (kind == "pending") {
     // The re-send after the user's answer goes to this conversation, as a held chat send does.
@@ -2017,6 +2018,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     out.conv_id = conv_id;
     out.chunk = Json{{"type", "usage_pending"}, {"conv_id", conv_id}, {"user_message_id", ""}, {"usage_pending", routed["usage_pending"]}};
     out.result = Json{{"conv_id", conv_id}, {"usage_pending", routed["usage_pending"]}, {"routed", Json{{"kind", "pending"}}}};
+    out.issues = none.issues;
     return out;
   }
 
@@ -2036,7 +2038,9 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     if (Json follow = offer_growth(rt, d, conv_id, user_id, cmd.value("action", ""), lang); !follow.is_null()) payload["follow_up"] = follow;
   }
   title_first_exchange(rt, conv_id, text);
-  return finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+  Outcome handled = finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+  handled.issues = none.issues;
+  return handled;
 }
 
 void note_removed(Runtime& rt, const Json& origin) {

@@ -57,6 +57,10 @@ struct Outcome {
   std::string assistant_message_id;
   Json chunk;                 // final stream chunk: action_proposal | action_result | usage_pending
   Json result;                // the JSON the C ABI returns for this input
+  // What went wrong in routing without stopping it (the same `issues` as chat.route): a model route that failed and the local method
+  // decided. A message that goes on to the model with such an issue must say so in its stream (capi_chat.cpp emits the event
+  // `route_issue`); nothing is lost either way. Empty array: nothing to say.
+  Json issues = Json::array();
 };
 
 // actions.confirm as the clients' transports (HTTP, JNI) call it: answers the run and, when a proposal of a conversation
