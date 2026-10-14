@@ -91,7 +91,7 @@ wydawać pieniędzy; wynik prób z prawdziwym modelem: `docs/reports/S2_R19_2026
 - **Archiwum nie rusza:** `install.sh` mówi „brakuje bibliotek” (doinstaluj `libssl3`), „GLIBC… not found” (za stary system:
   Ubuntu 22.04+/Debian 12+) albo „archiwum jest dla procesora…” (weź x64 albo arm64 pasujące do `uname -m`).
   `deploy/verify-package.sh PLIK.tar.gz` uruchamia serwer z archiwum i go odpytuje.
-- **Nie mogę się zalogować:** zbyt wiele złych haseł włącza opóźnienie (429); poczekaj. Hasło zresetujesz
+- **Nie mogę się zalogować:** zbyt wiele złych haseł włącza opóźnienie przed kolejną próbą; poczekaj. Hasło zresetujesz
   `chatadhd-user passwd LOGIN`. Zamknięta rejestracja to nie błąd: konto zakłada właściciel.
 - **Przeglądarka odrzuca żądania (403):** serwer odrzuca żądania, w których nagłówek `Origin` nie zgadza się z adresem
   strony (ochrona CSRF). Wchodź zawsze pod tym samym adresem, który stoi w Caddy; przy własnym pośredniku dodaj adres do `csrf.allowed_origins`.
