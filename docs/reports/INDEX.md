@@ -720,3 +720,14 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
   z `receipt_id` z wcześniejszej propozycji. Otwarte w S2: odrzucanie ciał chunked bez ustawienia; równoległe Argon2id,
   bomby zip, haki git w repo użytkownika, wyścig symlinków, długość loginu.
 - Raport: `docs/reports/S2_R18_2026-10-14.md`. Cofnięcie: revert scalenia R18 albo ustawienia w nakładce.
+
+## S2 / R20 — limity serwera jako ustawienia (2026-10-14)
+
+- Ciała chunked: `--allow-chunked-uploads` / `LOOM_SERVER_ALLOW_CHUNKED_UPLOADS` (preset: wyłączone, 411); włączone tylko
+  dla importu i transkrypcji, strumieniowo na dysk, w limicie `--max-upload-bytes`.
+- Argon2id naraz: `hashing.max_concurrent` (-1 = liczba CPU, 0 = bez limitu), `hashing.wait_seconds` (5, potem 503).
+- Bomby zip: `loom_zip_max_total_bytes` (64 GiB), `loom_zip_max_ratio` (1000), 0 = bez limitu; liczone przy rozpakowaniu.
+- Git w repo użytkownika bez haków i poleceń z konfiguracji repo: `loom_git_allow_repo_config` (preset false).
+- Długość loginu: `login_max_length` (128 znaków, 0 = bez limitu). `PathPolicy::open_read` z O_NOFOLLOW w skanie katalogu.
+- Otwarte: część miejsc wciąż sprawdza, a potem otwiera po nazwie; w trybie kont użytkownik może sam podnieść swoje
+  ustawienia zip/git (brak nadrzędnego limitu operatora). Raport: `docs/reports/S2_R20_2026-10-14.md`. Cofnięcie: ustawienia.
