@@ -316,14 +316,14 @@ void add_limit_reasons(Json& pending, const Json& decision) {
 }
 
 // A refusal by a spending limit, in the shape of a pending hold so that the conversation and the status can say it (status "denied": nothing
-// can be answered, `retry_after_s` is when the worker asks the ledger again).
-constexpr std::int64_t kRefusalRetrySeconds = 600;
-Json refusal_pending(const Json& decision, const char* kind, std::size_t messages, const std::string& body_sha, const Json& ids_or_convs) {
+// can be answered, `retry_after_s` is when the worker asks the ledger again: the worker profile's limit_refusal_retry_ms later).
+Json refusal_pending(const Json& decision, const char* kind, std::size_t messages, const std::string& body_sha, const Json& ids_or_convs,
+                     std::int64_t retry_ms) {
   Json out{{"schema", "loom.semantic_usage_pending/1"}, {"kind", kind}, {"status", "denied"}, {"refused", true},
            {"operation_id", decision.value("operation_id", Json(nullptr))}, {"receipt_id", decision.value("receipt_id", Json(nullptr))},
            {"baseline_key", decision.value("baseline_key", Json(nullptr))}, {"projected", decision.value("resources", Json::object())},
            {"messages", messages}, {"body_sha256", body_sha}, {"sent", false},
-           {"retry_after_s", static_cast<std::int64_t>(std::time(nullptr)) + kRefusalRetrySeconds}};
+           {"retry_after_s", static_cast<std::int64_t>(std::time(nullptr)) + (retry_ms + 999) / 1000}};
   out[std::string(kind) == "retry" ? "ids" : "conv_ids"] = ids_or_convs;
   add_limit_reasons(out, decision);
   return out;
@@ -437,7 +437,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
     } else if (status == "denied" && !usage_limit_reasons(admitted).empty()) {
       // P18: a spending limit with on_exceed deny refuses the batch. Nothing is sent and the messages stay pending; the refusal is said (status,
       // conversation) and asked again only after a while (the limit may have been raised or the period may have turned over).
-      usage_pending = refusal_pending(admitted, "batch", batch_requests.size(), body_sha, conv_ids);
+      usage_pending = refusal_pending(admitted, "batch", batch_requests.size(), body_sha, conv_ids, profile.values().value("limit_refusal_retry_ms", std::int64_t{600000}));
       mode = "blocked_by_spend_limit";
       log::warn("loom.semantic_worker", "Batch of {} messages refused by a spending limit", batch_requests.size());
     } else {
@@ -868,7 +868,7 @@ void SemanticWorker::auto_requeue(bool reaches_provider) {
         log::warn("loom.semantic_worker", "Automatic resend of {} items awaits usage confirmation (receipt {})",
                   due.size(), json::get_string(admitted->decision, "receipt_id"));
       } else if (status == "denied" && !usage_limit_reasons(admitted->decision).empty()) {
-        retry_pending_ = refusal_pending(admitted->decision, "retry", due.size(), body_sha, ids);
+        retry_pending_ = refusal_pending(admitted->decision, "retry", due.size(), body_sha, ids, profile_->values().value("limit_refusal_retry_ms", std::int64_t{600000}));
         mode_ = "blocked_by_spend_limit";
         log::warn("loom.semantic_worker", "Automatic resend refused by a spending limit");
       } else {

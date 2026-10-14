@@ -130,7 +130,9 @@ export function browserHost(): DeviceHost {
   if (typeof document !== "undefined") {
     host.hasDocument = true;
     host.pickFile = chooseFile;
-    if (hasFolderChooser()) host.pickFolder = chooseFolder;
+    // The Android shell's WebView has the attribute but its file chooser picks files only: there the folder is not declared (the action stays
+    // planned for that client, with its reason, and the sentence asks for a path or an archive file instead).
+    if (hasFolderChooser() && !shell) host.pickFolder = chooseFolder;
   }
   return host;
 }

@@ -39,7 +39,8 @@
       "batch",
       "llm",
       "regex"
-    ]
+    ],
+    "limit_refusal_retry_ms": 600000
   },
   "value_schema": {
     "x-setting": "",
@@ -265,6 +266,15 @@
         "x-setting": "/analysis_modes",
         "x-consumer": "semantic_worker",
         "description": "Preference order of registered analysis modes (built in: batch, llm, regex; embedders can register more). Each drain uses the first available bulk mode for the whole queue, otherwise every message goes to the first available per-message mode that accepts it, so modes can be mixed in one run. Availability still follows config (semantic_model, semantic_analysis, the batch key). Drop a name to disable that mode; keep regex last as the catch-all."
+      },
+      "limit_refusal_retry_ms": {
+        "x-setting": "/limit_refusal_retry_ms",
+        "x-consumer": "worker",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 9223372036854775807,
+        "x-unit": "milliseconds",
+        "description": "P18: after the usage ledger refuses a batch or a resend because of a spending limit (on_exceed deny), the worker asks again only after this long (the limit may have been raised or the period may have turned over). A preset, not a limit."
       }
     },
     "additionalProperties": false
