@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 
+#include "loom/action_overlay.h"
 #include "loom/action_runner.h"
 #include "loom/chat_route.h"
 #include "loom/config.h"
@@ -482,5 +483,103 @@ TEST_SUITE("guardian") {
     REQUIRE(pl.handled);
     CHECK(f.last().at("metadata").at("action_proposal").at("action") == "guardian.status");
     CHECK(f.last().at("metadata").at("action_proposal").at("element").at("id") == f.conv);
+  }
+  TEST_CASE("hypotheses of different kinds about the same thing support each other") {
+    Fixture f;
+    const std::string a = f.user("Keep the bullet points for the tables section please");
+    const std::string b = f.user("No");
+    (void)f.invoke("guardian.observe", Json{{"message_id", a}, {"kind", "course_correction"}, {"subject", "keep the bullet points for the tables section"}, {"post", false}});
+    (void)f.invoke("guardian.observe", Json{{"message_id", b}, {"kind", "proposal_rejection"}, {"subject", "bullet points for the tables section"}, {"post", false}});
+    const Json st = f.status();
+    const Json rejection = f.hypothesis("proposal_rejection");
+    REQUIRE_FALSE(rejection.is_null());
+    REQUIRE(rejection.at("supports").size() == 1);
+    CHECK(f.links(rejection.at("id"), "supports") >= 1);
+    CHECK(rejection.at("supports")[0] == f.hypothesis("course_correction").at("id"));
+    (void)st;
+  }
+  TEST_CASE("everything is data: an overlay changes the thresholds, a setting changes the categories of a level") {
+    Fixture f;
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "guardian.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "guardian"}, {"overrides", Json{{"thresholds", Json{{"propose", 0.5}}}}}}.dump();
+    f.user("Write a summary of the quarterly report");
+    f.assistant();
+    f.user("nie chodziło mi o tabelę, zrób listę");
+    CHECK(f.hypothesis("course_correction").at("status") == "ready");  // one calm correction is enough at the user's own threshold
+    // A category of the user's own in a level: jokes are dropped at L1 when an annotation says what a joke is.
+    f.rt->config().set("guardian_levels", Json{{"L1", Json{{"drop_categories", Json::array({"filler", "joke"})}}}});
+    const std::string raw = "Use bullet points. Ha, that is funny. Keep it short.";
+    const std::string mid = f.say("user", raw, false);
+    NodeOptions no;
+    no.metadata = Json{{"category", "joke"}};
+    NewMessageAnnotation ann;
+    ann.message_id = mid;
+    ann.node_id = unwrap(f.rt->db().get_or_create_node("annotation:joke", "annotation_category", no));
+    ann.start_char = static_cast<std::int64_t>(raw.find("Ha, that"));
+    ann.end_char = static_cast<std::int64_t>(raw.find(" Keep"));
+    ann.origin = "model";
+    ann.metadata = Json{{"category", "joke"}, {"producer", "semantic_llm"}, {"confidence", 0.9}};
+    (void)unwrap(f.rt->db().create_message_annotation(ann));
+    const Json row = f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}}).at("messages")[0];
+    CHECK(row.at("levels").at("L1").at("text") == "Use bullet points. Keep it short.");
+    CHECK(row.at("levels").at("L1").at("dropped")[0].at("producer") == "semantic_llm");
+    CHECK(row.at("raw") == raw);
+  }
+
+  TEST_CASE("L2: digressions the analyzer marked are dropped when the selector asks for them, and only then") {
+    Fixture f;
+    f.user("Write the quarterly report");
+    f.assistant();
+    const std::string raw = "Use bullet points. By the way, my cat is hilarious today. Keep it short.";
+    const std::string mid = f.say("user", raw, false);
+    NodeOptions no;
+    no.metadata = Json{{"category", "digression"}};
+    NewMessageAnnotation ann;
+    ann.message_id = mid;
+    ann.node_id = unwrap(f.rt->db().get_or_create_node("annotation:digression", "annotation_category", no));
+    ann.start_char = static_cast<std::int64_t>(raw.find("By the way"));
+    ann.end_char = static_cast<std::int64_t>(raw.find(" Keep"));
+    ann.origin = "model";
+    ann.metadata = Json{{"category", "digression"}, {"producer", "semantic_llm"}, {"confidence", 0.9}};
+    (void)unwrap(f.rt->db().create_message_annotation(ann));
+    (void)f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}});
+    f.assistant();
+    f.rt->config().set("chat_representation", "denoised");  // L1 does not drop digressions
+    CHECK(exact_user(f.sent("Go on."), raw) == 1);
+    f.rt->config().set("chat_representation", "lean");
+    const Json lean = f.sent("Go on.");
+    CHECK(exact_user(lean, raw) == 0);
+    CHECK(exact_user(lean, "Use bullet points. Keep it short.") == 1);
+    CHECK(unwrap(f.rt->db().get_msg(mid))->text == raw);
+  }
+
+  TEST_CASE("mixed: the raw messages stay and the compiled instruction follows them") {
+    Fixture f;
+    f.user("Write a short report about the quarterly sales numbers");
+    f.assistant();
+    f.user("Also add a table of the regions");
+    f.assistant();
+    f.user("Additionally make sure the totals are in euros");
+    f.assistant();
+    f.user("Plus include a short summary at the end");
+    f.assistant();
+    f.input("yes");
+    const std::string instruction = unwrap(f.rt->db().find_node("rep:" + f.conv, "guardian_representation"))->content;
+    REQUIRE_FALSE(instruction.empty());
+    Json set{{"scope", "conversation"}, {"scope_id", f.conv}, {"effect", "set_value"}, {"key", "chat_representation"}, {"value", "mixed"}};
+    (void)unwrap(actions::rules_set(f.td.path(), set));  // the user's own rule for this conversation replaces the guardian's
+    const Json messages = f.sent("Now produce the report.");
+    CHECK(exact_user(messages, "Also add a table of the regions") == 1);
+    CHECK(has_text(messages, instruction));
+  }
+
+  TEST_CASE("an explicit scope in the user's words widens the hypothesis") {
+    Fixture f;
+    f.user("Write a summary of the quarterly report");
+    f.assistant();
+    f.user("nie chodziło mi o tabelę, zrób listę, zawsze");
+    CHECK(f.hypothesis("course_correction").at("scope") == "person");
+    CHECK(f.hypothesis("course_correction").at("status") == "observing");  // one occurrence, whatever the scope
   }
 }

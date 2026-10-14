@@ -410,6 +410,19 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
   std::vector<Node> others = hyps;
   if (created_hyp)
     for (const auto& old : contradicted) meta["contradicts"].push_back(old.id);
+  // A claim of another kind that says the same thing (a rejected proposal and a correction about the same subject) supports it.
+  if (created_hyp)
+    for (const auto& other : hyps) {
+      if (json::get_string(other.metadata, "signal") == s.kind || json::get_string(other.metadata, "status") == "undone") continue;
+      std::vector<std::string> ot;
+      for (const auto& t : other.metadata.value("tokens", Json::array())) ot.push_back(t.get<std::string>());
+      const double o = overlap(tokens, ot);
+      if (o < min_overlap || other.metadata.value("negative", false) != neg) continue;
+      LOOM_TRY_ASSIGN(auto sup, db.create_link(hyp_id, other.id, json::get_string(links, "supports", "supports"), o, Json{{"kind", "hypothesis"}}));
+      (void)sup;
+      if (!meta.contains("supports")) meta["supports"] = Json::array();
+      meta["supports"].push_back(other.id);
+    }
   weigh(d, meta, others);
   LOOM_TRY(save_meta(db, hyp_id, meta));
   if (created_hyp) {

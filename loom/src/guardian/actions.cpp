@@ -281,7 +281,7 @@ Result<Json> Guardian::Impl::status(const Data& d, const Json& request) {
     if (!only.empty() && h.id != only) continue;
     const Json& m = h.metadata;
     Json row{{"id", h.id}, {"signal", m.value("signal", "")}, {"claim", m.value("claim", Json::object())}, {"scope", m.value("scope", "")}, {"weight", m.value("weight", 0.0)},
-             {"count", m.value("count", 0)}, {"status", m.value("status", "")}, {"exceptions", m.value("exceptions", Json::array())}, {"contradicts", m.value("contradicts", Json::array())},
+             {"count", m.value("count", 0)}, {"status", m.value("status", "")}, {"exceptions", m.value("exceptions", Json::array())}, {"contradicts", m.value("contradicts", Json::array())}, {"supports", m.value("supports", Json::array())},
              {"occurrences", m.value("occurrences", Json::array())}, {"rule", m.value("rule_id", "")}, {"proposal_message_id", m.value("proposal_message_id", "")}};
     if (m.contains("goal_message_id")) row["goal_message_id"] = m["goal_message_id"];
     list.push_back(row);
