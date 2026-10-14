@@ -4142,6 +4142,99 @@
       "conversation_language": {
         "enabled": true,
         "messages": 12
+      },
+      "statement_guard": {
+        "nouns": {
+          "pl": [
+            "ocena",
+            "oceny",
+            "ocene",
+            "ocenie",
+            "oceną",
+            "ocena",
+            "krytyka",
+            "krytyki",
+            "krytykę",
+            "krytyke",
+            "krytyce",
+            "krytyką",
+            "podsumowanie",
+            "podsumowania",
+            "podsumowaniu",
+            "podsumowaniem",
+            "streszczenie",
+            "streszczenia",
+            "streszczeniu",
+            "streszczeniem",
+            "tłumaczenie",
+            "tłumaczenia",
+            "tłumaczeniu",
+            "tłumaczeniem",
+            "transkrypcja",
+            "transkrypcji",
+            "transkrypcję",
+            "transkrypcje",
+            "narracja",
+            "narracji",
+            "narrację",
+            "narracje",
+            "rozwinięcie",
+            "rozwinięcia",
+            "skrócenie",
+            "skrócenia",
+            "zestaw",
+            "zestawy",
+            "zestawu",
+            "parodia",
+            "parodii",
+            "przedstawienie",
+            "przedstawienia"
+          ],
+          "en": [
+            "critique",
+            "evaluation",
+            "review",
+            "rating",
+            "summary",
+            "translation",
+            "transcription",
+            "narration",
+            "parody"
+          ]
+        },
+        "statement_words": {
+          "pl": [
+            "jest",
+            "była",
+            "było",
+            "był",
+            "były",
+            "są",
+            "będzie",
+            "będą",
+            "wynosi",
+            "wygląda",
+            "wydaje",
+            "okazała",
+            "okazał",
+            "wyszła",
+            "wyszło",
+            "pozostaje",
+            "została"
+          ],
+          "en": [
+            "is",
+            "was",
+            "are",
+            "were",
+            "seems",
+            "looks",
+            "remains",
+            "appears",
+            "became",
+            "becomes"
+          ]
+        }
       }
     },
     "confirmation": {
@@ -5288,6 +5381,33 @@
               "messages": {
                 "type": "integer",
                 "minimum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "statement_guard": {
+            "type": "object",
+            "description": "P18: a sentence that says something ABOUT a result (\"Ocena tej wiadomości jest niska\", \"The critique of this message is harsh\") is not the command a word in it also names. nouns: languages -> the words of the lexicon's stems that are nouns as well as verbs (ocena, krytyka, podsumowanie ...); statement_words: languages -> the words that make a sentence a statement (jest, była, wynosi, is, was ...). A phrase that hit on one of the nouns, in a sentence that has a statement word, is not a command; a hit on a verb never is dropped, nor a noun that asks for the act (\"Zrób ocenę tej wiadomości\"). Both lists are calibration and are replaced by an overlay; empty lists turn the guard off.",
+            "properties": {
+              "nouns": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "statement_words": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
               }
             },
             "additionalProperties": false

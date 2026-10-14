@@ -541,6 +541,30 @@ struct Found {
   Hit hit;
 };
 
+// A sentence that says something ABOUT a result ("Ocena tej wiadomości jest niska", "The critique of this message is harsh") is not the command the
+// word in it also names (P18). Data heuristic.statement_guard: `nouns` (the words of the lexicon's stems that are nouns as well as verbs: ocena,
+// krytyka, podsumowanie ...) and `statement_words` (jest, była, wynosi, is, was ...). A phrase that hit on one of those nouns, in a sentence with a
+// statement word, is dropped. A hit on a verb is never dropped ("Oceń tę wiadomość, bo nie jest jasna" is a command), nor a noun that asks for the act
+// ("Zrób ocenę tej wiadomości": no statement word). Lists are languages -> words (folded as the text is); empty lists turn the guard off.
+bool states_something(const Data& d, const std::vector<std::string>& tokens, const Hit& hit) {
+  const Json& h = d.cfg.at("heuristic");
+  const Json* guard = json::find(h, "statement_guard");
+  if (!guard || !guard->is_object() || hit.first >= tokens.size()) return false;
+  const Json& fold_map = h.at("fold");
+  const auto listed = [&](const char* key, const std::string& word) {
+    const Json* lists = json::find(*guard, key);
+    if (!lists || !lists->is_object()) return false;
+    for (auto lang = lists->begin(); lang != lists->end(); ++lang)
+      for (const auto& w : strings_of(&lang.value()))
+        if (fold(w, fold_map) == word) return true;
+    return false;
+  };
+  if (!listed("nouns", tokens[hit.first])) return false;
+  for (std::size_t i = 0; i < tokens.size(); ++i)
+    if (i != hit.first && listed("statement_words", tokens[i])) return true;
+  return false;
+}
+
 std::optional<Found> best_phrase(const Data& d, const std::string& key, const Json& entry, const std::vector<std::string>& tokens) {
   const Json& h = d.cfg.at("heuristic");
   const std::size_t window = static_cast<std::size_t>(json::get_int(h, "window_tokens", 12));
@@ -560,6 +584,7 @@ std::optional<Found> best_phrase(const Data& d, const std::string& key, const Js
     for (const auto& phrase : strings_of(&lang.value())) {
       auto hit = match_phrase(tokens, fold(phrase, h.at("fold")), window, lead);
       if (!hit) continue;
+      if (states_something(d, tokens, *hit)) continue;
       const double score = std::min(1.0, json::get_number(scoring, "base", 0.6) + json::get_number(scoring, "per_word", 0.1) * static_cast<double>(hit->words) -
                                              json::get_number(scoring, "lead_penalty", 0.05) * static_cast<double>(hit->first));
       if (score < json::get_number(scoring, "min_score", 0.5)) continue;
