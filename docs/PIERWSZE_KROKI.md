@@ -76,11 +76,13 @@ rozpoznaje je lokalnie (bez pytania modelu), pokazuje **propozycję** (co zrobi,
 
 ![propozycja](img/pierwsze_kroki/04-propozycja.png)
 
-Czego tu nie ma, choć można by się spodziewać: **„nagraj notatkę głosową i ją streść”** i **„zawsze pytaj przed obrazem”**
-w tej postaci. Nagrywanie z mikrofonu (`device.record_audio`) i rysowanie obrazu (`media.generate_image`) mają dziś status
-„planned”, więc nie ruszą; transkrypcja gotowego nagrania (`transcribe`) i reguła „pytaj przed X” dla akcji gotowych
-(`summarise`, `translate`…) działają. Czy prawdziwy model da dobre streszczenie, nie sprawdzałem (nie wolno było
-wydawać pieniędzy; wynik prób z prawdziwym modelem: `docs/reports/S2_R19_2026-10-14.md`).
+Dwie rzeczy działają tylko w przeglądarce albo na telefonie, nie ze skryptu w terminalu:
+**„nagraj notatkę głosową i ją streść”** — nagrywanie wykonuje urządzenie, które zgłosiło mikrofon (przeglądarka zgłasza go
+przed wysłaniem, telefon po podłączeniu); bez takiego urządzenia akcja jest tylko „zaplanowana” i nie ruszy.
+**„zawsze pytaj przed obrazem”** — jeszcze do sprawdzenia, czy trafia w rysowanie obrazu (`depict`), czy w akcję dopiero
+zaplanowaną. Transkrypcja gotowego nagrania i reguła „pytaj przed X” dla akcji gotowych (streść, przetłumacz…) działają.
+Odpowiedzi prawdziwego modelu nie sprawdzałem: klucz OpenRouter w ustawieniach sesji był nieważny, więc próba
+(`loom/tools/real_model_smoke.py`, limit 0,50 USD) czeka na poprawny klucz — zob. `docs/reports/S2_R19_2026-10-14.md`.
 
 ## 7. Gdy coś nie działa
 
