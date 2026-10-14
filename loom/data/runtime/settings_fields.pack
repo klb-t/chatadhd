@@ -87,6 +87,39 @@
         "description": "UI theme preset name (dark, amoled)."
       },
       {
+        "key": "start_view",
+        "scope": "config",
+        "group": "ui",
+        "type": "array",
+        "has_default": false,
+        "description": "What the app opens to, as an ordered list tried first to last; the first that yields a view wins (the preset is [last_saved, last_conversation, new_conversation]): last_saved = the view you left (layout and conversation, kept on this device), last_conversation = the most recently updated conversation, new_conversation = an empty chat (always possible, so the app always opens to a chat). A single string is a list of one. Unknown names are skipped. Default: the preset (R56)."
+      },
+      {
+        "key": "layout_mode",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "values": [{"value": "full_screen_chat", "preset": true}, {"value": "views_grid"}, {"value": "windows", "status": "planned", "reason": "Floating and dockable windows are the next thread after P20; until then the workbench (views_grid) opens."}],
+        "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (floating and dockable windows; planned, not implemented yet: until it is, the workbench opens). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56)."
+      },
+      {
+        "key": "ui_language",
+        "scope": "config",
+        "group": "ui",
+        "type": "string",
+        "has_default": false,
+        "description": "Language of the shell labels (chat screen, drawer, menus, first-run card): a language code present in the catalogs (pl, en), or empty / auto to follow the browser. Default: auto."
+      },
+      {
+        "key": "disclosure_ms",
+        "scope": "config",
+        "group": "ui",
+        "type": "integer",
+        "has_default": false,
+        "description": "Duration of the expand and collapse animation of disclosures, in milliseconds (the preset is 150; 0 turns the animation off; prefers-reduced-motion always turns it off). Default: 150."
+      },
+      {
         "key": "system_prompt",
         "scope": "config",
         "group": "chat",
