@@ -1,6 +1,7 @@
 // Composition root. See runtime.h for the wiring order.
 #include "util/safety.h"
 #include "loom/runtime.h"
+#include "loom/cleanup.h"
 #include "loom/path_policy.h"
 #include "loom/net/host_guard.h"
 #include "loom/storage_backend.h"
@@ -445,6 +446,12 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     // Housekeeping of the usage ledger (preset mode "auto"): never creates it, runs at most once per interval.
     if (auto compacted = auto_compact_usage_ledger(*impl->config, root); !compacted)
       log::warn(kLog, "usage ledger compaction failed: {}", compacted.error().message);
+    // Housekeeping of scratch files and unreferenced blobs (loom/cleanup.h; blobs are off and dry-run by preset): a failure never stops the runtime.
+    if (auto copts = cleanup_options(*impl->config); !copts) {
+      log::warn(kLog, "cleanup settings ignored: {}", copts.error().message);
+    } else if (auto cleaned = run_cleanup(*impl->db, *impl->blobs, root, *copts); !cleaned) {
+      log::warn(kLog, "cleanup failed: {}", cleaned.error().message);
+    }
     Json workers = impl->config->get("loom_task_workers");
     impl->tasks->start(workers.is_number_integer() ? workers.get<int>() : 1);
     impl->worker->start();

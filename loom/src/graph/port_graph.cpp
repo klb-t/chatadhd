@@ -90,8 +90,17 @@ Result<std::string> named_adapter(Database& db, const std::string& port, const s
 
 Json redact(const Json& value) { return redact_impl(value, ""); }
 
-ActionRunScope::ActionRunScope(std::string run_id) : previous_(t_run_id) { t_run_id = std::move(run_id); }
-ActionRunScope::~ActionRunScope() { t_run_id = previous_; }
+namespace {
+thread_local ActionRunScope* t_scope = nullptr;
+}
+ActionRunScope::ActionRunScope(std::string run_id) : previous_(t_run_id), run_id_(run_id), outer_(t_scope) {
+  t_run_id = std::move(run_id);
+  t_scope = this;
+}
+ActionRunScope::~ActionRunScope() {
+  t_run_id = previous_;
+  t_scope = outer_;
+}
 std::string ActionRunScope::current() { return t_run_id; }
 
 Result<std::string> port_node(Database& db, const std::string& port) {
@@ -212,10 +221,41 @@ Result<std::string> record_port_run(Database& db, const PortRun& run) {
   for (const auto& in : run.inputs) LOOM_TRY(link(db, id, in, "derived_from"));
   if (!run.role_choice_node.empty()) LOOM_TRY(link(db, run.role_choice_node, id, "used_by"));
   if (!run_id.empty()) {
+    for (ActionRunScope* s = t_scope; s; s = s->outer_)
+      if (s->run_id_ == run_id) {
+        s->recorded_.push_back(id);
+        break;
+      }
     LOOM_TRY_ASSIGN(auto run_node, db.find_node("run:" + run_id, "action_run"));
     if (run_node) LOOM_TRY(link(db, id, run_node->id, "part_of", Json{{"run_id", run_id}}));
   }
   return id;
+}
+
+Result<int> reconcile_action_run(Database& db, const std::string& run_id, const std::vector<std::string>& node_ids) {
+  if (run_id.empty()) return 0;
+  LOOM_TRY_ASSIGN(auto run_node, db.find_node("run:" + run_id, "action_run"));
+  if (!run_node) return 0;
+  std::vector<Node> candidates;
+  if (node_ids.empty()) {
+    LOOM_TRY_ASSIGN(candidates, db.list_nodes("port_run", 1000000));
+  } else {
+    for (const auto& id : node_ids) {
+      LOOM_TRY_ASSIGN(auto n, db.get_node(id));
+      if (n) candidates.push_back(*n);
+    }
+  }
+  int made = 0;
+  for (const auto& n : candidates) {
+    if (json::get_string(n.metadata, "action_run_id") != run_id) continue;
+    LOOM_TRY_ASSIGN(auto links, db.get_links(n.id, "part_of"));
+    bool have = false;
+    for (const auto& l : links) have = have || (l.src == n.id && l.dst == run_node->id);
+    if (have) continue;
+    LOOM_TRY(link(db, n.id, run_node->id, "part_of", Json{{"run_id", run_id}}));
+    ++made;
+  }
+  return made;
 }
 
 Result<int> reconcile_action_runs(Database& db) {
