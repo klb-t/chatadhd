@@ -18,7 +18,38 @@ struct Scratch {
         secrets(std::filesystem::temp_directory_path() / "loom-media-unguarded" / "secrets.json") {}
 };
 
+struct HoldState {
+  Json confirmation = Json::object();
+  Json pending = nullptr;
+};
+thread_local HoldState* g_hold = nullptr;
+
+Json pending_of(const llm::VariantResult& r, const WireCall& call) {
+  const Json& admitted = r.hold["decision"];
+  Json resources = Json::object();
+  if (const Json* res = json::find(admitted, "resources")) resources = *res;
+  return Json{{"schema", "loom.action_usage_pending/1"}, {"stage", "media"},
+              {"status", json::get_string(r.hold, "status")},
+              {"operation_id", admitted.value("operation_id", Json(nullptr))},
+              {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
+              {"baseline_key", admitted.value("baseline_key", Json(nullptr))},
+              {"projected", resources}, {"decisions", r.hold.value("decisions", Json(nullptr))},
+              {"media", call.action}, {"provider", call.manifest}, {"sent", false}};
+}
+
 }  // namespace
+
+HoldScope::HoldScope(Json confirmation) : confirming_(confirmation.is_object() && !confirmation.empty()) {
+  auto* st = new HoldState();
+  if (confirming_) st->confirmation = std::move(confirmation);
+  prev_ = g_hold;
+  g_hold = st;
+}
+HoldScope::~HoldScope() {
+  delete g_hold;
+  g_hold = static_cast<HoldState*>(prev_);
+}
+Json HoldScope::pending() const { return g_hold ? g_hold->pending : Json(nullptr); }
 
 Result<net::HttpResponse> send(net::HttpTransport& http, const std::shared_ptr<MediaCallContext>& ctx,
                                const WireCall& call, std::string_view label, std::size_t error_body_chars) {
@@ -40,7 +71,8 @@ Result<net::HttpResponse> send(net::HttpTransport& http, const std::shared_ptr<M
   }
 
   llm::ModelRequest request;
-  request.kind = call.action;  // the operation kind (guard cohort, provenance); no catalogue action: see S2_R8
+  request.kind = call.action;  // the operation kind (guard cohort, provenance)
+  request.action = call.action == "media.ocr" ? "ocr" : "transcribe";  // the catalogue action this call serves (P12 4)
   request.models = {llm::ModelSpec{call.model, "", Json::object()}};
   request.parameters = call.parameters;
   request.inputs = {call.input};
@@ -56,6 +88,10 @@ Result<net::HttpResponse> send(net::HttpTransport& http, const std::shared_ptr<M
   request.route.endpoint = slash == std::string::npos ? "" : call.endpoint.substr(slash);
   request.route.credential = call.credential;
   request.route.headers = call.headers;
+  if (guarded && g_hold && g_hold->confirmation.is_object() && !g_hold->confirmation.empty()) {
+    request.usage.confirmation = std::move(g_hold->confirmation);  // answers this one request, once
+    g_hold->confirmation = Json::object();
+  }
   if (!guarded) request.usage.gate = llm::make_admitted_gate();
 
   auto outcome = llm::use_model(services, std::move(request));
@@ -71,7 +107,8 @@ Result<net::HttpResponse> send(net::HttpTransport& http, const std::shared_ptr<M
       return resp;
     }
     case llm::State::Held:
-      return Error(Errc::Unavailable, prefix + "held by the usage guard: " + json::get_string(r.hold, "status"));
+      if (g_hold) g_hold->pending = pending_of(r, call);
+      return Error(Errc::Paused, prefix + "held by the usage guard: " + json::get_string(r.hold, "status"));
     case llm::State::HttpError: {
       std::string msg = "HTTP " + std::to_string(r.http_status);
       if (!r.body.empty()) msg += ": " + r.body.substr(0, error_body_chars);

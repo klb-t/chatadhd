@@ -74,11 +74,23 @@ export class LoomHttpApi implements LoomApi {
     return this.req("POST", "/api/usage-policy", command);
   }
   readonly actions: ActionsApi = {
+    clientKind: "web",
+    clientDeclare: (request) => this.req("POST", "/api/client/declare", request),
+    clientCapabilities: (request) => this.req("POST", "/api/client/capabilities", request),
+    clientResult: (result) => this.req("POST", "/api/actions/client_result", result),
+    clientBlob: (request) => this.req("POST", "/api/client/blob", request),
     run: (request) => this.req("POST", "/api/actions/run", request),
     confirm: (answer) => this.req("POST", "/api/actions/confirm", answer),
     cancel: (request) => this.req("POST", "/api/actions/cancel", request),
     status: (request) => this.req("POST", "/api/actions/status", request),
     route: (request) => this.req("POST", "/api/chat/route", request),
+    rulesSet: (request) => this.req("POST", "/api/rules/set", request),
+    rulesDisable: (request) => this.req("POST", "/api/rules/disable", request),
+    rulesList: (request = {}) => this.req("POST", "/api/rules/list", request),
+    actionsDefine: (request) => this.req("POST", "/api/actions/define", request),
+    actionsRemove: (request) => this.req("POST", "/api/actions/remove", request),
+    groupsDefine: (request) => this.req("POST", "/api/groups/define", request),
+    groupsRemove: (request) => this.req("POST", "/api/groups/remove", request),
   };
   packet(command: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Packet failures contain the immutable first-response capture. Preserve

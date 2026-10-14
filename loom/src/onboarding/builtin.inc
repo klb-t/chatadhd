@@ -368,7 +368,21 @@ R"loom_onboard({
                 "definition_define_action": "A new action \"{{id}}\": written only to your own overlay ({{overlay}}); you can remove it later",
                 "definition_define_sequence": "A chain you keep repeating, saved as the action \"{{id}}\" (your own overlay: {{overlay}})",
                 "definition_define_group": "A group \"{{id}}\" for what your classes have in common (your own overlay: {{overlay}})",
-                "rule_replaces": "Replaces the rule you set before for the same thing"
+                "rule_replaces": "Replaces the rule you set before for the same thing",
+                "offer": "Send my sentence as a message",
+                "offer_hint": "Nothing was sent to the model. Your sentence can still go to it as an ordinary message.",
+                "offer_sent": "Your sentence was sent as a message",
+                "offer_declined": "Your sentence stays unsent",
+                "offer_failed": "The sentence could not be sent ({{reason}}).",
+                "status_undone": "Taken back",
+                "written": "Written to your own overlay ({{overlay}}) as \"{{id}}\"",
+                "written_entry": "The entry that was written",
+                "undo": "Take it back",
+                "undone": "Taken back: removed from your own overlay",
+                "undo_failed": "It could not be taken back ({{reason}}).",
+                "status_cancelled": "Cancelled",
+                "written_rule": "Rule written to your own overlay ({{overlay}}) as \"{{id}}\"",
+                "undone_rule": "Rule switched off: it no longer applies"
               },
               "pl": {
                 "title": "Polecenie czeka na Twoją odpowiedź",
@@ -397,7 +411,80 @@ R"loom_onboard({
                 "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
                 "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
                 "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
-                "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie"
+                "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie",
+                "offer": "Wyślij moje zdanie jako wiadomość",
+                "offer_hint": "Nic nie poszło do modelu. Twoje zdanie może jeszcze do niego trafić jako zwykła wiadomość.",
+                "offer_sent": "Twoje zdanie poszło jako wiadomość",
+                "offer_declined": "Twoje zdanie zostaje niewysłane",
+                "offer_failed": "Nie udało się wysłać zdania ({{reason}}).",
+                "status_undone": "Wycofane",
+                "written": "Zapisane w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
+                "written_entry": "Zapisany wpis",
+                "undo": "Wycofaj",
+                "undone": "Wycofane: usunięte z Twojej własnej nakładki",
+                "undo_failed": "Nie udało się wycofać ({{reason}}).",
+                "status_cancelled": "Anulowane",
+                "written_rule": "Reguła zapisana w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
+                "undone_rule": "Reguła wyłączona: już nie obowiązuje"
+              }
+            }
+          }
+        },
+        {
+          "id": "presentation.client_step/v1",
+          "key": "presentation.client_step",
+          "area": "presentation/client_step",
+          "revision": 1,
+          "label": "Texts of a step the client carries out itself (P13): the controls of a run paused on a device action - record, take a picture, choose a file, read the clipboard, notify, play - and what happened on the device; texts only, they do not change what runs",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "client_step",
+            "locales": {
+              "en": {
+                "title": "Your device has a step to do",
+                "waiting": "The run is paused until this device answers; nothing else runs meanwhile.",
+                "start_record": "Start recording",
+                "stop_record": "Stop and send",
+                "recording": "Recording: {{seconds}} s",
+                "do_capture_image": "Take the picture",
+                "do_pick_file": "Choose a file",
+                "do_clipboard_read": "Read the clipboard",
+                "do_clipboard_write": "Copy to the clipboard",
+                "do_notify": "Show the notification",
+                "do_play_audio": "Play the recording",
+                "do_request_permission": "Ask for permission",
+                "do_unsupported": "This client cannot do it",
+                "decline": "Not now",
+                "cancel": "Cancel the run",
+                "sending": "Sending the answer to the kernel...",
+                "sent": "The answer was sent.",
+                "failed": "The device could not do it ({{reason}}).",
+                "send_failed": "The answer could not be sent ({{reason}}).",
+                "permission_hint": "Your browser or system asks for permission ({{permission}}) when this starts.",
+                "unsupported": "This browser has no way to do it ({{reason}}); decline it or cancel the run."
+              },
+              "pl": {
+                "title": "Twoje urządzenie ma krok do wykonania",
+                "waiting": "Przebieg czeka, aż to urządzenie odpowie; nic innego się w tym czasie nie wykonuje.",
+                "start_record": "Zacznij nagrywać",
+                "stop_record": "Zatrzymaj i wyślij",
+                "recording": "Nagrywanie: {{seconds}} s",
+                "do_capture_image": "Zrób zdjęcie",
+                "do_pick_file": "Wybierz plik",
+                "do_clipboard_read": "Odczytaj schowek",
+                "do_clipboard_write": "Skopiuj do schowka",
+                "do_notify": "Pokaż powiadomienie",
+                "do_play_audio": "Odtwórz nagranie",
+                "do_request_permission": "Poproś o zgodę",
+                "do_unsupported": "Ten klient tego nie potrafi",
+                "decline": "Nie teraz",
+                "cancel": "Anuluj przebieg",
+                "sending": "Wysyłam odpowiedź do jądra...",
+                "sent": "Odpowiedź wysłana.",
+                "failed": "Urządzenie nie dało rady ({{reason}}).",
+                "send_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+                "permission_hint": "Przeglądarka lub system poprosi o zgodę ({{permission}}), gdy to się zacznie.",
+                "unsupported": "Ta przeglądarka nie ma jak tego zrobić ({{reason}}); odmów albo anuluj przebieg."
               }
             }
           }
@@ -997,7 +1084,8 @@ R"loom_onboard({
             "review_state.rejected": "odrzucone",
             "error.template_syntax": "Nieprawidłowa składnia szablonu prezentacji.",
             "field.label_prefix": "{{label}} ",
-            "field.state": "({{status}}{{suffix}})",
+)loom_onboard",
+R"loom_onboard(            "field.state": "({{status}}{{suffix}})",
             "error.template_parameters": "Parametry szablonu muszą być obiektem.",
             "graph.prompt": "{{id}} prompt",
             "graph.parameters": "{{id}} parametry",
@@ -1183,8 +1271,7 @@ R"loom_onboard({
       "revision": 1,
       "label": "Relations and reach",
       "value": {
-)loom_onboard",
-R"loom_onboard(        "relations": [
+        "relations": [
           "*"
         ],
         "direction": "both",
@@ -1433,7 +1520,21 @@ R"loom_onboard(        "relations": [
             "definition_define_action": "A new action \"{{id}}\": written only to your own overlay ({{overlay}}); you can remove it later",
             "definition_define_sequence": "A chain you keep repeating, saved as the action \"{{id}}\" (your own overlay: {{overlay}})",
             "definition_define_group": "A group \"{{id}}\" for what your classes have in common (your own overlay: {{overlay}})",
-            "rule_replaces": "Replaces the rule you set before for the same thing"
+            "rule_replaces": "Replaces the rule you set before for the same thing",
+            "offer": "Send my sentence as a message",
+            "offer_hint": "Nothing was sent to the model. Your sentence can still go to it as an ordinary message.",
+            "offer_sent": "Your sentence was sent as a message",
+            "offer_declined": "Your sentence stays unsent",
+            "offer_failed": "The sentence could not be sent ({{reason}}).",
+            "status_undone": "Taken back",
+            "written": "Written to your own overlay ({{overlay}}) as \"{{id}}\"",
+            "written_entry": "The entry that was written",
+            "undo": "Take it back",
+            "undone": "Taken back: removed from your own overlay",
+            "undo_failed": "It could not be taken back ({{reason}}).",
+            "status_cancelled": "Cancelled",
+            "written_rule": "Rule written to your own overlay ({{overlay}}) as \"{{id}}\"",
+            "undone_rule": "Rule switched off: it no longer applies"
           },
           "pl": {
             "title": "Polecenie czeka na Twoją odpowiedź",
@@ -1462,7 +1563,80 @@ R"loom_onboard(        "relations": [
             "definition_define_action": "Nowa akcja „{{id}}”: zapisze się tylko w Twojej własnej nakładce ({{overlay}}); możesz ją później usunąć",
             "definition_define_sequence": "Łańcuch, który powtarzasz, zapisany jako akcja „{{id}}” (Twoja własna nakładka: {{overlay}})",
             "definition_define_group": "Grupa „{{id}}” dla tego, co mają wspólnego Twoje klasy (Twoja własna nakładka: {{overlay}})",
-            "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie"
+            "rule_replaces": "Zastępuje regułę, którą ustawiłeś wcześniej w tej samej sprawie",
+            "offer": "Wyślij moje zdanie jako wiadomość",
+            "offer_hint": "Nic nie poszło do modelu. Twoje zdanie może jeszcze do niego trafić jako zwykła wiadomość.",
+            "offer_sent": "Twoje zdanie poszło jako wiadomość",
+            "offer_declined": "Twoje zdanie zostaje niewysłane",
+            "offer_failed": "Nie udało się wysłać zdania ({{reason}}).",
+            "status_undone": "Wycofane",
+            "written": "Zapisane w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
+            "written_entry": "Zapisany wpis",
+            "undo": "Wycofaj",
+            "undone": "Wycofane: usunięte z Twojej własnej nakładki",
+            "undo_failed": "Nie udało się wycofać ({{reason}}).",
+            "status_cancelled": "Anulowane",
+            "written_rule": "Reguła zapisana w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
+            "undone_rule": "Reguła wyłączona: już nie obowiązuje"
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.client_step/v1",
+      "key": "presentation.client_step",
+      "area": "presentation/client_step",
+      "revision": 1,
+      "label": "Texts of a step the client carries out itself (P13): the controls of a run paused on a device action - record, take a picture, choose a file, read the clipboard, notify, play - and what happened on the device; texts only, they do not change what runs",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "client_step",
+        "locales": {
+          "en": {
+            "title": "Your device has a step to do",
+            "waiting": "The run is paused until this device answers; nothing else runs meanwhile.",
+            "start_record": "Start recording",
+            "stop_record": "Stop and send",
+            "recording": "Recording: {{seconds}} s",
+            "do_capture_image": "Take the picture",
+            "do_pick_file": "Choose a file",
+            "do_clipboard_read": "Read the clipboard",
+            "do_clipboard_write": "Copy to the clipboard",
+            "do_notify": "Show the notification",
+            "do_play_audio": "Play the recording",
+            "do_request_permission": "Ask for permission",
+            "do_unsupported": "This client cannot do it",
+            "decline": "Not now",
+            "cancel": "Cancel the run",
+            "sending": "Sending the answer to the kernel...",
+            "sent": "The answer was sent.",
+            "failed": "The device could not do it ({{reason}}).",
+            "send_failed": "The answer could not be sent ({{reason}}).",
+            "permission_hint": "Your browser or system asks for permission ({{permission}}) when this starts.",
+            "unsupported": "This browser has no way to do it ({{reason}}); decline it or cancel the run."
+          },
+          "pl": {
+            "title": "Twoje urządzenie ma krok do wykonania",
+            "waiting": "Przebieg czeka, aż to urządzenie odpowie; nic innego się w tym czasie nie wykonuje.",
+            "start_record": "Zacznij nagrywać",
+            "stop_record": "Zatrzymaj i wyślij",
+            "recording": "Nagrywanie: {{seconds}} s",
+            "do_capture_image": "Zrób zdjęcie",
+            "do_pick_file": "Wybierz plik",
+            "do_clipboard_read": "Odczytaj schowek",
+            "do_clipboard_write": "Skopiuj do schowka",
+            "do_notify": "Pokaż powiadomienie",
+            "do_play_audio": "Odtwórz nagranie",
+            "do_request_permission": "Poproś o zgodę",
+            "do_unsupported": "Ten klient tego nie potrafi",
+            "decline": "Nie teraz",
+            "cancel": "Anuluj przebieg",
+            "sending": "Wysyłam odpowiedź do jądra...",
+            "sent": "Odpowiedź wysłana.",
+            "failed": "Urządzenie nie dało rady ({{reason}}).",
+            "send_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+            "permission_hint": "Przeglądarka lub system poprosi o zgodę ({{permission}}), gdy to się zacznie.",
+            "unsupported": "Ta przeglądarka nie ma jak tego zrobić ({{reason}}); odmów albo anuluj przebieg."
           }
         }
       }

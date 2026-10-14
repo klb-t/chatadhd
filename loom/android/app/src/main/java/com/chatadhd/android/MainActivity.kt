@@ -1,13 +1,18 @@
 package com.chatadhd.android
 
 import android.annotation.SuppressLint
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.PermissionRequest
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
@@ -47,6 +52,32 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) {
             loadApp()
         }
+
+    // ── devices of the page (P13) ───────────────────────────────────────
+    // The page declares the microphone / camera it can use (client.declare); the WebView asks this activity before
+    // it hands them over. DevicePermissionPolicy decides which requests are served (the page this app loaded, the
+    // devices this shell serves); Android's own runtime permission comes first.
+    private var pendingDevices: Pair<PermissionRequest, List<String>>? = null
+    private val requestDevices =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions()) { granted ->
+            val pending = pendingDevices ?: return@registerForActivityResult
+            pendingDevices = null
+            val allowed = pending.second.filter { resource ->
+                val permission = DevicePermissionPolicy.androidPermissionFor(resource)
+                permission != null && (granted[permission] == true ||
+                    ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED)
+            }
+            if (allowed.isEmpty()) pending.first.deny() else pending.first.grant(allowed.toTypedArray())
+        }
+    private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
+    private val chooseFile =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()) { result ->
+            val chosen = WebChromeClient.FileChooserParams.parseResult(result.resultCode, result.data)
+            fileChooserCallback?.onReceiveValue(chosen)
+            fileChooserCallback = null
+        }
+    private val requestNotifications =
+        registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { }
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,7 +149,42 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        webView.webChromeClient = object : WebChromeClient() {
+            override fun onPermissionRequest(request: PermissionRequest) {
+                val servable = DevicePermissionPolicy.servable(request.resources, request.origin.toString(), "https://$APP_HOST", serverBase)
+                if (servable.isEmpty()) {
+                    request.deny()
+                    return
+                }
+                val missing = servable.mapNotNull { DevicePermissionPolicy.androidPermissionFor(it) }
+                    .filter { ContextCompat.checkSelfPermission(this@MainActivity, it) != PackageManager.PERMISSION_GRANTED }
+                if (missing.isEmpty()) {
+                    request.grant(servable.toTypedArray())
+                    return
+                }
+                pendingDevices?.first?.deny()
+                pendingDevices = Pair(request, servable)
+                requestDevices.launch(missing.toTypedArray())
+            }
+
+            override fun onShowFileChooser(view: WebView, callback: ValueCallback<Array<Uri>>, params: FileChooserParams): Boolean {
+                fileChooserCallback?.onReceiveValue(null)
+                fileChooserCallback = callback
+                return try {
+                    chooseFile.launch(params.createIntent())
+                    true
+                } catch (e: Exception) {
+                    fileChooserCallback = null
+                    false
+                }
+            }
+        }
+
         bridge = LoomBridge(webView)
+        // Notifications of the shell (the WebView has no Notification API): Android 13 asks for the permission at runtime.
+        bridge.onRequestNotifications = {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) requestNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
         startForMode()
     }
 

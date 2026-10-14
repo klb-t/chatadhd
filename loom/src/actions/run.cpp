@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "loom/client_devices.h"
+#include "loom/port_graph.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
@@ -376,8 +378,25 @@ std::set<std::string> trait_set(const Json& run) {
 
 const Executor* ExecutorTable::find(std::string_view action, const Json& entry) const {
   if (auto it = by_action_.find(action); it != by_action_.end()) return &it->second;
+  if (client_ && !client_capability(entry).empty()) return &client_;
   if (port_ && json::find(entry, "port") && !json::get_string(entry, "port").empty()) return &port_;
   return nullptr;
+}
+
+Executor make_client_step_executor() {
+  return [](const StepCall& c) {
+    StepOutcome out;
+    if (!c.entry) {
+      out.state = StepOutcome::State::Failed;
+      out.error = Error(Errc::Internal, "a client step has no catalogue entry");
+      return out;
+    }
+    Json inputs = Json::array();
+    for (const auto& p : c.inputs) inputs.push_back(p.to_json());
+    out.state = StepOutcome::State::Client;
+    out.data = client_step_spec(*c.entry, c.run_id, c.step_id, c.with, inputs);
+    return out;
+  };
 }
 
 namespace {
@@ -389,6 +408,23 @@ class MemoryRunStore final : public RunStore {
     const std::string id = json::get_string(run, "id");
     if (!docs_.count(id)) order_.push_back(id);
     docs_[id] = run;
+    log_.push_back(Checkpoint{++seq_, run});
+    return {};
+  }
+  Result<std::vector<Checkpoint>> checkpoints_since(std::int64_t after_seq, std::size_t limit) override {
+    std::lock_guard lk(mu_);
+    std::vector<Checkpoint> out;
+    for (const auto& cp : log_)
+      if (cp.seq > after_seq && out.size() < limit) out.push_back(cp);
+    return out;
+  }
+  Result<std::optional<Json>> load_index() override {
+    std::lock_guard lk(mu_);
+    return index_;
+  }
+  Status save_index(const Json& snapshot) override {
+    std::lock_guard lk(mu_);
+    index_ = snapshot;
     return {};
   }
   Result<std::optional<Json>> load(std::string_view run_id) override {
@@ -417,6 +453,9 @@ class MemoryRunStore final : public RunStore {
   std::mutex mu_;
   std::map<std::string, Json> docs_;
   std::vector<std::string> order_;
+  std::vector<Checkpoint> log_;
+  std::int64_t seq_ = 0;
+  std::optional<Json> index_;
 };
 
 }  // namespace
@@ -734,6 +773,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
   req["args"] = request.args;
   req["context"] = request.context;
   run["request"] = req;
+  if (request.client.is_object()) run["client"] = request.client;
   run["element"] = request.element;
   if (const Json* attrs = json::find(request.element, "attrs"); attrs && json::get_bool(*attrs, "sensitive", false)) run["sensitive"] = true;
   run["element_traits"] = Json(std::vector<std::string>(base_traits.begin(), base_traits.end()));
@@ -827,6 +867,47 @@ Result<std::vector<llm::Part>> Interpreter::inputs_of(const Json& run, const Jso
   return out;
 }
 
+// The outcome of a step the client carried out, from its answer {state, parts, data, error, ref, at}. The kinds a device action
+// may bring back are its `client.expects`; nothing of those kinds, for an action that is meant to bring something, is a failure.
+static StepOutcome client_outcome(const Json& answer, const Json* entry) {
+  StepOutcome out;
+  const std::string state = json::get_string(answer, "state");
+  const Json err = answer.value("error", Json::object());
+  const std::string message = json::get_string(err, "message");
+  out.provenance = Json::array({Json{{"schema", std::string(kClientResultSchema)}, {"state", state},
+                                     {"ref", json::get_string(answer, "ref")}, {"at", json::get_string(answer, "at")}}});
+  if (state == "declined") {
+    out.state = StepOutcome::State::Declined;
+    out.error = Error(Errc::Cancelled, message.empty() ? "declined on the device" : message);
+    return out;
+  }
+  if (state == "failed" || state == "unavailable") {
+    out.state = state == "failed" ? StepOutcome::State::Failed : StepOutcome::State::Unavailable;
+    out.error = Error(state == "failed" ? Errc::Internal : Errc::Unavailable, message.empty() ? "the device could not do it (" + state + ")" : message);
+    return out;
+  }
+  auto parts = parts_from(answer.value("parts", Json::array()));
+  if (!parts) {
+    out.state = StepOutcome::State::Failed;
+    out.error = parts.error();
+    return out;
+  }
+  out.parts = std::move(*parts);
+  if (const Json* data = json::find(answer, "data"); data && !data->is_null()) out.data = *data;
+  const std::vector<std::string> expects = entry ? strings_of(json::find(entry->value("client", Json::object()), "expects")) : std::vector<std::string>();
+  bool brought = expects.empty();
+  for (const auto& p : out.parts)
+    if (contains(expects, p.kind)) brought = true;
+  if (!brought && !out.data.is_null() && contains(expects, "json")) brought = true;
+  if (!brought) {
+    out.state = StepOutcome::State::Failed;
+    out.error = Error(Errc::InvalidArgument, "the device returned nothing for '" + (entry ? json::get_string(*entry, "id") : std::string()) + "'");
+    return out;
+  }
+  out.state = StepOutcome::State::Ok;
+  return out;
+}
+
 Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelToken* cancel, const Json& usage_confirmation) {
   const Json step = run.at("plan").at("steps").at(index);
   const std::string id = step.at("id").get<std::string>();
@@ -861,7 +942,7 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     else run["steps"].push_back(rec);
   };
 
-  if (first_variant == 0 && rec.value("status", "") != "held") {
+  if (first_variant == 0 && rec.value("status", "") != "held" && rec.value("status", "") != "awaiting_client") {
     if (const Json* when = json::find(step, "when"); when && !holds(*when, RunView{run, traits})) {
       rec["finished"] = timeutil::utc_now_iso();
       write("skipped");
@@ -936,9 +1017,18 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     call.inputs = *inputs;
     call.element = run.at("element");
     call.args = run.at("request").at("args");
+    call.entry = entry;
     call.cancel = cancel;
     if (j == first_variant && rec.value("status", "") == "held") call.usage_confirmation = usage_confirmation;
-    StepOutcome out = (*executor)(call);
+    // The client has answered the step it was paused on: the answer is this variant's outcome, nothing is executed again.
+    const bool answered = j == first_variant && rec.value("status", "") == "awaiting_client" && rec.contains("client_answer");
+    // Port runs made inside this step (a transcription, a model call through an adapter) belong to the run: part_of -> run:<id> (port_graph.h).
+    const port_graph::ActionRunScope scope(call.run_id);
+    StepOutcome out = answered ? client_outcome(rec.at("client_answer"), entry) : (*executor)(call);
+    if (answered) {
+      rec.erase("client_answer");
+      rec.erase("client_step");
+    }
     Json vrec = Json::object();
     vrec["label"] = label;
     switch (out.state) {
@@ -947,6 +1037,8 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
       case StepOutcome::State::Held: vrec["state"] = "held"; break;
       case StepOutcome::State::Cancelled: vrec["state"] = "cancelled"; break;
       case StepOutcome::State::Unavailable: vrec["state"] = "unavailable"; break;
+      case StepOutcome::State::Client: vrec["state"] = "client"; break;
+      case StepOutcome::State::Declined: vrec["state"] = "declined"; break;
     }
     vrec["parts"] = parts_json(out.parts);
     if (!out.data.is_null()) vrec["data"] = out.data;
@@ -959,6 +1051,13 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
       write("held");
       return rec;
     }
+    if (out.state == StepOutcome::State::Client) {
+      // The client carries this step out; the run waits for client_result (a durable pause, like the others).
+      rec["next_variant"] = j;
+      rec["client_step"] = out.data;
+      write("awaiting_client");
+      return rec;
+    }
     rec.erase("hold");
     rec.erase("pending_variant");
     rec["variants"].push_back(vrec);
@@ -966,6 +1065,12 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     if (out.state == StepOutcome::State::Cancelled) {
       rec["finished"] = timeutil::utc_now_iso();
       write("cancelled");
+      return rec;
+    }
+    if (out.state == StepOutcome::State::Declined) {
+      rec["finished"] = timeutil::utc_now_iso();
+      rec["error"] = error_json(*out.error);
+      write("declined");
       return rec;
     }
     if (out.state == StepOutcome::State::Ok) any_ok = true;
@@ -1007,7 +1112,7 @@ Result<Json> Interpreter::drive(Json run, const CancelToken* cancel, const Json&
     resumed = true;
     LOOM_TRY_ASSIGN(Json rec, run_step(run, index, cancel, confirmation));
     const std::string status = rec.value("status", "");
-    if (deps_.on_step && status != "held") deps_.on_step(rec);
+    if (deps_.on_step && status != "held" && status != "awaiting_client") deps_.on_step(rec);
     if (status == "held") {
       const Json hold = rec.value("hold", Json::object());
       Json ids = Json::array({steps[index].at("id")});
@@ -1022,6 +1127,26 @@ Result<Json> Interpreter::drive(Json run, const CancelToken* cancel, const Json&
       p["resume"] = "actions.confirm {run_id, approved, receipt_id, ref}";
       run["pending"] = p;
       LOOM_TRY(checkpoint("awaiting_usage"));
+      return run;
+    }
+    if (status == "awaiting_client") {
+      const Json spec = rec.value("client_step", Json::object());
+      Json p = Json::object();
+      p["schema"] = std::string(kPendingSchema);
+      p["kind"] = "client_step";
+      p["step"] = steps[index].at("id");
+      p["action"] = steps[index].at("action");
+      p["receipt_id"] = receipt_of(run, "client_step", Json::array({steps[index].at("id")}));
+      p["client_step"] = spec;
+      p["resume"] = "actions.client_result {run_id, receipt_id, state, parts?, data?, error?, ref}";
+      run["pending"] = p;
+      LOOM_TRY(checkpoint("awaiting_client"));
+      return run;
+    }
+    if (status == "declined") {
+      run["pending"] = nullptr;
+      run["error"] = Json{{"code", "declined"}, {"message", "declined on the device; later steps did not run"}, {"step", steps[index].at("id")}};
+      LOOM_TRY(checkpoint("rejected"));
       return run;
     }
     if (status == "cancelled") {
@@ -1153,6 +1278,36 @@ Result<Json> Interpreter::confirm(std::string_view run_id, const Json& answer, c
   for (const auto& g : run.at("gates"))
     if (g.value("decision", "") == "confirm" && std::find(run["approved"].begin(), run["approved"].end(), g.at("id")) == run["approved"].end())
       run["approved"].push_back(g.at("id"));
+  run["pending"] = nullptr;
+  stamp(run, "running");
+  LOOM_TRY(persist(*deps_.store, run));
+  return drive(std::move(run), cancel, Json::object());
+}
+
+Result<Json> Interpreter::client_result(std::string_view run_id, const Json& answer, const CancelToken* cancel) {
+  if (!answer.is_object()) return Error(Errc::InvalidArgument, "the answer must be an object {receipt_id, state, parts?, data?, error?, ref?}");
+  Claim claim(*this, run_id);
+  if (!claim.held) return Error(Errc::Busy, "run '" + std::string(run_id) + "' is executing right now");
+  LOOM_TRY_ASSIGN(Json run, get(run_id));
+  const std::string status = json::get_string(run, "status");
+  if (status != "awaiting_client")
+    return Error(Errc::Conflict, "run '" + std::string(run_id) + "' is " + status + "; no client step is waiting for an answer");
+  const Json pending = run.value("pending", Json(nullptr));
+  if (!pending.is_object() || json::get_string(pending, "kind") != "client_step") return Error(Errc::Conflict, "run has no pending client step");
+  const std::string receipt = json::get_string(answer, "receipt_id");
+  if (receipt.empty()) return Error(Errc::InvalidArgument, "receipt_id is required (see pending.receipt_id)");
+  if (receipt != json::get_string(pending, "receipt_id")) return Error(Errc::Conflict, "receipt_id does not match the pending client step of this run");
+  const std::string state = json::get_string(answer, "state");
+  if (state != "ok" && state != "failed" && state != "declined" && state != "unavailable")
+    return Error(Errc::InvalidArgument, "state must be ok, failed, declined or unavailable");
+  const std::size_t index = static_cast<std::size_t>(json::get_int(run, "cursor", 0));
+  if (index >= run.at("steps").size()) return Error(Errc::Internal, "the run has no step record for the pending client step");
+  Json stored = answer;
+  stored.erase("receipt_id");
+  stored["at"] = timeutil::utc_now_iso();
+  run["steps"][index]["client_answer"] = stored;
+  run["confirmations"].push_back(Json{{"at", timeutil::utc_now_iso()}, {"ref", json::get_string(answer, "ref")}, {"approved", state != "declined"},
+                                      {"kind", "client_step"}, {"receipt_id", receipt}, {"state", state}});
   run["pending"] = nullptr;
   stamp(run, "running");
   LOOM_TRY(persist(*deps_.store, run));

@@ -5,10 +5,12 @@
 #include "loom/action_overlay.h"
 
 #include <algorithm>
+#include <thread>
 
 #include "loom/action_element.h"
 #include "loom/action_estimate.h"
 #include "loom/action_result.h"
+#include "loom/chat_route.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/provenance.h"
@@ -19,6 +21,7 @@
 #include "loom/settings_fields.h"
 #include "loom/storage_command.h"
 #include "loom/usage_policy.h"
+#include "loom/util/base64.h"
 #include "loom/util/ids.h"
 #include "loom/util/utf8.h"
 #include "loom/media_providers.h"
@@ -55,7 +58,81 @@ Json usage_pending_of(const llm::VariantResult& r) {
               {"projected", resources}, {"decisions", r.hold.value("decisions", Json(nullptr))}, {"sent", false}};
 }
 
+// A use_model step with `media: asr | ocr` (transcribe, ocr): the recording or the picture of the element goes to the media providers
+// (profile media), which put it on the wire through the one use_model - the adapter of the provider's family, the usage guard, the
+// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the guard holds
+// comes back as the provider's error (the media providers have no way to resume it): the run fails with that reason.
+StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, const std::string& family) {
+  const Json media = settings.value("media", Json::object());
+  const Json kind = media.value(family, Json::object());
+  if (family == "formats" || !kind.is_object() || kind.empty()) return failed(Error(Errc::InvalidArgument, "unknown media kind '" + family + "' in a use_model step"));
+  const std::string part_kind = json::get_string(kind, "part");
+  const llm::Part* input = nullptr;
+  for (const auto& p : c.inputs)
+    if (p.kind == part_kind) { input = &p; break; }
+  if (!input) return failed(Error(Errc::InvalidArgument, "nothing to read: the step takes a " + part_kind + " input"));
+  std::string bytes = input->bytes;
+  if (bytes.empty() && !input->blob_hash.empty()) {
+    auto stored = rt.blobs().read(input->blob_hash);
+    if (!stored) return failed(stored.error());
+    bytes = std::move(*stored);
+  }
+  if (bytes.empty()) return failed(Error(Errc::InvalidArgument, "the " + part_kind + " has no bytes to read"));
+  // The format name the providers know: from the mime type (listed, else its subtype), else the kind's default.
+  std::string format = json::get_string(kind, "default_format");
+  if (!input->mime.empty()) {
+    const std::string mime = input->mime.substr(0, input->mime.find(';'));
+    const std::string listed = json::get_string(media.value("formats", Json::object()), mime);
+    if (!listed.empty()) format = listed;
+    else if (const auto slash = mime.find('/'); slash != std::string::npos && slash + 1 < mime.size()) format = mime.substr(slash + 1);
+  }
+  auto optional_text = [&](const char* key) {
+    const std::string v = json::get_string(c.with, key);
+    return v.empty() ? std::optional<std::string>() : std::optional<std::string>(v);
+  };
+  const auto provider = optional_text("provider");
+  const auto language = optional_text("language");
+
+  Json provenance = Json::array();
+  const std::thread::id caller = std::this_thread::get_id();
+  // The runtime's own sink (provenance rows, the port run in the graph) keeps hearing every call; this step listens as well, and
+  // puts the runtime's sink back when it is done.
+  const std::function<void(const Json&)> previous = rt.media().provenance_sink();
+  rt.media().set_provenance_sink([&provenance, caller, previous](const Json& record) {
+    if (previous) previous(record);
+    if (std::this_thread::get_id() == caller) provenance.push_back(record);  // another thread's call is not this step's
+  });
+  struct Release {
+    Runtime& rt;
+    std::function<void(const Json&)> previous;
+    ~Release() { rt.media().set_provenance_sink(previous); }
+  } release{rt, previous};
+  std::string text;
+  Json data = nullptr;
+  if (family == "asr") {
+    auto done = rt.media().transcribe_bytes(bytes, format, provider, language);
+    if (!done) return failed(done.error());
+    text = done->text;
+    data = done->to_json();
+  } else {
+    auto done = rt.media().ocr_bytes(bytes, format, provider, language);
+    if (!done) return failed(done.error());
+    text = done->text;
+    data = done->to_json();
+  }
+  StepOutcome out;
+  out.state = StepOutcome::State::Ok;
+  llm::Part part;
+  part.kind = "text";
+  part.text = std::move(text);
+  out.parts.push_back(std::move(part));
+  out.data = std::move(data);
+  out.provenance = std::move(provenance);
+  return out;
+}
+
 StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) {
+  if (const std::string media = json::get_string(c.with, "media"); !media.empty()) return run_media(rt, settings, c, media);
   const Json um = settings.value("use_model", Json::object());
   llm::ModelRequest req;
   const Json& with = c.with;
@@ -269,13 +346,15 @@ struct ActionRunner::Loaded {
   ElementResolver resolver;
   Json settings;
   Json results;  // runtime profile action_results: where the results of a run go
+  Json client;   // the declaration of the asking client (client_devices.h); null for none
   ExecutorTable executors;
 };
 
-ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())) {}
+ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_) {}
 ActionRunner::~ActionRunner() = default;
 
 RunStore& ActionRunner::store() { return *store_; }
+SequenceIndex& ActionRunner::sequence_index() { return index_; }
 
 void ActionRunner::install_executors(ExecutorTable& table) {
   Runtime& rt = rt_;
@@ -284,6 +363,8 @@ void ActionRunner::install_executors(ExecutorTable& table) {
     auto profile = RuntimeProfile::load("action_run", rt.paths().root);
     return run_use_model(rt, profile ? profile->values() : Json::object(), c);
   });
+  // The device actions a client declared are carried out by that client: the step pauses the run (client_devices.h).
+  table.set_client_executor(make_client_step_executor());
   table.add("settings.set", [&rt](const StepCall& c) { return run_settings_set(rt, c); });
   table.add("settings.get", [&rt](const StepCall& c) { return run_settings_get(rt, c); });
   table.set_port_executor([this](const StepCall& c) {
@@ -303,16 +384,29 @@ void ActionRunner::install_executors(ExecutorTable& table) {
   });
 }
 
-Result<ActionRunner::Loaded> ActionRunner::load() {
+Json ActionRunner::client_declaration(std::string_view client_id) { return clients_.find(client_id); }
+
+Json ActionRunner::client_patches(std::string_view client_id) {
+  const Json declaration = clients_.find(client_id);
+  if (declaration.is_null()) return Json::object();
+  auto profile = RuntimeProfile::load("client_devices", rt_.paths().root);
+  auto catalogue = RuntimeProfile::load("actions", rt_.paths().root);
+  if (!profile || !catalogue) return Json::object();
+  const Json* actions = json::find(catalogue->values(), "actions");
+  return actions::client_patches(actions ? *actions : Json::object(), declaration, profile->values());
+}
+
+Result<ActionRunner::Loaded> ActionRunner::load(std::string_view client_id) {
   const auto& root = rt_.paths().root;
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
   engine.set_user_values(rt_.config().all());  // the user's settings are the person level of scoped values
+  engine.apply_client(client_patches(client_id));  // the catalogue as the asking client sees it
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   Json settings = Json::object();
   if (auto profile = RuntimeProfile::load("action_run", root)) settings = profile->values();
   Json results = Json::object();
   if (auto profile = RuntimeProfile::load("action_results", root)) results = profile->values();
-  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), std::move(results), {}};
+  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), std::move(results), clients_.find(client_id), {}};
   install_executors(loaded.executors);
   return loaded;
 }
@@ -411,11 +505,16 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
   }
   if (resolved.is_string()) resolved = Json{{"class", resolved}};
   r.element = std::move(resolved);
+  if (loaded.client.is_object()) {
+    r.client = Json{{"client_id", loaded.client.value("client_id", "")}, {"client", loaded.client.value("client", Json::object())}};
+  } else if (const std::string asked = json::get_string(request, "client_id"); !asked.empty()) {
+    r.client = Json{{"client_id", asked}, {"known", false}};  // never declared, or the declaration expired: the device actions stay planned
+  }
   return r;
 }
 
 Result<Json> ActionRunner::run(const Json& request, const CancelToken* external) {
-  LOOM_TRY_ASSIGN(auto loaded, load());
+  LOOM_TRY_ASSIGN(auto loaded, load(json::get_string(request, "client_id")));
   LOOM_TRY_ASSIGN(RunRequest r, prepare(loaded, request));
   r.run_id = gen_id("ar_");
   CancelToken own;
@@ -445,6 +544,127 @@ Result<Json> ActionRunner::confirm(const Json& request, const CancelToken* exter
   }
   auto interpreter = make_interpreter(loaded);
   auto result = interpreter.confirm(run_id, request, token);
+  std::lock_guard lk(mu_);
+  live_.erase(run_id);
+  if (result) return public_view(*result);
+  return result;
+}
+
+// ── the clients ─────────────────────────────────────────────────────
+
+Result<Json> ActionRunner::client_declare(const Json& request) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("client_devices", rt_.paths().root));
+  LOOM_TRY_ASSIGN(auto catalogue, RuntimeProfile::load("actions", rt_.paths().root));
+  const Json* actions = json::find(catalogue.values(), "actions");
+  return clients_.declare(request, profile.values(), actions ? *actions : Json::object());
+}
+
+Result<Json> ActionRunner::client_capabilities(const Json& request) {
+  const std::string id = json::get_string(request, "client_id");
+  if (id.empty()) return Json{{"clients", clients_.list()}};
+  const Json declaration = clients_.find(id);
+  if (declaration.is_null()) {
+    auto profile = RuntimeProfile::load("client_devices", rt_.paths().root);
+    Json out{{"client_id", id}, {"known", false}};
+    if (profile)
+      if (const Json* t = json::find(profile->values().value("texts", Json::object()), "unknown_client")) out["message"] = *t;
+    return out;
+  }
+  Json out = declaration;
+  out["known"] = true;
+  return out;
+}
+
+Result<Json> ActionRunner::client_blob(const Json& request) {
+  const std::string hash = json::get_string(request, "hash");
+  if (!BlobStore::is_valid_hash(hash)) return Error(Errc::InvalidArgument, "hash must be a blob hash (64 hex)");
+  if (!rt_.blobs().has(hash)) return Error(Errc::NotFound, "no blob " + hash);
+  LOOM_TRY_ASSIGN(std::string bytes, rt_.blobs().read(hash));
+  std::string mime;
+  if (auto row = rt_.db().find_node("blob:" + hash, "blob"); row && *row) mime = json::get_string((*row)->metadata, "mime");
+  return Json{{"hash", hash}, {"mime", mime}, {"size", static_cast<std::int64_t>(bytes.size())}, {"data_base64", base64::encode(bytes)}};
+}
+
+namespace {
+
+// The parts a client brought back, as typed parts of the run: media given as data_base64 go to the blob store (with a graph node
+// and an artifact record that say where they came from), a part naming a stored blob is checked, text stays text.
+Result<Json> stored_client_parts(Runtime& rt, const Json& parts, const Json& origin) {
+  Json out = Json::array();
+  if (!parts.is_array()) return out;
+  for (const auto& p : parts) {
+    if (!p.is_object()) return Error(Errc::InvalidArgument, "a part must be an object");
+    const std::string kind = json::get_string(p, "kind");
+    if (!llm::known_part_kind(kind)) return Error(Errc::InvalidArgument, "unknown part kind '" + kind + "'");
+    Json part = Json{{"kind", kind}};
+    if (const std::string mime = json::get_string(p, "mime"); !mime.empty()) part["mime"] = mime;
+    if (kind == "text" || kind == "json" || kind == "embedding") {
+      if (const std::string text = json::get_string(p, "text"); !text.empty()) part["text"] = text;
+      if (const Json* v = json::find(p, "value")) part["value"] = *v;
+      out.push_back(std::move(part));
+      continue;
+    }
+    std::string hash = json::get_string(p, "blob_hash");
+    if (const std::string b64 = json::get_string(p, "data_base64"); !b64.empty()) {
+      LOOM_TRY_ASSIGN(std::string bytes, base64::decode(b64, true));
+      if (bytes.empty()) return Error(Errc::InvalidArgument, "a " + kind + " part has no bytes");
+      LOOM_TRY_ASSIGN(BlobRef ref, rt.blobs().put(bytes, json::get_string(p, "mime")));
+      hash = ref.hash;
+      part["size"] = ref.size;
+      NodeOptions o;
+      o.tags = Json::array({"blob", "client_capture", kind});
+      Json meta{{"blob_hash", hash}, {"size", ref.size}, {"mime", json::get_string(p, "mime")}, {"output_kind", kind}, {"produced_by", origin}};
+      if (const std::string name = json::get_string(p, "name"); !name.empty()) meta["name"] = name;
+      o.metadata = std::move(meta);
+      LOOM_TRY_ASSIGN(std::string node, rt.db().get_or_create_node("blob:" + hash, "blob", o));
+      part["node_id"] = node;
+      ArtifactRecord artifact;
+      artifact.kind = "client_capture";
+      artifact.title = kind + " from " + json::get_string(origin, "action");
+      artifact.blob_hash = hash;
+      artifact.mime = json::get_string(p, "mime");
+      artifact.metadata = origin;
+      if (auto made = rt.provenance().add_artifact(std::move(artifact))) part["artifact_id"] = *made;
+    } else if (!hash.empty()) {
+      if (!BlobStore::is_valid_hash(hash) || !rt.blobs().has(hash)) return Error(Errc::NotFound, "the blob " + hash + " is not in the blob store");
+    } else if (json::get_string(p, "url").empty()) {
+      return Error(Errc::InvalidArgument, "a " + kind + " part needs data_base64, blob_hash or url");
+    }
+    if (!hash.empty()) part["blob_hash"] = hash;
+    if (const std::string url = json::get_string(p, "url"); !url.empty()) part["url"] = url;
+    out.push_back(std::move(part));
+  }
+  return out;
+}
+
+}  // namespace
+
+Result<Json> ActionRunner::client_result(const Json& request, const CancelToken* external) {
+  const std::string run_id = json::get_string(request, "run_id");
+  if (run_id.empty()) return Error(Errc::InvalidArgument, "run_id is required");
+  LOOM_TRY_ASSIGN(auto loaded, load());
+  auto interpreter = make_interpreter(loaded);
+  Json answer = request;
+  answer.erase("run_id");
+  // Nothing is stored for an answer the run is not waiting for (a wrong receipt, a run that was cancelled meanwhile).
+  LOOM_TRY_ASSIGN(Json current, interpreter.get(run_id));
+  const Json pending = current.value("pending", Json(nullptr));
+  if (json::get_string(current, "status") == "awaiting_client" && pending.is_object() &&
+      json::get_string(request, "receipt_id") == json::get_string(pending, "receipt_id") && json::get_string(request, "state") == "ok") {
+    const Json spec = pending.value("client_step", Json::object());
+    Json origin{{"schema", "loom.client_capture/1"}, {"run_id", run_id}, {"step", json::get_string(pending, "step")},
+                {"action", json::get_string(pending, "action")}, {"client_id", current.value("client", Json::object()).value("client_id", "")},
+                {"ref", json::get_string(request, "ref")}, {"output_kind", spec.value("expects", Json::array()).empty() ? "media" : spec["expects"][0]}};
+    LOOM_TRY_ASSIGN(answer["parts"], stored_client_parts(rt_, request.value("parts", Json::array()), origin));
+  }
+  CancelToken own;
+  const CancelToken* token = external ? external : &own;
+  {
+    std::lock_guard lk(mu_);
+    if (live_.count(run_id)) return Error(Errc::Busy, "run '" + run_id + "' is executing right now");
+    live_.emplace(run_id, *token);
+  }
+  auto result = interpreter.client_result(run_id, answer, token);
   std::lock_guard lk(mu_);
   live_.erase(run_id);
   if (result) return public_view(*result);
@@ -484,7 +704,7 @@ Result<Json> ActionRunner::status(const Json& request) {
 }
 
 Result<Json> ActionRunner::preview(const Json& request) {
-  LOOM_TRY_ASSIGN(auto loaded, load());
+  LOOM_TRY_ASSIGN(auto loaded, load(json::get_string(request, "client_id")));
   LOOM_TRY_ASSIGN(RunRequest r, prepare(loaded, request));
   auto interpreter = make_interpreter(loaded);
   LOOM_TRY_ASSIGN(Json preview, interpreter.preview(r));
@@ -508,7 +728,12 @@ Result<Json> ActionRunner::preview(const Json& request) {
 Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& request) {
   const auto& root = rt_.paths().root;
   if (action == "rules.set") return rules_set(root, request);
-  if (action == "rules.disable") return rules_disable(root, request);
+  if (action == "rules.disable") {
+    auto done = rules_disable(root, request);
+    if (done && json::get_bool(*done, "written", true) && json::get_bool(*done, "changed", true))
+      chat_route::note_rule_switched(rt_, json::get_string(*done, "id"), json::get_bool(*done, "disabled", true));
+    return done;
+  }
   if (action == "rules.list") return rules_list(root, request);
   const bool define = action == "actions.define" || action == "groups.define";
   const bool remove = action == "actions.remove" || action == "groups.remove";
@@ -522,6 +747,7 @@ Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& re
     const std::string node = define ? json::get_string(request.value("provenance", Json::object()), "node")
                                     : json::get_string(done->value("origin", Json::object()), "node");
     emergent::settle(rt_, node, define ? "accepted" : "undone", *done);
+    if (!define) chat_route::note_removed(rt_, done->value("origin", Json::object()));
   }
   return done;
 }
@@ -556,13 +782,18 @@ Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view a
 Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) {
   if (action == "run") return run(request);
   if (action == "confirm") return confirm(request);
+  if (action == "client_result") return client_result(request);
+  if (action == "client.declare") return client_declare(request);
+  if (action == "client.capabilities") return client_capabilities(request);
+  if (action == "client.blob") return client_blob(request);
   if (action == "cancel") return cancel(request);
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);
   if (action == "rules.list") return write_overlay(action, request);
   if (is_overlay_action(action)) return run_gated(action, request);
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
-  return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config());
+  const Json patches = client_patches(json::get_string(request, "client_id"));
+  return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config(), &patches);
 }
 
 }  // namespace loom::actions

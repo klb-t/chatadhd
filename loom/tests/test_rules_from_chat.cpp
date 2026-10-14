@@ -232,6 +232,36 @@ TEST_SUITE("rules_from_chat") {
     CHECK(f.meta(no_question).at("action_proposal").at("needs_confirmation").size() == 0);
   }
 
+  TEST_CASE("the rule that was written is kept on its proposal, and one call (rulesDisable) takes it back; the proposal then says so") {
+    Fixture f;
+    const auto proposal = f.input("for this conversation never run summarise without asking");
+    const std::string proposal_id = proposal.assistant_message_id;
+    const auto done = f.input("yes");
+    REQUIRE(done.handled);
+    const std::string id = "user:conversation:" + f.conv_id + ":gate:summarise";
+    const Json written = unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal").at("written");
+    CHECK(written.at("kind") == "rule");
+    CHECK(written.at("id") == id);
+    CHECK(written.at("overlays") == Json::array({"profiles/action_rules.pack"}));
+    CHECK(written.at("entry").at("effect") == "confirm");
+    CHECK(written.at("entry").at("provenance").at("conv_id") == f.conv_id);
+    CHECK(unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal").at("status") == "executed");
+    // the click: the removal the web sends is a rules.disable that the user's click confirms
+    const Json run = unwrap(f.rt->actions().invoke("rules.disable", Json{{"id", id}, {"confirmed", true}, {"ref", "web"}}));
+    CHECK(run.at("status") == "completed");
+    CHECK(f.overlay_rules().at(id).at("disabled") == true);
+    const Json after = unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal");
+    CHECK(after.at("status") == "undone");
+    CHECK(after.at("written").at("undone") == true);
+    // taken back from somewhere else (restore): the proposal is the writer again
+    unwrap(f.rt->actions().invoke("rules.disable", Json{{"id", id}, {"restore", true}, {"confirmed", true}}));
+    const Json restored = unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal");
+    CHECK(restored.at("status") == "executed");
+    CHECK(restored.at("written").at("undone") == false);
+    // a rule that was not written from a conversation has no message to tell: nothing breaks
+    unwrap(f.rt->actions().invoke("rules.disable", Json{{"id", "confirm:rules.set"}, {"confirmed", true}}));
+  }
+
   TEST_CASE("a rule pinned by a higher scope refuses, with its reason and who pinned it; so does switching it off") {
     Fixture f;
     f.overlay("action_rules", Json{{"rules", Json{{"org_pin", Json{{"id", "org_pin"}, {"scope", "installation"}, {"target", Json{{"kind", "any"}}},

@@ -225,7 +225,8 @@ TEST_SUITE("action_runner") {
     CHECK(text_result(run) == "Three phases, two risks.");
     CHECK(run.at("plan").at("items").at(0).at("action") == "summarise");
     // a chain that includes a planned action never starts and nothing is sent
-    const std::string audio = unwrap(f.rt->blobs().put("RIFF....WAVE", "audio/wav")).hash;
+    // (a microphone is a device: recording is the client's, this runtime has no driver for it, so the chain from it is declared only)
+    const std::string audio = "device:microphone";
     const Json audio_chain = unwrap(f.runner().invoke("propose_chain", Json{{"element", audio}, {"target_trait", "summary"}}));
     REQUIRE(audio_chain.at("chains").size() >= 1);
     CHECK(audio_chain.at("chains").at(0).at("executable") == false);

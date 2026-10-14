@@ -14,6 +14,7 @@ using namespace loom;
 using loom::test::unwrap;
 
 namespace {
+// The repository root from the fixtures directory (loom/tests/fixtures): __FILE__ is relative under ccache's CCACHE_BASEDIR.
 const std::filesystem::path kRepo = std::filesystem::weakly_canonical(std::filesystem::path(LOOM_TEST_FIXTURES) / ".." / ".." / "..");
 }
 

@@ -64,14 +64,82 @@ export type Unsubscribe = () => void;
 
 export interface NativeUiRequestOptions { signal?: AbortSignal; }
 
+/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `confirmed` is the user's
+ *  explicit yes to exactly this write (the rules of the scope still apply, a deny is never overridden). */
+export interface OverlayWriteOptions { dry_run?: boolean; confirmed?: boolean; ref?: string; context?: Record<string, unknown> }
+/** A scoped rule or value (rules.set): written only to the user's overlay profiles/action_rules.pack. */
+export interface RuleRequest extends OverlayWriteOptions {
+  scope?: string; scope_id?: string; effect?: string; key?: string; value?: unknown; action?: string;
+  target?: Record<string, unknown>; reason?: string; initiator?: string; locked?: boolean; id?: string;
+}
+export interface RuleDisableRequest extends OverlayWriteOptions { id: string; restore?: boolean }
+export interface RulesListRequest { scope?: string; scope_id?: string; user_only?: boolean; include_disabled?: boolean }
+export interface RulesList { schema?: string; rules: Record<string, unknown>[] }
+/** A new action of the user's own (actions.define): a composite with use_model steps, its phrases and where it came from. */
+export interface DefineActionRequest extends OverlayWriteOptions {
+  id?: string; instruction?: string; steps?: Record<string, unknown>[]; title?: string; requires?: string[];
+  phrases?: Record<string, string[]>; lang?: string; provenance?: Record<string, unknown>;
+}
+/** A named bundle of traits (groups.define). */
+export interface DefineGroupRequest extends OverlayWriteOptions {
+  id?: string; traits?: string[]; label?: unknown; element_match?: unknown; provenance?: Record<string, unknown>;
+}
+/** Takes one of the user's own definitions back out of the overlay (actions.remove, groups.remove). */
+export interface RemoveRequest extends OverlayWriteOptions { id: string }
+
+/** What a client says about itself and the devices it can drive right now (client.declare). A capability is a name the catalogue's
+ *  device actions need (captures_audio, plays_audio, shows_notifications, clipboard_read ...), with its permission state
+ *  (granted | prompt | denied) and how the client does it. */
+export interface ClientDeclareRequest {
+  client_id?: string;
+  client?: { kind?: string; platform?: string; label?: string };
+  capabilities: Record<string, string | { permission: string; via?: string; detail?: string }>;
+}
+export interface ClientDeclaration {
+  client_id: string;
+  capabilities: Record<string, { permission: string; runnable: boolean; actions: string[]; via?: string }>;
+  runnable_actions: string[];
+  refused: Record<string, string>;
+  [key: string]: unknown;
+}
+/** The answer of a client to the step a run is paused on (actions.client_result). Media come as data_base64 (stored in the blob store). */
+export interface ClientResultPart { kind: string; mime?: string; data_base64?: string; blob_hash?: string; text?: string; name?: string }
+export interface ClientResult {
+  run_id: string;
+  receipt_id: string;
+  state: "ok" | "failed" | "declined" | "unavailable";
+  parts?: ClientResultPart[];
+  data?: unknown;
+  error?: { code?: string; message: string };
+  ref?: string;
+}
+
 /** Running actions (R54): the same actions the chat window proposes, reachable without it. */
 export interface ActionsApi {
+  /** The kind of client this transport is (web page, Android shell): what client.declare says about it. */
+  readonly clientKind?: string;
+  /** Declare the devices this client can drive; the kernel keeps it for this client only (device actions become runnable for it). */
+  clientDeclare?(request: ClientDeclareRequest): Promise<ClientDeclaration>;
+  clientCapabilities?(request: { client_id?: string }): Promise<Record<string, unknown>>;
+  /** Answer the client step a run is paused on; the run continues with the next step. */
+  clientResult?(result: ClientResult): Promise<ActionRun>;
+  /** A stored blob (a recording to play): {hash, mime, size, data_base64}. */
+  clientBlob?(request: { hash: string }): Promise<{ hash: string; mime: string; size: number; data_base64: string }>;
   run(request: Record<string, unknown>): Promise<ActionRun>;
   /** Answer the question a run is paused on; the receipt must be the pending one. */
   confirm(answer: ActionAnswer): Promise<ActionRun>;
   cancel(request: { run_id: string; ref?: string }): Promise<ActionRun>;
   status(request: { run_id?: string; list?: boolean; status?: string; conv_id?: string; limit?: number }): Promise<ActionRun>;
   route(request: { text: string; conv_id?: string; method?: string; lang?: string }): Promise<Record<string, unknown>>;
+  /** The user's own rules and definitions (P11). A write is a run that passed the rules of the scope: it may wait for a confirmation
+   *  (answered with `confirm`), and result.data says what was written and where. Only the user's overlays change. */
+  rulesSet(request: RuleRequest): Promise<ActionRun>;
+  rulesDisable(request: RuleDisableRequest): Promise<ActionRun>;
+  rulesList(request?: RulesListRequest): Promise<RulesList>;
+  actionsDefine(request: DefineActionRequest): Promise<ActionRun>;
+  actionsRemove(request: RemoveRequest): Promise<ActionRun>;
+  groupsDefine(request: DefineGroupRequest): Promise<ActionRun>;
+  groupsRemove(request: RemoveRequest): Promise<ActionRun>;
 }
 
 export interface LoomApi {

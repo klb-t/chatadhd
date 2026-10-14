@@ -7,11 +7,16 @@ import { conversationViewMessages, messageCan, type ConversationView } from "../
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import UsagePendingBlock from "./UsagePendingBlock";
-import ActionProposalBlock from "./ActionProposalBlock";
-import { ACTION_PROPOSAL_FEATURE, answerRequest, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, type PendingAnswer } from "../context/action-proposal";
+import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
+import ClientStepBlock from "./ClientStepBlock";
+import { CLIENT_STEP_FEATURE, type BlobLoader } from "../context/client-device";
+import { browserHost } from "../context/browser-host";
+import { clientIdentity, pageClientSession } from "../context/client-session";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { featureMessage } from "../onboarding/presentation.mjs";
 import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
+import type { ClientResult } from "../api/loom-api";
 import "./chat-context.css";
 import ContextPlanEditor from "./ContextPlanEditor";
 import { buildRetrievalPlan } from "../context/retrieval-plan";
@@ -108,9 +113,21 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
   const usageCatalog = usePresentationFeature(profileHost, USAGE_PENDING_FEATURE);
   const proposalCatalog = usePresentationFeature(profileHost, ACTION_PROPOSAL_FEATURE);
+  const clientStepCatalog = usePresentationFeature(profileHost, CLIENT_STEP_FEATURE);
+  // This page as a client of the kernel (P13): the devices it can drive are declared, so the device actions are runnable for it.
+  const clientHost = useMemo(() => browserHost(), []);
+  const clientSession = useMemo(() => pageClientSession({
+    actions: api.actions, host: clientHost, label: navigator.userAgent,
+    id: clientIdentity(typeof sessionStorage === "undefined" ? undefined : sessionStorage),
+  }), [clientHost]);
   // A command answered in the conversation (R54): the run being answered, and why an answer could not be sent.
   const [answering, setAnswering] = useState<string | null>(null);
   const [answerFailure, setAnswerFailure] = useState<{ runId: string; reason: string } | null>(null);
+  // The offer to send a rejected command's sentence as a message: why it could not be taken.
+  const [offerFailure, setOfferFailure] = useState<{ proposalId: string; reason: string } | null>(null);
+  // A definition the user accepted can be taken back from the proposal that wrote it: the one being removed, and why it could not be.
+  const [undoing, setUndoing] = useState<string | null>(null);
+  const [undoFailure, setUndoFailure] = useState<{ id: string; reason: string } | null>(null);
   const [usagePending, setUsagePending] = useState<{ request: ChatRequest; receipt: UsagePendingReceipt; convId: string } | null>(null);
   const [usageNotice, setUsageNotice] = useState<string | null>(null);
   const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
@@ -412,17 +429,28 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         onError: (msg: string) => finishError(msg),
         onDone: () => finishError("Chat stream ended before a done result."),
       };
-    if (runProfileOperation) {
-      void runProfileOperation("chat.send", { request, handlers,
-        onSubscription: (unsub: () => void) => { if (isCurrent()) unsubRef.current = unsub; else unsub(); },
-      }).catch((err: unknown) => {
-        finishError(err instanceof Error && err.name === "AbortError" ? null : err instanceof Error ? err.message : String(err));
-      });
-    } else {
-      try { unsubRef.current = api.chat(request, handlers); }
-      catch (err) { finishError(err instanceof Error ? err.message : String(err)); }
-    }
-  }, [input, stream, convId, model, onConversationCreated, refreshMessages,
+    const dispatch = () => {
+      if (runProfileOperation) {
+        void runProfileOperation("chat.send", { request, handlers,
+          onSubscription: (unsub: () => void) => { if (isCurrent()) unsubRef.current = unsub; else unsub(); },
+        }).catch((err: unknown) => {
+          finishError(err instanceof Error && err.name === "AbortError" ? null : err instanceof Error ? err.message : String(err));
+        });
+      } else {
+        try { unsubRef.current = api.chat(request, handlers); }
+        catch (err) { finishError(err instanceof Error ? err.message : String(err)); }
+      }
+    };
+    // The devices of this page are declared to the kernel here, right before the first thing the person started that may need them (a command
+    // that records, takes a picture ...), and again only when what the browser can do has changed: nothing is sent in the background.
+    // A request the user wrote by hand (the one-call override) or a re-send of one is sent exactly as it is.
+    const composed = !forced && requestOverride === null;
+    void clientSession.ensure().then((id) => {
+      if (!isCurrent()) return;
+      if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
+      dispatch();
+    });
+  }, [input, stream, convId, model, onConversationCreated, refreshMessages, clientSession,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
 
@@ -444,16 +472,87 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setUsageNotice(usageCatalog.feature ? safeNotice(usageCatalog.feature, "rejected") : null);
   }, [usagePending, usageCatalog.feature]);
 
+  // Takes the offer a "no" made: the sentence goes to the model as an ordinary message (the engine reads it from the conversation).
+  const takeOffer = useCallback((offer: OfferView) => {
+    const sentence = messages.find(row => row.id === offer.sentenceId);
+    if (!convId || !sentence) { setOfferFailure({ proposalId: offer.proposalId, reason: offer.sentenceId }); return; }
+    setOfferFailure(null);
+    const draft = input;
+    send("send", offerRequest(offer, sentence.text, convId));
+    setInput(draft);  // what the user was typing is not the sentence being sent
+  }, [convId, messages, send, input]);
+
+  const undoWritten = useCallback(async (written: WrittenView) => {
+    if (!api.actions) return;
+    setUndoing(written.id);
+    setUndoFailure(null);
+    try {
+      const run = await api.actions[undoCall(written)](undoRequest(written));
+      if (run.status !== "completed") throw new Error(run.error && run.error.message ? run.error.message : String(run.status));
+      if (convId) await refreshMessages(convId);
+      onMessagesChanged?.();
+    } catch (err) {
+      setUndoFailure({ id: written.id, reason: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setUndoing(null);
+    }
+  }, [convId, refreshMessages, onMessagesChanged]);
+
   const answerAction = useCallback(async (answer: PendingAnswer, approved: boolean) => {
     if (!api.actions) return;
     setAnswering(answer.runId);
     setAnswerFailure(null);
     try {
-      await api.actions.confirm(answerRequest(answer, approved, "web"));
+      const run = await api.actions.confirm(answerRequest(answer, approved, "web"));
+      if (convId) await refreshMessages(convId);
+      onMessagesChanged?.();
+      // The setting asks for the rejected sentence to be sent at once: the call settled the proposal, the client sends.
+      const resend = run.resend as { proposal_message_id?: string } | undefined;
+      const offer = run.offer as { message_id?: string } | undefined;
+      if (resend && resend.proposal_message_id && offer && offer.message_id) {
+        takeOffer({ proposalId: resend.proposal_message_id, sentenceId: offer.message_id, auto: true });
+      }
+    } catch (err) {
+      setAnswerFailure({ runId: answer.runId, reason: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setAnswering(null);
+    }
+  }, [convId, refreshMessages, onMessagesChanged, takeOffer]);
+
+  // A recording stored in the kernel, as the page can play it.
+  const loadBlob = useCallback<BlobLoader>(async (hash) => {
+    if (!api.actions || !api.actions.clientBlob) throw new Error("this transport has no blob access");
+    const stored = await api.actions.clientBlob({ hash });
+    const bytes = Uint8Array.from(atob(stored.data_base64), (c) => c.charCodeAt(0));
+    return new Blob([bytes], { type: stored.mime });
+  }, []);
+
+  // The answer of this device to the step a run is paused on: the run continues in the kernel and the conversation hears the result.
+  const answerClient = useCallback(async (runId: string, result: ClientResult) => {
+    if (!api.actions || !api.actions.clientResult) return;
+    setAnswering(runId);
+    setAnswerFailure(null);
+    try {
+      await api.actions.clientResult(result);
       if (convId) await refreshMessages(convId);
       onMessagesChanged?.();
     } catch (err) {
-      setAnswerFailure({ runId: answer.runId, reason: err instanceof Error ? err.message : String(err) });
+      setAnswerFailure({ runId, reason: err instanceof Error ? err.message : String(err) });
+    } finally {
+      setAnswering(null);
+    }
+  }, [convId, refreshMessages, onMessagesChanged]);
+
+  const cancelRun = useCallback(async (runId: string) => {
+    if (!api.actions) return;
+    setAnswering(runId);
+    setAnswerFailure(null);
+    try {
+      await api.actions.cancel({ run_id: runId, ref: "web" });
+      if (convId) await refreshMessages(convId);
+      onMessagesChanged?.();
+    } catch (err) {
+      setAnswerFailure({ runId, reason: err instanceof Error ? err.message : String(err) });
     } finally {
       setAnswering(null);
     }
@@ -639,6 +738,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                     receipt={{ ...(answer.usage ?? {}), receipt_id: answer.receiptId, operation_id: (m.metadata?.action_run as { pending?: { operation_id?: string | null } } | undefined)?.pending?.operation_id ?? null }}
                     onConfirm={() => void answerAction(answer, true)} onReject={() => void answerAction(answer, false)} />;
                 }
+                if (answer && answer.kind === "client" && answer.clientStep) {
+                  return <ClientStepBlock testId="chat-client-step" feature={clientStepCatalog.feature} step={answer.clientStep} runId={answer.runId}
+                    receiptId={answer.receiptId} host={clientHost} load={loadBlob} clientRef={"web:" + clientSession.id} busy={answering === answer.runId}
+                    failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
+                    onAnswer={(result) => answerClient(answer.runId, result)} onCancel={() => void cancelRun(answer.runId)} />;
+                }
                 if (answer) {
                   return <ActionProposalBlock testId="chat-action-proposal" feature={proposalCatalog.feature} answer={answer} busy={answering === answer.runId}
                     failure={answerFailure && answerFailure.runId === answer.runId ? answerFailure.reason : null}
@@ -646,7 +751,18 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 }
                 if (state && proposalCatalog.feature) {
                   const label = safeNotice(proposalCatalog.feature, "status_" + state);
-                  return label ? <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span> : null;
+                  const written = writtenView(m.metadata);
+                  const offer = openOffer(m.metadata, m.id);
+                  const ended = offerState(m.metadata);
+                  const endedLabel = ended ? offerTexts(proposalCatalog.feature).state(ended) : null;
+                  return (<>
+                    {label && <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span>}
+                    {written && <ProposalWritten testId="chat-action-written" feature={proposalCatalog.feature} written={written} busy={undoing === written.id}
+                      failure={undoFailure && undoFailure.id === written.id ? undoFailure.reason : null} onUndo={() => void undoWritten(written)} />}
+                    {offer && <ProposalOffer testId="chat-action-offer" feature={proposalCatalog.feature} offer={offer} busy={Boolean(stream)}
+                      failure={offerFailure && offerFailure.proposalId === offer.proposalId ? offerFailure.reason : null} onSend={() => takeOffer(offer)} />}
+                    {endedLabel && <span className="pill" data-testid="chat-action-offer-state" data-state={ended ?? ""}>{endedLabel}</span>}
+                  </>);
                 }
                 return null;
               })()}

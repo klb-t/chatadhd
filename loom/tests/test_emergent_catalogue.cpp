@@ -335,7 +335,7 @@ TEST_SUITE("emergent_catalogue") {
     CHECK(f.overlay("actions").empty());
     CHECK_FALSE(actions_define(f.td.path(), Json{{"id", "Bad Name"}, {"instruction", "x"}}));
     CHECK_FALSE(actions_define(f.td.path(), Json{{"id", "both"}, {"instruction", "x"}, {"steps", Json::array({Json{{"action", "summarise"}}})}}));
-    CHECK_FALSE(actions_define(f.td.path(), Json{{"id", "chain"}, {"steps", Json::array({Json{{"action", "ocr"}}})}}));  // ocr is only declared
+    CHECK_FALSE(actions_define(f.td.path(), Json{{"id", "chain"}, {"steps", Json::array({Json{{"action", "describe_image"}}})}}));  // describe_image is only declared
     unwrap(actions_define(f.td.path(), Json{{"id", "stepper"}, {"instruction", "Do it in steps"}}));
     unwrap(actions_define(f.td.path(), Json{{"id", "chained"}, {"steps", Json::array({Json{{"action", "stepper"}}, Json{{"action", "translate"}}})}}));
     const auto in_use = actions_remove(f.td.path(), Json{{"id", "stepper"}});

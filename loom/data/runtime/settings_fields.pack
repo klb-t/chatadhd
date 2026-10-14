@@ -191,6 +191,14 @@
         "description": "Whether a command from the chat waits for the user's yes (propose, preset), runs at once when its plan only reads and the rules ask for nothing (read_only), or runs at once (always). The rules and the x10 usage confirmation apply in every case."
       },
       {
+        "key": "intent_routing_on_reject",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "What a no to a proposal from the chat does with the sentence the proposal came from: offer (preset: the reply offers, in the same proposal block and by the words \"send as message\", to send the sentence to the model as an ordinary message), send_as_message (it is sent at once) or drop (it is not sent). Whatever is sent has exactly the request bytes of an ordinary message. Runtime profile intent_routing."
+      },
+      {
         "key": "intent_routing_model",
         "scope": "config",
         "group": "chat",

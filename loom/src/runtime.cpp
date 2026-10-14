@@ -22,6 +22,7 @@
 #include "loom/loom.h"
 #include "loom/media_providers.h"
 #include "loom/memory_engine.h"
+#include "loom/port_graph.h"
 #include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/providers.h"
@@ -360,7 +361,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(impl->media, build_part("media", parts.media, ctx));
   ctx.media = impl->media.get();
   // ASR/OCR model_use records go to the provenance store (subject = the usage receipt when there is one).
-  impl->media->set_provenance_sink([prov = impl->provenance.get()](const Json& record) {
+  impl->media->set_provenance_sink([prov = impl->provenance.get(), db = impl->db.get(), cfg = impl->config.get()](const Json& record) {
     ProvenanceRecord rec;
     rec.subject_id = json::get_string(record, "operation_id");
     if (rec.subject_id.empty()) rec.subject_id = json::get_string(record, "request_sha256");
@@ -368,6 +369,15 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     rec.transform = json::get_string(record, "kind", "model_use") + "@1";
     rec.locator = record;
     if (auto r = prov->add(std::move(rec)); !r) log::debug(kLog, "media provenance not recorded: {}", r.error().message);
+    // The same call as a port run in the graph (B-MOD-09); switch off with config port_graph_runs=false.
+    if (cfg->get("port_graph_runs", Json(true)) == Json(false)) return;
+    auto run = port_graph::port_run_from_model_use(record);
+    // The registered adapter whose name starts with the provider's id (groq -> groq_whisper).
+    const std::string provider = run.provider;
+    const auto names = run.port == "asr" ? asr_adapters().names() : run.port == "ocr" ? ocr_adapters().names() : std::vector<std::string>();
+    for (const auto& n : names)
+      if (!provider.empty() && n.rfind(provider, 0) == 0) { run.adapter = n; break; }
+    if (auto g = port_graph::record_port_run(*db, run); !g) log::debug(kLog, "port run not recorded in the graph: {}", g.error().message);
   });
   LOOM_TRY_ASSIGN(impl->importer, build_part("importer", parts.importer, ctx));
   ctx.importer = impl->importer.get();

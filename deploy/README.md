@@ -16,19 +16,24 @@ Budowanie trwa kilka minut. Skrypt można uruchamiać wielokrotnie.
 ## Gotowa paczka z GitHub Actions (bez kompilatora na VM)
 
 Workflow „Package (Android APK + server)” (`.github/workflows/package.yml`) uruchamia się **tylko ręcznie**
-(Actions → Package → Run workflow), więc zużywa minuty tylko, gdy o to prosisz. Daje dwa artefakty:
+(Actions → Package → Run workflow), więc zużywa minuty tylko, gdy o to prosisz. Daje artefakty:
 
-- `chatadhd-server-linux-x64`: `chatadhd-server-linux-x64-<wersja>.tar.gz` + `.sha256` (serwer + web),
+- `chatadhd-server-linux-x64` (zwykłe serwery, Intel/AMD) i `chatadhd-server-linux-arm64` (np. Oracle/Hetzner ARM, Raspberry Pi 64-bit):
+  `chatadhd-server-linux-<x64 albo arm64>-<wersja>.tar.gz` + `.sha256` (serwer + web). Wybierz ten, który pasuje do Twojej maszyny (`uname -m`: `x86_64` = x64, `aarch64` = arm64). Wariant arm64 jest dodatkowy: jeśli GitHub nie ma dla niego maszyny, workflow i tak daje x64,
 - `chatadhd-android-apk`: `app-debug.apk` (patrz „Telefon” niżej).
 
-Na VM (Ubuntu 24.04+ / Debian 13+, bo archiwum jest budowane na glibc 2.39):
+Jak pobrać: Actions → Package → wybrana uruchomiona pozycja → na dole strony „Artifacts” → kliknij nazwę artefaktu (pobierze się .zip, w środku jest .tar.gz i .sha256); wgraj oba pliki na VM.
+
+Działa na: **Ubuntu 22.04 i nowszym, Debian 12 i nowszym** (te systemy workflow sam sprawdza przed oddaniem paczki). Potrzebuje tylko pakietu `libssl3` (zwykle już jest). Na starszych systemach (Ubuntu 20.04, Debian 11) buduj ze źródeł.
+
+Na VM:
 
 ```
 sudo deploy/install.sh --from-tarball chatadhd-server-linux-x64-<wersja>.tar.gz --domain chat.twoja.domena --admin-login anna
 ```
 Skrypt sprawdza sumę `.sha256` (jeśli leży obok), rozpakowuje do `/opt/chatadhd/<wersja>`, sprawdza biblioteki
 (`ldd`) i dalej robi to samo co instalacja ze źródeł (systemd, Caddy, `current`, rollback). Nie instaluje
-kompilatora ani node. Starszy system: budowa ze źródeł (`deploy/install.sh` bez `--from-tarball`).
+kompilatora ani node. Starszy system: budowa ze źródeł (`deploy/install.sh` bez `--from-tarball`). Skrypt zatrzyma się z jasnym komunikatem, jeśli archiwum jest dla innego procesora niż maszyna.
 Archiwum można też zbudować samemu: `deploy/install.sh --package KATALOG --no-deps`, a sprawdzić
 `deploy/verify-package.sh PLIK.tar.gz` (uruchamia serwer z archiwum na `127.0.0.1` i go odpytuje).
 

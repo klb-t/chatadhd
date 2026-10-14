@@ -20,7 +20,11 @@
 //   * every step leaves a record (loom.action_step/1: action, element, decision, hashes of inputs and
 //     outputs, the provenance of the model calls it made); the whole run is a document
 //     (loom.action_run/1) you can read back;
-//   * a run can be cancelled: between steps, and inside a model call through the cancel token.
+//   * a run can be cancelled: between steps, and inside a model call through the cancel token;
+//   * a step that is a DEVICE action of a client (the catalogue entry has a `client` member, client_devices.h) is not
+//     executed here: the run pauses with a `client_step` receipt (status awaiting_client, durable like any pause), the
+//     client carries the step out and answers with client_result (the produced parts, or why it could not), and the
+//     run continues with the next step. A client that never answers leaves the run paused, not failed.
 //
 // Mechanism vs data: the interpreter knows how to run steps and what the conditions mean; which actions
 // have which steps, prompts, models and variants is data. Executors (the code behind atomic actions)
@@ -52,6 +56,7 @@ namespace loom::actions {
 inline constexpr std::string_view kRunSchema = "loom.action_run/1";
 inline constexpr std::string_view kStepSchema = "loom.action_step/1";
 inline constexpr std::string_view kPendingSchema = "loom.action_pending/1";
+inline constexpr std::string_view kClientResultSchema = "loom.client_result/1";
 
 // ── Executors: the code behind atomic actions ───────────────────────
 
@@ -68,11 +73,14 @@ struct StepCall {
   Json element = Json::object();
   Json args = Json::object();
   Json usage_confirmation = Json::object();  // set when resuming this step after the usage guard's hold
+  const Json* entry = nullptr;               // the catalogue entry of `action` (valid during the call)
   const CancelToken* cancel = nullptr;
 };
 
 struct StepOutcome {
-  enum class State { Ok, Failed, Held, Cancelled, Unavailable };
+  // Client: the step is carried out by the client; `data` is its client_step (client_devices.h). Declined: the person
+  // did not allow it on the device.
+  enum class State { Ok, Failed, Held, Cancelled, Unavailable, Client, Declined };
   State state = State::Failed;
   std::vector<llm::Part> parts;  // typed outputs
   Json data = nullptr;           // structured result, when the action has one
@@ -88,12 +96,19 @@ class ExecutorTable {
   void add(std::string action, Executor executor) { by_action_[std::move(action)] = std::move(executor); }
   // Executor for catalogue entries that carry port + action (storage.*, actions.*): `fallback` handles them.
   void set_port_executor(Executor executor) { port_ = std::move(executor); }
+  // Executor for the device actions of a client (catalogue entries with a `client` member): pauses the run on a client_step.
+  void set_client_executor(Executor executor) { client_ = std::move(executor); }
   const Executor* find(std::string_view action, const Json& entry) const;
 
  private:
   std::map<std::string, Executor, std::less<>> by_action_;
   Executor port_;
+  Executor client_;
 };
+
+// The executor of a client step: builds the client_step the client has to carry out (client_devices.h) and returns
+// StepOutcome::State::Client with it as `data`.
+Executor make_client_step_executor();
 
 // ── Run storage ─────────────────────────────────────────────────────
 
@@ -104,6 +119,17 @@ class RunStore {
   virtual Result<std::optional<Json>> load(std::string_view run_id) = 0;
   // Latest document of each run, newest first. filter: {"status"?, "conv_id"?, "limit"?}.
   virtual Result<std::vector<Json>> list(const Json& filter) = 0;
+
+  // The stream of checkpoints and the snapshots of the index built from it (action_index.h). `seq` strictly increases with every save.
+  struct Checkpoint {
+    std::int64_t seq = 0;
+    Json run;
+  };
+  // The checkpoints saved after `after_seq` (0 = all), oldest first, at most `limit`.
+  virtual Result<std::vector<Checkpoint>> checkpoints_since(std::int64_t after_seq, std::size_t limit) = 0;
+  // The newest snapshot of the sequence index (none yet: nullopt), and a new one, kept next to the checkpoints.
+  virtual Result<std::optional<Json>> load_index() = 0;
+  virtual Status save_index(const Json& snapshot) = 0;
 };
 std::unique_ptr<RunStore> make_memory_run_store();
 // Checkpoints are append-only events of type "action.run" (subject = run id): the audit trail and the
@@ -123,6 +149,7 @@ struct RunRequest {
   bool confirmed = false;        // the caller accepts the rule confirmations of this plan up front
   std::string ref;               // who/what confirms (web, cli, chat:<message id> ...)
   std::string run_id;            // optional: assigned by the caller (to register a cancel token first)
+  Json client = nullptr;         // the client that asked ({client_id, kind, label}): shown in the run, tells who carries out client steps
   static Result<RunRequest> from_json(const Json& j);
 };
 
@@ -146,12 +173,18 @@ class Interpreter {
   explicit Interpreter(InterpreterDeps deps) : deps_(std::move(deps)) {}
 
   // Plan, gate, and (unless proposing or paused) execute. The returned run document tells where it
-  // stands: completed | failed | denied | proposed | awaiting_confirmation | awaiting_usage | cancelled.
+  // stands: completed | failed | denied | proposed | awaiting_confirmation | awaiting_usage | awaiting_client | cancelled.
   Result<Json> start(const RunRequest& request, const CancelToken* cancel = nullptr);
 
   // Answer the pending question of a run: {"approved": bool, "receipt_id": str, "ref"?: str}.
   // The receipt must be the pending one (a stale or invented receipt is refused).
   Result<Json> confirm(std::string_view run_id, const Json& answer, const CancelToken* cancel = nullptr);
+
+  // Answer the client_step a run is paused on: {"receipt_id", "state": ok | failed | declined | unavailable, "parts"?: [typed
+  // parts as llm::Part json - media already in the blob store], "data"?, "error"?: {code?, message}, "ref"?}. The receipt must be
+  // the pending one. ok continues the run with the next step; failed / unavailable fail the step; declined ends the run as
+  // `rejected`.
+  Result<Json> client_result(std::string_view run_id, const Json& answer, const CancelToken* cancel = nullptr);
 
   // Stop a run: a paused / proposed run becomes `cancelled`; a running one stops at the next step
   // boundary (or inside a model call, through its token).

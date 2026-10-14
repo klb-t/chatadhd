@@ -1,5 +1,6 @@
 import { featureMessage, type PresentationFeature } from "../onboarding/presentation.mjs";
 import type { JsonValue } from "../onboarding/types";
+import type { ClientStepSpec } from "./client-device";
 
 /** Presentation feature holding the texts (`presentation.action_proposal`). */
 export const ACTION_PROPOSAL_FEATURE = "action_proposal";
@@ -19,8 +20,16 @@ export interface ProposalConfirmation { action?: string; title?: string; reason?
 export interface ProposalParam { name?: string; required?: boolean; given?: boolean; value?: unknown; from?: string; default?: unknown }
 /** A proposal that grows the catalogue (R55): an action, a repeated chain or a group; written to the user's overlay only. */
 export interface ProposalDefinition { kind?: string; id?: string; overlay?: string; node?: string }
+/** What a "no" leaves of the user's sentence: it can still go to the model as an ordinary message (setting intent_routing_on_reject).
+ *  status: open (waiting for the choice), sent (taken), declined (closed); mode: the preset that made the offer. */
+export interface ProposalOffer { action?: string; status?: string; message_id?: string; mode?: string }
+/** What an accepted definition wrote: the overlay file(s) and the entry itself (user overlay only), kept on the proposal.
+ *  `undone` is set once the definition was taken back. */
+export interface ProposalWritten { kind?: string; id?: string; overlays?: string[]; entry?: unknown; undone?: boolean }
 export interface ActionProposal {
   kind?: string;
+  offer?: ProposalOffer | null;
+  written?: ProposalWritten | null;
   params?: ProposalParam[];
   definition?: ProposalDefinition | null;
   replaces?: boolean;
@@ -38,13 +47,15 @@ export interface ActionRunPending {
   kind?: string;
   receipt_id?: string | null;
   operation_id?: string | null;
+  /** A run paused on a device action of this client (kind client_step): what the client has to do. */
+  client_step?: ClientStepSpec;
   usage_pending?: { status?: string; receipt_id?: string | null; operation_id?: string | null; baseline_key?: string | null; projected?: { [name: string]: { [field: string]: unknown } } };
 }
 /** What a completed run left in the graph: the form nodes of its result, the content node they express, the run node. */
 export interface ProducedMeta { target?: string; forms?: string[]; content?: string | null; run_node?: string | null }
 export interface ActionRunMeta { run_id?: string; status?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
 
-export type AnswerKind = "proposal" | "confirmation" | "usage";
+export type AnswerKind = "proposal" | "confirmation" | "usage" | "client";
 /** What a message of the conversation asks the user to answer, if anything. */
 export interface PendingAnswer {
   kind: AnswerKind;
@@ -54,6 +65,8 @@ export interface PendingAnswer {
   proposal: ActionProposal | null;
   /** The usage guard's receipt (kind usage only): shown by the usage block. */
   usage: ActionRunPending["usage_pending"] | null;
+  /** The step this client carries out (kind client only). */
+  clientStep: ClientStepSpec | null;
 }
 
 function text(value: unknown): string {
@@ -65,15 +78,18 @@ export function pendingAnswer(metadata: Meta | undefined): PendingAnswer | null 
   if (!metadata) return null;
   const proposal = metadata.action_proposal as ActionProposal | undefined;
   if (proposal && proposal.status === "pending" && text(proposal.run_id) !== "" && text(proposal.receipt_id) !== "") {
-    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null };
+    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null, clientStep: null };
   }
   const run = metadata.action_run as ActionRunMeta | undefined;
   const pending = run && run.pending ? run.pending : null;
   if (run && pending && text(run.run_id) !== "" && text(pending.receipt_id) !== "") {
     if (pending.kind === "usage") {
-      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null };
+      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null, clientStep: null };
     }
-    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null };
+    if (pending.kind === "client_step" && pending.client_step) {
+      return { kind: "client", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: pending.client_step };
+    }
+    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: null };
   }
   return null;
 }
@@ -83,6 +99,60 @@ export function proposalState(metadata: Meta | undefined): string | null {
   const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
   if (!proposal || !proposal.status || proposal.status === "pending") return null;
   return proposal.status;
+}
+
+/** An open offer to send a rejected command's sentence as a message: the proposal message that carries it, the sentence's message,
+ *  and whether the setting asks the client to send it at once. */
+export interface OfferView { proposalId: string; sentenceId: string; auto: boolean }
+
+/** The open offer a proposal message carries, or null (answered otherwise, closed, or none was made). */
+export function openOffer(metadata: Meta | undefined, messageId: string): OfferView | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const offer = proposal && proposal.status === "rejected" && proposal.offer ? proposal.offer : null;
+  if (!offer || offer.status !== "open" || text(offer.message_id) === "" || messageId === "") return null;
+  return { proposalId: messageId, sentenceId: text(offer.message_id), auto: offer.mode === "send_as_message" };
+}
+
+/** How an offer ended, for a small line under the proposal: sent or declined; null while open or without an offer. */
+export function offerState(metadata: Meta | undefined): string | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const status = proposal && proposal.offer ? text(proposal.offer.status) : "";
+  return status === "sent" || status === "declined" ? status : null;
+}
+
+/** The chat request that takes an offer. The engine reads the sentence from the conversation; `message` is the same sentence,
+ *  for the transports that require one. */
+export function offerRequest(offer: OfferView, sentence: string, convId: string) {
+  return { message: sentence, conv_id: convId, send_as_message: offer.proposalId };
+}
+
+export interface WrittenView { kind: string; id: string; overlays: string[]; entry: string; undone: boolean }
+
+/** What an accepted definition wrote, as the block shows it (the overlay entry as formatted JSON); null for any other message. */
+export function writtenView(metadata: Meta | undefined): WrittenView | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const written = proposal && proposal.written ? proposal.written : null;
+  if (!written || text(written.id) === "") return null;
+  const overlays: string[] = [];
+  if (Array.isArray(written.overlays)) {
+    for (const file of written.overlays) if (typeof file === "string" && file !== "") overlays.push(file);
+  }
+  return {
+    kind: text(written.kind), id: text(written.id), overlays,
+    entry: written.entry === undefined || written.entry === null ? "" : JSON.stringify(written.entry, null, 2),
+    undone: written.undone === true || (proposal !== undefined && proposal.status === "undone"),
+  };
+}
+
+/** Which call takes what was written back: a rule is switched off, a group has its own removal, an action and a repeated chain are both actions. */
+export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" | "rulesDisable" {
+  if (view.kind === "rule") return "rulesDisable";
+  return view.kind === "define_group" ? "groupsRemove" : "actionsRemove";
+}
+
+/** The body of the removal: the click is the user's explicit yes to exactly this removal (the rules of the scope still apply). */
+export function undoRequest(view: WrittenView) {
+  return { id: view.id, confirmed: true, ref: "web" };
 }
 
 export interface ProducedView { target: string; forms: string[]; content: string; runNode: string }
@@ -237,5 +307,55 @@ export function proposalTexts(feature: PresentationFeature | null, answer: Pendi
     rejected: say("rejected"),
     failed: (reason) => say("answer_failed", { reason }) ?? reason,
     status: (state) => say("status_" + state),
+  };
+}
+
+export interface OfferTexts {
+  /** The button: send the sentence as a message. */
+  send: string | null;
+  hint: string | null;
+  failed: (reason: string) => string;
+  /** The line for an offer that ended: sent or declined. */
+  state: (state: string) => string | null;
+}
+
+/** The words of the offer, from the catalog; without one the machine names are shown. */
+export function offerTexts(feature: PresentationFeature | null): OfferTexts {
+  const say = (id: string, parameters: Row = {}): string | null => {
+    if (!feature) return null;
+    try { return featureMessage(feature, id, parameters); }
+    catch { return null; }
+  };
+  return {
+    send: say("offer"),
+    hint: say("offer_hint"),
+    failed: (reason) => say("offer_failed", { reason }) ?? reason,
+    state: (state) => say("offer_" + state),
+  };
+}
+
+export interface WrittenTexts {
+  /** The line that says what was written and where. */
+  written: string | null;
+  /** The label over the entry itself. */
+  entry: string | null;
+  undo: string | null;
+  undone: string | null;
+  failed: (reason: string) => string;
+}
+
+/** The words of the written definition, from the catalog; without one the machine names are shown. */
+export function writtenTexts(feature: PresentationFeature | null, view: WrittenView): WrittenTexts {
+  const say = (id: string, parameters: Row = {}): string | null => {
+    if (!feature) return null;
+    try { return featureMessage(feature, id, parameters); }
+    catch { return null; }
+  };
+  return {
+    written: say(view.kind === "rule" ? "written_rule" : "written", { id: view.id, overlay: view.overlays.join(", ") }),
+    entry: say("written_entry"),
+    undo: say("undo"),
+    undone: say(view.kind === "rule" ? "undone_rule" : "undone"),
+    failed: (reason) => say("undo_failed", { reason }) ?? reason,
   };
 }

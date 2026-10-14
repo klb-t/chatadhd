@@ -240,7 +240,18 @@ TEST_CASE("chat graph wiring: explicit off has identical request bytes and no so
   const auto assistant = unwrap(off.runtime->db().get_msg(b.assistant_message_id));
   REQUIRE(assistant);
   CHECK_FALSE(assistant->metadata.contains("graph_reply"));
-  CHECK_FALSE(std::filesystem::exists(off.directory.path() / "context_execution_claims"));
+  // Every admitted model call leaves one durable execution claim (ModelUsageGuard::admit), so the chat's
+  // own request is claimed in both fixtures. "No source side effects" means no claim beyond that one:
+  // explicit off claims exactly what plain claims, one per transport request, so no context method ran.
+  const auto claims = [](const ChatGraphFixture& fixture) {
+    const auto dir = fixture.directory.path() / "context_execution_claims";
+    std::size_t count = 0;
+    if (std::filesystem::exists(dir))
+      for (const auto& entry : std::filesystem::directory_iterator(dir)) count += entry.is_directory() ? 1 : 0;
+    return count;
+  };
+  CHECK(claims(off) == off.transport->requests().size());
+  CHECK(claims(off) == claims(plain));
 }
 
 TEST_CASE("chat graph wiring: unavailable recipe retains malformed first wire bytes and assistant text") {
