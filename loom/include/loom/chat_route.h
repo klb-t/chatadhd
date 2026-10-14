@@ -86,6 +86,14 @@ void note_rule_switched(Runtime& rt, const std::string& rule_id, bool disabled);
 // (status "undone", written.undone). `origin` is the removed entry's origin ({conv_id, node, ...}); no conversation, nothing to mark.
 void note_removed(Runtime& rt, const Json& origin);
 
+// The background analysis is held by the x10 guard (events::kSemanticUsagePending): the conversation whose message was being analysed shows the
+// guard's question as a message with the receipt ("the background analysis wants about N times more than usual - continue?"), and "yes" / "no" as the
+// last thing said answers it through the worker's usage confirmation, as POST /api/semantic/usage-confirm does. A question of an older receipt is
+// closed as out of date. Without a conversation to show it in (the messages are gone) nothing is posted; the status of the worker still has it.
+void note_semantic_hold(Runtime& rt, const Json& pending);
+// The question was answered, by whichever surface (events::kSemanticUsageAnswered): the message that asks it records the answer and stops asking.
+void note_semantic_answer(Runtime& rt, const Json& answer);
+
 // The chat window's entry. `request` is the client's request object (its explicit chat features make an
 // input a message); `emit_start(conv_id, user_message_id)` is called once the user's message is stored.
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,

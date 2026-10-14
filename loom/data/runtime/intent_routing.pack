@@ -4030,7 +4030,15 @@
         "offer_gone": "That sentence is no longer there to send: {{why}}.",
         "route_failed": "Routing with the model failed ({{message}}); the local method decided instead.",
         "why_planned": "not available yet",
-        "why_no_executor": "nothing in this installation runs it"
+        "why_no_executor": "nothing in this installation runs it",
+        "semantic_question_batch": "The background analysis wants to use about {{ratio}} times more than usual ({{count}} messages) - continue?",
+        "semantic_question_batch_unknown": "The background analysis wants to use many times more than usual ({{count}} messages) - continue?",
+        "semantic_question_retry": "Sending the failed analyses again wants to use about {{ratio}} times more than usual ({{count}} messages) - continue?",
+        "semantic_question_retry_unknown": "Sending the failed analyses again wants to use many times more than usual ({{count}} messages) - continue?",
+        "semantic_answer_yes": "Right - the background analysis goes on.",
+        "semantic_answer_no": "Right - the background analysis is paused. Resume it with \"resume the semantic analysis\".",
+        "semantic_answer_no_retry": "Right - those analyses are not sent again.",
+        "semantic_answer_gone": "That question is no longer current ({{why}})."
       },
       "pl": {
         "proposal_title": "Rozumiem to jako polecenie: {{title}}.",
@@ -4096,7 +4104,15 @@
         "offer_gone": "Tego zdania nie ma już do wysłania: {{why}}.",
         "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna.",
         "why_planned": "jeszcze niedostępne",
-        "why_no_executor": "nic w tej instalacji tego nie wykonuje"
+        "why_no_executor": "nic w tej instalacji tego nie wykonuje",
+        "semantic_question_batch": "Analiza w tle chce zużyć ok. {{ratio}} razy więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_question_batch_unknown": "Analiza w tle chce zużyć wielokrotnie więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_question_retry": "Ponowne wysłanie nieudanych analiz chce zużyć ok. {{ratio}} razy więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_question_retry_unknown": "Ponowne wysłanie nieudanych analiz chce zużyć wielokrotnie więcej niż zwykle ({{count}} wiadomości) - kontynuować?",
+        "semantic_answer_yes": "Dobrze - analiza w tle jedzie dalej.",
+        "semantic_answer_no": "Dobrze - analiza w tle jest wstrzymana. Wznowisz ją poleceniem „wznów analizę semantyczną”.",
+        "semantic_answer_no_retry": "Dobrze - tych analiz nie wysyłam ponownie.",
+        "semantic_answer_gone": "To pytanie nie jest już aktualne ({{why}})."
       }
     }
   },

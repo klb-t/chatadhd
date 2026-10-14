@@ -48,6 +48,15 @@ inline constexpr std::string_view kImportProgress = "import:progress";
 // answered / closed: {conv_id, message_id, run_id, state: "waiting" | "closed", receipt_id?, step?, action?, status?}. No content, only ids:
 // a page that shows the conversation refreshes its messages (no polling).
 inline constexpr std::string_view kActionClientStep = "action:client_step";
+// The semantic worker is held by the x10 usage guard (or an automatic resend is): the pending question with its receipt, once per receipt
+// ({schema: loom.semantic_usage_pending/1, kind?, status, operation_id, receipt_id, baseline_key, projected, messages, conv_ids?, ids?}); and the
+// answer to it, from whichever surface gave it: {receipt_id, operation_id, approved, ref}. The conversation whose message was being analysed shows the
+// question (action/route.cpp note_semantic_hold) and closes it when the answer comes.
+inline constexpr std::string_view kSemanticUsagePending = "semantic:usage_pending";
+inline constexpr std::string_view kSemanticUsageAnswered = "semantic:usage_answered";
+// The conversation shows the question of the background analysis (state "waiting": a new message), or no longer asks it ("closed": approved, declined or
+// out of date): {conv_id, message_id, receipt_id, state, status?}. Ids only: a page that shows the conversation reads its messages again.
+inline constexpr std::string_view kSemanticQuestion = "semantic:question";
 inline constexpr std::string_view kWildcard = "*";
 }  // namespace events
 

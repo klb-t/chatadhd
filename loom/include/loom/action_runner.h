@@ -104,6 +104,8 @@ class ActionRunner {
   Result<Json> spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& request);
 
   Runtime& rt_;
+  std::uint64_t semantic_hold_sub_ = 0;    // EventBus::SubscriptionId of the question of the background analysis
+  std::uint64_t semantic_answer_sub_ = 0;  // ... and of its answer
   std::unique_ptr<RunStore> store_;
   SequenceIndex index_;
   ClientRegistry clients_;

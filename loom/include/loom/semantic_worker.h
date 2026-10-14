@@ -129,6 +129,8 @@ class SemanticWorker {
   // retry_mode=automatic: requeue due failed/stalled items through the usage guard.
   void auto_requeue(bool reaches_provider);
   std::string effective_retry_mode() const;
+  // The usage question that waits for the owner (a batch, or an automatic resend) is told once per receipt on the bus (events::kSemanticUsagePending).
+  void announce_pending();
 
   Database& db_;
   SemanticLLM& llm_;
@@ -161,6 +163,7 @@ class SemanticWorker {
   std::optional<Json> retry_pending_;        // automatic resend awaiting the owner; guarded by mu_
   std::optional<Json> retry_confirmation_;   // guarded by mu_
   std::string retry_mode_;                   // guarded by mu_
+  std::string announced_receipt_;            // the receipt last put on the bus; guarded by mu_
   std::string instance_;                     // claim-owner identity of this worker
   std::set<std::string> quarantine_;         // guarded by mu_
   ScopedSubscription import_sub_;

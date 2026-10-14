@@ -1295,6 +1295,23 @@
         }
       },
       {
+        "id": "semantic_usage_question",
+        "title": {
+          "en": "Answer the x10 question of the background analysis",
+          "pl": "Odpowiedz na pytanie ×10 analizy w tle"
+        },
+        "via": "native",
+        "surfaces": {
+          "http": [
+            "POST /api/semantic/usage-confirm"
+          ]
+        },
+        "note": {
+          "en": "When the background analysis is held by the x10 guard, the conversation whose message it was analysing asks (\"the background analysis wants about N times more than usual - continue?\") with the guard's receipt; \"yes\" or \"no\" answers it through the worker's usage confirmation, and an answer from the status panel closes the question there.",
+          "pl": "Gdy analizę w tle wstrzyma strażnik ×10, rozmowa, której wiadomość analizowano, pyta („analiza w tle chce zużyć ok. N razy więcej niż zwykle - kontynuować?”) z pokwitowaniem strażnika; „tak” albo „nie” odpowiada przez potwierdzenie zużycia pracownika, a odpowiedź z panelu stanu zamyka to pytanie w rozmowie."
+        }
+      },
+      {
         "id": "semantic_requeue",
         "title": {
           "en": "Queue failed analyses again",
@@ -1743,26 +1760,6 @@
       }
     ],
     "open": [
-      {
-        "id": "semantic_usage_confirm",
-        "title": {
-          "en": "Answer the x10 question of the analysis",
-          "pl": "Odpowiedz na pytanie ×10 analizy"
-        },
-        "reason": {
-          "en": "The guard's own question needs a place in the conversation (a message carrying its receipt); a chat proposal must never cover it.",
-          "pl": "Pytanie samego strażnika potrzebuje miejsca w rozmowie (wiadomości z jego pokwitowaniem); propozycja z czatu nie może go zastępować."
-        },
-        "plan": {
-          "en": "semantic.status posts the pending question as a block with the receipt, the same shape as usage_pending of a chat send.",
-          "pl": "semantic.status wystawia oczekujące pytanie jako blok z pokwitowaniem, w kształcie usage_pending zwykłej wiadomości."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/semantic/usage-confirm"
-          ]
-        }
-      },
       {
         "id": "archive",
         "title": {

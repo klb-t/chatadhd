@@ -575,6 +575,45 @@ R"loom_onboard({
           }
         },
         {
+          "id": "presentation.semantic_question/v1",
+          "key": "presentation.semantic_question",
+          "area": "presentation/semantic_question",
+          "revision": 1,
+          "label": "Texts for the question of the background analysis held by the x10 usage guard, asked in the conversation; texts only, they do not change what is sent",
+          "value": {
+            "schema": "loom.presentation_feature/1",
+            "feature": "semantic_question",
+            "locales": {
+              "en": {
+                "title": "The background analysis is waiting for you",
+                "explanation": "Nothing was sent. The expected usage of this analysis is far above your usual for this job, so you are asked first. Nothing is capped; you decide.",
+                "baseline_key": "Comparison group: {{key}}",
+                "resource": "{{name}}: expected {{projected}}, baseline {{baseline}}, growth {{ratio}}",
+                "unknown": "unknown",
+                "confirm": "Continue",
+                "reject": "Pause the analysis",
+                "confirm_failed": "The answer could not be sent ({{reason}}).",
+                "status_approved": "Continued",
+                "status_declined": "Paused",
+                "status_stale": "Out of date"
+              },
+              "pl": {
+                "title": "Analiza w tle czeka na Ciebie",
+                "explanation": "Nic nie wysłano. Przewidywane zużycie tej analizy jest znacznie wyższe niż zwykle dla tej pracy, więc najpierw pytamy. Nic nie jest ograniczane; decydujesz Ty.",
+                "baseline_key": "Grupa porównawcza: {{key}}",
+                "resource": "{{name}}: oczekiwane {{projected}}, baza {{baseline}}, wzrost {{ratio}}",
+                "unknown": "nieznane",
+                "confirm": "Kontynuuj",
+                "reject": "Wstrzymaj analizę",
+                "confirm_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+                "status_approved": "Kontynuowano",
+                "status_declined": "Wstrzymano",
+                "status_stale": "Nieaktualne"
+              }
+            }
+          }
+        },
+        {
           "id": "chat.send.block_without_source_history/v1",
           "key": "chat.send.block_without_source_history",
           "area": "chat/send",
@@ -1060,7 +1099,8 @@ R"loom_onboard({
             "default.disable": "Wyłącz",
             "default.reenable": "Włącz",
             "default.remove_exclusion": "Usuń trwałe wykluczenie",
-            "default.exclude": "Wyklucz na stałe",
+)loom_onboard",
+R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "default.clear_override": "Usuń nadpisanie użytkownika",
             "default.accept_proposal": "Przyjmij tę propozycję",
             "default.proposal": "Proponuj nowe domyślne w tym obszarze",
@@ -1088,8 +1128,7 @@ R"loom_onboard({
             "error.rule_object": "Wprowadź obiekt reguły.",
             "error.native_type": "Natywny kreator: {{label}} musi mieć typ {{expected}}.",
             "error.missing_field": "Pytanie natywnego scenariusza wskazuje brakujące pole {{field}}.",
-)loom_onboard",
-R"loom_onboard(            "error.failure": "Operacja nie powiodła się. Otwórz szczegóły diagnostyczne, aby sprawdzić pierwotny błąd.",
+            "error.failure": "Operacja nie powiodła się. Otwórz szczegóły diagnostyczne, aby sprawdzić pierwotny błąd.",
             "error.diagnostics": "Szczegóły diagnostyczne",
             "error.presentation": "Prezentacja kreatora jest niedostępna: {{reason}}",
             "value.raw_identifier": "{{id}}",
@@ -1772,6 +1811,45 @@ R"loom_onboard(            "error.failure": "Operacja nie powiodła się. Otwór
             "mode_explicit_requeue": "Tylko gdy sam ponowię",
             "mode_automatic": "Automatycznie",
             "action_failed": "Nie udało się wykonać żądania ({{reason}})."
+          }
+        }
+      }
+    },
+    {
+      "id": "presentation.semantic_question/v1",
+      "key": "presentation.semantic_question",
+      "area": "presentation/semantic_question",
+      "revision": 1,
+      "label": "Texts for the question of the background analysis held by the x10 usage guard, asked in the conversation; texts only, they do not change what is sent",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "semantic_question",
+        "locales": {
+          "en": {
+            "title": "The background analysis is waiting for you",
+            "explanation": "Nothing was sent. The expected usage of this analysis is far above your usual for this job, so you are asked first. Nothing is capped; you decide.",
+            "baseline_key": "Comparison group: {{key}}",
+            "resource": "{{name}}: expected {{projected}}, baseline {{baseline}}, growth {{ratio}}",
+            "unknown": "unknown",
+            "confirm": "Continue",
+            "reject": "Pause the analysis",
+            "confirm_failed": "The answer could not be sent ({{reason}}).",
+            "status_approved": "Continued",
+            "status_declined": "Paused",
+            "status_stale": "Out of date"
+          },
+          "pl": {
+            "title": "Analiza w tle czeka na Ciebie",
+            "explanation": "Nic nie wysłano. Przewidywane zużycie tej analizy jest znacznie wyższe niż zwykle dla tej pracy, więc najpierw pytamy. Nic nie jest ograniczane; decydujesz Ty.",
+            "baseline_key": "Grupa porównawcza: {{key}}",
+            "resource": "{{name}}: oczekiwane {{projected}}, baza {{baseline}}, wzrost {{ratio}}",
+            "unknown": "nieznane",
+            "confirm": "Kontynuuj",
+            "reject": "Wstrzymaj analizę",
+            "confirm_failed": "Nie udało się wysłać odpowiedzi ({{reason}}).",
+            "status_approved": "Kontynuowano",
+            "status_declined": "Wstrzymano",
+            "status_stale": "Nieaktualne"
           }
         }
       }

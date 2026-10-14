@@ -16,6 +16,7 @@
 #include "loom/client_blobs.h"
 #include "loom/config.h"
 #include "loom/db.h"
+#include "loom/event_bus.h"
 #include "loom/provenance.h"
 #include "loom/providers.h"
 #include "loom/runtime.h"
@@ -391,8 +392,17 @@ struct ActionRunner::Loaded {
   ExecutorTable executors;
 };
 
-ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_) {}
-ActionRunner::~ActionRunner() = default;
+ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_) {
+  // The background analysis held by the x10 guard asks its question in the conversation of the message it analysed, and the question closes when
+  // it is answered, from whichever surface (P17 3). The handlers hold the runtime only: the worker is stopped before the runtime is torn down.
+  Runtime* runtime = &rt;
+  semantic_hold_sub_ = rt.bus().on(events::kSemanticUsagePending, [runtime](std::string_view, const Json& pending) { chat_route::note_semantic_hold(*runtime, pending); });
+  semantic_answer_sub_ = rt.bus().on(events::kSemanticUsageAnswered, [runtime](std::string_view, const Json& answer) { chat_route::note_semantic_answer(*runtime, answer); });
+}
+ActionRunner::~ActionRunner() {
+  rt_.bus().off(semantic_hold_sub_);
+  rt_.bus().off(semantic_answer_sub_);
+}
 
 RunStore& ActionRunner::store() { return *store_; }
 SequenceIndex& ActionRunner::sequence_index() { return index_; }
