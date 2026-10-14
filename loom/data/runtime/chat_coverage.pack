@@ -339,6 +339,7 @@
             "group:memory",
             "group:safety",
             "group:semantic",
+            "group:storage",
             "group:sync",
             "group:ui",
             "group:usage"

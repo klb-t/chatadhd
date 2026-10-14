@@ -413,8 +413,13 @@ def main() -> int:
     # 14. concurrent Argon2id evaluations are a setting (hashing.max_concurrent, preset = CPU count): with one
     #     slot and no waiting, simultaneous registrations (each 64 MiB of Argon2id) are answered 503 + Retry-After
     import concurrent.futures
+    #     The registration throttle counts every attempt under one key per client address (7 here, 5 free), so with fast hashing the
+    #     seventh would be answered 429 within a second of the sixth; this step is about hashing slots, so it is off.
+    no_throttle = {"mode": "off", "reset_seconds": 900, "trust_forwarded_for": False,
+                   "per_login": {"free_attempts": 5, "base_delay_seconds": 1, "max_delay_seconds": 900},
+                   "per_ip": {"free_attempts": 20, "base_delay_seconds": 1, "max_delay_seconds": 900}}
     write_profile(root, argon2id_preset="rfc9106_second", registration="open",
-                  hashing={"max_concurrent": 1, "wait_seconds": 0})
+                  hashing={"max_concurrent": 1, "wait_seconds": 0}, throttle=no_throttle)
     srv = Server(root)
     try:
         b = srv.base
@@ -426,7 +431,8 @@ def main() -> int:
         codes = sorted(r.status_code for r in rs)
         assert 201 in codes and 503 in codes and set(codes) <= {201, 503}, codes
         assert all(int(r.headers["Retry-After"]) >= 1 for r in rs if r.status_code == 503)
-        assert reg(99).status_code == 201  # a free slot again
+        r99 = reg(99)
+        assert r99.status_code == 201, (r99.status_code, r99.text)  # a free slot again
     finally:
         srv.stop()
     # unlimited (0) never refuses
