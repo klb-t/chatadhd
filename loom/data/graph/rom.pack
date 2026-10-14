@@ -306,6 +306,9 @@
           "path": "loom/data/runtime/net.pack"
         },
         {
+          "path": "loom/data/runtime/ports.pack"
+        },
+        {
           "path": "loom/data/runtime/re.pack"
         },
         {
