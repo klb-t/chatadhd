@@ -821,3 +821,9 @@ CTest 215/215 (dev + serwer, Debug); `npm run build`, wszystkie skrypty `test:*`
   nigdy nie jest usuwany; gdy którejś tabeli nie da się przeczytać — nic nie jest usuwane.
 - Otwarte: pliki wysyłek multipart serwera; kopie w zdalnych magazynach. Raport: `docs/reports/S2_R22_2026-10-14.md`.
   Cofnięcie: usunąć klucz `cleanup` albo `upload_part_max_age_hours: 0`.
+
+### S2 — poprawki CI po R22 (2026-10-14, `main` = `bb1ebcd3`)
+
+- `chat_coverage.pack`: `group:storage` (ustawienie `cleanup`) osiągalne przez `settings.set`. Cofnięcie: usunąć wpis (test pokrycia wymaga wtedy innej decyzji dla grupy).
+- `server.security` krok 14: ogranicznik prób (`throttle.mode = off`) wyłączony tylko w kroku slotów haszowania; test ogranicznika rejestracji nie zależy od tego kroku. Cofnięcie: usunąć `throttle=no_throttle` (wraca zależny od czasu 429).
+- Serwer: odrzucony upload (`/api/import`, `/api/media/transcribe`, `/api/client/blob/upload`) odpowiada z `Connection: close`, żeby nieprzeczytana reszta ciała nie stała się następnym żądaniem keep-alive. Cofnięcie: usunąć trzy `set_header("Connection", "close")` w `server/src/app.cpp` (wraca pusta 400 na kolejnym żądaniu tego samego połączenia).
