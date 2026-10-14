@@ -12,7 +12,7 @@ import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
-import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
+import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
 import { watchClientSteps } from "../context/client-step-events";
@@ -502,7 +502,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setUndoing(written.id);
     setUndoFailure(null);
     try {
-      const run = await api.actions[undoCall(written)](undoRequest(written));
+      // First the receipt (the removal is proposed, nothing is removed), then the click's yes with that receipt.
+      const proposed = await api.actions[undoCall(written)](undoRequest(written));
+      const answer = undoConfirmation(proposed);
+      if (!answer) throw new Error(proposed.error && proposed.error.message ? proposed.error.message : String(proposed.status));
+      const run = await api.actions.confirm(answer);
       if (run.status !== "completed") throw new Error(run.error && run.error.message ? run.error.message : String(run.status));
       if (convId) await refreshMessages(convId);
       onMessagesChanged?.();

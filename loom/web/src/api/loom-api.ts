@@ -64,9 +64,11 @@ export type Unsubscribe = () => void;
 
 export interface NativeUiRequestOptions { signal?: AbortSignal; }
 
-/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `confirmed` is the user's
- *  explicit yes to exactly this write (the rules of the scope still apply, a deny is never overridden). */
-export interface OverlayWriteOptions { dry_run?: boolean; confirmed?: boolean; ref?: string; context?: Record<string, unknown> }
+/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `propose` stores the write as a
+ *  proposal with its receipt and executes nothing (the answer is `actions.confirm` with that receipt); `confirmed` is the user's explicit yes to
+ *  exactly this write and is honoured only with `receipt_id` = the `plan_receipt` of a proposal of the same write - a bare `confirmed: true` is
+ *  only a proposal (the rules of the scope still apply, a deny is never overridden). */
+export interface OverlayWriteOptions { dry_run?: boolean; propose?: boolean; confirmed?: boolean; receipt_id?: string; ref?: string; context?: Record<string, unknown> }
 /** A scoped rule or value (rules.set): written only to the user's overlay profiles/action_rules.pack. */
 export interface RuleRequest extends OverlayWriteOptions {
   scope?: string; scope_id?: string; effect?: string; key?: string; value?: unknown; action?: string;

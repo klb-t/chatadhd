@@ -2758,12 +2758,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "The caller accepts the confirmations the rules ask for in this plan (x10 usage confirmations are never covered)",
-              "pl": "Wywołujący akceptuje potwierdzenia wymagane przez zasady w tym planie (potwierdzenia ×10 nigdy nie są objęte)"
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           },
           {
             "name": "ref",
@@ -3604,12 +3615,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -3692,12 +3714,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -3932,12 +3965,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -4008,12 +4052,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -4128,12 +4183,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -4204,12 +4270,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {

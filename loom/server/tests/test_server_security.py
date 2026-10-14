@@ -97,6 +97,13 @@ def call(s, base, verb, path, body=None, status=None, **kw):
     return r
 
 
+def confirmed(s, base, path, body, status=200):
+    """A confirmed write as a client makes it (P14 7): the proposal gives the plan_receipt, the request is sent again with it."""
+    proposal = call(s, base, "POST", path, {**body, "propose": True}, 200).json()
+    assert proposal["status"] == "proposed" and proposal["plan_receipt"].startswith("arp_"), proposal
+    return call(s, base, "POST", path, {**body, "confirmed": True, "receipt_id": proposal["plan_receipt"]}, status)
+
+
 def sse_events(r):
     out = []
     for line in r.text.splitlines():
@@ -160,17 +167,21 @@ def main() -> int:
         assert str(call(sb, b, "GET", "/api/config", None, 200).json().get("max_tokens")) != "1234"
 
         # 3. rules / actions / groups overlays are per user (their files live in the user's own profiles/)
-        call(sa, b, "POST", "/api/rules/set", {"scope": "person", "effect": "deny", "action": "depict",
-                                                "reason": "ALICE-ONLY-RULE", "confirmed": True}, 200)
-        call(sa, b, "POST", "/api/actions/define", {"id": "alicestep", "instruction": "Alice only", "confirmed": True}, 200)
+        # a bare confirmed:true over HTTP is only a proposal: nothing is written until the receipt comes with it (P14 7)
+        bare = call(sa, b, "POST", "/api/rules/set", {"scope": "person", "effect": "deny", "action": "depict",
+                                                      "reason": "ALICE-ONLY-RULE", "confirmed": True}, 200).json()
+        assert bare["status"] == "proposed" and bare["confirmation_refused"]["reason"] == "receipt_required", bare
+        assert not (dir_a / "profiles" / "action_rules.pack").exists()
+        confirmed(sa, b, "/api/rules/set", {"scope": "person", "effect": "deny", "action": "depict", "reason": "ALICE-ONLY-RULE"})
+        confirmed(sa, b, "/api/actions/define", {"id": "alicestep", "instruction": "Alice only"})
         assert "ALICE-ONLY-RULE" in call(sa, b, "POST", "/api/rules/list", {}, 200).text
         assert "ALICE-ONLY-RULE" not in call(sb, b, "POST", "/api/rules/list", {}, 200).text
         assert "alicestep" not in call(sb, b, "POST", "/api/actions/for", {"text": "alicestep"}).text
         assert "ALICE-ONLY-RULE" in (dir_a / "profiles" / "action_rules.pack").read_text()
         assert not (dir_b / "profiles" / "action_rules.pack").exists()
-        r = call(sb, b, "POST", "/api/actions/remove", {"id": "alicestep", "confirmed": True})
+        r = confirmed(sb, b, "/api/actions/remove", {"id": "alicestep"}, None)
         assert "alicestep" in (dir_a / "profiles" / "actions.pack").read_text(), r.text
-        r = call(sb, b, "POST", "/api/rules/disable", {"id": "deny:depict", "confirmed": True})
+        r = confirmed(sb, b, "/api/rules/disable", {"id": "deny:depict"}, None)
         assert "ALICE-ONLY-RULE" in call(sa, b, "POST", "/api/rules/list", {}, 200).text
 
         # 4. conversations (and their messages/exports) are per user; upload is streamed into the user's dir

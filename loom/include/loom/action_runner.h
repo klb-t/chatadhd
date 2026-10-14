@@ -36,8 +36,11 @@ class ActionRunner {
   ActionRunner(const ActionRunner&) = delete;
   ActionRunner& operator=(const ActionRunner&) = delete;
 
-  // {action | chain, element?, scope?, args?, propose?, confirmed?, ref?, context?}. An element that is a
+  // {action | chain, element?, scope?, args?, propose?, confirmed?, receipt_id?, ref?, context?}. An element that is a
   // bare id is resolved; an action may name the argument that is its element (`element_from_arg`).
+  // `confirmed:true` skips the rules' confirmations only with `receipt_id` = the `plan_receipt` that preview() (or a proposal, `propose:true`)
+  // gave for exactly this plan; a bare `confirmed:true` returns the proposal (status "proposed", `confirmation_refused`) instead of running.
+  // The rules' denials and the usage guard (x10) still apply after the receipt.
   // `cancel` is an optional external token (the CLI's); the runner registers its own otherwise.
   Result<Json> run(const Json& request, const CancelToken* cancel = nullptr);
   // {run_id, approved, receipt_id, ref?}

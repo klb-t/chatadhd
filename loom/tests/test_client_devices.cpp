@@ -21,6 +21,7 @@
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "test_helpers.h"
+#include "test_receipts.h"
 
 using namespace loom;
 using loom::actions::ClientRegistry;
@@ -215,7 +216,7 @@ TEST_SUITE("client_devices") {
     CHECK(server.at("runnable") == false);
     CHECK(server.at("not_runnable").at(0).at("action") == "device.record_audio");
     // a run for a client that is not known stays refused, as before
-    auto refused = f.rt->actions().run(Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "never-declared"}, {"confirmed", true}});
+    auto refused = loom::test::run_confirmed(*f.rt, Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "never-declared"}, {"confirmed", true}});
     REQUIRE_FALSE(refused);
     CHECK(refused.error().message.find("planned") != std::string::npos);
   }
@@ -313,7 +314,7 @@ TEST_SUITE("client_devices") {
     f.declare(Json{{"clipboard", "granted"}});
     const Json chain = unwrap(f.rt->actions().invoke("propose_chain", Json{{"element", "device:clipboard"}, {"target_action", "summarise"}, {"client_id", "web-1"}}));
     REQUIRE(chain.at("chains").size() >= 1);
-    const Json run = unwrap(f.rt->actions().run(Json{{"chain", chain.at("chains").at(0)}, {"element", "device:clipboard"}, {"client_id", "web-1"}, {"confirmed", true}}));
+    const Json run = unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", chain.at("chains").at(0)}, {"element", "device:clipboard"}, {"client_id", "web-1"}, {"confirmed", true}}));
     REQUIRE(run.at("status") == "awaiting_client");
     CHECK(run.at("pending").at("action") == "device.clipboard_read");
     f.expect_chat("A short version.");
@@ -329,7 +330,7 @@ TEST_SUITE("client_devices") {
     Fixture f;
     f.declare(Json{{"captures_audio", "granted"}});
     const Json plan = f.chain_to_text("web-1");
-    const Json run = unwrap(f.rt->actions().run(Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
+    const Json run = unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
     REQUIRE(run.at("status") == "awaiting_client");
     const std::string id = run.at("id"), receipt = run.at("pending").at("receipt_id");
     f.restart();  // the declaration is gone with the process; the run is not
@@ -356,7 +357,7 @@ TEST_SUITE("client_devices") {
   TEST_CASE("a paused client step can be cancelled; the answer that comes later changes nothing") {
     Fixture f;
     f.declare(Json{{"captures_audio", "granted"}});
-    const Json run = unwrap(f.rt->actions().run(Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
+    const Json run = unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
     REQUIRE(run.at("status") == "awaiting_client");
     const Json cancelled = unwrap(f.rt->actions().cancel(Json{{"run_id", run.at("id")}, {"ref", "test"}}));
     CHECK(cancelled.at("status") == "cancelled");
@@ -372,7 +373,7 @@ TEST_SUITE("client_devices") {
   TEST_CASE("the person may decline on the device, the device may fail: the run ends with the reason and nothing more runs") {
     Fixture f;
     f.declare(Json{{"captures_audio", "prompt"}});
-    auto start = [&] { return unwrap(f.rt->actions().run(Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}})); };
+    auto start = [&] { return unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}})); };
     Json run = start();
     const Json no = unwrap(f.rt->actions().client_result(Json{{"run_id", run.at("id")}, {"receipt_id", run.at("pending").at("receipt_id")}, {"state", "declined"}}));
     CHECK(no.at("status") == "rejected");
@@ -413,7 +414,7 @@ TEST_SUITE("client_devices") {
     const Json played = unwrap(f.rt->actions().client_result(Json{{"run_id", play.at("id")}, {"receipt_id", play.at("pending").at("receipt_id")}, {"state", "ok"}}));
     CHECK(played.at("status") == "completed");
     // the user switches the rule off (an own rule, the overlay): the capture then goes straight to the device
-    const Json off = unwrap(f.rt->actions().invoke("rules.disable", Json{{"id", "confirm:device.record_audio"}, {"confirmed", true}}));
+    const Json off = unwrap(loom::test::invoke_confirmed(*f.rt, "rules.disable", Json{{"id", "confirm:device.record_audio"}, {"confirmed", true}}));
     INFO(off.value("status", ""));
     const Json direct = unwrap(f.rt->actions().run(Json{{"action", "device.record_audio"}, {"element", "device:microphone"}, {"client_id", "web-1"}}));
     CHECK(direct.at("status") == "awaiting_client");

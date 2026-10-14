@@ -150,9 +150,17 @@ export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" | 
   return view.kind === "define_group" ? "groupsRemove" : "actionsRemove";
 }
 
-/** The body of the removal: the click is the user's explicit yes to exactly this removal (the rules of the scope still apply). */
+/** The first call of taking something back: the removal is proposed and nothing is removed yet; the kernel answers with the proposal and its receipt. */
 export function undoRequest(view: WrittenView) {
-  return { id: view.id, confirmed: true, ref: "web" };
+  return { id: view.id, propose: true, ref: "web" };
+}
+
+/** The answer of the click: the user's explicit yes to exactly the removal that was proposed, with the receipt of that proposal (the rules of the
+ *  scope still apply). null when the kernel's answer is no proposal that can be answered (a denial, a failure). */
+export function undoConfirmation(proposed: { id?: string; status?: string; pending?: { receipt_id?: string | null } | null }) {
+  const receipt = proposed.pending && typeof proposed.pending.receipt_id === "string" ? proposed.pending.receipt_id : "";
+  if (proposed.status !== "proposed" || typeof proposed.id !== "string" || proposed.id === "" || receipt === "") return null;
+  return { run_id: proposed.id, approved: true, receipt_id: receipt, ref: "web" };
 }
 
 export interface ProducedView { target: string; forms: string[]; content: string; runNode: string }

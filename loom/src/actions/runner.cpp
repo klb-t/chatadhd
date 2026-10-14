@@ -807,13 +807,14 @@ Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& re
 
 Result<Json> ActionRunner::run_gated(std::string_view action, const Json& request) {
   Json args = request;
-  for (const char* control : {"confirmed", "ref", "context", "propose"}) args.erase(control);
+  for (const char* control : {"confirmed", "receipt_id", "ref", "context", "propose"}) args.erase(control);
   Json run_request{{"action", std::string(action)}, {"element", Json{{"class", "application"}}}, {"args", args}, {"ref", json::get_string(request, "ref", "api")}};
   Json context = request.value("context", Json::object());
   if (!context.is_object()) context = Json::object();
   if (!context.contains("origin")) context["origin"] = json::get_string(request, "ref", "api");
   run_request["context"] = context;
   if (json::get_bool(request, "confirmed", false)) run_request["confirmed"] = true;
+  if (const std::string receipt = json::get_string(request, "receipt_id"); !receipt.empty()) run_request["receipt_id"] = receipt;
   if (json::get_bool(request, "propose", false)) run_request["propose"] = true;
   std::string conv = json::get_string(context, "conv_id");
   if (conv.empty() && json::get_string(request, "scope") == "conversation") conv = json::get_string(request, "scope_id");

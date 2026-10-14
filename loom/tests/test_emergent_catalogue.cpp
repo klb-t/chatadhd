@@ -17,6 +17,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
+#include "test_receipts.h"
 
 using namespace loom;
 using loom::test::unwrap;
@@ -326,7 +327,7 @@ TEST_SUITE("emergent_catalogue") {
   TEST_CASE("c: a user-defined action used on several classes that share traits is offered a group; accepting writes the overlay of the graph entry") {
     Fixture f;
     f.rt->config().set("intent_routing_run", "always");
-    unwrap(f.rt->actions().invoke("actions.define", Json{{"id", "rozpisz"}, {"instruction", "Rozpisz na kroki"}, {"phrases", Json{{"pl", Json::array({"rozpisz"})}}}, {"lang", "pl"}, {"confirmed", true}}));
+    unwrap(loom::test::invoke_confirmed(*f.rt, "actions.define", Json{{"id", "rozpisz"}, {"instruction", "Rozpisz na kroki"}, {"phrases", Json{{"pl", Json::array({"rozpisz"})}}}, {"lang", "pl"}, {"confirmed", true}}));
     const std::string shipped_entry = hash_of("graph_entry");
     f.script("Kroki 1");
     const auto on_message = f.input("Rozpisz tę wiadomość");
@@ -363,9 +364,9 @@ TEST_SUITE("emergent_catalogue") {
     CHECK(f.overlay("graph_entry").empty());
     CHECK(f.node(node).at("status") == "undone");
     // shipped actions and groups cannot be removed through these doors
-    CHECK(unwrap(f.rt->actions().invoke("actions.remove", Json{{"id", "summarise"}, {"confirmed", true}})).at("status") == "failed");
-    CHECK(unwrap(f.rt->actions().invoke("groups.remove", Json{{"id", "rich_content"}, {"confirmed", true}})).at("status") == "failed");
-    CHECK(unwrap(f.rt->actions().invoke("actions.define", Json{{"id", "summarise"}, {"instruction", "x"}, {"confirmed", true}})).at("status") == "failed");
+    CHECK(unwrap(loom::test::invoke_confirmed(*f.rt, "actions.remove", Json{{"id", "summarise"}, {"confirmed", true}})).at("status") == "failed");
+    CHECK(unwrap(loom::test::invoke_confirmed(*f.rt, "groups.remove", Json{{"id", "rich_content"}, {"confirmed", true}})).at("status") == "failed");
+    CHECK(unwrap(loom::test::invoke_confirmed(*f.rt, "actions.define", Json{{"id", "summarise"}, {"instruction", "x"}, {"confirmed", true}})).at("status") == "failed");
   }
 
   TEST_CASE("the writers through the API: dry run, confirmation, names, an action another one of yours uses") {
