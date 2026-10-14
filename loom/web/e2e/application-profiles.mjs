@@ -178,7 +178,7 @@ try {
     }
     await route.continue();
   });
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await view(0).waitFor();
   await page.getByTestId("new-conversation").click();
   await page.locator('[data-testid="conv-item"].active').waitFor();

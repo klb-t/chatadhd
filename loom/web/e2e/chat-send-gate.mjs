@@ -112,7 +112,7 @@ try {
   browser = await chromium.launch({ headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE } : {}) });
   page = await browser.newPage();
   page.on("pageerror", error => pageErrors.push(error.message));
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.waitForFunction(() => Boolean(window.__chat));
 
   await check("missing source-history capability: Send dispatches and a data notice names the native reason", async () => {

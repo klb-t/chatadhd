@@ -167,7 +167,7 @@ try {
     const response = page.waitForResponse(response => new URL(response.url()).pathname === "/api/conversations" && response.request().method() === "POST" && response.request().postDataJSON()?.title === item.requestedTitle);
     item.release(); await (await response).finished();
   }
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await importProfile(0, fixture);
   await page.waitForFunction(id => document.querySelector('[data-testid="application-profile-view"]')?.getAttribute("data-profile-id") === id, fixture.id);
   await recovery().locator(":scope > summary").click();

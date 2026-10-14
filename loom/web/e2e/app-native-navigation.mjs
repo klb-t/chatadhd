@@ -123,7 +123,7 @@ try {
       traffic.push({ source: "browser", endpoint: url.pathname, query: url.search, method: request.method(), command, status: response.status(), raw, result });
     })().catch(error => traffic.push({ source: "browser", endpoint: url.pathname, command, status: response.status(), capture_error: error.message })));
   });
-  await page.goto(base, { waitUntil: "networkidle" });
+  await page.goto((base).replace(/\/?$/, "/#warsztat"), { waitUntil: "networkidle" });
   let snapshot, field, section;
 
   await check("whole App opens an explicit native identity and leaves unavailable model completion disabled", async () => {

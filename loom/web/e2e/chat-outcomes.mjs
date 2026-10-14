@@ -102,7 +102,7 @@ let browser, page;
 async function check(name, run) { await run(); groups.push(name); console.log(`[chat-outcomes] PASS ${name}`); }
 const send = () => page.getByTestId("send-chat");
 async function fresh() {
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("chat-input").waitFor();
 }
 // Types the words, sends, and waits until the page is at rest: no stream on the screen and no Stop button.

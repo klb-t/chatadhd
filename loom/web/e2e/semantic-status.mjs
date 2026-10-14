@@ -125,7 +125,7 @@ try {
     return route.continue();
   });
   page.on("pageerror", error => pageErrors.push(error.message));
-  await page.goto(origin);
+  await page.goto((origin).replace(/\/?$/, "/#warsztat"));
   const badge = page.getByTestId("semantic-status"), details = page.getByTestId("semantic-status-details");
   const summary = details.locator("summary"), toggle = page.getByTestId("semantic-toggle-pause");
   async function remount() {

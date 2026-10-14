@@ -83,7 +83,7 @@ try {
     } else { unexpected.push(`${request.method()} ${url.pathname}`); result = { error: { code: "unexpected_mock_request", message: url.pathname } }; }
     await route.fulfill({ contentType: "application/json", body: JSON.stringify(result) });
   });
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("nav-knowledge").click();
   const workbench = page.getByTestId("knowledge-workbench");
   await page.getByRole("button", { name: "Hide chat", exact: true }).click();

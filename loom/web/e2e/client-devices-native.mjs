@@ -110,7 +110,7 @@ try {
       bytesCalls.push({ path: url.pathname, method: request.method(), type: request.headers()["content-type"] ?? "", request,
         body: url.pathname === "/api/actions/client_result" ? request.postData() ?? "" : "" });
   });
-  await page.goto(base, { waitUntil: "domcontentloaded" });
+  await page.goto((base).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
   await page.getByTestId("chat-view").waitFor();
   await page.click('[data-testid="new-conversation"]');
   await page.waitForSelector('[data-testid="conv-item"].active');

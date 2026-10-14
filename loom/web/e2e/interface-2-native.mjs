@@ -117,7 +117,7 @@ try {
     if (request.method() === "POST" && url.pathname === "/api/chat") chatRequests.push(request.postDataJSON());
     await route.continue();
   });
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("new-conversation").click();
   await page.waitForFunction(() => document.querySelector('[data-testid="application-profile-view"]')?.getAttribute("data-conversation-id"));
   const convId = await view().getAttribute("data-conversation-id");

@@ -139,7 +139,7 @@ try {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
   const pageErrors = [];
   page.on("pageerror", failure => pageErrors.push(failure.message));
-  const reload = async () => { await page.goto(`http://127.0.0.1:${server.address().port}/`); await page.getByTestId("graph-reply-workbench").waitFor(); };
+  const reload = async () => { await page.goto((`http://127.0.0.1:${server.address().port}/`).replace(/\/?$/, "/#warsztat")); await page.getByTestId("graph-reply-workbench").waitFor(); };
   const seedPacket = async () => {
     await page.getByText("Base packet and host metadata", { exact: true }).click();
     await page.getByRole("button", { name: "Create empty packet", exact: true }).click();

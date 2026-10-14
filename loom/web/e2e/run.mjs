@@ -158,7 +158,7 @@ async function main() {
     });
 
     await step("load app", async () => {
-      await page.goto(serverBase, { waitUntil: "domcontentloaded" });
+      await page.goto((serverBase).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
       await page.waitForSelector('[data-testid="chat-view"]');
     });
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-01-initial.png") });
@@ -485,7 +485,7 @@ async function main() {
         const controls = () => graph().getByTestId("product-perspective");
         const details = async label => { const summary = controls().getByText(label, { exact: true }); if (!await summary.evaluate(element => element.parentElement.open)) await summary.click(); };
         const receipt = async () => JSON.parse(await controls().getByTestId("product-perspective-receipt").textContent());
-        await touchPage.goto(serverBase); await open();
+        await touchPage.goto((serverBase).replace(/\/?$/, "/#warsztat")); await open();
         await graph().locator(".kb-node").first().waitFor();
         await details("Graph perspective");
         await controls().getByRole("button", { name: "Install graph perspective defaults in this profile" }).click();
@@ -564,7 +564,7 @@ async function main() {
     const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });
     const phonePage = await phone.newPage();
     await step("phone layout renders and is navigable", async () => {
-      await phonePage.goto(serverBase, { waitUntil: "domcontentloaded" });
+      await phonePage.goto((serverBase).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
       await phonePage.waitForSelector('[data-testid="chat-view"]');
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-01-chat.png") });
 
@@ -597,7 +597,7 @@ async function main() {
         const narrow = await browser.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
         try {
           const narrowPage = await narrow.newPage();
-          await narrowPage.goto(serverBase, { waitUntil: "domcontentloaded" });
+          await narrowPage.goto((serverBase).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
           await narrowPage.waitForSelector('[data-testid="chat-input"]');
           // A new conversation, then Send at once (the click lands while it is being made or its view loads: the message is queued, not lost).
           await narrowPage.click('[data-testid="toggle-sidebar"]');

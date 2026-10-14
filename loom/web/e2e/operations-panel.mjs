@@ -136,7 +136,7 @@ try {
   const pageErrors = [], remote = [];
   page.on("pageerror", error => pageErrors.push(error.message));
   page.on("request", request => { if (!request.url().startsWith(`http://127.0.0.1:${fixtureServer.address().port}`)) remote.push(request.url()); });
-  await page.goto(`http://127.0.0.1:${fixtureServer.address().port}/`);
+  await page.goto((`http://127.0.0.1:${fixtureServer.address().port}/`).replace(/\/?$/, "/#warsztat"));
   await page.locator('[data-testid="asr-status"]').waitFor();
   await check("artifact metadata listing never reads content; explicit read stays inert", async () => {
     assert.equal(calls.filter(call => call.path?.includes("/api/artifacts")).length, 0);

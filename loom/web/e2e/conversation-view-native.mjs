@@ -90,7 +90,7 @@ try{
   if(url.pathname.includes('/messages/')&&req.method()!=='GET')mutations.push(req.url());
   if(url.pathname.endsWith('/view')&&req.method()==='POST')sourceReads.push(req.postDataJSON());
   return route.continue();});
- await page.goto(base);await selectLinked();
+ await page.goto((base).replace(/\/?$/, "/#warsztat"));await selectLinked();
  await chat().getByTestId('conversation-sources').waitFor();
  const settings=async()=>({model:await chat().getByTestId('model-picker').inputValue(),history:await chat().getByTestId('include-history').isChecked(),
   memory:await chat().getByTestId('include-memory').isChecked(),graph:await chat().getByTestId('include-graph-memory').isChecked()});

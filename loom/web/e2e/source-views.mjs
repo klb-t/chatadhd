@@ -98,7 +98,7 @@ try {
   const errors = [], remote = [];
   page.on("pageerror", error => errors.push(error.message));
   page.on("request", request => { if (/^https?:\/\/example\.invalid/.test(request.url())) remote.push(request.url()); });
-  await page.goto(`http://127.0.0.1:${server.address().port}/`);
+  await page.goto((`http://127.0.0.1:${server.address().port}/`).replace(/\/?$/, "/#warsztat"));
   await page.locator("#anthropic [data-testid=imported-source-details] > summary").click();
   await check("artifact projection preserves structure while scripts, styles and remote resources remain inert", async () => {
     const artifact = page.locator("#anthropic [data-testid=imported-artifact]");

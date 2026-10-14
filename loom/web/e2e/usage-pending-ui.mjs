@@ -96,7 +96,7 @@ try {
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
   page = await browser.newPage();
   page.on("pageerror", error => pageErrors.push(error.message));
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("chat-input").waitFor();
 
   await check("a paused send shows the confirmation block: texts from data, unknown shown as unknown, text kept, no error", async () => {

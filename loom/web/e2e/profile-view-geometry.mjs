@@ -131,7 +131,7 @@ try {
   async function chooseInHost(id) { await page.getByTestId("sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
   async function chooseInView(index, id) { await view(index).getByTestId("profile-view-sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
   async function openContext(index) { const control = view(index).getByTestId("chat-context-controls"); if (!(await control.evaluate(element => element.open))) await control.locator(":scope > summary").click(); }
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await check("new views retain the legacy shared sidebar and coupled conversation selection", async () => {
     await chooseInHost("a");
     await page.getByTestId("add-profile-view").click();

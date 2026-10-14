@@ -100,7 +100,7 @@ try {
     if (req.method() === "POST" && new URL(req.url()).pathname === "/api/chat") chatRequests.push(req.postDataJSON());
     await route.continue();
   });
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("new-conversation").click();
   await page.locator('[data-testid="conv-item"].active').waitFor();
   async function send(text, count) {

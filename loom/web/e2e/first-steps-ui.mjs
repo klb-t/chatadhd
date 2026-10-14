@@ -115,7 +115,7 @@ try {
   await check("the sign-in screen: the Login field has the background of the other inputs, in the dark and in the amoled theme", async () => {
     const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
     const page = await context.newPage();
-    await page.goto(base, { waitUntil: "domcontentloaded" });
+    await page.goto((base).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
     await page.getByTestId("auth-form").waitFor();
     const read = () => page.evaluate(() => {
       const style = (id) => getComputedStyle(document.querySelector(`[data-testid="${id}"]`));
@@ -138,7 +138,7 @@ try {
   await check("a wrong password is refused in words and the screen stays; the right one opens the chat", async () => {
     const context = await browser.newContext({ viewport: { width: 390, height: 800 }, isMobile: true });
     const page = await context.newPage();
-    await page.goto(base, { waitUntil: "domcontentloaded" });
+    await page.goto((base).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
     await page.getByTestId("auth-login").fill(login);
     await page.getByTestId("auth-password").fill("wrong");
     await page.getByTestId("auth-form").locator("button[type=submit], button.primary").first().click();
@@ -163,7 +163,7 @@ try {
       page.on("console", message => { if (message.type() === "error") failures.push("console: " + message.text()); });
       page.on("response", response => { if (response.status() >= 400) failures.push(`HTTP ${response.status()} ${new URL(response.url()).pathname}`); });
       try {
-        await page.goto(base, { waitUntil: "domcontentloaded" });
+        await page.goto((base).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
         await page.getByTestId("auth-login").fill(person);
         await page.getByTestId("auth-password").fill(password);
         await page.getByTestId("auth-form").locator("button[type=submit], button.primary").first().click();
@@ -211,7 +211,7 @@ try {
     const chats = [];
     page.on("request", request => { if (new URL(request.url()).pathname === "/api/chat") chats.push(request.postDataJSON()); });
     try {
-      await page.goto(base, { waitUntil: "domcontentloaded" });
+      await page.goto((base).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
       await page.getByTestId("auth-login").fill(person);
       await page.getByTestId("auth-password").fill(password);
       await page.getByTestId("auth-submit").click();
@@ -269,7 +269,7 @@ try {
       const context = await browser.newContext({ viewport: { width, height: 800 }, isMobile: width < 500, hasTouch: width < 500 });
       const page = await context.newPage();
       try {
-        await page.goto(base, { waitUntil: "domcontentloaded" });
+        await page.goto((base).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
         await page.getByTestId("auth-login").fill(person);
         await page.getByTestId("auth-password").fill(password);
         await page.getByTestId("auth-submit").click();
