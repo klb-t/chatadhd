@@ -371,7 +371,13 @@ def main() -> int:
         r = sa.post(b + "/api/import", data=multipart(small), headers=hdr, timeout=120)
         assert r.status_code == 200 and any(e.get("type") == "done" for e in sse_events(r)), (r.status_code, r.text[:300])
         r = sa.post(b + "/api/import", data=multipart(b"x" * 100_000), headers=hdr, timeout=120)
-        assert r.status_code == 413, r.status_code
+        assert r.status_code == 413, (r.status_code, r.text[:300])
+        # R23: the 413 must reach a client that is still sending (no RST for unread bytes) and must not depend on
+        # the retry policy of `sa`: a plain session, several times, fresh and reused connections
+        plain = requests.Session()
+        for _ in range(10):
+            r = plain.post(b + "/api/import", data=multipart(b"x" * 100_000), headers={**hdr, "Cookie": "; ".join(f"{c.name}={c.value}" for c in sa.cookies)}, timeout=120)
+            assert r.status_code == 413, (r.status_code, r.text[:300])
         def gen2():
             yield b'{"title":'
             yield b'"x"}'

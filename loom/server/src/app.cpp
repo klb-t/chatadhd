@@ -275,11 +275,18 @@ bool receive_upload(const httplib::Request& req, const httplib::ContentReader& r
       },
       [&](const char* data, std::size_t n) {
         total += n;
+        // Over the limit: keep reading and discard the rest of the body instead of aborting. Closing a socket
+        // that still has unread bytes makes the kernel send a RST, which can destroy the 413 before the client
+        // reads it (and a client that retries then resends an already consumed body, i.e. an empty one -> 400).
+        if (up.too_large) return true;
         if (total_limit != 0 && total > total_limit) {
           failed = true;
           up.too_large = true;
           up.error = "upload is larger than this server accepts (see --max-upload-bytes)";
-          return false;
+          out.close();
+          std::error_code rm;
+          if (!up.path.empty()) fs::remove(up.path, rm);
+          return true;
         }
         if (in_file) {
           out.write(data, static_cast<std::streamsize>(n));
