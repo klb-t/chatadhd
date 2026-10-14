@@ -10,13 +10,15 @@ Nadrzędny względem planów wykonawczych; podrzędny wobec `GRAF_HUB_KOD_SILNIK
 
 > „trzeba obsłużyć zarówno wszystkie konta użytkownika z uwierzytelnianiem na wszystkie sposoby, wszystkie lokalne zasoby użytkownika poprzez nas zarządzana maszyna od dowolnie wybranego dostawcy”
 
+> „strażnik czystości to bardziej go widzę jako takiego sekretarza, stenografa, który równolegle do bezpośredniej listy wiadomości buduje jej najbardziej oszczędną i precyzyjną reprezentację. kontekst selektor to co innego”
+
 > „sposób podejścia twojego jest zbyt szczegółowy pamiętaj że podaję tylko przykłady, jak przęsła mostu który ty masz zbudować”
 
 Przykłady właściciela są **przypadkami** mechanizmów poniżej, nie ich zakresem.
 
 ## 1. Strażnik kontekstu — jeden mechanizm
 
-**Czym jest:** stały proces nad grafem, który decyduje, co z rozmowy i grafu trafia do modelu, w jakiej postaci i z jaką wagą — i który uczy się tego z przebiegu rozmów. Nie jest kodem pod każdy przypadek: jego zadania to **dane** (wpisy w katalogu akcji i zasad), wykonywane tym samym silnikiem akcji co reszta (P9–P18).
+**Czym jest (korekta właściciela 2026-10-14):** sekretarz/stenograf — stały proces nad grafem, który **równolegle do surowej listy wiadomości** buduje jej najbardziej oszczędną i precyzyjną *reprezentację* (skompilowane polecenia w miejsce serii doprecyzowań, cykl wystąpienie → hipoteza → zasada dla poprawek i preferencji, znaczniki wątków/segmentów tematycznych) i uczy się z przebiegu rozmów. Zapisuje ją jako węzły grafu z krawędziami do wiadomości źródłowych. **Nigdy nie zmienia surowej listy i nie decyduje, co trafia do modelu.** To robi istniejący selektor kontekstu (metody i wycinki grafu, wyłączalny dla oszczędności, tryb zgodności = prompt systemowy + surowa rozmowa): może wybrać per segment surowe wiadomości, reprezentację strażnika albo mieszankę — jako dane i ustawienie (preset: surowe, bajty żądania bez zmian). Rozmowy wielotematyczne (skoki między 2–3 dużymi tematami, pomijanie wiadomości spoza bieżącego tematu) należą do selektora; strażnik może tylko znaczyć wątki w reprezentacji. Nie jest kodem pod każdy przypadek: jego zadania to **dane** (wpisy w katalogu akcji i zasad), wykonywane tym samym silnikiem akcji co reszta (P9–P18).
 
 **Jeden cykl, wiele zastosowań:**
 
@@ -32,7 +34,7 @@ obserwacja (zdarzenie w rozmowie)
 - **Hipoteza** — twierdzenie o użytkowniku, zadaniu, rozmowie lub stylu, z **zakresem ważności** (wiadomość → rozmowa → rodzaj zadania → osoba → wszędzie) i **wagą** liczoną z wystąpień (świeżość, liczba, siła sygnału, sprzeczności). Wyjątki to osobne węzły z krawędzią `except` — podane wprost albo wywnioskowane.
 - **Eskalacja** — narastanie sygnału (kolejna poprawka tego samego, ostrzejszy ton, „mówiłem już”) podnosi wagę i skraca drogę do zasady. Krzywa i progi to dane.
 - **Awans** hipotezy do zasady: `pytaj` / `proponuj` / `stosuj` — ustawienie z presetem (R1: decyduje użytkownik).
-- **Przekształcenia kontekstu** — tym samym cyklem: zastąpienie serii doprecyzowań jednym poleceniem (istniejąca specyfikacja zadania), usunięcie nieaktualnego lub sprzecznego, wyciszenie dygresji i ruchu technicznego (propozycje, pokwitowania). Każde przekształcenie zostawia ślad i da się je cofnąć; oryginał nigdy nie znika.
+- **Reprezentacje** (zamiast „przekształceń kontekstu”) — tym samym cyklem: skompilowane polecenie zastępujące serię doprecyzowań (istniejąca specyfikacja zadania), oznaczenie nieaktualnego lub sprzecznego, oznaczenie dygresji i ruchu technicznego. Każda reprezentacja jest węzłem ze śladem, da się ją cofnąć; surowe wiadomości nigdy nie znikają ani nie są zmieniane. Selektor kontekstu decyduje, czy jej użyć.
 
 ## 2. Środowiska działania — jeden mechanizm
 
