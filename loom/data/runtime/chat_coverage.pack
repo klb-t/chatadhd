@@ -1332,8 +1332,8 @@
           "en": "analyse this archive /home/me/exports/2026"
         },
         "note": {
-          "en": "Starts the Archive Intelligence pipeline in the background on a path (or the picked file); local and free unless the model is allowed (llm auto), the proposal says which. Over the API it needs the receipt of the proposal like any action.",
-          "pl": "Uruchamia potok Archive Intelligence w tle na ścieżce (albo wybranym pliku); lokalnie i za darmo, chyba że dopuszczono model (llm auto) - propozycja mówi, które. Przez API wymaga pokwitowania propozycji jak każda akcja."
+          "en": "Starts the Archive Intelligence pipeline in the background on a path, or - without one - on the folder the device lets you pick (device.pick_folder; \"this archive\" picks a file); local and free unless the model is allowed (llm auto), the proposal says which. Over the API it needs the receipt of the proposal like any action.",
+          "pl": "Uruchamia potok Archive Intelligence w tle na ścieżce albo - bez niej - na folderze wybranym na urządzeniu (device.pick_folder; „to archiwum” wybiera plik); lokalnie i za darmo, chyba że dopuszczono model (llm auto) - propozycja mówi, które. Przez API wymaga pokwitowania propozycji jak każda akcja."
         }
       },
       {
@@ -1484,8 +1484,8 @@
           "en": "scan this catalogue /home/me/exports"
         },
         "note": {
-          "en": "Catalogues a path in the background without importing anything; local and free.",
-          "pl": "Katalogowanie ścieżki w tle bez importowania czegokolwiek; lokalnie i za darmo."
+          "en": "Catalogues a path - or, without one, the folder the device lets you pick (device.pick_folder) - in the background without importing anything; local and free.",
+          "pl": "Katalogowanie ścieżki - a bez niej folderu wybranego na urządzeniu (device.pick_folder) - w tle bez importowania czegokolwiek; lokalnie i za darmo."
         }
       },
       {

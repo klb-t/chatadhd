@@ -106,7 +106,7 @@ export interface ClientDeclaration {
 }
 /** The answer of a client to the step a run is paused on (actions.client_result). Media name a blob that was uploaded before
  *  (`clientBlobUpload`); bytes never travel inside this JSON. */
-export interface ClientResultPart { kind: string; mime?: string; blob_hash?: string; text?: string; name?: string }
+export interface ClientResultPart { kind: string; mime?: string; blob_hash?: string; text?: string; name?: string; value?: unknown }
 /** A blob the kernel keeps for this user. */
 export interface ClientBlob { hash: string; size: number; mime: string }
 export interface ClientResult {

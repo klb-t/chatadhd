@@ -1102,6 +1102,8 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   {
     Json client_steps = Json::array();
     for (const auto& step : preview->at("plan").value("steps", Json::array())) {
+      // A step the arguments already switch off (the picker of a file when the sentence asked for a folder) is not one the device will be asked.
+      if (const Json* when = json::find(step, "when"); when && actions::condition_decided_by_args(*when, c.args) == 0) continue;
       const Json* e = entry_of(d, json::get_string(step, "action"));
       if (!e || json::get_string(*e, "runs_on") != "client") continue;
       const std::string label = localized(e->value("labels", Json::object()), lang);

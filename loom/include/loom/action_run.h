@@ -179,6 +179,10 @@ struct InterpreterDeps {
   std::function<Result<Json>(const Json& plan, const RunRequest& request, bool preview)> extra_gates;
 };
 
+// Whether the condition of a step (`when`) can be told before the run from the arguments alone: 1 it holds, 0 it does not (the step is skipped),
+// -1 it may (it looks at steps, traits or outputs). The plan lists every step; what is shown of it (the steps a device carries out) skips the 0s.
+int condition_decided_by_args(const Json& when, const Json& args);
+
 class Interpreter {
  public:
   explicit Interpreter(InterpreterDeps deps) : deps_(std::move(deps)) {}

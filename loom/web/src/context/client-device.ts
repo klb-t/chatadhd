@@ -1,6 +1,6 @@
 import type { BlobLoader, BlobUploader, CapabilityTable, DeviceHost, PendingCapabilities, PendingOutcome, PendingPart, PendingRecording, PendingRequest, PendingText, StepOutcome, StreamLike } from "./device-host";
 
-export type { BlobLoader, BlobUploader, DeviceHost, Recording, StepOutcome, StreamLike, RecorderLike } from "./device-host";
+export type { BlobLoader, BlobUploader, DeviceHost, PickedFolder, Recording, StepOutcome, StreamLike, RecorderLike } from "./device-host";
 
 /** Presentation feature holding the texts (`presentation.client_step`). */
 export const CLIENT_STEP_FEATURE = "client_step";
@@ -75,6 +75,7 @@ export async function detectCapabilities(host: DeviceHost): PendingCapabilities 
     found.shows_notifications = { permission: host.nativeNotify.state() === "granted" ? "granted" : "prompt", via: "native shell" };
   }
   if (host.pickFile) found.picks_files = { permission: "granted", via: "file chooser" };
+  if (host.pickFolder) found.picks_folders = { permission: "granted", via: "folder chooser" };
   if (host.mediaDevices || host.notifications) found.requests_permission = { permission: "granted", via: "Permissions API" };
   return found;
 }
@@ -88,12 +89,13 @@ export async function declaration(host: DeviceHost, clientId: string, kind: stri
 // ── one step on the device ──────────────────────────────────────────
 
 /** The kinds of step a person has to start (or stop) themselves, by the action of the step. */
-export type StepKind = "record" | "photo" | "file" | "read_clipboard" | "write_clipboard" | "notify" | "play" | "permission" | "unsupported";
+export type StepKind = "record" | "photo" | "file" | "folder" | "read_clipboard" | "write_clipboard" | "notify" | "play" | "permission" | "unsupported";
 
 const KIND_OF_ACTION: { [action: string]: StepKind } = {
   "device.record_audio": "record",
   "device.capture_image": "photo",
   "device.pick_file": "file",
+  "device.pick_folder": "folder",
   "device.clipboard_read": "read_clipboard",
   "device.clipboard_write": "write_clipboard",
   "device.notify": "notify",
@@ -203,8 +205,14 @@ function audioHash(spec: ClientStepSpec): string {
   return "";
 }
 
+/** The answer of device.pick_folder: the manifest of the files that were uploaded (the kernel writes them back as a folder). */
+export const FOLDER_MANIFEST_SCHEMA = "loom.folder_manifest/1";
+
+/** Progress of a step that sends many files: how many are sent of how many. */
+export type StepProgress = (done: number, total: number) => void;
+
 /** Carries out a step that is a single act (everything but the recording, which has two: start and stop). */
-export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: BlobLoader, upload: BlobUploader): PendingOutcome {
+export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: BlobLoader, upload: BlobUploader, progress?: StepProgress): PendingOutcome {
   try {
     switch (stepKind(spec)) {
       case "photo": {
@@ -218,6 +226,19 @@ export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: Blob
         const chosen = await host.pickFile(text(spec.with ? spec.with.accept : ""), "");
         if (!chosen) return { state: "declined", error: { message: "no file was chosen" } };
         return { state: "ok", parts: [await partOf(chosen, chosen.name, upload)] };
+      }
+      case "folder": {
+        if (!host.pickFolder) throw new DeviceError("unavailable", "no folder chooser");
+        const chosen = await host.pickFolder();
+        if (!chosen || chosen.files.length === 0) return { state: "declined", error: { message: "no folder was chosen" } };
+        // Every file goes to the kernel as bytes (the blob upload), one after the other; the answer is only the manifest naming them by hash.
+        const files: Array<{ path: string; blob_hash: string; size: number; mime?: string }> = [];
+        for (const item of chosen.files) {
+          const stored = await upload(item.file, item.path);
+          files.push({ path: item.path, blob_hash: stored.hash, size: item.file.size, ...(item.file.type ? { mime: item.file.type } : {}) });
+          if (progress) progress(files.length, chosen.files.length);
+        }
+        return { state: "ok", parts: [{ kind: "json", value: { schema: FOLDER_MANIFEST_SCHEMA, name: chosen.name, files } }] };
       }
       case "read_clipboard": {
         if (!host.clipboard || !host.clipboard.readText) throw new DeviceError("unavailable", "no clipboard");

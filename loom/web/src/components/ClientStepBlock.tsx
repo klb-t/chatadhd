@@ -15,6 +15,7 @@ export default function ClientStepBlock({ feature, step, runId, receiptId, host,
   const [recording, setRecording] = useState<Recording | null>(null);
   const [seconds, setSeconds] = useState(0);
   const [working, setWorking] = useState(false);
+  const [sent, setSent] = useState<{ done: number; total: number } | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const recordingRef = useRef<Recording | null>(null);
   recordingRef.current = recording;
@@ -65,8 +66,10 @@ export default function ClientStepBlock({ feature, step, runId, receiptId, host,
       return;
     }
     setWorking(true);
-    const outcome = await runStep(host, step, load, upload);
+    setSent(null);
+    const outcome = await runStep(host, step, load, upload, (done, total) => setSent({ done, total }));
     setWorking(false);
+    setSent(null);
     if (outcome.state === "ok" || outcome.state === "declined" || outcome.state === "unavailable") await send(outcome);
     else setProblem(outcome.error ? outcome.error.message : outcome.state);
   };
@@ -92,7 +95,7 @@ export default function ClientStepBlock({ feature, step, runId, receiptId, host,
             data-testid={testId + "-start"}>{texts.start}</button>}
       <button type="button" disabled={disabled} onClick={() => void decline()} data-testid={testId + "-decline"}>{texts.decline}</button>
       <button type="button" disabled={disabled} onClick={onCancel} data-testid={testId + "-cancel"}>{texts.cancel}</button>
-      {working && <p data-testid={testId + "-sending"}>{texts.sending}</p>}
+      {working && <p data-testid={testId + "-sending"}>{sent ? texts.uploading(sent.done, sent.total) : texts.sending}</p>}
       {problem && <p role="alert" data-testid={testId + "-problem"}>{texts.failed(problem)}</p>}
       {failure && <p role="alert" data-testid={testId + "-failure"}>{texts.sendFailed(failure)}</p>}
     </div>

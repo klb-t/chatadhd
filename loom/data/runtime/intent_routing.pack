@@ -3801,10 +3801,30 @@
           "takes_scope": false
         },
         {
+          "id": "archive.file.pl",
+          "action": "archive.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?archiwum(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "archive.run.pl",
           "action": "archive.run",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?(?:archiwum|folder|projekt|repozytorium)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przeanalizuj|analizuj|przetworz|skompiluj)\\s+(?:ten\\s+|to\\s+|ta\\s+|moje\\s+|moj\\s+|moja\\s+)?(?:folder|projekt|repozytorium)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?(?:\\s+(?:z\\s+haslami|z\\s+terminami|szukajac)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project",
@@ -3818,10 +3838,30 @@
           "takes_scope": false
         },
         {
+          "id": "archive.file.en",
+          "action": "archive.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?archive(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "original": [
+            "path",
+            "project",
+            "seeds"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "archive.run.en",
           "action": "archive.run",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:archive|folder|project|repository|repo)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:analy[sz]e|process|compile)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:folder|project|repository|repo)(?:\\s+((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?(?:\\s+(?:with\\s+seeds|seeded\\s+with|starting\\s+from|searching\\s+for)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project",
@@ -3867,10 +3907,28 @@
           "takes_scope": false
         },
         {
+          "id": "knowledge.file.pl",
+          "action": "knowledge.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:archiwum\\s*)(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "knowledge.run.pl",
           "action": "knowledge.run",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:(?:archiwum|folderu|katalogu|projektu|repozytorium)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zbuduj|buduj)\\s+(?:cala\\s+)?wiedze\\s+(?:z|na\\s+podstawie)\\s+(?:tego\\s+|tej\\s+|tych\\s+|moich\\s+)?(?:(?:folderu|katalogu|projektu|repozytorium)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:jako|pod\\s+nazwa|o\\s+nazwie|nazwij)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project"
@@ -3882,10 +3940,28 @@
           "takes_scope": false
         },
         {
+          "id": "knowledge.file.en",
+          "action": "knowledge.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:archive\\s*)(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path",
+            "project"
+          ],
+          "original": [
+            "path",
+            "project"
+          ],
+          "takes_scope": false,
+          "set": {
+            "pick": "file"
+          }
+        },
+        {
           "id": "knowledge.run.en",
           "action": "knowledge.run",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:(?:archive|folder|directory|project|repository)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?build\\s+(?:the\\s+)?knowledge\\s+(?:from|out\\s+of|of)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:(?:folder|directory|project|repository)\\s*)?(?:((?:/|~|\\./|[a-z]:)\\S*))?(?:\\s+(?:as|named|called)\\s+(.+?))?\\s*[.!?]*\\s*$",
           "args": [
             "path",
             "project"

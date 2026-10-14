@@ -701,6 +701,8 @@ int decided_by_args(const Json& cond, const Json& args) {
 
 }  // namespace
 
+int condition_decided_by_args(const Json& when, const Json& args) { return decided_by_args(when, args); }
+
 Result<Json> Interpreter::preview(const RunRequest& request) const {
   LOOM_TRY_ASSIGN(Json plan, plan_of(request));
   LOOM_TRY_ASSIGN(auto base_traits, element_traits(request.element, request.scope));

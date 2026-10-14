@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createServer as createHttpServer } from "node:http";
 import { createHash } from "node:crypto";
-import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import net from "node:net";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -26,7 +26,7 @@ assert.ok(existsSync(serverBin) && existsSync(path.join(dist, "index.html")), "B
 const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 
 const groups = [];
-const complete = suiteCompletionGuard("client-devices-native", 7, groups);
+const complete = suiteCompletionGuard("client-devices-native", 8, groups);
 const transcript = "We ship on Friday if the tests pass.";
 const summary = "Ship Friday, tests permitting.";
 const speech = [], chats = [], pageErrors = [], messageReads = [], eventFeeds = [], bytesCalls = [], uploadAnswers = [];
@@ -259,9 +259,63 @@ try {
     await step.waitFor({ state: "detached" });
     assert.equal(speech.length, 1, "no second recording was ever sent");
   });
+  await check("\"przeanalizuj ten folder\": the browser picks a folder, its files go up one by one, the answer is a manifest, and the archive analysis runs on them", async () => {
+    // a folder on the machine of the browser: two files, one in a subfolder, and an empty one
+    const picked = path.join(mkdtempSync(path.join(tmpdir(), "loom-pick-folder-")), "notes");
+    mkdirSync(path.join(picked, "sub"), { recursive: true });
+    writeFileSync(path.join(picked, "plan.md"), "# Atlas plan\n\nWe decided to ship the Atlas release on Friday.\n");
+    writeFileSync(path.join(picked, "sub", "ideas.txt"), "Idea: build the Atlas importer first.\nBug: the importer drops accents.\n");
+    writeFileSync(path.join(picked, "empty.txt"), "");
+    const uploadsBefore = bytesCalls.filter(call => call.path === "/api/client/blob/upload").length;
+    const answersBefore = bytesCalls.filter(call => call.path === "/api/actions/client_result").length;
+    await page.fill('[data-testid="chat-input"]', "przeanalizuj ten folder");
+    await page.click('[data-testid="send-chat"]');
+    const proposal = page.getByTestId("chat-action-proposal").last();
+    await proposal.waitFor();
+    const said = await page.locator('[data-testid="message"][data-role="assistant"]').last().locator(".body").innerText();
+    assert.match(said, /Na Twoim urządzeniu: Wybierz folder/, "the proposal says the device will be asked for a folder");
+    await proposal.getByTestId("chat-action-proposal-confirm").click();
+    const step = page.getByTestId("chat-client-step");
+    await step.waitFor();
+    assert.equal(await step.getAttribute("data-action"), "device.pick_folder");
+    assert.match(await step.getByTestId("chat-client-step-prompt").innerText(), /nie do żadnego modelu/, "the person is told the files go to this program, not to a model");
+    assert.equal(await step.getByTestId("chat-client-step-start").innerText(), "Wybierz folder");
+    // the folder chooser opens on the click; the test answers it with the folder
+    const [chooser] = await Promise.all([page.waitForEvent("filechooser"), step.getByTestId("chat-client-step-start").click()]);
+    assert.equal(chooser.isMultiple(), true);
+    await chooser.setFiles(picked);
+    await step.waitFor({ state: "detached" });
+    // one upload per file, then one small answer: a manifest, no bytes
+    const uploaded = bytesCalls.filter(call => call.path === "/api/client/blob/upload").length - uploadsBefore;
+    assert.equal(uploaded, 3, "every file of the folder was uploaded (the empty one too)");
+    const answers = bytesCalls.filter(call => call.path === "/api/actions/client_result").slice(answersBefore);
+    assert.equal(answers.length, 1);
+    const answer = JSON.parse(answers[0].body);
+    assert.equal(answer.state, "ok");
+    assert.equal(answer.parts.length, 1);
+    assert.equal(answer.parts[0].kind, "json");
+    const manifest = answer.parts[0].value;
+    assert.equal(manifest.schema, "loom.folder_manifest/1");
+    assert.equal(manifest.name, "notes");
+    assert.deepEqual(manifest.files.map(row => row.path).sort(), ["empty.txt", "plan.md", "sub/ideas.txt"]);
+    for (const row of manifest.files) assert.match(row.blob_hash, /^[0-9a-f]{64}$/);
+    assert.ok(!answers[0].body.includes("base64"));
+    // the kernel wrote the files back as a folder and the pipeline was started on it: the conversation says so
+    await page.locator('[data-testid="message"][data-role="assistant"] .body', { hasText: /analiz/i }).last().waitFor();
+    const uploadsDir = path.join(data, "tmp", "uploads");
+    const written = readdirSync(uploadsDir).filter(name => name.startsWith("folder_"));
+    assert.equal(written.length, 1);
+    const root = path.join(uploadsDir, written[0], "notes");
+    assert.equal(readFileSync(path.join(root, "plan.md"), "utf8"), "# Atlas plan\n\nWe decided to ship the Atlas release on Friday.\n");
+    assert.equal(readFileSync(path.join(root, "sub", "ideas.txt"), "utf8"), "Idea: build the Atlas importer first.\nBug: the importer drops accents.\n");
+    assert.equal(readFileSync(path.join(root, "empty.txt"), "utf8"), "");
+    assert.equal(chats.length, 1, "no model was asked: the analysis is local");
+    assert.equal(await page.getByTestId("chat-error").count(), 0);
+    rmSync(path.dirname(picked), { recursive: true, force: true });
+  });
   assert.deepEqual(pageErrors, []);
   complete.complete();
-  console.log("[client-devices-native] " + groups.length + "/7 groups passed");
+  console.log("[client-devices-native] " + groups.length + "/8 groups passed");
 } catch (error) {
   console.error(serverLog.split("\n").slice(-30).join("\n"));
   console.error(error?.stack ?? String(error));

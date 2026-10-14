@@ -5316,6 +5316,77 @@
           "pl": "Plik został wybrany."
         }
       },
+      "device.pick_folder": {
+        "id": "device.pick_folder",
+        "kind": "atomic",
+        "status": "planned",
+        "planned_reason": {
+          "en": "Picking a folder is done by a client that has a folder chooser (the browser, with webkitdirectory); this client has not declared one, so the folder cannot be chosen here. Write the path of the folder instead, or use a client that can pick one.",
+          "pl": "Folder wybiera klient, który ma wybierak folderów (przeglądarka, przez webkitdirectory); ten klient takiego nie zgłosił, więc folderu nie da się tu wybrać. Wypisz ścieżkę folderu albo użyj klienta, który potrafi go wybrać."
+        },
+        "title": "Pick a folder",
+        "description": "Let the user pick a folder (the browser's folder chooser). The client uploads the files of the folder to the kernel, one by one, through the blob upload, and answers with a manifest of them: {schema: loom.folder_manifest/1, name, files: [{path, blob_hash, size, mime}]}.",
+        "labels": {
+          "pl": "Wybierz folder"
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "file_access"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 1.0,
+        "confidence": 0.9,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "client",
+        "client": {
+          "capability": "picks_folders",
+          "prompt": {
+            "en": "Pick a folder on this device; its files are sent to this program (not to any model).",
+            "pl": "Wybierz folder na tym urządzeniu; jego pliki trafią do tego programu (nie do żadnego modelu)."
+          },
+          "expects": [
+            "json"
+          ]
+        },
+        "default_element": "device:file_access",
+        "keeps_output": true,
+        "phrases": {
+          "en": [
+            "pick a folder",
+            "choose a folder",
+            "open a folder"
+          ],
+          "pl": [
+            "wybierz folder",
+            "otwórz folder",
+            "otworz folder"
+          ]
+        },
+        "examples": {
+          "en": [
+            "pick a folder"
+          ],
+          "pl": [
+            "wybierz folder"
+          ]
+        },
+        "result_text": {
+          "en": "The folder was picked.",
+          "pl": "Folder został wybrany."
+        }
+      },
       "device.request_permission": {
         "id": "device.request_permission",
         "kind": "atomic",
@@ -8534,11 +8605,38 @@
         "steps": [
           {
             "id": "pick",
+            "action": "device.pick_folder",
+            "when": {
+              "all": [
+                {
+                  "not": {
+                    "arg": "path"
+                  }
+                },
+                {
+                  "not": {
+                    "arg": "pick",
+                    "equals": "file"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "pick_file",
             "action": "device.pick_file",
             "when": {
-              "not": {
-                "arg": "path"
-              }
+              "all": [
+                {
+                  "not": {
+                    "arg": "path"
+                  }
+                },
+                {
+                  "arg": "pick",
+                  "equals": "file"
+                }
+              ]
             }
           },
           {
@@ -8560,7 +8658,15 @@
               "llm": {
                 "$arg": "llm",
                 "default": ""
-              }
+              },
+              "inputs": [
+                {
+                  "from": "pick"
+                },
+                {
+                  "from": "pick_file"
+                }
+              ]
             }
           }
         ],
@@ -8592,8 +8698,19 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
-              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+              "en": "A folder, an archive or a file, written out (without it, the folder the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: folder wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "pick",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "What the device lets you pick when no path is given: folder (preset) or file (an archive file)",
+              "pl": "Co pozwala wybrać urządzenie, gdy nie podano ścieżki: folder (preset) albo file (plik archiwum)"
             },
             "has_default": false,
             "edit": "free_text"
@@ -8823,11 +8940,38 @@
         "steps": [
           {
             "id": "pick",
+            "action": "device.pick_folder",
+            "when": {
+              "all": [
+                {
+                  "not": {
+                    "arg": "path"
+                  }
+                },
+                {
+                  "not": {
+                    "arg": "pick",
+                    "equals": "file"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "pick_file",
             "action": "device.pick_file",
             "when": {
-              "not": {
-                "arg": "path"
-              }
+              "all": [
+                {
+                  "not": {
+                    "arg": "path"
+                  }
+                },
+                {
+                  "arg": "pick",
+                  "equals": "file"
+                }
+              ]
             }
           },
           {
@@ -8845,7 +8989,15 @@
               "llm": {
                 "$arg": "llm",
                 "default": ""
-              }
+              },
+              "inputs": [
+                {
+                  "from": "pick"
+                },
+                {
+                  "from": "pick_file"
+                }
+              ]
             }
           }
         ],
@@ -8877,8 +9029,19 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
-              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+              "en": "A folder, an archive or a file, written out (without it, the folder the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: folder wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "pick",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "What the device lets you pick when no path is given: folder (preset) or file (an archive file)",
+              "pl": "Co pozwala wybrać urządzenie, gdy nie podano ścieżki: folder (preset) albo file (plik archiwum)"
             },
             "has_default": false,
             "edit": "free_text"
@@ -9066,11 +9229,38 @@
         "steps": [
           {
             "id": "pick",
+            "action": "device.pick_folder",
+            "when": {
+              "all": [
+                {
+                  "not": {
+                    "arg": "path"
+                  }
+                },
+                {
+                  "not": {
+                    "arg": "pick",
+                    "equals": "file"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "pick_file",
             "action": "device.pick_file",
             "when": {
-              "not": {
-                "arg": "path"
-              }
+              "all": [
+                {
+                  "not": {
+                    "arg": "path"
+                  }
+                },
+                {
+                  "arg": "pick",
+                  "equals": "file"
+                }
+              ]
             }
           },
           {
@@ -9080,7 +9270,15 @@
               "path": {
                 "$arg": "path",
                 "default": ""
-              }
+              },
+              "inputs": [
+                {
+                  "from": "pick"
+                },
+                {
+                  "from": "pick_file"
+                }
+              ]
             }
           }
         ],
@@ -9112,8 +9310,19 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "A folder, an archive or a file, written out (without it, the file the device lets you pick)",
-              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: plik wybrany na urządzeniu)"
+              "en": "A folder, an archive or a file, written out (without it, the folder the device lets you pick)",
+              "pl": "Folder, archiwum albo plik, wypisane wprost (bez tego: folder wybrany na urządzeniu)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "pick",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "What the device lets you pick when no path is given: folder (preset) or file (an archive file)",
+              "pl": "Co pozwala wybrać urządzenie, gdy nie podano ścieżki: folder (preset) albo file (plik archiwum)"
             },
             "has_default": false,
             "edit": "free_text"

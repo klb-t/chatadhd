@@ -30,6 +30,9 @@ export interface DeviceHost {
   play?: (blob: Blob) => Promise<void>;
   /** Opens the file chooser (an input element); null when the person closed it without a choice. */
   pickFile?: (accept: string, capture: string) => Promise<File | null>;
+  /** Opens the folder chooser of the page (an input with webkitdirectory); null when the person closed it without a choice. The folder is
+   *  its name and its files, each with the path inside the folder. Present only where the browser has a folder chooser. */
+  pickFolder?: () => Promise<PickedFolder | null>;
   /** Takes a still picture with the camera; null when the camera is not there. */
   takePicture?: () => Promise<Blob | null>;
   /** The page has a document at all (a file chooser can be opened). */
@@ -38,6 +41,9 @@ export interface DeviceHost {
    *  (granted | prompt), asking for it (Android shows its own dialog; the answer comes later), and showing one (false: refused). */
   nativeNotify?: { state(): string; request(): void; show(title: string, body: string): boolean };
 }
+
+/** A folder the person chose: its name and its files with their paths inside it (forward slashes, no leading slash). */
+export interface PickedFolder { name: string; files: Array<{ path: string; file: File }> }
 
 /** A recording in progress: stop() ends it and answers with the sound; abort() drops it. */
 export interface Recording {
