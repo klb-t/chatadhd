@@ -17,7 +17,7 @@ const en = pack.entries.find(entry => entry.key === "presentation.chat_send").va
 const REASON = "source_egress_not_bound", VIEW_FAILURE = "authored view failure";
 const omitted = formatTemplate(en.reason, { reason: REASON, explanation: en[`reason.${REASON}`] });
 const blockedText = formatTemplate(en.blocked_by_setting, { setting: en.setting_label });
-const groups = [], chatRequests = [], viewRequests = [], unexpected = [], pageErrors = [];
+const groups = [], chatRequests = [], viewRequests = [], unexpected = [], pageErrors = [], eventFeeds = [];
 const complete = suiteCompletionGuard("chat-send-gate", 5, groups);
 
 const bundle = await build({ stdin: { contents: `
@@ -79,7 +79,9 @@ const server = createServer(async (request, response) => {
     response.end(); return;
   }
   // The page declares its devices to the kernel when it opens (P13); this authored backend has no clients, which the page tolerates.
-  if (url.pathname !== "/api/client/declare") unexpected.push(`${request.method} ${url.pathname}`);
+  // It also opens the kernel's event feed once (P14 4); this backend has none (404), which the page does not ask for again.
+  if (url.pathname === "/api/events/stream") eventFeeds.push(`${request.method} ${url.search}`);
+  else if (url.pathname !== "/api/client/declare") unexpected.push(`${request.method} ${url.pathname}`);
   json(response, { error: { code: "fixture_unsupported", message: "Unsupported fixture endpoint" } }, 404);
 });
 await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
@@ -87,7 +89,9 @@ const base = `http://127.0.0.1:${server.address().port}`;
 let browser, page;
 async function check(name, run) { await run(); groups.push(name); console.log(`[chat-send-gate] PASS ${name}`); }
 const send = () => page.getByTestId("send-chat");
+let mounts = 0;
 async function mount(id) {
+  mounts += 1;
   const before = viewRequests.length;
   await page.evaluate(conv => window.__chat.mount(conv), id);
   await waitFor(() => viewRequests.slice(before).some(row => row.key === `GET ${id}`), `view request of ${id}`);
@@ -204,6 +208,8 @@ try {
   });
   assert.deepEqual(pageErrors, []);
   assert.deepEqual(unexpected, []);
+  assert.equal(mounts, 7);
+  assert.deepEqual(eventFeeds, Array(mounts).fill("GET ?event=action%3Aclient_step"), "one event feed per mount of the chat view, refused by this backend and not asked for again");
 } finally {
   await browser?.close();
   await closeHttpFixture(server);

@@ -22,6 +22,8 @@
     "test:action-proposal": "node tests/conversation-view/action-proposal.test.mjs",
     "test:action-proposal-browser": "node e2e/action-proposal-ui.mjs",
     "test:rules-transport": "node tests/conversation-view/rules-transport.test.mjs",
+    "test:route-issue": "node tests/conversation-view/route-issue.test.mjs",
+    "test:client-step-events": "node tests/conversation-view/client-step-events.test.mjs",
     "test:client-device": "node tests/conversation-view/client-device.test.mjs",
     "test:client-devices-native": "node e2e/client-devices-native.mjs",
     "test:semantic-queue": "node tests/conversation-view/semantic-queue.test.mjs",

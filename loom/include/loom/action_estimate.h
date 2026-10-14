@@ -8,6 +8,9 @@
 // never zero for a price that is not known: a free model with a listed price of 0 is a known zero, an unlisted model
 // is not.
 //
+// `reason_code` names why the money is unknown (profile action_run, estimate.reasons: the texts, per language, are data); `reason` is
+// the text in English. An empty registry (a fresh data directory, the model list not fetched) is its own code, not "no price".
+//
 // An estimate is a number to decide by, not a limit and not a promise: the usage guard (x10 growth) and the rules are
 // separate and unchanged.
 #pragma once
@@ -31,13 +34,14 @@ struct EstimateServices {
   const Config* config = nullptr;         // default model, completion limit
   Json settings;                          // values of the runtime profile action_run
   Json catalogue;                         // the action catalogue (content_op of the actions)
+  std::string registry_failure;           // why the automatic fetch of the model list failed (empty: none was tried or it worked)
 };
 
 // plan: the plan of Interpreter::preview; args: the run's arguments (a step may take its model from one);
 // input_chars: characters of the content the first model step receives.
 //   {"schema","input_chars","calls":[{"step","action","model","kind","tokens":{"input":{low,high},"output":{low,high}},
 //    "price":{"known",...},"usd":{low,high}|null}],"tokens":{"input","output"},
-//    "money":{"known":true,"currency","low","high"} | {"known":false,"currency","reason","models":[...]},
+//    "money":{"known":true,"currency","low","high"} | {"known":false,"currency","reason","reason_code","reason_params"?,"models":[...]},
 //    "model_calls","assumptions"}
 Json estimate_plan(const EstimateServices& services, const Json& plan, const Json& args, std::int64_t input_chars);
 

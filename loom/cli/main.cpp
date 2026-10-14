@@ -857,9 +857,13 @@ int cmd_actions_run(Runtime& rt, const Args& a, const std::string& sub) {
   if (a.has("scope")) request["scope"] = cli_scope(a);
   if (sub == "run") {
     if (a.has("propose")) request["propose"] = true;
-    if (a.has("yes")) request["confirmed"] = true;
     request["ref"] = "cli";
     request["context"] = Json{{"origin", "cli"}};
+    if (a.has("yes")) {
+      // --yes is the yes of someone who has seen the plan: the receipt of the preview of this very request backs it (a bare confirmed:true is a proposal).
+      request["receipt_id"] = must(rt.actions().preview(request)).value("plan_receipt", "");
+      request["confirmed"] = true;
+    }
   }
   const Json result = must(sub == "run" ? rt.actions().run(request, &g_cancel) : rt.actions().preview(request));
   if (g_json) {
@@ -1055,9 +1059,16 @@ int cmd_rules(Runtime& rt, const Args& a) {
   }
   request["ref"] = "cli";
   request["context"] = Json{{"origin", "cli"}};
-  if (a.has("yes")) request["confirmed"] = true;
   if (a.has("propose")) request["propose"] = true;
-  const Json run = must(rt.actions().invoke(sub == "set" ? "rules.set" : "rules.disable", request));
+  const char* action = sub == "set" ? "rules.set" : "rules.disable";
+  if (a.has("yes")) {
+    // --yes: propose, then confirm with the receipt of that proposal (a bare confirmed:true is only a proposal).
+    Json ask = request;
+    ask["propose"] = true;
+    request["receipt_id"] = must(rt.actions().invoke(action, ask)).value("plan_receipt", "");
+    request["confirmed"] = true;
+  }
+  const Json run = must(rt.actions().invoke(action, request));
   if (g_json) {
     print_json(run);
     return run.value("status", "") == "failed" || run.value("status", "") == "denied" ? 1 : 0;
