@@ -36,7 +36,7 @@ concurrency:
 
 jobs:
   build-test:
-    name: ${{ matrix.preset }} (${{ matrix.cxx }})
+    name: ${{ matrix.name || format('{0} ({1})', matrix.preset, matrix.cxx) }}
     runs-on: ubuntu-24.04
     # ASan+UBSan, measured: cold build ~25 min + FFI companion ~8 min (run 38528837225: job cancelled at 45 min with
     # only 11 min of Test) + CTest ~80 CPU-minutes (slowest: onboarding_store 350 s, kb_pack 280 s, cli.smoke 495 s).
@@ -51,6 +51,9 @@ jobs:
           - { preset: asan, cc: gcc, cxx: g++, debug_info: "-g1" }
           # Closest to the Android build: Clang + the vendored SQLite amalgamation.
           - { preset: vendored, cc: clang, cxx: clang++, debug_info: "-g" }
+          # The Android NDK ships libc++, every other leg uses libstdc++. Differences between the two standard
+          # libraries (destruction order, unspecified behaviour, missing includes) are invisible without this leg.
+          - { preset: libcxx, cc: clang, cxx: clang++, debug_info: "-g", name: "libcxx (clang++ + libc++)" }
     env:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
@@ -69,6 +72,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ninja-build ccache libsqlite3-dev libssl-dev clang
+          # libc++ headers and runtime for the clang the leg above uses (ubuntu-24.04: clang 18); only the libcxx leg needs them.
+          if [ '${{ matrix.preset }}' = libcxx ]; then sudo apt-get install -y --no-install-recommends libc++-dev libc++abi-dev; fi
 
       # The Unicode tables are generated from CPython 3.11 (Unicode 14.0);
       # the compat tests compare against the same interpreter version.
