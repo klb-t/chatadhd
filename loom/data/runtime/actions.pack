@@ -44,7 +44,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/llm/use_model.cpp"
+        "consumer": "loom/src/llm/use_model.cpp",
+        "labels": {
+          "pl": "Użyj modelu"
+        }
       },
       "save": {
         "id": "save",
@@ -76,7 +79,14 @@
           "irreversible": false,
           "touches_private_data": false
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Zapisz"
+        },
+        "result_text": {
+          "en": "Saved.",
+          "pl": "Zapisano."
+        }
       },
       "share": {
         "id": "share",
@@ -108,7 +118,14 @@
           "irreversible": true,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Udostępnij"
+        },
+        "result_text": {
+          "en": "Shared.",
+          "pl": "Udostępniono."
+        }
       },
       "chat.send": {
         "id": "chat.send",
@@ -146,7 +163,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/chat/chat_engine.cpp"
+        "consumer": "loom/src/chat/chat_engine.cpp",
+        "labels": {
+          "pl": "Wyślij wiadomość czatu"
+        }
       },
       "semantic.analyse": {
         "id": "semantic.analyse",
@@ -183,7 +203,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/semantic/semantic_llm.cpp"
+        "consumer": "loom/src/semantic/semantic_llm.cpp",
+        "labels": {
+          "pl": "Analiza semantyczna jednej wiadomości"
+        }
       },
       "semantic.batch": {
         "id": "semantic.batch",
@@ -220,7 +243,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/worker/semantic_worker.cpp"
+        "consumer": "loom/src/worker/semantic_worker.cpp",
+        "labels": {
+          "pl": "Analiza semantyczna przez wsad (Message Batches)"
+        }
       },
       "batch.chat": {
         "id": "batch.chat",
@@ -257,7 +283,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/chat/batch_api.cpp"
+        "consumer": "loom/src/chat/batch_api.cpp",
+        "labels": {
+          "pl": "Wsadowa analiza wybranych wiadomości"
+        }
       },
       "archive.refine": {
         "id": "archive.refine",
@@ -294,7 +323,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/archive/pipeline.cpp"
+        "consumer": "loom/src/archive/pipeline.cpp",
+        "labels": {
+          "pl": "Dopracuj elementy archiwum"
+        }
       },
       "goal.typing": {
         "id": "goal.typing",
@@ -331,7 +363,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/context/context_engine.cpp"
+        "consumer": "loom/src/context/context_engine.cpp",
+        "labels": {
+          "pl": "Określ cel promptu"
+        }
       },
       "graph_native.reply": {
         "id": "graph_native.reply",
@@ -370,7 +405,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/chat/graph_reply.cpp"
+        "consumer": "loom/src/chat/graph_reply.cpp",
+        "labels": {
+          "pl": "Odpowiedź natywna dla grafu"
+        }
       },
       "jev.edge_classify": {
         "id": "jev.edge_classify",
@@ -408,7 +446,14 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Sklasyfikuj i zważ krawędzie (Jev)"
+        },
+        "result_text": {
+          "en": "The edges were classified and weighed.",
+          "pl": "Krawędzie zostały sklasyfikowane i zważone."
+        }
       },
       "input.route_intent": {
         "id": "input.route_intent",
@@ -446,7 +491,14 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/actions/route.cpp"
+        "consumer": "loom/src/actions/route.cpp",
+        "labels": {
+          "pl": "Rozpoznaj wejście użytkownika"
+        },
+        "result_text": {
+          "en": "The input was read as a message or a command.",
+          "pl": "Wejście zostało odczytane jako wiadomość albo polecenie."
+        }
       },
       "script.call": {
         "id": "script.call",
@@ -491,7 +543,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Wywołanie modelu ze skryptu"
+        }
       },
       "agent.call": {
         "id": "agent.call",
@@ -536,7 +591,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Wywołanie modelu przez agenta"
+        }
       },
       "media.generate_image": {
         "id": "media.generate_image",
@@ -574,7 +632,14 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Wygeneruj obraz"
+        },
+        "result_text": {
+          "en": "The image is ready.",
+          "pl": "Obraz jest gotowy."
+        }
       },
       "media.generate_video": {
         "id": "media.generate_video",
@@ -612,7 +677,14 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Wygeneruj film"
+        },
+        "result_text": {
+          "en": "The video is ready.",
+          "pl": "Film jest gotowy."
+        }
       },
       "media.generate_music": {
         "id": "media.generate_music",
@@ -650,7 +722,14 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": ""
+        "consumer": "",
+        "labels": {
+          "pl": "Wygeneruj muzykę"
+        },
+        "result_text": {
+          "en": "The music is ready.",
+          "pl": "Muzyka jest gotowa."
+        }
       },
       "storage.status": {
         "id": "storage.status",
@@ -709,7 +788,11 @@
             "pokaż stan magazynów"
           ]
         },
-        "stores_result": false
+        "stores_result": false,
+        "result_text": {
+          "en": "State of the storage backends and placement of every category:",
+          "pl": "Stan magazynów i rozmieszczenie każdej kategorii:"
+        }
       },
       "storage.probe": {
         "id": "storage.probe",
@@ -758,7 +841,11 @@
             "sprawdź połączenie z magazynami"
           ]
         },
-        "stores_result": false
+        "stores_result": false,
+        "result_text": {
+          "en": "Every configured backend was probed:",
+          "pl": "Sprawdzono każdy skonfigurowany magazyn:"
+        }
       },
       "storage.kinds": {
         "id": "storage.kinds",
@@ -807,7 +894,11 @@
             "jakie rodzaje magazynów można podłączyć"
           ]
         },
-        "stores_result": false
+        "stores_result": false,
+        "result_text": {
+          "en": "Backend kinds available here:",
+          "pl": "Rodzaje magazynów dostępne tutaj:"
+        }
       },
       "storage.placement": {
         "id": "storage.placement",
@@ -875,7 +966,11 @@
             "gdzie leżą moje dane"
           ]
         },
-        "stores_result": false
+        "stores_result": false,
+        "result_text": {
+          "en": "Placement of the storage categories:",
+          "pl": "Rozmieszczenie kategorii w magazynach:"
+        }
       },
       "storage.locate": {
         "id": "storage.locate",
@@ -934,7 +1029,11 @@
             }
           ]
         },
-        "stores_result": false
+        "stores_result": false,
+        "result_text": {
+          "en": "Where the graph says the object {{hash}} is held:",
+          "pl": "Gdzie według grafu znajduje się obiekt {{hash}}:"
+        }
       },
       "storage.copy": {
         "id": "storage.copy",
@@ -1025,6 +1124,10 @@
           "pl": [
             "skopiuj blobs do s3_main"
           ]
+        },
+        "result_text": {
+          "en": "Report of copying {{category}} to {{to}}:",
+          "pl": "Raport z kopiowania kategorii {{category}} do {{to}}:"
         }
       },
       "storage.move": {
@@ -1120,6 +1223,10 @@
           "pl": [
             "przenieś blobs do s3_main"
           ]
+        },
+        "result_text": {
+          "en": "Report of moving {{category}} to {{to}}:",
+          "pl": "Raport z przenoszenia kategorii {{category}} do {{to}}:"
         }
       },
       "storage.backup": {
@@ -1204,6 +1311,10 @@
           "pl": [
             "zrób kopię zapasową do s3_main"
           ]
+        },
+        "result_text": {
+          "en": "Report of the backup to {{to}}:",
+          "pl": "Raport z kopii zapasowej do {{to}}:"
         }
       },
       "knowledge.propose_semantics": {
@@ -1242,7 +1353,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/extract/semantic.cpp"
+        "consumer": "loom/src/extract/semantic.cpp",
+        "labels": {
+          "pl": "Zaproponuj strukturę semantyczną dla obserwacji źródła"
+        }
       },
       "embedding.embed": {
         "id": "embedding.embed",
@@ -1279,7 +1393,14 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/src/providers/embedding.cpp"
+        "consumer": "loom/src/providers/embedding.cpp",
+        "labels": {
+          "pl": "Osadź teksty"
+        },
+        "result_text": {
+          "en": "The texts were embedded.",
+          "pl": "Teksty zostały osadzone."
+        }
       },
       "analysis.run": {
         "id": "analysis.run",
@@ -1318,7 +1439,10 @@
           "irreversible": false,
           "touches_private_data": true
         },
-        "consumer": "loom/server/src/analysis-ui-routes.h"
+        "consumer": "loom/server/src/analysis-ui-routes.h",
+        "labels": {
+          "pl": "Wykonaj sprawdzone żądanie analizy"
+        }
       },
       "usage.compact": {
         "id": "usage.compact",
@@ -1691,7 +1815,8 @@
           "pl": [
             "streść tę rozmowę"
           ]
-        }
+        },
+        "default_element": "current_conversation"
       },
       "translate": {
         "id": "translate",
@@ -1791,7 +1916,8 @@
           "pl": [
             "przetłumacz tę wiadomość na niemiecki"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "elaborate": {
         "id": "elaborate",
@@ -1893,7 +2019,8 @@
           "pl": [
             "rozwiń tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "parody": {
         "id": "parody",
@@ -2099,7 +2226,8 @@
           "pl": [
             "skrytykuj tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "combine": {
         "id": "combine",
@@ -2370,7 +2498,8 @@
           "pl": [
             "narysuj tę rozmowę"
           ]
-        }
+        },
+        "default_element": "current_conversation"
       },
       "narrate": {
         "id": "narrate",
@@ -2602,6 +2731,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/for"
+        },
+        "result_text": {
+          "en": "Actions that fit the element:",
+          "pl": "Akcje pasujące do elementu:"
         }
       },
       "actions.explain": {
@@ -2676,6 +2809,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/explain"
+        },
+        "result_text": {
+          "en": "Why {{action}} fits the element or does not:",
+          "pl": "Dlaczego {{action}} pasuje do elementu albo nie pasuje:"
         }
       },
       "actions.propose_chain": {
@@ -2816,6 +2953,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/propose_chain"
+        },
+        "result_text": {
+          "en": "Proposed chains of actions:",
+          "pl": "Zaproponowane łańcuchy akcji:"
         }
       },
       "actions.run": {
@@ -2969,6 +3110,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/run"
+        },
+        "result_text": {
+          "en": "The run:",
+          "pl": "Przebieg:"
         }
       },
       "actions.preview": {
@@ -3065,6 +3210,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/preview"
+        },
+        "result_text": {
+          "en": "Preview of the run (nothing was executed):",
+          "pl": "Podgląd wykonania (nic nie zostało wykonane):"
         }
       },
       "actions.confirm": {
@@ -3150,6 +3299,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/confirm"
+        },
+        "result_text": {
+          "en": "The answer was recorded:",
+          "pl": "Odpowiedź została zapisana:"
         }
       },
       "actions.cancel": {
@@ -3213,6 +3366,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/cancel"
+        },
+        "result_text": {
+          "en": "The run was cancelled:",
+          "pl": "Przebieg został anulowany:"
         }
       },
       "actions.status": {
@@ -3320,7 +3477,11 @@
           ]
         },
         "stores_result": false,
-        "positional_arg": "run_id"
+        "positional_arg": "run_id",
+        "result_text": {
+          "en": "Status of the run:",
+          "pl": "Stan przebiegu:"
+        }
       },
       "client.declare": {
         "id": "client.declare",
@@ -3394,6 +3555,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/client/declare"
+        },
+        "result_text": {
+          "en": "What the client can do was declared:",
+          "pl": "Zdolności klienta zostały zadeklarowane:"
         }
       },
       "client.capabilities": {
@@ -3446,6 +3611,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/client/capabilities"
+        },
+        "result_text": {
+          "en": "What the client declared:",
+          "pl": "Co zadeklarował klient:"
         }
       },
       "actions.client_result": {
@@ -3564,6 +3733,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/client_result"
+        },
+        "result_text": {
+          "en": "The client's answer was recorded:",
+          "pl": "Odpowiedź klienta została zapisana:"
         }
       },
       "rules.set": {
@@ -3770,6 +3943,10 @@
           "pl": [
             "w tej rozmowie ustaw action_result_target=conversation_message"
           ]
+        },
+        "result_text": {
+          "en": "The rule was saved:",
+          "pl": "Reguła została zapisana:"
         }
       },
       "rules.disable": {
@@ -3877,6 +4054,10 @@
           "pl": [
             "wyłącz regułę user:person:confirm:depict"
           ]
+        },
+        "result_text": {
+          "en": "The rule was switched off:",
+          "pl": "Reguła została wyłączona:"
         }
       },
       "rules.list": {
@@ -3973,7 +4154,11 @@
             "pokaż moje reguły"
           ]
         },
-        "stores_result": false
+        "stores_result": false,
+        "result_text": {
+          "en": "Rules in force:",
+          "pl": "Reguły w mocy:"
+        }
       },
       "actions.define": {
         "id": "actions.define",
@@ -4137,6 +4322,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/define"
+        },
+        "result_text": {
+          "en": "The action {{id}} was defined:",
+          "pl": "Akcja {{id}} została zdefiniowana:"
         }
       },
       "actions.remove": {
@@ -4232,6 +4421,10 @@
           "pl": [
             "usuń akcję rozpisz"
           ]
+        },
+        "result_text": {
+          "en": "The action {{id}} was removed:",
+          "pl": "Akcja {{id}} została usunięta:"
         }
       },
       "groups.define": {
@@ -4363,6 +4556,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/groups/define"
+        },
+        "result_text": {
+          "en": "The group {{id}} was defined:",
+          "pl": "Grupa {{id}} została zdefiniowana:"
         }
       },
       "groups.remove": {
@@ -4458,6 +4655,10 @@
           "pl": [
             "usuń grupę moja_grupa"
           ]
+        },
+        "result_text": {
+          "en": "The group {{id}} was removed:",
+          "pl": "Grupa {{id}} została usunięta:"
         }
       },
       "device.record_audio": {
@@ -4549,6 +4750,10 @@
           "pl": [
             "nagraj notatkę głosową"
           ]
+        },
+        "result_text": {
+          "en": "The recording is ready.",
+          "pl": "Nagranie jest gotowe."
         }
       },
       "device.capture_image": {
@@ -4621,6 +4826,10 @@
           "pl": [
             "zrób zdjęcie"
           ]
+        },
+        "result_text": {
+          "en": "The photo is ready.",
+          "pl": "Zdjęcie jest gotowe."
         }
       },
       "device.capture_video": {
@@ -4680,7 +4889,11 @@
               "pl": "Jak długo nagrywać (domyślnie: do zatrzymania)."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The video recording is ready.",
+          "pl": "Nagranie wideo jest gotowe."
+        }
       },
       "device.play_audio": {
         "id": "device.play_audio",
@@ -4747,7 +4960,11 @@
               "pl": "Id elementu audio (skrót bloba albo węzeł), który odtworzyć."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The audio was played.",
+          "pl": "Dźwięk został odtworzony."
+        }
       },
       "device.display": {
         "id": "device.display",
@@ -4806,7 +5023,11 @@
               "pl": "Id elementu do pokazania."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The content was shown on the screen.",
+          "pl": "Treść została pokazana na ekranie."
+        }
       },
       "device.clipboard_write": {
         "id": "device.clipboard_write",
@@ -4874,7 +5095,11 @@
               "pl": "Id elementu, którego tekst skopiować."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "Copied to the clipboard.",
+          "pl": "Skopiowano do schowka."
+        }
       },
       "device.clipboard_read": {
         "id": "device.clipboard_read",
@@ -5010,7 +5235,11 @@
               "pl": "Co mówi powiadomienie."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The notification was shown.",
+          "pl": "Powiadomienie zostało wyświetlone."
+        }
       },
       "device.pick_file": {
         "id": "device.pick_file",
@@ -5081,6 +5310,10 @@
           "pl": [
             "wybierz plik"
           ]
+        },
+        "result_text": {
+          "en": "The file was picked.",
+          "pl": "Plik został wybrany."
         }
       },
       "device.request_permission": {
@@ -5150,7 +5383,11 @@
               "pl": "O jaką zgodę poprosić: microphone, camera, notifications, clipboard-read albo clipboard-write."
             }
           }
-        ]
+        ],
+        "result_text": {
+          "en": "The answer about the permission {{permission}}:",
+          "pl": "Odpowiedź w sprawie zgody {{permission}}:"
+        }
       },
       "net.test_endpoint": {
         "id": "net.test_endpoint",
@@ -5197,6 +5434,10 @@
             "sprawdz polaczenie",
             "przetestuj połączenie"
           ]
+        },
+        "result_text": {
+          "en": "The connection was tested:",
+          "pl": "Połączenie zostało sprawdzone:"
         }
       },
       "chat.route": {
@@ -5261,8 +5502,8 @@
             "type": "string",
             "required": false,
             "description": {
-              "en": "Override the routing method for this call: off, heuristic or model",
-              "pl": "Nadpisz metodę rozpoznawania dla tego wywołania: off, heuristic albo model"
+              "en": "Override the routing method for this call: off, heuristic, hybrid or model",
+              "pl": "Nadpisz metodę rozpoznawania dla tego wywołania: off, heuristic, hybrid albo model"
             },
             "has_default": false,
             "edit": "choice:intent_routing_methods"
@@ -5282,6 +5523,10 @@
         "http": {
           "verb": "POST",
           "path": "/api/chat/route"
+        },
+        "result_text": {
+          "en": "How the input was read:",
+          "pl": "Jak odczytano wejście:"
         }
       },
       "settings.set": {
@@ -5364,6 +5609,10 @@
           "pl": [
             "ustaw temperature=0.3"
           ]
+        },
+        "result_text": {
+          "en": "The setting {{key}} was changed:",
+          "pl": "Ustawienie {{key}} zostało zmienione:"
         }
       },
       "settings.get": {
@@ -5433,6 +5682,10 @@
           "pl": [
             "pokaż temperature"
           ]
+        },
+        "result_text": {
+          "en": "The setting {{key}}:",
+          "pl": "Ustawienie {{key}}:"
         }
       },
       "rephrase": {
@@ -5542,7 +5795,8 @@
           "pl": [
             "przeredaguj tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "explain_simply": {
         "id": "explain_simply",
@@ -5632,7 +5886,8 @@
           "pl": [
             "wytłumacz prościej tę wiadomość"
           ]
-        }
+        },
+        "default_element": "last_message"
       },
       "help.can_do": {
         "id": "help.can_do",
@@ -8338,6 +8593,28 @@
             "element_many": {
               "type": "boolean",
               "description": "The action takes several elements as one input (combine): the router reads every id in the words, and a request may give element as a list of ids; the contents reach the steps one after another."
+            },
+            "default_element": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The element the action acts on when the sentence names none: a name the router resolves (last_message, current_conversation), or an element id (device:microphone). A sentence that brings its own text to work on (a colon, a quote, more content words than heuristic.payload.max_words) stays an ordinary message."
+            },
+            "result_text": {
+              "type": "object",
+              "description": "The sentence that says what a result is when the result is data and not words (an action whose outputs have no text): per language, {{name}} is an argument of the run. Shown above the data itself, in the language of the proposal. Required by a test for every action whose outputs have no text; an action that outputs text says it in the language of the text it works on.",
+              "properties": {
+                "en": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pl": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": {
+                "type": "string"
+              }
             }
           },
           "additionalProperties": true

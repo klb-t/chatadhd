@@ -204,7 +204,7 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
-        "description": "How a chat input is told to be a message or a command (R54): heuristic (local and free, preset), model (one guarded model call per input) or off (every input is a message). Runtime profile intent_routing."
+        "description": "How a chat input is told to be a message or a command (R54): heuristic (local and free, preset), hybrid (the local reading first, the model asked only about what it is unsure of: a command the local reading is sure of is never turned into a message by the model; recommended once a provider key exists), model (one guarded model call per input) or off (every input is a message). Runtime profile intent_routing (heuristic.scoring.min_score and confident_score, method.presets.hybrid.ask_when)."
       },
       {
         "key": "intent_routing_run",

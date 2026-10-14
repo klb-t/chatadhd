@@ -1,4 +1,4 @@
-.application-views { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.application-views { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; }
 .profile-workspace-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 6px 12px; font-size: 12px; color: var(--dim); flex-shrink: 0; }
 .profile-native-storage { max-width: 100%; }
 .profile-native-storage > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 0; }

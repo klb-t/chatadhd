@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api";
 import type { Conversation } from "../api/types";
+import { beginCreation } from "../context/send-queue";
 
 interface Props {
   activeConvId: string | null;
@@ -39,13 +40,16 @@ export default function ConversationList({ activeConvId, onSelect, onCreated, on
 
   const createConversation = useCallback(async () => {
     onActivity?.(1);
+    // The composer waits for the conversation while it is made: a message typed in that moment goes into it, not into the one the kernel
+    // remembers from before. The end comes after the page has been told which conversation it is.
+    const created = beginCreation();
     try {
       const conv = await api.createConversation();
       await refresh();
       if (mounted.current) onCreated(conv.id);
     } catch (err) {
       if (mounted.current) setError(err instanceof Error ? err.message : String(err));
-    } finally { onActivity?.(-1); }
+    } finally { created(); onActivity?.(-1); }
   }, [refresh, onCreated, onActivity]);
 
   const deleteConversation = useCallback(

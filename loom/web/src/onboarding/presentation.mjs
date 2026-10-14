@@ -167,7 +167,15 @@ export function resolvePresentationFeature(presentation, feature, effective) {
   if (!declared || Object.keys(declared.locales[Object.keys(declared.locales)[0]]).some(key =>
       typeof value.locales[presentation.locale][key] !== "string"))
     throw new PresentationError("error.presentation", { reason: "feature_catalog_incomplete" }, true);
-  return { feature, locale: presentation.locale, catalog: value.locales[presentation.locale] };
+  return { feature, locale: presentation.locale, catalog: value.locales[presentation.locale], locales: value.locales };
+}
+/** The same feature in another language (the language of the proposal or the conversation, not of the interface), when its catalog has
+ * that language complete; otherwise unchanged. One language per answer: the title, the buttons and the lines of a Polish proposal are Polish. */
+export function featureInLanguage(feature, language) {
+  if (!feature || typeof language !== "string" || language === "" || language === feature.locale || !record(feature.locales)) return feature;
+  const catalog = feature.locales[language];
+  if (!record(catalog) || Object.keys(feature.catalog).some(key => typeof catalog[key] !== "string")) return feature;
+  return { ...feature, locale: language, catalog };
 }
 export function featureMessage(feature, id, parameters = {}) {
   const template = feature.catalog[id];
