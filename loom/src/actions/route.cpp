@@ -1080,8 +1080,10 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     cands.erase(std::remove_if(cands.begin(), cands.end(), [](const Cand& x) { return x.source == "pattern" && x.action == "settings.set"; }), cands.end());
     for (auto& r : rule_cands) cands.push_back(std::move(r));
   }
-  // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55).
-  if (cands.empty() && method != "model") {
+  // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55). This is a local
+  // check of the words, whatever the method: a model that called the sentence a message, or whose call failed, does not take the offer away
+  // (decision P14: the shape check runs after the model's verdict; the model's schema is unchanged).
+  if (cands.empty()) {
     const auto ref = find_reference(d, text, word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))));
     if (!ref.is_null()) {
       if (auto element = resolve_ref(rt, d, ref, conv)) {

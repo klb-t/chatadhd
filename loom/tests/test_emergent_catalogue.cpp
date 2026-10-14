@@ -93,6 +93,47 @@ std::string hash_of(const char* domain) { return unwrap(RuntimeProfile::builtin(
 }  // namespace
 
 TEST_SUITE("emergent_catalogue") {
+  TEST_CASE("P14 3c: with the model method a sentence the model calls a message is still offered as a new action when it is shaped like a command") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    const std::string message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.95}";
+    // not shaped like a command: still a message (the model said so, the words agree)
+    for (const char* text : {"Jak działa ta rozmowa?", "Napisz wiersz o tej rozmowie", "Dziękuję"}) {
+      f.script(message_verdict);
+      CHECK(f.route(text).at("kind") == "message");
+    }
+    // shaped like a command about an element, the model says message: the heuristic's offer stands
+    f.script(message_verdict);
+    const Json routed = f.route("Rozpisz tę wiadomość na kroki");
+    CHECK(routed.at("method") == "model");
+    REQUIRE(routed.at("kind") == "command");
+    CHECK(routed.at("command").at("source") == "emergent");
+    CHECK(routed.at("command").at("action") == "actions.define");
+    CHECK(routed.at("command").at("emergent").at("kind") == "define_action");
+    CHECK(routed.at("issues").empty());
+    // in the chat: the proposal of the definition is the answer; nothing but the model's routing call was sent
+    const std::size_t calls = f.transport->requests().size();
+    f.script(message_verdict);
+    const auto asked = f.input("Rozpisz tę wiadomość na kroki");
+    REQUIRE(asked.handled);
+    CHECK(f.proposal_of(asked).at("kind") == "define_action");
+    CHECK(f.transport->requests().size() == calls + 1);
+    // the setting is the user's: off, and the model's verdict is the end of it
+    f.rt->config().set("emergent_actions", "off");
+    f.script(message_verdict);
+    CHECK(f.route("Rozpisz tę wiadomość na kroki").at("kind") == "message");
+  }
+
+  TEST_CASE("P14 3c: a failed model route falls back to the local method, the definition included, and says so") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
+    const Json routed = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(routed.at("kind") == "command");
+    CHECK(routed.at("command").at("source") == "emergent");
+    CHECK(routed.at("issues").at(0).at("code") == "model_route_failed");
+  }
+
   TEST_CASE("a: a command no action understands is offered as a new action; accepting writes the overlays and runs it; undo takes it back") {
     Fixture f;
     const std::string shipped_actions = hash_of("actions"), shipped_routing = hash_of("intent_routing"), shipped_entry = hash_of("graph_entry");
