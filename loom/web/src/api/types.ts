@@ -154,6 +154,7 @@ export type ChatChunk =
   | { type: "action_proposal" | "action_result"; request_id: string; conv_id: string; user_message_id: string;
       message_id: string; text: string; proposal?: Record<string, unknown>; run?: Record<string, unknown>;
       proposal_message_id?: string; proposal_status?: string }
+  | { type: "route_issue"; request_id?: string; issues: Array<{ code: string; message?: string; fallback?: string }> }
   | { type: "error"; code: string; message: string };
 
 export interface GraphNode {

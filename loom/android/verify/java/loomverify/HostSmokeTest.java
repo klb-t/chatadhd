@@ -220,6 +220,31 @@ public final class HostSmokeTest {
                 require(done.contains("\"status\":\"completed\""), "the answer continues the run: " + done);
             });
 
+            failures += check("the bytes of a device step cross the dispatcher in chunks, are stored by hash and come back in chunks (P14 6)", () -> {
+                String begun = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_begin\",\"request\":{}}");
+                java.util.regex.Matcher upload = java.util.regex.Pattern.compile("\"upload_id\":\"(up_[0-9a-f]+)\"").matcher(begun);
+                require(upload.find(), "an upload id: " + begun);
+                // "AUDIO" in two chunks: "AUD" and "IO"
+                String first = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_append\",\"request\":{\"upload_id\":\""
+                    + upload.group(1) + "\",\"data_base64\":\"QVVE\"}}");
+                require(first.contains("\"size\":3"), "first chunk: " + first);
+                String second = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_append\",\"request\":{\"upload_id\":\""
+                    + upload.group(1) + "\",\"data_base64\":\"SU8=\"}}");
+                require(second.contains("\"size\":5"), "second chunk: " + second);
+                String stored = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_commit\",\"request\":{\"upload_id\":\""
+                    + upload.group(1) + "\",\"mime\":\"audio/mp4\"}}");
+                StringBuilder hex = new StringBuilder();
+                for (byte b : java.security.MessageDigest.getInstance("SHA-256").digest("AUDIO".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                    hex.append(String.format("%02x", b));
+                require(stored.contains("\"hash\":\"" + hex + "\"") && stored.contains("\"size\":5") && stored.contains("audio/mp4"), "stored by hash: " + stored);
+                String tail = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_read\",\"request\":{\"hash\":\"" + hex
+                    + "\",\"offset\":3,\"length\":100}}");
+                require(tail.contains("\"data_base64\":\"SU8=\"") && tail.contains("\"eof\":true") && tail.contains("\"length\":2"), "read back: " + tail);
+                String bytes = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client_result\",\"request\":{\"run_id\":\"ar_none\","
+                    + "\"receipt_id\":\"arr_none\",\"state\":\"ok\",\"parts\":[{\"kind\":\"audio\",\"data_base64\":\"QQ==\"}]}}");
+                require(bytes.contains("\"error\""), "a run that does not exist answers with an error, never with bytes taken: " + bytes);
+            });
+
             failures += check("nativeShutdown", () -> LoomNative.nativeShutdown());
             failures += check("stream errors settle after shutdown too", () -> {
                 terminalError("chat-after-shutdown", () -> LoomNative.nativeChat("{}", "chat-after-shutdown"), "invalid_argument");

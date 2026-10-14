@@ -64,9 +64,11 @@ export type Unsubscribe = () => void;
 
 export interface NativeUiRequestOptions { signal?: AbortSignal; }
 
-/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `confirmed` is the user's
- *  explicit yes to exactly this write (the rules of the scope still apply, a deny is never overridden). */
-export interface OverlayWriteOptions { dry_run?: boolean; confirmed?: boolean; ref?: string; context?: Record<string, unknown> }
+/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `propose` stores the write as a
+ *  proposal with its receipt and executes nothing (the answer is `actions.confirm` with that receipt); `confirmed` is the user's explicit yes to
+ *  exactly this write and is honoured only with `receipt_id` = the `plan_receipt` of a proposal of the same write - a bare `confirmed: true` is
+ *  only a proposal (the rules of the scope still apply, a deny is never overridden). */
+export interface OverlayWriteOptions { dry_run?: boolean; propose?: boolean; confirmed?: boolean; receipt_id?: string; ref?: string; context?: Record<string, unknown> }
 /** A scoped rule or value (rules.set): written only to the user's overlay profiles/action_rules.pack. */
 export interface RuleRequest extends OverlayWriteOptions {
   scope?: string; scope_id?: string; effect?: string; key?: string; value?: unknown; action?: string;
@@ -102,8 +104,11 @@ export interface ClientDeclaration {
   refused: Record<string, string>;
   [key: string]: unknown;
 }
-/** The answer of a client to the step a run is paused on (actions.client_result). Media come as data_base64 (stored in the blob store). */
-export interface ClientResultPart { kind: string; mime?: string; data_base64?: string; blob_hash?: string; text?: string; name?: string }
+/** The answer of a client to the step a run is paused on (actions.client_result). Media name a blob that was uploaded before
+ *  (`clientBlobUpload`); bytes never travel inside this JSON. */
+export interface ClientResultPart { kind: string; mime?: string; blob_hash?: string; text?: string; name?: string }
+/** A blob the kernel keeps for this user. */
+export interface ClientBlob { hash: string; size: number; mime: string }
 export interface ClientResult {
   run_id: string;
   receipt_id: string;
@@ -123,8 +128,11 @@ export interface ActionsApi {
   clientCapabilities?(request: { client_id?: string }): Promise<Record<string, unknown>>;
   /** Answer the client step a run is paused on; the run continues with the next step. */
   clientResult?(result: ClientResult): Promise<ActionRun>;
-  /** A stored blob (a recording to play): {hash, mime, size, data_base64}. */
-  clientBlob?(request: { hash: string }): Promise<{ hash: string; mime: string; size: number; data_base64: string }>;
+  /** Hands bytes to the kernel (a recording, a picture, a file): streamed to disk on the web, in bounded chunks on the native shell; the
+   *  answer names the blob by its hash. */
+  clientBlobUpload?(blob: Blob, options?: { name?: string }): Promise<ClientBlob>;
+  /** The bytes of a stored blob of this user (a recording to play). */
+  clientBlobFetch?(hash: string): Promise<Blob>;
   run(request: Record<string, unknown>): Promise<ActionRun>;
   /** Answer the question a run is paused on; the receipt must be the pending one. */
   confirm(answer: ActionAnswer): Promise<ActionRun>;

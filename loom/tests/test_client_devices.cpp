@@ -11,6 +11,7 @@
 #include "loom/client_devices.h"
 #include "loom/config.h"
 #include "loom/db.h"
+#include "loom/event_bus.h"
 #include "loom/media_providers.h"
 #include "loom/net/http.h"
 #include "loom/provenance.h"
@@ -20,6 +21,7 @@
 #include "loom/util/fs.h"
 #include "loom/util/sha256.h"
 #include "test_helpers.h"
+#include "test_receipts.h"
 
 using namespace loom;
 using loom::actions::ClientRegistry;
@@ -44,6 +46,7 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    rt->config().set("model_registry_autorefresh", "off");  // these tests count the transport's requests; fetching the model list for a price is tested in test_estimate_registry
     rt->secrets().set("groq_api_key", "gk_test");
     rt->media().refresh();
   }
@@ -78,9 +81,17 @@ struct Fixture {
     return proposal.at("chains").at(0);
   }
   std::string audio_b64() { return base64::encode("AUDIO"); }
+  // What the client does before it answers with a recording: the bytes are uploaded (here in the kernel's chunks, as the native shell does) and
+  // the answer names the blob. Nothing in client_result carries bytes.
+  std::string upload_audio(const std::string& bytes = "AUDIO") {
+    const std::string id = unwrap(rt->actions().invoke("client.blob_begin", Json::object())).at("upload_id");
+    for (std::size_t at = 0; at < bytes.size(); at += 3)
+      unwrap(rt->actions().invoke("client.blob_append", Json{{"upload_id", id}, {"data_base64", base64::encode(bytes.substr(at, 3))}}));
+    return unwrap(rt->actions().invoke("client.blob_commit", Json{{"upload_id", id}, {"mime", "audio/mp4"}})).at("hash");
+  }
   Json answer_audio(const Json& run, const std::string& state = "ok") {
     Json a{{"run_id", run.at("id")}, {"receipt_id", run.at("pending").at("receipt_id")}, {"state", state}, {"ref", "web:web-1"}};
-    if (state == "ok") a["parts"] = Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", audio_b64()}}});
+    if (state == "ok") a["parts"] = Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"blob_hash", upload_audio()}}});
     return a;
   }
   // The links that start at the node.
@@ -213,7 +224,7 @@ TEST_SUITE("client_devices") {
     CHECK(server.at("runnable") == false);
     CHECK(server.at("not_runnable").at(0).at("action") == "device.record_audio");
     // a run for a client that is not known stays refused, as before
-    auto refused = f.rt->actions().run(Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "never-declared"}, {"confirmed", true}});
+    auto refused = loom::test::run_confirmed(*f.rt, Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "never-declared"}, {"confirmed", true}});
     REQUIRE_FALSE(refused);
     CHECK(refused.error().message.find("planned") != std::string::npos);
   }
@@ -248,7 +259,11 @@ TEST_SUITE("client_devices") {
     REQUIRE_FALSE(refused);
     CHECK(refused.error().code == Errc::Conflict);
     CHECK(unwrap(f.rt->actions().status(Json{{"run_id", paused.at("id")}})).at("status") == "awaiting_client");
-    CHECK_FALSE(f.rt->blobs().has(Sha256::hex("AUDIO")));  // nothing was stored for an answer that was refused
+    // the bytes were uploaded before the answer (that is the client's business and the user's own store), but the refused answer recorded
+    // nothing of them: no graph node, no artifact, no part in the run
+    CHECK(f.rt->blobs().has(Sha256::hex("AUDIO")));
+    CHECK_FALSE(unwrap(f.rt->db().find_node("blob:" + Sha256::hex("AUDIO"), "blob")).has_value());
+    CHECK_FALSE(unwrap(f.rt->actions().status(Json{{"run_id", paused.at("id")}})).at("steps").at(0).contains("client_answer"));
 
     // the client records and answers: the run goes on with the next step (the transcription) and completes
     f.expect_asr("Remember the milk.");
@@ -311,7 +326,7 @@ TEST_SUITE("client_devices") {
     f.declare(Json{{"clipboard", "granted"}});
     const Json chain = unwrap(f.rt->actions().invoke("propose_chain", Json{{"element", "device:clipboard"}, {"target_action", "summarise"}, {"client_id", "web-1"}}));
     REQUIRE(chain.at("chains").size() >= 1);
-    const Json run = unwrap(f.rt->actions().run(Json{{"chain", chain.at("chains").at(0)}, {"element", "device:clipboard"}, {"client_id", "web-1"}, {"confirmed", true}}));
+    const Json run = unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", chain.at("chains").at(0)}, {"element", "device:clipboard"}, {"client_id", "web-1"}, {"confirmed", true}}));
     REQUIRE(run.at("status") == "awaiting_client");
     CHECK(run.at("pending").at("action") == "device.clipboard_read");
     f.expect_chat("A short version.");
@@ -327,7 +342,7 @@ TEST_SUITE("client_devices") {
     Fixture f;
     f.declare(Json{{"captures_audio", "granted"}});
     const Json plan = f.chain_to_text("web-1");
-    const Json run = unwrap(f.rt->actions().run(Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
+    const Json run = unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", plan}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
     REQUIRE(run.at("status") == "awaiting_client");
     const std::string id = run.at("id"), receipt = run.at("pending").at("receipt_id");
     f.restart();  // the declaration is gone with the process; the run is not
@@ -342,7 +357,7 @@ TEST_SUITE("client_devices") {
     // the answer after the restart continues the run: the declaration is not needed for a step that is already planned
     f.expect_asr("After the restart.");
     const Json done = unwrap(f.rt->actions().client_result(Json{{"run_id", id}, {"receipt_id", receipt}, {"state", "ok"}, {"ref", "web:web-1"},
-                                                                  {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", f.audio_b64()}}})}}));
+                                                                  {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"blob_hash", f.upload_audio()}}})}}));
     REQUIRE(done.at("status") == "completed");
     CHECK(done.at("result").at("parts").at(0).at("text") == "After the restart.");
     // a second answer finds nothing waiting
@@ -354,7 +369,7 @@ TEST_SUITE("client_devices") {
   TEST_CASE("a paused client step can be cancelled; the answer that comes later changes nothing") {
     Fixture f;
     f.declare(Json{{"captures_audio", "granted"}});
-    const Json run = unwrap(f.rt->actions().run(Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
+    const Json run = unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
     REQUIRE(run.at("status") == "awaiting_client");
     const Json cancelled = unwrap(f.rt->actions().cancel(Json{{"run_id", run.at("id")}, {"ref", "test"}}));
     CHECK(cancelled.at("status") == "cancelled");
@@ -363,14 +378,14 @@ TEST_SUITE("client_devices") {
     REQUIRE_FALSE(late);
     CHECK(late.error().code == Errc::Conflict);
     CHECK(f.transport->requests().empty());
-    // nothing of the late recording was kept
-    CHECK_FALSE(f.rt->blobs().has(Sha256::hex("AUDIO")));
+    // nothing of the late recording was recorded (the bytes sit in the user's store as uploaded; no node, no artifact)
+    CHECK_FALSE(unwrap(f.rt->db().find_node("blob:" + Sha256::hex("AUDIO"), "blob")).has_value());
   }
 
   TEST_CASE("the person may decline on the device, the device may fail: the run ends with the reason and nothing more runs") {
     Fixture f;
     f.declare(Json{{"captures_audio", "prompt"}});
-    auto start = [&] { return unwrap(f.rt->actions().run(Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}})); };
+    auto start = [&] { return unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}})); };
     Json run = start();
     const Json no = unwrap(f.rt->actions().client_result(Json{{"run_id", run.at("id")}, {"receipt_id", run.at("pending").at("receipt_id")}, {"state", "declined"}}));
     CHECK(no.at("status") == "rejected");
@@ -411,22 +426,120 @@ TEST_SUITE("client_devices") {
     const Json played = unwrap(f.rt->actions().client_result(Json{{"run_id", play.at("id")}, {"receipt_id", play.at("pending").at("receipt_id")}, {"state", "ok"}}));
     CHECK(played.at("status") == "completed");
     // the user switches the rule off (an own rule, the overlay): the capture then goes straight to the device
-    const Json off = unwrap(f.rt->actions().invoke("rules.disable", Json{{"id", "confirm:device.record_audio"}, {"confirmed", true}}));
+    const Json off = unwrap(loom::test::invoke_confirmed(*f.rt, "rules.disable", Json{{"id", "confirm:device.record_audio"}, {"confirmed", true}}));
     INFO(off.value("status", ""));
     const Json direct = unwrap(f.rt->actions().run(Json{{"action", "device.record_audio"}, {"element", "device:microphone"}, {"client_id", "web-1"}}));
     CHECK(direct.at("status") == "awaiting_client");
   }
 
-  TEST_CASE("client.blob hands a stored blob to the client; a hash that is not stored is not found") {
+  TEST_CASE("P14 6: client_result carries only the hash of a blob uploaded before; bytes in the JSON are refused; the hash must be in this user's store") {
     Fixture f;
-    const std::string hash = unwrap(f.rt->blobs().put("AUDIO", "audio/mp4")).hash;
-    const Json blob = unwrap(f.rt->actions().invoke("client.blob", Json{{"hash", hash}}));
-    CHECK(blob.at("data_base64") == f.audio_b64());
-    CHECK(blob.at("size") == 5);
-    auto missing = f.rt->actions().invoke("client.blob", Json{{"hash", std::string(64, 'a')}});
+    f.declare(Json{{"captures_audio", "granted"}});
+    const Json run = unwrap(loom::test::run_confirmed(*f.rt, Json{{"chain", f.chain_to_text("web-1")}, {"element", "device:microphone"}, {"client_id", "web-1"}, {"confirmed", true}}));
+    REQUIRE(run.at("status") == "awaiting_client");
+    const Json base{{"run_id", run.at("id")}, {"receipt_id", run.at("pending").at("receipt_id")}, {"state", "ok"}, {"ref", "web:web-1"}};
+    // bytes in the answer: refused with the way to do it, nothing is stored, the run still waits
+    Json with_bytes = base;
+    with_bytes["parts"] = Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", f.audio_b64()}}});
+    auto refused = f.rt->actions().client_result(with_bytes);
+    REQUIRE_FALSE(refused);
+    CHECK(refused.error().code == Errc::InvalidArgument);
+    CHECK(refused.error().message.find("blob_hash") != std::string::npos);
+    CHECK(unwrap(f.rt->actions().status(Json{{"run_id", run.at("id")}})).at("status") == "awaiting_client");
+    CHECK(unwrap(f.rt->db().list_nodes("blob", 10)).empty());
+    // a hash this store does not hold (another account's blob, a made-up one): not found, nothing recorded
+    Json foreign = base;
+    foreign["parts"] = Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"blob_hash", std::string(64, 'a')}}});
+    auto missing = f.rt->actions().client_result(foreign);
     REQUIRE_FALSE(missing);
     CHECK(missing.error().code == Errc::NotFound);
-    CHECK_FALSE(f.rt->actions().invoke("client.blob", Json{{"hash", "../etc/passwd"}}));
+    Json no_hash = base;
+    no_hash["parts"] = Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}}});
+    CHECK_FALSE(f.rt->actions().client_result(no_hash));
+    CHECK(unwrap(f.rt->db().list_nodes("blob", 10)).empty());
+    // the uploaded blob: accepted, with the node and the artifact that say where it came from
+    f.expect_asr("Uploaded first.");
+    Json ok = base;
+    const std::string hash = f.upload_audio();
+    ok["parts"] = Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"blob_hash", hash}, {"name", "note.m4a"}}});
+    const Json done = unwrap(f.rt->actions().client_result(ok));
+    REQUIRE(done.at("status") == "completed");
+    CHECK(done.dump().find(f.audio_b64()) == std::string::npos);
+    const Node node = *unwrap(f.rt->db().find_node("blob:" + hash, "blob"));
+    CHECK(node.metadata.at("blob_hash") == hash);
+    CHECK(node.metadata.at("mime") == "audio/mp4");
+    CHECK(node.metadata.at("size") == 5);
+    CHECK(node.metadata.at("name") == "note.m4a");
+    CHECK(node.metadata.at("produced_by").at("action") == "device.record_audio");
+    CHECK(node.metadata.at("produced_by").at("run_id") == run.at("id"));
+    CHECK(f.transport->requests().size() == 1);
+    CHECK(f.transport->requests()[0].body.find("AUDIO") != std::string::npos);  // the stored bytes are what the speech provider got
+  }
+
+  TEST_CASE("P14 6: client.blob_put takes only a file of the upload folder; the chunks build the same blob; reads come back in chunks") {
+    Fixture f;
+    const auto folder = f.td.path() / "tmp" / "uploads";
+    std::filesystem::create_directories(folder);
+    auto write = [&](const std::filesystem::path& file, const std::string& bytes) { std::ofstream(file, std::ios::binary) << bytes; };
+    // a file in the upload folder is stored (hash of its bytes, the mime as given) and the upload file is gone
+    write(folder / "up.bin", "AUDIO");
+    const Json put = unwrap(f.rt->actions().invoke("client.blob_put", Json{{"path", (folder / "up.bin").string()}, {"mime", "audio/mp4"}}));
+    CHECK(put.at("hash") == Sha256::hex("AUDIO"));
+    CHECK(put.at("size") == 5);
+    CHECK(put.at("mime") == "audio/mp4");
+    CHECK_FALSE(std::filesystem::exists(folder / "up.bin"));
+    CHECK(unwrap(f.rt->blobs().read(put.at("hash").get<std::string>())) == "AUDIO");
+    // anything else is refused and left alone: a file elsewhere, a link into the folder, the folder's parent, a missing path
+    write(f.td.path() / "secret.txt", "SECRET");
+    for (const auto& path : {f.td.path() / "secret.txt", folder / ".." / "secret.txt", folder / "missing", folder}) {
+      auto refused = f.rt->actions().invoke("client.blob_put", Json{{"path", path.string()}});
+      INFO(path.string());
+      REQUIRE_FALSE(refused);
+      CHECK(refused.error().code == Errc::InvalidArgument);
+    }
+    std::filesystem::create_symlink(f.td.path() / "secret.txt", folder / "link.bin");
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_put", Json{{"path", (folder / "link.bin").string()}}));
+    CHECK(std::filesystem::exists(f.td.path() / "secret.txt"));
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_put", Json::object()));
+    // the chunks: begin, append (any split), commit - the same blob as the file; abort drops it
+    const std::string upload = unwrap(f.rt->actions().invoke("client.blob_begin", Json::object())).at("upload_id");
+    CHECK(upload.rfind("up_", 0) == 0);
+    CHECK(unwrap(f.rt->actions().invoke("client.blob_append", Json{{"upload_id", upload}, {"data_base64", base64::encode("AUD")}})).at("size") == 3);
+    CHECK(unwrap(f.rt->actions().invoke("client.blob_append", Json{{"upload_id", upload}, {"data_base64", base64::encode("IO")}})).at("size") == 5);
+    const Json committed = unwrap(f.rt->actions().invoke("client.blob_commit", Json{{"upload_id", upload}, {"mime", "audio/mp4"}}));
+    CHECK(committed.at("hash") == put.at("hash"));
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_append", Json{{"upload_id", upload}, {"data_base64", base64::encode("X")}}));  // committed: gone
+    const std::string dropped = unwrap(f.rt->actions().invoke("client.blob_begin", Json::object())).at("upload_id");
+    CHECK(unwrap(f.rt->actions().invoke("client.blob_commit", Json{{"upload_id", dropped}, {"abort", true}})).at("aborted") == true);
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_commit", Json{{"upload_id", dropped}}));
+    // an id the kernel did not give (a path, a traversal) names nothing
+    for (const char* bad : {"../../etc/passwd", "up_zzzzzzzzzzzz", "", "up_0123456789ab/../x"})
+      CHECK_FALSE(f.rt->actions().invoke("client.blob_append", Json{{"upload_id", bad}, {"data_base64", "QQ=="}}));
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_append", Json{{"upload_id", upload}, {"data_base64", "not base64!"}}));
+    // reads: chunks with offset and length, the end says so; a hash that is not stored is not found; a path is not a hash
+    const std::string hash = put.at("hash");
+    const Json first = unwrap(f.rt->actions().invoke("client.blob_read", Json{{"hash", hash}, {"offset", 0}, {"length", 3}}));
+    CHECK(first.at("data_base64") == base64::encode("AUD"));
+    CHECK(first.at("eof") == false);
+    CHECK(first.at("size") == 5);
+    CHECK(first.at("mime") == "audio/mp4");
+    const Json last = unwrap(f.rt->actions().invoke("client.blob_read", Json{{"hash", hash}, {"offset", 3}, {"length", 100}}));
+    CHECK(last.at("data_base64") == base64::encode("IO"));
+    CHECK(last.at("length") == 2);
+    CHECK(last.at("eof") == true);
+    CHECK(unwrap(f.rt->actions().invoke("client.blob_read", Json{{"hash", hash}})).at("data_base64") == base64::encode("AUDIO"));  // preset chunk
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_read", Json{{"hash", hash}, {"offset", 6}}));
+    auto missing = f.rt->actions().invoke("client.blob_read", Json{{"hash", std::string(64, 'a')}});
+    REQUIRE_FALSE(missing);
+    CHECK(missing.error().code == Errc::NotFound);
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_read", Json{{"hash", "../etc/passwd"}}));
+    // the path of a blob is for the server that streams it
+    const Json where = unwrap(f.rt->actions().invoke("client.blob_path", Json{{"hash", hash}}));
+    CHECK(where.at("size") == 5);
+    CHECK(where.at("mime") == "audio/mp4");
+    CHECK(unwrap(fsutil::read_file(std::filesystem::path(where.at("path").get<std::string>()))) == "AUDIO");
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_path", Json{{"hash", "../etc/passwd"}}));
+    CHECK_FALSE(f.rt->actions().invoke("client.blob_path", Json{{"hash", std::string(64, 'b')}}));
   }
 }
 
@@ -519,7 +632,7 @@ TEST_SUITE("client_devices_chat") {
     f.expect_asr("We ship on Friday if the tests pass.");
     f.expect_chat("Ship Friday, tests permitting.");
     const Json done = unwrap(chat_route::client_result(*f.rt, Json{{"run_id", run_id}, {"receipt_id", meta.at("pending").at("receipt_id")}, {"state", "ok"},
-                                                                      {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", f.audio_b64()}}})}}));
+                                                                      {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"blob_hash", f.upload_audio()}}})}}));
     REQUIRE(done.at("status") == "completed");
     CHECK(done.contains("message_id"));
     const Json result = f.message(done.at("message_id"));
@@ -545,9 +658,41 @@ TEST_SUITE("client_devices_chat") {
     CHECK(f.message(yes.assistant_message_id).at("metadata").at("action_run").at("pending").is_null());
     CHECK(f.message(yes.assistant_message_id).at("metadata").at("action_run").at("status") == "cancelled");
     auto late = chat_route::client_result(*f.rt, Json{{"run_id", meta.at("run_id")}, {"receipt_id", meta.at("pending").at("receipt_id")}, {"state", "ok"},
-                                                      {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", f.audio_b64()}}})}});
+                                                      {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"blob_hash", f.upload_audio()}}})}});
     REQUIRE_FALSE(late);
     CHECK(f.transport->requests().empty());
+  }
+
+  // P14 4: the pages that show a conversation learn of a new client step from the event bus (SSE /api/events/stream, JNI subscribe), not by polling.
+  TEST_CASE("a question for the device is announced on the event bus with ids only; answering or cancelling it announces that it is closed") {
+    ChatFixture f;
+    f.declare(Json{{"captures_audio", "granted"}});
+    std::vector<Json> seen;
+    const auto sub = f.rt->bus().on(events::kActionClientStep, [&](std::string_view event, const Json& data) {
+      CHECK(event == "action:client_step");
+      seen.push_back(data);
+    });
+    (void)sub;
+    const auto proposed = f.input("Nagraj notatkę głosową i ją streść");
+    REQUIRE(proposed.handled);
+    CHECK(seen.empty());  // a proposal is not a step of the device
+    const auto yes = f.input("tak");
+    REQUIRE(yes.handled);
+    const Json meta = f.message(yes.assistant_message_id).at("metadata").at("action_run");
+    REQUIRE(meta.at("status") == "awaiting_client");
+    REQUIRE(seen.size() == 1);
+    CHECK(seen[0] == Json{{"conv_id", f.conv_id}, {"message_id", yes.assistant_message_id}, {"run_id", meta.at("run_id")}, {"state", "waiting"},
+                          {"receipt_id", meta.at("pending").at("receipt_id")}, {"step", meta.at("pending").at("step")}, {"action", "device.record_audio"}});
+    // the page that gets it reads the message and finds the question there
+    CHECK(f.message(seen[0].at("message_id")).at("metadata").at("action_run").at("pending").at("kind") == "client_step");
+    // cancelled elsewhere: the question is closed, and the event says so (the page refreshes and the block goes)
+    const Json cancelled = unwrap(chat_route::cancel(*f.rt, Json{{"run_id", meta.at("run_id")}, {"ref", "api"}}));
+    REQUIRE(cancelled.at("status") == "cancelled");
+    REQUIRE(seen.size() == 2);  // the message that says it was cancelled asks nothing: no second waiting event
+    CHECK(seen[1].at("state") == "closed");
+    CHECK(seen[1].at("status") == "cancelled");
+    CHECK(seen[1].at("message_id") == yes.assistant_message_id);
+    CHECK(seen[1].at("run_id") == meta.at("run_id"));
   }
 
   TEST_CASE("the client id rides on the chat request: a request that names a client is not an unknown chat option") {

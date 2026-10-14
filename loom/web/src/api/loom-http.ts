@@ -2,7 +2,7 @@
 // request/response endpoints, fetch + ReadableStream for SSE endpoints
 // (chat, import progress, live events). Talks to loom-server's /api/*.
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import type { ActionsApi, LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { ActionsApi, ClientBlob, LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import { createOperationsApi } from "./operations";
 import type {
   ChatChunk,
@@ -78,7 +78,23 @@ export class LoomHttpApi implements LoomApi {
     clientDeclare: (request) => this.req("POST", "/api/client/declare", request),
     clientCapabilities: (request) => this.req("POST", "/api/client/capabilities", request),
     clientResult: (result) => this.req("POST", "/api/actions/client_result", result),
-    clientBlob: (request) => this.req("POST", "/api/client/blob", request),
+    clientBlobUpload: async (blob, options) => {
+      // Multipart, streamed to disk by the server: the bytes are not base64 and not JSON, and are not read into the page's memory twice.
+      const form = new FormData();
+      form.append("mime", blob.type || "application/octet-stream");
+      form.append("file", blob, options?.name || "blob");
+      const res = await fetch("/api/client/blob/upload", { method: "POST", headers: this.headers(), body: form });
+      if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT));
+      const parsed = (await res.json().catch(() => ({}))) as unknown;
+      if (!res.ok || isLoomError(parsed)) throw new HttpError(res.status, isLoomError(parsed) ? parsed.error.message : `HTTP ${res.status}`);
+      return parsed as ClientBlob;
+    },
+    clientBlobFetch: async (hash) => {
+      const res = await fetch(`/api/client/blob/${encodeURIComponent(hash)}/raw`, { headers: this.headers() });
+      if (res.status === 401 && typeof window !== "undefined") window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT));
+      if (!res.ok) throw new HttpError(res.status, `HTTP ${res.status}`);
+      return res.blob();
+    },
     run: (request) => this.req("POST", "/api/actions/run", request),
     confirm: (answer) => this.req("POST", "/api/actions/confirm", answer),
     cancel: (request) => this.req("POST", "/api/actions/cancel", request),

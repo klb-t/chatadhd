@@ -524,7 +524,10 @@ other apps can actually read on a given Android version, and the layout of
   `DevicePermissionPolicy`, checked on the host by `DevicePermissionTest`), `onShowFileChooser` for the file chooser, and
   `LoomBridge.notify` / `notificationState` / `requestNotifications` for notifications (the WebView has no Notification
   API; Android 13 asks at runtime). The declaration and `client_result` path through the real JNI glue is checked on the
-  host by `HostSmokeTest`. What is not checked: the Kotlin (no SDK here), the system permission dialogs, the recording itself
+  host by `HostSmokeTest`. Recordings, pictures and files never travel inside `client_result` (P14 6): the page hands the bytes
+  to the kernel in bounded chunks (`client.blob_begin` / `append` / `commit` through the generic `invoke`, so the shell needs no
+  new bridge method), the answer names the blob by its hash, and a stored blob is read back with `client.blob_read` chunks; the
+  chunking, the hash and the read-back are in `HostSmokeTest` too. What is not checked: the Kotlin (no SDK here), the system permission dialogs, the recording itself
   on a phone. In server mode the bridge is not injected, so a remote page gets the WebView's own devices but no shell
   notifications.
 - **`assets/web/index.html` is a placeholder.** It only smoke-tests

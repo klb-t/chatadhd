@@ -290,7 +290,12 @@ test('an accepted definition shows what it wrote and can be taken back; the stat
   assert.equal(a.undoCall(view), 'actionsRemove');
   assert.equal(a.undoCall({ ...view, kind: 'define_sequence' }), 'actionsRemove', 'a repeated chain is an action too');
   assert.equal(a.undoCall({ ...view, kind: 'define_group' }), 'groupsRemove');
-  assert.deepEqual(a.undoRequest(view), { id: 'rozpisz', confirmed: true, ref: 'web' });
+  assert.deepEqual(a.undoRequest(view), { id: 'rozpisz', propose: true, ref: 'web' }, 'first the removal is proposed: nothing is removed, the kernel gives the receipt');
+  const proposed = { id: 'ar_9', status: 'proposed', pending: { kind: 'proposal', receipt_id: 'arr_abc', plan_receipt: 'arp_def' } };
+  assert.deepEqual(a.undoConfirmation(proposed), { run_id: 'ar_9', approved: true, receipt_id: 'arr_abc', ref: 'web' }, 'the click is the yes of the proposal it was shown');
+  assert.equal(a.undoConfirmation({ id: 'ar_9', status: 'denied', pending: null }), null, 'a denial is not answered');
+  assert.equal(a.undoConfirmation({ id: 'ar_9', status: 'proposed', pending: { kind: 'proposal' } }), null, 'no receipt, no yes');
+  assert.equal(a.undoConfirmation({ status: 'proposed', pending: { receipt_id: 'arr_abc' } }), null, 'no run to answer');
   // taken back: by the flag or by the proposal's own state
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'executed', written: { ...written, undone: true } } }).undone, true);
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written } }).undone, true);
@@ -340,7 +345,7 @@ test('a rule written from the conversation is shown as written and taken back by
   assert.equal(view.kind, 'rule');
   assert.deepEqual(JSON.parse(view.entry), rule, 'the rule is shown as it stands in the overlay');
   assert.equal(a.undoCall(view), 'rulesDisable', 'a rule is switched off, not removed');
-  assert.deepEqual(a.undoRequest(view), { id: rule.id, confirmed: true, ref: 'web' }, 'the click is the yes to exactly this switch-off');
+  assert.deepEqual(a.undoRequest(view), { id: rule.id, propose: true, ref: 'web' }, 'the switch-off is proposed first, the click then answers it with its receipt');
   assert.ok(en.written_rule && pl.written_rule && en.undone_rule && pl.undone_rule && en.status_cancelled && pl.status_cancelled);
   const texts = a.writtenTexts(feature, view);
   assert.equal(texts.written, en.written_rule.replace('{{overlay}}', 'profiles/action_rules.pack').replace('{{id}}', rule.id));

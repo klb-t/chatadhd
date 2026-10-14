@@ -2758,12 +2758,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "The caller accepts the confirmations the rules ask for in this plan (x10 usage confirmations are never covered)",
-              "pl": "Wywołujący akceptuje potwierdzenia wymagane przez zasady w tym planie (potwierdzenia ×10 nigdy nie są objęte)"
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           },
           {
             "name": "ref",
@@ -3265,7 +3276,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Answer a step the client carries out",
-        "description": "Answers the client_step a run is paused on (a device action the client declared: record, take a picture, pick a file, read the clipboard ...): the receipt must be the pending one. state ok brings the produced parts - media as data_base64 (stored in the blob store, with a graph node, like any produced media), text as text - and the run continues with the next step (record_audio -> transcribe -> summarise); failed and unavailable fail the step with the reason; declined (the person did not allow it) ends the run as rejected. A client that never answers leaves the run paused, not failed; actions.cancel stops it.",
+        "description": "Answers the client_step a run is paused on (a device action the client declared: record, take a picture, pick a file, read the clipboard ...): the receipt must be the pending one. state ok brings the produced parts - media as the blob_hash of bytes uploaded before (POST /api/client/blob/upload; checked against the blob store of this user, with a graph node and an artifact, like any produced media), text as text - and the run continues with the next step (record_audio -> transcribe -> summarise); failed and unavailable fail the step with the reason; declined (the person did not allow it) ends the run as rejected. A client that never answers leaves the run paused, not failed; actions.cancel stops it.",
         "labels": {
           "pl": "Odpowiedz na krok wykonywany przez klienta"
         },
@@ -3333,8 +3344,8 @@
             "type": "array",
             "required": false,
             "description": {
-              "en": "What the step produced: [{kind: audio | image | video | file_ref | text, mime?, data_base64? | blob_hash? | text?, name?}].",
-              "pl": "Co krok wytworzył: [{kind: audio | image | video | file_ref | text, mime?, data_base64? | blob_hash? | text?, name?}]."
+              "en": "What the step produced: [{kind: audio | image | video | file_ref | text, mime?, blob_hash? | text?, name?}]. Media name a blob uploaded before; bytes are never carried in this JSON (data_base64 is refused).",
+              "pl": "Co krok wytworzył: [{kind: audio | image | video | file_ref | text, mime?, blob_hash? | text?, name?}]. Media wskazują blob wgrany wcześniej; bajty nigdy nie idą w tym JSON-ie (data_base64 jest odrzucane)."
             },
             "has_default": false,
             "edit": "json"
@@ -3376,58 +3387,6 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/client_result"
-        }
-      },
-      "client.blob": {
-        "id": "client.blob",
-        "kind": "atomic",
-        "status": "implemented",
-        "title": "Read a stored blob for the client",
-        "description": "The bytes of a blob in the blob store as {hash, mime, size, data_base64}: how a client fetches what a device step has to play or show (device.play_audio takes the hash of a recording).",
-        "labels": {
-          "pl": "Odczytaj zapisany blob dla klienta"
-        },
-        "inputs": [
-          "json"
-        ],
-        "outputs": [
-          "json"
-        ],
-        "requires": [
-          "application"
-        ],
-        "produces": [],
-        "content_op": "none",
-        "form_op": "none",
-        "cost": 0.0,
-        "confidence": 1.0,
-        "effects": {
-          "reads_only": true,
-          "writes": false,
-          "sends_off_device": false,
-          "costs_money": false,
-          "irreversible": false,
-          "touches_private_data": true
-        },
-        "consumer": "loom/src/actions/runner.cpp",
-        "port": "actions",
-        "action": "client.blob",
-        "params": [
-          {
-            "name": "hash",
-            "type": "string",
-            "required": true,
-            "description": {
-              "en": "The blob hash (64 hex).",
-              "pl": "Skrót bloba (64 znaki hex)."
-            },
-            "has_default": false,
-            "edit": "free_text"
-          }
-        ],
-        "http": {
-          "verb": "POST",
-          "path": "/api/client/blob"
         }
       },
       "rules.set": {
@@ -3604,12 +3563,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -3692,12 +3662,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -3932,12 +3913,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -4008,12 +4000,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -4128,12 +4131,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {
@@ -4204,12 +4218,23 @@
             "type": "boolean",
             "required": false,
             "description": {
-              "en": "Through loom_invoke / HTTP: accept the confirmation the rules ask for up front.",
-              "pl": "Przez loom_invoke / HTTP: przyjmij z góry potwierdzenie, o które proszą reguły."
+              "en": "The caller's yes to the confirmations the rules ask for in this plan - honoured only with receipt_id (the plan_receipt of a preview or a proposal of exactly this plan); a bare true returns the proposal instead of running. Denials and the x10 usage confirmation are never covered.",
+              "pl": "Tak wywołującego na potwierdzenia, o które proszą reguły w tym planie - uwzględniane tylko z receipt_id (plan_receipt podglądu lub propozycji dokładnie tego planu); samo true zwraca propozycję zamiast wykonać. Odmowy i potwierdzenie ×10 nigdy nie są objęte."
             },
             "has_default": true,
             "edit": "toggle",
             "default": false
+          },
+          {
+            "name": "receipt_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With confirmed: the plan_receipt that actions.preview (or a proposal, propose:true) gave for exactly this plan (action, element, args, scope).",
+              "pl": "Razem z confirmed: plan_receipt, który actions.preview (albo propozycja, propose:true) zwróciło dla dokładnie tego planu (akcja, element, argumenty, zakres)."
+            },
+            "has_default": false,
+            "edit": "free_text"
           }
         ],
         "http": {

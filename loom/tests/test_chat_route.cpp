@@ -39,6 +39,7 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    rt->config().set("model_registry_autorefresh", "off");  // these tests count the transport's requests; fetching the model list for a price is tested in test_estimate_registry
     conv_id = unwrap(rt->db().create_conv("Planning")).id;
     add("user", "We should ship on Friday.");
     add("assistant", "Agreed, Friday works if the tests pass.");

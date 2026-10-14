@@ -53,6 +53,7 @@ struct Data {
   std::filesystem::path root;
   Json results = Json::object();  // runtime profile action_results (link names, ...)
   std::string client_id;          // the client that asks (client_devices.h): the device actions it declared are runnable in what it is shown
+  Json estimate_reasons = Json::object();  // profile action_run, estimate.reasons: why money is unknown, by code, per language
 };
 
 Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()) {
@@ -68,7 +69,11 @@ Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()
       for (const auto& f : *list) keys.insert(json::get_string(f, "key"));
   Json results = Json::object();
   if (auto p = RuntimeProfile::load("action_results", root)) results = p->values();
-  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results), client_id};
+  Json reasons = Json::object();
+  if (auto p = RuntimeProfile::load("action_run", root))
+    if (const Json* est = json::find(p->values(), "estimate"))
+      if (const Json* r = json::find(*est, "reasons"); r && r->is_object()) reasons = *r;
+  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results), client_id, std::move(reasons)};
 }
 
 ElementSources sources_of(Runtime& rt) { return ElementSources{&rt.db(), &rt.blobs(), rt.paths().root}; }
@@ -184,6 +189,19 @@ std::string localized(const Json& v, const std::string& lang) {
       if (const Json* s = json::find(v, k); s && s->is_string()) return s->get<std::string>();
   }
   return std::string();
+}
+
+// Why the money of an estimate is unknown, in the language of the proposal: the estimate returns a code (and parameters), the texts per
+// language are data (action_run: estimate.reasons). A code the data does not know keeps the estimate's own (English) words.
+void localize_money_reason(const Data& d, Json& money, const std::string& lang) {
+  if (!money.is_object()) return;
+  const std::string code = json::get_string(money, "reason_code");
+  const Json* texts = code.empty() ? nullptr : json::find(d.estimate_reasons, code);
+  if (!texts) return;
+  std::string text = localized(*texts, lang);
+  if (text.empty()) return;
+  if (auto rendered = render_profile_template(text, money.value("reason_params", Json::object()))) text = *rendered;
+  money["reason"] = text;
 }
 
 // ── candidates ──────────────────────────────────────────────────────
@@ -1062,8 +1080,10 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     cands.erase(std::remove_if(cands.begin(), cands.end(), [](const Cand& x) { return x.source == "pattern" && x.action == "settings.set"; }), cands.end());
     for (auto& r : rule_cands) cands.push_back(std::move(r));
   }
-  // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55).
-  if (cands.empty() && method != "model") {
+  // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55). This is a local
+  // check of the words, whatever the method: a model that called the sentence a message, or whose call failed, does not take the offer away
+  // (decision P14: the shape check runs after the model's verdict; the model's schema is unchanged).
+  if (cands.empty()) {
     const auto ref = find_reference(d, text, word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))));
     if (!ref.is_null()) {
       if (auto element = resolve_ref(rt, d, ref, conv)) {
@@ -1126,6 +1146,23 @@ Result<Json> route(Runtime& rt, const Json& request) {
 
 namespace {
 
+// A message that shows a question of a run paused on the client's step is a new step for every page that shows the conversation: the
+// event bus says so (events::kActionClientStep), with ids only. `state` "closed": the question was answered or cancelled.
+void announce_client_step(Runtime& rt, const std::string& conv_id, const std::string& message_id, const Json& meta, const std::string& state) {
+  const Json* run = meta.is_object() ? json::find(meta, "action_run") : nullptr;
+  if (!run || !run->is_object()) return;
+  const Json pending = run->value("pending", Json(nullptr));
+  if (state == "waiting" && (!pending.is_object() || json::get_string(pending, "kind") != "client_step")) return;
+  Json payload{{"conv_id", conv_id}, {"message_id", message_id}, {"run_id", json::get_string(*run, "run_id")}, {"state", state}};
+  if (pending.is_object()) {
+    payload["receipt_id"] = pending.value("receipt_id", Json(nullptr));
+    payload["step"] = pending.value("step", Json(nullptr));
+    payload["action"] = pending.value("action", Json(nullptr));
+  }
+  if (state == "closed") payload["status"] = json::get_string(*run, "status");
+  rt.bus().emit(events::kActionClientStep, payload);
+}
+
 Result<std::string> add_message(Runtime& rt, const std::string& conv_id, const std::string& role, const std::string& text, Json metadata,
                                 const std::string& model = std::string()) {
   NewMessage nm;
@@ -1142,6 +1179,7 @@ Result<std::string> add_message(Runtime& rt, const std::string& conv_id, const s
     MsgPatch patch;
     patch.semantic_status = "done";
     LOOM_TRY(rt.db().update_msg(id, patch));
+    announce_client_step(rt, conv_id, id, nm.metadata, "waiting");
   }
   return id;
 }
@@ -1227,7 +1265,8 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
     const Json estimate = cmd.value("estimate", Json(nullptr));
     // Money is a range where the model registry knows the price, else unknown with the reason: never a zero.
     Json money = estimate.is_object() ? estimate.value("money", Json(nullptr)) : Json(nullptr);
-    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}};
+    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}, {"reason_code", "no_estimate"}};
+    localize_money_reason(d, money, lang);
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
                      {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
                      {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
@@ -1241,7 +1280,6 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
   if (cmd.contains("client_steps") && !cmd["client_steps"].empty()) p["client_steps"] = cmd["client_steps"];
   p["runnable"] = cmd.value("runnable", false) && cmd.value("feasible", false);
   if (cmd.contains("candidates")) p["alternatives"] = cmd["candidates"];
-  (void)d;
   return p;
 }
 
@@ -1656,6 +1694,7 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
     patch.text = assistant_text;
     patch.metadata = meta;
     LOOM_TRY(rt.db().update_msg(early_id, patch));
+    announce_client_step(rt, conv_id, early_id, meta, "waiting");
   }
   if (meta.contains("action_run")) {
     if (auto linked = link_presented(rt, d, reply.assistant_id, meta["action_run"].value("produced", Json(nullptr)), meta["action_run"].value("run_id", "")); !linked)
@@ -1984,6 +2023,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   if (const Json* c = json::find(request, "route_usage_confirmation")) route_request["route_usage_confirmation"] = *c;
   LOOM_TRY_ASSIGN(Json routed, route_with(rt, d, route_request));
   const std::string kind = routed.value("kind", "message");
+  none.issues = routed.value("issues", Json::array());
   if (kind == "message") return none;
   if (kind == "pending") {
     // The re-send after the user's answer goes to this conversation, as a held chat send does.
@@ -1997,6 +2037,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     out.conv_id = conv_id;
     out.chunk = Json{{"type", "usage_pending"}, {"conv_id", conv_id}, {"user_message_id", ""}, {"usage_pending", routed["usage_pending"]}};
     out.result = Json{{"conv_id", conv_id}, {"usage_pending", routed["usage_pending"]}, {"routed", Json{{"kind", "pending"}}}};
+    out.issues = none.issues;
     return out;
   }
 
@@ -2016,7 +2057,9 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     if (Json follow = offer_growth(rt, d, conv_id, user_id, cmd.value("action", ""), lang); !follow.is_null()) payload["follow_up"] = follow;
   }
   title_first_exchange(rt, conv_id, text);
-  return finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+  Outcome handled = finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+  handled.issues = none.issues;
+  return handled;
 }
 
 void note_removed(Runtime& rt, const Json& origin) {
@@ -2037,6 +2080,10 @@ void note_removed(Runtime& rt, const Json& origin) {
   }
 }
 
+namespace {
+Result<Json> after_pause(Runtime& rt, Json run);  // below, with the client step's answer
+}
+
 Result<Json> confirm(Runtime& rt, const Json& request) {
   const std::string run_id = json::get_string(request, "run_id");
   if (run_id.empty()) return rt.actions().confirm(request);
@@ -2052,7 +2099,14 @@ Result<Json> confirm(Runtime& rt, const Json& request) {
         json::get_string(it->metadata["action_proposal"], "run_id") == run_id && json::get_string(it->metadata["action_proposal"], "status") == "pending")
       waiting = &*it;
   auto loaded = load_data(rt);
-  if (!waiting || !loaded) return rt.actions().confirm(request);
+  if (!waiting || !loaded) {
+    // No proposal waits for this run, but the run may be paused on a question the conversation showed (the usage guard's x10 hold, a rule's
+    // confirmation): the answer ends the pause and the conversation hears how it went, as it does after the typed "yes".
+    const std::string before = status ? json::get_string(*status, "status") : std::string();
+    auto answered = rt.actions().confirm(request);
+    if (!answered || (before != "awaiting_usage" && before != "awaiting_confirmation")) return answered;
+    return after_pause(rt, std::move(*answered));
+  }
   Data d = std::move(*loaded);
   const bool yes = json::get_bool(request, "approved", false);
   (void)rt.chat().load_conv(conv_id);
@@ -2082,11 +2136,16 @@ void close_questions(Runtime& rt, const std::string& conv_id, const Json& run, c
   for (const auto& m : *msgs) {
     if (m.role != "assistant" || !m.metadata.is_object()) continue;
     if (m.metadata.contains("action_run") && json::get_string(m.metadata["action_run"], "run_id") == run_id &&
-        m.metadata["action_run"].value("pending", Json(nullptr)).is_object())
+        m.metadata["action_run"].value("pending", Json(nullptr)).is_object()) {
+      const bool was_client_step = json::get_string(m.metadata["action_run"]["pending"], "kind") == "client_step";
+      Json closed;
       (void)set_metadata(rt, m.id, [&](Json& meta) {
         meta["action_run"]["pending"] = nullptr;
         meta["action_run"]["status"] = status;
+        closed = meta;
       });
+      if (was_client_step) announce_client_step(rt, conv_id, m.id, closed, "closed");
+    }
     if (m.metadata.contains("action_proposal") && json::get_string(m.metadata["action_proposal"], "run_id") == run_id &&
         json::get_string(m.metadata["action_proposal"], "status") == "waiting" && !proposal_status.empty())
       (void)set_metadata(rt, m.id, [&](Json& meta) { meta["action_proposal"]["status"] = proposal_status; });

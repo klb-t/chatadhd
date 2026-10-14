@@ -166,6 +166,27 @@
       }
     },
     {
+      "id": "presentation.route_issue/v1",
+      "key": "presentation.route_issue",
+      "area": "presentation/route_issue",
+      "revision": 1,
+      "label": "Quiet note when routing a chat input had a problem it worked around (the model route failed and the local rules decided); texts only, nothing is blocked and nothing is lost",
+      "value": {
+        "schema": "loom.presentation_feature/1",
+        "feature": "route_issue",
+        "locales": {
+          "en": {
+            "model_route_failed": "The model could not route this message ({{message}}); the local rules read it instead. Nothing was lost.",
+            "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
+          },
+          "pl": {
+            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+            "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
+          }
+        }
+      }
+    },
+    {
       "id": "presentation.action_proposal/v1",
       "key": "presentation.action_proposal",
       "area": "presentation/action_proposal",

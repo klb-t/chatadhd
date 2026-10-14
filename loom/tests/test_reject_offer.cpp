@@ -11,6 +11,7 @@
 #include "loom/runtime.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
+#include "test_receipts.h"
 
 using namespace loom;
 using loom::test::unwrap;
@@ -37,6 +38,7 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    rt->config().set("model_registry_autorefresh", "off");  // these tests count the transport's requests; fetching the model list for a price is tested in test_estimate_registry
     rt->config().set("system_prompt", "Golden system prompt.");
     conv_id = unwrap(rt->db().create_conv("Planning")).id;
     add("user", "We should ship on Friday.");
@@ -350,7 +352,7 @@ TEST_SUITE("reject_offer") {
     CHECK(written.at("entry").at("origin").at("conv_id") == f.conv_id);
     CHECK_FALSE(written.contains("undone"));
     // take it back through the transport call (a gated action: the explicit confirmation of the click)
-    const Json removed = unwrap(f.rt->actions().invoke("actions.remove", Json{{"id", "rozpisz"}, {"confirmed", true}, {"ref", "web"}}));
+    const Json removed = unwrap(loom::test::invoke_confirmed(*f.rt, "actions.remove", Json{{"id", "rozpisz"}, {"confirmed", true}, {"ref", "web"}}));
     CHECK(removed.at("status") == "completed");
     CHECK(f.proposal(asked.assistant_message_id).at("status") == "undone");
     CHECK(f.proposal(asked.assistant_message_id).at("written").at("undone") == true);

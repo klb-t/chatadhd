@@ -44,6 +44,10 @@ inline constexpr std::string_view kSemanticProgress = "semantic:progress";
 inline constexpr std::string_view kTaskChanged = "task:changed";    // {id, kind, status, ...}
 inline constexpr std::string_view kTaskProgress = "task:progress";  // {id, current, total, status}
 inline constexpr std::string_view kImportProgress = "import:progress";
+// A run of a conversation is paused on a step the client carries out (its question is a message of that conversation), or the question was
+// answered / closed: {conv_id, message_id, run_id, state: "waiting" | "closed", receipt_id?, step?, action?, status?}. No content, only ids:
+// a page that shows the conversation refreshes its messages (no polling).
+inline constexpr std::string_view kActionClientStep = "action:client_step";
 inline constexpr std::string_view kWildcard = "*";
 }  // namespace events
 

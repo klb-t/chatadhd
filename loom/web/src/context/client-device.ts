@@ -1,6 +1,6 @@
-import type { BlobLoader, CapabilityTable, DeviceHost, PendingCapabilities, PendingOutcome, PendingPart, PendingRecording, PendingRequest, PendingText, StepOutcome, StreamLike } from "./device-host";
+import type { BlobLoader, BlobUploader, CapabilityTable, DeviceHost, PendingCapabilities, PendingOutcome, PendingPart, PendingRecording, PendingRequest, PendingText, StepOutcome, StreamLike } from "./device-host";
 
-export type { BlobLoader, DeviceHost, Recording, StepOutcome, StreamLike, RecorderLike } from "./device-host";
+export type { BlobLoader, BlobUploader, DeviceHost, Recording, StepOutcome, StreamLike, RecorderLike } from "./device-host";
 
 /** Presentation feature holding the texts (`presentation.client_step`). */
 export const CLIENT_STEP_FEATURE = "client_step";
@@ -119,16 +119,6 @@ export function stepText(spec: ClientStepSpec): string {
   return parts.join("\n\n");
 }
 
-/** A binary string of the bytes in slices, so a long recording does not overflow the argument limit of the call. */
-const SLICE = 0x8000;
-
-export async function toBase64(blob: Blob): PendingText {
-  const bytes = new Uint8Array(await blob.arrayBuffer());
-  let binary = "";
-  for (let at = 0; bytes.length > at; at += SLICE) binary += String.fromCharCode(...bytes.subarray(at, at + SLICE));
-  return btoa(binary);
-}
-
 function failure(error: unknown): DeviceError {
   if (error instanceof DeviceError) return error;
   const name = error instanceof Error ? error.name : "";
@@ -139,7 +129,7 @@ function failure(error: unknown): DeviceError {
 }
 
 /** Opens the microphone and starts recording. A refused or missing microphone is a DeviceError (declined / unavailable). */
-export async function startRecording(host: DeviceHost): PendingRecording {
+export async function startRecording(host: DeviceHost, upload: BlobUploader): PendingRecording {
   if (!host.mediaDevices || !host.MediaRecorder) throw new DeviceError("unavailable", "no microphone API");
   let stream: StreamLike;
   try {
@@ -173,7 +163,14 @@ export async function startRecording(host: DeviceHost): PendingRecording {
       const mime = recorder.mimeType || (chunks[0] ? chunks[0].type : "") || "audio/webm";
       const sound = new Blob(chunks, { type: mime });
       if (sound.size === 0) return { state: "failed", error: { message: "nothing was recorded" } };
-      return { state: "ok", parts: [{ kind: "audio", mime, data_base64: await toBase64(sound) }] };
+      // The recording goes to the kernel as bytes first; the answer names it by hash (nothing is base64 in the answer).
+      try {
+        const stored = await upload(sound, "recording");
+        return { state: "ok", parts: [{ kind: "audio", mime, blob_hash: stored.hash }] };
+      } catch (error) {
+        const problem = failure(error);
+        return { state: problem.state, error: { message: problem.message } };
+      }
     },
     abort() {
       if (finished) return;
@@ -192,10 +189,11 @@ function mediaKind(mime: string): string {
   return "file_ref";
 }
 
-async function partOf(blob: Blob, name: string): PendingPart {
+async function partOf(blob: Blob, name: string, upload: BlobUploader): PendingPart {
   const mime = blob.type || "application/octet-stream";
   if (mime.startsWith("text/")) return { kind: "text", text: await blob.text(), name };
-  return { kind: mediaKind(mime), mime, data_base64: await toBase64(blob), name };
+  const stored = await upload(blob, name);
+  return { kind: mediaKind(mime), mime, blob_hash: stored.hash, name };
 }
 
 function audioHash(spec: ClientStepSpec): string {
@@ -206,20 +204,20 @@ function audioHash(spec: ClientStepSpec): string {
 }
 
 /** Carries out a step that is a single act (everything but the recording, which has two: start and stop). */
-export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: BlobLoader): PendingOutcome {
+export async function runStep(host: DeviceHost, spec: ClientStepSpec, load: BlobLoader, upload: BlobUploader): PendingOutcome {
   try {
     switch (stepKind(spec)) {
       case "photo": {
         const taken = host.takePicture ? await host.takePicture() : null;
         const picture = taken ?? (host.pickFile ? await host.pickFile("image/*", "environment") : null);
         if (!picture) return { state: "declined", error: { message: "no picture was taken" } };
-        return { state: "ok", parts: [await partOf(picture, "")] };
+        return { state: "ok", parts: [await partOf(picture, "", upload)] };
       }
       case "file": {
         if (!host.pickFile) throw new DeviceError("unavailable", "no file chooser");
         const chosen = await host.pickFile(text(spec.with ? spec.with.accept : ""), "");
         if (!chosen) return { state: "declined", error: { message: "no file was chosen" } };
-        return { state: "ok", parts: [await partOf(chosen, chosen.name)] };
+        return { state: "ok", parts: [await partOf(chosen, chosen.name, upload)] };
       }
       case "read_clipboard": {
         if (!host.clipboard || !host.clipboard.readText) throw new DeviceError("unavailable", "no clipboard");

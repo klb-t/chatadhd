@@ -263,6 +263,14 @@
         "description": "Whether the catalogue of actions grows from your conversations (R55): propose (preset: a command no action understands, a sequence you keep repeating, or an action used on several classes is offered as a new action or group, never made silently) or off. Accepting writes only your own overlays (profiles/actions.pack, profiles/intent_routing.pack, profiles/graph_entry.pack). Runtime profile intent_routing (emergent). Default: propose."
       },
       {
+        "key": "model_registry_autorefresh",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether an estimate may fetch the provider's public model list when it needs a price and the model registry (models.json) is empty, which it is on a fresh data directory until the list is refreshed: on_demand (preset: the list is fetched once, no user data is sent; if the fetch fails the price stays unknown with the reason, and the next automatic attempt waits the profile's retry_after_seconds) or off (the registry is filled only by refreshing the model list yourself; an estimate without a price says so). Runtime profile action_run (estimate.registry_refresh). A name that is not a preset means on_demand. Default: on_demand."
+      },
+      {
         "key": "image_model",
         "scope": "config",
         "group": "chat",
