@@ -1,5 +1,5 @@
 // The types of the devices of this client that need generics - kept apart so the logic modules stay free of them (lexically scannable).
-import type { ClientDeclaration, ClientDeclareRequest, ClientResultPart } from "../api/loom-api";
+import type { ClientDeclareRequest, ClientResultPart } from "../api/loom-api";
 
 /** What this client did with a step, in the kernel's words (state, the parts it produced, why it could not). */
 export interface StepOutcome {
@@ -48,8 +48,6 @@ export interface Recording {
 /** Reads a stored recording for `device.play_audio`: from the argument `audio` (a blob hash) or the audio that flowed in. */
 export interface BlobLoader { (hash: string): Promise<Blob> }
 
-/** The declaration in flight (client-session.ts keeps one at a time). */
-export type PendingDeclaration = Promise<ClientDeclaration | null>;
 
 /** Promises of the results of the logic module, named so its signatures need no generics. */
 export type PendingOutcome = Promise<StepOutcome>;

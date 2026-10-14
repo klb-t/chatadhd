@@ -102,22 +102,10 @@ try {
   await page.click('[data-testid="new-conversation"]');
   await page.waitForSelector('[data-testid="conv-item"].active');
 
-  await check("the page declares the devices it can drive; the kernel keeps the declaration for this client only", async () => {
-    const known = await until(async () => (await api("POST", "/api/client/capabilities", {})).clients?.[0], "the declaration of the page");
-    const declared = await api("POST", "/api/client/capabilities", { client_id: known.client_id });
-    assert.match(declared.client_id, /^web-[0-9a-f]{12}$/);
-    assert.equal(declared.client.kind, "web");
-    assert.equal(declared.capabilities.captures_audio.runnable, true, "the fake microphone is there");
-    assert.equal(declared.capabilities.captures_audio.via, "MediaRecorder");
-    assert.ok(declared.runnable_actions.includes("device.record_audio"));
-    assert.ok(declared.runnable_actions.includes("device.pick_file"));
-    // as another client (or the server side) the recording is still planned, with its reason
-    const server_side = await api("POST", "/api/actions/for", { element: "device:microphone" });
-    const planned = server_side.actions.find(row => row.action === "device.record_audio");
-    assert.equal(planned.callable, false);
-    assert.ok(planned.planned_reason.en);
-    const mine = await api("POST", "/api/actions/for", { element: "device:microphone", client_id: declared.client_id });
-    assert.equal(mine.actions.find(row => row.action === "device.record_audio").runs_on, "client");
+  await check("opening the page declares nothing: viewing is not a reason to tell the kernel about devices", async () => {
+    await page.waitForTimeout(1500);  // longer than a background timer of the old design would have waited
+    const clients = (await api("POST", "/api/client/capabilities", {})).clients;
+    assert.deepEqual(clients, [], "no client is known before the person starts something");
   });
 
   await check("a chat sentence with two actions is proposed as record -> transcribe -> summarise, with what runs on the device said", async () => {
@@ -132,6 +120,23 @@ try {
     assert.match(await proposal.getByTestId("chat-action-proposal-plan").innerText(), /Nagraj dźwięk.*Zapisz nagranie jako tekst.*streść/is);
     assert.equal(speech.length, 0, "nothing is sent while the person has not said yes");
     assert.equal(chats.length, 0);
+    // the declaration was made right before that send, for this client only
+    const known = (await api("POST", "/api/client/capabilities", {})).clients;
+    assert.equal(known.length, 1);
+    const declared = await api("POST", "/api/client/capabilities", { client_id: known[0].client_id });
+    assert.match(declared.client_id, /^web-[0-9a-f]{12}$/);
+    assert.equal(declared.client.kind, "web");
+    assert.equal(declared.capabilities.captures_audio.runnable, true, "the fake microphone is there");
+    assert.equal(declared.capabilities.captures_audio.via, "MediaRecorder");
+    assert.ok(declared.runnable_actions.includes("device.record_audio"));
+    assert.ok(declared.runnable_actions.includes("device.pick_file"));
+    // as another client (or the server side) the recording is still planned, with its reason
+    const server_side = await api("POST", "/api/actions/for", { element: "device:microphone" });
+    const planned = server_side.actions.find(row => row.action === "device.record_audio");
+    assert.equal(planned.callable, false);
+    assert.ok(planned.planned_reason.en);
+    const mine = await api("POST", "/api/actions/for", { element: "device:microphone", client_id: declared.client_id });
+    assert.equal(mine.actions.find(row => row.action === "device.record_audio").runs_on, "client");
   });
 
   await check("after yes the run waits for this device; the person records, stops, and the answer goes to the kernel", async () => {

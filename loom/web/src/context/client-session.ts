@@ -1,12 +1,9 @@
 import type { ActionsApi, ClientDeclaration } from "../api/loom-api";
 import { declaration } from "./client-device";
-import type { DeviceHost, PendingDeclaration } from "./device-host";
+import type { DeviceHost, PendingText } from "./device-host";
 
 /** Where the id of this client is kept so a reload of the tab is the same client for the kernel. */
 const ID_KEY = "loom.client_id";
-/** How long a declaration is trusted before it is made again (the permission state of a device can change under the page). */
-const FRESH_MS = 30000;
-
 interface KeyValueStore { getItem(key: string): string | null; setItem(key: string, value: string): void }
 
 function randomId(): string {
@@ -28,50 +25,77 @@ export function clientIdentity(store?: KeyValueStore): string {
   return made;
 }
 
-/** The declaration of this client to the kernel: what the browser can do now, repeated when it may have changed. A transport without
- *  client support (an older host) leaves the id empty and nothing is declared. */
+/** The declaration of this client to the kernel, made lazily: only when something the person started may need the devices (the first
+ *  chat send of the page), and again only when what the browser can do has changed since (the payload differs - a permission was
+ *  given or taken away) or the kernel's validity of the last one has run out. Never in the background: opening the page, a profile,
+ *  the graph or the settings sends nothing. A transport without client support (an older host) leaves the id empty. */
 export class ClientSession {
   private readonly actions: ActionsApi | undefined;
   private readonly host: DeviceHost;
   private readonly kind: string;
   private readonly label: string;
   private readonly now: () => number;
-  private readonly freshMs: number;
-  private declaredAt = 0;
-  private inFlight: PendingDeclaration | null = null;
+  private chain: PendingText | null = null;
+  /** The payload of the last declaration the kernel answered (accepted or refused); an unanswered one (offline) is tried again. */
+  private sent = "";
   readonly id: string;
   last: ClientDeclaration | null = null;
 
-  constructor(options: { actions: ActionsApi | undefined; host: DeviceHost; id: string; label?: string; now?: () => number; freshMs?: number }) {
+  constructor(options: { actions: ActionsApi | undefined; host: DeviceHost; id: string; label?: string; now?: () => number }) {
     this.actions = options.actions;
     this.host = options.host;
     this.id = options.id;
     this.kind = options.actions && options.actions.clientKind ? options.actions.clientKind : "web";
     this.label = options.label ?? "";
     this.now = options.now ?? (() => Date.now());
-    this.freshMs = options.freshMs ?? FRESH_MS;
   }
 
-  /** Declares (again) when the declaration is older than the freshness; returns the id to send with requests, "" without support. */
-  async ensure(force = false) {
+  /** Declares when the payload changed (or `force`); returns the id to send with requests, "" without support or when the kernel
+   *  does not take the declaration. Calls queue, so two sends at once make one declaration. */
+  ensure(force = false): PendingText {
+    const previous = this.chain;
+    const run = (async () => {
+      if (previous) await previous;
+      return this.declareIfChanged(force);
+    })();
+    this.chain = run;
+    return run;
+  }
+
+  private expired(): boolean {
+    const until = this.last ? this.last.expires : undefined;
+    return typeof until === "string" && this.now() >= Date.parse(until);
+  }
+
+  private async declareIfChanged(force: boolean): PendingText {
     const actions = this.actions;
     if (!actions || !actions.clientDeclare) return "";
-    if (!force && this.last && this.freshMs > this.now() - this.declaredAt) return this.id;
-    if (!this.inFlight) {
-      this.inFlight = (async () => {
-        try {
-          const made = await actions.clientDeclare!(await declaration(this.host, this.id, this.kind, this.label));
-          this.last = made;
-          this.declaredAt = this.now();
-          return made;
-        } catch {
-          return null;  // the kernel is not reachable now: the next request tries again; nothing is claimed in the meantime
-        } finally {
-          this.inFlight = null;
-        }
-      })();
+    try {
+      const request = await declaration(this.host, this.id, this.kind, this.label);
+      const payload = JSON.stringify(request);
+      if (!force && payload === this.sent && !this.expired()) return this.last ? this.id : "";
+      try {
+        this.last = await actions.clientDeclare(request);
+        this.sent = payload;
+      } catch (error) {
+        this.last = null;
+        // The kernel answered with a refusal: that payload is not sent again. No answer at all (offline): the next send tries again.
+        this.sent = error instanceof TypeError ? "" : payload;
+      }
+    } catch {
+      return "";  // the browser could not even be asked: nothing is claimed
     }
-    await this.inFlight;
     return this.last ? this.id : "";
   }
+}
+
+/** The one session of this page: every chat view of it is the same client for the kernel, and declares once. */
+let shared: ClientSession | null = null;
+let sharedFor: ActionsApi | undefined;
+export function pageClientSession(options: { actions: ActionsApi | undefined; host: DeviceHost; id: string; label?: string }): ClientSession {
+  if (!shared || sharedFor !== options.actions) {
+    shared = new ClientSession(options);
+    sharedFor = options.actions;
+  }
+  return shared;
 }

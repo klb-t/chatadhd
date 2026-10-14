@@ -11,7 +11,7 @@ import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionPro
 import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader } from "../context/client-device";
 import { browserHost } from "../context/browser-host";
-import { ClientSession, clientIdentity } from "../context/client-session";
+import { clientIdentity, pageClientSession } from "../context/client-session";
 import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
 import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
 import { featureMessage } from "../onboarding/presentation.mjs";
@@ -116,7 +116,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const clientStepCatalog = usePresentationFeature(profileHost, CLIENT_STEP_FEATURE);
   // This page as a client of the kernel (P13): the devices it can drive are declared, so the device actions are runnable for it.
   const clientHost = useMemo(() => browserHost(), []);
-  const clientSession = useMemo(() => new ClientSession({
+  const clientSession = useMemo(() => pageClientSession({
     actions: api.actions, host: clientHost, label: navigator.userAgent,
     id: clientIdentity(typeof sessionStorage === "undefined" ? undefined : sessionStorage),
   }), [clientHost]);
@@ -336,7 +336,6 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     }
     request = {
       message: text, conv_id: convId ?? undefined, model: model || undefined,
-      ...(clientSession.last && { client_id: clientSession.id }),
       // Omit unchanged options so the existing default request stays intact.
       ...(!includeMemory && { include_memory: false }),
       ...(!includeGraphMemory && { include_graph_memory: false }),
@@ -430,16 +429,27 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         onError: (msg: string) => finishError(msg),
         onDone: () => finishError("Chat stream ended before a done result."),
       };
-    if (runProfileOperation) {
-      void runProfileOperation("chat.send", { request, handlers,
-        onSubscription: (unsub: () => void) => { if (isCurrent()) unsubRef.current = unsub; else unsub(); },
-      }).catch((err: unknown) => {
-        finishError(err instanceof Error && err.name === "AbortError" ? null : err instanceof Error ? err.message : String(err));
-      });
-    } else {
-      try { unsubRef.current = api.chat(request, handlers); }
-      catch (err) { finishError(err instanceof Error ? err.message : String(err)); }
-    }
+    const dispatch = () => {
+      if (runProfileOperation) {
+        void runProfileOperation("chat.send", { request, handlers,
+          onSubscription: (unsub: () => void) => { if (isCurrent()) unsubRef.current = unsub; else unsub(); },
+        }).catch((err: unknown) => {
+          finishError(err instanceof Error && err.name === "AbortError" ? null : err instanceof Error ? err.message : String(err));
+        });
+      } else {
+        try { unsubRef.current = api.chat(request, handlers); }
+        catch (err) { finishError(err instanceof Error ? err.message : String(err)); }
+      }
+    };
+    // The devices of this page are declared to the kernel here, right before the first thing the person started that may need them (a command
+    // that records, takes a picture ...), and again only when what the browser can do has changed: nothing is sent in the background.
+    // A request the user wrote by hand (the one-call override) or a re-send of one is sent exactly as it is.
+    const composed = !forced && requestOverride === null;
+    void clientSession.ensure().then((id) => {
+      if (!isCurrent()) return;
+      if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
+      dispatch();
+    });
   }, [input, stream, convId, model, onConversationCreated, refreshMessages, clientSession,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked]);
@@ -508,18 +518,6 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       setAnswering(null);
     }
   }, [convId, refreshMessages, onMessagesChanged, takeOffer]);
-
-  // The devices of this page are declared when it opens and again when it comes back to the foreground or after a while: a
-  // permission can change under the page, and the kernel forgets a client that is quiet for long (and when it restarts).
-  useEffect(() => {
-    if (!api.actions || !api.actions.clientDeclare) return undefined;
-    void clientSession.ensure(true);
-    const refresh = () => { if (document.visibilityState !== "hidden") void clientSession.ensure(); };
-    const timer = window.setInterval(refresh, 15000);
-    document.addEventListener("visibilitychange", refresh);
-    window.addEventListener("focus", refresh);
-    return () => { window.clearInterval(timer); document.removeEventListener("visibilitychange", refresh); window.removeEventListener("focus", refresh); };
-  }, [clientSession]);
 
   // A recording stored in the kernel, as the page can play it.
   const loadBlob = useCallback<BlobLoader>(async (hash) => {

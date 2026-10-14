@@ -91,27 +91,53 @@ test('capabilities follow what the browser has, with the permission state it rep
     client_id: 'web-1', client: { kind: 'web', label: 'Test browser' }, capabilities: found });
 });
 
-test('a client session declares once, again when stale, and says nothing without kernel support', async () => {
+test('a client session declares lazily: nothing on its own, once at the first ask, again only when the payload changed or ran out', async () => {
   const calls = [];
   let clock = 1000;
-  const actions = { clientKind: 'android', clientDeclare: async request => { calls.push(request); return { client_id: request.client_id, capabilities: {}, runnable_actions: [], refused: {} }; } };
-  const session = new sessionModule.ClientSession({ actions, host: host(), id: 'web-1', label: 'L', now: () => clock, freshMs: 30000 });
+  const actions = { clientKind: 'android', clientDeclare: async request => { calls.push(request); return { client_id: request.client_id, capabilities: {}, runnable_actions: [], refused: {},
+    expires: new Date(clock + 60000).toISOString() }; } };
+  let microphone = 'prompt';
+  const changing = () => host({ permissions: { query: async ({ name }) => ({ state: name === 'microphone' ? microphone : 'granted' }) } });
+  const session = new sessionModule.ClientSession({ actions, host: changing(), id: 'web-1', label: 'L', now: () => clock });
   assert.equal(session.last, null);
+  assert.equal(calls.length, 0, 'creating the session sends nothing: viewing the page is not a reason to declare');
   assert.equal(await session.ensure(), 'web-1');
   assert.equal(calls.length, 1);
   assert.equal(calls[0].client.kind, 'android', 'the transport says what kind of client this is');
+  assert.equal(calls[0].capabilities.captures_audio.permission, 'prompt');
   assert.equal(await session.ensure(), 'web-1');
-  assert.equal(calls.length, 1, 'fresh: not declared again');
-  clock += 31000;
+  assert.equal(await session.ensure(), 'web-1');
+  assert.equal(calls.length, 1, 'the same payload is not declared again');
+  microphone = 'granted';
+  await session.ensure();
+  assert.equal(calls.length, 2, 'a permission that changed is declared');
+  assert.equal(calls[1].capabilities.captures_audio.permission, 'granted');
   await session.ensure();
   assert.equal(calls.length, 2);
+  clock += 61000;
+  await session.ensure();
+  assert.equal(calls.length, 3, 'the kernel forgets a declaration when its validity ends: declared again at the next ask');
   await session.ensure(true);
-  assert.equal(calls.length, 3);
+  assert.equal(calls.length, 4);
+  // two asks at once make one declaration
+  const parallel = new sessionModule.ClientSession({ actions, host: host(), id: 'web-5', now: () => clock });
+  const before = calls.length;
+  assert.deepEqual(await Promise.all([parallel.ensure(), parallel.ensure(), parallel.ensure()]), ['web-5', 'web-5', 'web-5']);
+  assert.equal(calls.length, before + 1);
   const quiet = new sessionModule.ClientSession({ actions: undefined, host: host(), id: 'web-2' });
   assert.equal(await quiet.ensure(), '');
-  const broken = new sessionModule.ClientSession({ actions: { clientDeclare: async () => { throw new Error('offline'); } }, host: host(), id: 'web-3' });
-  assert.equal(await broken.ensure(), '', 'a kernel that cannot be reached: nothing is claimed');
-  assert.equal(broken.last, null);
+  // a kernel that refuses is not asked again with the same payload; one that cannot be reached is asked again at the next ask
+  let refusals = 0;
+  const refusing = new sessionModule.ClientSession({ actions: { clientDeclare: async () => { refusals += 1; throw new Error('Unsupported endpoint'); } }, host: host(), id: 'web-3' });
+  assert.equal(await refusing.ensure(), '');
+  assert.equal(await refusing.ensure(), '');
+  assert.equal(refusals, 1);
+  assert.equal(refusing.last, null);
+  let attempts = 0;
+  const offline = new sessionModule.ClientSession({ actions: { clientDeclare: async () => { attempts += 1; throw new TypeError('Failed to fetch'); } }, host: host(), id: 'web-4' });
+  assert.equal(await offline.ensure(), '', 'a kernel that cannot be reached: nothing is claimed');
+  await offline.ensure();
+  assert.equal(attempts, 2);
   // the id is chosen once and kept for the tab
   const kept = new Map();
   const store = { getItem: key => kept.get(key) ?? null, setItem: (key, value) => kept.set(key, value) };
