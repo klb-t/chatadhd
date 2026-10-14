@@ -46,9 +46,9 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
       if (a == "graph") {
         Database& db = ctx->rt->db();
         Json adapters = Json::object();
-        auto add = [&](const char* port, std::vector<port_graph::AdapterInfo> infos) -> Status {
-          LOOM_TRY_ASSIGN(auto ids, port_graph::record_adapters(db, port, infos));
-          adapters[port] = ids;
+        auto add = [&](const char* port_name, std::vector<port_graph::AdapterInfo> infos) -> Status {
+          LOOM_TRY_ASSIGN(auto ids, port_graph::record_adapters(db, port_name, infos));
+          adapters[port_name] = ids;
           return Status{};
         };
         if (auto st = add("asr", port_graph::adapters_of(asr_adapters())); !st) return out_error(st.error());
