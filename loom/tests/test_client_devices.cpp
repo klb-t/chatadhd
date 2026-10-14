@@ -420,3 +420,126 @@ TEST_SUITE("client_devices") {
     CHECK_FALSE(f.rt->actions().invoke("client.blob", Json{{"hash", "../etc/passwd"}}));
   }
 }
+
+namespace {
+
+// The chat window as a client uses it: the conversation, the declared client, the words typed.
+struct ChatFixture : Fixture {
+  std::string conv_id;
+  ChatFixture() {
+    conv_id = unwrap(rt->db().create_conv("Voice")).id;
+    NewMessage m;
+    m.conv_id = conv_id;
+    m.role = "user";
+    m.text = "Hello.";
+    unwrap(rt->db().create_msg(m));
+  }
+  chat_route::Outcome input(const std::string& text, const std::string& client = "web-1") {
+    ChatOptions opts;
+    opts.conv_id = conv_id;
+    opts.stream = false;
+    Json req{{"message", text}};
+    if (!client.empty()) req["client_id"] = client;
+    return unwrap(chat_route::handle(*rt, text, opts, req, nullptr));
+  }
+  Json route(const std::string& text, const std::string& client = "web-1") {
+    Json req{{"text", text}, {"conv_id", conv_id}};
+    if (!client.empty()) req["client_id"] = client;
+    return unwrap(chat_route::route(*rt, req));
+  }
+  Json message(const std::string& id) { return unwrap(rt->db().get_msg(id))->to_json(); }
+  std::vector<Json> assistant_messages() {
+    std::vector<Json> out;
+    for (const auto& m : unwrap(rt->db().get_msgs(conv_id)))
+      if (m.role == "assistant") out.push_back(m.to_json());
+    return out;
+  }
+};
+
+}  // namespace
+
+TEST_SUITE("client_devices_chat") {
+  TEST_CASE("\"nagraj notatkę głosową i ją streść\" proposes record -> transcribe -> summarise; after \"tak\" the recording is the browser's") {
+    ChatFixture f;
+    f.declare(Json{{"captures_audio", "granted"}});
+    const Json routed = f.route("Nagraj notatkę głosową i ją streść");
+    REQUIRE(routed.at("kind") == "command");
+    const Json cmd = routed.at("command");
+    CHECK(cmd.at("action") == "summarise");
+    CHECK(cmd.at("chain") == Json::array({"device.record_audio", "transcribe", "summarise"}));
+    CHECK(cmd.at("element").at("id") == "device:microphone");
+    CHECK(cmd.at("runnable") == true);
+    CHECK(cmd.at("client_steps").at(0).at("action") == "device.record_audio");
+    CHECK(cmd.at("needs_confirmation").at(0).at("action") == "device.record_audio");
+    // the words of the English reading, and one action alone (the microphone is implied by the action)
+    const Json english = f.route("record a voice note and summarise it");
+    CHECK(english.at("command").at("chain") == Json::array({"device.record_audio", "transcribe", "summarise"}));
+    CHECK(f.route("Nagraj dźwięk").at("command").at("action") == "device.record_audio");
+    CHECK(f.route("Nagraj dźwięk").at("command").at("element").at("id") == "device:microphone");
+    // a client that declared nothing is told it cannot, as before
+    const Json server = f.route("Nagraj notatkę głosową i ją streść", "");
+    CHECK(server.at("command").at("runnable") == false);
+    CHECK(server.at("command").at("not_runnable").at(0).at("action") == "device.record_audio");
+
+    // the proposal in the conversation: what runs where
+    const auto proposed = f.input("Nagraj notatkę głosową i ją streść");
+    REQUIRE(proposed.handled);
+    const Json proposal = f.message(proposed.assistant_message_id);
+    const std::string text = proposal.at("text");
+    CHECK(text.find("Na Twoim urządzeniu") != std::string::npos);
+    CHECK(text.find("Nagraj dźwięk") != std::string::npos);
+    CHECK(proposal.at("metadata").at("action_proposal").at("status") == "pending");
+    CHECK(proposal.at("metadata").at("action_proposal").at("client_steps").at(0).at("action") == "device.record_audio");
+
+    // "tak": the run goes as far as the device: the answer says it waits, the question is in the message
+    const auto yes = f.input("tak");
+    REQUIRE(yes.handled);
+    const Json waiting = f.message(yes.assistant_message_id);
+    CHECK(waiting.at("text").get<std::string>().find("Czekam na Twoje urządzenie") != std::string::npos);
+    const Json meta = waiting.at("metadata").at("action_run");
+    CHECK(meta.at("status") == "awaiting_client");
+    CHECK(meta.at("pending").at("kind") == "client_step");
+    CHECK(meta.at("pending").at("client_step").at("action") == "device.record_audio");
+    const std::string run_id = meta.at("run_id");
+    CHECK(f.message(proposed.assistant_message_id).at("metadata").at("action_proposal").at("status") == "waiting");
+    CHECK(f.transport->requests().empty());
+
+    // the browser recorded: the transcription and the summary follow, the conversation hears the result, the old question is closed
+    f.expect_asr("We ship on Friday if the tests pass.");
+    f.expect_chat("Ship Friday, tests permitting.");
+    const Json done = unwrap(chat_route::client_result(*f.rt, Json{{"run_id", run_id}, {"receipt_id", meta.at("pending").at("receipt_id")}, {"state", "ok"},
+                                                                      {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", f.audio_b64()}}})}}));
+    REQUIRE(done.at("status") == "completed");
+    CHECK(done.contains("message_id"));
+    const Json result = f.message(done.at("message_id"));
+    CHECK(result.at("text").get<std::string>().find("Ship Friday, tests permitting.") != std::string::npos);
+    CHECK(result.at("metadata").at("action_run").at("status") == "completed");
+    CHECK(result.at("metadata").at("action_run").at("produced").at("forms").size() == 2);  // the recording and the summary
+    CHECK(f.message(yes.assistant_message_id).at("metadata").at("action_run").at("pending").is_null());
+    CHECK(f.message(proposed.assistant_message_id).at("metadata").at("action_proposal").at("status") == "executed");
+    // the model was asked to condense the transcript, nothing else
+    CHECK(f.transport->requests().size() == 2);
+    CHECK(unwrap(json::parse(f.transport->requests()[1].body)).at("messages").dump().find("We ship on Friday if the tests pass.") != std::string::npos);
+  }
+
+  TEST_CASE("cancelling the paused step closes its question in the conversation; the device answer that comes later changes nothing") {
+    ChatFixture f;
+    f.declare(Json{{"captures_audio", "granted"}});
+    f.input("Nagraj notatkę głosową i ją streść");
+    const auto yes = f.input("tak");
+    const Json meta = f.message(yes.assistant_message_id).at("metadata").at("action_run");
+    REQUIRE(meta.at("status") == "awaiting_client");
+    const Json cancelled = unwrap(chat_route::cancel(*f.rt, Json{{"run_id", meta.at("run_id")}, {"ref", "web"}}));
+    CHECK(cancelled.at("status") == "cancelled");
+    CHECK(f.message(yes.assistant_message_id).at("metadata").at("action_run").at("pending").is_null());
+    CHECK(f.message(yes.assistant_message_id).at("metadata").at("action_run").at("status") == "cancelled");
+    auto late = chat_route::client_result(*f.rt, Json{{"run_id", meta.at("run_id")}, {"receipt_id", meta.at("pending").at("receipt_id")}, {"state", "ok"},
+                                                      {"parts", Json::array({Json{{"kind", "audio"}, {"mime", "audio/mp4"}, {"data_base64", f.audio_b64()}}})}});
+    REQUIRE_FALSE(late);
+    CHECK(f.transport->requests().empty());
+  }
+
+  TEST_CASE("the client id rides on the chat request: a request that names a client is not an unknown chat option") {
+    CHECK(ChatOptions::from_json(Json{{"message", "hi"}, {"client_id", "web-1"}}));
+  }
+}

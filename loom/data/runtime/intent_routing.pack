@@ -74,6 +74,7 @@
       "window_tokens": 12,
       "lead_tokens": 4,
       "scoring": {"base": 0.6, "per_word": 0.1, "lead_penalty": 0.05, "min_score": 0.5},
+      "sequence": {"connectors": ["i", "oraz", "potem", "nastepnie", "and", "then"], "bonus": 0.05},
       "explicit": {
         "prefixes": ["/"],
         "run_verbs": ["run", "uruchom"],
@@ -465,6 +466,7 @@
           "language_hints": {"type": "object", "description": "Words (folded) that tell the language of an input that has no distinguishing letters; the language of a matched phrase wins over them.", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
           "window_tokens": {"type": "integer", "minimum": 1},
           "lead_tokens": {"type": "integer", "minimum": 1},
+          "sequence": {"type": "object", "description": "Two actions in one sentence (\"nagraj notatkę głosową i ją streść\"): the second acts on what the first brings. connectors: words (folded) that join them; bonus: added to the score of the first so the pair beats it alone.", "properties": {"connectors": {"type": "array", "items": {"type": "string", "minLength": 1}}, "bonus": {"type": "number"}}, "additionalProperties": false},
           "scoring": {
             "type": "object",
             "required": ["base", "per_word", "lead_penalty", "min_score"],

@@ -190,6 +190,7 @@ std::string localized(const Json& v, const std::string& lang) {
 
 struct Cand {
   std::string source, matched, lang, action;
+  std::string via;         // lexicon: an action said first whose product this one goes on from (the chain must contain it)
   Json args = Json::object();
   Json element = nullptr;  // {"id": ...} | {"resolve": "current_conversation" | "last_message"} | null
   double score = 0;
@@ -455,54 +456,105 @@ Json find_references_many(const Data& d, const std::string& text) {
   return many;
 }
 
+// The best phrase of an action found in the tokens: a phrase of the action itself or of the lexicon of the routing profile
+// (heuristic.phrases: action -> language -> phrases, where the phrases the user's own conversations added live).
+struct Found {
+  Cand cand;
+  Hit hit;
+};
+
+std::optional<Found> best_phrase(const Data& d, const std::string& key, const Json& entry, const std::vector<std::string>& tokens) {
+  const Json& h = d.cfg.at("heuristic");
+  const std::size_t window = static_cast<std::size_t>(json::get_int(h, "window_tokens", 12));
+  const std::size_t lead = static_cast<std::size_t>(json::get_int(h, "lead_tokens", 4));
+  const Json& scoring = h.at("scoring");
+  Json merged = Json::object();
+  if (const Json* own = json::find(entry, "phrases"); own && own->is_object()) merged = *own;
+  if (const Json* extra = json::find(h, "phrases"); extra && extra->is_object())
+    if (const Json* more = json::find(*extra, key); more && more->is_object())
+      for (auto l = more->begin(); l != more->end(); ++l) {
+        if (!merged.contains(l.key()) || !merged[l.key()].is_array()) merged[l.key()] = Json::array();
+        for (const auto& x : l.value())
+          if (x.is_string()) merged[l.key()].push_back(x);
+      }
+  std::optional<Found> best;
+  for (auto lang = merged.begin(); lang != merged.end(); ++lang) {
+    for (const auto& phrase : strings_of(&lang.value())) {
+      auto hit = match_phrase(tokens, fold(phrase, h.at("fold")), window, lead);
+      if (!hit) continue;
+      const double score = std::min(1.0, json::get_number(scoring, "base", 0.6) + json::get_number(scoring, "per_word", 0.1) * static_cast<double>(hit->words) -
+                                             json::get_number(scoring, "lead_penalty", 0.05) * static_cast<double>(hit->first));
+      if (score < json::get_number(scoring, "min_score", 0.5)) continue;
+      if (best && best->cand.score >= score) continue;
+      Found f;
+      f.cand.source = "lexicon";
+      f.cand.matched = phrase;
+      f.cand.lang = lang.key();
+      f.cand.action = key;
+      f.cand.score = score;
+      f.hit = *hit;
+      best = std::move(f);
+    }
+  }
+  return best;
+}
+
 std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
   std::vector<Cand> out;
   const Json& h = d.cfg.at("heuristic");
   const std::string folded = fold(text, h.at("fold"));
   const auto tokens = word_tokens(folded);
   const Json element = find_reference(d, text, tokens);
-  if (element.is_null()) return out;  // naming an action is not enough: a command acts on an element
-  const std::size_t window = static_cast<std::size_t>(json::get_int(h, "window_tokens", 12));
-  const std::size_t lead = static_cast<std::size_t>(json::get_int(h, "lead_tokens", 4));
-  const Json& scoring = h.at("scoring");
+  // Naming an action is not enough: a command acts on an element. A device action implies its device ("nagraj dźwięk": the
+  // microphone), which its catalogue entry names (default_element); any other action needs the element in the words.
+  std::vector<Found> device_hits;
   for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
     const Json& entry = it.value();
     if (json::find(entry, "element_from_arg")) continue;  // settings are named by their key: the patterns handle them
-    // The phrases of the action itself plus the lexicon of the routing profile (heuristic.phrases: action -> language -> phrases),
-    // where the phrases the user's own conversations added live.
-    Json merged = Json::object();
-    if (const Json* own = json::find(entry, "phrases"); own && own->is_object()) merged = *own;
-    if (const Json* extra = json::find(h, "phrases"); extra && extra->is_object())
-      if (const Json* more = json::find(*extra, it.key()); more && more->is_object())
-        for (auto l = more->begin(); l != more->end(); ++l) {
-          if (!merged.contains(l.key()) || !merged[l.key()].is_array()) merged[l.key()] = Json::array();
-          for (const auto& x : l.value())
-            if (x.is_string()) merged[l.key()].push_back(x);
-        }
-    if (merged.empty()) continue;
-    const Json* phrases = &merged;
-    std::optional<Cand> best;
-    for (auto lang = phrases->begin(); lang != phrases->end(); ++lang) {
-      for (const auto& phrase : strings_of(&lang.value())) {
-        auto hit = match_phrase(tokens, fold(phrase, h.at("fold")), window, lead);
-        if (!hit) continue;
-        const double score = std::min(1.0, json::get_number(scoring, "base", 0.6) + json::get_number(scoring, "per_word", 0.1) * static_cast<double>(hit->words) -
-                                               json::get_number(scoring, "lead_penalty", 0.05) * static_cast<double>(hit->first));
-        if (score < json::get_number(scoring, "min_score", 0.5)) continue;
-        if (best && best->score >= score) continue;
-        Cand c;
-        c.source = "lexicon";
-        c.matched = phrase;
-        c.lang = lang.key();
-        c.action = it.key();
-        c.element = element;
-        if (json::get_bool(entry, "element_many", false))
-          if (Json many = find_references_many(d, text); many.size() > 1) c.element = Json{{"many", many}};
-        c.score = score;
-        best = std::move(c);
+    const std::string implied = json::get_string(entry, "default_element");
+    if (element.is_null() && implied.empty()) continue;
+    auto found = best_phrase(d, it.key(), entry, tokens);
+    if (!found) continue;
+    Cand c = found->cand;
+    c.element = element.is_null() ? Json{{"id", implied}} : element;
+    if (json::get_bool(entry, "element_many", false))
+      if (Json many = find_references_many(d, text); many.size() > 1) c.element = Json{{"many", many}};
+    if (element.is_null()) {
+      found->cand = c;
+      device_hits.push_back(*found);
+    }
+    out.push_back(std::move(c));
+  }
+  // Two actions in one sentence ("nagraj notatkę głosową i ją streść"): the second acts on what the first brings. The device
+  // action names the element; the action after the connector (heuristic.sequence.connectors) is the target of a chain from it.
+  const Json* sequence = json::find(h, "sequence");
+  if (sequence && element.is_null() && !device_hits.empty()) {
+    std::vector<std::string> connectors;
+    for (const auto& w : strings_of(json::find(*sequence, "connectors"))) connectors.push_back(fold(w, h.at("fold")));
+    const Found* first = &device_hits[0];
+    for (const auto& f : device_hits)
+      if (f.cand.score > first->cand.score) first = &f;
+    std::size_t at = tokens.size();
+    for (std::size_t i = first->hit.first + 1; i < tokens.size() && at == tokens.size(); ++i)
+      if (std::find(connectors.begin(), connectors.end(), tokens[i]) != connectors.end()) at = i;
+    if (at + 1 < tokens.size()) {
+      const std::vector<std::string> tail(tokens.begin() + static_cast<std::ptrdiff_t>(at) + 1, tokens.end());
+      std::optional<Found> then;
+      for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
+        const Json& entry = it.value();
+        if (json::find(entry, "element_from_arg") || !json::get_string(entry, "default_element").empty()) continue;
+        auto found = best_phrase(d, it.key(), entry, tail);
+        if (found && (!then || found->cand.score > then->cand.score)) then = std::move(found);
+      }
+      if (then) {
+        Cand c = then->cand;
+        c.element = first->cand.element;
+        c.via = first->cand.action;
+        c.matched = first->cand.matched + " + " + then->cand.matched;
+        c.score = std::min(1.0, first->cand.score + json::get_number(*sequence, "bonus", 0.05));  // two actions said beat the first alone
+        out.insert(out.begin(), std::move(c));  // and win a tie with it: the sort is stable
       }
     }
-    if (best) out.push_back(std::move(*best));
   }
   return out;
 }
@@ -862,9 +914,21 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
       if (chains && chains->contains("beyond_bounds")) reason["beyond_bounds"] = (*chains)["beyond_bounds"];
       return infeasible(reason);
     }
-    request["chain"] = (*chains)["chains"][0];
+    // The chain that goes through the action said first ("nagraj ... i streść": record -> transcribe -> summarise), else the best one.
+    std::size_t pick = 0;
+    if (!c.via.empty()) {
+      bool through = false;
+      for (std::size_t i = 0; i < (*chains)["chains"].size() && !through; ++i)
+        for (const auto& s : (*chains)["chains"][i]["steps"])
+          if (s.value("action", "") == c.via) {
+            pick = i;
+            through = true;
+            break;
+          }
+    }
+    request["chain"] = (*chains)["chains"][pick];
     Json steps = Json::array();
-    for (const auto& s : (*chains)["chains"][0]["steps"]) steps.push_back(s.value("action", ""));
+    for (const auto& s : (*chains)["chains"][pick]["steps"]) steps.push_back(s.value("action", ""));
     cmd["chain"] = steps;
   }
   auto preview = rt.actions().preview(request);

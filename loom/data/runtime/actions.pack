@@ -4271,14 +4271,21 @@
             "record audio",
             "record sound",
             "record my voice",
-            "start recording"
+            "start recording",
+            "record a voice note",
+            "record a note",
+            "voice note"
           ],
           "pl": [
             "nagraj dźwięk",
             "nagraj dzwiek",
             "nagraj głos",
             "nagraj glos",
-            "nagraj audio"
+            "nagraj audio",
+            "nagraj notatkę głosową",
+            "nagraj notatkę",
+            "notatkę głosową",
+            "nagraj notatke glosowa"
           ]
         },
         "params": [
