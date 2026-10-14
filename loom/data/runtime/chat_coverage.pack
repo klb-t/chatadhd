@@ -101,6 +101,72 @@
         }
       },
       {
+        "id": "help_can_do",
+        "title": {
+          "en": "What can I do here",
+          "pl": "Co mogę tu zrobić"
+        },
+        "via": "action",
+        "action": "help.can_do",
+        "surfaces": {
+          "http": [
+            "POST /api/actions/for"
+          ],
+          "invoke": [
+            "actions.list",
+            "actions.for"
+          ]
+        },
+        "examples": {
+          "pl": "co mogę tu zrobić?",
+          "en": "what can I do here?"
+        }
+      },
+      {
+        "id": "help_how_to",
+        "title": {
+          "en": "How to do something (explained, not run)",
+          "pl": "Jak coś zrobić (wyjaśnione, nie wykonane)"
+        },
+        "via": "action",
+        "action": "help.how_to",
+        "surfaces": {
+          "http": [
+            "POST /api/actions/explain",
+            "POST /api/actions/propose_chain"
+          ],
+          "invoke": [
+            "actions.explain",
+            "actions.propose_chain"
+          ]
+        },
+        "examples": {
+          "pl": "jak to zrobić: streścić tę rozmowę",
+          "en": "how do I summarise this conversation"
+        }
+      },
+      {
+        "id": "runs",
+        "title": {
+          "en": "Runs of actions",
+          "pl": "Przebiegi akcji"
+        },
+        "via": "action",
+        "action": "actions.status",
+        "surfaces": {
+          "http": [
+            "POST /api/actions/status"
+          ],
+          "invoke": [
+            "actions.status"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż przebiegi akcji",
+          "en": "show the action runs"
+        }
+      },
+      {
         "id": "rules_set",
         "title": {
           "en": "Write a rule or a scoped value",
@@ -313,6 +379,440 @@
         }
       },
       {
+        "id": "settings_list",
+        "title": {
+          "en": "List the settings and their rules",
+          "pl": "Wypisz ustawienia i ich zasady"
+        },
+        "via": "action",
+        "action": "settings.list",
+        "surfaces": {
+          "c_abi": [
+            "loom_settings_fields"
+          ],
+          "http": [
+            "GET /api/settings/fields"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż ustawienia pamięci",
+          "en": "list the memory settings"
+        }
+      },
+      {
+        "id": "conversations_list",
+        "title": {
+          "en": "List conversations",
+          "pl": "Wypisz rozmowy"
+        },
+        "via": "action",
+        "action": "conversations.list",
+        "surfaces": {
+          "c_abi": [
+            "loom_list_conversations"
+          ],
+          "http": [
+            "GET /api/conversations"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż moje rozmowy",
+          "en": "list my conversations"
+        }
+      },
+      {
+        "id": "conversation_create",
+        "title": {
+          "en": "Start a conversation",
+          "pl": "Załóż rozmowę"
+        },
+        "via": "action",
+        "action": "conversation.create",
+        "surfaces": {
+          "c_abi": [
+            "loom_create_conversation"
+          ],
+          "http": [
+            "POST /api/conversations"
+          ]
+        },
+        "examples": {
+          "pl": "utwórz nową rozmowę „Podróże”",
+          "en": "create a new conversation called Travel"
+        }
+      },
+      {
+        "id": "conversation_rename",
+        "title": {
+          "en": "Rename a conversation",
+          "pl": "Zmień nazwę rozmowy"
+        },
+        "via": "action",
+        "action": "conversation.rename",
+        "surfaces": {
+          "c_abi": [
+            "loom_update_conversation"
+          ],
+          "http": [
+            "PATCH /api/conversations/:id"
+          ]
+        },
+        "examples": {
+          "pl": "zmień nazwę tej rozmowy na Plan wakacji",
+          "en": "rename this conversation to Holiday plan"
+        }
+      },
+      {
+        "id": "conversation_delete",
+        "title": {
+          "en": "Delete a conversation",
+          "pl": "Usuń rozmowę"
+        },
+        "via": "action",
+        "action": "conversation.delete",
+        "surfaces": {
+          "c_abi": [
+            "loom_delete_conversation"
+          ],
+          "http": [
+            "DELETE /api/conversations/:id"
+          ]
+        },
+        "examples": {
+          "pl": "usuń tę rozmowę",
+          "en": "delete this conversation"
+        }
+      },
+      {
+        "id": "message_edit",
+        "title": {
+          "en": "Edit a message (the old version stays, a new branch begins)",
+          "pl": "Popraw wiadomość (stara wersja zostaje, zaczyna się nowa gałąź)"
+        },
+        "via": "action",
+        "action": "message.edit",
+        "surfaces": {
+          "c_abi": [
+            "loom_edit_message"
+          ],
+          "http": [
+            "POST /api/messages/:id/edit"
+          ]
+        },
+        "examples": {
+          "pl": "popraw tę wiadomość: Spotkanie jest w piątek",
+          "en": "edit this message: The meeting is on Friday"
+        }
+      },
+      {
+        "id": "message_restore",
+        "title": {
+          "en": "Switch to another version of a message",
+          "pl": "Przełącz na inną wersję wiadomości"
+        },
+        "via": "action",
+        "action": "message.restore",
+        "surfaces": {
+          "c_abi": [
+            "loom_restore_version"
+          ],
+          "http": [
+            "POST /api/messages/:id/restore"
+          ]
+        },
+        "examples": {
+          "pl": "wróć do poprzedniej wersji tej wiadomości",
+          "en": "restore the previous version of this message"
+        }
+      },
+      {
+        "id": "message_versions",
+        "title": {
+          "en": "Show the versions of a message",
+          "pl": "Pokaż wersje wiadomości"
+        },
+        "via": "action",
+        "action": "message.versions",
+        "surfaces": {
+          "c_abi": [
+            "loom_get_versions"
+          ],
+          "http": [
+            "GET /api/messages/:id/versions"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż wersje tej wiadomości",
+          "en": "show the versions of this message"
+        }
+      },
+      {
+        "id": "message_status",
+        "title": {
+          "en": "Exclude, include or delete a message",
+          "pl": "Wyklucz, włącz albo usuń wiadomość"
+        },
+        "via": "action",
+        "action": "message.set_status",
+        "surfaces": {
+          "c_abi": [
+            "loom_set_message_status"
+          ],
+          "http": [
+            "POST /api/messages/:id/status"
+          ]
+        },
+        "examples": {
+          "pl": "wyklucz tę wiadomość z kontekstu",
+          "en": "exclude this message from the context"
+        }
+      },
+      {
+        "id": "message_weight",
+        "title": {
+          "en": "Say how much a message weighs",
+          "pl": "Ustaw wagę wiadomości"
+        },
+        "via": "action",
+        "action": "message.weight",
+        "surfaces": {
+          "c_abi": [
+            "loom_update_message"
+          ],
+          "http": [
+            "PATCH /api/messages/:id"
+          ]
+        },
+        "examples": {
+          "pl": "oznacz tę wiadomość jako ważną",
+          "en": "mark this message as important"
+        }
+      },
+      {
+        "id": "search",
+        "title": {
+          "en": "Find conversations and messages",
+          "pl": "Znajdź rozmowy i wiadomości"
+        },
+        "via": "action",
+        "action": "search.find",
+        "surfaces": {
+          "c_abi": [
+            "loom_search"
+          ],
+          "http": [
+            "GET /api/search"
+          ]
+        },
+        "examples": {
+          "pl": "znajdź rozmowy o kotach",
+          "en": "find conversations about cats"
+        }
+      },
+      {
+        "id": "graph_related",
+        "title": {
+          "en": "What is connected to a name",
+          "pl": "Co jest powiązane z nazwą"
+        },
+        "via": "action",
+        "action": "graph.related",
+        "surfaces": {
+          "c_abi": [
+            "loom_get_nodes",
+            "loom_get_edges",
+            "loom_get_graph_data",
+            "loom_expand_graph"
+          ],
+          "http": [
+            "GET /api/graph/data",
+            "GET /api/graph/nodes",
+            "GET /api/graph/edges",
+            "POST /api/graph/expand"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż, co jest powiązane z Python",
+          "en": "show what is related to Python"
+        }
+      },
+      {
+        "id": "graph_overview",
+        "title": {
+          "en": "The graph at a glance",
+          "pl": "Graf w skrócie"
+        },
+        "via": "action",
+        "action": "graph.overview",
+        "surfaces": {
+          "c_abi": [
+            "loom_graph_entry"
+          ],
+          "http": [
+            "GET /api/graph/entry"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż graf w skrócie",
+          "en": "show the graph overview"
+        }
+      },
+      {
+        "id": "graph_reindex",
+        "title": {
+          "en": "Rebuild the graph of a conversation",
+          "pl": "Przebuduj graf rozmowy"
+        },
+        "via": "action",
+        "action": "graph.reindex",
+        "surfaces": {
+          "c_abi": [
+            "loom_graph_reindex"
+          ],
+          "http": [
+            "POST /api/graph/reindex"
+          ]
+        },
+        "examples": {
+          "pl": "przebuduj graf tej rozmowy",
+          "en": "rebuild the graph of this conversation"
+        }
+      },
+      {
+        "id": "memory_recall",
+        "title": {
+          "en": "Show what is remembered",
+          "pl": "Pokaż, co jest zapamiętane"
+        },
+        "via": "action",
+        "action": "memory.recall",
+        "surfaces": {
+          "c_abi": [
+            "loom_list_memory",
+            "loom_get_memory_context"
+          ],
+          "http": [
+            "GET /api/memory",
+            "GET /api/memory/context"
+          ]
+        },
+        "examples": {
+          "pl": "co zapamiętałeś o mnie?",
+          "en": "what do you remember about me?"
+        }
+      },
+      {
+        "id": "memory_remember",
+        "title": {
+          "en": "Remember something",
+          "pl": "Zapamiętaj coś"
+        },
+        "via": "action",
+        "action": "memory.remember",
+        "surfaces": {
+          "c_abi": [
+            "loom_create_memory"
+          ],
+          "http": [
+            "POST /api/memory"
+          ]
+        },
+        "examples": {
+          "pl": "zapamiętaj, że lubię kawę",
+          "en": "remember that I like coffee"
+        }
+      },
+      {
+        "id": "memory_update",
+        "title": {
+          "en": "Correct a memory",
+          "pl": "Popraw zapamiętane"
+        },
+        "via": "action",
+        "action": "memory.update",
+        "surfaces": {
+          "c_abi": [
+            "loom_update_memory"
+          ],
+          "http": [
+            "PATCH /api/memory/:id"
+          ]
+        },
+        "examples": {
+          "pl": "zmień wpis pamięci a1b2c3d4e5f6 na lubię herbatę",
+          "en": "change memory entry a1b2c3d4e5f6 to I like tea"
+        }
+      },
+      {
+        "id": "memory_forget",
+        "title": {
+          "en": "Forget something",
+          "pl": "Zapomnij coś"
+        },
+        "via": "action",
+        "action": "memory.forget",
+        "surfaces": {
+          "c_abi": [
+            "loom_delete_memory"
+          ],
+          "http": [
+            "DELETE /api/memory/:id"
+          ]
+        },
+        "examples": {
+          "pl": "zapomnij, że lubię kawę",
+          "en": "forget that I like coffee"
+        }
+      },
+      {
+        "id": "import",
+        "title": {
+          "en": "Import a file of conversations",
+          "pl": "Zaimportuj plik z rozmowami"
+        },
+        "via": "action",
+        "action": "import.file",
+        "surfaces": {
+          "c_abi": [
+            "loom_import_file",
+            "loom_import_file_ex",
+            "loom_detect_format"
+          ],
+          "http": [
+            "POST /api/import"
+          ]
+        },
+        "examples": {
+          "pl": "zaimportuj ten plik",
+          "en": "import this file"
+        },
+        "note": {
+          "en": "Without a path the device picks the file (device.pick_file), then the import runs on it.",
+          "pl": "Bez ścieżki plik wybiera urządzenie (device.pick_file), potem rusza import."
+        }
+      },
+      {
+        "id": "export",
+        "title": {
+          "en": "Export a conversation",
+          "pl": "Wyeksportuj rozmowę"
+        },
+        "via": "action",
+        "action": "export.conversation",
+        "surfaces": {
+          "c_abi": [
+            "loom_export_conversation"
+          ],
+          "http": [
+            "GET /api/conversations/:id/export"
+          ]
+        },
+        "examples": {
+          "pl": "wyeksportuj tę rozmowę do markdown",
+          "en": "export this conversation as markdown"
+        }
+      },
+      {
         "id": "media_recognition",
         "title": {
           "en": "Speech and text from a recording or an image",
@@ -333,6 +833,637 @@
         "also": [
           "ocr"
         ]
+      },
+      {
+        "id": "storage_status",
+        "title": {
+          "en": "State of the storage backends",
+          "pl": "Stan magazynów"
+        },
+        "via": "action",
+        "action": "storage.status",
+        "surfaces": {
+          "http": [
+            "GET /api/storage/status"
+          ],
+          "invoke": [
+            "storage.status"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż stan magazynów",
+          "en": "show the storage status"
+        }
+      },
+      {
+        "id": "storage_probe",
+        "title": {
+          "en": "Check that the backends answer",
+          "pl": "Sprawdź, czy magazyny odpowiadają"
+        },
+        "via": "action",
+        "action": "storage.probe",
+        "surfaces": {
+          "http": [
+            "GET /api/storage/probe"
+          ],
+          "invoke": [
+            "storage.probe"
+          ]
+        },
+        "examples": {
+          "pl": "sprawdź połączenie z magazynami",
+          "en": "probe the storage backends"
+        }
+      },
+      {
+        "id": "storage_kinds",
+        "title": {
+          "en": "Kinds of storage that can be connected",
+          "pl": "Rodzaje magazynów, które można podłączyć"
+        },
+        "via": "action",
+        "action": "storage.kinds",
+        "surfaces": {
+          "http": [
+            "GET /api/storage/kinds"
+          ],
+          "invoke": [
+            "storage.kinds"
+          ]
+        },
+        "examples": {
+          "pl": "jakie rodzaje magazynów można podłączyć",
+          "en": "which kinds of storage can I connect"
+        }
+      },
+      {
+        "id": "storage_placement",
+        "title": {
+          "en": "Where each category of data lives",
+          "pl": "Gdzie leży każda kategoria danych"
+        },
+        "via": "action",
+        "action": "storage.placement",
+        "surfaces": {
+          "http": [
+            "GET /api/storage/placement"
+          ],
+          "invoke": [
+            "storage.placement"
+          ]
+        },
+        "examples": {
+          "pl": "gdzie leżą moje dane",
+          "en": "where does my data live"
+        }
+      },
+      {
+        "id": "storage_locate",
+        "title": {
+          "en": "Where an object lies",
+          "pl": "Gdzie leży obiekt"
+        },
+        "via": "action",
+        "action": "storage.locate",
+        "surfaces": {
+          "http": [
+            "GET /api/storage/locate"
+          ],
+          "invoke": [
+            "storage.locate"
+          ]
+        },
+        "examples": {
+          "pl": "gdzie jest obiekt aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "en": "where is the object aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      {
+        "id": "storage_copy",
+        "title": {
+          "en": "Copy data to a backend",
+          "pl": "Skopiuj dane do magazynu"
+        },
+        "via": "action",
+        "action": "storage.copy",
+        "surfaces": {
+          "http": [
+            "POST /api/storage/copy"
+          ],
+          "invoke": [
+            "storage.copy"
+          ]
+        },
+        "examples": {
+          "pl": "skopiuj blobs do s3_main",
+          "en": "copy blobs to s3_main"
+        }
+      },
+      {
+        "id": "storage_move",
+        "title": {
+          "en": "Move data to a backend",
+          "pl": "Przenieś dane do magazynu"
+        },
+        "via": "action",
+        "action": "storage.move",
+        "surfaces": {
+          "http": [
+            "POST /api/storage/move"
+          ],
+          "invoke": [
+            "storage.move"
+          ]
+        },
+        "examples": {
+          "pl": "przenieś blobs do s3_main",
+          "en": "move blobs to s3_main"
+        }
+      },
+      {
+        "id": "storage_backup",
+        "title": {
+          "en": "Back up the database to a backend",
+          "pl": "Kopia zapasowa bazy do magazynu"
+        },
+        "via": "action",
+        "action": "storage.backup",
+        "surfaces": {
+          "http": [
+            "POST /api/storage/backup"
+          ],
+          "invoke": [
+            "storage.backup"
+          ]
+        },
+        "examples": {
+          "pl": "zrób kopię zapasową do s3_main",
+          "en": "back up the database to s3_main"
+        }
+      },
+      {
+        "id": "storage_connect",
+        "title": {
+          "en": "Connect a storage backend (Google Drive, S3, WebDAV)",
+          "pl": "Podłącz magazyn (Dysk Google, S3, WebDAV)"
+        },
+        "via": "action",
+        "action": "storage.connect",
+        "examples": {
+          "pl": "podłącz mój Dysk Google",
+          "en": "connect my Google Drive"
+        },
+        "note": {
+          "en": "Only the non-secret part is written (into the user overlay); the secrets are entered in Settings, never in the conversation.",
+          "pl": "Zapisywana jest tylko część niejawna (do nakładki użytkownika); sekrety wpisuje się w Ustawieniach, nigdy w rozmowie."
+        }
+      },
+      {
+        "id": "github",
+        "title": {
+          "en": "Synchronise with GitHub",
+          "pl": "Synchronizuj z GitHubem"
+        },
+        "via": "action",
+        "action": "github.sync",
+        "surfaces": {
+          "c_abi": [
+            "loom_github_sync"
+          ],
+          "invoke": [
+            "github.test",
+            "github.status",
+            "github.pull",
+            "github.push",
+            "github.sync"
+          ]
+        },
+        "examples": {
+          "pl": "zsynchronizuj z GitHubem",
+          "en": "sync with GitHub"
+        }
+      },
+      {
+        "id": "models_list",
+        "title": {
+          "en": "List the models",
+          "pl": "Wypisz modele"
+        },
+        "via": "action",
+        "action": "models.list",
+        "surfaces": {
+          "c_abi": [
+            "loom_get_models"
+          ],
+          "http": [
+            "GET /api/models"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż modele",
+          "en": "list the models"
+        }
+      },
+      {
+        "id": "models_refresh",
+        "title": {
+          "en": "Refresh the model list",
+          "pl": "Odśwież listę modeli"
+        },
+        "via": "action",
+        "action": "models.refresh",
+        "surfaces": {
+          "c_abi": [
+            "loom_refresh_models"
+          ],
+          "http": [
+            "POST /api/models/refresh"
+          ]
+        },
+        "examples": {
+          "pl": "odśwież listę modeli",
+          "en": "refresh the model list"
+        }
+      },
+      {
+        "id": "providers_list",
+        "title": {
+          "en": "Which providers are connected (models, speech, text from images)",
+          "pl": "Którzy dostawcy są podłączeni (modele, mowa, tekst z obrazów)"
+        },
+        "via": "action",
+        "action": "providers.list",
+        "surfaces": {
+          "c_abi": [
+            "loom_get_providers",
+            "loom_can",
+            "loom_media_status"
+          ],
+          "http": [
+            "GET /api/providers",
+            "GET /api/media/status"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż dostawców",
+          "en": "show the providers"
+        }
+      },
+      {
+        "id": "ports_show",
+        "title": {
+          "en": "Which model or provider does a job",
+          "pl": "Który model albo dostawca wykonuje daną pracę"
+        },
+        "via": "action",
+        "action": "ports.show",
+        "surfaces": {
+          "invoke": [
+            "ports.resolve",
+            "ports.explain",
+            "ports.roles"
+          ]
+        },
+        "examples": {
+          "pl": "jakiego modelu używam do streszczeń",
+          "en": "which model do I use for summaries"
+        }
+      },
+      {
+        "id": "ports_set",
+        "title": {
+          "en": "Choose the model or provider for a job (per conversation or for me)",
+          "pl": "Wybierz model albo dostawcę do pracy (dla rozmowy albo dla mnie)"
+        },
+        "via": "action",
+        "action": "ports.set",
+        "examples": {
+          "pl": "do streszczeń używaj modelu openai/gpt-4o-mini",
+          "en": "use model openai/gpt-4o-mini for summaries"
+        }
+      },
+      {
+        "id": "usage_spend",
+        "title": {
+          "en": "How much was spent",
+          "pl": "Ile wydano"
+        },
+        "via": "action",
+        "action": "usage.spend",
+        "surfaces": {
+          "http": [
+            "POST /api/usage-policy"
+          ]
+        },
+        "examples": {
+          "pl": "ile wydałem w tym tygodniu",
+          "en": "how much did I spend this week"
+        },
+        "note": {
+          "en": "The ledger of the usage policy: requests, tokens and the cost the provider reported; the x10 guard stays a question the user answers.",
+          "pl": "Rejestr polityki zużycia: żądania, tokeny i koszt podany przez dostawcę; strażnik ×10 pozostaje pytaniem, na które odpowiada użytkownik."
+        }
+      },
+      {
+        "id": "usage_limit",
+        "title": {
+          "en": "Set the growth limit of the usage",
+          "pl": "Ustaw limit wzrostu zużycia"
+        },
+        "via": "action",
+        "action": "usage.set_limit",
+        "examples": {
+          "pl": "ustaw limit wzrostu zużycia na 20",
+          "en": "set the usage growth limit to 20"
+        }
+      },
+      {
+        "id": "usage_compact",
+        "title": {
+          "en": "Compact the usage ledger",
+          "pl": "Skompaktuj rejestr zużycia"
+        },
+        "via": "action",
+        "action": "usage.compact",
+        "examples": {
+          "pl": "skompaktuj rejestr zużycia",
+          "en": "compact the usage ledger"
+        }
+      },
+      {
+        "id": "economy",
+        "title": {
+          "en": "The economy report of the data",
+          "pl": "Raport oszczędności danych"
+        },
+        "via": "action",
+        "action": "economy.report",
+        "surfaces": {
+          "http": [
+            "GET /api/economy/report"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż raport oszczędności",
+          "en": "show the economy report"
+        }
+      },
+      {
+        "id": "semantic_status",
+        "title": {
+          "en": "State of the semantic analysis",
+          "pl": "Stan analizy semantycznej"
+        },
+        "via": "action",
+        "action": "semantic.status",
+        "surfaces": {
+          "c_abi": [
+            "loom_semantic_status"
+          ],
+          "http": [
+            "GET /api/semantic/status"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż stan analizy semantycznej",
+          "en": "show the semantic analysis status"
+        }
+      },
+      {
+        "id": "semantic_pause",
+        "title": {
+          "en": "Pause the analysis",
+          "pl": "Wstrzymaj analizę"
+        },
+        "via": "action",
+        "action": "semantic.pause",
+        "surfaces": {
+          "c_abi": [
+            "loom_semantic_pause"
+          ],
+          "http": [
+            "POST /api/semantic/pause"
+          ]
+        },
+        "examples": {
+          "pl": "wstrzymaj analizę semantyczną",
+          "en": "pause the semantic analysis"
+        }
+      },
+      {
+        "id": "semantic_resume",
+        "title": {
+          "en": "Resume the analysis",
+          "pl": "Wznów analizę"
+        },
+        "via": "action",
+        "action": "semantic.resume",
+        "surfaces": {
+          "c_abi": [
+            "loom_semantic_resume"
+          ],
+          "http": [
+            "POST /api/semantic/resume"
+          ]
+        },
+        "examples": {
+          "pl": "wznów analizę semantyczną",
+          "en": "resume the semantic analysis"
+        }
+      },
+      {
+        "id": "semantic_wake",
+        "title": {
+          "en": "Wake the analysis",
+          "pl": "Obudź analizę"
+        },
+        "via": "action",
+        "action": "semantic.wake",
+        "surfaces": {
+          "c_abi": [
+            "loom_semantic_wake"
+          ],
+          "http": [
+            "POST /api/semantic/wake"
+          ]
+        },
+        "examples": {
+          "pl": "obudź analizę semantyczną",
+          "en": "wake the semantic analysis"
+        }
+      },
+      {
+        "id": "semantic_requeue",
+        "title": {
+          "en": "Queue failed analyses again",
+          "pl": "Ponów nieudane analizy"
+        },
+        "via": "action",
+        "action": "semantic.requeue",
+        "surfaces": {
+          "http": [
+            "POST /api/semantic/requeue"
+          ]
+        },
+        "examples": {
+          "pl": "ponów nieudane analizy semantyczne",
+          "en": "requeue the failed semantic analyses"
+        }
+      },
+      {
+        "id": "tasks_list",
+        "title": {
+          "en": "Background tasks",
+          "pl": "Zadania w tle"
+        },
+        "via": "action",
+        "action": "tasks.list",
+        "surfaces": {
+          "c_abi": [
+            "loom_list_tasks",
+            "loom_get_task"
+          ],
+          "http": [
+            "GET /api/tasks",
+            "GET /api/tasks/:id"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż zadania w tle",
+          "en": "show the background tasks"
+        }
+      },
+      {
+        "id": "tasks_resume",
+        "title": {
+          "en": "Resume interrupted tasks",
+          "pl": "Wznów przerwane zadania"
+        },
+        "via": "action",
+        "action": "tasks.resume",
+        "surfaces": {
+          "c_abi": [
+            "loom_resume_tasks"
+          ],
+          "http": [
+            "POST /api/tasks/resume"
+          ]
+        },
+        "examples": {
+          "pl": "wznów przerwane zadania",
+          "en": "resume the interrupted tasks"
+        }
+      },
+      {
+        "id": "tasks_cancel",
+        "title": {
+          "en": "Cancel a task",
+          "pl": "Anuluj zadanie"
+        },
+        "via": "action",
+        "action": "tasks.cancel",
+        "surfaces": {
+          "c_abi": [
+            "loom_cancel_task"
+          ],
+          "http": [
+            "POST /api/tasks/:id/cancel"
+          ]
+        },
+        "examples": {
+          "pl": "anuluj zadanie t_0123456789ab",
+          "en": "cancel task t_0123456789ab"
+        }
+      },
+      {
+        "id": "logs",
+        "title": {
+          "en": "The application log",
+          "pl": "Dziennik aplikacji"
+        },
+        "via": "action",
+        "action": "logs.show",
+        "surfaces": {
+          "c_abi": [
+            "loom_get_logs"
+          ],
+          "http": [
+            "GET /api/logs"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż logi",
+          "en": "show the logs"
+        }
+      },
+      {
+        "id": "provenance",
+        "title": {
+          "en": "Where something comes from",
+          "pl": "Skąd coś pochodzi"
+        },
+        "via": "action",
+        "action": "provenance.show",
+        "surfaces": {
+          "c_abi": [
+            "loom_get_provenance"
+          ],
+          "http": [
+            "GET /api/provenance/:id"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż pochodzenie tej wiadomości",
+          "en": "show the provenance of this message"
+        }
+      },
+      {
+        "id": "sources",
+        "title": {
+          "en": "Sources and artifacts that were imported",
+          "pl": "Źródła i artefakty z importów"
+        },
+        "via": "action",
+        "action": "sources.list",
+        "surfaces": {
+          "c_abi": [
+            "loom_list_sources",
+            "loom_list_artifacts"
+          ],
+          "http": [
+            "GET /api/sources",
+            "GET /api/artifacts"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż źródła",
+          "en": "show the sources"
+        }
+      },
+      {
+        "id": "about",
+        "title": {
+          "en": "About this application: version, encryption",
+          "pl": "O aplikacji: wersja, szyfrowanie"
+        },
+        "via": "action",
+        "action": "app.info",
+        "surfaces": {
+          "c_abi": [
+            "loom_info",
+            "loom_version",
+            "loom_crypto_status"
+          ],
+          "http": [
+            "GET /api/info",
+            "GET /api/version"
+          ]
+        },
+        "examples": {
+          "pl": "jaka to wersja aplikacji",
+          "en": "what version is this application"
+        }
       }
     ],
     "not_from_chat": [
@@ -770,1335 +1901,6 @@
             "POST /api/onboarding"
           ]
         }
-      },
-      {
-        "id": "help_can_do",
-        "title": {
-          "en": "What can I do here",
-          "pl": "Co mogę tu zrobić"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action help.can_do with phrases in both languages.",
-          "pl": "Akcja help.can_do z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/actions/for"
-          ],
-          "invoke": [
-            "actions.list",
-            "actions.for"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "help.can_do"
-      },
-      {
-        "id": "help_how_to",
-        "title": {
-          "en": "How to do something (explained, not run)",
-          "pl": "Jak coś zrobić (wyjaśnione, nie wykonane)"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action help.how_to with phrases in both languages.",
-          "pl": "Akcja help.how_to z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/actions/explain",
-            "POST /api/actions/propose_chain"
-          ],
-          "invoke": [
-            "actions.explain",
-            "actions.propose_chain"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "help.how_to"
-      },
-      {
-        "id": "runs",
-        "title": {
-          "en": "Runs of actions",
-          "pl": "Przebiegi akcji"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action actions.status with phrases in both languages.",
-          "pl": "Akcja actions.status z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/actions/status"
-          ],
-          "invoke": [
-            "actions.status"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "settings_list",
-        "title": {
-          "en": "List the settings and their rules",
-          "pl": "Wypisz ustawienia i ich zasady"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action settings.list with phrases in both languages.",
-          "pl": "Akcja settings.list z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_settings_fields"
-          ],
-          "http": [
-            "GET /api/settings/fields"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "settings.list"
-      },
-      {
-        "id": "conversations_list",
-        "title": {
-          "en": "List conversations",
-          "pl": "Wypisz rozmowy"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action conversations.list with phrases in both languages.",
-          "pl": "Akcja conversations.list z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_list_conversations"
-          ],
-          "http": [
-            "GET /api/conversations"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "conversations.list"
-      },
-      {
-        "id": "conversation_create",
-        "title": {
-          "en": "Start a conversation",
-          "pl": "Załóż rozmowę"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action conversation.create with phrases in both languages.",
-          "pl": "Akcja conversation.create z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_create_conversation"
-          ],
-          "http": [
-            "POST /api/conversations"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "conversation.create"
-      },
-      {
-        "id": "conversation_rename",
-        "title": {
-          "en": "Rename a conversation",
-          "pl": "Zmień nazwę rozmowy"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action conversation.rename with phrases in both languages.",
-          "pl": "Akcja conversation.rename z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_update_conversation"
-          ],
-          "http": [
-            "PATCH /api/conversations/:id"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "conversation.rename"
-      },
-      {
-        "id": "conversation_delete",
-        "title": {
-          "en": "Delete a conversation",
-          "pl": "Usuń rozmowę"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action conversation.delete with phrases in both languages.",
-          "pl": "Akcja conversation.delete z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_delete_conversation"
-          ],
-          "http": [
-            "DELETE /api/conversations/:id"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "conversation.delete"
-      },
-      {
-        "id": "message_edit",
-        "title": {
-          "en": "Edit a message (the old version stays, a new branch begins)",
-          "pl": "Popraw wiadomość (stara wersja zostaje, zaczyna się nowa gałąź)"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action message.edit with phrases in both languages.",
-          "pl": "Akcja message.edit z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_edit_message"
-          ],
-          "http": [
-            "POST /api/messages/:id/edit"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "message.edit"
-      },
-      {
-        "id": "message_restore",
-        "title": {
-          "en": "Switch to another version of a message",
-          "pl": "Przełącz na inną wersję wiadomości"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action message.restore with phrases in both languages.",
-          "pl": "Akcja message.restore z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_restore_version"
-          ],
-          "http": [
-            "POST /api/messages/:id/restore"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "message.restore"
-      },
-      {
-        "id": "message_versions",
-        "title": {
-          "en": "Show the versions of a message",
-          "pl": "Pokaż wersje wiadomości"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action message.versions with phrases in both languages.",
-          "pl": "Akcja message.versions z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_get_versions"
-          ],
-          "http": [
-            "GET /api/messages/:id/versions"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "message.versions"
-      },
-      {
-        "id": "message_status",
-        "title": {
-          "en": "Exclude, include or delete a message",
-          "pl": "Wyklucz, włącz albo usuń wiadomość"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action message.set_status with phrases in both languages.",
-          "pl": "Akcja message.set_status z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_set_message_status"
-          ],
-          "http": [
-            "POST /api/messages/:id/status"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "message.set_status"
-      },
-      {
-        "id": "message_weight",
-        "title": {
-          "en": "Say how much a message weighs",
-          "pl": "Ustaw wagę wiadomości"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action message.weight with phrases in both languages.",
-          "pl": "Akcja message.weight z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_update_message"
-          ],
-          "http": [
-            "PATCH /api/messages/:id"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "message.weight"
-      },
-      {
-        "id": "search",
-        "title": {
-          "en": "Find conversations and messages",
-          "pl": "Znajdź rozmowy i wiadomości"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action search.find with phrases in both languages.",
-          "pl": "Akcja search.find z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_search"
-          ],
-          "http": [
-            "GET /api/search"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "search.find"
-      },
-      {
-        "id": "graph_related",
-        "title": {
-          "en": "What is connected to a name",
-          "pl": "Co jest powiązane z nazwą"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action graph.related with phrases in both languages.",
-          "pl": "Akcja graph.related z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_get_nodes",
-            "loom_get_edges",
-            "loom_get_graph_data",
-            "loom_expand_graph"
-          ],
-          "http": [
-            "GET /api/graph/data",
-            "GET /api/graph/nodes",
-            "GET /api/graph/edges",
-            "POST /api/graph/expand"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "graph.related"
-      },
-      {
-        "id": "graph_overview",
-        "title": {
-          "en": "The graph at a glance",
-          "pl": "Graf w skrócie"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action graph.overview with phrases in both languages.",
-          "pl": "Akcja graph.overview z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_graph_entry"
-          ],
-          "http": [
-            "GET /api/graph/entry"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "graph.overview"
-      },
-      {
-        "id": "graph_reindex",
-        "title": {
-          "en": "Rebuild the graph of a conversation",
-          "pl": "Przebuduj graf rozmowy"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action graph.reindex with phrases in both languages.",
-          "pl": "Akcja graph.reindex z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_graph_reindex"
-          ],
-          "http": [
-            "POST /api/graph/reindex"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "graph.reindex"
-      },
-      {
-        "id": "memory_recall",
-        "title": {
-          "en": "Show what is remembered",
-          "pl": "Pokaż, co jest zapamiętane"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action memory.recall with phrases in both languages.",
-          "pl": "Akcja memory.recall z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_list_memory",
-            "loom_get_memory_context"
-          ],
-          "http": [
-            "GET /api/memory",
-            "GET /api/memory/context"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "memory.recall"
-      },
-      {
-        "id": "memory_remember",
-        "title": {
-          "en": "Remember something",
-          "pl": "Zapamiętaj coś"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action memory.remember with phrases in both languages.",
-          "pl": "Akcja memory.remember z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_create_memory"
-          ],
-          "http": [
-            "POST /api/memory"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "memory.remember"
-      },
-      {
-        "id": "memory_update",
-        "title": {
-          "en": "Correct a memory",
-          "pl": "Popraw zapamiętane"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action memory.update with phrases in both languages.",
-          "pl": "Akcja memory.update z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_update_memory"
-          ],
-          "http": [
-            "PATCH /api/memory/:id"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "memory.update"
-      },
-      {
-        "id": "memory_forget",
-        "title": {
-          "en": "Forget something",
-          "pl": "Zapomnij coś"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action memory.forget with phrases in both languages.",
-          "pl": "Akcja memory.forget z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_delete_memory"
-          ],
-          "http": [
-            "DELETE /api/memory/:id"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "memory.forget"
-      },
-      {
-        "id": "import",
-        "title": {
-          "en": "Import a file of conversations",
-          "pl": "Zaimportuj plik z rozmowami"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action import.file with phrases in both languages.",
-          "pl": "Akcja import.file z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_import_file",
-            "loom_import_file_ex",
-            "loom_detect_format"
-          ],
-          "http": [
-            "POST /api/import"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "import.file"
-      },
-      {
-        "id": "export",
-        "title": {
-          "en": "Export a conversation",
-          "pl": "Wyeksportuj rozmowę"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action export.conversation with phrases in both languages.",
-          "pl": "Akcja export.conversation z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_export_conversation"
-          ],
-          "http": [
-            "GET /api/conversations/:id/export"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "export.conversation"
-      },
-      {
-        "id": "storage_status",
-        "title": {
-          "en": "State of the storage backends",
-          "pl": "Stan magazynów"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.status with phrases in both languages.",
-          "pl": "Akcja storage.status z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "GET /api/storage/status"
-          ],
-          "invoke": [
-            "storage.status"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_probe",
-        "title": {
-          "en": "Check that the backends answer",
-          "pl": "Sprawdź, czy magazyny odpowiadają"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.probe with phrases in both languages.",
-          "pl": "Akcja storage.probe z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "GET /api/storage/probe"
-          ],
-          "invoke": [
-            "storage.probe"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_kinds",
-        "title": {
-          "en": "Kinds of storage that can be connected",
-          "pl": "Rodzaje magazynów, które można podłączyć"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.kinds with phrases in both languages.",
-          "pl": "Akcja storage.kinds z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "GET /api/storage/kinds"
-          ],
-          "invoke": [
-            "storage.kinds"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_placement",
-        "title": {
-          "en": "Where each category of data lives",
-          "pl": "Gdzie leży każda kategoria danych"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.placement with phrases in both languages.",
-          "pl": "Akcja storage.placement z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "GET /api/storage/placement"
-          ],
-          "invoke": [
-            "storage.placement"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_locate",
-        "title": {
-          "en": "Where an object lies",
-          "pl": "Gdzie leży obiekt"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.locate with phrases in both languages.",
-          "pl": "Akcja storage.locate z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "GET /api/storage/locate"
-          ],
-          "invoke": [
-            "storage.locate"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_copy",
-        "title": {
-          "en": "Copy data to a backend",
-          "pl": "Skopiuj dane do magazynu"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.copy with phrases in both languages.",
-          "pl": "Akcja storage.copy z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/storage/copy"
-          ],
-          "invoke": [
-            "storage.copy"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_move",
-        "title": {
-          "en": "Move data to a backend",
-          "pl": "Przenieś dane do magazynu"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.move with phrases in both languages.",
-          "pl": "Akcja storage.move z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/storage/move"
-          ],
-          "invoke": [
-            "storage.move"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_backup",
-        "title": {
-          "en": "Back up the database to a backend",
-          "pl": "Kopia zapasowa bazy do magazynu"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.backup with phrases in both languages.",
-          "pl": "Akcja storage.backup z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/storage/backup"
-          ],
-          "invoke": [
-            "storage.backup"
-          ]
-        },
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "storage_connect",
-        "title": {
-          "en": "Connect a storage backend (Google Drive, S3, WebDAV)",
-          "pl": "Podłącz magazyn (Dysk Google, S3, WebDAV)"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action storage.connect with phrases in both languages.",
-          "pl": "Akcja storage.connect z frazami w obu językach."
-        },
-        "surfaces": {},
-        "stage": "P15 step 2",
-        "planned_action": "storage.connect"
-      },
-      {
-        "id": "github",
-        "title": {
-          "en": "Synchronise with GitHub",
-          "pl": "Synchronizuj z GitHubem"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action github.sync with phrases in both languages.",
-          "pl": "Akcja github.sync z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_github_sync"
-          ],
-          "invoke": [
-            "github.test",
-            "github.status",
-            "github.pull",
-            "github.push",
-            "github.sync"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "github.sync"
-      },
-      {
-        "id": "models_list",
-        "title": {
-          "en": "List the models",
-          "pl": "Wypisz modele"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action models.list with phrases in both languages.",
-          "pl": "Akcja models.list z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_get_models"
-          ],
-          "http": [
-            "GET /api/models"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "models.list"
-      },
-      {
-        "id": "models_refresh",
-        "title": {
-          "en": "Refresh the model list",
-          "pl": "Odśwież listę modeli"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action models.refresh with phrases in both languages.",
-          "pl": "Akcja models.refresh z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_refresh_models"
-          ],
-          "http": [
-            "POST /api/models/refresh"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "models.refresh"
-      },
-      {
-        "id": "providers_list",
-        "title": {
-          "en": "Which providers are connected (models, speech, text from images)",
-          "pl": "Którzy dostawcy są podłączeni (modele, mowa, tekst z obrazów)"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action providers.list with phrases in both languages.",
-          "pl": "Akcja providers.list z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_get_providers",
-            "loom_can",
-            "loom_media_status"
-          ],
-          "http": [
-            "GET /api/providers",
-            "GET /api/media/status"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "providers.list"
-      },
-      {
-        "id": "ports_show",
-        "title": {
-          "en": "Which model or provider does a job",
-          "pl": "Który model albo dostawca wykonuje daną pracę"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action ports.show with phrases in both languages.",
-          "pl": "Akcja ports.show z frazami w obu językach."
-        },
-        "surfaces": {
-          "invoke": [
-            "ports.resolve",
-            "ports.explain",
-            "ports.roles"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "ports.show"
-      },
-      {
-        "id": "ports_set",
-        "title": {
-          "en": "Choose the model or provider for a job (per conversation or for me)",
-          "pl": "Wybierz model albo dostawcę do pracy (dla rozmowy albo dla mnie)"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action ports.set with phrases in both languages.",
-          "pl": "Akcja ports.set z frazami w obu językach."
-        },
-        "surfaces": {},
-        "stage": "P15 step 2",
-        "planned_action": "ports.set"
-      },
-      {
-        "id": "usage_spend",
-        "title": {
-          "en": "How much was spent",
-          "pl": "Ile wydano"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action usage.spend with phrases in both languages.",
-          "pl": "Akcja usage.spend z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/usage-policy"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "usage.spend"
-      },
-      {
-        "id": "usage_limit",
-        "title": {
-          "en": "Set the growth limit of the usage",
-          "pl": "Ustaw limit wzrostu zużycia"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action usage.set_limit with phrases in both languages.",
-          "pl": "Akcja usage.set_limit z frazami w obu językach."
-        },
-        "surfaces": {},
-        "stage": "P15 step 2",
-        "planned_action": "usage.set_limit"
-      },
-      {
-        "id": "usage_compact",
-        "title": {
-          "en": "Compact the usage ledger",
-          "pl": "Skompaktuj rejestr zużycia"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action usage.compact with phrases in both languages.",
-          "pl": "Akcja usage.compact z frazami w obu językach."
-        },
-        "surfaces": {},
-        "stage": "P15 step 2"
-      },
-      {
-        "id": "economy",
-        "title": {
-          "en": "The economy report of the data",
-          "pl": "Raport oszczędności danych"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action economy.report with phrases in both languages.",
-          "pl": "Akcja economy.report z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "GET /api/economy/report"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "economy.report"
-      },
-      {
-        "id": "semantic_status",
-        "title": {
-          "en": "State of the semantic analysis",
-          "pl": "Stan analizy semantycznej"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action semantic.status with phrases in both languages.",
-          "pl": "Akcja semantic.status z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_semantic_status"
-          ],
-          "http": [
-            "GET /api/semantic/status"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "semantic.status"
-      },
-      {
-        "id": "semantic_pause",
-        "title": {
-          "en": "Pause the analysis",
-          "pl": "Wstrzymaj analizę"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action semantic.pause with phrases in both languages.",
-          "pl": "Akcja semantic.pause z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_semantic_pause"
-          ],
-          "http": [
-            "POST /api/semantic/pause"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "semantic.pause"
-      },
-      {
-        "id": "semantic_resume",
-        "title": {
-          "en": "Resume the analysis",
-          "pl": "Wznów analizę"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action semantic.resume with phrases in both languages.",
-          "pl": "Akcja semantic.resume z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_semantic_resume"
-          ],
-          "http": [
-            "POST /api/semantic/resume"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "semantic.resume"
-      },
-      {
-        "id": "semantic_wake",
-        "title": {
-          "en": "Wake the analysis",
-          "pl": "Obudź analizę"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action semantic.wake with phrases in both languages.",
-          "pl": "Akcja semantic.wake z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_semantic_wake"
-          ],
-          "http": [
-            "POST /api/semantic/wake"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "semantic.wake"
-      },
-      {
-        "id": "semantic_requeue",
-        "title": {
-          "en": "Queue failed analyses again",
-          "pl": "Ponów nieudane analizy"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action semantic.requeue with phrases in both languages.",
-          "pl": "Akcja semantic.requeue z frazami w obu językach."
-        },
-        "surfaces": {
-          "http": [
-            "POST /api/semantic/requeue"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "semantic.requeue"
-      },
-      {
-        "id": "tasks_list",
-        "title": {
-          "en": "Background tasks",
-          "pl": "Zadania w tle"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action tasks.list with phrases in both languages.",
-          "pl": "Akcja tasks.list z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_list_tasks",
-            "loom_get_task"
-          ],
-          "http": [
-            "GET /api/tasks",
-            "GET /api/tasks/:id"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "tasks.list"
-      },
-      {
-        "id": "tasks_resume",
-        "title": {
-          "en": "Resume interrupted tasks",
-          "pl": "Wznów przerwane zadania"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action tasks.resume with phrases in both languages.",
-          "pl": "Akcja tasks.resume z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_resume_tasks"
-          ],
-          "http": [
-            "POST /api/tasks/resume"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "tasks.resume"
-      },
-      {
-        "id": "tasks_cancel",
-        "title": {
-          "en": "Cancel a task",
-          "pl": "Anuluj zadanie"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action tasks.cancel with phrases in both languages.",
-          "pl": "Akcja tasks.cancel z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_cancel_task"
-          ],
-          "http": [
-            "POST /api/tasks/:id/cancel"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "tasks.cancel"
-      },
-      {
-        "id": "logs",
-        "title": {
-          "en": "The application log",
-          "pl": "Dziennik aplikacji"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action logs.show with phrases in both languages.",
-          "pl": "Akcja logs.show z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_get_logs"
-          ],
-          "http": [
-            "GET /api/logs"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "logs.show"
-      },
-      {
-        "id": "provenance",
-        "title": {
-          "en": "Where something comes from",
-          "pl": "Skąd coś pochodzi"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action provenance.show with phrases in both languages.",
-          "pl": "Akcja provenance.show z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_get_provenance"
-          ],
-          "http": [
-            "GET /api/provenance/:id"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "provenance.show"
-      },
-      {
-        "id": "sources",
-        "title": {
-          "en": "Sources and artifacts that were imported",
-          "pl": "Źródła i artefakty z importów"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action sources.list with phrases in both languages.",
-          "pl": "Akcja sources.list z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_list_sources",
-            "loom_list_artifacts"
-          ],
-          "http": [
-            "GET /api/sources",
-            "GET /api/artifacts"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "sources.list"
-      },
-      {
-        "id": "about",
-        "title": {
-          "en": "About this application: version, encryption",
-          "pl": "O aplikacji: wersja, szyfrowanie"
-        },
-        "reason": {
-          "en": "No action reaches it from the conversation yet.",
-          "pl": "Żadna akcja nie sięga do tego z rozmowy."
-        },
-        "plan": {
-          "en": "Action app.info with phrases in both languages.",
-          "pl": "Akcja app.info z frazami w obu językach."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_info",
-            "loom_version",
-            "loom_crypto_status"
-          ],
-          "http": [
-            "GET /api/info",
-            "GET /api/version"
-          ]
-        },
-        "stage": "P15 step 2",
-        "planned_action": "app.info"
       }
     ]
   },

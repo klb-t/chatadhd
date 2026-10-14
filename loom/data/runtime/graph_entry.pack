@@ -2894,6 +2894,9 @@
               "path": "loom/src/actions/estimate.cpp"
             },
             {
+              "path": "loom/src/actions/ops.cpp"
+            },
+            {
               "path": "loom/src/actions/overlay.cpp"
             },
             {
@@ -3040,6 +3043,9 @@
             },
             {
               "path": "loom/data/runtime/chat_coverage.pack"
+            },
+            {
+              "path": "loom/data/runtime/chat_ops.pack"
             },
             {
               "path": "loom/data/runtime/chat_reasoning.pack"

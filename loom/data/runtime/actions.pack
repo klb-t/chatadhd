@@ -700,7 +700,16 @@
             "stan magazyn*",
             "pokaż magazyn*"
           ]
-        }
+        },
+        "examples": {
+          "en": [
+            "show the storage status"
+          ],
+          "pl": [
+            "pokaż stan magazynów"
+          ]
+        },
+        "stores_result": false
       },
       "storage.probe": {
         "id": "storage.probe",
@@ -740,7 +749,16 @@
         "http": {
           "verb": "GET",
           "path": "/api/storage/probe"
-        }
+        },
+        "examples": {
+          "en": [
+            "probe the storage backends"
+          ],
+          "pl": [
+            "sprawdź połączenie z magazynami"
+          ]
+        },
+        "stores_result": false
       },
       "storage.kinds": {
         "id": "storage.kinds",
@@ -780,7 +798,16 @@
         "http": {
           "verb": "GET",
           "path": "/api/storage/kinds"
-        }
+        },
+        "examples": {
+          "en": [
+            "which kinds of storage can I connect"
+          ],
+          "pl": [
+            "jakie rodzaje magazynów można podłączyć"
+          ]
+        },
+        "stores_result": false
       },
       "storage.placement": {
         "id": "storage.placement",
@@ -839,7 +866,16 @@
               "always": false
             }
           ]
-        }
+        },
+        "examples": {
+          "en": [
+            "where does my data live"
+          ],
+          "pl": [
+            "gdzie leżą moje dane"
+          ]
+        },
+        "stores_result": false
       },
       "storage.locate": {
         "id": "storage.locate",
@@ -897,7 +933,8 @@
               "always": true
             }
           ]
-        }
+        },
+        "stores_result": false
       },
       "storage.copy": {
         "id": "storage.copy",
@@ -979,6 +1016,14 @@
           ],
           "pl": [
             "skopiuj kategori*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "copy blobs to s3_main"
+          ],
+          "pl": [
+            "skopiuj blobs do s3_main"
           ]
         }
       },
@@ -1067,6 +1112,14 @@
         "http": {
           "verb": "POST",
           "path": "/api/storage/move"
+        },
+        "examples": {
+          "en": [
+            "move blobs to s3_main"
+          ],
+          "pl": [
+            "przenieś blobs do s3_main"
+          ]
         }
       },
       "storage.backup": {
@@ -1142,6 +1195,14 @@
             "zrób kopię",
             "zrob kopie",
             "backup"
+          ]
+        },
+        "examples": {
+          "en": [
+            "back up the database to s3_main"
+          ],
+          "pl": [
+            "zrób kopię zapasową do s3_main"
           ]
         }
       },
@@ -1264,13 +1325,16 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Compact the usage ledger",
-        "description": "Folds completed operations older than the preset age into per-cohort aggregates; the baseline the growth guard compares against is preserved, pending, confirmed and denied operations and their receipts are never folded. Entry points: loom_usage_policy_json action compact, CLI usage compact.",
+        "description": "Folds completed operations older than the preset age into totals per cohort; the baseline of the growth guard is kept. It cannot be undone.",
+        "labels": {
+          "pl": "Skompaktuj rejestr zużycia"
+        },
         "inputs": [],
         "outputs": [
-          "json"
+          "text"
         ],
         "requires": [
-          "usage_ledger"
+          "application"
         ],
         "produces": [],
         "content_op": "none",
@@ -1283,9 +1347,32 @@
           "sends_off_device": false,
           "costs_money": false,
           "irreversible": true,
-          "touches_private_data": true
+          "touches_private_data": false
         },
-        "consumer": "loom/src/policy/usage_policy.cpp"
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "dry_run",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Only report",
+              "pl": "Tylko pokaż"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "examples": {
+          "en": [
+            "compact the usage ledger"
+          ],
+          "pl": [
+            "skompaktuj rejestr zużycia"
+          ]
+        }
       },
       "transcribe": {
         "id": "transcribe",
@@ -1369,7 +1456,15 @@
               "pl": "Język mowy albo tekstu, tak jak nazywa go dostawca („pl”, „en-US”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "transcribe this recording"
+          ],
+          "pl": [
+            "transkrybuj to nagranie"
+          ]
+        }
       },
       "describe_image": {
         "id": "describe_image",
@@ -1513,7 +1608,15 @@
               "pl": "Język mowy albo tekstu, tak jak nazywa go dostawca („pl”, „en-US”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "read the text from this image"
+          ],
+          "pl": [
+            "odczytaj tekst z tego obrazu"
+          ]
+        }
       },
       "summarise": {
         "id": "summarise",
@@ -1579,6 +1682,14 @@
             "podsumow*",
             "skróć",
             "skróc*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "summarise this conversation"
+          ],
+          "pl": [
+            "streść tę rozmowę"
           ]
         }
       },
@@ -1672,7 +1783,15 @@
               "pl": "Język, na który przetłumaczyć, słowami („niemiecki”, „German”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "translate this message to German"
+          ],
+          "pl": [
+            "przetłumacz tę wiadomość na niemiecki"
+          ]
+        }
       },
       "elaborate": {
         "id": "elaborate",
@@ -1766,7 +1885,15 @@
               "pl": "Którą część rozwinąć („przykłady”, „drugi akapit”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "elaborate on this message"
+          ],
+          "pl": [
+            "rozwiń tę wiadomość"
+          ]
+        }
       },
       "parody": {
         "id": "parody",
@@ -1860,7 +1987,15 @@
               "pl": "Styl parodii („pirat”, „korpomowa”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "write a parody of this message"
+          ],
+          "pl": [
+            "sparoduj tę wiadomość"
+          ]
+        }
       },
       "critique": {
         "id": "critique",
@@ -1956,7 +2091,15 @@
               "pl": "Czym oceniać tekst („argumentacja”, „ton”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "critique this message"
+          ],
+          "pl": [
+            "skrytykuj tę wiadomość"
+          ]
+        }
       },
       "combine": {
         "id": "combine",
@@ -2052,7 +2195,15 @@
             }
           }
         ],
-        "element_many": true
+        "element_many": true,
+        "examples": {
+          "en": [
+            "combine m_aaaaaaaaaaaa and m_bbbbbbbbbbbb"
+          ],
+          "pl": [
+            "połącz m_aaaaaaaaaaaa i m_bbbbbbbbbbbb"
+          ]
+        }
       },
       "depict": {
         "id": "depict",
@@ -2211,7 +2362,15 @@
               "pl": "Rozmiar obrazu w nazwach dostawcy."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "draw this conversation"
+          ],
+          "pl": [
+            "narysuj tę rozmowę"
+          ]
+        }
       },
       "narrate": {
         "id": "narrate",
@@ -2360,7 +2519,15 @@
               "pl": "Dodatkowe parametry żądania mowy (głos, format ...) w nazwach dostawcy."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "read this message aloud"
+          ],
+          "pl": [
+            "przeczytaj tę wiadomość na głos"
+          ]
+        }
       },
       "actions.for": {
         "id": "actions.for",
@@ -3143,7 +3310,17 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/status"
-        }
+        },
+        "examples": {
+          "en": [
+            "show the action runs"
+          ],
+          "pl": [
+            "pokaż przebiegi akcji"
+          ]
+        },
+        "stores_result": false,
+        "positional_arg": "run_id"
       },
       "client.declare": {
         "id": "client.declare",
@@ -3585,6 +3762,14 @@
         "http": {
           "verb": "POST",
           "path": "/api/rules/set"
+        },
+        "examples": {
+          "en": [
+            "for this conversation set action_result_target to conversation_message"
+          ],
+          "pl": [
+            "w tej rozmowie ustaw action_result_target=conversation_message"
+          ]
         }
       },
       "rules.disable": {
@@ -3684,6 +3869,14 @@
         "http": {
           "verb": "POST",
           "path": "/api/rules/disable"
+        },
+        "examples": {
+          "en": [
+            "disable the rule user:person:confirm:depict"
+          ],
+          "pl": [
+            "wyłącz regułę user:person:confirm:depict"
+          ]
         }
       },
       "rules.list": {
@@ -3771,7 +3964,16 @@
         "http": {
           "verb": "POST",
           "path": "/api/rules/list"
-        }
+        },
+        "examples": {
+          "en": [
+            "show my rules"
+          ],
+          "pl": [
+            "pokaż moje reguły"
+          ]
+        },
+        "stores_result": false
       },
       "actions.define": {
         "id": "actions.define",
@@ -4022,6 +4224,14 @@
         "http": {
           "verb": "POST",
           "path": "/api/actions/remove"
+        },
+        "examples": {
+          "en": [
+            "remove the action rozpisz"
+          ],
+          "pl": [
+            "usuń akcję rozpisz"
+          ]
         }
       },
       "groups.define": {
@@ -4240,6 +4450,14 @@
         "http": {
           "verb": "POST",
           "path": "/api/groups/remove"
+        },
+        "examples": {
+          "en": [
+            "remove the group my_group"
+          ],
+          "pl": [
+            "usuń grupę moja_grupa"
+          ]
         }
       },
       "device.record_audio": {
@@ -4323,7 +4541,15 @@
               "pl": "Jak długo nagrywać (domyślnie: do zatrzymania)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "record a voice note"
+          ],
+          "pl": [
+            "nagraj notatkę głosową"
+          ]
+        }
       },
       "device.capture_image": {
         "id": "device.capture_image",
@@ -4386,6 +4612,14 @@
             "zrob zdjecie",
             "zrób fotkę",
             "zrób fotografię"
+          ]
+        },
+        "examples": {
+          "en": [
+            "take a photo"
+          ],
+          "pl": [
+            "zrób zdjęcie"
           ]
         }
       },
@@ -4700,6 +4934,14 @@
             "wklej ze schowka",
             "odczytaj schowek"
           ]
+        },
+        "examples": {
+          "en": [
+            "paste from the clipboard"
+          ],
+          "pl": [
+            "wklej ze schowka"
+          ]
         }
       },
       "device.notify": {
@@ -4830,6 +5072,14 @@
             "wybierz plik",
             "otwórz plik",
             "otworz plik"
+          ]
+        },
+        "examples": {
+          "en": [
+            "pick a file"
+          ],
+          "pl": [
+            "wybierz plik"
           ]
         }
       },
@@ -5106,7 +5356,15 @@
             "has_default": false,
             "edit": "free_text"
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "set temperature to 0.3"
+          ],
+          "pl": [
+            "ustaw temperature=0.3"
+          ]
+        }
       },
       "settings.get": {
         "id": "settings.get",
@@ -5167,7 +5425,15 @@
             "has_default": false,
             "edit": "free_text"
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "show temperature"
+          ],
+          "pl": [
+            "pokaż temperature"
+          ]
+        }
       },
       "rephrase": {
         "id": "rephrase",
@@ -5268,7 +5534,15 @@
               "pl": "Poziom języka („akademicki”, „dla nastolatków”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "rephrase this message"
+          ],
+          "pl": [
+            "przeredaguj tę wiadomość"
+          ]
+        }
       },
       "explain_simply": {
         "id": "explain_simply",
@@ -5350,7 +5624,2477 @@
               "pl": "Dla kogo, na dowolnym poziomie („początkujący”, „dziesięciolatek”, „ekspert z innej dziedziny”)."
             }
           }
-        ]
+        ],
+        "examples": {
+          "en": [
+            "explain this message simply"
+          ],
+          "pl": [
+            "wytłumacz prościej tę wiadomość"
+          ]
+        }
+      },
+      "help.can_do": {
+        "id": "help.can_do",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What can be done here",
+        "description": "The actions that fit the conversation in front of the user and those of the application as a whole, in plain words and grouped, each with a sentence that does it; and the syntax for those who know it. Nothing is run.",
+        "labels": {
+          "pl": "Co można tu zrobić"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "what can I do here?"
+          ],
+          "pl": [
+            "co mogę tu zrobić?"
+          ]
+        }
+      },
+      "help.how_to": {
+        "id": "help.how_to",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "How to do something (explained, not run)",
+        "description": "Reads what is asked as a command would be read and explains it: what to say, the steps it takes, whether it asks first, whether it costs, the syntax. Nothing is run.",
+        "labels": {
+          "pl": "Jak coś zrobić (wyjaśnienie, bez wykonania)"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "topic",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What to do, in the user's words",
+              "pl": "Co zrobić, słowami użytkownika"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "how do I summarise this conversation"
+          ],
+          "pl": [
+            "jak to zrobić: streścić tę rozmowę"
+          ]
+        },
+        "positional_arg": "topic"
+      },
+      "conversations.list": {
+        "id": "conversations.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "List conversations",
+        "description": "The conversations, newest first.",
+        "labels": {
+          "pl": "Wypisz rozmowy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many",
+              "pl": "Ile"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "list my conversations"
+          ],
+          "pl": [
+            "pokaż moje rozmowy"
+          ]
+        }
+      },
+      "conversation.create": {
+        "id": "conversation.create",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Start a conversation",
+        "description": "Creates a conversation with the title given (or \"New Chat\").",
+        "labels": {
+          "pl": "Załóż rozmowę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Title",
+              "pl": "Tytuł"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "create a new conversation called Travel"
+          ],
+          "pl": [
+            "utwórz nową rozmowę „Podróże”"
+          ]
+        },
+        "positional_arg": "title"
+      },
+      "conversation.rename": {
+        "id": "conversation.rename",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Rename a conversation",
+        "description": "Gives the conversation a new title.",
+        "labels": {
+          "pl": "Zmień nazwę rozmowy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "title",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The new title",
+              "pl": "Nowy tytuł"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "rename this conversation to Holiday plan"
+          ],
+          "pl": [
+            "zmień nazwę tej rozmowy na Plan wakacji"
+          ]
+        },
+        "positional_arg": "title"
+      },
+      "conversation.delete": {
+        "id": "conversation.delete",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Delete a conversation",
+        "description": "Deletes the conversation with all its messages. It cannot be undone.",
+        "labels": {
+          "pl": "Usuń rozmowę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": true,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "delete this conversation"
+          ],
+          "pl": [
+            "usuń tę rozmowę"
+          ]
+        }
+      },
+      "message.edit": {
+        "id": "message.edit",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Edit a message (a new version, the old one stays)",
+        "description": "Writes the new text as the next version of the message: the old version is kept and a new branch begins from the edited one.",
+        "labels": {
+          "pl": "Popraw wiadomość (nowa wersja, stara zostaje)"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "message"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "text",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The new text",
+              "pl": "Nowy tekst"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "edit this message: The meeting is on Friday"
+          ],
+          "pl": [
+            "popraw tę wiadomość: Spotkanie jest w piątek"
+          ]
+        },
+        "positional_arg": "text"
+      },
+      "message.versions": {
+        "id": "message.versions",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show the versions of a message",
+        "description": "Every version of the message, with its number and state.",
+        "labels": {
+          "pl": "Pokaż wersje wiadomości"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "message"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "show the versions of this message"
+          ],
+          "pl": [
+            "pokaż wersje tej wiadomości"
+          ]
+        }
+      },
+      "message.restore": {
+        "id": "message.restore",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Switch to another version of a message",
+        "description": "Makes another version of the message the active one: the previous one (default), a version number, or a message id.",
+        "labels": {
+          "pl": "Przełącz na inną wersję wiadomości"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "message"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "version",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "previous (default), a version number or a message id",
+              "pl": "previous (domyślnie), numer wersji albo id wiadomości"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "previous"
+          }
+        ],
+        "examples": {
+          "en": [
+            "restore the previous version of this message"
+          ],
+          "pl": [
+            "wróć do poprzedniej wersji tej wiadomości"
+          ]
+        }
+      },
+      "message.set_status": {
+        "id": "message.set_status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Exclude, include or delete a message",
+        "description": "Sets the state of the message: excluded (kept, left out of the context), active, or deleted.",
+        "labels": {
+          "pl": "Wyklucz, włącz albo usuń wiadomość"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "message"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "status",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "active, excluded or deleted",
+              "pl": "active, excluded albo deleted"
+            },
+            "has_default": false,
+            "edit": "choice:message_status"
+          }
+        ],
+        "examples": {
+          "en": [
+            "exclude this message from the context"
+          ],
+          "pl": [
+            "wyklucz tę wiadomość z kontekstu"
+          ]
+        }
+      },
+      "message.weight": {
+        "id": "message.weight",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Say how much a message weighs",
+        "description": "The weight of the message in the context selection (1 is ordinary).",
+        "labels": {
+          "pl": "Ustaw wagę wiadomości"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "message"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "weight",
+            "type": "number",
+            "required": false,
+            "description": {
+              "en": "The weight",
+              "pl": "Waga"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "importance",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Or a word: important, unimportant",
+              "pl": "Albo słowo: ważna, nieważna"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "mark this message as important"
+          ],
+          "pl": [
+            "oznacz tę wiadomość jako ważną"
+          ]
+        }
+      },
+      "search.find": {
+        "id": "search.find",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Find conversations and messages",
+        "description": "Full-text search of the messages; the answer lists the conversations that match, with a snippet.",
+        "labels": {
+          "pl": "Znajdź rozmowy i wiadomości"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "query",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What to look for",
+              "pl": "Czego szukać"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many conversations",
+              "pl": "Ile rozmów"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "find conversations about cats"
+          ],
+          "pl": [
+            "znajdź rozmowy o kotach"
+          ]
+        },
+        "positional_arg": "query"
+      },
+      "graph.related": {
+        "id": "graph.related",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What is connected to a name",
+        "description": "The nodes of the knowledge graph that carry the name and what is linked to them, one step (or more) away.",
+        "labels": {
+          "pl": "Co jest powiązane z nazwą"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "name",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The name of an entity, topic or concept",
+              "pl": "Nazwa bytu, tematu albo pojęcia"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "depth",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many steps",
+              "pl": "Ile kroków"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": 1
+          }
+        ],
+        "examples": {
+          "en": [
+            "show what is related to Python"
+          ],
+          "pl": [
+            "pokaż, co jest powiązane z Python"
+          ]
+        },
+        "positional_arg": "name"
+      },
+      "graph.overview": {
+        "id": "graph.overview",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "The graph at a glance",
+        "description": "The areas of the graph entry view with their counts.",
+        "labels": {
+          "pl": "Graf w skrócie"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "show the graph overview"
+          ],
+          "pl": [
+            "pokaż graf w skrócie"
+          ]
+        }
+      },
+      "graph.reindex": {
+        "id": "graph.reindex",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Rebuild the graph of a conversation",
+        "description": "Reads the messages of the conversation again and writes the nodes and links they give (or of all conversations).",
+        "labels": {
+          "pl": "Przebuduj graf rozmowy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "all",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "All conversations",
+              "pl": "Wszystkie rozmowy"
+            },
+            "has_default": true,
+            "edit": "toggle",
+            "default": false
+          }
+        ],
+        "examples": {
+          "en": [
+            "rebuild the graph of this conversation"
+          ],
+          "pl": [
+            "przebuduj graf tej rozmowy"
+          ]
+        }
+      },
+      "memory.recall": {
+        "id": "memory.recall",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show what is remembered",
+        "description": "The memory entries (all, or those that match the words).",
+        "labels": {
+          "pl": "Pokaż, co jest zapamiętane"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "query",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only entries that match",
+              "pl": "Tylko pasujące wpisy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "what do you remember about me?"
+          ],
+          "pl": [
+            "co zapamiętałeś o mnie?"
+          ]
+        },
+        "positional_arg": "query"
+      },
+      "memory.remember": {
+        "id": "memory.remember",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Remember something",
+        "description": "Adds a memory entry; the memory goes into every prompt.",
+        "labels": {
+          "pl": "Zapamiętaj coś"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "content",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What to remember",
+              "pl": "Co zapamiętać"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "remember that I like coffee"
+          ],
+          "pl": [
+            "zapamiętaj, że lubię kawę"
+          ]
+        },
+        "positional_arg": "content"
+      },
+      "memory.update": {
+        "id": "memory.update",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Correct a memory entry",
+        "description": "Replaces the text of a memory entry.",
+        "labels": {
+          "pl": "Popraw wpis pamięci"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The entry",
+              "pl": "Wpis"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "content",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The new text",
+              "pl": "Nowy tekst"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "change memory entry a1b2c3d4e5f6 to I like tea"
+          ],
+          "pl": [
+            "zmień wpis pamięci a1b2c3d4e5f6 na lubię herbatę"
+          ]
+        }
+      },
+      "memory.forget": {
+        "id": "memory.forget",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Forget something",
+        "description": "Removes the one memory entry that matches the words (or the id); with several matches it lists them and removes nothing.",
+        "labels": {
+          "pl": "Zapomnij coś"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": true,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "query",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What to forget (words or an id)",
+              "pl": "Co zapomnieć (słowa albo id)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "forget that I like coffee"
+          ],
+          "pl": [
+            "zapomnij, że lubię kawę"
+          ]
+        },
+        "positional_arg": "query"
+      },
+      "export.conversation": {
+        "id": "export.conversation",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Export a conversation",
+        "description": "Writes the conversation as a file (markdown, json, text or html) into the exports folder, and to a storage backend when one is named.",
+        "labels": {
+          "pl": "Wyeksportuj rozmowę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "format",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "markdown (default), json, text, html",
+              "pl": "markdown (domyślnie), json, text, html"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "markdown"
+          },
+          {
+            "name": "to",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A configured storage backend, or the format",
+              "pl": "Skonfigurowany magazyn albo format"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "export this conversation as markdown"
+          ],
+          "pl": [
+            "wyeksportuj tę rozmowę do markdown"
+          ]
+        }
+      },
+      "import.run": {
+        "id": "import.run",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Import a file of conversations",
+        "description": "Reads the file (a path, or the file a device picked) with the universal importer: ChatGPT and Claude exports, JSON, HTML, Markdown, text, SQLite, archives.",
+        "labels": {
+          "pl": "Zaimportuj plik z rozmowami"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Path of the file (without it, the picked file)",
+              "pl": "Ścieżka pliku (bez niej: wybrany plik)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Title for a single conversation",
+              "pl": "Tytuł pojedynczej rozmowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "import /home/me/export.zip"
+          ],
+          "pl": [
+            "zaimportuj /home/ja/eksport.zip"
+          ]
+        },
+        "positional_arg": "path"
+      },
+      "import.file": {
+        "id": "import.file",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Import a file",
+        "labels": {
+          "pl": "Zaimportuj plik"
+        },
+        "description": "Imports a file of conversations: the path given, or - without one - the file the device lets the user pick, then the import runs on it.",
+        "steps": [
+          {
+            "id": "pick",
+            "action": "device.pick_file",
+            "when": {
+              "not": {
+                "arg": "path"
+              }
+            }
+          },
+          {
+            "id": "import",
+            "action": "import.run",
+            "with": {
+              "path": {
+                "$arg": "path",
+                "default": ""
+              },
+              "title": {
+                "$arg": "title",
+                "default": ""
+              }
+            }
+          }
+        ],
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Path of the file (without it, the picked file)",
+              "pl": "Ścieżka pliku (bez niej: wybrany plik)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "title",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Title for a single conversation",
+              "pl": "Tytuł pojedynczej rozmowy"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "import this file"
+          ],
+          "pl": [
+            "zaimportuj ten plik"
+          ]
+        },
+        "positional_arg": "path"
+      },
+      "storage.connect": {
+        "id": "storage.connect",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Connect a storage backend",
+        "description": "Describes a backend in your overlay (profiles/storage_security.pack): Google Drive, an S3 bucket, WebDAV. Only what is not secret is written; the keys and tokens are entered in Settings and never in the conversation.",
+        "labels": {
+          "pl": "Podłącz magazyn"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "gdrive, s3 or webdav",
+              "pl": "gdrive, s3 albo webdav"
+            },
+            "has_default": false,
+            "edit": "choice:storage_kinds"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A name for it",
+              "pl": "Nazwa"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "endpoint",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "S3 endpoint",
+              "pl": "Punkt końcowy S3"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "bucket",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "S3 bucket",
+              "pl": "Bucket S3"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "region",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "S3 region",
+              "pl": "Region S3"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "WebDAV address",
+              "pl": "Adres WebDAV"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "prefix",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Folder or key prefix",
+              "pl": "Folder albo przedrostek klucza"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "connect my Google Drive"
+          ],
+          "pl": [
+            "podłącz mój Dysk Google"
+          ]
+        }
+      },
+      "ports.show": {
+        "id": "ports.show",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Which model or provider does a job",
+        "description": "The adapter and model a job resolves to, and at which level (installation, you, this conversation) the choice was made; without a job, every job.",
+        "labels": {
+          "pl": "Który model albo dostawca wykonuje pracę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "role_word",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The job (summaries, transcription, chat ...)",
+              "pl": "Praca (streszczenia, transkrypcja, rozmowa ...)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "which model do I use for summaries"
+          ],
+          "pl": [
+            "jakiego modelu używam do streszczeń"
+          ]
+        },
+        "positional_arg": "role_word"
+      },
+      "ports.set": {
+        "id": "ports.set",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Choose the model or provider for a job",
+        "description": "Writes the choice into the ports profile at the level you name: for this conversation (its metadata) or for you (profiles/ports.pack). The shipped preset is never edited.",
+        "labels": {
+          "pl": "Wybierz model albo dostawcę do pracy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "role_word",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The job",
+              "pl": "Praca"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "model",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The model or provider",
+              "pl": "Model albo dostawca"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "person (default) or conversation",
+              "pl": "person (domyślnie) albo conversation"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "person"
+          }
+        ],
+        "examples": {
+          "en": [
+            "use model openai/gpt-4o-mini for summaries"
+          ],
+          "pl": [
+            "do streszczeń używaj modelu openai/gpt-4o-mini"
+          ]
+        }
+      },
+      "usage.spend": {
+        "id": "usage.spend",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "How much was spent",
+        "description": "The requests, tokens and cost the provider reported for the calls of a period (today, this week, this month, the last N days); what no provider reported is said to be unknown, never zero.",
+        "labels": {
+          "pl": "Ile wydano"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "period",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "today, this week, this month, the last N days ...",
+              "pl": "dzisiaj, w tym tygodniu, w tym miesiącu, w ostatnich N dniach ..."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "how much did I spend this week"
+          ],
+          "pl": [
+            "ile wydałem w tym tygodniu"
+          ]
+        },
+        "positional_arg": "period"
+      },
+      "usage.set_limit": {
+        "id": "usage.set_limit",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Set the growth limit of the usage",
+        "description": "How many times above the usual consumption an operation may grow before you are asked (the growth factor of the usage policy). It is an edit of the setting loom_usage_policy and goes through the rules of that setting: raising expected consumption by an order of magnitude still needs your confirmation.",
+        "labels": {
+          "pl": "Ustaw limit wzrostu zużycia"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "settings_field"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "growth_factor",
+            "type": "number",
+            "required": true,
+            "description": {
+              "en": "The factor (10 is the preset)",
+              "pl": "Współczynnik (preset to 10)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "set the usage growth limit to 20"
+          ],
+          "pl": [
+            "ustaw limit wzrostu zużycia na 20"
+          ]
+        },
+        "positional_arg": "growth_factor",
+        "gate_as": [
+          "edit"
+        ],
+        "element_from_arg": "setting_key"
+      },
+      "economy.report": {
+        "id": "economy.report",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "The economy report of the data",
+        "description": "Copies, waste and what could be saved in the stored data; it only reports, nothing is changed.",
+        "labels": {
+          "pl": "Raport oszczędności danych"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "mode",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "off, report or propose",
+              "pl": "off, report albo propose"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show the economy report"
+          ],
+          "pl": [
+            "pokaż raport oszczędności"
+          ]
+        }
+      },
+      "models.list": {
+        "id": "models.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "List the models",
+        "description": "The models of the registry (all, or those that match the words).",
+        "labels": {
+          "pl": "Wypisz modele"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "query",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only models that match",
+              "pl": "Tylko pasujące modele"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many",
+              "pl": "Ile"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "list the models"
+          ],
+          "pl": [
+            "pokaż modele"
+          ]
+        },
+        "positional_arg": "query"
+      },
+      "models.refresh": {
+        "id": "models.refresh",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Refresh the model list",
+        "description": "Fetches the provider's public model list; nothing of yours is sent besides the key the provider needs.",
+        "labels": {
+          "pl": "Odśwież listę modeli"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "refresh the model list"
+          ],
+          "pl": [
+            "odśwież listę modeli"
+          ]
+        }
+      },
+      "providers.list": {
+        "id": "providers.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Which providers are connected",
+        "description": "The providers of models, speech recognition and text from images, and whether each has what it needs (never the keys).",
+        "labels": {
+          "pl": "Którzy dostawcy są podłączeni"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "show the providers"
+          ],
+          "pl": [
+            "pokaż dostawców"
+          ]
+        }
+      },
+      "settings.list": {
+        "id": "settings.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "List the settings",
+        "description": "The settings (all, or of one group) with their values; a secret says only whether it is set.",
+        "labels": {
+          "pl": "Wypisz ustawienia"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "group",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "chat, semantic, memory, usage ...",
+              "pl": "chat, semantic, memory, usage ..."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "list the memory settings"
+          ],
+          "pl": [
+            "pokaż ustawienia pamięci"
+          ]
+        },
+        "positional_arg": "group"
+      },
+      "semantic.status": {
+        "id": "semantic.status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "State of the semantic analysis",
+        "description": "What the background analysis has done and has still to do.",
+        "labels": {
+          "pl": "Stan analizy semantycznej"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "show the semantic analysis status"
+          ],
+          "pl": [
+            "pokaż stan analizy semantycznej"
+          ]
+        }
+      },
+      "semantic.pause": {
+        "id": "semantic.pause",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Pause the analysis",
+        "description": "Stops the background analysis picking up messages until it is resumed.",
+        "labels": {
+          "pl": "Wstrzymaj analizę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "pause the semantic analysis"
+          ],
+          "pl": [
+            "wstrzymaj analizę semantyczną"
+          ]
+        }
+      },
+      "semantic.resume": {
+        "id": "semantic.resume",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Resume the analysis",
+        "description": "Lets the background analysis go on.",
+        "labels": {
+          "pl": "Wznów analizę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "resume the semantic analysis"
+          ],
+          "pl": [
+            "wznów analizę semantyczną"
+          ]
+        }
+      },
+      "semantic.wake": {
+        "id": "semantic.wake",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Wake the analysis",
+        "description": "Tells the background analysis to look for work now.",
+        "labels": {
+          "pl": "Obudź analizę"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "wake the semantic analysis"
+          ],
+          "pl": [
+            "obudź analizę semantyczną"
+          ]
+        }
+      },
+      "semantic.requeue": {
+        "id": "semantic.requeue",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Queue failed analyses again",
+        "description": "Puts the failed and interrupted analyses back in the queue (the history of the attempts stays).",
+        "labels": {
+          "pl": "Ponów nieudane analizy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "requeue the failed semantic analyses"
+          ],
+          "pl": [
+            "ponów nieudane analizy semantyczne"
+          ]
+        }
+      },
+      "tasks.list": {
+        "id": "tasks.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Background tasks",
+        "description": "The tasks the application runs in the background and their state.",
+        "labels": {
+          "pl": "Zadania w tle"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "status",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only tasks in this state",
+              "pl": "Tylko zadania w tym stanie"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many",
+              "pl": "Ile"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show the background tasks"
+          ],
+          "pl": [
+            "pokaż zadania w tle"
+          ]
+        }
+      },
+      "tasks.resume": {
+        "id": "tasks.resume",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Resume interrupted tasks",
+        "description": "Takes the tasks a restart interrupted up again from their checkpoints.",
+        "labels": {
+          "pl": "Wznów przerwane zadania"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "resume the interrupted tasks"
+          ],
+          "pl": [
+            "wznów przerwane zadania"
+          ]
+        }
+      },
+      "tasks.cancel": {
+        "id": "tasks.cancel",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Cancel a task",
+        "description": "Stops a background task.",
+        "labels": {
+          "pl": "Anuluj zadanie"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The task",
+              "pl": "Zadanie"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "cancel task t_0123456789ab"
+          ],
+          "pl": [
+            "anuluj zadanie t_0123456789ab"
+          ]
+        },
+        "positional_arg": "id"
+      },
+      "logs.show": {
+        "id": "logs.show",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "The application log",
+        "description": "The latest lines of the log.",
+        "labels": {
+          "pl": "Dziennik aplikacji"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many lines",
+              "pl": "Ile linii"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show the logs"
+          ],
+          "pl": [
+            "pokaż logi"
+          ]
+        }
+      },
+      "provenance.show": {
+        "id": "provenance.show",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Where something comes from",
+        "description": "The provenance records of a message, a conversation or any element: which source it was read from, when.",
+        "labels": {
+          "pl": "Skąd coś pochodzi"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "subject",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "An id (default: the element named)",
+              "pl": "Id (domyślnie: wskazany element)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show the provenance of this message"
+          ],
+          "pl": [
+            "pokaż pochodzenie tej wiadomości"
+          ]
+        },
+        "positional_arg": "subject"
+      },
+      "sources.list": {
+        "id": "sources.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Sources of imports",
+        "description": "The sources (files, archives) that were imported.",
+        "labels": {
+          "pl": "Źródła importów"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "limit",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "How many",
+              "pl": "Ile"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show the sources"
+          ],
+          "pl": [
+            "pokaż źródła"
+          ]
+        }
+      },
+      "app.info": {
+        "id": "app.info",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "About this application",
+        "description": "Version, data folder and whether encryption is on.",
+        "labels": {
+          "pl": "O aplikacji"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "examples": {
+          "en": [
+            "what version is this application"
+          ],
+          "pl": [
+            "jaka to wersja aplikacji"
+          ]
+        }
+      },
+      "github.sync": {
+        "id": "github.sync",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Synchronise with GitHub",
+        "description": "Pulls, pushes or syncs the data folder with the repository set in the settings (the token is a secret kept in Settings).",
+        "labels": {
+          "pl": "Synchronizuj z GitHubem"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "operation",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "sync (default), pull, push, status or test",
+              "pl": "sync (domyślnie), pull, push, status albo test"
+            },
+            "has_default": true,
+            "edit": "free_text",
+            "default": "sync"
+          },
+          {
+            "name": "repo",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "owner/repository (default: the setting github_repo)",
+              "pl": "właściciel/repozytorium (domyślnie: ustawienie github_repo)"
+            },
+            "has_default": false,
+            "edit": "free_text",
+            "setting": "github_repo"
+          }
+        ],
+        "examples": {
+          "en": [
+            "sync with GitHub"
+          ],
+          "pl": [
+            "zsynchronizuj z GitHubem"
+          ]
+        }
       }
     }
   },

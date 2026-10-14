@@ -117,6 +117,16 @@ std::string content_op_of(const Engine* engine, const Json& run) {
   return entry ? json::get_string(*entry, "content_op", "none") : std::string();
 }
 
+// An answer to a question (the list of conversations, a spend report, what can be done here) is said in the conversation and is
+// not content: an action that declares `stores_result: false` leaves no form or content node behind.
+bool stores_result(const Engine* engine, const Json& run) {
+  if (!engine) return true;
+  const Json items = run.value("plan", Json::object()).value("items", Json::array());
+  if (items.empty()) return true;
+  const Json* entry = json::find(engine->catalogue(), items[items.size() - 1].value("action", ""));
+  return !entry || json::get_bool(*entry, "stores_result", true);
+}
+
 Json fidelity_of(const Json& profile, const std::string& content_op) {
   const Json* table = json::find(profile, "fidelity");
   if (table && !content_op.empty())
@@ -183,6 +193,7 @@ Result<std::string> part_text(BlobStore* blobs, const Json& part) {
 Status store_run_results(const ResultServices& s, Json& run) {
   if (!s.profile.is_object() || json::get_bool(run, "sensitive", false)) return {};
   if (!run.contains("result") || !run["result"].is_object()) return {};
+  if (!stores_result(s.engine, run)) return {};
   const Json& profile = s.profile;
   const Json by_part = profile.value("classes", Json::object()).value("by_part", Json::object());
   const std::int64_t inline_max = [&] {

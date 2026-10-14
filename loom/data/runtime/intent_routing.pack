@@ -8,9 +8,24 @@
       "setting": "intent_routing_method",
       "active": "heuristic",
       "presets": {
-        "off": {"label": {"en": "Off: every input is a message", "pl": "Wyłączone: każde wejście jest wiadomością"}},
-        "heuristic": {"label": {"en": "Local: explicit syntax and phrases, no model call", "pl": "Lokalnie: jawna składnia i frazy, bez wywołania modelu"}},
-        "model": {"label": {"en": "Model: one model call per input (guarded like every other)", "pl": "Model: jedno wywołanie modelu na wejście (pod tym samym zabezpieczeniem)"}}
+        "off": {
+          "label": {
+            "en": "Off: every input is a message",
+            "pl": "Wyłączone: każde wejście jest wiadomością"
+          }
+        },
+        "heuristic": {
+          "label": {
+            "en": "Local: explicit syntax and phrases, no model call",
+            "pl": "Lokalnie: jawna składnia i frazy, bez wywołania modelu"
+          }
+        },
+        "model": {
+          "label": {
+            "en": "Model: one model call per input (guarded like every other)",
+            "pl": "Model: jedno wywołanie modelu na wejście (pod tym samym zabezpieczeniem)"
+          }
+        }
       },
       "model_setting": "intent_routing_model",
       "model_fallback_setting": "default_model"
@@ -19,68 +34,341 @@
       "setting": "intent_routing_run",
       "active": "propose",
       "presets": {
-        "propose": {"label": {"en": "Propose first, run after the user's yes", "pl": "Najpierw propozycja, wykonanie po „tak”"}},
-        "read_only": {"label": {"en": "Run at once when the plan only reads and the rules ask for nothing", "pl": "Od razu, gdy plan tylko czyta, a zasady o nic nie pytają"}},
-        "always": {"label": {"en": "Run at once (rules and the x10 confirmation still apply)", "pl": "Od razu (zasady i potwierdzenie ×10 nadal obowiązują)"}}
-      }
+        "propose": {
+          "label": {
+            "en": "Propose first, run after the user's yes",
+            "pl": "Najpierw propozycja, wykonanie po „tak”"
+          }
+        },
+        "read_only": {
+          "label": {
+            "en": "Run at once when the plan only reads and the rules ask for nothing",
+            "pl": "Od razu, gdy plan tylko czyta, a zasady o nic nie pytają"
+          }
+        },
+        "always": {
+          "label": {
+            "en": "Run at once (rules and the x10 confirmation still apply)",
+            "pl": "Od razu (zasady i potwierdzenie ×10 nadal obowiązują)"
+          }
+        }
+      },
+      "direct": [
+        "help.can_do",
+        "help.how_to"
+      ]
     },
     "on_reject": {
       "setting": "intent_routing_on_reject",
       "active": "offer",
       "unknown": "offer",
       "presets": {
-        "offer": {"label": {"en": "Offer: after a no, ask whether to send the sentence to the model as an ordinary message", "pl": "Propozycja: po „nie” zapytaj, czy wysłać zdanie do modelu jako zwykłą wiadomość"}},
-        "send_as_message": {"label": {"en": "Send: after a no, send the sentence to the model as an ordinary message at once", "pl": "Wyślij: po „nie” od razu wyślij zdanie do modelu jako zwykłą wiadomość"}},
-        "drop": {"label": {"en": "Drop: after a no, the sentence is not sent (it stays in the conversation)", "pl": "Odrzuć: po „nie” zdanie nie jest wysyłane (zostaje w rozmowie)"}}
+        "offer": {
+          "label": {
+            "en": "Offer: after a no, ask whether to send the sentence to the model as an ordinary message",
+            "pl": "Propozycja: po „nie” zapytaj, czy wysłać zdanie do modelu jako zwykłą wiadomość"
+          }
+        },
+        "send_as_message": {
+          "label": {
+            "en": "Send: after a no, send the sentence to the model as an ordinary message at once",
+            "pl": "Wyślij: po „nie” od razu wyślij zdanie do modelu jako zwykłą wiadomość"
+          }
+        },
+        "drop": {
+          "label": {
+            "en": "Drop: after a no, the sentence is not sent (it stays in the conversation)",
+            "pl": "Odrzuć: po „nie” zdanie nie jest wysyłane (zostaje w rozmowie)"
+          }
+        }
       }
     },
     "emergent": {
       "setting": "emergent_actions",
       "active": "propose",
       "presets": {
-        "off": {"label": {"en": "Off: the catalogue never grows from conversations", "pl": "Wyłączone: katalog nie rośnie z rozmów"}},
-        "propose": {"label": {"en": "Propose: new actions, sequences and groups are offered, never made silently", "pl": "Propozycje: nowe akcje, sekwencje i grupy są proponowane, nigdy po cichu"}}
+        "off": {
+          "label": {
+            "en": "Off: the catalogue never grows from conversations",
+            "pl": "Wyłączone: katalog nie rośnie z rozmów"
+          }
+        },
+        "propose": {
+          "label": {
+            "en": "Propose: new actions, sequences and groups are offered, never made silently",
+            "pl": "Propozycje: nowe akcje, sekwencje i grupy są proponowane, nigdy po cichu"
+          }
+        }
       },
       "command_shape": {
         "max_tokens": 16,
         "min_lead_chars": 4,
         "element_within": 3,
-        "lead_skip": ["prosze", "teraz", "moglbys", "mozesz", "moze", "please", "now", "could", "can", "would", "you", "just", "hey", "ok", "okay"],
-        "not_leads": ["jak", "jaki", "jaka", "jakie", "co", "czemu", "dlaczego", "czy", "kto", "kiedy", "gdzie", "ile", "ktory", "ktora", "chce", "chcialbym", "chcialabym", "mam", "musze", "powiedz", "what", "why", "how", "who", "when", "where", "which", "does", "should", "will", "this", "that", "there", "here", "what's", "i'm", "i'd", "i'll", "let's", "tell", "want", "need", "think", "wonder", "maybe"],
+        "lead_skip": [
+          "prosze",
+          "teraz",
+          "moglbys",
+          "mozesz",
+          "moze",
+          "please",
+          "now",
+          "could",
+          "can",
+          "would",
+          "you",
+          "just",
+          "hey",
+          "ok",
+          "okay"
+        ],
+        "not_leads": [
+          "jak",
+          "jaki",
+          "jaka",
+          "jakie",
+          "co",
+          "czemu",
+          "dlaczego",
+          "czy",
+          "kto",
+          "kiedy",
+          "gdzie",
+          "ile",
+          "ktory",
+          "ktora",
+          "chce",
+          "chcialbym",
+          "chcialabym",
+          "mam",
+          "musze",
+          "powiedz",
+          "what",
+          "why",
+          "how",
+          "who",
+          "when",
+          "where",
+          "which",
+          "does",
+          "should",
+          "will",
+          "this",
+          "that",
+          "there",
+          "here",
+          "what's",
+          "i'm",
+          "i'd",
+          "i'll",
+          "let's",
+          "tell",
+          "want",
+          "need",
+          "think",
+          "wonder",
+          "maybe"
+        ],
         "forbid_question_mark": true
       },
-      "naming": {"prefix": "", "max_chars": 24},
-      "requires_from": ["has_text", "has_image", "has_audio", "has_video", "has_code", "has_table"],
+      "naming": {
+        "prefix": "",
+        "max_chars": 24
+      },
+      "requires_from": [
+        "has_text",
+        "has_image",
+        "has_audio",
+        "has_video",
+        "has_code",
+        "has_table"
+      ],
       "definition": {
         "system": {
           "en": "You carry out an instruction about the text that follows it. Do what the instruction says, faithfully and completely; add nothing it does not ask for. Answer in the language of the instruction unless it asks for another.",
           "pl": "Wykonujesz polecenie dotyczące poniższego tekstu. Zrób dokładnie to, co polecenie mówi, wiernie i w całości; nie dodawaj niczego, o co nie prosi. Odpowiadaj w języku polecenia, chyba że prosi o inny."
         },
-        "parameters": {"temperature": 0.5},
+        "parameters": {
+          "temperature": 0.5
+        },
         "cost": 1.0,
         "confidence": 0.6
       },
-      "sequences": {"repeat": 3, "max_length": 3, "gap_seconds": 900, "window_runs": 200, "joiner": "_then_", "index": {"convs": 64, "snapshot_every": 100, "sources": 16}},
-      "groups": {"min_classes": 2, "suffix": "_targets"},
-      "node": {"kind": "proposal", "link": "derived_from"}
+      "sequences": {
+        "repeat": 3,
+        "max_length": 3,
+        "gap_seconds": 900,
+        "window_runs": 200,
+        "joiner": "_then_",
+        "index": {
+          "convs": 64,
+          "snapshot_every": 100,
+          "sources": 16
+        }
+      },
+      "groups": {
+        "min_classes": 2,
+        "suffix": "_targets"
+      },
+      "node": {
+        "kind": "proposal",
+        "link": "derived_from"
+      }
     },
     "default_language": "en",
-    "message_request_fields": ["attachments", "usage_confirmation", "active_task_spec", "knowledge_context", "web_search", "deep_research"],
+    "message_request_fields": [
+      "attachments",
+      "usage_confirmation",
+      "active_task_spec",
+      "knowledge_context",
+      "web_search",
+      "deep_research"
+    ],
     "heuristic": {
       "language_hints": {
-        "pl": ["ustaw", "zmien", "przelacz", "pokaz", "sprawdz", "jaka", "jakie", "streszcz", "podsumuj", "narysuj", "zrob", "tak", "nie", "prosze", "dziekuje", "rozmowe", "rozmowy", "wiadomosc"]
+        "pl": [
+          "ustaw",
+          "zmien",
+          "przelacz",
+          "pokaz",
+          "sprawdz",
+          "jaka",
+          "jakie",
+          "streszcz",
+          "podsumuj",
+          "narysuj",
+          "zrob",
+          "tak",
+          "nie",
+          "prosze",
+          "dziekuje",
+          "rozmowe",
+          "rozmowy",
+          "wiadomosc",
+          "zaimportuj",
+          "importuj",
+          "wczytaj",
+          "wyeksportuj",
+          "eksportuj",
+          "znajdz",
+          "wyszukaj",
+          "szukaj",
+          "zapamietaj",
+          "pamietaj",
+          "zapomnij",
+          "podlacz",
+          "polacz",
+          "odswiez",
+          "wstrzymaj",
+          "wznow",
+          "obudz",
+          "ponow",
+          "skompaktuj",
+          "wyklucz",
+          "popraw",
+          "oznacz",
+          "wroc",
+          "przywroc",
+          "usun",
+          "skasuj",
+          "zaloz",
+          "utworz",
+          "stworz",
+          "ile",
+          "wydalem",
+          "zsynchronizuj",
+          "synchronizuj",
+          "przebuduj",
+          "odbuduj",
+          "anuluj",
+          "przerwij",
+          "jakiego",
+          "tej",
+          "tego",
+          "ten",
+          "plik",
+          "moje",
+          "wszystkie",
+          "zadania",
+          "dostawcow",
+          "dostawcy",
+          "magazynow",
+          "magazyny",
+          "pamiec",
+          "zrodla",
+          "logi"
+        ]
       },
-      "fold": {"ą": "a", "ć": "c", "ę": "e", "ł": "l", "ń": "n", "ó": "o", "ś": "s", "ź": "z", "ż": "z"},
+      "fold": {
+        "ą": "a",
+        "ć": "c",
+        "ę": "e",
+        "ł": "l",
+        "ń": "n",
+        "ó": "o",
+        "ś": "s",
+        "ź": "z",
+        "ż": "z"
+      },
       "window_tokens": 12,
       "lead_tokens": 4,
-      "scoring": {"base": 0.6, "per_word": 0.1, "lead_penalty": 0.05, "min_score": 0.5},
-      "sequence": {"connectors": ["i", "oraz", "potem", "nastepnie", "and", "then"], "bonus": 0.05},
+      "scoring": {
+        "base": 0.6,
+        "per_word": 0.1,
+        "lead_penalty": 0.05,
+        "min_score": 0.5
+      },
+      "sequence": {
+        "connectors": [
+          "i",
+          "oraz",
+          "potem",
+          "nastepnie",
+          "and",
+          "then"
+        ],
+        "bonus": 0.05
+      },
       "explicit": {
-        "prefixes": ["/"],
-        "run_verbs": ["run", "uruchom"],
-        "aliases": {"set": "settings.set", "ustaw": "settings.set", "get": "settings.get", "show": "settings.get", "pokaz": "settings.get", "pokaż": "settings.get"},
+        "prefixes": [
+          "/"
+        ],
+        "run_verbs": [
+          "run",
+          "uruchom"
+        ],
+        "aliases": {
+          "set": "settings.set",
+          "ustaw": "settings.set",
+          "get": "settings.get",
+          "show": "settings.get",
+          "pokaz": "settings.get",
+          "pokaż": "settings.get",
+          "help": "help.can_do",
+          "pomoc": "help.can_do",
+          "search": "search.find",
+          "szukaj": "search.find",
+          "znajdz": "search.find",
+          "remember": "memory.remember",
+          "zapamietaj": "memory.remember",
+          "forget": "memory.forget",
+          "zapomnij": "memory.forget",
+          "models": "models.list",
+          "modele": "models.list",
+          "spend": "usage.spend",
+          "wydatki": "usage.spend",
+          "sync": "github.sync",
+          "export": "export.conversation",
+          "eksportuj": "export.conversation",
+          "import": "import.file",
+          "importuj": "import.file"
+        },
         "arg_pattern": "^([A-Za-z_][A-Za-z0-9_.]*)=(.*)$",
-        "element_markers": ["on", "na", "for", "dla"],
+        "element_markers": [
+          "on",
+          "na",
+          "for",
+          "dla"
+        ],
         "default_element": "current_conversation"
       },
       "patterns": [
@@ -88,7 +376,10 @@
           "id": "set_equals",
           "action": "settings.set",
           "regex": "^(?:(?:set|change|ustaw|zmień|zmien)\\s+)?([A-Za-z][A-Za-z0-9_]*)\\s*=\\s*(.+?)\\s*$",
-          "args": ["key", "value"],
+          "args": [
+            "key",
+            "value"
+          ],
           "element_arg": "key",
           "requires_element": true
         },
@@ -96,7 +387,10 @@
           "id": "set_to",
           "action": "settings.set",
           "regex": "^(?:set|change|switch|ustaw|zmień|zmien|przełącz|przelacz)\\s+(?:the\\s+)?(?:setting\\s+)?([A-Za-z][A-Za-z0-9_]*)\\s+(?:to|na|=)\\s+(.+?)\\s*$",
-          "args": ["key", "value"],
+          "args": [
+            "key",
+            "value"
+          ],
           "element_arg": "key",
           "requires_element": true
         },
@@ -104,158 +398,2804 @@
           "id": "show_setting",
           "action": "settings.get",
           "regex": "^(?:show|get|display|what is|what's|pokaż|pokaz|sprawdź|sprawdz|jaka jest|jakie jest)\\s+(?:the\\s+)?(?:setting\\s+|value of\\s+|ustawienie\\s+|wartość\\s+|wartosc\\s+)?([A-Za-z][A-Za-z0-9_]*)\\s*\\??$",
-          "args": ["key"],
+          "args": [
+            "key"
+          ],
           "element_arg": "key",
           "requires_element": true
         }
       ],
       "references": [
-        {"id": "conversation", "words": ["rozmow*", "konwersacj*", "czat*", "chat", "conversation", "thread", "dyskusj*", "wątek", "watek", "wątku", "watku"], "resolve": "current_conversation"},
-        {"id": "message", "words": ["wiadomo*", "message", "odpowied*", "reply", "answer"], "resolve": "last_message"},
-        {"id": "microphone", "words": ["mikrofon*", "microphone", "mic"], "resolve": "element", "element": "device:microphone"},
-        {"id": "camera", "words": ["aparat*", "kamer*", "camera"], "resolve": "element", "element": "device:camera"},
-        {"id": "speaker", "words": ["glosnik*", "speaker", "speakers"], "resolve": "element", "element": "device:speaker"},
-        {"id": "screen", "words": ["ekran*", "screen"], "resolve": "element", "element": "device:screen"},
-        {"id": "clipboard", "words": ["schowek", "schowka", "schowku", "clipboard"], "resolve": "element", "element": "device:clipboard"},
-        {"id": "notifications", "words": ["powiadomien*", "notification", "notifications"], "resolve": "element", "element": "device:notifications"},
-        {"id": "files", "words": ["plik", "pliki", "plikow", "file", "files"], "resolve": "element", "element": "device:file_access"}
+        {
+          "id": "conversation",
+          "words": [
+            "rozmow*",
+            "konwersacj*",
+            "czat*",
+            "chat",
+            "conversation",
+            "thread",
+            "dyskusj*",
+            "wątek",
+            "watek",
+            "wątku",
+            "watku"
+          ],
+          "resolve": "current_conversation"
+        },
+        {
+          "id": "message",
+          "words": [
+            "wiadomo*",
+            "message",
+            "odpowied*",
+            "reply",
+            "answer"
+          ],
+          "resolve": "last_message"
+        },
+        {
+          "id": "microphone",
+          "words": [
+            "mikrofon*",
+            "microphone",
+            "mic"
+          ],
+          "resolve": "element",
+          "element": "device:microphone"
+        },
+        {
+          "id": "camera",
+          "words": [
+            "aparat*",
+            "kamer*",
+            "camera"
+          ],
+          "resolve": "element",
+          "element": "device:camera"
+        },
+        {
+          "id": "speaker",
+          "words": [
+            "glosnik*",
+            "speaker",
+            "speakers"
+          ],
+          "resolve": "element",
+          "element": "device:speaker"
+        },
+        {
+          "id": "screen",
+          "words": [
+            "ekran*",
+            "screen"
+          ],
+          "resolve": "element",
+          "element": "device:screen"
+        },
+        {
+          "id": "clipboard",
+          "words": [
+            "schowek",
+            "schowka",
+            "schowku",
+            "clipboard"
+          ],
+          "resolve": "element",
+          "element": "device:clipboard"
+        },
+        {
+          "id": "notifications",
+          "words": [
+            "powiadomien*",
+            "notification",
+            "notifications"
+          ],
+          "resolve": "element",
+          "element": "device:notifications"
+        },
+        {
+          "id": "files",
+          "words": [
+            "plik",
+            "pliki",
+            "plikow",
+            "file",
+            "files"
+          ],
+          "resolve": "element",
+          "element": "device:file_access"
+        }
       ],
       "phrases": {
         "rephrase": {
-          "en": ["rephrase", "reword", "rewrite", "paraphrase", "say it differently", "put it differently"],
-          "pl": ["przeredaguj*", "przeformułuj*", "przeformuluj*", "sparafrazuj*", "napisz inaczej", "powiedz inaczej", "ujmij inaczej"]
+          "en": [
+            "rephrase",
+            "reword",
+            "rewrite",
+            "paraphrase",
+            "say it differently",
+            "put it differently"
+          ],
+          "pl": [
+            "przeredaguj*",
+            "przeformułuj*",
+            "przeformuluj*",
+            "sparafrazuj*",
+            "napisz inaczej",
+            "powiedz inaczej",
+            "ujmij inaczej"
+          ]
         },
         "explain_simply": {
-          "en": ["explain simply", "explain it simply", "explain this simply", "simplify", "eli5", "explain like", "make it simpler"],
-          "pl": ["wytłumacz prościej", "wyjaśnij prościej", "wytlumacz prosciej", "wyjasnij prosciej", "uprość*", "uprosc*", "wytłumacz jak"]
+          "en": [
+            "explain simply",
+            "explain it simply",
+            "explain this simply",
+            "simplify",
+            "eli5",
+            "explain like",
+            "make it simpler"
+          ],
+          "pl": [
+            "wytłumacz prościej",
+            "wyjaśnij prościej",
+            "wytlumacz prosciej",
+            "wyjasnij prosciej",
+            "uprość*",
+            "uprosc*",
+            "wytłumacz jak"
+          ]
         }
       },
       "rules": {
         "scopes": [
-          {"scope": "conversation", "phrases": {
-            "pl": ["w tej rozmowie", "w tym czacie", "w tym wątku", "dla tej rozmowy", "dla tego czatu", "dla tego wątku", "tylko tutaj", "tylko w tej rozmowie"],
-            "en": ["in this conversation", "for this conversation", "in this chat", "for this chat", "in this thread", "for this thread", "only here", "only in this conversation"]}},
-          {"scope": "person", "phrases": {
-            "pl": ["dla mnie", "u mnie", "na stałe dla mnie", "osobiście"],
-            "en": ["for me", "for myself", "personally", "on my account"]}},
-          {"scope": "installation", "phrases": {
-            "pl": ["w całej instalacji", "w tej instalacji", "dla wszystkich", "dla wszystkich rozmów", "wszędzie", "globalnie"],
-            "en": ["in this installation", "in the whole installation", "for everyone", "for all conversations", "everywhere", "globally"]}}
+          {
+            "scope": "conversation",
+            "phrases": {
+              "pl": [
+                "w tej rozmowie",
+                "w tym czacie",
+                "w tym wątku",
+                "dla tej rozmowy",
+                "dla tego czatu",
+                "dla tego wątku",
+                "tylko tutaj",
+                "tylko w tej rozmowie"
+              ],
+              "en": [
+                "in this conversation",
+                "for this conversation",
+                "in this chat",
+                "for this chat",
+                "in this thread",
+                "for this thread",
+                "only here",
+                "only in this conversation"
+              ]
+            }
+          },
+          {
+            "scope": "person",
+            "phrases": {
+              "pl": [
+                "dla mnie",
+                "u mnie",
+                "na stałe dla mnie",
+                "osobiście"
+              ],
+              "en": [
+                "for me",
+                "for myself",
+                "personally",
+                "on my account"
+              ]
+            }
+          },
+          {
+            "scope": "installation",
+            "phrases": {
+              "pl": [
+                "w całej instalacji",
+                "w tej instalacji",
+                "dla wszystkich",
+                "dla wszystkich rozmów",
+                "wszędzie",
+                "globalnie"
+              ],
+              "en": [
+                "in this installation",
+                "in the whole installation",
+                "for everyone",
+                "for all conversations",
+                "everywhere",
+                "globally"
+              ]
+            }
+          }
         ],
         "commands": [
-          {"id": "set_value.pl", "action": "rules.set", "effect": "set_value", "needs_scope": true, "lang": "pl",
-           "regex": "^[\\s,]*(?:ustaw|zmien|przelacz)\\s+([a-z][a-z0-9_.]*)\\s*(?:=|na)\\s*(.+?)\\s*[.!]*\\s*$", "args": ["key", "value"], "original": ["value"]},
-          {"id": "set_value.en", "action": "rules.set", "effect": "set_value", "needs_scope": true, "lang": "en",
-           "regex": "^[\\s,]*(?:set|change|switch)\\s+(?:the\\s+)?(?:setting\\s+)?([a-z][a-z0-9_.]*)\\s*(?:=|to)\\s*(.+?)\\s*[.!]*\\s*$", "args": ["key", "value"], "original": ["value"]},
-          {"id": "confirm.ask_before.pl", "action": "rules.set", "effect": "confirm", "lang": "pl",
-           "regex": "^[\\s,]*(?:zawsze\\s+)?(?:pytaj|zapytaj)\\s+(?:mnie\\s+)?(?:przed|o)\\s+(?:uruchomieniem\\s+|wykonaniem\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "confirm.never_without_asking.pl", "action": "rules.set", "effect": "confirm", "lang": "pl",
-           "regex": "^[\\s,]*nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)\\s+([a-z][a-z0-9_.]*)\\s+bez\\s+pytania\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "confirm.never_without_asking.en", "action": "rules.set", "effect": "confirm", "lang": "en",
-           "regex": "^[\\s,]*never\\s+(?:run|execute|start)\\s+([a-z][a-z0-9_.]*)\\s+without\\s+(?:asking|confirmation|confirming)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "confirm.ask_before.en", "action": "rules.set", "effect": "confirm", "lang": "en",
-           "regex": "^[\\s,]*(?:always\\s+)?ask\\s+(?:me\\s+)?before\\s+(?:running\\s+|executing\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "deny.never.pl", "action": "rules.set", "effect": "deny", "lang": "pl",
-           "regex": "^[\\s,]*(?:nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)|zabron\\w*|zablokuj)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "deny.never.en", "action": "rules.set", "effect": "deny", "lang": "en",
-           "regex": "^[\\s,]*(?:never\\s+(?:run|execute|start)|forbid|ban|block)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "allow.pl", "action": "rules.set", "effect": "allow", "lang": "pl",
-           "regex": "^[\\s,]*(?:(?:zawsze\\s+)?(?:pozwalaj|zezwalaj)\\s+na|nie\\s+pytaj\\s+(?:mnie\\s+)?(?:o|przed))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "allow.en", "action": "rules.set", "effect": "allow", "lang": "en",
-           "regex": "^[\\s,]*(?:(?:always\\s+)?allow|(?:stop\\s+asking|don't\\s+ask|do\\s+not\\s+ask)\\s+(?:me\\s+)?(?:about|before))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$", "args": ["action"], "resolve": ["action"]},
-          {"id": "disable.pl", "action": "rules.disable", "lang": "pl",
-           "regex": "^[\\s,]*(?:wylacz|usun|zdejmij)\\s+regule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
-          {"id": "disable.en", "action": "rules.disable", "lang": "en",
-           "regex": "^[\\s,]*(?:disable|remove|switch\\s+off|turn\\s+off)\\s+(?:the\\s+)?rule\\s+(\\S+?)\\s*[.!]*\\s*$", "args": ["id"], "original": ["id"]},
-          {"id": "remove_action.pl", "action": "actions.remove", "lang": "pl",
-           "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+akcje\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
-          {"id": "remove_action.en", "action": "actions.remove", "lang": "en",
-           "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?action\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
-          {"id": "remove_group.pl", "action": "groups.remove", "lang": "pl",
-           "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+grupe\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
-          {"id": "remove_group.en", "action": "groups.remove", "lang": "en",
-           "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?group\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$", "args": ["id"]},
-          {"id": "list.pl", "action": "rules.list", "lang": "pl",
-           "regex": "^[\\s,]*(?:pokaz|wylistuj|wypisz)\\s+(?:moje\\s+|wszystkie\\s+)?(?:zasady|reguly)\\s*[.!?]*\\s*$", "args": []},
-          {"id": "list.en", "action": "rules.list", "lang": "en",
-           "regex": "^[\\s,]*(?:show|list)\\s+(?:me\\s+)?(?:my\\s+|all\\s+|the\\s+)?rules\\s*[.!?]*\\s*$", "args": []}
+          {
+            "id": "set_value.pl",
+            "action": "rules.set",
+            "effect": "set_value",
+            "needs_scope": true,
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:ustaw|zmien|przelacz)\\s+([a-z][a-z0-9_.]*)\\s*(?:=|na)\\s*(.+?)\\s*[.!]*\\s*$",
+            "args": [
+              "key",
+              "value"
+            ],
+            "original": [
+              "value"
+            ]
+          },
+          {
+            "id": "set_value.en",
+            "action": "rules.set",
+            "effect": "set_value",
+            "needs_scope": true,
+            "lang": "en",
+            "regex": "^[\\s,]*(?:set|change|switch)\\s+(?:the\\s+)?(?:setting\\s+)?([a-z][a-z0-9_.]*)\\s*(?:=|to)\\s*(.+?)\\s*[.!]*\\s*$",
+            "args": [
+              "key",
+              "value"
+            ],
+            "original": [
+              "value"
+            ]
+          },
+          {
+            "id": "confirm.ask_before.pl",
+            "action": "rules.set",
+            "effect": "confirm",
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:zawsze\\s+)?(?:pytaj|zapytaj)\\s+(?:mnie\\s+)?(?:przed|o)\\s+(?:uruchomieniem\\s+|wykonaniem\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "confirm.never_without_asking.pl",
+            "action": "rules.set",
+            "effect": "confirm",
+            "lang": "pl",
+            "regex": "^[\\s,]*nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)\\s+([a-z][a-z0-9_.]*)\\s+bez\\s+pytania\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "confirm.never_without_asking.en",
+            "action": "rules.set",
+            "effect": "confirm",
+            "lang": "en",
+            "regex": "^[\\s,]*never\\s+(?:run|execute|start)\\s+([a-z][a-z0-9_.]*)\\s+without\\s+(?:asking|confirmation|confirming)\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "confirm.ask_before.en",
+            "action": "rules.set",
+            "effect": "confirm",
+            "lang": "en",
+            "regex": "^[\\s,]*(?:always\\s+)?ask\\s+(?:me\\s+)?before\\s+(?:running\\s+|executing\\s+)?([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "deny.never.pl",
+            "action": "rules.set",
+            "effect": "deny",
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:nigdy\\s+nie\\s+(?:uruchamiaj|wykonuj|odpalaj)|zabron\\w*|zablokuj)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "deny.never.en",
+            "action": "rules.set",
+            "effect": "deny",
+            "lang": "en",
+            "regex": "^[\\s,]*(?:never\\s+(?:run|execute|start)|forbid|ban|block)\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "allow.pl",
+            "action": "rules.set",
+            "effect": "allow",
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:(?:zawsze\\s+)?(?:pozwalaj|zezwalaj)\\s+na|nie\\s+pytaj\\s+(?:mnie\\s+)?(?:o|przed))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "allow.en",
+            "action": "rules.set",
+            "effect": "allow",
+            "lang": "en",
+            "regex": "^[\\s,]*(?:(?:always\\s+)?allow|(?:stop\\s+asking|don't\\s+ask|do\\s+not\\s+ask)\\s+(?:me\\s+)?(?:about|before))\\s+([a-z][a-z0-9_.]*)\\s*[.!]*\\s*$",
+            "args": [
+              "action"
+            ],
+            "resolve": [
+              "action"
+            ]
+          },
+          {
+            "id": "disable.pl",
+            "action": "rules.disable",
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:wylacz|usun|zdejmij)\\s+regule\\s+(\\S+?)\\s*[.!]*\\s*$",
+            "args": [
+              "id"
+            ],
+            "original": [
+              "id"
+            ]
+          },
+          {
+            "id": "disable.en",
+            "action": "rules.disable",
+            "lang": "en",
+            "regex": "^[\\s,]*(?:disable|remove|switch\\s+off|turn\\s+off)\\s+(?:the\\s+)?rule\\s+(\\S+?)\\s*[.!]*\\s*$",
+            "args": [
+              "id"
+            ],
+            "original": [
+              "id"
+            ]
+          },
+          {
+            "id": "remove_action.pl",
+            "action": "actions.remove",
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+akcje\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$",
+            "args": [
+              "id"
+            ]
+          },
+          {
+            "id": "remove_action.en",
+            "action": "actions.remove",
+            "lang": "en",
+            "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?action\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$",
+            "args": [
+              "id"
+            ]
+          },
+          {
+            "id": "remove_group.pl",
+            "action": "groups.remove",
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:usun|wycofaj|cofnij)\\s+grupe\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$",
+            "args": [
+              "id"
+            ]
+          },
+          {
+            "id": "remove_group.en",
+            "action": "groups.remove",
+            "lang": "en",
+            "regex": "^[\\s,]*(?:remove|delete|undo|take\\s+back)\\s+(?:the\\s+)?group\\s+([a-z0-9][a-z0-9_.-]*)\\s*[.!]*\\s*$",
+            "args": [
+              "id"
+            ]
+          },
+          {
+            "id": "list.pl",
+            "action": "rules.list",
+            "lang": "pl",
+            "regex": "^[\\s,]*(?:pokaz|wylistuj|wypisz)\\s+(?:moje\\s+|wszystkie\\s+)?(?:zasady|reguly)\\s*[.!?]*\\s*$",
+            "args": []
+          },
+          {
+            "id": "list.en",
+            "action": "rules.list",
+            "lang": "en",
+            "regex": "^[\\s,]*(?:show|list)\\s+(?:me\\s+)?(?:my\\s+|all\\s+|the\\s+)?rules\\s*[.!?]*\\s*$",
+            "args": []
+          }
         ]
       },
       "languages": [
-        {"code": "en", "label": {"en": "English", "pl": "angielski"}, "names": ["english", "angielsk*"]},
-        {"code": "pl", "label": {"en": "Polish", "pl": "polski"}, "names": ["polish", "polsk*"]},
-        {"code": "de", "label": {"en": "German", "pl": "niemiecki"}, "names": ["german", "deutsch", "niemieck*"]},
-        {"code": "fr", "label": {"en": "French", "pl": "francuski"}, "names": ["french", "francais", "francusk*"]},
-        {"code": "es", "label": {"en": "Spanish", "pl": "hiszpański"}, "names": ["spanish", "espanol", "hiszpansk*"]},
-        {"code": "it", "label": {"en": "Italian", "pl": "włoski"}, "names": ["italian", "italiano", "wlosk*"]},
-        {"code": "pt", "label": {"en": "Portuguese", "pl": "portugalski"}, "names": ["portuguese", "portugues", "portugalsk*"]},
-        {"code": "ru", "label": {"en": "Russian", "pl": "rosyjski"}, "names": ["russian", "rosyjsk*"]},
-        {"code": "uk", "label": {"en": "Ukrainian", "pl": "ukraiński"}, "names": ["ukrainian", "ukrainsk*"]},
-        {"code": "cs", "label": {"en": "Czech", "pl": "czeski"}, "names": ["czech", "czesk*"]},
-        {"code": "sk", "label": {"en": "Slovak", "pl": "słowacki"}, "names": ["slovak", "slowack*"]},
-        {"code": "sl", "label": {"en": "Slovenian", "pl": "słoweński"}, "names": ["slovenian", "slowensk*"]},
-        {"code": "hr", "label": {"en": "Croatian", "pl": "chorwacki"}, "names": ["croatian", "chorwack*"]},
-        {"code": "bg", "label": {"en": "Bulgarian", "pl": "bułgarski"}, "names": ["bulgarian", "bulgarsk*"]},
-        {"code": "nl", "label": {"en": "Dutch", "pl": "niderlandzki"}, "names": ["dutch", "nederlands", "niderlandzk*", "holendersk*"]},
-        {"code": "sv", "label": {"en": "Swedish", "pl": "szwedzki"}, "names": ["swedish", "svenska", "szwedzk*"]},
-        {"code": "no", "label": {"en": "Norwegian", "pl": "norweski"}, "names": ["norwegian", "norsk", "norwesk*"]},
-        {"code": "da", "label": {"en": "Danish", "pl": "duński"}, "names": ["danish", "dansk", "dunsk*"]},
-        {"code": "fi", "label": {"en": "Finnish", "pl": "fiński"}, "names": ["finnish", "suomi", "finsk*"]},
-        {"code": "hu", "label": {"en": "Hungarian", "pl": "węgierski"}, "names": ["hungarian", "wegiersk*"]},
-        {"code": "ro", "label": {"en": "Romanian", "pl": "rumuński"}, "names": ["romanian", "rumunsk*"]},
-        {"code": "el", "label": {"en": "Greek", "pl": "grecki"}, "names": ["greek", "greck*"]},
-        {"code": "lt", "label": {"en": "Lithuanian", "pl": "litewski"}, "names": ["lithuanian", "litewsk*"]},
-        {"code": "lv", "label": {"en": "Latvian", "pl": "łotewski"}, "names": ["latvian", "lotewsk*"]},
-        {"code": "et", "label": {"en": "Estonian", "pl": "estoński"}, "names": ["estonian", "estonsk*"]},
-        {"code": "tr", "label": {"en": "Turkish", "pl": "turecki"}, "names": ["turkish", "turecki", "turecku", "turk*"]},
-        {"code": "ja", "label": {"en": "Japanese", "pl": "japoński"}, "names": ["japanese", "japonsk*"]},
-        {"code": "zh", "label": {"en": "Chinese", "pl": "chiński"}, "names": ["chinese", "chinsk*"]},
-        {"code": "ko", "label": {"en": "Korean", "pl": "koreański"}, "names": ["korean", "koreansk*"]},
-        {"code": "ar", "label": {"en": "Arabic", "pl": "arabski"}, "names": ["arabic", "arabsk*"]},
-        {"code": "he", "label": {"en": "Hebrew", "pl": "hebrajski"}, "names": ["hebrew", "hebrajsk*"]},
-        {"code": "hi", "label": {"en": "Hindi", "pl": "hindi"}, "names": ["hindi"]},
-        {"code": "la", "label": {"en": "Latin", "pl": "łaciński"}, "names": ["latin", "lacin*"]}
+        {
+          "code": "en",
+          "label": {
+            "en": "English",
+            "pl": "angielski"
+          },
+          "names": [
+            "english",
+            "angielsk*"
+          ]
+        },
+        {
+          "code": "pl",
+          "label": {
+            "en": "Polish",
+            "pl": "polski"
+          },
+          "names": [
+            "polish",
+            "polsk*"
+          ]
+        },
+        {
+          "code": "de",
+          "label": {
+            "en": "German",
+            "pl": "niemiecki"
+          },
+          "names": [
+            "german",
+            "deutsch",
+            "niemieck*"
+          ]
+        },
+        {
+          "code": "fr",
+          "label": {
+            "en": "French",
+            "pl": "francuski"
+          },
+          "names": [
+            "french",
+            "francais",
+            "francusk*"
+          ]
+        },
+        {
+          "code": "es",
+          "label": {
+            "en": "Spanish",
+            "pl": "hiszpański"
+          },
+          "names": [
+            "spanish",
+            "espanol",
+            "hiszpansk*"
+          ]
+        },
+        {
+          "code": "it",
+          "label": {
+            "en": "Italian",
+            "pl": "włoski"
+          },
+          "names": [
+            "italian",
+            "italiano",
+            "wlosk*"
+          ]
+        },
+        {
+          "code": "pt",
+          "label": {
+            "en": "Portuguese",
+            "pl": "portugalski"
+          },
+          "names": [
+            "portuguese",
+            "portugues",
+            "portugalsk*"
+          ]
+        },
+        {
+          "code": "ru",
+          "label": {
+            "en": "Russian",
+            "pl": "rosyjski"
+          },
+          "names": [
+            "russian",
+            "rosyjsk*"
+          ]
+        },
+        {
+          "code": "uk",
+          "label": {
+            "en": "Ukrainian",
+            "pl": "ukraiński"
+          },
+          "names": [
+            "ukrainian",
+            "ukrainsk*"
+          ]
+        },
+        {
+          "code": "cs",
+          "label": {
+            "en": "Czech",
+            "pl": "czeski"
+          },
+          "names": [
+            "czech",
+            "czesk*"
+          ]
+        },
+        {
+          "code": "sk",
+          "label": {
+            "en": "Slovak",
+            "pl": "słowacki"
+          },
+          "names": [
+            "slovak",
+            "slowack*"
+          ]
+        },
+        {
+          "code": "sl",
+          "label": {
+            "en": "Slovenian",
+            "pl": "słoweński"
+          },
+          "names": [
+            "slovenian",
+            "slowensk*"
+          ]
+        },
+        {
+          "code": "hr",
+          "label": {
+            "en": "Croatian",
+            "pl": "chorwacki"
+          },
+          "names": [
+            "croatian",
+            "chorwack*"
+          ]
+        },
+        {
+          "code": "bg",
+          "label": {
+            "en": "Bulgarian",
+            "pl": "bułgarski"
+          },
+          "names": [
+            "bulgarian",
+            "bulgarsk*"
+          ]
+        },
+        {
+          "code": "nl",
+          "label": {
+            "en": "Dutch",
+            "pl": "niderlandzki"
+          },
+          "names": [
+            "dutch",
+            "nederlands",
+            "niderlandzk*",
+            "holendersk*"
+          ]
+        },
+        {
+          "code": "sv",
+          "label": {
+            "en": "Swedish",
+            "pl": "szwedzki"
+          },
+          "names": [
+            "swedish",
+            "svenska",
+            "szwedzk*"
+          ]
+        },
+        {
+          "code": "no",
+          "label": {
+            "en": "Norwegian",
+            "pl": "norweski"
+          },
+          "names": [
+            "norwegian",
+            "norsk",
+            "norwesk*"
+          ]
+        },
+        {
+          "code": "da",
+          "label": {
+            "en": "Danish",
+            "pl": "duński"
+          },
+          "names": [
+            "danish",
+            "dansk",
+            "dunsk*"
+          ]
+        },
+        {
+          "code": "fi",
+          "label": {
+            "en": "Finnish",
+            "pl": "fiński"
+          },
+          "names": [
+            "finnish",
+            "suomi",
+            "finsk*"
+          ]
+        },
+        {
+          "code": "hu",
+          "label": {
+            "en": "Hungarian",
+            "pl": "węgierski"
+          },
+          "names": [
+            "hungarian",
+            "wegiersk*"
+          ]
+        },
+        {
+          "code": "ro",
+          "label": {
+            "en": "Romanian",
+            "pl": "rumuński"
+          },
+          "names": [
+            "romanian",
+            "rumunsk*"
+          ]
+        },
+        {
+          "code": "el",
+          "label": {
+            "en": "Greek",
+            "pl": "grecki"
+          },
+          "names": [
+            "greek",
+            "greck*"
+          ]
+        },
+        {
+          "code": "lt",
+          "label": {
+            "en": "Lithuanian",
+            "pl": "litewski"
+          },
+          "names": [
+            "lithuanian",
+            "litewsk*"
+          ]
+        },
+        {
+          "code": "lv",
+          "label": {
+            "en": "Latvian",
+            "pl": "łotewski"
+          },
+          "names": [
+            "latvian",
+            "lotewsk*"
+          ]
+        },
+        {
+          "code": "et",
+          "label": {
+            "en": "Estonian",
+            "pl": "estoński"
+          },
+          "names": [
+            "estonian",
+            "estonsk*"
+          ]
+        },
+        {
+          "code": "tr",
+          "label": {
+            "en": "Turkish",
+            "pl": "turecki"
+          },
+          "names": [
+            "turkish",
+            "turecki",
+            "turecku",
+            "turk*"
+          ]
+        },
+        {
+          "code": "ja",
+          "label": {
+            "en": "Japanese",
+            "pl": "japoński"
+          },
+          "names": [
+            "japanese",
+            "japonsk*"
+          ]
+        },
+        {
+          "code": "zh",
+          "label": {
+            "en": "Chinese",
+            "pl": "chiński"
+          },
+          "names": [
+            "chinese",
+            "chinsk*"
+          ]
+        },
+        {
+          "code": "ko",
+          "label": {
+            "en": "Korean",
+            "pl": "koreański"
+          },
+          "names": [
+            "korean",
+            "koreansk*"
+          ]
+        },
+        {
+          "code": "ar",
+          "label": {
+            "en": "Arabic",
+            "pl": "arabski"
+          },
+          "names": [
+            "arabic",
+            "arabsk*"
+          ]
+        },
+        {
+          "code": "he",
+          "label": {
+            "en": "Hebrew",
+            "pl": "hebrajski"
+          },
+          "names": [
+            "hebrew",
+            "hebrajsk*"
+          ]
+        },
+        {
+          "code": "hi",
+          "label": {
+            "en": "Hindi",
+            "pl": "hindi"
+          },
+          "names": [
+            "hindi"
+          ]
+        },
+        {
+          "code": "la",
+          "label": {
+            "en": "Latin",
+            "pl": "łaciński"
+          },
+          "names": [
+            "latin",
+            "lacin*"
+          ]
+        }
       ],
       "arguments": [
-        {"id": "target_language.pl", "param": "target_language", "lang": "pl", "kind": "language", "regex": "\\b(?:na|po|do)\\s+(?:jezyk\\w*\\s+)?(\\w+)"},
-        {"id": "target_language.en", "param": "target_language", "lang": "en", "kind": "language", "regex": "\\b(?:into|to|in)\\s+(?:the\\s+)?(?:language\\s+)?(\\w+)"},
-        {"id": "style.pl", "param": "style", "lang": "pl", "kind": "text", "regex": "\\bw\\s+stylu\\s+(.+?)\\s*[.!?]*\\s*$"},
-        {"id": "style.pl.manner", "param": "style", "lang": "pl", "kind": "text", "regex": "\\bw\\s+manierze\\s+(.+?)\\s*[.!?]*\\s*$"},
-        {"id": "style.en", "param": "style", "lang": "en", "kind": "text", "regex": "\\bin\\s+the\\s+style\\s+of\\s+(.+?)\\s*[.!?]*\\s*$"},
-        {"id": "style.en.adjective", "param": "style", "lang": "en", "kind": "text", "regex": "\\bin\\s+(?:an?\\s+)?(\\w+)\\s+style\\b"},
-        {"id": "tone.pl.adjective", "param": "tone", "lang": "pl", "kind": "text", "regex": "\\bw\\s+(\\w+)\\s+tonie\\b"},
-        {"id": "tone.pl", "param": "tone", "lang": "pl", "kind": "text", "regex": "\\bw\\s+tonie\\s+(.+?)\\s*[.!?]*\\s*$"},
-        {"id": "tone.en", "param": "tone", "lang": "en", "kind": "text", "regex": "\\bin\\s+(?:an?\\s+|the\\s+)?(\\w+)\\s+tone\\b"},
-        {"id": "level.pl", "param": "level", "lang": "pl", "kind": "text", "regex": "\\bna\\s+poziomie\\s+(.+?)\\s*[.!?]*\\s*$"},
-        {"id": "level.en", "param": "level", "lang": "en", "kind": "text", "regex": "\\bat\\s+(?:an?\\s+|the\\s+)?(\\w+(?:\\s+\\w+)?)\\s+level\\b"},
-        {"id": "audience.pl", "param": "audience", "lang": "pl", "kind": "text", "regex": "\\b(?:jak\\s+)?dla\\s+(.+?)\\s*[.!?]*\\s*$"},
-        {"id": "audience.en.like", "param": "audience", "lang": "en", "kind": "text", "regex": "\\b(like\\s+i(?:'|\u2019)?m\\s+\\w+)\\s*[.!?]*\\s*$"},
-        {"id": "audience.en", "param": "audience", "lang": "en", "kind": "text", "regex": "\\bfor\\s+(?:an?\\s+|the\\s+)?(.+?)\\s*[.!?]*\\s*$"},
-        {"id": "size.pl.by", "param": "size", "lang": "pl", "kind": "text", "template": "{1}x{2}", "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\s*[x\u00d7]\\s*(\\d{2,5})"},
-        {"id": "size.pl", "param": "size", "lang": "pl", "kind": "text", "template": "{1}x{1}", "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\b"},
-        {"id": "size.en.by", "param": "size", "lang": "en", "kind": "text", "template": "{1}x{2}", "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\s*[x\u00d7]\\s*(\\d{2,5})"},
-        {"id": "size.en", "param": "size", "lang": "en", "kind": "text", "template": "{1}x{1}", "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\b"}
+        {
+          "id": "target_language.pl",
+          "param": "target_language",
+          "lang": "pl",
+          "kind": "language",
+          "regex": "\\b(?:na|po|do)\\s+(?:jezyk\\w*\\s+)?(\\w+)"
+        },
+        {
+          "id": "target_language.en",
+          "param": "target_language",
+          "lang": "en",
+          "kind": "language",
+          "regex": "\\b(?:into|to|in)\\s+(?:the\\s+)?(?:language\\s+)?(\\w+)"
+        },
+        {
+          "id": "style.pl",
+          "param": "style",
+          "lang": "pl",
+          "kind": "text",
+          "regex": "\\bw\\s+stylu\\s+(.+?)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "style.pl.manner",
+          "param": "style",
+          "lang": "pl",
+          "kind": "text",
+          "regex": "\\bw\\s+manierze\\s+(.+?)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "style.en",
+          "param": "style",
+          "lang": "en",
+          "kind": "text",
+          "regex": "\\bin\\s+the\\s+style\\s+of\\s+(.+?)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "style.en.adjective",
+          "param": "style",
+          "lang": "en",
+          "kind": "text",
+          "regex": "\\bin\\s+(?:an?\\s+)?(\\w+)\\s+style\\b"
+        },
+        {
+          "id": "tone.pl.adjective",
+          "param": "tone",
+          "lang": "pl",
+          "kind": "text",
+          "regex": "\\bw\\s+(\\w+)\\s+tonie\\b"
+        },
+        {
+          "id": "tone.pl",
+          "param": "tone",
+          "lang": "pl",
+          "kind": "text",
+          "regex": "\\bw\\s+tonie\\s+(.+?)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "tone.en",
+          "param": "tone",
+          "lang": "en",
+          "kind": "text",
+          "regex": "\\bin\\s+(?:an?\\s+|the\\s+)?(\\w+)\\s+tone\\b"
+        },
+        {
+          "id": "level.pl",
+          "param": "level",
+          "lang": "pl",
+          "kind": "text",
+          "regex": "\\bna\\s+poziomie\\s+(.+?)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "level.en",
+          "param": "level",
+          "lang": "en",
+          "kind": "text",
+          "regex": "\\bat\\s+(?:an?\\s+|the\\s+)?(\\w+(?:\\s+\\w+)?)\\s+level\\b"
+        },
+        {
+          "id": "audience.pl",
+          "param": "audience",
+          "lang": "pl",
+          "kind": "text",
+          "regex": "\\b(?:jak\\s+)?dla\\s+(.+?)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "audience.en.like",
+          "param": "audience",
+          "lang": "en",
+          "kind": "text",
+          "regex": "\\b(like\\s+i(?:'|’)?m\\s+\\w+)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "audience.en",
+          "param": "audience",
+          "lang": "en",
+          "kind": "text",
+          "regex": "\\bfor\\s+(?:an?\\s+|the\\s+)?(.+?)\\s*[.!?]*\\s*$"
+        },
+        {
+          "id": "size.pl.by",
+          "param": "size",
+          "lang": "pl",
+          "kind": "text",
+          "template": "{1}x{2}",
+          "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\s*[x×]\\s*(\\d{2,5})"
+        },
+        {
+          "id": "size.pl",
+          "param": "size",
+          "lang": "pl",
+          "kind": "text",
+          "template": "{1}x{1}",
+          "regex": "\\b(?:w\\s+rozmiarze|rozmiar(?:u|em)?)\\s+(\\d{2,5})\\b"
+        },
+        {
+          "id": "size.en.by",
+          "param": "size",
+          "lang": "en",
+          "kind": "text",
+          "template": "{1}x{2}",
+          "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\s*[x×]\\s*(\\d{2,5})"
+        },
+        {
+          "id": "size.en",
+          "param": "size",
+          "lang": "en",
+          "kind": "text",
+          "template": "{1}x{1}",
+          "regex": "\\b(?:size|sized|at)\\s+(\\d{2,5})\\b"
+        }
+      ],
+      "commands": [
+        {
+          "id": "help.can_do.pl",
+          "action": "help.can_do",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:co\\s+(?:moge|mozna|potrafisz|umiesz|mozesz)(?:\\s+(?:tu|tutaj|jeszcze))?(?:\\s+(?:zrobic|robic))?|pomoc|pomocy|jakie\\s+sa\\s+(?:moje\\s+)?mozliwosci|co\\s+jest\\s+mozliwe(?:\\s+tutaj)?)\\s*\\??\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "help.can_do.en",
+          "action": "help.can_do",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:what\\s+can\\s+(?:i|you)\\s+do(?:\\s+(?:here|now))?|help(?:\\s+me)?|what\\s+are\\s+(?:my|the)\\s+options|what\\s+is\\s+possible(?:\\s+here)?|what\\s+commands\\s+are\\s+there)\\s*\\??\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "help.how_to.pl",
+          "action": "help.how_to",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?jak\\s+(?:to\\s+zrobic|mozna|moge|zrobic|sie\\s+to\\s+robi|mam)\\s*[:,]?\\s+(.+?)\\s*\\??\\s*$",
+          "args": [
+            "topic"
+          ],
+          "original": [
+            "topic"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false,
+          "check_arg": "topic"
+        },
+        {
+          "id": "help.how_to.en",
+          "action": "help.how_to",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?how\\s+(?:do\\s+i|can\\s+i|would\\s+i|should\\s+i|to)\\s+(.+?)\\s*\\??\\s*$",
+          "args": [
+            "topic"
+          ],
+          "original": [
+            "topic"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false,
+          "check_arg": "topic"
+        },
+        {
+          "id": "runs.pl",
+          "action": "actions.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz|wyswietl)\\s+(?:mi\\s+)?(?:ostatnie\\s+)?przebiegi(?:\\s+akcji)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "list": true
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "runs.en",
+          "action": "actions.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:me\\s+)?(?:the\\s+)?(?:recent\\s+)?(?:action\\s+)?runs\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "list": true
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "search.pl",
+          "action": "search.find",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:znajdz|wyszukaj|szukaj|odszukaj)\\s+(?:mi\\s+)?(?:wszystkie\\s+|moje\\s+)?(?:rozmowy|rozmowe|konwersacje|wiadomosci|wiadomosc|czaty|watki)\\s+(?:o|na\\s+temat|dotyczace|dotyczacych|zawierajace|ze\\s+slowem|ze\\s+slowami|z)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "search.in.pl",
+          "action": "search.find",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:znajdz|wyszukaj|szukaj)\\s+(.+?)\\s+w\\s+(?:moich\\s+)?(?:rozmowach|wiadomosciach|historii|czatach)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "search.en",
+          "action": "search.find",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:find|search\\s+for|search|look\\s+up|look\\s+for)\\s+(?:me\\s+)?(?:all\\s+)?(?:my\\s+)?(?:conversations?|chats?|messages?|threads?)\\s+(?:about|on|containing|mentioning|with|regarding|that\\s+mention)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "search.in.en",
+          "action": "search.find",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:find|search\\s+for|search)\\s+(.+?)\\s+in\\s+(?:my\\s+)?(?:conversations|chats|messages|history)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.related.pl",
+          "action": "graph.related",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl|powiedz|wypisz)\\s*,?\\s*(?:mi\\s+)?co\\s+(?:jest|sa)\\s+(?:powiazane|polaczone|powiazany|powiazana)\\s+(?:z|ze)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.related2.pl",
+          "action": "graph.related",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:z\\s+czym|co)\\s+(?:jest\\s+)?(?:powiazan\\w+|polaczon\\w+)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.around.pl",
+          "action": "graph.related",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+graf\\s+(?:wokol|dookola|dla)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.related.en",
+          "action": "graph.related",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|tell)\\s*(?:me)?\\s*,?\\s*(?:what|everything)\\s+(?:is|that\\s+is|are)?\\s*(?:related|connected|linked)\\s+(?:to|with)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.related2.en",
+          "action": "graph.related",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?what\\s+(?:is|are)\\s+(?:related|connected|linked)\\s+(?:to|with)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.around.en",
+          "action": "graph.related",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:me\\s+)?the\\s+graph\\s+(?:around|of|for)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "name"
+          ],
+          "original": [
+            "name"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.overview.pl",
+          "action": "graph.overview",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+(?:mi\\s+)?(?:graf(?:\\s+w\\s+skrocie)?|przeglad\\s+grafu)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.overview.en",
+          "action": "graph.overview",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:me\\s+)?(?:the\\s+)?graph(?:\\s+overview)?(?:\\s+at\\s+a\\s+glance)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.reindex.pl",
+          "action": "graph.reindex",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przebuduj|odbuduj|przeindeksuj)\\s+graf\\s+(?:tej\\s+rozmowy|rozmowy|tego\\s+czatu)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "graph.reindex.all.pl",
+          "action": "graph.reindex",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:przebuduj|odbuduj|przeindeksuj)\\s+(?:caly\\s+|cala\\s+|wszystkie\\s+)?graf(?:\\s+wszystkich\\s+rozmow)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "conversation"
+          },
+          "set": {
+            "all": true
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "graph.reindex.en",
+          "action": "graph.reindex",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:rebuild|reindex)\\s+the\\s+graph\\s+(?:of|for)\\s+this\\s+(?:conversation|chat|thread)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "graph.reindex.all.en",
+          "action": "graph.reindex",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:rebuild|reindex)\\s+(?:the\\s+)?(?:whole\\s+|entire\\s+|all\\s+)?graph(?:\\s+of\\s+all\\s+conversations)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "conversation"
+          },
+          "set": {
+            "all": true
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "memory.recall.me.pl",
+          "action": "memory.recall",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?co\\s+(?:zapamietal\\w*|pamietasz|wiesz)\\s+(?:o\\s+mnie|na\\s+moj\\s+temat)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.recall.show.pl",
+          "action": "memory.recall",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl|wypisz)\\s+(?:mi\\s+)?(?:moja\\s+)?(?:pamiec|zapamietane)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.recall.about.pl",
+          "action": "memory.recall",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?co\\s+(?:zapamietal\\w*|pamietasz)\\s+o\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.recall.me.en",
+          "action": "memory.recall",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?what\\s+do\\s+you\\s+(?:remember|know)\\s+about\\s+me\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.recall.show.en",
+          "action": "memory.recall",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|display)\\s+(?:me\\s+)?(?:my\\s+)?(?:memory|memories|what\\s+you\\s+remember)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.recall.about.en",
+          "action": "memory.recall",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?what\\s+do\\s+you\\s+remember\\s+about\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.update.pl",
+          "action": "memory.update",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zmien|popraw|zaktualizuj)\\s+(?:wpis\\s+)?(?:pamieci|w\\s+pamieci)\\s+([0-9a-f]{12})\\s+(?:na|:)\\s*(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "id",
+            "content"
+          ],
+          "original": [
+            "content"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.update.en",
+          "action": "memory.update",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:change|update|correct)\\s+(?:the\\s+)?memory\\s+(?:entry\\s+)?([0-9a-f]{12})\\s+(?:to|:)\\s*(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "id",
+            "content"
+          ],
+          "original": [
+            "content"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.forget.pl",
+          "action": "memory.forget",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zapomnij|usun\\s+z\\s+pamieci|wymaz\\s+z\\s+pamieci)(?:\\s+to)?\\s*[,:]?\\s*(?:ze\\s+)?(.{3,}?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.forget.en",
+          "action": "memory.forget",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:forget|remove\\s+from\\s+(?:the\\s+)?memory)(?:\\s+that)?\\s*[,:]?\\s*(.{3,}?)\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.remember.pl",
+          "action": "memory.remember",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zapamietaj|pamietaj|zanotuj)(?:\\s+to)?\\s*[,:]?\\s*(?:ze\\s+)?([^?]{3,}?)\\s*[.!]*\\s*$",
+          "args": [
+            "content"
+          ],
+          "original": [
+            "content"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "memory.remember.en",
+          "action": "memory.remember",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:remember|memorise|memorize|make\\s+a\\s+note)(?:\\s+this)?\\s*[,:]?\\s*(?:that\\s+)?([^?]{3,}?)\\s*[.!]*\\s*$",
+          "args": [
+            "content"
+          ],
+          "original": [
+            "content"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "conv.list.pl",
+          "action": "conversations.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl|wypisz|wylistuj)\\s+(?:mi\\s+)?(?:moje\\s+|wszystkie\\s+|ostatnie\\s+)?(?:rozmowy|konwersacje|czaty|watki)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "conv.list.en",
+          "action": "conversations.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|display)\\s+(?:me\\s+)?(?:my\\s+|all\\s+|the\\s+)?(?:recent\\s+)?(?:conversations|chats|threads)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "conv.create.pl",
+          "action": "conversation.create",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:utworz|zaloz|stworz|zacznij|rozpocznij)\\s+(?:mi\\s+)?nowa\\s+(?:rozmowe|konwersacje|czat|watek)(?:\\s+(?:(?:o|na\\s+temat|pod\\s+nazwa|zatytulowana|zatytulowany|pt\\.?)\\s+)?(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "title"
+          ],
+          "original": [
+            "title"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "conv.create.en",
+          "action": "conversation.create",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:create|start|open|begin)\\s+(?:me\\s+)?a\\s+new\\s+(?:conversation|chat|thread)(?:\\s+(?:about|on|called|named|titled)\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "title"
+          ],
+          "original": [
+            "title"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "conv.rename.pl",
+          "action": "conversation.rename",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zmien\\s+nazwe|nazwij|przemianuj|zatytuluj)\\s+(?:tej\\s+|tego\\s+)?(?:rozmowy|rozmowe|konwersacji|czatu|czat|watku)?\\s*(?:na|jako)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "title"
+          ],
+          "original": [
+            "title"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "conv.rename.en",
+          "action": "conversation.rename",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:rename|retitle|title)\\s+(?:this\\s+)?(?:conversation|chat|thread)?\\s*(?:to|as)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "title"
+          ],
+          "original": [
+            "title"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "conv.delete.pl",
+          "action": "conversation.delete",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:usun|skasuj|wykasuj)\\s+(?:ta|te|ta\\s+cala)\\s+(?:rozmowe|konwersacje|czat|watek)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "conv.delete.en",
+          "action": "conversation.delete",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:delete|remove)\\s+this\\s+(?:whole\\s+)?(?:conversation|chat|thread)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.edit.pl",
+          "action": "message.edit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:popraw|zmien|edytuj)\\s+(?:ta|te|ostatnia|moja)\\s+(?:wiadomosc|odpowiedz)\\s*(?::|,|na)\\s*(.+?)\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.edit.en",
+          "action": "message.edit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:edit|change|correct|fix)\\s+(?:this|the\\s+last|my\\s+last)\\s+(?:message|reply|answer)\\s*(?::|,|to)\\s*(.+?)\\s*$",
+          "args": [
+            "text"
+          ],
+          "original": [
+            "text"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.versions.pl",
+          "action": "message.versions",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz|wyswietl)\\s+(?:mi\\s+)?wersje\\s+(?:tej\\s+)?(?:wiadomosci|odpowiedzi)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.versions.en",
+          "action": "message.versions",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:me\\s+)?(?:the\\s+)?versions\\s+of\\s+this\\s+(?:message|reply|answer)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.restore.n.pl",
+          "action": "message.restore",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wroc|przywroc|przelacz)\\s+(?:do\\s+)?wersji\\s+(\\d+)\\s+(?:tej\\s+)?(?:wiadomosci|odpowiedzi)\\s*[.!?]*\\s*$",
+          "args": [
+            "version"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.restore.pl",
+          "action": "message.restore",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wroc|przywroc|cofnij)\\s+(?:do\\s+)?(?:poprzedniej|starej|pierwszej)\\s+wersji\\s+(?:tej\\s+)?(?:wiadomosci|odpowiedzi)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.restore.n.en",
+          "action": "message.restore",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|switch\\s+to|go\\s+back\\s+to)\\s+version\\s+(\\d+)\\s+of\\s+this\\s+(?:message|reply|answer)\\s*[.!?]*\\s*$",
+          "args": [
+            "version"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.restore.en",
+          "action": "message.restore",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:restore|revert|go\\s+back\\s+to)\\s+(?:to\\s+)?the\\s+(?:previous|old|first)\\s+version\\s+of\\s+this\\s+(?:message|reply|answer)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.exclude.pl",
+          "action": "message.set_status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?wyklucz\\s+(?:te|ta|ostatnia)?\\s*(?:wiadomosc|odpowiedz)(?:\\s+z\\s+kontekstu)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "set": {
+            "status": "excluded"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.include.pl",
+          "action": "message.set_status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wlacz|uwzglednij|przywroc)\\s+(?:te|ta)\\s+(?:wiadomosc|odpowiedz)(?:\\s+(?:do\\s+kontekstu|ponownie|znowu))?\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "set": {
+            "status": "active"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.delete.pl",
+          "action": "message.set_status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?usun\\s+(?:te|ta)\\s+(?:wiadomosc|odpowiedz)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "set": {
+            "status": "deleted"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.exclude.en",
+          "action": "message.set_status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?exclude\\s+(?:this|the\\s+last)\\s+(?:message|reply|answer)(?:\\s+from\\s+(?:the\\s+)?context)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "set": {
+            "status": "excluded"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.include.en",
+          "action": "message.set_status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:include|restore|bring\\s+back)\\s+this\\s+(?:message|reply|answer)(?:\\s+(?:in\\s+the\\s+context|again))?\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "set": {
+            "status": "active"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.delete.en",
+          "action": "message.set_status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?delete\\s+this\\s+(?:message|reply|answer)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "set": {
+            "status": "deleted"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.weight.pl",
+          "action": "message.weight",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?oznacz\\s+(?:te|ta)\\s+(?:wiadomosc|odpowiedz)\\s+jako\\s+(wazn\\w+|niewazn\\w+|nieistotn\\w+|istotn\\w+)\\s*[.!?]*\\s*$",
+          "args": [
+            "importance"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.weight.n.pl",
+          "action": "message.weight",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?ustaw\\s+wage\\s+(?:tej\\s+)?(?:wiadomosci|odpowiedzi)\\s+na\\s+([0-9]+(?:[.,][0-9]+)?)\\s*[.!?]*\\s*$",
+          "args": [
+            "weight"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.weight.en",
+          "action": "message.weight",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?mark\\s+this\\s+(?:message|reply|answer)\\s+as\\s+(important|unimportant|minor|crucial)\\s*[.!?]*\\s*$",
+          "args": [
+            "importance"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "msg.weight.n.en",
+          "action": "message.weight",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?set\\s+the\\s+weight\\s+of\\s+this\\s+(?:message|reply|answer)\\s+to\\s+([0-9]+(?:\\.[0-9]+)?)\\s*[.!?]*\\s*$",
+          "args": [
+            "weight"
+          ],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "export.to.pl",
+          "action": "export.conversation",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wyeksportuj|eksportuj|zapisz)\\s+(?:te\\s+|ta\\s+|cala\\s+)?(?:rozmowe|konwersacje|czat)\\s+(?:do|jako|w\\s+formacie)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "export.pl",
+          "action": "export.conversation",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wyeksportuj|eksportuj)\\s+(?:te\\s+|ta\\s+|cala\\s+)?(?:rozmowe|konwersacje|czat)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "export.to.en",
+          "action": "export.conversation",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:export|save)\\s+this\\s+(?:conversation|chat|thread)\\s+(?:to|as|in)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "export.en",
+          "action": "export.conversation",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?export\\s+this\\s+(?:conversation|chat|thread)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "import.pl",
+          "action": "import.file",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zaimportuj|importuj|wczytaj)\\s+(?:ten\\s+|ta\\s+|moj\\s+)?(?:plik|archiwum|eksport)(?:\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "import.path.pl",
+          "action": "import.file",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zaimportuj|importuj|wczytaj)\\s+((?:/|~|\\./|[a-z]:)\\S*)\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "import.en",
+          "action": "import.file",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:import|load)\\s+(?:this\\s+|the\\s+|my\\s+)?(?:file|archive|export)(?:\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "import.path.en",
+          "action": "import.file",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:import|load)\\s+((?:/|~|\\./|[a-z]:)\\S*)\\s*[.!?]*\\s*$",
+          "args": [
+            "path"
+          ],
+          "original": [
+            "path"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "storage.status.pl",
+          "action": "storage.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|sprawdz|wyswietl)\\s+(?:mi\\s+)?(?:stan|status)\\s+magazyn\\w*\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.status.en",
+          "action": "storage.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|check|display)\\s+(?:me\\s+)?(?:the\\s+)?storage\\s+(?:status|state)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.probe.pl",
+          "action": "storage.probe",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:sprawdz|przetestuj)\\s+(?:polaczenie\\s+z\\s+)?magazyn\\w*\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.probe.en",
+          "action": "storage.probe",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:probe|check|test)\\s+(?:the\\s+)?storage(?:\\s+backends?|\\s+connections?)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.kinds.pl",
+          "action": "storage.kinds",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?jakie\\s+(?:rodzaje\\s+)?magazyn\\w*\\s+(?:mozna|moge)\\s+podlaczyc\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.kinds.en",
+          "action": "storage.kinds",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:which|what)\\s+(?:kinds\\s+of\\s+)?storage\\s+(?:can\\s+i|could\\s+i)\\s+connect\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.placement.pl",
+          "action": "storage.placement",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?gdzie\\s+(?:leza|sa\\s+trzymane|przechowywane)\\s+(?:moje\\s+)?(?:dane|conversations|search_index|blobs|usage_ledger|embedding_cache|memory_tree|models_cache|sync_state|exports|attachments|config)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.placement.en",
+          "action": "storage.placement",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?where\\s+(?:does|do)\\s+my\\s+(?:data|conversations|search_index|blobs|usage_ledger|embedding_cache|memory_tree|models_cache|sync_state|exports|attachments|config)\\s+(?:live|lives|stored|kept)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.locate.pl",
+          "action": "storage.locate",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?gdzie\\s+(?:jest|lezy)\\s+(?:obiekt|blob|plik)\\s+([0-9a-f]{64})\\s*[.!?]*\\s*$",
+          "args": [
+            "hash"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.locate.en",
+          "action": "storage.locate",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?where\\s+is\\s+(?:the\\s+)?(?:object|blob|file)\\s+([0-9a-f]{64})\\s*[.!?]*\\s*$",
+          "args": [
+            "hash"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.backup.pl",
+          "action": "storage.backup",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zrob|wykonaj|zrobic)\\s+kopie\\s+zapasowa(?:\\s+bazy)?\\s+(?:do|na)\\s+(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.backup.en",
+          "action": "storage.backup",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?back\\s*up\\s+(?:the\\s+)?(?:database|db|data)?\\s*(?:to|onto)\\s+(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.copy.pl",
+          "action": "storage.copy",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:skopiuj|replikuj)\\s+(?:kategorie\\s+)?(conversations|search_index|blobs|usage_ledger|embedding_cache|memory_tree|models_cache|sync_state|exports|attachments|config)\\s+(?:do|na)\\s+(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "category",
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.copy.en",
+          "action": "storage.copy",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:copy|replicate)\\s+(?:the\\s+)?(?:category\\s+)?(conversations|search_index|blobs|usage_ledger|embedding_cache|memory_tree|models_cache|sync_state|exports|attachments|config)\\s+to\\s+(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "category",
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.move.pl",
+          "action": "storage.move",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?przenies\\s+(?:kategorie\\s+)?(conversations|search_index|blobs|usage_ledger|embedding_cache|memory_tree|models_cache|sync_state|exports|attachments|config)\\s+(?:do|na)\\s+(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "category",
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "storage.move.en",
+          "action": "storage.move",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?move\\s+(?:the\\s+)?(?:category\\s+)?(conversations|search_index|blobs|usage_ledger|embedding_cache|memory_tree|models_cache|sync_state|exports|attachments|config)\\s+to\\s+(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "category",
+            "to"
+          ],
+          "original": [
+            "to"
+          ],
+          "element": {
+            "id": "storage"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "connect.gdrive.pl",
+          "action": "storage.connect",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:podlacz|polacz|dodaj|skonfiguruj)\\s+(?:moj\\s+|moje\\s+|mi\\s+)?(?:dysk\\w*\\s+google|google\\s+drive|gdrive|dysk\\s+g)(?:\\s+(?:jako|pod\\s+nazwa)\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "id"
+          ],
+          "original": [
+            "id"
+          ],
+          "set": {
+            "kind": "gdrive"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "connect.gdrive.en",
+          "action": "storage.connect",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:connect|add|set\\s+up|configure)\\s+(?:my\\s+|a\\s+)?(?:google\\s+drive|gdrive)(?:\\s+(?:as|named|called)\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "id"
+          ],
+          "original": [
+            "id"
+          ],
+          "set": {
+            "kind": "gdrive"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "connect.s3.pl",
+          "action": "storage.connect",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:podlacz|polacz|dodaj|skonfiguruj)\\s+(?:moj\\s+|moje\\s+|mi\\s+)?(?:bucket\\s+)?s3(?:\\s+bucket)?(?:\\s+(?:o\\s+nazwie|nazwany|bucket)\\s+(\\S+))?(?:\\s+(?:pod\\s+adresem|endpoint)\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "bucket",
+            "endpoint"
+          ],
+          "original": [
+            "bucket",
+            "endpoint"
+          ],
+          "set": {
+            "kind": "s3"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "connect.s3.en",
+          "action": "storage.connect",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:connect|add|set\\s+up|configure)\\s+(?:my\\s+|an?\\s+)?s3(?:\\s+bucket)?(?:\\s+(?:named|called|bucket)\\s+(\\S+))?(?:\\s+(?:at|endpoint)\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "bucket",
+            "endpoint"
+          ],
+          "original": [
+            "bucket",
+            "endpoint"
+          ],
+          "set": {
+            "kind": "s3"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "connect.webdav.pl",
+          "action": "storage.connect",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:podlacz|polacz|dodaj|skonfiguruj)\\s+(?:moj\\s+|moje\\s+|mi\\s+)?(?:webdav|nextcloud)(?:\\s+(?:pod\\s+adresem|adres)\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "url"
+          ],
+          "original": [
+            "url"
+          ],
+          "set": {
+            "kind": "webdav"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "connect.webdav.en",
+          "action": "storage.connect",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:connect|add|set\\s+up|configure)\\s+(?:my\\s+|a\\s+)?(?:webdav|nextcloud)(?:\\s+(?:at|url|address)\\s+(\\S+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "url"
+          ],
+          "original": [
+            "url"
+          ],
+          "set": {
+            "kind": "webdav"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "ports.set.pl",
+          "action": "ports.set",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:do|dla)\\s+((?:rozpoznawania\\s+tekstu|analizy\\s+semantycznej|rozpoznawania\\s+mowy|tekstu\\s+z\\s+obrazow|czytania\\s+obrazow|mowy\\s+na\\s+tekst|transkrypcji|podsumowania|streszczenia|embeddingow|tlumaczenia|podsumowan|dyktowania|rozwijania|czatowania|streszczen|streszczan|tlumaczen|rozwiniec|wektorow|rozmowy|analizy|krytyki|analiz|rozmow|czatu|ocen|ocr))\\s+(?:uzywaj|uzyj|ustaw|wybierz|wez)\\s+(?:modelu\\s+|model\\s+|dostawcy\\s+|dostawce\\s+)?(\\S+?)\\s*[.!]*\\s*$",
+          "args": [
+            "role_word",
+            "model"
+          ],
+          "original": [
+            "model"
+          ],
+          "takes_scope": true
+        },
+        {
+          "id": "ports.set.en",
+          "action": "ports.set",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:use|set|pick|choose)\\s+(?:the\\s+)?(?:model\\s+|provider\\s+)?(\\S+)\\s+(?:for|to\\s+do)\\s+((?:speech\\s+recognition|semantic\\s+analysis|text\\s+recognition|text\\s+from\\s+images|speech\\s+to\\s+text|reading\\s+images|transcription|vector\\s+search|conversations|translations|transcribing|conversation|elaborating|translating|summarizing|translation|elaboration|summarising|embeddings|analysing|summarize|critiques|dictation|summaries|summarise|analyzing|embedding|chatting|critique|analysis|reviews|talking|summary|chat|ocr))\\s*[.!]*\\s*$",
+          "args": [
+            "model",
+            "role_word"
+          ],
+          "original": [
+            "model"
+          ],
+          "takes_scope": true
+        },
+        {
+          "id": "ports.show.pl",
+          "action": "ports.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jakiego\\s+(?:modelu|dostawcy)\\s+uzywam|jaki\\s+model\\s+(?:uzywam|jest\\s+uzywany)|czego\\s+uzywam)\\s+(?:do|dla)\\s+((?:rozpoznawania\\s+tekstu|analizy\\s+semantycznej|rozpoznawania\\s+mowy|tekstu\\s+z\\s+obrazow|czytania\\s+obrazow|mowy\\s+na\\s+tekst|transkrypcji|podsumowania|streszczenia|embeddingow|tlumaczenia|podsumowan|dyktowania|rozwijania|czatowania|streszczen|streszczan|tlumaczen|rozwiniec|wektorow|rozmowy|analizy|krytyki|analiz|rozmow|czatu|ocen|ocr))\\s*\\??\\s*$",
+          "args": [
+            "role_word"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "ports.show.all.pl",
+          "action": "ports.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz)\\s+(?:moje\\s+)?(?:role|przypisania)\\s*(?:modeli|dostawcow)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "ports.show.en",
+          "action": "ports.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:which|what)\\s+(?:model|provider)\\s+(?:do\\s+i\\s+use|is\\s+used)\\s+(?:for|to\\s+do)\\s+((?:speech\\s+recognition|semantic\\s+analysis|text\\s+recognition|text\\s+from\\s+images|speech\\s+to\\s+text|reading\\s+images|transcription|vector\\s+search|conversations|translations|transcribing|conversation|elaborating|translating|summarizing|translation|elaboration|summarising|embeddings|analysing|summarize|critiques|dictation|summaries|summarise|analyzing|embedding|chatting|critique|analysis|reviews|talking|summary|chat|ocr))\\s*\\??\\s*$",
+          "args": [
+            "role_word"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "ports.show.all.en",
+          "action": "ports.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:my\\s+)?(?:model\\s+)?roles\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "usage.spend.pl",
+          "action": "usage.spend",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?ile\\s+(?:wydalem|wydalam|wydano|zuzylem|zuzylam|kosztowalo|to\\s+kosztowalo)\\s*(.*?)\\s*\\??\\s*$",
+          "args": [
+            "period"
+          ],
+          "original": [
+            "period"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "usage.spend.show.pl",
+          "action": "usage.spend",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+(?:moje\\s+)?(?:zuzycie|wydatki|koszty)\\s*(.*?)\\s*[.!?]*\\s*$",
+          "args": [
+            "period"
+          ],
+          "original": [
+            "period"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "usage.spend.en",
+          "action": "usage.spend",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?how\\s+much\\s+(?:did\\s+i|have\\s+i|was)\\s+(?:spend|spent|use|used)\\s*(.*?)\\s*\\??\\s*$",
+          "args": [
+            "period"
+          ],
+          "original": [
+            "period"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "usage.spend.show.en",
+          "action": "usage.spend",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:me\\s+)?(?:my\\s+)?(?:usage|spending|costs?)\\s*(.*?)\\s*[.!?]*\\s*$",
+          "args": [
+            "period"
+          ],
+          "original": [
+            "period"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "usage.limit.pl",
+          "action": "usage.set_limit",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?ustaw\\s+limit\\s+(?:wzrostu\\s+)?(?:zuzycia\\s+)?(?:na\\s+)?([0-9]+(?:[.,][0-9]+)?)\\s*(?:razy|x|×)?\\s*[.!?]*\\s*$",
+          "args": [
+            "growth_factor"
+          ],
+          "set": {
+            "setting_key": "loom_usage_policy"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.limit.en",
+          "action": "usage.set_limit",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?set\\s+(?:the\\s+)?(?:usage\\s+)?(?:growth\\s+)?limit\\s+(?:of\\s+usage\\s+)?(?:to|at)\\s+([0-9]+(?:\\.[0-9]+)?)\\s*(?:x|times)?\\s*[.!?]*\\s*$",
+          "args": [
+            "growth_factor"
+          ],
+          "set": {
+            "setting_key": "loom_usage_policy"
+          },
+          "takes_scope": false,
+          "element_from_arg": true
+        },
+        {
+          "id": "usage.compact.pl",
+          "action": "usage.compact",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:skompaktuj|zmniejsz|wyczysc|oczysc)\\s+rejestr\\s+zuzycia\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "usage.compact.en",
+          "action": "usage.compact",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?compact\\s+the\\s+usage\\s+(?:ledger|log)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "economy.pl",
+          "action": "economy.report",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+(?:mi\\s+)?raport\\s+oszczednosci(?:\\s+danych)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "economy.en",
+          "action": "economy.report",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:me\\s+)?the\\s+economy\\s+report\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "models.refresh.pl",
+          "action": "models.refresh",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:odswiez|zaktualizuj|pobierz)\\s+(?:na\\s+nowo\\s+)?(?:liste\\s+modeli|modele)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "models.refresh.en",
+          "action": "models.refresh",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:refresh|update|reload)\\s+(?:the\\s+)?(?:model\\s+list|models)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "models.list.pl",
+          "action": "models.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz|wyswietl)\\s+(?:mi\\s+)?(?:dostepne\\s+|wszystkie\\s+)?modele(?:\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "models.avail.pl",
+          "action": "models.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?jakie\\s+modele\\s+(?:sa\\s+)?dostepne\\s*\\??\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "models.list.en",
+          "action": "models.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|display)\\s+(?:me\\s+)?(?:the\\s+|all\\s+|available\\s+)?models(?:\\s+(.+?))?\\s*[.!?]*\\s*$",
+          "args": [
+            "query"
+          ],
+          "original": [
+            "query"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "models.avail.en",
+          "action": "models.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:which|what)\\s+models\\s+are\\s+available\\s*\\??\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "providers.pl",
+          "action": "providers.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz|wyswietl)\\s+(?:mi\\s+)?(?:moich\\s+|podlaczonych\\s+)?dostawc\\w+\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "providers.which.pl",
+          "action": "providers.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?jacy\\s+dostawcy\\s+(?:sa\\s+)?podlaczeni\\s*\\??\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "providers.en",
+          "action": "providers.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|display)\\s+(?:me\\s+)?(?:my\\s+|the\\s+|connected\\s+)?providers\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "settings.list.pl",
+          "action": "settings.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz|wyswietl)\\s+(?:mi\\s+)?(?:wszystkie\\s+|moje\\s+)?ustawienia(?:\\s+(?:grupy\\s+)?(\\w+))?\\s*[.!?]*\\s*$",
+          "args": [
+            "group"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "settings.list.en",
+          "action": "settings.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|display)\\s+(?:me\\s+)?(?:my\\s+|all\\s+|the\\s+)?(?:(\\w+)\\s+)?settings\\s*[.!?]*\\s*$",
+          "args": [
+            "group"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.status.pl",
+          "action": "semantic.status",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|sprawdz)\\s+(?:mi\\s+)?(?:stan|status)\\s+analizy(?:\\s+semantycznej)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.status.en",
+          "action": "semantic.status",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|check)\\s+(?:me\\s+)?(?:the\\s+)?(?:semantic\\s+)?(?:analysis\\s+)?status\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.pause.pl",
+          "action": "semantic.pause",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wstrzymaj|zatrzymaj|zapauzuj)\\s+analiz\\w+(?:\\s+semantyczn\\w+)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.pause.en",
+          "action": "semantic.pause",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pause|stop)\\s+(?:the\\s+)?(?:semantic\\s+)?analysis\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.resume.pl",
+          "action": "semantic.resume",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wznow|wznawiaj)\\s+analiz\\w+(?:\\s+semantyczn\\w+)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.resume.en",
+          "action": "semantic.resume",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:resume|restart)\\s+(?:the\\s+)?(?:semantic\\s+)?analysis\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.wake.pl",
+          "action": "semantic.wake",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:obudz|pobudz)\\s+analiz\\w+(?:\\s+semantyczn\\w+)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.wake.en",
+          "action": "semantic.wake",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?wake(?:\\s+up)?\\s+(?:the\\s+)?(?:semantic\\s+)?analysis\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.requeue.pl",
+          "action": "semantic.requeue",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:ponow|powtorz)\\s+(?:nieudane\\s+)?analiz\\w+(?:\\s+semantyczn\\w+)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "semantic.requeue.en",
+          "action": "semantic.requeue",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:requeue|retry|redo)\\s+(?:the\\s+)?(?:failed\\s+)?(?:semantic\\s+)?analys[ie]s\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tasks.list.pl",
+          "action": "tasks.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz|wyswietl)\\s+(?:mi\\s+)?(?:zadania|zadan)(?:\\s+w\\s+tle)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tasks.list.en",
+          "action": "tasks.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|display)\\s+(?:me\\s+)?(?:the\\s+)?(?:background\\s+)?tasks\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tasks.resume.pl",
+          "action": "tasks.resume",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?wznow\\s+(?:przerwane\\s+)?zadania\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tasks.resume.en",
+          "action": "tasks.resume",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?resume\\s+(?:the\\s+)?(?:interrupted\\s+)?tasks\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tasks.cancel.pl",
+          "action": "tasks.cancel",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:anuluj|przerwij|zatrzymaj)\\s+zadanie\\s+(\\S+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "id"
+          ],
+          "original": [
+            "id"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "tasks.cancel.en",
+          "action": "tasks.cancel",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:cancel|stop|abort)\\s+task\\s+(\\S+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "id"
+          ],
+          "original": [
+            "id"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "logs.pl",
+          "action": "logs.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+(?:mi\\s+)?(?:ostatnie\\s+)?(?:logi|dziennik)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "logs.en",
+          "action": "logs.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:me\\s+)?(?:the\\s+)?(?:recent\\s+)?logs?\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "provenance.msg.pl",
+          "action": "provenance.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|sprawdz)\\s+(?:mi\\s+)?(?:pochodzenie|skad\\s+pochodzi)\\s+(?:tej\\s+)?(?:wiadomosci|odpowiedzi)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "provenance.msg.en",
+          "action": "provenance.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|check)\\s+(?:me\\s+)?(?:the\\s+)?(?:provenance|origin)\\s+of\\s+this\\s+(?:message|reply|answer)\\s*[.!?]*\\s*$",
+          "args": [],
+          "element": {
+            "resolve": "last_message"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "provenance.id.pl",
+          "action": "provenance.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|sprawdz)\\s+(?:mi\\s+)?(?:pochodzenie|skad\\s+pochodzi)\\s+([a-z]{1,3}_[0-9a-f]{12})\\s*[.!?]*\\s*$",
+          "args": [
+            "subject"
+          ],
+          "element": {
+            "id": "application"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "provenance.id.en",
+          "action": "provenance.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|check)\\s+(?:me\\s+)?(?:the\\s+)?(?:provenance|origin)\\s+of\\s+([a-z]{1,3}_[0-9a-f]{12})\\s*[.!?]*\\s*$",
+          "args": [
+            "subject"
+          ],
+          "element": {
+            "id": "application"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "sources.pl",
+          "action": "sources.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz|wyswietl)\\s+(?:mi\\s+)?(?:moje\\s+)?zrodla\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "sources.en",
+          "action": "sources.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list|display)\\s+(?:me\\s+)?(?:my\\s+|the\\s+)?sources\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "about.pl",
+          "action": "app.info",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jaka\\s+to\\s+wersja(?:\\s+aplikacji)?|pokaz\\s+wersje|o\\s+aplikacji)\\s*\\??\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "about.en",
+          "action": "app.info",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:what\\s+version(?:\\s+is\\s+this(?:\\s+(?:app|application))?)?|show\\s+(?:the\\s+)?version|about\\s+this\\s+(?:app|application))\\s*\\??\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "github.sync.pl",
+          "action": "github.sync",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:zsynchronizuj|synchronizuj)\\s+(?:sie\\s+)?z\\s+github(?:em)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "sync"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "github.pull.pl",
+          "action": "github.sync",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?pobierz\\s+(?:dane\\s+)?z\\s+github(?:a)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "pull"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "github.push.pl",
+          "action": "github.sync",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?wyslij\\s+(?:dane\\s+)?na\\s+github(?:a)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "push"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "github.test.pl",
+          "action": "github.sync",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?sprawdz\\s+polaczenie\\s+z\\s+github(?:em)?\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "test"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "github.sync.en",
+          "action": "github.sync",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:sync|synchronise|synchronize)\\s+(?:with|to)\\s+github\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "sync"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "github.pull.en",
+          "action": "github.sync",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?pull\\s+(?:the\\s+data\\s+)?from\\s+github\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "pull"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "github.push.en",
+          "action": "github.sync",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?push\\s+(?:the\\s+data\\s+)?to\\s+github\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "push"
+          },
+          "takes_scope": false
+        },
+        {
+          "id": "github.test.en",
+          "action": "github.sync",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:test|check)\\s+(?:the\\s+)?github\\s+connection\\s*[.!?]*\\s*$",
+          "args": [],
+          "set": {
+            "operation": "test"
+          },
+          "takes_scope": false
+        }
       ]
     },
     "confirmation": {
       "yes": {
-        "en": ["yes", "y", "yep", "yeah", "ok", "okay", "sure", "confirm", "confirmed", "go ahead", "do it", "proceed", "run it"],
-        "pl": ["tak", "t", "ok", "okej", "dobrze", "jasne", "potwierdzam", "potwierdź", "potwierdz", "zrób to", "zrob to", "działaj", "dzialaj", "dalej", "wykonaj"]
+        "en": [
+          "yes",
+          "y",
+          "yep",
+          "yeah",
+          "ok",
+          "okay",
+          "sure",
+          "confirm",
+          "confirmed",
+          "go ahead",
+          "do it",
+          "proceed",
+          "run it"
+        ],
+        "pl": [
+          "tak",
+          "t",
+          "ok",
+          "okej",
+          "dobrze",
+          "jasne",
+          "potwierdzam",
+          "potwierdź",
+          "potwierdz",
+          "zrób to",
+          "zrob to",
+          "działaj",
+          "dzialaj",
+          "dalej",
+          "wykonaj"
+        ]
       },
       "no": {
-        "en": ["no", "n", "nope", "cancel", "stop", "never mind", "nevermind", "drop it", "don't", "do not"],
-        "pl": ["nie", "anuluj", "odrzuć", "odrzuc", "odrzucam", "zostaw", "zostaw to", "nie rób tego", "nie rob tego", "stop"]
+        "en": [
+          "no",
+          "n",
+          "nope",
+          "cancel",
+          "stop",
+          "never mind",
+          "nevermind",
+          "drop it",
+          "don't",
+          "do not"
+        ],
+        "pl": [
+          "nie",
+          "anuluj",
+          "odrzuć",
+          "odrzuc",
+          "odrzucam",
+          "zostaw",
+          "zostaw to",
+          "nie rób tego",
+          "nie rob tego",
+          "stop"
+        ]
       },
       "send": {
-        "en": ["send as message", "send as a message", "send it as a message", "send it as message", "send as an ordinary message", "send it", "send"],
-        "pl": ["wyślij jako wiadomość", "wyslij jako wiadomosc", "wyślij to jako wiadomość", "wyslij to jako wiadomosc", "wyślij jako zwykłą wiadomość", "wyslij jako zwykla wiadomosc", "wyślij to", "wyslij to", "wyślij", "wyslij"]
+        "en": [
+          "send as message",
+          "send as a message",
+          "send it as a message",
+          "send it as message",
+          "send as an ordinary message",
+          "send it",
+          "send"
+        ],
+        "pl": [
+          "wyślij jako wiadomość",
+          "wyslij jako wiadomosc",
+          "wyślij to jako wiadomość",
+          "wyslij to jako wiadomosc",
+          "wyślij jako zwykłą wiadomość",
+          "wyslij jako zwykla wiadomosc",
+          "wyślij to",
+          "wyslij to",
+          "wyślij",
+          "wyslij"
+        ]
       }
     },
     "model": {
       "system": "You decide whether a user's input to a chat application is an ordinary message for the language model, or a command to the application itself (run one of its actions on something). Answer with one JSON object only: {\"kind\": \"message\" | \"command\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command names something the application can do to an existing element (for example summarise this conversation, set a setting). Questions, requests for the model to write or explain, and anything unclear are messages. Use only action ids from the list.",
       "catalogue_line": "- {{id}}: {{title}} (needs: {{requires}})",
       "user": "Actions:\n{{actions}}\n\nInput:\n{{text}}",
-      "parameters": {"temperature": 0, "max_tokens": 300},
+      "parameters": {
+        "temperature": 0,
+        "max_tokens": 300
+      },
       "title": "ChatADHD-Route",
       "timeout_ms": 30000,
       "min_confidence": 0.5
@@ -393,98 +3333,465 @@
   },
   "value_schema": {
     "type": "object",
-    "required": ["method", "execution", "on_reject", "emergent", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
+    "required": [
+      "method",
+      "execution",
+      "on_reject",
+      "emergent",
+      "default_language",
+      "message_request_fields",
+      "heuristic",
+      "confirmation",
+      "model",
+      "texts"
+    ],
     "properties": {
       "method": {
         "type": "object",
-        "required": ["setting", "active", "presets"],
+        "required": [
+          "setting",
+          "active",
+          "presets"
+        ],
         "properties": {
-          "setting": {"type": "string", "minLength": 1},
-          "active": {"type": "string", "minLength": 1},
-          "presets": {"type": "object", "additionalProperties": {"type": "object"}},
-          "model_setting": {"type": "string"},
-          "model_fallback_setting": {"type": "string"}
+          "setting": {
+            "type": "string",
+            "minLength": 1
+          },
+          "active": {
+            "type": "string",
+            "minLength": 1
+          },
+          "presets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "model_setting": {
+            "type": "string"
+          },
+          "model_fallback_setting": {
+            "type": "string"
+          }
         },
         "additionalProperties": false
       },
       "execution": {
         "type": "object",
-        "required": ["setting", "active", "presets"],
+        "required": [
+          "setting",
+          "active",
+          "presets"
+        ],
         "properties": {
-          "setting": {"type": "string", "minLength": 1},
-          "active": {"type": "string", "minLength": 1},
-          "presets": {"type": "object", "additionalProperties": {"type": "object"}}
+          "setting": {
+            "type": "string",
+            "minLength": 1
+          },
+          "active": {
+            "type": "string",
+            "minLength": 1
+          },
+          "presets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "direct": {
+            "type": "array",
+            "description": "Actions that answer a question about the application (what can be done here, how to do something): they run at once whatever the setting says, because they only describe. The overlay replaces the list; an empty list makes them wait for the yes like the rest.",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
         },
         "additionalProperties": false
       },
       "on_reject": {
         "type": "object",
         "description": "What the answer \"no\" to a proposal does with the sentence the proposal came from. `setting`/`active`/`presets`: offer (preset: the reply offers to send the sentence to the model as an ordinary message, in the same proposal block and by the words in confirmation.send) | send_as_message (the sentence is sent at once) | drop (it is not sent). `unknown`: the preset used when the setting names none of the presets.",
-        "required": ["setting", "active", "presets"],
+        "required": [
+          "setting",
+          "active",
+          "presets"
+        ],
         "properties": {
-          "setting": {"type": "string", "minLength": 1},
-          "active": {"type": "string", "minLength": 1},
-          "unknown": {"type": "string", "minLength": 1},
-          "presets": {"type": "object", "additionalProperties": {"type": "object"}}
+          "setting": {
+            "type": "string",
+            "minLength": 1
+          },
+          "active": {
+            "type": "string",
+            "minLength": 1
+          },
+          "unknown": {
+            "type": "string",
+            "minLength": 1
+          },
+          "presets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
         },
         "additionalProperties": false
       },
       "emergent": {
         "type": "object",
         "description": "The catalogue grows from conversations (R55), always as proposals and never silently. `setting`/`active`/`presets`: off | propose. command_shape: an input that matches no action but has the shape of a command (a verb-like lead word, an element, no question) is offered as the definition of a new action (a composite with one use_model step whose prompt is the user's own instruction; requires inferred from the element's traits among requires_from; the phrase joins the lexicon). sequences: the same chain of actions, each run on the result of the one before, on elements of one class `repeat` times in a row (consecutive within gap_seconds, at most max_length long; the last window_runs occurrences of a chain are counted for each class, kept in an incremental index) is offered as one composite. groups: a user-defined action used on min_classes classes that share traits is offered a group (named trait bundle) of what they share. Accepting writes only user overlays; every proposal leaves a node of `node.kind` with links `node.link` to the messages it emerged from.",
-        "required": ["setting", "active", "presets", "command_shape", "naming", "requires_from", "definition", "sequences", "groups", "node"],
+        "required": [
+          "setting",
+          "active",
+          "presets",
+          "command_shape",
+          "naming",
+          "requires_from",
+          "definition",
+          "sequences",
+          "groups",
+          "node"
+        ],
         "properties": {
-          "setting": {"type": "string", "minLength": 1},
-          "active": {"type": "string", "minLength": 1},
-          "presets": {"type": "object", "additionalProperties": {"type": "object"}},
-          "command_shape": {"type": "object", "required": ["max_tokens", "min_lead_chars", "element_within", "lead_skip", "not_leads", "forbid_question_mark"], "properties": {
-            "max_tokens": {"type": "integer", "minimum": 1}, "min_lead_chars": {"type": "integer", "minimum": 1}, "element_within": {"type": "integer", "minimum": 1},
-            "lead_skip": {"type": "array", "items": {"type": "string"}}, "not_leads": {"type": "array", "items": {"type": "string"}},
-            "forbid_question_mark": {"type": "boolean"}}, "additionalProperties": false},
-          "naming": {"type": "object", "required": ["prefix", "max_chars"], "properties": {"prefix": {"type": "string"}, "max_chars": {"type": "integer", "minimum": 1}}, "additionalProperties": false},
-          "requires_from": {"type": "array", "items": {"type": "string", "minLength": 1}},
-          "definition": {"type": "object", "required": ["system", "parameters", "cost", "confidence"], "properties": {
-            "system": {"type": "object", "additionalProperties": {"type": "string"}}, "parameters": {"type": "object"},
-            "cost": {"type": "number", "minimum": 0}, "confidence": {"type": "number", "minimum": 0, "maximum": 1}}, "additionalProperties": false},
-          "sequences": {"type": "object", "required": ["repeat", "max_length", "gap_seconds", "window_runs", "joiner"], "properties": {
-            "repeat": {"type": "integer", "minimum": 1}, "max_length": {"type": "integer", "minimum": 2}, "gap_seconds": {"type": "integer", "minimum": 0},
-            "window_runs": {"type": "integer", "minimum": 1}, "joiner": {"type": "string", "minLength": 1},
-            "index": {"type": "object", "description": "The incremental index of completed runs behind the detection (action_index.h): the tail of this many conversations is kept (convs), a snapshot is written to the run log every snapshot_every folded runs (a restart folds only what came after it), and this many messages are remembered per action (sources: what a group offer is derived from).", "properties": {
-              "convs": {"type": "integer", "minimum": 1}, "snapshot_every": {"type": "integer", "minimum": 1}, "sources": {"type": "integer", "minimum": 1}}, "additionalProperties": false}}, "additionalProperties": false},
-          "groups": {"type": "object", "required": ["min_classes", "suffix"], "properties": {"min_classes": {"type": "integer", "minimum": 2}, "suffix": {"type": "string"}}, "additionalProperties": false},
-          "node": {"type": "object", "required": ["kind", "link"], "properties": {"kind": {"type": "string", "minLength": 1}, "link": {"type": "string", "minLength": 1}}, "additionalProperties": false}
+          "setting": {
+            "type": "string",
+            "minLength": 1
+          },
+          "active": {
+            "type": "string",
+            "minLength": 1
+          },
+          "presets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          },
+          "command_shape": {
+            "type": "object",
+            "required": [
+              "max_tokens",
+              "min_lead_chars",
+              "element_within",
+              "lead_skip",
+              "not_leads",
+              "forbid_question_mark"
+            ],
+            "properties": {
+              "max_tokens": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "min_lead_chars": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "element_within": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "lead_skip": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "not_leads": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "forbid_question_mark": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          "naming": {
+            "type": "object",
+            "required": [
+              "prefix",
+              "max_chars"
+            ],
+            "properties": {
+              "prefix": {
+                "type": "string"
+              },
+              "max_chars": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "requires_from": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "definition": {
+            "type": "object",
+            "required": [
+              "system",
+              "parameters",
+              "cost",
+              "confidence"
+            ],
+            "properties": {
+              "system": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "parameters": {
+                "type": "object"
+              },
+              "cost": {
+                "type": "number",
+                "minimum": 0
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "sequences": {
+            "type": "object",
+            "required": [
+              "repeat",
+              "max_length",
+              "gap_seconds",
+              "window_runs",
+              "joiner"
+            ],
+            "properties": {
+              "repeat": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "max_length": {
+                "type": "integer",
+                "minimum": 2
+              },
+              "gap_seconds": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "window_runs": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "joiner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "index": {
+                "type": "object",
+                "description": "The incremental index of completed runs behind the detection (action_index.h): the tail of this many conversations is kept (convs), a snapshot is written to the run log every snapshot_every folded runs (a restart folds only what came after it), and this many messages are remembered per action (sources: what a group offer is derived from).",
+                "properties": {
+                  "convs": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "snapshot_every": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "sources": {
+                    "type": "integer",
+                    "minimum": 1
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
+          },
+          "groups": {
+            "type": "object",
+            "required": [
+              "min_classes",
+              "suffix"
+            ],
+            "properties": {
+              "min_classes": {
+                "type": "integer",
+                "minimum": 2
+              },
+              "suffix": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          },
+          "node": {
+            "type": "object",
+            "required": [
+              "kind",
+              "link"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "minLength": 1
+              },
+              "link": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
         },
         "additionalProperties": false
       },
-      "default_language": {"type": "string", "minLength": 1},
-      "message_request_fields": {"type": "array", "items": {"type": "string"}, "description": "A chat request that carries one of these (non-empty) is an explicit chat feature: it is a message and never routed."},
+      "default_language": {
+        "type": "string",
+        "minLength": 1
+      },
+      "message_request_fields": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "A chat request that carries one of these (non-empty) is an explicit chat feature: it is a message and never routed."
+      },
       "heuristic": {
         "type": "object",
-        "required": ["fold", "language_hints", "window_tokens", "lead_tokens", "scoring", "explicit", "patterns", "references"],
+        "required": [
+          "fold",
+          "language_hints",
+          "window_tokens",
+          "lead_tokens",
+          "scoring",
+          "explicit",
+          "patterns",
+          "references"
+        ],
         "properties": {
-          "fold": {"type": "object", "additionalProperties": {"type": "string"}},
-          "language_hints": {"type": "object", "description": "Words (folded) that tell the language of an input that has no distinguishing letters; the language of a matched phrase wins over them.", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
-          "window_tokens": {"type": "integer", "minimum": 1},
-          "lead_tokens": {"type": "integer", "minimum": 1},
-          "sequence": {"type": "object", "description": "Two actions in one sentence (\"nagraj notatkę głosową i ją streść\"): the second acts on what the first brings. connectors: words (folded) that join them; bonus: added to the score of the first so the pair beats it alone.", "properties": {"connectors": {"type": "array", "items": {"type": "string", "minLength": 1}}, "bonus": {"type": "number"}}, "additionalProperties": false},
+          "fold": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "language_hints": {
+            "type": "object",
+            "description": "Words (folded) that tell the language of an input that has no distinguishing letters; the language of a matched phrase wins over them.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "window_tokens": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "lead_tokens": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sequence": {
+            "type": "object",
+            "description": "Two actions in one sentence (\"nagraj notatkę głosową i ją streść\"): the second acts on what the first brings. connectors: words (folded) that join them; bonus: added to the score of the first so the pair beats it alone.",
+            "properties": {
+              "connectors": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "bonus": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          },
           "scoring": {
             "type": "object",
-            "required": ["base", "per_word", "lead_penalty", "min_score"],
+            "required": [
+              "base",
+              "per_word",
+              "lead_penalty",
+              "min_score"
+            ],
             "properties": {
-              "base": {"type": "number"}, "per_word": {"type": "number"}, "lead_penalty": {"type": "number"}, "min_score": {"type": "number"}
+              "base": {
+                "type": "number"
+              },
+              "per_word": {
+                "type": "number"
+              },
+              "lead_penalty": {
+                "type": "number"
+              },
+              "min_score": {
+                "type": "number"
+              }
             },
             "additionalProperties": false
           },
           "explicit": {
             "type": "object",
-            "required": ["prefixes", "run_verbs", "aliases", "arg_pattern", "element_markers", "default_element"],
+            "required": [
+              "prefixes",
+              "run_verbs",
+              "aliases",
+              "arg_pattern",
+              "element_markers",
+              "default_element"
+            ],
             "properties": {
-              "prefixes": {"type": "array", "items": {"type": "string", "minLength": 1}},
-              "run_verbs": {"type": "array", "items": {"type": "string"}},
-              "aliases": {"type": "object", "additionalProperties": {"type": "string"}},
-              "arg_pattern": {"type": "string", "minLength": 1},
-              "element_markers": {"type": "array", "items": {"type": "string"}},
-              "default_element": {"type": "string", "enum": ["current_conversation", "last_message", ""]}
+              "prefixes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "run_verbs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "aliases": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "arg_pattern": {
+                "type": "string",
+                "minLength": 1
+              },
+              "element_markers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "default_element": {
+                "type": "string",
+                "enum": [
+                  "current_conversation",
+                  "last_message",
+                  ""
+                ]
+              }
             },
             "additionalProperties": false
           },
@@ -492,14 +3799,37 @@
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["id", "action", "regex", "args"],
+              "required": [
+                "id",
+                "action",
+                "regex",
+                "args"
+              ],
               "properties": {
-                "id": {"type": "string", "minLength": 1},
-                "action": {"type": "string", "minLength": 1},
-                "regex": {"type": "string", "minLength": 1},
-                "args": {"type": "array", "items": {"type": "string"}},
-                "element_arg": {"type": "string"},
-                "requires_element": {"type": "boolean"}
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "action": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "regex": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "args": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "element_arg": {
+                  "type": "string"
+                },
+                "requires_element": {
+                  "type": "boolean"
+                }
               },
               "additionalProperties": false
             }
@@ -508,12 +3838,34 @@
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["id", "words", "resolve"],
+              "required": [
+                "id",
+                "words",
+                "resolve"
+              ],
               "properties": {
-                "id": {"type": "string", "minLength": 1},
-                "words": {"type": "array", "items": {"type": "string"}},
-                "resolve": {"type": "string", "enum": ["current_conversation", "last_message", "element"]},
-                "element": {"type": "string", "description": "resolve element: the id of the element the words stand for (device:microphone ...; ids of the data in element_resolution.pack)."}
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "resolve": {
+                  "type": "string",
+                  "enum": [
+                    "current_conversation",
+                    "last_message",
+                    "element"
+                  ]
+                },
+                "element": {
+                  "type": "string",
+                  "description": "resolve element: the id of the element the words stand for (device:microphone ...; ids of the data in element_resolution.pack)."
+                }
               },
               "additionalProperties": false
             }
@@ -521,31 +3873,137 @@
           "rules": {
             "type": "object",
             "description": "Scoped settings and rules from what is said (R54): \"w tej rozmowie ustaw X=Y\", \"dla mnie zawsze pytaj przed depict\", \"for this conversation never run depict without asking\". `scopes`: the phrases that name a level of the scope chain (cut out of the text before the commands are read; none named = the default scope of the action_rules profile). `commands`: regexes matched against the folded text with the scope phrase blanked out; group order = `args`; `original` args are read from the text as typed, `resolve` args are action words turned into catalogue ids (an unknown word makes the input a message, nothing is guessed); `needs_scope`: only when a scope phrase was said (without it the plain settings patterns apply). The result is a proposal to run rules.set / rules.disable / rules.list.",
-            "required": ["scopes", "commands"],
+            "required": [
+              "scopes",
+              "commands"
+            ],
             "properties": {
-              "scopes": {"type": "array", "items": {"type": "object", "required": ["scope", "phrases"], "properties": {"scope": {"type": "string", "minLength": 1}, "phrases": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}}}, "additionalProperties": false}},
-              "commands": {"type": "array", "items": {"type": "object", "required": ["id", "action", "regex", "args"], "properties": {
-                "id": {"type": "string", "minLength": 1}, "action": {"type": "string", "minLength": 1}, "effect": {"type": "string"}, "lang": {"type": "string"},
-                "needs_scope": {"type": "boolean"}, "regex": {"type": "string", "minLength": 1},
-                "args": {"type": "array", "items": {"type": "string"}}, "original": {"type": "array", "items": {"type": "string"}}, "resolve": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}}
+              "scopes": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "scope",
+                    "phrases"
+                  ],
+                  "properties": {
+                    "scope": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "phrases": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "commands": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "id",
+                    "action",
+                    "regex",
+                    "args"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "action": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "effect": {
+                      "type": "string"
+                    },
+                    "lang": {
+                      "type": "string"
+                    },
+                    "needs_scope": {
+                      "type": "boolean"
+                    },
+                    "regex": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "args": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "original": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "resolve": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
             },
             "additionalProperties": false
           },
           "phrases": {
             "type": "object",
             "description": "The lexicon of commands next to the `phrases` of the catalogue's own actions: action id -> language -> phrases (a word ending in * is a prefix). Phrases the user's own conversations add live here (overlay profiles/intent_routing.pack); an action's own `phrases` stay where they are.",
-            "additionalProperties": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}}
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
           },
           "languages": {
             "type": "array",
             "description": "Names of languages as people say them (folded, lower case; a trailing * is a prefix): what a phrase such as \"na niemiecki\" or \"into German\" may name. The value given to an action is label.en. An unknown name is never guessed.",
             "items": {
               "type": "object",
-              "required": ["code", "label", "names"],
+              "required": [
+                "code",
+                "label",
+                "names"
+              ],
               "properties": {
-                "code": {"type": "string", "minLength": 1},
-                "label": {"type": "object", "additionalProperties": {"type": "string"}},
-                "names": {"type": "array", "items": {"type": "string", "minLength": 1}}
+                "code": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "label": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "names": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
               },
               "additionalProperties": false
             }
@@ -555,14 +4013,102 @@
             "description": "Arguments from loose phrases. Each pattern fills the declared parameter `param` of the chosen action (an action that does not declare it is not touched; an argument already given is never overwritten). `regex` is matched against the folded, lower-cased text (Polish letters without diacritics); group 1 (and 2 ...) is read from the original text, so the user's own words are kept. kind text: the captured words, or `template` ({1}, {2} = groups); kind language: the captured word must be one of `languages`, else nothing is extracted. First match per parameter wins; patterns of the language of the input come first.",
             "items": {
               "type": "object",
-              "required": ["id", "param", "kind", "regex"],
+              "required": [
+                "id",
+                "param",
+                "kind",
+                "regex"
+              ],
               "properties": {
-                "id": {"type": "string", "minLength": 1},
-                "param": {"type": "string", "minLength": 1},
-                "lang": {"type": "string"},
-                "kind": {"type": "string", "enum": ["text", "language"]},
-                "regex": {"type": "string", "minLength": 1},
-                "template": {"type": "string"}
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "param": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "lang": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "text",
+                    "language"
+                  ]
+                },
+                "regex": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "template": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "commands": {
+            "type": "array",
+            "description": "Commands of everything the conversation can do besides the rules (P15, R54): a regex matched against the folded text; group order = `args`; `original` args are read from the text as typed; `set` fixes arguments; `element` is the element the command acts on ({id} | {resolve: current_conversation | last_message}; none = the application), `element_from_arg` leaves it to the action (settings); `takes_scope` lets the scope phrases of the rules cut out of the text and fill `scope`; `check_arg` keeps the command only when the text of that argument is itself a command (how do I ...). First match per list wins ties, the order is the order of the list.",
+            "items": {
+              "type": "object",
+              "required": [
+                "id",
+                "action",
+                "regex",
+                "args"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "action": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "lang": {
+                  "type": "string"
+                },
+                "regex": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "args": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "original": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "resolve": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "set": {
+                  "type": "object"
+                },
+                "element": {
+                  "type": "object"
+                },
+                "element_from_arg": {
+                  "type": "boolean"
+                },
+                "takes_scope": {
+                  "type": "boolean"
+                },
+                "check_arg": {
+                  "type": "string"
+                }
               },
               "additionalProperties": false
             }
@@ -572,29 +4118,89 @@
       },
       "confirmation": {
         "type": "object",
-        "required": ["yes", "no"],
+        "required": [
+          "yes",
+          "no"
+        ],
         "properties": {
-          "yes": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
-          "no": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
-          "send": {"type": "object", "description": "Words that take an open offer to send the rejected sentence as a message (the yes words do too); the no words close the offer.", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
+          "yes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "no": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "send": {
+            "type": "object",
+            "description": "Words that take an open offer to send the rejected sentence as a message (the yes words do too); the no words close the offer.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
         },
         "additionalProperties": false
       },
       "model": {
         "type": "object",
-        "required": ["system", "catalogue_line", "user", "parameters", "title", "timeout_ms", "min_confidence"],
+        "required": [
+          "system",
+          "catalogue_line",
+          "user",
+          "parameters",
+          "title",
+          "timeout_ms",
+          "min_confidence"
+        ],
         "properties": {
-          "system": {"type": "string"},
-          "catalogue_line": {"type": "string"},
-          "user": {"type": "string"},
-          "parameters": {"type": "object"},
-          "title": {"type": "string"},
-          "timeout_ms": {"type": "integer", "minimum": 1},
-          "min_confidence": {"type": "number"}
+          "system": {
+            "type": "string"
+          },
+          "catalogue_line": {
+            "type": "string"
+          },
+          "user": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object"
+          },
+          "title": {
+            "type": "string"
+          },
+          "timeout_ms": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "min_confidence": {
+            "type": "number"
+          }
         },
         "additionalProperties": false
       },
-      "texts": {"type": "object", "description": "Per language: the sentences of proposals and results ({{name}} placeholders).", "additionalProperties": {"type": "object", "additionalProperties": {"type": "string"}}}
+      "texts": {
+        "type": "object",
+        "description": "Per language: the sentences of proposals and results ({{name}} placeholders).",
+        "additionalProperties": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
     },
     "additionalProperties": false
   }
