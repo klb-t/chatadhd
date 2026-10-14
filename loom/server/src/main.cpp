@@ -33,6 +33,7 @@ void print_usage(const char* argv0) {
                "       [--accounts-root DIR] [--allow-unauthenticated-public]\n"
                "       [--max-body-bytes N (JSON routes, 0 = no limit)] [--max-upload-bytes N (import/transcribe, 0 = no limit)]\n"
                "       [--sse-keepalive-ms N (idle event feeds probe their client this often, 0 = never; preset 15000)]\n"
+               "       [--allow-chunked-uploads (accept chunked/unframed import/transcribe bodies, streamed to disk)]\n"
                "       " << argv0 << " user add|passwd|disable|enable|invite|list --accounts-root DIR [LOGIN]\n"
                "         (password: --password-stdin, or prompted on a terminal)\n"
                "Environment: LOOM_SERVER_HOST, LOOM_SERVER_PORT, CHATADHD_DATA,\n"
@@ -136,6 +137,7 @@ int main(int argc, char** argv) {
   if (auto v = env_or("LOOM_SERVER_MAX_BODY_BYTES", ""); !v.empty()) opts.max_body_bytes = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_MAX_UPLOAD_BYTES", ""); !v.empty()) opts.max_upload_bytes = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_SSE_KEEPALIVE_MS", ""); !v.empty()) opts.sse_keepalive_ms = std::strtoull(v.c_str(), nullptr, 10);
+  if (auto v = env_or("LOOM_SERVER_ALLOW_CHUNKED_UPLOADS", ""); !v.empty()) opts.allow_chunked_uploads = v != "0" && v != "false";
   bool allow_public = false;
 
   for (int i = 1; i < argc; ++i) {
@@ -165,6 +167,8 @@ int main(int argc, char** argv) {
       opts.max_upload_bytes = std::strtoull(next("--max-upload-bytes"), nullptr, 10);
     } else if (arg == "--sse-keepalive-ms") {
       opts.sse_keepalive_ms = std::strtoull(next("--sse-keepalive-ms"), nullptr, 10);
+    } else if (arg == "--allow-chunked-uploads") {
+      opts.allow_chunked_uploads = true;
     } else if (arg == "--allow-unauthenticated-public") {
       allow_public = true;
     } else if (arg == "--version") {

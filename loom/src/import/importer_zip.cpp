@@ -11,6 +11,7 @@
 #include "loom/log.h"
 #include "loom/util/fs.h"
 #include "loom/util/utf8.h"
+#include "util/safety.h"
 #include <miniz.h>
 
 namespace loom {
@@ -41,6 +42,8 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
     return Error(Errc::Parse, "invalid zip archive: " + path.string());
   }
 
+  // R20: zip bomb guard (loom_zip_max_total_bytes / loom_zip_max_ratio in config.json).
+  safety::ZipBudget budget(safety::zip_limits(db_.path().parent_path()));
   struct Entry {
     std::string rel;  // POSIX-style relative path inside the archive
     fs::path abs;      // extracted location on disk
@@ -76,8 +79,10 @@ Result<std::vector<Conversation>> ConversationImporter::zip_body(const fs::path&
     }
     fs::path dest = td.path() / std::to_string(i) / relp;
     std::error_code ec;
+    if (auto admitted = budget.admit(st); !admitted) { mz_zip_reader_end(&zip); return admitted.error(); }
     fs::create_directories(dest.parent_path(), ec);
-    if (!mz_zip_reader_extract_to_file(&zip, i, dest.string().c_str(), 0)) {
+    if (auto extracted = budget.extract_to_file(zip, i, dest); !extracted) {
+      if (budget.refused()) { mz_zip_reader_end(&zip); return extracted.error(); }
       log::warn(kLog, "zip: failed to extract {}", name);
       if (ledger_) {
         FragmentRecord record;

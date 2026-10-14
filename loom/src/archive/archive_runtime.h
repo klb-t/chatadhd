@@ -48,7 +48,7 @@ Result<Plan> make_plan(Runtime& rt, const ArchiveConfig& cfg, const ArchiveProfi
 
 // Runs `git` (desktop-only adapter). Errc::Unsupported on platforms without
 // a shell; Errc::Unavailable when git is missing or the path is not a repo.
-Result<std::string> run_git(const std::string& repo, const std::vector<std::string>& args);
+Result<std::string> run_git(const std::string& repo, const std::vector<std::string>& args, bool allow_repo_config = false);
 
 struct IngestResult {
   Corpus corpus;

@@ -3,7 +3,9 @@
 
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 #include <cstdio>
+#include <thread>
 
 #include "loom/runtime_profile.h"
 #include "loom/util/base64.h"
@@ -32,7 +34,12 @@ std::string normalize_login(std::string s) {
   return s;
 }
 
-Status valid_login(const std::string& login) {
+Status valid_login(const std::string& login, std::int64_t max_chars) {
+  if (max_chars > 0) {
+    std::int64_t chars = 0;
+    for (unsigned char c : login) chars += (c & 0xC0) != 0x80;  // UTF-8 lead bytes
+    if (chars > max_chars) return Error(Errc::InvalidArgument, "login is longer than " + std::to_string(max_chars) + " characters");
+  }
   if (login.empty()) return Error(Errc::InvalidArgument, "login must not be empty");
   for (unsigned char c : login)
     if (c < 0x20 || c == 0x7f) return Error(Errc::InvalidArgument, "login contains control characters");
@@ -63,6 +70,7 @@ Result<Settings> load_settings(const std::filesystem::path& root) {
   s.session_idle_seconds = v.value("session_idle_seconds", std::int64_t(0));
   s.password_min_length = v.value("password_min_length", std::int64_t(0));
   s.argon2id_preset = v.value("argon2id_preset", std::string());
+  s.login_max_length = v.value("login_max_length", std::int64_t(128));
   s.session_token_bytes = v.value("session_token_bytes", std::uint64_t(0));
   s.accounts_file = v.value("accounts_file", std::string());
   s.users_subdir = v.value("users_subdir", std::string());
@@ -99,6 +107,10 @@ Result<Settings> load_settings(const std::filesystem::path& root) {
   if (v.contains("csrf") && v["csrf"].is_object()) {
     s.isolation.csrf_check_origin = v["csrf"].value("check_origin", true);
     s.isolation.csrf_allowed_origins = strings(v["csrf"], "allowed_origins");
+  }
+  if (v.contains("hashing") && v["hashing"].is_object()) {
+    s.hash_max_concurrent = v["hashing"].value("max_concurrent", std::int64_t(-1));
+    s.hash_wait_seconds = v["hashing"].value("wait_seconds", std::int64_t(5));
   }
   // File names must stay inside the accounts root.
   for (const auto& p : {s.accounts_file, s.users_subdir})
@@ -150,9 +162,40 @@ std::filesystem::path AccountStore::user_dir(const std::string& user_id) const {
   return root_ / settings_.users_subdir / user_id;
 }
 
-Result<std::string> AccountStore::hash_password(const std::string& password) const {
+// One Argon2id evaluation's right to run (R20). Holds a slot while alive; acquire() waits up to
+// hashing.wait_seconds and fails with Errc::Busy, which the server answers with 503 + Retry-After.
+class HashSlot {
+ public:
+  HashSlot() = default;
+  HashSlot(const HashSlot&) = delete;
+  HashSlot& operator=(const HashSlot&) = delete;
+  ~HashSlot() {
+    if (!store_) return;
+    { std::lock_guard lk(store_->hash_mu_); --store_->hash_active_; }
+    store_->hash_cv_.notify_one();
+  }
+  Status acquire(AccountStore& store) {
+    std::int64_t cap = store.settings_.hash_max_concurrent;
+    if (cap < 0) cap = std::max<std::int64_t>(1, std::thread::hardware_concurrency());
+    if (cap == 0) return {};  // unlimited
+    std::unique_lock lk(store.hash_mu_);
+    const auto wait = std::chrono::seconds(std::max<std::int64_t>(0, store.settings_.hash_wait_seconds));
+    if (!store.hash_cv_.wait_for(lk, wait, [&] { return store.hash_active_ < cap; }))
+      return Error(Errc::Busy, "the server is busy hashing passwords; retry shortly");
+    ++store.hash_active_;
+    store_ = &store;
+    return {};
+  }
+
+ private:
+  AccountStore* store_ = nullptr;
+};
+
+Result<std::string> AccountStore::hash_password(const std::string& password) {
   const auto& a = settings_.argon2;
   std::string salt = random_bytes(16);
+  HashSlot slot;
+  LOOM_TRY(slot.acquire(*this));
   auto h = cs::backend().argon2id(password, salt, a, 32);
   if (!h) return h.error();
   return "argon2id$v=19$m=" + std::to_string(a.m_kib) + ",t=" + std::to_string(a.t) + ",p=" + std::to_string(a.p) +
@@ -160,7 +203,7 @@ Result<std::string> AccountStore::hash_password(const std::string& password) con
 }
 
 namespace {
-Result<bool> check_hash(const std::string& stored, const std::string& password) {
+Result<bool> check_hash(AccountStore& store, const std::string& stored, const std::string& password) {
   // argon2id$v=19$m=..,t=..,p=..$salt$hash
   std::vector<std::string> f;
   std::size_t pos = 0;
@@ -176,6 +219,8 @@ Result<bool> check_hash(const std::string& stored, const std::string& password) 
     return Error(Errc::Parse, "malformed password hash");
   auto salt = base64::decode(f[3]), want = base64::decode(f[4]);
   if (!salt || !want) return Error(Errc::Parse, "malformed password hash");
+  HashSlot slot;
+  LOOM_TRY(slot.acquire(store));
   auto got = cs::backend().argon2id(password, *salt, a, want->size());
   if (!got) return got.error();
   return ct_equal(*got, *want);
@@ -192,7 +237,7 @@ Status AccountStore::check_password_policy(const std::string& password) const {
 Result<User> AccountStore::create_user(const std::string& login_in, const std::string& password,
                                        const std::string& invite) {
   const std::string login = normalize_login(login_in);
-  LOOM_TRY(valid_login(login));
+  LOOM_TRY(valid_login(login, settings_.login_max_length));
   LOOM_TRY(check_password_policy(password));
   LOOM_TRY_ASSIGN(std::string h, hash_password(password));
   std::lock_guard lk(mu_);
@@ -246,7 +291,15 @@ Result<std::int64_t> AccountStore::user_count() {
   return n.value_or(0);
 }
 
+bool AccountStore::login_too_long(const std::string& login) const {
+  if (settings_.login_max_length <= 0) return false;
+  std::int64_t chars = 0;
+  for (unsigned char c : login) chars += (c & 0xC0) != 0x80;
+  return chars > settings_.login_max_length;
+}
+
 Result<User> AccountStore::verify_password(const std::string& login, const std::string& password) {
+  if (login_too_long(login)) return Error(Errc::InvalidArgument, "login is too long");
   std::string stored;
   User u;
   bool found = false;
@@ -262,8 +315,10 @@ Result<User> AccountStore::verify_password(const std::string& login, const std::
     }
   }
   // Unknown login still pays one Argon2id evaluation so timing does not reveal which logins exist.
-  if (!found) stored = *hash_password(password);
-  LOOM_TRY_ASSIGN(bool ok, check_hash(stored, password));
+  if (!found) {
+    LOOM_TRY_ASSIGN(stored, hash_password(password));
+  }
+  LOOM_TRY_ASSIGN(bool ok, check_hash(*this, stored, password));
   if (!found || !ok || u.disabled) return Error(Errc::Auth, "invalid login or password");
   return u;
 }
