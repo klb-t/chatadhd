@@ -24,6 +24,16 @@
         "always": {"label": {"en": "Run at once (rules and the x10 confirmation still apply)", "pl": "Od razu (zasady i potwierdzenie ×10 nadal obowiązują)"}}
       }
     },
+    "on_reject": {
+      "setting": "intent_routing_on_reject",
+      "active": "offer",
+      "unknown": "offer",
+      "presets": {
+        "offer": {"label": {"en": "Offer: after a no, ask whether to send the sentence to the model as an ordinary message", "pl": "Propozycja: po „nie” zapytaj, czy wysłać zdanie do modelu jako zwykłą wiadomość"}},
+        "send_as_message": {"label": {"en": "Send: after a no, send the sentence to the model as an ordinary message at once", "pl": "Wyślij: po „nie” od razu wyślij zdanie do modelu jako zwykłą wiadomość"}},
+        "drop": {"label": {"en": "Drop: after a no, the sentence is not sent (it stays in the conversation)", "pl": "Odrzuć: po „nie” zdanie nie jest wysyłane (zostaje w rozmowie)"}}
+      }
+    },
     "emergent": {
       "setting": "emergent_actions",
       "active": "propose",
@@ -234,6 +244,10 @@
       "no": {
         "en": ["no", "n", "nope", "cancel", "stop", "never mind", "nevermind", "drop it", "don't", "do not"],
         "pl": ["nie", "anuluj", "odrzuć", "odrzuc", "odrzucam", "zostaw", "zostaw to", "nie rób tego", "nie rob tego", "stop"]
+      },
+      "send": {
+        "en": ["send as message", "send as a message", "send it as a message", "send it as message", "send as an ordinary message", "send it", "send"],
+        "pl": ["wyślij jako wiadomość", "wyslij jako wiadomosc", "wyślij to jako wiadomość", "wyslij to jako wiadomosc", "wyślij jako zwykłą wiadomość", "wyslij jako zwykla wiadomosc", "wyślij to", "wyslij to", "wyślij", "wyslij"]
       }
     },
     "model": {
@@ -302,6 +316,10 @@
         "result_usage": "The model call is held by the usage guard: its expected usage is far above your recent baseline. Nothing was sent. Confirm it here or in the usage prompt.",
         "result_no_text": "It produced no text.",
         "ack_no": "Dropped. Nothing was executed.",
+        "ack_no_offer": "Dropped. Nothing was executed, and your sentence was not sent to the model. Reply \"send as message\" (or \"yes\") to send it as an ordinary message, or use the button.",
+        "ack_no_send": "Dropped. Nothing was executed. Sending your sentence to the model as an ordinary message.",
+        "offer_declined": "Understood: your sentence stays unsent.",
+        "offer_gone": "That sentence is no longer there to send: {{why}}.",
         "route_failed": "Routing with the model failed ({{message}}); the local method decided instead."
       },
       "pl": {
@@ -360,13 +378,17 @@
         "result_usage": "Wywołanie modelu wstrzymał strażnik zużycia: przewidywane zużycie jest dużo wyższe niż ostatnia wartość bazowa. Nic nie wysłano. Potwierdź tutaj albo w oknie zużycia.",
         "result_no_text": "Nie powstał żaden tekst.",
         "ack_no": "Odrzucone. Nic nie wykonano.",
+        "ack_no_offer": "Odrzucone. Nic nie wykonano, a Twoje zdanie nie poszło do modelu. Odpowiedz „wyślij jako wiadomość” (albo „tak”), żeby wysłać je jako zwykłą wiadomość, albo użyj przycisku.",
+        "ack_no_send": "Odrzucone. Nic nie wykonano. Wysyłam Twoje zdanie do modelu jako zwykłą wiadomość.",
+        "offer_declined": "Rozumiem: Twoje zdanie zostaje niewysłane.",
+        "offer_gone": "Tego zdania nie ma już do wysłania: {{why}}.",
         "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna."
       }
     }
   },
   "value_schema": {
     "type": "object",
-    "required": ["method", "execution", "emergent", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
+    "required": ["method", "execution", "on_reject", "emergent", "default_language", "message_request_fields", "heuristic", "confirmation", "model", "texts"],
     "properties": {
       "method": {
         "type": "object",
@@ -386,6 +408,18 @@
         "properties": {
           "setting": {"type": "string", "minLength": 1},
           "active": {"type": "string", "minLength": 1},
+          "presets": {"type": "object", "additionalProperties": {"type": "object"}}
+        },
+        "additionalProperties": false
+      },
+      "on_reject": {
+        "type": "object",
+        "description": "What the answer \"no\" to a proposal does with the sentence the proposal came from. `setting`/`active`/`presets`: offer (preset: the reply offers to send the sentence to the model as an ordinary message, in the same proposal block and by the words in confirmation.send) | send_as_message (the sentence is sent at once) | drop (it is not sent). `unknown`: the preset used when the setting names none of the presets.",
+        "required": ["setting", "active", "presets"],
+        "properties": {
+          "setting": {"type": "string", "minLength": 1},
+          "active": {"type": "string", "minLength": 1},
+          "unknown": {"type": "string", "minLength": 1},
           "presets": {"type": "object", "additionalProperties": {"type": "object"}}
         },
         "additionalProperties": false
@@ -533,7 +567,8 @@
         "required": ["yes", "no"],
         "properties": {
           "yes": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
-          "no": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
+          "no": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "string"}}},
+          "send": {"type": "object", "description": "Words that take an open offer to send the rejected sentence as a message (the yes words do too); the no words close the offer.", "additionalProperties": {"type": "array", "items": {"type": "string"}}}
         },
         "additionalProperties": false
       },

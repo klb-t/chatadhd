@@ -52,8 +52,9 @@ void emit_chunk(LoomStreamCallback cb, void* ud, const Json& chunk, int done) {
 
 // Shared by loom_chat and loom_chat_ex. Always delivers exactly one final
 // chunk (done=1) and returns the final JSON (result or error).
-Json run_chat(LoomContext* ctx, const std::string& message, ChatOptions opts, std::string request_id,
+Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts, std::string request_id,
               LoomStreamCallback cb, void* ud, const Json& request = Json::object()) {
+  std::string message = message_in;
   if (request_id.empty()) request_id = gen_id("rq_");
   CancelToken token;
   bool already_in_flight = false;
@@ -100,6 +101,12 @@ Json run_chat(LoomContext* ctx, const std::string& message, ChatOptions opts, st
       chunk["request_id"] = request_id;
       emit_chunk(cb, ud, chunk, 1);
       return result;
+    } else if (routed->resend) {
+      // The sentence of a rejected proposal goes to the model as an ordinary message: the same chat path, the history
+      // without the proposal's exchange, so the request is the one the message would have made on its own.
+      message = routed->resend->text;
+      opts.history_skip = routed->resend->history_skip;
+      opts.conv_id = routed->conv_id.empty() ? opts.conv_id : std::optional<std::string>(routed->conv_id);
     }
   }
   auto r = ctx->rt->chat().send(message, opts, cbs, &token);
