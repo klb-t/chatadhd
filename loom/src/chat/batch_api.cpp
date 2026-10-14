@@ -1,4 +1,5 @@
 // OWNER: wave 2 net/chat/worker. Port of engine/batch_api.py (SemanticBatchAPI).
+#include "loom/annotation_layer.h"
 #include "loom/batch_api.h"
 
 #include <algorithm>
@@ -371,7 +372,7 @@ Result<std::optional<std::string>> SemanticBatchAPI::submit_anthropic_batch(cons
   for (const auto& mid : msg_ids) {
     auto m = db_.get_msg(mid);
     if (!m || !*m || (*m)->text.empty()) continue;
-    items.push_back(BatchItem{mid, std::string(kAnalysisPrompt) + std::string(utf8::prefix((*m)->text, 3000))});
+    items.push_back(BatchItem{mid, annotations::extend_prompt(kAnalysisPrompt, annotations::segments_plan(cfg_), cfg_) + std::string(utf8::prefix((*m)->text, 3000))});
   }
   if (items.empty()) return std::optional<std::string>(std::nullopt);
 

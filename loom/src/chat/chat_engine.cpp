@@ -647,6 +647,7 @@ ChatOptions ChatEngine::select_representation(const ChatOptions& in, const std::
   if (sel->empty()) return in;
   ChatOptions out = in;
   out.history_text = sel->substitutions;
+  for (const auto& id : sel->skip) out.history_skip.push_back(id);
   if (sel->spec) {
     out.active_task_spec = *sel->spec;
     out.active_task_bindings = sel->bindings;

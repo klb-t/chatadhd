@@ -69,6 +69,19 @@ Result<std::vector<Node>> hypotheses_of(Database& db, const Data& d, const std::
 // Preview: the compiled instruction text of the statements.
 Result<std::string> instruction_of(const Json& statements, const std::vector<std::string>& message_ids, Database& db, const std::string& conv_id);
 
+// ── matching and claims (matching.cpp) ─────────────────────────────────────────────────────
+
+std::string clip_to(const std::string& s, std::size_t n);
+// The concepts (data: matching.concepts) a text says, e.g. brevity for "shorter", "too long", "skróć".
+std::vector<std::string> concepts_in(const Data& d, const std::string& text);
+// The statement of the concepts in a language (the normalized content of a rule), "" when there is none.
+std::string concept_statement(const Data& d, const std::vector<std::string>& concept_ids, const std::string& lang);
+// What a correction asks for: its tokens without the markers that make it a correction, with concepts in place of the words that say them.
+std::vector<std::string> claim_tokens(const Data& d, const std::string& text);
+double overlap_of(const std::vector<std::string>& a, const std::vector<std::string>& b, std::size_t* common = nullptr);
+// The claim of a hypothesis for display: its normalized text, else its last evidence quote.
+std::string claim_text_of(const Json& hypothesis_metadata);
+
 // Tokens of a statement/claim for overlap and polarity (folded, stop words removed).
 std::vector<std::string> subject_tokens(const Data& d, const std::string& text);
 bool negative(const Data& d, const std::string& text);

@@ -330,7 +330,9 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
   const bool has_pref = pref.is_string() && !pref.get<std::string>().empty() && pref.get<std::string>() != "raw";
   LOOM_TRY_ASSIGN(auto rep, db.find_node("rep:" + conv_id, "guardian_representation"));
   const bool has_rep = rep && json::get_string(rep->metadata, "status") == "accepted";
-  if (!has_pref && !has_rep) return sel;  // nothing is chosen: the raw messages, at no cost
+  const Json tf_set = cfg.get("chat_thread_filter");
+  const bool has_tf = tf_set.is_string() && !tf_set.get<std::string>().empty() && tf_set.get<std::string>() != "off";
+  if (!has_pref && !has_rep && !has_tf) return sel;  // nothing is chosen: the raw messages, at no cost
 
   const std::filesystem::path root = cfg.path().parent_path();
   LOOM_TRY_ASSIGN(auto d, detail::load_data(cfg, root));
@@ -359,6 +361,39 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
     for (const auto& m : msgs) {
       if (m.status != msg_status::kActive || !levels.contains(m.role)) continue;
       if (auto t = detail::level_text(db, d, m, levels[m.role].get<std::string>())) sel.substitutions[m.id] = *t;
+    }
+  }
+  // The thread filter: messages the analyzer put in another topic thread than the one the user is in now are left out of this request.
+  {
+    const Json& tf = section.value("thread_filter", Json::object());
+    std::string mode = json::get_string(tf, "active", "off");
+    if (has_tf) mode = tf_set.get<std::string>();
+    if (!tf.value("presets", Json::object()).contains(mode)) mode = json::get_string(tf, "unknown", "off");
+    if (json::get_string(tf.value("presets", Json::object()).value(mode, Json::object()), "mode", "off") == "current") {
+      const double min_conf = json::get_number(tf, "min_confidence", 0.5);
+      const std::string category = json::get_string(tf, "category", "thread");
+      const auto keep = text::strings_of(json::find(tf, "keep_roles"));
+      const annotations::Policy pol = detail::policy_of(d);
+      LOOM_TRY_ASSIGN(auto msgs, db.get_msgs(conv_id));
+      std::map<std::string, std::string> thread_of;
+      std::string current;
+      for (const auto& m : msgs) {
+        if (m.status != msg_status::kActive) continue;
+        auto anns = annotations::list(db, pol, m.id);
+        if (!anns) continue;
+        for (const auto& a : *anns)
+          if (a.value("category", "") == category && a.value("confidence", 0.0) >= min_conf) {
+            const std::string label = a.value("data", Json::object()).value("thread", "");
+            if (label.empty()) continue;
+            thread_of[m.id] = label;
+            if (m.role == "user") current = label;
+          }
+      }
+      if (!current.empty())
+        for (const auto& m : msgs)
+          if (m.status == msg_status::kActive && std::find(keep.begin(), keep.end(), m.role) == keep.end())
+            if (auto it = thread_of.find(m.id); it != thread_of.end() && it->second != current) sel.skip.push_back(m.id);
+      if (!sel.skip.empty()) sel.notes.push_back(Json{{"thread_filter", current}, {"left_out", sel.skip.size()}});
     }
   }
   if (runs != "raw" && has_rep) {

@@ -48,8 +48,9 @@ struct Selection {
   Json bindings = Json::object();                      // event id -> {message_id, text_sha256}
   std::string history = "replace_refinement";          // or "append" (preset mixed)
   std::map<std::string, std::string> substitutions;    // message id -> its text at the chosen level (L1, L2)
+  std::vector<std::string> skip;                       // messages of another topic thread (setting chat_thread_filter), left out of this request only
   Json notes = Json::array();                          // what was left raw and why (a changed message, no goal ...)
-  bool empty() const { return !spec && substitutions.empty(); }
+  bool empty() const { return !spec && substitutions.empty() && skip.empty(); }
 };
 
 // The selector's reading. Cheap when nothing is chosen (no rule, no representation, setting raw). Errors never stop a send: the caller

@@ -21,11 +21,16 @@
 #include <cstdint>
 #include <filesystem>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "loom/db.h"
 #include "loom/result.h"
 #include "loom/util/json.h"
+
+namespace loom {
+class Config;
+}
 
 namespace loom::annotations {
 
@@ -35,6 +40,8 @@ inline constexpr const char* kSchema = "loom.segment_annotation/2";
 struct Policy {
   Json p = Json::object();
   static Result<Policy> load(const std::filesystem::path& data_root);
+  // The same, kept until the overlay file of the user changes (a producer that writes with every message must not read the profile each time).
+  static Result<Policy> load_cached(const std::filesystem::path& data_root);
   std::string label_prefix() const;
   std::string node_kind() const;
   // The class of a category (signal | droppable | structure | ...); "" when the data does not say.
@@ -95,6 +102,24 @@ Status record_run(Database& db, const Policy& policy, const std::string& message
                   const std::vector<std::string>& categories, const Json& cost);
 // The runs recorded for the message whose text is still the text that was read: [{producer, method_version, categories, cost, at}].
 Result<Json> runs_of(Database& db, const Policy& policy, const std::string& message_id);
+
+// ── the semantic analyzer as a producer (one prompt contract: entities, topics, relations AND segments) ─────────────────────────────
+
+struct SegmentsPlan {
+  bool wanted = false;        // does anyone read segment categories now (setting semantic_segments, data analyzer.presets)
+  std::string preset;
+  std::string version;        // method version of the extended prompt
+  int max_tokens = 800;
+  Json categories = Json::object();
+};
+SegmentsPlan segments_plan(const Config& cfg);
+// The classic analysis prompt, extended with the segment contract when the plan wants it (byte-identical to `base` when not).
+std::string extend_prompt(std::string_view base, const SegmentsPlan& plan, const Config& cfg);
+// Would the analyzer's model read this message (so nobody else should send it to a model)?
+bool analyzer_expected(const Config& cfg, const std::string& text);
+// Writes the annotations an analysis carries (segments and thread; regex analyses carry only a thread derived from the topics) and the run receipt.
+// Returns how many annotations were written. Called inside the graph ingestion, atomically with it.
+Result<int> write_analysis(Database& db, const Config* cfg, const std::filesystem::path& data_root, const std::string& message_id, const Json& analysis);
 
 // The method version of a producer: a short hash over the data that decides its answers (a list of phrases, a prompt).
 std::string method_version(const std::string& material);

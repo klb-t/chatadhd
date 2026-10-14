@@ -1,4 +1,5 @@
 // OWNER: wave 2 net/chat/worker. Port of engine/semantic_worker.py.
+#include "loom/annotation_layer.h"
 #include "loom/semantic_worker.h"
 #include "loom/usage_spend.h"
 
@@ -363,7 +364,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
             {"params", Json{{"model", model},
                            {"max_tokens", profile.values().at("batch_output_tokens")},
                            {"messages", Json::array({Json{{"role", "user"},
-                             {"content", std::string(kAnalysisPrompt) + std::string(utf8::prefix(m.text, profile.values().at("batch_input_chars").get<std::size_t>()))}}})}}}});
+                             {"content", annotations::extend_prompt(kAnalysisPrompt, annotations::segments_plan(cfg), cfg) + std::string(utf8::prefix(m.text, profile.values().at("batch_input_chars").get<std::size_t>()))}}})}}}});
   }
 
   const llm::Services services(cfg, secrets, http);

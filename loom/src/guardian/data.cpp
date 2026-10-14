@@ -81,13 +81,19 @@ std::string guess_lang(const Data& d, const std::string& txt) {
   std::size_t pl = 0, en = 0;
   const Json& kinds = d.p.at("kinds");
   for (auto it = kinds.begin(); it != kinds.end(); ++it) {
-    const Json* h = json::find(it.value().value("detect", Json::object()), "heuristic");
+    const Json detect_copy = it.value().value("detect", Json::object());
+    const Json* h = json::find(detect_copy, "heuristic");
     const Json* markers = h ? json::find(*h, "markers") : nullptr;
     if (!markers) continue;
     pl += text::find(toks, text::compile(text::strings_of(json::find(*markers, "pl")), d.fold)).size();
     en += text::find(toks, text::compile(text::strings_of(json::find(*markers, "en")), d.fold)).size();
   }
   return pl > en ? "pl" : "en";
+}
+
+std::string clip_to(const std::string& s, std::size_t n) {
+  std::string t(utf8::strip(s));
+  return std::string(utf8::prefix(t, n));
 }
 
 std::string sha256_hex(const std::string& s) { return Sha256::hex(s); }

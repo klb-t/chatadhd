@@ -181,7 +181,9 @@ TEST_SUITE("guardian") {
     CHECK(proposal.at("metadata").at("action_proposal").at("action") == "guardian.promote");
     CHECK(proposal.at("metadata").at("action_proposal").at("status") == "pending");
     CHECK(proposal.at("metadata").at("guardian").at("traffic") == true);
-    CHECK(proposal.at("text").get<std::string>().find("zrób listę") != std::string::npos);
+    // The proposal states a rule, it does not repeat the quote: the concepts the corrections agree on (lists yes, tables no) name it.
+    CHECK(proposal.at("text").get<std::string>().find("Używaj list") != std::string::npos);
+    CHECK(proposal.at("text").get<std::string>().find("Nie używaj tabel") != std::string::npos);
     CHECK(proposal.at("text").get<std::string>().find("nagłówkami") != std::string::npos);
     (void)m1;
     // The raw list is untouched and the proposal exchange is not part of what the model reads.
@@ -411,7 +413,8 @@ TEST_SUITE("guardian") {
     const Json h = f.hypothesis("course_correction");
     REQUIRE_FALSE(h.is_null());
     CHECK(h.at("claim").at("text") == "Prefer bullet points");
-    CHECK(h.at("scope") == "person");
+    CHECK(h.at("scope") == "conversation");  // the model's "person" is a request: a question, not a decision
+    CHECK(h.at("scope_request") == "person");
     CHECK(h.at("exceptions")[0].at("text") == "the appendix");
     CHECK(h.at("occurrences")[0].at("factor").get<double>() == doctest::Approx(1.5));  // tone: sharp
     CHECK(f.transport->requests().size() == 1);
@@ -579,7 +582,8 @@ TEST_SUITE("guardian") {
     f.user("Write a summary of the quarterly report");
     f.assistant();
     f.user("nie chodziło mi o tabelę, zrób listę, zawsze");
-    CHECK(f.hypothesis("preference_statement").at("scope") == "person");  // the marker stands in the clause of the stated preference
+    CHECK(f.hypothesis("preference_statement").at("scope_request") == "person");  // the marker stands in the clause of the stated preference
+    CHECK(f.hypothesis("preference_statement").at("scope") == "conversation");     // asking is not deciding
     CHECK(f.hypothesis("course_correction").at("scope") == "conversation");
     CHECK(f.hypothesis("preference_statement").at("status") == "observing");  // one occurrence, whatever the scope
   }
@@ -623,5 +627,89 @@ TEST_SUITE("guardian") {
     bool repetition_listed = false;
     for (const auto& a : row.at("annotations")) repetition_listed = repetition_listed || a.at("category") == "repetition";
     CHECK_FALSE(repetition_listed);  // in the contract's reading the covered noise is not in force
+  }
+
+  TEST_CASE("P23.2: the analyzer's one prompt yields entities, topics AND segment categories; the guardian reuses them - one model call per message") {
+    Fixture f;
+    f.rt->config().set("semantic_analysis", true);
+    f.rt->config().set("semantic_model", "test/sem");
+    f.rt->config().set("guardian_method", "model");
+    f.rt->config().set("guardian_model", "test/guard");
+    f.say("user", "Write a summary of the quarterly report", false);
+    f.say("assistant", "ok", false);
+    const std::string text = "Nie chodzi\xC5\x82o mi o tabel\xC4\x99, zr\xC3\xB3\x62 list\xC4\x99. Ha, that is funny. Also add the date.";
+    f.transport->expect("POST", "https://guardian.test/chat/completions",
+                        net::ScriptedTransport::Reply::json(200, chat_reply(R"({"entities":[{"name":"report","kind":"concept","relevance":0.8}],"topics":[{"label":"tech","confidence":0.8}],"relations":[],
+          "segments":[{"category":"correction","quote":"Nie chodziło mi o tabelę","confidence":0.9},{"category":"digression","quote":"Ha, that is funny.","confidence":0.8},{"category":"made_up","quote":"the date","confidence":0.9},{"category":"joke","quote":"not in the message","confidence":0.9}],
+          "thread":"report layout"})")));
+    const std::string mid = f.user(text);  // announced: the graph engine analyses it (one call), the guardian reads the layer
+    const auto reqs = f.transport->requests();
+    REQUIRE(reqs.size() == 1);  // one prompt contract, one call, for both readers
+    CHECK(reqs[0].body.find("Segment categories") != std::string::npos);
+    CHECK(reqs[0].body.find("Extract ALL named entities") != std::string::npos);  // the classic part is still there
+    const Json st = f.status();
+    std::map<std::string, Json> by;
+    for (const auto& seg : st.at("segments")) by[seg.at("category")] = seg;
+    REQUIRE(by.count("correction"));
+    CHECK(by["correction"].at("producer") == "semantic_llm");
+    CHECK(by["correction"].at("confidence").get<double>() == doctest::Approx(0.9));
+    CHECK(by["correction"].at("cost").at("calls") == 1);  // the receipt of the one call
+    REQUIRE(by.count("thread"));
+    CHECK(by["thread"].at("producer") == "semantic_llm");
+    const Json row = f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}}).at("messages")[0];
+    std::set<std::string> categories;
+    for (const auto& a : row.at("annotations")) categories.insert(a.at("category"));
+    CHECK(categories.count("digression") == 1);
+    CHECK(categories.count("made_up") == 0);  // a category the data does not know is not written
+    CHECK(categories.count("joke") == 0);     // a quote that is not in the message is not a segment
+    // L2 differs from L1 on a conversation with a digression.
+    REQUIRE(row.at("levels").contains("L2"));
+    CHECK(row.at("levels").at("L2").at("text").get<std::string>().find("Ha, that is funny.") == std::string::npos);
+    CHECK_FALSE(row.at("levels").contains("L1"));
+    // The guardian recorded the correction from the layer; no model call of its own followed.
+    const Json h = f.hypothesis("course_correction");
+    REQUIRE_FALSE(h.is_null());
+    CHECK(f.transport->requests().size() == 1);
+  }
+
+  TEST_CASE("P23.2: with nobody reading segments the analyzer's prompt is the classic one, byte for byte") {
+    Fixture f;
+    f.rt->config().set("semantic_analysis", true);
+    f.rt->config().set("semantic_model", "test/sem");
+    f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"entities":[],"topics":[],"relations":[]})")));
+    f.user("Write a summary of the quarterly report for Friday");
+    const auto reqs = f.transport->requests();
+    REQUIRE(reqs.size() == 1);
+    CHECK(reqs[0].body.find("Segment categories") == std::string::npos);
+    CHECK(reqs[0].body.find("\"max_tokens\":800") != std::string::npos);
+  }
+
+  TEST_CASE("P23.2: a regex analysis writes the thread of a message from its topic - when somebody reads threads - and the selector can leave another thread out") {
+    Fixture f;
+    f.rt->config().set("chat_thread_filter", "current");
+    const std::string legal = f.say("user", "Draft the contract clause about liability and the court jurisdiction for the lawsuit", true);
+    f.assistant("Here is the clause.");
+    const std::string tech = f.say("user", "Now debug the python server code: the api returns a bug in the database query", true);
+    const std::string reply = f.assistant("Looking at the code.");
+    (void)reply;
+    const Json a = f.invoke("guardian.levels", Json{{"message_id", legal}, {"refresh", true}}).at("messages")[0];
+    std::string t1, t2;
+    for (const auto& x : a.at("annotations")) if (x.at("category") == "thread") t1 = x.at("data").at("thread");
+    const Json b = f.invoke("guardian.levels", Json{{"message_id", tech}, {"refresh", true}}).at("messages")[0];
+    for (const auto& x : b.at("annotations")) if (x.at("category") == "thread") t2 = x.at("data").at("thread");
+    INFO(t1 << " / " << t2);
+    REQUIRE_FALSE(t1.empty());
+    REQUIRE_FALSE(t2.empty());
+    CHECK(t1 != t2);
+    const auto sel = unwrap(guardian::select(f.rt->db(), f.rt->config(), f.conv));
+    CHECK(std::find(sel.skip.begin(), sel.skip.end(), legal) != sel.skip.end());
+    CHECK(std::find(sel.skip.begin(), sel.skip.end(), tech) == sel.skip.end());
+    const Json messages = f.sent("And the stack trace?");
+    CHECK_FALSE(has_text(messages, "contract clause"));
+    CHECK(has_text(messages, "debug the python server"));
+    // The messages stay in the conversation; only the request is lighter. Switching the filter off sends them again.
+    CHECK(unwrap(f.rt->db().get_msg(legal))->text.find("contract clause") != std::string::npos);
+    f.rt->config().set("chat_thread_filter", "off");
+    CHECK(has_text(f.sent("One more thing"), "contract clause"));
   }
 }

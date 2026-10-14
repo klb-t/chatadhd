@@ -297,7 +297,112 @@ Result<std::optional<Signal>> Guardian::Impl::detect_model(const Data& d, const 
   return std::optional<Signal>(s);
 }
 
+Result<std::string> Guardian::Impl::goal_of(const Data& d, const Message& m, const std::vector<Message>& msgs) {
+  // The goal a clarification belongs to: the nearest instruction (or thread opening) before it that the analyzer annotated; else, only when
+  // nothing annotates the conversation yet, the first substantial message of the user. A refinement without a sure goal is not compiled.
+  const Json& tr = d.p.at("transforms").at("compile_refinements");
+  const std::size_t min_words = static_cast<std::size_t>(json::get_int(tr, "goal_min_words", 4));
+  const std::string occ_kind = json::get_string(d.p.at("nodes"), "occurrence", "guardian_occurrence");
+  const annotations::Policy pol = policy_of(d);
+  std::string nearest, first_plain;
+  bool conversation_annotated = false;
+  for (const auto& x : msgs) {
+    if (x.id == m.id) break;
+    if (x.status != msg_status::kActive || x.role != "user" || is_traffic(d, x)) continue;
+    auto anns = annotations::list(rt.db(), pol, x.id);
+    if (anns) {
+      for (const auto& a : *anns) {
+        const std::string c = a.value("category", "");
+        if (a.value("producer", "") == "guardian_heuristic" || a.value("producer", "") == "guardian_model") continue;
+        conversation_annotated = true;
+        if (c == "instruction" || (c == "thread" && nearest.empty())) nearest = x.id;
+        if (c == "instruction") nearest = x.id;
+      }
+    }
+    if (text::tokenize(utf8::decode(x.text), d.fold).size() < min_words) continue;
+    bool is_signal = false;
+    for (const auto& kn : d.p.at("kinds").items()) {
+      auto o = rt.db().find_node("occ:" + x.id + ":" + kn.key(), occ_kind);
+      is_signal = is_signal || (o && *o);
+    }
+    if (!is_signal && first_plain.empty()) first_plain = x.id;
+  }
+  if (!nearest.empty()) return nearest;
+  return conversation_annotated ? std::string() : first_plain;
+}
+
+Result<std::vector<Node>> Guardian::Impl::all_hypotheses(const Data& d) {
+  return rt.db().list_nodes(json::get_string(d.p.at("nodes"), "hypothesis", "guardian_hypothesis"), 100000);
+}
+
+// A claim against a hypothesis that became a rule: once it weighs enough, switching the rule off is proposed (his word decides).
+Status Guardian::Impl::lifecycle_against(const Data& d, const std::string& rule_hyp, const std::string& against_hyp) {
+  Database& db = rt.db();
+  LOOM_TRY_ASSIGN(Node r, get_node_or(db, rule_hyp));
+  if (json::get_string(r.metadata, "status") != "promoted") return ok_status();
+  LOOM_TRY_ASSIGN(Node a, get_node_or(db, against_hyp));
+  const double w = json::get_number(a.metadata, "weight", 0);
+  const double need = json::get_number(d.p.at("lifecycle"), "disable_threshold", 1.0);
+  const double declined = json::get_number(r.metadata, "disable_declined_weight", 0);
+  if (w < need || (declined > 0 && w < json::get_number(d.p.at("weighting"), "reask_factor", 2.0) * declined)) return ok_status();
+  Json meta = r.metadata;
+  meta["disable_suggested"] = true;
+  meta["disable_against"] = against_hyp;
+  meta["disable_weight"] = w;
+  return save_meta(db, rule_hyp, meta);
+}
+
 // ── occurrences and hypotheses ──────────────────────────────────────────────────────────────
+
+// What a hypothesis stands on: its own occurrences and those of its siblings (the same correction heard in other conversations).
+Guardian::Impl::Evidence Guardian::Impl::evidence_of(const Data& d, const Node& h) {
+  Evidence ev;
+  std::vector<Node> members{h};
+  for (const auto& s : h.metadata.value("siblings", Json::array())) {
+    if (!s.value("active", true)) continue;
+    auto n = rt.db().get_node(s.value("id", ""));
+    if (n && *n && json::get_string((*n)->metadata, "status") != "undone") members.push_back(**n);
+  }
+  const annotations::Policy pol = policy_of(d);
+  for (const auto& m : members) {
+    ev.weight += json::get_number(m.metadata, "weight", 0);
+    ev.count += static_cast<int>(json::get_int(m.metadata, "count", 0));
+    ev.convs.insert(json::get_string(m.metadata, "conv_id"));
+    for (const auto& o : m.metadata.value("occurrences", Json::array())) {
+      if (o.value("undone", false)) continue;
+      const std::string created = o.value("created", "");
+      if (!created.empty() && (ev.first.empty() || created < ev.first)) ev.first = created;
+      if (!created.empty() && created > ev.last) ev.last = created;
+      if (auto anns = annotations::list(rt.db(), pol, o.value("message_id", "")))
+        for (const auto& a : *anns)
+          if (a.value("category", "") == "thread" && !a.value("data", Json::object()).value("thread", "").empty()) ev.threads.insert(a["data"]["thread"].get<std::string>());
+    }
+  }
+  return ev;
+}
+
+// The scope the evidence supports: grown from diversity (conversations, kinds of task, time span), never from how often one thing was said in one place.
+Json Guardian::Impl::widening(const Data& d, const Evidence& ev, const Json& meta) {
+  std::string best = json::get_string(d.p.at("scopes"), "default", "conversation");
+  Json why = Json::array();
+  for (const auto& step : d.p.at("scopes").value("by_evidence", Json::array())) {
+    bool holds = true;
+    if (step.contains("distinct_conversations")) holds = holds && static_cast<std::int64_t>(ev.convs.size()) >= json::get_int(step, "distinct_conversations", 0);
+    if (step.contains("distinct_task_kinds")) holds = holds && static_cast<std::int64_t>(ev.threads.size()) >= json::get_int(step, "distinct_task_kinds", 0);
+    if (step.contains("min_span_hours")) {
+      auto a = timeutil::parse_iso_utc(ev.first), b = timeutil::parse_iso_utc(ev.last);
+      holds = holds && a && b && std::chrono::duration<double>(*b - *a).count() / 3600.0 >= json::get_number(step, "min_span_hours", 0);
+    }
+    if (!holds) continue;
+    const std::string scope = json::get_string(step, "scope");
+    if (scope_rank(d, scope) > scope_rank(d, best)) best = scope;
+    why.push_back(Json{{"kind", json::get_string(step, "why", "evidence")}, {"n", json::get_string(step, "why") == "task_kinds" ? ev.threads.size() : ev.convs.size()}});
+  }
+  const std::string requested = json::get_string(meta, "requested_scope");
+  if (!requested.empty() && scope_rank(d, requested) > scope_rank(d, best)) best = requested;
+  if (!requested.empty()) why.push_back(Json{{"kind", "requested"}, {"n", 1}});
+  return Json{{"candidate", best}, {"why", why}};
+}
 
 Json Guardian::Impl::weigh(const Data& d, Json& meta, const std::vector<Node>& others) {
   double w = 0;
@@ -315,14 +420,11 @@ Json Guardian::Impl::weigh(const Data& d, Json& meta, const std::vector<Node>& o
   w = std::round(w * 1000) / 1000;
   meta["weight"] = w;
   meta["count"] = count;
-  const Json& by_weight = d.p.at("scopes").at("by_weight");
-  std::string scope = json::get_string(d.p.at("scopes"), "default", "conversation");
-  for (const auto& step : by_weight)
-    if (w >= json::get_number(step, "min", 0)) scope = json::get_string(step, "scope", scope);
+  // The scope in force stays what it was (the default, or what the user chose); what the evidence would support is a question, kept apart.
   const std::string explicit_scope = json::get_string(meta, "explicit_scope");
   std::string current = json::get_string(meta, "scope");
-  for (const auto& cand : {scope, explicit_scope})
-    if (!cand.empty() && (current.empty() || scope_rank(d, cand) > scope_rank(d, current))) current = cand;
+  if (current.empty()) current = json::get_string(d.p.at("scopes"), "default", "conversation");
+  if (!explicit_scope.empty() && scope_rank(d, explicit_scope) > scope_rank(d, current)) current = explicit_scope;
   meta["scope"] = current;
   meta["scope_id"] = (current == "conversation" || current == "message") ? meta.value("conv_id", "") : std::string();
   return meta;
@@ -338,16 +440,33 @@ Status Guardian::Impl::reevaluate(const Data& d, const std::string& hyp_id) {
   if (promotes != "rule" && promotes != "transform") return ok_status();
   const std::string mode = choose(rt.config(), d.p.at("promotion"));
   const double threshold = json::get_number(d.p.at("thresholds"), json::get_string(d.p.at("promotion").at("presets").at(mode), "at", "propose"), 2.0);
-  const double weight = json::get_number(meta, "weight", 0);
+  const Evidence ev = evidence_of(d, h);
+  const Json wide = widening(d, ev, meta);
+  meta["scope_candidate"] = wide["candidate"];
+  meta["scope_why"] = wide["why"];
+  const double weight = ev.weight;
   const int need = promotes == "transform" ? static_cast<int>(json::get_int(d.p.at("transforms").at("compile_refinements"), "min_occurrences", 3)) : 1;
   bool ready = false;
-  if (status == "observing") ready = weight >= threshold && json::get_int(meta, "count", 0) >= need;
-  else if (status == "rejected") ready = weight >= json::get_number(d.p.at("weighting"), "reask_factor", 2.0) * json::get_number(meta, "rejected_weight", 0) && json::get_int(meta, "count", 0) >= need;
-  if (!ready) return ok_status();
+  if (status == "observing") ready = weight >= threshold && ev.count >= need;
+  else if (status == "rejected") ready = weight >= json::get_number(d.p.at("weighting"), "reask_factor", 2.0) * json::get_number(meta, "rejected_weight", 0) && ev.count >= need;
+  // A sibling (the same correction in another conversation) already asks, or already became a rule: one question, one rule.
+  bool covered_by_sibling = false;
+  for (const auto& s : meta.value("siblings", Json::array())) {
+    auto n = db.get_node(s.value("id", ""));
+    if (!n || !*n) continue;
+    const std::string ss = json::get_string((*n)->metadata, "status");
+    if (ss == "ready" || ss == "proposed" || ss == "promoted") covered_by_sibling = true;
+  }
+  if (!ready || covered_by_sibling) {
+    LOOM_TRY(save_meta(db, hyp_id, meta));
+    return ok_status();
+  }
   meta["status"] = "ready";
   meta["ready_at"] = timeutil::utc_now_iso();
   LOOM_TRY(save_meta(db, hyp_id, meta));
-  if (mode == "apply") {
+  // Applying without asking is only for a scope the conversation already holds: a wider scope is always a question.
+  const bool widens = scope_rank(d, json::get_string(meta, "scope_candidate")) > scope_rank(d, json::get_string(d.p.at("scopes"), "default", "conversation"));
+  if (mode == "apply" && !widens) {
     auto done = promote_node(d, hyp_id, Json{{"origin", "apply"}});
     if (!done) {
       log::write(log::Level::Warning, kLog, "could not apply the rule: " + done.error().message);
@@ -372,48 +491,46 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
   LOOM_TRY_ASSIGN(auto prior, db.find_node(occ_label, occ_kind));
   if (prior) return Json{{"occurrence", prior->id}, {"hypothesis", prior->metadata.value("hypothesis", "")}, {"kind", s.kind}, {"duplicate", true}};
 
+  // What the occurrence says: the user's words (kept as the evidence quote), and what they ask for (the tokens and concepts the match works on).
+  const std::string quote = clip_text(m.text, 300);
   const std::string claim_text = !s.subject.empty() ? s.subject : clip_text(m.text, 400);
-  const auto tokens = subject_tokens(d, claim_text);
+  const auto tokens = claim_tokens(d, claim_text);
+  const auto concepts = concepts_in(d, claim_text);
   const bool neg = negative(d, claim_text);
-  const double min_overlap = json::get_number(d.p.at("weighting"), "overlap_min", 0.5);
+  const bool named_by_source = !s.subject.empty();
+  const std::string claim_source = s.by == "user" ? "user" : (s.by == "model" ? "model" : (s.by == "structural" ? "structural" : (json::get_bool(hcfg, "named", false) ? "stated" : "")));
   LOOM_TRY_ASSIGN(auto hyps, hypotheses_of(db, d, m.conv_id));
 
   // The goal a clarification belongs to.
   std::string goal;
   if (hcfg.value("promotes", "") == "transform") {
     LOOM_TRY_ASSIGN(auto msgs, db.get_msgs(m.conv_id));
-    const std::size_t min_words = static_cast<std::size_t>(json::get_int(d.p.at("transforms").at("compile_refinements"), "goal_min_words", 4));
-    for (const auto& x : msgs) {
-      if (x.id == m.id) break;
-      if (x.status != msg_status::kActive || x.role != "user" || is_traffic(d, x)) continue;
-      if (text::tokenize(utf8::decode(x.text), d.fold).size() < min_words) continue;
-      bool is_signal = false;
-      for (const auto& kn : d.p.at("kinds").items()) {
-        auto o = db.find_node("occ:" + x.id + ":" + kn.key(), occ_kind);
-        is_signal = is_signal || (o && *o);
-      }
-      if (!is_signal) goal = x.id;
-    }
+    LOOM_TRY_ASSIGN(goal, goal_of(d, m, msgs));
     if (goal.empty()) return Json{{"kind", s.kind}, {"skipped", "no_goal"}};
   }
 
-  // Which hypothesis: the clarifications of one goal are one; a correction joins the one it overlaps in polarity, contradicts the one it
-  // overlaps against.
+  // Which hypothesis: the clarifications of one goal are one; a correction joins the one it matches by the method in force (overlap, embedding,
+  // model, user), contradicts the one it matches against; a match in another conversation is a sibling, evidence of diversity, not a join.
   std::optional<Node> hyp;
+  std::optional<Node> sibling;
+  Match matched;
   std::vector<Node> contradicted;
-  for (const auto& h : hyps) {
-    if (json::get_string(h.metadata, "signal") != s.kind || json::get_string(h.metadata, "status") == "undone") continue;
-    if (!goal.empty()) {
-      if (json::get_string(h.metadata, "goal_message_id") == goal) hyp = h;
-      continue;
+  const double min_overlap = json::get_number(d.p.at("weighting"), "overlap_min", 0.5);
+  if (!goal.empty()) {
+    for (const auto& h : hyps)
+      if (json::get_string(h.metadata, "signal") == s.kind && json::get_string(h.metadata, "status") != "undone" && json::get_string(h.metadata, "goal_message_id") == goal) hyp = h;
+  } else {
+    for (const auto& h : hyps) {
+      if (json::get_string(h.metadata, "signal") != s.kind || json::get_string(h.metadata, "status") == "undone") continue;
+      std::vector<std::string> ht;
+      for (const auto& t : h.metadata.value("tokens", Json::array())) ht.push_back(t.get<std::string>());
+      if (overlap(tokens, ht) >= min_overlap && h.metadata.value("negative", false) != neg) contradicted.push_back(h);
     }
-    std::vector<std::string> ht;
-    for (const auto& t : h.metadata.value("tokens", Json::array())) ht.push_back(t.get<std::string>());
-    if (overlap(tokens, ht) < min_overlap) continue;
-    if (h.metadata.value("negative", false) == neg) {
-      if (!hyp) hyp = h;
-    } else {
-      contradicted.push_back(h);
+    LOOM_TRY_ASSIGN(auto pool, all_hypotheses(d));
+    LOOM_TRY_ASSIGN(matched, find_match(d, m, s.kind, tokens, claim_text, neg, pool));
+    if (matched.target) {
+      if (json::get_string(matched.target->metadata, "conv_id") == m.conv_id) hyp = matched.target;
+      else sibling = matched.target;
     }
   }
   const std::string now = timeutil::utc_now_iso();
@@ -426,16 +543,23 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
   } else {
     created_hyp = true;
     const std::string label = "hyp:" + m.conv_id + ":" + s.kind + ":" + short_hash(s.kind + "|" + m.conv_id + "|" + (goal.empty() ? m.id : goal));
-    meta = Json{{"schema", "loom.guardian_hypothesis/1"}, {"signal", s.kind}, {"conv_id", m.conv_id}, {"claim", {{"text", claim_text}, {"subject", s.subject}, {"lang", s.lang}}},
+    meta = Json{{"schema", "loom.guardian_hypothesis/2"}, {"signal", s.kind}, {"conv_id", m.conv_id},
+                {"claim", {{"text", named_by_source ? claim_text : std::string()}, {"subject", s.subject}, {"lang", s.lang}, {"named", named_by_source}, {"source", named_by_source ? claim_source : std::string()}, {"quotes", Json::array()}}},
                 {"scope", json::get_string(d.p.at("scopes"), "default", "conversation")}, {"scope_id", m.conv_id}, {"negative", neg}, {"tokens", tokens},
-                {"occurrences", Json::array()}, {"exceptions", Json::array()}, {"contradicts", Json::array()}, {"weight", 0.0}, {"count", 0}, {"status", "observing"},
+                {"occurrences", Json::array()}, {"exceptions", Json::array()}, {"contradicts", Json::array()}, {"siblings", Json::array()}, {"weight", 0.0}, {"count", 0}, {"status", "observing"},
                 {"created", now}, {"lang", s.lang}};
     if (!goal.empty()) meta["goal_message_id"] = goal;
     NodeOptions o;
-    o.content = claim_text;
+    o.content = named_by_source ? claim_text : std::string();
     o.metadata = meta;
     o.tags = Json::array({"guardian_hypothesis", s.kind});
     LOOM_TRY_ASSIGN(hyp_id, db.create_node(label, hyp_kind, o));
+  }
+  if (named_by_source && claim_source != "" && json::get_string(meta["claim"], "source") != "user") {  // the user's word is never replaced by a model's or a concept's
+    meta["claim"]["text"] = claim_text;
+    meta["claim"]["subject"] = s.subject;
+    meta["claim"]["named"] = true;
+    meta["claim"]["source"] = claim_source;
   }
   // The occurrence and how much it counts (the escalation curve is data).
   int n = 0;
@@ -448,18 +572,33 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
   if (s.tone) factor *= json::get_number(esc.at("tone"), "factor", 1.5);
   if (s.repeat) factor *= json::get_number(esc.at("repeat"), "factor", 1.8);
   factor = std::round(factor * 1000) / 1000;
-  const double strength = json::get_number(kcfg, "strength", 1.0) * (s.by == "model" ? s.score : 1.0);
+  const double strength = json::get_number(kcfg, "strength", 1.0) * (s.by == "model" || s.by == "annotation" ? s.score : 1.0);
   NodeOptions oo;
   oo.content = clip_text(m.text, 200);
   oo.tags = Json::array({"guardian_occurrence", s.kind});
-  oo.metadata = Json{{"schema", "loom.guardian_occurrence/1"}, {"signal", s.kind}, {"conv_id", m.conv_id}, {"message_id", m.id}, {"strength", strength}, {"factor", factor},
-                     {"detected_by", s.by}, {"score", s.score}, {"tone", s.tone}, {"repeat", s.repeat}, {"scope", s.scope}, {"exceptions", s.exceptions}, {"hypothesis", hyp_id},
-                     {"created", m.created}, {"recorded", now}};
+  oo.metadata = Json{{"schema", "loom.guardian_occurrence/2"}, {"signal", s.kind}, {"conv_id", m.conv_id}, {"message_id", m.id}, {"strength", strength}, {"factor", factor},
+                     {"detected_by", s.by}, {"score", s.score}, {"confidence", s.confidence}, {"tone", s.tone}, {"repeat", s.repeat}, {"scope", s.scope}, {"exceptions", s.exceptions}, {"hypothesis", hyp_id},
+                     {"created", m.created}, {"recorded", now}, {"concepts", concepts}};
   LOOM_TRY_ASSIGN(std::string occ_id, db.create_node(occ_label, occ_kind, oo));
-  meta["occurrences"].push_back(Json{{"occurrence", occ_id}, {"message_id", m.id}, {"factor", factor}, {"strength", strength}, {"created", m.created}, {"tone", s.tone}, {"repeat", s.repeat}});
+  Json occ_entry{{"occurrence", occ_id}, {"message_id", m.id}, {"factor", factor}, {"strength", strength}, {"created", m.created}, {"tone", s.tone}, {"repeat", s.repeat},
+                 {"quote", quote}, {"concepts", concepts}};
+  // A join that is not the same words is a merge: recorded as an edge with its confidence and method, so that it can be taken back
+  // without losing the occurrence.
+  if (hyp && matched.target && !matched.strict && matched.target->id == hyp->id) {
+    std::string with;
+    for (auto it = hyp->metadata["occurrences"].rbegin(); it != hyp->metadata["occurrences"].rend(); ++it)
+      if (!it->value("undone", false)) {
+        with = it->value("occurrence", "");
+        break;
+      }
+    LOOM_TRY_ASSIGN(auto edge, db.create_link(occ_id, with, json::get_string(d.p.at("matching"), "edge", "same_as"), matched.confidence, Json{{"method", matched.method}, {"hypothesis", hyp_id}}));
+    occ_entry["merge"] = Json{{"method", matched.method}, {"confidence", matched.confidence}, {"with", with}, {"edge", edge}};
+  }
+  meta["occurrences"].push_back(occ_entry);
   if (!s.scope.empty()) {
-    const std::string cur = json::get_string(meta, "explicit_scope");
-    if (cur.empty() || scope_rank(d, s.scope) > scope_rank(d, cur)) meta["explicit_scope"] = s.scope;
+    const std::string field = s.by == "user" ? "explicit_scope" : "requested_scope";  // his own word through the API decides; words in a message ask
+    const std::string cur = json::get_string(meta, field);
+    if (cur.empty() || scope_rank(d, s.scope) > scope_rank(d, cur)) meta[field] = s.scope;
   }
   const std::string evidence = json::get_string(links, "evidence", "derived_from");
   LOOM_TRY_ASSIGN(auto l1, db.create_link(occ_id, m.id, evidence, 1.0, Json{{"role", "evidence"}, {"conv_id", m.conv_id}}));
@@ -501,8 +640,18 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
       if (!meta.contains("supports")) meta["supports"] = Json::array();
       meta["supports"].push_back(other.id);
     }
+  // The same thing heard in another conversation: siblings, both ways, with the confidence and method of the match.
+  if (sibling && created_hyp) {
+    LOOM_TRY_ASSIGN(auto edge, db.create_link(hyp_id, sibling->id, json::get_string(d.p.at("matching"), "edge", "same_as"), matched.confidence, Json{{"method", matched.method}, {"conv_id", sibling->metadata.value("conv_id", "")}}));
+    meta["siblings"].push_back(Json{{"id", sibling->id}, {"conv_id", sibling->metadata.value("conv_id", "")}, {"confidence", matched.confidence}, {"method", matched.method}, {"edge", edge}, {"active", true}});
+    Json other = sibling->metadata;
+    if (!other.contains("siblings")) other["siblings"] = Json::array();
+    other["siblings"].push_back(Json{{"id", hyp_id}, {"conv_id", m.conv_id}, {"confidence", matched.confidence}, {"method", matched.method}, {"edge", edge}, {"active", true}});
+    LOOM_TRY(save_meta(db, sibling->id, other));
+  }
+  refresh_claim(d, meta);
   weigh(d, meta, others);
-  LOOM_TRY(save_meta(db, hyp_id, meta));
+  LOOM_TRY(save_meta(db, hyp_id, meta, meta["claim"].value("text", "")));
   if (created_hyp) {
     Node self;
     self.id = hyp_id;
@@ -513,7 +662,13 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
       LOOM_TRY_ASSIGN(auto c1, db.create_link(hyp_id, old.id, json::get_string(links, "contradicts", "contradicts"), 1.0, Json{}));
       LOOM_TRY_ASSIGN(auto c2, db.create_link(old.id, hyp_id, json::get_string(links, "contradicts", "contradicts"), 1.0, Json{}));
       (void)c1; (void)c2;
-      if (scope_rank(d, json::get_string(om, "scope")) > scope_rank(d, json::get_string(meta, "scope"))) {
+      auto effective = [&](const Json& x) {
+        std::string a = json::get_string(x, "scope");
+        for (const char* k : {"requested_scope", "scope_candidate"})
+          if (scope_rank(d, json::get_string(x, k)) > scope_rank(d, a)) a = json::get_string(x, k);
+        return a;
+      };
+      if (scope_rank(d, effective(om)) > scope_rank(d, effective(meta))) {
         const std::string exc_kind = json::get_string(d.p.at("nodes"), "exception", "guardian_exception");
         NodeOptions eo;
         eo.content = claim_text;
@@ -526,13 +681,16 @@ Result<Json> Guardian::Impl::record(const Data& d, const Message& m, const Signa
       }
       weigh(d, om, {self});  // the older claim is weighed against the newer one
       LOOM_TRY(save_meta(db, old.id, om));
+      // A correction against a rule the user accepted: the rule is asked about (switching it off is his word), once the claim against it weighs enough.
+      LOOM_TRY(lifecycle_against(d, old.id, hyp_id));
     }
   }
   LOOM_TRY(reevaluate(d, hyp_id));
   // The occurrence remembers its hypothesis (for the duplicate check above).
   LOOM_TRY_ASSIGN(Node latest, get_node_or(db, hyp_id));
   return Json{{"occurrence", occ_id}, {"hypothesis", hyp_id}, {"kind", s.kind}, {"weight", json::get_number(latest.metadata, "weight", 0)}, {"count", json::get_int(latest.metadata, "count", 0)},
-              {"status", json::get_string(latest.metadata, "status")}, {"scope", json::get_string(latest.metadata, "scope")}, {"factor", factor}, {"detected_by", s.by}};
+              {"status", json::get_string(latest.metadata, "status")}, {"scope", json::get_string(latest.metadata, "scope")}, {"factor", factor}, {"detected_by", s.by},
+              {"merged", matched.target && !matched.strict}, {"sibling", sibling ? sibling->id : std::string()}};
 }
 
 // ── observation ─────────────────────────────────────────────────────────────────────────────
@@ -596,7 +754,8 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
       const Json& kinds = d.p.at("kinds");
       for (const auto& a : *anns) {
         const std::string producer = a.value("producer", "");
-        if (producer.rfind("guardian", 0) == 0 || producer == "user") continue;
+        // What the guardian itself wrote is not read back as a second opinion (data: producers.<name>.own); the user's own annotations are his.
+        if (json::get_bool(pol.p.value("producers", Json::object()).value(producer, Json::object()), "own", false) || producer == "user") continue;
         if (a.value("origin", "") == "model") model_read = true;
         for (auto it = kinds.begin(); it != kinds.end(); ++it) {
           const auto methods = text::strings_of(json::find(it.value().value("detect", Json::object()), "methods"));
@@ -638,6 +797,12 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
       for (auto& s : detect_heuristic(d, m, has_goal, covered)) signals.push_back(std::move(s));
     }
     if (signals.empty() && meth.model && !model_read && (meth.ask_model_when.empty() || meth.ask_model_when == "no_signal")) want_model = true;
+    // The analyzer's one prompt contract reads the message for everyone: while its reading is still to come, the guardian does not send the message
+    // to a model of its own (it reads the layer when the analyzer announces it); once the analyzer is done without a model reading, it does.
+    if (want_model && (m.semantic_status == "pending" || m.semantic_status == "executing") && annotations::analyzer_expected(rt.config(), m.text)) {
+      want_model = false;
+      out["model_reading"] = "awaiting_analyzer";
+    }
     if (model_read && signals.empty()) out["model_reading"] = "reused";
     if (signals.empty() && want_model) {
       if (json::get_bool(opts, "sync_model", false)) {
@@ -742,6 +907,25 @@ void Guardian::Impl::on_event(const Json& e) {
   }
 }
 
+// The analyzer wrote annotations (or a receipt that it read the message): read the layer again, which may now name signals the heuristics did not.
+void Guardian::Impl::on_annotations(const Json& e) {
+  try {
+    const std::string id = json::get_string(e, "message_id");
+    if (id.empty()) return;
+    auto m = rt.db().get_msg(id);
+    if (!m || !*m || (*m)->role != "user") return;
+    auto r = observe(id, Json{{"post", false}});
+    if (!r) {
+      log::write(log::Level::Debug, kLog, "observe after annotations failed: " + r.error().message);
+      return;
+    }
+    auto d = data();
+    if (d && method(*d).name != "off") (void)post_pending(*d, (*m)->conv_id);
+  } catch (const std::exception& ex) {
+    log::write(log::Level::Warning, kLog, std::string("annotations handler: ") + ex.what());
+  }
+}
+
 void Guardian::Impl::run_worker() {
   for (;;) {
     std::string id;
@@ -786,10 +970,12 @@ void Guardian::start() {
   impl_->stopping = false;
   impl_->worker = std::thread([this] { impl_->run_worker(); });
   impl_->sub = ScopedSubscription(impl_->rt.bus(), impl_->rt.bus().on(events::kMsgCreated, [this](std::string_view, const Json& e) { impl_->on_event(e); }));
+  impl_->sub_annotations = ScopedSubscription(impl_->rt.bus(), impl_->rt.bus().on(events::kAnnotationsWritten, [this](std::string_view, const Json& e) { impl_->on_annotations(e); }));
 }
 
 void Guardian::stop() {
   impl_->sub.reset();
+  impl_->sub_annotations.reset();
   {
     std::lock_guard lk(impl_->mu);
     impl_->stopping = true;
@@ -809,15 +995,37 @@ void Guardian::note_rejection(const std::string& conv_id, const std::string& pro
     if (!d || impl_->method(*d).name == "off") return;
     Database& db = impl_->rt.db();
     if (json::get_string(proposal, "action") == "guardian.promote") {
-      // The user declined the guardian's own proposal: not asked again until the evidence doubles.
+      // The user declined the guardian's own proposal: not asked again until the evidence doubles. A "no" also takes back the weak merges that
+      // made it up (occurrences joined by a method that was not sure): "that is not what I meant" separates them, and nothing is lost.
       const std::string hyp = json::get_string(proposal.value("args", Json::object()), "hypothesis");
       auto n = db.get_node(hyp);
       if (n && *n) {
-        Json meta = (*n)->metadata;
+        if (json::get_bool(d->p.at("lifecycle"), "unmerge_on_no", true))
+          (void)impl_->split_merged(*d, hyp, json::get_number(d->p.at("matching"), "unmerge_on_no_below", 0.95), "");
+        auto again = db.get_node(hyp);
+        Json meta = (*again)->metadata;
         meta["status"] = "rejected";
         meta["rejected_weight"] = json::get_number(meta, "weight", 0);
         meta["rejected_at"] = timeutil::utc_now_iso();
         meta["proposal_message_id"] = proposal_message_id;
+        (void)save_meta(db, hyp, meta);
+        for (const auto& sib : meta.value("siblings", Json::array())) {  // the same thing asked elsewhere is not asked again either
+          auto sn = db.get_node(sib.value("id", ""));
+          if (!sn || !*sn) continue;
+          Json sm = (*sn)->metadata;
+          sm["status"] = "rejected";
+          sm["rejected_weight"] = json::get_number(sm, "weight", 0);
+          (void)save_meta(db, (*sn)->id, sm);
+        }
+      }
+      return;
+    }
+    if (json::get_string(proposal, "action") == "guardian.undo") {
+      // He keeps the rule: not asked again until the evidence against it doubles / the next review period.
+      const std::string hyp = json::get_string(proposal.value("args", Json::object()), "hypothesis");
+      if (auto n = db.get_node(hyp); n && *n) {
+        Json meta = (*n)->metadata;
+        meta["disable_declined_weight"] = json::get_number(meta, "disable_weight", json::get_number(meta, "disable_proposed_weight", 1.0));
         (void)save_meta(db, hyp, meta);
       }
       return;

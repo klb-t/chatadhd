@@ -1,6 +1,7 @@
 // OWNER: wave 2 net/chat/worker. Port of engine/semantic_llm.py.
 #include "loom/semantic_llm.h"
 
+#include "loom/annotation_layer.h"
 #include "loom/config.h"
 #include "loom/log.h"
 #include "loom/net/http.h"
@@ -118,8 +119,11 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
   request.kind = "semantic.analyse";
   request.action = "semantic.analyse";
   request.models = {llm::ModelSpec{settings.model, "", Json::object()}};
-  request.prompt = std::string(kAnalysisPrompt) + analysis_text;
-  request.parameters = Json{{"temperature", 0.1}, {"max_tokens", 800}};
+  // One prompt contract for every reader of a message: entities, topics, relations, and - when somebody reads them (setting semantic_segments,
+  // the guardian, the thread filter) - the segment categories and the thread. Off, the prompt is the classic one, byte for byte.
+  const annotations::SegmentsPlan plan = annotations::segments_plan(cfg_);
+  request.prompt = annotations::extend_prompt(kAnalysisPrompt, plan, cfg_) + analysis_text;
+  request.parameters = Json{{"temperature", 0.1}, {"max_tokens", plan.wanted ? plan.max_tokens : 800}};
   request.route.base_url = settings.base;
   request.title = "ChatADHD-Semantic";
   request.timeout_ms = 30000;
@@ -157,6 +161,9 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
     log::debug("loom.semantic_llm", "Semantic LLM returned invalid JSON: {}", std::string(utf8::prefix(raw, 100)));
     return std::optional<Json>(std::nullopt);
   }
+  if (plan.wanted && parsed->is_object())
+    (*parsed)["annotation"] = Json{{"version", plan.version},
+                                   {"cost", Json{{"calls", 1}, {"input_bytes", request.prompt.size()}, {"output_bytes", raw.size()}, {"receipt", result.operation_id}, {"model", result.model}}}};
   return std::optional<Json>(std::move(*parsed));
 }
 
