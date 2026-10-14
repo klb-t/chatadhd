@@ -25,6 +25,15 @@ const ctx = await browser.newContext({ viewport: { width: Number(process.env.FS_
 const page = await ctx.newPage();
 const errors = [];
 page.on("pageerror", e => errors.push(e.message));
+// Dziennik zdarzen do diagnozy przy bledzie: konsola strony i kazde zapytanie /api/* z kodem odpowiedzi.
+await page.addInitScript(() => { window.__clicks = []; for (const t of ["pointerdown", "pointerup", "click"]) document.addEventListener(t, e => window.__clicks.push(t + " " + (e.target.outerHTML || "").slice(0, 70) + " connected=" + e.target.isConnected), true); });
+const trace = [];
+const t0 = Date.now();
+const note = m => trace.push(String(((Date.now() - t0) / 1000).toFixed(1)).padStart(6) + "s " + m);
+page.on("console", m => { if (m.type() === "error" || m.type() === "warning") note("console." + m.type() + ": " + m.text().slice(0, 300)); });
+page.on("request", r => { if (r.url().includes("/api/")) note("-> " + r.method() + " " + r.url().replace(base, "")); });
+page.on("response", r => { if (r.url().includes("/api/")) note("<- " + r.status() + " " + r.url().replace(base, "")); });
+page.on("requestfailed", r => note("!! " + r.method() + " " + r.url().replace(base, "") + " " + (r.failure()?.errorText ?? "")));
 const shot = async name => { if (shots) await page.screenshot({ path: path.join(shots, name + ".png") }); };
 const step = async (name, fn) => { await fn(); log("OK " + name); };
 
@@ -65,11 +74,34 @@ try {
     await page.getByTestId("close-panel").click();
   });
   await step("6 nowa rozmowa", async () => {
+    // Na telefonie (<= 720 px) lista rozmow jest schowana: najpierw ja otwieramy, potem zamykamy.
+    const narrow = page.viewportSize().width <= 720;
+    if (narrow) await page.getByTestId("toggle-sidebar").click();
     await page.getByTestId("new-conversation").click();
+    if (narrow) { await page.waitForTimeout(300); if (await page.getByTestId("new-conversation").isVisible()) await page.getByTestId("toggle-sidebar").click(); }
     await page.getByTestId("chat-input").waitFor();
   });
 
-  const send = async text => { await page.getByTestId("chat-input").fill(text); await page.getByTestId("send-chat").click(); };
+  // Wysylanie jest chwilowo zablokowane, gdy widok rozmowy sie wczytuje ("conversation_view_loading", zasada R43: przycisk
+  // dostaje `disabled` i `data-gate-reason`). Klikniecie w tym oknie jest ignorowane, wiec: czekamy az blokada zniknie,
+  // klikamy, a gdy pole nie oprozni sie (klik trafil w zablokowany przycisk), klikamy ponownie.
+  const send = async text => {
+    const input = page.getByTestId("chat-input"), button = page.getByTestId("send-chat");
+    await input.fill(text);
+    for (let attempt = 0; attempt < 5; attempt++) {
+      for (const end = Date.now() + 20000; Date.now() < end;) {
+        const ready = await button.evaluate(b => !b.disabled && !b.getAttribute("data-gate-reason")).catch(() => false);
+        if (ready) break;
+        await page.waitForTimeout(50);
+      }
+      await button.click({ timeout: 5000 }).catch(() => {});
+      for (const end = Date.now() + 3000; Date.now() < end;) {
+        if ((await input.inputValue()) === "") return;
+        await page.waitForTimeout(50);
+      }
+    }
+    throw new Error("wiadomosc nie zostala wyslana (pole nie opróżnione): " + text);
+  };
   const body = () => page.locator(".msg.assistant .body");
   const proposalThenYes = async (name, text, mustMatch) => {
     await send(text);
@@ -112,6 +144,14 @@ try {
 } catch (e) {
   await shot("blad").catch(() => {});
   console.error(e);
+  console.error("--- ostatnie zdarzenia strony ---\n" + trace.slice(-60).join("\n"));
+  console.error("--- tekst pola rozmowy ---\n" + await page.getByTestId("chat-input").inputValue().catch(() => "?"));
+  console.error("--- przycisk wysylania ---\n" + await page.getByTestId("send-chat").evaluate(b => b.outerHTML).catch(() => "brak (moze 'Stop')") +
+    "\n--- Stop? " + await page.getByTestId("cancel-chat").count().catch(() => "?"));
+  console.error("--- ostatnie klikniecia (cel w DOM) ---\n" + (await page.evaluate(() => window.__clicks.slice(-8).join("\n")).catch(() => "?")));
+  const box = await page.getByTestId("send-chat").boundingBox().catch(() => null);
+  console.error("--- pole Send: " + JSON.stringify(box) + " viewport " + JSON.stringify(page.viewportSize()));
+  console.error("--- widoczny blad ---\n" + await page.getByTestId("chat-error").allInnerTexts().catch(() => "?"));
   process.exitCode = 1;
 } finally {
   await browser.close();
