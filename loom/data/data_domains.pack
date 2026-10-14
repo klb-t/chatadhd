@@ -117,7 +117,7 @@
     {
       "path": "graph/classes.pack",
       "schema": "loom.graph_classes/1",
-      "sha256": "3902cfaa1be38bfd43917616015514f5f2219ba3e4d51b9a9430118d210d3d45",
+      "sha256": "ffc7a38b43f5ca53f20319205131083eb21a2fe5484adc82cab694b9d51eb063",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [
@@ -150,7 +150,7 @@
     {
       "path": "graph/interfaces.pack",
       "schema": "loom.graph_interfaces/1",
-      "sha256": "74ee50f788a4139b20d164529c5aea8c7de30a2077ae67e7f255ac149091d281",
+      "sha256": "dc2959b1cc8267e8c56326bf562929553cb71e14cf6bcc3b21f051692c7b1a66",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [
@@ -162,7 +162,7 @@
     {
       "path": "graph/rom.pack",
       "schema": "loom.rom_catalogue/1",
-      "sha256": "03800ed78d88fb0119155f6a40c2129e180e50fe51c0a615455ea86f08d8122b",
+      "sha256": "84bafe88218fd5c708998f70f43e06d481f641e73726aa7ab9cf5fbeaba82189",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

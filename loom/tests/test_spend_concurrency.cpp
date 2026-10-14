@@ -63,10 +63,7 @@ void run_shared_guard(bool limits, const char* label) {
     cfg.set("base_url", "https://api.test");
     if (limits) cfg.set("usage_spend_limits", limits_of("notify"));
     // 80 requests in flight add up as reservations and would trip the x10 guard; this test is about the ledger's locks, so the factor is the user's to raise
-    // The 80 admissions queue for the one write lock of the ledger and each decodes the reservations of the others, so the last one waits for all of them: under
-    // a sanitizer that is longer than the preset busy timeout (30 s). The timeout is the user's setting (ledger_busy_timeout_ms); what this test pins is that
-    // nobody is refused for a reason that waiting does not cure (a read upgraded to a write, a second connection), so the wait is allowed to be long.
-    cfg.set("loom_usage_policy", Json{{"baseline_min_samples", 0}, {"growth_factor", 1e12}, {"ledger_busy_timeout_ms", 600000}});
+    cfg.set("loom_usage_policy", Json{{"baseline_min_samples", 0}, {"growth_factor", 1e12}});
     secrets.set("api_key", "sk-test");
     earlier_spend(td.path(), 2.0);  // the month's limit of 1 USD is passed: every admission computes, and tells
     net::ScriptedTransport transport;
@@ -124,7 +121,6 @@ TEST_SUITE("spend_concurrency") {
       fsutil::TempDir td;
       Config cfg{td.path() / "config.json"};
       cfg.set("usage_spend_limits", Json::array({Json{{"period", "month"}, {"amount", 1000.0}, {"currency", "USD"}, {"on_exceed", on_exceed}}}));
-      cfg.set("loom_usage_policy", Json{{"ledger_busy_timeout_ms", 600000}});  // the wait for the one write lock is allowed to be long under a sanitizer
       const Json options = unwrap(effective_usage_policy_options(cfg));
       REQUIRE(options.contains("spend_limits"));
       std::barrier start(kThreads);
@@ -171,7 +167,6 @@ TEST_SUITE("spend_concurrency") {
     fsutil::TempDir td;
     Config cfg{td.path() / "config.json"};
     cfg.set("usage_spend_limits", limits_of("confirm"));
-    cfg.set("loom_usage_policy", Json{{"ledger_busy_timeout_ms", 600000}});
     const Json options = unwrap(effective_usage_policy_options(cfg));
     earlier_spend(td.path(), 2.0);
     const Json estimate{{"operation_id", "held"}, {"baseline_key", "stress|m"}, {"model", "m"}, {"resources", Json{{"requests", 1}}}};

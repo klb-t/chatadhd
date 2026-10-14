@@ -319,6 +319,7 @@ Database::Database(PrivateTag) {}
 Database::~Database() { close(); }
 
 void Database::close() {
+  fts_join_background();
   auto lk = lock();
   if (conn_.is_open()) {
     conn_.close();
@@ -1040,13 +1041,33 @@ Result<std::string> Database::get_or_create_node(std::string_view label, std::st
 
 // ── Graph data ─────────────────────────────────────────────────────
 Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id) {
+  return get_graph_data(conv_id, GraphDataPage{});
+}
+
+Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id, const GraphDataPage& page) {
   auto lk = lock();
   Json nodes = Json::array();
   Json edges = Json::array();
   std::unordered_map<std::string, bool> seen;
+  const bool paged = page.limit > 0;
+  bool truncated = false;
+  Json next_before = nullptr;
+  std::int64_t total = 0;
   if (conv_id && !conv_id->empty()) {
     LOOM_TRY_ASSIGN(auto msgs, get_msgs(*conv_id, true));
-    for (const auto& m : msgs) {
+    total = static_cast<std::int64_t>(msgs.size());
+    std::size_t end = msgs.size();
+    if (paged && !page.before.empty()) {
+      for (std::size_t i = 0; i < msgs.size(); ++i)
+        if (msgs[i].id == page.before) { end = i; break; }
+    }
+    std::size_t begin = (paged && end > static_cast<std::size_t>(page.limit)) ? end - page.limit : 0;
+    if (paged && begin > 0) {
+      truncated = true;
+      next_before = msgs[begin].id;
+    }
+    for (std::size_t i = begin; i < end; ++i) {
+      const auto& m = msgs[i];
       nodes.push_back(Json{{"id", m.id},
                            {"label", std::string(utf8::prefix(m.text, 25))},
                            {"type", m.role},
@@ -1060,7 +1081,7 @@ Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id) {
       }
     }
   }
-  LOOM_TRY_ASSIGN(auto all_nodes, list_nodes());
+  LOOM_TRY_ASSIGN(auto all_nodes, list_nodes(std::nullopt, paged && !(conv_id && !conv_id->empty()) ? page.limit : 200));
   for (const auto& n : all_nodes) {
     if (seen.count(n.id)) continue;
     nodes.push_back(Json{{"id", n.id},
@@ -1072,11 +1093,40 @@ Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id) {
                          {"tags", n.tags}});
     seen[n.id] = true;
   }
-  LOOM_TRY_ASSIGN(auto links, get_links());
-  for (const auto& l : links) {
-    edges.push_back(Json{{"src", l.src}, {"dst", l.dst}, {"type", l.link_type}, {"weight", l.weight}});
+  if (!paged) {
+    LOOM_TRY_ASSIGN(auto links, get_links());
+    for (const auto& l : links) {
+      edges.push_back(Json{{"src", l.src}, {"dst", l.dst}, {"type", l.link_type}, {"weight", l.weight}});
+    }
+    return Json{{"nodes", std::move(nodes)}, {"edges", std::move(edges)}};
   }
-  return Json{{"nodes", std::move(nodes)}, {"edges", std::move(edges)}};
+  // Paged: reply edges whose parent lies outside the page are dropped, links are kept when they touch a listed
+  // message or join two listed nodes (streamed, not materialised: a 1M-message store has 200k+ links).
+  {
+    Json kept = Json::array();
+    for (auto& e : edges)
+      if (seen.count(e["src"].get<std::string>())) kept.push_back(std::move(e));
+    edges = std::move(kept);
+  }
+  LOOM_TRY_ASSIGN(auto st, conn_.prepare("SELECT * FROM links ORDER BY rowid"));
+  dbi::RowMap rm(st);
+  while (true) {
+    LOOM_TRY_ASSIGN(bool row, st.step());
+    if (!row) break;
+    std::string src = rm.text(st, "src");
+    std::string dst = rm.text(st, "dst");
+    if (seen.count(src) && seen.count(dst)) {
+      edges.push_back(Json{{"src", src}, {"dst", dst}, {"type", rm.text(st, "link_type")},
+                           {"weight", rm.real(st, "weight", 1.0)}});
+    }
+  }
+  Json out{{"nodes", std::move(nodes)}, {"edges", std::move(edges)}};
+  if (conv_id && !conv_id->empty()) {
+    out["truncated"] = truncated;
+    out["next_before"] = next_before;
+    out["total_messages"] = total;
+  }
+  return out;
 }
 
 // ── Housekeeping ───────────────────────────────────────────────────

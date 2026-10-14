@@ -248,7 +248,8 @@ LOOM_API const char* loom_get_nodes(LoomContext* ctx, const char* filter_json);
 LOOM_API const char* loom_get_edges(LoomContext* ctx, const char* filter_json);
 /* seed_ids_json: ["n_...","m_..."] -> {"nodes":[...],"edges":[...]} */
 LOOM_API const char* loom_expand_graph(LoomContext* ctx, const char* seed_ids_json, int depth);
-/* Python Database.get_graph_data(conv_id) (conv_id may be NULL). */
+/* Python Database.get_graph_data(conv_id) (conv_id may be NULL). conv_id may also be a JSON object
+ * {"conv_id","limit","before"} for paging a conversation graph (see Database::GraphDataPage). */
 LOOM_API const char* loom_get_graph_data(LoomContext* ctx, const char* conv_id);
 /* Re-runs graph extraction for conv_id (NULL = every conversation) -> {"reindexed": n} */
 LOOM_API const char* loom_graph_reindex(LoomContext* ctx, const char* conv_id);

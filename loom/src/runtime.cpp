@@ -21,6 +21,7 @@
 #include "loom/event_bus.h"
 #include "loom/github_sync.h"
 #include "loom/graph_engine.h"
+#include "loom/guardian.h"
 #include "loom/graph_memory.h"
 #include "loom/importer.h"
 #include "loom/loom.h"
@@ -309,6 +310,7 @@ struct Runtime::Impl {
   std::unique_ptr<archive::ArchiveIntelligence> archive;  // needs the Runtime; created last
   std::unique_ptr<knowledge::KnowledgeEngine> knowledge;  // needs the Runtime; registers knowledge.* handlers
   rom::MountRegistry mounts;                              // ROM first, then the data dir
+  std::unique_ptr<guardian::Guardian> guardian;           // needs the Runtime; destroyed before the actions
   std::unique_ptr<actions::ActionRunner> actions;         // needs the Runtime; destroyed first
 
   mutable std::mutex embed_mu;
@@ -356,7 +358,15 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   DbOptions dbo;
   dbo.enable_fts = opts.enable_fts;
   dbo.fts_path = p.fts_index;
+  {
+    Json cr = impl->config->get("loom_fts_chunk_rows");
+    if (cr.is_number_integer()) dbo.fts_chunk_rows = static_cast<int>(std::max<std::int64_t>(0, cr.get<std::int64_t>()));
+  }
   LOOM_TRY_ASSIGN(impl->db, Database::open(p.db, dbo));
+  if (opts.start_workers && opts.enable_fts) {
+    Json bg = impl->config->get("loom_fts_background_build");
+    if (!bg.is_boolean() || bg.get<bool>()) impl->db->fts_start_background();
+  }
 
   impl->bus = std::make_unique<EventBus>();
   impl->event_log = std::make_unique<EventLog>(*impl->db);
@@ -475,6 +485,8 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   rt->impl_->actions = parts.actions(*rt);
   if (!rt->impl_->archive || !rt->impl_->knowledge || !rt->impl_->actions)
     return Error(Errc::Internal, "runtime part factory returned null: archive/knowledge/actions");
+  rt->impl_->guardian = std::make_unique<guardian::Guardian>(*rt);
+  rt->impl_->guardian->start();
   rt->tasks().register_handler("catalog.read_resource", [runtime = rt.get()](TaskContext& task) -> Status {
     const auto& params = task.params();
     if (!params.is_object() || !params.contains("unit_id") ||
@@ -535,6 +547,7 @@ void Runtime::shutdown() {
   if (!impl_ || impl_->shut_down.exchange(true)) return;
   if (impl_->worker) impl_->worker->stop();
   if (impl_->tasks) impl_->tasks->stop();
+  if (impl_->guardian) impl_->guardian->stop();
   if (impl_->graph) impl_->graph->stop();
   if (impl_->bus) impl_->bus->set_persistence(nullptr, {});
   if (impl_->crypto) impl_->crypto->lock();
@@ -574,6 +587,7 @@ CryptoVault& Runtime::crypto() { return *impl_->crypto; }
 GitHubSyncManager& Runtime::github() { return *impl_->github; }
 archive::ArchiveIntelligence& Runtime::archive() { return *impl_->archive; }
 knowledge::KnowledgeEngine& Runtime::knowledge() { return *impl_->knowledge; }
+guardian::Guardian& Runtime::guardian() { return *impl_->guardian; }
 actions::ActionRunner& Runtime::actions() { return *impl_->actions; }
 
 void Runtime::set_http_transport(std::shared_ptr<net::HttpTransport> transport) {

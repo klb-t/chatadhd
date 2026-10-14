@@ -111,6 +111,9 @@ struct ChatOptions {
   // the proposal is not part of what the model reads, so the request is that of an ordinary message. Not a wire
   // field (from_json never sets it); empty = nothing is left out.
   std::vector<std::string> history_skip;
+  // Message id -> the text sent in its place (a lossy level of the guardian's representation, chosen by the context selector). Not a wire
+  // field; empty = every message is sent as it is.
+  std::map<std::string, std::string> history_text;
   // The proposal message whose offer to send the rejected sentence as a message the user takes (chat request field
   // send_as_message; chat_route.h). The conversation window reads it; the engine ignores it.
   std::string send_as_message;
@@ -195,6 +198,9 @@ class ChatEngine {
   MemoryEngine* memory_;
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
+  // The context selector's choice for a conversation among the representations the guardian keeps beside the raw messages
+  // (setting chat_representation, preset raw = `in` unchanged, byte for byte). Never fails a send: what cannot be used stays raw.
+  ChatOptions select_representation(const ChatOptions& in, const std::string& conv_id);
   // Temporary projection-repair exemptions while send() is running. Protected
   // by db_.lock(); durable acceptance authority lives in EventLog.
   std::map<std::string, Json> active_task_in_flight_;

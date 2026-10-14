@@ -3739,6 +3739,756 @@
           "pl": "Odpowiedź klienta została zapisana:"
         }
       },
+      "guardian.status": {
+        "id": "guardian.status",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What the guardian noticed",
+        "description": "The context guardian's hypotheses for a conversation: each claim with its scope, weight, evidence occurrences, stated or inferred exceptions, contradictions and status (observing, ready, proposed, promoted, rejected, undone), the compiled representation if there is one and what the context selector would send (chat_representation). The guardian is a secretary: it builds a representation beside the raw messages and never changes them.",
+        "labels": {
+          "pl": "Co zauważył strażnik"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.status",
+        "params": [
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation (default: the current one).",
+              "pl": "Rozmowa (domyślnie bieżąca)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "hypothesis",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only this hypothesis.",
+              "pl": "Tylko ta hipoteza."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "lang",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the lines (pl or en).",
+              "pl": "Język wierszy (pl lub en)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/status"
+        },
+        "phrases": {
+          "en": [
+            "guardian status",
+            "what did the guardian notice",
+            "show the guardian"
+          ],
+          "pl": [
+            "stan strażnik*",
+            "co zauważył strażnik*",
+            "pokaż strażnik*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "what did the guardian notice in this conversation"
+          ],
+          "pl": [
+            "co zauważył strażnik w tej rozmowie"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "What the guardian noticed:",
+          "pl": "Co zauważył strażnik:"
+        },
+        "default_element": "current_conversation"
+      },
+      "guardian.promote": {
+        "id": "guardian.promote",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Remember it as a rule",
+        "description": "Promotes a hypothesis of the context guardian: a correction becomes a rule written to the user overlay profiles/guardian.pack, a run of clarifications becomes one compiled instruction (the existing active task specification). Either way the conversation's chat_representation is set to guardian by a rule of that conversation, so later sends use the representation. The raw messages are never touched. Undo: guardian.undo.",
+        "labels": {
+          "pl": "Zapamiętaj jako regułę"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.promote",
+        "params": [
+          {
+            "name": "hypothesis",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Id of the hypothesis (see guardian.status).",
+              "pl": "Id hipotezy (zob. guardian.status)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Scope of the rule: message, conversation, task_kind, person or global (default: the hypothesis' own).",
+              "pl": "Zakres reguły: message, conversation, task_kind, person albo global (domyślnie własny hipotezy)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "text",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The rule in your own words (default: what you said).",
+              "pl": "Reguła Twoimi słowami (domyślnie to, co powiedziałeś)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/promote"
+        },
+        "phrases": {
+          "en": [
+            "promote hypothesis",
+            "promote guardian hypothesis"
+          ],
+          "pl": [
+            "awansuj hipotez*",
+            "zapamiętaj hipotez*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "promote the guardian hypothesis"
+          ],
+          "pl": [
+            "awansuj hipotezę strażnika"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "The guardian saved it:",
+          "pl": "Strażnik to zapisał:"
+        },
+        "default_element": "application"
+      },
+      "guardian.undo": {
+        "id": "guardian.undo",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Take back what the guardian saved",
+        "description": "Takes back a promoted hypothesis (the rule leaves the overlay, the representation is rebuilt without it, the conversation's choice goes back when nothing is left) or retracts one segment annotation (a drop of a lossy level, which is then rebuilt). Nothing the guardian noticed is deleted: the occurrences, the hypothesis and the annotation stay as history.",
+        "labels": {
+          "pl": "Cofnij to, co zapisał strażnik"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.undo",
+        "params": [
+          {
+            "name": "hypothesis",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The hypothesis to take back.",
+              "pl": "Hipoteza do cofnięcia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "rule",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Or the id of the rule it wrote (g:...).",
+              "pl": "Albo id reguły, którą zapisała (g:...)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "annotation",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Or the id of a segment annotation to retract.",
+              "pl": "Albo id adnotacji segmentu do wycofania."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/undo"
+        },
+        "phrases": {
+          "en": [
+            "undo guardian",
+            "take back guardian rule"
+          ],
+          "pl": [
+            "cofnij strażnik*",
+            "wycofaj strażnik*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "undo what the guardian saved"
+          ],
+          "pl": [
+            "cofnij to co zapisał strażnik"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Taken back:",
+          "pl": "Cofnięto:"
+        },
+        "default_element": "application"
+      },
+      "guardian.observe": {
+        "id": "guardian.observe",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Let the guardian read a message",
+        "description": "Runs a message of the conversation through the guardian: the cheap segment annotations (fillers, repetitions, retractions), the lossy levels, and the signal (course correction, clarification), as the method guardian_method says. kind declares the signal yourself (this message is a correction) instead of having it read. The occurrence and the hypothesis are graph nodes linked to the message; a proposal is posted in the conversation when the weight reaches the threshold.",
+        "labels": {
+          "pl": "Niech strażnik przeczyta wiadomość"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "message"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.observe",
+        "params": [
+          {
+            "name": "message_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The message.",
+              "pl": "Wiadomość."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "kind",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Declare the signal: course_correction, refinement, proposal_rejection (or a kind of your own in the profile).",
+              "pl": "Zadeklaruj sygnał: course_correction, refinement, proposal_rejection (albo własny rodzaj z profilu)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "subject",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "What the claim says, in your words (default: the message).",
+              "pl": "Co mówi twierdzenie, Twoimi słowami (domyślnie wiadomość)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "scope",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "With kind: the scope you declare (message, conversation, task_kind, person, global).",
+              "pl": "Z kind: zakres, który deklarujesz (message, conversation, task_kind, person, global)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "exceptions",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "With kind: the exceptions you state (a list of short phrases).",
+              "pl": "Z kind: wyjątki, które podajesz (lista krótkich fraz)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "method",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "heuristic, model, hybrid or off, for this call.",
+              "pl": "heuristic, model, hybrid albo off, dla tego wywołania."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/observe"
+        },
+        "phrases": {
+          "en": [
+            "guardian observe",
+            "mark as correction",
+            "count as correction"
+          ],
+          "pl": [
+            "oznacz jako korekt*",
+            "strażnik przeczytaj",
+            "zaobserwuj wiadomość"
+          ]
+        },
+        "examples": {
+          "en": [
+            "mark this message as a correction"
+          ],
+          "pl": [
+            "oznacz tę wiadomość jako korektę"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "The guardian read the message:",
+          "pl": "Strażnik przeczytał wiadomość:"
+        },
+        "default_element": "last_message"
+      },
+      "guardian.compile": {
+        "id": "guardian.compile",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show the compiled instruction",
+        "description": "Previews the compiled representation of a conversation: the statements (goal, clarifications, rules, exceptions), the one instruction the compiler makes of them and the messages they stand for. Writes nothing. With hypothesis, as if that hypothesis were promoted.",
+        "labels": {
+          "pl": "Pokaż skompilowane polecenie"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.compile",
+        "params": [
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation (default: the current one).",
+              "pl": "Rozmowa (domyślnie bieżąca)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "hypothesis",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Preview as if this hypothesis were promoted.",
+              "pl": "Podgląd tak, jakby ta hipoteza była awansowana."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/compile"
+        },
+        "phrases": {
+          "en": [
+            "compile clarifications",
+            "compile the instruction",
+            "one instruction from clarifications"
+          ],
+          "pl": [
+            "skompiluj doprecyzowania",
+            "skompiluj polecenie",
+            "jedno polecenie z doprecyzowań"
+          ]
+        },
+        "examples": {
+          "en": [
+            "compile the clarifications of this conversation into one instruction"
+          ],
+          "pl": [
+            "skompiluj doprecyzowania tej rozmowy w jedno polecenie"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "The compiled instruction:",
+          "pl": "Skompilowane polecenie:"
+        },
+        "default_element": "current_conversation"
+      },
+      "guardian.levels": {
+        "id": "guardian.levels",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show the lossy levels of messages",
+        "description": "The levels L0-L3 of a message or of a conversation: for each level the text the context selector could send in place of the raw one and what was dropped (category, span, producer), with the segment annotations of every producer. refresh rebuilds the levels from the annotations (an analyzer's annotations are applied too). The raw text is never touched; guardian.undo with an annotation id takes one drop back.",
+        "labels": {
+          "pl": "Pokaż poziomy stratne wiadomości"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.levels",
+        "params": [
+          {
+            "name": "message_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "One message.",
+              "pl": "Jedna wiadomość."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "conv_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation (default: the current one).",
+              "pl": "Rozmowa (domyślnie bieżąca)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "refresh",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Rebuild from the annotations first.",
+              "pl": "Najpierw przebuduj z adnotacji."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/levels"
+        },
+        "phrases": {
+          "en": [
+            "show levels",
+            "lossy levels",
+            "what was dropped"
+          ],
+          "pl": [
+            "pokaż poziomy",
+            "poziomy stratne",
+            "co odrzucono"
+          ]
+        },
+        "examples": {
+          "en": [
+            "show the lossy levels of this conversation"
+          ],
+          "pl": [
+            "pokaż poziomy stratne tej rozmowy"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "The levels:",
+          "pl": "Poziomy:"
+        },
+        "default_element": "current_conversation"
+      },
+      "guardian.annotate": {
+        "id": "guardian.annotate",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Read a message with a model for the guardian",
+        "description": "One guarded model reading of a message (use_model, so the x10 guard and the spending limits apply): the signal kind, a short restatement, the tone, the scope and the exceptions. A message another producer (the semantic analyzer) has already annotated is not sent to a model again. Method: guardian_method model or hybrid; the model: guardian_model, else the default model.",
+        "labels": {
+          "pl": "Przeczytaj wiadomość modelem dla strażnika"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "message"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.2,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.annotate",
+        "params": [
+          {
+            "name": "message_id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The message.",
+              "pl": "Wiadomość."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "method",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "model (default here) or hybrid.",
+              "pl": "model (tu domyślnie) albo hybrid."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/annotate"
+        },
+        "phrases": {
+          "en": [
+            "annotate message",
+            "guardian model reading"
+          ],
+          "pl": [
+            "odczytaj wiadomość modelem",
+            "strażnik model przeczytaj"
+          ]
+        },
+        "examples": {
+          "en": [
+            "annotate this message with a model for the guardian"
+          ],
+          "pl": [
+            "odczytaj tę wiadomość modelem dla strażnika"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "The model read the message:",
+          "pl": "Model przeczytał wiadomość:"
+        },
+        "default_element": "last_message"
+      },
+      "guardian.model_read": {
+        "id": "guardian.model_read",
+        "kind": "composite",
+        "status": "implemented",
+        "title": "Guardian: model reading of a message",
+        "description": "The one model call the context guardian makes (method model or hybrid): labels a user message as a course correction, a clarification or neither. A use_model step, guarded like any other (x10 growth, spending limits); the prompt is data in runtime/guardian.pack (method.model_call).",
+        "steps": [
+          {
+            "action": "use_model"
+          }
+        ],
+        "inputs": [
+          "text",
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "user_input"
+        ],
+        "produces": [
+          "classification"
+        ],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.2,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/guardian/guardian.cpp",
+        "labels": {
+          "pl": "Strażnik: odczyt wiadomości modelem"
+        },
+        "result_text": {
+          "en": "The model labelled the message.",
+          "pl": "Model oznaczył wiadomość."
+        }
+      },
       "rules.set": {
         "id": "rules.set",
         "kind": "atomic",

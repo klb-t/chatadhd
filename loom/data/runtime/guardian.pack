@@ -1,0 +1,926 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "guardian",
+  "revision": 1,
+  "description": "The context guardian (P21; docs/architecture/STRAZNIK_I_SRODOWISKA_2026-10-14.md): a secretary that, beside the raw list of messages, builds the most economical and precise representation of a conversation and learns from corrections. Everything it does is data here: the kinds of signals and how each is recognised (heuristic, model, structural), the weighting and escalation curve, the thresholds, the scope ladder, how an accepted hypothesis becomes a rule, the lossy levels L0-L3 and the categories each drops, the shared segment-annotation layer, and the presets of what the context selector may pick. Settings: guardian_method, guardian_promotion, guardian_model, guardian_levels, chat_representation. The guardian never changes the raw messages and never decides what is sent: the selector reads chat_representation (preset raw: request bytes unchanged).",
+  "defaults": {
+    "schema": "loom.guardian/1",
+    "section": "Kontekst",
+    "subsection": "Strażnik",
+    "method": {
+      "setting": "guardian_method",
+      "model_setting": "guardian_model",
+      "model_fallback_setting": "default_model",
+      "active": "heuristic",
+      "unknown": "heuristic",
+      "presets": {
+        "off": {
+          "heuristic": false,
+          "model": false,
+          "meaning": {
+            "en": "The guardian observes nothing.",
+            "pl": "Strażnik niczego nie obserwuje."
+          }
+        },
+        "heuristic": {
+          "heuristic": true,
+          "model": false,
+          "meaning": {
+            "en": "Local and free: word lists and structure (preset).",
+            "pl": "Lokalnie i za darmo: listy słów i struktura (preset)."
+          }
+        },
+        "model": {
+          "heuristic": false,
+          "model": true,
+          "meaning": {
+            "en": "One guarded model call per message that no existing annotation already describes.",
+            "pl": "Jedno wywołanie modelu pod strażnikami na wiadomość, której nie opisuje jeszcze żadna adnotacja."
+          }
+        },
+        "hybrid": {
+          "heuristic": true,
+          "model": true,
+          "ask_model_when": "no_signal",
+          "meaning": {
+            "en": "The local reading first; the model only for messages in which it found nothing.",
+            "pl": "Najpierw odczyt lokalny; model tylko dla wiadomości, w których nic nie znalazł."
+          }
+        }
+      },
+      "model_call": {
+        "kind": "guardian.annotate",
+        "timeout_ms": 30000,
+        "title": "Guardian: annotate a message",
+        "parameters": {
+          "temperature": 0,
+          "max_tokens": 300
+        },
+        "system": "You label one user message of a chat. Answer with one JSON object only: {\"kind\": one of {{kinds}} or \"none\", \"confidence\": 0..1, \"subject\": short restatement of what the user wants or \"\", \"tone\": \"calm\" or \"sharp\", \"exceptions\": [short phrases the user excepts], \"scope\": \"message\"|\"conversation\"|\"person\" or \"\"}. Kinds: {{kind_help}}",
+        "user": "Previous assistant reply (may be empty):\n{{previous}}\n\nUser message:\n{{text}}",
+        "min_confidence": 0.5
+      }
+    },
+    "promotion": {
+      "setting": "guardian_promotion",
+      "active": "propose",
+      "unknown": "propose",
+      "max_per_reply": 1,
+      "presets": {
+        "ask": {
+          "at": "ask",
+          "meaning": {
+            "en": "Ask as soon as the first occurrence is seen: \"should I remember this?\"",
+            "pl": "Pytaj już przy pierwszym wystąpieniu: \"czy to zapamiętać?\""
+          }
+        },
+        "propose": {
+          "at": "propose",
+          "meaning": {
+            "en": "Propose a rule with its evidence once the weight of the hypothesis reaches the threshold (preset).",
+            "pl": "Zaproponuj regułę z dowodami, gdy waga hipotezy osiągnie próg (preset)."
+          }
+        },
+        "apply": {
+          "at": "apply",
+          "meaning": {
+            "en": "Write the rule at the higher threshold and say so in the conversation; always reversible.",
+            "pl": "Zapisz regułę przy wyższym progu i powiedz o tym w rozmowie; zawsze odwracalne."
+          }
+        }
+      }
+    },
+    "thresholds": {
+      "ask": 1.0,
+      "propose": 2.0,
+      "apply": 3.0
+    },
+    "weighting": {
+      "reask_factor": 2.0,
+      "recency_half_life_hours": 336,
+      "contradiction_factor": 0.8,
+      "overlap_min": 0.5,
+      "min_token_len": 3
+    },
+    "escalation": {
+      "curve": [
+        1.0,
+        1.6,
+        2.5,
+        3.5
+      ],
+      "beyond_last_step": 0.5,
+      "tone": {
+        "factor": 1.5,
+        "markers": {
+          "pl": [
+            "juz mowilem",
+            "ile razy",
+            "kolejny raz",
+            "znowu",
+            "cholera",
+            "do cholery",
+            "serio",
+            "naprawde",
+            "!!",
+            "jak mowie",
+            "przeciez"
+          ],
+          "en": [
+            "i already said",
+            "i told you",
+            "how many times",
+            "again",
+            "seriously",
+            "for the last time",
+            "damn",
+            "!!",
+            "as i said",
+            "come on"
+          ]
+        }
+      },
+      "repeat": {
+        "factor": 1.8,
+        "markers": {
+          "pl": [
+            "mowilem juz",
+            "juz pisalem",
+            "juz mowilem",
+            "powtarzam"
+          ],
+          "en": [
+            "i already said",
+            "i told you",
+            "i already told",
+            "as i said",
+            "i repeat"
+          ]
+        }
+      }
+    },
+    "scopes": {
+      "order": [
+        "message",
+        "conversation",
+        "task_kind",
+        "person",
+        "global"
+      ],
+      "default": "conversation",
+      "by_weight": [
+        {
+          "min": 0,
+          "scope": "conversation"
+        },
+        {
+          "min": 6,
+          "scope": "person"
+        }
+      ],
+      "markers": {
+        "person": {
+          "pl": [
+            "zawsze",
+            "od teraz",
+            "na przyszlosc",
+            "nigdy wiecej",
+            "we wszystkich rozmowach"
+          ],
+          "en": [
+            "always",
+            "from now on",
+            "in the future",
+            "never again",
+            "in all conversations"
+          ]
+        },
+        "conversation": {
+          "pl": [
+            "w tej rozmowie",
+            "tutaj",
+            "tylko tu"
+          ],
+          "en": [
+            "in this conversation",
+            "here",
+            "only here"
+          ]
+        },
+        "message": {
+          "pl": [
+            "tym razem",
+            "tylko teraz"
+          ],
+          "en": [
+            "this time",
+            "just now"
+          ]
+        }
+      }
+    },
+    "exceptions": {
+      "max_words": 12,
+      "markers": {
+        "pl": [
+          "z wyjatkiem",
+          "poza",
+          "oprocz",
+          "chyba ze",
+          "ale nie"
+        ],
+        "en": [
+          "except",
+          "unless",
+          "apart from",
+          "other than",
+          "but not"
+        ]
+      }
+    },
+    "polarity": {
+      "negation": {
+        "pl": [
+          "nie",
+          "bez",
+          "nigdy",
+          "zadnych",
+          "zadnego",
+          "przestan"
+        ],
+        "en": [
+          "not",
+          "dont",
+          "don't",
+          "never",
+          "no",
+          "without",
+          "stop"
+        ]
+      }
+    },
+    "tokens": {
+      "fold": {
+        "ą": "a",
+        "ć": "c",
+        "ę": "e",
+        "ł": "l",
+        "ń": "n",
+        "ó": "o",
+        "ś": "s",
+        "ź": "z",
+        "ż": "z"
+      },
+      "stopwords": {
+        "pl": [
+          "oraz",
+          "jest",
+          "sie",
+          "nie",
+          "tak",
+          "ale",
+          "dla",
+          "jak",
+          "czy",
+          "ten",
+          "ta",
+          "to",
+          "na",
+          "do",
+          "po",
+          "ze",
+          "bo",
+          "tez",
+          "juz"
+        ],
+        "en": [
+          "the",
+          "and",
+          "for",
+          "with",
+          "that",
+          "this",
+          "you",
+          "are",
+          "was",
+          "not",
+          "but",
+          "can",
+          "please",
+          "also"
+        ]
+      }
+    },
+    "kinds": {
+      "course_correction": {
+        "title": {
+          "en": "Course correction",
+          "pl": "Korekta kursu"
+        },
+        "strength": 1.0,
+        "priority": 2,
+        "annotation_category": "correction",
+        "hypothesis": {
+          "scope": "conversation",
+          "promotes": "rule",
+          "rule_kind": "preference",
+          "claim": {
+            "en": "The user wants this from now on: {{text}}",
+            "pl": "Użytkownik chce odtąd: {{text}}"
+          },
+          "statement_kind": "style",
+          "negative_statement_kind": "prohibition"
+        },
+        "detect": {
+          "methods": [
+            "heuristic",
+            "model"
+          ],
+          "needs_goal": false,
+          "heuristic": {
+            "min_score": 0.6,
+            "start_window": 5,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.6,
+            "markers": {
+              "pl": [
+                "nie chodzilo",
+                "chodzilo mi o",
+                "mialem na mysli",
+                "nie tak",
+                "to nie to",
+                "zly kierunek",
+                "zapomnij o",
+                "zapomnij o tym",
+                "wroc do",
+                "zamiast tego",
+                "zmieniam zdanie",
+                "nie nie",
+                "nie rob",
+                "nie chce",
+                "przestan",
+                "jednak nie",
+                "tym razem inaczej"
+              ],
+              "en": [
+                "i meant",
+                "thats not what",
+                "that's not what",
+                "not what i asked",
+                "wrong direction",
+                "forget that",
+                "forget about",
+                "go back to",
+                "instead",
+                "actually no",
+                "no no",
+                "no wait",
+                "dont do",
+                "don't do",
+                "i dont want",
+                "i don't want",
+                "stop doing",
+                "change of plan"
+              ]
+            }
+          }
+        }
+      },
+      "refinement": {
+        "title": {
+          "en": "Refinement or clarification",
+          "pl": "Doprecyzowanie"
+        },
+        "strength": 0.6,
+        "priority": 1,
+        "annotation_category": "refinement",
+        "hypothesis": {
+          "scope": "conversation",
+          "promotes": "transform",
+          "transform": "compile_refinements",
+          "claim": {
+            "en": "The task was clarified {{count}} times; one instruction says it exactly.",
+            "pl": "Zadanie doprecyzowano {{count}} razy; jedno polecenie mówi to dokładnie."
+          }
+        },
+        "detect": {
+          "methods": [
+            "heuristic",
+            "model"
+          ],
+          "needs_goal": true,
+          "heuristic": {
+            "min_score": 0.8,
+            "start_window": 4,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.4,
+            "markers": {
+              "pl": [
+                "dodatkowo",
+                "ponadto",
+                "a takze",
+                "jeszcze",
+                "doprecyzuje",
+                "doprecyzowanie",
+                "dodaj",
+                "uwzglednij",
+                "pamietaj",
+                "upewnij sie",
+                "w dodatku",
+                "oraz",
+                "tez",
+                "rowniez",
+                "i jeszcze",
+                "przy okazji",
+                "na koniec",
+                "zadbaj",
+                "ma byc",
+                "powinno",
+                "niech"
+              ],
+              "en": [
+                "also",
+                "additionally",
+                "in addition",
+                "one more thing",
+                "make sure",
+                "please also",
+                "and also",
+                "remember to",
+                "keep in mind",
+                "furthermore",
+                "plus",
+                "it should",
+                "it must",
+                "needs to",
+                "add",
+                "include",
+                "make it"
+              ]
+            }
+          }
+        }
+      },
+      "proposal_rejection": {
+        "title": {
+          "en": "Rejection of a proposal",
+          "pl": "Odrzucenie propozycji"
+        },
+        "strength": 0.5,
+        "priority": 0,
+        "annotation_category": "correction",
+        "hypothesis": {
+          "scope": "conversation",
+          "promotes": "record",
+          "rule_kind": "do_not_propose",
+          "statement_kind": "prohibition",
+          "note": {
+            "en": "Recorded and weighed; shown by guardian.status. No consumer of a do-not-propose rule exists yet, so nothing is proposed to the user for it.",
+            "pl": "Zapisywana i ważona; widoczna w guardian.status. Nie ma jeszcze odbiorcy reguły „nie proponuj”, więc użytkownikowi nic się o niej nie proponuje."
+          },
+          "claim": {
+            "en": "Do not propose again: {{text}}",
+            "pl": "Nie proponuj ponownie: {{text}}"
+          }
+        },
+        "detect": {
+          "methods": [
+            "structural"
+          ],
+          "structural": "rejected_proposal"
+        }
+      }
+    },
+    "transforms": {
+      "compile_refinements": {
+        "kind": "refinement",
+        "min_occurrences": 3,
+        "goal_min_words": 4,
+        "goal_max_chars": 4000,
+        "statement_max_chars": 1200,
+        "statement_kinds": [
+          {
+            "kind": "prohibition",
+            "markers": {
+              "pl": [
+                "nie ",
+                "bez ",
+                "nigdy",
+                "unikaj"
+              ],
+              "en": [
+                "do not",
+                "dont",
+                "don't",
+                "never",
+                "avoid",
+                "without"
+              ]
+            },
+            "at_start": true
+          },
+          {
+            "kind": "format",
+            "markers": {
+              "pl": [
+                "lista",
+                "liste",
+                "tabel",
+                "punkt",
+                "format",
+                "json",
+                "markdown",
+                "akapit",
+                "naglowk"
+              ],
+              "en": [
+                "list",
+                "table",
+                "bullet",
+                "format",
+                "json",
+                "markdown",
+                "paragraph",
+                "heading"
+              ]
+            }
+          },
+          {
+            "kind": "style",
+            "default": true
+          }
+        ],
+        "materializer": {
+          "id": "loom.guardian",
+          "version": "1"
+        },
+        "task_id": "guardian",
+        "product_prefix": "guardian-",
+        "goal_prefix": "guardian-goal-"
+      }
+    },
+    "levels": {
+      "roles": [
+        "user"
+      ],
+      "order": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "min_confidence": 0.5,
+      "defs": {
+        "L0": {
+          "title": {
+            "en": "Raw",
+            "pl": "Surowy"
+          },
+          "drop_categories": [],
+          "status": "implemented"
+        },
+        "L1": {
+          "title": {
+            "en": "Noise removed",
+            "pl": "Bez szumu"
+          },
+          "drop_categories": [
+            "filler",
+            "repetition",
+            "restart"
+          ],
+          "status": "implemented",
+          "producer": "guardian_heuristic"
+        },
+        "L2": {
+          "title": {
+            "en": "Digressions and jokes removed",
+            "pl": "Bez dygresji i żartów"
+          },
+          "inherits": "L1",
+          "drop_categories": [
+            "digression",
+            "joke"
+          ],
+          "status": "implemented",
+          "note": {
+            "en": "Applies annotations of any producer. Heuristic producers cover only the cheap categories; digression and joke come from the semantic analyzer and stay planned until it writes them.",
+            "pl": "Stosuje adnotacje dowolnego producenta. Producenci heurystyczni pokrywają tylko tanie kategorie; dygresje i żarty ma dopisywać analizator semantyczny i do tego czasu są planowane."
+          }
+        },
+        "L3": {
+          "title": {
+            "en": "Condensed meaning",
+            "pl": "Skondensowane znaczenie"
+          },
+          "kind": "compiled",
+          "transform": "compile_refinements",
+          "status": "implemented"
+        }
+      },
+      "preset_categories": {
+        "filler": {
+          "title": {
+            "en": "Filler",
+            "pl": "Wypełniacz"
+          }
+        },
+        "repetition": {
+          "title": {
+            "en": "Repetition",
+            "pl": "Powtórzenie"
+          }
+        },
+        "restart": {
+          "title": {
+            "en": "Restart or self-correction",
+            "pl": "Falstart lub samopoprawka"
+          }
+        },
+        "digression": {
+          "title": {
+            "en": "Digression",
+            "pl": "Dygresja"
+          }
+        },
+        "joke": {
+          "title": {
+            "en": "Joke",
+            "pl": "Żart"
+          }
+        }
+      },
+      "noise": {
+        "fillers": {
+          "pl": [
+            "yyy",
+            "yy",
+            "eee",
+            "ee",
+            "aaa",
+            "aa",
+            "hmm",
+            "hmmm",
+            "emm",
+            "ymm",
+            "yhm",
+            "no wiec",
+            "tak jakby",
+            "w sumie takie"
+          ],
+          "en": [
+            "um",
+            "uh",
+            "uhm",
+            "umm",
+            "uhh",
+            "erm",
+            "er",
+            "hmm",
+            "hmmm",
+            "you know",
+            "kind of like",
+            "sort of like"
+          ]
+        },
+        "repetition": {
+          "max_ngram": 3,
+          "min_token_len": 1
+        },
+        "restart": {
+          "max_clause_words": 12,
+          "markers": {
+            "pl": [
+              "zapomnij to co powiedzialem",
+              "anuluj to zdanie",
+              "nie czekaj zapomnij"
+            ],
+            "en": [
+              "scratch that",
+              "ignore that",
+              "never mind that",
+              "forget what i just said"
+            ]
+          }
+        }
+      }
+    },
+    "annotations": {
+      "schema": "loom.segment_annotation/1",
+      "node_kind": "annotation_category",
+      "label_prefix": "annotation:",
+      "producers": {
+        "guardian_heuristic": {
+          "status": "implemented",
+          "origin": "recorded",
+          "cost": "none"
+        },
+        "semantic_regex": {
+          "status": "planned",
+          "origin": "recorded",
+          "reason": {
+            "en": "The regex analyzer does not write segment annotations yet.",
+            "pl": "Analizator regex nie zapisuje jeszcze adnotacji segmentów."
+          }
+        },
+        "semantic_llm": {
+          "status": "planned",
+          "origin": "model",
+          "reason": {
+            "en": "The LLM analyzer does not write segment annotations yet; when it does, the guardian reads them and makes no second model call.",
+            "pl": "Analizator LLM nie zapisuje jeszcze adnotacji segmentów; gdy zacznie, strażnik je odczyta i nie wykona drugiego wywołania modelu."
+          }
+        },
+        "semantic_batch": {
+          "status": "planned",
+          "origin": "model",
+          "reason": {
+            "en": "As semantic_llm, through the batch API.",
+            "pl": "Jak semantic_llm, przez API wsadowe."
+          }
+        }
+      },
+      "categories": [
+        "instruction",
+        "correction",
+        "refinement",
+        "digression",
+        "joke",
+        "filler",
+        "repetition",
+        "restart",
+        "thread"
+      ]
+    },
+    "representation": {
+      "setting": "chat_representation",
+      "levels_setting": "guardian_levels",
+      "active": "raw",
+      "unknown": "raw",
+      "presets": {
+        "raw": {
+          "levels": {},
+          "runs": "raw",
+          "meaning": {
+            "en": "The raw messages, as they are (preset). Request bytes are unchanged.",
+            "pl": "Surowe wiadomości, jak są (preset). Bajty żądania bez zmian."
+          }
+        },
+        "denoised": {
+          "levels": {
+            "user": "L1"
+          },
+          "runs": "raw",
+          "meaning": {
+            "en": "Your messages without fillers, repetitions and restarts (L1).",
+            "pl": "Twoje wiadomości bez wypełniaczy, powtórzeń i falstartów (L1)."
+          }
+        },
+        "lean": {
+          "levels": {
+            "user": "L2"
+          },
+          "runs": "raw",
+          "meaning": {
+            "en": "L1 plus digressions and jokes where the analyzer marked them (L2).",
+            "pl": "L1 oraz dygresje i żarty, gdzie oznaczył je analizator (L2)."
+          }
+        },
+        "guardian": {
+          "levels": {
+            "user": "L1"
+          },
+          "runs": "replace_refinement",
+          "meaning": {
+            "en": "L1, and a run of clarifications is replaced by one compiled instruction (L3).",
+            "pl": "L1, a seria doprecyzowań jest zastąpiona jednym skompilowanym poleceniem (L3)."
+          }
+        },
+        "mixed": {
+          "levels": {},
+          "runs": "append",
+          "meaning": {
+            "en": "The raw messages and, after them, the compiled instruction.",
+            "pl": "Surowe wiadomości, a po nich skompilowane polecenie."
+          }
+        }
+      },
+      "thread_filter": {
+        "status": "planned",
+        "reason": {
+          "en": "Skipping other topic threads belongs to the context selector and needs the analyzer to write thread annotations.",
+          "pl": "Pomijanie innych wątków tematycznych należy do selektora kontekstu i wymaga adnotacji wątków od analizatora."
+        }
+      },
+      "version_goal_task": "guardian"
+    },
+    "traffic": {
+      "metadata_key": "guardian",
+      "ignore_metadata": [
+        "routed",
+        "action_proposal",
+        "action_run",
+        "semantic_question",
+        "guardian"
+      ]
+    },
+    "nodes": {
+      "occurrence": "guardian_occurrence",
+      "hypothesis": "guardian_hypothesis",
+      "exception": "guardian_exception",
+      "level": "guardian_level",
+      "representation": "guardian_representation",
+      "links": {
+        "evidence": "derived_from",
+        "supports": "supports",
+        "contradicts": "contradicts",
+        "except": "except"
+      }
+    },
+    "rules": {},
+    "texts": {
+      "en": {
+        "propose_rule": "I noticed you have corrected the same thing {{count}} times: \"{{claim}}\". Shall I remember it as a rule for {{scope}}{{exceptions}}? It stays your rule: you can switch it off at any time.",
+        "propose_compile": "You have clarified the task {{count}} times. I can keep one exact instruction instead of the whole run (your messages stay as they are):\n{{instruction}}\nUse it from now on?",
+        "ask_rule": "Should I remember this for {{scope}}: \"{{claim}}\"?",
+        "applied_rule": "I saved a rule for {{scope}}: \"{{claim}}\" (you corrected it {{count}} times). Switch it off with: guardian undo {{rule}}.",
+        "exceptions_suffix": ", except: {{list}}",
+        "answer_yes": "Done. {{what}}",
+        "answer_no": "Understood, I will not remember it.",
+        "promoted_rule": "Rule {{rule}} saved for {{scope}}.",
+        "promoted_compile": "From now on the instruction above stands in for your {{count}} clarifications when this conversation is sent.",
+        "undone": "Taken back: {{what}}. The messages and what I noticed stay.",
+        "status_empty": "I have not noticed anything to remember in this conversation.",
+        "status_line": "{{kind}} ({{status}}, weight {{weight}}, {{count}}x): {{claim}}"
+      },
+      "pl": {
+        "propose_rule": "Zauważyłem, że poprawiasz to samo już {{count}} razy: \"{{claim}}\". Zapamiętać to jako regułę dla: {{scope}}{{exceptions}}? To nadal Twoja reguła: możesz ją wyłączyć w każdej chwili.",
+        "propose_compile": "Doprecyzowałeś zadanie {{count}} razy. Zamiast całej serii mogę trzymać jedno dokładne polecenie (Twoje wiadomości zostają bez zmian):\n{{instruction}}\nUżywać go odtąd?",
+        "ask_rule": "Czy zapamiętać to dla: {{scope}}: \"{{claim}}\"?",
+        "applied_rule": "Zapisałem regułę dla: {{scope}}: \"{{claim}}\" (poprawiałeś to {{count}} razy). Wyłączysz ją poleceniem: guardian undo {{rule}}.",
+        "exceptions_suffix": ", z wyjątkiem: {{list}}",
+        "answer_yes": "Gotowe. {{what}}",
+        "answer_no": "Rozumiem, nie będę tego pamiętać.",
+        "promoted_rule": "Reguła {{rule}} zapisana dla: {{scope}}.",
+        "promoted_compile": "Odtąd powyższe polecenie zastępuje Twoje {{count}} doprecyzowania przy wysyłaniu tej rozmowy.",
+        "undone": "Cofnięto: {{what}}. Wiadomości i to, co zauważyłem, zostają.",
+        "status_empty": "Nie zauważyłem w tej rozmowie niczego do zapamiętania.",
+        "status_line": "{{kind}} ({{status}}, waga {{weight}}, {{count}}x): {{claim}}"
+      }
+    },
+    "scope_names": {
+      "en": {
+        "message": "this message",
+        "conversation": "this conversation",
+        "task_kind": "this kind of task",
+        "person": "everything you do",
+        "global": "everywhere"
+      },
+      "pl": {
+        "message": "tej wiadomości",
+        "conversation": "tej rozmowy",
+        "task_kind": "tego rodzaju zadań",
+        "person": "wszystkiego, co robisz",
+        "global": "wszędzie"
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "schema",
+      "method",
+      "promotion",
+      "thresholds",
+      "kinds",
+      "levels",
+      "representation",
+      "nodes"
+    ],
+    "additionalProperties": true,
+    "properties": {
+      "schema": {
+        "type": "string"
+      },
+      "rules": {
+        "type": "object",
+        "description": "Rules the user accepted: id -> {hypothesis, signal, scope, scope_id, text, exceptions, evidence, created}. Written to the user overlay only."
+      },
+      "thresholds": {
+        "type": "object"
+      },
+      "kinds": {
+        "type": "object"
+      },
+      "levels": {
+        "type": "object"
+      },
+      "representation": {
+        "type": "object"
+      },
+      "nodes": {
+        "type": "object"
+      }
+    }
+  }
+}

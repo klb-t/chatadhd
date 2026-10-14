@@ -11,6 +11,7 @@
 
 #include "loom/action_element.h"
 #include "loom/action_emergent.h"
+#include "loom/guardian.h"
 #include "loom/action_overlay.h"
 #include "loom/action_result.h"
 #include "loom/action_run.h"
@@ -1880,7 +1881,8 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
   // The sentence the proposal was read from (a growth offered after a run has none): a no does not lose it (intent_routing_on_reject).
   if (!text.empty() && !user_id.empty()) proposal["sentence"] = Json{{"message_id", user_id}};
   const bool grows = cmd.contains("emergent");  // a definition the catalogue could grow by: always waits for the user's yes
-  std::string assistant_text = grows ? render_emergent(d, d.engine, cmd, proposal, lang) : render_proposal(d, cmd, proposal, lang);
+  const bool custom = cmd.contains("proposal_text");  // a proposal the system makes itself (the guardian): its own words, always waits for the yes
+  std::string assistant_text = grows ? render_emergent(d, d.engine, cmd, proposal, lang) : custom ? localized(cmd["proposal_text"], lang) : render_proposal(d, cmd, proposal, lang);
   const bool usable = cmd.value("feasible", false) && cmd.value("runnable", false) && cmd.value("denied", Json::array()).empty();
   Reply reply;
   reply.type = "action_proposal";
@@ -1943,7 +1945,7 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
       }();
       const bool reads_only = json::get_bool(cmd["plan"].value("effects", Json::object()), "reads_only", false);
       const bool no_questions = cmd.value("needs_confirmation", Json::array()).empty();
-      if (!grows && no_questions && (mode == "always" || (mode == "read_only" && reads_only))) {
+      if (!grows && !custom && no_questions && (mode == "always" || (mode == "read_only" && reads_only))) {
         // The proposal is said first: the result (a message of its own when the target says so) comes after it, in the order it happened.
         proposal["status"] = "running";
         LOOM_TRY_ASSIGN(early_id, add_message(rt, conv_id, "assistant", assistant_text, Json{{"action_proposal", proposal}, {"routed", "proposal"}}, "loom:actions"));
@@ -1968,6 +1970,8 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
     if (meta.contains("action_run")) reply.payload["run"] = meta["action_run"];
   }
   meta["routed"] = "proposal";
+  if (cmd.contains("meta_extra") && cmd["meta_extra"].is_object())
+    for (auto it = cmd["meta_extra"].begin(); it != cmd["meta_extra"].end(); ++it) meta[it.key()] = it.value();
   reply.assistant_id = early_id;
   if (early_id.empty()) {
     LOOM_TRY_ASSIGN(reply.assistant_id, add_message(rt, conv_id, "assistant", assistant_text, meta, "loom:actions"));
@@ -2116,6 +2120,7 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_in, 
     rep.text = say(d.cfg, lang, "ack_no");
     rep.meta = Json{{"run_id", proposal.value("run_id", "")}, {"status", json::get_string(*run, "status")}};
     new_status = "rejected";
+    rt.guardian().note_rejection(conv_id, proposal_msg.id, proposal, user_id);  // a signal for the guardian (the cycle of corrections)
     // A no drops the command, never the user's sentence: the setting says whether it is offered, sent or left.
     const std::string mode = on_reject_mode(rt, d);
     if (!source_id.empty() && mode != "drop") {
@@ -2162,6 +2167,8 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_in, 
     if (written_view.is_object()) m["action_proposal"]["written"] = written_view;
   }));
   LOOM_TRY_ASSIGN(std::string assistant_id, answer_message(rt, d, conv_id, run ? &*run : nullptr, rep));
+  if (proposal_msg.metadata.contains("guardian"))
+    LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["guardian"] = Json{{"traffic", true}, {"answers", proposal_msg.id}}; }));
   if (offer.is_object())  // the reply the offer is made in: the words that take it are read while it is the last thing said
     LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["action_offer"] = Json{{"proposal_message_id", proposal_msg.id}}; }));
   Json payload{{"run", rep.meta}, {"proposal_message_id", proposal_msg.id}, {"proposal_status", new_status}};
@@ -2206,7 +2213,9 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_in, 
 Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, const std::string& answer,
                                 const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
   const Json proposal = proposal_msg.metadata.at("action_proposal");
-  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "confirmation"}, {"answers", proposal_msg.id}}));
+  Json answer_meta{{"routed", "confirmation"}, {"answers", proposal_msg.id}};
+  if (proposal_msg.metadata.contains("guardian")) answer_meta["guardian"] = Json{{"traffic", true}};  // the guardian's own exchange is not conversation content
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, answer_meta));
   if (emit_start) emit_start(conv_id, user_id);
   (void)rt.chat().load_conv(conv_id);
   const bool yes = answer == "yes";
@@ -2281,6 +2290,26 @@ Result<Outcome> answer_semantic_question(Runtime& rt, Data& d, const std::string
 }
 
 }  // namespace
+
+Result<Json> offer(Runtime& rt, const OfferRequest& request) {
+  if (request.conv_id.empty()) return Error(Errc::InvalidArgument, "a proposal needs a conversation");
+  LOOM_TRY_ASSIGN(Data d, load_data(rt));
+  Cand c;
+  c.source = "guardian";
+  c.matched = request.action;
+  c.lang = request.lang;
+  c.action = request.action;
+  c.args = request.args;
+  c.element = Json{{"id", "application"}};
+  c.score = 1.0;
+  Json cmd = evaluate(rt, d, c, conv_of(rt, request.conv_id), request.lang, std::string());
+  if (!cmd.value("feasible", false) || !cmd.value("runnable", false) || !cmd.value("denied", Json::array()).empty())
+    return Error(Errc::Conflict, "the proposal cannot be made: " + cmd.value("reason", Json::object()).value("message", std::string("denied by a rule or not runnable")));
+  cmd["proposal_text"] = request.texts;
+  cmd["meta_extra"] = request.meta;
+  LOOM_TRY_ASSIGN(Reply reply, reply_to_command(rt, d, request.conv_id, std::string(), std::string(), cmd, "guardian", request.lang, false));
+  return Json{{"message_id", reply.assistant_id}, {"proposal", reply.payload.value("proposal", Json(nullptr))}};
+}
 
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,
                        const std::function<void(const std::string&, const std::string&)>& emit_start) {

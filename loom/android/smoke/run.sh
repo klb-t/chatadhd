@@ -58,4 +58,19 @@ log "drive the app"
 node "$HERE/drive.mjs"
 rc=$?
 log "drive.mjs exit $rc"
+if [ "$rc" != 0 ]; then
+  # Artifacts are not always reachable to whoever reads the run, so the essentials of a failure go to the job log too.
+  log "--- screen at failure (texts of fail-ui.xml or a fresh dump)"
+  ui="$OUT/fail-ui.xml"
+  [ -s "$ui" ] || { adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1; adb exec-out cat /sdcard/ui.xml > "$ui" 2>/dev/null || true; }
+  grep -o 'text="[^"]*"\|class="[^"]*"\|resource-id="[^"]*"' "$ui" 2>/dev/null | grep -v '=""' | head -n 80 || true
+  log "--- focused activity"
+  adb shell dumpsys activity activities 2>/dev/null | grep -E "mResumedActivity|topResumedActivity" | head -n 5 || true
+  log "--- logcat (app, errors, crashes; last 80 lines)"
+  adb logcat -d -b crash -v brief 2>/dev/null | grep -vE "^F/DEBUG +\( *[0-9]+\): +#([3-9][0-9]|[1-9][0-9]{2}) " | head -n 90 || true
+  log "--- logcat (errors, fatals, app; last 80 lines)"
+  adb logcat -d -b main,system -v brief 2>/dev/null | grep -E "^[EF]/|chatadhd|ActivityTaskManager|ActivityManager: (Start|Force|Kill|Process)|libc|DEBUG" | grep -v "uiautomator" | tail -n 80 || true
+  log "--- server.log (last 40 lines)"
+  tail -n 40 "$OUT/server.log" 2>/dev/null || true
+fi
 exit $rc

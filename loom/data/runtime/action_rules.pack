@@ -284,6 +284,36 @@
           "pl": "Wyłączenie reguły zmienia od teraz zachowanie aplikacji; każdą potwierdzasz sam."
         }
       },
+      "confirm:guardian.promote": {
+        "id": "confirm:guardian.promote",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "guardian.promote",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "The guardian would save a rule or a compiled instruction for this conversation; you confirm each one.",
+          "pl": "Strażnik zapisałby regułę lub skompilowane polecenie dla tej rozmowy; każde potwierdzasz sam."
+        }
+      },
+      "confirm:guardian.undo": {
+        "id": "confirm:guardian.undo",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "guardian.undo",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Taking back what the guardian saved changes what is sent from now on; you confirm it.",
+          "pl": "Cofnięcie tego, co zapisał strażnik, zmienia to, co jest wysyłane odtąd; potwierdzasz to sam."
+        }
+      },
       "confirm:actions.define": {
         "id": "confirm:actions.define",
         "scope": "app_preset",

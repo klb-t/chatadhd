@@ -299,7 +299,18 @@
             "undo_failed": "It could not be taken back ({{reason}}).",
             "status_cancelled": "Cancelled",
             "written_rule": "Rule written to your own overlay ({{overlay}}) as \"{{id}}\"",
-            "undone_rule": "Rule switched off: it no longer applies"
+            "undone_rule": "Rule switched off: it no longer applies",
+            "title_guardian": "The guardian noticed something worth remembering",
+            "guardian_claim": "What it noticed: {{claim}}",
+            "guardian_scope": "For {{scope}}; weight {{weight}} from {{count}} occurrences, {{evidence}} of your messages as evidence",
+            "guardian_scope_message": "this message",
+            "guardian_scope_conversation": "this conversation",
+            "guardian_scope_task_kind": "this kind of task",
+            "guardian_scope_person": "everything you do",
+            "guardian_scope_global": "everywhere",
+            "guardian_exceptions": "Exceptions: {{list}}",
+            "guardian_instruction": "One instruction in place of the run of clarifications (your messages stay as they are): {{instruction}}",
+            "guardian_note": "Accepting writes only your own overlay and a rule of this conversation; you can take it back."
           },
           "pl": {
             "title": "Polecenie czeka na Twoją odpowiedź",
@@ -342,7 +353,18 @@
             "undo_failed": "Nie udało się wycofać ({{reason}}).",
             "status_cancelled": "Anulowane",
             "written_rule": "Reguła zapisana w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
-            "undone_rule": "Reguła wyłączona: już nie obowiązuje"
+            "undone_rule": "Reguła wyłączona: już nie obowiązuje",
+            "title_guardian": "Strażnik zauważył coś wartego zapamiętania",
+            "guardian_claim": "Co zauważył: {{claim}}",
+            "guardian_scope": "Dla: {{scope}}; waga {{weight}} z {{count}} wystąpień, dowód: {{evidence}} Twoich wiadomości",
+            "guardian_scope_message": "tej wiadomości",
+            "guardian_scope_conversation": "tej rozmowy",
+            "guardian_scope_task_kind": "tego rodzaju zadań",
+            "guardian_scope_person": "wszystkiego, co robisz",
+            "guardian_scope_global": "wszędzie",
+            "guardian_exceptions": "Wyjątki: {{list}}",
+            "guardian_instruction": "Jedno polecenie w miejsce serii doprecyzowań (Twoje wiadomości zostają bez zmian): {{instruction}}",
+            "guardian_note": "Przyjęcie zapisuje tylko Twoją własną nakładkę i regułę tej rozmowy; możesz to cofnąć."
           }
         }
       }

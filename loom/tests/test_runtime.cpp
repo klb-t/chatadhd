@@ -229,7 +229,7 @@ TEST_SUITE("runtime") {
     CHECK(rt->paths().root == td.path() / "data");
     CHECK(std::filesystem::exists(td.path() / "data" / ".chatadhd_data"));
     CHECK(unwrap(rt->db().schema_version()) == 4);
-    CHECK(rt->bus().handler_count(events::kMsgCreated) == 1);  // GraphEngine
+    CHECK(rt->bus().handler_count(events::kMsgCreated) == 2);  // GraphEngine and the context guardian
     CHECK(rt->bus().handler_count(events::kImportDone) == 1);  // SemanticWorker wake
     CHECK(unwrap(rt->relations().get("supersedes")).has_value());
     CHECK(rt->tasks().running());
@@ -321,7 +321,7 @@ TEST_SUITE("runtime") {
     CHECK(&rt->actions() == made_runner);
     CHECK(seen_http == &rt->http());
     // Untouched parts are the defaults.
-    CHECK(rt->bus().handler_count(events::kMsgCreated) == 1);
+    CHECK(rt->bus().handler_count(events::kMsgCreated) == 2);  // GraphEngine and the context guardian
   }
 
   TEST_CASE("RuntimeParts: a null factory result fails open() with Internal") {
