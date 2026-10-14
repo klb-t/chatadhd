@@ -1481,6 +1481,46 @@
             "pl": "Serwer"
           },
           "parent": "network_endpoint"
+        },
+        "port": {
+          "label": {
+            "en": "Port",
+            "pl": "Port"
+          },
+          "traits": [
+            "port",
+            "port_artifact"
+          ]
+        },
+        "adapter": {
+          "label": {
+            "en": "Adapter",
+            "pl": "Adapter"
+          },
+          "traits": [
+            "adapter",
+            "port_artifact"
+          ]
+        },
+        "role_choice": {
+          "label": {
+            "en": "Role choice",
+            "pl": "Wybór roli"
+          },
+          "traits": [
+            "role_choice",
+            "port_artifact"
+          ]
+        },
+        "port_run": {
+          "label": {
+            "en": "Port run",
+            "pl": "Przebieg portu"
+          },
+          "traits": [
+            "port_run",
+            "port_artifact"
+          ]
         }
       },
       "traits": {
@@ -1735,6 +1775,41 @@
             "pl": "Zdalne"
           },
           "description": "Reached over the network; data sent to it leaves the device."
+        },
+        "port": {
+          "label": {
+            "en": "Port",
+            "pl": "Port"
+          },
+          "description": "An abstract interface that adapters implement (asr, ocr, storage, llm ...)."
+        },
+        "adapter": {
+          "label": {
+            "en": "Adapter",
+            "pl": "Adapter"
+          },
+          "description": "One registered implementation of a port; carries a secret key name at most, never a secret."
+        },
+        "role_choice": {
+          "label": {
+            "en": "Role choice",
+            "pl": "Wybór roli"
+          },
+          "description": "The adapter (or composition) a role of the ports profile resolved to, with the scope and source of the choice."
+        },
+        "port_run": {
+          "label": {
+            "en": "Port run",
+            "pl": "Przebieg portu"
+          },
+          "description": "One real run through a port; result of a model call, storage operation or ensemble."
+        },
+        "port_artifact": {
+          "label": {
+            "en": "Port artifact",
+            "pl": "Element portów"
+          },
+          "description": "A node that describes the port layer (port, adapter, role choice, port run); references only, never secrets or bytes."
         }
       },
       "groups": {
@@ -1911,6 +1986,16 @@
             "device"
           ],
           "element_match": "any"
+        },
+        "ports": {
+          "label": {
+            "en": "Ports, adapters and their runs",
+            "pl": "Porty, adaptery i ich przebiegi"
+          },
+          "traits": [
+            "port_artifact"
+          ],
+          "element_match": "any"
         }
       },
       "relations": {
@@ -1951,6 +2036,33 @@
           "from": "form",
           "to": "action_run",
           "description": "The action run that made a result; the run node carries the action id, run id, step, model / adapter and usage receipts (references only, never secrets or bytes)."
+        },
+        "implements": {
+          "label": {
+            "en": "Implements",
+            "pl": "Implementuje"
+          },
+          "from": "adapter",
+          "to": "port",
+          "description": "The adapter is one registered implementation of the port."
+        },
+        "chose": {
+          "label": {
+            "en": "Chose",
+            "pl": "Wybrał"
+          },
+          "from": "role_choice",
+          "to": "adapter",
+          "description": "The role resolved to this adapter (a composition links every member)."
+        },
+        "part_of": {
+          "label": {
+            "en": "Part of",
+            "pl": "Część"
+          },
+          "from": "port_run",
+          "to": "action_run",
+          "description": "A port run that happened inside an action run (the run id is in the execution context)."
         }
       },
       "packages": {
