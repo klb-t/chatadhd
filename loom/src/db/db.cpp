@@ -1040,6 +1040,10 @@ Result<std::string> Database::get_or_create_node(std::string_view label, std::st
 }
 
 // ── Graph data ─────────────────────────────────────────────────────
+Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id) {
+  return get_graph_data(conv_id, GraphDataPage{});
+}
+
 Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id, const GraphDataPage& page) {
   auto lk = lock();
   Json nodes = Json::array();

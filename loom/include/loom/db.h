@@ -409,7 +409,8 @@ class Database {
     int limit = 0;
     std::string before;
   };
-  Result<Json> get_graph_data(std::optional<std::string_view> conv_id = std::nullopt, const GraphDataPage& page = {});
+  Result<Json> get_graph_data(std::optional<std::string_view> conv_id = std::nullopt);
+  Result<Json> get_graph_data(std::optional<std::string_view> conv_id, const GraphDataPage& page);
 
   // ── Full-text search (Loom extension) ─────────────────────────────
   Result<SearchResult> search_messages(std::string_view query, const SearchOptions& opts = {});
