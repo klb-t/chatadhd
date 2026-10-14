@@ -750,3 +750,15 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 
 - **Granice:** poza `src/actions/*`, `include/loom/action_*.h`, `client_blobs.h`, `chat_route.h`, własnymi `runtime/*.pack`, `settings_fields.pack` + golden, `web/*` i testami dotknąłem: `include/loom/event_bus.h` (stała zdarzenia), `src/capi/capi_chat.cpp` (zdarzenie `route_issue`), `cli/main.cpp` + `cli.pack` (`--yes`), `server/src/{app.cpp,app.h,main.cpp,sse_stream.h}` + `server/tests/*` + `CMakeLists.txt` (test `server.sse`) — pliki R18 S2, zmiany addytywne (trasy bloba, keep-alive SSE), `android/README.md` + `android/verify/…/HostSmokeTest.java`. Nie ruszyłem `runtime.cpp/h`, `storage/*`, `providers/*`, `llm/*`, `media/*`, `adapter_registry.h`, `port_graph*`, `graph_entry*.cpp`, `devices.pack`. Wygenerowane/przypięte generatorami i funkcjami strażnika: `runtime_profiles_embedded.inc`, `graph_entry.pack`, `graph/interfaces.pack`, `graph/rom.pack`, `builtin.inc`, `conversation-view.json`, `product_literals.pack`, `data_domains.pack`.
 - **Otwarte:** (1) Wgrania bez zatwierdzenia (`client.blob_begin` bez `commit`) zostawiają plik w `tmp/uploads`; sprzątanie przy starcie nie istnieje. (2) Blob wgrany, ale nieużyty w `client_result`, zostaje w magazynie bez węzła (adresowanie treścią; nie ma jeszcze zbierania). (3) Strumień zdarzeń przeglądarki to jedno połączenie na kartę (limit 6 połączeń HTTP/1.1 na pochodzenie; za HTTP/2 nie ma problemu). (4) Zdarzenie kroku klienta nie niesie treści, więc strona czyta wiadomości jeszcze raz (jedno żądanie na zdarzenie). (5) `receipt_id` w `run` wiąże plan, nie treść elementu (zmiana treści wiadomości między podglądem a wykonaniem nie unieważnia paragonu). (6) R19: próba z prawdziwym modelem nadal czeka na ważny klucz (raport S2 R19); punkt 2 raportu (model mówi „wiadomość” dla nieznanego polecenia) zamknięty testem na atrapie, nie prawdziwym modelem. (7) Kotlin powłoki nie był kompilowany (bez SDK); ścieżka JNI sprawdzona na hoście przez prawdziwy klej i podwójną atrapę mostu w testach web.
+
+## S2 / R21 — „Pierwsze kroki” dla właściciela (2026-10-14)
+
+- `docs/PIERWSZE_KROKI.md` (po polsku, 7 kroków, każdy oznaczony „sprawdzone” / „nie sprawdzone”), link w `README.md`.
+  Skrypt `deploy/first-steps-check.sh` przechodzi kroki naprawdę: instalacja paczki do świeżych katalogów, konto, serwer,
+  logowanie, klucz atrapy dostawcy, pięć poleceń z czatu (propozycja → paragon → potwierdzenie), opcjonalnie w Chromium.
+  Zadanie `first-steps` w `package.yml` (kontener `debian:12` + Chromium), nieblokujące.
+- Działa dziś: „streść / przetłumacz / wytłumacz prościej tę rozmowę”, zasada „zawsze pytaj mnie przed …”, „pokaż …”.
+  Nie działa jeszcze: notatka głosowa i „pytaj przed obrazem” (akcje `planned`), „przetłumacz na niemiecki” bez „tę rozmowę”.
+- Usterki dla S1/UI: trasowanie metodą `model` na prostym dostawcy; web po angielsku obok polskich wyników akcji; brak odpowiedzi
+  przy 390 px (raz); jasne tło pola loginu. Naprawione w S2: instalator nie ukrywa już nieudanego założenia konta (kod 3).
+- Raport: `docs/reports/S2_R21_2026-10-14.md`. Cofnięcie: usunąć zadanie `first-steps` / skrypty.
