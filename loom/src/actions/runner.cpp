@@ -1,6 +1,7 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+#include "loom/guardian.h"
 #include "loom/action_spend.h"
 #include "loom/usage_spend.h"
 #include "loom/action_emergent.h"
@@ -449,6 +450,13 @@ void ActionRunner::install_executors(ExecutorTable& table) {
     if (!entry) return failed(Error(Errc::NotFound, "unknown action '" + c.action + "'"));
     Json request = c.args;
     for (auto it = c.with.begin(); it != c.with.end(); ++it) request[it.key()] = it.value();
+    if (guardian::is_guardian_action(json::get_string(*entry, "action"))) {
+      // The element the words (or the caller) named is what the guardian looks at: a conversation, or one message of it.
+      const std::string cls = json::get_string(c.element, "class"), id = json::get_string(c.element, "id");
+      if (cls == "conversation" && !id.empty() && !request.contains("conv_id")) request["conv_id"] = id;
+      if (cls == "message" && !id.empty() && !request.contains("message_id")) request["message_id"] = id;
+      if (!request.contains("conv_id") && !json::get_string(c.context, "conv_id").empty()) request["conv_id"] = json::get_string(c.context, "conv_id");
+    }
     auto result = invoke_port(json::get_string(*entry, "port"), json::get_string(*entry, "action"), request);
     if (!result) return failed(result.error());
     StepOutcome out;
@@ -853,6 +861,7 @@ Result<Json> ActionRunner::run_gated(std::string_view action, const Json& reques
 
 Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view action, const Json& request) {
   if (port == "actions" && is_overlay_action(action)) return write_overlay(action, request);
+  if (port == "actions" && guardian::is_guardian_action(action)) return rt_.guardian().invoke(action, request);
   if (port == "actions") return invoke(action, request);
   if (port == "storage") {
     Json r = request;
@@ -879,6 +888,11 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "preview") return preview(request);
   if (action == "rules.list") return write_overlay(action, request);
   if (is_overlay_action(action)) return run_gated(action, request);
+  // The context guardian (guardian.h). What changes the user's rules or the representation is a run like rules.set (the rules of the
+  // scope and the receipt apply); reading, observing and annotating are the guardian's own work.
+  if (action == "guardian.promote" || action == "guardian.undo") return run_gated(action, request);
+  if (action == "guardian.observe" || action == "guardian.status" || action == "guardian.compile" || action == "guardian.levels" || action == "guardian.annotate")
+    return rt_.guardian().invoke(action, request);
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   const Json patches = client_patches(json::get_string(request, "client_id"));
   return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config(), &patches);

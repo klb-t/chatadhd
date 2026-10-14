@@ -167,6 +167,153 @@
         }
       },
       {
+        "id": "guardian_status",
+        "title": {
+          "en": "What the guardian noticed",
+          "pl": "Co zauważył strażnik"
+        },
+        "via": "action",
+        "action": "guardian.status",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/status"
+          ],
+          "invoke": [
+            "actions.guardian.status"
+          ]
+        },
+        "examples": {
+          "pl": "co zauważył strażnik w tej rozmowie",
+          "en": "what did the guardian notice in this conversation"
+        }
+      },
+      {
+        "id": "guardian_promote",
+        "title": {
+          "en": "Remember a correction as a rule",
+          "pl": "Zapamiętaj poprawkę jako regułę"
+        },
+        "via": "action",
+        "action": "guardian.promote",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/promote"
+          ],
+          "invoke": [
+            "actions.guardian.promote"
+          ]
+        },
+        "examples": {
+          "pl": "awansuj hipotezę strażnika",
+          "en": "promote the guardian hypothesis"
+        }
+      },
+      {
+        "id": "guardian_undo",
+        "title": {
+          "en": "Take back what the guardian saved",
+          "pl": "Cofnij to, co zapisał strażnik"
+        },
+        "via": "action",
+        "action": "guardian.undo",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/undo"
+          ],
+          "invoke": [
+            "actions.guardian.undo"
+          ]
+        },
+        "examples": {
+          "pl": "cofnij to co zapisał strażnik",
+          "en": "undo what the guardian saved"
+        }
+      },
+      {
+        "id": "guardian_observe",
+        "title": {
+          "en": "Let the guardian read a message",
+          "pl": "Niech strażnik przeczyta wiadomość"
+        },
+        "via": "action",
+        "action": "guardian.observe",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/observe"
+          ],
+          "invoke": [
+            "actions.guardian.observe"
+          ]
+        },
+        "examples": {
+          "pl": "oznacz tę wiadomość jako korektę",
+          "en": "mark this message as a correction"
+        }
+      },
+      {
+        "id": "guardian_compile",
+        "title": {
+          "en": "Compile clarifications into one instruction",
+          "pl": "Skompiluj doprecyzowania w jedno polecenie"
+        },
+        "via": "action",
+        "action": "guardian.compile",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/compile"
+          ],
+          "invoke": [
+            "actions.guardian.compile"
+          ]
+        },
+        "examples": {
+          "pl": "skompiluj doprecyzowania tej rozmowy w jedno polecenie",
+          "en": "compile the clarifications of this conversation into one instruction"
+        }
+      },
+      {
+        "id": "guardian_levels",
+        "title": {
+          "en": "Lossy levels of messages",
+          "pl": "Poziomy stratne wiadomości"
+        },
+        "via": "action",
+        "action": "guardian.levels",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/levels"
+          ],
+          "invoke": [
+            "actions.guardian.levels"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż poziomy stratne tej rozmowy",
+          "en": "show the lossy levels of this conversation"
+        }
+      },
+      {
+        "id": "guardian_annotate",
+        "title": {
+          "en": "Model reading for the guardian",
+          "pl": "Odczyt modelem dla strażnika"
+        },
+        "via": "action",
+        "action": "guardian.annotate",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/annotate"
+          ],
+          "invoke": [
+            "actions.guardian.annotate"
+          ]
+        },
+        "examples": {
+          "pl": "odczytaj tę wiadomość modelem dla strażnika",
+          "en": "annotate this message with a model for the guardian"
+        }
+      },
+      {
         "id": "rules_set",
         "title": {
           "en": "Write a rule or a scoped value",

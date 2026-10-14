@@ -479,6 +479,33 @@
     }
   },
   "relations": {
+    "supports": {
+      "label": {
+        "en": "Supports",
+        "pl": "Wspiera"
+      },
+      "from": "guardian_occurrence",
+      "to": "guardian_hypothesis",
+      "description": "An occurrence (or a hypothesis) supports a hypothesis; the weight is the escalation factor it was counted with."
+    },
+    "contradicts": {
+      "label": {
+        "en": "Contradicts",
+        "pl": "Przeczy"
+      },
+      "from": "guardian_hypothesis",
+      "to": "guardian_hypothesis",
+      "description": "Two hypotheses of the guardian claim opposite things in an overlapping scope."
+    },
+    "except": {
+      "label": {
+        "en": "Exception to",
+        "pl": "Wyjątek od"
+      },
+      "from": "guardian_exception",
+      "to": "guardian_hypothesis",
+      "description": "The exception limits the hypothesis; stated by the user or inferred (metadata.explicit)."
+    },
     "expresses": {
       "label": {
         "en": "Expresses",
@@ -833,6 +860,42 @@
       "label": {
         "en": "Proposal from a conversation (new action, sequence, group)",
         "pl": "Propozycja z rozmowy (nowa akcja, sekwencja, grupa)"
+      }
+    },
+    "guardian_occurrence": {
+      "label": {
+        "en": "Occurrence (a signal the guardian saw)",
+        "pl": "Wystąpienie (sygnał, który zauważył strażnik)"
+      }
+    },
+    "guardian_hypothesis": {
+      "label": {
+        "en": "Hypothesis of the guardian (a claim with a scope and a weight)",
+        "pl": "Hipoteza strażnika (twierdzenie z zakresem i wagą)"
+      }
+    },
+    "guardian_exception": {
+      "label": {
+        "en": "Exception to a hypothesis (stated or inferred)",
+        "pl": "Wyjątek od hipotezy (podany wprost lub wywnioskowany)"
+      }
+    },
+    "guardian_level": {
+      "label": {
+        "en": "Lossy level of a message (derived text, what was dropped)",
+        "pl": "Poziom stratny wiadomości (tekst pochodny, co odrzucono)"
+      }
+    },
+    "guardian_representation": {
+      "label": {
+        "en": "Compiled representation of a conversation (guardian)",
+        "pl": "Skompilowana reprezentacja rozmowy (strażnik)"
+      }
+    },
+    "annotation_category": {
+      "label": {
+        "en": "Category of segment annotations (shared layer)",
+        "pl": "Kategoria adnotacji segmentów (wspólna warstwa)"
       }
     },
     "application": {
