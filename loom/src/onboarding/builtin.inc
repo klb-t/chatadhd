@@ -322,6 +322,12 @@ R"loom_onboard({
                 "reject": "Reject",
                 "restored": "Your text is back in the composer.",
                 "rejected": "Rejected. Nothing was sent.",
+                "limit_title": "Spending limit",
+                "limit_explanation": "This message has not been sent: it is held by the spending limit you set. Nothing else is capped; you decide.",
+                "limit_refused_explanation": "This message has not been sent: you set this limit to refuse. Change it in the settings or say \"set a monthly limit ...\".",
+                "limit_confirm": "Send anyway",
+                "limit_dismiss": "OK",
+                "limit_dismissed": "Nothing was sent. Your text is back in the composer.",
                 "confirm_failed": "The confirmation could not be sent ({{reason}})."
               },
               "pl": {
@@ -334,6 +340,12 @@ R"loom_onboard({
                 "reject": "Odrzuć",
                 "restored": "Twój tekst wrócił do pola wiadomości.",
                 "rejected": "Odrzucono. Nic nie wysłano.",
+                "limit_title": "Limit wydatków",
+                "limit_explanation": "Ta wiadomość nie została wysłana: wstrzymał ją ustawiony przez Ciebie limit wydatków. Nic innego nie jest ograniczane; decydujesz Ty.",
+                "limit_refused_explanation": "Ta wiadomość nie została wysłana: ten limit ustawiono tak, by odmawiać. Zmienisz go w ustawieniach albo poleceniem \"ustaw miesięczny limit ...\".",
+                "limit_confirm": "Wyślij mimo to",
+                "limit_dismiss": "OK",
+                "limit_dismissed": "Nic nie wysłano. Twój tekst wrócił do pola wiadomości.",
                 "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
               }
             }
@@ -1080,7 +1092,8 @@ R"loom_onboard({
             "section.rejected": "Odrzuć podsumowanie tej części",
             "section.skip": "Pomiń tę część",
             "section.repeat": "Powtórz tę część",
-            "section.none": "Brak aktywnej części. Wybierz część, którą chcesz powtórzyć lub kontynuować.",
+)loom_onboard",
+R"loom_onboard(            "section.none": "Brak aktywnej części. Wybierz część, którą chcesz powtórzyć lub kontynuować.",
             "privacy.title": "Prywatność według kategorii",
             "privacy.empty": "Natywny profil nie zwrócił reguł kategorii.",
             "preferences.title": "Nowe preferencje proponowane podczas zwykłej rozmowy",
@@ -1099,8 +1112,7 @@ R"loom_onboard({
             "default.disable": "Wyłącz",
             "default.reenable": "Włącz",
             "default.remove_exclusion": "Usuń trwałe wykluczenie",
-)loom_onboard",
-R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
+            "default.exclude": "Wyklucz na stałe",
             "default.clear_override": "Usuń nadpisanie użytkownika",
             "default.accept_proposal": "Przyjmij tę propozycję",
             "default.proposal": "Proponuj nowe domyślne w tym obszarze",
@@ -1563,6 +1575,12 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "reject": "Reject",
             "restored": "Your text is back in the composer.",
             "rejected": "Rejected. Nothing was sent.",
+            "limit_title": "Spending limit",
+            "limit_explanation": "This message has not been sent: it is held by the spending limit you set. Nothing else is capped; you decide.",
+            "limit_refused_explanation": "This message has not been sent: you set this limit to refuse. Change it in the settings or say \"set a monthly limit ...\".",
+            "limit_confirm": "Send anyway",
+            "limit_dismiss": "OK",
+            "limit_dismissed": "Nothing was sent. Your text is back in the composer.",
             "confirm_failed": "The confirmation could not be sent ({{reason}})."
           },
           "pl": {
@@ -1575,6 +1593,12 @@ R"loom_onboard(            "default.exclude": "Wyklucz na stałe",
             "reject": "Odrzuć",
             "restored": "Twój tekst wrócił do pola wiadomości.",
             "rejected": "Odrzucono. Nic nie wysłano.",
+            "limit_title": "Limit wydatków",
+            "limit_explanation": "Ta wiadomość nie została wysłana: wstrzymał ją ustawiony przez Ciebie limit wydatków. Nic innego nie jest ograniczane; decydujesz Ty.",
+            "limit_refused_explanation": "Ta wiadomość nie została wysłana: ten limit ustawiono tak, by odmawiać. Zmienisz go w ustawieniach albo poleceniem \"ustaw miesięczny limit ...\".",
+            "limit_confirm": "Wyślij mimo to",
+            "limit_dismiss": "OK",
+            "limit_dismissed": "Nic nie wysłano. Twój tekst wrócił do pola wiadomości.",
             "confirm_failed": "Nie udało się wysłać potwierdzenia ({{reason}})."
           }
         }

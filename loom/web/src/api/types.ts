@@ -153,7 +153,9 @@ export type ChatChunk =
     }
   | { type: "usage_pending"; request_id: string; conv_id: string; user_message_id: string;
       usage_pending: { status?: string; operation_id?: string | null; receipt_id?: string | null; stage?: string;
-        baseline_key?: string | null; projected?: Record<string, Record<string, unknown>> } }
+        baseline_key?: string | null; projected?: Record<string, Record<string, unknown>>;
+        limits?: Array<{ period?: string; on_exceed?: string; code?: string; reason?: Record<string, unknown> }>; reason_codes?: string[] } }
+  | { type: "usage_notice"; request_id?: string; conv_id?: string; notices: Array<{ code?: string; period?: string; text?: Record<string, unknown> }> }
   | { type: "action_proposal" | "action_result"; request_id: string; conv_id: string; user_message_id: string;
       message_id: string; text: string; proposal?: Record<string, unknown>; run?: Record<string, unknown>;
       proposal_message_id?: string; proposal_status?: string }

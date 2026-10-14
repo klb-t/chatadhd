@@ -493,7 +493,8 @@ Result<Json> gates(const std::filesystem::path& root, const Config& config, cons
         notice[it.key()] = t ? render(pick(*t, it.key()), Json{{"what", what}}) : what;
       }
       g["notice"] = notice;
-      g["volatile"] = Json::array({"notice", "spend"});
+      g["reason"] = reason;
+      g["volatile"] = Json::array({"notice", "reason", "spend"});
     } else {
       g["decision"] = e.on_exceed;
       g["status"] = e.on_exceed == "deny" ? "denied" : "needs_confirmation";

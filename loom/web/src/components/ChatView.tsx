@@ -14,7 +14,7 @@ import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../cont
 import { browserHost } from "../context/browser-host";
 import { clientIdentity, pageClientSession } from "../context/client-session";
 import { ACTION_PROPOSAL_FEATURE, answerRequest, offerRequest, offerState, messageLanguage, offerTexts, openOffer, pendingAnswer, producedText, producedView, proposalState, routeConfirmedRequest, undoCall, undoConfirmation, undoRequest, writtenView, type OfferView, type PendingAnswer, type WrittenView } from "../context/action-proposal";
-import { confirmedRequest, USAGE_PENDING_FEATURE, type UsagePendingReceipt } from "../context/usage-pending";
+import { confirmedRequest, USAGE_PENDING_FEATURE, usageNoticeLines, type UsagePendingReceipt } from "../context/usage-pending";
 import { ROUTE_ISSUE_FEATURE, routeIssueNotes, routeIssues } from "../context/route-issue";
 import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTexts, requestOpenPanel } from "../context/open-settings";
 import { watchClientSteps } from "../context/client-step-events";
@@ -453,6 +453,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             notesForRef.current = requestConvId;
             notesAwaitStart = requestConvId === null;
             setRouteNotes(routeIssueNotes(routeIssueCatalog.feature, routeIssues(chunk.issues)));
+          } else if (chunk.type === "usage_notice") {
+            // A spending limit that only tells (P18): the send went on; the notice is a quiet line like the route notes.
+            notesForRef.current = requestConvId;
+            notesAwaitStart = requestConvId === null;
+            const lines = usageNoticeLines(chunk.notices, usageCatalog.feature?.locale ?? "en");
+            setRouteNotes((current) => [...current, ...lines]);
           } else if (chunk.type === "reasoning") {
             setStream((s) => (s ? { ...s, reasoning: s.reasoning + chunk.text } : s));
           } else if (chunk.type === "delta") {
@@ -516,7 +522,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
-  }, [input, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature,
+  }, [input, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked, gateTexts.emptyAnswer, gateTexts.streamEnded]);
 
@@ -546,6 +552,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     if (!usagePending) return;
     const { request, receipt } = usagePending;
     setUsagePending(null);
+    // A refusal by a spending limit (status denied) has nothing to answer: the block is only dismissed, the text stays in the composer.
+    if ((receipt as { status?: string }).status === "denied") {
+      setUsageNotice(usageCatalog.feature ? safeNotice(usageCatalog.feature, "limit_dismissed") : null);
+      return;
+    }
     // The ledger records the denial; nothing is sent and the text stays in the composer.
     const routed = (receipt as { stage?: string }).stage === "route_intent";
     try { api.chat((routed ? routeConfirmedRequest(request, receipt, false, "web") : confirmedRequest(request, receipt, false, "web")) as ChatRequest, { onChunk: () => undefined, onError: () => undefined, onDone: () => undefined }); }
