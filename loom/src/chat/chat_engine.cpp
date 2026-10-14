@@ -959,13 +959,21 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
         "active_task: acceptance cannot run inside an externally owned transaction");
     }
     std::lock_guard lk(mu_);
+    // The conversation remembered from the last send may have been deleted since (by the person, or by a command in the chat): a send
+    // that names none then starts a new one, not a write into a conversation that is gone (a foreign-key failure with no answer).
+    std::optional<Conversation> remembered;
+    if (!opts.conv_id && conv_) {
+      auto r = db_.get_conv(conv_->id);
+      if (!r) return r.error();
+      if (*r) remembered = **r;
+    }
     if (opts.conv_id) {
       auto r = db_.get_conv(*opts.conv_id);
       if (!r) return r.error();
       if (!*r) return Error(Errc::NotFound, "conversation not found: " + *opts.conv_id);
       conv = **r;
-    } else if (conv_) {
-      conv = *conv_;
+    } else if (remembered) {
+      conv = *remembered;
     } else {
       if (opts.active_task_spec) {
         return Error(Errc::InvalidArgument, "active_task requires an existing conversation");

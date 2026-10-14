@@ -157,7 +157,7 @@ try {
     const step = page.getByTestId("chat-client-step");
     await step.waitFor();
     assert.equal(await step.getAttribute("data-action"), "device.record_audio");
-    assert.match(await step.getByTestId("chat-client-step-prompt").innerText(), /microphone/i);
+    assert.match(await step.getByTestId("chat-client-step-prompt").innerText(), /mikrofon/i, "the conversation is Polish, so the step is asked in Polish (one language per answer)");
     assert.equal(speech.length, 0, "the kernel waits for the device");
     await step.getByTestId("chat-client-step-start").click();
     await step.getByTestId("chat-client-step-recording").waitFor();

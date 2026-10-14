@@ -1106,6 +1106,8 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     vrec["parts"] = parts_json(out.parts);
     if (!out.data.is_null()) vrec["data"] = out.data;
     vrec["provenance"] = out.provenance;
+    // The port-run nodes this step made (ActionRunScope); the run node is linked to exactly these when it is written (result.cpp).
+    if (!scope.recorded_nodes().empty()) vrec["port_run_nodes"] = scope.recorded_nodes();
     if (out.error) vrec["error"] = error_json(*out.error);
     if (out.state == StepOutcome::State::Held) {
       rec["next_variant"] = j;

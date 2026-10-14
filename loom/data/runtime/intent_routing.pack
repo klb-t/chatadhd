@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "intent_routing",
   "revision": 1,
-  "description": "Everything from the conversation window (R54, GRAF_HUB_KOD_SILNIK §8): every chat input goes through input.route_intent, which decides message or command and, for a command, resolves it against the action catalogue and the rules and answers IN the conversation with a proposal. This profile is the data of that decision. method: heuristic (local and free: explicit command syntax, patterns, and the phrases that actions carry in the catalogue; no model call), model (one use_model call with the configured model, guarded like every other), off (every input is a message). The method is a setting: config key `intent_routing_method`, then the preset below; the call may override it. execution: whether a proposal waits for the user's yes (propose, the preset), runs at once when the whole plan only reads and the rules ask for nothing (read_only), or runs at once whatever it does (always); the rules and the x10 usage confirmation apply in every case. Confirmation is a reply that is exactly one of the yes / no words below. A phrase on an action is space-separated words, all of which must occur within `window_tokens` of the start with at least one within `lead_tokens`; a word ending in * matches any continuation; text is lower-cased and the letters in `fold` are replaced before matching. A chat input is a command only when it names an action AND an element (an id, or a word that refers to the conversation or a message); otherwise it is a message and continues on the chat path unchanged. All numbers here are calibration, not limits: the user's overlay <data>/profiles/intent_routing.pack changes any of them.",
+  "description": "Everything from the conversation window (R54, GRAF_HUB_KOD_SILNIK §8): every chat input goes through input.route_intent, which decides message or command and, for a command, resolves it against the action catalogue and the rules and answers IN the conversation with a proposal. This profile is the data of that decision. method: heuristic (local and free: explicit command syntax, patterns, and the phrases that actions carry in the catalogue; no model call; the preset), model (one use_model call with the configured model, guarded like every other), hybrid (the local reading first, the model only for what it is unsure of; recommended once a provider key exists), off (every input is a message). The method is a setting: config key `intent_routing_method`, then the preset below; the call may override it. execution: whether a proposal waits for the user's yes (propose, the preset), runs at once when the whole plan only reads and the rules ask for nothing (read_only), or runs at once whatever it does (always); the rules and the x10 usage confirmation apply in every case. Confirmation is a reply that is exactly one of the yes / no words below. A phrase on an action is space-separated words, all of which must occur within `window_tokens` of the start with at least one within `lead_tokens`; a word ending in * matches any continuation; text is lower-cased and the letters in `fold` are replaced before matching. A chat input is a command only when it names an action AND an element (an id, or a word that refers to the conversation or a message); otherwise it is a message and continues on the chat path unchanged. All numbers here are calibration, not limits: the user's overlay <data>/profiles/intent_routing.pack changes any of them.",
   "defaults": {
     "method": {
       "setting": "intent_routing_method",
@@ -25,6 +25,20 @@
             "en": "Model: one model call per input (guarded like every other)",
             "pl": "Model: jedno wywołanie modelu na wejście (pod tym samym zabezpieczeniem)"
           }
+        },
+        "hybrid": {
+          "label": {
+            "en": "Hybrid: local first; the model is asked only when the local reading is unsure (recommended once a provider key exists)",
+            "pl": "Hybrydowo: najpierw lokalnie; model pytany tylko, gdy odczyt lokalny jest niepewny (zalecane, gdy jest klucz dostawcy)"
+          },
+          "description": {
+            "en": "The local reading runs first. A command it is sure of (a known action and an element, score at or above heuristic.scoring.confident_score) is never overridden by a model's verdict of message. The model is asked only when the local reading is unsure: a candidate scoring between heuristic.scoring.min_score and confident_score. ask_when lists when the model is asked: unsure (preset) and no_candidate (off in the preset: a sentence the local reading does not recognise at all is an ordinary message and costs no routing call). An unknown command shape still gets the definition offer, whatever the model says.",
+            "pl": "Najpierw czyta lokalny odczyt. Polecenia, którego jest pewien (znana akcja i element, wynik co najmniej heuristic.scoring.confident_score), werdykt modelu „wiadomość” nigdy nie unieważnia. Model jest pytany tylko, gdy odczyt lokalny jest niepewny: kandydat z wynikiem między heuristic.scoring.min_score a confident_score. ask_when mówi, kiedy pytać model: unsure (preset) i no_candidate (w presecie wyłączone: zdanie, którego odczyt lokalny w ogóle nie rozpoznaje, jest zwykłą wiadomością i nie kosztuje wywołania routingu). Nieznany kształt polecenia nadal dostaje ofertę definicji, cokolwiek powie model."
+          },
+          "recommended_when": "provider_key",
+          "ask_when": [
+            "unsure"
+          ]
         }
       },
       "model_setting": "intent_routing_model",
@@ -295,7 +309,104 @@
           "magazyny",
           "pamiec",
           "zrodla",
-          "logi"
+          "logi",
+          "zawsze",
+          "nigdy",
+          "pytaj",
+          "zapytaj",
+          "przed",
+          "bez",
+          "pytania",
+          "wylacz",
+          "wlacz",
+          "napisz",
+          "przetlumacz",
+          "wytlumacz",
+          "rozwin",
+          "skrytykuj",
+          "przeredaguj",
+          "sparafrazuj",
+          "dla",
+          "mnie",
+          "tych",
+          "moj",
+          "moja",
+          "czy",
+          "jak",
+          "gdzie",
+          "kiedy",
+          "dlaczego",
+          "tylko",
+          "regule",
+          "zasade",
+          "obrazem",
+          "obrazu",
+          "obraz",
+          "tlumacz",
+          "niemiecki",
+          "angielski",
+          "polski"
+        ],
+        "en": [
+          "the",
+          "this",
+          "that",
+          "these",
+          "those",
+          "please",
+          "what",
+          "how",
+          "why",
+          "where",
+          "when",
+          "which",
+          "set",
+          "show",
+          "summarise",
+          "summarize",
+          "translate",
+          "ask",
+          "before",
+          "always",
+          "never",
+          "run",
+          "without",
+          "asking",
+          "draw",
+          "make",
+          "image",
+          "picture",
+          "conversation",
+          "message",
+          "rule",
+          "for",
+          "me",
+          "my",
+          "with",
+          "can",
+          "could",
+          "you",
+          "your",
+          "explain",
+          "simply",
+          "rephrase",
+          "critique",
+          "elaborate",
+          "list",
+          "find",
+          "search",
+          "remember",
+          "forget",
+          "undo",
+          "enable",
+          "disable",
+          "turn",
+          "does",
+          "are",
+          "was",
+          "have",
+          "has",
+          "yes"
         ]
       },
       "fold": {
@@ -315,7 +426,8 @@
         "base": 0.6,
         "per_word": 0.1,
         "lead_penalty": 0.05,
-        "min_score": 0.5
+        "min_score": 0.5,
+        "confident_score": 0.7
       },
       "sequence": {
         "connectors": [
@@ -823,7 +935,20 @@
             "regex": "^[\\s,]*(?:show|list)\\s+(?:me\\s+)?(?:my\\s+|all\\s+|the\\s+)?rules\\s*[.!?]*\\s*$",
             "args": []
           }
-        ]
+        ],
+        "action_words": {
+          "obraz*": "depict",
+          "obrazek*": "depict",
+          "rysunek*": "depict",
+          "grafik*": "depict",
+          "image": "depict",
+          "images": "depict",
+          "picture": "depict",
+          "pictures": "depict",
+          "drawing": "depict",
+          "illustration*": "depict",
+          "ilustracj*": "depict"
+        }
       },
       "languages": [
         {
@@ -3101,7 +3226,61 @@
           },
           "takes_scope": false
         }
-      ]
+      ],
+      "payload": {
+        "payload_patterns": [
+          ":\\s*\\S",
+          "\\n\\s*\\S",
+          "\"[^\"]+\"",
+          "„[^”]+”",
+          "“[^”]+”",
+          "«[^»]+»",
+          "‘[^’]+’"
+        ],
+        "max_words": 0,
+        "filler_words": [
+          "to",
+          "ta",
+          "ten",
+          "ją",
+          "go",
+          "je",
+          "mi",
+          "mnie",
+          "proszę",
+          "prosze",
+          "teraz",
+          "jeszcze",
+          "raz",
+          "ponownie",
+          "krótko",
+          "krotko",
+          "pls",
+          "plz",
+          "it",
+          "this",
+          "that",
+          "please",
+          "now",
+          "again",
+          "for",
+          "me",
+          "once",
+          "more",
+          "briefly",
+          "shortly",
+          "quickly",
+          "too",
+          "also",
+          "thanks",
+          "dzięki",
+          "dziekuje"
+        ]
+      },
+      "conversation_language": {
+        "enabled": true,
+        "messages": 12
+      }
     },
     "confirmation": {
       "yes": {
@@ -3263,7 +3442,9 @@
         "ack_no_send": "Dropped. Nothing was executed. Sending your sentence to the model as an ordinary message.",
         "offer_declined": "Understood: your sentence stays unsent.",
         "offer_gone": "That sentence is no longer there to send: {{why}}.",
-        "route_failed": "Routing with the model failed ({{message}}); the local method decided instead."
+        "route_failed": "Routing with the model failed ({{message}}); the local method decided instead.",
+        "why_planned": "not available yet",
+        "why_no_executor": "nothing in this installation runs it"
       },
       "pl": {
         "proposal_title": "Rozumiem to jako polecenie: {{title}}.",
@@ -3327,7 +3508,9 @@
         "ack_no_send": "Odrzucone. Nic nie wykonano. Wysyłam Twoje zdanie do modelu jako zwykłą wiadomość.",
         "offer_declined": "Rozumiem: Twoje zdanie zostaje niewysłane.",
         "offer_gone": "Tego zdania nie ma już do wysłania: {{why}}.",
-        "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna."
+        "route_failed": "Rozpoznanie przez model się nie udało ({{message}}); zdecydowała metoda lokalna.",
+        "why_planned": "jeszcze niedostępne",
+        "why_no_executor": "nic w tej instalacji tego nie wykonuje"
       }
     }
   },
@@ -3740,6 +3923,10 @@
               },
               "min_score": {
                 "type": "number"
+              },
+              "confident_score": {
+                "type": "number",
+                "description": "Method hybrid: a candidate scoring at or above this is a command the local reading is sure of and the model is not asked; between min_score and this the reading is unsure and the model decides."
               }
             },
             "additionalProperties": false
@@ -3958,6 +4145,14 @@
                   },
                   "additionalProperties": false
                 }
+              },
+              "action_words": {
+                "type": "object",
+                "description": "Words (folded; a trailing * matches any continuation) that stand for exactly one action in a rule or a scoped statement (\"pytaj przed obrazem\": obraz* is depict, not a media action that is only planned). Tried before the phrases of the catalogue.",
+                "additionalProperties": {
+                  "type": "string",
+                  "minLength": 1
+                }
               }
             },
             "additionalProperties": false
@@ -4112,6 +4307,45 @@
               },
               "additionalProperties": false
             }
+          },
+          "payload": {
+            "type": "object",
+            "description": "Default element (actions.pack default_element: last_message, current_conversation): a sentence that names no element but brings its own text to work on is an ordinary message and the model does the job inline (\"przetłumacz na niemiecki: dzień dobry\"). payload_patterns: regexes matched against the text as typed (a colon followed by text, a second line, a quoted text). max_words: the content words allowed after the command (the words an argument pattern reads, such as \"na niemiecki\", and the filler words are not content); more is a payload. All numbers are calibration, not limits.",
+            "properties": {
+              "payload_patterns": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "max_words": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "filler_words": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "conversation_language": {
+            "type": "object",
+            "description": "When the words of an input show no language (\"undo\", \"ok\"), the answer is in the language of the conversation: that of its latest proposal, else of its latest message of the person that shows one. messages: how many of the latest messages are looked at; enabled false: the default language.",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "messages": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            "additionalProperties": false
           }
         },
         "additionalProperties": false

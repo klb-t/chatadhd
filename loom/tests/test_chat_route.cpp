@@ -11,6 +11,7 @@
 #include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -505,5 +506,351 @@ TEST_SUITE("chat_route") {
                                                 {"operation_id", held.at("usage_pending").at("operation_id")}, {"ref", "test"}}}});
     CHECK(confirmed.at("kind") == "message");
     CHECK(f.transport->requests().size() == 4);
+  }
+
+  // ── P16 1: the routing preset hybrid ──────────────────────────────────
+
+  TEST_CASE("hybrid: a command the local reading is sure of is never overridden by the model; the model is not even asked") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    const std::string message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.99}";
+    for (const char* text : {"Summarise this conversation", "Streść tę rozmowę", "/summarise"}) {
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+      const Json r = f.route(text);
+      INFO(text);
+      CHECK(r.at("method") == "hybrid");
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == "summarise");
+      CHECK(r.at("command").at("source") != "model");
+      CHECK(r.at("hybrid").at("confident") == true);
+      CHECK(r.at("hybrid").at("asked_model") == false);
+    }
+    CHECK(f.transport->requests().empty());  // three confident commands, a model that would have said "message": no call made
+    // a rule said in the conversation is a command the local reading is sure of too
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+    const Json rule = f.route("For me always ask before summarise");
+    CHECK(rule.at("kind") == "command");
+    CHECK(f.transport->requests().empty());
+  }
+
+  TEST_CASE("hybrid: an input the local reading is unsure of asks the model, and the model's verdict decides") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    const Json weak = f.route("Hey, could you summarise this conversation", "<current>", Json{{"method", "heuristic"}});
+    REQUIRE(weak.at("kind") == "command");  // the local reading alone finds it, with a score below confident_score
+    CHECK(weak.at("command").at("score").get<double>() < 0.7);
+    CHECK(weak.at("command").at("score").get<double>() >= 0.5);
+    const std::string message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.95}";
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+    const Json said_message = f.route("Hey, could you summarise this conversation");
+    CHECK(said_message.at("hybrid").at("confident") == false);
+    CHECK(said_message.at("hybrid").at("asked_model") == true);
+    CHECK(said_message.at("kind") == "message");  // the model arbitrates what the local reading was unsure of
+    REQUIRE(f.transport->requests().size() == 1);
+    CHECK(unwrap(json::parse(f.transport->requests()[0].body)).dump().find("could you summarise this conversation") != std::string::npos);
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"args\":{},\"confidence\":0.9}")));
+    const Json said_command = f.route("Hey, could you summarise this conversation");
+    REQUIRE(said_command.at("kind") == "command");
+    CHECK(action_of(said_command) == "summarise");
+    CHECK(said_command.at("command").at("source") == "model");
+    CHECK(f.transport->requests().size() == 2);
+    // a failed call: said, and the local reading stands
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
+    const Json failed = f.route("Hey, could you summarise this conversation");
+    CHECK(failed.at("issues").at(0).at("code") == "model_route_failed");
+    CHECK(failed.at("kind") == "command");
+    CHECK(failed.at("command").at("source") == "lexicon");
+  }
+
+  TEST_CASE("hybrid: an ordinary message stays a message and costs no routing call; the bytes sent are the golden ones") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    f.rt->config().set("system_prompt", "Golden system prompt.");
+    for (const char* text : {"What is the weather like in Paris?", "Dzień dobry, jak się masz?", "golden question"}) {
+      const Json r = f.route(text);
+      INFO(text);
+      CHECK(r.at("kind") == "message");
+      CHECK(r.at("hybrid").at("asked_model") == false);
+    }
+    CHECK(f.transport->requests().empty());
+    f.script(1, "ok");
+    ChatOptions opts;
+    opts.stream = false;
+    CHECK_FALSE(unwrap(chat_route::handle(*f.rt, "golden question", opts, Json{{"message", "golden question"}}, nullptr)).handled);
+    REQUIRE(f.rt->chat().send("golden question", opts));
+    REQUIRE(f.transport->requests().size() == 1);
+    // the same bytes as with the heuristic method (test "a message continues on the chat path ... (golden)")
+    Fixture g;
+    g.rt->config().set("system_prompt", "Golden system prompt.");
+    g.script(1, "ok");
+    CHECK_FALSE(unwrap(chat_route::handle(*g.rt, "golden question", opts, Json{{"message", "golden question"}}, nullptr)).handled);
+    REQUIRE(g.rt->chat().send("golden question", opts));
+    const Json hybrid_bytes = loom::test::request_json(f.transport->requests().at(0));
+    const Json heuristic_bytes = loom::test::request_json(g.transport->requests().at(0));
+    CHECK(hybrid_bytes == heuristic_bytes);
+    CHECK(hybrid_bytes.at("body") == "{\"model\":\"test/model\",\"messages\":[{\"role\":\"system\",\"content\":\"Golden system prompt.\"},"
+                                    "{\"role\":\"user\",\"content\":\"golden question\"}],\"temperature\":0.7,\"max_tokens\":4096,"
+                                    "\"stream\":false,\"include_reasoning\":true}");
+  }
+
+  TEST_CASE("hybrid: an unknown command shape still gets the definition offer, whatever the model says; ask_when no_candidate is a setting") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "hybrid");
+    const Json offered = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(offered.at("kind") == "command");
+    CHECK(offered.at("command").at("source") == "emergent");
+    CHECK(f.transport->requests().empty());  // nothing matched locally: not a case for the model by default
+    // the person who wants every unrecognised input put to the model says so in the overlay; the offer survives the verdict
+    f.overlay("intent_routing", Json{{"method", Json{{"presets", Json{{"hybrid", Json{{"ask_when", Json::array({"unsure", "no_candidate"})}}}}}}}});
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.95}")));
+    const Json again = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(again.at("kind") == "command");
+    CHECK(again.at("command").at("source") == "emergent");
+    CHECK(again.at("hybrid").at("asked_model") == true);
+    CHECK(f.transport->requests().size() == 1);
+  }
+
+  // ── P16 3: the default element of an action ───────────────────────────
+
+  TEST_CASE("a bare command acts on the element its action names by default; a sentence with its own text stays a message (PL)") {
+    Fixture f;
+    const std::string last = f.last_message().at("id");
+    // no element named: translate acts on the last message, summarise on the conversation
+    const Json bare = f.route("przetłumacz na niemiecki");
+    REQUIRE(bare.at("kind") == "command");
+    CHECK(action_of(bare) == "translate");
+    CHECK(bare.at("command").at("element").at("id") == last);
+    CHECK(bare.at("command").at("element").at("class") == "message");
+    CHECK(bare.at("command").at("args").at("target_language") == "German");
+    const Json plain = f.route("przetłumacz to na niemiecki, proszę");  // filler words are not content
+    REQUIRE(plain.at("kind") == "command");
+    CHECK(action_of(plain) == "translate");
+    const Json sum = f.route("streść");
+    REQUIRE(sum.at("kind") == "command");
+    CHECK(action_of(sum) == "summarise");
+    CHECK(sum.at("command").at("element").at("id") == f.conv_id);
+    for (const char* text : {"przeredaguj", "wytłumacz prościej", "skrytykuj", "rozwiń"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(r.at("command").at("element").at("id") == last);
+    }
+    // the sentence carries its own text: after a colon, quoted, on a second line, or as more content words than the data allows
+    for (const char* text : {"przetłumacz na niemiecki: dzień dobry", "przetłumacz na niemiecki:dzień dobry", "przetłumacz \"dzień dobry\" na niemiecki",
+                             "przetłumacz „dzień dobry” na niemiecki", "przetłumacz na niemiecki\ndzień dobry", "przetłumacz dzień dobry na niemiecki",
+                             "streść artykuł o grzybach", "Streść poniższy tekst: Ala ma kota"}) {
+      INFO(text);
+      CHECK(f.route(text).at("kind") == "message");
+    }
+    // a named element is as before
+    const Json named = f.route("przetłumacz tę rozmowę na niemiecki");
+    REQUIRE(named.at("kind") == "command");
+    CHECK(named.at("command").at("element").at("id") == f.conv_id);
+    // "przetłumacz na niemiecki: dzień dobry" is answered by the model: the chat window does not handle it, the bytes are the message's
+    ChatOptions opts;
+    opts.stream = false;
+    CHECK_FALSE(unwrap(chat_route::handle(*f.rt, "przetłumacz na niemiecki: dzień dobry", opts, Json{{"message", "x"}}, nullptr)).handled);
+    // and the bare one is proposed in the conversation
+    const auto proposed = f.input("przetłumacz na niemiecki");
+    CHECK(proposed.handled);
+  }
+
+  TEST_CASE("a bare command acts on the element its action names by default; a sentence with its own text stays a message (EN)") {
+    Fixture f;
+    const std::string last = f.last_message().at("id");
+    const Json bare = f.route("translate to German");
+    REQUIRE(bare.at("kind") == "command");
+    CHECK(action_of(bare) == "translate");
+    CHECK(bare.at("command").at("element").at("id") == last);
+    CHECK(bare.at("command").at("args").at("target_language") == "German");
+    CHECK(action_of(f.route("Please translate it to German")) == "translate");
+    CHECK(action_of(f.route("summarise")) == "summarise");
+    for (const char* text : {"rephrase", "explain simply", "critique", "elaborate"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(r.at("command").at("element").at("id") == last);
+    }
+    for (const char* text : {"translate to German: good morning", "translate \"good morning\" to German", "translate good morning to German",
+                             "Summarise the plot of Hamlet", "translate to German\ngood morning"}) {
+      INFO(text);
+      CHECK(f.route(text).at("kind") == "message");
+    }
+    // the allowed number of content words is data: with two allowed, "good morning" is still the command
+    f.overlay("intent_routing", Json{{"heuristic", Json{{"payload", Json{{"max_words", 2}}}}}});
+    const Json loose = f.route("translate good morning to German");
+    REQUIRE(loose.at("kind") == "command");
+    CHECK(action_of(loose) == "translate");
+    CHECK(f.route("translate to German: good morning").at("kind") == "message");  // a colon is a payload whatever the number
+    // /translate with no element: the action's own default
+    const Json explicit_ = f.route("/translate target_language=German");
+    REQUIRE(explicit_.at("kind") == "command");
+    CHECK(explicit_.at("command").at("element").at("id") == last);
+    // a conversation without a message has nothing to translate: the words are a message
+    Fixture empty;
+    empty.conv_id = unwrap(empty.rt->db().create_conv("Empty")).id;
+    CHECK(empty.route("translate to German").at("kind") == "message");
+  }
+
+  TEST_CASE("image phrases mean depict, in a command and in a rule; never a media action that is only planned") {
+    Fixture f;
+    for (const char* text : {"zrób obraz tej rozmowy", "zrób obraz", "narysuj tę rozmowę", "make an image of this conversation", "draw this conversation", "make image"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == "depict");
+      CHECK(r.at("command").at("element").at("id") == f.conv_id);
+      for (const auto& c : r.at("command").at("candidates")) CHECK(c.at("action").get<std::string>().rfind("media.", 0) != 0);
+    }
+    // a sentence about a subject is the model's to answer
+    CHECK(f.route("zrób obraz kota").at("kind") == "message");
+    for (const char* text : {"pytaj przed obrazem", "zawsze pytaj przed obrazem", "dla mnie zawsze pytaj przed obrazem", "w tej rozmowie pytaj przed obrazem",
+                             "ask before image", "for me always ask before image", "for this conversation never run image without asking", "ask before picture",
+                             "zabroń obrazu", "never run image without asking"}) {
+      INFO(text);
+      const Json r = f.route(text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == "rules.set");
+      CHECK(r.at("command").at("args").at("action") == "depict");
+    }
+  }
+
+  // ── P16 2: one language per answer ────────────────────────────────────
+
+  TEST_CASE("data: every action has a title and a result text in both languages") {
+    Fixture f;
+    const Json actions = unwrap(RuntimeProfile::load("actions", f.rt->paths().root)).values().at("actions");
+    REQUIRE(actions.size() > 100);
+    std::size_t data_results = 0;
+    for (auto it = actions.begin(); it != actions.end(); ++it) {
+      const Json& a = it.value();
+      INFO("action " << it.key());
+      CHECK_FALSE(a.value("title", "").empty());                                 // English title
+      CHECK_FALSE(a.value("labels", Json::object()).value("pl", "").empty());   // Polish title
+      const auto outputs = a.value("outputs", Json::array());
+      if (std::find(outputs.begin(), outputs.end(), "text") != outputs.end()) continue;  // words: in the language of the text it works on
+      // not words: the sentence that says what came out, in both languages, naming only arguments the action requires
+      ++data_results;
+      const Json texts = a.value("result_text", Json::object());
+      for (const char* lang : {"en", "pl"}) {
+        const std::string text = texts.value(lang, "");
+        INFO("result_text." << lang);
+        REQUIRE_FALSE(text.empty());
+        for (std::size_t at = text.find("{{"); at != std::string::npos; at = text.find("{{", at + 2)) {
+          const std::string name = text.substr(at + 2, text.find("}}", at) - at - 2);
+          bool declared = name == "title";
+          for (const auto& p : a.value("params", Json::array()))
+            if (p.value("name", "") == name && p.value("required", false)) declared = true;
+          INFO("placeholder " << name);
+          CHECK(declared);
+        }
+      }
+    }
+    CHECK(data_results >= 40);
+    // the texts of the router and of the operations: every sentence in both languages
+    for (const char* domain : {"intent_routing", "chat_ops"}) {
+      const Json texts = unwrap(RuntimeProfile::load(domain, f.rt->paths().root)).values().at("texts");
+      INFO(domain);
+      for (auto it = texts.at("en").begin(); it != texts.at("en").end(); ++it) CHECK_MESSAGE(texts.at("pl").contains(it.key()), "pl lacks " << it.key());
+      for (auto it = texts.at("pl").begin(); it != texts.at("pl").end(); ++it) CHECK_MESSAGE(texts.at("en").contains(it.key()), "en lacks " << it.key());
+    }
+  }
+
+  TEST_CASE("a Polish conversation is answered in Polish only: proposal, what asks first, result; an input that shows no language follows the conversation") {
+    Fixture f;
+    f.add("user", "Dzień dobry, mam pytanie o plan wydania.");
+    f.overlay("action_rules", Json{{"rules", Json{{"ask_summaries", Json{{"id", "ask_summaries"}, {"scope", "installation"},
+        {"target", Json{{"kind", "class"}, {"id", "conversation"}}}, {"action", "summarise"}, {"effect", "confirm"}, {"initiator", "owner"},
+        {"reason", Json{{"en", "summaries are asked about first"}, {"pl", "o streszczenia pytam najpierw"}}}}}}}});
+    const auto asked = f.input("Streść tę rozmowę");
+    REQUIRE(asked.handled);
+    const std::string proposal = asked.chunk.at("text");
+    CHECK(proposal.find("Rozumiem to jako polecenie: Streść.") != std::string::npos);
+    CHECK(proposal.find("o streszczenia pytam najpierw") != std::string::npos);
+    CHECK(proposal.find("Streść - o streszczenia") != std::string::npos);  // the title of what asks first is Polish too
+    CHECK(proposal.find("Summarise") == std::string::npos);
+    CHECK(proposal.find("Use a model") == std::string::npos);
+    f.script(1, "Krótkie streszczenie.");
+    const auto done = f.input("tak");
+    REQUIRE(done.handled);
+    CHECK(done.chunk.at("text").get<std::string>().find("Gotowe: Streść.") != std::string::npos);
+    CHECK(done.chunk.at("text").get<std::string>().find("Done:") == std::string::npos);
+    // an input whose words show no language: the answer follows the conversation, not the default
+    const auto bare = f.input("/rules.list");
+    REQUIRE(bare.handled);
+    CHECK(bare.chunk.at("proposal").at("lang") == "pl");
+    const std::string asked_list = bare.chunk.at("text");
+    CHECK(asked_list.find("Rozumiem to jako polecenie: Reguły w mocy.") != std::string::npos);
+    CHECK(asked_list.find("I read this as a command") == std::string::npos);
+    const auto listed = f.input("tak");
+    REQUIRE(listed.handled);
+    const std::string result = listed.chunk.at("text");
+    CHECK(result.find("Gotowe: Reguły w mocy.") != std::string::npos);
+    CHECK(result.find("Reguły w mocy:") != std::string::npos);  // the sentence that says what the data is
+    CHECK(result.find("Done:") == std::string::npos);
+    CHECK(result.find("Rules in force") == std::string::npos);
+    // the rule written from the conversation: Polish title and Polish sentence
+    const auto rule = f.input("zawsze pytaj przed obrazem");
+    REQUIRE(rule.handled);
+    CHECK(rule.chunk.at("proposal").at("lang") == "pl");
+    CHECK(rule.chunk.at("proposal").at("title") == "Zapisz regułę");
+    const auto saved = f.input("tak");
+    REQUIRE(saved.handled);
+    CHECK(saved.chunk.at("text").get<std::string>().find("Gotowe: Zapisz regułę.") != std::string::npos);
+    CHECK(saved.chunk.at("text").get<std::string>().find("Reguła została zapisana:") != std::string::npos);
+    CHECK(saved.chunk.at("text").get<std::string>().find("Set a rule") == std::string::npos);
+    // the message that holds the result says its language, for the clients
+    CHECK(unwrap(f.rt->db().get_msg(saved.assistant_message_id))->metadata.at("action_run").at("lang") == "pl");
+  }
+
+  TEST_CASE("an English conversation is answered in English only, and a Polish input in it gets Polish (the words win over the conversation)") {
+    Fixture f;
+    const auto bare = f.input("/rules.list");
+    REQUIRE(bare.handled);
+    CHECK(bare.chunk.at("proposal").at("lang") == "en");
+    const auto listed = f.input("yes");
+    REQUIRE(listed.handled);
+    const std::string result = listed.chunk.at("text");
+    CHECK(result.find("Done: Rules in force.") != std::string::npos);
+    CHECK(result.find("Rules in force:") != std::string::npos);
+    CHECK(result.find("Gotowe") == std::string::npos);
+    const auto polish = f.input("Streść tę rozmowę");
+    REQUIRE(polish.handled);
+    CHECK(polish.chunk.at("proposal").at("lang") == "pl");
+    // and the conversation has now spoken Polish last: the input that shows no language follows it
+    const auto after = f.input("/rules.list");
+    REQUIRE(after.handled);
+    CHECK(after.chunk.at("proposal").at("lang") == "pl");
+    // the feature is data
+    f.overlay("intent_routing", Json{{"heuristic", Json{{"conversation_language", Json{{"enabled", false}}}}}});
+    const auto plain = f.input("/rules.list");
+    REQUIRE(plain.handled);
+    CHECK(plain.chunk.at("proposal").at("lang") == "en");
+  }
+
+  TEST_CASE("P16: an ordinary message never waits for the model registry; only a proposal's estimate may fetch it, once, and unknown stays unknown") {
+    Fixture f;
+    f.rt->config().set("model_registry_autorefresh", "on_demand");  // the preset
+    // an ordinary message (heuristic routing, and hybrid with a confident or no local reading) sends and fetches nothing while it is routed
+    for (const char* method : {"heuristic", "hybrid"}) {
+      f.rt->config().set("intent_routing_method", method);
+      ChatOptions opts;
+      opts.stream = false;
+      CHECK_FALSE(unwrap(chat_route::handle(*f.rt, "What is the weather like in Paris?", opts, Json{{"message", "What is the weather like in Paris?"}}, nullptr)).handled);
+      CHECK(f.transport->requests().empty());
+    }
+    // a proposal needs a price: the public list is fetched once; a provider that lists nothing leaves the money unknown, with the reason
+    f.rt->config().set("intent_routing_method", "heuristic");
+    f.transport->expect("GET", "https://api.test/models", net::ScriptedTransport::Reply::json(200, Json{{"data", Json::array()}}));
+    const auto out = f.input("Summarise this conversation");
+    REQUIRE(out.handled);
+    CHECK(out.chunk.at("proposal").at("cost").at("money").at("known") == false);
+    REQUIRE(f.transport->requests().size() == 1);
+    CHECK(f.transport->requests()[0].url == "https://api.test/models");
+    // the next proposal inside the retry window does not fetch again
+    f.input("Streść tę rozmowę");
+    CHECK(f.transport->requests().size() == 1);
   }
 }

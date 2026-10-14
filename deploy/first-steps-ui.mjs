@@ -138,7 +138,7 @@ try {
     await body().filter({ hasText: "Odpowiedz testowego dostawcy" }).first().waitFor({ timeout: 60000 });
   });
   await step("6.1 streść tę rozmowę", async () => {
-    await proposalThenYes("1", "Streść tę rozmowę", /summar|stresz|Streszcz|Stre[sś]ć/i);
+    await proposalThenYes("1", "Streść tę rozmowę", /summar|stresz|Streszcz|Streść/i);
     await body().filter({ hasText: "Streszczenie testowe" }).first().waitFor({ timeout: 60000 });
   });
   await step("6.2 przetłumacz na niemiecki", async () => { await proposalThenYes("2", "Przetłumacz tę rozmowę na niemiecki", /translat|tłumacz|Tłumacz/i); });

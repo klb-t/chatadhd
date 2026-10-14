@@ -354,3 +354,63 @@ test('a rule written from the conversation is shown as written and taken back by
   // switched off from anywhere: the proposal says so (status undone, written.undone)
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written: { ...written, undone: true } } }).undone, true);
 });
+
+test('one language per answer: a Polish proposal, its state badge, its offer and what it wrote are Polish whatever the interface language', () => {
+  const polish = { ...proposal, lang: 'pl', title: 'Streść',
+    items: [{ action: 'transcribe', title: 'Transkrybuj', cost: 1 }, { action: 'summarise', title: 'Streść', cost: 1 }],
+    needs_confirmation: [{ action: 'share', title: 'Udostępnij', reason: 'zapytam najpierw', initiator: 'owner' }] };
+  const metadata = { action_proposal: polish };
+  assert.equal(a.messageLanguage(metadata), 'pl');
+  assert.equal(a.messageLanguage({ action_run: { run_id: 'ar_2', status: 'completed', lang: 'pl' } }), 'pl', 'a result message says the language of its run');
+  assert.equal(a.messageLanguage({ action_proposal: { ...polish, lang: '' } }), null);
+  assert.equal(a.messageLanguage({}), null);
+  assert.equal(a.messageLanguage(undefined), null);
+  const spoken = p.featureInLanguage(feature, a.messageLanguage(metadata));
+  assert.equal(feature.locale, 'en', 'the interface stays English');
+  assert.equal(spoken.locale, 'pl');
+  assert.equal(spoken.catalog.confirm, pl.confirm);
+  // a language the catalog does not have, or no language, changes nothing
+  assert.equal(p.featureInLanguage(feature, 'de'), feature);
+  assert.equal(p.featureInLanguage(feature, null), feature);
+  assert.equal(p.featureInLanguage(null, 'pl'), null);
+
+  const answer = a.pendingAnswer(metadata);
+  const html = renderToStaticMarkup(createElement(block.default, { feature: spoken, answer, testId: 'pl', onConfirm: () => undefined, onReject: () => undefined }));
+  // every line of the block is the Polish one: the words of the catalog and the titles of the proposal
+  for (const key of ['title', 'confirm', 'reject']) {
+    assert.ok(html.includes(pl[key]), 'Polish ' + key);
+    assert.ok(!html.includes(en[key]), 'no English ' + key);
+  }
+  assert.ok(html.includes('Plan: Transkrybuj -&gt; Streść'));
+  assert.ok(html.includes('Wymaga potwierdzenia: Udostępnij'));
+  assert.ok(html.includes('Szacunek:'));
+  assert.ok(!html.includes('Estimate:') && !html.includes('Needs confirmation') && !html.includes('Transcribe') && !html.includes('Summarise') && !html.includes('Share'));
+  // the same message in an English interface without the language (the page of an older server) keeps the interface language
+  const plain = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'en', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(plain.includes(en.title) && plain.includes(en.confirm));
+
+  // the badge a finished proposal leaves, the offer under a dropped one, and the line of what was written
+  assert.equal(a.proposalTexts(spoken, answer, a.proposalView(answer)).status('executed'), pl.status_executed);
+  assert.equal(a.offerTexts(spoken).send, pl.offer);
+  assert.equal(a.offerTexts(spoken).hint, pl.offer_hint);
+  assert.equal(a.offerTexts(spoken).state('sent'), pl.offer_sent);
+  const written = a.writtenView({ action_proposal: { ...polish, status: 'executed', written: { kind: 'rule', id: 'rule_1', overlays: ['profiles/action_rules.pack'], entry: { id: 'rule_1' } } } });
+  const writtenHtml = renderToStaticMarkup(createElement(block.ProposalWritten, { feature: spoken, written, testId: 'w', onUndo: () => undefined }));
+  assert.ok(writtenHtml.includes(pl.undo) && !writtenHtml.includes(en.undo));
+  assert.ok(writtenHtml.includes('Reguła zapisana w Twojej własnej nakładce'));
+  assert.ok(!writtenHtml.includes('Rule written to'));
+  const offerHtml = renderToStaticMarkup(createElement(block.ProposalOffer, { feature: spoken, offer: { proposalId: 'm_p', sentenceId: 'm_s', auto: false }, testId: 'o', onSend: () => undefined }));
+  assert.ok(offerHtml.includes(pl.offer) && !offerHtml.includes(en.offer));
+  assert.ok(a.producedText(spoken, { target: 'graph', forms: ['n_1'], content: null, runNode: null }).startsWith('Zapisano w grafie'));
+});
+
+test('a run that was declined, denied or failed is data, not a failed request: answering "no" closes the proposal', async () => {
+  const types = await loader.load('src/api/types.ts');
+  const declined = { schema: 'loom.action_run/1', id: 'ar_1', status: 'rejected', error: { code: 'rejected', message: 'declined; nothing was executed' } };
+  assert.equal(types.isLoomError(declined), false, 'the run of a "no" carries an error of its own and is returned to the page');
+  assert.equal(types.isLoomError({ ...declined, schema: 'loom.action_run/2' }), false);
+  // the envelope of a request that failed is still one
+  assert.equal(types.isLoomError({ error: { code: 'invalid_argument', message: 'no run' } }), true);
+  assert.equal(types.isLoomError({ schema: 'loom.other/1', error: { code: 'x', message: 'y' } }), true);
+  assert.equal(types.isLoomError({ id: 'ar_1', error: '' }), false);
+});
