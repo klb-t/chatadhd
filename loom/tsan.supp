@@ -1,0 +1,20 @@
+# ThreadSanitizer suppressions (used by the `tsan` test preset).
+#
+# SQLite's WAL index lives in a memory-mapped -shm file shared by every connection. Readers
+# (walIndexTryHdr) read the header without a lock, twice, and accept it only if both copies and the
+# checksum agree; the writer (walIndexWriteHdr) publishes it under the WAL write lock. That lock-free
+# retry protocol is intentional and is synchronised by fcntl locks and memory barriers that
+# ThreadSanitizer cannot model, so it reports a "race" between two connections of the same process.
+# Only SQLite's WAL-index routines are listed; races in Loom code are not affected.
+race:walIndexTryHdr
+race:walIndexWriteHdr
+race:walIndexReadHdr
+race:walIndexAppend
+race:walIndexRecover
+race:walCheckpoint
+race:walTryBeginRead
+race:walRestartHdr
+race:walRestartLog
+race:sqlite3WalFrames
+# unixOpen resets the PRNG when the pid changed; SQLite documents that concurrent resets "are harmless".
+race:unixOpen
