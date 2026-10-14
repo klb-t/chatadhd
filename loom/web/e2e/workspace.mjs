@@ -42,7 +42,7 @@ try {
   const graph=()=>page.getByTestId("kb-pane-graph");
   const snapshot=()=>page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
   // P17 5: on a phone the navigation is a menu under the header
-  async function menu(){const t=page.getByTestId("toggle-nav"); if(await t.isVisible() && !await page.getByTestId("app-nav").isVisible())await t.click();}
+  async function menu(){await page.getByTestId("toggle-sidebar").waitFor(); const t=page.getByTestId("toggle-nav"); if(await t.isVisible() && !await page.getByTestId("app-nav").isVisible())await t.click();}
   async function open(){await menu(); await page.getByTestId("nav-knowledge").click(); await menu(); const hide=page.getByRole("button",{name:"Hide chat",exact:true});if(await hide.count())await hide.click();await graph().first().locator(".kb-node").first().waitFor();}
   async function settings(pane){const d=pane.locator(".kb-view-settings");if(!await d.getAttribute("open")) { if(!(await d.evaluate(e=>e.open)))await d.locator(":scope > summary").click(); }}
   await page.goto(base); await open();
@@ -173,7 +173,7 @@ try {
   });
   await step("unavailable saved run is reported without silently selecting latest data",async()=>{
     await page.evaluate(k=>{const s=JSON.parse(localStorage.getItem(k));s.run="missing-run";for(const p of s.panes){p.parameters.run="missing-run";}localStorage.setItem(k,JSON.stringify(s));},key);
-    await page.reload();await page.getByTestId("nav-knowledge").click();
+    await page.reload();await menu(); await page.getByTestId("nav-knowledge").click();
     assert.equal(await page.getByLabel("Knowledge run",{exact:true}).inputValue(),"missing-run");
     assert.equal(await graph().first().locator(".kb-node").count(),0);
     assert.match(await graph().first().innerText(),/unavailable/);
