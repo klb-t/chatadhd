@@ -795,3 +795,7 @@ Do tego odkryte przy audycie: generator `tools/gen_graph_interfaces.py` nie widz
 6. **Po usunięciu rozmowy, w której się jest**: strona przechodzi do nowej rozmowy, gdy odpowiedź niesie inny `conv_id` (ścieżka czatu: „tak” wpisane w rozmowie); przycisk „potwierdź” w bloku propozycji (`POST /api/actions/confirm`) niesie `conv_id` w wyniku, ale blok go jeszcze nie czyta.
 7. **Zdania a fałszywe polecenia**: wyrażenia są kalibracją (np. „zapamiętaj …” na początku zdania zawsze jest poleceniem; „forget about it” trafia do `memory.forget` z hasłem „about it” i kończy się komunikatem „brak wpisu”). Fałszywe polecenie kosztuje jedno „nie” i oferta wysłania zdania jako wiadomości (`intent_routing_on_reject`).
 8. Zrzut `loom/web/e2e/screenshots` przywrócony po e2e; Kotlin/Android nietknięty.
+
+### Bramka (końcowa, na czubku gałęzi)
+
+CTest 215/215 (dev + serwer, Debug); `npm run build`, wszystkie skrypty `test:*` (30) i `e2e` w Chromium: PASS; cztery generatory `--check` czyste (`gen_runtime_profiles.py`, `gen_onboarding_pack.py`, `gen_graph_interfaces.py`, `gen_rom_catalogue.py`), piny `product_literals.pack` i `data_domains.pack` odświeżone funkcjami strażnika i sumami plików. Próba negatywna audytu: dopisanie fałszywej trasy, funkcji C ABI i operacji `loom_invoke` wywala `test_chat_coverage` z nazwą każdej z nich. `main` bez zmian od `e9b2aa70` (nic do scalenia). Nie sprawdzone: Clang, ASan/TSan, release, Android na telefonie, prawdziwy model.
