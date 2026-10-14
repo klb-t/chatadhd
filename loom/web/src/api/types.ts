@@ -71,6 +71,8 @@ export interface ChatRequest {
   stream?: boolean;
   /** Takes the offer a rejected proposal made: the sentence it came from is sent as an ordinary message. Value: the proposal's message id. */
   send_as_message?: string;
+  /** The client that declared its devices (client.declare): a command that needs a device of this page is runnable for it. */
+  client_id?: string;
 }
 
 // Only fields supported by the native ContextRequest. Omitting text uses the
