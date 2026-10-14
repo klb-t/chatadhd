@@ -212,8 +212,11 @@ struct UsagePolicy::Impl {
       return Json{{"value", (*cohort)[resource]}, {"samples", 0}, {"source", "declared"}};
     return Json{{"value", nullptr}, {"samples", 0}, {"source", "unavailable"}};
   }
-  Result<Json> reservations(std::string_view key, std::string_view excluding = "", bool known_only = false) {
-    Json totals = Json::object();
+  // One pass over the active reservations (each record decoded and integrity-checked once):
+  // `total` poisons a dimension to null when any reservation of it is unknown, `known` sums only the known ones.
+  struct Reserved { Json total = Json::object(); Json known = Json::object(); };
+  Result<Reserved> reservations(std::string_view key, std::string_view excluding = "") {
+    Reserved out;
     LOOM_TRY_ASSIGN(auto st, db.prepare("SELECT record FROM usage_operations WHERE baseline_key=? AND id<>? AND active=1"));
     st.bind_all(key, excluding);
     for (;;) {
@@ -223,16 +226,19 @@ struct UsagePolicy::Impl {
       if (!record.value("authorized", false)) continue;
       const auto& reserved = record["remaining"];
       for (auto it = reserved.begin(); it != reserved.end(); ++it) {
-        if (!totals.contains(it.key())) totals[it.key()] = 0.0;
-        if (known_only && it->is_null()) continue;
-        if (totals[it.key()].is_null() || it->is_null()) totals[it.key()] = nullptr;
+        if (!out.total.contains(it.key())) out.total[it.key()] = 0.0;
+        if (!out.known.contains(it.key())) out.known[it.key()] = 0.0;
+        if (out.total[it.key()].is_null() || it->is_null()) out.total[it.key()] = nullptr;
         else {
-          LOOM_TRY_ASSIGN(double total, narrow(static_cast<long double>(totals[it.key()].get<double>()) + it->get<double>()));
-          totals[it.key()] = total;
+          LOOM_TRY_ASSIGN(double total, narrow(static_cast<long double>(out.total[it.key()].get<double>()) + it->get<double>()));
+          out.total[it.key()] = total;
         }
+        if (it->is_null()) continue;
+        LOOM_TRY_ASSIGN(double known, narrow(static_cast<long double>(out.known[it.key()].get<double>()) + it->get<double>()));
+        out.known[it.key()] = known;
       }
     }
-    return totals;
+    return out;
   }
   // What was spent in [from, to): the actuals recorded in the window. The caller holds the lock and a transaction.
   Result<Json> spend(std::string_view from, std::string_view to) {
@@ -310,8 +316,9 @@ struct UsagePolicy::Impl {
   }
   Result<Json> assess(const Json& estimate, const SpendCheck& limits_check) {
     const auto key = json::get_string(estimate, "baseline_key");
-    LOOM_TRY_ASSIGN(auto reserved, reservations(key, json::get_string(estimate, "operation_id")));
-    LOOM_TRY_ASSIGN(auto known_reserved, reservations(key, json::get_string(estimate, "operation_id"), true));
+    LOOM_TRY_ASSIGN(auto both, reservations(key, json::get_string(estimate, "operation_id")));
+    const Json& reserved = both.total;
+    const Json& known_reserved = both.known;
     Json result{{"schema", "loom.usage_decision/1"}, {"operation_id", estimate["operation_id"]},
                 {"baseline_key", key}, {"estimate", estimate}, {"options", options},
                 {"status", "allowed"}, {"authorized", false}, {"resources", Json::object()}};
@@ -612,7 +619,8 @@ Result<Json> UsagePolicy::inspect(std::string_view key) {
   std::lock_guard lock(impl_->mu);
   sql::Txn txn(impl_->db, false);
   LOOM_TRY(txn.begin_status());
-  LOOM_TRY_ASSIGN(auto reserved, impl_->reservations(key));
+  LOOM_TRY_ASSIGN(auto reserved_both, impl_->reservations(key));
+  const Json& reserved = reserved_both.total;
   Json result{{"baseline_key", key}, {"options", impl_->options}, {"baseline", Json::object()},
               {"reservations", reserved}, {"operations", Json::array()}, {"events", Json::array()}};
   std::set<std::string> dimensions;

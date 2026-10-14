@@ -297,7 +297,9 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME server.smoke COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_smoke.py)
     set_tests_properties(server.smoke PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>"
-      TIMEOUT 60)
+      # Slow, not hung: measured 35 s under ASan+UBSan on a shared 4-core box (dev: a few s); CI asan on 2
+      # shared cores timed out at 60 s. Timeout widened, no assertion changed.
+      TIMEOUT 300)
     add_test(NAME server.conversation_view
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_conversation_view_server.py)
     set_tests_properties(server.conversation_view PROPERTIES
@@ -307,7 +309,8 @@ if(LOOM_BUILD_TESTS)
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_chat_usage_guard_server.py)
     set_tests_properties(server.chat_usage_guard PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
-      TIMEOUT 90)
+      # Slow, not hung: measured 77 s under ASan+UBSan on a shared 4-core box (CI asan timed out at 90 s).
+      TIMEOUT 600)
     add_test(NAME server.accounts
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_server_accounts.py)
     set_tests_properties(server.accounts PROPERTIES
