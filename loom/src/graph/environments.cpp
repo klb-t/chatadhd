@@ -29,7 +29,6 @@ namespace fs = std::filesystem;
 
 namespace {
 
-constexpr const char* kLog = "loom.environments";
 
 const Json kNoObject = Json::object();
 
