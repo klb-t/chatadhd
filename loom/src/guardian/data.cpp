@@ -81,8 +81,8 @@ std::string guess_lang(const Data& d, const std::string& txt) {
   std::size_t pl = 0, en = 0;
   const Json& kinds = d.p.at("kinds");
   for (auto it = kinds.begin(); it != kinds.end(); ++it) {
-    const Json detect_copy = it.value().value("detect", Json::object());
-    const Json* h = json::find(detect_copy, "heuristic");
+    const Json detect = it.value().value("detect", Json::object());  // value() copies: keep it alive while h points into it
+    const Json* h = json::find(detect, "heuristic");
     const Json* markers = h ? json::find(*h, "markers") : nullptr;
     if (!markers) continue;
     pl += text::find(toks, text::compile(text::strings_of(json::find(*markers, "pl")), d.fold)).size();
