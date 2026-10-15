@@ -357,6 +357,7 @@
         "POST /api/actions/remove",
         "POST /api/actions/run",
         "POST /api/actions/status",
+        "POST /api/agent/run",
         "POST /api/analysis",
         "POST /api/auth/login",
         "POST /api/auth/logout",

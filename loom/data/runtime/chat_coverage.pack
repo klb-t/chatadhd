@@ -219,6 +219,9 @@
         "via": "action",
         "action": "agent.run",
         "surfaces": {
+          "http": [
+            "POST /api/agent/run"
+          ],
           "invoke": [
             "agent.run"
           ]
