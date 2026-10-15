@@ -45,7 +45,8 @@ struct Fixture {
     return call("add", r);
   }
   Json catalogue_entry(const std::string& id) {
-    for (const auto& a : unwrap(action_catalogue(rt->paths().root)).at("actions"))
+    const Json cat = unwrap(action_catalogue(rt->paths().root));  // kept alive: no range-for over a temporary
+    for (const auto& a : cat.at("actions"))
       if (a.at("id") == id) return a;
     return Json();
   }
@@ -297,14 +298,4 @@ TEST_SUITE("tool_sources") {
     CHECK(bad.error().message.find("known: mcp") != std::string::npos);
     CHECK(tool_sources::registry().contains("mcp"));
   }
-}
-TEST_CASE("zz debug") {
-  Fixture f;
-  f.add_stdio();
-  std::ifstream in(f.td.path() / "profiles/actions.pack");
-  std::stringstream ss; ss << in.rdbuf();
-  MESSAGE(ss.str().substr(0, 1500));
-  auto cat = action_catalogue(f.rt->paths().root);
-  const std::string n = cat ? std::to_string(cat->at("actions").size()) : cat.error().message;
-  MESSAGE(n);
 }
