@@ -1006,3 +1006,10 @@ Wg `docs/architecture/PRZEGLAD_STRAZNIK_SRODOWISKA_2026-10-15.md` §1, §2 i §4
 
 - Akcje katalogu jako narzędzia modelu, wykonywane przez interpreter akcji (zasady, ×10, limity, paragony). Ustawienia: `tool_loop_policy` (preset `local_reversible`; też `read_only|confirm_all|apply_all`), `tool_loop_max_steps` (preset 8, 0 = bez limitu), `tool_loop_on_proposal` (preset `stop`, też `continue`), `tool_loop_result_max_chars` (preset 20000, 0 = bez cięcia). Dane: `data/runtime/tool_loop.pack`.
 - Wyniki narzędzi wracają do modelu jako JSON `{status, executed, result|note}`; wstrzymanie ×10 kończy pętlę (`needs_confirmation`). Cofnięcie: zmienić presety ustawień; całość — usunąć `tool_loop.pack`, `src/llm/tool_loop.cpp`, `src/agent/` i port `agent` w `chat_coverage.pack`. Raport: `docs/reports/S2_R33_2026-10-15.md`.
+
+### S2 / R34 — źródła narzędzi jako adapter (MCP) (2026-10-15)
+
+- Port `tool_source` (`loom/tool_sources.h`, `src/tool_sources/`) jako `AdapterRegistry` po `kind`; pierwszy rodzaj `mcp` (stdio — tylko POSIX; streamable HTTP z JSON/SSE). Nazwy metod, nagłówki i czasy oczekiwania to dane w `data/runtime/tool_sources.pack`. Żądania serwera (sampling, roots) odrzucane.
+- Ustawienie `tool_sources` (preset pusty — nic nie jest kontaktowane, dopóki użytkownik nie doda źródła); poświadczenia tylko jako nazwa klucza w sejfie (`access.secret`), odrzucane w url i `access`.
+- `tool_source.sync` dopisuje akcje `tool.<źródło>.<narzędzie>` wyłącznie do nakładki użytkownika; skutki najgorsze możliwe + `effects_unknown`; preset `confirm:tool_source.unknown` — każde uruchomienie pyta; podpowiedzi serwera nigdy nie obniżają presetu; `tool_source.trust` (allow|confirm|reset) zapisuje regułę użytkownika. Cofnięcie: `tool_source.trust reset` / `tool_source.remove`; całość — usunąć `tool_sources.pack`, `src/tool_sources/`, wpisy katalogu i port w `chat_coverage.pack`, uruchomić generatory.
+- Raport: `docs/reports/S2_R34_2026-10-15.md`.
