@@ -135,9 +135,10 @@ struct ModelChoice {
 };
 // Owner decision (2026-10-15): the conversation's model is never inherited. A policy (models.policies.<name>.chain; overlay-able) is a list of steps:
 // explicit {setting|model}, role {role} (the ports profile), relative_to {base: conversation | {role} | {setting}, tier_offset}, none.
-// `conversation_model` only matters to a relative_to step the user wrote; `price_per_million` (registry) refines the tier when known.
+// Settings named by a step are read through the scope chain (scope_resolver.h); `db` lets it see the conversation's units. `conversation_model` only matters to a relative_to step the user wrote; `price_per_million` (registry) refines the tier when known.
 ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& data_root, const std::string& policy, const std::string& conv_id,
-                          const std::string& conversation_model = std::string(), double price_per_million = -1);
+                          const std::string& conversation_model = std::string(), double price_per_million = -1,
+                          Database* db = nullptr);
 // cheap | mid | frontier | unknown (data: models.tiers; prices first, then name patterns).
 std::string model_tier(const Json& models_section, const std::string& model, double price_per_million = -1);
 

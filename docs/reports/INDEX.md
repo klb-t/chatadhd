@@ -981,3 +981,10 @@ Wg `docs/architecture/PRZEGLAD_STRAZNIK_SRODOWISKA_2026-10-15.md` §1, §2 i §4
 ### S2 / R30 — crash aplikacji na telefonie przy przełączeniu na serwer (2026-10-14, `main` = `5f347dfc`)
 
 - Przyczyna: kolejność niszczenia w `Runtime` — destruktor `ActionRunner` woła `rt_.bus()`, a libc++ (Android) zeruje `unique_ptr impl_` przed usunięciem `Impl`. Poprawka w `src/runtime.cpp`: `~Runtime` resetuje `actions`, `guardian`, `knowledge`, `archive` przed zniszczeniem `impl_`. Test: `tests/test_shutdown.cpp` (cykle init/shutdown) + `tests/libcxx_shutdown.sh` (odtwarza crash z libc++; poza CI). Cofnięcie: revert `3e5aec27` i `ab6b942a`. Raport: `docs/reports/S2_R30_2026-10-14.md`.
+
+### S2 / R31 — testy na libc++ i strażnik wzorca wiszącego wskaźnika (2026-10-15, `main` = `1cc84a8e`)
+
+- Preset `libcxx` (clang + `-stdlib=libc++`, vendored SQLite) i zadanie CI `libcxx (clang++ + libc++)` — ta sama biblioteka standardowa co Android NDK; wcześniej błąd R30 był w CI niewidoczny. Cofnięcie: usunąć zadanie z `loom.yml` i preset z `CMakePresets.json`.
+- Pod libc++: `-Wno-error=deprecated-declarations` tylko dla clang+libc++ (ostrzeżenie z przypiętego nlohmann 3.11.3, nie z naszego kodu; zostaje widoczne). Cofnięcie: usunąć blok `LOOM_USING_LIBCXX` w `loom/CMakeLists.txt`.
+- `capi.shutdown_cycle` (C ABI init/subscribe/chat/shutdown/init) w każdym presecie; `tests/compat/test_dangling_json_find.py` (z listą wyjątków z uzasadnieniem). Raport: `docs/reports/S2_R31_2026-10-14.md`.
+- Korekta R28: przywrócone `ledger_busy_timeout_ms`=600000 w `test_spend_concurrency` (revert `d476ca1b` → `1cc84a8e`), bo na runnerze pod ASan 7/80 przekroczyło 30 s.

@@ -3,7 +3,9 @@
 
 #include "loom/annotation_layer.h"
 #include "loom/config.h"
+#include "loom/log.h"
 #include "loom/port_profile.h"
+#include "loom/scope_resolver.h"
 #include "loom/util/utf8.h"
 
 namespace loom::annotations {
@@ -37,7 +39,7 @@ std::string model_tier(const Json& models, const std::string& model, double pric
 }
 
 ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, const std::string& policy, const std::string& conv_id,
-                          const std::string& conversation_model, double price) {
+                          const std::string& conversation_model, double price, Database* db) {
   ModelChoice out;
   out.via = "none";
   auto pol = Policy::load_cached(root);
@@ -54,6 +56,25 @@ ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, 
     auto r = ports->resolve(role, Json::object(), conv_id, cfg.all());
     return r ? param_model(*r) : std::string();
   };
+  // A setting is read through the one scope chain (loom/scope_resolver.h): conversation -> units -> user -> installation, rules included.
+  std::optional<scopes::Resolver> resolver;
+  bool resolver_tried = false;
+  auto setting_value = [&](const std::string& setting) -> Json {
+    if (setting.empty()) return Json();
+    if (!resolver_tried) {
+      resolver_tried = true;
+      if (auto opened = scopes::Resolver::open(root, &cfg, db)) resolver = std::move(*opened);
+      else log::write(log::Level::Debug, "annotations", "scope chain not readable, settings decide: " + opened.error().message);
+    }
+    if (resolver) {
+      scopes::Binding b;
+      b.key = setting;
+      b.conv_id = conv_id;
+      if (auto r = resolver->resolve(b)) return r->defined ? r->value : Json();
+      else log::write(log::Level::Debug, "annotations", "'" + setting + "' not resolved through the scope chain: " + r.error().message);
+    }
+    return cfg.get(setting);
+  };
   auto tier_index = [&](const std::string& tier) {
     const Json tiers = models.value("tiers", Json::array());
     for (std::size_t i = 0; i < tiers.size(); ++i)
@@ -67,7 +88,7 @@ ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, 
     if (type == "explicit") {
       if (step.contains("model")) model = json::get_string(step, "model");
       else {
-        const Json v = cfg.get(json::get_string(step, "setting"));
+        const Json v = setting_value(json::get_string(step, "setting"));
         if (v.is_string()) model = v.get<std::string>();
       }
       via = "explicit:" + json::get_string(step, "setting", "model");
@@ -81,7 +102,7 @@ ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, 
       if (b.is_string() && b.get<std::string>() == "conversation") base = conversation_model;
       else if (b.is_object() && b.contains("role")) base = role_model(json::get_string(b, "role"));
       else if (b.is_object() && b.contains("setting")) {
-        const Json v = cfg.get(json::get_string(b, "setting"));
+        const Json v = setting_value(json::get_string(b, "setting"));
         if (v.is_string()) base = v.get<std::string>();
       }
       const int at = tier_index(model_tier(models, base, price));

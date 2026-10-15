@@ -2,7 +2,7 @@
 // plugins), "github" (GitHub sync), "actions" (action "list" = the action catalogue; "for", "explain" and
 // "propose_chain" ask the action/element matching engine, loom/action_rules.h; "run", "confirm", "cancel",
 // "status" and "preview" run actions through the interpreter, loom/action_runner.h), "chat" ("route" decides
-// message or command for a chat input, loom/chat_route.h), "ports" (read-only: "resolve", "explain" and
+// message or command for a chat input, loom/chat_route.h), "environments" ("sync", "list", "can_do": environments, capabilities and accesses in the graph, loom/environments.h), "ports" (read-only: "resolve", "explain" and
 // "roles" of the ports profile, loom/port_profile.h; request {role, conversation_id?}; "graph" writes the adapters
 // and the role choices as graph nodes, loom/port_graph.h, and returns their ids), "agent" ("run", "tools", "formats": the
 // tool loop of use_model over the catalogue of actions, loom/agent.h).
@@ -10,6 +10,7 @@
 #include "loom/agent.h"
 #include "loom/action_table.h"
 #include "loom/chat_route.h"
+#include "loom/environments.h"
 #include "loom/media_providers.h"
 #include "loom/port_graph.h"
 #include "loom/port_profile.h"
@@ -83,6 +84,16 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
       }
       auto r = a == "resolve" ? prof->resolve(role, meta, cid, ctx->rt->config().all())
                               : prof->explain(role, meta, cid, ctx->rt->config().all());
+      if (!r) return out_error(r.error());
+      return out(*r);
+    }
+    if (p == "environments") {
+      // Environments, capabilities and accesses of the graph (loom/environments.h): the question "what can I do on my phone / in this
+      // directory" is answered from the graph.
+      if (a != "sync" && a != "list" && a != "can_do") return out_error(Errc::InvalidArgument, "unknown environments action '" + a + "'");
+      auto r = a == "sync"   ? environments::sync(*ctx->rt, *rj)
+               : a == "list" ? environments::list(*ctx->rt, *rj)
+                             : environments::can_do(*ctx->rt, *rj);
       if (!r) return out_error(r.error());
       return out(*r);
     }

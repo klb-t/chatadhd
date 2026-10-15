@@ -290,6 +290,56 @@
         "pl": "Element portów"
       },
       "description": "A node that describes the port layer (port, adapter, role choice, port run); references only, never secrets or bytes."
+    },
+    "environment": {
+      "label": {
+        "en": "Environment",
+        "pl": "Środowisko"
+      },
+      "description": {
+        "en": "Something one can act on: a runtime (phone, server, command line, browser), a directory, a storage, a service account. What it can do is its capabilities; how one gets in is its accesses.",
+        "pl": "To, na czym można działać: środowisko uruchomieniowe (telefon, serwer, wiersz poleceń, przeglądarka), katalog, magazyn, konto w serwisie. Co potrafi, to jego zdolności; jak się tam dostać, to jego dostępy."
+      }
+    },
+    "capability": {
+      "label": {
+        "en": "Capability",
+        "pl": "Zdolność"
+      },
+      "description": {
+        "en": "What an environment can do (record sound, keep files, run a port ...). It points at the class of the thing that does it, so actions fit it by that class's traits.",
+        "pl": "Co środowisko potrafi (nagrywać dźwięk, trzymać pliki, uruchamiać port ...). Wskazuje klasę tego, co to robi, więc akcje dopasowują się po cechach tej klasy."
+      }
+    },
+    "access": {
+      "label": {
+        "en": "Access",
+        "pl": "Dostęp"
+      },
+      "description": {
+        "en": "How one may act in an environment: a key, a token, a login, a permission, physical possession. Holds a reference to the secrets vault (a key name), never the secret itself.",
+        "pl": "Jak można działać w środowisku: klucz, token, logowanie, zgoda, fizyczne posiadanie. Trzyma odniesienie do sejfu (nazwę klucza), nigdy sam sekret."
+      }
+    },
+    "credential_reference": {
+      "label": {
+        "en": "Credential reference",
+        "pl": "Odniesienie do poświadczenia"
+      },
+      "description": {
+        "en": "A name of a secret in the vault and whether it is set; the value never enters the graph.",
+        "pl": "Nazwa sekretu w sejfie i informacja, czy jest ustawiony; wartość nigdy nie trafia do grafu."
+      }
+    },
+    "environment_artifact": {
+      "label": {
+        "en": "Environment artifact",
+        "pl": "Element środowisk"
+      },
+      "description": {
+        "en": "A node of the environment layer (environment, capability, access, vault); references only, never secrets or bytes.",
+        "pl": "Węzeł warstwy środowisk (środowisko, zdolność, dostęp, sejf); tylko odniesienia, nigdy sekrety ani bajty."
+      }
     }
   },
   "groups": {
@@ -476,6 +526,16 @@
         "port_artifact"
       ],
       "element_match": "any"
+    },
+    "environments": {
+      "label": {
+        "en": "Environments, capabilities and accesses",
+        "pl": "Środowiska, zdolności i dostępy"
+      },
+      "traits": [
+        "environment_artifact"
+      ],
+      "element_match": "any"
     }
   },
   "relations": {
@@ -570,6 +630,78 @@
       "from": "port_run",
       "to": "action_run",
       "description": "A port run that happened inside an action run (the run id is in the execution context)."
+    },
+    "has_capability": {
+      "label": {
+        "en": "Has capability",
+        "pl": "Ma zdolność"
+      },
+      "from": "environment",
+      "to": "capability",
+      "description": {
+        "en": "The environment can do this; the capability points at the class of the thing that does it.",
+        "pl": "Środowisko to potrafi; zdolność wskazuje klasę tego, co to wykonuje."
+      }
+    },
+    "accessed_via": {
+      "label": {
+        "en": "Accessed via",
+        "pl": "Dostęp przez"
+      },
+      "from": "environment",
+      "to": "access",
+      "description": {
+        "en": "One gets into the environment this way.",
+        "pl": "Do środowiska wchodzi się tym sposobem."
+      }
+    },
+    "requires_access": {
+      "label": {
+        "en": "Requires access",
+        "pl": "Wymaga dostępu"
+      },
+      "from": "capability",
+      "to": "access",
+      "description": {
+        "en": "The capability is usable only with this access (for example an operating-system permission).",
+        "pl": "Zdolność działa tylko z tym dostępem (na przykład zgodą systemu)."
+      }
+    },
+    "stored_in": {
+      "label": {
+        "en": "Stored in",
+        "pl": "Przechowywane w"
+      },
+      "from": "access",
+      "to": "secret_vault",
+      "description": {
+        "en": "The secret an access refers to lives in the vault; the node holds the key name only.",
+        "pl": "Sekret, do którego odnosi się dostęp, leży w sejfie; węzeł trzyma samą nazwę klucza."
+      }
+    },
+    "hosted_on": {
+      "label": {
+        "en": "Hosted on",
+        "pl": "Działa na"
+      },
+      "from": "environment",
+      "to": "environment",
+      "description": {
+        "en": "The environment lives on, or is reached through, another one (a storage on a runtime or in a directory).",
+        "pl": "Środowisko działa na innym albo jest osiągane przez inne (magazyn na środowisku uruchomieniowym lub w katalogu)."
+      }
+    },
+    "provided_by": {
+      "label": {
+        "en": "Provided by",
+        "pl": "Dostarczane przez"
+      },
+      "from": "capability",
+      "to": "port",
+      "description": {
+        "en": "The capability is carried out by this port (its adapters are the means).",
+        "pl": "Zdolność wykonuje ten port (jego adaptery są środkami)."
+      }
     }
   },
   "classes": {
@@ -1089,6 +1221,98 @@
       "traits": [
         "port_run",
         "port_artifact"
+      ]
+    },
+    "environment": {
+      "label": {
+        "en": "Environment",
+        "pl": "Środowisko"
+      },
+      "traits": [
+        "environment",
+        "environment_artifact"
+      ]
+    },
+    "runtime_environment": {
+      "label": {
+        "en": "Runtime environment (phone, server, command line)",
+        "pl": "Środowisko uruchomieniowe (telefon, serwer, wiersz poleceń)"
+      },
+      "parent": "application",
+      "traits": [
+        "environment",
+        "environment_artifact"
+      ]
+    },
+    "client_environment": {
+      "label": {
+        "en": "Client environment (browser)",
+        "pl": "Środowisko klienta (przeglądarka)"
+      },
+      "parent": "environment",
+      "traits": [
+        "environment_artifact"
+      ]
+    },
+    "directory_environment": {
+      "label": {
+        "en": "Directory",
+        "pl": "Katalog"
+      },
+      "parent": "environment",
+      "traits": [
+        "environment_artifact"
+      ]
+    },
+    "storage_environment": {
+      "label": {
+        "en": "Storage",
+        "pl": "Magazyn"
+      },
+      "parent": "storage",
+      "traits": [
+        "environment",
+        "environment_artifact"
+      ]
+    },
+    "service_environment": {
+      "label": {
+        "en": "Account at a service",
+        "pl": "Konto w serwisie"
+      },
+      "parent": "environment",
+      "traits": [
+        "environment_artifact"
+      ]
+    },
+    "capability": {
+      "label": {
+        "en": "Capability",
+        "pl": "Zdolność"
+      },
+      "traits": [
+        "capability",
+        "environment_artifact"
+      ]
+    },
+    "access": {
+      "label": {
+        "en": "Access",
+        "pl": "Dostęp"
+      },
+      "traits": [
+        "access",
+        "credential_reference",
+        "environment_artifact"
+      ]
+    },
+    "secret_vault": {
+      "label": {
+        "en": "Secrets vault",
+        "pl": "Sejf poświadczeń"
+      },
+      "traits": [
+        "environment_artifact"
       ]
     }
   }

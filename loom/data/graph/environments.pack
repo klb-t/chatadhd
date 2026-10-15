@@ -1,0 +1,421 @@
+{
+  "schema": "loom.graph_environments/1",
+  "revision": 1,
+  "calibration": true,
+  "description": "Environments, capabilities and accesses as graph nodes (PRZEGLAD_STRAZNIK_SRODOWISKA §3.1, S2/R32). An environment is what one can act on (a runtime such as a phone or this server, a directory, a configured storage, an account at a service); its capabilities say what it can do and are DERIVED from data that already exists (device availability per platform in graph/devices.pack, the ports and their adapters, the capabilities of a storage in storage_security, the probe of a directory); its accesses say how one gets in and hold only a REFERENCE to the secrets vault (a key name and whether it is set) - the bytes of a secret never enter a node, a link or an answer. Everything here is a preset and an example, not a closed list: the owner adds, hides or changes entries through the graph_entry overlay (environments), exactly like devices. Classes and traits are in graph/classes.pack. Mechanism vs data: code knows the five sources and the node/link shapes; which platforms, aliases, services, secrets and kinds exist is this file.",
+  "environments": {
+    "settings": {
+      "auto_sync": {
+        "value": true,
+        "description": {
+          "en": "Bring the environment nodes up to date from their sources before answering a question about them.",
+          "pl": "Przed odpowiedzią na pytanie o środowiska uaktualnij ich węzły ze źródeł."
+        }
+      },
+      "probe_paths": {
+        "value": true,
+        "description": {
+          "en": "A question about a directory looks at what the operating system says about it (exists, readable, writable). Off: only what the graph already holds.",
+          "pl": "Pytanie o katalog sprawdza, co mówi system (istnieje, do odczytu, do zapisu). Wyłączone: tylko to, co graf już zawiera."
+        }
+      }
+    },
+    "runtimes": {
+      "android": {
+        "class": "runtime_environment",
+        "hosts_ports": true,
+        "current_when_built_for": "android",
+        "access": {
+          "kind": "physical",
+          "label": {
+            "en": "The phone is in my hands",
+            "pl": "Telefon mam w ręku"
+          }
+        },
+        "aliases": {
+          "en": [
+            "phone",
+            "my phone",
+            "mobile",
+            "android"
+          ],
+          "pl": [
+            "telefon",
+            "mój telefon",
+            "moim telefonie",
+            "komórka",
+            "android"
+          ]
+        }
+      },
+      "server": {
+        "class": "runtime_environment",
+        "hosts_ports": true,
+        "current_when_built_for": "default",
+        "access": {
+          "kind": "operator",
+          "label": {
+            "en": "I run this server",
+            "pl": "Prowadzę ten serwer"
+          }
+        },
+        "aliases": {
+          "en": [
+            "server",
+            "this server",
+            "this machine",
+            "computer"
+          ],
+          "pl": [
+            "serwer",
+            "ten serwer",
+            "ta maszyna",
+            "komputer"
+          ]
+        }
+      },
+      "cli": {
+        "class": "runtime_environment",
+        "hosts_ports": true,
+        "current_when_built_for": "",
+        "access": {
+          "kind": "operator",
+          "label": {
+            "en": "I am at the command line",
+            "pl": "Jestem w wierszu poleceń"
+          }
+        },
+        "aliases": {
+          "en": [
+            "command line",
+            "terminal",
+            "shell",
+            "cli"
+          ],
+          "pl": [
+            "wiersz poleceń",
+            "terminal",
+            "konsola",
+            "cli"
+          ]
+        }
+      },
+      "web": {
+        "class": "client_environment",
+        "hosts_ports": false,
+        "current_when_built_for": "",
+        "access": {
+          "kind": "session",
+          "label": {
+            "en": "My browser session",
+            "pl": "Moja sesja w przeglądarce"
+          }
+        },
+        "aliases": {
+          "en": [
+            "browser",
+            "web",
+            "web page"
+          ],
+          "pl": [
+            "przeglądarka",
+            "przeglądarce",
+            "strona",
+            "web"
+          ]
+        }
+      }
+    },
+    "ports": {
+      "asr": {
+        "element_class": "port"
+      },
+      "ocr": {
+        "element_class": "port"
+      },
+      "batch": {
+        "element_class": "port"
+      },
+      "storage": {
+        "element_class": "storage_backend"
+      }
+    },
+    "directory": {
+      "class": "directory_environment",
+      "aliases": {
+        "en": [
+          "this directory",
+          "this folder",
+          "data directory",
+          "data folder"
+        ],
+        "pl": [
+          "ten katalog",
+          "ten folder",
+          "katalog danych",
+          "folder danych"
+        ]
+      },
+      "capabilities": {
+        "read_files": {
+          "element_class": "file_access",
+          "when": [
+            "readable"
+          ],
+          "label": {
+            "en": "Read files",
+            "pl": "Odczyt plików"
+          }
+        },
+        "write_files": {
+          "element_class": "file_access",
+          "when": [
+            "writable"
+          ],
+          "label": {
+            "en": "Write files",
+            "pl": "Zapis plików"
+          }
+        },
+        "keep_data": {
+          "element_class": "storage_backend",
+          "when": [
+            "data_directory"
+          ],
+          "label": {
+            "en": "Holds the Loom data (conversations, graph, settings)",
+            "pl": "Trzyma dane Loom (rozmowy, graf, ustawienia)"
+          }
+        }
+      },
+      "access": {
+        "kind": "file_permission",
+        "label": {
+          "en": "Operating-system file permissions of this user",
+          "pl": "Uprawnienia plikowe tego użytkownika w systemie"
+        }
+      }
+    },
+    "storage": {
+      "class": "storage_environment",
+      "from": {
+        "domain": "storage_security",
+        "pointer": "/storages"
+      },
+      "skip_when": {
+        "configured": false
+      },
+      "capability_class": "storage_backend",
+      "platform_map": {
+        "web": [
+          "web",
+          "all"
+        ],
+        "android": [
+          "android",
+          "all"
+        ],
+        "server": [
+          "server",
+          "linux",
+          "macos",
+          "windows",
+          "all"
+        ],
+        "cli": [
+          "linux",
+          "macos",
+          "windows",
+          "all"
+        ]
+      },
+      "access_kinds": {
+        "s3": "access_key",
+        "webdav": "basic_or_token",
+        "gdrive": "oauth2",
+        "github": "token"
+      },
+      "key_custody_prefix": "secrets.json:"
+    },
+    "services": {
+      "chat_provider": {
+        "label": {
+          "en": "Chat model provider (OpenRouter-compatible)",
+          "pl": "Dostawca modeli czatu (zgodny z OpenRouter)"
+        },
+        "keys": [
+          "api_key"
+        ],
+        "ports": [
+          "llm"
+        ]
+      },
+      "batch_provider": {
+        "label": {
+          "en": "Anthropic Message Batches",
+          "pl": "Anthropic Message Batches"
+        },
+        "keys": [
+          "anthropic_batch_key"
+        ],
+        "ports": [
+          "batch"
+        ]
+      },
+      "github": {
+        "label": {
+          "en": "GitHub",
+          "pl": "GitHub"
+        },
+        "keys": [
+          "github_token"
+        ],
+        "ports": [
+          "storage"
+        ]
+      },
+      "groq": {
+        "label": {
+          "en": "Groq (speech recognition)",
+          "pl": "Groq (rozpoznawanie mowy)"
+        },
+        "keys": [
+          "groq_api_key"
+        ],
+        "ports": [
+          "asr"
+        ]
+      },
+      "google_speech": {
+        "label": {
+          "en": "Google Speech",
+          "pl": "Google Speech"
+        },
+        "keys": [
+          "google_speech_api_key"
+        ],
+        "ports": [
+          "asr"
+        ]
+      },
+      "ocr_space": {
+        "label": {
+          "en": "OCR.space",
+          "pl": "OCR.space"
+        },
+        "keys": [
+          "ocr_space_api_key"
+        ],
+        "ports": [
+          "ocr"
+        ]
+      }
+    },
+    "service_class": "service_environment",
+    "vault": {
+      "label": {
+        "en": "Secrets vault (secrets.json, owner-only)",
+        "pl": "Sejf poświadczeń (secrets.json, tylko właściciel)"
+      },
+      "file": "secrets.json"
+    },
+    "credential_kinds": {
+      "suffixes": {
+        "_api_key": "api_key",
+        "_key": "api_key",
+        "_token": "token",
+        "_password": "password",
+        "_secret": "secret",
+        "_user": "login",
+        "_id": "identifier"
+      },
+      "default": "secret"
+    },
+    "access_kinds": {
+      "physical": {
+        "label": {
+          "en": "Physical possession",
+          "pl": "Fizyczne posiadanie"
+        }
+      },
+      "operator": {
+        "label": {
+          "en": "Operator of the runtime",
+          "pl": "Operator środowiska"
+        }
+      },
+      "session": {
+        "label": {
+          "en": "Session in the browser",
+          "pl": "Sesja w przeglądarce"
+        }
+      },
+      "file_permission": {
+        "label": {
+          "en": "File permission",
+          "pl": "Uprawnienie plikowe"
+        }
+      },
+      "os_permission": {
+        "label": {
+          "en": "Permission granted by the user to the application",
+          "pl": "Zgoda użytkownika dla aplikacji"
+        }
+      },
+      "api_key": {
+        "label": {
+          "en": "API key",
+          "pl": "Klucz API"
+        }
+      },
+      "token": {
+        "label": {
+          "en": "Token",
+          "pl": "Token"
+        }
+      },
+      "password": {
+        "label": {
+          "en": "Password",
+          "pl": "Hasło"
+        }
+      },
+      "access_key": {
+        "label": {
+          "en": "Access key",
+          "pl": "Klucz dostępu"
+        }
+      },
+      "basic_or_token": {
+        "label": {
+          "en": "Login and password, or token",
+          "pl": "Login i hasło albo token"
+        }
+      },
+      "oauth2": {
+        "label": {
+          "en": "OAuth2",
+          "pl": "OAuth2"
+        }
+      },
+      "secret": {
+        "label": {
+          "en": "Secret",
+          "pl": "Sekret"
+        }
+      },
+      "login": {
+        "label": {
+          "en": "Login",
+          "pl": "Login"
+        }
+      },
+      "identifier": {
+        "label": {
+          "en": "Identifier",
+          "pl": "Identyfikator"
+        }
+      }
+    }
+  }
+}
