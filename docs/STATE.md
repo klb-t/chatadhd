@@ -1,13 +1,10 @@
 # STATE — ChatADHD / Loom
 
-> B, 2026-10-15 UTC: follow-up `b5e67f45` (Generalizer 4 / pipeline 10)
-> ma aktualne 35/35 scope, 293 native / 8746 asercji, guard PASS oraz migrację
-> CLI z zachowaniem starego wyniku i sześcioma trafieniami cache. Pełny dev v4
-> na f3ce2c18: 203 wykonane / 204 wpisy, 1355 native / 47930 asercji / 2077 Python,
-> guard PASS. ASan przerwany po 41 wpisach ujawnił wyciek w teście C API
-> (naprawiony i sprawdzony: 16 przypadków / 2633 asercji) oraz zależny od granicy
-> minuty test tytułu importu. Pozostała macierz trwa; poniższy pełny dev dotyczy v3.
-> [Aktualny raport](reports/implicit-structures-2026-10-14.md).
+> B, 2026-10-15 UTC: przyjęte poprawki Claude’a `e368d7d1` → `b2051da1`
+> i `21cb0566` → `f74f0e1a`; ASan scope 8/8, 79 native / 2027 asercji,
+> guard PASS. Pełny ASan przed przyjęciem poprawek: FAIL, 7 porażek, w tym
+> timeout CLI 300 s (limit pozostaje). Pełna macierz złożonego drzewa jest następna.
+> Kod rozpoznawania: Generalizer 4 / pipeline 10. [Raport](reports/implicit-structures-2026-10-14.md).
 
 ## 2026-10-15 — B: osobna gałąź rozpoznawania struktur
 

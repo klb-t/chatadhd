@@ -1,0 +1,98 @@
+{
+  "architecture": "x86_64",
+  "binaries": [
+    {
+      "bytes": 1748855624,
+      "path": "/workspace/chatadhd/loom/build/asan/loom_tests",
+      "present": true,
+      "sha256": "ef1dca1a7c6d35d28df5bf8003346184f6a9c85a54b4cee8671334c75ba8cf67"
+    },
+    {
+      "bytes": 851512808,
+      "path": "/workspace/chatadhd/loom/build/asan/cli/loom",
+      "present": true,
+      "sha256": "a4bc49faa9de0d2b8380193b7d7c39fbc14b6b1f79aab5baf54adff175582191"
+    },
+    {
+      "bytes": 936419800,
+      "path": "/workspace/chatadhd/loom/build/asan/server/loom-server",
+      "present": true,
+      "sha256": "42dc11374bd57ea51462f8282a3d94dd4eba4b45c44328b501424563a0b4d051"
+    },
+    {
+      "bytes": 846310616,
+      "path": "/workspace/chatadhd/loom/build/asan/loom_compat_tool",
+      "present": true,
+      "sha256": "cf52cc4af2255db6f24b129e670d6b256c02a08ce42fa8e7e599b6f1b5e463d2"
+    },
+    {
+      "bytes": 14970808,
+      "path": "/workspace/chatadhd/loom/build/asan/loom_candidate_graph_native_tool",
+      "present": true,
+      "sha256": "7825f5f00bd923b33bff13d0329d8af3cb1e13a6a0103b5ff3d687e03cad639d"
+    },
+    {
+      "bytes": 135757904,
+      "path": "/workspace/chatadhd/loom/build/dev/libloom.so",
+      "present": true,
+      "sha256": "e1d09f1e223d74021b5515cda659dd5ae064962f9dd8950fc76a840d6e29b949"
+    },
+    {
+      "path": "/workspace/chatadhd/loom/build/asan/libloom.so",
+      "present": false
+    }
+  ],
+  "cmake_configuration": {
+    "bytes": 21684,
+    "fields": {
+      "CMAKE_BUILD_TYPE": {
+        "type": "STRING",
+        "value": "Debug"
+      },
+      "CMAKE_CXX_COMPILER": {
+        "type": "STRING",
+        "value": "/workspace/.onboarding/sysroot/usr/bin/g++-13"
+      },
+      "CMAKE_CXX_FLAGS": {
+        "type": "STRING",
+        "value": "-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined"
+      },
+      "CMAKE_CXX_FLAGS_DEBUG": {
+        "type": "STRING",
+        "value": "-g1"
+      },
+      "CMAKE_C_COMPILER": {
+        "type": "STRING",
+        "value": "/workspace/.onboarding/sysroot/usr/bin/gcc-13"
+      },
+      "CMAKE_C_FLAGS": {
+        "type": "STRING",
+        "value": "-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined"
+      },
+      "LOOM_BUILD_SERVER": {
+        "type": "BOOL",
+        "value": "ON"
+      },
+      "LOOM_SHARED": {
+        "type": "BOOL",
+        "value": "OFF"
+      },
+      "LOOM_USE_SYSTEM_SQLITE": {
+        "type": "BOOL",
+        "value": "OFF"
+      },
+      "LOOM_WERROR": {
+        "type": "BOOL",
+        "value": "ON"
+      }
+    },
+    "path": "/workspace/chatadhd/loom/build/asan/CMakeCache.txt",
+    "sha256": "dbd73901fdf0861cb651d58ba2da434179f79e24e614e7833090ecc8074e078b"
+  },
+  "platform": "Linux",
+  "preset": "asan",
+  "python": "3.12.14",
+  "schema": "loom.build_evidence/1",
+  "source_commit": "f74f0e1ada1d93b784dbfab597288b632090a502",
+  "source_tree": "9e8ff674d10c5acd0193ff94ffc29eb07b818ca9"
+}

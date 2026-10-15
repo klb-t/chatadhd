@@ -1,0 +1,74 @@
+{
+  "entries": [
+    {
+      "assertions": 592,
+      "cases": 20,
+      "classification": "executed",
+      "name": "unit.test_crypto_pq"
+    },
+    {
+      "assertions": 34,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_generalize_perspectives"
+    },
+    {
+      "assertions": 241,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_graph_devices"
+    },
+    {
+      "assertions": 171,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_graph_entry"
+    },
+    {
+      "assertions": 132,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_implicit_structures"
+    },
+    {
+      "assertions": 451,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_rom"
+    },
+    {
+      "assertions": 406,
+      "cases": 25,
+      "classification": "executed",
+      "name": "unit.test_storage"
+    },
+    {
+      "case_count": "script does not expose an inner case count",
+      "classification": "executed",
+      "name": "server.smoke"
+    }
+  ],
+  "errors": [],
+  "executed_entries": 8,
+  "executed_native_assertions": 2027,
+  "executed_native_cases": 79,
+  "executed_python_cases": 0,
+  "input_sha256": {
+    "junit": "62f246d942f861cfc70338cacfd41401b3cad0aef6c08509b095445b95f516f5",
+    "manifest": "d8be6a9f5f40cb14a0018a0e4b7620a56e6c0f569c4f70ac6807c1badc98d9d2"
+  },
+  "junit_entries": 8,
+  "manifest_entries": 8,
+  "policy_provenance": {
+    "path": "/workspace/chatadhd/.github/ctest-evidence-policy.json",
+    "revision": 3,
+    "schema": "loom.ctest_evidence_policy/1",
+    "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+    "sha256": "e6a914f4146c469929f80b6de8580dd2016230e6b5c4cc4e8574fc8cb60af408"
+  },
+  "preset": "asan",
+  "schema": "loom.ctest_evidence/1",
+  "skipped_python_cases": 0,
+  "unexecuted_entries": [],
+  "valid": true
+}

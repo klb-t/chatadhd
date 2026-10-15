@@ -1,6 +1,29 @@
 # Unnamed relational structures and qualified analogies — 2026-10-14
 
-## Current code — canonical comparison verified in scope, 2026-10-15 UTC
+## Current integration checkpoint — 2026-10-15 UTC
+
+Narrow upstream fixes accepted with authorship and `cherry-pick -x` provenance:
+`e368d7d1` → `b2051da1` (graph-entry temporary lifetime),
+`21cb0566` → `f74f0e1a` (storage fixture binary-array length). No other main
+commits or branch state were imported. Scoped ASan on the composed tree passed
+**8/8 entries, 79 native cases / 2027 assertions, guard PASS**,
+including the previously crashing graph/storage consumers, server smoke and
+both new generalization suites. Full subsequent matrix remains pending.
+
+The completed pre-intake ASan (`full-asan-v4-r2/`, source `0e5fe095`) is **FAIL**:
+203 selected, seven failures. Four native consumers and server smoke exposed
+the graph-entry defect; storage exposed the fixture overflow; `cli.smoke`
+exceeded its unchanged 300-second CTest timeout. The full log/JUnit and failed
+guard are retained. No failure is treated as a skip or a PASS. Main's separate
+CLI timeout increase (`030f404d`) has not been accepted; the existing bound stays.
+
+Fresh main observed: `92818518` (320 commits after this branch's base).
+A merge-tree preview before intake found textual conflicts only in STATE/INDEX;
+the knowledge-engine fingerprint merged with main's path confinement. This is
+not execution evidence for the merged main tree. C API fix `0e5fe095` is identical
+to main `d47f04f3` and must not be counted as a new main change.
+
+## Canonical comparison — verified scope, 2026-10-15 UTC
 
 Code `b5e67f45` is now verified by `comparison-scope/`: **35/35 entries,
 293 native cases / 8746 assertions, guard PASS**, no unexecuted entries and
