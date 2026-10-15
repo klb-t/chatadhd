@@ -266,7 +266,7 @@ TEST_SUITE("tool_sources") {
               R::json(200, Json{{"jsonrpc", "2.0"}, {"id", 2}, {"result", Json{{"tools", Json::array({Json{{"name", "ping"}, {"description", "Ping"}, {"inputSchema", Json{{"type", "object"}, {"properties", Json{{"host", Json{{"type", "string"}}}}}}}}})}}}}));
     t->expect("DELETE", "https://tools.example/mcp", R::text(405, ""));
     f.rt->set_http_transport(t);
-    f.call("add", Json{{"id", "web"}, {"transport", "http"}, {"url", "https://tools.example/mcp?key=urlsecret"}, {"access", Json{{"secret", "http_token"}}}});
+    f.call("add", Json{{"id", "web"}, {"transport", "http"}, {"url", "https://tools.example/mcp"}, {"access", Json{{"secret", "http_token"}}}});
     CHECK(!f.catalogue_entry("tool.web.ping").is_null());
     const auto first = t->requests();
     REQUIRE(first.size() >= 3);
@@ -286,7 +286,8 @@ TEST_SUITE("tool_sources") {
     CHECK(!f.catalogue_entry("tool.web.pong").is_null());
     CHECK(f.catalogue_entry("tool.web.ping").is_null());  // a tool the server no longer lists is gone
     CHECK(f.everything().find(kCanary) == std::string::npos);
-    CHECK(f.everything().find("urlsecret") == std::string::npos);
+    auto userinfo = tool_sources::invoke(*f.rt, "add", Json{{"id", "u"}, {"transport", "http"}, {"url", "https://name:pw@tools.example/mcp"}});
+    CHECK(!userinfo);  // credentials do not belong in a url
   }
 
   TEST_CASE("an unknown kind is refused with the known ones; the kind registry takes more kinds as data plus an adapter") {

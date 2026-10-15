@@ -65,6 +65,13 @@ Status validate_source(const std::string& id, const Json& cfg) {
   const std::string transport = json::get_string(cfg, "transport");
   if (transport == "stdio" && !json::find(cfg, "command")) return Error(Errc::InvalidArgument, "a stdio source needs command");
   if (transport == "http" && json::get_string(cfg, "url").empty()) return Error(Errc::InvalidArgument, "an http source needs url");
+  if (transport == "http") {
+    const std::string url = json::get_string(cfg, "url");
+    const auto scheme = url.find("://");
+    const auto at = url.find('@');
+    if (scheme != std::string::npos && at != std::string::npos && at < url.find('/', scheme + 3))
+      return Error(Errc::InvalidArgument, "a url holds no credentials: give access {secret: <vault key name>} instead");
+  }
   if (transport != "stdio" && transport != "http") return Error(Errc::InvalidArgument, "transport is stdio or http");
   if (const Json* a = json::find(cfg, "access")) {
     if (!a->is_object()) return Error(Errc::InvalidArgument, "access is {secret: <vault key name>, header?, scheme?}");
