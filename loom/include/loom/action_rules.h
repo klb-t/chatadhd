@@ -144,6 +144,8 @@ class Engine {
   const Json& user_values() const { return user_values_; }
   // The chain level a name (or alias) denotes ("" when unknown).
   std::string level_name(std::string_view name) const;
+  // The chain as data, most general first: [{id, label, ...}] (graph/scopes.pack plus the user's graph_entry overlay).
+  const Json& scope_chain() const { return scope_chain_; }
 
   // Gate decision of the rules for (element, action). The action need not be in the catalogue
   // (settings fields use the action "edit").

@@ -1,4 +1,5 @@
 // The compiled representation of a conversation (level L3) and what the context selector reads (select()).
+#include "loom/scope_resolver.h"
 #include <algorithm>
 #include <map>
 #include <set>
@@ -343,16 +344,14 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
   // The value in the scope of the conversation (R47): the installation's preset, the user's setting, a rule of the conversation.
   std::string name = json::get_string(section, "active", "raw");
   if (has_pref) name = pref.get<std::string>();
-  if (auto engine = actions::Engine::load(root)) {
-    engine->set_user_values(cfg.all());
-    std::vector<actions::Baseline> baselines;
-    baselines.emplace_back("installation", json::get_string(section, "active", "raw"), "profile:guardian.representation.active");
-    if (has_pref) baselines.emplace_back("person", pref, "setting:chat_representation");
-    if (auto scope = engine->parse_scope(Json{{"conversation", conv_id}, {"turn", ""}})) {
-      if (auto sv = engine->resolve_value("chat_representation", *scope, baselines); sv && sv->defined && sv->value.is_string()) name = sv->value.get<std::string>();
-    }
-  } else {
-    log::write(log::Level::Debug, detail::kLog, "scope rules not readable, the setting decides: " + engine.error().message);
+  {
+    scopes::Binding bind;
+    bind.key = "chat_representation";
+    bind.installation = json::get_string(section, "active", "raw");
+    bind.installation_source = "profile:guardian.representation.active";
+    bind.conv_id = conv_id;
+    const Json v = scopes::value_or(root, cfg, &db, bind, Json(name));
+    if (v.is_string()) name = v.get<std::string>();
   }
   if (!section.at("presets").contains(name)) name = json::get_string(section, "unknown", "raw");
   sel.preset = name;
@@ -374,13 +373,15 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
     std::string allowed = json::get_string(vis, "active", "send");
     const Json mine = cfg.get(json::get_string(vis, "setting", "guardian_person_rules"));
     if (mine.is_string() && !mine.get<std::string>().empty()) allowed = mine.get<std::string>();
-    if (auto engine = actions::Engine::load(root)) {
-      engine->set_user_values(cfg.all());
-      std::vector<actions::Baseline> baselines;
-      baselines.emplace_back("installation", json::get_string(vis, "active", "send"), "profile:guardian.privacy.visibility.active");
-      if (mine.is_string() && !mine.get<std::string>().empty()) baselines.emplace_back("person", mine, "setting:guardian_person_rules");
-      if (auto scope = engine->parse_scope(Json{{"conversation", conv_id}, {"turn", ""}}))
-        if (auto sv = engine->resolve_value("guardian_person_rules", *scope, baselines); sv && sv->defined && sv->value.is_string()) allowed = sv->value.get<std::string>();
+    {
+      scopes::Binding bind;
+      bind.key = "guardian_person_rules";
+      bind.installation = json::get_string(vis, "active", "send");
+      bind.installation_source = "profile:guardian.privacy.visibility.active";
+      bind.person_setting = json::get_string(vis, "setting", "guardian_person_rules");
+      bind.conv_id = conv_id;
+      const Json v = scopes::value_or(root, cfg, &db, bind, Json(allowed));
+      if (v.is_string()) allowed = v.get<std::string>();
     }
     if (!vis.at("presets").contains(allowed)) allowed = json::get_string(vis, "unknown", "send");
     if (allowed == "send") {
