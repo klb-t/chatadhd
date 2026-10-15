@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 
+#include "loom/action_runner.h"
 #include "loom/action_table.h"
 #include "loom/config.h"
 #include "loom/db.h"
