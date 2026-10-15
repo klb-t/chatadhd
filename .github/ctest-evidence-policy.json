@@ -48,6 +48,7 @@
         }
       ]
     },
-    "vendored": {"unavailable_entries": []}
+    "vendored": {"unavailable_entries": []},
+    "libcxx": {"unavailable_entries": []}
   }
 }

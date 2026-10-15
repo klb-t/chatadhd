@@ -67,6 +67,18 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
       target_compile_options(loom_warnings INTERFACE
         $<$<COMPILE_LANGUAGE:CXX>:-Wno-error=null-dereference -Wno-error=maybe-uninitialized>)
     endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      # nlohmann/json 3.11.3 (pinned) probes is_comparable<std::equal_to<>, string, json_pointer> for
+      # at()/contains()/operator[] with a json_pointer. libc++ evaluates equal_to<>'s noexcept-spec there, which selects
+      # json_pointer's own deprecated operator==(json_pointer, string) overload and reports it at <__functional/operations.h>
+      # (libstdc++ never does). The warning is inside the library's trait probe, not in our code, and the vendored
+      # header is pinned by sha256, so it stays a visible warning instead of a hard error. Every other warning stays fatal.
+      include(CheckCXXSourceCompiles)
+      check_cxx_source_compiles("#include <cstddef>\n#ifndef _LIBCPP_VERSION\n#error not libc++\n#endif\nint main(){}" LOOM_USING_LIBCXX)
+      if(LOOM_USING_LIBCXX)
+        target_compile_options(loom_warnings INTERFACE $<$<COMPILE_LANGUAGE:CXX>:-Wno-error=deprecated-declarations>)
+      endif()
+    endif()
   endif()
 endif()
 
@@ -220,6 +232,22 @@ if(LOOM_BUILD_TESTS)
     endif()
     add_test(NAME unit.${_name} COMMAND loom_tests --source-file=*/${_name}.cpp --no-intro=true)
   endforeach()
+
+  # C-ABI lifecycle probe (init/subscribe/shutdown loop) in plain C against the public header only. Runs in every
+  # preset: against libloom.so when it is built, else against loom_core (same code, static). It exists because a
+  # destruction-order bug (R30) crashed only under libc++, the Android standard library; see the `libcxx` preset.
+  add_executable(loom_shutdown_probe ${LOOM_ROOT}/tests/shutdown_cabi_probe.c)
+  target_include_directories(loom_shutdown_probe PRIVATE ${LOOM_ROOT}/include)
+  set_target_properties(loom_shutdown_probe PROPERTIES LINKER_LANGUAGE CXX)
+  if(LOOM_SHARED)
+    target_link_libraries(loom_shutdown_probe PRIVATE loom)
+  else()
+    target_link_libraries(loom_shutdown_probe PRIVATE loom_core loom_sqlite)
+  endif()
+  add_test(NAME capi.shutdown_cycle
+    COMMAND ${CMAKE_COMMAND} -DPROBE=$<TARGET_FILE:loom_shutdown_probe> -DDIR=${CMAKE_CURRENT_BINARY_DIR}/capi_shutdown_data
+      -P ${LOOM_ROOT}/tests/run_shutdown_probe.cmake)
+  set_tests_properties(capi.shutdown_cycle PROPERTIES TIMEOUT 120)
 
   file(GLOB LOOM_COMPAT_SOURCES CONFIGURE_DEPENDS ${LOOM_ROOT}/tests/compat/*.cpp)
   list(FILTER LOOM_COMPAT_SOURCES EXCLUDE REGEX "/candidate_graph_native_tool\\.cpp$")
