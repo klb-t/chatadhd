@@ -17,7 +17,8 @@
       "storage": "storage.*",
       "github": "github.*",
       "chat": "chat.*",
-      "ports": "ports.*"
+      "ports": "ports.*",
+      "environments": "environments.*"
     },
     "capabilities": [
       {
@@ -143,6 +144,69 @@
         "examples": {
           "pl": "jak to zrobić: streścić tę rozmowę",
           "en": "how do I summarise this conversation"
+        }
+      },
+      {
+        "id": "environments_can_do",
+        "title": {
+          "en": "What can I do on my phone, on this server, in this directory, in a storage",
+          "pl": "Co mogę zrobić na telefonie, na tym serwerze, w tym katalogu, w magazynie"
+        },
+        "via": "action",
+        "action": "environments.can_do",
+        "surfaces": {
+          "http": [
+            "POST /api/environments/can_do"
+          ],
+          "invoke": [
+            "environments.can_do"
+          ]
+        },
+        "examples": {
+          "pl": "co mogę zrobić na moim telefonie?",
+          "en": "what can I do on my phone?"
+        }
+      },
+      {
+        "id": "environments_list",
+        "title": {
+          "en": "My environments, their capabilities and accesses",
+          "pl": "Moje środowiska, ich zdolności i dostępy"
+        },
+        "via": "action",
+        "action": "environments.list",
+        "surfaces": {
+          "http": [
+            "GET /api/environments"
+          ],
+          "invoke": [
+            "environments.list"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż moje środowiska",
+          "en": "list my environments"
+        }
+      },
+      {
+        "id": "environments_sync",
+        "title": {
+          "en": "Bring the environment nodes up to date",
+          "pl": "Uaktualnij węzły środowisk"
+        },
+        "via": "action",
+        "action": "environments.sync",
+        "surfaces": {
+          "http": [
+            "POST /api/environments/sync"
+          ],
+          "invoke": [
+            "environments.sync"
+          ]
+        },
+        "examples": {
+          "pl": "odśwież moje środowiska",
+          "en": "refresh my environments"
         }
       },
       {
