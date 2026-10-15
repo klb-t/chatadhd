@@ -1957,6 +1957,72 @@
           "check_arg": "topic"
         },
         {
+          "id": "environments.can_do.pl",
+          "action": "environments.can_do",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?co\\s+(?:moge|mozna|moglbym|potrafie)\\s+(?:zrobic\\s+|robic\\s+)?(?:na|w|we|z|ze|przy|dla|wewnatrz)\\s+(.+?)\\s*\\??\\s*$",
+          "args": [
+            "environment"
+          ],
+          "original": [
+            "environment"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false,
+          "check_arg": "environment"
+        },
+        {
+          "id": "environments.can_do.en",
+          "action": "environments.can_do",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?what\\s+(?:can|could)\\s+(?:i|we)\\s+do\\s+(?:on|in|at|with|from|inside|within)\\s+(.+?)\\s*\\??\\s*$",
+          "args": [
+            "environment"
+          ],
+          "original": [
+            "environment"
+          ],
+          "element": {
+            "resolve": "current_conversation"
+          },
+          "takes_scope": false,
+          "check_arg": "environment"
+        },
+        {
+          "id": "environments.list.pl",
+          "action": "environments.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz)\\s+(?:moje\\s+)?srodowiska\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "environments.list.en",
+          "action": "environments.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:my\\s+)?environments\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "environments.sync.pl",
+          "action": "environments.sync",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?odswiez\\s+(?:moje\\s+)?srodowiska\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "environments.sync.en",
+          "action": "environments.sync",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?refresh\\s+(?:my\\s+)?environments\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
           "id": "runs.pl",
           "action": "actions.status",
           "lang": "pl",

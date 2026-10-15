@@ -440,6 +440,22 @@
         "description": "What the context selector sends of a conversation: raw (preset: the messages as they are, request bytes unchanged), denoised (your messages at level L1, without fillers, repetitions and restarts), lean (level L2), guardian (L1 and a run of clarifications replaced by one compiled instruction) or mixed (the raw messages followed by the compiled instruction); or a preset of your own in the profile guardian (representation.presets). A value that the scope chain resolves: accepting a proposal of the guardian sets guardian for that conversation as a rule you can switch off. The compatibility mode (system prompt and raw conversation only) is unaffected. Default: raw."
       },
       {
+        "key": "environments_auto_sync",
+        "scope": "config",
+        "group": "loom",
+        "type": "boolean",
+        "has_default": false,
+        "description": "Before answering a question about environments (what can I do on my phone, in this directory), bring the environment, capability and access nodes of the graph up to date from their sources. Off: answer from the nodes as they are (environments.sync does it on request). Runtime profile graph_entry (environments.settings). Default: true."
+      },
+      {
+        "key": "environments_probe_paths",
+        "scope": "config",
+        "group": "loom",
+        "type": "boolean",
+        "has_default": false,
+        "description": "A question about a directory asks the operating system about it (exists, readable, writable); nothing in it is read. Off: only what the graph already holds. Runtime profile graph_entry (environments.settings). Default: true."
+      },
+      {
         "key": "context_execution",
         "scope": "config",
         "group": "context",

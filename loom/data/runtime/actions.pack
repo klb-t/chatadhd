@@ -10234,6 +10234,214 @@
           ]
         },
         "positional_arg": "text"
+      },
+      "environments.can_do": {
+        "id": "environments.can_do",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What can be done in an environment (phone, server, directory, storage)",
+        "description": "Answers from the graph: the environment is found among the environment nodes (a platform such as your phone or this server, a directory, a configured storage, an account at a service), its capabilities and accesses are read through their links, and the action engine says which actions of the catalogue fit them, with their effect flags and whether the rules allow, ask or deny. Accesses are shown as references to the secrets vault (a key name and whether it is set), never as secrets. Without an environment: the one this process runs in. Brings the derived environment nodes up to date first (setting environments_auto_sync).",
+        "labels": {
+          "pl": "Co można zrobić w środowisku (telefon, serwer, katalog, magazyn)"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/graph/environments.cpp",
+        "port": "environments",
+        "action": "can_do",
+        "params": [
+          {
+            "name": "environment",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The environment: a platform (phone, server, command line, browser), a storage or service id, a node id, or a sentence that names one.",
+              "pl": "Środowisko: platforma (telefon, serwer, wiersz poleceń, przeglądarka), identyfikator magazynu lub serwisu, id węzła albo zdanie, które je nazywa."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A directory to ask about instead (added to the graph as an environment).",
+              "pl": "Katalog, o który pytasz (trafia do grafu jako środowisko)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "lang",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the labels (en or pl).",
+              "pl": "Język etykiet (en albo pl)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/environments/can_do"
+        },
+        "examples": {
+          "en": [
+            "what can I do on my phone?",
+            "what can I do in this directory?"
+          ],
+          "pl": [
+            "co mogę zrobić na moim telefonie?",
+            "co mogę zrobić w tym katalogu?"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "What can be done here, from the graph:",
+          "pl": "Co można tu zrobić, z grafu:"
+        },
+        "positional_arg": "environment"
+      },
+      "environments.list": {
+        "id": "environments.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "The environments, their capabilities and accesses",
+        "description": "Every environment node of the graph with its capabilities and its accesses (references to the secrets vault only).",
+        "labels": {
+          "pl": "Środowiska, ich zdolności i dostępy"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/graph/environments.cpp",
+        "port": "environments",
+        "action": "list",
+        "params": [],
+        "http": {
+          "verb": "GET",
+          "path": "/api/environments"
+        },
+        "examples": {
+          "en": [
+            "list my environments"
+          ],
+          "pl": [
+            "pokaż moje środowiska"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "The environments of the graph:",
+          "pl": "Środowiska w grafie:"
+        }
+      },
+      "environments.sync": {
+        "id": "environments.sync",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Bring the environment nodes up to date",
+        "description": "Rewrites the derived environment, capability and access nodes from their sources (device availability per platform, ports and adapters, configured storages, services and the credentials declared in the settings; a directory when named). Only nodes of the environment layer are touched; accesses keep key names, never values.",
+        "labels": {
+          "pl": "Uaktualnij węzły środowisk"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/graph/environments.cpp",
+        "port": "environments",
+        "action": "sync",
+        "params": [
+          {
+            "name": "path",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A directory to add as an environment.",
+              "pl": "Katalog do dodania jako środowisko."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/environments/sync"
+        },
+        "examples": {
+          "en": [
+            "refresh my environments"
+          ],
+          "pl": [
+            "odśwież moje środowiska"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Environment nodes brought up to date:",
+          "pl": "Węzły środowisk uaktualnione:"
+        }
       }
     }
   },

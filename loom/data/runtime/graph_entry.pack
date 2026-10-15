@@ -2826,6 +2826,7 @@
           "GET /api/conversations/:id/messages",
           "GET /api/conversations/:id/view",
           "GET /api/economy/report",
+          "GET /api/environments",
           "GET /api/events",
           "GET /api/events/stream",
           "GET /api/graph/data",
@@ -2895,6 +2896,8 @@
           "POST /api/context/select",
           "POST /api/conversations",
           "POST /api/conversations/:id/view",
+          "POST /api/environments/can_do",
+          "POST /api/environments/sync",
           "POST /api/graph-reply",
           "POST /api/graph/expand",
           "POST /api/graph/packets/store",
@@ -4146,7 +4149,7 @@
             "en": "Chat model provider (OpenRouter-compatible)",
             "pl": "Dostawca modeli czatu (zgodny z OpenRouter)"
           },
-          "secrets": [
+          "keys": [
             "api_key"
           ],
           "ports": [
@@ -4158,7 +4161,7 @@
             "en": "Anthropic Message Batches",
             "pl": "Anthropic Message Batches"
           },
-          "secrets": [
+          "keys": [
             "anthropic_batch_key"
           ],
           "ports": [
@@ -4170,7 +4173,7 @@
             "en": "GitHub",
             "pl": "GitHub"
           },
-          "secrets": [
+          "keys": [
             "github_token"
           ],
           "ports": [
@@ -4182,7 +4185,7 @@
             "en": "Groq (speech recognition)",
             "pl": "Groq (rozpoznawanie mowy)"
           },
-          "secrets": [
+          "keys": [
             "groq_api_key"
           ],
           "ports": [
@@ -4194,7 +4197,7 @@
             "en": "Google Speech",
             "pl": "Google Speech"
           },
-          "secrets": [
+          "keys": [
             "google_speech_api_key"
           ],
           "ports": [
@@ -4206,7 +4209,7 @@
             "en": "OCR.space",
             "pl": "OCR.space"
           },
-          "secrets": [
+          "keys": [
             "ocr_space_api_key"
           ],
           "ports": [

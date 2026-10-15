@@ -243,7 +243,7 @@
           "en": "Chat model provider (OpenRouter-compatible)",
           "pl": "Dostawca modeli czatu (zgodny z OpenRouter)"
         },
-        "secrets": [
+        "keys": [
           "api_key"
         ],
         "ports": [
@@ -255,7 +255,7 @@
           "en": "Anthropic Message Batches",
           "pl": "Anthropic Message Batches"
         },
-        "secrets": [
+        "keys": [
           "anthropic_batch_key"
         ],
         "ports": [
@@ -267,7 +267,7 @@
           "en": "GitHub",
           "pl": "GitHub"
         },
-        "secrets": [
+        "keys": [
           "github_token"
         ],
         "ports": [
@@ -279,7 +279,7 @@
           "en": "Groq (speech recognition)",
           "pl": "Groq (rozpoznawanie mowy)"
         },
-        "secrets": [
+        "keys": [
           "groq_api_key"
         ],
         "ports": [
@@ -291,7 +291,7 @@
           "en": "Google Speech",
           "pl": "Google Speech"
         },
-        "secrets": [
+        "keys": [
           "google_speech_api_key"
         ],
         "ports": [
@@ -303,7 +303,7 @@
           "en": "OCR.space",
           "pl": "OCR.space"
         },
-        "secrets": [
+        "keys": [
           "ocr_space_api_key"
         ],
         "ports": [
