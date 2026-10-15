@@ -60,14 +60,3 @@ export interface ViewModelRequest {
   budget?: number | null;
   sources?: Record<string, { weight?: number; depth?: number | null }>;
 }
-
-export function readViewEngineList(v: unknown): ViewEngineList {
-  const o = v as { declarations?: { entries?: unknown } } | null;
-  if (!o || !o.declarations || !Array.isArray(o.declarations.entries)) throw new Error("view_engine_list_invalid");
-  return { declarations: o.declarations.entries as ViewDeclarationInfo[] };
-}
-export function readViewModel(v: unknown): ViewModel {
-  const o = v as Partial<ViewModel> | null;
-  if (!o || o.schema !== "loom.view_model/1" || !Array.isArray(o.elements) || !Array.isArray(o.encodings)) throw new Error("view_model_invalid");
-  return { edges: [], groups: [], unsupported: [], coordinate_systems: [], measure_stats: {}, sources: [], issues: [], ...o } as ViewModel;
-}

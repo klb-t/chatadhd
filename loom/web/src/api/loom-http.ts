@@ -23,13 +23,13 @@ import type {
   SemanticStatusInfo,
   Task,
 } from "./types";
-import { isLoomError, readPerspectivesList, readScopeResolution, readSideBySide } from "./types";
+import { isLoomError, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
 import { AUTH_REQUIRED_EVENT } from "./auth";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
-import { readViewEngineList, readViewModel, type ViewEngineList, type ViewModel, type ViewModelRequest } from "./view-model";
+import type { ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
 import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import { readConversationView, type ConversationReadRequest, type ConversationView } from "./conversation-view";
 

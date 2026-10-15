@@ -203,11 +203,15 @@ try {
     assert.match(await page.getByTestId("ve-budget-note").innerText(), /6 elements were collapsed into group nodes to stay within the budget of 4 nodes\./);
     assert.equal(await mark(page, "v3").count(), 1, "the focus never collapses");
     await show({ budget: "0" });
-    assert.equal(await page.locator('[data-testid="ve-mark"]').count(), 10, "0 = no budget");
+    await page.waitForFunction(() => document.querySelectorAll('[data-testid="ve-mark"]').length === 10);
+    assert.equal(await page.getByTestId("ve-budget-note").count(), 0, "0 = no budget");
     await api("PUT", "/api/config/ui_language", { value: "pl" });
     await page.reload();
-    await page.getByTestId("shell-menu-toggle").click();
-    await page.getByTestId("shell-menu-workshop").click();
+    await page.locator('[data-testid="shell-menu-toggle"], [data-testid="nav-view-engine"]').first().waitFor();
+    if (await page.getByTestId("nav-view-engine").count() === 0) {
+      await page.getByTestId("shell-menu-toggle").click();
+      await page.getByTestId("shell-menu-workshop").click();
+    }
     assert.equal((await page.getByTestId("nav-view-engine").innerText()).trim(), "Silnik widoków");
     await page.getByTestId("nav-view-engine").click();
     await show({ budget: "4" });

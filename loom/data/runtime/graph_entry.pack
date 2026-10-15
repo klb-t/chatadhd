@@ -2804,6 +2804,7 @@
           "loom_update_message",
           "loom_version",
           "loom_view_effective",
+          "loom_view_model",
           "loom_view_write"
         ]
       },
@@ -2871,6 +2872,7 @@
           "GET /api/tasks/:id",
           "GET /api/tool_sources",
           "GET /api/version",
+          "GET /api/view-model",
           "GET /api/views/([A-Za-z0-9_.-]+)",
           "PATCH /api/config",
           "PATCH /api/conversations/:id",
@@ -2959,6 +2961,7 @@
           "POST /api/tool_sources/sync",
           "POST /api/tool_sources/trust",
           "POST /api/usage-policy",
+          "POST /api/view-model",
           "POST /api/views/write",
           "PUT /api/config/:id"
         ]
@@ -3028,6 +3031,7 @@
           "GET /api/sources",
           "GET /api/tasks",
           "GET /api/tasks/:id",
+          "GET /api/view-model",
           "PATCH /api/config",
           "PATCH /api/conversations/:id",
           "PATCH /api/memory/:id",
@@ -3090,6 +3094,7 @@
           "POST /api/tasks/:id/cancel",
           "POST /api/tasks/resume",
           "POST /api/usage-policy",
+          "POST /api/view-model",
           "PUT /api/config/:id"
         ]
       },
@@ -3176,6 +3181,9 @@
               "path": "loom/include/loom/effective_view.h"
             },
             {
+              "path": "loom/include/loom/view_engine.h"
+            },
+            {
               "path": "loom/src/views/effective_view.cpp"
             },
             {
@@ -3183,6 +3191,9 @@
             },
             {
               "path": "loom/src/views/scope_resolver.cpp"
+            },
+            {
+              "path": "loom/src/views/view_engine.cpp"
             }
           ],
           "gaps": []
