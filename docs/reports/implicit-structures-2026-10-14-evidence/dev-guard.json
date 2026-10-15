@@ -1,0 +1,1290 @@
+{
+  "entries": [
+    {
+      "assertions": 37,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_accounts"
+    },
+    {
+      "assertions": 84,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_action_arguments"
+    },
+    {
+      "assertions": 98,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_action_composites"
+    },
+    {
+      "assertions": 57,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_action_element"
+    },
+    {
+      "assertions": 78,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_action_estimate"
+    },
+    {
+      "assertions": 160,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_action_results"
+    },
+    {
+      "assertions": 756,
+      "cases": 17,
+      "classification": "executed",
+      "name": "unit.test_action_rules"
+    },
+    {
+      "assertions": 119,
+      "cases": 14,
+      "classification": "executed",
+      "name": "unit.test_action_run"
+    },
+    {
+      "assertions": 97,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_action_runner"
+    },
+    {
+      "assertions": 85,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_action_scope"
+    },
+    {
+      "assertions": 88,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_action_text_ops"
+    },
+    {
+      "assertions": 63,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_adapter_registry"
+    },
+    {
+      "assertions": 282,
+      "cases": 20,
+      "classification": "executed",
+      "name": "unit.test_archive"
+    },
+    {
+      "assertions": 98,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_archive_profiles"
+    },
+    {
+      "assertions": 78,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_archive_runtime_policy"
+    },
+    {
+      "assertions": 235,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_archive_synthesis_policy"
+    },
+    {
+      "assertions": 94,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_archive_text_policy"
+    },
+    {
+      "assertions": 48,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_batch_api"
+    },
+    {
+      "assertions": 2633,
+      "cases": 16,
+      "classification": "executed",
+      "name": "unit.test_capi"
+    },
+    {
+      "assertions": 55,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_capi_knowledge"
+    },
+    {
+      "assertions": 73,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_capi_knowledge_latest_run"
+    },
+    {
+      "assertions": 466,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_catalog"
+    },
+    {
+      "assertions": 81,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_catalog_context"
+    },
+    {
+      "assertions": 137,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_catalog_copy_relations"
+    },
+    {
+      "assertions": 76,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_catalog_eval"
+    },
+    {
+      "assertions": 3136,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_catalog_links"
+    },
+    {
+      "assertions": 126,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_catalog_resource_execution"
+    },
+    {
+      "assertions": 1268,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_catalog_resource_transient"
+    },
+    {
+      "assertions": 179,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_catalog_retention"
+    },
+    {
+      "assertions": 0,
+      "cases": 0,
+      "classification": "unexecuted",
+      "name": "unit.test_catalog_scale",
+      "reason": "existing opt-in scale test"
+    },
+    {
+      "assertions": 197,
+      "cases": 19,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task"
+    },
+    {
+      "assertions": 40,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_acceptance_audit"
+    },
+    {
+      "assertions": 2014,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_acceptance_scale"
+    },
+    {
+      "assertions": 151,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_acceptance_validation"
+    },
+    {
+      "assertions": 49,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_concurrency"
+    },
+    {
+      "assertions": 106,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_durability"
+    },
+    {
+      "assertions": 76,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_durable_audit"
+    },
+    {
+      "assertions": 45,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_exceptional"
+    },
+    {
+      "assertions": 9,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_history_aba"
+    },
+    {
+      "assertions": 49,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_reference"
+    },
+    {
+      "assertions": 232,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_retention"
+    },
+    {
+      "assertions": 228,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_revisions"
+    },
+    {
+      "assertions": 20,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_chat_active_task_scope_identity"
+    },
+    {
+      "assertions": 96,
+      "cases": 21,
+      "classification": "executed",
+      "name": "unit.test_chat_engine"
+    },
+    {
+      "assertions": 212,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_chat_knowledge_context"
+    },
+    {
+      "assertions": 244,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_chat_retrieval_plan"
+    },
+    {
+      "assertions": 240,
+      "cases": 16,
+      "classification": "executed",
+      "name": "unit.test_chat_route"
+    },
+    {
+      "assertions": 31,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_chat_usage_guard"
+    },
+    {
+      "assertions": 113,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_config"
+    },
+    {
+      "assertions": 63,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_context_channel_integration"
+    },
+    {
+      "assertions": 153,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_context_controls"
+    },
+    {
+      "assertions": 38,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_context_counter"
+    },
+    {
+      "assertions": 335,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_context_diagnostics"
+    },
+    {
+      "assertions": 1380,
+      "cases": 20,
+      "classification": "executed",
+      "name": "unit.test_context_engine"
+    },
+    {
+      "assertions": 268,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_context_eval"
+    },
+    {
+      "assertions": 105,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_context_native_consumer"
+    },
+    {
+      "assertions": 159,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_context_plan"
+    },
+    {
+      "assertions": 130,
+      "cases": 13,
+      "classification": "executed",
+      "name": "unit.test_context_retrieval"
+    },
+    {
+      "assertions": 241,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_context_retrieval_dev"
+    },
+    {
+      "assertions": 219,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_context_tfidf_reuse"
+    },
+    {
+      "assertions": 287,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_conversation_view"
+    },
+    {
+      "assertions": 71,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_conversation_view_presentation_store"
+    },
+    {
+      "assertions": 66,
+      "cases": 12,
+      "classification": "executed",
+      "name": "unit.test_crypto"
+    },
+    {
+      "assertions": 592,
+      "cases": 20,
+      "classification": "executed",
+      "name": "unit.test_crypto_pq"
+    },
+    {
+      "assertions": 5178,
+      "cases": 13,
+      "classification": "executed",
+      "name": "unit.test_db"
+    },
+    {
+      "assertions": 189,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_db_annotations"
+    },
+    {
+      "assertions": 40,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_device_actions"
+    },
+    {
+      "assertions": 71,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_economy_report"
+    },
+    {
+      "assertions": 95,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_embedding_adapter"
+    },
+    {
+      "assertions": 138,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_emergent_catalogue"
+    },
+    {
+      "assertions": 28,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_event_bus"
+    },
+    {
+      "assertions": 143,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_export_mapping"
+    },
+    {
+      "assertions": 241,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_extract"
+    },
+    {
+      "assertions": 27,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_extract_eval"
+    },
+    {
+      "assertions": 53,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_fts"
+    },
+    {
+      "assertions": 225,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_generalize"
+    },
+    {
+      "assertions": 178,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_generalize_eval"
+    },
+    {
+      "assertions": 34,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_generalize_perspectives"
+    },
+    {
+      "assertions": 154,
+      "cases": 22,
+      "classification": "executed",
+      "name": "unit.test_github"
+    },
+    {
+      "assertions": 95,
+      "cases": 12,
+      "classification": "executed",
+      "name": "unit.test_graph"
+    },
+    {
+      "assertions": 241,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_graph_devices"
+    },
+    {
+      "assertions": 171,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_graph_entry"
+    },
+    {
+      "assertions": 35,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_graph_perspective_store"
+    },
+    {
+      "assertions": 10,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_graph_reply_postprocess"
+    },
+    {
+      "assertions": 123,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_implicit_structures"
+    },
+    {
+      "assertions": 419,
+      "cases": 27,
+      "classification": "executed",
+      "name": "unit.test_import"
+    },
+    {
+      "assertions": 28,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_import_audit"
+    },
+    {
+      "assertions": 50,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_import_audit_presets"
+    },
+    {
+      "assertions": 106,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_import_aux_depth"
+    },
+    {
+      "assertions": 327,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_import_export_fidelity"
+    },
+    {
+      "assertions": 2202,
+      "cases": 18,
+      "classification": "executed",
+      "name": "unit.test_import_exports"
+    },
+    {
+      "assertions": 18,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_import_format_registry"
+    },
+    {
+      "assertions": 221,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_import_presets"
+    },
+    {
+      "assertions": 193,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_import_presets_binding"
+    },
+    {
+      "assertions": 185,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_import_recognition"
+    },
+    {
+      "assertions": 696,
+      "cases": 23,
+      "classification": "executed",
+      "name": "unit.test_import_resume"
+    },
+    {
+      "assertions": 872,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_import_screenshot"
+    },
+    {
+      "assertions": 592,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_import_source_materialization"
+    },
+    {
+      "assertions": 13,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_import_stream"
+    },
+    {
+      "assertions": 19,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_import_usage"
+    },
+    {
+      "assertions": 669,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_kb_data_domains"
+    },
+    {
+      "assertions": 627,
+      "cases": 27,
+      "classification": "executed",
+      "name": "unit.test_kb_pack"
+    },
+    {
+      "assertions": 277,
+      "cases": 26,
+      "classification": "executed",
+      "name": "unit.test_knowledge"
+    },
+    {
+      "assertions": 114,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_knowledge_candidate_graph"
+    },
+    {
+      "assertions": 14,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_knowledge_candidates"
+    },
+    {
+      "assertions": 239,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_knowledge_context_runs"
+    },
+    {
+      "assertions": 53,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_knowledge_flow"
+    },
+    {
+      "assertions": 24,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_knowledge_profile"
+    },
+    {
+      "assertions": 127,
+      "cases": 14,
+      "classification": "executed",
+      "name": "unit.test_knowledge_semantic"
+    },
+    {
+      "assertions": 100,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_knowledge_semantic_graph"
+    },
+    {
+      "assertions": 124,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_knowledge_store"
+    },
+    {
+      "assertions": 67,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_materialize"
+    },
+    {
+      "assertions": 119,
+      "cases": 16,
+      "classification": "executed",
+      "name": "unit.test_media"
+    },
+    {
+      "assertions": 71,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_media_actions"
+    },
+    {
+      "assertions": 9,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_media_wire"
+    },
+    {
+      "assertions": 72,
+      "cases": 12,
+      "classification": "executed",
+      "name": "unit.test_memory"
+    },
+    {
+      "assertions": 45,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_memory_sort_profiles"
+    },
+    {
+      "assertions": 10,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_memory_visibility_profiles"
+    },
+    {
+      "assertions": 55,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_method_registry"
+    },
+    {
+      "assertions": 137,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_model"
+    },
+    {
+      "assertions": 99,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_model_creation_profile"
+    },
+    {
+      "assertions": 805,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_model_profile"
+    },
+    {
+      "assertions": 45,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_net_profile"
+    },
+    {
+      "assertions": 45,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_net_sse"
+    },
+    {
+      "assertions": 234,
+      "cases": 18,
+      "classification": "executed",
+      "name": "unit.test_onboarding"
+    },
+    {
+      "assertions": 2753,
+      "cases": 12,
+      "classification": "executed",
+      "name": "unit.test_onboarding_graph"
+    },
+    {
+      "assertions": 58,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_onboarding_layers"
+    },
+    {
+      "assertions": 19,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_onboarding_presentation"
+    },
+    {
+      "assertions": 81,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_onboarding_presentation_layers"
+    },
+    {
+      "assertions": 151,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_onboarding_presentation_store"
+    },
+    {
+      "assertions": 304,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_onboarding_store"
+    },
+    {
+      "assertions": 903,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_pack_model"
+    },
+    {
+      "assertions": 24,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_packet"
+    },
+    {
+      "assertions": 52,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_ports"
+    },
+    {
+      "assertions": 49,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_provenance"
+    },
+    {
+      "assertions": 67,
+      "cases": 14,
+      "classification": "executed",
+      "name": "unit.test_providers"
+    },
+    {
+      "assertions": 125,
+      "cases": 18,
+      "classification": "executed",
+      "name": "unit.test_regex"
+    },
+    {
+      "assertions": 127,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_reject_offer"
+    },
+    {
+      "assertions": 76,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_relations"
+    },
+    {
+      "assertions": 71,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_resolve"
+    },
+    {
+      "assertions": 420,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_resolve_attribution"
+    },
+    {
+      "assertions": 15,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_resolve_lineage"
+    },
+    {
+      "assertions": 451,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_rom"
+    },
+    {
+      "assertions": 95,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_rules_from_chat"
+    },
+    {
+      "assertions": 252,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_runtime"
+    },
+    {
+      "assertions": 60,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_runtime_bootstrap_profiles"
+    },
+    {
+      "assertions": 563,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_runtime_profile"
+    },
+    {
+      "assertions": 116,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_runtime_recipe_consumers"
+    },
+    {
+      "assertions": 171,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_selector"
+    },
+    {
+      "assertions": 97,
+      "cases": 13,
+      "classification": "executed",
+      "name": "unit.test_semantic_llm"
+    },
+    {
+      "assertions": 454,
+      "cases": 35,
+      "classification": "executed",
+      "name": "unit.test_semantic_worker"
+    },
+    {
+      "assertions": 1381,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_sequence_index"
+    },
+    {
+      "assertions": 110,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_settings_fields"
+    },
+    {
+      "assertions": 406,
+      "cases": 25,
+      "classification": "executed",
+      "name": "unit.test_storage"
+    },
+    {
+      "assertions": 56,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_tasks"
+    },
+    {
+      "assertions": 758,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_usage_compaction"
+    },
+    {
+      "assertions": 870,
+      "cases": 23,
+      "classification": "executed",
+      "name": "unit.test_use_model"
+    },
+    {
+      "assertions": 16,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_use_model_concurrency"
+    },
+    {
+      "assertions": 94,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_util"
+    },
+    {
+      "assertions": 39,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_util_profiles"
+    },
+    {
+      "cases": 3,
+      "classification": "executed",
+      "discovered_cases": 3,
+      "name": "compat.test_abi_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 4,
+      "classification": "executed",
+      "discovered_cases": 4,
+      "name": "compat.test_active_task_compiler_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 32,
+      "classification": "executed",
+      "discovered_cases": 32,
+      "name": "compat.test_archive_cost",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 9,
+      "classification": "executed",
+      "discovered_cases": 9,
+      "name": "compat.test_candidate_graph_native",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 4,
+      "classification": "executed",
+      "discovered_cases": 4,
+      "name": "compat.test_chat_active_task_http",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 2,
+      "classification": "executed",
+      "discovered_cases": 2,
+      "name": "compat.test_chat_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 5,
+      "classification": "executed",
+      "discovered_cases": 5,
+      "name": "compat.test_config_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 6,
+      "classification": "executed",
+      "discovered_cases": 6,
+      "name": "compat.test_crypto_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 7,
+      "classification": "executed",
+      "discovered_cases": 7,
+      "name": "compat.test_db_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 2,
+      "classification": "executed",
+      "discovered_cases": 2,
+      "name": "compat.test_github_sync_defaults",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 3,
+      "classification": "executed",
+      "discovered_cases": 3,
+      "name": "compat.test_graph_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 29,
+      "classification": "executed",
+      "discovered_cases": 29,
+      "name": "compat.test_graph_packet_store",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 24,
+      "classification": "executed",
+      "discovered_cases": 24,
+      "name": "compat.test_import_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 10,
+      "classification": "executed",
+      "discovered_cases": 10,
+      "name": "compat.test_import_presets_generator",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 11,
+      "classification": "executed",
+      "discovered_cases": 11,
+      "name": "compat.test_import_profile_data",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 9,
+      "classification": "executed",
+      "discovered_cases": 9,
+      "name": "compat.test_legacy_importer_recovery",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 4,
+      "classification": "executed",
+      "discovered_cases": 4,
+      "name": "compat.test_memory_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 22,
+      "classification": "executed",
+      "discovered_cases": 22,
+      "name": "compat.test_onboarding_pack_generation",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 16,
+      "classification": "executed",
+      "discovered_cases": 16,
+      "name": "compat.test_packet",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 8,
+      "classification": "executed",
+      "discovered_cases": 8,
+      "name": "compat.test_pq_crypto_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 42,
+      "classification": "executed",
+      "discovered_cases": 42,
+      "name": "compat.test_product_literal_guard",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 13,
+      "classification": "executed",
+      "discovered_cases": 13,
+      "name": "compat.test_python_data_loss",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 1,
+      "classification": "executed",
+      "discovered_cases": 1,
+      "name": "compat.test_rom_catalogue",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 18,
+      "classification": "executed",
+      "discovered_cases": 18,
+      "name": "compat.test_runtime_profile_sources",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 5,
+      "classification": "executed",
+      "discovered_cases": 5,
+      "name": "compat.test_secret_file_perms",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 4,
+      "classification": "executed",
+      "discovered_cases": 4,
+      "name": "compat.test_selector_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 6,
+      "classification": "executed",
+      "discovered_cases": 6,
+      "name": "compat.test_semantic_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 8,
+      "classification": "executed",
+      "discovered_cases": 8,
+      "name": "compat.test_semantic_recovery",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 9,
+      "classification": "executed",
+      "discovered_cases": 9,
+      "name": "compat.test_semantic_worker_outcomes",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 6,
+      "classification": "executed",
+      "discovered_cases": 6,
+      "name": "compat.test_util_compat",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 137,
+      "classification": "executed",
+      "discovered_cases": 137,
+      "name": "resource_graph.contract",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 1280,
+      "classification": "executed",
+      "discovered_cases": 1280,
+      "name": "research.structure",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 10,
+      "classification": "executed",
+      "discovered_cases": 10,
+      "name": "research.independent_protocol",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 12,
+      "classification": "executed",
+      "discovered_cases": 12,
+      "name": "research.graph_native_protocol",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 15,
+      "classification": "executed",
+      "discovered_cases": 15,
+      "name": "research.candidate_graph_protocol",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 209,
+      "classification": "executed",
+      "discovered_cases": 209,
+      "name": "research.contracts",
+      "skipped_cases": 0
+    },
+    {
+      "cases": 69,
+      "classification": "executed",
+      "discovered_cases": 69,
+      "name": "research.seeding",
+      "skipped_cases": 0
+    },
+    {
+      "case_count": "script does not expose an inner case count",
+      "classification": "executed",
+      "name": "server.smoke"
+    },
+    {
+      "cases": 1,
+      "classification": "executed",
+      "discovered_cases": 1,
+      "name": "server.conversation_view",
+      "skipped_cases": 0
+    },
+    {
+      "case_count": "script does not expose an inner case count",
+      "classification": "executed",
+      "name": "server.chat_usage_guard"
+    },
+    {
+      "case_count": "script does not expose an inner case count",
+      "classification": "executed",
+      "name": "server.accounts"
+    },
+    {
+      "cases": 3,
+      "classification": "executed",
+      "discovered_cases": 3,
+      "name": "server.chat_active_task",
+      "skipped_cases": 0
+    },
+    {
+      "case_count": "script does not expose an inner case count",
+      "classification": "executed",
+      "name": "cli.smoke"
+    },
+    {
+      "cases": 19,
+      "classification": "executed",
+      "discovered_cases": 19,
+      "name": "eval.harness",
+      "skipped_cases": 0
+    }
+  ],
+  "errors": [],
+  "executed_entries": 203,
+  "executed_native_assertions": 47921,
+  "executed_native_cases": 1354,
+  "executed_python_cases": 2077,
+  "input_sha256": {
+    "junit": "1dc6c67b315a0d49b2b21594d6d75cbfda0e64562cded8ef62aae92c2d5832bd",
+    "manifest": "acbe2e79c0f92115589bf793c9882f35bf35e796e14416ebe99ca9e174b0de57"
+  },
+  "junit_entries": 204,
+  "manifest_entries": 204,
+  "policy_provenance": {
+    "path": "/workspace/chatadhd/.github/ctest-evidence-policy.json",
+    "revision": 3,
+    "schema": "loom.ctest_evidence_policy/1",
+    "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+    "sha256": "e6a914f4146c469929f80b6de8580dd2016230e6b5c4cc4e8574fc8cb60af408"
+  },
+  "preset": "dev",
+  "schema": "loom.ctest_evidence/1",
+  "skipped_python_cases": 0,
+  "unexecuted_entries": [
+    "unit.test_catalog_scale"
+  ],
+  "valid": true
+}

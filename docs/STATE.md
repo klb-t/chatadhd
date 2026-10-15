@@ -1,5 +1,22 @@
 # STATE — ChatADHD / Loom
 
+## 2026-10-15 — B: osobna gałąź rozpoznawania struktur
+
+`gpt/implicit-structures-2026-10-14`, kod `298b429b`, test modelu packa
+`f682fc89`, wcześniejsza poprawka transferu `79187377`. Main bez zmian;
+integracja należy do Claude’a. Relacyjny wzorzec z danych rozpoznaje opisane,
+nienazwane struktury; zapisuje kandydata, wiązania, dowody i alternatywy przez
+istniejący pipeline/store. Odtworzenie i wznowienie sprawdzone, zero wywołań modeli.
+Perspektywy kodu/idei/specyfikacji **tego samego projektu** pozostają osobną
+integracją; konkurencyjne interpretacje nie są ich zamiennikiem.
+
+Aktualny pełny dev/guard PASS: 204/204 wpisów, 203 wykonane,
+1354 native / 47921 asercji / 2077 Python, zero Python skips;
+1 catalog_scale opt-in niewykonany. ASan/Clang/web pending w tym checkpoincie.
+[Raport](reports/implicit-structures-2026-10-14.md) zawiera historię błędów,
+dowody i punkt wznowienia. R42 inventory nadal valid=false; nie jest bramką PASS.
+
+
 ## 2026-10-12 — S1: wątki T7, T6, T1–T5 scalone, `main` = gałąź robocza
 
 Źródło szczegółów: `docs/reports/wp-queue-2026-10-10.md` (stan, decyzje, otwarte) i `docs/reports/INDEX.md`.

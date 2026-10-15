@@ -1,19 +1,23 @@
 # Unnamed structures and multiple perspectives — 2026-10-14
 
-## Current checkpoint — relational recognition, 2026-10-14
+## Current checkpoint — full dev verified, 2026-10-15 UTC
 
-Both product increments are complete at their scoped gate. First: `79187377`
-(project-kind alternatives / transfer evidence). Second: `298b429b` (data-defined relational recognition, source receipts and recovery).
-Branch: `gpt/implicit-structures-2026-10-14`; main is unchanged.
+Published product: `79187377` (project-kind alternatives / transfer evidence),
+`298b429b` (relational recognition and durable receipts), `f682fc89` (exact pack
+model expectations). Branch: `gpt/implicit-structures-2026-10-14`; main unchanged.
 
-Current composed scoped result: **34/34 CTest entries, 286 native cases,
-7834 assertions, guard PASS, no unexecuted entries**, source unchanged during
-execution (`relations-scope/`). Nine implicit-structure cases are included.
-Five generator checks PASS: four `--check` commands and regeneration/hash
-identity for the KB embedding (its script does not implement `--check`).
-Full dev / Clang / ASan / web gates follow; their historical PASS results are
-not credited to this tree. The exact next operation is the full dev runner.
+Current full dev: **204/204 CTest entries accepted, 203 executed,
+1354 native cases / 47921 assertions, 2077 Python cases,
+guard PASS**. One catalog-scale entry is explicitly opt-in/unexecuted; zero
+Python skips. This is the corrected run `full-dev-r2/`, with code/configuration/
+binary receipt written before execution and unchanged source during it. The
+previous `full-dev/` failure remains history. [Receipt](implicit-structures-2026-10-14-evidence/dev-receipt.json),
+[guard](implicit-structures-2026-10-14-evidence/dev-guard.json).
 
+The preceding scope passed 34/34, 286 native cases / 7834 assertions. Five
+generator checks passed: four `--check` commands and KB regeneration/hash
+identity. Full ASan, Clang and web gates are pending at this checkpoint. Next:
+serialized ASan build, then its full runner; no competing heavy builds.
 
 ## Current checkpoint — first increment verified; next slice open
 
@@ -193,4 +197,4 @@ credential fixtures have a genuinely writable location outside Git. No marker,
 negative case, timeout or secret protection is removed. Full evidence remains
 in `full-dev/`; subsequent current gates receive new directories.
 
-The follow-up scope (`pack-model/`) passed 2/2 CTest entries, 15 native cases / 1040 assertions, execution guard PASS. The opt-in catalog-scale entry in the full manifest remains explicitly unexecuted.
+The follow-up scope (`pack-model/`) passed 2/2 CTest entries, 15 native cases / 1026 assertions, execution guard PASS. The opt-in catalog-scale entry in the full manifest remains explicitly unexecuted.
