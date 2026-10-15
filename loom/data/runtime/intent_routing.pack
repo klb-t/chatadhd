@@ -1967,11 +1967,7 @@
           "original": [
             "environment"
           ],
-          "element": {
-            "resolve": "current_conversation"
-          },
-          "takes_scope": false,
-          "check_arg": "environment"
+          "takes_scope": false
         },
         {
           "id": "environments.can_do.en",
@@ -1984,11 +1980,7 @@
           "original": [
             "environment"
           ],
-          "element": {
-            "resolve": "current_conversation"
-          },
-          "takes_scope": false,
-          "check_arg": "environment"
+          "takes_scope": false
         },
         {
           "id": "environments.list.pl",
