@@ -170,7 +170,8 @@
             "items": {}
           },
           "devices": {},
-          "device_platforms": {}
+          "device_platforms": {},
+          "environments": {}
         },
         "value_schema": {
           "type": "object",
@@ -286,6 +287,11 @@
           "source": "graph/devices.pack",
           "pointer": "/platforms",
           "target": "/defaults/device_platforms"
+        },
+        {
+          "source": "graph/environments.pack",
+          "pointer": "/environments",
+          "target": "/defaults/environments"
         }
       ]
     },

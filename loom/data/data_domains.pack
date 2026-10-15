@@ -117,7 +117,7 @@
     {
       "path": "graph/classes.pack",
       "schema": "loom.graph_classes/1",
-      "sha256": "ffc7a38b43f5ca53f20319205131083eb21a2fe5484adc82cab694b9d51eb063",
+      "sha256": "059a9262b9719dc7839ee3a37d32c731dbd7fd2950450aa8cb177b2051c7dab4",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [
@@ -144,6 +144,17 @@
       "role": "configuration",
       "validation_refs": [
         "loom/tests/test_graph_devices.cpp",
+        "loom/tests/test_graph_entry.cpp"
+      ]
+    },
+    {
+      "path": "graph/environments.pack",
+      "schema": "loom.graph_environments/1",
+      "sha256": "348c51ac988c17cccc7ac0e9e6a7fc9fe2a51d515504e6b917f58d0ec4e7a9c4",
+      "domain": "graph_entry",
+      "role": "configuration",
+      "validation_refs": [
+        "loom/tests/test_environments.cpp",
         "loom/tests/test_graph_entry.cpp"
       ]
     },
