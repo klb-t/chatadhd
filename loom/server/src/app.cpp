@@ -981,6 +981,35 @@ void App::route_graph_context() {
     send_loom(res, loom_graph_entry(rctx(), request.dump(-1, ' ', false, json::error_handler_t::replace).c_str()));
   });
 
+  // P24: graph views as data (effective view of edge kinds / perspectives / scopes ..., perspectives side by side, the scope resolver).
+  auto dump_body = [](const json& body) { return body.dump(-1, ' ', false, json::error_handler_t::replace); };
+  svr_.Get(R"(/api/views/([A-Za-z0-9_.-]+))", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    json request = json::object();
+    if (req.has_param("include_hidden")) request["include_hidden"] = req.get_param_value("include_hidden") == "true";
+    send_loom(res, loom_view_effective(rctx(), req.matches[1].str().c_str(), dump_body(request).c_str()));
+  });
+  svr_.Post("/api/views/write", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_view_write(rctx(), dump_body(parse_body(req)).c_str()));
+  });
+  svr_.Post("/api/edge-kinds", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_edge_kinds(rctx(), dump_body(parse_body(req)).c_str()));
+  });
+  svr_.Get("/api/edge-kinds", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    json request = json::object();
+    if (req.has_param("kind")) request["kind"] = req.get_param_value("kind");
+    if (req.has_param("classify")) request["classify"] = req.get_param_value("classify") == "true";
+    send_loom(res, loom_edge_kinds(rctx(), dump_body(request).c_str()));
+  });
+  svr_.Get("/api/perspectives", [this](const httplib::Request&, httplib::Response& res) {
+    send_loom(res, loom_perspectives(rctx(), "{}"));
+  });
+  svr_.Post("/api/perspectives", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_perspectives(rctx(), dump_body(parse_body(req)).c_str()));
+  });
+  svr_.Post("/api/scopes/resolve", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_scope_resolve(rctx(), dump_body(parse_body(req)).c_str()));
+  });
+
   // Storage plugins (P4) and the action/element matching queries (wave 2: /api/actions/for, explain,
   // propose_chain; R54: /api/actions/run|preview|confirm|cancel|status and /api/chat/route): routes come from the action table (loom/action_table.h) and go through
   // loom_invoke. Rides on rctx(), so with accounts enabled every account sees and changes only its own

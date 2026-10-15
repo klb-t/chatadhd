@@ -1,0 +1,1118 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "graph_views",
+  "revision": 1,
+  "description": "Graph views as data (P24): edge kinds (meaning, direction, inverse, parent kind, perspectives), node kinds, perspectives (named selections of edge kinds + node filter + depth + rendering hint, in the traversal shape of graph_perspectives: relations/direction/hops), organizational unit kinds, and the merge policy per kind of thing (view_kinds). This profile is the ROM layer; memory overlays live in <data_dir>/views/*.json (loom/effective_view.h) with the operations add, modify, hide, disable, alias and never change it. Everything is calibration, not a closed list: a kind used in data and unknown here is accepted and listed as unclassified.",
+  "defaults": {
+    "view_kinds": {
+      "edge_kinds": {
+        "label": {
+          "en": "Edge kinds",
+          "pl": "Rodzaje krawędzi"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/edge_kinds"
+        }
+      },
+      "node_kinds": {
+        "label": {
+          "en": "Node kinds",
+          "pl": "Rodzaje węzłów"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/node_kinds"
+        }
+      },
+      "perspectives": {
+        "label": {
+          "en": "Perspectives",
+          "pl": "Perspektywy"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/perspectives"
+        }
+      },
+      "unit_kinds": {
+        "label": {
+          "en": "Organizational unit kinds",
+          "pl": "Rodzaje jednostek organizacyjnych"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/unit_kinds"
+        }
+      },
+      "scopes": {
+        "label": {
+          "en": "Scope levels",
+          "pl": "Poziomy zakresów"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "issue",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_entry",
+          "pointer": "/scopes/chain",
+          "key": "id"
+        }
+      }
+    },
+    "edge_kinds": {
+      "relation": {
+        "meaning": {
+          "en": "Any relation between two nodes (root of the kind tree).",
+          "pl": "Dowolna relacja między dwoma węzłami (korzeń drzewa rodzajów)."
+        },
+        "direction": "directed",
+        "perspectives": []
+      },
+      "dependency": {
+        "meaning": {
+          "en": "Source needs the target to exist or work.",
+          "pl": "Źródło potrzebuje celu, by istnieć lub działać."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "depends_on": {
+        "meaning": {
+          "en": "Source depends on target.",
+          "pl": "Źródło zależy od celu."
+        },
+        "direction": "directed",
+        "inverse": "required_by",
+        "parent": "dependency",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "required_by": {
+        "meaning": {
+          "en": "Source is needed by target.",
+          "pl": "Źródło jest potrzebne celowi."
+        },
+        "direction": "directed",
+        "inverse": "depends_on",
+        "parent": "dependency",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "imports": {
+        "meaning": {
+          "en": "Source module imports target module.",
+          "pl": "Moduł źródłowy importuje moduł docelowy."
+        },
+        "direction": "directed",
+        "inverse": "imported_by",
+        "parent": "depends_on",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "imported_by": {
+        "meaning": {
+          "en": "Source module is imported by target.",
+          "pl": "Moduł jest importowany przez cel."
+        },
+        "direction": "directed",
+        "inverse": "imports",
+        "parent": "required_by",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "requires": {
+        "meaning": {
+          "en": "Source requires target (build, runtime or data).",
+          "pl": "Źródło wymaga celu (budowa, działanie lub dane)."
+        },
+        "direction": "directed",
+        "inverse": "required_by",
+        "parent": "depends_on",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "calls": {
+        "meaning": {
+          "en": "Source function/method calls target.",
+          "pl": "Funkcja/metoda źródłowa wywołuje docelową."
+        },
+        "direction": "directed",
+        "inverse": "called_by",
+        "parent": "relation",
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "called_by": {
+        "meaning": {
+          "en": "Source is called by target.",
+          "pl": "Źródło jest wywoływane przez cel."
+        },
+        "direction": "directed",
+        "inverse": "calls",
+        "parent": "relation",
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "defines": {
+        "meaning": {
+          "en": "Source file/module defines target symbol.",
+          "pl": "Plik/moduł definiuje symbol."
+        },
+        "direction": "directed",
+        "inverse": "defined_in",
+        "parent": "relation",
+        "perspectives": [
+          "calls",
+          "dependencies"
+        ]
+      },
+      "defined_in": {
+        "meaning": {
+          "en": "Source symbol is defined in target.",
+          "pl": "Symbol jest zdefiniowany w celu."
+        },
+        "direction": "directed",
+        "inverse": "defines",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "implements": {
+        "meaning": {
+          "en": "Source implements target (interface, requirement, idea).",
+          "pl": "Źródło realizuje cel (interfejs, wymaganie, ideę)."
+        },
+        "direction": "directed",
+        "inverse": "implemented_by",
+        "parent": "relation",
+        "perspectives": [
+          "calls",
+          "teleology"
+        ]
+      },
+      "implemented_by": {
+        "meaning": {
+          "en": "Source is implemented by target.",
+          "pl": "Źródło jest realizowane przez cel."
+        },
+        "direction": "directed",
+        "inverse": "implements",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "part_of": {
+        "meaning": {
+          "en": "Source is a part of target.",
+          "pl": "Źródło jest częścią celu."
+        },
+        "direction": "directed",
+        "inverse": "contains",
+        "parent": "relation",
+        "perspectives": [
+          "structure"
+        ]
+      },
+      "contains": {
+        "meaning": {
+          "en": "Source contains target.",
+          "pl": "Źródło zawiera cel."
+        },
+        "direction": "directed",
+        "inverse": "part_of",
+        "parent": "relation",
+        "perspectives": [
+          "structure"
+        ]
+      },
+      "lineage": {
+        "meaning": {
+          "en": "Source and target are versions or forks of one another.",
+          "pl": "Źródło i cel to wersje lub rozgałęzienia tego samego."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "derived_from": {
+        "meaning": {
+          "en": "Source was derived from target.",
+          "pl": "Źródło powstało z celu."
+        },
+        "direction": "directed",
+        "inverse": "source_of",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "source_of": {
+        "meaning": {
+          "en": "Source is what target was derived from.",
+          "pl": "Źródło jest tym, z czego powstał cel."
+        },
+        "direction": "directed",
+        "inverse": "derived_from",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "version_of": {
+        "meaning": {
+          "en": "Source is a version of target (the thing itself).",
+          "pl": "Źródło jest wersją celu (samej rzeczy)."
+        },
+        "direction": "directed",
+        "inverse": "has_version",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "has_version": {
+        "meaning": {
+          "en": "Source has target as a version.",
+          "pl": "Źródło ma cel jako wersję."
+        },
+        "direction": "directed",
+        "inverse": "version_of",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "previous_version": {
+        "meaning": {
+          "en": "Target is the version before source.",
+          "pl": "Cel jest wersją poprzedzającą źródło."
+        },
+        "direction": "directed",
+        "inverse": "next_version",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "next_version": {
+        "meaning": {
+          "en": "Target is the version after source.",
+          "pl": "Cel jest wersją następującą po źródle."
+        },
+        "direction": "directed",
+        "inverse": "previous_version",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "forked_from": {
+        "meaning": {
+          "en": "Source was forked from target.",
+          "pl": "Źródło rozgałęziono z celu."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "based_on": {
+        "meaning": {
+          "en": "Source is based on target.",
+          "pl": "Źródło opiera się na celu."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "evolved_into": {
+        "meaning": {
+          "en": "Source evolved into target.",
+          "pl": "Źródło ewoluowało w cel."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "merged_into": {
+        "meaning": {
+          "en": "Source was merged into target.",
+          "pl": "Źródło zostało scalone w cel."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "supersedes": {
+        "meaning": {
+          "en": "Source replaces target.",
+          "pl": "Źródło zastępuje cel."
+        },
+        "direction": "directed",
+        "inverse": "superseded_by",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "superseded_by": {
+        "meaning": {
+          "en": "Source is replaced by target.",
+          "pl": "Źródło jest zastąpione przez cel."
+        },
+        "direction": "directed",
+        "inverse": "supersedes",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "teleological": {
+        "meaning": {
+          "en": "Source has a purpose or goal in target (why).",
+          "pl": "Źródło ma cel lub sens w celu (dlaczego)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "serves_goal": {
+        "meaning": {
+          "en": "Source exists to serve target goal.",
+          "pl": "Źródło istnieje, by służyć celowi."
+        },
+        "direction": "directed",
+        "inverse": "served_by",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "served_by": {
+        "meaning": {
+          "en": "Source goal is served by target.",
+          "pl": "Cel źródła jest realizowany przez cel."
+        },
+        "direction": "directed",
+        "inverse": "serves_goal",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "motivates": {
+        "meaning": {
+          "en": "Source is the reason for target.",
+          "pl": "Źródło jest powodem celu."
+        },
+        "direction": "directed",
+        "inverse": "motivated_by",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "motivated_by": {
+        "meaning": {
+          "en": "Source is done because of target.",
+          "pl": "Źródło robimy z powodu celu."
+        },
+        "direction": "directed",
+        "inverse": "motivates",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "achieves": {
+        "meaning": {
+          "en": "Source achieves target outcome.",
+          "pl": "Źródło osiąga rezultat."
+        },
+        "direction": "directed",
+        "inverse": "achieved_by",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "achieved_by": {
+        "meaning": {
+          "en": "Source outcome is achieved by target.",
+          "pl": "Rezultat źródła osiąga cel."
+        },
+        "direction": "directed",
+        "inverse": "achieves",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "purpose_of": {
+        "meaning": {
+          "en": "Source is the purpose of target.",
+          "pl": "Źródło jest przeznaczeniem celu."
+        },
+        "direction": "directed",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "mentions": {
+        "meaning": {
+          "en": "Source mentions target.",
+          "pl": "Źródło wspomina o celu."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "references": {
+        "meaning": {
+          "en": "Source refers to target.",
+          "pl": "Źródło odwołuje się do celu."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "reply_to": {
+        "meaning": {
+          "en": "Source replies to target.",
+          "pl": "Źródło odpowiada na cel."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "generated_by": {
+        "meaning": {
+          "en": "Source was generated by target.",
+          "pl": "Źródło wygenerował cel."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "tagged_with": {
+        "meaning": {
+          "en": "Source is tagged with target topic.",
+          "pl": "Źródło ma temat."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "contradicts": {
+        "meaning": {
+          "en": "Source contradicts target.",
+          "pl": "Źródło przeczy celowi."
+        },
+        "direction": "symmetric",
+        "inverse": "contradicts",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "related": {
+        "meaning": {
+          "en": "Loosely related (default when nothing more is known).",
+          "pl": "Luźno powiązane (domyślne, gdy nic więcej nie wiadomo)."
+        },
+        "direction": "symmetric",
+        "inverse": "related",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "same_as": {
+        "meaning": {
+          "en": "Source and target are the same thing.",
+          "pl": "Źródło i cel to to samo."
+        },
+        "direction": "symmetric",
+        "inverse": "same_as",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "inherits_from": {
+        "meaning": {
+          "en": "Source scope level inherits its value from the more general target level.",
+          "pl": "Poziom zakresu dziedziczy wartość z ogólniejszego poziomu."
+        },
+        "direction": "directed",
+        "inverse": "inherited_by",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "inherited_by": {
+        "meaning": {
+          "en": "Source level hands its value down to the more specific target level.",
+          "pl": "Poziom przekazuje wartość bardziej szczegółowemu poziomowi."
+        },
+        "direction": "directed",
+        "inverse": "inherits_from",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "overrides": {
+        "meaning": {
+          "en": "Source level supplied the value and overrides the target level.",
+          "pl": "Poziom dostarczył wartość i nadpisuje poziom docelowy."
+        },
+        "direction": "directed",
+        "inverse": "overridden_by",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "overridden_by": {
+        "meaning": {
+          "en": "Source level is overridden by the target level.",
+          "pl": "Poziom jest nadpisany przez poziom docelowy."
+        },
+        "direction": "directed",
+        "inverse": "overrides",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "environment_link": {
+        "meaning": {
+          "en": "Relations of environments and access (S2).",
+          "pl": "Relacje środowisk i dostępu (S2)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "has_capability": {
+        "meaning": {
+          "en": "Source environment has target capability.",
+          "pl": "Środowisko ma zdolność."
+        },
+        "direction": "directed",
+        "inverse": "capability_of",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "capability_of": {
+        "meaning": {
+          "en": "Source capability belongs to target environment.",
+          "pl": "Zdolność należy do środowiska."
+        },
+        "direction": "directed",
+        "inverse": "has_capability",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "accessed_via": {
+        "meaning": {
+          "en": "Source is reached via target access.",
+          "pl": "Do źródła dochodzi się przez dostęp."
+        },
+        "direction": "directed",
+        "inverse": "gives_access_to",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "gives_access_to": {
+        "meaning": {
+          "en": "Source access leads to target.",
+          "pl": "Dostęp prowadzi do celu."
+        },
+        "direction": "directed",
+        "inverse": "accessed_via",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "requires_access": {
+        "meaning": {
+          "en": "Source needs target access.",
+          "pl": "Źródło potrzebuje dostępu."
+        },
+        "direction": "directed",
+        "inverse": "access_needed_by",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "access_needed_by": {
+        "meaning": {
+          "en": "Source access is needed by target.",
+          "pl": "Dostęp jest potrzebny celowi."
+        },
+        "direction": "directed",
+        "inverse": "requires_access",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "stored_in": {
+        "meaning": {
+          "en": "Source is stored in target.",
+          "pl": "Źródło jest przechowywane w celu."
+        },
+        "direction": "directed",
+        "inverse": "stores",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "stores": {
+        "meaning": {
+          "en": "Source stores target.",
+          "pl": "Źródło przechowuje cel."
+        },
+        "direction": "directed",
+        "inverse": "stored_in",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "hosted_on": {
+        "meaning": {
+          "en": "Source runs on target host.",
+          "pl": "Źródło działa na hoście."
+        },
+        "direction": "directed",
+        "inverse": "hosts",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "hosts": {
+        "meaning": {
+          "en": "Source hosts target.",
+          "pl": "Źródło gości cel."
+        },
+        "direction": "directed",
+        "inverse": "hosted_on",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "provided_by": {
+        "meaning": {
+          "en": "Source is provided by target.",
+          "pl": "Źródło dostarcza cel."
+        },
+        "direction": "directed",
+        "inverse": "provides",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "provides": {
+        "meaning": {
+          "en": "Source provides target.",
+          "pl": "Źródło dostarcza cel."
+        },
+        "direction": "directed",
+        "inverse": "provided_by",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      }
+    },
+    "node_kinds": {
+      "entity": {
+        "meaning": {
+          "en": "A thing named in a text.",
+          "pl": "Rzecz nazwana w tekście."
+        },
+        "perspectives": []
+      },
+      "topic": {
+        "meaning": {
+          "en": "A subject.",
+          "pl": "Temat."
+        },
+        "perspectives": []
+      },
+      "concept": {
+        "meaning": {
+          "en": "An idea.",
+          "pl": "Pojęcie."
+        },
+        "perspectives": []
+      },
+      "message": {
+        "meaning": {
+          "en": "A message of a conversation.",
+          "pl": "Wiadomość rozmowy."
+        },
+        "perspectives": []
+      },
+      "file": {
+        "meaning": {
+          "en": "A file of a project.",
+          "pl": "Plik projektu."
+        },
+        "perspectives": [
+          "dependencies",
+          "calls",
+          "version_history"
+        ]
+      },
+      "module": {
+        "meaning": {
+          "en": "A module / compilation unit.",
+          "pl": "Moduł / jednostka kompilacji."
+        },
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "function": {
+        "meaning": {
+          "en": "A function or method.",
+          "pl": "Funkcja lub metoda."
+        },
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "code_ref": {
+        "meaning": {
+          "en": "A reference into code.",
+          "pl": "Odwołanie do kodu."
+        },
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "version": {
+        "meaning": {
+          "en": "A version or revision.",
+          "pl": "Wersja lub rewizja."
+        },
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "scope_level": {
+        "meaning": {
+          "en": "A level of the scope chain.",
+          "pl": "Poziom łańcucha zakresów."
+        },
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "goal": {
+        "meaning": {
+          "en": "A goal or purpose.",
+          "pl": "Cel lub przeznaczenie."
+        },
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "environment": {
+        "meaning": {
+          "en": "An environment: a place things run or live (S2).",
+          "pl": "Środowisko: miejsce, gdzie coś działa lub żyje (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "capability": {
+        "meaning": {
+          "en": "What an environment can do (S2).",
+          "pl": "Co środowisko potrafi (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "access": {
+        "meaning": {
+          "en": "A way in to an environment (S2).",
+          "pl": "Sposób dostępu do środowiska (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "secret_vault": {
+        "meaning": {
+          "en": "Where secrets are kept (S2).",
+          "pl": "Miejsce przechowywania sekretów (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      }
+    },
+    "perspectives": {
+      "dependencies": {
+        "label": {
+          "en": "Dependencies",
+          "pl": "Zależności"
+        },
+        "relations": [
+          "dependency",
+          "defines"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {
+          "kinds": [
+            "file",
+            "module",
+            "function"
+          ]
+        },
+        "render": {
+          "layout": "layered",
+          "orientation": "left-right",
+          "edge_style": "arrow"
+        }
+      },
+      "calls": {
+        "label": {
+          "en": "Calls",
+          "pl": "Wywołania"
+        },
+        "relations": [
+          "calls",
+          "implements"
+        ],
+        "direction": "out",
+        "hops": 3,
+        "node_filter": {
+          "kinds": [
+            "function",
+            "file",
+            "module",
+            "code_ref"
+          ]
+        },
+        "render": {
+          "layout": "tree",
+          "orientation": "top-down",
+          "edge_style": "arrow"
+        }
+      },
+      "version_history": {
+        "label": {
+          "en": "Version history",
+          "pl": "Historia wersji"
+        },
+        "relations": [
+          "lineage"
+        ],
+        "direction": "both",
+        "hops": null,
+        "node_filter": {
+          "kinds": [
+            "version",
+            "file",
+            "module"
+          ]
+        },
+        "render": {
+          "layout": "timeline",
+          "orientation": "left-right",
+          "edge_style": "line"
+        }
+      },
+      "teleology": {
+        "label": {
+          "en": "Teleology (purpose)",
+          "pl": "Teleologia (cel)"
+        },
+        "relations": [
+          "teleological",
+          "implements"
+        ],
+        "direction": "both",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "force",
+          "edge_style": "arrow",
+          "emphasis": "goal"
+        }
+      },
+      "structure": {
+        "label": {
+          "en": "Structure",
+          "pl": "Struktura"
+        },
+        "relations": [
+          "part_of",
+          "contains"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "tree",
+          "edge_style": "line"
+        }
+      },
+      "environments": {
+        "label": {
+          "en": "Environments and access",
+          "pl": "Środowiska i dostęp"
+        },
+        "relations": [
+          "environment_link"
+        ],
+        "direction": "both",
+        "hops": null,
+        "node_filter": {
+          "kinds": [
+            "environment",
+            "capability",
+            "access",
+            "secret_vault"
+          ]
+        },
+        "render": {
+          "layout": "force",
+          "edge_style": "arrow"
+        }
+      },
+      "dziedziczenie": {
+        "label": {
+          "en": "Inheritance of a setting",
+          "pl": "Dziedziczenie ustawienia"
+        },
+        "relations": [],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "layered",
+          "orientation": "top-down",
+          "edge_style": "arrow",
+          "mark": [
+            "supplied",
+            "overridden",
+            "inactive"
+          ]
+        },
+        "source": "scope_chain",
+        "params": {
+          "key": {
+            "required": true,
+            "description": {
+              "en": "The setting or value key to trace.",
+              "pl": "Klucz ustawienia lub wartości do prześledzenia."
+            }
+          }
+        }
+      }
+    },
+    "unit_kinds": {
+      "organization": {
+        "level": "organization",
+        "label": {
+          "en": "Organization",
+          "pl": "Organizacja"
+        }
+      },
+      "team": {
+        "level": "team",
+        "label": {
+          "en": "Team",
+          "pl": "Zespół"
+        }
+      },
+      "project": {
+        "level": "project",
+        "label": {
+          "en": "Project",
+          "pl": "Projekt"
+        }
+      },
+      "role_in_context": {
+        "level": "role_in_context",
+        "label": {
+          "en": "Role in context",
+          "pl": "Rola w kontekście"
+        }
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "view_kinds",
+      "edge_kinds",
+      "node_kinds",
+      "perspectives",
+      "unit_kinds"
+    ],
+    "additionalProperties": true
+  }
+}
