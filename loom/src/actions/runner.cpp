@@ -891,7 +891,8 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   // The context guardian (guardian.h). What changes the user's rules or the representation is a run like rules.set (the rules of the
   // scope and the receipt apply); reading, observing and annotating are the guardian's own work.
   if (action == "guardian.promote" || action == "guardian.undo") return run_gated(action, request);
-  if (action == "guardian.observe" || action == "guardian.status" || action == "guardian.compile" || action == "guardian.levels" || action == "guardian.annotate")
+  if (action == "guardian.observe" || action == "guardian.status" || action == "guardian.compile" || action == "guardian.levels" || action == "guardian.annotate" ||
+      action == "guardian.remembered" || action == "guardian.merge" || action == "guardian.unmerge")
     return rt_.guardian().invoke(action, request);
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
   const Json patches = client_patches(json::get_string(request, "client_id"));

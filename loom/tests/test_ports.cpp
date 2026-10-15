@@ -60,7 +60,7 @@ TEST_SUITE("ports") {
     LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles" / "ports.pack",
         R"({"schema":"loom.runtime_profile_overlay/1","domain":"ports","overrides":{"roles":{"my.role":{"compose":"ensemble","members":["x","y"]}}}})"));
     auto prof = unwrap(PortProfile::load(td.path()));
-    CHECK(prof.roles().size() == 7);
+    CHECK(prof.roles().size() == 8);
     auto r = unwrap(prof.resolve("my.role"));
     CHECK(r["compose"] == "ensemble");
     CHECK(r["scope"] == "person");

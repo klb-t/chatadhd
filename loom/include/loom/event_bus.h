@@ -39,6 +39,8 @@ inline constexpr std::string_view kConvCreated = "conv:created";
 inline constexpr std::string_view kConvSwitched = "conv:switched";
 inline constexpr std::string_view kGraphChanged = "graph:changed";
 inline constexpr std::string_view kImportDone = "import:done";
+// P23: a producer (the semantic analyzer) wrote segment annotations / a run receipt for a message: {message_id, conv_id, written, producer, model_read}.
+inline constexpr std::string_view kAnnotationsWritten = "annotations:written";
 inline constexpr std::string_view kSemanticProgress = "semantic:progress";
 // Loom additions.
 inline constexpr std::string_view kTaskChanged = "task:changed";    // {id, kind, status, ...}

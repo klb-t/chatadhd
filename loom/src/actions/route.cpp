@@ -2400,6 +2400,8 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
 
   const Json cmd = routed["command"];
   const std::string lang = routed.value("lang", "en");
+  // The user has refused this very proposal often enough in this conversation (the guardian's do-not-propose rule): the sentence is a message.
+  if (!conv_id.empty() && !cmd.contains("proposal_text") && guardian::do_not_propose(rt.db(), rt.config(), conv_id, cmd.value("title", ""))) return none;
   if (conv_id.empty()) {
     LOOM_TRY_ASSIGN(auto created, rt.db().create_conv("New Chat"));
     conv_id = created.id;

@@ -460,6 +460,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
 
   // Start: graph subscription always (real-time graph is core behaviour);
   // background threads only when requested.
+  impl->graph->set_config(impl->config.get());
   impl->graph->start();
   if (auto rec = impl->tasks->recover_interrupted(); !rec) {
     log::warn(kLog, "task recovery failed: {}", rec.error().message);

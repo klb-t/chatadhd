@@ -91,6 +91,11 @@ std::string guess_lang(const Data& d, const std::string& txt) {
   return pl > en ? "pl" : "en";
 }
 
+std::string clip_to(const std::string& s, std::size_t n) {
+  std::string t(utf8::strip(s));
+  return std::string(utf8::prefix(t, n));
+}
+
 std::string sha256_hex(const std::string& s) { return Sha256::hex(s); }
 
 std::vector<std::string> subject_tokens(const Data& d, const std::string& txt) {

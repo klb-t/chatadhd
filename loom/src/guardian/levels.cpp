@@ -4,6 +4,7 @@
 #include <set>
 
 #include "internal.h"
+#include "loom/annotation_layer.h"
 #include "loom/log.h"
 #include "loom/util/time.h"
 #include "loom/util/utf8.h"
@@ -15,18 +16,6 @@ namespace {
 constexpr const char* kProducer = "guardian_heuristic";
 
 const Json& annotations_cfg(const Data& d) { return d.p.at("annotations"); }
-
-std::string category_node(Database& db, const Data& d, const std::string& category, std::map<std::string, std::string>& cache) {
-  if (auto it = cache.find(category); it != cache.end()) return it->second;
-  const Json& a = annotations_cfg(d);
-  NodeOptions o;
-  o.metadata = Json{{"schema", "loom.annotation_category/1"}, {"category", category}};
-  o.tags = Json::array({"annotation_category"});
-  auto id = db.get_or_create_node(json::get_string(a, "label_prefix", "annotation:") + category, json::get_string(a, "node_kind", "annotation_category"), o);
-  std::string out = id ? *id : std::string();
-  cache[category] = out;
-  return out;
-}
 
 // The categories a level drops, following `inherits`.
 std::set<std::string> level_categories(const Data& d, const std::string& level) {
@@ -47,58 +36,33 @@ std::set<std::string> level_categories(const Data& d, const std::string& level) 
 std::string level_label(const std::string& message_id, const std::string& level) { return "lvl:" + message_id + ":" + level; }
 
 Result<Json> annotations_of(Database& db, const Data& d, const std::string& message_id) {
-  MessageAnnotationListOptions o;
-  o.limit = std::nullopt;
-  LOOM_TRY_ASSIGN(auto list, db.list_message_annotations(message_id, o));
-  const std::string prefix = json::get_string(annotations_cfg(d), "label_prefix", "annotation:");
-  std::map<std::string, std::string> categories;
-  Json out = Json::array();
-  for (const auto& a : list) {
-    if (a.state != "active") continue;
-    std::string category = json::get_string(a.metadata, "category");
-    if (category.empty() && !a.node_id.empty()) {
-      auto n = db.get_node(a.node_id);
-      if (n && *n && (*n)->label.rfind(prefix, 0) == 0) category = (*n)->label.substr(prefix.size());
-    }
-    if (category.empty()) continue;
-    out.push_back(Json{{"id", a.id}, {"category", category}, {"producer", json::get_string(a.metadata, "producer", a.origin)}, {"origin", a.origin},
-                       {"confidence", json::get_number(a.metadata, "confidence", 1.0)}, {"start_char", a.start_char}, {"end_char", a.end_char},
-                       {"revision", a.revision}, {"excerpt", a.excerpt}});
-  }
-  return out;
+  // The contract's own reading: in force only, noise a signal covers left out (signal beats noise).
+  LOOM_TRY_ASSIGN(Json rows, annotations::list(db, policy_of(d), message_id));
+  return rows;
 }
 
 Result<int> annotate_message(Database& db, const Data& d, const Message& m) {
   const auto roles = text::strings_of(json::find(d.p.at("levels"), "roles"));
   if (std::find(roles.begin(), roles.end(), m.role) == roles.end() || is_traffic(d, m) || m.text.empty()) return 0;
-  {
-    MessageAnnotationListOptions all;
-    all.limit = std::nullopt;
-    all.include_retracted = true;  // a noise annotation the user took back is not written again
-    LOOM_TRY_ASSIGN(auto have, db.list_message_annotations(m.id, all));
-    for (const auto& a : have) {
-      const std::string c = json::get_string(a.metadata, "category");
-      if (json::get_string(a.metadata, "producer") == kProducer && (c == "filler" || c == "repetition" || c == "restart")) return 0;
-    }
-  }
   const auto cps = utf8::decode(m.text);
   const auto spans = text::noise_spans(cps, d.p.at("levels").at("noise"), d.fold);
-  std::map<std::string, std::string> cache;
+  const annotations::Policy pol = policy_of(d);
+  const std::string version = annotations::method_version(d.p.at("levels").at("noise").dump());
   int written = 0;
-  const std::string hash = sha256_hex(m.text);
   for (const auto& s : spans) {
-    NewMessageAnnotation n;
-    n.message_id = m.id;
-    n.node_id = category_node(db, d, s.category, cache);
-    if (n.node_id.empty()) continue;
-    n.start_char = static_cast<std::int64_t>(s.start);
-    n.end_char = static_cast<std::int64_t>(s.end);
-    n.origin = json::get_string(annotations_cfg(d).at("producers").at(kProducer), "origin", "recorded");
-    n.metadata = Json{{"schema", json::get_string(annotations_cfg(d), "schema")}, {"category", s.category}, {"producer", kProducer}, {"confidence", 1.0}, {"matched", s.matched}};
-    n.expected_text_hash = hash;
-    LOOM_TRY_ASSIGN(auto made, db.create_message_annotation(n));
-    (void)made;
-    ++written;
+    annotations::Claim c;
+    c.message_id = m.id;
+    c.category = s.category;
+    c.start_char = static_cast<std::int64_t>(s.start);
+    c.end_char = static_cast<std::int64_t>(s.end);
+    c.producer = kProducer;
+    c.method = "heuristic";
+    c.method_version = version;
+    c.confidence = s.confidence;
+    c.origin = json::get_string(annotations_cfg(d).at("producers").at(kProducer), "origin", "recorded");
+    c.extra = Json{{"matched", s.matched}};
+    LOOM_TRY_ASSIGN(auto made, annotations::write(db, pol, c));
+    if (made.outcome == annotations::Outcome::Created || made.outcome == annotations::Outcome::Replaced) ++written;
   }
   return written;
 }

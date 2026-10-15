@@ -647,6 +647,8 @@ ChatOptions ChatEngine::select_representation(const ChatOptions& in, const std::
   if (sel->empty()) return in;
   ChatOptions out = in;
   out.history_text = sel->substitutions;
+  out.guardian_rules = sel->rules;
+  for (const auto& id : sel->skip) out.history_skip.push_back(id);
   if (sel->spec) {
     out.active_task_spec = *sel->spec;
     out.active_task_bindings = sel->bindings;
@@ -813,6 +815,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   const Json& known_orders = order_profile.values().at("orders");
   if (!known_orders.contains(order_name)) return Error(Errc::InvalidArgument, "unknown context_order: " + order_name);
   if (!sys_prompt.empty()) part_system.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
+  if (!opts.guardian_rules.empty()) part_system.push_back(Json{{"role", "system"}, {"content", opts.guardian_rules}});
 
   // The configured modern recipe is explicit; historical callers retain their
   // compatible message order. Preview compilation never creates an execution
