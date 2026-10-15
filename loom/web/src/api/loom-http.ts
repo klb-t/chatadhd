@@ -2,7 +2,7 @@
 // request/response endpoints, fetch + ReadableStream for SSE endpoints
 // (chat, import progress, live events). Talks to loom-server's /api/*.
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import type { ActionsApi, ClientBlob, LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { ActionsApi, AgentApi, ClientBlob, LoomApi, NativeUiRequestOptions, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import { createOperationsApi } from "./operations";
 import type {
   ChatChunk,
@@ -74,6 +74,9 @@ export class LoomHttpApi implements LoomApi {
   usagePolicy(command: Record<string, unknown>): Promise<Record<string, unknown>> {
     return this.req("POST", "/api/usage-policy", command);
   }
+  readonly agent: AgentApi = {
+    run: (request) => this.req("POST", "/api/agent/run", request),
+  };
   readonly actions: ActionsApi = {
     clientKind: "web",
     clientDeclare: (request) => this.req("POST", "/api/client/declare", request),

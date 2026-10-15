@@ -119,6 +119,11 @@ export interface ClientResult {
   ref?: string;
 }
 
+/** The agent (agent.run): a model that uses the actions of the catalogue. A run that stopped on proposals is resumed with the user's answers. */
+export interface AgentApi {
+  run(request: Record<string, unknown>): Promise<Record<string, unknown>>;
+}
+
 /** Running actions (R54): the same actions the chat window proposes, reachable without it. */
 export interface ActionsApi {
   /** The kind of client this transport is (web page, Android shell): what client.declare says about it. */
@@ -163,6 +168,7 @@ export interface LoomApi {
   readonly operations?: import("./operations").OperationsApi;
   // Additive capability (loom_invoke ports actions and chat); older hosts leave it unavailable.
   readonly actions?: ActionsApi;
+  readonly agent?: AgentApi;
   // Additive capability; older embedded hosts can leave it unavailable.
   readonly knowledge?: KnowledgeApi;
   // Optional: older native embedded hosts do not dispatch this ABI yet.

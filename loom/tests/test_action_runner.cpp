@@ -214,6 +214,31 @@ TEST_SUITE("action_runner") {
     CHECK(fits.at("result").at("data").at("element").at("class") == "conversation");
   }
 
+  TEST_CASE("the ports environments and agent run as steps (P26): the same answers as through loom_invoke") {
+    Fixture f;
+    const Json listed = unwrap(f.runner().run(Json{{"action", "environments.list"}, {"element", Json{{"class", "application"}}}}));
+    CHECK(listed.at("status") == "completed");
+    CHECK(listed.at("result").at("data").at("schema") == "loom.environments_list/1");
+    const Json synced = unwrap(f.runner().run(Json{{"action", "environments.sync"}, {"element", Json{{"class", "application"}}}}));
+    CHECK(synced.at("status") == "completed");
+    CHECK(synced.at("result").at("data").at("schema") == "loom.environments_sync/1");
+    // agent.run is in the catalogue and runnable; it is a model action, so it asks like one: nothing is sent before the answer
+    const Json plan = unwrap(f.runner().run(Json{{"action", "agent.run"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"prompt", "say hi"}}}, {"propose", true}}));
+    CHECK(plan.at("status") == "proposed");
+    CHECK(f.transport->requests().empty());
+    const Json agent_run = unwrap(f.runner().run(Json{{"action", "agent.run"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"prompt", "say hi"}}}}));
+    CHECK((agent_run.at("status") == "awaiting_confirmation" || agent_run.at("status") == "awaiting_usage" || agent_run.at("status") == "completed"));
+    if (agent_run.at("status") == "awaiting_confirmation") CHECK(f.transport->requests().empty());
+    // after the answer the loop runs: one model turn, the answer is the result
+    if (agent_run.at("status") == "awaiting_confirmation") {
+      f.script(1, "hi there");
+      const Json done = unwrap(f.runner().confirm(Json{{"run_id", agent_run.at("id")}, {"approved", true},
+                                                       {"receipt_id", agent_run.at("pending").at("receipt_id")}, {"ref", "test"}}));
+      CHECK(done.at("status") == "completed");
+      CHECK(done.at("result").at("data").at("text") == "hi there");
+    }
+  }
+
   TEST_CASE("a chain from propose_chain is accepted and run through the same interpreter") {
     Fixture f;
     const std::string mid = f.add("user", "The launch plan has three phases and two risks.");

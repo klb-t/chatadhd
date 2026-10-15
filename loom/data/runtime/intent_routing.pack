@@ -2015,6 +2015,32 @@
           "takes_scope": false
         },
         {
+          "id": "agent.run.pl",
+          "action": "agent.run",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:popros\\s+agenta\\s+(?:zeby\\s+|o\\s+)?|uruchom\\s+agenta\\s*[:,]?\\s+|niech\\s+agent\\s+)(.+?)\\s*$",
+          "args": [
+            "prompt"
+          ],
+          "original": [
+            "prompt"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "agent.run.en",
+          "action": "agent.run",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:ask\\s+the\\s+agent\\s+(?:to\\s+)?|run\\s+the\\s+agent\\s*[:,]?\\s+|let\\s+the\\s+agent\\s+)(.+?)\\s*$",
+          "args": [
+            "prompt"
+          ],
+          "original": [
+            "prompt"
+          ],
+          "takes_scope": false
+        },
+        {
           "id": "tool_source.list.pl",
           "action": "tool_source.list",
           "lang": "pl",

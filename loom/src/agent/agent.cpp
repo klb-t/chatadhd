@@ -265,7 +265,54 @@ Result<Json> formats(Runtime& rt, const Json& request) {
               {"model_rules", profile.value("model_rules", Json::array())}};
 }
 
-Result<Json> run(Runtime& rt, const Json& request, const CancelToken* cancel) {
+
+// Resume after a proposal (R33): the request carries the transcript of the stopped loop (`messages`) and the user's answers
+// `resume: [{run_id, approved, ref?}]`. Each answer goes through ActionRunner::confirm (the rules, the x10 guard and the limits of
+// that run apply as for any confirmation); the placeholder tool message of the proposal is replaced by what the run came to, and
+// the loop continues from the changed transcript.
+static Result<Json> apply_resume(Runtime& rt, const Json& request) {
+  const Json* answers = json::find(request, "resume");
+  if (!answers || !answers->is_array() || answers->empty()) return request;
+  Json messages = Json::array();
+  if (const Json* m = json::find(request, "messages"); m && m->is_array()) messages = *m;
+  if (messages.empty()) return Error(Errc::InvalidArgument, "resume needs the transcript of the stopped loop in `messages`");
+  for (const auto& a : *answers) {
+    const std::string run_id = json::get_string(a, "run_id");
+    if (run_id.empty()) return Error(Errc::InvalidArgument, "resume: every answer needs a run_id");
+    const bool approved = json::get_bool(a, "approved", false);
+    LOOM_TRY_ASSIGN(Json current, rt.actions().status(Json{{"run_id", run_id}}));
+    const Json pending = current.value("pending", Json(nullptr));
+    std::string receipt = json::get_string(a, "receipt_id");
+    if (receipt.empty() && pending.is_object()) receipt = json::get_string(pending, "receipt_id");
+    Json answer{{"run_id", run_id}, {"approved", approved}, {"receipt_id", receipt}, {"ref", json::get_string(a, "ref", "agent:resume")}};
+    LOOM_TRY_ASSIGN(Json run, rt.actions().confirm(answer));
+    const std::string status = json::get_string(run, "status");
+    const bool done = status == "completed";
+    Json content{{"status", status}, {"executed", done}};
+    if (std::string text = result_text(run); done && !text.empty()) content["result"] = text;
+    if (!done) {
+      std::string why = reason_of(run);
+      if (why.empty() && !approved) why = "declined by the user; nothing was executed";
+      if (!why.empty()) content["note"] = why;
+    }
+    bool replaced = false;
+    for (auto& msg : messages) {
+      if (json::get_string(msg, "role") != "tool") continue;
+      if (json::get_string(msg, "content").find(run_id) == std::string::npos) continue;
+      msg["content"] = json::dump(content);
+      replaced = true;
+      break;
+    }
+    if (!replaced) return Error(Errc::NotFound, "resume: no tool message of the transcript refers to run '" + run_id + "'");
+  }
+  Json out = request;
+  out["messages"] = messages;
+  out.erase("resume");
+  return out;
+}
+
+Result<Json> run(Runtime& rt, const Json& original, const CancelToken* cancel) {
+  LOOM_TRY_ASSIGN(Json request, apply_resume(rt, original));
   llm::Services services(rt.config(), rt.secrets(), rt.http());
   services.data_root = rt.paths().root;
   auto outputs = llm::make_output_store(rt.blobs(), &rt.provenance(), &rt.db());

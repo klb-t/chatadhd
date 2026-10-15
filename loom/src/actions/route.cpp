@@ -1713,6 +1713,14 @@ Report report_of(Runtime& rt, const Data& d, const Json& run, const std::string&
     // An action that needs a secret from the person (connecting a storage) asks them to open Settings: the message carries the keys, the page a button.
     if (const Json* result = json::find(run, "result"); result && result->is_object())
       if (const Json* data = json::find(*result, "data"); data && data->is_object() && data->contains("open_settings")) r.meta["open_settings"] = (*data)["open_settings"];
+    // An agent run that stopped on proposals keeps what the page needs to answer them: the proposals and the transcript to resume from.
+    if (const Json* result = json::find(run, "result"); result && result->is_object()) {
+      const Json* data = json::find(*result, "data");
+      const Json* loop_proposals = data && data->is_object() ? json::find(*data, "proposals") : nullptr;
+      if (loop_proposals && loop_proposals->is_array() && !loop_proposals->empty() && json::get_string(*data, "status") == "needs_confirmation")
+        r.meta["agent_loop"] = Json{{"status", json::get_string(*data, "status")}, {"loop_id", json::get_string(*data, "loop_id")},
+                                   {"proposals", *loop_proposals}, {"messages", data->value("messages", Json::array())}};
+    }
     r.text = say(d.cfg, lang, "result_completed", Json{{"title", title}});
     const std::string body = body_of(rt, d, run, lang);
     r.text += "\n\n" + (body.empty() ? say(d.cfg, lang, "result_no_text") : body);

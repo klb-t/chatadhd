@@ -9,6 +9,8 @@ import ConversationSourceView, { useConversationSourcePresentation, useLayeredDe
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import { queueReason, queueStep, useCreationInFlight, VIEW_LOADING_REASON, type QueuedSend } from "../context/send-queue";
 import UsagePendingBlock from "./UsagePendingBlock";
+import AgentProposalBlock from "./AgentProposalBlock";
+import { agentLoopView, resumeRequest } from "../context/agent-proposal";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
 import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
@@ -158,6 +160,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }), [clientHost]);
   // A command answered in the conversation (R54): the run being answered, and why an answer could not be sent.
   const [answering, setAnswering] = useState<string | null>(null);
+  const [agentBusy, setAgentBusy] = useState<string | null>(null);
+  const [agentFailure, setAgentFailure] = useState<{ messageId: string; reason: string } | null>(null);
   const [answerFailure, setAnswerFailure] = useState<{ runId: string; reason: string } | null>(null);
   // The offer to send a rejected command's sentence as a message: why it could not be taken.
   const [offerFailure, setOfferFailure] = useState<{ proposalId: string; reason: string } | null>(null);
@@ -685,6 +689,32 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     }
   }, [convId, refreshMessages, onMessagesChanged, takeOffer]);
 
+  // The agent stopped on proposals: the answers resume the run (agent.run with `resume`), then the stored message records them.
+  const resumeAgent = useCallback(async (message: Message, decided: Record<string, boolean>): Promise<boolean> => {
+    const view = agentLoopView(message.metadata);
+    if (!view || !api.agent) return false;
+    setAgentBusy(message.id);
+    setAgentFailure(null);
+    try {
+      const outcome = await api.agent.run(resumeRequest(view, decided, convId));
+      const loop = message.metadata?.agent_loop as Record<string, unknown>;
+      const finished = outcome.status === "finished" || !Array.isArray(outcome.proposals) || outcome.proposals.length === 0;
+      const metadata = { ...message.metadata, agent_loop: { ...loop, answered: { ...view.answered, ...decided },
+        status: finished ? "answered" : String(outcome.status ?? "needs_confirmation"),
+        // more proposals: the next stop replaces the open ones, with the transcript to continue from
+        ...(finished ? { proposals: [] } : { proposals: outcome.proposals, messages: outcome.messages, answered: {} }) } };
+      await api.updateMessage(message.id, { metadata });
+      if (convId) await refreshMessages(convId);
+      onMessagesChanged?.();
+      return true;
+    } catch (err) {
+      setAgentFailure({ messageId: message.id, reason: err instanceof Error ? err.message : String(err) });
+      return false;
+    } finally {
+      setAgentBusy(null);
+    }
+  }, [convId, refreshMessages, onMessagesChanged]);
+
   // A recording stored in the kernel, as the page can play it.
   const loadBlob = useCallback<BlobLoader>(async (hash) => {
     if (!api.actions || !api.actions.clientBlobFetch) throw new Error("this transport has no blob access");
@@ -947,6 +977,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               {m.role === "assistant" && api.actions && (() => {
                 const answer = pendingAnswer(m.metadata);
                 const state = proposalState(m.metadata);
+                const agentView = agentLoopView(m.metadata);
+                if (agentView && api.agent) {
+                  return <AgentProposalBlock testId="chat-agent-proposal" view={agentView} t={t} busy={agentBusy === m.id}
+                    failure={agentFailure && agentFailure.messageId === m.id ? agentFailure.reason : null}
+                    onResume={(decided) => resumeAgent(m, decided)} />;
+                }
                 const spoken = messageLanguage(m.metadata);  // one language per answer: the page adds its lines in the language of the message
                 const proposalFeature = featureInLanguage(proposalCatalog.feature, spoken);
                 if (answer && answer.kind === "usage") {

@@ -24,6 +24,7 @@
     "test:p25-views": "node e2e/p25-views-native.mjs",
     "test:action-proposal": "node tests/conversation-view/action-proposal.test.mjs",
     "test:action-proposal-browser": "node e2e/action-proposal-ui.mjs",
+    "test:agent-proposal-browser": "node e2e/agent-proposal-ui.mjs",
     "test:rules-transport": "node tests/conversation-view/rules-transport.test.mjs",
     "test:route-issue": "node tests/conversation-view/route-issue.test.mjs",
     "test:open-settings": "node tests/conversation-view/open-settings.test.mjs",

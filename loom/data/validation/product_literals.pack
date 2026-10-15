@@ -497,7 +497,7 @@
         },
         {
           "path": "loom/data/graph/interfaces.pack",
-          "sha256": "24e65a2819ffacf54ad6e453aac1ad2cda099cf010aaf2728742cc9d7f9ed83d"
+          "sha256": "0e93dd6fa4a014de5687e1065ca8e0fb4d55659d474b95e9cd114c5c8c4d15ef"
         },
         {
           "path": "loom/data/graph/parties.pack",
@@ -537,7 +537,7 @@
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "66a830b52beac6eb8bdc21b86698dbe9dc08b4c87fbd06aaad52ba0d53f8414e"
+          "sha256": "acd950245c937d153f6d0ed7ed723ea157bcfa08cb702c214103c519ef05f25a"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -549,7 +549,7 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "e01f8347c54e8dd0ecdf83cda99ab56b2ddb9195296a4a9ccf8526b4aa652029"
+          "sha256": "7d918b4070398d3735865ae4932639e263fa048789a50f2246cd99f8e3a8ea20"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
@@ -617,7 +617,7 @@
         },
         {
           "path": "loom/data/runtime/intent_routing.pack",
-          "sha256": "4ca0ef59a273b37798f157b5aec6f0bca032a0e0ed4b7661f189e8c371df96e7"
+          "sha256": "e08ca673cdd76c2395da2cc243f48b0e750e07b245030ce04e976924dd4d9d84"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",

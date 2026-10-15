@@ -173,6 +173,31 @@ TEST_SUITE("tool_loop") {
     CHECK((done.at("status") == "completed" || done.at("status") == "proposed"));
   }
 
+  TEST_CASE("resume after a proposal (P26): the user's answer runs or drops the call, the transcript is continued, the model is asked again") {
+    for (const bool approve : {true, false}) {
+      Fixture f;
+      f.script(call_reply({{"c1", "conversation_delete", Json{{"element", f.other_id}}}}));
+      const Json a = f.agent(Json{{"prompt", "Delete the holidays conversation."}, {"element", f.other_id}});
+      REQUIRE(a.at("status") == "needs_confirmation");
+      const std::string run_id = a.at("proposals")[0].at("run_id");
+      f.script(text_reply(approve ? "Deleted." : "Left it alone."));
+      const Json b = f.agent(Json{{"messages", a.at("messages")}, {"resume", Json::array({Json{{"run_id", run_id}, {"approved", approve}}})}});
+      CHECK(b.at("status") == "finished");
+      CHECK(b.at("text") == (approve ? "Deleted." : "Left it alone."));
+      CHECK(f.model_calls() == 2);
+      CHECK(f.conv_exists(f.other_id) == !approve);  // accepted: it ran under the interpreter's rules; rejected: nothing ran
+      const std::string sent = f.body(1).at("messages").dump();
+      INFO(sent);
+      CHECK(sent.find(approve ? "\\\"executed\\\":true" : "declined; nothing was executed") != std::string::npos);
+      // the answer is final: a second answer to the same run is refused
+      auto again = agent::run(*f.rt, Json{{"messages", a.at("messages")}, {"resume", Json::array({Json{{"run_id", run_id}, {"approved", true}}})}});
+      CHECK_FALSE(again);
+    }
+    // a transcript that does not mention the run, and a resume without a transcript, are refused
+    Fixture g;
+    CHECK_FALSE(agent::run(*g.rt, Json{{"prompt", "x"}, {"resume", Json::array({Json{{"run_id", "ar_none"}, {"approved", true}}})}}));
+  }
+
   TEST_CASE("on_proposal continue: the model is told it was not executed and goes on") {
     Fixture f;
     f.script(call_reply({{"c1", "conversation_delete", Json{{"element", f.other_id}}}, {"c2", "search_find", Json{{"query", "report"}}}}));
