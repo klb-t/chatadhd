@@ -100,7 +100,20 @@
         "group": "ui",
         "type": "string",
         "has_default": false,
-        "values": [{"value": "full_screen_chat", "preset": true}, {"value": "views_grid"}, {"value": "windows", "status": "planned", "reason": "Floating and dockable windows are the next thread after P20; until then the workbench (views_grid) opens."}],
+        "values": [
+          {
+            "value": "full_screen_chat",
+            "preset": true
+          },
+          {
+            "value": "views_grid"
+          },
+          {
+            "value": "windows",
+            "status": "planned",
+            "reason": "Floating and dockable windows are the next thread after P20; until then the workbench (views_grid) opens."
+          }
+        ],
         "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (floating and dockable windows; planned, not implemented yet: until it is, the workbench opens). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56)."
       },
       {
@@ -421,7 +434,7 @@
         "group": "context",
         "type": "string",
         "has_default": false,
-        "description": "Model used by the guardian when its method asks one; empty = the default model. The call goes through use_model and the usage guards (x10, spending limits). Default: none."
+        "description": "Model used by the guardian when its method asks one (reading, naming, matching). The model of the conversation is never inherited (owner decision 2026-10-15): it is used only if you set this by hand. Resolution is a policy in the runtime profile guardian (models.policies.guardian, overlay-able): this setting; else the ports role guardian (preset: the same choice as analysis.fast, i.e. semantic_model); else analysis.fast; else NO model - the guardian then reads with word lists only and says so (status, proposals). A policy step relative_to (one tier cheaper than another model, tiers from models.tiers) is available but never preset. The call goes through use_model and the usage guards (x10, spending limits). Default: none."
       },
       {
         "key": "guardian_levels",
@@ -430,6 +443,38 @@
         "type": "object",
         "has_default": false,
         "description": "Your own definition of the lossy levels of the guardian's representation, merged over the profile guardian (levels.defs): {L1: {drop_categories: [filler, repetition, restart]}, L2: {drop_categories: [digression, joke]}, ...}; a level you name that the profile does not know is added. Categories and thresholds are yours to choose; the original text is never touched and every drop records its category and span. Default: the profile."
+      },
+      {
+        "key": "semantic_segments",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether the semantic analyzer's one prompt also returns the segment categories of a message (correction, preference, exception, digression, joke, instruction ...) and its topic thread, written to the shared annotation layer: auto (preset: when something reads them - a guardian that uses a model, the lean representation, the thread filter), on or off (the classic prompt: entities, topics, relations). One call per message either way. Runtime profile guardian (annotations.analyzer). Default: auto. The flow follows the class of the analysis model (models.flows, calibration): a frontier-class model gets one call for everything, a cheap one the classic call and one narrow question for the segments."
+      },
+      {
+        "key": "chat_thread_filter",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether the context selector leaves out of a request the messages the analyzer put in another topic thread than the one you are in: off (preset: every thread is sent) or current. The messages stay in the conversation; only the request is lighter. Runtime profile guardian (representation.thread_filter). Default: off."
+      },
+      {
+        "key": "guardian_match_method",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "How the guardian recognises that several corrections are the same thing: overlap (preset: shared words and concepts, local and free), embedding (then the embedding tier of the search engine when available), model (then one guarded model question per candidate) or user (only what you declare, guardian merge). A wrong join is separated again with guardian unmerge, or by answering no to its proposal. Runtime profile guardian (matching). Default: overlap."
+      },
+      {
+        "key": "guardian_person_rules",
+        "scope": "config",
+        "group": "context",
+        "type": "string",
+        "has_default": false,
+        "description": "Whether the rules the guardian keeps about you (scope person or wider) go with a request: send (preset) or off. Resolved in the scope chain (R47): a rule of one conversation can set it to off there. Only the normalized text of a rule is sent, never the quotes it was heard in. Runtime profile guardian (privacy.visibility). Default: send."
       },
       {
         "key": "chat_representation",

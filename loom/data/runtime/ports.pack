@@ -7,6 +7,7 @@
     "roles": {
       "chat.default": {"adapter": "openai_chat", "params": {}, "setting": "default_model"},
       "analysis.fast": {"adapter": "openai_chat", "params": {}, "setting": "semantic_model"},
+      "guardian": {"adapter": "openai_chat", "params": {}, "setting": "semantic_model"},
       "embed.default": {"adapter": "openai_embeddings", "params": {}},
       "asr": {"compose": "fallback", "members": ["groq", "google"]},
       "ocr": {"compose": "fallback", "members": ["ocr.space"]},

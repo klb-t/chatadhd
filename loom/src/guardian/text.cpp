@@ -32,6 +32,22 @@ bool boundary_char(char32_t c) { return c == ',' || c == ';' || c == '.' || c ==
 
 }  // namespace
 
+std::pair<std::size_t, std::size_t> clause(const std::u32string& text, const std::vector<Tok>& toks, std::size_t first, std::size_t last) {
+  std::size_t from = toks[first].start, to = toks[last].end;
+  while (from > 0 && !boundary_char(text[from - 1])) --from;
+  while (to < text.size() && !boundary_char(text[to])) ++to;
+  while (from < to && (text[from] == U' ' || text[from] == U'\t')) ++from;
+  while (to > from && (text[to - 1] == U' ' || text[to - 1] == U'\t')) --to;
+  return {from, to};
+}
+
+bool sentence_start(const std::u32string& text, const std::vector<Tok>& toks, std::size_t i) {
+  if (i == 0) return true;
+  for (std::size_t c = toks[i - 1].end; c < toks[i].start; ++c)
+    if (text[c] == U'.' || text[c] == U'!' || text[c] == U'?' || text[c] == U'\n' || text[c] == U':' || text[c] == 0x2014 || text[c] == 0x2013) return true;
+  return false;
+}
+
 std::string fold(std::string_view text, const Json& fold_map) {
   const auto table = fold_table(fold_map);
   std::u32string out;
@@ -134,9 +150,16 @@ std::vector<Span> noise_spans(const std::u32string& text, const Json& noise, con
   const auto toks = tokenize(text, fold_map);
   if (toks.empty()) return out;
   auto taken = std::vector<bool>(toks.size(), false);
+  const Json conf = noise.is_object() ? noise.value("confidence", Json::object()) : Json::object();
   auto add = [&](const std::string& category, std::size_t first, std::size_t last, std::size_t from_char, std::size_t to_char) {
     for (std::size_t k = first; k <= last; ++k) taken[k] = true;
     Span s;
+    // Confidence is read from the context: where in the sentence a filler stands, how long the repeated run is.
+    const Json cat = conf.value(category, Json::object());
+    std::string key = "default";
+    if (category == "filler") key = sentence_start(text, toks, first) ? "sentence_start" : "inside";
+    else if (category == "repetition") key = last == first ? "single_word" : "multi_word";
+    s.confidence = json::get_number(cat, key, json::get_number(cat, "default", 1.0));
     s.category = category;
     s.start = from_char;
     s.end = to_char;

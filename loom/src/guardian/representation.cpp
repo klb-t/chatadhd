@@ -330,7 +330,12 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
   const bool has_pref = pref.is_string() && !pref.get<std::string>().empty() && pref.get<std::string>() != "raw";
   LOOM_TRY_ASSIGN(auto rep, db.find_node("rep:" + conv_id, "guardian_representation"));
   const bool has_rep = rep && json::get_string(rep->metadata, "status") == "accepted";
-  if (!has_pref && !has_rep) return sel;  // nothing is chosen: the raw messages, at no cost
+  // Rules about the person live in the user's overlay; without one there is nothing to look up.
+  std::error_code ec;
+  const bool has_overlay = std::filesystem::exists(cfg.path().parent_path() / "profiles" / "guardian.pack", ec);
+  const Json tf_set = cfg.get("chat_thread_filter");
+  const bool has_tf = tf_set.is_string() && !tf_set.get<std::string>().empty() && tf_set.get<std::string>() != "off";
+  if (!has_pref && !has_rep && !has_tf && !has_overlay) return sel;  // nothing is chosen: the raw messages, at no cost
 
   const std::filesystem::path root = cfg.path().parent_path();
   LOOM_TRY_ASSIGN(auto d, detail::load_data(cfg, root));
@@ -361,6 +366,77 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
       if (auto t = detail::level_text(db, d, m, levels[m.role].get<std::string>())) sel.substitutions[m.id] = *t;
     }
   }
+  // Standing rules about the person: only their normalized text, only where the scope chain (R47) lets rules about him go with a request
+  // (setting guardian_person_rules; a rule of the conversation can switch them off there), only while not expired.
+  if (has_overlay) {
+    const Json& priv = d.p.at("privacy");
+    const Json& vis = priv.at("visibility");
+    std::string allowed = json::get_string(vis, "active", "send");
+    const Json mine = cfg.get(json::get_string(vis, "setting", "guardian_person_rules"));
+    if (mine.is_string() && !mine.get<std::string>().empty()) allowed = mine.get<std::string>();
+    if (auto engine = actions::Engine::load(root)) {
+      engine->set_user_values(cfg.all());
+      std::vector<actions::Baseline> baselines;
+      baselines.emplace_back("installation", json::get_string(vis, "active", "send"), "profile:guardian.privacy.visibility.active");
+      if (mine.is_string() && !mine.get<std::string>().empty()) baselines.emplace_back("person", mine, "setting:guardian_person_rules");
+      if (auto scope = engine->parse_scope(Json{{"conversation", conv_id}, {"turn", ""}}))
+        if (auto sv = engine->resolve_value("guardian_person_rules", *scope, baselines); sv && sv->defined && sv->value.is_string()) allowed = sv->value.get<std::string>();
+    }
+    if (!vis.at("presets").contains(allowed)) allowed = json::get_string(vis, "unknown", "send");
+    if (allowed == "send") {
+      const auto wide = text::strings_of(json::find(priv, "wide_scopes"));
+      const std::string now = timeutil::utc_now_iso();
+      const Json rules = d.p.value("rules", Json::object());
+      std::string lines;
+      for (auto it = rules.begin(); it != rules.end(); ++it) {
+        const Json& r = it.value();
+        if (!r.is_object() || r.value("disabled", false) || r.value("text", "").empty()) continue;
+        if (std::find(wide.begin(), wide.end(), r.value("scope", "")) == wide.end()) continue;
+        if (!r.value("expires", "").empty() && r.value("expires", "") < now) continue;  // expired: not applied (and not deleted)
+        const std::string vin = r.value("visible_in", "all");
+        if (vin == "origin" && r.value("conv_id", "") != conv_id) continue;
+        std::string line = "- " + r.value("text", "");
+        std::string ex;
+        for (const auto& e : r.value("exceptions", Json::array())) ex += (ex.empty() ? "" : "; ") + e.value("text", "");
+        if (!ex.empty()) line += " (" + std::string(r.value("lang", "en") == "pl" ? "z wyjątkiem: " : "except: ") + ex + ")";
+        lines += line + "\n";
+      }
+      if (!lines.empty()) sel.rules = json::get_string(priv.at("rules_header"), "en") + "\n" + lines;
+    }
+  }
+  // The thread filter: messages the analyzer put in another topic thread than the one the user is in now are left out of this request.
+  {
+    const Json& tf = section.value("thread_filter", Json::object());
+    std::string mode = json::get_string(tf, "active", "off");
+    if (has_tf) mode = tf_set.get<std::string>();
+    if (!tf.value("presets", Json::object()).contains(mode)) mode = json::get_string(tf, "unknown", "off");
+    if (json::get_string(tf.value("presets", Json::object()).value(mode, Json::object()), "mode", "off") == "current") {
+      const double min_conf = json::get_number(tf, "min_confidence", 0.5);
+      const std::string category = json::get_string(tf, "category", "thread");
+      const auto keep = text::strings_of(json::find(tf, "keep_roles"));
+      const annotations::Policy pol = detail::policy_of(d);
+      LOOM_TRY_ASSIGN(auto msgs, db.get_msgs(conv_id));
+      std::map<std::string, std::string> thread_of;
+      std::string current;
+      for (const auto& m : msgs) {
+        if (m.status != msg_status::kActive) continue;
+        auto anns = annotations::list(db, pol, m.id);
+        if (!anns) continue;
+        for (const auto& a : *anns)
+          if (a.value("category", "") == category && a.value("confidence", 0.0) >= min_conf) {
+            const std::string label = a.value("data", Json::object()).value("thread", "");
+            if (label.empty()) continue;
+            thread_of[m.id] = label;
+            if (m.role == "user") current = label;
+          }
+      }
+      if (!current.empty())
+        for (const auto& m : msgs)
+          if (m.status == msg_status::kActive && std::find(keep.begin(), keep.end(), m.role) == keep.end())
+            if (auto it = thread_of.find(m.id); it != thread_of.end() && it->second != current) sel.skip.push_back(m.id);
+      if (!sel.skip.empty()) sel.notes.push_back(Json{{"thread_filter", current}, {"left_out", sel.skip.size()}});
+    }
+  }
   if (runs != "raw" && has_rep) {
     auto mat = detail::materialize(db, d, conv_id, rep->metadata);
     if (mat) {
@@ -372,6 +448,26 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
     }
   }
   return sel;
+}
+
+bool do_not_propose(Database& db, const Config& cfg, const std::string& conv_id, const std::string& title) {
+  if (title.empty() || conv_id.empty()) return false;
+  try {
+    auto d = detail::load_data(cfg, cfg.path().parent_path());
+    if (!d) return false;
+    const Json& kc = d->p.at("kinds").at("proposal_rejection");
+    const double at = json::get_number(kc, "suppress_at", 0);
+    if (at <= 0) return false;
+    auto hyps = detail::hypotheses_of(db, *d, conv_id);
+    if (!hyps) return false;
+    for (const auto& h : *hyps) {
+      if (json::get_string(h.metadata, "signal") != "proposal_rejection" || json::get_string(h.metadata, "status") == "undone") continue;
+      if (detail::claim_text_of(h.metadata) == title && json::get_number(h.metadata, "weight", 0) >= at) return true;
+    }
+  } catch (const std::exception&) {
+    return false;
+  }
+  return false;
 }
 
 }  // namespace loom::guardian

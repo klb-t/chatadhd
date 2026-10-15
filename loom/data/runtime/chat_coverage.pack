@@ -294,6 +294,69 @@
         }
       },
       {
+        "id": "guardian_remembered",
+        "title": {
+          "en": "What the guardian remembers about you",
+          "pl": "Co strażnik o Tobie pamięta"
+        },
+        "via": "action",
+        "action": "guardian.remembered",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/remembered"
+          ],
+          "invoke": [
+            "actions.guardian.remembered"
+          ]
+        },
+        "examples": {
+          "pl": "co strażnik pamięta",
+          "en": "what does the guardian remember"
+        }
+      },
+      {
+        "id": "guardian_merge",
+        "title": {
+          "en": "Say two things the guardian noticed are the same",
+          "pl": "Połącz to, co strażnik zauważył osobno"
+        },
+        "via": "action",
+        "action": "guardian.merge",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/merge"
+          ],
+          "invoke": [
+            "actions.guardian.merge"
+          ]
+        },
+        "examples": {
+          "pl": "połącz te dwie poprawki strażnika",
+          "en": "guardian merge these two corrections"
+        }
+      },
+      {
+        "id": "guardian_unmerge",
+        "title": {
+          "en": "Separate what the guardian joined",
+          "pl": "Rozdziel to, co strażnik połączył"
+        },
+        "via": "action",
+        "action": "guardian.unmerge",
+        "surfaces": {
+          "http": [
+            "POST /api/guardian/unmerge"
+          ],
+          "invoke": [
+            "actions.guardian.unmerge"
+          ]
+        },
+        "examples": {
+          "pl": "rozdziel poprawki strażnika",
+          "en": "guardian unmerge this hypothesis"
+        }
+      },
+      {
         "id": "guardian_observe",
         "title": {
           "en": "Let the guardian read a message",
