@@ -165,7 +165,7 @@ class SemanticWorker {
   std::string retry_mode_;                   // guarded by mu_
   std::string announced_receipt_;            // the receipt last put on the bus; guarded by mu_
   std::string instance_;                     // claim-owner identity of this worker
-  std::int64_t scan_cursor_ = 0;             // drain thread only: last queue rowid handed out
+  std::atomic<std::int64_t> scan_cursor_{0};  // last queue rowid handed out; any queue change resets it
   std::set<std::string> quarantine_;         // guarded by mu_
   ScopedSubscription import_sub_;
 };

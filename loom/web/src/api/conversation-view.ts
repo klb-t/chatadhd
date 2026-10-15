@@ -9,8 +9,8 @@ export interface ConversationReadRequest {
 }
 /** Where a paged view stands: how many messages the conversation has and the cursor to the next older page. */
 export interface ConversationPage { total: number; truncated: boolean; next_before: string | null }
-export function conversationPage(view: { page?: unknown } | null | undefined): ConversationPage | null {
-  const page = view?.page;
+export function conversationPage(view: object | null | undefined): ConversationPage | null {
+  const page = (view as { page?: unknown } | null | undefined)?.page;
   if (page === null || typeof page !== "object" || Array.isArray(page)) return null;
   const p = page as Record<string, unknown>;
   if (typeof p.total !== "number" || typeof p.truncated !== "boolean") return null;

@@ -63,6 +63,37 @@ TEST_SUITE("db") {
     CHECK(unwrap(db2->schema_version()) == 4);
   }
 
+  TEST_CASE("P19: get_msgs_page reads newest-first windows, cursor and totals; count_msgs; unanalysed cursor") {
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "chatadhd.db");
+    auto conv = unwrap(db->create_conv("paged"));
+    std::vector<std::string> ids;
+    for (int i = 0; i < 7; ++i) ids.push_back(msg(*db, conv.id, "message number " + std::to_string(i) + " with enough text"));
+    CHECK(unwrap(db->count_msgs(conv.id)) == 7);
+    auto p1 = unwrap(db->get_msgs_page(conv.id, 3));
+    REQUIRE(p1.messages.size() == 3);
+    CHECK(p1.messages.front().id == ids[4]);
+    CHECK(p1.messages.back().id == ids[6]);
+    CHECK(p1.total == 7);
+    CHECK(p1.truncated);
+    CHECK(p1.next_before == ids[4]);
+    auto p2 = unwrap(db->get_msgs_page(conv.id, 3, p1.next_before));
+    REQUIRE(p2.messages.size() == 3);
+    CHECK(p2.messages.front().id == ids[1]);
+    CHECK(p2.messages.back().id == ids[3]);
+    auto p3 = unwrap(db->get_msgs_page(conv.id, 3, p2.next_before));
+    REQUIRE(p3.messages.size() == 1);
+    CHECK(p3.messages[0].id == ids[0]);
+    CHECK_FALSE(p3.truncated);
+    CHECK(unwrap(db->get_msgs_page(conv.id, 0)).messages.size() == 7);
+    CHECK_FALSE(db->get_msgs_page(conv.id, 3, "m_missing").has_value());
+    // the unanalysed queue resumes after a rowid
+    auto q1 = unwrap(db->get_unanalysed_msgs(3, {}, 0));
+    REQUIRE(q1.size() == 3);
+    auto q2 = unwrap(db->get_unanalysed_msgs(10, {}, q1.back().rowid));
+    CHECK(q2.size() == 4);
+  }
+
   TEST_CASE("conversations CRUD") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "c.db");

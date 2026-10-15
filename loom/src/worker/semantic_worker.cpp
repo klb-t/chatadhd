@@ -567,6 +567,7 @@ void SemanticWorker::stop() {
 }
 
 void SemanticWorker::wake() {
+  scan_cursor_.store(0);  // something changed the queue (import, requeue, settings): sweep from the start again
   {
     std::lock_guard lk(mu_);
     wake_ = true;
@@ -748,6 +749,7 @@ Status SemanticWorker::set_retry_mode(std::string_view mode) {
 }
 
 Result<Json> SemanticWorker::requeue(const Json& filter) {
+  scan_cursor_.store(0);  // requeued rows may sit before the cursor
   LOOM_TRY(profile_);
   LOOM_TRY_ASSIGN(auto f, parse_queue_filter(filter));
   const auto lease = profile_->values().at("executing_lease_ms").get<std::int64_t>();
@@ -895,7 +897,10 @@ void SemanticWorker::auto_requeue(bool reaches_provider) {
     else if (!done) log::warn("loom.semantic_worker", "Automatic requeue of {} failed: {}", item.id, done.error().message);
   }
   if (gate) gate->settle(llm::GateSettlement{true, 0, Json::object(), Json{{"messages", requeued}, {"cost_usd", declared_cost}}});
-  if (requeued) log::info("loom.semantic_worker", "Automatic retry requeued {} items", requeued);
+  if (requeued) {
+    scan_cursor_.store(0);
+    log::info("loom.semantic_worker", "Automatic retry requeued {} items", requeued);
+  }
 }
 
 Result<int> SemanticWorker::drain_once() {
@@ -923,15 +928,15 @@ Result<int> SemanticWorker::drain_once() {
   // Perf (P19): resume after the last row of the previous batch, so rows that never qualify (short texts, quarantined
   // ids) are walked once per sweep instead of on every batch; an empty sweep wraps to the start once, which also
   // picks up requeued rows with lower rowids.
-  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded, scan_cursor_);
-  if (msgsr && msgsr->empty() && scan_cursor_ > 0) {
-    scan_cursor_ = 0;
+  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded, scan_cursor_.load());
+  if (msgsr && msgsr->empty() && scan_cursor_.load() > 0) {
+    scan_cursor_.store(0);
     msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded, 0);
   }
   if (!msgsr) return msgsr.error();
   auto& msgs = *msgsr;
   if (msgs.empty()) return 0;
-  for (const auto& pm : msgs) scan_cursor_ = std::max(scan_cursor_, pm.rowid);
+  for (const auto& pm : msgs) if (pm.rowid > scan_cursor_.load()) scan_cursor_.store(pm.rowid);
 
   // Resolve once before any transport or write. A malformed overlay is an
   // operation error, never a reason to silently use the built-in analyzer.
