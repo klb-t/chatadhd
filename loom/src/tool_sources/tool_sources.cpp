@@ -409,7 +409,7 @@ Result<Json> do_trust(Runtime& rt, const Json& request) {
                {"scope", json::get_string(request, "scope", json::get_string(rcfg, "scope", "person"))}, {"initiator", "user"}};
       if (const Json* sid = json::find(request, "scope_id")) req["scope_id"] = *sid;
       if (const Json* r = json::find(request, "reason")) req["reason"] = *r;
-      else if (const Json* r = json::find(rcfg, "reason")) req["reason"] = *r;
+      else if (const Json* r2 = json::find(rcfg, "reason")) req["reason"] = *r2;
       LOOM_TRY(actions::rules_set(root, req));
       done.push_back(aid);
     }
@@ -458,7 +458,7 @@ Result<Json> do_call(Runtime& rt, std::string_view action, const Json& request, 
   // Only what the tool declares goes out: the arguments of the call, not the rest of the request.
   Json args = Json::object();
   actions::OverlayStore overlay(rt.paths().root);
-  LOOM_TRY(auto entry, overlay.entry("actions", {"actions", action_id(rt, source, tool)}));
+  LOOM_TRY_ASSIGN(auto entry, overlay.entry("actions", {"actions", action_id(rt, source, tool)}));
   std::set<std::string> declared;
   if (const Json* ps = json::find(entry, "params"); ps && ps->is_array())
     for (const auto& p : *ps) declared.insert(json::get_string(p, "name"));
