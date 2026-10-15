@@ -1,10 +1,10 @@
 # STATE — ChatADHD / Loom
 
-> B, 2026-10-15 UTC: follow-up kanonizacji kwalifikatorów jest obecnie WIP;
-> cztery reprodukcje wykazały błąd równości JSON. Generalizer 4 / pipeline 10
-> wymagają nowych bramek. Wyniki pełnego dev poniżej dotyczą poprzedniego kodu.
-> Aktualny punkt wznowienia: [raport](reports/implicit-structures-2026-10-14.md).
-
+> B, 2026-10-15 UTC: follow-up `b5e67f45` (Generalizer 4 / pipeline 10)
+> ma aktualne 35/35 scope, 293 native / 8746 asercji, guard PASS oraz migrację
+> CLI z zachowaniem starego wyniku i sześcioma trafieniami cache. Pełna macierz
+> v4 jest następna; poniższy pełny dev jest historyczny dla v3.
+> [Aktualny raport](reports/implicit-structures-2026-10-14.md).
 
 ## 2026-10-15 — B: osobna gałąź rozpoznawania struktur
 

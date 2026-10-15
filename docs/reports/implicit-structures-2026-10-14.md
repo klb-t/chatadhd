@@ -1,23 +1,30 @@
 # Unnamed structures and multiple perspectives — 2026-10-14
 
-## Active follow-up — canonical qualifier comparison, validation pending
+## Current code — canonical comparison verified in scope, 2026-10-15 UTC
 
-Four red assertions in `comparison-before/` prove that ordered JSON equality
-coerces integer/float values (including distinct large integers), distinguishes
-object key insertion order, and merges signed floating zero. The generic
-qualifier filter now reuses the existing `json::canonical` contract: object keys
-are canonicalized, arrays retain order, and numeric representations remain
-exact. No fields are dropped or strings converted to numbers. Generalizer 4 /
-pipeline 10 prevent replaying the earlier comparison under an unchanged run ID.
+Code `b5e67f45` is now verified by `comparison-scope/`: **35/35 entries,
+293 native cases / 8746 assertions, guard PASS**, no unexecuted entries and
+unchanged source. Ten implicit-structure cases include the four previously red
+comparison assertions. The old WIP label in the commit history records its
+state when saved; this later evidence completes the scoped increment.
 
-This checkpoint is **not a verified increment yet**. The successful full dev
-below is historical for the preceding code. The v3 ASan build was interrupted
-at step 229/408 before tests; its log remains `build-asan-interrupted-v3.log`.
-Next: rebuild dev, execute the comparison and downstream scope, then refresh
-full dev/ASan/Clang/web gates. Generated data and C/D/E-owned modules are unchanged.
+The qualifier filter reuses the established `json::canonical` contract:
+object key order is irrelevant; arrays retain order; integer/float values,
+large integers and signed floating zero keep their canonical representations.
+No unknown fields are dropped and no strings are converted to numbers.
+Generalizer 4 / pipeline 10 invalidate earlier computation identities.
 
+Actual CLI/store migration also passed: unchanged source, new run,
+byte-equivalent historical result, six cache hits on the repeat, `llm: off`.
+[Migration result](implicit-structures-2026-10-14-evidence/migration-v4-result.json),
+[pre-run receipt](implicit-structures-2026-10-14-evidence/migration-v4-receipt.json),
+[current recognition](implicit-structures-2026-10-14-evidence/example-v4-recognition.json).
 
-## Current checkpoint — full dev verified, 2026-10-15 UTC
+Full v4 dev/ASan/Clang/web are next. The v3 results below are historical.
+ASan v3 was interrupted at step 229/408 before tests; its retained log is
+`build-asan-interrupted-v3.log`. No sanitizer PASS is claimed for that build.
+
+## Historical v3 checkpoint — full dev verified, 2026-10-15 UTC
 
 Published product: `79187377` (project-kind alternatives / transfer evidence),
 `298b429b` (relational recognition and durable receipts), `f682fc89` (exact pack
@@ -138,8 +145,9 @@ bindings, per-edge claim IDs and supporting observation IDs. Source spans and
 source units remain in the existing KnowledgeStore. The regular knowledge query
 and the existing Workbench “All model fields” inspector expose this receipt.
 Legacy instances without the field retain their JSON shape; no DDL migration.
-Generalizer 3 / pipeline 9 invalidate the computation identity without rewriting
-older runs. Existing extracted claims and source bytes remain intact.
+The initial Generalizer 3 / pipeline 9 invalidated the computation identity
+without rewriting older runs; the canonical-comparison follow-up advances these
+to 4 / 10, with the same history-preservation rule. Existing extracted claims and source bytes remain intact.
 
 The example's “agent harness” and “supervised workbench” are alternative
 interpretations. The matched relationships alone cannot establish autonomous

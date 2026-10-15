@@ -1,0 +1,162 @@
+{
+  "status": "candidate",
+  "method": "generalize.match",
+  "version": "4",
+  "pack_hash": "d8d7f9fd48c2216435092cd63cc23ef8d3c8c5be6c6228cf56b2d952bb22d102",
+  "reasons": [
+    {
+      "anchor": "claim_count",
+      "op": {
+        "op": "claim_count",
+        "rel": "has_component",
+        "min": 2
+      },
+      "score": 1.0
+    },
+    {
+      "slot": "module",
+      "role": "part",
+      "values": 2,
+      "confidence": 0.525
+    },
+    {
+      "facet": "feedback_execution",
+      "anchors": [
+        {
+          "anchor": "relation_pattern",
+          "op": {
+            "op": "relation_pattern",
+            "root": "project",
+            "nodes": {
+              "project": "project",
+              "executor": "component",
+              "reviewer": "component",
+              "tool": "tool"
+            },
+            "edges": [
+              {
+                "from": "project",
+                "rel": "has_component",
+                "to": "executor"
+              },
+              {
+                "from": "project",
+                "rel": "has_component",
+                "to": "reviewer"
+              },
+              {
+                "from": "executor",
+                "rel": "uses_tool",
+                "to": "tool"
+              },
+              {
+                "from": "reviewer",
+                "rel": "verifies",
+                "to": "executor"
+              },
+              {
+                "from": "executor",
+                "rel": "has_input",
+                "to": "reviewer"
+              }
+            ],
+            "distinct": [
+              [
+                "executor",
+                "reviewer"
+              ]
+            ],
+            "same_qualifiers": [
+              "branch",
+              "version"
+            ],
+            "evidence": [
+              "observed",
+              "derived",
+              "user"
+            ],
+            "statuses": [
+              "active"
+            ],
+            "max_steps": 100000,
+            "max_matches": 64,
+            "interpretations": {
+              "agent_harness": {
+                "en": "Possible agent harness; autonomous control is not established by these relations.",
+                "pl": "Mo\u017cliwy harness agenta; te relacje nie dowodz\u0105 samodzielnego sterowania."
+              },
+              "supervised_workbench": {
+                "en": "Possible workbench supervised by a person; the initiator is not established.",
+                "pl": "Mo\u017cliwy warsztat nadzorowany przez cz\u0142owieka; inicjator pozostaje nieustalony."
+              }
+            },
+            "claim_qualifiers": {
+              "polarity": {
+                "allow_missing": true,
+                "values": [
+                  "positive"
+                ]
+              },
+              "assertion_context": {
+                "allow_missing": true,
+                "values": [
+                  "asserted"
+                ]
+              }
+            }
+          },
+          "score": 1.0,
+          "evidence": {
+            "matches": [
+              {
+                "bindings": {
+                  "executor": "e_a5be39c85c2234e7",
+                  "project": "e_0228306c83339467",
+                  "reviewer": "e_ba731f0b7164e06c",
+                  "tool": "e_66b337baf5cb7e11"
+                },
+                "proof": [
+                  {
+                    "edge": 0,
+                    "claim": "cl_41c872850846398e"
+                  },
+                  {
+                    "edge": 1,
+                    "claim": "cl_6a52e219d6131654"
+                  },
+                  {
+                    "edge": 2,
+                    "claim": "cl_383916d9f73fb6ef"
+                  },
+                  {
+                    "edge": 3,
+                    "claim": "cl_5035aa748ec95473"
+                  },
+                  {
+                    "edge": 4,
+                    "claim": "cl_ee42fe0ad183c96c"
+                  }
+                ],
+                "observations": [
+                  "ob_0b11a3db7cec3e9a",
+                  "ob_60747c97f2ddfdc4",
+                  "ob_7df8bab2d84b89bd",
+                  "ob_9b271c4cababa826",
+                  "ob_a99bb147f3c3d52a"
+                ],
+                "qualifiers": {
+                  "branch": "",
+                  "version": ""
+                }
+              }
+            ],
+            "steps": 19,
+            "complete": true,
+            "status": "candidate"
+          }
+        }
+      ],
+      "score": 1.0
+    }
+  ]
+}
