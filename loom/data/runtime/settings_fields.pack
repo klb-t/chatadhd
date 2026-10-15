@@ -501,6 +501,14 @@
         "description": "A question about a directory asks the operating system about it (exists, readable, writable); nothing in it is read. Off: only what the graph already holds. Runtime profile graph_entry (environments.settings). Default: true."
       },
       {
+        "key": "tool_sources",
+        "scope": "config",
+        "group": "loom",
+        "type": "object",
+        "has_default": false,
+        "description": "Your tool sources: external servers whose tools become actions of the catalogue, id -> {kind (mcp), transport (stdio | http), command + args (stdio) or url (http), access: {secret: <key name in the secrets vault>, header?, scheme?} (a reference, never the key itself), env: {NAME: {secret: <key name>}}, label?, enabled?, effects?: {flag: value} for every tool of the source, tools?: {<tool>: {effects?: {...}, hidden?: bool}}}. Nothing is contacted or sent until you add a source and ask for it to be listed (tool_source.sync); the tools are written to your overlay profiles/actions.pack, each marked with unknown effects so that the rules ask before every run (relax with tool_source.trust). Runtime profile tool_sources. Default: none."
+      },
+      {
         "key": "context_execution",
         "scope": "config",
         "group": "context",

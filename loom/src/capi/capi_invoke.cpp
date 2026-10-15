@@ -9,6 +9,7 @@
 #include "loom/action_table.h"
 #include "loom/chat_route.h"
 #include "loom/environments.h"
+#include "loom/tool_sources.h"
 #include "loom/media_providers.h"
 #include "loom/port_graph.h"
 #include "loom/port_profile.h"
@@ -92,6 +93,13 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
       auto r = a == "sync"   ? environments::sync(*ctx->rt, *rj)
                : a == "list" ? environments::list(*ctx->rt, *rj)
                              : environments::can_do(*ctx->rt, *rj);
+      if (!r) return out_error(r.error());
+      return out(*r);
+    }
+    if (p == "tool_source") {
+      // Tool sources (loom/tool_sources.h): list | sync | add | remove | trust | call:<source>:<tool>. "call" is the port the interpreter
+      // executes behind the rules; reaching it here is the embedding client's own call (like port "storage").
+      auto r = tool_sources::invoke(*ctx->rt, a, *rj);
       if (!r) return out_error(r.error());
       return out(*r);
     }

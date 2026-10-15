@@ -499,6 +499,67 @@
           "en": "Syncing sends your data folder to GitHub and brings changes back; you confirm each one.",
           "pl": "Synchronizacja wysyła folder danych na GitHub i sprowadza zmiany z powrotem; każdą potwierdzasz sam."
         }
+      },
+      "confirm:tool_source.unknown": {
+        "id": "confirm:tool_source.unknown",
+        "scope": "app_preset",
+        "target": {
+          "kind": "any"
+        },
+        "action": {
+          "flag": "effects_unknown"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "An external tool's effects are unknown, so each run asks you first. Relax it for one tool or one source when you trust it (tool_source.trust).",
+          "pl": "Skutki zewnętrznego narzędzia są nieznane, więc każde uruchomienie pyta Cię o zgodę. Złagodź to dla jednego narzędzia lub źródła, gdy mu ufasz (tool_source.trust)."
+        }
+      },
+      "confirm:tool_source.add": {
+        "id": "confirm:tool_source.add",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "tool_source.add",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Adding a tool source lets an external server provide actions and contacts it; you confirm each one.",
+          "pl": "Dodanie źródła narzędzi pozwala zewnętrznemu serwerowi dostarczać akcje i łączy się z nim; każde potwierdzasz sam."
+        }
+      },
+      "confirm:tool_source.sync": {
+        "id": "confirm:tool_source.sync",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "tool_source.sync",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Refreshing a tool source contacts its server; you confirm it.",
+          "pl": "Odświeżenie źródła narzędzi łączy się z jego serwerem; potwierdzasz to sam."
+        }
+      },
+      "confirm:tool_source.trust": {
+        "id": "confirm:tool_source.trust",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "tool_source.trust",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Letting an external tool run without asking changes what happens without you; you confirm each one.",
+          "pl": "Pozwolenie zewnętrznemu narzędziu na uruchomienie bez pytania zmienia to, co dzieje się bez Ciebie; każde potwierdzasz sam."
+        }
       }
     },
     "extrapolation": {
