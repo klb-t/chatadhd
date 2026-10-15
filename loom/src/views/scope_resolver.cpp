@@ -6,12 +6,60 @@
 #include "loom/effective_view.h"
 #include "loom/log.h"
 
+#include <map>
+#include <mutex>
+
 namespace loom::scopes {
 namespace {
 
 constexpr const char* kLog = "scopes";
 
 bool unset(const Json& v) { return v.is_null() || (v.is_string() && v.get<std::string>().empty()); }
+
+// Perf (P19): Engine::load parses three runtime profiles and config.json; annotations::resolve_model opens a Resolver
+// per message. The loaded engine is cached per data root and keyed by the stat of every file it reads (the three
+// profile overlays and config.json), so any change to them reloads on the next open. A live Config is applied to
+// each copy, never to the cached one.
+struct EngineCache {
+  std::mutex mu;
+  std::map<std::string, std::pair<std::string, actions::Engine>> by_root;
+};
+
+EngineCache& engine_cache() {
+  static EngineCache c;
+  return c;
+}
+
+std::string fingerprint(const std::filesystem::path& root) {
+  std::string out;
+  const std::filesystem::path files[] = {root / "profiles" / "graph_entry.pack", root / "profiles" / "actions.pack",
+                                         root / "profiles" / "action_rules.pack", root / "config.json"};
+  for (const auto& f : files) {
+    std::error_code ec;
+    const auto st = std::filesystem::symlink_status(f, ec);
+    if (ec || !std::filesystem::exists(st)) { out += "-;"; continue; }
+    std::error_code e1, e2;
+    const auto size = std::filesystem::is_regular_file(st) ? std::filesystem::file_size(f, e1) : 0;
+    const auto mtime = std::filesystem::last_write_time(f, e2).time_since_epoch().count();
+    out += std::to_string(size) + ":" + std::to_string(mtime) + ";";
+  }
+  return out;
+}
+
+Result<actions::Engine> cached_engine(const std::filesystem::path& root) {
+  const std::string key = root.string();
+  const std::string fp = fingerprint(root);
+  auto& c = engine_cache();
+  {
+    std::lock_guard lk(c.mu);
+    auto it = c.by_root.find(key);
+    if (it != c.by_root.end() && it->second.first == fp) return it->second.second;
+  }
+  LOOM_TRY_ASSIGN(auto engine, actions::Engine::load(root));
+  std::lock_guard lk(c.mu);
+  c.by_root.insert_or_assign(key, std::make_pair(fp, engine));
+  return engine;
+}
 
 }  // namespace
 
@@ -27,7 +75,7 @@ Json Resolution::to_json() const {
 }
 
 Result<Resolver> Resolver::open(const std::filesystem::path& data_root, const Config* cfg, Database* db) {
-  LOOM_TRY_ASSIGN(auto engine, actions::Engine::load(data_root));
+  LOOM_TRY_ASSIGN(auto engine, cached_engine(data_root));
   if (cfg) engine.set_user_values(cfg->all());
   Resolver r;
   r.engine_ = std::make_shared<actions::Engine>(std::move(engine));

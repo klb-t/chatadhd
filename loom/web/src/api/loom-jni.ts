@@ -322,8 +322,9 @@ export class LoomJniApi implements LoomApi {
   expandGraph(seedIds: string[], depth: number): Promise<GraphData> {
     return this.callAsync("expand_graph", { seed_ids: seedIds, depth });
   }
-  getGraphData(convId?: string): Promise<GraphData> {
-    return this.callAsync("get_graph_data", { conv_id: convId ?? null });
+  getGraphData(convId?: string, page?: { limit?: number; before?: string }): Promise<GraphData> {
+    const paged = convId && (page?.limit !== undefined || page?.before);
+    return this.callAsync("get_graph_data", { conv_id: paged ? JSON.stringify({ conv_id: convId, ...page }) : convId ?? null });
   }
   getGraphEntry(options: GraphEntryOptions = {}): Promise<GraphEntryView> {
     return this.callAsync("graph_entry", { request: JSON.stringify(options) }).then(readGraphEntry);

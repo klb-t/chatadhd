@@ -677,7 +677,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "731f55a794013be6f2c555baa99d59116e58085b32abc25f113655b1c884f111"
+          "sha256": "7e37e87ab2795956eec34420c2ab4592eeb693cc40defd6cce50917d9212f14a"
         },
         {
           "path": "loom/data/runtime/ui_animation.pack",

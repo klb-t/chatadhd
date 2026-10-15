@@ -3,7 +3,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { api } from "../api";
 import type { UserProfileHost } from "../api/onboarding-host";
-import { conversationViewMessages, messageCan, type ConversationView } from "../api/conversation-view";
+import { conversationPage, conversationViewMessages, messageCan, type ConversationPage, type ConversationView } from "../api/conversation-view";
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
 import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts, type ViewFailure } from "../context/send-gate";
 import { queueReason, queueStep, useCreationInFlight, VIEW_LOADING_REASON, type QueuedSend } from "../context/send-queue";
@@ -110,6 +110,9 @@ function safeNotice(feature: Parameters<typeof featureMessage>[0], id: string): 
   try { return featureMessage(feature, id, {}); } catch { return null; }
 }
 
+// Preset (not a limit): messages read per page. Older pages are always reachable, so nothing is cut.
+const MESSAGE_WINDOW = 500;
+
 export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" }: Props) {
   const chat = variant === "chat";
   const t = useShellText();
@@ -127,6 +130,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [branchMessages, setBranchMessages] = useState<Message[]>([]);
   const [conversationView, setConversationView] = useState<ConversationView | null>(null);
   const metadataViewRef = useRef<ConversationView | null>(null);
+  // P19 paging: the newest MESSAGE_WINDOW messages load first; older ones come page by page on scroll up (or the button) and are kept
+  // in `olderMessages` until the next refresh, which re-reads at least as many as are shown.
+  const [olderMessages, setOlderMessages] = useState<Message[]>([]);
+  const [pageInfo, setPageInfo] = useState<ConversationPage | null>(null);
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const loadedCountRef = useRef(0);
+  const loadingOlderRef = useRef(false);
   const [sourceBusy, setSourceBusy] = useState(false);
   const sourceCatalog = useConversationSourcePresentation(profileHost);
   const sendCatalog = usePresentationFeature(profileHost, SEND_GATE_FEATURE);
@@ -270,10 +280,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     // This request is now the one in flight; an earlier failure no longer describes it.
     setViewFailure(current => current?.conversationId === id ? null : current);
     try {
-      const view = api.readConversationView ? await api.readConversationView(id, { sourceAccess: "metadata" }) : null;
+      const view = api.readConversationView
+        ? await api.readConversationView(id, { sourceAccess: "metadata", limit: Math.max(MESSAGE_WINDOW, loadedCountRef.current) }) : null;
       const list = view ? view.messages : await api.getMessages(id, true);
       if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
         metadataViewRef.current = view;
+        loadedCountRef.current = list.length;
+        setOlderMessages([]); setPageInfo(conversationPage(view));
         setConversationView(view); setMessages(list); setBranchMessages(list); setSourceBusy(false);
       }
     } catch (err) {
@@ -298,6 +311,29 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     return watchClientSteps(api, (event) => { void refreshMessages(event.convId); }) ?? undefined;
   }, [refreshMessages]);
 
+  const loadOlder = useCallback(async () => {
+    const id = convId, cursor = pageInfo?.next_before;
+    if (!id || !cursor || !api.readConversationView || loadingOlderRef.current) return;
+    loadingOlderRef.current = true; setLoadingOlder(true);
+    try {
+      const view = await api.readConversationView(id, { sourceAccess: "metadata", limit: MESSAGE_WINDOW, before: cursor });
+      if (mountedRef.current && selectedConvRef.current === id) {
+        const page = conversationPage(view);
+        const el = scrollRef.current, before = el ? el.scrollHeight - el.scrollTop : 0;
+        loadedCountRef.current += view.messages.length;
+        setOlderMessages(current => [...view.messages, ...current]);
+        setPageInfo(page);
+        // Keep the reader where they were: the new rows are inserted above the viewport.
+        requestAnimationFrame(() => { if (el) el.scrollTop = el.scrollHeight - before; });
+      }
+    } catch (cause) {
+      if (mountedRef.current && selectedConvRef.current === id) setError(cause instanceof Error ? cause.message : String(cause));
+    } finally {
+      loadingOlderRef.current = false;
+      if (mountedRef.current) setLoadingOlder(false);
+    }
+  }, [convId, pageInfo]);
+
   const readSources = useCallback(async (options: Record<string, unknown>) => {
     if (!convId || !api.readConversationView || sourceBusy || !sourceCatalog.feature) return;
     const id = convId, epoch = ++fetchEpochRef.current;
@@ -321,6 +357,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
 
   useEffect(() => {
     setMessages([]); setBranchMessages([]); setConversationView(null); metadataViewRef.current = null; setSourceBusy(false);
+    setOlderMessages([]); setPageInfo(null); loadedCountRef.current = 0;
     setViewFailure(null);
     setEditingId(null);
     setVersionsById({});
@@ -335,6 +372,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, [convId, refreshMessages, refreshKey]);
 
   useEffect(() => {
+    if (loadingOlderRef.current) return;  // paging in older rows must not jump to the bottom
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, stream, pendingUserText]);
 
@@ -799,9 +837,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, [chat, messages, versionsById, loadVersions]);
 
   const visibleMessages = useMemo(() => branchLeaf
-    ? conversationBranchPath(branchMessages, branchLeaf).messages
-    : (conversationView ? conversationViewMessages(conversationView, showAllMessages) : messages.filter(row => showAllMessages || row.status === "active"))
-      .filter(message => message.conv_id === convId), [messages, convId, branchLeaf, branchMessages, conversationView, showAllMessages]);
+    ? conversationBranchPath([...olderMessages, ...branchMessages], branchLeaf).messages
+    : [...olderMessages.filter(row => showAllMessages || row.status === "active"),
+       ...(conversationView ? conversationViewMessages(conversationView, showAllMessages) : messages.filter(row => showAllMessages || row.status === "active"))]
+      .filter(message => message.conv_id === convId), [messages, convId, branchLeaf, branchMessages, conversationView, showAllMessages, olderMessages]);
   const displayedStream = stream?.convId === convId ? stream : null;
   const displayedPending = pendingUserText?.convId === convId ? pendingUserText : null;
 
@@ -819,7 +858,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       </p>}
       {conversationView && conversationView.resources.length > 0 && <ConversationSourceView key={convId} view={conversationView}
         profileHost={profileHost} catalog={sourceCatalog} busy={sourceBusy} onRead={readSources} onReload={() => { if (convId) void refreshMessages(convId); }} />}
-      <div className="chat-scroll" ref={scrollRef}>
+      <div className="chat-scroll" ref={scrollRef} onScroll={e => { if (e.currentTarget.scrollTop < 40 && pageInfo?.truncated) void loadOlder(); }}>
+        {pageInfo?.truncated && <div className="chat-older" data-testid="chat-older">
+          <span data-testid="chat-older-count">{olderMessages.length + messages.length} / {pageInfo.total}</span>{" "}
+          <button onClick={() => void loadOlder()} disabled={loadingOlder} data-testid="chat-load-older">{loadingOlder ? "..." : "Load older messages"}</button>
+        </div>}
         {visibleMessages.length === 0 && !displayedPending && !displayedStream && !gate.viewLoading && gate.viewFailure === null && !conversationView?.resources.length && (
           chat ? <div className="shell-empty" data-testid="shell-empty">
             {needsProviderKey(hasKey) && <div className="shell-card" data-testid="first-run-card" role="status">
