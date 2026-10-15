@@ -493,7 +493,7 @@
         },
         {
           "path": "loom/data/graph/interfaces.pack",
-          "sha256": "dc2959b1cc8267e8c56326bf562929553cb71e14cf6bcc3b21f051692c7b1a66"
+          "sha256": "3c0e2bef9fcbce7c6544edee70c3f115f751abc580777f4bbb22ac5a016356d4"
         },
         {
           "path": "loom/data/graph/parties.pack",
@@ -533,7 +533,7 @@
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "28b689d3df03d0f26351c973da9ac7cfd502c0af3265a51298c7bb8dc4f61931"
+          "sha256": "4a6be73364acfc51d0c49f54484996017cb4b4f1612638ac0d7fc5e95134bc42"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -545,7 +545,7 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "7be02333a584f5bf864746b437c157d63ceb58a8345d6e4987ed7faa9fdfc60e"
+          "sha256": "414e7078f94ba238e688a5f258fe573a45e1a55e8e6caedbefda431ad81a136b"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
@@ -593,7 +593,7 @@
         },
         {
           "path": "loom/data/runtime/guardian.pack",
-          "sha256": "e28619a845e66359bcc95a15c533a5a93816168259cc25794bd851e0d758b16e"
+          "sha256": "99cbc26b677e14e2a1249c080b4a038d52cab48e694caba89f5d0a2c0c0ba7dd"
         },
         {
           "path": "loom/data/runtime/import.pack",
@@ -637,7 +637,7 @@
         },
         {
           "path": "loom/data/runtime/ports.pack",
-          "sha256": "643d036c78f7dec2a49ce7fe75f32c269ee797a2bb844425e2ebfd258a107fac"
+          "sha256": "9946014ddafbc87556a9e198fe1090e3f26a64970342993e7337a486a36f09e2"
         },
         {
           "path": "loom/data/runtime/re.pack",
@@ -673,7 +673,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "44c5fdd6ec7d4934098d944cf6b51c887e73c9e4e8318ea2fa896954a396a07e"
+          "sha256": "b901c492317cc4ac930e2339c366e4419116fec7935694f46448d44f0681c55f"
         },
         {
           "path": "loom/data/runtime/ui_animation.pack",
@@ -696,7 +696,7 @@
           "sha256": "e43f04bd6a01f3015fe6ce5b6d857c9ac7ca606ffcceb05e1ca54158e79d29f9"
         }
       ],
-      "output_sha256": "0ec918d74b3a00a4d4681223fb9e2445c9eb09c293cfc5262599b78df76eb7f1",
+      "output_sha256": "a5d246dcb2fd40c43407819cdda4de0ffb961312113fcb481749a7dd25f0a599",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

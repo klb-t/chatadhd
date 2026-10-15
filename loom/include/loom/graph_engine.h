@@ -20,6 +20,7 @@
 #include "loom/util/json.h"
 
 namespace loom {
+class Config;
 
 class Database;
 struct Message;
@@ -59,6 +60,8 @@ class GraphEngine {
   GraphEngine& operator=(const GraphEngine&) = delete;
 
   // Python subscribed in __init__; Loom subscribes here (Runtime calls it).
+  // The settings the engine's producers read (P23: whether anyone reads thread annotations). Optional; nullptr = nobody does.
+  void set_config(const Config* cfg) noexcept { config_ = cfg; }
   void start();
   void stop();
   bool active() const noexcept { return active_.load(); }
@@ -97,6 +100,7 @@ class GraphEngine {
   const SemanticAnalyzer& regex_;
   AnalyzerBinding analyzer_binding_;
   SemanticLLM* llm_;
+  const Config* config_ = nullptr;
   RelationRegistry* relations_;
   std::atomic<bool> active_{false};
   ScopedSubscription sub_;

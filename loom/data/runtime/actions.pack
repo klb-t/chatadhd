@@ -10234,6 +10234,258 @@
           ]
         },
         "positional_arg": "text"
+      },
+      "guardian.remembered": {
+        "id": "guardian.remembered",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What the guardian remembers about you",
+        "description": "The rules the guardian keeps about the person across conversations (scope person or wider): their normalized text, since when, when they are reviewed or expire, where they are visible, and what is on the way as a proposal. Nothing of the quotes they were heard in.",
+        "labels": {
+          "pl": "Co strażnik o Tobie pamięta"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "conversation"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.remembered",
+        "params": [
+          {
+            "name": "lang",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Language of the lines (pl or en).",
+              "pl": "Język wierszy (pl lub en)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/remembered"
+        },
+        "phrases": {
+          "en": [
+            "guardian remember*",
+            "what does the guardian remember*",
+            "guardian rules about me"
+          ],
+          "pl": [
+            "strażnik* pamięta*",
+            "co strażnik* pamięta*",
+            "reguły strażnik*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "what does the guardian remember"
+          ],
+          "pl": [
+            "co strażnik pamięta"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "What I remember about you:",
+          "pl": "Co o Tobie pamiętam:"
+        },
+        "default_element": "current_conversation"
+      },
+      "guardian.merge": {
+        "id": "guardian.merge",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Say two things the guardian noticed are the same",
+        "description": "Method `user` of the guardian's matching: the occurrences of one hypothesis are joined to another of the same conversation (edges same_as, method user, confidence 1). Nothing is deleted; guardian.unmerge separates them again.",
+        "labels": {
+          "pl": "Połącz to, co strażnik zauważył osobno"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.merge",
+        "params": [
+          {
+            "name": "hypothesis",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The hypothesis that stays.",
+              "pl": "Hipoteza, która zostaje."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "with",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The hypothesis that joins it.",
+              "pl": "Hipoteza, która się do niej dołącza."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/merge"
+        },
+        "phrases": {
+          "en": [
+            "guardian merge",
+            "these corrections are the same thing"
+          ],
+          "pl": [
+            "połącz poprawki strażnik*",
+            "to jest to samo strażnik*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "guardian merge these two corrections"
+          ],
+          "pl": [
+            "połącz te dwie poprawki strażnika"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Joined:",
+          "pl": "Połączone:"
+        },
+        "default_element": "application"
+      },
+      "guardian.unmerge": {
+        "id": "guardian.unmerge",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Separate what the guardian joined",
+        "description": "Splits the merged occurrences of a hypothesis (those the matching method was not sure of, or the one named) into hypotheses of their own. Nothing is lost: each occurrence keeps its evidence.",
+        "labels": {
+          "pl": "Rozdziel to, co strażnik połączył"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/guardian/actions.cpp",
+        "port": "actions",
+        "action": "guardian.unmerge",
+        "params": [
+          {
+            "name": "hypothesis",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The hypothesis to split.",
+              "pl": "Hipoteza do rozdzielenia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "occurrence",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Only this occurrence (default: all merged).",
+              "pl": "Tylko to wystąpienie (domyślnie: wszystkie połączone)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/guardian/unmerge"
+        },
+        "phrases": {
+          "en": [
+            "guardian unmerge",
+            "guardian split"
+          ],
+          "pl": [
+            "rozdziel poprawki strażnik*",
+            "rozdziel hipotez* strażnik*"
+          ]
+        },
+        "examples": {
+          "en": [
+            "guardian unmerge this hypothesis"
+          ],
+          "pl": [
+            "rozdziel poprawki strażnika"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Separated:",
+          "pl": "Rozdzielone:"
+        },
+        "default_element": "application"
       }
     }
   },

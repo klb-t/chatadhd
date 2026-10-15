@@ -59,7 +59,8 @@
         "system": "You label one user message of a chat. Answer with one JSON object only: {\"kind\": one of {{kinds}} or \"none\", \"confidence\": 0..1, \"subject\": short restatement of what the user wants or \"\", \"tone\": \"calm\" or \"sharp\", \"exceptions\": [short phrases the user excepts], \"scope\": \"message\"|\"conversation\"|\"person\" or \"\"}. Kinds: {{kind_help}}",
         "user": "Previous assistant reply (may be empty):\n{{previous}}\n\nUser message:\n{{text}}",
         "min_confidence": 0.5
-      }
+      },
+      "model_fallback": "policy models.policies.guardian (never the conversation's model)"
     },
     "promotion": {
       "setting": "guardian_promotion",
@@ -168,16 +169,6 @@
         "global"
       ],
       "default": "conversation",
-      "by_weight": [
-        {
-          "min": 0,
-          "scope": "conversation"
-        },
-        {
-          "min": 6,
-          "scope": "person"
-        }
-      ],
       "markers": {
         "person": {
           "pl": [
@@ -216,6 +207,25 @@
             "this time",
             "just now"
           ]
+        }
+      },
+      "by_evidence": [
+        {
+          "distinct_conversations": 2,
+          "scope": "person",
+          "why": "conversations"
+        },
+        {
+          "distinct_task_kinds": 2,
+          "scope": "person",
+          "why": "task_kinds"
+        }
+      ],
+      "widening": {
+        "asks": true,
+        "meaning": {
+          "en": "A scope wider than the conversation is only ever proposed as a question; it grows from evidence diversity (distinct conversations, distinct kinds of task, time span), never from the count of repetitions in one place. Words like \"always\" are an occurrence that requests the scope.",
+          "pl": "Zakres szerszy niż rozmowa jest zawsze tylko pytaniem; rośnie z różnorodności dowodów (różne rozmowy, różne rodzaje zadań, odstęp czasu), nigdy z liczby powtórzeń w jednym miejscu. Słowa jak „zawsze” są wystąpieniem, które prosi o zakres."
         }
       }
     },
@@ -459,7 +469,10 @@
               ]
             }
           }
-        }
+        },
+        "yields_to": [
+          "course_correction"
+        ]
       },
       "proposal_rejection": {
         "title": {
@@ -475,8 +488,8 @@
           "rule_kind": "do_not_propose",
           "statement_kind": "prohibition",
           "note": {
-            "en": "Recorded and weighed; shown by guardian.status. No consumer of a do-not-propose rule exists yet, so nothing is proposed to the user for it.",
-            "pl": "Zapisywana i ważona; widoczna w guardian.status. Nie ma jeszcze odbiorcy reguły „nie proponuj”, więc użytkownikowi nic się o niej nie proponuje."
+            "en": "Weighed, shown by guardian.status and consumed by the action router: once the weight reaches kinds.proposal_rejection.suppress_at (two refusals), the same proposal is no longer offered in that conversation; the sentence is sent as a message.",
+            "pl": "Ważona, widoczna w guardian.status i używana przez router akcji: gdy waga osiągnie kinds.proposal_rejection.suppress_at (dwa odmowy), ta sama propozycja nie jest już składana w tej rozmowie; zdanie idzie jako wiadomość."
           },
           "claim": {
             "en": "Do not propose again: {{text}}",
@@ -488,6 +501,159 @@
             "structural"
           ],
           "structural": "rejected_proposal"
+        },
+        "suppress_at": 1.0
+      },
+      "preference_statement": {
+        "title": {
+          "en": "Stated preference",
+          "pl": "Wyrażona preferencja"
+        },
+        "strength": 1.0,
+        "priority": 1,
+        "annotation_category": "preference",
+        "polarity": "positive",
+        "hypothesis": {
+          "scope": "conversation",
+          "promotes": "rule",
+          "rule_kind": "preference",
+          "claim": {
+            "en": "The user prefers: {{text}}",
+            "pl": "Użytkownik woli: {{text}}"
+          },
+          "statement_kind": "style",
+          "negative_statement_kind": "prohibition"
+        },
+        "detect": {
+          "methods": [
+            "heuristic",
+            "model"
+          ],
+          "needs_goal": false,
+          "heuristic": {
+            "min_score": 0.6,
+            "start_window": 4,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.7,
+            "markers": {
+              "pl": [
+                "zawsze",
+                "od teraz",
+                "wole",
+                "preferuje",
+                "na przyszlosc",
+                "nigdy wiecej",
+                "nigdy"
+              ],
+              "en": [
+                "always",
+                "from now on",
+                "i prefer",
+                "in the future",
+                "never again",
+                "never"
+              ]
+            }
+          }
+        }
+      },
+      "acceptance": {
+        "title": {
+          "en": "Acceptance",
+          "pl": "Akceptacja"
+        },
+        "strength": 0.5,
+        "priority": 0,
+        "annotation_category": "acceptance",
+        "polarity": "positive",
+        "hypothesis": {
+          "promotes": "annotation"
+        },
+        "note": {
+          "en": "A positive signal: written to the annotation layer (what went well), no hypothesis of its own; it keeps a rule that was just applied alive.",
+          "pl": "Sygnał pozytywny: trafia do warstwy adnotacji (co się udało), bez własnej hipotezy; podtrzymuje przy życiu regułę, która właśnie zadziałała."
+        },
+        "detect": {
+          "methods": [
+            "heuristic"
+          ],
+          "needs_goal": false,
+          "heuristic": {
+            "min_score": 0.8,
+            "start_window": 3,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.5,
+            "markers": {
+              "pl": [
+                "swietnie",
+                "dokladnie tak",
+                "tak trzymaj",
+                "idealnie",
+                "wlasnie tak",
+                "o to mi chodzilo",
+                "super"
+              ],
+              "en": [
+                "perfect",
+                "exactly",
+                "great",
+                "keep doing that",
+                "thats what i wanted",
+                "that's what i wanted",
+                "just like that",
+                "well done"
+              ]
+            }
+          }
+        }
+      },
+      "rule_statement": {
+        "title": {
+          "en": "A rule stated by the user",
+          "pl": "Reguła podana przez użytkownika"
+        },
+        "strength": 2.0,
+        "priority": 3,
+        "annotation_category": "rule_statement",
+        "polarity": "positive",
+        "hypothesis": {
+          "scope": "conversation",
+          "promotes": "rule",
+          "rule_kind": "stated",
+          "named": true,
+          "claim": {
+            "en": "{{text}}",
+            "pl": "{{text}}"
+          },
+          "statement_kind": "style",
+          "negative_statement_kind": "prohibition"
+        },
+        "detect": {
+          "methods": [
+            "heuristic"
+          ],
+          "needs_goal": false,
+          "claim_after_marker": true,
+          "heuristic": {
+            "min_score": 0.9,
+            "start_window": 4,
+            "start_weight": 1.0,
+            "anywhere_weight": 0.0,
+            "markers": {
+              "pl": [
+                "zapamietaj ze",
+                "zapamietaj",
+                "przyjmij ze",
+                "ustalmy ze"
+              ],
+              "en": [
+                "remember that",
+                "please remember",
+                "let's agree that",
+                "lets agree that"
+              ]
+            }
+          }
         }
       }
     },
@@ -702,55 +868,255 @@
               "forget what i just said"
             ]
           }
+        },
+        "confidence": {
+          "filler": {
+            "sentence_start": 0.9,
+            "inside": 0.5
+          },
+          "repetition": {
+            "single_word": 0.3,
+            "multi_word": 0.9
+          },
+          "restart": {
+            "default": 0.9
+          }
         }
       }
     },
     "annotations": {
-      "schema": "loom.segment_annotation/1",
+      "schema": "loom.segment_annotation/2",
       "node_kind": "annotation_category",
       "label_prefix": "annotation:",
       "producers": {
         "guardian_heuristic": {
           "status": "implemented",
           "origin": "recorded",
-          "cost": "none"
+          "cost": "none",
+          "categories_written": [
+            "filler",
+            "repetition",
+            "restart",
+            "correction",
+            "refinement",
+            "preference",
+            "acceptance",
+            "exception",
+            "rule_statement"
+          ],
+          "method": "heuristic",
+          "own": true
         },
         "semantic_regex": {
-          "status": "planned",
+          "status": "implemented",
           "origin": "recorded",
-          "reason": {
-            "en": "The regex analyzer does not write segment annotations yet.",
-            "pl": "Analizator regex nie zapisuje jeszcze adnotacji segmentów."
+          "method": "regex",
+          "cost": "none",
+          "categories_written": [
+            "thread"
+          ],
+          "note": {
+            "en": "Writes the thread of a message from the dominant topic of the regex analysis.",
+            "pl": "Zapisuje wątek wiadomości z dominującego tematu analizy regex."
           }
         },
         "semantic_llm": {
-          "status": "planned",
+          "status": "implemented",
           "origin": "model",
-          "reason": {
-            "en": "The LLM analyzer does not write segment annotations yet; when it does, the guardian reads them and makes no second model call.",
-            "pl": "Analizator LLM nie zapisuje jeszcze adnotacji segmentów; gdy zacznie, strażnik je odczyta i nie wykona drugiego wywołania modelu."
-          }
+          "method": "llm",
+          "cost": "none beyond the analysis call that is made anyway (one prompt contract: entities, topics, relations and segments)",
+          "categories_written": [
+            "instruction",
+            "correction",
+            "refinement",
+            "preference",
+            "exception",
+            "digression",
+            "joke",
+            "filler",
+            "thread"
+          ]
         },
         "semantic_batch": {
-          "status": "planned",
+          "status": "implemented",
           "origin": "model",
-          "reason": {
-            "en": "As semantic_llm, through the batch API.",
-            "pl": "Jak semantic_llm, przez API wsadowe."
-          }
+          "method": "batch",
+          "cost": "as semantic_llm, through the batch API",
+          "categories_written": [
+            "instruction",
+            "correction",
+            "refinement",
+            "preference",
+            "exception",
+            "digression",
+            "joke",
+            "filler",
+            "thread"
+          ]
+        },
+        "guardian_model": {
+          "status": "implemented",
+          "origin": "model",
+          "cost": "one guarded model call per message not read by another model producer",
+          "method": "model",
+          "categories_written": [
+            "correction",
+            "refinement",
+            "preference",
+            "exception",
+            "rule_statement"
+          ],
+          "own": true
         }
       },
       "categories": [
         "instruction",
         "correction",
         "refinement",
+        "preference",
+        "acceptance",
+        "exception",
+        "rule_statement",
         "digression",
         "joke",
         "filler",
         "repetition",
         "restart",
         "thread"
-      ]
+      ],
+      "classes": {
+        "signal": [
+          "correction",
+          "refinement",
+          "instruction",
+          "preference",
+          "acceptance",
+          "exception",
+          "rule_statement"
+        ],
+        "droppable": [
+          "filler",
+          "repetition",
+          "restart",
+          "digression",
+          "joke"
+        ],
+        "structure": [
+          "thread"
+        ]
+      },
+      "polarity": {
+        "positive": [
+          "acceptance",
+          "preference",
+          "rule_statement"
+        ],
+        "negative": [
+          "correction",
+          "restart",
+          "digression"
+        ]
+      },
+      "conflicts": {
+        "order": [
+          "user",
+          "confidence",
+          "newer"
+        ],
+        "shield": {
+          "signal_over": "droppable",
+          "min_confidence": 0.5,
+          "whole_message_shields": false,
+          "meaning": {
+            "en": "A signal protects the segment it covers from being dropped as noise (signal beats noise). A signal that spans the whole message describes the message and shields nothing.",
+            "pl": "Sygnał chroni pokryty przez siebie segment przed odrzuceniem jako szum (sygnał przed szumem). Sygnał obejmujący całą wiadomość opisuje wiadomość i niczego nie chroni."
+          }
+        }
+      },
+      "analyzer": {
+        "setting": "semantic_segments",
+        "active": "auto",
+        "unknown": "auto",
+        "presets": {
+          "auto": {
+            "when": {
+              "guardian_method": [
+                "model",
+                "hybrid"
+              ],
+              "chat_representation": [
+                "lean"
+              ],
+              "chat_thread_filter": [
+                "current"
+              ]
+            },
+            "meaning": {
+              "en": "The analyzer's one prompt also returns the segment categories when something reads them: a guardian that uses a model, the lean representation, the thread filter (preset).",
+              "pl": "Jeden prompt analizatora zwraca też kategorie segmentów, gdy ktoś je czyta: strażnik używający modelu, reprezentacja lean, filtr wątków (preset)."
+            }
+          },
+          "on": {
+            "always": true,
+            "meaning": {
+              "en": "Always ask for segment categories and the thread.",
+              "pl": "Zawsze proś o kategorie segmentów i wątek."
+            }
+          },
+          "off": {
+            "never": true,
+            "meaning": {
+              "en": "The analyzer's prompt is the classic one (entities, topics, relations); the guardian reads messages itself.",
+              "pl": "Prompt analizatora jest klasyczny (encje, tematy, relacje); strażnik czyta wiadomości sam."
+            }
+          }
+        },
+        "max_tokens": 1200,
+        "max_segments": 12,
+        "min_text_codepoints": 20,
+        "thread": {
+          "write": true,
+          "min_confidence": 0.3,
+          "category": "thread"
+        },
+        "categories": {
+          "instruction": {
+            "en": "a task or request the assistant should carry out",
+            "pl": "zadanie lub prośba do wykonania"
+          },
+          "correction": {
+            "en": "the user corrects the assistant or changes direction",
+            "pl": "użytkownik poprawia asystenta albo zmienia kierunek"
+          },
+          "refinement": {
+            "en": "the user adds a detail to the task already given",
+            "pl": "użytkownik dodaje szczegół do zadania, które już podał"
+          },
+          "preference": {
+            "en": "a standing preference of the user (how he wants things done)",
+            "pl": "stała preferencja użytkownika (jak chce, żeby coś było robione)"
+          },
+          "exception": {
+            "en": "an exception to something the user has just asked for",
+            "pl": "wyjątek od tego, o co użytkownik przed chwilą poprosił"
+          },
+          "digression": {
+            "en": "a remark that leaves the topic and could be dropped without losing the task",
+            "pl": "uwaga poza tematem, którą można pominąć bez straty dla zadania"
+          },
+          "joke": {
+            "en": "a joke or aside with no bearing on the task",
+            "pl": "żart lub dygresja bez znaczenia dla zadania"
+          },
+          "filler": {
+            "en": "words that carry no content",
+            "pl": "słowa bez treści"
+          }
+        },
+        "prompt": {
+          "addendum": "\nAlso add to the same JSON object:\n  \"segments\": [{\"category\": \"{{categories}}\", \"quote\": \"the exact words copied from the message\", \"confidence\": 0.0-1.0, \"qualifier\": \"\" or \"quoted\" or \"hypothetical\"}],\n  \"thread\": \"a short label of the topic thread this message belongs to\"\n\nSegment categories:\n{{category_help}}\nSegment rules:\n- Quote the words exactly as they stand; never paraphrase. A segment is a phrase or sentence, not the whole message unless it is one.\n- qualifier is \"quoted\" when the user reports someone else's words, \"hypothetical\" when he imagines a case.\n- Use an empty segments array when nothing applies.\n"
+        }
+      }
     },
     "representation": {
       "setting": "chat_representation",
@@ -806,10 +1172,33 @@
         }
       },
       "thread_filter": {
-        "status": "planned",
-        "reason": {
-          "en": "Skipping other topic threads belongs to the context selector and needs the analyzer to write thread annotations.",
-          "pl": "Pomijanie innych wątków tematycznych należy do selektora kontekstu i wymaga adnotacji wątków od analizatora."
+        "setting": "chat_thread_filter",
+        "active": "off",
+        "unknown": "off",
+        "presets": {
+          "off": {
+            "mode": "off",
+            "meaning": {
+              "en": "Every thread of the conversation is sent (preset).",
+              "pl": "Wysyłane są wszystkie wątki rozmowy (preset)."
+            }
+          },
+          "current": {
+            "mode": "current",
+            "meaning": {
+              "en": "Messages that the analyzer put in another topic thread than the one you are in now are left out of the request; they stay in the conversation.",
+              "pl": "Wiadomości, które analizator przypisał do innego wątku tematycznego niż ten, w którym jesteś, nie idą w żądaniu; zostają w rozmowie."
+            }
+          }
+        },
+        "category": "thread",
+        "min_confidence": 0.5,
+        "keep_roles": [
+          "system"
+        ],
+        "note": {
+          "en": "The selector leaves out messages of other threads (history_skip). A message without a thread annotation is always sent.",
+          "pl": "Selektor pomija wiadomości innych wątków (history_skip). Wiadomość bez adnotacji wątku jest zawsze wysyłana."
         }
       },
       "version_goal_task": "guardian"
@@ -834,15 +1223,16 @@
         "evidence": "derived_from",
         "supports": "supports",
         "contradicts": "contradicts",
-        "except": "except"
+        "except": "except",
+        "same_as": "same_as"
       }
     },
     "rules": {},
     "texts": {
       "en": {
-        "propose_rule": "I noticed you have corrected the same thing {{count}} times: \"{{claim}}\". Shall I remember it as a rule for {{scope}}{{exceptions}}? It stays your rule: you can switch it off at any time.",
+        "propose_rule": "I noticed you have corrected the same thing {{count}} times: \"{{claim}}\". Shall I remember it as a rule for {{scope}}{{exceptions}}{{why}}? It stays your rule: you can switch it off at any time.",
         "propose_compile": "You have clarified the task {{count}} times. I can keep one exact instruction instead of the whole run (your messages stay as they are):\n{{instruction}}\nUse it from now on?",
-        "ask_rule": "Should I remember this for {{scope}}: \"{{claim}}\"?",
+        "ask_rule": "Should I remember this for {{scope}}{{why}}: \"{{claim}}\"?",
         "applied_rule": "I saved a rule for {{scope}}: \"{{claim}}\" (you corrected it {{count}} times). Switch it off with: guardian undo {{rule}}.",
         "exceptions_suffix": ", except: {{list}}",
         "answer_yes": "Done. {{what}}",
@@ -851,12 +1241,26 @@
         "promoted_compile": "From now on the instruction above stands in for your {{count}} clarifications when this conversation is sent.",
         "undone": "Taken back: {{what}}. The messages and what I noticed stay.",
         "status_empty": "I have not noticed anything to remember in this conversation.",
-        "status_line": "{{kind}} ({{status}}, weight {{weight}}, {{count}}x): {{claim}}"
+        "status_line": "{{kind}} ({{status}}, weight {{weight}}, {{count}}x): {{claim}}",
+        "propose_rule_unnamed": "I noticed you have corrected the same thing {{count}} times:\n{{quotes}}\nShall I remember it as a rule for {{scope}}{{exceptions}}{{why}}? It stays your rule: you can switch it off at any time.",
+        "quote_line": "- “{{quote}}”",
+        "why_conversations": "you said this in {{n}} different conversations",
+        "why_task_kinds": "you said this in {{n}} different kinds of task",
+        "why_requested": "you asked for it to hold always",
+        "why_wrap": " ({{list}})",
+        "review_rule": "The rule \"{{claim}}\" has had no confirmation for {{days}} days. Shall I switch it off? If not, it stays and I will ask again later.",
+        "disable_rule": "You have just corrected against the rule \"{{claim}}\". Shall I switch it off?",
+        "remembered_header": "What I remember about you:",
+        "remembered_empty": "I do not remember any rule about you yet.",
+        "remembered_line": "- {{claim}} ({{scope}}, since {{since}})",
+        "merged": "Joined: {{what}}",
+        "unmerged": "Separated: {{what}}",
+        "no_model": "(No analysis model is set, so I read with word lists only: set guardian_model or the analysis model.)"
       },
       "pl": {
-        "propose_rule": "Zauważyłem, że poprawiasz to samo już {{count}} razy: \"{{claim}}\". Zapamiętać to jako regułę dla: {{scope}}{{exceptions}}? To nadal Twoja reguła: możesz ją wyłączyć w każdej chwili.",
+        "propose_rule": "Zauważyłem, że poprawiasz to samo już {{count}} razy: \"{{claim}}\". Zapamiętać to jako regułę dla: {{scope}}{{exceptions}}{{why}}? To nadal Twoja reguła: możesz ją wyłączyć w każdej chwili.",
         "propose_compile": "Doprecyzowałeś zadanie {{count}} razy. Zamiast całej serii mogę trzymać jedno dokładne polecenie (Twoje wiadomości zostają bez zmian):\n{{instruction}}\nUżywać go odtąd?",
-        "ask_rule": "Czy zapamiętać to dla: {{scope}}: \"{{claim}}\"?",
+        "ask_rule": "Czy zapamiętać dla: {{scope}}{{why}}: \"{{claim}}\"?",
         "applied_rule": "Zapisałem regułę dla: {{scope}}: \"{{claim}}\" (poprawiałeś to {{count}} razy). Wyłączysz ją poleceniem: guardian undo {{rule}}.",
         "exceptions_suffix": ", z wyjątkiem: {{list}}",
         "answer_yes": "Gotowe. {{what}}",
@@ -865,7 +1269,21 @@
         "promoted_compile": "Odtąd powyższe polecenie zastępuje Twoje {{count}} doprecyzowania przy wysyłaniu tej rozmowy.",
         "undone": "Cofnięto: {{what}}. Wiadomości i to, co zauważyłem, zostają.",
         "status_empty": "Nie zauważyłem w tej rozmowie niczego do zapamiętania.",
-        "status_line": "{{kind}} ({{status}}, waga {{weight}}, {{count}}x): {{claim}}"
+        "status_line": "{{kind}} ({{status}}, waga {{weight}}, {{count}}x): {{claim}}",
+        "propose_rule_unnamed": "Zauważyłem, że poprawiasz to samo już {{count}} razy:\n{{quotes}}\nZapamiętać to jako regułę dla: {{scope}}{{exceptions}}{{why}}? To nadal Twoja reguła: możesz ją wyłączyć w każdej chwili.",
+        "quote_line": "- „{{quote}}”",
+        "why_conversations": "mówisz to w {{n}} różnych rozmowach",
+        "why_task_kinds": "mówisz to w {{n}} różnych rodzajach zadań",
+        "why_requested": "prosiłeś, żeby obowiązywało zawsze",
+        "why_wrap": " ({{list}})",
+        "review_rule": "Reguła \"{{claim}}\" nie była potwierdzona od {{days}} dni. Wyłączyć ją? Jeśli nie, zostaje i zapytam ponownie później.",
+        "disable_rule": "Przed chwilą poprawiłeś coś wbrew regule \"{{claim}}\". Wyłączyć ją?",
+        "remembered_header": "Co o Tobie pamiętam:",
+        "remembered_empty": "Nie pamiętam jeszcze żadnej reguły o Tobie.",
+        "remembered_line": "- {{claim}} ({{scope}}, od {{since}})",
+        "merged": "Połączone: {{what}}",
+        "unmerged": "Rozdzielone: {{what}}",
+        "no_model": "(Nie ustawiono modelu analizy, więc czytam tylko listami słów: ustaw guardian_model albo model analizy.)"
       }
     },
     "scope_names": {
@@ -883,6 +1301,509 @@
         "person": "wszystkiego, co robisz",
         "global": "wszędzie"
       }
+    },
+    "signal_confidence": {
+      "start": 0.9,
+      "anywhere": 0.65,
+      "per_extra_hit": 0.05,
+      "max": 0.95,
+      "meaning": {
+        "en": "Confidence of a heuristic signal, computed from where the marker stands (at the start of the message or anywhere) and how many markers the segment holds.",
+        "pl": "Pewność sygnału heurystycznego, liczona z miejsca znacznika (początek wiadomości lub gdziekolwiek) i liczby znaczników w segmencie."
+      }
+    },
+    "qualifiers": {
+      "quoted": {
+        "counts_as_evidence": false,
+        "markers": {
+          "pl": [
+            "on mowil",
+            "ona mowila",
+            "mowil mi",
+            "powiedzial mi",
+            "powiedziala mi",
+            "mowi ze",
+            "ktos powiedzial",
+            "cytuje",
+            "napisal ze"
+          ],
+          "en": [
+            "he said",
+            "she said",
+            "they said",
+            "he told me",
+            "she told me",
+            "they told me",
+            "someone said",
+            "quote",
+            "wrote that"
+          ]
+        }
+      },
+      "hypothetical": {
+        "counts_as_evidence": false,
+        "markers": {
+          "pl": [
+            "gdyby",
+            "jesli bym",
+            "co jesli",
+            "na przyklad",
+            "powiedzmy"
+          ],
+          "en": [
+            "what if",
+            "suppose",
+            "supposing",
+            "for example",
+            "say i"
+          ]
+        }
+      },
+      "meaning": {
+        "en": "A segment that quotes or imagines a correction is not a correction: it is annotated with a qualifier and does not count as evidence (data: counts_as_evidence).",
+        "pl": "Segment, który cytuje lub wyobraża sobie korektę, nie jest korektą: dostaje kwalifikator i nie liczy się jako dowód (dane: counts_as_evidence)."
+      }
+    },
+    "matching": {
+      "setting": "guardian_match_method",
+      "active": "overlap",
+      "unknown": "overlap",
+      "presets": {
+        "overlap": {
+          "methods": [
+            "overlap"
+          ],
+          "meaning": {
+            "en": "Words and concepts they share (local, free; preset). \"Shorter\", \"too long\" and \"trim it\" share the concept of brevity.",
+            "pl": "Wspólne słowa i pojęcia (lokalnie, za darmo; preset). „Krócej”, „za długie” i „skróć to” mają wspólne pojęcie zwięzłości."
+          }
+        },
+        "embedding": {
+          "methods": [
+            "overlap",
+            "embedding"
+          ],
+          "meaning": {
+            "en": "Overlap first, then the embedding tier of the search engine when one is available.",
+            "pl": "Najpierw wspólne słowa, potem warstwa osadzeń wyszukiwarki, gdy jest dostępna."
+          }
+        },
+        "model": {
+          "methods": [
+            "overlap",
+            "model"
+          ],
+          "meaning": {
+            "en": "Overlap first, then one question to the model per candidate when there are candidates (guarded model call).",
+            "pl": "Najpierw wspólne słowa, potem jedno pytanie do modelu na kandydata, gdy są kandydaci (wywołanie pod strażnikami)."
+          }
+        },
+        "user": {
+          "methods": [],
+          "meaning": {
+            "en": "Only what you tell the guardian is the same thing (guardian merge); same words still join.",
+            "pl": "Tylko to, co sam powiesz strażnikowi, że jest tym samym (guardian merge); te same słowa nadal się łączą."
+          }
+        }
+      },
+      "join_min": 0.8,
+      "common_min": 1,
+      "embedding_min": 0.75,
+      "unmerge_on_no_below": 0.95,
+      "edge": "same_as",
+      "model_call": {
+        "kind": "guardian.match",
+        "timeout_ms": 30000,
+        "title": "Guardian: are two corrections the same",
+        "parameters": {
+          "temperature": 0,
+          "max_tokens": 60
+        },
+        "system": "You decide whether two corrections that a user gave a chat assistant ask for the same thing. Answer with one JSON object only: {\"same\": true or false, \"confidence\": 0..1}.",
+        "user": "A: {{a}}\nB: {{b}}",
+        "min_confidence": 0.7,
+        "max_candidates": 2
+      },
+      "concepts": {
+        "brevity": {
+          "phrases": {
+            "pl": [
+              "krotk*",
+              "krocej",
+              "skroc*",
+              "zwiezl*",
+              "za dlug*",
+              "zbyt dlug*"
+            ],
+            "en": [
+              "short*",
+              "concise*",
+              "brief*",
+              "too long",
+              "trim"
+            ]
+          },
+          "statement": {
+            "pl": "Pisz krótko i zwięźle.",
+            "en": "Keep answers short and concise."
+          },
+          "negative_statement": {
+            "pl": "Nie skracaj odpowiedzi.",
+            "en": "Do not shorten answers."
+          }
+        },
+        "detail": {
+          "phrases": {
+            "pl": [
+              "szczegol*",
+              "dokladniej",
+              "rozwin*"
+            ],
+            "en": [
+              "detail*",
+              "elaborate",
+              "in depth",
+              "thorough*"
+            ]
+          },
+          "statement": {
+            "pl": "Podawaj więcej szczegółów.",
+            "en": "Give more detail."
+          },
+          "negative_statement": {
+            "pl": "Nie wchodź w szczegóły.",
+            "en": "Do not go into detail."
+          }
+        },
+        "bullets": {
+          "phrases": {
+            "pl": [
+              "lista",
+              "liste",
+              "listy",
+              "punkt*",
+              "wypunktowan*"
+            ],
+            "en": [
+              "bullet*",
+              "list",
+              "points"
+            ]
+          },
+          "statement": {
+            "pl": "Używaj list wypunktowanych.",
+            "en": "Use bullet lists."
+          },
+          "negative_statement": {
+            "pl": "Nie używaj list.",
+            "en": "Do not use lists."
+          }
+        },
+        "table": {
+          "phrases": {
+            "pl": [
+              "tabel*"
+            ],
+            "en": [
+              "table*"
+            ]
+          },
+          "statement": {
+            "pl": "Używaj tabel.",
+            "en": "Use tables."
+          },
+          "negative_statement": {
+            "pl": "Nie używaj tabel.",
+            "en": "Do not use tables."
+          }
+        },
+        "polish": {
+          "phrases": {
+            "pl": [
+              "po polsku",
+              "polsk*"
+            ],
+            "en": [
+              "in polish",
+              "polish"
+            ]
+          },
+          "statement": {
+            "pl": "Odpowiadaj po polsku.",
+            "en": "Respond in Polish."
+          },
+          "negative_statement": {
+            "pl": "Nie odpowiadaj po polsku.",
+            "en": "Do not respond in Polish."
+          }
+        },
+        "english": {
+          "phrases": {
+            "pl": [
+              "po angielsku",
+              "angielsk*"
+            ],
+            "en": [
+              "in english",
+              "english"
+            ]
+          },
+          "statement": {
+            "pl": "Odpowiadaj po angielsku.",
+            "en": "Respond in English."
+          },
+          "negative_statement": {
+            "pl": "Nie odpowiadaj po angielsku.",
+            "en": "Do not respond in English."
+          }
+        },
+        "formal": {
+          "phrases": {
+            "pl": [
+              "formaln*",
+              "oficjaln*"
+            ],
+            "en": [
+              "formal*"
+            ]
+          },
+          "statement": {
+            "pl": "Pisz formalnie.",
+            "en": "Write formally."
+          },
+          "negative_statement": {
+            "pl": "Nie pisz formalnie.",
+            "en": "Do not write formally."
+          }
+        },
+        "casual": {
+          "phrases": {
+            "pl": [
+              "luzn*",
+              "potoczn*",
+              "na luzie"
+            ],
+            "en": [
+              "casual*",
+              "informal*"
+            ]
+          },
+          "statement": {
+            "pl": "Pisz swobodnie.",
+            "en": "Write casually."
+          },
+          "negative_statement": {
+            "pl": "Nie pisz potocznie.",
+            "en": "Do not write casually."
+          }
+        }
+      },
+      "note": {
+        "en": "The concepts are a first lexicon, not a limit: add any concept in the overlay profile (matching.concepts.<id>) with the words that say it and the statement it stands for.",
+        "pl": "Pojęcia to pierwszy słownik, nie ograniczenie: dowolne pojęcie dopisujesz w nakładce profilu (matching.concepts.<id>) razem ze słowami, które je wyrażają, i zdaniem, które reprezentuje."
+      }
+    },
+    "naming": {
+      "allow_methods": [
+        "model",
+        "hybrid"
+      ],
+      "concept_agreement": 0.6,
+      "model_call": {
+        "kind": "guardian.name",
+        "timeout_ms": 30000,
+        "title": "Guardian: name a rule",
+        "parameters": {
+          "temperature": 0,
+          "max_tokens": 120
+        },
+        "system": "You write one standing rule for a chat assistant from several corrections that a user gave. Answer with one JSON object only: {\"rule\": the rule as one short imperative sentence in the user's language, \"confidence\": 0..1}. State what the user wants, not what he said; do not quote him.",
+        "user": "Corrections:\n{{quotes}}",
+        "min_confidence": 0.5,
+        "max_quotes": 5
+      },
+      "meaning": {
+        "en": "A hypothesis is unnamed until it is worth asking about. Its content is then the statement of the concepts its evidence agrees on (local), or one model call when the method uses a model; else it is shown by its quotes and you can name it yourself (guardian promote text=...).",
+        "pl": "Hipoteza jest nienazwana, dopóki nie warto o nią pytać. Jej treścią jest wtedy zdanie pojęć, w których zgadzają się dowody (lokalnie), albo jedno wywołanie modelu, gdy metoda używa modelu; w przeciwnym razie pokazuję cytaty, a nazwać ją możesz sam (guardian promote text=...)."
+      }
+    },
+    "lifecycle": {
+      "review_after_days": 90,
+      "expire_after_days": 0,
+      "disable_threshold": 1.0,
+      "review_every_days": 30,
+      "unmerge_on_no": true,
+      "meaning": {
+        "en": "A rule lives: it is reviewed after review_after_days without confirmation (the question is whether to switch it off), a correction against it proposes switching it off once its weight reaches disable_threshold, and expire_after_days (0 = never) makes it stop applying by itself. Nothing is deleted.",
+        "pl": "Reguła żyje: po review_after_days bez potwierdzenia jest przeglądana (pytanie, czy ją wyłączyć), poprawka wbrew niej proponuje wyłączenie, gdy jej waga osiągnie disable_threshold, a expire_after_days (0 = nigdy) sprawia, że przestaje obowiązywać sama. Nic nie jest usuwane."
+      }
+    },
+    "privacy": {
+      "wide_scopes": [
+        "task_kind",
+        "person",
+        "global"
+      ],
+      "store": "normalized_text_only",
+      "require_named": true,
+      "visibility": {
+        "setting": "guardian_person_rules",
+        "active": "send",
+        "unknown": "send",
+        "presets": {
+          "send": {
+            "meaning": {
+              "en": "A rule about you goes with a request in every conversation where the scope chain allows it (preset).",
+              "pl": "Reguła o Tobie idzie z żądaniem w każdej rozmowie, w której pozwala na to łańcuch zakresów (preset)."
+            }
+          },
+          "off": {
+            "meaning": {
+              "en": "Rules about you are never sent; they stay in your overlay.",
+              "pl": "Reguły o Tobie nie są wysyłane; zostają w Twojej nakładce."
+            }
+          }
+        },
+        "note": {
+          "en": "Resolved in the scope chain (R47): installation, person, a rule of the conversation (set_value guardian_person_rules=off keeps one conversation clear of them). A rule can also be limited to the conversation it came from (visible_in: origin).",
+          "pl": "Rozwiązywane łańcuchem zakresów (R47): instalacja, osoba, reguła rozmowy (set_value guardian_person_rules=off zostawia jedną rozmowę bez nich). Regułę można też ograniczyć do rozmowy, z której pochodzi (visible_in: origin)."
+        }
+      },
+      "rules_header": {
+        "en": "Standing preferences of the user:",
+        "pl": "Stałe preferencje użytkownika:"
+      }
+    },
+    "models": {
+      "calibration": true,
+      "note": {
+        "en": "CALIBRATION: the flows, tiers and prompts here are a first reading of the repo's researched prompts (data/prompts/*.prompt, docs/reports/model-research-2026-10-04.md); the owner says research and experiments are still needed. Owner decision 2026-10-15: the model of the conversation is never inherited by a background reader; it can only influence the choice through a policy the user wrote (relative_to).",
+        "pl": "KALIBRACJA: przepływy, klasy i prompty to pierwszy odczyt wyników badań w repo (data/prompts/*.prompt, docs/reports/model-research-2026-10-04.md); właściciel mówi, że badania i eksperymenty trwają. Decyzja właściciela 2026-10-15: model rozmowy nigdy nie jest dziedziczony przez czytnika w tle; może wpłynąć na wybór tylko przez politykę, którą napisał użytkownik (relative_to)."
+      },
+      "policies": {
+        "guardian": {
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "guardian_model"
+            },
+            {
+              "type": "role",
+              "role": "guardian"
+            },
+            {
+              "type": "role",
+              "role": "analysis.fast"
+            },
+            {
+              "type": "none"
+            }
+          ]
+        },
+        "analyzer": {
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "semantic_model"
+            },
+            {
+              "type": "role",
+              "role": "analysis.fast"
+            },
+            {
+              "type": "none"
+            }
+          ]
+        }
+      },
+      "tiers": [
+        {
+          "id": "cheap",
+          "max_per_million": 1.0,
+          "patterns": [
+            "haiku",
+            "mini",
+            "flash",
+            "lite",
+            "small",
+            "nano"
+          ]
+        },
+        {
+          "id": "mid",
+          "max_per_million": 6.0,
+          "patterns": [
+            "sonnet",
+            "turbo",
+            "medium"
+          ]
+        },
+        {
+          "id": "frontier",
+          "patterns": [
+            "opus",
+            "gpt-5",
+            "gpt-4.5",
+            "ultra",
+            "pro",
+            "large"
+          ]
+        }
+      ],
+      "tier_models": {
+        "cheap": "",
+        "mid": "",
+        "frontier": ""
+      },
+      "flows": {
+        "cheap": "narrow_questions",
+        "mid": "narrow_questions",
+        "frontier": "embed_conversation",
+        "unknown": "narrow_questions"
+      },
+      "flow_defs": {
+        "embed_conversation": {
+          "calls": "one",
+          "does": [
+            "entities",
+            "relations",
+            "segments",
+            "threads"
+          ],
+          "planned": [
+            "hypotheses"
+          ],
+          "prompt": "annotations.analyzer.prompt (extension of semantic.analysis)",
+          "status": "calibration"
+        },
+        "narrow_questions": {
+          "calls": "several",
+          "does": [
+            "classic analysis call",
+            "one narrow question: category of each segment and the thread"
+          ],
+          "planned": [
+            "relations between given items (data/prompts/relation.prompt)"
+          ],
+          "status": "calibration",
+          "segment_prompt": "Read the following chat message. Return ONLY valid JSON (no markdown): {\"segments\": [...], \"thread\": \"...\"}.\n{{contract}}\nMessage:\n"
+        }
+      },
+      "relative_to": {
+        "status": "implemented",
+        "never_preset": true,
+        "scale": "tier",
+        "planned": {
+          "complexity": {
+            "status": "planned",
+            "note": {
+              "en": "Proportional to the assessed complexity of the topic.",
+              "pl": "Proporcjonalnie do ocenionej złożoności tematu."
+            }
+          }
+        }
+      },
+      "graph_addressable": true
     }
   },
   "value_schema": {

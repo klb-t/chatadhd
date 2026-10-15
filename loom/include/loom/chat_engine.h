@@ -114,6 +114,9 @@ struct ChatOptions {
   // Message id -> the text sent in its place (a lossy level of the guardian's representation, chosen by the context selector). Not a wire
   // field; empty = every message is sent as it is.
   std::map<std::string, std::string> history_text;
+  // Standing rules about the person (the guardian's, normalized text only, allowed by the scope chain for this conversation); sent as one system message after the
+  // system prompt. Not a wire field; empty = nothing is added.
+  std::string guardian_rules;
   // The proposal message whose offer to send the rejected sentence as a message the user takes (chat request field
   // send_as_message; chat_route.h). The conversation window reads it; the engine ignores it.
   std::string send_as_message;

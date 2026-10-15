@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "loom/action_overlay.h"
+#include "loom/annotation_layer.h"
 #include "loom/action_runner.h"
 #include "loom/chat_route.h"
 #include "loom/config.h"
@@ -125,7 +126,7 @@ TEST_SUITE("guardian") {
     const Json row = lv.at("messages")[0];
     CHECK(row.at("raw") == raw);
     REQUIRE(row.at("levels").contains("L1"));
-    CHECK(row.at("levels").at("L1").at("text") == "I want, a list of tasks for Friday");
+    CHECK(row.at("levels").at("L1").at("text") == "I want, a list of of tasks for Friday");  // a doubled single word may be emphasis: confidence 0.3, kept
     std::set<std::string> categories;
     for (const auto& d : row.at("levels").at("L1").at("dropped")) categories.insert(d.at("category"));
     CHECK(categories == std::set<std::string>{"filler", "repetition"});
@@ -139,7 +140,7 @@ TEST_SUITE("guardian") {
       if (a.at("category") == "filler" && a.at("excerpt") == "yyy") filler_annotation = a.at("id");
     REQUIRE_FALSE(filler_annotation.empty());
     const Json undone = f.invoke("guardian.undo", Json{{"annotation", filler_annotation}});
-    CHECK(undone.at("levels").at("L1").at("text") == "yyy I want, a list of tasks for Friday");
+    CHECK(undone.at("levels").at("L1").at("text") == "yyy I want, a list of of tasks for Friday");
     CHECK(unwrap(f.rt->db().get_msg(mid))->text == raw);
     // A message with nothing to drop has no level at all.
     const std::string clean = f.user("Write the report for Friday");
@@ -181,7 +182,9 @@ TEST_SUITE("guardian") {
     CHECK(proposal.at("metadata").at("action_proposal").at("action") == "guardian.promote");
     CHECK(proposal.at("metadata").at("action_proposal").at("status") == "pending");
     CHECK(proposal.at("metadata").at("guardian").at("traffic") == true);
-    CHECK(proposal.at("text").get<std::string>().find("zrób listę") != std::string::npos);
+    // The proposal states a rule, it does not repeat the quote: the concepts the corrections agree on (lists yes, tables no) name it.
+    CHECK(proposal.at("text").get<std::string>().find("Używaj list") != std::string::npos);
+    CHECK(proposal.at("text").get<std::string>().find("Nie używaj tabel") != std::string::npos);
     CHECK(proposal.at("text").get<std::string>().find("nagłówkami") != std::string::npos);
     (void)m1;
     // The raw list is untouched and the proposal exchange is not part of what the model reads.
@@ -411,7 +414,8 @@ TEST_SUITE("guardian") {
     const Json h = f.hypothesis("course_correction");
     REQUIRE_FALSE(h.is_null());
     CHECK(h.at("claim").at("text") == "Prefer bullet points");
-    CHECK(h.at("scope") == "person");
+    CHECK(h.at("scope") == "conversation");  // the model's "person" is a request: a question, not a decision
+    CHECK(h.at("scope_request") == "person");
     CHECK(h.at("exceptions")[0].at("text") == "the appendix");
     CHECK(h.at("occurrences")[0].at("factor").get<double>() == doctest::Approx(1.5));  // tone: sharp
     CHECK(f.transport->requests().size() == 1);
@@ -436,6 +440,7 @@ TEST_SUITE("guardian") {
   TEST_CASE("held or failed model readings never stop anything and are reported") {
     Fixture f;
     f.rt->config().set("guardian_method", "model");
+    f.rt->config().set("guardian_model", "test/guard");
     f.say("user", "Write a summary of the quarterly report", false);
     const std::string m = f.say("user", "make it shorter please", false);
     f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
@@ -579,7 +584,420 @@ TEST_SUITE("guardian") {
     f.user("Write a summary of the quarterly report");
     f.assistant();
     f.user("nie chodziło mi o tabelę, zrób listę, zawsze");
-    CHECK(f.hypothesis("course_correction").at("scope") == "person");
-    CHECK(f.hypothesis("course_correction").at("status") == "observing");  // one occurrence, whatever the scope
+    CHECK(f.hypothesis("preference_statement").at("scope_request") == "person");  // the marker stands in the clause of the stated preference
+    CHECK(f.hypothesis("preference_statement").at("scope") == "conversation");     // asking is not deciding
+    CHECK(f.hypothesis("course_correction").at("scope") == "conversation");
+    CHECK(f.hypothesis("preference_statement").at("status") == "observing");  // one occurrence, whatever the scope
+  }
+
+  TEST_CASE("P23.1: one message holds a correction, a stated preference and an exception - three annotations, three things in status, and L1 keeps \"nie, nie\"") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    const std::string raw = "nie, nie tak \xE2\x80\x94 kr\xC3\xB3\x63zej, ale zawsze po polsku, opr\xC3\xB3\x63z nazw plik\xC3\xB3w";
+    const std::string mid = f.user(raw);
+    const Json st = f.status();
+    std::map<std::string, Json> by;
+    for (const auto& seg : st.at("segments")) by[seg.at("category")] = seg;
+    REQUIRE(by.count("correction"));
+    REQUIRE(by.count("preference"));
+    REQUIRE(by.count("exception"));
+    CHECK(by["correction"].at("excerpt") == "nie, nie tak");
+    CHECK(by["preference"].at("excerpt") == "ale zawsze po polsku");
+    CHECK(by["exception"].at("excerpt") == "opr\xC3\xB3\x63z nazw plik\xC3\xB3w");
+    CHECK(by["preference"].at("polarity") == "positive");
+    CHECK(by["correction"].at("producer") == "guardian_heuristic");
+    const double conf = by["preference"].at("confidence");
+    CHECK(conf > 0.0);
+    CHECK(conf < 1.0);  // computed from where the marker stands, not a constant 1.0
+    // Two hypotheses (the correction, the preference of the person) and the exception on the preference it follows.
+    const Json correction = f.hypothesis("course_correction"), preference = f.hypothesis("preference_statement");
+    REQUIRE_FALSE(correction.is_null());
+    REQUIRE_FALSE(preference.is_null());
+    CHECK(correction.at("exceptions").empty());
+    REQUIRE(preference.at("exceptions").size() == 1);
+    CHECK(preference.at("exceptions")[0].at("text") == "nazw plik\xC3\xB3w");
+    // The noise layer does not cut the emphasis: a doubled "nie" is a single-word repetition of low confidence ...
+    Json row = f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}}).at("messages")[0];
+    CHECK(row.at("levels").empty());
+    // ... and even where the user accepts low-confidence drops, the correction (a signal) protects the segment it covers.
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "guardian.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "guardian"}, {"overrides", Json{{"levels", Json{{"min_confidence", 0.2}}}}}}.dump();
+    row = f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}}).at("messages")[0];
+    CHECK(row.at("levels").empty());
+    bool repetition_listed = false;
+    for (const auto& a : row.at("annotations")) repetition_listed = repetition_listed || a.at("category") == "repetition";
+    CHECK_FALSE(repetition_listed);  // in the contract's reading the covered noise is not in force
+  }
+
+  TEST_CASE("P23.2: the analyzer's one prompt yields entities, topics AND segment categories; the guardian reuses them - one model call per message") {
+    Fixture f;
+    f.rt->config().set("semantic_analysis", true);
+    f.rt->config().set("semantic_model", "test/frontier-opus");
+    f.rt->config().set("guardian_method", "model");
+    f.rt->config().set("guardian_model", "test/guard");
+    f.say("user", "Write a summary of the quarterly report", false);
+    f.say("assistant", "ok", false);
+    const std::string text = "Nie chodzi\xC5\x82o mi o tabel\xC4\x99, zr\xC3\xB3\x62 list\xC4\x99. Ha, that is funny. Also add the date.";
+    f.transport->expect("POST", "https://guardian.test/chat/completions",
+                        net::ScriptedTransport::Reply::json(200, chat_reply(R"({"entities":[{"name":"report","kind":"concept","relevance":0.8}],"topics":[{"label":"tech","confidence":0.8}],"relations":[],
+          "segments":[{"category":"correction","quote":"Nie chodziło mi o tabelę","confidence":0.9},{"category":"digression","quote":"Ha, that is funny.","confidence":0.8},{"category":"made_up","quote":"the date","confidence":0.9},{"category":"joke","quote":"not in the message","confidence":0.9}],
+          "thread":"report layout"})")));
+    const std::string mid = f.user(text);  // announced: the graph engine analyses it (one call), the guardian reads the layer
+    const auto reqs = f.transport->requests();
+    REQUIRE(reqs.size() == 1);  // one prompt contract, one call, for both readers
+    CHECK(reqs[0].body.find("Segment categories") != std::string::npos);
+    CHECK(reqs[0].body.find("Extract ALL named entities") != std::string::npos);  // the classic part is still there
+    const Json st = f.status();
+    std::map<std::string, Json> by;
+    for (const auto& seg : st.at("segments")) by[seg.at("category")] = seg;
+    REQUIRE(by.count("correction"));
+    CHECK(by["correction"].at("producer") == "semantic_llm");
+    CHECK(by["correction"].at("confidence").get<double>() == doctest::Approx(0.9));
+    CHECK(by["correction"].at("cost").at("calls") == 1);  // the receipt of the one call
+    REQUIRE(by.count("thread"));
+    CHECK(by["thread"].at("producer") == "semantic_llm");
+    const Json row = f.invoke("guardian.levels", Json{{"message_id", mid}, {"refresh", true}}).at("messages")[0];
+    std::set<std::string> categories;
+    for (const auto& a : row.at("annotations")) categories.insert(a.at("category"));
+    CHECK(categories.count("digression") == 1);
+    CHECK(categories.count("made_up") == 0);  // a category the data does not know is not written
+    CHECK(categories.count("joke") == 0);     // a quote that is not in the message is not a segment
+    // L2 differs from L1 on a conversation with a digression.
+    REQUIRE(row.at("levels").contains("L2"));
+    CHECK(row.at("levels").at("L2").at("text").get<std::string>().find("Ha, that is funny.") == std::string::npos);
+    CHECK_FALSE(row.at("levels").contains("L1"));
+    // The guardian recorded the correction from the layer; no model call of its own followed.
+    const Json h = f.hypothesis("course_correction");
+    REQUIRE_FALSE(h.is_null());
+    CHECK(f.transport->requests().size() == 1);
+  }
+
+  TEST_CASE("P23.2: with nobody reading segments the analyzer's prompt is the classic one, byte for byte") {
+    Fixture f;
+    f.rt->config().set("semantic_analysis", true);
+    f.rt->config().set("semantic_model", "test/sem");
+    f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"entities":[],"topics":[],"relations":[]})")));
+    f.user("Write a summary of the quarterly report for Friday");
+    const auto reqs = f.transport->requests();
+    REQUIRE(reqs.size() == 1);
+    CHECK(reqs[0].body.find("Segment categories") == std::string::npos);
+    CHECK(reqs[0].body.find("\"max_tokens\":800") != std::string::npos);
+  }
+
+  TEST_CASE("P23.2: a regex analysis writes the thread of a message from its topic - when somebody reads threads - and the selector can leave another thread out") {
+    Fixture f;
+    f.rt->config().set("chat_thread_filter", "current");
+    const std::string legal = f.say("user", "Draft the contract clause about liability and the court jurisdiction for the lawsuit", true);
+    f.assistant("Here is the clause.");
+    const std::string tech = f.say("user", "Now debug the python server code: the api returns a bug in the database query", true);
+    const std::string reply = f.assistant("Looking at the code.");
+    (void)reply;
+    const Json a = f.invoke("guardian.levels", Json{{"message_id", legal}, {"refresh", true}}).at("messages")[0];
+    std::string t1, t2;
+    for (const auto& x : a.at("annotations")) if (x.at("category") == "thread") t1 = x.at("data").at("thread");
+    const Json b = f.invoke("guardian.levels", Json{{"message_id", tech}, {"refresh", true}}).at("messages")[0];
+    for (const auto& x : b.at("annotations")) if (x.at("category") == "thread") t2 = x.at("data").at("thread");
+    INFO(t1 << " / " << t2);
+    REQUIRE_FALSE(t1.empty());
+    REQUIRE_FALSE(t2.empty());
+    CHECK(t1 != t2);
+    const auto sel = unwrap(guardian::select(f.rt->db(), f.rt->config(), f.conv));
+    CHECK(std::find(sel.skip.begin(), sel.skip.end(), legal) != sel.skip.end());
+    CHECK(std::find(sel.skip.begin(), sel.skip.end(), tech) == sel.skip.end());
+    const Json messages = f.sent("And the stack trace?");
+    CHECK_FALSE(has_text(messages, "contract clause"));
+    CHECK(has_text(messages, "debug the python server"));
+    // The messages stay in the conversation; only the request is lighter. Switching the filter off sends them again.
+    CHECK(unwrap(f.rt->db().get_msg(legal))->text.find("contract clause") != std::string::npos);
+    f.rt->config().set("chat_thread_filter", "off");
+    CHECK(has_text(f.sent("One more thing"), "contract clause"));
+  }
+
+  TEST_CASE("P23.3: three corrections worded differently are one hypothesis and one proposal that reads as a rule; a no separates a doubtful join") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    f.user("nie tak, krócej proszę");
+    f.user("to nie to \xE2\x80\x94 za długie");
+    f.user("nie chodziło mi o tyle tekstu, skróć to");
+    f.assistant();
+    const Json st = f.status();
+    int corrections = 0;
+    for (const auto& h : st.at("hypotheses"))
+      if (h.at("signal") == "course_correction") ++corrections;
+    CHECK(corrections == 1);
+    const Json h = f.hypothesis("course_correction");
+    CHECK(h.at("count") == 3);
+    CHECK(h.at("claim").at("named") == true);
+    CHECK(h.at("claim").at("source") == "concept");
+    CHECK(h.at("claim").at("text") == "Pisz krótko i zwięźle.");
+    CHECK(h.at("claim").at("quotes").size() == 3);  // the evidence stays apart from the content
+    REQUIRE_FALSE(h.at("merged").empty());          // a join by shared concept, not by the same words, is recorded with its confidence and method
+    CHECK(h.at("merged")[0].at("merge").at("method") == "overlap");
+    int proposals = 0;
+    Json proposal;
+    for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv)))
+      if (m.metadata.is_object() && m.metadata.contains("action_proposal")) {
+        ++proposals;
+        proposal = m.to_json();
+      }
+    CHECK(proposals == 1);
+    const std::string text = proposal.at("text");
+    CHECK(text.find("Pisz krótko i zwięźle.") != std::string::npos);  // it reads as a rule ...
+    CHECK(text.find("krócej proszę") == std::string::npos);            // ... not as a quotation
+    // One "no": the proposal is refused and the doubtful join (the one the method was not sure of) is separated, nothing is lost.
+    f.input("nie");
+    INFO(f.status().dump());
+    int total = 0, rejected = 0;
+    const Json after = f.status();
+    for (const auto& x : after.at("hypotheses"))
+      if (x.at("signal") == "course_correction") {
+        ++total;
+        rejected += x.at("status") == "rejected" ? 1 : 0;
+      }
+    CHECK(total == 2);
+    CHECK(rejected == 1);
+  }
+
+  TEST_CASE("P23.3: the match method is swappable - the model method asks one question and records the join; unmerge separates it") {
+    Fixture f;
+    f.rt->config().set("guardian_match_method", "model");
+    f.rt->config().set("guardian_model", "test/guard");
+    const std::string a = f.say("user", "make it terse", false);
+    const std::string b = f.say("user", "fewer words please", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", a}, {"kind", "course_correction"}, {"subject", "make it terse"}, {"post", false}});
+    f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"same":true,"confidence":0.9})")));
+    (void)f.invoke("guardian.observe", Json{{"message_id", b}, {"kind", "course_correction"}, {"subject", "fewer words please"}, {"post", false}});
+    CHECK(f.transport->requests().size() == 1);
+    const Json h = f.hypothesis("course_correction");
+    CHECK(h.at("count") == 2);
+    REQUIRE(h.at("merged").size() == 1);
+    CHECK(h.at("merged")[0].at("merge").at("method") == "model");
+    CHECK(h.at("merged")[0].at("merge").at("confidence").get<double>() == doctest::Approx(0.9));
+    CHECK(f.links(h.at("merged")[0].at("occurrence"), "same_as") == 1);
+    const Json out = f.invoke("guardian.unmerge", Json{{"hypothesis", h.at("id")}});
+    CHECK(out.at("split") == 1);
+    INFO(f.status().dump());
+    int n = 0;
+    const Json after = f.status();
+    for (const auto& x : after.at("hypotheses")) n += x.at("signal") == "course_correction" ? 1 : 0;
+    CHECK(n == 2);
+  }
+
+  TEST_CASE("P23.3: the user can state a rule himself - it is named, counts as one strong occurrence and is proposed as he said it") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    f.user("Zapamiętaj, że odpowiedzi mają być po polsku.");
+    const Json h = f.hypothesis("rule_statement");
+    REQUIRE_FALSE(h.is_null());
+    CHECK(h.at("claim").at("text") == "odpowiedzi mają być po polsku");
+    CHECK(h.at("claim").at("source") == "stated");
+    CHECK(h.at("status") == "ready");
+    f.assistant();
+    CHECK(f.last().at("text").get<std::string>().find("odpowiedzi mają być po polsku") != std::string::npos);
+  }
+
+  TEST_CASE("P23.4: six corrections in one conversation are not a rule about the person; two conversations are - as a question, with the reason") {
+    Fixture f;
+    f.user("Napisz podsumowanie raportu");
+    for (int i = 0; i < 6; ++i) {
+      f.assistant();
+      f.user("nie tak, krócej proszę");
+    }
+    f.assistant();
+    Json h = f.hypothesis("course_correction");
+    CHECK(h.at("scope_candidate") == "conversation");
+    Json asked;
+    for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv)))
+      if (m.metadata.is_object() && m.metadata.contains("guardian") && m.metadata["guardian"].contains("hypothesis") && m.metadata.contains("action_proposal")) asked = m.metadata["guardian"];
+    REQUIRE_FALSE(asked.is_null());
+    CHECK(asked.at("scope") == "conversation");
+    // The same thing in another conversation: evidence of diversity.
+    const std::string first = f.conv;
+    f.conv = unwrap(f.rt->db().create_conv("Other")).id;
+    f.user("Przygotuj plan podróży");
+    f.assistant();
+    f.user("krócej, nie tak");
+    h = f.hypothesis("course_correction");
+    CHECK(h.at("scope_candidate") == "person");
+    CHECK(h.at("siblings").size() == 1);
+    CHECK(h.at("scope") == "conversation");  // nothing is decided by counting
+    (void)first;
+  }
+
+  TEST_CASE("P23.4: a rule about the person is saved as normalized text only, is sent in other conversations unless the scope chain says no, and is remembered on request") {
+    Fixture f;
+    f.rt->config().set("guardian_promotion", "propose");
+    f.user("Napisz podsumowanie raportu");
+    f.assistant();
+    f.user("nie tak, krócej proszę");
+    f.assistant();
+    const std::string a = f.conv;
+    f.conv = unwrap(f.rt->db().create_conv("Other")).id;
+    f.user("Przygotuj plan podróży");
+    f.assistant();
+    f.user("krócej, nie tak");
+    f.assistant();
+    const Json proposal = f.last();
+    REQUIRE(proposal.at("metadata").contains("guardian"));
+    CHECK(proposal.at("metadata").at("guardian").at("scope") == "person");
+    CHECK(proposal.at("text").get<std::string>().find("2") != std::string::npos);
+    f.input("tak");
+    const Json overlay = f.overlay_doc();
+    const Json rules = overlay.at("overrides").at("rules");
+    REQUIRE(rules.size() == 1);
+    const Json rule = rules.begin().value();
+    CHECK(rule.at("scope") == "person");
+    CHECK(rule.at("text") == "Pisz krótko i zwięźle.");
+    CHECK_FALSE(rule.contains("evidence"));             // the conversations it was heard in are edges of the graph, not part of the rule
+    CHECK(rule.at("evidence_count") == 2);
+    CHECK(rule.dump().find("proszę") == std::string::npos);
+    CHECK(rule.contains("review_after"));
+    // The sibling in the first conversation is covered: it does not ask again.
+    f.conv = a;
+    CHECK(f.hypothesis("course_correction").at("status") == "covered");
+    // A third conversation: the request carries the rule's text, and nothing of the quotes.
+    f.conv = unwrap(f.rt->db().create_conv("Third")).id;
+    Json messages = f.sent("Opisz pogodę");
+    CHECK(has_text(messages, "Pisz krótko i zwięźle."));
+    CHECK_FALSE(has_text(messages, "krócej proszę"));
+    // The scope chain (R47) decides per conversation: off there, and the request is the plain one.
+    f.rt->config().set("guardian_person_rules", "off");
+    CHECK_FALSE(has_text(f.sent("Opisz jeszcze pogodę"), "Pisz krótko i zwięźle."));
+    f.rt->config().set("guardian_person_rules", "send");
+    // "What do you remember about me?"
+    const Json mem = f.invoke("guardian.remembered", Json{{"lang", "pl"}});
+    REQUIRE(mem.at("rules").size() == 1);
+    CHECK(mem.at("text").get<std::string>().find("Pisz krótko i zwięźle.") != std::string::npos);
+    // Undo takes it back from the overlay; the request is plain again.
+    (void)f.invoke("guardian.undo", Json{{"rule", mem.at("rules")[0].at("id")}});
+    CHECK_FALSE(has_text(f.sent("A teraz?"), "Pisz krótko i zwięźle."));
+  }
+
+  TEST_CASE("P23.4: a rule beyond the conversation must have a name of its own; an unnamed one keeps its quotes in the conversation") {
+    Fixture f;
+    const std::string m = f.say("user", "do it differently", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", m}, {"kind", "course_correction"}, {"post", false}});
+    const Json h = f.hypothesis("course_correction");
+    CHECK(h.at("claim").at("named") == false);
+    auto bad = f.rt->guardian().invoke("guardian.promote", Json{{"hypothesis", h.at("id")}, {"scope", "person"}});
+    CHECK_FALSE(bad.has_value());
+    auto ok = f.rt->guardian().invoke("guardian.promote", Json{{"hypothesis", h.at("id")}, {"scope", "person"}, {"text", "Vary the structure."}});
+    REQUIRE(ok.has_value());
+    const Json rule = f.overlay_doc().at("overrides").at("rules").begin().value();
+    CHECK(rule.at("text") == "Vary the structure.");
+    CHECK_FALSE(rule.contains("evidence"));
+  }
+
+  TEST_CASE("P23.4: a rule lives - a correction against it proposes switching it off; a review asks after a while; an expired rule stops applying; nothing is deleted") {
+    Fixture f;
+    const std::string a = f.say("user", "Use tables for the data in every answer", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", a}, {"kind", "course_correction"}, {"subject", "use tables for the data"}, {"post", false}});
+    const Json h = f.hypothesis("course_correction");
+    (void)f.invoke("guardian.promote", Json{{"hypothesis", h.at("id")}});
+    const std::string b = f.say("user", "Do not use tables for the data", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", b}, {"kind", "course_correction"}, {"subject", "do not use tables for the data"}, {"post", false}});
+    f.assistant();
+    const Json p = f.last();
+    INFO(unwrap(f.rt->db().get_node(std::string(h.at("id").get<std::string>())))->metadata.dump());
+    REQUIRE(p.at("metadata").contains("action_proposal"));
+    CHECK(p.at("metadata").at("action_proposal").at("action") == "guardian.undo");
+    f.input("tak");
+    CHECK(f.overlay_doc().value("overrides", Json::object()).value("rules", Json::object()).empty());
+    // The hypothesis is still there, as history.
+    CHECK(f.hypothesis("course_correction").at("status") == "undone");
+  }
+
+  TEST_CASE("P23.4: a rule is reviewed after a while without confirmation (no keeps it) and an expired rule stops applying but stays in the overlay") {
+    Fixture f;
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "guardian.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "guardian"}, {"overrides", Json{{"lifecycle", Json{{"review_after_days", 1e-9}}}}}}.dump();
+    const std::string a = f.say("user", "do it differently", false);
+    (void)f.invoke("guardian.observe", Json{{"message_id", a}, {"kind", "course_correction"}, {"post", false}});
+    const Json h = f.hypothesis("course_correction");
+    (void)f.invoke("guardian.promote", Json{{"hypothesis", h.at("id")}, {"scope", "person"}, {"text", "Vary the structure."}});
+    f.assistant();
+    const Json p = f.last();
+    REQUIRE(p.at("metadata").contains("action_proposal"));
+    CHECK(p.at("metadata").at("action_proposal").at("action") == "guardian.undo");
+    CHECK(p.at("metadata").at("guardian").at("lifecycle") == "review");
+    f.input("nie");  // keep it
+    f.assistant();
+    CHECK(f.last().at("metadata").contains("action_proposal") == false);  // not asked again within the review period
+    CHECK(f.overlay_doc().at("overrides").at("rules").size() == 1);
+    // Expiry: a rule whose date has passed is not sent; it is still there.
+    Json doc = f.overlay_doc();
+    for (auto& r : doc["overrides"]["rules"]) r["expires"] = "2000-01-01T00:00:00Z";
+    std::ofstream(f.overlay()) << doc.dump();
+    f.conv = unwrap(f.rt->db().create_conv("Other")).id;
+    CHECK_FALSE(has_text(f.sent("Hello there"), "Vary the structure."));
+    CHECK(f.overlay_doc().at("overrides").at("rules").size() == 1);
+  }
+
+  TEST_CASE("P23 owner decision: the conversation's model is never inherited - setting, role, analysis, else no model and it says so") {
+    Fixture f;
+    f.rt->config().set("guardian_method", "model");
+    f.say("user", "Write a summary", false);
+    f.say("assistant", "ok", false);  // the chat model: test/model (default_model) is NOT a guardian model
+    const std::string m = f.say("user", "make it shorter now", false);
+    const Json none = f.invoke("guardian.annotate", Json{{"message_id", m}, {"post", false}});
+    CHECK(f.transport->requests().empty());  // no call
+    CHECK_FALSE(none.at("issues").empty());   // and it reports why
+    CHECK(none.at("issues")[0].get<std::string>().find("No analysis model is set") != std::string::npos);
+    const Json st = f.status();
+    CHECK(st.at("model").at("model") == "");
+    CHECK(st.contains("model_note"));
+    auto model_of_call = [&](const std::string& text) {
+      const std::string id = f.say("user", text, false);
+      f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"kind":"none","confidence":0})")));
+      (void)f.invoke("guardian.annotate", Json{{"message_id", id}, {"post", false}});
+      return unwrap(json::parse(f.transport->requests().back().body)).value("model", "");
+    };
+    f.rt->config().set("semantic_model", "test/analysis");  // the analysis model: via the ports role guardian (preset = analysis.fast)
+    CHECK(model_of_call("make it shorter again") == "test/analysis");
+    f.rt->config().set("guardian_model", "test/model");     // the chat model, but by hand
+    CHECK(model_of_call("shorter once more") == "test/model");
+  }
+
+  TEST_CASE("P23 owner decision: a policy the user wrote may derive the model from the conversation's (relative_to, one tier down); the flow follows the class of the model") {
+    Fixture f;
+    f.rt->config().set("guardian_method", "model");
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "guardian.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "guardian"},
+                {"overrides", Json{{"models", Json{{"policies", Json{{"guardian", Json{{"chain", Json::array({Json{{"type", "relative_to"}, {"base", "conversation"}, {"tier_offset", -1}}})}}}}},
+                                                   {"tier_models", Json{{"mid", "test/mid-model"}, {"cheap", "test/cheap-model"}}}}}}}}.dump();
+    f.say("user", "Write a summary", false);
+    NewMessage a;
+    a.conv_id = f.conv;
+    a.role = "assistant";
+    a.text = "ok";
+    a.model = "anthropic/claude-opus-4";
+    (void)unwrap(f.rt->db().create_msg(a));
+    const Json st = f.status();
+    CHECK(st.at("model").at("model") == "test/mid-model");   // frontier -> one tier cheaper
+    CHECK(st.at("model").at("via") == "relative_to:mid");
+    CHECK(st.at("model").at("flow") == "narrow_questions");
+    CHECK(annotations::model_tier(unwrap(annotations::Policy::load(f.td.path())).models, "anthropic/claude-opus-4") == "frontier");
+    CHECK(annotations::model_tier(unwrap(annotations::Policy::load(f.td.path())).models, "x/claude-haiku-4") == "cheap");
+  }
+
+  TEST_CASE("P23 flows: a frontier-class analysis model gets one call for everything, a cheap one the classic call and a narrow question") {
+    auto run = [](const std::string& model) {
+      Fixture f;
+      f.rt->config().set("semantic_analysis", true);
+      f.rt->config().set("semantic_model", model);
+      f.rt->config().set("semantic_segments", "on");
+      f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"entities":[],"topics":[],"relations":[],"segments":[],"thread":"t"})")));
+      f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"segments":[],"thread":"narrow thread"})")));
+      f.user("Write a summary of the quarterly report for Friday");
+      return f.transport->requests().size();
+    };
+    CHECK(run("test/frontier-opus") == 1);
+    CHECK(run("test/cheap-haiku") == 2);
   }
 }
