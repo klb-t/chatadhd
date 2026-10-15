@@ -13,7 +13,7 @@
 // invokes `window.__loomCallbacks[callbackId](chunkJson, done)` for every
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
-import type { ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
+import type { InteractionBindings, ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
 import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type { ActionsApi, ClientBlob, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
@@ -35,7 +35,7 @@ import type {
   SemanticStatusInfo,
   Task,
 } from "./types";
-import { isLoomError, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
+import { isLoomError, readInteractionBindings, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 
@@ -342,6 +342,9 @@ export class LoomJniApi implements LoomApi {
   }
   evaluateView(request: ViewModelRequest): Promise<ViewModel> {
     return this.callAsync<unknown>("view_model", { request: JSON.stringify(request) }).then(readViewModel);
+  }
+  getInteractionBindings(device?: string): Promise<InteractionBindings> {
+    return this.callAsync<unknown>("view_interaction", { request: JSON.stringify(device ? { device } : {}) }).then(readInteractionBindings);
   }
   resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
     return this.callAsync<unknown>("scope_resolve", { request: JSON.stringify(request) }).then(result => readScopeResolution(result, request.key));

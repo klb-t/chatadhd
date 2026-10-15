@@ -11728,6 +11728,146 @@
           "pl": "Źródła narzędzi:"
         },
         "positional_arg": "source"
+      },
+      "interaction.show": {
+        "id": "interaction.show",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show input bindings",
+        "description": "The effective input bindings (device, key or gesture, held modifiers, lock state -> an action on the view): the shipped presets plus the user's overlay, with conflicts (a warning, nothing blocked) and what is unsupported. Without a device: every device. Read only.",
+        "labels": {
+          "pl": "Pokaż przypisania wejść"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "device",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The device (keyboard, touch, voice, xr; without it: all)",
+              "pl": "Urządzenie (klawiatura, dotyk, głos, xr; bez niego: wszystkie)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show keyboard bindings"
+          ],
+          "pl": [
+            "pokaż przypisania klawiatury"
+          ]
+        },
+        "positional_arg": "device"
+      },
+      "interaction.rebind": {
+        "id": "interaction.rebind",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Rebind an input",
+        "description": "Rebinds one input binding in the user's overlay (for example a lock to zoom); the shipped presets are never written and the change can be taken back. Each write is confirmed.",
+        "labels": {
+          "pl": "Przypisz wejście do działania"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "binding",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The binding (id or a lock: caps, num, scroll)",
+              "pl": "Przypisanie (id albo blokada: caps, num, scroll)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "to",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The action (zoom, view, ...)",
+              "pl": "Działanie (powiększenie, widok, ...)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "declaration",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The view, for the action switch view",
+              "pl": "Widok, dla działania „przełącz widok”"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "remove",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Take back the user's rebinding (true)",
+              "pl": "Cofnij przypisanie użytkownika (true)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "bind capslock to zoom"
+          ],
+          "pl": [
+            "przypisz capslock do powiększenia"
+          ]
+        }
       }
     }
   },

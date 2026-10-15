@@ -239,6 +239,7 @@ class LoomBridge(private val webView: WebView) {
     @JavascriptInterface fun perspectives(requestJson: String?): String = invokeArgs("perspectives", requestJson)
     @JavascriptInterface fun scopeResolve(requestJson: String?): String = invokeArgs("scope_resolve", requestJson)
     @JavascriptInterface fun viewModel(requestJson: String?): String = invokeArgs("view_model", requestJson)
+    @JavascriptInterface fun viewInteraction(requestJson: String?): String = invokeArgs("view_interaction", requestJson)
     @JavascriptInterface fun graphReindex(convId: String?, callbackId: String): String =
         runAsync(callbackId) { invokeArgs("graph_reindex", convId) }
     @JavascriptInterface fun selectContext(text: String, depth: Int, maxTokens: Int): String =

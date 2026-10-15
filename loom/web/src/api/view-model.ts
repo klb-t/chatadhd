@@ -60,3 +60,40 @@ export interface ViewModelRequest {
   budget?: number | null;
   sources?: Record<string, { weight?: number; depth?: number | null }>;
 }
+
+// Interaction as data (P28 step 2): the effective input bindings of a device (loom_view_interaction, GET|POST /api/view-interaction). The kernel resolves
+// them (ROM presets + the user's overlays, with provenance; conflicts warned, never blocked; unknown things unsupported with the reason); the panel interprets.
+export interface InteractionBinding {
+  id: string;
+  label: ViewText | string;
+  device: string;
+  /** key | button | gesture | phrase | gaze | lock + state, modifiers (held), locks (states that must be on). */
+  input: Record<string, unknown>;
+  action: { kind: string } & Record<string, unknown>;
+  key: string;
+  origin: string;
+  provenance: unknown[];
+  status: "active" | "recorded";
+  shadowed?: boolean;
+  shadowed_by?: string;
+  reasons: ViewReason[];
+}
+export interface InteractionConflict { key: string; input: Record<string, unknown>; ids: string[]; winner: string; message: ViewText }
+export interface InteractionActionInfo {
+  id: string;
+  label: ViewText;
+  implemented: boolean;
+  pairs?: Record<string, { label: ViewText; axes: Record<string, string> }>;
+  targets?: Record<string, ViewText>;
+}
+export interface InteractionBindings {
+  schema: "loom.view_interaction/1";
+  device: string;
+  devices: Array<{ id: string; label: ViewText; implemented: boolean; inputs: string[] }>;
+  actions: InteractionActionInfo[];
+  bindings: InteractionBinding[];
+  conflicts: InteractionConflict[];
+  disabled: string[];
+  unsupported: Array<{ binding: string; device: string; reason: ViewReason }>;
+  issues: Array<{ code: string; text: ViewText }>;
+}

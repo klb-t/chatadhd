@@ -281,6 +281,12 @@ LOOM_API const char* loom_scope_resolve(LoomContext* ctx, const char* request_js
  * the reason, budget}. See loom/view_engine.h. */
 LOOM_API const char* loom_view_model(LoomContext* ctx, const char* request_json);
 
+/* P28 step 2: interaction as data. loom_view_interaction: {device?: keyboard | touch | voice | xr | ...} = the EFFECTIVE input bindings for that device
+ * (ROM presets + the user's overlays of the kind `interaction_bindings`, with provenance): {schema: "loom.view_interaction/1", devices, bindings
+ * [{id, label, device, input, action, status: active | recorded, shadowed?, reasons}], conflicts (two bindings with one input: a warning, the last wins,
+ * nothing is blocked), disabled, unsupported (unknown device / input field / action kind, with the reason), issues}. See loom/interaction.h. */
+LOOM_API const char* loom_view_interaction(LoomContext* ctx, const char* request_json);
+
 /* ContextSet for text: {"items":[...],"prompt_text","token_estimate","truncated"} */
 LOOM_API const char* loom_select_context(LoomContext* ctx, const char* text, int depth, int max_tokens);
 /* request_json: {"text","depth","max_tokens","conv_id","include_memory","include_graph","include_search"} */

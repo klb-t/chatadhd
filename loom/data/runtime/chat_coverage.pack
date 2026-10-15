@@ -1932,6 +1932,49 @@
         }
       },
       {
+        "id": "interaction_show",
+        "title": {
+          "en": "Show input bindings (interaction as data)",
+          "pl": "Pokaż przypisania wejść (interakcja jako dane)"
+        },
+        "via": "action",
+        "action": "interaction.show",
+        "surfaces": {
+          "c_abi": [
+            "loom_view_interaction"
+          ],
+          "http": [
+            "GET /api/view-interaction",
+            "POST /api/view-interaction"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż przypisania klawiatury",
+          "en": "show keyboard bindings"
+        }
+      },
+      {
+        "id": "interaction_rebind",
+        "title": {
+          "en": "Rebind an input",
+          "pl": "Przypisz wejście do działania"
+        },
+        "via": "action",
+        "action": "interaction.rebind",
+        "surfaces": {
+          "c_abi": [
+            "loom_view_write"
+          ],
+          "http": [
+            "POST /api/views/write"
+          ]
+        },
+        "examples": {
+          "pl": "przypisz capslock do powiększenia",
+          "en": "bind capslock to zoom"
+        }
+      },
+      {
         "id": "scopes_explain",
         "title": {
           "en": "Where does a setting come from",

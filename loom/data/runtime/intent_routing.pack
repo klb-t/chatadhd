@@ -4391,6 +4391,78 @@
           "takes_scope": false
         },
         {
+          "id": "interaction.show.all.pl",
+          "action": "interaction.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+przypisania\\s+wejsc\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "interaction.show.all.en",
+          "action": "interaction.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:the\\s+)?input\\s+bindings\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "interaction.show.pl",
+          "action": "interaction.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+przypisania\\s+([a-z]+)\\s*[.!?]*\\s*$",
+          "args": [
+            "device"
+          ],
+          "original": [
+            "device"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "interaction.show.en",
+          "action": "interaction.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:the\\s+)?([a-z]+)\\s+bindings\\s*[.!?]*\\s*$",
+          "args": [
+            "device"
+          ],
+          "original": [
+            "device"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "interaction.rebind.pl",
+          "action": "interaction.rebind",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?przypisz\\s+([A-Za-z0-9_. ]+?)\\s+do\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "binding",
+            "to"
+          ],
+          "original": [
+            "binding",
+            "to"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "interaction.rebind.en",
+          "action": "interaction.rebind",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:bind|map|assign)\\s+([A-Za-z0-9_. ]+?)\\s+to\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "binding",
+            "to"
+          ],
+          "original": [
+            "binding",
+            "to"
+          ],
+          "takes_scope": false
+        },
+        {
           "id": "scopes.explain.pl",
           "action": "scopes.explain",
           "lang": "pl",

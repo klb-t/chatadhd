@@ -23,13 +23,13 @@ import type {
   SemanticStatusInfo,
   Task,
 } from "./types";
-import { isLoomError, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
+import { isLoomError, readInteractionBindings, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
 import { AUTH_REQUIRED_EVENT } from "./auth";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
-import type { ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
+import type { InteractionBindings, ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
 import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import { readConversationView, type ConversationReadRequest, type ConversationView } from "./conversation-view";
 
@@ -408,6 +408,9 @@ export class LoomHttpApi implements LoomApi {
   }
   evaluateView(request: ViewModelRequest): Promise<ViewModel> {
     return this.req<unknown>("POST", "/api/view-model", request).then(readViewModel);
+  }
+  getInteractionBindings(device?: string): Promise<InteractionBindings> {
+    return this.req<unknown>("POST", "/api/view-interaction", device ? { device } : {}).then(readInteractionBindings);
   }
   resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
     return this.req<unknown>("POST", "/api/scopes/resolve", request).then(result => readScopeResolution(result, request.key));

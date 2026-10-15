@@ -954,7 +954,18 @@
         "edge_kinds_head": "Edge kinds ({{count}}):",
         "edge_unclassified": "{{type}} ({{count}} links)",
         "edge_all_classified": "All link types in use are classified ({{known}}).",
-        "edge_classify_head": "Link types: {{known}} classified, {{unclassified}} not:"
+        "edge_classify_head": "Link types: {{known}} classified, {{unclassified}} not:",
+        "ia_head": "Input bindings ({{device}}): {{count}}.",
+        "ia_all_devices": "all devices",
+        "ia_line": "{{id}}: {{label}} {{note}}",
+        "ia_recorded": "[recorded as data]",
+        "ia_shadowed": "[overridden by {{by}}]",
+        "ia_unsupported": "{{id}}: {{why}}",
+        "ia_none": "There are no input bindings for '{{device}}'.",
+        "ia_rebind_need": "Say which binding and to what (for example: bind capslock to zoom).",
+        "ia_unknown_binding": "There is no binding \"{{binding}}\".",
+        "ia_rebound": "Rebound {{id}} in your overlay: now {{action}}. You can take it back.",
+        "ia_removed": "Took back the rebinding of {{id}} ({{count}})."
       },
       "pl": {
         "unknown": "nieznane",
@@ -1168,7 +1179,18 @@
         "edge_kinds_head": "Rodzaje krawędzi ({{count}}):",
         "edge_unclassified": "{{type}} ({{count}} powiązań)",
         "edge_all_classified": "Wszystkie używane typy powiązań są sklasyfikowane ({{known}}).",
-        "edge_classify_head": "Typy powiązań: {{known}} sklasyfikowanych, {{unclassified}} nie:"
+        "edge_classify_head": "Typy powiązań: {{known}} sklasyfikowanych, {{unclassified}} nie:",
+        "ia_head": "Przypisania wejść ({{device}}): {{count}}.",
+        "ia_all_devices": "wszystkie urządzenia",
+        "ia_line": "{{id}}: {{label}} {{note}}",
+        "ia_recorded": "[zapisane jako dane]",
+        "ia_shadowed": "[przesłonięte przez {{by}}]",
+        "ia_unsupported": "{{id}}: {{why}}",
+        "ia_none": "Brak przypisań wejść dla „{{device}}”.",
+        "ia_rebind_need": "Powiedz które przypisanie i do czego (na przykład: przypisz capslock do powiększenia).",
+        "ia_unknown_binding": "Nie ma przypisania „{{binding}}”.",
+        "ia_rebound": "Przepisano {{id}} w Twojej nakładce: teraz {{action}}. Można to cofnąć.",
+        "ia_removed": "Cofnięto przepisanie {{id}} ({{count}})."
       }
     },
     "pipelines": {
@@ -1221,6 +1243,11 @@
         "view_kinds": [
           "view kinds",
           "rodzaje widokow"
+        ],
+        "interaction_bindings": [
+          "interaction bindings",
+          "przypisania wejsc",
+          "przypisan wejsc"
         ]
       },
       "ops": {
@@ -1253,6 +1280,79 @@
         " i ",
         " and "
       ]
+    },
+    "interaction": {
+      "zoom_factor": 1.25,
+      "devices": {
+        "keyboard": [
+          "keyboard",
+          "klawiatura",
+          "klawiatury",
+          "klawiature",
+          "klawiaturze"
+        ],
+        "touch": [
+          "touch",
+          "dotyk",
+          "dotyku",
+          "dotykowe"
+        ],
+        "voice": [
+          "voice",
+          "glos",
+          "glosu",
+          "glosowe"
+        ],
+        "xr": [
+          "xr",
+          "okulary",
+          "headset"
+        ]
+      },
+      "locks": {
+        "caps": [
+          "capslock",
+          "caps lock",
+          "caps",
+          "blokada caps"
+        ],
+        "num": [
+          "numlock",
+          "num lock",
+          "num"
+        ],
+        "scroll": [
+          "scrolllock",
+          "scroll lock",
+          "scroll"
+        ]
+      },
+      "actions": {
+        "zoom": [
+          "zoom",
+          "powiekszenie",
+          "powiekszenia",
+          "powiekszenie widoku",
+          "powiekszania"
+        ],
+        "switch_view": [
+          "widok",
+          "widoku",
+          "przelaczenia widoku",
+          "switch view",
+          "view"
+        ],
+        "change_depth": [
+          "glebia",
+          "glebi",
+          "depth"
+        ],
+        "rotate": [
+          "obrot",
+          "obrotu",
+          "rotate"
+        ]
+      }
     }
   },
   "value_schema": {

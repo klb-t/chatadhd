@@ -1,5 +1,5 @@
 import type { PerspectivesList, PerspectivesSideBySide, PerspectiveRender, ScopeResolution } from "./graph-views";
-import type { ViewDeclarationInfo, ViewEngineList, ViewModel } from "./view-model";
+import type { InteractionBindings, ViewDeclarationInfo, ViewEngineList, ViewModel } from "./view-model";
 // Shared JSON shapes returned by the Loom C ABI (loom/include/loom/loom.h),
 // as relayed by both transports (loom-http.ts over the server, loom-jni.ts
 // over the Android WebView bridge). Kept intentionally loose (most fields
@@ -317,4 +317,9 @@ export function readViewModel(v: unknown): ViewModel {
   const o = v as Partial<ViewModel> | null;
   if (!o || o.schema !== "loom.view_model/1" || !Array.isArray(o.elements) || !Array.isArray(o.encodings)) throw new Error("view_model_invalid");
   return { edges: [], groups: [], unsupported: [], coordinate_systems: [], measure_stats: {}, sources: [], issues: [], ...o } as ViewModel;
+}
+export function readInteractionBindings(v: unknown): InteractionBindings {
+  const o = v as Partial<InteractionBindings> | null;
+  if (!o || o.schema !== "loom.view_interaction/1" || !Array.isArray(o.bindings)) throw new Error("view_interaction_invalid");
+  return { devices: [], actions: [], conflicts: [], disabled: [], unsupported: [], issues: [], ...o } as InteractionBindings;
 }

@@ -24,6 +24,7 @@
 #include "loom/economy.h"
 #include "loom/effective_view.h"
 #include "loom/perspectives.h"
+#include "loom/interaction.h"
 #include "loom/view_engine.h"
 #include "loom/scope_resolver.h"
 #include "loom/event_bus.h"
@@ -1726,9 +1727,9 @@ Json json_arg(const Ctx& x, const char* name) {
 }
 
 // A word of the sentence mapped through a table of the profile ({canonical: [words]}); the canonical name or a word of it gives the name, else the word.
-std::string canonical_word(const Ctx& x, const char* table, const std::string& given) {
+std::string canonical_word_in(const Ctx& x, const char* group, const char* table, const std::string& given) {
   const std::string w = x.fold(trim_quotes(given));
-  const Json words = x.cfg.value("views", Json::object()).value(table, Json::object());
+  const Json words = x.cfg.value(group, Json::object()).value(table, Json::object());
   if (words.is_object())
     for (auto it = words.begin(); it != words.end(); ++it) {
       if (x.fold(it.key()) == w) return it.key();
@@ -1738,6 +1739,8 @@ std::string canonical_word(const Ctx& x, const char* table, const std::string& g
     }
   return trim_quotes(given);
 }
+
+std::string canonical_word(const Ctx& x, const char* table, const std::string& given) { return canonical_word_in(x, "views", table, given); }
 
 std::vector<std::string> id_list(const Json& v, const std::vector<std::string>& separators) {
   std::vector<std::string> out;
@@ -1833,6 +1836,70 @@ StepOutcome perspectives_show(Ctx& x) {
   for (auto it = all.begin(); it != all.end(); ++it)
     lines.push_back("• " + x.say("persp_rendered", Json{{"id", it.key()}, {"nodes", it.value().value("nodes", Json::array()).size()}, {"edges", it.value().value("edges", Json::array()).size()}}));
   return answer(x.say("persp_side_by_side", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), *r);
+}
+
+// P28 step 2: the effective input bindings of a device (the list), and their rebinding in the user's overlay (writes are confirmed like views.write).
+StepOutcome interaction_show(Ctx& x) {
+  auto it = views::Interaction::open(x.rt.paths().root);
+  if (!it) return fail(it.error());
+  const std::string said = trim_quotes(x.str("device"));
+  const std::string device = said.empty() ? std::string() : canonical_word_in(x, "interaction", "devices", said);
+  const Json r = it->resolve(Json{{"device", device}});
+  std::vector<std::string> lines;
+  for (const auto& b : r.value("bindings", Json::array())) {
+    std::string note = b.value("status", "") == "recorded" ? x.say("ia_recorded") : std::string();
+    if (b.value("shadowed", false)) note += (note.empty() ? "" : " ") + x.say("ia_shadowed", Json{{"by", b.value("shadowed_by", "")}});
+    lines.push_back("• " + x.say("ia_line", Json{{"id", b.value("id", "")}, {"label", x.pick(b.value("label", Json::object()))}, {"note", note}}));
+  }
+  for (const auto& c : r.value("conflicts", Json::array())) lines.push_back("! " + x.pick(c.value("message", Json::object())));
+  for (const auto& u : r.value("unsupported", Json::array()))
+    lines.push_back("? " + x.say("ia_unsupported", Json{{"id", u.value("binding", "")}, {"why", x.pick(u.value("reason", Json::object()).value("text", Json::object()))}}));
+  if (lines.empty()) return answer(x.say("ia_none", Json{{"device", device}}), r);
+  return answer(x.say("ia_head", Json{{"device", device.empty() ? x.say("ia_all_devices") : device}, {"count", r.value("bindings", Json::array()).size()}}) + "\n" + join_lines(lines), r);
+}
+
+StepOutcome interaction_rebind(Ctx& x) {
+  const std::string said = trim_quotes(x.str("binding", x.str("id")));
+  if (said.empty()) return fail(Errc::InvalidArgument, x.say("ia_rebind_need"));
+  auto it = views::Interaction::open(x.rt.paths().root);
+  if (!it) return fail(it.error());
+  const Json all = it->resolve(Json::object());
+  auto exists = [&](const std::string& id) {
+    for (const auto& b : all.value("bindings", Json::array()))
+      if (b.value("id", "") == id) return true;
+    return false;
+  };
+  std::string id = said;
+  if (!exists(id)) {
+    const std::string lock = canonical_word_in(x, "interaction", "locks", said);
+    id = "kbd.lock." + lock;
+  }
+  if (!exists(id)) return fail(Errc::NotFound, x.say("ia_unknown_binding", Json{{"binding", said}}));
+  auto& root = x.rt.paths().root;
+  if (json::get_bool(x.c.args, "remove", false) || x.fold(x.str("op")) == "remove") {
+    auto n = views::remove_ops(root, "user", "interaction_bindings", id);
+    if (!n) return fail(n.error());
+    return answer(x.say("ia_removed", Json{{"id", id}, {"count", *n}}), Json{{"overlay", "user"}, {"removed", *n}});
+  }
+  const std::string to = trim_quotes(x.str("to", x.str("action")));
+  if (to.empty()) return fail(Errc::InvalidArgument, x.say("ia_rebind_need"));
+  Json action = json_arg(x, "action");
+  if (!action.is_object()) {
+    const std::string kind = canonical_word_in(x, "interaction", "actions", to);
+    action = Json{{"kind", kind}};
+    if (kind == "zoom") action["factor"] = x.cfg.value("interaction", Json::object()).value("zoom_factor", Json(1.25));
+    const std::string decl = trim_quotes(x.str("declaration"));
+    if (kind == "switch_view" && !decl.empty()) action["declaration"] = decl;
+  }
+  // The old action's own fields leave (null removes a field in a deep patch), so the new action replaces it instead of mixing with it.
+  Json patch_action = action;
+  for (const auto& b : all.value("bindings", Json::array()))
+    if (b.value("id", "") == id && b.value("action", Json::object()).is_object())
+      for (auto f = b["action"].begin(); f != b["action"].end(); ++f)
+        if (!patch_action.contains(f.key())) patch_action[f.key()] = nullptr;
+  Json op{{"view", "interaction_bindings"}, {"op", "modify"}, {"id", id}, {"patch", Json{{"action", patch_action}}}};
+  if (auto st = views::put_op(root, "user", op); !st) return fail(st.error());
+  return answer(x.say("ia_rebound", Json{{"id", id}, {"action", action.value("kind", "")}}), Json{{"overlay", "user"}, {"written", op}});
 }
 
 // P28: a view declaration evaluated around a focus node; without a declaration the list of declarations.
@@ -1953,7 +2020,7 @@ const std::map<std::string, Op>& table() {
       {"archive.status", archive_status}, {"archive.cancel", archive_cancel}, {"knowledge.status", knowledge_status}, {"knowledge.cancel", knowledge_cancel},
       {"catalog.status", catalog_status}, {"catalog.cancel", catalog_cancel}, {"catalog.query", catalog_query},
       {"views.effective", views_effective}, {"views.write", views_write}, {"perspectives.show", perspectives_show}, {"scopes.explain", scopes_explain},
-      {"view_model.show", view_model_show}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify}};
+      {"view_model.show", view_model_show}, {"interaction.show", interaction_show}, {"interaction.rebind", interaction_rebind}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify}};
   return t;
 }
 

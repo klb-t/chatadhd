@@ -185,6 +185,66 @@
           "profile": "graph_views",
           "pointer": "/view_rules"
         }
+      },
+      "interaction_bindings": {
+        "label": {
+          "en": "Interaction bindings",
+          "pl": "Przypisania wejść"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_bindings"
+        }
+      },
+      "interaction_devices": {
+        "label": {
+          "en": "Input devices",
+          "pl": "Urządzenia wejścia"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_devices"
+        }
+      },
+      "interaction_actions": {
+        "label": {
+          "en": "View actions",
+          "pl": "Działania na widoku"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_actions"
+        }
+      },
+      "interaction_rules": {
+        "label": {
+          "en": "Interaction rules",
+          "pl": "Reguły interakcji"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_rules"
+        }
       }
     },
     "edge_kinds": {
@@ -1940,6 +2000,1384 @@
             "bins": 3
           }
         ]
+      }
+    },
+    "interaction_devices": {
+      "keyboard": {
+        "label": {
+          "en": "Keyboard",
+          "pl": "Klawiatura"
+        },
+        "implemented": true,
+        "inputs": [
+          "key",
+          "modifiers",
+          "locks",
+          "lock",
+          "state"
+        ],
+        "meaning": {
+          "en": "Keys, held modifiers (shift, ctrl, alt, meta) and lock states (caps, num, scroll).",
+          "pl": "Klawisze, trzymane modyfikatory (shift, ctrl, alt, meta) i stany blokad (caps, num, scroll)."
+        }
+      },
+      "touch": {
+        "label": {
+          "en": "Touch",
+          "pl": "Dotyk"
+        },
+        "implemented": true,
+        "inputs": [
+          "button",
+          "gesture",
+          "modifiers",
+          "locks",
+          "lock",
+          "state"
+        ],
+        "meaning": {
+          "en": "On-screen buttons (held modifiers, locks) and gestures.",
+          "pl": "Przyciski na ekranie (trzymane modyfikatory, blokady) i gesty."
+        }
+      },
+      "voice": {
+        "label": {
+          "en": "Voice",
+          "pl": "Głos"
+        },
+        "implemented": false,
+        "inputs": [
+          "phrase"
+        ],
+        "meaning": {
+          "en": "A spoken phrase. Recorded as data; the panel does not handle it yet.",
+          "pl": "Wypowiedziana fraza. Zapisane jako dane; panel jeszcze tego nie obsługuje."
+        }
+      },
+      "xr": {
+        "label": {
+          "en": "XR (glasses / headset)",
+          "pl": "XR (okulary / headset)"
+        },
+        "implemented": false,
+        "inputs": [
+          "gaze",
+          "gesture",
+          "phrase",
+          "modifiers"
+        ],
+        "meaning": {
+          "en": "Gaze with finger movement, voice, and large gestures for coarse scene moves only. Recorded as data; no WebXR code yet.",
+          "pl": "Wzrok z ruchem palców, głos i duże gesty tylko do zgrubnych ruchów sceny. Zapisane jako dane; bez kodu WebXR."
+        }
+      }
+    },
+    "interaction_actions": {
+      "move": {
+        "label": {
+          "en": "Move",
+          "pl": "Przesuń"
+        },
+        "implemented": true,
+        "pairs": {
+          "plane": {
+            "label": {
+              "en": "plane",
+              "pl": "płaszczyzna"
+            },
+            "axes": {
+              "horizontal": "x",
+              "vertical": "y"
+            }
+          },
+          "depth_time": {
+            "label": {
+              "en": "depth and time",
+              "pl": "głębia i czas"
+            },
+            "axes": {
+              "horizontal": "time",
+              "vertical": "depth"
+            }
+          },
+          "branches": {
+            "label": {
+              "en": "between branches",
+              "pl": "między gałęziami"
+            },
+            "axes": {
+              "horizontal": "branch",
+              "vertical": "along_branch"
+            }
+          }
+        },
+        "params": [
+          "pair",
+          "axis",
+          "direction",
+          "step",
+          "coarse"
+        ],
+        "meaning": {
+          "en": "Movement along an axis of an axis pair (plane, depth and time, between branches); step and direction are data.",
+          "pl": "Ruch wzdłuż osi pary osi (płaszczyzna, głębia i czas, między gałęziami); krok i kierunek są danymi."
+        }
+      },
+      "change_focus": {
+        "label": {
+          "en": "Change focus",
+          "pl": "Zmień fokus"
+        },
+        "implemented": true,
+        "params": [
+          "target"
+        ],
+        "meaning": {
+          "en": "Focus: origin, selected, gazed, next, previous.",
+          "pl": "Fokus: origin, selected, gazed, next, previous."
+        }
+      },
+      "rotate": {
+        "label": {
+          "en": "Rotate",
+          "pl": "Obrót"
+        },
+        "implemented": true,
+        "params": [
+          "target",
+          "direction",
+          "step"
+        ],
+        "targets": {
+          "direction": {
+            "en": "view direction",
+            "pl": "kierunek widoku"
+          },
+          "perspective": {
+            "en": "perspective (the next view)",
+            "pl": "perspektywa (kolejny widok)"
+          }
+        },
+        "meaning": {
+          "en": "Rotates the view direction or moves to the neighbouring perspective.",
+          "pl": "Obrót kierunku widoku albo przejście do sąsiedniej perspektywy."
+        }
+      },
+      "change_depth": {
+        "label": {
+          "en": "Change depth",
+          "pl": "Zmień głębię"
+        },
+        "implemented": true,
+        "params": [
+          "delta"
+        ],
+        "meaning": {
+          "en": "Depth of the main source's reach by delta steps.",
+          "pl": "Głębia zasięgu głównego źródła o delta kroków."
+        }
+      },
+      "zoom": {
+        "label": {
+          "en": "Zoom",
+          "pl": "Powiększenie"
+        },
+        "implemented": true,
+        "params": [
+          "factor"
+        ],
+        "meaning": {
+          "en": "A zoom factor; on a lock state it holds while the lock is on.",
+          "pl": "Mnożnik powiększenia; w stanie blokady działa, dopóki blokada jest włączona."
+        }
+      },
+      "switch_view": {
+        "label": {
+          "en": "Switch view",
+          "pl": "Przełącz widok"
+        },
+        "implemented": true,
+        "params": [
+          "declaration"
+        ],
+        "meaning": {
+          "en": "An alternative view (a declaration); on a lock state: while the lock is on.",
+          "pl": "Widok alternatywny (deklaracja); na stanie blokady: dopóki blokada jest włączona."
+        }
+      },
+      "toggle_element": {
+        "label": {
+          "en": "Toggle element",
+          "pl": "Przełącz element"
+        },
+        "implemented": true,
+        "params": [
+          "element"
+        ],
+        "meaning": {
+          "en": "Show or hide an element of the view (e.g. the labels).",
+          "pl": "Pokaż albo ukryj element widoku (np. etykiety)."
+        }
+      },
+      "hold_modifier": {
+        "label": {
+          "en": "Held modifier",
+          "pl": "Trzymany modyfikator"
+        },
+        "implemented": true,
+        "params": [
+          "modifier"
+        ],
+        "meaning": {
+          "en": "An on-screen button that acts like a held modifier key.",
+          "pl": "Przycisk ekranowy, który działa jak trzymany klawisz modyfikatora."
+        }
+      },
+      "toggle_lock": {
+        "label": {
+          "en": "Toggle lock",
+          "pl": "Przełącz blokadę"
+        },
+        "implemented": true,
+        "params": [
+          "lock"
+        ],
+        "meaning": {
+          "en": "An on-screen button that toggles a lock (caps, num, scroll).",
+          "pl": "Przycisk ekranowy, który przełącza blokadę (caps, num, scroll)."
+        }
+      }
+    },
+    "interaction_bindings": {
+      "kbd.plane.left": {
+        "label": {
+          "en": "Plane: left",
+          "pl": "Płaszczyzna: w lewo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.plane.right": {
+        "label": {
+          "en": "Plane: right",
+          "pl": "Płaszczyzna: w prawo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.plane.up": {
+        "label": {
+          "en": "Plane: up",
+          "pl": "Płaszczyzna: w górę"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.plane.down": {
+        "label": {
+          "en": "Plane: down",
+          "pl": "Płaszczyzna: w dół"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.left": {
+        "label": {
+          "en": "Time: back",
+          "pl": "Czas: wstecz"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.right": {
+        "label": {
+          "en": "Time: forward",
+          "pl": "Czas: naprzód"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.up": {
+        "label": {
+          "en": "Depth: shallower",
+          "pl": "Głębia: płycej"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.down": {
+        "label": {
+          "en": "Depth: deeper",
+          "pl": "Głębia: głębiej"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.branches.left": {
+        "label": {
+          "en": "Branches: previous",
+          "pl": "Gałęzie: poprzednia"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.branches.right": {
+        "label": {
+          "en": "Branches: next",
+          "pl": "Gałęzie: następna"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.branches.up": {
+        "label": {
+          "en": "Along the branch: back",
+          "pl": "Wzdłuż gałęzi: wstecz"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.branches.down": {
+        "label": {
+          "en": "Along the branch: forward",
+          "pl": "Wzdłuż gałęzi: naprzód"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.rotate.left": {
+        "label": {
+          "en": "Rotate: direction left",
+          "pl": "Obrót: kierunek w lewo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": -1,
+          "step": 15
+        }
+      },
+      "kbd.rotate.right": {
+        "label": {
+          "en": "Rotate: direction right",
+          "pl": "Obrót: kierunek w prawo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": 1,
+          "step": 15
+        }
+      },
+      "kbd.rotate.up": {
+        "label": {
+          "en": "Perspective: previous",
+          "pl": "Perspektywa: poprzednia"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.rotate.down": {
+        "label": {
+          "en": "Perspective: next",
+          "pl": "Perspektywa: następna"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.zoom.in": {
+        "label": {
+          "en": "Zoom in",
+          "pl": "Powiększ"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "+",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "kbd.zoom.out": {
+        "label": {
+          "en": "Zoom out",
+          "pl": "Pomniejsz"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "-",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 0.8
+        }
+      },
+      "kbd.depth.more": {
+        "label": {
+          "en": "One step deeper",
+          "pl": "Głębiej o jeden krok"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "PageDown",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "change_depth",
+          "delta": 1
+        }
+      },
+      "kbd.depth.less": {
+        "label": {
+          "en": "One step shallower",
+          "pl": "Płycej o jeden krok"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "PageUp",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "change_depth",
+          "delta": -1
+        }
+      },
+      "kbd.focus.origin": {
+        "label": {
+          "en": "Focus: back to the origin",
+          "pl": "Fokus: wróć do początku"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "Home",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "change_focus",
+          "target": "origin"
+        }
+      },
+      "kbd.toggle.labels": {
+        "label": {
+          "en": "Labels: show or hide",
+          "pl": "Etykiety: pokaż lub ukryj"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "l",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "toggle_element",
+          "element": "labels"
+        }
+      },
+      "kbd.lock.caps": {
+        "label": {
+          "en": "CapsLock: alternative view age_lanes",
+          "pl": "CapsLock: widok alternatywny age_lanes"
+        },
+        "device": "keyboard",
+        "input": {
+          "lock": "caps",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "kbd.lock.num": {
+        "label": {
+          "en": "NumLock: alternative view history_cone",
+          "pl": "NumLock: widok alternatywny history_cone"
+        },
+        "device": "keyboard",
+        "input": {
+          "lock": "num",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "history_cone"
+        }
+      },
+      "kbd.lock.scroll": {
+        "label": {
+          "en": "ScrollLock: alternative view age_lanes",
+          "pl": "ScrollLock: widok alternatywny age_lanes"
+        },
+        "device": "keyboard",
+        "input": {
+          "lock": "scroll",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "touch.hold.shift": {
+        "label": {
+          "en": "Button Shift (hold)",
+          "pl": "Przycisk Shift (trzymaj)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "shift"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "shift"
+        }
+      },
+      "touch.hold.ctrl": {
+        "label": {
+          "en": "Button Ctrl (hold)",
+          "pl": "Przycisk Ctrl (trzymaj)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "ctrl"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "ctrl"
+        }
+      },
+      "touch.hold.alt": {
+        "label": {
+          "en": "Button Alt (hold)",
+          "pl": "Przycisk Alt (trzymaj)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "alt"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "alt"
+        }
+      },
+      "touch.toggle.caps": {
+        "label": {
+          "en": "Button CapsLock (toggle)",
+          "pl": "Przycisk CapsLock (przełącz)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "caps"
+        },
+        "action": {
+          "kind": "toggle_lock",
+          "lock": "caps"
+        }
+      },
+      "touch.toggle.num": {
+        "label": {
+          "en": "Button NumLock (toggle)",
+          "pl": "Przycisk NumLock (przełącz)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "num"
+        },
+        "action": {
+          "kind": "toggle_lock",
+          "lock": "num"
+        }
+      },
+      "touch.toggle.scroll": {
+        "label": {
+          "en": "Button ScrollLock (toggle)",
+          "pl": "Przycisk ScrollLock (przełącz)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "scroll"
+        },
+        "action": {
+          "kind": "toggle_lock",
+          "lock": "scroll"
+        }
+      },
+      "touch.plane.left": {
+        "label": {
+          "en": "Plane: left (swipe)",
+          "pl": "Płaszczyzna: w lewo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.plane.right": {
+        "label": {
+          "en": "Plane: right (swipe)",
+          "pl": "Płaszczyzna: w prawo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.plane.up": {
+        "label": {
+          "en": "Plane: up (swipe)",
+          "pl": "Płaszczyzna: w górę (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.plane.down": {
+        "label": {
+          "en": "Plane: down (swipe)",
+          "pl": "Płaszczyzna: w dół (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.left": {
+        "label": {
+          "en": "Time: back (swipe)",
+          "pl": "Czas: wstecz (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.right": {
+        "label": {
+          "en": "Time: forward (swipe)",
+          "pl": "Czas: naprzód (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.up": {
+        "label": {
+          "en": "Depth: shallower (swipe)",
+          "pl": "Głębia: płycej (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.down": {
+        "label": {
+          "en": "Depth: deeper (swipe)",
+          "pl": "Głębia: głębiej (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.branches.left": {
+        "label": {
+          "en": "Branches: previous (swipe)",
+          "pl": "Gałęzie: poprzednia (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.branches.right": {
+        "label": {
+          "en": "Branches: next (swipe)",
+          "pl": "Gałęzie: następna (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.branches.up": {
+        "label": {
+          "en": "Along the branch: back (swipe)",
+          "pl": "Wzdłuż gałęzi: wstecz (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.branches.down": {
+        "label": {
+          "en": "Along the branch: forward (swipe)",
+          "pl": "Wzdłuż gałęzi: naprzód (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.rotate.left": {
+        "label": {
+          "en": "Rotate: direction left (swipe)",
+          "pl": "Obrót: kierunek w lewo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": -1,
+          "step": 15
+        }
+      },
+      "touch.rotate.right": {
+        "label": {
+          "en": "Rotate: direction right (swipe)",
+          "pl": "Obrót: kierunek w prawo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": 1,
+          "step": 15
+        }
+      },
+      "touch.rotate.up": {
+        "label": {
+          "en": "Perspective: previous (swipe)",
+          "pl": "Perspektywa: poprzednia (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.rotate.down": {
+        "label": {
+          "en": "Perspective: next (swipe)",
+          "pl": "Perspektywa: następna (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.zoom.in": {
+        "label": {
+          "en": "Zoom in (pinch out)",
+          "pl": "Powiększ (rozsunięcie palców)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "pinch_out",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "touch.zoom.out": {
+        "label": {
+          "en": "Zoom out (pinch in)",
+          "pl": "Pomniejsz (zsunięcie palców)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "pinch_in",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 0.8
+        }
+      },
+      "touch.lock.caps": {
+        "label": {
+          "en": "Lock caps: alternative view age_lanes",
+          "pl": "Blokada caps: widok alternatywny age_lanes"
+        },
+        "device": "touch",
+        "input": {
+          "lock": "caps",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "touch.lock.num": {
+        "label": {
+          "en": "Lock num: alternative view history_cone",
+          "pl": "Blokada num: widok alternatywny history_cone"
+        },
+        "device": "touch",
+        "input": {
+          "lock": "num",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "history_cone"
+        }
+      },
+      "touch.lock.scroll": {
+        "label": {
+          "en": "Lock scroll: alternative view age_lanes",
+          "pl": "Blokada scroll: widok alternatywny age_lanes"
+        },
+        "device": "touch",
+        "input": {
+          "lock": "scroll",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "voice.zoom.in": {
+        "label": {
+          "en": "Voice: \"zoom in\"",
+          "pl": "Głos: „przybliż”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "przybliż"
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "voice.zoom.out": {
+        "label": {
+          "en": "Voice: \"zoom out\"",
+          "pl": "Głos: „oddal”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "oddal"
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 0.8
+        }
+      },
+      "voice.view.age": {
+        "label": {
+          "en": "Voice: \"show age\"",
+          "pl": "Głos: „pokaż wiek”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "pokaż wiek"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "voice.view.history": {
+        "label": {
+          "en": "Voice: \"show history\"",
+          "pl": "Głos: „pokaż historię”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "pokaż historię"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "history_cone"
+        }
+      },
+      "xr.focus.gaze": {
+        "label": {
+          "en": "Gaze and pinch: focus on the looked-at element",
+          "pl": "Wzrok i uszczypnięcie: fokus na patrzonym elemencie"
+        },
+        "device": "xr",
+        "input": {
+          "gaze": "look",
+          "gesture": "pinch"
+        },
+        "action": {
+          "kind": "change_focus",
+          "target": "gazed"
+        }
+      },
+      "xr.voice.zoom.in": {
+        "label": {
+          "en": "Voice in XR: \"zoom in\"",
+          "pl": "Głos w XR: „przybliż”"
+        },
+        "device": "xr",
+        "input": {
+          "phrase": "przybliż"
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "xr.coarse.left": {
+        "label": {
+          "en": "Large gesture: scene left (coarse)",
+          "pl": "Duży gest: scena w lewo (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_left"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.coarse.right": {
+        "label": {
+          "en": "Large gesture: scene right (coarse)",
+          "pl": "Duży gest: scena w prawo (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_right"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.coarse.up": {
+        "label": {
+          "en": "Large gesture: scene up (coarse)",
+          "pl": "Duży gest: scena w górę (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_up"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.coarse.down": {
+        "label": {
+          "en": "Large gesture: scene down (coarse)",
+          "pl": "Duży gest: scena w dół (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_down"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.rotate.perspective": {
+        "label": {
+          "en": "Two-hand rotation: the next perspective",
+          "pl": "Obrót dwiema rękami: kolejna perspektywa"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "two_hand_rotate"
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": 1,
+          "step": 1
+        }
+      }
+    },
+    "interaction_rules": {
+      "messages": {
+        "kind": "messages",
+        "texts": {
+          "binding_without_device": {
+            "en": "The binding names no device.",
+            "pl": "Przypisanie nie wskazuje urządzenia."
+          },
+          "binding_without_input": {
+            "en": "The binding has no input.",
+            "pl": "Przypisanie nie ma wejścia."
+          },
+          "binding_without_action": {
+            "en": "The binding has no action.",
+            "pl": "Przypisanie nie ma działania."
+          },
+          "unsupported_device": {
+            "en": "No such device '{device}'; the binding stays in the data and does nothing.",
+            "pl": "Nieznane urządzenie '{device}'; przypisanie zostaje w danych i nie działa."
+          },
+          "unsupported_input_field": {
+            "en": "Device '{device}' does not know the input field '{field}'.",
+            "pl": "Urządzenie '{device}' nie zna pola wejścia '{field}'."
+          },
+          "unsupported_action_kind": {
+            "en": "No action '{kind}'; the binding stays in the data and does nothing.",
+            "pl": "Brak działania '{kind}'; przypisanie zostaje w danych i nie działa."
+          },
+          "device_not_implemented": {
+            "en": "Device '{device}' is only recorded as data here (not handled in this version).",
+            "pl": "Urządzenie '{device}' jest tu tylko zapisane jako dane (brak obsługi w tej wersji)."
+          },
+          "switch_view_unknown_declaration": {
+            "en": "The view '{declaration}' does not exist; the binding will switch nothing.",
+            "pl": "Widok '{declaration}' nie istnieje; przypisanie nic nie przełączy."
+          },
+          "conflict": {
+            "en": "Conflicting bindings for {input}: {ids}. The last one ({winner}) wins; none is blocked.",
+            "pl": "Konflikt przypisań dla {input}: {ids}. Działa ostatnie ({winner}); żadne nie jest zablokowane."
+          },
+          "unknown_device_requested": {
+            "en": "There is no device '{device}' in the list.",
+            "pl": "Nie ma urządzenia '{device}' na liście."
+          }
+        }
       }
     }
   },

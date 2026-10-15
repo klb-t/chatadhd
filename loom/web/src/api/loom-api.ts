@@ -227,6 +227,8 @@ export interface LoomApi {
   /** P28 visualization engine: the view declarations, and one evaluated around a focus node into a layout-independent view model. */
   listViewDeclarations(): Promise<import("./view-model").ViewEngineList>;
   evaluateView(request: import("./view-model").ViewModelRequest): Promise<import("./view-model").ViewModel>;
+  /** P28 step 2: the effective input bindings of a device (empty = every device). */
+  getInteractionBindings(device?: string): Promise<import("./view-model").InteractionBindings>;
   selectContext(req: ContextSelectRequest): Promise<ContextSet>;
 
   // Semantic worker

@@ -1028,6 +1028,15 @@ void App::route_graph_context() {
   svr_.Post("/api/view-model", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
     send_loom(res, loom_view_model(rctx(), dump_body(parse_body(req)).c_str()));
   });
+  // P28 step 2: interaction as data (the effective input bindings of a device, conflicts, unsupported).
+  svr_.Get("/api/view-interaction", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    json request = json::object();
+    if (req.has_param("device")) request["device"] = req.get_param_value("device");
+    send_loom(res, loom_view_interaction(rctx(), dump_body(request).c_str()));
+  });
+  svr_.Post("/api/view-interaction", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_view_interaction(rctx(), dump_body(parse_body(req)).c_str()));
+  });
   svr_.Post("/api/scopes/resolve", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
     send_loom(res, loom_scope_resolve(rctx(), dump_body(parse_body(req)).c_str()));
   });

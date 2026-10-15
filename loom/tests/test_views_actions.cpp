@@ -10,6 +10,7 @@
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/effective_view.h"
+#include "loom/interaction.h"
 #include "loom/perspectives.h"
 #include "loom/net/http.h"
 #include "loom/runtime.h"
@@ -139,5 +140,34 @@ TEST_SUITE("views_actions") {
     const auto none = f.say_and_confirm("show view history_cone around nothing_here", "view_model.show");
     INFO(f.text_of(none));
     CHECK(f.text_of(none).find("nothing_here") != std::string::npos);
+  }
+
+  TEST_CASE("P28 step 2: interaction bindings are listed in the chat and rebound through the confirmed overlay write") {
+    Fixture f;
+    const auto shown = f.say_and_confirm("show keyboard bindings", "interaction.show");
+    INFO(f.text_of(shown));
+    CHECK(f.text_of(shown).find("kbd.plane.left") != std::string::npos);
+    CHECK(f.text_of(shown).find("kbd.lock.caps") != std::string::npos);
+    const auto shown_pl = f.say_and_confirm("pokaż przypisania dotyku", "interaction.show", "tak");
+    INFO(f.text_of(shown_pl));
+    CHECK(f.text_of(shown_pl).find("touch.hold.shift") != std::string::npos);
+    const auto all = f.say_and_confirm("show the input bindings", "interaction.show");
+    CHECK(f.text_of(all).find("xr.focus.gaze") != std::string::npos);
+    CHECK(f.text_of(all).find("recorded as data") != std::string::npos);
+    // a lock to zoom: written to the user's overlay (confirmed like views.write), the preset itself is untouched
+    const auto rebound = f.say_and_confirm("bind capslock to zoom", "interaction.rebind");
+    INFO(f.text_of(rebound));
+    CHECK(f.text_of(rebound).find("kbd.lock.caps") != std::string::npos);
+    auto eff = unwrap(views::Interaction::open(f.rt->paths().root));
+    const Json r = eff.resolve(Json{{"device", "keyboard"}});
+    for (const auto& b : r["bindings"])
+      if (b["id"] == "kbd.lock.caps") {
+        CHECK(b["action"]["kind"] == "zoom");
+        CHECK(!b["action"].contains("declaration"));
+        CHECK(b["origin"] == "rom");
+        CHECK(b["provenance"].size() == 2);
+      }
+    const auto missing = f.say_and_confirm("bind nonsense to zoom", "interaction.rebind");
+    CHECK(f.text_of(missing).find("nonsense") != std::string::npos);
   }
 }

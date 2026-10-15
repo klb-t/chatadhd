@@ -2,6 +2,7 @@
 // loom/scope_resolver.h. Reads never write; loom_view_write only ever writes the user's overlay <data_dir>/views/<overlay>.json.
 #include "context.h"
 #include "loom/effective_view.h"
+#include "loom/interaction.h"
 #include "loom/perspectives.h"
 #include "loom/scope_resolver.h"
 #include "loom/view_engine.h"
@@ -124,6 +125,17 @@ LOOM_API const char* loom_view_model(LoomContext* ctx, const char* request_json)
     auto r = decl.is_object() ? engine->evaluate_declaration(render_context(ctx), decl, *rj) : engine->evaluate(render_context(ctx), id, *rj);
     if (!r) return out_error(r.error());
     return out(*r);
+  });
+}
+
+LOOM_API const char* loom_view_interaction(LoomContext* ctx, const char* request_json) {
+  return guard_json("loom_view_interaction", [&] {
+    LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
+    auto rj = parse_arg(request_json, Json::object());
+    if (!rj) return out_error(rj.error());
+    auto it = views::Interaction::open(ctx->rt->paths().root, extra_dirs_of(*rj));
+    if (!it) return out_error(it.error());
+    return out(it->resolve(*rj));
   });
 }
 
