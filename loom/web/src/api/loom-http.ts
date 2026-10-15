@@ -194,8 +194,9 @@ export class LoomHttpApi implements LoomApi {
     if (request.sourceAccess === "metadata" && request.readOptions !== undefined) throw new Error("conversation_view_metadata_options_invalid");
     const localRead = request.sourceAccess === "local_read";
     let nativeWire: string | undefined;
-    const result = await this.req<unknown>(localRead ? "POST" : "GET", `/api/conversations/${encodeURIComponent(convId)}/view`,
-      localRead ? { ...(request.readOptions === undefined ? {} : { read_options: request.readOptions }) } : undefined,
+    const paging = { ...(request.limit ? { limit: request.limit } : {}), ...(request.before ? { before: request.before } : {}) };
+    const result = await this.req<unknown>(localRead ? "POST" : "GET", `/api/conversations/${encodeURIComponent(convId)}/view${localRead ? "" : this.qs(paging)}`,
+      localRead ? { ...(request.readOptions === undefined ? {} : { read_options: request.readOptions }), ...paging } : undefined,
       false, options?.signal, "no-store", text => { nativeWire = text; });
     return readConversationView(result, convId, nativeWire);
   }
@@ -382,8 +383,8 @@ export class LoomHttpApi implements LoomApi {
   expandGraph(seedIds: string[], depth: number): Promise<GraphData> {
     return this.req("POST", "/api/graph/expand", { seed_ids: seedIds, depth });
   }
-  getGraphData(convId?: string): Promise<GraphData> {
-    return this.req("GET", `/api/graph/data${this.qs({ conv_id: convId })}`);
+  getGraphData(convId?: string, page?: { limit?: number; before?: string }): Promise<GraphData> {
+    return this.req("GET", `/api/graph/data${this.qs({ conv_id: convId, limit: convId ? page?.limit : undefined, before: convId ? page?.before : undefined })}`);
   }
   getGraphEntry(options: GraphEntryOptions = {}): Promise<GraphEntryView> {
     return this.req<unknown>("GET", `/api/graph/entry${this.qs({ lang: options.lang, include_hidden: options.include_hidden ? "true" : undefined })}`).then(readGraphEntry);

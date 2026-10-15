@@ -173,8 +173,10 @@ Result<Json> Runtime::read_conversation_view(std::string_view conversation_id, c
   if (conversation_id.empty() || !options.is_object())
     return Error(Errc::InvalidArgument, "conversation view requires an id and object options");
   for (const auto& [key, value] : options.items()) {
+    if (key == "limit" && value.is_number_integer()) continue;   // P19 paging: newest N messages of the view (0 = all)
+    if (key == "before" && value.is_string()) continue;          // P19 paging: message id cursor
     if (key != "read_options" || !value.is_object())
-      return Error(Errc::InvalidArgument, "conversation view supports only object read_options");
+      return Error(Errc::InvalidArgument, "conversation view supports only object read_options, integer limit and string before");
   }
   try {
     // Serializes authority and the native row snapshot with local edits. The
@@ -318,11 +320,33 @@ Result<Json> Runtime::read_conversation_view(std::string_view conversation_id, c
         {"status", resource.at("status")}, {"current", resource.at("current")},
         {"version", resource.value("version", Json(nullptr))}, {"mapping_status", resource.value("mapping_status", Json(nullptr))}});
     const auto view_id = "cv:" + Sha256::hex(json::canonical(Json{{"messages", messages}, {"resources", versions}}));
+    // P19 paging (additive): the view_id above is that of the whole view; only the delivered window is cut.
+    Json page = nullptr;
+    const std::int64_t page_limit = options.value("limit", std::int64_t(0));
+    const std::string page_before = options.value("before", std::string());
+    if (page_limit > 0 || !page_before.empty()) {
+      const std::int64_t total = static_cast<std::int64_t>(messages.size());
+      std::int64_t end = total;
+      if (!page_before.empty()) {
+        end = -1;
+        for (std::int64_t i = 0; i < total; ++i)
+          if (messages[i].is_object() && json::get_string(messages[i], "id") == page_before) { end = i; break; }
+        if (end < 0) return Error(Errc::NotFound, "conversation view: no message '" + page_before + "'");
+      }
+      const std::int64_t begin = page_limit > 0 && end > page_limit ? end - page_limit : 0;
+      Json window = Json::array();
+      for (std::int64_t i = begin; i < end; ++i) window.push_back(std::move(messages[i]));
+      page = Json{{"total", total}, {"truncated", begin > 0},
+                  {"next_before", begin > 0 ? json::get_string(window[0], "id") : std::string()}};
+      if (begin == 0) page["next_before"] = nullptr;
+      messages = std::move(window);
+    }
     Json result{{"schema", "loom.conversation_view/1"}, {"conversation_id", conversation_id}, {"view_id", view_id},
       {"status", status}, {"messages", messages}, {"resources", resources}, {"omissions", omissions},
       {"read_configuration", read_configuration},
       {"capabilities", {{"source_history_send", {{"available", false}, {"reason", linked ? "source_egress_not_bound" : "not_applicable"}}}}}};
     if (!configuration_error.is_null()) result["configuration_error"] = configuration_error;
+    if (!page.is_null()) result["page"] = page;
     return result;
   } catch (const std::exception& error) {
     return Error(Errc::InvalidArgument, "conversation view: " + std::string(error.what()));

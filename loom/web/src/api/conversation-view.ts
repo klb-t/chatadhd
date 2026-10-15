@@ -3,6 +3,18 @@ import type { Message } from "./types";
 export interface ConversationReadRequest {
   sourceAccess: "metadata" | "local_read";
   readOptions?: Record<string, unknown>;
+  /** Paging (P19): the newest `limit` messages of the view, or those just before the message id `before`. 0/absent = all. */
+  limit?: number;
+  before?: string;
+}
+/** Where a paged view stands: how many messages the conversation has and the cursor to the next older page. */
+export interface ConversationPage { total: number; truncated: boolean; next_before: string | null }
+export function conversationPage(view: { page?: unknown } | null | undefined): ConversationPage | null {
+  const page = view?.page;
+  if (page === null || typeof page !== "object" || Array.isArray(page)) return null;
+  const p = page as Record<string, unknown>;
+  if (typeof p.total !== "number" || typeof p.truncated !== "boolean") return null;
+  return { total: p.total, truncated: p.truncated, next_before: typeof p.next_before === "string" ? p.next_before : null };
 }
 export interface ConversationView {
   schema: "loom.conversation_view/1";

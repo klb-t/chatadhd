@@ -611,7 +611,12 @@ void App::route_conversations() {
 void App::route_messages() {
   svr_.Get(R"(/api/conversations/([^/]+)/view)", [this](const httplib::Request& req, httplib::Response& res) {
     res.set_header("Cache-Control", "no-store");
-    send_loom(res, loom_read_conversation_view(rctx(), req.matches[1].str().c_str(), "{}", 0));
+    // P19 additive paging: ?limit= (newest N messages; absent/0 = all) and ?before= (message id cursor).
+    json options = json::object();
+    if (req.has_param("limit")) options["limit"] = std::atoi(req.get_param_value("limit").c_str());
+    if (req.has_param("before")) options["before"] = req.get_param_value("before");
+    send_loom(res, loom_read_conversation_view(rctx(), req.matches[1].str().c_str(),
+                                               options.dump(-1, ' ', false, json::error_handler_t::replace).c_str(), 0));
   });
   svr_.Post(R"(/api/conversations/([^/]+)/view)", [this](const httplib::Request& req, httplib::Response& res) {
     res.set_header("Cache-Control", "no-store");
@@ -624,6 +629,16 @@ void App::route_messages() {
   svr_.Get(R"(/api/conversations/([^/]+)/messages)", [this](const httplib::Request& req, httplib::Response& res) {
     std::string conv_id = req.matches[1].str();
     bool all = req.has_param("all") && req.get_param_value("all") != "0" && req.get_param_value("all") != "false";
+    if (req.has_param("limit") || req.has_param("before")) {
+      // P19 additive paging: the answer is then {messages, total, truncated, next_before} (without it, the plain array).
+      json request = json::object();
+      request["conv_id"] = conv_id;
+      request["include_all"] = all;
+      if (req.has_param("limit")) request["limit"] = std::atoi(req.get_param_value("limit").c_str());
+      if (req.has_param("before")) request["before"] = req.get_param_value("before");
+      send_loom(res, loom_get_messages_ex(rctx(), request.dump(-1, ' ', false, json::error_handler_t::replace).c_str(), all ? 1 : 0));
+      return;
+    }
     send_loom(res, all ? loom_get_messages_ex(rctx(), conv_id.c_str(), 1) : loom_get_messages(rctx(), conv_id.c_str()));
   });
 

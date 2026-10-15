@@ -96,6 +96,7 @@ struct PendingMessage {
   std::string role;
   std::string text;
   Json metadata = Json::object();
+  std::int64_t rowid = 0;  // queue position; lets a drain resume after the last row it saw
   Json to_json() const;
 };
 
@@ -347,12 +348,25 @@ class Database {
                                 int batch_size = 1000);
   Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit = 100);
   // Same queue order, skipping ids the caller has quarantined (rows that cannot be claimed).
-  Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids);
+  Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids,
+                                                          std::int64_t after_rowid = 0);
   Result<std::int64_t> count_pending_semantic();
   // Stamps semantic_source/entity_count/topic_count/summary[:200]/sentiment
   // into metadata and flips semantic_status to 'done'. No-op if missing.
   Status mark_analysed(std::string_view msg_id, const Json& analysis);
   Result<std::vector<Message>> get_msgs(std::string_view conv_id, bool include_all = false);  // ORDER BY created
+  // Perf (P19): one page of a conversation, newest-first by (created, rowid) but returned oldest-first. `before_id`
+  // (a message id of this conversation; empty = from the end) is the cursor: only messages older than it are read.
+  // `limit` <= 0 means no limit (the whole remainder). `total` counts every message the filter matches.
+  struct MsgPage {
+    std::vector<Message> messages;
+    std::int64_t total = 0;
+    bool truncated = false;      // older messages remain before messages.front()
+    std::string next_before;     // pass as before_id to continue; empty when nothing is older
+  };
+  Result<MsgPage> get_msgs_page(std::string_view conv_id, std::int64_t limit, std::string_view before_id = {},
+                                bool include_all = false);
+  Result<std::int64_t> count_msgs(std::string_view conv_id, bool include_all = false);
   Result<std::optional<Message>> get_msg(std::string_view mid);
   Result<std::vector<Message>> get_versions(std::string_view version_group_id);  // ORDER BY version_num
   Status set_msg_status(std::string_view mid, std::string_view status);  // InvalidArgument if not whitelisted

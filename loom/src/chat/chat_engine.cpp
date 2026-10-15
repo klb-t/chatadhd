@@ -1489,8 +1489,8 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   result.usage_notices = sent.notices;
 
   // 8. Auto-title from the first exchange.
-  auto all_msgs = db_.get_msgs(conv.id);
-  if (all_msgs && all_msgs->size() <= 2 && cfg_bool(cfg_, "auto_title", true)) {
+  auto all_msgs = db_.count_msgs(conv.id);  // Perf (P19): a count, not the conversation
+  if (all_msgs && *all_msgs <= 2 && cfg_bool(cfg_, "auto_title", true)) {
     std::string title = std::string(utf8::prefix(text, 30)) + (utf8::length(text) > 30 ? "..." : "");
     ConvPatch patch;
     patch.title = title;

@@ -1156,14 +1156,21 @@ Conv conv_of(Runtime& rt, const std::string& conv_id) {
   Conv c;
   c.id = conv_id;
   if (conv_id.empty()) return c;
-  if (auto msgs = rt.db().get_msgs(conv_id)) {
-    for (auto it = msgs->rbegin(); it != msgs->rend(); ++it) {
+  // Perf (P19): the newest message that is not traffic; read from the end in growing windows, never the whole conversation
+  // unless every message is traffic.
+  std::string before;
+  for (std::int64_t window = 16;; window *= 4) {
+    auto page = rt.db().get_msgs_page(conv_id, window, before);
+    if (!page) break;
+    for (auto it = page->messages.rbegin(); it != page->messages.rend(); ++it) {
       const bool traffic = it->metadata.is_object() &&
                            (it->metadata.contains("routed") || it->metadata.contains("action_proposal") || it->metadata.contains("action_run"));
       if (traffic) continue;
       c.last_message_id = it->id;
-      break;
+      return c;
     }
+    if (!page->truncated) break;
+    before = page->next_before;
   }
   return c;
 }
@@ -1213,11 +1220,12 @@ std::string language_of_words(const Data& d, const std::string& input) {
 // person that shows one (heuristic.conversation_language.messages looked at, newest first). Empty for a conversation that shows none.
 std::string language_of_conversation(Runtime& rt, const Data& d, const std::string& conv_id) {
   if (conv_id.empty()) return std::string();
-  auto msgs = rt.db().get_msgs(conv_id);
-  if (!msgs) return std::string();
   const Json* cfg = json::find(d.cfg.at("heuristic"), "conversation_language");
   if (cfg && !json::get_bool(*cfg, "enabled", true)) return std::string();
   const std::int64_t window = cfg ? json::get_int(*cfg, "messages", 12) : 12;
+  auto tail = rt.db().get_msgs_page(conv_id, window > 0 ? window : 1);  // Perf (P19): only the window is read
+  if (!tail) return std::string();
+  auto* msgs = &tail->messages;
   std::int64_t looked = 0;
   for (auto it = msgs->rbegin(); it != msgs->rend() && looked < window; ++it, ++looked) {
     if (it->metadata.is_object() && it->metadata.contains("action_proposal")) {
@@ -1443,9 +1451,9 @@ Status set_metadata(Runtime& rt, const std::string& message_id, const std::funct
 }
 
 void title_first_exchange(Runtime& rt, const std::string& conv_id, const std::string& text) {
-  auto all = rt.db().get_msgs(conv_id);
+  auto all = rt.db().count_msgs(conv_id);  // Perf (P19): a count, not the conversation
   const Json auto_title = rt.config().get("auto_title");
-  if (all && all->size() <= 2 && (auto_title.is_null() || (auto_title.is_boolean() && auto_title.get<bool>()))) {
+  if (all && *all <= 2 && (auto_title.is_null() || (auto_title.is_boolean() && auto_title.get<bool>()))) {
     ConvPatch patch;
     patch.title = std::string(utf8::prefix(text, 30)) + (utf8::length(text) > 30 ? "..." : "");
     (void)rt.db().update_conv(conv_id, patch);
@@ -2349,8 +2357,8 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
 
   // 1. The answer to a proposal that waits as the last thing said in this conversation, or to the offer made in the last reply.
   if (!conv_id.empty()) {
-    if (auto msgs = rt.db().get_msgs(conv_id); msgs && !msgs->empty()) {
-      const Message& last = msgs->back();
+    if (auto tail = rt.db().get_msgs_page(conv_id, 1); tail && !tail->messages.empty()) {  // Perf (P19): the last message only
+      const Message& last = tail->messages.back();
       if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("semantic_question") &&
           json::get_string(last.metadata["semantic_question"], "status") == "pending") {
         const std::string answer = classify_answer(d, text);
@@ -2360,7 +2368,9 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
         const std::string answer = classify_answer(d, text);
         if (!answer.empty()) return answer_proposal(rt, d, conv_id, last, answer, text, emit_start);
       } else if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("action_offer")) {
-        const Message* proposal = message_by_id(*msgs, json::get_string(last.metadata["action_offer"], "proposal_message_id"));
+        std::optional<Message> proposal_row;
+        if (auto row = rt.db().get_msg(json::get_string(last.metadata["action_offer"], "proposal_message_id")); row && *row) proposal_row = std::move(**row);
+        const Message* proposal = proposal_row && proposal_row->conv_id == conv_id && proposal_row->status == "active" ? &*proposal_row : nullptr;
         const Json offer = proposal ? offer_of(*proposal) : Json(nullptr);
         if (offer.is_object() && json::get_string(offer, "status") == "open") {
           const std::string answer = classify_offer(d, text);

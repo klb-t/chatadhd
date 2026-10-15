@@ -185,7 +185,12 @@ export interface GraphEdge {
 export interface GraphData {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  /** Paged conversation graph (P19): the newest message nodes only; older ones follow with before = next_before. */
+  truncated?: boolean;
+  next_before?: string | null;
+  total_messages?: number;
 }
+export interface GraphDataPage { limit?: number; before?: string }
 
 export interface ContextSet {
   items: unknown[];

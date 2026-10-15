@@ -920,10 +920,18 @@ Result<int> SemanticWorker::drain_once() {
     std::lock_guard lk(mu_);
     excluded = quarantine_;
   }
-  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded);
+  // Perf (P19): resume after the last row of the previous batch, so rows that never qualify (short texts, quarantined
+  // ids) are walked once per sweep instead of on every batch; an empty sweep wraps to the start once, which also
+  // picks up requeued rows with lower rowids.
+  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded, scan_cursor_);
+  if (msgsr && msgsr->empty() && scan_cursor_ > 0) {
+    scan_cursor_ = 0;
+    msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded, 0);
+  }
   if (!msgsr) return msgsr.error();
   auto& msgs = *msgsr;
   if (msgs.empty()) return 0;
+  for (const auto& pm : msgs) scan_cursor_ = std::max(scan_cursor_, pm.rowid);
 
   // Resolve once before any transport or write. A malformed overlay is an
   // operation error, never a reason to silently use the built-in analyzer.

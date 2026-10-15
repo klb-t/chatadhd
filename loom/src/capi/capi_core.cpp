@@ -250,6 +250,20 @@ LOOM_API const char* loom_get_messages_ex(LoomContext* ctx, const char* conv_id,
   return guard_json("loom_get_messages", [&] {
     LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
     if (!conv_id || !*conv_id) return out_error(missing("conv_id"));
+    if (*conv_id == '{') {
+      // P19 paging (additive, same convention as loom_get_graph_data): {"conv_id","limit","before","include_all"}.
+      // Answers {"messages":[...oldest first],"total","truncated","next_before"}; limit <= 0 or absent = the whole rest.
+      auto j = parse_arg(conv_id);
+      if (!j) return out_error(j.error());
+      const std::string id = json::get_string(*j, "conv_id");
+      if (id.empty()) return out_error(missing("conv_id"));
+      const std::int64_t limit = json::get_int(*j, "limit", 0);
+      const bool all = json::get_bool(*j, "include_all", include_all != 0);
+      auto page = ctx->rt->db().get_msgs_page(id, limit, json::get_string(*j, "before"), all);
+      if (!page) return out_error(page.error());
+      return out(Json{{"messages", messages_json(page->messages)}, {"total", page->total}, {"truncated", page->truncated},
+                      {"next_before", page->truncated ? Json(page->next_before) : Json(nullptr)}});
+    }
     auto r = ctx->rt->db().get_msgs(conv_id, include_all != 0);
     if (!r) return out_error(r.error());
     return out(messages_json(*r));

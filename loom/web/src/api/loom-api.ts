@@ -211,7 +211,7 @@ export interface LoomApi {
   getNodes(filter?: { kind?: string; label?: string; limit?: number }): Promise<GraphNode[]>;
   getEdges(filter?: { node_id?: string; link_type?: string; limit?: number }): Promise<GraphEdge[]>;
   expandGraph(seedIds: string[], depth: number): Promise<GraphData>;
-  getGraphData(convId?: string): Promise<GraphData>;
+  getGraphData(convId?: string, page?: import("./types").GraphDataPage): Promise<GraphData>;
   getGraphEntry(options?: GraphEntryOptions): Promise<GraphEntryView>;
   reindexGraph(convId?: string): Promise<{ reindexed: number }>;
   selectContext(req: ContextSelectRequest): Promise<ContextSet>;
