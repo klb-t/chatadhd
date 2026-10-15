@@ -886,7 +886,17 @@ R"loom_onboard({
                 "scope_role_inactive": "not in use",
                 "scope_role_none": "no value",
                 "load_older_messages": "Load older messages",
-                "load_older": "Load older"
+                "load_older": "Load older",
+                "agent_title": "The agent is waiting for your answer",
+                "agent_proposal": "{{action}}",
+                "agent_run": "Run {{run}}",
+                "agent_accept": "Accept",
+                "agent_reject": "Reject",
+                "agent_resuming": "Continuing the agent...",
+                "agent_failed": "The agent could not continue ({{reason}}).",
+                "agent_decided_accepted": "Accepted",
+                "agent_decided_rejected": "Rejected",
+                "agent_sends_note": "Accepting runs this action under the usual rules; the agent then continues and may call the model again."
               },
               "pl": {
                 "menu_open": "Menu",
@@ -976,7 +986,17 @@ R"loom_onboard({
                 "scope_role_inactive": "nieużywany",
                 "scope_role_none": "brak wartości",
                 "load_older_messages": "Wczytaj starsze wiadomości",
-                "load_older": "Wczytaj starsze"
+                "load_older": "Wczytaj starsze",
+                "agent_title": "Agent czeka na Twoją odpowiedź",
+                "agent_proposal": "{{action}}",
+                "agent_run": "Przebieg {{run}}",
+                "agent_accept": "Zatwierdź",
+                "agent_reject": "Odrzuć",
+                "agent_resuming": "Agent kontynuuje...",
+                "agent_failed": "Agent nie mógł kontynuować ({{reason}}).",
+                "agent_decided_accepted": "Zatwierdzono",
+                "agent_decided_rejected": "Odrzucono",
+                "agent_sends_note": "Zatwierdzenie wykonuje tę akcję według zwykłych reguł; agent kontynuuje i może ponownie wywołać model."
               }
             }
           }
@@ -1113,7 +1133,8 @@ R"loom_onboard({
           "en": {
             "field.questions_suffix": "; questions: {{disposition}}",
             "knowledge.questions_suffix": " · questions: {{disposition}}",
-            "field.legend": "{{label}} ({{status}}{{suffix}})",
+)loom_onboard",
+R"loom_onboard(            "field.legend": "{{label}} ({{status}}{{suffix}})",
             "candidate.legend": "{{field}} · {{provenance}} · {{review}}",
             "knowledge.legend": "{{label}} · {{status}}{{suffix}}",
             "default.legend": "{{label}} · {{area}}",
@@ -1134,8 +1155,7 @@ R"loom_onboard({
             "review.sources": "Sources",
             "privacy.store": "Allow storage",
             "privacy.max_detail": "Detail (JSON value)",
-)loom_onboard",
-R"loom_onboard(            "privacy.max_sensitivity": "Sensitivity (JSON value)",
+            "privacy.max_sensitivity": "Sensitivity (JSON value)",
             "privacy.providers": "Allowed provider IDs, one per line",
             "privacy.infer": "Allow inference",
             "privacy.explicit_only": "Only store when I state it explicitly",
@@ -2184,7 +2204,8 @@ R"loom_onboard(            "privacy.max_sensitivity": "Sensitivity (JSON value)"
         "feature": "graph_entry",
         "locales": {
           "en": {
-            "title": "Graph entry",
+)loom_onboard",
+R"loom_onboard(            "title": "Graph entry",
             "loading": "Loading the graph entry view…",
             "error": "The graph entry view could not be loaded ({{reason}}).",
             "areas": "Areas",
@@ -2211,8 +2232,7 @@ R"loom_onboard(            "privacy.max_sensitivity": "Sensitivity (JSON value)"
             "areas": "Obszary",
             "seed": "Elementy startowe",
             "count.unknown": "nieznane",
-)loom_onboard",
-R"loom_onboard(            "count.unknown_reason": "nieznane ({{reason}})",
+            "count.unknown_reason": "nieznane ({{reason}})",
             "count.value": "{{value}}",
             "count.by": "{{name}}: {{value}}",
             "expand": "Otwórz",
@@ -2380,7 +2400,17 @@ R"loom_onboard(            "count.unknown_reason": "nieznane ({{reason}})",
             "scope_role_inactive": "not in use",
             "scope_role_none": "no value",
             "load_older_messages": "Load older messages",
-            "load_older": "Load older"
+            "load_older": "Load older",
+            "agent_title": "The agent is waiting for your answer",
+            "agent_proposal": "{{action}}",
+            "agent_run": "Run {{run}}",
+            "agent_accept": "Accept",
+            "agent_reject": "Reject",
+            "agent_resuming": "Continuing the agent...",
+            "agent_failed": "The agent could not continue ({{reason}}).",
+            "agent_decided_accepted": "Accepted",
+            "agent_decided_rejected": "Rejected",
+            "agent_sends_note": "Accepting runs this action under the usual rules; the agent then continues and may call the model again."
           },
           "pl": {
             "menu_open": "Menu",
@@ -2470,7 +2500,17 @@ R"loom_onboard(            "count.unknown_reason": "nieznane ({{reason}})",
             "scope_role_inactive": "nieużywany",
             "scope_role_none": "brak wartości",
             "load_older_messages": "Wczytaj starsze wiadomości",
-            "load_older": "Wczytaj starsze"
+            "load_older": "Wczytaj starsze",
+            "agent_title": "Agent czeka na Twoją odpowiedź",
+            "agent_proposal": "{{action}}",
+            "agent_run": "Przebieg {{run}}",
+            "agent_accept": "Zatwierdź",
+            "agent_reject": "Odrzuć",
+            "agent_resuming": "Agent kontynuuje...",
+            "agent_failed": "Agent nie mógł kontynuować ({{reason}}).",
+            "agent_decided_accepted": "Zatwierdzono",
+            "agent_decided_rejected": "Odrzucono",
+            "agent_sends_note": "Zatwierdzenie wykonuje tę akcję według zwykłych reguł; agent kontynuuje i może ponownie wywołać model."
           }
         }
       }

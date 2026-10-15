@@ -1031,7 +1031,7 @@ void App::route_graph_context() {
   // placement. Responses are the same as the former per-route loom_github_sync calls.
   for (const auto& row : json::parse(loom::action_table().dump())) {
     const std::string row_port = row.value("port", std::string());
-    if (row_port != "storage" && row_port != "actions" && row_port != "chat" && row_port != "environments") continue;
+    if (row_port != "storage" && row_port != "actions" && row_port != "chat" && row_port != "environments" && row_port != "agent") continue;
     const std::string verb = row.value("verb", std::string());
     const std::string path = row.value("path", std::string());
     const std::string port = row.value("port", std::string());

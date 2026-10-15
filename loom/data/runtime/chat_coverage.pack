@@ -211,6 +211,24 @@
         }
       },
       {
+        "id": "agent_run",
+        "title": {
+          "en": "Run the agent (a model that uses the actions)",
+          "pl": "Uruchom agenta (model korzystający z akcji)"
+        },
+        "via": "action",
+        "action": "agent.run",
+        "surfaces": {
+          "invoke": [
+            "agent.run"
+          ]
+        },
+        "examples": {
+          "pl": "poproś agenta żeby uporządkował moje notatki",
+          "en": "ask the agent to tidy my notes"
+        }
+      },
+      {
         "id": "runs",
         "title": {
           "en": "Runs of actions",

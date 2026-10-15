@@ -11103,6 +11103,117 @@
           "en": "Environment nodes brought up to date:",
           "pl": "Węzły środowisk uaktualnione:"
         }
+      },
+      "agent.run": {
+        "id": "agent.run",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Run the agent: a model that uses the actions of the catalogue",
+        "description": "A model turn loop (kind agent.loop) whose tools are the actions of the catalogue. Every model turn goes through the shared usage guard; every tool call is a run of the interpreter, so the rules, the confirmations, the x10 guard and the spending limits apply. A call the policy does not let run is stored as a proposal and the loop stops (setting tool_loop_on_proposal); the answer carries proposals[] and run_id for each, and the user answer resumes the run (agent.run with resume).",
+        "labels": {
+          "pl": "Uruchom agenta: model korzystający z akcji katalogu"
+        },
+        "inputs": [
+          "text",
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 3.0,
+        "confidence": 0.8,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": true,
+          "irreversible": false,
+          "touches_private_data": true
+        },
+        "consumer": "loom/src/agent/agent.cpp",
+        "port": "agent",
+        "action": "run",
+        "params": [
+          {
+            "name": "prompt",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "What the agent should do.",
+              "pl": "Co agent ma zrobić."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "model",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The model (default: default_model).",
+              "pl": "Model (domyślnie default_model)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "max_steps",
+            "type": "integer",
+            "required": false,
+            "description": {
+              "en": "Limit of model turns (default: setting tool_loop_max_steps).",
+              "pl": "Limit tur modelu (domyślnie ustawienie tool_loop_max_steps)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "on_proposal",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "stop or continue when a call is only proposed.",
+              "pl": "stop albo continue, gdy wywołanie jest tylko propozycją."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "resume",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "Answers to the proposals of a stopped run: [{run_id, approved}], with its transcript in messages.",
+              "pl": "Odpowiedzi na propozycje zatrzymanego przebiegu: [{run_id, approved}], z transkryptem w messages."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "ask the agent to tidy my notes"
+          ],
+          "pl": [
+            "poproś agenta żeby uporządkował moje notatki"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "The agent:",
+          "pl": "Agent:"
+        },
+        "positional_arg": "prompt",
+        "http": {
+          "verb": "POST",
+          "path": "/api/agent/run"
+        }
       }
     }
   },

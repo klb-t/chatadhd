@@ -1,6 +1,8 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+#include "loom/agent.h"
+#include "loom/environments.h"
 #include "loom/guardian.h"
 #include "loom/action_spend.h"
 #include "loom/usage_spend.h"
@@ -868,6 +870,13 @@ Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view a
     r["action"] = action.rfind("storage.", 0) == 0 ? std::string(action) : "storage." + std::string(action);
     return storage::run_command(rt_, r);
   }
+  if (port == "environments") {
+    if (action == "sync") return environments::sync(rt_, request);
+    if (action == "list") return environments::list(rt_, request);
+    if (action == "can_do") return environments::can_do(rt_, request);
+    return Error(Errc::Unsupported, "environments has no action '" + std::string(action) + "'");
+  }
+  if (port == "agent") return agent::invoke(rt_, action, request);
   return Error(Errc::Unsupported, "port '" + std::string(port) + "' cannot be run as a step");
 }
 
