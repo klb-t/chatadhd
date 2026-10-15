@@ -99,6 +99,8 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     if (p == "tool_source") {
       // Tool sources (loom/tool_sources.h): list | sync | add | remove | trust | call:<source>:<tool>. "call" is the port the interpreter
       // executes behind the rules; reaching it here is the embedding client's own call (like port "storage").
+      if (a != "list" && a != "sync" && a != "add" && a != "remove" && a != "trust" && a.rfind("call", 0) != 0)
+        return out_error(Errc::InvalidArgument, "unknown tool_source action '" + a + "'");
       auto r = tool_sources::invoke(*ctx->rt, a, *rj);
       if (!r) return out_error(r.error());
       return out(*r);

@@ -2015,6 +2015,86 @@
           "takes_scope": false
         },
         {
+          "id": "tool_source.list.pl",
+          "action": "tool_source.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wypisz)\\s+(?:moje\\s+)?zrodla\\s+narzedzi\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.list.en",
+          "action": "tool_source.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:list|show)\\s+(?:my\\s+)?tool\\s+sources\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.sync.pl",
+          "action": "tool_source.sync",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:odswiez|zsynchronizuj)\\s+(?:moje\\s+)?zrodla\\s+narzedzi\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.sync.en",
+          "action": "tool_source.sync",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:refresh|sync)\\s+(?:my\\s+)?tool\\s+sources\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.add.pl",
+          "action": "tool_source.add",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?dodaj\\s+zrodlo\\s+narzedzi\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.add.en",
+          "action": "tool_source.add",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?add\\s+(?:a\\s+|the\\s+)?tool\\s+source\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.remove.pl",
+          "action": "tool_source.remove",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?usun\\s+zrodlo\\s+narzedzi\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.remove.en",
+          "action": "tool_source.remove",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?remove\\s+(?:a\\s+|the\\s+)?tool\\s+source\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.trust.pl",
+          "action": "tool_source.trust",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?zaufaj\\s+(?:temu\\s+)?narzedziu\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "tool_source.trust.en",
+          "action": "tool_source.trust",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?trust\\s+(?:this\\s+|that\\s+)?tool\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
           "id": "runs.pl",
           "action": "actions.status",
           "lang": "pl",
