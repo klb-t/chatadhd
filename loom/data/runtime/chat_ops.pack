@@ -920,7 +920,32 @@
         "catalog_head": "The catalogue ({{count}} unit(s)):",
         "catalog_head_about": "The catalogue, units about \"{{text}}\" ({{count}}):",
         "catalog_line": "{{title}} ({{platform}}) {{id}}",
-        "catalog_none": "No unit of the catalogue matches \"{{text}}\"."
+        "catalog_none": "No unit of the catalogue matches \"{{text}}\".",
+        "views_which_kind": "Which kind of thing? (edge_kinds, perspectives, node_kinds, scopes ...)",
+        "views_entry": "{{id}} ({{origin}}) {{disabled}}",
+        "views_disabled": "[disabled]",
+        "views_none": "The effective view '{{kind}}' has no entries.",
+        "views_head": "The effective view '{{kind}}': {{count}} entries.",
+        "views_write_need": "Say the view and the id of the entry (for example: hide edge kind mentions).",
+        "views_removed": "Took back the changes of {{id}} in {{view}} ({{count}}).",
+        "views_written": "Wrote to your overlay: {{op}} {{id}} in {{view}}.",
+        "persp_entry": "{{id}}: {{label}}",
+        "persp_head": "Perspectives ({{count}}):",
+        "persp_rendered": "{{id}}: {{nodes}} nodes, {{edges}} edges",
+        "persp_side_by_side": "Perspectives side by side ({{count}}):",
+        "scopes_which_key": "Which setting? (for example: where does temperature come from)",
+        "scopes_role_supplied": "supplied the value",
+        "scopes_role_overridden": "overridden",
+        "scopes_role_inactive": "not in use",
+        "scopes_role_none": "no value",
+        "scopes_level": "{{level}}: {{role}}",
+        "scopes_supplied": "{{key}} = {{value}} (from level: {{scope}}).",
+        "scopes_undefined": "{{key}} has no value at any level.",
+        "edge_kind_one": "{{id}}: inverse {{inverse}}, ancestors {{ancestors}}",
+        "edge_kinds_head": "Edge kinds ({{count}}):",
+        "edge_unclassified": "{{type}} ({{count}} links)",
+        "edge_all_classified": "All link types in use are classified ({{known}}).",
+        "edge_classify_head": "Link types: {{known}} classified, {{unclassified}} not:"
       },
       "pl": {
         "unknown": "nieznane",
@@ -1100,7 +1125,32 @@
         "catalog_head": "Katalog (jednostek: {{count}}):",
         "catalog_head_about": "Katalog, jednostki o „{{text}}” ({{count}}):",
         "catalog_line": "{{title}} ({{platform}}) {{id}}",
-        "catalog_none": "Żadna jednostka katalogu nie pasuje do „{{text}}”."
+        "catalog_none": "Żadna jednostka katalogu nie pasuje do „{{text}}”.",
+        "views_which_kind": "Jakiego rodzaju rzeczy? (edge_kinds, perspectives, node_kinds, scopes ...)",
+        "views_entry": "{{id}} ({{origin}}) {{disabled}}",
+        "views_disabled": "[wyłączony]",
+        "views_none": "Widok efektywny „{{kind}}” nie ma wpisów.",
+        "views_head": "Widok efektywny „{{kind}}”: wpisów {{count}}.",
+        "views_write_need": "Podaj widok i id wpisu (na przykład: ukryj rodzaj krawędzi mentions).",
+        "views_removed": "Cofnięto zmiany wpisu {{id}} w {{view}} ({{count}}).",
+        "views_written": "Zapisano w Twojej nakładce: {{op}} {{id}} w {{view}}.",
+        "persp_entry": "{{id}}: {{label}}",
+        "persp_head": "Perspektywy ({{count}}):",
+        "persp_rendered": "{{id}}: węzłów {{nodes}}, krawędzi {{edges}}",
+        "persp_side_by_side": "Perspektywy obok siebie ({{count}}):",
+        "scopes_which_key": "Które ustawienie? (na przykład: skąd jest temperature)",
+        "scopes_role_supplied": "dał wartość",
+        "scopes_role_overridden": "nadpisany",
+        "scopes_role_inactive": "nieużywany",
+        "scopes_role_none": "brak wartości",
+        "scopes_level": "{{level}}: {{role}}",
+        "scopes_supplied": "{{key}} = {{value}} (z poziomu: {{scope}}).",
+        "scopes_undefined": "{{key}} nie ma wartości na żadnym poziomie.",
+        "edge_kind_one": "{{id}}: odwrotny {{inverse}}, przodkowie {{ancestors}}",
+        "edge_kinds_head": "Rodzaje krawędzi ({{count}}):",
+        "edge_unclassified": "{{type}} ({{count}} powiązań)",
+        "edge_all_classified": "Wszystkie używane typy powiązań są sklasyfikowane ({{known}}).",
+        "edge_classify_head": "Typy powiązań: {{known}} sklasyfikowanych, {{unclassified}} nie:"
       }
     },
     "pipelines": {
@@ -1112,6 +1162,72 @@
         ";",
         " i ",
         " oraz ",
+        " and "
+      ]
+    },
+    "views": {
+      "kinds": {
+        "edge_kinds": [
+          "edge kind",
+          "edge kinds",
+          "rodzaj krawedzi",
+          "rodzaje krawedzi"
+        ],
+        "perspectives": [
+          "perspective",
+          "perspektywa",
+          "perspektywe",
+          "perspektywy"
+        ],
+        "node_kinds": [
+          "node kind",
+          "node kinds",
+          "rodzaj wezla",
+          "rodzaje wezlow"
+        ],
+        "unit_kinds": [
+          "unit kind",
+          "rodzaj jednostki"
+        ],
+        "scopes": [
+          "scope",
+          "scopes",
+          "zakres",
+          "zakresy"
+        ],
+        "view_kinds": [
+          "view kinds",
+          "rodzaje widokow"
+        ]
+      },
+      "ops": {
+        "add": [
+          "add",
+          "dodaj"
+        ],
+        "modify": [
+          "modify",
+          "change",
+          "zmien"
+        ],
+        "hide": [
+          "hide",
+          "ukryj"
+        ],
+        "disable": [
+          "disable",
+          "wylacz"
+        ],
+        "alias": [
+          "alias",
+          "nazwij"
+        ]
+      },
+      "id_separators": [
+        ",",
+        ";",
+        "+",
+        " i ",
         " and "
       ]
     }

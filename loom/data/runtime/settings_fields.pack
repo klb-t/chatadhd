@@ -245,6 +245,22 @@
         "description": "Message nodes per page of GET /api/graph/data?conv_id= when the request gives no limit param. Preset 5000 = the newest 5000 messages per page; the response then carries truncated, next_before and total_messages, and older pages are fetched with before=next_before (nothing is cut for good). 0 = no limit (the whole conversation in one answer). A request's own limit param always wins."
       },
       {
+        "key": "loom_web_graph_page",
+        "scope": "config",
+        "group": "loom",
+        "type": "integer",
+        "has_default": true,
+        "description": "Message nodes the web graph view asks for per page of a conversation graph. Preset 2000 = the newest 2000 first, older ones on request (nothing is cut for good). 0 = no cut (the whole conversation in one answer)."
+      },
+      {
+        "key": "loom_web_message_window",
+        "scope": "config",
+        "group": "loom",
+        "type": "integer",
+        "has_default": true,
+        "description": "Messages the web chat view loads per page. Preset 500 = the newest 500 first, older ones page by page on scroll up or with the button (nothing is cut for good). 0 = no cut (the whole conversation)."
+      },
+      {
         "key": "loom_task_workers",
         "scope": "config",
         "group": "loom",

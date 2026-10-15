@@ -29,6 +29,7 @@ import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
+import { readPerspectivesList, readScopeResolution, readSideBySide, type PerspectiveRequest, type PerspectivesList, type PerspectivesSideBySide, type ScopeResolution, type ScopeResolveRequest } from "./graph-views";
 import { readConversationView, type ConversationReadRequest, type ConversationView } from "./conversation-view";
 
 const TOKEN_KEY = "loom.auth_token";
@@ -391,6 +392,15 @@ export class LoomHttpApi implements LoomApi {
   }
   reindexGraph(convId?: string): Promise<{ reindexed: number }> {
     return this.req("POST", "/api/graph/reindex", { conv_id: convId });
+  }
+  listPerspectives(): Promise<PerspectivesList> {
+    return this.req<unknown>("GET", "/api/perspectives").then(readPerspectivesList);
+  }
+  renderPerspectives(request: PerspectiveRequest): Promise<PerspectivesSideBySide> {
+    return this.req<unknown>("POST", "/api/perspectives", request).then(readSideBySide);
+  }
+  resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
+    return this.req<unknown>("POST", "/api/scopes/resolve", request).then(readScopeResolution);
   }
   selectContext(req: ContextSelectRequest): Promise<ContextSet> {
     return this.req("POST", "/api/context/select", req);

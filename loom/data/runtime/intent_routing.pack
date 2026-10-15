@@ -4087,6 +4087,182 @@
             "text"
           ],
           "takes_scope": false
+        },
+        {
+          "id": "views.effective.pl",
+          "action": "views.effective",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+widok\\s+efektywny\\s+(?:rodzajow\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "kind"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "views.effective.en",
+          "action": "views.effective",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:the\\s+)?effective\\s+view\\s+(?:of\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "kind"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "views.write.pl",
+          "action": "views.write",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(ukryj|wylacz)\\s+(rodzaj\\s+krawedzi|rodzaj\\s+wezla|perspektyw[ae]|edge\\s+kind|node\\s+kind|perspective)\\s+([A-Za-z0-9_.-]+)\\s*[.!?]*\\s*$",
+          "args": [
+            "op",
+            "view",
+            "id"
+          ],
+          "original": [
+            "id"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "views.write.en",
+          "action": "views.write",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(hide|disable)\\s+(rodzaj\\s+krawedzi|rodzaj\\s+wezla|perspektyw[ae]|edge\\s+kind|node\\s+kind|perspective)\\s+([A-Za-z0-9_.-]+)\\s*[.!?]*\\s*$",
+          "args": [
+            "op",
+            "view",
+            "id"
+          ],
+          "original": [
+            "id"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "perspectives.show.list.pl",
+          "action": "perspectives.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+(?:liste\\s+)?perspektyw\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "perspectives.show.list.en",
+          "action": "perspectives.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:the\\s+)?perspectives\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "perspectives.show.pl",
+          "action": "perspectives.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+perspektyw[ey]\\s+(.+?)(?:\\s+obok\\s+siebie)?\\s*[.!?]*\\s*$",
+          "args": [
+            "ids"
+          ],
+          "original": [
+            "ids"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "perspectives.show.en",
+          "action": "perspectives.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:the\\s+)?perspectives?\\s+(.+?)(?:\\s+side\\s+by\\s+side)?\\s*[.!?]*\\s*$",
+          "args": [
+            "ids"
+          ],
+          "original": [
+            "ids"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "scopes.explain.pl",
+          "action": "scopes.explain",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?skad\\s+(?:jest|pochodzi|bierze\\s+sie)\\s+(?:ustawienie\\s+)?([A-Za-z][A-Za-z0-9_.]*)\\s*[.!?]*\\s*$",
+          "args": [
+            "key"
+          ],
+          "original": [
+            "key"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "scopes.explain.en",
+          "action": "scopes.explain",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?where\\s+does\\s+(?:the\\s+)?(?:setting\\s+)?([A-Za-z][A-Za-z0-9_.]*)\\s+come\\s+from\\s*[.!?]*\\s*$",
+          "args": [
+            "key"
+          ],
+          "original": [
+            "key"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "edge_kinds.classify.pl",
+          "action": "edge_kinds.classify",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?sklasyfikuj\\s+(?:typy\\s+)?(?:powiazan|krawedzi)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "edge_kinds.classify.en",
+          "action": "edge_kinds.classify",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?classify\\s+(?:the\\s+)?(?:link|edge)\\s+types\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "edge_kinds.list.pl",
+          "action": "edge_kinds.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+rodzaje\\s+krawedzi\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "edge_kinds.list.en",
+          "action": "edge_kinds.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:the\\s+)?edge\\s+kinds\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "edge_kinds.one.pl",
+          "action": "edge_kinds.list",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+rodzaj\\s+krawedzi\\s+([A-Za-z0-9_.-]+)\\s*[.!?]*\\s*$",
+          "args": [
+            "kind"
+          ],
+          "original": [
+            "kind"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "edge_kinds.one.en",
+          "action": "edge_kinds.list",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+edge\\s+kind\\s+([A-Za-z0-9_.-]+)\\s*[.!?]*\\s*$",
+          "args": [
+            "kind"
+          ],
+          "original": [
+            "kind"
+          ],
+          "takes_scope": false
         }
       ],
       "payload": {

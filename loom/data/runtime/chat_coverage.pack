@@ -1759,6 +1759,133 @@
         }
       },
       {
+        "id": "views_effective",
+        "title": {
+          "en": "The effective view of a kind of thing",
+          "pl": "Widok efektywny rodzaju rzeczy"
+        },
+        "via": "action",
+        "action": "views.effective",
+        "surfaces": {
+          "c_abi": [
+            "loom_view_effective"
+          ],
+          "http": [
+            "GET /api/views/([A-Za-z0-9_.-]+)"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż widok efektywny rodzajów krawędzi",
+          "en": "show the effective view of edge kinds"
+        }
+      },
+      {
+        "id": "views_write",
+        "title": {
+          "en": "Change a view in my overlay",
+          "pl": "Zmień widok w mojej nakładce"
+        },
+        "via": "action",
+        "action": "views.write",
+        "surfaces": {
+          "c_abi": [
+            "loom_view_write"
+          ],
+          "http": [
+            "POST /api/views/write"
+          ]
+        },
+        "examples": {
+          "pl": "ukryj rodzaj krawędzi mentions",
+          "en": "hide edge kind mentions"
+        }
+      },
+      {
+        "id": "perspectives_show",
+        "title": {
+          "en": "Show perspectives (side by side)",
+          "pl": "Pokaż perspektywy (obok siebie)"
+        },
+        "via": "action",
+        "action": "perspectives.show",
+        "surfaces": {
+          "c_abi": [
+            "loom_perspectives"
+          ],
+          "http": [
+            "GET /api/perspectives",
+            "POST /api/perspectives"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż perspektywy dziedziczenie i mentions obok siebie",
+          "en": "show perspectives inheritance and mentions side by side"
+        }
+      },
+      {
+        "id": "scopes_explain",
+        "title": {
+          "en": "Where does a setting come from",
+          "pl": "Skąd jest ustawienie"
+        },
+        "via": "action",
+        "action": "scopes.explain",
+        "surfaces": {
+          "c_abi": [
+            "loom_scope_resolve"
+          ],
+          "http": [
+            "POST /api/scopes/resolve"
+          ]
+        },
+        "examples": {
+          "pl": "skąd jest ustawienie temperature",
+          "en": "where does temperature come from"
+        }
+      },
+      {
+        "id": "edge_kinds_list",
+        "title": {
+          "en": "Edge kinds",
+          "pl": "Rodzaje krawędzi"
+        },
+        "via": "action",
+        "action": "edge_kinds.list",
+        "surfaces": {
+          "c_abi": [
+            "loom_edge_kinds"
+          ],
+          "http": [
+            "GET /api/edge-kinds"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż rodzaje krawędzi",
+          "en": "show edge kinds"
+        }
+      },
+      {
+        "id": "edge_kinds_classify",
+        "title": {
+          "en": "Classify link types",
+          "pl": "Sklasyfikuj typy powiązań"
+        },
+        "via": "action",
+        "action": "edge_kinds.classify",
+        "surfaces": {
+          "c_abi": [
+            "loom_edge_kinds"
+          ],
+          "http": [
+            "POST /api/edge-kinds"
+          ]
+        },
+        "examples": {
+          "pl": "sklasyfikuj typy powiązań",
+          "en": "classify the link types"
+        }
+      },
+      {
         "id": "semantic_requeue",
         "title": {
           "en": "Queue failed analyses again",
@@ -2225,39 +2352,6 @@
       }
     ],
     "open": [
-      {
-        "id": "graph_views",
-        "title": {
-          "en": "Graph views as data (edge kinds, perspectives, scope inheritance)",
-          "pl": "Widoki grafu jako dane (rodzaje krawędzi, perspektywy, dziedziczenie zakresów)"
-        },
-        "reason": {
-          "en": "P24 added the effective view, edge kinds, perspectives and the scope resolver to the kernel; the catalogue actions that reach them from the conversation are not written yet.",
-          "pl": "P24 dodał do jądra widok efektywny, rodzaje krawędzi, perspektywy i resolver zakresów; akcje katalogu, które sięgają do nich z rozmowy, nie są jeszcze napisane."
-        },
-        "plan": {
-          "en": "views.effective, views.write (add/modify/hide/disable/alias into the overlay), perspectives.show (side by side) and scopes.explain (\"where does this setting come from?\") as catalogue actions.",
-          "pl": "views.effective, views.write (add/modify/hide/disable/alias do nakładki), perspectives.show (obok siebie) i scopes.explain („skąd to ustawienie?”) jako akcje katalogu."
-        },
-        "surfaces": {
-          "c_abi": [
-            "loom_view_effective",
-            "loom_view_write",
-            "loom_edge_kinds",
-            "loom_perspectives",
-            "loom_scope_resolve"
-          ],
-          "http": [
-            "GET /api/edge-kinds",
-            "GET /api/perspectives",
-            "GET /api/views/([A-Za-z0-9_.-]+)",
-            "POST /api/edge-kinds",
-            "POST /api/perspectives",
-            "POST /api/scopes/resolve",
-            "POST /api/views/write"
-          ]
-        }
-      },
       {
         "id": "methods",
         "title": {

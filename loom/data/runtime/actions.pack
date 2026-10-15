@@ -10235,6 +10235,415 @@
         },
         "positional_arg": "text"
       },
+      "views.effective": {
+        "id": "views.effective",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "The effective view of a kind of thing",
+        "description": "The shipped ROM plus the user's overlays for one kind of thing (edge kinds, perspectives, node kinds, scopes ...): each entry with its origin and whether it is disabled. Read only.",
+        "labels": {
+          "pl": "Widok efektywny rodzaju rzeczy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "Which kind of thing (edge_kinds, perspectives, node_kinds, scopes ...)",
+              "pl": "Jaki rodzaj rzeczy (edge_kinds, perspectives, node_kinds, scopes ...)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show the effective view of edge kinds"
+          ],
+          "pl": [
+            "pokaż widok efektywny rodzajów krawędzi"
+          ]
+        },
+        "positional_arg": "kind"
+      },
+      "views.write": {
+        "id": "views.write",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Change a view in my overlay",
+        "description": "Writes one operation (add, modify, hide, disable, alias) or takes one back (remove) in the user's overlay of a view; the shipped ROM is never written. Each write is confirmed.",
+        "labels": {
+          "pl": "Zmień widok w mojej nakładce"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "view",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The kind of thing (edge_kinds, perspectives ...)",
+              "pl": "Rodzaj rzeczy (edge_kinds, perspectives ...)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The entry",
+              "pl": "Wpis"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "op",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "add | modify | hide | disable | alias | remove",
+              "pl": "add | modify | hide | disable | alias | remove"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "entry",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The new entry (JSON), for add",
+              "pl": "Nowy wpis (JSON), dla add"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "patch",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The changes (JSON), for modify",
+              "pl": "Zmiany (JSON), dla modify"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "as",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The other id, for alias",
+              "pl": "Drugi id, dla alias"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "hide edge kind mentions"
+          ],
+          "pl": [
+            "ukryj rodzaj krawędzi mentions"
+          ]
+        }
+      },
+      "perspectives.show": {
+        "id": "perspectives.show",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show perspectives",
+        "description": "Without an id: the list of perspectives. With one or more ids: the graph of this conversation (or of the seeds) seen through each, side by side.",
+        "labels": {
+          "pl": "Pokaż perspektywy"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "ids",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "One or more perspective ids (comma or 'and')",
+              "pl": "Jedno lub więcej id perspektyw (przecinek lub „i”)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "seeds",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Seed node ids",
+              "pl": "Id węzłów startowych"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "hops",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "How far",
+              "pl": "Jak daleko"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "limit",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "How many nodes at most",
+              "pl": "Ile węzłów najwyżej"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show perspectives inheritance and mentions side by side"
+          ],
+          "pl": [
+            "pokaż perspektywy dziedziczenie i mentions obok siebie"
+          ]
+        },
+        "positional_arg": "ids"
+      },
+      "scopes.explain": {
+        "id": "scopes.explain",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Where does a setting come from",
+        "description": "The value of a setting through conversation, units, user and installation: which level supplied it and which were overridden (the inheritance resolution). Read only.",
+        "labels": {
+          "pl": "Skąd jest ustawienie"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "key",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The setting",
+              "pl": "Ustawienie"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "conversation_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation (default: the current one)",
+              "pl": "Rozmowa (domyślnie bieżąca)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "where does temperature come from"
+          ],
+          "pl": [
+            "skąd jest ustawienie temperature"
+          ]
+        },
+        "positional_arg": "key"
+      },
+      "edge_kinds.list": {
+        "id": "edge_kinds.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Edge kinds",
+        "description": "All edge kinds with their ancestors, inverse and perspectives, or one kind. Read only.",
+        "labels": {
+          "pl": "Rodzaje krawędzi"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "kind",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "One kind (default: all)",
+              "pl": "Jeden rodzaj (domyślnie wszystkie)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show edge kinds"
+          ],
+          "pl": [
+            "pokaż rodzaje krawędzi"
+          ]
+        },
+        "positional_arg": "kind"
+      },
+      "edge_kinds.classify": {
+        "id": "edge_kinds.classify",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Classify link types",
+        "description": "Which link types used in the graph belong to a known edge kind and which are unclassified. Read only.",
+        "labels": {
+          "pl": "Sklasyfikuj typy powiązań"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [],
+        "examples": {
+          "en": [
+            "classify the link types"
+          ],
+          "pl": [
+            "sklasyfikuj typy powiązań"
+          ]
+        }
+      },
       "guardian.remembered": {
         "id": "guardian.remembered",
         "kind": "atomic",
