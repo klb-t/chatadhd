@@ -1,0 +1,3350 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "graph_views",
+  "revision": 1,
+  "description": "Graph views as data (P24): edge kinds (meaning, direction, inverse, parent kind, perspectives), node kinds, perspectives (named selections of edge kinds + node filter + depth + rendering hint, in the traversal shape of graph_perspectives: relations/direction/hops), organizational unit kinds, and the merge policy per kind of thing (view_kinds). This profile is the ROM layer; memory overlays live in <data_dir>/views/*.json (loom/effective_view.h) with the operations add, modify, hide, disable, alias and never change it. Everything is calibration, not a closed list: a kind used in data and unknown here is accepted and listed as unclassified.",
+  "defaults": {
+    "view_kinds": {
+      "edge_kinds": {
+        "label": {
+          "en": "Edge kinds",
+          "pl": "Rodzaje krawędzi"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/edge_kinds"
+        }
+      },
+      "node_kinds": {
+        "label": {
+          "en": "Node kinds",
+          "pl": "Rodzaje węzłów"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/node_kinds"
+        }
+      },
+      "perspectives": {
+        "label": {
+          "en": "Perspectives",
+          "pl": "Perspektywy"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/perspectives"
+        }
+      },
+      "unit_kinds": {
+        "label": {
+          "en": "Organizational unit kinds",
+          "pl": "Rodzaje jednostek organizacyjnych"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/unit_kinds"
+        }
+      },
+      "scopes": {
+        "label": {
+          "en": "Scope levels",
+          "pl": "Poziomy zakresów"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "issue",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_entry",
+          "pointer": "/scopes/chain",
+          "key": "id"
+        }
+      },
+      "view_declarations": {
+        "label": {
+          "en": "View declarations",
+          "pl": "Deklaracje widoków"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/view_declarations"
+        }
+      },
+      "measure_kinds": {
+        "label": {
+          "en": "Measure kinds",
+          "pl": "Rodzaje miar"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/measure_kinds"
+        }
+      },
+      "coordinate_systems": {
+        "label": {
+          "en": "Coordinate systems",
+          "pl": "Układy współrzędnych"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/coordinate_systems"
+        }
+      },
+      "view_channels": {
+        "label": {
+          "en": "Visual channels",
+          "pl": "Kanały wizualne"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/view_channels"
+        }
+      },
+      "composition_kinds": {
+        "label": {
+          "en": "Composition kinds",
+          "pl": "Rodzaje złożenia"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/composition_kinds"
+        }
+      },
+      "combination_rules": {
+        "label": {
+          "en": "Combination rules",
+          "pl": "Reguły łączenia"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/combination_rules"
+        }
+      },
+      "view_rules": {
+        "label": {
+          "en": "View rules",
+          "pl": "Reguły widoków"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/view_rules"
+        }
+      },
+      "interaction_bindings": {
+        "label": {
+          "en": "Interaction bindings",
+          "pl": "Przypisania wejść"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_bindings"
+        }
+      },
+      "interaction_devices": {
+        "label": {
+          "en": "Input devices",
+          "pl": "Urządzenia wejścia"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_devices"
+        }
+      },
+      "interaction_actions": {
+        "label": {
+          "en": "View actions",
+          "pl": "Działania na widoku"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_actions"
+        }
+      },
+      "interaction_rules": {
+        "label": {
+          "en": "Interaction rules",
+          "pl": "Reguły interakcji"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/interaction_rules"
+        }
+      }
+    },
+    "edge_kinds": {
+      "relation": {
+        "meaning": {
+          "en": "Any relation between two nodes (root of the kind tree).",
+          "pl": "Dowolna relacja między dwoma węzłami (korzeń drzewa rodzajów)."
+        },
+        "direction": "directed",
+        "perspectives": []
+      },
+      "dependency": {
+        "meaning": {
+          "en": "Source needs the target to exist or work.",
+          "pl": "Źródło potrzebuje celu, by istnieć lub działać."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "depends_on": {
+        "meaning": {
+          "en": "Source depends on target.",
+          "pl": "Źródło zależy od celu."
+        },
+        "direction": "directed",
+        "inverse": "required_by",
+        "parent": "dependency",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "required_by": {
+        "meaning": {
+          "en": "Source is needed by target.",
+          "pl": "Źródło jest potrzebne celowi."
+        },
+        "direction": "directed",
+        "inverse": "depends_on",
+        "parent": "dependency",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "imports": {
+        "meaning": {
+          "en": "Source module imports target module.",
+          "pl": "Moduł źródłowy importuje moduł docelowy."
+        },
+        "direction": "directed",
+        "inverse": "imported_by",
+        "parent": "depends_on",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "imported_by": {
+        "meaning": {
+          "en": "Source module is imported by target.",
+          "pl": "Moduł jest importowany przez cel."
+        },
+        "direction": "directed",
+        "inverse": "imports",
+        "parent": "required_by",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "requires": {
+        "meaning": {
+          "en": "Source requires target (build, runtime or data).",
+          "pl": "Źródło wymaga celu (budowa, działanie lub dane)."
+        },
+        "direction": "directed",
+        "inverse": "required_by",
+        "parent": "depends_on",
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "calls": {
+        "meaning": {
+          "en": "Source function/method calls target.",
+          "pl": "Funkcja/metoda źródłowa wywołuje docelową."
+        },
+        "direction": "directed",
+        "inverse": "called_by",
+        "parent": "relation",
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "called_by": {
+        "meaning": {
+          "en": "Source is called by target.",
+          "pl": "Źródło jest wywoływane przez cel."
+        },
+        "direction": "directed",
+        "inverse": "calls",
+        "parent": "relation",
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "defines": {
+        "meaning": {
+          "en": "Source file/module defines target symbol.",
+          "pl": "Plik/moduł definiuje symbol."
+        },
+        "direction": "directed",
+        "inverse": "defined_in",
+        "parent": "relation",
+        "perspectives": [
+          "calls",
+          "dependencies"
+        ]
+      },
+      "defined_in": {
+        "meaning": {
+          "en": "Source symbol is defined in target.",
+          "pl": "Symbol jest zdefiniowany w celu."
+        },
+        "direction": "directed",
+        "inverse": "defines",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "implements": {
+        "meaning": {
+          "en": "Source implements target (interface, requirement, idea).",
+          "pl": "Źródło realizuje cel (interfejs, wymaganie, ideę)."
+        },
+        "direction": "directed",
+        "inverse": "implemented_by",
+        "parent": "relation",
+        "perspectives": [
+          "calls",
+          "teleology"
+        ]
+      },
+      "implemented_by": {
+        "meaning": {
+          "en": "Source is implemented by target.",
+          "pl": "Źródło jest realizowane przez cel."
+        },
+        "direction": "directed",
+        "inverse": "implements",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "part_of": {
+        "meaning": {
+          "en": "Source is a part of target.",
+          "pl": "Źródło jest częścią celu."
+        },
+        "direction": "directed",
+        "inverse": "contains",
+        "parent": "relation",
+        "perspectives": [
+          "structure"
+        ]
+      },
+      "contains": {
+        "meaning": {
+          "en": "Source contains target.",
+          "pl": "Źródło zawiera cel."
+        },
+        "direction": "directed",
+        "inverse": "part_of",
+        "parent": "relation",
+        "perspectives": [
+          "structure"
+        ]
+      },
+      "lineage": {
+        "meaning": {
+          "en": "Source and target are versions or forks of one another.",
+          "pl": "Źródło i cel to wersje lub rozgałęzienia tego samego."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "derived_from": {
+        "meaning": {
+          "en": "Source was derived from target.",
+          "pl": "Źródło powstało z celu."
+        },
+        "direction": "directed",
+        "inverse": "source_of",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "source_of": {
+        "meaning": {
+          "en": "Source is what target was derived from.",
+          "pl": "Źródło jest tym, z czego powstał cel."
+        },
+        "direction": "directed",
+        "inverse": "derived_from",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "version_of": {
+        "meaning": {
+          "en": "Source is a version of target (the thing itself).",
+          "pl": "Źródło jest wersją celu (samej rzeczy)."
+        },
+        "direction": "directed",
+        "inverse": "has_version",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "has_version": {
+        "meaning": {
+          "en": "Source has target as a version.",
+          "pl": "Źródło ma cel jako wersję."
+        },
+        "direction": "directed",
+        "inverse": "version_of",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "previous_version": {
+        "meaning": {
+          "en": "Target is the version before source.",
+          "pl": "Cel jest wersją poprzedzającą źródło."
+        },
+        "direction": "directed",
+        "inverse": "next_version",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "next_version": {
+        "meaning": {
+          "en": "Target is the version after source.",
+          "pl": "Cel jest wersją następującą po źródle."
+        },
+        "direction": "directed",
+        "inverse": "previous_version",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "forked_from": {
+        "meaning": {
+          "en": "Source was forked from target.",
+          "pl": "Źródło rozgałęziono z celu."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "based_on": {
+        "meaning": {
+          "en": "Source is based on target.",
+          "pl": "Źródło opiera się na celu."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "evolved_into": {
+        "meaning": {
+          "en": "Source evolved into target.",
+          "pl": "Źródło ewoluowało w cel."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "merged_into": {
+        "meaning": {
+          "en": "Source was merged into target.",
+          "pl": "Źródło zostało scalone w cel."
+        },
+        "direction": "directed",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "supersedes": {
+        "meaning": {
+          "en": "Source replaces target.",
+          "pl": "Źródło zastępuje cel."
+        },
+        "direction": "directed",
+        "inverse": "superseded_by",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "superseded_by": {
+        "meaning": {
+          "en": "Source is replaced by target.",
+          "pl": "Źródło jest zastąpione przez cel."
+        },
+        "direction": "directed",
+        "inverse": "supersedes",
+        "parent": "lineage",
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "teleological": {
+        "meaning": {
+          "en": "Source has a purpose or goal in target (why).",
+          "pl": "Źródło ma cel lub sens w celu (dlaczego)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "serves_goal": {
+        "meaning": {
+          "en": "Source exists to serve target goal.",
+          "pl": "Źródło istnieje, by służyć celowi."
+        },
+        "direction": "directed",
+        "inverse": "served_by",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "served_by": {
+        "meaning": {
+          "en": "Source goal is served by target.",
+          "pl": "Cel źródła jest realizowany przez cel."
+        },
+        "direction": "directed",
+        "inverse": "serves_goal",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "motivates": {
+        "meaning": {
+          "en": "Source is the reason for target.",
+          "pl": "Źródło jest powodem celu."
+        },
+        "direction": "directed",
+        "inverse": "motivated_by",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "motivated_by": {
+        "meaning": {
+          "en": "Source is done because of target.",
+          "pl": "Źródło robimy z powodu celu."
+        },
+        "direction": "directed",
+        "inverse": "motivates",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "achieves": {
+        "meaning": {
+          "en": "Source achieves target outcome.",
+          "pl": "Źródło osiąga rezultat."
+        },
+        "direction": "directed",
+        "inverse": "achieved_by",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "achieved_by": {
+        "meaning": {
+          "en": "Source outcome is achieved by target.",
+          "pl": "Rezultat źródła osiąga cel."
+        },
+        "direction": "directed",
+        "inverse": "achieves",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "purpose_of": {
+        "meaning": {
+          "en": "Source is the purpose of target.",
+          "pl": "Źródło jest przeznaczeniem celu."
+        },
+        "direction": "directed",
+        "parent": "teleological",
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "mentions": {
+        "meaning": {
+          "en": "Source mentions target.",
+          "pl": "Źródło wspomina o celu."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "references": {
+        "meaning": {
+          "en": "Source refers to target.",
+          "pl": "Źródło odwołuje się do celu."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "reply_to": {
+        "meaning": {
+          "en": "Source replies to target.",
+          "pl": "Źródło odpowiada na cel."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "generated_by": {
+        "meaning": {
+          "en": "Source was generated by target.",
+          "pl": "Źródło wygenerował cel."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "tagged_with": {
+        "meaning": {
+          "en": "Source is tagged with target topic.",
+          "pl": "Źródło ma temat."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "contradicts": {
+        "meaning": {
+          "en": "Source contradicts target.",
+          "pl": "Źródło przeczy celowi."
+        },
+        "direction": "symmetric",
+        "inverse": "contradicts",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "related": {
+        "meaning": {
+          "en": "Loosely related (default when nothing more is known).",
+          "pl": "Luźno powiązane (domyślne, gdy nic więcej nie wiadomo)."
+        },
+        "direction": "symmetric",
+        "inverse": "related",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "same_as": {
+        "meaning": {
+          "en": "Source and target are the same thing.",
+          "pl": "Źródło i cel to to samo."
+        },
+        "direction": "symmetric",
+        "inverse": "same_as",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "inherits_from": {
+        "meaning": {
+          "en": "Source scope level inherits its value from the more general target level.",
+          "pl": "Poziom zakresu dziedziczy wartość z ogólniejszego poziomu."
+        },
+        "direction": "directed",
+        "inverse": "inherited_by",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "inherited_by": {
+        "meaning": {
+          "en": "Source level hands its value down to the more specific target level.",
+          "pl": "Poziom przekazuje wartość bardziej szczegółowemu poziomowi."
+        },
+        "direction": "directed",
+        "inverse": "inherits_from",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "overrides": {
+        "meaning": {
+          "en": "Source level supplied the value and overrides the target level.",
+          "pl": "Poziom dostarczył wartość i nadpisuje poziom docelowy."
+        },
+        "direction": "directed",
+        "inverse": "overridden_by",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "overridden_by": {
+        "meaning": {
+          "en": "Source level is overridden by the target level.",
+          "pl": "Poziom jest nadpisany przez poziom docelowy."
+        },
+        "direction": "directed",
+        "inverse": "overrides",
+        "parent": "relation",
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "environment_link": {
+        "meaning": {
+          "en": "Relations of environments and access (S2).",
+          "pl": "Relacje środowisk i dostępu (S2)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "has_capability": {
+        "meaning": {
+          "en": "Source environment has target capability.",
+          "pl": "Środowisko ma zdolność."
+        },
+        "direction": "directed",
+        "inverse": "capability_of",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "capability_of": {
+        "meaning": {
+          "en": "Source capability belongs to target environment.",
+          "pl": "Zdolność należy do środowiska."
+        },
+        "direction": "directed",
+        "inverse": "has_capability",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "accessed_via": {
+        "meaning": {
+          "en": "Source is reached via target access.",
+          "pl": "Do źródła dochodzi się przez dostęp."
+        },
+        "direction": "directed",
+        "inverse": "gives_access_to",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "gives_access_to": {
+        "meaning": {
+          "en": "Source access leads to target.",
+          "pl": "Dostęp prowadzi do celu."
+        },
+        "direction": "directed",
+        "inverse": "accessed_via",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "requires_access": {
+        "meaning": {
+          "en": "Source needs target access.",
+          "pl": "Źródło potrzebuje dostępu."
+        },
+        "direction": "directed",
+        "inverse": "access_needed_by",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "access_needed_by": {
+        "meaning": {
+          "en": "Source access is needed by target.",
+          "pl": "Dostęp jest potrzebny celowi."
+        },
+        "direction": "directed",
+        "inverse": "requires_access",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "stored_in": {
+        "meaning": {
+          "en": "Source is stored in target.",
+          "pl": "Źródło jest przechowywane w celu."
+        },
+        "direction": "directed",
+        "inverse": "stores",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "stores": {
+        "meaning": {
+          "en": "Source stores target.",
+          "pl": "Źródło przechowuje cel."
+        },
+        "direction": "directed",
+        "inverse": "stored_in",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "hosted_on": {
+        "meaning": {
+          "en": "Source runs on target host.",
+          "pl": "Źródło działa na hoście."
+        },
+        "direction": "directed",
+        "inverse": "hosts",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "hosts": {
+        "meaning": {
+          "en": "Source hosts target.",
+          "pl": "Źródło gości cel."
+        },
+        "direction": "directed",
+        "inverse": "hosted_on",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "provided_by": {
+        "meaning": {
+          "en": "Source is provided by target.",
+          "pl": "Źródło dostarcza cel."
+        },
+        "direction": "directed",
+        "inverse": "provides",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "provides": {
+        "meaning": {
+          "en": "Source provides target.",
+          "pl": "Źródło dostarcza cel."
+        },
+        "direction": "directed",
+        "inverse": "provided_by",
+        "parent": "environment_link",
+        "perspectives": [
+          "environments"
+        ]
+      }
+    },
+    "node_kinds": {
+      "entity": {
+        "meaning": {
+          "en": "A thing named in a text.",
+          "pl": "Rzecz nazwana w tekście."
+        },
+        "perspectives": []
+      },
+      "topic": {
+        "meaning": {
+          "en": "A subject.",
+          "pl": "Temat."
+        },
+        "perspectives": []
+      },
+      "concept": {
+        "meaning": {
+          "en": "An idea.",
+          "pl": "Pojęcie."
+        },
+        "perspectives": []
+      },
+      "message": {
+        "meaning": {
+          "en": "A message of a conversation.",
+          "pl": "Wiadomość rozmowy."
+        },
+        "perspectives": []
+      },
+      "file": {
+        "meaning": {
+          "en": "A file of a project.",
+          "pl": "Plik projektu."
+        },
+        "perspectives": [
+          "dependencies",
+          "calls",
+          "version_history"
+        ]
+      },
+      "module": {
+        "meaning": {
+          "en": "A module / compilation unit.",
+          "pl": "Moduł / jednostka kompilacji."
+        },
+        "perspectives": [
+          "dependencies"
+        ]
+      },
+      "function": {
+        "meaning": {
+          "en": "A function or method.",
+          "pl": "Funkcja lub metoda."
+        },
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "code_ref": {
+        "meaning": {
+          "en": "A reference into code.",
+          "pl": "Odwołanie do kodu."
+        },
+        "perspectives": [
+          "calls"
+        ]
+      },
+      "version": {
+        "meaning": {
+          "en": "A version or revision.",
+          "pl": "Wersja lub rewizja."
+        },
+        "perspectives": [
+          "version_history"
+        ]
+      },
+      "scope_level": {
+        "meaning": {
+          "en": "A level of the scope chain.",
+          "pl": "Poziom łańcucha zakresów."
+        },
+        "perspectives": [
+          "dziedziczenie"
+        ]
+      },
+      "goal": {
+        "meaning": {
+          "en": "A goal or purpose.",
+          "pl": "Cel lub przeznaczenie."
+        },
+        "perspectives": [
+          "teleology"
+        ]
+      },
+      "environment": {
+        "meaning": {
+          "en": "An environment: a place things run or live (S2).",
+          "pl": "Środowisko: miejsce, gdzie coś działa lub żyje (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "capability": {
+        "meaning": {
+          "en": "What an environment can do (S2).",
+          "pl": "Co środowisko potrafi (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "access": {
+        "meaning": {
+          "en": "A way in to an environment (S2).",
+          "pl": "Sposób dostępu do środowiska (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      },
+      "secret_vault": {
+        "meaning": {
+          "en": "Where secrets are kept (S2).",
+          "pl": "Miejsce przechowywania sekretów (S2)."
+        },
+        "perspectives": [
+          "environments"
+        ]
+      }
+    },
+    "perspectives": {
+      "dependencies": {
+        "label": {
+          "en": "Dependencies",
+          "pl": "Zależności"
+        },
+        "relations": [
+          "dependency",
+          "defines"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {
+          "kinds": [
+            "file",
+            "module",
+            "function"
+          ]
+        },
+        "render": {
+          "layout": "layered",
+          "orientation": "left-right",
+          "edge_style": "arrow"
+        }
+      },
+      "calls": {
+        "label": {
+          "en": "Calls",
+          "pl": "Wywołania"
+        },
+        "relations": [
+          "calls",
+          "implements"
+        ],
+        "direction": "out",
+        "hops": 3,
+        "node_filter": {
+          "kinds": [
+            "function",
+            "file",
+            "module",
+            "code_ref"
+          ]
+        },
+        "render": {
+          "layout": "tree",
+          "orientation": "top-down",
+          "edge_style": "arrow"
+        }
+      },
+      "version_history": {
+        "label": {
+          "en": "Version history",
+          "pl": "Historia wersji"
+        },
+        "relations": [
+          "lineage"
+        ],
+        "direction": "both",
+        "hops": null,
+        "node_filter": {
+          "kinds": [
+            "version",
+            "file",
+            "module"
+          ]
+        },
+        "render": {
+          "layout": "timeline",
+          "orientation": "left-right",
+          "edge_style": "line"
+        }
+      },
+      "teleology": {
+        "label": {
+          "en": "Teleology (purpose)",
+          "pl": "Teleologia (cel)"
+        },
+        "relations": [
+          "teleological",
+          "implements"
+        ],
+        "direction": "both",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "force",
+          "edge_style": "arrow",
+          "emphasis": "goal"
+        }
+      },
+      "structure": {
+        "label": {
+          "en": "Structure",
+          "pl": "Struktura"
+        },
+        "relations": [
+          "part_of",
+          "contains"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "tree",
+          "edge_style": "line"
+        }
+      },
+      "environments": {
+        "label": {
+          "en": "Environments and access",
+          "pl": "Środowiska i dostęp"
+        },
+        "relations": [
+          "environment_link"
+        ],
+        "direction": "both",
+        "hops": null,
+        "node_filter": {
+          "kinds": [
+            "environment",
+            "capability",
+            "access",
+            "secret_vault"
+          ]
+        },
+        "render": {
+          "layout": "force",
+          "edge_style": "arrow"
+        }
+      },
+      "dziedziczenie": {
+        "label": {
+          "en": "Inheritance of a setting",
+          "pl": "Dziedziczenie ustawienia"
+        },
+        "relations": [],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "layered",
+          "orientation": "top-down",
+          "edge_style": "arrow",
+          "mark": [
+            "supplied",
+            "overridden",
+            "inactive"
+          ]
+        },
+        "source": "scope_chain",
+        "params": {
+          "key": {
+            "required": true,
+            "description": {
+              "en": "The setting or value key to trace.",
+              "pl": "Klucz ustawienia lub wartości do prześledzenia."
+            }
+          }
+        }
+      }
+    },
+    "unit_kinds": {
+      "organization": {
+        "level": "organization",
+        "label": {
+          "en": "Organization",
+          "pl": "Organizacja"
+        }
+      },
+      "team": {
+        "level": "team",
+        "label": {
+          "en": "Team",
+          "pl": "Zespół"
+        }
+      },
+      "project": {
+        "level": "project",
+        "label": {
+          "en": "Project",
+          "pl": "Projekt"
+        }
+      },
+      "role_in_context": {
+        "level": "role_in_context",
+        "label": {
+          "en": "Role in context",
+          "pl": "Rola w kontekście"
+        }
+      }
+    },
+    "measure_kinds": {
+      "distance_from_focus": {
+        "meaning": {
+          "en": "Distance from the focus through all sources: each source contributes hops / weight, combined by a combination rule.",
+          "pl": "Odległość od fokusu przez wszystkie źródła: każde źródło wnosi skoki / waga, łączone regułą łączenia."
+        },
+        "data_type": "quantitative",
+        "unit": "hops",
+        "importance_sense": "inverse",
+        "params": {
+          "combine": "weighted_sum"
+        }
+      },
+      "age": {
+        "meaning": {
+          "en": "Age in days against the focus (positive = older than the focus, negative = newer) or against now.",
+          "pl": "Wiek w dniach względem fokusu (dodatni = starszy od fokusu, ujemny = nowszy) albo względem teraz."
+        },
+        "data_type": "quantitative",
+        "unit": "days",
+        "params": {
+          "reference": "focus"
+        }
+      },
+      "branch_divergence": {
+        "meaning": {
+          "en": "How many forks lie between the focus and the element along the main source.",
+          "pl": "Ile rozwidleń leży między fokusem a elementem wzdłuż głównego źródła."
+        },
+        "data_type": "ordinal",
+        "unit": "forks"
+      },
+      "degree_of_interest": {
+        "meaning": {
+          "en": "Degree of interest (Furnas 1986): a priori importance (degree) minus distance from the focus.",
+          "pl": "Stopień zainteresowania (Furnas 1986): ważność a priori (stopień) minus odległość od fokusu."
+        },
+        "data_type": "quantitative",
+        "unit": "score",
+        "importance_sense": "direct",
+        "params": {
+          "api": "degree",
+          "api_scale": 1,
+          "distance_scale": 1
+        }
+      },
+      "membership": {
+        "meaning": {
+          "en": "Which sector (or source) the element belongs to.",
+          "pl": "Do którego sektora (albo źródła) należy element."
+        },
+        "data_type": "nominal",
+        "params": {
+          "by": "sector"
+        }
+      },
+      "node_kind": {
+        "meaning": {
+          "en": "The kind of the node.",
+          "pl": "Rodzaj węzła."
+        },
+        "data_type": "nominal"
+      }
+    },
+    "coordinate_systems": {
+      "cartesian": {
+        "meaning": {
+          "en": "Axes x and y, each bound to a measure.",
+          "pl": "Osie x i y, każda związana z miarą."
+        },
+        "axes": [
+          "x",
+          "y"
+        ]
+      },
+      "sector": {
+        "meaning": {
+          "en": "Direction to perspective: sectors with a centre angle; the angle is blended by how strongly each source reaches the element; radius from a measure; optional fixed angle per branch.",
+          "pl": "Kierunek do perspektywy: sektory z kątem środka; kąt mieszany według siły, z jaką źródła sięgają elementu; promień z miary; opcjonalnie stały kąt gałęzi."
+        },
+        "axes": [
+          "angle_deg",
+          "radius"
+        ]
+      },
+      "depth_from_distance": {
+        "meaning": {
+          "en": "Depth from the distance measure (signed per sector: the past is deeper, the future is behind). In 2D a renderer shows it as size, fog and desaturation.",
+          "pl": "Głębia z miary odległości (ze znakiem według sektora: przeszłość w głąb, przyszłość z tyłu). W 2D renderer pokazuje ją rozmiarem, mgłą i odbarwieniem."
+        },
+        "axes": [
+          "depth"
+        ]
+      },
+      "tree_branch_angles": {
+        "meaning": {
+          "en": "Tree of the main source: depth in hops, a fixed angle per branch from the forks.",
+          "pl": "Drzewo głównego źródła: głębokość w skokach, stały kąt gałęzi z rozwidleń."
+        },
+        "axes": [
+          "depth",
+          "angle_deg",
+          "branch"
+        ]
+      }
+    },
+    "view_channels": {
+      "position": {
+        "meaning": {
+          "en": "Position (axes of the coordinate system).",
+          "pl": "Pozycja (osie układu współrzędnych)."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          1
+        ]
+      },
+      "depth": {
+        "meaning": {
+          "en": "Depth.",
+          "pl": "Głębia."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          1
+        ]
+      },
+      "hue": {
+        "meaning": {
+          "en": "Hue, in degrees.",
+          "pl": "Barwa, w stopniach."
+        },
+        "type": "circular",
+        "range": [
+          0,
+          300
+        ]
+      },
+      "saturation": {
+        "meaning": {
+          "en": "Colour saturation.",
+          "pl": "Nasycenie barwy."
+        },
+        "type": "continuous",
+        "range": [
+          0.15,
+          1
+        ]
+      },
+      "lightness": {
+        "meaning": {
+          "en": "Lightness.",
+          "pl": "Jasność."
+        },
+        "type": "continuous",
+        "range": [
+          0.25,
+          0.85
+        ]
+      },
+      "alpha": {
+        "meaning": {
+          "en": "Transparency (alpha).",
+          "pl": "Przezroczystość (alfa)."
+        },
+        "type": "continuous",
+        "range": [
+          0.2,
+          1
+        ]
+      },
+      "size": {
+        "meaning": {
+          "en": "Size, in pixels.",
+          "pl": "Rozmiar, w pikselach."
+        },
+        "type": "continuous",
+        "range": [
+          4,
+          28
+        ]
+      },
+      "blur": {
+        "meaning": {
+          "en": "Blur, in pixels.",
+          "pl": "Rozmycie, w pikselach."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          6
+        ]
+      },
+      "badge": {
+        "meaning": {
+          "en": "A marker with a short text.",
+          "pl": "Znacznik z krótkim tekstem."
+        },
+        "type": "categorical"
+      }
+    },
+    "composition_kinds": {
+      "sectors": {
+        "meaning": {
+          "en": "One group per sector of the sector coordinate system.",
+          "pl": "Jedna grupa na sektor układu sektorowego."
+        }
+      },
+      "layers": {
+        "meaning": {
+          "en": "One layer per source, drawn over each other (elements may overlap).",
+          "pl": "Jedna warstwa na źródło, rysowane jedna na drugiej (elementy mogą się nakładać)."
+        }
+      },
+      "lanes": {
+        "meaning": {
+          "en": "Lanes (bands) cut from a measure.",
+          "pl": "Pasy cięte z miary."
+        }
+      },
+      "small_multiples": {
+        "meaning": {
+          "en": "One small panel per source.",
+          "pl": "Jeden mały panel na źródło."
+        }
+      }
+    },
+    "combination_rules": {
+      "weighted_sum": {
+        "meaning": {
+          "en": "Sum over the sources of hops / weight (a preset).",
+          "pl": "Suma po źródłach skoki / waga (preset)."
+        },
+        "evaluator": "weighted_sum"
+      },
+      "min": {
+        "meaning": {
+          "en": "The smallest hops / weight over the sources.",
+          "pl": "Najmniejsze skoki / waga po źródłach."
+        },
+        "evaluator": "min"
+      }
+    },
+    "view_rules": {
+      "suitability": {
+        "kind": "channel_suitability",
+        "meaning": {
+          "en": "Channel suitability per data type (after Mackinlay 1986, density mapped to lightness/alpha, area to size, shape to badge). A channel within the first promote_top places is promoted, the others are allowed with an explanation.",
+          "pl": "Dopasowanie kanału do rodzaju danych (wg Mackinlaya 1986; gęstość jako jasność/alfa, pole jako rozmiar, kształt jako znacznik). Kanał w pierwszych promote_top miejscach jest promowany, pozostałe są dozwolone z wyjaśnieniem."
+        },
+        "promote_top": 5,
+        "ranking": {
+          "quantitative": [
+            "position",
+            "depth",
+            "size",
+            "lightness",
+            "alpha",
+            "saturation",
+            "hue",
+            "blur",
+            "badge"
+          ],
+          "ordinal": [
+            "position",
+            "depth",
+            "lightness",
+            "alpha",
+            "saturation",
+            "hue",
+            "size",
+            "blur",
+            "badge"
+          ],
+          "nominal": [
+            "position",
+            "hue",
+            "badge",
+            "lightness",
+            "saturation",
+            "alpha",
+            "size",
+            "blur",
+            "depth"
+          ]
+        }
+      },
+      "interference.saturation_lightness_hue": {
+        "kind": "interference",
+        "interfered": "hue",
+        "interfering": [
+          "saturation",
+          "lightness"
+        ],
+        "condition": "monotone_with_importance",
+        "min_rank_correlation": 0.5,
+        "meaning": {
+          "en": "Saturation and lightness weaken the choice of hue: promoted only when low values of them coincide with low importance.",
+          "pl": "Nasycenie i jasność osłabiają wybór barwy: promowane tylko gdy ich niskie wartości zbiegają się z niską ważnością."
+        }
+      },
+      "interference.size_hue": {
+        "kind": "interference",
+        "interfered": "hue",
+        "interfering": [
+          "size"
+        ],
+        "condition": "monotone_with_importance",
+        "min_rank_correlation": 0.5,
+        "meaning": {
+          "en": "Small marks make hue hard to see: promoted only when small sizes coincide with low importance.",
+          "pl": "Małe znaczniki utrudniają odczyt barwy: promowane tylko gdy małe rozmiary zbiegają się z niską ważnością."
+        }
+      },
+      "interference.alpha_overlap": {
+        "kind": "interference",
+        "interfered": "overlap",
+        "interfering": [
+          "alpha"
+        ],
+        "active_when": {
+          "overlap": true
+        },
+        "condition": "monotone_with_importance",
+        "min_rank_correlation": 0.5,
+        "meaning": {
+          "en": "Transparency interferes with overlapping marks: promoted only when the most transparent marks are the least important.",
+          "pl": "Przezroczystość zakłóca nakładanie znaczników: promowana tylko gdy najbardziej przezroczyste są najmniej ważne."
+        }
+      },
+      "budget": {
+        "kind": "node_budget",
+        "max_nodes": 300,
+        "collapse_order": [
+          {
+            "by": "distance_from_focus",
+            "order": "desc"
+          },
+          {
+            "by": "degree_of_interest",
+            "order": "asc"
+          },
+          {
+            "by": "age",
+            "order": "abs_desc"
+          }
+        ],
+        "meaning": {
+          "en": "Node budget per view (a preset; 0 or null = none) and the order in which elements collapse into group nodes: farthest first, then least interesting, then most distant in time. The focus never collapses.",
+          "pl": "Budżet węzłów na widok (preset; 0 albo null = brak) i kolejność zwijania elementów w węzły grupowe: najpierw najdalsze, potem najmniej interesujące, potem najodleglejsze w czasie. Fokus nigdy się nie zwija."
+        }
+      },
+      "messages": {
+        "kind": "messages",
+        "texts": {
+          "unsupported_element_kind": {
+            "en": "No evaluator for the element kind '{kind}'; it is kept in the declaration and not drawn.",
+            "pl": "Brak ewaluatora rodzaju elementu '{kind}'; zostaje w deklaracji i nie jest rysowany."
+          },
+          "unsupported_measure_kind": {
+            "en": "No evaluator for the measure kind '{measure}'.",
+            "pl": "Brak ewaluatora rodzaju miary '{measure}'."
+          },
+          "unsupported_combine": {
+            "en": "No combination rule '{combine}'.",
+            "pl": "Brak reguły łączenia '{combine}'."
+          },
+          "unsupported_coordinate_system": {
+            "en": "No evaluator for the coordinate system '{system}'.",
+            "pl": "Brak ewaluatora układu współrzędnych '{system}'."
+          },
+          "unsupported_channel": {
+            "en": "No visual channel '{channel}'.",
+            "pl": "Brak kanału wizualnego '{channel}'."
+          },
+          "unsupported_composition": {
+            "en": "No evaluator for the composition '{composition}'.",
+            "pl": "Brak ewaluatora złożenia '{composition}'."
+          },
+          "unknown_perspective": {
+            "en": "The perspective '{perspective}' does not exist or is disabled.",
+            "pl": "Perspektywa '{perspective}' nie istnieje albo jest wyłączona."
+          },
+          "source_failed": {
+            "en": "The perspective '{perspective}' could not be rendered: {error}",
+            "pl": "Nie udało się wyrenderować perspektywy '{perspective}': {error}"
+          },
+          "source_shape": {
+            "en": "The perspective '{perspective}' does not return a graph (nodes and edges).",
+            "pl": "Perspektywa '{perspective}' nie zwraca grafu (węzły i krawędzie)."
+          },
+          "unknown_measure": {
+            "en": "The measure '{measure}' is not declared.",
+            "pl": "Miara '{measure}' nie jest zadeklarowana."
+          },
+          "measure_unavailable": {
+            "en": "The measure '{measure}' could not be computed (see its own reason).",
+            "pl": "Miary '{measure}' nie dało się policzyć (zob. jej własny powód)."
+          },
+          "measure_cycle": {
+            "en": "The measure '{measure}' depends on itself.",
+            "pl": "Miara '{measure}' zależy od siebie."
+          },
+          "measure_needs_source": {
+            "en": "'{measure}' needs a source that works.",
+            "pl": "'{measure}' potrzebuje działającego źródła."
+          },
+          "measure_needs_distance": {
+            "en": "'{measure}' needs a distance measure.",
+            "pl": "'{measure}' potrzebuje miary odległości."
+          },
+          "unsupported_api": {
+            "en": "A priori importance '{api}' is not supported.",
+            "pl": "Ważność a priori '{api}' nie jest obsługiwana."
+          },
+          "composition_needs_sectors": {
+            "en": "The composition '{composition}' needs a sector coordinate system.",
+            "pl": "Złożenie '{composition}' potrzebuje układu sektorowego."
+          },
+          "element_id_missing_or_duplicate": {
+            "en": "An element without an id or with a repeated id ('{id}', kind '{kind}').",
+            "pl": "Element bez id albo z powtórzonym id ('{id}', rodzaj '{kind}')."
+          },
+          "age_reference_unparseable": {
+            "en": "The age reference '{reference}' has no usable time.",
+            "pl": "Odniesienie wieku '{reference}' nie ma użytecznego czasu."
+          },
+          "age_unparseable": {
+            "en": "{count} elements have no usable creation time.",
+            "pl": "{count} elementów nie ma użytecznego czasu utworzenia."
+          },
+          "channel_unranked": {
+            "en": "The channel '{channel}' is not ranked for {data_type} data, so it is allowed but not promoted.",
+            "pl": "Kanał '{channel}' nie ma rankingu dla danych {data_type}, więc jest dozwolony, ale niepromowany."
+          },
+          "data_type_unranked": {
+            "en": "No channel ranking for {data_type} data.",
+            "pl": "Brak rankingu kanałów dla danych {data_type}."
+          },
+          "channel_low_rank": {
+            "en": "For {data_type} data the channel '{channel}' is place {rank} of {of}; '{best}' reads best. Allowed, not promoted.",
+            "pl": "Dla danych {data_type} kanał '{channel}' jest na miejscu {rank} z {of}; najlepiej czyta się '{best}'. Dozwolony, niepromowany."
+          },
+          "interference_cleared": {
+            "en": "'{interfering}' interferes with '{interfered}', but it grows with importance (rank correlation {rho} >= {need}).",
+            "pl": "'{interfering}' zakłóca '{interfered}', ale rośnie razem z ważnością (korelacja rang {rho} >= {need})."
+          },
+          "interference_cleared_constant": {
+            "en": "'{interfering}' does not vary, so it does not interfere with '{interfered}'.",
+            "pl": "'{interfering}' się nie zmienia, więc nie zakłóca '{interfered}'."
+          },
+          "interference_unmet": {
+            "en": "'{interfering}' interferes with '{interfered}' and does not grow with importance (rank correlation {rho} < {need}). Allowed, not promoted.",
+            "pl": "'{interfering}' zakłóca '{interfered}' i nie rośnie razem z ważnością (korelacja rang {rho} < {need}). Dozwolone, niepromowane."
+          },
+          "interference_unverifiable": {
+            "en": "'{interfering}' interferes with '{interfered}' and this view has no importance to check it against (or too few elements). Allowed, not promoted.",
+            "pl": "'{interfering}' zakłóca '{interfered}', a ten widok nie ma ważności, z którą można to sprawdzić (albo ma za mało elementów). Dozwolone, niepromowane."
+          },
+          "interference_condition_unknown": {
+            "en": "The interference rule '{rule}' has a condition '{condition}' this engine cannot check. Allowed, not promoted.",
+            "pl": "Reguła zakłóceń '{rule}' ma warunek '{condition}', którego silnik nie umie sprawdzić. Dozwolone, niepromowane."
+          },
+          "interference_predicate_unknown": {
+            "en": "The interference rule '{rule}' has an unknown activation predicate '{predicate}'; it was skipped.",
+            "pl": "Reguła zakłóceń '{rule}' ma nieznany predykat aktywacji '{predicate}'; pominięta."
+          },
+          "budget_applied": {
+            "en": "{collapsed} elements were collapsed into group nodes to stay within the budget of {max} nodes.",
+            "pl": "{collapsed} elementów zwinięto w węzły grupowe, by zmieścić się w budżecie {max} węzłów."
+          }
+        }
+      }
+    },
+    "view_declarations": {
+      "history_cone": {
+        "label": {
+          "en": "History cone",
+          "pl": "Stożek historii"
+        },
+        "meaning": {
+          "en": "Version history ahead, older things deeper; branches in a cone around that direction (a fixed angle per branch, divergence as saturation); the ecosystem on the sides (callers left, dependencies right); the future (goals) behind. One preset of many.",
+          "pl": "Historia wersji przed tobą, w głąb starsze; gałęzie w stożku wokół tego kierunku (stały kąt gałęzi, rozejście nasyceniem); ekosystem po bokach (wywołujący z lewej, zależności z prawej); przyszłość (cele) z tyłu. Jeden preset z wielu."
+        },
+        "elements": [
+          {
+            "id": "history",
+            "kind": "source",
+            "perspective": "version_history",
+            "weight": 1.0,
+            "depth": 6,
+            "role": "main"
+          },
+          {
+            "id": "callers",
+            "kind": "source",
+            "perspective": "calls",
+            "direction": "in",
+            "weight": 0.6,
+            "depth": 2,
+            "role": "side"
+          },
+          {
+            "id": "deps",
+            "kind": "source",
+            "perspective": "dependencies",
+            "direction": "both",
+            "weight": 0.6,
+            "depth": 2,
+            "role": "side"
+          },
+          {
+            "id": "future",
+            "kind": "source",
+            "perspective": "teleology",
+            "weight": 0.5,
+            "depth": 3,
+            "role": "future"
+          },
+          {
+            "id": "distance",
+            "kind": "measure",
+            "measure": "distance_from_focus",
+            "params": {
+              "combine": "weighted_sum"
+            }
+          },
+          {
+            "id": "age",
+            "kind": "measure",
+            "measure": "age"
+          },
+          {
+            "id": "divergence",
+            "kind": "measure",
+            "measure": "branch_divergence",
+            "params": {
+              "source": "history"
+            }
+          },
+          {
+            "id": "doi",
+            "kind": "measure",
+            "measure": "degree_of_interest",
+            "params": {
+              "distance": "distance"
+            }
+          },
+          {
+            "id": "sector",
+            "kind": "measure",
+            "measure": "membership",
+            "params": {
+              "by": "sector"
+            }
+          },
+          {
+            "id": "node_kind",
+            "kind": "measure",
+            "measure": "node_kind"
+          },
+          {
+            "id": "plane",
+            "kind": "coordinates",
+            "system": "sector",
+            "bind": {
+              "radius": "distance"
+            },
+            "branch_step_deg": 10,
+            "sectors": [
+              {
+                "id": "past",
+                "label": {
+                  "en": "History",
+                  "pl": "Historia"
+                },
+                "sources": [
+                  "history"
+                ],
+                "center_deg": 0,
+                "width_deg": 90
+              },
+              {
+                "id": "callers",
+                "label": {
+                  "en": "Callers",
+                  "pl": "Wywołujący"
+                },
+                "sources": [
+                  "callers"
+                ],
+                "center_deg": -90,
+                "width_deg": 60
+              },
+              {
+                "id": "deps",
+                "label": {
+                  "en": "Dependencies",
+                  "pl": "Zależności"
+                },
+                "sources": [
+                  "deps"
+                ],
+                "center_deg": 90,
+                "width_deg": 60
+              },
+              {
+                "id": "future",
+                "label": {
+                  "en": "Future",
+                  "pl": "Przyszłość"
+                },
+                "sources": [
+                  "future"
+                ],
+                "center_deg": 180,
+                "width_deg": 90,
+                "depth_sign": -1
+              }
+            ]
+          },
+          {
+            "id": "depth",
+            "kind": "coordinates",
+            "system": "depth_from_distance",
+            "bind": {
+              "depth": "distance"
+            }
+          },
+          {
+            "id": "e_hue",
+            "kind": "encoding",
+            "channel": "hue",
+            "measure": "sector"
+          },
+          {
+            "id": "e_saturation",
+            "kind": "encoding",
+            "channel": "saturation",
+            "measure": "divergence"
+          },
+          {
+            "id": "e_lightness",
+            "kind": "encoding",
+            "channel": "lightness",
+            "measure": "age",
+            "scale": {
+              "invert": true
+            }
+          },
+          {
+            "id": "e_size",
+            "kind": "encoding",
+            "channel": "size",
+            "measure": "doi"
+          },
+          {
+            "id": "e_badge",
+            "kind": "encoding",
+            "channel": "badge",
+            "measure": "node_kind"
+          },
+          {
+            "id": "by_sector",
+            "kind": "composition",
+            "composition": "sectors"
+          }
+        ]
+      },
+      "age_lanes": {
+        "label": {
+          "en": "Age lanes",
+          "pl": "Pasy wieku"
+        },
+        "meaning": {
+          "en": "Version history on a plane (x = age, y = divergence) cut into lanes by age; size from interest.",
+          "pl": "Historia wersji na płaszczyźnie (x = wiek, y = rozejście) pocięta w pasy według wieku; rozmiar z zainteresowania."
+        },
+        "elements": [
+          {
+            "id": "history",
+            "kind": "source",
+            "perspective": "version_history",
+            "weight": 1.0,
+            "depth": null,
+            "role": "main"
+          },
+          {
+            "id": "distance",
+            "kind": "measure",
+            "measure": "distance_from_focus"
+          },
+          {
+            "id": "age",
+            "kind": "measure",
+            "measure": "age"
+          },
+          {
+            "id": "divergence",
+            "kind": "measure",
+            "measure": "branch_divergence"
+          },
+          {
+            "id": "doi",
+            "kind": "measure",
+            "measure": "degree_of_interest"
+          },
+          {
+            "id": "plane",
+            "kind": "coordinates",
+            "system": "cartesian",
+            "bind": {
+              "x": "age",
+              "y": "divergence"
+            }
+          },
+          {
+            "id": "e_size",
+            "kind": "encoding",
+            "channel": "size",
+            "measure": "doi"
+          },
+          {
+            "id": "lanes",
+            "kind": "composition",
+            "composition": "lanes",
+            "by": "age",
+            "bins": 3
+          }
+        ]
+      }
+    },
+    "interaction_devices": {
+      "keyboard": {
+        "label": {
+          "en": "Keyboard",
+          "pl": "Klawiatura"
+        },
+        "implemented": true,
+        "inputs": [
+          "key",
+          "modifiers",
+          "locks",
+          "lock",
+          "state"
+        ],
+        "meaning": {
+          "en": "Keys, held modifiers (shift, ctrl, alt, meta) and lock states (caps, num, scroll).",
+          "pl": "Klawisze, trzymane modyfikatory (shift, ctrl, alt, meta) i stany blokad (caps, num, scroll)."
+        }
+      },
+      "touch": {
+        "label": {
+          "en": "Touch",
+          "pl": "Dotyk"
+        },
+        "implemented": true,
+        "inputs": [
+          "button",
+          "gesture",
+          "modifiers",
+          "locks",
+          "lock",
+          "state"
+        ],
+        "meaning": {
+          "en": "On-screen buttons (held modifiers, locks) and gestures.",
+          "pl": "Przyciski na ekranie (trzymane modyfikatory, blokady) i gesty."
+        }
+      },
+      "voice": {
+        "label": {
+          "en": "Voice",
+          "pl": "Głos"
+        },
+        "implemented": false,
+        "inputs": [
+          "phrase"
+        ],
+        "meaning": {
+          "en": "A spoken phrase. Recorded as data; the panel does not handle it yet.",
+          "pl": "Wypowiedziana fraza. Zapisane jako dane; panel jeszcze tego nie obsługuje."
+        }
+      },
+      "xr": {
+        "label": {
+          "en": "XR (glasses / headset)",
+          "pl": "XR (okulary / headset)"
+        },
+        "implemented": false,
+        "inputs": [
+          "gaze",
+          "gesture",
+          "phrase",
+          "modifiers"
+        ],
+        "meaning": {
+          "en": "Gaze with finger movement, voice, and large gestures for coarse scene moves only. Recorded as data; no WebXR code yet.",
+          "pl": "Wzrok z ruchem palców, głos i duże gesty tylko do zgrubnych ruchów sceny. Zapisane jako dane; bez kodu WebXR."
+        }
+      }
+    },
+    "interaction_actions": {
+      "move": {
+        "label": {
+          "en": "Move",
+          "pl": "Przesuń"
+        },
+        "implemented": true,
+        "pairs": {
+          "plane": {
+            "label": {
+              "en": "plane",
+              "pl": "płaszczyzna"
+            },
+            "axes": {
+              "horizontal": "x",
+              "vertical": "y"
+            }
+          },
+          "depth_time": {
+            "label": {
+              "en": "depth and time",
+              "pl": "głębia i czas"
+            },
+            "axes": {
+              "horizontal": "time",
+              "vertical": "depth"
+            }
+          },
+          "branches": {
+            "label": {
+              "en": "between branches",
+              "pl": "między gałęziami"
+            },
+            "axes": {
+              "horizontal": "branch",
+              "vertical": "along_branch"
+            }
+          }
+        },
+        "params": [
+          "pair",
+          "axis",
+          "direction",
+          "step",
+          "coarse"
+        ],
+        "meaning": {
+          "en": "Movement along an axis of an axis pair (plane, depth and time, between branches); step and direction are data.",
+          "pl": "Ruch wzdłuż osi pary osi (płaszczyzna, głębia i czas, między gałęziami); krok i kierunek są danymi."
+        }
+      },
+      "change_focus": {
+        "label": {
+          "en": "Change focus",
+          "pl": "Zmień fokus"
+        },
+        "implemented": true,
+        "params": [
+          "target"
+        ],
+        "meaning": {
+          "en": "Focus: origin, selected, gazed, next, previous.",
+          "pl": "Fokus: origin, selected, gazed, next, previous."
+        }
+      },
+      "rotate": {
+        "label": {
+          "en": "Rotate",
+          "pl": "Obrót"
+        },
+        "implemented": true,
+        "params": [
+          "target",
+          "direction",
+          "step"
+        ],
+        "targets": {
+          "direction": {
+            "en": "view direction",
+            "pl": "kierunek widoku"
+          },
+          "perspective": {
+            "en": "perspective (the next view)",
+            "pl": "perspektywa (kolejny widok)"
+          }
+        },
+        "meaning": {
+          "en": "Rotates the view direction or moves to the neighbouring perspective.",
+          "pl": "Obrót kierunku widoku albo przejście do sąsiedniej perspektywy."
+        }
+      },
+      "change_depth": {
+        "label": {
+          "en": "Change depth",
+          "pl": "Zmień głębię"
+        },
+        "implemented": true,
+        "params": [
+          "delta"
+        ],
+        "meaning": {
+          "en": "Depth of the main source's reach by delta steps.",
+          "pl": "Głębia zasięgu głównego źródła o delta kroków."
+        }
+      },
+      "zoom": {
+        "label": {
+          "en": "Zoom",
+          "pl": "Powiększenie"
+        },
+        "implemented": true,
+        "params": [
+          "factor"
+        ],
+        "meaning": {
+          "en": "A zoom factor; on a lock state it holds while the lock is on.",
+          "pl": "Mnożnik powiększenia; w stanie blokady działa, dopóki blokada jest włączona."
+        }
+      },
+      "switch_view": {
+        "label": {
+          "en": "Switch view",
+          "pl": "Przełącz widok"
+        },
+        "implemented": true,
+        "params": [
+          "declaration"
+        ],
+        "meaning": {
+          "en": "An alternative view (a declaration); on a lock state: while the lock is on.",
+          "pl": "Widok alternatywny (deklaracja); na stanie blokady: dopóki blokada jest włączona."
+        }
+      },
+      "toggle_element": {
+        "label": {
+          "en": "Toggle element",
+          "pl": "Przełącz element"
+        },
+        "implemented": true,
+        "params": [
+          "element"
+        ],
+        "meaning": {
+          "en": "Show or hide an element of the view (e.g. the labels).",
+          "pl": "Pokaż albo ukryj element widoku (np. etykiety)."
+        }
+      },
+      "hold_modifier": {
+        "label": {
+          "en": "Held modifier",
+          "pl": "Trzymany modyfikator"
+        },
+        "implemented": true,
+        "params": [
+          "modifier"
+        ],
+        "meaning": {
+          "en": "An on-screen button that acts like a held modifier key.",
+          "pl": "Przycisk ekranowy, który działa jak trzymany klawisz modyfikatora."
+        }
+      },
+      "toggle_lock": {
+        "label": {
+          "en": "Toggle lock",
+          "pl": "Przełącz blokadę"
+        },
+        "implemented": true,
+        "params": [
+          "lock"
+        ],
+        "meaning": {
+          "en": "An on-screen button that toggles a lock (caps, num, scroll).",
+          "pl": "Przycisk ekranowy, który przełącza blokadę (caps, num, scroll)."
+        }
+      }
+    },
+    "interaction_bindings": {
+      "kbd.plane.left": {
+        "label": {
+          "en": "Plane: left",
+          "pl": "Płaszczyzna: w lewo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.plane.right": {
+        "label": {
+          "en": "Plane: right",
+          "pl": "Płaszczyzna: w prawo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.plane.up": {
+        "label": {
+          "en": "Plane: up",
+          "pl": "Płaszczyzna: w górę"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.plane.down": {
+        "label": {
+          "en": "Plane: down",
+          "pl": "Płaszczyzna: w dół"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.left": {
+        "label": {
+          "en": "Time: back",
+          "pl": "Czas: wstecz"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.right": {
+        "label": {
+          "en": "Time: forward",
+          "pl": "Czas: naprzód"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.up": {
+        "label": {
+          "en": "Depth: shallower",
+          "pl": "Głębia: płycej"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.depth_time.down": {
+        "label": {
+          "en": "Depth: deeper",
+          "pl": "Głębia: głębiej"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.branches.left": {
+        "label": {
+          "en": "Branches: previous",
+          "pl": "Gałęzie: poprzednia"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.branches.right": {
+        "label": {
+          "en": "Branches: next",
+          "pl": "Gałęzie: następna"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.branches.up": {
+        "label": {
+          "en": "Along the branch: back",
+          "pl": "Wzdłuż gałęzi: wstecz"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.branches.down": {
+        "label": {
+          "en": "Along the branch: forward",
+          "pl": "Wzdłuż gałęzi: naprzód"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.rotate.left": {
+        "label": {
+          "en": "Rotate: direction left",
+          "pl": "Obrót: kierunek w lewo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowLeft",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": -1,
+          "step": 15
+        }
+      },
+      "kbd.rotate.right": {
+        "label": {
+          "en": "Rotate: direction right",
+          "pl": "Obrót: kierunek w prawo"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowRight",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": 1,
+          "step": 15
+        }
+      },
+      "kbd.rotate.up": {
+        "label": {
+          "en": "Perspective: previous",
+          "pl": "Perspektywa: poprzednia"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowUp",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "kbd.rotate.down": {
+        "label": {
+          "en": "Perspective: next",
+          "pl": "Perspektywa: następna"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "ArrowDown",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.zoom.in": {
+        "label": {
+          "en": "Zoom in",
+          "pl": "Powiększ"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "+",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "kbd.zoom.out": {
+        "label": {
+          "en": "Zoom out",
+          "pl": "Pomniejsz"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "-",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 0.8
+        }
+      },
+      "kbd.depth.more": {
+        "label": {
+          "en": "One step deeper",
+          "pl": "Głębiej o jeden krok"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "PageDown",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "change_depth",
+          "delta": 1
+        }
+      },
+      "kbd.depth.less": {
+        "label": {
+          "en": "One step shallower",
+          "pl": "Płycej o jeden krok"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "PageUp",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "change_depth",
+          "delta": -1
+        }
+      },
+      "kbd.focus.origin": {
+        "label": {
+          "en": "Focus: back to the origin",
+          "pl": "Fokus: wróć do początku"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "Home",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "change_focus",
+          "target": "origin"
+        }
+      },
+      "kbd.toggle.labels": {
+        "label": {
+          "en": "Labels: show or hide",
+          "pl": "Etykiety: pokaż lub ukryj"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "l",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "toggle_element",
+          "element": "labels"
+        }
+      },
+      "kbd.lock.caps": {
+        "label": {
+          "en": "CapsLock: alternative view age_lanes",
+          "pl": "CapsLock: widok alternatywny age_lanes"
+        },
+        "device": "keyboard",
+        "input": {
+          "lock": "caps",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "kbd.lock.num": {
+        "label": {
+          "en": "NumLock: alternative view history_cone",
+          "pl": "NumLock: widok alternatywny history_cone"
+        },
+        "device": "keyboard",
+        "input": {
+          "lock": "num",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "history_cone"
+        }
+      },
+      "kbd.lock.scroll": {
+        "label": {
+          "en": "ScrollLock: alternative view age_lanes",
+          "pl": "ScrollLock: widok alternatywny age_lanes"
+        },
+        "device": "keyboard",
+        "input": {
+          "lock": "scroll",
+          "state": "on"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "touch.hold.shift": {
+        "label": {
+          "en": "Button Shift (hold)",
+          "pl": "Przycisk Shift (trzymaj)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "shift"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "shift"
+        }
+      },
+      "touch.hold.ctrl": {
+        "label": {
+          "en": "Button Ctrl (hold)",
+          "pl": "Przycisk Ctrl (trzymaj)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "ctrl"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "ctrl"
+        }
+      },
+      "touch.hold.alt": {
+        "label": {
+          "en": "Button Alt (hold)",
+          "pl": "Przycisk Alt (trzymaj)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "alt"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "alt"
+        }
+      },
+      "touch.toggle.caps": {
+        "label": {
+          "en": "Button CapsLock (toggle)",
+          "pl": "Przycisk CapsLock (przełącz)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "caps"
+        },
+        "action": {
+          "kind": "toggle_lock",
+          "lock": "caps"
+        }
+      },
+      "touch.toggle.num": {
+        "label": {
+          "en": "Button NumLock (toggle)",
+          "pl": "Przycisk NumLock (przełącz)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "num"
+        },
+        "action": {
+          "kind": "toggle_lock",
+          "lock": "num"
+        }
+      },
+      "touch.toggle.scroll": {
+        "label": {
+          "en": "Button ScrollLock (toggle)",
+          "pl": "Przycisk ScrollLock (przełącz)"
+        },
+        "device": "touch",
+        "input": {
+          "button": "scroll"
+        },
+        "action": {
+          "kind": "toggle_lock",
+          "lock": "scroll"
+        }
+      },
+      "touch.plane.left": {
+        "label": {
+          "en": "Plane: left (swipe)",
+          "pl": "Płaszczyzna: w lewo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.plane.right": {
+        "label": {
+          "en": "Plane: right (swipe)",
+          "pl": "Płaszczyzna: w prawo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.plane.up": {
+        "label": {
+          "en": "Plane: up (swipe)",
+          "pl": "Płaszczyzna: w górę (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.plane.down": {
+        "label": {
+          "en": "Plane: down (swipe)",
+          "pl": "Płaszczyzna: w dół (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.left": {
+        "label": {
+          "en": "Time: back (swipe)",
+          "pl": "Czas: wstecz (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.right": {
+        "label": {
+          "en": "Time: forward (swipe)",
+          "pl": "Czas: naprzód (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.up": {
+        "label": {
+          "en": "Depth: shallower (swipe)",
+          "pl": "Głębia: płycej (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.depth_time.down": {
+        "label": {
+          "en": "Depth: deeper (swipe)",
+          "pl": "Głębia: głębiej (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.branches.left": {
+        "label": {
+          "en": "Branches: previous (swipe)",
+          "pl": "Gałęzie: poprzednia (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.branches.right": {
+        "label": {
+          "en": "Branches: next (swipe)",
+          "pl": "Gałęzie: następna (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.branches.up": {
+        "label": {
+          "en": "Along the branch: back (swipe)",
+          "pl": "Wzdłuż gałęzi: wstecz (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.branches.down": {
+        "label": {
+          "en": "Along the branch: forward (swipe)",
+          "pl": "Wzdłuż gałęzi: naprzód (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.rotate.left": {
+        "label": {
+          "en": "Rotate: direction left (swipe)",
+          "pl": "Obrót: kierunek w lewo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_left",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": -1,
+          "step": 15
+        }
+      },
+      "touch.rotate.right": {
+        "label": {
+          "en": "Rotate: direction right (swipe)",
+          "pl": "Obrót: kierunek w prawo (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_right",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": 1,
+          "step": 15
+        }
+      },
+      "touch.rotate.up": {
+        "label": {
+          "en": "Perspective: previous (swipe)",
+          "pl": "Perspektywa: poprzednia (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_up",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "touch.rotate.down": {
+        "label": {
+          "en": "Perspective: next (swipe)",
+          "pl": "Perspektywa: następna (przesunięcie palcem)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "swipe_down",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "touch.zoom.in": {
+        "label": {
+          "en": "Zoom in (pinch out)",
+          "pl": "Powiększ (rozsunięcie palców)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "pinch_out",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "touch.zoom.out": {
+        "label": {
+          "en": "Zoom out (pinch in)",
+          "pl": "Pomniejsz (zsunięcie palców)"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "pinch_in",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 0.8
+        }
+      },
+      "voice.zoom.in": {
+        "label": {
+          "en": "Voice: \"zoom in\"",
+          "pl": "Głos: „przybliż”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "przybliż"
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "voice.zoom.out": {
+        "label": {
+          "en": "Voice: \"zoom out\"",
+          "pl": "Głos: „oddal”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "oddal"
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 0.8
+        }
+      },
+      "voice.view.age": {
+        "label": {
+          "en": "Voice: \"show age\"",
+          "pl": "Głos: „pokaż wiek”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "pokaż wiek"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "age_lanes"
+        }
+      },
+      "voice.view.history": {
+        "label": {
+          "en": "Voice: \"show history\"",
+          "pl": "Głos: „pokaż historię”"
+        },
+        "device": "voice",
+        "input": {
+          "phrase": "pokaż historię"
+        },
+        "action": {
+          "kind": "switch_view",
+          "declaration": "history_cone"
+        }
+      },
+      "xr.focus.gaze": {
+        "label": {
+          "en": "Gaze and pinch: focus on the looked-at element",
+          "pl": "Wzrok i uszczypnięcie: fokus na patrzonym elemencie"
+        },
+        "device": "xr",
+        "input": {
+          "gaze": "look",
+          "gesture": "pinch"
+        },
+        "action": {
+          "kind": "change_focus",
+          "target": "gazed"
+        }
+      },
+      "xr.voice.zoom.in": {
+        "label": {
+          "en": "Voice in XR: \"zoom in\"",
+          "pl": "Głos w XR: „przybliż”"
+        },
+        "device": "xr",
+        "input": {
+          "phrase": "przybliż"
+        },
+        "action": {
+          "kind": "zoom",
+          "factor": 1.25
+        }
+      },
+      "xr.coarse.left": {
+        "label": {
+          "en": "Large gesture: scene left (coarse)",
+          "pl": "Duży gest: scena w lewo (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_left"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.coarse.right": {
+        "label": {
+          "en": "Large gesture: scene right (coarse)",
+          "pl": "Duży gest: scena w prawo (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_right"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.coarse.up": {
+        "label": {
+          "en": "Large gesture: scene up (coarse)",
+          "pl": "Duży gest: scena w górę (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_up"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.coarse.down": {
+        "label": {
+          "en": "Large gesture: scene down (coarse)",
+          "pl": "Duży gest: scena w dół (zgrubnie)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "large_swipe_down"
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 5,
+          "coarse": true
+        }
+      },
+      "xr.rotate.perspective": {
+        "label": {
+          "en": "Two-hand rotation: the next perspective",
+          "pl": "Obrót dwiema rękami: kolejna perspektywa"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "two_hand_rotate"
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": 1,
+          "step": 1
+        }
+      }
+    },
+    "interaction_rules": {
+      "messages": {
+        "kind": "messages",
+        "texts": {
+          "binding_without_device": {
+            "en": "The binding names no device.",
+            "pl": "Przypisanie nie wskazuje urządzenia."
+          },
+          "binding_without_input": {
+            "en": "The binding has no input.",
+            "pl": "Przypisanie nie ma wejścia."
+          },
+          "binding_without_action": {
+            "en": "The binding has no action.",
+            "pl": "Przypisanie nie ma działania."
+          },
+          "unsupported_device": {
+            "en": "No such device '{device}'; the binding stays in the data and does nothing.",
+            "pl": "Nieznane urządzenie '{device}'; przypisanie zostaje w danych i nie działa."
+          },
+          "unsupported_input_field": {
+            "en": "Device '{device}' does not know the input field '{field}'.",
+            "pl": "Urządzenie '{device}' nie zna pola wejścia '{field}'."
+          },
+          "unsupported_action_kind": {
+            "en": "No action '{kind}'; the binding stays in the data and does nothing.",
+            "pl": "Brak działania '{kind}'; przypisanie zostaje w danych i nie działa."
+          },
+          "device_not_implemented": {
+            "en": "Device '{device}' is only recorded as data here (not handled in this version).",
+            "pl": "Urządzenie '{device}' jest tu tylko zapisane jako dane (brak obsługi w tej wersji)."
+          },
+          "switch_view_unknown_declaration": {
+            "en": "The view '{declaration}' does not exist; the binding will switch nothing.",
+            "pl": "Widok '{declaration}' nie istnieje; przypisanie nic nie przełączy."
+          },
+          "conflict": {
+            "en": "Conflicting bindings for {input}: {ids}. The last one ({winner}) wins; none is blocked.",
+            "pl": "Konflikt przypisań dla {input}: {ids}. Działa ostatnie ({winner}); żadne nie jest zablokowane."
+          },
+          "unknown_device_requested": {
+            "en": "There is no device '{device}' in the list.",
+            "pl": "Nie ma urządzenia '{device}' na liście."
+          }
+        }
+      }
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "view_kinds",
+      "edge_kinds",
+      "node_kinds",
+      "perspectives",
+      "unit_kinds"
+    ],
+    "additionalProperties": true
+  }
+}

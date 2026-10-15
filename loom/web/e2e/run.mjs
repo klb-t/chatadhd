@@ -158,7 +158,7 @@ async function main() {
     });
 
     await step("load app", async () => {
-      await page.goto(serverBase, { waitUntil: "domcontentloaded" });
+      await page.goto((serverBase).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
       await page.waitForSelector('[data-testid="chat-view"]');
     });
     await page.screenshot({ path: path.join(SCREENSHOT_DIR, "desktop-01-initial.png") });
@@ -485,7 +485,7 @@ async function main() {
         const controls = () => graph().getByTestId("product-perspective");
         const details = async label => { const summary = controls().getByText(label, { exact: true }); if (!await summary.evaluate(element => element.parentElement.open)) await summary.click(); };
         const receipt = async () => JSON.parse(await controls().getByTestId("product-perspective-receipt").textContent());
-        await touchPage.goto(serverBase); await open();
+        await touchPage.goto((serverBase).replace(/\/?$/, "/#warsztat")); await open();
         await graph().locator(".kb-node").first().waitFor();
         await details("Graph perspective");
         await controls().getByRole("button", { name: "Install graph perspective defaults in this profile" }).click();
@@ -564,7 +564,7 @@ async function main() {
     const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true });
     const phonePage = await phone.newPage();
     await step("phone layout renders and is navigable", async () => {
-      await phonePage.goto(serverBase, { waitUntil: "domcontentloaded" });
+      await phonePage.goto((serverBase).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
       await phonePage.waitForSelector('[data-testid="chat-view"]');
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-01-chat.png") });
 
@@ -573,17 +573,49 @@ async function main() {
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-02-sidebar.png") });
       await phonePage.click('[data-testid="toggle-sidebar"]');
 
+      // P17 5: on a phone the navigation is a menu under the header (it closes after a choice)
+      await phonePage.click('[data-testid="toggle-nav"]');
       await phonePage.click('[data-testid="nav-graph"]');
       await phonePage.waitForSelector('[data-testid="graph-canvas"]');
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-03-graph.png") });
       await phonePage.click('[data-testid="close-panel"]');
+      await phonePage.click('[data-testid="toggle-nav"]');
       await phonePage.click('[data-testid="nav-knowledge"]');
+      await phonePage.click('[data-testid="toggle-nav"]');
       await phonePage.getByRole("button", { name: "Hide chat", exact: true }).click();
       await phonePage.waitForSelector('[data-testid="kb-pane-entities"] .kb-record');
       assert(await phonePage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), "knowledge layout does not overflow the phone viewport");
       await phonePage.screenshot({ path: path.join(SCREENSHOT_DIR, "phone-04-knowledge.png") });
     });
     await phone.close();
+
+    // P16: the very first message of a page at the width of a phone (390x800) is answered. A new page is the first send of that page (its lazy
+    // device declaration happens right before it); the reply is the test double's, so the assertion is on the exact text. S2 saw one such
+    // first message go unanswered once; ten runs of this (and thirty in first-steps-ui.mjs) did not reproduce it.
+    await step("phone 390x800: a new conversation and Send at once: the first message is answered, exactly once, ten times", async () => {
+      for (let run = 1; run <= 10; run += 1) {
+        const narrow = await browser.newContext({ viewport: { width: 390, height: 800 }, isMobile: true, hasTouch: true });
+        try {
+          const narrowPage = await narrow.newPage();
+          await narrowPage.goto((serverBase).replace(/\/?$/, "/#warsztat"), { waitUntil: "domcontentloaded" });
+          await narrowPage.waitForSelector('[data-testid="chat-input"]');
+          // A new conversation, then Send at once (the click lands while it is being made or its view loads: the message is queued, not lost).
+          await narrowPage.click('[data-testid="toggle-sidebar"]');
+          await narrowPage.click('[data-testid="new-conversation"]');
+          await narrowPage.fill('[data-testid="chat-input"]', `Hello from a phone, run ${run}`);
+          await narrowPage.click('[data-testid="send-chat"]');
+          await narrowPage.waitForFunction(() => document.querySelectorAll('[data-testid="message"][data-role="assistant"]').length === 1
+            && !document.querySelector('[data-testid="streaming-message"]'), null, { timeout: 15000 });
+          const reply = await narrowPage.locator('[data-testid="message"][data-role="assistant"]').last().locator(".body").innerText();
+          assert(reply.trim() === "Hello from the mock model! Streaming works end to end.", `run ${run}: the exact reply of the model double, got: ${reply}`);
+          assert((await narrowPage.locator('[data-testid="message"][data-role="user"]').count()) === 1, `run ${run}: the message of the person, once, in the conversation just made`);
+          assert((await narrowPage.locator('[data-testid="message"][data-role="user"] .body').last().innerText()).trim() === `Hello from a phone, run ${run}`, `run ${run}: the words as typed`);
+          assert(await narrowPage.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth), `run ${run}: no horizontal overflow at 390 px`);
+        } finally {
+          await narrow.close();
+        }
+      }
+    });
   } finally {
     if (browser) await browser.close().catch(() => {});
     server.kill("SIGTERM");

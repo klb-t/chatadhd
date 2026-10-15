@@ -1,5 +1,12 @@
 package com.chatadhd.android
 
+import android.Manifest
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import org.json.JSONArray
@@ -31,7 +38,7 @@ import java.util.UUID
  *    [LoomCallbacks] directly, once per token / once per progress tick);
  *    the rest deliver exactly one chunk with done = true.
  */
-class LoomBridge(webView: WebView) {
+class LoomBridge(private val webView: WebView) {
     private val executor: ExecutorService = Executors.newFixedThreadPool(4)
     private val cancellations = ConcurrentHashMap<String, () -> Unit>()
 
@@ -41,6 +48,49 @@ class LoomBridge(webView: WebView) {
      * SecretsVaultCore). Called on whichever thread made the bridge call.
      */
     @Volatile var onSecretsMayHaveChanged: (() -> Unit)? = null
+
+    /** Set by MainActivity: asks Android for the permission to show notifications (Android 13 and later). */
+    @Volatile var onRequestNotifications: (() -> Unit)? = null
+
+    /** Set by MainActivity: opens the native Connection screen (the web app's overflow menu entry "Połączenie"). */
+    @Volatile var onOpenConnection: (() -> Unit)? = null
+
+    @JavascriptInterface
+    fun openConnection() {
+        onOpenConnection?.invoke()
+    }
+
+    // ── notifications of the shell (P13): the WebView has no Notification API ──
+    private fun notificationsAllowed(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
+        return webView.context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+    }
+
+    /** "granted" or "prompt" (Android will ask when requestNotifications is called): what the page declares for device.notify. */
+    @JavascriptInterface
+    fun notificationState(): String = if (notificationsAllowed()) "granted" else "prompt"
+
+    @JavascriptInterface
+    fun requestNotifications() {
+        onRequestNotifications?.invoke()
+    }
+
+    /** Shows a notification; false when Android does not allow it (the page then asks for the permission). */
+    @JavascriptInterface
+    fun notify(title: String, body: String): Boolean {
+        if (!notificationsAllowed()) return false
+        val context = webView.context
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager.createNotificationChannel(NotificationChannel(NOTIFICATION_CHANNEL, "ChatADHD", NotificationManager.IMPORTANCE_DEFAULT))
+            Notification.Builder(context, NOTIFICATION_CHANNEL)
+        } else {
+            @Suppress("DEPRECATION") Notification.Builder(context)
+        }
+        builder.setContentTitle(title).setContentText(body).setSmallIcon(android.R.drawable.ic_dialog_info).setAutoCancel(true)
+        manager.notify(UUID.randomUUID().hashCode(), builder.build())
+        return true
+    }
 
     private fun noteIfSecret(method: String) {
         if (method == "set_secret" || method == "delete_secret") onSecretsMayHaveChanged?.invoke()
@@ -186,6 +236,10 @@ class LoomBridge(webView: WebView) {
         invokeArgs("expand_graph", seedIdsJson, depth)
     @JavascriptInterface fun getGraphData(convId: String?): String = invokeArgs("get_graph_data", convId)
     @JavascriptInterface fun graphEntry(requestJson: String?): String = invokeArgs("graph_entry", requestJson)
+    @JavascriptInterface fun perspectives(requestJson: String?): String = invokeArgs("perspectives", requestJson)
+    @JavascriptInterface fun scopeResolve(requestJson: String?): String = invokeArgs("scope_resolve", requestJson)
+    @JavascriptInterface fun viewModel(requestJson: String?): String = invokeArgs("view_model", requestJson)
+    @JavascriptInterface fun viewInteraction(requestJson: String?): String = invokeArgs("view_interaction", requestJson)
     @JavascriptInterface fun graphReindex(convId: String?, callbackId: String): String =
         runAsync(callbackId) { invokeArgs("graph_reindex", convId) }
     @JavascriptInterface fun selectContext(text: String, depth: Int, maxTokens: Int): String =
@@ -299,4 +353,8 @@ class LoomBridge(webView: WebView) {
         JSONObject().put("error", JSONObject().put("code", "invalid_argument").put("message", "rc=$code")).toString()
 
     private fun wrapInt(rc: Int): String = if (rc < 0) errorJson(rc) else JSONObject().put("ok", true).toString()
+
+    private companion object {
+        const val NOTIFICATION_CHANNEL = "loom_device_notifications"
+    }
 }

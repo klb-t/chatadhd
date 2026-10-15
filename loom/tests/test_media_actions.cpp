@@ -12,6 +12,7 @@
 #include "loom/db.h"
 #include "loom/media_providers.h"
 #include "loom/net/http.h"
+#include "loom/port_graph.h"
 #include "loom/runtime.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
@@ -56,6 +57,7 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    loom::test::measured_baseline_only(rt->config());  // P17 6: this test is about the x10 hold over three tiny samples, so the floor of the baseline is off
     if (keys) {
       rt->secrets().set("groq_api_key", "gk_test");
       rt->secrets().set("ocr_space_api_key", "ocrkey");
@@ -208,6 +210,125 @@ TEST_SUITE("media_actions") {
     const Json chat = unwrap(json::parse(f.transport->requests()[1].body));
     CHECK(chat.at("messages").dump().find("We ship on Friday.") != std::string::npos);
     CHECK(run.at("result").at("parts").at(0).at("text") == "They ship on Friday.");
+  }
+
+  // P14: a call the usage guard holds (x10 growth) is a pause with the guard's receipt, not a failed step (R16).
+  TEST_CASE("x10 growth in a transcription pauses the run with the guard's receipt; confirming sends the same request once; the result lands in the graph") {
+    Fixture f;
+    for (int i = 0; i < 3; ++i) {
+      f.expect_asr("small " + std::to_string(i));
+      const std::string tiny = unwrap(f.rt->blobs().put("tiny" + std::to_string(i), "audio/mp4")).hash;
+      REQUIRE(f.run(Json{{"action", "transcribe"}, {"element", tiny}, {"args", Json{{"language", "pl"}}}, {"ref", "test"}}).at("status") == "completed");
+    }
+    REQUIRE(f.transport->requests().size() == 3);
+    const std::string big(60000, 'a');
+    const std::string audio = unwrap(f.rt->blobs().put(big, "audio/mp4")).hash;
+    const Json held = f.run(Json{{"action", "transcribe"}, {"element", audio}, {"args", Json{{"language", "pl"}}}, {"ref", "test"}});
+    INFO(held.dump());
+    REQUIRE(held.at("status") == "awaiting_usage");
+    CHECK(held.at("pending").at("kind") == "usage");
+    CHECK(held.at("pending").at("usage_pending").at("schema") == "loom.action_usage_pending/1");
+    CHECK(held.at("pending").at("usage_pending").at("media") == "media.asr");
+    CHECK(held.at("pending").at("usage_pending").at("sent") == false);
+    CHECK(held.at("pending").at("receipt_id").is_string());
+    CHECK(f.transport->requests().size() == 3);  // nothing left the machine, no other provider was tried
+    // a wrong receipt answers nothing
+    CHECK_FALSE(f.rt->actions().confirm(Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", "arr_made_up"}}));
+    CHECK(f.transport->requests().size() == 3);
+    f.expect_asr("Big recording read.");
+    const Json done = unwrap(f.rt->actions().confirm(
+        Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "web"}}));
+    INFO(done.dump());
+    REQUIRE(done.at("status") == "completed");
+    REQUIRE(f.transport->requests().size() == 4);  // sent once
+    // the very request an unguarded call of the same recording makes (the boundary is derived from the parts)
+    Fixture ref;
+    ref.expect_asr("x");
+    REQUIRE(ref.rt->media().transcribe_bytes(big, "m4a", std::nullopt, std::string("pl")));
+    CHECK(wire(f.transport->requests()[3]) == wire(ref.transport->requests()[0]));
+    CHECK(f.transport->requests()[3].body == ref.transport->requests()[0].body);
+    // the text is the result, in the graph as any other
+    CHECK(done.at("result").at("parts").at(0).at("text") == "Big recording read.");
+    const Json& produced = done.at("result").at("produced");
+    REQUIRE(produced.at("items").size() == 1);
+    const Node form = *unwrap(f.rt->db().get_node(produced.at("items").at(0).at("form").get<std::string>()));
+    CHECK(form.kind == "text_form");
+    CHECK(form.content == "Big recording read.");
+    CHECK(done.at("confirmations").size() == 1);
+    // the step's record carries the call: the receipt of the confirmed admission is on the run node
+    const Node run_node = *unwrap(f.rt->db().get_node(produced.at("run_node").get<std::string>()));
+    CHECK(run_node.metadata.at("usage_receipt_id").is_string());
+  }
+
+  TEST_CASE("declining the held transcription ends the run rejected; nothing is sent") {
+    Fixture f;
+    for (int i = 0; i < 3; ++i) {
+      f.expect_asr("small");
+      const std::string tiny = unwrap(f.rt->blobs().put("tiny" + std::to_string(i), "audio/mp4")).hash;
+      REQUIRE(f.run(Json{{"action", "transcribe"}, {"element", tiny}, {"ref", "test"}}).at("status") == "completed");
+    }
+    const std::string audio = unwrap(f.rt->blobs().put(std::string(60000, 'a'), "audio/mp4")).hash;
+    const Json held = f.run(Json{{"action", "transcribe"}, {"element", audio}, {"ref", "test"}});
+    REQUIRE(held.at("status") == "awaiting_usage");
+    const Json no = unwrap(f.rt->actions().confirm(
+        Json{{"run_id", held.at("id")}, {"approved", false}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "web"}}));
+    CHECK(no.at("status") == "rejected");
+    CHECK(no.at("error").at("code") == "rejected");
+    CHECK(f.transport->requests().size() == 3);
+    // nothing was produced in the graph
+    CHECK(no.at("result").is_null());
+  }
+
+  TEST_CASE("the same for a picture: the held read is a pause, the confirmed one is sent once") {
+    Fixture f;
+    for (int i = 0; i < 3; ++i) {
+      f.expect_ocr("small");
+      const std::string tiny = unwrap(f.rt->blobs().put("PNG" + std::to_string(i), "image/png")).hash;
+      REQUIRE(f.run(Json{{"action", "ocr"}, {"element", tiny}, {"ref", "test"}}).at("status") == "completed");
+    }
+    const std::string picture = unwrap(f.rt->blobs().put(std::string(60000, 'p'), "image/png")).hash;
+    const Json held = f.run(Json{{"action", "ocr"}, {"element", picture}, {"ref", "test"}});
+    INFO(held.dump());
+    REQUIRE(held.at("status") == "awaiting_usage");
+    CHECK(held.at("pending").at("usage_pending").at("media") == "media.ocr");
+    CHECK(f.transport->requests().size() == 3);
+    f.expect_ocr("Words in the big picture");
+    const Json done = unwrap(f.rt->actions().confirm(
+        Json{{"run_id", held.at("id")}, {"approved", true}, {"receipt_id", held.at("pending").at("receipt_id")}, {"ref", "web"}}));
+    REQUIRE(done.at("status") == "completed");
+    CHECK(f.transport->requests().size() == 4);
+    CHECK(done.at("result").at("parts").at(0).at("text") == "Words in the big picture");
+  }
+
+  // P14 5: finishing a run links the port runs of ITS calls, found by operation id; it does not read the port runs of every run (R12's reconcile).
+  TEST_CASE("a finished run links its own port runs to its node and reads no others") {
+    Fixture f;
+    // a history: port runs of other runs, one of them with its run node already written (a link that is missing there is not this run's business)
+    for (int i = 0; i < 40; ++i) {
+      port_graph::PortRun decoy;
+      decoy.port = "asr";
+      decoy.adapter = "openai_transcriptions";
+      decoy.operation_id = "model_usage_decoy_" + std::to_string(i);
+      decoy.action_run_id = "ar_other_" + std::to_string(i % 2);
+      (void)unwrap(port_graph::record_port_run(f.rt->db(), decoy));
+    }
+    (void)unwrap(f.rt->db().get_or_create_node("run:ar_other_0", "action_run"));
+    f.expect_asr("Hello from the recording.");
+    const Json run = f.run(Json{{"action", "transcribe"}, {"element", f.recording()}, {"ref", "test"}});
+    REQUIRE(run.at("status") == "completed");
+    const std::string run_node = run.at("result").at("produced").at("run_node");
+    const std::string operation = run.at("steps").at(0).at("variants").at(0).at("provenance").at(0).at("operation_id");
+    const Node own = *unwrap(f.rt->db().find_node("port_run:" + operation, "port_run"));
+    const auto own_links = f.links(own.id, "part_of");
+    REQUIRE(own_links.size() == 1);
+    CHECK(own_links[0].src == own.id);
+    CHECK(own_links[0].dst == run_node);
+    CHECK(own_links[0].metadata.at("run_id") == run.at("id"));
+    // the others stay as they were: no part_of anywhere else, not even for the run whose node exists
+    std::size_t part_of = 0;
+    for (const auto& n : unwrap(f.rt->db().list_nodes("port_run", 1000)))
+      part_of += f.links(n.id, "part_of").size();
+    CHECK(part_of == 1);
   }
 
   TEST_CASE("a microphone is a device: recording from it stays declared, with its reason, until a client owns the driver") {

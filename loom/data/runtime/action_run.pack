@@ -34,7 +34,78 @@
       "unknown_ratio": {"low": 0.1, "high": 1.0},
       "output_floor_tokens": 32,
       "max_tokens_setting": "max_tokens",
-      "pricing": {"input_key": "prompt", "output_key": "completion", "tokens_per_unit": 1, "currency": "USD"}
+      "pricing": {"input_key": "prompt", "output_key": "completion", "tokens_per_unit": 1, "currency": "USD"},
+      "registry_refresh": {
+        "setting": "model_registry_autorefresh",
+        "active": "on_demand",
+        "unknown": "on_demand",
+        "retry_after_seconds": 300,
+        "presets": {
+          "on_demand": {"fetch": true, "label": {"en": "On demand: when an estimate needs a price and the model registry is empty, fetch the provider's public model list once", "pl": "Na żądanie: gdy szacunek potrzebuje ceny, a rejestr modeli jest pusty, pobierz raz publiczną listę modeli dostawcy"}},
+          "off": {"fetch": false, "label": {"en": "Off: the registry is filled only by refreshing the model list yourself; an estimate without a price says so", "pl": "Wyłączone: rejestr wypełnia tylko Twoje odświeżenie listy modeli; szacunek bez ceny mówi o tym"}}
+        }
+      },
+      "reasons": {
+        "no_estimate": {"en": "no estimate", "pl": "brak szacunku"},
+        "no_model_called": {"en": "no model is called", "pl": "żaden model nie jest wywoływany"},
+        "condition_not_met": {"en": "its condition is not met by the arguments", "pl": "jego warunek nie jest spełniony przez argumenty"},
+        "recognition_priced_by_provider": {"en": "recognition is priced by the provider by duration or by page, which the model registry does not list", "pl": "rozpoznawanie jest rozliczane przez dostawcę za czas nagrania lub za stronę, czego rejestr modeli nie podaje"},
+        "media_output_not_per_token": {"en": "media output is not priced per token", "pl": "wynik medialny nie jest wyceniany za token"},
+        "output_not_text": {"en": "the output is not text and its price is not listed per token", "pl": "wynik nie jest tekstem, a jego cena nie jest podana za token"},
+        "pipeline_model_use": {"en": "the pipeline may call the model to refine its result and how many calls depends on the data, so the cost is only known when it runs (llm off: it makes none)", "pl": "potok może wywołać model, żeby dopracować wynik, a liczba wywołań zależy od danych, więc koszt będzie znany dopiero w trakcie (llm off: nie wywołuje żadnego)"},
+        "no_model": {"en": "no model is named for this step", "pl": "dla tego kroku nie wskazano modelu"},
+        "no_price": {"en": "the registry lists no price for the model", "pl": "rejestr nie podaje ceny tego modelu"},
+        "registry_empty": {"en": "the model registry is empty, so no price is known (refresh the model list, or leave the setting model_registry_autorefresh on on_demand)", "pl": "rejestr modeli jest pusty, więc żadna cena nie jest znana (odśwież listę modeli albo zostaw ustawienie model_registry_autorefresh na on_demand)"},
+        "registry_fetch_failed": {"en": "the model registry is empty and the provider's model list could not be fetched: {{why}}", "pl": "rejestr modeli jest pusty, a listy modeli dostawcy nie udało się pobrać: {{why}}"}
+      }
+    },
+    "spend_limits": {
+      "setting": "usage_spend_limits",
+      "default_currency": "USD",
+      "default_on_exceed": "confirm",
+      "estimate_bound": "high",
+      "periods": [
+        {"id": "day", "kind": "today", "words": ["day", "daily", "today", "dzien", "dzienny", "dzienne", "dziennie", "dzis", "dzisiaj"], "label": {"en": "daily", "pl": "dzienny"}, "noun": {"en": "today", "pl": "dzisiaj"}},
+        {"id": "week", "kind": "week", "words": ["week", "weekly", "tydzien", "tygodniowy", "tygodniowe", "tygodniowo", "tygodn*"], "label": {"en": "weekly", "pl": "tygodniowy"}, "noun": {"en": "this week", "pl": "w tym tygodniu"}},
+        {"id": "month", "kind": "month", "words": ["month", "monthly", "miesiac", "miesieczny", "miesieczne", "miesiecznie", "miesiac*", "miesiec*"], "label": {"en": "monthly", "pl": "miesięczny"}, "noun": {"en": "this month", "pl": "w tym miesiącu"}}
+      ],
+      "on_exceed": [
+        {"id": "confirm", "words": ["confirm", "ask", "pytaj", "pytac", "potwierdz", "potwierdzac"], "label": {"en": "ask me first", "pl": "pytam o zgodę"}},
+        {"id": "deny", "words": ["deny", "block", "stop", "blokuj", "zablokuj", "odmow", "odmawiaj"], "label": {"en": "refuse", "pl": "odmawiam"}},
+        {"id": "notify", "words": ["notify", "warn", "tell", "powiadom", "ostrzez", "ostrzegaj"], "label": {"en": "only tell me", "pl": "tylko informuję"}}
+      ],
+      "rates_note": {"en": "The rates are approximate USD per unit (October 2026) and a preset; say your own with the limit's `rate` and it is kept.", "pl": "Kursy to przybliżone USD za jednostkę (październik 2026) i preset; podaj własny w polu `rate` limitu, a zostanie zachowany."},
+      "currencies": {
+        "USD": {"rate": 1.0, "words": ["usd", "$", "dolar*", "dollar*", "us$", "bucks"]},
+        "PLN": {"rate": 0.27, "words": ["pln", "zl", "zlot*", "zlotych", "zlotowek", "z\u0142"]},
+        "EUR": {"rate": 1.08, "words": ["eur", "euro", "\u20ac"]},
+        "GBP": {"rate": 1.27, "words": ["gbp", "\u00a3", "funt*", "pound*", "quid"]},
+        "CHF": {"rate": 1.13, "words": ["chf", "frank*", "franc*"]},
+        "CZK": {"rate": 0.043, "words": ["czk", "kc", "koron*"]},
+        "SEK": {"rate": 0.095, "words": ["sek"]},
+        "NOK": {"rate": 0.092, "words": ["nok"]},
+        "DKK": {"rate": 0.145, "words": ["dkk"]},
+        "CAD": {"rate": 0.73, "words": ["cad"]},
+        "AUD": {"rate": 0.65, "words": ["aud"]},
+        "JPY": {"rate": 0.0067, "words": ["jpy", "yen", "jen"]},
+        "UAH": {"rate": 0.024, "words": ["uah", "hrywn*", "hryvnia*"]},
+        "HUF": {"rate": 0.0027, "words": ["huf", "forint*"]}
+      },
+      "texts": {
+        "title": {"en": "Spending limit", "pl": "Limit wydatków"},
+        "already_over": {"en": "The {{period}} spending limit of {{amount}} {{currency}} is already used up: {{spent}} {{currency}} spent so far (as the providers reported it).", "pl": "Limit wydatków {{period}} {{amount}} {{currency}} jest już wykorzystany: do tej pory wydano {{spent}} {{currency}} (wg zgłoszeń dostawców)."},
+        "would_exceed": {"en": "This run (about {{estimate}} {{currency}}) takes the {{period}} total past the limit of {{amount}} {{currency}}: {{spent}} {{currency}} spent so far.", "pl": "Ten przebieg (ok. {{estimate}} {{currency}}) przekroczy limit wydatków {{period}} {{amount}} {{currency}}: do tej pory wydano {{spent}} {{currency}}."},
+        "estimate_unknown": {"en": "The cost of this run is not known, only what was already spent is counted.", "pl": "Koszt tego przebiegu nie jest znany, liczy się tylko to, co już wydano."},
+        "on_deny": {"en": "You set this limit to refuse; change it with \"set a {{period}} limit ...\" or the setting usage_spend_limits.", "pl": "Ten limit ustawiono tak, by odmawiać; zmienisz go poleceniem \"ustaw limit ...\" albo ustawieniem usage_spend_limits."},
+        "on_notify": {"en": "Heads up: {{what}}", "pl": "Uwaga: {{what}}"},
+        "use_would_exceed": {"en": "This request (about {{estimate}} {{currency}}) takes the {{period}} total past the limit of {{amount}} {{currency}}: {{spent}} {{currency}} spent so far.", "pl": "To żądanie (ok. {{estimate}} {{currency}}) przekroczy limit wydatków {{period}} {{amount}} {{currency}}: do tej pory wydano {{spent}} {{currency}}."},
+        "use_estimate_unknown": {"en": "The cost of this request is not known, only what was already spent is counted.", "pl": "Koszt tego żądania nie jest znany, liczy się tylko to, co już wydano."},
+        "confirm_hint": {"en": "You will be asked before the model is called.", "pl": "Zapytam o zgodę, zanim model zostanie wywołany."},
+        "hold_note": {"en": "Spending limit: nothing was sent.", "pl": "Limit wydatków: nic nie wysłano."}
+      },
+      "model_use": {"estimate_fields": ["model"], "resources": ["requests", "input_tokens", "output_tokens", "cost_usd", "money_usd"]},
+      "cost_resources": ["cost_usd", "money_usd"],
+      "spent_resource": "cost_usd"
     }
   },
   "value_schema": {
@@ -46,7 +117,7 @@
       "estimate": {
         "type": "object",
         "description": "How a plan's token use and money are estimated before it runs (never a limit, never zero for what is unknown). chars_per_token: the band (low = fewer tokens, high = more). output_ratio: by the content_op of the action, the output as a share of the input; unknown_ratio for an action without one. output_floor_tokens: the smallest output assumed. max_tokens_setting: the config key of the completion limit that caps the output estimate (a step's own parameters.max_tokens wins). pricing: where the model registry keeps a price (the OpenRouter models list: USD per token, tokens_per_unit = 1); a model without a price makes the money unknown.",
-        "required": ["chars_per_token", "output_ratio", "unknown_ratio", "output_floor_tokens", "max_tokens_setting", "pricing"],
+        "required": ["chars_per_token", "output_ratio", "unknown_ratio", "output_floor_tokens", "max_tokens_setting", "pricing", "registry_refresh", "reasons"],
         "properties": {
           "chars_per_token": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "number", "minimum": 0.01}, "high": {"type": "number", "minimum": 0.01}}, "additionalProperties": false},
           "output_ratio": {"type": "object", "additionalProperties": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}, "additionalProperties": false}},
@@ -58,7 +129,53 @@
             "required": ["input_key", "output_key", "tokens_per_unit", "currency"],
             "properties": {"input_key": {"type": "string", "minLength": 1}, "output_key": {"type": "string", "minLength": 1}, "tokens_per_unit": {"type": "number", "minimum": 1}, "currency": {"type": "string", "minLength": 1}},
             "additionalProperties": false
+          },
+          "registry_refresh": {
+            "type": "object",
+            "description": "The model registry (models.json) is empty on a fresh data directory until the model list is refreshed, so no price is known. When an estimate needs a price and the registry is empty, the provider's public model list is fetched (the existing refresh; no user data is sent). setting: the config key of the user's choice; active: the installation's preset; unknown: the preset a name that is not listed means; retry_after_seconds: after a failed fetch the next automatic attempt waits this long (null = every estimate tries again); presets: name -> {fetch, label}.",
+            "required": ["setting", "active", "unknown", "retry_after_seconds", "presets"],
+            "properties": {
+              "setting": {"type": "string", "minLength": 1},
+              "active": {"type": "string", "minLength": 1},
+              "unknown": {"type": "string", "minLength": 1},
+              "retry_after_seconds": {"type": ["number", "null"], "minimum": 0},
+              "presets": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": ["fetch", "label"],
+                  "properties": {"fetch": {"type": "boolean"}, "label": {"type": "object", "additionalProperties": {"type": "string"}}},
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "reasons": {
+            "type": "object",
+            "description": "Why money (or a price) is unknown, by code: the text in each language ({{why}} etc. are filled by the estimate). The estimate returns the code (money.reason_code) and the text in English; the chat shows the text in the language of the proposal.",
+            "additionalProperties": {"type": "object", "required": ["en"], "additionalProperties": {"type": "string"}}
           }
+        },
+        "additionalProperties": false
+      },
+      "spend_limits": {
+        "type": "object",
+        "description": "Spending limits per period (P17; the user decides, every value here is a preset). The user's limits are the setting `setting` (an array of {period: day|week|month, amount, currency, on_exceed: confirm|deny|notify, rate?}); the preset is none. Before an action run that calls a model, the runner adds the period's spend (the cost the providers reported, from the usage ledger) to the estimate of the run (`estimate_bound`: low | high) and compares it with each limit; when it is passed, `on_exceed` decides: confirm (the run waits for the user's yes, like a rule confirmation), deny (the run does not start, with the reason and the initiator `user`), notify (the run goes on and says so). The x10 growth guard is separate and unchanged. periods: `kind` is the window of the period in UTC as the question \"how much did I spend\" reads it (today, this week from Monday, this month from the 1st); `words` are folded words (a trailing * = any continuation) that name it in a sentence. currencies: `rate` = USD per unit, because the ledger counts what providers report, in USD; an entry may carry its own `rate`. All numbers and texts are calibration, not limits.",
+        "required": ["setting", "default_currency", "default_on_exceed", "estimate_bound", "periods", "on_exceed", "currencies", "texts"],
+        "properties": {
+          "setting": {"type": "string", "minLength": 1},
+          "default_currency": {"type": "string", "minLength": 1},
+          "default_on_exceed": {"type": "string", "minLength": 1},
+          "estimate_bound": {"type": "string", "enum": ["low", "high"]},
+          "periods": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "kind", "words", "label", "noun"], "properties": {"id": {"type": "string", "minLength": 1}, "kind": {"type": "string", "enum": ["today", "week", "month"]}, "words": {"type": "array", "items": {"type": "string"}}, "label": {"type": "object", "additionalProperties": {"type": "string"}}, "noun": {"type": "object", "additionalProperties": {"type": "string"}}}, "additionalProperties": false}},
+          "on_exceed": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "words", "label"], "properties": {"id": {"type": "string", "enum": ["confirm", "deny", "notify"]}, "words": {"type": "array", "items": {"type": "string"}}, "label": {"type": "object", "additionalProperties": {"type": "string"}}}, "additionalProperties": false}},
+          "rates_note": {"type": "object", "additionalProperties": {"type": "string"}},
+          "currencies": {"type": "object", "additionalProperties": {"type": "object", "required": ["rate", "words"], "properties": {"rate": {"type": "number", "minimum": 0}, "words": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}},
+          "texts": {"type": "object", "additionalProperties": {"type": "object", "required": ["en"], "additionalProperties": {"type": "string"}}},
+          "model_use": {"type": "object", "description": "P18: what marks an admission of the usage ledger as a model use that the limits apply to: a non-empty string field of the estimate (estimate_fields, e.g. model) or a resource it names (resources, e.g. requests). Importing a file or reading is no model use and is never stopped by a limit.", "properties": {"estimate_fields": {"type": "array", "items": {"type": "string"}}, "resources": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false},
+          "cost_resources": {"type": "array", "description": "P18: the resources of an estimate that carry the call's cost in USD when the caller knows it (the first number found counts); absent or null is unknown, not zero.", "items": {"type": "string"}},
+          "spent_resource": {"type": "string", "minLength": 1, "description": "P18: the resource of the usage ledger that holds what the providers reported as spent, in USD."}
         },
         "additionalProperties": false
       },

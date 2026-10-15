@@ -52,7 +52,7 @@ try {
   const page = await browser.newPage(); const errors = [], outside = [];
   page.on("pageerror", error => errors.push(error.message));
   page.on("request", request => { if (!request.url().startsWith("http://127.0.0.1:")) outside.push(request.url()); });
-  await page.goto(`http://127.0.0.1:${server.address().port}`);
+  await page.goto((`http://127.0.0.1:${server.address().port}`).replace(/\/?$/, "/#warsztat"));
   const context = page.getByTestId("context-slider"), workbench = page.getByTestId("knowledge-workbench");
   await context.getByTestId("context-preview").waitFor();
   assert.deepEqual(contextCalls[0], { text: "What have we discussed so far?", depth: 2, max_tokens: 2000, conv_id: "conversation-fixture" });

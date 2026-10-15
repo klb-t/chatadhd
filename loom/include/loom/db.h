@@ -22,6 +22,7 @@
 // so the object is safe to share between the UI thread and workers.
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <filesystem>
 #include <memory>
@@ -30,6 +31,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <vector>
 
 #include "loom/result.h"
@@ -94,6 +96,7 @@ struct PendingMessage {
   std::string role;
   std::string text;
   Json metadata = Json::object();
+  std::int64_t rowid = 0;  // queue position; lets a drain resume after the last row it saw
   Json to_json() const;
 };
 
@@ -227,6 +230,7 @@ struct FtsStatus {
   std::int64_t indexed = 0;  // documents in index
   std::int64_t messages = 0; // rows in messages
   bool dirty = false;        // pending changes not yet synced
+  bool building = false;     // a chunked (re)build is still in progress
   std::int64_t rebuilds = 0; // self-heal rebuilds since open
   Json to_json() const;
 };
@@ -236,6 +240,9 @@ struct DbOptions {
   // Index location; default: db path with extension ".fts.db" (chatadhd.fts.db).
   std::optional<std::filesystem::path> fts_path;
   int busy_timeout_ms = 30000;
+  // Rows indexed per transaction while (re)building the FTS index; the DB lock is released between chunks.
+  // Preset 10000 (config loom_fts_chunk_rows); 0 = one transaction for everything (the old behaviour).
+  int fts_chunk_rows = 10000;
 };
 
 // Immutable full-message source, deduplicated by message ID + full record hash.
@@ -341,12 +348,25 @@ class Database {
                                 int batch_size = 1000);
   Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit = 100);
   // Same queue order, skipping ids the caller has quarantined (rows that cannot be claimed).
-  Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids);
+  Result<std::vector<PendingMessage>> get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids,
+                                                          std::int64_t after_rowid = 0);
   Result<std::int64_t> count_pending_semantic();
   // Stamps semantic_source/entity_count/topic_count/summary[:200]/sentiment
   // into metadata and flips semantic_status to 'done'. No-op if missing.
   Status mark_analysed(std::string_view msg_id, const Json& analysis);
   Result<std::vector<Message>> get_msgs(std::string_view conv_id, bool include_all = false);  // ORDER BY created
+  // Perf (P19): one page of a conversation, newest-first by (created, rowid) but returned oldest-first. `before_id`
+  // (a message id of this conversation; empty = from the end) is the cursor: only messages older than it are read.
+  // `limit` <= 0 means no limit (the whole remainder). `total` counts every message the filter matches.
+  struct MsgPage {
+    std::vector<Message> messages;
+    std::int64_t total = 0;
+    bool truncated = false;      // older messages remain before messages.front()
+    std::string next_before;     // pass as before_id to continue; empty when nothing is older
+  };
+  Result<MsgPage> get_msgs_page(std::string_view conv_id, std::int64_t limit, std::string_view before_id = {},
+                                bool include_all = false);
+  Result<std::int64_t> count_msgs(std::string_view conv_id, bool include_all = false);
   Result<std::optional<Message>> get_msg(std::string_view mid);
   Result<std::vector<Message>> get_versions(std::string_view version_group_id);  // ORDER BY version_num
   Status set_msg_status(std::string_view mid, std::string_view status);  // InvalidArgument if not whitelisted
@@ -394,13 +414,25 @@ class Database {
   // Python get_graph_data(conv_id=None): {"nodes":[...], "edges":[...]} with
   // exactly the Python keys (message nodes when conv_id given, all explicit
   // nodes via list_nodes() (limit 200), all links).
+  // R27 paging (additive): with conv_id and limit > 0 only `limit` message nodes are returned - the newest ones, or
+  // the `limit` ones just before message `before` - and only the links joining two listed nodes;
+  // the result then also carries "truncated", "next_before" (cursor for the next older page or null) and
+  // "total_messages". limit 0 = the whole conversation (old behaviour, shape unchanged). Without conv_id a limit > 0
+  // lowers the node count likewise.
+  struct GraphDataPage {
+    int limit = 0;
+    std::string before;
+  };
   Result<Json> get_graph_data(std::optional<std::string_view> conv_id = std::nullopt);
+  Result<Json> get_graph_data(std::optional<std::string_view> conv_id, const GraphDataPage& page);
 
   // ── Full-text search (Loom extension) ─────────────────────────────
   Result<SearchResult> search_messages(std::string_view query, const SearchOptions& opts = {});
   FtsStatus fts_status();
   Status fts_sync();     // bring the index up to date (incremental)
   Status fts_rebuild();  // drop + rebuild from messages
+  // Builds/syncs the index on a background thread (chunked); close() stops and joins it.
+  void fts_start_background();
 
   // ── Housekeeping ──────────────────────────────────────────────────
   void close();
@@ -431,6 +463,7 @@ class Database {
   Status fts_reconcile_locked(bool full);
   Status fts_rebuild_locked();
   Status fts_index_ids_locked(const std::vector<std::string>& ids);
+  void fts_join_background();
   void fts_note_changed(std::string_view msg_id);
   void fts_note_deletions();
 
@@ -441,6 +474,8 @@ class Database {
 
   struct FtsState;
   std::unique_ptr<FtsState> fts_;
+  std::thread fts_thread_;
+  std::atomic<bool> fts_stop_{false};
 };
 
 }  // namespace loom

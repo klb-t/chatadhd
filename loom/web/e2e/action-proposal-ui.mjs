@@ -91,7 +91,7 @@ try {
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
   page = await browser.newPage();
   page.on("pageerror", error => pageErrors.push(error.message));
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("chat-input").waitFor();
 
   await check("a command is answered in the conversation: the proposal text, the block with plan, estimate and what the rules ask, no error", async () => {

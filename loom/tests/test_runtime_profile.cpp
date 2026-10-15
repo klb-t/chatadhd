@@ -164,7 +164,7 @@ TEST_SUITE("runtime_profile") {
       }
     }
     auto usage = unwrap(RuntimeProfile::builtin("usage_policy"));
-    CHECK(usage.hash() == "e8b8d4e5b098213a421b88b1f11db949a8a6056838a2f8c9487303913da5a8bd");
+    CHECK(usage.hash() == "b224511e168a1514f430bcdcc7afe37bc7fb77eea2c597efb895eba4aa333aa6");
     auto canonical = unwrap(json::parse(unwrap(fsutil::read_file(data / "policy/usage_policy.pack"))));
     CHECK(usage.defaults() == canonical);
   }

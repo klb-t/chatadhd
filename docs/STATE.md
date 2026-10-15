@@ -1,14 +1,78 @@
 # STATE — ChatADHD / Loom
 
-> B, 2026-10-15 21:30 UTC: dev i Clang na `efd969c7`: guard PASS,
-> 203/204 wykonane, 1355 native / 47931 asercji / 2077 Python; 1 opt-in niewykonany.
-> Web build i 26 skryptów mają PASS po poprawkach środowiska oraz przyjęciu
-> testu Claude’a `85a406dd` → `588ac547`. Pełny ASan przerwany po 37/203,
-> bez JUnit/guard; nowy przebieg następny, timeout CLI 300 s bez zmian.
-> Kod rozpoznawania: Generalizer 4 / pipeline 10. Perspektywy tego samego
-> projektu nadal otwarte. [Raport](reports/implicit-structures-2026-10-14.md).
+> B, 2026-10-15: na `gpt/implicit-structures-2026-10-14` scalono main
+> `6fc3ec6b` zgodnie z poleceniem właściciela. Konflikty dotyczyły wyłącznie
+> STATE/INDEX; zachowano aktualny stan S1/S2 i historię B. Bramki sprzed scalenia
+> są historią, walidacja złożonego drzewa jest następna. Rozpoznania łączymy
+> z adnotacjami P23, nakładkami rodzajów krawędzi P24 i widokami P28.
+> P29 (nieznane id → nowy kandydat + dopasowanie, bez odrzucania odpowiedzi)
+> jest kierunkiem właściciela, jeszcze otwartym w przyjętym main.
+> [Raport B](reports/implicit-structures-2026-10-14.md).
 
-## 2026-10-15 — B: osobna gałąź rozpoznawania struktur
+## 2026-10-15 — S1+S2 (P19, P23–P28, R32–R34)
+
+Szczegóły i decyzje: `docs/reports/PLAN_2026-10-13.md` (wpisy P19–P28), `docs/reports/INDEX.md`, architektura: `docs/architecture/STRAZNIK_I_SRODOWISKA_2026-10-14.md`, `PRZEGLAD_STRAZNIK_SRODOWISKA_2026-10-15.md`, `WIDOK_SILNIK_WIZUALIZACJI_2026-10-15.md`. Przebieg wątków: `docs/reports/LEDGER_2026-10-14.md`.
+
+**Co działa teraz (słowami właściciela)**
+
+- **Selektor zawsze wybiera z grafu.** Kontekst to wycinek grafu zależny od ustawień rozstrzyganych łańcuchem dziedziczenia (rozmowa → dowolne jednostki → użytkownik → instalacja); także surowa rozmowa jest wyborem z grafu. Wcześniej ustawienie dane tylko rozmowie było pomijane — poprawione.
+- **Przepływ wejścia i wyjścia jako dane.** Jak wycinek idzie do modelu (renderer) i co się dzieje z odpowiedzią (węzeł wyjścia) to dane; domyślnie żądanie bajt w bajt jak dawniej. Odpowiedź w formacie grafu można wymusić: widzisz tekst, a jej węzły trafiają do grafu.
+- **Osadzanie to odwrotność selektora.** Osadzenie tego, co selektor wybrał, nie zmienia grafu (test bajt w bajt); analizy są osobnym krokiem po osadzeniu.
+- **Strażnik-stenograf i wspólna warstwa adnotacji.** Reprezentacja rozmowy w poziomach (bez szumu, bez dygresji, skompilowane polecenie) obok surowych wiadomości; cykl poprawka → hipoteza → zasada; selektor decyduje, czego użyć.
+- **Model do pracy w tle nigdy nie jest dziedziczony z rozmowy.** Wybiera go Twoja polityka; „względem modelu rozmowy” tylko gdy sam to wybierzesz.
+- **Perspektywy i rodzaje krawędzi są danymi.** Podstawowe w ROM, Twoje w nakładkach; nakładka może dodać, zmienić, ukryć, wyłączyć albo przemianować wpis ROM, a każdy wpis mówi, skąd pochodzi. Perspektywy obok siebie w panelu „Perspektywy”; „skąd to ustawienie” w ustawieniach rozmowy.
+- **Silnik widoków.** Widok składa się z deklaracji w grafie (źródła z wagą i głębokością, miary, układy, kodowania, reguły); reguły sensu oceniają kodowania na danych i nigdy nie blokują. Preset: historia przed Tobą, gałęzie w stożku, ekosystem po bokach, przyszłość z tyłu. Strzałki z modyfikatorami, locki przełączają widoki; wszystko do przepisania z rozmowy.
+- **Środowiska, agent, źródła narzędzi (S2 R32–R34, S1 P26).** „Co mogę zrobić na telefonie / w tym katalogu” z grafu; agent wywołuje akcje katalogu jako narzędzia, zatrzymuje się na propozycji i czeka na Twoje tak/nie; serwery MCP dodajesz sam, każde użycie pyta, dopóki nie zaufasz.
+- **Duże rozmowy.** Wiadomości i graf ładują się stronami („wczytaj starsze”); rozmiary stron to ustawienia.
+
+**Co otwarte**
+
+- Odpowiedź w formacie grafu odrzuca dziś całą odpowiedź, gdy odwołuje się do węzła, którego nie wysłaliśmy — to za ostre; ma być nowym węzłem i kandydatem do dopasowania (P29).
+- Szerszy wycinek grafu (szerokość, głębokość, perspektywa) jako dane przepływu; dopasowanie wektorami i modelem.
+- Widok 3D i VR/AR (P28 krok 3, w toku); edytor przypisań klawiszy w interfejsie; MDS i czas jako ruch.
+- Gałąź GPT `gpt/implicit-structures-2026-10-14`: przegląd i włączenie jako nakładka rodzajów krawędzi.
+- Android: brak widoku propozycji agenta i stronicowania.
+- Nadal brak próby z prawdziwym modelem i prawdziwym telefonem.
+
+**Co musisz zrobić Ty** — bez zmian: ważny klucz OpenRouter w sekretach sieci środowiska, sekrety podpisu Androida na GitHubie, prawdziwy telefon.
+
+## 2026-10-14 — S1+S2
+
+Szczegóły techniczne i decyzje: `docs/reports/INDEX.md` (sekcje P9–P18 i S2/R*), wymagania właściciela: `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` (R54, R55).
+
+**Co działa teraz (słowami właściciela)**
+
+- **Pierwsza wiadomość zawsze dostaje odpowiedź albo widoczny powód.** Nic już nie milknie: dostajesz odpowiedź, pytanie o zgodę, odmowę z powodem albo błąd z treścią, a Twój tekst zostaje w polu, gdy nic nie poszło. Wiadomość wysłana zaraz po „Nowa rozmowa” czeka na rozmowę i idzie dokładnie raz.
+- **Pierwsze kroki działają od zera.** Przewodnik „pierwsze kroki” (`docs/PIERWSZE_KROKI.md`) i jego automatyczne sprawdzenie przechodzą na czystym Debianie na GitHubie: instalacja, konto, klucz, pierwsza rozmowa, polecenie z rozmowy.
+- **Graf jest centrum.** Rozmowy, wiadomości, wyniki akcji, urządzenia, adaptery i wybory modeli są węzłami jednego grafu; widok wejściowy pokazuje prawdziwe liczniki, a nie atrapy.
+- **Jedno „użyj modelu”.** Każde miejsce, które woła model (czat, rozpoznanie polecenia, streszczenie, tłumaczenie, analiza w tle, mowa, obraz), idzie tą samą drogą, z tym samym strażnikiem: wzrost zużycia o rząd wielkości (×10) zawsze pyta Ciebie, a koszt w pieniądzach jest pokazany albo uczciwie „nieznany”, nigdy zero.
+- **Strażnik ×10 nie zatrzymuje drugiej wiadomości.** Dopóki aplikacja nie zna Twojego zwykłego zużycia, uznaje za zwykłą rozsądną wielkość wiadomości, więc po „cześć” następna zwykła wiadomość idzie bez pytania. Naprawdę duży skok nadal pyta. Próg jest ustawieniem, nie regułą.
+- **Limity wydatków na dzień, tydzień i miesiąc.** Ustawiasz je zdaniem („ustaw limit 20 zł na miesiąc”) i sam wybierasz, co się dzieje po przekroczeniu: aplikacja pyta o zgodę, odmawia (z powodem) albo tylko mówi. Limit dotyczy każdego użycia modelu: zwykłej wiadomości, rozpoznania polecenia, analizy w tle i poleceń z rozmowy; plan pokazany w rozmowie mówi z góry, że przekroczy limit. Bez ustawionego limitu nic się nie zmienia.
+- **Akcje na elementach.** O każdej rzeczy (rozmowa, wiadomość, węzeł, nagranie, ustawienie) aplikacja wie, co można z nią zrobić, ile to kosztuje i czy reguły każą Cię zapytać. Własne reguły zapisują się u Ciebie, nigdy w plikach dostarczanych z aplikacją.
+- **Okienko rozmowy robi wszystko, co potrafią panele.** To, co robisz z paneli, powiesz też w rozmowie, po polsku albo po angielsku: szukanie rozmów, „co jest powiązane z …”, zapamiętywanie i zapominanie, zakładanie, zmiana nazwy i usuwanie rozmów, poprawianie wiadomości z zachowaniem starej wersji, import i eksport, podłączenie Dysku Google, S3 albo WebDAV, wybór modelu do konkretnej pracy, „ile wydałem w tym tygodniu”, limity, odświeżenie listy modeli, praca w tle, dziennik. Zdanie, które coś zmienia, aplikacja najpierw pokazuje i wykonuje po Twoim „tak”. „Co mogę tu zrobić?” daje listę po ludzku; „jak to zrobić: …” — wyjaśnienie bez wykonywania.
+- **Archiwum, wiedza i katalog z rozmowy.** „Przeanalizuj ten folder”, „zbuduj wiedzę z tego folderu”, „przejrzyj ten katalog”: bez ścieżki przeglądarka otwiera wybór folderu, jego pliki idą do programu (nie do modelu), a analiza rusza w tle, lokalnie i za darmo, dopóki sam nie dopuścisz modelu. „Jak idzie analiza?” i „przerwij” też są zdaniami.
+- **Katalog rośnie sam.** Gdy powiesz coś, czego aplikacja nie zna, proponuje nową akcję (po „tak” zapisaną u Ciebie), a powtarzane sekwencje proponuje zapamiętać jako jedną. Zdania, które tylko coś stwierdzają („Ocena tej wiadomości jest niska”), nie są już brane za polecenie.
+- **Urządzenia robi klient.** Mikrofon, aparat, schowek, wybór pliku i wybór folderu obsługuje strona albo aplikacja na Androidzie; serwer tylko prosi i czeka na odpowiedź.
+- **ROM.** Pamięć tylko do odczytu, montowana pierwsza: to, co aplikacja wie o sobie.
+- **Porty.** Który model albo dostawca wykonuje którą pracę (streszczenia, tłumaczenia, rozpoznawanie mowy i tekstu) — wybór zapisuje się na właściwym poziomie.
+- **Telefon w emulatorze Androida działa.** Na GitHubie aplikacja instaluje się w emulatorze, łączy z serwerem, loguje, odpowiada na wiadomość i wykonuje „streść tę rozmowę” po „tak” (przebieg `android-smoke` 38602445745 zielony). To emulator, nie prawdziwy telefon.
+- **Bezpieczeństwo serwera z kontami** przejrzane i poprawione; limity serwera są ustawieniami. Są paczki serwera dla starszych systemów i dla ARM. Klucze i hasła nigdy nie przechodzą przez rozmowę: wpisujesz je w Ustawieniach, a rozmowa mówi, które pole otworzyć.
+- **Pokrycie jest sprawdzane.** Lista wszystkiego, co aplikacja potrafi, jest zapisana jako dane razem z tym, jak to powiedzieć w rozmowie; nowa funkcja bez decyzji „da się z rozmowy / nie z rozmowy, bo …” zatrzymuje bramkę.
+
+**Co otwarte**
+
+- Z rozmowy nie da się jeszcze: oceny, wyboru i nadpisań poszczególnych pozycji katalogu, języka zapytań do wiedzy, rejestru metod i onboardingu — to rozbudowana konfiguracja, której mówiona postać nie jest jeszcze zaprojektowana. Logowanie i zmiana hasła są celowo poza rozmową.
+- Gdy limit odmawia lub pyta przy analizie w tle, pytanie pojawia się w rozmowie (analiza zbiorcza i ponowienia); zwykła analiza wiadomość po wiadomości po prostu przechodzi wtedy na tryb lokalny, bez pytania.
+- Prawdziwa próba z prawdziwym modelem nie była robiona: wszystkie sprawdzenia szły na atrapie serwera modeli.
+- Wybór folderu działa w przeglądarce; powłoka Androida go nie ma (wybierasz plik albo wpisujesz ścieżkę). Powłoka Androida buduje się na GitHubie jako paczka APK i przeszła próbę w emulatorze, ale nie była uruchomiona na prawdziwym telefonie.
+
+**Co musisz zrobić Ty**
+
+1. Wstawić ważny klucz OpenRouter do sekretów sieci środowiska — bez niego nie da się sprawdzić niczego z prawdziwym modelem.
+2. Dodać na GitHubie cztery sekrety z kluczem podpisu wydania (jak to zrobić: `docs/PIERWSZE_KROKI.md`) — bez nich paczka Androida jest podpisana tylko kluczem testowym i nie zainstaluje się jako aktualizacja własnej wersji.
+3. Dać prawdziwy telefon na paczkę APK — emulator nie ma prawdziwego mikrofonu ani aparatu, więc bez telefonu nie wiem, czy mikrofon, aparat i wybór pliku działają w powłoce.
+
+## Historyczny checkpoint 2026-10-15 — B: osobna gałąź rozpoznawania struktur
 
 `gpt/implicit-structures-2026-10-14`, kod `298b429b`, test modelu packa
 `f682fc89`, wcześniejsza poprawka transferu `79187377`. Main bez zmian;

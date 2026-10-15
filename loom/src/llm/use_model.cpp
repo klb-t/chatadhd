@@ -543,6 +543,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
       return r;
     }
     if (admitted->decision.is_object()) r.operation_id = json::get_string(admitted->decision, "operation_id");
+    if (const Json* notices = json::find(admitted->decision, "notices"); notices && notices->is_array() && !notices->empty()) r.notices = *notices;
     if (!admitted->dispatch) {
       r.state = State::Held;
       r.hold = Json{{"status", admitted->status}, {"decision", admitted->decision}, {"decisions", admitted->decisions}};
@@ -666,6 +667,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
   r.reasoning = out.reasoning;
   r.reported_model = out.reported_model;
   r.usage = out.usage;
+  r.tool_calls = out.tool_calls;
   r.issues = out.issues;
   if (!out.text.empty()) {
     Part text;

@@ -67,6 +67,20 @@
         "CMAKE_BUILD_TYPE": "Debug",
         "LOOM_USE_SYSTEM_SQLITE": "OFF"
       }
+    },
+    {
+      "name": "libcxx",
+      "inherits": "base",
+      "displayName": "Clang + libc++ (the Android NDK standard library), vendored SQLite",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "LOOM_USE_SYSTEM_SQLITE": "OFF",
+        "CMAKE_CXX_FLAGS": "-stdlib=libc++",
+        "CMAKE_EXE_LINKER_FLAGS": "-stdlib=libc++",
+        "CMAKE_SHARED_LINKER_FLAGS": "-stdlib=libc++"
+      }
     }
   ],
   "buildPresets": [
@@ -74,7 +88,8 @@
     { "name": "release", "configurePreset": "release" },
     { "name": "asan", "configurePreset": "asan" },
     { "name": "tsan", "configurePreset": "tsan" },
-    { "name": "vendored", "configurePreset": "vendored" }
+    { "name": "vendored", "configurePreset": "vendored" },
+    { "name": "libcxx", "configurePreset": "libcxx" }
   ],
   "testPresets": [
     {
@@ -98,8 +113,9 @@
       "name": "tsan",
       "inherits": "base",
       "configurePreset": "tsan",
-      "environment": { "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1" }
+      "environment": { "TSAN_OPTIONS": "halt_on_error=1:second_deadlock_stack=1:suppressions=${sourceDir}/tsan.supp" }
     },
-    { "name": "vendored", "inherits": "base", "configurePreset": "vendored" }
+    { "name": "vendored", "inherits": "base", "configurePreset": "vendored" },
+    { "name": "libcxx", "inherits": "base", "configurePreset": "libcxx" }
   ]
 }

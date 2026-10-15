@@ -28,6 +28,7 @@ struct Env {
   Env() {
     cfg.set("base_url", "https://api.test");
     secrets.set("api_key", "sk-secret-test");
+    loom::test::measured_baseline_only(cfg);  // P17 6: the x10 hold tests below use three tiny samples as the baseline, so the floor of the baseline is off
   }
   llm::Services services() {
     llm::Services s{cfg, secrets, transport};

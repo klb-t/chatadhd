@@ -248,7 +248,8 @@ LOOM_API const char* loom_get_nodes(LoomContext* ctx, const char* filter_json);
 LOOM_API const char* loom_get_edges(LoomContext* ctx, const char* filter_json);
 /* seed_ids_json: ["n_...","m_..."] -> {"nodes":[...],"edges":[...]} */
 LOOM_API const char* loom_expand_graph(LoomContext* ctx, const char* seed_ids_json, int depth);
-/* Python Database.get_graph_data(conv_id) (conv_id may be NULL). */
+/* Python Database.get_graph_data(conv_id) (conv_id may be NULL). conv_id may also be a JSON object
+ * {"conv_id","limit","before"} for paging a conversation graph (see Database::GraphDataPage). */
 LOOM_API const char* loom_get_graph_data(LoomContext* ctx, const char* conv_id);
 /* Re-runs graph extraction for conv_id (NULL = every conversation) -> {"reindexed": n} */
 LOOM_API const char* loom_graph_reindex(LoomContext* ctx, const char* conv_id);
@@ -257,6 +258,35 @@ LOOM_API const char* loom_graph_reindex(LoomContext* ctx, const char* conv_id);
  * "axes","origin","counts":{name:{"known":bool,"value"?,"by"?,"reason"?}},"sources","expand"}],"seed":[...],"issues":[]}.
  * Unavailable registries report "known":false, never zero. Areas come from the graph_entry runtime profile. */
 LOOM_API const char* loom_graph_entry(LoomContext* ctx, const char* request_json);
+
+/* P24: graph views as data. loom_view_effective: ROM + the user's overlays (<data_dir>/views/ *.json files) of one kind of thing
+ * (edge_kinds | node_kinds | perspectives | unit_kinds | scopes | view_kinds | any kind a user invents) -> {kind, policy, layers, entries:[{id,
+ * entry, origin, provenance, disabled?, aliases?}], hidden, issues}; request {include_hidden?, extra_dirs?}. loom_view_write puts one operation
+ * {view, op: add|modify|hide|disable|alias, id, entry|patch|as} into the overlay {overlay?: "user"} or, with {remove:true, view, id}, takes the
+ * operations of that entry back; the ROM is never written. loom_edge_kinds: all kinds with ancestors/children/inverse/perspectives, one
+ * ({kind}) or the classification of the link types in use ({classify:true} -> known + unclassified). loom_perspectives: no id = the list;
+ * {id, seeds?, hops?, direction?, limit?} = one rendered; {ids:[...]} = side by side. loom_scope_resolve: {key, conversation_id?, installation?,
+ * units?, inheritance?:true} = the value of a setting through conversation -> units -> user -> installation, which level supplied it and which
+ * were overridden (inheritance:true = the "dziedziczenie" perspective). See loom/effective_view.h, perspectives.h, scope_resolver.h. */
+LOOM_API const char* loom_view_effective(LoomContext* ctx, const char* kind, const char* request_json);
+LOOM_API const char* loom_view_write(LoomContext* ctx, const char* request_json);
+LOOM_API const char* loom_edge_kinds(LoomContext* ctx, const char* request_json);
+LOOM_API const char* loom_perspectives(LoomContext* ctx, const char* request_json);
+LOOM_API const char* loom_scope_resolve(LoomContext* ctx, const char* request_json);
+
+/* P28: the visualization engine. loom_view_model: no declaration = the lists the engine is made of (declarations, measure kinds, coordinate systems,
+ * channels, composition kinds, combination rules, rules: each the effective view, ROM + overlays). {declaration: id | object, focus: node id,
+ * sources?: {source id: {weight?, depth?}}, budget?: n (0/null = none)} = the layout-independent view model {schema: "loom.view_model/1", elements
+ * with measures/coords/channels, edges, groups, encodings: promoted | allowed with reasons, unsupported: what the engine has no evaluator for, with
+ * the reason, budget}. See loom/view_engine.h. */
+LOOM_API const char* loom_view_model(LoomContext* ctx, const char* request_json);
+
+/* P28 step 2: interaction as data. loom_view_interaction: {device?: keyboard | touch | voice | xr | ...} = the EFFECTIVE input bindings for that device
+ * (ROM presets + the user's overlays of the kind `interaction_bindings`, with provenance): {schema: "loom.view_interaction/1", devices, bindings
+ * [{id, label, device, input, action, status: active | recorded, shadowed?, reasons}], conflicts (two bindings with one input: a warning, the last wins,
+ * nothing is blocked), disabled, unsupported (unknown device / input field / action kind, with the reason), issues}. See loom/interaction.h. */
+LOOM_API const char* loom_view_interaction(LoomContext* ctx, const char* request_json);
+
 /* ContextSet for text: {"items":[...],"prompt_text","token_estimate","truncated"} */
 LOOM_API const char* loom_select_context(LoomContext* ctx, const char* text, int depth, int max_tokens);
 /* request_json: {"text","depth","max_tokens","conv_id","include_memory","include_graph","include_search"} */

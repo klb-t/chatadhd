@@ -138,7 +138,10 @@ std::string revision_entity(std::string_view label);
 // commit (each blob read once). id = full hash, label = the version of a
 // "Version x.y.z" subject or the short hash, date = author date (UTC).
 // Desktop only (runs `git`); Errc::Unsupported elsewhere.
-Result<std::vector<Revision>> git_revisions(const std::filesystem::path& repo, const std::vector<std::string>& paths);
+// git runs with the repository's hooks, fsmonitor and other configured programs disabled (R20) unless
+// allow_repo_config (config loom_git_allow_repo_config) is true.
+Result<std::vector<Revision>> git_revisions(const std::filesystem::path& repo, const std::vector<std::string>& paths,
+                                            bool allow_repo_config = false);
 // A recovered source tree as a revision: text files relative to `dir`
 // (skips .git, __pycache__, binaries). id = "snapshot:" + label.
 Result<Revision> snapshot_revision(const std::filesystem::path& dir, std::string_view label = "");

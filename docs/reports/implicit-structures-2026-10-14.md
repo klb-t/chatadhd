@@ -1,6 +1,38 @@
 # Unnamed relational structures and qualified analogies — 2026-10-14
 
-## Current verification checkpoint — 2026-10-15 21:30 UTC
+## Current owner-directed integration — 2026-10-15 UTC
+
+Owner requested reading the 14–15 October philosophy and merging current main
+before further work. Main `6fc3ec6b3a8263e0e0861afe2adfe412294489f1` is merged
+into this candidate branch, preserving both histories. Only STATE/INDEX needed
+conflict resolution; their current S1/S2 content and B history are retained.
+The knowledge pipeline fingerprint and main's path confinement both remain.
+No main or foreign branch was changed. This is an integration checkpoint,
+**not a verified merged-tree increment**; fresh builds/gates are next.
+
+The previous ASan rerun was deliberately interrupted for this integration:
+`full-asan-integrated-r2`, CTest exit -2, guard exit 1, source unchanged,
+328.75 seconds. It is not PASS. Earlier dev/Clang/web evidence is retained
+below but does not validate the merged tree. Main brings its independently
+recorded CLI/research timeout changes; they are upstream policy, not a local
+change made to obtain a passing result.
+
+The owner philosophy and actual current consumers replace the earlier narrow
+view-only next step: recognition writes evidence into the shared P23 annotation
+layer (`structure_role`), candidates use the guardian hypothesis/adoption cycle
+(`structure_recognition`), and recognized relation patterns enter P24's effective
+edge-kind view as overlays with provenance. P28 consumes those perspectives.
+Keep ROM immutable and alternatives/history; do not build another registry.
+Examples are presets, not a closed taxonomy or limits. Background models use
+explicit user policy, never implicit inheritance from a chat model.
+
+P29 clarification: new nodes/edges are open; an unrecognized reference should
+preserve the response as a new candidate with provenance and visible notice,
+then use the configured matching cascade. The accepted main still records this
+as open work. Do not claim it is implemented or take over Claude's active P29.
+No paid calls, services or hosted CI are authorized by this integration.
+
+## Historical pre-merge verification checkpoint — 2026-10-15 UTC
 
 Full dev and Clang on `efd969c7` both passed: **204 selected, 203 executed,
 1355 native cases / 47931 assertions / 2077 Python cases**, zero Python skips,

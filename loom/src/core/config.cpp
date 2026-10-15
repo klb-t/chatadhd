@@ -216,7 +216,21 @@ const Json& loom_config_defaults() {
   static const Json kLoomDefaults = Json{
       {"loom_event_log_types", Json::array({"conv:created", "import:done", "graph:changed"})},
       {"loom_task_workers", 1},
+      // R27 scale settings. loom_fts_chunk_rows: rows per transaction while building the FTS index (0 = one
+      // transaction); loom_fts_background_build: build/sync it on a background thread at startup;
+      // loom_graph_data_limit: message nodes per GET /api/graph/data?conv_id= page when the caller gives no
+      // limit (preset 5000 since P19: older pages are reached with before=next_before; 0 = no limit).
+      {"loom_fts_chunk_rows", 10000},
+      {"loom_fts_background_build", true},
+      {"loom_graph_data_limit", 5000},
+      // Web page sizes (P25): messages per page of the chat view and message nodes per page of the graph view; 0 = no cut.
+      {"loom_web_message_window", 500},
+      {"loom_web_graph_page", 2000},
       {"loom_usage_policy", usage_policy_defaults()},
+      // R20 safety settings (src/util/safety.h); 0 = no limit.
+      {"loom_zip_max_total_bytes", std::int64_t(64) * 1024 * 1024 * 1024},
+      {"loom_zip_max_ratio", 1000},
+      {"loom_git_allow_repo_config", false},
   };
   return kLoomDefaults;
 }

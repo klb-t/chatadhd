@@ -23,6 +23,7 @@ CANONICAL_FILES = (
     "profiles/conversation_view.pack",
     "onboarding/scenario.pack",
     "onboarding/ui.pack",
+    "runtime/ui_animation.pack",
 )
 
 # Approved expanded defaults before the include migration (3c0bc36). These

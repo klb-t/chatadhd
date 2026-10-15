@@ -103,6 +103,15 @@ class OutputStore {
 // db and provenance are optional: without them only the blob is written.
 std::unique_ptr<OutputStore> make_output_store(BlobStore& blobs, ProvenanceStore* provenance, Database* db);
 
+// One tool call a model asked for (native tool calling): the id the provider gave it, the tool's wire name and its
+// arguments.  `valid` is false when the arguments were not a JSON object (the raw text is kept).
+struct ToolCall {
+  std::string id, name;
+  Json arguments = Json::object();
+  std::string raw_arguments;
+  bool valid = true;
+};
+
 // ── Borrowed services ───────────────────────────────────────────────
 struct Services {
   Services(const Config& c, const Secrets& s, net::HttpTransport& h) : config(c), secrets(s), http(h) {}
@@ -310,12 +319,14 @@ struct VariantResult {
   std::optional<Error> parse_error;
   std::string text, reasoning, reported_model;
   Json usage = Json::object();
+  std::vector<ToolCall> tool_calls;           // native tool calls of a buffered answer (the request carried `tools`)
   std::vector<std::string> issues;            // "malformed_chunk" | "model_invalid" | "model_changed"
   std::vector<Part> outputs;                  // typed outputs (text first; media stored via Services::outputs)
   std::string body;                           // buffered or captured body; the error body on HttpError
   std::size_t received_bytes = 0;
   bool response_limited = false;
   std::string operation_id;                   // usage receipt of the admission (held or dispatched); "" = unguarded
+  Json notices = nullptr;                     // P18: what the admission only tells (a spending limit with on_exceed notify): [{code, period, text: {lang: text}}]
   Json hold = nullptr;                        // Held: {status, decision, decisions}
   Json provenance = Json::object();
   bool ok() const noexcept { return state == State::Ok; }
@@ -381,6 +392,7 @@ Result<net::HttpRequest> describe_request(const Services& services, const RouteS
 struct Parsed {
   std::string text, reasoning, reported_model;
   Json usage = Json::object();
+  std::vector<ToolCall> tool_calls;
   std::vector<std::string> issues;
   std::vector<Part> outputs;   // non-text outputs; media carry `bytes` until stored
 };

@@ -3,8 +3,13 @@ name: Package (Android APK + server)
 # Manual only. The owner pays for Actions minutes, so nothing here runs on push or pull_request.
 # Run it from the Actions tab (or `gh workflow run package.yml --ref <branch>`), then download the
 # artifacts from the run page:
-#   chatadhd-android-apk         app-debug.apk  - install on a phone (debug-signed, see loom/android/README.md)
-#   chatadhd-server-linux-x64    chatadhd-server-linux-x64-<version>.tar.gz (+ .sha256)
+#   chatadhd-android-apk-release  app-release.apk - signed with the owner's release key; produced only when ALL FOUR
+#                                repo secrets ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD, ANDROID_KEY_ALIAS,
+#                                ANDROID_KEY_PASSWORD exist (some but not all = the run fails on purpose)
+#   chatadhd-android-apk-TEST-KEY app-debug.apk  - without those secrets: debug/test key, only for trying the app
+#                                (install on a phone; see loom/android/README.md and docs/PIERWSZE_KROKI.md step 4)
+#   chatadhd-server-linux-x64 / -arm64   chatadhd-server-linux-<arch>-<version>.tar.gz (+ .sha256)
+#                                (Ubuntu 22.04+ / Debian 12+; arm64 entry is optional)
 #                                - `sudo deploy/install.sh --from-tarball <file> --domain ...` (see deploy/README.md)
 on:
   workflow_dispatch:
@@ -15,6 +20,10 @@ on:
         default: true
       server:
         description: "Build the server + web archive for deploy/install.sh --from-tarball"
+        type: boolean
+        default: true
+      first_steps:
+        description: "After the server archive: walk docs/PIERWSZE_KROKI.md for real (install, account, login, provider key, five chat checks) in a debian:12 container and in Chromium"
         type: boolean
         default: true
       abis:
@@ -40,7 +49,7 @@ concurrency:
 
 jobs:
   android:
-    name: Android APK (debug-signed)
+    name: Android APK (release key if the secrets exist, else test key)
     if: ${{ inputs.android }}
     runs-on: ubuntu-24.04
     # Cold native build of the whole kernel on a 2-core runner is slow; a warm ccache cuts it a lot.
@@ -129,10 +138,44 @@ jobs:
           sdkmanager --list_installed
           echo "ANDROID_HOME=$ANDROID_HOME"
 
+      # Release signing is all-or-nothing. Secrets cannot be read in `if:`, so they are mapped to env of THIS
+      # step only (not the whole job, not the Gradle step) and the verdict is passed on as step outputs.
+      - name: Decide the signing mode (release key or test key)
+        id: sign
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          have=(); missing=()
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -n "${!name:-}" ]; then have+=("$name"); else missing+=("$name"); fi
+          done
+          if [ "${#have[@]}" -eq 4 ]; then
+            echo "mode=release" >> "$GITHUB_OUTPUT"
+            echo "artifact=chatadhd-android-apk-release" >> "$GITHUB_OUTPUT"
+            echo "gradle_task=assembleRelease" >> "$GITHUB_OUTPUT"
+            echo "apk_dir=release" >> "$GITHUB_OUTPUT"
+            echo "SIGNING_KEY_SOURCE=release-secrets" >> "$GITHUB_ENV"
+            echo "all four release-signing secrets are set: the APK will be signed with the release key"
+          elif [ "${#have[@]}" -eq 0 ]; then
+            echo "mode=test" >> "$GITHUB_OUTPUT"
+            echo "artifact=chatadhd-android-apk-TEST-KEY" >> "$GITHUB_OUTPUT"
+            echo "gradle_task=assembleDebug" >> "$GITHUB_OUTPUT"
+            echo "apk_dir=debug" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Test key::No release-signing secrets: the APK is signed with the debug/TEST key (artifact name ends in TEST-KEY)."
+          else
+            echo "::error title=Release signing secrets are incomplete::Set: ${have[*]}. Missing: ${missing[*]}. Add the missing ones (Settings > Secrets and variables > Actions) or delete all four to build with the test key."
+            exit 1
+          fi
+
       # Every GitHub runner is a fresh machine and Gradle would generate a NEW debug key on each one.
       # Android refuses to update an installed app signed with a different key, and uninstalling deletes
       # the app-private data. So the key is pinned: from a secret if there is one, else from the cache.
       - name: Debug signing key from the ANDROID_DEBUG_KEYSTORE_B64 secret (optional)
+        if: ${{ steps.sign.outputs.mode == 'test' }}
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_DEBUG_KEYSTORE_B64 }}
         run: |
@@ -149,7 +192,7 @@ jobs:
 
       - name: Debug signing key from the cache
         id: keycache
-        if: ${{ env.SIGNING_KEY_SOURCE == 'cache' }}
+        if: ${{ steps.sign.outputs.mode == 'test' && env.SIGNING_KEY_SOURCE == 'cache' }}
         uses: actions/cache@v4
         with:
           path: ~/.android/debug.keystore
@@ -184,6 +227,7 @@ jobs:
         env:
           ABIS: ${{ inputs.abis }}
           NATIVE_BUILD_TYPE: ${{ inputs.native_build_type }}
+          GRADLE_TASK: ${{ steps.sign.outputs.gradle_task }}
         run: |
           set -euo pipefail
           version_name="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
@@ -191,7 +235,7 @@ jobs:
           java -version
           ./gradlew --version
           # versionCode = run number: increases with every run, so a phone accepts the next APK as an update
-          ./gradlew assembleDebug --stacktrace \
+          ./gradlew "$GRADLE_TASK" --stacktrace \
             -Ploom.versionCode="$GITHUB_RUN_NUMBER" \
             -Ploom.versionName="$version_name" \
             -Ploom.abis="$ABIS" \
@@ -202,10 +246,37 @@ jobs:
         if: always()
         run: ccache -s || true
 
+      # assembleRelease leaves app-release-unsigned.apk. The keystore lives in RUNNER_TEMP (outside the
+      # workspace, so it can never end up in an artifact) and is deleted in the last step with `if: always()`.
+      # Passwords go through env (apksigner `env:` source), never on a command line.
+      - name: Sign the APK with the release key (zipalign + apksigner)
+        if: ${{ steps.sign.outputs.mode == 'release' }}
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          bt="$ANDROID_HOME/build-tools/34.0.0"
+          d=loom/android/app/build/outputs/apk/release
+          in="$d/app-release-unsigned.apk"
+          test -s "$in" || { echo "::error::$in was not produced"; exit 1; }
+          ks="$RUNNER_TEMP/release.keystore"
+          (umask 077; printf '%s' "$KS_B64" | base64 -d > "$ks")
+          test -s "$ks" || { echo "::error::ANDROID_KEYSTORE_BASE64 decoded to an empty file"; exit 1; }
+          # zipalign must come BEFORE apksigner (v2+ signatures cover the alignment)
+          "$bt/zipalign" -p -f 4 "$in" "$RUNNER_TEMP/aligned.apk"
+          "$bt/apksigner" sign --ks "$ks" --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass env:KS_PASS --key-pass env:KEY_PASS \
+            --out "$d/app-release.apk" "$RUNNER_TEMP/aligned.apk"
+          rm -f "$RUNNER_TEMP/aligned.apk" "$d/app-release.apk.idsig"
+          echo "signed: $d/app-release.apk"
+
       - name: Check the APK
         run: |
           set -euo pipefail
-          apk=loom/android/app/build/outputs/apk/debug/app-debug.apk
+          apk=loom/android/app/build/outputs/apk/${APK_DIR}/app-${APK_DIR}.apk
           test -s "$apk" || { echo "::error::$apk was not produced"; exit 1; }
           bt="$ANDROID_HOME/build-tools/34.0.0"
           unzip -l "$apk" > apk.lst
@@ -215,54 +286,88 @@ jobs:
           # the placeholder assets/web/index.html alone would mean copyWebAssets found nothing to copy
           grep -qE ' assets/web/assets/.+\.js$' apk.lst || { echo "::error::the real web bundle is not in the APK (only the placeholder page)"; exit 1; }
           "$bt/aapt2" dump badging "$apk" | grep -E "^package:|^sdkVersion|^targetSdkVersion|^native-code"
-          "$bt/apksigner" verify --print-certs "$apk" | tee certs.txt
+          "$bt/zipalign" -c 4 "$apk"
+          # print only the certificate SHA-256 (not the subject, not the rest)
+          "$bt/apksigner" verify --print-certs "$apk" > certs.txt
+          grep -m1 'certificate SHA-256 digest' certs.txt || { echo "::error::apksigner verify gave no certificate digest"; exit 1; }
+          if [ "$SIGN_MODE" = release ] && grep -q 'Android Debug' certs.txt; then
+            echo "::error::the release APK carries the debug certificate"; exit 1
+          fi
           # the .sha256 is written next to the APK with a bare file name, so `sha256sum -c` works after unzipping
           (cd "$(dirname "$apk")" && sha256sum "$(basename "$apk")" > "$(basename "$apk").sha256" && cat "$(basename "$apk").sha256")
           {
             echo "### Android APK"
             echo ""
-            echo "- file: \`app-debug.apk\` ($(du -h "$apk" | cut -f1)), versionName \`$VERSION_NAME\`, ABIs \`$ABIS\`, native build \`$NATIVE_BUILD_TYPE\`"
+            echo "- file: \`$(basename "$apk")\` ($(du -h "$apk" | cut -f1)), versionName \`$VERSION_NAME\`, ABIs \`$ABIS\`, native build \`$NATIVE_BUILD_TYPE\`"
             echo "- signing key source: \`$SIGNING_KEY_SOURCE\`"
-            echo "- $(grep -m1 'SHA-256 digest' certs.txt || echo 'certificate digest: see log')"
+            echo "- $(grep -m1 'certificate SHA-256 digest' certs.txt || echo 'certificate digest: see log')"
+            if [ "$SIGN_MODE" = release ]; then
+              echo "- signed with the **release key** (secrets set)"
+            else
+              echo "- **TEST KEY**: signed with the debug key because the four ANDROID_KEYSTORE_* / ANDROID_KEY_* secrets are not set. The first switch to the release key needs a one-time uninstall of this app."
+            fi
             echo "- sha256: \`$(cut -d' ' -f1 "$apk.sha256")\`"
             echo ""
-            echo "Download the artifact \`chatadhd-android-apk\`, unzip it on the phone and open the .apk"
+            echo "Download the artifact \`$ARTIFACT\`, unzip it on the phone and open the .apk"
             echo "(allow installing from this source when Android asks). New installs keep their data in the app's private storage."
           } >> "$GITHUB_STEP_SUMMARY"
         env:
           ABIS: ${{ inputs.abis }}
           NATIVE_BUILD_TYPE: ${{ inputs.native_build_type }}
+          SIGN_MODE: ${{ steps.sign.outputs.mode }}
+          APK_DIR: ${{ steps.sign.outputs.apk_dir }}
+          ARTIFACT: ${{ steps.sign.outputs.artifact }}
 
       - name: Upload the APK
         uses: actions/upload-artifact@v4
         with:
-          name: chatadhd-android-apk
+          name: ${{ steps.sign.outputs.artifact }}
           path: |
-            loom/android/app/build/outputs/apk/debug/app-debug.apk
-            loom/android/app/build/outputs/apk/debug/app-debug.apk.sha256
+            loom/android/app/build/outputs/apk/${{ steps.sign.outputs.apk_dir }}/app-${{ steps.sign.outputs.apk_dir }}.apk
+            loom/android/app/build/outputs/apk/${{ steps.sign.outputs.apk_dir }}/app-${{ steps.sign.outputs.apk_dir }}.apk.sha256
           if-no-files-found: error
 
+      - name: Delete the release keystore
+        if: ${{ always() }}
+        run: rm -f "$RUNNER_TEMP/release.keystore" "$RUNNER_TEMP/aligned.apk"
+
   server:
-    name: Server + web archive (linux x64)
+    name: Server + web archive (${{ matrix.label }})
     if: ${{ inputs.server }}
-    # Ubuntu 24.04 (glibc 2.39), the same image the Loom workflow builds on. The archive therefore
-    # needs a target with glibc >= 2.38: Ubuntu 24.04+ / Debian 13+. install.sh --from-tarball checks.
-    runs-on: ubuntu-24.04
+    # Built on Ubuntu 22.04 (glibc 2.35), so the archive runs on Ubuntu 22.04+ and Debian 12+ (and newer).
+    # The code needs C++20 <format> = GCC 13, which 22.04 does not ship: GCC 13 comes from the
+    # ubuntu-toolchain-r/test PPA and libstdc++/libgcc are linked STATICALLY, so the target needs no
+    # newer libstdc++. The only runtime libraries left are glibc and libssl3 (OpenSSL 3.x).
+    # The arm64 entry uses a GitHub-hosted arm64 runner (free for public repos). If that label is not
+    # available for the repo, only that entry fails (continue-on-error + fail-fast off); x64 is unaffected.
+    runs-on: ${{ matrix.runner }}
+    continue-on-error: ${{ matrix.optional }}
     timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { label: "linux x64", arch: x64, runner: ubuntu-22.04, optional: false }
+          - { label: "linux arm64", arch: arm64, runner: ubuntu-22.04-arm, optional: true }
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_BASEDIR: ${{ github.workspace }}
       CCACHE_MAXSIZE: 1G
+      CC: gcc-13
+      CXX: g++-13
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           persist-credentials: false
 
-      - name: Install build dependencies
+      - name: Install build dependencies (GCC 13 from the toolchain PPA)
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends ninja-build ccache libssl-dev
+          sudo apt-get install -y --no-install-recommends software-properties-common
+          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc-13 g++-13 ninja-build ccache libssl-dev
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -275,14 +380,14 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .ccache
-          key: ccache-server-${{ github.sha }}
-          restore-keys: ccache-server-
+          key: ccache-server-${{ matrix.arch }}-${{ github.sha }}
+          restore-keys: ccache-server-${{ matrix.arch }}-
 
       - name: Toolchain versions
         run: |
           ccache -z
           cmake --version | head -1
-          g++ --version | head -1
+          g++-13 --version | head -1
           ninja --version
           node --version
           npm --version
@@ -293,6 +398,9 @@ jobs:
       - name: Build the archive
         env:
           CHATADHD_CMAKE_ARGS: -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          # install.sh word-splits CHATADHD_CMAKE_ARGS, so a flag list with spaces goes through LDFLAGS,
+          # which CMake reads into CMAKE_EXE_LINKER_FLAGS on the first configure.
+          LDFLAGS: -static-libstdc++ -static-libgcc
         run: |
           set -euo pipefail
           version="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
@@ -304,24 +412,107 @@ jobs:
         run: ccache -s || true
 
       # Start the server FROM the archive and ask it three questions (healthz, web page, auth).
-      - name: Verify the archive
+      - name: Verify the archive (build host)
         run: |
           set -euo pipefail
           ls -l dist-server
-          bash deploy/verify-package.sh "dist-server/chatadhd-server-linux-x64-${PACKAGE_VERSION}.tar.gz"
+          bash deploy/verify-package.sh "dist-server/chatadhd-server-linux-${{ matrix.arch }}-${PACKAGE_VERSION}.tar.gz"
+
+      # The point of this job: the archive must start on the OLDEST systems we claim to support, not on
+      # the build host. Each container gets a bare OS image + only what a VM would have (libssl3, curl),
+      # unpacks the archive and runs --version and the full verify-package.sh (server start + healthz + web).
+      - name: Verify the archive on target systems (Docker)
+        run: |
+          set -euo pipefail
+          tb="chatadhd-server-linux-${{ matrix.arch }}-${PACKAGE_VERSION}.tar.gz"
+          for image in debian:12 ubuntu:22.04 ubuntu:24.04 debian:13; do
+            echo "::group::$image"
+            docker run --rm -e DEBIAN_FRONTEND=noninteractive -v "$GITHUB_WORKSPACE:/w:ro" "$image" bash -ec '
+              apt-get update -qq
+              apt-get install -y -qq --no-install-recommends ca-certificates curl libssl3 >/dev/null 2>&1 \
+                || apt-get install -y -qq --no-install-recommends ca-certificates curl libssl3t64 >/dev/null
+              . /etc/os-release; echo "os: $PRETTY_NAME, $(ldd --version | head -1)"
+              mkdir /pkg && tar -xzf /w/dist-server/'"$tb"' -C /pkg --strip-components=1
+              /pkg/bin/loom-server --version
+              bash /w/deploy/verify-package.sh /w/dist-server/'"$tb"'
+            '
+            echo "::endgroup::"
+          done
+
+      - name: Summary
+        run: |
           {
-            echo "### Server archive"
+            echo "### Server archive (${{ matrix.label }})"
             echo ""
-            echo "- \`chatadhd-server-linux-x64-${PACKAGE_VERSION}.tar.gz\` ($(du -h dist-server/*.tar.gz | cut -f1))"
+            echo "- \`chatadhd-server-linux-${{ matrix.arch }}-${PACKAGE_VERSION}.tar.gz\` ($(du -h dist-server/*.tar.gz | cut -f1))"
             echo "- sha256: \`$(cut -d' ' -f1 dist-server/*.sha256)\`"
+            echo "- checked in containers: debian:12, ubuntu:22.04, ubuntu:24.04, debian:13"
             echo ""
-            echo "On the VM: \`sudo deploy/install.sh --from-tarball chatadhd-server-linux-x64-${PACKAGE_VERSION}.tar.gz --domain ... --admin-login ...\`"
-            echo "(needs Ubuntu 24.04+ / Debian 13+; older systems: build from source with \`deploy/install.sh\` without --from-tarball)"
+            echo "On the VM: \`sudo deploy/install.sh --from-tarball chatadhd-server-linux-${{ matrix.arch }}-${PACKAGE_VERSION}.tar.gz --domain ... --admin-login ...\`"
+            echo "(needs Ubuntu 22.04+ / Debian 12+; older systems: build from source with \`deploy/install.sh\` without --from-tarball)"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload the archive
         uses: actions/upload-artifact@v4
         with:
-          name: chatadhd-server-linux-x64
+          name: chatadhd-server-linux-${{ matrix.arch }}
           path: dist-server/
           if-no-files-found: error
+
+  # Optional: the owner's "first steps" guide (docs/PIERWSZE_KROKI.md) walked for real on the archive the
+  # server job just built, with nothing outside the runner: a fake provider on 127.0.0.1 stands in for the
+  # model. Part 1 runs in a bare debian:12 container (install.sh --from-tarball without root/systemd,
+  # first account, login, provider key, five chat checks over HTTP). Part 2 repeats it in headless
+  # Chromium on the runner (login screen, Settings, the chat window). Failing here never blocks the archive.
+  first-steps:
+    name: First steps walk-through (debian:12 + Chromium)
+    needs: server
+    if: ${{ inputs.server && inputs.first_steps }}
+    runs-on: ubuntu-22.04
+    continue-on-error: true
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Download the x64 archive
+        uses: actions/download-artifact@v4
+        with:
+          name: chatadhd-server-linux-x64
+          path: dist-server
+
+      - name: Part 1 - bare debian:12 container (install, account, login, key, five checks over HTTP)
+        run: |
+          set -euo pipefail
+          tb="$(ls dist-server/chatadhd-server-linux-x64-*.tar.gz)"
+          docker run --rm -e DEBIAN_FRONTEND=noninteractive -v "$GITHUB_WORKSPACE:/w:ro" debian:12 bash -ec '
+            apt-get update -qq
+            apt-get install -y -qq --no-install-recommends ca-certificates curl libssl3 python3 >/dev/null
+            . /etc/os-release; echo "os: $PRETTY_NAME"
+            bash /w/deploy/first-steps-check.sh /w/'"$tb"'
+          '
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: loom/web/package-lock.json
+
+      - name: Part 2 - the same in Chromium (screenshots are kept as an artifact)
+        working-directory: loom/web
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          bash "$GITHUB_WORKSPACE/deploy/first-steps-check.sh" "$(ls "$GITHUB_WORKSPACE"/dist-server/chatadhd-server-linux-x64-*.tar.gz)" --ui --shots "$GITHUB_WORKSPACE/first-steps-shots"
+
+      - name: Upload the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-steps-screenshots
+          path: first-steps-shots/
+          if-no-files-found: ignore

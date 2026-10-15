@@ -1,0 +1,29 @@
+{
+  "schema": "loom.shell_layouts/1",
+  "default": "czat",
+  "layouts": {
+    "czat": {
+      "label": "Czat",
+      "layout_mode": "full_screen_chat",
+      "topbar": ["drawer", "title", "model", "status", "menu"],
+      "menu": [
+        { "id": "settings", "label": "menu_settings", "action": "panel:settings" },
+        { "id": "graph", "label": "menu_graph", "action": "panel:graph" },
+        { "id": "memory", "label": "menu_memory", "action": "panel:memory" },
+        { "id": "knowledge", "label": "menu_knowledge", "action": "knowledge" },
+        { "id": "views", "label": "menu_views", "action": "sheet:views" },
+        { "id": "semantic", "label": "menu_semantic", "action": "sheet:semantic" },
+        { "id": "connection", "label": "menu_connection", "action": "connection", "when": "android_shell" },
+        { "id": "workshop", "label": "menu_workshop", "action": "layout:workshop" }
+      ],
+      "message_actions": ["copy", "edit", "regenerate", "versions", "exclude"],
+      "composer": ["attach", "text", "mic", "send"],
+      "starters": 4
+    },
+    "warsztat": {
+      "label": "Warsztat",
+      "layout_mode": "views_grid",
+      "note": "The workbench: the application views grid with every panel, as before P20."
+    }
+  }
+}

@@ -197,7 +197,7 @@ try {
   browser = await chromium.launch({ headless: true, args: ["--no-sandbox"] });
   const page = await browser.newPage(); page.on("pageerror", error => errors.push(error.message));
   await page.route("**/*", async route => { if (!route.request().url().startsWith(base + "/")) { external.push(route.request().url()); await route.abort(); } else await route.continue(); });
-  await page.goto(base); await page.getByLabel("Method profile", { exact: true }).selectOption(record.id);
+  await page.goto((base).replace(/\/?$/, "/#warsztat")); await page.getByLabel("Method profile", { exact: true }).selectOption(record.id);
   await page.getByRole("button", { name: "Load graph", exact: true }).click(); await page.locator('[data-testid="methods-snapshot"]').waitFor();
   await check("actual graph entities and three observed result relations render without fabricated defaults", async () => {
     assert.equal(await page.locator('[data-testid="methods-entity"]').count(), nested.packet.entities.length);
@@ -284,7 +284,7 @@ try {
     await page.getByRole("button", { name: "Show all results", exact: true }).click(); assert.equal(await page.locator('[data-testid="methods-result"]').count(), 3);
   });
   await check("native unavailable host is explicit and navigation performs no execution", async () => {
-    await page.goto(base + "/?unavailable"); await page.locator('[data-testid="methods-unavailable"]').waitFor();
+    await page.goto(base + "/?unavailable#warsztat"); await page.locator('[data-testid="methods-unavailable"]').waitFor();
     assert.equal(await page.getByRole("button", { name: "Load graph", exact: true }).isDisabled(), true);
     assert.deepEqual(external, []); assert.deepEqual(errors, []);
   });
@@ -300,7 +300,7 @@ print(json.dumps({'method_registry':{'profile':p,'receipt_ids':[],'selection':{'
     const settingsBeforeSeed = await native("GET", "/api/methods/chat-settings");
     await native("POST", "/api/methods", { operation: "set_chat_settings", context_execution_json: seed.stdout,
       expected_context_execution_sha256: settingsBeforeSeed.context_execution_sha256 });
-    await page.goto(base); await page.getByLabel("Method profile", { exact: true }).selectOption(record.id);
+    await page.goto((base).replace(/\/?$/, "/#warsztat")); await page.getByLabel("Method profile", { exact: true }).selectOption(record.id);
     await page.getByRole("button", { name: "Load graph", exact: true }).click(); await page.locator('[data-testid="methods-snapshot"]').waitFor();
     await check("actual native catalog/load/resolve returns repeated DAG paths and exact result Claims", async () => {
       assert.equal(await page.locator('[data-testid="methods-result"][data-complete="true"]').count(), 3);

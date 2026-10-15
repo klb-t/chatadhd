@@ -40,7 +40,7 @@ try {
   const errors = [], remote = [];
   page.on("pageerror", error => errors.push(error.message));
   page.on("request", request => { if (request.url().startsWith("https://example.invalid/")) remote.push(request.url()); });
-  await page.goto(`http://127.0.0.1:${server.address().port}/`);
+  await page.goto((`http://127.0.0.1:${server.address().port}/`).replace(/\/?$/, "/#warsztat"));
   await page.locator('[data-testid="imported-message-content"]').waitFor();
   assert.match(await page.locator(".body").innerText(), /Current edited message/);
   assert.equal(await page.locator(".body strong").innerText(), "edited");

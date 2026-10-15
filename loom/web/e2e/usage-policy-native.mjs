@@ -77,7 +77,7 @@ async function openPage() {
     if (request.method() !== "GET" && url.pathname.startsWith("/api/")) browserMutations.push({ method: request.method(), path: url.pathname, body: request.postDataJSON() });
     await route.continue();
   });
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("nav-settings").click();
   await page.getByTestId("usage-effective").waitFor();
 }

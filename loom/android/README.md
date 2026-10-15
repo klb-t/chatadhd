@@ -346,8 +346,13 @@ from the APK, and prints `apksigner` certificate digests.
   therefore pins the key: from the secret `ANDROID_DEBUG_KEYSTORE_B64`
   (`base64 -w0 ~/.android/debug.keystore`) if set, else from the Actions
   cache (evicted after 7 days without use; a warning annotation says when a
-  new key was generated). **Release signing is still open**: it needs the
-  owner's keystore as a secret and a `signingConfigs.release` block.
+  new key was generated). **Release signing** is done in the workflow, not in
+  Gradle: with all four secrets `ANDROID_KEYSTORE_BASE64`,
+  `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD` it
+  runs `assembleRelease`, then zipalign + apksigner (keystore in `RUNNER_TEMP`,
+  passwords via env, deleted at the end) and uploads
+  `chatadhd-android-apk-release`; with none it builds the debug APK as
+  `chatadhd-android-apk-TEST-KEY`; some but not all fails the run.
 * `versionCode` = run number, `versionName` = `ci-<run>-<sha7>`.
 * Install: download the artifact on the phone, unzip, open the `.apk`.
 
@@ -515,12 +520,21 @@ other apps can actually read on a given Android version, and the layout of
 - **Never run on a device or emulator** — no Android SDK/NDK in this
   environment. Everything above is host-side verification of the same
   code, not an on-device run.
-- **No microphone capture wired up.** `loom_transcribe`/`media_providers.h`
-  expect a file path; nothing in this shell records audio to one yet
-  (`RECORD_AUDIO` isn't even in the manifest). `transcribe()` works for a
-  file the user picked some other way (e.g. a share-sheet import).
-  Recording UI is a `loom/web` + a small additional bridge concern, not
-  started here.
+- **Devices of the page (P13) are wired but not run on a device.** The web UI is a *client* of the kernel: it declares
+  per session which devices it can drive (`loom_invoke("actions", "client.declare", ...)`, the same call as over HTTP;
+  `loom/web/src/api/loom-jni.ts` marks the transport `clientKind: "android"`) and carries out the device steps of a paused
+  run itself (`actions.client_result` over `loom_invoke`). Inside the WebView that needs three things from this shell,
+  all in `MainActivity`/`LoomBridge` and the manifest: `RECORD_AUDIO`/`CAMERA` and a `WebChromeClient.onPermissionRequest`
+  that hands the microphone and the camera to the page this app loaded (the rule is the pure-Java
+  `DevicePermissionPolicy`, checked on the host by `DevicePermissionTest`), `onShowFileChooser` for the file chooser, and
+  `LoomBridge.openConnection` (P20, R56: first run opens local mode straight into the chat; the web overflow menu entry "Połączenie" opens the native Connection screen; the corner gear remains only in server mode, where the page has no bridge), `LoomBridge.notify` / `notificationState` / `requestNotifications` for notifications (the WebView has no Notification
+  API; Android 13 asks at runtime). The declaration and `client_result` path through the real JNI glue is checked on the
+  host by `HostSmokeTest`. Recordings, pictures and files never travel inside `client_result` (P14 6): the page hands the bytes
+  to the kernel in bounded chunks (`client.blob_begin` / `append` / `commit` through the generic `invoke`, so the shell needs no
+  new bridge method), the answer names the blob by its hash, and a stored blob is read back with `client.blob_read` chunks; the
+  chunking, the hash and the read-back are in `HostSmokeTest` too. What is not checked: the Kotlin (no SDK here), the system permission dialogs, the recording itself
+  on a phone. In server mode the bridge is not injected, so a remote page gets the WebView's own devices but no shell
+  notifications.
 - **`assets/web/index.html` is a placeholder.** It only smoke-tests
   `window.LoomBridge` (open it and click through the buttons once
   `loom/web/dist` isn't there yet). `copyWebAssets` overwrites it with the

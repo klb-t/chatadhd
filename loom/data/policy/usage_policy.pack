@@ -4,5 +4,12 @@
   "baseline_window": 32,
   "ledger_busy_timeout_ms": 30000,
   "include_reservations": true,
-  "initial_baselines": {}
+  "initial_baselines": {},
+  "baseline_min_samples": 5,
+  "baseline_floor_tokens": {
+    "input": 4000,
+    "output": 1000
+  },
+  "baseline_floor_chars_per_token": 4.0,
+  "baseline_floor": {}
 }

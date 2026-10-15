@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <mutex>
 #include <thread>
 
 #include "loom/util/ids.h"
@@ -153,6 +154,11 @@ void Connection::close() noexcept {
 }
 
 Result<Connection> Connection::open(const std::filesystem::path& path, const OpenOptions& opts) {
+  // sqlite3_open_v2 initialises the library lazily; its unlocked fast-path check of the "initialised" flag races
+  // with the first initialiser when several threads open their first connection at once (ThreadSanitizer finds it).
+  // Initialise exactly once, before any thread proceeds.
+  static std::once_flag sqlite_init_once;
+  std::call_once(sqlite_init_once, [] { sqlite3_initialize(); });
   sqlite3* db = nullptr;
   int flags = SQLITE_OPEN_FULLMUTEX;
   flags |= opts.read_only ? SQLITE_OPEN_READONLY : SQLITE_OPEN_READWRITE;

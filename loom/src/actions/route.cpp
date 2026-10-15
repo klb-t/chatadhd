@@ -3,10 +3,15 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
+#include <map>
+#include <memory>
+#include <mutex>
 #include <set>
 
 #include "loom/action_element.h"
 #include "loom/action_emergent.h"
+#include "loom/guardian.h"
 #include "loom/action_overlay.h"
 #include "loom/action_result.h"
 #include "loom/action_run.h"
@@ -20,8 +25,11 @@
 #include "loom/re/regex.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
+#include "loom/semantic_worker.h"
 #include "loom/settings_fields.h"
+#include "loom/usage_spend.h"
 #include "loom/use_model.h"
+#include "loom/util/time.h"
 #include "loom/util/unicode.h"
 #include "loom/util/utf8.h"
 
@@ -45,6 +53,19 @@ std::vector<std::string> strings_of(const Json* v) {
   return out;
 }
 
+// The expressions of the data are compiled once: the router reads a few hundred of them on every input. nullptr = the pattern does not compile.
+std::shared_ptr<const re::Regex> compiled(const std::string& pattern, re::Flags flags = re::kNone) {
+  static std::mutex mu;
+  static std::map<std::pair<std::string, int>, std::shared_ptr<const re::Regex>> cache;
+  std::lock_guard<std::mutex> lock(mu);
+  auto key = std::make_pair(pattern, static_cast<int>(flags));
+  if (auto it = cache.find(key); it != cache.end()) return it->second;
+  auto made = re::Regex::compile(pattern, flags);
+  std::shared_ptr<const re::Regex> out = made ? std::make_shared<const re::Regex>(std::move(*made)) : nullptr;
+  cache.emplace(std::move(key), out);
+  return out;
+}
+
 struct Data {
   Json cfg;
   Engine engine;
@@ -52,13 +73,16 @@ struct Data {
   std::set<std::string> setting_keys;
   std::filesystem::path root;
   Json results = Json::object();  // runtime profile action_results (link names, ...)
+  std::string client_id;          // the client that asks (client_devices.h): the device actions it declared are runnable in what it is shown
+  Json estimate_reasons = Json::object();  // profile action_run, estimate.reasons: why money is unknown, by code, per language
 };
 
-Result<Data> load_data(Runtime& rt) {
+Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()) {
   const auto root = rt.paths().root;
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("intent_routing", root));
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
   engine.set_user_values(rt.config().all());  // the user's settings are the person level of scoped values
+  engine.apply_client(rt.actions().client_patches(client_id));
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   std::set<std::string> keys;
   if (auto fields = settings_fields(root))
@@ -66,7 +90,11 @@ Result<Data> load_data(Runtime& rt) {
       for (const auto& f : *list) keys.insert(json::get_string(f, "key"));
   Json results = Json::object();
   if (auto p = RuntimeProfile::load("action_results", root)) results = p->values();
-  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results)};
+  Json reasons = Json::object();
+  if (auto p = RuntimeProfile::load("action_run", root))
+    if (const Json* est = json::find(p->values(), "estimate"))
+      if (const Json* r = json::find(*est, "reasons"); r && r->is_object()) reasons = *r;
+  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results), client_id, std::move(reasons)};
 }
 
 ElementSources sources_of(Runtime& rt) { return ElementSources{&rt.db(), &rt.blobs(), rt.paths().root}; }
@@ -138,15 +166,20 @@ bool word_matches(const std::string& token, const std::string& word) {
   return token == word;
 }
 
+// default_element of an action (data): the element a command acts on when the sentence names none. A name the router resolves
+// (last_message, current_conversation) or an element id (device:microphone).
+bool resolves_default(std::string_view name) { return name == "last_message" || name == "current_conversation"; }
+Json default_element_ref(const std::string& name) { return resolves_default(name) ? Json{{"resolve", name}} : Json{{"id", name}}; }
+
 struct Hit {
-  std::size_t first = 0, words = 0;
+  std::size_t first = 0, words = 0, last = 0;  // the tokens the phrase occupies run from first to last (inclusive)
 };
 
 std::optional<Hit> match_phrase(const std::vector<std::string>& tokens, const std::string& phrase, std::size_t window, std::size_t lead) {
   const auto words = whitespace_tokens(phrase);
   if (words.empty()) return std::nullopt;
   std::set<std::size_t> used;
-  std::size_t first = tokens.size();
+  std::size_t first = tokens.size(), last = 0;
   const std::size_t limit = std::min(window, tokens.size());
   for (const auto& w : words) {
     bool found = false;
@@ -154,12 +187,13 @@ std::optional<Hit> match_phrase(const std::vector<std::string>& tokens, const st
       if (used.count(i) || !word_matches(tokens[i], w)) continue;
       used.insert(i);
       first = std::min(first, i);
+      last = std::max(last, i);
       found = true;
     }
     if (!found) return std::nullopt;
   }
   if (first >= lead) return std::nullopt;
-  return Hit{first, words.size()};
+  return Hit{first, words.size(), last};
 }
 
 std::string say(const Json& cfg, const std::string& lang, const std::string& id, const Json& params = Json::object()) {
@@ -184,14 +218,29 @@ std::string localized(const Json& v, const std::string& lang) {
   return std::string();
 }
 
+// Why the money of an estimate is unknown, in the language of the proposal: the estimate returns a code (and parameters), the texts per
+// language are data (action_run: estimate.reasons). A code the data does not know keeps the estimate's own (English) words.
+void localize_money_reason(const Data& d, Json& money, const std::string& lang) {
+  if (!money.is_object()) return;
+  const std::string code = json::get_string(money, "reason_code");
+  const Json* texts = code.empty() ? nullptr : json::find(d.estimate_reasons, code);
+  if (!texts) return;
+  std::string text = localized(*texts, lang);
+  if (text.empty()) return;
+  if (auto rendered = render_profile_template(text, money.value("reason_params", Json::object()))) text = *rendered;
+  money["reason"] = text;
+}
+
 // ── candidates ──────────────────────────────────────────────────────
 
 struct Cand {
   std::string source, matched, lang, action;
+  std::string via;         // lexicon: an action said first whose product this one goes on from (the chain must contain it)
   Json args = Json::object();
   Json element = nullptr;  // {"id": ...} | {"resolve": "current_conversation" | "last_message"} | null
   double score = 0;
   Json emergent = nullptr;  // a definition the catalogue could grow by (action_emergent.h); the command writes it
+  std::string check_arg;    // a command that is kept only when the text of this argument is itself a command (help.how_to: "how do I ...")
 };
 
 struct Conv {
@@ -199,6 +248,14 @@ struct Conv {
 };
 
 const Json* entry_of(const Data& d, const std::string& action) { return json::find(d.engine.catalogue(), action); }
+
+// The title of an action in a language: its label there, else its title (English); the name given when the catalogue does not know the action.
+std::string title_in(const Data& d, const std::string& action, const std::string& fallback, const std::string& lang) {
+  const Json* entry = entry_of(d, action);
+  if (!entry) return fallback.empty() ? action : fallback;
+  const std::string label = localized(entry->value("labels", Json::object()), lang);
+  return label.empty() ? json::get_string(*entry, "title", action) : label;
+}
 
 // ── arguments from loose phrases ────────────────────────────────────
 // Data: heuristic.arguments (patterns) and heuristic.languages. A pattern fills a parameter the chosen action declares;
@@ -247,7 +304,7 @@ std::vector<ArgHit> extract_args(const Data& d, const Json& entry, const std::st
     const std::string param = json::get_string(*p, "param");
     if (!declared.count(param) || done.count(param)) continue;
     if (const Json* given = json::find(have, param); given && !given->is_null()) continue;  // the caller's word comes first
-    auto rx = re::Regex::compile(json::get_string(*p, "regex"));
+    auto rx = compiled(json::get_string(*p, "regex"));
     if (!rx) continue;
     const std::string kind = json::get_string(*p, "kind", "text");
     for (const auto& m : rx->finditer(subject)) {
@@ -308,6 +365,20 @@ Json params_view(const Json& entry, const Json& said, const Json& bound, const s
   return out;
 }
 
+// An action whose element is one of its arguments (a setting) may say, in its data, which element an argument it was given stands for
+// (`element_arg_defaults`: usage.set_limit - an `amount` is about usage_spend_limits, a `growth_factor` about loom_usage_policy).
+void default_element_arg(const Json& entry, Json& args) {
+  const std::string from = json::get_string(entry, "element_from_arg");
+  if (from.empty() || !args.is_object() || args.contains(from)) return;
+  const Json* defaults = json::find(entry, "element_arg_defaults");
+  if (!defaults || !defaults->is_object()) return;
+  for (auto it = defaults->begin(); it != defaults->end(); ++it)
+    if (it->is_string() && args.contains(it.key()) && !args[it.key()].is_null()) {
+      args[from] = *it;
+      return;
+    }
+}
+
 std::string other_required_param(const Json& entry, const std::string& element_arg) {
   if (const Json* params = json::find(entry, "params"); params && params->is_array())
     for (const auto& p : *params)
@@ -352,7 +423,7 @@ std::optional<Cand> parse_explicit(const Data& d, const std::string& text) {
   c.score = 1.0;
   const std::string element_arg = entry ? json::get_string(*entry, "element_from_arg") : std::string();
   const std::string other = entry && !element_arg.empty() ? other_required_param(*entry, element_arg) : std::string();
-  auto kv = re::Regex::compile(json::get_string(ex, "arg_pattern"));
+  auto kv = compiled(json::get_string(ex, "arg_pattern"));
   const auto markers = strings_of(json::find(ex, "element_markers"));
   std::vector<std::string> positional;
   std::string element_token;
@@ -391,11 +462,22 @@ std::optional<Cand> parse_explicit(const Data& d, const std::string& text) {
     }
     if (!other.empty() && !c.args.contains(other) && !positional.empty()) c.args[other] = join(positional, " ");
   }
+  // The words after the action that are not key=value fill the parameter the action names as its positional one: /search.find cats and dogs.
+  if (entry) {
+    const std::string positional_arg = json::get_string(*entry, "positional_arg");
+    if (!positional_arg.empty() && !c.args.contains(positional_arg) && !positional.empty()) c.args[positional_arg] = join(positional, " ");
+  }
+  if (entry && element_token.empty()) default_element_arg(*entry, c.args);
   if (!element_token.empty()) {
     c.element = Json{{"id", element_token}};
   } else if (element_arg.empty() || !c.args.contains(element_arg)) {
+    // An action of the application as a whole (it requires nothing but `application`) acts on the application, not on the conversation.
+    const auto requires_ = entry ? strings_of(json::find(*entry, "requires")) : std::vector<std::string>();
     const std::string dflt = json::get_string(ex, "default_element");
-    if (!dflt.empty()) c.element = Json{{"resolve", dflt}};
+    const std::string own = entry ? json::get_string(*entry, "default_element") : std::string();
+    if (requires_.size() == 1 && requires_[0] == "application") c.element = Json{{"id", "application"}};
+    else if (resolves_default(own)) c.element = default_element_ref(own);  // the action says what it acts on when nothing is named
+    else if (!dflt.empty()) c.element = Json{{"resolve", dflt}};
   }
   return c;
 }
@@ -404,7 +486,7 @@ std::vector<Cand> parse_patterns(const Data& d, const std::string& text) {
   std::vector<Cand> out;
   const std::u32string subject = utf8::decode(std::string(utf8::strip(text)));
   for (const auto& p : d.cfg.at("heuristic").at("patterns")) {
-    auto rx = re::Regex::compile(json::get_string(p, "regex"), re::kIgnoreCase);
+    auto rx = compiled(json::get_string(p, "regex"), re::kIgnoreCase);
     if (!rx) continue;
     auto m = rx->search(subject);
     if (!m) continue;
@@ -453,54 +535,159 @@ Json find_references_many(const Data& d, const std::string& text) {
   return many;
 }
 
+// The best phrase of an action found in the tokens: a phrase of the action itself or of the lexicon of the routing profile
+// (heuristic.phrases: action -> language -> phrases, where the phrases the user's own conversations added live).
+struct Found {
+  Cand cand;
+  Hit hit;
+};
+
+// A sentence that says something ABOUT a result ("Ocena tej wiadomości jest niska", "The critique of this message is harsh") is not the command the
+// word in it also names (P18). Data heuristic.statement_guard: `nouns` (the words of the lexicon's stems that are nouns as well as verbs: ocena,
+// krytyka, podsumowanie ...) and `statement_words` (jest, była, wynosi, is, was ...). A phrase that hit on one of those nouns, in a sentence with a
+// statement word, is dropped. A hit on a verb is never dropped ("Oceń tę wiadomość, bo nie jest jasna" is a command), nor a noun that asks for the act
+// ("Zrób ocenę tej wiadomości": no statement word). Lists are languages -> words (folded as the text is); empty lists turn the guard off.
+bool states_something(const Data& d, const std::vector<std::string>& tokens, const Hit& hit) {
+  const Json& h = d.cfg.at("heuristic");
+  const Json* guard = json::find(h, "statement_guard");
+  if (!guard || !guard->is_object() || hit.first >= tokens.size()) return false;
+  const Json& fold_map = h.at("fold");
+  const auto listed = [&](const char* key, const std::string& word) {
+    const Json* lists = json::find(*guard, key);
+    if (!lists || !lists->is_object()) return false;
+    for (auto lang = lists->begin(); lang != lists->end(); ++lang)
+      for (const auto& w : strings_of(&lang.value()))
+        if (fold(w, fold_map) == word) return true;
+    return false;
+  };
+  if (!listed("nouns", tokens[hit.first])) return false;
+  for (std::size_t i = 0; i < tokens.size(); ++i)
+    if (i != hit.first && listed("statement_words", tokens[i])) return true;
+  return false;
+}
+
+std::optional<Found> best_phrase(const Data& d, const std::string& key, const Json& entry, const std::vector<std::string>& tokens) {
+  const Json& h = d.cfg.at("heuristic");
+  const std::size_t window = static_cast<std::size_t>(json::get_int(h, "window_tokens", 12));
+  const std::size_t lead = static_cast<std::size_t>(json::get_int(h, "lead_tokens", 4));
+  const Json& scoring = h.at("scoring");
+  Json merged = Json::object();
+  if (const Json* own = json::find(entry, "phrases"); own && own->is_object()) merged = *own;
+  if (const Json* extra = json::find(h, "phrases"); extra && extra->is_object())
+    if (const Json* more = json::find(*extra, key); more && more->is_object())
+      for (auto l = more->begin(); l != more->end(); ++l) {
+        if (!merged.contains(l.key()) || !merged[l.key()].is_array()) merged[l.key()] = Json::array();
+        for (const auto& x : l.value())
+          if (x.is_string()) merged[l.key()].push_back(x);
+      }
+  std::optional<Found> best;
+  for (auto lang = merged.begin(); lang != merged.end(); ++lang) {
+    for (const auto& phrase : strings_of(&lang.value())) {
+      auto hit = match_phrase(tokens, fold(phrase, h.at("fold")), window, lead);
+      if (!hit) continue;
+      if (states_something(d, tokens, *hit)) continue;
+      const double score = std::min(1.0, json::get_number(scoring, "base", 0.6) + json::get_number(scoring, "per_word", 0.1) * static_cast<double>(hit->words) -
+                                             json::get_number(scoring, "lead_penalty", 0.05) * static_cast<double>(hit->first));
+      if (score < json::get_number(scoring, "min_score", 0.5)) continue;
+      if (best && best->cand.score >= score) continue;
+      Found f;
+      f.cand.source = "lexicon";
+      f.cand.matched = phrase;
+      f.cand.lang = lang.key();
+      f.cand.action = key;
+      f.cand.score = score;
+      f.hit = *hit;
+      best = std::move(f);
+    }
+  }
+  return best;
+}
+
+// A sentence that names no element but brings its own text to work on is an ordinary message: the model does the job inline
+// ("przetłumacz na niemiecki: dzień dobry"). Data heuristic.payload: payload_patterns (a colon followed by text, a quoted text,
+// a second line), max_words (content words allowed after the command), filler_words. The words the argument patterns read
+// ("na niemiecki") and the filler words are not content.
+bool carries_payload(const Data& d, const Json& entry, const std::string& text, const std::vector<std::string>& tokens, const Found& found) {
+  const Json* cfg = json::find(d.cfg.at("heuristic"), "payload");
+  if (!cfg || !cfg->is_object()) return false;
+  const std::u32string subject = utf8::decode(text);
+  for (const auto& pattern : strings_of(json::find(*cfg, "payload_patterns"))) {
+    auto rx = compiled(pattern);
+    if (rx && rx->search(subject)) return true;
+  }
+  const Json& fold_map = d.cfg.at("heuristic").at("fold");
+  std::vector<std::string> tail(tokens.begin() + static_cast<std::ptrdiff_t>(std::min(found.hit.last + 1, tokens.size())), tokens.end());
+  const auto drop_one = [&](const std::string& word) {
+    auto at = std::find(tail.begin(), tail.end(), word);
+    if (at != tail.end()) tail.erase(at);
+  };
+  for (const auto& hit : extract_args(d, entry, text, found.cand.lang, Json::object()))
+    for (const auto& w : word_tokens(fold(hit.matched, fold_map))) drop_one(w);
+  std::set<std::string> fillers;
+  for (const auto& w : strings_of(json::find(*cfg, "filler_words"))) fillers.insert(fold(w, fold_map));
+  std::size_t content = 0;
+  for (const auto& w : tail)
+    if (!fillers.count(w)) ++content;
+  return content > static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(*cfg, "max_words", 0)));
+}
+
 std::vector<Cand> parse_lexicon(const Data& d, const std::string& text) {
   std::vector<Cand> out;
   const Json& h = d.cfg.at("heuristic");
   const std::string folded = fold(text, h.at("fold"));
   const auto tokens = word_tokens(folded);
   const Json element = find_reference(d, text, tokens);
-  if (element.is_null()) return out;  // naming an action is not enough: a command acts on an element
-  const std::size_t window = static_cast<std::size_t>(json::get_int(h, "window_tokens", 12));
-  const std::size_t lead = static_cast<std::size_t>(json::get_int(h, "lead_tokens", 4));
-  const Json& scoring = h.at("scoring");
+  // Naming an action is not enough: a command acts on an element. A device action implies its device ("nagraj dźwięk": the
+  // microphone), which its catalogue entry names (default_element); any other action needs the element in the words.
+  std::vector<Found> device_hits;
   for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
     const Json& entry = it.value();
     if (json::find(entry, "element_from_arg")) continue;  // settings are named by their key: the patterns handle them
-    // The phrases of the action itself plus the lexicon of the routing profile (heuristic.phrases: action -> language -> phrases),
-    // where the phrases the user's own conversations added live.
-    Json merged = Json::object();
-    if (const Json* own = json::find(entry, "phrases"); own && own->is_object()) merged = *own;
-    if (const Json* extra = json::find(h, "phrases"); extra && extra->is_object())
-      if (const Json* more = json::find(*extra, it.key()); more && more->is_object())
-        for (auto l = more->begin(); l != more->end(); ++l) {
-          if (!merged.contains(l.key()) || !merged[l.key()].is_array()) merged[l.key()] = Json::array();
-          for (const auto& x : l.value())
-            if (x.is_string()) merged[l.key()].push_back(x);
-        }
-    if (merged.empty()) continue;
-    const Json* phrases = &merged;
-    std::optional<Cand> best;
-    for (auto lang = phrases->begin(); lang != phrases->end(); ++lang) {
-      for (const auto& phrase : strings_of(&lang.value())) {
-        auto hit = match_phrase(tokens, fold(phrase, h.at("fold")), window, lead);
-        if (!hit) continue;
-        const double score = std::min(1.0, json::get_number(scoring, "base", 0.6) + json::get_number(scoring, "per_word", 0.1) * static_cast<double>(hit->words) -
-                                               json::get_number(scoring, "lead_penalty", 0.05) * static_cast<double>(hit->first));
-        if (score < json::get_number(scoring, "min_score", 0.5)) continue;
-        if (best && best->score >= score) continue;
-        Cand c;
-        c.source = "lexicon";
-        c.matched = phrase;
-        c.lang = lang.key();
-        c.action = it.key();
-        c.element = element;
-        if (json::get_bool(entry, "element_many", false))
-          if (Json many = find_references_many(d, text); many.size() > 1) c.element = Json{{"many", many}};
-        c.score = score;
-        best = std::move(c);
+    const std::string implied = json::get_string(entry, "default_element");
+    if (element.is_null() && implied.empty()) continue;
+    auto found = best_phrase(d, it.key(), entry, tokens);
+    if (!found) continue;
+    if (element.is_null() && resolves_default(implied) && carries_payload(d, entry, text, tokens, *found)) continue;
+    Cand c = found->cand;
+    c.element = element.is_null() ? default_element_ref(implied) : element;
+    if (json::get_bool(entry, "element_many", false))
+      if (Json many = find_references_many(d, text); many.size() > 1) c.element = Json{{"many", many}};
+    if (!implied.empty() && json::get_string(c.element, "id").rfind("device:", 0) == 0) {  // a device action on a device: the second action may go on from it
+      found->cand = c;
+      device_hits.push_back(*found);
+    }
+    out.push_back(std::move(c));
+  }
+  // Two actions in one sentence ("nagraj notatkę głosową i ją streść"): the second acts on what the first brings. The device
+  // action names the element; the action after the connector (heuristic.sequence.connectors) is the target of a chain from it.
+  const Json* sequence = json::find(h, "sequence");
+  if (sequence && !device_hits.empty()) {
+    std::vector<std::string> connectors;
+    for (const auto& w : strings_of(json::find(*sequence, "connectors"))) connectors.push_back(fold(w, h.at("fold")));
+    const Found* first = &device_hits[0];
+    for (const auto& f : device_hits)
+      if (f.cand.score > first->cand.score) first = &f;
+    std::size_t at = tokens.size();
+    for (std::size_t i = first->hit.first + 1; i < tokens.size() && at == tokens.size(); ++i)
+      if (std::find(connectors.begin(), connectors.end(), tokens[i]) != connectors.end()) at = i;
+    if (at + 1 < tokens.size()) {
+      const std::vector<std::string> tail(tokens.begin() + static_cast<std::ptrdiff_t>(at) + 1, tokens.end());
+      std::optional<Found> then;
+      for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
+        const Json& entry = it.value();
+        if (json::find(entry, "element_from_arg") || (!json::get_string(entry, "default_element").empty() && !resolves_default(json::get_string(entry, "default_element")))) continue;
+        auto found = best_phrase(d, it.key(), entry, tail);
+        if (found && (!then || found->cand.score > then->cand.score)) then = std::move(found);
+      }
+      if (then) {
+        Cand c = then->cand;
+        c.element = first->cand.element;
+        c.via = first->cand.action;
+        c.matched = first->cand.matched + " + " + then->cand.matched;
+        c.score = std::min(1.0, first->cand.score + json::get_number(*sequence, "bonus", 0.05));  // two actions said beat the first alone
+        out.insert(out.begin(), std::move(c));  // and win a tie with it: the sort is stable
       }
     }
-    if (best) out.push_back(std::move(*best));
   }
   return out;
 }
@@ -514,6 +701,11 @@ std::string resolve_action_word(const Data& d, const std::string& word) {
   if (word.empty()) return std::string();
   if (entry_of(d, word)) return word;
   const Json& h = d.cfg.at("heuristic");
+  // Words that stand for one action ("obraz" is depict, not a media action that is only planned): heuristic.rules.action_words, word -> action.
+  if (const Json* rules = json::find(h, "rules"); rules && rules->is_object())
+    if (const Json* words = json::find(*rules, "action_words"); words && words->is_object())
+      for (auto it = words->begin(); it != words->end(); ++it)
+        if (it.value().is_string() && entry_of(d, it.value().get<std::string>()) && word_matches(word, fold(it.key(), h.at("fold")))) return it.value().get<std::string>();
   std::vector<std::string> found;
   for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
     if (json::find(it.value(), "element_from_arg")) continue;
@@ -534,43 +726,57 @@ std::string resolve_action_word(const Data& d, const std::string& word) {
   return found.size() == 1 ? found[0] : std::string();
 }
 
-std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text) {
+// `inner`: the text is read as the topic of a how-to: commands that ask for another command's explanation, and the growth of the
+// catalogue, are not part of that reading.
+std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text, bool inner = false) {
   std::vector<Cand> out;
   const Json& h = d.cfg.at("heuristic");
   const Json* rules = json::find(h, "rules");
-  if (!rules || !rules->is_object()) return out;
-  std::u32string folded = utf8::decode(fold(text, h.at("fold")));
-  std::u32string original = utf8::decode(std::string(text));
-  if (original.size() != folded.size()) original = folded;
+  // The commands of the rules (with their scope phrases) and the commands of everything else the conversation can do (heuristic.commands).
+  Json commands = Json::array();
+  if (rules && rules->is_object())
+    for (const auto& command : rules->value("commands", Json::array())) commands.push_back(command);
+  if (const Json* more = json::find(h, "commands"); more && more->is_array())
+    for (const auto& command : *more) commands.push_back(command);
+  if (commands.empty()) return out;
+  const std::u32string folded_raw = utf8::decode(fold(text, h.at("fold")));
+  std::u32string original_raw = utf8::decode(std::string(text));
+  if (original_raw.size() != folded_raw.size()) original_raw = folded_raw;
+  std::u32string folded = folded_raw, original = original_raw;
   // The scope phrase: the longest one found as whole words; it is blanked out (same length) so the command reads what is left.
   std::string scope;
   std::size_t best_len = 0;
   std::size_t best_at = 0;
   auto is_word = [](char32_t c) { return unicode::is_word(c); };
-  for (const auto& entry : rules->value("scopes", Json::array()))
-    for (auto l = entry.at("phrases").begin(); l != entry.at("phrases").end(); ++l)
-      for (const auto& phrase : strings_of(&l.value())) {
-        const std::u32string needle = utf8::decode(fold(phrase, h.at("fold")));
-        if (needle.empty() || needle.size() <= best_len) continue;
-        for (std::size_t at = folded.find(needle); at != std::u32string::npos; at = folded.find(needle, at + 1)) {
-          const bool left = at == 0 || !is_word(folded[at - 1]);
-          const bool right = at + needle.size() >= folded.size() || !is_word(folded[at + needle.size()]);
-          if (left && right) {
-            scope = json::get_string(entry, "scope");
-            best_len = needle.size();
-            best_at = at;
-            break;
+  if (rules && rules->is_object())
+    for (const auto& entry : rules->value("scopes", Json::array()))
+      for (auto l = entry.at("phrases").begin(); l != entry.at("phrases").end(); ++l)
+        for (const auto& phrase : strings_of(&l.value())) {
+          const std::u32string needle = utf8::decode(fold(phrase, h.at("fold")));
+          if (needle.empty() || needle.size() <= best_len) continue;
+          for (std::size_t at = folded.find(needle); at != std::u32string::npos; at = folded.find(needle, at + 1)) {
+            const bool left = at == 0 || !is_word(folded[at - 1]);
+            const bool right = at + needle.size() >= folded.size() || !is_word(folded[at + needle.size()]);
+            if (left && right) {
+              scope = json::get_string(entry, "scope");
+              best_len = needle.size();
+              best_at = at;
+              break;
+            }
           }
         }
-      }
   if (best_len > 0) {
     for (std::size_t i = best_at; i < best_at + best_len; ++i) folded[i] = original[i] = U' ';
   }
-  for (const auto& command : rules->value("commands", Json::array())) {
+  for (const auto& command : commands) {
+    const bool takes_scope = command.value("takes_scope", true);  // the scope phrase is part of the sentence only for the commands that take one
     if (json::get_bool(command, "needs_scope", false) && scope.empty()) continue;
-    auto rx = re::Regex::compile(json::get_string(command, "regex"));
+    if (inner && !json::get_string(command, "check_arg").empty()) continue;
+    auto rx = compiled(json::get_string(command, "regex"));
     if (!rx) continue;
-    auto m = rx->search(folded);
+    const std::u32string& subject = takes_scope ? folded : folded_raw;
+    const std::u32string& source = takes_scope ? original : original_raw;
+    auto m = rx->search(subject);
     if (!m) continue;
     const auto names = strings_of(json::find(command, "args"));
     const auto from_original = strings_of(json::find(command, "original"));
@@ -581,14 +787,17 @@ std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text) {
     c.lang = json::get_string(command, "lang");
     c.action = json::get_string(command, "action");
     c.score = 1.05;  // a scoped statement outranks the plain settings patterns that would swallow its tail
+    c.check_arg = json::get_string(command, "check_arg");
     if (const std::string effect = json::get_string(command, "effect"); !effect.empty()) c.args["effect"] = effect;
-    if (!scope.empty()) c.args["scope"] = scope;
+    if (const Json* fixed = json::find(command, "set"); fixed && fixed->is_object())
+      for (auto it = fixed->begin(); it != fixed->end(); ++it) c.args[it.key()] = it.value();
+    if (!scope.empty() && takes_scope) c.args["scope"] = scope;
     bool ok = true;
     for (std::size_t i = 0; i < names.size() && ok; ++i) {
       if (!m->matched(i + 1)) continue;
       std::string value = m->group_utf8(i + 1);
       if (std::find(from_original.begin(), from_original.end(), names[i]) != from_original.end())
-        value = trim_value(utf8::encode(original.substr(static_cast<std::size_t>(m->start(i + 1)), static_cast<std::size_t>(m->end(i + 1) - m->start(i + 1)))));
+        value = trim_value(utf8::encode(source.substr(static_cast<std::size_t>(m->start(i + 1)), static_cast<std::size_t>(m->end(i + 1) - m->start(i + 1)))));
       if (std::find(to_resolve.begin(), to_resolve.end(), names[i]) != to_resolve.end()) {
         value = resolve_action_word(d, value);
         if (value.empty()) ok = false;  // the word names no action: nothing is guessed
@@ -596,9 +805,11 @@ std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text) {
       c.args[names[i]] = value;
     }
     if (!ok) continue;
-    c.element = Json{{"id", "application"}};
+    if (!c.check_arg.empty() && (!c.args.contains(c.check_arg) || json::get_string(c.args, c.check_arg).empty())) continue;
+    if (json::get_bool(command, "element_from_arg", false)) c.element = nullptr;  // the action names its element by an argument (settings: element_from_arg)
+    else if (const Json* el = json::find(command, "element"); el && el->is_object()) c.element = *el;
+    else c.element = Json{{"id", "application"}};
     out.push_back(std::move(c));
-    break;
   }
   return out;
 }
@@ -660,11 +871,27 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   const llm::VariantResult& r = outcome->last();
   if (r.state == llm::State::Held) {
     const Json& admitted = r.hold["decision"];
+    const Json limit = usage_limit_reasons(admitted);
+    // P18: a spending limit that refuses (on_exceed deny) does not stop the message: the routing model is not asked, the local method decides
+    // and the reason is said as a note (the same way as a failed model route). A limit that asks (confirm) holds with a receipt, like x10.
+    if (json::get_string(r.hold, "status") == "denied" && !limit.empty()) {
+      std::string why = "your spending limit does not allow the routing model call";
+      const Json limits = limit.value("limits", Json::array());
+      if (limits.is_array() && !limits.empty()) {
+        const Json reason = limits[0].value("reason", Json::object());  // bound: json::find points into it
+        for (const std::string& key : {lang, std::string("en")})
+          if (const Json* t = json::find(reason, key); t && t->is_string() && !t->get<std::string>().empty()) { why = t->get<std::string>(); break; }
+      }
+      result.error = Error(Errc::Conflict, why);
+      return result;
+    }
     Json resources = Json::object();
     if (const Json* res = json::find(admitted, "resources")) resources = *res;
     result.pending = Json{{"schema", "loom.action_usage_pending/1"}, {"stage", "route_intent"}, {"status", json::get_string(r.hold, "status")},
                           {"operation_id", admitted.value("operation_id", Json(nullptr))}, {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
                           {"baseline_key", admitted.value("baseline_key", Json(nullptr))}, {"projected", resources}, {"sent", false}};
+    for (auto it = limit.begin(); it != limit.end(); ++it)
+      if (it.key() != "status") result.pending[it.key()] = it.value();
     return result;
   }
   if (!r.ok()) {
@@ -694,9 +921,18 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   if (ref == "conversation") c.element = Json{{"resolve", "current_conversation"}};
   else if (ref == "message") c.element = Json{{"resolve", "last_message"}};
   else if (!ref.empty()) c.element = Json{{"id", ref}};
+  else if (const Json* own_entry = entry_of(d, action); own_entry && resolves_default(json::get_string(*own_entry, "default_element")))
+    c.element = default_element_ref(json::get_string(*own_entry, "default_element"));  // what the action acts on when nothing is named
   else if (const std::string dflt = json::get_string(d.cfg.at("heuristic").at("explicit"), "default_element"); !dflt.empty())
     c.element = Json{{"resolve", dflt}};
   const Json* entry = entry_of(d, action);
+  // The model named no element: an action that asks for one class (the application, a storage, a message) acts on that one.
+  if (ref.empty() && entry) {
+    const auto needs = strings_of(json::find(*entry, "requires"));
+    if (needs.size() == 1 && needs[0] == "message") c.element = Json{{"resolve", "last_message"}};
+    else if (needs.size() == 1 && needs[0] == "conversation") c.element = Json{{"resolve", "current_conversation"}};
+    else if (needs.size() == 1 && d.engine.has_class(needs[0])) c.element = Json{{"id", needs[0]}};
+  }
   const std::string element_arg = entry ? json::get_string(*entry, "element_from_arg") : std::string();
   if (!element_arg.empty() && c.args.contains(element_arg)) c.element = nullptr;
   result.cands.push_back(std::move(c));
@@ -790,6 +1026,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   cmd["args_read"] = Json::array();
   for (const auto& hit : hits) cmd["args_read"].push_back(Json{{"param", hit.param}, {"value", hit.value}, {"matched", hit.matched}, {"pattern", hit.pattern}});
   // The element.
+  default_element_arg(*entry, c.args);
   Json element_json = nullptr;
   if (!c.element.is_null()) {
     auto el = resolve_ref(rt, d, c.element, conv);
@@ -814,7 +1051,10 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   if (const Json* params = json::find(*entry, "params"); params && params->is_array())
     for (const auto& p : *params) {
       const std::string name = json::get_string(p, "name");
-      if (json::get_bool(p, "required", false) && !bound.contains(name) && name != element_arg) {
+      bool required = json::get_bool(p, "required", false);
+      for (const auto& other : strings_of(json::find(p, "required_unless")))
+        if (bound.contains(other) && !bound[other].is_null()) required = false;
+      if (required && !bound.contains(name) && name != element_arg) {
         missing_args.push_back(name);
         if (const std::string setting = json::get_string(p, "setting"); !setting.empty()) missing_settings[name] = setting;
       }
@@ -850,6 +1090,7 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   const bool fits = !row.is_null() && json::get_string(row, "status") != "not_applicable";
   Json request = Json{{"element", element_json}, {"args", c.args}};
   if (!scope.is_null()) request["scope"] = scope;
+  if (!d.client_id.empty()) request["client_id"] = d.client_id;
   if (fits) {
     request["action"] = c.action;
   } else {
@@ -859,9 +1100,21 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
       if (chains && chains->contains("beyond_bounds")) reason["beyond_bounds"] = (*chains)["beyond_bounds"];
       return infeasible(reason);
     }
-    request["chain"] = (*chains)["chains"][0];
+    // The chain that goes through the action said first ("nagraj ... i streść": record -> transcribe -> summarise), else the best one.
+    std::size_t pick = 0;
+    if (!c.via.empty()) {
+      bool through = false;
+      for (std::size_t i = 0; i < (*chains)["chains"].size() && !through; ++i)
+        for (const auto& s : (*chains)["chains"][i]["steps"])
+          if (s.value("action", "") == c.via) {
+            pick = i;
+            through = true;
+            break;
+          }
+    }
+    request["chain"] = (*chains)["chains"][pick];
     Json steps = Json::array();
-    for (const auto& s : (*chains)["chains"][0]["steps"]) steps.push_back(s.value("action", ""));
+    for (const auto& s : (*chains)["chains"][pick]["steps"]) steps.push_back(s.value("action", ""));
     cmd["chain"] = steps;
   }
   auto preview = rt.actions().preview(request);
@@ -873,6 +1126,20 @@ Json evaluate(Runtime& rt, Data& d, const Cand& c_in, const Conv& conv, const st
   cmd["denied"] = preview->at("denied");
   cmd["not_runnable"] = preview->at("not_runnable");
   cmd["runnable"] = preview->at("runnable");
+  // The steps the asking client carries out itself (client_devices.h): said in the proposal, so the person knows what will happen on the device.
+  {
+    Json client_steps = Json::array();
+    for (const auto& step : preview->at("plan").value("steps", Json::array())) {
+      // A step the arguments already switch off (the picker of a file when the sentence asked for a folder) is not one the device will be asked.
+      if (const Json* when = json::find(step, "when"); when && actions::condition_decided_by_args(*when, c.args) == 0) continue;
+      const Json* e = entry_of(d, json::get_string(step, "action"));
+      if (!e || json::get_string(*e, "runs_on") != "client") continue;
+      const std::string label = localized(e->value("labels", Json::object()), lang);
+      client_steps.push_back(Json{{"action", json::get_string(*e, "id")}, {"title", label.empty() ? json::get_string(*e, "title") : label},
+                                  {"prompt", e->value("client", Json::object()).value("prompt", Json(nullptr))}});
+    }
+    cmd["client_steps"] = client_steps;
+  }
   cmd["estimate"] = preview->value("estimate", Json(nullptr));
   cmd["feasible"] = true;
   // What would be sent: the exact size of the content the model steps take (money cost stays unknown).
@@ -889,14 +1156,21 @@ Conv conv_of(Runtime& rt, const std::string& conv_id) {
   Conv c;
   c.id = conv_id;
   if (conv_id.empty()) return c;
-  if (auto msgs = rt.db().get_msgs(conv_id)) {
-    for (auto it = msgs->rbegin(); it != msgs->rend(); ++it) {
+  // Perf (P19): the newest message that is not traffic; read from the end in growing windows, never the whole conversation
+  // unless every message is traffic.
+  std::string before;
+  for (std::int64_t window = 16;; window *= 4) {
+    auto page = rt.db().get_msgs_page(conv_id, window, before);
+    if (!page) break;
+    for (auto it = page->messages.rbegin(); it != page->messages.rend(); ++it) {
       const bool traffic = it->metadata.is_object() &&
                            (it->metadata.contains("routed") || it->metadata.contains("action_proposal") || it->metadata.contains("action_run"));
       if (traffic) continue;
       c.last_message_id = it->id;
-      break;
+      return c;
     }
+    if (!page->truncated) break;
+    before = page->next_before;
   }
   return c;
 }
@@ -912,10 +1186,18 @@ std::string effective_method(Runtime& rt, const Data& d, const Json& request) {
   return method;
 }
 
-std::string detect_language(const Data& d, const std::string& text, const std::string& hint) {
-  if (!hint.empty()) return hint;
+// The language the words themselves show: words that belong to one language (heuristic.language_hints), else the letters of Polish.
+// Empty when they show none ("undo", "ok", a bare id).
+std::string language_of_words(const Data& d, const std::string& input) {
   const Json& heuristic = d.cfg.at("heuristic");
-  // Words that belong to one language, else the letters of Polish, else the default.
+  // The name of an explicit command (/rules.list, /search.find) is syntax, not a word of a language.
+  std::string text = std::string(utf8::strip(input));
+  for (const auto& prefix : strings_of(json::find(heuristic.at("explicit"), "prefixes")))
+    if (!prefix.empty() && text.rfind(prefix, 0) == 0) {
+      const auto space = text.find_first_of(" \t\r\n");
+      text = space == std::string::npos ? std::string() : text.substr(space);
+      break;
+    }
   const auto tokens = word_tokens(fold(text, heuristic.at("fold")));
   std::string best;
   std::size_t best_hits = 0;
@@ -931,6 +1213,36 @@ std::string detect_language(const Data& d, const std::string& text, const std::s
   if (!best.empty()) return best;
   for (char32_t cp : utf8::decode(utf8::to_lower(text)))
     if (json::find(heuristic.at("fold"), utf8::encode(cp))) return "pl";
+  return std::string();
+}
+
+// The language of the conversation: that of its latest proposal (the answers that were given in it), else of its latest message of the
+// person that shows one (heuristic.conversation_language.messages looked at, newest first). Empty for a conversation that shows none.
+std::string language_of_conversation(Runtime& rt, const Data& d, const std::string& conv_id) {
+  if (conv_id.empty()) return std::string();
+  const Json* cfg = json::find(d.cfg.at("heuristic"), "conversation_language");
+  if (cfg && !json::get_bool(*cfg, "enabled", true)) return std::string();
+  const std::int64_t window = cfg ? json::get_int(*cfg, "messages", 12) : 12;
+  auto tail = rt.db().get_msgs_page(conv_id, window > 0 ? window : 1);  // Perf (P19): only the window is read
+  if (!tail) return std::string();
+  auto* msgs = &tail->messages;
+  std::int64_t looked = 0;
+  for (auto it = msgs->rbegin(); it != msgs->rend() && looked < window; ++it, ++looked) {
+    if (it->metadata.is_object() && it->metadata.contains("action_proposal")) {
+      const std::string lang = json::get_string(it->metadata["action_proposal"], "lang");
+      if (!lang.empty()) return lang;
+    }
+    if (it->role == "user")
+      if (const std::string lang = language_of_words(d, it->text); !lang.empty()) return lang;
+  }
+  return std::string();
+}
+
+// Words first; when they show no language, the conversation's; else the default. The caller's hint beats both.
+std::string detect_language(Runtime& rt, const Data& d, const std::string& text, const std::string& hint, const std::string& conv_id) {
+  if (!hint.empty()) return hint;
+  if (const std::string words = language_of_words(d, text); !words.empty()) return words;
+  if (const std::string conv = language_of_conversation(rt, d, conv_id); !conv.empty()) return conv;
   return json::get_string(d.cfg, "default_language", "en");
 }
 
@@ -944,9 +1256,12 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   const std::string text = json::get_string(request, "text");
   if (utf8::is_blank(text)) return Error(Errc::InvalidArgument, "text is required");
   const std::string method = effective_method(rt, d, request);
-  if (!json::find(d.cfg.at("method").at("presets"), method))
-    return Error(Errc::InvalidArgument, "unknown routing method '" + method + "' (off, heuristic or model)");
-  const std::string lang = detect_language(d, text, json::get_string(request, "lang"));
+  if (!json::find(d.cfg.at("method").at("presets"), method)) {
+    std::string known;
+    for (auto it = d.cfg.at("method").at("presets").begin(); it != d.cfg.at("method").at("presets").end(); ++it) known += (known.empty() ? "" : ", ") + it.key();
+    return Error(Errc::InvalidArgument, "unknown routing method '" + method + "' (" + known + ")");
+  }
+  const std::string lang = detect_language(rt, d, text, json::get_string(request, "lang"), json::get_string(request, "conv_id"));
   Json out = Json::object();
   out["schema"] = "loom.chat_route/1";
   out["kind"] = "message";
@@ -978,13 +1293,53 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     for (auto& p : parse_patterns(d, text)) cands.push_back(std::move(p));
     for (auto& l : parse_lexicon(d, text)) cands.push_back(std::move(l));
   }
-  // Rules and scoped values from what is said (the model method does not know them; they are read locally either way).
-  if (auto rule_cands = parse_rule_commands(d, text); !rule_cands.empty()) {
+  // Rules and scoped values from what is said, and the other commands of the conversation (the model method does not know them; they are read
+  // locally either way). A command that explains another ("how do I ...") is kept only when what follows is a command itself.
+  const bool inner = json::get_bool(request, "no_howto", false);
+  auto rule_cands = parse_rule_commands(d, text, inner);
+  rule_cands.erase(std::remove_if(rule_cands.begin(), rule_cands.end(),
+                                  [&](const Cand& rc) {
+                                    if (rc.check_arg.empty()) return false;
+                                    Json nested{{"text", json::get_string(rc.args, rc.check_arg)}, {"method", "heuristic"}, {"no_howto", true}, {"conv_id", json::get_string(request, "conv_id")}};
+                                    if (const Json* l = json::find(request, "lang")) nested["lang"] = *l;
+                                    auto r = route_with(rt, d, nested);
+                                    return !(r && r->value("kind", "") == "command");
+                                  }),
+                   rule_cands.end());
+  if (!rule_cands.empty()) {
     cands.erase(std::remove_if(cands.begin(), cands.end(), [](const Cand& x) { return x.source == "pattern" && x.action == "settings.set"; }), cands.end());
     for (auto& r : rule_cands) cands.push_back(std::move(r));
   }
-  // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55).
-  if (cands.empty() && method != "model") {
+  // hybrid: the local reading came first. A command it is sure of (a known action and an element, score at or above confident_score) is never
+  // overridden by a model's "message"; the model is asked only when the local reading is unsure (a candidate between min_score and
+  // confident_score), or, when the preset says so (ask_when: no_candidate), when it found nothing. The model's verdict then replaces the unsure
+  // candidates: "message" makes the input a message, a command is the model's command.
+  if (method == "hybrid") {
+    const Json& preset = d.cfg.at("method").at("presets").at("hybrid");
+    const double confident_score = json::get_number(d.cfg.at("heuristic").at("scoring"), "confident_score", 0.7);
+    const auto ask_when = strings_of(json::find(preset, "ask_when"));
+    const auto asks = [&](const char* when) { return std::find(ask_when.begin(), ask_when.end(), when) != ask_when.end(); };
+    const bool confident = std::any_of(cands.begin(), cands.end(), [&](const Cand& x) { return x.score >= confident_score; });
+    const bool ask = !confident && !inner && (cands.empty() ? asks("no_candidate") : asks("unsure"));
+    out["hybrid"] = Json{{"confident", confident}, {"asked_model", ask}};
+    if (ask) {
+      ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()));
+      if (!routed.pending.is_null()) {
+        out["kind"] = "pending";
+        out["usage_pending"] = routed.pending;
+        return out;
+      }
+      if (routed.error) {
+        out["issues"].push_back(Json{{"code", "model_route_failed"}, {"message", routed.error->message}, {"fallback", "heuristic"}});
+      } else {
+        cands = std::move(routed.cands);
+      }
+    }
+  }
+  // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55). This is a local
+  // check of the words, whatever the method: a model that called the sentence a message, or whose call failed, does not take the offer away
+  // (decision P14: the shape check runs after the model's verdict; the model's schema is unchanged).
+  if (cands.empty() && !inner) {
     const auto ref = find_reference(d, text, word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))));
     if (!ref.is_null()) {
       if (auto element = resolve_ref(rt, d, ref, conv)) {
@@ -1039,13 +1394,30 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
 }  // namespace
 
 Result<Json> route(Runtime& rt, const Json& request) {
-  LOOM_TRY_ASSIGN(Data d, load_data(rt));
+  LOOM_TRY_ASSIGN(Data d, load_data(rt, json::get_string(request, "client_id")));
   return route_with(rt, d, request);
 }
 
 // ── the chat window ─────────────────────────────────────────────────
 
 namespace {
+
+// A message that shows a question of a run paused on the client's step is a new step for every page that shows the conversation: the
+// event bus says so (events::kActionClientStep), with ids only. `state` "closed": the question was answered or cancelled.
+void announce_client_step(Runtime& rt, const std::string& conv_id, const std::string& message_id, const Json& meta, const std::string& state) {
+  const Json* run = meta.is_object() ? json::find(meta, "action_run") : nullptr;
+  if (!run || !run->is_object()) return;
+  const Json pending = run->value("pending", Json(nullptr));
+  if (state == "waiting" && (!pending.is_object() || json::get_string(pending, "kind") != "client_step")) return;
+  Json payload{{"conv_id", conv_id}, {"message_id", message_id}, {"run_id", json::get_string(*run, "run_id")}, {"state", state}};
+  if (pending.is_object()) {
+    payload["receipt_id"] = pending.value("receipt_id", Json(nullptr));
+    payload["step"] = pending.value("step", Json(nullptr));
+    payload["action"] = pending.value("action", Json(nullptr));
+  }
+  if (state == "closed") payload["status"] = json::get_string(*run, "status");
+  rt.bus().emit(events::kActionClientStep, payload);
+}
 
 Result<std::string> add_message(Runtime& rt, const std::string& conv_id, const std::string& role, const std::string& text, Json metadata,
                                 const std::string& model = std::string()) {
@@ -1063,6 +1435,7 @@ Result<std::string> add_message(Runtime& rt, const std::string& conv_id, const s
     MsgPatch patch;
     patch.semantic_status = "done";
     LOOM_TRY(rt.db().update_msg(id, patch));
+    announce_client_step(rt, conv_id, id, nm.metadata, "waiting");
   }
   return id;
 }
@@ -1078,9 +1451,9 @@ Status set_metadata(Runtime& rt, const std::string& message_id, const std::funct
 }
 
 void title_first_exchange(Runtime& rt, const std::string& conv_id, const std::string& text) {
-  auto all = rt.db().get_msgs(conv_id);
+  auto all = rt.db().count_msgs(conv_id);  // Perf (P19): a count, not the conversation
   const Json auto_title = rt.config().get("auto_title");
-  if (all && all->size() <= 2 && (auto_title.is_null() || (auto_title.is_boolean() && auto_title.get<bool>()))) {
+  if (all && *all <= 2 && (auto_title.is_null() || (auto_title.is_boolean() && auto_title.get<bool>()))) {
     ConvPatch patch;
     patch.title = std::string(utf8::prefix(text, 30)) + (utf8::length(text) > 30 ? "..." : "");
     (void)rt.db().update_conv(conv_id, patch);
@@ -1106,11 +1479,10 @@ std::string gate_reasons(const Data& d, const Json& gates, const std::string& la
   std::vector<std::string> parts;
   for (const auto& g : gates) {
     std::string reason = g.contains("reason") ? localized(g["reason"], lang) : std::string();
-    std::string line = json::get_string(g, "title", json::get_string(g, "action"));
+    std::string line = title_in(d, json::get_string(g, "action"), json::get_string(g, "title"), lang);
     if (!reason.empty()) line += " - " + reason;
     parts.push_back(line);
   }
-  (void)d;
   return join(parts, "; ");
 }
 
@@ -1148,20 +1520,21 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
     const Json estimate = cmd.value("estimate", Json(nullptr));
     // Money is a range where the model registry knows the price, else unknown with the reason: never a zero.
     Json money = estimate.is_object() ? estimate.value("money", Json(nullptr)) : Json(nullptr);
-    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}};
+    if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}, {"reason_code", "no_estimate"}};
+    localize_money_reason(d, money, lang);
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
-                     {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
+                     {"pipeline_model_use", cmd.at("plan").at("cost").value("pipeline_model_use", false)}, {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
                      {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
     p["effects"] = effects_of(cmd.at("plan"));
   }
   Json confirm = Json::array();
   for (const auto& g : cmd.value("needs_confirmation", Json::array()))
-    confirm.push_back(Json{{"action", g.value("action", "")}, {"title", g.value("title", "")}, {"reason", g.value("reason", Json(nullptr))},
+    confirm.push_back(Json{{"action", g.value("action", "")}, {"title", title_in(d, g.value("action", ""), g.value("title", ""), lang)}, {"reason", g.value("reason", Json(nullptr))},
                            {"initiator", g.value("initiator", "")}});
   p["needs_confirmation"] = confirm;
+  if (cmd.contains("client_steps") && !cmd["client_steps"].empty()) p["client_steps"] = cmd["client_steps"];
   p["runnable"] = cmd.value("runnable", false) && cmd.value("feasible", false);
   if (cmd.contains("candidates")) p["alternatives"] = cmd["candidates"];
-  (void)d;
   return p;
 }
 
@@ -1224,9 +1597,14 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   std::vector<std::string> plan;
   for (const auto& item : proposal.value("items", Json::array())) plan.push_back(item.value("title", ""));
   lines.push_back(say(d.cfg, lang, "proposal_plan", Json{{"plan", join(plan, " -> ")}}));
+  if (const Json steps = proposal.value("client_steps", Json::array()); !steps.empty()) {
+    std::vector<std::string> titles;
+    for (const auto& st : steps) titles.push_back(st.value("title", ""));
+    lines.push_back(say(d.cfg, lang, "proposal_client", Json{{"steps", join(titles, ", ")}}));
+  }
   if (const Json* cost = json::find(proposal, "cost")) {
     lines.push_back(say(d.cfg, lang, "proposal_cost", Json{{"cost", cost->value("declared", 0.0)}, {"calls", cost->value("model_calls", 0)}, {"bytes", cost->value("input_bytes", 0)}}));
-    if (cost->value("model_calls", 0) > 0) {
+    if (cost->value("model_calls", 0) > 0 || cost->value("pipeline_model_use", false)) {
       const Json money = cost->value("money", Json(nullptr));
       if (money.is_object() && json::get_bool(money, "known", false))
         lines.push_back(say(d.cfg, lang, "proposal_money_known", Json{{"low", money_text(money.value("low", 0.0))}, {"high", money_text(money.value("high", 0.0))}, {"currency", money.value("currency", "USD")}}));
@@ -1245,7 +1623,8 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   if (!not_runnable.empty()) {
     std::vector<std::string> why;
     for (const auto& n : not_runnable) {
-      std::string line = n.value("action", "") + " (" + n.value("why", "");
+      const std::string why_code = n.value("why", "");
+      std::string line = title_in(d, n.value("action", ""), n.value("action", ""), lang) + " (" + (why_code.empty() ? why_code : say(d.cfg, lang, "why_" + why_code));
       if (const Json* r = json::find(n, "reason")) line += ": " + localized(*r, lang);
       why.push_back(line + ")");
     }
@@ -1254,11 +1633,29 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
   }
   if (!proposal.value("needs_confirmation", Json::array()).empty())
     lines.push_back(say(d.cfg, lang, "proposal_confirm", Json{{"what", gate_reasons(d, cmd.value("needs_confirmation", Json::array()), lang)}}));
+  // A limit of the user that only tells (spending limit with on_exceed notify): the run goes on and the proposal says so.
+  for (const auto& g : cmd.value("gates", Json::array()))
+    if (g.contains("notice")) lines.push_back(localized(g["notice"], lang));
   lines.push_back(say(d.cfg, lang, "proposal_ask"));
   return join(lines, "\n");
 }
 
-std::string body_of(Runtime& rt, const Json& run) {
+// What a result that is data and not words says in the language of the proposal: the action's result_text (data, per language; {{name}}
+// is an argument of the run), then the data itself. Without a result_text, or when it names an argument the run did not have, the data alone.
+std::string result_sentence(const Data& d, const Json& run, const std::string& lang) {
+  const Json request = run.value("request", Json::object());
+  const Json* entry = entry_of(d, json::get_string(request, "action"));
+  if (!entry) return std::string();
+  const std::string tpl = localized(entry->value("result_text", Json::object()), lang);
+  if (tpl.empty()) return std::string();
+  Json vars = request.value("args", Json::object());
+  if (!vars.is_object()) vars = Json::object();
+  vars["title"] = title_in(d, json::get_string(request, "action"), std::string(), lang);
+  auto rendered = render_profile_template(tpl, vars);
+  return rendered ? *rendered : std::string();
+}
+
+std::string body_of(Runtime& rt, const Data& d, const Json& run, const std::string& lang) {
   std::string out;
   const Json* result = json::find(run, "result");
   if (result && result->is_object()) {
@@ -1268,8 +1665,13 @@ std::string body_of(Runtime& rt, const Json& run) {
         auto text = actions::part_text(&rt.blobs(), part);
         out += (out.empty() ? "" : "\n\n") + (text ? *text : json::get_string(part, "preview"));
       }
-    if (out.empty())
-      if (const Json* data = json::find(*result, "data")) out = "```json\n" + json::dump(*data, 2) + "\n```";
+    if (out.empty()) {
+      const std::string sentence = result_sentence(d, run, lang);
+      if (const Json* data = json::find(*result, "data"); data && !data->is_null())
+        out = (sentence.empty() ? std::string() : sentence + "\n\n") + "```json\n" + json::dump(*data, 2) + "\n```";
+      else
+        out = sentence;
+    }
   }
   return out;
 }
@@ -1305,11 +1707,22 @@ std::string posted_message(const Json& run) {
 Report report_of(Runtime& rt, const Data& d, const Json& run, const std::string& title, const std::string& lang) {
   Report r;
   const std::string status = json::get_string(run, "status");
-  r.meta = Json{{"run_id", json::get_string(run, "id")}, {"status", status}};
+  r.meta = Json{{"run_id", json::get_string(run, "id")}, {"status", status}, {"lang", lang}};
   if (status == "completed") {
     if (Json produced = produced_of(run); !produced.is_null()) r.meta["produced"] = produced;
+    // An action that needs a secret from the person (connecting a storage) asks them to open Settings: the message carries the keys, the page a button.
+    if (const Json* result = json::find(run, "result"); result && result->is_object())
+      if (const Json* data = json::find(*result, "data"); data && data->is_object() && data->contains("open_settings")) r.meta["open_settings"] = (*data)["open_settings"];
+    // An agent run that stopped on proposals keeps what the page needs to answer them: the proposals and the transcript to resume from.
+    if (const Json* result = json::find(run, "result"); result && result->is_object()) {
+      const Json* data = json::find(*result, "data");
+      const Json* loop_proposals = data && data->is_object() ? json::find(*data, "proposals") : nullptr;
+      if (loop_proposals && loop_proposals->is_array() && !loop_proposals->empty() && json::get_string(*data, "status") == "needs_confirmation")
+        r.meta["agent_loop"] = Json{{"status", json::get_string(*data, "status")}, {"loop_id", json::get_string(*data, "loop_id")},
+                                   {"proposals", *loop_proposals}, {"messages", data->value("messages", Json::array())}};
+    }
     r.text = say(d.cfg, lang, "result_completed", Json{{"title", title}});
-    const std::string body = body_of(rt, run);
+    const std::string body = body_of(rt, d, run, lang);
     r.text += "\n\n" + (body.empty() ? say(d.cfg, lang, "result_no_text") : body);
   } else if (status == "failed") {
     const Json err = run.value("error", Json::object());
@@ -1322,6 +1735,13 @@ Report report_of(Runtime& rt, const Data& d, const Json& run, const std::string&
     r.text = say(d.cfg, lang, "result_cancelled");
   } else if (status == "awaiting_usage") {
     r.text = say(d.cfg, lang, "result_usage");
+    r.meta["pending"] = run.value("pending", Json(nullptr));
+  } else if (status == "awaiting_client") {
+    // The device has a step to carry out: the question stays in this message (pending.client_step) until the client answers.
+    const Json spec = run.value("pending", Json::object()).value("client_step", Json::object());
+    std::string prompt = localized(spec.value("prompt", Json::object()), lang);
+    if (prompt.empty()) prompt = spec.value("title", "");
+    r.text = say(d.cfg, lang, "result_client", Json{{"prompt", prompt}});
     r.meta["pending"] = run.value("pending", Json(nullptr));
   } else {
     r.text = say(d.cfg, lang, "result_waiting", Json{{"kind", run.value("pending", Json::object()).value("kind", status)}});
@@ -1348,7 +1768,7 @@ Status link_presented(Runtime& rt, const Data& d, const std::string& message_id,
 Result<std::string> answer_message(Runtime& rt, const Data& d, const std::string& conv_id, const Json* run, Report& rep) {
   const std::string posted = run ? posted_message(*run) : std::string();
   if (!posted.empty()) {
-    rep.text = body_of(rt, *run);
+    rep.text = body_of(rt, d, *run, rep.meta.value("lang", "en"));
     return posted;
   }
   LOOM_TRY_ASSIGN(std::string id, add_message(rt, conv_id, "assistant", rep.text, Json{{"action_run", rep.meta}, {"routed", "result"}}, "loom:actions"));
@@ -1461,6 +1881,9 @@ std::string render_emergent(const Data& d, const Engine& engine, const Json& cmd
   }
   if (!proposal.value("needs_confirmation", Json::array()).empty())
     lines.push_back(say(d.cfg, lang, "proposal_confirm", Json{{"what", gate_reasons(d, cmd.value("needs_confirmation", Json::array()), lang)}}));
+  // A limit of the user that only tells (spending limit with on_exceed notify): the run goes on and the proposal says so.
+  for (const auto& g : cmd.value("gates", Json::array()))
+    if (g.contains("notice")) lines.push_back(localized(g["notice"], lang));
   lines.push_back(say(d.cfg, lang, "define_ask"));
   return join(lines, "\n");
 }
@@ -1474,7 +1897,8 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
   // The sentence the proposal was read from (a growth offered after a run has none): a no does not lose it (intent_routing_on_reject).
   if (!text.empty() && !user_id.empty()) proposal["sentence"] = Json{{"message_id", user_id}};
   const bool grows = cmd.contains("emergent");  // a definition the catalogue could grow by: always waits for the user's yes
-  std::string assistant_text = grows ? render_emergent(d, d.engine, cmd, proposal, lang) : render_proposal(d, cmd, proposal, lang);
+  const bool custom = cmd.contains("proposal_text");  // a proposal the system makes itself (the guardian): its own words, always waits for the yes
+  std::string assistant_text = grows ? render_emergent(d, d.engine, cmd, proposal, lang) : custom ? localized(cmd["proposal_text"], lang) : render_proposal(d, cmd, proposal, lang);
   const bool usable = cmd.value("feasible", false) && cmd.value("runnable", false) && cmd.value("denied", Json::array()).empty();
   Reply reply;
   reply.type = "action_proposal";
@@ -1524,14 +1948,20 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
       proposal["receipt_id"] = run->value("pending", Json::object()).value("receipt_id", "");
       // The setting decides whether the user's yes is needed: a plan that only reads (or any plan) may run at once;
       // whatever the rules ask to confirm is still asked.
+      // An answer to a question (what can I do here, how do I do this) runs at once whatever the setting says: execution.direct lists the actions.
+      const bool direct = [&] {
+        for (const auto& a : strings_of(json::find(d.cfg.at("execution"), "direct")))
+          if (a == cmd.value("action", "")) return true;
+        return false;
+      }();
       const std::string mode = [&] {
-        if (user_said_yes) return std::string("always");
+        if (user_said_yes || direct) return std::string("always");
         const Json v = rt.config().get(json::get_string(d.cfg.at("execution"), "setting"));
         return v.is_string() ? v.get<std::string>() : json::get_string(d.cfg.at("execution"), "active");
       }();
       const bool reads_only = json::get_bool(cmd["plan"].value("effects", Json::object()), "reads_only", false);
       const bool no_questions = cmd.value("needs_confirmation", Json::array()).empty();
-      if (!grows && no_questions && (mode == "always" || (mode == "read_only" && reads_only))) {
+      if (!grows && !custom && no_questions && (mode == "always" || (mode == "read_only" && reads_only))) {
         // The proposal is said first: the result (a message of its own when the target says so) comes after it, in the order it happened.
         proposal["status"] = "running";
         LOOM_TRY_ASSIGN(early_id, add_message(rt, conv_id, "assistant", assistant_text, Json{{"action_proposal", proposal}, {"routed", "proposal"}}, "loom:actions"));
@@ -1540,7 +1970,7 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
         if (done) {
           Report rep = report_of(rt, d, *done, proposal.value("title", ""), lang);
           const std::string st = json::get_string(*done, "status");
-          proposal["status"] = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" ? "waiting" : st;
+          proposal["status"] = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" || st == "awaiting_client" ? "waiting" : st;
           assistant_text = rep.text;
           if (!posted_message(*done).empty()) assistant_text = say(d.cfg, lang, "result_completed", Json{{"title", proposal.value("title", "")}});
           meta["action_run"] = rep.meta;
@@ -1556,6 +1986,8 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
     if (meta.contains("action_run")) reply.payload["run"] = meta["action_run"];
   }
   meta["routed"] = "proposal";
+  if (cmd.contains("meta_extra") && cmd["meta_extra"].is_object())
+    for (auto it = cmd["meta_extra"].begin(); it != cmd["meta_extra"].end(); ++it) meta[it.key()] = it.value();
   reply.assistant_id = early_id;
   if (early_id.empty()) {
     LOOM_TRY_ASSIGN(reply.assistant_id, add_message(rt, conv_id, "assistant", assistant_text, meta, "loom:actions"));
@@ -1564,6 +1996,7 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
     patch.text = assistant_text;
     patch.metadata = meta;
     LOOM_TRY(rt.db().update_msg(early_id, patch));
+    announce_client_step(rt, conv_id, early_id, meta, "waiting");
   }
   if (meta.contains("action_run")) {
     if (auto linked = link_presented(rt, d, reply.assistant_id, meta["action_run"].value("produced", Json(nullptr)), meta["action_run"].value("run_id", "")); !linked)
@@ -1671,13 +2104,22 @@ struct Settled {
   Json payload = Json::object();
   Json offer = nullptr;
   bool send_now = false;  // on_reject = send_as_message: the sentence is to be sent as a message now
+  std::string conv_id;    // set when the answer is said in a conversation other than the one asked in (the run deleted that one)
 };
 
 // Settles the proposal that waits in `proposal_msg` with the answer `run` came back with: its status, the reply (the result, the
 // definition written, or the acknowledgement of a no with the offer to send the sentence as a message), the follow-ups. Shared by the
 // typed yes/no (`user_id` = the user's answer message) and the clients' confirm call (`user_id` empty).
-Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, bool yes, const Result<Json>& run,
+Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_in, const Message& proposal_msg, bool yes, const Result<Json>& run,
                               const std::string& user_id) {
+  // The run may have deleted the conversation it was asked in ("delete this conversation"): the answer is then said in a new one.
+  std::string conv_id = conv_in;
+  bool moved = false;
+  if (auto cv = rt.db().get_conv(conv_in); cv && !*cv) {
+    LOOM_TRY_ASSIGN(auto fresh, rt.db().create_conv("New Chat"));
+    conv_id = fresh.id;
+    moved = true;
+  }
   Json proposal = proposal_msg.metadata.at("action_proposal");
   const std::string lang = json::get_string(proposal, "lang", "en");
   const std::string source_id = proposal.value("sentence", Json::object()).value("message_id", "");
@@ -1694,6 +2136,7 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
     rep.text = say(d.cfg, lang, "ack_no");
     rep.meta = Json{{"run_id", proposal.value("run_id", "")}, {"status", json::get_string(*run, "status")}};
     new_status = "rejected";
+    rt.guardian().note_rejection(conv_id, proposal_msg.id, proposal, user_id);  // a signal for the guardian (the cycle of corrections)
     // A no drops the command, never the user's sentence: the setting says whether it is offered, sent or left.
     const std::string mode = on_reject_mode(rt, d);
     if (!source_id.empty() && mode != "drop") {
@@ -1707,7 +2150,7 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
   } else {
     rep = report_of(rt, d, *run, proposal.value("title", ""), lang);
     const std::string st = json::get_string(*run, "status");
-    new_status = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" ? "waiting" : st;
+    new_status = st == "completed" ? "executed" : st == "awaiting_usage" || st == "awaiting_confirmation" || st == "awaiting_client" ? "waiting" : st;
   }
   // A proposal to grow the catalogue: what was written is said, and the node that records its origin follows the answer.
   const Json definition = proposal.value("definition", Json(nullptr));
@@ -1727,12 +2170,21 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
       emergent::settle(rt, node, new_status);
     }
   }
-  LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) {
+  // A rule written from the conversation is shown the same way and taken back with one click (rules.disable).
+  if (grow_kind.empty() && new_status == "executed" && proposal.value("action", "") == "rules.set") {
+    const Json written = run->value("result", Json::object()).value("data", Json::object());
+    if (!written.value("id", "").empty())
+      written_view = Json{{"kind", "rule"}, {"id", written.value("id", "")}, {"overlays", Json::array({written.value("overlay", "profiles/action_rules.pack")})},
+                          {"entry", written.value("rule", Json(nullptr))}};
+  }
+  if (!moved) LOOM_TRY(set_metadata(rt, proposal_msg.id, [&](Json& m) {
     m["action_proposal"]["status"] = new_status;
     if (offer.is_object()) m["action_proposal"]["offer"] = offer;
     if (written_view.is_object()) m["action_proposal"]["written"] = written_view;
   }));
   LOOM_TRY_ASSIGN(std::string assistant_id, answer_message(rt, d, conv_id, run ? &*run : nullptr, rep));
+  if (proposal_msg.metadata.contains("guardian"))
+    LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["guardian"] = Json{{"traffic", true}, {"answers", proposal_msg.id}}; }));
   if (offer.is_object())  // the reply the offer is made in: the words that take it are read while it is the last thing said
     LOOM_TRY(set_metadata(rt, assistant_id, [&](Json& m) { m["action_offer"] = Json{{"proposal_message_id", proposal_msg.id}}; }));
   Json payload{{"run", rep.meta}, {"proposal_message_id", proposal_msg.id}, {"proposal_status", new_status}};
@@ -1743,6 +2195,7 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
   out.text = rep.text;
   out.offer = offer;
   out.send_now = send_now;
+  if (moved) out.conv_id = conv_id;
 
   if (grow_kind == "define_action" && new_status == "executed") {
     // The user said yes to the definition and to the command it came from: the new action runs on the element the words were about.
@@ -1776,13 +2229,16 @@ Result<Settled> settle_answer(Runtime& rt, Data& d, const std::string& conv_id, 
 Result<Outcome> answer_proposal(Runtime& rt, Data& d, const std::string& conv_id, const Message& proposal_msg, const std::string& answer,
                                 const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
   const Json proposal = proposal_msg.metadata.at("action_proposal");
-  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "confirmation"}, {"answers", proposal_msg.id}}));
+  Json answer_meta{{"routed", "confirmation"}, {"answers", proposal_msg.id}};
+  if (proposal_msg.metadata.contains("guardian")) answer_meta["guardian"] = Json{{"traffic", true}};  // the guardian's own exchange is not conversation content
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, answer_meta));
   if (emit_start) emit_start(conv_id, user_id);
   (void)rt.chat().load_conv(conv_id);
   const bool yes = answer == "yes";
   const auto run = rt.actions().confirm(Json{{"run_id", proposal.value("run_id", "")}, {"approved", yes}, {"receipt_id", proposal.value("receipt_id", "")}, {"ref", "chat:" + user_id}});
   LOOM_TRY_ASSIGN(Settled settled, settle_answer(rt, d, conv_id, proposal_msg, yes, run, user_id));
-  Outcome out = finish(conv_id, user_id, settled.assistant_id, settled.text, settled.type, settled.payload);
+  Outcome out = settled.conv_id.empty() ? finish(conv_id, user_id, settled.assistant_id, settled.text, settled.type, settled.payload)
+                                        : finish(settled.conv_id, std::string(), settled.assistant_id, settled.text, settled.type, settled.payload);
   if (settled.send_now) {
     // intent_routing_on_reject = send_as_message: the chat path sends the sentence now, as the message it would have been.
     auto taken = take_offer(rt, d, conv_id, proposal_msg.id, false);
@@ -1818,12 +2274,63 @@ Result<std::optional<Outcome>> answer_offer(Runtime& rt, Data& d, const std::str
                                        Json{{"proposal_message_id", proposal_msg.id}, {"proposal_status", "rejected"}, {"offer", Json{{"status", "declined"}}}}));
 }
 
+// ── the question of the background analysis (P17 3) ─────────────────
+
+// The user answered the question of the background analysis (the last thing said in the conversation) with a yes or a no: the worker's own usage
+// confirmation takes it, with the receipt the question carries.
+Result<Outcome> answer_semantic_question(Runtime& rt, Data& d, const std::string& conv_id, const Message& question_msg, const std::string& answer,
+                                         const std::string& text, const std::function<void(const std::string&, const std::string&)>& emit_start) {
+  const Json question = question_msg.metadata.at("semantic_question");
+  const std::string lang = json::get_string(question, "lang", "en");
+  const std::string receipt = json::get_string(question, "receipt_id");
+  const bool yes = answer == "yes";
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "confirmation"}, {"answers", question_msg.id}}));
+  if (emit_start) emit_start(conv_id, user_id);
+  (void)rt.chat().load_conv(conv_id);
+  const std::string kind = json::get_string(question, "kind", "batch");
+  auto done = rt.worker().confirm_usage(yes, receipt, "chat:" + user_id);
+  std::string said, status;
+  if (done) {
+    status = yes ? "approved" : "declined";
+    said = say(d.cfg, lang, yes ? "semantic_answer_yes" : (kind == "retry" ? "semantic_answer_no_retry" : "semantic_answer_no"));
+  } else {
+    status = "stale";  // the worker no longer asks it: answered elsewhere, or the batch changed
+    said = say(d.cfg, lang, "semantic_answer_gone", Json{{"why", done.error().message}});
+    note_semantic_answer(rt, Json{{"receipt_id", receipt}, {"approved", Json(nullptr)}, {"conv_ids", Json::array({conv_id})}});
+  }
+  LOOM_TRY_ASSIGN(std::string assistant_id, add_message(rt, conv_id, "assistant", said,
+                                                        Json{{"routed", "result"}, {"semantic_answer", Json{{"receipt_id", receipt}, {"status", status}, {"question_message_id", question_msg.id}}}},
+                                                        "loom:actions"));
+  return finish(conv_id, user_id, assistant_id, said, "action_result",
+                Json{{"semantic_question_message_id", question_msg.id}, {"semantic_status", status}, {"receipt_id", receipt}});
+}
+
 }  // namespace
+
+Result<Json> offer(Runtime& rt, const OfferRequest& request) {
+  if (request.conv_id.empty()) return Error(Errc::InvalidArgument, "a proposal needs a conversation");
+  LOOM_TRY_ASSIGN(Data d, load_data(rt));
+  Cand c;
+  c.source = "guardian";
+  c.matched = request.action;
+  c.lang = request.lang;
+  c.action = request.action;
+  c.args = request.args;
+  c.element = Json{{"id", "application"}};
+  c.score = 1.0;
+  Json cmd = evaluate(rt, d, c, conv_of(rt, request.conv_id), request.lang, std::string());
+  if (!cmd.value("feasible", false) || !cmd.value("runnable", false) || !cmd.value("denied", Json::array()).empty())
+    return Error(Errc::Conflict, "the proposal cannot be made: " + cmd.value("reason", Json::object()).value("message", std::string("denied by a rule or not runnable")));
+  cmd["proposal_text"] = request.texts;
+  cmd["meta_extra"] = request.meta;
+  LOOM_TRY_ASSIGN(Reply reply, reply_to_command(rt, d, request.conv_id, std::string(), std::string(), cmd, "guardian", request.lang, false));
+  return Json{{"message_id", reply.assistant_id}, {"proposal", reply.payload.value("proposal", Json(nullptr))}};
+}
 
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,
                        const std::function<void(const std::string&, const std::string&)>& emit_start) {
   Outcome none;
-  LOOM_TRY_ASSIGN(Data d, load_data(rt));
+  LOOM_TRY_ASSIGN(Data d, load_data(rt, json::get_string(request, "client_id")));
   std::string conv_id = opts.conv_id.value_or(std::string());
   if (conv_id.empty())
     if (auto current = rt.chat().current_conv()) conv_id = current->id;
@@ -1858,14 +2365,20 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
 
   // 1. The answer to a proposal that waits as the last thing said in this conversation, or to the offer made in the last reply.
   if (!conv_id.empty()) {
-    if (auto msgs = rt.db().get_msgs(conv_id); msgs && !msgs->empty()) {
-      const Message& last = msgs->back();
-      if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("action_proposal") &&
+    if (auto tail = rt.db().get_msgs_page(conv_id, 1); tail && !tail->messages.empty()) {  // Perf (P19): the last message only
+      const Message& last = tail->messages.back();
+      if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("semantic_question") &&
+          json::get_string(last.metadata["semantic_question"], "status") == "pending") {
+        const std::string answer = classify_answer(d, text);
+        if (!answer.empty()) return answer_semantic_question(rt, d, conv_id, last, answer, text, emit_start);
+      } else if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("action_proposal") &&
           json::get_string(last.metadata["action_proposal"], "status") == "pending" && !json::get_string(last.metadata["action_proposal"], "run_id").empty()) {
         const std::string answer = classify_answer(d, text);
         if (!answer.empty()) return answer_proposal(rt, d, conv_id, last, answer, text, emit_start);
       } else if (last.role == "assistant" && last.metadata.is_object() && last.metadata.contains("action_offer")) {
-        const Message* proposal = message_by_id(*msgs, json::get_string(last.metadata["action_offer"], "proposal_message_id"));
+        std::optional<Message> proposal_row;
+        if (auto row = rt.db().get_msg(json::get_string(last.metadata["action_offer"], "proposal_message_id")); row && *row) proposal_row = std::move(**row);
+        const Message* proposal = proposal_row && proposal_row->conv_id == conv_id && proposal_row->status == "active" ? &*proposal_row : nullptr;
         const Json offer = proposal ? offer_of(*proposal) : Json(nullptr);
         if (offer.is_object() && json::get_string(offer, "status") == "open") {
           const std::string answer = classify_offer(d, text);
@@ -1885,6 +2398,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   if (const Json* c = json::find(request, "route_usage_confirmation")) route_request["route_usage_confirmation"] = *c;
   LOOM_TRY_ASSIGN(Json routed, route_with(rt, d, route_request));
   const std::string kind = routed.value("kind", "message");
+  none.issues = routed.value("issues", Json::array());
   if (kind == "message") return none;
   if (kind == "pending") {
     // The re-send after the user's answer goes to this conversation, as a held chat send does.
@@ -1898,11 +2412,14 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     out.conv_id = conv_id;
     out.chunk = Json{{"type", "usage_pending"}, {"conv_id", conv_id}, {"user_message_id", ""}, {"usage_pending", routed["usage_pending"]}};
     out.result = Json{{"conv_id", conv_id}, {"usage_pending", routed["usage_pending"]}, {"routed", Json{{"kind", "pending"}}}};
+    out.issues = none.issues;
     return out;
   }
 
   const Json cmd = routed["command"];
   const std::string lang = routed.value("lang", "en");
+  // The user has refused this very proposal often enough in this conversation (the guardian's do-not-propose rule): the sentence is a message.
+  if (!conv_id.empty() && !cmd.contains("proposal_text") && guardian::do_not_propose(rt.db(), rt.config(), conv_id, cmd.value("title", ""))) return none;
   if (conv_id.empty()) {
     LOOM_TRY_ASSIGN(auto created, rt.db().create_conv("New Chat"));
     conv_id = created.id;
@@ -1917,7 +2434,9 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     if (Json follow = offer_growth(rt, d, conv_id, user_id, cmd.value("action", ""), lang); !follow.is_null()) payload["follow_up"] = follow;
   }
   title_first_exchange(rt, conv_id, text);
-  return finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+  Outcome handled = finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, payload);
+  handled.issues = none.issues;
+  return handled;
 }
 
 void note_removed(Runtime& rt, const Json& origin) {
@@ -1938,6 +2457,132 @@ void note_removed(Runtime& rt, const Json& origin) {
   }
 }
 
+namespace {
+Result<Json> after_pause(Runtime& rt, Json run);  // below, with the client step's answer
+
+// The growth the guard saw: the largest ratio among the resources that asked for the confirmation (null when the guard knows none).
+Json hold_ratio(const Json& pending) {
+  double best = 0;
+  bool any = false;
+  const Json projected = pending.value("projected", Json::object());
+  if (projected.is_object())
+    for (auto it = projected.begin(); it != projected.end(); ++it) {
+      if (!it->is_object() || !json::get_bool(*it, "requires_confirmation", false)) continue;
+      const Json ratio = it->value("ratio", Json(nullptr));
+      if (ratio.is_number() && ratio.get<double>() > best) {
+        best = ratio.get<double>();
+        any = true;
+      }
+    }
+  return any ? Json(best) : Json(nullptr);
+}
+
+// "12" for 12.4, "1.5" for 1.5: the growth as a person says it.
+std::string ratio_words(double ratio) {
+  char buf[32];
+  if (ratio >= 10) std::snprintf(buf, sizeof(buf), "%.0f", ratio);
+  else std::snprintf(buf, sizeof(buf), "%.1f", ratio);
+  return buf;
+}
+
+// The conversation whose message was being analysed: the newest of those the hold names (conv_ids), else the one of the first message it lists (ids).
+std::string conversation_of_hold(Runtime& rt, const Json& pending) {
+  for (const auto& id : pending.value("conv_ids", Json::array()))
+    if (id.is_string() && !id.get<std::string>().empty()) return id.get<std::string>();
+  for (const auto& id : pending.value("ids", Json::array())) {
+    if (!id.is_string()) continue;
+    auto m = rt.db().get_msg(id.get<std::string>());
+    if (m && *m && !(*m)->conv_id.empty()) return (*m)->conv_id;
+  }
+  return std::string();
+}
+
+// The question is told on the one event every question of a conversation uses (events::kActionClientStep): ids only.
+void announce_question(Runtime& rt, const std::string& conv_id, const std::string& message_id, const std::string& receipt, const char* state, const std::string& status = std::string()) {
+  Json payload{{"conv_id", conv_id}, {"message_id", message_id}, {"run_id", "semantic:" + receipt}, {"receipt_id", receipt}, {"question", "semantic"}, {"state", state}};
+  if (!status.empty()) payload["status"] = status;
+  rt.bus().emit(events::kActionClientStep, payload);
+}
+}  // namespace
+
+void note_semantic_hold(Runtime& rt, const Json& pending) {
+  const std::string receipt = json::get_string(pending, "receipt_id");
+  const std::string conv_id = conversation_of_hold(rt, pending);
+  if (receipt.empty() || conv_id.empty()) return;
+  auto msgs = rt.db().get_msgs(conv_id);
+  auto loaded = load_data(rt);
+  if (!msgs || !loaded) return;
+  Data d = std::move(*loaded);
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("semantic_question")) continue;
+    const Json q = m.metadata["semantic_question"];
+    if (json::get_string(q, "receipt_id") == receipt) return;  // shown already
+    if (json::get_string(q, "status") != "pending") continue;
+    // an older question: the guard has a newer one, the old receipt cannot be answered any more
+    if (set_metadata(rt, m.id, [&](Json& meta) { meta["semantic_question"]["status"] = "stale"; }))
+      announce_question(rt, conv_id, m.id, json::get_string(q, "receipt_id"), "closed", "stale");
+  }
+  std::string lang = language_of_conversation(rt, d, conv_id);
+  if (lang.empty()) lang = json::get_string(d.cfg, "default_language", "en");
+  const std::string kind = json::get_string(pending, "kind", "batch");
+  // P18: a hold or refusal by a spending limit says that, with the limit's own reason in the language of the conversation.
+  std::string limit_reason;
+  if (const Json limits = pending.value("limits", Json::array()); limits.is_array() && !limits.empty()) {
+    const Json reason = limits[0].value("reason", Json::object());
+    for (const std::string& key : {lang, std::string("en")})
+      if (const Json* t = json::find(reason, key); t && t->is_string() && !t->get<std::string>().empty()) { limit_reason = t->get<std::string>(); break; }
+  }
+  if (json::get_string(pending, "status") == "denied" || json::get_bool(pending, "refused", false)) {
+    // Nothing can be answered: the analysis is told as paused (once per receipt) and tries again later.
+    for (const auto& m : *msgs)
+      if (m.role == "assistant" && m.metadata.is_object() && m.metadata.contains("semantic_refusal") &&
+          json::get_string(m.metadata["semantic_refusal"], "receipt_id") == receipt)
+        return;
+    const std::string note = say(d.cfg, lang, "semantic_refused", Json{{"reason", limit_reason}, {"count", pending.value("messages", 0)}});
+    Json refusal{{"schema", "loom.semantic_usage_refusal/1"}, {"lang", lang}, {"kind", kind}, {"receipt_id", receipt},
+                 {"limits", pending.value("limits", Json::array())}, {"reason_codes", pending.value("reason_codes", Json::array())}};
+    auto posted = add_message(rt, conv_id, "assistant", note, Json{{"routed", "semantic_refusal"}, {"semantic_refusal", refusal}}, "loom:actions");
+    if (posted) announce_question(rt, conv_id, *posted, receipt, "closed", "refused");
+    return;
+  }
+  const Json ratio = hold_ratio(pending);
+  const std::string text = !limit_reason.empty()
+      ? say(d.cfg, lang, std::string("semantic_question_limit_") + (kind == "retry" ? "retry" : "batch"), Json{{"reason", limit_reason}, {"count", pending.value("messages", 0)}})
+      : say(d.cfg, lang, std::string("semantic_question_") + (kind == "retry" ? "retry" : "batch") + (ratio.is_number() ? "" : "_unknown"),
+            Json{{"ratio", ratio.is_number() ? ratio_words(ratio.get<double>()) : std::string()}, {"count", pending.value("messages", 0)}});
+  Json question{{"schema", "loom.semantic_usage_question/1"}, {"status", "pending"}, {"lang", lang}, {"kind", kind}, {"receipt_id", receipt},
+                {"operation_id", pending.value("operation_id", Json(nullptr))}, {"ratio", ratio}, {"receipt", pending},
+                {"reason_codes", pending.value("reason_codes", Json::array())}};
+  auto posted = add_message(rt, conv_id, "assistant", text, Json{{"routed", "semantic_question"}, {"semantic_question", question}}, "loom:actions");
+  if (!posted) {
+    log::write(log::Level::Debug, "loom.chat_route", "the question of the background analysis could not be posted: " + posted.error().message);
+    return;
+  }
+  announce_question(rt, conv_id, *posted, receipt, "waiting");
+}
+
+void note_semantic_answer(Runtime& rt, const Json& answer) {
+  const std::string receipt = json::get_string(answer, "receipt_id");
+  if (receipt.empty()) return;
+  const Json approved = answer.value("approved", Json(nullptr));
+  const std::string status = approved.is_boolean() ? (approved.get<bool>() ? "approved" : "declined") : "stale";
+  // The question is in the conversation of the message that was analysed: the answer carries the conversations the hold named.
+  const std::string conv_id = conversation_of_hold(rt, answer);
+  if (conv_id.empty()) return;
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return;
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("semantic_question")) continue;
+    const Json q = m.metadata["semantic_question"];
+    if (json::get_string(q, "receipt_id") != receipt || json::get_string(q, "status") != "pending") continue;
+    if (set_metadata(rt, m.id, [&](Json& meta) {
+          meta["semantic_question"]["status"] = status;
+          meta["semantic_question"]["answered"] = Json{{"at", timeutil::utc_now_iso()}, {"ref", json::get_string(answer, "ref")}};
+        }))
+      announce_question(rt, conv_id, m.id, receipt, "closed", status);
+  }
+}
+
 Result<Json> confirm(Runtime& rt, const Json& request) {
   const std::string run_id = json::get_string(request, "run_id");
   if (run_id.empty()) return rt.actions().confirm(request);
@@ -1953,7 +2598,14 @@ Result<Json> confirm(Runtime& rt, const Json& request) {
         json::get_string(it->metadata["action_proposal"], "run_id") == run_id && json::get_string(it->metadata["action_proposal"], "status") == "pending")
       waiting = &*it;
   auto loaded = load_data(rt);
-  if (!waiting || !loaded) return rt.actions().confirm(request);
+  if (!waiting || !loaded) {
+    // No proposal waits for this run, but the run may be paused on a question the conversation showed (the usage guard's x10 hold, a rule's
+    // confirmation): the answer ends the pause and the conversation hears how it went, as it does after the typed "yes".
+    const std::string before = status ? json::get_string(*status, "status") : std::string();
+    auto answered = rt.actions().confirm(request);
+    if (!answered || (before != "awaiting_usage" && before != "awaiting_confirmation")) return answered;
+    return after_pause(rt, std::move(*answered));
+  }
   Data d = std::move(*loaded);
   const bool yes = json::get_bool(request, "approved", false);
   (void)rt.chat().load_conv(conv_id);
@@ -1964,11 +2616,102 @@ Result<Json> confirm(Runtime& rt, const Json& request) {
   out["proposal_message_id"] = waiting->id;
   out["proposal_status"] = settled.status;
   out["message_id"] = settled.assistant_id;
+  if (!settled.conv_id.empty()) out["conv_id"] = settled.conv_id;
   if (settled.offer.is_object()) out["offer"] = settled.offer;
   if (settled.send_now) out["resend"] = Json{{"proposal_message_id", waiting->id}};
   if (settled.payload.contains("follow_up")) out["follow_up"] = settled.payload["follow_up"];
   if (settled.payload.contains("defined")) out["defined"] = settled.payload["defined"];
   return out;
+}
+
+namespace {
+
+// A run that was paused on a question (the client's step) has moved on: the messages of the conversation that showed the question stop
+// showing it - their pending question is closed and their status says how it went - and the proposal that waited for the run is settled.
+void close_questions(Runtime& rt, const std::string& conv_id, const Json& run, const std::string& proposal_status) {
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return;
+  const std::string run_id = json::get_string(run, "id");
+  const std::string status = json::get_string(run, "status");
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object()) continue;
+    if (m.metadata.contains("action_run") && json::get_string(m.metadata["action_run"], "run_id") == run_id &&
+        m.metadata["action_run"].value("pending", Json(nullptr)).is_object()) {
+      const bool was_client_step = json::get_string(m.metadata["action_run"]["pending"], "kind") == "client_step";
+      Json closed;
+      (void)set_metadata(rt, m.id, [&](Json& meta) {
+        meta["action_run"]["pending"] = nullptr;
+        meta["action_run"]["status"] = status;
+        closed = meta;
+      });
+      if (was_client_step) announce_client_step(rt, conv_id, m.id, closed, "closed");
+    }
+    if (m.metadata.contains("action_proposal") && json::get_string(m.metadata["action_proposal"], "run_id") == run_id &&
+        json::get_string(m.metadata["action_proposal"], "status") == "waiting" && !proposal_status.empty())
+      (void)set_metadata(rt, m.id, [&](Json& meta) { meta["action_proposal"]["status"] = proposal_status; });
+  }
+}
+
+// The conversation a run belongs to hears how it went once a pause is over: a message with the result (or the next question).
+Result<Json> after_pause(Runtime& rt, Json run) {
+  const std::string conv_id = json::get_string(run.value("request", Json::object()).value("context", Json::object()), "conv_id");
+  if (conv_id.empty()) return run;
+  const std::string status = json::get_string(run, "status");
+  auto msgs = rt.db().get_msgs(conv_id);
+  auto loaded = load_data(rt);
+  if (!msgs || !loaded) return run;
+  Data d = std::move(*loaded);
+  Json proposal = nullptr;
+  for (const auto& m : *msgs)
+    if (m.role == "assistant" && m.metadata.is_object() && m.metadata.contains("action_proposal") &&
+        json::get_string(m.metadata["action_proposal"], "run_id") == json::get_string(run, "id"))
+      proposal = m.metadata["action_proposal"];
+  const std::string lang = proposal.is_object() ? json::get_string(proposal, "lang", "en") : json::get_string(d.cfg, "default_language", "en");
+  const std::string title = proposal.is_object() ? json::get_string(proposal, "title") : std::string();
+  const std::string new_status = status == "completed" ? "executed" : status == "awaiting_client" || status == "awaiting_usage" || status == "awaiting_confirmation" ? "waiting"
+                                 : status == "cancelled" ? "rejected" : status;
+  close_questions(rt, conv_id, run, new_status);
+  Report rep = report_of(rt, d, run, title, lang);
+  auto posted = answer_message(rt, d, conv_id, &run, rep);
+  if (!posted) return run;
+  run["message_id"] = *posted;
+  return run;
+}
+
+}  // namespace
+
+void note_rule_switched(Runtime& rt, const std::string& rule_id, bool disabled) {
+  auto profile = RuntimeProfile::load("action_rules", rt.paths().root);
+  if (!profile || !profile->values().contains("rules")) return;
+  const Json* rule = json::find(profile->values().at("rules"), rule_id);
+  const std::string conv_id = rule ? json::get_string(rule->value("provenance", Json::object()), "conv_id") : std::string();
+  if (conv_id.empty()) return;  // not written from a conversation: nothing there says so
+  auto msgs = rt.db().get_msgs(conv_id);
+  if (!msgs) return;
+  for (const auto& m : *msgs) {
+    if (m.role != "assistant" || !m.metadata.is_object() || !m.metadata.contains("action_proposal")) continue;
+    const Json proposal = m.metadata["action_proposal"];
+    const Json written = proposal.value("written", Json::object());
+    if (json::get_string(written, "kind") != "rule" || json::get_string(written, "id") != rule_id) continue;
+    (void)set_metadata(rt, m.id, [&](Json& meta) {
+      meta["action_proposal"]["written"]["undone"] = disabled;
+      meta["action_proposal"]["status"] = disabled ? "undone" : "executed";
+    });
+  }
+}
+
+Result<Json> client_result(Runtime& rt, const Json& request) {
+  LOOM_TRY_ASSIGN(Json run, rt.actions().client_result(request));
+  return after_pause(rt, std::move(run));
+}
+
+Result<Json> cancel(Runtime& rt, const Json& request) {
+  // Only a run paused on the client's step has a question in the conversation to close; every other cancel is the plain action.
+  auto before = rt.actions().status(Json{{"run_id", json::get_string(request, "run_id")}});
+  const bool on_client = before && json::get_string(*before, "status") == "awaiting_client";
+  LOOM_TRY_ASSIGN(Json answer, rt.actions().cancel(request));
+  if (!on_client || json::get_string(answer, "status") == "cancelling") return answer;
+  return after_pause(rt, std::move(answer));
 }
 
 }  // namespace loom::chat_route

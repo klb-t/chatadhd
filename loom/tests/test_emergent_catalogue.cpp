@@ -17,6 +17,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
+#include "test_receipts.h"
 
 using namespace loom;
 using loom::test::unwrap;
@@ -46,6 +47,7 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    rt->config().set("model_registry_autorefresh", "off");  // these tests count the transport's requests; fetching the model list for a price is tested in test_estimate_registry
     conv_id = unwrap(rt->db().create_conv("Planning")).id;
     first = add("user", "We should ship on Friday.");
     second = add("assistant", "Agreed, Friday works if the tests pass.");
@@ -92,6 +94,110 @@ std::string hash_of(const char* domain) { return unwrap(RuntimeProfile::builtin(
 }  // namespace
 
 TEST_SUITE("emergent_catalogue") {
+  TEST_CASE("P14 3c: with the model method a sentence the model calls a message is still offered as a new action when it is shaped like a command") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    const std::string message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.95}";
+    // not shaped like a command: still a message (the model said so, the words agree)
+    for (const char* text : {"Jak działa ta rozmowa?", "Napisz wiersz o tej rozmowie", "Dziękuję"}) {
+      f.script(message_verdict);
+      CHECK(f.route(text).at("kind") == "message");
+    }
+    // shaped like a command about an element, the model says message: the heuristic's offer stands
+    f.script(message_verdict);
+    const Json routed = f.route("Rozpisz tę wiadomość na kroki");
+    CHECK(routed.at("method") == "model");
+    REQUIRE(routed.at("kind") == "command");
+    CHECK(routed.at("command").at("source") == "emergent");
+    CHECK(routed.at("command").at("action") == "actions.define");
+    CHECK(routed.at("command").at("emergent").at("kind") == "define_action");
+    CHECK(routed.at("issues").empty());
+    // in the chat: the proposal of the definition is the answer; nothing but the model's routing call was sent
+    const std::size_t calls = f.transport->requests().size();
+    f.script(message_verdict);
+    const auto asked = f.input("Rozpisz tę wiadomość na kroki");
+    REQUIRE(asked.handled);
+    CHECK(f.proposal_of(asked).at("kind") == "define_action");
+    CHECK(f.transport->requests().size() == calls + 1);
+    // the setting is the user's: off, and the model's verdict is the end of it
+    f.rt->config().set("emergent_actions", "off");
+    f.script(message_verdict);
+    CHECK(f.route("Rozpisz tę wiadomość na kroki").at("kind") == "message");
+  }
+
+  TEST_CASE("P17 1: an ordinary sentence in a conversation that has messages is never offered as a new action; real commands still are") {
+    Fixture f;
+    // statements, noun phrases and labels that mention a message or the conversation: none of them is an order (PL and EN)
+    const std::vector<std::string> ordinary = {
+        "First message of run 1",
+        "Last message from run 2",
+        "Second message of the test",
+        "Message number 3 works",
+        "The last message was long",
+        "This message is fine",
+        "Outline of this conversation is below",
+        "List of messages in this conversation",
+        "Summary of the last message",
+        "Plan for this conversation",
+        "Draft of the message is saved",
+        "Review for this conversation is pending",
+        "Edit of the last message was saved",
+        "Note: this message is final",
+        "You outline this message badly",
+        "Run 3 message count",
+        "Pierwsza wiadomość z przebiegu 1",
+        "Ostatnia wiadomość z przebiegu 2",
+        "Druga wiadomość testowa",
+        "Wiadomość numer 3 działa",
+        "Ta wiadomość jest za długa",
+        "Rozpiska tej wiadomości jest niska",
+        "Rozpiska tej rozmowy jest poniżej",
+        "Uwaga: ta wiadomość jest ostateczna",
+        "Poprawka tej wiadomości jest gotowa",
+        "Uporządkowanie tej rozmowy jest w toku",
+        "Pierwsza wiadomosc z przebiegu 1",
+        "Zmiana tej wiadomosci jest zapisana",
+    };
+    for (const auto& text : ordinary) {
+      const Json routed = f.route(text);
+      INFO(text);
+      CHECK(routed.at("kind") == "message");
+      CHECK_FALSE(f.input(text).handled);
+    }
+    // the unknown-command offers stay: a verb of the language at the lead, the element as its object, no question, no statement
+    for (const auto& text : std::vector<std::string>{"Rozpisz tę wiadomość na kroki", "Uporządkuj tę wiadomość", "Outline this conversation",
+                                                       "Please outline this message", "Can you outline this message", "Tidy this message",
+                                                       "Fix this message", "Mógłbyś rozpisać tę wiadomość", "Przeanalizuj tę wiadomość",
+                                                       "Proszę rozpisać ostatnią wiadomość"}) {
+      const Json routed = f.route(text);
+      INFO(text);
+      REQUIRE(routed.at("kind") == "command");
+      CHECK(routed.at("command").at("source") == "emergent");
+    }
+    // a question is never an order, with or without the mark
+    for (const auto& text : std::vector<std::string>{"Can you outline this message?", "Czy możesz rozpisać tę wiadomość?"})
+      CHECK(f.route(text).at("kind") == "message");
+    // a verb the list does not know is not guessed; the user adds it in the overlay without replacing the list
+    CHECK(f.route("Frobnicate this message").at("kind") == "message");
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "intent_routing.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "intent_routing"},
+                {"overrides", Json{{"emergent", Json{{"command_shape", Json{{"verbs_extra", Json{{"en", Json::array({"frobnicate"})}}}}}}}}}}
+               .dump();
+    CHECK(f.route("Frobnicate this message").at("kind") == "command");
+    CHECK(f.route("Outline this conversation").at("kind") == "command");  // the shipped list stays
+  }
+
+  TEST_CASE("P14 3c: a failed model route falls back to the local method, the definition included, and says so") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
+    const Json routed = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(routed.at("kind") == "command");
+    CHECK(routed.at("command").at("source") == "emergent");
+    CHECK(routed.at("issues").at(0).at("code") == "model_route_failed");
+  }
+
   TEST_CASE("a: a command no action understands is offered as a new action; accepting writes the overlays and runs it; undo takes it back") {
     Fixture f;
     const std::string shipped_actions = hash_of("actions"), shipped_routing = hash_of("intent_routing"), shipped_entry = hash_of("graph_entry");
@@ -284,7 +390,7 @@ TEST_SUITE("emergent_catalogue") {
   TEST_CASE("c: a user-defined action used on several classes that share traits is offered a group; accepting writes the overlay of the graph entry") {
     Fixture f;
     f.rt->config().set("intent_routing_run", "always");
-    unwrap(f.rt->actions().invoke("actions.define", Json{{"id", "rozpisz"}, {"instruction", "Rozpisz na kroki"}, {"phrases", Json{{"pl", Json::array({"rozpisz"})}}}, {"lang", "pl"}, {"confirmed", true}}));
+    unwrap(loom::test::invoke_confirmed(*f.rt, "actions.define", Json{{"id", "rozpisz"}, {"instruction", "Rozpisz na kroki"}, {"phrases", Json{{"pl", Json::array({"rozpisz"})}}}, {"lang", "pl"}, {"confirmed", true}}));
     const std::string shipped_entry = hash_of("graph_entry");
     f.script("Kroki 1");
     const auto on_message = f.input("Rozpisz tę wiadomość");
@@ -321,9 +427,9 @@ TEST_SUITE("emergent_catalogue") {
     CHECK(f.overlay("graph_entry").empty());
     CHECK(f.node(node).at("status") == "undone");
     // shipped actions and groups cannot be removed through these doors
-    CHECK(unwrap(f.rt->actions().invoke("actions.remove", Json{{"id", "summarise"}, {"confirmed", true}})).at("status") == "failed");
-    CHECK(unwrap(f.rt->actions().invoke("groups.remove", Json{{"id", "rich_content"}, {"confirmed", true}})).at("status") == "failed");
-    CHECK(unwrap(f.rt->actions().invoke("actions.define", Json{{"id", "summarise"}, {"instruction", "x"}, {"confirmed", true}})).at("status") == "failed");
+    CHECK(unwrap(loom::test::invoke_confirmed(*f.rt, "actions.remove", Json{{"id", "summarise"}, {"confirmed", true}})).at("status") == "failed");
+    CHECK(unwrap(loom::test::invoke_confirmed(*f.rt, "groups.remove", Json{{"id", "rich_content"}, {"confirmed", true}})).at("status") == "failed");
+    CHECK(unwrap(loom::test::invoke_confirmed(*f.rt, "actions.define", Json{{"id", "summarise"}, {"instruction", "x"}, {"confirmed", true}})).at("status") == "failed");
   }
 
   TEST_CASE("the writers through the API: dry run, confirmation, names, an action another one of yours uses") {

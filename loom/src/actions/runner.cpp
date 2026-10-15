@@ -1,8 +1,15 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+#include "loom/agent.h"
+#include "loom/tool_sources.h"
+#include "loom/environments.h"
+#include "loom/guardian.h"
+#include "loom/action_spend.h"
+#include "loom/usage_spend.h"
 #include "loom/action_emergent.h"
 #include "loom/action_overlay.h"
+#include "loom/action_ops.h"
 
 #include <algorithm>
 #include <thread>
@@ -11,8 +18,10 @@
 #include "loom/action_estimate.h"
 #include "loom/action_result.h"
 #include "loom/chat_route.h"
+#include "loom/client_blobs.h"
 #include "loom/config.h"
 #include "loom/db.h"
+#include "loom/event_bus.h"
 #include "loom/provenance.h"
 #include "loom/providers.h"
 #include "loom/runtime.h"
@@ -21,9 +30,11 @@
 #include "loom/settings_fields.h"
 #include "loom/storage_command.h"
 #include "loom/usage_policy.h"
+#include "loom/util/base64.h"
 #include "loom/util/ids.h"
 #include "loom/util/utf8.h"
 #include "loom/media_providers.h"
+#include "loom/port_profile.h"
 #include "loom/use_model.h"
 
 namespace loom::actions {
@@ -44,23 +55,58 @@ StepOutcome failed(Error e) {
   return o;
 }
 
+// The choice the user made for a job in the ports profile (the role: this conversation first, then the user's overlay); nothing when only the
+// shipped preset speaks, so a person who chose nothing sees no change.
+std::optional<Json> chosen_role(Runtime& rt, const StepCall& c, const std::string& role) {
+  auto profile = PortProfile::load(rt.paths().root);
+  if (!profile) return std::nullopt;
+  Json meta = Json::object();
+  const std::string conv = json::get_string(c.context, "conv_id");
+  if (!conv.empty())
+    if (auto cv = rt.db().get_conv(conv); cv && *cv) meta = (*cv)->metadata.value("ports", Json::object());
+  auto resolved = profile->resolve(role, meta, conv, rt.config().all());
+  if (!resolved || !resolved->value("defined", false) || json::get_string(*resolved, "scope") == "installation") return std::nullopt;
+  return *resolved;
+}
+
 // ── use_model ───────────────────────────────────────────────────────
 
 Json usage_pending_of(const llm::VariantResult& r) {
   const Json& admitted = r.hold["decision"];
   Json resources = Json::object();
   if (const Json* res = json::find(admitted, "resources")) resources = *res;
-  return Json{{"schema", "loom.action_usage_pending/1"}, {"status", json::get_string(r.hold, "status")},
+  Json pending{{"schema", "loom.action_usage_pending/1"}, {"status", json::get_string(r.hold, "status")},
               {"operation_id", admitted.value("operation_id", Json(nullptr))},
               {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
               {"baseline_key", admitted.value("baseline_key", Json(nullptr))},
               {"projected", resources}, {"decisions", r.hold.value("decisions", Json(nullptr))}, {"sent", false}};
+  // P18: a spending limit that holds has its own reason code and texts (limits, reason_codes).
+  const Json limit = usage_limit_reasons(admitted);
+  for (auto it = limit.begin(); it != limit.end(); ++it)
+    if (it.key() != "status") pending[it.key()] = it.value();
+  return pending;
+}
+
+// A spending limit with on_exceed deny refuses the model call (the ledger's status `denied`): the step fails with the reason in the language of
+// the run, nothing was sent and there is no receipt to answer. Empty when the hold is not such a refusal.
+std::string limit_refusal(const llm::VariantResult& r, const std::string& lang) {
+  if (json::get_string(r.hold, "status") != "denied") return std::string();
+  const Json reasons = usage_limit_reasons(r.hold.value("decision", Json::object()));
+  const Json limits = reasons.value("limits", Json::array());
+  if (!limits.is_array() || limits.empty()) return std::string();
+  const Json reason = limits[0].value("reason", Json::object());
+  for (const std::string& key : {lang, std::string("en")})
+    if (const Json* t = json::find(reason, key); t && t->is_string() && !t->get<std::string>().empty()) return t->get<std::string>();
+  return "your spending limit does not allow this model call";
 }
 
 // A use_model step with `media: asr | ocr` (transcribe, ocr): the recording or the picture of the element goes to the media providers
 // (profile media), which put it on the wire through the one use_model - the adapter of the provider's family, the usage guard, the
-// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the guard holds
-// comes back as the provider's error (the media providers have no way to resume it): the run fails with that reason.
+// provenance record with the operation id. The step's provenance is what those calls recorded on this thread. A call the usage guard
+// holds (x10 growth) is a pause, not a failure: the providers' resumable calls answer with the hold's receipt, nothing is sent and no
+// other provider is tried, and the step comes back Held with that receipt, as a model call does. The run resumes with the user's
+// confirmation (c.usage_confirmation), and this function is called again with the same recording or picture, provider and language,
+// so the request that was held is the request that is sent (only once, only to the provider that held it).
 StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, const std::string& family) {
   const Json media = settings.value("media", Json::object());
   const Json kind = media.value(family, Json::object());
@@ -89,30 +135,51 @@ StepOutcome run_media(Runtime& rt, const Json& settings, const StepCall& c, cons
     const std::string v = json::get_string(c.with, key);
     return v.empty() ? std::optional<std::string>() : std::optional<std::string>(v);
   };
-  const auto provider = optional_text("provider");
+  auto provider = optional_text("provider");
+  // The provider the user chose for this job (role asr / ocr of the ports profile: "for transcription use groq").
+  if (!provider)
+    if (auto chosen = chosen_role(rt, c, family)) {
+      const Json members = chosen->value("members", chosen->value("entry", Json::object()).value("members", Json::array()));
+      if (members.is_array() && !members.empty() && members[0].is_string()) provider = members[0].get<std::string>();
+    }
   const auto language = optional_text("language");
 
   Json provenance = Json::array();
   const std::thread::id caller = std::this_thread::get_id();
-  rt.media().set_provenance_sink([&provenance, caller](const Json& record) {
+  // The runtime's own sink (provenance rows, the port run in the graph) keeps hearing every call; this step listens as well, and
+  // puts the runtime's sink back when it is done.
+  const std::function<void(const Json&)> previous = rt.media().provenance_sink();
+  rt.media().set_provenance_sink([&provenance, caller, previous](const Json& record) {
+    if (previous) previous(record);
     if (std::this_thread::get_id() == caller) provenance.push_back(record);  // another thread's call is not this step's
   });
   struct Release {
     Runtime& rt;
-    ~Release() { rt.media().set_provenance_sink(nullptr); }
-  } release{rt};
+    std::function<void(const Json&)> previous;
+    ~Release() { rt.media().set_provenance_sink(previous); }
+  } release{rt, previous};
   std::string text;
   Json data = nullptr;
+  const Json confirmation = c.usage_confirmation.is_object() ? c.usage_confirmation : Json::object();
+  auto held = [&](Json pending) {
+    StepOutcome h;
+    h.state = StepOutcome::State::Held;
+    h.hold = std::move(pending);
+    h.provenance = std::move(provenance);
+    return h;
+  };
   if (family == "asr") {
-    auto done = rt.media().transcribe_bytes(bytes, format, provider, language);
+    auto done = rt.media().transcribe_bytes_resumable(bytes, format, provider, language, confirmation);
     if (!done) return failed(done.error());
-    text = done->text;
-    data = done->to_json();
+    if (done->paused()) return held(std::move(done->pending));
+    text = done->value->text;
+    data = done->value->to_json();
   } else {
-    auto done = rt.media().ocr_bytes(bytes, format, provider, language);
+    auto done = rt.media().ocr_bytes_resumable(bytes, format, provider, language, confirmation);
     if (!done) return failed(done.error());
-    text = done->text;
-    data = done->to_json();
+    if (done->paused()) return held(std::move(done->pending));
+    text = done->value->text;
+    data = done->value->to_json();
   }
   StepOutcome out;
   out.state = StepOutcome::State::Ok;
@@ -146,6 +213,10 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
   }
   if (req.models.empty()) {
     std::string model = json::get_string(with, "model");
+    // The model the user chose for this job (role action.<id> of the ports profile: "for summaries use model X").
+    if (model.empty())
+      if (auto chosen = chosen_role(rt, c, "action." + (c.owner_action.empty() ? c.root_action : c.owner_action)))
+        model = chosen->value("params", Json::object()).value("model", "");
     if (model.empty()) {
       const Json configured = rt.config().get(json::get_string(um, "model_setting", "default_model"));
       if (configured.is_string()) model = configured.get<std::string>();
@@ -199,6 +270,7 @@ StepOutcome run_use_model(Runtime& rt, const Json& settings, const StepCall& c) 
       const std::string status = json::get_string(r.hold, "status");
       if (status != "requires_confirmation" && status != "denied" && status != "cancelled")
         return failed(Error(Errc::Paused, "model usage is not admitted: " + status));
+      if (const std::string refusal = limit_refusal(r, c.lang); !refusal.empty()) return failed(Error(Errc::Conflict, refusal));
       out.state = StepOutcome::State::Held;
       out.hold = usage_pending_of(r);
       out.parts.clear();
@@ -340,13 +412,25 @@ struct ActionRunner::Loaded {
   ElementResolver resolver;
   Json settings;
   Json results;  // runtime profile action_results: where the results of a run go
+  Json client;   // the declaration of the asking client (client_devices.h); null for none
   ExecutorTable executors;
 };
 
-ActionRunner::ActionRunner(Runtime& rt) : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_) {}
-ActionRunner::~ActionRunner() = default;
+ActionRunner::ActionRunner(Runtime& rt)
+    : rt_(rt), store_(make_event_log_run_store(rt.event_log())), index_(*store_), pipelines_(std::make_unique<pipelines::Jobs>(rt)) {
+  // The background analysis held by the x10 guard asks its question in the conversation of the message it analysed, and the question closes when
+  // it is answered, from whichever surface (P17 3). The handlers hold the runtime only: the worker is stopped before the runtime is torn down.
+  Runtime* runtime = &rt;
+  semantic_hold_sub_ = rt.bus().on(events::kSemanticUsagePending, [runtime](std::string_view, const Json& pending) { chat_route::note_semantic_hold(*runtime, pending); });
+  semantic_answer_sub_ = rt.bus().on(events::kSemanticUsageAnswered, [runtime](std::string_view, const Json& answer) { chat_route::note_semantic_answer(*runtime, answer); });
+}
+ActionRunner::~ActionRunner() {
+  rt_.bus().off(semantic_hold_sub_);
+  rt_.bus().off(semantic_answer_sub_);
+}
 
 RunStore& ActionRunner::store() { return *store_; }
+pipelines::Jobs& ActionRunner::pipelines() { return *pipelines_; }
 SequenceIndex& ActionRunner::sequence_index() { return index_; }
 
 void ActionRunner::install_executors(ExecutorTable& table) {
@@ -356,6 +440,10 @@ void ActionRunner::install_executors(ExecutorTable& table) {
     auto profile = RuntimeProfile::load("action_run", rt.paths().root);
     return run_use_model(rt, profile ? profile->values() : Json::object(), c);
   });
+  // The device actions a client declared are carried out by that client: the step pauses the run (client_devices.h).
+  table.set_client_executor(make_client_step_executor());
+  // The operations of the application (search, memory, conversations, ports, usage, help ...): action_ops.h.
+  install_chat_ops(table, rt);
   table.add("settings.set", [&rt](const StepCall& c) { return run_settings_set(rt, c); });
   table.add("settings.get", [&rt](const StepCall& c) { return run_settings_get(rt, c); });
   table.set_port_executor([this](const StepCall& c) {
@@ -365,6 +453,13 @@ void ActionRunner::install_executors(ExecutorTable& table) {
     if (!entry) return failed(Error(Errc::NotFound, "unknown action '" + c.action + "'"));
     Json request = c.args;
     for (auto it = c.with.begin(); it != c.with.end(); ++it) request[it.key()] = it.value();
+    if (guardian::is_guardian_action(json::get_string(*entry, "action"))) {
+      // The element the words (or the caller) named is what the guardian looks at: a conversation, or one message of it.
+      const std::string cls = json::get_string(c.element, "class"), id = json::get_string(c.element, "id");
+      if (cls == "conversation" && !id.empty() && !request.contains("conv_id")) request["conv_id"] = id;
+      if (cls == "message" && !id.empty() && !request.contains("message_id")) request["message_id"] = id;
+      if (!request.contains("conv_id") && !json::get_string(c.context, "conv_id").empty()) request["conv_id"] = json::get_string(c.context, "conv_id");
+    }
     auto result = invoke_port(json::get_string(*entry, "port"), json::get_string(*entry, "action"), request);
     if (!result) return failed(result.error());
     StepOutcome out;
@@ -375,21 +470,42 @@ void ActionRunner::install_executors(ExecutorTable& table) {
   });
 }
 
-Result<ActionRunner::Loaded> ActionRunner::load() {
+bool ActionRunner::runnable(const Json& entry) {
+  if (json::get_string(entry, "status") != "implemented") return false;
+  if (json::get_string(entry, "kind") == "composite") return json::get_string(entry, "consumer").empty();
+  ExecutorTable table;
+  install_executors(table);
+  return table.find(json::get_string(entry, "id"), entry) != nullptr;
+}
+
+Json ActionRunner::client_declaration(std::string_view client_id) { return clients_.find(client_id); }
+
+Json ActionRunner::client_patches(std::string_view client_id) {
+  const Json declaration = clients_.find(client_id);
+  if (declaration.is_null()) return Json::object();
+  auto profile = RuntimeProfile::load("client_devices", rt_.paths().root);
+  auto catalogue = RuntimeProfile::load("actions", rt_.paths().root);
+  if (!profile || !catalogue) return Json::object();
+  const Json* actions = json::find(catalogue->values(), "actions");
+  return actions::client_patches(actions ? *actions : Json::object(), declaration, profile->values());
+}
+
+Result<ActionRunner::Loaded> ActionRunner::load(std::string_view client_id) {
   const auto& root = rt_.paths().root;
   LOOM_TRY_ASSIGN(auto engine, Engine::load(root));
   engine.set_user_values(rt_.config().all());  // the user's settings are the person level of scoped values
+  engine.apply_client(client_patches(client_id));  // the catalogue as the asking client sees it
   LOOM_TRY_ASSIGN(auto resolver, ElementResolver::load(root));
   Json settings = Json::object();
   if (auto profile = RuntimeProfile::load("action_run", root)) settings = profile->values();
   Json results = Json::object();
   if (auto profile = RuntimeProfile::load("action_results", root)) results = profile->values();
-  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), std::move(results), {}};
+  Loaded loaded{std::move(engine), std::move(resolver), std::move(settings), std::move(results), clients_.find(client_id), {}};
   install_executors(loaded.executors);
   return loaded;
 }
 
-Interpreter ActionRunner::make_interpreter(const Loaded& loaded) const {
+Interpreter ActionRunner::make_interpreter(const Loaded& loaded) {
   InterpreterDeps deps;
   deps.engine = &loaded.engine;
   deps.executors = &loaded.executors;
@@ -412,6 +528,8 @@ Interpreter ActionRunner::make_interpreter(const Loaded& loaded) const {
   services.bus = &rt_.bus();
   services.profile = loaded.results;
   deps.on_result = [services](Json& run) { return store_run_results(services, run); };
+  // The user's spending limits (setting usage_spend_limits) are gates of the plan, like the rules' confirmations.
+  deps.extra_gates = [this, &loaded](const Json& plan, const RunRequest& request, bool preview) { return spend_gates(loaded, plan, request, preview); };
   return Interpreter(deps);
 }
 
@@ -440,6 +558,9 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
     const std::string from = json::get_string(*entry, "element_from_arg");
     if (!from.empty()) {
       if (const Json* v = json::find(r.args, from)) element = *v;
+      else if (const Json* defaults = json::find(*entry, "element_arg_defaults"); defaults && defaults->is_object())
+        for (auto it = defaults->begin(); it != defaults->end() && element.is_null(); ++it)  // the first argument given names the setting (data)
+          if (it->is_string() && r.args.is_object() && r.args.contains(it.key()) && !r.args[it.key()].is_null()) element = *it;
     }
   }
   if (element.is_null()) element = Json::object();
@@ -483,11 +604,16 @@ Result<RunRequest> ActionRunner::prepare(const Loaded& loaded, const Json& reque
   }
   if (resolved.is_string()) resolved = Json{{"class", resolved}};
   r.element = std::move(resolved);
+  if (loaded.client.is_object()) {
+    r.client = Json{{"client_id", loaded.client.value("client_id", "")}, {"client", loaded.client.value("client", Json::object())}};
+  } else if (const std::string asked = json::get_string(request, "client_id"); !asked.empty()) {
+    r.client = Json{{"client_id", asked}, {"known", false}};  // never declared, or the declaration expired: the device actions stay planned
+  }
   return r;
 }
 
 Result<Json> ActionRunner::run(const Json& request, const CancelToken* external) {
-  LOOM_TRY_ASSIGN(auto loaded, load());
+  LOOM_TRY_ASSIGN(auto loaded, load(json::get_string(request, "client_id")));
   LOOM_TRY_ASSIGN(RunRequest r, prepare(loaded, request));
   r.run_id = gen_id("ar_");
   CancelToken own;
@@ -517,6 +643,66 @@ Result<Json> ActionRunner::confirm(const Json& request, const CancelToken* exter
   }
   auto interpreter = make_interpreter(loaded);
   auto result = interpreter.confirm(run_id, request, token);
+  std::lock_guard lk(mu_);
+  live_.erase(run_id);
+  if (result) return public_view(*result);
+  return result;
+}
+
+// ── the clients ─────────────────────────────────────────────────────
+
+Result<Json> ActionRunner::client_declare(const Json& request) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("client_devices", rt_.paths().root));
+  LOOM_TRY_ASSIGN(auto catalogue, RuntimeProfile::load("actions", rt_.paths().root));
+  const Json* actions = json::find(catalogue.values(), "actions");
+  return clients_.declare(request, profile.values(), actions ? *actions : Json::object());
+}
+
+Result<Json> ActionRunner::client_capabilities(const Json& request) {
+  const std::string id = json::get_string(request, "client_id");
+  if (id.empty()) return Json{{"clients", clients_.list()}};
+  const Json declaration = clients_.find(id);
+  if (declaration.is_null()) {
+    auto profile = RuntimeProfile::load("client_devices", rt_.paths().root);
+    Json out{{"client_id", id}, {"known", false}};
+    if (profile) {
+      // value() returns a copy: bind it before pointing into it (a pointer into the temporary dangles after the initializer)
+      const Json texts = profile->values().value("texts", Json::object());
+      if (const Json* t = json::find(texts, "unknown_client")) out["message"] = *t;
+    }
+    return out;
+  }
+  Json out = declaration;
+  out["known"] = true;
+  return out;
+}
+
+Result<Json> ActionRunner::client_result(const Json& request, const CancelToken* external) {
+  const std::string run_id = json::get_string(request, "run_id");
+  if (run_id.empty()) return Error(Errc::InvalidArgument, "run_id is required");
+  LOOM_TRY_ASSIGN(auto loaded, load());
+  auto interpreter = make_interpreter(loaded);
+  Json answer = request;
+  answer.erase("run_id");
+  // Nothing is stored for an answer the run is not waiting for (a wrong receipt, a run that was cancelled meanwhile).
+  LOOM_TRY_ASSIGN(Json current, interpreter.get(run_id));
+  const Json pending = current.value("pending", Json(nullptr));
+  if (json::get_string(current, "status") == "awaiting_client" && pending.is_object() &&
+      json::get_string(request, "receipt_id") == json::get_string(pending, "receipt_id") && json::get_string(request, "state") == "ok") {
+    const Json spec = pending.value("client_step", Json::object());
+    Json origin{{"schema", "loom.client_capture/1"}, {"run_id", run_id}, {"step", json::get_string(pending, "step")},
+                {"action", json::get_string(pending, "action")}, {"client_id", current.value("client", Json::object()).value("client_id", "")},
+                {"ref", json::get_string(request, "ref")}, {"output_kind", spec.value("expects", Json::array()).empty() ? "media" : spec["expects"][0]}};
+    LOOM_TRY_ASSIGN(answer["parts"], client_blobs::parts(rt_, request.value("parts", Json::array()), origin));
+  }
+  CancelToken own;
+  const CancelToken* token = external ? external : &own;
+  {
+    std::lock_guard lk(mu_);
+    if (live_.count(run_id)) return Error(Errc::Busy, "run '" + run_id + "' is executing right now");
+    live_.emplace(run_id, *token);
+  }
+  auto result = interpreter.client_result(run_id, answer, token);
   std::lock_guard lk(mu_);
   live_.erase(run_id);
   if (result) return public_view(*result);
@@ -556,14 +742,19 @@ Result<Json> ActionRunner::status(const Json& request) {
 }
 
 Result<Json> ActionRunner::preview(const Json& request) {
-  LOOM_TRY_ASSIGN(auto loaded, load());
+  LOOM_TRY_ASSIGN(auto loaded, load(json::get_string(request, "client_id")));
   LOOM_TRY_ASSIGN(RunRequest r, prepare(loaded, request));
   auto interpreter = make_interpreter(loaded);
   LOOM_TRY_ASSIGN(Json preview, interpreter.preview(r));
   // What the plan would cost: tokens, and money where the registry knows the price (never zero for what it does not know).
+  preview["estimate"] = estimate_of(loaded, preview.at("plan"), r);
+  return preview;
+}
+
+Json ActionRunner::estimate_of(const Loaded& loaded, const Json& plan, const RunRequest& r) {
   std::int64_t chars = 0;
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
-  if (preview.at("plan").at("cost").value("model_calls", 0) > 0)
+  if (plan.at("cost").value("model_calls", 0) > 0)
     if (auto parts = loaded.resolver.content_parts(sources, r.element))
       for (const auto& p : *parts) chars += static_cast<std::int64_t>(utf8::length(p.text));
   EstimateServices services;
@@ -571,8 +762,58 @@ Result<Json> ActionRunner::preview(const Json& request) {
   services.config = &rt_.config();
   services.settings = loaded.settings;
   services.catalogue = loaded.engine.catalogue();
-  preview["estimate"] = estimate_plan(services, preview.at("plan"), r.args, chars);
-  return preview;
+  Json estimate = estimate_plan(services, plan, r.args, chars);
+  // A price the registry cannot give because it is empty (a fresh data directory): fetch the list once, then estimate again.
+  bool empty_registry = false;
+  for (const auto& call : estimate.value("calls", Json::array()))
+    if (json::get_string(call.value("price", Json::object()), "why_code") == "registry_empty") empty_registry = true;
+  if (empty_registry) {
+    services.registry_failure = fill_registry_for_estimate(loaded.settings);
+    estimate = estimate_plan(services, plan, r.args, chars);
+  }
+  return estimate;
+}
+
+Result<Json> ActionRunner::spend_gates(const Loaded& loaded, const Json& plan, const RunRequest& r, bool preview) {
+  // A run that starts is not gated here: the model call is admitted by the usage ledger, which applies the limits to every caller (P18).
+  if (!preview) return Json::array();
+  const Json data = loaded.settings.value("spend_limits", Json::object());
+  // Nothing is estimated, fetched or read while the user has set no limit (the preset), or when the plan calls no model.
+  if (spend::stored(rt_.config(), data).entries.empty()) return Json::array();
+  if (plan.value("cost", Json::object()).value("model_calls", 0) <= 0 && !plan.value("cost", Json::object()).value("pipeline_model_use", false)) return Json::array();
+  const Json estimate = estimate_of(loaded, plan, r);
+  return spend::gates(rt_.paths().root, rt_.config(), data, plan, estimate);
+}
+
+std::string ActionRunner::fill_registry_for_estimate(const Json& run_settings) {
+  const Json cfg = run_settings.value("estimate", Json::object()).value("registry_refresh", Json::object());
+  const Json* presets = json::find(cfg, "presets");
+  if (!presets || !presets->is_object()) return std::string();
+  // The user's choice (a preset name), else the installation's; a name that is not a preset means the one the data names for it.
+  std::string chosen = json::get_string(cfg, "active", "on_demand");
+  const Json set = rt_.config().get(json::get_string(cfg, "setting", "model_registry_autorefresh"));
+  if (set.is_string() && !set.get<std::string>().empty()) chosen = set.get<std::string>();
+  const Json* preset = json::find(*presets, chosen);
+  if (!preset) preset = json::find(*presets, json::get_string(cfg, "unknown", "on_demand"));
+  if (!preset || !json::get_bool(*preset, "fetch", false)) return std::string();
+  const Json retry = cfg.value("retry_after_seconds", Json(nullptr));
+  {
+    std::lock_guard lk(mu_);
+    if (registry_tried_) {
+      // Tried before and the registry is still empty: again only after the retry window (null: every time).
+      const double waited = std::chrono::duration<double>(std::chrono::steady_clock::now() - registry_tried_at_).count();
+      if (retry.is_number() && waited < retry.get<double>()) return registry_failure_;
+    }
+    registry_tried_ = true;  // set before the call so a second estimate at the same time does not fetch again
+    registry_tried_at_ = std::chrono::steady_clock::now();
+    registry_failure_.clear();
+  }
+  std::string failure;
+  if (auto st = rt_.models().update_from_api(); !st) failure = st.error().message;
+  else if (rt_.models().size() == 0) failure = "the provider's list has no models";
+  std::lock_guard lk(mu_);
+  registry_failure_ = failure;
+  return failure;
 }
 
 // The writes of rules and of the user's own actions: raw (a step of a run has passed the rules already) or gated (a call from
@@ -580,7 +821,12 @@ Result<Json> ActionRunner::preview(const Json& request) {
 Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& request) {
   const auto& root = rt_.paths().root;
   if (action == "rules.set") return rules_set(root, request);
-  if (action == "rules.disable") return rules_disable(root, request);
+  if (action == "rules.disable") {
+    auto done = rules_disable(root, request);
+    if (done && json::get_bool(*done, "written", true) && json::get_bool(*done, "changed", true))
+      chat_route::note_rule_switched(rt_, json::get_string(*done, "id"), json::get_bool(*done, "disabled", true));
+    return done;
+  }
   if (action == "rules.list") return rules_list(root, request);
   const bool define = action == "actions.define" || action == "groups.define";
   const bool remove = action == "actions.remove" || action == "groups.remove";
@@ -601,13 +847,14 @@ Result<Json> ActionRunner::write_overlay(std::string_view action, const Json& re
 
 Result<Json> ActionRunner::run_gated(std::string_view action, const Json& request) {
   Json args = request;
-  for (const char* control : {"confirmed", "ref", "context", "propose"}) args.erase(control);
+  for (const char* control : {"confirmed", "receipt_id", "ref", "context", "propose"}) args.erase(control);
   Json run_request{{"action", std::string(action)}, {"element", Json{{"class", "application"}}}, {"args", args}, {"ref", json::get_string(request, "ref", "api")}};
   Json context = request.value("context", Json::object());
   if (!context.is_object()) context = Json::object();
   if (!context.contains("origin")) context["origin"] = json::get_string(request, "ref", "api");
   run_request["context"] = context;
   if (json::get_bool(request, "confirmed", false)) run_request["confirmed"] = true;
+  if (const std::string receipt = json::get_string(request, "receipt_id"); !receipt.empty()) run_request["receipt_id"] = receipt;
   if (json::get_bool(request, "propose", false)) run_request["propose"] = true;
   std::string conv = json::get_string(context, "conv_id");
   if (conv.empty() && json::get_string(request, "scope") == "conversation") conv = json::get_string(request, "scope_id");
@@ -617,25 +864,50 @@ Result<Json> ActionRunner::run_gated(std::string_view action, const Json& reques
 
 Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view action, const Json& request) {
   if (port == "actions" && is_overlay_action(action)) return write_overlay(action, request);
+  if (port == "actions" && guardian::is_guardian_action(action)) return rt_.guardian().invoke(action, request);
   if (port == "actions") return invoke(action, request);
   if (port == "storage") {
     Json r = request;
     r["action"] = action.rfind("storage.", 0) == 0 ? std::string(action) : "storage." + std::string(action);
     return storage::run_command(rt_, r);
   }
+  if (port == "environments") {
+    if (action == "sync") return environments::sync(rt_, request);
+    if (action == "list") return environments::list(rt_, request);
+    if (action == "can_do") return environments::can_do(rt_, request);
+    return Error(Errc::Unsupported, "environments has no action '" + std::string(action) + "'");
+  }
+  if (port == "agent") return agent::invoke(rt_, action, request);
+  if (port == "tool_source") return tool_sources::invoke(rt_, action, request);
   return Error(Errc::Unsupported, "port '" + std::string(port) + "' cannot be run as a step");
 }
 
 Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) {
   if (action == "run") return run(request);
   if (action == "confirm") return confirm(request);
+  if (action == "client_result") return client_result(request);
+  if (action == "client.declare") return client_declare(request);
+  if (action == "client.capabilities") return client_capabilities(request);
+  if (action == "client.blob_put") return client_blobs::put(rt_, request);
+  if (action == "client.blob_path") return client_blobs::path(rt_, request);
+  if (action == "client.blob_begin") return client_blobs::begin(rt_, request);
+  if (action == "client.blob_append") return client_blobs::append(rt_, request);
+  if (action == "client.blob_commit") return client_blobs::commit(rt_, request);
+  if (action == "client.blob_read") return client_blobs::read(rt_, request);
   if (action == "cancel") return cancel(request);
   if (action == "status") return status(request);
   if (action == "preview") return preview(request);
   if (action == "rules.list") return write_overlay(action, request);
   if (is_overlay_action(action)) return run_gated(action, request);
+  // The context guardian (guardian.h). What changes the user's rules or the representation is a run like rules.set (the rules of the
+  // scope and the receipt apply); reading, observing and annotating are the guardian's own work.
+  if (action == "guardian.promote" || action == "guardian.undo") return run_gated(action, request);
+  if (action == "guardian.observe" || action == "guardian.status" || action == "guardian.compile" || action == "guardian.levels" || action == "guardian.annotate" ||
+      action == "guardian.remembered" || action == "guardian.merge" || action == "guardian.unmerge")
+    return rt_.guardian().invoke(action, request);
   const ElementSources sources{&rt_.db(), &rt_.blobs(), rt_.paths().root};
-  return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config());
+  const Json patches = client_patches(json::get_string(request, "client_id"));
+  return actions::invoke(rt_.paths().root, action, request, &sources, &rt_.config(), &patches);
 }
 
 }  // namespace loom::actions

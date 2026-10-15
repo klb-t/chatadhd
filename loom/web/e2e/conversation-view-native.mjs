@@ -38,6 +38,9 @@ writeFileSync(path.join(data,'profiles/worker.pack'),JSON.stringify({schema:'loo
 writeFileSync(path.join(data,'profiles/resource_read.pack'),JSON.stringify({schema:'loom.runtime_profile_overlay/1',domain:'resource_read',overrides:{content_index:'none'}}));
 const probe=createServer();await new Promise(resolve=>probe.listen(0,'127.0.0.1',resolve));const port=probe.address().port;await new Promise(resolve=>probe.close(resolve));
 const base=`http://127.0.0.1:${port}`;
+// The page declares its devices to the kernel only right before the first send (P13); the send then carries the id of that client, nothing else new.
+const clientIdForm=/^web-[0-9a-f]{12}$/;
+const exactSend=(requests,expected)=>{assert.equal(requests.length,expected.length);requests.forEach((row,i)=>{assert.match(row.client_id,clientIdForm);assert.deepEqual(Object.keys(row).sort(),['client_id','conv_id','message']);const {client_id,...rest}=row;assert.deepEqual(rest,expected[i]);});};
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const sources=['src/components/ChatView.tsx','src/components/ConversationSourceView.tsx','src/components/ApplicationProfiles.tsx','src/App.tsx','src/api/conversation-view.ts','src/api/loom-http.ts','src/onboarding/presentation.mjs','src/components/ImportedMessageContent.tsx','src/onboarding/generated/conversation-view.json','e2e/conversation-view-native.mjs'];
 const sourceHashes=()=>Object.fromEntries(sources.map(file=>[file,sha(readFileSync(path.join(web,file)))]));
@@ -47,7 +50,7 @@ writeFileSync(path.join(evidence,'receipt-before.json'),JSON.stringify({sources:
   dist_index_sha256:sha(readFileSync(path.join(dist,'index.html'))),fixture_sha256:sha(readFileSync(archive)),data_dir:data,source_dir:source,native_tmpdir:runtimeTmp,
   model_calls:0,retention:{scan_content_index:'none',initial_projection_storage:'snapshot',selected_read_projection_storage:'transient'}},null,2));
 let server,browser,page,serverLog='',failure;
-const groups=[],remoteRequests=[],sendRequests=[],mutations=[],sourceReads=[],errors=[];
+const groups=[],remoteRequests=[],sendRequests=[],declareRequests=[],mutations=[],sourceReads=[],errors=[];
 const complete=suiteCompletionGuard('conversation-view-native',9,groups);
 async function request(method,route,body){const response=await fetch(base+route,{method,headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
  const result=await response.json();assert.ok(response.ok && !result.error,`${route}: ${JSON.stringify(result)}`);return {result,response};}
@@ -83,10 +86,11 @@ try{
  await page.route('**/*',async route=>{const req=route.request(),url=new URL(req.url());
   if(url.origin!==base){remoteRequests.push(req.url());return route.abort();}
   if(url.pathname==='/api/chat'){sendRequests.push(req.postDataJSON());return route.abort();}
+  if(url.pathname==='/api/client/declare'){declareRequests.push(req.postDataJSON());return route.continue();}
   if(url.pathname.includes('/messages/')&&req.method()!=='GET')mutations.push(req.url());
   if(url.pathname.endsWith('/view')&&req.method()==='POST')sourceReads.push(req.postDataJSON());
   return route.continue();});
- await page.goto(base);await selectLinked();
+ await page.goto((base).replace(/\/?$/, "/#warsztat"));await selectLinked();
  await chat().getByTestId('conversation-sources').waitFor();
  const settings=async()=>({model:await chat().getByTestId('model-picker').inputValue(),history:await chat().getByTestId('include-history').isChecked(),
   memory:await chat().getByTestId('include-memory').isChecked(),graph:await chat().getByTestId('include-graph-memory').isChecked()});
@@ -124,11 +128,12 @@ try{
   assert.equal(await chat().getByTestId('send-chat').isDisabled(),true);
   assert.equal(await chat().getByTestId('send-chat').getAttribute('data-gate-initiator'),'user');
   assert.equal(await chat().getByTestId('preview-chat-request').isDisabled(),true);
-  assert.deepEqual(sendRequests,[]);
+  assert.deepEqual(sendRequests,[]);assert.deepEqual(declareRequests,[],'viewing, reading sources and a blocked send declare nothing');
   await chat().getByTestId('send-gate-unblock').click();
   await chat().getByTestId('chat-input').fill(degradedText);await chat().getByTestId('send-chat').click();
   await chat().getByTestId('chat-error').waitFor();
-  assert.deepEqual(sendRequests,[{message:degradedText,conv_id:convId}],'Client request carries no source history; native history is the stored rows');
+  exactSend(sendRequests,[{message:degradedText,conv_id:convId}]);assert.equal(declareRequests.length,1,'one declaration, made right before the first send');assert.equal(declareRequests[0].client_id,sendRequests[0].client_id);
+  // Client request carries no source history; native history is the stored rows (exactly the keys above, no history fields)
   assert.deepEqual(mutations,[]);assert.deepEqual(remoteRequests,[]);
   assert.equal(await visibleReferences().locator('img,iframe,audio,video,object,embed').count(),0);
   assert.deepEqual(await settings(),beforeSettings);
@@ -179,7 +184,7 @@ try{
   await chat().getByTestId('read-conversation-sources').tap();await visibleReferences().first().waitFor();
   const after=(await request('POST',`/api/conversations/${convId}/view`,{read_options:{projection_storage:'transient',content_index:'none'}})).result;
   assert.deepEqual(after.messages.map(row=>row.id),headless.messages.map(row=>row.id));
-  assert.deepEqual(remoteRequests,[]);assert.deepEqual(sendRequests,[{message:degradedText,conv_id:convId}]);assert.deepEqual(errors,[]);
+  assert.deepEqual(remoteRequests,[]);exactSend(sendRequests,[{message:degradedText,conv_id:convId}]);assert.deepEqual(errors,[]);
  });
  await check('locally edited placeholder stays visible and keeps native edit/status capabilities',async()=>{
   await request('POST',`/api/messages/${nativeRows[0].id}/edit`,{text:'PUBLIC_LOCAL_OVERLAY_9281'});
@@ -195,7 +200,7 @@ try{
   assert.ok(read.resources.some(resource=>resource.status==='binding_unresolved'));
   await local.getByTestId('toggle-exclude').click();await chat().getByTestId('show-all-messages').check();
   await chat().locator('[data-testid="message"][data-status="excluded"]').filter({has:page.locator('.body',{hasText:'PUBLIC_LOCAL_OVERLAY_9281'})}).waitFor();
-  assert.equal(await visibleReferences().count(),0);assert.deepEqual(sendRequests,[{message:degradedText,conv_id:convId}]);assert.deepEqual(remoteRequests,[]);
+  assert.equal(await visibleReferences().count(),0);exactSend(sendRequests,[{message:degradedText,conv_id:convId}]);assert.deepEqual(remoteRequests,[]);
  });
  await check('transient source content is absent from native store, logs and browser settings',async()=>{
   await stop();const scanned=[];

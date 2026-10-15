@@ -379,7 +379,7 @@ if (!pureOnly) {
     const waitRevision = async value => {
       await page.waitForFunction(value => document.querySelector('[data-testid="user-profile-revision"]')?.textContent === value, value);
     };
-    await page.goto(base);
+    await page.goto((base).replace(/\/?$/, "/#warsztat"));
     await check("browser exposes explicit identity without mount-time model calls and uses actual HTTP transport", async () => {
       assert.equal(browserCommands.length, 0); await select("browser-user");
       await page.getByTestId("onboarding-panel").waitFor();

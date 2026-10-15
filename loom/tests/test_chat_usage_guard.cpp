@@ -28,6 +28,7 @@ struct GuardEnv {
     cfg.set("base_url", "https://api.test");
     cfg.set("default_model", "test/model");
     cfg.set("auto_title", false);
+    loom::test::measured_baseline_only(cfg);  // P17 6: this test is about the x10 hold over three tiny sends, so the floor of the baseline is off
   }
   ChatEngine engine() { return ChatEngine(cfg, secrets, *db, bus, transport, *analyzer); }
   void script(int n) {

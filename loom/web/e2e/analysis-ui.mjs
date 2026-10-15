@@ -119,7 +119,7 @@ await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
 const browser = await chromium.launch({ headless: true });
 try {
   const page = await browser.newPage();
-  await page.goto(`http://127.0.0.1:${server.address().port}`);
+  await page.goto((`http://127.0.0.1:${server.address().port}`).replace(/\/?$/, "/#warsztat"));
   await page.locator('[data-testid="analysis-contract"]').filter({ hasText: "" }).waitFor();
   await page.waitForFunction(() => document.querySelector('[data-testid="analysis-contract"]')?.value.includes("synthetic.analysis"));
   assert.match(await page.locator('[data-testid="analysis-contract"]').inputValue(), /"native_ratio":1\.0/);

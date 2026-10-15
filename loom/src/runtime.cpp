@@ -1,5 +1,9 @@
 // Composition root. See runtime.h for the wiring order.
+#include "util/safety.h"
 #include "loom/runtime.h"
+#include "loom/cleanup.h"
+#include "loom/path_policy.h"
+#include "loom/net/host_guard.h"
 #include "loom/storage_backend.h"
 
 #include <atomic>
@@ -17,11 +21,13 @@
 #include "loom/event_bus.h"
 #include "loom/github_sync.h"
 #include "loom/graph_engine.h"
+#include "loom/guardian.h"
 #include "loom/graph_memory.h"
 #include "loom/importer.h"
 #include "loom/loom.h"
 #include "loom/media_providers.h"
 #include "loom/memory_engine.h"
+#include "loom/port_graph.h"
 #include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/providers.h"
@@ -56,8 +62,14 @@ class ForwardingTransport final : public net::HttpTransport {
     std::lock_guard lk(mu_);
     return target_;
   }
+  // Outbound guard (accounts mode, R18): refuses requests to private/local addresses.
+  void set_guard(std::vector<std::string> allow_hosts) {
+    guard_ = true;
+    allow_hosts_ = std::move(allow_hosts);
+  }
   Result<net::HttpResponse> send(const net::HttpRequest& req, const net::StreamSink* sink,
                                  const CancelToken* cancel) override {
+    if (guard_) LOOM_TRY(net::check_public_url(req.url, allow_hosts_));
     auto t = get();
     if (!t) return Error(Errc::Unavailable, "no HTTP transport configured");
     return t->send(req, sink, cancel);
@@ -70,6 +82,8 @@ class ForwardingTransport final : public net::HttpTransport {
  private:
   mutable std::mutex mu_;
   std::shared_ptr<net::HttpTransport> target_;
+  bool guard_ = false;
+  std::vector<std::string> allow_hosts_;
 };
 
 std::vector<std::string> event_log_types(const Config& cfg) {
@@ -97,6 +111,7 @@ std::unique_ptr<storage::StorageService> default_storage(PartsContext& c) {
   senv.http = c.http_shared;
   senv.secrets = c.secrets;
   senv.data_dir = c.paths->root;
+  senv.path_policy = c.path_policy;
   auto svc = storage::StorageService::load(senv, c.db);
   if (svc) return std::move(*svc);
   // A broken overlay must not stop the app, nor silently move data: fall back to the shipped default
@@ -227,6 +242,26 @@ Result<RuntimeOptions> RuntimeOptions::from_json(const Json& j) {
       o.start_workers = v.get<bool>();
     } else if (k == "enable_fts" && v.is_boolean()) {
       o.enable_fts = v.get<bool>();
+    } else if (k == "block_private_hosts" && v.is_boolean()) {
+      o.block_private_hosts = v.get<bool>();
+    } else if (k == "allow_hosts" && v.is_array()) {
+      for (const auto& r : v) {
+        if (!r.is_string()) return Error(Errc::InvalidArgument, "allow_hosts must be an array of strings");
+        o.allow_hosts.push_back(r.get<std::string>());
+      }
+    } else if (k == "zip_max_total_bytes" && v.is_number()) {
+      o.zip_max_total_bytes = v.get<std::int64_t>();
+    } else if (k == "zip_max_ratio" && v.is_number()) {
+      o.zip_max_ratio = v.get<double>();
+    } else if (k == "git_allow_repo_config" && v.is_boolean()) {
+      o.git_allow_repo_config = v.get<bool>();
+    } else if (k == "confine_paths" && v.is_boolean()) {
+      o.confine_paths = v.get<bool>();
+    } else if (k == "path_roots" && v.is_array()) {
+      for (const auto& r : v) {
+        if (!r.is_string()) return Error(Errc::InvalidArgument, "path_roots must be an array of strings");
+        o.path_roots.push_back(r.get<std::string>());
+      }
     } else if (k == "log_level" && v.is_string()) {
       std::string s = v.get<std::string>();
       if (s == "debug") o.log_level = log::Level::Debug;
@@ -244,6 +279,7 @@ Result<RuntimeOptions> RuntimeOptions::from_json(const Json& j) {
 struct Runtime::Impl {
   // Declaration order == construction order == reverse destruction order.
   DataPaths paths;
+  std::shared_ptr<PathPolicy> path_policy = std::make_shared<PathPolicy>();
   std::unique_ptr<Config> config;
   std::unique_ptr<Secrets> secrets;
   std::unique_ptr<Database> db;
@@ -274,6 +310,7 @@ struct Runtime::Impl {
   std::unique_ptr<archive::ArchiveIntelligence> archive;  // needs the Runtime; created last
   std::unique_ptr<knowledge::KnowledgeEngine> knowledge;  // needs the Runtime; registers knowledge.* handlers
   rom::MountRegistry mounts;                              // ROM first, then the data dir
+  std::unique_ptr<guardian::Guardian> guardian;           // needs the Runtime; destroyed before the actions
   std::unique_ptr<actions::ActionRunner> actions;         // needs the Runtime; destroyed first
 
   mutable std::mutex embed_mu;
@@ -283,7 +320,19 @@ struct Runtime::Impl {
 
 Runtime::Runtime(std::unique_ptr<Impl> impl) : impl_(std::move(impl)) {}
 
-Runtime::~Runtime() { shutdown(); }
+Runtime::~Runtime() {
+  shutdown();
+  // Parts built from the Runtime reach the other parts through rt.bus(), rt.event_log() ... in their destructors, i.e. through impl_.
+  // std::unique_ptr in libc++ (the Android NDK) nulls impl_ BEFORE it deletes the Impl, so letting ~Impl destroy them reads impl_->bus
+  // through a null pointer (SIGSEGV, fault addr = offsetof(Impl, bus) = 0x148). Destroy them here, while impl_ is still valid, in
+  // reverse construction order.
+  if (impl_) {
+    impl_->actions.reset();
+    impl_->guardian.reset();  // stopped in shutdown(); its message:created subscription is already gone
+    impl_->knowledge.reset();
+    impl_->archive.reset();
+  }
+}
 
 Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   if (opts.log_level) log::set_level(*opts.log_level);
@@ -295,6 +344,14 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   impl->paths = DataPaths::for_root(root);
   const DataPaths& p = impl->paths;
   impl->mounts = rom::MountRegistry::standard(p.root);
+  if (opts.zip_max_total_bytes || opts.zip_max_ratio || opts.git_allow_repo_config)
+    safety::set_operator_ceiling(p.root, {opts.zip_max_total_bytes.value_or(0), opts.zip_max_ratio.value_or(0),
+                                          opts.git_allow_repo_config.value_or(true)});
+  if (opts.confine_paths) {
+    std::vector<fs::path> roots{p.root};
+    for (const auto& r : opts.path_roots) roots.emplace_back(r);
+    impl->path_policy->confine(std::move(roots));
+  }
 
   impl->config = std::make_unique<Config>(p.config);
   impl->secrets = std::make_unique<Secrets>(p.secrets);
@@ -302,7 +359,15 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   DbOptions dbo;
   dbo.enable_fts = opts.enable_fts;
   dbo.fts_path = p.fts_index;
+  {
+    Json cr = impl->config->get("loom_fts_chunk_rows");
+    if (cr.is_number_integer()) dbo.fts_chunk_rows = static_cast<int>(std::max<std::int64_t>(0, cr.get<std::int64_t>()));
+  }
   LOOM_TRY_ASSIGN(impl->db, Database::open(p.db, dbo));
+  if (opts.start_workers && opts.enable_fts) {
+    Json bg = impl->config->get("loom_fts_background_build");
+    if (!bg.is_boolean() || bg.get<bool>()) impl->db->fts_start_background();
+  }
 
   impl->bus = std::make_unique<EventBus>();
   impl->event_log = std::make_unique<EventLog>(*impl->db);
@@ -317,6 +382,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   fill_default_parts(parts, opts.http);
   PartsContext ctx;
   ctx.paths = &impl->paths;
+  ctx.path_policy = impl->path_policy;
   ctx.config = impl->config.get();
   ctx.secrets = impl->secrets.get();
   ctx.db = impl->db.get();
@@ -330,7 +396,9 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(impl->analyzer, parts.analyzer(ctx));
   if (!impl->analyzer) return Error(Errc::Internal, "runtime part factory returned null: analyzer");
   ctx.analyzer = impl->analyzer.get();
-  impl->http = std::make_shared<ForwardingTransport>(parts.http());
+  auto forwarding = std::make_shared<ForwardingTransport>(parts.http());
+  if (opts.block_private_hosts) forwarding->set_guard(opts.allow_hosts);
+  impl->http = forwarding;
   ctx.http = impl->http.get();
   ctx.http_shared = impl->http;
 
@@ -360,7 +428,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   LOOM_TRY_ASSIGN(impl->media, build_part("media", parts.media, ctx));
   ctx.media = impl->media.get();
   // ASR/OCR model_use records go to the provenance store (subject = the usage receipt when there is one).
-  impl->media->set_provenance_sink([prov = impl->provenance.get()](const Json& record) {
+  impl->media->set_provenance_sink([prov = impl->provenance.get(), db = impl->db.get(), cfg = impl->config.get()](const Json& record) {
     ProvenanceRecord rec;
     rec.subject_id = json::get_string(record, "operation_id");
     if (rec.subject_id.empty()) rec.subject_id = json::get_string(record, "request_sha256");
@@ -368,6 +436,15 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     rec.transform = json::get_string(record, "kind", "model_use") + "@1";
     rec.locator = record;
     if (auto r = prov->add(std::move(rec)); !r) log::debug(kLog, "media provenance not recorded: {}", r.error().message);
+    // The same call as a port run in the graph (B-MOD-09); switch off with config port_graph_runs=false.
+    if (cfg->get("port_graph_runs", Json(true)) == Json(false)) return;
+    auto run = port_graph::port_run_from_model_use(record);
+    // The registered adapter whose name starts with the provider's id (groq -> groq_whisper).
+    const std::string provider = run.provider;
+    const auto names = run.port == "asr" ? asr_adapters().names() : run.port == "ocr" ? ocr_adapters().names() : std::vector<std::string>();
+    for (const auto& n : names)
+      if (!provider.empty() && n.rfind(provider, 0) == 0) { run.adapter = n; break; }
+    if (auto g = port_graph::record_port_run(*db, run); !g) log::debug(kLog, "port run not recorded in the graph: {}", g.error().message);
   });
   LOOM_TRY_ASSIGN(impl->importer, build_part("importer", parts.importer, ctx));
   ctx.importer = impl->importer.get();
@@ -383,6 +460,7 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
 
   // Start: graph subscription always (real-time graph is core behaviour);
   // background threads only when requested.
+  impl->graph->set_config(impl->config.get());
   impl->graph->start();
   if (auto rec = impl->tasks->recover_interrupted(); !rec) {
     log::warn(kLog, "task recovery failed: {}", rec.error().message);
@@ -391,6 +469,12 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     // Housekeeping of the usage ledger (preset mode "auto"): never creates it, runs at most once per interval.
     if (auto compacted = auto_compact_usage_ledger(*impl->config, root); !compacted)
       log::warn(kLog, "usage ledger compaction failed: {}", compacted.error().message);
+    // Housekeeping of scratch files and unreferenced blobs (loom/cleanup.h; blobs are off and dry-run by preset): a failure never stops the runtime.
+    if (auto copts = cleanup_options(*impl->config); !copts) {
+      log::warn(kLog, "cleanup settings ignored: {}", copts.error().message);
+    } else if (auto cleaned = run_cleanup(*impl->db, *impl->blobs, root, *copts); !cleaned) {
+      log::warn(kLog, "cleanup failed: {}", cleaned.error().message);
+    }
     Json workers = impl->config->get("loom_task_workers");
     impl->tasks->start(workers.is_number_integer() ? workers.get<int>() : 1);
     impl->worker->start();
@@ -403,6 +487,8 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
   rt->impl_->actions = parts.actions(*rt);
   if (!rt->impl_->archive || !rt->impl_->knowledge || !rt->impl_->actions)
     return Error(Errc::Internal, "runtime part factory returned null: archive/knowledge/actions");
+  rt->impl_->guardian = std::make_unique<guardian::Guardian>(*rt);
+  rt->impl_->guardian->start();
   rt->tasks().register_handler("catalog.read_resource", [runtime = rt.get()](TaskContext& task) -> Status {
     const auto& params = task.params();
     if (!params.is_object() || !params.contains("unit_id") ||
@@ -463,6 +549,7 @@ void Runtime::shutdown() {
   if (!impl_ || impl_->shut_down.exchange(true)) return;
   if (impl_->worker) impl_->worker->stop();
   if (impl_->tasks) impl_->tasks->stop();
+  if (impl_->guardian) impl_->guardian->stop();
   if (impl_->graph) impl_->graph->stop();
   if (impl_->bus) impl_->bus->set_persistence(nullptr, {});
   if (impl_->crypto) impl_->crypto->lock();
@@ -471,6 +558,7 @@ void Runtime::shutdown() {
 }
 
 const DataPaths& Runtime::paths() const { return impl_->paths; }
+const PathPolicy& Runtime::path_policy() const { return *impl_->path_policy; }
 const rom::MountRegistry& Runtime::mounts() const { return impl_->mounts; }
 Config& Runtime::config() { return *impl_->config; }
 Secrets& Runtime::secrets() { return *impl_->secrets; }
@@ -501,6 +589,7 @@ CryptoVault& Runtime::crypto() { return *impl_->crypto; }
 GitHubSyncManager& Runtime::github() { return *impl_->github; }
 archive::ArchiveIntelligence& Runtime::archive() { return *impl_->archive; }
 knowledge::KnowledgeEngine& Runtime::knowledge() { return *impl_->knowledge; }
+guardian::Guardian& Runtime::guardian() { return *impl_->guardian; }
 actions::ActionRunner& Runtime::actions() { return *impl_->actions; }
 
 void Runtime::set_http_transport(std::shared_ptr<net::HttpTransport> transport) {

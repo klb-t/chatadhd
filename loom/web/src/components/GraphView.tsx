@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api";
+import { readWebPageSizes } from "../settings/page-sizes";
+import { useShellText } from "../shell/text";
 import type { GraphEdge, GraphNode } from "../api/types";
 
 interface Props {
@@ -24,7 +26,7 @@ const KIND_COLORS: Record<string, string> = {
   message: "#8c8c99",
 };
 
-function colorFor(kind: string): string {
+export function colorFor(kind: string): string {
   return KIND_COLORS[kind] ?? "#9d9dff";
 }
 
@@ -73,7 +75,10 @@ function filterGraphNoise<N extends GraphNode>(nodes: N[], edges: GraphEdge[]): 
   return { nodes: kept, edges: edges.filter((e) => keptIds.has(e.src) && keptIds.has(e.dst)) };
 }
 
+// Message nodes per page: the setting loom_web_graph_page (preset 2000, 0 = no cut); older pages stay reachable with "Load older".
+
 export default function GraphView({ convId }: Props) {
+  const t = useShellText();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const nodesRef = useRef<Map<string, SimNode>>(new Map());
@@ -86,15 +91,21 @@ export default function GraphView({ convId }: Props) {
   const [depth, setDepth] = useState(1);
   const [nodeCount, setNodeCount] = useState(0);
   const [edgeCount, setEdgeCount] = useState(0);
+  // P19: a conversation graph shows its newest loom_web_graph_page message nodes ("N of M"); older ones are added on request.
+  const [graphPage, setGraphPage] = useState<{ shown: number; total: number; next: string | null } | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<GraphNode | null>(null);
 
   useEffect(() => setConvFilter(convId ?? ""), [convId]);
 
   const load = useCallback(() => {
-    api
-      .getGraphData(convFilter || undefined)
+    readWebPageSizes()
+      .then((sizes) => api.getGraphData(convFilter || undefined, convFilter ? { limit: sizes.graphPage } : undefined))
       .then((raw) => {
+        setGraphPage(convFilter && typeof raw.total_messages === "number"
+          ? { shown: raw.nodes.filter((n) => n.kind === "message").length, total: raw.total_messages, next: raw.truncated ? raw.next_before ?? null : null }
+          : null);
         const data = filterGraphNoise(raw.nodes, raw.edges);
         const map = new Map<string, SimNode>();
         const w = containerRef.current?.clientWidth ?? 400;
@@ -119,6 +130,37 @@ export default function GraphView({ convId }: Props) {
   }, [convFilter]);
 
   useEffect(load, [load]);
+
+  const loadMore = useCallback(() => {
+    const cursor = graphPage?.next;
+    if (!convFilter || !cursor) return;
+    setLoadingMore(true);
+    readWebPageSizes()
+      .then((sizes) => api.getGraphData(convFilter, { limit: sizes.graphPage, before: cursor }))
+      .then((raw) => {
+        const data = filterGraphNoise(raw.nodes, raw.edges);
+        const map = nodesRef.current;
+        const w = containerRef.current?.clientWidth ?? 400;
+        const h = containerRef.current?.clientHeight ?? 400;
+        for (const n of data.nodes) {
+          if (map.has(n.id)) continue;
+          map.set(n.id, { ...n, x: w / 2 + (Math.random() - 0.5) * 160, y: h / 2 + (Math.random() - 0.5) * 160, vx: 0, vy: 0 });
+        }
+        const known = new Set(edgesRef.current.map((e) => `${e.src}\u0000${e.dst}\u0000${e.type}`));
+        const added = data.edges.filter((e) => map.has(e.src) && map.has(e.dst) && !known.has(`${e.src}\u0000${e.dst}\u0000${e.type}`));
+        edgesRef.current = [...edgesRef.current, ...added];
+        setNodeCount(map.size);
+        setEdgeCount(edgesRef.current.length);
+        setGraphPage((cur) => ({
+          shown: (cur?.shown ?? 0) + raw.nodes.filter((n) => n.kind === "message").length,
+          total: raw.total_messages ?? cur?.total ?? 0,
+          next: raw.truncated ? raw.next_before ?? null : null,
+        }));
+        setError(null);
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : String(err)))
+      .finally(() => setLoadingMore(false));
+  }, [convFilter, graphPage]);
 
   // Force simulation + render loop.
   useEffect(() => {
@@ -366,6 +408,10 @@ export default function GraphView({ convId }: Props) {
       {error && <div className="empty-state" style={{ color: "var(--err)" }}>{error}</div>}
       <div className="pill" data-testid="graph-counts">
         {nodeCount} nodes · {edgeCount} edges
+        {graphPage && graphPage.total > 0 && (
+          <> · <span data-testid="graph-page-count">{graphPage.shown} of {graphPage.total} messages</span>
+            {graphPage.next && <> <button onClick={loadMore} disabled={loadingMore} data-testid="graph-load-more">{loadingMore ? "..." : t("load_older")}</button></>}</>
+        )}
       </div>
       {selected && (
         <div className="pill" style={{ marginLeft: 6 }}>

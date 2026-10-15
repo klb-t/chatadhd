@@ -92,7 +92,7 @@ try {
   browser = await chromium.launch({ headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
   const page = await browser.newPage(); const errors = []; page.on("pageerror", error => errors.push(error.message));
   const origin = `http://127.0.0.1:${server.address().port}`;
-  await page.goto(origin);
+  await page.goto((origin).replace(/\/?$/, "/#warsztat"));
   await page.locator('[data-testid="settings-load-error"]').waitFor();
   assert.match(await page.locator('[data-testid="settings-load-error"]').innerText(), /offline load fixture/);
   await page.evaluate(() => { window.__failLoad = false; });
@@ -209,7 +209,7 @@ try {
   await page.locator('[data-testid="settings-save-error"]').waitFor();
   assert.match(await page.locator('[data-testid="settings-save-error"]').innerText(), /Store credentials/);
   assert.equal(configWrites.length, beforeSecret);
-  await page.goto(`${origin}/unsupported`);
+  await page.goto(`${origin}/unsupported#warsztat`);
   await page.locator('[data-testid="usage-policy-error"]').waitFor();
   assert.match(await page.locator('[data-testid="usage-policy-error"]').innerText(), /unavailable in this host/);
   assert.equal(await page.locator('[data-testid="usage-preview"]').isDisabled(), true);

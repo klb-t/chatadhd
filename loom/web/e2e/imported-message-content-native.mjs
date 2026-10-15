@@ -86,7 +86,7 @@ try {
     if (url.pathname === "/api/chat") { inferenceRequests.push(request.url()); await route.abort(); return; }
     await route.continue();
   });
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await view().waitFor();
 
   await check("native Claude import renders all ten typed blocks through ChatView without running tools or media", async () => {

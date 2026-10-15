@@ -1,0 +1,134 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "ui_animation",
+  "revision": 1,
+  "description": "Animation of the interface as data (R56): named styles (kind, duration with its unit, easing), the table that maps each kind of UI element to a style, the display refresh rate used to convert frames, and the style that prefers-reduced-motion selects. Section Interfejs i wyświetlanie / Animacje. The shipped styles are a starting point: the settings animation_styles (overlay of your own styles), animations (per element) and animation_reduced_motion replace them. The web turns the resolved table into CSS variables.",
+  "defaults": {
+    "schema": "loom.ui_animation/1",
+    "section": "Interfejs i wyświetlanie",
+    "subsection": "Animacje",
+    "refresh_hz": 60,
+    "reduced_motion_style": "none",
+    "units": [
+      "ms",
+      "s",
+      "frames"
+    ],
+    "easings": {
+      "linear": "linear",
+      "ease": "ease",
+      "ease-out": "cubic-bezier(0, 0, 0.2, 1)",
+      "ease-in": "cubic-bezier(0.4, 0, 1, 1)",
+      "ease-in-out": "cubic-bezier(0.4, 0, 0.2, 1)"
+    },
+    "styles": {
+      "none": {
+        "kind": "none",
+        "duration": {
+          "value": 0,
+          "unit": "ms"
+        },
+        "easing": "linear"
+      },
+      "fade": {
+        "kind": "fade",
+        "duration": {
+          "value": 150,
+          "unit": "ms"
+        },
+        "easing": "ease-out"
+      },
+      "slide": {
+        "kind": "slide",
+        "direction": "left",
+        "duration": {
+          "value": 180,
+          "unit": "ms"
+        },
+        "easing": "ease-out"
+      },
+      "grow": {
+        "kind": "grow",
+        "duration": {
+          "value": 150,
+          "unit": "ms"
+        },
+        "easing": "ease-out"
+      },
+      "scale": {
+        "kind": "scale",
+        "duration": {
+          "value": 150,
+          "unit": "ms"
+        },
+        "easing": "ease-out"
+      },
+      "grow+fade": {
+        "kind": "grow+fade",
+        "duration": {
+          "value": 150,
+          "unit": "ms"
+        },
+        "easing": "ease-out"
+      }
+    },
+    "elements": {
+      "disclosure": "grow+fade",
+      "drawer": "slide",
+      "menu": "fade",
+      "dialog": "fade",
+      "notice": "fade",
+      "message": "fade",
+      "proposal": "fade",
+      "view": "fade"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "schema",
+      "refresh_hz",
+      "reduced_motion_style",
+      "units",
+      "easings",
+      "styles",
+      "elements"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "schema": {
+        "type": "string"
+      },
+      "section": {
+        "type": "string"
+      },
+      "subsection": {
+        "type": "string"
+      },
+      "refresh_hz": {
+        "type": "number",
+        "minimum": 1,
+        "description": "Display refresh rate that converts a duration in frames to time."
+      },
+      "reduced_motion_style": {
+        "type": "string",
+        "minLength": 1
+      },
+      "units": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "easings": {
+        "type": "object"
+      },
+      "styles": {
+        "type": "object"
+      },
+      "elements": {
+        "type": "object"
+      }
+    }
+  }
+}

@@ -200,6 +200,51 @@ public final class HostSmokeTest {
                 require(r.contains("\"context_set\""), "goal context failed: " + r);
             });
 
+            failures += check("a client declares its devices and answers a device step through the dispatcher (P13)", () -> {
+                String declared = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.declare\",\"request\":{"
+                    + "\"client_id\":\"android-1\",\"client\":{\"kind\":\"android\",\"label\":\"host smoke\"},\"capabilities\":{"
+                    + "\"captures_audio\":{\"permission\":\"prompt\",\"via\":\"MediaRecorder\"},"
+                    + "\"shows_notifications\":{\"permission\":\"granted\",\"via\":\"native shell\"}}}}");
+                require(declared.contains("\"schema\":\"loom.client_declaration/1\"") && declared.contains("\"client_id\":\"android-1\""), "declaration: " + declared);
+                require(declared.contains("device.record_audio") && declared.contains("device.notify"), "runnable actions: " + declared);
+                String rows = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"for\",\"request\":{\"element\":\"device:notifications\",\"client_id\":\"android-1\"}}");
+                require(rows.contains("\"runs_on\":\"client\""), "device.notify is runnable on this client: " + rows);
+                String paused = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"run\",\"request\":{\"action\":\"device.notify\","
+                    + "\"element\":\"device:notifications\",\"args\":{\"text\":\"Done\"},\"client_id\":\"android-1\"}}");
+                require(paused.contains("\"status\":\"awaiting_client\"") && paused.contains("\"kind\":\"client_step\""), "paused on the device: " + paused);
+                java.util.regex.Matcher id = java.util.regex.Pattern.compile("\"id\":\"(ar_[0-9a-f]+)\"").matcher(paused);
+                java.util.regex.Matcher receipt = java.util.regex.Pattern.compile("\"receipt_id\":\"(arr_[0-9a-f]+)\"").matcher(paused);
+                require(id.find() && receipt.find(), "run and receipt ids: " + paused);
+                String done = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client_result\",\"request\":{\"run_id\":\"" + id.group(1)
+                    + "\",\"receipt_id\":\"" + receipt.group(1) + "\",\"state\":\"ok\",\"ref\":\"android:host smoke\"}}");
+                require(done.contains("\"status\":\"completed\""), "the answer continues the run: " + done);
+            });
+
+            failures += check("the bytes of a device step cross the dispatcher in chunks, are stored by hash and come back in chunks (P14 6)", () -> {
+                String begun = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_begin\",\"request\":{}}");
+                java.util.regex.Matcher upload = java.util.regex.Pattern.compile("\"upload_id\":\"(up_[0-9a-f]+)\"").matcher(begun);
+                require(upload.find(), "an upload id: " + begun);
+                // "AUDIO" in two chunks: "AUD" and "IO"
+                String first = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_append\",\"request\":{\"upload_id\":\""
+                    + upload.group(1) + "\",\"data_base64\":\"QVVE\"}}");
+                require(first.contains("\"size\":3"), "first chunk: " + first);
+                String second = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_append\",\"request\":{\"upload_id\":\""
+                    + upload.group(1) + "\",\"data_base64\":\"SU8=\"}}");
+                require(second.contains("\"size\":5"), "second chunk: " + second);
+                String stored = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_commit\",\"request\":{\"upload_id\":\""
+                    + upload.group(1) + "\",\"mime\":\"audio/mp4\"}}");
+                StringBuilder hex = new StringBuilder();
+                for (byte b : java.security.MessageDigest.getInstance("SHA-256").digest("AUDIO".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                    hex.append(String.format("%02x", b));
+                require(stored.contains("\"hash\":\"" + hex + "\"") && stored.contains("\"size\":5") && stored.contains("audio/mp4"), "stored by hash: " + stored);
+                String tail = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client.blob_read\",\"request\":{\"hash\":\"" + hex
+                    + "\",\"offset\":3,\"length\":100}}");
+                require(tail.contains("\"data_base64\":\"SU8=\"") && tail.contains("\"eof\":true") && tail.contains("\"length\":2"), "read back: " + tail);
+                String bytes = LoomNative.nativeInvoke("invoke", "{\"port\":\"actions\",\"action\":\"client_result\",\"request\":{\"run_id\":\"ar_none\","
+                    + "\"receipt_id\":\"arr_none\",\"state\":\"ok\",\"parts\":[{\"kind\":\"audio\",\"data_base64\":\"QQ==\"}]}}");
+                require(bytes.contains("\"error\""), "a run that does not exist answers with an error, never with bytes taken: " + bytes);
+            });
+
             failures += check("nativeShutdown", () -> LoomNative.nativeShutdown());
             failures += check("stream errors settle after shutdown too", () -> {
                 terminalError("chat-after-shutdown", () -> LoomNative.nativeChat("{}", "chat-after-shutdown"), "invalid_argument");

@@ -284,6 +284,36 @@
           "pl": "Wyłączenie reguły zmienia od teraz zachowanie aplikacji; każdą potwierdzasz sam."
         }
       },
+      "confirm:guardian.promote": {
+        "id": "confirm:guardian.promote",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "guardian.promote",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "The guardian would save a rule or a compiled instruction for this conversation; you confirm each one.",
+          "pl": "Strażnik zapisałby regułę lub skompilowane polecenie dla tej rozmowy; każde potwierdzasz sam."
+        }
+      },
+      "confirm:guardian.undo": {
+        "id": "confirm:guardian.undo",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "guardian.undo",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Taking back what the guardian saved changes what is sent from now on; you confirm it.",
+          "pl": "Cofnięcie tego, co zapisał strażnik, zmienia to, co jest wysyłane odtąd; potwierdzasz to sam."
+        }
+      },
       "confirm:actions.define": {
         "id": "confirm:actions.define",
         "scope": "app_preset",
@@ -342,6 +372,207 @@
         "reason": {
           "en": "Removing a group takes away a name your rules may refer to; you confirm each one.",
           "pl": "Usunięcie grupy odbiera nazwę, do której mogą się odwoływać Twoje reguły; każde potwierdzasz sam."
+        }
+      },
+      "confirm:device.record_audio": {
+        "id": "confirm:device.record_audio",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.record_audio"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Recording sound with a microphone captures what is said around you; you confirm each recording.",
+          "pl": "Nagrywanie mikrofonem rejestruje to, co mówi się wokół Ciebie; każde nagranie potwierdzasz sam."
+        }
+      },
+      "confirm:device.capture_image": {
+        "id": "confirm:device.capture_image",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.capture_image"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Taking a picture with a camera captures what is in front of it; you confirm each one.",
+          "pl": "Zdjęcie aparatem rejestruje to, co jest przed nim; każde potwierdzasz sam."
+        }
+      },
+      "confirm:device.capture_video": {
+        "id": "confirm:device.capture_video",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.capture_video"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Recording video with a camera captures what is in front of it; you confirm each recording.",
+          "pl": "Film z aparatu rejestruje to, co jest przed nim; każde nagranie potwierdzasz sam."
+        }
+      },
+      "confirm:device.clipboard_read": {
+        "id": "confirm:device.clipboard_read",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "device.clipboard_read"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "The clipboard may hold what you copied from anywhere (passwords included); you confirm each read.",
+          "pl": "Schowek może zawierać to, co skopiowano skądkolwiek (także hasła); każdy odczyt potwierdzasz sam."
+        }
+      },
+      "confirm:conversation.delete": {
+        "id": "confirm:conversation.delete",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "conversation.delete"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Deleting a conversation removes it with all its messages and cannot be undone; you confirm each one.",
+          "pl": "Usunięcie rozmowy usuwa ją razem ze wszystkimi wiadomościami i nie da się go cofnąć; każde potwierdzasz sam."
+        }
+      },
+      "confirm:memory.forget": {
+        "id": "confirm:memory.forget",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "memory.forget"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Forgetting removes a memory entry for good; you confirm each one.",
+          "pl": "Zapomnienie usuwa wpis pamięci na stałe; każde potwierdzasz sam."
+        }
+      },
+      "confirm:usage.compact": {
+        "id": "confirm:usage.compact",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "usage.compact"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Compacting folds the ledger of the usage for good; you confirm each one.",
+          "pl": "Kompaktowanie na stałe zwija rejestr zużycia; każde potwierdzasz sam."
+        }
+      },
+      "confirm:storage.connect": {
+        "id": "confirm:storage.connect",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "storage.connect"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Connecting a storage adds a place your data can be sent to; you confirm each one.",
+          "pl": "Podłączenie magazynu dodaje miejsce, dokąd mogą trafiać Twoje dane; każde potwierdzasz sam."
+        }
+      },
+      "confirm:github.sync": {
+        "id": "confirm:github.sync",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "github.sync"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Syncing sends your data folder to GitHub and brings changes back; you confirm each one.",
+          "pl": "Synchronizacja wysyła folder danych na GitHub i sprowadza zmiany z powrotem; każdą potwierdzasz sam."
+        }
+      },
+      "confirm:tool_source.unknown": {
+        "id": "confirm:tool_source.unknown",
+        "scope": "app_preset",
+        "target": {
+          "kind": "any"
+        },
+        "action": {
+          "flag": "effects_unknown"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "An external tool's effects are unknown, so each run asks you first. Relax it for one tool or one source when you trust it (tool_source.trust).",
+          "pl": "Skutki zewnętrznego narzędzia są nieznane, więc każde uruchomienie pyta Cię o zgodę. Złagodź to dla jednego narzędzia lub źródła, gdy mu ufasz (tool_source.trust)."
+        }
+      },
+      "confirm:tool_source.add": {
+        "id": "confirm:tool_source.add",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "tool_source.add",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Adding a tool source lets an external server provide actions and contacts it; you confirm each one.",
+          "pl": "Dodanie źródła narzędzi pozwala zewnętrznemu serwerowi dostarczać akcje i łączy się z nim; każde potwierdzasz sam."
+        }
+      },
+      "confirm:tool_source.sync": {
+        "id": "confirm:tool_source.sync",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "tool_source.sync",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Refreshing a tool source contacts its server; you confirm it.",
+          "pl": "Odświeżenie źródła narzędzi łączy się z jego serwerem; potwierdzasz to sam."
+        }
+      },
+      "confirm:tool_source.trust": {
+        "id": "confirm:tool_source.trust",
+        "scope": "app_preset",
+        "target": {
+          "kind": "class",
+          "id": "application"
+        },
+        "action": "tool_source.trust",
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Letting an external tool run without asking changes what happens without you; you confirm each one.",
+          "pl": "Pozwolenie zewnętrznemu narzędziu na uruchomienie bez pytania zmienia to, co dzieje się bez Ciebie; każde potwierdzasz sam."
+        }
+      },
+      "confirm:views.write": {
+        "id": "confirm:views.write",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "views.write"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Changing a view in your overlay changes how the graph is read from now on; you confirm each change.",
+          "pl": "Zmiana widoku w Twojej nakładce zmienia od teraz sposób czytania grafu; każdą zmianę potwierdzasz sam."
         }
       }
     },
@@ -457,6 +688,20 @@
           "label": {
             "en": "How many chains are proposed",
             "pl": "Ile łańcuchów proponować"
+          }
+        },
+        "chat_representation": {
+          "setting": "chat_representation",
+          "label": {
+            "en": "What of the conversation is sent to the model",
+            "pl": "Co z rozmowy jest wysyłane do modelu"
+          }
+        },
+        "chat_flow": {
+          "setting": "chat_flow",
+          "label": {
+            "en": "Flow of the request (context in, answer out)",
+            "pl": "Przepływ żądania (kontekst na wejściu, odpowiedź na wyjściu)"
           }
         }
       }

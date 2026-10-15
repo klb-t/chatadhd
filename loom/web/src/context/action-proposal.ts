@@ -1,5 +1,6 @@
 import { featureMessage, type PresentationFeature } from "../onboarding/presentation.mjs";
 import type { JsonValue } from "../onboarding/types";
+import type { ClientStepSpec } from "./client-device";
 
 /** Presentation feature holding the texts (`presentation.action_proposal`). */
 export const ACTION_PROPOSAL_FEATURE = "action_proposal";
@@ -46,13 +47,22 @@ export interface ActionRunPending {
   kind?: string;
   receipt_id?: string | null;
   operation_id?: string | null;
+  /** A run paused on a device action of this client (kind client_step): what the client has to do. */
+  client_step?: ClientStepSpec;
   usage_pending?: { status?: string; receipt_id?: string | null; operation_id?: string | null; baseline_key?: string | null; projected?: { [name: string]: { [field: string]: unknown } } };
 }
 /** What a completed run left in the graph: the form nodes of its result, the content node they express, the run node. */
 export interface ProducedMeta { target?: string; forms?: string[]; content?: string | null; run_node?: string | null }
-export interface ActionRunMeta { run_id?: string; status?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
+export interface ActionRunMeta { run_id?: string; status?: string; lang?: string; pending?: ActionRunPending | null; produced?: ProducedMeta | null }
 
-export type AnswerKind = "proposal" | "confirmation" | "usage";
+/** What the context guardian adds to a proposal of its own (metadata.guardian): the claim, its scope and weight, the evidence, the exceptions and,
+ *  for a run of clarifications, the one instruction that would stand in for it. */
+export interface GuardianMeta {
+  traffic?: boolean; hypothesis?: string; signal?: string; claim?: string; scope?: string; weight?: number; count?: number; promotes?: string;
+  mode?: string; instruction?: string; evidence?: unknown[]; exceptions?: { text?: string; explicit?: boolean }[];
+}
+
+export type AnswerKind = "proposal" | "confirmation" | "usage" | "client";
 /** What a message of the conversation asks the user to answer, if anything. */
 export interface PendingAnswer {
   kind: AnswerKind;
@@ -62,6 +72,10 @@ export interface PendingAnswer {
   proposal: ActionProposal | null;
   /** The usage guard's receipt (kind usage only): shown by the usage block. */
   usage: ActionRunPending["usage_pending"] | null;
+  /** The step this client carries out (kind client only). */
+  clientStep: ClientStepSpec | null;
+  /** The guardian's own details of the proposal (kind proposal only), or null. */
+  guardian: GuardianMeta | null;
 }
 
 function text(value: unknown): string {
@@ -73,17 +87,30 @@ export function pendingAnswer(metadata: Meta | undefined): PendingAnswer | null 
   if (!metadata) return null;
   const proposal = metadata.action_proposal as ActionProposal | undefined;
   if (proposal && proposal.status === "pending" && text(proposal.run_id) !== "" && text(proposal.receipt_id) !== "") {
-    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null };
+    const guardian = metadata.guardian && typeof metadata.guardian === "object" ? metadata.guardian as GuardianMeta : null;
+    return { kind: "proposal", runId: text(proposal.run_id), receiptId: text(proposal.receipt_id), proposal, usage: null, clientStep: null, guardian };
   }
   const run = metadata.action_run as ActionRunMeta | undefined;
   const pending = run && run.pending ? run.pending : null;
   if (run && pending && text(run.run_id) !== "" && text(pending.receipt_id) !== "") {
     if (pending.kind === "usage") {
-      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null };
+      return { kind: "usage", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: pending.usage_pending ?? null, clientStep: null, guardian: null };
     }
-    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null };
+    if (pending.kind === "client_step" && pending.client_step) {
+      return { kind: "client", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: pending.client_step, guardian: null };
+    }
+    return { kind: "confirmation", runId: text(run.run_id), receiptId: text(pending.receipt_id), proposal: null, usage: null, clientStep: null, guardian: null };
   }
   return null;
+}
+
+/** The language a message of the router was written in (its proposal's, else its run's), or null: every line the page adds to that
+ *  message (title, buttons, status) is said in it, so one answer is in one language. */
+export function messageLanguage(metadata: Meta | undefined): string | null {
+  const proposal = metadata ? (metadata.action_proposal as ActionProposal | undefined) : undefined;
+  const run = metadata ? (metadata.action_run as ActionRunMeta | undefined) : undefined;
+  const lang = text(proposal ? proposal.lang : undefined) || text(run ? run.lang : undefined);
+  return lang === "" ? null : lang;
 }
 
 /** The terminal state a message reports, for a small badge (executed, rejected, denied ...). */
@@ -136,14 +163,23 @@ export function writtenView(metadata: Meta | undefined): WrittenView | null {
   };
 }
 
-/** Which removal takes a definition back: a group has its own, an action and a repeated chain are both actions. */
-export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" {
+/** Which call takes what was written back: a rule is switched off, a group has its own removal, an action and a repeated chain are both actions. */
+export function undoCall(view: WrittenView): "groupsRemove" | "actionsRemove" | "rulesDisable" {
+  if (view.kind === "rule") return "rulesDisable";
   return view.kind === "define_group" ? "groupsRemove" : "actionsRemove";
 }
 
-/** The body of the removal: the click is the user's explicit yes to exactly this removal (the rules of the scope still apply). */
+/** The first call of taking something back: the removal is proposed and nothing is removed yet; the kernel answers with the proposal and its receipt. */
 export function undoRequest(view: WrittenView) {
-  return { id: view.id, confirmed: true, ref: "web" };
+  return { id: view.id, propose: true, ref: "web" };
+}
+
+/** The answer of the click: the user's explicit yes to exactly the removal that was proposed, with the receipt of that proposal (the rules of the
+ *  scope still apply). null when the kernel's answer is no proposal that can be answered (a denial, a failure). */
+export function undoConfirmation(proposed: { id?: string; status?: string; pending?: { receipt_id?: string | null } | null }) {
+  const receipt = proposed.pending && typeof proposed.pending.receipt_id === "string" ? proposed.pending.receipt_id : "";
+  if (proposed.status !== "proposed" || typeof proposed.id !== "string" || proposed.id === "" || receipt === "") return null;
+  return { run_id: proposed.id, approved: true, receipt_id: receipt, ref: "web" };
 }
 
 export interface ProducedView { target: string; forms: string[]; content: string; runNode: string }
@@ -194,6 +230,8 @@ export interface ProposalView {
   /** Null when the proposal says nothing about money; known false = unknown, with the reason. */
   money: { known: boolean; low: string | null; high: string | null; currency: string; reason: string } | null;
   confirmations: string[];
+  /** The guardian's details of its own proposal; null for any other. */
+  guardian: { claim: string; scope: string; weight: string; count: string; evidence: string; exceptions: string[]; instruction: string } | null;
 }
 
 function amount(value: unknown): string | null {
@@ -243,6 +281,19 @@ export function proposalView(answer: PendingAnswer): ProposalView {
       low: sum(money.low), high: sum(money.high), currency: text(money.currency), reason: text(money.reason),
     },
     confirmations,
+    guardian: guardianOf(answer.guardian),
+  };
+}
+
+function guardianOf(meta: GuardianMeta | null): ProposalView["guardian"] {
+  if (!meta || text(meta.hypothesis) === "") return null;
+  const exceptions: string[] = [];
+  if (Array.isArray(meta.exceptions)) {
+    for (const e of meta.exceptions) if (e && text(e.text) !== "") exceptions.push(text(e.text));
+  }
+  return {
+    claim: text(meta.claim), scope: text(meta.scope), weight: typeof meta.weight === "number" ? meta.weight.toFixed(2) : "", count: amount(meta.count) ?? "",
+    evidence: Array.isArray(meta.evidence) ? String(meta.evidence.length) : "", exceptions, instruction: text(meta.instruction),
   };
 }
 
@@ -256,6 +307,11 @@ export interface ProposalTexts {
   cost: string | null;
   money: string | null;
   confirmNeeded: string | null;
+  guardianClaim: string | null;
+  guardianScope: string | null;
+  guardianExceptions: string | null;
+  guardianInstruction: string | null;
+  guardianNote: string | null;
   confirm: string | null;
   reject: string | null;
   usageHint: string | null;
@@ -282,8 +338,14 @@ export function proposalTexts(feature: PresentationFeature | null, answer: Pendi
   const shown = (value: string | null) => (value === null ? unknown : value);
   const cost = view.cost;
   const made = view.definition;
+  const g = view.guardian;
   return {
-    title: say(answer.kind === "confirmation" ? "title_confirmation" : made !== null ? "title_definition" : "title"),
+    title: say(answer.kind === "confirmation" ? "title_confirmation" : g !== null ? "title_guardian" : made !== null ? "title_definition" : "title"),
+    guardianClaim: g === null || g.claim === "" ? null : say("guardian_claim", { claim: g.claim }),
+    guardianScope: g === null ? null : say("guardian_scope", { scope: say("guardian_scope_" + g.scope) ?? g.scope, weight: g.weight, count: g.count, evidence: g.evidence }),
+    guardianExceptions: g === null || g.exceptions.length === 0 ? null : say("guardian_exceptions", { list: g.exceptions.join("; ") }),
+    guardianInstruction: g === null || g.instruction === "" ? null : say("guardian_instruction", { instruction: g.instruction }),
+    guardianNote: g === null ? null : say("guardian_note"),
     args: view.args.length === 0 ? null : say("args", { args: view.args.join(", ") }),
     argsOpen: view.open.length === 0 ? null : say("args_open", { params: view.open.join(", ") }),
     definition: made === null ? null : say("definition_" + made.kind, { id: made.id, overlay: made.overlay }),
@@ -343,10 +405,10 @@ export function writtenTexts(feature: PresentationFeature | null, view: WrittenV
     catch { return null; }
   };
   return {
-    written: say("written", { id: view.id, overlay: view.overlays.join(", ") }),
+    written: say(view.kind === "rule" ? "written_rule" : "written", { id: view.id, overlay: view.overlays.join(", ") }),
     entry: say("written_entry"),
     undo: say("undo"),
-    undone: say("undone"),
+    undone: say(view.kind === "rule" ? "undone_rule" : "undone"),
     failed: (reason) => say("undo_failed", { reason }) ?? reason,
   };
 }

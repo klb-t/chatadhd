@@ -51,7 +51,7 @@ const timestamp = "2026-10-04T12:00:00Z";
 const conversations = ["a", "b"].map(id => ({ id, title: `Conversation ${id.toUpperCase()}`, created: timestamp, updated: timestamp }));
 const messages = new Map(conversations.map(conv => [conv.id, [{ id: `${conv.id}-message`, conv_id: conv.id, role: "user",
   text: `Recorded conversation ${conv.id.toUpperCase()}`, status: "active", created: timestamp }]]));
-const requests = [], chatRequests = [], failures = [];
+const requests = [], chatRequests = [], declares = [], failures = [], eventFeeds = [];
 let created = 0;
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, "http://fixture.local");
@@ -76,7 +76,13 @@ const server = createServer(async (req, res) => {
   const messageMatch = /^\/api\/conversations\/([^/]+)\/messages$/.exec(url.pathname);
   if (messageMatch) return json(messages.get(decodeURIComponent(messageMatch[1])) ?? []);
   if (url.pathname === "/api/models") return json([{ id: "fixture/one", name: "Fixture one" }, { id: "fixture/two", name: "Fixture two" }]);
+  // The page reads its page sizes (loom_web_message_window) from the settings; this fixture sets none, so the presets apply.
+  if (url.pathname === "/api/config") return json({});
   if (url.pathname === "/api/semantic/status") return json({ pending: 0, processed: 0, errors: 0, mode: "off", rate: "off", paused: false });
+  // P13: the page declares its devices right before its first send (never while only viewing); this fixture takes the declaration.
+  if (url.pathname === "/api/client/declare") {
+    declares.push(body); return json({ client_id: body.client_id, capabilities: {}, runnable_actions: [], refused: {} });
+  }
   if (url.pathname === "/api/chat") {
     chatRequests.push(body);
     const conv = body.conv_id;
@@ -92,6 +98,8 @@ const server = createServer(async (req, res) => {
   }
   // P1: the app asks whether the server runs accounts; this fixture is a single-user server.
   if (url.pathname === "/api/auth/me") return json({ accounts: false });
+  // P14 4: every chat view opens the kernel's event feed; this fixture has none (404), which the page does not ask for again.
+  if (url.pathname === "/api/events/stream") { eventFeeds.push(url.search); res.writeHead(404).end(JSON.stringify({ error: { message: "no event feed in this fixture" } })); return; }
   if (url.pathname.startsWith("/api/")) {
     failures.push(`${req.method} ${url.pathname}`); res.writeHead(404).end(JSON.stringify({ error: { message: "Unsupported fixture endpoint" } })); return;
   }
@@ -125,7 +133,7 @@ try {
   async function chooseInHost(id) { await page.getByTestId("sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
   async function chooseInView(index, id) { await view(index).getByTestId("profile-view-sidebar").getByTestId("conv-item").filter({ hasText: `Conversation ${id.toUpperCase()}` }).click(); }
   async function openContext(index) { const control = view(index).getByTestId("chat-context-controls"); if (!(await control.evaluate(element => element.open))) await control.locator(":scope > summary").click(); }
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await check("new views retain the legacy shared sidebar and coupled conversation selection", async () => {
     await chooseInHost("a");
     await page.getByTestId("add-profile-view").click();
@@ -176,10 +184,13 @@ try {
     assert.equal(await view(1).getByTestId("model-picker").inputValue(), "fixture/two");
     assert.equal(await view(1).getByTestId("include-memory").isChecked(), false);
     assert.equal(await view(0).getByTestId("model-picker").inputValue(), "fixture/one");
+    assert.deepEqual(declares, [], "viewing, layout, selection and settings declare nothing");
     await view(1).getByTestId("chat-input").fill("Geometry fixture send");
     await view(1).getByTestId("send-chat").click();
     await view(1).getByTestId("message").filter({ hasText: "Fixture reply to a" }).waitFor();
     assert.equal(chatRequests.length, 1); assert.equal(chatRequests[0].conv_id, "a");
+    assert.equal(declares.length, 1, "one declaration, right before the first send"); assert.match(declares[0].client_id, /^web-[0-9a-f]{12}$/);
+    assert.equal(chatRequests[0].client_id, declares[0].client_id, "the send carries the id of the client that declared");
     assert.equal(chatRequests[0].model, "fixture/two"); assert.equal(chatRequests[0].include_memory, false);
     await waitSelection(0, "b");
   });
@@ -214,6 +225,7 @@ try {
     assert.equal(await page.evaluate(key => localStorage.getItem(key), storageKey), bytes);
   });
   assert.deepEqual(errors, []); assert.deepEqual(external, []); assert.deepEqual(failures, []);
+  assert.ok(eventFeeds.length > 0 && eventFeeds.every(search => search === "?event=action%3Aclient_step"), "the only feed a page opens is the kernel's client-step feed");
   if (process.env.PROFILE_GEOMETRY_EVIDENCE_DIR) {
     const directory = process.env.PROFILE_GEOMETRY_EVIDENCE_DIR; mkdirSync(directory, { recursive: true });
     const filename = path.join(directory, "profile-view-geometry-results.json");

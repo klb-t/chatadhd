@@ -36,9 +36,12 @@ concurrency:
 
 jobs:
   build-test:
-    name: ${{ matrix.preset }} (${{ matrix.cxx }})
+    name: ${{ matrix.name || format('{0} ({1})', matrix.preset, matrix.cxx) }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    # ASan+UBSan, measured: cold build ~25 min + FFI companion ~8 min (run 38528837225: job cancelled at 45 min with
+    # only 11 min of Test) + CTest ~80 CPU-minutes (slowest: onboarding_store 350 s, kb_pack 280 s, cli.smoke 495 s).
+    # The 45 min job limit is therefore far too small for this leg; the others fit.
+    timeout-minutes: ${{ matrix.preset == 'asan' && 150 || 45 }}
     strategy:
       fail-fast: false
       matrix:
@@ -48,9 +51,14 @@ jobs:
           - { preset: asan, cc: gcc, cxx: g++, debug_info: "-g1" }
           # Closest to the Android build: Clang + the vendored SQLite amalgamation.
           - { preset: vendored, cc: clang, cxx: clang++, debug_info: "-g" }
+          # The Android NDK ships libc++, every other leg uses libstdc++. Differences between the two standard
+          # libraries (destruction order, unspecified behaviour, missing includes) are invisible without this leg.
+          - { preset: libcxx, cc: clang, cxx: clang++, debug_info: "-g", name: "libcxx (clang++ + libc++)" }
     env:
       CC: ${{ matrix.cc }}
       CXX: ${{ matrix.cxx }}
+      CCACHE_COMPRESS: "1"
+      CCACHE_MAXSIZE: 3G
 
     steps:
       - name: Checkout
@@ -64,6 +72,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends ninja-build ccache libsqlite3-dev libssl-dev clang
+          # libc++ headers and runtime for the clang the leg above uses (ubuntu-24.04: clang 18); only the libcxx leg needs them.
+          if [ '${{ matrix.preset }}' = libcxx ]; then sudo apt-get install -y --no-install-recommends libc++-dev libc++abi-dev; fi
 
       # The Unicode tables are generated from CPython 3.11 (Unicode 14.0);
       # the compat tests compare against the same interpreter version.
@@ -78,8 +88,13 @@ jobs:
       - name: Check the CTest evidence guard
         run: python -m unittest discover -s .github/scripts -p 'test_*.py' -v
 
-      - name: ccache
-        uses: actions/cache@v4
+      # restore + save are split so that the compiled objects are stored even when a later step fails or the
+      # job is cancelled (a single actions/cache step saves only after a fully green job, so a leg that never
+      # finished, like asan at 45 min, would never get a warm cache). Compression keeps the sanitizer objects small
+      # enough for the repository cache quota.
+      - name: ccache (restore)
+        id: ccache
+        uses: actions/cache/restore@v4
         with:
           path: ~/.cache/ccache
           key: ccache-${{ matrix.preset }}-${{ matrix.cxx }}-${{ github.sha }}
@@ -112,6 +127,13 @@ jobs:
             -DLOOM_SHARED=ON -DLOOM_WERROR=ON \
             -DLOOM_BUILD_TESTS=OFF -DLOOM_BUILD_CLI=OFF -DLOOM_BUILD_SERVER=OFF
           cmake --build build/asan-ffi --target loom --parallel 2
+
+      - name: ccache (save)
+        if: always() && steps.ccache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/ccache
+          key: ccache-${{ matrix.preset }}-${{ matrix.cxx }}-${{ github.sha }}
 
       - name: Test
         working-directory: loom

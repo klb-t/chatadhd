@@ -20,6 +20,7 @@
 #include "loom/provenance.h"
 #include "loom/relations.h"
 #include "loom/runtime.h"
+#include "loom/path_policy.h"
 #include "loom/semantic_analyzer.h"
 #include "loom/semantic_llm.h"
 #include "loom/use_model.h"
@@ -887,6 +888,7 @@ Result<Json> StageRunner::materialize(const Json& p, StageControl& ctl, const st
   fs::path od;
   if (!out_dir.empty()) {
     od = fsutil::expand_user(out_dir);
+    LOOM_TRY(rt_.path_policy().check(od, "out_dir"));
     LOOM_TRY(fsutil::ensure_dir(od));
     LOOM_TRY(fsutil::atomic_write(od / policy_.text("/output/marker_file"), policy_.text("/output/marker_text")));
   }

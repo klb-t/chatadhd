@@ -1,0 +1,109 @@
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { api } from "../api";
+import type { Conversation } from "../api/types";
+import type { UserProfileHost } from "../api/onboarding-host";
+import ChatView from "../components/ChatView";
+import SemanticStatus from "../components/SemanticStatus";
+import SemanticDot from "./SemanticDot";
+import Disclosure from "./Disclosure";
+import { useShellText } from "./text";
+import layouts from "./data/layouts.json";
+import "./shell.css";
+
+export interface ShellActions {
+  panel(id: string): void;
+  knowledge(): void;
+  workshop(): void;
+}
+interface Props {
+  profileHost: UserProfileHost;
+  convId: string | null;
+  onSelect: (id: string | null) => void;
+  onCreated: (id: string) => void;
+  refreshKey: number;
+  onMessagesChanged: () => void;
+  actions: ShellActions;
+  planned: { windows: boolean };
+}
+type Sheet = "views" | "semantic" | null;
+
+function bridge(): { openConnection?: () => void } | undefined {
+  return (window as unknown as { LoomBridge?: { openConnection?: () => void } }).LoomBridge;
+}
+
+/** The default view (R56): the full-screen standard chat app. Menu entries come from data (shell/data/layouts.json, profile Czat). */
+export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned }: Props) {
+  const t = useShellText();
+  const layout = layouts.layouts.czat;
+  const [drawer, setDrawer] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const [sheet, setSheet] = useState<Sheet>(null);
+  const [list, setList] = useState<Conversation[]>([]);
+  const [query, setQuery] = useState("");
+  const [title, setTitle] = useState("");
+
+  useEffect(() => { api.listConversations(100).then(setList, () => setList([])); }, [refreshKey, convId]);
+  useEffect(() => { setTitle(list.find(c => c.id === convId)?.title ?? ""); }, [list, convId]);
+  const shown = useMemo(() => list.filter(c => (c.title || "").toLowerCase().includes(query.toLowerCase())), [list, query]);
+
+  const run = useCallback((action: string) => {
+    setMenu(false);
+    if (action.startsWith("panel:")) actions.panel(action.slice(6));
+    else if (action === "knowledge") actions.knowledge();
+    else if (action.startsWith("sheet:")) setSheet(action.slice(6) as Sheet);
+    else if (action === "layout:workshop") actions.workshop();
+    else if (action === "connection") bridge()?.openConnection?.();
+  }, [actions]);
+  const entries = layout.menu.filter(e => !("when" in e) || (e.when === "android_shell" && typeof bridge()?.openConnection === "function"));
+
+  let sheetBody: ReactNode = null;
+  if (sheet === "views") sheetBody = <>
+    <button className="shell-row" data-testid="layout-chat" aria-pressed onClick={() => setSheet(null)}>{t("layout_chat")}</button>
+    <button className="shell-row" data-testid="layout-grid" onClick={() => { setSheet(null); actions.workshop(); }}>{t("layout_grid")}</button>
+    <Disclosure testId="layout-windows" labels={{ show: `${t("layout_windows")} · ${t("planned")}`, hide: `${t("layout_windows")} · ${t("planned")}` }}>
+      <p>{planned.windows ? t("planned_reason") : ""}</p></Disclosure>
+  </>;
+  if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;
+
+  return (
+    <div className="shell-root" data-testid="chat-shell">
+      <header className="shell-bar" data-testid="shell-bar">
+        <button className="icon-btn shell-btn" aria-label={t("drawer_open")} aria-expanded={drawer} data-testid="shell-drawer-toggle" onClick={() => setDrawer(v => !v)}>☰</button>
+        <h1 className="shell-title" data-testid="shell-title">{title || t("new_chat")}</h1>
+        <span id="shell-model-slot" />
+        <SemanticDot />
+        <button className="icon-btn shell-btn" aria-label={t("more")} aria-expanded={menu} aria-haspopup="menu" data-testid="shell-menu-toggle" onClick={() => setMenu(v => !v)}>⋮</button>
+        {menu && <div className="shell-menu" role="menu" data-testid="shell-menu">
+          {entries.map(e => <button key={e.id} role="menuitem" data-testid={`shell-menu-${e.id}`} onClick={() => run(e.action)}>{t(e.label)}</button>)}
+        </div>}
+      </header>
+      <div className="shell-body" onClick={() => { if (menu) setMenu(false); }}>
+        {drawer && <>
+          <div className="drawer-backdrop" style={{ zIndex: 21 }} onClick={() => setDrawer(false)} />
+          <aside className="shell-drawer" data-testid="shell-drawer" aria-label={t("conversations")}>
+            <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 8 }}>
+              <button className="primary shell-btn" data-testid="shell-new-chat" onClick={() => { onSelect(null); setDrawer(false); }}>{t("new_chat")}</button>
+              <input type="search" aria-label={t("search")} placeholder={t("search")} value={query} onChange={e => setQuery(e.target.value)} data-testid="shell-search" />
+            </div>
+            <div className="shell-list">
+              {shown.length === 0 && <div className="empty-state">{t("no_conversations")}</div>}
+              {shown.map(c => <button key={c.id} className={`shell-row${c.id === convId ? " active" : ""}`} data-testid="shell-conv" onClick={() => { onSelect(c.id); setDrawer(false); }}>{c.title || t("untitled")}</button>)}
+            </div>
+          </aside>
+        </>}
+        <main className="shell-main">
+          <ChatView profileHost={profileHost} settingsKey="shell" convId={convId} onConversationCreated={onCreated}
+            refreshKey={refreshKey} onMessagesChanged={onMessagesChanged} variant="chat" />
+        </main>
+        {sheet && <>
+          <div className="drawer-backdrop" onClick={() => setSheet(null)} />
+          <div className="drawer" data-testid={`sheet-${sheet}`}>
+            <div className="drawer-header"><h2>{t(sheet === "views" ? "views_title" : "menu_semantic")}</h2>
+              <button className="icon-btn" aria-label="×" onClick={() => setSheet(null)}>×</button></div>
+            <div className="drawer-body">{sheetBody}</div>
+          </div>
+        </>}
+      </div>
+    </div>
+  );
+}

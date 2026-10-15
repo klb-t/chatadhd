@@ -93,8 +93,30 @@ LOOM_API const char* loom_expand_graph(LoomContext* ctx, const char* seed_ids_js
 LOOM_API const char* loom_get_graph_data(LoomContext* ctx, const char* conv_id) {
   return guard_json("loom_get_graph_data", [&] {
     LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
-    auto r = ctx->rt->db().get_graph_data(conv_id && *conv_id ? std::optional<std::string_view>(conv_id)
-                                                                : std::nullopt);
+    // conv_id is a plain conversation id (c_...) or, additively (R27), a JSON object
+    // {"conv_id","limit","before"}. limit omitted = config loom_graph_data_limit (conversation graphs only,
+    // 0 = whole conversation); limit 0 = whole conversation.
+    std::optional<std::string> conv;
+    Database::GraphDataPage page;
+    bool limit_given = false;
+    if (conv_id && *conv_id == '{') {
+      auto j = parse_arg(conv_id);
+      if (!j) return out_error(j.error());
+      if (auto* c = json::find(*j, "conv_id"); c && c->is_string() && !c->get<std::string>().empty())
+        conv = c->get<std::string>();
+      if (auto* l = json::find(*j, "limit"); l && l->is_number()) {
+        page.limit = static_cast<int>(std::max<std::int64_t>(0, l->get<std::int64_t>()));
+        limit_given = true;
+      }
+      if (auto* b = json::find(*j, "before"); b && b->is_string()) page.before = b->get<std::string>();
+    } else if (conv_id && *conv_id) {
+      conv = conv_id;
+    }
+    if (conv && !limit_given) {
+      Json lim = ctx->rt->config().get("loom_graph_data_limit");
+      if (lim.is_number()) page.limit = static_cast<int>(std::max<std::int64_t>(0, lim.get<std::int64_t>()));
+    }
+    auto r = ctx->rt->db().get_graph_data(conv ? std::optional<std::string_view>(*conv) : std::nullopt, page);
     if (!r) return out_error(r.error());
     return out(*r);
   });

@@ -36,6 +36,8 @@ struct Fixture {
     rt->secrets().set("api_key", "sk-test-key");
     rt->config().set("base_url", "https://api.test");
     rt->config().set("default_model", "test/model");
+    loom::test::measured_baseline_only(rt->config());  // P17 6: this test is about the x10 hold over three tiny samples, so the floor of the baseline is off
+    rt->config().set("model_registry_autorefresh", "off");  // these tests count the transport's requests; fetching the model list for a price is tested in test_estimate_registry
     conv_id = unwrap(rt->db().create_conv("Planning")).id;
     add("user", "We should ship on Friday.");
     add("assistant", "Agreed, Friday works if the tests pass.");
@@ -210,6 +212,38 @@ TEST_SUITE("action_runner") {
     const Json fits = unwrap(f.runner().run(Json{{"action", "actions.for"}, {"element", "application"}, {"args", Json{{"element", f.conv_id}}}}));
     CHECK(fits.at("status") == "completed");
     CHECK(fits.at("result").at("data").at("element").at("class") == "conversation");
+  }
+
+  TEST_CASE("the port tool_source runs as a step: tool_source.list completes instead of Unsupported") {
+    Fixture f;
+    const Json listed = unwrap(f.runner().run(Json{{"action", "tool_source.list"}, {"element", Json{{"class", "application"}}}}));
+    CHECK(listed.at("status") == "completed");
+    CHECK(listed.at("result").at("data").is_object());
+  }
+
+  TEST_CASE("the ports environments and agent run as steps (P26): the same answers as through loom_invoke") {
+    Fixture f;
+    const Json listed = unwrap(f.runner().run(Json{{"action", "environments.list"}, {"element", Json{{"class", "application"}}}}));
+    CHECK(listed.at("status") == "completed");
+    CHECK(listed.at("result").at("data").at("schema") == "loom.environments_list/1");
+    const Json synced = unwrap(f.runner().run(Json{{"action", "environments.sync"}, {"element", Json{{"class", "application"}}}}));
+    CHECK(synced.at("status") == "completed");
+    CHECK(synced.at("result").at("data").at("schema") == "loom.environments_sync/1");
+    // agent.run is in the catalogue and runnable; it is a model action, so it asks like one: nothing is sent before the answer
+    const Json plan = unwrap(f.runner().run(Json{{"action", "agent.run"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"prompt", "say hi"}}}, {"propose", true}}));
+    CHECK(plan.at("status") == "proposed");
+    CHECK(f.transport->requests().empty());
+    const Json agent_run = unwrap(f.runner().run(Json{{"action", "agent.run"}, {"element", Json{{"class", "application"}}}, {"args", Json{{"prompt", "say hi"}}}}));
+    CHECK((agent_run.at("status") == "awaiting_confirmation" || agent_run.at("status") == "awaiting_usage" || agent_run.at("status") == "completed"));
+    if (agent_run.at("status") == "awaiting_confirmation") CHECK(f.transport->requests().empty());
+    // after the answer the loop runs: one model turn, the answer is the result
+    if (agent_run.at("status") == "awaiting_confirmation") {
+      f.script(1, "hi there");
+      const Json done = unwrap(f.runner().confirm(Json{{"run_id", agent_run.at("id")}, {"approved", true},
+                                                       {"receipt_id", agent_run.at("pending").at("receipt_id")}, {"ref", "test"}}));
+      CHECK(done.at("status") == "completed");
+      CHECK(done.at("result").at("data").at("text") == "hi there");
+    }
   }
 
   TEST_CASE("a chain from propose_chain is accepted and run through the same interpreter") {

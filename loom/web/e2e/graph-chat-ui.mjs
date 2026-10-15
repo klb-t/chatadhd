@@ -77,7 +77,7 @@ const server=createServer(async(req,res)=>{
 await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
 const browser=await chromium.launch({headless:true}),page=await browser.newPage();
 try{
-  await page.goto(`http://127.0.0.1:${server.address().port}`);
+  await page.goto((`http://127.0.0.1:${server.address().port}`).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("graph-chat-settings").waitFor();
   assert.equal(commands.length,0,"Mount must not read or write native graph settings.");assert.match(await page.locator('[data-testid="graph-chat-settings"] > summary').textContent(),/not loaded/);
   await page.locator('[data-testid="graph-chat-settings"] > summary').click();

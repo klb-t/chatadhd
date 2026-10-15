@@ -1,5 +1,6 @@
 // OWNER: wave 2 semantic/graph. Exact port of engine/graph_engine.py.
 #include "loom/analysis_mode.h"
+#include "loom/annotation_layer.h"
 #include "loom/graph_engine.h"
 
 #include "loom/db.h"
@@ -31,7 +32,7 @@ constexpr std::string_view kLog = "loom.graph";
 // "part_of" edge. Returns whether anything (other than the conv edge) was
 // written.
 Result<bool> ingest_common(Database& db, std::string_view msg_id, std::string_view conv_id, const Json& analysis,
-                   RelationRegistry* relations, const Json& policy) {
+                   RelationRegistry* relations, const Json& policy, const Config* cfg = nullptr, int* annotated = nullptr) {
   const Json& ep = policy.at("entities");
   const Json& tp = policy.at("topics");
   const Json& rp = policy.at("relations");
@@ -87,6 +88,15 @@ Result<bool> ingest_common(Database& db, std::string_view msg_id, std::string_vi
     LOOM_TRY(db.create_link(msg_id, conv_id, membership.at("predicate").get<std::string>(), membership.at("weight").get<double>()));
   }
 
+  // P23: what the analysis says about segments (and the thread of the message) goes to the shared annotation layer, in the same transaction.
+  if (analysis.is_object() && (analysis.contains("segments") || analysis.contains("thread") || cfg)) {
+    auto wrote = annotations::write_analysis(db, cfg, db.path().parent_path(), std::string(msg_id), analysis);
+    if (wrote) {
+      if (annotated) *annotated = *wrote;
+    } else {
+      log::debug(kLog, "annotations of {} not written: {}", std::string(msg_id), wrote.error().message);
+    }
+  }
   return changed;
 }
 
@@ -302,6 +312,7 @@ Result<bool> GraphEngine::complete_analysis(const SemanticAttempt& attempt, cons
   LOOM_TRY(validate_graph_profile(attempt.graph_profile));
   if (!analysis.is_object()) return Error(Errc::InvalidArgument, "semantic analysis must be an object");
   bool changed = false;
+  int annotated = 0;
   {
     auto lock = db_.lock();
     if (db_.conn().in_transaction()) return Error(Errc::Conflict, "semantic completion requires a durable transaction boundary");
@@ -312,7 +323,7 @@ Result<bool> GraphEngine::complete_analysis(const SemanticAttempt& attempt, cons
     LOOM_TRY(matches_attempt(*message, attempt));
     LOOM_TRY_ASSIGN(auto metadata, attempt_metadata(*message));
     LOOM_TRY_ASSIGN(changed, ingest_common(db_, attempt.message_id, attempt.conv_id, analysis,
-                                         relations_, attempt.graph_profile.values()));
+                                         relations_, attempt.graph_profile.values(), config_, &annotated));
     auto& record = metadata["loom_semantic_attempts"].back();
     record["state"] = "done";
     record["finished"] = timeutil::utc_now_iso();
@@ -334,6 +345,8 @@ Result<bool> GraphEngine::complete_analysis(const SemanticAttempt& attempt, cons
   }
   // Subscribers may use other threads/DB connections. No callback under locks.
   if (changed) bus_.emit(events::kGraphChanged, Json{{"conv_id", attempt.conv_id}, {"trigger", attempt.message_id}});
+  if (analysis.contains("annotation") || annotated > 0)
+    bus_.emit(events::kAnnotationsWritten, Json{{"message_id", attempt.message_id}, {"conv_id", attempt.conv_id}, {"written", annotated}, {"model_read", analysis.contains("annotation")}});
   return changed;
 }
 
@@ -397,14 +410,17 @@ Result<bool> GraphEngine::ingest_analysis_checked(std::string_view msg_id, std::
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("graph_ingest", db_.path().parent_path(), overrides));
   try {
     bool changed = false;
+    int annotated = 0;
     {
       auto lock = db_.lock();
       sql::Txn txn(db_.conn());
       LOOM_TRY(txn.begin_status());
-      LOOM_TRY_ASSIGN(changed, ingest_common(db_, msg_id, conv_id, analysis, relations_, profile.values()));
+      LOOM_TRY_ASSIGN(changed, ingest_common(db_, msg_id, conv_id, analysis, relations_, profile.values(), config_, &annotated));
       LOOM_TRY(txn.commit());
     }
     if (changed) bus_.emit(events::kGraphChanged, Json{{"conv_id", std::string(conv_id)}, {"trigger", std::string(msg_id)}});
+    if (analysis.contains("annotation") || annotated > 0)
+      bus_.emit(events::kAnnotationsWritten, Json{{"message_id", std::string(msg_id)}, {"conv_id", std::string(conv_id)}, {"written", annotated}, {"model_read", analysis.contains("annotation")}});
     return changed;
   } catch (const std::exception& e) {
     return Error(Errc::Internal, "graph analysis ingestion: " + std::string(e.what()));

@@ -319,6 +319,7 @@ Database::Database(PrivateTag) {}
 Database::~Database() { close(); }
 
 void Database::close() {
+  fts_join_background();
   auto lk = lock();
   if (conn_.is_open()) {
     conn_.close();
@@ -651,6 +652,11 @@ Result<int> Database::batch_create_msgs(std::string_view conv_id, const std::vec
   std::string now = now_iso();
   int total = 0;
   auto lk = lock();
+  std::int64_t old_max_rowid = 0;
+  if (fts_) {
+    LOOM_TRY_ASSIGN(auto mr, conn_.query_int("SELECT COALESCE(MAX(rowid), 0) FROM messages"));
+    old_max_rowid = mr.value_or(0);
+  }
   static constexpr std::string_view kSql =
       "INSERT INTO messages\n"
       "                           (id, conv_id, parent_id, role, text, model, status,\n"
@@ -678,7 +684,10 @@ Result<int> Database::batch_create_msgs(std::string_view conv_id, const std::vec
     total += rows;
   }
   LOOM_TRY(update_conv_locked(conv_id, {}));
-  if (total > 0 && fts_) fts_note_changed({});  // bulk: reconcile new rows
+  if (total > 0 && fts_ && fts_->available) {  // bulk: reconcile the new rows (rowid > old max) only
+    if (fts_->scan_new) fts_->new_from = std::min(fts_->new_from, old_max_rowid);
+    else { fts_->scan_new = true; fts_->new_from = old_max_rowid; }
+  }
   log::info(kLog, "Batch inserted {} messages into {}", total, conv_id);
   return total;
 }
@@ -687,21 +696,29 @@ Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit) {
   return get_unanalysed_msgs(limit, {});
 }
 
-Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids) {
+Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit, const std::set<std::string>& exclude_ids,
+                                                                   std::int64_t after_rowid) {
   auto lk = lock();
+  // Perf (R26): the batch is the first `limit` pending rows in rowid order (idx_msg_semantic walks them in that
+  // order and stops at the limit), then ordered oldest-first by `created` inside the batch. The former plain
+  // ORDER BY created read and sorted EVERY pending row per call (14 ms at 20k pending, ~0.15 s at 200k, with the
+  // database lock held), which made a drain of N pending messages quadratic and stalled import and chat meanwhile.
   std::string sql =
-      "SELECT id, conv_id, role, text, metadata FROM messages\n"
+      "SELECT id, conv_id, role, text, metadata, rid FROM (\n"
+      "  SELECT rowid AS rid, id, conv_id, role, text, metadata, created FROM messages\n"
       "                   WHERE semantic_status = 'pending'\n"
       "                     AND status = 'active'\n"
-      "                     AND length(text) >= 20\n";
+      "                     AND length(text) >= 20\n"
+      "                     AND rowid > ?\n";
   if (!exclude_ids.empty()) {
     sql += "                     AND id NOT IN (?";
     for (std::size_t i = 1; i < exclude_ids.size(); ++i) sql += ",?";
     sql += ")\n";
   }
-  sql += "                   ORDER BY created ASC LIMIT ?";
+  sql += "                   ORDER BY rowid LIMIT ?) ORDER BY created ASC, rid ASC";
   LOOM_TRY_ASSIGN(auto st, conn_.prepare(sql));
   int idx = 1;
+  st.bind(idx++, after_rowid);
   for (const auto& id : exclude_ids) st.bind(idx++, id);
   st.bind(idx, limit);
   std::vector<PendingMessage> out;
@@ -714,6 +731,7 @@ Result<std::vector<PendingMessage>> Database::get_unanalysed_msgs(int limit, con
     p.role = st.get_text(2);
     p.text = st.get_text(3);
     p.metadata = loads_or(st.get_opt_text(4), Json::object());
+    p.rowid = st.get_int(5);
     out.push_back(std::move(p));
   }
   return out;
@@ -766,6 +784,69 @@ Result<std::vector<Message>> Database::get_msgs(std::string_view conv_id, bool i
     out.push_back(dbi::read_message(st, m));
   }
   return out;
+}
+
+Result<std::int64_t> Database::count_msgs(std::string_view conv_id, bool include_all) {
+  auto lk = lock();
+  LOOM_TRY_ASSIGN(auto st, conn_.prepare(include_all ? "SELECT COUNT(*) FROM messages WHERE conv_id = ?"
+                                                     : "SELECT COUNT(*) FROM messages WHERE conv_id = ? AND status = 'active'"));
+  st.bind(1, conv_id);
+  LOOM_TRY_ASSIGN(bool row, st.step());
+  return row ? st.get_int(0) : 0;
+}
+
+Result<Database::MsgPage> Database::get_msgs_page(std::string_view conv_id, std::int64_t limit, std::string_view before_id,
+                                                  bool include_all) {
+  auto lk = lock();
+  MsgPage page;
+  LOOM_TRY_ASSIGN(page.total, count_msgs(conv_id, include_all));
+  const std::string where = include_all ? "conv_id = ?1" : "conv_id = ?1 AND status = 'active'";
+  std::string cursor;
+  std::string cursor_created;
+  std::int64_t cursor_rowid = 0;
+  if (!before_id.empty()) {
+    LOOM_TRY_ASSIGN(auto cs, conn_.prepare("SELECT created, rowid FROM messages WHERE id = ?1 AND conv_id = ?2"));
+    cs.bind(1, before_id);
+    cs.bind(2, conv_id);
+    LOOM_TRY_ASSIGN(bool found, cs.step());
+    if (!found) return Error(Errc::NotFound, "no message '" + std::string(before_id) + "' in this conversation");
+    cursor_created = cs.get_text(0);
+    cursor_rowid = cs.get_int(1);
+    cursor = " AND (created < ?2 OR (created = ?2 AND rowid < ?3))";
+  }
+  // The inner query orders by (created, rowid) reading no text; only the chosen rows are read in full.
+  std::string sql = "SELECT * FROM messages WHERE rowid IN (SELECT rowid FROM messages WHERE " + where + cursor +
+                    " ORDER BY created DESC, rowid DESC" + (limit > 0 ? " LIMIT ?4" : "") +
+                    ") ORDER BY created, rowid";
+  LOOM_TRY_ASSIGN(auto st, conn_.prepare(sql));
+  st.bind(1, conv_id);
+  if (!before_id.empty()) {
+    st.bind(2, cursor_created);
+    st.bind(3, cursor_rowid);
+  }
+  if (limit > 0) st.bind(4, limit);
+  dbi::RowMap m(st);
+  while (true) {
+    LOOM_TRY_ASSIGN(bool row, st.step());
+    if (!row) break;
+    page.messages.push_back(dbi::read_message(st, m));
+  }
+  if (limit > 0 && !page.messages.empty()) {
+    LOOM_TRY_ASSIGN(auto older, conn_.prepare("SELECT 1 FROM messages WHERE " + where +
+                                               " AND (created < ?2 OR (created = ?2 AND rowid < ?3)) LIMIT 1"));
+    LOOM_TRY_ASSIGN(auto fr, conn_.prepare("SELECT created, rowid FROM messages WHERE id = ?1"));
+    fr.bind(1, page.messages.front().id);
+    LOOM_TRY_ASSIGN(bool ok, fr.step());
+    if (ok) {
+      older.bind(1, conv_id);
+      older.bind(2, fr.get_text(0));
+      older.bind(3, fr.get_int(1));
+      LOOM_TRY_ASSIGN(bool any, older.step());
+      page.truncated = any;
+      if (any) page.next_before = page.messages.front().id;
+    }
+  }
+  return page;
 }
 
 Result<std::optional<Message>> Database::get_msg(std::string_view mid) {
@@ -1027,13 +1108,35 @@ Result<std::string> Database::get_or_create_node(std::string_view label, std::st
 
 // ── Graph data ─────────────────────────────────────────────────────
 Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id) {
+  return get_graph_data(conv_id, GraphDataPage{});
+}
+
+Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id, const GraphDataPage& page) {
   auto lk = lock();
   Json nodes = Json::array();
   Json edges = Json::array();
   std::unordered_map<std::string, bool> seen;
+  const bool paged = page.limit > 0;
+  bool truncated = false;
+  Json next_before = nullptr;
+  std::int64_t total = 0;
   if (conv_id && !conv_id->empty()) {
-    LOOM_TRY_ASSIGN(auto msgs, get_msgs(*conv_id, true));
-    for (const auto& m : msgs) {
+    // Perf (P19): a page reads only its own rows (the old code loaded the whole conversation to cut a window of it).
+    std::vector<Message> msgs;
+    if (paged) {
+      LOOM_TRY_ASSIGN(auto mp, get_msgs_page(*conv_id, page.limit, page.before, true));
+      total = mp.total;
+      truncated = mp.truncated;
+      if (mp.truncated) next_before = mp.next_before;
+      msgs = std::move(mp.messages);
+    } else {
+      LOOM_TRY_ASSIGN(msgs, get_msgs(*conv_id, true));
+      total = static_cast<std::int64_t>(msgs.size());
+    }
+    const std::size_t end = msgs.size();
+    const std::size_t begin = 0;
+    for (std::size_t i = begin; i < end; ++i) {
+      const auto& m = msgs[i];
       nodes.push_back(Json{{"id", m.id},
                            {"label", std::string(utf8::prefix(m.text, 25))},
                            {"type", m.role},
@@ -1047,7 +1150,7 @@ Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id) {
       }
     }
   }
-  LOOM_TRY_ASSIGN(auto all_nodes, list_nodes());
+  LOOM_TRY_ASSIGN(auto all_nodes, list_nodes(std::nullopt, paged && !(conv_id && !conv_id->empty()) ? page.limit : 200));
   for (const auto& n : all_nodes) {
     if (seen.count(n.id)) continue;
     nodes.push_back(Json{{"id", n.id},
@@ -1059,11 +1162,40 @@ Result<Json> Database::get_graph_data(std::optional<std::string_view> conv_id) {
                          {"tags", n.tags}});
     seen[n.id] = true;
   }
-  LOOM_TRY_ASSIGN(auto links, get_links());
-  for (const auto& l : links) {
-    edges.push_back(Json{{"src", l.src}, {"dst", l.dst}, {"type", l.link_type}, {"weight", l.weight}});
+  if (!paged) {
+    LOOM_TRY_ASSIGN(auto links, get_links());
+    for (const auto& l : links) {
+      edges.push_back(Json{{"src", l.src}, {"dst", l.dst}, {"type", l.link_type}, {"weight", l.weight}});
+    }
+    return Json{{"nodes", std::move(nodes)}, {"edges", std::move(edges)}};
   }
-  return Json{{"nodes", std::move(nodes)}, {"edges", std::move(edges)}};
+  // Paged: reply edges whose parent lies outside the page are dropped, links are kept when they touch a listed
+  // message or join two listed nodes (streamed, not materialised: a 1M-message store has 200k+ links).
+  {
+    Json kept = Json::array();
+    for (auto& e : edges)
+      if (seen.count(e["src"].get<std::string>())) kept.push_back(std::move(e));
+    edges = std::move(kept);
+  }
+  LOOM_TRY_ASSIGN(auto st, conn_.prepare("SELECT * FROM links ORDER BY rowid"));
+  dbi::RowMap rm(st);
+  while (true) {
+    LOOM_TRY_ASSIGN(bool row, st.step());
+    if (!row) break;
+    std::string src = rm.text(st, "src");
+    std::string dst = rm.text(st, "dst");
+    if (seen.count(src) && seen.count(dst)) {
+      edges.push_back(Json{{"src", src}, {"dst", dst}, {"type", rm.text(st, "link_type")},
+                           {"weight", rm.real(st, "weight", 1.0)}});
+    }
+  }
+  Json out{{"nodes", std::move(nodes)}, {"edges", std::move(edges)}};
+  if (conv_id && !conv_id->empty()) {
+    out["truncated"] = truncated;
+    out["next_before"] = next_before;
+    out["total_messages"] = total;
+  }
+  return out;
 }
 
 // ── Housekeeping ───────────────────────────────────────────────────

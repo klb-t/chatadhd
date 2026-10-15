@@ -290,7 +290,12 @@ test('an accepted definition shows what it wrote and can be taken back; the stat
   assert.equal(a.undoCall(view), 'actionsRemove');
   assert.equal(a.undoCall({ ...view, kind: 'define_sequence' }), 'actionsRemove', 'a repeated chain is an action too');
   assert.equal(a.undoCall({ ...view, kind: 'define_group' }), 'groupsRemove');
-  assert.deepEqual(a.undoRequest(view), { id: 'rozpisz', confirmed: true, ref: 'web' });
+  assert.deepEqual(a.undoRequest(view), { id: 'rozpisz', propose: true, ref: 'web' }, 'first the removal is proposed: nothing is removed, the kernel gives the receipt');
+  const proposed = { id: 'ar_9', status: 'proposed', pending: { kind: 'proposal', receipt_id: 'arr_abc', plan_receipt: 'arp_def' } };
+  assert.deepEqual(a.undoConfirmation(proposed), { run_id: 'ar_9', approved: true, receipt_id: 'arr_abc', ref: 'web' }, 'the click is the yes of the proposal it was shown');
+  assert.equal(a.undoConfirmation({ id: 'ar_9', status: 'denied', pending: null }), null, 'a denial is not answered');
+  assert.equal(a.undoConfirmation({ id: 'ar_9', status: 'proposed', pending: { kind: 'proposal' } }), null, 'no receipt, no yes');
+  assert.equal(a.undoConfirmation({ status: 'proposed', pending: { receipt_id: 'arr_abc' } }), null, 'no run to answer');
   // taken back: by the flag or by the proposal's own state
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'executed', written: { ...written, undone: true } } }).undone, true);
   assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written } }).undone, true);
@@ -329,4 +334,107 @@ test('the written block: the line, the entry, one undo; undone and busy and fail
   const bare = renderToStaticMarkup(createElement(block.ProposalWritten, { feature: null, written: { ...written, entry: '' }, testId: 'w', onUndo: () => undefined }));
   assert.ok(bare.includes('rozpisz'));
   assert.doesNotMatch(bare, /w-entry/);
+});
+
+test('a rule written from the conversation is shown as written and taken back by switching it off (P13)', () => {
+  const rule = { id: 'user:conversation:c_1:gate:summarise', scope: 'conversation', scope_id: 'c_1', effect: 'confirm', action: 'summarise', initiator: 'user',
+    provenance: { origin: 'chat', conv_id: 'c_1' } };
+  const written = { kind: 'rule', id: rule.id, overlays: ['profiles/action_rules.pack'], entry: rule };
+  const metadata = { action_proposal: { ...proposal, action: 'rules.set', status: 'executed', written } };
+  const view = a.writtenView(metadata);
+  assert.equal(view.kind, 'rule');
+  assert.deepEqual(JSON.parse(view.entry), rule, 'the rule is shown as it stands in the overlay');
+  assert.equal(a.undoCall(view), 'rulesDisable', 'a rule is switched off, not removed');
+  assert.deepEqual(a.undoRequest(view), { id: rule.id, propose: true, ref: 'web' }, 'the switch-off is proposed first, the click then answers it with its receipt');
+  assert.ok(en.written_rule && pl.written_rule && en.undone_rule && pl.undone_rule && en.status_cancelled && pl.status_cancelled);
+  const texts = a.writtenTexts(feature, view);
+  assert.equal(texts.written, en.written_rule.replace('{{overlay}}', 'profiles/action_rules.pack').replace('{{id}}', rule.id));
+  assert.equal(texts.undone, en.undone_rule);
+  assert.equal(texts.undo, en.undo);
+  // switched off from anywhere: the proposal says so (status undone, written.undone)
+  assert.equal(a.writtenView({ action_proposal: { ...proposal, status: 'undone', written: { ...written, undone: true } } }).undone, true);
+});
+
+test('one language per answer: a Polish proposal, its state badge, its offer and what it wrote are Polish whatever the interface language', () => {
+  const polish = { ...proposal, lang: 'pl', title: 'Streść',
+    items: [{ action: 'transcribe', title: 'Transkrybuj', cost: 1 }, { action: 'summarise', title: 'Streść', cost: 1 }],
+    needs_confirmation: [{ action: 'share', title: 'Udostępnij', reason: 'zapytam najpierw', initiator: 'owner' }] };
+  const metadata = { action_proposal: polish };
+  assert.equal(a.messageLanguage(metadata), 'pl');
+  assert.equal(a.messageLanguage({ action_run: { run_id: 'ar_2', status: 'completed', lang: 'pl' } }), 'pl', 'a result message says the language of its run');
+  assert.equal(a.messageLanguage({ action_proposal: { ...polish, lang: '' } }), null);
+  assert.equal(a.messageLanguage({}), null);
+  assert.equal(a.messageLanguage(undefined), null);
+  const spoken = p.featureInLanguage(feature, a.messageLanguage(metadata));
+  assert.equal(feature.locale, 'en', 'the interface stays English');
+  assert.equal(spoken.locale, 'pl');
+  assert.equal(spoken.catalog.confirm, pl.confirm);
+  // a language the catalog does not have, or no language, changes nothing
+  assert.equal(p.featureInLanguage(feature, 'de'), feature);
+  assert.equal(p.featureInLanguage(feature, null), feature);
+  assert.equal(p.featureInLanguage(null, 'pl'), null);
+
+  const answer = a.pendingAnswer(metadata);
+  const html = renderToStaticMarkup(createElement(block.default, { feature: spoken, answer, testId: 'pl', onConfirm: () => undefined, onReject: () => undefined }));
+  // every line of the block is the Polish one: the words of the catalog and the titles of the proposal
+  for (const key of ['title', 'confirm', 'reject']) {
+    assert.ok(html.includes(pl[key]), 'Polish ' + key);
+    assert.ok(!html.includes(en[key]), 'no English ' + key);
+  }
+  assert.ok(html.includes('Plan: Transkrybuj -&gt; Streść'));
+  assert.ok(html.includes('Wymaga potwierdzenia: Udostępnij'));
+  assert.ok(html.includes('Szacunek:'));
+  assert.ok(!html.includes('Estimate:') && !html.includes('Needs confirmation') && !html.includes('Transcribe') && !html.includes('Summarise') && !html.includes('Share'));
+  // the same message in an English interface without the language (the page of an older server) keeps the interface language
+  const plain = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'en', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(plain.includes(en.title) && plain.includes(en.confirm));
+
+  // the badge a finished proposal leaves, the offer under a dropped one, and the line of what was written
+  assert.equal(a.proposalTexts(spoken, answer, a.proposalView(answer)).status('executed'), pl.status_executed);
+  assert.equal(a.offerTexts(spoken).send, pl.offer);
+  assert.equal(a.offerTexts(spoken).hint, pl.offer_hint);
+  assert.equal(a.offerTexts(spoken).state('sent'), pl.offer_sent);
+  const written = a.writtenView({ action_proposal: { ...polish, status: 'executed', written: { kind: 'rule', id: 'rule_1', overlays: ['profiles/action_rules.pack'], entry: { id: 'rule_1' } } } });
+  const writtenHtml = renderToStaticMarkup(createElement(block.ProposalWritten, { feature: spoken, written, testId: 'w', onUndo: () => undefined }));
+  assert.ok(writtenHtml.includes(pl.undo) && !writtenHtml.includes(en.undo));
+  assert.ok(writtenHtml.includes('Reguła zapisana w Twojej własnej nakładce'));
+  assert.ok(!writtenHtml.includes('Rule written to'));
+  const offerHtml = renderToStaticMarkup(createElement(block.ProposalOffer, { feature: spoken, offer: { proposalId: 'm_p', sentenceId: 'm_s', auto: false }, testId: 'o', onSend: () => undefined }));
+  assert.ok(offerHtml.includes(pl.offer) && !offerHtml.includes(en.offer));
+  assert.ok(a.producedText(spoken, { target: 'graph', forms: ['n_1'], content: null, runNode: null }).startsWith('Zapisano w grafie'));
+});
+
+test('a run that was declined, denied or failed is data, not a failed request: answering "no" closes the proposal', async () => {
+  const types = await loader.load('src/api/types.ts');
+  const declined = { schema: 'loom.action_run/1', id: 'ar_1', status: 'rejected', error: { code: 'rejected', message: 'declined; nothing was executed' } };
+  assert.equal(types.isLoomError(declined), false, 'the run of a "no" carries an error of its own and is returned to the page');
+  assert.equal(types.isLoomError({ ...declined, schema: 'loom.action_run/2' }), false);
+  // the envelope of a request that failed is still one
+  assert.equal(types.isLoomError({ error: { code: 'invalid_argument', message: 'no run' } }), true);
+  assert.equal(types.isLoomError({ schema: 'loom.other/1', error: { code: 'x', message: 'y' } }), true);
+  assert.equal(types.isLoomError({ id: 'ar_1', error: '' }), false);
+});
+
+test('a proposal of the context guardian renders in the same block, with its claim, scope, exceptions and the instruction, in both languages', () => {
+  const guardian = { traffic: true, hypothesis: 'n_h1', signal: 'refinement', claim: 'The task was clarified 3 times', scope: 'conversation', weight: 3.06, count: 3, promotes: 'transform',
+    instruction: '[goal] Write the report', evidence: ['m_1', 'm_2', 'm_3'], exceptions: [{ text: 'the appendix', explicit: true }] };
+  const guarded = { ...proposal, action: 'guardian.promote', needs_confirmation: [], items: [] };
+  const answer = a.pendingAnswer({ action_proposal: guarded, guardian });
+  assert.equal(answer.kind, 'proposal');
+  assert.equal(answer.guardian.hypothesis, 'n_h1');
+  const view = a.proposalView(answer);
+  assert.equal(view.guardian.evidence, '3');
+  assert.deepEqual(view.guardian.exceptions, ['the appendix']);
+  const html = renderToStaticMarkup(createElement(block.default, { feature, answer, testId: 'g1', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(html.includes(en.title_guardian) && html.includes('The task was clarified 3 times'));
+  assert.ok(html.includes('this conversation') && html.includes('weight 3.06'));
+  assert.ok(html.includes('Exceptions: the appendix') && html.includes('[goal] Write the report'));
+  assert.ok(html.includes('data-testid="g1-guardian-instruction"') && html.includes('g1-confirm') && html.includes('g1-reject'));
+  const spoken = p.featureInLanguage(feature, 'pl');
+  const polish = renderToStaticMarkup(createElement(block.default, { feature: spoken, answer, testId: 'g2', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(polish.includes(pl.title_guardian) && polish.includes('tej rozmowy') && polish.includes('Wyjątki: the appendix'));
+  assert.ok(!polish.includes(en.title_guardian));
+  // an ordinary proposal shows none of it
+  const plain = renderToStaticMarkup(createElement(block.default, { feature, answer: a.pendingAnswer({ action_proposal: proposal }), testId: 'g3', onConfirm: () => undefined, onReject: () => undefined }));
+  assert.ok(!plain.includes('guardian'));
 });

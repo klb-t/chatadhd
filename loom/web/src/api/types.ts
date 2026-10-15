@@ -1,3 +1,5 @@
+import type { PerspectivesList, PerspectivesSideBySide, PerspectiveRender, ScopeResolution } from "./graph-views";
+import type { InteractionBindings, ViewDeclarationInfo, ViewEngineList, ViewModel } from "./view-model";
 // Shared JSON shapes returned by the Loom C ABI (loom/include/loom/loom.h),
 // as relayed by both transports (loom-http.ts over the server, loom-jni.ts
 // over the Android WebView bridge). Kept intentionally loose (most fields
@@ -10,6 +12,9 @@ export interface LoomError {
 
 export function isLoomError(v: unknown): v is LoomError {
   if (!v || typeof v !== "object" || !("error" in v)) return false;
+  // A run document carries an `error` of its own when it was declined, denied or failed: that is the run's state, not a failed request.
+  const schema = (v as { schema?: unknown }).schema;
+  if (typeof schema === "string" && schema.startsWith("loom.action_run/")) return false;
   const error = (v as { error: unknown }).error;
   // Pipeline results also carry an `error` string (empty on success).
   // Only the C ABI error envelope means the request itself failed.
@@ -71,6 +76,8 @@ export interface ChatRequest {
   stream?: boolean;
   /** Takes the offer a rejected proposal made: the sentence it came from is sent as an ordinary message. Value: the proposal's message id. */
   send_as_message?: string;
+  /** The client that declared its devices (client.declare): a command that needs a device of this page is runnable for it. */
+  client_id?: string;
 }
 
 // Only fields supported by the native ContextRequest. Omitting text uses the
@@ -148,10 +155,13 @@ export type ChatChunk =
     }
   | { type: "usage_pending"; request_id: string; conv_id: string; user_message_id: string;
       usage_pending: { status?: string; operation_id?: string | null; receipt_id?: string | null; stage?: string;
-        baseline_key?: string | null; projected?: Record<string, Record<string, unknown>> } }
+        baseline_key?: string | null; projected?: Record<string, Record<string, unknown>>;
+        limits?: Array<{ period?: string; on_exceed?: string; code?: string; reason?: Record<string, unknown> }>; reason_codes?: string[] } }
+  | { type: "usage_notice"; request_id?: string; conv_id?: string; notices: Array<{ code?: string; period?: string; text?: Record<string, unknown> }> }
   | { type: "action_proposal" | "action_result"; request_id: string; conv_id: string; user_message_id: string;
       message_id: string; text: string; proposal?: Record<string, unknown>; run?: Record<string, unknown>;
       proposal_message_id?: string; proposal_status?: string }
+  | { type: "route_issue"; request_id?: string; issues: Array<{ code: string; message?: string; fallback?: string }> }
   | { type: "error"; code: string; message: string };
 
 export interface GraphNode {
@@ -177,7 +187,12 @@ export interface GraphEdge {
 export interface GraphData {
   nodes: GraphNode[];
   edges: GraphEdge[];
+  /** Paged conversation graph (P19): the newest message nodes only; older ones follow with before = next_before. */
+  truncated?: boolean;
+  next_before?: string | null;
+  total_messages?: number;
 }
+export interface GraphDataPage { limit?: number; before?: string }
 
 export interface ContextSet {
   items: unknown[];
@@ -274,3 +289,37 @@ export interface ActionRun {
 }
 
 export interface ActionAnswer { run_id: string; approved: boolean; receipt_id: string; ref?: string }
+
+// ── Graph views (P24): readers of the perspective and scope answers; the shapes are in ./graph-views (types only). ──
+export function readPerspectivesList(v: unknown): PerspectivesList {
+  const o = v as Partial<PerspectivesList> | null;
+  if (!o || !Array.isArray(o.perspectives)) throw new Error("perspectives_list_invalid");
+  return { perspectives: o.perspectives };
+}
+export function readSideBySide(v: unknown): PerspectivesSideBySide {
+  const o = v as { perspectives?: unknown } | null;
+  if (!o || typeof o.perspectives !== "object" || o.perspectives === null || Array.isArray(o.perspectives)) throw new Error("perspectives_render_invalid");
+  return { perspectives: o.perspectives as Record<string, PerspectiveRender> };
+}
+export function readScopeResolution(v: unknown, key: string): ScopeResolution {
+  const o = v as Partial<ScopeResolution> | null;
+  if (!o || typeof o.defined !== "boolean" || !Array.isArray(o.chain)) throw new Error("scope_resolution_invalid");
+  return { ...o, key: typeof o.key === "string" ? o.key : key } as ScopeResolution;
+}
+
+// ── The visualization engine (P28): readers of the view model answers; the shapes are in ./view-model (types only). ──
+export function readViewEngineList(v: unknown): ViewEngineList {
+  const o = v as { declarations?: { entries?: unknown } } | null;
+  if (!o || !o.declarations || !Array.isArray(o.declarations.entries)) throw new Error("view_engine_list_invalid");
+  return { declarations: o.declarations.entries as ViewDeclarationInfo[] };
+}
+export function readViewModel(v: unknown): ViewModel {
+  const o = v as Partial<ViewModel> | null;
+  if (!o || o.schema !== "loom.view_model/1" || !Array.isArray(o.elements) || !Array.isArray(o.encodings)) throw new Error("view_model_invalid");
+  return { edges: [], groups: [], unsupported: [], coordinate_systems: [], measure_stats: {}, sources: [], issues: [], ...o } as ViewModel;
+}
+export function readInteractionBindings(v: unknown): InteractionBindings {
+  const o = v as Partial<InteractionBindings> | null;
+  if (!o || o.schema !== "loom.view_interaction/1" || !Array.isArray(o.bindings)) throw new Error("view_interaction_invalid");
+  return { devices: [], actions: [], conflicts: [], disabled: [], unsupported: [], issues: [], ...o } as InteractionBindings;
+}

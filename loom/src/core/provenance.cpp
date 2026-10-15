@@ -66,6 +66,9 @@ bool BlobStore::is_valid_hash(std::string_view h) noexcept {
 
 sfs::path BlobStore::path_for(std::string_view hash) const {
   std::string h(hash);
+  // A hash comes from a request or a database row; whatever it holds, it never leaves the blob root (R18).
+  if (h.find_first_of("/\\") != std::string::npos || h.find("..") != std::string::npos || h.find('\0') != std::string::npos)
+    return root_ / "invalid-hash";
   if (h.size() < 4) return root_ / h;
   return root_ / h.substr(0, 2) / h.substr(2, 2) / h;
 }

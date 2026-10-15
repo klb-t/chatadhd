@@ -178,4 +178,41 @@ TEST_SUITE("fts") {
     CHECK(!db->search_messages("x", f));
     CHECK(unwrap(db->search_messages("   ")).hits.empty());
   }
+
+  TEST_CASE("chunked first build: search over an incomplete index is complete") {
+    fsutil::TempDir td;
+    {
+      auto db = open_db(td.path() / "chatadhd.db");
+      auto conv = unwrap(db->create_conv());
+      for (int i = 0; i < 25; ++i) add(*db, conv.id, "needle number " + std::to_string(i));
+    }
+    DbOptions o;
+    o.fts_chunk_rows = 4;
+    std::filesystem::remove(td.path() / "chatadhd.fts.db");
+    auto db = unwrap(Database::open(td.path() / "chatadhd.db", o));
+    CHECK(db->fts_status().building);  // one chunk of 4 so far, more pending
+    SearchOptions so;
+    so.limit = 100;
+    auto r = unwrap(db->search_messages("needle", so));
+    CHECK(r.mode == "fts5");
+    CHECK(r.hits.size() == 25);
+    auto st = db->fts_status();
+    CHECK(!st.building);
+    CHECK(st.indexed == 25);
+  }
+
+  TEST_CASE("background build completes without a search") {
+    fsutil::TempDir td;
+    {
+      auto db = open_db(td.path() / "chatadhd.db");
+      auto conv = unwrap(db->create_conv());
+      for (int i = 0; i < 30; ++i) add(*db, conv.id, "bg " + std::to_string(i));
+    }
+    std::filesystem::remove(td.path() / "chatadhd.fts.db");
+    DbOptions o;
+    o.fts_chunk_rows = 7;
+    auto db = unwrap(Database::open(td.path() / "chatadhd.db", o));
+    db->fts_start_background();
+    db->close();  // joins the thread; the index state is whatever it reached, never inconsistent
+  }
 }

@@ -47,7 +47,7 @@ async function check(name, run) { await run(); groups.push(name); console.log(`[
 const area = (page, id) => page.getByTestId(`graph-entry-area-${id}`);
 const countText = async (page, areaId, name) => (await area(page, areaId).getByTestId(`graph-entry-count-${name}`).innerText()).trim();
 async function openPanel(page, base) {
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("nav-graph-entry").click();
   await page.getByTestId("graph-entry-panel").waitFor();
 }

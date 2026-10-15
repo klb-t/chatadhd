@@ -702,6 +702,16 @@ own families of actions; the given examples are the start of a long list Claude 
 actions emerge from conversations as proposals. Design: `docs/architecture/GRAF_HUB_KOD_SILNIK_2026-10-13.md`
 §5–§7. (paraphrase)
 
+## R56 — The first screen is a standard chat app; windows and the workbench are configurable views of it (owner, 2026-10-14)
+> "było dla mnie oczywiście w tym punkcie wyjścia, że jak uruchamiasz aplikację, to dostajesz widok albo ostatni zapisany, albo ostatniej rozmowy w okienku czatu, albo nowej rozmowy. Na Androidzie okienka (pływające, dokowalne, obsługujące wszystko) co do zasady powinny być możliwe do skonfigurowania tak jak na desktopie Czy w web apce, tyle że domyślny, wyjściowy widok, to pełnoekranowy interfejs standardowej apki chat bota, z flow, harnesem, stylem wyświetlania, itp itd, będąca fuzją wszystkich apek od kilku (5-10) najpopularniejszych llm-ów. Obowiązkowe jak ktoś się przesiada na naszą apkę, to można się spodziewać że najpierw chciałby przetestować czat, zanim swędzi godziny na konfiguracji"
+
+Opening the app lands in a view: the last saved one, or the last conversation in the chat window, or a new
+conversation (an ordered, configurable choice). On Android too, floating and dockable windows that handle
+everything are, in principle, configurable as on the desktop or in the web app; only the default, starting view is
+the full-screen interface of a standard chatbot app (flow, harness, display style), a fusion of the 5-10 most popular
+LLM apps. Mandatory: a person switching to this app first wants to try the chat, before spending hours on
+configuration. (paraphrase; the quoted words are verbatim)
+
 ## Decision — rebuild, don't recover
 > "nic już nie szukam bo nawet jak coś było to ty i tak teraz lepiej zrobisz od nowa. bo co było to nawet nieprzetestowane"
 

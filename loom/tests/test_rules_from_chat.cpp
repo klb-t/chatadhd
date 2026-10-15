@@ -17,6 +17,7 @@
 #include "loom/runtime.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
+#include "test_receipts.h"
 
 using namespace loom;
 using loom::test::unwrap;
@@ -223,13 +224,43 @@ TEST_SUITE("rules_from_chat") {
     REQUIRE(listed.at("rules").size() == 1);
     CHECK(listed.at("rules").at(0).at("disabled") == true);
     // restore: the switch-off is taken back
-    unwrap(f.rt->actions().invoke("rules.disable", Json{{"id", id}, {"restore", true}, {"confirmed", true}}));
+    unwrap(loom::test::invoke_confirmed(*f.rt, "rules.disable", Json{{"id", id}, {"restore", true}, {"confirmed", true}}));
     CHECK(f.route("Summarise this conversation").at("command").at("needs_confirmation").size() == 1);
     // a shipped rule is switched off by an override of the overlay, and nothing in the shipped pack changes
-    unwrap(f.rt->actions().invoke("rules.disable", Json{{"id", "confirm:rules.set"}, {"confirmed", true}}));
+    unwrap(loom::test::invoke_confirmed(*f.rt, "rules.disable", Json{{"id", "confirm:rules.set"}, {"confirmed", true}}));
     CHECK(f.overlay_rules().at("confirm:rules.set") == Json{{"disabled", true}});
     const auto no_question = f.input("w tej rozmowie ustaw action_result_target=graph");
     CHECK(f.meta(no_question).at("action_proposal").at("needs_confirmation").size() == 0);
+  }
+
+  TEST_CASE("the rule that was written is kept on its proposal, and one call (rulesDisable) takes it back; the proposal then says so") {
+    Fixture f;
+    const auto proposal = f.input("for this conversation never run summarise without asking");
+    const std::string proposal_id = proposal.assistant_message_id;
+    const auto done = f.input("yes");
+    REQUIRE(done.handled);
+    const std::string id = "user:conversation:" + f.conv_id + ":gate:summarise";
+    const Json written = unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal").at("written");
+    CHECK(written.at("kind") == "rule");
+    CHECK(written.at("id") == id);
+    CHECK(written.at("overlays") == Json::array({"profiles/action_rules.pack"}));
+    CHECK(written.at("entry").at("effect") == "confirm");
+    CHECK(written.at("entry").at("provenance").at("conv_id") == f.conv_id);
+    CHECK(unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal").at("status") == "executed");
+    // the click: the removal the web sends is a rules.disable that the user's click confirms
+    const Json run = unwrap(loom::test::invoke_confirmed(*f.rt, "rules.disable", Json{{"id", id}, {"confirmed", true}, {"ref", "web"}}));
+    CHECK(run.at("status") == "completed");
+    CHECK(f.overlay_rules().at(id).at("disabled") == true);
+    const Json after = unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal");
+    CHECK(after.at("status") == "undone");
+    CHECK(after.at("written").at("undone") == true);
+    // taken back from somewhere else (restore): the proposal is the writer again
+    unwrap(loom::test::invoke_confirmed(*f.rt, "rules.disable", Json{{"id", id}, {"restore", true}, {"confirmed", true}}));
+    const Json restored = unwrap(f.rt->db().get_msg(proposal_id))->metadata.at("action_proposal");
+    CHECK(restored.at("status") == "executed");
+    CHECK(restored.at("written").at("undone") == false);
+    // a rule that was not written from a conversation has no message to tell: nothing breaks
+    unwrap(loom::test::invoke_confirmed(*f.rt, "rules.disable", Json{{"id", "confirm:rules.set"}, {"confirmed", true}}));
   }
 
   TEST_CASE("a rule pinned by a higher scope refuses, with its reason and who pinned it; so does switching it off") {
@@ -250,7 +281,7 @@ TEST_SUITE("rules_from_chat") {
     CHECK(said.find("the administrator") != std::string::npos);
     CHECK(f.meta(out).at("action_proposal").at("status") == "unavailable");
     // the same through the API: a refusal, nothing written
-    auto direct = f.rt->actions().invoke("rules.set", Json{{"scope", "conversation"}, {"scope_id", f.conv_id}, {"effect", "allow"}, {"action", "depict"}, {"confirmed", true}});
+    auto direct = loom::test::invoke_confirmed(*f.rt, "rules.set", Json{{"scope", "conversation"}, {"scope_id", f.conv_id}, {"effect", "allow"}, {"action", "depict"}, {"confirmed", true}});
     REQUIRE(direct);
     CHECK(direct->at("status") == "failed");
     CHECK(direct->at("error").at("message").get<std::string>().find("pinned by the administrator") != std::string::npos);
@@ -283,16 +314,16 @@ TEST_SUITE("rules_from_chat") {
     const Json chain = unwrap(f.rt->actions().invoke("propose_chain", Json{{"element", "message"}, {"target_action", "transcribe"}}));
     CHECK(chain.at("resolved").at("max_cost").at("rule") == id);
     // the setting name works as well as the scoped key; a setting nobody reads per scope yet is written with a note
-    const Json other = unwrap(f.rt->actions().invoke("rules.set", Json{{"scope", "person"}, {"key", "extrapolation_preset"}, {"value", "generous"}, {"confirmed", true}}));
+    const Json other = unwrap(loom::test::invoke_confirmed(*f.rt, "rules.set", Json{{"scope", "person"}, {"key", "extrapolation_preset"}, {"value", "generous"}, {"confirmed", true}}));
     CHECK(other.at("status") == "completed");
     CHECK(f.overlay_rules().contains("user:person:value:extrapolation.preset"));
-    const Json unread = unwrap(f.rt->actions().invoke("rules.set", Json{{"scope", "person"}, {"key", "max_tokens"}, {"value", 2048}, {"confirmed", true}}));
+    const Json unread = unwrap(loom::test::invoke_confirmed(*f.rt, "rules.set", Json{{"scope", "person"}, {"key", "max_tokens"}, {"value", 2048}, {"confirmed", true}}));
     CHECK(unread.at("result").at("data").at("note").at("consumer").get<std::string>().find("nothing reads") != std::string::npos);
     // errors are said: an unknown level, an unknown setting, an unknown action, a deny of nothing
-    CHECK_FALSE(unwrap(f.rt->actions().invoke("rules.set", Json{{"scope", "galaxy"}, {"key", "x"}, {"value", 1}, {"confirmed", true}})).at("status") == "completed");
-    CHECK_FALSE(unwrap(f.rt->actions().invoke("rules.set", Json{{"scope", "person"}, {"key", "no_such_setting"}, {"value", 1}, {"confirmed", true}})).at("status") == "completed");
-    CHECK_FALSE(unwrap(f.rt->actions().invoke("rules.set", Json{{"scope", "person"}, {"effect", "deny"}, {"action", "frobnicate"}, {"confirmed", true}})).at("status") == "completed");
-    CHECK_FALSE(unwrap(f.rt->actions().invoke("rules.set", Json{{"scope", "conversation"}, {"key", "action_result_target"}, {"value", "graph"}, {"confirmed", true}})).at("status") == "completed");
+    CHECK_FALSE(unwrap(loom::test::invoke_confirmed(*f.rt, "rules.set", Json{{"scope", "galaxy"}, {"key", "x"}, {"value", 1}, {"confirmed", true}})).at("status") == "completed");
+    CHECK_FALSE(unwrap(loom::test::invoke_confirmed(*f.rt, "rules.set", Json{{"scope", "person"}, {"key", "no_such_setting"}, {"value", 1}, {"confirmed", true}})).at("status") == "completed");
+    CHECK_FALSE(unwrap(loom::test::invoke_confirmed(*f.rt, "rules.set", Json{{"scope", "person"}, {"effect", "deny"}, {"action", "frobnicate"}, {"confirmed", true}})).at("status") == "completed");
+    CHECK_FALSE(unwrap(loom::test::invoke_confirmed(*f.rt, "rules.set", Json{{"scope", "conversation"}, {"key", "action_result_target"}, {"value", "graph"}, {"confirmed", true}})).at("status") == "completed");
     // the catalogue rows: loom_invoke port actions, HTTP routes
     std::set<std::string> paths;
     for (const auto& row : action_table())

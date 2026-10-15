@@ -50,6 +50,12 @@ void emit_chunk(LoomStreamCallback cb, void* ud, const Json& chunk, int done) {
   cb(s.c_str(), done, ud);
 }
 
+// Routing worked around a problem (the model route failed and the local method decided): a stream event, so the page can say so quietly.
+// The input goes on as it would have (a message to the model, or the command the local method found): nothing is lost.
+Json route_issue_chunk(const std::string& request_id, const Json& issues) {
+  return Json{{"type", "route_issue"}, {"request_id", request_id}, {"issues", issues}};
+}
+
 // Shared by loom_chat and loom_chat_ex. Always delivers exactly one final
 // chunk (done=1) and returns the final JSON (result or error).
 Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts, std::string request_id,
@@ -86,10 +92,12 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
   if (!cb) opts.stream = false;
   // R54: every chat input goes through input.route_intent. A message returns here untouched and continues on
   // the chat path below with the very same request; a command is answered in the conversation instead.
+  Json routed_issues = Json::array();
   {
     auto routed = chat_route::handle(*ctx->rt, message, opts, request, [&](const std::string& conv_id, const std::string& user_message_id) {
       emit_chunk(cb, ud, Json{{"type", "start"}, {"request_id", request_id}, {"conv_id", conv_id}, {"user_message_id", user_message_id}}, 0);
     });
+    if (routed) routed_issues = routed->issues;
     if (!routed) {
       // A broken routing profile must not take the chat down: the input is sent as a message, and the reason is logged.
       log::warn("loom.capi", "input routing failed, sending as a message: {}", routed.error().message);
@@ -99,6 +107,11 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
       result["request_id"] = request_id;
       Json chunk = routed->chunk;
       chunk["request_id"] = request_id;
+      if (!routed->issues.empty()) {
+        // The routing had a problem it worked around (the model route failed, the local method decided): said before the answer.
+        result["route_issues"] = routed->issues;
+        emit_chunk(cb, ud, route_issue_chunk(request_id, routed->issues), 0);
+      }
       emit_chunk(cb, ud, chunk, 1);
       return result;
     } else if (routed->resend) {
@@ -109,6 +122,7 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
       opts.conv_id = routed->conv_id.empty() ? opts.conv_id : std::optional<std::string>(routed->conv_id);
     }
   }
+  if (routed_issues.is_array() && !routed_issues.empty()) emit_chunk(cb, ud, route_issue_chunk(request_id, routed_issues), 0);
   auto r = ctx->rt->chat().send(message, opts, cbs, &token);
   registration.reset();
   if (!r) {
@@ -122,11 +136,16 @@ Json run_chat(LoomContext* ctx, const std::string& message_in, ChatOptions opts,
   }
   Json result = r->to_json();
   result["request_id"] = request_id;
+  if (routed_issues.is_array() && !routed_issues.empty()) result["route_issues"] = routed_issues;
   if (r->usage_pending) {
     // Paused by the shared usage guard: a state carrying the receipt, not an error.
     emit_chunk(cb, ud, Json{{"type", "usage_pending"}, {"request_id", request_id}, {"conv_id", r->conv_id},
                             {"user_message_id", r->user_message_id}, {"usage_pending", *r->usage_pending}}, 1);
     return result;
+  }
+  if (r->usage_notices.is_array() && !r->usage_notices.empty()) {
+    // The usage ledger only told (a spending limit with on_exceed notify): the send went on and the notice is said before the end.
+    emit_chunk(cb, ud, Json{{"type", "usage_notice"}, {"request_id", request_id}, {"conv_id", r->conv_id}, {"notices", r->usage_notices}}, 0);
   }
   Json done{{"type", "done"},
             {"request_id", request_id},

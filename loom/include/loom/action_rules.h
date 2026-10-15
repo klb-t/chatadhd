@@ -144,6 +144,8 @@ class Engine {
   const Json& user_values() const { return user_values_; }
   // The chain level a name (or alias) denotes ("" when unknown).
   std::string level_name(std::string_view name) const;
+  // The chain as data, most general first: [{id, label, ...}] (graph/scopes.pack plus the user's graph_entry overlay).
+  const Json& scope_chain() const { return scope_chain_; }
 
   // Gate decision of the rules for (element, action). The action need not be in the catalogue
   // (settings fields use the action "edit").
@@ -173,6 +175,10 @@ class Engine {
   Json issues() const;
 
   const Json& catalogue() const { return actions_; }
+  // The catalogue as ONE client sees it (client_devices.h): {action id: {status, runs_on, planned_reason, ...}} patches
+  // are merged into the entries - a device action the client declared becomes implemented and runs on the client, one it
+  // declared as denied keeps its planned status with the reason. A patch for an action the catalogue lacks is ignored.
+  void apply_client(const Json& patches);
   // True when `id` is a class of the ontology (a bare string that is one stays a class id).
   bool has_class(std::string_view id) const { return classes_.contains(std::string(id)); }
   // The decision table entry of a gate decision (allow | confirm | deny): its restrictiveness, 0 = none.
@@ -237,5 +243,8 @@ Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view acti
 // With the live settings (the person level of scoped values: extrapolation_preset, extrapolation_bounds ...).
 Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
                     const ElementSources* sources, const Config* config);
+// As a client sees the catalogue (client_devices.h): `client_patches` = ActionRunner::client_patches(request.client_id).
+Result<Json> invoke(const std::filesystem::path& data_dir, std::string_view action, const Json& request,
+                    const ElementSources* sources, const Config* config, const Json* client_patches);
 
 }  // namespace loom::actions

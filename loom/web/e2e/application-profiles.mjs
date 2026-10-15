@@ -178,7 +178,7 @@ try {
     }
     await route.continue();
   });
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await view(0).waitFor();
   await page.getByTestId("new-conversation").click();
   await page.locator('[data-testid="conv-item"].active').waitFor();
@@ -464,7 +464,7 @@ try {
   await check("truncated transport EOF clears pending content and exposes failure", async () => {
     await view(0).getByTestId("chat-input").fill("PROFILE_TRUNCATED_EOF_4819"); await view(0).getByTestId("send-chat").click();
     await view(0).getByTestId("chat-error").waitFor();
-    assert.match(await view(0).getByTestId("chat-error").innerText(), /ended before a done result/);
+    assert.match(await view(0).getByTestId("chat-error").innerText(), /ended before a result/);
     await view(0).getByTestId("streaming-message").waitFor({ state: "detached" });
     assert.equal(await view(0).locator(".msg.user .body").filter({ hasText: "PROFILE_TRUNCATED_EOF_4819" }).count(), 0);
     assert.equal(await view(0).getByTestId("send-chat").count(), 1); assert.equal(captures.length, 6);

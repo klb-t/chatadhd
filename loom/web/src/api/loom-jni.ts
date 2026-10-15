@@ -13,8 +13,10 @@
 // invokes `window.__loomCallbacks[callbackId](chunkJson, done)` for every
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
+import type { InteractionBindings, ViewEngineList, ViewModel, ViewModelRequest } from "./view-model";
+import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
-import type { ActionsApi, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
+import type { ActionsApi, ClientBlob, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import type {
   ChatChunk,
   ChatRequest,
@@ -33,7 +35,7 @@ import type {
   SemanticStatusInfo,
   Task,
 } from "./types";
-import { isLoomError } from "./types";
+import { isLoomError, readInteractionBindings, readPerspectivesList, readScopeResolution, readSideBySide, readViewEngineList, readViewModel } from "./types";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 
@@ -55,6 +57,24 @@ export function hasNativeBridge(): boolean {
 }
 
 let callbackSeq = 0;
+/** One chunk across the string bridge (a multiple of 3, so every chunk but the last is whole base64 groups). */
+const BLOB_CHUNK = 196608;
+
+// Bytes <-> base64 for the one transport that has no other way to move them: the shell's string bridge. Always one bounded chunk.
+/** A binary string of the bytes in slices, so a long chunk does not overflow the argument limit of the call. */
+const SLICE = 0x8000;
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = "";
+  for (let at = 0; bytes.length > at; at += SLICE) binary += String.fromCharCode(...bytes.subarray(at, at + SLICE));
+  return btoa(binary);
+}
+function base64ToBytes(encoded: string): Uint8Array {
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+  for (let at = 0; binary.length > at; at += 1) bytes[at] = binary.charCodeAt(at);
+  return bytes;
+}
+
 function nextCallbackId(): string {
   callbackSeq += 1;
   return `cb_${Date.now()}_${callbackSeq}`;
@@ -77,6 +97,39 @@ export class LoomJniApi implements LoomApi {
   };
   // R54: running actions through the one entry point (loom_invoke, ports actions and chat).
   readonly actions: ActionsApi = {
+    clientKind: "android",
+    clientDeclare: (request) => this.callAsync("invoke", { port: "actions", action: "client.declare", request }),
+    clientCapabilities: (request) => this.callAsync("invoke", { port: "actions", action: "client.capabilities", request }),
+    clientResult: (result) => this.callAsync("invoke", { port: "actions", action: "client_result", request: result }),
+    // No HTTP in the shell: the bytes cross the string bridge in bounded chunks that the kernel appends to an upload and then stores by hash
+    // (client.blob_begin | append | commit), and come back the same way (client.blob_read). Nothing is carried in client_result.
+    clientBlobUpload: async (blob) => {
+      const call = <T,>(action: string, request: Record<string, unknown>) => this.callAsync<T>("invoke", { port: "actions", action, request });
+      const begun = await call<{ upload_id: string }>("client.blob_begin", {});
+      try {
+        for (let at = 0; blob.size > at; at += BLOB_CHUNK) {
+          const chunk = new Uint8Array(await blob.slice(at, at + BLOB_CHUNK).arrayBuffer());
+          await call("client.blob_append", { upload_id: begun.upload_id, data_base64: bytesToBase64(chunk) });
+        }
+        return await call<ClientBlob>("client.blob_commit", { upload_id: begun.upload_id, mime: blob.type || "application/octet-stream" });
+      } catch (failure) {
+        try { await call("client.blob_commit", { upload_id: begun.upload_id, abort: true }); } catch { /* the upload is already gone */ }
+        throw failure;
+      }
+    },
+    clientBlobFetch: async (hash) => {
+      const pieces: Uint8Array[] = [];
+      let mime = "";
+      for (let offset = 0, last = false; !last;) {
+        const piece = await this.callAsync<{ length: number; eof: boolean; mime: string; data_base64: string }>("invoke",
+          { port: "actions", action: "client.blob_read", request: { hash, offset, length: BLOB_CHUNK } });
+        pieces.push(base64ToBytes(piece.data_base64));
+        mime = piece.mime;
+        offset += piece.length;
+        last = piece.eof || piece.length === 0;
+      }
+      return new Blob(pieces as BlobPart[], { type: mime });
+    },
     run: (request) => this.callAsync("invoke", { port: "actions", action: "run", request }),
     confirm: (answer) => this.callAsync("invoke", { port: "actions", action: "confirm", request: answer }),
     cancel: (request) => this.callAsync("invoke", { port: "actions", action: "cancel", request }),
@@ -271,11 +324,30 @@ export class LoomJniApi implements LoomApi {
   expandGraph(seedIds: string[], depth: number): Promise<GraphData> {
     return this.callAsync("expand_graph", { seed_ids: seedIds, depth });
   }
-  getGraphData(convId?: string): Promise<GraphData> {
-    return this.callAsync("get_graph_data", { conv_id: convId ?? null });
+  getGraphData(convId?: string, page?: { limit?: number; before?: string }): Promise<GraphData> {
+    const paged = convId && (page?.limit !== undefined || page?.before);
+    return this.callAsync("get_graph_data", { conv_id: paged ? JSON.stringify({ conv_id: convId, ...page }) : convId ?? null });
   }
   getGraphEntry(options: GraphEntryOptions = {}): Promise<GraphEntryView> {
     return this.callAsync("graph_entry", { request: JSON.stringify(options) }).then(readGraphEntry);
+  }
+  listPerspectives(): Promise<PerspectivesList> {
+    return this.callAsync<unknown>("perspectives", { request: "{}" }).then(readPerspectivesList);
+  }
+  renderPerspectives(request: PerspectiveRequest): Promise<PerspectivesSideBySide> {
+    return this.callAsync<unknown>("perspectives", { request: JSON.stringify(request) }).then(readSideBySide);
+  }
+  listViewDeclarations(): Promise<ViewEngineList> {
+    return this.callAsync<unknown>("view_model", { request: "{}" }).then(readViewEngineList);
+  }
+  evaluateView(request: ViewModelRequest): Promise<ViewModel> {
+    return this.callAsync<unknown>("view_model", { request: JSON.stringify(request) }).then(readViewModel);
+  }
+  getInteractionBindings(device?: string): Promise<InteractionBindings> {
+    return this.callAsync<unknown>("view_interaction", { request: JSON.stringify(device ? { device } : {}) }).then(readInteractionBindings);
+  }
+  resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
+    return this.callAsync<unknown>("scope_resolve", { request: JSON.stringify(request) }).then(result => readScopeResolution(result, request.key));
   }
   reindexGraph(convId?: string): Promise<{ reindexed: number }> {
     return this.callAsync("graph_reindex", { conv_id: convId ?? null });

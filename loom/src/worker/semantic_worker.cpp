@@ -1,8 +1,11 @@
 // OWNER: wave 2 net/chat/worker. Port of engine/semantic_worker.py.
+#include "loom/annotation_layer.h"
 #include "loom/semantic_worker.h"
+#include "loom/usage_spend.h"
 
 #include <algorithm>
 #include <cstdio>
+#include <ctime>
 #include <set>
 
 #include "loom/analysis_mode.h"
@@ -306,6 +309,31 @@ void check_batch_status(Database& db, const Config& cfg, const Secrets& secrets,
   }
 }
 
+// P18: the reason a spending limit gave (limits, reason_codes) on a pending hold or refusal.
+void add_limit_reasons(Json& pending, const Json& decision) {
+  const Json reasons = usage_limit_reasons(decision);
+  for (auto it = reasons.begin(); it != reasons.end(); ++it)
+    if (it.key() != "status") pending[it.key()] = it.value();
+}
+
+// A refusal by a spending limit, in the shape of a pending hold so that the conversation and the status can say it (status "denied": nothing
+// can be answered, `retry_after_s` is when the worker asks the ledger again: the worker profile's limit_refusal_retry_ms later).
+Json refusal_pending(const Json& decision, const char* kind, std::size_t messages, const std::string& body_sha, const Json& ids_or_convs,
+                     std::int64_t retry_ms) {
+  Json out{{"schema", "loom.semantic_usage_pending/1"}, {"kind", kind}, {"status", "denied"}, {"refused", true},
+           {"operation_id", decision.value("operation_id", Json(nullptr))}, {"receipt_id", decision.value("receipt_id", Json(nullptr))},
+           {"baseline_key", decision.value("baseline_key", Json(nullptr))}, {"projected", decision.value("resources", Json::object())},
+           {"messages", messages}, {"body_sha256", body_sha}, {"sent", false},
+           {"retry_after_s", static_cast<std::int64_t>(std::time(nullptr)) + (retry_ms + 999) / 1000}};
+  out[std::string(kind) == "retry" ? "ids" : "conv_ids"] = ids_or_convs;
+  add_limit_reasons(out, decision);
+  return out;
+}
+
+bool refusal_expired(const std::optional<Json>& slot) {
+  return slot && json::get_bool(*slot, "refused", false) && static_cast<std::int64_t>(std::time(nullptr)) >= json::get_int(*slot, "retry_after_s", 0);
+}
+
 // Returns 0 always (matches Python _submit_batch_api, which never returns a
 // processed count on the submit path).
 int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, net::HttpTransport& http, std::mutex& mu,
@@ -324,6 +352,11 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
   if (profile.values().at("strip_model_provider").get<bool>())
     if (auto p = model.find('/'); p != std::string::npos) model = model.substr(p + 1);
 
+  // The conversations whose messages the batch holds, the one with the newest message first (the messages come oldest first): the one that shows the
+  // question if the guard holds the batch.
+  Json conv_ids = Json::array();
+  for (auto it = msgsr->rbegin(); it != msgsr->rend(); ++it)
+    if (!it->conv_id.empty() && std::find(conv_ids.begin(), conv_ids.end(), Json(it->conv_id)) == conv_ids.end()) conv_ids.push_back(it->conv_id);
   Json batch_requests = Json::array();
   for (const auto& m : *msgsr) {
     batch_requests.push_back(
@@ -331,7 +364,7 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
             {"params", Json{{"model", model},
                            {"max_tokens", profile.values().at("batch_output_tokens")},
                            {"messages", Json::array({Json{{"role", "user"},
-                             {"content", std::string(kAnalysisPrompt) + std::string(utf8::prefix(m.text, profile.values().at("batch_input_chars").get<std::size_t>()))}}})}}}});
+                             {"content", annotations::extend_prompt(kAnalysisPrompt, annotations::segments_plan(cfg), cfg) + std::string(utf8::prefix(m.text, profile.values().at("batch_input_chars").get<std::size_t>()))}}})}}}});
   }
 
   const llm::Services services(cfg, secrets, http);
@@ -386,6 +419,8 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
     log::error("loom.semantic_worker", "Batch usage admission error: {}", sent.error ? sent.error->message : std::string());
     return 0;
   }
+  if (sent.notices.is_array() && !sent.notices.empty())  // a spending limit that only tells: the batch goes on, the notice is in the ledger's decision
+    log::warn("loom.semantic_worker", "Batch admitted over a spending limit (on_exceed notify): {}", json::dump(sent.notices));
   if (sent.state == llm::State::Held) {
     const auto status = json::get_string(sent.hold, "status", "unavailable");
     const Json& admitted = sent.hold["decision"];
@@ -397,10 +432,17 @@ int submit_batch_api(Database& db, const Config& cfg, const Secrets& secrets, ne
           {"receipt_id", admitted.value("receipt_id", Json(nullptr))},
           {"baseline_key", admitted.value("baseline_key", Json(nullptr))},
           {"projected", admitted.value("resources", Json::object())},
-          {"messages", batch_requests.size()}, {"body_sha256", body_sha}, {"sent", false}};
+          {"messages", batch_requests.size()}, {"body_sha256", body_sha}, {"sent", false}, {"conv_ids", conv_ids}};
+      add_limit_reasons(*usage_pending, admitted);
       mode = "awaiting_usage_confirmation";
       log::warn("loom.semantic_worker", "Batch of {} messages awaits usage confirmation (receipt {})",
                 batch_requests.size(), json::get_string(admitted, "receipt_id"));
+    } else if (status == "denied" && !usage_limit_reasons(admitted).empty()) {
+      // P18: a spending limit with on_exceed deny refuses the batch. Nothing is sent and the messages stay pending; the refusal is said (status,
+      // conversation) and asked again only after a while (the limit may have been raised or the period may have turned over).
+      usage_pending = refusal_pending(admitted, "batch", batch_requests.size(), body_sha, conv_ids, profile.values().value("limit_refusal_retry_ms", std::int64_t{600000}));
+      mode = "blocked_by_spend_limit";
+      log::warn("loom.semantic_worker", "Batch of {} messages refused by a spending limit", batch_requests.size());
     } else {
       usage_pending.reset();
       log::warn("loom.semantic_worker", "Batch not admitted: {}", status);
@@ -525,6 +567,7 @@ void SemanticWorker::stop() {
 }
 
 void SemanticWorker::wake() {
+  scan_cursor_.store(0);  // something changed the queue (import, requeue, settings): sweep from the start again
   {
     std::lock_guard lk(mu_);
     wake_ = true;
@@ -588,6 +631,24 @@ WorkerStatus SemanticWorker::status() const {
 
 Result<Json> SemanticWorker::runtime_profile() const { LOOM_TRY(profile_); return profile_->inspection(); }
 
+void SemanticWorker::announce_pending() {
+  Json pending;
+  {
+    std::lock_guard lk(mu_);
+    const std::optional<Json>& slot = usage_pending_ ? usage_pending_ : retry_pending_;
+    if (!slot) {
+      announced_receipt_.clear();  // nothing waits: the next hold is a new question
+      return;
+    }
+    const std::string receipt = json::get_string(*slot, "receipt_id");
+    if (receipt.empty() || receipt == announced_receipt_) return;
+    announced_receipt_ = receipt;
+    pending = *slot;
+    if (!pending.contains("kind")) pending["kind"] = "batch";
+  }
+  bus_.emit(events::kSemanticUsagePending, pending);
+}
+
 Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view receipt_id, std::string_view ref) {
   Json pending;
   bool is_retry = false;
@@ -608,7 +669,13 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
           Json{{"approved", true}, {"receipt_id", std::string(receipt_id)}, {"ref", std::string(ref)}};
     }
   }
+  const auto tell = [&] {  // whoever shows the question closes it (events::kSemanticUsageAnswered)
+    bus_.emit(events::kSemanticUsageAnswered, Json{{"receipt_id", std::string(receipt_id)}, {"operation_id", pending.value("operation_id", Json(nullptr))},
+                                                   {"approved", approved}, {"ref", std::string(ref)}, {"kind", is_retry ? "retry" : "batch"},
+                                                   {"conv_ids", pending.value("conv_ids", Json::array())}, {"ids", pending.value("ids", Json::array())}});
+  };
   if (approved) {
+    tell();
     wake();
     return Json{{"status", "confirmation_recorded"}, {"operation_id", pending["operation_id"]},
                 {"receipt_id", pending["receipt_id"]}, {"executes", "next drain"}};
@@ -635,9 +702,12 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
           log::warn("loom.semantic_worker", "usage_declined note not written for {}: {}", id.get<std::string>(), st.error().message);
       }
     }
-    std::lock_guard lk(mu_);
-    retry_pending_.reset();
-    retry_confirmation_.reset();
+    {
+      std::lock_guard lk(mu_);
+      retry_pending_.reset();
+      retry_confirmation_.reset();
+    }
+    tell();
     return denied;
   }
   {
@@ -646,6 +716,7 @@ Result<Json> SemanticWorker::confirm_usage(bool approved, std::string_view recei
     usage_confirmation_.reset();
   }
   pause();  // the owner declined: do not re-ask in a loop; resume() is explicit
+  tell();
   return denied;
 }
 
@@ -678,6 +749,7 @@ Status SemanticWorker::set_retry_mode(std::string_view mode) {
 }
 
 Result<Json> SemanticWorker::requeue(const Json& filter) {
+  scan_cursor_.store(0);  // requeued rows may sit before the cursor
   LOOM_TRY(profile_);
   LOOM_TRY_ASSIGN(auto f, parse_queue_filter(filter));
   const auto lease = profile_->values().at("executing_lease_ms").get<std::int64_t>();
@@ -761,8 +833,12 @@ void SemanticWorker::auto_requeue(bool reaches_provider) {
         retry_pending_.reset();  // the item set changed: an old receipt cannot authorize it
         retry_confirmation_.reset();
       }
+      if (refusal_expired(retry_pending_)) {  // P18: the refusal by a spending limit is old: ask the ledger again
+        retry_pending_.reset();
+        retry_confirmation_.reset();
+      }
       if (retry_pending_) {
-        if (!retry_confirmation_) return;  // same item set, still awaiting the owner: do not re-ask
+        if (!retry_confirmation_) return;  // same item set, still awaiting the owner (or refused by a limit): do not re-ask
         operation_id = json::get_string(*retry_pending_, "operation_id");
         confirmation = *retry_confirmation_;
       }
@@ -793,8 +869,13 @@ void SemanticWorker::auto_requeue(bool reaches_provider) {
             {"baseline_key", admitted->decision.value("baseline_key", Json(nullptr))},
             {"projected", admitted->decision.value("resources", Json::object())},
             {"messages", due.size()}, {"ids", ids}, {"body_sha256", body_sha}, {"sent", false}};
+        add_limit_reasons(*retry_pending_, admitted->decision);
         log::warn("loom.semantic_worker", "Automatic resend of {} items awaits usage confirmation (receipt {})",
                   due.size(), json::get_string(admitted->decision, "receipt_id"));
+      } else if (status == "denied" && !usage_limit_reasons(admitted->decision).empty()) {
+        retry_pending_ = refusal_pending(admitted->decision, "retry", due.size(), body_sha, ids, profile_->values().value("limit_refusal_retry_ms", std::int64_t{600000}));
+        mode_ = "blocked_by_spend_limit";
+        log::warn("loom.semantic_worker", "Automatic resend refused by a spending limit");
       } else {
         retry_pending_.reset();
         log::warn("loom.semantic_worker", "Automatic resend not admitted: {}", status);
@@ -816,7 +897,10 @@ void SemanticWorker::auto_requeue(bool reaches_provider) {
     else if (!done) log::warn("loom.semantic_worker", "Automatic requeue of {} failed: {}", item.id, done.error().message);
   }
   if (gate) gate->settle(llm::GateSettlement{true, 0, Json::object(), Json{{"messages", requeued}, {"cost_usd", declared_cost}}});
-  if (requeued) log::info("loom.semantic_worker", "Automatic retry requeued {} items", requeued);
+  if (requeued) {
+    scan_cursor_.store(0);
+    log::info("loom.semantic_worker", "Automatic retry requeued {} items", requeued);
+  }
 }
 
 Result<int> SemanticWorker::drain_once() {
@@ -824,22 +908,35 @@ Result<int> SemanticWorker::drain_once() {
   {
     // Awaiting the owner: nothing is sent, nothing is lost, no retry.
     std::lock_guard lk(mu_);
-    if (usage_pending_ && !usage_confirmation_) { mode_ = "awaiting_usage_confirmation"; return 0; }
+    if (refusal_expired(usage_pending_)) { usage_pending_.reset(); usage_confirmation_.reset(); }  // P18: ask the ledger again
+    if (usage_pending_ && !usage_confirmation_) {
+      mode_ = json::get_bool(*usage_pending_, "refused", false) ? "blocked_by_spend_limit" : "awaiting_usage_confirmation";
+      return 0;
+    }
   }
   AnalysisCapabilities caps;
   caps.llm_ready = llm_.enabled() && cfg_bool(cfg_, "semantic_analysis", true);
   // Whether this pass can reach a provider: the leading per-message mode decides.
   const AnalysisMode* lead = pick_message_mode(modes_, caps, "");
   auto_requeue(lead && lead->sends_to_provider());  // no-op in explicit_requeue mode
+  announce_pending();
   std::set<std::string> excluded;
   {
     std::lock_guard lk(mu_);
     excluded = quarantine_;
   }
-  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded);
+  // Perf (P19): resume after the last row of the previous batch, so rows that never qualify (short texts, quarantined
+  // ids) are walked once per sweep instead of on every batch; an empty sweep wraps to the start once, which also
+  // picks up requeued rows with lower rowids.
+  auto msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded, scan_cursor_.load());
+  if (msgsr && msgsr->empty() && scan_cursor_.load() > 0) {
+    scan_cursor_.store(0);
+    msgsr = db_.get_unanalysed_msgs(opts_.drain_batch, excluded, 0);
+  }
   if (!msgsr) return msgsr.error();
   auto& msgs = *msgsr;
   if (msgs.empty()) return 0;
+  for (const auto& pm : msgs) if (pm.rowid > scan_cursor_.load()) scan_cursor_.store(pm.rowid);
 
   // Resolve once before any transport or write. A malformed overlay is an
   // operation error, never a reason to silently use the built-in analyzer.
@@ -866,9 +963,11 @@ Result<int> SemanticWorker::drain_once() {
       SemanticWorker& w;
       explicit Host(SemanticWorker& worker) : w(worker) {}
       Result<int> submit_batch() override {
-        return submit_batch_api(w.db_, w.cfg_, w.secrets_, w.http_, w.mu_, w.mode_, w.batch_id_, w.batch_submitted_,
-                                w.opts_.batch_max_messages, w.opts_.batch_endpoint, *w.profile_, w.usage_pending_,
-                                w.usage_confirmation_);
+        auto done = submit_batch_api(w.db_, w.cfg_, w.secrets_, w.http_, w.mu_, w.mode_, w.batch_id_, w.batch_submitted_,
+                                     w.opts_.batch_max_messages, w.opts_.batch_endpoint, *w.profile_, w.usage_pending_,
+                                     w.usage_confirmation_);
+        w.announce_pending();
+        return done;
       }
     } host(*this);
     return bulk->run_bulk(host);

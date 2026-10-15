@@ -97,6 +97,42 @@ std::string class_label(const Engine& engine, const std::string& cls, const std:
   return cls;
 }
 
+
+// P17: whether the lead word is a verb of the sentence's language (command_shape.verbs united with verbs_extra). A language without a list
+// accepts a verb of any list: the shape check never guesses a language it has no words for.
+bool is_listed_verb(const Json& shape, const std::string& lang, const std::string& verb) {
+  const Json* lists[2] = {json::find(shape, "verbs"), json::find(shape, "verbs_extra")};
+  bool language_known = false;
+  for (const Json* l : lists)
+    if (l && l->is_object() && l->contains(lang)) language_known = true;
+  for (const Json* l : lists) {
+    if (!l || !l->is_object()) continue;
+    for (auto it = l->begin(); it != l->end(); ++it) {
+      if (language_known && it.key() != lang) continue;
+      const auto words = strings_of(&it.value());
+      if (std::find(words.begin(), words.end(), verb) != words.end()) return true;
+    }
+  }
+  return false;
+}
+
+// P17: the whitespace word that holds the idx-th word token ends with one of the label characters ("Note: ...", "Uwaga: ...").
+bool lead_is_label(const std::string& text, const Json& fold_map, std::size_t idx, const std::vector<std::string>& label_chars) {
+  if (label_chars.empty()) return false;
+  std::size_t seen = 0;
+  std::istringstream split(text);
+  for (std::string w; split >> w;) {
+    const std::size_t in_word = word_tokens(fold(w, fold_map)).size();
+    if (seen + in_word > idx) {
+      if (seen + in_word != idx + 1) return false;  // the lead is not the last token of its word ("message's")
+      std::string tail = w;
+      while (!tail.empty() && std::string("\"')]}").find(tail.back()) != std::string::npos) tail.pop_back();
+      return std::any_of(label_chars.begin(), label_chars.end(), [&](const std::string& c) { return !c.empty() && tail.size() >= c.size() && tail.compare(tail.size() - c.size(), c.size(), c) == 0; });
+    }
+    seen += in_word;
+  }
+  return false;
+}
 }  // namespace
 
 std::string preset(Runtime& rt, const Json& routing) {
@@ -124,10 +160,28 @@ std::optional<Json> from_command(const Context& c, const std::string& text, cons
   std::size_t idx = 0;
   while (idx < tokens.size() && std::find(skip.begin(), skip.end(), tokens[idx]) != skip.end()) ++idx;
   if (idx >= tokens.size() || idx > 2) return std::nullopt;
+  // P17: a subject word among the skipped ones ("you outline ...") is a statement; "can you ..." is a request.
+  const Json statement = shape.value("statement", Json::object());
+  {
+    const auto subjects = strings_of(json::find(statement, "subjects"));
+    const auto modals = strings_of(json::find(statement, "modals"));
+    for (std::size_t k = 0; k < idx; ++k)
+      if (std::find(subjects.begin(), subjects.end(), tokens[k]) != subjects.end() &&
+          (k == 0 || std::find(modals.begin(), modals.end(), tokens[k - 1]) == modals.end()))
+        return std::nullopt;
+  }
   const std::string verb = tokens[idx];
   if (utf8::length(verb) < static_cast<std::size_t>(json::get_int(shape, "min_lead_chars", 4))) return std::nullopt;
   if (std::find(not_leads.begin(), not_leads.end(), verb) != not_leads.end()) return std::nullopt;
   if (std::isdigit(static_cast<unsigned char>(verb[0])) || c.resolver.is_id(verb) || c.engine.has_class(verb)) return std::nullopt;
+  // P17: the lead is a verb of the language (the data's list), not any word ("First message of run 1" is a statement); what follows the
+  // lead does not turn the sentence into a noun phrase or a statement ("Outline of this conversation", "List is long", "Note: ...").
+  if (!is_listed_verb(shape, lang, verb)) return std::nullopt;
+  if (idx + 1 < tokens.size()) {
+    const auto after = strings_of(json::find(statement, "after_lead"));
+    if (std::find(after.begin(), after.end(), tokens[idx + 1]) != after.end()) return std::nullopt;
+  }
+  if (lead_is_label(text, fold_map, idx, strings_of(json::find(statement, "label_chars")))) return std::nullopt;
   if (!element.is_object()) return std::nullopt;
   // The element is the object of the command: named within a few words of the verb ("rozpisz tę wiadomość ..."), not somewhere in a request
   // for the model that merely mentions it ("napisz wiersz o tej rozmowie").

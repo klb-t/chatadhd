@@ -111,6 +111,12 @@ class UsagePolicy {
   // True when no compaction ran in the last `hours` (or none ever).
   Result<bool> compaction_due(double hours);
 
+  // What was spent: the measured and provider-reported resources of the operations completed in [from, to), the timestamps in the form
+  // the ledger records them ("YYYY-MM-DD HH:MM:SS", UTC). Read only. {operations, totals: {resource: sum}, models: {model: {operations,
+  // resources}}, folded_operations}. A resource nobody reported (a provider that does not say what a call cost) is absent from `totals`,
+  // never a zero; operations folded by compaction carry no time and are only counted.
+  Result<Json> spend_between(std::string_view from, std::string_view to);
+
  private:
   struct Impl;
   explicit UsagePolicy(std::unique_ptr<Impl> impl);

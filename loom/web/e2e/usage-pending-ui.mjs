@@ -15,9 +15,18 @@ const pack = JSON.parse(readFileSync(new URL("../src/onboarding/generated/conver
 const en = pack.entries.find(entry => entry.key === "presentation.chat_usage").value.locales.en;
 const RECEIPT = { status: "requires_confirmation", operation_id: "op-x10", receipt_id: "usage_r1", baseline_key: "chat.send|fixture|model",
   projected: { input_bytes: { projected: 60000, baseline: 250, ratio: 240 }, cost_usd: { projected: null, baseline: null, ratio: null } } };
+const pl = pack.entries.find(entry => entry.key === "presentation.chat_usage").value.locales.pl;
+// P18: a spending limit that asks (confirm) and one that refuses (deny) have their own reason and texts; the reason is the kernel's data, per language
+const REASON = { en: "The monthly spending limit of 20 PLN is already used up: 25.00 PLN spent so far (as the providers reported it).",
+  pl: "Limit wydatków miesięczny 20 PLN jest już wykorzystany: do tej pory wydano 25.00 PLN (wg zgłoszeń dostawców)." };
+const LIMIT_HOLD = { status: "requires_confirmation", operation_id: "op-limit", receipt_id: "usage_limit1", baseline_key: "chat.send|fixture|model",
+  projected: {}, reason_codes: ["spend_limit"], limits: [{ period: "month", on_exceed: "confirm", code: "spend_limit_already_over", reason: REASON }] };
+const LIMIT_DENY = { status: "denied", operation_id: "op-deny", receipt_id: "usage_limit2", baseline_key: "chat.send|fixture|model",
+  projected: {}, reason_codes: ["spend_limit"], limits: [{ period: "month", on_exceed: "deny", code: "spend_limit_already_over", reason: REASON }] };
+const NOTICE = { code: "spend_limit_notice", period: "month", text: { en: "Heads up: " + REASON.en, pl: "Uwaga: " + REASON.pl } };
 const groups = [], chatRequests = [], pageErrors = [];
-const complete = suiteCompletionGuard("usage-pending-ui", 3, groups);
-let mode = "pause";  // pause: answer with usage_pending unless the request carries a confirmation
+const complete = suiteCompletionGuard("usage-pending-ui", 6, groups);
+let mode = "pause";  // pause: answer with usage_pending unless the request carries a confirmation; limit_hold | limit_deny | notify (P18)
 
 const bundle = await build({ stdin: { contents: `
   import React from "react";
@@ -50,6 +59,12 @@ const server = createServer(async (request, response) => {
     const chunksOut = [{ type: "start", request_id: `request-${n}`, conv_id: "conv-1", user_message_id: `user-${n}` }];
     if (mode === "pause" && !body.usage_confirmation)
       chunksOut.push({ type: "usage_pending", conv_id: "conv-1", usage_pending: RECEIPT });
+    else if (mode === "limit_hold" && !body.usage_confirmation)
+      chunksOut.push({ type: "usage_pending", conv_id: "conv-1", usage_pending: LIMIT_HOLD });
+    else if (mode === "limit_deny")
+      chunksOut.push({ type: "usage_pending", conv_id: "conv-1", usage_pending: LIMIT_DENY });
+    else if (mode === "notify")
+      chunksOut.push({ type: "usage_notice", conv_id: "conv-1", notices: [NOTICE] }, { type: "done", conv_id: "conv-1", assistant_message_id: `assistant-${n}` });
     else if (body.usage_confirmation?.approved === false) chunksOut.push({ type: "done", conv_id: "conv-1" });
     else chunksOut.push({ type: "done", conv_id: "conv-1", assistant_message_id: `assistant-${n}` });
     for (const chunk of chunksOut) response.write(`data: ${JSON.stringify(chunk)}\n\n`);
@@ -81,7 +96,7 @@ try {
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
   page = await browser.newPage();
   page.on("pageerror", error => pageErrors.push(error.message));
-  await page.goto(base);
+  await page.goto((base).replace(/\/?$/, "/#warsztat"));
   await page.getByTestId("chat-input").waitFor();
 
   await check("a paused send shows the confirmation block: texts from data, unknown shown as unknown, text kept, no error", async () => {
@@ -123,9 +138,61 @@ try {
     assert.equal(await page.getByTestId("chat-input").inputValue(), "USAGE_X10_TEXT_2");
     assert.equal(await page.getByTestId("chat-error").count(), 0);
   });
+
+  await check("a spending limit that asks has its own block: title, the limit's reason (from the kernel's data), 'send anyway'; the answer is the same receipt flow", async () => {
+    mode = "limit_hold";
+    const before = chatRequests.length;
+    await page.getByTestId("chat-input").fill("LIMIT_HOLD_TEXT");
+    await page.getByTestId("send-chat").click();
+    await block().waitFor();
+    assert.equal(await block().getAttribute("data-reason"), "spend_limit");
+    assert.equal(await block().getAttribute("data-refused"), null);
+    const text = await block().innerText();
+    assert.ok(text.includes(en.limit_title), "the limit's own title");
+    assert.ok(!text.includes(en.title), "not the x10 title");
+    assert.deepEqual(await block().getByTestId("chat-usage-pending-reason").allInnerTexts(), [REASON.en]);
+    assert.equal(await block().getByTestId("chat-usage-pending-line").count(), 0, "no x10 lines");
+    assert.equal(await block().getByTestId("chat-usage-pending-confirm").innerText(), en.limit_confirm);
+    assert.equal(await page.getByTestId("chat-input").inputValue(), "LIMIT_HOLD_TEXT");
+    await block().getByTestId("chat-usage-pending-confirm").click();
+    await waitFor(() => chatRequests.length === before + 2, "confirmed re-send");
+    assert.deepEqual(chatRequests.at(-1).usage_confirmation, { approved: true, receipt_id: LIMIT_HOLD.receipt_id, operation_id: LIMIT_HOLD.operation_id, ref: "web" });
+    await block().waitFor({ state: "detached" });
+    assert.equal(await page.getByTestId("chat-error").count(), 0);
+  });
+
+  await check("a spending limit that refuses can only be dismissed: no confirm button, nothing sent, the reason is shown, the text stays", async () => {
+    mode = "limit_deny";
+    const before = chatRequests.length;
+    await page.getByTestId("chat-input").fill("LIMIT_DENY_TEXT");
+    await page.getByTestId("send-chat").click();
+    await block().waitFor();
+    assert.equal(chatRequests.length, before + 1);
+    assert.equal(await block().getAttribute("data-refused"), "true");
+    assert.equal(await block().getByTestId("chat-usage-pending-confirm").count(), 0, "there is nothing to confirm");
+    assert.deepEqual(await block().getByTestId("chat-usage-pending-reason").allInnerTexts(), [REASON.en]);
+    assert.ok((await block().innerText()).includes(en.limit_refused_explanation));
+    assert.equal(await block().getByTestId("chat-usage-pending-reject").innerText(), en.limit_dismiss);
+    await block().getByTestId("chat-usage-pending-reject").click();
+    await block().waitFor({ state: "detached" });
+    assert.equal(chatRequests.length, before + 1, "dismissing is local: no request");
+    assert.equal(await page.getByTestId("chat-usage-notice").innerText(), en.limit_dismissed);
+    assert.equal(await page.getByTestId("chat-input").inputValue(), "LIMIT_DENY_TEXT");
+    assert.equal(await page.getByTestId("chat-error").count(), 0);
+  });
+
+  await check("a spending limit that only tells: the send goes on and the notice is a quiet line", async () => {
+    mode = "notify";
+    await page.getByTestId("chat-input").fill("LIMIT_NOTIFY_TEXT");
+    await page.getByTestId("send-chat").click();
+    await page.getByTestId("chat-route-note").waitFor();
+    assert.deepEqual(await page.getByTestId("chat-route-note").allInnerTexts(), [NOTICE.text.en]);
+    assert.equal(await page.getByTestId("chat-error").count(), 0);
+    assert.ok(pl.limit_title && pl.limit_confirm && pl.limit_refused_explanation, "the Polish words exist");
+  });
   assert.deepEqual(pageErrors, []);
   complete.complete();
-  console.log(`[usage-pending-ui] ${groups.length}/3 groups passed`);
+  console.log(`[usage-pending-ui] ${groups.length}/6 groups passed`);
 } finally {
   await browser?.close();
   await closeHttpFixture(server);

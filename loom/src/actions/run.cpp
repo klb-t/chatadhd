@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "loom/client_devices.h"
+#include "loom/port_graph.h"
 #include "loom/util/ids.h"
 #include "loom/util/sha256.h"
 #include "loom/util/time.h"
@@ -363,6 +365,25 @@ std::string receipt_of(const Json& run, const std::string& kind, const Json& ids
                       .substr(0, 20);
 }
 
+// The receipt of what was shown: the plan and its gates, the element, the arguments and the scope. It does not depend on the run, so a
+// preview (which stores nothing) can give it and the run that follows can check it; anything that changes between the two changes the receipt.
+std::string plan_receipt_of(const Json& plan, const Json& gates, const RunRequest& request) {
+  // A gate may name keys that are numbers of the moment (`volatile`: the spend of the period): the decision is bound, not they.
+  Json stable = Json::array();
+  for (const auto& g : gates) {
+    // A gate that only tells (a spending limit at the preview, P18) binds nothing: the run that follows does not make it again.
+    if (g.is_object() && json::get_bool(g, "informational", false)) continue;
+    Json copy = g;
+    if (copy.is_object() && copy.contains("volatile")) {
+      for (const auto& k : strings_of(json::find(copy, "volatile"))) copy.erase(k);
+      copy.erase("volatile");
+    }
+    stable.push_back(std::move(copy));
+  }
+  const Json bound{{"plan", plan}, {"gates", stable}, {"element", request.element}, {"args", request.args}, {"scope", request.scope}};
+  return "arp_" + Sha256::hex(json::canonical(bound)).substr(0, 24);
+}
+
 std::set<std::string> trait_set(const Json& run) {
   std::set<std::string> out;
   for (const auto& t : strings_of(json::find(run, "element_traits"))) out.insert(t);
@@ -376,8 +397,25 @@ std::set<std::string> trait_set(const Json& run) {
 
 const Executor* ExecutorTable::find(std::string_view action, const Json& entry) const {
   if (auto it = by_action_.find(action); it != by_action_.end()) return &it->second;
+  if (client_ && !client_capability(entry).empty()) return &client_;
   if (port_ && json::find(entry, "port") && !json::get_string(entry, "port").empty()) return &port_;
   return nullptr;
+}
+
+Executor make_client_step_executor() {
+  return [](const StepCall& c) {
+    StepOutcome out;
+    if (!c.entry) {
+      out.state = StepOutcome::State::Failed;
+      out.error = Error(Errc::Internal, "a client step has no catalogue entry");
+      return out;
+    }
+    Json inputs = Json::array();
+    for (const auto& p : c.inputs) inputs.push_back(p.to_json());
+    out.state = StepOutcome::State::Client;
+    out.data = client_step_spec(*c.entry, c.run_id, c.step_id, c.with, inputs);
+    return out;
+  };
 }
 
 namespace {
@@ -463,6 +501,7 @@ Result<RunRequest> RunRequest::from_json(const Json& j) {
   }
   r.propose = json::get_bool(j, "propose", false);
   r.confirmed = json::get_bool(j, "confirmed", false);
+  r.receipt_id = json::get_string(j, "receipt_id");
   r.ref = json::get_string(j, "ref");
   return r;
 }
@@ -497,6 +536,7 @@ Result<Json> Interpreter::plan_of(const RunRequest& request) const {
   std::string previous_result;
   double cost = 0;
   std::int64_t model_calls = 0;
+  bool pipeline_model_use = false;
   Json effects = Json::object();
   for (std::size_t i = 0; i < chain_items.size(); ++i) {
     const Json& ci = chain_items[i];
@@ -536,6 +576,16 @@ Result<Json> Interpreter::plan_of(const RunRequest& request) const {
         const Json* variants = json::find(leaf, "variants");
         model_calls += variants && variants->is_array() && !variants->empty() ? static_cast<std::int64_t>(variants->size()) : 1;
       }
+      // A pipeline started from a sentence (archive, knowledge) calls the model only when the argument that decides says so (llm: auto); how many
+      // calls it makes depends on the data, so the plan says "may" and the estimate says why the cost is not known.
+      if (le)
+        if (const Json* use = json::find(*le, "model_use"); use && use->is_object()) {
+          const std::string arg = json::get_string(*use, "arg");
+          const Json said = request.args.is_object() && request.args.contains(arg) ? request.args[arg] : Json(nullptr);
+          const std::string value = said.is_string() && !said.get<std::string>().empty() ? said.get<std::string>() : json::get_string(*use, "default");
+          for (const auto& v : strings_of(json::find(*use, "values")))
+            if (v == value) pipeline_model_use = true;
+        }
       effects = add_effects(effects, le ? *le : Json::object());
     }
     if (!leaves.empty()) builder.steps[builder.steps.size() - 1]["result"] = true;
@@ -556,7 +606,7 @@ Result<Json> Interpreter::plan_of(const RunRequest& request) const {
   plan["root"] = root_label;
   plan["items"] = items;
   plan["steps"] = builder.steps;
-  plan["cost"] = Json{{"declared", std::round(cost * 1e6) / 1e6}, {"unit", "relative"}, {"model_calls", model_calls}};
+  plan["cost"] = Json{{"declared", std::round(cost * 1e6) / 1e6}, {"unit", "relative"}, {"model_calls", model_calls}, {"pipeline_model_use", pipeline_model_use}};
   plan["effects"] = effects;
   return plan;
 }
@@ -620,10 +670,47 @@ Result<Json> Interpreter::gate_plan(const Json& plan, const Json& element_json, 
   return gates;
 }
 
+namespace {
+
+// Can the condition be told before the run from the arguments alone? 1 holds, 0 does not, -1 may (it looks at steps, traits or outputs).
+int decided_by_args(const Json& cond, const Json& args) {
+  if (!cond.is_object() || cond.empty()) return 1;
+  if (const Json* c = json::find(cond, "not")) {
+    const int inner = decided_by_args(*c, args);
+    return inner < 0 ? -1 : 1 - inner;
+  }
+  auto fold = [&](const char* key, bool all) {
+    int result = all ? 1 : 0;
+    for (const auto& x : cond.at(key)) {
+      const int v = decided_by_args(x, args);
+      if (v < 0) return -1;
+      if (all && v == 0) return 0;
+      if (!all && v == 1) return 1;
+    }
+    return result;
+  };
+  if (json::find(cond, "all")) return fold("all", true);
+  if (json::find(cond, "any")) return fold("any", false);
+  if (const Json* a = json::find(cond, "arg")) {
+    const Json* given = a->is_string() ? json::find(args, a->get<std::string>()) : nullptr;
+    if (const Json* eq = json::find(cond, "equals")) return given && *given == *eq ? 1 : 0;
+    return given != nullptr && !given->is_null() ? 1 : 0;
+  }
+  return -1;
+}
+
+}  // namespace
+
+int condition_decided_by_args(const Json& when, const Json& args) { return decided_by_args(when, args); }
+
 Result<Json> Interpreter::preview(const RunRequest& request) const {
   LOOM_TRY_ASSIGN(Json plan, plan_of(request));
   LOOM_TRY_ASSIGN(auto base_traits, element_traits(request.element, request.scope));
   LOOM_TRY_ASSIGN(Json gates, gate_plan(plan, request.element, request.scope, base_traits));
+  if (deps_.extra_gates) {
+    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request, true));
+    for (auto& g : extra) gates.push_back(std::move(g));
+  }
   Json confirm = Json::array(), denied = Json::array(), not_runnable = Json::array();
   for (const auto& g : gates) {
     if (g.at("decision") == "confirm") confirm.push_back(g);
@@ -642,6 +729,8 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
   for (const auto& step : plan.at("steps")) {
     const Json* entry = json::find(catalogue, json::get_string(step, "action"));
     if (!entry) continue;
+    // A step the arguments already skip (the device picks a file only when no path was said) does not stand in the way.
+    if (const Json* when = json::find(step, "when"); when && decided_by_args(*when, request.args) == 0) continue;
     if (json::get_string(*entry, "status") != "implemented")
       not_runnable.push_back(planned(step.at("action")));
     else if (!deps_.executors || !deps_.executors->find(json::get_string(step, "action"), *entry))
@@ -655,6 +744,7 @@ Result<Json> Interpreter::preview(const RunRequest& request) const {
   out["denied"] = denied;
   out["not_runnable"] = not_runnable;
   out["runnable"] = denied.empty() && not_runnable.empty();
+  out["plan_receipt"] = plan_receipt_of(plan, gates, request);
   return out;
 }
 
@@ -679,6 +769,7 @@ namespace {
 // copy has redacted arguments and step parameters, the in-memory run keeps them until it is done.
 Json redacted(const Json& run) {
   Json copy = run;
+  copy.erase("plan_receipt");  // a hash over the values that are not kept
   if (copy.contains("request") && copy["request"].contains("args")) copy["request"]["args"] = Json{{"redacted", true}};
   if (copy.contains("plan") && copy["plan"].contains("steps"))
     for (auto& step : copy["plan"]["steps"])
@@ -734,6 +825,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     if (item.at("implementation") != "implemented") return Error(Errc::Unavailable, why_planned(item.at("action").get<std::string>()));
   for (const auto& step : plan.at("steps")) {
     const std::string action = step.at("action").get<std::string>();
+    if (const Json* when = json::find(step, "when"); when && decided_by_args(*when, request.args) == 0) continue;  // skipped by the arguments
     const Json* entry = json::find(catalogue, action);
     if (!entry || json::get_string(*entry, "status") != "implemented") return Error(Errc::Unavailable, why_planned(action));
     if (!deps_.executors || !deps_.executors->find(action, *entry))
@@ -741,6 +833,10 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
   }
 
   LOOM_TRY_ASSIGN(Json gates, gate_plan(plan, request.element, request.scope, base_traits));
+  if (deps_.extra_gates) {
+    LOOM_TRY_ASSIGN(Json extra, deps_.extra_gates(plan, request, false));
+    for (auto& g : extra) gates.push_back(std::move(g));
+  }
 
   Json run = Json::object();
   run["schema"] = std::string(kRunSchema);
@@ -754,6 +850,7 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
   req["args"] = request.args;
   req["context"] = request.context;
   run["request"] = req;
+  if (request.client.is_object()) run["client"] = request.client;
   run["element"] = request.element;
   if (const Json* attrs = json::find(request.element, "attrs"); attrs && json::get_bool(*attrs, "sensitive", false)) run["sensitive"] = true;
   run["element_traits"] = Json(std::vector<std::string>(base_traits.begin(), base_traits.end()));
@@ -777,15 +874,33 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
   if (!denied.empty()) {
     const Json& first = denied[0];
     stamp(run, "denied");
-    run["error"] = Json{{"code", "denied"}, {"message", "the rules do not allow '" + first.value("action", "") + "' here"},
+    const bool by_limit = json::get_string(first, "rule").rfind("spend_limit:", 0) == 0;
+    run["error"] = Json{{"code", "denied"},
+                        {"message", by_limit ? "your spending limit (" + json::get_string(first, "rule") + ") does not allow this run"
+                                             : "the rules do not allow '" + first.value("action", "") + "' here"},
                         {"gates", denied}};
     LOOM_TRY(persist(*deps_.store, run));
     return run;
   }
-  if (request.confirmed) {
+  const std::string plan_receipt = plan_receipt_of(plan, gates, request);
+  run["plan_receipt"] = plan_receipt;
+  bool propose = request.propose;
+  if (request.confirmed && !to_confirm.empty() && request.receipt_id != plan_receipt) {
+    // A bare confirmed:true - or the receipt of another plan - is not the yes of someone who saw this plan: the plan is proposed instead.
+    const std::string why = request.receipt_id.empty() ? "receipt_required" : "receipt_mismatch";
+    if (json::get_bool(run, "sensitive", false))
+      return Error(Errc::InvalidArgument, "a run on a credential cannot wait for an answer: its value is never stored; ask again with confirmed:true and "
+                                          "receipt_id = the plan_receipt that actions.preview gives for the same request (" + why + ")");
+    run["confirmation_refused"] = Json{{"reason", why},
+                                       {"message", why == "receipt_required" ? "confirmed:true is honoured only with the plan_receipt of a preview or proposal of this plan; "
+                                                                               "the plan is proposed instead (answer with actions.confirm and the receipt of the proposal)"
+                                                                             : "the receipt is not the receipt of this plan (it changed, or it is another plan's); "
+                                                                               "the plan is proposed instead (answer with actions.confirm and the receipt of the proposal)"}};
+    propose = true;
+  } else if (request.confirmed) {
     for (const auto& g : to_confirm) run["approved"].push_back(g.at("id"));
     run["confirmations"].push_back(Json{{"at", timeutil::utc_now_iso()}, {"ref", request.ref}, {"approved", true},
-                                        {"kind", "request"}, {"gates", run["approved"]}});
+                                        {"kind", "request"}, {"gates", run["approved"]}, {"receipt_id", request.receipt_id}});
     to_confirm = Json::array();
   }
   auto pending_of = [&](const std::string& kind, const Json& list) {
@@ -796,12 +911,14 @@ Result<Json> Interpreter::start(const RunRequest& request, const CancelToken* ca
     p["kind"] = kind;
     p["receipt_id"] = receipt_of(run, kind, ids);
     p["gates"] = list;
+    p["plan_receipt"] = plan_receipt;
     p["resume"] = "actions.confirm {run_id, approved, receipt_id, ref}";
     return p;
   };
-  if (json::get_bool(run, "sensitive", false) && (request.propose || !to_confirm.empty()))
-    return Error(Errc::InvalidArgument, "a run on a credential cannot wait for an answer: its value is never stored; ask again with confirmed:true");
-  if (request.propose) {
+  if (json::get_bool(run, "sensitive", false) && (propose || !to_confirm.empty()))
+    return Error(Errc::InvalidArgument, "a run on a credential cannot wait for an answer: its value is never stored; ask again with confirmed:true and "
+                                        "receipt_id = the plan_receipt that actions.preview gives for the same request");
+  if (propose) {
     // The user has not said yes to anything yet: whatever the rules would ask is asked together with this.
     Json all = to_confirm;
     stamp(run, "proposed");
@@ -847,6 +964,47 @@ Result<std::vector<llm::Part>> Interpreter::inputs_of(const Json& run, const Jso
   return out;
 }
 
+// The outcome of a step the client carried out, from its answer {state, parts, data, error, ref, at}. The kinds a device action
+// may bring back are its `client.expects`; nothing of those kinds, for an action that is meant to bring something, is a failure.
+static StepOutcome client_outcome(const Json& answer, const Json* entry) {
+  StepOutcome out;
+  const std::string state = json::get_string(answer, "state");
+  const Json err = answer.value("error", Json::object());
+  const std::string message = json::get_string(err, "message");
+  out.provenance = Json::array({Json{{"schema", std::string(kClientResultSchema)}, {"state", state},
+                                     {"ref", json::get_string(answer, "ref")}, {"at", json::get_string(answer, "at")}}});
+  if (state == "declined") {
+    out.state = StepOutcome::State::Declined;
+    out.error = Error(Errc::Cancelled, message.empty() ? "declined on the device" : message);
+    return out;
+  }
+  if (state == "failed" || state == "unavailable") {
+    out.state = state == "failed" ? StepOutcome::State::Failed : StepOutcome::State::Unavailable;
+    out.error = Error(state == "failed" ? Errc::Internal : Errc::Unavailable, message.empty() ? "the device could not do it (" + state + ")" : message);
+    return out;
+  }
+  auto parts = parts_from(answer.value("parts", Json::array()));
+  if (!parts) {
+    out.state = StepOutcome::State::Failed;
+    out.error = parts.error();
+    return out;
+  }
+  out.parts = std::move(*parts);
+  if (const Json* data = json::find(answer, "data"); data && !data->is_null()) out.data = *data;
+  const std::vector<std::string> expects = entry ? strings_of(json::find(entry->value("client", Json::object()), "expects")) : std::vector<std::string>();
+  bool brought = expects.empty();
+  for (const auto& p : out.parts)
+    if (contains(expects, p.kind)) brought = true;
+  if (!brought && !out.data.is_null() && contains(expects, "json")) brought = true;
+  if (!brought) {
+    out.state = StepOutcome::State::Failed;
+    out.error = Error(Errc::InvalidArgument, "the device returned nothing for '" + (entry ? json::get_string(*entry, "id") : std::string()) + "'");
+    return out;
+  }
+  out.state = StepOutcome::State::Ok;
+  return out;
+}
+
 Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelToken* cancel, const Json& usage_confirmation) {
   const Json step = run.at("plan").at("steps").at(index);
   const std::string id = step.at("id").get<std::string>();
@@ -881,7 +1039,7 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     else run["steps"].push_back(rec);
   };
 
-  if (first_variant == 0 && rec.value("status", "") != "held") {
+  if (first_variant == 0 && rec.value("status", "") != "held" && rec.value("status", "") != "awaiting_client") {
     if (const Json* when = json::find(step, "when"); when && !holds(*when, RunView{run, traits})) {
       rec["finished"] = timeutil::utc_now_iso();
       write("skipped");
@@ -956,9 +1114,20 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     call.inputs = *inputs;
     call.element = run.at("element");
     call.args = run.at("request").at("args");
+    call.lang = language_of(ctx);
+    call.context = run.at("request").value("context", Json::object());
+    call.entry = entry;
     call.cancel = cancel;
     if (j == first_variant && rec.value("status", "") == "held") call.usage_confirmation = usage_confirmation;
-    StepOutcome out = (*executor)(call);
+    // The client has answered the step it was paused on: the answer is this variant's outcome, nothing is executed again.
+    const bool answered = j == first_variant && rec.value("status", "") == "awaiting_client" && rec.contains("client_answer");
+    // Port runs made inside this step (a transcription, a model call through an adapter) belong to the run: part_of -> run:<id> (port_graph.h).
+    const port_graph::ActionRunScope scope(call.run_id);
+    StepOutcome out = answered ? client_outcome(rec.at("client_answer"), entry) : (*executor)(call);
+    if (answered) {
+      rec.erase("client_answer");
+      rec.erase("client_step");
+    }
     Json vrec = Json::object();
     vrec["label"] = label;
     switch (out.state) {
@@ -967,16 +1136,27 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
       case StepOutcome::State::Held: vrec["state"] = "held"; break;
       case StepOutcome::State::Cancelled: vrec["state"] = "cancelled"; break;
       case StepOutcome::State::Unavailable: vrec["state"] = "unavailable"; break;
+      case StepOutcome::State::Client: vrec["state"] = "client"; break;
+      case StepOutcome::State::Declined: vrec["state"] = "declined"; break;
     }
     vrec["parts"] = parts_json(out.parts);
     if (!out.data.is_null()) vrec["data"] = out.data;
     vrec["provenance"] = out.provenance;
+    // The port-run nodes this step made (ActionRunScope); the run node is linked to exactly these when it is written (result.cpp).
+    if (!scope.recorded_nodes().empty()) vrec["port_run_nodes"] = scope.recorded_nodes();
     if (out.error) vrec["error"] = error_json(*out.error);
     if (out.state == StepOutcome::State::Held) {
       rec["next_variant"] = j;
       rec["hold"] = out.hold;
       rec["pending_variant"] = vrec;
       write("held");
+      return rec;
+    }
+    if (out.state == StepOutcome::State::Client) {
+      // The client carries this step out; the run waits for client_result (a durable pause, like the others).
+      rec["next_variant"] = j;
+      rec["client_step"] = out.data;
+      write("awaiting_client");
       return rec;
     }
     rec.erase("hold");
@@ -986,6 +1166,12 @@ Result<Json> Interpreter::run_step(Json& run, std::size_t index, const CancelTok
     if (out.state == StepOutcome::State::Cancelled) {
       rec["finished"] = timeutil::utc_now_iso();
       write("cancelled");
+      return rec;
+    }
+    if (out.state == StepOutcome::State::Declined) {
+      rec["finished"] = timeutil::utc_now_iso();
+      rec["error"] = error_json(*out.error);
+      write("declined");
       return rec;
     }
     if (out.state == StepOutcome::State::Ok) any_ok = true;
@@ -1027,7 +1213,7 @@ Result<Json> Interpreter::drive(Json run, const CancelToken* cancel, const Json&
     resumed = true;
     LOOM_TRY_ASSIGN(Json rec, run_step(run, index, cancel, confirmation));
     const std::string status = rec.value("status", "");
-    if (deps_.on_step && status != "held") deps_.on_step(rec);
+    if (deps_.on_step && status != "held" && status != "awaiting_client") deps_.on_step(rec);
     if (status == "held") {
       const Json hold = rec.value("hold", Json::object());
       Json ids = Json::array({steps[index].at("id")});
@@ -1042,6 +1228,26 @@ Result<Json> Interpreter::drive(Json run, const CancelToken* cancel, const Json&
       p["resume"] = "actions.confirm {run_id, approved, receipt_id, ref}";
       run["pending"] = p;
       LOOM_TRY(checkpoint("awaiting_usage"));
+      return run;
+    }
+    if (status == "awaiting_client") {
+      const Json spec = rec.value("client_step", Json::object());
+      Json p = Json::object();
+      p["schema"] = std::string(kPendingSchema);
+      p["kind"] = "client_step";
+      p["step"] = steps[index].at("id");
+      p["action"] = steps[index].at("action");
+      p["receipt_id"] = receipt_of(run, "client_step", Json::array({steps[index].at("id")}));
+      p["client_step"] = spec;
+      p["resume"] = "actions.client_result {run_id, receipt_id, state, parts?, data?, error?, ref}";
+      run["pending"] = p;
+      LOOM_TRY(checkpoint("awaiting_client"));
+      return run;
+    }
+    if (status == "declined") {
+      run["pending"] = nullptr;
+      run["error"] = Json{{"code", "declined"}, {"message", "declined on the device; later steps did not run"}, {"step", steps[index].at("id")}};
+      LOOM_TRY(checkpoint("rejected"));
       return run;
     }
     if (status == "cancelled") {
@@ -1173,6 +1379,36 @@ Result<Json> Interpreter::confirm(std::string_view run_id, const Json& answer, c
   for (const auto& g : run.at("gates"))
     if (g.value("decision", "") == "confirm" && std::find(run["approved"].begin(), run["approved"].end(), g.at("id")) == run["approved"].end())
       run["approved"].push_back(g.at("id"));
+  run["pending"] = nullptr;
+  stamp(run, "running");
+  LOOM_TRY(persist(*deps_.store, run));
+  return drive(std::move(run), cancel, Json::object());
+}
+
+Result<Json> Interpreter::client_result(std::string_view run_id, const Json& answer, const CancelToken* cancel) {
+  if (!answer.is_object()) return Error(Errc::InvalidArgument, "the answer must be an object {receipt_id, state, parts?, data?, error?, ref?}");
+  Claim claim(*this, run_id);
+  if (!claim.held) return Error(Errc::Busy, "run '" + std::string(run_id) + "' is executing right now");
+  LOOM_TRY_ASSIGN(Json run, get(run_id));
+  const std::string status = json::get_string(run, "status");
+  if (status != "awaiting_client")
+    return Error(Errc::Conflict, "run '" + std::string(run_id) + "' is " + status + "; no client step is waiting for an answer");
+  const Json pending = run.value("pending", Json(nullptr));
+  if (!pending.is_object() || json::get_string(pending, "kind") != "client_step") return Error(Errc::Conflict, "run has no pending client step");
+  const std::string receipt = json::get_string(answer, "receipt_id");
+  if (receipt.empty()) return Error(Errc::InvalidArgument, "receipt_id is required (see pending.receipt_id)");
+  if (receipt != json::get_string(pending, "receipt_id")) return Error(Errc::Conflict, "receipt_id does not match the pending client step of this run");
+  const std::string state = json::get_string(answer, "state");
+  if (state != "ok" && state != "failed" && state != "declined" && state != "unavailable")
+    return Error(Errc::InvalidArgument, "state must be ok, failed, declined or unavailable");
+  const std::size_t index = static_cast<std::size_t>(json::get_int(run, "cursor", 0));
+  if (index >= run.at("steps").size()) return Error(Errc::Internal, "the run has no step record for the pending client step");
+  Json stored = answer;
+  stored.erase("receipt_id");
+  stored["at"] = timeutil::utc_now_iso();
+  run["steps"][index]["client_answer"] = stored;
+  run["confirmations"].push_back(Json{{"at", timeutil::utc_now_iso()}, {"ref", json::get_string(answer, "ref")}, {"approved", state != "declined"},
+                                      {"kind", "client_step"}, {"receipt_id", receipt}, {"state", state}});
   run["pending"] = nullptr;
   stamp(run, "running");
   LOOM_TRY(persist(*deps_.store, run));

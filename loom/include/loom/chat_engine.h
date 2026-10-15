@@ -111,6 +111,16 @@ struct ChatOptions {
   // the proposal is not part of what the model reads, so the request is that of an ordinary message. Not a wire
   // field (from_json never sets it); empty = nothing is left out.
   std::vector<std::string> history_skip;
+  // Message id -> the text sent in its place (a lossy level of the guardian's representation, chosen by the context selector). Not a wire
+  // field; empty = every message is sent as it is.
+  std::map<std::string, std::string> history_text;
+  // Standing rules about the person (the guardian's, normalized text only, allowed by the scope chain for this conversation); sent as one system message after the
+  // system prompt. Not a wire field; empty = nothing is added.
+  std::string guardian_rules;
+  // The flow of this request (profile guardian, context_io.flows): how the selection is rendered for the model and in which form the answer is
+  // asked for and taken back. Wire field "flow". Unset: the scope chain (setting chat_flow), else the flow of the model's class (preset plain =
+  // chat turns in, text out, request bytes unchanged).
+  std::optional<std::string> flow;
   // The proposal message whose offer to send the rejected sentence as a message the user takes (chat request field
   // send_as_message; chat_route.h). The conversation window reads it; the engine ignores it.
   std::string send_as_message;
@@ -145,6 +155,9 @@ struct ChatResult {
   // Set when the shared usage guard paused the send (requires_confirmation or
   // an answered rejection). Nothing was sent; no assistant message exists.
   std::optional<Json> usage_pending;
+  // P18: what the usage ledger only told while admitting the send (a spending limit with on_exceed notify): [{code, period, text: {lang: text}}].
+  // Also kept in the assistant message's metadata (usage_notices). Null when there was nothing to tell.
+  Json usage_notices = nullptr;
   Json to_json() const;
 };
 
@@ -180,6 +193,14 @@ class ChatEngine {
   // Read-only usage preview of a would-be send: compiles the same request body
   // without persisting anything or contacting the provider, and asks the shared
   // UsagePolicy for its decision (nothing reserved or recorded).
+  // The selector's output for a conversation as a graph selection (loom.context_graph/1): every message and graph link with its source id, place and
+  // whole row, the text as the selector chose it (representation, thread filter). It is read from the graph only. `exclude_message_id` leaves out the
+  // message of the turn being sent.
+  Result<Json> context_selection(std::string_view conv_id, const ChatOptions& opts = {}, std::string_view exclude_message_id = {});
+  // The inverse: the output of the selector (or any packet of that schema) is embedded in the graph where it came from. A selection taken from the
+  // graph changes nothing in it; only elements without a source are added, with provenance. Returns {unchanged, created_nodes, created_links, orphans, conflicts}.
+  Result<Json> embed_selection(std::string_view conv_id, const Json& selection);
+
   Result<Json> preview_usage(std::string_view text, const ChatOptions& opts = {});
 
  private:
@@ -192,6 +213,9 @@ class ChatEngine {
   MemoryEngine* memory_;
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
+  // The context selector's choice for a conversation among the representations the guardian keeps beside the raw messages
+  // (setting chat_representation, preset raw = `in` unchanged, byte for byte). Never fails a send: what cannot be used stays raw.
+  ChatOptions select_representation(const ChatOptions& in, const std::string& conv_id);
   // Temporary projection-repair exemptions while send() is running. Protected
   // by db_.lock(); durable acceptance authority lives in EventLog.
   std::map<std::string, Json> active_task_in_flight_;

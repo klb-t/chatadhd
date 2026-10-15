@@ -14,6 +14,11 @@ export default function ActionProposalBlock({ feature, answer, busy, failure, on
     <div className="pill warn" role="group" data-testid={testId} aria-live="polite"
       data-run-id={answer.runId} data-receipt-id={answer.receiptId} data-kind={answer.kind}>
       <strong>{texts.title ?? answer.kind}</strong>
+      {texts.guardianClaim && <p data-testid={testId + "-guardian-claim"}>{texts.guardianClaim}</p>}
+      {texts.guardianScope && <p data-testid={testId + "-guardian-scope"}>{texts.guardianScope}</p>}
+      {texts.guardianExceptions && <p data-testid={testId + "-guardian-exceptions"}>{texts.guardianExceptions}</p>}
+      {texts.guardianInstruction && <p data-testid={testId + "-guardian-instruction"}>{texts.guardianInstruction}</p>}
+      {texts.guardianNote && <p data-testid={testId + "-guardian-note"}>{texts.guardianNote}</p>}
       {texts.definition && <p data-testid={testId + "-definition"}>{texts.definition}</p>}
       {texts.args && <p data-testid={testId + "-args"}>{texts.args}</p>}
       {texts.argsOpen && <p data-testid={testId + "-args-open"}>{texts.argsOpen}</p>}

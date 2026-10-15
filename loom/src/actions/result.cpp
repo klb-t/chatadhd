@@ -8,6 +8,7 @@
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
+#include "loom/port_graph.h"
 #include "loom/provenance.h"
 #include "loom/util/sha256.h"
 #include "loom/util/utf8.h"
@@ -31,6 +32,7 @@ struct Item {
   std::string preview;
   std::string form;        // node id (or message id) the item became
   std::string message_id;
+  bool kept = false;       // the output of a step whose action keeps it (keeps_output: a recording, a picture) though a later step goes on from it
 };
 
 Json ref_of(const Item& it) {
@@ -116,6 +118,16 @@ std::string content_op_of(const Engine* engine, const Json& run) {
   return entry ? json::get_string(*entry, "content_op", "none") : std::string();
 }
 
+// An answer to a question (the list of conversations, a spend report, what can be done here) is said in the conversation and is
+// not content: an action that declares `stores_result: false` leaves no form or content node behind.
+bool stores_result(const Engine* engine, const Json& run) {
+  if (!engine) return true;
+  const Json items = run.value("plan", Json::object()).value("items", Json::array());
+  if (items.empty()) return true;
+  const Json* entry = json::find(engine->catalogue(), items[items.size() - 1].value("action", ""));
+  return !entry || json::get_bool(*entry, "stores_result", true);
+}
+
 Json fidelity_of(const Json& profile, const std::string& content_op) {
   const Json* table = json::find(profile, "fidelity");
   if (table && !content_op.empty())
@@ -182,6 +194,7 @@ Result<std::string> part_text(BlobStore* blobs, const Json& part) {
 Status store_run_results(const ResultServices& s, Json& run) {
   if (!s.profile.is_object() || json::get_bool(run, "sensitive", false)) return {};
   if (!run.contains("result") || !run["result"].is_object()) return {};
+  if (!stores_result(s.engine, run)) return {};
   const Json& profile = s.profile;
   const Json by_part = profile.value("classes", Json::object()).value("by_part", Json::object());
   const std::int64_t inline_max = [&] {
@@ -197,7 +210,7 @@ Status store_run_results(const ResultServices& s, Json& run) {
 
   // 1. The parts of the result (or of every step) that are worth storing.
   std::vector<Item> items;
-  auto gather = [&](const std::string& step, const Json& parts) {
+  auto gather = [&](const std::string& step, const Json& parts, bool kept = false) {
     std::size_t index = 0;
     for (const auto& p : parts) {
       const std::size_t at = index++;
@@ -205,6 +218,7 @@ Status store_run_results(const ResultServices& s, Json& run) {
       const std::string cls = json::get_string(by_part, kind);
       if (cls.empty()) continue;
       Item it;
+      it.kept = kept;
       it.step = step;
       it.index = at;
       it.kind = kind;
@@ -230,6 +244,15 @@ Status store_run_results(const ResultServices& s, Json& run) {
     for (const auto& rec : run.value("steps", Json::array()))
       if (rec.value("status", "") == "ok") gather(rec.value("id", ""), rec.value("outputs", Json::array()));
   } else {
+    // What a device brought (a recording, a picture, a picked file) is original material: it is kept as a form of its own though
+    // a later step (transcribe, ocr) goes on from it and the result of the run is something else. Its forms come first.
+    if (s.engine)
+      for (const auto& rec : run.value("steps", Json::array())) {
+        const std::string step = rec.value("id", "");
+        if (rec.value("status", "") != "ok" || step == json::get_string(result, "from")) continue;
+        const Json* entry = json::find(s.engine->catalogue(), rec.value("action", ""));
+        if (entry && json::get_bool(*entry, "keeps_output", false)) gather(step, rec.value("outputs", Json::array()), true);
+      }
     gather(json::get_string(result, "from"), result.value("parts", Json::array()));
   }
 
@@ -325,6 +348,16 @@ Status store_run_results(const ResultServices& s, Json& run) {
     // single source: its content is the group's own, and every member is something the result is derived from.
     auto source_node = [&](const Json& el) {
       std::string id = json::get_string(el, "id");
+      if (json::get_string(el, "source") == "device" && !id.empty()) {
+        // A device (device:microphone ...) is a node of its class: what it captured is derived from it.
+        NodeOptions o;
+        o.tags = Json::array({"device"});
+        o.metadata = Json{{"device", id}, {"origin", "action_result"}};
+        auto made = db.get_or_create_node(id, json::get_string(el, "class", "device"), o);
+        if (made) return *made;
+        issue("source_device_node", made.error().message);
+        return id;
+      }
       if (json::get_string(el, "source") == "blob" && !id.empty()) {
         const Json attrs = el.value("attrs", Json::object());
         std::string node = json::get_string(attrs, "node_id");
@@ -340,6 +373,8 @@ Status store_run_results(const ResultServices& s, Json& run) {
       return id;
     };
     const bool grouped = json::get_string(element, "source") == "group";
+    // What a device captured is a content of its own for each run (every recording differs); the device is only where it came from.
+    const bool from_device = json::get_string(element, "source") == "device";
     std::vector<std::string> sources;
     if (grouped) {
       for (const auto& m : element.value("members", Json::array()))
@@ -356,7 +391,7 @@ Status store_run_results(const ResultServices& s, Json& run) {
 
     // The content node: one per source element (per set of them, for a group), reused by every later run, never rewritten.
     const std::string content_kind = json::get_string(classes, "content", "content");
-    const std::string content_label = "content:" + (grouped ? (sources.empty() ? run_id : joined("+")) : (source.empty() ? run_id : source));
+    const std::string content_label = "content:" + (grouped ? (sources.empty() ? run_id : joined("+")) : (source.empty() || from_device ? run_id : source));
     std::string content_id;
     bool content_reused = false;
     {
@@ -382,7 +417,7 @@ Status store_run_results(const ResultServices& s, Json& run) {
     if (grouped) produced["sources"] = sources;
 
     // The source is a form of that content as well (fidelity 1): a search for the content finds it in every form.
-    if (!content_id.empty() && !source.empty()) {
+    if (!content_id.empty() && !source.empty() && !from_device) {
       auto have = link_exists(db, source, content_id, link_type("expresses"));
       if (have && !*have) {
         auto made = db.create_link(source, content_id, link_type("expresses"), 1.0,
@@ -405,6 +440,19 @@ Status store_run_results(const ResultServices& s, Json& run) {
       else issue("run_node", made.error().message);
     }
     produced["run_node"] = run_node.empty() ? Json(nullptr) : Json(run_node);
+    // The port runs the steps made were written before this node existed: they name the run, and are linked to it now (port_graph.h).
+    // Each step recorded the node ids of its own port runs (ActionRunScope::recorded_nodes(), run.cpp), so only those nodes and the run
+    // node are read: no label or table scan, whatever the size of the history.
+    if (!run_node.empty()) {
+      std::vector<std::string> port_runs;
+      for (const auto& rec : run.value("steps", Json::array()))
+        for (const auto& v : rec.value("variants", Json::array()))
+          for (const auto& id : v.value("port_run_nodes", Json::array()))
+            if (id.is_string() && std::find(port_runs.begin(), port_runs.end(), id.get<std::string>()) == port_runs.end())
+              port_runs.push_back(id.get<std::string>());
+      if (!port_runs.empty())
+        if (auto linked = port_graph::reconcile_action_run(db, run_id, port_runs); !linked) issue("port_run_links", linked.error().message);
+    }
 
     // The conversation a message goes to.
     const std::string conv_id = [&] {
@@ -503,7 +551,15 @@ Status store_run_results(const ResultServices& s, Json& run) {
         auto made = db.create_link(form, blob_node, link_type("stored_as"), 1.0, Json{{"blob_hash", it.blob_hash}, {"mime", it.mime}});
         if (!made) issue("stored_link", made.error().message);
       }
+      // The result goes on from what a device brought (the transcript of the recording): derived from that form as well.
+      if (!it.kept)
+        for (const auto& earlier : items) {
+          if (!earlier.kept || earlier.form.empty()) continue;
+          auto made = db.create_link(form, earlier.form, link_type("derived_from"), 1.0, Json{{"run_id", run_id}, {"action", action_id}, {"from_step", earlier.step}});
+          if (!made) issue("derived_link", made.error().message);
+        }
       Json row{{"part", it.index}, {"step", it.step}, {"kind", it.kind}, {"class", it.cls}, {"form", form}};
+      if (it.kept) row["kept"] = true;
       if (!it.message_id.empty()) row["message_id"] = it.message_id;
       if (!it.blob_hash.empty()) row["blob_hash"] = it.blob_hash;
       if (!blob_node.empty()) row["blob_node"] = blob_node;

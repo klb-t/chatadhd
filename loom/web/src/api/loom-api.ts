@@ -64,9 +64,11 @@ export type Unsubscribe = () => void;
 
 export interface NativeUiRequestOptions { signal?: AbortSignal; }
 
-/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `confirmed` is the user's
- *  explicit yes to exactly this write (the rules of the scope still apply, a deny is never overridden). */
-export interface OverlayWriteOptions { dry_run?: boolean; confirmed?: boolean; ref?: string; context?: Record<string, unknown> }
+/** Options every write of the user's own rules and definitions takes: `dry_run` validates and writes nothing; `propose` stores the write as a
+ *  proposal with its receipt and executes nothing (the answer is `actions.confirm` with that receipt); `confirmed` is the user's explicit yes to
+ *  exactly this write and is honoured only with `receipt_id` = the `plan_receipt` of a proposal of the same write - a bare `confirmed: true` is
+ *  only a proposal (the rules of the scope still apply, a deny is never overridden). */
+export interface OverlayWriteOptions { dry_run?: boolean; propose?: boolean; confirmed?: boolean; receipt_id?: string; ref?: string; context?: Record<string, unknown> }
 /** A scoped rule or value (rules.set): written only to the user's overlay profiles/action_rules.pack. */
 export interface RuleRequest extends OverlayWriteOptions {
   scope?: string; scope_id?: string; effect?: string; key?: string; value?: unknown; action?: string;
@@ -87,8 +89,55 @@ export interface DefineGroupRequest extends OverlayWriteOptions {
 /** Takes one of the user's own definitions back out of the overlay (actions.remove, groups.remove). */
 export interface RemoveRequest extends OverlayWriteOptions { id: string }
 
+/** What a client says about itself and the devices it can drive right now (client.declare). A capability is a name the catalogue's
+ *  device actions need (captures_audio, plays_audio, shows_notifications, clipboard_read ...), with its permission state
+ *  (granted | prompt | denied) and how the client does it. */
+export interface ClientDeclareRequest {
+  client_id?: string;
+  client?: { kind?: string; platform?: string; label?: string };
+  capabilities: Record<string, string | { permission: string; via?: string; detail?: string }>;
+}
+export interface ClientDeclaration {
+  client_id: string;
+  capabilities: Record<string, { permission: string; runnable: boolean; actions: string[]; via?: string }>;
+  runnable_actions: string[];
+  refused: Record<string, string>;
+  [key: string]: unknown;
+}
+/** The answer of a client to the step a run is paused on (actions.client_result). Media name a blob that was uploaded before
+ *  (`clientBlobUpload`); bytes never travel inside this JSON. */
+export interface ClientResultPart { kind: string; mime?: string; blob_hash?: string; text?: string; name?: string; value?: unknown }
+/** A blob the kernel keeps for this user. */
+export interface ClientBlob { hash: string; size: number; mime: string }
+export interface ClientResult {
+  run_id: string;
+  receipt_id: string;
+  state: "ok" | "failed" | "declined" | "unavailable";
+  parts?: ClientResultPart[];
+  data?: unknown;
+  error?: { code?: string; message: string };
+  ref?: string;
+}
+
+/** The agent (agent.run): a model that uses the actions of the catalogue. A run that stopped on proposals is resumed with the user's answers. */
+export interface AgentApi {
+  run(request: Record<string, unknown>): Promise<Record<string, unknown>>;
+}
+
 /** Running actions (R54): the same actions the chat window proposes, reachable without it. */
 export interface ActionsApi {
+  /** The kind of client this transport is (web page, Android shell): what client.declare says about it. */
+  readonly clientKind?: string;
+  /** Declare the devices this client can drive; the kernel keeps it for this client only (device actions become runnable for it). */
+  clientDeclare?(request: ClientDeclareRequest): Promise<ClientDeclaration>;
+  clientCapabilities?(request: { client_id?: string }): Promise<Record<string, unknown>>;
+  /** Answer the client step a run is paused on; the run continues with the next step. */
+  clientResult?(result: ClientResult): Promise<ActionRun>;
+  /** Hands bytes to the kernel (a recording, a picture, a file): streamed to disk on the web, in bounded chunks on the native shell; the
+   *  answer names the blob by its hash. */
+  clientBlobUpload?(blob: Blob, options?: { name?: string }): Promise<ClientBlob>;
+  /** The bytes of a stored blob of this user (a recording to play). */
+  clientBlobFetch?(hash: string): Promise<Blob>;
   run(request: Record<string, unknown>): Promise<ActionRun>;
   /** Answer the question a run is paused on; the receipt must be the pending one. */
   confirm(answer: ActionAnswer): Promise<ActionRun>;
@@ -119,6 +168,7 @@ export interface LoomApi {
   readonly operations?: import("./operations").OperationsApi;
   // Additive capability (loom_invoke ports actions and chat); older hosts leave it unavailable.
   readonly actions?: ActionsApi;
+  readonly agent?: AgentApi;
   // Additive capability; older embedded hosts can leave it unavailable.
   readonly knowledge?: KnowledgeApi;
   // Optional: older native embedded hosts do not dispatch this ABI yet.
@@ -167,9 +217,18 @@ export interface LoomApi {
   getNodes(filter?: { kind?: string; label?: string; limit?: number }): Promise<GraphNode[]>;
   getEdges(filter?: { node_id?: string; link_type?: string; limit?: number }): Promise<GraphEdge[]>;
   expandGraph(seedIds: string[], depth: number): Promise<GraphData>;
-  getGraphData(convId?: string): Promise<GraphData>;
+  getGraphData(convId?: string, page?: import("./types").GraphDataPage): Promise<GraphData>;
   getGraphEntry(options?: GraphEntryOptions): Promise<GraphEntryView>;
   reindexGraph(convId?: string): Promise<{ reindexed: number }>;
+  /** P24 views: the perspectives, several rendered side by side, and where a setting's value comes from. */
+  listPerspectives(): Promise<import("./graph-views").PerspectivesList>;
+  renderPerspectives(request: import("./graph-views").PerspectiveRequest): Promise<import("./graph-views").PerspectivesSideBySide>;
+  resolveScope(request: import("./graph-views").ScopeResolveRequest): Promise<import("./graph-views").ScopeResolution>;
+  /** P28 visualization engine: the view declarations, and one evaluated around a focus node into a layout-independent view model. */
+  listViewDeclarations(): Promise<import("./view-model").ViewEngineList>;
+  evaluateView(request: import("./view-model").ViewModelRequest): Promise<import("./view-model").ViewModel>;
+  /** P28 step 2: the effective input bindings of a device (empty = every device). */
+  getInteractionBindings(device?: string): Promise<import("./view-model").InteractionBindings>;
   selectContext(req: ContextSelectRequest): Promise<ContextSet>;
 
   // Semantic worker

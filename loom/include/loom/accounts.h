@@ -9,6 +9,7 @@
 #pragma once
 
 #include <cstdint>
+#include <condition_variable>
 #include <filesystem>
 #include <map>
 #include <memory>
@@ -38,6 +39,16 @@ struct Throttle {
   ThrottleLimit per_login, per_ip;
 };
 
+// Isolation between accounts (R18). See the server_accounts profile for each field.
+struct Isolation {
+  bool confine_paths = true, block_private_hosts = true, csrf_check_origin = true, expose_server_logs = false;
+  std::vector<std::string> path_roots, allow_private_hosts, csrf_allowed_origins;
+  // Operator ceilings over the account's own config.json (more restrictive wins); 0 = none.
+  std::int64_t zip_max_total_bytes = 0;
+  double zip_max_ratio = 0;
+  bool git_allow_repo_config = false;
+};
+
 struct Settings {
   std::string registration;  // open | invite | closed
   std::int64_t session_lifetime_seconds = 0;
@@ -49,6 +60,10 @@ struct Settings {
   std::string accounts_file, users_subdir;
   CookieSettings cookie;
   Throttle throttle;
+  Isolation isolation;
+  // R20: bound on simultaneous Argon2id evaluations (each holds its full memory). -1 = CPU count, 0 = unlimited.
+  std::int64_t hash_max_concurrent = -1, hash_wait_seconds = 5;
+  std::int64_t login_max_length = 128;  // R20: characters; 0 = no limit
 };
 
 // Effective server_accounts profile (+ <root>/profiles overlay) and the named Argon2id preset.
@@ -79,6 +94,8 @@ class AccountStore {
   Result<std::vector<User>> list_users();
   Result<std::int64_t> user_count();
   // Errc::Auth for an unknown login, a wrong password or a disabled account (one message for all three).
+  // True when the login exceeds settings().login_max_length characters (0 = no limit).
+  bool login_too_long(const std::string& login) const;
   Result<User> verify_password(const std::string& login, const std::string& password);
   Status set_password(const std::string& login, const std::string& password);
   // Disabling also revokes every session of the user.
@@ -102,13 +119,18 @@ class AccountStore {
 
  private:
   AccountStore() = default;
-  Result<std::string> hash_password(const std::string& password) const;
+  Result<std::string> hash_password(const std::string& password);
   Status check_password_policy(const std::string& password) const;
 
   std::filesystem::path root_;
   Settings settings_;
   sql::Connection db_;
   std::mutex mu_;
+  // Slots for Argon2id evaluations (settings_.hash_max_concurrent); see HashSlot in accounts.cpp.
+  std::mutex hash_mu_;
+  std::condition_variable hash_cv_;
+  std::int64_t hash_active_ = 0;
+  friend class HashSlot;
   struct Fails { std::int64_t count = 0, last = 0; };
   std::mutex tmu_;
   std::map<std::string, Fails> login_fails_, ip_fails_;
