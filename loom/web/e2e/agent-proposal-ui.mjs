@@ -29,7 +29,11 @@ const bundle = await build({ stdin: { contents: `
   import React from "react";
   import { createRoot } from "react-dom/client";
   import ChatView from "./src/components/ChatView";
-  createRoot(document.getElementById("root")).render(<ChatView convId="conv-1" onConversationCreated={() => {}} />);
+  import { ShellText, shellTranslator } from "./src/shell/text";
+  import pack from "./src/onboarding/generated/conversation-view.json";
+  const locales = pack.entries.find(entry => entry.key === "presentation.ui_shell").value.locales;
+  const feature = { locale: "en", catalog: locales.en, locales };
+  createRoot(document.getElementById("root")).render(<ShellText.Provider value={shellTranslator(feature, "en")}><ChatView convId="conv-1" onConversationCreated={() => {}} /></ShellText.Provider>);
 `, resolveDir: root, loader: "tsx" }, bundle: true, write: false, format: "iife", platform: "browser",
   outfile: "/tmp/loom-agent-proposal-ui.js", jsx: "automatic", loader: { ".json": "json" } });
 const js = bundle.outputFiles.find(file => file.path.endsWith(".js")).text;
@@ -77,6 +81,8 @@ try {
   browser = await chromium.launch({ headless: true, ...(executablePath ? { executablePath } : {}) });
   page = await browser.newPage();
   page.on("pageerror", error => pageErrors.push(error.message));
+  page.on("console", m => { if (process.env.DEBUG_E2E) console.log("[console]", m.text()); });
+  page.on("pageerror", error => { if (process.env.DEBUG_E2E) console.log("[pageerror]", error.message); });
   await page.goto(base.replace(/\/?$/, "/#warsztat"));
   await block().waitFor();
 
