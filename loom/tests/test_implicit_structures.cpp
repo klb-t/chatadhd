@@ -178,6 +178,30 @@ TEST_SUITE("implicit_structures") {
     CHECK(recognized(matches)->instance.recognition["pack_hash"] == hypotheses->hash());
   }
 
+  TEST_CASE("qualifier comparison preserves numeric representations and ignores object key order") {
+    struct Case { Json allowed; Json actual; bool matches; };
+    const std::vector<Case> cases{
+        {Json(1), Json(1), true},
+        {Json(1), Json::parse("1"), true},
+        {Json(1), Json(1.0), false},
+        {Json(1), Json(true), false},
+        {Json(1), Json("1"), false},
+        {Json::parse("9007199254740993"), Json(9007199254740992.0), false},
+        {Json{{"a", 1}, {"b", 2}}, Json{{"b", 2}, {"a", 1}}, true},
+        {Json::array({"1", 1}), Json::array({1, "1"}), false},
+        {Json(-0.0), Json(0.0), false}};
+    for (const auto& test : cases) {
+      auto pack = configured([&](Json& op) {
+        op["claim_qualifiers"]["filter_probe"] = Json{{"allow_missing", false}, {"values", Json::array({test.allowed})}};
+      });
+      auto ev = evidence(messages());
+      for (auto& claim : ev.claims) claim.qualifiers.extra["filter_probe"] = test.actual;
+      INFO("allowed=", test.allowed.dump(), " actual=", test.actual.dump());
+      const auto matches = unwrap(generalize::ParadigmMatcher(pack).match_projects(ev));
+      CHECK((recognized(matches) != nullptr) == test.matches);
+    }
+  }
+
   TEST_CASE("incoming expansion and all distinct bindings use the same generic matcher") {
     auto incoming = configured([](Json& op) {
       for (int i : {0, 1}) {

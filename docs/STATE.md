@@ -1,5 +1,11 @@
 # STATE — ChatADHD / Loom
 
+> B, 2026-10-15 UTC: follow-up kanonizacji kwalifikatorów jest obecnie WIP;
+> cztery reprodukcje wykazały błąd równości JSON. Generalizer 4 / pipeline 10
+> wymagają nowych bramek. Wyniki pełnego dev poniżej dotyczą poprzedniego kodu.
+> Aktualny punkt wznowienia: [raport](reports/implicit-structures-2026-10-14.md).
+
+
 ## 2026-10-15 — B: osobna gałąź rozpoznawania struktur
 
 `gpt/implicit-structures-2026-10-14`, kod `298b429b`, test modelu packa

@@ -67,7 +67,7 @@ struct StageContext;
 
 namespace generalize {
 
-inline constexpr std::string_view kGeneralizerVersion = "3";
+inline constexpr std::string_view kGeneralizerVersion = "4";
 
 // A read-only view of one run's epistemic state (what every function works on).
 struct Evidence {

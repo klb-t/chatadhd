@@ -1,5 +1,22 @@
 # Unnamed structures and multiple perspectives — 2026-10-14
 
+## Active follow-up — canonical qualifier comparison, validation pending
+
+Four red assertions in `comparison-before/` prove that ordered JSON equality
+coerces integer/float values (including distinct large integers), distinguishes
+object key insertion order, and merges signed floating zero. The generic
+qualifier filter now reuses the existing `json::canonical` contract: object keys
+are canonicalized, arrays retain order, and numeric representations remain
+exact. No fields are dropped or strings converted to numbers. Generalizer 4 /
+pipeline 10 prevent replaying the earlier comparison under an unchanged run ID.
+
+This checkpoint is **not a verified increment yet**. The successful full dev
+below is historical for the preceding code. The v3 ASan build was interrupted
+at step 229/408 before tests; its log remains `build-asan-interrupted-v3.log`.
+Next: rebuild dev, execute the comparison and downstream scope, then refresh
+full dev/ASan/Clang/web gates. Generated data and C/D/E-owned modules are unchanged.
+
+
 ## Current checkpoint — full dev verified, 2026-10-15 UTC
 
 Published product: `79187377` (project-kind alternatives / transfer evidence),

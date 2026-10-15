@@ -43,6 +43,16 @@ Result<Json> match_relation_pattern(const Index& ix, const model::Entity& subjec
     return std::find(values.begin(), values.end(), Json(std::string(value))) != values.end();
   };
 
+  // Reuse the established canonical JSON contract: object key order is
+  // irrelevant, while integer/float representations, booleans and strings
+  // remain distinct. ordered_json::operator== coerces unlike numbers and
+  // compares object insertion order, neither of which is this filter's rule.
+  std::map<std::string, std::set<std::string>> qualifier_values;
+  for (auto it = op.at("claim_qualifiers").begin(); it != op.at("claim_qualifiers").end(); ++it) {
+    auto& values = qualifier_values[it.key()];
+    for (const auto& value : it.value().at("values")) values.insert(json::canonical(value));
+  }
+
   struct State {
     std::map<std::string, std::string> bindings;
     std::map<std::size_t, std::string> claims;
@@ -82,8 +92,7 @@ Result<Json> match_relation_pattern(const Index& ix, const model::Entity& subjec
       if (!extra.contains(it.key())) {
         if (!filter.at("allow_missing").get<bool>()) admitted_qualifiers = false;
       } else {
-        const auto& values = filter.at("values");
-        if (std::find(values.begin(), values.end(), extra.at(it.key())) == values.end()) admitted_qualifiers = false;
+        if (!qualifier_values.at(it.key()).count(json::canonical(extra.at(it.key())))) admitted_qualifiers = false;
       }
     }
     if (!admitted_qualifiers) continue;
