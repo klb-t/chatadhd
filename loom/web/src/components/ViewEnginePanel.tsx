@@ -1,11 +1,18 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../api";
-import type { InteractionBinding, InteractionBindings, ViewDeclarationInfo, ViewModel, ViewReason } from "../api/view-model";
+import type { InteractionBinding, InteractionBindings, ViewDeclarationInfo, ViewModel, ViewReason, ViewRendererInfo } from "../api/view-model";
 import type { GraphNode } from "../api/types";
 import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
 import { project } from "../view-engine/project";
 import { LOCK_NAMES, LOCKS, MODS, applyAction, buildHint, initialLockModel, initialViewState, lockEffects, matchGesture, matchKey, neighbour, noMods, text as bindingText, unreadLocks, updateLocks } from "../view-engine/interaction";
 import type { Lock, LockModel, Mod, Mods, Request } from "../view-engine/interaction";
+import { buildXrHint, heldFromButtons, matchXr } from "../view-engine/xr-input";
+import { sceneHintLines } from "../view-engine/scene-hint";
+import type { HintContext } from "./ViewScene3D";
+import type { XrPayload } from "../view-engine/scene3d";
+
+// the 3D renderer (three.js) is a separate chunk: it is fetched only when a renderer of engine "three" is chosen
+const ViewScene3D = lazy(() => import("./ViewScene3D"));
 
 // The visualization engine, 2D renderer (P28 step 1): choose a view declaration (data) and a focus node; the kernel evaluates it into a view model
 // and this panel draws it. Which encodings are promoted and which are only allowed (with the reason), and what the engine could not do, stay visible.
@@ -25,6 +32,10 @@ export default function ViewEnginePanel() {
   const t = useShellText();
   const language = useShellLanguage();
   const [declarations, setDeclarations] = useState<ViewDeclarationInfo[] | null>(null);
+  const [renderers, setRenderers] = useState<ViewRendererInfo[]>([]);
+  const [rendererId, setRendererId] = useState("");
+  const [selected, setSelected] = useState<string | null>(null);
+  const [xrDown, setXrDown] = useState<string[]>([]);
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [declaration, setDeclaration] = useState("");
   const [focus, setFocus] = useState("");
@@ -56,6 +67,8 @@ export default function ViewEnginePanel() {
       .then(([list, found]) => {
         if (!live) return;
         setDeclarations(list.declarations);
+        setRenderers(list.renderers);
+        setRendererId(cur => cur || list.renderers.find(r => r.entry?.implemented !== false)?.id || "");
         setNodes(found);
         setDeclaration(cur => cur || list.declarations[0]?.id || "");
         setFocus(cur => cur || found[0]?.id || "");
@@ -65,7 +78,11 @@ export default function ViewEnginePanel() {
   }, []);
 
   const active = useMemo(() => (bindings?.bindings ?? []).filter(b => INPUT_DEVICES.includes(b.device)), [bindings]);
-  const mods = useMemo<Mods>(() => ({ shift: heldMods.shift || touchMods.shift, ctrl: heldMods.ctrl || touchMods.ctrl, alt: heldMods.alt || touchMods.alt, meta: heldMods.meta || touchMods.meta }), [heldMods, touchMods]);
+  const xrBindings = useMemo(() => (bindings?.bindings ?? []).filter(b => b.device === "xr"), [bindings]);
+  const xrMods = useMemo(() => heldFromButtons(xrBindings, xrDown), [xrBindings, xrDown]);
+  const mods = useMemo<Mods>(() => ({ shift: heldMods.shift || touchMods.shift || xrMods.shift, ctrl: heldMods.ctrl || touchMods.ctrl || xrMods.ctrl, alt: heldMods.alt || touchMods.alt || xrMods.alt, meta: heldMods.meta || touchMods.meta || xrMods.meta }), [heldMods, touchMods, xrMods]);
+  const renderer = renderers.find(r => r.id === rendererId);
+  const is3d = renderer?.entry?.engine === "three";
   const effects = useMemo(() => lockEffects(active, lockModel.state), [active, lockModel.state]);
   const known = (id: string | null): id is string => id !== null && (declarations ?? []).some(d => d.id === id);
   // an alternative view chosen by a lock (or by an action) wins over the one picked in the list, only while it lasts
@@ -95,7 +112,7 @@ export default function ViewEnginePanel() {
   const projection = useMemo(() => (model ? project(model, { width: W, height: H }) : null), [model]);
 
   const describe = useCallback((b: InteractionBinding) => bindingText(b.label, language, b.id), [language]);
-  const perform = useCallback((b: InteractionBinding) => {
+  const perform = useCallback((b: InteractionBinding, picked?: string | null) => {
     const { state, request } = applyAction(view, b.action);
     setView(state);
     const label = describe(b);
@@ -110,8 +127,9 @@ export default function ViewEnginePanel() {
       }
       if (r.type === "focus") {
         if (r.target === "origin") { if (home) setFocus(home); return undefined; }
-        if (r.target === "selected") return undefined;
-        if (r.target === "gazed" || !model || !projection) return r.target === "gazed" ? "gazed" : undefined;
+        if (r.target === "selected") { if (selected) setFocus(selected); return undefined; }
+        if (r.target === "gazed") { if (picked) { setFocus(picked); return undefined; } return "gazed"; }
+        if (!model || !projection) return undefined;
         const items = r.target === "time"
           ? model.elements.map(e => ({ id: e.id, value: typeof e.measures.age === "number" ? -e.measures.age : null }))
           : projection.marks.map(m => ({ id: m.id, value: r.target === "branch" ? m.x : m.y }));
@@ -123,7 +141,7 @@ export default function ViewEnginePanel() {
     };
     const unsupported = request ? handle(request) : undefined;
     setLast({ id: b.id, kind: b.action.kind, label, ...(unsupported ? { note: unsupported } : {}) });
-  }, [view, describe, declarations, effectiveDeclaration, home, model, projection]);
+  }, [view, describe, declarations, effectiveDeclaration, home, model, projection, selected]);
 
   // keyboard: held modifiers, lock states (getModifierState with a fallback), and the bindings
   const performRef = useRef(perform);
@@ -167,6 +185,19 @@ export default function ViewEnginePanel() {
 
   const hint = useMemo(() => buildHint(active, bindings?.actions ?? [], mods, lockModel.state, language), [active, bindings, mods, lockModel.state, language]);
   const heldNames = MODS.filter(m => mods[m]).map(m => m[0].toUpperCase() + m.slice(1));
+
+  // XR (P28 step 3): the scene reports pinch / trigger / thumbstick / large gestures; the same bindings and the same reducer as the keyboard decide what they do
+  const xrCtx = useRef({ bindings: xrBindings, mods });
+  xrCtx.current = { bindings: xrBindings, mods };
+  const onXr = useCallback((p: XrPayload) => {
+    const b = matchXr(xrCtx.current.bindings, p.event, xrCtx.current.mods);
+    if (b) performRef.current(b, p.picked);
+  }, []);
+  const sceneView = useMemo(() => ({ panX: view.panX, panY: view.panY, zoom, angle: view.angle, labels: view.labels }), [view.panX, view.panY, zoom, view.angle, view.labels]);
+  const hintLines = useCallback((ctx: HintContext) => sceneHintLines({
+    xr: ctx.xr, flat: hint, immersive: buildXrHint(xrBindings, bindings?.actions ?? [], mods, language), heldNames, gazedSector: ctx.sector, mode: ctx.mode,
+    conflicts: bindings?.conflicts.length ?? 0, unsupported: bindings?.unsupported.length ?? 0,
+  }, t), [hint, xrBindings, bindings, mods, language, heldNames.join("+"), t]); // eslint-disable-line react-hooks/exhaustive-deps
   const inferred = lockModel.api ? unreadLocks(lockModel) : LOCKS;
   const recorded = (bindings?.bindings ?? []).filter(b => b.status === "recorded").length;
   const lockText = (row: (typeof hint.locks)[number]): string => {
@@ -207,6 +238,14 @@ export default function ViewEnginePanel() {
           {(declarations ?? []).map(d => <option key={d.id} value={d.id}>{dataLabel(d.entry?.label, language, d.id)} ({d.id})</option>)}
         </select>
       </div>
+      {renderers.length > 0 && (
+        <div className="form-row">
+          <label htmlFor="ve-renderer">{t("view_engine_renderer")}</label>
+          <select id="ve-renderer" value={rendererId} onChange={e => setRendererId(e.target.value)} data-testid="ve-renderer">
+            {renderers.map(r => <option key={r.id} value={r.id} disabled={r.entry?.implemented === false}>{dataLabel(r.entry?.label, language, r.id)} ({r.id})</option>)}
+          </select>
+        </div>
+      )}
       <div className="form-row">
         <label htmlFor="ve-focus">{t("view_engine_focus")}</label>
         <select id="ve-focus" value={focus} onChange={e => setFocus(e.target.value)} data-testid="ve-focus">
@@ -224,7 +263,13 @@ export default function ViewEnginePanel() {
         <div data-testid="ve-result">
           <div className="pill" data-testid="ve-counts">{t("view_engine_counts", { elements: String(model.elements.length), edges: String(model.edges.length) })}</div>
           {model.budget.collapsed > 0 && model.budget.reason && <p className="pill" data-testid="ve-budget-note">{reasonText(model.budget.reason, language)}</p>}
-          <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={dataLabel(model.declaration.label, language, model.declaration.id ?? "")} data-testid="ve-canvas" data-system={projection.system ?? "none"} onPointerDown={onPointerDown} onPointerUp={onPointerUp} style={{ touchAction: "none" }}>
+          {is3d && renderer ? (
+            <Suspense fallback={<p className="pill" data-testid="ve3d-loading">{t("ve3d_loading")}</p>}>
+              <ViewScene3D entry={renderer} model={model} view={sceneView} selected={selected} language={language} hintLines={hintLines}
+                onPick={id => setSelected(id)} onXr={onXr} onXrButtons={setXrDown} />
+            </Suspense>
+          ) : (
+            <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label={dataLabel(model.declaration.label, language, model.declaration.id ?? "")} data-testid="ve-canvas" data-system={projection.system ?? "none"} onPointerDown={onPointerDown} onPointerUp={onPointerUp} style={{ touchAction: "none" }}>
             <g transform={`translate(${W / 2} ${H / 2}) scale(${zoom}) rotate(${view.angle}) translate(${-W / 2 - view.panX} ${-H / 2 - view.panY})`} data-testid="ve-scene">
             {projection.wedges.map(w => (
               <g key={w.id} data-testid={`ve-wedge-${w.id}`}>
@@ -242,7 +287,9 @@ export default function ViewEnginePanel() {
               </g>
             ))}
             </g>
-          </svg>
+            </svg>
+          )}
+          {is3d && selected && <p className="pill" data-testid="ve3d-selected" data-id={selected}>{t("ve3d_selected", { label: model.elements.find(e => e.id === selected)?.label ?? selected })}</p>}
           {projection.unplaced.length > 0 && (
             <p className="pill" data-testid="ve-unplaced">{t("view_engine_unplaced", { count: String(projection.unplaced.length) })}: {projection.unplaced.map(e => e.label).join(", ")}</p>
           )}

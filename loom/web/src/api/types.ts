@@ -1,5 +1,5 @@
 import type { PerspectivesList, PerspectivesSideBySide, PerspectiveRender, ScopeResolution } from "./graph-views";
-import type { InteractionBindings, ViewDeclarationInfo, ViewEngineList, ViewModel } from "./view-model";
+import type { InteractionBindings, ViewDeclarationInfo, ViewEngineList, ViewModel, ViewRendererInfo } from "./view-model";
 // Shared JSON shapes returned by the Loom C ABI (loom/include/loom/loom.h),
 // as relayed by both transports (loom-http.ts over the server, loom-jni.ts
 // over the Android WebView bridge). Kept intentionally loose (most fields
@@ -309,9 +309,9 @@ export function readScopeResolution(v: unknown, key: string): ScopeResolution {
 
 // ── The visualization engine (P28): readers of the view model answers; the shapes are in ./view-model (types only). ──
 export function readViewEngineList(v: unknown): ViewEngineList {
-  const o = v as { declarations?: { entries?: unknown } } | null;
+  const o = v as { declarations?: { entries?: unknown }; renderers?: { entries?: unknown } } | null;
   if (!o || !o.declarations || !Array.isArray(o.declarations.entries)) throw new Error("view_engine_list_invalid");
-  return { declarations: o.declarations.entries as ViewDeclarationInfo[] };
+  return { declarations: o.declarations.entries as ViewDeclarationInfo[], renderers: Array.isArray(o.renderers?.entries) ? (o.renderers.entries as ViewRendererInfo[]) : [] };
 }
 export function readViewModel(v: unknown): ViewModel {
   const o = v as Partial<ViewModel> | null;

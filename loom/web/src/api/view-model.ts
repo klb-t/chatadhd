@@ -53,7 +53,14 @@ export interface ViewModel {
   issues: Array<{ code: string; text: ViewText }>;
 }
 export interface ViewDeclarationInfo { id: string; entry?: { label?: ViewText | string; meaning?: ViewText; elements?: unknown[] }; origin?: string }
-export interface ViewEngineList { declarations: ViewDeclarationInfo[] }
+/** A renderer of the view model (P28 step 3), data in the effective view `view_renderers`: which engine draws it, the modes (screen / WebXR session) and the settings. */
+export interface ViewRendererMode { kind: "screen" | "xr" | string; label?: ViewText; meaning?: ViewText; session?: string; features?: { required?: string[]; optional?: string[] }; transparent_background?: boolean }
+export interface ViewRendererInfo {
+  id: string;
+  origin?: string;
+  entry?: { label?: ViewText | string; meaning?: ViewText; engine?: string; implemented?: boolean; default_mode?: string; modes?: Record<string, ViewRendererMode> } & Record<string, unknown>;
+}
+export interface ViewEngineList { declarations: ViewDeclarationInfo[]; renderers: ViewRendererInfo[] }
 export interface ViewModelRequest {
   declaration: string | Record<string, unknown>;
   focus: string;

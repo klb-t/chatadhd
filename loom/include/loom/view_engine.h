@@ -35,7 +35,7 @@ class ViewEngine {
   static Result<ViewEngine> open(const std::filesystem::path& root, const std::vector<std::filesystem::path>& extra_dirs = {});
 
   // {schema, declarations: [{id, entry, origin, provenance, ...}], measure_kinds, coordinate_systems, channels, composition_kinds,
-  // combination_rules, rules (each the effective list of that kind), issues}
+  // combination_rules, rules, renderers (each the effective list of that kind; renderers = how a client draws the model, P28 step 3), issues}
   Json list() const;
 
   // request: {focus: node id (required), declaration?: inline declaration object (instead of the id), sources?: {source id: {weight?, depth?}},
@@ -45,7 +45,7 @@ class ViewEngine {
 
  private:
   Perspectives persp_;
-  Effective declarations_, measures_, systems_, channels_, compositions_, combines_, rules_;
+  Effective declarations_, measures_, systems_, channels_, compositions_, combines_, rules_, renderers_;
   friend struct Evaluator;
 };
 
