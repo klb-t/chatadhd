@@ -306,8 +306,13 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME research.seeding
       COMMAND ${Python3_EXECUTABLE} -m unittest discover
         -s ${LOOM_ROOT}/tools/seeding -p "test_*.py")
-    set_tests_properties(research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol research.contracts research.seeding PROPERTIES
+    set_tests_properties(research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol research.seeding PROPERTIES
       ENVIRONMENT "${_loom_python_env}" TIMEOUT 60)
+    # The contracts suite (~210 cases) takes ~31 s alone on a dev build; under ASan with the other
+    # suites running in parallel it reached the 60 s hang timeout on CI (run 38788701397). Its hang
+    # timeout is wider, like research.structure's; no case, threshold or assertion changes.
+    set_tests_properties(research.contracts PROPERTIES
+      ENVIRONMENT "${_loom_python_env}" TIMEOUT 300)
     # The structure suite also runs the research programme's native-execution
     # cases (otherwise skipped) and has grown to ~1300 cases (~70 s alone), so
     # its hang timeout is wider; no case, threshold or assertion changes.
