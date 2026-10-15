@@ -41,7 +41,7 @@ std::string fingerprint(const std::filesystem::path& root) {
     std::error_code e1, e2;
     const auto size = std::filesystem::is_regular_file(st) ? std::filesystem::file_size(f, e1) : 0;
     const auto mtime = std::filesystem::last_write_time(f, e2).time_since_epoch().count();
-    out += std::to_string(size) + ":" + std::to_string(mtime) + ";";
+    out += std::to_string(size) + ":" + std::to_string(static_cast<long long>(mtime)) + ";";
   }
   return out;
 }
