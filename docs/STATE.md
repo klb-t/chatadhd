@@ -1,10 +1,12 @@
 # STATE — ChatADHD / Loom
 
-> B, 2026-10-15 UTC: przyjęte poprawki Claude’a `e368d7d1` → `b2051da1`
-> i `21cb0566` → `f74f0e1a`; ASan scope 8/8, 79 native / 2027 asercji,
-> guard PASS. Pełny ASan przed przyjęciem poprawek: FAIL, 7 porażek, w tym
-> timeout CLI 300 s (limit pozostaje). Pełna macierz złożonego drzewa jest następna.
-> Kod rozpoznawania: Generalizer 4 / pipeline 10. [Raport](reports/implicit-structures-2026-10-14.md).
+> B, 2026-10-15 21:30 UTC: dev i Clang na `efd969c7`: guard PASS,
+> 203/204 wykonane, 1355 native / 47931 asercji / 2077 Python; 1 opt-in niewykonany.
+> Web build i 26 skryptów mają PASS po poprawkach środowiska oraz przyjęciu
+> testu Claude’a `85a406dd` → `588ac547`. Pełny ASan przerwany po 37/203,
+> bez JUnit/guard; nowy przebieg następny, timeout CLI 300 s bez zmian.
+> Kod rozpoznawania: Generalizer 4 / pipeline 10. Perspektywy tego samego
+> projektu nadal otwarte. [Raport](reports/implicit-structures-2026-10-14.md).
 
 ## 2026-10-15 — B: osobna gałąź rozpoznawania struktur
 

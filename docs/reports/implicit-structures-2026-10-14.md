@@ -1,6 +1,30 @@
 # Unnamed relational structures and qualified analogies — 2026-10-14
 
-## Current integration checkpoint — 2026-10-15 UTC
+## Current verification checkpoint — 2026-10-15 21:30 UTC
+
+Full dev and Clang on `efd969c7` both passed: **204 selected, 203 executed,
+1355 native cases / 47931 assertions / 2077 Python cases**, zero Python skips,
+one catalog-scale opt-in unexecuted, guard PASS, unchanged source. These are
+this branch plus the two accepted upstream fixes, not a merged-main validation.
+
+Web build and all **26 package test scripts** now have successful executions:
+21 on the original system-Chromium pass, four after installing the package-pinned
+Playwright headless shell, and `test:interface-2` after narrow upstream test fix
+`85a406dd` → `588ac547`. The latter waits for model options to load after reload;
+both exact model-value assertions remain. No product code or timeout changed.
+The original five web failures and the replay's model-picker race remain in logs.
+The native interface runner completed 20/20 groups; native conversation view
+completed 9/9, including source loss, reopening and absence of persistent payload.
+Fresh evidence directories preserve earlier receipts rather than overwrite them.
+
+The subsequent ASan process was interrupted with the previous session after
+37/203 entries, with no final JUnit/guard. It is **unverified, not PASS**.
+A new full ASan run is next, on the same native sources and binaries; its CLI
+300-second timeout remains unchanged. No concurrent heavy build is scheduled.
+The branch remains a review candidate for configured-pattern recognition and
+qualified analogies; same-project code/ideas/spec/tests views remain open.
+
+## Historical upstream intake checkpoint — 2026-10-15 UTC
 
 Narrow upstream fixes accepted with authorship and `cherry-pick -x` provenance:
 `e368d7d1` → `b2051da1` (graph-entry temporary lifetime),
@@ -52,7 +76,7 @@ import compatibility failure when Python/native generated titles straddled a
 minute (00:48 / 00:49). Neither failure is suppressed.
 
 The C API check now uses the existing ownership-taking helper and retains the
-secret-nondisclosure assertion. Its ASan rerun passed **16 cases / 2633 assertions**,
+secret-nondisclosure assertion. Its ASan rerun passed **16 cases / 2634 assertions**,
 leak detection enabled, guard PASS (`asan-leak-fix/`). Full ASan, rebuilt dev,
 Clang and web are next on that test-only follow-up. The v3 results below are historical.
 ASan v3 was interrupted at step 229/408 before tests; its retained log is
