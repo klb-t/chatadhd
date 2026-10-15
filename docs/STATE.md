@@ -1,5 +1,32 @@
 # STATE — ChatADHD / Loom
 
+## 2026-10-15 — S1+S2 (P19, P23–P28, R32–R34)
+
+Szczegóły i decyzje: `docs/reports/PLAN_2026-10-13.md` (wpisy P19–P28), `docs/reports/INDEX.md`, architektura: `docs/architecture/STRAZNIK_I_SRODOWISKA_2026-10-14.md`, `PRZEGLAD_STRAZNIK_SRODOWISKA_2026-10-15.md`, `WIDOK_SILNIK_WIZUALIZACJI_2026-10-15.md`. Przebieg wątków: `docs/reports/LEDGER_2026-10-14.md`.
+
+**Co działa teraz (słowami właściciela)**
+
+- **Selektor zawsze wybiera z grafu.** Kontekst to wycinek grafu zależny od ustawień rozstrzyganych łańcuchem dziedziczenia (rozmowa → dowolne jednostki → użytkownik → instalacja); także surowa rozmowa jest wyborem z grafu. Wcześniej ustawienie dane tylko rozmowie było pomijane — poprawione.
+- **Przepływ wejścia i wyjścia jako dane.** Jak wycinek idzie do modelu (renderer) i co się dzieje z odpowiedzią (węzeł wyjścia) to dane; domyślnie żądanie bajt w bajt jak dawniej. Odpowiedź w formacie grafu można wymusić: widzisz tekst, a jej węzły trafiają do grafu.
+- **Osadzanie to odwrotność selektora.** Osadzenie tego, co selektor wybrał, nie zmienia grafu (test bajt w bajt); analizy są osobnym krokiem po osadzeniu.
+- **Strażnik-stenograf i wspólna warstwa adnotacji.** Reprezentacja rozmowy w poziomach (bez szumu, bez dygresji, skompilowane polecenie) obok surowych wiadomości; cykl poprawka → hipoteza → zasada; selektor decyduje, czego użyć.
+- **Model do pracy w tle nigdy nie jest dziedziczony z rozmowy.** Wybiera go Twoja polityka; „względem modelu rozmowy” tylko gdy sam to wybierzesz.
+- **Perspektywy i rodzaje krawędzi są danymi.** Podstawowe w ROM, Twoje w nakładkach; nakładka może dodać, zmienić, ukryć, wyłączyć albo przemianować wpis ROM, a każdy wpis mówi, skąd pochodzi. Perspektywy obok siebie w panelu „Perspektywy”; „skąd to ustawienie” w ustawieniach rozmowy.
+- **Silnik widoków.** Widok składa się z deklaracji w grafie (źródła z wagą i głębokością, miary, układy, kodowania, reguły); reguły sensu oceniają kodowania na danych i nigdy nie blokują. Preset: historia przed Tobą, gałęzie w stożku, ekosystem po bokach, przyszłość z tyłu. Strzałki z modyfikatorami, locki przełączają widoki; wszystko do przepisania z rozmowy.
+- **Środowiska, agent, źródła narzędzi (S2 R32–R34, S1 P26).** „Co mogę zrobić na telefonie / w tym katalogu” z grafu; agent wywołuje akcje katalogu jako narzędzia, zatrzymuje się na propozycji i czeka na Twoje tak/nie; serwery MCP dodajesz sam, każde użycie pyta, dopóki nie zaufasz.
+- **Duże rozmowy.** Wiadomości i graf ładują się stronami („wczytaj starsze”); rozmiary stron to ustawienia.
+
+**Co otwarte**
+
+- Odpowiedź w formacie grafu odrzuca dziś całą odpowiedź, gdy odwołuje się do węzła, którego nie wysłaliśmy — to za ostre; ma być nowym węzłem i kandydatem do dopasowania (P29).
+- Szerszy wycinek grafu (szerokość, głębokość, perspektywa) jako dane przepływu; dopasowanie wektorami i modelem.
+- Widok 3D i VR/AR (P28 krok 3, w toku); edytor przypisań klawiszy w interfejsie; MDS i czas jako ruch.
+- Gałąź GPT `gpt/implicit-structures-2026-10-14`: przegląd i włączenie jako nakładka rodzajów krawędzi.
+- Android: brak widoku propozycji agenta i stronicowania.
+- Nadal brak próby z prawdziwym modelem i prawdziwym telefonem.
+
+**Co musisz zrobić Ty** — bez zmian: ważny klucz OpenRouter w sekretach sieci środowiska, sekrety podpisu Androida na GitHubie, prawdziwy telefon.
+
 ## 2026-10-14 — S1+S2
 
 Szczegóły techniczne i decyzje: `docs/reports/INDEX.md` (sekcje P9–P18 i S2/R*), wymagania właściciela: `docs/architecture/OWNER_REQUIREMENTS_2026-09-26.md` (R54, R55).
