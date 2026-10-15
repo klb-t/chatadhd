@@ -202,18 +202,25 @@ Result<Plan> make_plan(Runtime& rt, llm::Services& services, const Json& request
     Json q{{"element", p.element}, {"implemented_only", true}};
     if (!p.scope.is_null()) q["scope"] = p.scope;
     if (json::get_bool(expose, "include_unmatched", false)) q["include_unmatched"] = true;
-    LOOM_TRY_ASSIGN(Json rows, rt.actions().invoke("for", q));
     std::set<std::string> statuses;
     if (const Json* st = json::find(expose, "statuses"); st && st->is_array())
       for (const auto& s : *st) if (s.is_string()) statuses.insert(s.get<std::string>());
-    for (const auto& row : rows.value("actions", Json::array())) {
-      const std::string id = json::get_string(row, "action");
-      if (id.empty() || excluded(expose, id)) continue;
-      if (!statuses.empty() && !statuses.count(json::get_string(row, "implementation", "planned"))) continue;
-      const std::string status = json::get_string(row, "status");
-      if (status == "denied" || status == "not_applicable") { p.denied.push_back(Json{{"action", id}, {"status", status}}); continue; }
-      if (row.contains("runs_on")) continue;  // a device step of a client: not something a text loop can carry out
-      ids.push_back(id);
+    std::vector<Json> elements{p.element};
+    if (const Json* also = json::find(expose, "also_elements"); also && also->is_array())
+      for (const auto& e : *also) elements.push_back(e);
+    std::set<std::string> seen;
+    for (const auto& element : elements) {
+      q["element"] = element;
+      LOOM_TRY_ASSIGN(Json rows, rt.actions().invoke("for", q));
+      for (const auto& row : rows.value("actions", Json::array())) {
+        const std::string id = json::get_string(row, "action");
+        if (id.empty() || excluded(expose, id) || !seen.insert(id).second) continue;
+        if (!statuses.empty() && !statuses.count(json::get_string(row, "implementation", "planned"))) continue;
+        const std::string status = json::get_string(row, "status");
+        if (status == "denied" || status == "not_applicable") { p.denied.push_back(Json{{"action", id}, {"status", status}}); continue; }
+        if (row.contains("runs_on")) continue;  // a device step of a client: not something a text loop can carry out
+        ids.push_back(id);
+      }
     }
   }
   p.tools = llm::tools::make_tools(p.profile, p.catalogue, ids, p.settings.lang);

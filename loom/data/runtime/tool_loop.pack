@@ -92,7 +92,12 @@
       "default_element": {
         "class": "application"
       },
-      "element_arg": "element"
+      "element_arg": "element",
+      "also_elements": [
+        {
+          "class": "application"
+        }
+      ]
     },
     "tool_name": {
       "allowed": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-",
@@ -243,7 +248,8 @@
         }
       },
       "expose": {
-        "type": "object"
+        "type": "object",
+        "description": "Which catalogue actions are offered: statuses (implementation states), exclude (ids, or prefixes ending in a dot), include_unmatched, default_element (the element when the loop has none), also_elements (elements whose fitting actions are offered besides the loop's own - the application, so a search is available on a conversation)."
       },
       "tool_name": {
         "type": "object"

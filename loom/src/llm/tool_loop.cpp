@@ -577,7 +577,7 @@ Result<LoopOutcome> run_loop(const Services& services, ModelRequest base, const 
         rec.action = tool.action;
         rec.mode = decide_mode(settings.rules, tool.action, tool.effects);
         Json args = c.arguments;
-        std::string el = element;
+        std::string el = tool.takes_element ? element : std::string();  // an application-level action runs on the application
         if (tool.takes_element) {
           if (const Json* e = json::find(args, "element"); e && e->is_string() && !e->get<std::string>().empty()) el = e->get<std::string>();
           args.erase("element");
