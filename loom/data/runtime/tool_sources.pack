@@ -1,0 +1,86 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "tool_sources",
+  "revision": 1,
+  "description": "Tool sources (PRZEGLAD_STRAZNIK_SRODOWISKA 3.3, S2/R34): an external server whose tools become actions of the catalogue (MCP first). Mechanism in code: an adapter per kind lists tools and calls one; the tools are written into the USER overlay profiles/actions.pack. Everything else is data here. Nothing is contacted until the user adds a source (setting tool_sources) and asks for it to be listed; nothing is sent to any server by default. Effects of an external tool are unknown, so the preset marks every action 'effects_unknown' and the rule confirm:tool_source.unknown (action_rules) asks before each run; the user relaxes it per tool or per source (tool_source.trust) or changes any default below in the overlay profiles/tool_sources.pack. Hints a server gives (readOnlyHint ...) are recorded as hints and never lower the preset. A source's credential is a reference to the secrets vault (a key name), never the bytes.",
+  "defaults": {
+    "action_prefix": "tool",
+    "port": "tool_source",
+    "unknown_effects": {
+      "reads_only": false,
+      "writes": true,
+      "sends_off_device": true,
+      "costs_money": true,
+      "irreversible": true,
+      "touches_private_data": true,
+      "effects_unknown": true
+    },
+    "action_template": {
+      "requires": ["application"],
+      "cost": 1.0,
+      "confidence": 0.5,
+      "origin": "external"
+    },
+    "rule": {
+      "prefix": "tool_source",
+      "relax_effect": "allow",
+      "tighten_effect": "confirm",
+      "scope": "person",
+      "reason": {
+        "en": "Set by you for this tool of an external source.",
+        "pl": "Ustawione przez Ciebie dla tego narzędzia zewnętrznego źródła."
+      }
+    },
+    "graph": {
+      "environment_class": "service_environment",
+      "node_prefix": "tool_source",
+      "port": "tool_source",
+      "element_class": "port"
+    },
+    "kinds": {
+      "mcp": {
+        "label": {
+          "en": "Model Context Protocol server",
+          "pl": "Serwer Model Context Protocol"
+        },
+        "transports": ["stdio", "http"],
+        "protocol_version": "2025-06-18",
+        "client_info": {
+          "name": "loom",
+          "version": "1"
+        },
+        "methods": {
+          "initialize": "initialize",
+          "initialized": "notifications/initialized",
+          "list": "tools/list",
+          "call": "tools/call"
+        },
+        "http": {
+          "accept": "application/json, text/event-stream",
+          "session_header": "Mcp-Session-Id",
+          "protocol_header": "MCP-Protocol-Version",
+          "auth_header": "Authorization",
+          "auth_scheme": "Bearer"
+        },
+        "timeout_ms": 120000,
+        "stop_grace_ms": 1500
+      }
+    }
+  },
+  "value_schema": {
+    "x-setting": "",
+    "x-consumer": "tool_sources",
+    "type": "object",
+    "required": ["action_prefix", "port", "unknown_effects", "action_template", "rule", "graph", "kinds"],
+    "properties": {
+      "action_prefix": {"x-setting": "/action_prefix", "x-consumer": "tool_sources", "type": "string"},
+      "port": {"x-setting": "/port", "x-consumer": "tool_sources", "type": "string"},
+      "unknown_effects": {"x-setting": "/unknown_effects", "x-consumer": "tool_sources", "type": "object"},
+      "action_template": {"x-setting": "/action_template", "x-consumer": "tool_sources", "type": "object"},
+      "rule": {"x-setting": "/rule", "x-consumer": "tool_sources", "type": "object"},
+      "graph": {"x-setting": "/graph", "x-consumer": "tool_sources", "type": "object"},
+      "kinds": {"x-setting": "/kinds", "x-consumer": "tool_sources", "type": "object"}
+    },
+    "additionalProperties": false
+  }
+}

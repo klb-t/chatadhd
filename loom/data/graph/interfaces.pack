@@ -192,6 +192,7 @@
         "GET /api/storage/status",
         "GET /api/tasks",
         "GET /api/tasks/:id",
+        "GET /api/tool_sources",
         "GET /api/version",
         "GET /api/views/([A-Za-z0-9_.-]+)",
         "PATCH /api/config",
@@ -275,6 +276,10 @@
         "POST /api/storage/move",
         "POST /api/tasks/:id/cancel",
         "POST /api/tasks/resume",
+        "POST /api/tool_sources/add",
+        "POST /api/tool_sources/remove",
+        "POST /api/tool_sources/sync",
+        "POST /api/tool_sources/trust",
         "POST /api/usage-policy",
         "POST /api/views/write",
         "PUT /api/config/:id"

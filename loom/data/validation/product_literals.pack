@@ -497,7 +497,7 @@
         },
         {
           "path": "loom/data/graph/interfaces.pack",
-          "sha256": "40cf0f9e6a4375253969c42a601861b832761eccdc49b0e4dc04d7372abaa547"
+          "sha256": "24e65a2819ffacf54ad6e453aac1ad2cda099cf010aaf2728742cc9d7f9ed83d"
         },
         {
           "path": "loom/data/graph/parties.pack",
@@ -509,7 +509,7 @@
         },
         {
           "path": "loom/data/graph/rom.pack",
-          "sha256": "2cc524b310dbc0a3156d5e3b8de938c96fc1e1e5ba585fe3734c373fcdf104e5"
+          "sha256": "04e81bec415a269815fd338fcdd87aad8138e7b022c5f4f8f20f262ee2ea9678"
         },
         {
           "path": "loom/data/graph/scopes.pack",
@@ -529,7 +529,7 @@
         },
         {
           "path": "loom/data/runtime/action_rules.pack",
-          "sha256": "d2857600c705f56bd5da239353c157416e944760881b4104e5cd450a120e13a5"
+          "sha256": "70afd2e795f9ce4e3a64d9a48a17d8d0145195ada8871212d90c44f502e92b8a"
         },
         {
           "path": "loom/data/runtime/action_run.pack",
@@ -537,7 +537,7 @@
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "9fe91fd8aaca120ef4fa2cb8eecb02c260474fba17c71f64bd3a26783d4ac825"
+          "sha256": "66a830b52beac6eb8bdc21b86698dbe9dc08b4c87fbd06aaad52ba0d53f8414e"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -549,7 +549,7 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "093d1765a77a6933557b9952ac903976351a989e99089f7f987483fb0ceb1a0f"
+          "sha256": "e01f8347c54e8dd0ecdf83cda99ab56b2ddb9195296a4a9ccf8526b4aa652029"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
@@ -617,7 +617,7 @@
         },
         {
           "path": "loom/data/runtime/intent_routing.pack",
-          "sha256": "0493bdd7bed0bf764915c76215774df15e1aa3c28afd1651b5253680f5b7a2a0"
+          "sha256": "4ca0ef59a273b37798f157b5aec6f0bca032a0e0ed4b7661f189e8c371df96e7"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",
@@ -681,7 +681,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "ac074b9178f87a1d07da4667071e4e7765fbc4dc181de6131581e3fc386bb09c"
+          "sha256": "3862f85b0ce9656565d59326bb043fd526552341879fa7eb27c23b187ac6c831"
         },
         {
           "path": "loom/data/runtime/ui_animation.pack",

@@ -11103,6 +11103,444 @@
           "en": "Environment nodes brought up to date:",
           "pl": "Węzły środowisk uaktualnione:"
         }
+      },
+      "tool_source.list": {
+        "id": "tool_source.list",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Tool sources and their actions",
+        "description": "Your tool sources (external servers whose tools are actions of the catalogue): transport, the actions each one provided, the tools you have trusted, and the state of its credential reference in the vault (never the key). Contacts nothing.",
+        "labels": {
+          "pl": "Źródła narzędzi i ich akcje"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/tool_sources/tool_sources.cpp",
+        "port": "tool_source",
+        "action": "list",
+        "params": [],
+        "http": {
+          "verb": "GET",
+          "path": "/api/tool_sources"
+        },
+        "examples": {
+          "en": [
+            "list my tool sources"
+          ],
+          "pl": [
+            "pokaż moje źródła narzędzi"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Tool sources:",
+          "pl": "Źródła narzędzi:"
+        }
+      },
+      "tool_source.sync": {
+        "id": "tool_source.sync",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Refresh the tools of a source",
+        "description": "Connects to the source (or every source you added), lists its tools and writes one action per tool into your overlay profiles/actions.pack. Effects of an external tool are unknown, so the rules ask before every run. Contacts the source server; sends nothing of your data.",
+        "labels": {
+          "pl": "Odśwież narzędzia źródła"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/tool_sources/tool_sources.cpp",
+        "port": "tool_source",
+        "action": "sync",
+        "params": [
+          {
+            "name": "source",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The source to refresh (all when omitted).",
+              "pl": "Źródło do odświeżenia (domyślnie wszystkie)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/tool_sources/sync"
+        },
+        "examples": {
+          "en": [
+            "refresh my tool sources"
+          ],
+          "pl": [
+            "odśwież źródła narzędzi"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Tool sources:",
+          "pl": "Źródła narzędzi:"
+        },
+        "positional_arg": "source"
+      },
+      "tool_source.add": {
+        "id": "tool_source.add",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Add a tool source (MCP server)",
+        "description": "Adds a tool source to the setting tool_sources: kind (mcp), transport stdio (command, args) or http (url), access as a reference to a key in the secrets vault (access.secret = key name; never the key), then lists its tools like tool_source.sync. Nothing is contacted before you add it.",
+        "labels": {
+          "pl": "Dodaj źródło narzędzi (serwer MCP)"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": true,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/tool_sources/tool_sources.cpp",
+        "port": "tool_source",
+        "action": "add",
+        "params": [
+          {
+            "name": "id",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "A short id for the source (letters, digits, _ and -).",
+              "pl": "Krótki identyfikator źródła (litery, cyfry, _ i -)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "kind",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The kind of source (mcp).",
+              "pl": "Rodzaj źródła (mcp)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "transport",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "stdio or http.",
+              "pl": "stdio albo http."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "command",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "stdio: the program to start.",
+              "pl": "stdio: program do uruchomienia."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "args",
+            "type": "array",
+            "required": false,
+            "description": {
+              "en": "stdio: its arguments.",
+              "pl": "stdio: jego argumenty."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "url",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "http: the endpoint of the server.",
+              "pl": "http: adres serwera."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "access",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "{secret: <key name in the vault>, header?, scheme?}.",
+              "pl": "{secret: <nazwa klucza w sejfie>, header?, scheme?}."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "env",
+            "type": "object",
+            "required": false,
+            "description": {
+              "en": "stdio: environment variables, NAME -> text or {secret: <key name>}.",
+              "pl": "stdio: zmienne środowiska, NAZWA -> tekst albo {secret: <nazwa klucza>}."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "label",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A name to show.",
+              "pl": "Nazwa do wyświetlania."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "sync",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "List the tools right away (default true).",
+              "pl": "Od razu wylistuj narzędzia (domyślnie tak)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/tool_sources/add"
+        },
+        "examples": {
+          "en": [
+            "add a tool source"
+          ],
+          "pl": [
+            "dodaj źródło narzędzi"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Tool sources:",
+          "pl": "Źródła narzędzi:"
+        },
+        "positional_arg": "id"
+      },
+      "tool_source.remove": {
+        "id": "tool_source.remove",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Remove a tool source",
+        "description": "Removes the source from the setting tool_sources together with its actions (your overlay), its trust rules and its graph nodes. The shipped code and packs are untouched.",
+        "labels": {
+          "pl": "Usuń źródło narzędzi"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/tool_sources/tool_sources.cpp",
+        "port": "tool_source",
+        "action": "remove",
+        "params": [
+          {
+            "name": "source",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The id of the tool source.",
+              "pl": "Identyfikator źródła narzędzi."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/tool_sources/remove"
+        },
+        "examples": {
+          "en": [
+            "remove a tool source"
+          ],
+          "pl": [
+            "usuń źródło narzędzi"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Tool sources:",
+          "pl": "Źródła narzędzi:"
+        },
+        "positional_arg": "source"
+      },
+      "tool_source.trust": {
+        "id": "tool_source.trust",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Change how a tool of a source is confirmed",
+        "description": "The preset asks before every run of an external tool. mode allow writes a rule (your overlay profiles/action_rules.pack) that lets one tool - or every tool of the source - run without asking; confirm asks again; reset takes your rule back out.",
+        "labels": {
+          "pl": "Zmień pytanie o zgodę dla narzędzia źródła"
+        },
+        "inputs": [
+          "json"
+        ],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": true,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/tool_sources/tool_sources.cpp",
+        "port": "tool_source",
+        "action": "trust",
+        "params": [
+          {
+            "name": "source",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "The id of the tool source.",
+              "pl": "Identyfikator źródła narzędzi."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "tool",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "One tool (all tools of the source when omitted).",
+              "pl": "Jedno narzędzie (domyślnie wszystkie narzędzia źródła)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "mode",
+            "type": "string",
+            "required": true,
+            "description": {
+              "en": "allow, confirm or reset.",
+              "pl": "allow, confirm albo reset."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/tool_sources/trust"
+        },
+        "examples": {
+          "en": [
+            "trust this tool"
+          ],
+          "pl": [
+            "zaufaj temu narzędziu"
+          ]
+        },
+        "stores_result": false,
+        "result_text": {
+          "en": "Tool sources:",
+          "pl": "Źródła narzędzi:"
+        },
+        "positional_arg": "source"
       }
     }
   },
