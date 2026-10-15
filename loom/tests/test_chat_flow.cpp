@@ -144,23 +144,70 @@ TEST_SUITE("chat_flow") {
     CHECK(refers);
   }
 
-  TEST_CASE("a reply that refers to an id that was not in the selection sent is rejected: raw text and a visible note, no node invented") {
+  // A reply whose only link goes to `to` (an id that was not sent).
+  static Json emergent_reply(const Json& sel, const std::string& to) {
+    return Json{{"schema", "loom.graph_reply/2"}, {"base_packet_sha256", sel["packet_id"]}, {"response_id", "r"},
+        {"nodes", Json::array({Json{{"id", "r"}, {"text", "Hi."}, {"role", "response"}, {"children", Json::array()}}})},
+        {"links", Json::array({Json{{"from", "r"}, {"predicate", "refers_to"}, {"to", to}}})}};
+  }
+
+  TEST_CASE("P29: a reply that refers to an id that was not sent is accepted; the element is an emergent node with provenance and a visible note") {
     Fix f;
     f.say("user", "Hello.");
     ChatOptions o = f.opts();
     o.flow = "graph_out";
     const Json sel = unwrap(f.rt->chat().context_selection(f.conv, o));
-    const Json reply = Json{{"schema", "loom.graph_reply/2"}, {"base_packet_sha256", sel["packet_id"]}, {"response_id", "r"},
-        {"nodes", Json::array({Json{{"id", "r"}, {"text", "Hi."}, {"role", "response"}, {"children", Json::array()}}})},
-        {"links", Json::array({Json{{"from", "r"}, {"predicate", "refers_to"}, {"to", "m_does_not_exist"}}})}};
     Json result;
-    f.send("Hi?", json::dump(reply), o, &result);
-    const std::string text = result["text"];
-    CHECK(text.find("link_to_unknown") != std::string::npos);  // the visible note names the reason
-    CHECK(text.find("\"schema\"") != std::string::npos);        // and the raw text is what is shown
+    f.send("Hi?", json::dump(emergent_reply(sel, "m_does_not_exist")), o, &result);
+    CHECK(result["text"] == "Hi.");
     const Json last = unwrap(f.rt->db().get_msg(result["assistant_message_id"].get<std::string>()))->to_json();
-    CHECK(last["metadata"]["reply_format"]["status"] == "invalid");
-    CHECK(unwrap(f.rt->db().list_nodes(std::string("reply_part"), 100)).empty());
+    const Json rf = last["metadata"]["reply_format"];
+    CHECK(rf["status"] == "ok");
+    REQUIRE(rf["notes"].size() == 1);
+    CHECK(rf["notes"][0].get<std::string>().find("m_does_not_exist") != std::string::npos);
+    CHECK(rf["embedded"]["emergent"][0]["status"] == "candidate");
+    const auto em = unwrap(f.rt->db().list_nodes(std::string("emergent"), 100));
+    REQUIRE(em.size() == 1);
+    CHECK(em[0].id != "m_does_not_exist");  // the claimed id is data, never an id
+    CHECK(em[0].metadata["emergent_ref"] == true);
+    CHECK(em[0].metadata["claimed_id"] == "m_does_not_exist");
+    CHECK(em[0].metadata["origin"] == "model");
+    CHECK(em[0].metadata["model"] == "test/model");
+    CHECK(em[0].metadata["message_id"] == result["assistant_message_id"]);
+    CHECK(em[0].metadata["flow"] == "graph_out");
+    CHECK_FALSE(unwrap(f.rt->db().get_node("m_does_not_exist")).has_value());
+    CHECK(unwrap(f.rt->db().get_links(std::nullopt, "same_as_candidate")).empty());  // no match: left as a candidate for the user
+    bool to_emergent = false;
+    for (const auto& l : unwrap(f.rt->db().get_links(std::nullopt, "refers_to"))) {
+      CHECK(l.dst != "m_does_not_exist");
+      to_emergent = to_emergent || l.dst == em[0].id;
+    }
+    CHECK(to_emergent);
+  }
+
+  TEST_CASE("P29: an emergent reference matched by a deterministic key becomes a same_as_candidate edge with matched_by, never a merge or an edge via the claimed id") {
+    Fix f;
+    f.say("user", "Hello.");
+    NodeOptions no;
+    no.content = "A person.";
+    const std::string existing = unwrap(f.rt->db().create_node("Alice Smith", "person", no));
+    ChatOptions o = f.opts();
+    o.flow = "graph_out";
+    const Json sel = unwrap(f.rt->chat().context_selection(f.conv, o));
+    Json result;
+    f.send("Hi?", json::dump(emergent_reply(sel, "alice_smith")), o, &result);
+    const auto em = unwrap(f.rt->db().list_nodes(std::string("emergent"), 100));
+    REQUIRE(em.size() == 1);
+    const auto cand = unwrap(f.rt->db().get_links(std::nullopt, "same_as_candidate"));
+    REQUIRE(cand.size() == 1);
+    CHECK(cand[0].src == em[0].id);
+    CHECK(cand[0].dst == existing);
+    CHECK(cand[0].metadata["matched_by"] == "label");
+    CHECK(cand[0].metadata["status"] == "candidate");
+    CHECK(unwrap(f.rt->db().get_node(existing)).has_value());  // nothing merged away
+    for (const auto& l : unwrap(f.rt->db().get_links(std::nullopt, "refers_to"))) CHECK(l.dst != existing);  // never an edge via the unverified id
+    const Json last = unwrap(f.rt->db().get_msg(result["assistant_message_id"].get<std::string>()))->to_json();
+    CHECK(last["metadata"]["reply_format"]["embedded"]["emergent"][0]["status"] == "matched");
   }
 
   TEST_CASE("fallback: not JSON at all, and a model known not to support structured outputs gets the instruction only") {
