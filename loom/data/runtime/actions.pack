@@ -10250,7 +10250,9 @@
         "outputs": [
           "json"
         ],
-        "requires": [],
+        "requires": [
+          "conversation"
+        ],
         "produces": [],
         "content_op": "none",
         "form_op": "none",
@@ -10286,29 +10288,30 @@
         },
         "phrases": {
           "en": [
-            "what does the guardian remember",
-            "guardian remembers",
-            "my guardian rules"
+            "guardian remember*",
+            "what does the guardian remember*",
+            "guardian rules about me"
           ],
           "pl": [
-            "co strażnik pamięta",
-            "co strażnik* wie o mnie",
-            "moje reguły strażnik*"
+            "strażnik* pamięta*",
+            "co strażnik* pamięta*",
+            "reguły strażnik*"
           ]
         },
         "examples": {
           "en": [
-            "what does the guardian remember about me"
+            "what does the guardian remember"
           ],
           "pl": [
-            "co strażnik pamięta o mnie"
+            "co strażnik pamięta"
           ]
         },
         "stores_result": false,
         "result_text": {
           "en": "What I remember about you:",
           "pl": "Co o Tobie pamiętam:"
-        }
+        },
+        "default_element": "current_conversation"
       },
       "guardian.merge": {
         "id": "guardian.merge",
