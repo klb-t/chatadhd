@@ -2083,7 +2083,7 @@
         "id": "tool_source_trust",
         "title": {
           "en": "Change how a tool of a source is confirmed",
-          "pl": "Zmień potwierdzanie narzędzia źródła"
+          "pl": "Zmień pytanie o zgodę dla narzędzia źródła"
         },
         "via": "action",
         "action": "tool_source.trust",

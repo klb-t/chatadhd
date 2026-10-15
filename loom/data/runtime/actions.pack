@@ -11052,7 +11052,7 @@
         "title": "Change how a tool of a source is confirmed",
         "description": "The preset asks before every run of an external tool. mode allow writes a rule (your overlay profiles/action_rules.pack) that lets one tool - or every tool of the source - run without asking; confirm asks again; reset takes your rule back out.",
         "labels": {
-          "pl": "Zmień potwierdzanie narzędzia źródła"
+          "pl": "Zmień pytanie o zgodę dla narzędzia źródła"
         },
         "inputs": [
           "json"
