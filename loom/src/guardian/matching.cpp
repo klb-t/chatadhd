@@ -5,6 +5,7 @@
 #include <set>
 
 #include "impl.h"
+#include "loom/port_profile.h"
 #include "loom/annotation_layer.h"
 #include "loom/log.h"
 #include "loom/use_model.h"
@@ -127,25 +128,25 @@ std::string claim_text_of(const Json& hyp_meta) {
 
 // ── the model: one call, JSON out ─────────────────────────────────────────────────────────────
 
-std::string Guardian::Impl::model_for(const Data& d, const std::string& conv_id) {
-  // The model the user chose for the guardian, else the model of this conversation (its last real reply): the text goes to the provider he picked for
-  // this conversation, not to another one. A new provider is the owner's decision (docs: P23).
-  const Json mine = rt.config().get(json::get_string(d.p.at("method"), "model_setting"));
-  if (mine.is_string() && !mine.get<std::string>().empty()) return mine.get<std::string>();
-  if (!conv_id.empty()) {
-    if (auto msgs = rt.db().get_msgs(conv_id)) {
-      for (auto it = msgs->rbegin(); it != msgs->rend(); ++it)
-        if (it->role == "assistant" && it->model && !it->model->empty() && it->model->rfind("loom:", 0) != 0) return *it->model;
-    }
-  }
-  const Json fallback = rt.config().get(json::get_string(d.p.at("method"), "model_fallback_setting"));
-  return fallback.is_string() ? fallback.get<std::string>() : std::string();
+annotations::ModelChoice Guardian::Impl::choice_for(const Data& d, const std::string& conv_id) {
+  // Owner decision (2026-10-15): "never the conversation's model unless the user set it by hand, never inherited". The choice is a policy
+  // (models.policies.guardian): guardian_model, the ports role guardian, the role analysis.fast, else NO model. The conversation's model is read
+  // only for a relative_to step that the user wrote himself.
+  (void)d;
+  std::string conversation_model;
+  if (!conv_id.empty())
+    if (auto msgs = rt.db().get_msgs(conv_id))
+      for (auto it = msgs->rbegin(); it != msgs->rend() && conversation_model.empty(); ++it)
+        if (it->role == "assistant" && it->model && !it->model->empty() && it->model->rfind("loom:", 0) != 0) conversation_model = *it->model;
+  return annotations::resolve_model(rt.config(), rt.paths().root, "guardian", conv_id, conversation_model);
 }
+
+std::string Guardian::Impl::model_for(const Data& d, const std::string& conv_id) { return choice_for(d, conv_id).model; }
 
 Result<Json> Guardian::Impl::call_json(const Data& d, const std::string& conv_id, const Json& call, const Json& vars, Json& issues, Json& cost) {
   const std::string model = model_for(d, conv_id);
   if (model.empty()) {
-    issues.push_back("no model is configured for the guardian");
+    issues.push_back("no analysis model set: the guardian reads with word lists only (set guardian_model, or the ports role guardian / analysis.fast)");
     return Json(nullptr);
   }
   LOOM_TRY_ASSIGN(std::string system, render_profile_template(json::get_string(call, "system"), vars));

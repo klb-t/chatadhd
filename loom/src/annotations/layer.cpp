@@ -52,6 +52,7 @@ Result<Policy> Policy::load(const std::filesystem::path& root) {
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("guardian", root));
   Policy p;
   p.p = profile.values().value("annotations", Json::object());
+  p.models = profile.values().value("models", Json::object());
   return p;
 }
 

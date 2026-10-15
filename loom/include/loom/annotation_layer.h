@@ -39,6 +39,7 @@ inline constexpr const char* kSchema = "loom.segment_annotation/2";
 // The `annotations` section of the profile guardian (values, overlays applied).
 struct Policy {
   Json p = Json::object();
+  Json models = Json::object();  // the `models` section of the profile (policies, tiers, flows)
   static Result<Policy> load(const std::filesystem::path& data_root);
   // The same, kept until the overlay file of the user changes (a producer that writes with every message must not read the profile each time).
   static Result<Policy> load_cached(const std::filesystem::path& data_root);
@@ -115,11 +116,30 @@ struct SegmentsPlan {
 SegmentsPlan segments_plan(const Config& cfg);
 // The classic analysis prompt, extended with the segment contract when the plan wants it (byte-identical to `base` when not).
 std::string extend_prompt(std::string_view base, const SegmentsPlan& plan, const Config& cfg);
+// The narrow question of the cheap-model flow: the segment contract alone (same categories and rules), asked in a call of its own.
+std::string narrow_prompt(const SegmentsPlan& plan, const Config& cfg);
 // Would the analyzer's model read this message (so nobody else should send it to a model)?
 bool analyzer_expected(const Config& cfg, const std::string& text);
 // Writes the annotations an analysis carries (segments and thread; regex analyses carry only a thread derived from the topics) and the run receipt.
 // Returns how many annotations were written. Called inside the graph ingestion, atomically with it.
 Result<int> write_analysis(Database& db, const Config* cfg, const std::filesystem::path& data_root, const std::string& message_id, const Json& analysis);
+
+// ── which model a background reader uses: a policy as data, never inherited from the conversation ──────────────────────────────────
+
+struct ModelChoice {
+  std::string model;   // "" = no model: the reader falls back to heuristics and says so
+  std::string via;     // which step of the policy decided: explicit:<setting> | role:<role> | relative_to | none
+  std::string reason;  // why there is none
+  std::string tier;    // cheap | mid | frontier | unknown
+  std::string flow;    // the flow this class of model gets (data: models.flows)
+};
+// Owner decision (2026-10-15): the conversation's model is never inherited. A policy (models.policies.<name>.chain; overlay-able) is a list of steps:
+// explicit {setting|model}, role {role} (the ports profile), relative_to {base: conversation | {role} | {setting}, tier_offset}, none.
+// `conversation_model` only matters to a relative_to step the user wrote; `price_per_million` (registry) refines the tier when known.
+ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& data_root, const std::string& policy, const std::string& conv_id,
+                          const std::string& conversation_model = std::string(), double price_per_million = -1);
+// cheap | mid | frontier | unknown (data: models.tiers; prices first, then name patterns).
+std::string model_tier(const Json& models_section, const std::string& model, double price_per_million = -1);
 
 // The method version of a producer: a short hash over the data that decides its answers (a list of phrases, a prompt).
 std::string method_version(const std::string& material);

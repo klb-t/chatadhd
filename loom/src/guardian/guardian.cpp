@@ -214,16 +214,9 @@ std::vector<Signal> Guardian::Impl::detect_heuristic(const Data& d, const Messag
 
 Result<std::optional<Signal>> Guardian::Impl::detect_model(const Data& d, const Message& m, Json& issues) {
   const Json& call = d.p.at("method").at("model_call");
-  std::string model;
-  for (const char* key : {"model_setting", "model_fallback_setting"}) {
-    const Json v = rt.config().get(json::get_string(d.p.at("method"), key));
-    if (v.is_string() && !v.get<std::string>().empty()) {
-      model = v.get<std::string>();
-      break;
-    }
-  }
+  const std::string model = model_for(d, m.conv_id);
   if (model.empty()) {
-    issues.push_back("no model is configured for the guardian");
+    issues.push_back("no analysis model set: the guardian reads with word lists only (set guardian_model, or the ports role guardian / analysis.fast)");
     return std::optional<Signal>();
   }
   std::string names, help;
@@ -802,6 +795,11 @@ Result<Json> Guardian::Impl::observe(const std::string& message_id, const Json& 
     if (signals.empty() && meth.model && !model_read && (meth.ask_model_when.empty() || meth.ask_model_when == "no_signal")) want_model = true;
     // The analyzer's one prompt contract reads the message for everyone: while its reading is still to come, the guardian does not send the message
     // to a model of its own (it reads the layer when the analyzer announces it); once the analyzer is done without a model reading, it does.
+    if (want_model && choice_for(d, m.conv_id).model.empty()) {
+      want_model = false;
+      out["model_reading"] = "no analysis model set";
+      out["issues"].push_back(say(d, m.text.empty() ? "en" : guess_lang(d, m.text), "no_model"));
+    }
     if (want_model && (m.semantic_status == "pending" || m.semantic_status == "executing") && annotations::analyzer_expected(rt.config(), m.text)) {
       want_model = false;
       out["model_reading"] = "awaiting_analyzer";

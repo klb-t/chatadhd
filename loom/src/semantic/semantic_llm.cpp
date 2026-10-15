@@ -50,7 +50,9 @@ bool SemanticLLM::enabled() const {
 SemanticLLM::Settings SemanticLLM::settings_locked() const {
   Json config = cfg_.all();
   const Json* active = json::find(config, "semantic_analysis");
-  Settings settings{active ? json::truthy(*active) : true, json::get_string(config, "semantic_model"), "", ""};
+  // The analysis model is chosen by policy (models.policies.analyzer: semantic_model, the ports role analysis.fast, else none) and never
+  // inherited from the conversation.
+  Settings settings{active ? json::truthy(*active) : true, annotations::resolve_model(cfg_, cfg_.path().parent_path(), "analyzer", "").model, "", ""};
   // Address and credential come from the provider the settings select; a
   // provider without a stored credential leaves them empty (not enabled).
   if (auto route = llm::resolve_route(llm::Services(cfg_, secrets_, http_), llm::RouteSelector{})) {
@@ -122,8 +124,12 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
   // One prompt contract for every reader of a message: entities, topics, relations, and - when somebody reads them (setting semantic_segments,
   // the guardian, the thread filter) - the segment categories and the thread. Off, the prompt is the classic one, byte for byte.
   const annotations::SegmentsPlan plan = annotations::segments_plan(cfg_);
-  request.prompt = annotations::extend_prompt(kAnalysisPrompt, plan, cfg_) + analysis_text;
-  request.parameters = Json{{"temperature", 0.1}, {"max_tokens", plan.wanted ? plan.max_tokens : 800}};
+  // The flow follows the class of the model (data: models.flows): a frontier-class model gets the one contract; a cheap one gets the classic
+  // analysis and, when somebody reads segments, one narrow question of its own.
+  const annotations::ModelChoice choice = annotations::resolve_model(cfg_, cfg_.path().parent_path(), "analyzer", "");
+  const bool narrow = plan.wanted && choice.flow == "narrow_questions";
+  request.prompt = (narrow ? std::string(kAnalysisPrompt) : annotations::extend_prompt(kAnalysisPrompt, plan, cfg_)) + analysis_text;
+  request.parameters = Json{{"temperature", 0.1}, {"max_tokens", plan.wanted && !narrow ? plan.max_tokens : 800}};
   request.route.base_url = settings.base;
   request.title = "ChatADHD-Semantic";
   request.timeout_ms = 30000;
@@ -161,9 +167,31 @@ Result<std::optional<Json>> SemanticLLM::call_llm(std::string_view text, const S
     log::debug("loom.semantic_llm", "Semantic LLM returned invalid JSON: {}", std::string(utf8::prefix(raw, 100)));
     return std::optional<Json>(std::nullopt);
   }
+  std::int64_t extra_calls = 0, extra_in = 0, extra_out = 0;
+  if (narrow && parsed->is_object()) {
+    llm::ModelRequest q;
+    q.kind = "semantic.segments";
+    q.action = "semantic.analyse";
+    q.models = {llm::ModelSpec{settings.model, "", Json::object()}};
+    q.prompt = annotations::narrow_prompt(plan, cfg_) + analysis_text;
+    q.parameters = Json{{"temperature", 0.1}, {"max_tokens", plan.max_tokens}};
+    q.route.base_url = settings.base;
+    q.title = "ChatADHD-Semantic";
+    q.timeout_ms = 30000;
+    if (auto qo = llm::use_model(llm::Services(cfg_, secrets_, http_), std::move(q)); qo && qo->last().state == llm::State::Ok) {
+      extra_calls = 1;
+      extra_in = static_cast<std::int64_t>(qo->last().received_bytes);
+      extra_out = static_cast<std::int64_t>(qo->last().text.size());
+      if (auto seg = parse_response_json(qo->last().text); seg && seg->is_object()) {
+        if (seg->contains("segments")) (*parsed)["segments"] = (*seg)["segments"];
+        if (seg->contains("thread")) (*parsed)["thread"] = (*seg)["thread"];
+      }
+    }
+  }
+  (void)extra_in;
   if (plan.wanted && parsed->is_object())
     (*parsed)["annotation"] = Json{{"version", plan.version},
-                                   {"cost", Json{{"calls", 1}, {"input_bytes", request.prompt.size()}, {"output_bytes", raw.size()}, {"receipt", result.operation_id}, {"model", result.model}}}};
+                                   {"cost", Json{{"calls", 1 + extra_calls}, {"flow", choice.flow}, {"input_bytes", request.prompt.size()}, {"output_bytes", raw.size() + static_cast<std::size_t>(extra_out)}, {"receipt", result.operation_id}, {"model", result.model}}}};
   return std::optional<Json>(std::move(*parsed));
 }
 

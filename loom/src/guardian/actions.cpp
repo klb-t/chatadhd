@@ -178,6 +178,8 @@ Result<Json> Guardian::Impl::post_pending(const Data& d, const std::string& conv
       else if (mode == "ask" && named) texts[l] = say(d, l, "ask_rule", params);
       else texts[l] = say(d, l, named ? "propose_rule" : "propose_rule_unnamed", params);
     }
+    if (method(d).model && choice_for(d, conv_id).model.empty())
+      for (const std::string l : {"en", "pl"}) texts[l] = texts[l].get<std::string>() + "\n" + say(d, l, "no_model");
     chat_route::OfferRequest req;
     req.conv_id = conv_id;
     req.action = "guardian.promote";
@@ -468,6 +470,11 @@ Result<Json> Guardian::Impl::status(const Data& d, const Json& request) {
     }
   }
   out["segments"] = segments;
+  {
+    const annotations::ModelChoice mc = choice_for(d, conv);
+    out["model"] = Json{{"model", mc.model}, {"via", mc.via}, {"tier", mc.tier}, {"flow", mc.flow}, {"reason", mc.reason}};
+    if (mc.model.empty() && (method(d).model)) out["model_note"] = say(d, lang, "no_model");
+  }
   out["text"] = text.empty() ? say(d, lang, "status_empty") : text;
   return out;
 }

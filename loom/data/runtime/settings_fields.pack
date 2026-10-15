@@ -434,7 +434,7 @@
         "group": "context",
         "type": "string",
         "has_default": false,
-        "description": "Model used by the guardian when its method asks one; empty = the default model. The call goes through use_model and the usage guards (x10, spending limits). Default: none."
+        "description": "Model used by the guardian when its method asks one (reading, naming, matching). The model of the conversation is never inherited (owner decision 2026-10-15): it is used only if you set this by hand. Resolution is a policy in the runtime profile guardian (models.policies.guardian, overlay-able): this setting; else the ports role guardian (preset: the same choice as analysis.fast, i.e. semantic_model); else analysis.fast; else NO model - the guardian then reads with word lists only and says so (status, proposals). A policy step relative_to (one tier cheaper than another model, tiers from models.tiers) is available but never preset. The call goes through use_model and the usage guards (x10, spending limits). Default: none."
       },
       {
         "key": "guardian_levels",
@@ -450,7 +450,7 @@
         "group": "context",
         "type": "string",
         "has_default": false,
-        "description": "Whether the semantic analyzer's one prompt also returns the segment categories of a message (correction, preference, exception, digression, joke, instruction ...) and its topic thread, written to the shared annotation layer: auto (preset: when something reads them - a guardian that uses a model, the lean representation, the thread filter), on or off (the classic prompt: entities, topics, relations). One call per message either way. Runtime profile guardian (annotations.analyzer). Default: auto."
+        "description": "Whether the semantic analyzer's one prompt also returns the segment categories of a message (correction, preference, exception, digression, joke, instruction ...) and its topic thread, written to the shared annotation layer: auto (preset: when something reads them - a guardian that uses a model, the lean representation, the thread filter), on or off (the classic prompt: entities, topics, relations). One call per message either way. Runtime profile guardian (annotations.analyzer). Default: auto. The flow follows the class of the analysis model (models.flows, calibration): a frontier-class model gets one call for everything, a cheap one the classic call and one narrow question for the segments."
       },
       {
         "key": "chat_thread_filter",

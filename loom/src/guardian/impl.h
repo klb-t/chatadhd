@@ -76,6 +76,7 @@ struct Guardian::Impl {
   Result<Match> find_match(const detail::Data& d, const Message& m, const std::string& kind, const std::vector<std::string>& tokens, const std::string& text, bool neg,
                            const std::vector<Node>& pool);
   Result<Json> call_json(const detail::Data& d, const std::string& conv_id, const Json& call, const Json& vars, Json& issues, Json& cost);
+  annotations::ModelChoice choice_for(const detail::Data& d, const std::string& conv_id);
   std::string model_for(const detail::Data& d, const std::string& conv_id);
   bool naming_allowed(const detail::Data& d);
   void refresh_claim(const detail::Data& d, Json& hypothesis_metadata);

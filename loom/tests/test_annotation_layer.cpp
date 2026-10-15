@@ -157,3 +157,6 @@ TEST_SUITE("annotation_layer") {
     CHECK(runs[0].at("cost").at("calls") == 1);
   }
 }
+
+#include "loom/config.h"
+

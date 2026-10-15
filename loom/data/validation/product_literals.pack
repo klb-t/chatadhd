@@ -593,7 +593,7 @@
         },
         {
           "path": "loom/data/runtime/guardian.pack",
-          "sha256": "3fbebc6b5ea47597f7dfa771f4310d2b1f0eec78ec115925d435b57a4ac20163"
+          "sha256": "99cbc26b677e14e2a1249c080b4a038d52cab48e694caba89f5d0a2c0c0ba7dd"
         },
         {
           "path": "loom/data/runtime/import.pack",
@@ -637,7 +637,7 @@
         },
         {
           "path": "loom/data/runtime/ports.pack",
-          "sha256": "643d036c78f7dec2a49ce7fe75f32c269ee797a2bb844425e2ebfd258a107fac"
+          "sha256": "9946014ddafbc87556a9e198fe1090e3f26a64970342993e7337a486a36f09e2"
         },
         {
           "path": "loom/data/runtime/re.pack",
@@ -673,7 +673,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "e5ed78ff3a9969ab9a18b1e61a650ae40c22406f44c4d062986c90cdd9e2d07e"
+          "sha256": "b901c492317cc4ac930e2339c366e4419116fec7935694f46448d44f0681c55f"
         },
         {
           "path": "loom/data/runtime/ui_animation.pack",
@@ -696,7 +696,7 @@
           "sha256": "e43f04bd6a01f3015fe6ce5b6d857c9ac7ca606ffcceb05e1ca54158e79d29f9"
         }
       ],
-      "output_sha256": "c0ff345075aea7f38219690c97d2d3913192b61310170677ca0a17a46d7f2681",
+      "output_sha256": "a5d246dcb2fd40c43407819cdda4de0ffb961312113fcb481749a7dd25f0a599",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

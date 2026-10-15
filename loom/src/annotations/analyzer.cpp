@@ -92,13 +92,22 @@ std::string extend_prompt(std::string_view base, const SegmentsPlan& plan, const
   return std::string(base.substr(0, pos)) + text + std::string(base.substr(pos));
 }
 
+std::string narrow_prompt(const SegmentsPlan& plan, const Config& cfg) {
+  auto pol = Policy::load_cached(cfg.path().parent_path());
+  if (!pol) return {};
+  const std::string head = json::get_string(pol->models.value("flow_defs", Json::object()).value("narrow_questions", Json::object()), "segment_prompt");
+  // The contract is the analyzer's own addendum, so that both flows ask the same thing and the annotations mean the same.
+  const std::string with = extend_prompt("\nMessage:\n", plan, cfg);
+  const std::string contract = with.substr(0, with.size() - std::string("\nMessage:\n").size());
+  return replace_all(head, "{{contract}}", contract);
+}
+
 bool analyzer_expected(const Config& cfg, const std::string& text) {
   const SegmentsPlan plan = segments_plan(cfg);
   if (!plan.wanted) return false;
   const Json active = cfg.get("semantic_analysis");
   if (active.is_boolean() && !active.get<bool>()) return false;
-  const Json model = cfg.get("semantic_model");
-  if (!model.is_string() || model.get<std::string>().empty()) return false;
+  if (resolve_model(cfg, cfg.path().parent_path(), "analyzer", "").model.empty()) return false;
   auto pol = Policy::load_cached(cfg.path().parent_path());
   const std::int64_t min_len = pol ? json::get_int(pol->p.value("analyzer", Json::object()), "min_text_codepoints", 20) : 20;
   return static_cast<std::int64_t>(utf8::length(text)) >= min_len;

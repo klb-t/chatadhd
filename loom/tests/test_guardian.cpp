@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include "loom/action_overlay.h"
+#include "loom/annotation_layer.h"
 #include "loom/action_runner.h"
 #include "loom/chat_route.h"
 #include "loom/config.h"
@@ -439,6 +440,7 @@ TEST_SUITE("guardian") {
   TEST_CASE("held or failed model readings never stop anything and are reported") {
     Fixture f;
     f.rt->config().set("guardian_method", "model");
+    f.rt->config().set("guardian_model", "test/guard");
     f.say("user", "Write a summary of the quarterly report", false);
     const std::string m = f.say("user", "make it shorter please", false);
     f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
@@ -632,7 +634,7 @@ TEST_SUITE("guardian") {
   TEST_CASE("P23.2: the analyzer's one prompt yields entities, topics AND segment categories; the guardian reuses them - one model call per message") {
     Fixture f;
     f.rt->config().set("semantic_analysis", true);
-    f.rt->config().set("semantic_model", "test/sem");
+    f.rt->config().set("semantic_model", "test/frontier-opus");
     f.rt->config().set("guardian_method", "model");
     f.rt->config().set("guardian_model", "test/guard");
     f.say("user", "Write a summary of the quarterly report", false);
@@ -934,5 +936,68 @@ TEST_SUITE("guardian") {
     f.conv = unwrap(f.rt->db().create_conv("Other")).id;
     CHECK_FALSE(has_text(f.sent("Hello there"), "Vary the structure."));
     CHECK(f.overlay_doc().at("overrides").at("rules").size() == 1);
+  }
+
+  TEST_CASE("P23 owner decision: the conversation's model is never inherited - setting, role, analysis, else no model and it says so") {
+    Fixture f;
+    f.rt->config().set("guardian_method", "model");
+    f.say("user", "Write a summary", false);
+    f.say("assistant", "ok", false);  // the chat model: test/model (default_model) is NOT a guardian model
+    const std::string m = f.say("user", "make it shorter now", false);
+    const Json none = f.invoke("guardian.annotate", Json{{"message_id", m}, {"post", false}});
+    CHECK(f.transport->requests().empty());  // no call
+    CHECK_FALSE(none.at("issues").empty());   // and it reports why
+    CHECK(none.at("issues")[0].get<std::string>().find("No analysis model is set") != std::string::npos);
+    const Json st = f.status();
+    CHECK(st.at("model").at("model") == "");
+    CHECK(st.contains("model_note"));
+    auto model_of_call = [&](const std::string& text) {
+      const std::string id = f.say("user", text, false);
+      f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"kind":"none","confidence":0})")));
+      (void)f.invoke("guardian.annotate", Json{{"message_id", id}, {"post", false}});
+      return unwrap(json::parse(f.transport->requests().back().body)).value("model", "");
+    };
+    f.rt->config().set("semantic_model", "test/analysis");  // the analysis model: via the ports role guardian (preset = analysis.fast)
+    CHECK(model_of_call("make it shorter again") == "test/analysis");
+    f.rt->config().set("guardian_model", "test/model");     // the chat model, but by hand
+    CHECK(model_of_call("shorter once more") == "test/model");
+  }
+
+  TEST_CASE("P23 owner decision: a policy the user wrote may derive the model from the conversation's (relative_to, one tier down); the flow follows the class of the model") {
+    Fixture f;
+    f.rt->config().set("guardian_method", "model");
+    std::filesystem::create_directories(f.td.path() / "profiles");
+    std::ofstream(f.td.path() / "profiles" / "guardian.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "guardian"},
+                {"overrides", Json{{"models", Json{{"policies", Json{{"guardian", Json{{"chain", Json::array({Json{{"type", "relative_to"}, {"base", "conversation"}, {"tier_offset", -1}}})}}}}},
+                                                   {"tier_models", Json{{"mid", "test/mid-model"}, {"cheap", "test/cheap-model"}}}}}}}}.dump();
+    f.say("user", "Write a summary", false);
+    NewMessage a;
+    a.conv_id = f.conv;
+    a.role = "assistant";
+    a.text = "ok";
+    a.model = "anthropic/claude-opus-4";
+    (void)unwrap(f.rt->db().create_msg(a));
+    const Json st = f.status();
+    CHECK(st.at("model").at("model") == "test/mid-model");   // frontier -> one tier cheaper
+    CHECK(st.at("model").at("via") == "relative_to:mid");
+    CHECK(st.at("model").at("flow") == "narrow_questions");
+    CHECK(annotations::model_tier(unwrap(annotations::Policy::load(f.td.path())).models, "anthropic/claude-opus-4") == "frontier");
+    CHECK(annotations::model_tier(unwrap(annotations::Policy::load(f.td.path())).models, "x/claude-haiku-4") == "cheap");
+  }
+
+  TEST_CASE("P23 flows: a frontier-class analysis model gets one call for everything, a cheap one the classic call and a narrow question") {
+    auto run = [](const std::string& model) {
+      Fixture f;
+      f.rt->config().set("semantic_analysis", true);
+      f.rt->config().set("semantic_model", model);
+      f.rt->config().set("semantic_segments", "on");
+      f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"entities":[],"topics":[],"relations":[],"segments":[],"thread":"t"})")));
+      f.transport->expect("POST", "https://guardian.test/chat/completions", net::ScriptedTransport::Reply::json(200, chat_reply(R"({"segments":[],"thread":"narrow thread"})")));
+      f.user("Write a summary of the quarterly report for Friday");
+      return f.transport->requests().size();
+    };
+    CHECK(run("test/frontier-opus") == 1);
+    CHECK(run("test/cheap-haiku") == 2);
   }
 }

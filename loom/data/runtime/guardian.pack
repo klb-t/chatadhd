@@ -60,7 +60,7 @@
         "user": "Previous assistant reply (may be empty):\n{{previous}}\n\nUser message:\n{{text}}",
         "min_confidence": 0.5
       },
-      "model_fallback": "conversation"
+      "model_fallback": "policy models.policies.guardian (never the conversation's model)"
     },
     "promotion": {
       "setting": "guardian_promotion",
@@ -1254,7 +1254,8 @@
         "remembered_empty": "I do not remember any rule about you yet.",
         "remembered_line": "- {{claim}} ({{scope}}, since {{since}})",
         "merged": "Joined: {{what}}",
-        "unmerged": "Separated: {{what}}"
+        "unmerged": "Separated: {{what}}",
+        "no_model": "(No analysis model is set, so I read with word lists only: set guardian_model or the analysis model.)"
       },
       "pl": {
         "propose_rule": "Zauważyłem, że poprawiasz to samo już {{count}} razy: \"{{claim}}\". Zapamiętać to jako regułę dla: {{scope}}{{exceptions}}{{why}}? To nadal Twoja reguła: możesz ją wyłączyć w każdej chwili.",
@@ -1281,7 +1282,8 @@
         "remembered_empty": "Nie pamiętam jeszcze żadnej reguły o Tobie.",
         "remembered_line": "- {{claim}} ({{scope}}, od {{since}})",
         "merged": "Połączone: {{what}}",
-        "unmerged": "Rozdzielone: {{what}}"
+        "unmerged": "Rozdzielone: {{what}}",
+        "no_model": "(Nie ustawiono modelu analizy, więc czytam tylko listami słów: ustaw guardian_model albo model analizy.)"
       }
     },
     "scope_names": {
@@ -1671,6 +1673,137 @@
         "en": "Standing preferences of the user:",
         "pl": "Stałe preferencje użytkownika:"
       }
+    },
+    "models": {
+      "calibration": true,
+      "note": {
+        "en": "CALIBRATION: the flows, tiers and prompts here are a first reading of the repo's researched prompts (data/prompts/*.prompt, docs/reports/model-research-2026-10-04.md); the owner says research and experiments are still needed. Owner decision 2026-10-15: the model of the conversation is never inherited by a background reader; it can only influence the choice through a policy the user wrote (relative_to).",
+        "pl": "KALIBRACJA: przepływy, klasy i prompty to pierwszy odczyt wyników badań w repo (data/prompts/*.prompt, docs/reports/model-research-2026-10-04.md); właściciel mówi, że badania i eksperymenty trwają. Decyzja właściciela 2026-10-15: model rozmowy nigdy nie jest dziedziczony przez czytnika w tle; może wpłynąć na wybór tylko przez politykę, którą napisał użytkownik (relative_to)."
+      },
+      "policies": {
+        "guardian": {
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "guardian_model"
+            },
+            {
+              "type": "role",
+              "role": "guardian"
+            },
+            {
+              "type": "role",
+              "role": "analysis.fast"
+            },
+            {
+              "type": "none"
+            }
+          ]
+        },
+        "analyzer": {
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "semantic_model"
+            },
+            {
+              "type": "role",
+              "role": "analysis.fast"
+            },
+            {
+              "type": "none"
+            }
+          ]
+        }
+      },
+      "tiers": [
+        {
+          "id": "cheap",
+          "max_per_million": 1.0,
+          "patterns": [
+            "haiku",
+            "mini",
+            "flash",
+            "lite",
+            "small",
+            "nano"
+          ]
+        },
+        {
+          "id": "mid",
+          "max_per_million": 6.0,
+          "patterns": [
+            "sonnet",
+            "turbo",
+            "medium"
+          ]
+        },
+        {
+          "id": "frontier",
+          "patterns": [
+            "opus",
+            "gpt-5",
+            "gpt-4.5",
+            "ultra",
+            "pro",
+            "large"
+          ]
+        }
+      ],
+      "tier_models": {
+        "cheap": "",
+        "mid": "",
+        "frontier": ""
+      },
+      "flows": {
+        "cheap": "narrow_questions",
+        "mid": "narrow_questions",
+        "frontier": "embed_conversation",
+        "unknown": "narrow_questions"
+      },
+      "flow_defs": {
+        "embed_conversation": {
+          "calls": "one",
+          "does": [
+            "entities",
+            "relations",
+            "segments",
+            "threads"
+          ],
+          "planned": [
+            "hypotheses"
+          ],
+          "prompt": "annotations.analyzer.prompt (extension of semantic.analysis)",
+          "status": "calibration"
+        },
+        "narrow_questions": {
+          "calls": "several",
+          "does": [
+            "classic analysis call",
+            "one narrow question: category of each segment and the thread"
+          ],
+          "planned": [
+            "relations between given items (data/prompts/relation.prompt)"
+          ],
+          "status": "calibration",
+          "segment_prompt": "Read the following chat message. Return ONLY valid JSON (no markdown): {\"segments\": [...], \"thread\": \"...\"}.\n{{contract}}\nMessage:\n"
+        }
+      },
+      "relative_to": {
+        "status": "implemented",
+        "never_preset": true,
+        "scale": "tier",
+        "planned": {
+          "complexity": {
+            "status": "planned",
+            "note": {
+              "en": "Proportional to the assessed complexity of the topic.",
+              "pl": "Proporcjonalnie do ocenionej złożoności tematu."
+            }
+          }
+        }
+      },
+      "graph_addressable": true
     }
   },
   "value_schema": {
