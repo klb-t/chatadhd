@@ -214,6 +214,13 @@ TEST_SUITE("action_runner") {
     CHECK(fits.at("result").at("data").at("element").at("class") == "conversation");
   }
 
+  TEST_CASE("the port tool_source runs as a step: tool_source.list completes instead of Unsupported") {
+    Fixture f;
+    const Json listed = unwrap(f.runner().run(Json{{"action", "tool_source.list"}, {"element", Json{{"class", "application"}}}}));
+    CHECK(listed.at("status") == "completed");
+    CHECK(listed.at("result").at("data").is_object());
+  }
+
   TEST_CASE("the ports environments and agent run as steps (P26): the same answers as through loom_invoke") {
     Fixture f;
     const Json listed = unwrap(f.runner().run(Json{{"action", "environments.list"}, {"element", Json{{"class", "application"}}}}));

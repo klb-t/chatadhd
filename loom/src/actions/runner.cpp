@@ -2,6 +2,7 @@
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
 #include "loom/agent.h"
+#include "loom/tool_sources.h"
 #include "loom/environments.h"
 #include "loom/guardian.h"
 #include "loom/action_spend.h"
@@ -877,6 +878,7 @@ Result<Json> ActionRunner::invoke_port(std::string_view port, std::string_view a
     return Error(Errc::Unsupported, "environments has no action '" + std::string(action) + "'");
   }
   if (port == "agent") return agent::invoke(rt_, action, request);
+  if (port == "tool_source") return tool_sources::invoke(rt_, action, request);
   return Error(Errc::Unsupported, "port '" + std::string(port) + "' cannot be run as a step");
 }
 
