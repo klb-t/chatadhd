@@ -246,10 +246,10 @@ TEST_SUITE("tool_sources") {
     CHECK(all.find(kCanaryEnv) == std::string::npos);
     CHECK(all.find("fake_token") != std::string::npos);  // the reference is there
     // a missing key is said, by name
-    f.rt->secrets().erase("fake_token");
+    f.rt->secrets().erase("fake_env_key");
     const Json s = f.call("sync", Json{{"source", "fake"}});
     CHECK(s.at("sources").at(0).at("ok") == false);
-    CHECK(s.at("sources").at(0).at("error").get<std::string>().find("fake_token") != std::string::npos);
+    CHECK(s.at("sources").at(0).at("error").get<std::string>().find("fake_env_key") != std::string::npos);
   }
 
   TEST_CASE("the streamable HTTP transport: JSON and SSE answers, session header, bearer from the vault") {
@@ -266,23 +266,25 @@ TEST_SUITE("tool_sources") {
               R::json(200, Json{{"jsonrpc", "2.0"}, {"id", 2}, {"result", Json{{"tools", Json::array({Json{{"name", "ping"}, {"description", "Ping"}, {"inputSchema", Json{{"type", "object"}, {"properties", Json{{"host", Json{{"type", "string"}}}}}}}}})}}}}));
     t->expect("DELETE", "https://tools.example/mcp", R::text(405, ""));
     f.rt->set_http_transport(t);
-    const Json added = f.call("add", Json{{"id", "web"}, {"transport", "http"}, {"url", "https://tools.example/mcp?key=urlsecret"}, {"access", Json{{"secret", "http_token"}}}});
-    CHECK(added.at("sync").at("ok") == false);  // the scripted url prefix has no query: the fallback answers an error
-    // with the right url
+    f.call("add", Json{{"id", "web"}, {"transport", "http"}, {"url", "https://tools.example/mcp?key=urlsecret"}, {"access", Json{{"secret", "http_token"}}}});
+    CHECK(!f.catalogue_entry("tool.web.ping").is_null());
+    const auto first = t->requests();
+    REQUIRE(first.size() >= 3);
+    CHECK(net::header_value(first[0].headers, "Authorization") == std::string("Bearer ") + kCanary);  // the bytes reach the wire only
+    CHECK(net::header_value(first[1].headers, "Mcp-Session-Id") == "sess-1");
+    CHECK(net::header_value(first[2].headers, "MCP-Protocol-Version") == "2025-06-18");
+    // the same answer as an SSE stream
     t = std::make_shared<net::ScriptedTransport>();
     t->expect("POST", "https://tools.example/mcp", init);
     t->expect("POST", "https://tools.example/mcp", R::text(202, ""));
     t->expect("POST", "https://tools.example/mcp",
-              R::sse({Json{{"jsonrpc", "2.0"}, {"id", 2}, {"result", Json{{"tools", Json::array({Json{{"name", "ping"}, {"description", "Ping"}, {"inputSchema", Json{{"type", "object"}, {"properties", Json{{"host", Json{{"type", "string"}}}}}}}}})}}}}.dump()}));
+              R::sse({Json{{"jsonrpc", "2.0"}, {"id", 2}, {"result", Json{{"tools", Json::array({Json{{"name", "pong"}, {"inputSchema", Json::object()}}})}}}}.dump()}));
     t->expect("DELETE", "https://tools.example/mcp", R::text(405, ""));
     f.rt->set_http_transport(t);
-    f.call("add", Json{{"id", "web"}, {"transport", "http"}, {"url", "https://tools.example/mcp"}, {"access", Json{{"secret", "http_token"}}}});
-    CHECK(!f.catalogue_entry("tool.web.ping").is_null());
-    const auto seen = t->requests();
-    REQUIRE(seen.size() >= 3);
-    CHECK(net::header_value(seen[0].headers, "Authorization") == std::string("Bearer ") + kCanary);  // the bytes reach the wire only
-    CHECK(net::header_value(seen[1].headers, "Mcp-Session-Id") == "sess-1");
-    CHECK(net::header_value(seen[2].headers, "MCP-Protocol-Version") == "2025-06-18");
+    const Json again = f.call("sync", Json{{"source", "web"}});
+    CHECK(again.at("sources").at(0).at("ok") == true);
+    CHECK(!f.catalogue_entry("tool.web.pong").is_null());
+    CHECK(f.catalogue_entry("tool.web.ping").is_null());  // a tool the server no longer lists is gone
     CHECK(f.everything().find(kCanary) == std::string::npos);
     CHECK(f.everything().find("urlsecret") == std::string::npos);
   }
@@ -294,4 +296,13 @@ TEST_SUITE("tool_sources") {
     CHECK(bad.error().message.find("known: mcp") != std::string::npos);
     CHECK(tool_sources::registry().contains("mcp"));
   }
+}
+TEST_CASE("zz debug") {
+  Fixture f;
+  f.add_stdio();
+  std::ifstream in(f.td.path() / "profiles/actions.pack");
+  std::stringstream ss; ss << in.rdbuf();
+  MESSAGE(ss.str().substr(0, 1500));
+  auto cat = action_catalogue(f.rt->paths().root);
+  MESSAGE(cat ? std::to_string(cat->at("actions").size()) : cat.error().message);
 }
