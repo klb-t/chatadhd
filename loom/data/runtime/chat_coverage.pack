@@ -1961,13 +1961,9 @@
         },
         "via": "action",
         "action": "interaction.rebind",
-        "surfaces": {
-          "c_abi": [
-            "loom_view_write"
-          ],
-          "http": [
-            "POST /api/views/write"
-          ]
+        "note": {
+          "en": "Writes through the same executors as views.write (loom_view_write, POST /api/views/write), which are listed with views_write.",
+          "pl": "Zapisuje tymi samymi wykonawcami co views.write (loom_view_write, POST /api/views/write), wymienionymi przy views_write."
         },
         "examples": {
           "pl": "przypisz capslock do powiększenia",

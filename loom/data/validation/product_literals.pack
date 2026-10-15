@@ -549,7 +549,7 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "06aa01f7ebc094c801d667b1be5f3fa7bc867e4c86d703775d218f656ae3786b"
+          "sha256": "b13cab2e91ddef8e38d47b594270dfdb955e29986c243c2d3328f240fed6f4c9"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
