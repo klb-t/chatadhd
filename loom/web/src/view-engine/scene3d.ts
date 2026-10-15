@@ -88,7 +88,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   gl.domElement.tabIndex = 0;
   host.appendChild(gl.domElement);
   const screenCfg = (renderer.screen ?? {}) as { orbit?: Record<string, number>; look?: Record<string, number>; fov_deg?: number };
-  const orbitCfg = { distance_m: 9, min_m: 1.5, max_m: 30, yaw_deg: 25, pitch_deg: 18, ...(screenCfg.orbit ?? {}) };
+  const orbitCfg = { distance_m: 9, min_m: 1.5, max_m: 30, yaw_deg: 25, pitch_deg: 18, fit: true, ...(screenCfg.orbit ?? {}) } as { distance_m: number; min_m: number; max_m: number; yaw_deg: number; pitch_deg: number; fit: boolean | number };
   const lookFov = screenCfg.look?.fov_deg ?? 70, orbitFov = screenCfg.fov_deg ?? 55;
 
   const scene = new Scene();
@@ -106,7 +106,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   let view: SceneViewState = { panX: 0, panY: 0, zoom: 1, angle: 0, labels: false };
   let mode: ScreenMode = "orbit";
   let yaw = rad(orbitCfg.yaw_deg), pitch = rad(orbitCfg.pitch_deg), dist = orbitCfg.distance_m;
-  let lookYaw = 0, lookPitch = 0;
+  let lookYaw = 0, lookPitch = 0, zoomedByUser = false;
   let frames = 0, xrMode: XrMode | null = null, session: XRSession | null = null;
   let azimuth = 0, sector: string | null = null, lastBlendAz = Number.NaN, dirty = true;
   let hintLines: string[] = [], hintMesh: Mesh | null = null;
@@ -203,9 +203,25 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
       world.add(new LineSegments(g, new LineBasicMaterial({ color: 0xaab6c5, transparent: true, opacity: cfg.edgeOpacity })));
     }
     lastBlendAz = Number.NaN; dirty = true;
+    fitOrbit();
   }
 
   // ── view state, camera ──
+  /** The orbit distance that frames the whole scene (its far radius) in the narrower of the two fields of view, until the user zooms by hand. */
+  function fitOrbit() {
+    if (zoomedByUser || !orbitCfg.fit || !spatial) return;
+    const vfov = rad(orbitFov), hfov = 2 * Math.atan(Math.tan(vfov / 2) * Math.max(0.2, camera.aspect));
+    const radius = Math.max(cfg.farM, spatial.maxDistance, 1) * 1.1;
+    dist = clamp(radius / Math.sin(Math.min(vfov, hfov) / 2), orbitCfg.min_m, orbitCfg.max_m);
+  }
+  /** The hint panel is at most as wide as the screen shows at its distance (a narrow phone screen); in XR it keeps its own width. */
+  function fitHint() {
+    if (!hintMesh) return;
+    const hc = (renderer as { hint?: Record<string, number> }).hint ?? {};
+    const distance = hc.distance_m ?? 1.25, widthM = hc.width_m ?? 1;
+    const visibleW = 2 * distance * Math.tan(rad(camera.fov) / 2) * camera.aspect;
+    hintMesh.scale.setScalar(xrMode ? 1 : Math.min(1, (0.96 * visibleW) / widthM));
+  }
   function applyView() {
     root.position.set(view.panX * 0.0025, -view.panY * 0.0025, 0);
     root.rotation.y = -rad(view.angle);
@@ -278,7 +294,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     mesh.renderOrder = 100;
     mesh.position.set(0, -Math.tan(rad(down)) * distance, -distance);
     mesh.userData.hint = true;
-    camera.add(mesh); hintMesh = mesh;
+    camera.add(mesh); hintMesh = mesh; fitHint();
   }
 
   // ── published state (tests, the panel's status line) ──
@@ -294,6 +310,19 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     stateEl.dataset.mode = s.mode; stateEl.dataset.xr = s.xr; stateEl.dataset.azimuth = String(s.azimuth); stateEl.dataset.sector = s.sector ?? "";
     stateEl.dataset.hint = s.hint; stateEl.dataset.alpha = JSON.stringify(s.alpha); stateEl.dataset.scale = JSON.stringify(s.scale);
     stateEl.dataset.frames = String(frames);
+    stateEl.dataset.positions = JSON.stringify(positions());
+    stateEl.dataset.xrEvents = xrLog.join(" ");
+  }
+  /** Screen position (CSS px in the canvas) and world position (metres, after the scene move) of every node: for pointing and for tests. */
+  function positions() {
+    const r = gl.domElement.getBoundingClientRect(), v = new Vector3();
+    scene.updateMatrixWorld(); camera.updateMatrixWorld();
+    return nodes.map(n => {
+      n.mesh.getWorldPosition(v);
+      const w = { wx: Math.round(v.x * 1000) / 1000, wy: Math.round(v.y * 1000) / 1000, wz: Math.round(v.z * 1000) / 1000 };
+      v.project(camera);
+      return { id: n.mark.id, x: Math.round(((v.x + 1) / 2) * r.width), y: Math.round(((1 - v.y) / 2) * r.height), visible: v.z > -1 && v.z < 1 && Math.abs(v.x) <= 1 && Math.abs(v.y) <= 1, ...w };
+    });
   }
 
   // ── flat-screen pointer: drag turns, wheel moves, a short click picks ──
@@ -320,6 +349,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pointers.size === 2) {
       const [a, b] = [...pointers.values()], d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (pinchBase > 0 && mode === "orbit") zoomedByUser = true;
       if (pinchBase > 0 && mode === "orbit") dist = clamp(dist * (pinchBase / d), orbitCfg.min_m, orbitCfg.max_m);
       pinchBase = d; if (drag) drag.moved = true; return;
     }
@@ -338,6 +368,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   const onWheel = (e: WheelEvent) => {
     if (mode !== "orbit") return;
     e.preventDefault();
+    zoomedByUser = true;
     dist = clamp(dist * Math.exp(e.deltaY * 0.0012), orbitCfg.min_m, orbitCfg.max_m);
   };
   gl.domElement.addEventListener("pointerdown", onDown);
@@ -353,6 +384,13 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   const stickState = new Map<number, { gesture: string | null; at: number }>();
   const down = new Set<string>();
   const stickCfg = ((renderer.xr ?? {}) as { stick?: { threshold?: number; repeat_ms?: number } }).stick ?? {};
+  /** The XR events reported so far (the last ones), exposed in the published state: what the scene saw, whatever the panel did with it. */
+  const xrLog: string[] = [];
+  const emitXr = (p: XrPayload) => {
+    xrLog.push(`${p.event.button ?? p.event.gesture}${p.picked ? `>${p.picked}` : ""}`);
+    if (xrLog.length > 40) xrLog.shift();
+    cb.onXr(p);
+  };
   const targets = (): PickTarget[] => nodes.map(n => { const p = n.mesh.getWorldPosition(new Vector3()); return { id: n.mark.id, x: p.x, y: p.y, z: p.z, radius: n.mark.radiusM * root.scale.x }; });
   function pick(origin: Vector3, dir: Vector3): string | null {
     return pickByRay([origin.x, origin.y, origin.z], [dir.x, dir.y, dir.z], targets(), cfg.pickToleranceDeg);
@@ -374,13 +412,18 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
       const src = (ev as { data?: XRInputSource }).data;
       info.hand = src?.handedness; info.isHand = !!src?.hand;
     });
+    ctl.addEventListener("disconnected", () => {
+      for (const kind of ["trigger", "squeeze", "primary"]) down.delete(buttonName(info.hand, kind));
+      cb.onXrButtons([...down]);
+      info.hand = undefined; info.isHand = false;
+    });
     ctl.addEventListener("selectstart", () => {
-      if (info.isHand) { cb.onXr({ event: { gesture: "pinch", gaze: true }, picked: headRay() }); return; }
+      if (info.isHand) { emitXr({ event: { gesture: "pinch", gaze: true }, picked: headRay() }); return; }
       const b = buttonName(info.hand, "trigger"); down.add(b); cb.onXrButtons([...down]);
-      cb.onXr({ event: { button: b }, picked: controllerRay(ctl) });
+      emitXr({ event: { button: b }, picked: controllerRay(ctl) });
     });
     ctl.addEventListener("selectend", () => { if (!info.isHand) { down.delete(buttonName(info.hand, "trigger")); cb.onXrButtons([...down]); } });
-    ctl.addEventListener("squeezestart", () => { const b = buttonName(info.hand, "squeeze"); down.add(b); cb.onXrButtons([...down]); cb.onXr({ event: { button: b }, picked: controllerRay(ctl) }); });
+    ctl.addEventListener("squeezestart", () => { const b = buttonName(info.hand, "squeeze"); down.add(b); cb.onXrButtons([...down]); emitXr({ event: { button: b }, picked: controllerRay(ctl) }); });
     ctl.addEventListener("squeezeend", () => { down.delete(buttonName(info.hand, "squeeze")); cb.onXrButtons([...down]); });
     scene.add(ctl);
     return { ctl, info };
@@ -393,11 +436,11 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
       if (gp) {
         const g = stickGesture(gp.axes[2] ?? 0, gp.axes[3] ?? 0, stickCfg.threshold ?? 0.7);
         const st = stickState.get(k) ?? { gesture: null, at: 0 };
-        if (g && (g !== st.gesture || now - st.at >= (stickCfg.repeat_ms ?? 350))) { cb.onXr({ event: { gesture: g }, picked: null }); stickState.set(k, { gesture: g, at: now }); }
+        if (g && (g !== st.gesture || now - st.at >= (stickCfg.repeat_ms ?? 350))) { emitXr({ event: { gesture: g }, picked: null }); stickState.set(k, { gesture: g, at: now }); }
         else if (!g) stickState.set(k, { gesture: null, at: 0 });
         else stickState.set(k, { gesture: g, at: st.at });
         const primary = gp.buttons[4]?.pressed ?? false, name = buttonName(s.handedness, "primary");
-        if (primary && !down.has(name)) { down.add(name); cb.onXrButtons([...down]); cb.onXr({ event: { button: "primary" }, picked: null }); }
+        if (primary && !down.has(name)) { down.add(name); cb.onXrButtons([...down]); emitXr({ event: { button: "primary" }, picked: null }); }
         else if (!primary && down.has(name)) { down.delete(name); cb.onXrButtons([...down]); }
       }
       k++;
@@ -406,20 +449,20 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
       if (!c.ctl.visible) return;
       const p = c.ctl.getWorldPosition(new Vector3());
       const g = swipes[i].push(now, [p.x, p.y, p.z]);
-      if (g) cb.onXr({ event: { gesture: g }, picked: null });
+      if (g) emitXr({ event: { gesture: g }, picked: null });
     });
     if (controllers[0].ctl.visible && controllers[1].ctl.visible) {
       const l = controllers.find(c => c.info.hand === "left") ?? controllers[0], r = controllers.find(c => c.info.hand === "right") ?? controllers[1];
       const lp = l.ctl.getWorldPosition(new Vector3()), rp = r.ctl.getWorldPosition(new Vector3());
       const res = rotate.push(now, [lp.x, lp.y, lp.z], [rp.x, rp.y, rp.z]);
-      if (res) cb.onXr({ event: { gesture: res.gesture }, picked: null });
+      if (res) emitXr({ event: { gesture: res.gesture }, picked: null });
     } else rotate.reset();
   }
 
   // ── loop ──
   const resize = () => {
     const w = Math.max(1, host.clientWidth), h = Math.max(1, host.clientHeight || Math.round(w * 0.62));
-    if (!xrMode) { gl.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+    if (!xrMode) { gl.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); fitOrbit(); fitHint(); }
     dirty = true;
   };
   const observer = typeof ResizeObserver !== "undefined" ? new ResizeObserver(resize) : null;
@@ -427,12 +470,12 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
   resize();
   gl.setAnimationLoop((time: number) => {
     frames++;
-    if (!xrMode) placeCamera();
+    if (!xrMode) { placeCamera(); fitHint(); }
     userMarker.visible = !xrMode && mode === "orbit";
     applyBlend(dirty); dirty = false;
     if (xrMode) pollXr(time);
     gl.render(scene, camera);
-    if (frames % 30 === 1) publish();
+    if (frames % 20 === 1) publish();
   });
 
   async function enter(m: XrMode, features: { required?: string[]; optional?: string[] }, transparent: boolean) {
@@ -441,12 +484,12 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     const s = await xr.requestSession(m, { requiredFeatures: features.required ?? [], optionalFeatures: features.optional ?? [] });
     gl.xr.setReferenceSpaceType(((renderer.xr ?? {}) as { reference_space?: XRReferenceSpaceType }).reference_space ?? "local");
     await gl.xr.setSession(s);
-    session = s; xrMode = m;
+    session = s; xrMode = m; fitHint();
     scene.background = transparent && m === "immersive-ar" ? null : new Color(BG);
     gl.setClearAlpha(transparent && m === "immersive-ar" ? 0 : 1);
     s.addEventListener("end", () => {
       session = null; xrMode = null; down.clear(); cb.onXrButtons([]);
-      scene.background = new Color(BG); gl.setClearAlpha(1); resize(); dirty = true; cb.onSession("end", m); publish();
+      scene.background = new Color(BG); gl.setClearAlpha(1); resize(); fitHint(); dirty = true; cb.onSession("end", m); publish();
     });
     dirty = true; cb.onSession("start", m); publish();
   }
@@ -460,13 +503,7 @@ export function createScene(host: HTMLElement, cfg: SpatialConfig, renderer: { x
     enter,
     async end() { if (session) await session.end(); },
     stats,
-    screenPositions() {
-      const r = gl.domElement.getBoundingClientRect(), v = new Vector3();
-      return nodes.map(n => {
-        n.mesh.getWorldPosition(v); v.project(camera);
-        return { id: n.mark.id, x: ((v.x + 1) / 2) * r.width, y: ((1 - v.y) / 2) * r.height, visible: v.z > -1 && v.z < 1 && Math.abs(v.x) <= 1 && Math.abs(v.y) <= 1 };
-      });
-    },
+    screenPositions() { return positions().map(({ id, x, y, visible }) => ({ id, x, y, visible })); },
     dispose() {
       gl.setAnimationLoop(null); observer?.disconnect();
       gl.domElement.removeEventListener("pointerdown", onDown); gl.domElement.removeEventListener("pointermove", onMove);

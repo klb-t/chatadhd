@@ -6,7 +6,7 @@ import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
 import { project } from "../view-engine/project";
 import { LOCK_NAMES, LOCKS, MODS, applyAction, buildHint, initialLockModel, initialViewState, lockEffects, matchGesture, matchKey, neighbour, noMods, text as bindingText, unreadLocks, updateLocks } from "../view-engine/interaction";
 import type { Lock, LockModel, Mod, Mods, Request } from "../view-engine/interaction";
-import { buildXrHint, heldFromButtons, matchXr } from "../view-engine/xr-input";
+import { buildXrHint, heldFromButtons, isModifierButton, matchXr } from "../view-engine/xr-input";
 import { sceneHintLines } from "../view-engine/scene-hint";
 import type { HintContext } from "./ViewScene3D";
 import type { XrPayload } from "../view-engine/scene3d";
@@ -190,6 +190,7 @@ export default function ViewEnginePanel() {
   const xrCtx = useRef({ bindings: xrBindings, mods });
   xrCtx.current = { bindings: xrBindings, mods };
   const onXr = useCallback((p: XrPayload) => {
+    if (p.event.button !== undefined && isModifierButton(xrCtx.current.bindings, p.event.button)) return; // a held-modifier button only holds
     const b = matchXr(xrCtx.current.bindings, p.event, xrCtx.current.mods);
     if (b) performRef.current(b, p.picked);
   }, []);

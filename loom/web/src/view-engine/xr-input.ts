@@ -74,15 +74,15 @@ export function pickByRay(origin: [number, number, number], dir: [number, number
 
 // ── large gestures (coarse scene moves only) ──
 export interface SwipeSettings { minDistanceM: number; maxMs: number; dominance: number; cooldownMs: number }
-export interface RotateSettings { minAngleDeg: number; cooldownMs: number }
+export interface RotateSettings { minAngleDeg: number; cooldownMs: number; /** Each hand must move at least this far (m): one hand moving past a resting one is not a two-hand turn. */ minHandMoveM: number; /** The turn must happen within this window (ms). */ maxMs: number }
 export const DEFAULT_SWIPE: SwipeSettings = { minDistanceM: 0.45, maxMs: 700, dominance: 1.6, cooldownMs: 800 };
-export const DEFAULT_ROTATE: RotateSettings = { minAngleDeg: 25, cooldownMs: 800 };
+export const DEFAULT_ROTATE: RotateSettings = { minAngleDeg: 25, cooldownMs: 800, minHandMoveM: 0.12, maxMs: 1200 };
 export function readGestureSettings(xr: unknown): { swipe: SwipeSettings; rotate: RotateSettings } {
   const g = (xr as { gestures?: Record<string, Record<string, unknown>> } | null)?.gestures ?? {};
   const n = (o: Record<string, unknown> | undefined, k: string, f: number) => (typeof o?.[k] === "number" && Number.isFinite(o[k] as number) ? (o[k] as number) : f);
   return {
     swipe: { minDistanceM: n(g.large_swipe, "min_distance_m", DEFAULT_SWIPE.minDistanceM), maxMs: n(g.large_swipe, "max_ms", DEFAULT_SWIPE.maxMs), dominance: n(g.large_swipe, "dominance", DEFAULT_SWIPE.dominance), cooldownMs: n(g.large_swipe, "cooldown_ms", DEFAULT_SWIPE.cooldownMs) },
-    rotate: { minAngleDeg: n(g.two_hand_rotate, "min_angle_deg", DEFAULT_ROTATE.minAngleDeg), cooldownMs: n(g.two_hand_rotate, "cooldown_ms", DEFAULT_ROTATE.cooldownMs) },
+    rotate: { minAngleDeg: n(g.two_hand_rotate, "min_angle_deg", DEFAULT_ROTATE.minAngleDeg), cooldownMs: n(g.two_hand_rotate, "cooldown_ms", DEFAULT_ROTATE.cooldownMs), minHandMoveM: n(g.two_hand_rotate, "min_hand_move_m", DEFAULT_ROTATE.minHandMoveM), maxMs: n(g.two_hand_rotate, "max_ms", DEFAULT_ROTATE.maxMs) },
   };
 }
 /** One hand's path: a swipe is a large, quick, mostly straight move; the result is the gesture the bindings name (`large_swipe_left`, ..._up). */
@@ -104,20 +104,23 @@ export class SwipeDetector {
     return ax >= ay ? (dx < 0 ? "large_swipe_left" : "large_swipe_right") : (dy < 0 ? "large_swipe_down" : "large_swipe_up");
   }
 }
-/** Two hands turning around each other in the horizontal plane: `two_hand_rotate` with the direction (+1 clockwise seen from above). */
+/** Two hands turning around each other in the horizontal plane, BOTH moving: `two_hand_rotate` with the direction (+1 clockwise seen from above). */
 export class TwoHandRotateDetector {
-  private base: number | null = null;
+  private base: { t: number; angle: number; left: [number, number, number]; right: [number, number, number] } | null = null;
   private quietUntil = -Infinity;
   constructor(private s: RotateSettings = DEFAULT_ROTATE) {}
   reset(): void { this.base = null; }
   push(t: number, left: [number, number, number], right: [number, number, number]): { gesture: string; direction: number } | null {
     const angle = (Math.atan2(right[2] - left[2], right[0] - left[0]) * 180) / Math.PI;
-    if (this.base === null || t < this.quietUntil) { if (t >= this.quietUntil) this.base = angle; return null; }
-    let d = angle - this.base;
+    if (t < this.quietUntil) return null;
+    if (this.base === null || t - this.base.t > this.s.maxMs) { this.base = { t, angle, left, right }; return null; }
+    let d = angle - this.base.angle;
     while (d > 180) d -= 360;
     while (d <= -180) d += 360;
     if (Math.abs(d) < this.s.minAngleDeg) return null;
-    this.base = angle;
+    const moved = (a: [number, number, number], b: [number, number, number]) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+    if (moved(left, this.base.left) < this.s.minHandMoveM || moved(right, this.base.right) < this.s.minHandMoveM) return null;
+    this.base = null;
     this.quietUntil = t + this.s.cooldownMs;
     return { gesture: "two_hand_rotate", direction: d > 0 ? 1 : -1 };
   }

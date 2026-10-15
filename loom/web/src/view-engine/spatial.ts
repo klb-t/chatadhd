@@ -19,6 +19,8 @@ export interface SpatialConfig {
   mPerPx: number;
   minRadiusM: number;
   maxRadiusM: number;
+  /** A node never looks smaller than this angle from the user, so the far ones stay visible (0 = off). */
+  minAngleDeg: number;
   /** Strength of the depth cues taken from the `depth_from_distance` element of the declaration (fog and desaturation; size is perspective in 3D). */
   useDepthSystem: boolean;
   groundShow: boolean;
@@ -40,7 +42,7 @@ export interface SpatialConfig {
 }
 
 export const DEFAULT_RENDERER: Record<string, unknown> = {
-  spatial: { direction_offset_deg: 0, mirror: false, distance: { near_m: 1, far_m: 7, curve: [[0, 0], [1, 1]], flat_m: 3, rise_m_per_m: 0.12 }, node: { m_per_px: 0.012, min_radius_m: 0.03, max_radius_m: 0.4 }, ground: { show: true, y_m: -1.2, opacity: 0.07 }, edges: { opacity: 0.35 }, fog: { use_depth_system: true } },
+  spatial: { direction_offset_deg: 0, mirror: false, distance: { near_m: 1, far_m: 7, curve: [[0, 0], [1, 1]], flat_m: 3, rise_m_per_m: 0.12 }, node: { m_per_px: 0.012, min_radius_m: 0.03, max_radius_m: 0.4, min_angle_deg: 0.7 }, ground: { show: true, y_m: -1.2, opacity: 0.07 }, edges: { opacity: 0.35 }, fog: { use_depth_system: true } },
   blend: { curve: [[0, 1], [0.5, 0.92], [1, 0.5], [1.5, 0.2], [2.5, 0.1]], floor_alpha: 0.15, floor_scale: 0.8 },
   labels: { policy: "focus_and_gazed", gazed_weight: 0.7, near_m: 2.2, max_chars: 42, world_height_m: 0.14, badges: true },
   pick: { tolerance_deg: 4 },
@@ -102,6 +104,7 @@ export function readSpatialConfig(entry: unknown): SpatialConfig {
     mPerPx: num(node, "m_per_px", "spatial.node", 0.012),
     minRadiusM: num(node, "min_radius_m", "spatial.node", 0.03),
     maxRadiusM: num(node, "max_radius_m", "spatial.node", 0.4),
+    minAngleDeg: num(node, "min_angle_deg", "spatial.node", 0.7),
     useDepthSystem: fog.use_depth_system !== false,
     groundShow: ground.show !== false,
     groundYM: num(ground, "y_m", "spatial.ground", -1.2),
@@ -272,7 +275,7 @@ export function projectSpatial(model: ViewModel, cfg: SpatialConfig): Spatial3D 
     const sizePx = finite(ch.size) ?? 10;
     maxDistance = Math.max(maxDistance, p.distance);
     marks.push({
-      id: e.id, label: e.label, ...p, radiusM: Math.max(cfg.minRadiusM, Math.min(cfg.maxRadiusM, (sizePx / 2) * cfg.mPerPx)),
+      id: e.id, label: e.label, ...p, radiusM: Math.max(cfg.minRadiusM, Math.min(cfg.maxRadiusM, (sizePx / 2) * cfg.mPerPx), p.distance * Math.tan(rad(cfg.minAngleDeg) / 2)),
       fill: hsla(hue, saturation, lightness, alpha), hue, saturation, lightness, alpha, blur: finite(ch.blur) ?? 0,
       badge: typeof ch.badge === "string" ? ch.badge : undefined, focus: !!e.focus, sector: e.sector, ...(depthSystem ? { depth: t } : {}),
     });

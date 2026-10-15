@@ -84,7 +84,7 @@ try {
   const overlay = (op) => api("POST", "/api/views/write", { overlay: "p28i", op });
   const byId = (r, id) => r.bindings.find(b => b.id === id);
 
-  await check("the kernel resolves the effective bindings of a device: presets with provenance, xr and voice recorded as data only, no conflicts", async () => {
+  await check("the kernel resolves the effective bindings of a device: presets with provenance, voice recorded as data only, no conflicts", async () => {
     const kbd = await api("GET", "/api/view-interaction?device=keyboard");
     assert.equal(kbd.schema, "loom.view_interaction/1");
     assert.ok(kbd.bindings.length >= 20 && kbd.bindings.every(b => b.device === "keyboard"));
@@ -96,7 +96,8 @@ try {
     assert.equal(byId(kbd, "kbd.lock.caps").origin, "rom");
     assert.deepEqual(kbd.conflicts, []);
     const xr = await api("POST", "/api/view-interaction", { device: "xr" });
-    assert.ok(xr.bindings.length > 0 && xr.bindings.every(b => b.status === "recorded"));
+    assert.ok(xr.bindings.length > 0);
+    assert.deepEqual(xr.bindings.filter(b => b.status === "recorded").map(b => b.id), ["xr.voice.zoom.in"], "in XR only the voice phrase stays recorded (P28 step 3 handles the rest)");
     const touch = await api("POST", "/api/view-interaction", { device: "touch" });
     assert.ok(byId(touch, "touch.hold.shift"));
     const all = await api("GET", "/api/view-interaction");

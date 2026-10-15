@@ -3863,7 +3863,8 @@
           "node": {
             "m_per_px": 0.012,
             "min_radius_m": 0.03,
-            "max_radius_m": 0.4
+            "max_radius_m": 0.4,
+            "min_angle_deg": 0.7
           },
           "ground": {
             "show": true,
@@ -3933,7 +3934,9 @@
             },
             "two_hand_rotate": {
               "min_angle_deg": 25,
-              "cooldown_ms": 800
+              "cooldown_ms": 800,
+              "min_hand_move_m": 0.12,
+              "max_ms": 1200
             }
           },
           "stick": {
@@ -3947,7 +3950,8 @@
             "min_m": 1.5,
             "max_m": 30,
             "yaw_deg": 25,
-            "pitch_deg": 18
+            "pitch_deg": 18,
+            "fit": true
           },
           "look": {
             "fov_deg": 70
