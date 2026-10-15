@@ -387,6 +387,9 @@
           "path": "loom/data/runtime/storage_security.pack"
         },
         {
+          "path": "loom/data/runtime/tool_sources.pack"
+        },
+        {
           "path": "loom/data/runtime/ui_animation.pack"
         },
         {

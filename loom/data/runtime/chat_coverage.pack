@@ -18,7 +18,8 @@
       "github": "github.*",
       "chat": "chat.*",
       "ports": "ports.*",
-      "environments": "environments.*"
+      "environments": "environments.*",
+      "tool_source": "tool_source.*"
     },
     "capabilities": [
       {
@@ -1992,6 +1993,111 @@
         "examples": {
           "pl": "jaka to wersja aplikacji",
           "en": "what version is this application"
+        }
+      },
+      {
+        "id": "tool_source_list",
+        "title": {
+          "en": "My tool sources and their actions",
+          "pl": "Moje źródła narzędzi i ich akcje"
+        },
+        "via": "action",
+        "action": "tool_source.list",
+        "surfaces": {
+          "http": [
+            "GET /api/tool_sources"
+          ],
+          "invoke": [
+            "tool_source.list"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż moje źródła narzędzi",
+          "en": "list my tool sources"
+        }
+      },
+      {
+        "id": "tool_source_sync",
+        "title": {
+          "en": "Refresh the tools of a source",
+          "pl": "Odśwież narzędzia źródła"
+        },
+        "via": "action",
+        "action": "tool_source.sync",
+        "surfaces": {
+          "http": [
+            "POST /api/tool_sources/sync"
+          ],
+          "invoke": [
+            "tool_source.sync"
+          ]
+        },
+        "examples": {
+          "pl": "odśwież źródła narzędzi",
+          "en": "refresh my tool sources"
+        }
+      },
+      {
+        "id": "tool_source_add",
+        "title": {
+          "en": "Add a tool source (MCP server)",
+          "pl": "Dodaj źródło narzędzi (serwer MCP)"
+        },
+        "via": "action",
+        "action": "tool_source.add",
+        "surfaces": {
+          "http": [
+            "POST /api/tool_sources/add"
+          ],
+          "invoke": [
+            "tool_source.add"
+          ]
+        },
+        "examples": {
+          "pl": "dodaj źródło narzędzi",
+          "en": "add a tool source"
+        }
+      },
+      {
+        "id": "tool_source_remove",
+        "title": {
+          "en": "Remove a tool source",
+          "pl": "Usuń źródło narzędzi"
+        },
+        "via": "action",
+        "action": "tool_source.remove",
+        "surfaces": {
+          "http": [
+            "POST /api/tool_sources/remove"
+          ],
+          "invoke": [
+            "tool_source.remove"
+          ]
+        },
+        "examples": {
+          "pl": "usuń źródło narzędzi",
+          "en": "remove a tool source"
+        }
+      },
+      {
+        "id": "tool_source_trust",
+        "title": {
+          "en": "Change how a tool of a source is confirmed",
+          "pl": "Zmień potwierdzanie narzędzia źródła"
+        },
+        "via": "action",
+        "action": "tool_source.trust",
+        "surfaces": {
+          "http": [
+            "POST /api/tool_sources/trust"
+          ],
+          "invoke": [
+            "tool_source.trust"
+          ]
+        },
+        "examples": {
+          "pl": "zaufaj temu narzędziu",
+          "en": "trust this tool"
         }
       }
     ],
