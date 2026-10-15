@@ -10286,22 +10286,22 @@
         },
         "phrases": {
           "en": [
-            "what do you remember about me",
+            "what does the guardian remember",
             "guardian remembers",
-            "my rules"
+            "my guardian rules"
           ],
           "pl": [
-            "co o mnie pamiętasz",
             "co strażnik pamięta",
+            "co strażnik* wie o mnie",
             "moje reguły strażnik*"
           ]
         },
         "examples": {
           "en": [
-            "what do you remember about me"
+            "what does the guardian remember about me"
           ],
           "pl": [
-            "co o mnie pamiętasz"
+            "co strażnik pamięta o mnie"
           ]
         },
         "stores_result": false,
@@ -10462,11 +10462,11 @@
         "phrases": {
           "en": [
             "guardian unmerge",
-            "these are not the same thing"
+            "guardian split"
           ],
           "pl": [
             "rozdziel poprawki strażnik*",
-            "to nie jest to samo strażnik*"
+            "rozdziel hipotez* strażnik*"
           ]
         },
         "examples": {
@@ -10474,7 +10474,7 @@
             "guardian unmerge this hypothesis"
           ],
           "pl": [
-            "rozdziel tę hipotezę strażnika"
+            "rozdziel poprawki strażnika"
           ]
         },
         "stores_result": false,

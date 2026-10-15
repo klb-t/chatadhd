@@ -246,8 +246,8 @@
           ]
         },
         "examples": {
-          "pl": "co o mnie pamiętasz",
-          "en": "what do you remember about me"
+          "pl": "co strażnik pamięta o mnie",
+          "en": "what does the guardian remember about me"
         }
       },
       {
@@ -288,7 +288,7 @@
           ]
         },
         "examples": {
-          "pl": "rozdziel tę hipotezę strażnika",
+          "pl": "rozdziel poprawki strażnika",
           "en": "guardian unmerge this hypothesis"
         }
       },
