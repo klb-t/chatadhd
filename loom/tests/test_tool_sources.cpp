@@ -305,5 +305,5 @@ TEST_CASE("zz debug") {
   std::stringstream ss; ss << in.rdbuf();
   MESSAGE(ss.str().substr(0, 1500));
   auto cat = action_catalogue(f.rt->paths().root);
-  MESSAGE(cat ? std::to_string(cat->at("actions").size()) : cat.error().message);
+  MESSAGE(cat ? std::to_string(cat->at("actions").size()) : std::string(cat.error().message));
 }
