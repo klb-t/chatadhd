@@ -117,6 +117,10 @@ struct ChatOptions {
   // Standing rules about the person (the guardian's, normalized text only, allowed by the scope chain for this conversation); sent as one system message after the
   // system prompt. Not a wire field; empty = nothing is added.
   std::string guardian_rules;
+  // The flow of this request (profile guardian, context_io.flows): how the selection is rendered for the model and in which form the answer is
+  // asked for and taken back. Wire field "flow". Unset: the scope chain (setting chat_flow), else the flow of the model's class (preset plain =
+  // chat turns in, text out, request bytes unchanged).
+  std::optional<std::string> flow;
   // The proposal message whose offer to send the rejected sentence as a message the user takes (chat request field
   // send_as_message; chat_route.h). The conversation window reads it; the engine ignores it.
   std::string send_as_message;
@@ -189,6 +193,14 @@ class ChatEngine {
   // Read-only usage preview of a would-be send: compiles the same request body
   // without persisting anything or contacting the provider, and asks the shared
   // UsagePolicy for its decision (nothing reserved or recorded).
+  // The selector's output for a conversation as a graph selection (loom.context_graph/1): every message and graph link with its source id, place and
+  // whole row, the text as the selector chose it (representation, thread filter). It is read from the graph only. `exclude_message_id` leaves out the
+  // message of the turn being sent.
+  Result<Json> context_selection(std::string_view conv_id, const ChatOptions& opts = {}, std::string_view exclude_message_id = {});
+  // The inverse: the output of the selector (or any packet of that schema) is embedded in the graph where it came from. A selection taken from the
+  // graph changes nothing in it; only elements without a source are added, with provenance. Returns {unchanged, created_nodes, created_links, orphans, conflicts}.
+  Result<Json> embed_selection(std::string_view conv_id, const Json& selection);
+
   Result<Json> preview_usage(std::string_view text, const ChatOptions& opts = {});
 
  private:

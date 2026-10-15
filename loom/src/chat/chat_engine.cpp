@@ -38,6 +38,8 @@
 #include "context/method_registry.h"
 #include "graph_reply.h"
 #include "reasoning_profile.h"
+#include "context_format.h"
+#include "loom/runtime_profile.h"
 
 namespace loom {
 
@@ -589,6 +591,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
       auto compiled = chat::compile_active_task_spec(v);
       if (!compiled) return compiled.error();
       o.active_task_spec = v;
+    } else if (k == "flow") {
+      if (!v.is_string()) return bad();
+      o.flow = v.get<std::string>();
     } else if (k == "send_as_message") {
       if (!v.is_string()) return bad();
       o.send_as_message = v.get<std::string>();
@@ -637,6 +642,69 @@ Json ChatResult::to_json() const {
   return out;
 }
 
+namespace {
+
+bool guardian_traffic(const Message& m) {
+  // The guardian's own exchange (a proposal, the answer to it, a notice) is traffic of the application, not conversation content.
+  return m.metadata.is_object() && m.metadata.contains("guardian") && json::get_bool(m.metadata["guardian"], "traffic", false);
+}
+bool history_skipped(const ChatOptions& opts, const std::string& id) {
+  return !opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), id) != opts.history_skip.end();
+}
+
+// The flow of a request. A profile that cannot be read never fails a send: it is logged and the request stays plain.
+std::optional<chat::formats::Axes> resolve_flow(Database& db, const Config& cfg, const ChatOptions& opts, const std::string& conv_id,
+                                                const std::string& model, bool reply_allowed) {
+  auto axes = chat::formats::resolve(cfg.path().parent_path(), cfg, &db, conv_id, model, opts.flow, reply_allowed);
+  if (!axes) {
+    log::warn("loom.chat_engine", "flow not resolved, the request stays plain: {}", axes.error().message);
+    return std::nullopt;
+  }
+  return std::move(*axes);
+}
+
+// The messages of the selection (the graph read, then the selector's choices) in order, with the text the selector chose.
+Result<std::vector<chat::formats::Entry>> selection_entries(Database& db, const std::string& conv_id, const ChatOptions& opts,
+                                                            std::string_view exclude, const std::set<std::string>& refinement) {
+  std::vector<chat::formats::Entry> entries;
+  if (conv_id.empty() || !opts.include_history) return entries;
+  LOOM_TRY_ASSIGN(auto msgs, db.get_msgs(conv_id));
+  for (const auto& m : msgs) {
+    if (m.status != msg_status::kActive) continue;
+    if (!exclude.empty() && m.id == exclude) continue;
+    if (guardian_traffic(m) || history_skipped(opts, m.id) || refinement.count(m.id)) continue;
+    chat::formats::Entry e;
+    e.msg = m;
+    e.text = m.text;
+    if (auto level = opts.history_text.find(m.id); level != opts.history_text.end()) {
+      e.text = level->second;
+      e.selected_level = true;
+    }
+    entries.push_back(std::move(e));
+  }
+  return entries;
+}
+
+Result<Json> selection_packet(Database& db, const Json& section, const std::string& conv_id, const ChatOptions& opts, std::string_view exclude,
+                              const std::set<std::string>& refinement) {
+  LOOM_TRY_ASSIGN(auto entries, selection_entries(db, conv_id, opts, exclude, refinement));
+  std::set<std::string> ids;
+  for (const auto& e : entries) ids.insert(e.msg.id);
+  std::vector<Link> links;
+  std::set<std::string> seen;
+  for (const auto& e : entries) {
+    LOOM_TRY_ASSIGN(auto at, db.get_links(e.msg.id));
+    for (const auto& l : at)
+      if (ids.count(l.src) && ids.count(l.dst) && seen.insert(l.id).second) links.push_back(l);
+  }
+  std::sort(links.begin(), links.end(), [](const Link& a, const Link& b) { return a.id < b.id; });
+  std::size_t substituted = 0;
+  for (const auto& e : entries) substituted += e.selected_level ? 1 : 0;
+  return chat::formats::packet(section, conv_id, entries, links, Json{{"substituted", substituted}, {"skipped", opts.history_skip.size()}});
+}
+
+}  // namespace
+
 ChatOptions ChatEngine::select_representation(const ChatOptions& in, const std::string& conv_id) {
   if (conv_id.empty() || !in.include_history || in.active_task_spec) return in;
   auto sel = guardian::select(db_, cfg_, conv_id);
@@ -668,6 +736,26 @@ ChatOptions ChatEngine::select_representation(const ChatOptions& in, const std::
     }
   }
   return out;
+}
+
+Result<Json> ChatEngine::context_selection(std::string_view conv_id_in, const ChatOptions& opts_in, std::string_view exclude_message_id) {
+  const std::string conv_id(conv_id_in);
+  const ChatOptions opts = select_representation(opts_in, conv_id);
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("guardian", cfg_.path().parent_path()));
+  if (!profile.values().contains("context_io")) return Error(Errc::NotFound, "profile guardian has no context_io section");
+  return selection_packet(db_, profile.values().at("context_io"), conv_id, opts, exclude_message_id, {});
+}
+
+Result<Json> ChatEngine::embed_selection(std::string_view conv_id, const Json& selection) {
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("guardian", cfg_.path().parent_path()));
+  if (!profile.values().contains("context_io")) return Error(Errc::NotFound, "profile guardian has no context_io section");
+  LOOM_TRY_ASSIGN(auto done, chat::formats::embed_packet(db_, profile.values().at("context_io"), std::string(conv_id), selection));
+  // The embedder is structure only. What is new has entered the graph like any message: analyses run as their own step, on this event.
+  for (const auto& id : done.value("created_message_ids", Json::array())) {
+    LOOM_TRY_ASSIGN(auto row, db_.get_msg(id.get<std::string>()));
+    if (row) bus_.emit(events::kMsgCreated, Json{{"id", row->id}, {"text", row->text}, {"conv_id", row->conv_id}, {"role", row->role}});
+  }
+  return done;
 }
 
 Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions& opts_in) {
@@ -828,6 +916,16 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     return Error(Errc::InvalidArgument, "context_execution.unified must be an object with boolean enabled");
   const bool unified = unified_options.value("enabled", false);
   Json unified_context;
+  // The flow: how the selection (read from the graph) is rendered for this model and what form of answer is asked for. Preset plain = today's bytes.
+  const std::string flow_model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  const bool graph_off = json::get_string(execution.value("graph_reply", Json::object()), "mode", "off") == "off";
+  const auto flow = resolve_flow(db_, cfg_, opts, std::string(conv_id), flow_model, graph_off);
+  Json selection = nullptr;
+  if (flow && (flow->packet || flow->reply_graph)) {
+    auto sp = selection_packet(db_, flow->section, std::string(conv_id), opts, exclude_message_id, refinement_ids);
+    if (!sp) return sp.error();
+    selection = *sp;
+  }
 
   if (!unified && memory_ && opts.include_memory) {
     std::string mem_ctx = memory_->get_active_context();
@@ -924,9 +1022,14 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       } else if (m.weight < 0.5) {
         content = "[low priority] " + content;
       }
-      part_history.push_back(Json{{"role", m.role}, {"content", content}});
+      if (!flow || flow->turns) part_history.push_back(Json{{"role", m.role}, {"content", content}});
       history_ids.push_back(m.id);
     }
+  }
+
+  if (flow && flow->packet && !selection.is_null()) {
+    const Json rendered = chat::formats::render_packet(flow->section, flow->renderer, selection);
+    part_history.insert(part_history.begin(), Json{{"role", "system"}, {"content", chat::formats::packet_block(flow->section, rendered)}});
   }
 
   for (const auto& cls : known_orders.at(order_name)) {
@@ -941,6 +1044,8 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       {"content", "[Active task specification; derived from the selected source messages]\n" +
         (*active_task)["compiled_spec"]["compiled_instruction"]["text"].get<std::string>()}});
   }
+  if (flow && flow->reply_graph && !selection.is_null())
+    messages.push_back(Json{{"role", "system"}, {"content", chat::formats::reply_instruction(flow->section, flow->mode, json::get_string(selection, "packet_id"))}});
   messages.push_back(Json{{"role", "user"}, {"content", build_content(current_text, attachments)}});
   if (context_trace) {
     *context_trace = Json{{"kind", "compiled_messages"}, {"version", 1},
@@ -953,6 +1058,10 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
                                         {"context_depth", opts.context_depth ? Json(*opts.context_depth) : Json(nullptr)}}},
                          {"knowledge_context_request", resolved_context_request},
                          {"knowledge_context", compiled_context}};
+    if (flow && !flow->plain())
+      (*context_trace)["flow"] = Json{{"flow", flow->flow}, {"renderer", flow->renderer}, {"output", flow->output}, {"mode", flow->mode},
+                                      {"model_class", flow->model_class}, {"why", flow->reason},
+                                      {"selection_packet_id", selection.is_null() ? Json(nullptr) : selection.value("packet_id", Json(nullptr))}};
     if (unified) (*context_trace)["unified_context"] = unified_context;
     if (opts.active_task_spec) {
       (*context_trace)["active_task"] = *active_task;
@@ -1230,7 +1339,29 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   const std::string base = route->base_url;
   bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true)) && static_cast<bool>(cb.on_chunk);
 
+  // The output node of the flow: a graph answer is FORCED through a structured response format (prompt-only and validated for a model that
+  // cannot). It is not streamed: partial JSON is not readable; the rendered text is delivered once, below.
+  const auto out_flow = resolve_flow(db_, cfg_, opts, conv.id, model, !graph_enabled);
+  const bool reply_graph = out_flow && out_flow->reply_graph;
+  std::string reply_packet_id;
+  std::set<std::string> reply_prior_ids;
+  if (reply_graph) {
+    stream = false;
+    const std::string line = json::get_string(out_flow->section.value("outputs", Json::object()).value("graph_reply", Json::object()), "base_packet_line");
+    const std::string marker = line.substr(0, line.find("{{packet_id}}"));
+    for (const auto& m : *msgs_json) {
+      if (!m.value("content", Json()).is_string()) continue;
+      const std::string c = m["content"].get<std::string>();
+      const auto at = marker.empty() ? std::string::npos : c.find(marker);
+      if (at != std::string::npos) reply_packet_id = c.substr(at + marker.size(), 64);
+    }
+    // A reply may only refer to ids that were in the selection actually sent; any other id is rejected, never turned into a node.
+    LOOM_TRY_ASSIGN(auto sent_selection, selection_packet(db_, out_flow->section, conv.id, opts, user_mid, {}));
+    for (const auto& n : sent_selection["nodes"]) reply_prior_ids.insert(n["id"].get<std::string>());
+  }
+
   Json payload = compose_chat_payload(cfg_, opts, model, *msgs_json, stream, reasoning_recipe);
+  if (reply_graph) chat::formats::apply_reply_request(payload, out_flow->section, out_flow->mode);
 
   std::unique_ptr<ChatGraphExecution> graph;
   const bool graph_postprocess = graph_mode == "separate_model_afterwards" || graph_mode == "separate-model-postprocess";
@@ -1443,8 +1574,39 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     }
   }
 
+  // The output node: parse the graph reply, render it to the text the person reads. An unusable reply is shown raw with a visible note.
+  Json reply_meta = nullptr;
+  chat::formats::Reply parsed_reply;
+  if (reply_graph && !graph) {
+    const std::string raw_text = full_text;
+    const Json reply_base{{"format", "graph"}, {"flow", out_flow->flow}, {"mode", out_flow->mode}, {"model_class", out_flow->model_class},
+                    {"raw_sha256", Sha256::hex(raw_text)}};
+    reply_meta = reply_base;
+    if (cancelled) {
+      reply_meta["status"] = "not_parsed";
+      reply_meta["reason"] = "cancelled";
+    } else {
+      parsed_reply = chat::formats::parse_reply(out_flow->section, raw_text, reply_packet_id, reply_prior_ids);
+      if (parsed_reply.ok) {
+        full_text = parsed_reply.text;
+        reply_meta["status"] = "ok";
+        reply_meta["fence_stripped"] = parsed_reply.fence_stripped;
+        reply_meta["graph"] = parsed_reply.graph;
+      } else {
+        const std::string note = chat::formats::invalid_note(out_flow->section, cfg_string(cfg_, "language", "en"), parsed_reply.error);
+        full_text = raw_text + "\n\n" + note;
+        reply_meta["status"] = "invalid";
+        reply_meta["reason"] = parsed_reply.error;
+        reply_meta["note"] = note;
+        log::warn("loom.chat_engine", "graph reply not usable ({}); raw text shown with a note", parsed_reply.error);
+      }
+      if (cb.on_chunk) cb.on_chunk(full_text);
+    }
+  }
+
   // 7. Persist the assistant message.
   Json metadata = Json::object();
+  if (!reply_meta.is_null()) metadata["reply_format"] = reply_meta;
   if (reasoning_profile_explicit)
     metadata["reasoning_profile"] = reasoning_recipe.snapshot.inspection();
   if (graph) metadata["graph_reply"] = graph->result;
@@ -1465,6 +1627,17 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   auto amid = db_.create_msg(anm);
   if (!amid) return amid.error();
   std::string asst_mid = *amid;
+  if (parsed_reply.ok) {
+    // The embedder is structure only (no model, no analysis): the parts and the proposed links enter the graph with provenance to the message.
+    const Json plan = chat::formats::plan_placement(out_flow->section, asst_mid, parsed_reply, reply_prior_ids);
+    auto embedded = chat::formats::embed(db_, out_flow->section, asst_mid, conv.id, model, parsed_reply, plan);
+    Json summary = embedded ? *embedded : Json{{"embedded", false}, {"error", embedded.error().message}};
+    if (!embedded) log::warn("loom.chat_engine", "graph reply not embedded: {}", embedded.error().message);
+    metadata["reply_format"]["embedded"] = summary;
+    MsgPatch patch;
+    patch.metadata = metadata;
+    if (auto saved = db_.update_msg(asst_mid, patch); !saved) log::warn("loom.chat_engine", "graph reply summary not saved: {}", saved.error().message);
+  }
 
   bus_.emit(events::kMsgCreated,
            Json{{"id", asst_mid}, {"text", full_text}, {"conv_id", conv.id}, {"role", "assistant"}});

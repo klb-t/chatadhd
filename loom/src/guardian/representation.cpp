@@ -327,23 +327,12 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
   Selection sel;
   sel.preset = "raw";
   if (conv_id.empty()) return sel;
-  const Json pref = cfg.get("chat_representation");
-  const bool has_pref = pref.is_string() && !pref.get<std::string>().empty() && pref.get<std::string>() != "raw";
-  LOOM_TRY_ASSIGN(auto rep, db.find_node("rep:" + conv_id, "guardian_representation"));
-  const bool has_rep = rep && json::get_string(rep->metadata, "status") == "accepted";
-  // Rules about the person live in the user's overlay; without one there is nothing to look up.
-  std::error_code ec;
-  const bool has_overlay = std::filesystem::exists(cfg.path().parent_path() / "profiles" / "guardian.pack", ec);
-  const Json tf_set = cfg.get("chat_thread_filter");
-  const bool has_tf = tf_set.is_string() && !tf_set.get<std::string>().empty() && tf_set.get<std::string>() != "off";
-  if (!has_pref && !has_rep && !has_tf && !has_overlay) return sel;  // nothing is chosen: the raw messages, at no cost
-
+  // The selector reads its settings from the graph's scope chain EVERY time (conversation -> units -> user -> installation, rules included), also when
+  // nothing is chosen in config.json: a rule or a value of the conversation alone is enough. Raw is the answer of the chain, not a shortcut around it.
   const std::filesystem::path root = cfg.path().parent_path();
   LOOM_TRY_ASSIGN(auto d, detail::load_data(cfg, root));
   const Json& section = d.p.at("representation");
-  // The value in the scope of the conversation (R47): the installation's preset, the user's setting, a rule of the conversation.
   std::string name = json::get_string(section, "active", "raw");
-  if (has_pref) name = pref.get<std::string>();
   {
     scopes::Binding bind;
     bind.key = "chat_representation";
@@ -351,9 +340,27 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
     bind.installation_source = "profile:guardian.representation.active";
     bind.conv_id = conv_id;
     const Json v = scopes::value_or(root, cfg, &db, bind, Json(name));
-    if (v.is_string()) name = v.get<std::string>();
+    if (v.is_string() && !v.get<std::string>().empty()) name = v.get<std::string>();
   }
   if (!section.at("presets").contains(name)) name = json::get_string(section, "unknown", "raw");
+  LOOM_TRY_ASSIGN(auto rep, db.find_node("rep:" + conv_id, "guardian_representation"));
+  const bool has_rep = rep && json::get_string(rep->metadata, "status") == "accepted";
+  std::error_code ec;
+  const bool has_overlay = std::filesystem::exists(root / "profiles" / "guardian.pack", ec);
+  // The thread filter is a value of the same chain.
+  const Json& tf0 = section.value("thread_filter", Json::object());
+  std::string tf_mode = json::get_string(tf0, "active", "off");
+  {
+    scopes::Binding bind;
+    bind.key = "chat_thread_filter";
+    bind.installation = tf_mode;
+    bind.installation_source = "profile:guardian.representation.thread_filter.active";
+    bind.conv_id = conv_id;
+    const Json v = scopes::value_or(root, cfg, &db, bind, Json(tf_mode));
+    if (v.is_string() && !v.get<std::string>().empty()) tf_mode = v.get<std::string>();
+  }
+  const bool has_tf = tf_mode != "off" && !tf_mode.empty();
+  if (name == "raw" && !has_rep && !has_tf && !has_overlay) { sel.preset = "raw"; return sel; }  // the chain says raw: the raw messages, at no further cost
   sel.preset = name;
   const Json& preset = section.at("presets").at(name);
   const Json levels = preset.value("levels", Json::object());
@@ -408,8 +415,7 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
   // The thread filter: messages the analyzer put in another topic thread than the one the user is in now are left out of this request.
   {
     const Json& tf = section.value("thread_filter", Json::object());
-    std::string mode = json::get_string(tf, "active", "off");
-    if (has_tf) mode = tf_set.get<std::string>();
+    std::string mode = tf_mode;
     if (!tf.value("presets", Json::object()).contains(mode)) mode = json::get_string(tf, "unknown", "off");
     if (json::get_string(tf.value("presets", Json::object()).value(mode, Json::object()), "mode", "off") == "current") {
       const double min_conf = json::get_number(tf, "min_confidence", 0.5);

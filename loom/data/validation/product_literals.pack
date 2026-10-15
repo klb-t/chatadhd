@@ -529,7 +529,7 @@
         },
         {
           "path": "loom/data/runtime/action_rules.pack",
-          "sha256": "70afd2e795f9ce4e3a64d9a48a17d8d0145195ada8871212d90c44f502e92b8a"
+          "sha256": "943b67ab5e61725bc09dea8478a9053d3529b78b56da2b7bfcb0149fcb121cab"
         },
         {
           "path": "loom/data/runtime/action_run.pack",
@@ -601,7 +601,7 @@
         },
         {
           "path": "loom/data/runtime/guardian.pack",
-          "sha256": "99cbc26b677e14e2a1249c080b4a038d52cab48e694caba89f5d0a2c0c0ba7dd"
+          "sha256": "054790acd8145c85c3f983d0731ec888d0abcbfa5bece3e5d531aabfc37f70fc"
         },
         {
           "path": "loom/data/runtime/import.pack",
@@ -681,7 +681,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "3862f85b0ce9656565d59326bb043fd526552341879fa7eb27c23b187ac6c831"
+          "sha256": "4a39faaa8ab15874ae0103fe048ede65f2e05be7d56ddd3e2c3e44f825ff60f6"
         },
         {
           "path": "loom/data/runtime/ui_animation.pack",

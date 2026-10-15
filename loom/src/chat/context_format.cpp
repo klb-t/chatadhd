@@ -24,31 +24,6 @@ std::string replace_all(std::string text, const std::string& from, const std::st
   return text;
 }
 
-// One axis: the preset name from the scope chain (an override of the request wins), unknown names fall back to the data's `unknown`.
-std::string axis_name(const std::filesystem::path& root, const Config& cfg, Database* db, const std::string& conv_id, const Json& part,
-                      const std::string& source, const std::optional<std::string>& override_value) {
-  const std::string key = json::get_string(part, "setting");
-  const std::string installation = json::get_string(part, "active");
-  std::string name = installation;
-  if (override_value && !override_value->empty()) {
-    name = *override_value;
-  } else if (!key.empty()) {
-    scopes::Binding bind;
-    bind.key = key;
-    bind.installation = installation;
-    bind.installation_source = source;
-    bind.conv_id = conv_id;
-    const Json v = scopes::value_or(root, cfg, db, bind, Json(installation));
-    if (v.is_string() && !v.get<std::string>().empty()) name = v.get<std::string>();
-  }
-  const Json presets = part.value("presets", Json::object());
-  if (!presets.contains(name)) {
-    log::write(log::Level::Debug, kLog, "'" + name + "' is not a preset of " + key + "; using " + json::get_string(part, "unknown", installation));
-    name = json::get_string(part, "unknown", installation);
-  }
-  return name;
-}
-
 // Does the model support the capability: true / false from the user's model_capabilities, null when nothing says.
 Json capability_of(const Config& cfg, const Json& reply, const std::string& model, const std::string& capability) {
   const Json all = cfg.get(json::get_string(reply, "capability_setting", "model_capabilities"));
@@ -73,69 +48,120 @@ Reply fail(const std::string& why) {
 }  // namespace
 
 Result<Axes> resolve(const std::filesystem::path& root, const Config& cfg, Database* db, const std::string& conv_id, const std::string& model,
-                     const std::optional<std::string>& override_context, const std::optional<std::string>& override_reply, bool reply_allowed) {
+                     const std::optional<std::string>& override_flow, bool reply_allowed) {
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("guardian", root));
   const Json& values = profile.values();
-  if (!values.contains("context_format")) return Error(Errc::NotFound, "profile guardian has no context_format section");
+  if (!values.contains("context_io")) return Error(Errc::NotFound, "profile guardian has no context_io section");
   Axes a;
-  a.section = values.at("context_format");
+  a.section = values.at("context_io");
   const Json& section = a.section;
-  a.context_format = axis_name(root, cfg, db, conv_id, section, "profile:guardian.context_format.active", override_context);
-  const Json& cpreset = section.at("presets").at(a.context_format);
-  a.turns = json::get_bool(cpreset, "turns", true);
-  a.packet = json::get_bool(cpreset, "packet", false);
-
-  const Json reply = section.value("reply", Json::object());
-  a.reply_format = axis_name(root, cfg, db, conv_id, reply, "profile:guardian.context_format.reply.active", override_reply);
-  const bool wants_graph = json::get_bool(reply.at("presets").at(a.reply_format), "graph", false);
-  if (wants_graph && !reply_allowed) {
-    a.flow_reason = "context_execution.graph_reply is active: it owns the graph reply of this send";
-  } else if (wants_graph) {
-    a.reply_graph = true;
-    // The flow follows the class of the model (data), never the model of the conversation as a setting; a known capability refines it.
-    const Json models = values.value("models", Json::object());
-    a.model_class = annotations::model_tier(models, model);
-    const Json flows = reply.value("flows", Json::object());
-    a.flow = json::get_string(flows, a.model_class, json::get_string(flows, "unknown", "prompt_only"));
-    a.flow_reason = "class " + a.model_class;
-    const Json defs = reply.value("flow_defs", Json::object());
-    for (auto it = defs.begin(); it != defs.end(); ++it) {
-      const std::string needs = json::get_string(it.value(), "requires_capability");
-      if (needs.empty()) continue;
-      const Json cap = capability_of(cfg, reply, model, needs);
-      if (cap.is_boolean() && cap.get<bool>() && a.flow != it.key()) {
-        a.flow = it.key();
-        a.flow_reason = "model_capabilities: " + needs;
-      } else if (cap.is_boolean() && !cap.get<bool>() && a.flow == it.key()) {
-        a.flow = json::get_string(it.value(), "fallback_flow", "prompt_only");
-        a.flow_reason = "model_capabilities: no " + needs;
+  const Json models = values.value("models", Json::object());
+  a.model_class = annotations::model_tier(models, model);
+  const Json flows = section.value("flows", Json::object());
+  // A flow named by the request or by the scope chain; else the flow of the class of the model (data). The model of the conversation is only
+  // ever read through its class, never inherited as a setting.
+  std::string name;
+  if (override_flow && !override_flow->empty()) {
+    name = *override_flow;
+    a.reason = "request";
+  } else {
+    scopes::Binding bind;
+    bind.key = json::get_string(section, "setting", "chat_flow");
+    bind.installation = json::get_string(section, "active");
+    bind.installation_source = "profile:guardian.context_io.active";
+    bind.conv_id = conv_id;
+    const Json v = scopes::value_or(root, cfg, db, bind, Json(bind.installation));
+    if (v.is_string()) name = v.get<std::string>();
+    a.reason = "scope chain";
+  }
+  if (name.empty()) {
+    const Json by_class = section.value("class_flows", Json::object());
+    name = json::get_string(by_class, a.model_class, json::get_string(by_class, "unknown", json::get_string(section, "unknown", "plain")));
+    a.reason = "class " + a.model_class;
+  }
+  if (!flows.contains(name)) {
+    log::write(log::Level::Warning, kLog, "chat_flow '" + name + "' is not a flow in context_io.flows; using " + json::get_string(section, "unknown", "plain"));
+    name = json::get_string(section, "unknown", "plain");
+    a.reason += " (unknown flow)";
+  }
+  a.flow = name;
+  const Json& flow = flows.at(name);
+  a.renderer = json::get_string(flow, "renderer", "chat_turns");
+  a.output = json::get_string(flow, "output", "text");
+  const Json renderers = section.value("renderers", Json::object());
+  if (!renderers.contains(a.renderer)) return Error(Errc::InvalidArgument, "context_io.renderers has no renderer '" + a.renderer + "'");
+  a.turns = json::get_bool(renderers.at(a.renderer), "turns", true);
+  a.packet = json::get_bool(renderers.at(a.renderer), "packet", false);
+  const Json outputs = section.value("outputs", Json::object());
+  if (!outputs.contains(a.output)) return Error(Errc::InvalidArgument, "context_io.outputs has no output '" + a.output + "'");
+  const Json& out = outputs.at(a.output);
+  if (json::get_bool(out, "graph", false)) {
+    if (!reply_allowed) {
+      a.reason += "; context_execution.graph_reply owns the graph reply of this send";
+    } else {
+      a.reply_graph = true;
+      // Forced: the structured response format. A model known not to support it gets the instruction only, and the reply is validated.
+      a.mode = json::get_string(out, "force", "response_format");
+      const std::string needs = json::get_string(out, "requires_capability");
+      const Json cap = needs.empty() ? Json() : capability_of(cfg, out, model, needs);
+      if (cap.is_boolean() && !cap.get<bool>()) {
+        a.mode = json::get_string(out, "fallback_mode", "prompt_only");
+        a.reason += "; model_capabilities: no " + needs;
       }
+      if (!out.value("modes", Json::object()).contains(a.mode)) return Error(Errc::InvalidArgument, "output '" + a.output + "' has no mode '" + a.mode + "'");
     }
-    if (!defs.contains(a.flow)) return Error(Errc::InvalidArgument, "context_format.reply.flow_defs has no flow '" + a.flow + "'");
   }
   return a;
 }
 
-Json packet(const Json& section, const std::string& conv_id, const std::vector<Entry>& entries) {
+namespace {
+// The columns of a message row, as the embedder compares them (everything but the text, which is compared by its hash).
+Json raw_of(const Message& m) {
+  return Json{{"conv_id", m.conv_id}, {"parent_id", m.parent_id ? Json(*m.parent_id) : Json(nullptr)}, {"role", m.role},
+              {"model", m.model ? Json(*m.model) : Json(nullptr)}, {"status", m.status},
+              {"version_group_id", m.version_group_id ? Json(*m.version_group_id) : Json(nullptr)}, {"version_num", m.version_num},
+              {"weight", m.weight}, {"attachments", m.attachments}, {"metadata", m.metadata}, {"created", m.created},
+              {"semantic_status", m.semantic_status}, {"text_sha256", Sha256::hex(m.text)}};
+}
+}  // namespace
+
+Json packet(const Json& section, const std::string& conv_id, const std::vector<Entry>& entries, const std::vector<Link>& graph_links, const Json& inputs) {
   const Json spec = section.value("packet", Json::object());
   const Json predicates = spec.value("predicates", Json::object());
   const std::string origin = json::get_string(spec, "origin", "conversation");
   Json nodes = Json::array(), links = Json::array();
   std::set<std::string> kept;
-  for (const auto& e : entries) kept.insert(e.id);
+  for (const auto& e : entries) kept.insert(e.msg.id);
   for (std::size_t i = 0; i < entries.size(); ++i) {
     const Entry& e = entries[i];
-    nodes.push_back(Json{{"id", e.id}, {"kind", json::get_string(spec, "node_kind", "message")}, {"role", e.role}, {"text", e.text},
-                         {"order", i}, {"weight", e.weight},
-                         {"provenance", Json{{"origin", origin}, {"source", "message"}, {"message_id", e.id}, {"conversation_id", conv_id},
-                                             {"text_form", e.selected_level ? "selected_level" : "raw"}}}});
-    if (i > 0) links.push_back(Json{{"from", e.id}, {"predicate", json::get_string(predicates, "order", "follows")}, {"to", entries[i - 1].id}});
-    if (!e.parent_id.empty() && kept.count(e.parent_id) && (i == 0 || entries[i - 1].id != e.parent_id))
-      links.push_back(Json{{"from", e.id}, {"predicate", json::get_string(predicates, "parent", "reply_to")}, {"to", e.parent_id}});
+    const Message& m = e.msg;
+    // The selection keeps the identity and the place of every element: where it came from (source) is never dropped here, only by a renderer.
+    nodes.push_back(Json{{"id", m.id}, {"kind", json::get_string(spec, "node_kind", "message")}, {"role", m.role}, {"text", e.text},
+                         {"order", i}, {"weight", m.weight},
+                         {"provenance", Json{{"origin", origin}, {"source", "message"}, {"message_id", m.id}, {"conversation_id", conv_id},
+                                             {"text_form", e.selected_level ? "selected_level" : "raw"}}},
+                         {"source", Json{{"table", "messages"}, {"id", m.id}, {"position", i}, {"raw", raw_of(m)}}}});
+    if (i > 0) links.push_back(Json{{"from", m.id}, {"predicate", json::get_string(predicates, "order", "follows")}, {"to", entries[i - 1].msg.id}, {"derived", true}});
+    if (m.parent_id && kept.count(*m.parent_id) && (i == 0 || entries[i - 1].msg.id != *m.parent_id))
+      links.push_back(Json{{"from", m.id}, {"predicate", json::get_string(predicates, "parent", "reply_to")}, {"to", *m.parent_id}, {"derived", true}});
   }
-  Json p{{"schema", json::get_string(spec, "schema", "loom.context_graph/1")}, {"conversation_id", conv_id}, {"nodes", nodes}, {"links", links}};
+  for (const auto& l : graph_links)
+    links.push_back(Json{{"from", l.src}, {"predicate", l.link_type}, {"to", l.dst}, {"weight", l.weight}, {"metadata", l.metadata},
+                         {"source", Json{{"table", "links"}, {"id", l.id}, {"created", l.created}}}});
+  Json p{{"schema", json::get_string(spec, "schema", "loom.context_graph/1")}, {"conversation_id", conv_id}, {"selection", inputs}, {"nodes", nodes}, {"links", links}};
   p["packet_id"] = Sha256::hex(json::dump(p));
   return p;
+}
+
+Json render_packet(const Json& section, const std::string& renderer, const Json& pkt) {
+  const Json drop = section.value("renderers", Json::object()).value(renderer, Json::object()).value("drop", Json::array());
+  if (!drop.is_array() || drop.empty()) return pkt;
+  Json out = pkt;
+  for (auto& n : out["nodes"])
+    for (const auto& k : drop) if (k.is_string()) n.erase(k.get<std::string>());
+  for (auto& l : out["links"])
+    for (const auto& k : drop) if (k.is_string()) l.erase(k.get<std::string>());
+  return out;
 }
 
 std::string packet_block(const Json& section, const Json& pkt) {
@@ -143,20 +169,20 @@ std::string packet_block(const Json& section, const Json& pkt) {
   return replace_all(json::get_string(spec, "recipe"), "{{packet_id}}", json::get_string(pkt, "packet_id")) + json::dump(pkt);
 }
 
-std::string reply_instruction(const Json& section, const std::string& flow, const std::string& packet_id) {
-  const Json reply = section.value("reply", Json::object());
+std::string reply_instruction(const Json& section, const std::string& mode, const std::string& packet_id) {
+  const Json reply = section.value("outputs", Json::object()).value("graph_reply", Json::object());
   std::string out = json::get_string(reply, "recipe");
   if (!out.empty() && out.back() != '\n') out += "\n";
   out += replace_all(json::get_string(reply, "base_packet_line"), "{{packet_id}}", packet_id);
-  const Json def = reply.value("flow_defs", Json::object()).value(flow, Json::object());
+  const Json def = reply.value("modes", Json::object()).value(mode, Json::object());
   if (json::get_bool(def, "schema_hint", false))
     out += "Answer with exactly one JSON object that follows this JSON schema:\n" + json::dump(reply.value("response_format", Json::object()).value("schema", Json::object())) + "\n";
   return out;
 }
 
-void apply_reply_request(Json& payload, const Json& section, const std::string& flow) {
-  const Json reply = section.value("reply", Json::object());
-  const Json def = reply.value("flow_defs", Json::object()).value(flow, Json::object());
+void apply_reply_request(Json& payload, const Json& section, const std::string& mode) {
+  const Json reply = section.value("outputs", Json::object()).value("graph_reply", Json::object());
+  const Json def = reply.value("modes", Json::object()).value(mode, Json::object());
   if (json::get_bool(def, "response_format", false)) {
     const Json rf = reply.value("response_format", Json::object());
     payload["response_format"] = Json{{"type", "json_schema"},
@@ -171,7 +197,7 @@ void apply_reply_request(Json& payload, const Json& section, const std::string& 
 }
 
 Reply parse_reply(const Json& section, const std::string& model_text, const std::string& packet_id, const std::set<std::string>& prior_ids) {
-  const Json spec = section.value("reply", Json::object());
+  const Json spec = section.value("outputs", Json::object()).value("graph_reply", Json::object());
   Reply out;
   std::string body = trim(model_text);
   if (json::get_bool(spec, "tolerate_fence", true) && body.rfind("```", 0) == 0) {
@@ -261,33 +287,50 @@ Reply parse_reply(const Json& section, const std::string& model_text, const std:
 }
 
 std::string invalid_note(const Json& section, const std::string& lang, const std::string& reason) {
-  const Json note = section.value("reply", Json::object()).value("notes", Json::object()).value("invalid", Json::object());
+  const Json note = section.value("outputs", Json::object()).value("graph_reply", Json::object()).value("notes", Json::object()).value("invalid", Json::object());
   std::string text = json::get_string(note, lang, json::get_string(note, "en", "[graph reply not usable: {{reason}}]"));
   return replace_all(text, "{{reason}}", reason);
 }
 
+Json plan_placement(const Json& section, const std::string& message_id, const Reply& reply, const std::set<std::string>& prior_ids) {
+  // Placement is a step of its own (an analysis-like node); the embedder only applies its plan. The cascade is data (outputs.graph_reply.placement.cascade);
+  // implemented here: explicit_ref (a link names a local node or an existing id) and deterministic_key (a local node gets the id derived from the message and
+  // its local id, so placing it twice lands on the same element). Vector similarity, the matching method of the guardian (annotations/matching.cpp) and a model
+  // are further steps of the cascade, not run here: what they would place stays unplaced and is listed.
+  Json nodes = Json::object(), links = Json::array(), unplaced = Json::array();
+  for (const auto& n : reply.graph["nodes"]) {
+    const std::string local = n["id"].get<std::string>();
+    nodes[local] = "n_" + Sha256::hex(message_id + "/" + local).substr(0, 12);
+  }
+  for (const auto& l : reply.graph["links"]) {
+    const std::string to = l["to"].get<std::string>();
+    Json item{{"from", nodes[l["from"].get<std::string>()]}, {"predicate", l["predicate"]}};
+    if (nodes.contains(to)) { item["to"] = nodes[to]; item["placed_by"] = "deterministic_key"; }
+    else if (prior_ids.count(to)) { item["to"] = to; item["placed_by"] = "explicit_ref"; }
+    else { unplaced.push_back(Json{{"link_to", to}, {"why", "no step of the cascade placed it"}}); continue; }
+    links.push_back(item);
+  }
+  return Json{{"nodes", nodes}, {"links", links}, {"unplaced", unplaced}, {"cascade", section.value("outputs", Json::object()).value("graph_reply", Json::object()).value("placement", Json::object()).value("cascade", Json::array())}};
+}
+
 Result<Json> embed(Database& db, const Json& section, const std::string& message_id, const std::string& conv_id, const std::string& model,
-                   const Reply& reply) {
-  const Json spec = section.value("reply", Json::object());
+                   const Reply& reply, const Json& plan) {
+  const Json spec = section.value("outputs", Json::object()).value("graph_reply", Json::object());
   const Json cfg = spec.value("embed", Json::object());
-  if (!json::get_bool(cfg, "enabled", true)) return Json{{"embedded", false}, {"reason", "disabled by context_format.reply.embed.enabled"}};
+  if (!json::get_bool(cfg, "enabled", true)) return Json{{"embedded", false}, {"reason", "disabled by outputs.graph_reply.embed.enabled"}};
   const std::string kind = json::get_string(cfg, "node_kind", "reply_part");
   const std::string part_link = json::get_string(cfg, "part_link", "part_of");
   const std::string message_link = json::get_string(cfg, "message_link", "generated_by");
   const std::string origin = json::get_string(cfg, "link_origin", "model");
   const std::string packet_id = json::get_string(reply.graph, "base_packet_sha256");
   const std::string root = json::get_string(reply.graph, "response_id");
-  std::map<std::string, std::string> global;  // local id -> node id
-  for (const auto& n : reply.graph["nodes"]) {
-    const std::string local = n["id"].get<std::string>();
-    global[local] = "n_" + Sha256::hex(message_id + "/" + local).substr(0, 12);
-  }
+  const Json& global = plan["nodes"];
   std::size_t made_nodes = 0, made_links = 0;
   for (const auto& n : reply.graph["nodes"]) {
     const std::string local = n["id"].get<std::string>();
     const std::string& text = reply.rendered.at(local);
     NodeOptions opts;
-    opts.node_id = global[local];
+    opts.node_id = global[local].get<std::string>();
     opts.content = text;
     Json children = Json::array();
     for (const auto& c : n["children"]) children.push_back(global[c.get<std::string>()]);
@@ -300,29 +343,107 @@ Result<Json> embed(Database& db, const Json& section, const std::string& message
     (void)nid;
     ++made_nodes;
   }
-  const Json prov{{"origin", origin}, {"message_id", message_id}};
+  const Json structure{{"origin", "reply_structure"}, {"message_id", message_id}};
   for (const auto& n : reply.graph["nodes"]) {
-    const std::string local = n["id"].get<std::string>();
     for (const auto& c : n["children"]) {
-      LOOM_TRY_ASSIGN(auto lid, db.create_link(global[c.get<std::string>()], global[local], part_link, 1.0, Json{{"origin", "reply_structure"}, {"message_id", message_id}}));
+      LOOM_TRY_ASSIGN(auto lid, db.create_link(global[c.get<std::string>()].get<std::string>(), global[n["id"].get<std::string>()].get<std::string>(), part_link, 1.0, structure));
       (void)lid;
       ++made_links;
     }
   }
-  LOOM_TRY_ASSIGN(auto mlid, db.create_link(global[root], message_id, message_link, 1.0, Json{{"origin", "reply_structure"}, {"message_id", message_id}}));
+  LOOM_TRY_ASSIGN(auto mlid, db.create_link(global[root].get<std::string>(), message_id, message_link, 1.0, structure));
   (void)mlid;
   ++made_links;
-  for (const auto& l : reply.graph["links"]) {
-    const std::string to = l["to"].get<std::string>();
-    const auto local_to = global.find(to);
-    Json lm = prov;
-    lm["proposal"] = true;
-    LOOM_TRY_ASSIGN(auto lid, db.create_link(global[l["from"].get<std::string>()], local_to != global.end() ? local_to->second : to,
-                                             l["predicate"].get<std::string>(), 1.0, lm));
+  for (const auto& l : plan["links"]) {
+    Json lm{{"origin", origin}, {"message_id", message_id}, {"proposal", true}, {"placed_by", l["placed_by"]}};
+    LOOM_TRY_ASSIGN(auto lid, db.create_link(l["from"].get<std::string>(), l["to"].get<std::string>(), l["predicate"].get<std::string>(), 1.0, lm));
     (void)lid;
     ++made_links;
   }
-  return Json{{"embedded", true}, {"nodes", made_nodes}, {"links", made_links}, {"root_node", global[root]}};
+  return Json{{"embedded", true}, {"nodes", made_nodes}, {"links", made_links}, {"root_node", global[root]}, {"unplaced", plan["unplaced"]}};
+}
+
+Result<Json> embed_packet(Database& db, const Json& section, const std::string& conv_id, const Json& pkt) {
+  const Json spec = section.value("packet", Json::object());
+  if (!pkt.is_object() || json::get_string(pkt, "schema") != json::get_string(spec, "schema", "loom.context_graph/1") || !pkt.contains("nodes") ||
+      !pkt["nodes"].is_array() || !pkt.contains("links") || !pkt["links"].is_array())
+    return Error(Errc::InvalidArgument, "not a " + json::get_string(spec, "schema", "loom.context_graph/1") + " packet");
+  const std::string packet_id = json::get_string(pkt, "packet_id");
+  Json orphans = Json::array(), conflicts = Json::array();
+  std::size_t unchanged = 0, created_nodes = 0, created_links = 0;
+  Json created_ids = Json::array();
+  std::map<std::string, std::string> target;  // packet node id -> message id in the graph
+  LOOM_TRY_ASSIGN(auto existing, db.get_msgs(conv_id));
+  std::map<std::string, std::string> earlier;  // packet node id embedded before -> message id
+  for (const auto& m : existing) {
+    const Json emb = m.metadata.is_object() ? m.metadata.value("embedded", Json::object()) : Json::object();
+    if (emb.is_object() && emb.contains("node")) earlier[json::get_string(emb, "node")] = m.id;
+  }
+  std::map<std::string, std::string> parent_of;  // packet node id -> packet node id it answers (reply_to / follows)
+  for (const auto& l : pkt["links"]) {
+    if (!json::get_bool(l, "derived", false)) continue;
+    const std::string kind = json::get_string(l, "predicate");
+    const std::string from = json::get_string(l, "from");
+    if (kind == json::get_string(spec.value("predicates", Json::object()), "parent", "reply_to") || !parent_of.count(from)) parent_of[from] = json::get_string(l, "to");
+  }
+  for (const auto& n : pkt["nodes"]) {
+    const std::string pid = json::get_string(n, "id");
+    const Json source = n.value("source", Json());
+    if (source.is_object()) {
+      const std::string id = json::get_string(source, "id");
+      LOOM_TRY_ASSIGN(auto row, db.get_msg(id));
+      if (!row) { orphans.push_back(Json{{"node", pid}, {"source", id}, {"why", "the source row is gone"}}); continue; }
+      target[pid] = id;
+      const Json now = raw_of(*row);
+      const Json was = source.value("raw", Json::object());
+      if (now != was) { conflicts.push_back(Json{{"node", pid}, {"source", id}, {"why", "the row changed since the selection"}}); continue; }
+      if (json::get_string(n.value("provenance", Json::object()), "text_form") == "raw" && Sha256::hex(json::get_string(n, "text")) != json::get_string(was, "text_sha256")) {
+        conflicts.push_back(Json{{"node", pid}, {"source", id}, {"why", "the raw text differs from the graph; it is not overwritten"}});
+        continue;
+      }
+      ++unchanged;
+      continue;
+    }
+    // No source: new data. A node embedded before is found again; nothing is added twice.
+    if (auto it = earlier.find(pid); it != earlier.end()) { target[pid] = it->second; ++unchanged; continue; }
+    NewMessage nm;
+    nm.conv_id = conv_id;
+    nm.role = json::get_string(n, "role", "user");
+    nm.text = json::get_string(n, "text");
+    nm.weight = json::get_number(n, "weight", 1.0);
+    if (auto p = parent_of.find(pid); p != parent_of.end())
+      if (auto t = target.find(p->second); t != target.end()) nm.parent_id = t->second;
+    nm.metadata = Json{{"embedded", Json{{"packet_id", packet_id}, {"node", pid}, {"origin", json::get_string(n.value("provenance", Json::object()), "origin", "external")}}}};
+    LOOM_TRY_ASSIGN(auto mid, db.create_msg(nm));
+    target[pid] = mid;
+    created_ids.push_back(mid);
+    ++created_nodes;
+  }
+  for (const auto& l : pkt["links"]) {
+    if (json::get_bool(l, "derived", false)) continue;  // order and parent are the structure of the nodes, already compared
+    const Json source = l.value("source", Json());
+    const std::string from = json::get_string(l, "from"), to = json::get_string(l, "to"), type = json::get_string(l, "predicate");
+    LOOM_TRY_ASSIGN(auto at_from, db.get_links(from, type));
+    const Link* found = nullptr;
+    if (source.is_object()) {
+      for (const auto& x : at_from) if (x.id == json::get_string(source, "id")) found = &x;
+      if (!found) { orphans.push_back(Json{{"link", json::get_string(source, "id")}, {"why", "the source link is gone"}}); continue; }
+      if (found->dst != to || found->src != from || found->link_type != type || found->weight != json::get_number(l, "weight", 1.0) || found->metadata != l.value("metadata", Json::object()))
+        conflicts.push_back(Json{{"link", found->id}, {"why", "the link changed since the selection"}});
+      else ++unchanged;
+      continue;
+    }
+    const auto ends = [&](const std::string& id) { auto t = target.find(id); return t != target.end() ? t->second : id; };
+    const std::string src = ends(from), dst = ends(to);
+    LOOM_TRY_ASSIGN(auto at_src, db.get_links(src, type));
+    bool there = false;
+    for (const auto& x : at_src) if (x.src == src && x.dst == dst) there = true;
+    if (there) { ++unchanged; continue; }
+    LOOM_TRY_ASSIGN(auto lid, db.create_link(src, dst, type, json::get_number(l, "weight", 1.0), l.value("metadata", Json::object())));
+    (void)lid;
+    ++created_links;
+  }
+  return Json{{"unchanged", unchanged}, {"created_nodes", created_nodes}, {"created_links", created_links}, {"created_message_ids", created_ids}, {"orphans", orphans}, {"conflicts", conflicts}};
 }
 
 }  // namespace loom::chat::formats

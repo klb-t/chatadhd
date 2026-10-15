@@ -690,25 +690,18 @@
             "pl": "Ile łańcuchów proponować"
           }
         },
-        "chat_context_format": {
-          "setting": "chat_context_format",
-          "label": {
-            "en": "Format of the context sent to the model",
-            "pl": "Format kontekstu wysyłanego do modelu"
-          }
-        },
-        "chat_reply_format": {
-          "setting": "chat_reply_format",
-          "label": {
-            "en": "Format of the model's reply",
-            "pl": "Format odpowiedzi modelu"
-          }
-        },
         "chat_representation": {
           "setting": "chat_representation",
           "label": {
             "en": "What of the conversation is sent to the model",
             "pl": "Co z rozmowy jest wysyłane do modelu"
+          }
+        },
+        "chat_flow": {
+          "setting": "chat_flow",
+          "label": {
+            "en": "Flow of the request (context in, answer out)",
+            "pl": "Przepływ żądania (kontekst na wejściu, odpowiedź na wyjściu)"
           }
         }
       }

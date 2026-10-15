@@ -533,45 +533,14 @@
         "description": "What the context selector sends of a conversation: raw (preset: the messages as they are, request bytes unchanged), denoised (your messages at level L1, without fillers, repetitions and restarts), lean (level L2), guardian (L1 and a run of clarifications replaced by one compiled instruction) or mixed (the raw messages followed by the compiled instruction); or a preset of your own in the profile guardian (representation.presets). A value that the scope chain resolves: accepting a proposal of the guardian sets guardian for that conversation as a rule you can switch off. The compatibility mode (system prompt and raw conversation only) is unaffected. Default: raw."
       },
       {
-        "key": "chat_context_format",
+        "key": "chat_flow",
         "scope": "config",
         "group": "context",
         "section": "Kontekst",
-        "subsection": "Format kontekstu",
+        "subsection": "Przepływ wejścia i wyjścia",
         "type": "string",
         "has_default": false,
-        "values": [
-          {
-            "value": "conversation",
-            "preset": true
-          },
-          {
-            "value": "graph"
-          },
-          {
-            "value": "both"
-          }
-        ],
-        "description": "In which form the context selector gives the model what it selected of a conversation (what is chosen by chat_representation): conversation (preset: ordinary chat turns, request bytes unchanged), graph (one graph packet with nodes, links and provenance in a system block instead of the turns) or both (the packet and the turns). A value that the scope chain resolves: a rule of one conversation (\"w tej rozmowie ustaw chat_context_format na graph\") overrides yours. The selector always reads its settings from the graph, also for the raw messages. Runtime profile guardian (context_format). Default: conversation."
-      },
-      {
-        "key": "chat_reply_format",
-        "scope": "config",
-        "group": "context",
-        "section": "Kontekst",
-        "subsection": "Format odpowiedzi",
-        "type": "string",
-        "has_default": false,
-        "values": [
-          {
-            "value": "text",
-            "preset": true
-          },
-          {
-            "value": "graph"
-          }
-        ],
-        "description": "In which form the model answers: text (preset: plain text, request bytes unchanged) or graph (the model returns a graph, loom.graph_reply/2: through a structured response format when the model supports it, else by instruction only and validated; the graph is rendered to the same text for you and its nodes and links are kept in the graph with provenance to the message; an invalid reply is shown as raw text with a note, never silently; a graph reply is not streamed). Which flow a model gets follows its class (profile guardian, context_format.reply.flows) and never the model of the conversation. A value that the scope chain resolves, as chat_context_format. Default: text."
+        "description": "Which flow the request goes through: how the context the selector chose (from the graph, by task, settings, representation) is rendered for the model and in which form the answer is asked for and taken back. A flow is data in the profile guardian (context_io.flows: renderer + output); shipped: plain (preset: ordinary chat turns in, plain text out, request bytes unchanged), graph_out (chat turns in, a graph reply out: loom.graph_reply/2 forced through a structured response format, prompt-only and validated for a model that cannot), graph_in (the selection as a graph packet in), graph_io (both). Empty: the flow of the model's class (context_io.class_flows), never the model of the conversation as such. A value that the scope chain resolves: \"w tej rozmowie ustaw chat_flow na graph_io\". A graph reply is rendered to the same text for you and its nodes and links are embedded in the graph with provenance to the message; an invalid reply is shown as raw text with a note. Graph replies are not streamed. Default: the flow of the class (all plain)."
       },
       {
         "key": "environments_auto_sync",

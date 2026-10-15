@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 
+#include "loom/db.h"
 #include "loom/result.h"
 #include "loom/util/json.h"
 
@@ -26,39 +27,44 @@ class Database;
 
 namespace loom::chat::formats {
 
-// What the axes resolved to for one request.
+// What the flow resolved to for one request.
 struct Axes {
-  std::string context_format = "conversation";
-  std::string reply_format = "text";
-  bool turns = true;           // the context goes as chat turns
-  bool packet = false;         // the context goes as a graph packet
-  bool reply_graph = false;    // the model is asked for loom.graph_reply/2
-  std::string model_class;     // cheap | mid | frontier | unknown (only for a graph reply)
-  std::string flow;            // json_schema | prompt_only (only for a graph reply)
-  std::string flow_reason;     // why this flow (class flow, capability, ...)
-  Json section = nullptr;      // profile guardian, context_format
+  std::string flow = "plain";      // name of the flow (data: context_io.flows)
+  std::string renderer = "chat_turns";
+  std::string output = "text";
+  bool turns = true;               // the selection is rendered as chat turns
+  bool packet = false;             // the selection is rendered as a graph packet
+  bool reply_graph = false;        // the answer is asked for as loom.graph_reply/2
+  std::string mode;                // response_format | prompt_only (only for a graph reply)
+  std::string model_class;         // cheap | mid | frontier | unknown
+  std::string reason;              // why this flow / mode
+  Json section = nullptr;          // profile guardian, context_io
   bool plain() const { return turns && !packet && !reply_graph; }
 };
 
-// The values come from the scope chain; `override_*` (a per-send option) win over it. Errors are the profile's; the caller degrades to plain.
+// The flow: an override of the request, else the scope chain (setting chat_flow), else the flow of the model's class (data). Errors are
+// the profile's; the caller degrades to plain, visibly (log).
 Result<Axes> resolve(const std::filesystem::path& root, const Config& cfg, Database* db, const std::string& conv_id,
-                     const std::string& model, const std::optional<std::string>& override_context,
-                     const std::optional<std::string>& override_reply, bool reply_allowed);
+                     const std::string& model, const std::optional<std::string>& override_flow, bool reply_allowed);
 
 struct Entry {
-  std::string id, role, text, parent_id;
-  double weight = 1.0;
-  bool selected_level = false;  // the text is a lossy level chosen by the selector, not the raw one
+  Message msg;                  // the row, whole
+  std::string text;             // the text of the selection (raw, or a lossy level chosen by the selector)
+  bool selected_level = false;
 };
 
 // loom.context_graph/1: nodes (messages with provenance) and links (follows, reply_to), packet_id = sha256 of the rest.
-Json packet(const Json& section, const std::string& conv_id, const std::vector<Entry>& entries);
+// The SELECTION: every node and graph link keeps its source (table, id, position, the whole row) so that the embedder can put it back where it came
+// from. `inputs` records what the selector read (representation, flow, settings). packet_id = sha256 of the rest.
+Json packet(const Json& section, const std::string& conv_id, const std::vector<Entry>& entries, const std::vector<Link>& graph_links, const Json& inputs);
+// A renderer may drop parts of the selection (renderers.<id>.drop, e.g. "source"); the selection itself never does.
+Json render_packet(const Json& section, const std::string& renderer, const Json& packet);
 // The system block that carries the packet: recipe + the packet as JSON.
 std::string packet_block(const Json& section, const Json& packet);
 // The instruction of a graph reply (recipe + the id the reply echoes + the schema when the flow has no response format).
-std::string reply_instruction(const Json& section, const std::string& flow, const std::string& packet_id);
+std::string reply_instruction(const Json& section, const std::string& mode, const std::string& packet_id);
 // Adds what the flow puts in the payload (response_format, provider constraints).
-void apply_reply_request(Json& payload, const Json& section, const std::string& flow);
+void apply_reply_request(Json& payload, const Json& section, const std::string& mode);
 
 struct Reply {
   bool ok = false;
@@ -73,8 +79,18 @@ Reply parse_reply(const Json& section, const std::string& model_text, const std:
 // The visible note for an invalid reply (data text).
 std::string invalid_note(const Json& section, const std::string& lang, const std::string& reason);
 
-// Writes the nodes and links of a valid reply into the graph with provenance to the message. Returns a summary (counts, ids).
+// PLACEMENT (an analysis-like step, not part of the embedder): where each new element of a reply goes. Cascade as data; here explicit refs and
+// deterministic keys. Returns {nodes: local->id, links: [{from,to,predicate,placed_by}], unplaced: [...], cascade}.
+Json plan_placement(const Json& section, const std::string& message_id, const Reply& reply, const std::set<std::string>& prior_ids);
+// OUTPUT node embedder (inputs."loom.graph_reply/2".embedder = reply_graph): PURE STRUCTURE, no model, no analysis. It applies a placement plan: writes
+// the nodes and links of a valid reply into the graph with provenance to the message. Deterministic ids and upserting links make it idempotent.
 Result<Json> embed(Database& db, const Json& section, const std::string& message_id, const std::string& conv_id,
-                   const std::string& model, const Reply& reply);
+                   const std::string& model, const Reply& reply, const Json& plan);
+
+// INPUT node embedder (inputs."loom.context_graph/1".embedder = packet_messages): the inverse of the selector on its image. Every message of the
+// packet is matched to the graph (by id, else by an earlier embedding of the same packet node); a match changes NOTHING (a lossy text_form is
+// never written over the raw text); what is new is added to the conversation as a message with provenance metadata.embedded = {packet_id, node,
+// origin}. So select(embed(select(G))) == select(G) and embedding twice adds nothing. Parsers that need a model are not part of this guarantee.
+Result<Json> embed_packet(Database& db, const Json& section, const std::string& conv_id, const Json& packet);
 
 }  // namespace loom::chat::formats
