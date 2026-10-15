@@ -400,7 +400,7 @@ export class LoomHttpApi implements LoomApi {
     return this.req<unknown>("POST", "/api/perspectives", request).then(readSideBySide);
   }
   resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
-    return this.req<unknown>("POST", "/api/scopes/resolve", request).then(readScopeResolution);
+    return this.req<unknown>("POST", "/api/scopes/resolve", request).then(result => readScopeResolution(result, request.key));
   }
   selectContext(req: ContextSelectRequest): Promise<ContextSet> {
     return this.req("POST", "/api/context/select", req);

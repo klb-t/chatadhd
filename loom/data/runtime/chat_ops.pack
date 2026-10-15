@@ -1171,19 +1171,24 @@
           "edge kind",
           "edge kinds",
           "rodzaj krawedzi",
-          "rodzaje krawedzi"
+          "rodzaje krawedzi",
+          "rodzajow krawedzi",
+          "krawedzi"
         ],
         "perspectives": [
           "perspective",
           "perspektywa",
           "perspektywe",
-          "perspektywy"
+          "perspektywy",
+          "perspektyw"
         ],
         "node_kinds": [
           "node kind",
           "node kinds",
           "rodzaj wezla",
-          "rodzaje wezlow"
+          "rodzaje wezlow",
+          "rodzajow wezlow",
+          "wezlow"
         ],
         "unit_kinds": [
           "unit kind",

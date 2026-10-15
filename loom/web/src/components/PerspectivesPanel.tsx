@@ -1,20 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../api";
 import type { PerspectiveInfo, PerspectiveRender } from "../api/graph-views";
-import { useShellText } from "../shell/text";
+import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
 import { colorFor } from "./GraphView";
 
 // Perspectives side by side (P24 + P25): choose one or more, each is the same graph seen through a different selection of edge kinds,
 // drawn next to the others with the node colours of the graph view. Positions are a fixed circle: the panel compares selections, it does
 // not simulate physics.
 const W = 320, H = 260;
-
-function labelOf(p: PerspectiveInfo, language: string): string {
-  const l = p.label;
-  if (typeof l === "string") return l;
-  if (l && typeof l === "object") return l[language as "en" | "pl"] ?? l.en ?? p.id;
-  return p.id;
-}
 
 function PerspectiveGraph({ id, render }: { id: string; render: PerspectiveRender }) {
   const t = useShellText();
@@ -44,8 +37,9 @@ function PerspectiveGraph({ id, render }: { id: string; render: PerspectiveRende
   );
 }
 
-export default function PerspectivesPanel({ convId, language }: { convId: string | null; language: string }) {
+export default function PerspectivesPanel({ convId }: { convId: string | null }) {
   const t = useShellText();
+  const language = useShellLanguage();
   const [list, setList] = useState<PerspectiveInfo[] | null>(null);
   const [chosen, setChosen] = useState<string[]>([]);
   const [key, setKey] = useState("temperature");
@@ -85,7 +79,7 @@ export default function PerspectivesPanel({ convId, language }: { convId: string
         {(list ?? []).map(p => (
           <li key={p.id}>
             <label>
-              <input type="checkbox" checked={chosen.includes(p.id)} onChange={() => toggle(p.id)} data-testid={`perspective-choose-${p.id}`} /> {labelOf(p, language)} <code>{p.id}</code>
+              <input type="checkbox" checked={chosen.includes(p.id)} onChange={() => toggle(p.id)} data-testid={`perspective-choose-${p.id}`} /> {dataLabel(p.entry?.label, language, p.id)} <code>{p.id}</code>
             </label>
           </li>
         ))}

@@ -3,7 +3,8 @@ import type { GraphEdge, GraphNode } from "./types";
 
 export interface PerspectiveInfo {
   id: string;
-  label?: { en?: string; pl?: string } | string;
+  /** The data of the perspective (label {en, pl}, relations, direction, render ...). */
+  entry?: { label?: { en?: string; pl?: string } | string; [key: string]: unknown };
   relations?: string[];
   edge_kinds?: string[];
   origin?: string;
@@ -29,7 +30,7 @@ export interface PerspectiveRequest {
 export interface ScopeResolveRequest { key: string; conversation_id?: string; inheritance?: boolean }
 export interface ScopeChainLevel {
   level: string;
-  label?: string;
+  label?: { en?: string; pl?: string } | string;
   active?: boolean;
   scope_id?: string;
   role: "supplied" | "overridden" | "inactive" | "none" | string;
@@ -55,8 +56,8 @@ export function readSideBySide(v: unknown): PerspectivesSideBySide {
   if (!o || typeof o.perspectives !== "object" || o.perspectives === null || Array.isArray(o.perspectives)) throw new Error("perspectives_render_invalid");
   return { perspectives: o.perspectives as Record<string, PerspectiveRender> };
 }
-export function readScopeResolution(v: unknown): ScopeResolution {
+export function readScopeResolution(v: unknown, key: string): ScopeResolution {
   const o = v as Partial<ScopeResolution> | null;
-  if (!o || typeof o.key !== "string" || !Array.isArray(o.chain)) throw new Error("scope_resolution_invalid");
-  return o as ScopeResolution;
+  if (!o || typeof o.defined !== "boolean" || !Array.isArray(o.chain)) throw new Error("scope_resolution_invalid");
+  return { ...o, key: typeof o.key === "string" ? o.key : key } as ScopeResolution;
 }

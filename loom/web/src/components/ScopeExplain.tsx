@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { api } from "../api";
 import type { ScopeResolution } from "../api/graph-views";
-import { useShellText } from "../shell/text";
+import { dataLabel, useShellLanguage, useShellText } from "../shell/text";
 
 // "Where does this setting come from": the value of one key through conversation -> units -> user -> installation (P24 scope resolver),
 // which level supplied it and which were overridden. Reads only; the words are the shell's (PL/EN by ui_language).
@@ -9,6 +9,7 @@ const KEY_PRESET = "temperature";
 
 export default function ScopeExplain({ convId }: { convId: string | null }) {
   const t = useShellText();
+  const language = useShellLanguage();
   const [key, setKey] = useState(KEY_PRESET);
   const [result, setResult] = useState<ScopeResolution | null>(null);
   const [error, setError] = useState("");
@@ -45,7 +46,7 @@ export default function ScopeExplain({ convId }: { convId: string | null }) {
           <ul>
             {result.chain.map(level => (
               <li key={level.level} data-testid={`scope-level-${level.level}`} data-role={level.role}>
-                {level.label ?? level.level}: {t(`scope_role_${level.role}`)}
+                {dataLabel(level.label, language, level.level)}: {t(`scope_role_${level.role}`)}
               </li>
             ))}
           </ul>

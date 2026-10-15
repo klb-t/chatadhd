@@ -1812,7 +1812,7 @@ StepOutcome perspectives_show(Ctx& x) {
   if (ids.empty()) {
     const Json list = p->list();
     std::vector<std::string> lines;
-    for (const auto& e : list) lines.push_back("• " + x.say("persp_entry", Json{{"id", e.value("id", "")}, {"label", x.pick(e.value("label", Json::object()))}}));
+    for (const auto& e : list) lines.push_back("• " + x.say("persp_entry", Json{{"id", e.value("id", "")}, {"label", x.pick(e.value("entry", Json::object()).value("label", Json::object()))}}));
     return answer(x.say("persp_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), Json{{"perspectives", list}});
   }
   Json request = Json::object();
@@ -1847,7 +1847,7 @@ StepOutcome scopes_explain(Ctx& x) {
   const Json doc = r->to_json();
   std::vector<std::string> lines;
   for (const auto& l : doc.value("chain", Json::array()))
-    lines.push_back("• " + x.say("scopes_level", Json{{"level", l.value("label", l.value("level", ""))}, {"role", x.say("scopes_role_" + l.value("role", "none"))}}));
+    lines.push_back("• " + x.say("scopes_level", Json{{"level", l.contains("label") ? x.pick(l["label"]) : l.value("level", "")}, {"role", x.say("scopes_role_" + l.value("role", "none"))}}));
   const std::string head = r->defined ? x.say("scopes_supplied", Json{{"key", b.key}, {"value", json::dump(r->value)}, {"scope", r->scope}}) : x.say("scopes_undefined", Json{{"key", b.key}});
   return answer(head + "\n" + join_lines(lines), doc);
 }

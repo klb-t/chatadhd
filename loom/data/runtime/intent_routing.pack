@@ -4092,7 +4092,7 @@
           "id": "views.effective.pl",
           "action": "views.effective",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+widok\\s+efektywny\\s+(?:rodzajow\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+widok\\s+efektywny\\s+(.+?)\\s*[.!?]*\\s*$",
           "args": [
             "kind"
           ],

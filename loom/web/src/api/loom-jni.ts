@@ -337,7 +337,7 @@ export class LoomJniApi implements LoomApi {
     return this.callAsync<unknown>("perspectives", { request: JSON.stringify(request) }).then(readSideBySide);
   }
   resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
-    return this.callAsync<unknown>("scope_resolve", { request: JSON.stringify(request) }).then(readScopeResolution);
+    return this.callAsync<unknown>("scope_resolve", { request: JSON.stringify(request) }).then(result => readScopeResolution(result, request.key));
   }
   reindexGraph(convId?: string): Promise<{ reindexed: number }> {
     return this.callAsync("graph_reindex", { conv_id: convId ?? null });

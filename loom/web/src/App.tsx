@@ -24,7 +24,7 @@ import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 import ChatShell from "./shell/ChatShell";
 import PerspectivesPanel from "./components/PerspectivesPanel";
-import { ShellText, shellTranslator } from "./shell/text";
+import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStartView, startViewOrder, writeSaved, type Layout } from "./shell/start-view";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
@@ -188,7 +188,7 @@ export default function App() {
               <div className="drawer-body">
                 {activePanel === "graph" && <GraphView convId={activeConvId} />}
                 {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
-                {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} language={uiLanguage} />}
+                {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
@@ -284,7 +284,7 @@ export default function App() {
     </div>
   );
   if (layout === "chat") return (
-    <ShellText.Provider value={t}>
+    <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }}
         actions={{ panel: (id) => setActivePanel(id as PanelId), knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
@@ -296,7 +296,7 @@ export default function App() {
           <div className="drawer-body"><KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} /></div>
         </div>
       </>}
-    </ShellText.Provider>
+    </ShellLanguage.Provider></ShellText.Provider>
   );
-  return <ShellText.Provider value={t}>{workshop}</ShellText.Provider>;
+  return <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>{workshop}</ShellLanguage.Provider></ShellText.Provider>;
 }
