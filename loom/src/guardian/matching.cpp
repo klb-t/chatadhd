@@ -138,7 +138,7 @@ annotations::ModelChoice Guardian::Impl::choice_for(const Data& d, const std::st
     if (auto msgs = rt.db().get_msgs(conv_id))
       for (auto it = msgs->rbegin(); it != msgs->rend() && conversation_model.empty(); ++it)
         if (it->role == "assistant" && it->model && !it->model->empty() && it->model->rfind("loom:", 0) != 0) conversation_model = *it->model;
-  return annotations::resolve_model(rt.config(), rt.paths().root, "guardian", conv_id, conversation_model);
+  return annotations::resolve_model(rt.config(), rt.paths().root, "guardian", conv_id, conversation_model, -1, &rt.db());
 }
 
 std::string Guardian::Impl::model_for(const Data& d, const std::string& conv_id) { return choice_for(d, conv_id).model; }

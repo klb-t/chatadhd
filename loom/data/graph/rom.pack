@@ -64,7 +64,22 @@
           "path": "loom/data/graph/scopes.pack"
         },
         {
+          "path": "loom/data/runtime/graph_views.pack"
+        },
+        {
           "path": "loom/data/schema/types.json"
+        },
+        {
+          "path": "loom/include/loom/effective_view.h"
+        },
+        {
+          "path": "loom/src/views/effective_view.cpp"
+        },
+        {
+          "path": "loom/src/views/perspectives.cpp"
+        },
+        {
+          "path": "loom/src/views/scope_resolver.cpp"
         }
       ],
       "gaps": []
@@ -301,6 +316,9 @@
         },
         {
           "path": "loom/data/runtime/graph_memory.pack"
+        },
+        {
+          "path": "loom/data/runtime/graph_views.pack"
         },
         {
           "path": "loom/data/runtime/guardian.pack"

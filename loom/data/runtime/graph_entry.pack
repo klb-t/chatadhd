@@ -2490,6 +2490,7 @@
           "loom_delete_memory",
           "loom_delete_secret",
           "loom_detect_format",
+          "loom_edge_kinds",
           "loom_edit_message",
           "loom_emit",
           "loom_expand_graph",
@@ -2546,12 +2547,14 @@
           "loom_media_status",
           "loom_ocr",
           "loom_packet",
+          "loom_perspectives",
           "loom_query_events",
           "loom_read_conversation_view",
           "loom_refresh_models",
           "loom_resolve_lineage",
           "loom_restore_version",
           "loom_resume_tasks",
+          "loom_scope_resolve",
           "loom_search",
           "loom_select_context",
           "loom_select_context_ex",
@@ -2575,7 +2578,9 @@
           "loom_update_conversation",
           "loom_update_memory",
           "loom_update_message",
-          "loom_version"
+          "loom_version",
+          "loom_view_effective",
+          "loom_view_write"
         ]
       },
       "http": {
@@ -2602,6 +2607,7 @@
           "GET /api/conversations/:id/messages",
           "GET /api/conversations/:id/view",
           "GET /api/economy/report",
+          "GET /api/edge-kinds",
           "GET /api/events",
           "GET /api/events/stream",
           "GET /api/graph/data",
@@ -2622,6 +2628,7 @@
           "GET /api/messages/:id/versions",
           "GET /api/methods/chat-settings",
           "GET /api/models",
+          "GET /api/perspectives",
           "GET /api/provenance/:id",
           "GET /api/providers",
           "GET /api/search",
@@ -2638,6 +2645,7 @@
           "GET /api/tasks",
           "GET /api/tasks/:id",
           "GET /api/version",
+          "GET /api/views/([A-Za-z0-9_.-]+)",
           "PATCH /api/config",
           "PATCH /api/conversations/:id",
           "PATCH /api/memory/:id",
@@ -2671,6 +2679,7 @@
           "POST /api/context/select",
           "POST /api/conversations",
           "POST /api/conversations/:id/view",
+          "POST /api/edge-kinds",
           "POST /api/graph-reply",
           "POST /api/graph/expand",
           "POST /api/graph/packets/store",
@@ -2699,9 +2708,11 @@
           "POST /api/models/refresh",
           "POST /api/onboarding",
           "POST /api/packet",
+          "POST /api/perspectives",
           "POST /api/rules/disable",
           "POST /api/rules/list",
           "POST /api/rules/set",
+          "POST /api/scopes/resolve",
           "POST /api/secrets/:id",
           "POST /api/semantic/pause",
           "POST /api/semantic/requeue",
@@ -2715,6 +2726,7 @@
           "POST /api/tasks/:id/cancel",
           "POST /api/tasks/resume",
           "POST /api/usage-policy",
+          "POST /api/views/write",
           "PUT /api/config/:id"
         ]
       },
@@ -2918,7 +2930,22 @@
               "path": "loom/data/graph/scopes.pack"
             },
             {
+              "path": "loom/data/runtime/graph_views.pack"
+            },
+            {
               "path": "loom/data/schema/types.json"
+            },
+            {
+              "path": "loom/include/loom/effective_view.h"
+            },
+            {
+              "path": "loom/src/views/effective_view.cpp"
+            },
+            {
+              "path": "loom/src/views/perspectives.cpp"
+            },
+            {
+              "path": "loom/src/views/scope_resolver.cpp"
             }
           ],
           "gaps": []
@@ -3155,6 +3182,9 @@
             },
             {
               "path": "loom/data/runtime/graph_memory.pack"
+            },
+            {
+              "path": "loom/data/runtime/graph_views.pack"
             },
             {
               "path": "loom/data/runtime/guardian.pack"
