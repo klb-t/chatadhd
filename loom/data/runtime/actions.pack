@@ -10484,6 +10484,82 @@
         },
         "positional_arg": "ids"
       },
+      "view_model.show": {
+        "id": "view_model.show",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Show a view",
+        "description": "Without a declaration: the list of view declarations. With one and a focus: the view declaration evaluated around the focus node into a layout-independent view model (elements with measures, coordinates and channel values; which encodings are promoted and which are allowed with a warning; what is unsupported and why). Read only.",
+        "labels": {
+          "pl": "Pokaż widok"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "declaration",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The view declaration (without it: the list)",
+              "pl": "Deklaracja widoku (bez niej: lista)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "focus",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The focus node (id or label)",
+              "pl": "Węzeł fokusu (id albo etykieta)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "budget",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "Node budget for this view (0 = none)",
+              "pl": "Budżet węzłów dla tego widoku (0 = brak)"
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "examples": {
+          "en": [
+            "show view history_cone around main.c"
+          ],
+          "pl": [
+            "pokaż widok history_cone wokół main.c"
+          ]
+        },
+        "positional_arg": "declaration"
+      },
       "scopes.explain": {
         "id": "scopes.explain",
         "kind": "atomic",

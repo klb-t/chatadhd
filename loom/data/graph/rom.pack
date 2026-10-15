@@ -73,6 +73,9 @@
           "path": "loom/include/loom/effective_view.h"
         },
         {
+          "path": "loom/include/loom/view_engine.h"
+        },
+        {
           "path": "loom/src/views/effective_view.cpp"
         },
         {
@@ -80,6 +83,9 @@
         },
         {
           "path": "loom/src/views/scope_resolver.cpp"
+        },
+        {
+          "path": "loom/src/views/view_engine.cpp"
         }
       ],
       "gaps": []

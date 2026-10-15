@@ -4345,6 +4345,52 @@
           "takes_scope": false
         },
         {
+          "id": "view_model.show.list.pl",
+          "action": "view_model.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+(?:liste\\s+)?deklaracj[ie]\\s+widokow\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "view_model.show.list.en",
+          "action": "view_model.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:the\\s+)?view\\s+declarations\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "view_model.show.pl",
+          "action": "view_model.show",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+widok\\s+([A-Za-z0-9_.-]+)\\s+wokol\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "declaration",
+            "focus"
+          ],
+          "original": [
+            "declaration",
+            "focus"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "view_model.show.en",
+          "action": "view_model.show",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|display)\\s+(?:the\\s+)?view\\s+([A-Za-z0-9_.-]+)\\s+around\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "declaration",
+            "focus"
+          ],
+          "original": [
+            "declaration",
+            "focus"
+          ],
+          "takes_scope": false
+        },
+        {
           "id": "scopes.explain.pl",
           "action": "scopes.explain",
           "lang": "pl",

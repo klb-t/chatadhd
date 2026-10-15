@@ -1910,6 +1910,28 @@
         }
       },
       {
+        "id": "view_model_show",
+        "title": {
+          "en": "Show a view (visualization engine)",
+          "pl": "Pokaż widok (silnik wizualizacji)"
+        },
+        "via": "action",
+        "action": "view_model.show",
+        "surfaces": {
+          "c_abi": [
+            "loom_view_model"
+          ],
+          "http": [
+            "GET /api/view-model",
+            "POST /api/view-model"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż widok history_cone wokół main.c",
+          "en": "show view history_cone around main.c"
+        }
+      },
+      {
         "id": "scopes_explain",
         "title": {
           "en": "Where does a setting come from",

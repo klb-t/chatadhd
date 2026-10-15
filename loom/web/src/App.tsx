@@ -24,13 +24,14 @@ import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 import ChatShell from "./shell/ChatShell";
 import PerspectivesPanel from "./components/PerspectivesPanel";
+import ViewEnginePanel from "./components/ViewEnginePanel";
 import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStartView, startViewOrder, writeSaved, type Layout } from "./shell/start-view";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 
 type Theme = "dark" | "amoled";
-type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge" | "graph-entry" | "perspectives";
+type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge" | "graph-entry" | "perspectives" | "view-engine";
 
 function readStored(key: string, fallback: string): string {
   try {
@@ -62,10 +63,11 @@ const PANEL_LABELS: Record<PanelId, string> = {
   "user-knowledge": "What app knows",
   "graph-entry": "Entry",
   perspectives: "Perspectives",
+  "view-engine": "View engine",
 };
 
 // Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
-const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { perspectives: "perspectives_title" };
+const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { perspectives: "perspectives_title", "view-engine": "view_engine_title" };
 
 export default function App() {
   const account = useAccountSession();
@@ -189,6 +191,7 @@ export default function App() {
                 {activePanel === "graph" && <GraphView convId={activeConvId} />}
                 {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
                 {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
+                {activePanel === "view-engine" && <ViewEnginePanel />}
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}

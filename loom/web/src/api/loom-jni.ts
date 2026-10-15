@@ -13,6 +13,7 @@
 // invokes `window.__loomCallbacks[callbackId](chunkJson, done)` for every
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
+import { readViewEngineList, readViewModel, type ViewEngineList, type ViewModel, type ViewModelRequest } from "./view-model";
 import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type { ActionsApi, ClientBlob, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
@@ -335,6 +336,12 @@ export class LoomJniApi implements LoomApi {
   }
   renderPerspectives(request: PerspectiveRequest): Promise<PerspectivesSideBySide> {
     return this.callAsync<unknown>("perspectives", { request: JSON.stringify(request) }).then(readSideBySide);
+  }
+  listViewDeclarations(): Promise<ViewEngineList> {
+    return this.callAsync<unknown>("view_model", { request: "{}" }).then(readViewEngineList);
+  }
+  evaluateView(request: ViewModelRequest): Promise<ViewModel> {
+    return this.callAsync<unknown>("view_model", { request: JSON.stringify(request) }).then(readViewModel);
   }
   resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
     return this.callAsync<unknown>("scope_resolve", { request: JSON.stringify(request) }).then(result => readScopeResolution(result, request.key));

@@ -121,4 +121,23 @@ TEST_SUITE("views_actions") {
     CHECK(hidden);
     CHECK(f.text_of(done).find("mentions") != std::string::npos);
   }
+
+  TEST_CASE("P28: a view declaration is listed and evaluated around a focus from a sentence (both languages)") {
+    Fixture f;
+    const std::string v1 = unwrap(f.rt->db().create_node("main.c", "file")), v2 = unwrap(f.rt->db().create_node("util.c", "file"));
+    unwrap(f.rt->db().create_link(v2, v1, "previous_version"));
+    const auto list = f.say_and_confirm("show view declarations", "view_model.show");
+    INFO(f.text_of(list));
+    CHECK(f.text_of(list).find("history_cone") != std::string::npos);
+    const auto shown = f.say_and_confirm("show view history_cone around main.c", "view_model.show");
+    INFO(f.text_of(shown));
+    CHECK(f.text_of(shown).find("history_cone") != std::string::npos);
+    CHECK(f.text_of(shown).find("2 elements") != std::string::npos);
+    const auto shown_pl = f.say_and_confirm("pokaż widok history_cone wokół main.c", "view_model.show", "tak");
+    INFO(f.text_of(shown_pl));
+    CHECK(f.text_of(shown_pl).find("2 elementów") != std::string::npos);
+    const auto none = f.say_and_confirm("show view history_cone around nothing_here", "view_model.show");
+    INFO(f.text_of(none));
+    CHECK(f.text_of(none).find("nothing_here") != std::string::npos);
+  }
 }

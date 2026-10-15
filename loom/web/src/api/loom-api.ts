@@ -224,6 +224,9 @@ export interface LoomApi {
   listPerspectives(): Promise<import("./graph-views").PerspectivesList>;
   renderPerspectives(request: import("./graph-views").PerspectiveRequest): Promise<import("./graph-views").PerspectivesSideBySide>;
   resolveScope(request: import("./graph-views").ScopeResolveRequest): Promise<import("./graph-views").ScopeResolution>;
+  /** P28 visualization engine: the view declarations, and one evaluated around a focus node into a layout-independent view model. */
+  listViewDeclarations(): Promise<import("./view-model").ViewEngineList>;
+  evaluateView(request: import("./view-model").ViewModelRequest): Promise<import("./view-model").ViewModel>;
   selectContext(req: ContextSelectRequest): Promise<ContextSet>;
 
   // Semantic worker

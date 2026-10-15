@@ -274,6 +274,13 @@ LOOM_API const char* loom_edge_kinds(LoomContext* ctx, const char* request_json)
 LOOM_API const char* loom_perspectives(LoomContext* ctx, const char* request_json);
 LOOM_API const char* loom_scope_resolve(LoomContext* ctx, const char* request_json);
 
+/* P28: the visualization engine. loom_view_model: no declaration = the lists the engine is made of (declarations, measure kinds, coordinate systems,
+ * channels, composition kinds, combination rules, rules: each the effective view, ROM + overlays). {declaration: id | object, focus: node id,
+ * sources?: {source id: {weight?, depth?}}, budget?: n (0/null = none)} = the layout-independent view model {schema: "loom.view_model/1", elements
+ * with measures/coords/channels, edges, groups, encodings: promoted | allowed with reasons, unsupported: what the engine has no evaluator for, with
+ * the reason, budget}. See loom/view_engine.h. */
+LOOM_API const char* loom_view_model(LoomContext* ctx, const char* request_json);
+
 /* ContextSet for text: {"items":[...],"prompt_text","token_estimate","truncated"} */
 LOOM_API const char* loom_select_context(LoomContext* ctx, const char* text, int depth, int max_tokens);
 /* request_json: {"text","depth","max_tokens","conv_id","include_memory","include_graph","include_search"} */

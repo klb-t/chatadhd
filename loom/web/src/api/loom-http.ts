@@ -29,6 +29,7 @@ import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
+import { readViewEngineList, readViewModel, type ViewEngineList, type ViewModel, type ViewModelRequest } from "./view-model";
 import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import { readConversationView, type ConversationReadRequest, type ConversationView } from "./conversation-view";
 
@@ -401,6 +402,12 @@ export class LoomHttpApi implements LoomApi {
   }
   renderPerspectives(request: PerspectiveRequest): Promise<PerspectivesSideBySide> {
     return this.req<unknown>("POST", "/api/perspectives", request).then(readSideBySide);
+  }
+  listViewDeclarations(): Promise<ViewEngineList> {
+    return this.req<unknown>("GET", "/api/view-model").then(readViewEngineList);
+  }
+  evaluateView(request: ViewModelRequest): Promise<ViewModel> {
+    return this.req<unknown>("POST", "/api/view-model", request).then(readViewModel);
   }
   resolveScope(request: ScopeResolveRequest): Promise<ScopeResolution> {
     return this.req<unknown>("POST", "/api/scopes/resolve", request).then(result => readScopeResolution(result, request.key));

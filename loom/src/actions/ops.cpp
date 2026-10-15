@@ -24,6 +24,7 @@
 #include "loom/economy.h"
 #include "loom/effective_view.h"
 #include "loom/perspectives.h"
+#include "loom/view_engine.h"
 #include "loom/scope_resolver.h"
 #include "loom/event_bus.h"
 #include "loom/graph_engine.h"
@@ -1834,6 +1835,53 @@ StepOutcome perspectives_show(Ctx& x) {
   return answer(x.say("persp_side_by_side", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), *r);
 }
 
+// P28: a view declaration evaluated around a focus node; without a declaration the list of declarations.
+StepOutcome view_model_show(Ctx& x) {
+  auto engine = views::ViewEngine::open(x.rt.paths().root);
+  if (!engine) return fail(engine.error());
+  const std::string id = trim_quotes(x.str("declaration", x.str("id")));
+  if (id.empty()) {
+    const Json list = engine->list();
+    std::vector<std::string> lines;
+    for (const auto& e : list.value("declarations", Json::object()).value("entries", Json::array()))
+      lines.push_back("• " + x.say("vm_entry", Json{{"id", e.value("id", "")}, {"label", x.pick(e.value("entry", Json::object()).value("label", Json::object()))}}));
+    return answer(x.say("vm_list_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), list);
+  }
+  const std::string focus_said = trim_quotes(x.str("focus"));
+  if (focus_said.empty()) return fail(Errc::InvalidArgument, x.say("vm_which_focus"));
+  std::string focus = focus_said;
+  auto by_id = x.rt.db().get_node(focus_said);
+  if (!by_id) return fail(by_id.error());
+  if (!*by_id) {
+    auto by_label = x.rt.db().find_node(focus_said);
+    if (!by_label) return fail(by_label.error());
+    if (!*by_label) return fail(Errc::NotFound, x.say("vm_no_focus", Json{{"focus", focus_said}}));
+    focus = (*by_label)->id;
+  }
+  Json request{{"focus", focus}};
+  if (x.has("budget")) request["budget"] = json_arg(x, "budget");
+  views::RenderContext rc;
+  rc.db = &x.rt.db();
+  rc.cfg = &x.rt.config();
+  rc.root = x.rt.paths().root;
+  auto r = engine->evaluate(rc, id, request);
+  if (!r) return fail(r.error());
+  std::size_t promoted = 0, allowed = 0;
+  std::vector<std::string> lines;
+  for (const auto& e : r->value("encodings", Json::array())) {
+    const bool ok = e.value("status", "") == "promoted";
+    (ok ? promoted : allowed) += 1;
+    std::string why;
+    for (const auto& reason : e.value("reasons", Json::array()))
+      if (reason.value("level", "") == "warning") { why = " — " + x.pick(reason.value("text", Json::object())); break; }
+    lines.push_back("• " + x.say("vm_encoding", Json{{"channel", e.value("channel", "")}, {"measure", e.value("measure", "")}, {"status", x.say(ok ? "vm_promoted" : "vm_allowed")}}) + why);
+  }
+  for (const auto& u : r->value("unsupported", Json::array()))
+    lines.push_back("• " + x.say("vm_unsupported", Json{{"element", u.value("element", "")}, {"why", x.pick(u.value("reason", Json::object()).value("text", Json::object()))}}));
+  return answer(x.say("vm_head", Json{{"id", id}, {"elements", r->value("elements", Json::array()).size()}, {"promoted", promoted}, {"allowed", allowed},
+                                      {"unsupported", r->value("unsupported", Json::array()).size()}}) + "\n" + join_lines(lines), *r);
+}
+
 StepOutcome scopes_explain(Ctx& x) {
   scopes::Binding b;
   b.key = trim_quotes(x.str("key"));
@@ -1905,7 +1953,7 @@ const std::map<std::string, Op>& table() {
       {"archive.status", archive_status}, {"archive.cancel", archive_cancel}, {"knowledge.status", knowledge_status}, {"knowledge.cancel", knowledge_cancel},
       {"catalog.status", catalog_status}, {"catalog.cancel", catalog_cancel}, {"catalog.query", catalog_query},
       {"views.effective", views_effective}, {"views.write", views_write}, {"perspectives.show", perspectives_show}, {"scopes.explain", scopes_explain},
-      {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify}};
+      {"view_model.show", view_model_show}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify}};
   return t;
 }
 

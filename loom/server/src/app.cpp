@@ -1021,6 +1021,13 @@ void App::route_graph_context() {
   svr_.Post("/api/perspectives", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
     send_loom(res, loom_perspectives(rctx(), dump_body(parse_body(req)).c_str()));
   });
+  // P28: the visualization engine (view declarations as data -> a layout-independent view model).
+  svr_.Get("/api/view-model", [this](const httplib::Request&, httplib::Response& res) {
+    send_loom(res, loom_view_model(rctx(), "{}"));
+  });
+  svr_.Post("/api/view-model", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
+    send_loom(res, loom_view_model(rctx(), dump_body(parse_body(req)).c_str()));
+  });
   svr_.Post("/api/scopes/resolve", [this, dump_body](const httplib::Request& req, httplib::Response& res) {
     send_loom(res, loom_scope_resolve(rctx(), dump_body(parse_body(req)).c_str()));
   });

@@ -22,6 +22,8 @@
     "test:usage-pending-browser": "node e2e/usage-pending-ui.mjs",
     "test:graph-entry-browser": "node e2e/graph-entry-native.mjs",
     "test:p25-views": "node e2e/p25-views-native.mjs",
+    "test:p28-project": "node tests/view-engine/project.test.mjs",
+    "test:p28-view-engine": "node e2e/p28-view-engine-native.mjs",
     "test:action-proposal": "node tests/conversation-view/action-proposal.test.mjs",
     "test:action-proposal-browser": "node e2e/action-proposal-ui.mjs",
     "test:agent-proposal-browser": "node e2e/agent-proposal-ui.mjs",

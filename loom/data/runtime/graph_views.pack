@@ -80,6 +80,111 @@
           "pointer": "/scopes/chain",
           "key": "id"
         }
+      },
+      "view_declarations": {
+        "label": {
+          "en": "View declarations",
+          "pl": "Deklaracje widoków"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/view_declarations"
+        }
+      },
+      "measure_kinds": {
+        "label": {
+          "en": "Measure kinds",
+          "pl": "Rodzaje miar"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/measure_kinds"
+        }
+      },
+      "coordinate_systems": {
+        "label": {
+          "en": "Coordinate systems",
+          "pl": "Układy współrzędnych"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/coordinate_systems"
+        }
+      },
+      "view_channels": {
+        "label": {
+          "en": "Visual channels",
+          "pl": "Kanały wizualne"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/view_channels"
+        }
+      },
+      "composition_kinds": {
+        "label": {
+          "en": "Composition kinds",
+          "pl": "Rodzaje złożenia"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/composition_kinds"
+        }
+      },
+      "combination_rules": {
+        "label": {
+          "en": "Combination rules",
+          "pl": "Reguły łączenia"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/combination_rules"
+        }
+      },
+      "view_rules": {
+        "label": {
+          "en": "View rules",
+          "pl": "Reguły widoków"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/view_rules"
+        }
       }
     },
     "edge_kinds": {
@@ -1101,6 +1206,740 @@
           "en": "Role in context",
           "pl": "Rola w kontekście"
         }
+      }
+    },
+    "measure_kinds": {
+      "distance_from_focus": {
+        "meaning": {
+          "en": "Distance from the focus through all sources: each source contributes hops / weight, combined by a combination rule.",
+          "pl": "Odległość od fokusu przez wszystkie źródła: każde źródło wnosi skoki / waga, łączone regułą łączenia."
+        },
+        "data_type": "quantitative",
+        "unit": "hops",
+        "importance_sense": "inverse",
+        "params": {
+          "combine": "weighted_sum"
+        }
+      },
+      "age": {
+        "meaning": {
+          "en": "Age in days against the focus (positive = older than the focus, negative = newer) or against now.",
+          "pl": "Wiek w dniach względem fokusu (dodatni = starszy od fokusu, ujemny = nowszy) albo względem teraz."
+        },
+        "data_type": "quantitative",
+        "unit": "days",
+        "params": {
+          "reference": "focus"
+        }
+      },
+      "branch_divergence": {
+        "meaning": {
+          "en": "How many forks lie between the focus and the element along the main source.",
+          "pl": "Ile rozwidleń leży między fokusem a elementem wzdłuż głównego źródła."
+        },
+        "data_type": "ordinal",
+        "unit": "forks"
+      },
+      "degree_of_interest": {
+        "meaning": {
+          "en": "Degree of interest (Furnas 1986): a priori importance (degree) minus distance from the focus.",
+          "pl": "Stopień zainteresowania (Furnas 1986): ważność a priori (stopień) minus odległość od fokusu."
+        },
+        "data_type": "quantitative",
+        "unit": "score",
+        "importance_sense": "direct",
+        "params": {
+          "api": "degree",
+          "api_scale": 1,
+          "distance_scale": 1
+        }
+      },
+      "membership": {
+        "meaning": {
+          "en": "Which sector (or source) the element belongs to.",
+          "pl": "Do którego sektora (albo źródła) należy element."
+        },
+        "data_type": "nominal",
+        "params": {
+          "by": "sector"
+        }
+      },
+      "node_kind": {
+        "meaning": {
+          "en": "The kind of the node.",
+          "pl": "Rodzaj węzła."
+        },
+        "data_type": "nominal"
+      }
+    },
+    "coordinate_systems": {
+      "cartesian": {
+        "meaning": {
+          "en": "Axes x and y, each bound to a measure.",
+          "pl": "Osie x i y, każda związana z miarą."
+        },
+        "axes": [
+          "x",
+          "y"
+        ]
+      },
+      "sector": {
+        "meaning": {
+          "en": "Direction to perspective: sectors with a centre angle; the angle is blended by how strongly each source reaches the element; radius from a measure; optional fixed angle per branch.",
+          "pl": "Kierunek do perspektywy: sektory z kątem środka; kąt mieszany według siły, z jaką źródła sięgają elementu; promień z miary; opcjonalnie stały kąt gałęzi."
+        },
+        "axes": [
+          "angle_deg",
+          "radius"
+        ]
+      },
+      "depth_from_distance": {
+        "meaning": {
+          "en": "Depth from the distance measure (signed per sector: the past is deeper, the future is behind). In 2D a renderer shows it as size, fog and desaturation.",
+          "pl": "Głębia z miary odległości (ze znakiem według sektora: przeszłość w głąb, przyszłość z tyłu). W 2D renderer pokazuje ją rozmiarem, mgłą i odbarwieniem."
+        },
+        "axes": [
+          "depth"
+        ]
+      },
+      "tree_branch_angles": {
+        "meaning": {
+          "en": "Tree of the main source: depth in hops, a fixed angle per branch from the forks.",
+          "pl": "Drzewo głównego źródła: głębokość w skokach, stały kąt gałęzi z rozwidleń."
+        },
+        "axes": [
+          "depth",
+          "angle_deg",
+          "branch"
+        ]
+      }
+    },
+    "view_channels": {
+      "position": {
+        "meaning": {
+          "en": "Position (axes of the coordinate system).",
+          "pl": "Pozycja (osie układu współrzędnych)."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          1
+        ]
+      },
+      "depth": {
+        "meaning": {
+          "en": "Depth.",
+          "pl": "Głębia."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          1
+        ]
+      },
+      "hue": {
+        "meaning": {
+          "en": "Hue, in degrees.",
+          "pl": "Barwa, w stopniach."
+        },
+        "type": "circular",
+        "range": [
+          0,
+          300
+        ]
+      },
+      "saturation": {
+        "meaning": {
+          "en": "Colour saturation.",
+          "pl": "Nasycenie barwy."
+        },
+        "type": "continuous",
+        "range": [
+          0.15,
+          1
+        ]
+      },
+      "lightness": {
+        "meaning": {
+          "en": "Lightness.",
+          "pl": "Jasność."
+        },
+        "type": "continuous",
+        "range": [
+          0.25,
+          0.85
+        ]
+      },
+      "alpha": {
+        "meaning": {
+          "en": "Transparency (alpha).",
+          "pl": "Przezroczystość (alfa)."
+        },
+        "type": "continuous",
+        "range": [
+          0.2,
+          1
+        ]
+      },
+      "size": {
+        "meaning": {
+          "en": "Size, in pixels.",
+          "pl": "Rozmiar, w pikselach."
+        },
+        "type": "continuous",
+        "range": [
+          4,
+          28
+        ]
+      },
+      "blur": {
+        "meaning": {
+          "en": "Blur, in pixels.",
+          "pl": "Rozmycie, w pikselach."
+        },
+        "type": "continuous",
+        "range": [
+          0,
+          6
+        ]
+      },
+      "badge": {
+        "meaning": {
+          "en": "A marker with a short text.",
+          "pl": "Znacznik z krótkim tekstem."
+        },
+        "type": "categorical"
+      }
+    },
+    "composition_kinds": {
+      "sectors": {
+        "meaning": {
+          "en": "One group per sector of the sector coordinate system.",
+          "pl": "Jedna grupa na sektor układu sektorowego."
+        }
+      },
+      "layers": {
+        "meaning": {
+          "en": "One layer per source, drawn over each other (elements may overlap).",
+          "pl": "Jedna warstwa na źródło, rysowane jedna na drugiej (elementy mogą się nakładać)."
+        }
+      },
+      "lanes": {
+        "meaning": {
+          "en": "Lanes (bands) cut from a measure.",
+          "pl": "Pasy cięte z miary."
+        }
+      },
+      "small_multiples": {
+        "meaning": {
+          "en": "One small panel per source.",
+          "pl": "Jeden mały panel na źródło."
+        }
+      }
+    },
+    "combination_rules": {
+      "weighted_sum": {
+        "meaning": {
+          "en": "Sum over the sources of hops / weight (a preset).",
+          "pl": "Suma po źródłach skoki / waga (preset)."
+        },
+        "evaluator": "weighted_sum"
+      },
+      "min": {
+        "meaning": {
+          "en": "The smallest hops / weight over the sources.",
+          "pl": "Najmniejsze skoki / waga po źródłach."
+        },
+        "evaluator": "min"
+      }
+    },
+    "view_rules": {
+      "suitability": {
+        "kind": "channel_suitability",
+        "meaning": {
+          "en": "Channel suitability per data type (after Mackinlay 1986, density mapped to lightness/alpha, area to size, shape to badge). A channel within the first promote_top places is promoted, the others are allowed with an explanation.",
+          "pl": "Dopasowanie kanału do rodzaju danych (wg Mackinlaya 1986; gęstość jako jasność/alfa, pole jako rozmiar, kształt jako znacznik). Kanał w pierwszych promote_top miejscach jest promowany, pozostałe są dozwolone z wyjaśnieniem."
+        },
+        "promote_top": 5,
+        "ranking": {
+          "quantitative": [
+            "position",
+            "depth",
+            "size",
+            "lightness",
+            "alpha",
+            "saturation",
+            "hue",
+            "blur",
+            "badge"
+          ],
+          "ordinal": [
+            "position",
+            "depth",
+            "lightness",
+            "alpha",
+            "saturation",
+            "hue",
+            "size",
+            "blur",
+            "badge"
+          ],
+          "nominal": [
+            "position",
+            "hue",
+            "badge",
+            "lightness",
+            "saturation",
+            "alpha",
+            "size",
+            "blur",
+            "depth"
+          ]
+        }
+      },
+      "interference.saturation_lightness_hue": {
+        "kind": "interference",
+        "interfered": "hue",
+        "interfering": [
+          "saturation",
+          "lightness"
+        ],
+        "condition": "monotone_with_importance",
+        "min_rank_correlation": 0.5,
+        "meaning": {
+          "en": "Saturation and lightness weaken the choice of hue: promoted only when low values of them coincide with low importance.",
+          "pl": "Nasycenie i jasność osłabiają wybór barwy: promowane tylko gdy ich niskie wartości zbiegają się z niską ważnością."
+        }
+      },
+      "interference.size_hue": {
+        "kind": "interference",
+        "interfered": "hue",
+        "interfering": [
+          "size"
+        ],
+        "condition": "monotone_with_importance",
+        "min_rank_correlation": 0.5,
+        "meaning": {
+          "en": "Small marks make hue hard to see: promoted only when small sizes coincide with low importance.",
+          "pl": "Małe znaczniki utrudniają odczyt barwy: promowane tylko gdy małe rozmiary zbiegają się z niską ważnością."
+        }
+      },
+      "interference.alpha_overlap": {
+        "kind": "interference",
+        "interfered": "overlap",
+        "interfering": [
+          "alpha"
+        ],
+        "active_when": {
+          "overlap": true
+        },
+        "condition": "monotone_with_importance",
+        "min_rank_correlation": 0.5,
+        "meaning": {
+          "en": "Transparency interferes with overlapping marks: promoted only when the most transparent marks are the least important.",
+          "pl": "Przezroczystość zakłóca nakładanie znaczników: promowana tylko gdy najbardziej przezroczyste są najmniej ważne."
+        }
+      },
+      "budget": {
+        "kind": "node_budget",
+        "max_nodes": 300,
+        "collapse_order": [
+          {
+            "by": "distance_from_focus",
+            "order": "desc"
+          },
+          {
+            "by": "degree_of_interest",
+            "order": "asc"
+          },
+          {
+            "by": "age",
+            "order": "abs_desc"
+          }
+        ],
+        "meaning": {
+          "en": "Node budget per view (a preset; 0 or null = none) and the order in which elements collapse into group nodes: farthest first, then least interesting, then most distant in time. The focus never collapses.",
+          "pl": "Budżet węzłów na widok (preset; 0 albo null = brak) i kolejność zwijania elementów w węzły grupowe: najpierw najdalsze, potem najmniej interesujące, potem najodleglejsze w czasie. Fokus nigdy się nie zwija."
+        }
+      },
+      "messages": {
+        "kind": "messages",
+        "texts": {
+          "unsupported_element_kind": {
+            "en": "No evaluator for the element kind '{kind}'; it is kept in the declaration and not drawn.",
+            "pl": "Brak ewaluatora rodzaju elementu '{kind}'; zostaje w deklaracji i nie jest rysowany."
+          },
+          "unsupported_measure_kind": {
+            "en": "No evaluator for the measure kind '{measure}'.",
+            "pl": "Brak ewaluatora rodzaju miary '{measure}'."
+          },
+          "unsupported_combine": {
+            "en": "No combination rule '{combine}'.",
+            "pl": "Brak reguły łączenia '{combine}'."
+          },
+          "unsupported_coordinate_system": {
+            "en": "No evaluator for the coordinate system '{system}'.",
+            "pl": "Brak ewaluatora układu współrzędnych '{system}'."
+          },
+          "unsupported_channel": {
+            "en": "No visual channel '{channel}'.",
+            "pl": "Brak kanału wizualnego '{channel}'."
+          },
+          "unsupported_composition": {
+            "en": "No evaluator for the composition '{composition}'.",
+            "pl": "Brak ewaluatora złożenia '{composition}'."
+          },
+          "unknown_perspective": {
+            "en": "The perspective '{perspective}' does not exist or is disabled.",
+            "pl": "Perspektywa '{perspective}' nie istnieje albo jest wyłączona."
+          },
+          "source_failed": {
+            "en": "The perspective '{perspective}' could not be rendered: {error}",
+            "pl": "Nie udało się wyrenderować perspektywy '{perspective}': {error}"
+          },
+          "source_shape": {
+            "en": "The perspective '{perspective}' does not return a graph (nodes and edges).",
+            "pl": "Perspektywa '{perspective}' nie zwraca grafu (węzły i krawędzie)."
+          },
+          "unknown_measure": {
+            "en": "The measure '{measure}' is not declared.",
+            "pl": "Miara '{measure}' nie jest zadeklarowana."
+          },
+          "measure_unavailable": {
+            "en": "The measure '{measure}' could not be computed (see its own reason).",
+            "pl": "Miary '{measure}' nie dało się policzyć (zob. jej własny powód)."
+          },
+          "measure_cycle": {
+            "en": "The measure '{measure}' depends on itself.",
+            "pl": "Miara '{measure}' zależy od siebie."
+          },
+          "measure_needs_source": {
+            "en": "'{measure}' needs a source that works.",
+            "pl": "'{measure}' potrzebuje działającego źródła."
+          },
+          "measure_needs_distance": {
+            "en": "'{measure}' needs a distance measure.",
+            "pl": "'{measure}' potrzebuje miary odległości."
+          },
+          "unsupported_api": {
+            "en": "A priori importance '{api}' is not supported.",
+            "pl": "Ważność a priori '{api}' nie jest obsługiwana."
+          },
+          "composition_needs_sectors": {
+            "en": "The composition '{composition}' needs a sector coordinate system.",
+            "pl": "Złożenie '{composition}' potrzebuje układu sektorowego."
+          },
+          "element_id_missing_or_duplicate": {
+            "en": "An element without an id or with a repeated id ('{id}', kind '{kind}').",
+            "pl": "Element bez id albo z powtórzonym id ('{id}', rodzaj '{kind}')."
+          },
+          "age_reference_unparseable": {
+            "en": "The age reference '{reference}' has no usable time.",
+            "pl": "Odniesienie wieku '{reference}' nie ma użytecznego czasu."
+          },
+          "age_unparseable": {
+            "en": "{count} elements have no usable creation time.",
+            "pl": "{count} elementów nie ma użytecznego czasu utworzenia."
+          },
+          "channel_unranked": {
+            "en": "The channel '{channel}' is not ranked for {data_type} data, so it is allowed but not promoted.",
+            "pl": "Kanał '{channel}' nie ma rankingu dla danych {data_type}, więc jest dozwolony, ale niepromowany."
+          },
+          "data_type_unranked": {
+            "en": "No channel ranking for {data_type} data.",
+            "pl": "Brak rankingu kanałów dla danych {data_type}."
+          },
+          "channel_low_rank": {
+            "en": "For {data_type} data the channel '{channel}' is place {rank} of {of}; '{best}' reads best. Allowed, not promoted.",
+            "pl": "Dla danych {data_type} kanał '{channel}' jest na miejscu {rank} z {of}; najlepiej czyta się '{best}'. Dozwolony, niepromowany."
+          },
+          "interference_cleared": {
+            "en": "'{interfering}' interferes with '{interfered}', but it grows with importance (rank correlation {rho} >= {need}).",
+            "pl": "'{interfering}' zakłóca '{interfered}', ale rośnie razem z ważnością (korelacja rang {rho} >= {need})."
+          },
+          "interference_cleared_constant": {
+            "en": "'{interfering}' does not vary, so it does not interfere with '{interfered}'.",
+            "pl": "'{interfering}' się nie zmienia, więc nie zakłóca '{interfered}'."
+          },
+          "interference_unmet": {
+            "en": "'{interfering}' interferes with '{interfered}' and does not grow with importance (rank correlation {rho} < {need}). Allowed, not promoted.",
+            "pl": "'{interfering}' zakłóca '{interfered}' i nie rośnie razem z ważnością (korelacja rang {rho} < {need}). Dozwolone, niepromowane."
+          },
+          "interference_unverifiable": {
+            "en": "'{interfering}' interferes with '{interfered}' and this view has no importance to check it against (or too few elements). Allowed, not promoted.",
+            "pl": "'{interfering}' zakłóca '{interfered}', a ten widok nie ma ważności, z którą można to sprawdzić (albo ma za mało elementów). Dozwolone, niepromowane."
+          },
+          "interference_condition_unknown": {
+            "en": "The interference rule '{rule}' has a condition '{condition}' this engine cannot check. Allowed, not promoted.",
+            "pl": "Reguła zakłóceń '{rule}' ma warunek '{condition}', którego silnik nie umie sprawdzić. Dozwolone, niepromowane."
+          },
+          "interference_predicate_unknown": {
+            "en": "The interference rule '{rule}' has an unknown activation predicate '{predicate}'; it was skipped.",
+            "pl": "Reguła zakłóceń '{rule}' ma nieznany predykat aktywacji '{predicate}'; pominięta."
+          },
+          "budget_applied": {
+            "en": "{collapsed} elements were collapsed into group nodes to stay within the budget of {max} nodes.",
+            "pl": "{collapsed} elementów zwinięto w węzły grupowe, by zmieścić się w budżecie {max} węzłów."
+          }
+        }
+      }
+    },
+    "view_declarations": {
+      "history_cone": {
+        "label": {
+          "en": "History cone",
+          "pl": "Stożek historii"
+        },
+        "meaning": {
+          "en": "Version history ahead, older things deeper; branches in a cone around that direction (a fixed angle per branch, divergence as saturation); the ecosystem on the sides (callers left, dependencies right); the future (goals) behind. One preset of many.",
+          "pl": "Historia wersji przed tobą, w głąb starsze; gałęzie w stożku wokół tego kierunku (stały kąt gałęzi, rozejście nasyceniem); ekosystem po bokach (wywołujący z lewej, zależności z prawej); przyszłość (cele) z tyłu. Jeden preset z wielu."
+        },
+        "elements": [
+          {
+            "id": "history",
+            "kind": "source",
+            "perspective": "version_history",
+            "weight": 1.0,
+            "depth": 6,
+            "role": "main"
+          },
+          {
+            "id": "callers",
+            "kind": "source",
+            "perspective": "calls",
+            "direction": "in",
+            "weight": 0.6,
+            "depth": 2,
+            "role": "side"
+          },
+          {
+            "id": "deps",
+            "kind": "source",
+            "perspective": "dependencies",
+            "direction": "both",
+            "weight": 0.6,
+            "depth": 2,
+            "role": "side"
+          },
+          {
+            "id": "future",
+            "kind": "source",
+            "perspective": "teleology",
+            "weight": 0.5,
+            "depth": 3,
+            "role": "future"
+          },
+          {
+            "id": "distance",
+            "kind": "measure",
+            "measure": "distance_from_focus",
+            "params": {
+              "combine": "weighted_sum"
+            }
+          },
+          {
+            "id": "age",
+            "kind": "measure",
+            "measure": "age"
+          },
+          {
+            "id": "divergence",
+            "kind": "measure",
+            "measure": "branch_divergence",
+            "params": {
+              "source": "history"
+            }
+          },
+          {
+            "id": "doi",
+            "kind": "measure",
+            "measure": "degree_of_interest",
+            "params": {
+              "distance": "distance"
+            }
+          },
+          {
+            "id": "sector",
+            "kind": "measure",
+            "measure": "membership",
+            "params": {
+              "by": "sector"
+            }
+          },
+          {
+            "id": "node_kind",
+            "kind": "measure",
+            "measure": "node_kind"
+          },
+          {
+            "id": "plane",
+            "kind": "coordinates",
+            "system": "sector",
+            "bind": {
+              "radius": "distance"
+            },
+            "branch_step_deg": 10,
+            "sectors": [
+              {
+                "id": "past",
+                "label": {
+                  "en": "History",
+                  "pl": "Historia"
+                },
+                "sources": [
+                  "history"
+                ],
+                "center_deg": 0,
+                "width_deg": 90
+              },
+              {
+                "id": "callers",
+                "label": {
+                  "en": "Callers",
+                  "pl": "Wywołujący"
+                },
+                "sources": [
+                  "callers"
+                ],
+                "center_deg": -90,
+                "width_deg": 60
+              },
+              {
+                "id": "deps",
+                "label": {
+                  "en": "Dependencies",
+                  "pl": "Zależności"
+                },
+                "sources": [
+                  "deps"
+                ],
+                "center_deg": 90,
+                "width_deg": 60
+              },
+              {
+                "id": "future",
+                "label": {
+                  "en": "Future",
+                  "pl": "Przyszłość"
+                },
+                "sources": [
+                  "future"
+                ],
+                "center_deg": 180,
+                "width_deg": 90,
+                "depth_sign": -1
+              }
+            ]
+          },
+          {
+            "id": "depth",
+            "kind": "coordinates",
+            "system": "depth_from_distance",
+            "bind": {
+              "depth": "distance"
+            }
+          },
+          {
+            "id": "e_hue",
+            "kind": "encoding",
+            "channel": "hue",
+            "measure": "sector"
+          },
+          {
+            "id": "e_saturation",
+            "kind": "encoding",
+            "channel": "saturation",
+            "measure": "divergence"
+          },
+          {
+            "id": "e_lightness",
+            "kind": "encoding",
+            "channel": "lightness",
+            "measure": "age",
+            "scale": {
+              "invert": true
+            }
+          },
+          {
+            "id": "e_size",
+            "kind": "encoding",
+            "channel": "size",
+            "measure": "doi"
+          },
+          {
+            "id": "e_badge",
+            "kind": "encoding",
+            "channel": "badge",
+            "measure": "node_kind"
+          },
+          {
+            "id": "by_sector",
+            "kind": "composition",
+            "composition": "sectors"
+          }
+        ]
+      },
+      "age_lanes": {
+        "label": {
+          "en": "Age lanes",
+          "pl": "Pasy wieku"
+        },
+        "meaning": {
+          "en": "Version history on a plane (x = age, y = divergence) cut into lanes by age; size from interest.",
+          "pl": "Historia wersji na płaszczyźnie (x = wiek, y = rozejście) pocięta w pasy według wieku; rozmiar z zainteresowania."
+        },
+        "elements": [
+          {
+            "id": "history",
+            "kind": "source",
+            "perspective": "version_history",
+            "weight": 1.0,
+            "depth": null,
+            "role": "main"
+          },
+          {
+            "id": "distance",
+            "kind": "measure",
+            "measure": "distance_from_focus"
+          },
+          {
+            "id": "age",
+            "kind": "measure",
+            "measure": "age"
+          },
+          {
+            "id": "divergence",
+            "kind": "measure",
+            "measure": "branch_divergence"
+          },
+          {
+            "id": "doi",
+            "kind": "measure",
+            "measure": "degree_of_interest"
+          },
+          {
+            "id": "plane",
+            "kind": "coordinates",
+            "system": "cartesian",
+            "bind": {
+              "x": "age",
+              "y": "divergence"
+            }
+          },
+          {
+            "id": "e_size",
+            "kind": "encoding",
+            "channel": "size",
+            "measure": "doi"
+          },
+          {
+            "id": "lanes",
+            "kind": "composition",
+            "composition": "lanes",
+            "by": "age",
+            "bins": 3
+          }
+        ]
       }
     }
   },

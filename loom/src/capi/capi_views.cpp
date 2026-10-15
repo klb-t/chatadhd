@@ -4,6 +4,7 @@
 #include "loom/effective_view.h"
 #include "loom/perspectives.h"
 #include "loom/scope_resolver.h"
+#include "loom/view_engine.h"
 
 using namespace loom;
 using namespace loom::capi;
@@ -104,6 +105,23 @@ LOOM_API const char* loom_perspectives(LoomContext* ctx, const char* request_jso
       return out(*r);
     }
     auto r = p->render_many(render_context(ctx), ids, *rj);
+    if (!r) return out_error(r.error());
+    return out(*r);
+  });
+}
+
+LOOM_API const char* loom_view_model(LoomContext* ctx, const char* request_json) {
+  return guard_json("loom_view_model", [&] {
+    LOOM_CAPI_REQUIRE_CTX_JSON(ctx);
+    auto rj = parse_arg(request_json, Json::object());
+    if (!rj) return out_error(rj.error());
+    auto engine = views::ViewEngine::open(ctx->rt->paths().root, extra_dirs_of(*rj));
+    if (!engine) return out_error(engine.error());
+    const Json decl = rj->value("declaration", Json(nullptr));
+    std::string id = json::get_string(*rj, "id");
+    if (decl.is_string()) id = decl.get<std::string>();
+    if (id.empty() && !decl.is_object()) return out(engine->list());
+    auto r = decl.is_object() ? engine->evaluate_declaration(render_context(ctx), decl, *rj) : engine->evaluate(render_context(ctx), id, *rj);
     if (!r) return out_error(r.error());
     return out(*r);
   });
