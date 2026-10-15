@@ -18,7 +18,8 @@
       "github": "github.*",
       "chat": "chat.*",
       "ports": "ports.*",
-      "environments": "environments.*"
+      "environments": "environments.*",
+      "agent": "agent.*"
     },
     "capabilities": [
       {

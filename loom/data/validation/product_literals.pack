@@ -509,7 +509,7 @@
         },
         {
           "path": "loom/data/graph/rom.pack",
-          "sha256": "e3abd84e44ea6bf8f951d43ebef05272c94df0a168b7f614fc4502bb48ee5c83"
+          "sha256": "2cc524b310dbc0a3156d5e3b8de938c96fc1e1e5ba585fe3734c373fcdf104e5"
         },
         {
           "path": "loom/data/graph/scopes.pack",
@@ -549,7 +549,7 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "259d228ead7d186e2fca06ff17bf54579891364c880a33db19a38744ef5b3c4d"
+          "sha256": "4bc01b609a32b6761c78c9a144d6c2485257b6a884626e92189b9411b00d953a"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
@@ -677,7 +677,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "7e37e87ab2795956eec34420c2ab4592eeb693cc40defd6cce50917d9212f14a"
+          "sha256": "9d3e63c77ebeee0f49823cebb888153d138f7f12cb6643a14f358ce6e00062b3"
         },
         {
           "path": "loom/data/runtime/ui_animation.pack",

@@ -373,6 +373,38 @@
         "description": "Whether the catalogue of actions grows from your conversations (R55): propose (preset: a command no action understands, a sequence you keep repeating, or an action used on several classes is offered as a new action or group, never made silently) or off. Accepting writes only your own overlays (profiles/actions.pack, profiles/intent_routing.pack, profiles/graph_entry.pack). Runtime profile intent_routing (emergent). Default: propose."
       },
       {
+        "key": "tool_loop_policy",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "What the agent (the tool loop of use_model) may do on its own: a preset of the runtime profile tool_loop - local_reversible (preset: local, reversible actions run, everything else is proposed and waits for you), read_only, confirm_all (every call is a proposal) or apply_all (every call runs; the rules of the interpreter, the x10 guard and the spending limits still apply) - or a policy of your own as an object {id?, rules: [{when?: {effects, actions, prefixes}, mode: run|propose|deny}]}. Default: local_reversible."
+      },
+      {
+        "key": "tool_loop_max_steps",
+        "scope": "config",
+        "group": "chat",
+        "type": "integer",
+        "has_default": false,
+        "description": "How many model turns one agent loop may take; 0 = no limit. Runtime profile tool_loop (max_steps). Default: 8."
+      },
+      {
+        "key": "tool_loop_on_proposal",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "What the agent does when a call it made became a proposal that waits for you: stop (preset: the loop ends and shows the proposals) or continue (the model is told the call was not executed and goes on). Default: stop."
+      },
+      {
+        "key": "tool_loop_result_max_chars",
+        "scope": "config",
+        "group": "chat",
+        "type": "integer",
+        "has_default": false,
+        "description": "A tool result longer than this many characters is cut when it is handed back to the model (the run keeps all of it); 0 = no cut. Runtime profile tool_loop (result_max_chars). Default: 20000."
+      },
+      {
         "key": "model_registry_autorefresh",
         "scope": "config",
         "group": "chat",

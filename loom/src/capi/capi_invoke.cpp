@@ -4,8 +4,10 @@
 // "status" and "preview" run actions through the interpreter, loom/action_runner.h), "chat" ("route" decides
 // message or command for a chat input, loom/chat_route.h), "environments" ("sync", "list", "can_do": environments, capabilities and accesses in the graph, loom/environments.h), "ports" (read-only: "resolve", "explain" and
 // "roles" of the ports profile, loom/port_profile.h; request {role, conversation_id?}; "graph" writes the adapters
-// and the role choices as graph nodes, loom/port_graph.h, and returns their ids).
+// and the role choices as graph nodes, loom/port_graph.h, and returns their ids), "agent" ("run", "tools", "formats": the
+// tool loop of use_model over the catalogue of actions, loom/agent.h).
 #include "loom/action_runner.h"
+#include "loom/agent.h"
 #include "loom/action_table.h"
 #include "loom/chat_route.h"
 #include "loom/environments.h"
@@ -98,6 +100,11 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
     if (p == "chat") {
       if (a != "route") return out_error(Errc::InvalidArgument, "unknown chat action '" + a + "'");
       auto r = chat_route::route(*ctx->rt, *rj);
+      if (!r) return out_error(r.error());
+      return out(*r);
+    }
+    if (p == "agent") {  // the tool loop of use_model (agent.h): run | tools | formats
+      auto r = agent::invoke(*ctx->rt, a, *rj);
       if (!r) return out_error(r.error());
       return out(*r);
     }
