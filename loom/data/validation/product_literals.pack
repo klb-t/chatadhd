@@ -597,7 +597,7 @@
         },
         {
           "path": "loom/data/runtime/graph_views.pack",
-          "sha256": "41e710903997093c331486244eefd8b6e2112f10e03ce0a0c62ce8836bae450e"
+          "sha256": "28412d3b50ac297e3d496ac475909693db787e314758c917eff2db4cb0ee7af6"
         },
         {
           "path": "loom/data/runtime/guardian.pack",
