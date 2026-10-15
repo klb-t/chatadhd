@@ -198,3 +198,31 @@ negative case, timeout or secret protection is removed. Full evidence remains
 in `full-dev/`; subsequent current gates receive new directories.
 
 The follow-up scope (`pack-model/`) passed 2/2 CTest entries, 15 native cases / 1026 assertions, execution guard PASS. The opt-in catalog-scale entry in the full manifest remains explicitly unexecuted.
+
+## Reproducible public product example — 2026-10-15 UTC
+
+The ordinary CLI completed all six pipeline stages on a public synthetic
+conversation, then the public `loom_kb_query` API reopened the same store and
+returned one candidate with five proof edges. Evidence includes the
+[exact input](implicit-structures-2026-10-14-evidence/example-source.json),
+[configuration](implicit-structures-2026-10-14-evidence/example-config.json),
+[recognition receipt](implicit-structures-2026-10-14-evidence/example-recognition.json)
+and [pre-run binary/input hashes](implicit-structures-2026-10-14-evidence/example-receipt.json).
+The input never names a harness: it describes components, a tool, verification
+and feedback. No claim of autonomous control or discovery quality follows.
+
+From the repository root, with a fresh data directory:
+
+```sh
+example_data="$(mktemp -d)"
+loom/build/dev/cli/loom --data-dir "$example_data" --json --quiet knowledge run \
+  --source docs/reports/implicit-structures-2026-10-14-evidence/example-source.json \
+  --config docs/reports/implicit-structures-2026-10-14-evidence/example-config.json
+```
+
+Use the returned run ID with the existing knowledge query (`what: instances`,
+`paradigm: software_app`) to inspect `recognition`. Absolute source paths may
+change run/observation identities; the structural acceptance is one candidate,
+five proof edges and retained source references, not identical host paths.
+The configuration explicitly sets `llm: off`; this is a mechanism example,
+not an LLM quality measurement.
