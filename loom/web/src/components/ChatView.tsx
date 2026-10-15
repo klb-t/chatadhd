@@ -2,6 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { api } from "../api";
+import { readWebPageSizes } from "../settings/page-sizes";
 import type { UserProfileHost } from "../api/onboarding-host";
 import { conversationPage, conversationViewMessages, messageCan, type ConversationPage, type ConversationView } from "../api/conversation-view";
 import ConversationSourceView, { useConversationSourcePresentation, useLayeredDefault, usePresentationFeature } from "./ConversationSourceView";
@@ -32,6 +33,7 @@ import ConversationBranches, { conversationBranchPath } from "./ConversationBran
 import { parseCandidateChannels, readChatSettings, storedPlan, writeChatSettings } from "../context/chat-settings";
 import GraphReplyWorkbench from "./GraphReplyWorkbench";
 import GraphChatSettings from "../graph/GraphChatSettings";
+import ScopeExplain from "./ScopeExplain";
 import MicButton from "../shell/MicButton";
 import Disclosure from "../shell/Disclosure";
 import { needsProviderKey, useShellText } from "../shell/text";
@@ -110,8 +112,7 @@ function safeNotice(feature: Parameters<typeof featureMessage>[0], id: string): 
   try { return featureMessage(feature, id, {}); } catch { return null; }
 }
 
-// Preset (not a limit): messages read per page. Older pages are always reachable, so nothing is cut.
-const MESSAGE_WINDOW = 500;
+// Messages read per page: the setting loom_web_message_window (preset 500, 0 = no cut). Older pages are always reachable, so nothing is cut.
 
 export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" }: Props) {
   const chat = variant === "chat";
@@ -130,7 +131,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [branchMessages, setBranchMessages] = useState<Message[]>([]);
   const [conversationView, setConversationView] = useState<ConversationView | null>(null);
   const metadataViewRef = useRef<ConversationView | null>(null);
-  // P19 paging: the newest MESSAGE_WINDOW messages load first; older ones come page by page on scroll up (or the button) and are kept
+  // P19 paging: the newest loom_web_message_window messages load first; older ones come page by page on scroll up (or the button) and are kept
   // in `olderMessages` until the next refresh, which re-reads at least as many as are shown.
   const [olderMessages, setOlderMessages] = useState<Message[]>([]);
   const [pageInfo, setPageInfo] = useState<ConversationPage | null>(null);
@@ -280,8 +281,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     // This request is now the one in flight; an earlier failure no longer describes it.
     setViewFailure(current => current?.conversationId === id ? null : current);
     try {
+      const windowSize = api.readConversationView ? (await readWebPageSizes()).messageWindow : 0;
       const view = api.readConversationView
-        ? await api.readConversationView(id, { sourceAccess: "metadata", limit: Math.max(MESSAGE_WINDOW, loadedCountRef.current) }) : null;
+        ? await api.readConversationView(id, { sourceAccess: "metadata", limit: windowSize === 0 ? 0 : Math.max(windowSize, loadedCountRef.current) }) : null;
       const list = view ? view.messages : await api.getMessages(id, true);
       if (mountedRef.current && selectedConvRef.current === id && epoch === fetchEpochRef.current) {
         metadataViewRef.current = view;
@@ -316,7 +318,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     if (!id || !cursor || !api.readConversationView || loadingOlderRef.current) return;
     loadingOlderRef.current = true; setLoadingOlder(true);
     try {
-      const view = await api.readConversationView(id, { sourceAccess: "metadata", limit: MESSAGE_WINDOW, before: cursor });
+      const view = await api.readConversationView(id, { sourceAccess: "metadata", limit: (await readWebPageSizes()).messageWindow, before: cursor });
       if (mountedRef.current && selectedConvRef.current === id) {
         const page = conversationPage(view);
         const el = scrollRef.current, before = el ? el.scrollHeight - el.scrollTop : 0;
@@ -861,7 +863,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       <div className="chat-scroll" ref={scrollRef} onScroll={e => { if (e.currentTarget.scrollTop < 40 && pageInfo?.truncated) void loadOlder(); }}>
         {pageInfo?.truncated && <div className="chat-older" data-testid="chat-older">
           <span data-testid="chat-older-count">{olderMessages.length + messages.length} / {pageInfo.total}</span>{" "}
-          <button onClick={() => void loadOlder()} disabled={loadingOlder} data-testid="chat-load-older">{loadingOlder ? "..." : "Load older messages"}</button>
+          <button onClick={() => void loadOlder()} disabled={loadingOlder} data-testid="chat-load-older">{loadingOlder ? "..." : t("load_older_messages")}</button>
         </div>}
         {visibleMessages.length === 0 && !displayedPending && !displayedStream && !gate.viewLoading && gate.viewFailure === null && !conversationView?.resources.length && (
           chat ? <div className="shell-empty" data-testid="shell-empty">
@@ -1069,6 +1071,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       )}
 
       {!chat && <GraphChatSettings transport={api} disabled={!!stream} />}
+      {!chat && <ScopeExplain convId={convId} />}
       {!chat && <details className="chat-context-controls" data-testid="chat-context-controls">
         <summary>Context for next message{useKnowledge ? " · knowledge enabled" : ""}</summary>
         <fieldset disabled={!!stream}>

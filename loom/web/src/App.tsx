@@ -23,13 +23,14 @@ import { featureMessage } from "./onboarding/presentation.mjs";
 import { useAccountSession } from "./components/AuthGate";
 import { createLoomProfileRegistry } from "./profiles/loom-adapter";
 import ChatShell from "./shell/ChatShell";
-import { ShellText, shellTranslator } from "./shell/text";
+import PerspectivesPanel from "./components/PerspectivesPanel";
+import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStartView, startViewOrder, writeSaved, type Layout } from "./shell/start-view";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 
 type Theme = "dark" | "amoled";
-type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge" | "graph-entry";
+type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge" | "graph-entry" | "perspectives";
 
 function readStored(key: string, fallback: string): string {
   try {
@@ -60,7 +61,11 @@ const PANEL_LABELS: Record<PanelId, string> = {
   onboarding: "Onboarding",
   "user-knowledge": "What app knows",
   "graph-entry": "Entry",
+  perspectives: "Perspectives",
 };
+
+// Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
+const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { perspectives: "perspectives_title" };
 
 export default function App() {
   const account = useAccountSession();
@@ -164,7 +169,8 @@ export default function App() {
     try { return featureMessage(shellCatalog.feature, id); } catch { return id; }
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
-  const t = useMemo(() => shellTranslator(uiShell.feature, shellLanguage(config.ui_language, undefined, navigator.languages ?? [navigator.language], ["en", "pl"])), [uiShell.feature, config.ui_language]);
+  const uiLanguage = shellLanguage(config.ui_language, undefined, navigator.languages ?? [navigator.language], ["en", "pl"]);
+  const t = useMemo(() => shellTranslator(uiShell.feature, uiLanguage), [uiShell.feature, uiLanguage]);
   const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
   const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);
 
@@ -174,7 +180,7 @@ export default function App() {
             <div className="drawer-backdrop" onClick={closePanel} data-testid="drawer-backdrop" />
             <div className="drawer" data-testid={`panel-${activePanel}`}>
               <div className="drawer-header">
-                <h2>{PANEL_LABELS[activePanel]}</h2>
+                <h2>{PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]}</h2>
                 <button className="icon-btn" aria-label="Close panel" onClick={closePanel} data-testid="close-panel">
                   ×
                 </button>
@@ -182,6 +188,7 @@ export default function App() {
               <div className="drawer-body">
                 {activePanel === "graph" && <GraphView convId={activeConvId} />}
                 {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
+                {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
@@ -237,7 +244,7 @@ export default function App() {
               onClick={() => openPanel(p)}
               style={activePanel === p ? { borderColor: "var(--accent)", color: "var(--accent)" } : undefined}
             >
-              {PANEL_LABELS[p]}
+              {PANEL_TEXT_IDS[p] ? t(PANEL_TEXT_IDS[p]!) : PANEL_LABELS[p]}
             </button>
           ))}
           <button data-testid="toggle-theme" onClick={toggleTheme} title="Toggle theme">
@@ -277,7 +284,7 @@ export default function App() {
     </div>
   );
   if (layout === "chat") return (
-    <ShellText.Provider value={t}>
+    <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated}
         refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }}
         actions={{ panel: (id) => setActivePanel(id as PanelId), knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
@@ -289,7 +296,7 @@ export default function App() {
           <div className="drawer-body"><KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} /></div>
         </div>
       </>}
-    </ShellText.Provider>
+    </ShellLanguage.Provider></ShellText.Provider>
   );
-  return <ShellText.Provider value={t}>{workshop}</ShellText.Provider>;
+  return <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>{workshop}</ShellLanguage.Provider></ShellText.Provider>;
 }

@@ -214,6 +214,10 @@ export interface LoomApi {
   getGraphData(convId?: string, page?: import("./types").GraphDataPage): Promise<GraphData>;
   getGraphEntry(options?: GraphEntryOptions): Promise<GraphEntryView>;
   reindexGraph(convId?: string): Promise<{ reindexed: number }>;
+  /** P24 views: the perspectives, several rendered side by side, and where a setting's value comes from. */
+  listPerspectives(): Promise<import("./graph-views").PerspectivesList>;
+  renderPerspectives(request: import("./graph-views").PerspectiveRequest): Promise<import("./graph-views").PerspectivesSideBySide>;
+  resolveScope(request: import("./graph-views").ScopeResolveRequest): Promise<import("./graph-views").ScopeResolution>;
   selectContext(req: ContextSelectRequest): Promise<ContextSet>;
 
   // Semantic worker

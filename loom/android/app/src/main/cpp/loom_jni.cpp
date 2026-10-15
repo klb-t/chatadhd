@@ -378,7 +378,7 @@ Json positional_args(const std::string& method, const Json& args) {
       {"update_message", {"msg_id", "patch"}}, {"search", {"query", "options"}},
       {"chat_cancel", {"request_id"}}, {"can", {"resource", "capability", "constraints"}},
       {"get_nodes", {"filter"}}, {"get_edges", {"filter"}}, {"expand_graph", {"seed_ids", "depth"}},
-      {"get_graph_data", {"conv_id"}}, {"graph_entry", {"request"}}, {"graph_reindex", {"conv_id"}},
+      {"get_graph_data", {"conv_id"}}, {"graph_entry", {"request"}}, {"perspectives", {"request"}}, {"scope_resolve", {"request"}}, {"graph_reindex", {"conv_id"}},
       {"select_context", {"text", "depth", "max_tokens"}}, {"select_context_ex", {"request"}},
       {"delete_memory", {"id"}}, {"get_memory_context", {"max_chars"}},
       {"detect_format", {"path"}}, {"import_file", {"path", "title"}},
@@ -543,6 +543,14 @@ const std::unordered_map<std::string, Fn>& dispatch_table() {
     table["graph_entry"] = [](const Json& a) {
       std::string r;
       return take(loom_graph_entry(g_ctx, a_cstr(a, 0, r)));
+    };
+    table["perspectives"] = [](const Json& a) {
+      std::string r;
+      return take(loom_perspectives(g_ctx, a_cstr(a, 0, r)));
+    };
+    table["scope_resolve"] = [](const Json& a) {
+      std::string r;
+      return take(loom_scope_resolve(g_ctx, a_cstr(a, 0, r)));
     };
     table["graph_reindex"] = [](const Json& a) {
       std::string c;

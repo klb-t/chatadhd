@@ -22,6 +22,9 @@
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/economy.h"
+#include "loom/effective_view.h"
+#include "loom/perspectives.h"
+#include "loom/scope_resolver.h"
 #include "loom/event_bus.h"
 #include "loom/graph_engine.h"
 #include "loom/graph_entry.h"
@@ -1711,6 +1714,178 @@ StepOutcome help_how_to(Ctx& x) {
   return answer(join_lines(out), Json{{"topic", topic}, {"found", true}, {"action", id}, {"feasible", cmd.value("feasible", false)}, {"args", cmd.value("args", Json::object())}});
 }
 
+
+// ── graph views as data (P24): effective views, perspectives, scope inheritance, edge kinds ──
+
+// A JSON argument said as text ("{...}", "[...]") or given as JSON; anything else stays what it was.
+Json json_arg(const Ctx& x, const char* name) {
+  const Json v = x.arg(name);
+  if (!v.is_string()) return v;
+  return json::parse_or(v.get<std::string>(), v);
+}
+
+// A word of the sentence mapped through a table of the profile ({canonical: [words]}); the canonical name or a word of it gives the name, else the word.
+std::string canonical_word(const Ctx& x, const char* table, const std::string& given) {
+  const std::string w = x.fold(trim_quotes(given));
+  const Json words = x.cfg.value("views", Json::object()).value(table, Json::object());
+  if (words.is_object())
+    for (auto it = words.begin(); it != words.end(); ++it) {
+      if (x.fold(it.key()) == w) return it.key();
+      if (it.value().is_array())
+        for (const auto& alias : it.value())
+          if (alias.is_string() && x.fold(alias.get<std::string>()) == w) return it.key();
+    }
+  return trim_quotes(given);
+}
+
+std::vector<std::string> id_list(const Json& v, const std::vector<std::string>& separators) {
+  std::vector<std::string> out;
+  if (v.is_array()) {
+    for (const auto& i : v)
+      if (i.is_string() && !i.get<std::string>().empty()) out.push_back(i.get<std::string>());
+  } else if (v.is_string()) {
+    std::string cur;
+    std::string s = v.get<std::string>();
+    for (const auto& sep : separators) {
+      if (sep.empty() || sep == ",") continue;
+      for (std::size_t at = s.find(sep); at != std::string::npos; at = s.find(sep, at + 1)) s.replace(at, sep.size(), ",");
+    }
+    auto flush = [&] {
+      std::size_t b = cur.find_first_not_of(" \t");
+      std::size_t e = cur.find_last_not_of(" \t");
+      if (b != std::string::npos) out.push_back(cur.substr(b, e - b + 1));
+      cur.clear();
+    };
+    for (char ch : s) {
+      if (ch == ',') flush();
+      else cur += ch;
+    }
+    flush();
+  }
+  return out;
+}
+
+StepOutcome views_effective(Ctx& x) {
+  const std::string kind = canonical_word(x, "kinds", x.str("kind", x.str("view")));
+  if (kind.empty()) return fail(Errc::InvalidArgument, x.say("views_which_kind"));
+  auto eff = views::effective(x.rt.paths().root, kind);
+  if (!eff) return fail(eff.error());
+  const Json doc = eff->to_json(json::get_bool(x.c.args, "include_hidden", true));
+  std::vector<std::string> lines;
+  for (const auto& e : doc.value("entries", Json::array()))
+    lines.push_back("• " + x.say("views_entry", Json{{"id", e.value("id", "")}, {"origin", e.value("origin", "")}, {"disabled", e.value("disabled", false) ? x.say("views_disabled") : std::string()}}));
+  if (lines.empty()) return answer(x.say("views_none", Json{{"kind", kind}}), doc);
+  return answer(x.say("views_head", Json{{"kind", kind}, {"count", lines.size()}}) + "\n" + join_lines(lines), doc);
+}
+
+StepOutcome views_write(Ctx& x) {
+  const std::string view = canonical_word(x, "kinds", x.str("view", x.str("kind")));
+  const std::string id = trim_quotes(x.str("id"));
+  if (view.empty() || id.empty()) return fail(Errc::InvalidArgument, x.say("views_write_need"));
+  const std::string overlay = x.str("overlay", "user");
+  auto& root = x.rt.paths().root;
+  if (json::get_bool(x.c.args, "remove", false) || x.fold(x.str("op")) == "remove") {
+    auto n = views::remove_ops(root, overlay, view, id);
+    if (!n) return fail(n.error());
+    return answer(x.say("views_removed", Json{{"view", view}, {"id", id}, {"count", *n}}), Json{{"overlay", overlay}, {"removed", *n}});
+  }
+  const std::string op_name = canonical_word(x, "ops", x.str("op", "add"));
+  Json op{{"view", view}, {"op", op_name}, {"id", id}};
+  const Json entry = json_arg(x, "entry");
+  const Json patch = json_arg(x, "patch");
+  const Json as = x.arg("as");
+  if (entry.is_object()) op["entry"] = entry;
+  if (patch.is_object()) op["patch"] = patch;
+  if (as.is_string()) op["as"] = trim_quotes(as.get<std::string>());
+  if (auto st = views::put_op(root, overlay, op); !st) return fail(st.error());
+  return answer(x.say("views_written", Json{{"view", view}, {"op", op_name}, {"id", id}}), Json{{"overlay", overlay}, {"written", op}});
+}
+
+StepOutcome perspectives_show(Ctx& x) {
+  auto p = views::Perspectives::open(x.rt.paths().root);
+  if (!p) return fail(p.error());
+  std::vector<std::string> separators;
+  for (const auto& sep : x.cfg.value("views", Json::object()).value("id_separators", Json::array()))
+    if (sep.is_string()) separators.push_back(sep.get<std::string>());
+  std::vector<std::string> ids = id_list(x.arg("ids"), separators);
+  for (const auto& one : id_list(x.arg("id"), separators)) ids.push_back(one);
+  if (ids.empty()) {
+    const Json list = p->list();
+    std::vector<std::string> lines;
+    for (const auto& e : list) lines.push_back("• " + x.say("persp_entry", Json{{"id", e.value("id", "")}, {"label", x.pick(e.value("entry", Json::object()).value("label", Json::object()))}}));
+    return answer(x.say("persp_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), Json{{"perspectives", list}});
+  }
+  Json request = Json::object();
+  for (const char* k : {"seeds", "hops", "direction", "limit", "key", "units"})
+    if (x.has(k)) request[k] = json_arg(x, k);
+  std::string conv = x.str("conversation_id");
+  if (conv.empty()) conv = x.conv_id();
+  if (!conv.empty()) request["conversation_id"] = conv;
+  views::RenderContext rc;
+  rc.db = &x.rt.db();
+  rc.cfg = &x.rt.config();
+  rc.root = x.rt.paths().root;
+  auto r = p->render_many(rc, ids, request);
+  if (!r) return fail(r.error());
+  std::vector<std::string> lines;
+  const Json all = r->value("perspectives", Json::object());
+  for (auto it = all.begin(); it != all.end(); ++it)
+    lines.push_back("• " + x.say("persp_rendered", Json{{"id", it.key()}, {"nodes", it.value().value("nodes", Json::array()).size()}, {"edges", it.value().value("edges", Json::array()).size()}}));
+  return answer(x.say("persp_side_by_side", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), *r);
+}
+
+StepOutcome scopes_explain(Ctx& x) {
+  scopes::Binding b;
+  b.key = trim_quotes(x.str("key"));
+  if (b.key.empty()) return fail(Errc::InvalidArgument, x.say("scopes_which_key"));
+  b.conv_id = x.str("conversation_id");
+  if (b.conv_id.empty()) b.conv_id = x.conv_id();
+  auto resolver = scopes::Resolver::open(x.rt.paths().root, &x.rt.config(), &x.rt.db());
+  if (!resolver) return fail(resolver.error());
+  auto r = resolver->resolve(b);
+  if (!r) return fail(r.error());
+  const Json doc = r->to_json();
+  std::vector<std::string> lines;
+  for (const auto& l : doc.value("chain", Json::array()))
+    lines.push_back("• " + x.say("scopes_level", Json{{"level", l.contains("label") ? x.pick(l["label"]) : l.value("level", "")}, {"role", x.say("scopes_role_" + l.value("role", "none"))}}));
+  const std::string head = r->defined ? x.say("scopes_supplied", Json{{"key", b.key}, {"value", json::dump(r->value)}, {"scope", r->scope}}) : x.say("scopes_undefined", Json{{"key", b.key}});
+  return answer(head + "\n" + join_lines(lines), doc);
+}
+
+StepOutcome edge_kinds_list(Ctx& x) {
+  auto kinds = views::EdgeKinds::open(x.rt.paths().root);
+  if (!kinds) return fail(kinds.error());
+  auto persp = views::effective(x.rt.paths().root, "perspectives");
+  if (!persp) return fail(persp.error());
+  const std::string one = trim_quotes(x.str("kind"));
+  if (!one.empty()) {
+    const Json d = kinds->describe(one, *persp);
+    return answer(x.say("edge_kind_one", Json{{"id", one}, {"inverse", d.value("inverse", "")}, {"ancestors", json::dump(d.value("ancestors", Json::array()))}}), d);
+  }
+  Json list = Json::array();
+  std::vector<std::string> lines;
+  for (const auto& e : kinds->view().entries) {
+    list.push_back(kinds->describe(e.id, *persp));
+    lines.push_back("• " + e.id);
+  }
+  return answer(x.say("edge_kinds_head", Json{{"count", lines.size()}}) + "\n" + join_lines(lines), Json{{"kinds", list}});
+}
+
+StepOutcome edge_kinds_classify(Ctx& x) {
+  auto kinds = views::EdgeKinds::open(x.rt.paths().root);
+  if (!kinds) return fail(kinds.error());
+  auto persp = views::effective(x.rt.paths().root, "perspectives");
+  if (!persp) return fail(persp.error());
+  auto used = views::link_types_in_use(x.rt.db());
+  if (!used) return fail(used.error());
+  const Json d = kinds->classify(*used, *persp);
+  std::vector<std::string> lines;
+  for (const auto& u : d.value("unclassified", Json::array())) lines.push_back("• " + x.say("edge_unclassified", Json{{"type", u.value("type", "")}, {"count", u.value("count", 0)}}));
+  const std::size_t known = d.value("known", Json::array()).size();
+  if (lines.empty()) return answer(x.say("edge_all_classified", Json{{"known", known}}), d);
+  return answer(x.say("edge_classify_head", Json{{"known", known}, {"unclassified", lines.size()}}) + "\n" + join_lines(lines), d);
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -1728,7 +1903,9 @@ const std::map<std::string, Op>& table() {
       {"tasks.resume", tasks_resume}, {"tasks.cancel", tasks_cancel}, {"logs.show", logs_show}, {"provenance.show", provenance_show},
       {"sources.list", sources_list}, {"app.info", app_info}, {"github.sync", github_sync}, {"help.can_do", help_can_do}, {"help.how_to", help_how_to},
       {"archive.status", archive_status}, {"archive.cancel", archive_cancel}, {"knowledge.status", knowledge_status}, {"knowledge.cancel", knowledge_cancel},
-      {"catalog.status", catalog_status}, {"catalog.cancel", catalog_cancel}, {"catalog.query", catalog_query}};
+      {"catalog.status", catalog_status}, {"catalog.cancel", catalog_cancel}, {"catalog.query", catalog_query},
+      {"views.effective", views_effective}, {"views.write", views_write}, {"perspectives.show", perspectives_show}, {"scopes.explain", scopes_explain},
+      {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify}};
   return t;
 }
 

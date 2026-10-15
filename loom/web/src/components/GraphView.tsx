@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api";
+import { readWebPageSizes } from "../settings/page-sizes";
+import { useShellText } from "../shell/text";
 import type { GraphEdge, GraphNode } from "../api/types";
 
 interface Props {
@@ -24,7 +26,7 @@ const KIND_COLORS: Record<string, string> = {
   message: "#8c8c99",
 };
 
-function colorFor(kind: string): string {
+export function colorFor(kind: string): string {
   return KIND_COLORS[kind] ?? "#9d9dff";
 }
 
@@ -73,10 +75,10 @@ function filterGraphNoise<N extends GraphNode>(nodes: N[], edges: GraphEdge[]): 
   return { nodes: kept, edges: edges.filter((e) => keptIds.has(e.src) && keptIds.has(e.dst)) };
 }
 
-// Preset (not a limit): message nodes per page; older pages stay reachable with "Load older".
-const GRAPH_PAGE = 2000;
+// Message nodes per page: the setting loom_web_graph_page (preset 2000, 0 = no cut); older pages stay reachable with "Load older".
 
 export default function GraphView({ convId }: Props) {
+  const t = useShellText();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const nodesRef = useRef<Map<string, SimNode>>(new Map());
@@ -89,7 +91,7 @@ export default function GraphView({ convId }: Props) {
   const [depth, setDepth] = useState(1);
   const [nodeCount, setNodeCount] = useState(0);
   const [edgeCount, setEdgeCount] = useState(0);
-  // P19: a conversation graph shows its newest GRAPH_PAGE message nodes ("N of M"); older ones are added on request.
+  // P19: a conversation graph shows its newest loom_web_graph_page message nodes ("N of M"); older ones are added on request.
   const [graphPage, setGraphPage] = useState<{ shown: number; total: number; next: string | null } | null>(null);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -98,8 +100,8 @@ export default function GraphView({ convId }: Props) {
   useEffect(() => setConvFilter(convId ?? ""), [convId]);
 
   const load = useCallback(() => {
-    api
-      .getGraphData(convFilter || undefined, convFilter ? { limit: GRAPH_PAGE } : undefined)
+    readWebPageSizes()
+      .then((sizes) => api.getGraphData(convFilter || undefined, convFilter ? { limit: sizes.graphPage } : undefined))
       .then((raw) => {
         setGraphPage(convFilter && typeof raw.total_messages === "number"
           ? { shown: raw.nodes.filter((n) => n.kind === "message").length, total: raw.total_messages, next: raw.truncated ? raw.next_before ?? null : null }
@@ -130,10 +132,11 @@ export default function GraphView({ convId }: Props) {
   useEffect(load, [load]);
 
   const loadMore = useCallback(() => {
-    if (!convFilter || !graphPage?.next) return;
+    const cursor = graphPage?.next;
+    if (!convFilter || !cursor) return;
     setLoadingMore(true);
-    api
-      .getGraphData(convFilter, { limit: GRAPH_PAGE, before: graphPage.next })
+    readWebPageSizes()
+      .then((sizes) => api.getGraphData(convFilter, { limit: sizes.graphPage, before: cursor }))
       .then((raw) => {
         const data = filterGraphNoise(raw.nodes, raw.edges);
         const map = nodesRef.current;
@@ -407,7 +410,7 @@ export default function GraphView({ convId }: Props) {
         {nodeCount} nodes · {edgeCount} edges
         {graphPage && graphPage.total > 0 && (
           <> · <span data-testid="graph-page-count">{graphPage.shown} of {graphPage.total} messages</span>
-            {graphPage.next && <> <button onClick={loadMore} disabled={loadingMore} data-testid="graph-load-more">{loadingMore ? "..." : "Load older"}</button></>}</>
+            {graphPage.next && <> <button onClick={loadMore} disabled={loadingMore} data-testid="graph-load-more">{loadingMore ? "..." : t("load_older")}</button></>}</>
         )}
       </div>
       {selected && (

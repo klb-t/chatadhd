@@ -499,6 +499,20 @@
           "en": "Syncing sends your data folder to GitHub and brings changes back; you confirm each one.",
           "pl": "Synchronizacja wysyła folder danych na GitHub i sprowadza zmiany z powrotem; każdą potwierdzasz sam."
         }
+      },
+      "confirm:views.write": {
+        "id": "confirm:views.write",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "views.write"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Changing a view in your overlay changes how the graph is read from now on; you confirm each change.",
+          "pl": "Zmiana widoku w Twojej nakładce zmienia od teraz sposób czytania grafu; każdą zmianę potwierdzasz sam."
+        }
       }
     },
     "extrapolation": {
