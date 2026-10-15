@@ -667,6 +667,7 @@ VariantResult execute_call(const Services& services, const ModelRequest& request
   r.reasoning = out.reasoning;
   r.reported_model = out.reported_model;
   r.usage = out.usage;
+  r.tool_calls = out.tool_calls;
   r.issues = out.issues;
   if (!out.text.empty()) {
     Part text;

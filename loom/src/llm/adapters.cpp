@@ -185,6 +185,25 @@ class OpenAiChatAdapter final : public Adapter {
     }
     out.text = json::get_string(*message, "content");
     out.reasoning = json::get_string(*message, "reasoning");
+    if (const Json* calls = json::find(*message, "tool_calls"); calls && calls->is_array()) {
+      for (const auto& c : *calls) {
+        const Json* fn = json::find(c, "function");
+        if (!fn || !fn->is_object()) continue;
+        ToolCall tc;
+        tc.id = json::get_string(c, "id");
+        tc.name = json::get_string(*fn, "name");
+        if (const Json* a = json::find(*fn, "arguments"); a && a->is_string()) {
+          tc.raw_arguments = a->get<std::string>();
+          auto parsed = tc.raw_arguments.empty() ? Result<Json>(Json::object()) : json::parse(tc.raw_arguments);
+          if (parsed && parsed->is_object()) tc.arguments = *parsed;
+          else tc.valid = false;
+        } else if (a && a->is_object()) {
+          tc.arguments = *a;
+          tc.raw_arguments = a->dump();
+        }
+        out.tool_calls.push_back(std::move(tc));
+      }
+    }
     if (const Json* u = json::find(*j, "usage"); u && u->is_object()) out.usage = *u;
     return out;
   }
@@ -354,6 +373,15 @@ class AnthropicMessagesAdapter final : public Adapter {
       const std::string type = json::get_string(block, "type");
       if (type == "text") out.text += json::get_string(block, "text");
       else if (type == "thinking") out.reasoning += json::get_string(block, "thinking");
+      else if (type == "tool_use") {
+        ToolCall tc;
+        tc.id = json::get_string(block, "id");
+        tc.name = json::get_string(block, "name");
+        if (const Json* in = json::find(block, "input"); in && in->is_object()) tc.arguments = *in;
+        else tc.valid = false;
+        tc.raw_arguments = tc.arguments.dump();
+        out.tool_calls.push_back(std::move(tc));
+      }
     }
     out.reported_model = json::get_string(*j, "model");
     if (const Json* u = json::find(*j, "usage"); u && u->is_object()) out.usage = *u;

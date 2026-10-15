@@ -1,0 +1,303 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "tool_loop",
+  "revision": 1,
+  "description": "The tool loop of use_model (the agent): a model is offered the actions of the catalogue that fit the element in context as tools, asks for one, the interpreter carries it out (ActionRunner: the same rules, the x10 guard, the spending limits, the receipts and the graph trace as for any other run), the result goes back to the model, until it answers without a tool or a bound is reached. This profile is all the policy: which actions are offered (`expose`), what happens to a call (`policies` - presets, not rules; the setting tool_loop_policy chooses one or holds a policy of its own), how many model turns a loop may take (`max_steps`; the setting tool_loop_max_steps, 0 = no limit), what a proposal does to the loop (`on_proposal`), and how a model is offered tools (`formats`, `format_by_adapter`, `model_rules`; a per-model override is config model_capabilities {model: {tools: <format>}} or the provider manifest's metadata capabilities.tools). A model without native tools gets the `text` format: the tools are described in the prompt and the model answers with a marked JSON call. Overlay: <data>/profiles/tool_loop.pack.",
+  "defaults": {
+    "schema": "loom.tool_loop/1",
+    "policy": "local_reversible",
+    "max_steps": 8,
+    "on_proposal": "stop",
+    "result_max_chars": 20000,
+    "kind": "agent.loop",
+    "use_loop_node": "action_run",
+    "policies": {
+      "local_reversible": {
+        "label": {
+          "en": "Local and reversible actions run, everything else is proposed",
+          "pl": "Lokalne i odwracalne akcje wykonują się, resztę proponuję"
+        },
+        "rules": [
+          {
+            "when": {
+              "effects": {
+                "sends_off_device": false,
+                "costs_money": false,
+                "irreversible": false
+              }
+            },
+            "mode": "run"
+          },
+          {
+            "mode": "propose"
+          }
+        ]
+      },
+      "read_only": {
+        "label": {
+          "en": "Only reading actions run, everything else is proposed",
+          "pl": "Wykonują się tylko akcje czytające, resztę proponuję"
+        },
+        "rules": [
+          {
+            "when": {
+              "effects": {
+                "reads_only": true,
+                "sends_off_device": false,
+                "costs_money": false
+              }
+            },
+            "mode": "run"
+          },
+          {
+            "mode": "propose"
+          }
+        ]
+      },
+      "confirm_all": {
+        "label": {
+          "en": "Every call is proposed and waits for the user",
+          "pl": "Każde wywołanie jest propozycją i czeka na użytkownika"
+        },
+        "rules": [
+          {
+            "mode": "propose"
+          }
+        ]
+      },
+      "apply_all": {
+        "label": {
+          "en": "Every call runs (the rules of the interpreter, the x10 guard and the spending limits still apply)",
+          "pl": "Każde wywołanie się wykonuje (reguły interpretera, strażnik ×10 i limity wydatków nadal obowiązują)"
+        },
+        "rules": [
+          {
+            "mode": "run"
+          }
+        ]
+      }
+    },
+    "expose": {
+      "statuses": [
+        "implemented"
+      ],
+      "exclude": [
+        "use_model",
+        "actions.",
+        "client.",
+        "tasks.",
+        "agent."
+      ],
+      "include_unmatched": false,
+      "default_element": {
+        "class": "application"
+      },
+      "element_arg": "element"
+    },
+    "tool_name": {
+      "allowed": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-",
+      "replacement": "_",
+      "max_length": 64
+    },
+    "formats": {
+      "openai_tools": {
+        "kind": "openai_tools",
+        "description": "OpenAI / OpenRouter chat completions: request tools=[{type:function,function:{name,description,parameters}}], answer message.tool_calls, result message role tool."
+      },
+      "anthropic_tool_use": {
+        "kind": "anthropic_tool_use",
+        "description": "Anthropic Messages: request tools=[{name,description,input_schema}], answer content blocks tool_use, result a user message with tool_result blocks."
+      },
+      "text": {
+        "kind": "text",
+        "description": "For models without native tools: the tools are listed in the prompt, the model answers with a marked JSON call, the result comes back as a marked user message.",
+        "open": "<tool_call>",
+        "close": "</tool_call>",
+        "result_open": "<tool_result>",
+        "result_close": "</tool_result>",
+        "instruction": {
+          "en": "You can use tools. To use a tool, answer with exactly one block {open}{\"name\": \"<tool name>\", \"arguments\": {<arguments>}}{close} and nothing else; you will get the result in a message between {result_open} and {result_close}. When you have what you need, answer in plain text without a tool call. Tools:",
+          "pl": "Możesz używać narzędzi. Aby użyć narzędzia, odpowiedz dokładnie jednym blokiem {open}{\"name\": \"<nazwa narzędzia>\", \"arguments\": {<argumenty>}}{close} i niczym więcej; wynik dostaniesz w wiadomości między {result_open} a {result_close}. Gdy masz to, czego potrzebujesz, odpowiedz zwykłym tekstem bez wywołania narzędzia. Narzędzia:"
+        }
+      },
+      "none": {
+        "kind": "none",
+        "description": "The model is not offered tools; the loop is a single model call."
+      }
+    },
+    "format_by_adapter": {
+      "openai_chat": "openai_tools",
+      "anthropic_messages": "anthropic_tool_use"
+    },
+    "model_rules": [],
+    "default_format": "text",
+    "messages": {
+      "proposed": {
+        "en": "Not executed: this call needs the user's confirmation (proposal {run_id}).",
+        "pl": "Nie wykonano: to wywołanie wymaga potwierdzenia użytkownika (propozycja {run_id})."
+      },
+      "denied": {
+        "en": "Not executed: the rules do not allow it ({reason}).",
+        "pl": "Nie wykonano: reguły tego nie pozwalają ({reason})."
+      },
+      "held": {
+        "en": "Not executed: the usage guard holds it for the user's confirmation.",
+        "pl": "Nie wykonano: strażnik zużycia wstrzymał to do potwierdzenia użytkownika."
+      },
+      "unknown_tool": {
+        "en": "Unknown tool '{name}'.",
+        "pl": "Nieznane narzędzie '{name}'."
+      },
+      "bad_arguments": {
+        "en": "The arguments of '{name}' are not a JSON object.",
+        "pl": "Argumenty '{name}' nie są obiektem JSON."
+      },
+      "failed": {
+        "en": "The action failed: {reason}",
+        "pl": "Akcja się nie powiodła: {reason}"
+      }
+    }
+  },
+  "value_schema": {
+    "x-setting": "tool_loop_policy",
+    "x-consumer": "loom/src/llm/tool_loop.cpp",
+    "type": "object",
+    "required": [
+      "policy",
+      "max_steps",
+      "on_proposal",
+      "policies",
+      "expose",
+      "formats",
+      "format_by_adapter",
+      "default_format"
+    ],
+    "properties": {
+      "schema": {
+        "type": "string"
+      },
+      "policy": {
+        "type": "string",
+        "minLength": 1,
+        "description": "The preset used when neither the request nor the setting tool_loop_policy names one."
+      },
+      "max_steps": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "Model turns per loop; 0 = no limit. The setting tool_loop_max_steps replaces it."
+      },
+      "on_proposal": {
+        "type": "string",
+        "enum": [
+          "stop",
+          "continue"
+        ],
+        "description": "stop: the loop ends with status needs_confirmation as soon as a call was proposed; continue: the model is told it was not executed and goes on."
+      },
+      "result_max_chars": {
+        "type": "integer",
+        "minimum": 0,
+        "description": "A tool result longer than this is cut when handed to the model (the run keeps the whole); 0 = no cut."
+      },
+      "kind": {
+        "type": "string"
+      },
+      "use_loop_node": {
+        "type": "string"
+      },
+      "policies": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "required": [
+            "rules"
+          ],
+          "properties": {
+            "label": {
+              "type": "object"
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "mode"
+                ],
+                "properties": {
+                  "when": {
+                    "type": "object",
+                    "description": "effects: {flag: bool} - every named flag of the action's effects must be present and equal; actions: [ids]; prefixes: [id prefixes]."
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "run",
+                      "propose",
+                      "deny"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "expose": {
+        "type": "object"
+      },
+      "tool_name": {
+        "type": "object"
+      },
+      "formats": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "openai_tools",
+                "anthropic_tool_use",
+                "text",
+                "none"
+              ]
+            }
+          }
+        }
+      },
+      "format_by_adapter": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
+      "model_rules": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "format"
+          ],
+          "properties": {
+            "match": {
+              "type": "object",
+              "description": "adapter, provider (exact), model (exact) or model_prefix."
+            },
+            "format": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "default_format": {
+        "type": "string"
+      },
+      "messages": {
+        "type": "object"
+      }
+    }
+  }
+}
