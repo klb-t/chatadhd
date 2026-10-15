@@ -1873,9 +1873,6 @@
         "via": "action",
         "action": "edge_kinds.classify",
         "surfaces": {
-          "c_abi": [
-            "loom_edge_kinds"
-          ],
           "http": [
             "POST /api/edge-kinds"
           ]
@@ -1883,6 +1880,10 @@
         "examples": {
           "pl": "sklasyfikuj typy powiązań",
           "en": "classify the link types"
+        },
+        "note": {
+          "en": "The same kernel function as edge_kinds_list ({classify:true}); listed there.",
+          "pl": "Ta sama funkcja jądra co edge_kinds_list ({classify:true}); wymieniona tam."
         }
       },
       {

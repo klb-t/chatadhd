@@ -545,7 +545,7 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "d018376666d90841134c177facc6e0aaf7bd180822983970e89b1841018933ca"
+          "sha256": "61173357a95576de70631b2851a6cac4648cc2b0addad7dd0d535d5faecdd53b"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
@@ -700,7 +700,7 @@
           "sha256": "e43f04bd6a01f3015fe6ce5b6d857c9ac7ca606ffcceb05e1ca54158e79d29f9"
         }
       ],
-      "output_sha256": "4cd07f2b7bf7d7e2cbc37c37a3d266855b1cd2596668122e004b2755577b96b9",
+      "output_sha256": "1849a7db0719df6e22ee7cfc76f1e6cc73a000861fe4b0d7e56ee8bf1b7884b8",
       "reason": "Only the exact current trusted in-memory generator result is non-literal product data. Generator bytes, every canonical input and complete output must match; no whole-file review waiver."
     }
   ],

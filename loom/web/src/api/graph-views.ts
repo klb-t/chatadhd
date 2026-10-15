@@ -45,19 +45,3 @@ export interface ScopeResolution {
   source?: string;
   chain: ScopeChainLevel[];
 }
-
-export function readPerspectivesList(v: unknown): PerspectivesList {
-  const o = v as Partial<PerspectivesList> | null;
-  if (!o || !Array.isArray(o.perspectives)) throw new Error("perspectives_list_invalid");
-  return { perspectives: o.perspectives };
-}
-export function readSideBySide(v: unknown): PerspectivesSideBySide {
-  const o = v as { perspectives?: unknown } | null;
-  if (!o || typeof o.perspectives !== "object" || o.perspectives === null || Array.isArray(o.perspectives)) throw new Error("perspectives_render_invalid");
-  return { perspectives: o.perspectives as Record<string, PerspectiveRender> };
-}
-export function readScopeResolution(v: unknown, key: string): ScopeResolution {
-  const o = v as Partial<ScopeResolution> | null;
-  if (!o || typeof o.defined !== "boolean" || !Array.isArray(o.chain)) throw new Error("scope_resolution_invalid");
-  return { ...o, key: typeof o.key === "string" ? o.key : key } as ScopeResolution;
-}

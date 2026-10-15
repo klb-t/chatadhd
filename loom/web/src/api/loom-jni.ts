@@ -13,7 +13,7 @@
 // invokes `window.__loomCallbacks[callbackId](chunkJson, done)` for every
 // chunk, exactly like the C ABI's LoomStreamCallback/LoomProgressCallback/
 // LoomEventCallback (`done` is 1 on the final call, matching loom.h).
-import { readPerspectivesList, readScopeResolution, readSideBySide, type PerspectiveRequest, type PerspectivesList, type PerspectivesSideBySide, type ScopeResolution, type ScopeResolveRequest } from "./graph-views";
+import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type { ActionsApi, ClientBlob, LoomApi, ContextSelectRequest, SearchOptions, SearchResult, StreamHandlers, Unsubscribe } from "./loom-api";
 import type {
@@ -34,7 +34,7 @@ import type {
   SemanticStatusInfo,
   Task,
 } from "./types";
-import { isLoomError } from "./types";
+import { isLoomError, readPerspectivesList, readScopeResolution, readSideBySide } from "./types";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 

@@ -1,3 +1,4 @@
+import type { PerspectivesList, PerspectivesSideBySide, PerspectiveRender, ScopeResolution } from "./graph-views";
 // Shared JSON shapes returned by the Loom C ABI (loom/include/loom/loom.h),
 // as relayed by both transports (loom-http.ts over the server, loom-jni.ts
 // over the Android WebView bridge). Kept intentionally loose (most fields
@@ -287,3 +288,20 @@ export interface ActionRun {
 }
 
 export interface ActionAnswer { run_id: string; approved: boolean; receipt_id: string; ref?: string }
+
+// ── Graph views (P24): readers of the perspective and scope answers; the shapes are in ./graph-views (types only). ──
+export function readPerspectivesList(v: unknown): PerspectivesList {
+  const o = v as Partial<PerspectivesList> | null;
+  if (!o || !Array.isArray(o.perspectives)) throw new Error("perspectives_list_invalid");
+  return { perspectives: o.perspectives };
+}
+export function readSideBySide(v: unknown): PerspectivesSideBySide {
+  const o = v as { perspectives?: unknown } | null;
+  if (!o || typeof o.perspectives !== "object" || o.perspectives === null || Array.isArray(o.perspectives)) throw new Error("perspectives_render_invalid");
+  return { perspectives: o.perspectives as Record<string, PerspectiveRender> };
+}
+export function readScopeResolution(v: unknown, key: string): ScopeResolution {
+  const o = v as Partial<ScopeResolution> | null;
+  if (!o || typeof o.defined !== "boolean" || !Array.isArray(o.chain)) throw new Error("scope_resolution_invalid");
+  return { ...o, key: typeof o.key === "string" ? o.key : key } as ScopeResolution;
+}

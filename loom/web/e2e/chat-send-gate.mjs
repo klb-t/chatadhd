@@ -69,6 +69,8 @@ const server = createServer(async (request, response) => {
     return json(response, view(id));
   }
   if (url.pathname === "/api/models") return json(response, []);
+  // The page reads its page sizes (loom_web_message_window) from the settings; this authored backend sets none, so the presets apply.
+  if (url.pathname === "/api/config") return json(response, {});
   if (url.pathname === "/api/methods/chat-settings") return json(response, { error: { code: "fixture_unavailable", message: "authored" } }, 503);
   if (url.pathname === "/api/chat" && request.method === "POST") {
     chatRequests.push(body);

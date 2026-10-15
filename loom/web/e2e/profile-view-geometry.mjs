@@ -76,6 +76,8 @@ const server = createServer(async (req, res) => {
   const messageMatch = /^\/api\/conversations\/([^/]+)\/messages$/.exec(url.pathname);
   if (messageMatch) return json(messages.get(decodeURIComponent(messageMatch[1])) ?? []);
   if (url.pathname === "/api/models") return json([{ id: "fixture/one", name: "Fixture one" }, { id: "fixture/two", name: "Fixture two" }]);
+  // The page reads its page sizes (loom_web_message_window) from the settings; this fixture sets none, so the presets apply.
+  if (url.pathname === "/api/config") return json({});
   if (url.pathname === "/api/semantic/status") return json({ pending: 0, processed: 0, errors: 0, mode: "off", rate: "off", paused: false });
   // P13: the page declares its devices right before its first send (never while only viewing); this fixture takes the declaration.
   if (url.pathname === "/api/client/declare") {

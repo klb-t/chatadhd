@@ -23,13 +23,13 @@ import type {
   SemanticStatusInfo,
   Task,
 } from "./types";
-import { isLoomError } from "./types";
+import { isLoomError, readPerspectivesList, readScopeResolution, readSideBySide } from "./types";
 import { AUTH_REQUIRED_EVENT } from "./auth";
 import type { KnowledgeApi } from "./knowledge";
 import { readGraphEntry, type GraphEntryOptions, type GraphEntryView } from "./graph-entry";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
-import { readPerspectivesList, readScopeResolution, readSideBySide, type PerspectiveRequest, type PerspectivesList, type PerspectivesSideBySide, type ScopeResolution, type ScopeResolveRequest } from "./graph-views";
+import type { PerspectiveRequest, PerspectivesList, PerspectivesSideBySide, ScopeResolution, ScopeResolveRequest } from "./graph-views";
 import { readConversationView, type ConversationReadRequest, type ConversationView } from "./conversation-view";
 
 const TOKEN_KEY = "loom.auth_token";
