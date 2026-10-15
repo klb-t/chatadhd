@@ -1,4 +1,4 @@
-# Unnamed structures and multiple perspectives — 2026-10-14
+# Unnamed relational structures and qualified analogies — 2026-10-14
 
 ## Current code — canonical comparison verified in scope, 2026-10-15 UTC
 
@@ -20,7 +20,18 @@ byte-equivalent historical result, six cache hits on the repeat, `llm: off`.
 [pre-run receipt](implicit-structures-2026-10-14-evidence/migration-v4-receipt.json),
 [current recognition](implicit-structures-2026-10-14-evidence/example-v4-recognition.json).
 
-Full v4 dev/ASan/Clang/web are next. The v3 results below are historical.
+Full v4 dev on `f3ce2c18` passed: **204 selected, 203 executed, 1355 native
+cases / 47930 assertions / 2077 Python cases, zero Python skips, guard PASS**.
+The one existing opt-in catalog-scale entry remains unexecuted. The interrupted
+ASan run completed only 41 entries and has no final JUnit/guard; it is not a PASS.
+It exposed a C API test leaking its caller-owned settings string and an independent
+import compatibility failure when Python/native generated titles straddled a
+minute (00:48 / 00:49). Neither failure is suppressed.
+
+The C API check now uses the existing ownership-taking helper and retains the
+secret-nondisclosure assertion. Its ASan rerun passed **16 cases / 2633 assertions**,
+leak detection enabled, guard PASS (`asan-leak-fix/`). Full ASan, rebuilt dev,
+Clang and web are next on that test-only follow-up. The v3 results below are historical.
 ASan v3 was interrupted at step 229/408 before tests; its retained log is
 `build-asan-interrupted-v3.log`. No sanitizer PASS is claimed for that build.
 
@@ -30,7 +41,7 @@ Published product: `79187377` (project-kind alternatives / transfer evidence),
 `298b429b` (relational recognition and durable receipts), `f682fc89` (exact pack
 model expectations). Branch: `gpt/implicit-structures-2026-10-14`; main unchanged.
 
-Current full dev: **204/204 CTest entries accepted, 203 executed,
+Historical v3 full dev: **204/204 CTest entries accepted, 203 executed,
 1354 native cases / 47921 assertions, 2077 Python cases,
 guard PASS**. One catalog-scale entry is explicitly opt-in/unexecuted; zero
 Python skips. This is the corrected run `full-dev-r2/`, with code/configuration/
@@ -43,7 +54,7 @@ generator checks passed: four `--check` commands and KB regeneration/hash
 identity. Full ASan, Clang and web gates are pending at this checkpoint. Next:
 serialized ASan build, then its full runner; no competing heavy builds.
 
-## Current checkpoint — first increment verified; next slice open
+## Historical first increment — verified scope
 
 Branch: `gpt/implicit-structures-2026-10-14`.
 Fresh base: `6c55d46953569d8ca80b577fbe213c28cbf63353` (`origin/main`).
@@ -80,7 +91,7 @@ a closed or mandatory taxonomy (R8/R10/R35/R53). Recognizing source-described
 structure, proposing an unmentioned component, and discovering a new reusable
 pattern are different evidence claims.
 
-## Confirmed code gaps and intended increments
+## Initial findings — resolved by the increments below
 
 1. `ParadigmMatcher::analogies` and `transfer` keep only one project-kind
    instance per subject. A higher-scoring unrelated reading can erase a valid
@@ -204,11 +215,10 @@ tests (`relations-before/`, `relations-r1/`); both failed the guard and count as
 no validation. `relations-r2/` records an undeclared relation in a data-change
 test; it now uses a declared, different relation. All failed logs are retained.
 
-## Next exact step
+## Historical resume point after the relation increment
 
-Run the expanded scoped gates, publish the relation increment, then run current
-full dev/guard and the serialized compiler/sanitizer/web matrix. Record precise
-counts and environmental limits here before handing the branch to Claude.
+The scoped publication and corrected full dev run described above supersede
+this checkpoint. The current status is at the top of this report.
 
 ## Full-matrix follow-up
 

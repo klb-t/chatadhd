@@ -1,0 +1,33 @@
+{
+  "entries": [
+    {
+      "assertions": 2634,
+      "cases": 16,
+      "classification": "executed",
+      "name": "unit.test_capi"
+    }
+  ],
+  "errors": [],
+  "executed_entries": 1,
+  "executed_native_assertions": 2634,
+  "executed_native_cases": 16,
+  "executed_python_cases": 0,
+  "input_sha256": {
+    "junit": "5e59d734d2e6d55b3c96ba78c4ba79c06929a09e7d236299df92261c2e688e57",
+    "manifest": "7fef9b9c63c1dd0b4cb91f5f7504ae137f1df85ed3091d083316e988fd911f88"
+  },
+  "junit_entries": 1,
+  "manifest_entries": 1,
+  "policy_provenance": {
+    "path": "/workspace/chatadhd/.github/ctest-evidence-policy.json",
+    "revision": 3,
+    "schema": "loom.ctest_evidence_policy/1",
+    "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+    "sha256": "e6a914f4146c469929f80b6de8580dd2016230e6b5c4cc4e8574fc8cb60af408"
+  },
+  "preset": "asan",
+  "schema": "loom.ctest_evidence/1",
+  "skipped_python_cases": 0,
+  "unexecuted_entries": [],
+  "valid": true
+}

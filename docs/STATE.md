@@ -2,8 +2,11 @@
 
 > B, 2026-10-15 UTC: follow-up `b5e67f45` (Generalizer 4 / pipeline 10)
 > ma aktualne 35/35 scope, 293 native / 8746 asercji, guard PASS oraz migrację
-> CLI z zachowaniem starego wyniku i sześcioma trafieniami cache. Pełna macierz
-> v4 jest następna; poniższy pełny dev jest historyczny dla v3.
+> CLI z zachowaniem starego wyniku i sześcioma trafieniami cache. Pełny dev v4
+> na f3ce2c18: 203 wykonane / 204 wpisy, 1355 native / 47930 asercji / 2077 Python,
+> guard PASS. ASan przerwany po 41 wpisach ujawnił wyciek w teście C API
+> (naprawiony i sprawdzony: 16 przypadków / 2633 asercji) oraz zależny od granicy
+> minuty test tytułu importu. Pozostała macierz trwa; poniższy pełny dev dotyczy v3.
 > [Aktualny raport](reports/implicit-structures-2026-10-14.md).
 
 ## 2026-10-15 — B: osobna gałąź rozpoznawania struktur
@@ -16,7 +19,7 @@ istniejący pipeline/store. Odtworzenie i wznowienie sprawdzone, zero wywołań 
 Perspektywy kodu/idei/specyfikacji **tego samego projektu** pozostają osobną
 integracją; konkurencyjne interpretacje nie są ich zamiennikiem.
 
-Aktualny pełny dev/guard PASS: 204/204 wpisów, 203 wykonane,
+Historyczny pełny dev/guard v3 PASS: 204/204 wpisów, 203 wykonane,
 1354 native / 47921 asercji / 2077 Python, zero Python skips;
 1 catalog_scale opt-in niewykonany. ASan/Clang/web pending w tym checkpoincie.
 [Raport](reports/implicit-structures-2026-10-14.md) zawiera historię błędów,

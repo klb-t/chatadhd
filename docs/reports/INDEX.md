@@ -660,7 +660,7 @@ Wg `CLAUDE.md` (nic nie jest ograniczeniem, wszystko ustawieniem, domyślne to p
 - Otwarte: odbiorcy (media, analiza, czat) jeszcze nie czytają ról (kolejność ASR/OCR dalej z `media.pack`); zespół dwóch
   modeli analizy niepodłączony; brak widoku w ustawieniach web. Raport: `docs/reports/S2_R10_2026-10-13.md`.
   Cofnięcie: revert scalenia R10.
-# B — unnamed structures / perspectives (2026-10-14, candidate branch)
+# B — unnamed structures / perspectives (2026-10-14, historical first increment)
 
 `gpt/implicit-structures-2026-10-14`, base `6c55d469`: first increment keeps
 alternative project-kind pairs in analogy/transfer, records all contributing
