@@ -53,6 +53,29 @@ async function api(method, url, body) {
 }
 async function check(name, run) { await run(); groups.push(name); console.log(`[p28-interaction-native] PASS ${name}`); }
 
+// The graph of the fixture goes straight into the data directory's database (the server reads it per request).
+function seed(dataDir) {
+  const db = new DatabaseSync(path.join(dataDir, "chatadhd.db"));
+  db.exec("PRAGMA busy_timeout = 5000");
+  const ids = {};
+  const day = n => new Date(Date.UTC(2026, 0, 1 + n)).toISOString().replace(".000Z", "Z");
+  const node = (key, kind, n) => {
+    ids[key] = `n_p28_${key}`;
+    db.prepare("INSERT INTO nodes (id, kind, label, content, tags, metadata, created) VALUES (?, ?, ?, '', '[]', '{}', ?)").run(ids[key], kind, key, day(n));
+  };
+  let linkNo = 0;
+  const link = (a, b, type) => db.prepare("INSERT INTO links (id, src, dst, link_type, weight, metadata, created) VALUES (?, ?, ?, ?, 1.0, '{}', ?)").run(`l_p28_${++linkNo}`, ids[a], ids[b], type, day(0));
+  [["v1", "version"], ["v2", "version"], ["v3", "version"], ["v4", "version"], ["v5", "version"], ["fb1", "version"]].forEach(([k, kind], i) => node(k, kind, i * 10));
+  node("caller_a", "function", 60); node("caller_b", "function", 61); node("libx", "module", 62); node("ship", "goal", 63);
+  link("v2", "v1", "previous_version"); link("v3", "v2", "previous_version"); link("v4", "v3", "previous_version"); link("v5", "v4", "previous_version");
+  link("fb1", "v2", "forked_from");
+  link("caller_a", "v3", "calls"); link("caller_b", "v3", "calls");
+  link("v3", "libx", "imports");
+  link("v3", "ship", "serves_goal");
+  db.close();
+  return ids;
+}
+
 try {
   const dataDir = mkdtempSync(path.join(tmpdir(), "loom-p28i-")); dirs.push(dataDir);
   await start(dataDir);
@@ -92,7 +115,7 @@ try {
   const openPanel = async () => {
     await page.getByTestId("nav-view-engine").click();
     await page.getByTestId("view-engine-panel").waitFor();
-    await page.getByTestId("ve-hint-arrows").waitFor();
+    await page.getByTestId("ve-hint-keys").waitFor();
   };
   const show = async ({ declaration = "history_cone", focus = ids.v3 } = {}) => {
     await page.getByTestId("ve-declaration").selectOption(declaration);

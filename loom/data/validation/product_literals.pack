@@ -497,7 +497,7 @@
         },
         {
           "path": "loom/data/graph/interfaces.pack",
-          "sha256": "20510b5a7062b9968c7c0abae255a0fdcd73f07e022f1d739c3a8c45015b69a8"
+          "sha256": "2d25141fd312e2e02c118d075cba99879abcb657532894b09e156c906e3b2721"
         },
         {
           "path": "loom/data/graph/parties.pack",
@@ -509,7 +509,7 @@
         },
         {
           "path": "loom/data/graph/rom.pack",
-          "sha256": "ae6fdd0a47aaab52ad2edd7d5eaea29c0cdcad3a3538ebfe0954826a6ce3ad17"
+          "sha256": "1d56bd5c4b5320c342e40145561c74fe7672ea3b04229098e53fd6939f2cd783"
         },
         {
           "path": "loom/data/graph/scopes.pack",
@@ -537,7 +537,7 @@
         },
         {
           "path": "loom/data/runtime/actions.pack",
-          "sha256": "61a365ab5723e6789183154943ae17adadc43f33a5a2337bc34cb771212a95ce"
+          "sha256": "3a6288658be6b0c60d9f071477e9609305957cad9bbd3442b3e6b421328ccd2c"
         },
         {
           "path": "loom/data/runtime/archive.pack",
@@ -549,11 +549,11 @@
         },
         {
           "path": "loom/data/runtime/chat_coverage.pack",
-          "sha256": "6470293081ab731d41980fa8e150bcfe2da13a511f7d288a870647377c00f1cf"
+          "sha256": "06aa01f7ebc094c801d667b1be5f3fa7bc867e4c86d703775d218f656ae3786b"
         },
         {
           "path": "loom/data/runtime/chat_ops.pack",
-          "sha256": "c280fa982c704c501c01c2e8e262c0b818dd2107e8ce990f96786e203d09ba33"
+          "sha256": "dbdf16a03c21039d4a10b4eccab493c06f2c525dde87dce6c7b379ded135bcf7"
         },
         {
           "path": "loom/data/runtime/chat_reasoning.pack",
@@ -597,7 +597,7 @@
         },
         {
           "path": "loom/data/runtime/graph_views.pack",
-          "sha256": "f8b3e9d4a196e728b22c8726a22ed2f9a576821df1e0eef58e0dbf66f2e7aeb8"
+          "sha256": "41e710903997093c331486244eefd8b6e2112f10e03ce0a0c62ce8836bae450e"
         },
         {
           "path": "loom/data/runtime/guardian.pack",
@@ -617,7 +617,7 @@
         },
         {
           "path": "loom/data/runtime/intent_routing.pack",
-          "sha256": "de012c0a676c03163caf9cc836b0d4bdf604e7ccb2a11988e957151815a00b52"
+          "sha256": "3f8c527d66fa1fa9b30ab96753b670205f18325ffd495bc4726ef14f5358bf53"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",

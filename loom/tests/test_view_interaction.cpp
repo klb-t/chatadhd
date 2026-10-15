@@ -94,7 +94,7 @@ TEST_SUITE("view_interaction") {
     CHECK(!(*caps)["action"].contains("declaration"));
     CHECK((*caps)["origin"] == "rom");
     CHECK((*caps)["provenance"].size() == 2);
-    CHECK((*caps)["provenance"][1]["layer"] == "u");
+    CHECK((*caps)["provenance"][1]["layer"] == "overlay:u");
     CHECK(r["conflicts"].empty());
     // undo: the preset is back
     unwrap(views::remove_ops(td.path(), "u", "interaction_bindings", "kbd.lock.caps"));

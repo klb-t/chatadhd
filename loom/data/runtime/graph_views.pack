@@ -3114,51 +3114,6 @@
           "factor": 0.8
         }
       },
-      "touch.lock.caps": {
-        "label": {
-          "en": "Lock caps: alternative view age_lanes",
-          "pl": "Blokada caps: widok alternatywny age_lanes"
-        },
-        "device": "touch",
-        "input": {
-          "lock": "caps",
-          "state": "on"
-        },
-        "action": {
-          "kind": "switch_view",
-          "declaration": "age_lanes"
-        }
-      },
-      "touch.lock.num": {
-        "label": {
-          "en": "Lock num: alternative view history_cone",
-          "pl": "Blokada num: widok alternatywny history_cone"
-        },
-        "device": "touch",
-        "input": {
-          "lock": "num",
-          "state": "on"
-        },
-        "action": {
-          "kind": "switch_view",
-          "declaration": "history_cone"
-        }
-      },
-      "touch.lock.scroll": {
-        "label": {
-          "en": "Lock scroll: alternative view age_lanes",
-          "pl": "Blokada scroll: widok alternatywny age_lanes"
-        },
-        "device": "touch",
-        "input": {
-          "lock": "scroll",
-          "state": "on"
-        },
-        "action": {
-          "kind": "switch_view",
-          "declaration": "age_lanes"
-        }
-      },
       "voice.zoom.in": {
         "label": {
           "en": "Voice: \"zoom in\"",
