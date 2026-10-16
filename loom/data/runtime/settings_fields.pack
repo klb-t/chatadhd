@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "settings_fields",
-  "revision": 3,
-  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack. Review of M1-D0 (rev. 3): `human.levels` = the levels where a reader honours the value, backed by `level_evidence` (chain-resolved keys, per-request wire options); a field whose key no code reads yet carries `status {state: planned, by, reason}`; `values_open` marks an example list; `human.role_status` keeps a role chip honest until ports.pack knows the role; the `group` and `levels` enums are gone (an overlay may add a group of its own; levels are checked against the live scope chain).",
+  "revision": 4,
+  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack. Review of M1-D0 (rev. 3): `human.levels` = the levels where a reader honours the value, backed by `level_evidence` (chain-resolved keys, per-request wire options); a field whose key no code reads yet carries `status {state: planned, by, reason}`; `values_open` marks an example list; `human.role_status` keeps a role chip honest until ports.pack knows the role; the `group` and `levels` enums are gone (an overlay may add a group of its own; levels are checked against the live scope chain). Review fixes (rev. 4): `values[].on_set` and `on_unlisted` say what a write of a planned or unlisted value does on every write path (refuse: its reader rejects it; warn: stored with a warning); `level_evidence.installation` backs the installation level (a profile value is set only in its profile, never in config.json); `placement` lets an overlay move one field into another group without copying the fields array; a missing `human` is a listed problem, not a load failure; `human.flows` are checked against the action catalogue.",
   "defaults": {
     "element_class": "settings_field",
     "rule_action": "edit",
@@ -429,6 +429,7 @@
         ]
       }
     },
+    "placement": {},
     "level_evidence": {
       "chain": [
         "default_model",
@@ -4225,8 +4226,7 @@
             "group",
             "type",
             "has_default",
-            "description",
-            "human"
+            "description"
           ],
           "properties": {
             "key": {
@@ -4645,8 +4645,7 @@
           "type": "object",
           "required": [
             "profile",
-            "pointer",
-            "human"
+            "pointer"
           ],
           "additionalProperties": false,
           "properties": {
@@ -4761,6 +4760,21 @@
                   "type": "boolean"
                 }
               }
+            }
+          }
+        }
+      },
+      "placement": {
+        "type": "object",
+        "description": "Group membership a user overlay patches per key (profiles/settings_fields.pack overrides.placement): field key, or <profile><pointer> of a profile value -> {group, subgroup?}. It moves the entry on top of human.group/subgroup (the preset stays visible as human.placed_from) without copying the fields array. Empty in the shipped pack: the preset membership is human.group. An entry without a group, or naming no field, is an issue (groups_issues), never dropped silently.",
+        "additionalProperties": {
+          "type": "object",
+          "properties": {
+            "group": {
+              "type": "string"
+            },
+            "subgroup": {
+              "type": "string"
             }
           }
         }

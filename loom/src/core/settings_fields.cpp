@@ -128,6 +128,42 @@ Result<Groups> groups_of(const Json& v, const std::filesystem::path& data_dir) {
   return out;
 }
 
+// Membership a user overlay patches per key (`placement`: field key or <profile><pointer> -> {group, subgroup?}): moves the entry on
+// top of human.group/subgroup and keeps the preset as human.placed_from, so moving one field never copies the fields array. An entry
+// without a group, or one that names no field, is an issue in the same list as the view overlays' (never dropped silently).
+struct Placement {
+  const Json* map = nullptr;
+  std::set<std::string> used;
+  Json issues = Json::array();
+
+  void apply(Json& entry, const std::string& ref) {
+    const Json* p = map && map->is_object() ? json::find(*map, ref) : nullptr;
+    if (!p) return;
+    used.insert(ref);
+    const std::string group = p->is_object() ? json::get_string(*p, "group") : "";
+    Json* h = entry.contains("human") && entry["human"].is_object() ? &entry["human"] : nullptr;
+    if (group.empty() || !h) {
+      issues.push_back(Json{{"code", group.empty() ? "placement_without_group" : "placement_without_human"}, {"layer", "placement"},
+                            {"op", ""}, {"id", ref}, {"note", group.empty() ? "a placement needs a group" : "the entry has no human layer to place"}});
+      return;
+    }
+    Json from{{"group", h->value("group", "")}};
+    if (const Json* sub = json::find(*h, "subgroup")) from["subgroup"] = *sub;
+    (*h)["group"] = group;
+    if (const std::string sub = json::get_string(*p, "subgroup"); !sub.empty()) (*h)["subgroup"] = sub;
+    else h->erase("subgroup");  // the old subgroup belonged to the old group
+    (*h)["placed_from"] = std::move(from);
+  }
+
+  void unused() {
+    if (!map || !map->is_object()) return;
+    for (auto it = map->begin(); it != map->end(); ++it)
+      if (!used.count(it.key()))
+        issues.push_back(Json{{"code", "placement_unknown"}, {"layer", "placement"}, {"op", ""}, {"id", it.key()},
+                              {"note", "no field or profile value with this key"}});
+  }
+};
+
 // {pl, en}, both non-empty: every human text is a sentence in both languages.
 bool text_pair(const Json* t) {
   return t && t->is_object() && !json::get_string(*t, "pl").empty() && !json::get_string(*t, "en").empty();
@@ -151,9 +187,12 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir) {
   Json fields = Json::array();
   const Json& cfg = config_defaults();
   const Json& lcfg = loom_config_defaults();
+  Placement placement;
+  placement.map = json::find(v, "placement");
   for (const auto& f : v.at("fields")) {
     const std::string scope_name = f.value("scope", ""), key = f.value("key", "");
     Json o = f;  // `human`, `status`, `values` and the rest of the entry pass through unchanged
+    placement.apply(o, key);
     o.erase("has_default");
     const bool has_default = f.value("has_default", false);
     o["default"] = has_default ? "present" : "absent";
@@ -175,10 +214,14 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir) {
   // Additive (M1-D0): the human groups of the fields and the runtime-profile values shown as fields.
   // Grouping is data: an overlay may regroup, rename or hide; nothing about it lives in code.
   LOOM_TRY_ASSIGN(auto groups, groups_of(v, data_dir));
+  Json profile_values = profile_values_of(v, data_dir);
+  for (auto& p : profile_values) placement.apply(p, p.value("profile", "") + p.value("pointer", ""));
+  placement.unused();
+  for (auto& i : placement.issues) groups.issues.push_back(std::move(i));
   out["groups"] = std::move(groups.object);
   if (!groups.issues.empty()) out["groups_issues"] = std::move(groups.issues);
   out["level_evidence"] = v.value("level_evidence", Json::object());
-  out["profile_values"] = profile_values_of(v, data_dir);
+  out["profile_values"] = std::move(profile_values);
   return out;
 }
 
@@ -187,9 +230,15 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
   std::set<std::string> described;
   // The levels a field may be set at are the chain of graph/scopes.pack (the effective `scopes` view of the rules engine).
   std::set<std::string> chain;
+  // The flows a field names are actions of the catalogue (actions.pack with the user's overlay): a renamed action never leaves a dangling
+  // flow on a field card.
+  std::set<std::string> action_ids;
   if (auto engine = actions::Engine::load(data_dir)) {
     for (const auto& level : engine->scope_chain()) chain.insert(json::get_string(level, "id"));
     if (chain.empty()) out.push_back("scope chain empty: levels cannot be checked");
+    if (engine->catalogue().is_object())
+      for (auto it = engine->catalogue().begin(); it != engine->catalogue().end(); ++it) action_ids.insert(it.key());
+    if (action_ids.empty()) out.push_back("action catalogue empty: human.flows cannot be checked");
   } else {
     out.push_back("scope chain unavailable: " + engine.error().message);
   }
@@ -261,6 +310,12 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
         if (id == "person" && profile_value)
           out.push_back("level 'person' on a profile value (its value lives in the profile, never in config.json): " + who);
       }
+    if (const Json* flows = json::find(*h, "flows"); flows && !action_ids.empty()) {
+      if (!flows->is_array()) out.push_back("human.flows must be a list of action ids: " + who);
+      else
+        for (const auto& fl : *flows)
+          if (!fl.is_string() || !action_ids.count(fl.get<std::string>())) out.push_back("unknown flow " + fl.dump() + ": " + who);
+    }
     if (const std::string role = json::get_string(*h, "role");
         !role.empty() && !roles.empty() && !roles.count(role) && json::get_string(*h, "role_status").empty())
       out.push_back("role '" + role + "' unknown to ports.pack and without role_status: " + who);

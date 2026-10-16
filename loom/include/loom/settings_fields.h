@@ -20,13 +20,16 @@ namespace loom {
 
 // {"schema":"loom.settings_fields/1","edit_rules":[...],"fields":[{"key","scope","group","type",
 //  "default":"present|absent","default_value"?,"edit","description","sensitive"?,
-//  "human":{"label":{pl,en},"why":{pl,en},"effect":{pl,en},"levels":[...],"group","subgroup"?,"role"?,"role_status"?,"flows"?,"technical_only"?},
+//  "human":{"label":{pl,en},"why":{pl,en},"effect":{pl,en},"levels":[...],"group","subgroup"?,"placed_from"?,"role"?,"role_status"?,"flows"?,"technical_only"?},
 //  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn"}],"values_open"?,
 //  "on_unlisted"?:"refuse"|"warn","status"?:{"state","by"?,"reason":{pl,en}}}],
 //  "groups":{id:{"label":{pl,en},"why":{pl,en},"order","subgroups":[...],"origin","provenance":[...],"hidden"?,"hidden_by"?,"disabled"?,"empty_reason"?}},
 //  "groups_issues"?:[...], "level_evidence":{"chain":[keys],"turn":[keys],"installation":[keys and <profile><pointer>]},
 //  "profile_values":[{"profile","pointer","human":{...},"value"|"problem"}]}
-// `human`, `groups` and `profile_values` are data of the pack (M1-D0): an overlay may regroup, rename or hide.
+// `human`, `groups` and `profile_values` are data of the pack (M1-D0): an overlay may regroup, rename or hide. Membership is patched per
+// key by the pack's `placement` (field key or <profile><pointer> -> {group, subgroup?}; a user overlay moves one field without copying
+// the fields array): the entry's human.group/subgroup become the placement's and human.placed_from keeps the preset; a placement
+// without a group or naming nothing is a `groups_issues` entry.
 // `groups` is the effective list of the view kind `settings_groups` (graph_views.pack): the pack's /groups (with the user's profile
 // overlay, which may add a group) is the ROM layer and the view overlays of `data_dir` (views/*.json) are composed on top with the
 // kind's policy, each group carrying origin and provenance; a hidden group stays listed with hidden:true and hidden_by, so the
@@ -44,7 +47,8 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir = {});
 // named), levels inside the scope chain (graph/scopes.pack through the rules engine of `data_dir`; empty levels only
 // on a read_only field, which is settable nowhere and whose rule carries the reason; project/conversation only for a key of
 // `level_evidence.chain`, turn only for a key of `level_evidence.turn`, installation only for a key or profile value of
-// `level_evidence.installation`, person never on a profile value), a `role` known to ports.pack or carrying `role_status`,
+// `level_evidence.installation`, person never on a profile value), `flows` that are actions of the catalogue (actions.pack with the
+// user's overlay), a `role` known to ports.pack or carrying `role_status`,
 // a `status` with state and reason pl+en, no `groups_issues`; every group holds something or says why it is empty
 // (`empty_reason`); every profile value resolves. Empty = consistent.
 // Used by the completeness test and available to tooling; each entry is a reason the owner can read.

@@ -139,6 +139,10 @@ TEST_SUITE("settings_fields") {
     Json badsub = doc;
     badsub["fields"][0]["human"]["subgroup"] = "nonsense";
     CHECK(has(settings_fields_problems(badsub), "unknown subgroup 'nonsense'"));
+    Json badflow = doc;  // an action renamed or removed: the field card would point at nothing
+    badflow["fields"][0]["human"]["flows"] = Json::array({"chat.send", "no.such.action"});
+    CHECK(has(settings_fields_problems(badflow), "unknown flow \"no.such.action\": config:base_url"));
+    CHECK_FALSE(has(settings_fields_problems(badflow), "unknown flow \"chat.send\""));
     Json badlevel = doc;
     badlevel["fields"][0]["human"]["levels"] = Json::array({"galaxy"});
     CHECK(has(settings_fields_problems(badlevel), "level outside the scope chain 'galaxy'"));
@@ -282,34 +286,67 @@ TEST_SUITE("settings_fields") {
     }
   }
 
-  TEST_CASE("a profile overlay may add a group of its own and move a field into it (no enum closes the groups)") {
+  TEST_CASE("a profile overlay may add a group of its own and move one field into it by placement, without copying the fields array") {
     fsutil::TempDir td;
     std::filesystem::create_directories(td.path() / "profiles");
-    const RuntimeProfile pack_profile = unwrap(RuntimeProfile::builtin("settings_fields"));
-    Json fields = pack_profile.values()["fields"];
-    for (auto& f : fields)
-      if (f["key"] == "theme") {
-        f["human"]["group"] = "moje";
-        f["human"].erase("subgroup");  // the subgroup belonged to the old group
-      }
+    const Json shipped = unwrap(settings_fields());
     std::ofstream(td.path() / "profiles" / "settings_fields.pack")
         << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"},
                 {"overrides", Json{{"groups", Json{{"moje", Json{{"label", Json{{"pl", "Moje"}, {"en", "Mine"}}},
                                                                     {"why", Json{{"pl", "Pola, które wybrałem."}, {"en", "The fields I chose."}}},
                                                                     {"order", 0}, {"subgroups", Json::array()}}}}},
-                                   {"fields", fields}}}}.dump();
+                                   {"placement", Json{{"theme", Json{{"group", "moje"}}},
+                                                      {"worker/batch_threshold", Json{{"group", "moje"}}}}}}}}.dump();
     Json doc = unwrap(settings_fields(td.path()));
     REQUIRE(doc["groups"].contains("moje"));
     // the view engine reads the same overlaid profile: loom_view_effective("settings_groups") sees the group too
     const auto eff = unwrap(views::effective(td.path(), "settings_groups"));
     REQUIRE(eff.find("moje"));
     CHECK(eff.find("moje")->value["label"]["pl"] == "Moje");
-    bool moved = false;
-    for (const auto& f : doc["fields"]) if (f["key"] == "theme") moved = f["human"]["group"] == "moje";
-    CHECK(moved);
+    // the field moved, its preset stays visible; every other field is the shipped one (nothing copied, nothing frozen)
+    REQUIRE(doc["fields"].size() == shipped["fields"].size());
+    for (std::size_t i = 0; i < doc["fields"].size(); ++i) {
+      const Json& f = doc["fields"][i];
+      if (f["key"] == "theme") {
+        CHECK(f["human"]["group"] == "moje");
+        CHECK_FALSE(f["human"].contains("subgroup"));  // the subgroup belonged to the old group
+        CHECK(f["human"]["placed_from"]["group"] == shipped["fields"][i]["human"]["group"]);
+        CHECK(f["human"]["label"] == shipped["fields"][i]["human"]["label"]);
+      } else {
+        CHECK(f == shipped["fields"][i]);
+      }
+    }
+    for (const auto& p : doc["profile_values"])
+      if (p["pointer"] == "/batch_threshold") CHECK(p["human"]["group"] == "moje");
     const auto problems = settings_fields_problems(doc, td.path());
     INFO(joined(problems));
     CHECK(problems.empty());
+    // a placement naming nothing, or without a group, is an issue the owner reads (never dropped silently)
+    std::ofstream(td.path() / "profiles" / "settings_fields.pack", std::ios::trunc)
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"},
+                {"overrides", Json{{"placement", Json{{"no_such_key", Json{{"group", "koszty"}}}, {"theme", Json::object()}}}}}}.dump();
+    Json bad = unwrap(settings_fields(td.path()));
+    REQUIRE(bad.contains("groups_issues"));
+    const std::string issues = bad["groups_issues"].dump();
+    CHECK(issues.find("placement_unknown") != std::string::npos);
+    CHECK(issues.find("no_such_key") != std::string::npos);
+    CHECK(issues.find("placement_without_group") != std::string::npos);
+    CHECK_FALSE(settings_fields_problems(bad, td.path()).empty());
+  }
+
+  TEST_CASE("a hand-written overlay of the whole fields array without the human layer loads; every missing human is a problem, not a blank screen") {
+    fsutil::TempDir td;
+    std::filesystem::create_directories(td.path() / "profiles");
+    Json fields = unwrap(RuntimeProfile::builtin("settings_fields")).values()["fields"];
+    for (auto& f : fields) f.erase("human");  // a pre-M1 overlay
+    std::ofstream(td.path() / "profiles" / "settings_fields.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"}, {"overrides", Json{{"fields", fields}}}}.dump();
+    Json doc = unwrap(settings_fields(td.path()));
+    CHECK(doc["fields"].size() == fields.size());
+    const auto problems = settings_fields_problems(doc, td.path());
+    std::size_t no_human = 0;
+    for (const auto& p : problems) no_human += p.rfind("no human: ", 0) == 0 ? 1 : 0;
+    CHECK(no_human == fields.size());
   }
 
   TEST_CASE("levels are promises with evidence in data: project/conversation need a chain-resolved reader, turn a per-request option; a role needs ports.pack or a status; a status needs its reason") {
