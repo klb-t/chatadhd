@@ -154,7 +154,13 @@ async function connect(target) {
     else if (m.method === "Runtime.exceptionThrown")
       appendFileSync(path.join(OUT, "webview-console.txt"), `exception: ${m.params.exceptionDetails.text} ${m.params.exceptionDetails.exception?.description ?? ""}\n`);
   };
-  const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, { res, rej }); ws.send(JSON.stringify({ id: i, method, params })); });
+  // Every CDP call has a deadline: a page behind the system picker (or a dead WebView) must fail a step, not hang the job.
+  const send = (method, params = {}) => new Promise((res, rej) => {
+    const i = ++id;
+    const t = setTimeout(() => { if (pending.delete(i)) rej(new Error(`CDP ${method} gave no answer in ${120 * SCALE}s`)); }, 120 * SCALE * 1000);
+    pending.set(i, { res: v => { clearTimeout(t); res(v); }, rej: e => { clearTimeout(t); rej(e); } });
+    ws.send(JSON.stringify({ id: i, method, params }));
+  });
   await send("Runtime.enable");
   return {
     async ev(expr, gesture = false) {
@@ -320,7 +326,7 @@ async function drivePicker(target, { folder = false } = {}) {
     if (folder) {
       const use = btn(/use this folder/i);
       if (entered && use) { log("picker: Use this folder"); tap(use); continue; }
-      const item = find(nodes, n => n.text === target && !/toolbar|title/i.test(n["resource-id"] || ""));
+      const item = find(nodes, n => n.text === target && !/toolbar/i.test(n["resource-id"] || ""));
       if (item && !entered) { log("picker: open folder " + target); tap(item); entered = true; continue; }
       if (item && entered && use) { tap(use); continue; }
     } else {
@@ -328,11 +334,13 @@ async function drivePicker(target, { folder = false } = {}) {
       if (file) { log("picker: tap " + target); tap(file); await sleep(800); const open = btn(/^(open|select)$/i); if (open) tap(open); continue; }
       const open = btn(/^(open|select)$/i); if (open) { tap(open); continue; }
     }
-    const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar|title/i.test(n["resource-id"] || ""));
+    const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar/i.test(n["resource-id"] || ""));
     if (dl && i % 3 === 0) { log("picker: Downloads"); tap(dl); continue; }
     const roots = find(nodes, n => /show roots|open drawer|navigate up/i.test(n["content-desc"] || ""));
     if (roots && i % 3 === 1) { log("picker: roots"); tap(roots); continue; }
   }
+  // leave the picker, so the next check starts from the app and not from a stale picker
+  for (let k = 0; k < 3 && dump().some(n => /documentsui/i.test(n.package || "")); k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(800); }
   throw new Error(`the system picker did not return ${target}; it showed: ${lastTexts}`);
 }
 
@@ -368,11 +376,11 @@ const localChecks = [
     const all = JSON.stringify(await bridgeCall("list_conversations", { limit: 200 }));
     for (const t of ["Smoke ChatGPT JSON", "Smoke Claude ZIP"]) if (!all.includes(t)) throw new Error(`"${t}" is not listed: ${all.slice(0, 300)}`);
   }],
-  ["local: import panel with a picked file (+ -> choose file -> Import)", async () => {
-    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
-    await page.setFiles("import-file-input", [`${DEV}/ui-local.json`]);
-    await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
-    await click("start-import");
+  ["local: import panel (+ -> Choose a file -> system picker)", async () => {
+    // the Android shell has no browser file input: the panel opens the system picker (api.pickImport -> LoomBridge pick_import)
+    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-pick-file");
+    await click("import-pick-file");
+    await drivePicker("ui-local.json");
     await until("a result or an error of the import panel", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
     if (await has("import-error")) throw new Error("import panel: " + (await page.ev(`${q("import-error")}.innerText`)));
     await closePanel();

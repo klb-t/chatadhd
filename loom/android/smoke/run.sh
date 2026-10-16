@@ -62,11 +62,11 @@ export SMOKE_DEVICE_DIR="/data/data/$PKG/cache/smoke"
 python3 "$HERE/make-exports.py" "$SMOKE_EXPORTS_DIR" >&2 || log "make-exports.py FAILED"
 adb shell rm -rf /sdcard/Download/smoke-exports /data/local/tmp/smoke 2>/dev/null || true
 adb shell mkdir -p /sdcard/Download/smoke-exports /data/local/tmp/smoke
-for f in saf-local.json saf-server.json; do adb push "$SMOKE_EXPORTS_DIR/$f" "/sdcard/Download/$f" >/dev/null 2>&1 || log "push $f failed"; done
+for f in saf-local.json saf-server.json ui-local.json; do adb push "$SMOKE_EXPORTS_DIR/$f" "/sdcard/Download/$f" >/dev/null 2>&1 || log "push $f failed"; done
 adb push "$SMOKE_EXPORTS_DIR/saf-folder/." /sdcard/Download/smoke-exports/ >/dev/null 2>&1 || log "push saf-folder failed"
 for f in "$SMOKE_EXPORTS_DIR"/*.json "$SMOKE_EXPORTS_DIR"/*.zip; do adb push "$f" "/data/local/tmp/smoke/$(basename "$f")" >/dev/null 2>&1 || log "push $f failed"; done
 # the media index must know the files, or the picker's Downloads view does not list them
-for f in /sdcard/Download/saf-local.json /sdcard/Download/saf-server.json /sdcard/Download/smoke-exports/one.json \
+for f in /sdcard/Download/saf-local.json /sdcard/Download/saf-server.json /sdcard/Download/ui-local.json /sdcard/Download/smoke-exports/one.json \
          /sdcard/Download/smoke-exports/two.json /sdcard/Download/smoke-exports/ignored.bin; do
   adb shell "am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://$f" >/dev/null 2>&1 || true
 done

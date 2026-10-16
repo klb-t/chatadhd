@@ -252,6 +252,8 @@ export interface LoomApi {
 
   // Import / export
   importFile(file: File, title: string | undefined, handlers: StreamHandlers<ImportChunk>): Unsubscribe;
+  /** A host that owns the files (the Android shell) opens its own picker: a file or a folder, imported with progress. Optional. */
+  pickImport?(kind: "file" | "folder", title: string | undefined, handlers: StreamHandlers<ImportChunk>): Unsubscribe;
   exportConversationUrl(convId: string, format: "json" | "markdown" | "text" | "html"): string;
 
   // Provenance, events, tasks
