@@ -232,8 +232,9 @@ const Json& loom_config_defaults() {
       {"loom_zip_max_ratio", 1000},
       {"loom_git_allow_repo_config", false},
       // M1-D0 presets of the shell and the context receipt (data/runtime/settings_fields.pack describes each,
-      // with its human label, group and the meaning of every value). Presets, not rules: the user, a project
-      // or a conversation may set another value through the one scope chain.
+      // with its human label, group and the meaning of every value). Presets, not rules: the user may set another
+      // value (settings.set and every config write path); project/conversation levels come when a reader resolves the
+      // key through the scope chain (level_evidence.chain of the pack).
       {"navigator_layout", "both"},
       {"perspective_composition", "sectors"},
       {"navigator_children_limit", 50},
