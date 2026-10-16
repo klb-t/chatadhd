@@ -223,18 +223,18 @@ class Unit:
         kids = self.children()
         by_id = self.by_id()
         out: list[list[Message]] = []
-
-        def walk(mid: str, path: list[Message]) -> None:
-            path = path + [by_id[mid]]
+        # iterative depth-first walk (same order as the recursive one): an agent session can be thousands
+        # of messages deep, which a recursive walk would not survive
+        stack: list[tuple[str, list[Message]]] = [(r, []) for r in reversed(kids.get(None, []))]
+        while stack:
+            mid, prefix = stack.pop()
+            path = prefix + [by_id[mid]]
             ch = kids.get(mid, [])
             if not ch:
                 out.append(path)
-                return
-            for c in ch:
-                walk(c, path)
-
-        for root in kids.get(None, []):
-            walk(root, [])
+                continue
+            for c in reversed(ch):
+                stack.append((c, path))
         return out
 
     def leaf_count(self) -> int:

@@ -16,6 +16,7 @@ from .engine import Engine, EngineError
 from .i18n import label, resolve_language, set_language, t
 from .recipe import RecipeError, load_recipe, normalise, recipe_hash, save_recipe, validate
 from . import cli_cut as _cc
+from . import cli_faces as _cf
 from .flows import ModelRefused
 
 log = logging.getLogger(__name__)
@@ -135,6 +136,26 @@ VERBS: list[dict[str, Any]] = [
     {"name": "filtr", "aliases": ["filter"], "help": "cli.verb.filter",
      "opts": [_o("akcja", choices=["zapisz", "save", "lista", "list", "usun", "remove", "delete"], help="cli.opt.filter_action"),
               _o("nazwa", nargs="?", metavar="NAZWA", help="cli.opt.profile_name"), _o("wyrazenie", nargs="?", metavar="WYRAŻENIE", help="cli.opt.expr")]},
+    {"name": "komander", "aliases": ["commander", "tui", "xport"], "help": "cli.verb.commander",
+     "opts": [_o("zrodla", nargs="*", metavar="ŹRÓDŁO", help="cli.opt.sources"), PACKAGE,
+              _o("--klawisze-profil", "--keymap", dest="profil_klawiszy", metavar="PROFIL", help="cli.opt.keymap"),
+              _o("--kolory", "--colors", metavar="PROFIL", help="cli.opt.colors"),
+              _o("--odtworz", "--replay", metavar="PRZEPIS", help="cli.opt.replay"),
+              _o("--wznow", "--resume", action="store_true", help="cli.opt.resume"),
+              _o("--nie-wznawiaj", "--no-resume", action="store_true", help="cli.opt.no_resume"),
+              _o("--autozapis", "--autosave", metavar="PLIK|off", help="cli.opt.autosave"),
+              _o("--bez-ekranu", "--headless", action="store_true", help="cli.opt.headless"),
+              _o("--klawisze", "--keys", metavar="KLAWISZE", help="cli.opt.keys"),
+              _o("--szerokosc", "--width", type=int, metavar="N", help="cli.opt.width"),
+              _o("--wysokosc", "--height", type=int, metavar="N", help="cli.opt.height")]},
+    {"name": "serwuj", "aliases": ["serve"], "help": "cli.verb.serve",
+     "opts": [_o("zrodla", nargs="*", metavar="ŹRÓDŁO", help="cli.opt.sources"), PACKAGE,
+              _o("--port", type=int, metavar="N", help="cli.opt.port"),
+              _o("--adres", "--address", metavar="ADRES", help="cli.opt.address")]},
+    {"name": "api", "aliases": ["call", "wywolaj", "wywołaj"], "help": "cli.verb.api",
+     "opts": [_o("wywolania", nargs="*", metavar="JSON", help="cli.opt.calls"),
+              _o("--plik", "--file", metavar="PLIK.jsonl|-", help="cli.opt.calls_file"),
+              _o("--zrodla", "--sources", nargs="+", metavar="ŹRÓDŁO", help="cli.opt.sources"), PACKAGE]},
 ]
 DECISION_ALIASES = {"wlacz": "include", "wyklucz": "exclude", "usun": "remove"}
 
@@ -554,7 +575,10 @@ HANDLERS = {"inwentarz": verb_inventory, "os-czasu": verb_timeline, "roznica": v
             "edytuj": lambda a: _cc.verb_edit(a, _prog(a)),
             "cofnij": lambda a: _cc.verb_undo(a, _prog(a)),
             "ponow": lambda a: _cc.verb_undo(a, _prog(a), redo=True),
-            "filtr": _cc.verb_filter}
+            "filtr": _cc.verb_filter,
+            "komander": lambda a: _cf.verb_commander(a),
+            "serwuj": lambda a: _cf.verb_serve(a),
+            "api": lambda a: _cf.verb_api(a)}
 VERB_WORDS = {v["name"] for v in VERBS} | {a for v in VERBS for a in v["aliases"]}
 
 

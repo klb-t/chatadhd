@@ -1,0 +1,21 @@
+{
+ "schema": "loom.extract.macro/1",
+ "id": "bez_rozumowania_i_narzedzi",
+ "label": {
+  "pl": "Bez rozumowania i narzędzi (na pakiecie)",
+  "en": "Without reasoning and tools (on the package)"
+ },
+ "steps": [
+  {
+   "op": "edit.drop_blocks",
+   "params": {
+    "where": "message",
+    "kinds": [
+     "thinking",
+     "tool_use",
+     "tool_result"
+    ]
+   }
+  }
+ ]
+}

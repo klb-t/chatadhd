@@ -711,3 +711,4 @@ def op_user_call(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
 
 
 from . import ops_cut  # noqa: E402,F401  (registers the slice B operations)
+from . import ops_views  # noqa: E402,F401  (registers the slice C operations)

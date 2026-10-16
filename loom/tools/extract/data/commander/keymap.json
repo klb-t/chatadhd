@@ -1,0 +1,33 @@
+{
+ "schema": "loom.extract.keymap/1",
+ "description": "Key → action (actions.json). A profile may inherit another; a child's sequence (\"d d\") shadows the parent's single key that starts it. Key names: F1…F12, Up, Down, Left, Right, PageUp, PageDown, Home, End, Insert, Delete, Enter, Tab, S-Tab, Backspace, Esc, Space, C-a…C-z, and printable characters. The user's overlay (<data dir>/extract/commander/keymap.json) adds profiles or changes bindings.",
+ "default": "fkeys",
+ "profiles": {
+  "fkeys": {
+   "inherits": null,
+   "label": {"pl": "Klawisze F (Norton/Total Commander)", "en": "F-keys (Norton/Total Commander)"},
+   "bindings": {
+    "F1": "help", "F2": "menu", "F3": "view", "F4": "edit", "F5": "copy", "F6": "move", "F7": "mkdir", "F8": "remove",
+    "F9": "export", "F10": "quit",
+    "Tab": "pane.switch", "Enter": "open", "Right": "open", "Left": "parent", "Backspace": "parent",
+    "Up": "cursor.up", "Down": "cursor.down", "PageUp": "page.up", "PageDown": "page.down", "Home": "top", "End": "bottom",
+    "Insert": "select.toggle", "Space": "select.toggle", "*": "select.invert", "+": "select.expr", "-": "deselect.expr",
+    "/": "search", "n": "search.next", "C-f": "filter.live", "C-g": "goto", "C-z": "undo", "C-y": "redo", "C-s": "recipe.save",
+    "b": "bookmark", "t": "tag", "m": "select.similar", "d": "diff.nodes", "r": "rename", "v": "view.cycle",
+    "o": "root.next", "f": "mode.flat", "s": "sort.cycle", "?": "explain", "a": "decide.include", "x": "decide.exclude",
+    "y": "yank", "p": "paste", ":": "command", "P": "select.pattern", "R": "select.regex", "T": "select.time", "C": "select.clear",
+    "V": "view.save", "L": "view.load", "F": "filter.save", "M": "macro.run", "S": "select.criteria", "I": "selection.show",
+    "Esc": "cancel"
+   }
+  },
+  "vim": {
+   "inherits": "fkeys",
+   "label": {"pl": "Vim (dziedziczy klawisze F)", "en": "Vim (inherits F-keys)"},
+   "bindings": {
+    "j": "cursor.down", "k": "cursor.up", "h": "parent", "l": "open", "g g": "top", "G": "bottom",
+    "C-d": "page.down", "C-u": "page.up", "v": "select.toggle", "y": "yank", "p": "paste", "d d": "remove", "D": "diff.nodes",
+    "u": "undo", "C-r": "redo", ":": "command", "n": "search.next", "Z Z": "quit"
+   }
+  }
+ }
+}

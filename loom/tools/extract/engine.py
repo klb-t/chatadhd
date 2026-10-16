@@ -82,6 +82,7 @@ class Engine:
         self.model_runner: Any = None
         self.ask: Optional[Callable[[dict[str, Any]], bool]] = None
         self._tmp_stage: Any = None
+        self.op_ctx: dict[str, Any] = {}
 
     # -- lifecycle --------------------------------------------------------------
     def close(self) -> None:
@@ -173,11 +174,17 @@ class Engine:
             raise EngineError(f"op {name!r} is registered in ops.json but not implemented in this slice")
         self.emit("op.start", op=name, by=by)
         t0 = time.time()
+        # what the running op may ask about its call: an implicit pipeline step (by the engine, or replayed as one)
+        # is the base state, not a user's change, so package ops do not log it for undo
+        prev_ctx = self.op_ctx
+        self.op_ctx = {"by": by, "note": note, "implicit": (by == "engine" and note is None) or note == "implicit"}
         try:
             result = fn(self, params)
         except Exception as exc:
             self.emit("op.error", op=name, error=f"{type(exc).__name__}: {exc}")
             raise
+        finally:
+            self.op_ctx = prev_ctx
         result = dict(result or {})
         result.setdefault("op", name)
         result["seconds"] = round(time.time() - t0, 4)

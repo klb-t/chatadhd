@@ -1,0 +1,633 @@
+{
+ "schema": "loom.extract.actions/1",
+ "description": "Commander actions: label (pl/en), group (menu section), kind (state = navigation and display, op = calls the engine), records (whether the action can add a recipe step; navigation never does), needs_selection. The keymap binds keys to these ids; the menu (F2) and help (F1) are generated from here.",
+ "actions": [
+  {
+   "id": "help",
+   "group": "session",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Pomoc (z bieżącego keymapu)",
+    "en": "Help (from the current keymap)"
+   }
+  },
+  {
+   "id": "menu",
+   "group": "session",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Menu akcji",
+    "en": "Action menu"
+   }
+  },
+  {
+   "id": "quit",
+   "group": "session",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Wyjście (przepis zapisany)",
+    "en": "Quit (recipe saved)"
+   }
+  },
+  {
+   "id": "cancel",
+   "group": "session",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Anuluj / przerwij pracę w tle",
+    "en": "Cancel / stop background work"
+   }
+  },
+  {
+   "id": "command",
+   "group": "session",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Wiersz poleceń (:op, :call, :sel)",
+    "en": "Command line (:op, :call, :sel)"
+   }
+  },
+  {
+   "id": "pane.switch",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Drugi panel",
+    "en": "Other pane"
+   }
+  },
+  {
+   "id": "cursor.up",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "W górę",
+    "en": "Up"
+   }
+  },
+  {
+   "id": "cursor.down",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "W dół",
+    "en": "Down"
+   }
+  },
+  {
+   "id": "page.up",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Strona w górę",
+    "en": "Page up"
+   }
+  },
+  {
+   "id": "page.down",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Strona w dół",
+    "en": "Page down"
+   }
+  },
+  {
+   "id": "top",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Na początek",
+    "en": "Top"
+   }
+  },
+  {
+   "id": "bottom",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Na koniec",
+    "en": "Bottom"
+   }
+  },
+  {
+   "id": "open",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Otwórz węzeł",
+    "en": "Open node"
+   }
+  },
+  {
+   "id": "parent",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Poziom wyżej",
+    "en": "Parent"
+   }
+  },
+  {
+   "id": "root.next",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Następny widok panelu (źródła, pakiet, zaznaczenie, oś czasu…)",
+    "en": "Next pane view (sources, package, selection, timeline…)"
+   }
+  },
+  {
+   "id": "mode.flat",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Drzewo / lista płaska (rozmowy, wiadomości, bloki, załączniki)",
+    "en": "Tree / flat list (conversations, messages, blocks, attachments)"
+   }
+  },
+  {
+   "id": "sort.cycle",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Sortowanie (czas, tytuł, rozmiar…)",
+    "en": "Sort (time, title, size…)"
+   }
+  },
+  {
+   "id": "goto",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Idź do (id, data)",
+    "en": "Go to (id, date)"
+   }
+  },
+  {
+   "id": "search",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Szukaj w obu panelach",
+    "en": "Search both panes"
+   }
+  },
+  {
+   "id": "search.next",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Następne trafienie",
+    "en": "Next hit"
+   }
+  },
+  {
+   "id": "filter.live",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Filtr żywy (tekst lub wyrażenie)",
+    "en": "Live filter (text or expression)"
+   }
+  },
+  {
+   "id": "filter.save",
+   "group": "nav",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zapisz filtr",
+    "en": "Save filter"
+   }
+  },
+  {
+   "id": "view",
+   "group": "view",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Podgląd węzła (JSON / Markdown / surowy)",
+    "en": "View node (JSON / Markdown / raw)"
+   }
+  },
+  {
+   "id": "view.cycle",
+   "group": "view",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Format podglądu",
+    "en": "Viewer format"
+   }
+  },
+  {
+   "id": "diff.nodes",
+   "group": "view",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Porównaj dwa węzły",
+    "en": "Compare two nodes"
+   }
+  },
+  {
+   "id": "explain",
+   "group": "view",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Dlaczego (nie) zaznaczone",
+    "en": "Why (not) selected"
+   }
+  },
+  {
+   "id": "selection.show",
+   "group": "view",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zaznaczenie z powodami",
+    "en": "Selection with reasons"
+   }
+  },
+  {
+   "id": "select.toggle",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zaznacz / odznacz",
+    "en": "Select / deselect"
+   }
+  },
+  {
+   "id": "select.invert",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Odwróć zaznaczenie",
+    "en": "Invert selection"
+   }
+  },
+  {
+   "id": "select.expr",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zaznacz wyrażeniem",
+    "en": "Select by expression"
+   }
+  },
+  {
+   "id": "deselect.expr",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Odznacz wyrażeniem",
+    "en": "Deselect by expression"
+   }
+  },
+  {
+   "id": "select.regex",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zaznacz regexem na polu",
+    "en": "Select by regex on a field"
+   }
+  },
+  {
+   "id": "select.pattern",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zaznacz wzorcem strukturalnym",
+    "en": "Select by structural pattern"
+   }
+  },
+  {
+   "id": "select.time",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zaznacz czasem (okno, wokół daty, tydzień tematu)",
+    "en": "Select by time (window, around a date, week of a topic)"
+   }
+  },
+  {
+   "id": "select.similar",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Więcej takich",
+    "en": "More like this"
+   }
+  },
+  {
+   "id": "select.criteria",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zaznacz słowami/regexami (kaskada)",
+    "en": "Select by keywords/regexes (cascade)"
+   }
+  },
+  {
+   "id": "select.clear",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Wyczyść zaznaczenie",
+    "en": "Clear selection"
+   }
+  },
+  {
+   "id": "decide.include",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Decyzja: włącz (uczy się z poprawek)",
+    "en": "Decision: include (learns from corrections)"
+   }
+  },
+  {
+   "id": "decide.exclude",
+   "group": "select",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Decyzja: wyklucz (uczy się z poprawek)",
+    "en": "Decision: exclude (learns from corrections)"
+   }
+  },
+  {
+   "id": "copy",
+   "group": "package",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Kopiuj do pakietu",
+    "en": "Copy into the package"
+   }
+  },
+  {
+   "id": "move",
+   "group": "package",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Przenieś w pakiecie",
+    "en": "Move within the package"
+   }
+  },
+  {
+   "id": "mkdir",
+   "group": "package",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Nowa grupa / katalog",
+    "en": "New group / folder"
+   }
+  },
+  {
+   "id": "remove",
+   "group": "package",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Usuń z pakietu",
+    "en": "Remove from the package"
+   }
+  },
+  {
+   "id": "rename",
+   "group": "package",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zmień nazwę",
+    "en": "Rename"
+   }
+  },
+  {
+   "id": "yank",
+   "group": "package",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Do schowka",
+    "en": "Yank to clipboard"
+   }
+  },
+  {
+   "id": "paste",
+   "group": "package",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Wklej ze schowka do pakietu",
+    "en": "Paste clipboard into the package"
+   }
+  },
+  {
+   "id": "edit",
+   "group": "edit",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Edycja seryjna (podgląd → zastosuj)",
+    "en": "Batch edit (preview → apply)"
+   }
+  },
+  {
+   "id": "undo",
+   "group": "edit",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Cofnij",
+    "en": "Undo"
+   }
+  },
+  {
+   "id": "redo",
+   "group": "edit",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Ponów",
+    "en": "Redo"
+   }
+  },
+  {
+   "id": "bookmark",
+   "group": "view",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zakładka",
+    "en": "Bookmark"
+   }
+  },
+  {
+   "id": "tag",
+   "group": "view",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Etykieta",
+    "en": "Tag"
+   }
+  },
+  {
+   "id": "view.save",
+   "group": "view",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zapisz widok",
+    "en": "Save view"
+   }
+  },
+  {
+   "id": "view.load",
+   "group": "view",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Wczytaj widok",
+    "en": "Load view"
+   }
+  },
+  {
+   "id": "recipe.save",
+   "group": "recipe",
+   "kind": "op",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zapisz przepis",
+    "en": "Save recipe"
+   }
+  },
+  {
+   "id": "export",
+   "group": "recipe",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Zapisz pakiet (wytnij + zapis)",
+    "en": "Write the package (cut + write)"
+   }
+  },
+  {
+   "id": "macro.run",
+   "group": "recipe",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Makro",
+    "en": "Macro"
+   }
+  },
+  {
+   "id": "replay.next",
+   "group": "recipe",
+   "kind": "op",
+   "records": true,
+   "needs_selection": false,
+   "label": {
+    "pl": "Odtwarzanie: następny krok",
+    "en": "Replay: next step"
+   }
+  }
+ ]
+}

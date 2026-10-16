@@ -34,5 +34,9 @@
   "cut": {"profiles": ["preserve", "text"], "order": "package", "attachments": "copy_used", "redaction": "none", "extract_text": false},
   "handoff": {"branches": "current", "graph": false, "zip": true},
   "edits": {"preview_sample": 0},
-  "report": {"language": "pl", "examples_per_unknown": 1, "max_list": 0}
+  "report": {"language": "pl", "examples_per_unknown": 1, "max_list": 0},
+  "commander": {"keymap": "fkeys", "colors": "dark", "tick_ms": 100, "bytes_per_char": 1.5,
+                "autosave": {"every": 1, "resume": "ask", "file": "komander.autosave.json"}},
+  "serve": {"address": "127.0.0.1", "port": 8741, "token_file": "serve.token", "answer_default": false,
+            "question_timeout_s": 0, "events_keep": 0, "heartbeat_s": 15}
 }

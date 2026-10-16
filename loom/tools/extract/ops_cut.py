@@ -5,7 +5,7 @@ describe).  Registered into ``ops.OPS``; names and parameter schemas are in
 ``data/ops.json`` like every other op."""
 import logging
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from . import edits as _edits
 from .cut.common import archive_slugs, copy_stream, find_archive
@@ -22,19 +22,48 @@ log = logging.getLogger(__name__)
 
 
 # ───────────────────────────── package tree ─────────────────────────────
+# Structure ops (copy into, move, folder, remove, rename, mark) are package edits like the batch edits:
+# each is an oplog entry with a snapshot (undo/redo, manifest ``edits[]``, report "co zmieniono") — except
+# the implicit copy that creates the package from the selection (the base state, not a user's change).
+def _begin(eng: Any) -> tuple[Optional[dict[str, Any]], str]:
+    pkg = eng.package
+    if eng.op_ctx.get("implicit"):
+        return None, pkg.tree_hash()
+    return pkg.snapshot(), pkg.tree_hash()
+
+
+def _log(eng: Any, name: str, p: dict[str, Any], count: int, begun: tuple[Optional[dict[str, Any]], str], **kw: Any) -> None:
+    snap, before = begun
+    if snap is None:
+        return
+    from .i18n import t as _t
+    pkg = eng.package
+    pkg.oplog.append({"n": len(pkg.oplog) + 1, "op": name, "params": dict(p), "count": int(count), "before": before,
+                      "after": pkg.tree_hash(), "invertible": "snapshot", "structure": True,
+                      "lines": [_t("pkgop." + name.split(".", 1)[1], **{**{k: v for k, v in p.items() if k != "count"}, **kw, "count": count})],
+                      "_snapshot": snap})
+    pkg.redo.clear()
+
+
 @op("package.copy")
 def op_package_copy(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.ensure_units()
     if eng.package is None:
         eng.package = Package()
     src = p.get("from", "selection")
-    if src == "all":
+    if p.get("items"):  # explicit node references (the commander's F5 on the cursor, the API, a recipe)
+        from .nodes import resolve_refs
+        sel = resolve_refs(eng, [str(r) for r in p["items"]])
+    elif src == "all":
         sel = {u.uid: None for u in eng.conversations}
     elif src == "selection":
         sel = dict(eng.selection.units)
     else:
-        raise ValueError(f"package.copy: from must be selection | all, got {src!r}")
-    added = eng.package.copy_in(eng.conversations, sel, into=str(p.get("into") or "/"))
+        raise ValueError(f"package.copy: from must be selection | all (or items: […]), got {src!r}")
+    begun = _begin(eng)
+    into = str(p.get("into") or "/")
+    added = eng.package.copy_in(eng.conversations, sel, into=into)
+    _log(eng, "package.copy", p, added, begun, into=into)
     return {"counts": {"added": added, "entries": len(eng.package.entries)}, "tree_hash": eng.package.tree_hash()}
 
 
@@ -55,17 +84,22 @@ def _targets(eng: Any, p: dict[str, Any]) -> list[Any]:
 @op("package.move")
 def op_package_move(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     ents = _targets(eng, p)
+    begun = _begin(eng)
     into = str(p["into"])
     for e in ents:
         e.folder = into
     eng.package.folders.add(into)
+    _log(eng, "package.move", p, len(ents), begun)
     return {"counts": {"moved": len(ents)}, "tree_hash": eng.package.tree_hash()}
 
 
 @op("package.mkdir")
 def op_package_mkdir(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     pkg = eng.ensure_package()
+    begun = _begin(eng)
+    new = str(p["path"]) not in pkg.folders
     pkg.folders.add(str(p["path"]))
+    _log(eng, "package.mkdir", p, int(new), begun)
     return {"counts": {"folders": len(pkg.folders)}, "tree_hash": pkg.tree_hash()}
 
 
@@ -73,15 +107,19 @@ def op_package_mkdir(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
 def op_package_remove(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     ents = _targets(eng, p)
     pkg = eng.package
+    begun = _begin(eng)
     pkg.entries = [e for e in pkg.entries if e not in ents]
+    _log(eng, "package.remove", p, len(ents), begun)
     return {"counts": {"removed": len(ents), "entries": len(pkg.entries)}, "tree_hash": pkg.tree_hash()}
 
 
 @op("package.rename")
 def op_package_rename(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     ents = _targets(eng, {"items": [p["item"]]})
+    begun = _begin(eng)
     for e in ents:
         e.name = str(p["title"])
+    _log(eng, "package.rename", p, len(ents), begun)
     return {"counts": {"renamed": len(ents)}, "tree_hash": eng.package.tree_hash()}
 
 
@@ -90,10 +128,12 @@ def op_package_mark(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     """Mark the leaf whose path is kept by ``branches.keep: marked``."""
     pkg = eng.ensure_package()
     ents = pkg.find([str(p["item"])])
+    begun = _begin(eng)
     for e in ents:
         if p["leaf"] not in e.unit.by_id():
             raise ValueError(f"package.mark: message {p['leaf']!r} not in {e.unit.uid}")
         pkg.marks[e.unit.uid] = str(p["leaf"])
+    _log(eng, "package.mark", p, len(ents), begun)
     return {"counts": {"marked": len(ents)}}
 
 

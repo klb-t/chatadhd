@@ -1,0 +1,277 @@
+{
+ "schema": "loom.extract.colors/1",
+ "description": "Colour profiles for the curses renderer: attribute name → [foreground, background, styles]; borders as characters. 'mono' has no colours and ASCII borders (16-colour terminals, screen readers).",
+ "default": "dark",
+ "profiles": {
+  "dark": {
+   "ascii": false,
+   "borders": {
+    "v": "│",
+    "h": "─"
+   },
+   "attrs": {
+    "normal": [
+     "white",
+     "default",
+     []
+    ],
+    "title": [
+     "black",
+     "cyan",
+     []
+    ],
+    "title_inactive": [
+     "white",
+     "blue",
+     []
+    ],
+    "header": [
+     "yellow",
+     "default",
+     [
+      "bold"
+     ]
+    ],
+    "cursor": [
+     "black",
+     "cyan",
+     []
+    ],
+    "cursor_inactive": [
+     "black",
+     "white",
+     []
+    ],
+    "selected": [
+     "yellow",
+     "default",
+     [
+      "bold"
+     ]
+    ],
+    "status": [
+     "black",
+     "white",
+     []
+    ],
+    "prompt": [
+     "white",
+     "blue",
+     []
+    ],
+    "overlay": [
+     "white",
+     "default",
+     []
+    ],
+    "overlay_title": [
+     "black",
+     "yellow",
+     []
+    ],
+    "error": [
+     "white",
+     "red",
+     [
+      "bold"
+     ]
+    ],
+    "dim": [
+     "cyan",
+     "default",
+     []
+    ],
+    "border": [
+     "blue",
+     "default",
+     []
+    ]
+   }
+  },
+  "light": {
+   "ascii": false,
+   "borders": {
+    "v": "│",
+    "h": "─"
+   },
+   "attrs": {
+    "normal": [
+     "black",
+     "default",
+     []
+    ],
+    "title": [
+     "white",
+     "blue",
+     []
+    ],
+    "title_inactive": [
+     "black",
+     "white",
+     []
+    ],
+    "header": [
+     "blue",
+     "default",
+     [
+      "bold"
+     ]
+    ],
+    "cursor": [
+     "white",
+     "blue",
+     []
+    ],
+    "cursor_inactive": [
+     "black",
+     "white",
+     []
+    ],
+    "selected": [
+     "red",
+     "default",
+     [
+      "bold"
+     ]
+    ],
+    "status": [
+     "white",
+     "black",
+     []
+    ],
+    "prompt": [
+     "black",
+     "cyan",
+     []
+    ],
+    "overlay": [
+     "black",
+     "default",
+     []
+    ],
+    "overlay_title": [
+     "white",
+     "magenta",
+     []
+    ],
+    "error": [
+     "white",
+     "red",
+     [
+      "bold"
+     ]
+    ],
+    "dim": [
+     "blue",
+     "default",
+     []
+    ],
+    "border": [
+     "black",
+     "default",
+     []
+    ]
+   }
+  },
+  "mono": {
+   "ascii": true,
+   "borders": {
+    "v": "|",
+    "h": "-"
+   },
+   "attrs": {
+    "normal": [
+     null,
+     null,
+     []
+    ],
+    "title": [
+     null,
+     null,
+     [
+      "reverse"
+     ]
+    ],
+    "title_inactive": [
+     null,
+     null,
+     [
+      "underline"
+     ]
+    ],
+    "header": [
+     null,
+     null,
+     [
+      "bold"
+     ]
+    ],
+    "cursor": [
+     null,
+     null,
+     [
+      "reverse"
+     ]
+    ],
+    "cursor_inactive": [
+     null,
+     null,
+     [
+      "underline"
+     ]
+    ],
+    "selected": [
+     null,
+     null,
+     [
+      "bold"
+     ]
+    ],
+    "status": [
+     null,
+     null,
+     [
+      "reverse"
+     ]
+    ],
+    "prompt": [
+     null,
+     null,
+     [
+      "reverse"
+     ]
+    ],
+    "overlay": [
+     null,
+     null,
+     []
+    ],
+    "overlay_title": [
+     null,
+     null,
+     [
+      "reverse"
+     ]
+    ],
+    "error": [
+     null,
+     null,
+     [
+      "bold",
+      "reverse"
+     ]
+    ],
+    "dim": [
+     null,
+     null,
+     []
+    ],
+    "border": [
+     null,
+     null,
+     []
+    ]
+   }
+  }
+ }
+}

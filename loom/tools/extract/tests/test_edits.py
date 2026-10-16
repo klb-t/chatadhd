@@ -92,7 +92,11 @@ class EditsTest(ExtractTest):
         eng.op("cut", {"profiles": ["flat"]})
         eng.op("write", {"package": str(self.tmp / "pkg")})
         oplog = [json.loads(x) for x in (self.tmp / "pkg/oplog.jsonl").read_text(encoding="utf-8").splitlines()]
-        self.assertEqual([o["op"] for o in oplog], ["edit.flatten", "edit.merge_conversations", "edit.sort"])
+        # slice C: the package's structure ops (an explicit copy, folder, move, rename, remove) are edits too —
+        # logged, undoable and listed in the manifest (nothing leaves the package without an entry)
+        self.assertEqual([o["op"] for o in oplog], ["package.copy", "edit.flatten", "edit.merge_conversations", "edit.sort",
+                                                     "package.mkdir", "package.move", "package.rename", "package.remove"])
+        self.assertTrue(all(o["lines"] and "pkgop." not in o["lines"][0] for o in oplog), oplog)
         self.assertTrue(all("_snapshot" not in o for o in oplog), "snapshots stay in memory, not in the package")
         man = json.loads((self.tmp / "pkg/manifest.json").read_text(encoding="utf-8"))
         self.assertEqual([e["op"] for e in man["edits"]], [o["op"] for o in oplog])

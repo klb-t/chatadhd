@@ -1,0 +1,427 @@
+{
+ "schema": "loom.extract.api/1",
+ "description": "Calls of the one dispatcher every face uses (commander, serve, CLI 'api'): label, long (may run as a background job with progress), mutates (changes the state; caches refresh, the commander autosaves), during_job (answered while a background job runs; every other call answers 'busy'), params (documentation of the request fields). Engine operations themselves are in ops.json and reachable through 'op', 'apply' and 'select'.",
+ "calls": {
+  "calls": {
+   "label": {
+    "pl": "Rejestr wywołań API",
+    "en": "API call registry"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {}
+  },
+  "ops": {
+   "label": {
+    "pl": "Rejestr operacji silnika (ops.json)",
+    "en": "Engine operation registry (ops.json)"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {}
+  },
+  "open": {
+   "label": {
+    "pl": "Otwórz źródła, przepis albo pakiet",
+    "en": "Open sources, a recipe or a package"
+   },
+   "long": true,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "sources": "list",
+    "recipe": "object|path",
+    "package": "path",
+    "write": "path"
+   }
+  },
+  "list": {
+   "label": {
+    "pl": "Wiersze widoku (to, co rysuje panel)",
+    "en": "View rows (what a pane draws)"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "root": "enum",
+    "path": "list",
+    "flat": "enum",
+    "filter": "string",
+    "sort": "string",
+    "offset": "number",
+    "limit": "number"
+   }
+  },
+  "view": {
+   "label": {
+    "pl": "Podgląd węzła: JSON, Markdown, surowy",
+    "en": "View a node: JSON, Markdown, raw"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "node": "id",
+    "format": "enum"
+   }
+  },
+  "select": {
+   "label": {
+    "pl": "Zaznacz: pozycje, wyrażenie, regex, wzorzec, podobieństwo, czas, kryteria, odwróć, wyczyść",
+    "en": "Select: items, expression, regex, pattern, similarity, time, criteria, invert, clear"
+   },
+   "long": true,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "how": "enum",
+    "mode": "mode",
+    "items": "list",
+    "expr": "expr",
+    "kind": "enum",
+    "field": "path",
+    "pattern": "regex"
+   }
+  },
+  "selection": {
+   "label": {
+    "pl": "Zaznaczenie z powodami per pozycja",
+    "en": "Selection with a reason per item"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "limit": "number"
+   }
+  },
+  "filter": {
+   "label": {
+    "pl": "Filtry: sprawdź, zapisz, lista, usuń",
+    "en": "Filters: check, save, list, delete"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "action": "enum",
+    "name": "id",
+    "expr": "expr"
+   }
+  },
+  "edit": {
+   "label": {
+    "pl": "Podgląd edycji seryjnej (różnica, nic nie zmienia)",
+    "en": "Batch-edit preview (diff, changes nothing)"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "edit": "id",
+    "params": "object",
+    "where": "expr"
+   }
+  },
+  "apply": {
+   "label": {
+    "pl": "Zastosuj edycję lub operację pakietu (krok przepisu)",
+    "en": "Apply an edit or a package operation (a recipe step)"
+   },
+   "long": false,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "edit": "id",
+    "op": "id",
+    "params": "object"
+   }
+  },
+  "undo": {
+   "label": {
+    "pl": "Cofnij",
+    "en": "Undo"
+   },
+   "long": false,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "steps": "number"
+   }
+  },
+  "redo": {
+   "label": {
+    "pl": "Ponów",
+    "en": "Redo"
+   },
+   "long": false,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "steps": "number"
+   }
+  },
+  "save-recipe": {
+   "label": {
+    "pl": "Zapisz przepis",
+    "en": "Save the recipe"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "path": "path"
+   }
+  },
+  "export": {
+   "label": {
+    "pl": "Wytnij i zapisz pakiet (manifest, raport)",
+    "en": "Cut and write the package (manifest, report)"
+   },
+   "long": true,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "package": "path",
+    "profiles": "list"
+   }
+  },
+  "op": {
+   "label": {
+    "pl": "Dowolna operacja z ops.json",
+    "en": "Any operation from ops.json"
+   },
+   "long": false,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "op": "id",
+    "params": "object"
+   }
+  },
+  "compare": {
+   "label": {
+    "pl": "Porównaj dwa węzły (pola i tekst)",
+    "en": "Compare two nodes (fields and text)"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "a": "id",
+    "b": "id"
+   }
+  },
+  "search": {
+   "label": {
+    "pl": "Szukaj w widokach",
+    "en": "Search the views"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "text": "string",
+    "roots": "list",
+    "limit": "number"
+   }
+  },
+  "goto": {
+   "label": {
+    "pl": "Idź do id lub daty",
+    "en": "Go to an id or a date"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "target": "string",
+    "root": "enum"
+   }
+  },
+  "bookmark": {
+   "label": {
+    "pl": "Zakładka na węźle",
+    "en": "Bookmark a node"
+   },
+   "long": false,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "node": "id",
+    "name": "string",
+    "remove": "bool"
+   }
+  },
+  "tag": {
+   "label": {
+    "pl": "Etykieta na węźle",
+    "en": "Tag a node"
+   },
+   "long": false,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "node": "id",
+    "tag": "string",
+    "remove": "bool"
+   }
+  },
+  "views": {
+   "label": {
+    "pl": "Zapisane widoki: zapisz, wczytaj, lista, usuń",
+    "en": "Saved views: save, load, list, delete"
+   },
+   "long": false,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "action": "enum",
+    "name": "string",
+    "state": "object"
+   }
+  },
+  "status": {
+   "label": {
+    "pl": "Wiersz stanu: liczniki, zaznaczenie, rozmiar pakietu, koszt",
+    "en": "Status line: counts, selection, package size, cost"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {}
+  },
+  "jobs": {
+   "label": {
+    "pl": "Prace w tle",
+    "en": "Background jobs"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {
+    "id": "id"
+   }
+  },
+  "cancel": {
+   "label": {
+    "pl": "Przerwij pracę w tle",
+    "en": "Stop background work"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {
+    "id": "id"
+   }
+  },
+  "answer": {
+   "label": {
+    "pl": "Odpowiedz na pytanie (np. zgoda na koszt)",
+    "en": "Answer a question (e.g. cost consent)"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {
+    "question": "id",
+    "answer": "string"
+   }
+  },
+  "events": {
+   "label": {
+    "pl": "Zdarzenia po numerze",
+    "en": "Events after a sequence number"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {
+    "after": "number"
+   }
+  },
+  "i18n": {
+   "label": {
+    "pl": "Teksty interfejsu",
+    "en": "UI strings"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {
+    "lang": "string"
+   }
+  },
+  "keymap": {
+   "label": {
+    "pl": "Klawisze i pomoc",
+    "en": "Keys and help"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {
+    "profile": "string"
+   }
+  },
+  "layout": {
+   "label": {
+    "pl": "Układ i kolumny",
+    "en": "Layout and columns"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": true,
+   "params": {}
+  },
+  "recipe": {
+   "label": {
+    "pl": "Przepis (postać kanoniczna)",
+    "en": "Recipe (canonical form)"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {}
+  },
+  "explain": {
+   "label": {
+    "pl": "Dlaczego (nie) zaznaczone",
+    "en": "Why (not) selected"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "node": "id"
+   }
+  },
+  "macro": {
+   "label": {
+    "pl": "Uruchom makro (nazwany fragment przepisu)",
+    "en": "Run a macro (a named recipe fragment)"
+   },
+   "long": true,
+   "mutates": true,
+   "during_job": false,
+   "params": {
+    "name": "id"
+   }
+  },
+  "manifest": {
+   "label": {
+    "pl": "Manifest ostatnio zapisanego pakietu",
+    "en": "Manifest of the last written package"
+   },
+   "long": false,
+   "mutates": false,
+   "during_job": false,
+   "params": {
+    "package": "path"
+   }
+  }
+ }
+}
