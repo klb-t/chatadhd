@@ -1130,3 +1130,11 @@ matrix pending; main remains Claude's. Revert the product increment to restore
 the earlier computation; never delete historical runs to downgrade.
 
 2026-10-15 B: owner-requested merge of main `6fc3ec6b`; preserve P23 annotation/guardian contract, P24 effective edge-kind overlays and P28 view engine. New recognition integration must consume these mechanisms. P29 remains owned by Claude; unknown references are candidates for matching, not grounds to reject the response. Merged-tree gates pending.
+
+### S2 / R35 — Android: podstawy działają (2026-10-16)
+
+- Miejsce danych: nowa instalacja i tak była prywatna (`filesDir/ChatADHD`); stara instalacja z danymi w Dokumentach jest raz kopiowana do pamięci prywatnej (sha256 każdego pliku, wartownik na końcu, przełączenie dopiero po weryfikacji; stary folder zostaje do decyzji użytkownika). Preset włączony, przełącznik w ekranie „Miejsce danych”. Stały czerwony pasek zastąpiony jednorazową spokojną informacją tylko przy samodzielnym wyborze współdzielonej. Cofnięcie: odznaczyć automatyczną migrację; wybrać „użyj istniejącej” lokalizacji. Raport: `docs/reports/S2_R35_storage_2026-10-16.md`.
+- Teksty: host_unavailable tylko gdy rozmowa ma powiązaną historię źródła, której host nie czyta; panel grafu PL/EN; etykiety skracane i ukrywane przy kolizji (progi to presety). Raport: `docs/reports/S2_R35_texts_2026-10-16.md`.
+- Import na Androidzie: `LoomApi.pickImport` (opcjonalne) → `LoomBridge pick_import` → `ImportFlow` (SAF plik/folder → kopia prywatna → jądro); panel importu w powłoce Android pokazuje „Wybierz plik…/Wybierz folder…”. Cofnięcie: usunąć `pickImport` z loom-jni (panel wraca do pola pliku). Raport: `docs/reports/S2_R35_imports_2026-10-16.md`.
+- `ChatOptions::new_conversation` (pole wire): wysłanie bez `conv_id` kontynuuje zapamiętaną rozmowę, chyba że klient poprosi o nową; web wysyła je przy pustej stronie („Nowa rozmowa”). Cofnięcie: nie wysyłać pola z ChatView.
+- Test dymny Androida (`loom/android/smoke`): raport działa/nie w logu zadania; termin na każde wywołanie CDP; zamykanie pickera między krokami.
