@@ -765,15 +765,31 @@
         "values": [
           {
             "value": "full_screen_chat",
-            "preset": true
+            "preset": true,
+            "meaning": {
+              "pl": "Czat na pełnym ekranie (preset).",
+              "en": "Full-screen chat (the preset)."
+            }
           },
           {
-            "value": "views_grid"
+            "value": "views_grid",
+            "meaning": {
+              "pl": "Warsztat: siatka widoków aplikacji.",
+              "en": "The workbench: a grid of the application's views."
+            }
           },
           {
             "value": "windows",
             "status": "planned",
-            "reason": "Floating and dockable windows are the next thread after P20; until then the workbench (views_grid) opens."
+            "reason": {
+              "pl": "Okna pływające i dokowane to następny wątek po P20; do tego czasu otwiera się warsztat (siatka widoków).",
+              "en": "Floating and dockable windows are the next thread after P20; until then the workbench (views_grid) opens."
+            },
+            "meaning": {
+              "pl": "Okna pływające i dokowane (planowane; do tego czasu otwiera się warsztat).",
+              "en": "Floating and docked windows (planned; until then the workbench opens)."
+            },
+            "on_set": "warn"
           }
         ],
         "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (floating and dockable windows; planned, not implemented yet: until it is, the workbench opens). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56).",
@@ -797,7 +813,8 @@
           "group": "interfejs",
           "subgroup": "wyglad",
           "flows": []
-        }
+        },
+        "on_unlisted": "warn"
       },
       {
         "key": "animation_styles",
@@ -1645,12 +1662,12 @@
             "en": "Retrying failed analysis"
           },
           "why": {
-            "pl": "Czy nieudana analiza wiadomości czeka na Twoje polecenie (explicit_requeue), czy ponawia się sama (automatic).",
-            "en": "Whether a failed message analysis waits for your command (explicit_requeue) or retries by itself (automatic)."
+            "pl": "Czy nieudana analiza wiadomości czeka na Twoje polecenie, czy ponawia się sama.",
+            "en": "Whether a failed message analysis waits for your command or retries by itself."
           },
           "effect": {
-            "pl": "Przy „automatic” nieudane wiadomości wracają do kolejki same, co może kosztować kolejne wywołania.",
-            "en": "With “automatic” failed messages return to the queue by themselves, which may cost further calls."
+            "pl": "Gdy ponawia się sama, nieudane wiadomości wracają do kolejki bez pytania, co może kosztować kolejne wywołania.",
+            "en": "When it retries by itself, failed messages return to the queue without asking, which may cost further calls."
           },
           "levels": [
             "installation",
@@ -1662,7 +1679,24 @@
             "semantic.requeue",
             "semantic.analyse"
           ]
-        }
+        },
+        "values": [
+          {
+            "value": "explicit_requeue",
+            "meaning": {
+              "pl": "Czeka na Twoje polecenie: nieudana analiza wraca do kolejki dopiero, gdy o to poprosisz.",
+              "en": "Waits for your command: a failed analysis returns to the queue only when you ask."
+            }
+          },
+          {
+            "value": "automatic",
+            "meaning": {
+              "pl": "Sama: nieudana analiza wraca do kolejki bez pytania (może kosztować kolejne wywołania).",
+              "en": "By itself: a failed analysis returns to the queue without asking (may cost further calls)."
+            }
+          }
+        ],
+        "on_unlisted": "refuse"
       },
       {
         "key": "intent_routing_method",
@@ -3245,11 +3279,15 @@
           {
             "value": "stability",
             "status": "planned",
-            "reason": "M1-D2 adds the order stability [system, profile, rules, memory, project, history, graph] to chat_context.pack; until then chat_engine rejects the name with 'unknown context_order'.",
+            "reason": {
+              "pl": "M1-D2 dopisze kolejność „według stabilności” [instrukcja, profil, reguły, pamięć, projekt, historia, graf]; do tego czasu czat odrzuca tę nazwę przy następnym żądaniu („unknown context_order”).",
+              "en": "M1-D2 adds the order stability [system, profile, rules, memory, project, history, graph] to chat_context.pack; until then chat_engine rejects the name with 'unknown context_order'."
+            },
             "meaning": {
               "pl": "Według stabilności: instrukcja, profil, reguły, pamięć, projekt, historia, graf (planowane, M1-D2).",
               "en": "By stability: instruction, profile, rules, memory, project, history, graph (planned, M1-D2)."
-            }
+            },
+            "on_set": "refuse"
           }
         ],
         "human": {
@@ -3275,7 +3313,8 @@
           "flows": [
             "chat.send"
           ]
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "language",
@@ -3433,7 +3472,8 @@
           "group": "interfejs",
           "subgroup": "nawigator",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "perspective_composition",
@@ -3486,7 +3526,8 @@
           "group": "interfejs",
           "subgroup": "nawigator",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "navigator_children_limit",
@@ -3583,7 +3624,8 @@
           "group": "interfejs",
           "subgroup": "czat",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "receipt_link",
@@ -3636,7 +3678,8 @@
           "group": "interfejs",
           "subgroup": "czat",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "topbar_model_line",
@@ -3689,7 +3732,8 @@
           "group": "interfejs",
           "subgroup": "czat",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "onboarding_card",
@@ -3749,7 +3793,8 @@
           "group": "interfejs",
           "subgroup": "wyglad",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "android_back_exit_confirm",
@@ -3809,7 +3854,8 @@
           "group": "interfejs",
           "subgroup": "czat",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "secrets_in_chat",
@@ -3872,7 +3918,8 @@
             "chat.send",
             "input.route_intent"
           ]
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "profile_detail_level",
@@ -3932,7 +3979,8 @@
           "group": "ty",
           "subgroup": "profil",
           "flows": []
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "context_receipt_store",
@@ -3994,7 +4042,8 @@
           "flows": [
             "chat.send"
           ]
-        }
+        },
+        "on_unlisted": "refuse"
       },
       {
         "key": "context_receipt_max_bytes",
@@ -4385,16 +4434,84 @@
             },
             "values": {
               "type": "array",
+              "description": "The values the field's reader understands, as the phone list editor shows them. Each entry: value; meaning {pl,en}; preset (the default value of a field without a kernel default); status (e.g. planned: the reader does not handle it yet) with reason {pl,en}; on_set: what a write of a value with a status does on every write path (settings.set, PATCH /api/config, loom_set_config, `loom config set`) - refuse (its reader rejects it: the write is refused with the reason) or warn (its reader degrades: stored, the write reports the status and reason); absent = warn.",
               "items": {
                 "type": "object",
                 "required": [
                   "value"
-                ]
+                ],
+                "properties": {
+                  "value": {
+                    "type": [
+                      "string",
+                      "number",
+                      "integer",
+                      "boolean",
+                      "null",
+                      "object",
+                      "array"
+                    ]
+                  },
+                  "meaning": {
+                    "type": "object",
+                    "required": [
+                      "pl",
+                      "en"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "pl": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "en": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  },
+                  "preset": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": [
+                      "object",
+                      "string"
+                    ],
+                    "required": [
+                      "pl",
+                      "en"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "pl": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "en": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "minLength": 1
+                  },
+                  "on_set": {
+                    "type": "string",
+                    "enum": [
+                      "refuse",
+                      "warn"
+                    ]
+                  }
+                }
               }
             },
             "values_open": {
               "type": "boolean",
-              "description": "The `values` list is examples, not the whole set: settings.set accepts other values too. Without it a value outside `values` is refused with the list, and a value whose entry has status planned is refused with its reason."
+              "description": "The `values` list is examples, not the whole set: every write path accepts other values without a warning. Without it the list is closed and `on_unlisted` says what a write of another value does."
             },
             "status": {
               "type": "object",
@@ -4441,6 +4558,14 @@
             },
             "subsection": {
               "type": "string"
+            },
+            "on_unlisted": {
+              "type": "string",
+              "enum": [
+                "refuse",
+                "warn"
+              ],
+              "description": "What a write of a value outside a closed `values` list does on every write path (settings.set, PATCH /api/config, loom_set_config, `loom config set`): refuse (the reader rejects unknown values, or the list is the field's contract) or warn (the reader falls back: stored, the write names the list). Absent = warn. Clearing the key (null) is always accepted. Ignored with values_open."
             }
           }
         }

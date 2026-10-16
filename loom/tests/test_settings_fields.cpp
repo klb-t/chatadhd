@@ -368,6 +368,41 @@ TEST_SUITE("settings_fields") {
   }
 
 
+  TEST_CASE("declared values: the data says what a write of a planned or unlisted value does, one rule for every write path") {
+    Json doc = unwrap(settings_fields());
+    // every value with a status says what a write of it does, and every closed list says what an unlisted value does
+    for (const auto& f : doc["fields"]) {
+      if (!f.contains("values")) continue;
+      INFO(f["key"].get<std::string>());
+      if (!f.value("values_open", false)) CHECK(f.contains("on_unlisted"));
+      for (const auto& v : f["values"]) {
+        if (v.contains("status")) CHECK(v.contains("on_set"));
+        if (v.contains("reason")) CHECK(v["reason"].is_object());  // pl and en, like every human text
+        CHECK(v.contains("meaning"));
+      }
+    }
+    // the raw write paths (loom_set_config, PATCH /api/config, CLI) share the check
+    CHECK_FALSE(check_config_patch(Json{{"chat_context_order", "stability"}}));
+    CHECK_FALSE(check_config_patch(Json{{"chat_context_order", "no_such_order"}}));
+    CHECK_FALSE(check_config_patch(Json{{"_config_version", 9}}));
+    const Json windows = unwrap(check_config_patch(Json{{"layout_mode", "windows"}}));
+    REQUIRE(windows.size() == 1);
+    CHECK(windows[0]["key"] == "layout_mode");
+    CHECK(windows[0]["status"] == "planned");
+    CHECK(unwrap(check_config_patch(Json{{"layout_mode", "tiles"}}))[0]["status"] == "unlisted");
+    CHECK(unwrap(check_config_patch(Json{{"layout_mode", "views_grid"}, {"theme", "anything"}, {"not_described", 1}})).empty());
+    CHECK(unwrap(check_config_patch(Json{{"chat_context_order", nullptr}})).empty());  // clearing = back to the preset
+    // the policy is data: a user overlay may let the planned value through (warn) or close a list (refuse)
+    Json field;
+    for (const auto& f : doc["fields"]) if (f["key"] == "chat_context_order") field = f;
+    for (auto& v : field["values"]) if (v["value"] == "stability") v["on_set"] = "warn";
+    CHECK(unwrap(check_declared_value(field, "stability"))["status"] == "planned");
+    field["on_unlisted"] = "warn";
+    CHECK(unwrap(check_declared_value(field, "mine"))["status"] == "unlisted");
+    field["values_open"] = true;
+    CHECK(unwrap(check_declared_value(field, "mine")).is_null());
+  }
+
   TEST_CASE("only read_only is enforced; undescribed keys stay writable") {
     CHECK(check_config_write("theme"));
     CHECK(check_config_write("loom_usage_policy"));

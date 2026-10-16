@@ -304,6 +304,60 @@ std::string settings_edit_rule(std::string_view scope, std::string_view key) {
   return "";
 }
 
+Result<Json> check_declared_value(const Json& field, const Json& value) {
+  const Json* values = json::find(field, "values");
+  if (value.is_null() || !values || !values->is_array() || field.value("values_open", false)) return Json(nullptr);
+  const Json* match = nullptr;
+  for (const auto& entry : *values)
+    if (const Json* v = json::find(entry, "value"); v && *v == value) { match = &entry; break; }
+  if (!match) {
+    Json listed = Json::array();
+    std::string allowed;
+    for (const auto& entry : *values) {
+      listed.push_back(entry.value("value", Json()));
+      allowed += (allowed.empty() ? "" : ", ") + json::dump(entry.value("value", Json()));
+    }
+    if (json::get_string(field, "on_unlisted") == "refuse")
+      return Error(Errc::InvalidArgument, "the value " + json::dump(value) + " is not one of the setting's values: " + allowed);
+    return Json{{"value", value}, {"status", "unlisted"}, {"values", listed},
+                {"message", "the value " + json::dump(value) + " is not one of the setting's values (" + allowed +
+                                "); stored, its reader falls back"}};
+  }
+  const std::string status = json::get_string(*match, "status");
+  if (status.empty() || status == "available") return Json(nullptr);
+  const Json reason = match->value("reason", Json());
+  const std::string why = reason.is_string() ? reason.get<std::string>() : json::get_string(reason, "en");
+  const std::string head = "the value " + json::dump(value) + " is " + status + ", not available yet";
+  if (json::get_string(*match, "on_set") == "refuse") return Error(Errc::InvalidArgument, head + (why.empty() ? "" : ": " + why));
+  Json warning{{"value", value}, {"status", status}, {"message", head + "; stored" + (why.empty() ? "" : ": " + why)}};
+  if (!reason.is_null()) warning["reason"] = reason;
+  return warning;
+}
+
+Result<Json> check_config_patch(const Json& patch, const std::filesystem::path& data_dir) {
+  Json warnings = Json::array();
+  if (!patch.is_object() || patch.empty()) return warnings;
+  auto doc = settings_fields(data_dir);
+  if (!doc) {  // metadata unavailable: never block writes
+    log::debug(kLog, "config write checked without metadata: {}", doc.error().message);
+    return warnings;
+  }
+  for (auto it = patch.begin(); it != patch.end(); ++it) {
+    for (const auto& f : doc->at("fields")) {
+      if (f.value("scope", "") != "config" || f.value("key", "") != it.key()) continue;
+      if (f.at("rule").value("effect", "") == "deny")
+        return Error(Errc::InvalidArgument, "config key '" + it.key() + "' is read_only");
+      LOOM_TRY_ASSIGN(Json warning, check_declared_value(f, it.value()));
+      if (!warning.is_null()) {
+        warning["key"] = it.key();
+        warnings.push_back(std::move(warning));
+      }
+      break;
+    }
+  }
+  return warnings;
+}
+
 Status check_config_write(std::string_view key, const std::filesystem::path& data_dir) {
   auto doc = settings_fields(data_dir);
   if (!doc) return {};  // metadata unavailable: never block writes

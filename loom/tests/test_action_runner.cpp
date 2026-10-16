@@ -155,7 +155,7 @@ TEST_SUITE("action_runner") {
     }
   }
 
-  TEST_CASE("settings.set honours the values a field declares: a listed value is stored, an unknown one is refused with the list, a planned one with its reason") {
+  TEST_CASE("settings.set honours the values a field declares: a listed value is stored; a planned or unlisted one is refused or stored with a warning, as the data says") {
     Fixture f;
     // a listed value
     const Json ok = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "navigator_layout"}, {"value", "list"}}}}));
@@ -166,7 +166,7 @@ TEST_SUITE("action_runner") {
     CHECK(unknown.at("status") == "failed");
     CHECK(unknown.at("error").at("message").get<std::string>().find("\"both\", \"list\", \"map\"") != std::string::npos);
     CHECK(f.rt->config().get("navigator_layout") == "list");
-    // a planned value is refused with the data's own reason (chat.send would reject it at the next request)
+    // a planned value whose reader rejects it (on_set: refuse) is refused with the data's own reason (chat.send would fail at the next request)
     const Json planned = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}}));
     CHECK(planned.at("status") == "failed");
     CHECK(planned.at("error").at("message").get<std::string>().find("planned") != std::string::npos);
@@ -176,6 +176,22 @@ TEST_SUITE("action_runner") {
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", ""}}}})).at("status") == "completed");
     CHECK(f.rt->config().get("chat_context_order") == "");
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stable_first"}}}})).at("status") == "completed");
+    // a planned value whose reader degrades (on_set: warn) is stored, and the step says it is planned, with the reason in both languages
+    const Json windows = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "windows"}}}}));
+    REQUIRE(windows.at("status") == "completed");
+    CHECK(f.rt->config().get("layout_mode") == "windows");
+    const Json warning = windows.at("result").at("data").at("warning");
+    CHECK(warning.at("status") == "planned");
+    CHECK_FALSE(warning.at("reason").at("pl").get<std::string>().empty());
+    CHECK_FALSE(warning.at("reason").at("en").get<std::string>().empty());
+    // outside a closed list whose reader falls back (on_unlisted: warn): stored, the warning names the list
+    const Json other = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "tiles"}}}}));
+    REQUIRE(other.at("status") == "completed");
+    CHECK(other.at("result").at("data").at("warning").at("status") == "unlisted");
+    CHECK(other.at("result").at("data").at("warning").at("values").size() == 3);
+    // a listed, available value has nothing to say
+    const Json grid = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "views_grid"}}}}));
+    CHECK_FALSE(grid.at("result").at("data").contains("warning"));
     // a field without a values list stays open (type only)
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "theme"}, {"value", "anything"}}}})).at("status") == "completed");
   }
@@ -190,7 +206,8 @@ TEST_SUITE("action_runner") {
     // a value the setting refuses is a failure with the setting's own message
     const Json bad = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "semantic_retry_mode"}, {"value", "sometimes"}}}}));
     CHECK(bad.at("status") == "failed");
-    CHECK(bad.at("error").at("message").get<std::string>().find("explicit_requeue or automatic") != std::string::npos);
+    // (the field's declared values, settings_fields.pack: the same two the worker accepts)
+    CHECK(bad.at("error").at("message").get<std::string>().find("\"explicit_requeue\", \"automatic\"") != std::string::npos);
     CHECK(f.rt->config().get("semantic_retry_mode") == "automatic");
     // types: an integer field takes a number written as text
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "max_tokens"}, {"value", "2048"}}}})).at("status") == "completed");

@@ -21,7 +21,8 @@ namespace loom {
 // {"schema":"loom.settings_fields/1","edit_rules":[...],"fields":[{"key","scope","group","type",
 //  "default":"present|absent","default_value"?,"edit","description","sensitive"?,
 //  "human":{"label":{pl,en},"why":{pl,en},"effect":{pl,en},"levels":[...],"group","subgroup"?,"role"?,"role_status"?,"flows"?,"technical_only"?},
-//  "values"?:[{"value","meaning"?,"status"?,"reason"?}],"values_open"?,"status"?:{"state","by"?,"reason":{pl,en}}}],
+//  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn"}],"values_open"?,
+//  "on_unlisted"?:"refuse"|"warn","status"?:{"state","by"?,"reason":{pl,en}}}],
 //  "groups":{id:{"label":{pl,en},"why":{pl,en},"order","subgroups":[...],"origin","provenance":[...],"hidden"?,"hidden_by"?,"disabled"?,"empty_reason"?}},
 //  "groups_issues"?:[...], "level_evidence":{"chain":[keys],"turn":[keys]},
 //  "profile_values":[{"profile","pointer","human":{...},"value"|"problem"}]}
@@ -53,5 +54,20 @@ std::string settings_edit_rule(std::string_view scope, std::string_view key);
 
 // Rejects a config write when the key's rule is enforced (read_only). Unknown keys are writable.
 Status check_config_write(std::string_view key, const std::filesystem::path& data_dir = {});
+
+// The `values` a field declares, applied to a value about to be written. The data says what a write does (never a rule in code):
+// a value whose entry carries a `status` (planned) is refused when the entry says `on_set: "refuse"` (its reader rejects it, e.g.
+// chat_context_order=stability) and stored with a warning otherwise (`"warn"` or absent: its reader degrades, e.g.
+// layout_mode=windows); a value outside a closed list (no `values_open`) is refused when the field says `on_unlisted: "refuse"`
+// and stored with a warning otherwise. null (clearing the key: back to the preset) is always accepted.
+// Ok(null) = nothing to say; Ok(warning) = {"value","status":"planned"|"unlisted","reason"?,"values"?,"message"} to report with the
+// stored value; Error = the refusal with the data's reason.
+Result<Json> check_declared_value(const Json& field, const Json& value);
+
+// One rule for every raw config write path (loom_set_config, PATCH /api/config = loom_set_config_json, `loom config set`, a role's
+// model setting): for each key of `patch` the read_only rule (check_config_write) and the declared values (check_declared_value),
+// with one read of the settings document. Ok = the warnings ([{"key", ...warning}], empty = none); Error = the first refusal, and
+// nothing is written by the caller. Metadata unavailable: Ok (never blocks a write; the reason is logged).
+Result<Json> check_config_patch(const Json& patch, const std::filesystem::path& data_dir = {});
 
 }  // namespace loom

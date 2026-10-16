@@ -419,11 +419,14 @@ LOOM_API const char* loom_settings_fields(LoomContext* ctx) {
 LOOM_API void loom_set_config(LoomContext* ctx, const char* key, const char* value) {
   guard_void("loom_set_config", [&] {
     if (!live(ctx) || !key || !*key) return;
-    if (auto ok = check_config_write(key, ctx->rt->paths().root); !ok) {
-      log::error("loom.capi", "loom_set_config: {}", ok.error().message);
+    Json v = value ? json::parse_or(value, Json(std::string(value))) : Json(nullptr);
+    // read_only and the declared values of the field: the same rule as settings.set and PATCH /api/config
+    auto checked = check_config_patch(Json{{key, v}}, ctx->rt->paths().root);
+    if (!checked) {
+      log::error("loom.capi", "loom_set_config: {}", checked.error().message);
       return;
     }
-    Json v = value ? json::parse_or(value, Json(std::string(value))) : Json(nullptr);
+    for (const auto& w : *checked) log::info("loom.capi", "loom_set_config {}: {}", key, json::get_string(w, "message"));
     if (std::string_view(key) == "loom_usage_policy") {
       if (auto st = validate_usage_policy_options(v); !st) {
         log::error("loom.capi", "loom_set_config: invalid usage policy");
@@ -442,8 +445,11 @@ LOOM_API int loom_set_config_json(LoomContext* ctx, const char* patch_json) {
     auto pj = parse_arg(patch_json, Json(nullptr));
     if (!pj) return code(pj.error());
     if (!pj->is_object()) return LOOM_E_INVALID_ARGUMENT;
-    for (auto it = pj->begin(); it != pj->end(); ++it)
-      if (auto ok = check_config_write(it.key(), ctx->rt->paths().root); !ok) return code(ok.error());
+    // read_only and the declared values of each field, before anything is written (one refusal = nothing written)
+    auto checked = check_config_patch(*pj, ctx->rt->paths().root);
+    if (!checked) return code(checked.error());
+    for (const auto& w : *checked)
+      log::info("loom.capi", "loom_set_config_json {}: {}", json::get_string(w, "key"), json::get_string(w, "message"));
     if (auto it = pj->find("loom_usage_policy"); it != pj->end()) {
       if (auto st = validate_usage_policy_options(*it); !st) return code(st.error());
     }
