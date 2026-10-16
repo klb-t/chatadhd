@@ -841,13 +841,16 @@
             "cm_issue_no_submenu": "change no. {{n}}: there is no submenu “{{name}}”",
             "cm_issue_exists": "change no. {{n}}: “{{name}}” is already in the menu",
             "cm_issue_move_missing": "change no. {{n}}: there is nothing to move (“{{name}}”)",
-            "cm_issue_move_into_itself": "change no. {{n}}: “{{name}}” cannot be moved into itself",
+            "cm_issue_move_into_itself": "change no. {{n}}: “{{name}}” cannot be moved inside itself",
             "cm_issue_unknown_op": "change no. {{n}}: unknown change “{{op}}”",
             "tool_chip_on": "{{name}}: on",
-            "att_unreadable": "{{name}}: this kind of file cannot be sent (images and plain-text files can)",
-            "att_missing": "{{name}}: the app no longer has this file; add it again",
+            "att_unreadable": "this kind of file cannot be sent (images and plain-text files can)",
+            "att_missing": "the app no longer has this file; add it again",
             "att_scope": "Files go with this message only: for a later question about them, add them again.",
-            "cm_action_no_files": "Files do not go with “{{name}}”: remove them or turn it off."
+            "cm_action_no_files": "Files do not go with “{{name}}”: remove them or turn it off.",
+            "cm_reason_needs": "This needs a setting that is still empty; see Settings.",
+            "att_not_sent": "Nothing was sent: {{name}}: {{reason}}. Remove it and send again.",
+            "cm_issue_settings_unread": "the settings could not be read ({{reason}}), so entries that need one are not checked"
           },
           "pl": {
             "menu_open": "Menu",
@@ -1058,13 +1061,16 @@
             "cm_issue_no_submenu": "zmiana nr {{n}}: nie ma podmenu „{{name}}”",
             "cm_issue_exists": "zmiana nr {{n}}: „{{name}}” już jest w menu",
             "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
-            "cm_issue_move_into_itself": "zmiana nr {{n}}: „{{name}}” nie da się przenieść do jej samej",
+            "cm_issue_move_into_itself": "zmiana nr {{n}}: nie da się przenieść „{{name}}” do wnętrza tej samej pozycji",
             "cm_issue_unknown_op": "zmiana nr {{n}}: nieznana zmiana „{{op}}”",
             "tool_chip_on": "{{name}}: włączone",
-            "att_unreadable": "{{name}}: nie da się wysłać tego rodzaju pliku (da się obrazy i pliki tekstowe)",
-            "att_missing": "{{name}}: aplikacja nie ma już tego pliku, dodaj go ponownie",
+            "att_unreadable": "nie da się wysłać tego rodzaju pliku (da się wysłać obrazy i pliki tekstowe)",
+            "att_missing": "aplikacja nie ma już tego pliku, dodaj go ponownie",
             "att_scope": "Pliki idą tylko z tą wiadomością: przy kolejnym pytaniu o nie dodaj je ponownie.",
-            "cm_action_no_files": "Pliki nie idą do „{{name}}”: usuń je albo wyłącz tę opcję."
+            "cm_action_no_files": "Pliki nie idą do „{{name}}”: usuń je albo wyłącz tę opcję.",
+            "cm_reason_needs": "To wymaga ustawienia, które jest jeszcze puste; zajrzyj do Ustawień.",
+            "att_not_sent": "Nic nie zostało wysłane. {{name}}: {{reason}}. Usuń go i wyślij ponownie.",
+            "cm_issue_settings_unread": "nie udało się odczytać ustawień ({{reason}}), więc pozycje, które ich wymagają, nie są sprawdzone"
           }
         }
       }

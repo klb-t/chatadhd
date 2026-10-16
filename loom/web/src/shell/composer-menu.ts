@@ -138,6 +138,20 @@ export function effectiveMenu(base: LayeredValue, ops: LayeredValue, shipped: un
   return composed;
 }
 
+/** The words of a label: a word of ui_shell, else the label itself (a plain text someone wrote), {en, pl} by language, else the fallback
+ *  (the id, only when there is no label at all). `t` gives back the id it does not know. */
+export function labelText(label: unknown, t: (id: string, params?: Record<string, string>) => string, lang: string, fallback: string): string {
+  if (typeof label === "string") return label === "" ? fallback : t(label);
+  if (isObject(label)) { const text = label[lang] ?? label.en; if (typeof text === "string") return text; }
+  return fallback;
+}
+/** One problem of the menu in plain words of the page's language (`cm_issue_<code>`), entries named by the label they show. */
+export function issueText(item: MenuIssue, t: (id: string, params?: Record<string, string>) => string, lang: string): string {
+  const params: Record<string, string> = {};
+  for (const [key, value] of Object.entries(item.params)) params[key] = key === "name" ? labelText(value, t, lang, String(value)) : String(value);
+  return t(`cm_issue_${item.code}`, params);
+}
+
 /** What this client can do now; an entry that needs a thing the client lacks stays in the menu with a reason. */
 export interface MenuContext {
   /** Whether the transport can take a file (clientBlobUpload). */

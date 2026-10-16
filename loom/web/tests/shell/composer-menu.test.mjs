@@ -1,5 +1,5 @@
 // P33: the + menu as data. Pure logic: the shipped entries, the user's operations (hide, add, move), what each entry says about itself,
-// the labels in Polish and English, and the attachment reference.
+// the switches and the request fields they set, the problems said in plain words (Polish and English), and the attachment reference.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
@@ -14,28 +14,45 @@ const entry = (key) => pack.entries.find(r => r.key === key);
 const base = entry('chat.composer_menu').value;
 const ids = (items) => items.map(i => i.id);
 const flat = (items) => items.flatMap(i => [i, ...(i.items ? flat(i.items) : [])]);
+const words = entry('presentation.ui_shell').value.locales;
+const tIn = (lang) => text.shellTranslator(p.resolvePresentationFeature(p.resolvePresentation(), 'ui_shell'), lang);
+const plT = tIn('pl');
+const codes = (m) => m.issues.map(i => i.code);
 
 test('the shipped menu: the union of the popular chat apps, nothing invented as a limit', () => {
   const m = cm.composeMenu(base, entry('chat.composer_menu_ops').value);
   assert.deepEqual(m.issues, []);
   assert.deepEqual(ids(m.items), ['attach_file', 'attach_photo', 'model', 'tools', 'context', 'import']);
-  assert.deepEqual(ids(m.items.find(i => i.id === 'tools').items), ['web_search', 'agent', 'thinking', 'image', 'music']);
+  assert.deepEqual(ids(m.items.find(i => i.id === 'tools').items), ['web_search', 'deep_research', 'thinking', 'agent', 'image', 'music']);
   assert.deepEqual(ids(m.items.find(i => i.id === 'context').items), ['memory', 'knowledge', 'perspective']);
+  // The existing actions are the entries: the agent runs agent.run, a picture is depict; deep research is the request's own field.
+  const find = (id) => flat(m.items).find(i => i.id === id);
+  assert.deepEqual([find('agent').field, find('agent').value], ['action', 'agent.run']);
+  assert.deepEqual([find('image').field, find('image').value, find('image').needs], ['action', 'depict', ['image_model', 'image_provider']]);
+  assert.deepEqual([find('deep_research').field, find('deep_research').value], ['deep_research', true]);
+  assert.equal(find('model').setting, undefined, 'the model goes to default_model, the key the kernel reads; not a setting of the data');
+  assert.equal(cm.MODEL_SETTING, 'default_model');
 });
 
-test('every entry has a word in Polish and English; an entry without a backend has a reason', () => {
-  const feature = entry('presentation.ui_shell').value;
-  assert.deepEqual(Object.keys(feature.locales.en).sort(), Object.keys(feature.locales.pl).sort());
+test('every entry, reason and problem has a word in Polish and English', () => {
+  assert.deepEqual(Object.keys(words.en).sort(), Object.keys(words.pl).sort());
   const m = cm.composeMenu(base, undefined);
   for (const item of flat(m.items)) {
     for (const lang of ['en', 'pl']) {
-      assert.ok(feature.locales[lang][item.label], `${lang}: label ${item.label}`);
-      if (item.kind === 'unavailable') assert.ok(feature.locales[lang][item.reason], `${lang}: reason ${item.reason}`);
+      assert.ok(words[lang][item.label], `${lang}: label ${item.label}`);
+      if (item.reason) assert.ok(words[lang][item.reason], `${lang}: reason ${item.reason}`);
     }
   }
-  const t = text.shellTranslator(p.resolvePresentationFeature(p.resolvePresentation(), 'ui_shell'), 'pl');
-  assert.equal(t('cm_attach_file'), 'Załącz plik');
-  assert.match(t('cm_reason_image'), /dostawcy/);
+  for (const code of ['menu_not_effective', 'no_items', 'items_not_list', 'no_id', 'unknown_kind', 'toggle_target', 'no_panel', 'unknown_panel',
+    'ops_shape', 'op_shape', 'hide_missing', 'no_submenu', 'exists', 'move_missing', 'move_into_itself', 'unknown_op', 'settings_unread'])
+    for (const lang of ['en', 'pl']) assert.ok(words[lang][`cm_issue_${code}`], `${lang}: cm_issue_${code}`);
+  for (const word of ['cm_reason_needs', 'cm_reason_unknown_action', 'cm_reason_upload', 'tool_chip_on', 'att_unreadable', 'att_missing', 'att_not_sent', 'att_scope', 'cm_action_no_files'])
+    for (const lang of ['en', 'pl']) assert.ok(words[lang][word], `${lang}: ${word}`);
+  assert.equal(plT('cm_attach_file'), 'Załącz plik');
+  assert.equal(plT('cm_context'), 'Kontekst', 'no project item yet: the submenu does not promise one');
+  assert.equal(plT('cm_deep_research'), 'Głębokie badanie');
+  assert.match(plT('cm_reason_image'), /Ustawieniach/);
+  assert.match(plT('cm_reason_music'), /nie ma takiej czynności/, 'the music reason says the truth: no provider would help');
 });
 
 test('overlay: hide, add (top, in a submenu, before another), move', () => {
@@ -44,36 +61,127 @@ test('overlay: hide, add (top, in a submenu, before another), move', () => {
     { op: 'hide', id: 'music' },
     { op: 'add', item: { id: 'translate', label: { en: 'Translate', pl: 'Tłumacz' }, kind: 'panel', panel: 'settings' }, before: 'model' },
     { op: 'add', item: { id: 'notes', label: 'Notes', kind: 'toggle', flag: 'memory' }, parent: 'tools' },
+    { op: 'add', item: { id: 'canvas', label: 'Canvas', kind: 'toggle', field: 'flow', value: 'canvas' }, parent: 'tools' },
     { op: 'move', id: 'tools', before: 'attach_file' },
   ] };
   const m = cm.composeMenu(base, ops);
   assert.deepEqual(m.issues, []);
   assert.deepEqual(ids(m.items), ['tools', 'attach_file', 'attach_photo', 'translate', 'model', 'context']);
-  assert.deepEqual(ids(m.items[0].items), ['web_search', 'agent', 'thinking', 'image', 'notes']);
+  assert.deepEqual(ids(m.items[0].items), ['web_search', 'deep_research', 'thinking', 'agent', 'image', 'notes', 'canvas']);
   assert.equal(base.items.length, 6, 'the shipped data is not changed');
+  // A toggle added by an overlay names the request field it sets: no code change is needed for it to work.
+  assert.deepEqual(cm.requestFields(m.items, { canvas: true }), { flow: 'canvas' });
 });
 
-test('overlay mistakes are reported, never silently dropped, and do not break the rest', () => {
+test('overlay mistakes are reported by name, never silently dropped, and do not break the rest', () => {
   const m = cm.composeMenu(base, { ops: [
     { op: 'hide', id: 'nope' }, { op: 'add', item: { id: 'x', kind: 'wat' } }, { op: 'add', item: { id: 'model', kind: 'model' } },
-    { op: 'add', item: { id: 'y', kind: 'panel' }, parent: 'missing' }, { op: 'jump' }, 7, { op: 'hide', id: 'import' },
+    { op: 'add', item: { id: 'y', kind: 'panel', panel: 'import' }, parent: 'missing' }, { op: 'jump' }, 7, { op: 'hide', id: 'import' },
+    { op: 'add', item: { id: 'z', label: 'Zet', kind: 'toggle', flag: 'nope' } },
+    { op: 'add', item: { id: 'p1', label: 'P1', kind: 'panel' } },
+    { op: 'add', item: { id: 'p2', label: 'P2', kind: 'panel', panel: 'nowhere' } },
+    { op: 'add', item: { id: 'u1', label: 'U1', kind: 'unavailable', reason: 'cm_reason_music', panel: 'nowhere' } },
+    { op: 'move', id: 'tools', parent: 'tools' },
+    { op: 'move', id: 'ghost' },
   ] });
-  assert.equal(m.issues.length, 6);
-  assert.deepEqual(ids(m.items), ['attach_file', 'attach_photo', 'model', 'tools', 'context']);
-  assert.equal(cm.composeMenu(base, { nope: 1 }).issues.length, 1);
-  assert.ok(cm.composeMenu(undefined, undefined).items.length === 0);
+  assert.deepEqual(codes(m), ['hide_missing', 'unknown_kind', 'exists', 'no_submenu', 'unknown_op', 'op_shape', 'toggle_target', 'no_panel',
+    'unknown_panel', 'unknown_panel', 'move_into_itself', 'move_missing']);
+  assert.deepEqual(ids(m.items), ['attach_file', 'attach_photo', 'model', 'tools', 'context', 'u1']);
+  assert.equal(m.items.at(-1).panel, undefined, 'an unavailable entry keeps its reason; a panel the app does not have is dropped and said');
+  // A submenu cannot be moved into one of its own submenus either.
+  const nested = cm.composeMenu({ items: [{ id: 'outer', label: 'Outer', kind: 'submenu', items: [{ id: 'inner', label: 'Inner', kind: 'submenu', items: [] }] }] },
+    { ops: [{ op: 'move', id: 'outer', parent: 'inner' }] });
+  assert.deepEqual(codes(nested), ['move_into_itself']);
+  assert.deepEqual(ids(nested.items), ['outer']);
+  // A missing or malformed menu value, and a malformed overlay, are said too.
+  assert.deepEqual(codes(cm.composeMenu(undefined, undefined)), ['no_items']);
+  assert.deepEqual(codes(cm.composeMenu({ items: 5 }, undefined)), ['items_not_list']);
+  assert.deepEqual(codes(cm.composeMenu(base, { nope: 1 })), ['ops_shape']);
 });
 
-test('state of an entry: the camera entry only where there is a camera; missing abilities show a reason', () => {
+test('problems are said in plain Polish, entries named by the label they show, not by ids or op indices', () => {
+  const m = cm.composeMenu(base, { ops: [{ op: 'hide', id: 'nope' }, { op: 'add', item: { id: 'z', label: { en: 'Zed', pl: 'Zet' }, kind: 'toggle', flag: 'nope' } },
+    { op: 'move', id: 'tools', parent: 'tools' }] });
+  const said = m.issues.map(i => cm.issueText(i, plT, 'pl'));
+  assert.match(said[0], /^zmiana nr 1: nie ma pozycji „nope” do ukrycia$/);
+  assert.match(said[1], /przełącznik „Zet” nie mówi, co włącza/);
+  assert.match(said[2], /zmiana nr 3: nie da się przenieść „Narzędzia”/);
+  for (const line of said) assert.ok(!/ops\[|cm_|undefined/.test(line), line);
+  assert.match(cm.issueText({ code: 'menu_not_effective', params: {} }, tIn('en'), 'en'), /menu as shipped/);
+});
+
+test('a label that is not a word of the shell is shown as written; the id only when there is no label', () => {
+  assert.equal(cm.labelText('cm_memory', plT, 'pl', 'memory'), 'Pamięć');
+  assert.equal(cm.labelText('Moje notatki', plT, 'pl', 'notes'), 'Moje notatki');
+  assert.equal(cm.labelText({ en: 'Translate', pl: 'Tłumacz' }, plT, 'pl', 'translate'), 'Tłumacz');
+  assert.equal(cm.labelText('', plT, 'pl', 'translate'), 'translate');
+  assert.equal(cm.labelText(undefined, plT, 'pl', 'translate'), 'translate');
+  const added = cm.composeMenu(base, { ops: [{ op: 'add', item: { id: 'mine', label: 'Moja pozycja', kind: 'panel', panel: 'import' } }] });
+  assert.equal(cm.labelText(added.items.at(-1).label, plT, 'pl', 'mine'), 'Moja pozycja');
+});
+
+test("the layered default's status: a menu that is not effective falls back to the shipped one and says so; changes apply only while effective", () => {
+  const ops = { status: 'effective', value: { ops: [{ op: 'hide', id: 'import' }] } };
+  const own = cm.effectiveMenu({ status: 'effective', value: { items: [{ id: 'only', label: 'Only', kind: 'attach' }] } }, { status: 'missing' }, base);
+  assert.deepEqual(ids(own.items), ['only']);
+  assert.deepEqual(own.issues, []);
+  for (const status of ['disabled', 'excluded', 'missing']) {
+    const m = cm.effectiveMenu({ status, value: { items: [] } }, ops, base);
+    assert.equal(m.issues[0].code, 'menu_not_effective', status);
+    assert.deepEqual(ids(m.items), ['attach_file', 'attach_photo', 'model', 'tools', 'context'], `${status}: shipped menu, changes applied`);
+  }
+  for (const status of ['disabled', 'excluded']) {
+    const m = cm.effectiveMenu({ status: 'effective', value: base }, { ...ops, status }, base);
+    assert.ok(ids(m.items).includes('import'), `${status} changes do not apply`);
+    assert.deepEqual(m.issues, []);
+  }
+});
+
+test('state of an entry: the photo entry wherever files can go; missing abilities and empty settings show a reason', () => {
   const m = cm.composeMenu(base, undefined);
   const find = (id) => flat(m.items).find(i => i.id === id);
-  assert.equal(cm.itemState(find('attach_photo'), { camera: false, upload: true }).state, 'hidden');
-  assert.equal(cm.itemState(find('attach_photo'), { camera: true, upload: true }).state, 'ok');
-  const noUpload = cm.itemState(find('attach_file'), { camera: true, upload: false });
+  assert.equal(cm.itemState(find('attach_photo'), { upload: true }).state, 'ok', 'never hidden for a missing camera API (plain-HTTP phones)');
+  const noUpload = cm.itemState(find('attach_photo'), { upload: false });
   assert.equal(noUpload.state, 'unavailable'); assert.equal(noUpload.reason, 'cm_reason_upload');
-  for (const id of ['agent', 'image', 'music']) assert.equal(cm.itemState(find(id), { camera: true, upload: true }).state, 'unavailable');
-  assert.equal(cm.itemState(find('web_search'), { camera: false, upload: false }).state, 'ok');
-  assert.equal(cm.itemState(find('import'), { camera: false, upload: false }).state, 'ok');
+  assert.equal(cm.itemState(find('attach_file'), { upload: false }).reason, 'cm_reason_upload');
+  assert.equal(cm.itemState(find('music'), { upload: true }).state, 'unavailable');
+  for (const id of ['agent', 'web_search', 'deep_research', 'thinking', 'import']) assert.equal(cm.itemState(find(id), { upload: false }).state, 'ok', id);
+  // Painting needs an image model and its provider: unavailable only while one of them is empty, pointing to Settings.
+  assert.equal(cm.itemState(find('image'), { upload: true, settings: null }).state, 'ok', 'settings not read: not checked, the kernel says');
+  const empty = cm.itemState(find('image'), { upload: true, settings: { image_model: '', image_provider: 'img' } });
+  assert.deepEqual(empty, { state: 'unavailable', reason: 'cm_reason_image' });
+  assert.equal(find('image').panel, 'settings');
+  assert.equal(cm.itemState(find('image'), { upload: true, settings: { image_model: 'image-1', image_provider: 'img' } }).state, 'ok');
+  const bare = { id: 'b', label: 'B', kind: 'toggle', field: 'x', needs: ['k'] };
+  assert.equal(cm.itemState(bare, { upload: true, settings: {} }).reason, 'cm_reason_needs');
+});
+
+test('switches: each sets the field its entry names; one field is one choice; an action stands alone', () => {
+  const { items } = cm.composeMenu(base, undefined);
+  let on = {};
+  for (const id of ['web_search', 'deep_research', 'thinking']) on = cm.switchToggle(items, on, id);
+  assert.deepEqual(cm.requestFields(items, on), { web_search: true, deep_research: true, reasoning_effort: 'high' });
+  assert.deepEqual(ids(cm.onSwitches(items, on)), ['web_search', 'deep_research', 'thinking']);
+  on = cm.switchToggle(items, on, 'agent');
+  assert.deepEqual(cm.requestFields(items, on), { action: 'agent.run' }, 'the agent takes only the words');
+  on = cm.switchToggle(items, on, 'image');
+  assert.deepEqual(cm.requestFields(items, on), { action: 'depict' }, 'one action per message');
+  on = cm.switchToggle(items, on, 'web_search');
+  assert.deepEqual(cm.requestFields(items, on), { web_search: true }, 'a tool turns the action off');
+  on = cm.switchToggle(items, on, 'web_search');
+  assert.deepEqual(cm.requestFields(items, on), {});
+  assert.deepEqual(cm.switchToggle(items, {}, 'memory'), {}, 'memory is a switch of this view, not a request field');
+  // An entry the menu no longer has (hidden by an overlay) sends nothing.
+  const hidden = cm.composeMenu(base, { ops: [{ op: 'hide', id: 'web_search' }] });
+  assert.deepEqual(cm.requestFields(hidden.items, { web_search: true }), {});
+});
+
+test('a refused send names the file it would not take', () => {
+  const refs = ['blob:' + 'a'.repeat(64) + '/notatki.txt', 'blob:' + 'b'.repeat(64) + '/raport.pdf'];
+  assert.deepEqual(cm.refusedAttachment('unsupported', `this kind of file cannot be sent (images and plain-text files can): ${refs[1]}`, refs), { ref: refs[1], why: 'unreadable' });
+  assert.deepEqual(cm.refusedAttachment('not_found', `attachment not found: ${refs[0]}`, refs), { ref: refs[0], why: 'missing' });
+  assert.equal(cm.refusedAttachment('network', 'the provider did not answer', refs), null);
+  assert.equal(cm.refusedAttachment('unsupported', undefined, refs), null);
 });
 
 test('attachment references: the kernel reads blob:<hash>/<name>; the name shows', () => {
@@ -82,22 +190,6 @@ test('attachment references: the kernel reads blob:<hash>/<name>; the name shows
   assert.equal(cm.attachmentName(`blob:${hash}/plan dnia.pdf`), 'plan dnia.pdf');
   assert.equal(cm.attachmentName('/home/me/zdjęcie.jpg'), 'zdjęcie.jpg');
   assert.equal(cm.attachmentName('plain.txt'), 'plain.txt');
-});
-
-test('values from data: the thinking effort and the model setting are entries of the menu, a missing one falls back to the preset', () => {
-  const m = cm.composeMenu(base, undefined);
-  assert.equal(cm.toggleValue(m.items, 'thinking', 'fallback'), 'high');
-  assert.equal(cm.modelSetting(m.items), 'default_model');
-  const changed = cm.composeMenu(base, { ops: [
-    { op: 'hide', id: 'thinking' }, { op: 'add', item: { id: 'think_max', label: 'Max', kind: 'toggle', flag: 'thinking', value: 'max' }, parent: 'tools' },
-    { op: 'hide', id: 'model' }, { op: 'add', item: { id: 'model2', label: 'Model', kind: 'model', setting: 'chat_model' } },
-  ] });
-  assert.deepEqual(changed.issues, []);
-  assert.equal(cm.toggleValue(changed.items, 'thinking', 'fallback'), 'max');
-  assert.equal(cm.modelSetting(changed.items), 'chat_model');
-  const bare = cm.composeMenu({ items: [{ id: 't', label: 't', kind: 'toggle', flag: 'thinking' }, { id: 'm', label: 'm', kind: 'model' }] }, undefined);
-  assert.equal(cm.toggleValue(bare.items, 'thinking', cm.THINKING_EFFORT), cm.THINKING_EFFORT);
-  assert.equal(cm.modelSetting(bare.items), cm.MODEL_SETTING);
 });
 
 test('the model of a conversation through the scope chain: only a level more specific than the person is its own', () => {

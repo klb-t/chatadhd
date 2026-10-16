@@ -38,11 +38,12 @@ import GraphChatSettings from "../graph/GraphChatSettings";
 import ScopeExplain from "./ScopeExplain";
 import MicButton from "../shell/MicButton";
 import Disclosure from "../shell/Disclosure";
-import { needsProviderKey, useShellText } from "../shell/text";
+import { needsProviderKey, useShellLanguage, useShellText } from "../shell/text";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
 import ComposerMenu from "../shell/ComposerMenu";
-import { attachmentName, attachmentRef, composeMenu, conversationModel, modelSetting, THINKING_EFFORT, toggleValue, withConversationModel, type MenuFlags } from "../shell/composer-menu";
+import { attachmentName, attachmentRef, conversationModel, effectiveMenu, MODEL_SETTING, labelText, onSwitches, refusedAttachment, requestFields, switchToggle, withConversationModel, type MenuFlag, type MenuFlags, type MenuIssue } from "../shell/composer-menu";
+import featurePack from "../onboarding/generated/conversation-view.json";
 import { nativeFragmentPrompt, nativeGraphDisplayText, recordedGraphReply } from "../graph/chat-graph";
 
 marked.setOptions({ breaks: true });
@@ -124,10 +125,10 @@ let attachmentCounter = 0;
 export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" }: Props) {
   const chat = variant === "chat";
   const t = useShellText();
+  const shellLanguage = useShellLanguage();
   const [hasKey, setHasKey] = useState<boolean | null>(null);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const regenerate = useRef(false);
   const pressTimer = useRef<number | null>(null);
   const [stored] = useState(() => readChatSettings(settingsKey));
   const storedString = (key: string, fallback: string) => typeof stored.value[key] === "string" ? stored.value[key] as string : fallback;
@@ -206,14 +207,18 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [input, setInput] = useState("");
   // P33: the + menu. Tools are on until turned off (chips above the field say which); files are chips too.
   const [menuOpen, setMenuOpen] = useState(false);
-  const [webSearch, setWebSearch] = useState(false);
-  const [thinking, setThinking] = useState(false);
+  // The field switches that are on (web search, deep research, deep thinking, an action ...), by the id of their entry in the menu's data.
+  const [switches, setSwitches] = useState<Record<string, boolean>>({});
   const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const plusRef = useRef<HTMLButtonElement>(null);
   const [models, setModels] = useState<ModelInfo[]>([]);
-  const [model, setModel] = useState<string>(() => storedString("model", ""));
+  const [model, setModel] = useState<string>(() => storedString("model", ""));  // the person's pick (saved with the view's settings)
+  // P33: the model the open conversation has of its own (scope chain, P24). Kept apart from the person's pick: shown and sent only while
+  // that conversation is open, never saved as the person's choice.
+  const [ownModel, setOwnModel] = useState<{ convId: string; model: string } | null>(null);
+  const shownModel = chat && convId !== null && ownModel?.convId === convId ? ownModel.model : model;
   const [pendingUserText, setPendingUserText] = useState<{ text: string; convId: string | null } | null>(null);
   const [stream, setStream] = useState<StreamState | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -418,45 +423,100 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const removeAttachment = useCallback((key: string) => {
     setAttachments((list) => { const gone = list.find(a => a.key === key); if (gone?.preview) URL.revokeObjectURL(gone.preview); return list.filter(a => a.key !== key); });
   }, []);
-  const menuFlags: MenuFlags = { web_search: webSearch, thinking, memory: includeMemory, knowledge: useKnowledge };
-  const toggleFlag = useCallback((flag: keyof MenuFlags) => {
-    if (flag === "web_search") setWebSearch(v => !v);
-    else if (flag === "thinking") setThinking(v => !v);
-    else if (flag === "memory") setIncludeMemory(v => !v);
+  const menuFlags: MenuFlags = { memory: includeMemory, knowledge: useKnowledge };
+  const toggleFlag = useCallback((flag: MenuFlag) => {
+    if (flag === "memory") setIncludeMemory(v => !v);
     else setUseKnowledge(v => !v);
   }, []);
-  const composedMenu = useMemo(() => composeMenu(menuBase.value, menuOps.value), [menuBase.value, menuOps.value]);
+  // The menu as data: the person's own menu while its default is effective (else the shipped one, and the menu says so), their changes on top.
+  const shippedMenu = useMemo(() => featurePack.entries.find(entry => entry.key === "chat.composer_menu")?.value, []);
+  const composedMenu = useMemo(() => effectiveMenu(menuBase, menuOps, shippedMenu), [menuBase, menuOps, shippedMenu]);
+  const toggleSwitch = useCallback((id: string) => setSwitches(on => switchToggle(composedMenu.items, on, id)), [composedMenu]);
+  const switchesOn = useMemo(() => onSwitches(composedMenu.items, switches), [composedMenu, switches]);
+  // An action (the agent, painting) takes only the words: files staged with it are said next to Send, not dropped (the kernel refuses them too).
+  const actionSwitch = switchesOn.find(i => i.field === "action") ?? null;
+  const filesWithAction = actionSwitch !== null && attachments.some(a => a.state !== "failed");
+  // The settings some entries need (painting needs an image model), read when the menu opens. Not read = not checked, and the menu says so.
+  const [menuSettings, setMenuSettings] = useState<Record<string, unknown> | null>(null);
+  const [menuSettingsError, setMenuSettingsError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    let live = true;
+    api.getConfig().then(
+      (cfg) => { if (live) { setMenuSettings(cfg); setMenuSettingsError(null); } },
+      (err: unknown) => { if (live) { setMenuSettings(null); setMenuSettingsError(err instanceof Error ? err.message : String(err)); } });
+    return () => { live = false; };
+  }, [menuOpen]);
+  const menuIssues = useMemo<MenuIssue[]>(() => menuSettingsError === null ? composedMenu.issues
+    : [...composedMenu.issues, { code: "settings_unread", params: { reason: menuSettingsError } }], [composedMenu, menuSettingsError]);
   const closeMenu = useCallback(() => { setMenuOpen(false); plusRef.current?.focus(); }, []);
-  const thinkingEffort = useMemo(() => toggleValue(composedMenu.items, "thinking", THINKING_EFFORT), [composedMenu]);
-  const modelKey = useMemo(() => modelSetting(composedMenu.items), [composedMenu]);
-  // P33: in the chat shell the model is the conversation's, through the scope chain (P24). Choosing one (the + menu or the picker above, one
-  // state) writes it at the conversation level (conversations.metadata.settings); opening a conversation shows the model it has of its own,
-  // if any. A failure to read or keep it is said under the field: the choice still holds for the next message. Workshop views keep their
-  // own model each (several views may show one conversation with different models), so they neither write nor read it.
+  // P33: in the chat shell a conversation can have a model of its own, through the scope chain (P24). Choosing one (the + menu or the picker
+  // above, one state) in an open conversation writes it at the conversation level (conversations.metadata.settings.default_model); with no
+  // conversation open it is the person's pick, and the conversation the first message makes keeps it when it differs from what the chain
+  // gives. Opening a conversation shows the model it has of its own, else the person's pick. A failure to read or keep it is said under the
+  // field. Workshop views keep their own model each (several views may show one conversation with different models): they neither write nor read it.
   const [modelNote, setModelNote] = useState<string | null>(null);
   const shellTextRef = useRef(t);
   shellTextRef.current = t;
+  // Explicit choices made on this page: a resolution of the chain that started before one is stale and is not applied.
+  const modelChoicesRef = useRef(0);
+  const saveConversationModel = useCallback((target: string, id: string) =>
+    api.getConversation(target).then((conv) => api.updateConversation(target, { metadata: withConversationModel(conv.metadata, MODEL_SETTING, id) })), []);
   const chooseModel = useCallback((id: string) => {
-    setModel(id);
+    const choices = ++modelChoicesRef.current;
     setModelNote(null);
     const target = convId;
-    if (!chat || !target) return;
-    api.getConversation(target)
-      .then((conv) => api.updateConversation(target, { metadata: withConversationModel(conv.metadata, modelKey, id) }))
-      .then(undefined, (err: unknown) => { if (mountedRef.current) setModelNote(t("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
-  }, [chat, convId, modelKey, t]);
+    if (!chat || !target) { setModel(id); return; }
+    // In an open conversation the choice is the conversation's own; the person's pick stays for the other conversations.
+    setOwnModel(id ? { convId: target, model: id } : null);
+    saveConversationModel(target, id)
+      .then(() => id === "" ? api.resolveScope({ key: MODEL_SETTING, conversation_id: target }) : null)
+      .then((resolution) => {
+        // The default model removes the conversation's own: what the chain gives it now (its project's, or the person's pick) is shown.
+        if (!resolution || !mountedRef.current || modelChoicesRef.current !== choices) return;
+        const own = conversationModel(resolution);
+        setOwnModel(own === null ? null : { convId: target, model: own });
+      })
+      .then(undefined, (err: unknown) => { if (mountedRef.current && selectedConvRef.current === target) setModelNote(t("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
+  }, [chat, convId, saveConversationModel, t]);
+  // A conversation this page's send created keeps the model it was made with, when the chain would give it another one.
+  const keepNewConversationModel = useCallback((target: string, chosen: string) => {
+    if (!chat || !chosen) return;
+    const choices = ++modelChoicesRef.current;
+    api.resolveScope({ key: MODEL_SETTING, conversation_id: target })
+      .then((resolution) => conversationModel(resolution) !== null || resolution.value === chosen ? false
+        : saveConversationModel(target, chosen).then(() => true))
+      .then((saved) => { if (saved && mountedRef.current && modelChoicesRef.current === choices) setOwnModel({ convId: target, model: chosen }); },
+        (err: unknown) => { if (mountedRef.current && selectedConvRef.current === target) setModelNote(shellTextRef.current("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
+  }, [chat, saveConversationModel]);
   useEffect(() => {
+    setModelNote(null);  // what was said about one conversation's model does not follow the person into the next
     if (!chat || !convId) return;
     let live = true;
-    api.resolveScope({ key: modelKey, conversation_id: convId }).then(
-      (resolution) => { const own = conversationModel(resolution); if (live && own !== null) setModel(own); },
+    const choices = modelChoicesRef.current;
+    api.resolveScope({ key: MODEL_SETTING, conversation_id: convId }).then(
+      (resolution) => {
+        if (!live || modelChoicesRef.current !== choices) return;  // a choice made meanwhile wins
+        const own = conversationModel(resolution);
+        setOwnModel(own === null ? null : { convId, model: own });
+      },
       (err: unknown) => { if (live) setModelNote(shellTextRef.current("cm_model_not_read", { reason: err instanceof Error ? err.message : String(err) })); });
     return () => { live = false; };
-  }, [chat, convId, modelKey]);
+  }, [chat, convId]);
+  // A refused send gives its files back as chips; the one the kernel named is marked with why it cannot go (ChatEngine::check_attachments).
+  const restoredChips = useCallback((refs: string[], refused: { ref: string; why: "missing" | "unreadable" } | null): ComposerAttachment[] =>
+    refs.map(ref => ref === refused?.ref
+      ? { key: `a${++attachmentCounter}`, name: attachmentName(ref), state: "failed" as const, ref, reason: t(refused.why === "unreadable" ? "att_unreadable" : "att_missing") }
+      : { key: `a${++attachmentCounter}`, name: attachmentName(ref), state: "ready" as const, ref }), [t]);
 
   const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
     const text = input.trim();
-    if (mode === "send" && !forced && requestOverride === null && text !== "" && !stream) {
+    // A message written in the field (not a re-send, not the one-call override): only it takes the composer's files and switches.
+    const composed = !forced && requestOverride === null;
+    const ready = attachments.flatMap(a => a.state === "ready" && a.ref ? [a.ref] : []);
+    // Files alone are a message too (as in the popular chat apps): words or at least one ready file.
+    const content = text !== "" || ready.length > 0;
+    if (mode === "send" && composed && content && !stream) {
       if (queuedRef.current) return;  // already waiting: the text goes once
       if (queueReason({ convId, creating, gate }) !== null) {
         queuedRef.current = { convId };
@@ -468,8 +528,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     if (gate.blocked) { setError(gateTexts.blocked); return; }
     if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
     if (stream || !supports("chat.send")) return;
-    if (attachments.some(a => a.state === "uploading")) return;
-    if (!text && !forced && !(mode === "send" && requestOverride !== null)) return;
+    // The chips say a file is still being added, or that files do not go with an action; Send waits and says why.
+    if (composed && (attachments.some(a => a.state === "uploading") || filesWithAction)) return;
+    if (!forced && !(mode === "send" && requestOverride !== null) && !content) return;
     let request: ChatRequest;
     if (forced) {
       request = forced;
@@ -508,11 +569,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       catch (err) { setError(err instanceof Error ? err.message : String(err)); return; }
     }
     request = {
-      message: text, conv_id: convId ?? undefined, model: model || undefined,
+      message: text, conv_id: convId ?? undefined, model: shownModel || undefined,
       // Omit unchanged options so the existing default request stays intact.
-      ...(attachments.some(a => a.state === "ready") && { attachments: attachments.flatMap(a => a.state === "ready" && a.ref ? [a.ref] : []) }),
-      ...(webSearch && { web_search: true }),
-      ...(thinking && { reasoning_effort: thinkingEffort }),
+      ...(ready.length > 0 && { attachments: ready }),
+      // The switches of the + menu: each sets the request field its entry names (data).
+      ...(requestFields(composedMenu.items, switches) as Partial<ChatRequest>),
       ...(!includeMemory && { include_memory: false }),
       ...(!includeGraphMemory && { include_graph_memory: false }),
       ...(!includeHistory && { include_history: false }),
@@ -547,17 +608,20 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (requestConvId) void refreshMessages(requestConvId);
       onMessagesChanged?.();
     };
-    const finishError = (message: string | null) => {
+    const finishError = (raw: string | null, code?: string) => {
       if (!isCurrent() || terminal) return;
       terminal = true;
       setStream(null);
       setPendingUserText(null);
+      let message = raw;
       // Nothing was stored: the words go back into the field, so a failed send loses nothing and can be sent again.
       if (message && !started) {
         setInput((current) => current || request.message);
-        // The files go back as chips too (without their previews): a failed send loses nothing.
+        // The files go back as chips too (without their previews); a file the kernel would not take is marked with why.
         const sent = request.attachments ?? [];
-        if (sent.length) setAttachments((list) => list.length ? list : sent.map(ref => ({ key: `a${++attachmentCounter}`, name: attachmentName(ref), state: "ready" as const, ref })));
+        const refused = refusedAttachment(code, message, sent);
+        if (sent.length) setAttachments((list) => list.length ? list : restoredChips(sent, refused));
+        if (refused) message = t("att_not_sent", { name: attachmentName(refused.ref), reason: t(refused.why === "unreadable" ? "att_unreadable" : "att_missing") });
       }
       // The error is said in the conversation the message went to. That is the one on the screen unless the person has gone to another
       // one; a conversation this very send created is not yet selected when an error follows its start at once.
@@ -566,7 +630,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       refreshShared();
     };
     setInput("");
-    setAttachments((list) => { for (const a of list) if (a.preview) URL.revokeObjectURL(a.preview); return []; });
+    // The chips go with a composed message only: a re-send (taking an offer, confirming usage, a regeneration) leaves the next one's files.
+    if (composed) setAttachments((list) => { for (const a of list) if (a.preview) URL.revokeObjectURL(a.preview); return []; });
     setQueuedNote(null);
     setRequestOverride(null);
     setRouteNotes([]);
@@ -588,6 +653,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setStream((s) => (s ? { ...s, requestId: chunk.request_id, convId: chunk.conv_id } : s));
             setPendingUserText((s) => s ? { ...s, convId: chunk.conv_id } : s);
             if (!convId && selectedConvRef.current === null) onConversationCreated(chunk.conv_id);
+            if (!request.conv_id && request.model) keepNewConversationModel(chunk.conv_id, request.model);
             onMessagesChanged?.();
           } else if (chunk.type === "route_issue") {
             notesForRef.current = requestConvId;
@@ -629,12 +695,16 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setStream(null);
             setPendingUserText(null);
             setInput((current) => current || request.message);
+            // The files wait with the words: a refusal, or editing and sending again, loses none of them.
+            const held = request.attachments ?? [];
+            if (held.length) setAttachments((list) => list.length ? list : restoredChips(held, null));
+            if (!request.conv_id && chunk.conv_id && request.model) keepNewConversationModel(chunk.conv_id, request.model);
             setUsageNotice(null);
             setUsagePending({ request: { ...request, conv_id: chunk.conv_id }, receipt: chunk.usage_pending, convId: chunk.conv_id });
             requestConvId = chunk.conv_id;
             refreshShared();
           } else if (chunk.type === "error") {
-            finishError(chunk.message);
+            finishError(chunk.message, chunk.code);
           }
         },
         onError: (msg: string) => finishError(msg),
@@ -654,15 +724,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     };
     // The devices of this page are declared to the kernel here, right before the first thing the person started that may need them (a command
     // that records, takes a picture ...), and again only when what the browser can do has changed: nothing is sent in the background.
-    // A request the user wrote by hand (the one-call override) or a re-send of one is sent exactly as it is.
-    const composed = !forced && requestOverride === null;
+    // A request the user wrote by hand (the one-call override) or a re-send of one is sent exactly as it is (`composed` above).
     // A declaration that fails, is refused or does not answer never holds the send back: it goes without a client id.
     void clientSession.ensure().catch(() => "").then((id) => {
       if (!isCurrent()) return;
       if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
-  }, [input, attachments, webSearch, thinking, thinkingEffort, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
+  }, [input, attachments, switches, composedMenu, filesWithAction, restoredChips, keepNewConversationModel, t, stream, convId, creating, gate, shownModel, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked, gateTexts.emptyAnswer, gateTexts.streamEnded]);
 
@@ -676,15 +745,20 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (queued.convId === null && convId !== null) queuedRef.current = { convId };  // the conversation was made: this is the one it goes into
       return;
     }
+    // A file still being added holds the queued message back (it stays "waiting"); it goes once every file is in.
+    if (step === "send" && attachments.some(a => a.state === "uploading")) return;
     queuedRef.current = null;
     if (step === "send") { send("send"); return; }
     setQueuedNote(step === "failed" ? "failed" : null);
-  }, [convId, creating, gate, send, queuedNote]);
+  }, [convId, creating, gate, send, queuedNote, attachments]);
 
   const confirmUsage = useCallback(() => {
     if (!usagePending) return;
     const { request, receipt } = usagePending;
     setUsagePending(null);
+    // The files this confirmed message carries leave the composer with it; files staged since stay for the next one.
+    const carried = request.attachments ?? [];
+    if (carried.length) setAttachments((list) => list.filter(a => !(a.ref && carried.includes(a.ref))));
     const routed = (receipt as { stage?: string }).stage === "route_intent";
     send("send", (routed ? routeConfirmedRequest(request, receipt, true, "web") : confirmedRequest(request, receipt, true, "web")) as ChatRequest);
   }, [usagePending, send]);
@@ -692,6 +766,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     if (!usagePending) return;
     const { request, receipt } = usagePending;
     setUsagePending(null);
+    // The files stay with the words in the composer, as chips (a refusal loses none of them).
+    const held = request.attachments ?? [];
+    if (held.length) setAttachments((list) => list.length ? list : restoredChips(held, null));
     // A refusal by a spending limit (status denied) has nothing to answer: the block is only dismissed, the text stays in the composer.
     if ((receipt as { status?: string }).status === "denied") {
       setUsageNotice(usageCatalog.feature ? safeNotice(usageCatalog.feature, "limit_dismissed") : null);
@@ -702,7 +779,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     try { api.chat((routed ? routeConfirmedRequest(request, receipt, false, "web") : confirmedRequest(request, receipt, false, "web")) as ChatRequest, { onChunk: () => undefined, onError: () => undefined, onDone: () => undefined }); }
     catch (err) { setError(err instanceof Error ? err.message : String(err)); }
     setUsageNotice(usageCatalog.feature ? safeNotice(usageCatalog.feature, "rejected") : null);
-  }, [usagePending, usageCatalog.feature]);
+  }, [usagePending, usageCatalog.feature, restoredChips]);
 
   // Takes the offer a "no" made: the sentence goes to the model as an ordinary message (the engine reads it from the conversation).
   const takeOffer = useCallback((offer: OfferView) => {
@@ -937,13 +1014,18 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     [convId, refreshMessages, runProfileOperation, onMessagesChanged, supports, messages, versionsById],
   );
 
+  // A regeneration sends the earlier message again as it was (its words, its files, the model that answered it); the composer keeps what is
+  // being written and its chips.
   const regenerateFrom = useCallback((m: Message) => {
     const at = messages.findIndex(x => x.id === m.id);
     const prior = [...messages.slice(0, at)].reverse().find(x => x.role === "user");
-    if (!prior) return;
-    regenerate.current = true; setInput(prior.text);
-  }, [messages]);
-  useEffect(() => { if (regenerate.current && input.trim() && !stream) { regenerate.current = false; send(); } }, [input, stream, send]);
+    if (!prior || !convId) return;
+    const files = Array.isArray(prior.attachments) ? prior.attachments.filter((x): x is string => typeof x === "string") : [];
+    const answeredBy = m.model && !m.model.startsWith("loom:") ? m.model : shownModel;
+    const draft = input;
+    send("send", { message: prior.text, conv_id: convId, ...(answeredBy && { model: answeredBy }), ...(files.length > 0 && { attachments: files }) });
+    setInput(draft);
+  }, [messages, convId, shownModel, input, send]);
   useEffect(() => { if (chat) api.hasSecret("api_key").then(setHasKey, () => setHasKey(null)); }, [chat, error, convId]);
   useEffect(() => {
     if (!chat) return;
@@ -1270,28 +1352,35 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       <div className={chat ? "composer shell-composer" : "composer"}>
         {chat && <span className="composer-plus">
           <button type="button" ref={plusRef} aria-label={t("attach")} title={t("attach")} aria-haspopup="menu" aria-expanded={menuOpen} data-testid="shell-attach" onClick={() => setMenuOpen(v => !v)}>+</button>
-          {menuOpen && <ComposerMenu items={composedMenu.items} issues={composedMenu.issues} ctx={{ camera: Boolean(navigator.mediaDevices?.getUserMedia), upload: Boolean(api.actions?.clientBlobUpload) }}
-            flags={menuFlags} model={model} models={models}
+          {/* The photo entry is shown wherever files can go: the capture input opens the camera on a phone and a picture file elsewhere. */}
+          {menuOpen && <ComposerMenu items={composedMenu.items} issues={menuIssues} ctx={{ upload: Boolean(api.actions?.clientBlobUpload), settings: menuSettings }}
+            flags={menuFlags} switches={switches} model={shownModel} models={models}
             onAttach={(kind) => (kind === "camera" ? cameraInputRef : fileInputRef).current?.click()}
-            onToggle={toggleFlag} onModel={chooseModel} onPanel={(panel) => requestPanel(panel)} onClose={closeMenu} />}
+            onFlag={toggleFlag} onSwitch={toggleSwitch} onModel={chooseModel} onPanel={(panel) => requestPanel(panel)} onClose={closeMenu} />}
           <input ref={fileInputRef} type="file" multiple hidden data-testid="composer-file-input" onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
           <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" hidden data-testid="composer-camera-input" onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
         </span>}
-        {chat && (attachments.length > 0 || webSearch || thinking || useKnowledge || !includeMemory) && <div className="composer-chips" role="list" aria-label={t("att_list")} data-testid="composer-chips">
+        {chat && (attachments.length > 0 || switchesOn.length > 0 || useKnowledge || !includeMemory) && <div className="composer-chips" role="list" aria-label={t("att_list")} data-testid="composer-chips">
           {attachments.map(a => <span key={a.key} role="listitem" className="composer-chip" data-testid="attachment-chip" data-state={a.state} data-name={a.name}>
             {a.preview && <img src={a.preview} alt={t("att_image", { name: a.name })} data-testid="attachment-preview" />}
             <span className="chip-name" title={a.state === "failed" ? t("att_failed", { name: a.name, reason: a.reason ?? "" }) : a.name}>
               {a.state === "uploading" ? t("att_uploading", { name: a.name }) : a.state === "failed" ? t("att_failed", { name: a.name, reason: a.reason ?? "" }) : a.name}</span>
             <button type="button" aria-label={t("att_remove", { name: a.name })} data-testid="attachment-remove" onClick={() => removeAttachment(a.key)}>×</button>
           </span>)}
-          {([["web_search", webSearch, "tool_chip_web", () => setWebSearch(false)], ["thinking", thinking, "tool_chip_thinking", () => setThinking(false)],
-            ["knowledge", useKnowledge, "tool_chip_knowledge", () => setUseKnowledge(false)], ["memory_off", !includeMemory, "tool_chip_memory_off", () => setIncludeMemory(true)]] as const)
+          {switchesOn.map(item => { const name = t("tool_chip_on", { name: labelText(item.label, t, shellLanguage, item.id) });
+            return <span key={item.id} role="listitem" className="composer-chip" data-testid={`tool-chip-${item.id}`}>
+              <span className="chip-name">{name}</span>
+              <button type="button" aria-label={t("tool_chip_remove", { name })} onClick={() => toggleSwitch(item.id)}>×</button></span>; })}
+          {([["knowledge", useKnowledge, "tool_chip_knowledge", () => setUseKnowledge(false)], ["memory_off", !includeMemory, "tool_chip_memory_off", () => setIncludeMemory(true)]] as const)
             .filter(([, on]) => on).map(([id, , word, off]) => <span key={id} role="listitem" className="composer-chip" data-testid={`tool-chip-${id}`}>
               <span className="chip-name">{t(word)}</span>
               <button type="button" aria-label={t("tool_chip_remove", { name: t(word) })} onClick={off}>×</button></span>)}
         </div>}
+        {chat && attachments.length > 0 && <p className="composer-note composer-hint" data-testid="attachment-scope">{t("att_scope")}</p>}
+        {chat && filesWithAction && actionSwitch && <p className="composer-note composer-hint" role="status" data-testid="attachment-action-note">
+          {t("cm_action_no_files", { name: labelText(actionSwitch.label, t, shellLanguage, actionSwitch.id) })}</p>}
         {(() => { const picker = <select
-          value={model}
+          value={shownModel}
           onChange={(e) => chooseModel(e.target.value)}
           style={chat ? { width: "auto", maxWidth: "38vw", borderRadius: 999, minHeight: 32, fontSize: 12, padding: "2px 8px" } : { width: 150, flexShrink: 0 }}
           aria-label={t("model_label")}
@@ -1303,6 +1392,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
               {m.name ?? m.id}
             </option>
           ))}
+          {/* A model the list does not have (a conversation's own, the person's pick from earlier) is still shown as what it is. */}
+          {shownModel !== "" && !models.some(m => m.id === shownModel) && <option value={shownModel}>{shownModel}</option>}
         </select>;
           if (!chat) return picker;
           const slot = document.getElementById("shell-model-slot");
@@ -1337,7 +1428,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           </button>
         ) : (
           <button className="primary" onClick={() => send()} data-testid="send-chat" aria-busy={queuedNote === "waiting" || undefined}
-            disabled={!!branchLeaf || (Boolean(gate.blocked) && gate.blocked?.reason !== VIEW_LOADING_REASON) || (requestOverride === null && !input.trim()) || attachments.some(a => a.state === "uploading") || !supports("chat.send") || queuedNote === "waiting"}
+            disabled={!!branchLeaf || (Boolean(gate.blocked) && gate.blocked?.reason !== VIEW_LOADING_REASON) || (requestOverride === null && !input.trim() && !attachments.some(a => a.state === "ready")) || attachments.some(a => a.state === "uploading") || filesWithAction || !supports("chat.send") || queuedNote === "waiting"}
             title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}
             data-gate-initiator={gate.blocked?.initiator} data-gate-reason={gate.blocked?.reason}>
             {chat ? t("send") : "Send"}
