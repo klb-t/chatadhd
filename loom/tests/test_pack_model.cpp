@@ -117,7 +117,11 @@ TEST_SUITE("pack_model") {
     CHECK(legal.domain_kind("deadline")->role == Role::Event);
     CHECK(legal.domain_kind("legal_norm")->role == Role::Constraint);
     auto sw = unwrap(project_kind(*p, "software_app"));
-    CHECK(sw.facets == std::vector<std::string>{"multiplatform", "agent", "staged_transformation"});
+    CHECK(sw.facets == std::vector<std::string>{"multiplatform", "agent", "staged_transformation", "feedback_execution"});
+    const auto feedback = unwrap(facet(*p, "feedback_execution"));
+    CHECK(feedback.header.validation == ValidationStatus::Candidate);
+    CHECK(feedback.domain_kinds.empty());  // Recognition never invents an executor slot.
+    CHECK(feedback.applies_to == std::vector<std::string>{"software_app"});
     auto bs = unwrap(artifact_type(*p, "brainstorm"));
     std::set<std::string> fields;
     for (const auto& s : bs.structure) fields.insert(s.name);

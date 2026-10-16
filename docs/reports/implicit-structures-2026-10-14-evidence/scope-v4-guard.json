@@ -1,0 +1,237 @@
+{
+  "entries": [
+    {
+      "assertions": 63,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_context_channel_integration"
+    },
+    {
+      "assertions": 153,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_context_controls"
+    },
+    {
+      "assertions": 38,
+      "cases": 4,
+      "classification": "executed",
+      "name": "unit.test_context_counter"
+    },
+    {
+      "assertions": 335,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_context_diagnostics"
+    },
+    {
+      "assertions": 1380,
+      "cases": 20,
+      "classification": "executed",
+      "name": "unit.test_context_engine"
+    },
+    {
+      "assertions": 268,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_context_eval"
+    },
+    {
+      "assertions": 105,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_context_native_consumer"
+    },
+    {
+      "assertions": 159,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_context_plan"
+    },
+    {
+      "assertions": 130,
+      "cases": 13,
+      "classification": "executed",
+      "name": "unit.test_context_retrieval"
+    },
+    {
+      "assertions": 241,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_context_retrieval_dev"
+    },
+    {
+      "assertions": 219,
+      "cases": 9,
+      "classification": "executed",
+      "name": "unit.test_context_tfidf_reuse"
+    },
+    {
+      "assertions": 241,
+      "cases": 15,
+      "classification": "executed",
+      "name": "unit.test_extract"
+    },
+    {
+      "assertions": 27,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_extract_eval"
+    },
+    {
+      "assertions": 225,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_generalize"
+    },
+    {
+      "assertions": 178,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_generalize_eval"
+    },
+    {
+      "assertions": 34,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_generalize_perspectives"
+    },
+    {
+      "assertions": 132,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_implicit_structures"
+    },
+    {
+      "assertions": 669,
+      "cases": 5,
+      "classification": "executed",
+      "name": "unit.test_kb_data_domains"
+    },
+    {
+      "assertions": 627,
+      "cases": 27,
+      "classification": "executed",
+      "name": "unit.test_kb_pack"
+    },
+    {
+      "assertions": 277,
+      "cases": 26,
+      "classification": "executed",
+      "name": "unit.test_knowledge"
+    },
+    {
+      "assertions": 114,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_knowledge_candidate_graph"
+    },
+    {
+      "assertions": 14,
+      "cases": 1,
+      "classification": "executed",
+      "name": "unit.test_knowledge_candidates"
+    },
+    {
+      "assertions": 239,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_knowledge_context_runs"
+    },
+    {
+      "assertions": 53,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_knowledge_flow"
+    },
+    {
+      "assertions": 24,
+      "cases": 3,
+      "classification": "executed",
+      "name": "unit.test_knowledge_profile"
+    },
+    {
+      "assertions": 127,
+      "cases": 14,
+      "classification": "executed",
+      "name": "unit.test_knowledge_semantic"
+    },
+    {
+      "assertions": 100,
+      "cases": 11,
+      "classification": "executed",
+      "name": "unit.test_knowledge_semantic_graph"
+    },
+    {
+      "assertions": 124,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_knowledge_store"
+    },
+    {
+      "assertions": 137,
+      "cases": 10,
+      "classification": "executed",
+      "name": "unit.test_model"
+    },
+    {
+      "assertions": 99,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_model_creation_profile"
+    },
+    {
+      "assertions": 805,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_model_profile"
+    },
+    {
+      "assertions": 903,
+      "cases": 6,
+      "classification": "executed",
+      "name": "unit.test_pack_model"
+    },
+    {
+      "assertions": 71,
+      "cases": 8,
+      "classification": "executed",
+      "name": "unit.test_resolve"
+    },
+    {
+      "assertions": 420,
+      "cases": 7,
+      "classification": "executed",
+      "name": "unit.test_resolve_attribution"
+    },
+    {
+      "assertions": 15,
+      "cases": 2,
+      "classification": "executed",
+      "name": "unit.test_resolve_lineage"
+    }
+  ],
+  "errors": [],
+  "executed_entries": 35,
+  "executed_native_assertions": 8746,
+  "executed_native_cases": 293,
+  "executed_python_cases": 0,
+  "input_sha256": {
+    "junit": "c65701ee58ed1546ac5b1d34564b2653cbf0c07de8dae9b4510e4922dfddb66d",
+    "manifest": "65fbb4ed8859b7c4e13fb1706e72669f806e1e9aef369aecd063f3029102dbac"
+  },
+  "junit_entries": 35,
+  "manifest_entries": 35,
+  "policy_provenance": {
+    "path": "/workspace/chatadhd/.github/ctest-evidence-policy.json",
+    "revision": 3,
+    "schema": "loom.ctest_evidence_policy/1",
+    "schema_sha256": "29ff3cd357e02cd0fc8139cacb86293fcfab5803c9f0001eb8aec53b4f4be6e0",
+    "sha256": "e6a914f4146c469929f80b6de8580dd2016230e6b5c4cc4e8574fc8cb60af408"
+  },
+  "preset": "dev",
+  "schema": "loom.ctest_evidence/1",
+  "skipped_python_cases": 0,
+  "unexecuted_entries": [],
+  "valid": true
+}

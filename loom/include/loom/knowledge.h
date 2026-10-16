@@ -60,7 +60,7 @@ class RuntimeProfile;
 
 namespace knowledge {
 
-inline constexpr std::string_view kPipelineVersion = "7";
+inline constexpr std::string_view kPipelineVersion = "10";
 
 // The stages in execution order (closed set: wiring, not policy).
 inline constexpr std::array<std::string_view, 6> kStages = {"catalog", "extract", "resolve", "assess", "generalize", "materialize"};

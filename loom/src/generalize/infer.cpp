@@ -321,16 +321,19 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
   auto ms = model::morphisms(pack);
   if (!ms) return ms.error();
   kb::Normalizer norm(pack);
-  Evidence no_evidence;
-  Index ix(no_evidence);
-  std::set<std::string> active;
-  // Best project instance per subject.
-  std::map<std::string, const Match*> best;
+  Evidence evidence;
+  std::vector<const Match*> projects;
   for (const auto& m : matches) {
     if (m.instance.paradigm_kind != model::ParadigmKind::ProjectKind) continue;
-    auto& b = best[m.instance.subject];
-    if (!b || m.score > b->score) b = &m;
+    projects.push_back(&m);
+    evidence.claims.insert(evidence.claims.end(), m.claims.begin(), m.claims.end());
   }
+  detail::dedupe(evidence.claims);
+  Index ix(evidence);
+  std::set<std::string> active;
+  std::sort(projects.begin(), projects.end(), [](const Match* a, const Match* b) {
+    return std::tie(a->instance.subject, a->instance.id) < std::tie(b->instance.subject, b->instance.id);
+  });
   auto slot_of = [](const Match& m, const model::MorphismEnd& e) -> std::string {
     if (m.instance.paradigm == e.paradigm) return e.kind;
     if (std::find(m.instance.facets.begin(), m.instance.facets.end(), e.paradigm) != m.instance.facets.end()) return e.paradigm + "." + e.kind;
@@ -340,11 +343,11 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
   // of instances and morphism): the observed-grade roles it fills, and its
   // claims per slot in slot order.
   struct View {
-    std::set<model::Role> roles;
+    std::map<model::Role, std::set<std::string>> roles;
     std::map<std::string, std::vector<const Claim*>> by_slot;
   };
   std::map<const Match*, View> views;
-  for (const auto& [subject, m] : best) {
+  for (const auto* m : projects) {
     View v;
     std::map<std::string, const Claim*> cs;
     for (const auto& c : m->claims) cs.emplace(c.id, &c);
@@ -352,7 +355,8 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
       auto it = cs.find(sv.claim);
       if (it == cs.end()) continue;
       v.by_slot[sv.slot].push_back(it->second);
-      if (sv.role && detail::observed_grade(*it->second)) v.roles.insert(*sv.role);
+      if (sv.role && detail::observed_grade(*it->second) && !detail::transferred(*it->second))
+        v.roles[*sv.role].insert(it->second->id);
     }
     views.emplace(m, std::move(v));
   }
@@ -371,20 +375,19 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
       // Targets: instances with an empty slot at the destination end (a
       // property of the instance and the direction, not of the source).
       struct Target {
-        const std::string* subject;
         const Match* b;
         std::string slot;
       };
       std::vector<Target> targets;
-      for (const auto& [sb, b] : best) {
+      for (const auto* b : projects) {
         std::string tslot = slot_of(*b, *dst);
         if (tslot.empty()) continue;
         bool empty = true;
         for (auto* c : claims_in(*b, tslot)) empty &= !detail::usable(*c);
         if (!empty) continue;
-        targets.push_back(Target{&sb, b, std::move(tslot)});
+        targets.push_back(Target{b, std::move(tslot)});
       }
-      for (const auto& [sa, a] : best) {
+      for (const auto* a : projects) {
         std::string sslot = slot_of(*a, *src);
         if (sslot.empty()) continue;
         std::vector<const Claim*> source;
@@ -395,17 +398,30 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
         const auto& ra = views.at(a).roles;
         for (const auto& tg : targets) {
           const Match* b = tg.b;
-          if (*tg.subject == sa) continue;
+          if (b->instance.subject == a->instance.subject) continue;
           const std::string& tslot = tg.slot;
           // The two projects must be analogous at role level (>= 2 shared
           // filled roles besides the transferred one).
           const auto& rb = views.at(b).roles;
           int shared = 0;
-          for (auto r : ra) shared += rb.count(r) > 0;
+          std::set<std::string> premises;
+          for (const auto& [role, claims] : ra) {
+            auto other = rb.find(role);
+            if (other == rb.end()) continue;
+            ++shared;
+            premises.insert(claims.begin(), claims.end());
+            premises.insert(other->second.begin(), other->second.end());
+          }
           if (shared < 2) continue;
-          ExprCtx ctx{ix, norm, &pack, b, &matches, b->instance.subject, Json(), "", &active, nullptr};
+          std::vector<std::string> condition_claims;
+          ExprCtx ctx{ix, norm, &pack, b, &matches, b->instance.subject, Json(), "", &active, &condition_claims};
           bool ok = true;
           for (const auto& cond : mo.conditions) ok &= detail::eval_cond(cond, ctx);
+          for (const auto& id : condition_claims) {
+            const Claim* used = ix.find_claim(id);
+            ok &= used && detail::observed_grade(*used) && !detail::transferred(*used);
+            premises.insert(id);
+          }
           if (!ok) continue;
           model::ProjectKind pk;
           model::Facet fc;
@@ -421,16 +437,17 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
             c.value = Json{{"presence", dk->id}, {"label", label}, {"analog", a->instance.subject_label.empty() ? a->instance.subject : a->instance.subject_label}};
           }
           c.qualifiers.scope = b->instance.id;
-          c.qualifiers.extra = Json{{"by", "generalize"}, {"slot", tslot}, {"from", a->instance.id}};
+          c.qualifiers.extra = Json{{"by", "generalize"}, {"slot", tslot}, {"from", a->instance.id},
+                                    {"source_slot", sslot}, {"morphism", mo.id}};
           auto& as = c.assessment;
           as.evidence = EvidenceClass::Inferred;
           as.origin = mo.origin;
           double src_conf = 0;
           for (auto* s : source) {
             src_conf = std::max(src_conf, s->assessment.confidence);
-            as.premises.claims.push_back(s->id);
+            premises.insert(s->id);
           }
-          std::sort(as.premises.claims.begin(), as.premises.claims.end());
+          as.premises.claims.assign(premises.begin(), premises.end());
           double conf = std::min(mo.confidence, src_conf);
           // model_knowledge never outranks the owner's sources: a transfer
           // stays below the inference threshold unless the morphism was
@@ -447,6 +464,13 @@ Result<std::vector<Claim>> transfer(const kb::Pack& pack, const std::vector<Matc
             ep.expr = Json{{"op", "nonempty"}, {"args", Json::array({"$slot:" + dk->id})}};
             ep.rationale = mo.rationale;
           }
+          // Direction-independent references are explicit in the morphism
+          // data. Old literal slot references retain their declared meaning.
+          auto target_slot = [&](auto&& self, Json& value) -> void {
+            if (value.is_string() && value == "$target_slot") value = "$slot:" + tslot;
+            else if (value.is_array() || value.is_object()) for (auto& item : value) self(self, item);
+          };
+          target_slot(target_slot, ep.expr);
           ExprCtx bctx{ix, norm, &pack, b, &matches, b->instance.subject, c.value, "", &active, nullptr};
           ep.expr = detail::bind(ep.expr, bctx);
           as.expected = ep;

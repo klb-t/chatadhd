@@ -1,5 +1,13 @@
 # Indeks wątków — 2026-10-05 wieczór
 
+2026-10-14 B implementation decision (candidate branch): relational recognition
+uses the existing pack anchor/matcher and additive Instance receipt; filters,
+patterns, alternatives and budgets are data. Revert the facet/pack descriptor to
+disable it; old runs and source bytes remain. Owner's perspective clarification
+means views of the **same** project, separately from interpretation alternatives.
+See [current report](implicit-structures-2026-10-14.md). No new owner requirement.
+
+
 **Od 2026-10-05 ~18:00 integrację prowadzi Claude.** Wątki GPT skończyły tokeny;
 właściciel: „GPT już nam nie pomoże, przyjmij jego wyniki”. Poprzednia wersja tego
 indeksu (integrator 9, kolejka i wszystkie dowody) jest w
@@ -1081,3 +1089,16 @@ Testy: `web/tests/view-engine/spatial.test.mjs` (11: sektor → kierunek, głęb
 
 - Ustawienie `chat_history_command_traffic` (`skip_exchange` preset | `skip_all` | `include`): wymiana polecenia czatu (`metadata.routed`: command, proposal, confirmation) nie trafia do historii, którą czyta model czatu; wynik akcji (`routed: result` / `action_run`) zostaje jako kontekst. Powód: w teście na prawdziwym modelu model naśladował wcześniejsze propozycje i pisał fałszywą propozycję, której „tak” nie mogło wykonać. Miejsca: `src/chat/chat_engine.cpp` (`command_traffic_skipped`, obie pętle historii), `ChatOptions::history_command_traffic`. Cofnięcie: `chat_history_command_traffic=include`.
 - `loom/tools/real_model_smoke.py`: forwarder przekazuje darmowe `GET /models` (szacunek kosztu propozycji), nagłówek opisuje budowę `loom-server`. Cofnięcie: usunąć `do_GET`.
+# B — unnamed structures / perspectives (2026-10-14, historical first increment)
+
+`gpt/implicit-structures-2026-10-14`, base `6c55d469`: first increment keeps
+alternative project-kind pairs in analogy/transfer, records all contributing
+premises, and binds reverse morphism expectations to their actual destination.
+Pipeline v8 fingerprints new computations separately; old runs are preserved.
+Reversible implementation decisions and current gates are in
+[implicit-structures-2026-10-14.md](implicit-structures-2026-10-14.md).
+Scoped 33/33, 277 native cases / 7697 assertions, guard PASS. Full integration
+matrix pending; main remains Claude's. Revert the product increment to restore
+the earlier computation; never delete historical runs to downgrade.
+
+2026-10-15 B: owner-requested merge of main `6fc3ec6b`; preserve P23 annotation/guardian contract, P24 effective edge-kind overlays and P28 view engine. New recognition integration must consume these mechanisms. P29 remains owned by Claude; unknown references are candidates for matching, not grounds to reject the response. Merged-tree gates pending.

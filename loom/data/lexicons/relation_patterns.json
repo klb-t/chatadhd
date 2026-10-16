@@ -31,6 +31,12 @@
     {"id": "rp.introduced_in.pl", "lang": "pl", "rel": "introduced_in", "template": "(w|we) {obj:version} (dodałem|dodaliśmy|doszedł|doszła|doszło|nowy|nowa|nowe) {subj:component}", "confidence": 0.8},
     {"id": "rp.introduced_in.pl2", "lang": "pl", "rel": "introduced_in", "template": "{subj:component} (od|w) (wersji|wersja) {obj:version}", "confidence": 0.7},
     {"id": "rp.purpose.en", "lang": "en", "rel": "has_purpose", "template": "{subj:project} is (a|an) {obj:text}", "confidence": 0.5},
-    {"id": "rp.purpose.pl", "lang": "pl", "rel": "has_purpose", "template": "{subj:project} (to|jest|służy do) {obj:text}", "confidence": 0.5}
+    {"id": "rp.purpose.pl", "lang": "pl", "rel": "has_purpose", "template": "{subj:project} (to|jest|służy do) {obj:text}", "confidence": 0.5},
+    {"id": "rp.has_component.en", "lang": "en", "rel": "has_component", "template": "{subj:project} (has component|contains component) {obj:component}", "confidence": 0.75},
+    {"id": "rp.has_component.pl", "lang": "pl", "rel": "has_component", "template": "{subj:project} (ma moduł|ma komponent|zawiera komponent) {obj:component}", "confidence": 0.75},
+    {"id": "rp.verifies.component.en", "lang": "en", "rel": "verifies", "template": "{subj:component} (verifies|checks|tests) {obj:component}", "confidence": 0.75},
+    {"id": "rp.verifies.component.pl", "lang": "pl", "rel": "verifies", "template": "{subj:component} (sprawdza|weryfikuje|testuje) {obj:component}", "confidence": 0.75},
+    {"id": "rp.feedback.component.en", "lang": "en", "rel": "has_input", "template": "{obj:component} (returns feedback to|returns results to) {subj:component}", "confidence": 0.75},
+    {"id": "rp.feedback.component.pl", "lang": "pl", "rel": "has_input", "template": "{obj:component} (przekazuje wynik do|przekazuje wyniki do) {subj:component}", "confidence": 0.75}
   ]
 }

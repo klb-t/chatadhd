@@ -1,7 +1,7 @@
 {
  "schema": "loom.kb.project_kind/1",
  "id": "software_app",
- "version": 1,
+ "version": 2,
  "title": {
   "en": "Software application",
   "pl": "Aplikacja"
@@ -35,7 +35,8 @@
  "facets": [
   "multiplatform",
   "agent",
-  "staged_transformation"
+  "staged_transformation",
+  "feedback_execution"
  ],
  "anchors": {
   "any": [

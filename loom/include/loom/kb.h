@@ -89,7 +89,7 @@ inline constexpr std::string_view kBindingKinds[] = {
     "principles", "forks", "enumeration", "versions", "checks"};
 // Paradigm anchors (does a subject look like an instance of this paradigm?).
 inline constexpr std::string_view kAnchorOps[] = {
-    "claim_count", "kind_hint", "cue", "option_set", "has_items", "principle_count", "codebase"};
+    "claim_count", "kind_hint", "cue", "option_set", "has_items", "principle_count", "codebase", "relation_pattern"};
 // Rule conditions ("when").
 inline constexpr std::string_view kConditionOps[] = {
     "const", "nonempty", "empty", "all", "any", "not", "has_claim", "has_items", "principle_active", "eq", "gt"};

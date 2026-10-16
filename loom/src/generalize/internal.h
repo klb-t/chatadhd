@@ -31,6 +31,7 @@ struct Index {
   std::map<std::string, const model::Observation*, std::less<>> obs;
   std::map<std::string, const model::Claim*, std::less<>> claim;
   std::map<std::string, std::vector<const model::Claim*>, std::less<>> by_subject;   // sorted by id
+  std::map<std::string, std::vector<const model::Claim*>, std::less<>> by_object;    // directed joins, sorted by id
   std::map<std::string, std::vector<const model::Observation*>, std::less<>> unit_obs;  // by ordinal, id
   std::map<std::string, std::set<std::string>, std::less<>> subject_units;          // entity -> unit ids
   std::map<std::string, std::set<std::string>, std::less<>> subject_obs;            // entity -> usable source-supported observation ids
@@ -47,6 +48,11 @@ struct Index {
   const model::Entity* find_entity(std::string_view id) const;
   const model::Observation* find_obs(std::string_view id) const;
 };
+
+// Validated pack anchor: connected directed joins, with exact bindings and
+// source claim IDs. Exhausted data-declared budgets return an explicit error,
+// never a false empty result. No names/phrases or model calls participate.
+Result<Json> match_relation_pattern(const Index& ix, const model::Entity& subject, const Json& op);
 
 // Items dated <= cut (before=true; undated items are kept) or > cut.
 Evidence slice(const Evidence& ev, std::string_view cut, bool before);

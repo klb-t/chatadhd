@@ -209,11 +209,14 @@ TEST_SUITE("generalize") {
     CHECK(mix->assessment.derivation->depth == 1);
     CHECK(mix->assessment.confidence < 0.55);
     CHECK(mix->assessment.check == CheckState::Pending);
-    REQUIRE(mix->assessment.premises.claims.size() == 1);
-    // The premise is the film's OBSERVED continuity check, never a transfer.
-    bool premise_observed = false;
-    for (const auto& c : b.ev.claims) premise_observed |= c.id == mix->assessment.premises.claims[0] && c.assessment.evidence == EvidenceClass::Observed;
-    CHECK(premise_observed);
+    // The check and both projects' shared role evidence justify this transfer.
+    // Every contributing premise must be observed, never another transfer.
+    REQUIRE(mix->assessment.premises.claims.size() == 7);
+    for (const auto& id : mix->assessment.premises.claims) {
+      bool premise_observed = false;
+      for (const auto& c : b.ev.claims) premise_observed |= c.id == id && c.assessment.evidence == EvidenceClass::Observed;
+      CHECK(premise_observed);
+    }
     // Nothing transfers into a slot the owner's sources already fill.
     for (const auto& c : tr) CHECK(json::get_string(c.qualifiers.extra, "slot") != "scene");
     // The transferred expectation is re-checkable: once a mix check is observed, it holds.

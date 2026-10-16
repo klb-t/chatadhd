@@ -1,0 +1,10 @@
+{
+  "llm": "off",
+  "stage_params": {
+    "catalog": {
+      "import": {
+        "mode": "full"
+      }
+    }
+  }
+}

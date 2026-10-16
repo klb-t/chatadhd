@@ -245,7 +245,8 @@ struct TypesVocab {
 };
 // ── expressions (conditions, value ops, predicates) ─────────────────
 template <std::size_t N>
-void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_view (&ops)[N], std::string_view what) {
+void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_view (&ops)[N], std::string_view what,
+                bool target_slot = false) {
   if (!e.is_object() || !e.contains("op")) {
     v.err(ptr, std::string("expected a ") + std::string(what) + " expression {\"op\",\"args\"}");
     return;
@@ -264,11 +265,11 @@ void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_v
     const Json& a = (*args)[i];
     std::string p = idx(ptr + "/args", i);
     if (a.is_object() && a.contains("op")) {
-      check_expr(v, a, p, ops, what);
+      check_expr(v, a, p, ops, what, target_slot);
     } else if (a.is_string()) {
       const std::string s = a.get<std::string>();
       if (!s.empty() && s[0] == '$') {
-        bool ok = false;
+        bool ok = target_slot && s == "$target_slot";
         for (auto pre : kRefPrefixes) ok = ok || s.rfind(pre, 0) == 0;
         if (!ok) v.err(p, "unknown reference '" + s + "'");
       }
@@ -277,7 +278,7 @@ void check_expr(V& v, const Json& e, const std::string& ptr, const std::string_v
         if (it.value().is_string()) {
           const std::string s = it.value().get<std::string>();
           if (!s.empty() && s[0] == '$') {
-            bool ok = false;
+            bool ok = target_slot && s == "$target_slot";
             for (auto pre : kRefPrefixes) ok = ok || s.rfind(pre, 0) == 0;
             if (!ok) v.err(p + "/" + it.key(), "unknown reference '" + s + "'");
           }
@@ -902,6 +903,97 @@ void v_slot_spec(V& v, const model::SlotSpec& s, const std::string& p, const Typ
   for (std::size_t k = 0; k < s.bind.size(); ++k) v_binding(v, s.bind[k], idx(p + "/bind", k), t);
 }
 
+// The relational anchor is an executable contract, not an extensible bag of
+// options. Unknown fields cannot silently turn a requested constraint off.
+void v_relation_pattern(V& v, const Json& o, const std::string& p, const TypesVocab& t) {
+  const std::set<std::string> fields{"op", "root", "nodes", "edges", "distinct", "same_qualifiers",
+                                     "evidence", "statuses", "claim_qualifiers", "max_steps", "max_matches", "interpretations"};
+  for (auto it = o.begin(); it != o.end(); ++it)
+    if (!fields.count(it.key())) v.err(p + "/" + it.key(), "unknown relation_pattern field");
+  v.str(o, p, "root");
+  v.size_count(o, p, "max_steps");
+  v.size_count(o, p, "max_matches");
+  const Json* nodes = v.object(o, p, "nodes");
+  const Json* edges = v.array(o, p, "edges", true, true);
+  if (!nodes || !edges) return;
+  if (nodes->empty()) v.err(p + "/nodes", "expected at least one node");
+  std::set<std::string> variables;
+  for (auto it = nodes->begin(); it != nodes->end(); ++it) {
+    if (it.key().empty()) v.err(p + "/nodes", "empty node variable");
+    variables.insert(it.key());
+    v.one_of(*nodes, p + "/nodes", it.key(), t.kinds);
+  }
+  const auto root = json::get_string(o, "root");
+  if (!variables.count(root)) v.err(p + "/root", "unknown root variable");
+  std::map<std::string, std::set<std::string>> adjacent;
+  std::set<std::string> edge_keys;
+  for (std::size_t i = 0; i < edges->size(); ++i) {
+    const auto& edge = (*edges)[i];
+    const auto ptr = idx(p + "/edges", i);
+    v.one_of(edge, ptr, "from", variables);
+    v.one_of(edge, ptr, "to", variables);
+    v.one_of(edge, ptr, "rel", t.relations);
+    if (!edge.is_object()) continue;
+    for (auto it = edge.begin(); it != edge.end(); ++it)
+      if (it.key() != "from" && it.key() != "to" && it.key() != "rel") v.err(ptr + "/" + it.key(), "unknown edge field");
+    if (!edge_keys.insert(json::canonical(edge)).second) v.err(ptr, "duplicate pattern edge");
+    const auto a = json::get_string(edge, "from"), b = json::get_string(edge, "to");
+    adjacent[a].insert(b);
+    adjacent[b].insert(a);
+  }
+  std::set<std::string> reached;
+  std::vector<std::string> pending{root};
+  while (!pending.empty()) {
+    auto node = pending.back(); pending.pop_back();
+    if (!reached.insert(node).second) continue;
+    for (const auto& neighbor : adjacent[node]) pending.push_back(neighbor);
+  }
+  if (reached != variables) v.err(p + "/edges", "pattern must connect every node to root");
+  if (const auto* distinct = v.array(o, p, "distinct")) {
+    for (std::size_t i = 0; i < distinct->size(); ++i) {
+      const auto& pair = (*distinct)[i];
+      if (!pair.is_array() || pair.size() != 2 || !pair[0].is_string() || !pair[1].is_string() ||
+          !variables.count(pair[0].get<std::string>()) || !variables.count(pair[1].get<std::string>()) || pair[0] == pair[1])
+        v.err(idx(p + "/distinct", i), "expected two different declared node variables");
+    }
+  }
+  auto choices = [&](const char* key, const std::set<std::string>& allowed, bool nonempty) {
+    const auto* values = v.array(o, p, key, true, nonempty);
+    if (!values) return;
+    std::set<std::string> seen;
+    for (std::size_t i = 0; i < values->size(); ++i) {
+      const auto& value = (*values)[i];
+      if (!value.is_string() || !allowed.count(value.get<std::string>()) || !seen.insert(value.get<std::string>()).second)
+        v.err(idx(p + "/" + key, i), "unsupported or duplicate relation_pattern choice");
+    }
+  };
+  choices("same_qualifiers", {"branch", "version", "scope", "valid_from", "valid_to"}, false);
+  if (const auto* qualifiers = v.object(o, p, "claim_qualifiers")) {
+    for (auto it = qualifiers->begin(); it != qualifiers->end(); ++it) {
+      const auto ptr = p + "/claim_qualifiers/" + it.key();
+      if (it.key().empty()) v.err(ptr, "empty qualifier key");
+      const auto& filter = it.value();
+      if (!filter.is_object()) { v.err(ptr, "expected qualifier filter object"); continue; }
+      for (auto f = filter.begin(); f != filter.end(); ++f)
+        if (f.key() != "allow_missing" && f.key() != "values") v.err(ptr + "/" + f.key(), "unknown qualifier filter field");
+      if (const auto* value = v.member(filter, ptr, "allow_missing"); value && !value->is_boolean())
+        v.err(ptr + "/allow_missing", "expected a boolean");
+      v.array(filter, ptr, "values");  // Exact typed JSON equality, including a deliberate empty accepted set.
+    }
+  }
+  // This operation matches established evidence, not chained hypotheses.
+  choices("evidence", {"observed", "derived", "user"}, true);
+  choices("statuses", {"active", "contested", "superseded"}, true);
+  if (const auto* interpretations = v.object(o, p, "interpretations")) {
+    if (interpretations->empty()) v.err(p + "/interpretations", "expected candidate interpretation labels");
+    for (auto it = interpretations->begin(); it != interpretations->end(); ++it) {
+      if (it.key().empty()) v.err(p + "/interpretations", "empty interpretation id");
+      v.str(it.value(), p + "/interpretations/" + it.key(), "en");
+      v.str(it.value(), p + "/interpretations/" + it.key(), "pl");
+    }
+  }
+}
+
 // Paradigm anchors: {"any"|"all": [anchor ops], "min_score"}.
 void v_anchors(V& v, const Json& an, const std::string& p0, const TypesVocab& t) {
   if (!an.is_object() || an.empty()) return;
@@ -920,6 +1012,7 @@ void v_anchors(V& v, const Json& an, const std::string& p0, const TypesVocab& t)
       const Json& o = (*ops)[i];
       v.closed(o, p, "op", kAnchorOps);
       std::string op = json::get_string(o, "op");
+      if (op == "relation_pattern") v_relation_pattern(v, o, p, t);
       if (op == "claim_count") {
         v.one_of(o, p, "rel", t.relations);
         v.integer(o, p, "min", 1, 1000);
@@ -1067,7 +1160,7 @@ void v_morphisms(V& v, const Json& d) {
       v.err(p + "/use", "anchoring morphisms are derived from the domain kinds' roles, not listed");
     }
     for (std::size_t k = 0; k < m->conditions.size(); ++k) check_expr(v, m->conditions[k], idx(p + "/conditions", k), kConditionOps, "condition");
-    if (m->expected) check_expr(v, m->expected->expr, p + "/expected_property/expr", kPredicates, "predicate");
+    if (m->expected) check_expr(v, m->expected->expr, p + "/expected_property/expr", kPredicates, "predicate", true);
   }
 }
 

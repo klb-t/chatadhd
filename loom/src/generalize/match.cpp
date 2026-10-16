@@ -195,7 +195,12 @@ Result<double> anchor_op(AnchorEnv& env, const model::Entity& e, const Json& op,
   std::string name = json::get_string(op, "op");
   double s = 0.0;
   Json measured;
-  if (name == "claim_count") {
+  if (name == "relation_pattern") {
+    LOOM_TRY_ASSIGN(auto result, detail::match_relation_pattern(ix, e, op));
+    s = result.at("matches").empty() ? 0.0 : 1.0;
+    measured = std::move(result);
+    measured["status"] = "candidate";
+  } else if (name == "claim_count") {
     double min = std::max(1.0, json::get_number(op, "min", 1));
     s = std::min(1.0, count_claims(ix, e.id, json::get_string(op, "rel")) / min);
   } else if (name == "kind_hint") {
@@ -655,7 +660,11 @@ Result<std::vector<Match>> ParadigmMatcher::match_projects(const Evidence& ev) c
         }
       }
     }
-    if (!reject) kept.push_back(std::move(m));
+    if (!reject) {
+      m.instance.recognition = Json{{"status", "candidate"}, {"method", "generalize.match"},
+                                   {"version", kGeneralizerVersion}, {"pack_hash", pack.hash()}, {"reasons", m.reasons}};
+      kept.push_back(std::move(m));
+    }
   }
   std::sort(kept.begin(), kept.end(), [](const Match& a, const Match& b) { return a.instance.id < b.instance.id; });
   return kept;
@@ -755,18 +764,19 @@ Result<std::vector<Claim>> ParadigmMatcher::analogies(const std::vector<Match>& 
   if (!pack_) return Error(Errc::InvalidArgument, "ParadigmMatcher: no pack");
   double tau = detail::threshold(*pack_, "paradigm", "analogy_min_similarity", 0.4);
   kb::Normalizer norm(*pack_);
-  // Best project instance per subject (competing kinds of one subject are
-  // not analogies of each other).
-  std::map<std::string, const Match*> best;
+  // A score is not a choice of perspective. Compare all matched readings,
+  // retaining their identities; readings of one subject are not self-analogies.
+  std::vector<const Match*> projects;
   for (const auto& m : matches) {
-    if (m.instance.paradigm_kind != model::ParadigmKind::ProjectKind) continue;
-    auto& b = best[m.instance.subject];
-    if (!b || m.score > b->score || (m.score == b->score && m.instance.id < b->instance.id)) b = &m;
+    if (m.instance.paradigm_kind == model::ParadigmKind::ProjectKind) projects.push_back(&m);
   }
+  std::sort(projects.begin(), projects.end(), [](const Match* a, const Match* b) {
+    return std::tie(a->instance.subject, a->instance.id) < std::tie(b->instance.subject, b->instance.id);
+  });
   struct Sig {
     std::set<std::string> roles;
     std::set<std::string> values;  // slot|value key
-    std::map<std::string, std::string> role_claim;  // role -> first observed claim id
+    std::set<std::string> premises;  // every claim used by the similarity calculation
   };
   auto signature = [&](const Match& m) {
     Sig s;
@@ -774,13 +784,13 @@ Result<std::vector<Claim>> ParadigmMatcher::analogies(const std::vector<Match>& 
     for (const auto& c : m.claims) claims.emplace(c.id, &c);
     for (const auto& sv : m.instance.slots) {
       auto it = claims.find(sv.claim);
-      if (it == claims.end() || !detail::usable(*it->second) || !sv.role) continue;
+      if (it == claims.end() || !detail::observed_grade(*it->second) || detail::transferred(*it->second) || !sv.role) continue;
       std::string role(model::to_string(*sv.role));
       s.roles.insert(role);
       const Claim& c = *it->second;
       std::string vk = !c.object.empty() ? c.object : (c.value.is_string() ? norm.phrase_key(c.value.get<std::string>()) : json::canonical(c.value));
       s.values.insert(sv.slot + "|" + vk);
-      if (detail::observed_grade(c)) s.role_claim.emplace(role, c.id);
+      s.premises.insert(c.id);
     }
     return s;
   };
@@ -791,12 +801,13 @@ Result<std::vector<Claim>> ParadigmMatcher::analogies(const std::vector<Match>& 
     return static_cast<double>(inter) / static_cast<double>(a.size() + b.size() - inter);
   };
   std::vector<std::pair<const Match*, Sig>> sigs;
-  for (const auto& [s, m] : best) sigs.emplace_back(m, signature(*m));
+  for (const auto* m : projects) sigs.emplace_back(m, signature(*m));
   std::vector<Claim> out;
   for (std::size_t i = 0; i < sigs.size(); ++i) {
     for (std::size_t j = i + 1; j < sigs.size(); ++j) {
       const auto& [a, sa] = sigs[i];
       const auto& [b, sb] = sigs[j];
+      if (a->instance.subject == b->instance.subject) continue;
       double role_sim = jac(sa.roles, sb.roles);
       double value_sim = a->instance.paradigm == b->instance.paradigm ? jac(sa.values, sb.values) : 0.0;
       // Same paradigm: shared values count; across paradigms only the role
@@ -812,15 +823,17 @@ Result<std::vector<Claim>> ParadigmMatcher::analogies(const std::vector<Match>& 
       for (const auto& r : sa.roles) {
         if (!sb.roles.count(r)) continue;
         shared.push_back(r);
-        if (auto x = sa.role_claim.find(r); x != sa.role_claim.end()) c.assessment.premises.claims.push_back(x->second);
-        if (auto y = sb.role_claim.find(r); y != sb.role_claim.end()) c.assessment.premises.claims.push_back(y->second);
       }
       c.qualifiers.extra["shared_roles"] = shared;
-      std::sort(c.assessment.premises.claims.begin(), c.assessment.premises.claims.end());
+      c.qualifiers.extra["from_instance"] = a->instance.id;
+      c.qualifiers.extra["to_instance"] = b->instance.id;
+      std::set<std::string> premises = sa.premises;
+      premises.insert(sb.premises.begin(), sb.premises.end());
+      c.assessment.premises.claims.assign(premises.begin(), premises.end());
       c.assessment.evidence = EvidenceClass::Inferred;
       c.assessment.origin = model::Origin::System;
       c.assessment.confidence = detail::calibrate(*pack_, EvidenceClass::Inferred, sim);
-      c.assessment.derivation = model::Derivation{"g.analogy", 1, "", 0};
+      c.assessment.derivation = model::Derivation{"g.analogy", 2, "", 0};
       kb::ExpectedProperty ep;
       ep.expr = Json{{"op", "not_contradicted_by"}, {"args", Json::array({"analogous_to"})}};
       ep.rationale = "both instances fill the same universal roles (" + std::to_string(shared.size()) +

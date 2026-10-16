@@ -1,0 +1,24 @@
+{
+  "commit": "b5e67f458ad03eb74c49bb58e0220914cc66b710",
+  "old_run": "kr_229ed21891079d54",
+  "command": [
+    "/workspace/chatadhd/loom/build/dev/cli/loom",
+    "--data-dir",
+    "/workspace/.onboarding/implicit-structures-20261014/cli-example/store",
+    "--json",
+    "--quiet",
+    "knowledge",
+    "run",
+    "--config",
+    "/workspace/.onboarding/implicit-structures-20261014/cli-example/config.json",
+    "--source",
+    "/workspace/.onboarding/implicit-structures-20261014/cli-example/conversation.json"
+  ],
+  "files": {
+    "/workspace/chatadhd/loom/build/dev/libloom.so": "e1d09f1e223d74021b5515cda659dd5ae064962f9dd8950fc76a840d6e29b949",
+    "/workspace/chatadhd/loom/build/dev/cli/loom": "52cd01f7f77a41702fb732fee7f9bd21423a2244467199f67a711ccbd3bd5c6e",
+    "/workspace/.onboarding/implicit-structures-20261014/cli-example/conversation.json": "b2c9064689841723d2ccf1be3c3e6c7392b77a32cbbca69ba0d86a958bab1015",
+    "/workspace/.onboarding/implicit-structures-20261014/cli-example/config.json": "67a1374ebfab4ed0c44d10b863fd517c837d45e15fd9ea290765bd62db8a268e",
+    "/workspace/.onboarding/implicit-structures-20261014/cli-example/recognition.json": "de5a2d0d0e33699a6b2a7044275bdb772fbce9c0e9880361fa4dd4b4091b102e"
+  }
+}

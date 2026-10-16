@@ -563,7 +563,7 @@ std::string Instance::make_id(std::string_view paradigm, std::string_view subjec
   return kb::stable_id("in_", join_key({paradigm, subject}));
 }
 Json Instance::to_json() const {
-  return Json{{"id", id},
+  Json out{{"id", id},
               {"paradigm_kind", detail::en(paradigm_kind)},
               {"paradigm", paradigm},
               {"paradigm_version", paradigm_version},
@@ -574,6 +574,8 @@ Json Instance::to_json() const {
               {"coverage", coverage},
               {"model", model},
               {"slots", detail::list(slots)}};
+  if (!recognition.is_null()) out["recognition"] = recognition;
+  return out;
 }
 Result<Instance> Instance::from_json(const Json& j) {
   Rd r(j, "instance");
@@ -589,6 +591,7 @@ Result<Instance> Instance::from_json(const Json& j) {
   x.coverage = r.object("coverage");
   x.model = r.str("model");
   x.slots = r.list<SlotValue>("slots");
+  if (j.contains("recognition")) x.recognition = r.object("recognition");
   if (!r.ok()) return r.error();
   return x;
 }

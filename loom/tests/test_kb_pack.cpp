@@ -63,7 +63,7 @@ TEST_SUITE("kb_pack") {
     for (const auto& external : domains["files"]) json_domains += external["path"].get<std::string>().ends_with(".json");
     CHECK(pack.files().size() + json_domains == on_disk);
     CHECK(pack.ids("project_kinds") == std::vector<std::string>{"film", "legal_case", "music", "research", "software_app"});
-    CHECK(pack.ids("facets") == std::vector<std::string>{"agent", "multiplatform", "staged_transformation"});
+    CHECK(pack.ids("facets") == std::vector<std::string>{"agent", "feedback_execution", "multiplatform", "staged_transformation"});
     CHECK(pack.ids("artifact_types") ==
           std::vector<std::string>{"brainstorm", "codebase", "commit", "conversation", "email", "pleading",
                                    "recording_transcript", "screenplay", "specification"});

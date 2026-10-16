@@ -1,0 +1,78 @@
+{
+  "architecture": "x86_64",
+  "binaries": [
+    {
+      "bytes": 229942632,
+      "path": "/workspace/chatadhd/loom/build/dev/loom_tests",
+      "present": true,
+      "sha256": "53f872bf8051fbdfe14202a5b5489fdd47fe1ad90363ee23290d133f7b094de8"
+    },
+    {
+      "bytes": 127381952,
+      "path": "/workspace/chatadhd/loom/build/dev/cli/loom",
+      "present": true,
+      "sha256": "52cd01f7f77a41702fb732fee7f9bd21423a2244467199f67a711ccbd3bd5c6e"
+    },
+    {
+      "bytes": 138136400,
+      "path": "/workspace/chatadhd/loom/build/dev/server/loom-server",
+      "present": true,
+      "sha256": "6322c71afcdf9deb607c229134e5940761a831a11a2f7b79af7921a673ec8866"
+    },
+    {
+      "bytes": 125762632,
+      "path": "/workspace/chatadhd/loom/build/dev/loom_compat_tool",
+      "present": true,
+      "sha256": "fbbfbebcd5472cb25cc40b2dfd5a6a77fe2701f2d036b413797ad436046f4114"
+    },
+    {
+      "bytes": 4215888,
+      "path": "/workspace/chatadhd/loom/build/dev/loom_candidate_graph_native_tool",
+      "present": true,
+      "sha256": "ab86498c2ef95dcec728606290fdac523d16d1ff9218244ee069467b14ca37ab"
+    },
+    {
+      "bytes": 135757904,
+      "path": "/workspace/chatadhd/loom/build/dev/libloom.so",
+      "present": true,
+      "sha256": "e1d09f1e223d74021b5515cda659dd5ae064962f9dd8950fc76a840d6e29b949"
+    }
+  ],
+  "cmake_configuration": {
+    "bytes": 21829,
+    "fields": {
+      "CMAKE_BUILD_TYPE": {
+        "type": "STRING",
+        "value": "Debug"
+      },
+      "CMAKE_CXX_COMPILER": {
+        "type": "UNINITIALIZED",
+        "value": "/workspace/.onboarding/sysroot/usr/bin/g++-13"
+      },
+      "CMAKE_CXX_FLAGS": {
+        "type": "STRING",
+        "value": ""
+      },
+      "CMAKE_CXX_FLAGS_DEBUG": {
+        "type": "STRING",
+        "value": "-g1"
+      },
+      "LOOM_SHARED": {
+        "type": "BOOL",
+        "value": "ON"
+      },
+      "LOOM_USE_SYSTEM_SQLITE": {
+        "type": "BOOL",
+        "value": "OFF"
+      }
+    },
+    "path": "/workspace/chatadhd/loom/build/dev/CMakeCache.txt",
+    "sha256": "fc6b63c6ce85972308aa0f778ea1630cfcd46b07c6a66d6350b16b52cf420082"
+  },
+  "platform": "Linux",
+  "preset": "dev",
+  "python": "3.12.14",
+  "schema": "loom.build_evidence/1",
+  "source_commit": "b5e67f458ad03eb74c49bb58e0220914cc66b710",
+  "source_tree": "adf5bb674475162e7aedba185dcd2fac1ed8d021"
+}

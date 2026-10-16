@@ -1,5 +1,14 @@
 # STATE — ChatADHD / Loom
 
+> B, 2026-10-15: na `gpt/implicit-structures-2026-10-14` scalono main
+> `6fc3ec6b` zgodnie z poleceniem właściciela. Konflikty dotyczyły wyłącznie
+> STATE/INDEX; zachowano aktualny stan S1/S2 i historię B. Bramki sprzed scalenia
+> są historią, walidacja złożonego drzewa jest następna. Rozpoznania łączymy
+> z adnotacjami P23, nakładkami rodzajów krawędzi P24 i widokami P28.
+> P29 (nieznane id → nowy kandydat + dopasowanie, bez odrzucania odpowiedzi)
+> jest kierunkiem właściciela, jeszcze otwartym w przyjętym main.
+> [Raport B](reports/implicit-structures-2026-10-14.md).
+
 ## 2026-10-15 — S1+S2 (P19, P23–P28, R32–R34)
 
 Szczegóły i decyzje: `docs/reports/PLAN_2026-10-13.md` (wpisy P19–P28), `docs/reports/INDEX.md`, architektura: `docs/architecture/STRAZNIK_I_SRODOWISKA_2026-10-14.md`, `PRZEGLAD_STRAZNIK_SRODOWISKA_2026-10-15.md`, `WIDOK_SILNIK_WIZUALIZACJI_2026-10-15.md`. Przebieg wątków: `docs/reports/LEDGER_2026-10-14.md`.
@@ -62,6 +71,23 @@ Szczegóły techniczne i decyzje: `docs/reports/INDEX.md` (sekcje P9–P18 i S2/
 1. Wstawić ważny klucz OpenRouter do sekretów sieci środowiska — bez niego nie da się sprawdzić niczego z prawdziwym modelem.
 2. Dodać na GitHubie cztery sekrety z kluczem podpisu wydania (jak to zrobić: `docs/PIERWSZE_KROKI.md`) — bez nich paczka Androida jest podpisana tylko kluczem testowym i nie zainstaluje się jako aktualizacja własnej wersji.
 3. Dać prawdziwy telefon na paczkę APK — emulator nie ma prawdziwego mikrofonu ani aparatu, więc bez telefonu nie wiem, czy mikrofon, aparat i wybór pliku działają w powłoce.
+
+## Historyczny checkpoint 2026-10-15 — B: osobna gałąź rozpoznawania struktur
+
+`gpt/implicit-structures-2026-10-14`, kod `298b429b`, test modelu packa
+`f682fc89`, wcześniejsza poprawka transferu `79187377`. Main bez zmian;
+integracja należy do Claude’a. Relacyjny wzorzec z danych rozpoznaje opisane,
+nienazwane struktury; zapisuje kandydata, wiązania, dowody i alternatywy przez
+istniejący pipeline/store. Odtworzenie i wznowienie sprawdzone, zero wywołań modeli.
+Perspektywy kodu/idei/specyfikacji **tego samego projektu** pozostają osobną
+integracją; konkurencyjne interpretacje nie są ich zamiennikiem.
+
+Historyczny pełny dev/guard v3 PASS: 204/204 wpisów, 203 wykonane,
+1354 native / 47921 asercji / 2077 Python, zero Python skips;
+1 catalog_scale opt-in niewykonany. ASan/Clang/web pending w tym checkpoincie.
+[Raport](reports/implicit-structures-2026-10-14.md) zawiera historię błędów,
+dowody i punkt wznowienia. R42 inventory nadal valid=false; nie jest bramką PASS.
+
 
 ## 2026-10-12 — S1: wątki T7, T6, T1–T5 scalone, `main` = gałąź robocza
 
