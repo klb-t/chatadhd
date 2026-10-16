@@ -211,7 +211,14 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tu
             if mem is None:
                 info["missing"].append({"ref": a.ref, "conversation": u.uid, "message": a.message, "status": "member not found"})
                 continue
-            rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{a.member}"
+            to = (u.flags or {}).get("attachments_to")
+            if to:  # edit.move_attachments: the user's layout; a name already taken gets the archive slug in front
+                d = to.replace("{key}", e.key).replace("{uid}", u.uid.split(":", 1)[-1][:8]).replace("{service}", u.service or "x")
+                rel = f"attachments/{d}/{a.member.rsplit('/', 1)[-1]}"
+                if rel in paths.values():
+                    rel = f"attachments/{d}/{slugs[(arc.label, arc.sha256)]}-{a.member.rsplit('/', 1)[-1]}"
+            else:
+                rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{a.member}"
             target = stage.root / rel
             target.parent.mkdir(parents=True, exist_ok=True)
             with mem.open() as fi, open(target, "wb") as fo:

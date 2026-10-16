@@ -1219,6 +1219,6 @@ Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plast
   7. `handoff.zip` tylko z rozmowami (importer Pythona robiłby „rozmowy” OCR z obrazów); liczniki tego, co zobaczy importer. Cofnięcie: `handoff.zip: false`.
   8. Kody wyjścia 3/4/5/6; tryb `--zbiorczo` bez list ścieżek wyjść. Cofnięcie: —.
 - Znalezisko (do decyzji S1, nie zmieniane): `engine/importer.py` nie czyta opakowania `{"conversations": [...]}` z drzewami `mapping` (ChatGPT) — ani źródła, ani cięcia.
-- Doszło ponad brief: profil `bundle`, CSV rozmów, karty z pytaniami, `package.mark`/`package.show`, zapisane filtry, nazwy klastrów modelem (`klastry --nazwij`), tekst załączników tekstowych (`--tekst-zalacznikow`), obieg `handoff.zip` przez `libloom`.
-- Nie weszło (plaster C lub później): komander TUI, `serwuj`, trasa `loom_server`, OCR/ASR obrazów i dźwięku, `move_attachments`, edycje `user:<moduł>`, `state.json`, `workers`.
+- Doszło ponad brief: profil `bundle`, CSV rozmów, karty z pytaniami, `package.mark`/`package.show`, zapisane filtry, nazwy klastrów modelem (`klastry --nazwij`), tekst załączników tekstowych (`--tekst-zalacznikow`), obieg `handoff.zip` przez `libloom`, edycje `move_attachments` i `edit.user` (moduł z nakładki, tylko z `allow_user_code`).
+- Nie weszło (plaster C lub później): komander TUI, `serwuj`, trasa `loom_server`, OCR/ASR obrazów i dźwięku, `state.json` (powtórzenie polecenia = wznowienie z pamięci podręcznej modelu), `workers`.
 - Prywatność: tylko fixture'y syntetyczne; test wyjścia `--zbiorczo` dla `wytnij`; pakiet z redakcją nie zawiera zamaskowanych wartości w żadnym pliku (test).

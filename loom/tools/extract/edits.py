@@ -411,6 +411,20 @@ def e_relabel(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng:
     return {"count": n}
 
 
+@edit("move_attachments")
+def e_move_attachments(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng: Any) -> dict[str, Any]:
+    """New directory layout for the conversations' attachments in the outputs (``{key}``, ``{uid}``, ``{service}``
+    placeholders); the references in every profile follow (preserve keeps the source layout)."""
+    to = str(p["to"]).strip("/")
+    n = 0
+    for u in _conv_units(items):
+        if u.attachments and u.flags.get("attachments_to") != to:
+            u.flags = dict(u.flags or {})
+            u.flags["attachments_to"] = to
+            n += sum(1 for a in u.attachments if a.status == "resolved")
+    return {"count": n, "to": to}
+
+
 # ───────────────────────────── time ─────────────────────────────
 def _shift_obj(obj: Any, delta: timedelta, field: str) -> bool:
     utc = getattr(obj, f"{field}_utc", None)

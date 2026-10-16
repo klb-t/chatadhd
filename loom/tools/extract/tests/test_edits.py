@@ -33,6 +33,7 @@ class EditsTest(ExtractTest):
         "shift_time": {"where": "conversation", "by": "-2d"},
         "anonymise_time": {"where": "conversation", "origin": "package"},
         "redact": {"where": "conversation", "profile": "personal", "terms": ["Migracja"]},
+        "move_attachments": {"where": "conversation", "to": "media/{key}"},
     }
 
     def test_every_described_edit_is_implemented_and_tested(self):
@@ -112,6 +113,19 @@ class EditsTest(ExtractTest):
         eng2.run_recipe(rec)
         self.assertEqual(eng2.last_write["reproducible_hash"], w1["reproducible_hash"])
         self.assertNotIn(",tool,", (self.tmp / "b/table/messages.csv").read_text(encoding="utf-8"))
+
+    def test_moved_attachments_are_where_the_links_point(self):
+        eng = self._eng()
+        eng.op("edit.move_attachments", {"where": "conversation[title~/Obrazy/]", "to": "media/{key}"})
+        eng.op("cut", {"profiles": ["text"]})
+        eng.op("write", {"package": str(self.tmp / "pkg")})
+        pkg = self.tmp / "pkg"
+        moved = sorted(p.relative_to(pkg).as_posix() for p in (pkg / "attachments/media").rglob("*") if p.is_file())
+        self.assertTrue(moved)
+        md = next(p.read_text(encoding="utf-8") for p in (pkg / "text").glob("0*.md") if "Obrazy" in p.read_text(encoding="utf-8"))
+        link = md.split("](", 1)[1].split(")", 1)[0]
+        self.assertIn("media/", link)
+        self.assertTrue((pkg / "text" / link).resolve().exists())
 
     def test_scope_errors_are_explicit(self):
         eng = self._eng()
