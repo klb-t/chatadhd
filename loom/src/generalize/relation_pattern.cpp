@@ -1,8 +1,11 @@
 // Connected, directed relation joins over the existing evidence graph. Domain
 // names, edges, admission classes and search budgets are validated pack data.
 #include <algorithm>
+#include <cstdint>
 #include <map>
 #include <set>
+#include <string>
+#include <vector>
 
 #include "internal.h"
 
@@ -16,7 +19,14 @@ Result<Json> match_relation_pattern(const Index& ix, const model::Entity& subjec
   const auto max_matches = op.at("max_matches").get<std::uint64_t>();
   Json matches = Json::array();
   std::uint64_t steps = 0;
-  auto result = [&] { return Json{{"matches", matches}, {"steps", steps}, {"complete", true}}; };
+  // A spent budget does not fail the run (one dense subject would stop every
+  // project): the result says it is incomplete and which budget ran out.
+  std::string exhausted;
+  auto result = [&] {
+    Json r{{"matches", matches}, {"steps", steps}, {"complete", exhausted.empty()}};
+    if (!exhausted.empty()) r["exhausted"] = exhausted;
+    return r;
+  };
   if (nodes.at(root).get<std::string>() != subject.kind) return result();
 
   // A connected order means each join has an already bound endpoint. This
@@ -78,7 +88,10 @@ Result<Json> match_relation_pattern(const Index& ix, const model::Entity& subjec
     auto& state = stack.back();
     if (state.cursor == state.candidates->size()) { stack.pop_back(); continue; }
     if (max_steps && steps == max_steps)
-      return Error(Errc::Unavailable, "generalize.relation_pattern: max_steps exhausted; recognition is incomplete");
+    {
+      exhausted = "max_steps";
+      return result();
+    }
     ++steps;
     const auto* claim = (*state.candidates)[state.cursor++];
     const auto& edge = edges[order[stack.size() - 1]];
@@ -117,7 +130,8 @@ Result<Json> match_relation_pattern(const Index& ix, const model::Entity& subjec
     for (const auto& key : op.at("same_qualifiers")) {
       const std::string name = key.get<std::string>();
       const Json value = qualifiers.value(name, Json(""));
-      if (next.qualifiers.contains(name) && next.qualifiers[name] != value) compatible = false;
+      // Canonical comparison: ordered_json operator!= coerces 1 and 1.0.
+      if (next.qualifiers.contains(name) && json::canonical(next.qualifiers[name]) != json::canonical(value)) compatible = false;
       next.qualifiers[name] = value;
     }
     if (!compatible) continue;
@@ -128,7 +142,10 @@ Result<Json> match_relation_pattern(const Index& ix, const model::Entity& subjec
       continue;
     }
     if (max_matches && matches.size() == max_matches)
-      return Error(Errc::Unavailable, "generalize.relation_pattern: max_matches exhausted; recognition is incomplete");
+    {
+      exhausted = "max_matches";
+      return result();
+    }
     Json proof = Json::array();
     std::set<std::string> observations;
     for (const auto& [index, id] : next.claims) {

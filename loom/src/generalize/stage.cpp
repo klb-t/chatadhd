@@ -6,6 +6,7 @@
 #include "internal.h"
 #include "kb/stage_profile.h"
 #include "loom/knowledge.h"
+#include "loom/runtime.h"
 
 namespace loom::generalize {
 
@@ -243,6 +244,13 @@ Result<Json> run_stage(knowledge::StageContext& ctx) {
   LOOM_TRY(ctx.store.put_models(ctx.run, models));
   LOOM_TRY(ctx.store.put_predictions(ctx.run, preds));
   LOOM_TRY(ctx.store.put_areas(ctx.run, areas));
+  // Recognized patterns surface as an overlay on the edge-kind effective view (P24), never auto-promoted unless the user sets "auto".
+  {
+    const std::string promotion = json::get_string(ctx.params, "recognition_overlay", "propose");
+    if (promotion != "propose" && promotion != "auto" && promotion != "off")
+      return Error(Errc::InvalidArgument, "knowledge.generalize: recognition_overlay must be propose, auto or off");
+    LOOM_TRY(write_recognition_overlay(ctx.rt.paths().root, instances, promotion));
+  }
   phase("generalize.hash_output");
   progress(8, "done");
 

@@ -8,6 +8,7 @@
 #include <map>
 #include <optional>
 #include <set>
+#include <tuple>
 #include <unordered_map>
 
 #include "internal.h"

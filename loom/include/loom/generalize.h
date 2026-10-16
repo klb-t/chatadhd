@@ -48,6 +48,7 @@
 // * Competing models are kept side by side and scored; never merged.
 #pragma once
 
+#include <filesystem>
 #include <memory>
 #include <optional>
 #include <string>
@@ -143,6 +144,14 @@ Result<std::vector<model::Prediction>> evaluate_predictions(std::vector<model::P
 // written to the store. Params: {"max_depth"?:1, "predict"?:true}.
 // -> {"output","stats":{"instances","inferred","extrapolated","transferred","principles","operators","models","predictions"}}
 Result<Json> run_stage(knowledge::StageContext& ctx);
+
+// P24 adapter: recognized patterns are not a registry of their own, they are an overlay on the edge-kind view (views/recognition.json).
+// Every candidate Instance with a recognition receipt becomes `add` of edge kind "structure:<paradigm>" (provenance: origin=generalize,
+// via=recognition, method/version/pack_hash, instances). Promotion mode: "propose" (preset) = the entry is added and `disable`d, a visible
+// hypothesis (kind structure_recognition) that readers skip until the user restores it in an overlay of their own; "auto" = enabled;
+// "off" = no overlay. The file is rewritten whole by each run (a recognition that no longer holds disappears).
+Json recognition_overlay(const std::vector<model::Instance>& instances, std::string_view promotion);
+Status write_recognition_overlay(const std::filesystem::path& root, const std::vector<model::Instance>& instances, std::string_view promotion);
 
 }  // namespace generalize
 }  // namespace loom
