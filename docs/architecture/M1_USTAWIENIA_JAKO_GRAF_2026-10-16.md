@@ -361,3 +361,9 @@ Obszar: `docs` · zależy od: M1-T1, M1-A1
 
 Pliki: docs/architecture/USTAWIENIA_JAKO_GRAF_2026-10-16.md (treść tej specyfikacji §1–§7 z odwołaniami do plików), docs/reports/INDEX.md (sekcja M1: decyzje 1–12 z §5 i cofnięcia; sprostowania stanu: P33 na main, ui.pack ma pl, JNI ma settings_fields, #shell-model-slot nie był pusty, 86 pól nie 81, rom why EN-only w generatorze), docs/STATE.md („Co działa teraz (słowami właściciela)”: ROM, ustawienia po ludzku, role, Ty, wywiad, profile selektora, Co wysłaliśmy, menu +, Android; „Co otwarte”: profile dostawców = kalibracja do etapu replikacji, Propozycja modelu przy polu, touch.drag.hold jeśli nie zrobione, P37, okna, 3D na telefonie; „Co musisz zrobić Ty”: klucz, telefon, sekrety podpisu — bez zmian), docs/PRZEWODNIK_M1.md (lista kontroli z sekcji acceptance_checks jako instrukcja na telefon, każdy punkt z cytatem właściciela), docs/reports/M1_CHECKPOINT_{0,1,2,3}.md (zrzuty z emulatora po każdej bramie). Akceptacja: każda ścieżka pliku w dokumentach istnieje (skrypt sprawdzający linki w docs → add_test lub krok CI); STATE mówi wprost, czego w M1 nie ma.
 
+
+---
+
+## Uzupełnienia w trakcie prac
+
+- **S2, 2026-10-16 15:32 (kontrakt Android ↔ web dla M1-W0/W3):** Wstecz Androida woła najpierw `window.__loomBack()` — funkcja **synchroniczna**, zwraca `true`, gdy zamknęła nakładkę albo krok ścieżki nawigatora; potem historia WebView; w korzeniu pytanie wg ustawienia `android_back_exit_confirm` (`ask` | `always` | `never`; brak pola = `ask`; przy `ask` drugie Wstecz = wyjście = `moveTaskToBack`, szkic zostaje). Wykluczenie gestów systemowych dla mapy: `window.LoomBridge?.setGestureExclusion?.(JSON.stringify([{x,y,w,h}, …]))` w px CSS, `[]` czyści. Powłoka ma `adjustResize`, `.shell-root` zapas 100vh, `.shell-composer` z marginesem safe-area. Smoke S2: macierz pixel_6 / pixel_5 / pixel_6 + czcionka 1.3; kroki ROM/Ustawienia/rola czekają na `data-testid` z W0 — W0 podaje je w raporcie.
