@@ -1,6 +1,8 @@
 package com.chatadhd.android
 
 import android.content.Context
+import android.os.Build
+import android.os.Environment
 import java.io.File
 
 /**
@@ -26,6 +28,39 @@ class DataLocation(private val ctx: Context) {
     var secretsWrap: Boolean
         get() = p.getBoolean("secrets_wrap", true)
         set(v) { p.edit().putBoolean("secrets_wrap", v).apply() }
+
+    /** One-time move of a legacy shared-storage dir to private storage at start-up (preset on). */
+    var autoMigrate: Boolean
+        get() = p.getBoolean("auto_migrate", true)
+        set(v) { p.edit().putBoolean("auto_migrate", v).apply() }
+    private var autoMigrateTried: Boolean
+        get() = p.getBoolean("auto_migrate_tried", false)
+        set(v) { p.edit().putBoolean("auto_migrate_tried", v).commit() }
+    /** The one-time "data is in shared storage" notice was shown for the current choice. */
+    var sharedNoticeShown: Boolean
+        get() = p.getBoolean("shared_notice_shown", false)
+        set(v) { p.edit().putBoolean("shared_notice_shown", v).commit() }
+
+    private fun canReadShared(): Boolean =
+        Build.VERSION.SDK_INT < Build.VERSION_CODES.R || Environment.isExternalStorageManager()
+
+    fun shouldAutoMigrate(): Boolean = DataLocationPolicy.shouldAutoMigrate(
+        choice(), DataLocationPolicy.hasData(sharedDir), DataLocationPolicy.hasData(privateDir),
+        autoMigrate, autoMigrateTried, canReadShared()
+    )
+
+    /**
+     * Copy shared -> private, verify every file (sha256), and only then switch. The shared dir is left
+     * untouched and remembered as an "old copy" (deletable later by the user in [StorageActivity]).
+     * Attempted once; on failure the data stays where it was. Call from a background thread, before
+     * the core is initialised.
+     */
+    fun runAutoMigration(): DataMigration.Result {
+        autoMigrateTried = true
+        val r = DataMigration.copyAndVerify(sharedDir, privateDir) { _, _, _ -> true }
+        if (r.ok) switchTo(DataLocationPolicy.KIND_PRIVATE, null, sharedDir)
+        return r
+    }
 
     fun choice(): DataLocationPolicy.Choice = DataLocationPolicy.choose(
         savedKind, DataLocationPolicy.hasData(sharedDir), DataLocationPolicy.hasData(privateDir)
@@ -63,6 +98,7 @@ class DataLocation(private val ctx: Context) {
             .putString("kind", kind)
             .putString("custom_path", custom ?: "")
             .putStringSet("old_copies", olds)
+            .putBoolean("shared_notice_shown", false)
             .commit()
     }
 

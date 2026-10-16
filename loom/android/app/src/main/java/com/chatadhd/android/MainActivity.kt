@@ -44,7 +44,6 @@ import com.google.android.material.snackbar.Snackbar
 class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
     private lateinit var bridge: LoomBridge
-    private lateinit var banner: android.widget.TextView
     private lateinit var gear: android.widget.TextView
     private lateinit var dataLocation: DataLocation
     /** Keeps secrets.json sealed with the Keystore between uses (see SecretsVaultCore). */
@@ -101,19 +100,8 @@ class MainActivity : AppCompatActivity() {
             setPadding(24, 8, 24, 8)
             setOnClickListener { requestConnection.launch(Intent(this@MainActivity, ConnectionActivity::class.java)) }
         }
-        // Visible warning while the data directory is in shared storage; tap = open the location screen.
-        banner = android.widget.TextView(this).apply {
-            visibility = View.GONE
-            setText(R.string.storage_banner_shared)
-            setTextColor(ContextCompat.getColor(this@MainActivity, R.color.loom_warning_fg))
-            setBackgroundColor(ContextCompat.getColor(this@MainActivity, R.color.loom_warning_bg))
-            setPadding(24, 16, 24, 16)
-            setOnClickListener { requestConnection.launch(Intent(this@MainActivity, StorageActivity::class.java)) }
-        }
         val column = android.widget.LinearLayout(this).apply {
             orientation = android.widget.LinearLayout.VERTICAL
-            addView(banner, android.widget.LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
             addView(webView, android.widget.LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f))
         }
@@ -250,6 +238,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadApp() {
+        if (dataLocation.shouldAutoMigrate()) { runAutoMigration(); return }
         // The web client queries its backend as soon as it mounts. Initialise
         // it first; the asset handler maps /assets/web/... to assets/web/....
         val dir = dataLocation.currentDir()
@@ -272,9 +261,26 @@ class MainActivity : AppCompatActivity() {
         webView.loadUrl(LOCAL_URL)
     }
 
+    /** One-time copy+verify of a legacy shared-storage dir into private storage; then continues to [loadApp]. */
+    private fun runAutoMigration() {
+        Snackbar.make(webView, R.string.storage_auto_migrating, Snackbar.LENGTH_INDEFINITE).show()
+        Thread {
+            val r = dataLocation.runAutoMigration()
+            runOnUiThread {
+                Snackbar.make(webView,
+                    if (r.ok) R.string.storage_auto_migrated else R.string.storage_auto_migrate_failed,
+                    Snackbar.LENGTH_LONG).show()
+                loadApp()
+            }
+        }.start()
+    }
+
     private fun showStorageNotices(dir: java.io.File, unseal: SecretsVaultCore.Outcome, seal: SecretsVaultCore.Outcome) {
-        banner.visibility =
-            if (DataLocationPolicy.needsWarning(dataLocation.exposure(dir))) View.VISIBLE else View.GONE
+        // No permanent bar: one calm notice, only when the user chose shared storage themselves.
+        if (DataLocationPolicy.showSharedNoticeOnce(dataLocation.choice(), dataLocation.exposure(dir), dataLocation.sharedNoticeShown)) {
+            dataLocation.sharedNoticeShown = true
+            Snackbar.make(webView, R.string.storage_notice_shared, Snackbar.LENGTH_LONG).show()
+        }
         val message = when {
             unseal == SecretsVaultCore.Outcome.UNSEAL_FAILED -> R.string.secrets_unreadable
             seal == SecretsVaultCore.Outcome.SEAL_FAILED -> R.string.secrets_seal_failed

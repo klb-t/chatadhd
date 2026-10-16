@@ -91,6 +91,46 @@ public final class DataLocationTest {
         } finally {
             deleteAll(root);
         }
+
+        // --- R35: default private, one-time migration decision, notice only for an explicit shared choice ---
+        Choice legacy = DataLocationPolicy.choose(null, true, false);
+        eq(DataLocationPolicy.shouldAutoMigrate(legacy, true, false, true, false, true), true, "legacy shared -> migrate");
+        eq(DataLocationPolicy.shouldAutoMigrate(legacy, true, false, false, false, true), false, "setting off -> no migrate");
+        eq(DataLocationPolicy.shouldAutoMigrate(legacy, true, false, true, true, true), false, "already tried -> no migrate");
+        eq(DataLocationPolicy.shouldAutoMigrate(legacy, true, false, true, false, false), false, "shared unreadable -> no migrate");
+        eq(DataLocationPolicy.shouldAutoMigrate(DataLocationPolicy.choose("shared", true, false), true, false, true, false, true), false, "explicit shared is never moved");
+        eq(DataLocationPolicy.shouldAutoMigrate(DataLocationPolicy.choose(null, false, false), false, false, true, false, true), false, "new install: nothing to move");
+        eq(DataLocationPolicy.shouldAutoMigrate(DataLocationPolicy.choose(null, true, true), true, true, true, false, true), false, "private already has data");
+        eq(DataLocationPolicy.shouldAutoMigrate(null, true, false, true, false, true), false, "null choice");
+        Choice explicitShared = DataLocationPolicy.choose("shared", true, false);
+        eq(DataLocationPolicy.showSharedNoticeOnce(explicitShared, Exposure.SHARED, false), true, "explicit shared: notice once");
+        eq(DataLocationPolicy.showSharedNoticeOnce(explicitShared, Exposure.SHARED, true), false, "notice not repeated");
+        eq(DataLocationPolicy.showSharedNoticeOnce(legacy, Exposure.SHARED, false), false, "derived shared: no notice");
+        eq(DataLocationPolicy.showSharedNoticeOnce(DataLocationPolicy.choose(null, false, false), Exposure.PRIVATE, false), false, "default private: no notice");
+        eq(DataLocationPolicy.showSharedNoticeOnce(DataLocationPolicy.choose("private", false, false), Exposure.PRIVATE, false), false, "explicit private: no notice");
+        eq(DataLocationPolicy.showSharedNoticeOnce(DataLocationPolicy.choose("app_external", false, false), Exposure.APP_EXTERNAL, false), false, "app external: no notice");
+
+        File mroot = Files.createTempDirectory("loom-mig").toFile();
+        try {
+            File sh = new File(mroot, "sdcard/Documents/ChatADHD"); sh.mkdirs();
+            Files.write(new File(sh, ".chatadhd_data").toPath(), "x".getBytes());
+            Files.write(new File(sh, "secrets.json").toPath(), "{\"k\":1}".getBytes());
+            File pv = new File(mroot, "data/files/ChatADHD");
+            eq(DataLocationPolicy.hasData(pv), false, "private empty before");
+            com.chatadhd.android.DataMigration.Result r = com.chatadhd.android.DataMigration.copyAndVerify(sh, pv, (i, n, rel) -> true);
+            eq(r.ok, true, "migration ok");
+            eq(DataLocationPolicy.hasData(pv), true, "sentinel copied to private");
+            eq(DataLocationPolicy.hasData(sh), true, "old dir kept with its sentinel");
+            eq(new File(sh, "secrets.json").isFile(), true, "old data not deleted");
+            eq(DataLocationPolicy.isSafeToDeleteOldCopy(sh, pv), true, "old copy deletable by explicit action");
+            eq(DataLocationPolicy.shouldAutoMigrate(DataLocationPolicy.choose(null, true, true), true, true, true, false, true), false, "no second migration");
+            File pv2 = new File(mroot, "data/files2/ChatADHD"); pv2.mkdirs();
+            Files.write(new File(pv2, "stray").toPath(), "x".getBytes());
+            eq(com.chatadhd.android.DataMigration.copyAndVerify(sh, pv2, (i, n, rel) -> true).ok, false, "non-empty destination refused");
+            eq(new File(pv2, "stray").isFile(), true, "refused destination untouched");
+        } finally {
+            deleteAll(mroot);
+        }
         if (fails > 0) System.exit(1);
         System.out.println("DataLocationTest OK");
     }
