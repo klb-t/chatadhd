@@ -13,7 +13,16 @@ Environment variables:
   CHATADHD_DATA   Override data directory path
   KIVY_LOG_LEVEL  Kivy log verbosity (debug, info, warning, error)
 """
-__version__ = "0.07.10"
+def _read_version() -> str:
+    # R36: one source of the version for every client: loom/VERSION ("x.yy.zz").
+    from pathlib import Path
+    try:
+        return (Path(__file__).resolve().parent / "loom" / "VERSION").read_text(encoding="utf-8").strip()
+    except OSError:
+        return "0.10.00"
+
+
+__version__ = _read_version()
 
 import logging
 import os

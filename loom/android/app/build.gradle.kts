@@ -14,8 +14,16 @@ plugins {
 //   -Ploom.nativeBuildType=T CMake build type of the native core (Release/RelWithDebInfo/Debug/MinSizeRel);
 //                            default: what Gradle picks for the variant (Debug for assembleDebug, which
 //                            makes the core slow on a phone - the package workflow asks for Release)
-val loomVersionCode = providers.gradleProperty("loom.versionCode").map { it.trim().toInt() }.orElse(1)
-val loomVersionName = providers.gradleProperty("loom.versionName").map { it.trim() }.orElse("0.1.0")
+// The one source of the version (R36): loom/VERSION, "x.yy.zz". versionName defaults to it; versionCode defaults to
+// x*10^9 + yy*10^7 + zz*10^5 (+ the build number CI passes as loom.buildNumber, < 100000), so a newer version, and a
+// newer build of the same version, always installs as an update.
+val loomVersionText = rootProject.file("../VERSION").readText().trim()
+val loomVersionParts = Regex("""^(\d+)\.(\d\d)\.(\d\d)$""").matchEntire(loomVersionText)?.groupValues?.drop(1)?.map { it.toInt() }
+    ?: throw GradleException("loom/VERSION must read x.yy.zz (got '$loomVersionText')")
+val loomBuildNumber = providers.gradleProperty("loom.buildNumber").map { it.trim().toInt() % 100000 }.orElse(0)
+val loomVersionCode = providers.gradleProperty("loom.versionCode").map { it.trim().toInt() }
+    .orElse(loomBuildNumber.map { loomVersionParts[0] * 1_000_000_000 + loomVersionParts[1] * 10_000_000 + loomVersionParts[2] * 100_000 + it })
+val loomVersionName = providers.gradleProperty("loom.versionName").map { it.trim() }.orElse(loomVersionText)
 val loomAbis = providers.gradleProperty("loom.abis")
     .map { v -> v.split(",").map { it.trim() }.filter { it.isNotEmpty() } }
     .orElse(listOf("arm64-v8a", "x86_64"))
