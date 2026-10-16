@@ -61,7 +61,7 @@ TEST_SUITE("view_interaction") {
     for (const auto& b : r["bindings"]) CHECK(b["device"] == "keyboard");
   }
 
-  TEST_CASE("touch: on-screen held-modifier buttons and gestures; xr and voice are recorded as data only") {
+  TEST_CASE("touch: on-screen held-modifier buttons and gestures; xr is handled (P28 step 3) but its voice phrase and the voice device stay recorded as data only") {
     fsutil::TempDir td;
     const Json touch = resolve(td.path(), "touch");
     const Json* hold = binding(touch, "touch.hold.shift");
@@ -72,9 +72,19 @@ TEST_SUITE("view_interaction") {
     const Json xr = resolve(td.path(), "xr");
     const Json* gaze = binding(xr, "xr.focus.gaze");
     REQUIRE(gaze);
-    CHECK((*gaze)["status"] == "recorded");
-    CHECK((*gaze)["reasons"][0]["code"] == "device_not_implemented");
+    CHECK((*gaze)["status"] == "active");
+    CHECK((*gaze)["reasons"].empty());
     CHECK((*binding(xr, "xr.coarse.left"))["action"]["coarse"] == true);
+    // controller buttons are held modifiers, the thumbstick has the same bindings as the touch swipes (per held modifier)
+    CHECK((*binding(xr, "xr.hold.shift"))["action"]["kind"] == "hold_modifier");
+    CHECK((*binding(xr, "xr.depth_time.left"))["input"]["modifiers"] == Json::array({"shift"}));
+    CHECK((*binding(xr, "xr.plane.left"))["input"]["gesture"] == "stick_left");
+    // voice in XR: the device is handled, the phrase input is not - recorded, with the reason naming the input
+    const Json* phrase = binding(xr, "xr.voice.zoom.in");
+    REQUIRE(phrase);
+    CHECK((*phrase)["status"] == "recorded");
+    CHECK((*phrase)["reasons"][0]["code"] == "input_not_implemented");
+    CHECK((*phrase)["reasons"][0]["params"]["field"] == "phrase");
     CHECK((*binding(resolve(td.path(), "voice"), "voice.zoom.in"))["status"] == "recorded");
     // without a device: every device
     auto all = unwrap(views::Interaction::open(td.path())).resolve(Json::object());

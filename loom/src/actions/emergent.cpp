@@ -146,6 +146,38 @@ std::string preset(Runtime& rt, const Json& routing) {
 
 // ── a command no action understands ─────────────────────────────────
 
+std::string existing_action_for(const Context& c, const std::string& verb) {
+  const Json& fold_map = c.routing.at("heuristic").at("fold");
+  const std::u32string v = utf8::decode(fold(verb, fold_map));
+  if (v.empty()) return std::string();
+  const auto near_chars = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(emergent_cfg(c.routing).value("command_shape", Json::object()), "existing_prefix_chars", 5)));
+  const auto names = [&](const Json& phrases) {
+    if (!phrases.is_object()) return false;
+    for (auto lang = phrases.begin(); lang != phrases.end(); ++lang)
+      for (const auto& phrase : strings_of(&lang.value())) {
+        const auto words = word_tokens(fold(phrase, fold_map));
+        const std::string raw = fold(phrase, fold_map);
+        if (words.empty()) continue;
+        std::u32string w = utf8::decode(words[0]);
+        if (!raw.empty() && raw.find('*') != std::string::npos && raw.find(' ') == std::string::npos) {  // "streszcz*": a stem
+          if (v.rfind(w, 0) == 0) return true;
+          continue;
+        }
+        if (v == w) return true;
+        std::size_t shared = 0;
+        while (shared < v.size() && shared < w.size() && v[shared] == w[shared]) ++shared;
+        if (near_chars > 0 && shared >= near_chars) return true;
+      }
+    return false;
+  };
+  for (auto it = c.engine.catalogue().begin(); it != c.engine.catalogue().end(); ++it) {
+    if (names(it.value().value("phrases", Json::object()))) return it.key();
+    const Json extra = c.routing.at("heuristic").value("phrases", Json::object());
+    if (extra.is_object() && extra.contains(it.key()) && names(extra.at(it.key()))) return it.key();
+  }
+  return std::string();
+}
+
 std::optional<Json> from_command(const Context& c, const std::string& text, const std::string& lang, const Json& element) {
   if (preset(c.rt, c.routing) != "propose") return std::nullopt;
   const Json& cfg = emergent_cfg(c.routing);
@@ -177,6 +209,8 @@ std::optional<Json> from_command(const Context& c, const std::string& text, cons
   // P17: the lead is a verb of the language (the data's list), not any word ("First message of run 1" is a statement); what follows the
   // lead does not turn the sentence into a noun phrase or a statement ("Outline of this conversation", "List is long", "Note: ...").
   if (!is_listed_verb(shape, lang, verb)) return std::nullopt;
+  // P30: a verb an existing action already answers to ("streść" -> summarise) is never offered as a new action.
+  if (!existing_action_for(c, verb).empty()) return std::nullopt;
   if (idx + 1 < tokens.size()) {
     const auto after = strings_of(json::find(statement, "after_lead"));
     if (std::find(after.begin(), after.end(), tokens[idx + 1]) != after.end()) return std::nullopt;

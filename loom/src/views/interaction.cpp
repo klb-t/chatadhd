@@ -144,8 +144,16 @@ Json Interaction::resolve(const Json& request) const {
     if (kind.empty() || !act || act->disabled) { reject("unsupported_action_kind", Json{{"kind", kind}}); continue; }
 
     Json reasons = Json::array();
-    const bool implemented = json::get_bool(dev->value, "implemented", false);
+    bool implemented = json::get_bool(dev->value, "implemented", false);
     if (!implemented) reasons.push_back(reason("device_not_implemented", "info", Json{{"device", device}}));
+    // A device can be handled while some of its input fields are still only recorded (xr: the voice phrase): such a binding is "recorded".
+    if (implemented)
+      for (const auto& field : strs(dev->value.value("recorded_inputs", Json::array())))
+        if (input.contains(field)) {
+          implemented = false;
+          reasons.push_back(reason("input_not_implemented", "info", Json{{"device", device}, {"field", field}}));
+          break;
+        }
     if (kind == "switch_view") {
       const std::string decl = json::get_string(action, "declaration");
       const EffectiveEntry* d = declarations_.find(decl);

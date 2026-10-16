@@ -245,6 +245,21 @@
           "profile": "graph_views",
           "pointer": "/interaction_rules"
         }
+      },
+      "view_renderers": {
+        "label": {
+          "en": "View renderers",
+          "pl": "Renderery widoków"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "graph_views",
+          "pointer": "/view_renderers"
+        }
       }
     },
     "edge_kinds": {
@@ -2059,17 +2074,21 @@
           "en": "XR (glasses / headset)",
           "pl": "XR (okulary / headset)"
         },
-        "implemented": false,
+        "implemented": true,
         "inputs": [
           "gaze",
           "gesture",
           "phrase",
-          "modifiers"
+          "modifiers",
+          "button"
         ],
         "meaning": {
-          "en": "Gaze with finger movement, voice, and large gestures for coarse scene moves only. Recorded as data; no WebXR code yet.",
-          "pl": "Wzrok z ruchem palców, głos i duże gesty tylko do zgrubnych ruchów sceny. Zapisane jako dane; bez kodu WebXR."
-        }
+          "en": "Gaze with a pinch or a controller trigger, controller buttons as held modifiers, the thumbstick as the arrows, large gestures for coarse scene moves only. Voice (phrase) stays recorded as data.",
+          "pl": "Wzrok z uszczypnięciem albo spustem kontrolera, przyciski kontrolerów jako trzymane modyfikatory, drążek jako strzałki, duże gesty tylko do zgrubnych ruchów sceny. Głos (fraza) zostaje zapisany jako dane."
+        },
+        "recorded_inputs": [
+          "phrase"
+        ]
       }
     },
     "interaction_actions": {
@@ -3286,6 +3305,399 @@
           "direction": 1,
           "step": 1
         }
+      },
+      "xr.focus.trigger": {
+        "label": {
+          "en": "Right trigger: focus on the pointed element",
+          "pl": "Prawy spust: fokus na wskazanym elemencie"
+        },
+        "device": "xr",
+        "input": {
+          "button": "right_trigger"
+        },
+        "action": {
+          "kind": "change_focus",
+          "target": "gazed"
+        }
+      },
+      "xr.hold.shift": {
+        "label": {
+          "en": "Left trigger (hold): Shift",
+          "pl": "Lewy spust (trzymaj): Shift"
+        },
+        "device": "xr",
+        "input": {
+          "button": "left_trigger"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "shift"
+        }
+      },
+      "xr.hold.ctrl": {
+        "label": {
+          "en": "Left squeeze (hold): Ctrl",
+          "pl": "Lewy chwyt (trzymaj): Ctrl"
+        },
+        "device": "xr",
+        "input": {
+          "button": "left_squeeze"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "ctrl"
+        }
+      },
+      "xr.hold.alt": {
+        "label": {
+          "en": "Right squeeze (hold): Alt",
+          "pl": "Prawy chwyt (trzymaj): Alt"
+        },
+        "device": "xr",
+        "input": {
+          "button": "right_squeeze"
+        },
+        "action": {
+          "kind": "hold_modifier",
+          "modifier": "alt"
+        }
+      },
+      "xr.labels.toggle": {
+        "label": {
+          "en": "Primary button: labels on/off",
+          "pl": "Przycisk główny: etykiety wł./wył."
+        },
+        "device": "xr",
+        "input": {
+          "button": "primary"
+        },
+        "action": {
+          "kind": "toggle_element",
+          "element": "labels"
+        }
+      },
+      "xr.plane.left": {
+        "label": {
+          "en": "Plane: left (thumbstick)",
+          "pl": "Płaszczyzna: w lewo (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_left",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "xr.plane.right": {
+        "label": {
+          "en": "Plane: right (thumbstick)",
+          "pl": "Płaszczyzna: w prawo (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_right",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "xr.plane.up": {
+        "label": {
+          "en": "Plane: up (thumbstick)",
+          "pl": "Płaszczyzna: w górę (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_up",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "xr.plane.down": {
+        "label": {
+          "en": "Plane: down (thumbstick)",
+          "pl": "Płaszczyzna: w dół (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_down",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "plane",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "xr.depth_time.left": {
+        "label": {
+          "en": "Time: back (thumbstick)",
+          "pl": "Czas: wstecz (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_left",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "xr.depth_time.right": {
+        "label": {
+          "en": "Time: forward (thumbstick)",
+          "pl": "Czas: naprzód (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_right",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "xr.depth_time.up": {
+        "label": {
+          "en": "Depth: shallower (thumbstick)",
+          "pl": "Głębia: płycej (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_up",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "xr.depth_time.down": {
+        "label": {
+          "en": "Depth: deeper (thumbstick)",
+          "pl": "Głębia: głębiej (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_down",
+          "modifiers": [
+            "shift"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "xr.branches.left": {
+        "label": {
+          "en": "Branches: previous (thumbstick)",
+          "pl": "Gałęzie: poprzednia (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_left",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "xr.branches.right": {
+        "label": {
+          "en": "Branches: next (thumbstick)",
+          "pl": "Gałęzie: następna (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_right",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "horizontal",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "xr.branches.up": {
+        "label": {
+          "en": "Along the branch: back (thumbstick)",
+          "pl": "Wzdłuż gałęzi: wstecz (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_up",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "xr.branches.down": {
+        "label": {
+          "en": "Along the branch: forward (thumbstick)",
+          "pl": "Wzdłuż gałęzi: naprzód (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_down",
+          "modifiers": [
+            "ctrl"
+          ]
+        },
+        "action": {
+          "kind": "move",
+          "pair": "branches",
+          "axis": "vertical",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "xr.rotate.left": {
+        "label": {
+          "en": "Rotate: direction left (thumbstick)",
+          "pl": "Obrót: kierunek w lewo (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_left",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": -1,
+          "step": 15
+        }
+      },
+      "xr.rotate.right": {
+        "label": {
+          "en": "Rotate: direction right (thumbstick)",
+          "pl": "Obrót: kierunek w prawo (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_right",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "direction",
+          "direction": 1,
+          "step": 15
+        }
+      },
+      "xr.rotate.up": {
+        "label": {
+          "en": "Perspective: previous (thumbstick)",
+          "pl": "Perspektywa: poprzednia (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_up",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": -1,
+          "step": 1
+        }
+      },
+      "xr.rotate.down": {
+        "label": {
+          "en": "Perspective: next (thumbstick)",
+          "pl": "Perspektywa: następna (drążek)"
+        },
+        "device": "xr",
+        "input": {
+          "gesture": "stick_down",
+          "modifiers": [
+            "alt"
+          ]
+        },
+        "action": {
+          "kind": "rotate",
+          "target": "perspective",
+          "direction": 1,
+          "step": 1
+        }
+      },
+      "kbd.focus.selected": {
+        "label": {
+          "en": "F: focus on the selected element",
+          "pl": "F: fokus na zaznaczonym elemencie"
+        },
+        "device": "keyboard",
+        "input": {
+          "key": "f",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "change_focus",
+          "target": "selected"
+        }
       }
     },
     "interaction_rules": {
@@ -3331,7 +3743,220 @@
           "unknown_device_requested": {
             "en": "There is no device '{device}' in the list.",
             "pl": "Nie ma urządzenia '{device}' na liście."
+          },
+          "input_not_implemented": {
+            "en": "Input '{field}' of device '{device}' is only recorded as data here (not handled in this version).",
+            "pl": "Wejście '{field}' urządzenia '{device}' jest tu tylko zapisane jako dane (brak obsługi w tej wersji)."
           }
+        }
+      }
+    },
+    "view_renderers": {
+      "flat_2d": {
+        "label": {
+          "en": "Flat 2D (SVG)",
+          "pl": "Płaski 2D (SVG)"
+        },
+        "meaning": {
+          "en": "The view model projected onto a plane; depth shown as size, fog and desaturation. Works everywhere.",
+          "pl": "Model widoku rzutowany na płaszczyznę; głębia jako rozmiar, mgła i odbarwienie. Działa wszędzie."
+        },
+        "engine": "svg_2d",
+        "implemented": true,
+        "modes": {
+          "flat": {
+            "kind": "screen",
+            "label": {
+              "en": "Flat",
+              "pl": "Płasko"
+            }
+          }
+        },
+        "default_mode": "flat"
+      },
+      "spatial_3d": {
+        "label": {
+          "en": "Spatial 3D (screen, VR, AR)",
+          "pl": "Przestrzenny 3D (ekran, VR, AR)"
+        },
+        "meaning": {
+          "en": "The same view model in 3D: sector angles are real directions around the user, depth is distance, the world stands still and the user turns. On a flat screen: orbit or look-around; with WebXR: immersive VR or AR.",
+          "pl": "Ten sam model widoku w 3D: kąty sektorów to prawdziwe kierunki wokół użytkownika, głębia to odległość, świat stoi, obraca się użytkownik. Na płaskim ekranie: orbita albo rozglądanie się; z WebXR: immersyjne VR albo AR."
+        },
+        "engine": "three",
+        "implemented": true,
+        "default_mode": "orbit",
+        "modes": {
+          "orbit": {
+            "kind": "screen",
+            "label": {
+              "en": "Orbit (screen)",
+              "pl": "Orbita (ekran)"
+            },
+            "meaning": {
+              "en": "Drag to orbit the scene, wheel to move closer; the fallback when there is no headset.",
+              "pl": "Przeciągnij, by okrążać scenę, kółko przybliża; tryb zastępczy bez gogli."
+            }
+          },
+          "look": {
+            "kind": "screen",
+            "label": {
+              "en": "Look around (screen)",
+              "pl": "Rozglądanie się (ekran)"
+            },
+            "meaning": {
+              "en": "Stand in the middle and turn your head by dragging, as in VR.",
+              "pl": "Stań pośrodku i obracaj głowę przeciągnięciem, jak w VR."
+            }
+          },
+          "immersive-vr": {
+            "kind": "xr",
+            "session": "immersive-vr",
+            "label": {
+              "en": "Enter VR",
+              "pl": "Wejdź w VR"
+            },
+            "features": {
+              "required": [],
+              "optional": [
+                "local-floor",
+                "hand-tracking"
+              ]
+            }
+          },
+          "immersive-ar": {
+            "kind": "xr",
+            "session": "immersive-ar",
+            "label": {
+              "en": "Enter AR",
+              "pl": "Wejdź w AR"
+            },
+            "features": {
+              "required": [],
+              "optional": [
+                "local-floor",
+                "hand-tracking"
+              ]
+            },
+            "transparent_background": true
+          }
+        },
+        "spatial": {
+          "direction_offset_deg": 0,
+          "mirror": false,
+          "distance": {
+            "near_m": 1.0,
+            "far_m": 7.0,
+            "curve": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            "flat_m": 3.0,
+            "rise_m_per_m": 0.12
+          },
+          "node": {
+            "m_per_px": 0.012,
+            "min_radius_m": 0.03,
+            "max_radius_m": 0.4,
+            "min_angle_deg": 0.7
+          },
+          "ground": {
+            "show": true,
+            "y_m": -1.2,
+            "opacity": 0.07
+          },
+          "edges": {
+            "opacity": 0.35
+          },
+          "fog": {
+            "use_depth_system": true
+          }
+        },
+        "blend": {
+          "curve": [
+            [
+              0,
+              1
+            ],
+            [
+              0.5,
+              0.92
+            ],
+            [
+              1,
+              0.5
+            ],
+            [
+              1.5,
+              0.2
+            ],
+            [
+              2.5,
+              0.1
+            ]
+          ],
+          "floor_alpha": 0.15,
+          "floor_scale": 0.8,
+          "unit": "half_sector_width"
+        },
+        "labels": {
+          "policy": "focus_and_gazed",
+          "gazed_weight": 0.7,
+          "near_m": 2.2,
+          "max_chars": 42,
+          "world_height_m": 0.14,
+          "badges": true
+        },
+        "hint": {
+          "distance_m": 1.25,
+          "down_deg": 24,
+          "width_m": 1.0,
+          "opacity": 0.88,
+          "max_lines": 14
+        },
+        "pick": {
+          "tolerance_deg": 4
+        },
+        "xr": {
+          "reference_space": "local",
+          "gestures": {
+            "large_swipe": {
+              "min_distance_m": 0.45,
+              "max_ms": 700,
+              "dominance": 1.6,
+              "cooldown_ms": 800
+            },
+            "two_hand_rotate": {
+              "min_angle_deg": 25,
+              "cooldown_ms": 800,
+              "min_hand_move_m": 0.12,
+              "max_ms": 1200
+            }
+          },
+          "stick": {
+            "threshold": 0.7,
+            "repeat_ms": 350
+          }
+        },
+        "screen": {
+          "orbit": {
+            "distance_m": 9.0,
+            "min_m": 1.5,
+            "max_m": 30,
+            "yaw_deg": 25,
+            "pitch_deg": 18,
+            "fit": true
+          },
+          "look": {
+            "fov_deg": 70
+          },
+          "fov_deg": 55
         }
       }
     }

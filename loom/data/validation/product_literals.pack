@@ -597,11 +597,11 @@
         },
         {
           "path": "loom/data/runtime/graph_views.pack",
-          "sha256": "41e710903997093c331486244eefd8b6e2112f10e03ce0a0c62ce8836bae450e"
+          "sha256": "28412d3b50ac297e3d496ac475909693db787e314758c917eff2db4cb0ee7af6"
         },
         {
           "path": "loom/data/runtime/guardian.pack",
-          "sha256": "054790acd8145c85c3f983d0731ec888d0abcbfa5bece3e5d531aabfc37f70fc"
+          "sha256": "9885210cdde537412ff0da0a645357e624a7b60b6fef7a3683666e52f599fb19"
         },
         {
           "path": "loom/data/runtime/import.pack",
@@ -681,7 +681,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "4a39faaa8ab15874ae0103fe048ede65f2e05be7d56ddd3e2c3e44f825ff60f6"
+          "sha256": "cceceb309f5e5271fce4060b49039d4525ae708576c8efd700e2ef8f8a2169af"
         },
         {
           "path": "loom/data/runtime/tool_loop.pack",

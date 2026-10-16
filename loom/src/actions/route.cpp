@@ -820,7 +820,16 @@ struct ModelRoute {
   std::vector<Cand> cands;
   Json pending = nullptr;
   std::optional<Error> error;
+  Json trace = nullptr;  // P30: what the model was asked and answered (never the key, never the prompt)
 };
+
+// P30: the raw answer kept in the trace: model.trace_raw_chars characters (-1: whole, 0: none).
+std::string clipped(const Data& d, const std::string& raw) {
+  const std::int64_t keep = json::get_int(d.cfg.at("model"), "trace_raw_chars", 4000);
+  if (keep < 0) return raw;
+  const std::string head(utf8::prefix(raw, static_cast<std::size_t>(keep)));
+  return head.size() < raw.size() ? head + "..." : head;
+}
 
 ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, const std::string& lang, const Json& confirmation) {
   ModelRoute result;
@@ -834,7 +843,9 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
       break;
     }
   }
+  result.trace = Json{{"asked", true}, {"model", model}, {"raw", nullptr}, {"verdict", nullptr}};
   if (model.empty()) {
+    result.trace["asked"] = false;
     result.error = Error(Errc::InvalidArgument, "no model is configured for routing");
     return result;
   }
@@ -894,6 +905,9 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
       if (it.key() != "status") result.pending[it.key()] = it.value();
     return result;
   }
+  result.trace["state"] = r.state == llm::State::HttpError ? "http_error" : r.ok() ? "ok" : "failed";
+  for (const auto& part : r.outputs)
+    if (part.kind == "json" || part.kind == "text") result.trace["raw"] = clipped(d, part.value.is_string() ? part.value.get<std::string>() : part.value.dump());
   if (!r.ok()) {
     result.error = r.state == llm::State::HttpError ? Error(Errc::Http, "API error " + std::to_string(r.http_status))
                                                     : (r.error ? *r.error : Error(Errc::Unavailable, "model call failed"));
@@ -906,10 +920,20 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
     result.error = Error(Errc::Parse, "the model did not return a JSON object");
     return result;
   }
-  if (json::get_string(answer, "kind") != "command") return result;
   const std::string action = json::get_string(answer, "action");
   const double confidence = json::get_number(answer, "confidence", 0.0);
-  if (action.empty() || !entry_of(d, action) || confidence < json::get_number(m, "min_confidence", 0.5)) return result;
+  result.trace["verdict"] = Json{{"kind", json::get_string(answer, "kind")}, {"action", action.empty() ? Json(nullptr) : Json(action)}, {"confidence", confidence}};
+  if (json::get_string(answer, "kind") != "command") {
+    result.trace["verdict"]["accepted"] = false;
+    result.trace["verdict"]["why"] = "model_said_message";
+    return result;
+  }
+  if (action.empty() || !entry_of(d, action) || confidence < json::get_number(m, "min_confidence", 0.5)) {
+    result.trace["verdict"]["accepted"] = false;
+    result.trace["verdict"]["why"] = action.empty() ? "no_action" : !entry_of(d, action) ? "unknown_action" : "below_min_confidence";
+    return result;
+  }
+  result.trace["verdict"]["accepted"] = true;
   Cand c;
   c.source = "model";
   c.matched = model;
@@ -1268,10 +1292,30 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   out["method"] = method;
   out["lang"] = lang;
   out["issues"] = Json::array();
+  // P30: the route trace: which stage decided, what each stage offered, what the model answered raw, and why the result is what it is.
+  out["trace"] = Json{{"schema", "loom.route_trace/1"}, {"method", method}, {"lang", lang}, {"stages", Json::array()}};
+  const auto described = [](const std::vector<Cand>& list) {
+    Json arr = Json::array();
+    for (const auto& c : list) arr.push_back(Json{{"action", c.action}, {"source", c.source}, {"score", c.score}, {"matched", c.matched}});
+    return arr;
+  };
+  const auto stage = [&](const char* name, const std::vector<Cand>& list, Json extra = Json::object()) {
+    Json st = Json{{"stage", name}, {"candidates", described(list)}};
+    for (auto it = extra.begin(); it != extra.end(); ++it) st[it.key()] = it.value();
+    out["trace"]["stages"].push_back(std::move(st));
+  };
   if (method == "off") return out;
 
   const Conv conv = conv_of(rt, json::get_string(request, "conv_id"));
   std::vector<Cand> cands;
+  const auto local_reading = [&] {
+    std::vector<Cand> found;
+    if (auto e = parse_explicit(d, text)) found.push_back(*e);
+    for (auto& p : parse_patterns(d, text)) found.push_back(std::move(p));
+    for (auto& l : parse_lexicon(d, text)) found.push_back(std::move(l));
+    return found;
+  };
+  bool recheck_allowed = false;  // the local reading has not been made yet
   if (method == "model") {
     ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()));
     if (!routed.pending.is_null()) {
@@ -1282,16 +1326,17 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     if (routed.error) {
       // Not silent: the failure is reported, and the local method decides instead.
       out["issues"].push_back(Json{{"code", "model_route_failed"}, {"message", routed.error->message}, {"fallback", "heuristic"}});
-      if (auto e = parse_explicit(d, text)) cands.push_back(*e);
-      for (auto& p : parse_patterns(d, text)) cands.push_back(std::move(p));
-      for (auto& l : parse_lexicon(d, text)) cands.push_back(std::move(l));
+      stage("model", {}, Json{{"model", routed.trace.is_object() ? routed.trace.value("model", "") : ""}, {"raw", routed.trace.is_object() ? routed.trace.value("raw", Json(nullptr)) : Json(nullptr)}, {"error", routed.error->message}});
+      cands = local_reading();
+      stage("fallback", cands, Json{{"why", "model_route_failed"}});
     } else {
       cands = std::move(routed.cands);
+      stage("model", cands, routed.trace.is_object() ? routed.trace : Json::object());
+      recheck_allowed = true;
     }
   } else {
-    if (auto e = parse_explicit(d, text)) cands.push_back(*e);
-    for (auto& p : parse_patterns(d, text)) cands.push_back(std::move(p));
-    for (auto& l : parse_lexicon(d, text)) cands.push_back(std::move(l));
+    cands = local_reading();
+    stage("heuristic", cands);
   }
   // Rules and scoped values from what is said, and the other commands of the conversation (the model method does not know them; they are read
   // locally either way). A command that explains another ("how do I ...") is kept only when what follows is a command itself.
@@ -1331,14 +1376,23 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
       }
       if (routed.error) {
         out["issues"].push_back(Json{{"code", "model_route_failed"}, {"message", routed.error->message}, {"fallback", "heuristic"}});
+        stage("model", {}, Json{{"model", routed.trace.is_object() ? routed.trace.value("model", "") : ""}, {"error", routed.error->message}});
       } else {
         cands = std::move(routed.cands);
+        stage("model", cands, routed.trace.is_object() ? routed.trace : Json::object());  // hybrid: the local reading came first and was unsure
       }
     }
   }
   // Nothing in the catalogue understands it, but it is shaped like a command about an element: the catalogue may grow (R55). This is a local
   // check of the words, whatever the method: a model that called the sentence a message, or whose call failed, does not take the offer away
   // (decision P14: the shape check runs after the model's verdict; the model's schema is unchanged).
+  // P30: the model found nothing (a message, or an answer below the threshold), but the sentence may name an action the lexicon knows
+  // ("Streść tę rozmowę"): the local reading is made before the catalogue is offered a new action. Reverse: the model's verdict alone decides
+  // when `model.local_recheck` is false.
+  if (cands.empty() && !inner && recheck_allowed && json::get_bool(d.cfg.at("model"), "local_recheck", true)) {
+    cands = local_reading();
+    stage("local_recheck", cands, Json{{"why", "model_found_no_command"}});
+  }
   if (cands.empty() && !inner) {
     const auto ref = find_reference(d, text, word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))));
     if (!ref.is_null()) {
@@ -1360,11 +1414,16 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
             (void)then;
           }
           cands.push_back(std::move(c));
+          stage("emergent", cands, Json{{"why", "no_action_matched_and_command_shaped"}});
         }
       }
     }
   }
-  if (cands.empty()) return out;
+  if (cands.empty()) {
+    out["trace"]["decided_by"] = "none";
+    out["trace"]["why"] = "no_candidate";
+    return out;
+  }
   std::stable_sort(cands.begin(), cands.end(), [](const Cand& a, const Cand& b) { return a.score > b.score; });
   for (auto& c : cands)
     if (c.lang.empty()) c.lang = lang;
@@ -1382,8 +1441,26 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     if (first.is_null()) first = cmd;
     if (cmd.value("feasible", false) && chosen.is_null()) chosen = cmd;
   }
-  if (first.is_null()) return out;  // every reading pointed at nothing: it is a message
+  if (first.is_null()) {  // every reading pointed at nothing: it is a message
+    out["trace"]["decided_by"] = "none";
+    out["trace"]["why"] = "candidates_pointed_at_nothing";
+    out["trace"]["considered"] = summaries;
+    return out;
+  }
   Json command = chosen.is_null() ? first : chosen;
+  {
+    const std::string source = command.value("source", "");
+    const std::string st = source == "model" ? "model" : source == "emergent" ? "emergent" : "heuristic";
+    const Json& last = out["trace"]["stages"].back();
+    const std::string last_stage = json::get_string(last, "stage");
+    out["trace"]["decided_by"] = last_stage == "fallback" || last_stage == "local_recheck" ? last_stage : st;
+    out["trace"]["chosen"] = command.value("action", "");
+    out["trace"]["why"] = source == "emergent" ? "define_action: no existing action matched the verb and the sentence is shaped like a command"
+                          : chosen.is_null()  ? "first candidate (none feasible)"
+                                              : "best feasible candidate by score";
+    out["trace"]["considered"] = summaries;
+  }
+  command["route_trace"] = out["trace"];
   command["candidates"] = summaries;
   out["kind"] = "command";
   out["confidence"] = command["score"];
@@ -1986,6 +2063,7 @@ Result<Reply> reply_to_command(Runtime& rt, Data& d, const std::string& conv_id,
     if (meta.contains("action_run")) reply.payload["run"] = meta["action_run"];
   }
   meta["routed"] = "proposal";
+  if (cmd.contains("route_trace")) meta["route_trace"] = cmd["route_trace"];
   if (cmd.contains("meta_extra") && cmd["meta_extra"].is_object())
     for (auto it = cmd["meta_extra"].begin(); it != cmd["meta_extra"].end(); ++it) meta[it.key()] = it.value();
   reply.assistant_id = early_id;
@@ -2425,7 +2503,7 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     conv_id = created.id;
   }
   (void)rt.chat().load_conv(conv_id);
-  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "command"}}));
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "command"}, {"route_trace", routed.value("trace", Json(nullptr))}}));
   if (emit_start) emit_start(conv_id, user_id);
 
   LOOM_TRY_ASSIGN(Reply reply, reply_to_command(rt, d, conv_id, user_id, text, cmd, routed.value("method", ""), lang, false));

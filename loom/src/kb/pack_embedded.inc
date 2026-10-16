@@ -809,6 +809,12 @@ const char* const kPackChunks1[] = {
    "symmetric": true
   },
   {
+   "name": "same_as_candidate",
+   "inverse": "same_as_candidate",
+   "category": "provenance",
+   "symmetric": true
+  },
+  {
    "name": "instance_of",
    "inverse": "has_instance",
    "category": "structural"
@@ -1212,7 +1218,8 @@ const char* const kPackChunks1[] = {
    "inverse": "transcript_of"
   },
   {
-   "name": "asks",
+   "name": "asks",)LOOMKB",
+    R"LOOMKB(
    "category": "structural"
   },
   {
@@ -1221,8 +1228,7 @@ const char* const kPackChunks1[] = {
   },
   {
    "name": "has_experiment",
-)LOOMKB",
-    R"LOOMKB(   "category": "structural",
+   "category": "structural",
    "inverse": "experiment_of"
   },
   {

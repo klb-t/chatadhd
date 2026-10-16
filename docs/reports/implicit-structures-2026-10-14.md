@@ -1,6 +1,25 @@
 # Unnamed relational structures and qualified analogies — 2026-10-14
 
-## Current owner-directed integration — 2026-10-15 UTC
+## Current continuation — 2026-10-16 UTC
+
+After the session interruption, dev build on first merged head `f628e50b`
+completed; a resumed build confirmed no pending work. One fresh fetch found
+main `a51a347b` with P28 WebXR, P29 and P30; it is now merged before starting
+the next product increment. INDEX preserves both additions, and the embedded
+KB pack is regenerated from the merged data. No further main polling is planned
+within this increment. Full gates on this new composed tree are pending.
+
+P29 is now implemented on the accepted main: unknown explicit references create
+emergent nodes with provenance and a visible note; key/vector matching records
+`same_as_candidate`, without silent merging. Model matching remains open.
+The prior note below that P29 was open describes the earlier source SHA.
+
+Next: verify the merged native boundary, then connect recognition through P23
+shared annotations and P24 effective-view overlays. Preserve existing defaults,
+user exclusions, source identity and candidate status; do not invent a second
+registry or activate inferred policy just because recognition completed.
+
+## Historical first main merge — 2026-10-15 UTC
 
 Owner requested reading the 14–15 October philosophy and merging current main
 before further work. Main `6fc3ec6b3a8263e0e0861afe2adfe412294489f1` is merged

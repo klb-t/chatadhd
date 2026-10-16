@@ -648,6 +648,16 @@ bool guardian_traffic(const Message& m) {
   // The guardian's own exchange (a proposal, the answer to it, a notice) is traffic of the application, not conversation content.
   return m.metadata.is_object() && m.metadata.contains("guardian") && json::get_bool(m.metadata["guardian"], "traffic", false);
 }
+// The exchange of a chat command (what the user typed as a command, the proposal, the answer to it; metadata.routed) is traffic of
+// the application. Setting chat_history_command_traffic: skip_exchange (preset: the exchange is left out, a result stays as context),
+// skip_all (results too), include (everything is sent). Without it the model reads earlier proposals and imitates them.
+bool command_traffic_skipped(const ChatOptions& opts, const Message& m) {
+  if (!m.metadata.is_object() || opts.history_command_traffic == "include") return false;
+  const bool result = m.metadata.contains("action_run") || json::get_string(m.metadata, "routed") == "result";
+  const bool traffic = m.metadata.contains("routed") || m.metadata.contains("action_proposal") || m.metadata.contains("action_run");
+  if (!traffic) return false;
+  return !result || opts.history_command_traffic == "skip_all";
+}
 bool history_skipped(const ChatOptions& opts, const std::string& id) {
   return !opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), id) != opts.history_skip.end();
 }
@@ -672,7 +682,7 @@ Result<std::vector<chat::formats::Entry>> selection_entries(Database& db, const 
   for (const auto& m : msgs) {
     if (m.status != msg_status::kActive) continue;
     if (!exclude.empty() && m.id == exclude) continue;
-    if (guardian_traffic(m) || history_skipped(opts, m.id) || refinement.count(m.id)) continue;
+    if (guardian_traffic(m) || command_traffic_skipped(opts, m) || history_skipped(opts, m.id) || refinement.count(m.id)) continue;
     chat::formats::Entry e;
     e.msg = m;
     e.text = m.text;
@@ -705,7 +715,9 @@ Result<Json> selection_packet(Database& db, const Json& section, const std::stri
 
 }  // namespace
 
-ChatOptions ChatEngine::select_representation(const ChatOptions& in, const std::string& conv_id) {
+ChatOptions ChatEngine::select_representation(const ChatOptions& in_raw, const std::string& conv_id) {
+  ChatOptions in = in_raw;
+  if (in.history_command_traffic.empty()) in.history_command_traffic = cfg_string(cfg_, "chat_history_command_traffic", "skip_exchange");
   if (conv_id.empty() || !in.include_history || in.active_task_spec) return in;
   auto sel = guardian::select(db_, cfg_, conv_id);
   if (!sel) {
@@ -1009,6 +1021,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       if (!exclude_message_id.empty() && m.id == exclude_message_id) continue;
       // The guardian's own exchange (a proposal, the answer to it, a notice) is traffic of the application, not conversation content.
       if (m.metadata.is_object() && m.metadata.contains("guardian") && json::get_bool(m.metadata["guardian"], "traffic", false)) continue;
+      if (command_traffic_skipped(opts, m)) continue;
       if (!opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), m.id) != opts.history_skip.end()) continue;
       if (refinement_ids.count(m.id)) {
         replaced_ids.push_back(m.id);
@@ -1355,7 +1368,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       const auto at = marker.empty() ? std::string::npos : c.find(marker);
       if (at != std::string::npos) reply_packet_id = c.substr(at + marker.size(), 64);
     }
-    // A reply may only refer to ids that were in the selection actually sent; any other id is rejected, never turned into a node.
+    // Ids that were in the selection actually sent are real references; any other id becomes an emergent node (P29), never a real id.
     LOOM_TRY_ASSIGN(auto sent_selection, selection_packet(db_, out_flow->section, conv.id, opts, user_mid, {}));
     for (const auto& n : sent_selection["nodes"]) reply_prior_ids.insert(n["id"].get<std::string>());
   }
@@ -1592,6 +1605,13 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
         reply_meta["status"] = "ok";
         reply_meta["fence_stripped"] = parsed_reply.fence_stripped;
         reply_meta["graph"] = parsed_reply.graph;
+        if (!parsed_reply.emergent.empty()) {
+          Json notes = Json::array();
+          for (const auto& e : parsed_reply.emergent)
+            notes.push_back(chat::formats::emergent_note(out_flow->section, cfg_string(cfg_, "language", "en"), e["claimed_id"].get<std::string>()));
+          reply_meta["notes"] = notes;
+          reply_meta["emergent_refs"] = parsed_reply.emergent;
+        }
       } else {
         const std::string note = chat::formats::invalid_note(out_flow->section, cfg_string(cfg_, "language", "en"), parsed_reply.error);
         full_text = raw_text + "\n\n" + note;
@@ -1629,7 +1649,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   std::string asst_mid = *amid;
   if (parsed_reply.ok) {
     // The embedder is structure only (no model, no analysis): the parts and the proposed links enter the graph with provenance to the message.
-    const Json plan = chat::formats::plan_placement(out_flow->section, asst_mid, parsed_reply, reply_prior_ids);
+    const Json plan = chat::formats::plan_placement(db_, out_flow->section, asst_mid, out_flow->flow, parsed_reply, reply_prior_ids);
     auto embedded = chat::formats::embed(db_, out_flow->section, asst_mid, conv.id, model, parsed_reply, plan);
     Json summary = embedded ? *embedded : Json{{"embedded", false}, {"error", embedded.error().message}};
     if (!embedded) log::warn("loom.chat_engine", "graph reply not embedded: {}", embedded.error().message);

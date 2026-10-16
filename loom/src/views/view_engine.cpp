@@ -1042,17 +1042,18 @@ Result<ViewEngine> ViewEngine::open(const std::filesystem::path& root, const std
   LOOM_TRY_ASSIGN(v.compositions_, effective(root, "composition_kinds", extra_dirs));
   LOOM_TRY_ASSIGN(v.combines_, effective(root, "combination_rules", extra_dirs));
   LOOM_TRY_ASSIGN(v.rules_, effective(root, "view_rules", extra_dirs));
+  LOOM_TRY_ASSIGN(v.renderers_, effective(root, "view_renderers", extra_dirs));
   return v;
 }
 
 Json ViewEngine::list() const {
   Json issues = Json::array();
-  for (const Effective* e : {&declarations_, &measures_, &systems_, &channels_, &compositions_, &combines_, &rules_})
+  for (const Effective* e : {&declarations_, &measures_, &systems_, &channels_, &compositions_, &combines_, &rules_, &renderers_})
     for (const auto& i : e->issues) issues.push_back(i);
   auto entries = [](const Effective& e) { return e.to_json(false); };
   return Json{{"schema", "loom.view_engine/1"}, {"declarations", entries(declarations_)}, {"measure_kinds", entries(measures_)}, {"coordinate_systems", entries(systems_)},
               {"channels", entries(channels_)}, {"composition_kinds", entries(compositions_)}, {"combination_rules", entries(combines_)}, {"rules", entries(rules_)},
-              {"issues", issues}};
+              {"renderers", entries(renderers_)}, {"issues", issues}};
 }
 
 Result<Json> ViewEngine::evaluate(const RenderContext& ctx, const std::string& declaration_id, const Json& request) const {
