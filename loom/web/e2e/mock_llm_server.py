@@ -20,7 +20,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
         if self.path.rstrip("/").endswith("/__last"):
             body = json.dumps(Handler.last_body).encode()
         else:
-            body = json.dumps({"data": [{"id": "mock/e2e-model", "name": "Mock E2E"}, {"id": "mock/second-model", "name": "Mock Second"}]}).encode()
+            body = json.dumps({"data": [{"id": "mock/e2e-model", "name": "Mock E2E"}, {"id": "mock/second-model", "name": "Mock Second"},
+                                        {"id": "mock/third-model", "name": "Mock Third"}]}).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
