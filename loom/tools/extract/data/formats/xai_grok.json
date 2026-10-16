@@ -27,7 +27,7 @@
   "roles": {"human": "user", "user": "user", "assistant": "assistant", "grok": "assistant", "ASSISTANT": "assistant", "USER": "user"},
   "blocks": {"message": "text", "*": "unknown"},
   "members": {"data/grok-chat-item.js": "conversations", "*": "unknown"},
-  "preserve": {"unit": "conversation_object", "keep_members": [], "attachment_root": "."},
+  "preserve": {"unit": "conversation_object", "lead": "js_assignment", "keep_members": [], "attachment_root": "."},
   "known_absent": {"pl": ["rozumowanie", "gałęzie (poza parent_response_id, gdy jest)", "załączniki w archiwum X"],
                    "en": ["reasoning", "branches (beyond parent_response_id when present)", "attachments in the X archive"]}
 }

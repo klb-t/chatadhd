@@ -1,0 +1,5 @@
+{"schema": "loom.extract.redaction/1", "id": "dictionary",
+ "label": {"pl": "Słownik użytkownika (imiona, nazwy firm, miejsca) — terminy w nakładce lub w --slownik", "en": "User dictionary (names, companies, places) — terms in the overlay or --dictionary"},
+ "mode": "mask", "mask": "[{KIND}#{n}]",
+ "rules": [], "dictionary": [], "dictionary_kind": "NAME", "dictionary_fold": true,
+ "fields": ["title", "text", "input", "name", "author"], "attachments": "copy"}

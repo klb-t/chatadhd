@@ -191,3 +191,64 @@ def parse_duration(text: str) -> timedelta:
     n = float(m.group(1))
     unit = m.group(2)
     return timedelta(**{{"s": "seconds", "m": "minutes", "h": "hours", "d": "days", "w": "weeks"}[unit]: n})
+
+
+class TimePolicy:
+    """How times look in a restructured output (profile ``timestamps`` + run overrides).
+
+    ``zone``: ``source`` (ISO strings with their own offset stay as written, epoch → UTC ISO; preset),
+    ``UTC``, ``+HH:MM`` or an IANA name; ``format``: ``iso8601`` | ``epoch`` | ``date`` | ``source``
+    (the native value untouched); ``shift``: a duration (``-3d``, ``12h``) added to every time;
+    ``anonymise``: ``package`` (the earliest time of the package becomes 1970-01-01T00:00:00Z,
+    intervals kept) | ``conversation`` (each conversation starts at the epoch) | None;
+    ``granularity``: ``minute`` | ``hour`` | ``day`` | ``week`` | ``month`` | None.
+    """
+
+    def __init__(self, spec: Optional[dict[str, Any]] = None, **over: Any) -> None:
+        spec = dict(spec or {})
+        spec.update({k: v for k, v in over.items() if v is not None})
+        self.zone = spec.get("zone") or "source"
+        self.format = spec.get("format") or "iso8601"
+        sh = spec.get("shift")
+        self.shift_seconds = parse_duration(sh.lstrip("+-")).total_seconds() * (-1 if str(sh).startswith("-") else 1) \
+            if isinstance(sh, str) and sh else float(sh or 0)
+        self.anonymise = spec.get("anonymise") or None
+        if self.anonymise is True:
+            self.anonymise = "package"
+        self.granularity = spec.get("granularity") or None
+        self.origin: Optional[datetime] = None          # package origin for anonymise=package
+        self.conv_origin: Optional[datetime] = None     # set per conversation for anonymise=conversation
+        if self.zone != "source":
+            parse_zone(self.zone)  # explicit error on a bad zone, before anything is written
+
+    def as_dict(self) -> dict[str, Any]:
+        return {"zone": self.zone, "format": self.format, "shift_seconds": self.shift_seconds, "anonymise": self.anonymise,
+                "granularity": self.granularity}
+
+    @property
+    def changes_times(self) -> bool:
+        return bool(self.shift_seconds or self.anonymise or self.granularity or self.zone not in ("source",)
+                    or self.format not in ("iso8601", "source"))
+
+    def render(self, native: Any, utc_iso: Optional[str]) -> Any:
+        if self.format == "source" and not (self.shift_seconds or self.anonymise or self.granularity):
+            return native
+        dt = from_iso(utc_iso) if utc_iso else None
+        if dt is None:
+            return None if native in (None, "") else native
+        if self.shift_seconds:
+            dt = dt + timedelta(seconds=self.shift_seconds)
+        origin = self.conv_origin if self.anonymise == "conversation" else self.origin if self.anonymise == "package" else None
+        if origin is not None:
+            dt = datetime(1970, 1, 1, tzinfo=timezone.utc) + (dt - (origin + timedelta(seconds=self.shift_seconds)))
+        dt = round_to(dt, self.granularity)
+        if self.format == "epoch":
+            v = dt.timestamp()
+            return int(v) if v == int(v) else v
+        if self.format == "date":
+            return (dt.astimezone(parse_zone(self.zone)) if self.zone != "source" else dt).date().isoformat()
+        if self.zone == "source":
+            if isinstance(native, str) and _ISO_RE.match(native.strip()) and not (self.shift_seconds or origin or self.granularity):
+                return native
+            return to_iso(dt)
+        return in_zone(dt, self.zone)
