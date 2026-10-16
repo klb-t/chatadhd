@@ -72,6 +72,22 @@ async function waitNode(what, pred, timeoutS = 30) {
   return until("native widget: " + what, () => find(dump(), pred), timeoutS, 500);
 }
 const tap = n => adb("shell", "input", "tap", String(n.cx), String(n.cy));
+// A slow emulator now and then shows "<app> isn't responding" (seen: Pixel Launcher with font_scale 1.3). The dialog
+// takes the screen and the WebView stops answering CDP; "Wait" lets the app (and the run) go on.
+function dismissSystemDialogs(nodes) {
+  try { nodes = nodes || dump(); } catch { return false; }
+  const title = nodes.find(n => /isn't responding|nie odpowiada/i.test(n.text || ""));
+  if (!title) return false;
+  // the launcher is restarted (Close app): Wait keeps a stuck launcher stuck and the dialog comes back every few
+  // seconds; any other app (ours included) gets Wait, and the text is logged so an ANR of the app itself is visible
+  const launcher = /launcher/i.test(title.text);
+  const pick = launcher ? /^(close app|zamknij aplikację)$/i : /^(wait|czekaj)$/i;
+  const id = launcher ? "android:id/aerr_close" : "android:id/aerr_wait";
+  const button = nodes.find(n => n.cx !== undefined && (n["resource-id"] === id || pick.test(n.text || "")));
+  if (!button) return false;
+  log(`system: "${title.text}", tapping ${button.text || id}`); tap(button);
+  return true;
+}
 const textOf = n => `${n.text || ""} ${n["content-desc"] || ""}`;
 
 async function connectScreen() {
@@ -137,7 +153,9 @@ async function openPage(prefix = URL_, reattach = false) {
     const list = await (await fetch(`${base}/json`)).json();
     return list.find(t => t.type === "page" && t.url.startsWith(prefix) && t.webSocketDebuggerUrl);
   }, 60, 500);
-  return connect(target);
+  const p = await connect(target);
+  p.prefix = prefix;
+  return p;
 }
 async function attachSocket(timeoutS = 60) {
   const sock = await until("the WebView DevTools socket", () => {
@@ -258,6 +276,13 @@ async function check(name, fn) {
     if (e && e.skip) { results.push({ step: name, status: "skipped", why: e.message, s: 0 }); log("SKIP " + name + ": " + e.message); return; }
     results.push({ step: name, status: "doesnt", why: short(e), s: (Date.now() - t) / 1000 });
     log("FAIL " + name + ": " + e.message);
+    // a page that stopped answering (a system dialog over it, a stalled renderer) is re-attached once, so one stuck
+    // check does not turn every later check into a 120 s timeout
+    if (/gave no answer/.test(e.message || "") && page?.prefix) {
+      dismissSystemDialogs();
+      try { page.close(); } catch { /* closed */ }
+      try { page = await openPage(page.prefix, true); log("re-attached to the page after a CDP timeout"); } catch (r) { log("re-attach failed: " + short(r)); }
+    }
     await failureEvidence(name).catch(() => {});
     // the next check starts from a clean screen: a panel or a menu left open by the failure is closed
     await page?.ev(`(()=>{for(const t of ['close-panel']){const e=${q("close-panel")};if(e)e.click()} const k=document.querySelector('[data-testid="panel-knowledge-sheet"] .icon-btn');if(k)k.click()})()`).catch(() => {});
@@ -290,6 +315,12 @@ async function openMenu(entry) {
   await waitTid("shell-menu-" + entry, 10);
   await click("shell-menu-" + entry);
 }
+// P33: + opens the composer menu; its "Import conversations" entry opens the import panel (M1 §3.14 rewrites the old step).
+async function openImportPanel() {
+  await waitTid("shell-attach", 20); await click("shell-attach");
+  await waitTid("composer-menu", 10); await waitTid("composer-menu-import", 10); await click("composer-menu-import");
+  await waitTid("panel-import", 10);
+}
 async function closePanel() {
   await click("close-panel").catch(() => {});
   await page.ev(`(()=>{const k=document.querySelector('[data-testid="panel-knowledge-sheet"] .icon-btn');if(k)k.click()})()`);
@@ -318,12 +349,13 @@ async function apiImport(hostFile, name) {
 // file: finds the file by name (Downloads root first), taps it. folder: opens the folder by name and taps "Use this folder",
 // then "Allow". Every try logs what the screen shows, so a failure says what the picker looked like.
 async function drivePicker(target, { folder = false } = {}) {
-  let seen = false, entered = false, lastTexts = "";
+  let seen = false, entered = false, lastTexts = "", fileTaps = 0, places = 0, moved = false;
   for (let i = 0; i < 60; i++) {
     await sleep(1000);
     let nodes;
     try { nodes = dump(); } catch (e) { continue; }
     const inPicker = nodes.some(n => /documentsui/i.test(n.package || ""));
+    if (dismissSystemDialogs(nodes)) continue;
     lastTexts = nodes.map(n => n.text || n["content-desc"]).filter(Boolean).slice(0, 40).join(" | ");
     if (!inPicker) { if (seen) return "picker closed"; continue; }
     if (!seen) { seen = true; log("picker: " + lastTexts); shot("picker-" + target.replace(/\W+/g, "-")); }
@@ -336,12 +368,23 @@ async function drivePicker(target, { folder = false } = {}) {
       if (item && !entered) { log("picker: open folder " + target); tap(item); entered = true; continue; }
       if (item && entered && use) { tap(use); continue; }
     } else {
+      // A tap on the name does not always choose the file (seen with font_scale 1.3 in the Recent view): the second try
+      // taps the row start, then the picker is moved to Downloads and the same is tried there. Bounds go to the log.
       const file = find(nodes, n => n.text === target);
-      if (file) { log("picker: tap " + target); tap(file); await sleep(800); const open = btn(/^(open|select)$/i); if (open) tap(open); continue; }
+      if (file && fileTaps < 2 * (places + 1) && (places === 0 || moved)) {
+        const atStart = fileTaps % 2 === 1;
+        log(`picker: tap ${target} ${atStart ? "row start" : "name"} bounds=${file.bounds} clickable=${file.clickable}`);
+        if (atStart) adb("shell", "input", "tap", String(Math.max(file.l - 120, 10)), String(file.cy)); else tap(file);
+        fileTaps++; await sleep(800); const open = btn(/^(open|select)$/i); if (open) tap(open); continue;
+      }
+      if (file && places === 0) {
+        places = 1; log("picker: the file did not open from here, trying Downloads");
+        const r = find(nodes, n => /show roots|open drawer/i.test(n["content-desc"] || "")); if (r) tap(r); continue;
+      }
       const open = btn(/^(open|select)$/i); if (open) { tap(open); continue; }
     }
     const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar/i.test(n["resource-id"] || ""));
-    if (dl && i % 3 === 0) { log("picker: Downloads"); tap(dl); continue; }
+    if (dl && (i % 3 === 0 || (places === 1 && !moved))) { log("picker: Downloads"); tap(dl); if (places === 1) moved = true; continue; }
     const roots = find(nodes, n => /show roots|open drawer|navigate up/i.test(n["content-desc"] || ""));
     if (roots && i % 3 === 1) { log("picker: roots"); tap(roots); continue; }
   }
@@ -382,9 +425,9 @@ const localChecks = [
     const all = JSON.stringify(await bridgeCall("list_conversations", { limit: 200 }));
     for (const t of ["Smoke ChatGPT JSON", "Smoke Claude ZIP"]) if (!all.includes(t)) throw new Error(`"${t}" is not listed: ${all.slice(0, 300)}`);
   }],
-  ["local: import panel (+ -> Choose a file -> system picker)", async () => {
+  ["local: import panel (+ menu -> Import conversations -> Choose a file -> system picker)", async () => {
     // the Android shell has no browser file input: the panel opens the system picker (api.pickImport -> LoomBridge pick_import)
-    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-pick-file");
+    await openImportPanel(); await waitTid("import-pick-file");
     await click("import-pick-file");
     await drivePicker("ui-local.json");
     await until("a result or an error of the import panel", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
@@ -417,7 +460,48 @@ const localChecks = [
     if (!st.last.error || st.last.error.code !== "cancelled") throw new Error("expected a cancelled error, got " + JSON.stringify(st.last).slice(0, 200));
     return st.last.error.message;
   }],
+  // M1 §3.14: system Back never ends the app silently. The page closes its own overlays first (window.__loomBack),
+  // then the WebView history; at the root the shell asks (android_back_exit_confirm, preset ask). "Stay" keeps the
+  // app and the draft; Back again while asked leaves (the task goes to the back, the draft stays in the WebView).
+  ["local: Back at the chat root asks before leaving; Stay keeps the app and the draft", async () => {
+    if (await has("panel-import")) await closePanel();
+    await waitTid("chat-input", 20);
+    const draft = "szkic M1 wstecz";
+    await setVal("chat-input", draft);
+    const exitDialog = () => find(dump(), n => n["resource-id"] === "android:id/button2");
+    let dialog;
+    for (let k = 0; k < 5 && !dialog; k++) {
+      dismissSystemDialogs();   // a system dialog would take this Back instead of the app
+      adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200);
+      if (!resumed()) throw new Error(`Back #${k + 1} left the app without asking`);
+      dialog = exitDialog();
+      if (!dialog) log(`Back #${k + 1}: handled by the page or the WebView history`);
+    }
+    if (!dialog) throw new Error("no exit question after 5 Backs");
+    shot("back-exit-question");
+    const question = textOf(find(dump(), n => n["resource-id"] === "android:id/message") || {}).trim();
+    tap(dialog); await sleep(1000);
+    if (!resumed()) throw new Error("Stay did not keep the app");
+    const kept = await page.ev(`${q("chat-input")}?.value`);
+    if (kept !== draft) throw new Error(`the draft is gone after Stay: ${JSON.stringify(kept)}`);
+    return `asked: "${question}"`;
+  }],
+  ["local: Back twice at the root leaves to the launcher; reopening shows the draft", async () => {
+    const draft = await page.ev(`${q("chat-input")}?.value`);
+    dismissSystemDialogs();
+    adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200);
+    await until("the exit question", () => find(dump(), n => n["resource-id"] === "android:id/button2"), 15, 600);
+    adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1500);
+    if (resumed()) throw new Error("Back on the question did not leave the app");
+    adb("shell", "am", "start", "-W", "-n", `${PKG}/.MainActivity`); await sleep(1500);
+    if (!resumed()) throw new Error("the app did not come back");
+    const kept = await until("the draft after reopening", () => page.ev(`${q("chat-input")}?.value`).then(v => v === draft && v), 20, 500);
+    await setVal("chat-input", "");
+    return `draft kept: "${kept}"`;
+  }],
 ];
+const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${PKG.replace(/\./g, "\\.")}/\\.MainActivity`).test(
+  execFileSync("adb", ["shell", "dumpsys", "activity", "activities"], { encoding: "utf8", maxBuffer: 16 << 20 }));
 
 const serverChecks = [
   ["new conversation (drawer -> New chat -> message -> listed)", async () => {
@@ -464,13 +548,13 @@ const serverChecks = [
     await setConfigViaUi("cfg-semantic-model", "semantic_model", "");   // leave the account as it was
     return "saved " + shown;
   }],
-  ["attachment: the + button opens the import panel", async () => {
-    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+  ["+ opens the menu; Import conversations opens the import panel", async () => {
+    await openImportPanel(); await waitTid("import-file-input");
     await closePanel();
-    return "the chat has no per-message attachment; + is the import panel";
+    return "+ menu -> import panel";
   }],
   ["import (UI): ChatGPT conversations.json from a picked file", async () => {
-    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await openImportPanel(); await waitTid("import-file-input");
     await page.setFiles("import-file-input", [`${DEV}/chatgpt-conversations.json`]);
     await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
     await click("start-import");
@@ -483,7 +567,7 @@ const serverChecks = [
     return "4 messages through the API";
   }],
   ["import (UI): Claude.ai ZIP from a picked file", async () => {
-    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await openImportPanel(); await waitTid("import-file-input");
     await page.setFiles("import-file-input", [`${DEV}/claude-export.zip`]);
     await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
     await click("start-import");
@@ -496,7 +580,7 @@ const serverChecks = [
     return `conversation "${a.title}" has ${n} messages`;
   }],
   ["import (UI): through the WebView file chooser = system picker (SAF)", async () => {
-    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await openImportPanel(); await waitTid("import-file-input");
     await page.ev(`${q("import-file-input")}.click()`, true);   // a user gesture: Android opens the document picker
     await drivePicker("saf-server.json");
     await until("the page got the file", () => page.ev(`${q("import-file-input")}.files.length===1`), 20, 300);

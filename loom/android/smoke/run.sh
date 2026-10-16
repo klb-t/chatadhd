@@ -20,6 +20,8 @@ adb shell settings put global window_animation_scale 0
 adb shell settings put global transition_animation_scale 0
 adb shell settings put global animator_duration_scale 0
 adb shell settings put secure show_ime_with_hard_keyboard 0 || true
+# M1 §3.14: one run of the matrix uses a larger system font (SMOKE_FONT_SCALE, e.g. 1.3); unset = the device default
+if [ -n "${SMOKE_FONT_SCALE:-}" ]; then adb shell settings put system font_scale "$SMOKE_FONT_SCALE"; log "font_scale $SMOKE_FONT_SCALE"; fi
 
 adb logcat -c
 adb logcat -v threadtime > "$OUT/logcat.txt" 2>&1 &
@@ -41,6 +43,11 @@ if ! grep -q " lib/$abi/libloom_jni\.so$" <<<"$apk_listing"; then
   unzip -l "$APK" | grep "libloom_jni" >&2 || true
   exit 3
 fi
+# A cold emulator under swiftshader often shows "Pixel Launcher isn't responding" while it still starts up; give the
+# home screen time to settle first (boot completed, then Home and a pause) so the dialog does not land over the app.
+for _ in $(seq 1 60); do [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1 ] && break; sleep 2; done
+adb shell input keyevent KEYCODE_HOME || true
+sleep 15
 log "install"
 adb install -r -g "$APK" || { echo "ERROR: adb install failed" >&2; exit 3; }
 adb shell pm grant "$PKG" android.permission.POST_NOTIFICATIONS 2>/dev/null || true
