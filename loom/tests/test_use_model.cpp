@@ -833,7 +833,10 @@ TEST_SUITE("use_model") {
     REQUIRE(r.provenance["outputs"].size() == 2);
     CHECK(r.provenance["outputs"][0]["value"]["dimensions"] == 2);
     CHECK(r.provenance["outputs"][0]["value"]["sha256"] == Sha256::hex(json::canonical(Json::array({1.0, 2.0}))));
-    CHECK(r.provenance.dump().find("0.25") == std::string::npos);
+    // recorded_at is a timestamp (".250123Z" holds "0.25" now and then): the values must not be anywhere else.
+    Json without_time = r.provenance;
+    without_time.erase("recorded_at");
+    CHECK(without_time.dump().find("0.25") == std::string::npos);
 
     // A malformed answer is a result of its own, never half a vector.
     env.transport.expect("POST", "https://api.test/embeddings",
