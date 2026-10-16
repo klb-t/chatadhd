@@ -78,6 +78,8 @@ class MainActivity : AppCompatActivity() {
             fileChooserCallback?.onReceiveValue(chosen)
             fileChooserCallback = null
         }
+    /** Import through the system picker (content:// -> private copy -> kernel); registers its pickers here, at construction. */
+    private val importFlow = ImportFlow(this)
     private val requestNotifications =
         registerForActivityResult(androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { }
 
@@ -191,6 +193,9 @@ class MainActivity : AppCompatActivity() {
         bridge.onRequestNotifications = {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) requestNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+        bridge.onPickImport = { kind, title, all, callbackId -> importFlow.start(kind, title, all, callbackId) }
+        bridge.onImportUri = { uri, title, callbackId -> importFlow.startUri(uri, title, callbackId) }
+        bridge.onCancelImport = { callbackId -> importFlow.cancel(callbackId) }
         bridge.onOpenConnection = { runOnUiThread { requestConnection.launch(Intent(this, ConnectionActivity::class.java)) } }
         startForMode()
     }
@@ -290,6 +295,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+        importFlow.shutdown()
         if (::bridge.isInitialized) bridge.shutdown()
         vault?.afterChange()
         super.onDestroy()

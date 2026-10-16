@@ -157,10 +157,19 @@ async function connect(target) {
   const send = (method, params = {}) => new Promise((res, rej) => { const i = ++id; pending.set(i, { res, rej }); ws.send(JSON.stringify({ id: i, method, params })); });
   await send("Runtime.enable");
   return {
-    async ev(expr) {
-      const r = await send("Runtime.evaluate", { expression: expr, awaitPromise: true, returnByValue: true });
+    async ev(expr, gesture = false) {
+      const r = await send("Runtime.evaluate", { expression: expr, awaitPromise: true, returnByValue: true, userGesture: gesture });
       if (r.exceptionDetails) throw new Error("page script: " + (r.exceptionDetails.exception?.description ?? r.exceptionDetails.text));
       return r.result.value;
+    },
+    send,
+    // <input type=file data-testid=tid>: hand it files by device path, as if the user had picked them
+    async setFiles(tid, paths) {
+      await send("DOM.enable");
+      const { root } = await send("DOM.getDocument", { depth: 0 });
+      const { nodeId } = await send("DOM.querySelector", { nodeId: root.nodeId, selector: `[data-testid="${tid}"]` });
+      if (!nodeId) throw new Error("no element [data-testid=" + tid + "]");
+      await send("DOM.setFileInputFiles", { files: paths, nodeId });
     },
     close() { ws.close(); },
   };
@@ -198,23 +207,330 @@ async function send(text) {
 }
 
 // ---------- scenario ----------
+// Two kinds of steps. step(): the set-up that everything else needs (attach, connect, log in, first reply); a failure stops
+// the run (exit 1). check(): one function of the app, independent of the others: it is recorded as works / doesn't (with the
+// reason) and the run goes on. The table is printed at the end to the job log (artifacts cannot always be downloaded).
 const results = [];
+const EXP = process.env.SMOKE_EXPORTS_DIR || "";                    // host copy of the synthetic exports (make-exports.py)
+const DEV = process.env.SMOKE_DEVICE_DIR || `/data/data/${PKG}/cache/smoke`;  // copies readable by the app (run.sh)
+const STRICT = process.env.SMOKE_STRICT === "1";                     // any "doesn't" fails the job
+const short = e => String(e && e.message || e).replace(/\s+/g, " ").slice(0, 400);
+const skip = why => Object.assign(new Error(why), { skip: true });
+
+async function failureEvidence(name) {
+  shot("FAIL-" + name.replace(/\W+/g, "-").slice(0, 40));
+  if (page) {
+    const body = await page.ev(`document.body.innerText.slice(0,3000)`).catch(() => "?");
+    writeFileSync(path.join(OUT, "fail-page-text.txt"), String(body));
+    writeFileSync(path.join(OUT, "fail-page-html.html"), String(await page.ev(`document.documentElement.outerHTML.slice(0,200000)`).catch(() => "?")));
+  }
+  if (!CDP_ONLY) try { writeFileSync(path.join(OUT, "fail-ui.xml"), execFileSync("adb", ["exec-out", "cat", "/sdcard/ui.xml"], { encoding: "utf8" })); } catch { /* none */ }
+}
 async function step(name, fn) {
   const t = Date.now();
-  try { await fn(); results.push({ step: name, ok: true, s: (Date.now() - t) / 1000 }); log("OK   " + name); }
+  try { await fn(); results.push({ step: name, status: "works", why: "", s: (Date.now() - t) / 1000, core: true }); log("OK   " + name); }
   catch (e) {
-    results.push({ step: name, ok: false, why: e.message });
+    results.push({ step: name, status: "doesnt", why: short(e), s: (Date.now() - t) / 1000, core: true });
     log("FAIL " + name + ": " + e.message);
-    shot("FAIL-" + name.replace(/\W+/g, "-").slice(0, 40));
-    if (page) {
-      const body = await page.ev(`document.body.innerText.slice(0,3000)`).catch(() => "?");
-      writeFileSync(path.join(OUT, "fail-page-text.txt"), String(body));
-      writeFileSync(path.join(OUT, "fail-page-html.html"), String(await page.ev(`document.documentElement.outerHTML.slice(0,200000)`).catch(() => "?")));
-    }
-    if (!CDP_ONLY) try { writeFileSync(path.join(OUT, "fail-ui.xml"), execFileSync("adb", ["exec-out", "cat", "/sdcard/ui.xml"], { encoding: "utf8" })); } catch { /* none */ }
+    await failureEvidence(name);
     throw e;
   }
 }
+async function check(name, fn) {
+  const t = Date.now();
+  try {
+    const note = await fn();
+    results.push({ step: name, status: "works", why: note || "", s: (Date.now() - t) / 1000 });
+    log("OK   " + name + (note ? "  -- " + note : ""));
+  } catch (e) {
+    if (e && e.skip) { results.push({ step: name, status: "skipped", why: e.message, s: 0 }); log("SKIP " + name + ": " + e.message); return; }
+    results.push({ step: name, status: "doesnt", why: short(e), s: (Date.now() - t) / 1000 });
+    log("FAIL " + name + ": " + e.message);
+    await failureEvidence(name).catch(() => {});
+    // the next check starts from a clean screen: a panel or a menu left open by the failure is closed
+    await page?.ev(`(()=>{for(const t of ['close-panel']){const e=${q("close-panel")};if(e)e.click()} const k=document.querySelector('[data-testid="panel-knowledge-sheet"] .icon-btn');if(k)k.click()})()`).catch(() => {});
+  }
+}
+function report() {
+  const w = Math.min(70, Math.max(10, ...results.map(r => r.step.length)));
+  const label = r => (r.status === "works" ? "WORKS  " : r.status === "skipped" ? "SKIPPED" : "DOESN'T");
+  const lines = ["", "=== ANDROID SMOKE REPORT (" + results.filter(r => r.status === "works").length + " works, " +
+    results.filter(r => r.status === "doesnt").length + " don't, " + results.filter(r => r.status === "skipped").length + " skipped) ==="];
+  for (const r of results) lines.push(`${label(r)}  ${r.step.padEnd(w)}  ${r.why || ""}`);
+  lines.push("=== END OF REPORT ===", "");
+  const text = lines.join("\n");
+  console.error(text);
+  try { writeFileSync(path.join(OUT, "report.txt"), text); } catch { /* the log has it */ }
+}
+
+// ---- helpers for the checks ----
+const apiJson = (method, p, body) => page.ev(`(async()=>{const r=await fetch(${JSON.stringify(p)},{method:${JSON.stringify(method)},credentials:'same-origin',` +
+  `headers:{'Content-Type':'application/json'}${body === undefined ? "" : ",body:JSON.stringify(" + JSON.stringify(body) + ")"}});` +
+  `const t=await r.text();let j;try{j=JSON.parse(t)}catch{j=t}return {status:r.status,body:j}})()`);
+const listOf = x => Array.isArray(x) ? x : (x && (x.conversations || x.nodes || x.items || x.data)) || [];
+const convs = async () => listOf((await apiJson("GET", "/api/conversations?limit=500")).body);
+const convTitled = async sub => (await convs()).find(c => String(c.title || "").includes(sub));
+const messagesOf = async id => listOf((await apiJson("GET", `/api/conversations/${encodeURIComponent(id)}/messages?all=1`)).body);
+const providerCalls = () => readFileSync(path.join(OUT, "provider.jsonl"), "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l));
+const clickText = (tid, re) => page.ev(`(()=>{const e=[...document.querySelectorAll('[data-testid="${tid}"]')].find(x=>${re}.test(x.innerText));if(!e)return false;e.click();return true})()`);
+async function openMenu(entry) {
+  if (!(await has("shell-menu"))) { await click("shell-menu-toggle"); await waitTid("shell-menu", 10); }
+  await waitTid("shell-menu-" + entry, 10);
+  await click("shell-menu-" + entry);
+}
+async function closePanel() {
+  await click("close-panel").catch(() => {});
+  await page.ev(`(()=>{const k=document.querySelector('[data-testid="panel-knowledge-sheet"] .icon-btn');if(k)k.click()})()`);
+}
+// a text field that saves on blur (settings): focus, set, leave
+const setOnBlur = (tid, v) => page.ev(`(()=>{const e=${q(tid)};if(!e)return false;e.focus();
+  Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,${JSON.stringify(v)});
+  e.dispatchEvent(new Event('input',{bubbles:true}));e.blur();e.dispatchEvent(new FocusEvent('focusout',{bubbles:true}));return true})()`);
+async function setConfigViaUi(tid, key, value) {
+  await openMenu("settings"); await waitTid("panel-settings"); await waitTid(tid);
+  await setOnBlur(tid, value);
+  await until(`config ${key} = ${value}`, async () => (await apiJson("GET", "/api/config")).body?.[key] === value, 15, 300);
+  await closePanel();
+}
+// the synthetic export as an upload straight to the server API (what the web client does with a picked File)
+async function apiImport(hostFile, name) {
+  const b64 = readFileSync(path.join(EXP, hostFile)).toString("base64");
+  return page.ev(`(async()=>{const bin=atob(${JSON.stringify(b64)});const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+    const f=new FormData();f.append('file',new File([u],${JSON.stringify(name)}));
+    const r=await fetch('/api/import',{method:'POST',body:f,credentials:'same-origin'});const t=await r.text();
+    const ch=[...t.matchAll(/data:\s*(\{.*\})/g)].map(m=>{try{return JSON.parse(m[1])}catch{return null}}).filter(Boolean);
+    return {status:r.status,progress:ch.filter(c=>c.type==='progress').length,last:ch[ch.length-1]||null,raw:t.slice(0,300)}})()`);
+}
+
+// ---- the Android system picker (DocumentsUI), driven with UI Automator ----
+// file: finds the file by name (Downloads root first), taps it. folder: opens the folder by name and taps "Use this folder",
+// then "Allow". Every try logs what the screen shows, so a failure says what the picker looked like.
+async function drivePicker(target, { folder = false } = {}) {
+  let seen = false, entered = false, lastTexts = "";
+  for (let i = 0; i < 60; i++) {
+    await sleep(1000);
+    let nodes;
+    try { nodes = dump(); } catch (e) { continue; }
+    const inPicker = nodes.some(n => /documentsui/i.test(n.package || ""));
+    lastTexts = nodes.map(n => n.text || n["content-desc"]).filter(Boolean).slice(0, 40).join(" | ");
+    if (!inPicker) { if (seen) return "picker closed"; continue; }
+    if (!seen) { seen = true; log("picker: " + lastTexts); shot("picker-" + target.replace(/\W+/g, "-")); }
+    const btn = re => find(nodes, n => /Button/.test(n.class || "") && re.test(n.text || "") && n.enabled !== "false");
+    const allow = btn(/^allow$/i); if (allow) { log("picker: Allow"); tap(allow); continue; }
+    if (folder) {
+      const use = btn(/use this folder/i);
+      if (entered && use) { log("picker: Use this folder"); tap(use); continue; }
+      const item = find(nodes, n => n.text === target && !/toolbar|title/i.test(n["resource-id"] || ""));
+      if (item && !entered) { log("picker: open folder " + target); tap(item); entered = true; continue; }
+      if (item && entered && use) { tap(use); continue; }
+    } else {
+      const file = find(nodes, n => n.text === target);
+      if (file) { log("picker: tap " + target); tap(file); await sleep(800); const open = btn(/^(open|select)$/i); if (open) tap(open); continue; }
+      const open = btn(/^(open|select)$/i); if (open) { tap(open); continue; }
+    }
+    const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar|title/i.test(n["resource-id"] || ""));
+    if (dl && i % 3 === 0) { log("picker: Downloads"); tap(dl); continue; }
+    const roots = find(nodes, n => /show roots|open drawer|navigate up/i.test(n["content-desc"] || ""));
+    if (roots && i % 3 === 1) { log("picker: roots"); tap(roots); continue; }
+  }
+  throw new Error(`the system picker did not return ${target}; it showed: ${lastTexts}`);
+}
+
+// ---- LoomBridge streams from the page (local mode only: the bridge exists there) ----
+const bridgeCall = (method, args = {}) => page.ev(`window.LoomBridge.call(${JSON.stringify(method)},${JSON.stringify(JSON.stringify(args))})`).then(JSON.parse);
+const startBridge = (method, args) => page.ev(`(()=>{const id='smoke_'+Date.now()+'_'+Math.random().toString(36).slice(2);window.__smoke=window.__smoke||{};
+  const st=window.__smoke[id]={chunks:[],done:false};window.__loomCallbacks=window.__loomCallbacks||{};
+  window.__loomCallbacks[id]=(j,d)=>{try{st.chunks.push(JSON.parse(j))}catch(e){st.chunks.push({parse_error:String(e),raw:j})}if(d)st.done=true};
+  window.LoomBridge.startStream(${JSON.stringify(method)},${JSON.stringify(JSON.stringify(args))},id);return id})()`);
+const bridgeState = id => page.ev(`(()=>{const s=window.__smoke[${JSON.stringify(id)}];const l=s.chunks[s.chunks.length-1];
+  return {n:s.chunks.length,done:s.done,last:l,progress:s.chunks.filter(c=>c.type==='progress').length}})()`);
+const awaitBridge = (id, s) => until("the stream " + id + " to finish", async () => { const st = await bridgeState(id); return st.done && st; }, s, 400);
+function wantDone(st, messages) {
+  const l = st.last;
+  if (!l) throw new Error("no final chunk");
+  if (l.error) throw new Error(`${l.error.code}: ${l.error.message}`);
+  if (l.type !== "done") throw new Error("the final chunk is not type=done: " + JSON.stringify(l).slice(0, 300));
+  if (messages !== undefined && l.messages !== messages) throw new Error(`expected ${messages} messages, got ${l.messages} (${JSON.stringify(l).slice(0, 300)})`);
+  return `${l.messages} messages, ${(l.conversations || []).length} conversation(s), ${st.progress} progress chunk(s)`;
+}
+
+// ---- the checks ----
+const localChecks = [
+  ["local: import a ChatGPT conversations.json by path (JNI import_file)", async () => {
+    const st = await awaitBridge(await startBridge("import_file", { path: `${DEV}/chatgpt-conversations.json` }), 90);
+    return wantDone(st, 4);
+  }],
+  ["local: import a Claude.ai ZIP by path (JNI import_file)", async () => {
+    const st = await awaitBridge(await startBridge("import_file", { path: `${DEV}/claude-export.zip` }), 90);
+    return wantDone(st, 6);
+  }],
+  ["local: imported conversations are in the app (LoomBridge list_conversations)", async () => {
+    const all = JSON.stringify(await bridgeCall("list_conversations", { limit: 200 }));
+    for (const t of ["Smoke ChatGPT JSON", "Smoke Claude ZIP"]) if (!all.includes(t)) throw new Error(`"${t}" is not listed: ${all.slice(0, 300)}`);
+  }],
+  ["local: import panel with a picked file (+ -> choose file -> Import)", async () => {
+    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await page.setFiles("import-file-input", [`${DEV}/ui-local.json`]);
+    await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
+    await click("start-import");
+    await until("a result or an error of the import panel", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
+    if (await has("import-error")) throw new Error("import panel: " + (await page.ev(`${q("import-error")}.innerText`)));
+    await closePanel();
+    return await page.ev(`(${q("import-result")}?.innerText||'').replace(/\s+/g,' ').slice(0,100)`).catch(() => "");
+  }],
+  ["local: system picker, one file (SAF content:// -> copy -> kernel)", async () => {
+    const id = await startBridge("pick_import", { kind: "file" });
+    await drivePicker("saf-local.json");
+    return wantDone(await awaitBridge(id, 90), 2);
+  }],
+  ["local: system picker, a folder (tree URI, only importable files)", async () => {
+    const id = await startBridge("pick_import", { kind: "folder" });
+    await drivePicker("smoke-exports", { folder: true });
+    const st = await awaitBridge(id, 90);
+    const note = wantDone(st, 4);
+    const l = st.last;
+    if (l.imported !== 2) throw new Error(`expected 2 files imported, got ${l.imported}: ${JSON.stringify(l.files)}`);
+    return note + "; files: " + (l.files || []).map(f => f.name + (f.ok ? "" : " FAILED")).join(", ");
+  }],
+  ["local: a cancelled picker ends with an error chunk, not a hang", async () => {
+    const id = await startBridge("pick_import", { kind: "file" });
+    await until("the picker on screen", () => dump().some(n => /documentsui/i.test(n.package || "")), 30, 800);
+    adb("shell", "input", "keyevent", "KEYCODE_BACK");
+    const st = await awaitBridge(id, 30);
+    if (!st.last.error || st.last.error.code !== "cancelled") throw new Error("expected a cancelled error, got " + JSON.stringify(st.last).slice(0, 200));
+    return st.last.error.message;
+  }],
+];
+
+const serverChecks = [
+  ["new conversation (drawer -> New chat -> message -> listed)", async () => {
+    const before = (await convs()).length;
+    await click("shell-drawer-toggle"); await waitTid("shell-new-chat", 10); await click("shell-new-chat");
+    await waitTid("shell-empty", 15);
+    await send("Nowa rozmowa smoke: Kowalski jest w Krakowie.");
+    await until("the reply in the new conversation", () => assistantSays("Odpowiedz testowego dostawcy"), 90, 300);
+    await until("one more conversation on the server", async () => (await convs()).length === before + 1, 20, 500);
+    return `${before} -> ${before + 1} conversations`;
+  }],
+  ["chat command: przetłumacz -> proposal -> confirm", async () => {
+    await send("Przetłumacz tę rozmowę na niemiecki");
+    await waitTid("chat-action-proposal", 90);
+    const shown = await until("proposal text", () => page.ev(`(${q("chat-action-proposal")}?.innerText||'')`).then(t => /translat|tłumacz|Tłumacz/i.test(t) && t), 20, 200);
+    await click("chat-action-proposal-confirm");
+    await waitGone("chat-action-proposal", 60);
+    if (await has("chat-error")) throw new Error("chat-error: " + await page.ev(`${q("chat-error")}.innerText`));
+    return shown.replace(/\s+/g, " ").slice(0, 80);
+  }],
+  ["model: the picker and the default-model setting reach the provider", async () => {
+    const options = await page.ev(`[...document.querySelectorAll('[data-testid="model-picker"] option')].map(o=>o.value)`);
+    await setConfigViaUi("cfg-default-model", "default_model", "smoke/model-b");
+    await send("Pytanie po zmianie modelu.");
+    await until("the provider saw the new model", () => providerCalls().some(c => !c.classify && c.model === "smoke/model-b"), 60, 500);
+    await setConfigViaUi("cfg-default-model", "default_model", "test/first-steps");
+    return `picker options: ${options.length} (${options.slice(0, 3).join(", ") || "none"}); provider got smoke/model-b`;
+  }],
+  ["settings: a change persists (field -> server config -> reload -> field)", async () => {
+    const val = "smoke/semantic-" + (Date.now() % 100000);
+    await setConfigViaUi("cfg-semantic-model", "semantic_model", val);
+    await page.ev(`location.reload()`);
+    await waitTid("chat-input", 60);
+    await openMenu("settings"); await waitTid("cfg-semantic-model");
+    const shown = await until("the field shows the saved value", async () => (await page.ev(`${q("cfg-semantic-model")}.value`)) === val && val, 20, 300);
+    await closePanel();
+    await setConfigViaUi("cfg-semantic-model", "semantic_model", "");   // leave the account as it was
+    return "saved " + shown;
+  }],
+  ["attachment: the + button opens the import panel", async () => {
+    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await closePanel();
+    return "the chat has no per-message attachment; + is the import panel";
+  }],
+  ["import (UI): ChatGPT conversations.json from a picked file", async () => {
+    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await page.setFiles("import-file-input", [`${DEV}/chatgpt-conversations.json`]);
+    await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
+    await click("start-import");
+    await until("import result or error", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
+    if (await has("import-error")) throw new Error("import panel: " + (await page.ev(`${q("import-error")}.innerText`)));
+    const c = await until("the conversation on the server", () => convTitled("Smoke ChatGPT JSON"), 20, 500);
+    const n = (await messagesOf(c.id)).length;
+    if (n !== 4) throw new Error(`expected 4 messages through the API, found ${n}`);
+    await closePanel();
+    return "4 messages through the API";
+  }],
+  ["import (UI): Claude.ai ZIP from a picked file", async () => {
+    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await page.setFiles("import-file-input", [`${DEV}/claude-export.zip`]);
+    await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
+    await click("start-import");
+    await until("import result or error", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
+    if (await has("import-error")) throw new Error("import panel: " + (await page.ev(`${q("import-error")}.innerText`)));
+    const a = await until("first conversation", () => convTitled("Smoke Claude ZIP"), 20, 500);
+    const n = (await messagesOf(a.id)).length;
+    if (n < 2) throw new Error(`the Claude conversation has ${n} messages through the API`);
+    await closePanel();
+    return `conversation "${a.title}" has ${n} messages`;
+  }],
+  ["import (UI): through the WebView file chooser = system picker (SAF)", async () => {
+    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await page.ev(`${q("import-file-input")}.click()`, true);   // a user gesture: Android opens the document picker
+    await drivePicker("saf-server.json");
+    await until("the page got the file", () => page.ev(`${q("import-file-input")}.files.length===1`), 20, 300);
+    await click("start-import");
+    await until("import result or error", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
+    if (await has("import-error")) throw new Error("import panel: " + (await page.ev(`${q("import-error")}.innerText`)));
+    const c = await until("the conversation on the server", () => convTitled("Smoke SAF server"), 20, 500);
+    await closePanel();
+    return `conversation "${c.title}" imported from a content:// file`;
+  }],
+  ["graph: the panel opens and shows nodes", async () => {
+    await openMenu("graph"); await waitTid("panel-graph", 10); await waitTid("graph-view", 20);
+    const nodes = await until("graph nodes through the API", async () => { const n = listOf((await apiJson("GET", "/api/graph/nodes")).body); return n.length > 0 && n.length; }, 60, 1000);
+    const counts = await until("graph counts text", () => page.ev(`(${q("graph-counts")}?.innerText||'').replace(/\s+/g,' ')`).then(t => /[1-9]/.test(t) && t), 30, 500);
+    const canvas = await has("graph-canvas");
+    shot("graph");
+    await closePanel();
+    return `${nodes} nodes (API); panel says "${counts}"; canvas ${canvas ? "present" : "absent"}`;
+  }],
+  ["memory: the panel opens, a note is added and stored", async () => {
+    await openMenu("memory"); await waitTid("panel-memory", 10); await waitTid("memory-new-content", 20);
+    const text = "Smoke notatka " + Date.now();
+    await setVal("memory-new-content", text);
+    await click("memory-add");
+    await until("the note in the panel", () => page.ev(`[...document.querySelectorAll('[data-testid="memory-node"]')].some(n=>n.innerText.includes(${JSON.stringify(text)}))`), 20, 300);
+    const stored = JSON.stringify((await apiJson("GET", "/api/memory")).body);
+    if (!stored.includes(text)) throw new Error("the note is not in /api/memory");
+    await closePanel();
+    return "stored (API)";
+  }],
+  ["knowledge: the panel opens", async () => {
+    await openMenu("knowledge"); await waitTid("panel-knowledge-sheet", 10); await waitTid("knowledge-workbench", 20);
+    shot("knowledge");
+    await closePanel();
+  }],
+  ["paging: a 520-message conversation loads in pages", async () => {
+    const r = await apiImport("long-claude.json", "long-claude.json");
+    if (!r.last || r.last.type !== "done") throw new Error("API import: " + JSON.stringify(r).slice(0, 300));
+    const patch = await apiJson("PATCH", "/api/config", { loom_web_message_window: 40 });
+    if (patch.status >= 400) throw new Error("cannot set loom_web_message_window: " + JSON.stringify(patch.body).slice(0, 200));
+    try {
+      const c = await until("the long conversation", () => convTitled("Smoke Long 520"), 20, 500);
+      await click("shell-drawer-toggle"); await waitTid("shell-conv", 10);
+      if (!(await clickText("shell-conv", "/Smoke Long 520/"))) throw new Error("the conversation is not in the drawer list");
+      await waitTid("chat-older", 30);
+      const first = await page.ev(`${q("chat-older-count")}.innerText`);
+      await click("chat-load-older");
+      const second = await until("a bigger page", async () => { const t = await page.ev(`${q("chat-older-count")}?.innerText||''`); return t !== first && t; }, 20, 300);
+      const total = (await messagesOf(c.id)).length;
+      return `API has ${total} messages; first page "${first}", after "load older" "${second}"`;
+    } finally {
+      await apiJson("PATCH", "/api/config", { loom_web_message_window: 500 });
+    }
+  }],
+  ["agent proposals", async () => {
+    throw skip("not reachable from the chat UI without an agent scenario (AgentProposalBlock renders only for agent runs); not driven here");
+  }],
+];
 
 try {
   if (!CDP_ONLY) adb("shell", "am", "start", "-W", "-n", `${PKG}/.MainActivity`);
@@ -224,7 +540,11 @@ try {
       await waitTid("shell-menu-toggle", 60);
       shot("local-chat");
     });
+    // the local app (JNI kernel on the phone) has the bridge: imports are checked here, before switching to the server
+    for (const [name, fn] of localChecks) await check(name, fn);
     await step("2 menu -> connection (LoomBridge.openConnection)", async () => {
+      if (await has("panel-import")) await closePanel();
+      if (await has("shell-menu")) await click("shell-menu-toggle");   // a menu left open by a check
       await click("shell-menu-toggle");
       await waitTid("shell-menu", 10);
       // the entry is listed only when LoomBridge.openConnection exists (layouts.json: when=android_shell)
@@ -263,12 +583,12 @@ try {
       await waitTid("chat-input");
     }
   });
-  await step("7 send a message and see the reply", async () => {
+  await step("7 chat: send a message and see the reply", async () => {
     await send("Zespol Acme planuje wydac wersje 2.0 w piatek, jesli testy przejda. Odpowiedz dwoma zdaniami.");
     await until("the assistant reply", () => assistantSays("Odpowiedz testowego dostawcy"), 90, 300);
     shot("reply");
   });
-  await step("8 'streść tę rozmowę' -> proposal -> 'tak' -> summary", async () => {
+  await step("8 chat command: 'streść tę rozmowę' -> proposal -> 'tak' -> summary", async () => {
     await send("streść tę rozmowę");
     await waitTid("chat-action-proposal", 90);
     const shown = await until("proposal text", () => page.ev(`(${q("chat-action-proposal")}?.innerText||'')`).then(t => /summar|stresz|Streść/i.test(t) && t), 20, 200);
@@ -281,13 +601,19 @@ try {
     shot("summary");
   });
   await step("9 the provider got the key from the account settings", async () => {
-    const calls = readFileSync(path.join(OUT, "provider.jsonl"), "utf8").split("\n").filter(Boolean).map(l => JSON.parse(l));
+    const calls = providerCalls();
     if (!calls.some(c => c.authorization === "Bearer " + KEY)) throw new Error(`no provider call with the key (${calls.length} calls)`);
   });
-  log("ALL STEPS OK");
+  for (const [name, fn] of serverChecks) await check(name, fn);
+  log("SET-UP STEPS OK");
 } catch (e) {
   process.exitCode = 1;
+  const ran = new Set(results.map(r => r.step));
+  for (const [name] of [...(CDP_ONLY ? [] : localChecks), ...serverChecks])
+    if (!ran.has(name)) results.push({ step: name, status: "skipped", why: "not run: a set-up step failed (" + short(e).slice(0, 120) + ")", s: 0 });
 } finally {
-  writeFileSync(path.join(OUT, "results.json"), JSON.stringify(results, null, 1));
+  report();
+  if (STRICT && results.some(r => r.status === "doesnt")) process.exitCode = 1;
+  writeFileSync(path.join(OUT, "results.json"), JSON.stringify(results.map(r => ({ ...r, ok: r.status === "works" })), null, 1));
   try { page?.close(); } catch { /* closed */ }
 }

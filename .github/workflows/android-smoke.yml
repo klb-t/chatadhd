@@ -34,6 +34,10 @@ on:
         description: "Multiplier of every wait in the UI driver (raise it when the runner is slow)."
         type: string
         default: "1"
+      strict:
+        description: "Fail the job when any function check of the report says 'doesn't' (default: the report is printed and only the set-up steps fail the job)."
+        type: boolean
+        default: false
       cmake_version:
         description: "Android SDK CMake package, e.g. 3.31.5. Empty = the newest 3.x the SDK offers."
         type: string
@@ -289,6 +293,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
         env:
           SMOKE_TIMEOUT_S: ${{ inputs.speed_factor }}
+          SMOKE_STRICT: ${{ inputs.strict && '1' || '0' }}
         with:
           api-level: ${{ inputs.api_level }}
           target: google_apis
@@ -312,7 +317,8 @@ jobs:
               python3 - "$OUT/results.json" <<'PY'
           import json, sys
           for r in json.load(open(sys.argv[1])):
-              print("- %s %s%s" % ("OK  " if r["ok"] else "FAIL", r["step"], "" if r["ok"] else ": " + r.get("why", "")))
+              mark = {"works": "OK  ", "skipped": "SKIP"}.get(r.get("status"), "FAIL")
+              print("- %s %s%s" % (mark, r["step"], ("" if r.get("status") == "works" else ": ") + (r.get("why") or "")))
           PY
             else
               echo "No results.json: the emulator or the app never got as far as the scenario (see logcat / the job log)."
@@ -320,6 +326,10 @@ jobs:
             echo ""
             echo "Artifact \`android-smoke\`: shots/ (screenshots), logcat.txt, server.log, provider.log, drive.log."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Print the function report (also in the job log)
+        if: ${{ always() }}
+        run: cat "$OUT/report.txt" 2>/dev/null || echo "no report.txt (the scenario did not get as far as the end)"
 
       - name: Upload screenshots, logcat and server log
         if: ${{ always() }}
