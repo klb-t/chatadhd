@@ -417,7 +417,46 @@ const localChecks = [
     if (!st.last.error || st.last.error.code !== "cancelled") throw new Error("expected a cancelled error, got " + JSON.stringify(st.last).slice(0, 200));
     return st.last.error.message;
   }],
+  // M1 §3.14: system Back never ends the app silently. The page closes its own overlays first (window.__loomBack),
+  // then the WebView history; at the root the shell asks (android_back_exit_confirm, preset ask). "Stay" keeps the
+  // app and the draft; Back again while asked leaves (the task goes to the back, the draft stays in the WebView).
+  ["local: Back at the chat root asks before leaving; Stay keeps the app and the draft", async () => {
+    if (await has("panel-import")) await closePanel();
+    await waitTid("chat-input", 20);
+    const draft = "szkic M1 wstecz";
+    await setVal("chat-input", draft);
+    const exitDialog = () => find(dump(), n => n["resource-id"] === "android:id/button2");
+    let dialog;
+    for (let k = 0; k < 5 && !dialog; k++) {
+      adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200);
+      if (!resumed()) throw new Error(`Back #${k + 1} left the app without asking`);
+      dialog = exitDialog();
+      if (!dialog) log(`Back #${k + 1}: handled by the page or the WebView history`);
+    }
+    if (!dialog) throw new Error("no exit question after 5 Backs");
+    shot("back-exit-question");
+    const question = textOf(find(dump(), n => n["resource-id"] === "android:id/message") || {}).trim();
+    tap(dialog); await sleep(1000);
+    if (!resumed()) throw new Error("Stay did not keep the app");
+    const kept = await page.ev(`${q("chat-input")}?.value`);
+    if (kept !== draft) throw new Error(`the draft is gone after Stay: ${JSON.stringify(kept)}`);
+    return `asked: "${question}"`;
+  }],
+  ["local: Back twice at the root leaves to the launcher; reopening shows the draft", async () => {
+    const draft = await page.ev(`${q("chat-input")}?.value`);
+    adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200);
+    await until("the exit question", () => find(dump(), n => n["resource-id"] === "android:id/button2"), 15, 600);
+    adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1500);
+    if (resumed()) throw new Error("Back on the question did not leave the app");
+    adb("shell", "am", "start", "-W", "-n", `${PKG}/.MainActivity`); await sleep(1500);
+    if (!resumed()) throw new Error("the app did not come back");
+    const kept = await until("the draft after reopening", () => page.ev(`${q("chat-input")}?.value`).then(v => v === draft && v), 20, 500);
+    await setVal("chat-input", "");
+    return `draft kept: "${kept}"`;
+  }],
 ];
+const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${PKG.replace(/\./g, "\\.")}/\\.MainActivity`).test(
+  execFileSync("adb", ["shell", "dumpsys", "activity", "activities"], { encoding: "utf8", maxBuffer: 16 << 20 }));
 
 const serverChecks = [
   ["new conversation (drawer -> New chat -> message -> listed)", async () => {

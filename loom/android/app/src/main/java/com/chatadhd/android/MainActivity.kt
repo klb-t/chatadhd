@@ -19,6 +19,8 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.webkit.WebViewAssetLoader
@@ -177,6 +179,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         bridge = LoomBridge(webView)
+        bridge.onGestureExclusion = { rects -> runOnUiThread { setGestureExclusion(rects) } }
         // Notifications of the shell (the WebView has no Notification API): Android 13 asks for the permission at runtime.
         bridge.onRequestNotifications = {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) requestNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -185,7 +188,54 @@ class MainActivity : AppCompatActivity() {
         bridge.onImportUri = { uri, title, callbackId -> importFlow.startUri(uri, title, callbackId) }
         bridge.onCancelImport = { callbackId -> importFlow.cancel(callbackId) }
         bridge.onOpenConnection = { runOnUiThread { requestConnection.launch(Intent(this, ConnectionActivity::class.java)) } }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = handleBack()
+        })
         startForMode()
+    }
+
+    // ── system Back (M1 §3.14) ──────────────────────────────────────────
+    // The page first: window.__loomBack() closes its topmost sheet, card, menu or path step and says whether it did.
+    // Then the WebView history (one entry per overlay, popstate closes it). Only at the root does Back leave the app,
+    // after a question when android_back_exit_confirm says so (preset: ask). Leaving moves the task to the back
+    // instead of finishing it, so a draft in the composer stays.
+    private fun handleBack() {
+        webView.evaluateJavascript(BACK_JS) { handled ->
+            when {
+                handled == "true" -> Unit
+                webView.canGoBack() -> webView.goBack()
+                else -> when (exitMode()) {
+                    "never" -> moveTaskToBack(true)
+                    "always" -> confirmExit(backTwiceLeaves = false)
+                    else -> confirmExit(backTwiceLeaves = true)
+                }
+            }
+        }
+    }
+
+    /** android_back_exit_confirm: ask (preset; Back again while asked = leave) | always (only the button leaves) | never. */
+    private fun exitMode(): String {
+        val v = try { org.json.JSONObject(bridge.getConfig()).opt("android_back_exit_confirm") } catch (e: Exception) { null }
+        return when (v) { is String -> v; false -> "never"; else -> "ask" }
+    }
+
+    private var exitDialog: AlertDialog? = null
+    private fun confirmExit(backTwiceLeaves: Boolean) {
+        exitDialog = AlertDialog.Builder(this)
+            .setMessage(R.string.back_exit_question)
+            .setPositiveButton(R.string.back_exit_leave) { _, _ -> moveTaskToBack(true) }
+            .setNegativeButton(R.string.back_exit_stay, null)
+            .setOnKeyListener { dialog, keyCode, event ->
+                if (backTwiceLeaves && keyCode == android.view.KeyEvent.KEYCODE_BACK && event.action == android.view.KeyEvent.ACTION_UP) {
+                    dialog.dismiss(); moveTaskToBack(true); true
+                } else false
+            }
+            .show()
+    }
+
+    /** Called by the page (LoomBridge.setGestureExclusion): edge swipes over these CSS-pixel rectangles go to the page. */
+    internal fun setGestureExclusion(rects: List<android.graphics.Rect>) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) webView.systemGestureExclusionRects = rects
     }
 
     private val requestConnection =
@@ -313,5 +363,6 @@ class MainActivity : AppCompatActivity() {
         // origin the way a made-up https hostname could.
         private const val APP_HOST = "appassets.androidx.startup"
         private const val LOCAL_URL = "https://$APP_HOST/assets/web/index.html"
+        private const val BACK_JS = "(function(){try{return !!(window.__loomBack&&window.__loomBack());}catch(e){return false;}})()"
     }
 }

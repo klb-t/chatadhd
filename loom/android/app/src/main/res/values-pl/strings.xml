@@ -73,4 +73,7 @@
     <string name="secrets_unreadable">Nie udało się odczytać kluczy API (klucza Keystore już nie ma, np. po reinstalacji). Wpisz je ponownie w Ustawieniach.</string>
     <string name="secrets_seal_failed">Nie udało się zabezpieczyć kluczy API w Keystore; zostają w zwykłym pliku.</string>
     <string name="data_open_failed">Nie udało się otworzyć danych ChatADHD</string>
+    <string name="back_exit_question">Zamknąć ChatADHD? Szkic zostanie.</string>
+    <string name="back_exit_leave">Zamknij</string>
+    <string name="back_exit_stay">Zostań</string>
 </resources>

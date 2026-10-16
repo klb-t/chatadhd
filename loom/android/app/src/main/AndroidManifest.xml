@@ -58,6 +58,7 @@
             android:exported="true"
             android:configChanges="orientation|screenSize|keyboardHidden|uiMode"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.ChatADHD">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
