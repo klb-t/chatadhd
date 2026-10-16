@@ -111,6 +111,9 @@ struct ChatOptions {
   // the proposal is not part of what the model reads, so the request is that of an ordinary message. Not a wire
   // field (from_json never sets it); empty = nothing is left out.
   std::vector<std::string> history_skip;
+  // How the exchange of chat commands (metadata.routed: command, proposal, confirmation, result) enters the history: skip_exchange |
+  // skip_all | include. Not a wire field; empty = setting chat_history_command_traffic (preset skip_exchange).
+  std::string history_command_traffic;
   // Message id -> the text sent in its place (a lossy level of the guardian's representation, chosen by the context selector). Not a wire
   // field; empty = every message is sent as it is.
   std::map<std::string, std::string> history_text;

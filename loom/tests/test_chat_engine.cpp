@@ -454,4 +454,35 @@ TEST_SUITE("chat_engine") {
     CHECK(parsed.context_order == "stable_first");
     CHECK_FALSE(ChatOptions::from_json(Json{{"context_order", 3}}));
   }
+
+  TEST_CASE("R19: the exchange of a chat command stays out of the history; a result stays (chat_history_command_traffic)") {
+    // Real-model smoke: the model read earlier proposals in its history and wrote a fake proposal of its own.
+    auto history_of = [](const char* mode) {
+      OrderFixture f;
+      if (mode) f.env.cfg.set("chat_history_command_traffic", mode);
+      auto add = [&](const char* role, const char* text, Json meta) {
+        NewMessage m; m.conv_id = f.conv_id; m.role = role; m.text = text; m.metadata = std::move(meta);
+        unwrap(f.env.db->create_msg(m));
+      };
+      add("user", "CMD-typed boil this down", Json{{"routed", "command"}});
+      add("assistant", "PROP-I read this as a command", Json{{"routed", "proposal"}, {"action_proposal", Json::object()}});
+      add("user", "CONF-yes", Json{{"routed", "confirmation"}});
+      add("assistant", "RES-the summary", Json{{"routed", "result"}, {"action_run", Json::object()}});
+      std::string all;
+      for (const auto& c : contents(f.send_body(ChatOptions{}))) all += c + "\n";
+      return all;
+    };
+    const auto preset = history_of(nullptr);
+    CHECK(preset.find("HIST-S3") != std::string::npos);
+    CHECK(preset.find("CMD-") == std::string::npos);
+    CHECK(preset.find("PROP-") == std::string::npos);
+    CHECK(preset.find("CONF-") == std::string::npos);
+    CHECK(preset.find("RES-the summary") != std::string::npos);
+    const auto all = history_of("skip_all");
+    CHECK(all.find("RES-") == std::string::npos);
+    CHECK(all.find("HIST-S3") != std::string::npos);
+    const auto inc = history_of("include");
+    CHECK(inc.find("PROP-I read this as a command") != std::string::npos);
+    CHECK(inc.find("CMD-typed") != std::string::npos);
+  }
 }

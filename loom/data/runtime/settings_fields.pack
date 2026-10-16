@@ -421,6 +421,14 @@
         "description": "A tool result longer than this many characters is cut when it is handed back to the model (the run keeps all of it); 0 = no cut. Runtime profile tool_loop (result_max_chars). Default: 20000."
       },
       {
+        "key": "chat_history_command_traffic",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "How the exchange of a chat command (what you typed as a command, the proposal, your answer to it) enters the history the chat model reads: skip_exchange (preset: left out, an action's result stays as context), skip_all (results left out too) or include (everything is sent). Default: skip_exchange."
+      },
+      {
         "key": "model_registry_autorefresh",
         "scope": "config",
         "group": "chat",
