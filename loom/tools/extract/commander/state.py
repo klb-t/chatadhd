@@ -647,6 +647,20 @@ class CommanderState:
             {"call": "filter", "action": "save", "name": name, "expr": self.pane.filter},
             then=lambda r: self._msg(t("commander.filter_saved", name=r.get("saved")))))
 
+    def a_filter_load(self) -> None:
+        res = self.call({"call": "filter", "action": "list"})
+        if res is None:
+            return
+        if not res["filters"]:
+            self._msg(t("commander.no_filters"), error=True)
+            return
+
+        def use(expr: str) -> None:
+            self.pane.filter, self.pane.cursor = expr, 0
+            self.refresh(self.pane)
+        self.menu(t("commander.menu.filters"), [{"label": f"{f['id']}: {f['expr']}", "do": (lambda e=f["expr"]: use(e))}
+                                               for f in res["filters"]])
+
     # ───────────────────────────── actions: view ─────────────────────────────
     def _open_viewer(self, nid: str) -> None:
         fmt = self.formats[self.format_i % len(self.formats)]
@@ -810,8 +824,9 @@ class CommanderState:
         if self.pane.root == "package":
             self._msg(t("commander.copy_from_package"), error=True)
             return
-        sel = (self.status_data.get("selection") or {}).get("conversations", 0)
-        if sel and self.marked_rows() or (sel and not self.pane.rows):
+        # the selection when there is one (the status line shows its size), otherwise the node under the cursor
+        st = self.s.call({"call": "status"})
+        if not st.get("busy") and (st.get("selection") or {}).get("conversations", 0):
             self._apply_op("package.copy", {"from": "selection", "into": into}, "commander.copied")
             return
         nid = self._content_id(self._need_row())

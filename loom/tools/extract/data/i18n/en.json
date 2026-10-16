@@ -472,5 +472,7 @@
   "serve.started": "X-Port API: {url} (this computer only)",
   "serve.stopped": "stopped",
   "serve.token": "token (header X-Extract-Token): {token}",
-  "serve.unauthorized": "missing or wrong token (header X-Extract-Token)"
+  "serve.unauthorized": "missing or wrong token (header X-Extract-Token)",
+  "commander.no_filters": "no saved filters (F saves the current one)",
+  "commander.menu.filters": "Saved filters"
 }

@@ -245,6 +245,17 @@
    }
   },
   {
+   "id": "filter.load",
+   "group": "nav",
+   "kind": "state",
+   "records": false,
+   "needs_selection": false,
+   "label": {
+    "pl": "Wczytaj zapisany filtr",
+    "en": "Load a saved filter"
+   }
+  },
+  {
    "id": "view",
    "group": "view",
    "kind": "state",

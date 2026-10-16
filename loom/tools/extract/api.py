@@ -112,6 +112,7 @@ class Session:
         self.answer_default = bool(self.ds.preset("serve.answer_default", False)) if answer_default is None else answer_default
         self._sync_answer: Optional[bool] = None
         self._cost_cache: tuple[int, Any] = (-1, None)
+        self._status_cache: tuple[int, dict[str, Any], Any] = (-1, {}, None)
         self._calls = self.ds.file("api.json")["calls"]
         self.layout = self.ds.file("commander/layout.json")
 
@@ -768,13 +769,14 @@ class Session:
                 out["job"] = job.public()
             out["busy"] = True
             return out  # the engine is busy: counters below would read a state that is changing
-        out["conversations"] = len(eng.conversations)
-        out["messages"] = sum(len(u.messages) for u in eng.conversations)
-        out["selection"] = eng.selection_summary() if eng.units else {"conversations": 0, "messages": 0, "chars": 0, "tokens_est": 0}
-        out["package"] = self._package_size()
-        out["cost"] = self._cost()
-        out["undo"] = len(eng.package.oplog) if eng.package is not None else 0
-        out["redo"] = len(eng.package.redo) if eng.package is not None else 0
+        if self._status_cache[0] != self.version or self._status_cache[2] is not eng:  # the commander asks every tick
+            heavy = {"conversations": len(eng.conversations), "messages": sum(len(u.messages) for u in eng.conversations),
+                     "selection": eng.selection_summary() if eng.units else {"conversations": 0, "messages": 0, "chars": 0, "tokens_est": 0},
+                     "package": self._package_size(), "cost": self._cost(),
+                     "undo": len(eng.package.oplog) if eng.package is not None else 0,
+                     "redo": len(eng.package.redo) if eng.package is not None else 0}
+            self._status_cache = (self.version, heavy, eng)
+        out.update(self._status_cache[1])
         return out
 
     def _package_size(self) -> dict[str, Any]:

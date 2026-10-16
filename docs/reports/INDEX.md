@@ -1225,3 +1225,24 @@ presetem `dev` bez tych `-D`).
 - Doszło ponad brief: profil `bundle`, CSV rozmów, karty z pytaniami, `package.mark`/`package.show`, zapisane filtry, nazwy klastrów modelem (`klastry --nazwij`), tekst załączników tekstowych (`--tekst-zalacznikow`), obieg `handoff.zip` przez `libloom`, edycje `move_attachments` i `edit.user` (moduł z nakładki, tylko z `allow_user_code`).
 - Nie weszło (plaster C lub później): komander TUI, `serwuj`, trasa `loom_server`, OCR/ASR obrazów i dźwięku, `state.json` (powtórzenie polecenia = wznowienie z pamięci podręcznej modelu), `workers`.
 - Prywatność: tylko fixture'y syntetyczne; test wyjścia `--zbiorczo` dla `wytnij`; pakiet z redakcją nie zawiera zamaskowanych wartości w żadnym pliku (test).
+
+
+## P38 — X-Port, plaster C: komander i serwowanie (2026-10-16, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plaster C”, §11 stan). ctest `tools.extract`: 155 testów
+(test curses na pty pominięty z powodem tam, gdzie nie ma curses/pty/terminfo). Uruchomienie: `python3 -m loom.tools.extract
+komander ARCHIWUM… [--pakiet KAT] [--klawisze-profil vim] [--kolory mono]`, `… serwuj ARCHIWUM… [--port N]`, `… api '{"call": "list"}'`.
+
+- Decyzje (szczegóły i odwrócenie w §10):
+  1. Jeden dyspozytor `api.Session.call` z rejestrem `data/api.json`; komander, `serwuj` i `api` nie mają własnej logiki; stan zmienia się tylko operacjami `ops.json` (kroki z `by` = twarz). Cofnięcie: wywołanie usuwa się z `api.json`.
+  2. Widoki (`nodes.py`): drzewo albo lista płaska; listy płaskie w jednym porządku czasu dla wszystkich archiwów i usług, remisy stałe. Cofnięcie: nakładka `commander/layout.json`.
+  3. Operacje struktury pakietu są wpisami `oplog` (cofnij/ponów, manifest, raport); kopia niejawna nie. Cofnięcie: `_log` w `ops_cut.py`.
+  4. `open` = świeży silnik; prace w tle z `busy` zamiast czekania, `cancel` przywraca stan, przerwany krok nie wchodzi do przepisu; pytania o koszt domyślnie „nie”. Cofnięcie: `"wait": true`; presety `serve.*`.
+  5. Klawisze: F9 = zapis pakietu (menu pod F2), dodatkowe klawisze i profil `vim` z jawnie zgłoszonym zasłonięciem `d`. Cofnięcie: nakładka `commander/keymap.json`.
+  6. Autozapis po każdym kroku, atomowo; zastany autozapis nigdy nie ginie (`.prev.json` albo pytanie o wznowienie). Cofnięcie: `commander.autosave.every: 0`, `--autozapis off`.
+  7. `export` tnie tylko, gdy trzeba → ten sam przepis daje te same bajty z CLI, komandera i API (test parytetu). Cofnięcie: jawne `profiles`.
+  8. Serwowanie tylko na pętli zwrotnej, token na uruchomienie (plik 600), bez CORS. Cofnięcie: `--adres` (z ostrzeżeniem), `--port`.
+- Znaleziska naprawione przy okazji: rekurencyjne `Unit.branches()` (głębokie sesje agentowe) → iteracyjne; klawisze F w rendererze (test na pty).
+- Doszło ponad brief: makra, schowek, samouczek `--odtworz`, wiersz poleceń `:`, „dlaczego nie”, decyzje włącz/wyklucz z klawiatury, zapisane filtry, czasownik `api` (JSONL), korzenie widoków (zaznaczenie, oś czasu, załączniki, klastry, przepis, inwentarz, różnica, zakładki), kolumny obliczane, profil `mono`.
+- Nie weszło: renderer Warsztatu w `loom/web` (API widoku gotowe), zmiana nazwy katalogu pakietu, akcja czatu aplikacji i port jądra, trasa `loom_server`, OCR/ASR obrazów/dźwięku, `state.json` wznawiania i `workers`.
+- Prywatność: tylko fixture'y syntetyczne; tryb `--zbiorczo` w widokach bez tytułów i treści, podgląd treści odmówiony (test).

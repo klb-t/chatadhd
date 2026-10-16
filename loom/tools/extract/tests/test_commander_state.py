@@ -260,6 +260,16 @@ class CommanderTest(ExtractTest):
         self.act("view.load")
         self.d.press("Enter")
         self.assertEqual((st.panes[0].root, st.panes[0].filter), ("sources", "migr"))
+        st.pane.filter = "role:user"
+        self.act("filter.save")
+        self.typed("pytania")
+        self.assertTrue((self.tmp / "no-overlay" / "filters" / "pytania.json").exists())
+        st.pane.filter = ""
+        self.act("filter.load")
+        self.assertEqual(st.mode, "menu")
+        self.d.press("Enter")
+        self.assertEqual(st.pane.filter, "role:user")
+        st.pane.filter = ""
         self.act("command")
         self.typed("sel tag:chatadhd")
         self.assertEqual(st.status_data["selection"]["conversations"], 1)

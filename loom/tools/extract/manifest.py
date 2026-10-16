@@ -62,7 +62,7 @@ def build_manifest(eng: Any, outputs: list[dict[str, Any]], repro: str, recipe_n
         "schema": "loom.extract.manifest/1",
         "tool": {"name": tool["name"], "version": tool["version"], "extract_schema": tool["extract_schema"], "python": tool["python"],
                  "selector": tool["selector"]},
-        "run": {"id": run_id, "started": started, "finished": finished, "aggregate": aggregate, "slice": "B",
+        "run": {"id": run_id, "started": started, "finished": finished, "aggregate": aggregate, "slice": "C",
                 "sentence": eng.settings.get("sentence"), "faces": sorted({s.get("by", "recipe") for s in recipe_norm.get("steps") or []})},
         "sources": sources,
         "settings": {k: v for k, v in eng.settings.items() if k not in ("cache_dir",)},

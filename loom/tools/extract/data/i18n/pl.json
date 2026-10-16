@@ -472,5 +472,7 @@
   "serve.started": "X-Port API: {url} (tylko ten komputer)",
   "serve.stopped": "zatrzymano",
   "serve.token": "token (nagłówek X-Extract-Token): {token}",
-  "serve.unauthorized": "brak lub zły token (nagłówek X-Extract-Token)"
+  "serve.unauthorized": "brak lub zły token (nagłówek X-Extract-Token)",
+  "commander.no_filters": "brak zapisanych filtrów (F zapisuje bieżący)",
+  "commander.menu.filters": "Zapisane filtry"
 }
