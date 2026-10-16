@@ -106,14 +106,39 @@ class PackageTest(ExtractTest):
         self.assertTrue(conv["metadata"]["export"]["locator"])
 
     def test_handoff_through_libloom_when_present(self):
-        lib = os.environ.get("LOOM_LIBRARY")
-        if not lib or not os.path.exists(lib):
-            self.skipTest("libloom not available (set LOOM_LIBRARY): the C++ importer round trip runs in the full gate only")
         import ctypes
-        dll = ctypes.CDLL(lib)
-        if not hasattr(dll, "loom_import_file_ex"):
+        lib_path = os.environ.get("LOOM_LIBRARY")
+        if not lib_path or not os.path.exists(lib_path):
+            self.skipTest("libloom not available (LOOM_LIBRARY unset or missing): the C++ importer round trip runs in the gate")
+        try:
+            lib = ctypes.CDLL(lib_path)
+        except OSError as exc:
+            self.skipTest(f"LOOM_LIBRARY is not a loadable shared library ({exc})")
+        if not hasattr(lib, "loom_import_file_ex"):
             self.skipTest("this libloom has no loom_import_file_ex")
-        self.skipTest("libloom import of handoff/ is described in the spec; the ctypes harness lands with the kernel port (§3.10)")
+        pkg = self.tmp / "p"
+        self._run(pkg)
+        h = json.loads((pkg / "handoff/handoff.json").read_text(encoding="utf-8"))
+        lib.loom_init_ex.restype = ctypes.c_void_p
+        lib.loom_init_ex.argtypes = [ctypes.c_char_p, ctypes.POINTER(ctypes.c_char_p)]
+        lib.loom_import_file_ex.restype = ctypes.c_void_p
+        lib.loom_import_file_ex.argtypes = [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_void_p, ctypes.c_void_p]
+        lib.loom_free_string.argtypes = [ctypes.c_void_p]
+        lib.loom_shutdown.argtypes = [ctypes.c_void_p]
+        err = ctypes.c_char_p()
+        ctx = lib.loom_init_ex(json.dumps({"data_dir": str(self.tmp / "loomdata"), "start_workers": False}).encode("utf-8"),
+                               ctypes.byref(err))
+        self.assertTrue(ctx, err.value)
+        try:
+            raw = lib.loom_import_file_ex(ctx, str(pkg / "handoff.zip").encode("utf-8"), None, None, None)
+            doc = json.loads(ctypes.string_at(raw).decode("utf-8"))
+            lib.loom_free_string(raw)
+        finally:
+            lib.loom_shutdown(ctx)
+        self.assertNotIn("error", doc, doc)
+        self.assertEqual(len(doc.get("conversations") or []), h["counts"]["conversations_with_messages"],
+                         "libloom imports every hand-off conversation in one step")
+        self.assertGreaterEqual(int(doc.get("messages") or 0), h["counts"]["messages_with_text"])
 
     def test_rewrite_removes_files_of_an_earlier_run(self):
         pkg = self.tmp / "p"

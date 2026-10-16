@@ -338,7 +338,7 @@ if(LOOM_BUILD_TESTS)
       COMMAND ${Python3_EXECUTABLE} -I -m unittest discover
         -s ${LOOM_ROOT}/tools/extract/tests -p "test_*.py")
     set_tests_properties(tools.extract PROPERTIES
-      ENVIRONMENT "${_loom_python_env};TERM=xterm-256color"
+      ENVIRONMENT "${_loom_python_env};LOOM_LIBRARY=$<TARGET_FILE:loom>;TERM=xterm-256color"
       TIMEOUT 600)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
