@@ -68,8 +68,8 @@ class LoomExportReader(Reader):
 
     def iter_units(self, member: Member, fmt: dict[str, Any], ctx: ReadContext) -> Iterator[Unit]:
         if member.name.endswith(".jsonl"):
-            with member.open() as fh:
-                for lineno, raw in enumerate(io.TextIOWrapper(fh, encoding="utf-8", errors="replace"), 1):
+            with member.open() as fh, io.TextIOWrapper(fh, encoding="utf-8", errors="replace") as text:
+                for lineno, raw in enumerate(text, 1):
                     raw = raw.strip()
                     if raw:
                         d = json.loads(raw)

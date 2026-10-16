@@ -168,8 +168,9 @@ class EngineTest(ExtractTest):
         self.assertEqual(r["units"], [], "aggregate: no per-unit titles")
         self.assertEqual(r["cost_total"]["amount"], 0.0)
         w = eng.op("write", {"package": str(self.tmp / "agg")})
-        self.assertNotIn("units.jsonl", w["outputs"])
-        self.assertNotIn("explain.jsonl", w["outputs"])
+        self.assertIsInstance(w["outputs"], int, "aggregate: output paths (attachment names) do not leave the engine")
+        self.assertFalse((self.tmp / "agg/units.jsonl").exists())
+        self.assertFalse((self.tmp / "agg/explain.jsonl").exists())
         text = "".join(p.read_text(encoding="utf-8") for p in (self.tmp / "agg").iterdir())
         for s in ("pamięć hierarchiczna", "takeout.zip", "schemat.png"):
             self.assertNotIn(s, text)

@@ -123,7 +123,8 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
         out += ["", f"## {t('report.cut')}", ""]
         for pinfo in cut.get("profiles") or []:
             out.append("- " + t("report.cut_line", profile=pinfo.get("profile"), conversations=pinfo.get("conversations", 0),
-                                messages=pinfo.get("messages", 0), files=len(pinfo.get("outputs") or [])))
+                                messages=pinfo.get("messages", 0),
+                                files=pinfo["outputs"] if isinstance(pinfo.get("outputs"), int) else len(pinfo.get("outputs") or [])))
             if pinfo.get("branches_cut"):
                 out.append("  - " + t("report.cut_branches", n=pinfo["branches_cut"], m=pinfo.get("messages_cut", 0)))
         pres = cut.get("preserve")

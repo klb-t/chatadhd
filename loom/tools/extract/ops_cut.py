@@ -270,6 +270,10 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
                               clusters=None if eng.aggregate else eng.clusters)
         info["timestamps"] = tp.as_dict()
         infos.append(info)
+    if eng.aggregate:
+        for i in infos:
+            if isinstance(i.get("outputs"), list):
+                i["outputs"] = len(i["outputs"])
     eng.redaction_entries = list(red.entries)
     eng.cut_info = {"profiles": infos, "preserve": preserve_info, "attachments": _public_att(att_info, eng.aggregate),
                     "redaction": red.report(), "entries": len(entries), "order": p.get("order") or "created"}

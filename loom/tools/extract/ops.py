@@ -666,7 +666,9 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     _write_text(pkg / "manifest.json", _json_text(manifest))
     eng.last_write = {"package": str(pkg), "reproducible_hash": repro, "outputs": len(outputs)}
     return {"counts": {"outputs": len(outputs) + 1, "bytes": sum(o["bytes"] for o in outputs)}, "package": str(pkg),
-            "reproducible_hash": repro, "outputs": [o["path"] for o in outputs] + ["manifest.json"]}
+            "reproducible_hash": repro,
+            # aggregate mode: output paths carry attachment and member names, so only their number leaves the engine
+            "outputs": len(outputs) + 1 if aggregate else [o["path"] for o in outputs] + ["manifest.json"]}
 
 
 @op("report")

@@ -31,8 +31,8 @@ class ClaudeCodeReader(Reader):
         first_ts: Any = None
         last_ts: Any = None
         lines_total = 0
-        with member.open() as fh:
-            for lineno, raw in enumerate(io.TextIOWrapper(fh, encoding="utf-8", errors="replace"), 1):
+        with member.open() as fh, io.TextIOWrapper(fh, encoding="utf-8", errors="replace") as text:
+            for lineno, raw in enumerate(text, 1):
                 raw = raw.strip()
                 if not raw:
                     continue

@@ -244,8 +244,8 @@ class ModelRunner:
         f = self.flow(flow_id)
         model = self.model_for(f)
         prompt = f.get("prompt") or {}
-        system = label(prompt.get("system")).format_map(_Safe(variables))
-        user = label(prompt.get("user")).format_map(_Safe(variables))
+        system = _fill(label(prompt.get("system")), variables)
+        user = _fill(label(prompt.get("user")), variables)
         params = ((f.get("model") or {}).get("parameters") or {})
         key_src = json.dumps({"flow": flow_id, "model": model, "system": system, "user": user, "params": params}, sort_keys=True, ensure_ascii=False)
         h = hashlib.sha256(key_src.encode("utf-8")).hexdigest()
@@ -337,9 +337,9 @@ class ModelRunner:
         return [{k: v for k, v in c.items() if k != "seconds"} for c in self.calls]
 
 
-class _Safe(dict):
-    def __missing__(self, key: str) -> str:
-        return "{" + key + "}"
+def _fill(template: str, variables: dict[str, Any]) -> str:
+    """``{name}`` placeholders only (prompts also contain literal JSON braces)."""
+    return re.sub(r"\{([a-z_]+)\}", lambda m: str(variables[m.group(1)]) if m.group(1) in variables else m.group(0), template)
 
 
 def _merge(a: Any, b: Any) -> Any:

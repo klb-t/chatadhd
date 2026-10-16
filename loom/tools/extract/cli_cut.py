@@ -577,13 +577,18 @@ def task_to_recipe(task: dict[str, Any]) -> dict[str, Any]:
 
 
 def load_task(path: str) -> dict[str, Any]:
+    """A task or recipe file, JSON or TOML (by content), read as written (no schema defaulting)."""
     if path == "-":
         text = sys.stdin.read()
-        if text.lstrip().startswith("{"):
-            return json.loads(text)
-        import tomllib
-        return tomllib.loads(text)
-    return load_recipe(path)
+    else:
+        p = Path(path).expanduser()
+        if not p.exists():
+            raise FileNotFoundError(f"task file not found: {p}")
+        text = p.read_text(encoding="utf-8")
+    if text.lstrip().startswith("{"):
+        return json.loads(text)
+    import tomllib
+    return tomllib.loads(text)
 
 
 def run_recipe_face(args: argparse.Namespace, recipe: dict[str, Any], base: Optional[Path], progress: Any, *, show: bool = False,
@@ -600,7 +605,8 @@ def run_recipe_face(args: argparse.Namespace, recipe: dict[str, Any], base: Opti
     if args.na_sucho or getattr(args, "plan", False):
         recipe["steps"] = [s for s in recipe.get("steps") or [] if s.get("op") not in ("write", "cut", "handoff", "flow.run")
                            and not str(s.get("op", "")).startswith("edit.")]
-        recipe["steps"].append({"op": "dry_run", "by": "cli"})
+        if not any(s.get("op") == "dry_run" for s in recipe["steps"]):
+            recipe["steps"].append({"op": "dry_run", "by": "cli"})
     if show and not args.json:
         print(t("cli.sentence.task"), file=sys.stderr)
         print(json.dumps({k: recipe.get(k) for k in ("sources", "steps")}, ensure_ascii=False, indent=1), file=sys.stderr)

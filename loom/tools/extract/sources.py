@@ -229,18 +229,22 @@ class _Probe:
             out: list[dict[str, Any]] = []
             try:
                 with self.member.open() as fh:
-                    for raw in io.TextIOWrapper(fh, encoding="utf-8", errors="replace"):
-                        raw = raw.strip()
-                        if not raw:
-                            continue
-                        try:
-                            obj = json.loads(raw)
-                        except json.JSONDecodeError:
-                            break
-                        if isinstance(obj, dict):
-                            out.append(obj)
-                        if len(out) >= n:
-                            break
+                    tw = io.TextIOWrapper(fh, encoding="utf-8", errors="replace")
+                    try:
+                        for raw in tw:
+                            raw = raw.strip()
+                            if not raw:
+                                continue
+                            try:
+                                obj = json.loads(raw)
+                            except json.JSONDecodeError:
+                                break
+                            if isinstance(obj, dict):
+                                out.append(obj)
+                            if len(out) >= n:
+                                break
+                    finally:
+                        tw.detach()  # the member's handle is closed by the with; no unclosed-wrapper warning
             except Exception:
                 log.debug("jsonl sniff failed for %s", self.member.name, exc_info=True)
             self._jsonl = out
@@ -532,6 +536,13 @@ def iter_json_array(fh: io.BufferedIOBase, *, wrapper: Optional[str] = None, chu
     element, not with the file.
     """
     reader = io.TextIOWrapper(fh, encoding="utf-8", errors="replace")
+    try:
+        yield from _iter_json_array(reader, wrapper, chunk)
+    finally:
+        reader.detach()  # the caller owns ``fh``; a stopped iteration leaves no unclosed wrapper behind
+
+
+def _iter_json_array(reader: io.TextIOWrapper, wrapper: Optional[str], chunk: int) -> Iterator[Any]:
     buf = reader.read(chunk)
     pos = 0
 
