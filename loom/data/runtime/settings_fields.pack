@@ -1114,8 +1114,8 @@
             "en": "How many hops along relations from your message's topics the app walks when looking for context from past conversations."
           },
           "effect": {
-            "pl": "Głębiej = więcej dalszych skojarzeń w żądaniu (i więcej tokenów); 0 = wartość z pola „Głębokość pamięci z grafu (preset profilu)”.",
-            "en": "Deeper = more distant associations in the request (and more tokens); 0 = the value of the field “Graph memory depth (profile preset)”."
+            "pl": "Głębiej = więcej dalszych skojarzeń w żądaniu (i więcej tokenów); 0 = ani jednego kroku po powiązaniach, więc z dawnych rozmów zwykle nic nie dochodzi.",
+            "en": "Deeper = more distant associations in the request (and more tokens); 0 = not a single hop along relations, so usually nothing comes from past conversations."
           },
           "levels": [
             "person",
@@ -1141,12 +1141,12 @@
             "en": "Graph memory node budget"
           },
           "why": {
-            "pl": "Ile fragmentów z grafu najwyżej dokłada się do jednego żądania.",
-            "en": "At most how many graph fragments are added to one request."
+            "pl": "Ile najwyżej wiadomości z dawnych rozmów, znalezionych przez graf, dokłada się do jednego żądania.",
+            "en": "At most how many messages from past conversations, found through the graph, are added to one request."
           },
           "effect": {
-            "pl": "Więcej = pełniejszy kontekst, dłuższe i droższe żądanie; 0 = wartość z pola „Budżet węzłów pamięci z grafu (preset profilu)”.",
-            "en": "More = fuller context, a longer and dearer request; 0 = the value of the field “Graph memory node budget (profile preset)”."
+            "pl": "Więcej = pełniejszy kontekst, dłuższe i droższe żądanie; 0 = bez limitu: każda znaleziona wiadomość trafia do żądania (najdłuższe i najdroższe).",
+            "en": "More = fuller context, a longer and dearer request; 0 = no limit: every message found goes into the request (the longest and dearest)."
           },
           "levels": [
             "person"
@@ -4082,12 +4082,12 @@
             "en": "Graph memory depth (profile preset)"
           },
           "why": {
-            "pl": "Wartość, której pamięć z grafu używa, gdy pole Głębokość pamięci z grafu jest 0.",
-            "en": "The value graph memory uses when the Graph memory depth field is 0."
+            "pl": "Zapasowa głębokość pamięci z grafu na wypadek, gdyby w ustawieniach nie było żadnej wartości pola „Głębokość pamięci z grafu”.",
+            "en": "The fallback graph memory depth in case the settings hold no value at all for the field “Graph memory depth”."
           },
           "effect": {
-            "pl": "Działa tylko wtedy, gdy pole „Głębokość pamięci z grafu” ma 0.",
-            "en": "Takes effect only when the field “Graph memory depth” is 0."
+            "pl": "Dziś nie działa: pole „Głębokość pamięci z grafu” ma zawsze wartość (preset 2), a 0 w tym polu znaczy „bez kroków”, nie „weź tę liczbę”.",
+            "en": "Not in effect today: the field “Graph memory depth” always has a value (preset 2), and 0 in that field means “no hops”, not “take this number”."
           },
           "levels": [
             "installation"
@@ -4108,12 +4108,12 @@
             "en": "Graph memory node budget (profile preset)"
           },
           "why": {
-            "pl": "Wartość, której pamięć z grafu używa, gdy pole Budżet węzłów pamięci z grafu jest 0.",
-            "en": "The value graph memory uses when the Graph memory node budget field is 0."
+            "pl": "Zapasowy budżet pamięci z grafu na wypadek, gdyby w ustawieniach nie było żadnej wartości pola „Budżet węzłów pamięci z grafu”.",
+            "en": "The fallback graph memory budget in case the settings hold no value at all for the field “Graph memory node budget”."
           },
           "effect": {
-            "pl": "Działa tylko wtedy, gdy pole „Budżet węzłów pamięci z grafu” ma 0.",
-            "en": "Takes effect only when the field “Graph memory node budget” is 0."
+            "pl": "Dziś nie działa: pole „Budżet węzłów pamięci z grafu” ma zawsze wartość (preset 20), a 0 w tym polu znaczy „bez limitu”, nie „weź tę liczbę”.",
+            "en": "Not in effect today: the field “Graph memory node budget” always has a value (preset 20), and 0 in that field means “no limit”, not “take this number”."
           },
           "levels": [
             "installation"
