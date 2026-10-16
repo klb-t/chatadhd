@@ -197,7 +197,9 @@ LOOM_API const char* loom_chat_ex(LoomContext* ctx, const char* request_json, Lo
     if (!rj) return fail(rj.error());
     if (!rj->is_object()) return fail(Error(Errc::InvalidArgument, "request must be a JSON object"));
     std::string message = json::get_string(*rj, "message");
-    if (message.empty()) return fail(missing("message"));
+    // A message of files alone (P33) has no words: "" is accepted when "attachments" names at least one file.
+    const Json* files = json::find(*rj, "attachments");
+    if (message.empty() && !(files && files->is_array() && !files->empty())) return fail(missing("message"));
     auto opts = ChatOptions::from_json(*rj);
     if (!opts) return fail(opts.error());
     return out(run_chat(ctx, message, std::move(opts).value(), json::get_string(*rj, "request_id"), callback,

@@ -15,9 +15,28 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def log_message(self, *_args):
         pass
 
+    def do_GET(self):
+        # GET /models: the list a provider gives; GET /__last: the body of the last chat request (for tests that check what was sent).
+        if self.path.rstrip("/").endswith("/__last"):
+            body = json.dumps(Handler.last_body).encode()
+        else:
+            body = json.dumps({"data": [{"id": "mock/e2e-model", "name": "Mock E2E"}, {"id": "mock/second-model", "name": "Mock Second"},
+                                        {"id": "mock/third-model", "name": "Mock Third"}]}).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    last_body = None
+
     def do_POST(self):
         length = int(self.headers.get("Content-Length", 0))
-        self.rfile.read(length)
+        raw = self.rfile.read(length)
+        try:
+            Handler.last_body = json.loads(raw)
+        except ValueError:
+            Handler.last_body = {"unparsed": raw.decode("utf-8", "replace")}
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.end_headers()

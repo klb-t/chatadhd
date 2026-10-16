@@ -80,6 +80,8 @@ export interface ChatRequest {
   send_as_message?: string;
   /** The client that declared its devices (client.declare): a command that needs a device of this page is runnable for it. */
   client_id?: string;
+  /** The action of the catalogue this message is for (an action switch of the + menu: agent.run, depict): the message is its command. */
+  action?: string;
 }
 
 // Only fields supported by the native ContextRequest. Omitting text uses the

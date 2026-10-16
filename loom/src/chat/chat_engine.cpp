@@ -40,6 +40,7 @@
 #include "reasoning_profile.h"
 #include "context_format.h"
 #include "loom/runtime_profile.h"
+#include "loom/scope_resolver.h"
 
 namespace loom {
 
@@ -599,6 +600,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
     } else if (k == "send_as_message") {
       if (!v.is_string()) return bad();
       o.send_as_message = v.get<std::string>();
+    } else if (k == "action") {
+      // Read by the conversation window (chat_route.h): the action the composer named for this message (P33); not a chat option.
+      if (!v.is_string()) return bad();
     } else if (k == "intent_routing_method" || k == "lang" || k == "route_usage_confirmation" || k == "client_id") {
       // Read by the conversation window (chat_route.h) from the request itself; not a chat option.
       // client_id: the client that declared its devices (client_devices.h).
@@ -662,6 +666,20 @@ bool command_traffic_skipped(const ChatOptions& opts, const Message& m) {
 }
 bool history_skipped(const ChatOptions& opts, const std::string& id) {
   return !opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), id) != opts.history_skip.end();
+}
+
+// The model of a send that names none: the setting default_model through the one scope chain (loom/scope_resolver.h): conversation
+// (conversations.metadata.settings.default_model, what the + menu and the model picker write) -> units -> user -> installation. A chain that
+// cannot be read is logged by value_or and the user's setting decides, as before.
+std::string scoped_default_model(Database& db, const Config& cfg, const std::string& conv_id) {
+  const std::string mine = cfg_string(cfg, "default_model");
+  scopes::Binding bind;
+  bind.key = "default_model";
+  bind.conv_id = conv_id;
+  const Json v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(mine));
+  if (v.is_string() && !v.get<std::string>().empty()) return v.get<std::string>();
+  if (!v.is_null()) log::warn("loom.chat_engine", "default_model from the scope chain is not a model name ({}); the setting decides", v.dump());
+  return mine;
 }
 
 // The flow of a request. A profile that cannot be read never fails a send: it is logged and the request stays plain.
@@ -773,16 +791,17 @@ Result<Json> ChatEngine::embed_selection(std::string_view conv_id, const Json& s
 }
 
 Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions& opts_in) {
+  LOOM_TRY(check_attachments(opts_in.attachments));  // a file that cannot go is said before anything else (P33)
   LOOM_TRY_ASSIGN(auto reasoning_recipe, chat::reasoning_recipe(cfg_.get("chat_reasoning", Json::object())));
   std::string conv_id;
   {
     std::lock_guard lk(mu_);
     if (opts_in.conv_id) conv_id = *opts_in.conv_id;
-    else if (conv_) conv_id = conv_->id;
+    else if (conv_ && !opts_in.new_conversation) conv_id = conv_->id;  // a new conversation (R35) has no history yet: nothing of the remembered one
   }
   const ChatOptions opts = select_representation(opts_in, conv_id);
   LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
-  const std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  const std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv_id);
   const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
   llm::RouteSelector preview_route;
   preview_route.require_credential = false;  // a preview spends nothing and needs no key
@@ -815,6 +834,8 @@ void ChatEngine::set_knowledge_context_builder(KnowledgeContextBuilder builder) 
   knowledge_context_builder_ = std::move(builder);
 }
 
+void ChatEngine::set_attachment_resolver(AttachmentResolver resolver) { attachment_resolver_ = std::move(resolver); }
+
 Status ChatEngine::resume_last() {
   auto r = db_.list_convs(1);
   if (!r) return r.error();
@@ -844,20 +865,50 @@ std::optional<Conversation> ChatEngine::current_conv() const {
   return conv_;
 }
 
+std::optional<std::pair<std::filesystem::path, std::filesystem::path>> ChatEngine::locate_attachment(const std::string& ref) const {
+  std::filesystem::path file(ref);
+  std::filesystem::path shown = file;  // the name that decides the kind of file and is shown to the model
+  if (ref.rfind("blob:", 0) == 0) {
+    const auto slash = ref.find('/');
+    const std::string hash = ref.substr(5, slash == std::string::npos ? std::string::npos : slash - 5);
+    std::optional<std::filesystem::path> stored;
+    if (attachment_resolver_) stored = attachment_resolver_(hash);
+    if (!stored) return std::nullopt;
+    shown = std::filesystem::path(slash == std::string::npos ? std::string() : ref.substr(slash + 1)).filename();
+    file = *stored;
+  }
+  std::error_code ec;
+  if (!std::filesystem::exists(file, ec)) return std::nullopt;
+  return std::make_pair(file, shown);
+}
+
+Status ChatEngine::check_attachments(const std::vector<std::string>& attachments) const {
+  for (const auto& ref : attachments) {
+    const auto located = locate_attachment(ref);
+    if (!located) return Error(Errc::NotFound, "attachment not found: " + ref);
+    const std::string ext = lower_ext(located->second);
+    if (!contains(image_exts(), ext) && !contains(text_exts(), ext))
+      return Error(Errc::Unsupported, "this kind of file cannot be sent (images and plain-text files can): " + ref);
+  }
+  return ok_status();
+}
+
 Json ChatEngine::build_content(std::string_view text, const std::vector<std::string>& attachments) const {
   if (attachments.empty()) return Json(std::string(text));
 
   Json parts = Json::array();
-  parts.push_back(Json{{"type", "text"}, {"text", std::string(text)}});
+  // A message of files alone (P33) has no words: no empty text part, which some providers refuse.
+  if (!text.empty()) parts.push_back(Json{{"type", "text"}, {"text", std::string(text)}});
 
   for (const auto& path_str : attachments) {
-    std::filesystem::path p(path_str);
-    std::error_code ec;
-    if (!std::filesystem::exists(p, ec)) {
+    const auto located = locate_attachment(path_str);
+    if (!located) {
       log::warn("loom.chat_engine", "Attachment not found: {}", path_str);
       continue;
     }
-    std::string ext = lower_ext(p);
+    const std::filesystem::path& p = located->first;
+    const std::filesystem::path& shown = located->second;
+    std::string ext = lower_ext(shown);
     if (contains(image_exts(), ext)) {
       auto data = fsutil::read_file(p);
       if (!data) {
@@ -876,11 +927,14 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
       }
       std::string repaired = utf8::repair(*data);
       std::string file_text(utf8::prefix(repaired, kMaxFileChars));
-      std::string name = p.filename().string();
+      std::string name = shown.filename().string();
       parts.push_back(
           Json{{"type", "text"}, {"text", "\n--- FILE: " + name + " ---\n" + file_text + "\n--- END FILE ---"}});
+    } else {
+      log::warn("loom.chat_engine", "Attachment of a kind that is not read: {}", path_str);
     }
   }
+  if (parts.empty()) parts.push_back(Json{{"type", "text"}, {"text", std::string(text)}});
   return parts;
 }
 
@@ -931,7 +985,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   const bool unified = unified_options.value("enabled", false);
   Json unified_context;
   // The flow: how the selection (read from the graph) is rendered for this model and what form of answer is asked for. Preset plain = today's bytes.
-  const std::string flow_model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  const std::string flow_model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, std::string(conv_id));
   const bool graph_off = json::get_string(execution.value("graph_reply", Json::object()), "mode", "off") == "off";
   const auto flow = resolve_flow(db_, cfg_, opts, std::string(conv_id), flow_model, graph_off);
   Json selection = nullptr;
@@ -1102,10 +1156,12 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
 
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts_in, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
+  // A file that cannot go to the model (not found, a kind that is not read) is said before anything is stored or sent (P33).
+  LOOM_TRY(check_attachments(opts_in.attachments));
   std::string selector_conv;
   {
     std::lock_guard lk(mu_);
-    selector_conv = opts_in.conv_id ? *opts_in.conv_id : (conv_ ? conv_->id : std::string());
+    selector_conv = opts_in.conv_id ? *opts_in.conv_id : (conv_ && !opts_in.new_conversation ? conv_->id : std::string());
   }
   const ChatOptions opts = select_representation(opts_in, selector_conv);
   const Json execution = cfg_.get("context_execution", Json::object());
@@ -1342,7 +1398,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   if (!msgs_json) return msgs_json.error();
   LOOM_TRY(retain_request_metadata());
 
-  std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv.id);
 
   // 5. Call the API (through the one use-model action).
   const llm::Services services(cfg_, secrets_, http_);

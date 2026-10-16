@@ -2642,6 +2642,52 @@ Result<Outcome> answer_semantic_question(Runtime& rt, Data& d, const std::string
                 Json{{"semantic_question_message_id", question_msg.id}, {"semantic_status", status}, {"receipt_id", receipt}});
 }
 
+// ── an action named by the composer (P33) ───────────────────────────
+
+// The + menu's action entries (agent.run, depict) name the action the message is for: the message is that action's command, through the same
+// proposal and run as a typed one, so the rules, the confirmations and the x10 guard apply, and nothing is guessed. The action's positional
+// argument takes the words (agent.run: prompt); an action that acts on an element acts on the message itself (depict paints what was written).
+// Files do not go with an action, and an action needs words: both are refused before anything is stored, and said.
+Result<Outcome> composer_action(Runtime& rt, Data& d, std::string conv_id, const std::string& text, const std::string& action, const ChatOptions& opts,
+                                const Json& request, const std::function<void(const std::string&, const std::string&)>& emit_start) {
+  auto refuse = [&](Errc code, const std::string& message) {
+    Outcome failed;
+    failed.handled = true;
+    failed.conv_id = conv_id;
+    const Json err{{"code", std::string(errc_name(code))}, {"message", message}};
+    failed.chunk = Json{{"type", "error"}, {"code", err["code"]}, {"message", err["message"]}};
+    failed.result = Json{{"error", err}};
+    return failed;
+  };
+  const Json* entry = entry_of(d, action);
+  if (!entry) return refuse(Errc::NotFound, "no action '" + action + "' in the catalogue");
+  if (!opts.attachments.empty()) return refuse(Errc::InvalidArgument, "files do not go with an action (" + action + "); send them as a message");
+  if (text.empty()) return refuse(Errc::InvalidArgument, "an action needs words: what it should do (" + action + ")");
+  if (conv_id.empty()) {
+    LOOM_TRY_ASSIGN(auto created, rt.db().create_conv("New Chat"));
+    conv_id = created.id;
+  }
+  (void)rt.chat().load_conv(conv_id);
+  const std::string lang = detect_language(rt, d, text, json::get_string(request, "lang"), conv_id);
+  LOOM_TRY_ASSIGN(std::string user_id, add_message(rt, conv_id, "user", text, Json{{"routed", "command"}, {"composer_action", action}}));
+  if (emit_start) emit_start(conv_id, user_id);
+  Cand c;
+  c.source = "composer";
+  c.matched = action;
+  c.lang = lang;
+  c.action = action;
+  c.score = 1.0;
+  if (const std::string positional = json::get_string(*entry, "positional_arg"); !positional.empty()) c.args[positional] = text;
+  bool on_application = false;
+  for (const auto& need : strings_of(json::find(*entry, "requires")))
+    if (need == "application") on_application = true;
+  c.element = on_application ? Json{{"id", "application"}} : Json{{"id", user_id}};
+  const Json cmd = evaluate(rt, d, c, conv_of(rt, conv_id), lang, text);
+  LOOM_TRY_ASSIGN(Reply reply, reply_to_command(rt, d, conv_id, user_id, text, cmd, "composer", lang, false));
+  title_first_exchange(rt, conv_id, text);
+  return finish(conv_id, user_id, reply.assistant_id, reply.text, reply.type, reply.payload);
+}
+
 }  // namespace
 
 Result<Json> offer(Runtime& rt, const OfferRequest& request) {
@@ -2669,7 +2715,10 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   Outcome none;
   LOOM_TRY_ASSIGN(Data d, load_data(rt, json::get_string(request, "client_id")));
   std::string conv_id = opts.conv_id.value_or(std::string());
-  if (conv_id.empty())
+  // A request that names no conversation continues the one remembered from the last send, unless it asks for a new one
+  // (new_conversation, R35): then a command or a composer action (P33) starts a new conversation too, as the chat path does
+  // (ChatEngine::send), and never writes into the older one.
+  if (conv_id.empty() && !opts.new_conversation)
     if (auto current = rt.chat().current_conv()) conv_id = current->id;
 
   // 0. The button of an offer: the sentence of a rejected proposal goes on the chat path as an ordinary message, whatever the routing method.
@@ -2688,6 +2737,10 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
     none.resend = std::move(*taken);
     return none;
   }
+
+  // 0b. The composer named the action this message is for (P33): whatever the routing method, nothing is guessed.
+  if (const std::string forced = json::get_string(request, "action"); !forced.empty())
+    return composer_action(rt, d, conv_id, text, forced, opts, request, emit_start);
 
   const std::string method = effective_method(rt, d, request);
   if (method == "off") return none;

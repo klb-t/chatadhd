@@ -701,7 +701,9 @@ void App::route_search() {
 void App::route_chat() {
   svr_.Post("/api/chat", [this](const httplib::Request& req, httplib::Response& res) {
     json body = parse_body(req);
-    if (!body.contains("message") || !body["message"].is_string() || body["message"].get<std::string>().empty()) {
+    // A message of files alone (P33) has no words: "message" may be "" when "attachments" names at least one file.
+    const bool has_files = body.contains("attachments") && body["attachments"].is_array() && !body["attachments"].empty();
+    if (!body.contains("message") || !body["message"].is_string() || (body["message"].get<std::string>().empty() && !has_files)) {
       send_error(res, "invalid_argument", "\"message\" is required", 400);
       return;
     }

@@ -29,9 +29,10 @@ import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStartView, startViewOrder, writeSaved, type Layout } from "./shell/start-view";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
+import type { PanelId } from "./shell/panels";
 
 type Theme = "dark" | "amoled";
-type PanelId = "graph" | "memory" | "import" | "context" | "settings" | "logs" | "operations" | "methods" | "analysis" | "onboarding" | "user-knowledge" | "graph-entry" | "perspectives" | "view-engine";
+// The panels are one list (shell/panels.ts): the + menu checks the panel an entry names against it.
 
 function readStored(key: string, fallback: string): string {
   try {
