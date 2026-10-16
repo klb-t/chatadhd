@@ -55,6 +55,22 @@
         "description": "Model used for chat when a request names none."
       },
       {
+        "key": "llm_provider",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Which model provider answers the chat and the other model calls: openrouter (preset), local (an OpenAI-compatible server on this device, such as llama.cpp or Ollama, at local_model_base_url), or the id of any provider manifest you added. Default: openrouter."
+      },
+      {
+        "key": "local_model_base_url",
+        "scope": "config",
+        "group": "chat",
+        "type": "string",
+        "has_default": false,
+        "description": "Address of the model server on this device for llm_provider = local: an OpenAI-compatible API, such as http://127.0.0.1:8080/v1 for llama.cpp or http://127.0.0.1:11434/v1 for Ollama. No key is sent. Default: http://127.0.0.1:8080/v1."
+      },
+      {
         "key": "semantic_model",
         "scope": "config",
         "group": "semantic",

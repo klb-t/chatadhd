@@ -1526,6 +1526,11 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       cancelled = true;
       break;
     case llm::State::TransportError:
+      // R37: a model on this device that does not answer is a server that is not running, said in words the person can act on.
+      if (!graph && json::get_bool(route->metadata, "local", false))
+        return Error(Errc::Unavailable, "The local model at " + base + " does not answer (" + sent.error->message +
+                                            "). Start a llama.cpp or Ollama server there, set its address in the setting "
+                                            "local_model_base_url, or choose another provider in llm_provider.");
       if (!graph) return *sent.error;
       graph->transport_issue = std::string(errc_name(sent.error->code));
       break;

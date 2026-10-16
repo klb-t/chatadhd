@@ -78,6 +78,36 @@ TEST_SUITE("chat_engine") {
     CHECK(unwrap(env.db->get_msgs(now->id)).front().text == "second");
   }
 
+  TEST_CASE("R37: llm_provider = local talks to the server on this device, with no key, at local_model_base_url") {
+    Env env;
+    env.cfg.set("llm_provider", "local");
+    env.cfg.set("local_model_base_url", "http://127.0.0.1:11434/v1/");
+    env.secrets.set("api_key", "");
+    env.transport.expect("POST", "http://127.0.0.1:11434/v1/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("local ok")));
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    auto r = engine.send("hello", opts);
+    REQUIRE(r);
+    CHECK(r->text == "local ok");
+    const auto reqs = env.transport.requests();
+    REQUIRE(reqs.size() == 1);
+    for (const auto& [name, value] : reqs.back().headers) CHECK(name != "Authorization");
+  }
+
+  TEST_CASE("R37: a local model that does not answer says so in words the person can act on") {
+    Env env;
+    env.cfg.set("llm_provider", "local");
+    env.transport.expect("POST", "http://127.0.0.1:8080/v1/chat/completions", net::ScriptedTransport::Reply::fail(Errc::Unavailable, "connection refused"));
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    auto r = engine.send("hello", opts);
+    REQUIRE_FALSE(r);
+    CHECK(r.error().message.find("local model at http://127.0.0.1:8080/v1 does not answer") != std::string::npos);
+    CHECK(r.error().message.find("local_model_base_url") != std::string::npos);
+  }
+
   TEST_CASE("R35: new_conversation starts a new conversation instead of continuing the remembered one (New chat)") {
     Env env;
     for (int i = 0; i < 3; ++i)

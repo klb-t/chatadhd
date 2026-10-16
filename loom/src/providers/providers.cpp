@@ -63,7 +63,7 @@ Json normalize_legacy_models(const Json& raw) {
   return out;
 }
 
-// Seed manifests (policy data): OpenRouter, Anthropic (batch), Groq, Google
+// Seed manifests (policy data): OpenRouter, a local OpenAI-compatible server (R37), Anthropic (batch), Groq, Google
 // Speech, OCR.space, GitHub — matches engine/*.py's hardcoded providers.
 constexpr std::string_view kBuiltinManifestsJson = R"JSON(
 [
@@ -80,6 +80,18 @@ constexpr std::string_view kBuiltinManifestsJson = R"JSON(
       {"resource": "llm", "name": "web_search"},
       {"resource": "llm", "name": "reasoning"},
       {"resource": "embedding", "name": "embed", "constraints": {"modalities": ["text"]}}
+    ]
+  },
+  {
+    "id": "local",
+    "display_name": "Local model (this device)",
+    "base_url": "http://127.0.0.1:8080/v1",
+    "auth_scheme": "none",
+    "metadata": {"adapter": "openai_chat", "base_url_setting": "local_model_base_url", "local": true},
+    "capabilities": [
+      {"resource": "llm", "name": "chat.completions"},
+      {"resource": "llm", "name": "chat.stream"},
+      {"resource": "llm", "name": "models.list"}
     ]
   },
   {

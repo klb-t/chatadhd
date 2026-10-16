@@ -1143,3 +1143,7 @@ the earlier computation; never delete historical runs to downgrade.
 
 - `loom/VERSION` = `0.10.00` (x.yy.zz, zera wiodące → sortuje się jako tekst; po historii `0.9.0`). Czytają go: CMake (`project` bez zer wiodących, `LOOM_VERSION_STRING` jak w pliku), Gradle (versionName; versionCode = x·10⁹ + yy·10⁷ + zz·10⁵ + numer przebiegu CI `loom.buildNumber`), `package.yml` (APK, archiwum serwera, wydanie), `main.py`, `web/package.json` (semver bez zer: `0.10.0`). Test: `tests/compat/test_version_single_source.py`.
 - `package.yml`: zadanie `release` składa wszystko, co przebieg zbudował (APK + archiwa serwera + `.sha256` + `SHA256SUMS`), w jeden artefakt bez folderów `chatadhd-<wersja>-ci.<run>.<sha>` = jeden płaski zip. Cofnięcie: usunąć zadanie `release`; wersję zmienia się wyłącznie w `loom/VERSION`.
+
+### S2 / R37 — model lokalny (offline) (2026-10-16)
+
+- Wbudowany manifest dostawcy `local`: adapter `openai_chat`, bez klucza (`auth_scheme: none`), adres z ustawienia `local_model_base_url` (preset `http://127.0.0.1:8080/v1` — llama.cpp; Ollama `:11434/v1`). Wybór przez `llm_provider = local` (nowe pola w rejestrze ustawień: `llm_provider`, `local_model_base_url`). Gdy serwer nie odpowiada, czat zwraca zdanie, co zrobić (`chat_engine.cpp`, gałąź TransportError przy `metadata.local`). Instrukcja: `docs/LOCAL_MODEL.md`. Silnik nie jest wbudowany w APK (osobna decyzja). Cofnięcie: `llm_provider = openrouter`; usunąć manifest `local` z `providers.cpp`.
