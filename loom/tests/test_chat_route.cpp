@@ -3,6 +3,7 @@
 #include <doctest/doctest.h>
 
 #include <fstream>
+#include <set>
 
 #include "loom/action_runner.h"
 #include "loom/chat_route.h"
@@ -1063,5 +1064,133 @@ TEST_SUITE("chat_route") {
     // nothing found locally: the model is asked, as the preset's ask_when says
     CHECK(f.route("Opowiedz mi o kotach").at("kind") == "message");
     CHECK(f.transport->requests().size() == 1);
+  }
+
+  // ── P32: the router's catalogue and the verb guard ─────────────────────
+
+  TEST_CASE("P32: the nearest action at full confidence is not accepted for a verb it does not answer to; the trace shows the verb guard") {
+    const char* nearest = "{\"kind\":\"command\",\"action\":\"explain_simply\",\"reference\":\"message\",\"args\":{},\"confidence\":1.0}";
+    for (const char* sentence : {"Rozpisz tę wiadomość na kroki", "rozpisz tę rozmowę na punkty"}) {
+      Fixture f;
+      f.rt->config().set("intent_routing_method", "model");
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(nearest)));
+      const Json r = f.route(sentence);
+      INFO(sentence);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(r.at("command").at("emergent").at("kind") == "define_action");
+      CHECK(r.at("trace").at("decided_by") == "emergent");
+      const Json stages = r.at("trace").at("stages");
+      CHECK(stages.at(0).at("stage") == "model");
+      CHECK(stages.at(0).at("verdict").at("guard").at("verb") == "rozpisz");
+      CHECK(stages.at(0).at("verdict").at("guard").at("action") == "explain_simply");
+      CHECK(stages.back().at("stage") == "emergent");
+      CHECK(stages.back().at("why") == "verb_guard");
+    }
+    // data: the guard off leaves the model's pick (the old behaviour)
+    Fixture off;
+    off.rt->config().set("intent_routing_method", "model");
+    off.overlay("intent_routing", Json{{"model", Json{{"verb_guard", Json{{"enabled", false}}}}}});
+    off.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(nearest)));
+    const Json r = off.route("Rozpisz tę wiadomość na kroki");
+    CHECK(action_of(r) == "explain_simply");
+    CHECK(r.at("trace").at("decided_by") == "model");
+    // nothing can be defined (no element near the verb): the model's action stands, and the trace says so
+    Fixture g;
+    g.rt->config().set("intent_routing_method", "model");
+    g.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(nearest)));
+    const Json k = g.route("Rozpisz to dokładniej");
+    if (k.at("kind") == "command" && k.at("command").value("emergent", Json(nullptr)).is_null()) {
+      CHECK(action_of(k) == "explain_simply");
+      CHECK(k.at("trace").at("stages").at(1).at("why") == "kept_model_action");
+    }
+  }
+
+  TEST_CASE("P32: kind=define from the model is the definition offer, traced; a known verb still reaches its action") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"define\",\"action\":null,\"confidence\":0.9}")));
+    const Json r = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(r.at("kind") == "command");
+    CHECK(r.at("command").at("emergent").at("kind") == "define_action");
+    CHECK(r.at("trace").at("stages").at(0).at("verdict").at("why") == "model_said_define");
+    CHECK(r.at("trace").at("stages").back().at("stage") == "emergent");
+    CHECK(r.at("trace").at("stages").back().at("why") == "model_said_define");
+    // a model that says define about a sentence the lexicon knows: the local recheck wins, no new action
+    Fixture g;
+    g.rt->config().set("intent_routing_method", "model");
+    g.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"define\",\"action\":null,\"confidence\":0.9}")));
+    const Json k = g.route("Streść tę rozmowę");
+    REQUIRE(k.at("kind") == "command");
+    CHECK(action_of(k) == "summarise");
+    // the prompt teaches the answer, in both languages, from the data
+    const Json body = unwrap(json::parse(f.transport->requests().back().body));
+    const std::string system = body.at("messages").at(0).at("content").get<std::string>();
+    CHECK(system.find("\"kind\": \"define\"") != std::string::npos);
+    CHECK(system.find("\"Rozpisz to na kroki\" -> define") != std::string::npos);
+  }
+
+  TEST_CASE("P32: the model's right answers still route (summarise, translate, explain simply, rules.set)") {
+    struct Case { const char* text; const char* answer; const char* action; };
+    const Case cases[] = {
+        {"Streść tę rozmowę", "{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"confidence\":0.95}", "summarise"},
+        {"streść rozmowę", "{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"confidence\":0.95}", "summarise"},
+        {"podsumuj tę rozmowę", "{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"confidence\":0.95}", "summarise"},
+        {"summarise this conversation", "{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"confidence\":0.95}", "summarise"},
+        {"Przetłumacz tę wiadomość na niemiecki", "{\"kind\":\"command\",\"action\":\"translate\",\"reference\":\"message\",\"args\":{\"to\":\"niemiecki\"},\"confidence\":0.95}", "translate"},
+        {"Wyjaśnij to prościej", "{\"kind\":\"command\",\"action\":\"explain_simply\",\"reference\":\"message\",\"confidence\":0.95}", "explain_simply"},
+        {"pytaj przed obrazem", "{\"kind\":\"command\",\"action\":\"rules.set\",\"confidence\":0.9}", "rules.set"},
+    };
+    for (const auto& c : cases) {
+      Fixture f;
+      f.rt->config().set("intent_routing_method", "model");
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(c.answer)));
+      const Json r = f.route(c.text);
+      INFO(c.text);
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == c.action);
+      CHECK(r.at("command").value("emergent", Json(nullptr)).is_null());
+    }
+  }
+
+  TEST_CASE("P32: the routing prompt carries the top-K actions closest to the message plus what the local reading scored; K=0 is the whole catalogue") {
+    const auto catalogue_of = [](Fixture& f, const std::string& text) {
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"message\",\"action\":null,\"confidence\":0.9}")));
+      const Json r = f.route(text);
+      const Json body = unwrap(json::parse(f.transport->requests().back().body));
+      const std::string user = body.at("messages").back().at("content").get<std::string>();
+      std::set<std::string> ids;
+      for (std::size_t at = user.find("\n- "); at != std::string::npos; at = user.find("\n- ", at + 1)) {
+        const std::size_t colon = user.find(':', at);
+        ids.insert(user.substr(at + 3, colon - at - 3));
+      }
+      return std::make_pair(ids, user.size());
+    };
+    struct Case { const char* text; const char* action; };
+    const Case cases[] = {{"Streść tę rozmowę", "summarise"}, {"podsumuj tę rozmowę", "summarise"}, {"summarise this conversation", "summarise"},
+                          {"Przetłumacz tę wiadomość na niemiecki", "translate"}, {"Wyjaśnij to prościej", "explain_simply"}, {"pytaj przed obrazem", "rules.set"}};
+    Fixture whole;
+    whole.rt->config().set("intent_routing_method", "model");
+    whole.overlay("intent_routing", Json{{"model", Json{{"catalogue_retrieval", Json{{"top_k", 0}}}}}});
+    const auto full = catalogue_of(whole, "Streść tę rozmowę");
+    CHECK(full.first.size() > 100);
+    for (const auto& c : cases) {
+      Fixture f;
+      f.rt->config().set("intent_routing_method", "model");
+      const auto got = catalogue_of(f, c.text);
+      INFO(c.text);
+      CHECK(got.first.count(c.action) == 1);
+      CHECK(got.first.size() <= 20 + 4 + 8);  // K, the always list, the actions the local reading scored
+      CHECK(got.first.size() < full.first.size());
+      CHECK(got.second < full.second);
+      if (std::string(c.text) == "Streść tę rozmowę")
+        MESSAGE("routing prompt (user part): ", full.second, " chars whole catalogue (", full.first.size(), " actions), ", got.second, " chars with K=20 (", got.first.size(), " actions); ~", static_cast<int>(full.second / 3.9), " -> ~", static_cast<int>(got.second / 3.9), " tokens (estimate: chars/3.9)");
+    }
+    // the trace carries the sizes
+    Fixture t;
+    t.rt->config().set("intent_routing_method", "model");
+    t.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"message\",\"action\":null,\"confidence\":0.9}")));
+    const Json cat = t.route("Opowiedz mi o kotach").at("trace").at("stages").at(0).at("catalogue");
+    CHECK(cat.at("why") == "top_k");
+    CHECK(cat.at("tokens_estimate_after").get<int>() < cat.at("tokens_estimate_before").get<int>());
   }
 }

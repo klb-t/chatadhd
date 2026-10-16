@@ -146,39 +146,48 @@ std::string preset(Runtime& rt, const Json& routing) {
 
 // ── a command no action understands ─────────────────────────────────
 
-std::string existing_action_for(const Context& c, const std::string& verb) {
+namespace {
+// Whether the (folded) verb is named by one of the phrases: equal to the first word, a stem match ("streszcz*"), or sharing the leading characters.
+bool phrases_name_verb(const Context& c, const Json& phrases, const std::u32string& v) {
+  if (!phrases.is_object()) return false;
   const Json& fold_map = c.routing.at("heuristic").at("fold");
-  const std::u32string v = utf8::decode(fold(verb, fold_map));
-  if (v.empty()) return std::string();
   const auto near_chars = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(emergent_cfg(c.routing).value("command_shape", Json::object()), "existing_prefix_chars", 5)));
-  const auto names = [&](const Json& phrases) {
-    if (!phrases.is_object()) return false;
-    for (auto lang = phrases.begin(); lang != phrases.end(); ++lang)
-      for (const auto& phrase : strings_of(&lang.value())) {
-        const auto words = word_tokens(fold(phrase, fold_map));
-        const std::string raw = fold(phrase, fold_map);
-        if (words.empty()) continue;
-        std::u32string w = utf8::decode(words[0]);
-        if (!raw.empty() && raw.find('*') != std::string::npos && raw.find(' ') == std::string::npos) {  // "streszcz*": a stem
-          if (v.rfind(w, 0) == 0) return true;
-          continue;
-        }
-        if (v == w) return true;
-        std::size_t shared = 0;
-        while (shared < v.size() && shared < w.size() && v[shared] == w[shared]) ++shared;
-        if (near_chars > 0 && shared >= near_chars) return true;
+  for (auto lang = phrases.begin(); lang != phrases.end(); ++lang)
+    for (const auto& phrase : strings_of(&lang.value())) {
+      const auto words = word_tokens(fold(phrase, fold_map));
+      const std::string raw = fold(phrase, fold_map);
+      if (words.empty()) continue;
+      std::u32string w = utf8::decode(words[0]);
+      if (!raw.empty() && raw.find('*') != std::string::npos && raw.find(' ') == std::string::npos) {  // "streszcz*": a stem
+        if (v.rfind(w, 0) == 0) return true;
+        continue;
       }
-    return false;
-  };
-  for (auto it = c.engine.catalogue().begin(); it != c.engine.catalogue().end(); ++it) {
-    if (names(it.value().value("phrases", Json::object()))) return it.key();
-    const Json extra = c.routing.at("heuristic").value("phrases", Json::object());
-    if (extra.is_object() && extra.contains(it.key()) && names(extra.at(it.key()))) return it.key();
-  }
+      if (v == w) return true;
+      std::size_t shared = 0;
+      while (shared < v.size() && shared < w.size() && v[shared] == w[shared]) ++shared;
+      if (near_chars > 0 && shared >= near_chars) return true;
+    }
+  return false;
+}
+}  // namespace
+
+bool action_answers_verb(const Context& c, const std::string& action, const std::string& verb) {
+  const std::u32string v = utf8::decode(fold(verb, c.routing.at("heuristic").at("fold")));
+  if (v.empty()) return false;
+  const Json* entry = json::find(c.engine.catalogue(), action);
+  if (entry && phrases_name_verb(c, entry->value("phrases", Json::object()), v)) return true;
+  const Json& extra = c.routing.at("heuristic").at("phrases");
+  const Json* own = extra.is_object() ? json::find(extra, action) : nullptr;
+  return own && phrases_name_verb(c, *own, v);
+}
+
+std::string existing_action_for(const Context& c, const std::string& verb) {
+  for (auto it = c.engine.catalogue().begin(); it != c.engine.catalogue().end(); ++it)
+    if (action_answers_verb(c, it.key(), verb)) return it.key();
   return std::string();
 }
 
-std::optional<Json> from_command(const Context& c, const std::string& text, const std::string& lang, const Json& element) {
+std::optional<CommandLead> command_lead(const Context& c, const std::string& text, const std::string& lang) {
   if (preset(c.rt, c.routing) != "propose") return std::nullopt;
   const Json& cfg = emergent_cfg(c.routing);
   const Json shape = cfg.value("command_shape", Json::object());
@@ -209,13 +218,26 @@ std::optional<Json> from_command(const Context& c, const std::string& text, cons
   // P17: the lead is a verb of the language (the data's list), not any word ("First message of run 1" is a statement); what follows the
   // lead does not turn the sentence into a noun phrase or a statement ("Outline of this conversation", "List is long", "Note: ...").
   if (!is_listed_verb(shape, lang, verb)) return std::nullopt;
-  // P30: a verb an existing action already answers to ("streść" -> summarise) is never offered as a new action.
-  if (!existing_action_for(c, verb).empty()) return std::nullopt;
   if (idx + 1 < tokens.size()) {
     const auto after = strings_of(json::find(statement, "after_lead"));
     if (std::find(after.begin(), after.end(), tokens[idx + 1]) != after.end()) return std::nullopt;
   }
   if (lead_is_label(text, fold_map, idx, strings_of(json::find(statement, "label_chars")))) return std::nullopt;
+  return CommandLead{verb, idx};
+}
+
+std::optional<Json> from_command(const Context& c, const std::string& text, const std::string& lang, const Json& element) {
+  const auto lead = command_lead(c, text, lang);
+  if (!lead) return std::nullopt;
+  const Json& cfg = emergent_cfg(c.routing);
+  const Json shape = cfg.value("command_shape", Json::object());
+  const Json& fold_map = c.routing.at("heuristic").at("fold");
+  const auto tokens = word_tokens(fold(text, fold_map));
+  const std::string& verb = lead->verb;
+  const std::size_t idx = lead->idx;
+  const auto original_tokens = word_tokens(text);
+  // P30: a verb an existing action already answers to ("streść" -> summarise) is never offered as a new action.
+  if (!existing_action_for(c, verb).empty()) return std::nullopt;
   if (!element.is_object()) return std::nullopt;
   // The element is the object of the command: named within a few words of the verb ("rozpisz tę wiadomość ..."), not somewhere in a request
   // for the model that merely mentions it ("napisz wiersz o tej rozmowie").

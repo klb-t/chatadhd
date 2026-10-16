@@ -28,6 +28,7 @@
 #include "loom/re/regex.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
+#include "loom/selector.h"
 #include "loom/semantic_worker.h"
 #include "loom/settings_fields.h"
 #include "loom/usage_spend.h"
@@ -825,6 +826,8 @@ struct ModelRoute {
   std::optional<Error> error;
   Json trace = nullptr;  // P30: what the model was asked and answered (never the key, never the prompt)
   Json spent = nullptr;  // P31: what the routing call itself cost (already spent): {model, tokens: {input, output}, usd, usd_source}
+  bool define = false;   // P32: the model said no action fits (kind=define): the definition offer decides
+  Json guard = nullptr;  // P32: the verb guard held the model's action back: {verb, action}; route_with tries the definition offer first
 };
 
 // P31: a price as the registry keeps it: a number or a numeric string (OpenRouter sends strings).
@@ -880,6 +883,7 @@ std::string routing_examples(const Data& d, const std::string& lang) {
         const std::string action = json::get_string(e, "action");
         if (!action.empty() && !entry_of(d, action)) continue;
         std::string answer = action.empty() ? json::get_string(ex, "message_answer", "message") : json::get_string(ex, "command_answer", "command") + " " + action;
+        if (const std::string own = json::get_string(e, "answer"); !own.empty()) answer = own;  // P32: "define" (no action fits)
         if (const std::string ref = json::get_string(e, "reference"); !ref.empty() && !action.empty()) answer += " " + ref;
         line(json::get_string(e, "text"), answer);
       }
@@ -907,7 +911,103 @@ std::string clipped(const Data& d, const std::string& raw) {
   return head.size() < raw.size() ? head + "..." : head;
 }
 
-ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, const std::string& lang, const Json& confirmation) {
+// P32: the routing prompt's catalogue. model.catalogue_retrieval.top_k actions closest to the message by the local search (core/selector tiers:
+// embeddings, TF-IDF, keyword; over id, title, description and phrases) plus every action in `keep` (what the local reading scored);
+// 0 = the whole catalogue. Without the embedding tier the words are folded and cut to `stem_chars` letters, so Polish inflection still meets.
+// Returns the lines; `info` is the trace: sizes before and after (an ESTIMATE: characters / chars_per_token).
+std::string catalogue_lines(Runtime& rt, const Data& d, const std::string& text, const std::set<std::string>& keep, Json& info) {
+  const Json& m = d.cfg.at("model");
+  const Json rcfg = m.value("catalogue_retrieval", Json::object());
+  const auto line_of = [&](const std::string& id, const Json& entry) {
+    const std::string needs = join(strings_of(json::find(entry, "requires")), ", ");
+    auto line = render_profile_template(json::get_string(m, needs.empty() && m.contains("catalogue_line_free") ? "catalogue_line_free" : "catalogue_line"),
+        Json{{"id", id}, {"title", json::get_string(entry, "title", id)}, {"requires", needs}});
+    return line ? *line : std::string();
+  };
+  std::vector<std::string> ids;
+  std::map<std::string, std::string> line;
+  std::size_t all_chars = 0;
+  for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
+    if (it.key() == "use_model") continue;  // P31: a line without "(needs: )" when the action needs no element
+    ids.push_back(it.key());
+    line[it.key()] = line_of(it.key(), it.value());
+    all_chars += line[it.key()].size() + 1;
+  }
+  const double per_token = std::max(1.0, json::get_number(rcfg, "chars_per_token", 3.9));
+  const std::int64_t top_k = json::get_int(rcfg, "top_k", 20);
+  std::set<std::string> chosen(ids.begin(), ids.end());
+  Json how = Json{{"total", ids.size()}, {"top_k", top_k}, {"tier", nullptr}, {"why", "whole_catalogue"}};
+  if (top_k > 0 && ids.size() > static_cast<std::size_t>(top_k)) {
+    SelectorEngine sel = rt.make_selector();
+    const std::string tier = sel.active_tier();
+    const Json& fold_map = d.cfg.at("heuristic").at("fold");
+    const auto stem_chars = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(rcfg, "stem_chars", 5)));
+    const auto prepare = [&](const std::string& raw) {
+      if (tier == "embedding") return raw;
+      std::string out;
+      for (const auto& w : word_tokens(fold(raw, fold_map))) out += (out.empty() ? "" : " ") + std::string(utf8::prefix(w, stem_chars > 0 ? stem_chars : w.size()));
+      return out;
+    };
+    const Json& extra = d.cfg.at("heuristic").at("phrases");
+    std::vector<std::string> texts;
+    for (const auto& id : ids) {
+      const Json* entry = json::find(d.engine.catalogue(), id);
+      std::string doc = id;
+      for (char& ch : doc)
+        if (ch == '.' || ch == '_') ch = ' ';
+      if (entry)
+        for (const auto& field : strings_of(json::find(rcfg, "text_fields"))) {
+          if (field == "id") continue;
+          const Json* v = json::find(*entry, field);
+          if (!v) continue;
+          if (v->is_string()) doc += " " + v->get<std::string>();
+          else if (v->is_object())
+            for (auto lg = v->begin(); lg != v->end(); ++lg)
+              for (const auto& phrase : strings_of(&lg.value())) doc += " " + phrase;
+        }
+      const Json* own = extra.is_object() ? json::find(extra, id) : nullptr;  // the lexicon of the profile
+      if (own && own->is_object())
+        for (auto lg = own->begin(); lg != own->end(); ++lg)
+          for (const auto& phrase : strings_of(&lg.value())) doc += " " + phrase;
+      texts.push_back(prepare(doc));
+    }
+    auto indexed = sel.index(texts, ids);
+    if (!indexed) {
+      log::write(log::Level::Warning, "loom.chat_route", "routing catalogue: retrieval index failed (" + indexed.error().message + "); the whole catalogue is sent");
+      how["why"] = "index_failed: " + indexed.error().message;
+    } else {
+      std::set<std::string> near_ids;
+      for (const auto& hit : sel.search(prepare(text), static_cast<int>(top_k))) near_ids.insert(hit.id);
+      how["tier"] = tier;
+      if (near_ids.empty()) {
+        how["why"] = "no_match";
+      } else {
+        chosen = near_ids;
+        for (const auto& id : strings_of(json::find(rcfg, "always")))  // the core text operations stay (data): a paraphrase shares no word with them
+          if (line.count(id)) chosen.insert(id);
+        for (const auto& k : keep)
+          if (line.count(k)) chosen.insert(k);
+        how["why"] = "top_k";
+        how["kept_from_local_reading"] = Json::array();
+        for (const auto& k : keep)
+          if (line.count(k)) how["kept_from_local_reading"].push_back(k);
+      }
+    }
+  }
+  std::string lines;
+  for (const auto& id : ids)
+    if (chosen.count(id)) lines += (lines.empty() ? "" : "\n") + line[id];
+  how["included"] = chosen.size();
+  how["chars_before"] = all_chars;
+  how["chars_after"] = lines.size();
+  how["tokens_estimate_before"] = static_cast<std::int64_t>(std::llround(static_cast<double>(all_chars) / per_token));
+  how["tokens_estimate_after"] = static_cast<std::int64_t>(std::llround(static_cast<double>(lines.size()) / per_token));
+  how["estimate_note"] = "estimate: characters / " + std::to_string(per_token).substr(0, 3);
+  info = how;
+  return lines;
+}
+
+ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, const std::string& lang, const Json& confirmation, const std::set<std::string>& keep = {}) {
   ModelRoute result;
   const Json& m = d.cfg.at("model");
   const Json& method = d.cfg.at("method");
@@ -925,15 +1025,9 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
     result.error = Error(Errc::InvalidArgument, "no model is configured for routing");
     return result;
   }
-  std::string lines;
-  for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
-    if (it.key() == "use_model") continue;
-    // P31: a line without "(needs: )" when the action needs no element: fewer tokens for every routing call.
-    const std::string needs = join(strings_of(json::find(it.value(), "requires")), ", ");
-    auto line = render_profile_template(json::get_string(m, needs.empty() && m.contains("catalogue_line_free") ? "catalogue_line_free" : "catalogue_line"),
-        Json{{"id", it.key()}, {"title", json::get_string(it.value(), "title", it.key())}, {"requires", needs}});
-    if (line) lines += (lines.empty() ? "" : "\n") + *line;
-  }
+  Json catalogue_info = nullptr;
+  const std::string lines = catalogue_lines(rt, d, text, keep, catalogue_info);
+  result.trace["catalogue"] = catalogue_info;
   auto user = render_profile_template(json::get_string(m, "user"), Json{{"actions", lines}, {"text", text}});
   if (!user) {
     result.error = user.error();
@@ -1015,6 +1109,13 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   // P31: a small model answers kind=message for a command it names ("kind": "message", "action": "explain_simply", confidence 1.0). An answer
   // that names an existing action with at least model.named_action_min_confidence (a preset; above 1 switches it off) is the action.
   bool named_despite_message = false;
+  // P32: kind=define: no action in the list fits ("rozpisz to na kroki"); the model must not pick the nearest one. The definition offer decides.
+  if (json::get_string(answer, "kind") == json::get_string(m, "define_answer", "define")) {
+    result.define = true;
+    result.trace["verdict"]["accepted"] = false;
+    result.trace["verdict"]["why"] = "model_said_define";
+    return result;
+  }
   if (json::get_string(answer, "kind") != "command") {
     if (!action.empty() && entry_of(d, action) && confidence >= json::get_number(m, "named_action_min_confidence", 0.8)) {
       named_despite_message = true;
@@ -1030,6 +1131,17 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
     return result;
   }
   result.trace["verdict"]["accepted"] = true;
+  // P32: the verb guard. A small model picks the nearest action at full confidence ("Rozpisz ..." -> explain_simply@1.0). When the sentence has
+  // command shape and its lead verb is neither one of this action's phrases nor the verb of any existing action, the action is held back and
+  // route_with tries the definition offer first (the model's action stays when nothing can be defined). model.verb_guard.enabled = false switches it off.
+  if (json::get_bool(m.value("verb_guard", Json::object()), "enabled", true)) {
+    const emergent::Context ctx{rt, d.cfg, d.engine, d.resolver};
+    if (const auto lead = emergent::command_lead(ctx, text, lang);
+        lead && !emergent::action_answers_verb(ctx, action, lead->verb) && emergent::existing_action_for(ctx, lead->verb).empty()) {
+      result.guard = Json{{"verb", lead->verb}, {"action", action}, {"confidence", confidence}};
+      result.trace["verdict"]["guard"] = result.guard;
+    }
+  }
   if (named_despite_message) result.trace["verdict"]["why"] = "named_action_despite_kind_message";
   Cand c;
   c.source = "model";
@@ -1412,13 +1524,64 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     for (auto& l : parse_lexicon(d, text)) found.push_back(std::move(l));
     return found;
   };
+  // The definition offer (R55): the sentence names an element and is shaped like a command no action answers to.
+  const auto offer_definition = [&]() -> std::optional<Cand> {
+    const auto ref = find_reference(d, text, word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))));
+    if (ref.is_null()) return std::nullopt;
+    auto element = resolve_ref(rt, d, ref, conv);
+    if (!element) return std::nullopt;
+    const emergent::Context ctx{rt, d.cfg, d.engine, d.resolver};
+    auto def = emergent::from_command(ctx, text, lang, *element);
+    if (!def) return std::nullopt;
+    Cand c;
+    c.source = "emergent";
+    c.matched = json::get_string(def->at("summary"), "verb");
+    c.lang = lang;
+    c.action = json::get_string(*def, "writer");
+    c.args = def->at("args");
+    c.element = Json{{"id", "application"}};
+    c.score = 0.9;
+    c.emergent = *def;
+    if (const Json* then = json::find(*def, "then_run")) {
+      c.emergent["then_run"]["element"]["class"] = json::get_string(*element, "class");
+      c.emergent["then_run"]["element"]["label"] = json::get_string(*element, "label");
+      (void)then;
+    }
+    return c;
+  };
+  // P32: what the model's answer asks of the definition offer: kind=define, or the verb guard holding its action back.
+  bool model_define = false;
+  const auto take_model = [&](ModelRoute& routed) {
+    cands = std::move(routed.cands);
+    stage("model", cands, routed.trace.is_object() ? routed.trace : Json::object());
+    model_define = routed.define;
+    if (routed.guard.is_object()) {
+      if (auto c = offer_definition()) {
+        cands.clear();
+        cands.push_back(std::move(*c));
+        model_define = true;
+        stage("emergent", cands, Json{{"why", "verb_guard"}, {"guard", routed.guard},
+              {"note", "the lead verb is not one of the chosen action's phrases and no existing action answers to it: the action is not accepted"}});
+      } else {
+        stage("verb_guard", cands, Json{{"why", "kept_model_action"}, {"guard", routed.guard},
+              {"note", "nothing can be defined from this sentence (no element named near the verb): the model's action stands"}});
+      }
+    }
+  };
   bool recheck_allowed = false;  // the local reading has not been made yet
   // P31: the model method with `local_first` (a preset, off) reads locally first and asks the model like hybrid does: a command the local
   // reading is sure of costs no routing call.
   const Json& method_preset = d.cfg.at("method").at("presets").at(method);
   const bool local_first = method == "model" && json::get_bool(method_preset, "local_first", false);
+  // P32: the actions the local reading scored always stay in the routing prompt's catalogue.
+  const auto scored_by_local = [&](const std::vector<Cand>& found) {
+    std::set<std::string> ids;
+    for (const auto& x : found) ids.insert(x.action);
+    for (const auto& x : parse_rule_commands(d, text, false)) ids.insert(x.action);  // rules and scoped values are read locally either way
+    return ids;
+  };
   if (method == "model" && !local_first) {
-    ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()));
+    ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()), scored_by_local(local_reading()));
     if (!routed.spent.is_null()) out["routing"] = routed.spent;  // P31: what the routing call cost, shown with the proposal
     if (!routed.pending.is_null()) {
       out["kind"] = "pending";
@@ -1432,8 +1595,7 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
       cands = local_reading();
       stage("fallback", cands, Json{{"why", "model_route_failed"}});
     } else {
-      cands = std::move(routed.cands);
-      stage("model", cands, routed.trace.is_object() ? routed.trace : Json::object());
+      take_model(routed);
       recheck_allowed = true;
     }
   } else {
@@ -1470,7 +1632,7 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     const bool ask = !confident && !inner && (cands.empty() ? asks("no_candidate") : asks("unsure"));
     out["hybrid"] = Json{{"confident", confident}, {"asked_model", ask}};
     if (ask) {
-      ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()));
+      ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()), scored_by_local(cands));
       if (!routed.spent.is_null()) out["routing"] = routed.spent;  // P31: what the routing call cost, shown with the proposal
       if (!routed.pending.is_null()) {
         out["kind"] = "pending";
@@ -1481,8 +1643,7 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
         out["issues"].push_back(Json{{"code", "model_route_failed"}, {"message", routed.error->message}, {"fallback", "heuristic"}});
         stage("model", {}, Json{{"model", routed.trace.is_object() ? routed.trace.value("model", "") : ""}, {"error", routed.error->message}});
       } else {
-        cands = std::move(routed.cands);
-        stage("model", cands, routed.trace.is_object() ? routed.trace : Json::object());  // hybrid: the local reading came first and was unsure
+        take_model(routed);  // hybrid: the local reading came first and was unsure
       }
     }
   }
@@ -1497,29 +1658,9 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     stage("local_recheck", cands, Json{{"why", "model_found_no_command"}});
   }
   if (cands.empty() && !inner) {
-    const auto ref = find_reference(d, text, word_tokens(fold(text, d.cfg.at("heuristic").at("fold"))));
-    if (!ref.is_null()) {
-      if (auto element = resolve_ref(rt, d, ref, conv)) {
-        const emergent::Context ctx{rt, d.cfg, d.engine, d.resolver};
-        if (auto def = emergent::from_command(ctx, text, lang, *element)) {
-          Cand c;
-          c.source = "emergent";
-          c.matched = json::get_string(def->at("summary"), "verb");
-          c.lang = lang;
-          c.action = json::get_string(*def, "writer");
-          c.args = def->at("args");
-          c.element = Json{{"id", "application"}};
-          c.score = 0.9;
-          c.emergent = *def;
-          if (const Json* then = json::find(*def, "then_run")) {
-            c.emergent["then_run"]["element"]["class"] = json::get_string(*element, "class");
-            c.emergent["then_run"]["element"]["label"] = json::get_string(*element, "label");
-            (void)then;
-          }
-          cands.push_back(std::move(c));
-          stage("emergent", cands, Json{{"why", "no_action_matched_and_command_shaped"}});
-        }
-      }
+    if (auto c = offer_definition()) {
+      cands.push_back(std::move(*c));
+      stage("emergent", cands, Json{{"why", model_define ? "model_said_define" : "no_action_matched_and_command_shaped"}});
     }
   }
   if (cands.empty()) {

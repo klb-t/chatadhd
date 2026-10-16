@@ -4791,12 +4791,33 @@
       }
     },
     "model": {
-      "system": "You route one input of a chat application; the input may be in any language (often Polish). Decide: an ordinary message for the language model, or a command to the application itself (run one of its actions on something that already exists). Answer with one JSON object only: {\"kind\": \"message\" | \"command\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command asks the application to act on the conversation, a message or a setting (summarise, translate, explain simply, rephrase, set, show, ...); when you name an action, kind is \"command\". Questions, requests to write or explain something new, and anything unclear are messages with action null. Use only action ids from the list.\nExamples (input -> kind, action, reference):\n{{examples}}",
+      "system": "You route one input of a chat application; the input may be in any language (often Polish). Decide: an ordinary message for the language model, or a command to the application itself (run one of its actions on something that already exists). Answer with one JSON object only: {\"kind\": \"message\" | \"command\" | \"define\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command asks the application to act on the conversation, a message or a setting (summarise, translate, explain simply, rephrase, set, show, ...); when you name an action, kind is \"command\". Questions, requests to write or explain something new, and anything unclear are messages with action null. Use only action ids from the list, and only an action that really does what is asked. When the input is a command to the application but NO action in the list fits it, do not pick the nearest one: answer {\"kind\": \"define\", \"action\": null, \"confidence\": <0..1>} (the application then offers the user a new action).\nExamples (input -> kind, action, reference):\n{{examples}}",
       "trace_raw_chars": 4000,
       "local_recheck": true,
       "catalogue_line": "- {{id}}: {{title}} (needs: {{requires}})",
       "catalogue_line_free": "- {{id}}: {{title}}",
       "named_action_min_confidence": 0.8,
+      "define_answer": "define",
+      "verb_guard": {
+        "enabled": true
+      },
+      "catalogue_retrieval": {
+        "top_k": 20,
+        "stem_chars": 5,
+        "chars_per_token": 3.9,
+        "always": [
+          "summarise",
+          "translate",
+          "explain_simply",
+          "rephrase"
+        ],
+        "text_fields": [
+          "id",
+          "title",
+          "description",
+          "phrases"
+        ]
+      },
       "examples": {
         "enabled": true,
         "max": 8,
@@ -4821,6 +4842,10 @@
               "reference": "message"
             },
             {
+              "text": "Rozpisz to na kroki",
+              "answer": "define"
+            },
+            {
               "text": "Napisz wiersz o kocie"
             },
             {
@@ -4837,6 +4862,10 @@
               "text": "Translate this message into German",
               "action": "translate",
               "reference": "message"
+            },
+            {
+              "text": "Break this into steps",
+              "answer": "define"
             },
             {
               "text": "Write a poem about a cat"
@@ -6022,6 +6051,28 @@
               "phrase_reference": {"type": "string"},
               "phrase_actions": {"type": "array", "items": {"type": "string"}},
               "fixed": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "object"}}}
+            },
+            "additionalProperties": false
+          },
+          "define_answer": {
+            "type": "string",
+            "description": "P32: the kind the routing model answers when no action of the list fits the command (the prompt teaches it); the definition offer decides."
+          },
+          "verb_guard": {
+            "type": "object",
+            "description": "P32: before a model-named action is accepted, a sentence of command shape whose lead verb is neither one of that action's phrases nor the verb of any existing action goes to the definition offer (the model's action stands when nothing can be defined). enabled false switches it off.",
+            "properties": {"enabled": {"type": "boolean"}},
+            "additionalProperties": false
+          },
+          "catalogue_retrieval": {
+            "type": "object",
+            "description": "P32: the routing prompt lists only the top_k actions closest to the message by the local search (selector tiers: embeddings, TF-IDF, keyword) over text_fields (id, title, description, phrases), plus the always list and every action the local reading scored; top_k 0 = the whole catalogue. stem_chars: words are folded and cut to this many letters for the TF-IDF and keyword tiers (0 = whole words). chars_per_token: the divisor of the token ESTIMATE in the trace.",
+            "properties": {
+              "top_k": {"type": "integer", "minimum": 0},
+              "stem_chars": {"type": "integer", "minimum": 0},
+              "chars_per_token": {"type": "number"},
+              "always": {"type": "array", "items": {"type": "string"}},
+              "text_fields": {"type": "array", "items": {"type": "string"}}
             },
             "additionalProperties": false
           },
