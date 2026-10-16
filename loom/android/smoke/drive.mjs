@@ -76,10 +76,16 @@ const tap = n => adb("shell", "input", "tap", String(n.cx), String(n.cy));
 // takes the screen and the WebView stops answering CDP; "Wait" lets the app (and the run) go on.
 function dismissSystemDialogs(nodes) {
   try { nodes = nodes || dump(); } catch { return false; }
-  if (!nodes.some(n => /isn't responding|nie odpowiada/i.test(n.text || ""))) return false;
-  const wait = nodes.find(n => n.cx !== undefined && (n["resource-id"] === "android:id/aerr_wait" || /^(wait|czekaj)$/i.test(n.text || "")));
-  if (!wait) return false;
-  log("system: an app is not responding, tapping Wait"); tap(wait);
+  const title = nodes.find(n => /isn't responding|nie odpowiada/i.test(n.text || ""));
+  if (!title) return false;
+  // the launcher is restarted (Close app): Wait keeps a stuck launcher stuck and the dialog comes back every few
+  // seconds; any other app (ours included) gets Wait, and the text is logged so an ANR of the app itself is visible
+  const launcher = /launcher/i.test(title.text);
+  const pick = launcher ? /^(close app|zamknij aplikację)$/i : /^(wait|czekaj)$/i;
+  const id = launcher ? "android:id/aerr_close" : "android:id/aerr_wait";
+  const button = nodes.find(n => n.cx !== undefined && (n["resource-id"] === id || pick.test(n.text || "")));
+  if (!button) return false;
+  log(`system: "${title.text}", tapping ${button.text || id}`); tap(button);
   return true;
 }
 const textOf = n => `${n.text || ""} ${n["content-desc"] || ""}`;
@@ -465,6 +471,7 @@ const localChecks = [
     const exitDialog = () => find(dump(), n => n["resource-id"] === "android:id/button2");
     let dialog;
     for (let k = 0; k < 5 && !dialog; k++) {
+      dismissSystemDialogs();   // a system dialog would take this Back instead of the app
       adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200);
       if (!resumed()) throw new Error(`Back #${k + 1} left the app without asking`);
       dialog = exitDialog();
@@ -481,6 +488,7 @@ const localChecks = [
   }],
   ["local: Back twice at the root leaves to the launcher; reopening shows the draft", async () => {
     const draft = await page.ev(`${q("chat-input")}?.value`);
+    dismissSystemDialogs();
     adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200);
     await until("the exit question", () => find(dump(), n => n["resource-id"] === "android:id/button2"), 15, 600);
     adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1500);

@@ -43,6 +43,11 @@ if ! grep -q " lib/$abi/libloom_jni\.so$" <<<"$apk_listing"; then
   unzip -l "$APK" | grep "libloom_jni" >&2 || true
   exit 3
 fi
+# A cold emulator under swiftshader often shows "Pixel Launcher isn't responding" while it still starts up; give the
+# home screen time to settle first (boot completed, then Home and a pause) so the dialog does not land over the app.
+for _ in $(seq 1 60); do [ "$(adb shell getprop sys.boot_completed | tr -d '\r')" = 1 ] && break; sleep 2; done
+adb shell input keyevent KEYCODE_HOME || true
+sleep 15
 log "install"
 adb install -r -g "$APK" || { echo "ERROR: adb install failed" >&2; exit 3; }
 adb shell pm grant "$PKG" android.permission.POST_NOTIFICATIONS 2>/dev/null || true
