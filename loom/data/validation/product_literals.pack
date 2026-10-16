@@ -617,7 +617,7 @@
         },
         {
           "path": "loom/data/runtime/intent_routing.pack",
-          "sha256": "49ff6bbf1971a24d31ad3e178b3faff7b61b70601a51ce3d10fde9731413479d"
+          "sha256": "28ae2065b0c327bf2e486481bf449879587f9224fdb82eb83e41a80f6c0f0537"
         },
         {
           "path": "loom/data/runtime/knowledge.pack",
