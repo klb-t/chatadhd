@@ -52,6 +52,7 @@
 #include <functional>
 #include <map>
 #include <mutex>
+#include <filesystem>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -184,6 +185,11 @@ class ChatEngine {
   // install the same capability; an absent adapter is an explicit error on opt-in.
   void set_knowledge_context_builder(KnowledgeContextBuilder builder);
 
+  // An attachment is a file path, or `blob:<64 hex>/<file name>`: a file a client uploaded to the blob store (the web composer). The resolver
+  // gives the stored file of a hash; the name after the slash decides how the file is read (image, text). Set once, before the first send.
+  using AttachmentResolver = std::function<std::optional<std::filesystem::path>(const std::string& hash)>;
+  void set_attachment_resolver(AttachmentResolver resolver);
+
   // Exposed for tests and for wave-3 tooling (prompt inspection).
   Result<Json> build_messages(std::string_view conv_id, std::string_view current_text,
                               const std::vector<std::string>& attachments, const ChatOptions& opts = {},
@@ -216,6 +222,7 @@ class ChatEngine {
   MemoryEngine* memory_;
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
+  AttachmentResolver attachment_resolver_;
   // The context selector's choice for a conversation among the representations the guardian keeps beside the raw messages
   // (setting chat_representation, preset raw = `in` unchanged, byte for byte). Never fails a send: what cannot be used stays raw.
   ChatOptions select_representation(const ChatOptions& in, const std::string& conv_id);

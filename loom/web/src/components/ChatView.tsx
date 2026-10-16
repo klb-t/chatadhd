@@ -41,6 +41,8 @@ import Disclosure from "../shell/Disclosure";
 import { needsProviderKey, useShellText } from "../shell/text";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
+import ComposerMenu from "../shell/ComposerMenu";
+import { attachmentName, attachmentRef, composeMenu, THINKING_EFFORT, type MenuFlags } from "../shell/composer-menu";
 import { nativeFragmentPrompt, nativeGraphDisplayText, recordedGraphReply } from "../graph/chat-graph";
 
 marked.setOptions({ breaks: true });
@@ -116,6 +118,9 @@ function safeNotice(feature: Parameters<typeof featureMessage>[0], id: string): 
 
 // Messages read per page: the setting loom_web_message_window (preset 500, 0 = no cut). Older pages are always reachable, so nothing is cut.
 
+interface ComposerAttachment { key: string; name: string; state: "uploading" | "ready" | "failed"; ref?: string; preview?: string; reason?: string }
+let attachmentCounter = 0;
+
 export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" }: Props) {
   const chat = variant === "chat";
   const t = useShellText();
@@ -173,6 +178,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   // Routing the last input had a problem it worked around (the model route failed, the local rules decided): a quiet note, nothing was lost.
   const [routeNotes, setRouteNotes] = useState<string[]>([]);
   const blockPreset = useLayeredDefault(profileHost, SEND_BLOCK_DEFAULT_KEY);
+  const menuBase = useLayeredDefault(profileHost, "chat.composer_menu");
+  const menuOps = useLayeredDefault(profileHost, "chat.composer_menu_ops");
   // An explicit choice in this view wins; otherwise only an effective layered `true`
   // blocks. A missing, disabled or excluded default has no initiator and never blocks (R43).
   const [blockChoice, setBlockChoice] = useState<boolean | undefined>(() =>
@@ -197,6 +204,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const [messages, setMessages] = useState<Message[]>([]);
   const [showAllMessages, setShowAllMessages] = useState(false);
   const [input, setInput] = useState("");
+  // P33: the + menu. Tools are on until turned off (chips above the field say which); files are chips too.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [webSearch, setWebSearch] = useState(false);
+  const [thinking, setThinking] = useState(false);
+  const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+  const plusRef = useRef<HTMLButtonElement>(null);
   const [models, setModels] = useState<ModelInfo[]>([]);
   const [model, setModel] = useState<string>(() => storedString("model", ""));
   const [pendingUserText, setPendingUserText] = useState<{ text: string; convId: string | null } | null>(null);
@@ -382,6 +397,37 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, stream, pendingUserText]);
 
+  // Files chosen in the + menu go to the kernel's blob store at once (the answer names them by hash); the message then carries that reference.
+  const addFiles = useCallback((files: FileList | File[]) => {
+    for (const file of Array.from(files)) {
+      const key = `a${++attachmentCounter}`;
+      const name = file.name || "file";
+      const preview = file.type.startsWith("image/") ? URL.createObjectURL(file) : undefined;
+      const upload = api.actions?.clientBlobUpload;
+      if (!upload) {
+        setAttachments((list) => [...list, { key, name, state: "failed", preview, reason: t("cm_reason_upload") }]);
+        continue;
+      }
+      setAttachments((list) => [...list, { key, name, state: "uploading", preview }]);
+      upload.call(api.actions, file, { name }).then(
+        (blob) => { if (mountedRef.current) setAttachments((list) => list.map(a => a.key === key ? { ...a, state: "ready", ref: attachmentRef(blob.hash, name) } : a)); },
+        (err: unknown) => { if (mountedRef.current) setAttachments((list) => list.map(a => a.key === key ? { ...a, state: "failed", reason: err instanceof Error ? err.message : String(err) } : a)); },
+      );
+    }
+  }, [t]);
+  const removeAttachment = useCallback((key: string) => {
+    setAttachments((list) => { const gone = list.find(a => a.key === key); if (gone?.preview) URL.revokeObjectURL(gone.preview); return list.filter(a => a.key !== key); });
+  }, []);
+  const menuFlags: MenuFlags = { web_search: webSearch, thinking, memory: includeMemory, knowledge: useKnowledge };
+  const toggleFlag = useCallback((flag: keyof MenuFlags) => {
+    if (flag === "web_search") setWebSearch(v => !v);
+    else if (flag === "thinking") setThinking(v => !v);
+    else if (flag === "memory") setIncludeMemory(v => !v);
+    else setUseKnowledge(v => !v);
+  }, []);
+  const composedMenu = useMemo(() => composeMenu(menuBase.value, menuOps.value), [menuBase.value, menuOps.value]);
+  const closeMenu = useCallback(() => { setMenuOpen(false); plusRef.current?.focus(); }, []);
+
   const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
     const text = input.trim();
     if (mode === "send" && !forced && requestOverride === null && text !== "" && !stream) {
@@ -396,6 +442,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     if (gate.blocked) { setError(gateTexts.blocked); return; }
     if (branchLeaf) { setError("Return to current conversation before sending from a branch projection."); return; }
     if (stream || !supports("chat.send")) return;
+    if (attachments.some(a => a.state === "uploading")) return;
     if (!text && !forced && !(mode === "send" && requestOverride !== null)) return;
     let request: ChatRequest;
     if (forced) {
@@ -437,6 +484,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     request = {
       message: text, conv_id: convId ?? undefined, model: model || undefined,
       // Omit unchanged options so the existing default request stays intact.
+      ...(attachments.some(a => a.state === "ready") && { attachments: attachments.flatMap(a => a.state === "ready" && a.ref ? [a.ref] : []) }),
+      ...(webSearch && { web_search: true }),
+      ...(thinking && { reasoning_effort: THINKING_EFFORT }),
       ...(!includeMemory && { include_memory: false }),
       ...(!includeGraphMemory && { include_graph_memory: false }),
       ...(!includeHistory && { include_history: false }),
@@ -477,7 +527,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       setStream(null);
       setPendingUserText(null);
       // Nothing was stored: the words go back into the field, so a failed send loses nothing and can be sent again.
-      if (message && !started) setInput((current) => current || request.message);
+      if (message && !started) {
+        setInput((current) => current || request.message);
+        // The files go back as chips too (without their previews): a failed send loses nothing.
+        const sent = request.attachments ?? [];
+        if (sent.length) setAttachments((list) => list.length ? list : sent.map(ref => ({ key: `a${++attachmentCounter}`, name: attachmentName(ref), state: "ready" as const, ref })));
+      }
       // The error is said in the conversation the message went to. That is the one on the screen unless the person has gone to another
       // one; a conversation this very send created is not yet selected when an error follows its start at once.
       const here = selectedConvRef.current;
@@ -485,6 +540,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       refreshShared();
     };
     setInput("");
+    setAttachments((list) => { for (const a of list) if (a.preview) URL.revokeObjectURL(a.preview); return []; });
     setQueuedNote(null);
     setRequestOverride(null);
     setRouteNotes([]);
@@ -580,7 +636,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
-  }, [input, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
+  }, [input, attachments, webSearch, thinking, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked, gateTexts.emptyAnswer, gateTexts.streamEnded]);
 
@@ -1019,6 +1075,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                 }
                 return null;
               })()}
+              {m.role === "user" && Array.isArray(m.attachments) && m.attachments.length > 0 && <p className="composer-chips" data-testid="message-attachments">
+                {m.attachments.filter((x): x is string => typeof x === "string").map((ref, i) => <span key={i} className="composer-chip" data-testid="message-attachment"><span className="chip-name">{attachmentName(ref)}</span></span>)}</p>}
               {m.role === "assistant" && (() => {
                 const made = producedView(m.metadata, m.id);
                 const label = made ? producedText(featureInLanguage(proposalCatalog.feature, messageLanguage(m.metadata)), made) : null;
@@ -1184,7 +1242,28 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       </div>}
       {gate.blocked && <span id={gateDescriptionId} hidden data-testid="send-gate-explanation">{gateTexts.blocked}</span>}
       <div className={chat ? "composer shell-composer" : "composer"}>
-        {chat && <button type="button" aria-label={t("attach")} title={t("attach")} data-testid="shell-attach" onClick={() => requestPanel("import")}>+</button>}
+        {chat && <span className="composer-plus">
+          <button type="button" ref={plusRef} aria-label={t("attach")} title={t("attach")} aria-haspopup="menu" aria-expanded={menuOpen} data-testid="shell-attach" onClick={() => setMenuOpen(v => !v)}>+</button>
+          {menuOpen && <ComposerMenu items={composedMenu.items} issues={composedMenu.issues} ctx={{ camera: Boolean(navigator.mediaDevices?.getUserMedia), upload: Boolean(api.actions?.clientBlobUpload) }}
+            flags={menuFlags} model={model} models={models}
+            onAttach={(kind) => (kind === "camera" ? cameraInputRef : fileInputRef).current?.click()}
+            onToggle={toggleFlag} onModel={setModel} onPanel={(panel) => requestPanel(panel)} onClose={closeMenu} />}
+          <input ref={fileInputRef} type="file" multiple hidden data-testid="composer-file-input" onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
+          <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" hidden data-testid="composer-camera-input" onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
+        </span>}
+        {chat && (attachments.length > 0 || webSearch || thinking || useKnowledge || !includeMemory) && <div className="composer-chips" role="list" aria-label={t("att_list")} data-testid="composer-chips">
+          {attachments.map(a => <span key={a.key} role="listitem" className="composer-chip" data-testid="attachment-chip" data-state={a.state} data-name={a.name}>
+            {a.preview && <img src={a.preview} alt={t("att_image", { name: a.name })} data-testid="attachment-preview" />}
+            <span className="chip-name" title={a.state === "failed" ? t("att_failed", { name: a.name, reason: a.reason ?? "" }) : a.name}>
+              {a.state === "uploading" ? t("att_uploading", { name: a.name }) : a.state === "failed" ? t("att_failed", { name: a.name, reason: a.reason ?? "" }) : a.name}</span>
+            <button type="button" aria-label={t("att_remove", { name: a.name })} data-testid="attachment-remove" onClick={() => removeAttachment(a.key)}>×</button>
+          </span>)}
+          {([["web_search", webSearch, "tool_chip_web", () => setWebSearch(false)], ["thinking", thinking, "tool_chip_thinking", () => setThinking(false)],
+            ["knowledge", useKnowledge, "tool_chip_knowledge", () => setUseKnowledge(false)], ["memory_off", !includeMemory, "tool_chip_memory_off", () => setIncludeMemory(true)]] as const)
+            .filter(([, on]) => on).map(([id, , word, off]) => <span key={id} role="listitem" className="composer-chip" data-testid={`tool-chip-${id}`}>
+              <span className="chip-name">{t(word)}</span>
+              <button type="button" aria-label={t("tool_chip_remove", { name: t(word) })} onClick={off}>×</button></span>)}
+        </div>}
         {(() => { const picker = <select
           value={model}
           onChange={(e) => setModel(e.target.value)}
@@ -1231,7 +1310,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           </button>
         ) : (
           <button className="primary" onClick={() => send()} data-testid="send-chat" aria-busy={queuedNote === "waiting" || undefined}
-            disabled={!!branchLeaf || (Boolean(gate.blocked) && gate.blocked?.reason !== VIEW_LOADING_REASON) || (requestOverride === null && !input.trim()) || !supports("chat.send") || queuedNote === "waiting"}
+            disabled={!!branchLeaf || (Boolean(gate.blocked) && gate.blocked?.reason !== VIEW_LOADING_REASON) || (requestOverride === null && !input.trim()) || attachments.some(a => a.state === "uploading") || !supports("chat.send") || queuedNote === "waiting"}
             title={gateTexts.blocked ?? undefined} aria-describedby={gate.blocked ? gateDescriptionId : undefined}
             data-gate-initiator={gate.blocked?.initiator} data-gate-reason={gate.blocked?.reason}>
             {chat ? t("send") : "Send"}

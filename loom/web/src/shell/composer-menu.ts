@@ -1,0 +1,117 @@
+// The + menu next to the message field, as data (P33). The entries come from the layered default `chat.composer_menu`; the user's own
+// changes (hide, add, move) from `chat.composer_menu_ops`. This file is the pure part: composing the entries and judging each one.
+
+export type MenuKind = "attach" | "camera" | "model" | "submenu" | "toggle" | "panel" | "unavailable";
+export interface MenuItem {
+  id: string;
+  /** A word of presentation.ui_shell, or {en, pl}. */
+  label: unknown;
+  kind: MenuKind;
+  when?: string;
+  flag?: string;
+  panel?: string;
+  reason?: unknown;
+  items?: MenuItem[];
+}
+export type MenuOp =
+  | { op: "hide"; id: string }
+  | { op: "add"; item: MenuItem; parent?: string; before?: string }
+  | { op: "move"; id: string; before?: string; parent?: string };
+export interface ComposedMenu { items: MenuItem[]; issues: string[] }
+
+const KINDS: readonly string[] = ["attach", "camera", "model", "submenu", "toggle", "panel", "unavailable"];
+
+function isObject(v: unknown): v is Record<string, unknown> { return typeof v === "object" && v !== null && !Array.isArray(v); }
+
+/** Reads the entries of a menu value; a malformed entry is reported (not dropped silently). */
+export function readItems(value: unknown, where: string, issues: string[]): MenuItem[] {
+  if (!Array.isArray(value)) { issues.push(`${where}: items must be a list`); return []; }
+  const out: MenuItem[] = [];
+  for (const raw of value) {
+    if (!isObject(raw) || typeof raw.id !== "string" || raw.id === "") { issues.push(`${where}: an entry without id`); continue; }
+    if (typeof raw.kind !== "string" || !KINDS.includes(raw.kind)) { issues.push(`${where}/${raw.id}: unknown kind ${String(raw.kind)}`); continue; }
+    const item: MenuItem = { id: raw.id, label: raw.label ?? raw.id, kind: raw.kind as MenuKind };
+    for (const key of ["when", "flag", "panel"] as const) if (typeof raw[key] === "string") item[key] = raw[key] as string;
+    if (raw.reason !== undefined) item.reason = raw.reason;
+    if (raw.kind === "submenu") item.items = readItems(raw.items ?? [], `${where}/${raw.id}`, issues);
+    out.push(item);
+  }
+  return out;
+}
+
+function find(list: MenuItem[], id: string): { list: MenuItem[]; at: number } | null {
+  for (let at = 0; at < list.length; at++) {
+    if (list[at].id === id) return { list, at };
+    const sub = list[at].items;
+    if (sub) { const hit = find(sub, id); if (hit) return hit; }
+  }
+  return null;
+}
+
+/** The effective menu: the entries as shipped, then the user's operations in order. A bad operation is reported and skipped. */
+export function composeMenu(baseValue: unknown, opsValue: unknown): ComposedMenu {
+  const issues: string[] = [];
+  const base = isObject(baseValue) ? baseValue.items : undefined;
+  const items = readItems(base ?? [], "menu", issues);
+  const ops = isObject(opsValue) && Array.isArray(opsValue.ops) ? opsValue.ops : [];
+  if (opsValue !== undefined && opsValue !== null && !(isObject(opsValue) && Array.isArray(opsValue.ops))) issues.push("ops: expected {ops: [...]}");
+  const target = (parent: unknown): MenuItem[] | null => {
+    if (typeof parent !== "string" || parent === "") return items;
+    const hit = find(items, parent);
+    const holder = hit ? hit.list[hit.at] : null;
+    return holder && holder.kind === "submenu" ? (holder.items ??= []) : null;
+  };
+  ops.forEach((raw: unknown, n: number) => {
+    const where = `ops[${n}]`;
+    if (!isObject(raw)) { issues.push(`${where}: not an object`); return; }
+    if (raw.op === "hide") {
+      const hit = typeof raw.id === "string" ? find(items, raw.id) : null;
+      if (!hit) { issues.push(`${where}: no entry ${String(raw.id)} to hide`); return; }
+      hit.list.splice(hit.at, 1);
+    } else if (raw.op === "add") {
+      const parsed = readItems([raw.item], where, issues);
+      const list = target(raw.parent);
+      if (!parsed.length) return;
+      if (!list) { issues.push(`${where}: no submenu ${String(raw.parent)}`); return; }
+      if (find(items, parsed[0].id)) { issues.push(`${where}: entry ${parsed[0].id} already exists`); return; }
+      const before = typeof raw.before === "string" ? list.findIndex(i => i.id === raw.before) : -1;
+      if (before >= 0) list.splice(before, 0, parsed[0]); else list.push(parsed[0]);
+    } else if (raw.op === "move") {
+      const hit = typeof raw.id === "string" ? find(items, raw.id) : null;
+      const list = target(raw.parent);
+      if (!hit || !list) { issues.push(`${where}: nothing to move (${String(raw.id)} → ${String(raw.parent ?? "top")})`); return; }
+      const [moved] = hit.list.splice(hit.at, 1);
+      const before = typeof raw.before === "string" ? list.findIndex(i => i.id === raw.before) : -1;
+      if (before >= 0) list.splice(before, 0, moved); else list.push(moved);
+    } else issues.push(`${where}: unknown operation ${String(raw.op)}`);
+  });
+  return { items, issues };
+}
+
+/** What this client can do now; an entry that needs a thing the client lacks stays in the menu with a reason. */
+export interface MenuContext {
+  camera: boolean;
+  /** Whether the transport can take a file (clientBlobUpload). */
+  upload: boolean;
+}
+export type ItemState = { state: "ok" } | { state: "hidden" } | { state: "unavailable"; reason: unknown };
+
+export function itemState(item: MenuItem, ctx: MenuContext): ItemState {
+  if (item.when === "camera" && !ctx.camera) return { state: "hidden" };
+  if (item.kind === "unavailable") return { state: "unavailable", reason: item.reason ?? "cm_reason_unknown_action" };
+  if ((item.kind === "attach" || item.kind === "camera") && !ctx.upload) return { state: "unavailable", reason: "cm_reason_upload" };
+  return { state: "ok" };
+}
+
+/** The request fields a set of on-flags adds to one message. Only the flags that differ from the preset are sent. */
+export interface MenuFlags { web_search: boolean; thinking: boolean; memory: boolean; knowledge: boolean }
+export const THINKING_EFFORT = "high";
+
+/** The reference the kernel resolves to the uploaded file (see ChatEngine::set_attachment_resolver). */
+export function attachmentRef(hash: string, name: string): string { return `blob:${hash}/${name}`; }
+/** The name to show for a stored attachment: a blob reference carries it after the slash, a path ends with it. */
+export function attachmentName(ref: string): string {
+  const slash = ref.startsWith("blob:") ? ref.indexOf("/") : ref.lastIndexOf("/");
+  const tail = slash >= 0 ? ref.slice(slash + 1) : ref;
+  return tail || ref;
+}

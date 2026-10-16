@@ -520,6 +520,10 @@ Result<std::unique_ptr<Runtime>> Runtime::open(const RuntimeOptions& opts) {
     task.set_result(std::move(result));
     return {};
   });
+  rt->chat().set_attachment_resolver([runtime = rt.get()](const std::string& hash) -> std::optional<std::filesystem::path> {
+    if (!runtime->blobs().has(hash)) return std::nullopt;
+    return runtime->blobs().local_path(hash);
+  });
   rt->chat().set_knowledge_context_builder([runtime = rt.get()](const context::ContextRequest& request) -> Result<Json> {
     auto pack = runtime->knowledge().pack();
     if (!pack) return pack.error();

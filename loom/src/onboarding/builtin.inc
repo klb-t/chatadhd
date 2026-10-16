@@ -828,7 +828,7 @@ R"loom_onboard({
                 "composer_placeholder": "Message",
                 "send": "Send",
                 "stop": "Stop",
-                "attach": "Add a file",
+                "attach": "Add to the message",
                 "mic_start": "Dictate",
                 "mic_stop": "Stop dictation",
                 "mic_failed": "Dictation failed: {{reason}}",
@@ -953,7 +953,46 @@ R"loom_onboard({
                 "scene_hint_screen": "Drag: turn · wheel or pinch: distance · click: select · F: focus on the selected",
                 "scene_hint_gaze": "You face: {{sector}}",
                 "scene_hint_conflicts": "Conflicting bindings: {{count}}",
-                "scene_hint_unsupported": "Unsupported bindings: {{count}}"
+                "scene_hint_unsupported": "Unsupported bindings: {{count}}",
+                "cm_title": "Add to the message",
+                "cm_close": "Close menu",
+                "cm_back": "Back",
+                "cm_attach_file": "Attach a file",
+                "cm_attach_photo": "Photo or camera",
+                "cm_model": "Choose model",
+                "cm_model_current": "Now: {{model}}",
+                "cm_model_default": "default model",
+                "cm_tools": "Tools",
+                "cm_web_search": "Web search",
+                "cm_agent": "Agent mode",
+                "cm_thinking": "Deep thinking",
+                "cm_image": "Generate an image",
+                "cm_music": "Generate music",
+                "cm_context": "Project and context",
+                "cm_memory": "Memory",
+                "cm_knowledge": "Knowledge",
+                "cm_perspective": "Graph perspective",
+                "cm_import": "Import conversations",
+                "cm_on": "on",
+                "cm_off": "off",
+                "cm_unavailable": "unavailable",
+                "cm_reason_agent": "There is no per-message switch yet: the agent is on, and what it may do on its own is set in Settings.",
+                "cm_reason_image": "No image provider is connected, so there is nothing that could draw it.",
+                "cm_reason_music": "No music provider is connected, so there is nothing that could compose it.",
+                "cm_reason_upload": "This connection cannot hand files to the app.",
+                "cm_reason_unknown_action": "This entry has no action in this version.",
+                "cm_issue": "The composer menu overlay has a problem: {{issue}}",
+                "cm_models_empty": "The list of models is empty. Set the provider key in Settings.",
+                "att_remove": "Remove {{name}}",
+                "att_list": "Attachments",
+                "att_uploading": "Adding {{name}}…",
+                "att_failed": "Could not add {{name}}: {{reason}}",
+                "att_image": "Image preview: {{name}}",
+                "tool_chip_web": "Web search on",
+                "tool_chip_thinking": "Deep thinking on",
+                "tool_chip_memory_off": "Memory off",
+                "tool_chip_knowledge": "Knowledge on",
+                "tool_chip_remove": "Turn off: {{name}}"
               },
               "pl": {
                 "menu_open": "Menu",
@@ -985,7 +1024,7 @@ R"loom_onboard({
                 "composer_placeholder": "Napisz wiadomość",
                 "send": "Wyślij",
                 "stop": "Zatrzymaj",
-                "attach": "Dodaj plik",
+                "attach": "Dodaj do wiadomości",
                 "mic_start": "Dyktuj",
                 "mic_stop": "Zakończ dyktowanie",
                 "mic_failed": "Dyktowanie nie powiodło się: {{reason}}",
@@ -1005,7 +1044,8 @@ R"loom_onboard({
                 "prev_version": "Poprzednia wersja",
                 "next_version": "Następna wersja",
                 "thinking": "Myślenie",
-                "thinking_for": "Myślenie przez {{seconds}} s",
+)loom_onboard",
+R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
                 "show": "Pokaż {{what}}",
                 "hide": "Ukryj {{what}}",
                 "show_thinking": "Pokaż myślenie",
@@ -1039,8 +1079,7 @@ R"loom_onboard({
                 "view_engine_budget": "Budżet węzłów (puste = preset, 0 = brak)",
                 "view_engine_show": "Pokaż widok",
                 "view_engine_empty": "Nie zdefiniowano deklaracji widoków.",
-)loom_onboard",
-R"loom_onboard(                "view_engine_need_focus": "Wybierz deklarację i węzeł fokusu.",
+                "view_engine_need_focus": "Wybierz deklarację i węzeł fokusu.",
                 "view_engine_counts": "Elementów: {{elements}}, krawędzi: {{edges}}",
                 "view_engine_unplaced": "Elementów bez pozycji w tym układzie: {{count}}",
                 "view_engine_encodings": "Kodowania",
@@ -1111,9 +1150,158 @@ R"loom_onboard(                "view_engine_need_focus": "Wybierz deklarację i 
                 "scene_hint_screen": "Przeciągnij: obrót · kółko lub szczypanie: odległość · klik: zaznacz · F: fokus na zaznaczonym",
                 "scene_hint_gaze": "Patrzysz na: {{sector}}",
                 "scene_hint_conflicts": "Konflikty przypisań: {{count}}",
-                "scene_hint_unsupported": "Nieobsługiwane przypisania: {{count}}"
+                "scene_hint_unsupported": "Nieobsługiwane przypisania: {{count}}",
+                "cm_title": "Dodaj do wiadomości",
+                "cm_close": "Zamknij menu",
+                "cm_back": "Wstecz",
+                "cm_attach_file": "Załącz plik",
+                "cm_attach_photo": "Zdjęcie lub aparat",
+                "cm_model": "Wybierz model",
+                "cm_model_current": "Teraz: {{model}}",
+                "cm_model_default": "model domyślny",
+                "cm_tools": "Narzędzia",
+                "cm_web_search": "Wyszukiwanie w sieci",
+                "cm_agent": "Tryb agenta",
+                "cm_thinking": "Głębokie myślenie",
+                "cm_image": "Generuj obraz",
+                "cm_music": "Generuj muzykę",
+                "cm_context": "Projekt i kontekst",
+                "cm_memory": "Pamięć",
+                "cm_knowledge": "Wiedza",
+                "cm_perspective": "Perspektywa grafu",
+                "cm_import": "Importuj rozmowy",
+                "cm_on": "włączone",
+                "cm_off": "wyłączone",
+                "cm_unavailable": "niedostępne",
+                "cm_reason_agent": "Nie ma jeszcze przełącznika dla pojedynczej wiadomości: agent jest włączony, a to, co może robić sam, ustawiasz w Ustawieniach.",
+                "cm_reason_image": "Nie podłączono żadnego dostawcy obrazów, więc nic by go nie narysowało.",
+                "cm_reason_music": "Nie podłączono żadnego dostawcy muzyki, więc nic by jej nie skomponowało.",
+                "cm_reason_upload": "To połączenie nie potrafi przekazać plików do aplikacji.",
+                "cm_reason_unknown_action": "Ta pozycja nie ma w tej wersji żadnej czynności.",
+                "cm_issue": "Nakładka menu dodawania ma problem: {{issue}}",
+                "cm_models_empty": "Lista modeli jest pusta. Wpisz klucz dostawcy w Ustawieniach.",
+                "att_remove": "Usuń {{name}}",
+                "att_list": "Załączniki",
+                "att_uploading": "Dodaję {{name}}…",
+                "att_failed": "Nie udało się dodać {{name}}: {{reason}}",
+                "att_image": "Podgląd obrazu: {{name}}",
+                "tool_chip_web": "Wyszukiwanie w sieci włączone",
+                "tool_chip_thinking": "Głębokie myślenie włączone",
+                "tool_chip_memory_off": "Pamięć wyłączona",
+                "tool_chip_knowledge": "Wiedza włączona",
+                "tool_chip_remove": "Wyłącz: {{name}}"
               }
             }
+          }
+        },
+        {
+          "id": "chat.composer_menu/v1",
+          "key": "chat.composer_menu",
+          "area": "chat/composer",
+          "revision": 1,
+          "label": "Entries of the + menu next to the message field (attach, model, tools, context, import)",
+          "value": {
+            "schema": "loom.composer_menu/1",
+            "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo; when: camera), model (list of models), submenu (items), toggle (flag: web_search | thinking | memory | knowledge, valid for the next message), panel (opens a panel: import | graph | settings), unavailable (visible, with reason; panel optionally points where it is set).",
+            "items": [
+              {
+                "id": "attach_file",
+                "label": "cm_attach_file",
+                "kind": "attach"
+              },
+              {
+                "id": "attach_photo",
+                "label": "cm_attach_photo",
+                "kind": "camera",
+                "when": "camera"
+              },
+              {
+                "id": "model",
+                "label": "cm_model",
+                "kind": "model"
+              },
+              {
+                "id": "tools",
+                "label": "cm_tools",
+                "kind": "submenu",
+                "items": [
+                  {
+                    "id": "web_search",
+                    "label": "cm_web_search",
+                    "kind": "toggle",
+                    "flag": "web_search"
+                  },
+                  {
+                    "id": "agent",
+                    "label": "cm_agent",
+                    "kind": "unavailable",
+                    "reason": "cm_reason_agent",
+                    "panel": "settings"
+                  },
+                  {
+                    "id": "thinking",
+                    "label": "cm_thinking",
+                    "kind": "toggle",
+                    "flag": "thinking"
+                  },
+                  {
+                    "id": "image",
+                    "label": "cm_image",
+                    "kind": "unavailable",
+                    "reason": "cm_reason_image"
+                  },
+                  {
+                    "id": "music",
+                    "label": "cm_music",
+                    "kind": "unavailable",
+                    "reason": "cm_reason_music"
+                  }
+                ]
+              },
+              {
+                "id": "context",
+                "label": "cm_context",
+                "kind": "submenu",
+                "items": [
+                  {
+                    "id": "memory",
+                    "label": "cm_memory",
+                    "kind": "toggle",
+                    "flag": "memory"
+                  },
+                  {
+                    "id": "knowledge",
+                    "label": "cm_knowledge",
+                    "kind": "toggle",
+                    "flag": "knowledge"
+                  },
+                  {
+                    "id": "perspective",
+                    "label": "cm_perspective",
+                    "kind": "panel",
+                    "panel": "graph"
+                  }
+                ]
+              },
+              {
+                "id": "import",
+                "label": "cm_import",
+                "kind": "panel",
+                "panel": "import"
+              }
+            ]
+          }
+        },
+        {
+          "id": "chat.composer_menu_ops/v1",
+          "key": "chat.composer_menu_ops",
+          "area": "chat/composer",
+          "revision": 1,
+          "label": "Your own changes to the + menu: hide, add, reorder",
+          "value": {
+            "schema": "loom.composer_menu_ops/1",
+            "note": "Your changes to the + menu, applied in order to the entries: {op: hide, id} | {op: add, item, parent?, before?} | {op: move, id, before?|parent?} . Empty = the menu as shipped.",
+            "ops": []
           }
         }
       ]
@@ -1993,7 +2181,8 @@ R"loom_onboard(                "view_engine_need_focus": "Wybierz deklarację i 
             "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
           },
           "pl": {
-            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+)loom_onboard",
+R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
             "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
           }
         }
@@ -2141,8 +2330,7 @@ R"loom_onboard(                "view_engine_need_focus": "Wybierz deklarację i 
             "status_undone": "Wycofane",
             "written": "Zapisane w Twojej własnej nakładce ({{overlay}}) jako „{{id}}”",
             "written_entry": "Zapisany wpis",
-)loom_onboard",
-R"loom_onboard(            "undo": "Wycofaj",
+            "undo": "Wycofaj",
             "undone": "Wycofane: usunięte z Twojej własnej nakładki",
             "undo_failed": "Nie udało się wycofać ({{reason}}).",
             "status_cancelled": "Anulowane",
@@ -2456,7 +2644,7 @@ R"loom_onboard(            "undo": "Wycofaj",
             "composer_placeholder": "Message",
             "send": "Send",
             "stop": "Stop",
-            "attach": "Add a file",
+            "attach": "Add to the message",
             "mic_start": "Dictate",
             "mic_stop": "Stop dictation",
             "mic_failed": "Dictation failed: {{reason}}",
@@ -2581,7 +2769,46 @@ R"loom_onboard(            "undo": "Wycofaj",
             "scene_hint_screen": "Drag: turn · wheel or pinch: distance · click: select · F: focus on the selected",
             "scene_hint_gaze": "You face: {{sector}}",
             "scene_hint_conflicts": "Conflicting bindings: {{count}}",
-            "scene_hint_unsupported": "Unsupported bindings: {{count}}"
+            "scene_hint_unsupported": "Unsupported bindings: {{count}}",
+            "cm_title": "Add to the message",
+            "cm_close": "Close menu",
+            "cm_back": "Back",
+            "cm_attach_file": "Attach a file",
+            "cm_attach_photo": "Photo or camera",
+            "cm_model": "Choose model",
+            "cm_model_current": "Now: {{model}}",
+            "cm_model_default": "default model",
+            "cm_tools": "Tools",
+            "cm_web_search": "Web search",
+            "cm_agent": "Agent mode",
+            "cm_thinking": "Deep thinking",
+            "cm_image": "Generate an image",
+            "cm_music": "Generate music",
+            "cm_context": "Project and context",
+            "cm_memory": "Memory",
+            "cm_knowledge": "Knowledge",
+            "cm_perspective": "Graph perspective",
+            "cm_import": "Import conversations",
+            "cm_on": "on",
+            "cm_off": "off",
+            "cm_unavailable": "unavailable",
+            "cm_reason_agent": "There is no per-message switch yet: the agent is on, and what it may do on its own is set in Settings.",
+            "cm_reason_image": "No image provider is connected, so there is nothing that could draw it.",
+            "cm_reason_music": "No music provider is connected, so there is nothing that could compose it.",
+            "cm_reason_upload": "This connection cannot hand files to the app.",
+            "cm_reason_unknown_action": "This entry has no action in this version.",
+            "cm_issue": "The composer menu overlay has a problem: {{issue}}",
+            "cm_models_empty": "The list of models is empty. Set the provider key in Settings.",
+            "att_remove": "Remove {{name}}",
+            "att_list": "Attachments",
+            "att_uploading": "Adding {{name}}…",
+            "att_failed": "Could not add {{name}}: {{reason}}",
+            "att_image": "Image preview: {{name}}",
+            "tool_chip_web": "Web search on",
+            "tool_chip_thinking": "Deep thinking on",
+            "tool_chip_memory_off": "Memory off",
+            "tool_chip_knowledge": "Knowledge on",
+            "tool_chip_remove": "Turn off: {{name}}"
           },
           "pl": {
             "menu_open": "Menu",
@@ -2613,7 +2840,7 @@ R"loom_onboard(            "undo": "Wycofaj",
             "composer_placeholder": "Napisz wiadomość",
             "send": "Wyślij",
             "stop": "Zatrzymaj",
-            "attach": "Dodaj plik",
+            "attach": "Dodaj do wiadomości",
             "mic_start": "Dyktuj",
             "mic_stop": "Zakończ dyktowanie",
             "mic_failed": "Dyktowanie nie powiodło się: {{reason}}",
@@ -2738,9 +2965,158 @@ R"loom_onboard(            "undo": "Wycofaj",
             "scene_hint_screen": "Przeciągnij: obrót · kółko lub szczypanie: odległość · klik: zaznacz · F: fokus na zaznaczonym",
             "scene_hint_gaze": "Patrzysz na: {{sector}}",
             "scene_hint_conflicts": "Konflikty przypisań: {{count}}",
-            "scene_hint_unsupported": "Nieobsługiwane przypisania: {{count}}"
+            "scene_hint_unsupported": "Nieobsługiwane przypisania: {{count}}",
+            "cm_title": "Dodaj do wiadomości",
+            "cm_close": "Zamknij menu",
+            "cm_back": "Wstecz",
+            "cm_attach_file": "Załącz plik",
+            "cm_attach_photo": "Zdjęcie lub aparat",
+            "cm_model": "Wybierz model",
+            "cm_model_current": "Teraz: {{model}}",
+            "cm_model_default": "model domyślny",
+            "cm_tools": "Narzędzia",
+            "cm_web_search": "Wyszukiwanie w sieci",
+            "cm_agent": "Tryb agenta",
+            "cm_thinking": "Głębokie myślenie",
+            "cm_image": "Generuj obraz",
+            "cm_music": "Generuj muzykę",
+            "cm_context": "Projekt i kontekst",
+            "cm_memory": "Pamięć",
+            "cm_knowledge": "Wiedza",
+            "cm_perspective": "Perspektywa grafu",
+            "cm_import": "Importuj rozmowy",
+            "cm_on": "włączone",
+            "cm_off": "wyłączone",
+            "cm_unavailable": "niedostępne",
+            "cm_reason_agent": "Nie ma jeszcze przełącznika dla pojedynczej wiadomości: agent jest włączony, a to, co może robić sam, ustawiasz w Ustawieniach.",
+            "cm_reason_image": "Nie podłączono żadnego dostawcy obrazów, więc nic by go nie narysowało.",
+            "cm_reason_music": "Nie podłączono żadnego dostawcy muzyki, więc nic by jej nie skomponowało.",
+            "cm_reason_upload": "To połączenie nie potrafi przekazać plików do aplikacji.",
+            "cm_reason_unknown_action": "Ta pozycja nie ma w tej wersji żadnej czynności.",
+            "cm_issue": "Nakładka menu dodawania ma problem: {{issue}}",
+            "cm_models_empty": "Lista modeli jest pusta. Wpisz klucz dostawcy w Ustawieniach.",
+            "att_remove": "Usuń {{name}}",
+            "att_list": "Załączniki",
+            "att_uploading": "Dodaję {{name}}…",
+            "att_failed": "Nie udało się dodać {{name}}: {{reason}}",
+            "att_image": "Podgląd obrazu: {{name}}",
+            "tool_chip_web": "Wyszukiwanie w sieci włączone",
+            "tool_chip_thinking": "Głębokie myślenie włączone",
+            "tool_chip_memory_off": "Pamięć wyłączona",
+            "tool_chip_knowledge": "Wiedza włączona",
+            "tool_chip_remove": "Wyłącz: {{name}}"
           }
         }
+      }
+    },
+    {
+      "id": "chat.composer_menu/v1",
+      "key": "chat.composer_menu",
+      "area": "chat/composer",
+      "revision": 1,
+      "label": "Entries of the + menu next to the message field (attach, model, tools, context, import)",
+      "value": {
+        "schema": "loom.composer_menu/1",
+        "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo; when: camera), model (list of models), submenu (items), toggle (flag: web_search | thinking | memory | knowledge, valid for the next message), panel (opens a panel: import | graph | settings), unavailable (visible, with reason; panel optionally points where it is set).",
+        "items": [
+          {
+            "id": "attach_file",
+            "label": "cm_attach_file",
+            "kind": "attach"
+          },
+          {
+            "id": "attach_photo",
+            "label": "cm_attach_photo",
+            "kind": "camera",
+            "when": "camera"
+          },
+          {
+            "id": "model",
+            "label": "cm_model",
+            "kind": "model"
+          },
+          {
+            "id": "tools",
+            "label": "cm_tools",
+            "kind": "submenu",
+            "items": [
+              {
+                "id": "web_search",
+                "label": "cm_web_search",
+                "kind": "toggle",
+                "flag": "web_search"
+              },
+              {
+                "id": "agent",
+                "label": "cm_agent",
+                "kind": "unavailable",
+                "reason": "cm_reason_agent",
+                "panel": "settings"
+              },
+              {
+                "id": "thinking",
+                "label": "cm_thinking",
+                "kind": "toggle",
+                "flag": "thinking"
+              },
+              {
+                "id": "image",
+                "label": "cm_image",
+                "kind": "unavailable",
+                "reason": "cm_reason_image"
+              },
+              {
+                "id": "music",
+                "label": "cm_music",
+                "kind": "unavailable",
+                "reason": "cm_reason_music"
+              }
+            ]
+          },
+          {
+            "id": "context",
+            "label": "cm_context",
+            "kind": "submenu",
+            "items": [
+              {
+                "id": "memory",
+                "label": "cm_memory",
+                "kind": "toggle",
+                "flag": "memory"
+              },
+              {
+                "id": "knowledge",
+                "label": "cm_knowledge",
+                "kind": "toggle",
+                "flag": "knowledge"
+              },
+              {
+                "id": "perspective",
+                "label": "cm_perspective",
+                "kind": "panel",
+                "panel": "graph"
+              }
+            ]
+          },
+          {
+            "id": "import",
+            "label": "cm_import",
+            "kind": "panel",
+            "panel": "import"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chat.composer_menu_ops/v1",
+      "key": "chat.composer_menu_ops",
+      "area": "chat/composer",
+      "revision": 1,
+      "label": "Your own changes to the + menu: hide, add, reorder",
+      "value": {
+        "schema": "loom.composer_menu_ops/1",
+        "note": "Your changes to the + menu, applied in order to the entries: {op: hide, id} | {op: add, item, parent?, before?} | {op: move, id, before?|parent?} . Empty = the menu as shipped.",
+        "ops": []
       }
     }
   ],

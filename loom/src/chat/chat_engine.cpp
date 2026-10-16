@@ -813,6 +813,8 @@ void ChatEngine::set_knowledge_context_builder(KnowledgeContextBuilder builder) 
   knowledge_context_builder_ = std::move(builder);
 }
 
+void ChatEngine::set_attachment_resolver(AttachmentResolver resolver) { attachment_resolver_ = std::move(resolver); }
+
 Status ChatEngine::resume_last() {
   auto r = db_.list_convs(1);
   if (!r) return r.error();
@@ -851,11 +853,24 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
   for (const auto& path_str : attachments) {
     std::filesystem::path p(path_str);
     std::error_code ec;
+    std::filesystem::path shown = p;  // the name that decides the kind of file and is shown to the model
+    if (path_str.rfind("blob:", 0) == 0) {
+      const auto slash = path_str.find('/');
+      const std::string hash = path_str.substr(5, slash == std::string::npos ? std::string::npos : slash - 5);
+      std::optional<std::filesystem::path> stored;
+      if (attachment_resolver_) stored = attachment_resolver_(hash);
+      if (!stored) {
+        log::warn("loom.chat_engine", "Attachment blob not found: {}", hash);
+        continue;
+      }
+      shown = std::filesystem::path(slash == std::string::npos ? std::string() : path_str.substr(slash + 1)).filename();
+      p = *stored;
+    }
     if (!std::filesystem::exists(p, ec)) {
       log::warn("loom.chat_engine", "Attachment not found: {}", path_str);
       continue;
     }
-    std::string ext = lower_ext(p);
+    std::string ext = lower_ext(shown);
     if (contains(image_exts(), ext)) {
       auto data = fsutil::read_file(p);
       if (!data) {
@@ -874,7 +889,7 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
       }
       std::string repaired = utf8::repair(*data);
       std::string file_text(utf8::prefix(repaired, kMaxFileChars));
-      std::string name = p.filename().string();
+      std::string name = shown.filename().string();
       parts.push_back(
           Json{{"type", "text"}, {"text", "\n--- FILE: " + name + " ---\n" + file_text + "\n--- END FILE ---"}});
     }
