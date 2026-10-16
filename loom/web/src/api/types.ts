@@ -59,6 +59,8 @@ export interface ChatRequest {
   route_usage_confirmation?: { approved: boolean; receipt_id: string; operation_id: string; ref: string };
   request_id?: string;
   conv_id?: string;
+  /** Start a new conversation instead of continuing the one the server remembers (New chat). */
+  new_conversation?: boolean;
   model?: string;
   attachments?: string[];
   web_search?: boolean;

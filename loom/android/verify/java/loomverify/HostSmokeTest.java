@@ -245,6 +245,57 @@ public final class HostSmokeTest {
                 require(bytes.contains("\"error\""), "a run that does not exist answers with an error, never with bytes taken: " + bytes);
             });
 
+            failures += check("import of a Claude.ai ZIP and a ChatGPT JSON as the picker stages them (progress, then one done chunk)", () -> {
+                // what ImportFlow hands the kernel: a private copy named after the display name (spaces, no extension, "(1)")
+                Path zip = dataDir.resolve("Pobrane eksport claude (1).zip");
+                try (java.util.zip.ZipOutputStream out = new java.util.zip.ZipOutputStream(Files.newOutputStream(zip))) {
+                    out.putNextEntry(new java.util.zip.ZipEntry("conversations.json"));
+                    out.write(("[{\"uuid\":\"22222222-2222-2222-2222-222222222222\",\"name\":\"Rozmowa z Claude\",\"created_at\":\"2025-01-02T10:00:00Z\","
+                        + "\"chat_messages\":[{\"uuid\":\"m1\",\"sender\":\"human\",\"text\":\"Cze\\u015b\\u0107, jak dzia\\u0142a graf?\",\"created_at\":\"2025-01-02T10:00:01Z\"},"
+                        + "{\"uuid\":\"m2\",\"sender\":\"assistant\",\"text\":\"Graf \\ud83d\\ude00 \\u0142\\u0105czy w\\u0119z\\u0142y.\",\"created_at\":\"2025-01-02T10:00:02Z\"}]}]")
+                        .getBytes(StandardCharsets.UTF_8));
+                    out.closeEntry();
+                    out.putNextEntry(new java.util.zip.ZipEntry("users.json"));
+                    out.write("[]".getBytes(StandardCharsets.UTF_8));
+                    out.closeEntry();
+                }
+                BlockingQueue<LoomCallbacks.Chunk> chunks = LoomCallbacks.register("import-zip");
+                String returned = LoomNative.nativeImportFile(zip.toString(), null, "import-zip");
+                LoomCallbacks.Chunk last = null;
+                int terminal = 0;
+                for (LoomCallbacks.Chunk c; (c = chunks.poll(500, TimeUnit.MILLISECONDS)) != null; ) {
+                    if (c.done) { terminal++; last = c; }
+                    else require(c.json.contains("\"type\":\"progress\""), "a non-final chunk is progress: " + c.json);
+                }
+                require(terminal == 1 && last != null, "exactly one terminal chunk, got " + terminal);
+                require(last.json.contains("\"type\":\"done\""), "the final chunk carries type done like /api/import: " + last.json);
+                require(last.json.contains("\"messages\":2"), "two messages imported: " + last.json);
+                require(returned.contains("\"type\":\"done\""), "the return value is the same result: " + returned);
+
+                Path gpt = dataDir.resolve("conversations");   // no extension at all
+                Files.write(gpt, ("[{\"title\":\"Rozmowa ChatGPT\",\"mapping\":{\"root\":{\"id\":\"root\",\"parent\":null,\"children\":[\"a\"],\"message\":null},"
+                    + "\"a\":{\"id\":\"a\",\"parent\":\"root\",\"children\":[\"b\"],\"message\":{\"author\":{\"role\":\"user\"},\"content\":{\"content_type\":\"text\",\"parts\":[\"Pierwsze pytanie\"]}}},"
+                    + "\"b\":{\"id\":\"b\",\"parent\":\"a\",\"children\":[],\"message\":{\"author\":{\"role\":\"assistant\"},\"content\":{\"content_type\":\"text\",\"parts\":[\"Pierwsza odpowied\\u017a\"]}}}}}]")
+                    .getBytes(StandardCharsets.UTF_8));
+                BlockingQueue<LoomCallbacks.Chunk> chunks2 = LoomCallbacks.register("import-gpt");
+                LoomNative.nativeImportFile(gpt.toString(), "Z tytu\u0142em", "import-gpt");
+                LoomCallbacks.Chunk end = null;
+                for (LoomCallbacks.Chunk c; (c = chunks2.poll(500, TimeUnit.MILLISECONDS)) != null; ) if (c.done) end = c;
+                require(end != null && end.json.contains("\"type\":\"done\"") && end.json.contains("\"messages\":2"), "ChatGPT mapping: " + (end == null ? null : end.json));
+                require(end.json.contains("Z tytu\u0142em"), "the title override is used: " + end.json);
+
+                String list = LoomNative.nativeInvoke("list_conversations", "[100]");
+                require(list.contains("Rozmowa z Claude") && list.contains("Z tytu\u0142em"), "both conversations are listed: " + list);
+
+                Path junk = dataDir.resolve("movie.mp4");
+                Files.write(junk, new byte[] {0, 1, 2, 3, 4, 5});
+                BlockingQueue<LoomCallbacks.Chunk> chunks3 = LoomCallbacks.register("import-junk");
+                LoomNative.nativeImportFile(junk.toString(), null, "import-junk");
+                LoomCallbacks.Chunk bad = chunks3.poll(2, TimeUnit.SECONDS);
+                require(bad != null && bad.done && bad.json.contains("\"error\"") && !bad.json.contains("\"type\":\"done\""),
+                    "an unsupported file ends with an error object, not with done: " + (bad == null ? null : bad.json));
+            });
+
             failures += check("nativeShutdown", () -> LoomNative.nativeShutdown());
             failures += check("stream errors settle after shutdown too", () -> {
                 terminalError("chat-after-shutdown", () -> LoomNative.nativeChat("{}", "chat-after-shutdown"), "invalid_argument");

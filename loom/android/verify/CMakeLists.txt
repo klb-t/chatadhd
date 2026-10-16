@@ -73,7 +73,7 @@ file(GLOB_RECURSE LOOM_VERIFY_JAVA_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SO
 # The pure-Java rules are security-relevant: compile the app's OWN files, never copies.
 # (No android.* imports in these; that is what makes them testable here.)
 set(LOOM_APP_JAVA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../app/src/main/java/com/chatadhd/android")
-foreach(_app_java ConnectionPolicy DataLocationPolicy DataMigration DevicePermissionPolicy SecretsEnvelope SecretsVaultCore)
+foreach(_app_java ConnectionPolicy DataLocationPolicy DataMigration DevicePermissionPolicy ImportStaging SecretsEnvelope SecretsVaultCore)
   list(APPEND LOOM_VERIFY_JAVA_SOURCES "${LOOM_APP_JAVA_DIR}/${_app_java}.java")
 endforeach()
 set(LOOM_VERIFY_CLASSES_DIR "${CMAKE_CURRENT_BINARY_DIR}/classes")
@@ -105,6 +105,11 @@ add_test(NAME connection_policy_test
 # P13: which device requests of the WebView (microphone, camera) are handed to the page.
 add_test(NAME android_DevicePermissionTest
   COMMAND ${LOOM_JAVA_EXE} -cp "${LOOM_VERIFY_CLASSES_DIR}" loomverify.DevicePermissionTest)
+
+# R35: the pure rules of the import through the system picker (safe names, streaming staged copy, cancel, clean-up).
+add_test(NAME android_ImportStagingTest
+  COMMAND ${LOOM_JAVA_EXE} -Dfile.encoding=UTF-8 -cp "${LOOM_VERIFY_CLASSES_DIR}" loomverify.ImportStagingTest)
+set_tests_properties(android_ImportStagingTest PROPERTIES TIMEOUT 120)
 
 # F2: data location (private by default, warning for shared), migration with sha256
 # verification, Keystore-sealed secrets (software key stands in for the Keystore here).

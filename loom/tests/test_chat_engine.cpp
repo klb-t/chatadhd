@@ -78,6 +78,29 @@ TEST_SUITE("chat_engine") {
     CHECK(unwrap(env.db->get_msgs(now->id)).front().text == "second");
   }
 
+  TEST_CASE("R35: new_conversation starts a new conversation instead of continuing the remembered one (New chat)") {
+    Env env;
+    for (int i = 0; i < 3; ++i)
+      env.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    auto engine = env.engine();
+    ChatOptions opts;
+    opts.stream = false;
+    REQUIRE(engine.send("first", opts));
+    const auto first = engine.current_conv();
+    REQUIRE(first);
+    REQUIRE(engine.send("same", opts));  // no conv_id: the remembered conversation goes on
+    CHECK(engine.current_conv()->id == first->id);
+    auto fresh = unwrap(ChatOptions::from_json(Json{{"new_conversation", true}, {"stream", false}}));
+    CHECK(fresh.new_conversation);
+    REQUIRE(engine.send("new chat", fresh));
+    const auto now = engine.current_conv();
+    REQUIRE(now);
+    CHECK(now->id != first->id);
+    CHECK(unwrap(env.db->get_msgs(first->id)).size() == 4);
+    CHECK(unwrap(env.db->get_msgs(now->id)).front().text == "new chat");
+    CHECK_FALSE(ChatOptions::from_json(Json{{"new_conversation", "yes"}}));
+  }
+
   TEST_CASE("golden: non-streaming chat request bytes are pinned") {
     Env env;
     env.cfg.set("system_prompt", "Golden system prompt.");

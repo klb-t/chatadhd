@@ -54,6 +54,30 @@ for _ in $(seq 1 45); do
 done
 log "phone -> 10.0.2.2:$SMOKE_PORT tcp connect: $([ "$reach" = 0 ] && echo ok || echo FAILED)"
 
+# Synthetic exports (no real data): made on the host, pushed to the phone twice:
+#   * /sdcard/Download (+ /sdcard/Download/smoke-exports/ for the folder pick): what the system picker (SAF) shows;
+#   * the app's own cache dir via run-as (the debug APK is debuggable): paths the importer / the WebView can open directly.
+export SMOKE_EXPORTS_DIR="$OUT/exports"
+export SMOKE_DEVICE_DIR="/data/data/$PKG/cache/smoke"
+python3 "$HERE/make-exports.py" "$SMOKE_EXPORTS_DIR" >&2 || log "make-exports.py FAILED"
+adb shell rm -rf /sdcard/Download/smoke-exports /data/local/tmp/smoke 2>/dev/null || true
+adb shell mkdir -p /sdcard/Download/smoke-exports /data/local/tmp/smoke
+for f in saf-local.json saf-server.json ui-local.json; do adb push "$SMOKE_EXPORTS_DIR/$f" "/sdcard/Download/$f" >/dev/null 2>&1 || log "push $f failed"; done
+adb push "$SMOKE_EXPORTS_DIR/saf-folder/." /sdcard/Download/smoke-exports/ >/dev/null 2>&1 || log "push saf-folder failed"
+for f in "$SMOKE_EXPORTS_DIR"/*.json "$SMOKE_EXPORTS_DIR"/*.zip; do adb push "$f" "/data/local/tmp/smoke/$(basename "$f")" >/dev/null 2>&1 || log "push $f failed"; done
+# the media index must know the files, or the picker's Downloads view does not list them
+for f in /sdcard/Download/saf-local.json /sdcard/Download/saf-server.json /sdcard/Download/ui-local.json /sdcard/Download/smoke-exports/one.json \
+         /sdcard/Download/smoke-exports/two.json /sdcard/Download/smoke-exports/ignored.bin; do
+  adb shell "am broadcast -a android.intent.action.MEDIA_SCANNER_SCAN_FILE -d file://$f" >/dev/null 2>&1 || true
+done
+adb shell "run-as $PKG sh -c 'rm -rf cache/smoke; mkdir -p cache/smoke'" || log "run-as failed: the APK is not debuggable?"
+for f in "$SMOKE_EXPORTS_DIR"/*.json "$SMOKE_EXPORTS_DIR"/*.zip; do
+  b="$(basename "$f")"
+  adb shell "cat /data/local/tmp/smoke/$b | run-as $PKG sh -c 'cat > cache/smoke/$b'" || log "copy of $b into the app failed"
+done
+log "files in the app cache: $(adb shell "run-as $PKG ls cache/smoke" | tr -d '\r' | tr '\n' ' ')"
+log "files in Downloads: $(adb shell ls /sdcard/Download /sdcard/Download/smoke-exports | tr -d '\r' | tr '\n' ' ')"
+
 log "drive the app"
 node "$HERE/drive.mjs"
 rc=$?

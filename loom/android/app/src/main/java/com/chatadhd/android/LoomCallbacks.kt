@@ -6,6 +6,7 @@ import android.util.Log
 import android.webkit.WebView
 import org.json.JSONObject
 import java.lang.ref.WeakReference
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * The one native -> JS delivery path, called from loom_jni.cpp
@@ -40,9 +41,30 @@ object LoomCallbacks {
         webViewRef = null
     }
 
+    /**
+     * Callback ids Kotlin listens to itself instead of the page: a native call made by the shell (the staged import,
+     * ImportFlow) streams into [sink]; nothing reaches JS for these ids.
+     */
+    private val interceptors = ConcurrentHashMap<String, (String, Boolean) -> Unit>()
+
+    @JvmStatic
+    fun intercept(callbackId: String, sink: (String, Boolean) -> Unit) {
+        interceptors[callbackId] = sink
+    }
+
+    @JvmStatic
+    fun release(callbackId: String) {
+        interceptors.remove(callbackId)
+    }
+
     /** Called from native code (loom_jni.cpp: deliver_chunk). */
     @JvmStatic
     fun onChunk(callbackId: String, chunkJson: String, done: Boolean) {
+        val sink = interceptors[callbackId]
+        if (sink != null) {
+            sink(chunkJson, done)
+            return
+        }
         val js = buildString {
             append("(function(){var cb=window.__loomCallbacks&&window.__loomCallbacks[")
             append(JSONObject.quote(callbackId))
