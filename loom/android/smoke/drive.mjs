@@ -72,6 +72,16 @@ async function waitNode(what, pred, timeoutS = 30) {
   return until("native widget: " + what, () => find(dump(), pred), timeoutS, 500);
 }
 const tap = n => adb("shell", "input", "tap", String(n.cx), String(n.cy));
+// A slow emulator now and then shows "<app> isn't responding" (seen: Pixel Launcher with font_scale 1.3). The dialog
+// takes the screen and the WebView stops answering CDP; "Wait" lets the app (and the run) go on.
+function dismissSystemDialogs(nodes) {
+  try { nodes = nodes || dump(); } catch { return false; }
+  if (!nodes.some(n => /isn't responding|nie odpowiada/i.test(n.text || ""))) return false;
+  const wait = nodes.find(n => n.cx !== undefined && (n["resource-id"] === "android:id/aerr_wait" || /^(wait|czekaj)$/i.test(n.text || "")));
+  if (!wait) return false;
+  log("system: an app is not responding, tapping Wait"); tap(wait);
+  return true;
+}
 const textOf = n => `${n.text || ""} ${n["content-desc"] || ""}`;
 
 async function connectScreen() {
@@ -137,7 +147,9 @@ async function openPage(prefix = URL_, reattach = false) {
     const list = await (await fetch(`${base}/json`)).json();
     return list.find(t => t.type === "page" && t.url.startsWith(prefix) && t.webSocketDebuggerUrl);
   }, 60, 500);
-  return connect(target);
+  const p = await connect(target);
+  p.prefix = prefix;
+  return p;
 }
 async function attachSocket(timeoutS = 60) {
   const sock = await until("the WebView DevTools socket", () => {
@@ -258,6 +270,13 @@ async function check(name, fn) {
     if (e && e.skip) { results.push({ step: name, status: "skipped", why: e.message, s: 0 }); log("SKIP " + name + ": " + e.message); return; }
     results.push({ step: name, status: "doesnt", why: short(e), s: (Date.now() - t) / 1000 });
     log("FAIL " + name + ": " + e.message);
+    // a page that stopped answering (a system dialog over it, a stalled renderer) is re-attached once, so one stuck
+    // check does not turn every later check into a 120 s timeout
+    if (/gave no answer/.test(e.message || "") && page?.prefix) {
+      dismissSystemDialogs();
+      try { page.close(); } catch { /* closed */ }
+      try { page = await openPage(page.prefix, true); log("re-attached to the page after a CDP timeout"); } catch (r) { log("re-attach failed: " + short(r)); }
+    }
     await failureEvidence(name).catch(() => {});
     // the next check starts from a clean screen: a panel or a menu left open by the failure is closed
     await page?.ev(`(()=>{for(const t of ['close-panel']){const e=${q("close-panel")};if(e)e.click()} const k=document.querySelector('[data-testid="panel-knowledge-sheet"] .icon-btn');if(k)k.click()})()`).catch(() => {});
@@ -330,6 +349,7 @@ async function drivePicker(target, { folder = false } = {}) {
     let nodes;
     try { nodes = dump(); } catch (e) { continue; }
     const inPicker = nodes.some(n => /documentsui/i.test(n.package || ""));
+    if (dismissSystemDialogs(nodes)) continue;
     lastTexts = nodes.map(n => n.text || n["content-desc"]).filter(Boolean).slice(0, 40).join(" | ");
     if (!inPicker) { if (seen) return "picker closed"; continue; }
     if (!seen) { seen = true; log("picker: " + lastTexts); shot("picker-" + target.replace(/\W+/g, "-")); }
