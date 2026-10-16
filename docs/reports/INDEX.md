@@ -1147,3 +1147,9 @@ the earlier computation; never delete historical runs to downgrade.
 ### S2 / R37 — model lokalny (offline) (2026-10-16)
 
 - Wbudowany manifest dostawcy `local`: adapter `openai_chat`, bez klucza (`auth_scheme: none`), adres z ustawienia `local_model_base_url` (preset `http://127.0.0.1:8080/v1` — llama.cpp; Ollama `:11434/v1`). Wybór przez `llm_provider = local` (nowe pola w rejestrze ustawień: `llm_provider`, `local_model_base_url`). Gdy serwer nie odpowiada, czat zwraca zdanie, co zrobić (`chat_engine.cpp`, gałąź TransportError przy `metadata.local`). Instrukcja: `docs/LOCAL_MODEL.md`. Silnik nie jest wbudowany w APK (osobna decyzja). Cofnięcie: `llm_provider = openrouter`; usunąć manifest `local` z `providers.cpp`.
+
+### S2 / R39 — folder do pamięci z pełną treścią plików (2026-10-16)
+
+- `loom/memory_folder.h` / `src/memory/memory_folder.cpp`: folder i jego podfoldery → węzły `dir`, każdy plik → węzeł `file` pod swoim folderem; plik tekstowy (UTF-8, bez NUL) niesie całą treść, binarny jest na liście bez treści (`metadata.binary`); metadane: `source: folder`, `path` (względna), `size`, `sha256`, `truncated`. Linki symboliczne nie są śledzone (mogą wyjść poza folder albo zapętlić).
+- Presety (nie limity, 0 = bez cięcia): `memory_folder_file_chars` (0), `memory_folder_max_files` (0), `memory_folder_include_hidden` (false); żądanie może je nadpisać. Wejście: `loom_invoke("memory_folder", "attach_folder", {path, parent_id?, title?, ...})`.
+- Dla S1 (akcja czatu): `memory.attach_folder` jako op w `ops.cpp` — ścieżka z argumentu albo z `device.pick_folder` (ten sam `client_blobs::materialize_folder` co `archive.start`) → `memory_folder::attach(rt.memory(), path, memory_folder::options_from(rt.config(), args))`; wpis katalogu z przykładami PL/EN („dodaj ten folder do pamięci”). Cofnięcie: usunąć węzły (folder → usuń rekurencyjnie) albo ustawić presety.
