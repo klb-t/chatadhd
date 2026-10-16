@@ -3,6 +3,7 @@
 #include <doctest/doctest.h>
 
 #include "loom/chat_engine.h"
+#include "loom/chat_route.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/net/http.h"
@@ -81,17 +82,83 @@ TEST_SUITE("chat_composer") {
     CHECK(stored.at("attachments").dump().find("notatki.txt") != std::string::npos);
   }
 
-  TEST_CASE("a blob reference that names no stored blob, or no valid hash, is left out and the text still goes") {
+  TEST_CASE("a file that cannot go to the model is refused before anything is stored, and the refusal names it") {
     Fixture f;
+    const std::string conv = unwrap(f.rt->db().create_conv("Refused")).id;
+    const auto pdf = unwrap(f.rt->blobs().put("%PDF-1.7 raport", "application/pdf"));
+    struct Case { std::string ref; Errc code; };
+    for (const Case& c : {Case{"blob:" + std::string(64, 'a') + "/gone.txt", Errc::NotFound}, Case{"blob:../../config.json/x.txt", Errc::NotFound},
+                          Case{"blob:", Errc::NotFound}, Case{"blob:" + pdf.hash + "/raport.pdf", Errc::Unsupported},
+                          Case{(f.td.path() / "missing.txt").string(), Errc::NotFound}}) {
+      INFO(c.ref);
+      ChatOptions opts;
+      opts.conv_id = conv;
+      opts.stream = false;
+      opts.attachments = {c.ref};
+      const auto sent = f.rt->chat().send("Tekst z plikiem", opts);
+      REQUIRE_FALSE(sent);
+      CHECK(sent.error().code == c.code);
+      const std::string& said = sent.error().message;
+      CHECK(said.size() >= c.ref.size());
+      CHECK(said.compare(said.size() - c.ref.size(), c.ref.size(), c.ref) == 0);  // the client marks the chip it names
+      const auto preview = f.rt->chat().preview_usage("Tekst z plikiem", opts);
+      REQUIRE_FALSE(preview);
+      CHECK(preview.error().code == c.code);
+    }
+    CHECK(unwrap(f.rt->db().get_msgs(conv)).empty());  // nothing was stored
+    CHECK(f.transport->requests().empty());           // nothing was sent
+    CHECK(f.rt->chat().check_attachments({}));
+  }
+
+  TEST_CASE("a message of files alone goes without an empty text part") {
+    Fixture f;
+    const auto text_blob = unwrap(f.rt->blobs().put("Sekretne slowo: PAPUGA", "text/plain"));
     ChatOptions opts;
-    opts.conv_id = unwrap(f.rt->db().create_conv("Missing")).id;
-    opts.attachments = {"blob:" + std::string(64, 'a') + "/gone.txt", "blob:../../config.json/x.txt", "blob:"};
-    const Json body = f.send("Tekst bez plikow", opts);
+    opts.conv_id = unwrap(f.rt->db().create_conv("Files only")).id;
+    opts.attachments = {"blob:" + text_blob.hash + "/notatki.txt"};
+    const Json body = f.send("", opts);
     const Json& content = body.at("messages").back().at("content");
-    const std::string dumped = content.dump();
-    CHECK(dumped.find("Tekst bez plikow") != std::string::npos);
-    CHECK(dumped.find("FILE:") == std::string::npos);
-    CHECK(dumped.find("default_model") == std::string::npos);  // nothing outside the store is read
+    REQUIRE(content.is_array());
+    REQUIRE(content.size() == 1);
+    CHECK(content[0].at("text").get<std::string>().find("PAPUGA") != std::string::npos);
+  }
+
+  TEST_CASE("an action named by the composer: the message is its command, through the proposal and the rules") {
+    Fixture f;
+    const std::string conv = unwrap(f.rt->db().create_conv("Actions")).id;
+    ChatOptions opts;
+    opts.conv_id = conv;
+    // agent.run: the words are its prompt; it acts on the application.
+    const auto agent = unwrap(chat_route::handle(*f.rt, "uporzadkuj moje notatki", opts, Json{{"message", "uporzadkuj moje notatki"}, {"action", "agent.run"}}, nullptr));
+    REQUIRE(agent.handled);
+    CHECK(agent.chunk.at("type").get<std::string>().rfind("action_", 0) == 0);
+    const Json agent_proposal = agent.result.at("routed").at("proposal");
+    CHECK(agent_proposal.at("action") == "agent.run");
+    CHECK(agent_proposal.at("args").at("prompt") == "uporzadkuj moje notatki");
+    const auto user = unwrap(f.rt->db().get_msg(agent.user_message_id));
+    REQUIRE(user);
+    CHECK(user->metadata.at("composer_action") == "agent.run");
+    // depict paints the message itself; without an image model it is said what is missing, nothing is guessed.
+    const auto image = unwrap(chat_route::handle(*f.rt, "kot na dachu o zachodzie", opts, Json{{"message", "kot na dachu o zachodzie"}, {"action", "depict"}}, nullptr));
+    REQUIRE(image.handled);
+    const Json image_proposal = image.result.at("routed").at("proposal");
+    CHECK(image_proposal.at("action") == "depict");
+    CHECK(image_proposal.at("status") == "unavailable");
+    CHECK(image_proposal.at("element").dump().find("message") != std::string::npos);
+    // Files do not go with an action, an unknown action is not guessed: refused before anything is stored.
+    const auto before = unwrap(f.rt->db().get_msgs(conv)).size();
+    ChatOptions with_file = opts;
+    with_file.attachments = {"blob:" + std::string(64, 'b') + "/x.txt"};
+    const auto files = unwrap(chat_route::handle(*f.rt, "zrob cos", with_file, Json{{"message", "zrob cos"}, {"action", "agent.run"}}, nullptr));
+    CHECK(files.handled);
+    CHECK(files.chunk.at("type") == "error");
+    const auto unknown = unwrap(chat_route::handle(*f.rt, "zrob cos", opts, Json{{"message", "zrob cos"}, {"action", "no.such.action"}}, nullptr));
+    CHECK(unknown.chunk.at("type") == "error");
+    CHECK(unwrap(f.rt->db().get_msgs(conv)).size() == before);
+    CHECK(f.transport->requests().empty());
+    // The request field is read by the conversation window, and must be a string.
+    CHECK(ChatOptions::from_json(Json{{"message", "x"}, {"action", "agent.run"}}));
+    CHECK_FALSE(ChatOptions::from_json(Json{{"message", "x"}, {"action", 7}}));
   }
 
   TEST_CASE("the model of a conversation comes from the scope chain when the request names none; a named model wins") {

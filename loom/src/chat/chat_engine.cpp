@@ -598,6 +598,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
     } else if (k == "send_as_message") {
       if (!v.is_string()) return bad();
       o.send_as_message = v.get<std::string>();
+    } else if (k == "action") {
+      // Read by the conversation window (chat_route.h): the action the composer named for this message (P33); not a chat option.
+      if (!v.is_string()) return bad();
     } else if (k == "intent_routing_method" || k == "lang" || k == "route_usage_confirmation" || k == "client_id") {
       // Read by the conversation window (chat_route.h) from the request itself; not a chat option.
       // client_id: the client that declared its devices (client_devices.h).
@@ -786,6 +789,7 @@ Result<Json> ChatEngine::embed_selection(std::string_view conv_id, const Json& s
 }
 
 Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions& opts_in) {
+  LOOM_TRY(check_attachments(opts_in.attachments));  // a file that cannot go is said before anything else (P33)
   LOOM_TRY_ASSIGN(auto reasoning_recipe, chat::reasoning_recipe(cfg_.get("chat_reasoning", Json::object())));
   std::string conv_id;
   {
@@ -859,32 +863,49 @@ std::optional<Conversation> ChatEngine::current_conv() const {
   return conv_;
 }
 
+std::optional<std::pair<std::filesystem::path, std::filesystem::path>> ChatEngine::locate_attachment(const std::string& ref) const {
+  std::filesystem::path file(ref);
+  std::filesystem::path shown = file;  // the name that decides the kind of file and is shown to the model
+  if (ref.rfind("blob:", 0) == 0) {
+    const auto slash = ref.find('/');
+    const std::string hash = ref.substr(5, slash == std::string::npos ? std::string::npos : slash - 5);
+    std::optional<std::filesystem::path> stored;
+    if (attachment_resolver_) stored = attachment_resolver_(hash);
+    if (!stored) return std::nullopt;
+    shown = std::filesystem::path(slash == std::string::npos ? std::string() : ref.substr(slash + 1)).filename();
+    file = *stored;
+  }
+  std::error_code ec;
+  if (!std::filesystem::exists(file, ec)) return std::nullopt;
+  return std::make_pair(file, shown);
+}
+
+Status ChatEngine::check_attachments(const std::vector<std::string>& attachments) const {
+  for (const auto& ref : attachments) {
+    const auto located = locate_attachment(ref);
+    if (!located) return Error(Errc::NotFound, "attachment not found: " + ref);
+    const std::string ext = lower_ext(located->second);
+    if (!contains(image_exts(), ext) && !contains(text_exts(), ext))
+      return Error(Errc::Unsupported, "this kind of file cannot be sent (images and plain-text files can): " + ref);
+  }
+  return ok_status();
+}
+
 Json ChatEngine::build_content(std::string_view text, const std::vector<std::string>& attachments) const {
   if (attachments.empty()) return Json(std::string(text));
 
   Json parts = Json::array();
-  parts.push_back(Json{{"type", "text"}, {"text", std::string(text)}});
+  // A message of files alone (P33) has no words: no empty text part, which some providers refuse.
+  if (!text.empty()) parts.push_back(Json{{"type", "text"}, {"text", std::string(text)}});
 
   for (const auto& path_str : attachments) {
-    std::filesystem::path p(path_str);
-    std::error_code ec;
-    std::filesystem::path shown = p;  // the name that decides the kind of file and is shown to the model
-    if (path_str.rfind("blob:", 0) == 0) {
-      const auto slash = path_str.find('/');
-      const std::string hash = path_str.substr(5, slash == std::string::npos ? std::string::npos : slash - 5);
-      std::optional<std::filesystem::path> stored;
-      if (attachment_resolver_) stored = attachment_resolver_(hash);
-      if (!stored) {
-        log::warn("loom.chat_engine", "Attachment blob not found: {}", hash);
-        continue;
-      }
-      shown = std::filesystem::path(slash == std::string::npos ? std::string() : path_str.substr(slash + 1)).filename();
-      p = *stored;
-    }
-    if (!std::filesystem::exists(p, ec)) {
+    const auto located = locate_attachment(path_str);
+    if (!located) {
       log::warn("loom.chat_engine", "Attachment not found: {}", path_str);
       continue;
     }
+    const std::filesystem::path& p = located->first;
+    const std::filesystem::path& shown = located->second;
     std::string ext = lower_ext(shown);
     if (contains(image_exts(), ext)) {
       auto data = fsutil::read_file(p);
@@ -907,8 +928,11 @@ Json ChatEngine::build_content(std::string_view text, const std::vector<std::str
       std::string name = shown.filename().string();
       parts.push_back(
           Json{{"type", "text"}, {"text", "\n--- FILE: " + name + " ---\n" + file_text + "\n--- END FILE ---"}});
+    } else {
+      log::warn("loom.chat_engine", "Attachment of a kind that is not read: {}", path_str);
     }
   }
+  if (parts.empty()) parts.push_back(Json{{"type", "text"}, {"text", std::string(text)}});
   return parts;
 }
 
@@ -1130,6 +1154,8 @@ std::optional<std::string> ChatEngine::last_reasoning() const {
 
 Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& opts_in, const ChatCallbacks& cb,
                                     const CancelToken* cancel) {
+  // A file that cannot go to the model (not found, a kind that is not read) is said before anything is stored or sent (P33).
+  LOOM_TRY(check_attachments(opts_in.attachments));
   std::string selector_conv;
   {
     std::lock_guard lk(mu_);

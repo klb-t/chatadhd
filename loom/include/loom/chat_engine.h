@@ -56,6 +56,7 @@
 #include <optional>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include "loom/db.h"
@@ -189,6 +190,10 @@ class ChatEngine {
   // gives the stored file of a hash; the name after the slash decides how the file is read (image, text). Set once, before the first send.
   using AttachmentResolver = std::function<std::optional<std::filesystem::path>(const std::string& hash)>;
   void set_attachment_resolver(AttachmentResolver resolver);
+  // What would keep an attachment from the model, checked before anything is stored or sent: a blob the store does not have or a path
+  // that does not exist (NotFound), a kind of file that is not read (Unsupported: images and plain-text files are). The message ends
+  // with the attachment exactly as given, so a client can say which one. send() and preview_usage() refuse with it.
+  Status check_attachments(const std::vector<std::string>& attachments) const;
 
   // Exposed for tests and for wave-3 tooling (prompt inspection).
   Result<Json> build_messages(std::string_view conv_id, std::string_view current_text,
@@ -223,6 +228,8 @@ class ChatEngine {
   GraphMemorySelector* graph_memory_;
   KnowledgeContextBuilder knowledge_context_builder_;
   AttachmentResolver attachment_resolver_;
+  // The stored file of an attachment and the name that decides its kind; nullopt when there is none.
+  std::optional<std::pair<std::filesystem::path, std::filesystem::path>> locate_attachment(const std::string& ref) const;
   // The context selector's choice for a conversation among the representations the guardian keeps beside the raw messages
   // (setting chat_representation, preset raw = `in` unchanged, byte for byte). Never fails a send: what cannot be used stays raw.
   ChatOptions select_representation(const ChatOptions& in, const std::string& conv_id);

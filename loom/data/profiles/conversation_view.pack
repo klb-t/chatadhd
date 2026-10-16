@@ -802,7 +802,7 @@
             "cm_thinking": "Deep thinking",
             "cm_image": "Generate an image",
             "cm_music": "Generate music",
-            "cm_context": "Project and context",
+            "cm_context": "Context",
             "cm_memory": "Memory",
             "cm_knowledge": "Knowledge",
             "cm_perspective": "Graph perspective",
@@ -810,12 +810,11 @@
             "cm_on": "on",
             "cm_off": "off",
             "cm_unavailable": "unavailable",
-            "cm_reason_agent": "There is no per-message switch yet: the agent is on, and what it may do on its own is set in Settings.",
-            "cm_reason_image": "No image provider is connected, so there is nothing that could draw it.",
-            "cm_reason_music": "No music provider is connected, so there is nothing that could compose it.",
+            "cm_reason_image": "Set an image model and the provider that serves it in Settings; then the message you write is painted.",
+            "cm_reason_music": "This version cannot make music yet: there is no such action, so connecting a provider would not help.",
             "cm_reason_upload": "This connection cannot hand files to the app.",
             "cm_reason_unknown_action": "This entry has no action in this version.",
-            "cm_issue": "The composer menu overlay has a problem: {{issue}}",
+            "cm_issue": "The + menu has a problem: {{issue}}",
             "cm_models_empty": "The list of models is empty. Set the provider key in Settings.",
             "cm_model_not_saved": "The model is set for the next message, but this conversation did not keep it: {{reason}}",
             "cm_model_not_read": "Could not read which model this conversation uses: {{reason}}",
@@ -824,11 +823,31 @@
             "att_uploading": "Adding {{name}}…",
             "att_failed": "Could not add {{name}}: {{reason}}",
             "att_image": "Image preview: {{name}}",
-            "tool_chip_web": "Web search on",
-            "tool_chip_thinking": "Deep thinking on",
             "tool_chip_memory_off": "Memory off",
             "tool_chip_knowledge": "Knowledge on",
-            "tool_chip_remove": "Turn off: {{name}}"
+            "tool_chip_remove": "Turn off: {{name}}",
+            "cm_deep_research": "Deep research",
+            "cm_issue_menu_not_effective": "your own menu setting is off or missing, so the menu as shipped is shown",
+            "cm_issue_no_items": "the menu has no list of entries",
+            "cm_issue_items_not_list": "the entries of “{{name}}” are not a list",
+            "cm_issue_no_id": "an entry in “{{name}}” has no id",
+            "cm_issue_unknown_kind": "“{{name}}” is of a kind this version does not know ({{kind}})",
+            "cm_issue_toggle_target": "the switch “{{name}}” does not say what it turns on",
+            "cm_issue_no_panel": "“{{name}}” should open a panel but names none",
+            "cm_issue_unknown_panel": "“{{name}}” opens a panel this version does not know ({{panel}})",
+            "cm_issue_ops_shape": "your changes to the menu are not in the expected shape",
+            "cm_issue_op_shape": "change no. {{n}} is not a change",
+            "cm_issue_hide_missing": "change no. {{n}}: there is no entry “{{name}}” to hide",
+            "cm_issue_no_submenu": "change no. {{n}}: there is no submenu “{{name}}”",
+            "cm_issue_exists": "change no. {{n}}: “{{name}}” is already in the menu",
+            "cm_issue_move_missing": "change no. {{n}}: there is nothing to move (“{{name}}”)",
+            "cm_issue_move_into_itself": "change no. {{n}}: “{{name}}” cannot be moved into itself",
+            "cm_issue_unknown_op": "change no. {{n}}: unknown change “{{op}}”",
+            "tool_chip_on": "{{name}}: on",
+            "att_unreadable": "{{name}}: this kind of file cannot be sent (images and plain-text files can)",
+            "att_missing": "{{name}}: the app no longer has this file; add it again",
+            "att_scope": "Files go with this message only: for a later question about them, add them again.",
+            "cm_action_no_files": "Files do not go with “{{name}}”: remove them or turn it off."
           },
           "pl": {
             "menu_open": "Menu",
@@ -1000,7 +1019,7 @@
             "cm_thinking": "Głębokie myślenie",
             "cm_image": "Generuj obraz",
             "cm_music": "Generuj muzykę",
-            "cm_context": "Projekt i kontekst",
+            "cm_context": "Kontekst",
             "cm_memory": "Pamięć",
             "cm_knowledge": "Wiedza",
             "cm_perspective": "Perspektywa grafu",
@@ -1008,12 +1027,11 @@
             "cm_on": "włączone",
             "cm_off": "wyłączone",
             "cm_unavailable": "niedostępne",
-            "cm_reason_agent": "Nie ma jeszcze przełącznika dla pojedynczej wiadomości: agent jest włączony, a to, co może robić sam, ustawiasz w Ustawieniach.",
-            "cm_reason_image": "Nie podłączono żadnego dostawcy obrazów, więc nic by go nie narysowało.",
-            "cm_reason_music": "Nie podłączono żadnego dostawcy muzyki, więc nic by jej nie skomponowało.",
+            "cm_reason_image": "Ustaw w Ustawieniach model do obrazów i dostawcę, który go obsługuje; wtedy to, co napiszesz, zostanie namalowane.",
+            "cm_reason_music": "Ta wersja jeszcze nie umie tworzyć muzyki: nie ma takiej czynności, więc podłączenie dostawcy nic by nie dało.",
             "cm_reason_upload": "To połączenie nie potrafi przekazać plików do aplikacji.",
             "cm_reason_unknown_action": "Ta pozycja nie ma w tej wersji żadnej czynności.",
-            "cm_issue": "Nakładka menu dodawania ma problem: {{issue}}",
+            "cm_issue": "Menu „+” ma problem: {{issue}}",
             "cm_models_empty": "Lista modeli jest pusta. Wpisz klucz dostawcy w Ustawieniach.",
             "cm_model_not_saved": "Model jest ustawiony dla następnej wiadomości, ale ta rozmowa go nie zapamiętała: {{reason}}",
             "cm_model_not_read": "Nie udało się sprawdzić, jakiego modelu używa ta rozmowa: {{reason}}",
@@ -1022,11 +1040,31 @@
             "att_uploading": "Dodaję {{name}}…",
             "att_failed": "Nie udało się dodać {{name}}: {{reason}}",
             "att_image": "Podgląd obrazu: {{name}}",
-            "tool_chip_web": "Wyszukiwanie w sieci włączone",
-            "tool_chip_thinking": "Głębokie myślenie włączone",
             "tool_chip_memory_off": "Pamięć wyłączona",
             "tool_chip_knowledge": "Wiedza włączona",
-            "tool_chip_remove": "Wyłącz: {{name}}"
+            "tool_chip_remove": "Wyłącz: {{name}}",
+            "cm_deep_research": "Głębokie badanie",
+            "cm_issue_menu_not_effective": "Twoje ustawienie menu jest wyłączone albo go brak, więc widać menu w wersji domyślnej",
+            "cm_issue_no_items": "menu nie ma listy pozycji",
+            "cm_issue_items_not_list": "pozycje w „{{name}}” nie są listą",
+            "cm_issue_no_id": "pozycja w „{{name}}” nie ma identyfikatora",
+            "cm_issue_unknown_kind": "„{{name}}” jest rodzaju, którego ta wersja nie zna ({{kind}})",
+            "cm_issue_toggle_target": "przełącznik „{{name}}” nie mówi, co włącza",
+            "cm_issue_no_panel": "„{{name}}” ma otwierać panel, ale żadnego nie wskazuje",
+            "cm_issue_unknown_panel": "„{{name}}” otwiera panel, którego ta wersja nie zna ({{panel}})",
+            "cm_issue_ops_shape": "Twoje zmiany menu mają zły kształt",
+            "cm_issue_op_shape": "zmiana nr {{n}} nie jest zmianą",
+            "cm_issue_hide_missing": "zmiana nr {{n}}: nie ma pozycji „{{name}}” do ukrycia",
+            "cm_issue_no_submenu": "zmiana nr {{n}}: nie ma podmenu „{{name}}”",
+            "cm_issue_exists": "zmiana nr {{n}}: „{{name}}” już jest w menu",
+            "cm_issue_move_missing": "zmiana nr {{n}}: nie ma czego przenieść („{{name}}”)",
+            "cm_issue_move_into_itself": "zmiana nr {{n}}: „{{name}}” nie da się przenieść do jej samej",
+            "cm_issue_unknown_op": "zmiana nr {{n}}: nieznana zmiana „{{op}}”",
+            "tool_chip_on": "{{name}}: włączone",
+            "att_unreadable": "{{name}}: nie da się wysłać tego rodzaju pliku (da się obrazy i pliki tekstowe)",
+            "att_missing": "{{name}}: aplikacja nie ma już tego pliku, dodaj go ponownie",
+            "att_scope": "Pliki idą tylko z tą wiadomością: przy kolejnym pytaniu o nie dodaj je ponownie.",
+            "cm_action_no_files": "Pliki nie idą do „{{name}}”: usuń je albo wyłącz tę opcję."
           }
         }
       }
@@ -1039,7 +1077,7 @@
       "label": "Entries of the + menu next to the message field (attach, model, tools, context, import)",
       "value": {
         "schema": "loom.composer_menu/1",
-        "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo; when: camera), model (list of models; the choice is written to the conversation level of the scope chain under `setting`), submenu (items), toggle (flag: web_search | thinking | memory | knowledge; on until turned off, a chip above the field says so; `value` = what an on flag sends, thinking: the reasoning effort), panel (opens a panel: import | graph | settings), unavailable (visible, with reason; panel optionally points where it is set).",
+        "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo: the camera on a phone, a picture file elsewhere), model (list of models; the choice is written to the conversation level of the scope chain under default_model, the key the kernel reads), submenu (items), toggle (on until turned off, a chip above the field says so: `field` + `value` = the request field it sets while on, e.g. web_search: true, deep_research: true, reasoning_effort: high, action: agent.run; or `flag` = a switch of this view: memory | knowledge), panel (opens a panel: import | graph | settings), unavailable (visible, with reason). exclusive: turning it on turns off the other field switches (an action takes only the words, no files). needs: settings that must not be empty, else the entry is unavailable with `reason` (and `panel` where they are set).",
         "items": [
           {
             "id": "attach_file",
@@ -1049,14 +1087,12 @@
           {
             "id": "attach_photo",
             "label": "cm_attach_photo",
-            "kind": "camera",
-            "when": "camera"
+            "kind": "camera"
           },
           {
             "id": "model",
             "label": "cm_model",
-            "kind": "model",
-            "setting": "default_model"
+            "kind": "model"
           },
           {
             "id": "tools",
@@ -1067,27 +1103,44 @@
                 "id": "web_search",
                 "label": "cm_web_search",
                 "kind": "toggle",
-                "flag": "web_search"
+                "field": "web_search",
+                "value": true
               },
               {
-                "id": "agent",
-                "label": "cm_agent",
-                "kind": "unavailable",
-                "reason": "cm_reason_agent",
-                "panel": "settings"
+                "id": "deep_research",
+                "label": "cm_deep_research",
+                "kind": "toggle",
+                "field": "deep_research",
+                "value": true
               },
               {
                 "id": "thinking",
                 "label": "cm_thinking",
                 "kind": "toggle",
-                "flag": "thinking",
+                "field": "reasoning_effort",
                 "value": "high"
+              },
+              {
+                "id": "agent",
+                "label": "cm_agent",
+                "kind": "toggle",
+                "field": "action",
+                "value": "agent.run",
+                "exclusive": true
               },
               {
                 "id": "image",
                 "label": "cm_image",
-                "kind": "unavailable",
-                "reason": "cm_reason_image"
+                "kind": "toggle",
+                "field": "action",
+                "value": "depict",
+                "exclusive": true,
+                "needs": [
+                  "image_model",
+                  "image_provider"
+                ],
+                "reason": "cm_reason_image",
+                "panel": "settings"
               },
               {
                 "id": "music",
