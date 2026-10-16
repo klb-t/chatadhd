@@ -5,12 +5,14 @@ which is SHOWN before it runs and saved in the manifest; what the grammar did
 not understand is returned as ``rest`` (never guessed; with ``--model`` the
 ``describe`` flow may propose an interpretation).  The same module turns a
 filter described in words into criteria without a model (``describe``)."""
+import logging
 import re
-from pathlib import Path
 from typing import Any, Optional
 
 from .datafiles import DataStore, store as default_store
 from .recipe import SCHEMA
+
+log = logging.getLogger(__name__)
 
 
 def _grammars(ds: DataStore, lang: Optional[str]) -> list[dict[str, Any]]:
@@ -21,6 +23,7 @@ def _grammars(ds: DataStore, lang: Optional[str]) -> list[dict[str, Any]]:
         try:
             out.append(ds.file(f"grammar/{g}.json"))
         except Exception:  # noqa: BLE001 - a missing grammar is reported by the caller as "not understood"
+            log.debug("sentence grammar %s unavailable", g, exc_info=True)
             continue
     return out
 
@@ -160,6 +163,7 @@ def describe_rules(text: str, ds: Optional[DataStore] = None) -> tuple[dict[str,
             words = data.get("words") if isinstance(data, dict) else data
             stop |= {str(w).lower() for w in (words or [])}
         except Exception:  # noqa: BLE001 - no stop list = keep every word
+            log.debug("stop list %s unavailable", name, exc_info=True)
             continue
     for w in re.findall(r"[\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ][\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ.+#-]*", work):
         lw = w.lower()

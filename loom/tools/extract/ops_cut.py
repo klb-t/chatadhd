@@ -265,7 +265,8 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         tp = TimePolicy(prof.get("timestamps"), zone=p.get("zone"), format=p.get("time_format"), shift=p.get("shift"),
                         anonymise=p.get("anonymise"), granularity=p.get("granularity"))
         tp.origin = from_iso(firsts[0]) if firsts else None
-        ctx = RenderCtx(eng, time=tp, redactor=red, att_paths=att_paths, aggregate=eng.aggregate, summaries=eng.summaries)
+        ctx = RenderCtx(eng, time=tp, redactor=red, att_paths=att_paths, aggregate=eng.aggregate, summaries=eng.summaries,
+                        extract_text=bool(p.get("extract_text")))
         info = render_profile(prof, entries, ctx, stage, ds=eng.ds, tool=tool, sources=sources,
                               clusters=None if eng.aggregate else eng.clusters)
         info["timestamps"] = tp.as_dict()
@@ -299,8 +300,10 @@ def op_handoff(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     red = _redactor(eng, {"redaction": p.get("redaction") or getattr(eng, "_cut_redactor_key", ("none",))[0],
                           "dictionary": list(getattr(eng, "_cut_redactor_key", ("none", ()))[1])})
     from .recipe import recipe_hash
+    norm = eng.normalised_recipe()
+    norm["steps"] = [st for st in norm.get("steps") or [] if st.get("op") != "write"]
     info = build_handoff(eng, entries, eng.stage(), branches=str(p.get("branches") or "current"), with_graph=bool(p.get("graph")),
-                         zip_too=bool(p.get("zip", True)), redactor=red, recipe_sha=None)
+                         zip_too=bool(p.get("zip", True)), redactor=red, recipe_sha="sha256:" + recipe_hash(norm, eng.ds))
     eng.handoff_info = info
     return {"counts": {k: info[k] for k in ("conversations", "messages", "messages_with_text", "attachments")}, "handoff": info}
 

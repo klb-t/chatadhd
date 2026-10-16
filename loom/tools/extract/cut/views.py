@@ -13,9 +13,14 @@ BRANCH_KEEP = ("tree", "current", "newest", "longest", "marked", "all_paths")
 BLOCK_POLICY = ("keep", "omit", "reference", "note", "summary")
 
 
+TEXT_ATTACHMENT = (".txt", ".md", ".markdown", ".csv", ".tsv", ".json", ".jsonl", ".log", ".py", ".js", ".ts", ".html", ".htm",
+                   ".xml", ".yaml", ".yml", ".toml", ".ini", ".sql", ".sh", ".c", ".cpp", ".h", ".java", ".rs", ".go")
+
+
 class RenderCtx:
     def __init__(self, eng: Any, *, time: Any, redactor: Any, att_paths: dict[tuple[str, str], str],
-                 aggregate: bool = False, summaries: Optional[dict[str, dict[str, Any]]] = None) -> None:
+                 aggregate: bool = False, summaries: Optional[dict[str, dict[str, Any]]] = None, extract_text: bool = False) -> None:
+        self.extract_text = extract_text
         self.eng = eng
         self.time = time
         self.redactor = redactor
@@ -145,6 +150,14 @@ def _att_ref(b: Block, unit: Unit, m: Message, ctx: RenderCtx) -> dict[str, Any]
         p = ctx.att_paths.get(((unit.source or {}).get("archive") or "", a.member))
         if p:
             d["path"] = p
+        if ctx.extract_text and (str(a.mime or "").startswith("text/") or a.member.lower().endswith(TEXT_ATTACHMENT)):
+            # text attachments are embedded as text (images/audio need OCR/ASR providers: not in this slice)
+            from .common import find_archive
+            arc = find_archive(ctx.eng.archives, unit) if ctx.eng is not None else None
+            mem = arc.member(a.member) if arc is not None else None
+            if mem is not None:
+                d["extracted_text"] = ctx.redactor.text(mem.read_bytes().decode("utf-8", errors="replace"),
+                                                        {"conversation": unit.uid, "attachment": a.ref}, "text")
     return d
 
 

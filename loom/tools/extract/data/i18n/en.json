@@ -284,5 +284,6 @@
   "report.cost_total": "total: {amount} {currency}",
   "report.cost_unknown": "unknown (no price)",
   "report.irreversible": "irreversible",
-  "report.reproduce_manifest": "Or: `reproduce manifest.json` — builds the package next to it and compares reproducible_hash."
+  "report.reproduce_manifest": "Or: `reproduce manifest.json` — builds the package next to it and compares reproducible_hash.",
+  "cli.opt.attachment_text": "embed the text of text attachments (txt, md, csv, json, code) in outputs; images and audio need OCR/ASR (not in this slice)"
 }

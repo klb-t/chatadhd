@@ -87,7 +87,8 @@ def _md_block(b: dict[str, Any], md_path: str) -> str:
     if kind == "attachment" or b.get("ref"):
         name = b.get("file_name") or b.get("ref") or "?"
         if b.get("path"):
-            return f"[{t('md.attachment')}: {name}]({_rel(b['path'], md_path)})"
+            link = f"[{t('md.attachment')}: {name}]({_rel(b['path'], md_path)})"
+            return link + ("\n\n" + _fence(b["extracted_text"]) if b.get("extracted_text") else "")
         ref = b.get("ref")
         both = f"{name} ({ref})" if ref and ref != name else name
         return f"*[{t('md.attachment')}: {both} — {b.get('status', 'reference')}]*"

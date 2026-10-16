@@ -36,6 +36,7 @@ CUT_OPTS = [
     _o("--przekaz", "--handoff", action="store_true", help="cli.opt.handoff"),
     _o("--z-grafem", "--with-graph", action="store_true", help="cli.opt.with_graph"),
     _o("--streszczenia", "--summaries", action="store_true", help="cli.opt.summaries"),
+    _o("--tekst-zalacznikow", "--attachment-text", dest="att_text", action="store_true", help="cli.opt.attachment_text"),
 ]
 MODEL_OPTS = [
     _o("--tak", "--yes", action="store_true", help="cli.opt.yes"),
@@ -113,6 +114,8 @@ def cut_params(args: argparse.Namespace) -> dict[str, Any]:
             p[dst] = v
     if getattr(args, "slownik", None):
         p["dictionary"] = list(args.slownik)
+    if getattr(args, "att_text", False):
+        p["extract_text"] = True
     return p
 
 

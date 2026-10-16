@@ -175,3 +175,30 @@ class StatsTest(ExtractTest):
         self.assertEqual(sum(r["conversations"] for r in st["topic_timeline"]), st["total"]["conversations"])
         self.assertEqual(set(st["services"]), {"openai", "anthropic"})
         self.assertIn("python", st["tools"])
+
+
+class AttachmentTextTest(ExtractTest):
+    def test_text_attachments_are_embedded_on_request(self):
+        import zipfile
+        conv = [{"id": "cx", "conversation_id": "cx", "title": "Notatka", "create_time": 1760000000.0, "update_time": 1760000100.0,
+                 "current_node": "m2", "mapping": {
+                     "root": {"id": "root", "message": None, "parent": None, "children": ["m1"]},
+                     "m1": {"id": "m1", "parent": "root", "children": ["m2"], "message": {
+                         "id": "m1", "author": {"role": "user"}, "create_time": 1760000001.0,
+                         "content": {"content_type": "text", "parts": ["Zobacz notatkę"]},
+                         "metadata": {"attachments": [{"id": "file-Note1", "name": "notatka.txt", "mime_type": "text/plain"}]}}},
+                     "m2": {"id": "m2", "parent": "m1", "children": [], "message": {
+                         "id": "m2", "author": {"role": "assistant"}, "create_time": 1760000002.0,
+                         "content": {"content_type": "text", "parts": ["Przeczytane."]}}}}}]
+        z = self.tmp / "export.zip"
+        with zipfile.ZipFile(z, "w") as zf:
+            zf.writestr("conversations.json", json.dumps(conv))
+            zf.writestr("file-Note1-notatka.txt", "Treść notatki 42")
+        for extract, expect in ((False, False), (True, True)):
+            eng = self.engine(z)
+            eng.op("select.expr", {"expr": "kind:conversation"})
+            eng.op("cut", {"profiles": ["text"], "extract_text": extract})
+            eng.op("write", {"package": str(self.tmp / f"p{int(extract)}")})
+            md = "".join(p.read_text(encoding="utf-8") for p in (self.tmp / f"p{int(extract)}/text").glob("0*.md"))
+            self.assertIn("notatka.txt", md)
+            self.assertEqual("Treść notatki 42" in md, expect)
