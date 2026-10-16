@@ -211,6 +211,7 @@ def message_fields(m: Message, e: Entry, policies: dict[str, str], ctx: RenderCt
         "created_how": m.created_how, "author": ctx.redactor.text(m.author, where, "author") if m.author else None,
         "model": m.model, "branch": m.branch, "on_current_path": m.on_current_path, "path": path_index,
         "text": text, "blocks": blocks, "attachments": atts, "kinds": sorted({b.kind for b in m.blocks}),
+        "notes": [f"{d['kind']}: {d['note']}" for d in blocks if "note" in d],
         "chars": len(text), "words": len(text.split()), "tools": m.tool_names(),
     }
 
@@ -246,7 +247,8 @@ def conversation_views(e: Entry, profile: dict[str, Any], ctx: RenderCtx) -> lis
             conv["path"] = pi
         msgs = [message_fields(m, e, policies, ctx, pi) for m in path]
         if profile.get("drop_empty_messages"):
-            msgs = [mm for mm in msgs if mm["blocks"]]
+            msgs = [mm for mm in msgs if any(b.get("text") or b.get("ref") or b.get("input") is not None or b.get("note") or b.get("summary")
+                                             for b in mm["blocks"])]
         cfields = fields.get("conversation")
         mfields = fields.get("message")
         views.append({"conversation": _pick(conv, cfields) if cfields else conv, "conversation_full": conv,

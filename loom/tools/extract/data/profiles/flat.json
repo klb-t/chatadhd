@@ -3,7 +3,7 @@
  "layout": "conversation>message",
  "branches": {"keep": "current", "alternatives": "note", "note_text": {"pl": "wycięto {n} gałęzi ({m} wiadomości) w {k} miejscach rozwidlenia", "en": "{n} branch(es) cut ({m} messages) at {k} fork point(s)"}},
  "fields": {"conversation": ["key", "uid", "title", "created", "service", "account.label", "messages", "branch_note"],
-            "message": ["conversation", "id", "role", "created", "text"]},
+            "message": ["conversation", "id", "role", "created", "text", "attachments", "notes"]},
  "blocks": {"text": "keep", "code": "keep", "thinking": "omit", "tool_use": "omit", "tool_result": "omit", "attachment": "reference", "citation": "omit", "unknown": "note", "*": "omit"},
  "drop_empty_messages": true,
  "timestamps": {"zone": "source", "format": "iso8601"},

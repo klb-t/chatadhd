@@ -570,7 +570,13 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     pkg.mkdir(parents=True, exist_ok=True)
     outputs: list[dict[str, Any]] = []
 
+    red = getattr(eng, "_cut_redactor", None)
+    red = red if red is not None and red.active else None
+
     def put(rel: str, text: str) -> None:
+        if red is not None and rel.endswith((".json", ".jsonl", ".md")):
+            # a redacted package leaks nothing through its side files either (units, timeline, explain, report …)
+            text = red.text(text, {"file": rel}, "text")
         sha, n = _write_text(pkg / rel, text)
         outputs.append({"path": rel, "sha256": sha, "bytes": n})
 
@@ -619,11 +625,7 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             put("oplog.jsonl", "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in oplog_rows(eng.package)))
     if eng.stats is not None:
         put("stats.json", _json_text(eng.stats))
-    if eng.cut_info is not None:
-        red = eng.cut_info.get("redaction") or {}
-        if red.get("active"):
-            put("redaction.json", _json_text(red))
-            put("redaction.jsonl", "".join(json.dumps({k: v for k, v in e.items()}, ensure_ascii=False) + "\n" for e in eng.redaction_entries))
+
     if eng.model_runner is not None and eng.model_runner.calls:
         put("log.jsonl", "".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in eng.model_runner.log_rows()))
     if eng.staged is not None:
@@ -642,6 +644,12 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     put("recipe.json", _json_text(recipe_norm))
     report = build_report(eng, aggregate=aggregate)
     put("RAPORT.md", report)
+    if red is not None:  # last, so the counts include the side files; masks and locations, never values
+        rep = red.report()
+        eng.cut_info["redaction"] = rep
+        _w = lambda rel, text: outputs.append(dict(zip(("sha256", "bytes"), _write_text(pkg / rel, text)), path=rel))
+        _w("redaction.json", _json_text(rep))
+        _w("redaction.jsonl", "".join(json.dumps(e, ensure_ascii=False) + "\n" for e in red.entries))
     outputs.sort(key=lambda o: o["path"])
     repro = reproducible_hash(outputs)
     manifest = build_manifest(eng, outputs, repro, recipe_norm, aggregate)

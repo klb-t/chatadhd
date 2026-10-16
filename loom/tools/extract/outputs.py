@@ -88,7 +88,9 @@ def _md_block(b: dict[str, Any], md_path: str) -> str:
         name = b.get("file_name") or b.get("ref") or "?"
         if b.get("path"):
             return f"[{t('md.attachment')}: {name}]({_rel(b['path'], md_path)})"
-        return f"*[{t('md.attachment')}: {name} — {b.get('status', 'reference')}]*"
+        ref = b.get("ref")
+        both = f"{name} ({ref})" if ref and ref != name else name
+        return f"*[{t('md.attachment')}: {both} — {b.get('status', 'reference')}]*"
     if kind == "thinking":
         return f"<details><summary>{t('md.thinking')}</summary>\n\n{b.get('text', '')}\n\n</details>"
     if kind in ("tool_use", "tool_result"):

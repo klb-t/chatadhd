@@ -15,6 +15,8 @@ from .datafiles import DataFileError, DataStore, set_store
 from .engine import Engine, EngineError
 from .i18n import label, resolve_language, set_language, t
 from .recipe import RecipeError, load_recipe, normalise, recipe_hash, save_recipe, validate
+from . import cli_cut as _cc
+from .flows import ModelRefused
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +30,8 @@ SOURCES = _o("zrodla", nargs="+", metavar="ŹRÓDŁO", help="cli.opt.sources")
 PACKAGE = _o("--pakiet", "--package", "-p", metavar="KATALOG", help="cli.opt.package")
 SAVE_RECIPE = _o("--zapisz-przepis", "--save-recipe", metavar="PLIK", help="cli.opt.save_recipe")
 DRY = _o("--na-sucho", "--dry-run", "-n", action="store_true", help="cli.opt.dry_run")
+PLAN = _o("--plan", action="store_true", help="cli.opt.plan")
+CACHE = _o("--cache", metavar="KATALOG|off", help="cli.opt.cache")
 SELECT_OPTS = [
     _o("--slowa", "--terms", "-s", nargs="+", metavar="SŁOWO", help="cli.opt.terms"),
     _o("--regex", "-r", nargs="+", metavar="REGEX", help="cli.opt.regex"),
@@ -43,6 +47,7 @@ SELECT_OPTS = [
     _o("--tryb", "--mode", choices=["replace", "add", "subtract", "intersect"], help="cli.opt.mode"),
     _o("--od-manifestu", "--since", metavar="PAKIET", help="cli.opt.since"),
     _o("--tylko", "--only", choices=["only_new", "changed", "removed", "all", "unchanged"], help="cli.opt.only"),
+    _o("--filtr", "--filter", action="append", metavar="NAZWA", help="cli.opt.saved_filter"),
     _o("--model", action="store_true", help="cli.opt.model"),
 ]
 TIMELINE_OPTS = [
@@ -66,7 +71,7 @@ VERBS: list[dict[str, Any]] = [
               _o("--tozsamosc", "--identity", choices=["ext_id", "content_hash"], help="cli.opt.identity"),
               _o("--tylko-liczby", "--summary", action="store_true", help="cli.opt.summary"), PACKAGE]},
     {"name": "szukaj", "aliases": ["search", "select"], "help": "cli.verb.search",
-     "opts": [SOURCES, PACKAGE, SAVE_RECIPE, DRY] + SELECT_OPTS + TIMELINE_OPTS[:1]},
+     "opts": [SOURCES, PACKAGE, SAVE_RECIPE, DRY, _cc.TOPIC] + SELECT_OPTS + TIMELINE_OPTS[:1] + _cc.MODEL_OPTS},
     {"name": "wyjasnij", "aliases": ["explain", "wyjaśnij"], "help": "cli.verb.explain",
      "opts": [SOURCES, _o("--jednostka", "--unit", "-u", required=True, nargs="+", metavar="UID", help="cli.opt.unit")] + SELECT_OPTS},
     {"name": "zaznacz", "aliases": ["mark"], "help": "cli.verb.mark",
@@ -87,6 +92,47 @@ VERBS: list[dict[str, Any]] = [
               _o("plik", metavar="PLIK", help="cli.opt.recipe_file"), PACKAGE, DRY]},
     {"name": "formaty", "aliases": ["formats"], "help": "cli.verb.formats", "opts": [_o("pliki", nargs="*", metavar="PLIK", help="cli.opt.files")]},
     {"name": "operacje", "aliases": ["ops"], "help": "cli.verb.ops", "opts": []},
+    {"name": "wytnij", "aliases": ["cut", "extract", "wyciagnij", "wyciągnij"], "help": "cli.verb.cut",
+     "opts": [SOURCES, PACKAGE, SAVE_RECIPE, DRY, PLAN, _cc.TOPIC] + SELECT_OPTS + _cc.CUT_OPTS + _cc.MODEL_OPTS + [CACHE]},
+    {"name": "koszt", "aliases": ["cost"], "help": "cli.verb.cost",
+     "opts": [SOURCES, _cc.TOPIC] + SELECT_OPTS + _cc.MODEL_OPTS + [_o("--streszczenia", "--summaries", action="store_true", help="cli.opt.summaries")]},
+    {"name": "odtworz", "aliases": ["reproduce", "odtwórz"], "help": "cli.verb.reproduce",
+     "opts": [_o("manifest", metavar="MANIFEST", help="cli.opt.manifest"), PACKAGE] + _cc.MODEL_OPTS + [_o("--model", action="store_true", help="cli.opt.model")]},
+    {"name": "przekaz", "aliases": ["handoff", "przekaż"], "help": "cli.verb.handoff",
+     "opts": [_o("--pakiet", "--package", "-p", required=True, metavar="KATALOG", help="cli.opt.package"),
+              _o("--z-grafem", "--with-graph", action="store_true", help="cli.opt.with_graph"),
+              _o("--galezie", "--branches", choices=["current", "newest", "longest", "marked", "tree"], help="cli.opt.branches")]},
+    {"name": "statystyki", "aliases": ["stats"], "help": "cli.verb.stats",
+     "opts": [_o("--pakiet", "--package", "-p", required=True, metavar="KATALOG", help="cli.opt.package"),
+              _o("--rozmowa", "--conversation", metavar="ID", help="cli.opt.conversation")]},
+    {"name": "sprawdz", "aliases": ["check", "sprawdź"], "help": "cli.verb.check",
+     "opts": [_o("--pakiet", "--package", "-p", required=True, metavar="KATALOG", help="cli.opt.package")]},
+    {"name": "zalaczniki", "aliases": ["attachments", "załączniki"], "help": "cli.verb.attachments",
+     "opts": [SOURCES, _o("--typ", "--mime", metavar="MIME", help="cli.opt.mime"), _o("--rozmiar", "--size", metavar=">N", help="cli.opt.size"),
+              _o("--rozmowa", "--conversation", metavar="ID", help="cli.opt.conversation"),
+              _o("--brakujace", "--missing", action="store_true", help="cli.opt.missing")]},
+    {"name": "profil", "aliases": ["profile"], "help": "cli.verb.profile",
+     "opts": [_o("akcja", choices=["lista", "list", "pokaz", "show", "sprawdz", "check"], help="cli.opt.profile_action"),
+              _o("nazwa", nargs="?", metavar="ID|PLIK", help="cli.opt.profile_name")]},
+    {"name": "przeplyw", "aliases": ["flow", "przepływ"], "help": "cli.verb.flow",
+     "opts": [_o("akcja", choices=["lista", "list", "pokaz", "show", "sprawdz", "check"], help="cli.opt.profile_action"),
+              _o("nazwa", nargs="?", metavar="ID", help="cli.opt.profile_name")]},
+    {"name": "opisz", "aliases": ["describe"], "help": "cli.verb.describe",
+     "opts": [_o("opis", metavar="OPIS", help="cli.opt.description"), _o("--model", action="store_true", help="cli.opt.model"),
+              _o("--zapisz", "--save", metavar="NAZWA", help="cli.opt.save_criteria")] + _cc.MODEL_OPTS},
+    {"name": "edytuj", "aliases": ["edit"], "help": "cli.verb.edit",
+     "opts": [_o("--pakiet", "--package", "-p", required=True, metavar="KATALOG", help="cli.opt.package"),
+              _o("--operacja", "--op", required=True, metavar="NAZWA", help="cli.opt.edit_op"),
+              _o("--zakres", "--where", metavar="WYRAŻENIE", help="cli.opt.where"),
+              _o("--param", action="append", metavar="K=V", help="cli.opt.param"),
+              _o("--podglad", "--preview", action="store_true", help="cli.opt.preview")]},
+    {"name": "cofnij", "aliases": ["undo"], "help": "cli.verb.undo",
+     "opts": [_o("--pakiet", "--package", "-p", required=True, metavar="KATALOG", help="cli.opt.package"), _o("n", nargs="?", type=int, help="cli.opt.n")]},
+    {"name": "ponow", "aliases": ["redo", "ponów"], "help": "cli.verb.redo",
+     "opts": [_o("--pakiet", "--package", "-p", required=True, metavar="KATALOG", help="cli.opt.package"), _o("n", nargs="?", type=int, help="cli.opt.n")]},
+    {"name": "filtr", "aliases": ["filter"], "help": "cli.verb.filter",
+     "opts": [_o("akcja", choices=["zapisz", "save", "lista", "list", "usun", "remove", "delete"], help="cli.opt.filter_action"),
+              _o("nazwa", nargs="?", metavar="NAZWA", help="cli.opt.profile_name"), _o("wyrazenie", nargs="?", metavar="WYRAŻENIE", help="cli.opt.expr")]},
 ]
 DECISION_ALIASES = {"wlacz": "include", "wyklucz": "exclude", "usun": "remove"}
 
@@ -159,6 +205,10 @@ def _select_steps(args: argparse.Namespace) -> list[tuple[str, dict[str, Any]]]:
         steps.append(("select.criteria", crit))
     for e in getattr(args, "wyrazenie", None) or []:
         steps.append(("select.expr", {"expr": e, **({"mode": mode} if mode else {})}))
+    for name in getattr(args, "filtr", None) or []:
+        from .datafiles import store as _store
+        flt = _store().entry("filters", name)
+        steps.append(("select.expr", {"expr": flt["expr"], **({"mode": mode} if mode else {})}))
     for pat in getattr(args, "wzorzec", None) or []:
         steps.append(("select.structural", {"pattern": pat, **({"mode": mode} if mode else {})}))
     if getattr(args, "podobne", None):
@@ -283,8 +333,10 @@ def verb_diff(args: argparse.Namespace) -> int:
 
 
 def verb_search(args: argparse.Namespace) -> int:
-    with _engine(args) as eng:
+    with _cc.make_engine(args, None if args.json else _progress) as eng:
         steps = _select_steps(args)
+        if getattr(args, "temat", None):
+            steps.insert(0, _cc.topic_step(args.temat))
         if not steps:
             print(t("cli.search.nothing"), file=sys.stderr)
             return 2
@@ -473,31 +525,109 @@ def verb_ops(args: argparse.Namespace) -> int:
     return 0
 
 
+def _prog(args: argparse.Namespace) -> Any:
+    return None if args.json else _progress
+
+
 HANDLERS = {"inwentarz": verb_inventory, "os-czasu": verb_timeline, "roznica": verb_diff, "szukaj": verb_search,
             "wyjasnij": verb_explain, "zaznacz": verb_mark, "klastry": verb_clusters, "przepis": verb_recipe,
-            "formaty": verb_formats, "operacje": verb_ops}
+            "formaty": verb_formats, "operacje": verb_ops,
+            "wytnij": lambda a: _cc.verb_cut(a, _select_steps, _prog(a)),
+            "koszt": lambda a: _cc.verb_cost(a, _select_steps, _prog(a)),
+            "odtworz": lambda a: _cc.verb_reproduce(a, _prog(a)),
+            "przekaz": lambda a: _cc.verb_handoff(a, _prog(a)),
+            "statystyki": lambda a: _cc.verb_stats(a, _prog(a)),
+            "sprawdz": _cc.verb_check,
+            "zalaczniki": lambda a: _cc.verb_attachments(a, _select_steps, _prog(a)),
+            "profil": _cc.verb_profile, "przeplyw": _cc.verb_flow,
+            "opisz": lambda a: _cc.verb_describe(a, _prog(a)),
+            "edytuj": lambda a: _cc.verb_edit(a, _prog(a)),
+            "cofnij": lambda a: _cc.verb_undo(a, _prog(a)),
+            "ponow": lambda a: _cc.verb_undo(a, _prog(a), redo=True),
+            "filtr": _cc.verb_filter}
+VERB_WORDS = {v["name"] for v in VERBS} | {a for v in VERBS for a in v["aliases"]}
+
+
+COMMON_RUN_OPTS = [PACKAGE, DRY, PLAN, CACHE, _o("--model", action="store_true", help="cli.opt.model")] + _cc.MODEL_OPTS
+
+
+def _common_parser(prog: str) -> argparse.ArgumentParser:
+    ap = argparse.ArgumentParser(prog=prog, description=t("cli.description"))
+    ap.add_argument("--jezyk", "--lang", dest="lang")
+    ap.add_argument("--json", action="store_true")
+    ap.add_argument("--zbiorczo", "--aggregate", dest="aggregate", action="store_true")
+    ap.add_argument("--dane", "--data-dir", dest="data_dir")
+    ap.add_argument("--debug", action="store_true")
+    for flags, kw in COMMON_RUN_OPTS:
+        kw = dict(kw)
+        kw["help"] = t(kw["help"]) if isinstance(kw.get("help"), str) else kw.get("help")
+        ap.add_argument(*flags, **kw)
+    return ap
+
+
+def _dispatch(argv: list[str], pre_args: argparse.Namespace, rest: list[str]) -> int:
+    if pre_args.zadanie:
+        ap = _common_parser("python3 -m loom.tools.extract --zadanie PLIK")
+        ap.add_argument("--zadanie", "--task", "--przepis", "--recipe", dest="zadanie")
+        args = ap.parse_args(argv)
+        task = _cc.load_task(args.zadanie)
+        recipe = _cc.task_to_recipe(task)
+        base = Path(args.zadanie).expanduser().resolve().parent if args.zadanie != "-" else Path.cwd()
+        return _cc.run_recipe_face(args, recipe, base, None if args.json else _progress, show=True)
+    first = next((x for x in rest if not x.startswith("-")), None)
+    if first is not None and first not in VERB_WORDS:
+        from .sentence import parse_sentence, sentence_to_recipe
+        ap = _common_parser("python3 -m loom.tools.extract \"ZDANIE\"")
+        ap.add_argument("zdanie", nargs="+")
+        args = ap.parse_args(argv)
+        text = " ".join(args.zdanie)
+        parsed = parse_sentence(text, lang=pre_args.lang)
+        if parsed.get("rest"):
+            print(t("cli.sentence.rest", rest=parsed["rest"]), file=sys.stderr)
+        if not parsed.get("sources"):
+            print(t("cli.sentence.no_sources"), file=sys.stderr)
+            return 2
+        recipe = sentence_to_recipe(parsed, sentence=text)
+        return _cc.run_recipe_face(args, recipe, Path.cwd(), None if args.json else _progress, show=True, sentence=text)
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    if not args.verb:
+        parser.print_help()
+        return 2
+    return HANDLERS[args.verb](args)
 
 
 def main(argv: Optional[list[str]] = None) -> int:
+    """Exit codes: 0 ok; 1 error (message on stderr); 2 usage; 3 nothing recognised in the sources; 4 interrupted
+    (run the same command again); 5 a paid step refused (estimate, ×10, limit, no model); 6 a source unreadable."""
     argv = list(sys.argv[1:] if argv is None else argv)
     # language and data dir first, so even --help speaks the chosen language
     pre = argparse.ArgumentParser(add_help=False)
     pre.add_argument("--jezyk", "--lang", dest="lang")
     pre.add_argument("--dane", "--data-dir", dest="data_dir")
     pre.add_argument("--debug", action="store_true")
-    pre_args, _ = pre.parse_known_args(argv)
+    pre.add_argument("--zadanie", "--task", "--przepis", "--recipe", dest="zadanie")
+    pre_args, rest = pre.parse_known_args(argv)
     logging.basicConfig(level=logging.DEBUG if pre_args.debug else logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
     if pre_args.data_dir:
         set_store(DataStore(overlay=Path(pre_args.data_dir).expanduser() / "extract"))
     set_language(resolve_language(pre_args.lang))
-    parser = build_parser()
-    args = parser.parse_args(argv)
-    if not args.verb:
-        parser.print_help()
-        return 2
     try:
-        return HANDLERS[args.verb](args)
-    except (EngineError, RecipeError, DataFileError, ValueError, FileNotFoundError) as exc:
+        return _dispatch(argv, pre_args, rest)
+    except ModelRefused as exc:
+        print(f"{t('cli.model_refused')}: {exc.reason}", file=sys.stderr)
+        if exc.estimate:
+            print("  " + t("cli.cost.line", **_cc._cost_fmt(exc.estimate)), file=sys.stderr)
+        return 5
+    except KeyboardInterrupt:
+        print(t("cli.interrupted"), file=sys.stderr)
+        return 4
+    except FileNotFoundError as exc:
+        print(f"{t('cli.unreadable')}: {exc}", file=sys.stderr)
+        if pre_args.debug:
+            raise
+        return 6
+    except (EngineError, RecipeError, DataFileError, ValueError) as exc:
         print(f"{t('cli.error')}: {exc}", file=sys.stderr)
         if pre_args.debug:
             raise

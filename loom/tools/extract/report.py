@@ -117,12 +117,95 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
         out.append(t("report.how_to_resolve"))
     else:
         out.append(f"- {t('report.none')}")
+    # -- cut (slice B) -----------------------------------------------------------
+    cut = getattr(eng, "cut_info", None)
+    if cut:
+        out += ["", f"## {t('report.cut')}", ""]
+        for pinfo in cut.get("profiles") or []:
+            out.append("- " + t("report.cut_line", profile=pinfo.get("profile"), conversations=pinfo.get("conversations", 0),
+                                messages=pinfo.get("messages", 0), files=len(pinfo.get("outputs") or [])))
+            if pinfo.get("branches_cut"):
+                out.append("  - " + t("report.cut_branches", n=pinfo["branches_cut"], m=pinfo.get("messages_cut", 0)))
+        pres = cut.get("preserve")
+        if pres:
+            out.append("- " + t("report.cut_preserve", conversations=pres.get("conversations", 0),
+                                exact=t("report.yes") if pres.get("byte_exact") else t("report.no_redacted")))
+            for a in pres.get("archives") or []:
+                om = a.get("omitted") or []
+                ind = a.get("indivisible") or []
+                if isinstance(om, int) or aggregate:
+                    out.append("  - " + t("report.cut_omitted_count", archive=a.get("archive"), n=om if isinstance(om, int) else len(om)))
+                else:
+                    for o in om:
+                        out.append("  - " + t("report.cut_omitted", archive=a.get("archive"), member=o.get("member"), why=o.get("why")))
+                for o in ([] if isinstance(ind, int) else ind):
+                    out.append("  - " + t("report.cut_indivisible", member=o.get("member") if not aggregate else "…", n=o.get("other_conversations", 0)))
+                for nr in a.get("not_redacted") or []:
+                    out.append("  - " + t("report.not_redacted", member=nr if not aggregate else "…"))
+            if pres.get("partial_whole"):
+                out.append("  - " + t("report.cut_partial", n=pres["partial_whole"]))
+        att = cut.get("attachments")
+        if att:
+            miss = att.get("missing")
+            out.append("- " + t("report.cut_attachments", referenced=att.get("referenced", 0), copied=att.get("copied", 0),
+                                bytes=att.get("bytes", 0), missing=miss if isinstance(miss, int) else len(miss or [])))
+            if not aggregate and isinstance(miss, list):
+                for m in miss[:50]:
+                    out.append("  - " + t("report.missing_attachment", ref=m.get("ref"), conversation=m.get("conversation")))
+    if getattr(eng, "handoff_info", None):
+        h = eng.handoff_info
+        out += ["", f"## {t('report.handoff')}", "",
+                "- " + t("report.handoff_line", conversations=h.get("conversations", 0), messages=h.get("messages", 0),
+                         text=h.get("messages_with_text", 0), attachments=h.get("attachments", 0), missing=h.get("attachments_missing", 0))]
+    if getattr(eng, "stats", None):
+        st = eng.stats
+        tot = st.get("total") or {}
+        out += ["", f"## {t('report.stats')}", "",
+                "- " + t("report.stats_line", conversations=tot.get("conversations", 0), messages=tot.get("messages", 0),
+                         words=tot.get("words", 0), agentic=tot.get("agentic", 0),
+                         **{"from": (st.get("period") or {}).get("from") or "?", "to": (st.get("period") or {}).get("to") or "?"}),
+                "- " + t("report.stats_services", services=", ".join(f"{k}: {v}" for k, v in (st.get("services") or {}).items()) or "-",
+                         languages=", ".join(f"{k}: {v}" for k, v in (st.get("languages") or {}).items()) or "-")]
+        for row in st.get("topic_timeline") or []:
+            out.append(f"  - {row['month']}: " + t("report.stats_month", conversations=row["conversations"], messages=row["messages"]))
     # -- masked ------------------------------------------------------------------
-    out += ["", f"## {t('report.masked')}", "", f"- {t('report.masked_none')}"]
+    out += ["", f"## {t('report.masked')}", ""]
+    red = (cut or {}).get("redaction") or {}
+    reps = list(getattr(eng, "redaction_reports", []) or [])
+    if red.get("active") or reps:
+        if red.get("active"):
+            out.append("- " + t("report.masked_line", profile=red.get("profile"), n=red.get("entries", 0),
+                                kinds=", ".join(f"{k}: {v}" for k, v in (red.get("by_kind") or {}).items()) or "-"))
+            if red.get("attachments") != "omit":
+                out.append("- " + t("report.masked_attachments"))
+        for r in reps:
+            out.append("- " + t("report.masked_edit", profile=r.get("profile"), n=r.get("entries", 0),
+                                kinds=", ".join(f"{k}: {v}" for k, v in (r.get("by_kind") or {}).items()) or "-"))
+    else:
+        out.append(f"- {t('report.masked_none')}")
     # -- cost --------------------------------------------------------------------
-    out += ["", f"## {t('report.cost')}", "", f"- {t('report.cost_zero')}"]
+    out += ["", f"## {t('report.cost')}", ""]
+    runner = getattr(eng, "model_runner", None)
+    calls, total = runner.summary() if runner is not None else ([], None)
+    if calls:
+        for c in calls:
+            amt = c["cost"]["amount"] if c["cost"]["known"] else t("report.cost_unknown")
+            out.append("- " + t("report.cost_flow", flow=c["flow"], model=c["model"], calls=c["calls"], cache=c["cache_hits"],
+                                tin=c["tokens_in"], tout=c["tokens_out"], amount=amt))
+        out.append("- " + t("report.cost_total", amount=total["amount"] if total and total.get("known") else t("report.cost_unknown"),
+                            currency=(total or {}).get("currency", "USD")))
+    else:
+        out.append(f"- {t('report.cost_zero')}")
     # -- edits -------------------------------------------------------------------
-    out += ["", f"## {t('report.edits')}", "", f"- {t('report.edits_none')}"]
+    out += ["", f"## {t('report.edits')}", ""]
+    pkg = getattr(eng, "package", None)
+    if pkg is not None and pkg.oplog:
+        for e in pkg.oplog:
+            irr = f" ({t('report.irreversible')})" if e.get("invertible") == "none" else ""
+            out.append(f"- {e['n']}. {e['op']}: " + "; ".join(e.get("lines") or [str(e.get("count"))]) + irr)
+    else:
+        out.append(f"- {t('report.edits_none')}")
     # -- reproduce ---------------------------------------------------------------
-    out += ["", f"## {t('report.reproduce')}", "", t("report.reproduce_line", steps=len(eng.recipe.get('steps') or [])), ""]
+    out += ["", f"## {t('report.reproduce')}", "", t("report.reproduce_line", steps=len(eng.recipe.get('steps') or [])),
+            t("report.reproduce_manifest"), ""]
     return "\n".join(out)

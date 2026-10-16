@@ -70,8 +70,8 @@ class CliTest(ExtractTest):
         code, out, err = run("szukaj", EXTRACT / "versions/chatgpt_2025-10-01.zip")
         self.assertEqual(code, 2)
         code, out, err = run("inwentarz", self.tmp / "nope.zip")
-        self.assertEqual(code, 1)
-        self.assertIn("błąd", err)
+        self.assertEqual(code, 6, "an unreadable source has its own exit code")
+        self.assertIn("źródło nieczytelne", err)
         code, out, err = run("szukaj", EXTRACT / "versions/chatgpt_2025-10-01.zip", "--wyrazenie", "title~/(/")
         self.assertEqual(code, 1)
         code, out, err = run()
@@ -124,9 +124,9 @@ class I18nTest(ExtractTest):
         pl, en = i18n.table("pl"), i18n.table("en")
         self.assertEqual(set(pl), set(en))
         used = set()
-        for src in (PKG / "cli.py", PKG / "report.py"):
+        for src in (PKG / "cli.py", PKG / "cli_cut.py", PKG / "report.py", PKG / "outputs.py", PKG / "cut" / "profiles.py"):
             text = src.read_text(encoding="utf-8")
-            used.update(re.findall(r'(?<![A-Za-z_.])t\("([a-z_.]+)"', text))
+            used.update(re.findall(r'(?<![A-Za-z_.])t\(["\']([a-z_.]+)["\']', text))
             used.update(re.findall(r'"((?:cli|report)\.[a-z_.]+)"', text))
         missing = sorted(k for k in used if k not in pl)
         self.assertEqual(missing, [])

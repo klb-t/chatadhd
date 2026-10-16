@@ -13,9 +13,9 @@
   {"id": "password_assignment", "kind": "SECRET", "regex": "(?i)\\b(?:password|passwd|hasło|haslo|secret|token)[\"']?\\s*[:=]\\s*[\"']?([^\\s\"',;]{6,})", "group": 1},
   {"id": "email", "kind": "EMAIL", "regex": "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b"},
   {"id": "iban", "kind": "IBAN", "regex": "\\b[A-Z]{2}\\d{2}(?:[ ]?[A-Z0-9]{4}){3,7}(?:[ ]?[A-Z0-9]{1,4})?\\b"},
-  {"id": "card", "kind": "CARD", "regex": "\\b(?:\\d[ -]?){13,19}\\b", "check": "luhn"},
+  {"id": "card", "kind": "CARD", "regex": "\\b\\d(?:[ -]?\\d){12,18}\\b", "check": "luhn"},
   {"id": "pesel", "kind": "PESEL", "regex": "\\b\\d{11}\\b", "check": "pesel"},
-  {"id": "phone", "kind": "PHONE", "regex": "(?<![\\w+])(?:\\+\\d{1,3}[ -]?)?(?:\\(?\\d{2,3}\\)?[ -]?)?\\d{3}[ -]?\\d{3}[ -]?\\d{3}\\b"},
+  {"id": "phone", "kind": "PHONE", "regex": "(?<![\\w+])\\+\\d{1,3}[ -]?\\d{2,4}(?:[ -]?\\d{2,4}){1,3}\\b|(?<![\\w+-])\\(?\\d{2,3}\\)?[ -]\\d{3}[ -]\\d{2,3}[ -]?\\d{2,3}\\b|(?<![\\w+-])\\d{3}-\\d{3}-\\d{3,4}\\b"},
   {"id": "ipv4", "kind": "IP", "regex": "\\b(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)(?:\\.(?:25[0-5]|2[0-4]\\d|1?\\d?\\d)){3}\\b"},
   {"id": "street_pl", "kind": "ADDRESS", "regex": "\\b(?:ul\\.|ulica|al\\.|aleja|os\\.|pl\\.)\\s+[A-ZŁŚŻŹĆŃÓĘĄ][\\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ.-]*(?:\\s+[A-ZŁŚŻŹĆŃÓĘĄ][\\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ.-]*)*\\s+\\d+[A-Za-z]?(?:/\\d+[A-Za-z]?)?"}
  ],
