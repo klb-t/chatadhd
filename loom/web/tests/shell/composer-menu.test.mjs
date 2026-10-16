@@ -83,3 +83,39 @@ test('attachment references: the kernel reads blob:<hash>/<name>; the name shows
   assert.equal(cm.attachmentName('/home/me/zdjęcie.jpg'), 'zdjęcie.jpg');
   assert.equal(cm.attachmentName('plain.txt'), 'plain.txt');
 });
+
+test('values from data: the thinking effort and the model setting are entries of the menu, a missing one falls back to the preset', () => {
+  const m = cm.composeMenu(base, undefined);
+  assert.equal(cm.toggleValue(m.items, 'thinking', 'fallback'), 'high');
+  assert.equal(cm.modelSetting(m.items), 'default_model');
+  const changed = cm.composeMenu(base, { ops: [
+    { op: 'hide', id: 'thinking' }, { op: 'add', item: { id: 'think_max', label: 'Max', kind: 'toggle', flag: 'thinking', value: 'max' }, parent: 'tools' },
+    { op: 'hide', id: 'model' }, { op: 'add', item: { id: 'model2', label: 'Model', kind: 'model', setting: 'chat_model' } },
+  ] });
+  assert.deepEqual(changed.issues, []);
+  assert.equal(cm.toggleValue(changed.items, 'thinking', 'fallback'), 'max');
+  assert.equal(cm.modelSetting(changed.items), 'chat_model');
+  const bare = cm.composeMenu({ items: [{ id: 't', label: 't', kind: 'toggle', flag: 'thinking' }, { id: 'm', label: 'm', kind: 'model' }] }, undefined);
+  assert.equal(cm.toggleValue(bare.items, 'thinking', cm.THINKING_EFFORT), cm.THINKING_EFFORT);
+  assert.equal(cm.modelSetting(bare.items), cm.MODEL_SETTING);
+});
+
+test('the model of a conversation through the scope chain: only a level more specific than the person is its own', () => {
+  const chain = ['installation', 'person', 'project', 'conversation'].map(level => ({ level }));
+  assert.equal(cm.conversationModel({ defined: true, value: 'x/conv', scope: 'conversation', chain }), 'x/conv');
+  assert.equal(cm.conversationModel({ defined: true, value: 'x/project', scope: 'project', chain }), 'x/project');
+  assert.equal(cm.conversationModel({ defined: true, value: 'x/mine', scope: 'person', chain }), null, "the person's setting does not override the picker");
+  assert.equal(cm.conversationModel({ defined: true, value: 'x/preset', scope: 'installation', chain }), null);
+  assert.equal(cm.conversationModel({ defined: false, chain }), null);
+  assert.equal(cm.conversationModel({ defined: true, value: 7, scope: 'conversation', chain }), null);
+  assert.equal(cm.conversationModel(null), null);
+});
+
+test('writing the model at the conversation level keeps the rest of the metadata; the default model removes it', () => {
+  const meta = { units: { project: 'p1' }, settings: { chat_flow: 'graph' } };
+  const set = cm.withConversationModel(meta, 'default_model', 'x/conv');
+  assert.deepEqual(set, { units: { project: 'p1' }, settings: { chat_flow: 'graph', default_model: 'x/conv' } });
+  assert.deepEqual(meta.settings, { chat_flow: 'graph' }, 'the input is not changed');
+  assert.deepEqual(cm.withConversationModel(set, 'default_model', ''), { units: { project: 'p1' }, settings: { chat_flow: 'graph' } });
+  assert.deepEqual(cm.withConversationModel(undefined, 'default_model', 'm'), { settings: { default_model: 'm' } });
+});

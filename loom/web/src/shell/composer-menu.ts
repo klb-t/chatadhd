@@ -10,6 +10,10 @@ export interface MenuItem {
   when?: string;
   flag?: string;
   panel?: string;
+  /** model: the setting the choice is written to at the conversation level of the scope chain (preset default_model). */
+  setting?: string;
+  /** toggle: the value the flag sends when on (thinking: the reasoning effort, preset high). */
+  value?: unknown;
   reason?: unknown;
   items?: MenuItem[];
 }
@@ -31,8 +35,9 @@ export function readItems(value: unknown, where: string, issues: string[]): Menu
     if (!isObject(raw) || typeof raw.id !== "string" || raw.id === "") { issues.push(`${where}: an entry without id`); continue; }
     if (typeof raw.kind !== "string" || !KINDS.includes(raw.kind)) { issues.push(`${where}/${raw.id}: unknown kind ${String(raw.kind)}`); continue; }
     const item: MenuItem = { id: raw.id, label: raw.label ?? raw.id, kind: raw.kind as MenuKind };
-    for (const key of ["when", "flag", "panel"] as const) if (typeof raw[key] === "string") item[key] = raw[key] as string;
+    for (const key of ["when", "flag", "panel", "setting"] as const) if (typeof raw[key] === "string") item[key] = raw[key] as string;
     if (raw.reason !== undefined) item.reason = raw.reason;
+    if (raw.value !== undefined) item.value = raw.value;
     if (raw.kind === "submenu") item.items = readItems(raw.items ?? [], `${where}/${raw.id}`, issues);
     out.push(item);
   }
@@ -105,7 +110,45 @@ export function itemState(item: MenuItem, ctx: MenuContext): ItemState {
 
 /** The request fields a set of on-flags adds to one message. Only the flags that differ from the preset are sent. */
 export interface MenuFlags { web_search: boolean; thinking: boolean; memory: boolean; knowledge: boolean }
+/** Used only when a toggle entry of the data carries no value of its own (the shipped entry says high). */
 export const THINKING_EFFORT = "high";
+/** Used only when the model entry of the data names no setting (the shipped entry says default_model). */
+export const MODEL_SETTING = "default_model";
+
+/** Every entry, submenus included, in menu order. */
+export function flatItems(items: MenuItem[]): MenuItem[] {
+  return items.flatMap(i => [i, ...(i.items ? flatItems(i.items) : [])]);
+}
+/** The value a toggle sends when on: the entry's `value` (data), else the fallback. */
+export function toggleValue(items: MenuItem[], flag: string, fallback: string): string {
+  const hit = flatItems(items).find(i => i.kind === "toggle" && i.flag === flag);
+  return typeof hit?.value === "string" && hit.value !== "" ? hit.value : fallback;
+}
+/** The setting a model choice is written to: the model entry's `setting` (data), else default_model. */
+export function modelSetting(items: MenuItem[]): string {
+  const hit = flatItems(items).find(i => i.kind === "model");
+  return hit?.setting || MODEL_SETTING;
+}
+
+/** The answer of the scope chain (P24) for the model setting of one conversation, as the transport reads it. */
+export interface ModelResolution { defined?: boolean; value?: unknown; scope?: string; chain?: { level: string }[] }
+/** The model a conversation has of its own: one a level more specific than the person supplied (the conversation, its project, ...).
+ *  null = it has none, and the picker keeps the person's choice. The order of the levels is the chain's (data), general first. */
+export function conversationModel(resolution: ModelResolution | null | undefined): string | null {
+  if (!resolution?.defined || typeof resolution.value !== "string" || resolution.value === "") return null;
+  const levels = (resolution.chain ?? []).map(l => l.level);
+  const at = levels.indexOf(resolution.scope ?? "");
+  const person = levels.indexOf("person");
+  return at >= 0 && person >= 0 && at > person ? resolution.value : null;
+}
+/** The conversation's metadata with the model chosen at its level of the chain ("" = none of its own: the chain decides). Other keys stay. */
+export function withConversationModel(metadata: unknown, setting: string, model: string): Record<string, unknown> {
+  const meta: Record<string, unknown> = isObject(metadata) ? { ...metadata } : {};
+  const settings: Record<string, unknown> = isObject(meta.settings) ? { ...meta.settings } : {};
+  if (model) settings[setting] = model; else delete settings[setting];
+  meta.settings = settings;
+  return meta;
+}
 
 /** The reference the kernel resolves to the uploaded file (see ChatEngine::set_attachment_resolver). */
 export function attachmentRef(hash: string, name: string): string { return `blob:${hash}/${name}`; }

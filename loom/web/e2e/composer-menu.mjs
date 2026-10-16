@@ -43,7 +43,8 @@ try {
   await api("POST", "/api/models/refresh");
   const launch = await chromium();
   browser = await launch.launch({ headless: true }).catch(() => launch.launch({ headless: true, executablePath: CHROMIUM }));
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true });
+  // Reduced motion: the screenshots show the menu, not its fade-in (and the menu honours the preference).
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: "reduce" });
   const page = await context.newPage();
   const png = (n) => page.screenshot({ path: path.join(SHOTS, `composer-menu-phone-${n}.png`) });
   await page.goto(base, { waitUntil: "domcontentloaded" });
@@ -94,6 +95,11 @@ try {
     await page.locator('[data-testid="attachment-chip"][data-state="ready"]').nth(1).waitFor();
     assert.equal(await page.getByTestId("attachment-chip").count(), 2);
     await page.getByTestId("attachment-preview").waitFor();
+    const field = await page.getByTestId("chat-input").boundingBox();
+    for (const chip of await page.getByTestId("attachment-chip").all()) assert.ok((await chip.boundingBox()).y + 1 < field.y, "chips sit above the field");
+    assert.ok(field.width >= 150, `the field keeps its width next to the chips (${field.width}px)`);
+    const plusBox = await plus.boundingBox();
+    assert.ok(Math.abs(plusBox.y + plusBox.height - (field.y + field.height)) < 24, "+ stays on the row of the field");
     await png("03-chips");
     await page.locator('[data-testid="attachment-chip"][data-name="pixel.png"] [data-testid="attachment-remove"]').click();
     assert.equal(await page.getByTestId("attachment-chip").count(), 1);
@@ -137,6 +143,35 @@ try {
     await page.getByTestId("send-chat").click();
     await page.waitForFunction(() => document.querySelectorAll('[data-testid="message"][data-role="assistant"]').length >= 2, null, { timeout: 20000 });
     assert.ok(JSON.stringify((await last()).messages).includes("image_url"));
+  });
+
+  await step("in a conversation the model from the menu is the conversation's own (scope chain), and opening it again shows it", async () => {
+    const listed = await (await api("GET", "/api/conversations")).json();
+    const conv = (Array.isArray(listed) ? listed : listed.conversations)[0];
+    await plus.click();
+    await page.getByTestId("composer-menu-model").click();
+    await page.locator('[data-testid="composer-model-option"][data-model="mock/e2e-model"]').click();
+    await menu.waitFor({ state: "detached" });
+    let meta = null;
+    for (const end = Date.now() + 10000; Date.now() < end; await new Promise(r => setTimeout(r, 100))) {
+      meta = (await (await api("GET", `/api/conversations/${conv.id}`)).json()).metadata;
+      if (meta?.settings?.default_model === "mock/e2e-model") break;
+    }
+    assert.equal(meta?.settings?.default_model, "mock/e2e-model", "the choice is kept at the conversation level");
+    const resolved = await (await api("POST", "/api/scopes/resolve", { key: "default_model", conversation_id: conv.id })).json();
+    assert.equal(resolved.scope, "conversation");
+    assert.equal(resolved.value, "mock/e2e-model");
+    // The kernel reads the same chain when a request names no model (another client, the command line).
+    await (await api("POST", "/api/chat", { message: "Bez modelu w prośbie", conv_id: conv.id })).text();
+    assert.equal((await last()).model, "mock/e2e-model", "a send without a model uses the conversation's");
+    // A new chat with another model in the picker above; the old conversation still opens with its own.
+    await page.getByTestId("shell-drawer-toggle").click();
+    await page.getByTestId("shell-new-chat").click();
+    await page.getByTestId("model-picker").selectOption("mock/second-model");
+    await page.getByTestId("shell-drawer-toggle").click();
+    await page.getByTestId("shell-conv").first().click();
+    await page.waitForFunction(() => document.querySelector('[data-testid="model-picker"]')?.value === "mock/e2e-model", null, { timeout: 10000 });
+    assert.equal(await page.getByTestId("composer-model-note").count(), 0, "no problem was reported");
   });
 
   await step("Import conversations is reachable from the menu", async () => {

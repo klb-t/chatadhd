@@ -40,6 +40,7 @@
 #include "reasoning_profile.h"
 #include "context_format.h"
 #include "loom/runtime_profile.h"
+#include "loom/scope_resolver.h"
 
 namespace loom {
 
@@ -662,6 +663,20 @@ bool history_skipped(const ChatOptions& opts, const std::string& id) {
   return !opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), id) != opts.history_skip.end();
 }
 
+// The model of a send that names none: the setting default_model through the one scope chain (loom/scope_resolver.h): conversation
+// (conversations.metadata.settings.default_model, what the + menu and the model picker write) -> units -> user -> installation. A chain that
+// cannot be read is logged by value_or and the user's setting decides, as before.
+std::string scoped_default_model(Database& db, const Config& cfg, const std::string& conv_id) {
+  const std::string mine = cfg_string(cfg, "default_model");
+  scopes::Binding bind;
+  bind.key = "default_model";
+  bind.conv_id = conv_id;
+  const Json v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(mine));
+  if (v.is_string() && !v.get<std::string>().empty()) return v.get<std::string>();
+  if (!v.is_null()) log::warn("loom.chat_engine", "default_model from the scope chain is not a model name ({}); the setting decides", v.dump());
+  return mine;
+}
+
 // The flow of a request. A profile that cannot be read never fails a send: it is logged and the request stays plain.
 std::optional<chat::formats::Axes> resolve_flow(Database& db, const Config& cfg, const ChatOptions& opts, const std::string& conv_id,
                                                 const std::string& model, bool reply_allowed) {
@@ -780,7 +795,7 @@ Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions&
   }
   const ChatOptions opts = select_representation(opts_in, conv_id);
   LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
-  const std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  const std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv_id);
   const bool stream = opts.stream.value_or(cfg_bool(cfg_, "stream", true));
   llm::RouteSelector preview_route;
   preview_route.require_credential = false;  // a preview spends nothing and needs no key
@@ -944,7 +959,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   const bool unified = unified_options.value("enabled", false);
   Json unified_context;
   // The flow: how the selection (read from the graph) is rendered for this model and what form of answer is asked for. Preset plain = today's bytes.
-  const std::string flow_model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  const std::string flow_model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, std::string(conv_id));
   const bool graph_off = json::get_string(execution.value("graph_reply", Json::object()), "mode", "off") == "off";
   const auto flow = resolve_flow(db_, cfg_, opts, std::string(conv_id), flow_model, graph_off);
   Json selection = nullptr;
@@ -1355,7 +1370,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   if (!msgs_json) return msgs_json.error();
   LOOM_TRY(retain_request_metadata());
 
-  std::string model = opts.model.value_or(cfg_string(cfg_, "default_model"));
+  std::string model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, conv.id);
 
   // 5. Call the API (through the one use-model action).
   const llm::Services services(cfg_, secrets_, http_);

@@ -983,6 +983,8 @@ R"loom_onboard({
                 "cm_reason_unknown_action": "This entry has no action in this version.",
                 "cm_issue": "The composer menu overlay has a problem: {{issue}}",
                 "cm_models_empty": "The list of models is empty. Set the provider key in Settings.",
+                "cm_model_not_saved": "The model is set for the next message, but this conversation did not keep it: {{reason}}",
+                "cm_model_not_read": "Could not read which model this conversation uses: {{reason}}",
                 "att_remove": "Remove {{name}}",
                 "att_list": "Attachments",
                 "att_uploading": "Adding {{name}}…",
@@ -1039,13 +1041,13 @@ R"loom_onboard({
                 "regenerate": "Wygeneruj ponownie",
                 "exclude": "Wyklucz",
                 "restore": "Przywróć",
-                "versions": "Wersje",
+)loom_onboard",
+R"loom_onboard(                "versions": "Wersje",
                 "message_actions": "Akcje wiadomości",
                 "prev_version": "Poprzednia wersja",
                 "next_version": "Następna wersja",
                 "thinking": "Myślenie",
-)loom_onboard",
-R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
+                "thinking_for": "Myślenie przez {{seconds}} s",
                 "show": "Pokaż {{what}}",
                 "hide": "Ukryj {{what}}",
                 "show_thinking": "Pokaż myślenie",
@@ -1180,6 +1182,8 @@ R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
                 "cm_reason_unknown_action": "Ta pozycja nie ma w tej wersji żadnej czynności.",
                 "cm_issue": "Nakładka menu dodawania ma problem: {{issue}}",
                 "cm_models_empty": "Lista modeli jest pusta. Wpisz klucz dostawcy w Ustawieniach.",
+                "cm_model_not_saved": "Model jest ustawiony dla następnej wiadomości, ale ta rozmowa go nie zapamiętała: {{reason}}",
+                "cm_model_not_read": "Nie udało się sprawdzić, jakiego modelu używa ta rozmowa: {{reason}}",
                 "att_remove": "Usuń {{name}}",
                 "att_list": "Załączniki",
                 "att_uploading": "Dodaję {{name}}…",
@@ -1202,7 +1206,7 @@ R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
           "label": "Entries of the + menu next to the message field (attach, model, tools, context, import)",
           "value": {
             "schema": "loom.composer_menu/1",
-            "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo; when: camera), model (list of models), submenu (items), toggle (flag: web_search | thinking | memory | knowledge, valid for the next message), panel (opens a panel: import | graph | settings), unavailable (visible, with reason; panel optionally points where it is set).",
+            "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo; when: camera), model (list of models; the choice is written to the conversation level of the scope chain under `setting`), submenu (items), toggle (flag: web_search | thinking | memory | knowledge; on until turned off, a chip above the field says so; `value` = what an on flag sends, thinking: the reasoning effort), panel (opens a panel: import | graph | settings), unavailable (visible, with reason; panel optionally points where it is set).",
             "items": [
               {
                 "id": "attach_file",
@@ -1218,7 +1222,8 @@ R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
               {
                 "id": "model",
                 "label": "cm_model",
-                "kind": "model"
+                "kind": "model",
+                "setting": "default_model"
               },
               {
                 "id": "tools",
@@ -1242,7 +1247,8 @@ R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
                     "id": "thinking",
                     "label": "cm_thinking",
                     "kind": "toggle",
-                    "flag": "thinking"
+                    "flag": "thinking",
+                    "value": "high"
                   },
                   {
                     "id": "image",
@@ -2170,7 +2176,8 @@ R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
       "id": "presentation.route_issue/v1",
       "key": "presentation.route_issue",
       "area": "presentation/route_issue",
-      "revision": 1,
+)loom_onboard",
+R"loom_onboard(      "revision": 1,
       "label": "Quiet note when routing a chat input had a problem it worked around (the model route failed and the local rules decided); texts only, nothing is blocked and nothing is lost",
       "value": {
         "schema": "loom.presentation_feature/1",
@@ -2181,8 +2188,7 @@ R"loom_onboard(                "thinking_for": "Myślenie przez {{seconds}} s",
             "other": "Routing had a problem ({{code}}: {{message}}); the local rules read this message instead. Nothing was lost."
           },
           "pl": {
-)loom_onboard",
-R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
+            "model_route_failed": "Model nie zdołał rozpoznać zamiaru tej wiadomości ({{message}}); przeczytały ją lokalne reguły. Nic nie zginęło.",
             "other": "Rozpoznawanie zamiaru miało problem ({{code}}: {{message}}); tę wiadomość przeczytały lokalne reguły. Nic nie zginęło."
           }
         }
@@ -2799,6 +2805,8 @@ R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać 
             "cm_reason_unknown_action": "This entry has no action in this version.",
             "cm_issue": "The composer menu overlay has a problem: {{issue}}",
             "cm_models_empty": "The list of models is empty. Set the provider key in Settings.",
+            "cm_model_not_saved": "The model is set for the next message, but this conversation did not keep it: {{reason}}",
+            "cm_model_not_read": "Could not read which model this conversation uses: {{reason}}",
             "att_remove": "Remove {{name}}",
             "att_list": "Attachments",
             "att_uploading": "Adding {{name}}…",
@@ -2995,6 +3003,8 @@ R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać 
             "cm_reason_unknown_action": "Ta pozycja nie ma w tej wersji żadnej czynności.",
             "cm_issue": "Nakładka menu dodawania ma problem: {{issue}}",
             "cm_models_empty": "Lista modeli jest pusta. Wpisz klucz dostawcy w Ustawieniach.",
+            "cm_model_not_saved": "Model jest ustawiony dla następnej wiadomości, ale ta rozmowa go nie zapamiętała: {{reason}}",
+            "cm_model_not_read": "Nie udało się sprawdzić, jakiego modelu używa ta rozmowa: {{reason}}",
             "att_remove": "Usuń {{name}}",
             "att_list": "Załączniki",
             "att_uploading": "Dodaję {{name}}…",
@@ -3017,7 +3027,7 @@ R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać 
       "label": "Entries of the + menu next to the message field (attach, model, tools, context, import)",
       "value": {
         "schema": "loom.composer_menu/1",
-        "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo; when: camera), model (list of models), submenu (items), toggle (flag: web_search | thinking | memory | knowledge, valid for the next message), panel (opens a panel: import | graph | settings), unavailable (visible, with reason; panel optionally points where it is set).",
+        "note": "Entries of the + menu next to the message field. label/reason name a word of presentation.ui_shell, or are {en, pl}. kind: attach (file picker), camera (photo; when: camera), model (list of models; the choice is written to the conversation level of the scope chain under `setting`), submenu (items), toggle (flag: web_search | thinking | memory | knowledge; on until turned off, a chip above the field says so; `value` = what an on flag sends, thinking: the reasoning effort), panel (opens a panel: import | graph | settings), unavailable (visible, with reason; panel optionally points where it is set).",
         "items": [
           {
             "id": "attach_file",
@@ -3033,7 +3043,8 @@ R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać 
           {
             "id": "model",
             "label": "cm_model",
-            "kind": "model"
+            "kind": "model",
+            "setting": "default_model"
           },
           {
             "id": "tools",
@@ -3057,7 +3068,8 @@ R"loom_onboard(            "model_route_failed": "Model nie zdołał rozpoznać 
                 "id": "thinking",
                 "label": "cm_thinking",
                 "kind": "toggle",
-                "flag": "thinking"
+                "flag": "thinking",
+                "value": "high"
               },
               {
                 "id": "image",

@@ -42,7 +42,7 @@ import { needsProviderKey, useShellText } from "../shell/text";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
 import ComposerMenu from "../shell/ComposerMenu";
-import { attachmentName, attachmentRef, composeMenu, THINKING_EFFORT, type MenuFlags } from "../shell/composer-menu";
+import { attachmentName, attachmentRef, composeMenu, conversationModel, modelSetting, THINKING_EFFORT, toggleValue, withConversationModel, type MenuFlags } from "../shell/composer-menu";
 import { nativeFragmentPrompt, nativeGraphDisplayText, recordedGraphReply } from "../graph/chat-graph";
 
 marked.setOptions({ breaks: true });
@@ -427,6 +427,31 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   }, []);
   const composedMenu = useMemo(() => composeMenu(menuBase.value, menuOps.value), [menuBase.value, menuOps.value]);
   const closeMenu = useCallback(() => { setMenuOpen(false); plusRef.current?.focus(); }, []);
+  const thinkingEffort = useMemo(() => toggleValue(composedMenu.items, "thinking", THINKING_EFFORT), [composedMenu]);
+  const modelKey = useMemo(() => modelSetting(composedMenu.items), [composedMenu]);
+  // P33: the model is the conversation's, through the scope chain (P24). Choosing one (the + menu or the picker above, one state) writes it at
+  // the conversation level (conversations.metadata.settings); opening a conversation shows the model it has of its own, if any. A failure
+  // to read or keep it is said under the field: the choice still holds for the next message.
+  const [modelNote, setModelNote] = useState<string | null>(null);
+  const shellTextRef = useRef(t);
+  shellTextRef.current = t;
+  const chooseModel = useCallback((id: string) => {
+    setModel(id);
+    setModelNote(null);
+    const target = convId;
+    if (!target) return;
+    api.getConversation(target)
+      .then((conv) => api.updateConversation(target, { metadata: withConversationModel(conv.metadata, modelKey, id) }))
+      .then(undefined, (err: unknown) => { if (mountedRef.current) setModelNote(t("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
+  }, [convId, modelKey, t]);
+  useEffect(() => {
+    if (!convId) return;
+    let live = true;
+    api.resolveScope({ key: modelKey, conversation_id: convId }).then(
+      (resolution) => { const own = conversationModel(resolution); if (live && own !== null) setModel(own); },
+      (err: unknown) => { if (live) setModelNote(shellTextRef.current("cm_model_not_read", { reason: err instanceof Error ? err.message : String(err) })); });
+    return () => { live = false; };
+  }, [convId, modelKey]);
 
   const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
     const text = input.trim();
@@ -486,7 +511,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       // Omit unchanged options so the existing default request stays intact.
       ...(attachments.some(a => a.state === "ready") && { attachments: attachments.flatMap(a => a.state === "ready" && a.ref ? [a.ref] : []) }),
       ...(webSearch && { web_search: true }),
-      ...(thinking && { reasoning_effort: THINKING_EFFORT }),
+      ...(thinking && { reasoning_effort: thinkingEffort }),
       ...(!includeMemory && { include_memory: false }),
       ...(!includeGraphMemory && { include_graph_memory: false }),
       ...(!includeHistory && { include_history: false }),
@@ -636,7 +661,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
-  }, [input, attachments, webSearch, thinking, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
+  }, [input, attachments, webSearch, thinking, thinkingEffort, stream, convId, creating, gate, model, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
     useKnowledge, contextQuery, contextProject, contextTargets, contextRun,
     contextLanguage, contextBudget, contextHops, contextDetail, usePlan, planDraft, includeMemory, includeGraphMemory, includeHistory, traceContext, runProfileOperation, onMessagesChanged, supports, channels, scanLimit, counterEvidence, lexicalShadow, branchLeaf, requestOverride, gate.blocked, gateTexts.blocked, gateTexts.emptyAnswer, gateTexts.streamEnded]);
 
@@ -1247,7 +1272,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           {menuOpen && <ComposerMenu items={composedMenu.items} issues={composedMenu.issues} ctx={{ camera: Boolean(navigator.mediaDevices?.getUserMedia), upload: Boolean(api.actions?.clientBlobUpload) }}
             flags={menuFlags} model={model} models={models}
             onAttach={(kind) => (kind === "camera" ? cameraInputRef : fileInputRef).current?.click()}
-            onToggle={toggleFlag} onModel={setModel} onPanel={(panel) => requestPanel(panel)} onClose={closeMenu} />}
+            onToggle={toggleFlag} onModel={chooseModel} onPanel={(panel) => requestPanel(panel)} onClose={closeMenu} />}
           <input ref={fileInputRef} type="file" multiple hidden data-testid="composer-file-input" onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
           <input ref={cameraInputRef} type="file" accept="image/*" capture="environment" hidden data-testid="composer-camera-input" onChange={(e) => { if (e.target.files) addFiles(e.target.files); e.target.value = ""; }} />
         </span>}
@@ -1266,12 +1291,12 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
         </div>}
         {(() => { const picker = <select
           value={model}
-          onChange={(e) => setModel(e.target.value)}
+          onChange={(e) => chooseModel(e.target.value)}
           style={chat ? { width: "auto", maxWidth: "38vw", borderRadius: 999, minHeight: 32, fontSize: 12, padding: "2px 8px" } : { width: 150, flexShrink: 0 }}
           aria-label={t("model_label")}
           data-testid="model-picker"
         >
-          <option value="">default model</option>
+          <option value="">{chat ? t("cm_model_default") : "default model"}</option>
           {models.map((m) => (
             <option key={m.id} value={m.id}>
               {m.name ?? m.id}
@@ -1281,10 +1306,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
           if (!chat) return picker;
           const slot = document.getElementById("shell-model-slot");
           return slot ? createPortal(picker, slot) : null; })()}
-        {routeNotes.length > 0 && <div style={{ width: "100%" }}>
+        {modelNote && <div className="pill composer-note" role="status" data-testid="composer-model-note" style={{ width: "100%" }}>{modelNote}</div>}
+        {routeNotes.length > 0 && <div className="composer-note" style={{ width: "100%" }}>
           {routeNotes.map((note, i) => <div className="pill" role="status" key={i} data-testid="chat-route-note">{note}</div>)}
         </div>}
-        {(usagePending || usageNotice) && <div style={{ width: "100%" }}>
+        {(usagePending || usageNotice) && <div className="composer-note" style={{ width: "100%" }}>
           {usagePending && <UsagePendingBlock testId="chat-usage-pending" feature={usageCatalog.feature} receipt={usagePending.receipt}
             onConfirm={confirmUsage} onReject={rejectUsage} />}
           {usageNotice && <div className="pill" data-testid="chat-usage-notice">{usageNotice}</div>}
