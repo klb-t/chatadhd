@@ -1,0 +1,28 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "split_at_date",
+ "module": "edits:split_at_date",
+ "group": "structure",
+ "label": {
+  "pl": "Podziel rozmowę datą (lub listą dat) na kilka",
+  "en": "Split a conversation at a date (or a list of dates)"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "at": {
+   "type": "any",
+   "required": true
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} rozmów podzielonych na {parts} części",
+  "en": "{count} conversation(s) split into {parts} part(s)"
+ }
+}

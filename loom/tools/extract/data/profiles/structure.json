@@ -1,0 +1,11 @@
+{"schema": "loom.extract.profile/1", "id": "structure", "kind": "restructure",
+ "label": {"pl": "Struktura: tytuły, daty, konta, drzewo gałęzi, narzędzia, załączniki, liczniki — bez treści", "en": "Structure: titles, dates, accounts, branch tree, tools, attachments, counts — no content"},
+ "layout": "conversation>message",
+ "branches": {"keep": "tree"},
+ "fields": {"conversation": ["key", "uid", "ext_id", "title", "created", "updated", "first_message", "last_message", "service", "product", "account.label", "archive", "format",
+                             "messages", "branches", "forks", "tools", "attachments", "lang", "models", "agentic", "versions", "duplicates", "tags"],
+            "message": ["id", "parent", "role", "created", "branch", "on_current_path", "kinds", "tools", "attachments", "model"]},
+ "blocks": {"attachment": "reference", "*": "omit"},
+ "timestamps": {"zone": "source", "format": "iso8601"},
+ "outputs": [{"kind": "json", "path": "structure/structure.json", "rows": "conversations", "nested": true}],
+ "sort": "package"}

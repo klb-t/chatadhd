@@ -91,7 +91,7 @@ class Redactor:
         fold = bool(prof.get("dictionary_fold", True))
         inflect = bool(prof.get("dictionary_inflect", True))
         if words:
-            pat = "|".join(_term_pattern(w, fold, inflect) for w in words)
+            pat = "|".join(f"(?P<t{i}>{_term_pattern(w, fold, inflect)})" for i, w in enumerate(words))
             self.rules.append(("dictionary", dkind, re.compile(pat), None, 0))
         self.dictionary_terms = len(words)
         self.keep_map = keep_map
@@ -121,7 +121,8 @@ class Redactor:
                 val = m.group(group)
                 if val is None or (check is not None and not check(re.sub(r"\D", "", val))):
                     return m.group(0)
-                mask = self._mask(kind, val)
+                key = f"term:{m.lastgroup}" if rid == "dictionary" and m.lastgroup else val
+                mask = self._mask(kind, key)
                 self.entries.append({"where": where, "field": field, "kind": kind, "rule": rid, "mask": mask,
                                      "at": m.start(group), "length": len(val)})
                 self.counts[kind] = self.counts.get(kind, 0) + 1

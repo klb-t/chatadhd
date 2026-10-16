@@ -1,0 +1,6 @@
+{"schema": "loom.extract.profile/1", "id": "timeline", "kind": "timeline",
+ "label": {"pl": "Oś czasu: lista chronologiczna wiadomości ze wszystkich źródeł z lukami, seriami i kontynuacjami; JSONL + dziennik Markdown", "en": "Timeline: a chronological list of messages from every source with gaps, bursts and continuations; JSONL + Markdown journal"},
+ "rows": "messages",
+ "timestamps": {"zone": "source", "format": "iso8601"},
+ "outputs": [{"kind": "jsonl", "path": "timeline/timeline.jsonl", "rows": "timeline"},
+             {"kind": "markdown_journal", "path": "timeline/DZIENNIK.md"}]}

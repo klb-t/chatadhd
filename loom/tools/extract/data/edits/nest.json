@@ -1,0 +1,24 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "nest",
+ "module": "edits:nest",
+ "group": "structure",
+ "label": {
+  "pl": "Zagnieźdź listę w łańcuch (rodzic = poprzednia wiadomość)",
+  "en": "Nest a list into a chain (parent = previous message)"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} rozmów zagnieżdżonych",
+  "en": "{count} conversation(s) nested"
+ }
+}

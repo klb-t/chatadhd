@@ -1,0 +1,10 @@
+{"schema": "loom.extract.profile/1", "id": "table", "kind": "restructure",
+ "label": {"pl": "Tabela: CSV wiadomości (rozmowa, id, rodzic, rola, czas, gałąź, rodzaje bloków, tekst)", "en": "Table: CSV of messages (conversation, id, parent, role, time, branch, block kinds, text)"},
+ "branches": {"keep": "tree"},
+ "fields": {"message": ["conversation", "id", "parent", "role", "created", "branch", "on_current_path", "kinds", "tools", "model", "chars", "words", "text"]},
+ "blocks": {"text": "keep", "code": "keep", "attachment": "reference", "*": "omit"},
+ "timestamps": {"zone": "source", "format": "iso8601"},
+ "outputs": [{"kind": "csv", "path": "table/messages.csv", "rows": "messages"},
+             {"kind": "csv", "path": "table/conversations.csv", "rows": "conversations",
+              "columns": ["key", "uid", "title", "service", "created", "first_message", "last_message", "messages", "branches", "attachments", "lang", "agentic"]}],
+ "sort": "package"}

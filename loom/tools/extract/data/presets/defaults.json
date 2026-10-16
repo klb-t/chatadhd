@@ -27,7 +27,12 @@
   "decisions": {"learn_min_corrections": 2, "proposals": true},
   "flows": {"model": {"enabled": false, "cheap": "cheap_classify", "strong": "strong_judge",
                        "classes": {"cheap": null, "strong": null}, "route": "provider",
-                       "guard": {"ratio": 10.0, "limit_per_run": 0, "limit_per_day": 0}}},
+                       "guard": {"ratio": 10.0, "limit_per_run": 0, "limit_per_day": 0},
+                       "accept": false, "accept_x10": false, "replay_only": false,
+                       "provider": {"base_url": null, "api_key_env": "LOOM_EXTRACT_API_KEY", "secret": "api_key", "timeout": 120}}},
   "write": {"units_snapshot": true, "explain": true, "aggregate": false},
+  "cut": {"profiles": ["preserve", "text"], "order": "created", "attachments": "copy_used", "redaction": "none"},
+  "handoff": {"branches": "current", "graph": false, "zip": true},
+  "edits": {"preview_sample": 0},
   "report": {"language": "pl", "examples_per_unknown": 1, "max_list": 0}
 }

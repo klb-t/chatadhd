@@ -1,0 +1,33 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "add_field",
+ "module": "edits:add_field",
+ "group": "keys",
+ "label": {
+  "pl": "Dodaj pole ze stałą",
+  "en": "Add a field with a constant"
+ },
+ "scope": [
+  "conversation",
+  "message",
+  "block"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "field": {
+   "type": "path",
+   "required": true
+  },
+  "value": {
+   "type": "any"
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} × dodano {field}",
+  "en": "{count} × added {field}"
+ }
+}

@@ -182,8 +182,11 @@ def make_grains(unit: Unit, grain: str, include_blocks: list[str], window: int =
 class Cascade:
     def __init__(self, units: list[Unit], criteria: Criteria, ds: Optional[DataStore] = None, lex: Optional[Lexicon] = None,
                  *, cascade_id: Optional[str] = None, grain: Optional[str] = None, manual: Optional[dict[str, dict[str, Any]]] = None,
-                 vectors: Optional[VectorIndex] = None, model_enabled: bool = False, bands: Optional[dict[str, float]] = None) -> None:
+                 vectors: Optional[VectorIndex] = None, model_enabled: bool = False, bands: Optional[dict[str, float]] = None,
+                 model_runner: Any = None, topic: str = "") -> None:
         self.ds = ds or default_store()
+        self.model_runner = model_runner
+        self.topic = topic
         self.lex = lex or default_lexicon()
         self.units = [u for u in units if u.kind in ("conversation", "session")]
         self.criteria = criteria
@@ -259,6 +262,18 @@ class Cascade:
         reasons = [{"query": q, "similarity": round(s, 4), "threshold": thr, "tier": self.vectors.tier_name if self.vectors else None}] if q else []
         return LevelOutcome(level["id"], level["flow"], score, self._band(score), reasons)
 
+    def _level_model(self, grain: "Grain", level: dict[str, Any], flow_id: str) -> LevelOutcome:
+        from .flows import verdict_outcome
+        crit = self.criteria
+        summary = ", ".join(crit.terms[:12]) if getattr(crit, "terms", None) else crit.id
+        parsed = self.model_runner.call(flow_id, {"topic": self.topic or crit.id, "title": grain.unit.title or "",
+                                                  "window": grain.text, "criteria_summary": summary})
+        decision, conf, reason = verdict_outcome(parsed)
+        if decision is None:
+            return LevelOutcome(level["id"], flow_id, None, None, skipped=reason)
+        score = {"include": 0.5 + conf / 2, "exclude": 0.5 - conf / 2, "ambiguous": 0.5}[decision]
+        return LevelOutcome(level["id"], flow_id, score, decision, [{"model": True, "confidence": conf, "reason": reason}])
+
     # -- combine ----------------------------------------------------------------------
     def _combine(self, outcomes: list[LevelOutcome]) -> tuple[float, float, str]:
         """(score, confidence, source) from decisive local levels."""
@@ -324,6 +339,7 @@ class Cascade:
             outcomes: list[LevelOutcome] = []
             excluded = False
             state = "all"
+            model_decided: Optional[tuple[str, Optional[float], str]] = None
             for lv in levels:
                 flow = lv["flow"]
                 on = lv.get("on", "all")
@@ -352,10 +368,16 @@ class Cascade:
                 else:
                     fl = self.flows.get(flow, {})
                     if fl.get("kind") == "model":
-                        model_pending.setdefault(flow, {"grains": 0, "chars": 0, "note": "model flows are described in data; calling them arrives in slice B"})
+                        model_pending.setdefault(flow, {"grains": 0, "chars": 0})
                         model_pending[flow]["grains"] += 1
                         model_pending[flow]["chars"] += len(g.text)
-                        out = LevelOutcome(lv["id"], flow, None, None, skipped="model flow not executed in this slice (recorded)")
+                        if self.model_runner is not None:
+                            out = self._level_model(g, lv, flow)
+                            if out.decision in ("include", "exclude"):
+                                model_decided = (out.decision, out.score, lv["id"])
+                        else:
+                            out = LevelOutcome(lv["id"], flow, None, None,
+                                               skipped="model flow counted, not called (enable with --model and accept the estimate)")
                     else:
                         out = LevelOutcome(lv["id"], flow, None, None, skipped=f"unknown flow kind {fl.get('kind')}")
                 outcomes.append(out)
@@ -371,8 +393,13 @@ class Cascade:
                     state = "exclude"
                 elif out.decision in ("include", "ambiguous") and out.decision in decides:
                     state = out.decision if state != "include" else "include"
-            score, conf, src = self._combine(outcomes)
+            score, conf, src = self._combine([o for o in outcomes if not o.flow or self.flows.get(o.flow, {}).get("kind") != "model"])
             decision = "exclude" if excluded else self._band(score)
+            if model_decided is not None and not excluded:
+                # a model level runs on what the local levels left open; its verdict decides that grain
+                decision, src = model_decided[0], model_decided[2]
+                conf = next((float(o.reasons[0].get("confidence", conf)) for o in outcomes if o.level == src and o.reasons), conf)
+                score = model_decided[1] if model_decided[1] is not None else score
             if decision == "ambiguous" and self.cascade.get("unresolved") in ("include", "exclude"):
                 decision = self.cascade["unresolved"]
                 src = f"{src}+unresolved:{decision}"

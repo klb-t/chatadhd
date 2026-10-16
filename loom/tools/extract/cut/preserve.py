@@ -17,6 +17,7 @@ With redaction active, kept elements are re-serialised with the masks applied
 and the manifest says the copy is no longer byte-exact.
 """
 import fnmatch
+import io
 import json
 import logging
 from pathlib import Path
@@ -166,10 +167,13 @@ def _cut_archive(eng: Any, a: Any, units: list[Any], kept: list[Any], outputs: O
             filt = _match(name, pres.get("filter_members") or {})
             if keep is not None or other_policy == "copy":
                 with m.open() as src, sink.open(target, zinfo) as dst:
-                    copy_stream(src, dst)
+                    if redactor is not None and redactor.active:
+                        _copy_redacted(src, dst, redactor, name, info)
+                    else:
+                        copy_stream(src, dst)
                 info["members_written"] += 1
             elif filt is not None:
-                if _write_filtered(m, target, zinfo, sink, str(filt), ext_ids, redactor, info):
+                if _write_filtered(m, target, zinfo, sink, str(filt), ext_ids, redactor if redactor is not None and redactor.active else None, info):
                     info["members_written"] += 1
             else:
                 info["omitted"].append({"member": name, "why": f"{m.kind or 'unknown'} member not in the format's preserve table"})
@@ -220,11 +224,49 @@ def _write_conversations(m: Any, mu: list[Any], mk: list[Any], target: str, zinf
         info["indivisible"].append({"member": m.name, "why": "the format has no per-conversation boundary in this member",
                                     "other_conversations": len(mu) - len(mk)})
     with m.open() as src, sink.open(target, zinfo) as dst:
-        copy_stream(src, dst)
-    if redactor is not None and redactor.active:
-        info["byte_exact"] = False
-        info.setdefault("not_redacted", []).append(m.name)
+        if redacting:
+            _copy_redacted(src, dst, redactor, m.name, info)
+        else:
+            copy_stream(src, dst)
     return True
+
+
+_TEXT_EXT = (".md", ".markdown", ".txt", ".html", ".htm", ".mht", ".mhtml", ".js", ".csv", ".log")
+
+
+def _copy_redacted(src: Any, dst: Any, redactor: Any, name: str, info: dict[str, Any]) -> None:
+    """A whole member with the masks applied: JSON re-serialised, JSONL line by line, text as text; a binary member
+    is copied unchanged and listed under ``not_redacted``."""
+    info["byte_exact"] = False
+    data = src.read()
+    low = name.lower()
+    where = {"member": name}
+    try:
+        if low.endswith(".jsonl"):
+            out = []
+            for i, line in enumerate(data.decode("utf-8", errors="replace").splitlines()):
+                if not line.strip():
+                    out.append(line)
+                    continue
+                try:
+                    out.append(json.dumps(redactor.value(json.loads(line), {**where, "line": i + 1}), ensure_ascii=False))
+                except json.JSONDecodeError:
+                    out.append(redactor.text(line, {**where, "line": i + 1}))
+            dst.write(("\n".join(out) + ("\n" if data.endswith(b"\n") else "")).encode("utf-8", errors="backslashreplace"))
+            return
+        if low.endswith(".json"):
+            obj = json.loads(data.decode("utf-8", errors="replace"))
+            dst.write(json.dumps(redactor.value(obj, where), ensure_ascii=False).encode("utf-8", errors="backslashreplace"))
+            return
+        if low.endswith(_TEXT_EXT) or not name:
+            dst.write(redactor.text(data.decode("utf-8", errors="replace"), where).encode("utf-8", errors="backslashreplace"))
+            return
+    except json.JSONDecodeError:
+        log.debug("redaction: %s is not valid JSON; masked as text", name, exc_info=True)
+        dst.write(redactor.text(data.decode("utf-8", errors="replace"), where).encode("utf-8", errors="backslashreplace"))
+        return
+    dst.write(data)
+    info.setdefault("not_redacted", []).append(name)
 
 
 def _filter_redacted(src: Any, dst: Any, keep_idx: set[int], wrapper: Optional[str], lead: bool, redactor: Any, member: str) -> None:
@@ -242,7 +284,7 @@ def _filter_redacted(src: Any, dst: Any, keep_idx: set[int], wrapper: Optional[s
                 obj = redactor.value(obj, {"member": member, "element": idx})
                 if kept:
                     dst.write(pending or b",")
-                dst.write(json.dumps(obj, ensure_ascii=False).encode("utf-8"))
+                dst.write(json.dumps(obj, ensure_ascii=False).encode("utf-8", errors="backslashreplace"))
                 kept += 1
             pending = None
 
@@ -259,7 +301,13 @@ def _write_filtered(m: Any, target: str, zinfo: Any, sink: Any, field: str, ext_
             return isinstance(obj, dict) and str(obj.get(field)) in ext_ids
         try:
             with m.open() as src, sink.open(target, zinfo) as dst:
-                r = filter_array(src, dst, keep)
+                if redactor is not None:
+                    buf = io.BytesIO()
+                    r = filter_array(src, buf, keep)
+                    buf.seek(0)
+                    _copy_redacted(buf, dst, redactor, m.name, info)
+                else:
+                    r = filter_array(src, dst, keep)
             if r["kept"] < r["total"]:
                 info["omitted"].append({"member": m.name, "why": f"{r['total'] - r['kept']} record(s) of other conversations left out",
                                         "kept": r["kept"]})
@@ -274,7 +322,10 @@ def _write_filtered(m: Any, target: str, zinfo: Any, sink: Any, field: str, ext_
         return False
     if isinstance(obj, dict) and str(obj.get(field)) in ext_ids:
         with m.open() as src, sink.open(target, zinfo) as dst:
-            copy_stream(src, dst)
+            if redactor is not None:
+                _copy_redacted(src, dst, redactor, m.name, info)
+            else:
+                copy_stream(src, dst)
         return True
     info["omitted"].append({"member": m.name, "why": "record of a conversation that is not kept"})
     return False

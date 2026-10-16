@@ -144,7 +144,7 @@ class EngineTest(ExtractTest):
             self.assertEqual(m["cost_total"]["amount"], 0.0)
             self.assertEqual(m["model_calls"], [])
             self.assertTrue(m["recipe"]["sha256"])
-            self.assertEqual(m["run"]["slice"], "A")
+            self.assertEqual(m["run"]["slice"], "B")
         self.assertEqual(hashes[0], hashes[1], self._package_diff(self.tmp / "p1", self.tmp / "p2"))
         # replay from the package's own recipe → identical package
         eng = self.engine()

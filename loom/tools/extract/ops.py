@@ -199,9 +199,27 @@ def op_select_criteria(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     if crit.vectors:
         # the cascade indexes its own grains; here the index is created lazily by the cascade helper
         vectors = _window_index(eng)
+    model_on = bool(p.get("model")) or eng.model_enabled()
+    count_only = bool(p.get("model_count")) and not model_on
     cas = Cascade(eng.units, crit, eng.ds, eng.lex, cascade_id=p.get("cascade") or None, grain=p.get("grain") or None,
-                  manual=manual, vectors=vectors, model_enabled=bool(p.get("model")))
+                  manual=manual, vectors=vectors, model_enabled=model_on or count_only)
     res = cas.run()
+    estimate = None
+    if count_only and res.model_pending:
+        work = {f: {"calls": int(v.get("grains", 0)), "chars": int(v.get("chars", 0))} for f, v in res.model_pending.items()}
+        estimate = eng.models().estimate(work)
+    if model_on and res.model_pending:
+        # two passes: the local levels decide what stays ambiguous, the estimate of the model levels on exactly that
+        # is shown and must be accepted (or the run stops with the reason), then the model levels run (cached)
+        runner = eng.models()
+        work = {f: {"calls": int(v.get("grains", 0)), "chars": int(v.get("chars", 0))} for f, v in res.model_pending.items()}
+        estimate = runner.estimate(work)
+        eng.emit("question" if not runner.accept else "note", text="model estimate", estimate=estimate)
+        runner.authorize(estimate)
+        cas = Cascade(eng.units, crit, eng.ds, eng.lex, cascade_id=p.get("cascade") or None, grain=p.get("grain") or None,
+                      manual=manual, vectors=vectors, model_enabled=True, model_runner=runner,
+                      topic=crit.description or crit.id)
+        res = cas.run()
     eng.cascade = res
     eng.unit_decisions = {uid: d.as_dict() for uid, d in res.units.items()}
     eng.explain = res.explain_rows()
@@ -216,11 +234,13 @@ def op_select_criteria(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         if ud.manual:
             eng.recipe.setdefault("manual", {"include": [], "exclude": []})
     model_note = None
-    if p.get("model"):
-        model_note = "model flows are recorded (grains, chars) but not called in this slice; no network was used"
+    if model_on and estimate is None:
+        model_note = "models enabled; nothing stayed ambiguous, so no model was called"
+    elif not model_on and res.model_pending:
+        model_note = "model levels counted, not called (enable with --model and accept the estimate)"
     return {"counts": {**res.counts(), "grains": len(res.grains)}, "criteria": {"id": crit.id, "source": crit.source,
             "terms": crit.terms, "vectors": len(crit.vectors)}, "cascade": res.as_dict(), "selection": applied,
-            "manual_applied": sum(1 for d in res.units.values() if d.manual), "model_note": model_note,
+            "manual_applied": sum(1 for d in res.units.values() if d.manual), "model_note": model_note, "model_estimate": estimate,
             "shadow": {k: len(v) for k, v in res.shadow.items()}}
 
 
@@ -529,7 +549,7 @@ def op_dry_run(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
 
 def _write_text(path: Path, text: str) -> tuple[str, int]:
     path.parent.mkdir(parents=True, exist_ok=True)
-    data = text.encode("utf-8")
+    data = text.encode("utf-8", errors="backslashreplace")
     tmp = path.with_name(path.name + ".tmp")
     tmp.write_bytes(data)
     tmp.replace(path)
@@ -542,6 +562,7 @@ def _json_text(obj: Any) -> str:
 
 @op("write")
 def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
+    from .manifest import build_manifest, reproducible_hash
     from .report import build_report
     eng.ensure_units()
     aggregate = bool(p.get("aggregate")) or eng.aggregate
@@ -588,58 +609,56 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     put("decisions.json", _json_text(eng.decisions.as_dict()))
     if p.get("units_snapshot", True) and not aggregate:
         put("units.jsonl", "".join(json.dumps(u.as_dict(), ensure_ascii=False) + "\n" for u in eng.units))
+    # -- slice B: package tree, edits, cut outputs, redaction, statistics, model calls -------------------------
+    if eng.package is not None:
+        from .edits import oplog_rows
+        if eng.stats is None:
+            eng.op("stats", by="engine")
+        put("package.json", _json_text(eng.package.as_dict()))
+        if eng.package.oplog:
+            put("oplog.jsonl", "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in oplog_rows(eng.package)))
+    if eng.stats is not None:
+        put("stats.json", _json_text(eng.stats))
+    if eng.cut_info is not None:
+        red = eng.cut_info.get("redaction") or {}
+        if red.get("active"):
+            put("redaction.json", _json_text(red))
+            put("redaction.jsonl", "".join(json.dumps({k: v for k, v in e.items()}, ensure_ascii=False) + "\n" for e in eng.redaction_entries))
+    if eng.model_runner is not None and eng.model_runner.calls:
+        put("log.jsonl", "".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in eng.model_runner.log_rows()))
+    if eng.staged is not None:
+        import shutil
+        for o in sorted(eng.staged.items, key=lambda o: o["path"]):
+            src = eng.stage_dir / o["path"]
+            dst = pkg / o["path"]
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            if dst.exists():
+                dst.unlink()
+            shutil.copyfile(src, dst)
+            outputs.append({k: v for k, v in o.items()})
     recipe_norm = eng.normalised_recipe()
+    # the package's recipe describes the content, not where it is written: whoever replays it names the package
+    recipe_norm["steps"] = [st for st in recipe_norm.get("steps") or [] if st.get("op") != "write"]
     put("recipe.json", _json_text(recipe_norm))
     report = build_report(eng, aggregate=aggregate)
     put("RAPORT.md", report)
     outputs.sort(key=lambda o: o["path"])
-    repro = sha256_text("\n".join(f"{o['path']}:{o['sha256']}" for o in outputs))
-    manifest = _manifest(eng, p, outputs, repro, recipe_norm, aggregate)
+    repro = reproducible_hash(outputs)
+    manifest = build_manifest(eng, outputs, repro, recipe_norm, aggregate)
+    old = pkg / "manifest.json"
+    if old.exists():  # files of an earlier run that this run did not produce are removed, so the package is exactly the manifest
+        try:
+            keep = {o["path"] for o in outputs} | {"manifest.json"}
+            for o in json.loads(old.read_text(encoding="utf-8")).get("outputs") or []:
+                q = pkg / o["path"]
+                if o["path"] not in keep and q.is_file() and pkg.resolve() in q.resolve().parents:
+                    q.unlink()
+        except (OSError, json.JSONDecodeError):
+            log.debug("previous manifest unreadable; stale files left", exc_info=True)
     _write_text(pkg / "manifest.json", _json_text(manifest))
     eng.last_write = {"package": str(pkg), "reproducible_hash": repro, "outputs": len(outputs)}
     return {"counts": {"outputs": len(outputs) + 1, "bytes": sum(o["bytes"] for o in outputs)}, "package": str(pkg),
             "reproducible_hash": repro, "outputs": [o["path"] for o in outputs] + ["manifest.json"]}
-
-
-def _manifest(eng: Any, p: dict[str, Any], outputs: list[dict[str, Any]], repro: str, recipe_norm: dict[str, Any],
-              aggregate: bool) -> dict[str, Any]:
-    now = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-    started = datetime.fromtimestamp(eng.started, timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-    tool = eng.tool_info()
-    sources = []
-    for a in eng.archives:
-        unknown = [m.name for m in a.members if not m.format and m.kind not in ("asset", "container")]
-        sources.append({"path": None if aggregate else a.path, "label": a.label, "sha256": a.sha256, "size": a.size,
-                        "mtime": _ts.to_iso(datetime.fromtimestamp(a.mtime, timezone.utc)) if getattr(a, "mtime", None) else None,
-                        "format": a.format, "units": sum(1 for u in eng.units_raw if u.source.get("sha256") == a.sha256),
-                        "members_unknown": [] if aggregate else unknown, "members_unknown_count": len(unknown)})
-    cas = eng.cascade.as_dict() if eng.cascade else None
-    run_id = sha256_text(canonical_json({"sources": [s["sha256"] for s in sources], "recipe": recipe_hash(recipe_norm, eng.ds)}))
-    return {
-        "schema": "loom.extract.manifest/1",
-        "tool": {"name": tool["name"], "version": tool["version"], "extract_schema": tool["extract_schema"], "python": tool["python"],
-                 "selector": tool["selector"]},
-        "run": {"id": run_id, "started": started, "finished": now, "aggregate": aggregate, "slice": "A"},
-        "sources": sources,
-        "settings": eng.settings,
-        "criteria": eng.criteria.as_dict() if eng.criteria else None,
-        "cascade": cas,
-        "decisions": {"applied": sum(1 for d in eng.unit_decisions.values() if d.get("source") == "manual"),
-                      "entries": len(eng.decisions.entries), "source": eng.decisions.source},
-        "selection": eng.selection_summary(),
-        "expand": eng.expand_result,
-        "model_calls": list(eng.model_calls),
-        "cost_total": {"amount": 0.0, "currency": "USD", "known": True, "note": "0 — bez modelu"},
-        "outputs": outputs,
-        "recipe": {"sha256": recipe_hash(recipe_norm, eng.ds), "steps": len(recipe_norm.get("steps") or []),
-                   "by": steps_by_face(recipe_norm)},
-        "timeline": {k: eng.timeline.get(k) for k in ("key", "zone", "ties") if eng.timeline} | (
-            {"gaps": len(eng.timeline.get("gaps") or []), "bursts": len(eng.timeline.get("bursts") or []),
-             "continuations": len(eng.timeline.get("continuations") or [])} if eng.timeline else {}),
-        "diff": ({"against": eng.diff.get("old"), **eng.diff.get("counts", {})} if eng.diff else None),
-        "faces": sorted({s.get("by", "recipe") for s in recipe_norm.get("steps") or []}),
-        "reproducible_hash": repro,
-    }
 
 
 @op("report")
@@ -671,3 +690,6 @@ def op_user_call(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     out = fn(eng, dict(p.get("args") or {}))
     eng.emit("note", text=f"user code executed: {path}:{p['function']}")
     return {"counts": {}, "result": out, "user_code": str(path)}
+
+
+from . import ops_cut  # noqa: E402,F401  (registers the slice B operations)

@@ -76,7 +76,8 @@ class Outputs:
         return self.add(rel, hashlib.sha256(data).hexdigest(), len(data), **meta)
 
     def write_text(self, rel: str, text: str, **meta: Any) -> dict[str, Any]:
-        return self.write_bytes(rel, text.encode("utf-8"), **meta)
+        # a lone surrogate (invalid UTF-16 in the source, kept in tool inputs) becomes its JSON escape, never a crash
+        return self.write_bytes(rel, text.encode("utf-8", errors="backslashreplace"), **meta)
 
     def add_file(self, rel: str, **meta: Any) -> dict[str, Any]:
         """Register a file already written at ``root/rel``."""

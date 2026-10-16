@@ -69,12 +69,28 @@ class Engine:
         self._vectors: dict[str, VectorIndex] = {}
         self.started = time.time()
         self.last_write: Optional[dict[str, Any]] = None
+        # slice B: package tree, cut staging, redaction, statistics, hand-off, model runner
+        self.package: Any = None
+        self.stage_dir: Optional[Path] = None
+        self.staged: Any = None
+        self.cut_info: Optional[dict[str, Any]] = None
+        self.handoff_info: Optional[dict[str, Any]] = None
+        self.stats: Optional[dict[str, Any]] = None
+        self.redaction_reports: list[dict[str, Any]] = []
+        self.redaction_entries: list[dict[str, Any]] = []
+        self.summaries: dict[str, dict[str, Any]] = {}
+        self.model_runner: Any = None
+        self.ask: Optional[Callable[[dict[str, Any]], bool]] = None
+        self._tmp_stage: Any = None
 
     # -- lifecycle --------------------------------------------------------------
     def close(self) -> None:
         if self.ctx is not None:
             self.ctx.close()
             self.ctx = None
+        if self._tmp_stage is not None:
+            self._tmp_stage.cleanup()
+            self._tmp_stage = None
 
     def __enter__(self) -> "Engine":
         return self
@@ -165,7 +181,8 @@ class Engine:
         result = dict(result or {})
         result.setdefault("op", name)
         result["seconds"] = round(time.time() - t0, 4)
-        if spec.get("records", True):
+        no_record = bool(result.pop("_no_record", False))
+        if spec.get("records", True) and not no_record:
             # implicit pipeline steps (by="engine") are recorded too, marked as such, so the recipe is complete;
             # every step carries all its parameters with their origin (step | preset:… | op_default)
             step = add_step(self.recipe, name, params, by="recipe" if by == "engine" else by,
@@ -180,6 +197,7 @@ class Engine:
         if norm.get("sources"):
             self.set_sources(norm["sources"])
         self.settings.update(norm.get("settings") or {})
+        self.model_runner = None  # settings may have changed (models enabled, classes, provider)
         self.recipe["id"] = norm.get("id", self.recipe.get("id"))
         self.recipe["label"] = norm.get("label", {})
         self.recipe["manual"] = norm.get("manual", self.recipe.get("manual"))
@@ -282,6 +300,37 @@ class Engine:
                 "by_service": dict(sorted(by_service.items())),
                 "whole": sum(1 for uid in convs if self.selection.units[uid] is None),
                 "partial": sum(1 for uid in convs if self.selection.units[uid] is not None)}
+
+    # -- slice B helpers --------------------------------------------------------------
+    def ensure_package(self) -> Any:
+        """The package tree; created from the current selection on first use (recorded as an implicit step)."""
+        if self.package is None:
+            self.op("package.copy", {"from": "selection"}, by="engine")
+        return self.package
+
+    @property
+    def package_marks(self) -> dict[str, str]:
+        return self.package.marks if self.package is not None else {}
+
+    def stage(self) -> Any:
+        """Staging area for cut/hand-off outputs; ``write`` moves them into the package."""
+        from .cut.common import Outputs
+        if self.staged is None:
+            import tempfile
+            self._tmp_stage = tempfile.TemporaryDirectory(prefix="xport_stage_")
+            self.stage_dir = Path(self._tmp_stage.name)
+            self.staged = Outputs(self.stage_dir)
+        return self.staged
+
+    def models(self) -> Any:
+        from .flows import ModelRunner
+        if self.model_runner is None:
+            cache = self.settings.get("cache_dir")
+            self.model_runner = ModelRunner(self, ask=self.ask, cache_dir=Path(cache) if cache else None)
+        return self.model_runner
+
+    def model_enabled(self) -> bool:
+        return bool(((self.settings.get("flows") or {}).get("model") or {}).get("enabled"))
 
     # -- helpers for ops ---------------------------------------------------------
     def expr_context(self) -> ExprContext:
