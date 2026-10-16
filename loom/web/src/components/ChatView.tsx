@@ -23,7 +23,7 @@ import { OPEN_SETTINGS_FEATURE, SETTINGS_PANEL, openSettingsHint, openSettingsTe
 import { watchClientSteps } from "../context/client-step-events";
 import { SEMANTIC_ANSWER_REF, SEMANTIC_QUESTION_FEATURE, semanticAnsweredText, semanticFailedText, semanticQuestion, semanticQuestionOpen, type SemanticQuestion } from "../context/semantic-question";
 import { featureInLanguage, featureMessage } from "../onboarding/presentation.mjs";
-import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Message, ModelInfo } from "../api/types";
+import type { ChatChunk, ChatContextTrace, ChatKnowledgeContextRequest, ChatRequest, Conversation, Message, ModelInfo } from "../api/types";
 import type { ClientResult } from "../api/loom-api";
 import "./chat-context.css";
 import ContextPlanEditor from "./ContextPlanEditor";
@@ -38,7 +38,8 @@ import GraphChatSettings from "../graph/GraphChatSettings";
 import ScopeExplain from "./ScopeExplain";
 import MicButton from "../shell/MicButton";
 import Disclosure from "../shell/Disclosure";
-import { needsProviderKey, useShellText } from "../shell/text";
+import { needsProviderKey, useShellLanguage, useShellText } from "../shell/text";
+import { sourceHistoryUnavailable } from "../shell/source-notice";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
 import { nativeFragmentPrompt, nativeGraphDisplayText, recordedGraphReply } from "../graph/chat-graph";
@@ -119,6 +120,8 @@ function safeNotice(feature: Parameters<typeof featureMessage>[0], id: string): 
 export default function ChatView({ profileHost, settingsKey = "default", convId, onConversationCreated, profile, runProfileOperation, availableOperations, refreshKey, onMessagesChanged, variant = "workshop" }: Props) {
   const chat = variant === "chat";
   const t = useShellText();
+  const shellLanguage = useShellLanguage();
+  const [convRecord, setConvRecord] = useState<Conversation | null>(null);
   const [hasKey, setHasKey] = useState<boolean | null>(null);
   const [actionsFor, setActionsFor] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
@@ -254,6 +257,13 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     traceContext, channels, scanLimit, counterEvidence, lexicalShadow, usePlan, planDraft, blockChoice]);
 
   useEffect(() => { setBranchLeaf(null); }, [convId, refreshKey]);
+  useEffect(() => {
+    setConvRecord(null);
+    if (!convId || api.readConversationView) return;
+    let live = true;
+    api.getConversation(convId).then(c => { if (live) setConvRecord(c); }, () => { if (live) setConvRecord(null); });
+    return () => { live = false; };
+  }, [convId, refreshKey]);
   // The notes of a send that made this very conversation belong to it: moving the page into it does not wipe them.
   const notesForRef = useRef<string | null>(null);
   useEffect(() => {
@@ -885,8 +895,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       {showBranches && <ConversationBranches messages={branchMessages} selectedId={branchLeaf} onSelect={message => setBranchLeaf(message.id)} />}
       {branchLeaf && <p role="status">Ancestor path projection <button onClick={() => setBranchLeaf(null)} data-testid="return-current-branch">Return to current conversation</button></p>}
       {settingsError && <p role="alert">{settingsError}</p>}
-      {convId && !api.readConversationView && sourceCatalog.feature && <p role="status" data-testid="conversation-view-host-unavailable">
-        {featureMessage(sourceCatalog.feature, "host_unavailable")}
+      {convId && !api.readConversationView && sourceCatalog.feature && sourceHistoryUnavailable(convRecord, [...olderMessages, ...messages]) && <p role="status" data-testid="conversation-view-host-unavailable">
+        {featureMessage(featureInLanguage(sourceCatalog.feature, shellLanguage), "host_unavailable")}
       </p>}
       {conversationView && conversationView.resources.length > 0 && <ConversationSourceView key={convId} view={conversationView}
         profileHost={profileHost} catalog={sourceCatalog} busy={sourceBusy} onRead={readSources} onReload={() => { if (convId) void refreshMessages(convId); }} />}
