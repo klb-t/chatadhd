@@ -1172,3 +1172,21 @@ the earlier computation; never delete historical runs to downgrade.
 - Decyzja: kolejność kontekstu — *wybór* regionu profilu według użyteczności dla celu, *kolejność* według stabilności (najbardziej uniwersalne i najmniej zmienne najpierw), rendering deterministyczny (stały porządek kluczy, bez znaczników czasu), żeby początek promptu był identyczny między turami (pamięć podręczna promptu). Wykonanie w M1/P36. Cofnięcie: porządek jako ustawienie (`stability` | `usefulness`), preset `stability`.
 - Onboarding: wczesne pytanie o poziom szczegółowości z podglądem, co dany poziom oznacza (o co zapytam, co zapiszę, co zobaczy model); poziom jest ustawieniem zakresowym (instalacja→użytkownik), zmienialnym później per dziedzina.
 - Proces: panel M1 (trzy projekty powstały przed wiadomością 12:38) — sędziowie, sceptycy i synteza dostają dopisek z tą wiadomością; projektów nie przelicza się. Agenci sprawdzający luki chodzą po trzech naraz (limit sesji padł przy czterech workflow równolegle; reset 12:40 UTC).
+
+### S1 / M1 — specyfikacja „15%”: jeden graf wszystkiego, ustawienia po ludzku, Ty, selektor (2026-10-16)
+
+- `docs/architecture/M1_USTAWIENIA_JAKO_GRAF_2026-10-16.md`: panel trzech projektów (graf-najpierw 87, czat-najpierw 88, **ustawienia-jako-graf 91**), trzech sędziów i trzech sceptyków (73 problemy, w tym pięć z wiadomości właściciela 12:38), synteza z 20 sprawdzeniami odbiorczymi na telefonie i 14 pozycjami pracy w czterech bramach (Brama 0: ROM + ustawienia + role; 1: kontekst i „Co wysłaliśmy”; 2: Ty i wywiad; 3: rozmowy, przepływy, mapa). APK dla właściciela po Bramie 3; każda brama ma raport ze zrzutami z emulatora. Pozycje Android (M1-A0, M1-A1) i smoke — S2.
+- Decyzje (z §5 specyfikacji) i cofnięcia:
+  1. Pamięć/Wiedza bez własnych pozycji menu i obszaru; pamięć = podgraf Ty; wiedza = warstwa `evidence` + perspektywa. Cofnięcie: dopisać pozycje do `layouts.json` i obszar do `entry.pack` — panele w Warsztacie nie zniknęły.
+  2. Warstwa epistemiczna na węźle z nadpisaniem per właściwość/krawędź. Cofnięcie: usunąć poziom „właściwość” z resolvera; zostaje węzeł.
+  3. Projekcja na żądanie z `graph_sources.pack`, nic nie pisze do `nodes`. Cofnięcie: usunąć źródło z packa = projekcja znika.
+  4. Jedna powierzchnia API: akcje katalogu przez `loom_invoke('actions')` + `http` z `actions.pack`; bez nowych funkcji C ABI/JNI. Cofnięcie: usunąć wpis akcji.
+  5. Porządek kontekstu `stability` jako preset, prefiks profilu deterministyczny. Cofnięcie: `chat_context_order = legacy` (dzisiejsze bajty, test złoty).
+  6. Modyfikatory na poziomie tury (nietrwałe), ×10 obejmuje je. Cofnięcie: poziom `conversation` jako preset w `scoped_values`.
+  7. Ślad „Co wysłaliśmy” zawsze w trybie czatu, referencje, limit rozmiaru. Cofnięcie: `context_receipt_store = auto`.
+  8. Pierwsze pytanie wywiadu = poziom szczegółowości jako ustawienie zakresowe; liczba pytań wynika z poziomu i uwag. Cofnięcie: `profile_detail_level = szczegółowo` i brak `remark_rules`.
+  9. Lista i Mapa razem (preset `both`), perspektywy jako sektory (preset), renderer z danych. Cofnięcie: `navigator_layout = list`, `perspective_composition = side_by_side`.
+  10. „Zdejmij wartość: <warstwa>” zamiast „Przywróć preset”. Cofnięcie: etykieta w katalogu słów.
+  11. Kroki przepływów jako opis (nie wykonanie) do P37. Cofnięcie: usunąć `human.steps`.
+  12. Propozycja modelu przy polu = „planowane” w M1. Cofnięcie: gdy powstaną dane `hypothesis.setting_key`, chip staje się żywy bez zmiany UI.
+- Proces: jedna pozycja pracy naraz (agent w worktree → przegląd nastawiony na obalenie → bramka → FF main); zmiana packa = regeneracja osadzonych danych w tym samym commicie.
