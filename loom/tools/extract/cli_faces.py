@@ -55,7 +55,7 @@ def verb_commander(args: argparse.Namespace) -> int:
                 print(note, file=sys.stderr)
         if args.odtworz:
             from .recipe import load_recipe
-            state.load_replay(load_recipe(args.odtworz))
+            state.load_replay(load_recipe(args.odtworz), base=str(Path(args.odtworz).expanduser().resolve().parent))
         elif args.zrodla:
             state.call({"call": "open", "sources": list(args.zrodla)}, background=not args.bez_ekranu)
         if args.bez_ekranu:

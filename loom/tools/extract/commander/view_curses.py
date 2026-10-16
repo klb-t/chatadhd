@@ -29,9 +29,8 @@ def key_name(ch: Any) -> Optional[str]:
     if isinstance(ch, int):
         if ch in _SPECIAL:
             return _SPECIAL[ch]
-        for n in range(1, 13):
-            if ch == curses.KEY_F(n):
-                return f"F{n}"
+        if curses.KEY_F0 < ch <= curses.KEY_F0 + 12:
+            return f"F{ch - curses.KEY_F0}"
         return None
     if ch in ("\n", "\r"):
         return "Enter"
@@ -133,11 +132,32 @@ def run(state: CommanderState, *, colors: Optional[str] = None) -> int:
                 ch = scr.get_wch()
             except curses.error:
                 ch = None  # the tick timeout: no key, keep polling the background work
-            if ch is not None:
-                key = key_name(ch)
-                if key is not None:
-                    state.feed(key)
-            state.tick()
+            try:
+                if ch is not None:
+                    key = key_name(ch)
+                    if key is not None:
+                        state.feed(key)
+                state.tick()
+            except Exception as exc:  # noqa: BLE001 - the screen never dies on one key; the error is shown and logged
+                log.warning("commander: %s", exc, exc_info=True)
+                state.close_overlay()
+                state._msg(f"{type(exc).__name__}: {exc}", error=True)
 
-    curses.wrapper(main)
+    # while curses owns the terminal, log lines on stderr would tear the screen: warnings go to the message line
+    class _ToMessage(logging.Handler):
+        def emit(self, record: logging.LogRecord) -> None:
+            state._msg(record.getMessage(), error=record.levelno >= logging.WARNING)
+
+    root = logging.getLogger()
+    streams = [h for h in root.handlers if isinstance(h, logging.StreamHandler) and not isinstance(h, logging.FileHandler)]
+    for h in streams:
+        root.removeHandler(h)
+    to_msg = _ToMessage(level=logging.WARNING)
+    root.addHandler(to_msg)
+    try:
+        curses.wrapper(main)
+    finally:
+        root.removeHandler(to_msg)
+        for h in streams:
+            root.addHandler(h)
     return 0

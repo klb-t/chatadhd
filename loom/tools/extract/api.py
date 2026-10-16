@@ -91,7 +91,9 @@ class Session:
                  aggregate: bool = False, package: Optional[str] = None, settings: Optional[dict[str, Any]] = None,
                  answer_default: Optional[bool] = None) -> None:
         self.ds = ds or (engine.ds if engine is not None else default_store())
-        self.eng = engine or Engine(ds=self.ds, aggregate=aggregate, settings=settings)
+        self._engine_args = {"aggregate": aggregate if engine is None else engine.aggregate,
+                             "settings": dict(settings or {}) if engine is None else dict(engine.settings)}
+        self.eng = engine or Engine(ds=self.ds, **self._engine_args)
         self._face_progress = self.eng.progress
         self.eng.progress = self._on_engine_event
         self.eng.ask = self._ask
@@ -234,29 +236,35 @@ class Session:
         self.jobs[job.id] = job
         spec = self._calls[name]
 
+        def restore(eng: Engine, saved: dict[str, Any], deep: dict[str, Any]) -> None:
+            if self.eng is not eng:  # an open replaced the engine: the old one comes back
+                self.eng.close()
+                self.eng = eng
+            for k, v in saved.items():
+                setattr(eng, k, v)
+            for k, v in deep.items():
+                setattr(eng, k, v)
+
         def run() -> None:
             with self.lock:
+                old_eng = self.eng
                 saved = {k: getattr(self.eng, k) for k in _RESTORE}
                 deep = {k: copy.deepcopy(getattr(self.eng, k)) for k in _DEEP}
                 job.state = "running"
                 self.event("job.start", job=job.id, call=name)
                 try:
                     job.result = self._invoke(name, spec, dict(req, wait=True))
+                    if self.eng is not old_eng:
+                        old_eng.close()
                     job.state = "done"
                     self.event("done", job=job.id, call=name, result=_brief(job.result))
                 except Cancelled:
-                    for k, v in saved.items():
-                        setattr(self.eng, k, v)
-                    for k, v in deep.items():
-                        setattr(self.eng, k, v)
+                    restore(old_eng, saved, deep)
                     job.state = "cancelled"
                     self.event("cancelled", job=job.id, call=name, text=t("api.cancelled"))
                 except Exception as exc:  # noqa: BLE001 - every failure is reported as the job's error
                     log.debug("job %s failed", job.id, exc_info=True)
-                    for k, v in saved.items():
-                        setattr(self.eng, k, v)
-                    for k, v in deep.items():
-                        setattr(self.eng, k, v)
+                    restore(old_eng, saved, deep)
                     job.error = error_body(exc)
                     job.state = "error"
                     self.event("error", job=job.id, call=name, error=job.error)
@@ -280,6 +288,15 @@ class Session:
     def views(self) -> Views:
         return Views(self.eng, self.layout)
 
+    def fresh_engine(self) -> Engine:
+        """``open`` starts from a clean state: a new engine with the session's settings (the old one is closed;
+        a cancelled open puts it back)."""
+        eng = Engine(ds=self.ds, aggregate=self._engine_args["aggregate"], settings=dict(self._engine_args["settings"]))
+        eng.progress = self._on_engine_event
+        eng.ask = self._ask
+        self.eng = eng
+        return eng
+
     def _need_units(self) -> None:
         if self.eng.sources and not self.eng.units:
             self.eng.ensure_units()
@@ -299,7 +316,10 @@ class Session:
         return {"ops": self.eng.ops_available()}
 
     def c_open(self, req: dict[str, Any]) -> dict[str, Any]:
-        eng = self.eng
+        old = self.eng
+        eng = self.fresh_engine()
+        if old is not eng and self.job is None:
+            old.close()
         if req.get("package"):
             rp = Path(str(req["package"])).expanduser() / "recipe.json"
             if not rp.exists():
@@ -307,7 +327,7 @@ class Session:
             req = dict(req, recipe=str(rp))
             self.package = self.package or str(Path(str(req["package"])).expanduser())
         if req.get("recipe") is not None:
-            rec, base = req["recipe"], None
+            rec, base = req["recipe"], (Path(str(req["base"])).expanduser() if req.get("base") else None)
             if isinstance(rec, str):
                 base = Path(rec).expanduser().resolve().parent
                 rec = load_recipe(rec)
@@ -584,7 +604,14 @@ class Session:
             raise ApiError(t("api.export_needs"), "bad_request")
         cut_params = {k: req[k] for k in ("profiles", "order", "attachments", "redaction", "dictionary", "extract_text", "zone",
                                           "time_format", "shift", "anonymise", "granularity") if req.get(k) is not None}
-        results = [self._op("cut", cut_params)]
+        # cut when asked (explicit cut parameters), when there is no cut yet, or when the package changed after the
+        # last one; otherwise the staged cut is written as it is (a replayed recipe exports to the same bytes)
+        steps = self.eng.recipe.get("steps") or []
+        last_cut = max((i for i, st in enumerate(steps) if st.get("op") == "cut"), default=-1)
+        changed = any(st.get("op") not in ("cut", "write", "handoff") and _mutates(st.get("op"), self.ds) for st in steps[last_cut + 1:])
+        results = []
+        if cut_params or last_cut < 0 or changed or self.eng.staged is None:
+            results.append(self._op("cut", cut_params))
         if req.get("handoff"):
             results.append(self._op("handoff", dict(req["handoff"]) if isinstance(req["handoff"], dict) else {}))
         w = self._op("write", {"package": str(pkg)})
@@ -874,6 +901,13 @@ def error_body(exc: BaseException) -> dict[str, Any]:
     if isinstance(exc, ModelRefused):
         return {"error": exc.reason, "code": "refused", "estimate": jsonable(exc.estimate)}
     return {"error": f"{exc}", "code": type(exc).__name__}
+
+
+def _mutates(op: Any, ds: DataStore) -> bool:
+    try:
+        return bool(op_spec(str(op), ds).get("mutates_package"))
+    except RecipeError:
+        return False
 
 
 def _brief(res: Any, keep: tuple[str, ...] = ()) -> dict[str, Any]:

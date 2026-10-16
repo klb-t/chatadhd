@@ -230,6 +230,8 @@ class CommanderState:
         self.keylog.append(key)
         if key == "Resize":
             return
+        if self.mode == "normal" and not self.pending:
+            self.message, self.message_error = "", False  # a message lives until the next key; then the key hints return
         handler = {"prompt": self._prompt_key, "viewer": self._viewer_key, "help": self._viewer_key, "menu": self._menu_key,
                    "preview": self._preview_key, "question": self._question_key}.get(self.mode)
         if handler is not None:
@@ -1002,9 +1004,9 @@ class CommanderState:
                                               for k, m in sorted(macros.items())])
 
     # ───────────────────────────── replay (``komander --odtworz``) ─────────────────────────────
-    def load_replay(self, recipe: dict[str, Any]) -> None:
-        if recipe.get("sources"):
-            self.call({"call": "open", "sources": recipe["sources"]})
+    def load_replay(self, recipe: dict[str, Any], base: Optional[str] = None) -> None:
+        """The recipe's header (sources, settings, id, views, bookmarks, tags) now; its steps one per Enter."""
+        self.call({"call": "open", "recipe": dict(recipe, steps=[]), "base": base})
         self.replay = [s for s in recipe.get("steps") or [] if s.get("op") not in ("scan", "read", "merge", "write")]
         self.replay_pos = 0
         self._msg(t("commander.replay_ready", n=len(self.replay)))
