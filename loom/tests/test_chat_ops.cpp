@@ -547,6 +547,8 @@ TEST_SUITE("chat_ops") {
     CHECK(storage.at("command").at("action") == "storage.status");
     CHECK(storage.at("command").at("feasible") == true);
     // the model failing does not leave the words unread: the local reading finds the same command
+    // (P34 would read this conversation command locally and not ask the model at all; the fallback path is what is checked here)
+    f.overlay_put("intent_routing", Json{{"model", Json{{"skip_when_rule_command", false}}}});
     f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(500, Json{{"error", "boom"}}));
     const Json local = f.route("find conversations about holidays");
     CHECK(local.at("issues").at(0).at("code") == "model_route_failed");

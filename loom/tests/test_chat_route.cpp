@@ -1178,6 +1178,7 @@ TEST_SUITE("chat_route") {
     const auto catalogue_of = [](Fixture& f, const std::string& text) {
       f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"message\",\"action\":null,\"confidence\":0.9}")));
       const Json r = f.route(text);
+      REQUIRE(!f.transport->requests().empty());  // the catalogue is only visible when the model was asked
       const Json body = unwrap(json::parse(f.transport->requests().back().body));
       const std::string user = body.at("messages").back().at("content").get<std::string>();
       std::set<std::string> ids;
@@ -1192,12 +1193,14 @@ TEST_SUITE("chat_route") {
                           {"Przetłumacz tę wiadomość na niemiecki", "translate"}, {"Wyjaśnij to prościej", "explain_simply"}, {"pytaj przed obrazem", "rules.set"}};
     Fixture whole;
     whole.rt->config().set("intent_routing_method", "model");
-    whole.overlay("intent_routing", Json{{"model", Json{{"catalogue_retrieval", Json{{"top_k", 0}}}}}});
+    // P34 reads rule commands locally and skips the model; this test looks at the prompt, so the model is asked for every sentence
+    whole.overlay("intent_routing", Json{{"model", Json{{"catalogue_retrieval", Json{{"top_k", 0}}}, {"skip_when_rule_command", false}}}});
     const auto full = catalogue_of(whole, "Streść tę rozmowę");
     CHECK(full.first.size() > 100);
     for (const auto& c : cases) {
       Fixture f;
       f.rt->config().set("intent_routing_method", "model");
+      f.overlay("intent_routing", Json{{"model", Json{{"skip_when_rule_command", false}}}});
       const auto got = catalogue_of(f, c.text);
       INFO(c.text);
       CHECK(got.first.count(c.action) == 1);
