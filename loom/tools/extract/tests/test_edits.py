@@ -121,3 +121,37 @@ class EditsTest(ExtractTest):
             eng.op("edit.set", {"where": "conversation", "field": "no_such_field", "value": 1})
         with self.assertRaises(ValueError):
             eng.op("edit.flatten", {"where": "message"})
+
+
+class UserEditTest(ExtractTest):
+    def test_user_edit_needs_explicit_permission_and_is_undoable(self):
+        from loom.tools.extract.engine import EngineError
+        ov = store().overlay
+        (ov / "edits").mkdir(parents=True)
+        (ov / "user").mkdir(parents=True)
+        (ov / "edits/upper_titles.json").write_text(json.dumps({
+            "schema": "loom.extract.edit/1", "id": "upper_titles", "module": "user:upper", "label": {"pl": "Tytuły wielkimi", "en": "Upper titles"},
+            "scope": ["conversation"], "params": {"where": {"type": "expr", "default": "conversation"}}, "invertible": "snapshot"}), encoding="utf-8")
+        (ov / "user/upper.py").write_text(
+            "def edit(pkg, kind, items, params, eng):\n"
+            "    n = 0\n"
+            "    for it in items:\n"
+            "        if it.unit.title:\n"
+            "            it.unit.title = it.unit.title.upper()\n"
+            "            n += 1\n"
+            "    return {'count': n}\n", encoding="utf-8")
+        eng = self.engine(EXPORTS / "anthropic_2026_full.zip")
+        eng.op("select.expr", {"expr": "kind:conversation"})
+        with self.assertRaises(EngineError):
+            eng.op("edit.user", {"edit": "upper_titles"})
+        eng.settings["allow_user_code"] = True
+        h0 = eng.ensure_package().tree_hash()
+        r = eng.op("edit.user", {"edit": "upper_titles"})
+        self.assertGreater(r["count"], 0)
+        self.assertIn("WIDOK LISTY", [e.unit.title for e in eng.package.entries])
+        self.assertEqual(eng.recipe["steps"][-1]["op"], "edit.user")
+        eng.op("undo", {})
+        self.assertEqual(eng.package.tree_hash(), h0)
+        self.assertNotEqual(eng.recipe["steps"][-1]["op"], "edit.user", "undo removes the user edit's step")
+        eng.op("redo", {})
+        self.assertIn("WIDOK LISTY", [e.unit.title for e in eng.package.entries])

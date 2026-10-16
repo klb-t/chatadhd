@@ -125,6 +125,23 @@ def _register_edit_ops() -> None:
 _register_edit_ops()
 
 
+@op("edit.user")
+def op_edit_user(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
+    """A user's edit registered by a data entry (``edits/<id>.json`` with ``module: "user:<name>"``)."""
+    preview = bool(p.get("preview"))
+    params = dict(p.get("params") or {})
+    if p.get("where") is not None:
+        params["where"] = p["where"]
+    res = _edits.run_edit(eng, str(p["edit"]), params, preview=preview)
+    if not preview:  # undo/redo find the recipe step by the op that recorded it
+        eng.package.oplog[-1]["recipe_op"] = "edit.user"
+        eng.package.oplog[-1]["recipe_params"] = {k: v for k, v in p.items() if k != "preview"}
+    out = {"counts": {"changed": res["count"], "items": res["scope"]["items"]}, **res, "user_code": True}
+    if preview:
+        out["_no_record"] = True
+    return out
+
+
 @op("undo")
 def op_undo(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     pkg = eng.ensure_package()
@@ -141,7 +158,7 @@ def op_undo(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         pkg.redo.append(entry)
         steps = eng.recipe.get("steps") or []
         for i in range(len(steps) - 1, -1, -1):
-            if steps[i]["op"] == entry["op"]:
+            if steps[i]["op"] == entry.get("recipe_op", entry["op"]):
                 del steps[i]
                 break
         undone.append(entry["op"])
@@ -158,7 +175,7 @@ def op_redo(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             break
         entry = pkg.redo.pop()
         keep = list(pkg.redo)
-        eng.op(entry["op"], {k: v for k, v in entry["params"].items()}, by="engine", note="redo")
+        eng.op(entry.get("recipe_op", entry["op"]), dict(entry.get("recipe_params", entry["params"])), by="engine", note="redo")
         pkg.redo = keep
         redone.append(entry["op"])
     return {"counts": {"redone": len(redone)}, "redone": redone, "tree_hash": pkg.tree_hash()}

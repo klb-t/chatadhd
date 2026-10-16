@@ -527,8 +527,9 @@ def run_edit(eng: Any, op_id: str, params: dict[str, Any], *, preview: bool = Fa
     spec = eng.ds.entry("edits", op_id)
     mod = str(spec.get("module") or "")
     if mod.startswith("user:"):
-        raise EditError(f"edit {op_id}: user module {mod!r} — call it through op user.call (needs settings.allow_user_code)")
-    fn = EDITS.get(op_id)
+        fn = _user_edit(eng, op_id, mod[5:])
+    else:
+        fn = EDITS.get(op_id)
     if fn is None:
         raise EditError(f"edit {op_id!r} is described in data but not implemented")
     p = {k: v.get("default") for k, v in (spec.get("params") or {}).items() if "default" in v}
@@ -568,6 +569,24 @@ def run_edit(eng: Any, op_id: str, params: dict[str, Any], *, preview: bool = Fa
     pkg.oplog.append(entry)
     pkg.redo.clear()
     return out
+
+
+def _user_edit(eng: Any, op_id: str, name: str) -> Callable[..., dict[str, Any]]:
+    """A user's edit: ``<data dir>/extract/user/<name>.py`` with ``edit(pkg, kind, items, params, eng) -> {"count": n, …}``,
+    loaded only when the run allows user code (``settings.allow_user_code``); the report says the code is the user's."""
+    import importlib.util
+    if not eng.settings.get("allow_user_code"):
+        raise EditError(f"edit {op_id}: user code needs settings.allow_user_code = true")
+    base = eng.ds.overlay
+    path = (base / "user" / f"{name}.py") if base is not None else None
+    if path is None or not path.exists():
+        raise EditError(f"edit {op_id}: user module not found: {path}")
+    spec = importlib.util.spec_from_file_location(f"loom_extract_user_edit_{name}", path)
+    mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
+    assert spec and spec.loader
+    spec.loader.exec_module(mod)
+    eng.emit("note", text=f"user code executed: {path}:edit")
+    return getattr(mod, "edit")
 
 
 def oplog_rows(pkg: Package) -> list[dict[str, Any]]:
