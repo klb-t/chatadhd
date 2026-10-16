@@ -1152,6 +1152,28 @@ TEST_SUITE("chat_route") {
     }
   }
 
+  TEST_CASE("P34: a rule command read locally costs no routing call under the model method, and the trace shows the rule_command stage") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions",
+                        net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"message\",\"action\":null,\"confidence\":0.9}")));
+    const Json r = f.route("pytaj przed obrazem");
+    REQUIRE(r.at("kind") == "command");
+    CHECK(action_of(r) == "rules.set");
+    CHECK(f.transport->requests().empty());  // the model was not asked: nothing to pay for routing
+    CHECK(f.transport->pending_expectations() == 1);
+    bool saw_rule_stage = false, saw_model_stage = false;
+    for (const auto& st : r.at("trace").at("stages")) {
+      if (st.value("stage", "") == "rule_command") {
+        saw_rule_stage = true;
+        CHECK(st.value("why", "") == "scoped_rule_read_locally");
+      }
+      if (st.value("stage", "") == "model") saw_model_stage = true;
+    }
+    CHECK(saw_rule_stage);
+    CHECK_FALSE(saw_model_stage);
+  }
+
   TEST_CASE("P32: the routing prompt carries the top-K actions closest to the message plus what the local reading scored; K=0 is the whole catalogue") {
     const auto catalogue_of = [](Fixture& f, const std::string& text) {
       f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"message\",\"action\":null,\"confidence\":0.9}")));

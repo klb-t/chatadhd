@@ -4794,6 +4794,7 @@
       "system": "You route one input of a chat application; the input may be in any language (often Polish). Decide: an ordinary message for the language model, or a command to the application itself (run one of its actions on something that already exists). Answer with one JSON object only: {\"kind\": \"message\" | \"command\" | \"define\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command asks the application to act on the conversation, a message or a setting (summarise, translate, explain simply, rephrase, set, show, ...); when you name an action, kind is \"command\". Questions, requests to write or explain something new, and anything unclear are messages with action null. Use only action ids from the list, and only an action that really does what is asked. When the input is a command to the application but NO action in the list fits it, do not pick the nearest one: answer {\"kind\": \"define\", \"action\": null, \"confidence\": <0..1>} (the application then offers the user a new action).\nExamples (input -> kind, action, reference):\n{{examples}}",
       "trace_raw_chars": 4000,
       "local_recheck": true,
+      "skip_when_rule_command": true,
       "catalogue_line": "- {{id}}: {{title}} (needs: {{requires}})",
       "catalogue_line_free": "- {{id}}: {{title}}",
       "named_action_min_confidence": 0.8,
@@ -6084,6 +6085,10 @@
           },
           "title": {
             "type": "string"
+          },
+          "skip_when_rule_command": {
+            "type": "boolean",
+            "description": "P34: a rule or scoped-value command is read locally either way; when one is found the routing model is not asked (no routing call is paid). Off: the model is asked as before."
           },
           "local_recheck": {
             "type": "boolean",
