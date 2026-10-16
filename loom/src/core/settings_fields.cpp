@@ -123,20 +123,23 @@ void resolve_values_from(Json& field, const std::filesystem::path& data_dir) {
   field["values"] = std::move(values);
 }
 
-// The groups as the view kind `settings_groups` composes them: the pack's /groups (with the user's profile overlay, which may add
-// a group of its own) is the ROM layer; the view overlays of the data dir (<data_dir>/views/*.json, ops on settings_groups) regroup,
-// rename or hide on top, with the policy the view kind declares. One list for every reader (loom_view_effective and this document
-// agree on what an overlay did). A hidden group stays listed with hidden:true and who hid it, so the fields in it are never
-// orphaned; a bad overlay op is an issue (`issues`), never a dropped group. A views directory that cannot be read at all (a file that
-// is not JSON, a wrong schema, an unrelated view's overlay) never blanks the settings: the ROM groups are composed without overlays
-// and the reason is an issue the owner reads (settings_fields_problems lists it). Only a pack without /groups is an error.
+// The groups as the view kind `settings_groups` composes them: the shipped pack's /groups is the ROM layer; the user's profile overlay
+// (profiles/settings_fields.pack, which may add, rename or drop a group) is a layer of its own (views::profile_overlay), so what it did
+// carries the origin overlay:profile:settings_fields, never "rom"; the view overlays of the data dir (<data_dir>/views/*.json, ops on
+// settings_groups) regroup, rename or hide on top, with the policy the view kind declares. One list for every reader
+// (loom_view_effective and this document agree on what an overlay did). A hidden group stays listed with hidden:true and who hid it, so
+// the fields in it are never orphaned; a bad overlay op is an issue (`issues`), never a dropped group. A views directory that cannot be
+// read at all (a file that is not JSON, a wrong schema, an unrelated view's overlay) never blanks the settings: the groups are composed
+// without view overlays and the reason is an issue the owner reads (settings_fields_problems lists it). Only a pack without /groups is
+// an error. `v` is the profile with the user's overlay (a hidden group the overlay added is shown with its overlaid entry).
 struct Groups {
   Json object = Json::object();  // id -> group (+ origin, provenance, hidden?, hidden_by?, disabled?)
   Json issues = Json::array();
 };
 
 Result<Groups> groups_of(const Json& v, const std::filesystem::path& data_dir) {
-  const Json* rom_groups = json::find(v, "groups");
+  LOOM_TRY_ASSIGN(auto shipped, RuntimeProfile::builtin("settings_fields"));
+  const Json* rom_groups = json::find(shipped.values(), "groups");
   if (!rom_groups || !rom_groups->is_object()) return Error(Errc::InvalidArgument, "settings_fields: the pack has no /groups object");
   const Json& rom = *rom_groups;
   Groups out;
@@ -153,8 +156,21 @@ Result<Groups> groups_of(const Json& v, const std::filesystem::path& data_dir) {
     overlays = std::move(*loaded);
     if (const views::EffectiveEntry* def = kinds->find(kGroupsView); def && !def->disabled)
       policy = views::Policy::from_json(def->value.value("policy", Json::object()));
+    // the view kinds were composed without an unreadable graph_views profile overlay: the owner reads why
+    for (const auto& i : kinds->issues)
+      if (json::get_string(i, "code") == "profile_overlay_unreadable") out.issues.push_back(i);
   }
-  const views::Effective eff = views::compose(kGroupsView, rom, overlays, policy);
+  std::vector<views::Overlay> layers;
+  const Json source{{"profile", "settings_fields"}, {"pointer", "/groups"}};
+  if (auto mine = views::profile_overlay(kGroupsView, source, rom, data_dir, policy); !mine) {
+    log::debug(kLog, "settings groups composed without the profile overlay: {}", mine.error().message);
+    out.issues.push_back(Json{{"code", "profile_overlay_unreadable"}, {"layer", "overlay:profile:settings_fields"}, {"op", ""}, {"id", ""},
+                              {"note", "the user's profile overlay is not applied to the settings groups: " + mine.error().message}});
+  } else if (!mine->ops.empty()) {
+    layers.push_back(std::move(*mine));
+  }
+  layers.insert(layers.end(), overlays.begin(), overlays.end());
+  const views::Effective eff = views::compose(kGroupsView, rom, layers, policy);
   for (const auto& e : eff.entries) {
     Json g = e.value;
     g["origin"] = e.origin;
@@ -162,13 +178,16 @@ Result<Groups> groups_of(const Json& v, const std::filesystem::path& data_dir) {
     if (e.disabled) g["disabled"] = true;
     out.object[e.id] = std::move(g);
   }
+  const Json* overlaid = json::find(v, "groups");
   for (const auto& h : eff.hidden) {
     const std::string id = json::get_string(h, "id");
-    Json g = rom.value(id, Json::object());
+    const Json* entry = rom.contains(id) ? &rom.at(id) : (overlaid && overlaid->is_object() ? json::find(*overlaid, id) : nullptr);
+    Json g = entry ? *entry : Json::object();
     g["hidden"] = true;
     g["hidden_by"] = h.value("by", "");
-    g["origin"] = "rom";
-    g["provenance"] = h.value("provenance", Json::array());
+    const Json provenance = h.value("provenance", Json::array());
+    g["origin"] = provenance.is_array() && !provenance.empty() ? json::get_string(provenance[0], "layer", "rom") : std::string("rom");
+    g["provenance"] = provenance;
     out.object[id] = std::move(g);
   }
   for (const auto& i : eff.issues) out.issues.push_back(i);

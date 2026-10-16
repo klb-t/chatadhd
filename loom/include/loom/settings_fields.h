@@ -31,9 +31,9 @@ namespace loom {
 // key by the pack's `placement` (field key or <profile><pointer> -> {group, subgroup?}; a user overlay moves one field without copying
 // the fields array): the entry's human.group/subgroup become the placement's and human.placed_from keeps the preset; a placement
 // without a group or naming nothing is a `groups_issues` entry.
-// `groups` is the effective list of the view kind `settings_groups` (graph_views.pack): the pack's /groups (with the user's profile
-// overlay, which may add a group) is the ROM layer and the view overlays of `data_dir` (views/*.json) are composed on top with the
-// kind's policy, each group carrying origin and provenance; a hidden group stays listed with hidden:true and hidden_by, so the
+// `groups` is the effective list of the view kind `settings_groups` (graph_views.pack): the shipped pack's /groups is the ROM layer,
+// the user's profile overlay (profiles/settings_fields.pack) is its own layer (origin overlay:profile:settings_fields, never "rom") and
+// the view overlays of `data_dir` (views/*.json) are composed on top with the kind's policy, each group carrying origin and provenance; a hidden group stays listed with hidden:true and hidden_by, so the
 // fields in it are never orphaned; bad overlay ops are `groups_issues`, and so is a views directory that cannot be read (a file that
 // is not JSON or has another schema, of any view): then the shipped groups are shown without view overlays, never an error. `status` (field level) says a key has a preset but no
 // reader yet (shown as "planned (reason)"); `level_evidence` names the keys whose readers honour project/conversation (scope

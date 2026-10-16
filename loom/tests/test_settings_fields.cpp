@@ -286,6 +286,34 @@ TEST_SUITE("settings_fields") {
     }
   }
 
+  TEST_CASE("a group the profile overlay renames keeps origin rom and names the overlay in its provenance; a hidden added group keeps its entry") {
+    fsutil::TempDir td;
+    std::filesystem::create_directories(td.path() / "profiles");
+    std::ofstream(td.path() / "profiles" / "settings_fields.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"},
+                {"overrides", Json{{"groups", Json{{"ty", Json{{"label", Json{{"pl", "O mnie"}}}}},
+                                                   {"moje", Json{{"label", Json{{"pl", "Moje"}, {"en", "Mine"}}},
+                                                                 {"why", Json{{"pl", "Pola, które wybrałem."}, {"en", "The fields I chose."}}},
+                                                                 {"order", 0}, {"subgroups", Json::array()}}}}}}}}.dump();
+    std::filesystem::create_directories(td.path() / "views");
+    std::ofstream(td.path() / "views" / "mine.json")
+        << Json{{"schema", views::kOverlaySchema}, {"ops", Json::array({Json{{"view", "settings_groups"}, {"op", "hide"}, {"id", "moje"}}})}}.dump();
+    const Json doc = unwrap(settings_fields(td.path()));
+    const Json& ty = doc["groups"]["ty"];
+    CHECK(ty["label"]["pl"] == "O mnie");
+    CHECK(ty["label"]["en"] == "You");  // deep: only the renamed text changed
+    CHECK(ty["origin"] == "rom");
+    REQUIRE(ty["provenance"].size() == 2);
+    CHECK(ty["provenance"][1]["layer"] == "overlay:profile:settings_fields");
+    CHECK(ty["provenance"][1]["op"] == "modify");
+    CHECK(ty["provenance"][1]["fields"] == Json::array({"label.pl"}));
+    const Json& moje = doc["groups"]["moje"];
+    CHECK(moje["hidden"] == true);
+    CHECK(moje["hidden_by"] == "overlay:mine");
+    CHECK(moje["origin"] == "overlay:profile:settings_fields");
+    CHECK(moje["label"]["pl"] == "Moje");  // the hidden group still says what it is
+  }
+
   TEST_CASE("a profile overlay may add a group of its own and move one field into it by placement, without copying the fields array") {
     fsutil::TempDir td;
     std::filesystem::create_directories(td.path() / "profiles");
@@ -303,6 +331,12 @@ TEST_SUITE("settings_fields") {
     const auto eff = unwrap(views::effective(td.path(), "settings_groups"));
     REQUIRE(eff.find("moje"));
     CHECK(eff.find("moje")->value["label"]["pl"] == "Moje");
+    // the provenance tells the truth: the user's profile overlay is its own layer, never "rom"
+    CHECK(doc["groups"]["moje"]["origin"] == "overlay:profile:settings_fields");
+    CHECK(eff.find("moje")->origin == "overlay:profile:settings_fields");
+    CHECK(doc["groups"]["moje"]["provenance"][0]["layer"] == "overlay:profile:settings_fields");
+    CHECK(doc["groups"]["ty"]["origin"] == "rom");  // untouched shipped group
+    CHECK(doc["groups"]["ty"]["provenance"].size() == 1);
     // the field moved, its preset stays visible; every other field is the shipped one (nothing copied, nothing frozen)
     REQUIRE(doc["fields"].size() == shipped["fields"].size());
     for (std::size_t i = 0; i < doc["fields"].size(); ++i) {

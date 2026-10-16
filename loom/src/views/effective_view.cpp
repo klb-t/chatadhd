@@ -3,6 +3,7 @@
 
 #include <algorithm>
 
+#include "loom/log.h"
 #include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
 
@@ -245,15 +246,11 @@ Result<std::vector<Overlay>> load_overlays(const std::vector<std::filesystem::pa
   return all;
 }
 
-Result<Json> rom_layer(const Json& view_kind_entry) { return rom_layer(view_kind_entry, {}); }
-
-Result<Json> rom_layer(const Json& view_kind_entry, const std::filesystem::path& data_dir) {
-  const Json* src = json::find(view_kind_entry, "source");
-  if (!src || !src->is_object() || src->empty()) return Json::object();
-  const std::string profile = json::get_string(*src, "profile");
-  if (profile.empty()) return Json::object();
-  LOOM_TRY_ASSIGN(auto prof, data_dir.empty() ? RuntimeProfile::builtin(profile) : RuntimeProfile::load(profile, data_dir));
-  const std::string pointer = json::get_string(*src, "pointer");
+namespace {
+// A source {profile, pointer, key?} read out of a loaded profile as {id: entry}; an array is keyed by `key` (default "id").
+Result<Json> source_entries(const Json& src, const RuntimeProfile& prof) {
+  const std::string profile = json::get_string(src, "profile");
+  const std::string pointer = json::get_string(src, "pointer");
   const Json* at = pointer.empty() ? &prof.values() : nullptr;
   Json holder;
   if (!at) {
@@ -266,7 +263,7 @@ Result<Json> rom_layer(const Json& view_kind_entry, const std::filesystem::path&
   }
   if (at->is_object()) return *at;
   if (!at->is_array()) return Error(Errc::InvalidArgument, "view source " + profile + pointer + " is neither an object nor an array");
-  const std::string key = json::get_string(*src, "key", "id");
+  const std::string key = json::get_string(src, "key", "id");
   Json out = Json::object();
   for (const auto& item : *at) {
     const std::string id = json::get_string(item, key);
@@ -276,23 +273,104 @@ Result<Json> rom_layer(const Json& view_kind_entry, const std::filesystem::path&
   return out;
 }
 
+// The patch that turns `from` into `to` under a modify policy: replace = the whole entry; shallow = the changed top-level fields (a
+// removed one null); deep (any other policy, as compose reads it) = the same, recursing into objects both sides have. A non-object
+// side gives the whole `to` (compose reports a modify whose patch is not an object as an issue).
+Json patch_between(const Json& from, const Json& to, const std::string& modify) {
+  if (modify == "replace" || !from.is_object() || !to.is_object()) return to;
+  const bool deep = modify != "shallow";
+  Json patch = Json::object();
+  for (auto it = from.begin(); it != from.end(); ++it)
+    if (!to.contains(it.key())) patch[it.key()] = nullptr;
+  for (auto it = to.begin(); it != to.end(); ++it) {
+    const Json* before = json::find(from, it.key());
+    if (before && *before == it.value()) continue;
+    if (deep && before && before->is_object() && it.value().is_object()) patch[it.key()] = patch_between(*before, it.value(), modify);
+    else patch[it.key()] = it.value();
+  }
+  return patch;
+}
+}  // namespace
+
+Result<Json> rom_layer(const Json& view_kind_entry) {
+  const Json* src = json::find(view_kind_entry, "source");
+  if (!src || !src->is_object() || src->empty()) return Json::object();
+  const std::string profile = json::get_string(*src, "profile");
+  if (profile.empty()) return Json::object();
+  LOOM_TRY_ASSIGN(auto prof, RuntimeProfile::builtin(profile));
+  return source_entries(*src, prof);
+}
+
+Result<Overlay> profile_overlay(std::string_view kind, const Json& source, const Json& rom, const std::filesystem::path& data_dir,
+                                const Policy& policy) {
+  Overlay ov;
+  const std::string profile = json::get_string(source, "profile");
+  ov.name = "profile:" + profile;
+  if (data_dir.empty() || profile.empty()) return ov;
+  ov.source = (data_dir / "profiles" / (profile + ".pack")).string();
+  LOOM_TRY_ASSIGN(auto prof, RuntimeProfile::load(profile, data_dir));
+  LOOM_TRY_ASSIGN(auto mine, source_entries(source, prof));
+  const std::string view(kind);
+  if (rom.is_object())
+    for (auto it = rom.begin(); it != rom.end(); ++it)
+      if (!mine.contains(it.key())) ov.ops.push_back(Json{{"view", view}, {"op", "hide"}, {"id", it.key()}});
+  for (auto it = mine.begin(); it != mine.end(); ++it) {
+    const Json* before = rom.is_object() ? json::find(rom, it.key()) : nullptr;
+    if (!before) ov.ops.push_back(Json{{"view", view}, {"op", "add"}, {"id", it.key()}, {"entry", it.value()}});
+    else if (*before != it.value())
+      ov.ops.push_back(Json{{"view", view}, {"op", "modify"}, {"id", it.key()}, {"patch", patch_between(*before, it.value(), policy.modify)}});
+  }
+  return ov;
+}
+
 Result<Effective> effective(const std::filesystem::path& root, std::string_view kind, const std::vector<std::filesystem::path>& extra_dirs) {
   std::vector<std::filesystem::path> dirs{root};
   dirs.insert(dirs.end(), extra_dirs.begin(), extra_dirs.end());
   LOOM_TRY_ASSIGN(auto overlays, load_overlays(dirs));
-  // view_kinds is a kind itself: ROM from the profile (with the user's profile overlay, like every source), default policy; its
-  // effective entries say how every other kind is read.
-  LOOM_TRY_ASSIGN(auto vk_profile, root.empty() ? RuntimeProfile::builtin("graph_views") : RuntimeProfile::load("graph_views", root));
+  Json issues = Json::array();
+  // The user's profile overlay of a source is its own layer, right after the ROM; one that does not load leaves the shipped entries
+  // and is an issue (never an error of the whole view, never silent).
+  auto layers_for = [&](std::string_view k, const Json& source, const Json& rom, const Policy& pol) {
+    std::vector<Overlay> layers;
+    auto po = profile_overlay(k, source, rom, root, pol);
+    if (!po) {
+      const std::string layer = "overlay:profile:" + json::get_string(source, "profile");
+      log::debug("loom.views", "{}: {} not applied: {}", k, layer, po.error().message);
+      bool known = false;
+      for (const auto& i : issues) known = known || json::get_string(i, "layer") == layer;
+      if (!known)
+        issues.push_back(Json{{"code", "profile_overlay_unreadable"}, {"layer", layer}, {"op", ""}, {"id", ""},
+                              {"note", "the user's profile overlay is not applied (the shipped entries are shown): " + po.error().message}});
+    } else if (!po->ops.empty()) {
+      layers.push_back(std::move(*po));
+    }
+    layers.insert(layers.end(), overlays.begin(), overlays.end());
+    return layers;
+  };
+  auto with_issues = [&](Effective e) {
+    Json all = issues;
+    for (auto& i : e.issues) all.push_back(std::move(i));
+    e.issues = std::move(all);
+    return e;
+  };
+  // view_kinds is a kind itself: ROM from the builtin profile, then the user's graph_views overlay, default policy; its effective
+  // entries say how every other kind is read.
+  LOOM_TRY_ASSIGN(auto vk_profile, RuntimeProfile::builtin("graph_views"));
   const Json vk_rom = vk_profile.values().value("view_kinds", Json::object());
-  if (kind == "view_kinds") return compose(kind, vk_rom, overlays, Policy{});
-  const Effective vk = compose("view_kinds", vk_rom, overlays, Policy{});
+  const Json vk_source{{"profile", "graph_views"}, {"pointer", "/view_kinds"}};
+  const std::vector<Overlay> vk_layers = layers_for("view_kinds", vk_source, vk_rom, Policy{});
+  if (kind == "view_kinds") return with_issues(compose(kind, vk_rom, vk_layers, Policy{}));
+  const Effective vk = compose("view_kinds", vk_rom, vk_layers, Policy{});
   Json rom = Json::object();
   Policy policy;
+  std::vector<Overlay> layers = overlays;
   if (const EffectiveEntry* def = vk.find(kind); def && !def->disabled) {
-    LOOM_TRY_ASSIGN(rom, rom_layer(def->value, root));
+    LOOM_TRY_ASSIGN(rom, rom_layer(def->value));
     policy = Policy::from_json(def->value.value("policy", Json::object()));
+    if (const Json* src = json::find(def->value, "source"); src && src->is_object() && !json::get_string(*src, "profile").empty())
+      layers = layers_for(kind, *src, rom, policy);
   }
-  return compose(kind, rom, overlays, policy);
+  return with_issues(compose(kind, rom, layers, policy));
 }
 
 Status put_op(const std::filesystem::path& root, std::string_view overlay, const Json& op) {
