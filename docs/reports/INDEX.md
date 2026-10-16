@@ -1206,8 +1206,11 @@ ctest `tools.extract` (75 testów, bez sieci — strażnik gniazd).
 
 ## P38 — X-Port, plaster B: wycięcie, profile, manifest, CLI (2026-10-16, branch `claude/p38-archive-extract`)
 
-Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plaster B”, §11 stan). ctest `tools.extract`: 114 testów
-(1 pominięty z powodem: obieg przez `libloom`), bez sieci poza atrapą dostawcy na pętli zwrotnej.
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plaster B”, §11 stan). ctest `tools.extract`: 119 testów
+(obieg przez `libloom` uruchamiany w bramce z `LOOM_LIBRARY`, poza nią pominięty z powodem), bez sieci poza atrapą dostawcy
+na pętli zwrotnej. Bramka: `ctest --preset dev` 239/239 (GATE GREEN); `build/dev` skonfigurowany z `CMAKE_CXX_FLAGS_DEBUG=-O0`
+(bez `-g`) i bez ccache, bo przy pełnych informacjach debugowania zabrakło miejsca na dysku (cofnięcie: ponowna konfiguracja
+presetem `dev` bez tych `-D`).
 
 - Decyzje (szczegóły i odwrócenie w §10):
   1. `preserve` = bajty źródła ze skanera rozpiętości JSON (`jsonspan.py`); wszystko zaznaczone = identyczny plik; zip z metadanymi członków źródła. Cofnięcie: pominąć `preserve` w `cut.profiles`.

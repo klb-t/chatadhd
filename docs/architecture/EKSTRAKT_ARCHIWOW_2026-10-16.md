@@ -1471,7 +1471,7 @@ TOML jako osobny czasownik (przepis TOML działa), `wyjasnij` jako osobny plik `
 (+ `data/grammar/pl.json`, `en.json`), `ops_cut.py`, `cli_cut.py`, profile `data/profiles/*.json` (`preserve`, `flat`,
 `structure`, `reasoning`, `text`, `graph`, `table`, `timeline`, `cards`, `bundle`); czasowniki `wytnij`/`wyciagnij`, `koszt`,
 `odtworz`, `przekaz`, `statystyki`, `sprawdz`, `zalaczniki`, `profil`, `przeplyw`, `opisz`, `edytuj`, `cofnij`, `ponow`,
-`filtr`, tryb zdania, `--zadanie` (JSON/TOML), `--plan`; ctest `tools.extract` 114 testów (+39), w tym determinizm bajtowy
+`filtr`, tryb zdania, `--zadanie` (JSON/TOML), `--plan`; ctest `tools.extract` 119 testów (+44; obieg `libloom` uruchamiany w bramce z `LOOM_LIBRARY`), w tym determinizm bajtowy
 pakietu, obieg `preserve` → czytnik narzędzia i `engine/importer.py`, atrapa dostawcy modelu na pętli zwrotnej. Dodane ponad
 listę (zasada „listy są przykładami”): profil `bundle` (zip Markdown + JSONL + załączniki), `table` z CSV rozmów, karty z
 pytaniami otwartymi, `package.mark` (liść dla `branches.keep: marked`), `package.show`, zapisane filtry, `filtr`/`--filtr`,
