@@ -310,7 +310,7 @@ async function apiImport(hostFile, name) {
   return page.ev(`(async()=>{const bin=atob(${JSON.stringify(b64)});const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
     const f=new FormData();f.append('file',new File([u],${JSON.stringify(name)}));
     const r=await fetch('/api/import',{method:'POST',body:f,credentials:'same-origin'});const t=await r.text();
-    const ch=[...t.matchAll(/data:\s*(\{.*\})/g)].map(m=>{try{return JSON.parse(m[1])}catch{return null}}).filter(Boolean);
+    const ch=[...t.matchAll(/data:\\s*(\\{.*\\})/g)].map(m=>{try{return JSON.parse(m[1])}catch{return null}}).filter(Boolean);
     return {status:r.status,progress:ch.filter(c=>c.type==='progress').length,last:ch[ch.length-1]||null,raw:t.slice(0,300)}})()`);
 }
 
@@ -390,7 +390,7 @@ const localChecks = [
     await until("a result or an error of the import panel", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
     if (await has("import-error")) throw new Error("import panel: " + (await page.ev(`${q("import-error")}.innerText`)));
     await closePanel();
-    return await page.ev(`(${q("import-result")}?.innerText||'').replace(/\s+/g,' ').slice(0,100)`).catch(() => "");
+    return await page.ev(`(${q("import-result")}?.innerText||'').replace(/\\s+/g,' ').slice(0,100)`).catch(() => "");
   }],
   ["local: system picker, one file (SAF content:// -> copy -> kernel)", async () => {
     const id = await startBridge("pick_import", { kind: "file" });
@@ -426,7 +426,14 @@ const serverChecks = [
     await waitTid("shell-empty", 15);
     await send("Nowa rozmowa smoke: Kowalski jest w Krakowie.");
     await until("the reply in the new conversation", () => assistantSays("Odpowiedz testowego dostawcy"), 90, 300);
-    await until("one more conversation on the server", async () => (await convs()).length === before + 1, 20, 500);
+    try {
+      await until("one more conversation on the server", async () => (await convs()).length === before + 1, 20, 500);
+    } catch (e) {
+      const now = await convs();
+      const newest = now.slice().sort((a, b) => String(b.updated || b.created).localeCompare(String(a.updated || a.created))).slice(0, 3);
+      const sizes = await Promise.all(newest.map(async c => `${c.title || c.id} (${(await messagesOf(c.id)).length} msgs)`));
+      throw new Error(`${e.message}; before ${before}, now ${now.length}; newest: ${sizes.join(" | ")}`);
+    }
     return `${before} -> ${before + 1} conversations`;
   }],
   ["chat command: przetłumacz -> proposal -> confirm", async () => {
@@ -503,7 +510,7 @@ const serverChecks = [
   ["graph: the panel opens and shows nodes", async () => {
     await openMenu("graph"); await waitTid("panel-graph", 10); await waitTid("graph-view", 20);
     const nodes = await until("graph nodes through the API", async () => { const n = listOf((await apiJson("GET", "/api/graph/nodes")).body); return n.length > 0 && n.length; }, 60, 1000);
-    const counts = await until("graph counts text", () => page.ev(`(${q("graph-counts")}?.innerText||'').replace(/\s+/g,' ')`).then(t => /[1-9]/.test(t) && t), 30, 500);
+    const counts = await until("graph counts text", () => page.ev(`(${q("graph-counts")}?.innerText||'').replace(/\\s+/g,' ')`).then(t => /[1-9]/.test(t) && t), 30, 500);
     const canvas = await has("graph-canvas");
     shot("graph");
     await closePanel();
