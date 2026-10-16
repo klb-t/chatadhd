@@ -8,6 +8,7 @@
 #include <set>
 
 #include "loom/config.h"
+#include "loom/money_format.h"
 #include "loom/providers.h"
 #include "loom/runtime_profile.h"
 #include "loom/util/utf8.h"
@@ -136,6 +137,12 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
   const std::string currency = json::get_string(pricing_cfg, "currency", "USD");
   const double per_unit = std::max(1.0, json::get_number(pricing_cfg, "tokens_per_unit", 1.0));
   const double floor_tokens = json::get_number(est, "output_floor_tokens", 32);
+  const Json floors_by_op = est.value("output_floor_by_op", Json::object());
+  const Json calibration = est.value("calibration", Json::object());
+  const bool calibrate = json::get_string(calibration, "mode", "on") != "off";
+  const std::string calibration_resource = json::get_string(calibration, "resource", "output_tokens");
+  const std::int64_t calibration_min_samples = std::max<std::int64_t>(1, json::get_int(calibration, "min_samples", 3));
+  const double calibration_headroom = std::max(1.0, json::get_number(calibration, "headroom", 1.5));
   const Json unknown_ratio = est.value("unknown_ratio", Json{{"low", 0.1}, {"high", 1.0}});
   const Json ratios = est.value("output_ratio", Json::object());
   const Json reasons = est.value("reasons", Json::object());
@@ -238,7 +245,20 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
       } else {
         const Json* r = json::find(ratios, content_op);
         const Json ratio = r ? *r : unknown_ratio;
-        out = Band{std::max(floor_tokens, content.low * json::get_number(ratio, "low", 0.1)), std::max(floor_tokens, content.high * json::get_number(ratio, "high", 1.0))};
+        // P31: a generative action writes more than a short input suggests: its kind has its own floor and expected size (data).
+        double floor_low = floor_tokens, floor_high = floor_tokens;
+        if (const Json* f = json::find(floors_by_op, content_op); f && f->is_object()) {
+          floor_low = json::get_number(*f, "low", floor_tokens);
+          floor_high = json::get_number(*f, "high", floor_tokens);
+        }
+        out = Band{std::max(floor_low, content.low * json::get_number(ratio, "low", 0.1)), std::max(floor_high, content.high * json::get_number(ratio, "high", 1.0))};
+        // P31: what the ledger measured for this action and model replaces the assumption once there are enough samples.
+        if (calibrate && s.observed && !action_id.empty() && !model.empty()) {
+          if (const auto seen = s.observed(action_id, model, calibration_resource); seen && seen->samples >= calibration_min_samples) {
+            out = Band{seen->min, std::max(seen->max, seen->mean * calibration_headroom)};
+            call["calibration"] = Json{{"source", "usage_ledger"}, {"resource", calibration_resource}, {"samples", seen->samples}, {"mean", seen->mean}};
+          }
+        }
       }
       double cap = config_cap;
       if (const Json* p = json::find(merged_with, "parameters"); p && p->is_object())
@@ -319,8 +339,12 @@ Json estimate_plan(const EstimateServices& s, const Json& plan, const Json& args
   out["calls"] = calls;
   out["tokens"] = Json{{"input", band_json(tokens_in)}, {"output", band_json(tokens_out)}};
   out["money"] = money;
+  // The rules the sums are written by (P31): data, so a client and the proposal text say an amount the same way.
+  out["money_format"] = s.settings.value("spend_limits", Json::object()).value("money_format", money_format_preset());
   out["assumptions"] = Json{{"chars_per_token", cpt},
                             {"output_floor_tokens", floor_tokens},
+                            {"output_floor_by_op", floors_by_op},
+                            {"calibration", calibration},
                             {"completion_limit", config_cap > 0 ? Json(config_cap) : Json(nullptr)},
                             {"price_source", "the model registry (models.json); not verified current"},
                             {"note", "an estimate from the size of the input: not a limit and not a promise; the usage guard and the rules are separate"}};

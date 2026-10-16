@@ -117,6 +117,11 @@ class UsagePolicy {
   // never a zero; operations folded by compaction carry no time and are only counted.
   Result<Json> spend_between(std::string_view from, std::string_view to);
 
+  // P31: what a kind of operation measured for one model, whatever the endpoint: the samples of `resource` (e.g. output_tokens) in the
+  // cohorts "<kind>|...|<model>" (the default key template; a custom template is not matched), the folded ones included. Read only.
+  // {samples, mean, min, max}; samples is 0 (and the rest absent) when nothing was measured: never a zero invented.
+  Result<Json> observed(std::string_view kind, std::string_view model, std::string_view resource);
+
  private:
   struct Impl;
   explicit UsagePolicy(std::unique_ptr<Impl> impl);

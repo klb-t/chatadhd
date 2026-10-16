@@ -24,7 +24,16 @@
           "label": {
             "en": "Model: one model call per input (guarded like every other)",
             "pl": "Model: jedno wywołanie modelu na wejście (pod tym samym zabezpieczeniem)"
-          }
+          },
+          "description": {
+            "en": "P31: with local_first true the model method reads locally first and asks the model only when ask_when says so (unsure: a candidate between heuristic.scoring.min_score and confident_score; no_candidate: nothing found), so a command the local reading is sure of costs no routing call. The preset is false: one model call per input, as the label says.",
+            "pl": "P31: przy local_first równym true metoda modelowa najpierw czyta lokalnie i pyta model tylko wtedy, gdy mówi to ask_when (unsure: kandydat między heuristic.scoring.min_score a confident_score; no_candidate: nic nie znaleziono), więc polecenie, którego odczyt lokalny jest pewien, nie kosztuje wywołania routingu. Preset to false: jedno wywołanie modelu na wejście, jak mówi etykieta."
+          },
+          "local_first": false,
+          "ask_when": [
+            "unsure",
+            "no_candidate"
+          ]
         },
         "hybrid": {
           "label": {
@@ -4782,10 +4791,62 @@
       }
     },
     "model": {
-      "system": "You decide whether a user's input to a chat application is an ordinary message for the language model, or a command to the application itself (run one of its actions on something). Answer with one JSON object only: {\"kind\": \"message\" | \"command\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command names something the application can do to an existing element (for example summarise this conversation, set a setting). Questions, requests for the model to write or explain, and anything unclear are messages. Use only action ids from the list.",
+      "system": "You route one input of a chat application; the input may be in any language (often Polish). Decide: an ordinary message for the language model, or a command to the application itself (run one of its actions on something that already exists). Answer with one JSON object only: {\"kind\": \"message\" | \"command\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command asks the application to act on the conversation, a message or a setting (summarise, translate, explain simply, rephrase, set, show, ...); when you name an action, kind is \"command\". Questions, requests to write or explain something new, and anything unclear are messages with action null. Use only action ids from the list.\nExamples (input -> kind, action, reference):\n{{examples}}",
       "trace_raw_chars": 4000,
       "local_recheck": true,
       "catalogue_line": "- {{id}}: {{title}} (needs: {{requires}})",
+      "catalogue_line_free": "- {{id}}: {{title}}",
+      "named_action_min_confidence": 0.8,
+      "examples": {
+        "enabled": true,
+        "max": 8,
+        "line": "\"{{text}}\" -> {{answer}}",
+        "command_answer": "command",
+        "message_answer": "message",
+        "phrase_reference": "message",
+        "phrase_actions": [
+          "explain_simply",
+          "rephrase"
+        ],
+        "fixed": {
+          "pl": [
+            {
+              "text": "Streść tę rozmowę",
+              "action": "summarise",
+              "reference": "conversation"
+            },
+            {
+              "text": "Przetłumacz tę wiadomość na angielski",
+              "action": "translate",
+              "reference": "message"
+            },
+            {
+              "text": "Napisz wiersz o kocie"
+            },
+            {
+              "text": "Co to jest DNS?"
+            }
+          ],
+          "en": [
+            {
+              "text": "Summarise this conversation",
+              "action": "summarise",
+              "reference": "conversation"
+            },
+            {
+              "text": "Translate this message into German",
+              "action": "translate",
+              "reference": "message"
+            },
+            {
+              "text": "Write a poem about a cat"
+            },
+            {
+              "text": "What is DNS?"
+            }
+          ]
+        }
+      },
       "user": "Actions:\n{{actions}}\n\nInput:\n{{text}}",
       "parameters": {
         "temperature": 0,
@@ -4803,6 +4864,8 @@
         "proposal_cost": "Estimate: {{cost}} (relative cost, 1 = one ordinary model call), {{calls}} model call(s), about {{bytes}} bytes sent to the model.",
         "proposal_money_known": "Money: about {{low}} to {{high}} {{currency}}, from the size of the input and the model's listed price (an estimate, not a limit).",
         "proposal_money_unknown": "Money: unknown ({{why}}); do not read it as free.",
+        "proposal_routing_spent": "Already spent reading your sentence (routing call, {{model}}, {{tokens}} tokens): {{usd}} USD; it is not in the estimate above.",
+        "proposal_routing_unknown": "Already spent reading your sentence (routing call, {{model}}, {{tokens}} tokens): the cost is not known; it is not in the estimate above.",
         "missing_args_settings": " (or set: {{settings}})",
         "proposal_effects": "It {{effects}}.",
         "proposal_confirm": "The rules ask you to confirm: {{what}}.",
@@ -4880,6 +4943,8 @@
         "proposal_cost": "Szacunek: {{cost}} (koszt względny, 1 = jedno zwykłe wywołanie modelu), wywołań modelu: {{calls}}, do modelu pójdzie ok. {{bytes}} bajtów.",
         "proposal_money_known": "Pieniądze: ok. {{low}} do {{high}} {{currency}}, z rozmiaru wejścia i ceny modelu z cennika (szacunek, nie limit).",
         "proposal_money_unknown": "Pieniądze: nieznane ({{why}}); nie czytaj tego jako za darmo.",
+        "proposal_routing_spent": "Już wydane na odczytanie zdania (wywołanie routingu, {{model}}, {{tokens}} tokenów): {{usd}} USD; nie ma tego w szacunku powyżej.",
+        "proposal_routing_unknown": "Już wydane na odczytanie zdania (wywołanie routingu, {{model}}, {{tokens}} tokenów): koszt nieznany; nie ma go w szacunku powyżej.",
         "missing_args_settings": " (albo ustaw: {{settings}})",
         "proposal_effects": "To {{effects}}.",
         "proposal_confirm": "Zasady każą Cię zapytać o potwierdzenie: {{what}}.",
@@ -5936,6 +6001,29 @@
           },
           "catalogue_line": {
             "type": "string"
+          },
+          "catalogue_line_free": {
+            "type": "string",
+            "description": "P31: the catalogue line of an action that needs no element (shorter: no needs part)."
+          },
+          "named_action_min_confidence": {
+            "type": "number",
+            "description": "P31: a model answer that names an existing action is taken as that command even when it says kind=message, from this confidence up (a preset; a value above 1 switches it off). The route trace says why."
+          },
+          "examples": {
+            "type": "object",
+            "description": "P31: the examples in the routing prompt ({{examples}} of system), in the language of the input: fixed ones, and the first phrase of each phrase_actions action from heuristic.phrases. line: {{text}}, {{answer}}. max: the most lines (-1: all). enabled false leaves them out.",
+            "properties": {
+              "enabled": {"type": "boolean"},
+              "max": {"type": "integer", "minimum": -1},
+              "line": {"type": "string"},
+              "command_answer": {"type": "string"},
+              "message_answer": {"type": "string"},
+              "phrase_reference": {"type": "string"},
+              "phrase_actions": {"type": "array", "items": {"type": "string"}},
+              "fixed": {"type": "object", "additionalProperties": {"type": "array", "items": {"type": "object"}}}
+            },
+            "additionalProperties": false
           },
           "user": {
             "type": "string"

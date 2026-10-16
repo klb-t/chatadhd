@@ -33,6 +33,7 @@
 #include "loom/graph_memory.h"
 #include "loom/importer.h"
 #include "loom/log.h"
+#include "loom/money_format.h"
 #include "loom/memory_engine.h"
 #include "loom/path_policy.h"
 #include "loom/port_profile.h"
@@ -1006,11 +1007,8 @@ StepOutcome usage_spend(Ctx& x) {
 
 // ── spending limits per period (P17) ───────────────────────────────
 
-std::string spend_amount_text(double v) {
-  char buf[48];
-  std::snprintf(buf, sizeof(buf), "%.2f", v);
-  if (v > 0 && std::string(buf) == "0.00") std::snprintf(buf, sizeof(buf), "%.4f", v);
-  return buf;
+std::string spend_amount_text(double v, const Json& data) {
+  return format_money(v, data.value("money_format", Json(nullptr)));
 }
 
 // The limits as lines for the answer of "how much did I spend": each limit with what the period has spent, or the way to set one.
@@ -1031,7 +1029,7 @@ std::vector<std::string> spend_limit_lines(Ctx& x, Json* data_out) {
                     {"amount", number_text(l.value("amount", 0.0))},
                     {"currency", json::get_string(l, "currency")},
                     {"what", spend::on_exceed_label(data, json::get_string(l, "on_exceed"), x.lang)},
-                    {"spent", l["spent"].is_number() ? spend_amount_text(l["spent"].get<double>()) : std::string()},
+                    {"spent", l["spent"].is_number() ? spend_amount_text(l["spent"].get<double>(), data) : std::string()},
                     {"share", l["share"].is_number() ? number_text(std::round(l["share"].get<double>() * 100)) : std::string()}};
     lines.push_back("• " + x.say(l["spent"].is_number() ? "limit_line" : "limit_line_unknown", vars));
   }
@@ -1065,7 +1063,7 @@ StepOutcome usage_set_spend_limit(Ctx& x) {
   auto done = spend::put(x.rt.config(), data, *entry);
   if (!done) return fail(done.error());
   const Json vars{{"period", spend::period_label(data, entry->period, x.lang)}, {"amount", number_text(entry->amount)}, {"currency", entry->currency},
-                  {"usd", spend_amount_text(entry->usd())}, {"rate", number_text(entry->rate)}, {"what", spend::on_exceed_label(data, entry->on_exceed, x.lang)}};
+                  {"usd", spend_amount_text(entry->usd(), data)}, {"rate", number_text(entry->rate)}, {"what", spend::on_exceed_label(data, entry->on_exceed, x.lang)}};
   std::string text = x.say("limit_spend_set", vars);
   if (entry->rate_source == "preset") text += " " + x.say("limit_rate_preset", Json{{"note", x.pick(data.value("rates_note", Json::object()))}});
   if (!done->value("previous", Json(nullptr)).is_null()) {

@@ -12,6 +12,7 @@
 #include "loom/provenance.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
+#include "loom/usage_policy.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -23,6 +24,10 @@ namespace {
 Json reply(const std::string& content) {
   return Json{{"choices", Json::array({Json{{"message", Json{{"role", "assistant"}, {"content", content}}}}})},
               {"usage", Json{{"total_tokens", 7}}}};
+}
+
+Json reply_with_usage(const std::string& content, const Json& usage) {
+  return Json{{"choices", Json::array({Json{{"message", Json{{"role", "assistant"}, {"content", content}}}}})}, {"usage", usage}};
 }
 
 struct Fixture {
@@ -920,5 +925,143 @@ TEST_SUITE("chat_route") {
     CHECK(st.at("verdict").at("accepted") == true);
     CHECK(st.at("raw").get<std::string>().find("summarise") != std::string::npos);
     CHECK(r.dump().find("sk-test-key") == std::string::npos);
+  }
+
+  // ── P31: the findings of the real-model run (R19) ─────────────────────
+
+  TEST_CASE("P31: an answer that names an existing action is that command even when it says kind=message; the trace says why") {
+    const char* named = "{\"kind\":\"message\",\"action\":\"explain_simply\",\"reference\":\"message\",\"args\":{},\"confidence\":1.0}";
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(named)));
+    const Json r = f.route("Wyjaśnij to prościej");
+    REQUIRE(r.at("kind") == "command");
+    CHECK(action_of(r) == "explain_simply");
+    CHECK(r.at("command").at("source") == "model");
+    const Json st = r.at("trace").at("stages").at(0);
+    CHECK(st.at("verdict").at("accepted") == true);
+    CHECK(st.at("verdict").at("why") == "named_action_despite_kind_message");
+    CHECK(r.at("trace").at("decided_by") == "model");
+    // below the threshold, an unknown action or no action at all: still a message
+    for (const char* weak : {"{\"kind\":\"message\",\"action\":\"explain_simply\",\"confidence\":0.5}", "{\"kind\":\"message\",\"action\":\"no_such_action\",\"confidence\":1.0}",
+                            "{\"kind\":\"message\",\"action\":null,\"confidence\":1.0}"}) {
+      Fixture g;
+      g.rt->config().set("intent_routing_method", "model");
+      g.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(weak)));
+      CAPTURE(weak);
+      CHECK(g.route("Opowiedz mi o kotach").at("kind") == "message");
+    }
+    // the threshold is data: above 1 it is switched off
+    Fixture off;
+    off.rt->config().set("intent_routing_method", "model");
+    off.overlay("intent_routing", Json{{"model", Json{{"named_action_min_confidence", 2}}}});
+    off.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(named)));
+    CHECK(off.route("Opowiedz mi o kotach").at("kind") == "message");
+  }
+
+  TEST_CASE("P31: the routing prompt is Polish-aware: examples in the language of the input, from the data; no empty needs part") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    const auto prompt_of = [&](const std::string& text) {
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply("{\"kind\":\"message\",\"action\":null,\"confidence\":0.9}")));
+      f.route(text);
+      const Json body = unwrap(json::parse(f.transport->requests().back().body));
+      std::string all;
+      for (const auto& msg : body.at("messages")) all += msg.at("content").get<std::string>() + "\n";
+      return std::make_pair(body.at("messages").at(0).at("content").get<std::string>(), all);
+    };
+    const auto pl = prompt_of("Opowiedz mi coś o kotach, proszę");
+    CHECK(pl.first.find("Streść tę rozmowę\" -> command summarise conversation") != std::string::npos);
+    CHECK(pl.first.find("\"wytłumacz prościej\" -> command explain_simply message") != std::string::npos);  // the first phrase of the lexicon
+    CHECK(pl.first.find("Co to jest DNS?\" -> message") != std::string::npos);
+    CHECK(pl.first.find("Summarise this conversation") == std::string::npos);
+    CHECK(pl.second.find("(needs: )") == std::string::npos);
+    CHECK(pl.second.find("- summarise: ") != std::string::npos);
+    const auto en = prompt_of("Tell me something about cats, please");
+    CHECK(en.first.find("Summarise this conversation\" -> command summarise conversation") != std::string::npos);
+    CHECK(en.first.find("Streść tę rozmowę") == std::string::npos);
+    // data: examples switched off leave only the instruction
+    f.overlay("intent_routing", Json{{"model", Json{{"examples", Json{{"enabled", false}}}}}});
+    const auto none = prompt_of("Opowiedz mi coś o kotach, proszę");
+    CHECK(none.first.find("command summarise") == std::string::npos);
+    CHECK(none.first.size() < pl.first.size());
+    // the size of the whole prompt, in characters (the real call was ~2780 tokens; the catalogue is most of it)
+    std::size_t lines = 0, with_needs = 0;
+    for (std::size_t at = pl.second.find("\n- "); at != std::string::npos; at = pl.second.find("\n- ", at + 1)) ++lines;
+    for (std::size_t at = pl.second.find("(needs: "); at != std::string::npos; at = pl.second.find("(needs: ", at + 1)) ++with_needs;
+    MESSAGE("routing prompt: ", pl.second.size(), " chars with examples, ", none.second.size(), " without; catalogue lines ", lines, ", with needs ", with_needs);
+  }
+
+  TEST_CASE("P31: the routing call is already spent: the proposal shows it apart from the estimate, and the ledger counts it") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply_with_usage(
+        "{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"args\":{},\"confidence\":0.9}",
+        Json{{"prompt_tokens", 2780}, {"completion_tokens", 40}, {"total_tokens", 2820}, {"cost", 0.00029}})));
+    const auto out = f.input("Could you boil this chat down to a paragraph?");
+    REQUIRE(out.handled);
+    const Json proposal = f.last_message("assistant").at("metadata").at("action_proposal");
+    REQUIRE(proposal.contains("routing"));
+    CHECK(proposal.at("routing").at("usd") == 0.00029);
+    CHECK(proposal.at("routing").at("usd_source") == "provider");
+    CHECK(proposal.at("routing").at("tokens").at("input") == 2780);
+    CHECK(proposal.at("routing").at("tokens").at("output") == 40);
+    CHECK(proposal.at("routing").at("model") == "test/model");
+    const std::string text = f.last_message("assistant").at("text");
+    CHECK(text.find("Already spent reading your sentence") != std::string::npos);
+    CHECK(text.find("0.00029 USD") != std::string::npos);
+    CHECK(text.find("2820 tokens") != std::string::npos);
+    CHECK(text.find("not in the estimate above") != std::string::npos);
+    // the estimate of the action is separate and does not include it
+    CHECK(proposal.at("cost").at("model_calls") == 1);
+    // the call went through use_model: the ledger of the guard recorded it, with its own cohort
+    auto policy = unwrap(UsagePolicy::open(f.td.path() / "usage-policy.sqlite", Json::object()));
+    CHECK(unwrap(policy->observed("input.route_intent", "test/model", "output_tokens")).at("samples") == 1);
+    // a provider that reports no cost and no tokens: unknown, said so - never a zero
+    Fixture g;
+    g.rt->config().set("intent_routing_method", "model");
+    g.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply_with_usage(
+        "{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"args\":{},\"confidence\":0.9}", Json::object())));
+    REQUIRE(g.input("Could you boil this chat down to a paragraph?").handled);
+    const std::string unknown = g.last_message("assistant").at("text");
+    CHECK(unknown.find("the cost is not known") != std::string::npos);
+    CHECK(g.last_message("assistant").at("metadata").at("action_proposal").at("routing").at("usd").is_null());
+    // a Polish sentence is answered in Polish
+    Fixture p;
+    p.rt->config().set("intent_routing_method", "model");
+    p.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply_with_usage(
+        "{\"kind\":\"message\",\"action\":\"summarise\",\"reference\":\"conversation\",\"args\":{},\"confidence\":1.0}",
+        Json{{"prompt_tokens", 100}, {"completion_tokens", 10}, {"cost", 0.000025}})));
+    REQUIRE(p.input("Zrób z tego krótkie podsumowanie").handled);
+    const std::string pl = p.last_message("assistant").at("text");
+    CHECK(pl.find("Już wydane na odczytanie zdania") != std::string::npos);
+    CHECK(pl.find("0.000025 USD") != std::string::npos);
+  }
+
+  TEST_CASE("P31: the model method with local_first asks the model only when the local reading is unsure (a preset, off by default)") {
+    const std::string message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.99}";
+    {
+      Fixture f;  // the preset: one model call per input, a confident command included
+      f.rt->config().set("intent_routing_method", "model");
+      f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+      f.route("Streść tę rozmowę");
+      CHECK(f.transport->requests().size() == 1);
+    }
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.overlay("intent_routing", Json{{"method", Json{{"presets", Json{{"model", Json{{"local_first", true}}}}}}}});
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+    for (const char* text : {"Summarise this conversation", "Streść tę rozmowę", "/summarise"}) {
+      const Json r = f.route(text);
+      INFO(text);
+      CHECK(r.at("method") == "model");
+      REQUIRE(r.at("kind") == "command");
+      CHECK(action_of(r) == "summarise");
+      CHECK(r.at("hybrid").at("asked_model") == false);
+    }
+    CHECK(f.transport->requests().empty());  // the local reading was sure: no routing call
+    // nothing found locally: the model is asked, as the preset's ask_when says
+    CHECK(f.route("Opowiedz mi o kotach").at("kind") == "message");
+    CHECK(f.transport->requests().size() == 1);
   }
 }

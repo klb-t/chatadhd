@@ -16,6 +16,8 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
+#include <optional>
 #include <string_view>
 
 #include "loom/util/json.h"
@@ -29,11 +31,19 @@ namespace loom::actions {
 
 inline constexpr std::string_view kEstimateSchema = "loom.action_estimate/1";
 
+// What the usage ledger measured for an action and a model (P31): the samples of one resource.
+struct ObservedUsage {
+  std::int64_t samples = 0;
+  double mean = 0, min = 0, max = 0;
+};
+
 struct EstimateServices {
   const ModelRegistry* models = nullptr;  // prices (models.json as OpenRouter lists them); null = no price is known
   const Config* config = nullptr;         // default model, completion limit
   Json settings;                          // values of the runtime profile action_run
   Json catalogue;                         // the action catalogue (content_op of the actions)
+  // Measured output of (action, model, resource) from the usage ledger; empty = no calibration. Never creates a ledger.
+  std::function<std::optional<ObservedUsage>(const std::string& action, const std::string& model, const std::string& resource)> observed;
   std::string registry_failure;           // why the automatic fetch of the model list failed (empty: none was tried or it worked)
 };
 

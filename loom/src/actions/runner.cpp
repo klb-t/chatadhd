@@ -12,6 +12,8 @@
 #include "loom/action_ops.h"
 
 #include <algorithm>
+#include <filesystem>
+#include <memory>
 #include <thread>
 
 #include "loom/action_element.h"
@@ -22,6 +24,7 @@
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/event_bus.h"
+#include "loom/log.h"
 #include "loom/provenance.h"
 #include "loom/providers.h"
 #include "loom/runtime.h"
@@ -762,6 +765,28 @@ Json ActionRunner::estimate_of(const Loaded& loaded, const Json& plan, const Run
   services.config = &rt_.config();
   services.settings = loaded.settings;
   services.catalogue = loaded.engine.catalogue();
+  // P31: what the ledger measured for an action and a model calibrates the output band (a ledger is never created by a question).
+  const auto ledger_path = rt_.paths().root / "usage-policy.sqlite";
+  auto ledger = std::make_shared<std::unique_ptr<UsagePolicy>>();
+  services.observed = [ledger, ledger_path](const std::string& action, const std::string& model, const std::string& resource) -> std::optional<ObservedUsage> {
+    std::error_code ec;
+    if (!*ledger) {
+      if (!std::filesystem::exists(ledger_path, ec)) return std::nullopt;
+      auto opened = UsagePolicy::open(ledger_path, Json::object());
+      if (!opened) {
+        log::write(log::Level::Debug, "loom.estimate", "the usage ledger could not be read for calibration: " + opened.error().message);
+        return std::nullopt;
+      }
+      *ledger = std::move(*opened);
+    }
+    auto seen = (*ledger)->observed(action, model, resource);
+    if (!seen) {
+      log::write(log::Level::Debug, "loom.estimate", "no calibration from the usage ledger: " + seen.error().message);
+      return std::nullopt;
+    }
+    if (json::get_int(*seen, "samples", 0) <= 0) return std::nullopt;
+    return ObservedUsage{json::get_int(*seen, "samples", 0), json::get_number(*seen, "mean", 0.0), json::get_number(*seen, "min", 0.0), json::get_number(*seen, "max", 0.0)};
+  };
   Json estimate = estimate_plan(services, plan, r.args, chars);
   // A price the registry cannot give because it is empty (a fresh data directory): fetch the list once, then estimate again.
   bool empty_registry = false;

@@ -679,6 +679,48 @@ Result<Json> UsagePolicy::inspect(std::string_view key) {
   return result;
 }
 
+Result<Json> UsagePolicy::observed(std::string_view kind, std::string_view model, std::string_view resource) {
+  const auto like_escape = [](std::string_view text) {
+    std::string out;
+    for (const char c : text) {
+      if (c == '%' || c == '_' || c == '\\') out += '\\';
+      out += c;
+    }
+    return out;
+  };
+  const std::string pattern = like_escape(kind) + "|%|" + like_escape(model);
+  std::lock_guard lock(impl_->mu);
+  sql::Txn txn(impl_->db, false);
+  LOOM_TRY(txn.begin_status());
+  std::int64_t samples = 0;
+  long double sum = 0;
+  double lo = 0, hi = 0;
+  const auto take = [&](std::int64_t n, double s, double mn, double mx) {
+    if (n <= 0) return;
+    lo = samples ? std::min(lo, mn) : mn;
+    hi = samples ? std::max(hi, mx) : mx;
+    samples += n;
+    sum += static_cast<long double>(s);
+  };
+  {
+    LOOM_TRY_ASSIGN(auto st, impl_->db.prepare("SELECT COUNT(*),COALESCE(SUM(value),0),COALESCE(MIN(value),0),COALESCE(MAX(value),0) FROM usage_samples "
+                                               "WHERE resource=? AND baseline_key LIKE ? ESCAPE '\\'"));
+    st.bind_all(std::string(resource), pattern);
+    LOOM_TRY_ASSIGN(bool row, st.step());
+    if (row) take(st.get_int(0), st.get_double(1), st.get_double(2), st.get_double(3));
+  }
+  {
+    LOOM_TRY_ASSIGN(auto st, impl_->db.prepare("SELECT COALESCE(SUM(samples),0),COALESCE(SUM(sample_sum),0),COALESCE(MIN(sample_min),0),COALESCE(MAX(sample_max),0) "
+                                               "FROM usage_fold_samples WHERE resource=? AND baseline_key LIKE ? ESCAPE '\\'"));
+    st.bind_all(std::string(resource), pattern);
+    LOOM_TRY_ASSIGN(bool row, st.step());
+    if (row) take(st.get_int(0), st.get_double(1), st.get_double(2), st.get_double(3));
+  }
+  LOOM_TRY(txn.commit());
+  if (samples == 0) return Json{{"samples", 0}};
+  return Json{{"samples", samples}, {"mean", static_cast<double>(sum / samples)}, {"min", lo}, {"max", hi}};
+}
+
 Result<Json> UsagePolicy::spend_between(std::string_view from, std::string_view to) {
   std::lock_guard lock(impl_->mu);
   sql::Txn txn(impl_->db, false);

@@ -11,6 +11,7 @@
 #include "loom/db.h"
 #include "loom/net/http.h"
 #include "loom/providers.h"
+#include "loom/usage_policy.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
@@ -224,5 +225,158 @@ TEST_SUITE("action_estimate") {
     CHECK_FALSE(cost2.at("money").contains("low"));
     CHECK(unknown.text.find("Money: unknown") != std::string::npos);
     CHECK(unknown.text.find("do not read it as free") != std::string::npos);
+  }
+
+  TEST_CASE("P31: a generative action is estimated at the size of its kind, not of a short input; the table is data") {
+    Registry r;
+    actions::EstimateServices s = r.services();
+    s.catalogue["explain_simply"] = Json{{"content_op", "restyle"}};
+    s.catalogue["elaborate"] = Json{{"content_op", "expand"}};
+    // 40 characters of input: 10..13 tokens. R19: explain_simply wrote 250 tokens against a high of 84.
+    const Json e = actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40);
+    CHECK(e.at("tokens").at("output").at("low") == 48);
+    CHECK(e.at("tokens").at("output").at("high") == 320);
+    CHECK(e.at("tokens").at("output").at("high").get<double>() >= 250);
+    CHECK(e.at("money").at("high").get<double>() >= 250 * 4e-6);
+    const Json x = actions::estimate_plan(s, plan_with("priced/model", "elaborate"), Json::object(), 40);
+    CHECK(x.at("tokens").at("output").at("high") == 600);
+    // an op the table does not list keeps the single floor; a large input still wins over the floor
+    const Json t = actions::estimate_plan(s, plan_with("priced/model", "translate"), Json::object(), 40);
+    CHECK(t.at("tokens").at("output").at("low") == 32);
+    CHECK(t.at("tokens").at("output").at("high") == 32);
+    const Json big = actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 12000);
+    CHECK(big.at("tokens").at("output").at("high").get<double>() > 320);
+    // the table is data: emptied, the old floor is back
+    s.settings["estimate"]["output_floor_by_op"] = Json::object();
+    const Json old = actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40);
+    CHECK(old.at("tokens").at("output").at("high") == 32);
+    // and the completion limit of the user still caps it
+    s.settings = unwrap(RuntimeProfile::builtin("action_run")).values();
+    r.cfg.set("max_tokens", 100);
+    CHECK(actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40).at("tokens").at("output").at("high") == 100);
+  }
+
+  TEST_CASE("P31: what the ledger measured calibrates the high bound once there are enough samples (min samples, headroom and mode are data)") {
+    Registry r;
+    actions::EstimateServices s = r.services();
+    s.catalogue["explain_simply"] = Json{{"content_op", "restyle"}};
+    std::vector<std::string> asked;
+    actions::ObservedUsage seen{5, 240.0, 200.0, 280.0};
+    s.observed = [&](const std::string& action, const std::string& model, const std::string& resource) -> std::optional<actions::ObservedUsage> {
+      asked.push_back(action + "|" + model + "|" + resource);
+      return seen;
+    };
+    const Json e = actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40);
+    REQUIRE(asked.size() == 1);
+    CHECK(asked[0] == "explain_simply|priced/model|output_tokens");
+    CHECK(e.at("tokens").at("output").at("low") == 200);
+    CHECK(e.at("tokens").at("output").at("high") == 360);  // max(280, 240 x 1.5)
+    CHECK(e.at("calls").at(0).at("calibration").at("samples") == 5);
+    CHECK(e.at("calls").at(0).at("calibration").at("source") == "usage_ledger");
+    // fewer samples than the preset's minimum: the assumption stays
+    seen.samples = 2;
+    const Json few = actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40);
+    CHECK(few.at("tokens").at("output").at("high") == 320);
+    CHECK_FALSE(few.at("calls").at(0).contains("calibration"));
+    // the minimum is data
+    seen.samples = 2;
+    s.settings["estimate"]["calibration"]["min_samples"] = 2;
+    CHECK(actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40).at("tokens").at("output").at("high") == 360);
+    // mode off: the ledger is not even asked
+    asked.clear();
+    s.settings["estimate"]["calibration"]["mode"] = "off";
+    CHECK(actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40).at("tokens").at("output").at("high") == 320);
+    CHECK(asked.empty());
+    // the completion limit caps a calibrated band too
+    s.settings["estimate"]["calibration"]["mode"] = "on";
+    r.cfg.set("max_tokens", 300);
+    CHECK(actions::estimate_plan(s, plan_with("priced/model", "explain_simply"), Json::object(), 40).at("tokens").at("output").at("high") == 300);
+  }
+
+  TEST_CASE("P31: the preview reads the ledger by itself: samples of the action and the model change the output band; no ledger, no call") {
+    fsutil::TempDir td;
+    auto transport = std::make_shared<net::ScriptedTransport>();
+    RuntimeOptions o;
+    o.data_dir = td.path().string();
+    o.start_workers = false;
+    o.http = transport;
+    auto rt = unwrap(Runtime::open(o));
+    rt->secrets().set("api_key", "sk-test-key");
+    rt->config().set("base_url", "https://api.test");
+    rt->config().set("default_model", "priced/model");
+    rt->config().set("model_registry_autorefresh", "off");
+    const std::string conv = unwrap(rt->db().create_conv("Planning")).id;
+    NewMessage m;
+    m.conv_id = conv;
+    m.role = "user";
+    m.text = "Explain the migration plan.";
+    const std::string message = unwrap(rt->db().create_msg(m));
+    transport->expect("GET", "https://api.test/models",
+                      net::ScriptedTransport::Reply::json(200, Json{{"data", Json::array({Json{{"id", "priced/model"}, {"name", "Priced"}, {"context_length", 8000},
+                                                                                              {"pricing", Json{{"prompt", "0.000003"}, {"completion", "0.000015"}}}}})}}));
+    LOOM_REQUIRE_OK(rt->models().update_from_api());
+    const Json before = unwrap(rt->actions().preview(Json{{"action", "explain_simply"}, {"element", message}}));
+    CHECK_FALSE(std::filesystem::exists(td.path() / "usage-policy.sqlite"));  // a question never creates the ledger
+    CHECK(before.at("estimate").at("tokens").at("output").at("high") == 320);
+    {
+      auto policy = unwrap(UsagePolicy::open(td.path() / "usage-policy.sqlite", Json::object()));
+      const char* keys[] = {"explain_simply|https://api.test/chat/completions|priced/model", "explain_simply|https://api.test/chat/completions|priced/model",
+                            "explain_simply|https://api.test/chat/completions|priced/model", "explain_simply|https://api.test/chat/completions|other/model"};
+      const double outputs[] = {250, 270, 230, 5000};
+      for (int i = 0; i < 4; ++i) {
+        const std::string op = "op" + std::to_string(i);
+        unwrap(policy->request(Json{{"operation_id", op}, {"baseline_key", keys[i]}, {"resources", Json{{"output_tokens", nullptr}}}}));
+        unwrap(policy->complete(op, Json{{"resources", Json{{"output_tokens", outputs[i]}}}, {"provenance", "provider_reported"}}));
+      }
+      const Json seen = unwrap(policy->observed("explain_simply", "priced/model", "output_tokens"));
+      CHECK(seen.at("samples") == 3);
+      CHECK(seen.at("min") == 230);
+      CHECK(seen.at("max") == 270);
+      CHECK(seen.at("mean").get<double>() == doctest::Approx(250.0));
+      CHECK(unwrap(policy->observed("summarise", "priced/model", "output_tokens")).at("samples") == 0);
+      CHECK(unwrap(policy->observed("explain_simply", "no/model", "output_tokens")).at("samples") == 0);
+    }
+    const Json after = unwrap(rt->actions().preview(Json{{"action", "explain_simply"}, {"element", message}}));
+    CHECK(after.at("estimate").at("tokens").at("output").at("low") == 230);
+    CHECK(after.at("estimate").at("tokens").at("output").at("high") == 375);  // 250 x 1.5 headroom beats the largest sample
+    CHECK(after.at("estimate").at("calls").at(0).at("calibration").at("samples") == 3);
+  }
+
+  TEST_CASE("P31: a tiny estimate is written with its digits in the proposal, never as 0.0000") {
+    fsutil::TempDir td;
+    auto transport = std::make_shared<net::ScriptedTransport>();
+    RuntimeOptions o;
+    o.data_dir = td.path().string();
+    o.start_workers = false;
+    o.http = transport;
+    auto rt = unwrap(Runtime::open(o));
+    rt->secrets().set("api_key", "sk-test-key");
+    rt->config().set("base_url", "https://api.test");
+    rt->config().set("default_model", "cheap/model");
+    rt->config().set("model_registry_autorefresh", "off");
+    const std::string conv = unwrap(rt->db().create_conv("Planning")).id;
+    NewMessage m;
+    m.conv_id = conv;
+    m.role = "user";
+    m.text = "Ship on Friday.";
+    unwrap(rt->db().create_msg(m));
+    transport->expect("GET", "https://api.test/models",
+                      net::ScriptedTransport::Reply::json(200, Json{{"data", Json::array({Json{{"id", "cheap/model"}, {"name", "Cheap"}, {"context_length", 8000},
+                                                                                              {"pricing", Json{{"prompt", "0.0000001"}, {"completion", "0.0000004"}}}}})}}));
+    LOOM_REQUIRE_OK(rt->models().update_from_api());
+    ChatOptions opts;
+    opts.conv_id = conv;
+    opts.stream = false;
+    for (const char* sentence : {"Summarise this conversation", "Streść tę rozmowę"}) {
+      const auto out = unwrap(chat_route::handle(*rt, sentence, opts, Json{{"message", sentence}}, nullptr));
+      const Message answer = *unwrap(rt->db().get_msg(out.assistant_message_id));
+      CAPTURE(answer.text);
+      CHECK(answer.text.find("0.0000 ") == std::string::npos);
+      CHECK(answer.text.find("0.0000 do") == std::string::npos);
+      const Json& money = answer.metadata.at("action_proposal").at("cost").at("money");
+      REQUIRE(money.at("known") == true);
+      CHECK(money.at("high").get<double>() > 0);
+      CHECK(answer.metadata.at("action_proposal").at("cost").at("money_format").at("significant") == 2);
+    }
   }
 }

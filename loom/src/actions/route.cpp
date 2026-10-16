@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
+#include <cstdlib>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -21,7 +22,9 @@
 #include "loom/db.h"
 #include "loom/event_bus.h"
 #include "loom/log.h"
+#include "loom/money_format.h"
 #include "loom/provenance.h"
+#include "loom/providers.h"
 #include "loom/re/regex.h"
 #include "loom/runtime.h"
 #include "loom/runtime_profile.h"
@@ -821,7 +824,80 @@ struct ModelRoute {
   Json pending = nullptr;
   std::optional<Error> error;
   Json trace = nullptr;  // P30: what the model was asked and answered (never the key, never the prompt)
+  Json spent = nullptr;  // P31: what the routing call itself cost (already spent): {model, tokens: {input, output}, usd, usd_source}
 };
+
+// P31: a price as the registry keeps it: a number or a numeric string (OpenRouter sends strings).
+std::optional<double> registry_price(const Json& pricing, const std::string& key) {
+  const Json* v = json::find(pricing, key);
+  if (!v) return std::nullopt;
+  if (v->is_number()) return v->get<double>();
+  if (!v->is_string()) return std::nullopt;
+  const std::string text = v->get<std::string>();
+  char* end = nullptr;
+  const double out = std::strtod(text.c_str(), &end);
+  if (text.empty() || end != text.c_str() + text.size() || !std::isfinite(out)) return std::nullopt;
+  return out;
+}
+
+// P31: the routing call's own cost for the proposal: what the provider reported, else tokens x the registry price, else unknown (never a zero).
+Json routing_spent(Runtime& rt, const std::string& model, const Json& usage) {
+  const auto count = [&](const char* a, const char* b) -> Json {
+    for (const char* key : {a, b})
+      if (const Json* v = json::find(usage, key); v && v->is_number()) return *v;
+    return nullptr;
+  };
+  const Json in = count("prompt_tokens", "input_tokens"), out = count("completion_tokens", "output_tokens");
+  Json spent{{"model", model}, {"tokens", Json{{"input", in}, {"output", out}}}, {"usd", nullptr}, {"usd_source", "unknown"}};
+  if (const Json* cost = json::find(usage, "cost"); cost && cost->is_number()) {
+    spent["usd"] = *cost;
+    spent["usd_source"] = "provider";
+  } else if (in.is_number() && out.is_number()) {
+    const Json pricing = rt.models().get_pricing(model);
+    const auto pin = registry_price(pricing, "prompt"), pout = registry_price(pricing, "completion");
+    if (pin && pout) {
+      spent["usd"] = in.get<double>() * *pin + out.get<double>() * *pout;
+      spent["usd_source"] = "registry";
+    }
+  }
+  return spent;
+}
+
+// P31: the examples of the routing prompt, in the language of the input: fixed ones from the data, and the first phrase of each action
+// the lexicon lists, so the prompt shows the verbs this application really understands (model.examples).
+std::string routing_examples(const Data& d, const std::string& lang) {
+  const Json& ex = d.cfg.at("model").value("examples", Json::object());
+  if (!json::get_bool(ex, "enabled", true)) return std::string();
+  const std::string language = lang.empty() ? json::get_string(d.cfg, "default_language", "en") : lang;
+  std::vector<std::string> lines;
+  const auto line = [&](const std::string& text, const std::string& answer) {
+    auto r = render_profile_template(json::get_string(ex, "line"), Json{{"text", text}, {"answer", answer}});
+    if (r) lines.push_back(*r);
+  };
+  if (const Json* fixed = json::find(ex, "fixed"); fixed && fixed->is_object())
+    if (const Json* mine = json::find(*fixed, language); mine && mine->is_array())
+      for (const auto& e : *mine) {
+        const std::string action = json::get_string(e, "action");
+        if (!action.empty() && !entry_of(d, action)) continue;
+        std::string answer = action.empty() ? json::get_string(ex, "message_answer", "message") : json::get_string(ex, "command_answer", "command") + " " + action;
+        if (const std::string ref = json::get_string(e, "reference"); !ref.empty() && !action.empty()) answer += " " + ref;
+        line(json::get_string(e, "text"), answer);
+      }
+  const Json& phrases = d.cfg.at("heuristic").at("phrases");
+  for (const auto& action : strings_of(json::find(ex, "phrase_actions"))) {
+    if (!entry_of(d, action)) continue;
+    const Json* by_action = json::find(phrases, action);
+    const Json* list = by_action ? json::find(*by_action, language) : nullptr;
+    if (!list || !list->is_array() || list->empty() || !(*list)[0].is_string()) continue;
+    std::string phrase = (*list)[0].get<std::string>();
+    while (!phrase.empty() && phrase.back() == '*') phrase.pop_back();
+    if (phrase.empty()) continue;
+    line(phrase, json::get_string(ex, "command_answer", "command") + " " + action + " " + json::get_string(ex, "phrase_reference", "message"));
+  }
+  const std::int64_t most = json::get_int(ex, "max", 8);
+  if (most >= 0 && lines.size() > static_cast<std::size_t>(most)) lines.resize(static_cast<std::size_t>(most));
+  return join(lines, "\n");
+}
 
 // P30: the raw answer kept in the trace: model.trace_raw_chars characters (-1: whole, 0: none).
 std::string clipped(const Data& d, const std::string& raw) {
@@ -852,8 +928,10 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   std::string lines;
   for (auto it = d.engine.catalogue().begin(); it != d.engine.catalogue().end(); ++it) {
     if (it.key() == "use_model") continue;
-    auto line = render_profile_template(json::get_string(m, "catalogue_line"),
-        Json{{"id", it.key()}, {"title", json::get_string(it.value(), "title", it.key())}, {"requires", join(strings_of(json::find(it.value(), "requires")), ", ")}});
+    // P31: a line without "(needs: )" when the action needs no element: fewer tokens for every routing call.
+    const std::string needs = join(strings_of(json::find(it.value(), "requires")), ", ");
+    auto line = render_profile_template(json::get_string(m, needs.empty() && m.contains("catalogue_line_free") ? "catalogue_line_free" : "catalogue_line"),
+        Json{{"id", it.key()}, {"title", json::get_string(it.value(), "title", it.key())}, {"requires", needs}});
     if (line) lines += (lines.empty() ? "" : "\n") + *line;
   }
   auto user = render_profile_template(json::get_string(m, "user"), Json{{"actions", lines}, {"text", text}});
@@ -865,7 +943,13 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   req.kind = "input.route_intent";
   req.action = "input.route_intent";
   req.models = {llm::ModelSpec{model, "", Json::object()}};
-  req.messages = Json::array({Json{{"role", "system"}, {"content", json::get_string(m, "system")}}});
+  // P31: the system text is data with the examples in the language of the input.
+  auto system = render_profile_template(json::get_string(m, "system"), Json{{"examples", routing_examples(d, lang)}});
+  if (!system) {
+    result.error = system.error();
+    return result;
+  }
+  req.messages = Json::array({Json{{"role", "system"}, {"content", *system}}});
   req.prompt = *user;
   if (const Json* p = json::find(m, "parameters"); p && p->is_object()) req.parameters = *p;
   req.wants = {"json"};
@@ -906,6 +990,11 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
     return result;
   }
   result.trace["state"] = r.state == llm::State::HttpError ? "http_error" : r.ok() ? "ok" : "failed";
+  // P31: the call went through use_model (the ledger, the limits, the x10 guard like every other); what it cost is shown with the proposal.
+  if (r.sent) {
+    result.spent = routing_spent(rt, model, r.usage);
+    result.trace["spent"] = result.spent;
+  }
   for (const auto& part : r.outputs)
     if (part.kind == "json" || part.kind == "text") result.trace["raw"] = clipped(d, part.value.is_string() ? part.value.get<std::string>() : part.value.dump());
   if (!r.ok()) {
@@ -923,10 +1012,17 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
   const std::string action = json::get_string(answer, "action");
   const double confidence = json::get_number(answer, "confidence", 0.0);
   result.trace["verdict"] = Json{{"kind", json::get_string(answer, "kind")}, {"action", action.empty() ? Json(nullptr) : Json(action)}, {"confidence", confidence}};
+  // P31: a small model answers kind=message for a command it names ("kind": "message", "action": "explain_simply", confidence 1.0). An answer
+  // that names an existing action with at least model.named_action_min_confidence (a preset; above 1 switches it off) is the action.
+  bool named_despite_message = false;
   if (json::get_string(answer, "kind") != "command") {
-    result.trace["verdict"]["accepted"] = false;
-    result.trace["verdict"]["why"] = "model_said_message";
-    return result;
+    if (!action.empty() && entry_of(d, action) && confidence >= json::get_number(m, "named_action_min_confidence", 0.8)) {
+      named_despite_message = true;
+    } else {
+      result.trace["verdict"]["accepted"] = false;
+      result.trace["verdict"]["why"] = "model_said_message";
+      return result;
+    }
   }
   if (action.empty() || !entry_of(d, action) || confidence < json::get_number(m, "min_confidence", 0.5)) {
     result.trace["verdict"]["accepted"] = false;
@@ -934,6 +1030,7 @@ ModelRoute model_route(Runtime& rt, const Data& d, const std::string& text, cons
     return result;
   }
   result.trace["verdict"]["accepted"] = true;
+  if (named_despite_message) result.trace["verdict"]["why"] = "named_action_despite_kind_message";
   Cand c;
   c.source = "model";
   c.matched = model;
@@ -1316,8 +1413,13 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     return found;
   };
   bool recheck_allowed = false;  // the local reading has not been made yet
-  if (method == "model") {
+  // P31: the model method with `local_first` (a preset, off) reads locally first and asks the model like hybrid does: a command the local
+  // reading is sure of costs no routing call.
+  const Json& method_preset = d.cfg.at("method").at("presets").at(method);
+  const bool local_first = method == "model" && json::get_bool(method_preset, "local_first", false);
+  if (method == "model" && !local_first) {
     ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()));
+    if (!routed.spent.is_null()) out["routing"] = routed.spent;  // P31: what the routing call cost, shown with the proposal
     if (!routed.pending.is_null()) {
       out["kind"] = "pending";
       out["usage_pending"] = routed.pending;
@@ -1359,8 +1461,8 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   // overridden by a model's "message"; the model is asked only when the local reading is unsure (a candidate between min_score and
   // confident_score), or, when the preset says so (ask_when: no_candidate), when it found nothing. The model's verdict then replaces the unsure
   // candidates: "message" makes the input a message, a command is the model's command.
-  if (method == "hybrid") {
-    const Json& preset = d.cfg.at("method").at("presets").at("hybrid");
+  if (method == "hybrid" || local_first) {
+    const Json& preset = method_preset;
     const double confident_score = json::get_number(d.cfg.at("heuristic").at("scoring"), "confident_score", 0.7);
     const auto ask_when = strings_of(json::find(preset, "ask_when"));
     const auto asks = [&](const char* when) { return std::find(ask_when.begin(), ask_when.end(), when) != ask_when.end(); };
@@ -1369,6 +1471,7 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     out["hybrid"] = Json{{"confident", confident}, {"asked_model", ask}};
     if (ask) {
       ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()));
+      if (!routed.spent.is_null()) out["routing"] = routed.spent;  // P31: what the routing call cost, shown with the proposal
       if (!routed.pending.is_null()) {
         out["kind"] = "pending";
         out["usage_pending"] = routed.pending;
@@ -1461,6 +1564,7 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     out["trace"]["considered"] = summaries;
   }
   command["route_trace"] = out["trace"];
+  if (out.contains("routing")) command["routing"] = out["routing"];  // P31: the routing call is already spent: the proposal shows it apart from the estimate
   command["candidates"] = summaries;
   out["kind"] = "command";
   out["confidence"] = command["score"];
@@ -1593,6 +1697,7 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
       items.push_back(Json{{"action", item.value("action", "")}, {"title", localized(item.value("labels", Json::object()), lang).empty() ? item.value("title", "") : localized(item.at("labels"), lang)},
                            {"cost", item.value("cost", 0.0)}, {"implementation", item.value("implementation", "")}});
   p["items"] = items;
+  if (const Json routing = cmd.value("routing", Json(nullptr)); routing.is_object()) p["routing"] = routing;  // P31: already spent, apart from the estimate of the action
   if (cmd.contains("plan")) {
     const Json estimate = cmd.value("estimate", Json(nullptr));
     // Money is a range where the model registry knows the price, else unknown with the reason: never a zero.
@@ -1600,7 +1705,7 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
     if (money.is_null()) money = Json{{"known", false}, {"currency", "USD"}, {"reason", "no estimate"}, {"reason_code", "no_estimate"}};
     localize_money_reason(d, money, lang);
     p["cost"] = Json{{"declared", cmd.at("plan").at("cost").at("declared")}, {"unit", "relative"}, {"model_calls", cmd.at("plan").at("cost").at("model_calls")},
-                     {"pipeline_model_use", cmd.at("plan").at("cost").value("pipeline_model_use", false)}, {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money},
+                     {"pipeline_model_use", cmd.at("plan").at("cost").value("pipeline_model_use", false)}, {"input_bytes", cmd.value("input_bytes", 0)}, {"money", money}, {"money_format", estimate.is_object() ? estimate.value("money_format", Json(nullptr)) : Json(nullptr)},
                      {"tokens", estimate.is_object() ? estimate.value("tokens", Json(nullptr)) : Json(nullptr)}};
     p["effects"] = effects_of(cmd.at("plan"));
   }
@@ -1615,12 +1720,8 @@ Json build_proposal(const Data& d, const Json& cmd, const Json& route_doc, const
   return p;
 }
 
-// A sum of money for people: enough digits to tell a hundredth of a cent from nothing.
-std::string money_text(double v) {
-  char buf[48];
-  std::snprintf(buf, sizeof buf, v >= 0.01 ? "%.2f" : "%.4f", v);
-  return buf;
-}
+// A sum of money for people (P31: the one shared formatter; its rules travel with the estimate, from the profile).
+std::string money_text(double v, const Json& rules) { return format_money(v, rules); }
 
 std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal, const std::string& lang) {
   std::vector<std::string> lines;
@@ -1684,10 +1785,21 @@ std::string render_proposal(const Data& d, const Json& cmd, const Json& proposal
     if (cost->value("model_calls", 0) > 0 || cost->value("pipeline_model_use", false)) {
       const Json money = cost->value("money", Json(nullptr));
       if (money.is_object() && json::get_bool(money, "known", false))
-        lines.push_back(say(d.cfg, lang, "proposal_money_known", Json{{"low", money_text(money.value("low", 0.0))}, {"high", money_text(money.value("high", 0.0))}, {"currency", money.value("currency", "USD")}}));
+        lines.push_back(say(d.cfg, lang, "proposal_money_known", Json{{"low", money_text(money.value("low", 0.0), cost->value("money_format", Json(nullptr)))}, {"high", money_text(money.value("high", 0.0), cost->value("money_format", Json(nullptr)))}, {"currency", money.value("currency", "USD")}}));
       else
         lines.push_back(say(d.cfg, lang, "proposal_money_unknown", Json{{"why", money.is_object() ? money.value("reason", "") : std::string()}}));
     }
+  }
+  // P31: the routing call that read the sentence is already spent; the estimate above is only the action.
+  if (const Json* routing = json::find(proposal, "routing"); routing && routing->is_object()) {
+    const Json rules = json::find(proposal, "cost") ? proposal.at("cost").value("money_format", Json(nullptr)) : Json(nullptr);
+    const Json usd = routing->value("usd", Json(nullptr));
+    const Json tokens = routing->value("tokens", Json::object());
+    const Json in = tokens.value("input", Json(nullptr)), out = tokens.value("output", Json(nullptr));
+    lines.push_back(say(d.cfg, lang, usd.is_number() ? "proposal_routing_spent" : "proposal_routing_unknown",
+                        Json{{"usd", usd.is_number() ? format_money(usd.get<double>(), rules) : std::string()},
+                             {"tokens", in.is_number() && out.is_number() ? std::to_string(static_cast<long long>(in.get<double>() + out.get<double>())) : std::string("?")},
+                             {"model", routing->value("model", "")}}));
   }
   if (const Json* effects = json::find(proposal, "effects"))
     lines.push_back(say(d.cfg, lang, "proposal_effects", Json{{"effects", effects_sentence(d, *effects, lang)}}));

@@ -33,6 +33,14 @@
       },
       "unknown_ratio": {"low": 0.1, "high": 1.0},
       "output_floor_tokens": 32,
+      "output_floor_by_op": {
+        "expand": {"low": 64, "high": 600},
+        "restyle": {"low": 48, "high": 320},
+        "condense": {"low": 32, "high": 300},
+        "combine": {"low": 48, "high": 400},
+        "evaluate": {"low": 48, "high": 400}
+      },
+      "calibration": {"mode": "on", "resource": "output_tokens", "min_samples": 3, "headroom": 1.5},
       "max_tokens_setting": "max_tokens",
       "pricing": {"input_key": "prompt", "output_key": "completion", "tokens_per_unit": 1, "currency": "USD"},
       "registry_refresh": {
@@ -64,6 +72,7 @@
       "default_currency": "USD",
       "default_on_exceed": "confirm",
       "estimate_bound": "high",
+      "money_format": {"min_unit": 0.01, "decimals": 2, "significant": 2, "zero": "0", "unknown": "unknown"},
       "periods": [
         {"id": "day", "kind": "today", "words": ["day", "daily", "today", "dzien", "dzienny", "dzienne", "dziennie", "dzis", "dzisiaj"], "label": {"en": "daily", "pl": "dzienny"}, "noun": {"en": "today", "pl": "dzisiaj"}},
         {"id": "week", "kind": "week", "words": ["week", "weekly", "tydzien", "tygodniowy", "tygodniowe", "tygodniowo", "tygodn*"], "label": {"en": "weekly", "pl": "tygodniowy"}, "noun": {"en": "this week", "pl": "w tym tygodniu"}},
@@ -123,6 +132,8 @@
           "output_ratio": {"type": "object", "additionalProperties": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}, "additionalProperties": false}},
           "unknown_ratio": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "number", "minimum": 0}, "high": {"type": "number", "minimum": 0}}, "additionalProperties": false},
           "output_floor_tokens": {"type": "integer", "minimum": 0},
+          "output_floor_by_op": {"type": "object", "description": "P31: the smallest output assumed (low) and the output a generative action is assumed to reach (high), in tokens, by the content_op of the action. A model that explains, elaborates or restyles writes more than the size of a short input suggests, so the bound from input size x output_ratio never goes below `high` here (a preset; the ratio still wins when the input is large). An op without an entry uses output_floor_tokens for both.", "additionalProperties": {"type": "object", "required": ["low", "high"], "properties": {"low": {"type": "integer", "minimum": 0}, "high": {"type": "integer", "minimum": 0}}, "additionalProperties": false}},
+          "calibration": {"type": "object", "description": "P31: the output band from what the usage ledger recorded (the same baseline mechanism as the growth guard). mode on: once the cohort (the action, whatever its endpoint, and the model) has min_samples measured samples of `resource`, the band is [smallest measured, max(largest measured, mean x headroom)] instead of the assumption; off: only the assumption is used. The completion limit still caps the band.", "required": ["mode", "resource", "min_samples", "headroom"], "properties": {"mode": {"type": "string", "enum": ["on", "off"]}, "resource": {"type": "string", "minLength": 1}, "min_samples": {"type": "integer", "minimum": 1}, "headroom": {"type": "number", "minimum": 1}}, "additionalProperties": false},
           "max_tokens_setting": {"type": "string"},
           "pricing": {
             "type": "object",
@@ -168,6 +179,7 @@
           "default_currency": {"type": "string", "minLength": 1},
           "default_on_exceed": {"type": "string", "minLength": 1},
           "estimate_bound": {"type": "string", "enum": ["low", "high"]},
+          "money_format": {"type": "object", "description": "P31: how a sum of money is written for people, by the one formatter every place uses (a proposal's estimate, the answer to \"how much did I spend\", a limit's reason). From min_unit up: `decimals` decimals (0.01 -> 0.01, 1.5 -> 1.50). Below it: fixed notation with `significant` significant digits (0.000025), so a nonzero sum is never written as zero. zero: the text of exactly zero. unknown: the text of a sum that is not known (never a zero). All are presets.", "properties": {"min_unit": {"type": "number", "minimum": 0}, "decimals": {"type": "integer", "minimum": 0, "maximum": 12}, "significant": {"type": "integer", "minimum": 1, "maximum": 12}, "zero": {"type": "string"}, "unknown": {"type": "string"}}, "additionalProperties": false},
           "periods": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "kind", "words", "label", "noun"], "properties": {"id": {"type": "string", "minLength": 1}, "kind": {"type": "string", "enum": ["today", "week", "month"]}, "words": {"type": "array", "items": {"type": "string"}}, "label": {"type": "object", "additionalProperties": {"type": "string"}}, "noun": {"type": "object", "additionalProperties": {"type": "string"}}}, "additionalProperties": false}},
           "on_exceed": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "words", "label"], "properties": {"id": {"type": "string", "enum": ["confirm", "deny", "notify"]}, "words": {"type": "array", "items": {"type": "string"}}, "label": {"type": "object", "additionalProperties": {"type": "string"}}}, "additionalProperties": false}},
           "rates_note": {"type": "object", "additionalProperties": {"type": "string"}},

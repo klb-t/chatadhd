@@ -6,6 +6,7 @@
 #include <iterator>
 #include <set>
 
+#include "loom/money_format.h"
 #include "loom/runtime_profile.h"
 
 namespace loom {
@@ -27,11 +28,8 @@ std::set<std::string> names_of(const Json& v, const char* const* defaults, std::
   return out;
 }
 
-std::string money_text(double v) {
-  char buf[48];
-  std::snprintf(buf, sizeof(buf), "%.2f", v);
-  if (v > 0 && std::string(buf) == "0.00") std::snprintf(buf, sizeof(buf), "%.4f", v);
-  return buf;
+std::string money_text(double v, const Json& sl) {
+  return format_money(v, sl.value("money_format", Json(nullptr)));
 }
 
 std::string amount_text(double v) {
@@ -187,8 +185,8 @@ Result<SpendCheck> check_spend_limits(const Json& sl, const Json& estimate, cons
       const Json vars{{"period", label_in(labels, period, lang)},
                       {"amount", amount_text(json::get_number(l, "amount", limit_usd / rate))},
                       {"currency", json::get_string(l, "currency", "USD")},
-                      {"spent", money_text(spent_usd / rate)},
-                      {"estimate", money_text(estimate_usd / rate)}};
+                      {"spent", money_text(spent_usd / rate, sl)},
+                      {"estimate", money_text(estimate_usd / rate, sl)}};
       std::string body = render(text_in(texts, already ? "already_over" : "use_would_exceed", lang), vars);
       if (!estimate_known && !already) {
         const std::string unknown = text_in(texts, "use_estimate_unknown", lang);

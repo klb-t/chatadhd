@@ -8,6 +8,7 @@
 #include <cstdio>
 
 #include "loom/log.h"
+#include "loom/money_format.h"
 #include "loom/runtime_profile.h"
 #include "loom/usage_policy.h"
 #include "loom/util/utf8.h"
@@ -61,11 +62,9 @@ const Json* find_by_id(const Json& list, const std::string& id) {
   return nullptr;
 }
 
-std::string money_text(double v) {
-  char buf[48];
-  std::snprintf(buf, sizeof(buf), "%.2f", v);
-  if (v > 0 && std::string(buf) == "0.00") std::snprintf(buf, sizeof(buf), "%.4f", v);
-  return buf;
+// P31: one formatter for every sum (loom/money_format.h); its rules are data (spend_limits.money_format).
+std::string money_text(double v, const Json& data) {
+  return format_money(v, data.value("money_format", Json(nullptr)));
 }
 
 std::string amount_text(double v) {
@@ -396,7 +395,7 @@ Json policy_options(const Config& config, const std::filesystem::path& root) {
   for (const char* id : {"already_over", "use_would_exceed", "use_estimate_unknown", "on_deny", "on_notify"})
     if (const Json* t = json::find(all_texts, id)) texts[id] = *t;
   Json out{{"limits", limits}, {"period_labels", labels}, {"texts", texts}};
-  for (const char* key : {"model_use", "cost_resources", "spent_resource"})
+  for (const char* key : {"model_use", "cost_resources", "spent_resource", "money_format"})
     if (const Json* v = json::find(data, key)) out[key] = *v;
   return out;
 }
@@ -461,8 +460,8 @@ Result<Json> gates(const std::filesystem::path& root, const Config& config, cons
       vars_by_lang[lang] = Json{{"period", period ? pick(period->value("label", Json::object()), lang) : e.period},
                                 {"amount", amount_text(e.amount)},
                                 {"currency", e.currency},
-                                {"spent", money_text(spent.usd / e.rate)},
-                                {"estimate", money_text(estimate_usd / e.rate)}};
+                                {"spent", money_text(spent.usd / e.rate, data)},
+                                {"estimate", money_text(estimate_usd / e.rate, data)}};
     }
     Json reason = rendered(texts, already ? "already_over" : "would_exceed", vars_by_lang);
     if (!estimate_known) {
