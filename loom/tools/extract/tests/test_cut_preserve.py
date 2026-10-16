@@ -146,3 +146,19 @@ class PreserveTest(ExtractTest):
         self.assertFalse(res.byte_exact)
         back = self._reparse(out)
         self.assertEqual([u.ext_id for u in back.conversations], ["c1-0000-aaaa"])
+
+
+class NameCollisionTest(ExtractTest):
+    def test_two_exports_with_the_same_name_never_overwrite_each_other(self):
+        import shutil
+        (self.tmp / "a").mkdir()
+        (self.tmp / "b").mkdir()
+        shutil.copy(EXPORTS / "openai_2026_sharded.zip", self.tmp / "a/export.zip")
+        shutil.copy(EXPORTS / "anthropic_2026_full.zip", self.tmp / "b/export.zip")
+        eng = self.engine(self.tmp / "a/export.zip", self.tmp / "b/export.zip")
+        eng.op("select.expr", {"expr": "kind:conversation"})
+        eng.op("cut", {"profiles": ["preserve", "text"]})
+        eng.op("write", {"package": str(self.tmp / "pkg")})
+        pres = sorted(p.name for p in (self.tmp / "pkg/preserve").iterdir())
+        self.assertEqual(pres, ["export-2.zip", "export.zip"])
+        self.assertEqual(zipfile.ZipFile(self.tmp / "pkg/preserve/export-2.zip").namelist()[0], "conversations.json")

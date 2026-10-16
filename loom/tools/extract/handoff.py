@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from . import outputs as out
-from .cut.common import Entry, Outputs, archive_slug, copy_stream, deterministic_zip
+from .cut.common import Entry, Outputs, archive_slugs, copy_stream, deterministic_zip, find_archive
 from .cut.views import choose_paths
 
 
@@ -21,7 +21,7 @@ def build_handoff(eng: Any, entries: list[Entry], stage: Outputs, *, branches: s
     files: list[dict[str, Any]] = []
     att_copied: dict[tuple[str, str], str] = {}
     missing = 0
-    by_label = {a.label: a for a in eng.archives}
+    slugs = archive_slugs(eng.archives)
     totals = {"conversations": 0, "conversations_with_messages": 0, "messages": 0, "messages_with_text": 0, "attachments": 0}
     for e in entries:
         u = e.unit
@@ -45,10 +45,10 @@ def build_handoff(eng: Any, entries: list[Entry], stage: Outputs, *, branches: s
                 if a.message != m.id:
                     continue
                 if a.status == "resolved" and a.member and (src.get("archive"), a.member) not in att_copied:
-                    arc = by_label.get(src.get("archive") or "")
+                    arc = find_archive(eng.archives, u)
                     mem = arc.member(a.member) if arc is not None else None
                     if mem is not None:
-                        rel = f"attachments/{archive_slug(arc.label)}/{a.member}"
+                        rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{a.member}"
                         target = stage.root / root / rel
                         target.parent.mkdir(parents=True, exist_ok=True)
                         with mem.open() as fi, open(target, "wb") as fo:

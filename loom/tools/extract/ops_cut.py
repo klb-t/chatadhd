@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from . import edits as _edits
-from .cut.common import archive_slug, copy_stream
+from .cut.common import archive_slugs, copy_stream, find_archive
 from .cut.preserve import cut_preserve
 from .cut.profiles import render_profile
 from .cut.views import RenderCtx
@@ -177,10 +177,11 @@ def _redactor(eng: Any, p: dict[str, Any]) -> Redactor:
 def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tuple[dict[tuple[str, str], str], dict[str, Any]]:
     paths: dict[tuple[str, str], str] = {}
     info = {"referenced": 0, "copied": 0, "bytes": 0, "missing": [], "mode": mode}
-    by_label = {a.label: a for a in eng.archives}
+    slugs = archive_slugs(eng.archives)
     for e in entries:
         u = e.unit
         arc_label = (u.source or {}).get("archive") or ""
+        arc = find_archive(eng.archives, u)
         for a in u.attachments:
             info["referenced"] += 1
             if a.status != "resolved" or not a.member:
@@ -189,12 +190,11 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tu
             key = (arc_label, a.member)
             if key in paths or mode == "reference_only":
                 continue
-            arc = by_label.get(arc_label)
             mem = arc.member(a.member) if arc is not None else None
             if mem is None:
                 info["missing"].append({"ref": a.ref, "conversation": u.uid, "message": a.message, "status": "member not found"})
                 continue
-            rel = f"attachments/{archive_slug(arc_label)}/{a.member}"
+            rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{a.member}"
             target = stage.root / rel
             target.parent.mkdir(parents=True, exist_ok=True)
             with mem.open() as fi, open(target, "wb") as fo:
@@ -207,7 +207,7 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tu
         for arc in eng.archives:
             for m in arc.members:
                 if m.kind == "asset" and (arc.label, m.name) not in paths:
-                    rel = f"attachments/{archive_slug(arc.label)}/{m.name}"
+                    rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{m.name}"
                     target = stage.root / rel
                     target.parent.mkdir(parents=True, exist_ok=True)
                     with m.open() as fi, open(target, "wb") as fo:
@@ -236,7 +236,7 @@ def _profiles(eng: Any, names: Any) -> list[dict[str, Any]]:
 def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.ensure_units()
     pkg = eng.ensure_package()
-    entries = pkg.ordered(p.get("order") or "created")
+    entries = pkg.ordered(p.get("order") or "package")
     stage = eng.stage()
     profiles = _profiles(eng, p.get("profiles"))
     red = _redactor(eng, p)
@@ -276,7 +276,7 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
                 i["outputs"] = len(i["outputs"])
     eng.redaction_entries = list(red.entries)
     eng.cut_info = {"profiles": infos, "preserve": preserve_info, "attachments": _public_att(att_info, eng.aggregate),
-                    "redaction": red.report(), "entries": len(entries), "order": p.get("order") or "created"}
+                    "redaction": red.report(), "entries": len(entries), "order": p.get("order") or "package"}
     return {"counts": {"profiles": len(infos), "conversations": len(entries), "files": len(stage.items),
                        "masked": len(red.entries)}, "cut": eng.cut_info}
 
@@ -295,7 +295,7 @@ def op_handoff(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     from .handoff import build_handoff
     eng.ensure_units()
     pkg = eng.ensure_package()
-    entries = pkg.ordered(p.get("order") or "created")
+    entries = pkg.ordered(p.get("order") or "package")
     red = _redactor(eng, {"redaction": p.get("redaction") or getattr(eng, "_cut_redactor_key", ("none",))[0],
                           "dictionary": list(getattr(eng, "_cut_redactor_key", ("none", ()))[1])})
     from .recipe import recipe_hash
@@ -310,7 +310,7 @@ def op_stats(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     from .stats import package_stats
     eng.ensure_units()
     if p.get("of", "package") == "package":
-        entries = eng.ensure_package().ordered(p.get("order") or "created")
+        entries = eng.ensure_package().ordered(p.get("order") or "package")
     else:
         from .cut.common import Entry, assign_keys
         entries = [Entry(unit=u, origin=u.uid) for u in eng.conversations]

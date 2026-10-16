@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 from ..jsonspan import SpanError, filter_array
-from .common import DirSink, Outputs, ZipSink, archive_slug, copy_stream, safe_name, zip_info_of
+from .common import DirSink, Outputs, ZipSink, archive_slugs, copy_stream, safe_name, zip_info_of
 
 log = logging.getLogger(__name__)
 
@@ -88,22 +88,23 @@ def cut_preserve(eng: Any, outputs: Outputs, origins: set[str], *, settings: dic
         src = u.source or {}
         raw_by_archive.setdefault((src.get("archive") or "", src.get("sha256") or ""), []).append(u)
     other_policy = settings.get("other_members", "omit")
+    slugs = archive_slugs(eng.archives)
     for a in eng.archives:
         units = raw_by_archive.get((a.label, a.sha256), [])
         kept = [u for u in units if u.uid in origins and u.kind in ("conversation", "session")]
         if not kept:
             continue
-        info = _cut_archive(eng, a, units, kept, outputs, settings, redactor, attachments_mode, other_policy, res)
+        info = _cut_archive(eng, a, units, kept, outputs, settings, redactor, attachments_mode, other_policy, res, slugs[(a.label, a.sha256)])
         res.archives.append(info)
     return res
 
 
 def _cut_archive(eng: Any, a: Any, units: list[Any], kept: list[Any], outputs: Outputs, settings: dict[str, Any],
-                 redactor: Any, attachments_mode: str, other_policy: str, res: PreserveResult) -> dict[str, Any]:
+                 redactor: Any, attachments_mode: str, other_policy: str, res: PreserveResult, slug: str) -> dict[str, Any]:
     fmt_id = a.format or (kept[0].source or {}).get("format")
     fmt = eng.catalog.get(fmt_id) if fmt_id else {}
     pres = dict(fmt.get("preserve") or {})
-    base_rel = "preserve/" + archive_slug(a.label)
+    base_rel = "preserve/" + slug
     if a.kind == "zip":
         sink: Any = ZipSink(outputs.root / base_rel)
     elif a.kind == "dir":
@@ -123,7 +124,7 @@ def _cut_archive(eng: Any, a: Any, units: list[Any], kept: list[Any], outputs: O
                 used_assets[att.member] = used_assets.get(att.member, 0) + 1
             elif att.status != "resolved":
                 missing.append({"ref": att.ref, "conversation": u.uid, "message": att.message})
-    info: dict[str, Any] = {"archive": a.label, "kind": a.kind, "format": fmt_id, "output": base_rel if a.kind != "file" else f"preserve/{safe_name(a.label)}",
+    info: dict[str, Any] = {"archive": a.label, "kind": a.kind, "format": fmt_id, "output": base_rel,
                             "conversations_kept": 0, "conversations_total": sum(1 for u in units if u.kind in ("conversation", "session")),
                             "members_written": 0, "omitted": [], "indivisible": [], "partial_whole": 0,
                             "attachments_copied": 0, "attachments_bytes": 0, "missing": missing, "byte_exact": True}
@@ -131,7 +132,7 @@ def _cut_archive(eng: Any, a: Any, units: list[Any], kept: list[Any], outputs: O
     try:
         for m in a.members:
             name = m.name
-            target = name if a.kind != "file" else safe_name(a.label)
+            target = name if a.kind != "file" else slug
             zinfo = zip_info_of(a, name)
             if m.kind == "container":
                 info["omitted"].append({"member": name, "why": "nested archive (cut separately as its own archive)"})

@@ -214,7 +214,14 @@ def verb_cut(args: argparse.Namespace, select_steps: Any, progress: Any) -> int:
             return 3
         res = [eng.op(name, params, by="cli") for name, params in steps]
         lines = summary_lines(res, eng.aggregate)
-        if args.na_sucho:
+        if getattr(args, "plan", False):
+            cost = eng.op("cost", {"summaries": bool(getattr(args, "streszczenia", False))}, by="cli")
+            res.append(cost)
+            lines.append(t("cli.cost.line", **_cost_fmt(cost["estimate"])))
+            planned = [n for n, _ in build_cut_steps(argparse.Namespace(**{**vars(args), "plan": False, "na_sucho": False,
+                                                                          "pakiet": args.pakiet or "<pakiet>"}), select_steps(args))]
+            lines.append(t("cli.plan.steps", n=len(planned)) + ": " + " → ".join(planned))
+        elif args.na_sucho:
             lines.append(t("cli.search.dry_only"))
         if getattr(args, "zapisz_przepis", None):
             save_recipe(eng.normalised_recipe(), args.zapisz_przepis)

@@ -99,6 +99,7 @@ class EditsTest(ExtractTest):
         self.assertIn("edit.merge_conversations", rep)
         convs = [json.loads(x) for x in (self.tmp / "pkg/flat/conversations.jsonl").read_text(encoding="utf-8").splitlines()]
         self.assertIn("Nowa nazwa", [c["title"] for c in convs])
+        self.assertEqual([c["uid"] for c in convs], [e.unit.uid for e in eng.package.entries], "the cut keeps the package order (edit.sort)")
 
     def test_package_recipe_replays_the_edits(self):
         eng = self._eng()

@@ -61,7 +61,9 @@ class Package:
     def copy_in(self, units: list[Unit], selection: dict[str, Optional[set[str]]], into: str = "/") -> int:
         have = self.by_uid()
         added = 0
-        for u in units:
+        # new entries arrive in time order (stable ties by service and uid), so the package order is chronological
+        # until an edit (sort, merge, split) or a move says otherwise; the cut keeps the package order (preset)
+        for u in sorted(units, key=lambda x: entry_sort_key(x, "created")):
             if u.uid not in selection:
                 continue
             ms = selection[u.uid]

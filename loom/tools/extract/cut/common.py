@@ -23,6 +23,31 @@ def archive_slug(label: str) -> str:
     return safe_name(label.replace("!", "__"), fallback="archive")
 
 
+def archive_slugs(archives: list[Any]) -> dict[tuple[str, str], str]:
+    """(label, sha256) → a directory/file name unique within the package (two exports named alike from different
+    folders never overwrite each other: ``export.zip``, ``export-2.zip`` in scan order)."""
+    out: dict[tuple[str, str], str] = {}
+    used: set[str] = set()
+    for a in archives:
+        base = archive_slug(a.label)
+        name, n = base, 1
+        while name in used:
+            n += 1
+            stem, dot, ext = base.rpartition(".")
+            name = f"{stem}-{n}.{ext}" if dot and stem else f"{base}-{n}"
+        used.add(name)
+        out[(a.label, a.sha256)] = name
+    return out
+
+
+def find_archive(archives: list[Any], unit: Any) -> Any:
+    src = unit.source or {}
+    for a in archives:
+        if a.label == src.get("archive") and a.sha256 == src.get("sha256"):
+            return a
+    return None
+
+
 def uid_hex(uid: str) -> str:
     return uid.split(":", 1)[-1]
 
