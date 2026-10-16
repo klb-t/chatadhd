@@ -1230,7 +1230,7 @@ presetem `dev` bez tych `-D`).
 ## P38 — X-Port, plaster C: komander i serwowanie (2026-10-16, branch `claude/p38-archive-extract`)
 
 Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plaster C”, §11 stan). ctest `tools.extract`: 155 testów
-(test curses na pty pominięty z powodem tam, gdzie nie ma curses/pty/terminfo). Uruchomienie: `python3 -m loom.tools.extract
+(test curses na pty pominięty z powodem tam, gdzie nie ma curses/pty/terminfo; w bramce uruchomiony, bez pominięć). Bramka: `ctest --preset dev` 246/246, strażnik, skrypty, web build i testy web — GATE GREEN przy `9d11e125`; pierwszy przebieg padł przy kompilacji na braku miejsca na dysku („No space left on device” w `/tmp`), powtórzony z `CCACHE_DISABLE=1` (budowa bez dopisywania do wspólnej pamięci ccache; cofnięcie: zwykły przebieg bramki, gdy jest miejsce). Uruchomienie: `python3 -m loom.tools.extract
 komander ARCHIWUM… [--pakiet KAT] [--klawisze-profil vim] [--kolory mono]`, `… serwuj ARCHIWUM… [--port N]`, `… api '{"call": "list"}'`.
 
 - Decyzje (szczegóły i odwrócenie w §10):
