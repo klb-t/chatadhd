@@ -435,7 +435,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       catch (err) { setError(err instanceof Error ? err.message : String(err)); return; }
     }
     request = {
-      message: text, conv_id: convId ?? undefined, model: model || undefined,
+      message: text, conv_id: convId ?? undefined, new_conversation: convId ? undefined : true, model: model || undefined,
       // Omit unchanged options so the existing default request stays intact.
       ...(!includeMemory && { include_memory: false }),
       ...(!includeGraphMemory && { include_graph_memory: false }),

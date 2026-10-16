@@ -99,6 +99,9 @@ struct ChatOptions {
   bool include_memory = true;
   bool include_graph_memory = true;
   bool include_history = true;
+  // A send that names no conversation continues the one remembered from the last send; new_conversation starts a new one
+  // instead (the "New chat" of a client). Wire field "new_conversation"; ignored when conv_id is set.
+  bool new_conversation = false;
   std::optional<context::ContextRequest> knowledge_context;  // explicitly opt in; offline selection
   std::optional<bool> trace_context;           // unset: automatic for knowledge / changed recipe; false opts out
   // Explicit caller-supplied derived instruction over existing native messages.

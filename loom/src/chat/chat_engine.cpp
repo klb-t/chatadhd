@@ -574,7 +574,8 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
         o.attachments.push_back(a.get<std::string>());
       }
     } else if (k == "web_search" || k == "deep_research" || k == "stream" ||
-               k == "include_memory" || k == "include_graph_memory" || k == "include_history" || k == "trace_context") {
+               k == "include_memory" || k == "include_graph_memory" || k == "include_history" || k == "trace_context" ||
+               k == "new_conversation") {
       if (!v.is_boolean()) return bad();
       if (k == "web_search") o.web_search = v.get<bool>();
       if (k == "deep_research") o.deep_research = v.get<bool>();
@@ -583,6 +584,7 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
       if (k == "include_graph_memory") o.include_graph_memory = v.get<bool>();
       if (k == "include_history") o.include_history = v.get<bool>();
       if (k == "trace_context") o.trace_context = v.get<bool>();
+      if (k == "new_conversation") o.new_conversation = v.get<bool>();
     } else if (k == "knowledge_context") {
       auto context = chat_context_request(v);
       if (!context) return context.error();
@@ -1132,7 +1134,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
     // The conversation remembered from the last send may have been deleted since (by the person, or by a command in the chat): a send
     // that names none then starts a new one, not a write into a conversation that is gone (a foreign-key failure with no answer).
     std::optional<Conversation> remembered;
-    if (!opts.conv_id && conv_) {
+    if (!opts.conv_id && !opts.new_conversation && conv_) {
       auto r = db_.get_conv(conv_->id);
       if (!r) return r.error();
       if (*r) remembered = **r;
