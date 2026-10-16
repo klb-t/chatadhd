@@ -15,6 +15,42 @@ Co z tego wynika (zapis Claude'a, do potwierdzenia w M1):
 4. **Onboarding:** jedno z pierwszych pytań — jak szczegółowo aplikacja ma znać użytkownika; od odpowiedzi (i od uwag w trakcie) zależy szczegółowość dalszych pytań. Profil potem stale doprecyzowywany.
 5. **Kolejność kontekstu:** profil wstawiany na początku, przed danymi bieżącego tematu; zakres zależny od celu; najpierw informacje najbardziej uniwersalne i najmniej zmienne (identyczny początek = pamięć podręczna promptu działa), szczegóły później, zależnie od prompta lub kilku kolejnych wiadomości.
 
+## Uzupełnienie 2 — po krytyku kompletności (2026-10-16, ~14:30 UTC)
+
+Krytyk wskazał słowa właściciela spoza zbioru. Dosłownie:
+
+### Sesja S1, 2026-10-16T11:45:36Z
+
+> Weź mi daj dopiero jak będzie wszystko zrobione, bo co nie sprawdzam to nie ma. Dlaczego na przykład jest do wyboru model do analizy semantycznej, jak są różne flowy do tej analizy? Dlaczego ja nie wiem o co chodzi w ustawieniach i w ogóle w interfejsie? Dlaczego w grafie nie ma romu, wszystkich konwersacji, sensownego widoku, sensu jakiegokolwiek? interfejs miał być intuicyjny, wielowymiarowe reprezentacje i nawigacja po grafie, ... co w ogóle teraz zrobiłeś, że mi dałeś do sprawdzenia? 
+> przesadzam nie musi być wszystko bo chętnie coś Zobaczę jak już 15% omawianych funkcjonalności będzie osadzone w grafie i dostępne intuicyjnie za pomocą interfejsu na podstawie moich wskazówek
+
+### Sesja S1, 2026-10-16T12:01:35Z
+
+> w ogóle tak sobie myślę jak będzie najtaniej, żeby pełny solidny ekstrakt z archiwów od otwartych i ludzkich, z Googla zresztą też i gr oka, bo z nimi też czasem gadałem (btw. nie wiesz czy, a jeśli tak to z jaką dokładnością w archiwach są przebiegi agentowe?) na temat ChataADHD i jeszcze kilka innych małych niedokończonych wcześniejszych projektów,  które z założenia miały być zintegrowane w czata (agent, analizator archiwów - hahaha, rekurencja wchodzi ;D)? jeszcze takie ekstrakty dotyczące innych tematów będę potrzebował, więc dobrze to zrobić jako osobny skrypcik nawet opusowi To chyba można zlecić jako - nie wiem, sam Zadecyduj czy agent czy inna sesja czy jak. tylko mu dobrze określ Według mojej filozofii czyli pełna funkcjonalność i konfigurowalność przy minimalnej wymaganej konfiguracji, Key Wordy regeksy wektory wykorzystanie modeli według różnych Flow wyszukiwanie zaznaczanie według maski według filtra słownie opisanego... wycinanie zachowujące format oryginalnego archiwum łącznie z odwołaniami do załączników które tylko wykorzystywane będą w paczce... albo z dowolną przebudową (chociażby profil: tylko tytuły rozmów załączniki rozgałęzienia rozumowania narzędzia, wyciągnięte z zagnieżdżenia i uproszczone Do prostego rozmowa->wiadomość), timestampy...
+> jeśli z Filozofii i z przeglądu uwag rozszerzysz tę listę  7-10 krotnie, to będzie funkcjonalne
+
+### Sesja S1, 2026-10-16T12:10:43Z
+
+> Ważne żebyś zawsze brał pod uwagę że o ile nie mówię inaczej. to listy które podaję, na przykład podstawowe węzły w podstawowym widoku root grafu, że na przykład: ustawienia użytkownik io narzędzia konektory graf aplikacja dostawca środowisko automatyzacje eksperymenty...
+> to są tylko przykłady na których masz się wzorować (jak też  na filozofii na którą tak często się powołuję) wypełniając tę listę pasującymi rzeczami które na przykład już są w apce ale również takimi o których nie mówiłem ale widzisz że by były albo potrzebne albo fajne
+
+### `history/chatadhd_v0.9.0/docs/ARCHITECTURE_v0.9.0.md:85-89` (era v0.9.0)
+
+> ### Presety layoutu (wbudowane w wersję 0.9.0)
+> 
+> - `minimal` — tylko chat + lista czatów (Twoja prośba „domyślnie wszystko wyłączone, zostaje główny czat").
+> - `classic_0.07` — layout z 0.07.x, dla ciągłości.
+> - `aod_video_production` — chat w centrum, scene_graph_editor floating po lewej, video_preview floating-locked po prawej, portfolio_panel docked na dole.
+
+### Treść commita `7ebd5455` (2026-09-28, zapis asystenta przypisany właścicielowi)
+
+> Activate owner-authorized capped OpenRouter development pilot
+> 
+> Owner confirmed dedicated key setup. Run 32 frozen development requests with
+> USD 2 key ceiling, retain first responses and never retry uncertain attempts.
+
+Niesprawdzone (krytyk): wiadomości właściciela wpisane bezpośrednio do S2 po 08:20Z 16.10 i sesje właściciela w innych repozytoriach (Custom-Keyboard-Pro, Watchdog) — poza zakresem tego zbioru.
+
 ---
 
 # Filozofia (`philosophy`)
