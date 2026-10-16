@@ -267,6 +267,17 @@
             }
           },
           {
+            "id": "nawigacja",
+            "label": {
+              "pl": "Nawigacja",
+              "en": "Navigation"
+            },
+            "why": {
+              "pl": "Wstecz, gesty i przejścia między ekranami.",
+              "en": "Back, gestures and moving between screens."
+            }
+          },
+          {
             "id": "nawigator",
             "label": {
               "pl": "Nawigator grafu",
@@ -308,8 +319,19 @@
               "en": "What leaves the device"
             },
             "why": {
-              "pl": "Klucze w rozmowie, pytania systemu o foldery, zewnętrzne źródła narzędzi.",
-              "en": "Keys in the chat, system questions about folders, external tool sources."
+              "pl": "Klucze w rozmowie i zewnętrzne źródła narzędzi.",
+              "en": "Keys in the chat and external tool sources."
+            }
+          },
+          {
+            "id": "urzadzenie",
+            "label": {
+              "pl": "Dostęp do urządzenia",
+              "en": "Device access"
+            },
+            "why": {
+              "pl": "Co aplikacja sprawdza w systemie tego urządzenia: foldery i to, co wolno w nich robić.",
+              "en": "What the app checks in this device's system: folders and what may be done in them."
             }
           },
           {
@@ -575,8 +597,8 @@
             "en": "Whether OpenRouter (preset), a server on this device (llama.cpp, Ollama) or a provider you added serves the models."
           },
           "effect": {
-            "pl": "Wszystkie wywołania modeli idą do wskazanego dostawcy; przy „local” adres bierze się z pola Adres lokalnego serwera modeli.",
-            "en": "Every model call goes to the named provider; with “local” the address comes from the Local model server address field."
+            "pl": "Wszystkie wywołania modeli idą do wskazanego dostawcy; przy dostawcy lokalnym adres bierze się z pola „Adres lokalnego serwera modeli”.",
+            "en": "Every model call goes to the named provider; with the local provider the address comes from the field “Local model server address”."
           },
           "levels": [
             "person"
@@ -602,12 +624,12 @@
             "en": "Local model server address"
           },
           "why": {
-            "pl": "Gdzie na tym urządzeniu działa serwer modeli, gdy dostawcą jest „local” (np. http://127.0.0.1:8080/v1).",
-            "en": "Where the model server runs on this device when the provider is “local” (e.g. http://127.0.0.1:8080/v1)."
+            "pl": "Gdzie na tym urządzeniu działa serwer modeli, gdy dostawcą jest serwer lokalny (np. http://127.0.0.1:8080/v1).",
+            "en": "Where the model server runs on this device when the provider is the local server (e.g. http://127.0.0.1:8080/v1)."
           },
           "effect": {
-            "pl": "Przy dostawcy „local” wywołania modeli trafiają pod ten adres; przy innym dostawcy pole nie ma wpływu.",
-            "en": "With the “local” provider model calls go to this address; with another provider the field has no effect."
+            "pl": "Przy dostawcy lokalnym wywołania modeli trafiają pod ten adres; przy innym dostawcy pole nie ma wpływu.",
+            "en": "With the local provider model calls go to this address; with another provider the field has no effect."
           },
           "levels": [
             "person"
@@ -701,8 +723,8 @@
             "en": "Maximum reply length"
           },
           "why": {
-            "pl": "Górna granica długości jednej odpowiedzi (w tokenach, mniej więcej 3/4 słowa każdy); długie odpowiedzi kosztują więcej.",
-            "en": "The upper bound of one reply's length (in tokens, roughly 3/4 of a word each); long replies cost more."
+            "pl": "Górna granica długości jednej odpowiedzi w tokenach (po polsku token to zwykle mniej niż pół słowa); długie odpowiedzi kosztują więcej.",
+            "en": "The upper bound of one reply's length in tokens (in English a token is roughly 3/4 of a word, in Polish usually less than half a word); long replies cost more."
           },
           "effect": {
             "pl": "Odpowiedź czatu lub agenta dłuższa niż limit urywa się na granicy; wyższy limit = dłuższe i droższe odpowiedzi. Analiza w tle i archiwum mają własne limity.",
@@ -1013,8 +1035,8 @@
             "en": "The text the model gets at the start of every request: who to be and how to answer."
           },
           "effect": {
-            "pl": "Działa od następnej wiadomości; jedno żądanie może podać własną instrukcję (opcja system_prompt).",
-            "en": "Applies from the next message; a single request may give its own instruction (option system_prompt)."
+            "pl": "Działa od następnej wiadomości; jedno żądanie może podać własną instrukcję.",
+            "en": "Applies from the next message; a single request may give its own instruction."
           },
           "levels": [
             "person",
@@ -1374,8 +1396,8 @@
             "en": "Graph data nodes per page"
           },
           "why": {
-            "pl": "Ile najnowszych wiadomości na stronę dostaje widok grafu z API, gdy nie poda własnego limitu; starsze dociąga dalej.",
-            "en": "How many newest messages per page the graph view gets from the API when it names no limit; older ones are fetched further on."
+            "pl": "Ile najnowszych wiadomości na stronę dostaje widok grafu, gdy sam nie poda limitu; starsze dociąga dalej.",
+            "en": "How many newest messages per page the graph view gets when it names no limit itself; older ones are fetched further on."
           },
           "effect": {
             "pl": "Więcej = cięższe strony; 0 = bez cięcia. Nic nie jest tracone.",
@@ -1648,8 +1670,8 @@
             "en": "The number by which the app knows how to upgrade the settings file; it maintains it itself."
           },
           "effect": {
-            "pl": "Tylko do odczytu: zmiana przez API jest odrzucana, z powodem.",
-            "en": "Read only: a change through the API is rejected, with the reason."
+            "pl": "Tylko do odczytu: każda próba zmiany jest odrzucana, z powodem.",
+            "en": "Read only: every attempt to change it is rejected, with the reason."
           },
           "levels": [],
           "group": "silnik",
@@ -1816,8 +1838,8 @@
             "en": "Which model judges whether an entry is a command when the recognition method uses a model; empty = the conversation model."
           },
           "effect": {
-            "pl": "Tańszy model = tańsze rozpoznawanie; działa tylko przy metodach „model” i „hybrid”.",
-            "en": "A cheaper model = cheaper recognition; applies only with the “model” and “hybrid” methods."
+            "pl": "Tańszy model = tańsze rozpoznawanie; działa tylko wtedy, gdy rozpoznawanie używa modelu: „zawsze modelem” albo „modelem tam, gdzie aplikacja nie jest pewna”.",
+            "en": "A cheaper model = cheaper recognition; applies only when recognition uses a model: “always with a model” or “with a model where the app is unsure”."
           },
           "levels": [
             "person"
@@ -2399,8 +2421,8 @@
             "en": "Your definition of what drops at level L1 (fillers, repetitions…) and L2 in the representation of the conversation sent to the model."
           },
           "effect": {
-            "pl": "Działa od następnego żądania w trybach „denoised”, „lean” i „guardian”.",
-            "en": "Applies from the next request in the “denoised”, “lean” and “guardian” modes."
+            "pl": "Działa od następnego żądania, gdy rozmowa idzie do modelu bez wypełniaczy, odchudzona albo z instrukcją strażnika (pole „Co model dostaje z rozmowy”).",
+            "en": "Applies from the next request when the conversation goes to the model without fillers, slimmed or with the guardian's instruction (field “What the model gets of the conversation”)."
           },
           "levels": [
             "person"
@@ -2556,8 +2578,8 @@
             "en": "The messages as they are (preset), without fillers (L1), slimmed (L2), with the instruction the guardian compiled, or both."
           },
           "effect": {
-            "pl": "Odchudzone = tańsze żądanie, mniej dosłownie; przyjęcie propozycji strażnika ustawia „guardian” dla tej rozmowy jako regułę, którą możesz wyłączyć.",
-            "en": "Slimmed = a cheaper request, less literal; accepting a guardian proposal sets “guardian” for that conversation as a rule you can switch off."
+            "pl": "Odchudzone = tańsze żądanie, mniej dosłownie; przyjęcie propozycji strażnika ustawia dla tej rozmowy tryb „z instrukcją strażnika” jako regułę, którą możesz wyłączyć.",
+            "en": "Slimmed = a cheaper request, less literal; accepting a guardian proposal sets the mode “with the guardian's instruction” for that conversation as a rule you can switch off."
           },
           "levels": [
             "installation",
@@ -2625,14 +2647,14 @@
             "en": "Before the app answers what it can do on this device or in a folder, it refreshes the environment and access nodes of the graph (preset: yes)."
           },
           "effect": {
-            "pl": "Wyłączone: odpowiada z tego, co graf już ma; odświeżasz poleceniem „environments.sync”.",
-            "en": "Off: it answers from what the graph already holds; you refresh with “environments.sync”."
+            "pl": "Wyłączone: odpowiada z tego, co graf już ma, dopóki sam nie odświeżysz środowisk.",
+            "en": "Off: it answers from what the graph already holds until you refresh the environments yourself."
           },
           "levels": [
             "person"
           ],
           "group": "prywatnosc",
-          "subgroup": "dane",
+          "subgroup": "urzadzenie",
           "flows": [
             "environments.can_do",
             "environments.sync"
@@ -2663,7 +2685,7 @@
             "person"
           ],
           "group": "prywatnosc",
-          "subgroup": "dane",
+          "subgroup": "urzadzenie",
           "flows": [
             "environments.can_do"
           ]
@@ -2714,8 +2736,8 @@
             "en": "Context plan execution options"
           },
           "why": {
-            "pl": "Opcje zapisane przez silnik kontekstu: jak wykonuje plan wyboru tego, co idzie do modelu.",
-            "en": "Options stored by the context engine: how it executes the plan of choosing what goes to the model."
+            "pl": "Jak aplikacja składa kontekst żądania: czy używa jednego wspólnego planu (pamięć, historia, graf, wiedza), jakim modelem mierzy podobieństwo znaczeń i w jakim trybie model odpowiada grafem.",
+            "en": "How the app assembles the context of a request: whether it uses one combined plan (memory, history, graph, knowledge), which model measures similarity of meaning, and in which mode the model replies with a graph."
           },
           "effect": {
             "pl": "Zmiana dotyczy następnych żądań; pusty obiekt = presety silnika.",
@@ -2748,8 +2770,8 @@
             "en": "How much “thinking” you ask of the model and how to request it from each model family."
           },
           "effect": {
-            "pl": "Więcej rozumowania = wolniej i drożej, często dokładniej; rodzina bez wpisu dostaje preset. Jedno żądanie może zmienić tylko poziom rozumowania (opcja reasoning_effort), nie sposób zgłaszania.",
-            "en": "More reasoning = slower and dearer, often more accurate; a family without an entry gets the preset. A single request can change only the effort level (option reasoning_effort), not how it is reported."
+            "pl": "Więcej rozumowania = wolniej i drożej, często dokładniej; rodzina bez wpisu dostaje preset. Jedno żądanie może zmienić tylko poziom rozumowania, nie sposób zgłaszania.",
+            "en": "More reasoning = slower and dearer, often more accurate; a family without an entry gets the preset. A single request can change only the reasoning level, not how it is reported."
           },
           "levels": [
             "person",
@@ -2927,12 +2949,12 @@
             "en": "Semantic candidates in the catalogue"
           },
           "why": {
-            "pl": "Jak skanowanie katalogu dobiera kandydatów do analizy modelem.",
-            "en": "How a catalogue scan picks candidates for analysis by a model."
+            "pl": "Czy wyszukiwanie w katalogu plików projektu lub archiwum dobiera kandydatów także po podobieństwie znaczeń (wektorami) i jakim modelem.",
+            "en": "Whether a search of the project or archive file catalogue also picks candidates by similarity of meaning (vectors), and with which model."
           },
           "effect": {
-            "pl": "Dotyczy następnego skanowania.",
-            "en": "Applies to the next scan."
+            "pl": "Dotyczy następnego wyszukiwania w katalogu.",
+            "en": "Applies to the next catalogue search."
           },
           "levels": [
             "person"
@@ -3050,8 +3072,8 @@
             "en": "The OpenRouter (or your provider's) key without which chat cannot run; never shown and never sent to a model."
           },
           "effect": {
-            "pl": "Bez klucza każde wywołanie modelu kończy się czytelnym błędem; z kluczem rusza od razu.",
-            "en": "Without the key every model call ends with a plain error; with it, calls run at once."
+            "pl": "Bez klucza każde wywołanie modelu kończy się czytelnym błędem (oprócz dostawcy lokalnego, który klucza nie potrzebuje); z kluczem rusza od razu.",
+            "en": "Without the key every model call ends with a plain error (except with the local provider, which needs no key); with it, calls run at once."
           },
           "levels": [
             "person"
@@ -3263,13 +3285,14 @@
           {
             "value": "stability",
             "status": "planned",
+            "by": "M1-D2",
             "reason": {
-              "pl": "M1-D2 dopisze kolejność „według stabilności” [instrukcja, profil, reguły, pamięć, projekt, historia, graf]; do tego czasu czat odrzuca tę nazwę przy następnym żądaniu („unknown context_order”).",
-              "en": "M1-D2 adds the order stability [system, profile, rules, memory, project, history, graph] to chat_context.pack; until then chat_engine rejects the name with 'unknown context_order'."
+              "pl": "Tej kolejności nie ma jeszcze w danych kontekstu; do tego czasu czat odrzuca tę nazwę przy następnym żądaniu.",
+              "en": "This order is not in the context data yet; until then the chat rejects the name at the next request."
             },
             "meaning": {
-              "pl": "Według stabilności: instrukcja, profil, reguły, pamięć, projekt, historia, graf (planowane, M1-D2).",
-              "en": "By stability: instruction, profile, rules, memory, project, history, graph (planned, M1-D2)."
+              "pl": "Według stabilności: instrukcja, profil, reguły, pamięć, projekt, historia, graf (planowane).",
+              "en": "By stability: instruction, profile, rules, memory, project, history, graph (planned)."
             },
             "on_set": "refuse"
           }
@@ -3869,7 +3892,7 @@
             "person"
           ],
           "group": "interfejs",
-          "subgroup": "czat",
+          "subgroup": "nawigacja",
           "flows": []
         },
         "on_unlisted": "refuse"
@@ -3995,8 +4018,8 @@
             "en": "The detail level of your profile: minimal, normal (preset) or detailed. It decides what the “Get to know me” interview asks, what it stores and how much about you the model sees."
           },
           "effect": {
-            "pl": "Wyżej = więcej pytań i pełniejszy opis Ciebie w żądaniu; zasady prywatności profilu i tak decydują, co wolno zapisać i wysłać. Pierwsze pytanie wywiadu ustawi to pole (gdy wywiad powstanie, M1-K2).",
-            "en": "Higher = more questions and a fuller description of you in a request; the profile's privacy rules still decide what may be stored and sent. The interview's first question will set this field (when the interview comes, M1-K2)."
+            "pl": "Wyżej = więcej pytań i pełniejszy opis Ciebie w żądaniu; zasady prywatności profilu i tak decydują, co wolno zapisać i wysłać. Pierwsze pytanie wywiadu ustawi to pole, gdy wywiad powstanie.",
+            "en": "Higher = more questions and a fuller description of you in a request; the profile's privacy rules still decide what may be stored and sent. The interview's first question will set this field once the interview exists."
           },
           "levels": [
             "person"
@@ -4159,8 +4182,8 @@
             "en": "Which modes, and in which order, the background analysis may work in: batch, one by one with a model, local rules."
           },
           "effect": {
-            "pl": "Tryb usunięty z listy nie jest używany; bez modelu zostają lokalne reguły.",
-            "en": "A mode removed from the list is not used; without a model the local rules remain."
+            "pl": "Tryb usunięty z listy nie jest używany; bez modelu zostają lokalne reguły, a jeśli usuniesz też lokalne reguły, analiza w tle nie pracuje.",
+            "en": "A mode removed from the list is not used; without a model the local rules remain, and if you remove the local rules too, the background analysis does not run."
           },
           "levels": [
             "installation"
@@ -4535,6 +4558,11 @@
                       "refuse",
                       "warn"
                     ]
+                  },
+                  "by": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The work item that adds the reader of a planned value (technical; the human reason names it in plain words)."
                   }
                 }
               }

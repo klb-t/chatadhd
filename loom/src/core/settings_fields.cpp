@@ -462,9 +462,11 @@ Result<Json> check_declared_value(const Json& field, const Json& value) {
   if (status.empty() || status == "available") return Json(nullptr);
   const Json reason = match->value("reason", Json());
   const std::string why = reason.is_string() ? reason.get<std::string>() : json::get_string(reason, "en");
-  const std::string head = "the value " + json::dump(value) + " is " + status + ", not available yet";
+  const std::string by = json::get_string(*match, "by");  // the work item that adds its reader (technical; the reason is plain words)
+  const std::string head = "the value " + json::dump(value) + " is " + status + (by.empty() ? "" : " (comes with " + by + ")") + ", not available yet";
   if (json::get_string(*match, "on_set") == "refuse") return Error(Errc::InvalidArgument, head + (why.empty() ? "" : ": " + why));
   Json warning{{"value", value}, {"status", status}, {"message", head + "; stored" + (why.empty() ? "" : ": " + why)}};
+  if (!by.empty()) warning["by"] = by;
   if (!reason.is_null()) warning["reason"] = reason;
   return warning;
 }

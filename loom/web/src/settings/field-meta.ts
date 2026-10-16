@@ -66,6 +66,8 @@ export interface SettingsFieldValue {
   meaning?: LocalizedText;
   preset?: boolean;
   status?: string;
+  /** The work item that adds the reader of a planned value (technical). */
+  by?: string;
   reason?: LocalizedText | string;
   on_set?: "refuse" | "warn" | string;
   /** The value is in the reader's runtime profile (the field's `values_from`), with the user's profile overlay. */

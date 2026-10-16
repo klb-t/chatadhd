@@ -21,7 +21,7 @@ namespace loom {
 // {"schema":"loom.settings_fields/1","edit_rules":[...],"fields":[{"key","scope","group","type",
 //  "default":"present|absent","default_value"?,"edit","description","sensitive"?,
 //  "human":{"label":{pl,en},"why":{pl,en},"effect":{pl,en},"levels":[...],"group","subgroup"?,"placed_from"?,"role"?,"role_status"?,"flows"?,"technical_only"?},
-//  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn","from_profile"?,"status_superseded"?}],
+//  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"by"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn","from_profile"?,"status_superseded"?}],
 //  "values_from"?:{"profile","pointer","keys"?},"values_from_problem"?,"values_open"?,
 //  "on_unlisted"?:"refuse"|"warn","status"?:{"state","by"?,"reader"?,"reason":{pl,en},"today"?:{pl,en}}}],
 //  "groups":{id:{"label":{pl,en},"why":{pl,en},"order","subgroups":[...],"origin","provenance":[...],"hidden"?,"hidden_by"?,"disabled"?,"empty_reason"?}},
