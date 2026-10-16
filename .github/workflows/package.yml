@@ -230,13 +230,14 @@ jobs:
           GRADLE_TASK: ${{ steps.sign.outputs.gradle_task }}
         run: |
           set -euo pipefail
-          version_name="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          # R36: the version is loom/VERSION (x.yy.zz); a CI build adds its run number and commit, so names sort.
+          version_name="$(tr -d '[:space:]' < ../VERSION)-ci.${GITHUB_RUN_NUMBER}.${GITHUB_SHA::7}"
           echo "VERSION_NAME=$version_name" >> "$GITHUB_ENV"
           java -version
           ./gradlew --version
-          # versionCode = run number: increases with every run, so a phone accepts the next APK as an update
+          # versionCode comes from loom/VERSION plus the run number (build.gradle.kts), so a phone accepts the next APK as an update
           ./gradlew "$GRADLE_TASK" --stacktrace \
-            -Ploom.versionCode="$GITHUB_RUN_NUMBER" \
+            -Ploom.buildNumber="$GITHUB_RUN_NUMBER" \
             -Ploom.versionName="$version_name" \
             -Ploom.abis="$ABIS" \
             -Ploom.nativeBuildType="$NATIVE_BUILD_TYPE" \
@@ -403,7 +404,7 @@ jobs:
           LDFLAGS: -static-libstdc++ -static-libgcc
         run: |
           set -euo pipefail
-          version="ci-${GITHUB_RUN_NUMBER}-${GITHUB_SHA::7}"
+          version="$(tr -d '[:space:]' < loom/VERSION)-ci.${GITHUB_RUN_NUMBER}.${GITHUB_SHA::7}"
           echo "PACKAGE_VERSION=$version" >> "$GITHUB_ENV"
           bash deploy/install.sh --package "$GITHUB_WORKSPACE/dist-server" --version "$version" --no-deps
 
@@ -516,3 +517,45 @@ jobs:
           name: first-steps-screenshots
           path: first-steps-shots/
           if-no-files-found: ignore
+
+  # R36: the release is ONE flat zip. Everything this run built (APK + .sha256, server archives + .sha256) goes into
+  # a single artifact without folders, so the download is one zip with the files side by side; its name carries the
+  # version from loom/VERSION, so releases sort.
+  release:
+    name: One flat release zip
+    runs-on: ubuntu-24.04
+    needs: [android, server]
+    if: ${{ !cancelled() && (needs.android.result == 'success' || needs.server.result == 'success') }}
+    steps:
+      - name: Checkout (for loom/VERSION)
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: loom/VERSION
+          sparse-checkout-cone-mode: false
+      - name: Collect what this run built
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: chatadhd-*
+          path: collected
+          merge-multiple: true
+      - name: Flatten and name the release
+        run: |
+          set -euo pipefail
+          version="$(tr -d '[:space:]' < loom/VERSION)-ci.${GITHUB_RUN_NUMBER}.${GITHUB_SHA::7}"
+          echo "RELEASE_NAME=chatadhd-$version" >> "$GITHUB_ENV"
+          mkdir -p release
+          find collected -type f -exec cp -n {} release/ \;
+          ( cd release && sha256sum * > SHA256SUMS )
+          ls -la release
+          {
+            echo "### Release \`chatadhd-$version\`"
+            echo ""
+            echo "One flat zip (artifact \`chatadhd-$version\`) with:"
+            ( cd release && for f in *; do echo "- \`$f\` ($(du -h "$f" | cut -f1))"; done )
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload the one flat release zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.RELEASE_NAME }}
+          path: release/*
+          if-no-files-found: error

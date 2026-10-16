@@ -1138,3 +1138,8 @@ the earlier computation; never delete historical runs to downgrade.
 - Import na Androidzie: `LoomApi.pickImport` (opcjonalne) → `LoomBridge pick_import` → `ImportFlow` (SAF plik/folder → kopia prywatna → jądro); panel importu w powłoce Android pokazuje „Wybierz plik…/Wybierz folder…”. Cofnięcie: usunąć `pickImport` z loom-jni (panel wraca do pola pliku). Raport: `docs/reports/S2_R35_imports_2026-10-16.md`.
 - `ChatOptions::new_conversation` (pole wire): wysłanie bez `conv_id` kontynuuje zapamiętaną rozmowę, chyba że klient poprosi o nową; web wysyła je przy pustej stronie („Nowa rozmowa”). Cofnięcie: nie wysyłać pola z ChatView.
 - Test dymny Androida (`loom/android/smoke`): raport działa/nie w logu zadania; termin na każde wywołanie CDP; zamykanie pickera między krokami.
+
+### S2 / R36 — jedno źródło wersji, wydanie = jeden płaski zip (2026-10-16)
+
+- `loom/VERSION` = `0.10.00` (x.yy.zz, zera wiodące → sortuje się jako tekst; po historii `0.9.0`). Czytają go: CMake (`project` bez zer wiodących, `LOOM_VERSION_STRING` jak w pliku), Gradle (versionName; versionCode = x·10⁹ + yy·10⁷ + zz·10⁵ + numer przebiegu CI `loom.buildNumber`), `package.yml` (APK, archiwum serwera, wydanie), `main.py`, `web/package.json` (semver bez zer: `0.10.0`). Test: `tests/compat/test_version_single_source.py`.
+- `package.yml`: zadanie `release` składa wszystko, co przebieg zbudował (APK + archiwa serwera + `.sha256` + `SHA256SUMS`), w jeden artefakt bez folderów `chatadhd-<wersja>-ci.<run>.<sha>` = jeden płaski zip. Cofnięcie: usunąć zadanie `release`; wersję zmienia się wyłącznie w `loom/VERSION`.

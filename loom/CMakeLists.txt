@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(loom VERSION 0.1.0 DESCRIPTION "Loom kernel library (ChatADHD engine)" LANGUAGES C CXX)
+# The one source of the version (R36): loom/VERSION, "x.yy.zz" (zero-padded, so versions sort as text). CMake wants
+# plain integers, so the project version drops the padding; LOOM_VERSION_STRING keeps the text as written.
+file(READ "${CMAKE_CURRENT_LIST_DIR}/VERSION" LOOM_VERSION_TEXT)
+string(STRIP "${LOOM_VERSION_TEXT}" LOOM_VERSION_TEXT)
+if(NOT LOOM_VERSION_TEXT MATCHES "^([0-9]+)\\.([0-9][0-9])\\.([0-9][0-9])$")
+  message(FATAL_ERROR "loom/VERSION must read x.yy.zz (got '${LOOM_VERSION_TEXT}')")
+endif()
+math(EXPR LOOM_VERSION_MINOR_N "${CMAKE_MATCH_2}")
+math(EXPR LOOM_VERSION_PATCH_N "${CMAKE_MATCH_3}")
+set(LOOM_VERSION_NUMERIC "${CMAKE_MATCH_1}.${LOOM_VERSION_MINOR_N}.${LOOM_VERSION_PATCH_N}")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/VERSION")
+
+project(loom VERSION ${LOOM_VERSION_NUMERIC} DESCRIPTION "Loom kernel library (ChatADHD engine)" LANGUAGES C CXX)
 
 # ── Language / global settings ───────────────────────────────────────
 set(CMAKE_CXX_STANDARD 20)
@@ -177,7 +189,7 @@ target_link_libraries(loom_core
   PUBLIC Threads::Threads
   PRIVATE loom_warnings loom_sqlite loom_miniz loom_pqc)
 target_compile_definitions(loom_core PUBLIC
-  LOOM_VERSION_STRING="${PROJECT_VERSION}"
+  LOOM_VERSION_STRING="${LOOM_VERSION_TEXT}"
   JSON_USE_IMPLICIT_CONVERSIONS=1)
 target_compile_definitions(loom_core PRIVATE LOOM_BUILDING=1)
 if(LOOM_HAVE_OPENSSL)
