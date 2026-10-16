@@ -286,6 +286,28 @@ TEST_SUITE("settings_fields") {
     }
   }
 
+  TEST_CASE("a hand-written fields overlay whose entry lacks description, type, group, has_default and human still loads; the problems list says what is missing") {
+    fsutil::TempDir td;
+    Json fields = unwrap(RuntimeProfile::builtin("settings_fields")).values().at("fields");
+    REQUIRE(fields[0]["key"] == "base_url");
+    for (const char* k : {"human", "description", "type", "group", "has_default"}) fields[0].erase(k);
+    unwrap(fsutil::write_file(td.path() / "profiles" / "settings_fields.pack",
+        Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"}, {"overrides", Json{{"fields", fields}}}}.dump()));
+    const Json doc = unwrap(settings_fields(td.path()));
+    REQUIRE(doc["fields"][0]["key"] == "base_url");
+    const auto problems = settings_fields_problems(doc, td.path());
+    auto has = [](const std::vector<std::string>& v, std::string_view part) {
+      for (const auto& s : v) if (s.find(part) != std::string::npos) return true;
+      return false;
+    };
+    INFO(joined(problems));
+    CHECK(has(problems, "no description: base_url"));
+    CHECK(has(problems, "no type: base_url"));
+    CHECK(has(problems, "no technical group: base_url"));
+    CHECK(has(problems, "default mismatch: base_url"));  // has_default absent = declared absent, but config has a default
+    CHECK(has(problems, "no human: config:base_url"));
+  }
+
   TEST_CASE("a group the profile overlay renames keeps origin rom and names the overlay in its provenance; a hidden added group keeps its entry") {
     fsutil::TempDir td;
     std::filesystem::create_directories(td.path() / "profiles");

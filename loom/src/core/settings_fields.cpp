@@ -401,6 +401,9 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
     if (!described.insert(scope + ":" + key).second) out.push_back("duplicate " + scope + ":" + key);
     if (f.value("edit", "").empty()) out.push_back("no edit rule: " + key);
     if (f.value("description", "").empty()) out.push_back("no description: " + key);
+    // the pack's schema requires only key and scope (a hand-written overlay entry still loads); what an entry lacks is listed here
+    if (!f.contains("type") || !f["type"].is_string()) out.push_back("no type: " + key);
+    if (f.value("group", "").empty()) out.push_back("no technical group: " + key);
     const bool has_default = scope == "config" && (config_defaults().contains(key) || loom_config_defaults().contains(key));
     const std::string declared = f.value("default", "");
     if (declared != "present" && declared != "absent") out.push_back("default must be present|absent: " + key);

@@ -4322,11 +4322,7 @@
           "type": "object",
           "required": [
             "key",
-            "scope",
-            "group",
-            "type",
-            "has_default",
-            "description"
+            "scope"
           ],
           "properties": {
             "key": {
@@ -4646,7 +4642,8 @@
               ],
               "description": "What a write of a value outside a closed `values` list does on every write path (settings.set, PATCH /api/config, loom_set_config, `loom config set`): refuse (the reader rejects unknown values, or the list is the field's contract) or warn (the reader falls back: stored, the write names the list). Absent = warn. Clearing the key (null) is always accepted. Ignored with values_open."
             }
-          }
+          },
+          "description": "A settings field. Only key and scope (which identify the entry) are required to load: a hand-written overlay entry missing group, type, has_default, description or human still loads, and settings_fields_problems lists what it lacks (a missing piece is a problem on the list, never a load error)."
         }
       },
       "groups": {
