@@ -3,13 +3,9 @@
 Zakres: `git diff origin/main...gpt/...  -- loom ':!loom/docs'` (kod ~1160 linii; docs pominięte). Przegląd adwersarialny.
 
 ## Znaleziska (naprawione w integracji)
-1. `loom/src/generalize/relation_pattern.cpp` (ok. l. 81, 131): wyczerpanie `max_steps`/`max_matches` zwracało `Errc::Unavailable`,
-   a `anchor_op` (`match.cpp:304/311`) propaguje błąd — jeden gęsty podmiot (>64 dopasowań; limit 64 w `facets/feedback_execution.json:79`)
-   przerywał cały etap `generalize` całego przebiegu. Poprawka: wynik `complete:false` + `exhausted:"max_steps|max_matches"` w `reasons`
-   (jawne, nie fałszywie puste; przebieg trwa). Limity zostają danymi pakietu (presety, nie reguły).
-2. `relation_pattern.cpp` (`same_qualifiers`): porównanie `next.qualifiers[name] != value` na `ordered_json` zrównuje 1 i 1.0 — dokładnie
+1. `relation_pattern.cpp` (`same_qualifiers`): porównanie `next.qualifiers[name] != value` na `ordered_json` zrównuje 1 i 1.0 — dokładnie
    to, przed czym ostrzega komentarz przy filtrze `claim_qualifiers`. Poprawka: `json::canonical` po obu stronach.
-3. Przenośność libc++: `std::tie` w `infer.cpp`/`match.cpp` bez `<tuple>`; `std::uint64_t`/`std::string`/`std::vector` w
+2. Przenośność libc++: `std::tie` w `infer.cpp`/`match.cpp` bez `<tuple>`; `std::uint64_t`/`std::string`/`std::vector` w
    `relation_pattern.cpp` bez własnych include'ów. Dopisane.
 
 ## Sprawdzone, bez zastrzeżeń
@@ -29,6 +25,10 @@ Zakres: `git diff origin/main...gpt/...  -- loom ':!loom/docs'` (kod ~1160 linii
 - P29 (placement): brak nakładania się.
 
 ## Problemy projektowe (nie przepisywane)
+- Wyczerpanie budżetu (`max_steps` 100000, `max_matches` 64 w `facets/feedback_execution.json:78-79`) zwraca `Errc::Unavailable` z
+  `relation_pattern.cpp`, a `anchor_op` (`match.cpp:304/311`) propaguje go: jeden gęsty podmiot przerywa cały etap `generalize`.
+  Testy GPT utrwalają ten kontrakt (`test_implicit_structures.cpp:135,230`), więc NIE zmieniono. Limit 64 to wymyślone ograniczenie
+  (zasada właściciela); proponowana zmiana: wynik `complete:false` + `exhausted` w `reasons` zamiast błędu i domyślnie wyższy/zerowy limit.
 - `transfer()`/`analogies()` iterują teraz po *wszystkich* instancjach (nie najlepszej na podmiot): koszt O(P²) po instancjach; przy dużych
   korpusach rozważyć indeks po paradygmacie. Brak twardego limitu (zgodnie z zasadą właściciela), ale bez pomiaru.
 - Kandydat bez wersjonowanej tożsamości między przebiegami: `Instance.id` zależy od (paradigm, subject), więc zmiana metody nadpisuje
