@@ -1,0 +1,54 @@
+{
+ "id": "lx1",
+ "title": "Eksport Loom",
+ "created": "2026-04-01T10:00:00Z",
+ "messages": [
+  {
+   "id": "m1",
+   "role": "user",
+   "content": "Jak eksportować rozmowę?",
+   "created": "2026-04-01T10:00:00Z"
+  },
+  {
+   "id": "m2",
+   "parent_id": "m1",
+   "role": "assistant",
+   "content": "Przez loom.export.v1.",
+   "created": "2026-04-01T10:00:30Z",
+   "metadata": {
+    "export": {
+     "schema": "loom.export.v1",
+     "blocks": [
+      {
+       "kind": "thinking",
+       "text": "Użytkownik pyta o eksport."
+      },
+      {
+       "kind": "text",
+       "text": "Przez loom.export.v1."
+      },
+      {
+       "kind": "tool_use",
+       "name": "python",
+       "input": {
+        "code": "print(1)"
+       }
+      }
+     ]
+    }
+   },
+   "attachments": [
+    "attachments/notatka.txt"
+   ]
+  }
+ ],
+ "metadata": {
+  "export": {
+   "schema": "loom.export.v1",
+   "provider": "openai",
+   "locator": {
+    "json_pointer": "/3"
+   }
+  }
+ }
+}

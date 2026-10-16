@@ -1,0 +1,53 @@
+{
+ "schema": "loom.graph_packet/1",
+ "packet_id": "pk-0001",
+ "task": {
+  "title": "Graf z rozmów o ChatADHD"
+ },
+ "definitions": [
+  {
+   "id": "d1",
+   "term": "pamięć hierarchiczna"
+  }
+ ],
+ "entities": [
+  {
+   "id": "e1",
+   "label": "ChatADHD"
+  },
+  {
+   "id": "e2",
+   "label": "Loom"
+  }
+ ],
+ "claims": [
+  {
+   "id": "c1",
+   "text": "ChatADHD ma pamięć hierarchiczną.",
+   "subject": "e1",
+   "known_at": "2026-04-02T10:00:00Z"
+  },
+  {
+   "id": "c2",
+   "text": "Loom jest portem C++.",
+   "subject": "e2",
+   "known_at": "2026-04-02T10:01:00Z"
+  },
+  {
+   "id": "c3",
+   "statement": "Graf buduje się w czasie rzeczywistym.",
+   "known_at": "2026-04-02T10:02:00Z"
+  }
+ ],
+ "sources": [
+  {
+   "id": "s1",
+   "locator": {
+    "json_pointer": "/0"
+   }
+  }
+ ],
+ "extras": {
+  "future": true
+ }
+}

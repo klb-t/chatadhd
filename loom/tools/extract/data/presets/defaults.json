@@ -23,7 +23,7 @@
                "continuation": {"enabled": true, "window_minutes": 240, "min_shared_terms": 2, "min_confidence": 0.3}},
   "diff": {"identity": "ext_id", "summary_only": false},
   "merge": {"newest_wins": true},
-  "clusters": {"min_conversations": 2, "top_terms": 8, "max_clusters": 0, "min_term_df": 2},
+  "clusters": {"min_conversations": 2, "top_terms": 8, "max_clusters": 0, "min_term_df": 2, "min_similarity": 0.15, "feature_boost": 2.0, "max_df_share": 0.5},
   "decisions": {"learn_min_corrections": 2, "proposals": true},
   "flows": {"model": {"enabled": false, "cheap": "cheap_classify", "strong": "strong_judge",
                        "classes": {"cheap": null, "strong": null}, "route": "provider",

@@ -65,8 +65,9 @@ def table(lang: Optional[str] = None) -> dict[str, str]:
     return _tables[lang]
 
 
-def t(key: str, **kw: Any) -> str:
-    """Translate ``key`` with ``str.format`` arguments; unknown key → key."""
+def t(_key: str, **kw: Any) -> str:
+    """Translate ``_key`` with ``str.format`` arguments; unknown key → key."""
+    key = _key
     text = table().get(key)
     if text is None:
         text = table("en").get(key) if language() != "en" else None

@@ -141,7 +141,7 @@ class ChatGPTReader(Reader):
             ct = content.get("content_type")
             kind, mod = block_kind(fmt, ct)
             if kind == "text" or (ct in ("text", "multimodal_text")) or mod == "<parts>" or fmt["blocks"].get(ct) == "<parts>":
-                self._parts(m, content, fmt, ct)
+                self._parts(m, u, content, fmt, ct)
             elif kind == "thinking":
                 if ct == "thoughts":
                     for th in content.get("thoughts") or []:
@@ -206,7 +206,7 @@ class ChatGPTReader(Reader):
                 m.blocks.append(Block(kind="search_result", native="search_result_groups", name=g.get("domain"),
                                       text="\n".join(str(e.get("title") or e.get("url") or "") for e in g.get("entries") or [] if isinstance(e, dict))))
 
-    def _parts(self, m: Message, content: dict[str, Any], fmt: dict[str, Any], ct: Optional[str]) -> None:
+    def _parts(self, m: Message, u: Unit, content: dict[str, Any], fmt: dict[str, Any], ct: Optional[str]) -> None:
         parts = content.get("parts")
         if parts is None:
             if "text" in content:
@@ -222,6 +222,10 @@ class ChatGPTReader(Reader):
                     ref = pointer_id(part.get("asset_pointer")) or "?"
                     m.blocks.append(Block(kind="attachment", native=pct, ref=ref, mime=_mime_for(pct, part),
                                           extra={k: v for k, v in part.items() if k in ("width", "height", "size_bytes")}))
+                    # the reference is registered on the unit so it is resolved or listed as missing, never dropped
+                    if not any(a.ref == ref and a.message == m.id for a in u.attachments):
+                        u.attachments.append(Attachment(ref=ref, name=None, mime=_mime_for(pct, part), size=part.get("size_bytes"),
+                                                        status="reference", message=m.id))
                 elif kind == "text":
                     m.blocks.append(Block(kind="text", text=str(part.get("text") or ""), native=pct))
                 elif kind == "search_result":
