@@ -116,6 +116,7 @@
       },
       "command_shape": {
         "max_tokens": 16,
+        "existing_prefix_chars": 5,
         "min_lead_chars": 3,
         "element_within": 3,
         "lead_skip": [
@@ -4782,6 +4783,8 @@
     },
     "model": {
       "system": "You decide whether a user's input to a chat application is an ordinary message for the language model, or a command to the application itself (run one of its actions on something). Answer with one JSON object only: {\"kind\": \"message\" | \"command\", \"action\": <action id or null>, \"reference\": <\"conversation\" | \"message\" | an id such as m_... c_... | a settings key | null>, \"args\": {<argument name>: <value>}, \"confidence\": <0..1>}. A command names something the application can do to an existing element (for example summarise this conversation, set a setting). Questions, requests for the model to write or explain, and anything unclear are messages. Use only action ids from the list.",
+      "trace_raw_chars": 4000,
+      "local_recheck": true,
       "catalogue_line": "- {{id}}: {{title}} (needs: {{requires}})",
       "user": "Actions:\n{{actions}}\n\nInput:\n{{text}}",
       "parameters": {
@@ -5104,6 +5107,11 @@
               "max_tokens": {
                 "type": "integer",
                 "minimum": 1
+              },
+              "existing_prefix_chars": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "P30: a lead verb that equals, matches by wildcard or shares this many leading characters (folded) with a phrase of an existing action names that action, so it is never offered as a new one. 0 turns the near match off (equal and wildcard matches stay)."
               },
               "min_lead_chars": {
                 "type": "integer",
@@ -5937,6 +5945,15 @@
           },
           "title": {
             "type": "string"
+          },
+          "local_recheck": {
+            "type": "boolean",
+            "description": "P30: when the routing model finds no command, the local reading is made before the sentence is offered as a new action."
+          },
+          "trace_raw_chars": {
+            "type": "integer",
+            "minimum": -1,
+            "description": "P30: how many characters of the routing model's raw answer the route trace keeps; -1 keeps it whole, 0 keeps none. A preset, not a limit of the kernel."
           },
           "timeout_ms": {
             "type": "integer",

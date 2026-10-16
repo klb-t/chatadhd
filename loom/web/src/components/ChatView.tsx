@@ -1009,6 +1009,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
                   const endedLabel = ended ? offerTexts(proposalFeature).state(ended) : null;
                   return (<>
                     {label && <span className="pill" data-testid="chat-action-state" data-state={state}>{label}</span>}
+                    {m.metadata?.route_trace != null && <details data-testid="chat-route-trace"><summary>route_trace</summary><pre>{JSON.stringify(m.metadata.route_trace, null, 2)}</pre></details>}
                     {written && <ProposalWritten testId="chat-action-written" feature={proposalFeature} written={written} busy={undoing === written.id}
                       failure={undoFailure && undoFailure.id === written.id ? undoFailure.reason : null} onUndo={() => void undoWritten(written)} />}
                     {offer && <ProposalOffer testId="chat-action-offer" feature={proposalFeature} offer={offer} busy={Boolean(stream)}

@@ -47,6 +47,9 @@ std::string preset(Runtime& rt, const Json& routing);
 // A definition: {"kind": define_action | define_sequence | define_group, "writer": "actions.define" | "groups.define", "args": {...},
 //   "id", "signature", "title", "sources": [message ids it emerged from, beyond the user's own message],
 //   "summary": {fields the texts use}, "then_run"?: {"element": {"id": ...}}}.
+// P30: the action whose phrases the (folded) verb equals, matches as a stem, or shares command_shape.existing_prefix_chars leading characters
+// with; "" when it names none. from_command never offers such a verb as a new action.
+std::string existing_action_for(const Context& c, const std::string& verb);
 std::optional<Json> from_command(const Context& c, const std::string& text, const std::string& lang, const Json& element);
 // `conv_id`: the conversation the run that has just finished belongs to.
 std::optional<Json> from_sequence(const Context& c, const std::string& conv_id);

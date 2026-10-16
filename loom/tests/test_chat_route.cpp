@@ -853,4 +853,72 @@ TEST_SUITE("chat_route") {
     f.input("Streść tę rozmowę");
     CHECK(f.transport->requests().size() == 1);
   }
+  // P30: the Polish "Streść tę rozmowę" was routed to define_action of a new verb "stresc" when the routing model (a cheap one) called the
+  // sentence a message: the emergent shape check ran without asking the lexicon. The local reading is made first now, and a verb an existing
+  // action answers to is never offered as a new one. Every route carries its trace.
+  TEST_CASE("P30: a model that finds no command never turns a known verb into define_action; the route trace says why") {
+    const char* message_verdict = "{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.9}";
+    for (const char* method : {"model", "hybrid", "heuristic"}) {
+      for (const char* sentence : {"Streść tę rozmowę", "streść rozmowę", "podsumuj tę rozmowę", "summarise this conversation"}) {
+        CAPTURE(method);
+        CAPTURE(sentence);
+        Fixture f;
+        f.rt->config().set("intent_routing_method", method);
+        for (int i = 0; i < 2; ++i)
+          f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, reply(message_verdict)));
+        const Json r = f.route(sentence);
+        REQUIRE(r.at("kind") == "command");
+        CHECK(action_of(r) == "summarise");
+        CHECK(r.at("command").value("emergent", Json(nullptr)).is_null());
+        const Json trace = r.at("trace");
+        CHECK(trace.at("schema") == "loom.route_trace/1");
+        CHECK(trace.at("chosen") == "summarise");
+        CHECK(trace.at("decided_by").is_string());
+        CHECK(trace.at("why").is_string());
+        CHECK(trace.at("considered").size() >= 1);
+        CHECK(r.at("command").at("route_trace").at("chosen") == "summarise");
+        if (std::string(method) == "model") {
+          const Json st = trace.at("stages").at(0);
+          CHECK(st.at("stage") == "model");
+          CHECK(st.at("asked") == true);
+          CHECK(st.at("model") == "test/model");
+          CHECK(st.at("raw").get<std::string>().find("\"message\"") != std::string::npos);
+          CHECK(st.at("verdict").at("why") == "model_said_message");
+          CHECK(trace.at("decided_by") == "local_recheck");
+        }
+      }
+    }
+  }
+
+  TEST_CASE("P30: a genuinely unknown verb is still offered as a new action, and the proposal message keeps the trace") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.9}")));
+    const Json r = f.route("Rozpisz tę wiadomość na kroki");
+    REQUIRE(r.at("kind") == "command");
+    CHECK(r.at("command").at("emergent").at("kind") == "define_action");
+    CHECK(r.at("trace").at("decided_by") == "emergent");
+    CHECK(r.at("trace").at("why").get<std::string>().find("define_action") == 0);
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"message\",\"action\":null,\"reference\":null,\"args\":{},\"confidence\":0.9}")));
+    const auto out = f.input("Rozpisz tę wiadomość na kroki");
+    REQUIRE(out.handled);
+    const Json proposal_msg = f.last_message("assistant");
+    CHECK(proposal_msg.at("metadata").at("route_trace").at("decided_by") == "emergent");
+    CHECK(f.last_message("user").at("metadata").at("route_trace").at("schema") == "loom.route_trace/1");
+  }
+
+  TEST_CASE("P30: a model answer that names the action is recorded with its raw output and accepted") {
+    Fixture f;
+    f.rt->config().set("intent_routing_method", "model");
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200,
+        reply("{\"kind\":\"command\",\"action\":\"summarise\",\"reference\":\"conversation\",\"args\":{},\"confidence\":0.9}")));
+    const Json r = f.route("Could you boil this chat down to a paragraph?");
+    const Json st = r.at("trace").at("stages").at(0);
+    CHECK(r.at("trace").at("decided_by") == "model");
+    CHECK(st.at("verdict").at("accepted") == true);
+    CHECK(st.at("raw").get<std::string>().find("summarise") != std::string::npos);
+    CHECK(r.dump().find("sk-test-key") == std::string::npos);
+  }
 }
