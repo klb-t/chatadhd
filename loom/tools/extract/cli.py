@@ -86,7 +86,9 @@ VERBS: list[dict[str, Any]] = [
     {"name": "klastry", "aliases": ["clusters"], "help": "cli.verb.clusters",
      "opts": [SOURCES, PACKAGE, _o("--min", type=int, metavar="N", help="cli.opt.cluster_min"),
               _o("--terminy", "--terms-per-cluster", type=int, metavar="K", help="cli.opt.cluster_terms"),
-              _o("--prog", "--min-similarity", type=float, metavar="S", help="cli.opt.cluster_sim")]},
+              _o("--prog", "--min-similarity", type=float, metavar="S", help="cli.opt.cluster_sim"),
+              _o("--nazwij", "--name", action="store_true", help="cli.opt.cluster_names"),
+              _o("--model", action="store_true", help="cli.opt.model")] + _cc.MODEL_OPTS},
     {"name": "przepis", "aliases": ["recipe"], "help": "cli.verb.recipe",
      "opts": [_o("akcja", choices=["sprawdz", "check", "normalizuj", "normalize", "uruchom", "run", "hash"], help="cli.opt.recipe_action"),
               _o("plik", metavar="PLIK", help="cli.opt.recipe_file"), PACKAGE, DRY]},
@@ -430,7 +432,7 @@ def verb_mark(args: argparse.Namespace) -> int:
 
 
 def verb_clusters(args: argparse.Namespace) -> int:
-    with _engine(args) as eng:
+    with _cc.make_engine(args, None if args.json else _progress) as eng:
         params: dict[str, Any] = {}
         if args.min is not None:
             params["min_conversations"] = args.min
@@ -439,13 +441,17 @@ def verb_clusters(args: argparse.Namespace) -> int:
         if args.prog is not None:
             params["min_similarity"] = args.prog
         steps: list[tuple[str, dict[str, Any]]] = [("clusters", params)]
+        if getattr(args, "nazwij", False):
+            steps.append(("flow.run", {"flow": "name_clusters"}))
         if args.pakiet:
             steps.append(("write", {"package": args.pakiet}))
         res = _run_steps(eng, args.zrodla, steps)
+        if getattr(args, "nazwij", False):
+            res[0]["clusters"] = eng.clusters.get("clusters") or []
         c = res[0]["counts"]
         lines = [t("cli.clusters.header", clusters=c["clusters"], clustered=c["clustered"], conversations=c["conversations"])]
         for cl in res[0]["clusters"]:
-            lines.append("  " + t("cli.clusters.line", id=cl["id"], size=cl["size"], terms=", ".join(x["term"] for x in cl["top_terms"][:6]),
+            lines.append("  " + (f"„{cl['name']}” " if cl.get("name") and not args.aggregate else "") + t("cli.clusters.line", id=cl["id"], size=cl["size"], terms=", ".join(x["term"] for x in cl["top_terms"][:6]),
                                   titles="" if args.aggregate else " | ".join(str(x)[:40] for x in cl.get("sample_titles") or [])))
         return _finish(eng, args, res, lines + _write_lines(res[1:]))
 

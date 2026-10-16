@@ -19,7 +19,9 @@ class _Stub(BaseHTTPRequestHandler):
         body = json.loads(self.rfile.read(int(self.headers["Content-Length"])).decode("utf-8"))
         system = body["messages"][0]["content"]
         type(self).calls.append({"model": body["model"], "auth": self.headers.get("Authorization"), "system": system[:40]})
-        if "kryteria" in system or "criteria" in system:
+        if "krótką nazwę" in system or "short name" in system:
+            answer = {"name": "Migracje baz", "description": "stub"}
+        elif "kryteria" in system or "criteria" in system:
             answer = {"schema": "loom.extract.criteria/1", "id": "x", "keywords": [{"term": "migracja"}], "regex": [], "vectors": []}
         elif "Streść" in system or "Summarise" in system:
             answer = {"summary": "Rozmowa o migracji.", "open_questions": ["Kiedy?"]}
@@ -171,6 +173,18 @@ class FlowsTest(ExtractTest):
         self.assertEqual(r["criteria"]["keywords"][0]["term"], "migracja")
         rules = eng.op("describe", {"text": "wszystko o migracji bazy"})
         self.assertEqual(rules["source"], "rules")
+
+    def test_cluster_names_by_model(self):
+        from loom.tools.extract.engine import Engine
+        eng = Engine(ds=store(), settings=self.settings())
+        self._engines.append(eng)
+        eng.set_sources([str(EXPORTS / "openai_2026_sharded.zip"), str(EXPORTS / "anthropic_2026_full.zip")])
+        eng.op("clusters", {"min_conversations": 1})
+        n = len(eng.clusters["clusters"])
+        self.assertGreater(n, 0)
+        r = eng.op("flow.run", {"flow": "name_clusters"})
+        self.assertEqual(r["counts"]["calls"], n)
+        self.assertTrue(all(c["name"] == "Migracje baz" for c in eng.clusters["clusters"]))
 
     def test_no_model_configured_is_explicit(self):
         eng = self._eng(classes={"cheap": None, "strong": None})

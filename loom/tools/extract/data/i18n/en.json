@@ -285,5 +285,6 @@
   "report.cost_unknown": "unknown (no price)",
   "report.irreversible": "irreversible",
   "report.reproduce_manifest": "Or: `reproduce manifest.json` — builds the package next to it and compares reproducible_hash.",
-  "cli.opt.attachment_text": "embed the text of text attachments (txt, md, csv, json, code) in outputs; images and audio need OCR/ASR (not in this slice)"
+  "cli.opt.attachment_text": "embed the text of text attachments (txt, md, csv, json, code) in outputs; images and audio need OCR/ASR (not in this slice)",
+  "cli.opt.cluster_names": "name the clusters with a model (flow name_clusters; only with --model, estimate first)"
 }

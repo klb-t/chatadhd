@@ -63,7 +63,7 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
         out += ["", f"### {t('report.clusters')}", ""]
         for c in eng.clusters.get("clusters") or []:
             terms = "…" if aggregate else ", ".join(x["term"] for x in (c.get("top_terms") or [])[:6])
-            out.append(f"- {c['id']}: " + t("report.cluster_line", size=c["size"], terms=terms,
+            out.append(f"- {c['id']}{(' „' + c['name'] + '”') if c.get('name') and not aggregate else ''}: " + t("report.cluster_line", size=c["size"], terms=terms,
                                              period=f"{(c.get('period') or {}).get('from') or '?'} – {(c.get('period') or {}).get('to') or '?'}"))
     # -- timeline ----------------------------------------------------------------
     if eng.timeline:

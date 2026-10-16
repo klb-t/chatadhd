@@ -285,5 +285,6 @@
   "report.cost_unknown": "nieznany (brak ceny)",
   "report.irreversible": "nieodwracalne",
   "report.reproduce_manifest": "Albo: `odtworz manifest.json` — buduje pakiet obok i porównuje reproducible_hash.",
-  "cli.opt.attachment_text": "wstaw tekst załączników tekstowych (txt, md, csv, json, kod) do wyjść; obrazy i dźwięk wymagają OCR/ASR (poza tym plastrem)"
+  "cli.opt.attachment_text": "wstaw tekst załączników tekstowych (txt, md, csv, json, kod) do wyjść; obrazy i dźwięk wymagają OCR/ASR (poza tym plastrem)",
+  "cli.opt.cluster_names": "nazwij klastry modelem (przepływ name_clusters; tylko z --model, szacunek najpierw)"
 }

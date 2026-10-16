@@ -381,7 +381,20 @@ def op_flow_run(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         runner.authorize(est)
         parsed = runner.call(flow, {"description": text})
         return {"counts": {"calls": 1}, "criteria": parsed, "estimate": est}
-    ents = eng.ensure_package().ordered("created")
+    if flow == "name_clusters":
+        if not eng.clusters:
+            eng.op("clusters", by="engine")
+        cl = eng.clusters.get("clusters") or []
+        prompts = [{"terms": ", ".join(x["term"] for x in (c.get("top_terms") or [])[:10]),
+                    "titles": " | ".join(str(x) for x in (c.get("sample_titles") or [])[:6])} for c in cl]
+        est = runner.estimate({flow: {"calls": len(cl), "chars": sum(len(v["terms"]) + len(v["titles"]) for v in prompts)}})
+        runner.authorize(est)
+        for c, v in zip(cl, prompts):
+            parsed = runner.call(flow, v)
+            c["name"] = parsed.get("name")
+            c["name_source"] = f"model:{flow}"
+        return {"counts": {"calls": len(cl)}, "estimate": est, "names": {c["id"]: c.get("name") for c in cl}}
+    ents = eng.ensure_package().ordered("package")
     texts = {e.unit.uid: "\n".join(f"{m.role}: {m.text()}" for m in e.unit.messages if m.text() and (e.messages is None or m.id in e.messages))
              for e in ents}
     est = runner.estimate({flow: {"calls": len(ents), "chars": sum(len(v) for v in texts.values())}})
