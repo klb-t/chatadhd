@@ -18,6 +18,18 @@ presets, no invented limits), record the decision and how to reverse it in
 the agreed budget, sending his private data to a new provider, or a product
 direction that contradicts the requirements — and then as a yes/no question.
 
+## Lists are examples (owner, 2026-10-16)
+
+> „o ile nie mówię inaczej, to listy które podaję, na przykład podstawowe węzły w podstawowym
+> widoku root grafu (ustawienia, użytkownik, io, narzędzia, konektory, graf, aplikacja, dostawca,
+> środowisko, automatyzacje, eksperymenty…) to są tylko przykłady na których masz się wzorować
+> (jak też na filozofii), wypełniając tę listę pasującymi rzeczami które już są w apce, ale również
+> takimi o których nie mówiłem, ale widzisz, że by były albo potrzebne, albo fajne”
+
+Every list the owner gives (node kinds, menu items, settings groups, perspectives, formats,
+flows…) is a seed, not a scope: fill it with what already exists in the app and with what the
+philosophy implies, and say what was added. Unless he says a list is closed, it is open.
+
 ## Working with subagents (owner, 2026-10-10)
 
 Run subagents **one at a time**, as a queue — no parallel agents and no workflow
