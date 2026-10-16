@@ -371,6 +371,9 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
     if (const Json* status = json::find(entry, "status")) {
       if (!status->is_object() || json::get_string(*status, "state").empty()) out.push_back("status without state: " + who);
       if (!text_pair(status->is_object() ? json::find(*status, "reason") : nullptr)) out.push_back("status without reason pl+en: " + who);
+      // a planned field says what the app does today, so a preset never reads as behaviour (or protection) that is not there yet
+      if (status->is_object() && json::get_string(*status, "state") == "planned" && !text_pair(json::find(*status, "today")))
+        out.push_back("planned status without today pl+en: " + who);
     }
   };
   for (const auto& f : doc.at("fields")) {

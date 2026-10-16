@@ -23,7 +23,7 @@ namespace loom {
 //  "human":{"label":{pl,en},"why":{pl,en},"effect":{pl,en},"levels":[...],"group","subgroup"?,"placed_from"?,"role"?,"role_status"?,"flows"?,"technical_only"?},
 //  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn","from_profile"?,"status_superseded"?}],
 //  "values_from"?:{"profile","pointer","keys"?},"values_from_problem"?,"values_open"?,
-//  "on_unlisted"?:"refuse"|"warn","status"?:{"state","by"?,"reason":{pl,en}}}],
+//  "on_unlisted"?:"refuse"|"warn","status"?:{"state","by"?,"reader"?,"reason":{pl,en},"today"?:{pl,en}}}],
 //  "groups":{id:{"label":{pl,en},"why":{pl,en},"order","subgroups":[...],"origin","provenance":[...],"hidden"?,"hidden_by"?,"disabled"?,"empty_reason"?}},
 //  "groups_issues"?:[...], "level_evidence":{"chain":[keys],"turn":[keys],"installation":[keys and <profile><pointer>]},
 //  "profile_values":[{"profile","pointer","human":{...},"value"|"problem"}]}

@@ -368,16 +368,22 @@ TEST_SUITE("settings_fields") {
         INFO("level_evidence.", list, " names ", k.get<std::string>());
         CHECK((std::string(list) == "installation" ? refs : keys).count(k.get<std::string>()) == 1);
       }
-    // the shipped levels name a writer the resolver reads: a profile value is set only in its profile (installation), a
-    // config-only key only in config.json (person)
+    // the shipped levels name a writer the resolver reads: a profile value is set only in its profile (installation); a key outside
+    // the chain has an installation layer only when its reader falls back to a runtime-profile preset (profiles/<domain>.pack writes
+    // it: tool_loop.cpp resolve_settings, route.cpp effective_method); a config-only key only in config.json (person)
+    const std::set<std::string> profile_preset{"intent_routing_method", "tool_loop_policy", "tool_loop_max_steps",
+                                               "tool_loop_result_max_chars", "tool_loop_on_proposal"};
     for (const auto& p : doc["profile_values"]) CHECK(p["human"]["levels"] == Json::array({"installation"}));
     for (const auto& f : doc["fields"]) {
-      INFO(f["key"].get<std::string>());
-      bool in_chain = false;
+      const std::string key = f["key"].get<std::string>();
+      INFO(key);
+      bool in_chain = false, evidenced = false;
       for (const auto& k : doc["level_evidence"]["chain"]) in_chain = in_chain || k == f["key"];
+      for (const auto& k : doc["level_evidence"]["installation"]) evidenced = evidenced || k == f["key"];
       bool installation = false;
       for (const auto& l : f["human"]["levels"]) installation = installation || l == "installation";
-      if (!in_chain) CHECK_FALSE(installation);
+      if (!in_chain) CHECK(installation == (profile_preset.count(key) == 1));
+      if (installation) CHECK(evidenced);
     }
     // a claim without evidence is a problem naming the level and the field
     Json claim = doc;
@@ -416,12 +422,15 @@ TEST_SUITE("settings_fields") {
         CHECK(f["status"]["state"] == "planned");
         CHECK_FALSE(f["status"]["reason"]["pl"].get<std::string>().empty());
         CHECK_FALSE(f["status"]["by"].get<std::string>().empty());
+        CHECK_FALSE(f["status"]["today"]["pl"].get<std::string>().empty());  // what the app does now, next to the planned chip
+        CHECK_FALSE(f["status"]["today"]["en"].get<std::string>().empty());
         ++planned;
       }
-    CHECK(planned >= 12);
+    CHECK(planned >= 13);
     Json nostatus = doc;
     nostatus["fields"][0]["status"] = Json{{"state", "planned"}};
     CHECK(has(settings_fields_problems(nostatus), "status without reason pl+en: config:base_url"));
+    CHECK(has(settings_fields_problems(nostatus), "planned status without today pl+en: config:base_url"));
   }
 
 

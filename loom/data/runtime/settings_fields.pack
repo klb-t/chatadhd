@@ -452,7 +452,15 @@
         "graph_memory_depth",
         "chat_flow",
         "chat_reasoning",
-        "chat_context_order"
+        "chat_context_order",
+        "intent_routing_method",
+        "tool_loop_policy",
+        "tool_loop_max_steps",
+        "tool_loop_result_max_chars",
+        "tool_loop_on_proposal",
+        "memory_folder_file_chars",
+        "memory_folder_max_files",
+        "memory_folder_include_hidden"
       ],
       "installation": [
         "default_model",
@@ -465,6 +473,11 @@
         "extrapolation_preset",
         "extrapolation_bounds",
         "action_result_target",
+        "intent_routing_method",
+        "tool_loop_policy",
+        "tool_loop_max_steps",
+        "tool_loop_result_max_chars",
+        "tool_loop_on_proposal",
         "worker/batch_threshold",
         "worker/analysis_modes",
         "graph_memory/default_depth",
@@ -661,8 +674,8 @@
             "en": "How much randomness a reply has: lower = more repeatable and careful, higher = freer and more creative."
           },
           "effect": {
-            "pl": "Działa od następnej odpowiedzi; dotyczy czatu, analizy w tle i agenta.",
-            "en": "Applies from the next reply; covers the chat, the background analysis and the agent."
+            "pl": "Działa od następnej odpowiedzi czatu i pracy agenta; analiza w tle i archiwum mają własne wartości.",
+            "en": "Applies from the next chat reply and agent run; the background analysis and the archive have their own values."
           },
           "levels": [
             "person",
@@ -671,9 +684,7 @@
           "group": "rozmowa",
           "flows": [
             "chat.send",
-            "semantic.analyse",
-            "agent.run",
-            "archive.run"
+            "agent.run"
           ]
         }
       },
@@ -694,8 +705,8 @@
             "en": "The upper bound of one reply's length (in tokens, roughly 3/4 of a word each); long replies cost more."
           },
           "effect": {
-            "pl": "Odpowiedź dłuższa niż limit urywa się na granicy; wyższy limit = dłuższe i droższe odpowiedzi.",
-            "en": "A reply longer than the limit stops at the bound; a higher limit = longer and dearer replies."
+            "pl": "Odpowiedź czatu lub agenta dłuższa niż limit urywa się na granicy; wyższy limit = dłuższe i droższe odpowiedzi. Analiza w tle i archiwum mają własne limity.",
+            "en": "A chat or agent reply longer than the limit stops at the bound; a higher limit = longer and dearer replies. The background analysis and the archive have their own limits."
           },
           "levels": [
             "person",
@@ -705,9 +716,7 @@
           "flows": [
             "chat.send",
             "agent.run",
-            "semantic.analyse",
-            "actions.preview",
-            "archive.run"
+            "actions.preview"
           ]
         }
       },
@@ -728,8 +737,8 @@
             "en": "The app's look: dark or AMOLED (black, saves battery on OLED screens)."
           },
           "effect": {
-            "pl": "Zmiana działa od razu na tym urządzeniu.",
-            "en": "The change applies at once on this device."
+            "pl": "Dziś działa tylko w starej aplikacji okienkowej; w przeglądarce i na telefonie motyw zmienia przycisk w aplikacji, a odczyt tego pola jest planowany.",
+            "en": "Today it works only in the old desktop app; in the browser and on the phone the theme is changed by a button in the app, and reading this field is planned."
           },
           "levels": [
             "person"
@@ -737,6 +746,19 @@
           "group": "interfejs",
           "subgroup": "wyglad",
           "flows": []
+        },
+        "status": {
+          "state": "planned",
+          "by": "M1-W0",
+          "reader": "loom/web App.tsx (also the Android WebView) keeps its own theme in localStorage loom.theme with a toggle; only the Kivy app (main.py, gui/dialogs.py) reads config theme",
+          "reason": {
+            "pl": "Przeglądarka i telefon przełączają motyw własnym przyciskiem i pamiętają wybór na urządzeniu; to pole czyta dziś tylko stara aplikacja okienkowa.",
+            "en": "The browser and the phone switch the theme with their own button and remember the choice on the device; today only the old desktop app reads this field."
+          },
+          "today": {
+            "pl": "Dziś zmiana tego pola nie zmienia wyglądu w przeglądarce ani na telefonie.",
+            "en": "Today changing this field does not change the look in the browser or on the phone."
+          }
         }
       },
       {
@@ -1017,8 +1039,8 @@
             "en": "Automatic conversation title"
           },
           "why": {
-            "pl": "Po pierwszej odpowiedzi aplikacja sama nadaje rozmowie tytuł (jedno krótkie wywołanie modelu).",
-            "en": "After the first reply the app names the conversation itself (one short model call)."
+            "pl": "Po pierwszej wiadomości rozmowa dostaje tytuł z jej pierwszych 30 znaków (bez wywołania modelu).",
+            "en": "After the first message the conversation is titled with its first 30 characters (no model call)."
           },
           "effect": {
             "pl": "Wyłączone: nowe rozmowy zostają bez tytułu, dopóki ich nie nazwiesz.",
@@ -1179,7 +1201,8 @@
             "en": "Applies when a folder is next added or refreshed."
           },
           "levels": [
-            "person"
+            "person",
+            "turn"
           ],
           "group": "kontekst",
           "subgroup": "pamiec",
@@ -1209,7 +1232,8 @@
             "en": "Applies when a folder is next added or refreshed."
           },
           "levels": [
-            "person"
+            "person",
+            "turn"
           ],
           "group": "kontekst",
           "subgroup": "pamiec",
@@ -1239,7 +1263,8 @@
             "en": "Applies when a folder is next added or refreshed."
           },
           "levels": [
-            "person"
+            "person",
+            "turn"
           ],
           "group": "kontekst",
           "subgroup": "pamiec",
@@ -1702,7 +1727,9 @@
             "en": "A model in recognition = better hits and an extra call per message."
           },
           "levels": [
-            "person"
+            "installation",
+            "person",
+            "turn"
           ],
           "group": "rozmowa",
           "subgroup": "polecenia",
@@ -1956,7 +1983,9 @@
             "en": "“Run everything” still obeys the rules, the ×10 guard and the spending limits."
           },
           "levels": [
-            "person"
+            "installation",
+            "person",
+            "turn"
           ],
           "group": "rozmowa",
           "subgroup": "agent",
@@ -1986,7 +2015,9 @@
             "en": "More steps = a longer and dearer job; at the limit the agent stops and shows what it did."
           },
           "levels": [
-            "person"
+            "installation",
+            "person",
+            "turn"
           ],
           "group": "rozmowa",
           "subgroup": "agent",
@@ -2016,7 +2047,9 @@
             "en": "“Go on” = the model keeps working without waiting for your decision on that step."
           },
           "levels": [
-            "person"
+            "installation",
+            "person",
+            "turn"
           ],
           "group": "rozmowa",
           "subgroup": "agent",
@@ -2046,7 +2079,9 @@
             "en": "A smaller value = cheaper steps, but the model sees less."
           },
           "levels": [
-            "person"
+            "installation",
+            "person",
+            "turn"
           ],
           "group": "rozmowa",
           "subgroup": "agent",
@@ -3397,9 +3432,14 @@
         "status": {
           "state": "planned",
           "by": "M1-W0",
+          "reader": "web GraphNavigator",
           "reason": {
-            "pl": "Czytelnik tego pola — nawigator grafu (lista i mapa razem) — powstaje w M1-W0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the graph navigator (list and map together) — comes with M1-W0; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — nawigator grafu (lista i mapa razem) — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the graph navigator (list and map together) — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
+            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
           }
         },
         "human": {
@@ -3450,9 +3490,14 @@
         "status": {
           "state": "planned",
           "by": "M1-W0",
+          "reader": "web GraphNavigator (perspective sectors)",
           "reason": {
-            "pl": "Czytelnik tego pola — sektory perspektyw w nawigatorze — powstaje w M1-W0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the perspective sectors of the navigator — comes with M1-W0; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — sektory perspektyw w nawigatorze — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the perspective sectors of the navigator — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
+            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
           }
         },
         "human": {
@@ -3487,9 +3532,14 @@
         "status": {
           "state": "planned",
           "by": "M1-K0",
+          "reader": "kernel action graph.navigate (children limit)",
           "reason": {
-            "pl": "Czytelnik tego pola — akcja graph.navigate (limit dzieci) — powstaje w M1-K0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the action graph.navigate (children limit) — comes with M1-K0; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — pokazywanie dzieci węzła w nawigatorze grafu — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — showing a node's children in the graph navigator — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś nawigatora grafu jeszcze nie ma, więc żaden limit dzieci nie działa.",
+            "en": "Today the graph navigator does not exist yet, so no children limit applies."
           }
         },
         "human": {
@@ -3546,9 +3596,14 @@
         "status": {
           "state": "planned",
           "by": "M1-W1",
+          "reader": "web composer context strip",
           "reason": {
-            "pl": "Czytelnik tego pola — pasek kontekstu pod polem pisania — powstaje w M1-W1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the context strip under the composer — comes with M1-W1; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — pasek kontekstu pod polem pisania — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the context strip under the composer — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
+            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
           }
         },
         "human": {
@@ -3599,9 +3654,14 @@
         "status": {
           "state": "planned",
           "by": "M1-W1",
+          "reader": "web receipt line under a reply",
           "reason": {
-            "pl": "Czytelnik tego pola — linia „Kontekst” pod odpowiedzią — powstaje w M1-W1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the “Context” line under a reply — comes with M1-W1; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — linia „Kontekst” pod odpowiedzią — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the “Context” line under a reply — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
+            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
           }
         },
         "human": {
@@ -3652,9 +3712,14 @@
         "status": {
           "state": "planned",
           "by": "M1-W0",
+          "reader": "web top bar model chip",
           "reason": {
-            "pl": "Czytelnik tego pola — chip modelu w górnym pasku — powstaje w M1-W0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the model chip of the top bar — comes with M1-W0; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — chip modelu w górnym pasku — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the model chip of the top bar — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
+            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
           }
         },
         "human": {
@@ -3712,9 +3777,14 @@
         "status": {
           "state": "planned",
           "by": "M1-W2",
+          "reader": "web empty-chat onboarding card",
           "reason": {
-            "pl": "Czytelnik tego pola — karta „Poznajmy się” w pustym czacie — powstaje w M1-W2; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the “Let us meet” card of the empty chat — comes with M1-W2; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — karta „Poznajmy się” w pustym czacie — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the “Let us meet” card of the empty chat — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś pusty czat nie pokazuje karty „Poznajmy się”, niezależnie od tej wartości.",
+            "en": "Today the empty chat does not show the “Let us meet” card, whatever this value is."
           }
         },
         "human": {
@@ -3772,9 +3842,14 @@
         "status": {
           "state": "planned",
           "by": "M1-A0",
+          "reader": "Android shell MainActivity (OnBackPressedDispatcher <-> __loomBack/goBack)",
           "reason": {
-            "pl": "Czytelnik tego pola — przycisk wstecz Androida (OnBackPressedDispatcher) — powstaje w M1-A0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the Android back button (OnBackPressedDispatcher) — comes with M1-A0; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — obsługa przycisku wstecz na Androidzie — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the Android back button handling — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś przycisk wstecz na Androidzie od razu zamyka aplikację, bez pytania i bez cofania się w niej.",
+            "en": "Today the Android back button closes the app at once, without asking and without stepping back inside it."
           }
         },
         "human": {
@@ -3832,9 +3907,14 @@
         "status": {
           "state": "planned",
           "by": "M1-K1",
+          "reader": "kernel chat.send and input.route_intent secret filter",
           "reason": {
-            "pl": "Czytelnik tego pola — filtr kluczy i haseł w chat.send i input.route_intent — powstaje w M1-K1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the key-and-password filter in chat.send and input.route_intent — comes with M1-K1; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — filtr kluczy i haseł w wiadomościach i poleceniach — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the key-and-password filter of messages and commands — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś klucz lub hasło wpisane w rozmowie jest zapisywane w historii i wysyłane dostawcy modelu jak każda wiadomość.",
+            "en": "Today a key or password typed in a conversation is stored in the history and sent to the model provider like any message."
           }
         },
         "human": {
@@ -3895,9 +3975,14 @@
         "status": {
           "state": "planned",
           "by": "M1-K2",
+          "reader": "kernel action profile.interview",
           "reason": {
-            "pl": "Czytelnik tego pola — wywiad profilu (profile.interview) — powstaje w M1-K2; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the profile interview (profile.interview) — comes with M1-K2; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — pytanie o szczegółowość w wywiadzie o Tobie — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — the detail question of the interview about you — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś wywiad o Tobie nie bierze tej wartości pod uwagę.",
+            "en": "Today the interview about you does not take this value into account."
           }
         },
         "human": {
@@ -3955,9 +4040,14 @@
         "status": {
           "state": "planned",
           "by": "M1-K1",
+          "reader": "kernel build_messages -> metadata.context_trace.receipt",
           "reason": {
-            "pl": "Czytelnik tego pola — ślad „Co wysłaliśmy” zapisywany przez build_messages — powstaje w M1-K1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the “What we sent” receipt stored by build_messages — comes with M1-K1; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — zapis śladu „Co wysłaliśmy” przy każdej wiadomości — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — storing the “What we sent” trail with each message — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś ślad „Co wysłaliśmy” nie jest zapisywany przy wiadomościach, niezależnie od tej wartości.",
+            "en": "Today the “What we sent” trail is not stored with messages, whatever this value is."
           }
         },
         "human": {
@@ -3994,9 +4084,14 @@
         "status": {
           "state": "planned",
           "by": "M1-K1",
+          "reader": "kernel build_messages -> metadata.context_trace.receipt",
           "reason": {
-            "pl": "Czytelnik tego pola — ślad „Co wysłaliśmy” zapisywany przez build_messages — powstaje w M1-K1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The reader of this field — the “What we sent” receipt stored by build_messages — comes with M1-K1; until then the value is stored but nothing reads it."
+            "pl": "Część aplikacji, która czyta to pole — zapis śladu „Co wysłaliśmy” przy każdej wiadomości — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The part of the app that reads this field — storing the “What we sent” trail with each message — is not built yet; until then the value is stored but nothing reads it."
+          },
+          "today": {
+            "pl": "Dziś ślad „Co wysłaliśmy” nie jest zapisywany przy wiadomościach, niezależnie od tej wartości.",
+            "en": "Today the “What we sent” trail is not stored with messages, whatever this value is."
           }
         },
         "human": {
@@ -4196,7 +4291,7 @@
       "level_evidence": {
         "type": "object",
         "additionalProperties": false,
-        "description": "Evidence for human.levels: `chain` = keys whose reader resolves the value through the scope chain (scopes::Binding / resolve_value), the only keys that may declare project or conversation; `turn` = keys with a per-request wire option (ChatOptions::from_json), the only keys that may declare turn; `installation` = keys and profile values (<profile><pointer>) whose installation layer has a writer: the runtime-profile preset (profiles/<domain>.pack, the only writer of a profile value) or a user rule at the installation scope (chain keys). `person` is config.json / secrets.json (settings.set), never a profile value. A field declaring a level without evidence is a problem (settings_fields_problems). M1-D1 replaces these lists with `reads`/`implemented_in` per field.",
+        "description": "Evidence for human.levels: `chain` = keys whose reader resolves the value through the scope chain (scopes::Binding / resolve_value), the only keys that may declare project or conversation; `turn` = keys whose reader takes a per-call option of the action that reads it (chat.send: ChatOptions::from_json; input.route_intent: the request's intent_routing_method; agent.run: the tool loop's request policy/max_steps/result_max_chars/on_proposal; memory.attach_folder: file_chars/max_files/include_hidden), the only keys that may declare turn; `installation` = keys and profile values (<profile><pointer>) whose installation layer has a writer: the runtime-profile preset (profiles/<domain>.pack, the only writer of a profile value; e.g. tool_loop policy/max_steps/result_max_chars/on_proposal and intent_routing method.active under the settings tool_loop_* and intent_routing_method) or a user rule at the installation scope (chain keys). `person` is config.json / secrets.json (settings.set), never a profile value. A field declaring a level without evidence is a problem (settings_fields_problems). M1-D1 replaces these lists with `reads`/`implemented_in` per field.",
         "properties": {
           "chain": {
             "type": "array",
@@ -4480,7 +4575,7 @@
                 "reason"
               ],
               "additionalProperties": false,
-              "description": "Field-level status when the key has a preset but no reader yet (M1 §3.5 \"nothing pretends to be ready\"): state (planned), by (the position that adds the reader), reason {pl,en} shown as the chip \"planned (reason)\". Removed by the position that implements the reader.",
+              "description": "Field-level status when the key has a preset but no reader yet (M1 §3.5 \"nothing pretends to be ready\"): state (planned), by (the position that adds the reader), reason {pl,en} shown as the chip \"planned (reason)\". Removed by the position that implements the reader; reader: the technical name of that code; today {pl,en}: what the app does now, shown next to the chip.",
               "properties": {
                 "state": {
                   "type": "string",
@@ -4497,6 +4592,30 @@
                     "en"
                   ],
                   "additionalProperties": false,
+                  "properties": {
+                    "pl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "en": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "reader": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Technical name of the code that will read the key (for engineers; the human reason names it in plain words)."
+                },
+                "today": {
+                  "type": "object",
+                  "required": [
+                    "pl",
+                    "en"
+                  ],
+                  "additionalProperties": false,
+                  "description": "What the app does today, while the reader is missing (shown next to the planned chip, so a preset never reads as protection that is not there).",
                   "properties": {
                     "pl": {
                       "type": "string",

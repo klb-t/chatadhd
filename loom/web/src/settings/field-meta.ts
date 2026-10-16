@@ -26,7 +26,11 @@ export interface SettingsHuman {
 export interface SettingsFieldStatus {
   state: string;
   by?: string;
+  /** Technical name of the code that will read the key (shown under "nazwa techniczna"). */
+  reader?: string;
   reason: LocalizedText;
+  /** What the app does today, while the reader is missing; shown next to the planned chip. */
+  today?: LocalizedText;
 }
 export interface SettingsSubgroup {
   id: string;
