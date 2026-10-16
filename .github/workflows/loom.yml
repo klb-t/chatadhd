@@ -236,8 +236,10 @@ jobs:
           npm run test:context-plan
           npm run test:application-profiles
           npm run test:imported-message-content-state
+          npm run test:composer-menu
           npx playwright install --with-deps chromium
           npm run e2e
+          npm run test:composer-menu-browser
           npm run test:workspace
           npm run test:chat-context
           npm run test:application-profiles-browser
