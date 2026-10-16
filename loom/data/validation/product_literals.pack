@@ -681,7 +681,7 @@
         },
         {
           "path": "loom/data/runtime/settings_fields.pack",
-          "sha256": "36ada61eaa590554a1994e33ae46e43f06bf1be472b8b729cb5592166c653553"
+          "sha256": "d2d94dec02cedaf6b56b62172b67b9a4600da30188fc5e548a573d8507fd7ce9"
         },
         {
           "path": "loom/data/runtime/tool_loop.pack",

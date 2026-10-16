@@ -3,8 +3,20 @@
 
 
 .disclosure-head { display: flex; align-items: center; gap: 8px; min-width: 44px; min-height: 44px; width: 100%; text-align: left; background: none; border: 0; padding: 4px 8px; color: var(--dim); }
-.disclosure-chevron { display: inline-block; width: 1.2em; text-align: center; font-size: 18px; transition: transform var(--anim-disclosure-ms) var(--anim-disclosure-easing); }
-.disclosure[data-state="expanded"] > .disclosure-head .disclosure-chevron { transform: rotate(90deg); }
+/* UI25: the glyph shows the state in the notation of the setting disclosure_glyphs (preset ▼ = collapsed, expand down;
+   ▲ = expanded, collapse up). It swaps at once and flips in the disclosure animation time, so the eye catches the change.
+   Two keyframe names, one per state, so the flip replays on every toggle. The same signs mark every <details> summary. */
+:root { --disclosure-glyph-collapsed: "\25BC"; --disclosure-glyph-expanded: "\25B2"; }
+.disclosure-chevron { display: inline-block; min-width: 1.2em; text-align: center; font-size: 14px; animation: disclosure-flip-a var(--anim-disclosure-ms) var(--anim-disclosure-easing); }
+.disclosure-chevron::before { content: var(--disclosure-glyph-collapsed); }
+.disclosure[data-state="expanded"] > .disclosure-head .disclosure-chevron { animation-name: disclosure-flip-b; }
+.disclosure[data-state="expanded"] > .disclosure-head .disclosure-chevron::before { content: var(--disclosure-glyph-expanded); }
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: var(--disclosure-glyph-collapsed); display: inline-block; min-width: 1.4em; font-size: .85em; animation: disclosure-flip-a var(--anim-disclosure-ms) var(--anim-disclosure-easing); }
+details[open] > summary::before { content: var(--disclosure-glyph-expanded); animation-name: disclosure-flip-b; }
+@keyframes disclosure-flip-a { from { transform: scaleY(-1); } }
+@keyframes disclosure-flip-b { from { transform: scaleY(-1); } }
 .disclosure-body { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows var(--anim-disclosure-ms) var(--anim-disclosure-easing), visibility 0s linear var(--anim-disclosure-ms); }
 .disclosure[data-state="expanded"] > .disclosure-body { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows var(--anim-disclosure-ms) var(--anim-disclosure-easing), visibility 0s; }
 .disclosure-inner { overflow: hidden; min-height: 0; padding: 0 8px; opacity: var(--anim-disclosure-fade, 1); transition: opacity var(--anim-disclosure-ms) var(--anim-disclosure-easing); }
