@@ -1379,8 +1379,7 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
         stage("model", {}, Json{{"model", routed.trace.is_object() ? routed.trace.value("model", "") : ""}, {"error", routed.error->message}});
       } else {
         cands = std::move(routed.cands);
-        stage("model", cands, routed.trace.is_object() ? routed.trace : Json::object());
-        recheck_allowed = true;
+        stage("model", cands, routed.trace.is_object() ? routed.trace : Json::object());  // hybrid: the local reading came first and was unsure
       }
     }
   }
