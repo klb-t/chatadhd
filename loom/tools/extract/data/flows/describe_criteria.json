@@ -1,0 +1,9 @@
+{"schema": "loom.extract.flow/1", "id": "describe_criteria", "kind": "model", "class": "cheap",
+ "label": {"pl": "Opis słowny → kryteria (słowa, regexy, zapytania wektorowe) do poprawienia przez użytkownika", "en": "Description in words → criteria (keywords, regexes, vector queries) for the user to correct"},
+ "input": {"grain": "none", "fields": ["description"]},
+ "prompt": {"system": {"pl": "Zamieniasz opis tematu na kryteria wyboru. Odpowiedz wyłącznie JSON zgodnym ze schematem loom.extract.criteria/1 (keywords z formami polskimi, regex, vectors).",
+                       "en": "Turn a topic description into selection criteria. Answer with JSON only, schema loom.extract.criteria/1 (keywords with Polish forms, regex, vectors)."},
+            "user": {"pl": "Opis: {description}", "en": "Description: {description}"}},
+ "output": {"schema": "criteria"},
+ "model": {"route": "inherit", "class": "cheap", "parameters": {"temperature": 0, "max_tokens": 1200}},
+ "cache": true, "enabled": false}

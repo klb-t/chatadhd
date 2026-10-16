@@ -1,0 +1,10 @@
+{"schema": "loom.extract.cascade/1", "id": "precision_first",
+ "label": {"pl": "Najpierw trafność: wchodzi tylko to, co wysoko w obu kanałach", "en": "Precision first: only what scores high in both channels"},
+ "levels": [
+   {"id": "L0", "flow": "masks",          "on": "all",       "decides": ["exclude"]},
+   {"id": "L1", "flow": "lexical",        "on": "passed",    "decides": ["include", "exclude", "ambiguous"]},
+   {"id": "L2", "flow": "vectors",        "on": "passed",    "decides": ["include", "exclude", "ambiguous"]},
+   {"id": "L3", "flow": "cheap_classify", "on": "ambiguous", "enabled": false},
+   {"id": "L4", "flow": "strong_judge",   "on": "ambiguous", "enabled": false}],
+ "combine": "weighted_mean", "bands": {"include": 0.85, "exclude": 0.4},
+ "manual": "wins", "unresolved": "exclude", "shadow": {"lexical_vs_vectors": true}}

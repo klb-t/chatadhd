@@ -1,0 +1,21 @@
+{
+  "schema": "loom.extract.block_kinds/1",
+  "description": "Common block kinds (open list: a reader may emit a new kind; unknown native kinds go to 'unknown' with an example, never lost).",
+  "kinds": {
+    "text": {"pl": "tekst", "en": "text", "counts_as_content": true},
+    "thinking": {"pl": "rozumowanie", "en": "thinking", "fields": ["complete", "redacted"]},
+    "tool_use": {"pl": "wywołanie narzędzia", "en": "tool call", "fields": ["name", "input"]},
+    "tool_result": {"pl": "wynik narzędzia", "en": "tool result", "fields": ["name", "input"]},
+    "code": {"pl": "kod", "en": "code"},
+    "execution_output": {"pl": "wynik wykonania", "en": "execution output"},
+    "attachment": {"pl": "załącznik", "en": "attachment", "fields": ["ref", "name", "mime", "status"]},
+    "citation": {"pl": "cytowanie", "en": "citation"},
+    "search_result": {"pl": "wynik wyszukiwania", "en": "search result"},
+    "context": {"pl": "kontekst (instrukcje)", "en": "context (instructions)"},
+    "system": {"pl": "systemowy", "en": "system"},
+    "error": {"pl": "błąd", "en": "error"},
+    "summary": {"pl": "podsumowanie", "en": "summary"},
+    "unknown": {"pl": "nieznany", "en": "unknown", "fields": ["native", "example"]}
+  },
+  "agentic": ["tool_use", "tool_result", "code", "execution_output"]
+}

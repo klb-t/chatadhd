@@ -1,0 +1,30 @@
+{
+  "schema": "loom.extract.grammar/1",
+  "id": "select",
+  "description": "One selection language for the CLI, the commander, the API, edit scopes and view filters. Aliases map user words to canonical field/operator names; the parser is code, the vocabulary is data.",
+  "default_conjunction": "AND",
+  "operators": {"AND": ["AND", "and", "&&", "I", "i", "ORAZ", "oraz"], "OR": ["OR", "or", "||", "LUB", "lub", "ALBO", "albo"], "NOT": ["NOT", "not", "!", "NIE", "nie", "BEZ", "bez"]},
+  "field_aliases": {
+    "tytuł": "title", "tytul": "title", "data": "created", "utworzono": "created", "zmieniono": "updated", "rola": "role",
+    "narzędzie": "tool", "narzedzie": "tool", "usługa": "service", "usluga": "service", "konto": "account", "źródło": "source",
+    "zrodlo": "source", "archiwum": "source", "format": "format", "ma": "has", "jest": "is", "język": "lang", "jezyk": "lang",
+    "model": "model", "rodzaj": "kind", "tekst": "text", "treść": "text", "tresc": "text", "wokół": "around", "wokol": "around",
+    "tydzień-z": "week-of", "tydzien-z": "week-of", "luka": "gap", "seria": "burst", "jak": "like", "obok": "near",
+    "pasmo": "band", "klaster": "cluster", "etykieta": "label", "tag": "tag", "wiadomości": "messages", "wiadomosci": "messages",
+    "znaki": "len", "słowa": "words", "slowa": "words", "głębokość": "depth", "glebokosc": "depth", "rozwidlenia": "forks",
+    "gałęzie": "branches", "galezie": "branches", "załączniki": "attachments", "zalaczniki": "attachments", "wzorzec": "pattern",
+    "id": "uid", "identyfikator": "uid"
+  },
+  "value_aliases": {
+    "has": {"załączniki": "attachments", "zalaczniki": "attachments", "gałęzie": "branches", "galezie": "branches",
+            "rozumowanie": "thinking", "narzędzia": "tools", "narzedzia": "tools", "cytowania": "citations", "nieznane": "unknown",
+            "tekst": "text", "wersje": "versions", "duplikaty": "duplicates"},
+    "is": {"agentowa": "agentic", "agentowy": "agentic", "boczna": "sidechain", "skompaktowana": "compacted", "wnioskowana": "inferred",
+           "duplikat": "duplicate", "kontynuacja": "continuation", "ślepa": "deadend", "slepa": "deadend", "bieżąca": "current_path",
+           "biezaca": "current_path", "wersja": "version", "hipoteza": "hypothesis"},
+    "role": {"użytkownik": "user", "uzytkownik": "user", "asystent": "assistant", "systemowa": "system", "narzędzie": "tool", "narzedzie": "tool"}
+  },
+  "similarity_default_threshold": 0.35,
+  "near_default": 3,
+  "around_default": "3d"
+}

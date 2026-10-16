@@ -1,0 +1,16 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "textlike.sqlite",
+  "vendor": null, "product": null, "service": "file",
+  "label": {"pl": "Baza SQLite z rozmowami (Claude, ChatGPT, chatadhd.db; przez engine.importer)", "en": "SQLite database with chats (Claude, ChatGPT, chatadhd.db; via engine.importer)"},
+  "priority": 600,
+  "containers": ["sqlite"],
+  "sniff": {"any_of": [{"magic": "53514c69746520666f726d6174203300"}]},
+  "reader": "textlike", "importer_method": "import_sqlite",
+  "roles": {"user": "user", "assistant": "assistant"},
+  "blocks": {"text": "text"},
+  "members": {"*": "unknown"},
+  "preserve": {"unit": "file", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["gałęzie i wersje (importer spłaszcza)", "narzędzia", "rozumowanie", "załączniki"],
+                   "en": ["branches and versions (the importer flattens)", "tools", "reasoning", "attachments"]}
+}

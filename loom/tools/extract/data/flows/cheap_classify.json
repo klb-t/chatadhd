@@ -1,0 +1,10 @@
+{"schema": "loom.extract.flow/1", "id": "cheap_classify", "kind": "model", "class": "cheap",
+ "label": {"pl": "Tani model: czy to o temacie?", "en": "Cheap model: on topic?"},
+ "input": {"grain": "window", "window": 6, "max_chars": 0, "fields": ["title", "role", "text"], "include_blocks": ["text"], "strip": ["citations"]},
+ "prompt": {"system": {"pl": "Oceniasz, czy fragment rozmowy dotyczy tematu: {topic}. Odpowiedz wyłącznie JSON: {\"verdict\": \"include\"|\"exclude\"|\"ambiguous\", \"confidence\": 0..1, \"reason\": \"…\"}.",
+                       "en": "Judge whether a conversation fragment is about: {topic}. Answer with JSON only: {\"verdict\": \"include\"|\"exclude\"|\"ambiguous\", \"confidence\": 0..1, \"reason\": \"…\"}."},
+            "user": {"pl": "Tytuł: {title}\n{window}\nKryteria: {criteria_summary}", "en": "Title: {title}\n{window}\nCriteria: {criteria_summary}"}},
+ "output": {"schema": "verdict", "values": ["include", "exclude", "ambiguous"], "confidence": true, "reason": true},
+ "model": {"route": "inherit", "class": "cheap", "parameters": {"temperature": 0, "max_tokens": 200}},
+ "cache": true, "parallel": 4, "enabled": false,
+ "note": {"pl": "Plaster A: przepływ opisany, wywołanie modelu w plastrze B (trasa, szacunek, strażnik ×10, dziennik).", "en": "Slice A: flow described; the model call arrives in slice B (route, estimate, ×10 guard, log)."}}

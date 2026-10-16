@@ -1,0 +1,6 @@
+{"schema": "loom.extract.flow/1", "id": "vectors", "kind": "local",
+ "label": {"pl": "Wektory: selektor trójpoziomowy aplikacji (osadzenia → TF-IDF → słowa)", "en": "Vectors: the app's three-tier selector (embeddings → TF-IDF → keywords)"},
+ "input": {"grain": "window", "window": 6, "fields": ["title", "text"], "include_blocks": ["text"]},
+ "output": {"schema": "score", "confidence": true, "reason": true},
+ "parameters": {"threshold": 0.35, "candidates": 0},
+ "cache": true}

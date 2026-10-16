@@ -1,0 +1,42 @@
+{
+  "schema": "loom.extract.criteria/1",
+  "id": "chatadhd",
+  "language": "pl",
+  "description": "ChatADHD/Loom i wcześniejsze małe projekty do integracji (agent, analizator archiwów — „rekurencja”)",
+  "keywords": [
+    {"term": "ChatADHD", "inflect": "forms", "forms": ["ChatADHD", "Chat ADHD", "chatadhd", "czat ADHD"], "fold": true, "weight": 2.0},
+    {"term": "Loom", "boundary": true, "weight": 1.5},
+    {"term": "analizator archiwów", "inflect": "rules", "weight": 1.0},
+    {"term": "rekurencja", "inflect": "rules", "weight": 0.8},
+    {"term": "importer", "inflect": "rules", "weight": 0.8},
+    {"term": "graf wiedzy", "inflect": "rules", "weight": 1.0},
+    {"term": "pamięć hierarchiczna", "inflect": "rules", "weight": 1.0},
+    {"term": "OpenRouter", "weight": 0.8},
+    {"term": "Kivy", "weight": 0.8},
+    {"term": "agent", "inflect": "rules", "weight": 0.4},
+    {"term": "eksport rozmów", "inflect": "rules", "weight": 0.6},
+    {"term": "libloom", "weight": 1.0}
+  ],
+  "regex": [
+    {"pattern": "(?i)chat\\s*adhd", "weight": 2.0},
+    {"pattern": "\\bloom/(src|include|tools|web|cli|server)/", "weight": 1.5},
+    {"pattern": "(?i)\\bchatadhd\\.db\\b", "weight": 1.5}
+  ],
+  "exclude": {
+    "keywords": [{"term": "ADHD", "when_without": ["chat", "aplikacja", "app", "loom"]}],
+    "regex": []
+  },
+  "masks": {"date": {"from": null, "to": null}, "services": [], "accounts": [], "roles": [], "tools": [], "title_regex": null,
+            "with_attachments": null, "with_branches": null, "agentic_only": false, "languages": [], "models": [],
+            "min_messages": 0, "max_messages": 0, "min_chars": 0, "max_chars": 0},
+  "vectors": [
+    {"query": "aplikacja czatu z wieloma modelami, pamięcią hierarchiczną i grafem wiedzy", "threshold": 0.35, "candidates": 0, "grain": "window"},
+    {"query": "mobile AI chat client with knowledge graph, memory tree and conversation importer", "threshold": 0.35, "candidates": 0, "grain": "window"}
+  ],
+  "clusters": [],
+  "grain": "conversation",
+  "expand": "conversation",
+  "cascade": "default",
+  "flows": {"model": {"enabled": false, "cheap": "cheap_classify", "strong": "strong_judge"}},
+  "weights": {"lexical": 1.0, "vectors": 1.0, "cheap": 1.5, "strong": 3.0}
+}

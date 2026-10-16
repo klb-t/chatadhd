@@ -1,0 +1,9 @@
+{"schema": "loom.extract.flow/1", "id": "strong_judge", "kind": "model", "class": "strong",
+ "label": {"pl": "Mocny model: rozstrzygnięcie niejednoznacznych", "en": "Strong model: judge the ambiguous"},
+ "input": {"grain": "conversation", "max_chars": 0, "fields": ["title", "role", "text"], "include_blocks": ["text", "tool_use"], "strip": ["citations"]},
+ "prompt": {"system": {"pl": "Jesteś sędzią. Rozstrzygasz, czy rozmowa dotyczy tematu: {topic}. Odpowiedz wyłącznie JSON: {\"verdict\": \"include\"|\"exclude\"|\"ambiguous\", \"confidence\": 0..1, \"reason\": \"…\"}.",
+                       "en": "You are a judge. Decide whether a conversation is about: {topic}. Answer with JSON only: {\"verdict\": \"include\"|\"exclude\"|\"ambiguous\", \"confidence\": 0..1, \"reason\": \"…\"}."},
+            "user": {"pl": "Tytuł: {title}\n{window}\nKryteria: {criteria_summary}", "en": "Title: {title}\n{window}\nCriteria: {criteria_summary}"}},
+ "output": {"schema": "verdict", "values": ["include", "exclude", "ambiguous"], "confidence": true, "reason": true},
+ "model": {"route": "inherit", "class": "strong", "parameters": {"temperature": 0, "max_tokens": 300}},
+ "cache": true, "parallel": 2, "enabled": false}

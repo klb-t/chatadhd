@@ -1,0 +1,27 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "anthropic.claude_code.session",
+  "vendor": "anthropic", "product": "claude_code", "service": "anthropic",
+  "label": {"pl": "Sesje Claude Code (~/.claude/projects/*/*.jsonl)", "en": "Claude Code sessions (~/.claude/projects/*/*.jsonl)"},
+  "priority": 15,
+  "containers": ["jsonl", "dir"],
+  "sniff": {"any_of": [
+    {"jsonl_first_keys_all": ["parentUuid", "sessionId"]},
+    {"jsonl_any_line_keys_all": ["sessionId", "type"], "jsonl_scan_lines": 20}
+  ]},
+  "reader": "claude_code",
+  "unit_kind": "session",
+  "line": {"id": "uuid", "parent": "parentUuid", "type": "type", "created": {"path": "timestamp", "type": "iso"},
+           "session": "sessionId", "cwd": "cwd", "message": "message", "role": "message.role", "content": "message.content",
+           "model": "message.model", "sidechain": "isSidechain", "compact": "isCompactSummary", "summary": "summary",
+           "leaf": "leafUuid", "version": "version", "git_branch": "gitBranch", "agent": "agentId"},
+  "line_types": {"user": "message", "assistant": "message", "summary": "summary", "system": "system",
+                 "file-history-snapshot": "member", "queue-operation": "member", "*": "unknown"},
+  "roles": {"user": "user", "assistant": "assistant", "system": "system"},
+  "blocks": {"text": "text", "thinking": "thinking:full", "redacted_thinking": "thinking:redacted", "tool_use": "tool_use",
+             "tool_result": "tool_result", "image": "attachment", "document": "attachment", "*": "unknown"},
+  "members": {"*.jsonl": "conversations", "*": "unknown"},
+  "preserve": {"unit": "jsonl_line", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["treści plików czytanych przez narzędzia poza wynikami tool_result", "prompt systemowy", "ustawienia i uprawnienia sesji"],
+                   "en": ["contents of files read by tools beyond tool_result payloads", "system prompt", "session settings and permissions"]}
+}

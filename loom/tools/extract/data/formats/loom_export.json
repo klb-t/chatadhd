@@ -1,0 +1,22 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "loom.export",
+  "vendor": "loom", "product": "chatadhd", "service": "loom",
+  "label": {"pl": "Nasz pakiet przekazania / eksport rozmowy (loom.export.v1 w metadata.export)", "en": "Our hand-off / conversation export (loom.export.v1 in metadata.export)"},
+  "priority": 5,
+  "containers": ["json", "dir"],
+  "sniff": {"any_of": [
+    {"json_path_equals": {"path": "metadata.export.schema", "value": "loom.export.v1"}},
+    {"json_path_equals": {"path": "schema", "value": "loom.extract.handoff/1"}},
+    {"json_path_equals": {"path": "schema", "value": "loom.extract.unit/1"}}
+  ]},
+  "reader": "loom_export",
+  "conversation": {"ext_id": ["id", "metadata.export.key"], "title": "title", "created": {"path": "created", "type": "iso"},
+                   "messages": "messages"},
+  "message": {"role": "role", "text": "content", "created": {"path": "created", "type": "iso"}, "id": "id", "parent": "parent_id",
+              "blocks": "metadata.export.blocks"},
+  "roles": {"user": "user", "assistant": "assistant", "system": "system", "tool": "tool"},
+  "members": {"handoff.json": "member", "conversations/*.json": "conversations", "*": "unknown"},
+  "preserve": {"unit": "conversation_object", "keep_members": ["handoff.json"], "attachment_root": "attachments"},
+  "known_absent": {"pl": [], "en": []}
+}

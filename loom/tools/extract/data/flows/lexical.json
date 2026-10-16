@@ -1,0 +1,6 @@
+{"schema": "loom.extract.flow/1", "id": "lexical", "kind": "local",
+ "label": {"pl": "Leksykalny: słowa z fleksją i składaniem, regexy, wykluczenia", "en": "Lexical: inflected/folded keywords, regexes, exclusions"},
+ "input": {"grain": "inherit", "fields": ["title", "text"], "include_blocks": ["text", "thinking", "tool_use", "tool_result", "code"]},
+ "output": {"schema": "score", "confidence": true, "reason": true},
+ "parameters": {"saturation": 6.0, "explain_top_k": 10},
+ "cache": false}
