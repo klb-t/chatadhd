@@ -1067,6 +1067,19 @@ Spec: `docs/architecture/WIDOK_SILNIK_WIZUALIZACJI_2026-10-15.md` §2 pkt 7 (sł
 
 Testy: `tests/test_view_interaction.cpp` (rozwiązanie presetów, nadpisanie z proweniencją i cofnięcie, konflikt, otwarte listy), `tests/test_views_actions.cpp` (czat), `web/tests/view-engine/interaction.test.mjs`, `web/e2e/p28-interaction-native.mjs` (klawiatura per modyfikator, blokada przełącza widok, lock→zoom przez nakładkę, konflikt, podpowiedź po polsku). Otwarte: pinch i obsługa głosu w panelu (dane są), WebXR (krok 3), edytor przypisań w UI (dziś nakładka/czat), uczenie przypisań z użycia.
 
+# B — unnamed structures / perspectives (2026-10-14, historical first increment)
+
+`gpt/implicit-structures-2026-10-14`, base `6c55d469`: first increment keeps
+alternative project-kind pairs in analogy/transfer, records all contributing
+premises, and binds reverse morphism expectations to their actual destination.
+Pipeline v8 fingerprints new computations separately; old runs are preserved.
+Reversible implementation decisions and current gates are in
+[implicit-structures-2026-10-14.md](implicit-structures-2026-10-14.md).
+Scoped 33/33, 277 native cases / 7697 assertions, guard PASS. Full integration
+matrix pending; main remains Claude's. Revert the product increment to restore
+the earlier computation; never delete historical runs to downgrade.
+
+2026-10-15 B: owner-requested merge of main `6fc3ec6b`; preserve P23 annotation/guardian contract, P24 effective edge-kind overlays and P28 view engine. New recognition integration must consume these mechanisms. P29 remains owned by Claude; unknown references are candidates for matching, not grounds to reject the response. Merged-tree gates pending.
 ## P28 krok 3 — renderer WebXR: ten sam model widoku w 3D (ekran, VR, AR), renderer jako dane (2026-10-15, branch `claude/p28-webxr`)
 
 Spec: `docs/architecture/WIDOK_SILNIK_WIZUALIZACJI_2026-10-15.md` §2 pkt 7–8 i §3 (słowa właściciela w §0: „głębia … przez kierunek w który patrzysz”, „w boki to sąsiedzi ekosystemu”, „w raporcie mniejszości”). Wszystko konfigurowalne, presety nie ograniczenia, dane, odwracalne.

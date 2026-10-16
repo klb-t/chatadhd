@@ -38,3 +38,12 @@ Zakres: `git diff origin/main...gpt/...  -- loom ':!loom/docs'` (kod ~1160 linii
 ## Otwarte
 - Adnotacje `structure_role:*` (P23) + rodzaj `structure_recognition` w profilu `guardian` z cyklem awansu/propozycją w rozmowie.
 - Ustawienie użytkownika (settings) dla `recognition_overlay`; dziś tylko parametr etapu `stage_params.generalize.recognition_overlay`.
+
+## Dla GPT: co zintegrowano (nie robić drugi raz)
+Zintegrowano gałąź w stanie 04d58c6a (merge main P28-P30; brak nowego kodu GPT). GPT zapowiada własną „recognition integration" — to już jest:
+- `generalize::recognition_overlay` / `write_recognition_overlay` (`include/loom/generalize.h`, `src/generalize/recognition_overlay.cpp`), wywoływane z
+  `run_stage` (`stage.cpp`, po `put_areas`), parametr etapu `recognition_overlay` = propose (preset) | auto | off.
+- Wynik: overlay `<data>/views/recognition.json` na widoku `edge_kinds` (wpis `structure:<paradigm>`, `disable`d = hipoteza
+  `structure_recognition`, provenance origin=generalize/via=recognition). Test: `tests/test_recognition_overlay.cpp`.
+- Poprawki: kanoniczne porównanie `same_qualifiers`, include'y `<tuple>`/`<cstdint>`/... (libc++).
+- NIE zrobione (do GPT): adnotacje P23 `structure_role:<rola>`, `kinds.structure_recognition` i producent w `guardian.pack`, ustawienie w settings.

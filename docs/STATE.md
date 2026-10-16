@@ -1,12 +1,11 @@
 # STATE — ChatADHD / Loom
 
-> B, 2026-10-15: na `gpt/implicit-structures-2026-10-14` scalono main
-> `6fc3ec6b` zgodnie z poleceniem właściciela. Konflikty dotyczyły wyłącznie
-> STATE/INDEX; zachowano aktualny stan S1/S2 i historię B. Bramki sprzed scalenia
-> są historią, walidacja złożonego drzewa jest następna. Rozpoznania łączymy
-> z adnotacjami P23, nakładkami rodzajów krawędzi P24 i widokami P28.
-> P29 (nieznane id → nowy kandydat + dopasowanie, bez odrzucania odpowiedzi)
-> jest kierunkiem właściciela, jeszcze otwartym w przyjętym main.
+> B, 2026-10-16: gałąź `gpt/implicit-structures-2026-10-14` scala teraz
+> main `a51a347b` (P28 WebXR, P29 i P30). P29 zachowuje nieznane odwołania
+> jako węzły emergentne i zapisuje `same_as_candidate`; dopasowanie modelem
+> pozostaje otwarte. Dev pierwszego scalenia `f628e50b` kompiluje się;
+> bramki bieżącego złożenia jeszcze niewykonane. Następny przyrost: wspólne
+> adnotacje P23 i nakładki rodzajów krawędzi P24, z dowodami i polityką użytkownika.
 > [Raport B](reports/implicit-structures-2026-10-14.md).
 
 ## 2026-10-15 — S1+S2 (P19, P23–P28, R32–R34)
