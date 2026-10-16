@@ -3225,6 +3225,15 @@
               "pl": "Najpierw części stałe: instrukcja, pamięć, projekt, historia, graf.",
               "en": "Stable parts first: instruction, memory, project, history, graph."
             }
+          },
+          {
+            "value": "stability",
+            "status": "planned",
+            "reason": "M1-D2 adds the order stability [system, profile, rules, memory, project, history, graph] to chat_context.pack; until then chat_engine rejects the name with 'unknown context_order'.",
+            "meaning": {
+              "pl": "Według stabilności: instrukcja, profil, reguły, pamięć, projekt, historia, graf (planowane, M1-D2).",
+              "en": "By stability: instruction, profile, rules, memory, project, history, graph (planned, M1-D2)."
+            }
           }
         ],
         "human": {
@@ -3785,55 +3794,46 @@
         "group": "context",
         "type": "string",
         "has_default": true,
-        "description": "How much of your profile (style, length, language, attention needs, interests you allowed) the profile prefix of a request carries: none, brief, standard (preset) or full. The privacy decisions of the profile (onboarding.privacy) decide what may be sent at all; this field only sets how much of what may be sent is. This is the user's level of a value that the scope chain resolves: a conversation or project may set another one. Default: standard.",
+        "description": "Detail level of your profile, the ids of onboarding/scenario.pack detail_levels: minimal, normal (preset) or detailed. It decides which interview fields are asked (detail <= level), what is stored and how much of the profile the profile prefix of a request carries; the privacy decisions of the profile (onboarding.privacy: max_detail, max_sensitivity) decide what may be stored or sent at all. The first question of the profile interview writes it (installation -> person); a remark such as 'shorter' lowers it by one. Default: normal.",
         "values": [
           {
-            "value": "none",
+            "value": "minimal",
             "meaning": {
-              "pl": "Nic o Tobie.",
-              "en": "Nothing about you."
+              "pl": "Minimalnie: tylko styl i język.",
+              "en": "Minimal: style and language only."
             }
           },
           {
-            "value": "brief",
+            "value": "normal",
             "meaning": {
-              "pl": "Krótko: styl i język.",
-              "en": "Brief: style and language."
+              "pl": "Zwykle: styl, język, potrzeby uwagi.",
+              "en": "Normal: style, language, attention needs."
             }
           },
           {
-            "value": "standard",
+            "value": "detailed",
             "meaning": {
-              "pl": "Standardowo: styl, język, potrzeby uwagi.",
-              "en": "Standard: style, language, attention needs."
-            }
-          },
-          {
-            "value": "full",
-            "meaning": {
-              "pl": "W pełni: wszystko, na co pozwoliłeś.",
-              "en": "Full: everything you allowed."
+              "pl": "Szczegółowo: wszystko, na co pozwoliłeś.",
+              "en": "Detailed: everything you allowed."
             }
           }
         ],
         "human": {
           "label": {
-            "pl": "Ile o Tobie idzie z żądaniem",
-            "en": "How much about you goes with a request"
+            "pl": "Jak dokładnie aplikacja ma Cię znać",
+            "en": "How closely the app should know you"
           },
           "why": {
-            "pl": "Jak szczegółowy opis Ciebie (styl, język, potrzeby uwagi) aplikacja dokłada do żądania: nic, krótko, standardowo (preset) albo w pełni.",
-            "en": "How detailed a description of you (style, language, attention needs) the app adds to a request: nothing, brief, standard (preset) or full."
+            "pl": "Poziom szczegółowości profilu: minimalnie, zwykle (preset) albo szczegółowo. Od niego zależy, o co pyta wywiad „Poznaj mnie”, co zapisuje i ile o Tobie widzi model.",
+            "en": "The detail level of your profile: minimal, normal (preset) or detailed. It decides what the “Get to know me” interview asks, what it stores and how much about you the model sees."
           },
           "effect": {
-            "pl": "Więcej = model lepiej Cię zna, dłuższe żądanie; zasady prywatności profilu i tak decydują, co wolno wysłać.",
-            "en": "More = the model knows you better, a longer request; the profile's privacy rules still decide what may be sent."
+            "pl": "Wyżej = więcej pytań i pełniejszy opis Ciebie w żądaniu; zasady prywatności profilu i tak decydują, co wolno zapisać i wysłać. Pierwsze pytanie wywiadu ustawia to pole.",
+            "en": "Higher = more questions and a fuller description of you in a request; the profile's privacy rules still decide what may be stored and sent. The interview's first question sets this field."
           },
           "levels": [
             "installation",
-            "person",
-            "project",
-            "conversation"
+            "person"
           ],
           "group": "ty",
           "subgroup": "profil",

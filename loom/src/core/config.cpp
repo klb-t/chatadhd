@@ -243,7 +243,7 @@ const Json& loom_config_defaults() {
       {"onboarding_card", "show"},
       {"android_back_exit_confirm", "ask"},
       {"secrets_in_chat", "never"},
-      {"profile_detail_level", "standard"},
+      {"profile_detail_level", "normal"},
       {"context_receipt_store", "auto"},
       {"context_receipt_max_bytes", 65536},
   };
