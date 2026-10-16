@@ -73,6 +73,7 @@ struct Reply {
   std::string text;          // the rendered public text (root)
   bool fence_stripped = false;
   std::map<std::string, std::string> rendered;  // local node id -> its rendered text
+  Json emergent = Json::array();  // [{claimed_id}]: ids referred to that were not in the selection sent (never rejects the reply)
 };
 // Parse + mechanical validation + the deterministic renderer (ordered exact concatenation of the children).
 Reply parse_reply(const Json& section, const std::string& model_text, const std::string& packet_id, const std::set<std::string>& prior_ids);
@@ -81,7 +82,10 @@ std::string invalid_note(const Json& section, const std::string& lang, const std
 
 // PLACEMENT (an analysis-like step, not part of the embedder): where each new element of a reply goes. Cascade as data; here explicit refs and
 // deterministic keys. Returns {nodes: local->id, links: [{from,to,predicate,placed_by}], unplaced: [...], cascade}.
-Json plan_placement(const Json& section, const std::string& message_id, const Reply& reply, const std::set<std::string>& prior_ids);
+// An id referred to that was not sent is an emergent node (P29); db is read for identity candidates outside the selection (never written).
+Json plan_placement(Database& db, const Json& section, const std::string& message_id, const std::string& flow, const Reply& reply, const std::set<std::string>& prior_ids);
+// The visible note for an emergent reference (data text).
+std::string emergent_note(const Json& section, const std::string& lang, const std::string& claimed);
 // OUTPUT node embedder (inputs."loom.graph_reply/2".embedder = reply_graph): PURE STRUCTURE, no model, no analysis. It applies a placement plan: writes
 // the nodes and links of a valid reply into the graph with provenance to the message. Deterministic ids and upserting links make it idempotent.
 Result<Json> embed(Database& db, const Json& section, const std::string& message_id, const std::string& conv_id,

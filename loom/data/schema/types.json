@@ -625,6 +625,12 @@
    "symmetric": true
   },
   {
+   "name": "same_as_candidate",
+   "inverse": "same_as_candidate",
+   "category": "provenance",
+   "symmetric": true
+  },
+  {
    "name": "instance_of",
    "inverse": "has_instance",
    "category": "structural"

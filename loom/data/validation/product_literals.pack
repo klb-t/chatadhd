@@ -601,7 +601,7 @@
         },
         {
           "path": "loom/data/runtime/guardian.pack",
-          "sha256": "054790acd8145c85c3f983d0731ec888d0abcbfa5bece3e5d531aabfc37f70fc"
+          "sha256": "9885210cdde537412ff0da0a645357e624a7b60b6fef7a3683666e52f599fb19"
         },
         {
           "path": "loom/data/runtime/import.pack",

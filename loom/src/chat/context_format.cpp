@@ -2,12 +2,14 @@
 #include "context_format.h"
 
 #include <algorithm>
+#include <cctype>
 #include <deque>
 
 #include "loom/annotation_layer.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/log.h"
+#include "loom/selector.h"
 #include "loom/runtime_profile.h"
 #include "loom/scope_resolver.h"
 #include "loom/util/sha256.h"
@@ -277,8 +279,14 @@ Reply parse_reply(const Json& section, const std::string& model_text, const std:
         !l["predicate"].is_string() || !l["to"].is_string() || l["predicate"].get<std::string>().empty())
       return fail("link_shape");
     if (!nodes.count(l["from"].get<std::string>())) return fail("link_from_not_local");
+    // An id that was not sent never rejects the reply (P29): the frontier model is there to notice what emerges. The element becomes an emergent
+    // node created by the model; the claimed id stays as data and is never used as a real id (see plan_placement).
     const std::string to = l["to"].get<std::string>();
-    if (!nodes.count(to) && !prior_ids.count(to)) return fail("link_to_unknown:" + to);
+    if (!nodes.count(to) && !prior_ids.count(to)) {
+      bool known = false;
+      for (const auto& e : out.emergent) known = known || e["claimed_id"] == to;
+      if (!known) out.emergent.push_back(Json{{"claimed_id", to}});
+    }
   }
   out.text = out.rendered[root];
   out.graph = g;
@@ -292,25 +300,120 @@ std::string invalid_note(const Json& section, const std::string& lang, const std
   return replace_all(text, "{{reason}}", reason);
 }
 
-Json plan_placement(const Json& section, const std::string& message_id, const Reply& reply, const std::set<std::string>& prior_ids) {
-  // Placement is a step of its own (an analysis-like node); the embedder only applies its plan. The cascade is data (outputs.graph_reply.placement.cascade);
-  // implemented here: explicit_ref (a link names a local node or an existing id) and deterministic_key (a local node gets the id derived from the message and
-  // its local id, so placing it twice lands on the same element). Vector similarity, the matching method of the guardian (annotations/matching.cpp) and a model
-  // are further steps of the cascade, not run here: what they would place stays unplaced and is listed.
-  Json nodes = Json::object(), links = Json::array(), unplaced = Json::array();
+std::string emergent_note(const Json& section, const std::string& lang, const std::string& claimed) {
+  const Json note = section.value("outputs", Json::object()).value("graph_reply", Json::object()).value("notes", Json::object()).value("emergent_ref", Json::object());
+  std::string text = json::get_string(note, lang, json::get_string(note, "en", "[the model referred to {{id}}, which was not sent: kept as an emergent node]"));
+  return replace_all(text, "{{id}}", claimed);
+}
+
+namespace {
+std::string norm_key(std::string_view v) {
+  std::string out;
+  bool space = true;
+  for (unsigned char ch : v) {
+    const bool sep = std::isspace(ch) || ch == '_' || ch == '-';
+    if (sep) { if (!space) out += ' '; space = true; continue; }
+    out += static_cast<char>(std::tolower(ch));
+    space = false;
+  }
+  while (!out.empty() && out.back() == ' ') out.pop_back();
+  return out;
+}
+bool is_emergent_or_part(const Node& n) {
+  if (n.metadata.is_object() && n.metadata.contains("emergent_ref")) return true;
+  if (n.tags.is_array())
+    for (const auto& t : n.tags) if (t == "reply_graph") return true;
+  return false;
+}
+}  // namespace
+
+Json plan_placement(Database& db, const Json& section, const std::string& message_id, const std::string& flow, const Reply& reply, const std::set<std::string>& prior_ids) {
+  // Placement is a step of its own (an analysis-like node); the embedder only applies its plan. The cascade is data (outputs.graph_reply.placement.cascade):
+  // explicit_ref (a link names a local node or an id that was sent), deterministic_key (a local node gets the id derived from the message and its local id;
+  // an emergent reference is matched to an existing node outside the selection by claimed id, label or kind:label), vector_similarity (the selector tiers
+  // over the labels and contents of the remaining nodes), ask (left as a candidate for the user). A model step and the guardian's matching are not run here.
+  // A reference to an id that was not sent is an EMERGENT node created by the model; the claimed id is data, never an id, and an edge to an existing node
+  // is only ever an identity CANDIDATE (same_as_candidate with matched_by) - never a silent merge, never an edge via the unverified id.
+  const Json pl = section.value("outputs", Json::object()).value("graph_reply", Json::object()).value("placement", Json::object());
+  const Json cascade = pl.value("cascade", Json::array());
+  const std::string cand_link = json::get_string(pl, "identity_link", "same_as_candidate");
+  Json nodes = Json::object(), links = Json::array(), unplaced = Json::array(), emergent = Json::array(), identity = Json::array();
   for (const auto& n : reply.graph["nodes"]) {
     const std::string local = n["id"].get<std::string>();
     nodes[local] = "n_" + Sha256::hex(message_id + "/" + local).substr(0, 12);
+  }
+  std::map<std::string, std::size_t> emergent_at;
+  for (const auto& e : reply.emergent) {
+    const std::string claimed = e["claimed_id"].get<std::string>();
+    emergent_at[claimed] = emergent.size();
+    emergent.push_back(Json{{"claimed_id", claimed}, {"node", "n_" + Sha256::hex(message_id + "/emergent/" + claimed).substr(0, 12)},
+                            {"referenced_by", Json::array()}, {"status", "candidate"}, {"matches", Json::array()}});
   }
   for (const auto& l : reply.graph["links"]) {
     const std::string to = l["to"].get<std::string>();
     Json item{{"from", nodes[l["from"].get<std::string>()]}, {"predicate", l["predicate"]}};
     if (nodes.contains(to)) { item["to"] = nodes[to]; item["placed_by"] = "deterministic_key"; }
     else if (prior_ids.count(to)) { item["to"] = to; item["placed_by"] = "explicit_ref"; }
-    else { unplaced.push_back(Json{{"link_to", to}, {"why", "no step of the cascade placed it"}}); continue; }
+    else {
+      Json& em = emergent[emergent_at.at(to)];
+      item["to"] = em["node"];
+      item["placed_by"] = "emergent_ref";
+      em["referenced_by"].push_back(Json{{"local", l["from"]}, {"predicate", l["predicate"]}});
+    }
     links.push_back(item);
   }
-  return Json{{"nodes", nodes}, {"links", links}, {"unplaced", unplaced}, {"cascade", section.value("outputs", Json::object()).value("graph_reply", Json::object()).value("placement", Json::object()).value("cascade", Json::array())}};
+  auto result = [&]() { return Json{{"nodes", nodes}, {"links", links}, {"unplaced", unplaced}, {"emergent", emergent}, {"identity_links", identity}, {"flow", flow}, {"cascade", cascade}}; };
+  if (emergent.empty()) return result();
+  // Candidates for identity: existing nodes that are not in the selection and not made by a reply.
+  std::vector<Node> pool;
+  const Json dk = pl.value("deterministic_key", Json::object());
+  auto listed = db.list_nodes(std::nullopt, static_cast<int>(json::get_number(dk, "scan_limit", 100000)));
+  if (listed) { for (auto& n : *listed) if (!prior_ids.count(n.id) && !is_emergent_or_part(n)) pool.push_back(std::move(n)); }
+  else log::warn("loom.chat_flow", "emergent placement: nodes not listed ({}); the candidates stay for the user", listed.error().message);
+  auto add_match = [&](Json& em, const Node& n, const std::string& by, double score) {
+    for (const auto& m : em["matches"]) if (m["node"] == n.id) return;
+    Json m{{"node", n.id}, {"label", n.label}, {"matched_by", by}};
+    if (score > 0) m["score"] = score;
+    em["matches"].push_back(m);
+  };
+  for (const auto& step : cascade) {
+    const std::string name = step.is_string() ? step.get<std::string>() : "";
+    for (auto& em : emergent) {
+      if (!em["matches"].empty()) continue;  // an earlier step placed it
+      const std::string claimed = em["claimed_id"].get<std::string>();
+      if (name == "deterministic_key") {
+        const std::size_t colon = claimed.find(':');
+        const std::string kind_part = colon == std::string::npos ? "" : norm_key(claimed.substr(0, colon));
+        const std::string label_part = colon == std::string::npos ? "" : norm_key(claimed.substr(colon + 1));
+        const std::string whole = norm_key(claimed);
+        for (const auto& n : pool) {
+          const std::string lab = norm_key(n.label);
+          if (n.id == claimed) add_match(em, n, "claimed_id", 0);
+          else if (!lab.empty() && lab == whole) add_match(em, n, "label", 0);
+          else if (!label_part.empty() && lab == label_part && norm_key(n.kind) == kind_part) add_match(em, n, "kind_label", 0);
+        }
+      } else if (name == "vector_similarity" && !pool.empty()) {
+        const Json vs = pl.value("vector_similarity", Json::object());
+        const double min_score = json::get_number(vs, "min_score", 0.5);
+        SelectorEngine sel;
+        std::vector<std::string> texts, ids;
+        for (const auto& n : pool) { texts.push_back(n.label + " " + std::string(utf8::prefix(n.content, 400))); ids.push_back(n.id); }
+        if (auto ix = sel.index(std::move(texts), ids); !ix) { log::warn("loom.chat_flow", "emergent placement: similarity index failed: {}", ix.error().message); continue; }
+        for (const auto& hit : sel.search(claimed, static_cast<int>(json::get_number(vs, "top_k", 1))))
+          if (hit.score >= min_score)
+            for (const auto& n : pool) if (n.id == hit.id) add_match(em, n, "vector_similarity:" + sel.active_tier(), hit.score);
+      }
+    }
+  }
+  const std::string prov = json::get_string(pl, "origin", "model");
+  for (auto& em : emergent) {
+    if (em["matches"].empty()) continue;
+    em["status"] = "matched";
+    for (const auto& m : em["matches"])
+      identity.push_back(Json{{"from", em["node"]}, {"to", m["node"]}, {"predicate", cand_link}, {"matched_by", m["matched_by"]}, {"score", m.value("score", Json())},
+                              {"claimed_id", em["claimed_id"]}, {"origin", prov}});
+  }
+  return result();
 }
 
 Result<Json> embed(Database& db, const Json& section, const std::string& message_id, const std::string& conv_id, const std::string& model,
@@ -343,6 +446,18 @@ Result<Json> embed(Database& db, const Json& section, const std::string& message
     (void)nid;
     ++made_nodes;
   }
+  for (const auto& em : plan.value("emergent", Json::array())) {
+    NodeOptions eo;
+    eo.node_id = em["node"].get<std::string>();
+    eo.content = "";
+    eo.metadata = Json{{"origin", origin}, {"model", model}, {"message_id", message_id}, {"conversation_id", conv_id}, {"flow", plan.value("flow", "")},
+                       {"emergent_ref", true}, {"claimed_id", em["claimed_id"]}, {"referenced_by", em["referenced_by"]}, {"status", em["status"]},
+                       {"schema", json::get_string(spec, "schema")}, {"base_packet_sha256", packet_id}};
+    eo.tags = Json::array({"emergent_ref"});
+    LOOM_TRY_ASSIGN(auto eid, db.create_node(em["claimed_id"].get<std::string>(), json::get_string(cfg, "emergent_kind", "emergent"), eo));
+    (void)eid;
+    ++made_nodes;
+  }
   const Json structure{{"origin", "reply_structure"}, {"message_id", message_id}};
   for (const auto& n : reply.graph["nodes"]) {
     for (const auto& c : n["children"]) {
@@ -360,7 +475,16 @@ Result<Json> embed(Database& db, const Json& section, const std::string& message
     (void)lid;
     ++made_links;
   }
-  return Json{{"embedded", true}, {"nodes", made_nodes}, {"links", made_links}, {"root_node", global[root]}, {"unplaced", plan["unplaced"]}};
+  for (const auto& il : plan.value("identity_links", Json::array())) {
+    Json im{{"origin", origin}, {"message_id", message_id}, {"proposal", true}, {"status", "candidate"}, {"matched_by", il["matched_by"]},
+            {"claimed_id", il["claimed_id"]}};
+    if (!il["score"].is_null()) im["score"] = il["score"];
+    LOOM_TRY_ASSIGN(auto lid, db.create_link(il["from"].get<std::string>(), il["to"].get<std::string>(), il["predicate"].get<std::string>(), 1.0, im));
+    (void)lid;
+    ++made_links;
+  }
+  return Json{{"embedded", true}, {"nodes", made_nodes}, {"links", made_links}, {"root_node", global[root]}, {"unplaced", plan["unplaced"]},
+              {"emergent", plan.value("emergent", Json::array())}, {"identity_links", plan.value("identity_links", Json::array())}};
 }
 
 Result<Json> embed_packet(Database& db, const Json& section, const std::string& conv_id, const Json& pkt) {
