@@ -14,6 +14,8 @@ export interface SettingsHuman {
   levels: string[];
   group: string;
   subgroup?: string;
+  /** Set when the pack's `placement` (a user overlay, per key) moved the entry: the preset group/subgroup it came from. */
+  placed_from?: { group: string; subgroup?: string };
   role?: string;
   /** Status of `role` when ports.pack does not know the role yet (e.g. "planned"): the chip says so instead of dangling. */
   role_status?: string;
@@ -45,18 +47,31 @@ export interface SettingsGroup {
   disabled?: boolean;
   empty_reason?: LocalizedText;
 }
-/** Evidence for human.levels: keys whose reader resolves the value through the scope chain (project/conversation) and keys with a
- * per-request option (turn). A level a field declares without evidence is a problem in the kernel's check, never a promise shown. */
+/** Evidence for human.levels: keys whose reader resolves the value through the scope chain (project/conversation), keys with a
+ * per-request option (turn) and keys or profile values (<profile><pointer>) whose installation layer has a writer (installation).
+ * A level a field declares without evidence is a problem in the kernel's check, never a promise shown. */
 export interface SettingsLevelEvidence {
   chain: string[];
   turn: string[];
+  installation?: string[];
+}
+/** A value a field's reader understands. `on_set` says what a write of a value with a `status` does on every write path:
+ * "refuse" (its reader rejects it) or "warn" (stored with a warning; absent = warn). */
+export interface SettingsFieldValue {
+  value: unknown;
+  meaning?: LocalizedText;
+  preset?: boolean;
+  status?: string;
+  reason?: LocalizedText | string;
+  on_set?: "refuse" | "warn" | string;
 }
 /** A value of a runtime profile shown as a field with the chip "runtime profile: <profile>"; the value lives in the profile.
  * `problem` (instead of `value`) says why it could not be read; it is shown, never dropped. */
 export interface SettingsProfileValue {
   profile: string;
   pointer: string;
-  human: SettingsHuman;
+  /** Absent only in a hand-written overlay; the kernel's check lists it as a problem. */
+  human?: SettingsHuman;
   value?: unknown;
   problem?: string;
 }
@@ -71,9 +86,11 @@ export interface SettingsField {
   description?: string;
   sensitive?: boolean;
   human?: SettingsHuman;
-  values?: { value: unknown; meaning?: LocalizedText; status?: string; reason?: LocalizedText | string }[];
-  /** The values list is examples, not the whole set (settings.set accepts other values). */
+  values?: SettingsFieldValue[];
+  /** The values list is examples, not the whole set (every write path accepts other values). */
   values_open?: boolean;
+  /** What a write of a value outside a closed `values` list does: "refuse" or "warn" (stored with a warning; absent = warn). */
+  on_unlisted?: "refuse" | "warn" | string;
   status?: SettingsFieldStatus;
 }
 export interface SettingsFieldsDoc {
@@ -81,7 +98,8 @@ export interface SettingsFieldsDoc {
   edit_rules: { id: string; edit?: string; label_pl?: string; enforced?: boolean; meaning?: string }[];
   fields: SettingsField[];
   groups: Record<string, SettingsGroup>;
-  /** Bad overlay operations on settings_groups, as the view engine reports them; shown, never swallowed. */
+  /** Bad overlay operations on settings_groups as the view engine reports them, an unreadable views directory and bad
+   * `placement` entries; shown, never swallowed. */
   groups_issues?: unknown[];
   level_evidence?: SettingsLevelEvidence;
   profile_values: SettingsProfileValue[];

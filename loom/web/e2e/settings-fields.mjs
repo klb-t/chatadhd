@@ -22,6 +22,13 @@ assert.equal(m.isReadOnly(doc.fields[2]), true);
 assert.equal(m.isReadOnly(doc.fields[3]), false);
 assert.equal(m.editLabel(doc.fields[3], doc), "custom_rule");  // open rule strings pass through
 assert.throws(() => m.parseSettingsFields({}), /malformed/);
+// the human layer's defaults: a response without groups or profile values still parses into empty ones
+const bare = m.parseSettingsFields({ fields: [] });
+assert.deepEqual(bare.groups, {});
+assert.deepEqual(bare.profile_values, []);
+assert.equal(bare.groups_issues, undefined);
+assert.deepEqual(m.parseSettingsFields({ fields: [], groups: [1, 2] }).groups, {});  // an array is not a groups object
+assert.deepEqual(m.parseSettingsFields({ fields: [], groups_issues: [{ code: "x" }] }).groups_issues, [{ code: "x" }]);
 
 if (process.env.LOOM_SETTINGS_FIELDS_JSON) {
   const real = m.parseSettingsFields(JSON.parse(readFileSync(process.env.LOOM_SETTINGS_FIELDS_JSON, "utf8")));
@@ -29,6 +36,17 @@ if (process.env.LOOM_SETTINGS_FIELDS_JSON) {
     assert.ok(f.edit && f.description, `field ${f.key} lacks edit rule or description`);
     assert.ok(f.default === "present" || f.default === "absent", `field ${f.key}: default must be present|absent`);
     if (f.scope === "secret") assert.equal(f.default_value, undefined);
+    // the human layer (M1-D0): a Polish label and a group the response lists, for every field and profile value
+    assert.ok(f.human?.label?.pl, `field ${f.key} lacks human.label.pl`);
+    assert.ok(f.human.group in real.groups, `field ${f.key}: group ${f.human.group} not in groups`);
   }
+  assert.ok(Object.keys(real.groups).length > 0, "no groups");
+  assert.ok(real.profile_values.length > 0, "no profile values");
+  for (const p of real.profile_values) {
+    assert.ok(p.human?.label?.pl, `profile value ${p.profile}${p.pointer} lacks human.label.pl`);
+    assert.ok(p.human.group in real.groups, `profile value ${p.profile}${p.pointer}: group not in groups`);
+    assert.ok("value" in p || "problem" in p, `profile value ${p.profile}${p.pointer}: neither value nor problem`);
+  }
+  assert.equal(real.groups_issues, undefined, "the shipped response has no groups issues");
 }
 console.log("[settings-fields] PASS");
