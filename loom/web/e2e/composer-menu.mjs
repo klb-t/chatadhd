@@ -303,6 +303,25 @@ try {
     const conv = (await conversations()).find(c => (c.title ?? "").includes("Rozmowa B")).id;
     await page.getByTestId("send-chat").click();
     await until("the agent's message", async () => (await messagesOf(conv)).some(m => m.role === "user" && m.metadata?.composer_action === "agent.run"), 20000);
+    await page.getByTestId("tool-chip-agent").locator("button").click();
+    assert.equal(await page.getByTestId("tool-chip-agent").count(), 0);
+  });
+
+  await step("a message from a new chat never writes the model into an older conversation it lands in", async () => {
+    const conv = (await conversations()).find(c => (c.title ?? "").includes("Rozmowa B")).id;
+    const before = (await messagesOf(conv)).length;
+    await newChat();
+    await picker.selectOption("mock/second-model");
+    await page.getByTestId("chat-input").fill("Z nowej rozmowy");
+    await page.getByTestId("send-chat").click();
+    await until("sent", async () => (await last()).messages?.at(-1)?.content === "Z nowej rozmowy", 20000);
+    await new Promise(r => setTimeout(r, 1000));
+    if ((await messagesOf(conv)).length > before) {  // the kernel put it into the conversation it remembers (ChatEngine::send without conv_id)
+      assert.equal((await settingsOf(conv)).default_model, undefined, "an older conversation keeps having no model of its own");
+    } else {  // a conversation made by this send keeps the model it was made with
+      const fresh = (await conversations())[0].id;
+      await until("the new conversation's model", async () => (await settingsOf(fresh)).default_model === "mock/second-model");
+    }
   });
 
   await step("Import conversations is reachable from the menu", async () => {

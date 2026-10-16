@@ -479,12 +479,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       })
       .then(undefined, (err: unknown) => { if (mountedRef.current && selectedConvRef.current === target) setModelNote(t("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
   }, [chat, convId, saveConversationModel, t]);
-  // A conversation this page's send created keeps the model it was made with, when the chain would give it another one.
-  const keepNewConversationModel = useCallback((target: string, chosen: string) => {
+  // A conversation this page's send created keeps the model it was made with, when the chain would give it another one. A send that names no
+  // conversation may also land in the one the kernel remembers (ChatEngine::send): that one is not new, holds earlier messages, and is left alone.
+  const keepNewConversationModel = useCallback((target: string, chosen: string, userMessageId: string | null) => {
     if (!chat || !chosen) return;
     const choices = ++modelChoicesRef.current;
-    api.resolveScope({ key: MODEL_SETTING, conversation_id: target })
-      .then((resolution) => conversationModel(resolution) !== null || resolution.value === chosen ? false
+    api.getMessages(target)
+      .then((rows) => rows.length === 0 || rows[0].id === userMessageId ? api.resolveScope({ key: MODEL_SETTING, conversation_id: target }) : null)
+      .then((resolution) => !resolution || conversationModel(resolution) !== null || resolution.value === chosen ? false
         : saveConversationModel(target, chosen).then(() => true))
       .then((saved) => { if (saved && mountedRef.current && modelChoicesRef.current === choices) setOwnModel({ convId: target, model: chosen }); },
         (err: unknown) => { if (mountedRef.current && selectedConvRef.current === target) setModelNote(shellTextRef.current("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
@@ -509,11 +511,14 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       ? { key: `a${++attachmentCounter}`, name: attachmentName(ref), state: "failed" as const, ref, reason: t(refused.why === "unreadable" ? "att_unreadable" : "att_missing") }
       : { key: `a${++attachmentCounter}`, name: attachmentName(ref), state: "ready" as const, ref }), [t]);
 
-  const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
-    const text = input.trim();
-    // A message written in the field (not a re-send, not the one-call override): only it takes the composer's files and switches.
-    const composed = !forced && requestOverride === null;
-    const ready = attachments.flatMap(a => a.state === "ready" && a.ref ? [a.ref] : []);
+  // `again`: a regeneration — the composer's options with an earlier message's words, files and model; the field and its chips stay as they are.
+  const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest, again?: { text: string; attachments: string[]; model: string }) => {
+    const text = again ? again.text : input.trim();
+    // The request is built from the composer's options (a message written in the field, or a regeneration) ...
+    const fromComposer = !forced && (again !== undefined || requestOverride === null);
+    // ... and only a message written in the field takes the field's words, its files and the action switch (and empties them).
+    const composed = fromComposer && again === undefined;
+    const ready = again ? again.attachments : attachments.flatMap(a => a.state === "ready" && a.ref ? [a.ref] : []);
     // Files alone are a message too (as in the popular chat apps): words or at least one ready file.
     const content = text !== "" || ready.length > 0;
     if (mode === "send" && composed && content && !stream) {
@@ -534,7 +539,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     let request: ChatRequest;
     if (forced) {
       request = forced;
-    } else if (mode === "send" && requestOverride !== null) {
+    } else if (!again && mode === "send" && requestOverride !== null) {
       try {
         const parsed: unknown = JSON.parse(requestOverride);
         if (!parsed || typeof parsed !== "object" || Array.isArray(parsed) ||
@@ -569,11 +574,11 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       catch (err) { setError(err instanceof Error ? err.message : String(err)); return; }
     }
     request = {
-      message: text, conv_id: convId ?? undefined, model: shownModel || undefined,
+      message: text, conv_id: convId ?? undefined, model: (again ? again.model : shownModel) || undefined,
       // Omit unchanged options so the existing default request stays intact.
       ...(ready.length > 0 && { attachments: ready }),
-      // The switches of the + menu: each sets the request field its entry names (data).
-      ...(requestFields(composedMenu.items, switches) as Partial<ChatRequest>),
+      // The switches of the + menu: each sets the request field its entry names (data). A regeneration is a message again, never an action.
+      ...(Object.fromEntries(Object.entries(requestFields(composedMenu.items, switches)).filter(([field]) => composed || field !== "action")) as Partial<ChatRequest>),
       ...(!includeMemory && { include_memory: false }),
       ...(!includeGraphMemory && { include_graph_memory: false }),
       ...(!includeHistory && { include_history: false }),
@@ -614,8 +619,9 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       setStream(null);
       setPendingUserText(null);
       let message = raw;
-      // Nothing was stored: the words go back into the field, so a failed send loses nothing and can be sent again.
-      if (message && !started) {
+      // Nothing was stored: the words go back into the field, so a failed send loses nothing and can be sent again (a regeneration is the
+      // earlier message, still in the conversation: the field keeps what is being written).
+      if (message && !started && !again) {
         setInput((current) => current || request.message);
         // The files go back as chips too (without their previews); a file the kernel would not take is marked with why.
         const sent = request.attachments ?? [];
@@ -629,7 +635,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
       if (message && (here === requestConvId || here === null || requestConvId === null)) { errorForRef.current = requestConvId; setError(message); }
       refreshShared();
     };
-    setInput("");
+    if (!again) setInput("");
     // The chips go with a composed message only: a re-send (taking an offer, confirming usage, a regeneration) leaves the next one's files.
     if (composed) setAttachments((list) => { for (const a of list) if (a.preview) URL.revokeObjectURL(a.preview); return []; });
     setQueuedNote(null);
@@ -653,7 +659,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             setStream((s) => (s ? { ...s, requestId: chunk.request_id, convId: chunk.conv_id } : s));
             setPendingUserText((s) => s ? { ...s, convId: chunk.conv_id } : s);
             if (!convId && selectedConvRef.current === null) onConversationCreated(chunk.conv_id);
-            if (!request.conv_id && request.model) keepNewConversationModel(chunk.conv_id, request.model);
+            if (!request.conv_id && request.model) keepNewConversationModel(chunk.conv_id, request.model, chunk.user_message_id);
             onMessagesChanged?.();
           } else if (chunk.type === "route_issue") {
             notesForRef.current = requestConvId;
@@ -698,7 +704,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
             // The files wait with the words: a refusal, or editing and sending again, loses none of them.
             const held = request.attachments ?? [];
             if (held.length) setAttachments((list) => list.length ? list : restoredChips(held, null));
-            if (!request.conv_id && chunk.conv_id && request.model) keepNewConversationModel(chunk.conv_id, request.model);
+            if (!request.conv_id && chunk.conv_id && request.model) keepNewConversationModel(chunk.conv_id, request.model, null);
             setUsageNotice(null);
             setUsagePending({ request: { ...request, conv_id: chunk.conv_id }, receipt: chunk.usage_pending, convId: chunk.conv_id });
             requestConvId = chunk.conv_id;
@@ -728,7 +734,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     // A declaration that fails, is refused or does not answer never holds the send back: it goes without a client id.
     void clientSession.ensure().catch(() => "").then((id) => {
       if (!isCurrent()) return;
-      if (composed && id !== "" && !request.client_id) request = { ...request, client_id: id };
+      if (fromComposer && id !== "" && !request.client_id) request = { ...request, client_id: id };
       dispatch();
     });
   }, [input, attachments, switches, composedMenu, filesWithAction, restoredChips, keepNewConversationModel, t, stream, convId, creating, gate, shownModel, onConversationCreated, refreshMessages, clientSession, routeIssueCatalog.feature, usageCatalog.feature,
@@ -1022,10 +1028,8 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     if (!prior || !convId) return;
     const files = Array.isArray(prior.attachments) ? prior.attachments.filter((x): x is string => typeof x === "string") : [];
     const answeredBy = m.model && !m.model.startsWith("loom:") ? m.model : shownModel;
-    const draft = input;
-    send("send", { message: prior.text, conv_id: convId, ...(answeredBy && { model: answeredBy }), ...(files.length > 0 && { attachments: files }) });
-    setInput(draft);
-  }, [messages, convId, shownModel, input, send]);
+    send("send", undefined, { text: prior.text, attachments: files, model: answeredBy });
+  }, [messages, convId, shownModel, send]);
   useEffect(() => { if (chat) api.hasSecret("api_key").then(setHasKey, () => setHasKey(null)); }, [chat, error, convId]);
   useEffect(() => {
     if (!chat) return;
