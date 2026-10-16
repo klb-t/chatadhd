@@ -12,7 +12,7 @@ interface Props {
   className?: string;
 }
 
-/** The disclosure of the chat screen: chevron, a label that changes, aria-expanded, a 44 px target, content right under the header. */
+/** The disclosure of the chat screen: a state glyph (CSS, setting disclosure_glyphs; preset ▼ collapsed, ▲ expanded), a label that changes, aria-expanded, a 44 px target, content right under the header. */
 export default function Disclosure({ labels, children, defaultOpen = false, open: controlled, onToggle, testId, className }: Props) {
   const [inner, setInner] = useState(defaultOpen);
   const open = controlled ?? inner;
@@ -33,7 +33,7 @@ export default function Disclosure({ labels, children, defaultOpen = false, open
   return (
     <div className={`disclosure${className ? " " + className : ""}`} ref={root} data-testid={testId} data-state={view.chevron}>
       <button type="button" className="disclosure-head" aria-expanded={view.ariaExpanded === "true"} aria-controls={id} onClick={toggle}>
-        <span className="disclosure-chevron" aria-hidden="true">›</span>
+        <span className="disclosure-chevron" aria-hidden="true" />
         <span className="disclosure-label">{view.label}</span>
       </button>
       <div className="disclosure-body" id={id} role="region">

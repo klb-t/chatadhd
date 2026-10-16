@@ -133,6 +133,26 @@
         "description": "Layout of the application: full_screen_chat (preset: the full-screen standard chat app, profile \"Czat\"), views_grid (the workbench: application views grid, profile \"Warsztat\") or windows (floating and dockable windows; planned, not implemented yet: until it is, the workbench opens). The ⋮ menu switches between them for the session; the last choice is part of last_saved. Default: full_screen_chat (R56)."
       },
       {
+        "key": "disclosure_glyphs",
+        "scope": "config",
+        "group": "ui",
+        "section": "Interfejs i wyświetlanie",
+        "subsection": "Animacje",
+        "type": "string",
+        "has_default": false,
+        "description": "The sign a collapsible section shows in each state: a set name — down_expands (preset: ▼ on a collapsed section means expand downwards, ▲ on an expanded one collapse upwards, the Windows 3.x drop-down notation), tree (▶ collapsed, ▼ expanded) or plus_minus ([+] / [-]) — or a set of your own from disclosure_glyph_sets. Applies to every collapsible section of the app. Default: down_expands (UI25)."
+      },
+      {
+        "key": "disclosure_glyph_sets",
+        "scope": "config",
+        "group": "ui",
+        "section": "Interfejs i wyświetlanie",
+        "subsection": "Animacje",
+        "type": "object",
+        "has_default": false,
+        "description": "Your own sets of disclosure signs, an overlay on the shipped ones (down_expands, tree, plus_minus): {name: {collapsed: text, expanded: text}}. A set of the same name replaces the shipped one; a missing half keeps the preset sign. Choose a set in disclosure_glyphs. Default: none (only the shipped sets)."
+      },
+      {
         "key": "animation_styles",
         "scope": "config",
         "group": "ui",
