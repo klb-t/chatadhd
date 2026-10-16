@@ -575,9 +575,16 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     red = red if red is not None and red.active else None
 
     def put(rel: str, text: str) -> None:
-        if red is not None and rel.endswith((".json", ".jsonl", ".md")):
-            # a redacted package leaks nothing through its side files either (units, timeline, explain, report …)
-            text = red.text(text, {"file": rel}, "text")
+        if red is not None:
+            # a redacted package leaks nothing through its side files either (units, timeline, explain, report …);
+            # JSON is redacted value by value (a mask never eats JSON syntax), Markdown as text
+            if rel.endswith(".json"):
+                text = _json_text(red.value(json.loads(text), {"file": rel}, "text"))
+            elif rel.endswith(".jsonl"):
+                text = "".join(json.dumps(red.value(json.loads(line), {"file": rel, "line": i + 1}, "text"), ensure_ascii=False) + "\n"
+                               for i, line in enumerate(text.splitlines()) if line.strip())
+            elif rel.endswith(".md"):
+                text = red.text(text, {"file": rel}, "text")
         sha, n = _write_text(pkg / rel, text)
         outputs.append({"path": rel, "sha256": sha, "bytes": n})
 
