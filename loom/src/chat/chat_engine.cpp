@@ -797,7 +797,7 @@ Result<Json> ChatEngine::preview_usage(std::string_view text, const ChatOptions&
   {
     std::lock_guard lk(mu_);
     if (opts_in.conv_id) conv_id = *opts_in.conv_id;
-    else if (conv_) conv_id = conv_->id;
+    else if (conv_ && !opts_in.new_conversation) conv_id = conv_->id;  // a new conversation (R35) has no history yet: nothing of the remembered one
   }
   const ChatOptions opts = select_representation(opts_in, conv_id);
   LOOM_TRY_ASSIGN(auto messages, build_messages(conv_id, text, opts.attachments, opts));
@@ -1161,7 +1161,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   std::string selector_conv;
   {
     std::lock_guard lk(mu_);
-    selector_conv = opts_in.conv_id ? *opts_in.conv_id : (conv_ ? conv_->id : std::string());
+    selector_conv = opts_in.conv_id ? *opts_in.conv_id : (conv_ && !opts_in.new_conversation ? conv_->id : std::string());
   }
   const ChatOptions opts = select_representation(opts_in, selector_conv);
   const Json execution = cfg_.get("context_execution", Json::object());

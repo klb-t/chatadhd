@@ -307,8 +307,10 @@ try {
     assert.equal(await page.getByTestId("tool-chip-agent").count(), 0);
   });
 
-  await step("a message from a new chat never writes the model into an older conversation it lands in", async () => {
+  await step("a message from a new chat never lands in an older conversation, nor writes its model there", async () => {
     const conv = (await conversations()).find(c => (c.title ?? "").includes("Rozmowa B")).id;
+    // The agent's reply of the step before may still be on its way into B: let it land, so the count below is B's settled state.
+    await until("B settled", async () => (await messagesOf(conv)).at(-1)?.role === "assistant", 20000);
     const before = (await messagesOf(conv)).length;
     await newChat();
     await picker.selectOption("mock/second-model");
@@ -317,7 +319,9 @@ try {
     await until("sent", async () => (await last()).messages?.at(-1)?.content === "Z nowej rozmowy", 20000);
     await new Promise(r => setTimeout(r, 1000));
     // R35: a blank page asks for a new conversation (new_conversation), so the kernel never puts the message into the one it remembers.
-    assert.equal((await messagesOf(conv)).length, before, "the older conversation gets no message from a new chat");
+    const inB = await messagesOf(conv);
+    assert.equal(inB.length, before, "the older conversation gets no message from a new chat");
+    assert.ok(!inB.some(m => m.text === "Z nowej rozmowy"), "the new chat's words are not in the older conversation");
     assert.equal((await settingsOf(conv)).default_model, undefined, "an older conversation keeps having no model of its own");
     // The conversation made by this send keeps the model it was made with.
     const fresh = (await conversations())[0].id;
