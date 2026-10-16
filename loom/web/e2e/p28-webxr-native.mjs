@@ -205,6 +205,10 @@ try {
       throw Error(`timeout waiting for ${what}: ${JSON.stringify(seen)} (${cause.message.split("\n")[0]})`);
     }
   };
+  // The renderer samples the viewer pose, the controller poses and the thumbstick once per rendered frame, and three.js maps a new input source to a
+  // controller when it handles the change: after a change made from outside, wait for frames that used it instead of a fixed pause (under a loaded
+  // machine — the full gate runs ctest alongside — a fixed pause is not enough and the gesture lands on the stale pose).
+  const rendered = async (page, n = 2) => { const f0 = Number((await state(page)).frames); await waitState(page, x => Number(x.frames) >= f0 + n, `${n} frames after a change made from outside`); };
   const positions = async page => JSON.parse((await state(page)).positions);
   const viewState = (page, key) => page.getByTestId("ve-view-state").getAttribute(key);
 
@@ -326,13 +330,13 @@ try {
   await check("XR input through the same reducer: right trigger and pinch+gaze focus on the pointed / looked-at element, the thumbstick moves the scene, a held controller button is a modifier", async () => {
     const ctl = await xrPage.evaluate(() => window.__xr.addSource({ handedness: "right" }));
     const left = await xrPage.evaluate(() => window.__xr.addSource({ handedness: "left" }));
-    await xrPage.waitForTimeout(200);
+    await rendered(xrPage);
     if (process.env.P28_DEBUG) console.log("SOURCES", await xrPage.evaluate(() => window.__xr.state.session.inputSources.length));
     const at = id => positions(xrPage).then(ps => { const p = ps.find(x => x.id === id); return [p.wx, p.wy, p.wz]; });
     // point the right controller (held at the chest) at v4 and pull the trigger
     const v4 = await at(ids.v4), hand = [0.25, -0.4, -0.3];
     await xrPage.evaluate(([i, m]) => window.__xr.pose(i, m), [ctl, lookAlong(hand, sub(v4, hand))]);
-    await xrPage.waitForTimeout(150);
+    await rendered(xrPage);
     await xrPage.evaluate(i => window.__xr.fire(i, "selectstart"), ctl);
     await until(xrPage, id => document.querySelector('[data-testid="ve-view-state"]')?.getAttribute("data-focus") === id, ids.v4, "the right trigger to focus the pointed element");
     assert.equal(await xrPage.getByTestId("ve-last-action").getAttribute("data-binding"), "xr.focus.trigger");
@@ -343,7 +347,7 @@ try {
     await xrPage.waitForFunction(p => Number(document.querySelector('[data-testid="ve-view-state"]')?.getAttribute("data-pan-x")) === p - 40, pan0);
     assert.equal(await xrPage.getByTestId("ve-last-action").getAttribute("data-binding"), "xr.plane.left");
     await xrPage.evaluate(i => window.__xr.axes(i, 0, 0), ctl);
-    await xrPage.waitForTimeout(100);
+    await rendered(xrPage);
     // hold the left trigger (a modifier: Shift), then the same stick direction is time, not the plane
     await xrPage.evaluate(i => window.__xr.fire(i, "selectstart"), left);
     await waitState(xrPage, x => /Drążek teraz: Shift: Czas: wstecz/.test(x.hint), "the hint with Shift held");
@@ -360,17 +364,17 @@ try {
   await check("XR gestures: a pinch on a hand with the gaze ray focuses the looked-at element; a large swipe is only a coarse scene move; voice does nothing", async () => {
     // the left controller is put down and the left hand is tracked instead (a device has two input slots)
     await xrPage.evaluate(() => window.__xr.removeSource(1));
-    await xrPage.waitForTimeout(150);
+    await rendered(xrPage);
     await xrPage.evaluate(() => window.__xr.addSource({ handedness: "left", hand: true }));
-    await xrPage.waitForTimeout(150);
+    await rendered(xrPage);
     const hand = 1;
     const ps = await positions(xrPage);
     const v2 = ps.find(p => p.id === ids.v2);
     // turn the head to v2 (the viewer pose is the gaze)
     await xrPage.evaluate(m => window.__xr.viewer(m), lookAlong([0, 0, 0], [v2.wx, v2.wy, v2.wz]));
-    await xrPage.waitForTimeout(250);
+    await rendered(xrPage);
     await xrPage.evaluate(i => window.__xr.fire(i, "selectstart"), hand);
-    await xrPage.waitForFunction(id => document.querySelector('[data-testid="ve-view-state"]')?.getAttribute("data-focus") === id, ids.v2);
+    await until(xrPage, id => document.querySelector('[data-testid="ve-view-state"]')?.getAttribute("data-focus") === id, ids.v2, "the pinch with the gaze to focus the looked-at element");
     assert.equal(await xrPage.getByTestId("ve-last-action").getAttribute("data-binding"), "xr.focus.gaze");
     await xrPage.evaluate(m => window.__xr.viewer(m), lookAlong([0, 0, 0], [0, 0, -1]));
     // a large swipe of the right controller from right to left within 300 ms
