@@ -80,21 +80,34 @@ Json profile_values_of(const Json& v, const std::filesystem::path& data_dir) {
 // a group of its own) is the ROM layer; the view overlays of the data dir (<data_dir>/views/*.json, ops on settings_groups) regroup,
 // rename or hide on top, with the policy the view kind declares. One list for every reader (loom_view_effective and this document
 // agree on what an overlay did). A hidden group stays listed with hidden:true and who hid it, so the fields in it are never
-// orphaned; a bad overlay op is an issue (`issues`), never a dropped group.
+// orphaned; a bad overlay op is an issue (`issues`), never a dropped group. A views directory that cannot be read at all (a file that
+// is not JSON, a wrong schema, an unrelated view's overlay) never blanks the settings: the ROM groups are composed without overlays
+// and the reason is an issue the owner reads (settings_fields_problems lists it). Only a pack without /groups is an error.
 struct Groups {
   Json object = Json::object();  // id -> group (+ origin, provenance, hidden?, hidden_by?, disabled?)
   Json issues = Json::array();
 };
 
 Result<Groups> groups_of(const Json& v, const std::filesystem::path& data_dir) {
-  const Json rom = v.value("groups", Json::object());
-  LOOM_TRY_ASSIGN(auto overlays, views::load_overlays({data_dir}));  // empty data_dir: none (builtin)
-  LOOM_TRY_ASSIGN(auto kinds, views::effective(data_dir, "view_kinds"));
-  views::Policy policy;
-  if (const views::EffectiveEntry* def = kinds.find(kGroupsView); def && !def->disabled)
-    policy = views::Policy::from_json(def->value.value("policy", Json::object()));
-  const views::Effective eff = views::compose(kGroupsView, rom, overlays, policy);
+  const Json* rom_groups = json::find(v, "groups");
+  if (!rom_groups || !rom_groups->is_object()) return Error(Errc::InvalidArgument, "settings_fields: the pack has no /groups object");
+  const Json& rom = *rom_groups;
   Groups out;
+  std::vector<views::Overlay> overlays;
+  views::Policy policy;
+  auto loaded = views::load_overlays({data_dir});  // empty data_dir: none (builtin)
+  auto kinds = loaded ? views::effective(data_dir, "view_kinds") : Result<views::Effective>(loaded.error());
+  if (!loaded || !kinds) {
+    const std::string why = (!loaded ? loaded.error() : kinds.error()).message;
+    log::debug(kLog, "settings groups composed without view overlays: {}", why);
+    out.issues.push_back(Json{{"code", "overlays_unreadable"}, {"layer", "views"}, {"op", ""}, {"id", ""},
+                              {"note", "view overlays not applied to the settings groups (the shipped groups are shown): " + why}});
+  } else {
+    overlays = std::move(*loaded);
+    if (const views::EffectiveEntry* def = kinds->find(kGroupsView); def && !def->disabled)
+      policy = views::Policy::from_json(def->value.value("policy", Json::object()));
+  }
+  const views::Effective eff = views::compose(kGroupsView, rom, overlays, policy);
   for (const auto& e : eff.entries) {
     Json g = e.value;
     g["origin"] = e.origin;
@@ -111,7 +124,7 @@ Result<Groups> groups_of(const Json& v, const std::filesystem::path& data_dir) {
     g["provenance"] = h.value("provenance", Json::array());
     out.object[id] = std::move(g);
   }
-  out.issues = eff.issues;
+  for (const auto& i : eff.issues) out.issues.push_back(i);
   return out;
 }
 

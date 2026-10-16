@@ -255,6 +255,33 @@ TEST_SUITE("settings_fields") {
     CHECK_FALSE(settings_fields_problems(issue, td.path()).empty());
   }
 
+  TEST_CASE("an unreadable view overlay (of any view, not only settings_groups) never blanks the settings: the shipped groups are shown and the reason is an issue") {
+    fsutil::TempDir td;
+    const Json rom = unwrap(settings_fields());
+    std::filesystem::create_directories(td.path() / "views");
+    for (const char* bytes : {"{not json", R"({"schema":"something/else","ops":[]})"}) {
+      INFO(bytes);
+      std::ofstream(td.path() / "views" / "broken.json", std::ios::trunc) << bytes;
+      auto doc = settings_fields(td.path());
+      REQUIRE(doc);
+      CHECK((*doc)["fields"].size() == rom["fields"].size());
+      REQUIRE((*doc)["groups"].size() == rom["groups"].size());
+      for (auto it = rom["groups"].begin(); it != rom["groups"].end(); ++it) {
+        CHECK((*doc)["groups"][it.key()]["label"] == it.value()["label"]);
+        CHECK((*doc)["groups"][it.key()]["origin"] == "rom");
+      }
+      REQUIRE(doc->contains("groups_issues"));
+      CHECK((*doc)["groups_issues"].dump().find("broken.json") != std::string::npos);
+      bool reported = false;
+      for (const auto& p : settings_fields_problems(*doc, td.path()))
+        reported = reported || (p.find("groups overlay issue") != std::string::npos && p.find("broken.json") != std::string::npos);
+      CHECK(reported);
+      // the write path that reads the same document keeps working
+      LOOM_REQUIRE_OK(check_config_write("theme", td.path()));
+      CHECK_FALSE(check_config_write("_config_version", td.path()));
+    }
+  }
+
   TEST_CASE("a profile overlay may add a group of its own and move a field into it (no enum closes the groups)") {
     fsutil::TempDir td;
     std::filesystem::create_directories(td.path() / "profiles");

@@ -7,6 +7,7 @@
 #include <iterator>
 
 #include "loom/db.h"
+#include "loom/log.h"
 #include "loom/provenance.h"
 #include "loom/runtime_profile.h"
 #include "loom/settings_fields.h"
@@ -123,7 +124,12 @@ Result<Json> ElementResolver::resolve_setting(const ElementSources& sources, std
   const Json* setting = json::find(values_, "setting");
   if (!setting) return Json(nullptr);
   auto doc = settings_fields(sources.data_dir);
-  if (!doc) return Json(nullptr);
+  if (!doc) {
+    // Any bare id is tried as a setting key, so an unreadable settings document must not fail every resolution; the reason is
+    // logged (the runner's settings.set/settings.get report it themselves when they read the document).
+    log::debug("loom.actions.element", "settings fields unreadable, '{}' not resolved as a setting: {}", key, doc.error().message);
+    return Json(nullptr);
+  }
   const Json* fields = json::find(*doc, "fields");
   if (!fields || !fields->is_array()) return Json(nullptr);
   for (const auto& f : *fields) {
