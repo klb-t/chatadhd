@@ -20,6 +20,8 @@ adb shell settings put global window_animation_scale 0
 adb shell settings put global transition_animation_scale 0
 adb shell settings put global animator_duration_scale 0
 adb shell settings put secure show_ime_with_hard_keyboard 0 || true
+# M1 §3.14: one run of the matrix uses a larger system font (SMOKE_FONT_SCALE, e.g. 1.3); unset = the device default
+if [ -n "${SMOKE_FONT_SCALE:-}" ]; then adb shell settings put system font_scale "$SMOKE_FONT_SCALE"; log "font_scale $SMOKE_FONT_SCALE"; fi
 
 adb logcat -c
 adb logcat -v threadtime > "$OUT/logcat.txt" 2>&1 &

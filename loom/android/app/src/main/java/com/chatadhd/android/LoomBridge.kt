@@ -69,6 +69,28 @@ class LoomBridge(private val webView: WebView) {
         onOpenConnection?.invoke()
     }
 
+    /** Set by MainActivity: the system gesture exclusion of the WebView (edge swipes go to the page there). */
+    @Volatile var onGestureExclusion: ((List<android.graphics.Rect>) -> Unit)? = null
+
+    /**
+     * The page tells which rectangles (CSS pixels of the viewport: [{x,y,w,h}], [] clears) need edge swipes, e.g. an
+     * open graph map; the system Back/Home gestures keep the rest of the edges. The only new bridge method of M1.
+     */
+    @JavascriptInterface
+    fun setGestureExclusion(rectsJson: String): Boolean {
+        val density = webView.resources.displayMetrics.density
+        val rects = try {
+            val arr = JSONArray(rectsJson)
+            (0 until arr.length()).map { i ->
+                val r = arr.getJSONObject(i)
+                val x = (r.optDouble("x") * density).toInt(); val y = (r.optDouble("y") * density).toInt()
+                android.graphics.Rect(x, y, x + (r.optDouble("w") * density).toInt(), y + (r.optDouble("h") * density).toInt())
+            }
+        } catch (e: Exception) { return false }
+        onGestureExclusion?.invoke(rects)
+        return true
+    }
+
     // ── notifications of the shell (P13): the WebView has no Notification API ──
     private fun notificationsAllowed(): Boolean {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true

@@ -73,4 +73,7 @@
     <string name="secrets_unreadable">API keys could not be unsealed (the Keystore key is gone, e.g. after reinstalling). Enter them again in Settings.</string>
     <string name="secrets_seal_failed">API keys could not be sealed with the Keystore and stay in a plain file.</string>
     <string name="data_open_failed">Could not open ChatADHD data</string>
+    <string name="back_exit_question">Close ChatADHD? Your draft stays.</string>
+    <string name="back_exit_leave">Close</string>
+    <string name="back_exit_stay">Stay</string>
 </resources>

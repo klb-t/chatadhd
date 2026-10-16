@@ -26,7 +26,7 @@ details[open] > summary::before { content: var(--disclosure-glyph-expanded); ani
 @keyframes shell-fade { from { opacity: 0; } }
 @keyframes shell-slide { from { transform: translateX(-100%); } }
 
-.shell-root { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; background: var(--bg); }
+.shell-root { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; background: var(--bg); }
 .shell-bar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--border); background: var(--card); flex-shrink: 0; }
 .shell-bar .shell-title { flex: 1; min-width: 0; font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0; }
 .shell-bar button, .shell-btn { min-width: 44px; min-height: 44px; }
@@ -53,7 +53,7 @@ details[open] > summary::before { content: var(--disclosure-glyph-expanded); ani
 .shell-code { position: relative; }
 .shell-code .shell-copy { position: absolute; top: 4px; right: 4px; font-size: 11px; padding: 2px 8px; min-height: 28px; }
 .shell-artifact { border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; background: var(--artifact); }
-.shell-composer { display: flex; align-items: flex-end; gap: 6px; padding: 8px; border-top: 1px solid var(--border); max-width: 820px; width: 100%; margin: 0 auto; }
+.shell-composer { display: flex; align-items: flex-end; gap: 6px; padding: 8px; padding-bottom: max(8px, env(safe-area-inset-bottom)); border-top: 1px solid var(--border); max-width: 820px; width: 100%; margin: 0 auto; }
 .shell-composer textarea { flex: 1; min-height: 44px; }
 .shell-composer button { min-width: 44px; min-height: 44px; }
 @media (min-width: 721px) { .shell-drawer { position: static; width: 280px; box-shadow: none; } }
