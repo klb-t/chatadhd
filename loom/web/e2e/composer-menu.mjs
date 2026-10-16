@@ -316,12 +316,13 @@ try {
     await page.getByTestId("send-chat").click();
     await until("sent", async () => (await last()).messages?.at(-1)?.content === "Z nowej rozmowy", 20000);
     await new Promise(r => setTimeout(r, 1000));
-    if ((await messagesOf(conv)).length > before) {  // the kernel put it into the conversation it remembers (ChatEngine::send without conv_id)
-      assert.equal((await settingsOf(conv)).default_model, undefined, "an older conversation keeps having no model of its own");
-    } else {  // a conversation made by this send keeps the model it was made with
-      const fresh = (await conversations())[0].id;
-      await until("the new conversation's model", async () => (await settingsOf(fresh)).default_model === "mock/second-model");
-    }
+    // R35: a blank page asks for a new conversation (new_conversation), so the kernel never puts the message into the one it remembers.
+    assert.equal((await messagesOf(conv)).length, before, "the older conversation gets no message from a new chat");
+    assert.equal((await settingsOf(conv)).default_model, undefined, "an older conversation keeps having no model of its own");
+    // The conversation made by this send keeps the model it was made with.
+    const fresh = (await conversations())[0].id;
+    assert.notEqual(fresh, conv);
+    await until("the new conversation's model", async () => (await settingsOf(fresh)).default_model === "mock/second-model");
   });
 
   await step("Import conversations is reachable from the menu", async () => {

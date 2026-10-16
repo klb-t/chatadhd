@@ -400,10 +400,15 @@ export class LoomJniApi implements LoomApi {
     // a blob URL/path is not available from a WebView <input>. Real Android
     // integration wires file picking to a native intent that returns a
     // content:// path here instead of a browser File object.
-    handlers.onError?.("File import from the browser file picker is not supported in the Android shell yet");
+    // The shell's picker is pickImport; a browser File object carries no path the kernel can open.
+    handlers.onError?.("Use the system picker (pickImport) in the Android shell");
     void file;
     void title;
     return () => {};
+  }
+  pickImport(kind: "file" | "folder", title: string | undefined, handlers: StreamHandlers<ImportChunk>): Unsubscribe {
+    // The system picker (SAF) -> a private copy -> the kernel importer; progress and the done chunk as /api/import (ImportFlow).
+    return this.stream<ImportChunk>("pick_import", { kind, title: title ?? null }, handlers);
   }
   exportConversationUrl(convId: string, format: "json" | "markdown" | "text" | "html"): string {
     // No HTTP server in the native shell; callers should use a native

@@ -49,7 +49,7 @@ class H(http.server.BaseHTTPRequestHandler):
         if LOG:
             with open(LOG, "a", encoding="utf-8") as f:
                 f.write(json.dumps({"path": self.path, "authorization": self.headers.get("Authorization", ""),
-                                    "stream": bool(body.get("stream")), "classify": classify,
+                                    "stream": bool(body.get("stream")), "classify": classify, "model": body.get("model"),
                                     "last": last[-120:]}, ensure_ascii=False) + "\n")
         # Zuzycie ma byc wiarygodne: rozmiar zapytania / 4. Stale "20 tokenow" tworzylo mikroskopijny punkt odniesienia, wiec
         # kolejne, dluzsze zapytanie (rosnaca historia) przekraczalo x10 i serwer slusznie czekal na potwierdzenie (usage_pending).

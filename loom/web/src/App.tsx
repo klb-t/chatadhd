@@ -68,7 +68,7 @@ const PANEL_LABELS: Record<PanelId, string> = {
 };
 
 // Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
-const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { perspectives: "perspectives_title", "view-engine": "view_engine_title" };
+const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { graph: "menu_graph", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
 
 export default function App() {
   const account = useAccountSession();

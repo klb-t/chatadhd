@@ -951,6 +951,13 @@ JNIEXPORT jstring JNICALL Java_com_chatadhd_android_LoomNative_nativeImportFile(
       const std::string p = j2s(env, path);
       const std::string t = j2s(env, title);
       result = take(loom_import_file(g_ctx, p.c_str(), title ? t.c_str() : nullptr, import_progress_trampoline, &ctx));
+      // The web client reads the last import chunk like the one /api/import streams: a success carries "type":"done"
+      // (without it the import panel never shows the result or refreshes the list). An error object stays as it is.
+      Json parsed = parse_or(result, Json(nullptr));
+      if (parsed.is_object() && !parsed.contains("error")) {
+        parsed["type"] = "done";
+        result = dump(parsed);
+      }
     }
   } catch (...) {
     result = err_json(LOOM_E_INTERNAL);

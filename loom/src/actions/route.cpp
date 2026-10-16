@@ -1580,7 +1580,25 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     for (const auto& x : parse_rule_commands(d, text, false)) ids.insert(x.action);  // rules and scoped values are read locally either way
     return ids;
   };
-  if (method == "model" && !local_first) {
+  // Rules and scoped values from what is said, and the other commands of the conversation (the model method does not know them; they are read
+  // locally either way). A command that explains another ("how do I ...") is kept only when what follows is a command itself.
+  // P34: read before any routing call, so a sentence the local rule reader settles does not pay for one (model.skip_when_rule_command).
+  const bool inner = json::get_bool(request, "no_howto", false);
+  auto rule_cands = parse_rule_commands(d, text, inner);
+  rule_cands.erase(std::remove_if(rule_cands.begin(), rule_cands.end(),
+                                  [&](const Cand& rc) {
+                                    if (rc.check_arg.empty()) return false;
+                                    Json nested{{"text", json::get_string(rc.args, rc.check_arg)}, {"method", "heuristic"}, {"no_howto", true}, {"conv_id", json::get_string(request, "conv_id")}};
+                                    if (const Json* l = json::find(request, "lang")) nested["lang"] = *l;
+                                    auto r = route_with(rt, d, nested);
+                                    return !(r && r->value("kind", "") == "command");
+                                  }),
+                   rule_cands.end());
+  const bool skip_model_for_rules = !rule_cands.empty() && json::get_bool(d.cfg.at("model"), "skip_when_rule_command", true);
+  if (method == "model" && !local_first && skip_model_for_rules) {
+    cands = local_reading();
+    stage("heuristic", cands, Json{{"why", "rule_command_read_locally"}, {"note", "a rule or scoped-value command was found locally: the routing model is not asked (model.skip_when_rule_command)"}});
+  } else if (method == "model" && !local_first) {
     ModelRoute routed = model_route(rt, d, text, lang, request.value("route_usage_confirmation", Json::object()), scored_by_local(local_reading()));
     if (!routed.spent.is_null()) out["routing"] = routed.spent;  // P31: what the routing call cost, shown with the proposal
     if (!routed.pending.is_null()) {
@@ -1602,20 +1620,8 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
     cands = local_reading();
     stage("heuristic", cands);
   }
-  // Rules and scoped values from what is said, and the other commands of the conversation (the model method does not know them; they are read
-  // locally either way). A command that explains another ("how do I ...") is kept only when what follows is a command itself.
-  const bool inner = json::get_bool(request, "no_howto", false);
-  auto rule_cands = parse_rule_commands(d, text, inner);
-  rule_cands.erase(std::remove_if(rule_cands.begin(), rule_cands.end(),
-                                  [&](const Cand& rc) {
-                                    if (rc.check_arg.empty()) return false;
-                                    Json nested{{"text", json::get_string(rc.args, rc.check_arg)}, {"method", "heuristic"}, {"no_howto", true}, {"conv_id", json::get_string(request, "conv_id")}};
-                                    if (const Json* l = json::find(request, "lang")) nested["lang"] = *l;
-                                    auto r = route_with(rt, d, nested);
-                                    return !(r && r->value("kind", "") == "command");
-                                  }),
-                   rule_cands.end());
   if (!rule_cands.empty()) {
+    stage("rule_command", rule_cands, Json{{"why", "scoped_rule_read_locally"}});
     cands.erase(std::remove_if(cands.begin(), cands.end(), [](const Cand& x) { return x.source == "pattern" && x.action == "settings.set"; }), cands.end());
     for (auto& r : rule_cands) cands.push_back(std::move(r));
   }
@@ -2709,7 +2715,10 @@ Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& 
   Outcome none;
   LOOM_TRY_ASSIGN(Data d, load_data(rt, json::get_string(request, "client_id")));
   std::string conv_id = opts.conv_id.value_or(std::string());
-  if (conv_id.empty())
+  // A request that names no conversation continues the one remembered from the last send, unless it asks for a new one
+  // (new_conversation, R35): then a command or a composer action (P33) starts a new conversation too, as the chat path does
+  // (ChatEngine::send), and never writes into the older one.
+  if (conv_id.empty() && !opts.new_conversation)
     if (auto current = rt.chat().current_conv()) conv_id = current->id;
 
   // 0. The button of an offer: the sentence of a rejected proposal goes on the chat path as an ordinary message, whatever the routing method.

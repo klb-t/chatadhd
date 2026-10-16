@@ -161,6 +161,31 @@ TEST_SUITE("chat_composer") {
     CHECK_FALSE(ChatOptions::from_json(Json{{"message", "x"}, {"action", 7}}));
   }
 
+  TEST_CASE("a composer action from a blank page that asks for a new conversation (R35) never lands in the remembered one") {
+    Fixture f;
+    // An earlier send left this conversation remembered by the kernel (ChatEngine::current_conv).
+    const std::string older = unwrap(f.rt->db().create_conv("Older")).id;
+    REQUIRE(f.rt->chat().load_conv(older));
+    const auto before = unwrap(f.rt->db().get_msgs(older)).size();
+    ChatOptions fresh;
+    fresh.new_conversation = true;
+    const auto run = unwrap(chat_route::handle(*f.rt, "uporzadkuj moje notatki", fresh,
+                                               Json{{"message", "uporzadkuj moje notatki"}, {"action", "agent.run"}, {"new_conversation", true}}, nullptr));
+    REQUIRE(run.handled);
+    CHECK(run.conv_id != older);
+    CHECK_FALSE(run.conv_id.empty());
+    CHECK(unwrap(f.rt->db().get_msgs(older)).size() == before);
+    const auto user = unwrap(f.rt->db().get_msg(run.user_message_id));
+    REQUIRE(user);
+    CHECK(user->conv_id == run.conv_id);
+    // Without the request the remembered conversation (now the new one) is continued, as before.
+    ChatOptions keep;
+    const auto again = unwrap(chat_route::handle(*f.rt, "zrob to jeszcze raz", keep, Json{{"message", "zrob to jeszcze raz"}, {"action", "agent.run"}}, nullptr));
+    REQUIRE(again.handled);
+    CHECK(again.conv_id == run.conv_id);
+    CHECK(unwrap(f.rt->db().get_msgs(older)).size() == before);
+  }
+
   TEST_CASE("the model of a conversation comes from the scope chain when the request names none; a named model wins") {
     Fixture f;
     const std::string with_own = unwrap(f.rt->db().create_conv("Own model")).id;

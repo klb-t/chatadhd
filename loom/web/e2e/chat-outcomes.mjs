@@ -114,7 +114,7 @@ async function sendKind(kind, rest = "") {
   for (const end = Date.now() + 10000; chatRequests.length === before && Date.now() < end;) await new Promise(resolve => setTimeout(resolve, 20));
   await page.getByTestId("cancel-chat").waitFor({ state: "detached", timeout: 10000 });
   assert.equal(chatRequests.length, before + 1, `${kind}: one request`);
-  assert.deepEqual(chatRequests.at(-1), { message: kind + rest }, `${kind}: the request of a blank page names no conversation and the words as typed`);
+  assert.deepEqual(chatRequests.at(-1), { message: kind + rest, new_conversation: true }, `${kind}: the request of a blank page names no conversation, asks for a new one (R35: not the remembered one) and carries the words as typed`);
 }
 const errorText = () => page.getByTestId("chat-error").innerText();
 const field = () => page.getByTestId("chat-input").inputValue();

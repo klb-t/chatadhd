@@ -125,11 +125,11 @@ try {
     await page.getByTestId("nav-graph").click();
     const counter = page.getByTestId("graph-page-count");
     await counter.waitFor();
-    assert.equal((await counter.innerText()).trim(), `${GRAPH_PAGE} of ${MESSAGES} messages`);
+    assert.equal((await counter.innerText()).trim(), `${GRAPH_PAGE} z ${MESSAGES} wiadomości`);
     await page.getByTestId("graph-load-more").click();
-    await page.waitForFunction(text => document.querySelector('[data-testid="graph-page-count"]')?.textContent?.trim() === text, `${GRAPH_PAGE * 2} of ${MESSAGES} messages`);
+    await page.waitForFunction(text => document.querySelector('[data-testid="graph-page-count"]')?.textContent?.trim() === text, `${GRAPH_PAGE * 2} z ${MESSAGES} wiadomości`);
     await page.getByTestId("graph-load-more").click();
-    await page.waitForFunction(text => document.querySelector('[data-testid="graph-page-count"]')?.textContent?.trim() === text, `${MESSAGES} of ${MESSAGES} messages`);
+    await page.waitForFunction(text => document.querySelector('[data-testid="graph-page-count"]')?.textContent?.trim() === text, `${MESSAGES} z ${MESSAGES} wiadomości`);
     assert.equal(await page.getByTestId("graph-load-more").count(), 0);
     assert.ok((await page.evaluate(() => [...window.__graphOlderTexts])).includes("Wczytaj starsze"));
     await page.getByTestId("close-panel").click();
