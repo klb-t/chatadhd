@@ -429,9 +429,10 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const closeMenu = useCallback(() => { setMenuOpen(false); plusRef.current?.focus(); }, []);
   const thinkingEffort = useMemo(() => toggleValue(composedMenu.items, "thinking", THINKING_EFFORT), [composedMenu]);
   const modelKey = useMemo(() => modelSetting(composedMenu.items), [composedMenu]);
-  // P33: the model is the conversation's, through the scope chain (P24). Choosing one (the + menu or the picker above, one state) writes it at
-  // the conversation level (conversations.metadata.settings); opening a conversation shows the model it has of its own, if any. A failure
-  // to read or keep it is said under the field: the choice still holds for the next message.
+  // P33: in the chat shell the model is the conversation's, through the scope chain (P24). Choosing one (the + menu or the picker above, one
+  // state) writes it at the conversation level (conversations.metadata.settings); opening a conversation shows the model it has of its own,
+  // if any. A failure to read or keep it is said under the field: the choice still holds for the next message. Workshop views keep their
+  // own model each (several views may show one conversation with different models), so they neither write nor read it.
   const [modelNote, setModelNote] = useState<string | null>(null);
   const shellTextRef = useRef(t);
   shellTextRef.current = t;
@@ -439,19 +440,19 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setModel(id);
     setModelNote(null);
     const target = convId;
-    if (!target) return;
+    if (!chat || !target) return;
     api.getConversation(target)
       .then((conv) => api.updateConversation(target, { metadata: withConversationModel(conv.metadata, modelKey, id) }))
       .then(undefined, (err: unknown) => { if (mountedRef.current) setModelNote(t("cm_model_not_saved", { reason: err instanceof Error ? err.message : String(err) })); });
-  }, [convId, modelKey, t]);
+  }, [chat, convId, modelKey, t]);
   useEffect(() => {
-    if (!convId) return;
+    if (!chat || !convId) return;
     let live = true;
     api.resolveScope({ key: modelKey, conversation_id: convId }).then(
       (resolution) => { const own = conversationModel(resolution); if (live && own !== null) setModel(own); },
       (err: unknown) => { if (live) setModelNote(shellTextRef.current("cm_model_not_read", { reason: err instanceof Error ? err.message : String(err) })); });
     return () => { live = false; };
-  }, [convId, modelKey]);
+  }, [chat, convId, modelKey]);
 
   const send = useCallback((mode: "send" | "preview" = "send", forced?: ChatRequest) => {
     const text = input.trim();

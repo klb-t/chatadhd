@@ -78,7 +78,7 @@ class HttpTransport;
 
 struct ChatOptions {
   std::optional<std::string> conv_id;
-  std::optional<std::string> model;            // default: config.default_model
+  std::optional<std::string> model;            // unset: default_model through the scope chain (conversation -> units -> user setting)
   std::vector<std::string> attachments;        // file paths
   bool web_search = false;
   bool deep_research = false;
