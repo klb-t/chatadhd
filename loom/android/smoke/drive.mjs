@@ -290,6 +290,12 @@ async function openMenu(entry) {
   await waitTid("shell-menu-" + entry, 10);
   await click("shell-menu-" + entry);
 }
+// P33: + opens the composer menu; its "Import conversations" entry opens the import panel (M1 §3.14 rewrites the old step).
+async function openImportPanel() {
+  await waitTid("shell-attach", 20); await click("shell-attach");
+  await waitTid("composer-menu", 10); await waitTid("composer-menu-import", 10); await click("composer-menu-import");
+  await waitTid("panel-import", 10);
+}
 async function closePanel() {
   await click("close-panel").catch(() => {});
   await page.ev(`(()=>{const k=document.querySelector('[data-testid="panel-knowledge-sheet"] .icon-btn');if(k)k.click()})()`);
@@ -318,7 +324,7 @@ async function apiImport(hostFile, name) {
 // file: finds the file by name (Downloads root first), taps it. folder: opens the folder by name and taps "Use this folder",
 // then "Allow". Every try logs what the screen shows, so a failure says what the picker looked like.
 async function drivePicker(target, { folder = false } = {}) {
-  let seen = false, entered = false, lastTexts = "";
+  let seen = false, entered = false, lastTexts = "", fileTaps = 0, places = 0, moved = false;
   for (let i = 0; i < 60; i++) {
     await sleep(1000);
     let nodes;
@@ -336,12 +342,23 @@ async function drivePicker(target, { folder = false } = {}) {
       if (item && !entered) { log("picker: open folder " + target); tap(item); entered = true; continue; }
       if (item && entered && use) { tap(use); continue; }
     } else {
+      // A tap on the name does not always choose the file (seen with font_scale 1.3 in the Recent view): the second try
+      // taps the row start, then the picker is moved to Downloads and the same is tried there. Bounds go to the log.
       const file = find(nodes, n => n.text === target);
-      if (file) { log("picker: tap " + target); tap(file); await sleep(800); const open = btn(/^(open|select)$/i); if (open) tap(open); continue; }
+      if (file && fileTaps < 2 * (places + 1) && (places === 0 || moved)) {
+        const atStart = fileTaps % 2 === 1;
+        log(`picker: tap ${target} ${atStart ? "row start" : "name"} bounds=${file.bounds} clickable=${file.clickable}`);
+        if (atStart) adb("shell", "input", "tap", String(Math.max(file.l - 120, 10)), String(file.cy)); else tap(file);
+        fileTaps++; await sleep(800); const open = btn(/^(open|select)$/i); if (open) tap(open); continue;
+      }
+      if (file && places === 0) {
+        places = 1; log("picker: the file did not open from here, trying Downloads");
+        const r = find(nodes, n => /show roots|open drawer/i.test(n["content-desc"] || "")); if (r) tap(r); continue;
+      }
       const open = btn(/^(open|select)$/i); if (open) { tap(open); continue; }
     }
     const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar/i.test(n["resource-id"] || ""));
-    if (dl && i % 3 === 0) { log("picker: Downloads"); tap(dl); continue; }
+    if (dl && (i % 3 === 0 || (places === 1 && !moved))) { log("picker: Downloads"); tap(dl); if (places === 1) moved = true; continue; }
     const roots = find(nodes, n => /show roots|open drawer|navigate up/i.test(n["content-desc"] || ""));
     if (roots && i % 3 === 1) { log("picker: roots"); tap(roots); continue; }
   }
@@ -382,9 +399,9 @@ const localChecks = [
     const all = JSON.stringify(await bridgeCall("list_conversations", { limit: 200 }));
     for (const t of ["Smoke ChatGPT JSON", "Smoke Claude ZIP"]) if (!all.includes(t)) throw new Error(`"${t}" is not listed: ${all.slice(0, 300)}`);
   }],
-  ["local: import panel (+ -> Choose a file -> system picker)", async () => {
+  ["local: import panel (+ menu -> Import conversations -> Choose a file -> system picker)", async () => {
     // the Android shell has no browser file input: the panel opens the system picker (api.pickImport -> LoomBridge pick_import)
-    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-pick-file");
+    await openImportPanel(); await waitTid("import-pick-file");
     await click("import-pick-file");
     await drivePicker("ui-local.json");
     await until("a result or an error of the import panel", async () => (await has("import-result")) || (await has("import-error")), 60, 300);
@@ -503,13 +520,13 @@ const serverChecks = [
     await setConfigViaUi("cfg-semantic-model", "semantic_model", "");   // leave the account as it was
     return "saved " + shown;
   }],
-  ["attachment: the + button opens the import panel", async () => {
-    await waitTid("shell-attach", 20); await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+  ["+ opens the menu; Import conversations opens the import panel", async () => {
+    await openImportPanel(); await waitTid("import-file-input");
     await closePanel();
-    return "the chat has no per-message attachment; + is the import panel";
+    return "+ menu -> import panel";
   }],
   ["import (UI): ChatGPT conversations.json from a picked file", async () => {
-    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await openImportPanel(); await waitTid("import-file-input");
     await page.setFiles("import-file-input", [`${DEV}/chatgpt-conversations.json`]);
     await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
     await click("start-import");
@@ -522,7 +539,7 @@ const serverChecks = [
     return "4 messages through the API";
   }],
   ["import (UI): Claude.ai ZIP from a picked file", async () => {
-    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await openImportPanel(); await waitTid("import-file-input");
     await page.setFiles("import-file-input", [`${DEV}/claude-export.zip`]);
     await until("the Import button enabled", () => page.ev(`!!${q("start-import")}&&!${q("start-import")}.disabled`), 10, 200);
     await click("start-import");
@@ -535,7 +552,7 @@ const serverChecks = [
     return `conversation "${a.title}" has ${n} messages`;
   }],
   ["import (UI): through the WebView file chooser = system picker (SAF)", async () => {
-    await click("shell-attach"); await waitTid("panel-import", 10); await waitTid("import-file-input");
+    await openImportPanel(); await waitTid("import-file-input");
     await page.ev(`${q("import-file-input")}.click()`, true);   // a user gesture: Android opens the document picker
     await drivePicker("saf-server.json");
     await until("the page got the file", () => page.ev(`${q("import-file-input")}.files.length===1`), 20, 300);
