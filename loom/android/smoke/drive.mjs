@@ -539,6 +539,9 @@ const serverChecks = [
     if (patch.status >= 400) throw new Error("cannot set loom_web_message_window: " + JSON.stringify(patch.body).slice(0, 200));
     try {
       const c = await until("the long conversation", () => convTitled("Smoke Long 520"), 20, 500);
+      // the import went straight to the API (not through the panel, which refreshes the list): reload the page to list it
+      await page.ev("location.reload()").catch(() => {});
+      await waitTid("shell-drawer-toggle", 60);
       await click("shell-drawer-toggle"); await waitTid("shell-conv", 10);
       if (!(await clickText("shell-conv", "/Smoke Long 520/"))) throw new Error("the conversation is not in the drawer list");
       await waitTid("chat-older", 30);
