@@ -4400,6 +4400,25 @@
                   }
                 }
               }
+            },
+            "empty_reason": {
+              "type": "object",
+              "required": [
+                "pl",
+                "en"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "pl": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "en": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "description": "Why the group holds no field (an overlay may hide fields or a later milestone adds them); a group that holds nothing without this is a problem (settings_fields_problems)."
             }
           }
         }
