@@ -76,14 +76,15 @@ class Package:
         return added
 
     def snapshot(self, uids: Optional[list[str]] = None) -> dict[str, Any]:
-        return {"entries": [entry_dict(e) for e in self.entries if uids is None or e.unit.uid in uids],
+        # deep copy: a unit's dicts (account, flags, meta, stats) are mutable and edits change them in place
+        return {"entries": [copy.deepcopy(entry_dict(e)) for e in self.entries if uids is None or e.unit.uid in uids],
                 "order": [e.unit.uid for e in self.entries], "folders": sorted(self.folders), "all": uids is None}
 
     def restore(self, snap: dict[str, Any]) -> None:
         if snap.get("all"):
-            self.entries = [entry_from_dict(d) for d in snap["entries"]]
+            self.entries = [entry_from_dict(copy.deepcopy(d)) for d in snap["entries"]]
         else:
-            saved = {d["unit"]["uid"]: entry_from_dict(d) for d in snap["entries"]}
+            saved = {d["unit"]["uid"]: entry_from_dict(copy.deepcopy(d)) for d in snap["entries"]}
             cur = self.by_uid()
             cur.update(saved)
             self.entries = [cur[u] for u in snap["order"] if u in cur]

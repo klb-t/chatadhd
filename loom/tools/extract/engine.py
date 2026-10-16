@@ -193,6 +193,9 @@ class Engine:
         return result
 
     def run_recipe(self, recipe: dict[str, Any], *, base_dir: Optional[Any] = None, by: str = "recipe") -> list[dict[str, Any]]:
+        from .recipe import SCHEMA as _RECIPE_SCHEMA
+        recipe = dict(recipe)
+        recipe.setdefault("schema", _RECIPE_SCHEMA)  # an inline recipe (API, tests, task files) may omit it
         norm = normalise(recipe, self.ds, base_dir=base_dir)
         if norm.get("sources"):
             self.set_sources(norm["sources"])

@@ -203,6 +203,19 @@ def message_fields(m: Message, e: Entry, policies: dict[str, str], ctx: RenderCt
         d = render_block(b, block_policy(policies, b.kind), u, m, ctx, {**where, "block": i})
         if d is not None:
             blocks.append(d)
+    # attachments a message carries only in its metadata (no content block) are still shown, never dropped
+    pol = block_policy(policies, "attachment")
+    if pol != "omit":
+        have = {b.ref for b in m.blocks if b.ref}
+        for a in u.attachments:
+            if a.message == m.id and a.ref not in have:
+                have.add(a.ref)
+                from ..model import Block as _Block
+                d = render_block(_Block(kind="attachment", ref=a.ref, mime=a.mime, native="metadata"), "keep" if pol == "keep" else "reference",
+                                 u, m, ctx, {**where, "attachment": a.ref})
+                if d is not None:
+                    d["from"] = "metadata"
+                    blocks.append(d)
     text = "\n".join(d.get("text", "") for d in blocks if d.get("kind") in ("text", "code") and d.get("text"))
     atts = [{k: v for k, v in d.items() if k != "kind"} for d in blocks if d.get("kind") == "attachment"]
     return {
