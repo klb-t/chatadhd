@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "../api";
 import { readWebPageSizes } from "../settings/page-sizes";
-import { useShellText } from "../shell/text";
+import { useShellLanguage, useShellText } from "../shell/text";
+import { graphText } from "../graph/graph-text";
+import { degreeMap, graphLabelOptions, planLabels, type PlacedLabel } from "../graph/graph-labels";
 import type { GraphEdge, GraphNode } from "../api/types";
 
 interface Props {
@@ -79,6 +81,11 @@ function filterGraphNoise<N extends GraphNode>(nodes: N[], edges: GraphEdge[]): 
 
 export default function GraphView({ convId }: Props) {
   const t = useShellText();
+  const language = useShellLanguage();
+  const g = useCallback((id: Parameters<typeof graphText>[1], params?: Record<string, string | number>) => graphText(language, id, params), [language]);
+  const hoverRef = useRef<string | null>(null);
+  const selectedRef = useRef<string | null>(null);
+  const labelsRef = useRef<{ frame: number; placed: PlacedLabel[] }>({ frame: 0, placed: [] });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const nodesRef = useRef<Map<string, SimNode>>(new Map());
@@ -255,10 +262,27 @@ export default function GraphView({ convId }: Props) {
         ctx!.arc(n.x, n.y, 8, 0, Math.PI * 2);
         ctx!.fillStyle = colorFor(n.kind);
         ctx!.fill();
-        ctx!.font = `${12 / scale}px sans-serif`;
-        ctx!.fillStyle = "#e8e8ec";
-        ctx!.fillText(n.label ?? n.id, n.x + 10, n.y + 4);
       }
+      ctx!.restore();
+
+      // Labels in screen space: truncated, collision-free; hovered/selected nodes always show their full label.
+      const lab = labelsRef.current;
+      if (lab.frame++ % 6 === 0) {
+        const opts = graphLabelOptions(w);
+        ctx!.font = `${opts.fontPx}px sans-serif`;
+        const deg = degreeMap(edgesRef.current);
+        const items = nodes.map((n) => ({
+          id: n.id, x: n.x * scale + tx, y: n.y * scale + ty, text: n.label ?? n.id, degree: deg.get(n.id) ?? 0,
+          forced: n.id === hoverRef.current || n.id === selectedRef.current,
+        }));
+        lab.placed = planLabels(items, opts, (text) => ctx!.measureText(text).width, 8 * scale);
+      }
+      ctx!.save();
+      ctx!.scale(devicePixelRatio, devicePixelRatio);
+      ctx!.font = `${graphLabelOptions(w).fontPx}px sans-serif`;
+      ctx!.fillStyle = "#e8e8ec";
+      ctx!.textBaseline = "middle";
+      for (const p of lab.placed) ctx!.fillText(p.text, p.x, p.y);
       ctx!.restore();
 
       rafRef.current = requestAnimationFrame(tick);
@@ -303,7 +327,17 @@ export default function GraphView({ convId }: Props) {
   const onPointerMove = useCallback(
     (e: React.PointerEvent<HTMLCanvasElement>) => {
       const drag = dragRef.current;
-      if (!drag) return;
+      if (!drag) {
+        const world = toWorld(e.clientX, e.clientY);
+        const hit = hitTest(world.x, world.y);
+        const id = hit?.id ?? null;
+        if (hoverRef.current !== id) {
+          hoverRef.current = id;
+          labelsRef.current.frame = 0;
+          e.currentTarget.title = hit ? hit.label ?? hit.id : "";
+        }
+        return;
+      }
       if (drag.mode === "pan") {
         transformRef.current.x += e.clientX - drag.startX;
         transformRef.current.y += e.clientY - drag.startY;
@@ -320,7 +354,7 @@ export default function GraphView({ convId }: Props) {
         }
       }
     },
-    [toWorld],
+    [toWorld, hitTest],
   );
 
   const onPointerUp = useCallback(
@@ -332,6 +366,9 @@ export default function GraphView({ convId }: Props) {
       if (drag.mode === "node" && drag.nodeId && !moved) {
         const node = nodesRef.current.get(drag.nodeId) ?? null;
         setSelected(node);
+        selectedRef.current = node?.id ?? null;
+        labelsRef.current.frame = 0;
+        if (canvasRef.current) canvasRef.current.title = node ? node.label ?? node.id : "";
         try {
           const rawExpansion = await api.expandGraph([drag.nodeId], depth);
           const expansion = filterGraphNoise(rawExpansion.nodes, rawExpansion.edges);
@@ -384,18 +421,19 @@ export default function GraphView({ convId }: Props) {
       <div className="form-row" style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
         <input
           type="text"
-          placeholder="conv_id filter (empty = all)"
+          placeholder={g("filter_placeholder")}
+          aria-label={g("filter_placeholder")}
           value={convFilter}
           onChange={(e) => setConvFilter(e.target.value)}
           style={{ flex: 1, minWidth: 140 }}
           data-testid="graph-conv-filter"
         />
         <button onClick={load} data-testid="graph-reload">
-          Reload
+          {g("reload")}
         </button>
       </div>
       <div className="form-row">
-        <label htmlFor="graph-depth">Expand depth on click: {depth}</label>
+        <label htmlFor="graph-depth">{g("depth", { n: depth })}</label>
         <input
           id="graph-depth"
           type="range"
@@ -407,15 +445,15 @@ export default function GraphView({ convId }: Props) {
       </div>
       {error && <div className="empty-state" style={{ color: "var(--err)" }}>{error}</div>}
       <div className="pill" data-testid="graph-counts">
-        {nodeCount} nodes · {edgeCount} edges
+        {g("counts", { nodes: nodeCount, edges: edgeCount })}
         {graphPage && graphPage.total > 0 && (
-          <> · <span data-testid="graph-page-count">{graphPage.shown} of {graphPage.total} messages</span>
+          <> · <span data-testid="graph-page-count">{g("page_count", { shown: graphPage.shown, total: graphPage.total })}</span>
             {graphPage.next && <> <button onClick={loadMore} disabled={loadingMore} data-testid="graph-load-more">{loadingMore ? "..." : t("load_older")}</button></>}</>
         )}
       </div>
       {selected && (
-        <div className="pill" style={{ marginLeft: 6 }}>
-          selected: {selected.label} ({selected.kind})
+        <div className="pill" style={{ marginLeft: 6, maxWidth: "100%", overflowWrap: "anywhere" }} title={selected.label ?? selected.id}>
+          {g("selected", { label: selected.label ?? selected.id, kind: selected.kind })}
         </div>
       )}
       <div
@@ -432,10 +470,13 @@ export default function GraphView({ convId }: Props) {
         <canvas
           ref={canvasRef}
           data-testid="graph-canvas"
+          role="img"
+          aria-label={g("canvas_label")}
           style={{ touchAction: "none", cursor: "grab", display: "block" }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
+          onPointerLeave={(e) => { hoverRef.current = null; labelsRef.current.frame = 0; e.currentTarget.title = ""; }}
           onWheel={onWheel}
         />
       </div>
