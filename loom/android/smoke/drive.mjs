@@ -75,6 +75,12 @@ const tap = n => adb("shell", "input", "tap", String(n.cx), String(n.cy));
 const textOf = n => `${n.text || ""} ${n["content-desc"] || ""}`;
 
 async function connectScreen() {
+  // a system picker left over by an earlier check would cover the native connection screen
+  for (let k = 0; k < 4; k++) {
+    let up = false; try { up = dump().some(n => /documentsui/i.test(n.package || "")); } catch {}
+    if (!up) break;
+    log("a picker is still open before the connection screen: BACK"); adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1500);
+  }
   log("native: connection screen (opened from the local chat menu)");
   const radio = await waitNode("'Server account' radio", n => /RadioButton/.test(n.class) && /Server account/i.test(n.text), 60);
   shot("connection-screen");
@@ -402,8 +408,11 @@ const localChecks = [
   }],
   ["local: a cancelled picker ends with an error chunk, not a hang", async () => {
     const id = await startBridge("pick_import", { kind: "file" });
-    await until("the picker on screen", () => dump().some(n => /documentsui/i.test(n.package || "")), 30, 800);
-    adb("shell", "input", "keyevent", "KEYCODE_BACK");
+    const pickerUp = () => { try { return dump().some(n => /documentsui/i.test(n.package || "")); } catch { return false; } };
+    await until("the picker on screen", pickerUp, 30, 800);
+    await sleep(1500); // a BACK sent while the picker is still opening goes to the app and the picker stays open
+    for (let k = 0; k < 4 && pickerUp(); k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1500); }
+    if (pickerUp()) throw new Error("the picker did not close on BACK");
     const st = await awaitBridge(id, 30);
     if (!st.last.error || st.last.error.code !== "cancelled") throw new Error("expected a cancelled error, got " + JSON.stringify(st.last).slice(0, 200));
     return st.last.error.message;
