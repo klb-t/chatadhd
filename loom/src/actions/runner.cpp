@@ -341,6 +341,29 @@ Result<Json> typed_value(const Json& given, const std::string& type) {
   return v;
 }
 
+// The `values` a field declares (settings_fields.pack) are the whole set unless the field says `values_open`: a value outside the
+// list is refused with the list, and a value whose entry is `status: planned` is refused with the entry's own reason (the data's
+// statement, e.g. chat_context_order=stability, which chat.send would reject at the next request). Not an invented limit: a
+// field that wants an open set says so in data.
+Status check_declared_values(const Json& field, const Json& value) {
+  const Json* values = json::find(field, "values");
+  if (!values || !values->is_array() || field.value("values_open", false)) return {};
+  const Json* match = nullptr;
+  for (const auto& entry : *values)
+    if (const Json* v = json::find(entry, "value"); v && *v == value) { match = &entry; break; }
+  if (!match) {
+    std::string allowed;
+    for (const auto& entry : *values) allowed += (allowed.empty() ? "" : ", ") + json::dump(entry.value("value", Json()));
+    return Error(Errc::InvalidArgument, "the value " + json::dump(value) + " is not one of the setting's values: " + allowed);
+  }
+  if (const std::string status = json::get_string(*match, "status"); !status.empty() && status != "available") {
+    const Json* reason = json::find(*match, "reason");
+    const std::string why = !reason ? "" : reason->is_string() ? reason->get<std::string>() : json::get_string(*reason, "en");
+    return Error(Errc::InvalidArgument, "the value " + json::dump(value) + " is " + status + ", not available yet" + (why.empty() ? "" : ": " + why));
+  }
+  return {};
+}
+
 StepOutcome run_settings_set(Runtime& rt, const StepCall& c) {
   const Json key_json = take(c, "key");
   if (!key_json.is_string() || key_json.get<std::string>().empty()) return failed(Error(Errc::InvalidArgument, "key is required"));
@@ -354,6 +377,7 @@ StepOutcome run_settings_set(Runtime& rt, const StepCall& c) {
   const std::string scope = json::get_string(*field, "scope", "config");
   auto value = typed_value(given, json::get_string(*field, "type"));
   if (!value) return failed(value.error());
+  if (auto st = check_declared_values(*field, *value); !st) return failed(st.error());
   StepOutcome out;
   Json report = Json{{"key", key}, {"scope", scope}};
   if (scope == "secret") {

@@ -15,21 +15,41 @@ export interface SettingsHuman {
   group: string;
   subgroup?: string;
   role?: string;
+  /** Status of `role` when ports.pack does not know the role yet (e.g. "planned"): the chip says so instead of dangling. */
+  role_status?: string;
   flows?: string[];
   technical_only?: boolean;
+}
+/** A field whose key has a preset but no reader yet: shown as the chip "planned (reason)"; dropped by the position that implements the reader. */
+export interface SettingsFieldStatus {
+  state: string;
+  by?: string;
+  reason: LocalizedText;
 }
 export interface SettingsSubgroup {
   id: string;
   label: LocalizedText;
   why?: LocalizedText;
 }
+/** A group as the view kind `settings_groups` composes it: the pack's group (ROM) with the views overlays of the data dir on top;
+ * origin/provenance say who renamed or regrouped. A hidden group stays listed (hidden + hidden_by) so its fields are never orphaned. */
 export interface SettingsGroup {
   label: LocalizedText;
   why: LocalizedText;
   order: number;
   subgroups: SettingsSubgroup[];
+  origin?: string;
+  provenance?: unknown[];
   hidden?: boolean;
+  hidden_by?: string;
+  disabled?: boolean;
   empty_reason?: LocalizedText;
+}
+/** Evidence for human.levels: keys whose reader resolves the value through the scope chain (project/conversation) and keys with a
+ * per-request option (turn). A level a field declares without evidence is a problem in the kernel's check, never a promise shown. */
+export interface SettingsLevelEvidence {
+  chain: string[];
+  turn: string[];
 }
 /** A value of a runtime profile shown as a field with the chip "runtime profile: <profile>"; the value lives in the profile.
  * `problem` (instead of `value`) says why it could not be read; it is shown, never dropped. */
@@ -52,12 +72,18 @@ export interface SettingsField {
   sensitive?: boolean;
   human?: SettingsHuman;
   values?: { value: unknown; meaning?: LocalizedText; status?: string; reason?: LocalizedText | string }[];
+  /** The values list is examples, not the whole set (settings.set accepts other values). */
+  values_open?: boolean;
+  status?: SettingsFieldStatus;
 }
 export interface SettingsFieldsDoc {
   schema: string;
   edit_rules: { id: string; edit?: string; label_pl?: string; enforced?: boolean; meaning?: string }[];
   fields: SettingsField[];
   groups: Record<string, SettingsGroup>;
+  /** Bad overlay operations on settings_groups, as the view engine reports them; shown, never swallowed. */
+  groups_issues?: unknown[];
+  level_evidence?: SettingsLevelEvidence;
   profile_values: SettingsProfileValue[];
 }
 
@@ -70,6 +96,8 @@ export function parseSettingsFields(raw: unknown): SettingsFieldsDoc {
     edit_rules: Array.isArray(doc.edit_rules) ? doc.edit_rules : [],
     fields: doc.fields,
     groups,
+    groups_issues: Array.isArray(doc.groups_issues) ? doc.groups_issues : undefined,
+    level_evidence: doc.level_evidence && typeof doc.level_evidence === "object" ? doc.level_evidence : undefined,
     profile_values: Array.isArray(doc.profile_values) ? doc.profile_values : [],
   };
 }

@@ -155,6 +155,31 @@ TEST_SUITE("action_runner") {
     }
   }
 
+  TEST_CASE("settings.set honours the values a field declares: a listed value is stored, an unknown one is refused with the list, a planned one with its reason") {
+    Fixture f;
+    // a listed value
+    const Json ok = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "navigator_layout"}, {"value", "list"}}}}));
+    CHECK(ok.at("status") == "completed");
+    CHECK(f.rt->config().get("navigator_layout") == "list");
+    // a value no reader understands never lands in config.json; the message names the values
+    const Json unknown = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "navigator_layout"}, {"value", "nonsense"}}}}));
+    CHECK(unknown.at("status") == "failed");
+    CHECK(unknown.at("error").at("message").get<std::string>().find("\"both\", \"list\", \"map\"") != std::string::npos);
+    CHECK(f.rt->config().get("navigator_layout") == "list");
+    // a planned value is refused with the data's own reason (chat.send would reject it at the next request)
+    const Json planned = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}}));
+    CHECK(planned.at("status") == "failed");
+    CHECK(planned.at("error").at("message").get<std::string>().find("planned") != std::string::npos);
+    CHECK(planned.at("error").at("message").get<std::string>().find("M1-D2") != std::string::npos);
+    CHECK(f.rt->config().get("chat_context_order").is_null());
+    // the empty value is a value of its own (the profile's order), listed in the data
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", ""}}}})).at("status") == "completed");
+    CHECK(f.rt->config().get("chat_context_order") == "");
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stable_first"}}}})).at("status") == "completed");
+    // a field without a values list stays open (type only)
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "theme"}, {"value", "anything"}}}})).at("status") == "completed");
+  }
+
   TEST_CASE("settings.set: the field is the element; the value is typed; edit rules apply; credentials stay out of the conversation") {
     Fixture f;
     const Json set = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "semantic_retry_mode"}, {"value", "automatic"}}}}));

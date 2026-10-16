@@ -1,10 +1,12 @@
 #include "loom/settings_fields.h"
 
+#include <charconv>
 #include <map>
 #include <set>
 #include <stdexcept>
 
 #include "loom/action_rules.h"
+#include "loom/effective_view.h"
 #include "loom/log.h"
 #include "loom/runtime_profile.h"
 
@@ -12,13 +14,15 @@ namespace loom {
 
 namespace {
 constexpr std::string_view kLog = "loom.settings_fields";
+constexpr std::string_view kGroupsView = "settings_groups";  // view kind of graph_views.pack whose ROM is this pack's /groups
 
 const Json* find_effect(const Json& effects, const std::string& id) {
   for (const auto& e : effects) if (e.value("id", "") == id) return &e;
   return nullptr;
 }
 
-// A JSON pointer (RFC 6901) into a profile's values; "" = the whole document. The failure is the reason, never swallowed.
+// A JSON pointer (RFC 6901) into a profile's values; "" = the whole document. The failure is the reason, never swallowed and
+// never an exception (an overlay's pointer is user data: an index that does not parse is "no element", like one past the end).
 Result<Json> value_at(const Json& values, const std::string& pointer) {
   if (pointer.empty()) return values;
   if (pointer[0] != '/') return Error(Errc::InvalidArgument, "pointer " + pointer + ": must start with '/'");
@@ -35,8 +39,8 @@ Result<Json> value_at(const Json& values, const std::string& pointer) {
       cur = child;
     } else if (cur->is_array()) {
       std::size_t index = 0;
-      if (token.empty() || token.find_first_not_of("0123456789") != std::string::npos ||
-          (index = std::stoul(token)) >= cur->size())
+      const auto [end, ec] = std::from_chars(token.data(), token.data() + token.size(), index);
+      if (token.empty() || ec != std::errc{} || end != token.data() + token.size() || index >= cur->size())
         return Error(Errc::NotFound, "pointer " + pointer + ": no element '" + token + "'");
       cur = &(*cur)[index];
     } else {
@@ -72,9 +76,54 @@ Json profile_values_of(const Json& v, const std::filesystem::path& data_dir) {
   return out;
 }
 
+// The groups as the view kind `settings_groups` composes them: the pack's /groups (with the user's profile overlay, which may add
+// a group of its own) is the ROM layer; the view overlays of the data dir (<data_dir>/views/*.json, ops on settings_groups) regroup,
+// rename or hide on top, with the policy the view kind declares. One list for every reader (loom_view_effective and this document
+// agree on what an overlay did). A hidden group stays listed with hidden:true and who hid it, so the fields in it are never
+// orphaned; a bad overlay op is an issue (`issues`), never a dropped group.
+struct Groups {
+  Json object = Json::object();  // id -> group (+ origin, provenance, hidden?, hidden_by?, disabled?)
+  Json issues = Json::array();
+};
+
+Result<Groups> groups_of(const Json& v, const std::filesystem::path& data_dir) {
+  const Json rom = v.value("groups", Json::object());
+  LOOM_TRY_ASSIGN(auto overlays, views::load_overlays({data_dir}));  // empty data_dir: none (builtin)
+  LOOM_TRY_ASSIGN(auto kinds, views::effective(data_dir, "view_kinds"));
+  views::Policy policy;
+  if (const views::EffectiveEntry* def = kinds.find(kGroupsView); def && !def->disabled)
+    policy = views::Policy::from_json(def->value.value("policy", Json::object()));
+  const views::Effective eff = views::compose(kGroupsView, rom, overlays, policy);
+  Groups out;
+  for (const auto& e : eff.entries) {
+    Json g = e.value;
+    g["origin"] = e.origin;
+    g["provenance"] = e.provenance;
+    if (e.disabled) g["disabled"] = true;
+    out.object[e.id] = std::move(g);
+  }
+  for (const auto& h : eff.hidden) {
+    const std::string id = json::get_string(h, "id");
+    Json g = rom.value(id, Json::object());
+    g["hidden"] = true;
+    g["hidden_by"] = h.value("by", "");
+    g["origin"] = "rom";
+    g["provenance"] = h.value("provenance", Json::array());
+    out.object[id] = std::move(g);
+  }
+  out.issues = eff.issues;
+  return out;
+}
+
 // {pl, en}, both non-empty: every human text is a sentence in both languages.
 bool text_pair(const Json* t) {
   return t && t->is_object() && !json::get_string(*t, "pl").empty() && !json::get_string(*t, "en").empty();
+}
+
+bool lists(const Json* arr, const std::string& id) {
+  if (!arr || !arr->is_array()) return false;
+  for (const auto& x : *arr) if (x.is_string() && x.get<std::string>() == id) return true;
+  return false;
 }
 }  // namespace
 
@@ -91,7 +140,7 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir) {
   const Json& lcfg = loom_config_defaults();
   for (const auto& f : v.at("fields")) {
     const std::string scope_name = f.value("scope", ""), key = f.value("key", "");
-    Json o = f;  // `human` and the rest of the entry pass through unchanged
+    Json o = f;  // `human`, `status`, `values` and the rest of the entry pass through unchanged
     o.erase("has_default");
     const bool has_default = f.value("has_default", false);
     o["default"] = has_default ? "present" : "absent";
@@ -112,7 +161,10 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir) {
   Json out{{"schema", "loom.settings_fields/1"}, {"edit_rules", v.at("effects")}, {"fields", fields}};
   // Additive (M1-D0): the human groups of the fields and the runtime-profile values shown as fields.
   // Grouping is data: an overlay may regroup, rename or hide; nothing about it lives in code.
-  out["groups"] = v.value("groups", Json::object());
+  LOOM_TRY_ASSIGN(auto groups, groups_of(v, data_dir));
+  out["groups"] = std::move(groups.object);
+  if (!groups.issues.empty()) out["groups_issues"] = std::move(groups.issues);
+  out["level_evidence"] = v.value("level_evidence", Json::object());
   out["profile_values"] = profile_values_of(v, data_dir);
   return out;
 }
@@ -128,6 +180,21 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
   } else {
     out.push_back("scope chain unavailable: " + engine.error().message);
   }
+  // The model roles a field may be the value of are the roles of ports.pack (with the user's overlay); a role the ports do not
+  // know yet must say so (`role_status`), so the chip never dangles.
+  std::set<std::string> roles;
+  if (auto ports = RuntimeProfile::load("ports", data_dir)) {
+    if (const Json* r = json::find(ports->values(), "roles"); r && r->is_object())
+      for (auto it = r->begin(); it != r->end(); ++it) roles.insert(it.key());
+    if (roles.empty()) out.push_back("ports.pack has no roles: human.role cannot be checked");
+  } else {
+    out.push_back("ports profile unavailable: " + ports.error().message);
+  }
+  // Evidence for the levels project/conversation (a chain-resolved reader) and turn (a per-request wire option): data of the pack.
+  const Json* evidence = json::find(doc, "level_evidence");
+  const Json* chain_keys = evidence ? json::find(*evidence, "chain") : nullptr;
+  const Json* turn_keys = evidence ? json::find(*evidence, "turn") : nullptr;
+  if (!chain_keys || !turn_keys) out.push_back("no level_evidence (chain, turn)");
   const Json* groups = json::find(doc, "groups");
   std::map<std::string, int> per_group;  // group id -> fields + profile values in it
   if (!groups || !groups->is_object()) {
@@ -135,11 +202,13 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
   } else {
     for (auto it = groups->begin(); it != groups->end(); ++it) {
       per_group[it.key()] = 0;
-      if (!text_pair(json::find(it.value(), "label"))) out.push_back("group without label pl+en: " + it.key());
-      if (!text_pair(json::find(it.value(), "why"))) out.push_back("group without why pl+en: " + it.key());
+      if (!text_pair(json::find(*it, "label"))) out.push_back("group without label pl+en: " + it.key());
+      if (!text_pair(json::find(*it, "why"))) out.push_back("group without why pl+en: " + it.key());
     }
   }
-  auto check_human = [&](const Json& entry, const std::string& who) {
+  if (const Json* issues = json::find(doc, "groups_issues"); issues && issues->is_array())
+    for (const auto& i : *issues) out.push_back("groups overlay issue: " + i.dump());
+  auto check_human = [&](const Json& entry, const std::string& who, const std::string& evidence_key) {
     const Json* h = json::find(entry, "human");
     if (!h || !h->is_object()) { out.push_back("no human: " + who); return; }
     for (const char* k : {"label", "why", "effect"})
@@ -162,11 +231,24 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
     const Json* levels = json::find(*h, "levels");
     if (!levels || !levels->is_array()) out.push_back("no levels: " + who);
     else if (levels->empty() && !read_only) out.push_back("no levels (only a read_only field is settable nowhere): " + who);
-    else if (!chain.empty())
+    else
       for (const auto& l : *levels) {
         const std::string id = l.is_string() ? l.get<std::string>() : "";
-        if (!chain.count(id)) out.push_back("level outside the scope chain '" + id + "': " + who);
+        if (!chain.empty() && !chain.count(id)) out.push_back("level outside the scope chain '" + id + "': " + who);
+        // A level is a promise that a reader honours the value there; the evidence is data (level_evidence), never a guess.
+        if ((id == "project" || id == "conversation") && chain_keys && !lists(chain_keys, evidence_key))
+          out.push_back("level '" + id + "' without a chain-resolved reader (level_evidence.chain): " + who);
+        if (id == "turn" && turn_keys && !lists(turn_keys, evidence_key))
+          out.push_back("level 'turn' without a per-request option (level_evidence.turn): " + who);
       }
+    if (const std::string role = json::get_string(*h, "role");
+        !role.empty() && !roles.empty() && !roles.count(role) && json::get_string(*h, "role_status").empty())
+      out.push_back("role '" + role + "' unknown to ports.pack and without role_status: " + who);
+    // A field whose key nothing reads yet says so in data (status.planned with its reason), never in the present tense alone.
+    if (const Json* status = json::find(entry, "status")) {
+      if (!status->is_object() || json::get_string(*status, "state").empty()) out.push_back("status without state: " + who);
+      if (!text_pair(status->is_object() ? json::find(*status, "reason") : nullptr)) out.push_back("status without reason pl+en: " + who);
+    }
   };
   for (const auto& f : doc.at("fields")) {
     const std::string scope = f.value("scope", ""), key = f.value("key", "");
@@ -181,13 +263,14 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
     if (has_default && !f.contains("default_value")) out.push_back("default value missing: " + key);
     if (scope == "secret" && (f.contains("default_value") || !f.value("sensitive", false)))
       out.push_back("secret must be sensitive without value: " + key);
-    check_human(f, scope + ":" + key);
+    check_human(f, scope + ":" + key, key);
   }
   if (const Json* pv = json::find(doc, "profile_values"); pv && pv->is_array())
     for (const auto& p : *pv) {
-      const std::string who = "profile value " + p.value("profile", "") + p.value("pointer", "");
+      const std::string ref = p.value("profile", "") + p.value("pointer", "");
+      const std::string who = "profile value " + ref;
       if (p.value("profile", "").empty() || p.value("pointer", "").empty()) out.push_back("profile value without profile or pointer");
-      check_human(p, who);
+      check_human(p, who, ref);
       if (p.contains("problem")) out.push_back(who + ": " + p.at("problem").dump());
       else if (!p.contains("value")) out.push_back(who + ": no value");
     }

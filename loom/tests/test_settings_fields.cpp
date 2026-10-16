@@ -5,6 +5,7 @@
 #include <set>
 
 #include "loom/config.h"
+#include "loom/effective_view.h"
 #include "loom/providers.h"
 #include "loom/runtime_profile.h"
 #include "loom/settings_fields.h"
@@ -168,7 +169,7 @@ TEST_SUITE("settings_fields") {
       if (p["profile"] == "worker" && p["pointer"] == "/batch_threshold") threshold = &p;
     REQUIRE(threshold);
     CHECK((*threshold)["value"] == unwrap(RuntimeProfile::builtin("worker")).values()["batch_threshold"]);
-    CHECK((*threshold)["human"]["group"] == "kontekst");
+    CHECK(doc["groups"].contains((*threshold)["human"]["group"].get<std::string>()));  // any declared group: grouping is data
     CHECK_FALSE((*threshold).contains("problem"));
     // the value follows the profile overlay in the data dir (profiles/worker.pack), the chip names the profile
     fsutil::TempDir td;
@@ -191,7 +192,150 @@ TEST_SUITE("settings_fields") {
     CHECK_FALSE(broken["profile_values"][0].contains("value"));
     CHECK(broken["profile_values"][0]["problem"].get<std::string>().find("/no_such_key") != std::string::npos);
     CHECK_FALSE(settings_fields_problems(broken, td.path()).empty());
+    // an array index that does not fit (user data) is "no element" on that entry; the other entries and the document stay intact
+    std::ofstream(td.path() / "profiles" / "settings_fields.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"},
+                {"overrides", Json{{"profile_values", Json::array({
+                    Json{{"profile", "worker"}, {"pointer", "/analysis_modes/0"}, {"human", doc["profile_values"][0]["human"]}},
+                    Json{{"profile", "worker"}, {"pointer", "/analysis_modes/99999999999999999999999999"}, {"human", doc["profile_values"][0]["human"]}},
+                    Json{{"profile", "worker"}, {"pointer", "/analysis_modes/-1"}, {"human", doc["profile_values"][0]["human"]}}})}}}}.dump();
+    Json overflow = unwrap(settings_fields(td.path()));
+    REQUIRE(overflow["profile_values"].size() == 3);
+    CHECK(overflow["profile_values"][0].contains("value"));
+    CHECK_FALSE(overflow["profile_values"][0].contains("problem"));
+    for (std::size_t i : {std::size_t(1), std::size_t(2)}) {
+      CHECK_FALSE(overflow["profile_values"][i].contains("value"));
+      CHECK(overflow["profile_values"][i]["problem"].get<std::string>().find("no element") != std::string::npos);
+    }
+    CHECK(overflow["fields"].size() == doc["fields"].size());
   }
+
+  TEST_CASE("groups are the effective list of the view kind settings_groups: a views overlay renaming or hiding a group is what settings_fields() reports") {
+    fsutil::TempDir td;
+    // without overlays the two readers agree: the ids of the effective view are the keys of groups
+    const auto base = unwrap(views::effective(td.path(), "settings_groups"));
+    Json doc = unwrap(settings_fields(td.path()));
+    std::set<std::string> ids, keys;
+    for (const auto& e : base.entries) ids.insert(e.id);
+    for (auto it = doc["groups"].begin(); it != doc["groups"].end(); ++it) keys.insert(it.key());
+    REQUIRE_FALSE(ids.empty());
+    CHECK(ids == keys);
+    for (auto it = doc["groups"].begin(); it != doc["groups"].end(); ++it) CHECK(it.value()["origin"] == "rom");
+    // rename (deep modify keeps the other language) and hide through the view overlay of the data dir
+    LOOM_REQUIRE_OK(views::put_op(td.path(), "mine", Json{{"view", "settings_groups"}, {"op", "modify"}, {"id", "ty"},
+                                                          {"patch", Json{{"label", Json{{"pl", "O mnie"}}}}}}));
+    LOOM_REQUIRE_OK(views::put_op(td.path(), "mine", Json{{"view", "settings_groups"}, {"op", "hide"}, {"id", "silnik"}}));
+    Json over = unwrap(settings_fields(td.path()));
+    CHECK(over["groups"]["ty"]["label"]["pl"] == "O mnie");
+    CHECK(over["groups"]["ty"]["label"]["en"] == doc["groups"]["ty"]["label"]["en"]);
+    CHECK(over["groups"]["ty"]["origin"] == "rom");  // the entry came from the ROM; the overlay is in its provenance
+    REQUIRE(over["groups"]["ty"]["provenance"].is_array());
+    CHECK(over["groups"]["ty"]["provenance"].dump().find("overlay:mine") != std::string::npos);
+    // a hidden group stays listed with who hid it, so its fields are not orphaned
+    CHECK(over["groups"]["silnik"]["hidden"] == true);
+    CHECK(over["groups"]["silnik"]["hidden_by"] == "overlay:mine");
+    CHECK(over["groups"]["silnik"]["label"] == doc["groups"]["silnik"]["label"]);
+    const auto problems = settings_fields_problems(over, td.path());
+    INFO(joined(problems));
+    CHECK(problems.empty());
+    // the view engine says the same
+    const auto eff = unwrap(views::effective(td.path(), "settings_groups"));
+    CHECK(eff.find("silnik") == nullptr);
+    REQUIRE(eff.find("ty"));
+    CHECK(eff.find("ty")->value["label"]["pl"] == "O mnie");
+    // a bad op is an issue the owner can read, never a dropped group
+    std::filesystem::create_directories(td.path() / "views");
+    std::ofstream(td.path() / "views" / "zz.json")
+        << Json{{"schema", "loom.view_overlay/1"}, {"name", "zz"},
+                {"ops", Json::array({Json{{"view", "settings_groups"}, {"op", "modify"}, {"id", "nonsense"}, {"patch", Json{{"order", 1}}}}})}}.dump();
+    Json issue = unwrap(settings_fields(td.path()));
+    CHECK(issue["groups"].size() == doc["groups"].size());
+    REQUIRE(issue.contains("groups_issues"));
+    CHECK_FALSE(issue["groups_issues"].empty());
+    CHECK_FALSE(settings_fields_problems(issue, td.path()).empty());
+  }
+
+  TEST_CASE("a profile overlay may add a group of its own and move a field into it (no enum closes the groups)") {
+    fsutil::TempDir td;
+    std::filesystem::create_directories(td.path() / "profiles");
+    const RuntimeProfile pack_profile = unwrap(RuntimeProfile::builtin("settings_fields"));
+    Json fields = pack_profile.values()["fields"];
+    for (auto& f : fields)
+      if (f["key"] == "theme") {
+        f["human"]["group"] = "moje";
+        f["human"].erase("subgroup");  // the subgroup belonged to the old group
+      }
+    std::ofstream(td.path() / "profiles" / "settings_fields.pack")
+        << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "settings_fields"},
+                {"overrides", Json{{"groups", Json{{"moje", Json{{"label", Json{{"pl", "Moje"}, {"en", "Mine"}}},
+                                                                    {"why", Json{{"pl", "Pola, które wybrałem."}, {"en", "The fields I chose."}}},
+                                                                    {"order", 0}, {"subgroups", Json::array()}}}}},
+                                   {"fields", fields}}}}.dump();
+    Json doc = unwrap(settings_fields(td.path()));
+    REQUIRE(doc["groups"].contains("moje"));
+    bool moved = false;
+    for (const auto& f : doc["fields"]) if (f["key"] == "theme") moved = f["human"]["group"] == "moje";
+    CHECK(moved);
+    const auto problems = settings_fields_problems(doc, td.path());
+    INFO(joined(problems));
+    CHECK(problems.empty());
+  }
+
+  TEST_CASE("levels are promises with evidence in data: project/conversation need a chain-resolved reader, turn a per-request option; a role needs ports.pack or a status; a status needs its reason") {
+    Json doc = unwrap(settings_fields());
+    auto has = [](const std::vector<std::string>& v, std::string_view part) {
+      for (const auto& s : v) if (s.find(part) != std::string::npos) return true;
+      return false;
+    };
+    REQUIRE(doc["level_evidence"]["chain"].is_array());
+    REQUIRE(doc["level_evidence"]["turn"].is_array());
+    // the shipped data: every declared level has its evidence (the problems list is empty), and the evidence names real keys
+    std::set<std::string> keys;
+    for (const auto& f : doc["fields"]) keys.insert(f["key"].get<std::string>());
+    for (const char* list : {"chain", "turn"})
+      for (const auto& k : doc["level_evidence"][list]) {
+        INFO("level_evidence.", list, " names ", k.get<std::string>());
+        CHECK(keys.count(k.get<std::string>()) == 1);
+      }
+    // a claim without evidence is a problem naming the level and the field
+    Json claim = doc;
+    for (auto& f : claim["fields"]) if (f["key"] == "theme") f["human"]["levels"] = Json::array({"installation", "person", "project", "conversation", "turn"});
+    const auto problems = settings_fields_problems(claim);
+    CHECK(has(problems, "level 'project' without a chain-resolved reader (level_evidence.chain): config:theme"));
+    CHECK(has(problems, "level 'conversation' without a chain-resolved reader (level_evidence.chain): config:theme"));
+    CHECK(has(problems, "level 'turn' without a per-request option (level_evidence.turn): config:theme"));
+    // the evidence itself is data: adding the key to it makes the same claim consistent
+    claim["level_evidence"]["chain"].push_back("theme");
+    claim["level_evidence"]["turn"].push_back("theme");
+    CHECK_FALSE(has(settings_fields_problems(claim), "config:theme"));
+    // a role chip never dangles: unknown to ports.pack and without role_status is a problem
+    Json role = doc;
+    role["fields"][0]["human"]["role"] = "no.such.role";
+    CHECK(has(settings_fields_problems(role), "role 'no.such.role' unknown to ports.pack and without role_status: config:base_url"));
+    role["fields"][0]["human"]["role_status"] = "planned";
+    CHECK_FALSE(has(settings_fields_problems(role), "role 'no.such.role'"));
+    // the three roles of M1-D1 are declared planned today (ports.pack does not know them)
+    for (const auto& f : doc["fields"])
+      if (f["human"].contains("role")) {
+        const std::string r = f["human"]["role"].get<std::string>();
+        if (r == "intent.routing" || r == "image.generate" || r == "speech.synthesize") CHECK(f["human"]["role_status"] == "planned");
+      }
+    // a field without a reader says so with a reason (never present tense alone); a status without reason is a problem
+    std::size_t planned = 0;
+    for (const auto& f : doc["fields"])
+      if (f.contains("status")) {
+        INFO(f["key"].get<std::string>());
+        CHECK(f["status"]["state"] == "planned");
+        CHECK_FALSE(f["status"]["reason"]["pl"].get<std::string>().empty());
+        CHECK_FALSE(f["status"]["by"].get<std::string>().empty());
+        ++planned;
+      }
+    CHECK(planned >= 12);
+    Json nostatus = doc;
+    nostatus["fields"][0]["status"] = Json{{"state", "planned"}};
+    CHECK(has(settings_fields_problems(nostatus), "status without reason pl+en: config:base_url"));
+  }
+
 
   TEST_CASE("only read_only is enforced; undescribed keys stay writable") {
     CHECK(check_config_write("theme"));

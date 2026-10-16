@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "settings_fields",
-  "revision": 2,
-  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack.",
+  "revision": 3,
+  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack. Review of M1-D0 (rev. 3): `human.levels` = the levels where a reader honours the value, backed by `level_evidence` (chain-resolved keys, per-request wire options); a field whose key no code reads yet carries `status {state: planned, by, reason}`; `values_open` marks an example list; `human.role_status` keeps a role chip honest until ports.pack knows the role; the `group` and `levels` enums are gone (an overlay may add a group of its own; levels are checked against the live scope chain).",
   "defaults": {
     "element_class": "settings_field",
     "rule_action": "edit",
@@ -429,6 +429,31 @@
         ]
       }
     },
+    "level_evidence": {
+      "chain": [
+        "default_model",
+        "semantic_model",
+        "guardian_model",
+        "chat_representation",
+        "chat_thread_filter",
+        "guardian_person_rules",
+        "chat_flow",
+        "extrapolation_preset",
+        "extrapolation_bounds",
+        "action_result_target"
+      ],
+      "turn": [
+        "default_model",
+        "temperature",
+        "max_tokens",
+        "system_prompt",
+        "stream",
+        "graph_memory_depth",
+        "chat_flow",
+        "chat_reasoning",
+        "chat_context_order"
+      ]
+    },
     "fields": [
       {
         "key": "base_url",
@@ -627,8 +652,6 @@
           "levels": [
             "installation",
             "person",
-            "project",
-            "conversation",
             "turn"
           ],
           "group": "rozmowa",
@@ -663,8 +686,6 @@
           "levels": [
             "installation",
             "person",
-            "project",
-            "conversation",
             "turn"
           ],
           "group": "rozmowa",
@@ -886,8 +907,8 @@
             "en": "Display refresh rate (Hz)"
           },
           "why": {
-            "pl": "Przelicza czas animacji podany w klatkach na milisekundy; preset 60.",
-            "en": "Converts an animation time given in frames into milliseconds; preset 60."
+            "pl": "Przelicza czas animacji podany w klatkach na milisekundy.",
+            "en": "Converts an animation time given in frames into milliseconds."
           },
           "effect": {
             "pl": "Wyższa wartość = te same animacje w klatkach trwają krócej.",
@@ -948,14 +969,12 @@
             "en": "The text the model gets at the start of every request: who to be and how to answer."
           },
           "effect": {
-            "pl": "Działa od następnej wiadomości; rozmowa lub projekt mogą mieć własną instrukcję.",
-            "en": "Applies from the next message; a conversation or project may have its own instruction."
+            "pl": "Działa od następnej wiadomości; jedno żądanie może podać własną instrukcję (opcja system_prompt).",
+            "en": "Applies from the next message; a single request may give its own instruction (option system_prompt)."
           },
           "levels": [
             "installation",
             "person",
-            "project",
-            "conversation",
             "turn"
           ],
           "group": "rozmowa",
@@ -1018,8 +1037,6 @@
           "levels": [
             "installation",
             "person",
-            "project",
-            "conversation",
             "turn"
           ],
           "group": "rozmowa",
@@ -1085,8 +1102,6 @@
           "levels": [
             "installation",
             "person",
-            "project",
-            "conversation",
             "turn"
           ],
           "group": "kontekst",
@@ -1118,9 +1133,7 @@
           },
           "levels": [
             "installation",
-            "person",
-            "project",
-            "conversation"
+            "person"
           ],
           "group": "kontekst",
           "subgroup": "wybor",
@@ -1772,6 +1785,7 @@
           "group": "modele",
           "subgroup": "role",
           "role": "intent.routing",
+          "role_status": "planned",
           "flows": [
             "input.route_intent"
           ],
@@ -2055,10 +2069,7 @@
           },
           "levels": [
             "installation",
-            "person",
-            "project",
-            "conversation",
-            "turn"
+            "person"
           ],
           "group": "rozmowa",
           "subgroup": "polecenia",
@@ -2126,6 +2137,7 @@
           "group": "modele",
           "subgroup": "role",
           "role": "image.generate",
+          "role_status": "planned",
           "flows": [
             "depict",
             "media.generate_image"
@@ -2160,6 +2172,7 @@
           "group": "modele",
           "subgroup": "role",
           "role": "image.generate",
+          "role_status": "planned",
           "flows": [
             "depict"
           ],
@@ -2193,6 +2206,7 @@
           "group": "modele",
           "subgroup": "role",
           "role": "speech.synthesize",
+          "role_status": "planned",
           "flows": [
             "narrate"
           ],
@@ -2226,6 +2240,7 @@
           "group": "modele",
           "subgroup": "role",
           "role": "speech.synthesize",
+          "role_status": "planned",
           "flows": [
             "narrate"
           ],
@@ -2483,8 +2498,7 @@
             "installation",
             "person",
             "project",
-            "conversation",
-            "turn"
+            "conversation"
           ],
           "group": "ty",
           "subgroup": "reguly",
@@ -2680,10 +2694,7 @@
           },
           "levels": [
             "installation",
-            "person",
-            "project",
-            "conversation",
-            "turn"
+            "person"
           ],
           "group": "kontekst",
           "subgroup": "wybor",
@@ -2715,8 +2726,6 @@
           "levels": [
             "installation",
             "person",
-            "project",
-            "conversation",
             "turn"
           ],
           "group": "rozmowa",
@@ -3213,6 +3222,13 @@
         "description": "Order of the context sections of a chat request, a name from the runtime profile chat_context (orders): legacy (system, memory, graph, project, history; the profile's preset) or stable_first (system, memory, project, history, graph: the stable sections first so a provider's prompt cache hits). Empty = the profile's context_order. A request may name its own order (option context_order). A name the profile does not know is rejected with the reason. Default: none (the profile's preset).",
         "values": [
           {
+            "value": "",
+            "meaning": {
+              "pl": "Pusty: kolejność z profilu chat_context (preset).",
+              "en": "Empty: the order of the chat_context profile (the preset)."
+            }
+          },
+          {
             "value": "legacy",
             "meaning": {
               "pl": "Klasycznie: instrukcja, pamięć, graf, projekt, historia (preset profilu).",
@@ -3252,8 +3268,6 @@
           "levels": [
             "installation",
             "person",
-            "project",
-            "conversation",
             "turn"
           ],
           "group": "kontekst",
@@ -3391,6 +3405,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-W0",
+          "reason": {
+            "pl": "Czytelnik tego pola — nawigator grafu (lista i mapa razem) — powstaje w M1-W0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the graph navigator (list and map together) — comes with M1-W0; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Układ nawigatora grafu",
@@ -3436,6 +3458,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-W0",
+          "reason": {
+            "pl": "Czytelnik tego pola — sektory perspektyw w nawigatorze — powstaje w M1-W0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the perspective sectors of the navigator — comes with M1-W0; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Składanie perspektyw",
@@ -3465,6 +3495,14 @@
         "type": "integer",
         "has_default": true,
         "description": "How many children of one node graph.navigate returns per level when the request names no limit; the rest is collapsed and the navigator says how many (\"K nodes collapsed - change the budget\"). 0 = no limit. Default: 50.",
+        "status": {
+          "state": "planned",
+          "by": "M1-K0",
+          "reason": {
+            "pl": "Czytelnik tego pola — akcja graph.navigate (limit dzieci) — powstaje w M1-K0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the action graph.navigate (children limit) — comes with M1-K0; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Budżet węzłów na poziom",
@@ -3517,6 +3555,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-W1",
+          "reason": {
+            "pl": "Czytelnik tego pola — pasek kontekstu pod polem pisania — powstaje w M1-W1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the context strip under the composer — comes with M1-W1; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Pasek kontekstu nad polem pisania",
@@ -3562,6 +3608,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-W1",
+          "reason": {
+            "pl": "Czytelnik tego pola — linia „Kontekst” pod odpowiedzią — powstaje w M1-W1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the “Context” line under a reply — comes with M1-W1; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Odnośnik „Co wysłaliśmy”",
@@ -3607,6 +3661,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-W0",
+          "reason": {
+            "pl": "Czytelnik tego pola — chip modelu w górnym pasku — powstaje w M1-W0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the model chip of the top bar — comes with M1-W0; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Model na górnym pasku",
@@ -3659,6 +3721,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-W2",
+          "reason": {
+            "pl": "Czytelnik tego pola — karta „Poznajmy się” w pustym czacie — powstaje w M1-W2; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the “Let us meet” card of the empty chat — comes with M1-W2; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Karta pierwszych kroków",
@@ -3711,6 +3781,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-A0",
+          "reason": {
+            "pl": "Czytelnik tego pola — przycisk wstecz Androida (OnBackPressedDispatcher) — powstaje w M1-A0; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the Android back button (OnBackPressedDispatcher) — comes with M1-A0; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Wstecz na Androidzie wychodzi z aplikacji",
@@ -3763,6 +3841,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-K1",
+          "reason": {
+            "pl": "Czytelnik tego pola — filtr kluczy i haseł w chat.send i input.route_intent — powstaje w M1-K1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the key-and-password filter in chat.send and input.route_intent — comes with M1-K1; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Klucze i hasła w rozmowie",
@@ -3818,6 +3904,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-K2",
+          "reason": {
+            "pl": "Czytelnik tego pola — wywiad profilu (profile.interview) — powstaje w M1-K2; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the profile interview (profile.interview) — comes with M1-K2; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Jak dokładnie aplikacja ma Cię znać",
@@ -3870,6 +3964,14 @@
             }
           }
         ],
+        "status": {
+          "state": "planned",
+          "by": "M1-K1",
+          "reason": {
+            "pl": "Czytelnik tego pola — ślad „Co wysłaliśmy” zapisywany przez build_messages — powstaje w M1-K1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the “What we sent” receipt stored by build_messages — comes with M1-K1; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Zapis śladu „Co wysłaliśmy”",
@@ -3885,9 +3987,7 @@
           },
           "levels": [
             "installation",
-            "person",
-            "project",
-            "conversation"
+            "person"
           ],
           "group": "kontekst",
           "subgroup": "slad",
@@ -3903,6 +4003,14 @@
         "type": "integer",
         "has_default": true,
         "description": "Most bytes of a context receipt stored whole in the auto mode of context_receipt_store; a larger receipt is stored as a summary with the reason. 0 = no cap. Default: 65536.",
+        "status": {
+          "state": "planned",
+          "by": "M1-K1",
+          "reason": {
+            "pl": "Czytelnik tego pola — ślad „Co wysłaliśmy” zapisywany przez build_messages — powstaje w M1-K1; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
+            "en": "The reader of this field — the “What we sent” receipt stored by build_messages — comes with M1-K1; until then the value is stored but nothing reads it."
+          }
+        },
         "human": {
           "label": {
             "pl": "Limit śladu „Co wysłaliśmy”",
@@ -3942,8 +4050,8 @@
             "en": "From how many waiting messages the background analysis switches to the half-price, slower batch mode (needs the Anthropic batch analysis key)."
           },
           "effect": {
-            "pl": "Niżej = częściej partiami (taniej, wolniej); wyżej = częściej pojedynczo (szybciej, drożej). Preset 500.",
-            "en": "Lower = batches more often (cheaper, slower); higher = one by one more often (faster, dearer). Preset 500."
+            "pl": "Niżej = częściej partiami (taniej, wolniej); wyżej = częściej pojedynczo (szybciej, drożej).",
+            "en": "Lower = batches more often (cheaper, slower); higher = one by one more often (faster, dearer)."
           },
           "levels": [
             "installation",
@@ -4076,6 +4184,7 @@
       "rule_scope",
       "effects",
       "groups",
+      "level_evidence",
       "fields",
       "profile_values"
     ],
@@ -4100,6 +4209,27 @@
         "type": "array",
         "items": {
           "type": "object"
+        }
+      },
+      "level_evidence": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Evidence for human.levels: `chain` = keys whose reader resolves the value through the scope chain (scopes::Binding / resolve_value), the only keys that may declare project or conversation; `turn` = keys with a per-request wire option (ChatOptions::from_json), the only keys that may declare turn. A field declaring a level without evidence is a problem (settings_fields_problems). M1-D1 replaces this list with `reads`/`implemented_in` per field.",
+        "properties": {
+          "chain": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "turn": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
         }
       },
       "fields": {
@@ -4152,7 +4282,7 @@
             },
             "human": {
               "type": "object",
-              "description": "The field as a person reads it on a phone. label: plain name; why: what it is for; effect: what changes when it changes; levels: the levels of the scopes chain (graph/scopes.pack) where the field may be set (a preset; the full chain is always available under 'more levels'); group/subgroup: ids from `groups`; role: the model role of ports.pack the field is the value of; flows: ids of the actions (runtime/actions.pack) that read the key, empty when the reader is the shell or the runtime itself; technical_only: shown only under its technical name (the role card, the all-fields table), never in the human group list - the field is never dropped.",
+              "description": "The field as a person reads it on a phone. label: plain name; why: what it is for; effect: what changes when it changes; levels: the levels of the scopes chain (graph/scopes.pack) where a reader honours the value (a preset; the full chain is always available under 'more levels'; project/conversation only with `level_evidence.chain`, turn only with `level_evidence.turn`); group/subgroup: ids from `groups`; role: the model role of ports.pack the field is the value of; flows: ids of the actions (runtime/actions.pack) that read the key, empty when the reader is the shell or the runtime itself; technical_only: shown only under its technical name (the role card, the all-fields table), never in the human group list - the field is never dropped.",
               "required": [
                 "label",
                 "why",
@@ -4220,33 +4350,13 @@
                   "type": "array",
                   "items": {
                     "type": "string",
-                    "enum": [
-                      "engine",
-                      "app_preset",
-                      "installation",
-                      "organization",
-                      "group_of_groups",
-                      "team",
-                      "person",
-                      "role_in_context",
-                      "project",
-                      "conversation",
-                      "turn"
-                    ]
+                    "minLength": 1
                   }
                 },
                 "group": {
                   "type": "string",
-                  "enum": [
-                    "ty",
-                    "rozmowa",
-                    "modele",
-                    "kontekst",
-                    "interfejs",
-                    "prywatnosc",
-                    "koszty",
-                    "silnik"
-                  ]
+                  "minLength": 1,
+                  "description": "Id of a group of `groups` (checked at runtime against the live groups, so an overlay may add a group of its own)."
                 },
                 "subgroup": {
                   "type": "string",
@@ -4255,6 +4365,11 @@
                 "role": {
                   "type": "string",
                   "minLength": 1
+                },
+                "role_status": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Status of `role` when ports.pack does not know the role yet (e.g. planned): the chip stays honest; a role neither known nor given a status is a problem."
                 },
                 "flows": {
                   "type": "array",
@@ -4275,6 +4390,47 @@
                 "required": [
                   "value"
                 ]
+              }
+            },
+            "values_open": {
+              "type": "boolean",
+              "description": "The `values` list is examples, not the whole set: settings.set accepts other values too. Without it a value outside `values` is refused with the list, and a value whose entry has status planned is refused with its reason."
+            },
+            "status": {
+              "type": "object",
+              "required": [
+                "state",
+                "reason"
+              ],
+              "additionalProperties": false,
+              "description": "Field-level status when the key has a preset but no reader yet (M1 §3.5 \"nothing pretends to be ready\"): state (planned), by (the position that adds the reader), reason {pl,en} shown as the chip \"planned (reason)\". Removed by the position that implements the reader.",
+              "properties": {
+                "state": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "by": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "reason": {
+                  "type": "object",
+                  "required": [
+                    "pl",
+                    "en"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "pl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "en": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
               }
             },
             "sensitive": {
@@ -4446,7 +4602,7 @@
             },
             "human": {
               "type": "object",
-              "description": "The field as a person reads it on a phone. label: plain name; why: what it is for; effect: what changes when it changes; levels: the levels of the scopes chain (graph/scopes.pack) where the field may be set (a preset; the full chain is always available under 'more levels'); group/subgroup: ids from `groups`; role: the model role of ports.pack the field is the value of; flows: ids of the actions (runtime/actions.pack) that read the key, empty when the reader is the shell or the runtime itself; technical_only: shown only under its technical name (the role card, the all-fields table), never in the human group list - the field is never dropped.",
+              "description": "The field as a person reads it on a phone. label: plain name; why: what it is for; effect: what changes when it changes; levels: the levels of the scopes chain (graph/scopes.pack) where a reader honours the value (a preset; the full chain is always available under 'more levels'; project/conversation only with `level_evidence.chain`, turn only with `level_evidence.turn`); group/subgroup: ids from `groups`; role: the model role of ports.pack the field is the value of; flows: ids of the actions (runtime/actions.pack) that read the key, empty when the reader is the shell or the runtime itself; technical_only: shown only under its technical name (the role card, the all-fields table), never in the human group list - the field is never dropped.",
               "required": [
                 "label",
                 "why",
@@ -4514,33 +4670,13 @@
                   "type": "array",
                   "items": {
                     "type": "string",
-                    "enum": [
-                      "engine",
-                      "app_preset",
-                      "installation",
-                      "organization",
-                      "group_of_groups",
-                      "team",
-                      "person",
-                      "role_in_context",
-                      "project",
-                      "conversation",
-                      "turn"
-                    ]
+                    "minLength": 1
                   }
                 },
                 "group": {
                   "type": "string",
-                  "enum": [
-                    "ty",
-                    "rozmowa",
-                    "modele",
-                    "kontekst",
-                    "interfejs",
-                    "prywatnosc",
-                    "koszty",
-                    "silnik"
-                  ]
+                  "minLength": 1,
+                  "description": "Id of a group of `groups` (checked at runtime against the live groups, so an overlay may add a group of its own)."
                 },
                 "subgroup": {
                   "type": "string",
@@ -4549,6 +4685,11 @@
                 "role": {
                   "type": "string",
                   "minLength": 1
+                },
+                "role_status": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Status of `role` when ports.pack does not know the role yet (e.g. planned): the chip stays honest; a role neither known nor given a status is a problem."
                 },
                 "flows": {
                   "type": "array",
