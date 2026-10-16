@@ -237,12 +237,12 @@ Bez zmian: wszystkie panele z `panels.ts` (graph, memory, import, context, setti
 
 ---
 
-## 6. Kolejność prac i bramy (jeden tor; pierwsza rzecz do zobaczenia w ~1,5–2 tygodnie)
-Estymaty poprzednich projektów (suma 34 dni) były zaniżone; realnie M1 to **9–12 tygodni jednym torem**. Dlatego bramy, nie jeden wielki koniec:
-- **Brama 0 (ROM + ustawienia + role, ~1,5–2 tyg.)**: D0 → D1 → K0 → W0 → A0. Właściciel na telefonie widzi: Graf › ROM (13 po polsku, 4/8/1), Ustawienia w 8 grupach po ludzku z pochodzeniem i „Zdejmij wartość”, rolę Analiza w tle z łańcuchem/klasą/przepływem na żywo, Ty jako wiersz korzenia (nawet jeśli pusty, z powodem), wstecz Androida działa. Raport ze zrzutami: `docs/reports/M1_CHECKPOINT_0.md`.
-- **Brama 1 (kontekst, ~2–3 tyg.)**: D2 → K1 → W1 → A1a. „Co wysłaliśmy” pod każdą odpowiedzią, profile selektora, szerzej/głębiej, `+ › Kontekst`, chip modelu z pochodzeniem. Raport `M1_CHECKPOINT_1.md`.
-- **Brama 2 (Ty i wywiad, ~2–3 tyg.)**: K2 → W2 → A1b. Węzeł Ty z podgrafami, pamięć jako podgraf, wywiad w rozmowie z pytaniem o szczegółowość, jednostki.
-- **Brama 3 (rozmowy, przepływy, mapa, ~2 tyg.)**: W3 → A1c → T1 → DOC. Rozmowy i przepływy w nawigatorze, sektory perspektyw, gesty, Disclosure, pełny smoke na dwóch profilach emulatora.
+## 6. Kolejność prac i bramy (jeden tor; pierwsza rzecz do zobaczenia do jutra)
+Korekta 2026-10-16 (właściciel: „zamiast minuty i godziny mówisz tygodnie”): liczby „34 dni” i „9–12 tygodni” z panelu były estymatami dla ludzkiego zespołu (pole `estimate_days` w schemacie projektu), nie ze zmierzonego tempa. Miara z historii `main`: 168 commitów od 2026-10-15 00:00; P23–P34 (12 pozycji wagi pozycji M1) + integracja GPT + R32–R39 w ~40 h; P33 od briefu do main ~6 h z pauzą na limit. Stąd: pozycja M1 = 3–6 h; **14 pozycji = 2–4 dni zegarowe**, ograniczone oknami limitów, nie pracą. Bramy zostają, bo każda daje właścicielowi coś do sprawdzenia:
+- **Brama 0 (ROM + ustawienia + role, do ~24 h)**: D0 → D1 → K0 → W0 → A0. Właściciel na telefonie widzi: Graf › ROM (13 po polsku, 4/8/1), Ustawienia w 8 grupach po ludzku z pochodzeniem i „Zdejmij wartość”, rolę Analiza w tle z łańcuchem/klasą/przepływem na żywo, Ty jako wiersz korzenia (nawet jeśli pusty, z powodem), wstecz Androida działa. Raport ze zrzutami: `docs/reports/M1_CHECKPOINT_0.md`.
+- **Brama 1 (kontekst, +~1 dzień)**: D2 → K1 → W1 → A1a. „Co wysłaliśmy” pod każdą odpowiedzią, profile selektora, szerzej/głębiej, `+ › Kontekst`, chip modelu z pochodzeniem. Raport `M1_CHECKPOINT_1.md`.
+- **Brama 2 (Ty i wywiad, +~1 dzień)**: K2 → W2 → A1b. Węzeł Ty z podgrafami, pamięć jako podgraf, wywiad w rozmowie z pytaniem o szczegółowość, jednostki.
+- **Brama 3 (rozmowy, przepływy, mapa, +~1 dzień)**: W3 → A1c → T1 → DOC. Rozmowy i przepływy w nawigatorze, sektory perspektyw, gesty, Disclosure, pełny smoke na dwóch profilach emulatora.
 APK dla właściciela dopiero po zielonej Bramie 3 i przejściu listy kontroli — ale każda brama ma własny raport ze zrzutami z emulatora, więc „coś zobaczyć” jest po Bramie 0.
 
 ## 7. Czego w M1 nie ma (jawnie, z powodem)
