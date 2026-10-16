@@ -6,6 +6,9 @@ NOT part of CTest or CI: it spends money and needs network. Run it by hand:
     python3 loom/tools/real_model_smoke.py [--model google/gemini-2.5-flash-lite] [--budget 0.50]
     python3 loom/tools/real_model_smoke.py --mock          # offline self-test of this script (no money)
 
+It needs loom-server, which the dev preset does not build by default:
+    cd loom && cmake --preset dev -DLOOM_BUILD_SERVER=ON && cmake --build --preset dev --target loom-server
+
 What it does (standard library only):
   1. starts a dev loom-server on a fresh temp data dir (deleted at the end unless --keep-data),
   2. configures api_key (any non-empty placeholder: a proxy injects the real key), base_url and a cheap model,
@@ -109,6 +112,25 @@ def make_forwarder(meter: Meter, upstream: str, port: int, mock: bool):
             self.end_headers()
             self.wfile.write(data)
 
+        def do_GET(self):
+            # The kernel reads the model list (GET /models) for the money estimate of a proposal. It is free, so it is
+            # forwarded without metering; anything else is refused.
+            path, _, query = self.path.partition("?")
+            if not path.endswith("/models"):
+                return self._send_json(403, {"error": {"message": "meter: only GET /models is forwarded"}})
+            if mock:
+                return self._send_json(200, {"data": []})
+            try:
+                status, headers, chunks = _real_upstream(parsed, b"", self.headers, "GET", "/models" + ("?" + query if query else ""))
+                data = b"".join(chunks)
+            except Exception as exc:
+                return self._send_json(502, {"error": {"message": f"meter: upstream failure: {exc}"}})
+            self.send_response(status)
+            self.send_header("Content-Type", headers.get("Content-Type", "application/json"))
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
         def do_POST(self):
             raw = self.rfile.read(int(self.headers.get("Content-Length") or 0))
             path = self.path
@@ -181,7 +203,7 @@ def make_forwarder(meter: Meter, upstream: str, port: int, mock: bool):
     return Srv(("127.0.0.1", port), Handler)
 
 
-def _real_upstream(parsed, payload: bytes, in_headers):
+def _real_upstream(parsed, payload: bytes, in_headers, method: str = "POST", suffix: str = "/chat/completions"):
     ctx = _ssl_context()
     proxy = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
     if proxy:
@@ -190,10 +212,10 @@ def _real_upstream(parsed, payload: bytes, in_headers):
         conn.set_tunnel(parsed.hostname, parsed.port or 443)
     else:
         conn = http.client.HTTPSConnection(parsed.hostname, parsed.port or 443, context=ctx, timeout=180)
-    hdrs = {"Content-Type": "application/json", "Content-Length": str(len(payload)),
-            "Authorization": in_headers.get("Authorization", "Bearer proxy-injected"),
-            "X-Title": "loom real_model_smoke"}
-    conn.request("POST", parsed.path.rstrip("/") + "/chat/completions", body=payload, headers=hdrs)
+    hdrs = {"Authorization": in_headers.get("Authorization", "Bearer proxy-injected"), "X-Title": "loom real_model_smoke"}
+    if method == "POST":
+        hdrs.update({"Content-Type": "application/json", "Content-Length": str(len(payload))})
+    conn.request(method, parsed.path.rstrip("/") + suffix, body=payload if method == "POST" else None, headers=hdrs)
     resp = conn.getresponse()
 
     def gen():
