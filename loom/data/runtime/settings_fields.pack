@@ -3202,7 +3202,7 @@
         "group": "context",
         "type": "string",
         "has_default": false,
-        "description": "Order of the context sections of a chat request, a name from the runtime profile chat_context (orders): legacy (system, memory, graph, project, history; the profile's preset) or stable_first (system, memory, project, history, graph: the stable sections first so a provider's prompt cache hits). Empty = the profile's context_order. A request may name its own order (option context_order). A name the profile does not know is rejected with the reason. Default: none (the profile's preset).",
+        "description": "Order of the context sections of a chat request, a name from the runtime profile chat_context (orders, with the user's profile overlay): legacy (system, memory, graph, project, history; the profile's preset) or stable_first (system, memory, project, history, graph: the stable sections first so a provider's prompt cache hits), or any order the user adds to profiles/chat_context.pack. The listed values are that profile's orders (values_from), so a write refuses only a name the effective profile does not know. Empty = the profile's context_order. A request may name its own order (option context_order). Default: none (the profile's preset).",
         "values": [
           {
             "value": "",
@@ -3239,6 +3239,11 @@
             "on_set": "refuse"
           }
         ],
+        "values_from": {
+          "profile": "chat_context",
+          "pointer": "/orders",
+          "keys": true
+        },
         "human": {
           "label": {
             "pl": "Kolejność części żądania",
@@ -4440,6 +4445,27 @@
                       "warn"
                     ]
                   }
+                }
+              }
+            },
+            "values_from": {
+              "type": "object",
+              "required": [
+                "profile",
+                "pointer"
+              ],
+              "additionalProperties": false,
+              "description": "The values are the reader's data, not a copy: settings_fields() reads the runtime profile `profile` (with the user's profile overlay, as the reader does) at `pointer` - the object's keys when keys:true, else the array's items. The field's own `values` entries stay as annotations (meaning, preset, status) and come first; every value of the profile is marked from_profile, one without an annotation is appended, and an annotation `planned` whose value the profile now has becomes status_superseded (its reader knows it). A profile that cannot be read leaves the annotations and values_from_problem.",
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pointer": {
+                  "type": "string"
+                },
+                "keys": {
+                  "type": "boolean"
                 }
               }
             },

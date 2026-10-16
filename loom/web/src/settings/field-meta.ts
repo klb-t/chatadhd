@@ -64,6 +64,16 @@ export interface SettingsFieldValue {
   status?: string;
   reason?: LocalizedText | string;
   on_set?: "refuse" | "warn" | string;
+  /** The value is in the reader's runtime profile (the field's `values_from`), with the user's profile overlay. */
+  from_profile?: string;
+  /** A status the data gave (e.g. "planned") that no longer holds: the reader's profile now has the value. */
+  status_superseded?: string;
+}
+/** Where a field's values come from: the runtime profile's value at `pointer` (its keys when `keys`), as the reader reads it. */
+export interface SettingsValuesFrom {
+  profile: string;
+  pointer: string;
+  keys?: boolean;
 }
 /** A value of a runtime profile shown as a field with the chip "runtime profile: <profile>"; the value lives in the profile.
  * `problem` (instead of `value`) says why it could not be read; it is shown, never dropped. */
@@ -87,6 +97,10 @@ export interface SettingsField {
   sensitive?: boolean;
   human?: SettingsHuman;
   values?: SettingsFieldValue[];
+  /** The values are the reader's data (resolved by the kernel); the pack's own entries annotate them. */
+  values_from?: SettingsValuesFrom;
+  /** Why `values_from` could not be read (the annotations are listed alone). */
+  values_from_problem?: string;
   /** The values list is examples, not the whole set (every write path accepts other values). */
   values_open?: boolean;
   /** What a write of a value outside a closed `values` list does: "refuse" or "warn" (stored with a warning; absent = warn). */

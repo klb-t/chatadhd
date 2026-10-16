@@ -21,7 +21,8 @@ namespace loom {
 // {"schema":"loom.settings_fields/1","edit_rules":[...],"fields":[{"key","scope","group","type",
 //  "default":"present|absent","default_value"?,"edit","description","sensitive"?,
 //  "human":{"label":{pl,en},"why":{pl,en},"effect":{pl,en},"levels":[...],"group","subgroup"?,"placed_from"?,"role"?,"role_status"?,"flows"?,"technical_only"?},
-//  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn"}],"values_open"?,
+//  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn","from_profile"?,"status_superseded"?}],
+//  "values_from"?:{"profile","pointer","keys"?},"values_from_problem"?,"values_open"?,
 //  "on_unlisted"?:"refuse"|"warn","status"?:{"state","by"?,"reason":{pl,en}}}],
 //  "groups":{id:{"label":{pl,en},"why":{pl,en},"order","subgroups":[...],"origin","provenance":[...],"hidden"?,"hidden_by"?,"disabled"?,"empty_reason"?}},
 //  "groups_issues"?:[...], "level_evidence":{"chain":[keys],"turn":[keys],"installation":[keys and <profile><pointer>]},
@@ -37,6 +38,9 @@ namespace loom {
 // is not JSON or has another schema, of any view): then the shipped groups are shown without view overlays, never an error. `status` (field level) says a key has a preset but no
 // reader yet (shown as "planned (reason)"); `level_evidence` names the keys whose readers honour project/conversation (scope
 // chain) and turn (per-request option) — the only keys that may declare those levels.
+// `values_from` makes a field's values its reader's data: the runtime profile's value at the pointer (object keys with keys:true), read
+// with the user's profile overlay, so a write refuses only what the effective profile does not know; the pack's `values` entries are
+// annotations over that list (see resolve_values_from in settings_fields.cpp).
 // A profile value is read from its runtime profile (with the user's overlay) at the JSON pointer; when it cannot be
 // read the entry carries `problem` instead of `value` (never an exception: a pointer is user data). `data_dir` selects the user
 // overlay profile (profiles/settings_fields.pack) and the view overlays; empty = builtin.

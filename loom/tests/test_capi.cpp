@@ -189,6 +189,14 @@ TEST_SUITE("capi") {
     CHECK(take(loom_get_config(c.ctx))["navigator_layout"] == "both");  // the preset, untouched
     loom_set_config(c.ctx, "navigator_layout", "map");
     CHECK(take(loom_get_config(c.ctx))["navigator_layout"] == "map");
+    // chat_context_order lists its reader's orders (values_from chat_context /orders, with the user's profile overlay): an order the user
+    // adds is written through the C ABI too; a name the effective profile does not know is still refused
+    REQUIRE(static_cast<bool>(loom::fsutil::write_file(c.dir.path() / "profiles" / "chat_context.pack",
+        R"({"schema":"loom.runtime_profile_overlay/1","domain":"chat_context","overrides":{"orders":{"mine":["memory","system","project","history","graph"]}}})")));
+    CHECK(loom_set_config_json(c.ctx, R"({"chat_context_order": "mine"})") == LOOM_OK);
+    CHECK(take(loom_get_config(c.ctx))["chat_context_order"] == "mine");
+    CHECK(loom_set_config_json(c.ctx, R"({"chat_context_order": "no_such_order"})") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(take(loom_get_config(c.ctx))["chat_context_order"] == "mine");
   }
 
   TEST_CASE("config and secrets (values never exposed)") {

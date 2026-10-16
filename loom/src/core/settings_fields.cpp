@@ -76,6 +76,53 @@ Json profile_values_of(const Json& v, const std::filesystem::path& data_dir) {
   return out;
 }
 
+// A field whose values are its reader's data (`values_from` {profile, pointer, keys?}): the list is that runtime profile's value at
+// the pointer (the object's keys when keys:true, else the array's items), read with the user's profile overlay the way the reader
+// reads it, so a value the user adds in profiles/<profile>.pack (an order of chat_context, say) is a listed value on every write path
+// and never refused by a copy. The pack's own `values` entries are annotations (meaning, preset, status) and come first; a value the
+// profile has is marked `from_profile`, and one the profile has but the pack does not annotate is appended. An annotation `planned`
+// whose value the profile now has is no longer planned (its reader knows it): the status moves to `status_superseded`. A profile that
+// cannot be read keeps the annotations and says why in `values_from_problem` (shown, never silent).
+void resolve_values_from(Json& field, const std::filesystem::path& data_dir) {
+  const Json* from = json::find(field, "values_from");
+  if (!from || !from->is_object()) return;
+  const std::string profile = json::get_string(*from, "profile"), pointer = json::get_string(*from, "pointer");
+  const bool keys = json::get_bool(*from, "keys", false);
+  auto problem = [&](const std::string& why) {
+    log::debug(kLog, "values_from {}{} of '{}': {}", profile, pointer, json::get_string(field, "key"), why);
+    field["values_from_problem"] = why;
+  };
+  auto prof = RuntimeProfile::load(profile, data_dir);
+  if (!prof) return problem("profile '" + profile + "' not readable: " + prof.error().message);
+  auto at = value_at(prof->values(), pointer);
+  if (!at) return problem("no value in profile '" + profile + "': " + at.error().message);
+  std::vector<Json> found;
+  if (keys && at->is_object()) {
+    for (auto it = at->begin(); it != at->end(); ++it) found.emplace_back(it.key());
+  } else if (!keys && at->is_array()) {
+    for (const auto& x : *at) found.push_back(x);
+  } else {
+    return problem("the value at " + pointer + " of profile '" + profile + "' is not " + (keys ? "an object" : "an array"));
+  }
+  Json values = field.contains("values") && field["values"].is_array() ? field["values"] : Json::array();
+  for (const auto& v : found) {
+    Json* annotated = nullptr;
+    for (auto& e : values)
+      if (const Json* ev = json::find(e, "value"); ev && *ev == v) { annotated = &e; break; }
+    if (!annotated) {
+      values.push_back(Json{{"value", v}, {"from_profile", profile}});
+      continue;
+    }
+    (*annotated)["from_profile"] = profile;
+    if (json::get_string(*annotated, "status") == "planned") {
+      (*annotated)["status_superseded"] = "planned";
+      annotated->erase("status");
+      annotated->erase("on_set");
+    }
+  }
+  field["values"] = std::move(values);
+}
+
 // The groups as the view kind `settings_groups` composes them: the pack's /groups (with the user's profile overlay, which may add
 // a group of its own) is the ROM layer; the view overlays of the data dir (<data_dir>/views/*.json, ops on settings_groups) regroup,
 // rename or hide on top, with the policy the view kind declares. One list for every reader (loom_view_effective and this document
@@ -192,6 +239,7 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir) {
   for (const auto& f : v.at("fields")) {
     const std::string scope_name = f.value("scope", ""), key = f.value("key", "");
     Json o = f;  // `human`, `status`, `values` and the rest of the entry pass through unchanged
+    resolve_values_from(o, data_dir);
     placement.apply(o, key);
     o.erase("has_default");
     const bool has_default = f.value("has_default", false);

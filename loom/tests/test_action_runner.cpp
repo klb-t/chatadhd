@@ -8,6 +8,7 @@
 #include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/settings_fields.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -194,6 +195,41 @@ TEST_SUITE("action_runner") {
     CHECK_FALSE(grid.at("result").at("data").contains("warning"));
     // a field without a values list stays open (type only)
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "theme"}, {"value", "anything"}}}})).at("status") == "completed");
+  }
+
+  TEST_CASE("settings.set: chat_context_order lists its reader's orders (values_from), so an order a profile overlay adds is stored and only an unknown name is refused") {
+    Fixture f;
+    const auto root = f.rt->paths().root;
+    // the user's own order and the planned `stability`, added the way the reader (chat_engine) reads orders: profiles/chat_context.pack
+    unwrap(fsutil::write_file(root / "profiles" / "chat_context.pack",
+        Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "chat_context"},
+             {"overrides", Json{{"orders", Json{{"mine", Json::array({"memory", "system", "project", "history", "graph"})},
+                                                {"stability", Json::array({"system", "memory", "project", "history", "graph"})}}}}}}.dump()));
+    const Json mine = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "mine"}}}}));
+    CHECK(mine.at("status") == "completed");
+    CHECK_FALSE(mine.at("result").at("data").contains("warning"));
+    CHECK(f.rt->config().get("chat_context_order") == "mine");
+    // a planned annotation whose value the reader's profile now has is no longer planned
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}})).at("status") == "completed");
+    CHECK(f.rt->config().get("chat_context_order") == "stability");
+    // a name the effective profile does not know is still refused (chat.send would reject it), and nothing is stored
+    const Json unknown = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "no_such_order"}}}}));
+    CHECK(unknown.at("status") == "failed");
+    CHECK(unknown.at("error").at("message").get<std::string>().find("\"mine\"") != std::string::npos);
+    CHECK(f.rt->config().get("chat_context_order") == "stability");
+    // the raw write paths read the same list
+    CHECK(unwrap(check_config_patch(Json{{"chat_context_order", "mine"}}, root)).empty());
+    CHECK_FALSE(check_config_patch(Json{{"chat_context_order", "no_such_order"}}, root));
+    // the document says where the values come from
+    const Json doc = unwrap(settings_fields(root));
+    for (const auto& field : doc.at("fields")) {
+      if (field.at("key") != "chat_context_order") continue;
+      bool listed = false;
+      for (const auto& v : field.at("values"))
+        if (v.at("value") == "mine") { listed = true; CHECK(v.at("from_profile") == "chat_context"); }
+        else if (v.at("value") == "stability") { CHECK(v.at("status_superseded") == "planned"); CHECK_FALSE(v.contains("status")); }
+      CHECK(listed);
+    }
   }
 
   TEST_CASE("settings.set: the field is the element; the value is typed; edit rules apply; credentials stay out of the conversation") {
