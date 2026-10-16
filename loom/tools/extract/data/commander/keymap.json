@@ -17,7 +17,7 @@
     "o": "root.next", "f": "mode.flat", "s": "sort.cycle", "?": "explain", "a": "decide.include", "x": "decide.exclude",
     "y": "yank", "p": "paste", ":": "command", "P": "select.pattern", "R": "select.regex", "T": "select.time", "C": "select.clear",
     "V": "view.save", "L": "view.load", "F": "filter.save", "C-o": "filter.load", "M": "macro.run", "S": "select.criteria", "I": "selection.show",
-    "Esc": "cancel"
+    "Esc": "cancel", "C-c": "cancel"
    }
   },
   "vim": {

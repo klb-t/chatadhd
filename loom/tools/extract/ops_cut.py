@@ -199,6 +199,8 @@ def op_undo(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         steps = eng.recipe.get("steps") or []
         for i in range(len(steps) - 1, -1, -1):
             if steps[i]["op"] == entry.get("recipe_op", entry["op"]):
+                # remembered, so a redo records the same step again (the face that made it, the params' origins)
+                entry["_step"] = {k: steps[i].get(k) for k in ("by", "note", "params_source")}
                 del steps[i]
                 break
         undone.append(entry["op"])
@@ -215,7 +217,12 @@ def op_redo(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             break
         entry = pkg.redo.pop()
         keep = list(pkg.redo)
-        eng.op(entry.get("recipe_op", entry["op"]), dict(entry.get("recipe_params", entry["params"])), by="engine", note="redo")
+        st = entry.get("_step") or {}
+        if st.get("by"):
+            eng.op(entry.get("recipe_op", entry["op"]), dict(entry.get("recipe_params", entry["params"])), by=st["by"],
+                   note=st.get("note"), sources=st.get("params_source"))
+        else:
+            eng.op(entry.get("recipe_op", entry["op"]), dict(entry.get("recipe_params", entry["params"])), by="engine", note="redo")
         pkg.redo = keep
         redone.append(entry["op"])
     return {"counts": {"redone": len(redone)}, "redone": redone, "tree_hash": pkg.tree_hash()}

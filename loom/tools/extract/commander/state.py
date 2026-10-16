@@ -186,7 +186,8 @@ class CommanderState:
                 if p.path:  # e.g. the node went away after an edit: back to the root of the view
                     p.path, p.cursor = [], 0
                     self._msg(t("commander.view_reset", error=str(exc)), error=True)
-                    return self.refresh(p, force=True)
+                    self.refresh(p, force=True)
+                    continue
                 self._msg(t("commander.error", error=str(exc)), error=True)
             if res is None or res.get("busy"):
                 continue  # keep showing the last rows while the engine works
@@ -543,6 +544,16 @@ class CommanderState:
     def a_open(self) -> None:
         r = self.cur()
         if r is None:
+            return
+        if r.get("children") and self.pane.flat and r["kind"] in ("conversation", "message"):
+            # from a flat list (or the timeline) into the node's own tree, where its blocks and branches are
+            root = "package" if self.pane.root == "package" else "sources"
+            res = self.call({"call": "goto", "target": r["id"], "root": root})
+            if res is not None:
+                p = self.pane
+                p.root, p.flat, p.filter, p.sort = root, None, "", ""
+                p.path, p.cursor = list(res["path"]) + [r["id"]], 0
+                self.refresh(p)
             return
         if r.get("children"):
             self.pane.path.append(r["id"])

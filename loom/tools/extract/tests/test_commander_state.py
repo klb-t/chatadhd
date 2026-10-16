@@ -80,6 +80,14 @@ class CommanderTest(ExtractTest):
         self.assertEqual(st.pane.flat, "conversation")
         self.act("mode.flat")
         self.assertEqual(st.pane.flat, "message")
+        st.pane.cursor = next(i for i, r in enumerate(st.pane.rows) if r["children"])
+        msg = st.pane.current()["id"]
+        self.act("open")
+        self.assertIsNone(st.pane.flat, "a node opened from a flat list opens in its tree")
+        self.assertEqual(st.pane.path[-1], msg)
+        self.assertTrue(all(r["kind"] == "block" for r in st.pane.rows))
+        st.pane.__init__(root="sources", flat="message")
+        st.refresh(st.pane)
         self.assertEqual(len(st.pane.rows), sum(len(u.messages) for u in st.s.eng.conversations))
         self.act("sort.cycle")
         self.assertEqual(st.pane.sort, "created")
@@ -204,6 +212,8 @@ class CommanderTest(ExtractTest):
         self.assertEqual({e.folder for e in pkg.entries}, {"/"})
         self.act("redo")
         self.assertEqual({e.folder for e in pkg.entries if e.unit.title == "Migracja bazy danych"}, {"/projekty"})
+        last = self.steps(st)[-1]
+        self.assertEqual((last["op"], last["by"], last.get("note")), ("package.move", "tui", None), "a redo records the step as it was")
         # vim-style yank/paste: clipboard → package
         self.act("pane.switch")
         self.cursor_to(st, "Obrazy i dźwięk")
