@@ -20,8 +20,12 @@
     <string name="conn_err_not_loom">Ten adres nie wygląda na serwer Loom (HTTP %1$d).</string>
     <!-- F2: lokalizacja danych (ustawienie), ostrzeżenie dla pamięci współdzielonej, przenoszenie z weryfikacją, klucze API w Keystore -->
     <string name="storage_open">Lokalizacja danych…</string>
-    <string name="storage_banner_shared">Twoje dane są we współdzielonej pamięci i mogą je czytać inne aplikacje. Dotknij, aby zmienić.</string>
-    <string name="storage_warn_shared">Uwaga: ten katalog jest we współdzielonej pamięci. Każda aplikacja z dostępem do wszystkich plików może czytać Twoje rozmowy; klucze API są chronione tylko przy włączonej opcji Keystore poniżej. Katalog przetrwa odinstalowanie aplikacji. Możesz go zostawić albo przenieść do prywatnego katalogu.</string>
+    <string name="storage_auto_migrate_opt">Przenieś dane ze współdzielonej do prywatnej pamięci automatycznie (raz, kopia i weryfikacja; stary folder zostaje)</string>
+    <string name="storage_notice_shared">Dane są w folderze Dokumenty \u2014 inne aplikacje z dostępem do plików mogą je odczytać. Zmień w Ustawieniach \u2192 Miejsce danych.</string>
+    <string name="storage_auto_migrating">Przenoszę dane do prywatnej pamięci aplikacji (kopia i weryfikacja)\u2026</string>
+    <string name="storage_auto_migrated">Dane skopiowano do prywatnej pamięci i zweryfikowano. Stary folder zostawiono; możesz go usunąć w Ustawieniach \u2192 Miejsce danych.</string>
+    <string name="storage_auto_migrate_failed">Nie udało się przenieść danych do prywatnej pamięci. Nic nie zmieniono ani nie usunięto. Możesz spróbować ponownie w Ustawieniach \u2192 Miejsce danych.</string>
+    <string name="storage_warn_shared">Ten katalog jest w pamięci współdzielonej (Dokumenty). Aplikacje z dostępem do wszystkich plików mogą czytać Twoje rozmowy; klucze API są chronione tylko przy włączonej opcji Keystore poniżej. Katalog przetrwa odinstalowanie aplikacji. Możesz go zostawić albo w każdej chwili przenieść do prywatnej pamięci.</string>
     <string name="storage_move_to_private">Przenieś do prywatnego katalogu</string>
     <string name="storage_current">Dane są teraz w:\n%1$s\n(%2$s)</string>
     <string name="storage_exposure_private">prywatny katalog aplikacji</string>
