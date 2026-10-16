@@ -1203,3 +1203,21 @@ ctest `tools.extract` (75 testów, bez sieci — strażnik gniazd).
 - Nie weszło do plastra A (plaster B/C): `wytnij` i profile (`preserve`, `flat`, …), edycja seryjna, `handoff`, `odtworz manifest.json`, zdanie i plik zadania, komander TUI, `serwuj`, pamięć podręczna i wznawianie, `workers`, `libloom` jako drugi czytnik.
 - Prywatność: wyłącznie fixture'y syntetyczne; test `test_no_real_paths_in_tool_tests_or_fixtures` i test wyjścia zbiorczego.
 
+
+## P38 — X-Port, plaster B: wycięcie, profile, manifest, CLI (2026-10-16, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plaster B”, §11 stan). ctest `tools.extract`: 114 testów
+(1 pominięty z powodem: obieg przez `libloom`), bez sieci poza atrapą dostawcy na pętli zwrotnej.
+
+- Decyzje (szczegóły i odwrócenie w §10):
+  1. `preserve` = bajty źródła ze skanera rozpiętości JSON (`jsonspan.py`); wszystko zaznaczone = identyczny plik; zip z metadanymi członków źródła. Cofnięcie: pominąć `preserve` w `cut.profiles`.
+  2. Załączniki: w `preserve` układ źródła (odwołania ważne bez zmian), w profilach i `handoff/` przepisane na ścieżki względne; tylko użyte; brakujące wymienione. Cofnięcie: `--zalaczniki copy_all|reference_only`.
+  3. Członkowie boczni wg tabeli `preserve` formatu (`keep_members`, `filter_members` po `conversation_id`), reszta pominięta z wpisem. Cofnięcie: `other_members: copy` / glob w `keep_members`.
+  4. Profile przebudowy, redakcja, operacje edycji, gramatyka zdań, ceny — wszystko jako dane (`data/profiles`, `data/redaction`, `data/edits`, `data/grammar`, `data/prices.json` pusty: cen nie zgadujemy). Cofnięcie: nakładka użytkownika.
+  5. Przepis pakietu i przepis w manifeście bez `write` (opisują treść, nie miejsce); `SOURCE_DATE_EPOCH` → identyczne bajty pakietu; `odtworz` porównuje hash i każde wyjście. Cofnięcie: —.
+  6. Model tylko po `--model`, szacunek przed wysyłką, zgoda (`--tak`/pytanie, domyślnie nie), ×10 wobec `usage.jsonl` (`--zgoda-x10`), limity `0` = brak, trasa `provider`; `loom_server` odmówiony z powodem. Cofnięcie: ustawienia `flows.model.*`.
+  7. `handoff.zip` tylko z rozmowami (importer Pythona robiłby „rozmowy” OCR z obrazów); liczniki tego, co zobaczy importer. Cofnięcie: `handoff.zip: false`.
+  8. Kody wyjścia 3/4/5/6; tryb `--zbiorczo` bez list ścieżek wyjść. Cofnięcie: —.
+- Znalezisko (do decyzji S1, nie zmieniane): `engine/importer.py` nie czyta opakowania `{"conversations": [...]}` z drzewami `mapping` (ChatGPT) — ani źródła, ani cięcia.
+- Nie weszło (plaster C lub później): komander TUI, `serwuj`, trasa `loom_server`, obieg `libloom`, OCR/ASR załączników, nazwy klastrów modelem, `move_attachments`, edycje `user:<moduł>`, `state.json`, `workers`.
+- Prywatność: tylko fixture'y syntetyczne; test wyjścia `--zbiorczo` dla `wytnij`; pakiet z redakcją nie zawiera zamaskowanych wartości w żadnym pliku (test).

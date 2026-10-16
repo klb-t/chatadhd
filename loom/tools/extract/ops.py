@@ -534,12 +534,13 @@ def op_dry_run(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             if ms is None or m.id in ms:
                 bytes_est += m.chars()
     pending = (eng.cascade.model_pending if eng.cascade else {}) or {}
-    model_est = {flow: {"grains": v.get("grains", 0), "tokens_est": _tokens_est(eng, int(v.get("chars", 0))),
-                        "cost": {"amount": None, "known": False, "note": "no price table in this slice"}} for flow, v in pending.items()}
+    model_est = eng.models().estimate({f: {"calls": int(v.get("grains", 0)), "chars": int(v.get("chars", 0))} for f, v in pending.items()}) \
+        if pending else None
     return {"counts": {"conversations": summary["conversations"], "messages": summary["messages"], "attachments": attachments,
                        "attachments_missing": missing, "chars": summary["chars"], "tokens_est": summary["tokens_est"]},
             "package_bytes_est": bytes_est, "by_service": summary["by_service"], "whole": summary["whole"], "partial": summary["partial"],
-            "model_pending": model_est, "cost_total": {"amount": 0.0, "currency": "USD", "known": True, "note": "0 — bez modelu"},
+            "model_pending": model_est,
+            "cost_total": (model_est or {}).get("total") if model_est else {"amount": 0.0, "currency": "USD", "known": True, "note": "0 — bez modelu"},
             "would_write": [] if not p.get("package") else [str(p["package"])],
             "units": [] if eng.aggregate else [{"uid": uid, "title": by[uid].title, "service": by[uid].service,
                                                 "messages": len(by[uid].messages) if ms is None else len(ms),

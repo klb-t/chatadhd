@@ -609,7 +609,9 @@ def run_recipe_face(args: argparse.Namespace, recipe: dict[str, Any], base: Opti
             recipe["steps"].append({"op": "dry_run", "by": "cli"})
     if show and not args.json:
         print(t("cli.sentence.task"), file=sys.stderr)
-        print(json.dumps({k: recipe.get(k) for k in ("sources", "steps")}, ensure_ascii=False, indent=1), file=sys.stderr)
+        shown = {"sources": len(recipe.get("sources") or []) if args.aggregate else recipe.get("sources"),  # aggregate: no paths
+                 "steps": recipe.get("steps")}
+        print(json.dumps(shown, ensure_ascii=False, indent=1), file=sys.stderr)
     if getattr(args, "plan", False) and not recipe.get("sources"):
         print(json.dumps(normalise(recipe, base_dir=base), ensure_ascii=False, indent=1))
         return 0

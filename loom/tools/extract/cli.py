@@ -473,7 +473,11 @@ def verb_recipe(args: argparse.Namespace) -> int:
         return 0
     with _engine(args) as eng:
         if args.pakiet and not args.na_sucho:
-            recipe.setdefault("steps", []).append({"op": "write", "params": {"package": args.pakiet}, "by": "cli"})
+            writes = [s for s in recipe.get("steps") or [] if s.get("op") == "write"]
+            for st in writes:  # --pakiet names the package; a recipe's own write step is redirected, never doubled
+                st["params"] = dict(st.get("params") or {}, package=args.pakiet)
+            if not writes:
+                recipe.setdefault("steps", []).append({"op": "write", "params": {"package": args.pakiet}, "by": "cli"})
         if args.na_sucho:
             recipe["steps"] = [s for s in recipe.get("steps") or [] if s.get("op") != "write"] + [{"op": "dry_run", "by": "cli"}]
         res = eng.run_recipe(recipe, base_dir=base)
