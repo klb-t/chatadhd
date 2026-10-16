@@ -46,6 +46,7 @@ class StorageActivity : AppCompatActivity() {
     private lateinit var group: RadioGroup
     private lateinit var custom: EditText
     private lateinit var wrap: CheckBox
+    private lateinit var autoMig: CheckBox
     private lateinit var applyBtn: Button
     private lateinit var cancelCopy: Button
     private lateinit var status: TextView
@@ -84,6 +85,7 @@ class StorageActivity : AppCompatActivity() {
             inputType = InputType.TYPE_TEXT_VARIATION_URI or InputType.TYPE_CLASS_TEXT
         }
         wrap = CheckBox(this).apply { setText(R.string.storage_secrets_wrap); isChecked = loc.secretsWrap }
+        autoMig = CheckBox(this).apply { setText(R.string.storage_auto_migrate_opt); isChecked = loc.autoMigrate }
         applyBtn = Button(this).apply { setText(R.string.storage_apply); setOnClickListener { onApply() } }
         cancelCopy = Button(this).apply {
             setText(R.string.storage_cancel_copy); visibility = View.GONE
@@ -91,7 +93,7 @@ class StorageActivity : AppCompatActivity() {
         }
         status = TextView(this)
         oldBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        listOf(current, warning, moveToPrivate, group, custom, wrap, applyBtn, cancelCopy, status, oldBox).forEach {
+        listOf(current, warning, moveToPrivate, group, custom, wrap, autoMig, applyBtn, cancelCopy, status, oldBox).forEach {
             root.addView(it, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
         setContentView(ScrollView(this).apply { addView(root) })
@@ -155,6 +157,7 @@ class StorageActivity : AppCompatActivity() {
     private fun onApply() {
         val kind = kindOf(group.checkedRadioButtonId)
         val customPath = custom.text.toString().trim()
+        loc.autoMigrate = autoMig.isChecked
         loc.secretsWrap = wrap.isChecked           // takes effect when the local session restarts
         if (kind == DataLocationPolicy.KIND_CUSTOM) {
             val err = DataLocationPolicy.validateCustomPath(customPath)

@@ -20,8 +20,12 @@
     <string name="conn_err_not_loom">This address does not look like a Loom server (HTTP %1$d).</string>
     <!-- F2: data location (a setting), warning for shared storage, move with verification, Keystore-sealed API keys -->
     <string name="storage_open">Data location…</string>
-    <string name="storage_banner_shared">Your data is in shared storage and other apps can read it. Tap to change.</string>
-    <string name="storage_warn_shared">Warning: this folder is in shared storage. Any app with All files access can read your conversations; API keys are protected only while the Keystore option below is on. The folder survives uninstalling the app. You can keep it or move it to private storage.</string>
+    <string name="storage_auto_migrate_opt">Move data from shared to private storage automatically (once, copy and verify; the old folder is kept)</string>
+    <string name="storage_notice_shared">Your data is in the Documents folder: other apps with file access may read it. Change it in Settings \u2192 Data location.</string>
+    <string name="storage_auto_migrating">Moving your data to the app\u0027s private storage (copy and verify)\u2026</string>
+    <string name="storage_auto_migrated">Your data was copied to private storage and verified. The old folder was kept; you can delete it in Settings \u2192 Data location.</string>
+    <string name="storage_auto_migrate_failed">Could not move your data to private storage. Nothing was changed or deleted. You can try again in Settings \u2192 Data location.</string>
+    <string name="storage_warn_shared">This folder is in shared storage (Documents). Other apps with All files access can read your conversations; API keys are protected only while the Keystore option below is on. The folder survives uninstalling the app. You can keep it or move it to private storage at any time.</string>
     <string name="storage_move_to_private">Move to private storage</string>
     <string name="storage_current">Data is now in:\n%1$s\n(%2$s)</string>
     <string name="storage_exposure_private">private to this app</string>

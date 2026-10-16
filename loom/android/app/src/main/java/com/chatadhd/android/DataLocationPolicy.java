@@ -109,6 +109,26 @@ public final class DataLocationPolicy {
         return e == Exposure.SHARED;
     }
 
+    /**
+     * One-time move of a LEGACY shared-storage data dir (derived, never chosen by the user) into the
+     * private dir. Only when: the user has not turned it off, it was not tried before, the shared dir
+     * can be read, the choice was derived (not explicit), and private holds no data yet. The source is
+     * never modified or deleted by this step.
+     */
+    public static boolean shouldAutoMigrate(Choice c, boolean sharedHasData, boolean privateHasData,
+                                            boolean enabled, boolean alreadyTried, boolean canReadShared) {
+        return c != null && enabled && !alreadyTried && canReadShared && !c.explicit
+            && KIND_SHARED.equals(c.kind) && sharedHasData && !privateHasData;
+    }
+
+    /**
+     * The calm, one-time notice (not a permanent bar) is shown only when the user picked shared
+     * storage themselves and has not seen it for this choice. The Settings screen always shows the text.
+     */
+    public static boolean showSharedNoticeOnce(Choice c, Exposure e, boolean alreadyShown) {
+        return c != null && c.explicit && needsWarning(e) && !alreadyShown;
+    }
+
     /** All-files access (MANAGE_EXTERNAL_STORAGE) is needed to use this exposure on API 30+. */
     public static boolean needsAllFilesAccess(Exposure e) {
         return e == Exposure.SHARED;
