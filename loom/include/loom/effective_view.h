@@ -81,8 +81,13 @@ Result<std::vector<Overlay>> load_overlays(const std::vector<std::filesystem::pa
 // The ROM layer of a kind: the view_kinds entry's source {profile, pointer, key?} read from the builtin runtime profile (never the user's
 // overlay of that profile). An array source is keyed by `key`. Empty source = an empty ROM layer.
 Result<Json> rom_layer(const Json& view_kind_entry);
+// The same source read the way every other reader of that profile reads it: with the user's profile overlay of `data_dir`
+// (<data_dir>/profiles/<profile>.pack; empty data_dir = builtin). effective() uses this one, so a group or scope a profile overlay
+// adds is in the view as it is in settings_fields() and the rules engine. An overlay that does not load is the error.
+Result<Json> rom_layer(const Json& view_kind_entry, const std::filesystem::path& data_dir);
 
-// The effective list of `kind` for a data directory (ROM + <root>/views/*.json). `extra_dirs`: further memories, composed after root.
+// The effective list of `kind` for a data directory (ROM + <root>/views/*.json). The ROM layer, of view_kinds too, is the source profile
+// with the user's profile overlay of `root` (rom_layer(entry, root)). `extra_dirs`: further memories, composed after root.
 // A kind that view_kinds does not know is still composed (emergent): empty ROM layer, default policy.
 Result<Effective> effective(const std::filesystem::path& root, std::string_view kind, const std::vector<std::filesystem::path>& extra_dirs = {});
 

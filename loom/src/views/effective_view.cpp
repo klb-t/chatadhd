@@ -245,12 +245,14 @@ Result<std::vector<Overlay>> load_overlays(const std::vector<std::filesystem::pa
   return all;
 }
 
-Result<Json> rom_layer(const Json& view_kind_entry) {
+Result<Json> rom_layer(const Json& view_kind_entry) { return rom_layer(view_kind_entry, {}); }
+
+Result<Json> rom_layer(const Json& view_kind_entry, const std::filesystem::path& data_dir) {
   const Json* src = json::find(view_kind_entry, "source");
   if (!src || !src->is_object() || src->empty()) return Json::object();
   const std::string profile = json::get_string(*src, "profile");
   if (profile.empty()) return Json::object();
-  LOOM_TRY_ASSIGN(auto prof, RuntimeProfile::builtin(profile));
+  LOOM_TRY_ASSIGN(auto prof, data_dir.empty() ? RuntimeProfile::builtin(profile) : RuntimeProfile::load(profile, data_dir));
   const std::string pointer = json::get_string(*src, "pointer");
   const Json* at = pointer.empty() ? &prof.values() : nullptr;
   Json holder;
@@ -278,15 +280,16 @@ Result<Effective> effective(const std::filesystem::path& root, std::string_view 
   std::vector<std::filesystem::path> dirs{root};
   dirs.insert(dirs.end(), extra_dirs.begin(), extra_dirs.end());
   LOOM_TRY_ASSIGN(auto overlays, load_overlays(dirs));
-  // view_kinds is a kind itself: ROM from the profile, default policy; its effective entries say how every other kind is read.
-  LOOM_TRY_ASSIGN(auto vk_profile, RuntimeProfile::builtin("graph_views"));
+  // view_kinds is a kind itself: ROM from the profile (with the user's profile overlay, like every source), default policy; its
+  // effective entries say how every other kind is read.
+  LOOM_TRY_ASSIGN(auto vk_profile, root.empty() ? RuntimeProfile::builtin("graph_views") : RuntimeProfile::load("graph_views", root));
   const Json vk_rom = vk_profile.values().value("view_kinds", Json::object());
   if (kind == "view_kinds") return compose(kind, vk_rom, overlays, Policy{});
   const Effective vk = compose("view_kinds", vk_rom, overlays, Policy{});
   Json rom = Json::object();
   Policy policy;
   if (const EffectiveEntry* def = vk.find(kind); def && !def->disabled) {
-    LOOM_TRY_ASSIGN(rom, rom_layer(def->value));
+    LOOM_TRY_ASSIGN(rom, rom_layer(def->value, root));
     policy = Policy::from_json(def->value.value("policy", Json::object()));
   }
   return compose(kind, rom, overlays, policy);

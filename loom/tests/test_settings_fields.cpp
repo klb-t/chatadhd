@@ -300,6 +300,10 @@ TEST_SUITE("settings_fields") {
                                    {"fields", fields}}}}.dump();
     Json doc = unwrap(settings_fields(td.path()));
     REQUIRE(doc["groups"].contains("moje"));
+    // the view engine reads the same overlaid profile: loom_view_effective("settings_groups") sees the group too
+    const auto eff = unwrap(views::effective(td.path(), "settings_groups"));
+    REQUIRE(eff.find("moje"));
+    CHECK(eff.find("moje")->value["label"]["pl"] == "Moje");
     bool moved = false;
     for (const auto& f : doc["fields"]) if (f["key"] == "theme") moved = f["human"]["group"] == "moje";
     CHECK(moved);
