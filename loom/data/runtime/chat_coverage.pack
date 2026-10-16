@@ -20,7 +20,8 @@
       "ports": "ports.*",
       "environments": "environments.*",
       "tool_source": "tool_source.*",
-      "agent": "agent.*"
+      "agent": "agent.*",
+      "memory_folder": "memory.*"
     },
     "capabilities": [
       {

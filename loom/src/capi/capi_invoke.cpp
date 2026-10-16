@@ -11,6 +11,7 @@
 #include "loom/action_table.h"
 #include "loom/chat_route.h"
 #include "loom/environments.h"
+#include "loom/memory_folder.h"
 #include "loom/tool_sources.h"
 #include "loom/media_providers.h"
 #include "loom/port_graph.h"
@@ -95,6 +96,12 @@ LOOM_API const char* loom_invoke(LoomContext* ctx, const char* port, const char*
       auto r = a == "sync"   ? environments::sync(*ctx->rt, *rj)
                : a == "list" ? environments::list(*ctx->rt, *rj)
                              : environments::can_do(*ctx->rt, *rj);
+      if (!r) return out_error(r.error());
+      return out(*r);
+    }
+    if (p == "memory_folder") {
+      // A folder into the memory tree with the full content of its files (loom/memory_folder.h, R39): action "attach_folder".
+      auto r = memory_folder::invoke(*ctx->rt, a, *rj);
       if (!r) return out_error(r.error());
       return out(*r);
     }

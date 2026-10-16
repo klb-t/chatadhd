@@ -176,7 +176,11 @@ TEST_SUITE("providers.registry") {
     ProviderRegistry reg(env.cfg, env.secrets);
     REQUIRE(reg.load_builtin());
     auto all = reg.all();
-    CHECK(all.size() == 6);
+    CHECK(all.size() == 7);  // R37: + "local" (an OpenAI-compatible server on this device)
+    auto local = reg.get("local");
+    REQUIRE(local.has_value());
+    CHECK(local->auth_secret.empty());
+    CHECK(local->base_url == "http://127.0.0.1:8080/v1");
     auto orm = reg.get("openrouter");
     REQUIRE(orm.has_value());
     CHECK(orm->base_url == "https://api.test");  // picked up from config
@@ -192,7 +196,7 @@ TEST_SUITE("providers.registry") {
 
     Json status = reg.status();
     REQUIRE(status["providers"].is_array());
-    CHECK(status["providers"].size() == 6);
+    CHECK(status["providers"].size() == 7);
     for (const auto& p : status["providers"]) {
       CHECK(!p.contains("auth_secret"));  // never leaks the secret key name via status()
     }
