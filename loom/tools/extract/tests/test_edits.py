@@ -169,3 +169,8 @@ class UserEditTest(ExtractTest):
         self.assertNotEqual(eng.recipe["steps"][-1]["op"], "edit.user", "undo removes the user edit's step")
         eng.op("redo", {})
         self.assertIn("WIDOK LISTY", [e.unit.title for e in eng.package.entries])
+        rec = eng.normalised_recipe()
+        self.assertTrue(rec["settings"]["allow_user_code"], "the recipe says it runs user code")
+        again = self.engine()
+        again.run_recipe(rec)
+        self.assertIn("WIDOK LISTY", [e.unit.title for e in again.package.entries])

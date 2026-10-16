@@ -212,6 +212,8 @@ class Engine:
         return out
 
     def normalised_recipe(self) -> dict[str, Any]:
+        if self.settings.get("allow_user_code"):  # a recipe with user code says so, or it would not replay
+            self.recipe.setdefault("settings", {})["allow_user_code"] = True
         norm = normalise(self.recipe, self.ds)
         if self.aggregate:  # privacy: no path or file name leaves an aggregate run; the content hash still identifies the archive
             by_path = {a.path: a for a in self.archives}
