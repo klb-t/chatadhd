@@ -55,6 +55,15 @@ class LoomBridge(private val webView: WebView) {
     /** Set by MainActivity: opens the native Connection screen (the web app's overflow menu entry "Połączenie"). */
     @Volatile var onOpenConnection: (() -> Unit)? = null
 
+    /**
+     * Set by MainActivity (ImportFlow): opens the system picker (kind "file" or "folder"), copies what the user chose into
+     * private storage, imports it and streams progress and the result to [callbackId]. See ImportFlow.
+     */
+    @Volatile var onPickImport: ((kind: String, title: String?, all: Boolean, callbackId: String) -> Unit)? = null
+    @Volatile var onCancelImport: ((callbackId: String) -> Unit)? = null
+    /** Set by MainActivity (ImportFlow): imports a document the page already holds a content:// URI of. */
+    @Volatile var onImportUri: ((uri: String, title: String?, callbackId: String) -> Unit)? = null
+
     @JavascriptInterface
     fun openConnection() {
         onOpenConnection?.invoke()
@@ -148,11 +157,31 @@ class LoomBridge(private val webView: WebView) {
                         finally { cancellations.remove(callbackId) }
                     }
                 }
+                "pick_import" -> {
+                    // {"kind":"file"|"folder","title"?,"all"?}: the native picker -> staged copy -> kernel import (ImportFlow)
+                    val start = onPickImport
+                    if (start == null) {
+                        LoomCallbacks.onChunk(callbackId, JSONObject().put("error", JSONObject()
+                            .put("code", "unavailable").put("message", "The file import is not available in this shell")).toString(), true)
+                    } else {
+                        val kind = if (args.optString("kind") == "folder") "folder" else "file"
+                        val title = if (args.isNull("title")) null else args.optString("title").ifEmpty { null }
+                        cancellations[callbackId] = { onCancelImport?.invoke(callbackId); Unit }
+                        start(kind, title, args.optBoolean("all", false), callbackId)
+                    }
+                }
                 "import_file" -> {
                     // Parse required arguments before queuing: exceptions
                     // thrown inside execute are outside this method's catch.
                     val path = args.getString("path")
-                    val title = args.optString("title").ifEmpty { null }
+                    val title = if (args.isNull("title")) null else args.optString("title").ifEmpty { null }
+                    val viaUri = onImportUri
+                    if (path.startsWith("content://") && viaUri != null) {
+                        // the kernel opens paths, not URIs: ImportFlow copies the document first
+                        cancellations[callbackId] = { onCancelImport?.invoke(callbackId); Unit }
+                        viaUri(path, title, callbackId)
+                        return
+                    }
                     executor.execute {
                         try { LoomNative.nativeImportFile(path, title, callbackId) }
                         catch (e: Exception) {

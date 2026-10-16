@@ -43,6 +43,41 @@ TEST_SUITE("import") {
     CHECK(imp.detect_format(td.path() / "plain.dat") == "unknown");
   }
 
+  TEST_CASE("import_file: a copy staged by the Android picker (any name, no extension) imports like the original") {
+    // The phone copies a picked document to a private file named after the display name (spaces, "(1)", Polish letters,
+    // unknown or no extension, ".part"-free): the importer must detect the format from the content then.
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "d.db");
+    EventBus bus;
+    ConversationImporter imp(*db, bus);
+    namespace fs = std::filesystem;
+    const fs::path exports = fs::path(LOOM_TEST_FIXTURES) / "exports";
+    struct Case {
+      fs::path from;
+      std::u8string to;
+    };
+    const Case cases[] = {
+        {exports / "openai_2026_sharded.zip", u8"eksport ChatGPT (1)"},
+        {exports / "anthropic_2026_full.zip", u8"Pobrane żółć 2026.bin"},
+        {exports / "anthropic_single_chat.json", u8"claude chat.json.download"},
+        {exports / "openai_single_conversations.json", u8"conversations"},
+        {fixture("claude_export.json"), u8"claude_export.tmp"},
+    };
+    int n = 0;
+    for (const auto& c : cases) {
+      auto original = unwrap(imp.import_file(c.from));
+      const fs::path staged = td.path() / std::to_string(++n) / fs::path(c.to);
+      fs::create_directories(staged.parent_path());
+      fs::copy_file(c.from, staged);
+      auto copy = unwrap(imp.import_file(staged));
+      INFO("staged name #" << n);
+      CHECK(!original.conversations.empty());
+      CHECK(copy.conversations.size() == original.conversations.size());
+      CHECK(copy.messages == original.messages);
+      CHECK(copy.format == original.format);
+    }
+  }
+
   TEST_CASE("import_file: ChatGPT mapping tree (roots, forks, skipped system/tool roles)") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "d.db");

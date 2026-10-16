@@ -1,6 +1,18 @@
 import { useCallback, useRef, useState } from "react";
 import { api } from "../api";
 import type { ImportChunk } from "../api/types";
+import { dataLabel, useShellLanguage } from "../shell/text";
+
+const WORDS = {
+  pickFile: { en: "Choose a file…", pl: "Wybierz plik…" },
+  pickFolder: { en: "Choose a folder…", pl: "Wybierz folder…" },
+  pickHint: {
+    en: "ZIP or JSON exports of Claude.ai and ChatGPT, JSONL, HTML, MHT, SQLite, Markdown, text, screenshots. A folder imports every file it can read.",
+    pl: "Eksporty ZIP lub JSON z Claude.ai i ChatGPT, JSONL, HTML, MHT, SQLite, Markdown, tekst, zrzuty ekranu. Folder importuje każdy plik, który da się odczytać.",
+  },
+  title: { en: "Title override (optional)", pl: "Własny tytuł (opcjonalnie)" },
+  importing: { en: "Importing…", pl: "Importuję…" },
+} as const;
 
 interface Props {
   onImported: () => void;
@@ -15,13 +27,16 @@ export default function ImportPanel({ onImported }: Props) {
   const [busy, setBusy] = useState(false);
   const unsubRef = useRef<(() => void) | null>(null);
 
-  const start = useCallback(() => {
-    if (!file) return;
+  const language = useShellLanguage();
+  const w = (k: keyof typeof WORDS) => dataLabel(WORDS[k], language, WORDS[k].en);
+  const native = typeof api.pickImport === "function";
+
+  const run = useCallback((begin: (h: Parameters<typeof api.importFile>[2]) => () => void) => {
     setBusy(true);
     setProgress(null);
     setResult(null);
     setError(null);
-    unsubRef.current = api.importFile(file, title || undefined, {
+    unsubRef.current = begin({
       onChunk: (chunk: ImportChunk) => {
         if (chunk.type === "progress") {
           setProgress({ current: chunk.current, total: chunk.total, status: chunk.status });
@@ -40,12 +55,27 @@ export default function ImportPanel({ onImported }: Props) {
       },
       onDone: () => setBusy(false),
     });
-  }, [file, title, onImported]);
+  }, [onImported]);
+  const start = useCallback(() => {
+    if (file) run((h) => api.importFile(file, title || undefined, h));
+  }, [file, title, run]);
+  const pick = useCallback((kind: "file" | "folder") => {
+    if (api.pickImport) run((h) => api.pickImport!(kind, title || undefined, h));
+  }, [title, run]);
 
   const pct = progress && progress.total > 0 ? Math.round((progress.current / progress.total) * 100) : null;
 
   return (
     <div data-testid="import-panel">
+      {native ? (
+      <div className="form-row">
+        <div className="empty-state" style={{ textAlign: "left", padding: 0 }}>{w("pickHint")}</div>
+        <button className="primary" onClick={() => pick("file")} disabled={busy} data-testid="import-pick-file">
+          {busy ? w("importing") : w("pickFile")}
+        </button>{" "}
+        <button onClick={() => pick("folder")} disabled={busy} data-testid="import-pick-folder">{w("pickFolder")}</button>
+      </div>
+      ) : (
       <div className="form-row">
         <label htmlFor="import-file">
           File (ZIP, JSON, JSONL, HTML, MHT, SQLite, Markdown, text, screenshot)
@@ -57,13 +87,16 @@ export default function ImportPanel({ onImported }: Props) {
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
         />
       </div>
+      )}
       <div className="form-row">
-        <label htmlFor="import-title">Title override (optional)</label>
+        <label htmlFor="import-title">{w("title")}</label>
         <input id="import-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
       </div>
+      {!native && (
       <button className="primary" onClick={start} disabled={!file || busy} data-testid="start-import">
         {busy ? "Importing…" : "Import"}
       </button>
+      )}
 
       {progress && (
         <div style={{ marginTop: 12 }} data-testid="import-progress">
