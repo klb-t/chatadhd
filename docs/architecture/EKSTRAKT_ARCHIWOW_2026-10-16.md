@@ -1392,6 +1392,16 @@ uszczegółowienie mechanizmu.
 | Serwowanie tylko na pętli zwrotnej z tokenem na uruchomienie; brak sieci wychodzącej | §2; API służy testom, skryptom, portowi i Warsztatowi | `--adres` jawnie (z ostrzeżeniem) |
 | **Prywatność DIP26** (właściciel 2026-10-12): prawdziwe eksporty preferowane w lokalnych przebiegach odbiorczych; syntetyczne jako kontrola; w repo/testach/dziennikach/raportach/transkryptach tylko syntetyczne; agent na prawdziwych danych tylko w `--zbiorczo`; nowy dostawca = pytanie tak/nie | słowa właściciela; jego dane | — (decyzja właściciela) |
 | Keymap, akcje, układ, kolory, teksty komandera jako dane z nakładką użytkownika; profile `fkeys` i `vim` dostarczone | R42, R47 | — (dane) |
+| **Plaster A, 2026-10-16 (S1, wykonane):** krok przepisu jest samoopisowy — `params` zapisane w całości z `params_source` per parametr (`step` \| `preset:<ścieżka>` \| `op_default`); `normalise` szanuje zapisane pochodzenie; odtworzenie z `recipe.json` pakietu daje ten sam `reproducible_hash` (test) | bez tego odtworzenie przepisu z pakietu oznaczało presety jako `step` i hash się różnił | `params_source` można pominąć w nakładce `ops.json` (`record_sources: false`) — wtedy odtworzenie bierze bieżące presety |
+| Plaster A: odwołania do załączników z części treści ChatGPT (`image_asset_pointer` itp.) są rejestrowane na jednostce (rozwiązane albo brakujące), więc licznik `attachment` jest ≥ wyroczni C++ (13 vs 7 na `openai_2026_sharded.zip`); `branch` (liście) może przekraczać wyrocznię, gdy mapping ma liście bez wiadomości (11 vs 9) — test parytetu sprawdza równość rozmów, wiadomości, rozwidleń i ścieżki bieżącej, a te dwa liczniki jako `>=` | słowa właściciela: nic nie znika po cichu; brakujące załączniki wymienione | `attachments.from_parts: false` w pliku formatu; port jądra może przyjąć tę samą regułę |
+| Plaster A: tryb `--zbiorczo` (agent na prawdziwych eksportach): archiwa numerowane `archive-N`, w przepisie `sources` = `archive-N:sha256:<hash treści>`, bez ścieżek, nazw członków, tytułów, tekstów, lokalizatorów, powodów dopasowań, terminów kontynuacji i klastrów (tylko liczby); test strażnika sprawdza wyjście na fixture'ach listą ciągów zakazanych | DIP26 | `--zbiorczo` jest opcją; tryb pełny zostaje presetem |
+| Plaster A: `write` zapisuje to, co plaster produkuje (`inventory.json`, `timeline.json/.jsonl`, `diff.json`, `selection.json`, `explain.jsonl`, `clusters.json`, `decisions.json`, `recipe.json`, `units.jsonl`, `RAPORT.md`, `manifest.json`); `reproducible_hash` = sha256 par `ścieżka:sha256` wszystkich wyjść poza manifestem; `run.started/finished` poza haszem | determinizm sprawdzalny już przed plastrem B (`preserve`/profile dopiszą wyjścia do tej samej listy) | — |
+| Plaster A: `roznica` wobec pakietu czyta jego migawkę `units.jsonl` (schemat `loom.extract.unit/1`), wobec archiwów — scan→read→merge z tymi samymi ustawieniami; tożsamość `ext_id` (preset) lub `content_hash` | przebieg przyrostowy bez ponownego czytania starego eksportu | `write.units_snapshot: false` (wtedy różnica tylko wobec archiwów) |
+| Plaster A: poziomy z modelem w kaskadzie są **liczone** (ziarna, znaki, szacunek tokenów), nigdy wołane; `--model` tylko włącza zliczanie; strażnik gniazd w testach blokuje każde połączenie poza pętlą zwrotną | zero sieci w plastrze A; wywołania, trasa, szacunek ceny i ×10 przychodzą w plastrze B | — |
+| Plaster A: strefa dla stempli bez strefy (`timeline.assume_zone`) przyjmuje też nazwy IANA przez `zoneinfo` (biblioteka standardowa); brak bazy stref = jawny błąd z nazwą | właściciel ma stemple lokalne bez strefy | preset `UTC` |
+| Plaster A: poziom wektorowy bez indeksu jest **pominięty z powodem** (`skipped`), nie oceniony na 0 — brak indeksu nie wyklucza | wykluczenie z braku danych byłoby decyzją za użytkownika | — |
+| Plaster A: granica końcowa zakresu dat (`created:..2026-05`, `--do`) jest wyłączna (pierwsza chwila po okresie), początkowa włączna | jednoznaczne okna miesięczne/dzienne | — |
+| Plaster A: fixture'y nowych formatów z `loom/tools/gen_extract_fixtures.py` (Claude Code z narzędziami/sidechainem/kompaktowaniem/wierszami nieznanymi i niepoprawnymi, Gemini JSON+HTML, Grok dwa kształty, pakiet grafu, `loom.export`, katalog mieszany z mieszanymi stemplami, dwa eksporty jednego konta, duplikat, kontynuacja ChatGPT→Claude); `EXPECTED.json` liczony z danych generatora, nie przez czytniki; ctest `tools.extract` (75 testów, `python3 -I -m unittest`) | §9; prywatność | — |
 
 ## 11. Przyrosty
 
@@ -1428,6 +1438,16 @@ agent). Dawne P38.1–P38.5 mieszczą się w nich w tej kolejności.
    w plikach formatów), port jądra `archive_extract`, akcja czatu, `obserwuj`. Bramka: test
    parytetu zielony; `test_commander_curses` zielony tam, gdzie jest pty, pominięty z powodem
    w CI. Właściciel dostaje: X-Port Commander.
+
+**Stan 2026-10-16 (S1):** plaster A wykonany na gałęzi `claude/p38-archive-extract` — `loom/tools/extract/`
+(silnik + rejestr operacji `data/ops.json`, przepisy, czytniki wszystkich formatów z §3.4 plus Gemini/Grok jako
+hipotezy, `merge`, `inventory`, `timeline`, `diff`, kryteria, L0–L2, język zaznaczania, `expand`, decyzje ręczne
+z propozycjami, klastry, i18n pl/en, CLI z czasownikami `inwentarz`, `os-czasu`, `roznica`, `szukaj`, `wyjasnij`,
+`zaznacz`, `klastry`, `przepis`, `formaty`, `operacje`; `write` pakietu plastra A z manifestem i `RAPORT.md`);
+bramka: `ctest -R tools.extract` zielona lokalnie. Z plastra A **nie** weszły jeszcze: `zdanie` (§4.2) i plik zadania
+TOML jako osobny czasownik (przepis TOML działa), `wyjasnij` jako osobny plik `explain`-only, `odtworz manifest.json`
+(odtwarzanie idzie przez `przepis uruchom recipe.json` pakietu), pamięć podręczna osadzeń i `state.json` wznawiania
+(§3.6), `workers` równoległe (§3.7 — porządek wyjścia i tak deterministyczny), `libloom` jako drugi czytnik.
 
 Otwarte (do zmierzenia, nie do zgadywania): rzeczywisty kształt eksportów Gemini i Grok;
 pełność `thinking` w bieżących eksportach Claude; czy aplikacje źródłowe importują własny format

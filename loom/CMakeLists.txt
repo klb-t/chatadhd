@@ -331,6 +331,15 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(research.structure PROPERTIES
       ENVIRONMENT "${_loom_python_env};LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=$<TARGET_FILE:loom_candidate_graph_native_tool>"
       TIMEOUT 300)
+    # X-Port archive-extract tool (loom/tools/extract): stdlib-only unittest suite on synthetic
+    # fixtures (loom/tests/fixtures/extract, exports, import); no network (socket guard in setUp);
+    # optional deps (curses, libloom) make their tests SKIP with a visible reason, never fail.
+    add_test(NAME tools.extract
+      COMMAND ${Python3_EXECUTABLE} -I -m unittest discover
+        -s ${LOOM_ROOT}/tools/extract/tests -p "test_*.py")
+    set_tests_properties(tools.extract PROPERTIES
+      ENVIRONMENT "${_loom_python_env};TERM=xterm-256color"
+      TIMEOUT 600)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
   endif()

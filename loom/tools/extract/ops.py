@@ -48,6 +48,9 @@ def op_scan(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     if not eng.sources:
         raise ValueError("scan: no sources (set_sources or recipe.sources)")
     eng.archives = _sources.scan(eng.sources, catalog=eng.catalog, nested_limit=int(p.get("nested_limit") or 0))
+    if eng.aggregate:  # aggregate mode: no file name leaves the engine, archives are numbered
+        for i, a in enumerate(eng.archives, 1):
+            a.label = f"archive-{i}"
     eng.units_raw, eng.units, eng.merge_result = [], [], None
     members = sum(len(a.members) for a in eng.archives)
     unknown = sum(1 for a in eng.archives for m in a.members if not m.format and m.kind not in ("asset", "container"))
@@ -106,6 +109,10 @@ def op_timeline(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         burst_ratio=p.get("burst_ratio"), window=(lo, hi), shift_seconds=shift, anonymise=bool(p.get("anonymise")),
         granularity=p.get("granularity"), continuations=p.get("continuations"), lex=eng.lex)
     tl = eng.timeline
+    if eng.aggregate:  # shared terms are content words: only their number leaves an aggregate run
+        for c in tl.get("continuations") or []:
+            if isinstance(c.get("shared_terms"), list):
+                c["shared_terms"] = len(c["shared_terms"])
     return {"counts": {"rows": len(eng.timeline_rows), "buckets": len((tl.get("buckets") or {}).get("rows") or []),
                        "gaps": len(tl.get("gaps") or []), "bursts": len(tl.get("bursts") or []),
                        "continuations": len(tl.get("continuations") or [])},
@@ -404,13 +411,29 @@ def op_expand(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             "preset": res.preset}
 
 
+def _public_meta(meta: Optional[dict[str, Any]], aggregate: bool) -> Optional[dict[str, Any]]:
+    if meta is None or not aggregate:
+        return meta
+    return {k: v for k, v in meta.items() if k not in ("reasons", "like")}
+
+
+def public_clusters(eng: Any) -> dict[str, Any]:
+    """Clusters as they may leave the engine: in aggregate mode the content terms become a count."""
+    doc = eng.clusters or {}
+    if not eng.aggregate:
+        return doc
+    out = dict(doc)
+    out["clusters"] = [dict(c, top_terms=len(c.get("top_terms") or []), sample_titles=[]) for c in doc.get("clusters") or []]
+    return out
+
+
 @op("clusters")
 def op_clusters(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.ensure_units()
     eng.clusters = _cluster.discover(eng.units, eng.ds, eng.lex, min_conversations=p.get("min_conversations"),
                                      top_terms=p.get("top_terms"), max_clusters=p.get("max_clusters"),
                                      min_similarity=p.get("min_similarity"), aggregate=eng.aggregate)
-    return {"counts": dict(eng.clusters["counts"]), "clusters": eng.clusters["clusters"]}
+    return {"counts": dict(eng.clusters["counts"]), "clusters": public_clusters(eng)["clusters"]}
 
 
 # ───────────────────────────── decisions ─────────────────────────────
@@ -542,22 +565,22 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     for r in rows:
         rr = dict(r)
         if aggregate:
-            rr.pop("title", None)
-            rr.pop("text", None)
+            for k in ("title", "text", "locator", "archive"):
+                rr.pop(k, None)
         buf.write(_timeline.ts_json(rr) + "\n")
     put("timeline.jsonl", buf.getvalue())
     if eng.diff is not None:
         put("diff.json", _json_text(eng.diff))
     if eng.clusters is not None:
-        put("clusters.json", _json_text(eng.clusters))
+        put("clusters.json", _json_text(public_clusters(eng)))
     sel_doc = {"schema": "loom.extract.selection/1", "summary": eng.selection_summary(),
                "units": {uid: {"messages": (sorted(ms) if ms is not None else None),
                                "reasons": [] if aggregate else eng.selection.reasons.get(uid, []),
-                               "meta": eng.selection_meta.get(uid)}
+                               "meta": _public_meta(eng.selection_meta.get(uid), aggregate)}
                          for uid, ms in sorted(eng.selection.units.items())},
                "expand": eng.expand_result,
                "cascade": eng.cascade.as_dict() if eng.cascade else None,
-               "decisions": {uid: ({k: v for k, v in d.items() if k not in ("title", "reasons")} if aggregate else d)
+               "decisions": {uid: ({k: v for k, v in d.items() if k not in ("title", "reasons", "manual")} if aggregate else d)
                              for uid, d in sorted(eng.unit_decisions.items())}}
     put("selection.json", _json_text(sel_doc))
     if p.get("explain", True) and not aggregate:
@@ -565,7 +588,7 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     put("decisions.json", _json_text(eng.decisions.as_dict()))
     if p.get("units_snapshot", True) and not aggregate:
         put("units.jsonl", "".join(json.dumps(u.as_dict(), ensure_ascii=False) + "\n" for u in eng.units))
-    recipe_norm = normalise(eng.recipe, eng.ds)
+    recipe_norm = eng.normalised_recipe()
     put("recipe.json", _json_text(recipe_norm))
     report = build_report(eng, aggregate=aggregate)
     put("RAPORT.md", report)

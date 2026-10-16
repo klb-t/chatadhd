@@ -18,6 +18,7 @@ _POINTER_RE = re.compile(r"(file[-_][A-Za-z0-9_-]+)")
 def pointer_id(value: Any) -> Optional[str]:
     if not isinstance(value, str):
         return None
+    value = value.split("://", 1)[-1]  # file-service://file-X, sediment://file-X → file-X
     m = _POINTER_RE.search(value)
     return m.group(1) if m else value.rsplit("/", 1)[-1] or None
 
@@ -189,6 +190,12 @@ class ChatGPTReader(Reader):
             if not isinstance(att, dict):
                 continue
             ref = pointer_id(att.get("id")) or att.get("name") or "?"
+            seen = next((a for a in u.attachments if a.ref == ref and a.message == m.id), None)
+            if seen is not None:  # the same pointer already came from a content part: merge, do not count twice
+                seen.name = seen.name or att.get("name")
+                seen.mime = seen.mime or att.get("mime_type") or att.get("mimeType")
+                seen.size = seen.size if seen.size is not None else att.get("size")
+                continue
             a = Attachment(ref=ref, name=att.get("name"), mime=att.get("mime_type") or att.get("mimeType"),
                            size=att.get("size"), status="reference", message=m.id)
             u.attachments.append(a)

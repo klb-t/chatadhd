@@ -313,6 +313,10 @@ class Parser:
                 m2 = re.fullmatch(r"([^±+~]+?)\s*(?:(?:±|\+-|~)\s*(\d+(?:\.\d+)?)([dhmw])?)?", value)
                 if not m2:
                     raise ExprError("around: expected DATE±N[d|h]", pos, self.text)
+                try:
+                    ts.parse_date_bound(m2.group(1))
+                except ValueError as exc:
+                    raise ExprError(f"around: {exc}", pos, self.text) from None
                 return {"t": "around", "date": m2.group(1), "n": m2.group(2), "unit": m2.group(3) or "d", "pos": pos}
             if f == "week-of":
                 return {"t": "week_of", "term": value, "pos": pos}

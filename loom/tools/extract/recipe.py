@@ -81,13 +81,15 @@ def new_recipe(sources: list[str], *, ident: str = "recipe", settings: Optional[
 
 
 def add_step(recipe: dict[str, Any], op: str, params: Optional[dict[str, Any]] = None, *, by: str = "api",
-             at: Optional[str] = None, note: Optional[str] = None) -> dict[str, Any]:
+             at: Optional[str] = None, note: Optional[str] = None, params_source: Optional[dict[str, str]] = None) -> dict[str, Any]:
     steps = recipe.setdefault("steps", [])
     used = {s.get("id") for s in steps}
     n = len(steps) + 1
     while f"s{n}" in used:
         n += 1
     step: dict[str, Any] = {"id": f"s{n}", "op": op, "params": dict(params or {}), "by": by}
+    if params_source:
+        step["params_source"] = {k: v for k, v in params_source.items() if k in step["params"]}
     if at:
         step["at"] = at
     if note:
@@ -202,7 +204,8 @@ def normalise(recipe: dict[str, Any], ds: Optional[DataStore] = None, *, base_di
         used.add(sid)
         spec = reg["ops"][step["op"]]
         params = dict(step.get("params") or {})
-        source: dict[str, str] = {k: "step" for k in params}
+        prior = step.get("params_source") if isinstance(step.get("params_source"), dict) else {}
+        source: dict[str, str] = {k: str(prior.get(k, "step")) for k in params}  # a recorded origin is kept
         for name, ps in (spec.get("params") or {}).items():
             if name in params:
                 continue

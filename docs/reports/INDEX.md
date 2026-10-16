@@ -1186,3 +1186,20 @@ the earlier computation; never delete historical runs to downgrade.
   11. Kroki przepływów jako opis (nie wykonanie) do P37. Cofnięcie: usunąć `human.steps`.
   12. Propozycja modelu przy polu = „planowane” w M1. Cofnięcie: gdy powstaną dane `hypothesis.setting_key`, chip staje się żywy bez zmiany UI.
 - Proces: jedna pozycja pracy naraz (agent w worktree → przegląd nastawiony na obalenie → bramka → FF main); zmiana packa = regeneracja osadzonych danych w tym samym commicie.
+
+## P38 — X-Port, plaster A: silnik ekstraktu archiwów (2026-10-16, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 tabela decyzji, §11 stan). Pakiet `loom/tools/extract/`
+(`python3 -m loom.tools.extract`), fixture'y `loom/tests/fixtures/extract/` z `loom/tools/gen_extract_fixtures.py`,
+ctest `tools.extract` (75 testów, bez sieci — strażnik gniazd).
+
+- Decyzje (szczegóły i odwrócenie w tabeli §10 specyfikacji):
+  1. Jeden silnik (`engine.py`) + rejestr operacji jako dane (`data/ops.json`); każda operacja = krok przepisu z pełnymi parametrami i ich pochodzeniem (`params_source`). Cofnięcie: `record_sources: false`.
+  2. Adaptery na `engine/importer.py` (formaty tekstowe) i bezstratne przejście drzew sprawdzane wyrocznią `exports/EXPECTED.json`; różnice udokumentowane: załączniki z części treści (≥), liście (≥). Cofnięcie: `attachments.from_parts: false` w pliku formatu.
+  3. Tryb `--zbiorczo` nie wypuszcza ścieżek, nazw, tytułów, tekstów ani terminów; `sources` w przepisie = `archive-N:sha256`. Cofnięcie: tryb pełny jest presetem.
+  4. Pakiet plastra A z `reproducible_hash` wszystkich wyjść; `roznica` wobec pakietu czyta `units.jsonl`. Cofnięcie: `write.units_snapshot: false`.
+  5. Poziomy z modelem liczone, nie wołane (plaster B: trasa, szacunek, ×10, dziennik). Cofnięcie: —.
+  6. Strefy IANA przez `zoneinfo`; granica końcowa zakresu dat wyłączna; poziom wektorowy bez indeksu pominięty z powodem. Cofnięcie: presety `assume_zone = UTC`; —; —.
+- Nie weszło do plastra A (plaster B/C): `wytnij` i profile (`preserve`, `flat`, …), edycja seryjna, `handoff`, `odtworz manifest.json`, zdanie i plik zadania, komander TUI, `serwuj`, pamięć podręczna i wznawianie, `workers`, `libloom` jako drugi czytnik.
+- Prywatność: wyłącznie fixture'y syntetyczne; test `test_no_real_paths_in_tool_tests_or_fixtures` i test wyjścia zbiorczego.
+

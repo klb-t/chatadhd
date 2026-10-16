@@ -39,7 +39,13 @@ def parse_zone(spec: Optional[str]) -> timezone:
         return timezone.utc
     m = re.match(r"^([+-])(\d{2}):?(\d{2})$", spec)
     if not m:
-        raise ValueError(f"unknown zone spec: {spec!r} (use UTC or +HH:MM)")
+        if "/" in spec or spec.isalpha():  # IANA name (Europe/Warsaw) through the standard library
+            try:
+                from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+                return ZoneInfo(spec)  # type: ignore[return-value]
+            except (ImportError, ZoneInfoNotFoundError, ValueError) as exc:
+                raise ValueError(f"unknown zone {spec!r}: {exc} (use UTC, +HH:MM or an IANA name with tzdata installed)") from None
+        raise ValueError(f"unknown zone spec: {spec!r} (use UTC, +HH:MM or an IANA name)")
     sign = 1 if m.group(1) == "+" else -1
     return timezone(sign * timedelta(hours=int(m.group(2)), minutes=int(m.group(3))))
 

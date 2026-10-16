@@ -126,12 +126,16 @@ class Engine:
             self.op("merge", by="engine")
 
     # -- ops --------------------------------------------------------------------
-    def op(self, name: str, params: Optional[dict[str, Any]] = None, *, by: str = "api", note: Optional[str] = None) -> dict[str, Any]:
+    def op(self, name: str, params: Optional[dict[str, Any]] = None, *, by: str = "api", note: Optional[str] = None,
+           sources: Optional[dict[str, str]] = None) -> dict[str, Any]:
         from . import ops as _ops  # local import: ops imports this module's types
         spec = op_spec(name, self.ds)
         params = dict(params or {})
-        # presets and defaults, written out so the recipe says where each value came from
+        # presets and defaults, written out so the recipe says where each value came from; a replayed
+        # step brings its recorded origins along, so the recipe stays byte-identical after a replay
         source: dict[str, str] = {k: "step" for k in params}
+        if sources:
+            source.update({k: str(v) for k, v in sources.items() if k in params})
         for pname, ps in (spec.get("params") or {}).items():
             if pname in params:
                 continue
@@ -161,12 +165,11 @@ class Engine:
         result = dict(result or {})
         result.setdefault("op", name)
         result["seconds"] = round(time.time() - t0, 4)
-        if spec.get("records", True) and by != "engine":
-            step = add_step(self.recipe, name, {k: v for k, v in params.items() if source.get(k) == "step"}, by=by, note=note)
-            result["step"] = step["id"]
-        elif spec.get("records", True) and by == "engine":
-            # implicit pipeline steps are recorded too, marked as such, so the recipe is complete
-            step = add_step(self.recipe, name, {}, by="recipe", note="implicit")
+        if spec.get("records", True):
+            # implicit pipeline steps (by="engine") are recorded too, marked as such, so the recipe is complete;
+            # every step carries all its parameters with their origin (step | preset:… | op_default)
+            step = add_step(self.recipe, name, params, by="recipe" if by == "engine" else by,
+                            note="implicit" if by == "engine" else note, params_source=source)
             result["step"] = step["id"]
         self.results.append({"op": name, "by": by, "summary": {k: v for k, v in result.items() if k in ("counts", "step", "seconds")}})
         self.emit("op.done", op=name, seconds=result["seconds"])
@@ -183,12 +186,18 @@ class Engine:
         self.recipe["views"], self.recipe["bookmarks"], self.recipe["tags"] = norm.get("views", []), norm.get("bookmarks", []), norm.get("tags", {})
         out: list[dict[str, Any]] = []
         for step in norm["steps"]:
-            params = {k: v for k, v in step["params"].items() if step.get("params_source", {}).get(k, "step") == "step"}
-            out.append(self.op(step["op"], params, by=by if step.get("by") in (None, "recipe") else step["by"], note=step.get("note")))
+            out.append(self.op(step["op"], dict(step["params"]), by=by if step.get("by") in (None, "recipe") else step["by"],
+                               note=step.get("note"), sources=step.get("params_source")))
         return out
 
     def normalised_recipe(self) -> dict[str, Any]:
-        return normalise(self.recipe, self.ds)
+        norm = normalise(self.recipe, self.ds)
+        if self.aggregate:  # privacy: no path or file name leaves an aggregate run; the content hash still identifies the archive
+            by_path = {a.path: a for a in self.archives}
+            norm["sources"] = [f"{by_path[s].label}:sha256:{by_path[s].sha256}" if s in by_path else f"source-{i + 1}"
+                               for i, s in enumerate(norm.get("sources") or [])]
+            norm["sources_note"] = "aggregate mode: sources replaced by archive labels and content hashes"
+        return norm
 
     # -- selection ---------------------------------------------------------------
     def apply_selection(self, new: Selection, mode: str, meta: Optional[dict[str, dict[str, Any]]] = None) -> dict[str, int]:

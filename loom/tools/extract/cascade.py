@@ -247,6 +247,8 @@ class Cascade:
     def _level_vectors(self, grain: Grain, level: dict[str, Any], scores: dict[str, tuple[float, str]]) -> LevelOutcome:
         if not self.criteria.vectors:
             return LevelOutcome(level["id"], level["flow"], None, None, skipped="no vector queries in criteria")
+        if self.vectors is None:
+            return LevelOutcome(level["id"], level["flow"], None, None, skipped="no vector index (run with vectors enabled)")
         s, q = scores.get(grain.id, (0.0, ""))
         thr = getattr(self, "_vector_threshold", 0.35)
         # similarity → score: below threshold scales into the exclude band, above into include
