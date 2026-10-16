@@ -320,14 +320,28 @@ TEST_SUITE("settings_fields") {
     };
     REQUIRE(doc["level_evidence"]["chain"].is_array());
     REQUIRE(doc["level_evidence"]["turn"].is_array());
+    REQUIRE(doc["level_evidence"]["installation"].is_array());
     // the shipped data: every declared level has its evidence (the problems list is empty), and the evidence names real keys
     std::set<std::string> keys;
     for (const auto& f : doc["fields"]) keys.insert(f["key"].get<std::string>());
-    for (const char* list : {"chain", "turn"})
+    std::set<std::string> refs = keys;  // installation evidence may name a profile value (<profile><pointer>)
+    for (const auto& p : doc["profile_values"]) refs.insert(p["profile"].get<std::string>() + p["pointer"].get<std::string>());
+    for (const char* list : {"chain", "turn", "installation"})
       for (const auto& k : doc["level_evidence"][list]) {
         INFO("level_evidence.", list, " names ", k.get<std::string>());
-        CHECK(keys.count(k.get<std::string>()) == 1);
+        CHECK((std::string(list) == "installation" ? refs : keys).count(k.get<std::string>()) == 1);
       }
+    // the shipped levels name a writer the resolver reads: a profile value is set only in its profile (installation), a
+    // config-only key only in config.json (person)
+    for (const auto& p : doc["profile_values"]) CHECK(p["human"]["levels"] == Json::array({"installation"}));
+    for (const auto& f : doc["fields"]) {
+      INFO(f["key"].get<std::string>());
+      bool in_chain = false;
+      for (const auto& k : doc["level_evidence"]["chain"]) in_chain = in_chain || k == f["key"];
+      bool installation = false;
+      for (const auto& l : f["human"]["levels"]) installation = installation || l == "installation";
+      if (!in_chain) CHECK_FALSE(installation);
+    }
     // a claim without evidence is a problem naming the level and the field
     Json claim = doc;
     for (auto& f : claim["fields"]) if (f["key"] == "theme") f["human"]["levels"] = Json::array({"installation", "person", "project", "conversation", "turn"});
@@ -335,10 +349,16 @@ TEST_SUITE("settings_fields") {
     CHECK(has(problems, "level 'project' without a chain-resolved reader (level_evidence.chain): config:theme"));
     CHECK(has(problems, "level 'conversation' without a chain-resolved reader (level_evidence.chain): config:theme"));
     CHECK(has(problems, "level 'turn' without a per-request option (level_evidence.turn): config:theme"));
+    CHECK(has(problems, "level 'installation' without a writer (level_evidence.installation): config:theme"));
     // the evidence itself is data: adding the key to it makes the same claim consistent
     claim["level_evidence"]["chain"].push_back("theme");
     claim["level_evidence"]["turn"].push_back("theme");
+    claim["level_evidence"]["installation"].push_back("theme");
     CHECK_FALSE(has(settings_fields_problems(claim), "config:theme"));
+    // a profile value is never set in config.json: `person` on it is a problem
+    Json person = doc;
+    person["profile_values"][0]["human"]["levels"] = Json::array({"installation", "person"});
+    CHECK(has(settings_fields_problems(person), "level 'person' on a profile value (its value lives in the profile, never in config.json): profile value worker/batch_threshold"));
     // a role chip never dangles: unknown to ports.pack and without role_status is a problem
     Json role = doc;
     role["fields"][0]["human"]["role"] = "no.such.role";

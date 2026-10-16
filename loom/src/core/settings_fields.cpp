@@ -203,11 +203,13 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
   } else {
     out.push_back("ports profile unavailable: " + ports.error().message);
   }
-  // Evidence for the levels project/conversation (a chain-resolved reader) and turn (a per-request wire option): data of the pack.
+  // Evidence for the levels project/conversation (a chain-resolved reader), turn (a per-request wire option) and installation (a
+  // writer of the installation layer: the runtime-profile preset or a user rule at that scope): data of the pack.
   const Json* evidence = json::find(doc, "level_evidence");
   const Json* chain_keys = evidence ? json::find(*evidence, "chain") : nullptr;
   const Json* turn_keys = evidence ? json::find(*evidence, "turn") : nullptr;
-  if (!chain_keys || !turn_keys) out.push_back("no level_evidence (chain, turn)");
+  const Json* installation_keys = evidence ? json::find(*evidence, "installation") : nullptr;
+  if (!chain_keys || !turn_keys || !installation_keys) out.push_back("no level_evidence (chain, turn, installation)");
   const Json* groups = json::find(doc, "groups");
   std::map<std::string, int> per_group;  // group id -> fields + profile values in it
   if (!groups || !groups->is_object()) {
@@ -221,7 +223,7 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
   }
   if (const Json* issues = json::find(doc, "groups_issues"); issues && issues->is_array())
     for (const auto& i : *issues) out.push_back("groups overlay issue: " + i.dump());
-  auto check_human = [&](const Json& entry, const std::string& who, const std::string& evidence_key) {
+  auto check_human = [&](const Json& entry, const std::string& who, const std::string& evidence_key, bool profile_value) {
     const Json* h = json::find(entry, "human");
     if (!h || !h->is_object()) { out.push_back("no human: " + who); return; }
     for (const char* k : {"label", "why", "effect"})
@@ -253,6 +255,11 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
           out.push_back("level '" + id + "' without a chain-resolved reader (level_evidence.chain): " + who);
         if (id == "turn" && turn_keys && !lists(turn_keys, evidence_key))
           out.push_back("level 'turn' without a per-request option (level_evidence.turn): " + who);
+        if (id == "installation" && installation_keys && !lists(installation_keys, evidence_key))
+          out.push_back("level 'installation' without a writer (level_evidence.installation): " + who);
+        // `person` is config.json / secrets.json; a profile value lives in its profile, never in config (§3.5)
+        if (id == "person" && profile_value)
+          out.push_back("level 'person' on a profile value (its value lives in the profile, never in config.json): " + who);
       }
     if (const std::string role = json::get_string(*h, "role");
         !role.empty() && !roles.empty() && !roles.count(role) && json::get_string(*h, "role_status").empty())
@@ -276,14 +283,14 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
     if (has_default && !f.contains("default_value")) out.push_back("default value missing: " + key);
     if (scope == "secret" && (f.contains("default_value") || !f.value("sensitive", false)))
       out.push_back("secret must be sensitive without value: " + key);
-    check_human(f, scope + ":" + key, key);
+    check_human(f, scope + ":" + key, key, false);
   }
   if (const Json* pv = json::find(doc, "profile_values"); pv && pv->is_array())
     for (const auto& p : *pv) {
       const std::string ref = p.value("profile", "") + p.value("pointer", "");
       const std::string who = "profile value " + ref;
       if (p.value("profile", "").empty() || p.value("pointer", "").empty()) out.push_back("profile value without profile or pointer");
-      check_human(p, who, ref);
+      check_human(p, who, ref, true);
       if (p.contains("problem")) out.push_back(who + ": " + p.at("problem").dump());
       else if (!p.contains("value")) out.push_back(who + ": no value");
     }

@@ -24,7 +24,7 @@ namespace loom {
 //  "values"?:[{"value","meaning"?:{pl,en},"preset"?,"status"?,"reason"?:{pl,en},"on_set"?:"refuse"|"warn"}],"values_open"?,
 //  "on_unlisted"?:"refuse"|"warn","status"?:{"state","by"?,"reason":{pl,en}}}],
 //  "groups":{id:{"label":{pl,en},"why":{pl,en},"order","subgroups":[...],"origin","provenance":[...],"hidden"?,"hidden_by"?,"disabled"?,"empty_reason"?}},
-//  "groups_issues"?:[...], "level_evidence":{"chain":[keys],"turn":[keys]},
+//  "groups_issues"?:[...], "level_evidence":{"chain":[keys],"turn":[keys],"installation":[keys and <profile><pointer>]},
 //  "profile_values":[{"profile","pointer","human":{...},"value"|"problem"}]}
 // `human`, `groups` and `profile_values` are data of the pack (M1-D0): an overlay may regroup, rename or hide.
 // `groups` is the effective list of the view kind `settings_groups` (graph_views.pack): the pack's /groups (with the user's profile
@@ -43,7 +43,8 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir = {});
 // profile value has `human` with label/why/effect in pl and en, a group of `groups` (and a subgroup of it when
 // named), levels inside the scope chain (graph/scopes.pack through the rules engine of `data_dir`; empty levels only
 // on a read_only field, which is settable nowhere and whose rule carries the reason; project/conversation only for a key of
-// `level_evidence.chain`, turn only for a key of `level_evidence.turn`), a `role` known to ports.pack or carrying `role_status`,
+// `level_evidence.chain`, turn only for a key of `level_evidence.turn`, installation only for a key or profile value of
+// `level_evidence.installation`, person never on a profile value), a `role` known to ports.pack or carrying `role_status`,
 // a `status` with state and reason pl+en, no `groups_issues`; every group holds something or says why it is empty
 // (`empty_reason`); every profile value resolves. Empty = consistent.
 // Used by the completeness test and available to tooling; each entry is a reason the owner can read.

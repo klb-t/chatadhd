@@ -452,6 +452,23 @@
         "chat_flow",
         "chat_reasoning",
         "chat_context_order"
+      ],
+      "installation": [
+        "default_model",
+        "semantic_model",
+        "guardian_model",
+        "chat_representation",
+        "chat_thread_filter",
+        "guardian_person_rules",
+        "chat_flow",
+        "extrapolation_preset",
+        "extrapolation_bounds",
+        "action_result_target",
+        "worker/batch_threshold",
+        "worker/analysis_modes",
+        "graph_memory/default_depth",
+        "graph_memory/default_max_nodes",
+        "chat_context/context_order"
       ]
     },
     "fields": [
@@ -476,7 +493,6 @@
             "en": "Changing the address sends every model call (chat, analysis, embeddings) to another OpenAI-compatible service."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -549,7 +565,6 @@
             "en": "Every model call goes to the named provider; with “local” the address comes from the Local model server address field."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -581,7 +596,6 @@
             "en": "With the “local” provider model calls go to this address; with another provider the field has no effect."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -608,8 +622,8 @@
             "en": "Which cheap model reads messages in the background and pulls topics, entities and relations into the graph; empty = local rules only, no cost."
           },
           "effect": {
-            "pl": "Z modelem analiza jest dokładniejsza i płatna; bez niego graf buduje się z lokalnych reguł. Rozmowa lub projekt mogą wskazać inny model.",
-            "en": "With a model the analysis is more accurate and paid; without one the graph is built from local rules. A conversation or project may name another model."
+            "pl": "Z modelem analiza jest dokładniejsza i płatna; bez niego graf buduje się z lokalnych reguł. Model wskazany w rozmowie lub projekcie honoruje dziś tylko strażnik rozmowy; analiza w tle bierze Twój.",
+            "en": "With a model the analysis is more accurate and paid; without one the graph is built from local rules. A model named in a conversation or project is honoured today only by the conversation guardian; the background analysis takes yours."
           },
           "levels": [
             "installation",
@@ -650,7 +664,6 @@
             "en": "Applies from the next reply; covers the chat, the background analysis and the agent."
           },
           "levels": [
-            "installation",
             "person",
             "turn"
           ],
@@ -684,7 +697,6 @@
             "en": "A reply longer than the limit stops at the bound; a higher limit = longer and dearer replies."
           },
           "levels": [
-            "installation",
             "person",
             "turn"
           ],
@@ -719,7 +731,6 @@
             "en": "The change applies at once on this device."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -748,7 +759,6 @@
             "en": "Applies at the next launch; a new conversation is always possible, so the app always opens to a chat."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -807,7 +817,6 @@
             "en": "Changes the layout at once; “windows” does not work yet — then the workbench opens, with the reason."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -839,7 +848,6 @@
             "en": "A new style can then be assigned to elements in the Element animations field; the builtin ones stay."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -870,7 +878,6 @@
             "en": "Applies at once; an element without an entry keeps the builtin style."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -901,7 +908,6 @@
             "en": "When the system has reduced motion on, every element uses this style."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -932,7 +938,6 @@
             "en": "A higher value = the same animations in frames take less time."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -961,7 +966,6 @@
             "en": "The labels change at once; conversations and model replies are not translated."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -990,7 +994,6 @@
             "en": "Applies from the next message; a single request may give its own instruction (option system_prompt)."
           },
           "levels": [
-            "installation",
             "person",
             "turn"
           ],
@@ -1021,7 +1024,6 @@
             "en": "Off: new conversations stay untitled until you name them."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -1052,7 +1054,6 @@
             "en": "Applies from the next message; changes neither the reply's content nor its cost."
           },
           "levels": [
-            "installation",
             "person",
             "turn"
           ],
@@ -1085,7 +1086,6 @@
             "en": "Off: new messages do not enter the graph until you switch it on; earlier results stay."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -1113,11 +1113,10 @@
             "en": "How many hops along relations from your message's topics the app walks when looking for context from past conversations."
           },
           "effect": {
-            "pl": "Głębiej = więcej dalszych skojarzeń w żądaniu (i więcej tokenów); 0 = wartość presetu profilu graph_memory.",
-            "en": "Deeper = more distant associations in the request (and more tokens); 0 = the preset of the graph_memory profile."
+            "pl": "Głębiej = więcej dalszych skojarzeń w żądaniu (i więcej tokenów); 0 = wartość z pola „Głębokość pamięci z grafu (preset profilu)”.",
+            "en": "Deeper = more distant associations in the request (and more tokens); 0 = the value of the field “Graph memory depth (profile preset)”."
           },
           "levels": [
-            "installation",
             "person",
             "turn"
           ],
@@ -1145,11 +1144,10 @@
             "en": "At most how many graph fragments are added to one request."
           },
           "effect": {
-            "pl": "Więcej = pełniejszy kontekst, dłuższe i droższe żądanie; 0 = wartość presetu profilu graph_memory.",
-            "en": "More = fuller context, a longer and dearer request; 0 = the preset of the graph_memory profile."
+            "pl": "Więcej = pełniejszy kontekst, dłuższe i droższe żądanie; 0 = wartość z pola „Budżet węzłów pamięci z grafu (preset profilu)”.",
+            "en": "More = fuller context, a longer and dearer request; 0 = the value of the field “Graph memory node budget (profile preset)”."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -1180,7 +1178,6 @@
             "en": "Applies when a folder is next added or refreshed."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -1211,7 +1208,6 @@
             "en": "Applies when a folder is next added or refreshed."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -1242,7 +1238,6 @@
             "en": "Applies when a folder is next added or refreshed."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -1273,7 +1268,6 @@
             "en": "Fewer types = a smaller database and less history for tools; applies to new events."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "silnik",
@@ -1302,7 +1296,6 @@
             "en": "A larger chunk = a faster build and longer locks; 0 = one transaction."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "silnik",
@@ -1333,7 +1326,6 @@
             "en": "Off: the first search after start builds the index itself and takes longer."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "silnik",
@@ -1364,7 +1356,6 @@
             "en": "More = heavier pages; 0 = no cut. Nothing is lost."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "silnik",
@@ -1395,7 +1386,6 @@
             "en": "More = a slower first drawing; 0 = everything at once. Nothing is lost."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -1424,7 +1414,6 @@
             "en": "More = a longer first load of long conversations; 0 = the whole conversation at once. Nothing is lost."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -1453,7 +1442,6 @@
             "en": "Applies after a restart; more = faster, but a heavier load on the device."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "silnik",
@@ -1484,7 +1472,6 @@
             "en": "Changing these values itself needs confirmation; actions compare an estimate with the baseline and ask when it exceeds the factor."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "koszty",
@@ -1517,7 +1504,6 @@
             "en": "Past a threshold: a question, a refusal or only a notice — as you set it; covers every use of a model."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "koszty",
@@ -1550,7 +1536,6 @@
             "en": "An import of a larger archive is refused before anything is written, with the reason."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -1581,7 +1566,6 @@
             "en": "Such an entry is refused while unpacking, with the reason."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -1612,7 +1596,6 @@
             "en": "On: a repository you sync may run its own code on your device."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -1670,7 +1653,6 @@
             "en": "When it retries by itself, failed messages return to the queue without asking, which may cost further calls."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -1719,7 +1701,6 @@
             "en": "A model in recognition = better hits and an extra call per message."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -1751,7 +1732,6 @@
             "en": "The rules and the ×10 guard ask regardless of this field."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -1782,7 +1762,6 @@
             "en": "A sent sentence goes to the model exactly like an ordinary message."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -1813,7 +1792,6 @@
             "en": "A cheaper model = cheaper recognition; applies only with the “model” and “hybrid” methods."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -1946,7 +1924,6 @@
             "en": "Off: the catalogue of actions grows only when you define them yourself."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -1978,7 +1955,6 @@
             "en": "“Run everything” still obeys the rules, the ×10 guard and the spending limits."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -2009,7 +1985,6 @@
             "en": "More steps = a longer and dearer job; at the limit the agent stops and shows what it did."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -2040,7 +2015,6 @@
             "en": "“Go on” = the model keeps working without waiting for your decision on that step."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -2071,7 +2045,6 @@
             "en": "A smaller value = cheaper steps, but the model sees less."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -2102,7 +2075,6 @@
             "en": "Skipping = shorter requests; the model does not see what you settled around commands."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "rozmowa",
@@ -2133,7 +2105,6 @@
             "en": "Off: prices are known only after you refresh the list yourself, and an estimate without a price says so."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -2165,7 +2136,6 @@
             "en": "Applies to the next image; needs the provider from the Image provider field."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -2200,7 +2170,6 @@
             "en": "Without it the action “depict” asks where to send."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -2234,7 +2203,6 @@
             "en": "Applies to the next narration; needs the provider from the Speech provider field."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -2268,7 +2236,6 @@
             "en": "Without it the action “narrate” returns text only."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -2302,7 +2269,6 @@
             "en": "A model = more accurate and paid (one guarded call per message without annotations); the guardian never changes your messages."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2334,7 +2300,6 @@
             "en": "“Writes itself” = rules appear without asking; always reversible (You › Rules)."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2402,7 +2367,6 @@
             "en": "Applies from the next request in the “denoised”, “lean” and “guardian” modes."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2434,7 +2398,6 @@
             "en": "One call per message either way; without categories the thread filter and the slimmed modes have nothing to work on."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2497,7 +2460,6 @@
             "en": "A wrong join is separated with “unmerge” or by answering no to its proposal."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2631,7 +2593,6 @@
             "en": "Off: it answers from what the graph already holds; you refresh with “environments.sync”."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -2663,7 +2624,6 @@
             "en": "Off: only what the graph already knows."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -2694,7 +2654,6 @@
             "en": "An added source appears in the catalogue after a sync; a removed one disappears with its actions."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -2727,7 +2686,6 @@
             "en": "A change applies to the next requests; an empty object = the engine's presets."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2754,11 +2712,10 @@
             "en": "How much “thinking” you ask of the model and how to request it from each model family."
           },
           "effect": {
-            "pl": "Więcej rozumowania = wolniej i drożej, często dokładniej; rodzina bez wpisu dostaje preset.",
-            "en": "More reasoning = slower and dearer, often more accurate; a family without an entry gets the preset."
+            "pl": "Więcej rozumowania = wolniej i drożej, często dokładniej; rodzina bez wpisu dostaje preset. Jedno żądanie może zmienić tylko poziom rozumowania (opcja reasoning_effort), nie sposób zgłaszania.",
+            "en": "More reasoning = slower and dearer, often more accurate; a family without an entry gets the preset. A single request can change only the effort level (option reasoning_effort), not how it is reported."
           },
           "levels": [
-            "installation",
             "person",
             "turn"
           ],
@@ -2789,7 +2746,6 @@
             "en": "Applies from the next analysed message."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2821,7 +2777,6 @@
             "en": "A file named after a prompt in this folder wins over the builtin one."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2853,7 +2808,6 @@
             "en": "On: analysis without admission waits instead of spending."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "koszty",
@@ -2884,7 +2838,6 @@
             "en": "Sync sends data to this repository; without a token nothing leaves."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -2915,7 +2868,6 @@
             "en": "Applies from the next request; the builtin words stay."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2947,7 +2899,6 @@
             "en": "Applies to the next scan."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -2978,7 +2929,6 @@
             "en": "Other templates = another grouping of the usage history; old baselines are not rewritten."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "koszty",
@@ -3009,7 +2959,6 @@
             "en": "Folded entries remain as sums; the details within the window are kept."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "koszty",
@@ -3040,7 +2989,6 @@
             "en": "A file that anything refers to is never removed."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -3258,8 +3206,8 @@
           {
             "value": "",
             "meaning": {
-              "pl": "Pusty: kolejność z profilu chat_context (preset).",
-              "en": "Empty: the order of the chat_context profile (the preset)."
+              "pl": "Puste: kolejność z ustawień domyślnych (preset).",
+              "en": "Empty: the order from the default settings (the preset)."
             }
           },
           {
@@ -3300,11 +3248,10 @@
             "en": "In which order the model gets the instruction, memory, graph, project and history: classic (the profile's preset) or the stable parts first so the provider's prompt cache hits more often."
           },
           "effect": {
-            "pl": "Ta sama treść w innej kolejności; przy „stable_first” powtarzające się żądania bywają tańsze. Pusty = kolejność z profilu chat_context.",
-            "en": "The same content in another order; with “stable_first” repeated requests tend to be cheaper. Empty = the order of the chat_context profile."
+            "pl": "Ta sama treść w innej kolejności; gdy najpierw idą części stałe, powtarzające się żądania bywają tańsze. Puste = kolejność z pola „Kolejność części żądania (preset profilu)”.",
+            "en": "The same content in another order; with the stable parts first, repeated requests tend to be cheaper. Empty = the order of the field “Order of the request parts (profile preset)”."
           },
           "levels": [
-            "installation",
             "person",
             "turn"
           ],
@@ -3337,7 +3284,6 @@
             "en": "The menu labels have their own field (Interface language); model replies are not translated."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3369,7 +3315,6 @@
             "en": "A request the model cannot serve according to these data is rejected with the reason before anything is sent."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -3402,7 +3347,6 @@
             "en": "A change applies to the next model call; the builtin providers stay."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "modele",
@@ -3466,7 +3410,6 @@
             "en": "Changes only the drawing; the same graph and the same path."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3520,7 +3463,6 @@
             "en": "Changes only the drawing of the map."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3558,7 +3500,6 @@
             "en": "More = a fuller picture, slower on a phone; nothing disappears — you expand what is collapsed."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3618,7 +3559,6 @@
             "en": "Changes only what is shown; what goes with the message stays the same."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3672,7 +3612,6 @@
             "en": "The trail is stored regardless of this field (see Storing the “What we sent” trail)."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3726,7 +3665,6 @@
             "en": "Changes only the look of the bar."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3787,7 +3725,6 @@
             "en": "“Never” does not delete the profile; the interview can always be started with a command."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3848,7 +3785,6 @@
             "en": "Applies to the Android shell only; no effect in a browser."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "interfejs",
@@ -3909,7 +3845,6 @@
             "en": "“Let through” stores the entry in the history and sends it to the model provider like any message."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "prywatnosc",
@@ -3927,7 +3862,7 @@
         "group": "context",
         "type": "string",
         "has_default": true,
-        "description": "Detail level of your profile, the ids of onboarding/scenario.pack detail_levels: minimal, normal (preset) or detailed. It decides which interview fields are asked (detail <= level), what is stored and how much of the profile the profile prefix of a request carries; the privacy decisions of the profile (onboarding.privacy: max_detail, max_sensitivity) decide what may be stored or sent at all. The first question of the profile interview writes it (installation -> person); a remark such as 'shorter' lowers it by one. Default: normal.",
+        "description": "Detail level of your profile, the ids planned for onboarding/scenario.pack detail_levels (M1-K2): minimal, normal (preset) or detailed. It decides which interview fields are asked (detail <= level), what is stored and how much of the profile the profile prefix of a request carries; the privacy decisions of the profile (onboarding.privacy: max_detail, max_sensitivity) decide what may be stored or sent at all. The first question of the profile interview will write it (person; M1-K2); a remark such as 'shorter' lowers it by one. Default: normal.",
         "values": [
           {
             "value": "minimal",
@@ -3969,11 +3904,10 @@
             "en": "The detail level of your profile: minimal, normal (preset) or detailed. It decides what the “Get to know me” interview asks, what it stores and how much about you the model sees."
           },
           "effect": {
-            "pl": "Wyżej = więcej pytań i pełniejszy opis Ciebie w żądaniu; zasady prywatności profilu i tak decydują, co wolno zapisać i wysłać. Pierwsze pytanie wywiadu ustawia to pole.",
-            "en": "Higher = more questions and a fuller description of you in a request; the profile's privacy rules still decide what may be stored and sent. The interview's first question sets this field."
+            "pl": "Wyżej = więcej pytań i pełniejszy opis Ciebie w żądaniu; zasady prywatności profilu i tak decydują, co wolno zapisać i wysłać. Pierwsze pytanie wywiadu ustawi to pole (gdy wywiad powstanie, M1-K2).",
+            "en": "Higher = more questions and a fuller description of you in a request; the profile's privacy rules still decide what may be stored and sent. The interview's first question will set this field (when the interview comes, M1-K2)."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "ty",
@@ -4034,7 +3968,6 @@
             "en": "Without a record the “What we sent” link shows only that there is no trail, and why."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -4074,7 +4007,6 @@
             "en": "A larger limit = fuller trails and a larger database."
           },
           "levels": [
-            "installation",
             "person"
           ],
           "group": "kontekst",
@@ -4103,8 +4035,7 @@
             "en": "Lower = batches more often (cheaper, slower); higher = one by one more often (faster, dearer)."
           },
           "levels": [
-            "installation",
-            "person"
+            "installation"
           ],
           "group": "kontekst",
           "subgroup": "analiza",
@@ -4131,8 +4062,7 @@
             "en": "A mode removed from the list is not used; without a model the local rules remain."
           },
           "levels": [
-            "installation",
-            "person"
+            "installation"
           ],
           "group": "kontekst",
           "subgroup": "analiza",
@@ -4155,12 +4085,11 @@
             "en": "The value graph memory uses when the Graph memory depth field is 0."
           },
           "effect": {
-            "pl": "Zmienia zachowanie tylko przy 0 w polu config.",
-            "en": "Changes the behaviour only when the config field is 0."
+            "pl": "Działa tylko wtedy, gdy pole „Głębokość pamięci z grafu” ma 0.",
+            "en": "Takes effect only when the field “Graph memory depth” is 0."
           },
           "levels": [
-            "installation",
-            "person"
+            "installation"
           ],
           "group": "kontekst",
           "subgroup": "wybor",
@@ -4182,12 +4111,11 @@
             "en": "The value graph memory uses when the Graph memory node budget field is 0."
           },
           "effect": {
-            "pl": "Zmienia zachowanie tylko przy 0 w polu config.",
-            "en": "Changes the behaviour only when the config field is 0."
+            "pl": "Działa tylko wtedy, gdy pole „Budżet węzłów pamięci z grafu” ma 0.",
+            "en": "Takes effect only when the field “Graph memory node budget” is 0."
           },
           "levels": [
-            "installation",
-            "person"
+            "installation"
           ],
           "group": "kontekst",
           "subgroup": "wybor",
@@ -4209,12 +4137,11 @@
             "en": "The order used when the Order of the request parts field is empty."
           },
           "effect": {
-            "pl": "Zmienia zachowanie tylko przy pustym polu config.",
-            "en": "Changes the behaviour only when the config field is empty."
+            "pl": "Działa tylko wtedy, gdy pole „Kolejność części żądania” jest puste.",
+            "en": "Takes effect only when the field “Order of the request parts” is empty."
           },
           "levels": [
-            "installation",
-            "person"
+            "installation"
           ],
           "group": "kontekst",
           "subgroup": "wybor",
@@ -4263,7 +4190,7 @@
       "level_evidence": {
         "type": "object",
         "additionalProperties": false,
-        "description": "Evidence for human.levels: `chain` = keys whose reader resolves the value through the scope chain (scopes::Binding / resolve_value), the only keys that may declare project or conversation; `turn` = keys with a per-request wire option (ChatOptions::from_json), the only keys that may declare turn. A field declaring a level without evidence is a problem (settings_fields_problems). M1-D1 replaces this list with `reads`/`implemented_in` per field.",
+        "description": "Evidence for human.levels: `chain` = keys whose reader resolves the value through the scope chain (scopes::Binding / resolve_value), the only keys that may declare project or conversation; `turn` = keys with a per-request wire option (ChatOptions::from_json), the only keys that may declare turn; `installation` = keys and profile values (<profile><pointer>) whose installation layer has a writer: the runtime-profile preset (profiles/<domain>.pack, the only writer of a profile value) or a user rule at the installation scope (chain keys). `person` is config.json / secrets.json (settings.set), never a profile value. A field declaring a level without evidence is a problem (settings_fields_problems). M1-D1 replaces these lists with `reads`/`implemented_in` per field.",
         "properties": {
           "chain": {
             "type": "array",
@@ -4273,6 +4200,13 @@
             }
           },
           "turn": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "installation": {
             "type": "array",
             "items": {
               "type": "string",
