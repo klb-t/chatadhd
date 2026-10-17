@@ -68,8 +68,8 @@
             },
             {
               "label": {
-                "pl": "Sprawdź możliwości modelu (model_capabilities), strażnika ×10 i limity wydatków",
-                "en": "Check the model capabilities (model_capabilities), the ×10 guard and the spending limits"
+                "pl": "Sprawdź możliwości modelu (model_capabilities), Bezpiecznik ×10 i limity wydatków",
+                "en": "Check the model capabilities (model_capabilities), the ×10 fuse and the spending limits"
               }
             },
             {
@@ -250,8 +250,8 @@
             },
             {
               "label": {
-                "pl": "Wywołaj model (strumieniowo, gdy stream) pod strażnikiem zużycia",
-                "en": "Call the model (streamed when stream is on) under the usage guard"
+                "pl": "Wywołaj model (strumieniowo, gdy stream) pod Bezpiecznikiem ×10 i limitami wydatków",
+                "en": "Call the model (streamed when stream is on) under the ×10 fuse and the spending limits"
               }
             },
             {
@@ -356,8 +356,8 @@
             },
             {
               "label": {
-                "pl": "Klasa modelu wybiera przepływ: frontier — jedno wywołanie na wszystko; tani — klasyczne wywołanie i wąskie pytanie o segmenty (semantic_segments)",
-                "en": "The class of the model picks the flow: frontier — one call for everything; cheap — the classic call and a narrow question about segments (semantic_segments)"
+                "pl": "Klasa modelu wybiera przepływ (gdy ktoś czyta segmenty: semantic_segments, Sekretarz albo filtr wątków): frontier — jedno wywołanie; tani, średni i nieznany — klasyczne wywołanie i wąskie pytanie o segmenty; bez segmentów — samo klasyczne wywołanie",
+                "en": "The class of the model picks the flow (when something reads segments: semantic_segments, the Secretary or the thread filter): frontier — one call; cheap, mid and unknown — the classic call and a narrow question about segments; without segments — the classic call only"
               }
             },
             {
@@ -373,7 +373,10 @@
           "semantic_model",
           "semantic_analysis",
           "semantic_segments",
-          "semantic_retry_mode"
+          "semantic_retry_mode",
+          "guardian_method",
+          "chat_representation",
+          "chat_thread_filter"
         ],
         "uses_role": "analysis.fast",
         "implemented_in": [
@@ -381,7 +384,8 @@
           "loom/src/annotations/analyzer.cpp",
           "loom/src/worker/semantic_worker.cpp",
           "loom/data/runtime/guardian.pack#/defaults/models/policies/analyzer",
-          "loom/data/runtime/ports.pack#/defaults/roles/analysis.fast"
+          "loom/data/runtime/ports.pack#/defaults/roles/analysis.fast",
+          "loom/data/runtime/guardian.pack#/defaults/annotations/analyzer"
         ]
       },
       "semantic.batch": {
@@ -453,11 +457,18 @@
         "reads": [
           "semantic_model",
           "semantic_analysis",
-          "semantic_retry_mode"
+          "semantic_retry_mode",
+          "anthropic_batch_key",
+          "semantic_segments",
+          "guardian_method",
+          "chat_representation",
+          "chat_thread_filter"
         ],
         "uses_role": "analysis.fast",
         "implemented_in": [
-          "loom/src/worker/semantic_worker.cpp"
+          "loom/src/worker/semantic_worker.cpp",
+          "loom/data/runtime/worker.pack#/defaults/batch_secret_key",
+          "loom/data/runtime/guardian.pack#/defaults/annotations/analyzer"
         ]
       },
       "batch.chat": {
@@ -529,11 +540,16 @@
         "reads": [
           "semantic_model",
           "base_url",
-          "api_key"
+          "api_key",
+          "semantic_segments",
+          "guardian_method",
+          "chat_representation",
+          "chat_thread_filter"
         ],
         "uses_role": "analysis.fast",
         "implemented_in": [
-          "loom/src/chat/batch_api.cpp"
+          "loom/src/chat/batch_api.cpp",
+          "loom/data/runtime/guardian.pack#/defaults/annotations/analyzer"
         ]
       },
       "archive.refine": {
@@ -1925,8 +1941,8 @@
             },
             {
               "label": {
-                "pl": "Wykonaj raz pod strażnikiem zużycia i zapisz pierwszą odpowiedź przed dekodowaniem",
-                "en": "Run it once under the usage guard and keep the first response before decoding"
+                "pl": "Wykonaj raz pod Bezpiecznikiem ×10 i limitami wydatków i zapisz pierwszą odpowiedź przed dekodowaniem",
+                "en": "Run it once under the ×10 fuse and the spending limits and keep the first response before decoding"
               }
             }
           ],
@@ -3008,8 +3024,8 @@
           "steps": [
             {
               "label": {
-                "pl": "Model rozmowy pisze prompt obrazu w zadanym stylu",
-                "en": "The conversation model writes an image prompt in the given style"
+                "pl": "Model wybrany dla tego działania (rola action.depict), inaczej model rozmowy, pisze prompt obrazu w zadanym stylu",
+                "en": "The model chosen for this action (role action.depict), otherwise the conversation model, writes an image prompt in the given style"
               }
             },
             {
@@ -3194,8 +3210,8 @@
           "steps": [
             {
               "label": {
-                "pl": "Model rozmowy przepisuje tekst jako narrację do czytania na głos",
-                "en": "The conversation model rewrites the text as a narration for reading aloud"
+                "pl": "Model wybrany dla tego działania (rola action.narrate), inaczej model rozmowy, przepisuje tekst jako narrację do czytania na głos",
+                "en": "The model chosen for this action (role action.narrate), otherwise the conversation model, rewrites the text as a narration for reading aloud"
               }
             },
             {
@@ -12043,8 +12059,8 @@
             },
             {
               "label": {
-                "pl": "Każda tura modelu przechodzi przez strażnika zużycia; każde wywołanie narzędzia to przebieg interpretera z regułami i potwierdzeniami",
-                "en": "Every model turn goes through the usage guard; every tool call is an interpreter run with the rules and confirmations"
+                "pl": "Każda tura modelu przechodzi przez Bezpiecznik ×10 i limity wydatków; każde wywołanie narzędzia to przebieg interpretera z regułami i potwierdzeniami",
+                "en": "Every model turn goes through the ×10 fuse and the spending limits; every tool call is an interpreter run with the rules and confirmations"
               }
             },
             {

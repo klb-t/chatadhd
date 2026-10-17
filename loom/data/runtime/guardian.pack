@@ -35,7 +35,7 @@
           "model": true,
           "meaning": {
             "en": "One guarded model call per message that no existing annotation already describes.",
-            "pl": "Jedno wywołanie modelu pod strażnikami na wiadomość, której nie opisuje jeszcze żadna adnotacja."
+            "pl": "Jedno wywołanie modelu pod bezpiecznikami na wiadomość, której nie opisuje jeszcze żadna adnotacja."
           }
         },
         "hybrid": {
@@ -1052,8 +1052,8 @@
               ]
             },
             "meaning": {
-              "en": "The analyzer's one prompt also returns the segment categories when something reads them: a guardian that uses a model, the lean representation, the thread filter (preset).",
-              "pl": "Jeden prompt analizatora zwraca też kategorie segmentów, gdy ktoś je czyta: strażnik używający modelu, reprezentacja lean, filtr wątków (preset)."
+              "en": "The analyzer's one prompt also returns the segment categories when something reads them: the Secretary using a model, the lean representation, the thread filter (preset).",
+              "pl": "Jeden prompt analizatora zwraca też kategorie segmentów, gdy ktoś je czyta: Sekretarz używający modelu, reprezentacja lean, filtr wątków (preset)."
             }
           },
           "on": {
@@ -1066,8 +1066,8 @@
           "off": {
             "never": true,
             "meaning": {
-              "en": "The analyzer's prompt is the classic one (entities, topics, relations); the guardian reads messages itself.",
-              "pl": "Prompt analizatora jest klasyczny (encje, tematy, relacje); strażnik czyta wiadomości sam."
+              "en": "The analyzer's prompt is the classic one (entities, topics, relations); the Secretary reads messages itself.",
+              "pl": "Prompt analizatora jest klasyczny (encje, tematy, relacje); Sekretarz czyta wiadomości sam."
             }
           }
         },
@@ -1395,14 +1395,14 @@
           ],
           "meaning": {
             "en": "Overlap first, then one question to the model per candidate when there are candidates (guarded model call).",
-            "pl": "Najpierw wspólne słowa, potem jedno pytanie do modelu na kandydata, gdy są kandydaci (wywołanie pod strażnikami)."
+            "pl": "Najpierw wspólne słowa, potem jedno pytanie do modelu na kandydata, gdy są kandydaci (wywołanie pod bezpiecznikami)."
           }
         },
         "user": {
           "methods": [],
           "meaning": {
-            "en": "Only what you tell the guardian is the same thing (guardian merge); same words still join.",
-            "pl": "Tylko to, co sam powiesz strażnikowi, że jest tym samym (guardian merge); te same słowa nadal się łączą."
+            "en": "Only what you tell the Secretary is the same thing (guardian merge); same words still join.",
+            "pl": "Tylko to, co sam powiesz Sekretarzowi, że jest tym samym (guardian merge); te same słowa nadal się łączą."
           }
         }
       },
@@ -1687,24 +1687,24 @@
               "type": "explicit",
               "setting": "guardian_model",
               "meaning": {
-                "pl": "Wprost: pole guardian_model (Model Sekretarza), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja.",
-                "en": "Explicit: the field guardian_model (Secretary model), read through the scope chain: conversation → units → person → installation."
+                "pl": "Wprost: pole guardian_model („Model Sekretarza”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja. To jedyne pole modelu, które Sekretarz czyta dla rozmowy.",
+                "en": "Explicit: the field guardian_model (“Secretary model”), read through the scope chain: conversation → units → person → installation. This is the only model field the Secretary reads per conversation."
               }
             },
             {
               "type": "role",
               "role": "guardian",
               "meaning": {
-                "pl": "Rola Sekretarz (guardian) z profilu ports: rozmowa, potem Twój profil, potem preset. Preset roli wskazuje dziś pole semantic_model — ten sam klucz co Analiza w tle — a nie guardian_model.",
-                "en": "Role Secretary (guardian) from the ports profile: the conversation, then your profile, then the preset. The role preset points today at the field semantic_model — the same key as Background analysis — not guardian_model."
+                "pl": "Rola Sekretarz (guardian) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Preset: pole semantic_model („Model analizy w tle”) z Twoich ustawień (config.json), bez rozmowy i jednostek. Preset roli wskazuje więc ten sam klucz co Analiza w tle, a nie guardian_model (guardian_model to krok 1).",
+                "en": "Role Secretary (guardian) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). Preset: the field semantic_model (“Background analysis model”) from your settings (config.json), without the conversation or units. So the role preset points at the same key as Background analysis, not guardian_model (guardian_model is step 1)."
               }
             },
             {
               "type": "role",
               "role": "analysis.fast",
               "meaning": {
-                "pl": "Rola Analiza w tle (analysis.fast) z profilu ports: rozmowa, potem Twój profil, potem preset. Preset: pole semantic_model.",
-                "en": "Role Background analysis (analysis.fast) from the ports profile: the conversation, then your profile, then the preset. Preset: the field semantic_model."
+                "pl": "Rola Analiza w tle (analysis.fast) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Preset: pole semantic_model („Model analizy w tle”) z Twoich ustawień (config.json), bez rozmowy i jednostek.",
+                "en": "Role Background analysis (analysis.fast) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). Preset: the field semantic_model (“Background analysis model”) from your settings (config.json), without the conversation or units."
               }
             },
             {
@@ -1717,7 +1717,8 @@
           ],
           "role": "guardian",
           "readers": [
-            "loom/src/guardian/matching.cpp (guardian.observe, guardian.model_read, guardian.merge)"
+            "loom/src/guardian/matching.cpp choice_for (guardian.observe, guardian.annotate, guardian.model_read)",
+            "loom/src/guardian/actions.cpp (guardian.status; the no-model note of post_pending inside guardian.observe)"
           ]
         },
         "analyzer": {
@@ -1726,16 +1727,16 @@
               "type": "explicit",
               "setting": "semantic_model",
               "meaning": {
-                "pl": "Wprost: pole semantic_model (Model analizy w tle), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja.",
-                "en": "Explicit: the field semantic_model (Background analysis model), read through the scope chain: conversation → units → person → installation."
+                "pl": "Wprost: pole semantic_model („Model analizy w tle”), Twoje ustawienie: osoba → instalacja. Analiza w tle nie zna rozmowy (woła tę politykę bez rozmowy i bez bazy), więc wartości wskazanej dla rozmowy lub projektu nie czyta.",
+                "en": "Explicit: the field semantic_model (“Background analysis model”), your setting: person → installation. The background analysis does not know the conversation (it calls this policy without a conversation and without the database), so a value named for a conversation or project is not read."
               }
             },
             {
               "type": "role",
               "role": "analysis.fast",
               "meaning": {
-                "pl": "Rola Analiza w tle (analysis.fast) z profilu ports: rozmowa, potem Twój profil, potem preset. Preset: to samo pole semantic_model, więc ten krok coś zmienia tylko wtedy, gdy rolę nadpiszesz w profilu ports albo w rozmowie.",
-                "en": "Role Background analysis (analysis.fast) from the ports profile: the conversation, then your profile, then the preset. Preset: the same field semantic_model, so this step only matters when you override the role in the ports profile or in a conversation."
+                "pl": "Rola Analiza w tle (analysis.fast) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Preset: pole semantic_model („Model analizy w tle”) z Twoich ustawień (config.json), bez rozmowy i jednostek. Ten krok coś zmienia tylko wtedy, gdy rolę nadpiszesz w swoim profilu ports.",
+                "en": "Role Background analysis (analysis.fast) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). Preset: the field semantic_model (“Background analysis model”) from your settings (config.json), without the conversation or units. This step only matters when you override the role in your ports profile."
               }
             },
             {
@@ -1759,8 +1760,8 @@
               "type": "explicit",
               "setting": "default_model",
               "meaning": {
-                "pl": "Wprost: pole default_model (Model rozmowy), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja.",
-                "en": "Explicit: the field default_model (Conversation model), read through the scope chain: conversation → units → person → installation."
+                "pl": "Wprost: pole default_model („Model rozmowy”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field default_model (“Conversation model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
               }
             },
             {
@@ -1793,24 +1794,24 @@
               "type": "explicit",
               "setting": "intent_routing_model",
               "meaning": {
-                "pl": "Wprost: pole intent_routing_model (Model rozpoznawania poleceń), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja.",
-                "en": "Explicit: the field intent_routing_model (Command recognition model), read through the scope chain: conversation → units → person → installation."
+                "pl": "Wprost: pole intent_routing_model („Model rozpoznawania poleceń”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field intent_routing_model (“Command recognition model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
               }
             },
             {
               "type": "role",
               "role": "intent.routing",
               "meaning": {
-                "pl": "Rola Rozpoznanie polecenia (intent.routing) z profilu ports: rozmowa, potem Twój profil, potem preset. Preset: to samo pole intent_routing_model.",
-                "en": "Role Command recognition (intent.routing) from the ports profile: the conversation, then your profile, then the preset. Preset: the same field intent_routing_model."
+                "pl": "Rola Rozpoznanie polecenia (intent.routing) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Preset: pole intent_routing_model („Model rozpoznawania poleceń”) z Twoich ustawień (config.json), bez rozmowy i jednostek.",
+                "en": "Role Command recognition (intent.routing) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). Preset: the field intent_routing_model (“Command recognition model”) from your settings (config.json), without the conversation or units."
               }
             },
             {
               "type": "role",
               "role": "analysis.fast",
               "meaning": {
-                "pl": "Rola Analiza w tle (analysis.fast) z profilu ports: rozmowa, potem Twój profil, potem preset. Preset: pole semantic_model.",
-                "en": "Role Background analysis (analysis.fast) from the ports profile: the conversation, then your profile, then the preset. Preset: the field semantic_model."
+                "pl": "Rola Analiza w tle (analysis.fast) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Preset: pole semantic_model („Model analizy w tle”) z Twoich ustawień (config.json), bez rozmowy i jednostek.",
+                "en": "Role Background analysis (analysis.fast) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). Preset: the field semantic_model (“Background analysis model”) from your settings (config.json), without the conversation or units."
               }
             },
             {
@@ -1843,23 +1844,23 @@
               "type": "explicit",
               "setting": "image_model",
               "meaning": {
-                "pl": "Wprost: pole image_model (Model obrazów), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja.",
-                "en": "Explicit: the field image_model (Image model), read through the scope chain: conversation → units → person → installation."
+                "pl": "Wprost: pole image_model („Model obrazów”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field image_model (“Image model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
               }
             },
             {
               "type": "role",
               "role": "image.generate",
               "meaning": {
-                "pl": "Rola Obraz (image.generate) z profilu ports: rozmowa, potem Twój profil, potem preset. Preset: to samo pole image_model, dostawca z image_provider.",
-                "en": "Role Image (image.generate) from the ports profile: the conversation, then your profile, then the preset. Preset: the same field image_model, the provider from image_provider."
+                "pl": "Rola Obraz (image.generate) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Preset: pole image_model („Model obrazów”) z Twoich ustawień (config.json), bez rozmowy i jednostek. Dostawca z image_provider.",
+                "en": "Role Image (image.generate) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). Preset: the field image_model (“Image model”) from your settings (config.json), without the conversation or units. The provider from image_provider."
               }
             },
             {
               "type": "none",
               "meaning": {
-                "pl": "Brak modelu: działanie depict pyta o model.",
-                "en": "No model: the action depict asks for a model."
+                "pl": "Brak modelu: depict nie startuje i mówi, że brakuje argumentu model (albo pola „Model obrazów”); nic nie jest płatne.",
+                "en": "No model: depict does not start and says the argument model (or the field “Image model”) is missing; nothing is paid."
               }
             }
           ],
@@ -1885,16 +1886,16 @@
               "type": "explicit",
               "setting": "speech_model",
               "meaning": {
-                "pl": "Wprost: pole speech_model (Model mowy), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja.",
-                "en": "Explicit: the field speech_model (Speech model), read through the scope chain: conversation → units → person → installation."
+                "pl": "Wprost: pole speech_model („Model mowy”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field speech_model (“Speech model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
               }
             },
             {
               "type": "role",
               "role": "speech.synthesize",
               "meaning": {
-                "pl": "Rola Głos (speech.synthesize) z profilu ports: rozmowa, potem Twój profil, potem preset. Preset: to samo pole speech_model, dostawca z speech_provider.",
-                "en": "Role Voice (speech.synthesize) from the ports profile: the conversation, then your profile, then the preset. Preset: the same field speech_model, the provider from speech_provider."
+                "pl": "Rola Głos (speech.synthesize) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Preset: pole speech_model („Model mowy”) z Twoich ustawień (config.json), bez rozmowy i jednostek. Dostawca z speech_provider.",
+                "en": "Role Voice (speech.synthesize) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). Preset: the field speech_model (“Speech model”) from your settings (config.json), without the conversation or units. The provider from speech_provider."
               }
             },
             {
@@ -1927,8 +1928,8 @@
               "type": "role",
               "role": "embed.default",
               "meaning": {
-                "pl": "Rola Osadzenia (embed.default) z profilu ports: rozmowa, potem Twój profil, potem preset. Żadne pole ustawień nie wskazuje dziś modelu osadzeń, więc nie ma kroku „wprost”.",
-                "en": "Role Embeddings (embed.default) from the ports profile: the conversation, then your profile, then the preset. No settings field names the embedding model today, so there is no explicit step."
+                "pl": "Rola Osadzenia (embed.default) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Żadne pole ustawień nie wskazuje dziś modelu osadzeń, więc nie ma kroku „wprost”.",
+                "en": "Role Embeddings (embed.default) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). No settings field names the embedding model today, so there is no explicit step."
               }
             },
             {
@@ -1962,8 +1963,8 @@
               "type": "role",
               "role": "asr",
               "meaning": {
-                "pl": "Rola Mowa→tekst (asr) z profilu ports: rozmowa, potem Twój profil, potem preset. Model bierze się z params.model wybranego wpisu; preset (lista dostawców) nie nazywa modelu.",
-                "en": "Role Speech→text (asr) from the ports profile: the conversation, then your profile, then the preset. The model comes from params.model of the chosen entry; the preset (a list of providers) names no model."
+                "pl": "Rola Mowa→tekst (asr) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Model bierze się z params.model wybranego wpisu; preset (lista dostawców) nie nazywa modelu.",
+                "en": "Role Speech→text (asr) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). The model comes from params.model of the chosen entry; the preset (a list of providers) names no model."
               }
             },
             {
@@ -1997,8 +1998,8 @@
               "type": "role",
               "role": "ocr",
               "meaning": {
-                "pl": "Rola Tekst ze zdjęcia (ocr) z profilu ports: rozmowa, potem Twój profil, potem preset. Model bierze się z params.model wybranego wpisu; preset (lista dostawców) nie nazywa modelu.",
-                "en": "Role Text from a picture (ocr) from the ports profile: the conversation, then your profile, then the preset. The model comes from params.model of the chosen entry; the preset (a list of providers) names no model."
+                "pl": "Rola Tekst ze zdjęcia (ocr) z profilu ports: Twój profil ports, potem preset. Wyboru zapisanego dla rozmowy ten krok dziś nie czyta (annotations::resolve_model podaje portom pustą warstwę rozmowy). Model bierze się z params.model wybranego wpisu; preset (lista dostawców) nie nazywa modelu.",
+                "en": "Role Text from a picture (ocr) from the ports profile: your ports profile, then the preset. A choice saved for a conversation is not read by this step today (annotations::resolve_model gives the ports an empty conversation layer). The model comes from params.model of the chosen entry; the preset (a list of providers) names no model."
               }
             },
             {
@@ -2046,7 +2047,8 @@
             "threshold": {
               "pl": "tani, bo cena z rejestru modeli ≤ {max} $ za milion tokenów",
               "en": "cheap, because the registry price is ≤ {max} $ per million tokens"
-            }
+            },
+            "threshold_state": "planned"
           }
         },
         {
@@ -2065,7 +2067,8 @@
             "threshold": {
               "pl": "średni, bo cena z rejestru modeli ≤ {max} $ za milion tokenów (i powyżej progu klasy taniej)",
               "en": "mid, because the registry price is ≤ {max} $ per million tokens (and above the cheap threshold)"
-            }
+            },
+            "threshold_state": "planned"
           }
         },
         {
@@ -2084,9 +2087,10 @@
               "en": "frontier, because the name contains “{pattern}”"
             },
             "threshold": {
-              "pl": "frontier nie ma progu ceny: model droższy niż próg klasy średniej trafia tu tylko po wzorcu nazwy, inaczej jest „nieznany”",
-              "en": "frontier has no price threshold: a model dearer than the mid threshold lands here only by a name pattern, otherwise it is “unknown”"
-            }
+              "pl": "frontier nie ma progu ceny: model droższy niż próg klasy średniej idzie do wzorców nazw wszystkich klas po kolei (tania pierwsza), więc może wyjść tani, średni albo frontier; bez pasującego wzorca jest „nieznany”",
+              "en": "frontier has no price threshold: a model dearer than the mid threshold goes to the name patterns of all classes in order (cheap first), so it may become cheap, mid or frontier; with no matching pattern it is “unknown”"
+            },
+            "threshold_state": "planned"
           }
         }
       ],
@@ -2149,14 +2153,26 @@
         "en": "A policy = a chain of steps read from the top; the first step that yields a model wins. Steps: explicit (a settings field through the scope chain), role (the ports profile), relative_to (only when you write it yourself), none. annotations::resolve_model reads a policy by name; a policy with status planned says what that job does differently today."
       },
       "tier_rule": {
-        "pl": "Najpierw cena (gdy rejestr modeli ją zna): pierwsza klasa po kolei, której próg max_per_million ≥ cena. Potem nazwa: pierwsza klasa po kolei, której wzorzec jest fragmentem nazwy (bez rozróżniania wielkości liter). Kolejność klas ma znaczenie.",
-        "en": "Price first (when the model registry knows it): the first class in order whose max_per_million ≥ the price. Then the name: the first class in order with a pattern that is a part of the name (case-insensitive). The order of the classes matters."
+        "pl": "Dziś klasę wybiera tylko nazwa: pierwsza klasa po kolei, której wzorzec jest fragmentem nazwy (bez rozróżniania wielkości liter); kolejność klas ma znaczenie („mini” w klasie taniej łapie „gemini-…-pro”). Planowane (price_path): najpierw cena z rejestru — pierwsza klasa po kolei, której próg max_per_million ≥ cena — a dopiero potem nazwa.",
+        "en": "Today the class comes from the name only: the first class in order with a pattern that is a part of the name (case-insensitive); the order of the classes matters (“mini” of the cheap class catches “gemini-…-pro”). Planned (price_path): first the registry price — the first class in order whose max_per_million ≥ the price — and only then the name."
       },
       "unknown_tier": {
         "reason": {
-          "pl": "nieznana — brak ceny w rejestrze i żaden wzorzec nie pasuje → przepływ unknown = kilka wąskich pytań",
-          "en": "unknown — no price in the registry and no pattern matches → flow unknown = a few narrow questions"
+          "pl": "nieznana — żaden wzorzec nazwy żadnej klasy nie pasuje (dziś ceny nikt nie podaje; z ceną także wtedy, gdy nie mieści się w progu żadnej klasy) → przepływ unknown = kilka wąskich pytań",
+          "en": "unknown — no name pattern of any class matches (no reader passes a price today; with a price, also when it fits no class threshold) → flow unknown = a few narrow questions"
         }
+      },
+      "price_path": {
+        "state": "planned",
+        "today": {
+          "pl": "Dziś żaden czytelnik nie podaje ceny (annotations::resolve_model i model_tier są wołane z ceną -1: matching.cpp, semantic_llm.cpp, analyzer.cpp, context_format.cpp), więc klasę wybiera tylko nazwa; progi max_per_million nie są dziś czytane.",
+          "en": "No reader passes a price today (annotations::resolve_model and model_tier are called with price -1: matching.cpp, semantic_llm.cpp, analyzer.cpp, context_format.cpp), so the class comes from the name alone; the max_per_million thresholds are not read today."
+        },
+        "reason": {
+          "pl": "Rejestr modeli zna ceny, ale żaden czytelnik klasy ich jeszcze nie przekazuje.",
+          "en": "The model registry knows prices, but no reader of the class passes them yet."
+        },
+        "readers": []
       }
     },
     "context_io": {
@@ -2406,8 +2422,8 @@
               "top_k": 1
             },
             "note": {
-              "en": "Placement is its own step; the embedder only applies its plan. The planned steps reuse the guardian's matching (guardian_match_method).",
-              "pl": "Umieszczanie to osobny krok; osadzacz tylko stosuje jego plan. Planowane kroki używają dopasowania strażnika (guardian_match_method)."
+              "en": "Placement is its own step; the embedder only applies its plan. The planned steps reuse the Secretary's matching (guardian_match_method).",
+              "pl": "Umieszczanie to osobny krok; osadzacz tylko stosuje jego plan. Planowane kroki używają dopasowania Sekretarza (guardian_match_method)."
             }
           },
           "graph": true,

@@ -1001,7 +1001,7 @@ TEST_SUITE("guardian") {
     CHECK(run("test/cheap-haiku") == 2);
   }
 
-  TEST_CASE("M1-D1: resolve_model works for every policy of the data - each explicit step, the first role step, else none") {
+  TEST_CASE("M1-D1: resolve_model works for every policy of the data - each explicit step, every role step alone, else none") {
     Fixture f;
     const auto profile = unwrap(RuntimeProfile::builtin("guardian"));
     const Json& policies = profile.values().at("models").at("policies");
@@ -1042,7 +1042,7 @@ TEST_SUITE("guardian") {
       auto none = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
       CHECK(none.model.empty());
       CHECK(none.via == "none");
-      CHECK_FALSE(none.reason.empty());
+      CHECK_MESSAGE(none.reason.find("'" + name + "'") != std::string::npos, none.reason);  // the reason names the policy
       bool explicit_seen = false;
       for (const auto& step : chain) {
         const std::string type = json::get_string(step, "type");
@@ -1060,19 +1060,40 @@ TEST_SUITE("guardian") {
           }
           explicit_seen = true;
         } else if (type == "role") {
-          // with the explicit settings empty, the first role step decides: the user's choice in the ports profile
+          // with the explicit settings empty and only THIS role chosen in the ports profile, this step decides: every earlier
+          // role step yields nothing (its preset reads a cleared setting), so a later step is reached (intent: analysis.fast, in
+          // place of today's fallback to default_model; guardian: analysis.fast)
           clear();
           const std::string r = json::get_string(step, "role");
           std::filesystem::create_directories(overlay.parent_path());
           std::ofstream(overlay) << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "ports"},
-                                         {"overrides", Json{{"roles", Json{{r, Json{{"adapter", "openai_chat"}, {"params", Json{{"model", "role/" + name}}}}}}}}}}.dump();
+                                         {"overrides", Json{{"roles", Json{{r, Json{{"adapter", "openai_chat"}, {"params", Json{{"model", "role/" + name + "/" + r}}}}}}}}}}.dump();
           auto c = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
-          CHECK(c.model == "role/" + name);
+          INFO(r);
+          CHECK(c.model == "role/" + name + "/" + r);
           CHECK(c.via == "role:" + r);
-          break;  // later role steps are reached only when this one yields nothing (guardian: analysis.fast, tested by the P23 case)
         }
       }
       clear();
     }
+  }
+
+  TEST_CASE("M1-D1: the class of a model as guardian.pack says it today - the name decides, a price above the mid threshold too") {
+    Fixture f;
+    const Json models = unwrap(annotations::Policy::load(f.td.path())).models;
+    // no reader passes a price today (models.price_path planned): the name patterns decide, cheap first ("mini" is in "gemini")
+    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro") == "cheap");
+    CHECK(annotations::model_tier(models, "vendor/brand-x") == "unknown");
+    // with a price above the mid threshold (frontier has no threshold) the patterns of all classes decide, in order: cheap, mid
+    // or frontier, else unknown (tiers[frontier].reason.threshold, unknown_tier.reason)
+    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro", 10) == "cheap");
+    CHECK(annotations::model_tier(models, "anthropic/claude-sonnet-4", 10) == "mid");
+    CHECK(annotations::model_tier(models, "anthropic/claude-opus-4", 10) == "frontier");
+    CHECK(annotations::model_tier(models, "vendor/brand-x", 10) == "unknown");
+    // a price within a threshold decides before the name
+    CHECK(annotations::model_tier(models, "anthropic/claude-opus-4", 0.5) == "cheap");
+    // the texts say what the code does: no price path today, every threshold reason marked planned
+    CHECK(models.at("price_path").at("state") == "planned");
+    for (const auto& t : models.at("tiers")) CHECK(t.at("reason").at("threshold_state") == "planned");
   }
 }

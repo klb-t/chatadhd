@@ -98,6 +98,16 @@ TEST_SUITE("ports") {
     CHECK(roles.at("guardian").at("why").at("pl").get<std::string>().find("guardian_model") != std::string::npos);
     // the three roles M1-D1 adds are honest: their readers (route.cpp, the params of depict/narrate) read the keys directly
     for (const char* r : {"intent.routing", "image.generate", "speech.synthesize"}) CHECK(roles.at(r).at("status").at("state") == "planned");
+    // the role family the action runner really reads (runner.cpp chosen_role "action.<id>"): one documented entry action.*,
+    // whose preset chooses no model, so an action keeps the step's model or default_model until the person or the conversation chooses
+    REQUIRE(roles.contains("action.*"));
+    CHECK(roles.at("action.*").at("label").at("pl") == "Model dla działania");
+    CHECK(roles.at("action.*").at("status").at("state") == "partial");
+    fsutil::TempDir td;
+    auto prof = unwrap(PortProfile::load(td.path()));
+    auto summarise = unwrap(prof.resolve("action.summarise", Json::object(), "", Json{{"default_model", "chat-model"}}));
+    CHECK(summarise["scope"] == "installation");
+    CHECK_FALSE(summarise["params"].contains("model"));
   }
 
   TEST_CASE("param_settings: a param the entry does not set comes from its setting, like the model") {

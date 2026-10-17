@@ -126,7 +126,10 @@ ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, 
       return out;
     }
   }
-  if (out.reason.empty()) out.reason = "no analysis model set";
+  // The reason names the policy, so the reader of policy chat is not told about an analysis model.
+  if (out.reason.empty())
+    out.reason = chain.empty() ? "policy '" + policy + "' is not defined (guardian.pack models.policies)"
+                               : "policy '" + policy + "': no step gave a model";
   return out;
 }
 

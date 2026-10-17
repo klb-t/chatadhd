@@ -323,6 +323,10 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME data.check_action_reads
       COMMAND ${Python3_EXECUTABLE} -I ${LOOM_ROOT}/tools/check_action_reads.py)
     set_tests_properties(data.check_action_reads PROPERTIES TIMEOUT 60)
+    # The check itself fails on mutated copies of the data (a lost read, a false role, a non-read literal ...).
+    add_test(NAME data.check_action_reads_selftest
+      COMMAND ${Python3_EXECUTABLE} -I ${LOOM_ROOT}/tools/check_action_reads.py --self-test)
+    set_tests_properties(data.check_action_reads_selftest PROPERTIES TIMEOUT 120)
     set_tests_properties(research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol research.seeding PROPERTIES
       ENVIRONMENT "${_loom_python_env}" TIMEOUT 60)
     # The contracts suite (~210 cases) takes ~31 s alone on a dev build; under ASan with the other
