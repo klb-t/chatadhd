@@ -1069,7 +1069,8 @@
         "nav_collapsed_one": "1 more collapsed by the budget per level — change “Node budget per level” (Settings › Interface) or narrow it with a query",
         "nav_collapsed_source": "• {{label}}: {{shown}} of {{total}} shown",
         "settings_resolved_group_one": "• {{label}}: 1 field, yours {{yours}}",
-        "rr_line_no_model": "• {{label}}: {{model}}"
+        "rr_line_no_model": "• {{label}}: {{model}}",
+        "settings_resolved_group_few": "• {{label}}: {{count}} fields, yours {{yours}}"
       },
       "pl": {
         "unknown": "nieznane",
@@ -1326,7 +1327,8 @@
         "nav_collapsed_source": "• {{label}}: pokazano {{shown}} z {{total}}",
         "settings_resolved_group_one": "• {{label}}: 1 pole, Twoje: {{yours}}",
         "settings_resolved_group_few": "• {{label}}: {{count}} pola, Twoje: {{yours}}",
-        "rr_line_no_model": "• {{label}}: {{model}}"
+        "rr_line_no_model": "• {{label}}: {{model}}",
+        "nav_collapsed_one": "zwinięty przez budżet poziomu: 1 węzeł — zmień „Budżet węzłów na poziom” (Ustawienia › Interfejs) albo zawęź zapytaniem"
       }
     },
     "pipelines": {
