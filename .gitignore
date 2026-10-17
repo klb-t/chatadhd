@@ -35,6 +35,8 @@ desktop.ini
 *.pem
 *.key
 secrets.json
+# …except X-Port's redaction profile of that name (masking rules, no secret in it)
+!loom/tools/extract/data/redaction/secrets.json
 
 # Loom (C++ kernel) build trees
 loom/build*/
