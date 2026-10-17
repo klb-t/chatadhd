@@ -483,5 +483,9 @@
   "report.cut_dropped_empty": "pominięto {n} wiadomości bez treści w tym profilu (np. same narzędzia albo rozumowanie, których profil nie pokazuje)",
   "report.masked_edit_everywhere": "redakcję z edycji zastosowano też do formatu źródłowego (preserve) i do plików bocznych (inventory, units, timeline, oplog, raport, manifest)",
   "report.masked_secrets": "słownik i {n} wartości przepisu są w recipe.json odwołaniami (sha256); same wartości zapisano poza pakietem: {store} — odtworzenie na innym komputerze wymaga --slownik-plik, bez niego zostanie odmówione",
-  "report.masked_secrets_nostore": "słownik i {n} wartości przepisu są w recipe.json odwołaniami (sha256) i nie zapisano ich nigdzie (redaction.secret_store: false) — odtworzenie wymaga --slownik-plik"
+  "report.masked_secrets_nostore": "słownik i {n} wartości przepisu są w recipe.json odwołaniami (sha256) i nie zapisano ich nigdzie (redaction.secret_store: false) — odtworzenie wymaga --slownik-plik",
+  "engine.user_code_in_recipe": "przepis uruchamia kod użytkownika: {steps}; zgoda tej twarzy (--kod-uzytkownika): {granted}",
+  "report.no": "nie",
+  "cli.opt.dictionary_file": "plik ze słownikiem redakcji (lista terminów albo magazyn secrets.json) dla przepisu pakietu z redakcją",
+  "cli.opt.user_code": "to wywołanie może uruchomić kod użytkownika z nakładki (<dane>/extract/user/); przepis sam tej zgody nie daje"
 }

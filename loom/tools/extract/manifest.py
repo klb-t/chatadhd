@@ -120,8 +120,20 @@ def reproduce(eng: Any, manifest_path: Any, *, target: Optional[Any] = None) -> 
     out_dir = Path(str(target)).expanduser() if target else pkg_dir.with_name(pkg_dir.name + ".reproduced")
     recipe["steps"] = [st for st in recipe.get("steps") or [] if st.get("op") != "write"]
     recipe["steps"].append({"op": "write", "params": {"package": str(out_dir)}, "by": "recipe"})
-    if man.get("settings", {}).get("flows"):
-        recipe.setdefault("settings", {})["flows"] = man["settings"]["flows"]
+    from .engine import take_consent
+    flows = json.loads(json.dumps((man.get("settings") or {}).get("flows") or {}))
+    take_consent({"flows": flows})  # the manifest records the original run's consent; it is never applied again
+    face = ((eng.settings.get("flows") or {}).get("model") or {})
+    rerun = bool(face.get("enabled") and face.get("accept"))  # a real re-run: explicit --model --tak on this face
+    if not rerun:
+        # reproduction re-sends nothing and pays nothing: model answers come from the original package's cache
+        flows.setdefault("model", {})["replay_only"] = True
+        cache = pkg_dir / "cache"
+        if cache.is_dir():
+            eng.settings["cache_dir"] = str(cache)
+        eng.model_runner = None
+    if flows:
+        recipe.setdefault("settings", {})["flows"] = _merge_flows(recipe.get("settings", {}).get("flows") or {}, flows)
     eng.run_recipe(recipe, base_dir=pkg_dir, by="recipe")
     new_man, _ = load_manifest(out_dir)
     src_old = {s.get("label"): s.get("sha256") for s in man.get("sources") or []}
@@ -133,6 +145,11 @@ def reproduce(eng: Any, manifest_path: Any, *, target: Optional[Any] = None) -> 
     return {"equal": man.get("reproducible_hash") == new_man.get("reproducible_hash"), "original": man.get("reproducible_hash"),
             "reproduced": new_man.get("reproducible_hash"), "package": str(out_dir), "differences": diffs,
             "sources_changed": changed_sources}
+
+
+def _merge_flows(a: dict[str, Any], b: dict[str, Any]) -> dict[str, Any]:
+    from .engine import _deep_merge
+    return _deep_merge(a, b)
 
 
 def check_package(pkg_dir: Any, *, ds: Any = None) -> dict[str, Any]:

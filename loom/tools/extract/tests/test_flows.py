@@ -159,6 +159,100 @@ class FlowsTest(ExtractTest):
             eng.op("select.criteria", dict(self.SELECT))
         self.assertIn("price is unknown", cm.exception.reason)
 
+    def _cli(self, *argv):
+        import contextlib
+        import io
+        from loom.tools.extract import cli
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main([str(a) for a in argv])
+        return code, out.getvalue(), err.getvalue()
+
+    def test_a_recipe_cannot_grant_itself_models_or_a_provider(self):
+        """F36: consent belongs to the face.  A recipe with enabled/accept/accept_x10 and its own provider makes zero
+        calls and exits 5 without --model --tak; with them, a provider host the user did not configure is asked
+        about (no answer = no); the face's own --dostawca is the user's choice."""
+        rec = {"schema": "loom.extract.recipe/1", "sources": [str(EXPORTS / "openai_2026_sharded.zip")],
+               "settings": {"flows": {"model": {"enabled": True, "accept": True, "accept_x10": True,
+                                                 "classes": {"cheap": "stub-cheap", "strong": "stub-strong"},
+                                                 "provider": {"base_url": self.url, "api_key_env": "XPORT_TEST_KEY"}}},
+                            "allow_user_code": True},
+               "steps": [{"op": "select.criteria", "params": dict(self.SELECT, model=True)}]}
+        f = self.write(self.tmp / "r.json", json.dumps(rec))
+        code, out, err = self._cli("przepis", "uruchom", f, "--cache", self.tmp / "c1")
+        self.assertEqual(code, 5, err)
+        self.assertEqual(_Stub.calls, [], "a recipe's accept: true sends nothing")
+        code, out, err = self._cli("przepis", "uruchom", f, "--model", "--tak", "--cache", self.tmp / "c2")
+        self.assertEqual(code, 5, err)
+        self.assertIn("127.0.0.1", err, "the question shows the host")
+        self.assertEqual(_Stub.calls, [], "a provider named by the data is not used without a yes")
+        code, out, err = self._cli("przepis", "uruchom", f, "--model", "--tak", "--dostawca", self.url, "--cache", self.tmp / "c3")
+        self.assertEqual(code, 5, "the face names the host, but the recipe's own key variable is still asked about")
+        self.assertEqual(_Stub.calls, [])
+        del rec["settings"]["flows"]["model"]["provider"]["api_key_env"]
+        f = self.write(self.tmp / "r2.json", json.dumps(rec))
+        code, out, err = self._cli("przepis", "uruchom", f, "--model", "--tak", "--dostawca", self.url, "--cache", self.tmp / "c4")
+        self.assertEqual(code, 0, err)
+        self.assertTrue(_Stub.calls, "the user's own --dostawca and --model --tak: the run proceeds")
+
+    def test_reproduce_of_a_model_run_package_makes_no_calls(self):
+        """F37: odtworz never re-sends or pays: accept is not taken from the manifest; answers come from the original
+        package's cache; a real re-run needs --model --tak on the command line."""
+        from loom.tools.extract.engine import Engine
+        st = self.settings()
+        st["cache_dir"] = str(self.tmp / "pkg" / "cache")
+        eng = Engine(ds=store(), settings=st)
+        self._engines.append(eng)
+        eng.set_sources([str(EXPORTS / "openai_2026_sharded.zip")])
+        eng.op("select.criteria", dict(self.SELECT, model=True))
+        eng.op("cut", {"profiles": ["flat"]})
+        eng.op("write", {"package": str(self.tmp / "pkg")})
+        n = len(_Stub.calls)
+        self.assertGreater(n, 0)
+        man = json.loads((self.tmp / "pkg/manifest.json").read_text(encoding="utf-8"))
+        self.assertTrue(man["settings"]["flows"]["model"]["accept"], "the manifest records the original consent")
+        code, out, err = self._cli("odtworz", self.tmp / "pkg", "--pakiet", self.tmp / "again")
+        self.assertIn(code, (0, 1), err)
+        self.assertEqual(len(_Stub.calls), n, "reproduction made no call")
+        import shutil
+        shutil.rmtree(self.tmp / "pkg" / "cache")
+        code, out, err = self._cli("odtworz", self.tmp / "pkg", "--pakiet", self.tmp / "again2")
+        self.assertEqual(code, 5, err)
+        self.assertEqual(len(_Stub.calls), n, "without the cache it stops instead of paying again")
+
+    def test_x10_guard_with_unknown_prices_compares_tokens(self):
+        """F38: prices.json ships empty, so the price is unknown; the guard compares the estimated tokens (or the
+        number of calls) with the last accepted run instead of never firing."""
+        (store().overlay / "prices.json").write_text(json.dumps({"models": {}}), encoding="utf-8")
+        usage = store().overlay / "usage.jsonl"
+        usage.write_text(json.dumps({"at": "2026-10-01T00:00:00Z", "estimate": {"amount": None, "known": False}, "calls": 1,
+                                     "volume": {"calls": 1, "tokens": 10}, "accepted": True}) + "\n", encoding="utf-8")
+        eng = self._eng()
+        with self.assertRaises(ModelRefused) as cm:
+            eng.op("select.criteria", dict(self.SELECT))
+        self.assertIn("tokens", cm.exception.reason)
+        self.assertEqual(_Stub.calls, [])
+        eng = self._eng(accept_x10=True)
+        eng.op("select.criteria", dict(self.SELECT))
+        last = json.loads(usage.read_text(encoding="utf-8").splitlines()[-1])
+        self.assertGreater(last["volume"]["tokens"], 0, "the volume is remembered for the next guard")
+        usage.write_text(json.dumps({"at": "2026-10-01T00:00:00Z", "estimate": {"amount": None}, "calls": 1, "accepted": True}) + "\n",
+                         encoding="utf-8")
+        eng = self._eng()
+        with self.assertRaises(ModelRefused) as cm:
+            eng.op("select.criteria", dict(self.SELECT))
+        self.assertIn("calls", cm.exception.reason, "an old record without volume: the number of calls")
+
+    def test_a_failed_provider_call_is_logged_and_refused(self):
+        """F41: a call that fails is appended to usage.jsonl with the error, and reported as a refusal (exit 5)."""
+        eng = self._eng(provider={"base_url": "http://127.0.0.1:9/v1", "api_key_env": "XPORT_TEST_KEY", "timeout": 2})
+        with self.assertRaises(ModelRefused) as cm:
+            eng.op("select.criteria", dict(self.SELECT))
+        self.assertIn("failed", cm.exception.reason)
+        rows = [json.loads(x) for x in (store().overlay / "usage.jsonl").read_text(encoding="utf-8").splitlines()]
+        self.assertTrue(any(r.get("error") for r in rows))
+        self.assertTrue(any(c.get("error") for c in eng.model_runner.calls))
+
     def test_summaries_for_cards_and_described_criteria(self):
         eng = self._eng()
         eng.op("select.expr", {"expr": "title~/Migracja/"})

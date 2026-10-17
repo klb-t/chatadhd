@@ -721,6 +721,20 @@ def op_report(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     return {"counts": {"chars": len(text)}, "report": text}
 
 
+def user_module_path(base: Path, module: str, what: str) -> Path:
+    """``<overlay>/user/<module>.py`` and nothing else: the module is a plain Python name (no path, no ``..``) and the
+    resolved file lies inside the overlay's ``user/`` directory — a recipe cannot point at any other file on disk."""
+    if not module.isidentifier():
+        raise ValueError(f"{what}: module must be a Python name (a file in <overlay>/user/), got {module!r}")
+    root = (Path(base) / "user").resolve()
+    path = (root / f"{module}.py").resolve()
+    if not path.is_relative_to(root):
+        raise ValueError(f"{what}: module {module!r} resolves outside {root}")
+    if not path.exists():
+        raise ValueError(f"{what}: module not found: {path}")
+    return path
+
+
 @op("user.call")
 def op_user_call(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     """A user function from the overlay (``<data dir>/extract/user/<module>.py``), loaded only on explicit request."""
@@ -729,9 +743,9 @@ def op_user_call(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     base = overlay_dir()
     if base is None:
         raise ValueError("user.call: no overlay directory (app data dir unknown)")
-    path = base / "user" / f"{p['module']}.py"
-    if not path.exists():
-        raise ValueError(f"user.call: module not found: {path}")
+    path = user_module_path(base, str(p["module"]), "user.call")
+    if not str(p["function"]).isidentifier():
+        raise ValueError(f"user.call: function must be a Python name, got {p['function']!r}")
     spec = importlib.util.spec_from_file_location(f"loom_extract_user_{p['module']}", path)
     mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
     assert spec and spec.loader

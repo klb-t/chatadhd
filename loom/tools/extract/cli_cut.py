@@ -49,6 +49,14 @@ MODEL_OPTS = [
 
 
 # ───────────────────────────── shared helpers ─────────────────────────────
+# grants of THIS face invocation (``--kod-uzytkownika``): never read from a recipe, a task file or a manifest
+FACE_GRANTS: dict[str, Any] = {}
+
+
+def face_settings() -> dict[str, Any]:
+    return {"allow_user_code": True} if FACE_GRANTS.get("allow_user_code") else {}
+
+
 def model_settings(args: argparse.Namespace) -> dict[str, Any]:
     m: dict[str, Any] = {}
     if getattr(args, "model", False):
@@ -93,6 +101,7 @@ def interactive_ask(args: argparse.Namespace) -> Any:
 def make_engine(args: argparse.Namespace, progress: Any = None, settings: Optional[dict[str, Any]] = None) -> Engine:
     s = dict(settings or {})
     s.update(model_settings(args))
+    s.update(face_settings())
     pk = getattr(args, "pakiet", None)
     if pk and getattr(args, "cache", None) != "off":
         s.setdefault("cache_dir", str(Path(pk).expanduser() / "cache"))

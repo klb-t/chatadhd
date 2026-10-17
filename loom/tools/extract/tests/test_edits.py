@@ -312,6 +312,31 @@ class UserEditTest(ExtractTest):
         self.assertIn("WIDOK LISTY", [e.unit.title for e in eng.package.entries])
         rec = eng.normalised_recipe()
         self.assertTrue(rec["settings"]["allow_user_code"], "the recipe says it runs user code")
+        # F43: the recipe records that it runs user code, but cannot grant itself the right: the face does
+        refused = self.engine()
+        with self.assertRaises(EngineError):
+            refused.run_recipe(rec)
+        self.assertTrue(any("upper_titles" in str(ev.get("text")) for ev in refused.events if ev["kind"] == "note"),
+                        "the user code a replay would run is shown before it runs")
         again = self.engine()
+        again.settings["allow_user_code"] = True  # the face's grant (CLI --kod-uzytkownika)
         again.run_recipe(rec)
         self.assertIn("WIDOK LISTY", [e.unit.title for e in again.package.entries])
+
+    def test_user_code_paths_are_contained_in_the_overlay(self):
+        """F43: a module name is a Python name inside <overlay>/user/, never a path to another file."""
+        import os
+        from loom.tools.extract import paths as _paths
+        os.environ["LOOM_EXTRACT_DATA_DIR"] = str(self.tmp / "appdata")
+        ov = _paths.overlay_dir()
+        (ov / "user").mkdir(parents=True)
+        outside = self.write(self.tmp / "evil.py", "def run(eng, args):\n    return 'ran'\n")
+        eng = self.engine(EXPORTS / "anthropic_2026_full.zip")
+        eng.settings["allow_user_code"] = True
+        rel = os.path.relpath(outside.with_suffix(""), ov / "user")
+        for module in (rel, "../evil", "/etc/passwd", "a.b"):
+            with self.subTest(module=module):
+                with self.assertRaises(ValueError):
+                    eng.op("user.call", {"module": module, "function": "run"})
+        self.write(ov / "user" / "ok.py", "def run(eng, args):\n    return 'ok'\n")
+        self.assertEqual(eng.op("user.call", {"module": "ok", "function": "run"})["result"], "ok")

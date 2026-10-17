@@ -483,5 +483,9 @@
   "report.cut_dropped_empty": "{n} message(s) without content in this profile left out (e.g. tool-only or reasoning-only turns the profile omits)",
   "report.masked_edit_everywhere": "the redaction edit was also applied to the source format (preserve) and to the side files (inventory, units, timeline, oplog, report, manifest)",
   "report.masked_secrets": "the dictionary and {n} recipe value(s) are references (sha256) in recipe.json; the values were saved outside the package: {store} — reproducing elsewhere needs --dictionary-file, without it it is refused",
-  "report.masked_secrets_nostore": "the dictionary and {n} recipe value(s) are references (sha256) in recipe.json and were saved nowhere (redaction.secret_store: false) — reproducing needs --dictionary-file"
+  "report.masked_secrets_nostore": "the dictionary and {n} recipe value(s) are references (sha256) in recipe.json and were saved nowhere (redaction.secret_store: false) — reproducing needs --dictionary-file",
+  "engine.user_code_in_recipe": "the recipe runs user code: {steps}; this face's grant (--allow-user-code): {granted}",
+  "report.no": "no",
+  "cli.opt.dictionary_file": "redaction dictionary file (a list of terms or a secrets.json store) for a redacted package's recipe",
+  "cli.opt.user_code": "this invocation may run the user's code from the overlay (<data>/extract/user/); a recipe cannot grant it"
 }

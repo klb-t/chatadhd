@@ -787,9 +787,13 @@ def _user_edit(eng: Any, op_id: str, name: str) -> Callable[..., dict[str, Any]]
     if not eng.settings.get("allow_user_code"):
         raise EditError(f"edit {op_id}: user code needs settings.allow_user_code = true")
     base = eng.ds.overlay
-    path = (base / "user" / f"{name}.py") if base is not None else None
-    if path is None or not path.exists():
-        raise EditError(f"edit {op_id}: user module not found: {path}")
+    if base is None:
+        raise EditError(f"edit {op_id}: user module not found: no overlay directory")
+    from .ops import user_module_path
+    try:
+        path = user_module_path(base, name, f"edit {op_id}")
+    except ValueError as exc:
+        raise EditError(str(exc)) from exc
     spec = importlib.util.spec_from_file_location(f"loom_extract_user_edit_{name}", path)
     mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
     assert spec and spec.loader

@@ -7,6 +7,7 @@ from ``data/ops.json`` and nothing else; an op with ``records: true`` becomes a
 recipe step, so whatever a face did can be replayed with ``run_recipe``.
 Long ops report ``progress`` events through a callback; nothing here draws.
 """
+import json
 import logging
 import sys
 import time
@@ -20,13 +21,38 @@ from .expand import Selection
 from .lexical import Lexicon, lexicon as default_lexicon
 from .model import Unit
 from .readers.base import ReadContext
-from .recipe import RecipeError, add_step, new_recipe, normalise, op_spec, ops_registry
+from .recipe import RecipeError, add_step, new_recipe, normalise, op_spec, ops_registry, step_problems
 from .select_expr import ExprContext
 from .sources import FormatCatalog
 from .vectors import VectorIndex
 
 log = logging.getLogger(__name__)
 MODES = ("replace", "add", "subtract", "intersect")
+# consent belongs to the face (CLI flags, an interactive answer, a serve call's explicit answer), never to the data:
+# a recipe, a task file, a manifest or a request body may record these, but a run does not apply them
+CONSENT_KEYS = (("flows", "model", "enabled"), ("flows", "model", "accept"), ("flows", "model", "accept_x10"), ("allow_user_code",))
+PROVIDER_KEYS = ("base_url", "secret", "api_key_env")
+
+
+def _deep_merge(a: Any, b: Any) -> Any:
+    if isinstance(a, dict) and isinstance(b, dict):
+        out = dict(a)
+        for k, v in b.items():
+            out[k] = _deep_merge(a.get(k), v) if k in a else v
+        return out
+    return b
+
+
+def take_consent(settings: dict[str, Any]) -> dict[str, Any]:
+    """Remove the consent keys from ``settings`` (in place); returns what was there (``flows.model.accept`` …)."""
+    claims: dict[str, Any] = {}
+    for path in CONSENT_KEYS:
+        node: Any = settings
+        for part in path[:-1]:
+            node = node.get(part) if isinstance(node, dict) else None
+        if isinstance(node, dict) and path[-1] in node:
+            claims[".".join(path)] = node.pop(path[-1])
+    return claims
 
 
 class EngineError(ValueError):
@@ -91,6 +117,9 @@ class Engine:
         # values a redacted package's recipe refers to by hash (``--slownik-plik``; the local store is read too)
         self.secret_values: dict[str, Any] = {}
         self.secrets_info: Optional[dict[str, Any]] = None
+        # what a recipe claimed about consent (recorded, never applied) and a provider it names (asked about first)
+        self.recipe_claims: dict[str, Any] = {}
+        self.data_provider: Optional[dict[str, Any]] = None
 
     # -- lifecycle --------------------------------------------------------------
     def close(self) -> None:
@@ -156,6 +185,11 @@ class Engine:
         from . import ops as _ops  # local import: ops imports this module's types
         spec = op_spec(name, self.ds)
         params = dict(params or {})
+        # the same per-step check as a recipe file (unknown params, types, enums, modes): what one face accepts,
+        # every face accepts, and nothing reaches the state or the recipe that a replay would reject
+        problems = step_problems(name, params, ops_registry(self.ds), where=name, by=None, check_explicit=False)
+        if problems:
+            raise EngineError("; ".join(problems))
         # presets and defaults, written out so the recipe says where each value came from; a replayed
         # step brings its recorded origins along, so the recipe stays byte-identical after a replay
         source: dict[str, str] = {k: "step" for k in params}
@@ -221,8 +255,25 @@ class Engine:
         norm = normalise(recipe, self.ds, base_dir=base_dir)
         if norm.get("sources"):
             self.set_sources(norm["sources"])
-        self.settings.update(norm.get("settings") or {})
-        self.model_runner = None  # settings may have changed (models enabled, classes, provider)
+        rs = json.loads(json.dumps(norm.get("settings") or {}))
+        self.recipe_claims.update(take_consent(rs))  # recorded fact; the grants are the face's
+        prov = ((rs.get("flows") or {}).get("model") or {}).get("provider")
+        if isinstance(prov, dict):
+            mine = dict(((self.ds.preset("flows.model") or {}).get("provider")) or {})
+            mine.update((((self.settings.get("flows") or {}).get("model") or {}).get("provider")) or {})
+            differs = {k: prov[k] for k in PROVIDER_KEYS if k in prov and prov[k] not in (None, "") and prov[k] != mine.get(k)}
+            for k in differs:
+                prov.pop(k)
+            if differs:  # a host or a key the user did not configure: a yes/no showing the host before any call
+                self.data_provider = differs
+        self.settings = _deep_merge(self.settings, rs)
+        self.model_runner = None  # settings may have changed (classes, flows, cache)
+        user_code = [st for st in norm["steps"] if (op_spec(st["op"], self.ds) or {}).get("explicit")]
+        if user_code:  # what user code a replay would run, said before it runs (and run only with the face's grant)
+            from .i18n import t as _t
+            self.emit("note", text=_t("engine.user_code_in_recipe", steps=", ".join(
+                f"{st['op']}:{(st.get('params') or {}).get('module') or (st.get('params') or {}).get('edit')}" for st in user_code),
+                granted=_t("report.yes") if self.settings.get("allow_user_code") else _t("report.no")))
         self.recipe["id"] = norm.get("id", self.recipe.get("id"))
         self.recipe["label"] = norm.get("label", {})
         self.recipe["manual"] = norm.get("manual", self.recipe.get("manual"))

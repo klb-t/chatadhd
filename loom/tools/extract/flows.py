@@ -179,12 +179,39 @@ class ModelRunner:
                 log.debug("usage.jsonl: bad line skipped", exc_info=True)
         return rows
 
+    @staticmethod
+    def _volume(est: dict[str, Any]) -> dict[str, int]:
+        """Size of a run independent of prices: calls and estimated tokens (input estimate + output upper bound)."""
+        tokens = sum(int(f.get("tokens_in_est") or 0) + int(f.get("tokens_out_max") or 0) for f in (est.get("flows") or {}).values())
+        return {"calls": int(est.get("calls") or 0), "tokens": tokens}
+
+    def _provider_check(self) -> None:
+        """A provider host or key named by a recipe / task file / manifest (not by the user's config or a face flag)
+        is used only after a yes/no that shows the host; otherwise nothing is sent."""
+        data = getattr(self.eng, "data_provider", None)
+        if not data:
+            return
+        from urllib.parse import urlparse
+        host = urlparse(str(data.get("base_url") or (self.cfg.get("provider") or {}).get("base_url") or "")).hostname or "?"
+        q = {"kind": "provider", "host": host, "keys": sorted(data)}
+        if not (self.ask and self.ask(q)):
+            raise ModelRefused(f"the recipe names a provider the user did not configure (host {host}, {', '.join(sorted(data))}); "
+                               f"confirm by answering yes or pass --dostawca", question=True)
+        self.cfg["provider"] = {**(self.cfg.get("provider") or {}), **data}
+        self.eng.data_provider = None
+
     def authorize(self, est: dict[str, Any]) -> dict[str, Any]:
         """Raise ModelRefused unless the run may spend ``est``; returns the decision record."""
         if est.get("calls", 0) == 0:
             return {"accepted": True, "reason": "nothing to call"}
+        if self.replay_only:
+            # nothing is sent and nothing is paid: answers come from the cache or the step stops (reproduction)
+            rec = {"at": _now_iso(), "accepted": True, "replay_only": True, "calls": est.get("calls")}
+            self.authorized = rec
+            return rec
         if not self.enabled:
             raise ModelRefused("model steps are off (enable explicitly with --model)", estimate=est)
+        self._provider_check()
         guard = self.cfg.get("guard") or {}
         amount = (est.get("total") or {}).get("amount")
         known = bool((est.get("total") or {}).get("known"))
@@ -201,26 +228,43 @@ class ModelRunner:
             if spent + amount > per_day:
                 raise ModelRefused(f"estimate {amount} + {round(spent, 6)} spent today exceeds limit_per_day {per_day}", estimate=est)
         ratio = float(guard.get("ratio") or 0)
-        last = next((float((h.get("estimate") or {}).get("amount") or 0) for h in reversed(hist) if h.get("accepted")), 0.0)
+        prev = next((h for h in reversed(hist) if h.get("accepted") and not h.get("replay_only")), None)
+        last = float(((prev or {}).get("estimate") or {}).get("amount") or 0)
+        vol = self._volume(est)
         x10 = bool(ratio and known and last > 0 and amount is not None and amount > ratio * last)
+        basis = "amount"
+        if ratio and not x10 and prev is not None and (not known or not last):
+            # the price is unknown (prices.json ships empty): the guard compares the size of the run instead —
+            # estimated tokens, else the number of calls — with the last accepted run
+            pv = prev.get("volume") or {}
+            if int(pv.get("tokens") or 0) > 0 and vol["tokens"] > ratio * int(pv["tokens"]):
+                x10, basis, last = True, "tokens", int(pv["tokens"])
+            elif int(pv.get("calls") or prev.get("calls") or 0) > 0 and vol["calls"] > ratio * int(pv.get("calls") or prev.get("calls") or 0):
+                x10, basis, last = True, "calls", int(pv.get("calls") or prev.get("calls") or 0)
         if x10 and not self.accept_x10:
-            q = {"kind": "x10", "estimate": est, "last": last, "ratio": ratio}
+            q = {"kind": "x10", "estimate": est, "last": last, "ratio": ratio, "basis": basis}
             if not (self.ask and self.ask(q)):
-                raise ModelRefused(f"estimate {amount} is more than {ratio}× the last accepted run ({last}); confirm with --zgoda-x10",
+                what = {"amount": f"estimate {amount}", "tokens": f"{vol['tokens']} estimated tokens",
+                        "calls": f"{vol['calls']} calls"}[basis]
+                raise ModelRefused(f"{what} is more than {ratio}× the last accepted run ({last}); confirm with --zgoda-x10",
                                    estimate=est, question=True)
         if not self.accept:
             q = {"kind": "estimate", "estimate": est}
             if not (self.ask and self.ask(q)):
                 raise ModelRefused("estimate not accepted (answer 'yes' or pass --tak)", estimate=est, question=True)
-        rec = {"at": _now_iso(), "estimate": est.get("total"), "calls": est.get("calls"), "accepted": True, "x10": x10}
-        p = self._usage_path()
-        if p is not None:
-            p.parent.mkdir(parents=True, exist_ok=True)
-            with open(p, "a", encoding="utf-8") as fh:
-                fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+        rec = {"at": _now_iso(), "estimate": est.get("total"), "calls": est.get("calls"), "volume": vol, "accepted": True, "x10": x10}
+        self._usage_append(rec)
         self.authorized = rec
         self.eng.emit("model.authorized", estimate=est.get("total"), calls=est.get("calls"))
         return rec
+
+    def _usage_append(self, rec: dict[str, Any]) -> None:
+        p = self._usage_path()
+        if p is None:
+            return
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with open(p, "a", encoding="utf-8") as fh:
+            fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
     # -- calls -------------------------------------------------------------------------------
     def _key(self, route: dict[str, Any]) -> Optional[str]:
@@ -273,8 +317,19 @@ class ModelRunner:
         if key:
             req.add_header("Authorization", f"Bearer {key}")
         t0 = time.time()
-        with urllib.request.urlopen(req, timeout=float(route.get("timeout", 120))) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
+        try:
+            with urllib.request.urlopen(req, timeout=float(route.get("timeout", 120))) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+        except (OSError, ValueError) as exc:  # URLError/HTTPError are OSError; a body that is not JSON is ValueError
+            err = f"{type(exc).__name__}: {exc}"
+            entry.update({"cache": False, "error": err, "cost": {"amount": None, "currency": "USD", "known": False},
+                          "seconds": round(time.time() - t0, 3)})
+            self.calls.append(entry)
+            self._usage_append({"at": _now_iso(), "flow": flow_id, "model": model, "error": err, "accepted": False,
+                                "cost": {"amount": None, "known": False}})
+            log.warning("model call failed: %s", err)
+            log.debug("model call failure", exc_info=True)
+            raise ModelRefused(f"the provider call failed ({err}); nothing was cached, run again when it works") from exc
         text = (((data.get("choices") or [{}])[0].get("message") or {}).get("content")) or ""
         usage = data.get("usage") or {}
         tin, tout = int(usage.get("prompt_tokens") or 0), int(usage.get("completion_tokens") or 0)

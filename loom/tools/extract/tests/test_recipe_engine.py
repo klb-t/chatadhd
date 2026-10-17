@@ -82,6 +82,23 @@ class EngineTest(ExtractTest):
         with self.assertRaises(ValueError):
             eng.op("scan")
 
+    def test_engine_op_validates_params_like_a_recipe(self):
+        """F29: a face's op call with an unknown or mistyped param is refused before any state changes, so the
+        recorded recipe stays valid and every later write still works."""
+        eng = self.engine(EXPORTS / "openai_2026_sharded.zip")
+        eng.ensure_units()
+        steps = len(eng.recipe["steps"])
+        for name, params in (("select.expr", {"expr": "kind:conversation", "bogus": 1}), ("select.expr", {"expr": 5}),
+                             ("select.expr", {"expr": "x", "kind": "planet"}), ("expand", {"preset": 3})):
+            with self.subTest(op=name, params=params):
+                with self.assertRaises(EngineError):
+                    eng.op(name, params)
+        self.assertEqual(len(eng.recipe["steps"]), steps, "a refused op is not a step")
+        self.assertEqual(R.validate(eng.normalised_recipe()), [])
+        eng.op("select.expr", {"expr": "kind:conversation"})
+        eng.op("write", {"package": str(self.tmp / "pkg")})
+        self.assertTrue((self.tmp / "pkg/manifest.json").exists())
+
     def test_selection_modes(self):
         eng, units = self.units(EXPORTS / "openai_2026_sharded.zip")
         convs = [u for u in units if u.kind == "conversation"]

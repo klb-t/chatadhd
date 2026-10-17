@@ -16,7 +16,8 @@ log = logging.getLogger(__name__)
 
 
 def _session(args: argparse.Namespace, face: str) -> Session:
-    return Session(face=face, aggregate=bool(args.aggregate), package=getattr(args, "pakiet", None))
+    from .cli_cut import face_settings
+    return Session(face=face, aggregate=bool(args.aggregate), package=getattr(args, "pakiet", None), settings=face_settings())
 
 
 def autosave_path(args: argparse.Namespace, ds: Any) -> Optional[Path]:

@@ -119,6 +119,43 @@ _TYPE_CHECK = {
 }
 
 
+def step_problems(op: str, params: Any, reg: dict[str, Any], *, where: str = "step", by: Optional[str] = "recipe",
+                  settings: Optional[dict[str, Any]] = None, modes: Optional[list[str]] = None,
+                  check_explicit: bool = True) -> list[str]:
+    """Problems of one step's parameters against ``ops.json`` (unknown params, types, enums, modes, required ones);
+    the same check for a recipe file and for a face's ``Engine.op`` call, so every face accepts the same steps."""
+    problems: list[str] = []
+    if op not in reg["ops"]:
+        return [f"{where}: unknown op {op!r}"]
+    spec = reg["ops"][op]
+    modes = modes or reg.get("modes") or ["replace", "add", "subtract", "intersect"]
+    if by is not None and by not in BY:
+        problems.append(f"{where}: by must be one of {', '.join(BY)}")
+    if not isinstance(params, dict):
+        return problems + [f"{where}: params must be an object"]
+    pspec = spec.get("params") or {}
+    for name, ps in pspec.items():
+        if ps.get("required") and name not in params:
+            problems.append(f"{where} ({op}): missing required param {name!r}")
+    for name, value in params.items():
+        if name not in pspec:
+            problems.append(f"{where} ({op}): unknown param {name!r} (known: {', '.join(sorted(pspec)) or '-'})")
+            continue
+        ptype = pspec[name].get("type", "string")
+        check = _TYPE_CHECK.get(ptype)
+        if value is None or _is_secret_ref(value):  # a redacted package's reference: resolved before a run
+            continue
+        if check and not check(value):
+            problems.append(f"{where} ({op}): param {name!r} must be {ptype}, got {type(value).__name__}")
+        if ptype == "enum" and isinstance(value, str) and value not in (pspec[name].get("values") or []):
+            problems.append(f"{where} ({op}): param {name!r} must be one of {', '.join(pspec[name].get('values') or [])}")
+        if ptype == "mode" and isinstance(value, str) and value not in modes:
+            problems.append(f"{where} ({op}): mode must be one of {', '.join(modes)}")
+    if check_explicit and spec.get("explicit") and not (settings or {}).get("allow_user_code"):
+        problems.append(f"{where} ({op}): user code needs settings.allow_user_code = true")
+    return problems
+
+
 def validate(recipe: dict[str, Any], ds: Optional[DataStore] = None) -> list[str]:
     """Problems as readable strings (empty = valid)."""
     ds = ds or default_store()
@@ -149,33 +186,8 @@ def validate(recipe: dict[str, Any], ds: Optional[DataStore] = None) -> list[str
         if not isinstance(op, str) or op not in reg["ops"]:
             problems.append(f"{where}: unknown op {op!r}")
             continue
-        spec = reg["ops"][op]
-        if step.get("by", "recipe") not in BY:
-            problems.append(f"{where}: by must be one of {', '.join(BY)}")
-        params = step.get("params", {})
-        if not isinstance(params, dict):
-            problems.append(f"{where}: params must be an object")
-            continue
-        pspec = spec.get("params") or {}
-        for name, ps in pspec.items():
-            if ps.get("required") and name not in params:
-                problems.append(f"{where} ({op}): missing required param {name!r}")
-        for name, value in params.items():
-            if name not in pspec:
-                problems.append(f"{where} ({op}): unknown param {name!r} (known: {', '.join(sorted(pspec)) or '-'})")
-                continue
-            ptype = pspec[name].get("type", "string")
-            check = _TYPE_CHECK.get(ptype)
-            if value is None or _is_secret_ref(value):  # a redacted package's reference: resolved before a run
-                continue
-            if check and not check(value):
-                problems.append(f"{where} ({op}): param {name!r} must be {ptype}, got {type(value).__name__}")
-            if ptype == "enum" and isinstance(value, str) and value not in (pspec[name].get("values") or []):
-                problems.append(f"{where} ({op}): param {name!r} must be one of {', '.join(pspec[name].get('values') or [])}")
-            if ptype == "mode" and isinstance(value, str) and value not in modes:
-                problems.append(f"{where} ({op}): mode must be one of {', '.join(modes)}")
-        if spec.get("explicit") and not (recipe.get("settings") or {}).get("allow_user_code"):
-            problems.append(f"{where} ({op}): user code needs settings.allow_user_code = true")
+        problems += step_problems(op, step.get("params", {}), reg, where=where, by=step.get("by", "recipe"),
+                                  settings=recipe.get("settings") or {}, modes=modes)
     return problems
 
 

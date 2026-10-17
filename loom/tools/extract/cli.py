@@ -92,7 +92,8 @@ VERBS: list[dict[str, Any]] = [
               _o("--model", action="store_true", help="cli.opt.model")] + _cc.MODEL_OPTS},
     {"name": "przepis", "aliases": ["recipe"], "help": "cli.verb.recipe",
      "opts": [_o("akcja", choices=["sprawdz", "check", "normalizuj", "normalize", "uruchom", "run", "hash"], help="cli.opt.recipe_action"),
-              _o("plik", metavar="PLIK", help="cli.opt.recipe_file"), PACKAGE, DRY]},
+              _o("plik", metavar="PLIK", help="cli.opt.recipe_file"), PACKAGE, DRY, CACHE,
+              _o("--model", action="store_true", help="cli.opt.model")] + _cc.MODEL_OPTS},
     {"name": "formaty", "aliases": ["formats"], "help": "cli.verb.formats", "opts": [_o("pliki", nargs="*", metavar="PLIK", help="cli.opt.files")]},
     {"name": "operacje", "aliases": ["ops"], "help": "cli.verb.ops", "opts": []},
     {"name": "wytnij", "aliases": ["cut", "extract", "wyciagnij", "wyciągnij"], "help": "cli.verb.cut",
@@ -167,6 +168,10 @@ def build_parser(lang: Optional[str] = None) -> argparse.ArgumentParser:
     parser.add_argument("--zbiorczo", "--aggregate", dest="aggregate", action="store_true", help=t("cli.opt.aggregate"))
     parser.add_argument("--dane", "--data-dir", dest="data_dir", metavar="KATALOG", help=t("cli.opt.data_dir"))
     parser.add_argument("--debug", action="store_true", help=t("cli.opt.debug"))
+    # read by main() before this parser (any position); listed here so --help shows them
+    parser.add_argument("--slownik-plik", "--dictionary-file", dest="slownik_plik", metavar="PLIK", action="append",
+                        help=t("cli.opt.dictionary_file"))
+    parser.add_argument("--kod-uzytkownika", "--allow-user-code", dest="user_code", action="store_true", help=t("cli.opt.user_code"))
     parser.add_argument("--wersja", "--version", action="version", version=f"loom.tools.extract {__version__}")
     sub = parser.add_subparsers(dest="verb", metavar="CZASOWNIK")
     for v in VERBS:
@@ -181,7 +186,7 @@ def build_parser(lang: Optional[str] = None) -> argparse.ArgumentParser:
 
 # ───────────────────────────── verbs ─────────────────────────────
 def _engine(args: argparse.Namespace) -> Engine:
-    return Engine(aggregate=bool(args.aggregate), progress=(_progress if not args.json else None))
+    return Engine(aggregate=bool(args.aggregate), progress=(_progress if not args.json else None), settings=_cc.face_settings())
 
 
 def _progress(ev: dict[str, Any]) -> None:
@@ -498,7 +503,7 @@ def verb_recipe(args: argparse.Namespace) -> int:
     if action == "hash":
         print(recipe_hash(normalise(recipe, base_dir=base)))
         return 0
-    with _engine(args) as eng:
+    with _cc.make_engine(args, None if args.json else _progress) as eng:
         if args.pakiet and not args.na_sucho:
             writes = [s for s in recipe.get("steps") or [] if s.get("op") == "write"]
             for st in writes:  # --pakiet names the package; a recipe's own write step is redirected, never doubled
@@ -658,10 +663,17 @@ def main(argv: Optional[list[str]] = None) -> int:
     pre.add_argument("--debug", action="store_true")
     pre.add_argument("--zadanie", "--task", "--przepis", "--recipe", dest="zadanie")
     pre.add_argument("--slownik-plik", "--dictionary-file", dest="slownik_plik", action="append", default=[])
+    pre.add_argument("--kod-uzytkownika", "--allow-user-code", dest="user_code", action="store_true")
     pre_args, rest = pre.parse_known_args(argv)
     # --slownik-plik FILE (any position, repeatable): the values a redacted package's recipe refers to by hash
     argv = _strip_opt(argv, ("--slownik-plik", "--dictionary-file"))
     rest = _strip_opt(rest, ("--slownik-plik", "--dictionary-file"))
+    # --kod-uzytkownika: this invocation may run the user's own code (overlay modules); a recipe never grants it
+    argv = [a for a in argv if a not in ("--kod-uzytkownika", "--allow-user-code")]
+    rest = [a for a in rest if a not in ("--kod-uzytkownika", "--allow-user-code")]
+    _cc.FACE_GRANTS.clear()
+    if pre_args.user_code:
+        _cc.FACE_GRANTS["allow_user_code"] = True
     logging.basicConfig(level=logging.DEBUG if pre_args.debug else logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
     if pre_args.data_dir:
         set_store(DataStore(overlay=Path(pre_args.data_dir).expanduser() / "extract"))
