@@ -1276,6 +1276,26 @@ Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Przeg
 - Prywatność: tylko fixture'y syntetyczne (nowy `damaged/chatgpt_damaged.zip` z generatora); test `--zbiorczo` czyta każdy plik pakietu, także `manifest.json`.
 - Bramka: `ctest --preset dev` 246/246 (w tym `tools.extract`, 197 testów, 1 pominięty z powodem tam, gdzie brak curses/pty), strażnik CTest 245 + 1 jawnie niewykonany, skrypty, web build i testy web — GATE GREEN przy `a42cee4a` (drugi przebieg na końcowym HEAD; pierwszy, przy `ecd8ea02`, też zielony); zrzuty ekranu e2e przywrócone po bramce.
 
+## P38 — X-Port, plaster 4: ekonomia tokenów, wymaganie 37 (2026-10-17, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§3.19 + §3.19.1 „jak odtworzyć liczby S1”, §5.16, §8 wiersz 37,
+§10 wiersze „Plaster 4”, §11 stan). Operacja `token_economics` (CLI `ekonomia`/`tokens`, komander menu F2 i `:op`,
+`serwuj` `POST /api/op`); `python3 -I -m unittest discover` w `loom/tools/extract/tests`: 218 testów, 1 pominięty
+(obieg `libloom` — tylko w bramce z `LOOM_LIBRARY`); budowy cmake nie uruchamiano.
+
+- Decyzje (szczegóły i odwrócenie w §10):
+  1. Liczniki per tura zostają na wiadomości (`meta.usage` z mapy `formats/claude_code.json#usage`, pola spoza mapy w `usage.extra`); odpowiedź API zapisana w kilku wierszach liczona raz (`max`). Cofnięcie: `economics.usage.duplicate_lines: last|sum`.
+  2. Podagent i agent przepływu rozpoznawane po katalogu (`<sesja>/subagents/…`, `…/workflows/<przebieg>/…`), `ext_id` = ścieżka od katalogu sesji. Cofnięcie: `transcripts: {}` w nakładce formatu.
+  3. Lista sesji tylko z pliku (`--sesje`; kształt zmierzony: `list_sessions` = `{"ccr": {"data": […]}}`, `get_session` = `{"ccr": {…}}`); powiązanie z transkryptem: jawne > to samo id > stopka `Claude-Session` w `git commit` transkryptu. Cofnięcie: `--polacz`, `economics.links.trailer_in_transcripts: false`.
+  4. Commity z `git log --all` (tylko odczyt), „na main” = osiągalne z `economics.git.main_ref`. Cofnięcie: `--main GAŁĄŹ`.
+  5. Ceny jako dane `data/prices/*.json` (`valid_from`, źródło), jedna książka cen także dla przepływów; dostarczone bez cen — `loom/data` nie ma cennika per model. Cofnięcie: wpisy w nakładce `<dane>/extract/prices/`.
+  6. Szacunek: `tiktoken` tylko offline (pod strażnikiem sieci), inaczej znaki; błąd = kalibracja na turach z licznikami albo „nieznany”. Cofnięcie: `--szacunek chars|tiktoken`.
+  7. Narzędzia: tokeny tury po równo (`split`). Cofnięcie: `economics.tool_attribution: full`.
+  8. `--zbiorczo`: etykiety numerowane; w przepisie parametry `path`/`paths` → `nazwa-N`, powiązania → `{"count": N}` (wszystkie operacje). Cofnięcie: tryb pełny.
+- Przebieg kontrolny (agent, `--zbiorczo`, tylko liczby, transkrypty tej maszyny + `get_session` S1 zapisany do pliku + `git log` worktree): S1 1 532,69 USD wg API, 461 commitów ze stopką (453 na `origin/main`) → 3,32 USD/commit; sesja „Port” 220/18 jak w raporcie S1; pokrycie transkryptów względem API sesji: odczyt cache 99,2 %, zapis 99,97 %, wejście 44 %, wyjście 16,8 % — `output_tokens` per tura z transkryptów to dolna granica (znalezisko; przyczyna po stronie klienta Claude Code nie sprawdzona).
+- Nie weszło: ceny modeli (brak źródła w repo), wycena żądań narzędzi serwera (liczone, nie wyceniane), pole `usage.iterations` (w `usage.extra`, zgłoszone).
+- Prywatność: fixture'y syntetyczne (`economics/` z `gen_extract_fixtures.py`), repozytorium git budowane w teście w katalogu tymczasowym; test `--zbiorczo` czyta każdy plik pakietu.
+
 ### S1 / M1-D0 (dane) — ustawienia po ludzku: `groups`, `human` per pole, 16 nowych pól, `profile_values` (2026-10-16, branch `claude/m1-d0`)
 - Stan: `loom/data/runtime/settings_fields.pack` rev. 2: 102 pola (86 + 4 z kluczy czytanych przez kod: `chat_context_order`, `language`, `model_capabilities`, `provider_manifests` + 12 powłoki/M1: `navigator_layout`, `perspective_composition`, `navigator_children_limit`, `composer_context_strip`, `receipt_link`, `topbar_model_line`, `onboarding_card`, `android_back_exit_confirm`, `secrets_in_chat`, `profile_detail_level`, `context_receipt_store`, `context_receipt_max_bytes`), każde z `human {label, why, effect (pl+en), levels, group, subgroup?, role?, flows[], technical_only?}`; 8 grup (`ty, rozmowa, modele, kontekst, interfejs, prywatnosc, koszty, silnik`) z podgrupami; `profile_values` (5); `graph_views.pack` rodzaj `settings_groups` (źródło `settings_fields` `/groups`); `runtime_profiles_embedded.inc` zregenerowany (`--check` czysty). Test złoty, doctesty (grupa + `label.pl` na każdym polu, suma grup == liczba pól) i test hash `.inc` = druga połowa M1-D0 (następny agent); golden `settings_fields.json` odświeżony w połowie kodowej (commit `08c2267c`, sekcja niżej) i znów w przeglądzie M1-D0 (sekcja „M1-D0 (przegląd)”).
 - Decyzje:

@@ -614,5 +614,10 @@
   "economics.na": "—",
   "economics.why.no_counters": "the source has no counters",
   "economics.why.measured_instead": "not estimated — counters present",
-  "economics.why.no_field_in_session_list": "the field is not in the session list"
+  "economics.why.no_field_in_session_list": "the field is not in the session list",
+  "economics.note.day_zone_unknown": "unknown day zone (economics.day_zone) — days counted in UTC: {n}",
+  "economics.why.no_main_ref": "no main branch in the repository",
+  "economics.why.main_ref_off": "main branch off (economics.git.main_ref empty)",
+  "economics.why.git_unavailable": "git not available",
+  "economics.why.git_log_failed": "git log failed"
 }

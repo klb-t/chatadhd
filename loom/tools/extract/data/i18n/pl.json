@@ -614,5 +614,10 @@
   "economics.na": "—",
   "economics.why.no_counters": "źródło bez liczników",
   "economics.why.measured_instead": "nie szacowano — są liczniki",
-  "economics.why.no_field_in_session_list": "brak pola na liście sesji"
+  "economics.why.no_field_in_session_list": "brak pola na liście sesji",
+  "economics.note.day_zone_unknown": "nieznana strefa dni (economics.day_zone) — dni liczone w UTC: {n}",
+  "economics.why.no_main_ref": "brak gałęzi main w repozytorium",
+  "economics.why.main_ref_off": "gałąź main wyłączona (economics.git.main_ref pusty)",
+  "economics.why.git_unavailable": "git niedostępny",
+  "economics.why.git_log_failed": "git log nie powiódł się"
 }

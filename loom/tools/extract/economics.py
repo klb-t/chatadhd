@@ -264,7 +264,7 @@ def _day(iso: Optional[str], zone: str) -> Optional[str]:
     try:
         from zoneinfo import ZoneInfo
         return dt.astimezone(ZoneInfo(zone)).date().isoformat()
-    except Exception:  # noqa: BLE001 - an unknown zone falls back to UTC, said in the settings echo
+    except Exception:  # noqa: BLE001 - validated in build_economics (an unknown zone is noted there); UTC here
         log.debug("day zone %r unusable", zone, exc_info=True)
         return iso[:10]
 
@@ -333,6 +333,14 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     trailer_rx = trailer_regex(git_cfg)
     estimator = Estimator(ds, p.get("estimate"))
     book = PriceBook(ds)
+    zone_problem = None
+    if zone not in ("", "UTC", "utc", "Z"):
+        try:
+            from zoneinfo import ZoneInfo
+            ZoneInfo(zone)
+        except Exception:  # noqa: BLE001 - an unknown zone is said and the days are counted in UTC
+            log.debug("day zone %r unusable", zone, exc_info=True)
+            zone_problem, zone = zone, "UTC"
 
     units = [u for u in eng.conversations]
     if (p.get("of") or "all") == "selection":
@@ -458,8 +466,8 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         g["method"] = "measured"
         if not g["thinking"] and not g["usage"]["output_thinking"] and g["usage"]["output"] > 0 \
                 and int(est_cfg.get("calibration_min_output", 1) or 0) <= g["usage"]["output"]:
-            est, _how = estimator.count("\n".join(g["texts"]), g["model"], g["lang"])
-            calib_pairs.append((est, g["usage"]["output"]))
+            fn_c, _how = estimator.counter(g["model"], g["lang"])  # not counted in "used": calibration, not an estimate
+            calib_pairs.append((fn_c("\n".join(g["texts"])), g["usage"]["output"]))
 
     # -- estimated turns (sources without counters) ------------------------------------------------------------------
     for u in units:
@@ -480,12 +488,14 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             if m.id in cum:
                 continue
             chain = []
+            on_chain: set[str] = set()
             cur: Optional[Any] = m
-            while cur is not None and cur.id not in cum:
+            while cur is not None and cur.id not in cum and cur.id not in on_chain:  # a parent cycle ends the walk
                 chain.append(cur)
-                cur = by.get(cur.parent) if cur.parent in by and cur.parent != cur.id else None
+                on_chain.add(cur.id)
+                cur = by.get(cur.parent) if cur.parent in by else None
             for x in reversed(chain):
-                par = by.get(x.parent) if x.parent in by and x.parent != x.id else None
+                par = by.get(x.parent) if x.parent in by and x.parent in cum else None
                 if par is None:
                     cum[x.id], pend[x.id] = 0, 0
                 else:
@@ -519,6 +529,8 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     api_sessions, problems = load_session_lists([str(x) for x in (p.get("sessions") or [])], ds, p.get("session_source"))
     for pr in problems:
         note(pr["key"], pr.get("n", 1))
+    if zone_problem:
+        note("day_zone_unknown", zone=zone_problem)
     commits: dict[str, dict[str, Any]] = {}
     main_sets: list[Optional[set[str]]] = []
     main_reasons: list[str] = []
@@ -756,11 +768,11 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     wf_keys = sorted(wf_acc, key=lambda k: first_key(wf_acc[k], "/".join(k)))
     w_labels = label_for("workflow", ["/".join(k) for k in wf_keys])
     if aggregate:  # the run column of the runs table names the workflow run by its label too
-        wl = {k[1]: w_labels["/".join(k)] for k in wf_keys}
+        wl = {k: w_labels["/".join(k)] for k in wf_keys}
         for row, uid in zip(runs, run_keys):
-            run_id = _place(by_uid[uid])["run"]
-            if run_id:
-                row["workflow_run"] = wl.get(str(run_id))
+            pl = _place(by_uid[uid])
+            if pl["run"] and pl["family"]:
+                row["workflow_run"] = wl.get((pl["family"], str(pl["run"])))
     workflow_runs = [{**wf_acc[k].row(grand), "label": w_labels["/".join(k)] if aggregate else k[1],
                       "session": fam_label.get(k[0]) or (None if aggregate else k[0]), "agents": wf_agents.get(k, 0)} for k in wf_keys]
 
@@ -1042,8 +1054,11 @@ def render_markdown(doc: dict[str, Any], ds: DataStore) -> str:
             for k, v in sorted((k, v) for k, v in e.items() if k not in ("key", "n")):
                 if isinstance(v, dict):
                     parts.append(", ".join(f"{t('economics.why.' + str(kk)) if k == 'reasons' else kk}: {vv}" for kk, vv in sorted(v.items())))
+                elif k in ("reason", "error"):  # a code (": detail") → the sentence of the code
+                    code, _, rest = str(v).partition(":")
+                    parts.append(t("economics.why." + code) + (f": {rest}" if rest else ""))
                 else:
-                    parts.append(f"{t('economics.why.' + str(v)) if k == 'reason' else v}")
+                    parts.append(f"{k}: {v}")
             out.append("- " + t("economics.note." + e["key"], n=e["n"]) + (" — " + "; ".join(parts) if parts else ""))
         out.append("")
     return "\n".join(out).rstrip() + "\n"

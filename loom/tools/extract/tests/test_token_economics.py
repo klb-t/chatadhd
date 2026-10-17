@@ -182,6 +182,20 @@ class MeasuredTest(EconTest):
         days = {d["day"]: d for d in doc["days"]}
         self.assertEqual({k: days[k]["turns_measured"] for k in E["days"]}, E["days"])
 
+    def test_day_zone_preset_and_unknown_zone(self):
+        try:
+            from zoneinfo import ZoneInfo
+            ZoneInfo("Pacific/Kiritimati")
+        except Exception:  # noqa: BLE001
+            self.skipTest("no IANA zone data on this machine (tzdata)")
+        eng, doc = self.econ(PROJ, day_zone="Pacific/Kiritimati")  # UTC+14: every 2026-10-10 turn falls on 10-10 or 10-11
+        days = {d["day"]: d["turns_measured"] for d in doc["days"]}
+        self.assertEqual(sum(days.values()), E["turns"])
+        self.assertNotEqual(days, E["days"], "the zone moves turns across midnight")
+        eng2, doc2 = self.econ(PROJ, day_zone="Mars/Olympus_Mons")
+        self.assertIn("day_zone_unknown", {n["key"] for n in doc2["unknowns"]})
+        self.assertEqual({d["day"]: d["turns_measured"] for d in doc2["days"]}, E["days"], "counted in UTC, said")
+
     def test_session_list_link_by_trailer_and_coverage(self):
         eng, doc = self.econ(PROJ, sessions=[str(SESSIONS)])
         rows = {r["id"]: r for r in doc["sessions"]}
@@ -259,6 +273,9 @@ class GitOutcomesTest(EconTest):
         # a directory that is not a repository: said, the rest of the report stands
         eng3, doc3 = self.econ(PROJ, repos=[str(self.tmp / "nothing-here")])
         self.assertIn("git_error", {n["key"] for n in doc3["unknowns"]})
+        md = eng3.op("token_economics", {"repos": [str(self.tmp / "nothing-here")], "main_ref": "trunk"})["markdown"]
+        self.assertIn(i18n.t("economics.why.git_log_failed"), md, "the code is said as a sentence")
+        self.assertNotIn("economics.why.", md, "no key shown in place of a sentence")
 
     def test_sources_less_run_session_list_and_repo_only(self):
         repo = make_repo(self.tmp / "repo")
@@ -490,7 +507,8 @@ class FacesTest(EconTest):
                                        "no_turns", "commits_unknown", "no_commits", "no_commits_on_main", "main_ref_unknown", "no_cost_field",
                                        "no_session_list", "not_in_session_list", "no_transcript", "not_measured", "no_column",
                                        "no_calibration", "tiktoken_missing", "tiktoken_offline_missing", "tiktoken_error", "no_counters",
-                                       "measured_instead", "no_field_in_session_list"],
+                                       "measured_instead", "no_field_in_session_list", "no_main_ref", "main_ref_off",
+                                       "git_unavailable", "git_log_failed"],
                     "economics.role.": ["main", "subagent", "workflow_agent", "resumed", "conversation"],
                     "economics.link.": ["explicit", "same_id", "trailer", "trailer_ambiguous", "none"],
                     "economics.reasoning.": ["full", "summary", "none", "redacted", "short"],
