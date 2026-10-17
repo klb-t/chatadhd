@@ -640,7 +640,7 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         api = api_sessions.get(sid) if sid else None
         a = fam_acc.get(fam) if fam else None
         row: dict[str, Any] = {"label": s_labels[rk] if aggregate else ((api or {}).get("title") or sid or fam or rk),
-                               "id": None if aggregate else (sid or fam)}
+                               "id": None if aggregate else (sid or fam), "transcript_id": None if aggregate else fam}
         if fam:
             fam_label[fam] = row["label"]
         if api:
