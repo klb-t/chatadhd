@@ -1246,3 +1246,20 @@ komander ARCHIWUM… [--pakiet KAT] [--klawisze-profil vim] [--kolory mono]`, `�
 - Doszło ponad brief: makra, schowek, samouczek `--odtworz`, wiersz poleceń `:`, „dlaczego nie”, decyzje włącz/wyklucz z klawiatury, zapisane filtry, czasownik `api` (JSONL), korzenie widoków (zaznaczenie, oś czasu, załączniki, klastry, przepis, inwentarz, różnica, zakładki), kolumny obliczane, profil `mono`.
 - Nie weszło: renderer Warsztatu w `loom/web` (API widoku gotowe), zmiana nazwy katalogu pakietu, akcja czatu aplikacji i port jądra, trasa `loom_server`, OCR/ASR obrazów/dźwięku, `state.json` wznawiania i `workers`.
 - Prywatność: tylko fixture'y syntetyczne; tryb `--zbiorczo` w widokach bez tytułów i treści, podgląd treści odmówiony (test).
+
+## P38 — X-Port, przegląd: 46 potwierdzonych znalezisk (2026-10-17, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Przegląd”, §11 stan 2026-10-17, §6.1 ziarno `block`,
+§8 wiersze 6, 21, 76 dopasowane do presetów). Bramka i ctest `tools.extract` w notatce bramki poniżej.
+
+- Decyzje (szczegóły i odwrócenie w §10):
+  1. Redakcja jest jedna dla pakietu: profil i słownik cięcia + każda `edit.redact` (zasiane maski) na `preserve` i wszystkich plikach bocznych. Cofnięcie: redagować tylko cięciem.
+  2. Wartości wrażliwe przepisu (słownik, terminy redakcji, każdy literał, który redakcja by zamaskowała) = odwołania `sha256`; wartości w `<katalog stanu>/secrets.json` (600) poza pakietem; bez nich przebieg odmawia; manifest maskowany. Cofnięcie: `redaction.secret_store: false` (wtedy tylko `--slownik-plik`).
+  3. Zgoda należy do twarzy (flagi, odpowiedź, jawne „tak” w API); przepis/manifest/żądanie jej nie dają; dostawca nazwany przez dane → pytanie z hostem; kod użytkownika tylko z `--kod-uzytkownika`. Cofnięcie: flagi twarzy.
+  4. `odtworz` = tylko z pamięci podręcznej oryginału; ×10 przy nieznanej cenie liczy tokeny/wywołania. Cofnięcie: `--model --tak`; `guard.ratio: 0`.
+  5. Wektory offline domyślnie, pobranie modelu tylko z `vectors.allow_download` i „tak”. Cofnięcie: preset.
+  6. `--zbiorczo` odmawia `cut`/`handoff`. Cofnięcie: `write.aggregate_content: allow`.
+  7. `nest` po polu/co N/po dacie z odmową na rozwidleniach; aliasy pól wyjść; `copy_used` = tylko renderowane; zapis odtwarza nieaktualne cięcie. Cofnięcie: `on_forks`, brak aliasów, `copy_all`, jawne `cut`.
+  8. Presety zostają (`edits.preview_sample: 0`, kontynuacja 240 min / 2 terminy), spec dopasowana. Cofnięcie: presety w nakładce.
+- Nie weszło: jednostki w pamięci w całości (indeks + ponowne czytanie niezaznaczonych), nazwy członków źródła w `preserve` przy redakcji, nazwa katalogu archiwum w `attachments/`.
+- Prywatność: tylko fixture'y syntetyczne (nowy `damaged/chatgpt_damaged.zip` z generatora); test `--zbiorczo` czyta każdy plik pakietu, także `manifest.json`.
