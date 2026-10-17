@@ -11,6 +11,8 @@
   ]},
   "reader": "claude_code",
   "unit_kind": "session",
+  "leaf": "last_main",
+  "leaf_note": {"pl": "liść bieżącej ścieżki: ostatnia wiadomość spoza sidechainu (last_main) albo ostatnia linia (last_line)", "en": "current-path leaf: the last non-sidechain message (last_main) or the last line (last_line)"},
   "line": {"id": "uuid", "parent": "parentUuid", "type": "type", "created": {"path": "timestamp", "type": "iso"},
            "session": "sessionId", "cwd": "cwd", "message": "message", "role": "message.role", "content": "message.content",
            "model": "message.model", "sidechain": "isSidechain", "compact": "isCompactSummary", "summary": "summary",

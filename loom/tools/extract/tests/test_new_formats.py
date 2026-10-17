@@ -1,6 +1,8 @@
 """New readers against the generator's independent oracle (tests/fixtures/extract/EXPECTED.json):
 Claude Code sessions, Gemini Takeout (JSON + HTML), Grok (two shapes), our graph packet and
 loom.export, the mixed text-like directory with mixed time stamps."""
+import json
+
 from _support import EXPECTED_EXTRACT as E, EXTRACT, ExtractTest
 
 
@@ -40,6 +42,49 @@ class ClaudeCodeTest(ExtractTest):
         self.assertFalse(s2.is_agentic())
 
 
+class ClaudeCodeIdentityTest(ExtractTest):
+    """F22/F23: a subagent transcript next to its session is its own unit (linked by flags.parent_session), never a
+    'version' that hides the main session; a sidechain written last never decides the main path."""
+
+    @staticmethod
+    def line(uuid, parent, typ, ts, text, session="sess-A", **extra):
+        d = {"uuid": uuid, "parentUuid": parent, "type": typ, "timestamp": ts, "sessionId": session, "isSidechain": False,
+             "message": {"role": typ, "content": text}}
+        d.update(extra)
+        return json.dumps(d, ensure_ascii=False)
+
+    def _project(self):
+        proj = self.tmp / "projects" / "-home-user-x"
+        main = [self.line("a1", None, "user", "2026-10-12T10:00:00Z", "Główne pytanie o importer"),
+                self.line("a2", "a1", "assistant", "2026-10-12T10:01:00Z", "Główna odpowiedź"),
+                self.line("a3", "a2", "user", "2026-10-12T10:02:00Z", "Dalsze pytanie"),
+                # a subagent's lines interleaved at the end (its own root, written last)
+                self.line("x1", None, "user", "2026-10-12T10:03:00Z", "Zadanie dla podagenta", isSidechain=True, agentId="ag1")]
+        agent = [self.line("g1", None, "user", "2026-10-12T10:05:00Z", "Podagent: sprawdź testy", isSidechain=True, agentId="ag1"),
+                 self.line("g2", "g1", "assistant", "2026-10-12T10:06:00Z", "Testy przechodzą", isSidechain=True, agentId="ag1")]
+        self.write(proj / "sess-A.jsonl", "\n".join(main) + "\n")
+        self.write(proj / "agent-ag1.jsonl", "\n".join(agent) + "\n")
+        return proj
+
+    def test_agent_file_is_a_related_unit_and_the_main_path_is_the_main_thread(self):
+        eng, units = self.units(self._project())
+        sessions = {u.ext_id: u for u in units if u.kind == "session"}
+        self.assertEqual(set(sessions), {"sess-A", "agent-ag1"}, "two units, not one with a version")
+        main, agent = sessions["sess-A"], sessions["agent-ag1"]
+        self.assertEqual(main.versions, [], "the agent transcript is not a version of the session")
+        self.assertEqual(agent.flags.get("parent_session"), "sess-A")
+        self.assertTrue(agent.flags.get("agent_transcript"))
+        on = {m.id for m in main.messages if m.on_current_path}
+        self.assertEqual(on, {"a1", "a2", "a3"}, "the last line is a sidechain: the main thread stays current")
+        eng.op("select.expr", {"expr": "kind:session"})
+        eng.op("cut", {"profiles": ["flat"]})
+        eng.op("write", {"package": str(self.tmp / "pkg")})
+        rows = [json.loads(x) for x in (self.tmp / "pkg/flat/messages.jsonl").read_text(encoding="utf-8").splitlines()]
+        texts = [r["text"] for r in rows]
+        self.assertIn("Dalsze pytanie", texts, "the flat profile keeps the main conversation")
+        self.assertIn("Testy przechodzą", texts, "and the agent's transcript, as its own conversation")
+
+
 class GeminiTest(ExtractTest):
     def test_takeout_json_grouped_by_gap_flagged_inferred(self):
         eng, units = self.units(EXTRACT / "gemini/takeout.zip")
@@ -61,6 +106,24 @@ class GeminiTest(ExtractTest):
         self.assertEqual(len(convs), exp["conversations"])
         self.assertEqual(sum(len(u.messages) for u in convs), exp["messages"])
         self.assertEqual(convs[0].created_utc, exp["created_utc"])
+
+
+class GeminiDatesTest(ExtractTest):
+    def test_zone_abbreviations_and_polish_dates_in_takeout_html(self):
+        """F31: CEST/CET/PST are offsets from a data table (not dropped), and Polish-locale dates parse."""
+        cells = [("Zapytano: Migracja pamięci", "Odpowiedź pierwsza.", "2 mar 2026, 10:00:00 CET"),
+                 ("Zapytano: Druga sprawa", "Odpowiedź druga.", "2 mar 2026, 10:05:00 CET"),
+                 ("Prompted Summer time", "Answer.", "Jul 1, 2026, 9:00:00 AM CEST"),
+                 ("Prompted Pacific", "Answer.", "Jul 1, 2026, 9:00:00 PM PDT")]
+        body = "".join(f'<div class="outer-cell"><div class="content-cell mdl-cell">{p}<br>{r}<br>{t}</div></div>' for p, r, t in cells)
+        html = f"<!DOCTYPE html><html><head><title>Aplikacje Gemini</title></head><body><h1>Aplikacje Gemini</h1>{body}</body></html>"
+        f = self.write(self.tmp / "Moja aktywność" / "MyActivity.html", html)
+        eng, units = self.units(f)
+        convs = sorted((u for u in units if u.kind == "conversation"), key=lambda u: u.created_utc)
+        stamps = sorted(m.created_utc for u in convs for m in u.messages if m.role == "user")
+        self.assertEqual(stamps[0], "2026-03-02T09:00:00Z", "10:00 CET = 09:00 UTC")
+        self.assertIn("2026-07-01T07:00:00Z", stamps, "9:00 AM CEST = 07:00 UTC, not 2 h off")
+        self.assertIn("2026-07-02T04:00:00Z", stamps, "9:00 PM PDT = 04:00 UTC next day")
 
 
 class GrokTest(ExtractTest):

@@ -1,6 +1,12 @@
 """Claude Code local sessions: ``~/.claude/projects/<project>/<session>.jsonl``.
 
-One unit (kind ``session``) per file.  Lines of type user/assistant become
+One unit (kind ``session``) per file, identified per file: the main session
+file keeps its ``sessionId`` as ``ext_id``; a subagent transcript
+(``agent-*.jsonl``) or a resumed-session file — which carry the parent's
+``sessionId`` — gets its own file stem and ``flags.parent_session``, so it is a
+related unit, never merged with the main session as a "version".  The current
+leaf is the last non-sidechain message (format preset ``leaf: last_main``), so
+a subagent writing last never decides the main path.  Lines of type user/assistant become
 messages (tree by ``parentUuid``; sidechains and compact summaries flagged),
 ``summary`` lines become session summaries, ``system`` lines system messages,
 housekeeping line types are counted, anything else goes to the unknown bucket
@@ -24,6 +30,8 @@ class ClaudeCodeReader(Reader):
         roles = fmt.get("roles") or {}
         u = Unit(kind=fmt.get("unit_kind", "session"))
         order: list[str] = []
+        sidechain: set[str] = set()
+        tool_names: dict[str, Any] = {}  # tool_use id → name, kept for the session (one pass, not per message)
         nodes: dict[str, TreeNode] = {}
         summaries: list[dict[str, Any]] = []
         internal: dict[str, int] = {}
@@ -65,6 +73,8 @@ class ClaudeCodeReader(Reader):
                     parent = obj.get(lspec["parent"])
                     nodes[mid] = TreeNode(parent if isinstance(parent, str) and parent else None, True, (lineno, obj))
                     order.append(mid)
+                    if obj.get(lspec.get("sidechain", "isSidechain")):
+                        sidechain.add(mid)
                 elif mapped == "summary":
                     summaries.append({"summary": obj.get(lspec.get("summary", "summary")), "leaf": obj.get(lspec.get("leaf", "leafUuid")), "line": lineno})
                 elif mapped == "system":
@@ -76,9 +86,19 @@ class ClaudeCodeReader(Reader):
                     internal[ltype] = internal.get(ltype, 0) + 1
                 else:
                     note_unknown(u, f"line:{lineno}", obj, native=ltype or "?")
-        u.ext_id = session_id or member.name
+        stem = member.name.rsplit("/", 1)[-1]
+        stem = stem[:-len(".jsonl")] if stem.endswith(".jsonl") else stem
+        if session_id and stem != session_id:
+            # an agent transcript or a resumed session in its own file: its own identity, linked to the parent session
+            u.ext_id = stem
+            u.flags["parent_session"] = session_id
+        else:
+            u.ext_id = session_id or member.name
         ctx.set_unit_times(u, first_ts, last_ts, mtime=member.mtime)
-        leaf = order[-1] if order else None
+        leaf_policy = str(fmt.get("leaf") or "last_main")
+        main_ids = [x for x in order if x not in sidechain]
+        leaf = (main_ids[-1] if main_ids else None) if leaf_policy == "last_main" else None
+        leaf = leaf or (order[-1] if order else None)
         walk = walk_tree(order, nodes, leaf)
         for e in walk.messages:
             lineno, obj = e.payload
@@ -98,13 +118,15 @@ class ClaudeCodeReader(Reader):
                 txt = obj.get("content")
                 m.blocks.append(Block(kind="system", text=str(txt or ""), native="system", name=obj.get("subtype")))
             else:
-                self._blocks(m, obj, u, fmt, ctx, lspec)
+                self._blocks(m, obj, u, fmt, ctx, lspec, tool_names)
             u.messages.append(m)
         u.tree = {"roots": walk.roots, "current_leaf": walk.current_leaf, "forks": walk.forks}
         u.flags["summaries"] = summaries
         u.flags["internal_lines"] = internal
         u.flags["lines"] = lines_total
         u.flags["sidechain_messages"] = sum(1 for m in u.messages if m.meta.get("sidechain"))
+        if u.messages and all(m.meta.get("sidechain") for m in u.messages if m.role != "system"):
+            u.flags["agent_transcript"] = True
         u.flags["compacted_messages"] = sum(1 for m in u.messages if m.meta.get("compacted"))
         if summaries and not u.title:
             u.title = str(summaries[-1].get("summary") or "")[:80] or None
@@ -115,7 +137,9 @@ class ClaudeCodeReader(Reader):
                     break
         yield finalize_unit(u, member, fmt, ctx, {"line": 1, "session": session_id})
 
-    def _blocks(self, m: Message, obj: dict[str, Any], u: Unit, fmt: dict[str, Any], ctx: ReadContext, lspec: dict[str, Any]) -> None:
+    def _blocks(self, m: Message, obj: dict[str, Any], u: Unit, fmt: dict[str, Any], ctx: ReadContext, lspec: dict[str, Any],
+                tool_names: Optional[dict[str, Any]] = None) -> None:
+        names = tool_names if tool_names is not None else {}
         content = getpath(obj, lspec["content"])
         if isinstance(content, str):
             m.blocks.append(Block(kind="text", text=content, native="string"))
@@ -154,16 +178,15 @@ class ClaudeCodeReader(Reader):
                 note_unknown(u, f"{m.raw_pointer}/message/content/{i}", b, native=bt)
             else:
                 m.blocks.append(Block(kind=kind, text=str(b.get("text") or ""), native=bt))
-        # tool results are bound to the tool_use name when the id is known in this session
-        names = {}
-        for mm in u.messages:
-            for bb in mm.blocks:
-                if bb.kind == "tool_use" and bb.extra.get("id"):
-                    names[bb.extra["id"]] = bb.name
+        # tool results are bound to the tool_use name when the id is known in this session (earlier messages; the
+        # map grows as messages are read, so a long agent session is read in one pass)
         for bb in m.blocks:
             if bb.kind == "tool_result" and bb.name in names:
                 bb.extra["tool_use_id"] = bb.name
                 bb.name = names[bb.name]
+        for bb in m.blocks:
+            if bb.kind == "tool_use" and bb.extra.get("id"):
+                names[bb.extra["id"]] = bb.name
 
 
 def _tool_text(inp: Any) -> str:

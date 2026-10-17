@@ -27,7 +27,7 @@ class GeminiReader(Reader):
                         entries.append((json_pointer(i), e))
         else:
             html = member.read_bytes().decode("utf-8", errors="replace")
-            for i, e in enumerate(_parse_takeout_html(html)):
+            for i, e in enumerate(_parse_takeout_html(html, fmt.get("dates"))):
                 entries.append((f"html:{i}", e))
         yield from self._group(entries, member, fmt, ctx)
 
@@ -141,7 +141,7 @@ class _TakeoutHTML(HTMLParser):
             self._buf[-1] += data
 
 
-def _parse_takeout_html(html: str) -> list[dict[str, Any]]:
+def _parse_takeout_html(html: str, dates: Optional[dict[str, Any]] = None) -> list[dict[str, Any]]:
     p = _TakeoutHTML()
     p.feed(html)
     out: list[dict[str, Any]] = []
@@ -150,7 +150,7 @@ def _parse_takeout_html(html: str) -> list[dict[str, Any]]:
             continue
         time_val = None
         for cand in reversed(pieces):
-            parsed = _parse_takeout_date(cand)
+            parsed = _parse_takeout_date(cand, dates)
             if parsed:
                 time_val = parsed
                 pieces = [x for x in pieces if x is not cand]
@@ -164,22 +164,40 @@ def _parse_takeout_html(html: str) -> list[dict[str, Any]]:
 
 
 _MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
+_ZONE = r"(?P<zone>[A-Za-z]{2,5}|[+-]\d{2}:?\d{2})?"
+_TIME = r",?\s+(?P<h>\d{1,2}):(?P<mi>\d{2})(?::(?P<s>\d{2}))?\s*(?P<ampm>AM|PM|am|pm)?\s*" + _ZONE + r"$"
+_MONTH_FIRST = re.compile(r"^(?P<mon>[^\W\d_]{3,})\.?\s+(?P<d>\d{1,2}),\s+(?P<y>\d{4})" + _TIME)
+_DAY_FIRST = re.compile(r"^(?P<d>\d{1,2})\s+(?P<mon>[^\W\d_]{3,})\.?\s+(?P<y>\d{4})" + _TIME)
 
 
-def _parse_takeout_date(text: str) -> Optional[str]:
-    """``Oct 9, 2025, 10:53:20 AM CEST`` → ISO (zone kept when it is a numeric offset or UTC)."""
-    m = re.match(r"^([A-Za-z]{3})\w*\s+(\d{1,2}),\s+(\d{4}),?\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?\s*([A-Z]{2,5}|[+-]\d{2}:?\d{2})?$", text.strip())
+def _parse_takeout_date(text: str, dates: Optional[dict[str, Any]] = None) -> Optional[str]:
+    """``Oct 9, 2025, 10:53:20 AM CEST`` or (Polish Takeout) ``2 mar 2026, 10:00:00 CET`` → ISO with the zone as an
+    offset.  Month names (any language, by their first letters) and zone abbreviations are data
+    (``dates.months`` / ``dates.zones`` in google_gemini.json); an abbreviation not in the table leaves the time
+    naive (read in the assumed zone, flagged inferred)."""
+    dates = dates or {}
+    months = {str(k).casefold(): int(v) for k, v in (dates.get("months") or {}).items()} or dict(_MONTHS)
+    zones = {str(k).upper(): str(v) for k, v in (dates.get("zones") or {}).items()}
+    zones.setdefault("UTC", "Z")
+    zones.setdefault("GMT", "Z")
+    t = text.strip()
+    m = _MONTH_FIRST.match(t) or _DAY_FIRST.match(t)
     if not m:
         iso = ts.parse(text)
         return text if iso.utc is not None and iso.how in ("iso",) else None
-    mon = _MONTHS.get(m.group(1).lower())
+    name = m.group("mon").casefold()
+    mon = months.get(name) or next((v for k, v in sorted(months.items(), key=lambda kv: -len(kv[0])) if name.startswith(k)), None)
     if not mon:
         return None
-    hour = int(m.group(4))
-    if m.group(7) == "PM" and hour < 12:
+    hour = int(m.group("h"))
+    ampm = (m.group("ampm") or "").upper()
+    if ampm == "PM" and hour < 12:
         hour += 12
-    if m.group(7) == "AM" and hour == 12:
+    if ampm == "AM" and hour == 12:
         hour = 0
-    zone = m.group(8) or ""
-    suffix = "Z" if zone in ("UTC", "GMT") else (zone if re.fullmatch(r"[+-]\d{2}:?\d{2}", zone) else "")
-    return f"{int(m.group(3)):04d}-{mon:02d}-{int(m.group(2)):02d}T{hour:02d}:{m.group(5)}:{m.group(6) or '00'}{suffix}"
+    zone = m.group("zone") or ""
+    if re.fullmatch(r"[+-]\d{2}:?\d{2}", zone):
+        suffix = zone
+    else:
+        suffix = zones.get(zone.upper(), "")
+    return f"{int(m.group('y')):04d}-{mon:02d}-{int(m.group('d')):02d}T{hour:02d}:{m.group('mi')}:{m.group('s') or '00'}{suffix}"
