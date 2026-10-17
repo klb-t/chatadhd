@@ -34,7 +34,7 @@
   "write": {"units_snapshot": true, "explain": true, "aggregate": false, "aggregate_content": "refuse"},
   "cut": {"profiles": ["preserve", "text"], "order": "package", "attachments": "copy_used", "redaction": "none", "extract_text": false,
           "package_default": "ekstrakt-{topic}", "package_topic_default": "archiwum"},
-  "redaction": {"inflection": {"strip_final": "aeiouyąę", "optional_inner": "e", "ending_max": 5, "min_stem": 3},
+  "redaction": {"inflection": {"strip_final": "aeiouyąę", "optional_inner": "e", "ending_max": 5, "min_stem": 2},
                 "secret_store": true},
   "state": {"dir": null},
   "handoff": {"branches": "current", "graph": false, "zip": true},

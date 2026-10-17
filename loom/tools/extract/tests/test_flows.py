@@ -243,6 +243,16 @@ class FlowsTest(ExtractTest):
             eng.op("select.criteria", dict(self.SELECT))
         self.assertIn("calls", cm.exception.reason, "an old record without volume: the number of calls")
 
+    def test_a_failed_provider_call_from_the_cli_is_a_sentence_and_exit_5(self):
+        """F41 (CLI): an unreachable provider answers with the reason and exit code 5, no traceback."""
+        code, out, err = self._cli("wytnij", EXPORTS / "openai_2026_sharded.zip", "--slowa", "migracja", "--kaskada", "all_ambiguous",
+                                   "--model", "--tak", "--model-tani", "stub-cheap", "--model-mocny", "stub-strong",
+                                   "--dostawca", "http://127.0.0.1:9/v1", "-p", self.tmp / "p")
+        self.assertEqual(code, 5, err)
+        self.assertIn("failed", err)
+        self.assertNotIn("Traceback", err)
+        self.assertFalse((self.tmp / "p/manifest.json").exists())
+
     def test_a_failed_provider_call_is_logged_and_refused(self):
         """F41: a call that fails is appended to usage.jsonl with the error, and reported as a refusal (exit 5)."""
         eng = self._eng(provider={"base_url": "http://127.0.0.1:9/v1", "api_key_env": "XPORT_TEST_KEY", "timeout": 2})

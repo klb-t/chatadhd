@@ -43,7 +43,7 @@ def _pesel(digits: str) -> bool:
 CHECKS = {"luhn": _luhn, "pesel": _pesel}
 
 
-_INFLECT_DEFAULT = {"strip_final": "aeiouyąę", "optional_inner": "e", "ending_max": 5, "min_stem": 3}
+_INFLECT_DEFAULT = {"strip_final": "aeiouyąę", "optional_inner": "e", "ending_max": 5, "min_stem": 2}
 _HASHLIKE = re.compile(r"^(?:sha256:)?[0-9a-f]{32,}$")
 
 

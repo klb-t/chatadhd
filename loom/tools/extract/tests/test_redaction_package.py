@@ -162,11 +162,12 @@ class RedactedPackageTest(ExtractTest):
         self.assertNotIn("schemat", md)
 
     def test_polish_inflection_is_masked_from_the_stem(self):
-        r = Redactor("dictionary", terms=["Anna Kowalska", "Jan Nowicki", "migracja", "Marek", "Łódź"])
+        r = Redactor("dictionary", terms=["Anna Kowalska", "Jan Nowicki", "migracja", "Marek", "Łódź", "Ewa Nowacka"])
         text = ("Spotkanie z Anną Kowalską, list od Anny Kowalskiej, rozmowa z Janem Nowickim; plan migracji i migrację "
-                "omówiono z Markiem w Łodzi; Annotation zostaje.")
+                "omówiono z Markiem w Łodzi; u Ewy Nowackiej też; Annotation zostaje.")
         out = r.text(text, {})
-        for form in ("Anną", "Kowalską", "Anny", "Kowalskiej", "Janem", "Nowickim", "migracji", "migrację", "Markiem", "Łodzi"):
+        for form in ("Anną", "Kowalską", "Anny", "Kowalskiej", "Janem", "Nowickim", "migracji", "migrację", "Markiem", "Łodzi",
+                     "Ewy", "Nowackiej"):
             self.assertNotIn(form, out, form)
         self.assertIn("Annotation", out, "a longer word is not a form of the name")
         self.assertEqual(out.count("[NAME#1]"), 2, "every form of one term gets the same mask")
