@@ -6,6 +6,7 @@
 #include "loom/port_profile.h"
 #include "../src/context/method_channels.h"
 #include "loom/runtime.h"
+#include "loom/runtime_profile.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -60,10 +61,61 @@ TEST_SUITE("ports") {
     LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles" / "ports.pack",
         R"({"schema":"loom.runtime_profile_overlay/1","domain":"ports","overrides":{"roles":{"my.role":{"compose":"ensemble","members":["x","y"]}}}})"));
     auto prof = unwrap(PortProfile::load(td.path()));
-    CHECK(prof.roles().size() == 8);
+    const auto preset = unwrap(RuntimeProfile::builtin("ports"));
+    CHECK(prof.roles().size() == preset.values().at("roles").size() + 1);  // the preset's roles and the user's one, counted from the pack
     auto r = unwrap(prof.resolve("my.role"));
     CHECK(r["compose"] == "ensemble");
     CHECK(r["scope"] == "person");
+  }
+
+  TEST_CASE("M1-D1: every role names its job in pl and en, and a role its readers do not resolve yet says so") {
+    const auto preset = unwrap(RuntimeProfile::builtin("ports"));
+    const Json& roles = preset.values().at("roles");
+    for (const char* r : {"chat.default", "analysis.fast", "guardian", "intent.routing", "image.generate", "speech.synthesize",
+                          "embed.default", "asr", "ocr"})
+      CHECK_MESSAGE(roles.contains(r), r);
+    for (auto it = roles.begin(); it != roles.end(); ++it) {
+      INFO(it.key());
+      for (const char* k : {"label", "why"}) {
+        REQUIRE(it.value().contains(k));
+        CHECK_FALSE(json::get_string(it.value()[k], "pl").empty());
+        CHECK_FALSE(json::get_string(it.value()[k], "en").empty());
+      }
+      if (const Json* st = json::find(it.value(), "status")) {
+        const std::string state = json::get_string(*st, "state");
+        CHECK((state == "planned" || state == "partial"));
+        for (const char* k : {"today", "reason"}) {
+          CHECK_FALSE(json::get_string(st->value(k, Json::object()), "pl").empty());
+          CHECK_FALSE(json::get_string(st->value(k, Json::object()), "en").empty());
+        }
+      }
+    }
+    CHECK(roles.at("chat.default").at("label").at("pl") == "Rozmowa");
+    CHECK(roles.at("analysis.fast").at("label").at("pl") == "Analiza w tle");
+    CHECK(roles.at("guardian").at("label").at("pl") == "Sekretarz");
+    // the Secretary's role binds semantic_model, not guardian_model (guardian_model is step 1 of policies.guardian), and says so
+    CHECK(roles.at("guardian").at("setting") == "semantic_model");
+    CHECK(roles.at("guardian").at("why").at("pl").get<std::string>().find("guardian_model") != std::string::npos);
+    // the three roles M1-D1 adds are honest: their readers (route.cpp, the params of depict/narrate) read the keys directly
+    for (const char* r : {"intent.routing", "image.generate", "speech.synthesize"}) CHECK(roles.at(r).at("status").at("state") == "planned");
+  }
+
+  TEST_CASE("param_settings: a param the entry does not set comes from its setting, like the model") {
+    fsutil::TempDir td;
+    auto prof = unwrap(PortProfile::load(td.path()));
+    auto img = unwrap(prof.resolve("image.generate", Json::object(), "", Json{{"image_model", "img-1"}, {"image_provider", "my-images"}}));
+    CHECK(img["params"]["model"] == "img-1");
+    CHECK(img["params"]["provider"] == "my-images");
+    CHECK(img["adapter"] == "openai_images");
+    // empty settings add nothing; a param the entry sets wins over the setting
+    CHECK_FALSE(unwrap(prof.resolve("image.generate"))["params"].contains("provider"));
+    std::filesystem::create_directories(td.path() / "profiles");
+    LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles" / "ports.pack",
+        R"({"schema":"loom.runtime_profile_overlay/1","domain":"ports","overrides":{"roles":{"speech.synthesize":{"params":{"provider":"fixed"},"setting":"speech_model","param_settings":{"provider":"speech_provider"}}}}})"));
+    auto user = unwrap(PortProfile::load(td.path()));
+    auto sp = unwrap(user.resolve("speech.synthesize", Json::object(), "", Json{{"speech_model", "tts-1"}, {"speech_provider", "other"}}));
+    CHECK(sp["params"]["provider"] == "fixed");
+    CHECK(sp["params"]["model"] == "tts-1");
   }
 
   TEST_CASE("compose: fallback") {

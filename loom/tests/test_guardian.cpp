@@ -1000,4 +1000,79 @@ TEST_SUITE("guardian") {
     CHECK(run("test/frontier-opus") == 1);
     CHECK(run("test/cheap-haiku") == 2);
   }
+
+  TEST_CASE("M1-D1: resolve_model works for every policy of the data - each explicit step, the first role step, else none") {
+    Fixture f;
+    const auto profile = unwrap(RuntimeProfile::builtin("guardian"));
+    const Json& policies = profile.values().at("models").at("policies");
+    const auto ports = unwrap(RuntimeProfile::builtin("ports"));
+    for (const char* name : {"guardian", "analyzer", "chat", "intent", "image", "speech", "embed", "asr", "ocr"}) CHECK_MESSAGE(policies.contains(name), name);
+    std::vector<std::string> settings;  // every setting an explicit step names, cleared before each case
+    for (auto it = policies.begin(); it != policies.end(); ++it)
+      for (const auto& step : it.value().at("chain"))
+        if (json::get_string(step, "type") == "explicit") settings.push_back(json::get_string(step, "setting"));
+    // the role presets that would supply a model through their `setting` (semantic_model for guardian / analysis.fast ...)
+    for (auto it = ports.values().at("roles").begin(); it != ports.values().at("roles").end(); ++it)
+      if (const std::string s = json::get_string(it.value(), "setting"); !s.empty()) settings.push_back(s);
+    const auto overlay = f.td.path() / "profiles" / "ports.pack";
+    auto clear = [&] {
+      for (const auto& s : settings) f.rt->config().set(s, "");
+      std::filesystem::remove(overlay);
+    };
+    for (auto it = policies.begin(); it != policies.end(); ++it) {
+      const std::string name = it.key();
+      INFO(name);
+      const Json& chain = it.value().at("chain");
+      REQUIRE_FALSE(chain.empty());
+      CHECK(json::get_string(chain.back(), "type") == "none");
+      // every step says what it means, in pl and en
+      for (const auto& step : chain) {
+        CHECK_FALSE(json::get_string(step.value("meaning", Json::object()), "pl").empty());
+        CHECK_FALSE(json::get_string(step.value("meaning", Json::object()), "en").empty());
+      }
+      // a policy names the ports role it chooses for; one that nothing reads yet says what happens today
+      const std::string role = json::get_string(it.value(), "role");
+      CHECK(ports.values().at("roles").contains(role));
+      if (name != "guardian" && name != "analyzer") {
+        CHECK(it.value().at("status").at("state") == "planned");
+        CHECK_FALSE(json::get_string(it.value().at("status").at("today"), "pl").empty());
+      }
+      // nothing set: no model, and the reader is told why
+      clear();
+      auto none = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
+      CHECK(none.model.empty());
+      CHECK(none.via == "none");
+      CHECK_FALSE(none.reason.empty());
+      bool explicit_seen = false;
+      for (const auto& step : chain) {
+        const std::string type = json::get_string(step, "type");
+        if (type == "explicit") {
+          // an explicit setting decides first
+          clear();
+          const std::string setting = json::get_string(step, "setting");
+          f.rt->config().set(setting, "explicit/" + name);
+          auto c = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
+          if (!explicit_seen) {
+            CHECK(c.model == "explicit/" + name);
+            CHECK(c.via == "explicit:" + setting);
+            CHECK_FALSE(c.tier.empty());
+            CHECK_FALSE(c.flow.empty());
+          }
+          explicit_seen = true;
+        } else if (type == "role") {
+          // with the explicit settings empty, the first role step decides: the user's choice in the ports profile
+          clear();
+          const std::string r = json::get_string(step, "role");
+          std::filesystem::create_directories(overlay.parent_path());
+          std::ofstream(overlay) << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "ports"},
+                                         {"overrides", Json{{"roles", Json{{r, Json{{"adapter", "openai_chat"}, {"params", Json{{"model", "role/" + name}}}}}}}}}}.dump();
+          auto c = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
+          CHECK(c.model == "role/" + name);
+          CHECK(c.via == "role:" + r);
+          break;  // later role steps are reached only when this one yields nothing (guardian: analysis.fast, tested by the P23 case)
+        }
+      }
+      clear();
+    }
+  }
 }
