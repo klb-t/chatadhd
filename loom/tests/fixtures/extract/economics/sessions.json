@@ -1,0 +1,62 @@
+{
+ "ccr": {
+  "data": [
+   {
+    "id": "session_TEST1",
+    "title": "Sesja testowa jeden",
+    "created_at": "2026-10-10T07:59:00Z",
+    "updated_at": "2026-10-11T09:10:00Z",
+    "configured_model": "claude-x-large",
+    "status": "idle",
+    "session_context": {
+     "sources": [
+      {
+       "git_repository": {
+        "url": "https://example.invalid/econ/repo-a",
+        "revision": "refs/heads/main"
+       }
+      }
+     ]
+    },
+    "external_metadata": {
+     "usage": {
+      "cache_read_tokens": 3000,
+      "cache_write_tokens": 2000,
+      "input_tokens": 30,
+      "output_tokens": 300,
+      "cost_usd": 1.5
+     }
+    }
+   },
+   {
+    "id": "session_TEST2",
+    "title": "Sesja bez transkryptu",
+    "created_at": "2026-10-09T10:00:00Z",
+    "updated_at": "2026-10-09T11:00:00Z",
+    "configured_model": "claude-x-small",
+    "session_context": {
+     "sources": [
+      {
+       "git_repository": {
+        "url": "https://example.invalid/other/repo-b"
+       }
+      }
+     ]
+    },
+    "external_metadata": {
+     "usage": {
+      "cache_read_tokens": 100,
+      "cache_write_tokens": 50,
+      "input_tokens": 5,
+      "output_tokens": 20,
+      "cost_usd": 0.25
+     }
+    },
+    "parent_session_id": "session_TEST1"
+   }
+  ],
+  "has_more": false,
+  "first_id": "session_TEST1",
+  "last_id": "session_TEST2"
+ }
+}

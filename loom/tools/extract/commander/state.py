@@ -451,7 +451,7 @@ class CommanderState:
         for root in self.layout.get("roots") or []:
             items.append({"label": t("commander.menu.root", root=_label((self.layout.get("root_labels") or {}).get(root)) or root),
                           "do": (lambda r=root: self._set_root(self.pane, r))})
-        for op_name in ("inventory", "timeline", "clusters", "stats", "propose", "dry_run"):
+        for op_name in self.layout.get("menu_ops") or []:  # data: commander/layout.json#menu_ops
             items.append({"label": t("commander.menu.op", op=op_name), "do": (lambda o=op_name: self._run_op(o))})
         self.menu(t("commander.menu.title"), items)
 
@@ -459,7 +459,9 @@ class CommanderState:
         def done(res: dict[str, Any]) -> None:
             r = res.get("result") or res
             self._msg(t("commander.op_done", op=name, counts=json.dumps(r.get("counts") or {}, ensure_ascii=False)))
-            if name in ("inventory", "clusters", "timeline", "propose", "dry_run", "stats"):
+            if isinstance(r.get("markdown"), str):  # a result with a report of its own (token_economics) shows the report
+                self.show("viewer", name, r["markdown"].splitlines())
+            elif name in (self.layout.get("menu_ops") or []):
                 self.show("viewer", name, json.dumps({k: v for k, v in r.items() if k not in ("op", "seconds")}, ensure_ascii=False,
                                                      indent=1, default=str).splitlines())
         self.call({"call": "op", "op": name, "params": params or {}}, then=done, background=True)

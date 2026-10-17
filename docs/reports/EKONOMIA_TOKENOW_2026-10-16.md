@@ -32,3 +32,10 @@ Razem ChatADHD/Loom: ~2 204 USD; pozostałe projekty: ~1 522 USD.
 ## Metoda i powtarzalność
 
 Źródła: `mcp__claude-code-remote__list_sessions` (usage per sesja, stan 2026-10-16 16:25 UTC); `git log --all --format=%b | grep "Claude-Session: …<id>"` (commity per sesja); transkrypt `/root/.claude/projects/-home-user-chatadhd/<session>.jsonl` (usage per tura). Liczby cache/wyjście dla krótkich sesji S2 zsumowane z czterech wpisów. Następny punkt pomiarowy: po Bramie 0 M1.
+
+## Punkt 2 — 2026-10-17, zmierzone narzędziem X-Port (`python3 -m loom.tools.extract ekonomia --zbiorczo`)
+
+- S1: **1 532,69 USD** wg cennika API, 461 commitów ze stopką sesji (453 na main) → **3,32 USD na commit** (3,38 na main). Wzrost z 2,94: dzień 16.10 to w dużej części panele i przeglądy (M1, sweep, X-Port), które dają dokumenty i poprawki, nie commity — koszt na commit nie jest dobrą miarą dla pracy projektowej; lepsza będzie miara na pozycję pracy (brief → main).
+- Pętla główna to **15,4 %** tokenów S1; reszta to agenci i workflow (zgodne z punktem 1).
+- **Poprawka metody:** w transkryptach subagentów i workflow `output_tokens` jest zapisywane na starcie strumienia (15 521 z 17 651 odpowiedzi nie ma `stop_reason`), więc jest tylko **dolną granicą**; główny transkrypt jest pełny (0 z 1 595). Wyjście agentów liczę więc z API sesji, nie z transkryptów; narzędzie oznacza takie wiersze „dolna granica” i nie kalibruje na nich szacunków.
+- Szacunek bez liczników (znaki/4) ma na pełnych turach Claude'a medianę błędu **−56,5 %** (869 tur) — dla eksportów ChatGPT/claude.ai liczby oszacowane trzeba czytać jako rząd wielkości, nie kwotę.

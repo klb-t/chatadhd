@@ -120,6 +120,9 @@ class Engine:
         # what a recipe claimed about consent (recorded, never applied) and a provider it names (asked about first)
         self.recipe_claims: dict[str, Any] = {}
         self.data_provider: Optional[dict[str, Any]] = None
+        # slice 4: the last token-economics result (``token_economics``); ``write`` puts its files in the package
+        self.economics: Optional[dict[str, Any]] = None
+        self.units_snapshot_written: Optional[bool] = None  # the last write: units.jsonl (full content) in the package or not
 
     # -- lifecycle --------------------------------------------------------------
     def close(self) -> None:
@@ -154,6 +157,7 @@ class Engine:
         self.recipe["sources"] = list(self.sources)
         self.archives, self.units_raw, self.units, self.merge_result = [], [], [], None
         self.inventory = self.timeline = self.timeline_rows = None
+        self.economics = None
         self._vectors.clear()
 
     @property
@@ -172,8 +176,9 @@ class Engine:
         return self.ctx
 
     def ensure_units(self) -> None:
-        """scan → read → merge when the snapshot is not there yet (the ops are recorded)."""
-        if not self.archives:
+        """scan → read → merge when the snapshot is not there yet (the ops are recorded).  Without sources (a token
+        economics run over a session list and a repository only) there is nothing to scan: the snapshot stays empty."""
+        if not self.archives and (self.sources or self.economics is None):
             self.op("scan", by="engine")
         if not self.units_raw and self.archives:
             self.op("read", by="engine")
@@ -294,6 +299,19 @@ class Engine:
             norm["sources"] = [f"{by_path[s].label}:sha256:{by_path[s].sha256}" if s in by_path else f"source-{i + 1}"
                                for i, s in enumerate(norm.get("sources") or [])]
             norm["sources_note"] = "aggregate mode: sources replaced by archive labels and content hashes"
+            # path parameters of the steps (a session list, a repository) are numbered the same way
+            for st in norm.get("steps") or []:
+                pspec = (op_spec(st["op"], self.ds) or {}).get("params") or {}
+                for name, ps in pspec.items():
+                    val = (st.get("params") or {}).get(name)
+                    if val is None:
+                        continue
+                    if ps.get("type") == "paths" and isinstance(val, list):
+                        st["params"][name] = [f"{name}-{i + 1}" for i in range(len(val))]
+                    elif ps.get("type") == "path" and isinstance(val, str):
+                        st["params"][name] = f"{name}-1"
+                    elif ps.get("identifiers") and isinstance(val, (dict, list)):  # ids (sessions, transcripts): only how many
+                        st["params"][name] = {"count": len(val)}
         return norm
 
     # -- selection ---------------------------------------------------------------

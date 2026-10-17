@@ -89,38 +89,15 @@ class ModelRunner:
         return str(model)
 
     def price(self, model: str) -> Optional[dict[str, Any]]:
-        try:
-            prices = self.ds.file("prices.json")
-        except Exception:  # noqa: BLE001 - a missing price table means "unknown", never zero
-            log.debug("prices.json unavailable", exc_info=True)
-            prices = {}
-        p = (prices.get("models") or {}).get(model)
-        if p:
-            return {"in": float(p["input_per_mtok"]), "out": float(p["output_per_mtok"]), "currency": prices.get("currency", "USD"),
-                    "source": f"prices.json ({p.get('as_of') or prices.get('as_of') or '?'})"}
-        app = self._app_models_price(model)
-        return app
-
-    def _app_models_price(self, model: str) -> Optional[dict[str, Any]]:
-        from .paths import app_data_dir
-        d = app_data_dir()
-        if d is None or not (d / "models.json").exists():
+        """Input/output price per million tokens from the one price book (``prices/*.json``, the legacy
+        ``prices.json``, the app's ``models.json``); None = unknown (a cost is then "unknown", never zero)."""
+        from .prices import PriceBook
+        hit = PriceBook(self.ds).lookup(model)
+        pr = hit.get("prices") or {}
+        if not hit.get("known") or pr.get("input") is None or pr.get("output") is None:
             return None
-        try:
-            data = json.loads((d / "models.json").read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            log.debug("models.json unreadable", exc_info=True)
-            return None
-        items = data.get("models") if isinstance(data, dict) else data
-        for m in items or []:
-            if isinstance(m, dict) and m.get("id") == model and isinstance(m.get("pricing"), dict):
-                pr = m["pricing"]
-                try:  # OpenRouter pricing is USD per token (strings)
-                    return {"in": float(pr.get("prompt") or 0) * 1e6, "out": float(pr.get("completion") or 0) * 1e6, "currency": "USD",
-                            "source": "app models.json (per token × 1e6)"}
-                except (TypeError, ValueError):
-                    return None
-        return None
+        return {"in": float(pr["input"]), "out": float(pr["output"]), "currency": hit.get("currency", "USD"),
+                "source": f"{hit.get('file') or hit.get('source')} ({hit.get('valid_from') or '?'})"}
 
     # -- estimate and consent ---------------------------------------------------------------
     def _cpt(self) -> float:

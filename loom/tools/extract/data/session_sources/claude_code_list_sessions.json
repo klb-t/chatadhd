@@ -1,0 +1,45 @@
+{
+ "schema": "loom.extract.session_source/1",
+ "id": "claude_code.list_sessions",
+ "label": {
+  "pl": "Lista sesji Claude Code (wynik list_sessions zapisany do pliku)",
+  "en": "Claude Code session list (list_sessions result saved to a file)"
+ },
+ "note": {
+  "pl": "Narzędzie nigdy nie woła sieci: plik zapisuje użytkownik (albo Claude) z API sesji. Kształt zmierzony 2026-10-17: list_sessions = {\"ccr\": {\"data\": [sesje…], \"has_more\", \"first_id\", \"last_id\"}}, get_session = {\"ccr\": {sesja}, \"lineage\"}; liczniki w external_metadata.usage. Przyjmowane też: tablica sesji, obiekt z tablicą pod innym kluczem z wrappers, JSONL (sesja na wiersz); kilka plików (strony) — ta sama sesja liczona raz (najnowsze updated_at). Pole z [*] (repos: session_context.sources[*].git_repository.url — repozytoria źródłowe sesji) daje listę; tabela „Repozytoria” sumuje koszt wg API sesji i commity per repozytorium.",
+  "en": "The tool never calls the network: the user (or Claude) saves the file from the session API. Shape measured 2026-10-17: list_sessions = {\"ccr\": {\"data\": [sessions…], \"has_more\", \"first_id\", \"last_id\"}}, get_session = {\"ccr\": {session}, \"lineage\"}; counters in external_metadata.usage. Also accepted: an array of sessions, an object with the array under another wrappers key, JSONL (a session per line); several files (pages) — the same session counted once (latest updated_at). A field with [*] (repos: session_context.sources[*].git_repository.url — the session's source repositories) gives a list; the 'Repositories' table sums session-API cost and commits per repository."
+ },
+ "wrappers": [
+  "ccr.data",
+  "ccr",
+  "sessions",
+  "data",
+  "items",
+  "result",
+  "results"
+ ],
+ "id_field": "id",
+ "fields": {
+  "id": "id",
+  "title": "title",
+  "created": "created_at",
+  "updated": "updated_at",
+  "model": "configured_model",
+  "status": "status",
+  "input": "external_metadata.usage.input_tokens",
+  "output": "external_metadata.usage.output_tokens",
+  "cache_creation": "external_metadata.usage.cache_write_tokens",
+  "cache_read": "external_metadata.usage.cache_read_tokens",
+  "cost_usd": "external_metadata.usage.cost_usd",
+  "parent": "parent_session_id",
+  "last_model": "external_metadata.last_served_model",
+  "repos": "session_context.sources[*].git_repository.url"
+ },
+ "counters": [
+  "input",
+  "output",
+  "cache_creation",
+  "cache_read"
+ ],
+ "currency": "USD"
+}

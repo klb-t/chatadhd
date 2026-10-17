@@ -82,6 +82,7 @@ def build_manifest(eng: Any, outputs: list[dict[str, Any]], repro: str, recipe_n
         "edits": edits,
         "model_calls": calls,
         "cost_total": cost_total,
+        "economics": _economics_summary(eng),
         "stats": ({k: eng.stats.get(k) for k in ("total", "period", "services", "languages")} if eng.stats else None),
         "handoff": eng.handoff_info,
         "outputs": outputs,
@@ -194,3 +195,11 @@ def check_package(pkg_dir: Any, *, ds: Any = None) -> dict[str, Any]:
         if handoff["messages_with_text"] != exp.get("messages_with_text"):
             problems.append(f"handoff: importer saw {handoff['messages_with_text']} messages, manifest says {exp.get('messages_with_text')}")
     return {"ok": not problems, "problems": problems, "outputs": len(man.get("outputs") or []), "handoff_import": handoff}
+
+
+def _economics_summary(eng: Any) -> Any:
+    """Token economics in the manifest: the totals only (the tables are in ``economics/``)."""
+    if getattr(eng, "economics", None) is None:
+        return None
+    from .economics import summary
+    return summary(eng.economics)

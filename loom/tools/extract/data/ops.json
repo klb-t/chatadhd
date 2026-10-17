@@ -1,6 +1,6 @@
 {
   "schema": "loom.extract.ops/1",
-  "description": "Registry of engine operations. Every face (CLI, commander, API) calls these and nothing else; every executed operation with records=true becomes a recipe step. Param types: string, number, bool, list, object, expr (selection language), path (a filesystem path, resolved against the recipe directory), field (a field name such as title or meta.x — never a filesystem path); secret=true marks a value a redacted package never carries in clear (a sha256 reference, resolved from the local store at run time), id, enum (values), mode (replace|add|subtract|intersect). A param with a preset is filled in at normalisation and its origin recorded.",
+  "description": "Registry of engine operations. Every face (CLI, commander, API) calls these and nothing else; every executed operation with records=true becomes a recipe step. Param types: string, number, bool, list, object, expr (selection language), path (a filesystem path, resolved against the recipe directory), paths (a list of filesystem paths, each resolved the same way), field (a field name such as title or meta.x — never a filesystem path); secret=true marks a value a redacted package never carries in clear (a sha256 reference, resolved from the local store at run time), id, enum (values), mode (replace|add|subtract|intersect). A param with a preset is filled in at normalisation and its origin recorded.",
   "modes": ["replace", "add", "subtract", "intersect"],
   "ops": {
     "scan":            {"label": {"pl": "Przeskanuj źródła", "en": "Scan sources"}, "params": {"nested_limit": {"type": "number", "preset": "sniff.nested_zip_limit_bytes"}},
@@ -201,6 +201,23 @@
                         "records": false, "recipe_data": "views", "long": false, "needs_model": false, "mutates_package": false, "faces": ["cli", "tui", "api"]},
     "view.delete":    {"label": {"pl": "Usuń zapisany widok", "en": "Delete a saved view"},
                         "params": {"name": {"type": "string", "required": true}},
-                        "records": false, "recipe_data": "views", "long": false, "needs_model": false, "mutates_package": false, "faces": ["cli", "tui", "api"]}
+                        "records": false, "recipe_data": "views", "long": false, "needs_model": false, "mutates_package": false, "faces": ["cli", "tui", "api"]},
+    "token_economics": {"label": {"pl": "Ekonomia tokenów: zmierzone i oszacowane tokeny, koszt, wyniki (sesje, przebiegi, modele, narzędzia, dni, źródła)",
+                                  "en": "Token economics: measured and estimated tokens, cost, outcomes (sessions, runs, models, tools, days, sources)"},
+                        "params": {"of": {"type": "enum", "values": ["all", "selection"], "preset": "economics.of"},
+                                   "sessions": {"type": "paths", "default": []},
+                                   "session_source": {"type": "id"},
+                                   "repos": {"type": "paths", "default": []},
+                                   "links": {"type": "object", "default": {}, "identifiers": true},
+                                   "duplicate_lines": {"type": "enum", "values": ["max", "last", "sum"], "preset": "economics.usage.duplicate_lines"},
+                                   "stale_output": {"type": "enum", "values": ["keep", "estimate"], "preset": "economics.usage.stale_output"},
+                                   "skip_session_side_files": {"type": "bool", "preset": "economics.skip_session_side_files"},
+                                   "per_turn": {"type": "bool", "preset": "economics.outcomes.per_turn"},
+                                   "tool_attribution": {"type": "enum", "values": ["split", "full"], "preset": "economics.tool_attribution"},
+                                   "day_zone": {"type": "string", "preset": "economics.day_zone"},
+                                   "estimate": {"type": "enum", "values": ["auto", "chars", "tiktoken"], "preset": "economics.estimate.method"},
+                                   "context": {"type": "enum", "values": ["path", "none"], "preset": "economics.estimate.context"},
+                                   "main_ref": {"type": "strings", "preset": "economics.git.main_ref"}},
+                        "records": true, "long": true, "needs_model": false, "mutates_package": false, "faces": ["cli", "tui", "api"]}
   }
 }

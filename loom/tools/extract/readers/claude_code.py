@@ -11,14 +11,19 @@ messages (tree by ``parentUuid``; sidechains and compact summaries flagged),
 ``summary`` lines become session summaries, ``system`` lines system messages,
 housekeeping line types are counted, anything else goes to the unknown bucket
 with an example.  Tool calls and results are kept as blocks."""
+import fnmatch
 import io
 import json
+import logging
+from pathlib import Path, PurePosixPath
 from typing import Any, Iterator, Optional
 
 from ..model import Block, Message, Unit
 from ..sources import Member
 from .base import ReadContext, Reader, block_kind, getpath, note_unknown, finalize_unit, thinking_block, unknown_block
 from .tree_walk import TreeNode, walk_tree
+
+log = logging.getLogger(__name__)
 
 
 class ClaudeCodeReader(Reader):
@@ -86,14 +91,27 @@ class ClaudeCodeReader(Reader):
                     internal[ltype] = internal.get(ltype, 0) + 1
                 else:
                     note_unknown(u, f"line:{lineno}", obj, native=ltype or "?")
-        stem = member.name.rsplit("/", 1)[-1]
+        stem = member.name.rsplit("/", 1)[-1] if member.name else Path(member.archive.path).name
         stem = stem[:-len(".jsonl")] if stem.endswith(".jsonl") else stem
-        if session_id and stem != session_id:
+        place = transcript_place(member, fmt, session_id=session_id, stem=stem)
+        if place is not None:
+            # <session>/subagents/**/x.jsonl or <session>/[subagents/]workflows/<run>/agent-*.jsonl: the directory names
+            # the parent session (a measured link); the id is the path from the session directory, unique across runs
+            u.ext_id = place["ext_id"]
+            u.flags["parent_session"] = place["session"]
+            u.flags["parent_session_how"] = "path"
+            u.flags["transcript_role"] = place["role"]
+            if place.get("run"):
+                u.flags["workflow_run"] = place["run"]
+            _read_sidecars(u, member, fmt, place, stem, ctx)
+        elif session_id and stem != session_id:
             # an agent transcript or a resumed session in its own file: its own identity, linked to the parent session
             u.ext_id = stem
             u.flags["parent_session"] = session_id
+            u.flags["parent_session_how"] = "sessionId"
         else:
             u.ext_id = session_id or member.name
+            u.flags["transcript_role"] = "main"
         ctx.set_unit_times(u, first_ts, last_ts, mtime=member.mtime)
         leaf_policy = str(fmt.get("leaf") or "last_main")
         main_ids = [x for x in order if x not in sidechain]
@@ -107,6 +125,7 @@ class ClaudeCodeReader(Reader):
             m = Message(id=e.id, parent=e.parent, role=roles.get(role, role), branch=e.branch, on_current_path=e.on_current,
                         raw_pointer=f"line:{lineno}")
             m.model = getpath(obj, lspec.get("model"))
+            read_usage(m, obj, fmt.get("usage"))
             ctx.set_msg_time(m, obj.get(lspec["created"]["path"]), fallback=u.created_utc)
             if obj.get(lspec.get("sidechain", "isSidechain")):
                 m.meta["sidechain"] = True
@@ -127,6 +146,8 @@ class ClaudeCodeReader(Reader):
         u.flags["sidechain_messages"] = sum(1 for m in u.messages if m.meta.get("sidechain"))
         if u.messages and all(m.meta.get("sidechain") for m in u.messages if m.role != "system"):
             u.flags["agent_transcript"] = True
+        if "transcript_role" not in u.flags:  # a file next to the session's, linked by sessionId
+            u.flags["transcript_role"] = "subagent" if u.flags.get("agent_transcript") else "resumed"
         u.flags["compacted_messages"] = sum(1 for m in u.messages if m.meta.get("compacted"))
         if summaries and not u.title:
             u.title = str(summaries[-1].get("summary") or "")[:80] or None
@@ -195,3 +216,159 @@ def _tool_text(inp: Any) -> str:
             if isinstance(inp.get(k), str):
                 return inp[k]
     return ""
+
+
+def _path_parts(member: Member) -> tuple[list[str], int]:
+    """(path parts ending with the file name, index of the first part inside the scanned source).  A directory source:
+    the root's own path, then the member's path below it; a zip: the member's path only (the zip's location says
+    nothing about the layout); a single file: its path, nothing of it inside the source but the file name."""
+    if member.archive.kind == "file" or not member.name:
+        parts = list(Path(member.archive.path).parts)
+        return parts, len(parts) - 1
+    rel = list(PurePosixPath(member.name).parts)
+    if member.archive.kind == "dir":
+        root = list(Path(member.archive.path).parts)
+        return root + rel, len(root)
+    return rel, 0
+
+
+def transcript_place(member: Member, fmt: dict[str, Any], *, session_id: Optional[str] = None,
+                     stem: Optional[str] = None) -> Optional[dict[str, Any]]:
+    """Where a transcript sits: ``<session>/subagents/**/agent-*.jsonl`` → subagent of <session>; ``<session>/
+    [subagents/]workflows/<run>/agent-*.jsonl`` → agent of workflow run <run>.  Directory and file names come from
+    the format file (``transcripts.subagent_dirs`` / ``workflow_dirs`` / ``agent_files``).  Matched from the file
+    upwards (the nearest directory wins, so an ancestor that happens to be called ``workflows`` or ``subagents``
+    never decides), and only:
+      - a file named like an agent transcript; a file whose lines' sessionId is its own name (a main transcript) is
+        never re-placed;
+      - when the lines carry a sessionId, it must be the session the path names;
+      - a session directory above the scanned source (a source that is itself a session or subagents directory)
+        is accepted only when the lines' sessionId confirms it.
+    None = not an agent transcript by its place (the caller links it by the lines' sessionId, if any)."""
+    tspec = fmt.get("transcripts") or {}
+    subs = set(tspec.get("subagent_dirs") or [])
+    wfs = set(tspec.get("workflow_dirs") or [])
+    if not subs and not wfs:
+        return None
+    if stem and session_id and stem == session_id:
+        return None
+    parts, inside = _path_parts(member)
+    if not parts:
+        return None
+    pats = [str(x) for x in (tspec.get("agent_files") or ["*.jsonl"])]
+    if not any(fnmatch.fnmatchcase(parts[-1], pat) for pat in pats):
+        return None
+    dirs = parts[:-1]
+    run: Optional[str] = None
+    if len(dirs) >= 3 and dirs[-2] in wfs:
+        role, run, s = "workflow_agent", dirs[-1], len(dirs) - 3
+        if s >= 1 and dirs[s] in subs:
+            s -= 1
+    else:
+        i_sub = next((i for i in range(len(dirs) - 1, -1, -1) if dirs[i] in subs), None)
+        if i_sub is None or i_sub == 0:
+            return None
+        role, s = "subagent", i_sub - 1
+    if s < 0:
+        return None
+    session = dirs[s]
+    if session_id and session_id != session:
+        return None
+    if s < inside and session_id != session:
+        return None
+    rel = "/".join(parts[s:])
+    rel = rel[:-len(".jsonl")] if rel.endswith(".jsonl") else rel
+    return {"session": session, "role": role, "run": run, "ext_id": rel, "parts": parts, "inside": inside, "s": s}
+
+
+def _sidecar(member: Member, name: str, ctx: ReadContext) -> Optional[dict[str, Any]]:
+    """A JSON file Claude Code writes next to the transcripts, read only when it is a member of the same scanned
+    source (dir or zip); cached per source, so the run's summary is read once for all its agents."""
+    if member.archive.kind not in ("dir", "zip"):
+        return None
+    cache = ctx.sidecars
+    key = (member.archive.path, name)
+    if key in cache:
+        return cache[key]
+    cache[key] = None
+    sm = member.archive.member(name)
+    if sm is None:
+        return None
+    try:
+        doc = json.loads(sm.read_bytes().decode("utf-8", "replace"))
+    except (OSError, ValueError, RuntimeError):  # zipfile errors are among these
+        log.debug("sidecar %s unreadable", name, exc_info=True)
+        return None
+    cache[key] = doc if isinstance(doc, dict) else None
+    return cache[key]
+
+
+def _read_sidecars(u: Unit, member: Member, fmt: dict[str, Any], place: dict[str, Any], stem: str, ctx: ReadContext) -> None:
+    """Measured metadata next to an agent transcript (format file ``transcripts.agent_meta`` / ``workflow_meta``):
+    the agent's ``<stem>.meta.json`` (type, description) and the workflow run's ``<session>/workflows/<run>.json``
+    (name, agent count, its own token total).  Absent or unreadable = not there; nothing is inferred."""
+    tspec = fmt.get("transcripts") or {}
+    if not member.name:
+        return
+    here = member.name.rsplit("/", 1)[0] if "/" in member.name else ""
+    am = tspec.get("agent_meta") or {}
+    if am.get("file"):
+        name = str(am["file"]).format(stem=stem)
+        doc = _sidecar(member, f"{here}/{name}" if here else name, ctx)
+        if doc is not None:
+            meta = {k: getpath(doc, path) for k, path in (am.get("fields") or {}).items() if getpath(doc, path) is not None}
+            if meta:
+                u.flags["agent_meta"] = meta
+    wm = tspec.get("workflow_meta") or {}
+    if wm.get("file") and place.get("run"):
+        s, inside, parts = place["s"], place["inside"], place["parts"]
+        if s < inside:  # the session directory is above the scanned source: the run's file is not in it
+            return
+        sess_dir = "/".join(parts[inside:s + 1])
+        name = str(wm["file"]).format(session=sess_dir, run=place["run"])
+        doc = _sidecar(member, name, ctx)
+        if doc is not None:
+            meta = {k: getpath(doc, path) for k, path in (wm.get("fields") or {}).items() if getpath(doc, path) is not None}
+            if meta:
+                u.flags["workflow_meta"] = meta
+
+
+def read_usage(m: Message, obj: dict[str, Any], uspec: Optional[dict[str, Any]]) -> None:
+    """Measured counters of one line (``usage`` of the format file) → ``m.meta``: ``usage`` (mapped counters, labels,
+    ``extra`` = every unmapped field, never dropped), ``api_id`` / ``request_id`` (one API response may span several
+    lines), ``cost_usd`` when the line carries its own cost."""
+    if not uspec:
+        return
+    raw = getpath(obj, uspec.get("path"))
+    cost = getpath(obj, uspec.get("cost_usd")) if uspec.get("cost_usd") else None
+    if isinstance(cost, (int, float)) and not isinstance(cost, bool):
+        m.meta["cost_usd"] = float(cost)
+    if not isinstance(raw, dict):
+        return
+    out: dict[str, Any] = {}
+    consumed: set[str] = set()
+    for key, path in (uspec.get("fields") or {}).items():
+        consumed.add(str(path).split(".")[0])
+        v = getpath(raw, path)
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            out[key] = int(v)
+    for key, path in (uspec.get("labels") or {}).items():
+        consumed.add(str(path).split(".")[0])
+        v = getpath(raw, path)
+        if v is not None:
+            out[key] = v
+    extra = {k: v for k, v in raw.items() if k not in consumed}
+    if extra:
+        out["extra"] = extra
+    m.meta["usage"] = out
+    if uspec.get("stop_reason"):
+        # stop_reason is set only on the line written when the response ended (the counters there are final); lines
+        # written while it streams carry null — their output_tokens is the stream-start snapshot
+        sr = getpath(obj, uspec["stop_reason"])
+        m.meta["usage_final"] = bool(sr)
+        if sr:
+            m.meta["stop_reason"] = str(sr)
+    for key in ("api_id", "request_id"):
+        v = getpath(obj, uspec.get(key)) if uspec.get(key) else None
+        if v:
+            m.meta[key] = str(v)

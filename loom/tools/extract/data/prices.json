@@ -1,6 +1,10 @@
-{"schema": "loom.extract.prices/1",
+{
+ "schema": "loom.extract.prices/1",
  "currency": "USD",
  "as_of": null,
- "note": {"pl": "Ceny za milion tokenów, z datą i źródłem per model. Celowo puste: cen nie zgadujemy. Uzupełnij w nakładce (<katalog danych>/extract/prices.json) albo przez models.json aplikacji (pole pricing). Brak ceny = koszt „nieznany”, nigdy zero.",
-          "en": "Prices per million tokens, with a date and source per model. Empty on purpose: prices are not guessed. Fill them in the overlay (<data dir>/extract/prices.json) or through the app's models.json (pricing). No price = cost 'unknown', never zero."},
- "models": {}}
+ "note": {
+  "pl": "Dawna tabela cen (dokładne id modelu → input_per_mtok/output_per_mtok); nadal czytana. Ceny z datą, źródłem i cache są w prices/*.json (wzorce modeli, valid_from); tam też nakładka (<katalog danych>/extract/prices/<id>.json). Celowo puste: cen nie zgadujemy. Brak ceny = koszt „nieznany”, nigdy zero.",
+  "en": "Legacy price table (exact model id → input_per_mtok/output_per_mtok); still read. Dated prices with a source and cache prices live in prices/*.json (model patterns, valid_from); the overlay goes there too (<data dir>/extract/prices/<id>.json). Empty on purpose: prices are not guessed. No price = cost 'unknown', never zero."
+ },
+ "models": {}
+}

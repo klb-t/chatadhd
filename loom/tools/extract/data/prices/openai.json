@@ -1,0 +1,102 @@
+{
+ "schema": "loom.extract.prices/2",
+ "id": "openai",
+ "vendor": "openai",
+ "currency": "USD",
+ "unit": "per_million_tokens",
+ "note": {
+  "pl": "Ceny za milion tokenów per wzorzec modelu (fnmatch, bez rozróżniania wielkości liter; najbardziej szczegółowy wzorzec wygrywa), z datą ważności (valid_from, ISO) i źródłem. Wpis bez ceny = koszt „nieznany (brak ceny)”, nigdy zero. Nakładka: <katalog danych>/extract/prices/openai.json (te same pola; nowsze valid_from obok starszych).",
+  "en": "Prices per million tokens per model pattern (fnmatch, case-insensitive; the most specific pattern wins), with a validity date (valid_from, ISO) and a source. An entry without a price = cost 'unknown (no price)', never zero. Overlay: <data dir>/extract/prices/openai.json (same fields; newer valid_from next to older ones)."
+ },
+ "fields": {
+  "input": "wejście (bez cache)",
+  "output": "wyjście",
+  "cache_write": "zapis cache (5 min)",
+  "cache_write_1h": "zapis cache 1 h (opcjonalnie)",
+  "cache_read": "odczyt cache",
+  "web_search_per_1000": "wyszukiwania www (za 1000 żądań; null = nieznana — koszt tury z wyszukiwaniem nieznany)",
+  "web_fetch_per_1000": "pobrania www (za 1000 żądań; null = nieznana)"
+ },
+ "entries": [
+  {
+   "pattern": "gpt-*",
+   "input": null,
+   "output": null,
+   "cache_write": null,
+   "cache_read": null,
+   "valid_from": null,
+   "source": null,
+   "unknown_reason": {
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
+  },
+  {
+   "pattern": "o1*",
+   "input": null,
+   "output": null,
+   "cache_write": null,
+   "cache_read": null,
+   "valid_from": null,
+   "source": null,
+   "unknown_reason": {
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
+  },
+  {
+   "pattern": "o3*",
+   "input": null,
+   "output": null,
+   "cache_write": null,
+   "cache_read": null,
+   "valid_from": null,
+   "source": null,
+   "unknown_reason": {
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
+  },
+  {
+   "pattern": "o4*",
+   "input": null,
+   "output": null,
+   "cache_write": null,
+   "cache_read": null,
+   "valid_from": null,
+   "source": null,
+   "unknown_reason": {
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
+  },
+  {
+   "pattern": "chatgpt-*",
+   "input": null,
+   "output": null,
+   "cache_write": null,
+   "cache_read": null,
+   "valid_from": null,
+   "source": null,
+   "unknown_reason": {
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
+  }
+ ]
+}
