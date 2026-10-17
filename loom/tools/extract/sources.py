@@ -633,7 +633,7 @@ def top_level_keys_partial(text: str) -> dict[str, Any]:
                     try:
                         keys[json.loads('"' + m.group(1) + '"')] = None
                     except json.JSONDecodeError:
-                        pass
+                        log.debug("sniff: a key that is not a JSON string skipped", exc_info=True)
                     i += m.end()
                     continue
             in_str = True

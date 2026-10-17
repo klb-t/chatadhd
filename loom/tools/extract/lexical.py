@@ -4,13 +4,17 @@ keyword matching with explicit forms or rules, regexes, exclusions, and
 "why it matched" (form, position, weight).  Stop words come from the kernel's
 lists plus the tool's extras.  Everything here is deterministic and local.
 """
+import json
+import logging
 import math
 import re
 import unicodedata
 from dataclasses import dataclass, field
 from typing import Any, Iterable, Optional
 
-from .datafiles import DataStore, store as default_store
+from .datafiles import DataFileError, DataStore, store as default_store
+
+log = logging.getLogger(__name__)
 
 _TOKEN = re.compile(r"[^\W_]+(?:[-'’][^\W_]+)*", re.UNICODE)
 
@@ -36,18 +40,29 @@ class Lexicon:
         for sid in ("stop_pl", "stop_en"):
             try:
                 sw = ds.file(f"lexicon/{sid}.json")
-            except Exception:  # noqa: BLE001 - a missing extra list is reported by the data loader elsewhere
+            except (DataFileError, OSError, json.JSONDecodeError):
+                # an extra stop list that is missing is fine (debug); one that exists but does not parse is a warning
+                exists = any(p is not None and (p / "lexicon" / f"{sid}.json").exists() for p in (ds.overlay, ds.shipped))
+                (log.warning if exists else log.debug)("stop list %s not loaded", sid, exc_info=True)
                 continue
             lang = sid.split("_")[1]
             for rel in sw.get("extends", []):
                 try:
                     kernel = ds.repo_file(rel)
-                except Exception:  # noqa: BLE001
+                except (DataFileError, OSError, json.JSONDecodeError):
+                    log.warning("kernel stop list %s not loaded (stop words of %s are the tool's own only)", rel, sid, exc_info=True)
                     continue
                 for k in ("pl", "en"):
                     self.stop[k].update(self.fold(w) for w in kernel.get(k, []))
             self.stop[lang].update(self.fold(w) for w in sw.get("words", []))
         self.stop_all = self.stop["pl"] | self.stop["en"]
+        # a term shorter than min_token is not stemmed, while its inflected forms (5+ letters) are: 'baza' would
+        # never meet 'bazy'/'bazie'.  Such a token is also matched as a prefix (final vowel stripped) with a short
+        # ending, in text not recognised as English (data: pl_inflection.json short_terms)
+        st = dict(own.get("short_terms") or {})
+        self.short_terms = {"enabled": bool(st.get("enabled", True)), "strip_final": str(st.get("strip_final", "aeiouyąę")),
+                            "ending_max": int(st.get("ending_max", 4)), "min_prefix": int(st.get("min_prefix", 2)),
+                            "skip_lang": list(st.get("skip_lang", ["en"]))}
 
     # -- folding ----------------------------------------------------------------
     def fold(self, text: str) -> str:
@@ -165,6 +180,7 @@ class Keyword:
     # compiled
     form_keys: list[tuple[str, ...]] = field(default_factory=list)   # token sequences (folded)
     stem_keys: list[tuple[str, ...]] = field(default_factory=list)   # token sequences (stems)
+    prefix_keys: list[tuple[tuple[str, str], ...]] = field(default_factory=list)  # (("^", prefix) | ("=", stem), …)
     substrings: list[str] = field(default_factory=list)
 
 
@@ -206,6 +222,22 @@ def compile_keyword(spec: Any, lex: Lexicon, defaults: Optional[dict[str, Any]] 
                 st = tuple(lex.stem(t, lang) for t, _, _ in lex.tokens(f))
                 if st and st not in kw.stem_keys:
                     kw.stem_keys.append(st)
+        sh = lex.short_terms
+        min_token = int(lex.pl.get("min_token", 5))
+        if sh["enabled"]:
+            for f in forms:
+                toks = [lex.fold(t) for t, _, _ in lex.tokens(f)]
+                if not toks or not any(len(t) < min_token for t in toks):
+                    continue
+                key = []
+                for t in toks:
+                    if len(t) < min_token:
+                        p = t[:-1] if len(t) - 1 >= sh["min_prefix"] and t[-1] in sh["strip_final"] else t
+                        key.append(("^", p))
+                    else:
+                        key.append(("=", lex.stem(t, "pl")))
+                if tuple(key) not in kw.prefix_keys:
+                    kw.prefix_keys.append(tuple(key))
     return kw
 
 
@@ -218,14 +250,25 @@ class TextIndex:
     lowered: list[str]
     stems: list[str]
     folded_text: str
+    lang: Optional[str] = None
+    ending_max: int = 4
+    skip_lang: list[str] = field(default_factory=lambda: ["en"])
+    stems_pl: Optional[list[str]] = None
+    _lex: Any = None
 
     @classmethod
     def build(cls, text: str, lex: Lexicon) -> "TextIndex":
         toks = lex.tokens(text)
         words = [t for t, _, _ in toks]
         lang = lex.guess_lang(words)
-        return cls(text, toks, [lex.fold(t) for t in words], [t.lower() for t in words],
-                   [lex.stem(t, lang) for t in words], lex.fold(text))
+        idx = cls(text, toks, [lex.fold(t) for t in words], [t.lower() for t in words],
+                  [lex.stem(t, lang) for t in words], lex.fold(text))
+        idx.lang = lang
+        idx.ending_max = int(lex.short_terms["ending_max"])
+        idx.skip_lang = list(lex.short_terms["skip_lang"])
+        idx.stems_pl = None
+        idx._lex = lex
+        return idx
 
 
 def match_keyword(kw: Keyword, idx: TextIndex) -> list[Match]:
@@ -246,6 +289,29 @@ def match_keyword(kw: Keyword, idx: TextIndex) -> list[Match]:
                         continue
                     seen.add((start, end))
                     out.append(Match(kw.term, idx.text[start:end], start, end, kw.weight, how))
+    if kw.prefix_keys and getattr(idx, "lang", None) not in (getattr(idx, "skip_lang", None) or ["en"]):
+        emax = int(getattr(idx, "ending_max", 4))
+        if idx.stems_pl is None:
+            idx.stems_pl = [idx._lex.stem(t, "pl") for t in idx.folded]
+        for key in kw.prefix_keys:
+            k = len(key)
+            for i in range(n - k + 1):
+                ok = True
+                for j, (mark, val) in enumerate(key):
+                    tok = idx.folded[i + j]
+                    if mark == "^":
+                        if not (tok.startswith(val) and len(tok) - len(val) <= emax):
+                            ok = False
+                            break
+                    elif idx.stems_pl[i + j] != val and idx.stems[i + j] != val:
+                        ok = False
+                        break
+                if ok:
+                    start, end = idx.tokens[i][1], idx.tokens[i + k - 1][2]
+                    if (start, end) in seen:
+                        continue
+                    seen.add((start, end))
+                    out.append(Match(kw.term, idx.text[start:end], start, end, kw.weight, "rule"))
     if not kw.boundary:
         for sub in kw.substrings:
             for m in re.finditer(re.escape(sub), idx.folded_text):

@@ -13,5 +13,7 @@
     "agent": "agent", "agenta": "agent", "agentem": "agent", "agencie": "agent", "agenci": "agent", "agentów": "agent"
   },
   "extra_suffixes": [],
-  "multiword_join": " "
+  "multiword_join": " ",
+ "short_terms": {"enabled": true, "strip_final": "aeiouyąę", "ending_max": 4, "min_prefix": 2, "skip_lang": ["en"],
+                 "note": "terms shorter than the stemmer's min_token (baza, Anna) also match as a prefix with a short ending (bazy, bazie, Annę), except in text recognised as English"}
 }

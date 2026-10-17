@@ -45,6 +45,22 @@ class CascadeTest(ExtractTest):
         lex = lexicon()
         self.assertEqual(lex.fold("Zażółć gęślą"), "zazolc gesla")
 
+    def test_short_polish_terms_meet_their_inflected_forms(self):
+        """F32: 'baza' and 'Anna' are shorter than the stemmer's min_token, while 'bazy', 'bazie', 'Annę' are
+        stemmed to something else; the short term also matches as a prefix with a short ending (data:
+        pl_inflection.json short_terms), not in English text."""
+        from loom.tools.extract.lexical import TextIndex, compile_keyword, match_keyword
+        lex = lexicon()
+        cases = [("baza", "Migracja: w bazie są dane, a nowe bazy czekają.", {"bazie", "bazy"}),
+                 ("baza danych", "Kopia bazy danych i stan bazie danych.", {"bazy danych", "bazie danych"}),
+                 ("Anna", "Rozmowa z Anną i list od Anny.", {"Anną", "Anny"})]
+        for term, text, want in cases:
+            with self.subTest(term=term):
+                got = {m.form for m in match_keyword(compile_keyword(term, lex), TextIndex.build(text, lex))}
+                self.assertTrue(want <= got, (term, got))
+        en = TextIndex.build("The date and the data are here, the dates too.", lex)
+        self.assertEqual({m.form for m in match_keyword(compile_keyword("data", lex), en)}, {"data"}, "no prefix match in English")
+
     def test_bands_are_presets_and_ambiguous_is_reported(self):
         eng, units = self._units()
         crit = criteria_from_terms(["rekurencja"], eng.ds, eng.lex)
