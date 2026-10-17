@@ -7,7 +7,7 @@ In aggregate mode no title, text fragment or file name appears.
 """
 from typing import Any, Optional
 
-from .i18n import label, t
+from .i18n import label, reason, t
 
 
 def _line(items: list[str]) -> str:
@@ -38,6 +38,9 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
                                                             known=a.get("members", {}).get("known", 0),
                                                             unknown=a.get("members", {}).get("unknown", 0),
                                                             conversations=units.get("conversation", 0) + units.get("session", 0)))
+    ctx = getattr(eng, "ctx", None)
+    for uc in (getattr(ctx, "user_code_used", None) or []):  # a reader that is the user's own code says so
+        out.append("- " + t("report.user_reader", reader=uc.get("reader"), path="…" if aggregate else uc.get("path")))
     conv = inv.get("conversations") or 0
     msgs = inv.get("messages") or {}
     out.append("")
@@ -92,7 +95,7 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
     unreadable: list[str] = []
     for a in inv.get("archives") or []:
         for m in (a.get("members") or {}).get("unknown_list") or []:
-            unreadable.append(f"{a.get('label')}: {m.get('name')} ({m.get('size')} B) — {m.get('why')}")
+            unreadable.append(f"{a.get('label')}: {m.get('name')} ({m.get('size')} B) — {reason(m.get('why'))}")
         if aggregate and (a.get("members") or {}).get("unknown"):
             unreadable.append(t("report.unknown_count", archive=a.get("label"), n=a["members"]["unknown"]))
     for m in (att.get("missing_list") or []):
@@ -154,7 +157,7 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
                     out.append("  - " + t("report.cut_omitted_count", archive=a.get("archive"), n=om if isinstance(om, int) else len(om)))
                 else:
                     for o in om:
-                        out.append("  - " + t("report.cut_omitted", archive=a.get("archive"), member=o.get("member"), why=o.get("why")))
+                        out.append("  - " + t("report.cut_omitted", archive=a.get("archive"), member=o.get("member"), why=reason(o.get("why"))))
                 for o in ([] if isinstance(ind, int) else ind):
                     out.append("  - " + t("report.cut_indivisible", member=o.get("member") if not aggregate else "…", n=o.get("other_conversations", 0)))
                 for nr in a.get("not_redacted") or []:

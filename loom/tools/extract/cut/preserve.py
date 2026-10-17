@@ -135,7 +135,10 @@ def _cut_archive(eng: Any, a: Any, units: list[Any], kept: list[Any], outputs: O
             target = name if a.kind != "file" else slug
             zinfo = zip_info_of(a, name)
             if m.kind == "container":
-                info["omitted"].append({"member": name, "why": "nested archive (cut separately as its own archive)"})
+                info["omitted"].append({"member": name, "why": "why.preserve_nested"})
+                continue
+            if m.kind == "unreadable":  # a damaged member: reported by the scan, never copied
+                info["omitted"].append({"member": name, "why": m.sniff_how or "why.unreadable"})
                 continue
             if m.kind == "asset":
                 if name in used_assets and attachments_mode != "reference_only":
@@ -149,14 +152,14 @@ def _cut_archive(eng: Any, a: Any, units: list[Any], kept: list[Any], outputs: O
                         copy_stream(src, dst)
                     info["members_written"] += 1
                 else:
-                    info["omitted"].append({"member": name, "why": "attachment not used by a kept conversation"
-                                            if attachments_mode != "reference_only" else "attachments: reference_only"})
+                    info["omitted"].append({"member": name, "why": "why.preserve_att_unused"
+                                            if attachments_mode != "reference_only" else "why.preserve_att_reference_only"})
                 continue
             if m.kind == "conversations":
                 mu = by_member.get(name, [])
                 mk = [u for u in mu if u.uid in kept_ids]
                 if not mk:
-                    info["omitted"].append({"member": name, "why": "no kept conversation in this member"})
+                    info["omitted"].append({"member": name, "why": "why.preserve_no_kept"})
                     continue
                 info["conversations_kept"] += len(mk)
                 info["partial_whole"] += sum(1 for u in mk if _partial(eng, u))
@@ -177,7 +180,7 @@ def _cut_archive(eng: Any, a: Any, units: list[Any], kept: list[Any], outputs: O
                 if _write_filtered(m, target, zinfo, sink, str(filt), ext_ids, redactor if redactor is not None and redactor.active else None, info):
                     info["members_written"] += 1
             else:
-                info["omitted"].append({"member": name, "why": f"{m.kind or 'unknown'} member not in the format's preserve table"})
+                info["omitted"].append({"member": name, "why": f"why.preserve_not_in_table|{m.kind or 'unknown'}"})
     finally:
         sink.close()
     if a.kind == "zip":
@@ -219,10 +222,10 @@ def _write_conversations(m: Any, mu: list[Any], mk: list[Any], target: str, zinf
             return True
         except SpanError as exc:
             log.debug("preserve: %s is not a plain JSON array (%s); copied whole", m.name, exc)
-            info["indivisible"].append({"member": m.name, "why": f"no per-conversation boundary ({exc})",
+            info["indivisible"].append({"member": m.name, "why": f"why.preserve_no_boundary|{exc}",
                                         "other_conversations": len(mu) - len(mk)})
     elif len(mk) < len(mu):
-        info["indivisible"].append({"member": m.name, "why": "the format has no per-conversation boundary in this member",
+        info["indivisible"].append({"member": m.name, "why": "why.preserve_no_boundary_member",
                                     "other_conversations": len(mu) - len(mk)})
     with m.open() as src, sink.open(target, zinfo) as dst:
         if redacting:
@@ -310,16 +313,16 @@ def _write_filtered(m: Any, target: str, zinfo: Any, sink: Any, field: str, ext_
                 else:
                     r = filter_array(src, dst, keep)
             if r["kept"] < r["total"]:
-                info["omitted"].append({"member": m.name, "why": f"{r['total'] - r['kept']} record(s) of other conversations left out",
+                info["omitted"].append({"member": m.name, "why": f"why.preserve_records_left|{r['total'] - r['kept']}",
                                         "kept": r["kept"]})
             return True
         except SpanError as exc:
-            info["omitted"].append({"member": m.name, "why": f"filter member unreadable ({exc})"})
+            info["omitted"].append({"member": m.name, "why": f"why.preserve_filter_unreadable|{exc}"})
             return False
     try:
         obj = json.loads(m.read_bytes().decode("utf-8", errors="replace"))
     except json.JSONDecodeError as exc:
-        info["omitted"].append({"member": m.name, "why": f"filter member unreadable ({exc})"})
+        info["omitted"].append({"member": m.name, "why": f"why.preserve_filter_unreadable|{exc}"})
         return False
     if isinstance(obj, dict) and str(obj.get(field)) in ext_ids:
         with m.open() as src, sink.open(target, zinfo) as dst:
@@ -328,5 +331,5 @@ def _write_filtered(m: Any, target: str, zinfo: Any, sink: Any, field: str, ext_
             else:
                 copy_stream(src, dst)
         return True
-    info["omitted"].append({"member": m.name, "why": "record of a conversation that is not kept"})
+    info["omitted"].append({"member": m.name, "why": "why.preserve_record_not_kept"})
     return False

@@ -79,6 +79,16 @@ def t(_key: str, **kw: Any) -> str:
         return text
 
 
+def reason(text: Any) -> str:
+    """A machine reason code stored in the data (``why.<key>`` or ``why.<key>|<detail>``) in the current language;
+    any other text (a format rule, a source's own name) is shown as it is."""
+    s = "" if text is None else str(text)
+    if not s.startswith("why."):
+        return s
+    key, _, detail = s.partition("|")
+    return t(key, detail=detail)
+
+
 def label(obj: Any, lang: Optional[str] = None) -> str:
     """``{"pl": …, "en": …}`` → text for the current language (fallback: any)."""
     if isinstance(obj, dict):

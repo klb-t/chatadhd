@@ -16,16 +16,24 @@ log = logging.getLogger(__name__)
 def read_member(member: Member, ctx: ReadContext) -> Iterator[Unit]:
     if member.kind in ("asset", "container"):
         return
-    if not member.format:
+    if member.kind == "unreadable" or not member.format:
         u = Unit(kind="unknown", title=member.name or member.archive.label)
-        note_unknown(u, "", {"member": member.name, "size": member.size, "sniff": member.sniff_how,
-                             "head": member.head(120).decode("utf-8", errors="replace")}, native="unrecognised member")
+        head = ""
+        if member.kind != "unreadable":
+            try:
+                head = member.head(120).decode("utf-8", errors="replace")
+            except (OSError, EOFError, ValueError, RuntimeError):  # zipfile.BadZipFile and zlib.error are among these
+                log.debug("member head unreadable: %s", member.name, exc_info=True)
+        note_unknown(u, "", {"member": member.name, "size": member.size, "sniff": member.sniff_how, "head": head},
+                     native="unreadable member" if member.kind == "unreadable" else "unrecognised member")
         fmt = {"id": "unknown", "service": None, "product": None}
         yield finalize_unit(u, member, fmt, ctx, {"member": member.name})
         return
     fmt = ctx.catalog.get(member.format)
-    reader = get_reader(fmt["reader"])
     try:
+        # inside the try: an unknown reader (e.g. an overlay format naming a reader that does not exist) becomes an
+        # 'unknown' unit with the reason, not the end of the whole run
+        reader = get_reader(fmt["reader"], ctx)
         for unit in reader.iter_units(member, fmt, ctx):
             yield unit
     except Exception as exc:  # noqa: BLE001 - reported as a unit, never silent

@@ -93,7 +93,7 @@ class PreserveTest(ExtractTest):
         used = {a.member for u in chosen for a in u.attachments if a.status == "resolved"}
         self.assertTrue(used and used <= names, "every used attachment is in the package, in the source layout")
         self.assertNotIn("file-Orphan9-old.png", names, "an attachment no kept conversation uses stays out")
-        self.assertIn({"member": "file-Orphan9-old.png", "why": "attachment not used by a kept conversation"}, info["omitted"])
+        self.assertIn({"member": "file-Orphan9-old.png", "why": "why.preserve_att_unused"}, info["omitted"])
         missing = {m["ref"] for m in info["missing"]}
         self.assertTrue({"file-NoSuchId0", "file-Plot0001"} <= missing, "missing attachments are flagged, not dropped")
         self.assertNotIn("chat.html", names, "a member holding every conversation is left out with a reason")

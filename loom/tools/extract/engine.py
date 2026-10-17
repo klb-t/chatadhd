@@ -168,6 +168,7 @@ class Engine:
         if self.ctx is None:
             self.ctx = ReadContext(self.ds, self.catalog)
             self.ctx.progress = lambda d: self.emit("progress", **d)
+        self.ctx.allow_user_code = bool(self.settings.get("allow_user_code"))
         return self.ctx
 
     def ensure_units(self) -> None:

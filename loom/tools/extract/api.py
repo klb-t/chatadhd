@@ -906,11 +906,19 @@ class Session:
 
 # ───────────────────────────── helpers ─────────────────────────────
 def error_body(exc: BaseException) -> dict[str, Any]:
+    """The answer to a failed call: a sentence in the face's language (the engine's own detail inside it, kept
+    as ``detail`` too), and a stable ``code``."""
+    from .edits import EditError
     from .flows import ModelRefused
+    from .select_expr import ExprError
     if isinstance(exc, ApiError):
         return {"error": str(exc), "code": exc.code}
     if isinstance(exc, ModelRefused):
-        return {"error": exc.reason, "code": "refused", "estimate": jsonable(exc.estimate)}
+        return {"error": t("error.refused", detail=exc.reason), "detail": exc.reason, "code": "refused", "estimate": jsonable(exc.estimate)}
+    if isinstance(exc, ExprError):
+        return {"error": t("error.expr", detail=str(exc)), "detail": str(exc), "code": type(exc).__name__}
+    if isinstance(exc, EditError):
+        return {"error": t("error.edit", detail=str(exc)), "detail": str(exc), "code": type(exc).__name__}
     return {"error": f"{exc}", "code": type(exc).__name__}
 
 

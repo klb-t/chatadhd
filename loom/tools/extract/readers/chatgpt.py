@@ -23,6 +23,17 @@ def pointer_id(value: Any) -> Optional[str]:
     return m.group(1) if m else value.rsplit("/", 1)[-1] or None
 
 
+def _wrapper_in_head(member: Member, wrappers: list[str], head_bytes: int = 1 << 16) -> Optional[str]:
+    """The wrapper key whose array opens in the member's head (``{"conversations": [``), else None."""
+    head = member.head(head_bytes).decode("utf-8", errors="replace").lstrip()
+    if not head.startswith("{"):
+        return None
+    for w in wrappers:
+        if re.match(r'\{\s*"' + re.escape(w) + r'"\s*:\s*\[', head):
+            return w
+    return None
+
+
 class ChatGPTReader(Reader):
     id = "chatgpt"
 
@@ -36,8 +47,16 @@ class ChatGPTReader(Reader):
                 for i, conv in enumerate(iter_json_array(fh)):
                     yield self._conversation(conv, json_pointer(i), member, fmt, ctx)
         else:
-            obj = load_member_json(member)
             wrappers = fmt.get("wrappers") or []
+            w = _wrapper_in_head(member, wrappers)
+            if w is not None:
+                # the {"conversations": [...]} wrapper (sharded 2026 exports) streams like the bare array:
+                # memory grows with one conversation, not with the member
+                with member.open() as fh:
+                    for i, conv in enumerate(iter_json_array(fh, wrapper=w)):
+                        yield self._conversation(conv, json_pointer(w, i), member, fmt, ctx)
+                return
+            obj = load_member_json(member)
             for w in wrappers:
                 if isinstance(obj, dict) and isinstance(obj.get(w), list):
                     for i, conv in enumerate(obj[w]):

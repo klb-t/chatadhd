@@ -32,6 +32,7 @@ import os
 import re
 import tempfile
 import zipfile
+import zlib
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Iterator, Optional
@@ -362,7 +363,7 @@ def sniff_member(member: Member, catalog: FormatCatalog, *, container_names: Opt
     """(format id, rule description) for a single member by its content."""
     probe = _Probe(member, catalog.head_bytes, catalog.json_whole_limit)
     if not probe.head:
-        return None, "empty"
+        return None, "why.empty"
     for f in catalog.ordered:
         for rule in (f.get("sniff") or {}).get("any_of", []):
             if any(k in rule for k in ("zip_member", "zip_member_glob", "zip_member_json", "dir_glob")):
@@ -374,7 +375,7 @@ def sniff_member(member: Member, catalog: FormatCatalog, *, container_names: Opt
                 raise
             except Exception:
                 log.debug("sniff rule failed: %s on %s", rule, member.name, exc_info=True)
-    return None, "no rule matched"
+    return None, "why.no_rule"
 
 
 def sniff_container(archive: Archive, catalog: FormatCatalog) -> tuple[Optional[str], str]:
@@ -393,7 +394,7 @@ def sniff_container(archive: Archive, catalog: FormatCatalog) -> tuple[Optional[
                 raise
             except Exception:
                 log.debug("container sniff rule failed: %s", rule, exc_info=True)
-    return None, "no container rule matched"
+    return None, "why.no_container_rule"
 
 
 def _rule_name(rule: dict[str, Any]) -> str:
@@ -440,7 +441,7 @@ def _finish_archive(archive: Archive, catalog: FormatCatalog) -> None:
     archive.format = fmt_id
     fmt = catalog.get(fmt_id) if fmt_id else None
     for m in archive.members:
-        if m.format or m.kind == "container":
+        if m.format or m.kind in ("container", "unreadable"):
             continue
         kind = member_kind(m.name, fmt, catalog)
         if kind == "conversations" and fmt_id:
@@ -450,7 +451,7 @@ def _finish_archive(archive: Archive, catalog: FormatCatalog) -> None:
             m.kind, m.sniff_how = "asset", "assets.extensions"
             continue
         if kind == "unknown":
-            m.kind, m.sniff_how = "unknown", "members:* (not in the provider's table)"
+            m.kind, m.sniff_how = "unknown", "why.members_star"
             continue
         if kind is not None:
             m.format, m.kind, m.sniff_how = fmt_id, kind, f"members:{kind}"
@@ -512,8 +513,16 @@ def _scan_zip(path: Path, catalog: FormatCatalog, *, nested_limit: int = 0, data
         for info in zf.infolist():
             if info.is_dir():
                 continue
-            with zf.open(info) as fh:
-                sha, size = sha256_stream(fh)
+            try:
+                with zf.open(info) as fh:
+                    sha, size = sha256_stream(fh)
+            except (zipfile.BadZipFile, zlib.error, EOFError, OSError, NotImplementedError, RuntimeError) as exc:
+                # one damaged member (CRC, deflate, a partly downloaded export) is reported, the others are read
+                log.warning("unreadable member %s in %s: %s", info.filename, a.label, exc)
+                m = Member(a, info.filename, info.file_size, "", None, depth=depth)
+                m.kind, m.sniff_how = "unreadable", f"why.unreadable|{type(exc).__name__}: {exc}"
+                a.members.append(m)
+                continue
             m = Member(a, info.filename, size, sha, None, depth=depth)
             a.members.append(m)
             if info.filename.lower().endswith(".zip") and (nested_limit == 0 or size <= nested_limit):

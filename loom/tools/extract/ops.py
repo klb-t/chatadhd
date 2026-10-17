@@ -54,7 +54,13 @@ def op_scan(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.units_raw, eng.units, eng.merge_result = [], [], None
     members = sum(len(a.members) for a in eng.archives)
     unknown = sum(1 for a in eng.archives for m in a.members if not m.format and m.kind not in ("asset", "container"))
-    return {"counts": {"archives": len(eng.archives), "members": members, "members_unknown": unknown},
+    unreadable = [(a.label, m.name) for a in eng.archives for m in a.members if m.kind == "unreadable"]
+    if unreadable:  # a damaged member is a warning with its name; the scan goes on with the others
+        from .i18n import t as _t
+        eng.emit("note", text=_t("scan.unreadable", n=len(unreadable),
+                                 members=", ".join(f"{a}:{m}" for a, m in unreadable) if not eng.aggregate else "…"))
+    return {"counts": {"archives": len(eng.archives), "members": members, "members_unknown": unknown,
+                       "members_unreadable": len(unreadable)},
             "archives": [{"label": a.label, "kind": a.kind, "format": a.format, "members": len(a.members), "sha256": a.sha256,
                           "size": a.size, "path": None if eng.aggregate else a.path} for a in eng.archives]}
 

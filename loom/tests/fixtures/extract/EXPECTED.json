@@ -45,6 +45,13 @@
   "to_service": "anthropic",
   "to_title": "Analizator archiwów — ciąg dalszy"
  },
+ "damaged/chatgpt_damaged.zip": {
+  "conversations": 3,
+  "note": "one stored member with a flipped byte (CRC error); the rest reads",
+  "unreadable": [
+   "file-Broken1-uszkodzony.png"
+  ]
+ },
  "duplicate": {
   "duplicates": 4,
   "identities": 4,

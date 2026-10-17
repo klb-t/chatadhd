@@ -34,6 +34,8 @@ class ReadContext:
             self._tmp = tempfile.TemporaryDirectory(prefix="loom_extract_")
             self.tmpdir = self._tmp.name
         self.progress = None  # optional callable(dict)
+        self.allow_user_code = False  # the face's grant (``--kod-uzytkownika``), set by the engine
+        self.user_code_used: list[dict[str, Any]] = []
 
     def stamp(self, value: Any, mtime: Optional[float] = None) -> ts.Stamp:
         return ts.parse(value, assume_zone=self.assume_zone, mtime=mtime)
@@ -181,6 +183,9 @@ def resolve_attachments(unit: Unit, member: Member, fmt: dict[str, Any]) -> None
         if cands:
             chosen = sorted(cands)[0]
             m = archive.member(chosen)
+            if m is not None and m.kind == "unreadable":  # the file is there but damaged: not resolved, said why
+                att.status, att.member = "unreadable", chosen
+                continue
             att.status, att.member = "resolved", chosen
             if m is not None:
                 att.size = att.size if att.size is not None else m.size

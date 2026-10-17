@@ -16,6 +16,7 @@ readers); the tests compare the readers' measurements against it.
 Regenerate: python3 loom/tools/gen_extract_fixtures.py
 """
 import hashlib
+import io
 import json
 import pathlib
 import sys
@@ -231,6 +232,25 @@ def continuation_claude():
     return [("conversations.json", dumps([conv]))]
 
 
+def write_damaged_zip(path, members, broken):
+    """A zip whose member ``broken`` is stored with one flipped byte: reading it fails the CRC check (a partly
+    downloaded or damaged export), every other member is intact."""
+    import zipfile
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        for name, data in members:
+            zi = zipfile.ZipInfo(name, date_time=(2026, 1, 1, 0, 0, 0))
+            zi.compress_type = zipfile.ZIP_STORED if name == broken else zipfile.ZIP_DEFLATED
+            zi.external_attr = 0o644 << 16
+            zf.writestr(zi, data if isinstance(data, bytes) else data.encode("utf-8"))
+    raw = bytearray(buf.getvalue())
+    with zipfile.ZipFile(io.BytesIO(bytes(raw))) as zf:
+        info = zf.getinfo(broken)
+    start = info.header_offset + 30 + len(info.filename.encode("utf-8")) + len(info.extra)
+    raw[start + info.compress_size // 2] ^= 0xFF
+    path.write_bytes(bytes(raw))
+
+
 # ═════════════════════════ assemble + oracle ═════════════════════════
 def sha(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
@@ -272,6 +292,10 @@ def main() -> None:
     dup.mkdir(exist_ok=True)
     (dup / "chatgpt_2025-06-20_copy.zip").write_bytes((ver / "chatgpt_2025-06-20.zip").read_bytes())
 
+    dmg = OUT / "damaged"
+    dmg.mkdir(exist_ok=True)
+    write_damaged_zip(dmg / "chatgpt_damaged.zip", export_a() + [("file-Broken1-uszkodzony.png", PNG)], "file-Broken1-uszkodzony.png")
+
     cont = OUT / "continuation"
     cont.mkdir(exist_ok=True)
     write_zip(cont / "chatgpt_part.zip", continuation_chatgpt())
@@ -309,6 +333,8 @@ def main() -> None:
         "continuation": {"from_title": "Analizator archiwów — rekurencja", "to_title": "Analizator archiwów — ciąg dalszy",
                          "from_service": "openai", "to_service": "anthropic", "gap_minutes_max": 240,
                          "shared_terms_min": 2},
+        "damaged/chatgpt_damaged.zip": {"unreadable": ["file-Broken1-uszkodzony.png"], "conversations": 3,
+                                         "note": "one stored member with a flipped byte (CRC error); the rest reads"},
         "forbidden_in_aggregate": FORBIDDEN,
     }
     (OUT / "EXPECTED.json").write_text(json.dumps(expected, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
