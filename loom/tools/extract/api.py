@@ -83,7 +83,7 @@ class Job:
 _RESTORE = ("sources", "archives", "units_raw", "units", "merge_result", "inventory", "timeline", "timeline_rows", "diff",
             "cascade", "criteria", "unit_decisions", "explain", "clusters", "selection_meta", "expand_result", "package",
             "staged", "cut_info", "handoff_info", "stats", "last_write", "summaries",
-            "cut_params", "cut_tree_hash", "handoff_params", "handoff_tree_hash")
+            "cut_params", "handoff_params")  # the tree hashes are not put back: a cancelled cut is made again by write
 _DEEP = ("selection", "recipe", "decisions")
 
 

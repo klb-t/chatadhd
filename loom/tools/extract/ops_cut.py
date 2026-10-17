@@ -399,6 +399,8 @@ def _aggregate_guard(eng: Any, what: str) -> None:
 @op("cut")
 def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     _aggregate_guard(eng, "cut")
+    # until this cut finishes the stage describes no tree: a cancelled cut leaves write to make it again
+    eng.cut_tree_hash = None
     eng.ensure_units()
     pkg = eng.ensure_package()
     entries = pkg.ordered(p.get("order") or "package")

@@ -184,6 +184,16 @@ class EditsTest(ExtractTest):
         eng.op("undo", {})
         self.assertEqual(c2.unit.leaf_count() if c2 in eng.package.entries else
                          next(e for e in eng.package.entries if e.unit.ext_id == "c2-0000-bbbb").unit.leaf_count(), 1)
+        # by parent (the preset): a parent field names the parent; a message without one hangs on the previous one
+        c2 = next(e for e in eng.package.entries if e.unit.ext_id == "c2-0000-bbbb")
+        ids = [m.id for m in c2.unit.messages]
+        target = c2.unit.messages[3]
+        target.meta["parent"] = ids[0]  # set directly: one message answers the first one
+        r = eng.op("edit.nest", {"where": "conversation[title~/Wyszukiwanie/]"})
+        self.assertEqual(r["result"]["by"], "parent")
+        c2 = next(e for e in eng.package.entries if e.unit.ext_id == "c2-0000-bbbb")
+        self.assertEqual(next(m for m in c2.unit.messages if m.id == target.id).parent, ids[0])
+        self.assertEqual(c2.unit.leaf_count(), 2, "one message hangs on the first: a fork")
         r = eng.op("edit.nest", {"where": "conversation[title~/Migracja/]", "by": "date", "on_forks": "replace"})
         self.assertEqual(r["count"], 1)
         c1 = next(e for e in eng.package.entries if e.unit.ext_id == "c1-0000-aaaa")

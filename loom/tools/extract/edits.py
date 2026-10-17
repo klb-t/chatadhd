@@ -389,7 +389,7 @@ def e_nest(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng: An
             ids = {m.id for m in u.messages}
             prev: Optional[str] = None
             for m in u.messages:
-                it = type("_It", (), {"kind": "message", "message": m, "unit": u})()
+                it = type("_It", (), {"kind": "message", "message": m, "unit": u, "block": None, "attachment": None})()
                 val = get_field(it, field)
                 if isinstance(val, str) and val in ids and val != m.id:
                     parents[m.id] = val
