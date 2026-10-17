@@ -1,0 +1,32 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "anonymise_time",
+ "module": "edits:anonymise_time",
+ "group": "time",
+ "label": {
+  "pl": "Oś względna: najwcześniejszy czas = 1970-01-01, odstępy zachowane",
+  "en": "Relative axis: the earliest time = 1970-01-01, intervals kept"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "origin": {
+   "type": "enum",
+   "values": [
+    "package",
+    "conversation"
+   ],
+   "default": "package"
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} czasów zanonimizowanych",
+  "en": "{count} time(s) anonymised"
+ }
+}

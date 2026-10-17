@@ -1,0 +1,6 @@
+{"schema": "loom.extract.prices/1",
+ "currency": "USD",
+ "as_of": null,
+ "note": {"pl": "Ceny za milion tokenów, z datą i źródłem per model. Celowo puste: cen nie zgadujemy. Uzupełnij w nakładce (<katalog danych>/extract/prices.json) albo przez models.json aplikacji (pole pricing). Brak ceny = koszt „nieznany”, nigdy zero.",
+          "en": "Prices per million tokens, with a date and source per model. Empty on purpose: prices are not guessed. Fill them in the overlay (<data dir>/extract/prices.json) or through the app's models.json (pricing). No price = cost 'unknown', never zero."},
+ "models": {}}

@@ -1,0 +1,43 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "replace_regex",
+ "module": "edits:replace_regex",
+ "group": "values",
+ "label": {
+  "pl": "Zamień regexem w polu",
+  "en": "Regex replace in a field"
+ },
+ "scope": [
+  "conversation",
+  "message",
+  "block",
+  "attachment"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "message"
+  },
+  "field": {
+   "type": "field",
+   "default": "text"
+  },
+  "pattern": {
+   "type": "regex",
+   "required": true
+  },
+  "replacement": {
+   "type": "string",
+   "default": ""
+  },
+  "flags": {
+   "type": "string",
+   "default": ""
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} zmian w polu {field}",
+  "en": "{count} change(s) in field {field}"
+ }
+}

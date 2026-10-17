@@ -1,0 +1,35 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "flatten",
+ "module": "edits:flatten",
+ "group": "structure",
+ "label": {
+  "pl": "Spłaszcz drzewo do listy po ścieżce (current, newest, longest, marked; all_paths = osobna rozmowa na każdą ścieżkę)",
+  "en": "Flatten the tree to a list along a path (current, newest, longest, marked; all_paths = one conversation per path)"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "path": {
+   "type": "enum",
+   "values": [
+    "current",
+    "newest",
+    "longest",
+    "marked",
+    "all_paths"
+   ],
+   "default": "current"
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} rozmów spłaszczonych, wycięto {cut} wiadomości z gałęzi",
+  "en": "{count} conversation(s) flattened, {cut} branch message(s) cut"
+ }
+}

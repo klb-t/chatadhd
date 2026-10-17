@@ -1,0 +1,9 @@
+{
+  "schema": "loom.extract.stopwords/1",
+  "id": "stop_pl",
+  "description": "Extra Polish stop words for term extraction (clusters, continuations). The kernel's lists (loom/data/lexicons/stopwords_base.json, stopwords.json) are loaded first; this only adds.",
+  "extends": ["loom/data/lexicons/stopwords_base.json", "loom/data/lexicons/stopwords.json"],
+  "words": ["czyli", "chyba", "właśnie", "raczej", "jakoś", "proszę", "dzięki", "dziękuję", "okej", "ok", "dobrze", "super",
+            "jeszcze", "potem", "teraz", "zaraz", "dalej", "może", "trzeba", "można", "powinien", "powinna", "wiem", "myślę",
+            "chcę", "chciałbym", "chciałabym", "zrób", "zróbmy", "sprawdź", "napisz", "pokaż", "powiedz"]
+}

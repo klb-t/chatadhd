@@ -1,0 +1,15 @@
+{
+  "schema": "loom.extract.timeline_presets/1",
+  "description": "Sort keys for the global timeline and the tie order. Keys are presets: the user picks one per run; 'activity' puts every message of every conversation on one axis.",
+  "keys": {
+    "created": {"level": "conversation", "field": "created_utc", "label": {"pl": "utworzenie rozmowy", "en": "conversation created"}},
+    "updated": {"level": "conversation", "field": "updated_utc", "label": {"pl": "ostatnia zmiana rozmowy", "en": "conversation updated"}},
+    "first_message": {"level": "conversation", "field": "stats.first_message_utc", "label": {"pl": "pierwsza wiadomość", "en": "first message"}},
+    "last_message": {"level": "conversation", "field": "stats.last_message_utc", "label": {"pl": "ostatnia wiadomość", "en": "last message"}},
+    "activity": {"level": "message", "field": "created_utc", "label": {"pl": "każda wiadomość osobno", "en": "every message"}}
+  },
+  "ties": ["t", "service", "archive", "locator", "index"],
+  "buckets": ["day", "week", "month"],
+  "zone_note": {"pl": "oś liczona zawsze w UTC; 'zone' wpływa tylko na wyświetlanie (source = bez przeliczania)",
+                "en": "the axis is always computed in UTC; 'zone' only affects display (source = untouched)"}
+}

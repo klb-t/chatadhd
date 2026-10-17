@@ -1198,6 +1198,84 @@ the earlier computation; never delete historical runs to downgrade.
   12. Propozycja modelu przy polu = „planowane” w M1. Cofnięcie: gdy powstaną dane `hypothesis.setting_key`, chip staje się żywy bez zmiany UI.
 - Proces: jedna pozycja pracy naraz (agent w worktree → przegląd nastawiony na obalenie → bramka → FF main); zmiana packa = regeneracja osadzonych danych w tym samym commicie.
 
+## P38 — X-Port, plaster A: silnik ekstraktu archiwów (2026-10-16, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 tabela decyzji, §11 stan). Pakiet `loom/tools/extract/`
+(`python3 -m loom.tools.extract`), fixture'y `loom/tests/fixtures/extract/` z `loom/tools/gen_extract_fixtures.py`,
+ctest `tools.extract` (75 testów, bez sieci — strażnik gniazd).
+
+- Decyzje (szczegóły i odwrócenie w tabeli §10 specyfikacji):
+  1. Jeden silnik (`engine.py`) + rejestr operacji jako dane (`data/ops.json`); każda operacja = krok przepisu z pełnymi parametrami i ich pochodzeniem (`params_source`). Cofnięcie: `record_sources: false`.
+  2. Adaptery na `engine/importer.py` (formaty tekstowe) i bezstratne przejście drzew sprawdzane wyrocznią `exports/EXPECTED.json`; różnice udokumentowane: załączniki z części treści (≥), liście (≥). Cofnięcie: `attachments.from_parts: false` w pliku formatu.
+  3. Tryb `--zbiorczo` nie wypuszcza ścieżek, nazw, tytułów, tekstów ani terminów; `sources` w przepisie = `archive-N:sha256`. Cofnięcie: tryb pełny jest presetem.
+  4. Pakiet plastra A z `reproducible_hash` wszystkich wyjść; `roznica` wobec pakietu czyta `units.jsonl`. Cofnięcie: `write.units_snapshot: false`.
+  5. Poziomy z modelem liczone, nie wołane (plaster B: trasa, szacunek, ×10, dziennik). Cofnięcie: —.
+  6. Strefy IANA przez `zoneinfo`; granica końcowa zakresu dat wyłączna; poziom wektorowy bez indeksu pominięty z powodem. Cofnięcie: presety `assume_zone = UTC`; —; —.
+- Nie weszło do plastra A (plaster B/C): `wytnij` i profile (`preserve`, `flat`, …), edycja seryjna, `handoff`, `odtworz manifest.json`, zdanie i plik zadania, komander TUI, `serwuj`, pamięć podręczna i wznawianie, `workers`, `libloom` jako drugi czytnik.
+- Prywatność: wyłącznie fixture'y syntetyczne; test `test_no_real_paths_in_tool_tests_or_fixtures` i test wyjścia zbiorczego.
+
+
+## P38 — X-Port, plaster B: wycięcie, profile, manifest, CLI (2026-10-16, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plaster B”, §11 stan). ctest `tools.extract`: 119 testów
+(obieg przez `libloom` uruchamiany w bramce z `LOOM_LIBRARY`, poza nią pominięty z powodem), bez sieci poza atrapą dostawcy
+na pętli zwrotnej. Bramka: `ctest --preset dev` 239/239 (GATE GREEN); `build/dev` skonfigurowany z `CMAKE_CXX_FLAGS_DEBUG=-O0`
+(bez `-g`) i bez ccache, bo przy pełnych informacjach debugowania zabrakło miejsca na dysku (cofnięcie: ponowna konfiguracja
+presetem `dev` bez tych `-D`).
+
+- Decyzje (szczegóły i odwrócenie w §10):
+  1. `preserve` = bajty źródła ze skanera rozpiętości JSON (`jsonspan.py`); wszystko zaznaczone = identyczny plik; zip z metadanymi członków źródła. Cofnięcie: pominąć `preserve` w `cut.profiles`.
+  2. Załączniki: w `preserve` układ źródła (odwołania ważne bez zmian), w profilach i `handoff/` przepisane na ścieżki względne; tylko użyte; brakujące wymienione. Cofnięcie: `--zalaczniki copy_all|reference_only`.
+  3. Członkowie boczni wg tabeli `preserve` formatu (`keep_members`, `filter_members` po `conversation_id`), reszta pominięta z wpisem. Cofnięcie: `other_members: copy` / glob w `keep_members`.
+  4. Profile przebudowy, redakcja, operacje edycji, gramatyka zdań, ceny — wszystko jako dane (`data/profiles`, `data/redaction`, `data/edits`, `data/grammar`, `data/prices.json` pusty: cen nie zgadujemy). Cofnięcie: nakładka użytkownika.
+  5. Przepis pakietu i przepis w manifeście bez `write` (opisują treść, nie miejsce); `SOURCE_DATE_EPOCH` → identyczne bajty pakietu; `odtworz` porównuje hash i każde wyjście. Cofnięcie: —.
+  6. Model tylko po `--model`, szacunek przed wysyłką, zgoda (`--tak`/pytanie, domyślnie nie), ×10 wobec `usage.jsonl` (`--zgoda-x10`), limity `0` = brak, trasa `provider`; `loom_server` odmówiony z powodem. Cofnięcie: ustawienia `flows.model.*`.
+  7. `handoff.zip` tylko z rozmowami (importer Pythona robiłby „rozmowy” OCR z obrazów); liczniki tego, co zobaczy importer. Cofnięcie: `handoff.zip: false`.
+  8. Kody wyjścia 3/4/5/6; tryb `--zbiorczo` bez list ścieżek wyjść. Cofnięcie: —.
+- Znalezisko (do decyzji S1, nie zmieniane): `engine/importer.py` nie czyta opakowania `{"conversations": [...]}` z drzewami `mapping` (ChatGPT) — ani źródła, ani cięcia.
+- Doszło ponad brief: profil `bundle`, CSV rozmów, karty z pytaniami, `package.mark`/`package.show`, zapisane filtry, nazwy klastrów modelem (`klastry --nazwij`), tekst załączników tekstowych (`--tekst-zalacznikow`), obieg `handoff.zip` przez `libloom`, edycje `move_attachments` i `edit.user` (moduł z nakładki, tylko z `allow_user_code`).
+- Nie weszło (plaster C lub później): komander TUI, `serwuj`, trasa `loom_server`, OCR/ASR obrazów i dźwięku, `state.json` (powtórzenie polecenia = wznowienie z pamięci podręcznej modelu), `workers`.
+- Prywatność: tylko fixture'y syntetyczne; test wyjścia `--zbiorczo` dla `wytnij`; pakiet z redakcją nie zawiera zamaskowanych wartości w żadnym pliku (test).
+
+
+## P38 — X-Port, plaster C: komander i serwowanie (2026-10-16, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Plaster C”, §11 stan). ctest `tools.extract`: 155 testów
+(test curses na pty pominięty z powodem tam, gdzie nie ma curses/pty/terminfo; w bramce uruchomiony, bez pominięć). Bramka: `ctest --preset dev` 246/246, strażnik, skrypty, web build i testy web — GATE GREEN przy `9d11e125`; pierwszy przebieg padł przy kompilacji na braku miejsca na dysku („No space left on device” w `/tmp`), powtórzony z `CCACHE_DISABLE=1` (budowa bez dopisywania do wspólnej pamięci ccache; cofnięcie: zwykły przebieg bramki, gdy jest miejsce). Uruchomienie: `python3 -m loom.tools.extract
+komander ARCHIWUM… [--pakiet KAT] [--klawisze-profil vim] [--kolory mono]`, `… serwuj ARCHIWUM… [--port N]`, `… api '{"call": "list"}'`.
+
+- Decyzje (szczegóły i odwrócenie w §10):
+  1. Jeden dyspozytor `api.Session.call` z rejestrem `data/api.json`; komander, `serwuj` i `api` nie mają własnej logiki; stan zmienia się tylko operacjami `ops.json` (kroki z `by` = twarz). Cofnięcie: wywołanie usuwa się z `api.json`.
+  2. Widoki (`nodes.py`): drzewo albo lista płaska; listy płaskie w jednym porządku czasu dla wszystkich archiwów i usług, remisy stałe. Cofnięcie: nakładka `commander/layout.json`.
+  3. Operacje struktury pakietu są wpisami `oplog` (cofnij/ponów, manifest, raport); kopia niejawna nie. Cofnięcie: `_log` w `ops_cut.py`.
+  4. `open` = świeży silnik; prace w tle z `busy` zamiast czekania, `cancel` przywraca stan, przerwany krok nie wchodzi do przepisu; pytania o koszt domyślnie „nie”. Cofnięcie: `"wait": true`; presety `serve.*`.
+  5. Klawisze: F9 = zapis pakietu (menu pod F2), dodatkowe klawisze i profil `vim` z jawnie zgłoszonym zasłonięciem `d`. Cofnięcie: nakładka `commander/keymap.json`.
+  6. Autozapis po każdym kroku, atomowo; zastany autozapis nigdy nie ginie (`.prev.json` albo pytanie o wznowienie). Cofnięcie: `commander.autosave.every: 0`, `--autozapis off`.
+  7. `export` tnie tylko, gdy trzeba → ten sam przepis daje te same bajty z CLI, komandera i API (test parytetu). Cofnięcie: jawne `profiles`.
+  8. Serwowanie tylko na pętli zwrotnej, token na uruchomienie (plik 600), bez CORS. Cofnięcie: `--adres` (z ostrzeżeniem), `--port`.
+- Znaleziska naprawione przy okazji: rekurencyjne `Unit.branches()` (głębokie sesje agentowe) → iteracyjne; klawisze F w rendererze (test na pty).
+- Doszło ponad brief: makra, schowek, samouczek `--odtworz`, wiersz poleceń `:`, „dlaczego nie”, decyzje włącz/wyklucz z klawiatury, zapisane filtry, czasownik `api` (JSONL), korzenie widoków (zaznaczenie, oś czasu, załączniki, klastry, przepis, inwentarz, różnica, zakładki), kolumny obliczane, profil `mono`.
+- Nie weszło: renderer Warsztatu w `loom/web` (API widoku gotowe), zmiana nazwy katalogu pakietu, akcja czatu aplikacji i port jądra, trasa `loom_server`, OCR/ASR obrazów/dźwięku, `state.json` wznawiania i `workers`.
+- Prywatność: tylko fixture'y syntetyczne; tryb `--zbiorczo` w widokach bez tytułów i treści, podgląd treści odmówiony (test).
+
+## P38 — X-Port, przegląd: 46 potwierdzonych znalezisk (2026-10-17, branch `claude/p38-archive-extract`)
+
+Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Przegląd”, §11 stan 2026-10-17, §6.1 ziarno `block`,
+§8 wiersze 6, 21, 76 dopasowane do presetów). Bramka i ctest `tools.extract` w notatce bramki poniżej.
+
+- Decyzje (szczegóły i odwrócenie w §10):
+  1. Redakcja jest jedna dla pakietu: profil i słownik cięcia + każda `edit.redact` (zasiane maski) na `preserve` i wszystkich plikach bocznych. Cofnięcie: redagować tylko cięciem.
+  2. Wartości wrażliwe przepisu (słownik, terminy redakcji, każdy literał, który redakcja by zamaskowała) = odwołania `sha256`; wartości w `<katalog stanu>/secrets.json` (600) poza pakietem; bez nich przebieg odmawia; manifest maskowany. Cofnięcie: `redaction.secret_store: false` (wtedy tylko `--slownik-plik`).
+  3. Zgoda należy do twarzy (flagi, odpowiedź, jawne „tak” w API); przepis/manifest/żądanie jej nie dają; dostawca nazwany przez dane → pytanie z hostem; kod użytkownika tylko z `--kod-uzytkownika`. Cofnięcie: flagi twarzy.
+  4. `odtworz` = tylko z pamięci podręcznej oryginału; ×10 przy nieznanej cenie liczy tokeny/wywołania. Cofnięcie: `--model --tak`; `guard.ratio: 0`.
+  5. Wektory offline domyślnie, pobranie modelu tylko z `vectors.allow_download` i „tak”. Cofnięcie: preset.
+  6. `--zbiorczo` odmawia `cut`/`handoff`. Cofnięcie: `write.aggregate_content: allow`.
+  7. `nest` po polu/co N/po dacie z odmową na rozwidleniach; aliasy pól wyjść; `copy_used` = tylko renderowane; zapis odtwarza nieaktualne cięcie. Cofnięcie: `on_forks`, brak aliasów, `copy_all`, jawne `cut`.
+  8. Presety zostają (`edits.preview_sample: 0`, kontynuacja 240 min / 2 terminy), spec dopasowana. Cofnięcie: presety w nakładce.
+- Nie weszło: jednostki w pamięci w całości (indeks + ponowne czytanie niezaznaczonych), nazwy członków źródła w `preserve` przy redakcji, nazwa katalogu archiwum w `attachments/`.
+- Prywatność: tylko fixture'y syntetyczne (nowy `damaged/chatgpt_damaged.zip` z generatora); test `--zbiorczo` czyta każdy plik pakietu, także `manifest.json`.
+- Bramka: `ctest --preset dev` 246/246 (w tym `tools.extract`, 197 testów, 1 pominięty z powodem tam, gdzie brak curses/pty), strażnik CTest 245 + 1 jawnie niewykonany, skrypty, web build i testy web — GATE GREEN przy `a42cee4a` (drugi przebieg na końcowym HEAD; pierwszy, przy `ecd8ea02`, też zielony); zrzuty ekranu e2e przywrócone po bramce.
+
 ### S1 / M1-D0 (dane) — ustawienia po ludzku: `groups`, `human` per pole, 16 nowych pól, `profile_values` (2026-10-16, branch `claude/m1-d0`)
 - Stan: `loom/data/runtime/settings_fields.pack` rev. 2: 102 pola (86 + 4 z kluczy czytanych przez kod: `chat_context_order`, `language`, `model_capabilities`, `provider_manifests` + 12 powłoki/M1: `navigator_layout`, `perspective_composition`, `navigator_children_limit`, `composer_context_strip`, `receipt_link`, `topbar_model_line`, `onboarding_card`, `android_back_exit_confirm`, `secrets_in_chat`, `profile_detail_level`, `context_receipt_store`, `context_receipt_max_bytes`), każde z `human {label, why, effect (pl+en), levels, group, subgroup?, role?, flows[], technical_only?}`; 8 grup (`ty, rozmowa, modele, kontekst, interfejs, prywatnosc, koszty, silnik`) z podgrupami; `profile_values` (5); `graph_views.pack` rodzaj `settings_groups` (źródło `settings_fields` `/groups`); `runtime_profiles_embedded.inc` zregenerowany (`--check` czysty). Test złoty, doctesty (grupa + `label.pl` na każdym polu, suma grup == liczba pól) i test hash `.inc` = druga połowa M1-D0 (następny agent); golden `settings_fields.json` odświeżony w połowie kodowej (commit `08c2267c`, sekcja niżej) i znów w przeglądzie M1-D0 (sekcja „M1-D0 (przegląd)”).
 - Decyzje:

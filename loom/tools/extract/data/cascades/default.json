@@ -1,0 +1,10 @@
+{"schema": "loom.extract.cascade/1", "id": "default",
+ "label": {"pl": "Domyślna: maski → leksykalny → wektory; model obecny, wyłączony", "en": "Default: masks → lexical → vectors; model present, disabled"},
+ "levels": [
+   {"id": "L0", "flow": "masks",          "on": "all",       "decides": ["exclude"]},
+   {"id": "L1", "flow": "lexical",        "on": "passed",    "decides": ["include", "exclude", "ambiguous"]},
+   {"id": "L2", "flow": "vectors",        "on": "passed",    "decides": ["include", "exclude", "ambiguous"]},
+   {"id": "L3", "flow": "cheap_classify", "on": "ambiguous", "enabled": false},
+   {"id": "L4", "flow": "strong_judge",   "on": "ambiguous", "enabled": false}],
+ "combine": "weighted_max", "bands": {"include": 0.75, "exclude": 0.25},
+ "manual": "wins", "unresolved": "report", "shadow": {"lexical_vs_vectors": true}}

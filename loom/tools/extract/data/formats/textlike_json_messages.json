@@ -1,0 +1,19 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "textlike.json_messages",
+  "vendor": null, "product": null, "service": "file",
+  "label": {"pl": "JSON z listą wiadomości (role/content; OpenAI API; przez engine.importer)", "en": "JSON with a message list (role/content; OpenAI API; via engine.importer)"},
+  "priority": 700,
+  "containers": ["json"],
+  "sniff": {"any_of": [{"json_object_keys_any": ["messages", "items", "data"]},
+                       {"json_wrapper_first_keys_any": {"wrapper": "conversations", "keys": ["messages", "title"]}},
+                       {"json_array_first_keys_any": ["role", "content", "messages", "chat_messages"]},
+                       {"json_array_first_keys_all": ["title", "messages"]}]},
+  "reader": "textlike", "importer_method": "import_json",
+  "roles": {"user": "user", "assistant": "assistant"},
+  "blocks": {"text": "text"},
+  "members": {"*": "unknown"},
+  "preserve": {"unit": "file", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["identyfikatory i czasy wiadomości (chyba że w obiekcie)", "gałęzie", "narzędzia", "rozumowanie"],
+                   "en": ["message ids and times (unless in the object)", "branches", "tools", "reasoning"]}
+}

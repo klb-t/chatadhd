@@ -1,0 +1,1 @@
+{"messages": [{"role": "user", "content": "Epoka", "created": 1700000000}, {"role": "assistant", "content": "ISO ze strefą", "created": "2026-05-05T10:00:00+02:00"}, {"role": "user", "content": "ISO bez strefy", "created": "2026-05-05T10:30:00"}, {"role": "assistant", "content": "Bez czasu"}]}

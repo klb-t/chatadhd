@@ -1,0 +1,19 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "loom.graph_packet",
+  "vendor": "loom", "product": "chatadhd", "service": "loom",
+  "label": {"pl": "Nasz pakiet grafu (loom.graph_packet/1)", "en": "Our graph packet (loom.graph_packet/1)"},
+  "priority": 5,
+  "containers": ["json"],
+  "sniff": {"any_of": [
+    {"json_path_equals": {"path": "schema", "value": "loom.graph_packet/1"}}
+  ]},
+  "reader": "loom_graph",
+  "unit_kind": "graph",
+  "collections": ["definitions", "entities", "claims", "sources"],
+  "claim": {"id": "id", "text": ["text", "statement", "claim"], "subject": "subject", "created": {"path": "known_at", "type": "iso"}},
+  "members": {"*": "unknown"},
+  "preserve": {"unit": "packet", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["rozmowy (pakiet zawiera twierdzenia i obserwacje, nie wiadomości)"],
+                   "en": ["conversations (the packet holds claims and observations, not messages)"]}
+}

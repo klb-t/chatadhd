@@ -1,0 +1,185 @@
+{
+ "claude_code/projects/-home-user-proj": {
+  "format": "anthropic.claude_code.session",
+  "kind": "session",
+  "sess-0001": {
+   "assistant": 3,
+   "compacted": 1,
+   "created_src_zone": "+02:00",
+   "created_utc": "2026-10-10T08:00:00Z",
+   "forks": 1,
+   "internal_lines": {
+    "file-history-snapshot": 1,
+    "queue-operation": 1
+   },
+   "leaves": 2,
+   "messages": 9,
+   "sidechain": 1,
+   "summaries": 1,
+   "system": 1,
+   "system_blocks": 1,
+   "text": 6,
+   "thinking": 1,
+   "tool_mentions": {
+    "Edit": 2,
+    "Read": 2
+   },
+   "tool_mentions_note": "tool_use + its bound tool_result",
+   "tool_result": 2,
+   "tool_use": 2,
+   "unknown_entries": 2,
+   "user": 5
+  },
+  "sess-0002": {
+   "forks": 0,
+   "messages": 2,
+   "tool_use": 0
+  },
+  "units": 2
+ },
+ "continuation": {
+  "from_service": "openai",
+  "from_title": "Analizator archiwów — rekurencja",
+  "gap_minutes_max": 240,
+  "shared_terms_min": 2,
+  "to_service": "anthropic",
+  "to_title": "Analizator archiwów — ciąg dalszy"
+ },
+ "damaged/chatgpt_damaged.zip": {
+  "conversations": 3,
+  "note": "one stored member with a flipped byte (CRC error); the rest reads",
+  "unreadable": [
+   "file-Broken1-uszkodzony.png"
+  ]
+ },
+ "duplicate": {
+  "duplicates": 4,
+  "identities": 4,
+  "note": "3 conversations + account",
+  "with": "versions/chatgpt_2025-06-20.zip"
+ },
+ "forbidden_in_aggregate": [
+  "Naprawa importera",
+  "pamięć hierarchiczna",
+  "Grok o ChatADHD",
+  "Eksport Loom",
+  "Analizator archiwów",
+  "schemat.png",
+  "brak.pdf",
+  "Migracja pamięci",
+  "Rekurencja po katalogach"
+ ],
+ "gemini/MyActivity.html": {
+  "conversations": 1,
+  "created_utc": "2026-03-02T10:00:00Z",
+  "format": "google.gemini.takeout",
+  "messages": 4
+ },
+ "gemini/takeout.zip": {
+  "attachments": 1,
+  "attachments_missing": 1,
+  "conversations": 2,
+  "created_utc_first": "2026-03-01T09:00:00.123000Z",
+  "format": "google.gemini.takeout",
+  "grouping_inferred": true,
+  "hypothesis": true,
+  "messages": 8,
+  "unknown_entries": 1
+ },
+ "grok/grok_com.json": {
+  "conversations": 2,
+  "forks": 1,
+  "format": "xai.grok.export",
+  "messages": 5,
+  "models": {
+   "grok-3": 3
+  }
+ },
+ "grok/x_archive.zip": {
+  "conversations": 2,
+  "format": "xai.grok.export",
+  "members_unknown": 1,
+  "messages": 3,
+  "units": 3
+ },
+ "mixed_dir": {
+  "api_messages_times": [
+   {
+    "how": "epoch",
+    "utc": "2023-11-14T22:13:20Z"
+   },
+   {
+    "how": "iso",
+    "utc": "2026-05-05T08:00:00Z"
+   },
+   {
+    "how": "iso_nozone",
+    "utc": "2026-05-05T10:30:00Z"
+   },
+   {
+    "how": "conversation",
+    "utc": null
+   }
+  ],
+  "conversations": 4,
+  "formats": {
+   "api_messages.json": "textlike.json_messages",
+   "chat.txt": "textlike.text",
+   "log.jsonl": "textlike.jsonl",
+   "notes.md": "textlike.markdown",
+   "unknown.bin": null
+  },
+  "members": 5,
+  "members_unknown": 1,
+  "messages": 12
+ },
+ "ours/conversation.json": {
+  "attachments": 1,
+  "blocks": {
+   "text": 2,
+   "thinking": 1,
+   "tool_use": 1
+  },
+  "conversations": 1,
+  "format": "loom.export",
+  "messages": 2,
+  "service": "openai"
+ },
+ "ours/packet.json": {
+  "format": "loom.graph_packet",
+  "kind": "graph",
+  "messages": 3,
+  "units": 1,
+  "unknown_entries": 1
+ },
+ "versions": {
+  "attachments_new": {
+   "missing": 1,
+   "referenced": 2,
+   "resolved": 1
+  },
+  "diff": {
+   "changed": 1,
+   "messages_added": 2,
+   "messages_changed": 0,
+   "messages_removed": 0,
+   "new": 1,
+   "new_attachments": {
+    "c2": 1
+   },
+   "removed": 1,
+   "title_changed": [
+    "c2"
+   ],
+   "unchanged": 1
+  },
+  "merge_both": {
+   "duplicates": 2,
+   "identities": 5,
+   "note": "4 conversations + 1 account unit (user.json in both)",
+   "versions": 1
+  },
+  "new": "chatgpt_2025-10-01.zip",
+  "old": "chatgpt_2025-06-20.zip"
+ }
+}

@@ -1,0 +1,9 @@
+{"schema": "loom.extract.flow/1", "id": "name_clusters", "kind": "model", "class": "cheap",
+ "label": {"pl": "Nazwy klastrów tematów (model tylko nazywa; klastry liczone lokalnie)", "en": "Topic cluster names (the model only names; clusters are computed locally)"},
+ "input": {"grain": "cluster", "fields": ["terms", "titles"]},
+ "prompt": {"system": {"pl": "Nadajesz krótką nazwę (2–5 słów) grupie rozmów na podstawie jej słów kluczowych i tytułów. Odpowiedz wyłącznie JSON: {\"name\": \"…\", \"description\": \"…\"}.",
+                       "en": "Give a short name (2–5 words) to a group of conversations from its key terms and titles. Answer with JSON only: {\"name\": \"…\", \"description\": \"…\"}."},
+            "user": {"pl": "Słowa: {terms}\nTytuły: {titles}", "en": "Terms: {terms}\nTitles: {titles}"}},
+ "output": {"schema": "name"},
+ "model": {"route": "inherit", "class": "cheap", "parameters": {"temperature": 0, "max_tokens": 120}},
+ "cache": true, "enabled": false}

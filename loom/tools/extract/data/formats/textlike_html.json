@@ -1,0 +1,16 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "textlike.html",
+  "vendor": null, "product": null, "service": "file",
+  "label": {"pl": "Strona HTML z rozmową (przez engine.importer)", "en": "HTML page with a chat (via engine.importer)"},
+  "priority": 800,
+  "containers": ["html"],
+  "sniff": {"any_of": [{"text_regex": "(?is)^\\s*(<!doctype\\s+html|<html)"}, {"html_contains": "<body"}]},
+  "reader": "textlike", "importer_method": "import_html",
+  "roles": {"user": "user", "assistant": "assistant"},
+  "blocks": {"text": "text"},
+  "members": {"*": "unknown"},
+  "preserve": {"unit": "file", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["identyfikatory wiadomości (nadawane kolejno)", "czasy wiadomości (z pliku: mtime)", "gałęzie", "narzędzia", "rozumowanie", "załączniki"],
+                   "en": ["message ids (assigned sequentially)", "message times (file mtime)", "branches", "tools", "reasoning", "attachments"]}
+}

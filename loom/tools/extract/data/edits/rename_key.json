@@ -1,0 +1,39 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "rename_key",
+ "module": "edits:rename_key",
+ "group": "keys",
+ "label": {
+  "pl": "Zmień nazwę klucza w polu słownikowym (meta, flags, input, extra, account) albo — z in: \"\" — nazwę pola w wyjściach (np. text → content)",
+  "en": "Rename a key inside a dict field (meta, flags, input, extra, account) or — with in: \"\" — a field's name in the outputs (e.g. text → content)"
+ },
+ "scope": [
+  "conversation",
+  "message",
+  "block"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "message"
+  },
+  "in": {
+   "type": "string",
+   "default": "meta",
+   "help": "\"\" = the output name of a model field (alias applied by every renderer)"
+  },
+  "from": {
+   "type": "string",
+   "required": true
+  },
+  "to": {
+   "type": "string",
+   "required": true
+  }
+ },
+ "invertible": "inverse_rename",
+ "preview_lines": {
+  "pl": "{count} × klucz {from} → {to}",
+  "en": "{count} × key {from} → {to}"
+ }
+}

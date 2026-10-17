@@ -1,0 +1,49 @@
+{
+  "schema": "loom.extract.select_fields/1",
+  "description": "Fields of the selection language per node kind (type decides the comparison: text = folded contains; enum/list = membership; date = period or range; number = equality/comparison/range; bool = true/false). Columns of the commander come from the same list.",
+  "fields": {
+    "conversation": {
+      "uid": {"type": "id"}, "ext_id": {"type": "id"}, "title": {"type": "text"}, "text": {"type": "text"},
+      "created": {"type": "date"}, "updated": {"type": "date"}, "first_message": {"type": "date"}, "last_message": {"type": "date"},
+      "service": {"type": "enum"}, "account": {"type": "enum"}, "source": {"type": "enum"}, "format": {"type": "enum"}, "kind": {"type": "enum"},
+      "lang": {"type": "list"}, "model": {"type": "list"}, "tool": {"type": "list"}, "role": {"type": "list"},
+      "messages": {"type": "number"}, "len": {"type": "number"}, "words": {"type": "number"}, "depth": {"type": "number"},
+      "forks": {"type": "number"}, "branches": {"type": "number"}, "attachments": {"type": "number"}, "thinking_chars": {"type": "number"},
+      "tokens": {"type": "number"}, "versions": {"type": "number"}, "unknown": {"type": "number"},
+      "band": {"type": "enum"}, "cluster": {"type": "list"}, "tag": {"type": "list"}, "label": {"type": "list"}, "score": {"type": "number"}
+    },
+    "message": {
+      "uid": {"type": "id"}, "id": {"type": "id"}, "role": {"type": "enum"}, "text": {"type": "text"}, "title": {"type": "text"},
+      "created": {"type": "date"}, "model": {"type": "enum"}, "author": {"type": "text"}, "branch": {"type": "enum"},
+      "tool": {"type": "list"}, "kind": {"type": "list"}, "service": {"type": "enum"}, "source": {"type": "enum"},
+      "len": {"type": "number"}, "words": {"type": "number"}, "index": {"type": "number"}, "attachments": {"type": "number"},
+      "on_current_path": {"type": "bool"}, "lang": {"type": "list"}, "band": {"type": "enum"}, "tag": {"type": "list"}, "label": {"type": "list"}
+    },
+    "block": {
+      "uid": {"type": "id"}, "kind": {"type": "enum"}, "name": {"type": "text"}, "text": {"type": "text"}, "native": {"type": "enum"},
+      "ref": {"type": "id"}, "mime": {"type": "enum"}, "len": {"type": "number"}, "words": {"type": "number"}, "role": {"type": "enum"},
+      "service": {"type": "enum"}, "created": {"type": "date"}
+    },
+    "attachment": {
+      "uid": {"type": "id"}, "ref": {"type": "id"}, "name": {"type": "text"}, "mime": {"type": "enum"}, "size": {"type": "number"},
+      "status": {"type": "enum"}, "service": {"type": "enum"}, "title": {"type": "text"}, "created": {"type": "date"}
+    }
+  },
+  "has": ["attachments", "branches", "thinking", "tools", "citations", "unknown", "text", "versions", "duplicates", "errors", "code", "context", "system"],
+  "is": ["agentic", "sidechain", "compacted", "inferred", "duplicate", "continuation", "deadend", "current_path", "version", "hypothesis", "unreachable"],
+  "count": ["messages", "branches", "forks", "attachments", "tools", "text", "thinking", "tool_use", "tool_result", "code", "execution_output",
+            "attachment", "citation", "search_result", "context", "system", "error", "unknown", "user", "assistant", "tool", "versions"],
+  "patterns": {
+    "agentic": {"expr": "count(tool_use) >= 1 OR role:tool", "label": {"pl": "agentowe (≥1 wywołanie narzędzia lub rola tool)", "en": "agentic (≥1 tool call or role tool)"}},
+    "heavy_tools": {"expr": "count(tool_use) >= 2", "label": {"pl": "≥2 wywołania narzędzi", "en": "≥2 tool calls"}},
+    "deadend": {"expr": "is:deadend", "label": {"pl": "gałąź kończąca się wiadomością użytkownika lub błędem", "en": "branch ending with a user message or an error"}},
+    "edited_branch": {"expr": "forks > 0", "label": {"pl": "z rozwidleniami (edycje/regeneracje)", "en": "with forks (edits/regenerations)"}},
+    "long_thinking": {"expr": "count(thinking) >= 1 AND thinking_chars >= 200", "label": {"pl": "z dłuższym rozumowaniem", "en": "with longer reasoning"}},
+    "no_text": {"expr": "has:thinking AND NOT has:text", "label": {"pl": "rozumowanie bez tekstu", "en": "thinking without text"}},
+    "missing_attachments": {"expr": "attachments_missing > 0", "label": {"pl": "z brakującymi załącznikami", "en": "with missing attachments"}},
+    "multi_turn": {"expr": "count(messages) >= 10", "label": {"pl": "≥10 wiadomości", "en": "≥10 messages"}},
+    "cross_service": {"expr": "is:continuation", "label": {"pl": "kontynuacja między usługami", "en": "cross-service continuation"}},
+    "with_versions": {"expr": "has:versions", "label": {"pl": "z wersjami z innych eksportów", "en": "with versions from other exports"}},
+    "inferred_time": {"expr": "is:inferred", "label": {"pl": "czas wnioskowany (brak strefy/czasu w źródle)", "en": "inferred time (no zone/time in the source)"}}
+  }
+}

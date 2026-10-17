@@ -1,0 +1,7 @@
+{"schema": "loom.extract.cascade/1", "id": "vectors_only",
+ "label": {"pl": "Tylko maski i kanał wektorowy", "en": "Masks and the vector channel only"},
+ "levels": [
+   {"id": "L0", "flow": "masks",   "on": "all",    "decides": ["exclude"]},
+   {"id": "L2", "flow": "vectors", "on": "passed", "decides": ["include", "exclude", "ambiguous"]}],
+ "combine": "weighted_max", "bands": {"include": 0.75, "exclude": 0.25},
+ "manual": "wins", "unresolved": "report", "shadow": {"lexical_vs_vectors": false}}

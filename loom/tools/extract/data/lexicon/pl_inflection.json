@@ -1,0 +1,19 @@
+{
+  "schema": "loom.extract.lexicon/1",
+  "id": "pl_inflection",
+  "description": "Light Polish/English stemmer and diacritic folding for keyword matching. The tables are the kernel's (loom/data/lexicons/stemming.json, kb::Normalizer) — reused, not copied; this file only adds entries. Forms are shown in 'why it matched'.",
+  "extends": "loom/data/lexicons/stemming.json",
+  "extra_fold": {},
+  "extra_exceptions": {
+    "chatadhd": "chatadhd", "loom": "loom", "loomie": "loom", "loomem": "loom", "loomowi": "loom",
+    "importer": "importer", "importera": "importer", "importerze": "importer", "importerem": "importer",
+    "archiwum": "archiw", "archiwa": "archiw", "archiwów": "archiw", "archiwach": "archiw", "archiwami": "archiw",
+    "analizator": "analizator", "analizatora": "analizator", "analizatorem": "analizator", "analizatorze": "analizator",
+    "rekurencja": "rekurencj", "rekurencji": "rekurencj", "rekurencją": "rekurencj",
+    "agent": "agent", "agenta": "agent", "agentem": "agent", "agencie": "agent", "agenci": "agent", "agentów": "agent"
+  },
+  "extra_suffixes": [],
+  "multiword_join": " ",
+ "short_terms": {"enabled": true, "strip_final": "aeiouyąę", "ending_max": 4, "min_prefix": 2, "skip_lang": ["en"],
+                 "note": "terms shorter than the stemmer's min_token (baza, Anna) also match as a prefix with a short ending (bazy, bazie, Annę), except in text recognised as English"}
+}

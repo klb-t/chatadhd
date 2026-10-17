@@ -1,0 +1,8 @@
+{"schema": "loom.extract.profile/1", "id": "text", "kind": "restructure",
+ "label": {"pl": "Tekst: Markdown czytelny dla człowieka, jeden plik na rozmowę + spis, załączniki jako linki względne", "en": "Text: human-readable Markdown, one file per conversation + index, attachments as relative links"},
+ "layout": "conversation>message",
+ "branches": {"keep": "current", "alternatives": "note", "note_text": {"pl": "wycięto {n} gałęzi ({m} wiadomości) w {k} miejscach rozwidlenia", "en": "{n} branch(es) cut ({m} messages) at {k} fork point(s)"}},
+ "blocks": {"text": "keep", "code": "keep", "thinking": "keep", "tool_use": "keep", "tool_result": "keep", "execution_output": "keep", "attachment": "keep", "citation": "note", "search_result": "note", "unknown": "note", "*": "note"},
+ "timestamps": {"zone": "source", "format": "iso8601"},
+ "outputs": [{"kind": "markdown", "path": "text/{conversation.key}.md"}, {"kind": "markdown_index", "path": "text/INDEX.md"}],
+ "sort": "package"}

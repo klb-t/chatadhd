@@ -1,0 +1,35 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "redact",
+ "module": "edits:redact",
+ "group": "values",
+ "label": {
+  "pl": "Redakcja (maski i słownik) jako edycja — nieodwracalna, z raportem",
+  "en": "Redaction (masks and dictionary) as an edit — irreversible, with a report"
+ },
+ "scope": [
+  "conversation",
+  "message",
+  "block"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "profile": {
+   "type": "string",
+   "default": "personal"
+  },
+  "terms": {
+   "type": "list",
+   "default": [],
+   "secret": true
+  }
+ },
+ "invertible": "none",
+ "preview_lines": {
+  "pl": "zamaskowano {count} wystąpień",
+  "en": "{count} occurrence(s) masked"
+ }
+}

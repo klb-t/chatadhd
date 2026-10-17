@@ -1,0 +1,30 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "delete_field",
+ "module": "edits:delete_field",
+ "group": "keys",
+ "label": {
+  "pl": "Usuń pole",
+  "en": "Delete a field"
+ },
+ "scope": [
+  "conversation",
+  "message",
+  "block"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "message"
+  },
+  "field": {
+   "type": "field",
+   "required": true
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} × usunięto {field}",
+  "en": "{count} × deleted {field}"
+ }
+}

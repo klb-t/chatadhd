@@ -1,0 +1,21 @@
+{
+  "schema": "loom.extract.langdetect/1",
+  "description": "Function-word profiles for a cheap, local language share estimate (per message, weighted by characters). Scripts decide first (cyrillic → uk/ru by letters), then word hits. Measured, not guessed: a text below min_chars or without hits is 'und'.",
+  "min_hits": 2,
+  "scripts": {
+    "cyrillic": {"range": ["0400", "04FF"], "uk_letters": "їєіґ", "ru_letters": "ыэъё"}
+  },
+  "profiles": {
+    "pl": ["i", "w", "nie", "się", "na", "z", "to", "jest", "do", "że", "a", "o", "jak", "ale", "co", "tak", "czy", "po", "za", "od", "tego", "jego", "przez", "dla", "być", "już", "lub", "oraz", "który", "która", "które", "mnie", "też", "bardzo", "można", "tylko", "jeszcze", "żeby", "właśnie", "kiedy"],
+    "en": ["the", "and", "of", "to", "a", "in", "is", "that", "it", "for", "with", "as", "on", "this", "be", "are", "or", "was", "by", "an", "not", "from", "at", "which", "have", "you", "can", "will", "would", "should", "about", "there", "their", "what", "when", "also", "but", "if", "they", "we"],
+    "de": ["und", "der", "die", "das", "ist", "nicht", "ich", "zu", "mit", "auf", "ein", "eine", "sich", "den", "auch", "es", "von", "für", "wie", "im", "dem", "oder", "aber", "wenn", "noch", "nur", "werden", "kann", "sind", "einen"],
+    "fr": ["le", "la", "les", "et", "de", "des", "un", "une", "est", "que", "qui", "dans", "pour", "pas", "ce", "sur", "avec", "vous", "nous", "il", "elle", "sont", "mais", "ou", "plus", "aussi", "très", "comme", "cette", "ces"],
+    "es": ["el", "la", "los", "las", "y", "de", "que", "en", "un", "una", "es", "no", "por", "con", "para", "se", "del", "al", "como", "más", "pero", "sus", "este", "esta", "son", "muy", "también", "cuando", "hay", "sin"],
+    "it": ["il", "la", "di", "che", "e", "è", "un", "una", "per", "non", "con", "del", "della", "sono", "gli", "le", "anche", "come", "più", "ma", "questo", "questa", "nel", "nella", "alla", "hanno", "molto", "essere", "può", "tra"],
+    "pt": ["o", "a", "os", "as", "de", "que", "e", "do", "da", "em", "um", "uma", "para", "com", "não", "se", "por", "mais", "dos", "das", "como", "mas", "foi", "ao", "também", "são", "isso", "muito", "ele", "ela"],
+    "nl": ["de", "het", "een", "en", "van", "in", "is", "dat", "op", "te", "zijn", "voor", "met", "niet", "aan", "er", "ook", "als", "maar", "om", "bij", "naar", "dan", "nog", "wordt", "kan", "wel", "deze", "dit", "hebben"],
+    "cs": ["a", "je", "v", "na", "se", "to", "že", "s", "z", "do", "i", "o", "jsem", "jak", "ale", "pro", "jsou", "by", "tak", "co", "nebo", "už", "když", "také", "může", "být", "jen", "ještě", "který", "která"],
+    "ru": ["и", "в", "не", "на", "я", "что", "с", "это", "как", "а", "по", "но", "из", "у", "к", "за", "так", "для", "же", "он", "она", "они", "мы", "вы", "то", "все", "его", "или", "уже", "если"],
+    "uk": ["і", "в", "не", "на", "що", "з", "це", "як", "а", "по", "але", "та", "у", "до", "за", "так", "для", "же", "він", "вона", "вони", "ми", "ви", "те", "все", "його", "або", "вже", "якщо", "також"]
+  }
+}

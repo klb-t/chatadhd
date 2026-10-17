@@ -1,0 +1,27 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "merge_conversations",
+ "module": "edits:merge_conversations",
+ "group": "structure",
+ "label": {
+  "pl": "Scal rozmowy (np. kontynuacja ChatGPT→Claude) z zachowaniem źródła każdej wiadomości",
+  "en": "Merge conversations (e.g. a ChatGPT→Claude continuation) keeping each message's source"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "required": true
+  },
+  "title": {
+   "type": "string"
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "scalono {count} rozmów w jedną",
+  "en": "{count} conversation(s) merged into one"
+ }
+}

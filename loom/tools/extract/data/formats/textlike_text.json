@@ -1,0 +1,17 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "textlike.text",
+  "vendor": null, "product": null, "service": "file",
+  "label": {"pl": "Tekst z rozmową (Human:/Assistant:; przez engine.importer)", "en": "Plain-text chat log (Human:/Assistant:; via engine.importer)"},
+  "priority": 950,
+  "containers": ["text"],
+  "sniff": {"any_of": [{"text_regex": "(?im)^(human|user|you|assistant|ai|claude):\\s"},
+                       {"extension": [".txt", ".log"], "text_regex": "(?s)^[\\x09\\x0a\\x0d\\x20-\\x7e\\u0080-\\uffff]+$"}]},
+  "reader": "textlike", "importer_method": "import_text",
+  "roles": {"user": "user", "assistant": "assistant"},
+  "blocks": {"text": "text"},
+  "members": {"*": "unknown"},
+  "preserve": {"unit": "file", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["identyfikatory i czasy wiadomości", "gałęzie", "narzędzia", "rozumowanie", "załączniki"],
+                   "en": ["message ids and times", "branches", "tools", "reasoning", "attachments"]}
+}
