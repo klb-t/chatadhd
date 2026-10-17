@@ -455,7 +455,6 @@
     "level_evidence": {
       "chain": [
         "default_model",
-        "semantic_model",
         "guardian_model",
         "chat_representation",
         "chat_thread_filter",
@@ -486,7 +485,6 @@
       ],
       "installation": [
         "default_model",
-        "semantic_model",
         "guardian_model",
         "chat_representation",
         "chat_thread_filter",
@@ -582,7 +580,18 @@
             "actions.preview",
             "use_model",
             "archive.refine",
-            "input.route_intent"
+            "input.route_intent",
+            "summarise",
+            "translate",
+            "elaborate",
+            "parody",
+            "critique",
+            "combine",
+            "rephrase",
+            "explain_simply",
+            "depict",
+            "narrate",
+            "ports.show"
           ]
         }
       },
@@ -660,18 +669,15 @@
             "en": "Background analysis model"
           },
           "why": {
-            "pl": "Który tani model czyta wiadomości w tle i wyciąga z nich tematy, encje i powiązania do grafu; pusty = analiza wiadomości tylko lokalnie, bez kosztu. Uwaga: „Dopracuj elementy archiwum” (tylko z llm auto) przy pustym polu bierze model rozmowy i jest płatne (archive.pack refinement.model_keys).",
-            "en": "Which cheap model reads messages in the background and pulls topics, entities and relations into the graph; empty = message analysis stays local, no cost. Note: “Refine archive items” (only with llm auto) takes the conversation model when this field is empty, and is paid (archive.pack refinement.model_keys)."
+            "pl": "Model, który czyta wiadomości w tle i wyciąga z nich tematy, encje i powiązania do grafu; od jego klasy zależy przepływ, gdy analiza czyta fragmenty (frontier — jedno wywołanie; tani, średni i nieznany — klasyczne wywołanie i wąskie pytanie o fragmenty); pusty = analiza wiadomości tylko lokalnie, bez kosztu. Z tego pola korzystają też: Sekretarz (gdy „Model Sekretarza” jest pusty), określanie celu promptu (przy wysyłaniu wiadomości), szacunek kosztu (gdy archiwum albo budowanie wiedzy może dopracować wynik modelem), dopracowanie archiwum, analiza na żądanie i pytanie „jakiego modelu używam do analizy”. Uwaga: „Dopracuj elementy archiwum” (tylko z llm auto) przy pustym polu bierze „Model rozmowy” i jest płatne.",
+            "en": "The model that reads messages in the background and pulls topics, entities and relations into the graph; its class picks the flow when the analysis reads segments (frontier — one call; cheap, mid and unknown — the classic call and a narrow question about segments); empty = message analysis stays local, no cost. The same field is also used by: the Secretary (when “Secretary model” is empty), typing the goal of a prompt (when a message is sent), the cost estimate (when an archive or a knowledge build may refine its result with a model), the refinement of archive items, the analysis on request and the question “which model do I use for analysis”. Note: “Refine archive items” (only with llm auto) takes “Conversation model” when this field is empty, and is paid."
           },
           "effect": {
-            "pl": "Z modelem analiza jest dokładniejsza i płatna; bez niego graf buduje się z lokalnych reguł. Każdy czytelnik bierze Twoje ustawienie (osoba → instalacja); wartości wskazanej dla rozmowy lub projektu dziś nie czyta nikt — dla rozmowy działa tylko „Model Sekretarza” (guardian_model).",
-            "en": "With a model the analysis is more accurate and paid; without one the graph is built from local rules. Every reader takes your setting (person → installation); a value named for a conversation or project is read by nobody today — per conversation only the “Secretary model” (guardian_model) applies."
+            "pl": "Z modelem analiza jest dokładniejsza i płatna; bez niego graf buduje się z lokalnych reguł. Każdy czytelnik bierze Twoje ustawienie, a bez niego preset (puste pole); wartości wskazanej dla rozmowy lub projektu dziś nie czyta nikt — dla rozmowy działa tylko „Model Sekretarza” (guardian_model).",
+            "en": "With a model the analysis is more accurate and paid; without one the graph is built from local rules. Every reader takes your setting, else the preset (an empty field); a value named for a conversation or project is read by nobody today — per conversation only the “Secretary model” (guardian_model) applies."
           },
           "levels": [
-            "installation",
-            "person",
-            "project",
-            "conversation"
+            "person"
           ],
           "group": "modele",
           "subgroup": "role",
@@ -688,7 +694,8 @@
             "goal.typing",
             "knowledge.propose_semantics",
             "analysis.run",
-            "guardian.model_read"
+            "guardian.model_read",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -1200,8 +1207,8 @@
             "en": "Whether the app reads messages in the background and builds the knowledge graph (topics, entities, relations) it later picks context from."
           },
           "effect": {
-            "pl": "Wyłączone: nowe wiadomości nie trafiają do grafu, dopóki nie włączysz; dotychczasowe wyniki zostają.",
-            "en": "Off: new messages do not enter the graph until you switch it on; earlier results stay."
+            "pl": "Wyłączone: nowe wiadomości nie trafiają do grafu, dopóki nie włączysz; dotychczasowe wyniki zostają. Wyłączenie sprawia też, że Sekretarz (metoda model albo hybryda) nie czeka na odczyt analizy i czyta wiadomość własnym modelem — to płatne wywołanie.",
+            "en": "Off: new messages do not enter the graph until you switch it on; earlier results stay. Switching it off also makes the Secretary (method model or hybrid) stop waiting for the analysis reading and read the message with its own model — a paid call."
           },
           "levels": [
             "person"
@@ -1211,7 +1218,8 @@
           "flows": [
             "semantic.analyse",
             "semantic.batch",
-            "knowledge.propose_semantics"
+            "knowledge.propose_semantics",
+            "guardian.observe"
           ]
         }
       },
@@ -1924,7 +1932,8 @@
           "subgroup": "role",
           "role": "intent.routing",
           "flows": [
-            "input.route_intent"
+            "input.route_intent",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2276,7 +2285,7 @@
           "role": "image.generate",
           "flows": [
             "depict",
-            "media.generate_image"
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2308,7 +2317,8 @@
           "subgroup": "role",
           "role": "image.generate",
           "flows": [
-            "depict"
+            "depict",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2340,7 +2350,8 @@
           "subgroup": "role",
           "role": "speech.synthesize",
           "flows": [
-            "narrate"
+            "narrate",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2372,7 +2383,8 @@
           "subgroup": "role",
           "role": "speech.synthesize",
           "flows": [
-            "narrate"
+            "narrate",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2474,7 +2486,8 @@
             "guardian.observe",
             "guardian.annotate",
             "guardian.status",
-            "guardian.model_read"
+            "guardian.model_read",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2527,8 +2540,8 @@
             "en": "Whether the background analysis also records the kind of each message segment (correction, preference, joke, instruction…) and its topic thread: when something uses them (preset), always, or never."
           },
           "effect": {
-            "pl": "Jedno wywołanie na wiadomość tak czy inaczej; bez kategorii filtr wątków i tryby odchudzone nie mają na czym pracować.",
-            "en": "One call per message either way; without categories the thread filter and the slimmed modes have nothing to work on."
+            "pl": "Jedno wywołanie na wiadomość tak czy inaczej; bez kategorii filtr wątków i tryby odchudzone nie mają na czym pracować. Gdy analiza nie czyta fragmentów (nigdy, albo preset, gdy nic z nich nie korzysta), Sekretarz (metoda model albo hybryda) nie czeka na nią i czyta wiadomość własnym modelem — to płatne wywołanie.",
+            "en": "One call per message either way; without categories the thread filter and the slimmed modes have nothing to work on. When the analysis reads no segments (never, or the preset when nothing uses them), the Secretary (method model or hybrid) does not wait for it and reads the message with its own model — a paid call."
           },
           "levels": [
             "person"
@@ -2538,7 +2551,8 @@
           "flows": [
             "semantic.analyse",
             "semantic.batch",
-            "batch.chat"
+            "batch.chat",
+            "guardian.observe"
           ]
         }
       },
@@ -2573,7 +2587,8 @@
             "chat.send",
             "semantic.analyse",
             "semantic.batch",
-            "batch.chat"
+            "batch.chat",
+            "guardian.observe"
           ]
         }
       },
@@ -2673,7 +2688,8 @@
             "guardian.compile",
             "semantic.analyse",
             "semantic.batch",
-            "batch.chat"
+            "batch.chat",
+            "guardian.observe"
           ]
         }
       },

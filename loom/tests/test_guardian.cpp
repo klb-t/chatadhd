@@ -1006,7 +1006,7 @@ TEST_SUITE("guardian") {
     const auto profile = unwrap(RuntimeProfile::builtin("guardian"));
     const Json& policies = profile.values().at("models").at("policies");
     const auto ports = unwrap(RuntimeProfile::builtin("ports"));
-    for (const char* name : {"guardian", "analyzer", "chat", "intent", "image", "speech", "embed", "asr", "ocr"}) CHECK_MESSAGE(policies.contains(name), name);
+    for (const char* name : {"guardian", "analyzer", "chat", "intent", "image", "speech", "embed", "asr", "ocr", "action"}) CHECK_MESSAGE(policies.contains(name), name);
     std::vector<std::string> settings;  // every setting an explicit step names, cleared before each case
     for (auto it = policies.begin(); it != policies.end(); ++it)
       for (const auto& step : it.value().at("chain"))
@@ -1095,5 +1095,26 @@ TEST_SUITE("guardian") {
     // the texts say what the code does: no price path today, every threshold reason marked planned
     CHECK(models.at("price_path").at("state") == "planned");
     for (const auto& t : models.at("tiers")) CHECK(t.at("reason").at("threshold_state") == "planned");
+    // every class says why, in pl and en, for the pattern and for the threshold; the unknown class says why too
+    const Json builtin = unwrap(RuntimeProfile::builtin("guardian")).values().at("models");
+    REQUIRE_FALSE(builtin.at("tiers").empty());
+    for (const auto& t : builtin.at("tiers")) {
+      INFO(json::get_string(t, "id"));
+      for (const char* kind : {"pattern", "threshold"})
+        for (const char* lang : {"pl", "en"}) {
+          INFO(kind << " " << lang);
+          const Json reason = t.at("reason").value(kind, Json::object());
+          REQUIRE(reason.contains(lang));
+          REQUIRE(reason.at(lang).is_string());
+          CHECK_FALSE(reason.at(lang).get<std::string>().empty());
+        }
+    }
+    for (const char* lang : {"pl", "en"}) CHECK_FALSE(json::get_string(builtin.at("unknown_tier").at("reason"), lang).empty());
+    // the preset assigns no model to a class by hand: tier_models is the person's overlay, every value empty in the preset
+    REQUIRE(builtin.at("tier_models").is_object());
+    for (auto it = builtin.at("tier_models").begin(); it != builtin.at("tier_models").end(); ++it) {
+      INFO(it.key());
+      CHECK(it.value() == "");
+    }
   }
 }

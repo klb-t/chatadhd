@@ -3244,7 +3244,7 @@
           "id": "ports.set.pl",
           "action": "ports.set",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:do|dla)\\s+((?:rozpoznawania\\s+tekstu|analizy\\s+semantycznej|rozpoznawania\\s+mowy|tekstu\\s+z\\s+obrazow|czytania\\s+obrazow|mowy\\s+na\\s+tekst|transkrypcji|podsumowania|streszczenia|embeddingow|tlumaczenia|podsumowan|dyktowania|rozwijania|czatowania|streszczen|streszczan|tlumaczen|rozwiniec|wektorow|rozmowy|analizy|krytyki|analiz|rozmow|czatu|ocen|ocr))\\s+(?:uzywaj|uzyj|ustaw|wybierz|wez)\\s+(?:modelu\\s+|model\\s+|dostawcy\\s+|dostawce\\s+)?(\\S+?)\\s*[.!]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:do|dla)\\s+((?:rozpoznawania\\s+polecen|analizy\\s+semantycznej|rozpoznawania\\s+tekstu|czytania\\s+na\\s+glos|generowania\\s+obrazow|rozpoznania\\s+polecen|tekstu\\s+z\\s+obrazow|rozpoznawania\\s+mowy|czytania\\s+obrazow|mowy\\s+na\\s+tekst|syntezy\\s+mowy|podsumowania|streszczenia|transkrypcji|embeddingow|tlumaczenia|czatowania|dyktowania|podsumowan|rozwijania|sekretarza|streszczan|streszczen|malowania|rozwiniec|sekretarz|tlumaczen|narracji|wektorow|analizy|krytyki|obrazow|rozmowy|analiz|rozmow|czatu|glosu|ocen|ocr))\\s+(?:uzywaj|uzyj|ustaw|wybierz|wez)\\s+(?:modelu\\s+|model\\s+|dostawcy\\s+|dostawce\\s+)?(\\S+?)\\s*[.!]*\\s*$",
           "args": [
             "role_word",
             "model"
@@ -3258,7 +3258,7 @@
           "id": "ports.set.en",
           "action": "ports.set",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:use|set|pick|choose)\\s+(?:the\\s+)?(?:model\\s+|provider\\s+)?(\\S+)\\s+(?:for|to\\s+do)\\s+((?:speech\\s+recognition|semantic\\s+analysis|text\\s+recognition|text\\s+from\\s+images|speech\\s+to\\s+text|reading\\s+images|transcription|vector\\s+search|conversations|translations|transcribing|conversation|elaborating|translating|summarizing|translation|elaboration|summarising|embeddings|analysing|summarize|critiques|dictation|summaries|summarise|analyzing|embedding|chatting|critique|analysis|reviews|talking|summary|chat|ocr))\\s*[.!]*\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:use|set|pick|choose)\\s+(?:the\\s+)?(?:model\\s+|provider\\s+)?(\\S+)\\s+(?:for|to\\s+do)\\s+((?:recognising\\s+commands|recognizing\\s+commands|command\\s+recognition|text\\s+from\\s+images|speech\\s+recognition|semantic\\s+analysis|speech\\s+to\\s+text|text\\s+to\\s+speech|image\\s+generation|speech\\s+synthesis|text\\s+recognition|reading\\s+images|reading\\s+aloud|the\\s+secretary|vector\\s+search|conversations|transcription|conversation|transcribing|translations|elaborating|elaboration|summarising|summarizing|translating|translation|embeddings|analysing|analyzing|critiques|dictation|embedding|narration|secretary|summaries|summarise|summarize|analysis|chatting|critique|painting|pictures|reviews|summary|talking|images|voice|chat|ocr))\\s*[.!]*\\s*$",
           "args": [
             "model",
             "role_word"
@@ -3272,7 +3272,7 @@
           "id": "ports.show.pl",
           "action": "ports.show",
           "lang": "pl",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jakiego\\s+(?:modelu|dostawcy)\\s+uzywam|jaki\\s+model\\s+(?:uzywam|jest\\s+uzywany)|czego\\s+uzywam)\\s+(?:do|dla)\\s+((?:rozpoznawania\\s+tekstu|analizy\\s+semantycznej|rozpoznawania\\s+mowy|tekstu\\s+z\\s+obrazow|czytania\\s+obrazow|mowy\\s+na\\s+tekst|transkrypcji|podsumowania|streszczenia|embeddingow|tlumaczenia|podsumowan|dyktowania|rozwijania|czatowania|streszczen|streszczan|tlumaczen|rozwiniec|wektorow|rozmowy|analizy|krytyki|analiz|rozmow|czatu|ocen|ocr))\\s*\\??\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:jakiego\\s+(?:modelu|dostawcy)\\s+uzywam|jaki\\s+model\\s+(?:uzywam|jest\\s+uzywany)|czego\\s+uzywam)\\s+(?:do|dla)\\s+((?:rozpoznawania\\s+polecen|analizy\\s+semantycznej|rozpoznawania\\s+tekstu|czytania\\s+na\\s+glos|generowania\\s+obrazow|rozpoznania\\s+polecen|tekstu\\s+z\\s+obrazow|rozpoznawania\\s+mowy|czytania\\s+obrazow|mowy\\s+na\\s+tekst|syntezy\\s+mowy|podsumowania|streszczenia|transkrypcji|embeddingow|tlumaczenia|czatowania|dyktowania|podsumowan|rozwijania|sekretarza|streszczan|streszczen|malowania|rozwiniec|sekretarz|tlumaczen|narracji|wektorow|analizy|krytyki|obrazow|rozmowy|analiz|rozmow|czatu|glosu|ocen|ocr))\\s*\\??\\s*$",
           "args": [
             "role_word"
           ],
@@ -3290,7 +3290,7 @@
           "id": "ports.show.en",
           "action": "ports.show",
           "lang": "en",
-          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:which|what)\\s+(?:model|provider)\\s+(?:do\\s+i\\s+use|is\\s+used)\\s+(?:for|to\\s+do)\\s+((?:speech\\s+recognition|semantic\\s+analysis|text\\s+recognition|text\\s+from\\s+images|speech\\s+to\\s+text|reading\\s+images|transcription|vector\\s+search|conversations|translations|transcribing|conversation|elaborating|translating|summarizing|translation|elaboration|summarising|embeddings|analysing|summarize|critiques|dictation|summaries|summarise|analyzing|embedding|chatting|critique|analysis|reviews|talking|summary|chat|ocr))\\s*\\??\\s*$",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:which|what)\\s+(?:model|provider)\\s+(?:do\\s+i\\s+use|is\\s+used)\\s+(?:for|to\\s+do)\\s+((?:recognising\\s+commands|recognizing\\s+commands|command\\s+recognition|text\\s+from\\s+images|speech\\s+recognition|semantic\\s+analysis|speech\\s+to\\s+text|text\\s+to\\s+speech|image\\s+generation|speech\\s+synthesis|text\\s+recognition|reading\\s+images|reading\\s+aloud|the\\s+secretary|vector\\s+search|conversations|transcription|conversation|transcribing|translations|elaborating|elaboration|summarising|summarizing|translating|translation|embeddings|analysing|analyzing|critiques|dictation|embedding|narration|secretary|summaries|summarise|summarize|analysis|chatting|critique|painting|pictures|reviews|summary|talking|images|voice|chat|ocr))\\s*\\??\\s*$",
           "args": [
             "role_word"
           ],

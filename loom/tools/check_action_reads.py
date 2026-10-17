@@ -33,10 +33,24 @@ itself (semantic.analyse calls llm::use_model with its own model) does not read 
 It also checks the shape of the M1-D1 annotations: `uses_role` names a role of ports.pack that has a policy
 in guardian.pack models.policies, whose explicit setting the flow itself reads (own reads and subflows, not
 steps), or its caller reads (a flow that lists it in `subflows` and hands it the model); `human` has title
-{pl, en}, steps [{label {pl, en}}] and steps_are "description" (the steps describe the flow; they are not what
-runs - P37); a planned action declares no executor and no reads.
+{pl, en} equal to labels.pl and title (one name per flow: the router shows labels.pl), steps [{label {pl, en},
+uses_role?}] and steps_are "description" (the steps describe the flow; they are not what runs - P37); a step's
+uses_role names a role with a policy whose explicit setting the flow reads (steps count here), and the flow's
+uses_role is one of its steps' roles; a planned action declares no executor and no reads. A field that is not
+planned may not name a planned flow (it reads nothing yet) or an id that is no action.
+
+The chat command that names a job (chat_ops.pack roles: "use model X for summaries", "which model do I use
+for analysis") must name a role ports.pack knows, and a row with a `setting` must name the role's own setting
+or the first explicit setting of the role's policy (the field the job reads first: guardian -> guardian_model).
+
+The texts the owner reads (pl of ports.pack label/why/status.today, guardian.pack policy step meanings,
+status.today, policies_note, price_path.today, actions.pack human title and step labels, settings_fields.pack
+human label/why/effect) carry no code identifiers (::, a file name such as x.cpp or y.pack, metadata., params.,
+<id>, "profil ports"); those belong in `reason`, `readers` or `code`.
 
 Usage: check_action_reads.py [--verbose] [--discover ACTION] [--self-test]
+  --verbose          also list the flows named on fields that declare no reads (their human.flows are not
+                     checked against code).
   --discover ACTION  print, for one action, every settings key found in its implemented_in with the
                      line numbers (a helper for writing `reads`); exit 0.
   --self-test        run the check on mutated copies of the data (a removed read, a false role, a field naming
@@ -56,6 +70,7 @@ FIELDS = LOOM / 'data/runtime/settings_fields.pack'
 PORTS = LOOM / 'data/runtime/ports.pack'
 GUARDIAN = LOOM / 'data/runtime/guardian.pack'
 ACTION_RUN = LOOM / 'data/runtime/action_run.pack'
+CHAT_OPS = LOOM / 'data/runtime/chat_ops.pack'
 ALLOW = LOOM / 'tools/check_action_reads_allow.json'
 DOC_KEYS = {'human', 'reads', 'implemented_in', 'uses_role', 'subflows'}
 CODE_SUFFIXES = {'.cpp', '.cc', '.h', '.hpp', '.inc', '.py', '.ts', '.tsx', '.kt', '.java'}
@@ -66,6 +81,9 @@ SETTING_KEYS = {'setting', 'model_setting', 'model_fallback_setting', 'model_key
 # Keys of the data holding a dict whose KEYS are settings ({setting: accepted values}).
 SETTING_MAP_KEYS = {'when'}
 RUNNER_CONSUMERS = {'', 'loom/src/actions/runner.cpp'}
+# Code identifiers that do not belong in a text the owner reads (pl); product names that look like one are allowed.
+CODE_IN_TEXT = re.compile(r'::|\b[\w-]+\.(?:cpp|cc|h|hpp|inc|pack|py|json|ts|tsx)\b|\bmetadata\.|\bparams\.|<id>|\bprofil\w* ports\b')
+PRODUCT_NAMES = ('llama.cpp',)
 
 
 class Data:
@@ -160,6 +178,44 @@ def found_in(data, entry, keys, pattern):
 
 def text_pair(v):
     return isinstance(v, dict) and isinstance(v.get('pl'), str) and v['pl'].strip() and isinstance(v.get('en'), str) and v['en'].strip()
+
+
+def code_in_text(text):
+    for name in PRODUCT_NAMES:
+        text = text.replace(name, '')
+    m = CODE_IN_TEXT.search(text)
+    return m.group(0) if m else None
+
+
+def owner_texts(data):
+    """(where, pl text) of every text the owner reads that the M1-D1 data carries."""
+    out = []
+
+    def pl(where, v):
+        if isinstance(v, dict) and isinstance(v.get('pl'), str):
+            out.append((where, v['pl']))
+    for rid, r in data.load(PORTS)['defaults']['roles'].items():
+        pl(f'ports.pack roles.{rid}.label', r.get('label'))
+        pl(f'ports.pack roles.{rid}.why', r.get('why'))
+        pl(f'ports.pack roles.{rid}.status.today', (r.get('status') or {}).get('today'))
+    models = data.load(GUARDIAN)['defaults']['models']
+    for name, p in models['policies'].items():
+        for i, s in enumerate(p.get('chain', [])):
+            pl(f'guardian.pack models.policies.{name}.chain[{i}].meaning', s.get('meaning'))
+        pl(f'guardian.pack models.policies.{name}.status.today', (p.get('status') or {}).get('today'))
+    pl('guardian.pack models.policies_note', models.get('policies_note'))
+    pl('guardian.pack models.price_path.today', (models.get('price_path') or {}).get('today'))
+    for aid, a in data.load(ACTIONS)['defaults']['actions'].items():
+        h = a.get('human') or {}
+        pl(f'actions.pack {aid}.human.title', h.get('title'))
+        for i, s in enumerate(h.get('steps') or []):
+            if isinstance(s, dict):
+                pl(f'actions.pack {aid}.human.steps[{i}].label', s.get('label'))
+    for f in data.load(FIELDS)['defaults']['fields']:
+        h = f.get('human') or {}
+        for k in ('label', 'why', 'effect'):
+            pl(f'settings_fields.pack {f["key"]}.human.{k}', h.get(k))
+    return out
 
 
 def check(data, verbose=False, discover=None, out=print):
@@ -330,17 +386,52 @@ def check(data, verbose=False, discover=None, out=print):
             continue
         if not text_pair(h.get('title')):
             errors.append(f'{aid}: human.title needs pl and en')
+        else:
+            label = (a.get('labels') or {}).get('pl')
+            if label is not None and label != h['title']['pl']:
+                errors.append(f'{aid}: one name per flow: labels.pl {label!r} (what the router shows) differs from human.title.pl {h["title"]["pl"]!r}')
+            if a.get('title') != h['title']['en']:
+                errors.append(f'{aid}: one name per flow: title {a.get("title")!r} differs from human.title.en {h["title"]["en"]!r}')
         steps = h.get('steps')
         if not isinstance(steps, list) or not steps or not all(isinstance(s, dict) and text_pair(s.get('label')) for s in steps):
             errors.append(f'{aid}: human.steps needs at least one step, each with label pl and en')
+            steps = []
+        step_roles = []
+        for n, s in enumerate(steps, 1):
+            srole = s.get('uses_role')
+            if srole is None:
+                continue
+            step_roles.append(srole)
+            if srole not in roles:
+                errors.append(f'{aid}: human.steps[{n}] uses_role {srole!r} is not a role of ports.pack')
+                continue
+            spol = [p for p in policies.values() if p.get('role') == srole]
+            if not spol:
+                errors.append(f'{aid}: human.steps[{n}] uses_role {srole!r} has no policy in guardian.pack models.policies')
+            elif aid in annotated and a.get('status') != 'planned':
+                for p in spol:
+                    explicit = [x.get('setting') for x in p.get('chain', []) if x.get('type') == 'explicit' and x.get('setting')]
+                    if explicit and explicit[0] not in effective(aid):
+                        errors.append(f'{aid}: step {n} uses_role {srole!r}, whose policy starts with the setting {explicit[0]!r}, which the flow does not read')
+        if step_roles and role not in step_roles:
+            errors.append(f'{aid}: uses_role {role!r} is none of the roles of its steps ({", ".join(step_roles)})')
         if h.get('steps_are') != 'description':
             errors.append(f'{aid}: human.steps_are must be "description" (the steps describe the flow, they are not what runs)')
 
     # settings_fields.pack human.flows against reads.
+    unchecked = {}
     for k, f in fields.items():
         if f.get('status', {}).get('state') == 'planned':
             continue
         for aid in f.get('human', {}).get('flows', []) or []:
+            if aid not in actions:
+                errors.append(f'settings field {k!r} names the flow {aid!r}, which is not an action of actions.pack')
+                continue
+            if actions[aid].get('status') == 'planned':
+                errors.append(f'settings field {k!r} names the planned flow {aid!r}, which reads nothing yet (remove it from human.flows, or mark the field planned)')
+                continue
+            if aid not in annotated:
+                unchecked.setdefault(aid, []).append(k)
             if aid in annotated and actions[aid].get('status') != 'planned' and k not in effective(aid):
                 if not allowed(flow_exceptions, lambda e, aid=aid, k=k: e['field'] == k and e['action'] == aid):
                     errors.append(f'settings field {k!r} names the flow {aid!r}, which does not read it (fix human.flows or the reads of {aid})')
@@ -354,8 +445,37 @@ def check(data, verbose=False, discover=None, out=print):
         for e, used in table:
             if not used:
                 errors.append(f'allowlist {kind} entry no longer needed: {json.dumps({x: y for x, y in e.items() if x != "reason"}, ensure_ascii=False)}')
+    # The chat command that names a job (chat_ops.pack roles) against the ports roles and their policies.
+    for i, row in enumerate(data.load(CHAT_OPS)['defaults'].get('roles', [])):
+        rid = row.get('role', '')
+        known = rid in roles or any(r.endswith('.*') and rid.startswith(r[:-1]) for r in roles)
+        if not known:
+            errors.append(f'chat_ops.pack roles[{i}] {rid!r} is not a role of ports.pack')
+            continue
+        if not all(isinstance(row.get('words', {}).get(lang), list) and row['words'][lang] for lang in ('pl', 'en')):
+            errors.append(f'chat_ops.pack roles[{i}] {rid!r} needs words pl and en')
+        setting = row.get('setting')
+        if setting:
+            own = roles.get(rid, {}).get('setting')
+            first = [s.get('setting') for p in policies.values() if p.get('role') == rid
+                     for s in p.get('chain', []) if s.get('type') == 'explicit' and s.get('setting')][:1]
+            if setting != own and setting not in first:
+                errors.append(f'chat_ops.pack roles[{i}] {rid!r} writes the setting {setting!r}, which is neither the role\'s setting ({own!r}) '
+                              f'nor the first explicit setting of its policy ({first[0] if first else None!r})')
+            if setting not in keys:
+                errors.append(f'chat_ops.pack roles[{i}] {rid!r} names {setting!r}, which is not a settings field')
+
+    # The texts the owner reads are plain words.
+    for where, text in owner_texts(data):
+        found = code_in_text(text)
+        if found:
+            errors.append(f'{where} (pl) is a text the owner reads but carries the code identifier {found!r}; '
+                          f'say it in plain words and keep the reference in reason, readers or code')
+
     if verbose:
-        out(f'check_action_reads: {len(annotated)} actions with reads')
+        for aid in sorted(unchecked):
+            out(f'not checked: {aid} declares no reads; named on {", ".join(sorted(unchecked[aid]))}')
+        out(f'check_action_reads: {len(annotated)} actions with reads, {len(unchecked)} flows named on fields without reads')
     return errors
 
 
@@ -410,6 +530,24 @@ def self_test():
     def bump_count(doc):
         doc['not_a_read'][0]['count'] += 1
 
+    def set_label(aid, pl):
+        def change(doc):
+            acts(doc)[aid]['labels']['pl'] = pl
+        return change
+
+    def set_step_role(aid, n, role):
+        def change(doc):
+            acts(doc)[aid]['human']['steps'][n]['uses_role'] = role
+        return change
+
+    def chat_ops_setting(rid, setting):
+        def change(doc):
+            next(r for r in doc['defaults']['roles'] if r['role'] == rid)['setting'] = setting
+        return change
+
+    def code_in_meaning(doc):
+        doc['defaults']['models']['policies']['analyzer']['chain'][1]['meaning']['pl'] += ' (models.cpp)'
+
     cases = [
         # a param name, an $arg or a when.arg equal to a key is no evidence: without `setting` nothing reads speech_model
         ('narrate without param settings', mutated(ACTIONS, drop_param_settings), "narrate: declares 'speech_model'"),
@@ -433,6 +571,19 @@ def self_test():
         ('goal.typing without semantic_model', mutated(ACTIONS, drop_read('goal.typing', 'semantic_model')), "goal.typing: reads 'semantic_model'"),
         ('semantic.analyse with role intent.routing', mutated(ACTIONS, set_role('semantic.analyse', 'intent.routing')), "semantic.analyse: uses_role 'intent.routing'"),
         ('a not_a_read count that no longer matches', mutated(ALLOW, bump_count), 'the exception explains'),
+        # a planned flow reads nothing yet; an id that is no action is a typo
+        ('image_model names the planned media.generate_image', mutated(FIELDS, add_flow('image_model', 'media.generate_image')),
+         "names the planned flow 'media.generate_image'"),
+        ('image_model names an id that is no action', mutated(FIELDS, add_flow('image_model', 'media.paint')), 'is not an action of actions.pack'),
+        # one name per flow: the router's label is the human title
+        ('depict with another router label', mutated(ACTIONS, set_label('depict', 'Namaluj')), 'one name per flow: labels.pl'),
+        # each model step names its own role; the flow's role is one of them
+        ('depict step 1 with role intent.routing', mutated(ACTIONS, set_step_role('depict', 0, 'intent.routing')), "step 1 uses_role 'intent.routing'"),
+        ('depict whose role is none of its steps', mutated(ACTIONS, set_role('depict', 'speech.synthesize')), 'is none of the roles of its steps'),
+        # the chat command writes the setting the job reads first
+        ('the Secretary row of chat_ops writes temperature', mutated(CHAT_OPS, chat_ops_setting('guardian', 'temperature')), "chat_ops.pack roles"),
+        # the owner's texts are plain words
+        ('a policy step meaning that names a file', mutated(GUARDIAN, code_in_meaning), "carries the code identifier 'models.cpp'"),
     ]
     for name, data, expect in cases:
         errs = check(data)
@@ -448,7 +599,13 @@ def main(argv):
     if '--self-test' in argv:
         return self_test()
     verbose = '--verbose' in argv
-    discover = argv[argv.index('--discover') + 1] if '--discover' in argv else None
+    discover = None
+    if '--discover' in argv:
+        i = argv.index('--discover')
+        if i + 1 >= len(argv) or argv[i + 1].startswith('--'):
+            print('usage: check_action_reads.py [--verbose] [--discover ACTION] [--self-test]', file=sys.stderr)
+            return 2
+        discover = argv[i + 1]
     data = Data()
     errors = check(data, verbose, discover)
     if discover:
