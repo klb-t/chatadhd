@@ -536,6 +536,24 @@ TEST_SUITE("graph_projection") {
     CHECK(q.at("counts").at("collapsed") == 0);
   }
 
+  TEST_CASE("the budget of a level is read through the scope chain: a conversation's own budget applies in it") {
+    Fixture f;
+    const std::string conv = unwrap(f.rt->db().create_conv("Small budget")).id;
+    ConvPatch patch;
+    patch.metadata = Json{{"settings", Json{{"navigator_children_limit", 3}}}};
+    LOOM_REQUIRE_OK(f.rt->db().update_conv(conv, patch));
+    const Json in_conv = f.navigate(Json{{"focus", "area:flows"}, {"conv_id", conv}});
+    CHECK(in_conv.at("limit").at("value") == 3);
+    CHECK(in_conv.at("counts").at("shown") == 3);
+    const Json outside = f.navigate(Json{{"focus", "area:flows"}});
+    CHECK(outside.at("limit").at("value") != 3);
+    // the usage fuse is said by its factor, not as a count of members
+    const Json r = unwrap(f.rt->actions().invoke("settings.resolved", Json{{"lang", "pl"}}));
+    for (const auto& g : r.at("groups"))
+      for (const auto& field : g.at("fields"))
+        if (field.at("key") == "loom_usage_policy") CHECK(field.at("value_human").get<std::string>().rfind("×10", 0) == 0);
+  }
+
   TEST_CASE("a large source never crowds the others out of a level: every source keeps a share, the collapsed are said per source") {
     Fixture f;
     const Json nav = f.navigate(Json{{"focus", "area:devices_io"}, {"limit", 20}});

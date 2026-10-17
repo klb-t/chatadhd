@@ -253,16 +253,9 @@ namespace {
 Result<Json> source_entries(const Json& src, const RuntimeProfile& prof) {
   const std::string profile = json::get_string(src, "profile");
   const std::string pointer = json::get_string(src, "pointer");
-  const Json* at = pointer.empty() ? &prof.values() : nullptr;
-  Json holder;
-  if (!at) {
-    try {
-      holder = prof.values().at(Json::json_pointer(pointer));
-      at = &holder;
-    } catch (const std::exception& e) {
-      return Error(Errc::NotFound, "view source " + profile + pointer + ": " + e.what());
-    }
-  }
+  // Walked member by member (json::find_pointer): a pointer that names nothing, or is malformed, is a NotFound with the pointer.
+  const Json* at = json::find_pointer(prof.values(), pointer);
+  if (!at) return Error(Errc::NotFound, "view source " + profile + pointer + ": the profile has nothing at this pointer");
   if (at->is_object()) return *at;
   if (!at->is_array()) return Error(Errc::InvalidArgument, "view source " + profile + pointer + " is neither an object nor an array");
   const std::string key = json::get_string(src, "key", "id");

@@ -10,11 +10,16 @@ export interface GraphEvidence {
   class: EvidenceClass | string;
   confidence: number | null;
   provenance: { layer: string; source_ref: string; method: string; time: string | null };
+  /** The evidence in words (graph_screen evidence.method.<method>, else evidence.<class>): a model's reply is never "you said". */
+  human?: string;
 }
 
 export interface GraphChip {
+  /** The level that gave the value (installation, person, conversation, a unit ...), secret, none, or code_preset (what the code does). */
   id: string;
+  /** In words: graph_screen chip.<id>, else the level's own label. */
   label: string;
+  same_as_preset?: boolean;
 }
 
 export interface GraphProvenance {
@@ -34,6 +39,8 @@ export interface GraphNodeRow {
   /** Children of this node; absent with count_unknown_reason when no source can say (never a made-up 0). */
   count?: number;
   count_unknown_reason?: string;
+  /** count_unknown_reason in words (graph_screen reason.<code>). */
+  count_unknown_human?: string;
   count_partial?: { source: string; reason: string }[];
   provenance: GraphProvenance;
   evidence: GraphEvidence;
@@ -44,9 +51,14 @@ export interface GraphNodeRow {
   order?: number;
   same_as?: string[];
   depth?: number;
-  /** An area row: the graph entry counters of the area. */
-  counts?: Record<string, unknown>;
+  /** An area row: the graph entry counters of the area, each with its name and, when unknown, its reason in words. */
+  counts?: Record<string, { known: boolean; value?: number; by?: Record<string, number>; reason?: string; name?: string; reason_human?: string }>;
   empty_reason?: string;
+  /** The words of the language asked are missing: which language is shown instead. */
+  no_translation?: { lang: string; shown_lang: string; words: string };
+  /** A node shown here although its own place is elsewhere (its parent stays the breadcrumbs). */
+  shown_also_in?: string;
+  value_unknown_reason?: string;
 }
 
 export interface GraphNavigateRequest {
@@ -66,6 +78,8 @@ export interface GraphEdgeRow {
   src: string;
   dst: string;
   kind: string;
+  /** The edge kind's name in the language asked (graph_views edge_kinds label), else its id. */
+  label: string;
   /** The edge kind's meaning in the language asked; null when no kind describes it. */
   meaning: string | null;
 }
@@ -85,9 +99,10 @@ export interface GraphNavigateResult {
   children: GraphNodeRow[];
   edges: GraphEdgeRow[];
   breadcrumbs: { address: string; label: string }[];
-  counts: { total: number; shown: number; collapsed: number };
+  /** Of the first level; by_source: the sources the budget collapsed (each keeps a share of the level). */
+  counts: { total: number; shown: number; collapsed: number; by_source: Record<string, { label: string; total: number; shown: number }> };
   hidden_by_you: { count: number; items: { source: string; id: string; by?: unknown }[] };
-  unknown: { source: string; reason: string }[];
+  unknown: { source: string; reason: string; source_label: string; reason_human: string }[];
   pages: Record<string, { limit?: number; offset?: number; next_offset?: number; before?: string; next_before?: string; total?: number }>;
   limit: { value: number; from: "request" | "navigator_children_limit" };
   hops: number;
@@ -114,8 +129,10 @@ export interface FieldProvenance {
   source?: string;
   scope_id?: string;
   chip: GraphChip;
-  /** The person level holds the same value as the preset (config.json carries the presets too): not "you said". */
+  /** The person level holds the same value as the preset (config.json carries the presets too): not "you said", not yours. */
   same_as_preset?: boolean;
+  /** No level gives a value: value_human says what the reader does then (human.when_unset), chip code_preset. */
+  when_unset?: boolean;
   chain_unavailable?: string;
 }
 
@@ -129,7 +146,8 @@ export interface ResolvedField {
   inheritance: InheritanceLevel[];
   edit_rule: string;
   evidence: GraphEvidence;
-  flows_reading: string[];
+  /** The flows that read the field, by their human titles. */
+  flows_reading: { id: string; title: string }[];
   /** Planned: proposals_status of the answer says why it is empty today. */
   proposals: unknown[];
   status?: string;
@@ -157,6 +175,14 @@ export interface RoleChainStep {
   decides: boolean;
 }
 
+export interface RoleTodayStep {
+  step: number;
+  setting: string | null;
+  value: unknown;
+  decides: boolean;
+  meaning: string;
+}
+
 export interface RoleResolved {
   id: string;
   label: string;
@@ -167,11 +193,25 @@ export interface RoleResolved {
   model_human: string;
   via: string;
   reason?: string;
-  tier: { id: string; reason: string };
+  reason_human?: string;
+  reason_detail?: string;
+  /** No model: id "none" (no class); else cheap | mid | frontier | unknown with its name and reason in words. */
+  tier: { id: string; label: string; reason: string };
   chain: RoleChainStep[];
+  /** read: a reader reads the policy (its chain decides); described_not_read: the chain decides nothing today (see today_chain / status.today). */
+  chain_status?: "read" | "described_not_read";
+  /** What today's reader of a policy no reader reads yet reads, in order (guardian.pack policies.<id>.today_reads). */
+  today_chain?: RoleTodayStep[];
   flow: { id: string; status: string; does: string[]; planned: string[]; calls: string } | null;
   mode?: { modes: unknown; batch_threshold: unknown; batch_key_set?: boolean | null };
-  cost: { per_million?: { input: number; output: number | null; currency: string }; per_million_unknown_reason?: string; last_7d?: unknown; last_7d_unknown_reason?: string };
+  cost: {
+    per_million?: { input: number; output: number | null; currency: string };
+    per_million_unknown_reason?: string;
+    per_million_unknown_human?: string;
+    last_7d?: unknown;
+    last_7d_unknown_reason?: string;
+    last_7d_unknown_human?: string;
+  };
   flows_reading: { id: string; title: string }[];
   settings: { key: string; label: string }[];
 }
@@ -180,6 +220,8 @@ export interface RolesResolved {
   schema: "loom.roles_resolved/1";
   conv_id: string | null;
   roles: RoleResolved[];
+  /** What could not be read (the roles then show less, and why). */
+  issues?: { what: string; reason: string; reason_human: string }[];
 }
 
 export interface GraphCardResult extends GraphNodeRow {
@@ -189,8 +231,10 @@ export interface GraphCardResult extends GraphNodeRow {
   edit_rule?: string;
   inheritance?: InheritanceLevel[];
   flows_reading?: { id: string; title: string }[];
-  relations: Record<string, { meaning: string | null; out: { address: string; label: string }[]; in: { address: string; label: string }[] }>;
-  actions: { id: string; decision: unknown; label: unknown }[];
+  relations: Record<string, { label: string; meaning: string | null; out: { address: string; label: string }[]; in: { address: string; label: string }[] }>;
+  relations_unknown?: { source: string; reason: string }[];
+  /** decision: the rules' status (applicable | needs_confirmation | denied | default); label: the action's title in the language asked. */
+  actions: { id: string; decision: string | null; label: string; implementation: string | null }[];
   actions_unknown_reason?: string;
   evidence_per_property: Record<string, GraphEvidence>;
   breadcrumbs: { address: string; label: string }[];
