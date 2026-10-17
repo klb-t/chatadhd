@@ -114,6 +114,42 @@ TEST_SUITE("views") {
     CHECK(broken.error().message.find("broken.json") != std::string::npos);
   }
 
+  TEST_CASE("the user's profile overlay of a source is a layer of its own (true origin); an unreadable one leaves the shipped entries and an issue") {
+    fsutil::TempDir td;
+    const auto shipped = unwrap(views::effective({}, "perspectives"));
+    REQUIRE_FALSE(shipped.entries.empty());
+    const std::string some = shipped.entries.front().id;
+    // a perspective added and one changed by profiles/graph_views.pack
+    unwrap(fsutil::write_file(td.path() / "profiles" / "graph_views.pack",
+        Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "graph_views"},
+             {"overrides", Json{{"perspectives", Json{{"moja", Json{{"label", "Moja"}, {"relations", Json::array({"mentions"})}}},
+                                                      {some, Json{{"label", Json{{"pl", "Przemianowana"}}}}}}}}}}.dump()));
+    const auto eff = unwrap(views::effective(td.path(), "perspectives"));
+    REQUIRE(eff.find("moja"));
+    CHECK(eff.find("moja")->origin == "overlay:profile:graph_views");
+    CHECK(eff.find("moja")->provenance[0]["layer"] == "overlay:profile:graph_views");
+    REQUIRE(eff.find(some));
+    CHECK(eff.find(some)->origin == "rom");
+    CHECK(eff.find(some)->value["label"]["pl"] == "Przemianowana");
+    CHECK(eff.find(some)->value["label"]["en"] == shipped.find(some)->value["label"]["en"]);  // deep: only the renamed text
+    CHECK(eff.find(some)->provenance.back()["fields"] == Json::array({"label.pl"}));
+    CHECK(eff.find(some)->provenance.back()["layer"] == "overlay:profile:graph_views");
+    CHECK(eff.find(some)->provenance.back()["op"] == "modify");
+    CHECK(eff.issues.empty());
+    // the same overlay, unreadable: every kind still has its shipped entries, and the issue names the layer
+    unwrap(fsutil::write_file(td.path() / "profiles" / "graph_views.pack", "{not json"));
+    for (const char* kind : {"perspectives", "interaction_bindings", "edge_kinds", "view_kinds"}) {
+      INFO(kind);
+      const auto broken = unwrap(views::effective(td.path(), kind));
+      const auto base = unwrap(views::effective({}, kind));
+      CHECK(broken.entries.size() == base.entries.size());
+      REQUIRE_FALSE(broken.issues.empty());
+      CHECK(broken.issues[0]["code"] == "profile_overlay_unreadable");
+      CHECK(broken.issues[0]["layer"] == "overlay:profile:graph_views");
+    }
+    CHECK_FALSE(unwrap(views::effective(td.path(), "perspectives")).find("moja"));
+  }
+
   TEST_CASE("N memory overlays compose in (order, name) order; extra memories come after the data dir") {
     fsutil::TempDir a, b;
     LOOM_REQUIRE_OK(views::put_op(a.path(), "z", op("perspectives", "modify", "calls", Json{{"patch", Json{{"hops", 1}}}})));

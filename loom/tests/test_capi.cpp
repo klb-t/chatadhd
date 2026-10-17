@@ -180,6 +180,23 @@ TEST_SUITE("capi") {
     loom_set_config(c.ctx, "_config_version", "9");
     CHECK(take(loom_get_config(c.ctx)).value("_config_version", 0) != 9);
     CHECK(loom_set_config_json(c.ctx, R"({"theme": "amoled", "not_described_key": 1})") == LOOM_OK);
+    // the declared values of a field: the same rule as settings.set (data: values[].on_set, on_unlisted)
+    CHECK(loom_set_config_json(c.ctx, R"({"chat_context_order": "stability", "theme": "dark"})") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(take(loom_get_config(c.ctx))["theme"] == "amoled");  // one refusal = nothing of the patch written
+    CHECK(loom_set_config_json(c.ctx, R"({"layout_mode": "windows"})") == LOOM_OK);  // planned, its reader degrades: stored
+    CHECK(take(loom_get_config(c.ctx))["layout_mode"] == "windows");
+    loom_set_config(c.ctx, "navigator_layout", "nonsense");  // outside a closed list that refuses
+    CHECK(take(loom_get_config(c.ctx))["navigator_layout"] == "both");  // the preset, untouched
+    loom_set_config(c.ctx, "navigator_layout", "map");
+    CHECK(take(loom_get_config(c.ctx))["navigator_layout"] == "map");
+    // chat_context_order lists its reader's orders (values_from chat_context /orders, with the user's profile overlay): an order the user
+    // adds is written through the C ABI too; a name the effective profile does not know is still refused
+    REQUIRE(static_cast<bool>(loom::fsutil::write_file(c.dir.path() / "profiles" / "chat_context.pack",
+        R"({"schema":"loom.runtime_profile_overlay/1","domain":"chat_context","overrides":{"orders":{"mine":["memory","system","project","history","graph"]}}})")));
+    CHECK(loom_set_config_json(c.ctx, R"({"chat_context_order": "mine"})") == LOOM_OK);
+    CHECK(take(loom_get_config(c.ctx))["chat_context_order"] == "mine");
+    CHECK(loom_set_config_json(c.ctx, R"({"chat_context_order": "no_such_order"})") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(take(loom_get_config(c.ctx))["chat_context_order"] == "mine");
   }
 
   TEST_CASE("config and secrets (values never exposed)") {

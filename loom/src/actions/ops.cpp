@@ -869,7 +869,7 @@ StepOutcome ports_set(Ctx& x) {
   } else if (scope == "person" || scope == "installation") {
     if (!setting.empty() && kind == "model") {
       // The role is backed by a setting (the model of the chat, of the analysis): the person's choice is that setting, which the window already reads.
-      if (auto ok = check_config_write(setting, x.rt.paths().root); !ok) return fail(ok.error());
+      if (auto ok = check_config_patch(Json{{setting, value}}, x.rt.paths().root); !ok) return fail(ok.error());
       x.rt.config().set(setting, value);
       if (auto st = x.rt.config().save(); !st) return fail(st.error());
       where = "config.json:" + setting;

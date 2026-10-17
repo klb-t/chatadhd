@@ -29,6 +29,7 @@ import { ShellLanguage, ShellText, shellTranslator } from "./shell/text";
 import { START_VIEW_PRESET, layoutOfMode, parseShellHash, readSaved, resolveStartView, startViewOrder, writeSaved, type Layout } from "./shell/start-view";
 import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
+import { glyphVariables } from "./shell/disclosure-glyphs";
 import type { PanelId } from "./shell/panels";
 
 type Theme = "dark" | "amoled";
@@ -114,10 +115,10 @@ export default function App() {
     return () => { live = false; };
   }, []);
   useEffect(() => { if (started && layout) writeSaved(localStorage, { layout, conversationId: activeConvId }); }, [started, layout, activeConvId]);
-  // Animation is data: the resolved table becomes CSS variables (prefers-reduced-motion selects the reduced-motion style).
+  // Animation and disclosure glyphs are data: the resolved tables become CSS variables (prefers-reduced-motion selects the reduced-motion style).
   useEffect(() => {
     const reduced = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const vars = cssVariables(mergeData(config), reduced);
+    const vars = { ...cssVariables(mergeData(config), reduced), ...glyphVariables(config.disclosure_glyphs, config.disclosure_glyph_sets) };
     for (const [k, v] of Object.entries(vars)) document.documentElement.style.setProperty(k, v);
   }, [config]);
 

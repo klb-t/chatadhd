@@ -79,11 +79,24 @@ Effective compose(std::string_view kind, const Json& rom, const std::vector<Over
 Result<std::vector<Overlay>> load_overlays(const std::vector<std::filesystem::path>& data_dirs);
 
 // The ROM layer of a kind: the view_kinds entry's source {profile, pointer, key?} read from the builtin runtime profile (never the user's
-// overlay of that profile). An array source is keyed by `key`. Empty source = an empty ROM layer.
+// overlay of that profile: that one is a layer of its own, profile_overlay). An array source is keyed by `key`. Empty source = an empty ROM
+// layer.
 Result<Json> rom_layer(const Json& view_kind_entry);
 
-// The effective list of `kind` for a data directory (ROM + <root>/views/*.json). `extra_dirs`: further memories, composed after root.
-// A kind that view_kinds does not know is still composed (emergent): empty ROM layer, default policy.
+// The user's profile overlay of a source {profile, pointer, key?} as a layer of its own, never folded into the ROM: the differences between
+// `rom` (the source read from the builtin profile, rom_layer) and the same source read with <data_dir>/profiles/<profile>.pack, as add /
+// modify / hide operations on `kind` of an in-memory overlay named "profile:<profile>" — so an entry the overlay added has the origin
+// "overlay:profile:<profile>" and one it changed carries that layer in its provenance, like any view overlay. A modify patch fits the kind's
+// policy (replace: the whole entry; shallow: changed top-level fields; deep: changed fields, recursing into objects). No data_dir, no
+// overlay file or no difference: an overlay without ops. An overlay that does not load is the error (effective() then composes without
+// it and reports the reason as an issue).
+Result<Overlay> profile_overlay(std::string_view kind, const Json& source, const Json& rom, const std::filesystem::path& data_dir,
+                                const Policy& policy = {});
+
+// The effective list of `kind` for a data directory: the ROM (builtin), then the user's profile overlay of the kind's source profile
+// (profile_overlay; for view_kinds itself, of graph_views), then <root>/views/*.json. A profile overlay that does not load never fails the
+// view: the shipped entries are composed without it and `issues` names it (code profile_overlay_unreadable). `extra_dirs`: further
+// memories, composed after root. A kind that view_kinds does not know is still composed (emergent): empty ROM layer, default policy.
 Result<Effective> effective(const std::filesystem::path& root, std::string_view kind, const std::vector<std::filesystem::path>& extra_dirs = {});
 
 // Writing (the executors behind loom_view_write): put an operation into the overlay <root>/views/<overlay>.json, replacing an earlier operation

@@ -11,6 +11,7 @@ const sv = await loader.load('src/shell/start-view.ts');
 const dis = await loader.load('src/shell/disclosure-state.ts');
 const Disclosure = (await loader.load('src/shell/Disclosure.tsx')).default;
 const anim = await loader.load('src/shell/animation.ts');
+const glyphs = await loader.load('src/shell/disclosure-glyphs.ts');
 const lang = await loader.load('src/shell/language.ts');
 const text = await loader.load('src/shell/text.ts');
 const p = await loader.load('src/onboarding/presentation.mjs');
@@ -72,7 +73,7 @@ test('disclosure: state, aria-expanded and label change at once (no wait for the
   assert.match(open, /aria-expanded="true"/); assert.match(open, /Ukryj myślenie/); assert.match(open, /data-state="expanded"/);
   const css = await readFile(new URL('../../src/shell/shell.css', import.meta.url), 'utf8');
   assert.match(css, /\.disclosure-head \{[^}]*min-height: 44px/);
-  assert.match(css, /rotate\(90deg\)/);
+  assert.match(css, /\.disclosure\[data-state="expanded"\] > \.disclosure-head \.disclosure-chevron::before \{ content: var\(--disclosure-glyph-expanded\)/);  // UI25: the state glyph swaps (was a rotated ›)
 });
 
 test('animation as data: units, per-element styles, reduced motion, overlay style', () => {
@@ -98,6 +99,28 @@ test('animation as data: units, per-element styles, reduced motion, overlay styl
   assert.equal(anim.resolveElement(mine, 'disclosure', true).style, 'fade');
   assert.equal(anim.resolveElement(mine, 'drawer', false).kind, 'slide');  // untouched elements keep the preset
   assert.equal(anim.resolveElement(anim.mergeData({ animations: { menu: 'none' } }), 'menu', false).ms, 0);
+});
+
+test('disclosure glyphs (UI25): preset ▼ collapsed = expand down, ▲ expanded; sets and own sets are data; CSS uses them everywhere', async () => {
+  assert.deepEqual(glyphs.resolveGlyphs(undefined), { collapsed: '▼', expanded: '▲' });
+  assert.deepEqual(glyphs.resolveGlyphs('no-such-set'), { collapsed: '▼', expanded: '▲' });
+  assert.deepEqual(glyphs.resolveGlyphs('plus_minus'), { collapsed: '[+]', expanded: '[-]' });
+  assert.equal(glyphs.resolveGlyphs('tree').expanded, '▼');
+  // an own set by name; a missing half keeps the preset sign; an own set can replace a shipped one
+  assert.deepEqual(glyphs.resolveGlyphs('mine', { mine: { collapsed: 'v' } }), { collapsed: 'v', expanded: '▲' });
+  assert.deepEqual(glyphs.resolveGlyphs('tree', { tree: { collapsed: '>', expanded: 'v' } }), { collapsed: '>', expanded: 'v' });
+  assert.deepEqual(glyphs.resolveGlyphs('__proto__', {}), { collapsed: '▼', expanded: '▲' });
+  const vars = glyphs.glyphVariables('mine', { mine: { collapsed: 'a"b\\c', expanded: 'x' } });
+  assert.equal(vars['--disclosure-glyph-collapsed'], '"a\\"b\\\\c"');
+  assert.equal(vars['--disclosure-glyph-expanded'], '"x"');
+  const css = await readFile(new URL('../../src/shell/shell.css', import.meta.url), 'utf8');
+  assert.doesNotMatch(css, /rotate\(90deg\)/, 'the old right-pointing chevron that turned down only when expanded is gone');
+  assert.match(css, /--disclosure-glyph-collapsed: "\\25BC"/);
+  assert.match(css, /details > summary::before \{ content: var\(--disclosure-glyph-collapsed\)/);
+  assert.match(css, /details\[open\] > summary::before \{ content: var\(--disclosure-glyph-expanded\)/);
+  const field = (k) => fields.find(f => f.key === k);
+  assert.equal(field('disclosure_glyphs')?.section, 'Interfejs i wyświetlanie');
+  assert.equal(field('disclosure_glyph_sets')?.type, 'object');
 });
 
 test('language: setting, then preference, then browser, then en', () => {

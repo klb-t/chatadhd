@@ -51,6 +51,14 @@ Krytyk wskazał słowa właściciela spoza zbioru. Dosłownie:
 
 Niesprawdzone (krytyk): wiadomości właściciela wpisane bezpośrednio do S2 po 08:20Z 16.10 i sesje właściciela w innych repozytoriach (Custom-Keyboard-Pro, Watchdog) — poza zakresem tego zbioru.
 
+## Uzupełnienie 3 — 2026-10-16 ~16:30 UTC: przebiegi agentowe w archiwach → ilościowa ekonomia tokenów (P38)
+
+> a jeszcze już mi się trzeci raz przypomina a zapominam jak gadam z tobą, bo pytałem czy przebiegi agdentyczny też są w archiwach, to by się zrobiło ilościową analizę ekonomii tokenów
+
+Wcześniej tego samego dnia: „gpt statystyk narobił na przełomie miesięcy kilku jak nie kilkunastokrotnie więcej niż ty, w tych więcej niż dwóch, chyba 3-4 dniach”; „wcześniejszy Speed Run to był czad jepity którego wykorzystałem przez 3 dni abonament 500 € na miesiąc, ale dałem mu za duże parametry i za dużo swobody to nieekonomicznie to rozegrał, teraz Ciebie na maksa Mam i to nie na 2 dni a na dwa miesiące”; „co?? Chyba ci się coś pomieszało bo zamiast minuty i godziny mówisz tygodnie i miesiące”; „jakie poprzednie projekty jakie 34 dni Skąd to wziąłeś? Patrzyłeś w historię commitów?”.
+
+Wymaganie (P38 nr 37, „ekonomia tokenów”): inwentarz mierzy per archiwum `has_usage`, `has_tool_traces`, `reasoning: full|summary|none`; raport per przebieg, per model i per narzędzie: tokeny zmierzone (Claude Code JSONL `usage`, ledger OpenRouter, Codex CLI gdy ma liczniki) albo oszacowane (tokenizer + cennik z datą jako dane; metoda i błąd podane, nigdy mieszane bez etykiety), koszt, cache read/write, wynik (commit/plik/decyzja), porównanie między dostawcami, CSV. Estymaty czasu pracy — wyłącznie z miary (historia `main`, brief→main), z podaną podstawą.
+
 ---
 
 # Filozofia (`philosophy`)

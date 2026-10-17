@@ -354,8 +354,13 @@ StepOutcome run_settings_set(Runtime& rt, const StepCall& c) {
   const std::string scope = json::get_string(*field, "scope", "config");
   auto value = typed_value(given, json::get_string(*field, "type"));
   if (!value) return failed(value.error());
+  // The declared values (settings_fields.pack): the data says whether a planned or unlisted value is refused (its reader rejects it)
+  // or stored with a warning (its reader degrades) — the same rule as every raw config write path (check_config_patch).
+  auto declared = check_declared_value(*field, *value);
+  if (!declared) return failed(declared.error());
   StepOutcome out;
   Json report = Json{{"key", key}, {"scope", scope}};
+  if (!declared->is_null()) report["warning"] = *declared;
   if (scope == "secret") {
     if (!value->is_string()) return failed(Error(Errc::InvalidArgument, "a secret is text"));
     rt.secrets().set(key, value->get<std::string>());

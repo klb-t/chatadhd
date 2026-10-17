@@ -1196,9 +1196,12 @@ int cmd_config(Runtime& rt, const Args& a) {
     print_json(must(settings_fields(rt.paths().root)));
   } else if (sub == "set") {
     std::string key = need(a, 1, "key"), raw = need(a, 2, "value");
-    must(check_config_write(key, rt.paths().root));
     auto parsed = json::parse(raw);
-    c.set(key, parsed ? *parsed : Json(raw));
+    const Json value = parsed ? *parsed : Json(raw);
+    // read_only and the declared values of the field: the same rule as settings.set and PATCH /api/config
+    for (const auto& w : must(check_config_patch(Json{{key, value}}, rt.paths().root)))
+      std::cerr << "warning: " << json::get_string(w, "message") << "\n";
+    c.set(key, value);
     must(c.save());
     if (!g_quiet) std::cout << key << " = " << json::dump(c.get(key)) << "\n";
   } else {

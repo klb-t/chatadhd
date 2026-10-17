@@ -231,6 +231,22 @@ const Json& loom_config_defaults() {
       {"loom_zip_max_total_bytes", std::int64_t(64) * 1024 * 1024 * 1024},
       {"loom_zip_max_ratio", 1000},
       {"loom_git_allow_repo_config", false},
+      // M1-D0 presets of the shell and the context receipt (data/runtime/settings_fields.pack describes each,
+      // with its human label, group and the meaning of every value). Presets, not rules: the user may set another
+      // value (settings.set and every config write path); project/conversation levels come when a reader resolves the
+      // key through the scope chain (level_evidence.chain of the pack).
+      {"navigator_layout", "both"},
+      {"perspective_composition", "sectors"},
+      {"navigator_children_limit", 50},
+      {"composer_context_strip", "chips"},
+      {"receipt_link", "visible"},
+      {"topbar_model_line", "chip"},
+      {"onboarding_card", "show"},
+      {"android_back_exit_confirm", "ask"},
+      {"secrets_in_chat", "never"},
+      {"profile_detail_level", "normal"},
+      {"context_receipt_store", "auto"},
+      {"context_receipt_max_bytes", 65536},
   };
   return kLoomDefaults;
 }
