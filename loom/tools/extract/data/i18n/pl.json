@@ -516,5 +516,6 @@
   "expr.needs_timeline": "{what} potrzebuje osi czasu, a jej nie ma (brak dat w źródłach)",
   "expr.unknown_field": "nieznane pole {field!r} dla {kind}; pola słownikowe: {dicts}; dowolna ścieżka: raw.<pole>",
   "decisions.carried": "{n} decyzji ręcznych przeniesiono na nowszą wersję tej samej rozmowy (service, ext_id) — treść się zmieniła",
-  "decisions.unknown": "{n} decyzji ręcznych nie pasuje do żadnej rozmowy w źródłach (zostają w pliku, niczego nie zmieniają)"
+  "decisions.unknown": "{n} decyzji ręcznych nie pasuje do żadnej rozmowy w źródłach (zostają w pliku, niczego nie zmieniają)",
+  "aggregate.no_content": "tryb zbiorczy to same liczby: {op} zapisałby treść i nazwy plików, więc nie został wykonany (uruchom bez --zbiorczo albo ustaw write.aggregate_content: allow)"
 }

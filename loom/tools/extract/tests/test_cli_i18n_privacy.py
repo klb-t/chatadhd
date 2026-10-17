@@ -161,7 +161,9 @@ class PrivacyGuardTest(ExtractTest):
             code = cli.main(["--zbiorczo", "--json", "szukaj", *map(str, sources), "--slowa", "rekurencja", "--wzorzec", "agentic",
                              "--pakiet", str(pkg)])
         self.assertEqual(code, 0, err.getvalue())
-        text = out.getvalue() + "".join(p.read_text(encoding="utf-8") for p in pkg.iterdir())
+        files = sorted(p for p in pkg.rglob("*") if p.is_file())  # every file, recursively, manifest.json included
+        self.assertIn(pkg / "manifest.json", files)
+        text = out.getvalue() + "".join(p.read_text(encoding="utf-8") for p in files) + "\n".join(str(p.relative_to(pkg)) for p in files)
         names = [p.name for s in sources for p in ([s] if s.is_file() else s.rglob("*"))] + ["MyActivity.json", "grok-chat-item.js"]
         for needle in E["forbidden_in_aggregate"] + names:
             self.assertNotIn(needle, text, needle)

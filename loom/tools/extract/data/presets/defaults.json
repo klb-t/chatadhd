@@ -31,7 +31,7 @@
                        "guard": {"ratio": 10.0, "limit_per_run": 0, "limit_per_day": 0},
                        "accept": false, "accept_x10": false, "replay_only": false,
                        "provider": {"base_url": null, "api_key_env": "LOOM_EXTRACT_API_KEY", "secret": "api_key", "timeout": 120}}},
-  "write": {"units_snapshot": true, "explain": true, "aggregate": false},
+  "write": {"units_snapshot": true, "explain": true, "aggregate": false, "aggregate_content": "refuse"},
   "cut": {"profiles": ["preserve", "text"], "order": "package", "attachments": "copy_used", "redaction": "none", "extract_text": false,
           "package_default": "ekstrakt-{topic}", "package_topic_default": "archiwum"},
   "redaction": {"inflection": {"strip_final": "aeiouyąę", "optional_inner": "e", "ending_max": 5, "min_stem": 3},

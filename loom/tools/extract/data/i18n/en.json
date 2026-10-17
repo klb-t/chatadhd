@@ -516,5 +516,6 @@
   "expr.needs_timeline": "{what} needs a timeline and there is none (no dates in the sources)",
   "expr.unknown_field": "unknown field {field!r} for {kind}; dict fields: {dicts}; any path: raw.<field>",
   "decisions.carried": "{n} manual decision(s) carried to a newer version of the same conversation (service, ext_id) — the content changed",
-  "decisions.unknown": "{n} manual decision(s) match no conversation in the sources (kept in the file, they change nothing)"
+  "decisions.unknown": "{n} manual decision(s) match no conversation in the sources (kept in the file, they change nothing)",
+  "aggregate.no_content": "aggregate mode is counts only: {op} would write content and file names, so it was not run (run without --aggregate or set write.aggregate_content: allow)"
 }

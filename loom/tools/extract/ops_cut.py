@@ -388,8 +388,17 @@ def _reset_cut_stage(eng: Any) -> None:
     eng.staged.items = keep
 
 
+def _aggregate_guard(eng: Any, what: str) -> None:
+    """Aggregate mode is counts only: a cut or a hand-off writes content and file names (texts, titles, member and
+    attachment names), so it is refused there unless the preset says otherwise (write.aggregate_content: allow)."""
+    if eng.aggregate and str(eng.ds.preset("write.aggregate_content", "refuse")) != "allow":
+        from .i18n import t as _t
+        raise ValueError(_t("aggregate.no_content", op=what))
+
+
 @op("cut")
 def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
+    _aggregate_guard(eng, "cut")
     eng.ensure_units()
     pkg = eng.ensure_package()
     entries = pkg.ordered(p.get("order") or "package")
@@ -460,6 +469,7 @@ def _public_att(info: Any, aggregate: bool) -> Any:
 @op("handoff")
 def op_handoff(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     from .handoff import build_handoff
+    _aggregate_guard(eng, "handoff")
     eng.ensure_units()
     pkg = eng.ensure_package()
     entries = pkg.ordered(p.get("order") or "package")

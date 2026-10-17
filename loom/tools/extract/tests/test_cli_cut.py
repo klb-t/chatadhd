@@ -191,9 +191,14 @@ class CutVerbsTest(ExtractTest):
 
     def test_aggregate_cut_prints_no_titles_or_names(self):
         sources = [EXPORTS / "openai_2026_sharded.zip", EXTRACT / "claude_code/projects"]
-        code, out, err = run("--zbiorczo", "--json", "wytnij", *sources, "-e", "kind:conversation OR kind:session", "--profil", "text",
-                             "--przekaz", "-p", self.tmp / "agg")
-        self.assertEqual(code, 0, err)
+        # F45: aggregate = counts only, so a content-writing cut is refused (preset write.aggregate_content: refuse)
+        profiles = sorted(p.stem for p in (EXTRACT.parents[2] / "tools/extract/data/profiles").glob("*.json"))
+        code, out, err = run("--zbiorczo", "--json", "wytnij", *sources, "-e", "kind:conversation OR kind:session",
+                             *[x for pid in profiles for x in ("--profil", pid)], "--przekaz", "-p", self.tmp / "agg")
+        self.assertEqual(code, 1, err)
+        self.assertIn("tryb zbiorczy", err)
+        written = [p for p in (self.tmp / "agg").rglob("*") if p.is_file()] if (self.tmp / "agg").exists() else []
+        self.assertEqual(written, [], "nothing is written by a refused aggregate cut")
         for needle in ("Migracja bazy danych", "Obrazy i dźwięk", "openai_2026_sharded.zip", "sess-0001", "schemat.png"):
             i = (out + err).find(needle)
             self.assertEqual(i, -1, (needle, (out + err)[max(0, i - 300):i + 40]))
