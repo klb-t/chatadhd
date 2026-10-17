@@ -135,6 +135,8 @@ Result<std::string> record_role_choice(Database& db, const Json& resolved, const
   if (const Json* e = json::find(resolved, "entry"); e && e->is_object()) entry = *e;
   for (const char* k : {"adapter", "compose", "members", "quorum", "fuse", "params", "setting"})
     if (const Json* x = json::find(resolved, k); x && !entry.contains(k)) entry[k] = *x;
+  // The human texts of a role (ports.pack label, why, status) describe the job; they are not part of the choice.
+  for (const char* k : {"label", "why", "status"}) entry.erase(k);
   entry = redact(entry);
   // The same choice is the same node; a changed choice (another adapter, params, scope) is a new one.
   const std::string digest = Sha256::hex(json::canonical(entry)).substr(0, 12);

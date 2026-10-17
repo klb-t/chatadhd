@@ -1000,4 +1000,121 @@ TEST_SUITE("guardian") {
     CHECK(run("test/frontier-opus") == 1);
     CHECK(run("test/cheap-haiku") == 2);
   }
+
+  TEST_CASE("M1-D1: resolve_model works for every policy of the data - each explicit step, every role step alone, else none") {
+    Fixture f;
+    const auto profile = unwrap(RuntimeProfile::builtin("guardian"));
+    const Json& policies = profile.values().at("models").at("policies");
+    const auto ports = unwrap(RuntimeProfile::builtin("ports"));
+    for (const char* name : {"guardian", "analyzer", "chat", "intent", "image", "speech", "embed", "asr", "ocr", "action"}) CHECK_MESSAGE(policies.contains(name), name);
+    std::vector<std::string> settings;  // every setting an explicit step names, cleared before each case
+    for (auto it = policies.begin(); it != policies.end(); ++it)
+      for (const auto& step : it.value().at("chain"))
+        if (json::get_string(step, "type") == "explicit") settings.push_back(json::get_string(step, "setting"));
+    // the role presets that would supply a model through their `setting` (semantic_model for guardian / analysis.fast ...)
+    for (auto it = ports.values().at("roles").begin(); it != ports.values().at("roles").end(); ++it)
+      if (const std::string s = json::get_string(it.value(), "setting"); !s.empty()) settings.push_back(s);
+    const auto overlay = f.td.path() / "profiles" / "ports.pack";
+    auto clear = [&] {
+      for (const auto& s : settings) f.rt->config().set(s, "");
+      std::filesystem::remove(overlay);
+    };
+    for (auto it = policies.begin(); it != policies.end(); ++it) {
+      const std::string name = it.key();
+      INFO(name);
+      const Json& chain = it.value().at("chain");
+      REQUIRE_FALSE(chain.empty());
+      CHECK(json::get_string(chain.back(), "type") == "none");
+      // every step says what it means, in pl and en
+      for (const auto& step : chain) {
+        CHECK_FALSE(json::get_string(step.value("meaning", Json::object()), "pl").empty());
+        CHECK_FALSE(json::get_string(step.value("meaning", Json::object()), "en").empty());
+      }
+      // a policy names the ports role it chooses for; one that nothing reads yet says what happens today
+      const std::string role = json::get_string(it.value(), "role");
+      CHECK(ports.values().at("roles").contains(role));
+      if (name != "guardian" && name != "analyzer") {
+        CHECK(it.value().at("status").at("state") == "planned");
+        CHECK_FALSE(json::get_string(it.value().at("status").at("today"), "pl").empty());
+      }
+      // nothing set: no model, and the reader is told why
+      clear();
+      auto none = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
+      CHECK(none.model.empty());
+      CHECK(none.via == "none");
+      CHECK_MESSAGE(none.reason.find("'" + name + "'") != std::string::npos, none.reason);  // the reason names the policy
+      bool explicit_seen = false;
+      for (const auto& step : chain) {
+        const std::string type = json::get_string(step, "type");
+        if (type == "explicit") {
+          // an explicit setting decides first
+          clear();
+          const std::string setting = json::get_string(step, "setting");
+          f.rt->config().set(setting, "explicit/" + name);
+          auto c = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
+          if (!explicit_seen) {
+            CHECK(c.model == "explicit/" + name);
+            CHECK(c.via == "explicit:" + setting);
+            CHECK_FALSE(c.tier.empty());
+            CHECK_FALSE(c.flow.empty());
+          }
+          explicit_seen = true;
+        } else if (type == "role") {
+          // with the explicit settings empty and only THIS role chosen in the ports profile, this step decides: every earlier
+          // role step yields nothing (its preset reads a cleared setting), so a later step is reached (intent: analysis.fast, in
+          // place of today's fallback to default_model; guardian: analysis.fast)
+          clear();
+          const std::string r = json::get_string(step, "role");
+          std::filesystem::create_directories(overlay.parent_path());
+          std::ofstream(overlay) << Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "ports"},
+                                         {"overrides", Json{{"roles", Json{{r, Json{{"adapter", "openai_chat"}, {"params", Json{{"model", "role/" + name + "/" + r}}}}}}}}}}.dump();
+          auto c = annotations::resolve_model(f.rt->config(), f.td.path(), name, f.conv, "", -1, &f.rt->db());
+          INFO(r);
+          CHECK(c.model == "role/" + name + "/" + r);
+          CHECK(c.via == "role:" + r);
+        }
+      }
+      clear();
+    }
+  }
+
+  TEST_CASE("M1-D1: the class of a model as guardian.pack says it today - the name decides, a price above the mid threshold too") {
+    Fixture f;
+    const Json models = unwrap(annotations::Policy::load(f.td.path())).models;
+    // no reader passes a price today (models.price_path planned): the name patterns decide, cheap first ("mini" is in "gemini")
+    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro") == "cheap");
+    CHECK(annotations::model_tier(models, "vendor/brand-x") == "unknown");
+    // with a price above the mid threshold (frontier has no threshold) the patterns of all classes decide, in order: cheap, mid
+    // or frontier, else unknown (tiers[frontier].reason.threshold, unknown_tier.reason)
+    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro", 10) == "cheap");
+    CHECK(annotations::model_tier(models, "anthropic/claude-sonnet-4", 10) == "mid");
+    CHECK(annotations::model_tier(models, "anthropic/claude-opus-4", 10) == "frontier");
+    CHECK(annotations::model_tier(models, "vendor/brand-x", 10) == "unknown");
+    // a price within a threshold decides before the name
+    CHECK(annotations::model_tier(models, "anthropic/claude-opus-4", 0.5) == "cheap");
+    // the texts say what the code does: no price path today, every threshold reason marked planned
+    CHECK(models.at("price_path").at("state") == "planned");
+    for (const auto& t : models.at("tiers")) CHECK(t.at("reason").at("threshold_state") == "planned");
+    // every class says why, in pl and en, for the pattern and for the threshold; the unknown class says why too
+    const Json builtin = unwrap(RuntimeProfile::builtin("guardian")).values().at("models");
+    REQUIRE_FALSE(builtin.at("tiers").empty());
+    for (const auto& t : builtin.at("tiers")) {
+      INFO(json::get_string(t, "id"));
+      for (const char* kind : {"pattern", "threshold"})
+        for (const char* lang : {"pl", "en"}) {
+          INFO(kind << " " << lang);
+          const Json reason = t.at("reason").value(kind, Json::object());
+          REQUIRE(reason.contains(lang));
+          REQUIRE(reason.at(lang).is_string());
+          CHECK_FALSE(reason.at(lang).get<std::string>().empty());
+        }
+    }
+    for (const char* lang : {"pl", "en"}) CHECK_FALSE(json::get_string(builtin.at("unknown_tier").at("reason"), lang).empty());
+    // the preset assigns no model to a class by hand: tier_models is the person's overlay, every value empty in the preset
+    REQUIRE(builtin.at("tier_models").is_object());
+    for (auto it = builtin.at("tier_models").begin(); it != builtin.at("tier_models").end(); ++it) {
+      INFO(it.key());
+      CHECK(it.value() == "");
+    }
+  }
 }

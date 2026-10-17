@@ -30,6 +30,13 @@ TEST_SUITE("rom") {
       const Json item = unwrap(rom.read(id));
       const std::string status = item["status"].get<std::string>();
       CHECK(item["address"] == "rom:" + id);
+      // M1-D1: what the item is for, in both languages (from the generator, never one language only)
+      INFO(id);
+      REQUIRE(item["why"].is_object());
+      CHECK_FALSE(json::get_string(item["why"], "en").empty());
+      CHECK_FALSE(json::get_string(item["why"], "pl").empty());
+      CHECK(item["why"]["pl"] != item["why"]["en"]);
+      CHECK_FALSE(json::get_string(item["label"], "pl").empty());
       if (item["files"].empty()) {
         CHECK(status == "missing");
         CHECK_FALSE(item["gaps"].empty());  // a missing item says why

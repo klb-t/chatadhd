@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "settings_fields",
-  "revision": 4,
-  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack. Review of M1-D0 (rev. 3): `human.levels` = the levels where a reader honours the value, backed by `level_evidence` (chain-resolved keys, per-request wire options); a field whose key no code reads yet carries `status {state: planned, by, reason}`; `values_open` marks an example list; `human.role_status` keeps a role chip honest until ports.pack knows the role; the `group` and `levels` enums are gone (an overlay may add a group of its own; levels are checked against the live scope chain). Review fixes (rev. 4): `values[].on_set` and `on_unlisted` say what a write of a planned or unlisted value does on every write path (refuse: its reader rejects it; warn: stored with a warning); `level_evidence.installation` backs the installation level (a profile value is set only in its profile, never in config.json); `placement` lets an overlay move one field into another group without copying the fields array; a missing `human` is a listed problem, not a load failure; `human.flows` are checked against the action catalogue.",
+  "revision": 5,
+  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack. Review of M1-D0 (rev. 3): `human.levels` = the levels where a reader honours the value, backed by `level_evidence` (chain-resolved keys, per-request wire options); a field whose key no code reads yet carries `status {state: planned, by, reason}`; `values_open` marks an example list; `human.role_status` keeps a role chip honest until ports.pack knows the role; the `group` and `levels` enums are gone (an overlay may add a group of its own; levels are checked against the live scope chain). Review fixes (rev. 4): `values[].on_set` and `on_unlisted` say what a write of a planned or unlisted value does on every write path (refuse: its reader rejects it; warn: stored with a warning); `level_evidence.installation` backs the installation level (a profile value is set only in its profile, never in config.json); `placement` lets an overlay move one field into another group without copying the fields array; a missing `human` is a listed problem, not a load failure; `human.flows` are checked against the action catalogue. M1-D1: the roles of human.role are all known to ports.pack, which carries each role's label, why and status; `role_status` remains only for a role ports.pack does not know (an overlay's own role). human.flows agree with actions.pack reads (tools/check_action_reads.py, ctest data.check_action_reads): for every flow that declares reads, a field names the flow when the flow's own reads list the key, and may name it when the flow reads the key through its steps or subflows (use_model); a flow without reads is not checked yet, and a planned field names the flows that will read it.",
   "defaults": {
     "element_class": "settings_field",
     "rule_action": "edit",
@@ -67,8 +67,8 @@
               "en": "Rules about you"
             },
             "why": {
-              "pl": "To, co strażnik rozmowy zapamiętał o Tobie i wysyła z żądaniem.",
-              "en": "What the conversation guardian remembered about you and sends with a request."
+              "pl": "To, co Sekretarz zapamiętał o Tobie i wysyła z żądaniem.",
+              "en": "What the Secretary remembered about you and sends with a request."
             }
           }
         ]
@@ -137,8 +137,8 @@
               "en": "Roles"
             },
             "why": {
-              "pl": "Który model wykonuje którą pracę: rozmowa, analiza w tle, strażnik, obraz, głos.",
-              "en": "Which model does which job: conversation, background analysis, guardian, image, voice."
+              "pl": "Który model wykonuje którą pracę: rozmowa, analiza w tle, Sekretarz, obraz, głos.",
+              "en": "Which model does which job: conversation, background analysis, Secretary, image, voice."
             }
           },
           {
@@ -190,8 +190,8 @@
           {
             "id": "straznik",
             "label": {
-              "pl": "Strażnik rozmowy",
-              "en": "Conversation guardian"
+              "pl": "Sekretarz",
+              "en": "Secretary"
             },
             "why": {
               "pl": "Sekretarz, który zauważa poprawki i doprecyzowania i nigdy nie zmienia Twoich wiadomości.",
@@ -375,8 +375,8 @@
           "en": "Costs"
         },
         "why": {
-          "pl": "Twoje limity wydatków, strażnik wzrostu zużycia ×10 i księga tego, ile wydałeś.",
-          "en": "Your spending limits, the ×10 consumption growth guard and the ledger of what you spent."
+          "pl": "Twoje limity wydatków, Bezpiecznik ×10 (wzrost zużycia) i księga tego, ile wydałeś.",
+          "en": "Your spending limits, the ×10 fuse (consumption growth) and the ledger of what you spent."
         },
         "order": 7,
         "subgroups": [
@@ -455,7 +455,6 @@
     "level_evidence": {
       "chain": [
         "default_model",
-        "semantic_model",
         "guardian_model",
         "chat_representation",
         "chat_thread_filter",
@@ -486,7 +485,6 @@
       ],
       "installation": [
         "default_model",
-        "semantic_model",
         "guardian_model",
         "chat_representation",
         "chat_thread_filter",
@@ -539,7 +537,10 @@
             "semantic.batch",
             "agent.run",
             "use_model",
-            "embedding.embed"
+            "embedding.embed",
+            "batch.chat",
+            "knowledge.propose_semantics",
+            "analysis.run"
           ]
         }
       },
@@ -576,7 +577,21 @@
             "chat.send",
             "actions.run",
             "agent.run",
-            "actions.preview"
+            "actions.preview",
+            "use_model",
+            "archive.refine",
+            "input.route_intent",
+            "summarise",
+            "translate",
+            "elaborate",
+            "parody",
+            "critique",
+            "combine",
+            "rephrase",
+            "explain_simply",
+            "depict",
+            "narrate",
+            "ports.show"
           ]
         }
       },
@@ -654,18 +669,15 @@
             "en": "Background analysis model"
           },
           "why": {
-            "pl": "Który tani model czyta wiadomości w tle i wyciąga z nich tematy, encje i powiązania do grafu; pusty = tylko lokalne reguły, bez kosztu.",
-            "en": "Which cheap model reads messages in the background and pulls topics, entities and relations into the graph; empty = local rules only, no cost."
+            "pl": "Model, który czyta wiadomości w tle i wyciąga z nich tematy, encje i powiązania do grafu; od jego klasy zależy przepływ, gdy analiza czyta fragmenty (frontier — jedno wywołanie; tani, średni i nieznany — klasyczne wywołanie i wąskie pytanie o fragmenty); pusty = analiza wiadomości tylko lokalnie, bez kosztu. Z tego pola korzystają też: Sekretarz (gdy „Model Sekretarza” jest pusty), określanie celu promptu (przy wysyłaniu wiadomości), szacunek kosztu (gdy archiwum albo budowanie wiedzy może dopracować wynik modelem), dopracowanie archiwum, analiza na żądanie i pytanie „jakiego modelu używam do analizy”. Uwaga: „Dopracuj elementy archiwum” (tylko z llm auto) przy pustym polu bierze „Model rozmowy” i jest płatne.",
+            "en": "The model that reads messages in the background and pulls topics, entities and relations into the graph; its class picks the flow when the analysis reads segments (frontier — one call; cheap, mid and unknown — the classic call and a narrow question about segments); empty = message analysis stays local, no cost. The same field is also used by: the Secretary (when “Secretary model” is empty), typing the goal of a prompt (when a message is sent), the cost estimate (when an archive or a knowledge build may refine its result with a model), the refinement of archive items, the analysis on request and the question “which model do I use for analysis”. Note: “Refine archive items” (only with llm auto) takes “Conversation model” when this field is empty, and is paid."
           },
           "effect": {
-            "pl": "Z modelem analiza jest dokładniejsza i płatna; bez niego graf buduje się z lokalnych reguł. Model wskazany w rozmowie lub projekcie honoruje dziś tylko strażnik rozmowy; analiza w tle bierze Twój.",
-            "en": "With a model the analysis is more accurate and paid; without one the graph is built from local rules. A model named in a conversation or project is honoured today only by the conversation guardian; the background analysis takes yours."
+            "pl": "Z modelem analiza jest dokładniejsza i płatna; bez niego graf buduje się z lokalnych reguł. Każdy czytelnik bierze Twoje ustawienie, a bez niego preset (puste pole); wartości wskazanej dla rozmowy lub projektu dziś nie czyta nikt — dla rozmowy działa tylko „Model Sekretarza” (guardian_model).",
+            "en": "With a model the analysis is more accurate and paid; without one the graph is built from local rules. Every reader takes your setting, else the preset (an empty field); a value named for a conversation or project is read by nobody today — per conversation only the “Secretary model” (guardian_model) applies."
           },
           "levels": [
-            "installation",
-            "person",
-            "project",
-            "conversation"
+            "person"
           ],
           "group": "modele",
           "subgroup": "role",
@@ -674,7 +686,16 @@
             "semantic.analyse",
             "semantic.batch",
             "guardian.observe",
-            "actions.preview"
+            "guardian.annotate",
+            "guardian.status",
+            "actions.preview",
+            "batch.chat",
+            "archive.refine",
+            "goal.typing",
+            "knowledge.propose_semantics",
+            "analysis.run",
+            "guardian.model_read",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -1134,7 +1155,8 @@
           "group": "rozmowa",
           "flows": [
             "chat.send",
-            "conversation.rename"
+            "conversation.rename",
+            "input.route_intent"
           ]
         }
       },
@@ -1164,9 +1186,7 @@
           ],
           "group": "rozmowa",
           "flows": [
-            "chat.send",
-            "agent.run",
-            "graph_native.reply"
+            "chat.send"
           ]
         }
       },
@@ -1187,8 +1207,8 @@
             "en": "Whether the app reads messages in the background and builds the knowledge graph (topics, entities, relations) it later picks context from."
           },
           "effect": {
-            "pl": "Wyłączone: nowe wiadomości nie trafiają do grafu, dopóki nie włączysz; dotychczasowe wyniki zostają.",
-            "en": "Off: new messages do not enter the graph until you switch it on; earlier results stay."
+            "pl": "Wyłączone: nowe wiadomości nie trafiają do grafu, dopóki nie włączysz; dotychczasowe wyniki zostają. Wyłączenie sprawia też, że Sekretarz (metoda model albo hybryda) nie czeka na odczyt analizy i czyta wiadomość własnym modelem — to płatne wywołanie.",
+            "en": "Off: new messages do not enter the graph until you switch it on; earlier results stay. Switching it off also makes the Secretary (method model or hybrid) stop waiting for the analysis reading and read the message with its own model — a paid call."
           },
           "levels": [
             "person"
@@ -1197,7 +1217,9 @@
           "subgroup": "analiza",
           "flows": [
             "semantic.analyse",
-            "semantic.batch"
+            "semantic.batch",
+            "knowledge.propose_semantics",
+            "guardian.observe"
           ]
         }
       },
@@ -1568,8 +1590,8 @@
         "description": "Usage policy options (growth factor, baselines). Raising expected consumption by an order of magnitude needs the user's confirmation; the confirmation is enforced by the usage-policy actions, not by the config write. P17: baseline_min_samples (preset 5): until a cohort has this many measured samples its baseline is the larger of the measured mean and a floor, so one short first message does not make the next ordinary one look like a tenfold growth (0 turns the floor off; a cohort with no sample keeps the old behaviour). baseline_floor_tokens (preset {input: 4000, output: 1000}): the size of an ordinary request the floor is derived from - input_tokens and output_tokens as they are, input_bytes as input x baseline_floor_chars_per_token (preset 4.0, the low end of the band the cost estimates use), cost_usd and money_usd priced with the model's price when the caller knows it. baseline_floor: explicit floors per resource that replace the derived ones (null = none). These are presets of what normal usage is, not limits; they are edited like the growth factor, with the same confirmation.",
         "human": {
           "label": {
-            "pl": "Strażnik wzrostu zużycia (×10)",
-            "en": "Consumption growth guard (×10)"
+            "pl": "Bezpiecznik ×10 (wzrost zużycia)",
+            "en": "×10 fuse (consumption growth)"
           },
           "why": {
             "pl": "Jedyna reguła właściciela: skok spodziewanego zużycia o rząd wielkości wymaga Twojego potwierdzenia; tu są współczynnik i punkty odniesienia.",
@@ -1587,7 +1609,8 @@
           "flows": [
             "actions.run",
             "usage.spend",
-            "chat.send"
+            "chat.send",
+            "use_model"
           ]
         }
       },
@@ -1619,7 +1642,8 @@
           "flows": [
             "usage.set_limit",
             "usage.spend",
-            "chat.send"
+            "chat.send",
+            "use_model"
           ]
         }
       },
@@ -1767,7 +1791,8 @@
           "subgroup": "analiza",
           "flows": [
             "semantic.requeue",
-            "semantic.analyse"
+            "semantic.analyse",
+            "semantic.batch"
           ]
         },
         "values": [
@@ -1816,8 +1841,7 @@
           "group": "rozmowa",
           "subgroup": "polecenia",
           "flows": [
-            "input.route_intent",
-            "chat.send"
+            "input.route_intent"
           ]
         }
       },
@@ -1838,8 +1862,8 @@
             "en": "Whether a command waits for your yes (preset), runs at once when it only reads, or always runs at once."
           },
           "effect": {
-            "pl": "Reguły i strażnik ×10 pytają niezależnie od tego pola.",
-            "en": "The rules and the ×10 guard ask regardless of this field."
+            "pl": "Reguły i Bezpiecznik ×10 pytają niezależnie od tego pola.",
+            "en": "The rules and the ×10 fuse ask regardless of this field."
           },
           "levels": [
             "person"
@@ -1907,9 +1931,9 @@
           "group": "modele",
           "subgroup": "role",
           "role": "intent.routing",
-          "role_status": "planned",
           "flows": [
-            "input.route_intent"
+            "input.route_intent",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2061,8 +2085,8 @@
             "en": "Which tool calls the agent runs without asking: local and reversible (preset), read only, every one asks, every one runs — or your own policy."
           },
           "effect": {
-            "pl": "„Wykonuj wszystko” nadal podlega regułom, strażnikowi ×10 i limitom wydatków.",
-            "en": "“Run everything” still obeys the rules, the ×10 guard and the spending limits."
+            "pl": "„Wykonuj wszystko” nadal podlega regułom, Bezpiecznikowi ×10 i limitom wydatków.",
+            "en": "“Run everything” still obeys the rules, the ×10 fuse and the spending limits."
           },
           "levels": [
             "installation",
@@ -2246,8 +2270,8 @@
             "en": "Image model"
           },
           "why": {
-            "pl": "Który model maluje obrazy dla działania „depict”; pusty = działanie pyta o model.",
-            "en": "Which model paints images for the action “depict”; empty = the action asks for one."
+            "pl": "Który model maluje obrazy dla działania „depict”; pusty = depict nie startuje i mówi, że brakuje modelu (nic nie jest płatne).",
+            "en": "Which model paints images for the action “depict”; empty = depict does not start and says the model is missing (nothing is paid)."
           },
           "effect": {
             "pl": "Działa przy następnym obrazie; potrzebuje dostawcy z pola Dostawca obrazów.",
@@ -2259,10 +2283,9 @@
           "group": "modele",
           "subgroup": "role",
           "role": "image.generate",
-          "role_status": "planned",
           "flows": [
             "depict",
-            "media.generate_image"
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2293,9 +2316,9 @@
           "group": "modele",
           "subgroup": "role",
           "role": "image.generate",
-          "role_status": "planned",
           "flows": [
-            "depict"
+            "depict",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2326,9 +2349,9 @@
           "group": "modele",
           "subgroup": "role",
           "role": "speech.synthesize",
-          "role_status": "planned",
           "flows": [
-            "narrate"
+            "narrate",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2359,9 +2382,9 @@
           "group": "modele",
           "subgroup": "role",
           "role": "speech.synthesize",
-          "role_status": "planned",
           "flows": [
-            "narrate"
+            "narrate",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2375,16 +2398,16 @@
         "description": "How the context guardian recognises signals in your messages (corrections, clarifications): heuristic (preset: word lists and structure, local and free), model (one guarded model call per message that no existing annotation already describes), hybrid (the local reading first, the model only where it found nothing) or off. The guardian is a secretary: it builds a representation of the conversation beside the raw messages and never changes them. Runtime profile guardian (method). Default: heuristic.",
         "human": {
           "label": {
-            "pl": "Jak strażnik czyta sygnały",
-            "en": "How the guardian reads signals"
+            "pl": "Jak Sekretarz czyta sygnały",
+            "en": "How the Secretary reads signals"
           },
           "why": {
             "pl": "Jak sekretarz rozmowy rozpoznaje poprawki i doprecyzowania: lokalnie (preset), modelem, najpierw lokalnie i modelem tam, gdzie nic nie znalazł, albo wcale.",
             "en": "How the conversation's secretary recognises corrections and clarifications: locally (preset), with a model, locally first and the model where it found nothing, or not at all."
           },
           "effect": {
-            "pl": "Model = dokładniej i płatnie (jedno chronione wywołanie na wiadomość bez adnotacji); strażnik nigdy nie zmienia Twoich wiadomości.",
-            "en": "A model = more accurate and paid (one guarded call per message without annotations); the guardian never changes your messages."
+            "pl": "Model = dokładniej i płatnie (jedno chronione wywołanie na wiadomość bez adnotacji); Sekretarz nigdy nie zmienia Twoich wiadomości.",
+            "en": "A model = more accurate and paid (one guarded call per message without annotations); the Secretary never changes your messages."
           },
           "levels": [
             "person"
@@ -2393,7 +2416,10 @@
           "subgroup": "straznik",
           "flows": [
             "guardian.observe",
-            "guardian.annotate"
+            "guardian.annotate",
+            "semantic.analyse",
+            "semantic.batch",
+            "batch.chat"
           ]
         }
       },
@@ -2406,12 +2432,12 @@
         "description": "What the guardian does when a hypothesis about you gathers enough weight: ask (ask at the first occurrence), propose (preset: propose a rule with its evidence at the threshold) or apply (write the rule at the higher threshold and say so; always reversible). The thresholds, the escalation curve and the weights are data in the runtime profile guardian. Default: propose.",
         "human": {
           "label": {
-            "pl": "Gdy strażnik jest pewny",
-            "en": "When the guardian is sure"
+            "pl": "Gdy Sekretarz jest pewny",
+            "en": "When the Secretary is sure"
           },
           "why": {
-            "pl": "Co strażnik robi, gdy hipoteza o Tobie zbierze dość wagi: pyta od razu, proponuje regułę z dowodami (preset) albo zapisuje ją sam i mówi o tym.",
-            "en": "What the guardian does when a hypothesis about you gathers enough weight: asks at once, proposes a rule with its evidence (preset), or writes it itself and says so."
+            "pl": "Co Sekretarz robi, gdy hipoteza o Tobie zbierze dość wagi: pyta od razu, proponuje regułę z dowodami (preset) albo zapisuje ją sam i mówi o tym.",
+            "en": "What the Secretary does when a hypothesis about you gathers enough weight: asks at once, proposes a rule with its evidence (preset), or writes it itself and says so."
           },
           "effect": {
             "pl": "„Zapisuje sam” = reguły powstają bez pytania; zawsze odwracalne (Ty › Reguły).",
@@ -2436,16 +2462,16 @@
         "description": "Model used by the guardian when its method asks one (reading, naming, matching). The model of the conversation is never inherited (owner decision 2026-10-15): it is used only if you set this by hand. Resolution is a policy in the runtime profile guardian (models.policies.guardian, overlay-able): this setting; else the ports role guardian (preset: the same choice as analysis.fast, i.e. semantic_model); else analysis.fast; else NO model - the guardian then reads with word lists only and says so (status, proposals). A policy step relative_to (one tier cheaper than another model, tiers from models.tiers) is available but never preset. The call goes through use_model and the usage guards (x10, spending limits). Default: none.",
         "human": {
           "label": {
-            "pl": "Model strażnika",
-            "en": "Guardian model"
+            "pl": "Model Sekretarza",
+            "en": "Secretary model"
           },
           "why": {
-            "pl": "Który model pomaga strażnikowi rozmowy czytać, nazywać i łączyć sygnały, gdy jego metoda tego wymaga; model rozmowy nigdy nie jest dziedziczony.",
-            "en": "Which model helps the conversation guardian read, name and join signals when its method asks for one; the conversation model is never inherited."
+            "pl": "Który model pomaga Sekretarzowi czytać, nazywać i łączyć sygnały, gdy jego metoda tego wymaga; model rozmowy nigdy nie jest dziedziczony.",
+            "en": "Which model helps the Secretary read, name and join signals when its method asks for one; the conversation model is never inherited."
           },
           "effect": {
-            "pl": "Pusty: strażnik używa modelu analizy w tle. Rozmowa lub projekt mogą wskazać inny.",
-            "en": "Empty: the guardian uses the background analysis model. A conversation or project may name another."
+            "pl": "Pusty: Sekretarz bierze model z roli Sekretarz, która wskazuje pole „Model analizy w tle” (semantic_model). Rozmowa lub projekt mogą wskazać inny: to jedyne pole modelu, które Sekretarz czyta dla rozmowy.",
+            "en": "Empty: the Secretary takes the model of the role Secretary, which points at the field “Background analysis model” (semantic_model). A conversation or project may name another: this is the only model field the Secretary reads per conversation."
           },
           "levels": [
             "installation",
@@ -2458,8 +2484,10 @@
           "role": "guardian",
           "flows": [
             "guardian.observe",
-            "guardian.compile",
-            "guardian.merge"
+            "guardian.annotate",
+            "guardian.status",
+            "guardian.model_read",
+            "ports.show"
           ],
           "technical_only": true
         }
@@ -2481,8 +2509,8 @@
             "en": "Your definition of what drops at level L1 (fillers, repetitions…) and L2 in the representation of the conversation sent to the model."
           },
           "effect": {
-            "pl": "Działa od następnego żądania, gdy rozmowa idzie do modelu bez wypełniaczy, odchudzona albo z instrukcją strażnika (pole „Co model dostaje z rozmowy”).",
-            "en": "Applies from the next request when the conversation goes to the model without fillers, slimmed or with the guardian's instruction (field “What the model gets of the conversation”)."
+            "pl": "Działa od następnego żądania, gdy rozmowa idzie do modelu bez wypełniaczy, odchudzona albo z instrukcją Sekretarza (pole „Co model dostaje z rozmowy”).",
+            "en": "Applies from the next request when the conversation goes to the model without fillers, slimmed or with the Secretary's instruction (field “What the model gets of the conversation”)."
           },
           "levels": [
             "person"
@@ -2512,8 +2540,8 @@
             "en": "Whether the background analysis also records the kind of each message segment (correction, preference, joke, instruction…) and its topic thread: when something uses them (preset), always, or never."
           },
           "effect": {
-            "pl": "Jedno wywołanie na wiadomość tak czy inaczej; bez kategorii filtr wątków i tryby odchudzone nie mają na czym pracować.",
-            "en": "One call per message either way; without categories the thread filter and the slimmed modes have nothing to work on."
+            "pl": "Jedno wywołanie na wiadomość tak czy inaczej; bez kategorii filtr wątków i tryby odchudzone nie mają na czym pracować. Gdy analiza nie czyta fragmentów (nigdy, albo preset, gdy nic z nich nie korzysta), Sekretarz (metoda model albo hybryda) nie czeka na nią i czyta wiadomość własnym modelem — to płatne wywołanie.",
+            "en": "One call per message either way; without categories the thread filter and the slimmed modes have nothing to work on. When the analysis reads no segments (never, or the preset when nothing uses them), the Secretary (method model or hybrid) does not wait for it and reads the message with its own model — a paid call."
           },
           "levels": [
             "person"
@@ -2521,7 +2549,10 @@
           "group": "kontekst",
           "subgroup": "analiza",
           "flows": [
-            "semantic.analyse"
+            "semantic.analyse",
+            "semantic.batch",
+            "batch.chat",
+            "guardian.observe"
           ]
         }
       },
@@ -2553,7 +2584,11 @@
           ],
           "group": "rozmowa",
           "flows": [
-            "chat.send"
+            "chat.send",
+            "semantic.analyse",
+            "semantic.batch",
+            "batch.chat",
+            "guardian.observe"
           ]
         }
       },
@@ -2566,12 +2601,12 @@
         "description": "How the guardian recognises that several corrections are the same thing: overlap (preset: shared words and concepts, local and free), embedding (then the embedding tier of the search engine when available), model (then one guarded model question per candidate) or user (only what you declare, guardian merge). A wrong join is separated again with guardian unmerge, or by answering no to its proposal. Runtime profile guardian (matching). Default: overlap.",
         "human": {
           "label": {
-            "pl": "Jak strażnik łączy poprawki",
-            "en": "How the guardian joins corrections"
+            "pl": "Jak Sekretarz łączy poprawki",
+            "en": "How the Secretary joins corrections"
           },
           "why": {
-            "pl": "Jak strażnik poznaje, że kilka poprawek to to samo: wspólne słowa (preset), osadzenia, pytanie do modelu albo tylko to, co sam wskażesz.",
-            "en": "How the guardian tells that several corrections are the same thing: shared words (preset), embeddings, a question to a model, or only what you point out."
+            "pl": "Jak Sekretarz poznaje, że kilka poprawek to to samo: wspólne słowa (preset), osadzenia, pytanie do modelu albo tylko to, co sam wskażesz.",
+            "en": "How the Secretary tells that several corrections are the same thing: shared words (preset), embeddings, a question to a model, or only what you point out."
           },
           "effect": {
             "pl": "Błędne połączenie rozdzielasz poleceniem „unmerge” albo odpowiedzią „nie” na propozycję.",
@@ -2583,8 +2618,8 @@
           "group": "kontekst",
           "subgroup": "straznik",
           "flows": [
-            "guardian.merge",
-            "guardian.observe"
+            "guardian.observe",
+            "guardian.annotate"
           ]
         }
       },
@@ -2601,8 +2636,8 @@
             "en": "Rules about you in a request"
           },
           "why": {
-            "pl": "Czy reguły, które strażnik pamięta o Tobie, idą z każdym żądaniem (preset) czy nie; jedna rozmowa może to wyłączyć u siebie.",
-            "en": "Whether the rules the guardian keeps about you go with every request (preset) or not; one conversation may switch it off for itself."
+            "pl": "Czy reguły, które Sekretarz pamięta o Tobie, idą z każdym żądaniem (preset) czy nie; jedna rozmowa może to wyłączyć u siebie.",
+            "en": "Whether the rules the Secretary keeps about you go with every request (preset) or not; one conversation may switch it off for itself."
           },
           "effect": {
             "pl": "Wysyłany jest tylko tekst reguły, nigdy cytaty, z których powstała.",
@@ -2634,12 +2669,12 @@
             "en": "What the model gets of the conversation"
           },
           "why": {
-            "pl": "Wiadomości jak są (preset), bez wypełniaczy (L1), odchudzone (L2), z instrukcją skompilowaną przez strażnika albo jedno i drugie.",
-            "en": "The messages as they are (preset), without fillers (L1), slimmed (L2), with the instruction the guardian compiled, or both."
+            "pl": "Wiadomości jak są (preset), bez wypełniaczy (L1), odchudzone (L2), z instrukcją skompilowaną przez Sekretarza albo jedno i drugie.",
+            "en": "The messages as they are (preset), without fillers (L1), slimmed (L2), with the instruction the Secretary compiled, or both."
           },
           "effect": {
-            "pl": "Odchudzone = tańsze żądanie, mniej dosłownie; przyjęcie propozycji strażnika ustawia dla tej rozmowy tryb „z instrukcją strażnika” jako regułę, którą możesz wyłączyć.",
-            "en": "Slimmed = a cheaper request, less literal; accepting a guardian proposal sets the mode “with the guardian's instruction” for that conversation as a rule you can switch off."
+            "pl": "Odchudzone = tańsze żądanie, mniej dosłownie; przyjęcie propozycji Sekretarza ustawia dla tej rozmowy tryb „z instrukcją Sekretarza” jako regułę, którą możesz wyłączyć.",
+            "en": "Slimmed = a cheaper request, less literal; accepting a Secretary proposal sets the mode “with the Secretary's instruction” for that conversation as a rule you can switch off."
           },
           "levels": [
             "installation",
@@ -2650,7 +2685,11 @@
           "group": "rozmowa",
           "flows": [
             "chat.send",
-            "guardian.compile"
+            "guardian.compile",
+            "semantic.analyse",
+            "semantic.batch",
+            "batch.chat",
+            "guardian.observe"
           ]
         }
       },
@@ -2685,8 +2724,7 @@
           ],
           "group": "rozmowa",
           "flows": [
-            "chat.send",
-            "graph_native.reply"
+            "chat.send"
           ]
         }
       },
@@ -2809,7 +2847,8 @@
           "group": "kontekst",
           "subgroup": "wybor",
           "flows": [
-            "chat.send"
+            "chat.send",
+            "goal.typing"
           ]
         }
       },
@@ -2856,12 +2895,12 @@
             "en": "Your own analysis prompt texts"
           },
           "why": {
-            "pl": "Twoje wersje poleceń dla modelu analizy, podmienione za wbudowane.",
-            "en": "Your versions of the instructions for the analysis model, swapped for the builtin ones."
+            "pl": "Twoje wersje promptów dla propozycji wiedzy (budowanie wiedzy z modelem) i dla przejrzanych analiz, podmienione za wbudowane; analiza wiadomości w tle ich nie czyta.",
+            "en": "Your versions of the prompts of knowledge proposals (building knowledge with a model) and of reviewed analyses, used instead of the built-in ones; the background analysis of messages does not read them."
           },
           "effect": {
-            "pl": "Działa od następnej analizowanej wiadomości.",
-            "en": "Applies from the next analysed message."
+            "pl": "Działa przy następnej propozycji wiedzy albo następnym uruchomieniu przejrzanej analizy.",
+            "en": "Applies to the next knowledge proposal or the next run of a reviewed analysis."
           },
           "levels": [
             "person"
@@ -2869,8 +2908,8 @@
           "group": "kontekst",
           "subgroup": "analiza",
           "flows": [
-            "semantic.analyse",
-            "semantic.batch"
+            "knowledge.propose_semantics",
+            "analysis.run"
           ]
         }
       },
@@ -2887,8 +2926,8 @@
             "en": "Folder with analysis prompts"
           },
           "why": {
-            "pl": "Folder z plikami promptów, które zastępują wbudowane.",
-            "en": "A folder with prompt files that replace the builtin ones."
+            "pl": "Folder z plikami promptów, które zastępują wbudowane w propozycjach wiedzy i w przejrzanych analizach; analiza wiadomości w tle go nie czyta.",
+            "en": "A folder of prompt files that replace the built-in ones in knowledge proposals and reviewed analyses; the background analysis of messages does not read it."
           },
           "effect": {
             "pl": "Plik o nazwie promptu w tym folderze wygrywa z wbudowanym.",
@@ -2900,8 +2939,8 @@
           "group": "kontekst",
           "subgroup": "analiza",
           "flows": [
-            "semantic.analyse",
-            "semantic.batch"
+            "knowledge.propose_semantics",
+            "analysis.run"
           ]
         }
       },
@@ -2918,12 +2957,12 @@
             "en": "Cost admission before analysis"
           },
           "why": {
-            "pl": "Czy każde wywołanie modelu analizy w tle musi najpierw przejść przez politykę zużycia.",
-            "en": "Whether every background analysis model call must first pass the usage policy."
+            "pl": "Czy każde wywołanie modelu w propozycjach wiedzy (budowanie wiedzy z modelem) musi najpierw przejść przez politykę zużycia.",
+            "en": "Whether every model call of knowledge proposals (building knowledge with a model) must first pass the usage policy."
           },
           "effect": {
-            "pl": "Włączone: analiza bez dopuszczenia czeka, zamiast wydawać.",
-            "en": "On: analysis without admission waits instead of spending."
+            "pl": "Włączone: propozycja bez dopuszczenia czeka, zamiast wydawać.",
+            "en": "On: a proposal without admission waits instead of spending."
           },
           "levels": [
             "person"
@@ -2931,7 +2970,7 @@
           "group": "koszty",
           "subgroup": "limity",
           "flows": [
-            "semantic.analyse"
+            "knowledge.propose_semantics"
           ]
         }
       },
@@ -2991,7 +3030,6 @@
           "group": "kontekst",
           "subgroup": "wybor",
           "flows": [
-            "chat.send",
             "goal.typing"
           ]
         }
@@ -3039,8 +3077,8 @@
             "en": "Usage baseline key templates"
           },
           "why": {
-            "pl": "Jak nazywane są punkty odniesienia, z którymi strażnik ×10 porównuje nowe zużycie.",
-            "en": "How the baselines the ×10 guard compares new consumption with are named."
+            "pl": "Jak nazywane są punkty odniesienia, z którymi Bezpiecznik ×10 porównuje nowe zużycie.",
+            "en": "How the baselines the ×10 fuse compares new consumption with are named."
           },
           "effect": {
             "pl": "Inne szablony = inne grupowanie historii zużycia; stare punkty nie są przepisywane.",
@@ -3052,7 +3090,8 @@
           "group": "koszty",
           "subgroup": "ksiega",
           "flows": [
-            "usage.spend"
+            "usage.spend",
+            "use_model"
           ]
         }
       },
@@ -3145,7 +3184,10 @@
             "semantic.analyse",
             "agent.run",
             "use_model",
-            "embedding.embed"
+            "embedding.embed",
+            "batch.chat",
+            "goal.typing",
+            "analysis.run"
           ]
         }
       },
@@ -3177,7 +3219,8 @@
           "subgroup": "klucze",
           "role": "analysis.fast",
           "flows": [
-            "semantic.batch"
+            "semantic.batch",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3241,7 +3284,8 @@
           "subgroup": "klucze",
           "role": "asr",
           "flows": [
-            "transcribe"
+            "transcribe",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3274,7 +3318,8 @@
           "subgroup": "klucze",
           "role": "asr",
           "flows": [
-            "transcribe"
+            "transcribe",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3308,7 +3353,8 @@
           "role": "ocr",
           "flows": [
             "ocr",
-            "import.file"
+            "import.file",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3413,8 +3459,7 @@
           "group": "interfejs",
           "subgroup": "wyglad",
           "flows": [
-            "chat.send",
-            "graph_native.reply"
+            "chat.send"
           ]
         }
       },
@@ -4531,7 +4576,7 @@
                 "role_status": {
                   "type": "string",
                   "minLength": 1,
-                  "description": "Status of `role` when ports.pack does not know the role yet (e.g. planned): the chip stays honest; a role neither known nor given a status is a problem."
+                  "description": "Status of `role` only while ports.pack does not know the role (e.g. planned): the chip stays honest. A role ports.pack knows carries its status there (roles.<id>.status: partial | planned with today and reason) and the field gives none (one source). A role neither known nor given a status is a problem."
                 },
                 "flows": {
                   "type": "array",
@@ -4977,7 +5022,7 @@
                 "role_status": {
                   "type": "string",
                   "minLength": 1,
-                  "description": "Status of `role` when ports.pack does not know the role yet (e.g. planned): the chip stays honest; a role neither known nor given a status is a problem."
+                  "description": "Status of `role` only while ports.pack does not know the role (e.g. planned): the chip stays honest. A role ports.pack knows carries its status there (roles.<id>.status: partial | planned with today and reason) and the field gives none (one source). A role neither known nor given a status is a problem."
                 },
                 "flows": {
                   "type": "array",

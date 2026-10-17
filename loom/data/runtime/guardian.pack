@@ -6,7 +6,7 @@
   "defaults": {
     "schema": "loom.guardian/1",
     "section": "Kontekst",
-    "subsection": "Strażnik",
+    "subsection": "Sekretarz",
     "method": {
       "setting": "guardian_method",
       "model_setting": "guardian_model",
@@ -18,8 +18,8 @@
           "heuristic": false,
           "model": false,
           "meaning": {
-            "en": "The guardian observes nothing.",
-            "pl": "Strażnik niczego nie obserwuje."
+            "en": "The Secretary observes nothing.",
+            "pl": "Sekretarz niczego nie obserwuje."
           }
         },
         "heuristic": {
@@ -35,7 +35,7 @@
           "model": true,
           "meaning": {
             "en": "One guarded model call per message that no existing annotation already describes.",
-            "pl": "Jedno wywołanie modelu pod strażnikami na wiadomość, której nie opisuje jeszcze żadna adnotacja."
+            "pl": "Jedno wywołanie modelu pod bezpiecznikami na wiadomość, której nie opisuje jeszcze żadna adnotacja."
           }
         },
         "hybrid": {
@@ -1052,8 +1052,8 @@
               ]
             },
             "meaning": {
-              "en": "The analyzer's one prompt also returns the segment categories when something reads them: a guardian that uses a model, the lean representation, the thread filter (preset).",
-              "pl": "Jeden prompt analizatora zwraca też kategorie segmentów, gdy ktoś je czyta: strażnik używający modelu, reprezentacja lean, filtr wątków (preset)."
+              "en": "The analyzer's one prompt also returns the segment categories when something reads them: the Secretary using a model, the lean representation, the thread filter (preset).",
+              "pl": "Jeden prompt analizatora zwraca też kategorie segmentów, gdy ktoś je czyta: Sekretarz używający modelu, reprezentacja lean, filtr wątków (preset)."
             }
           },
           "on": {
@@ -1066,8 +1066,8 @@
           "off": {
             "never": true,
             "meaning": {
-              "en": "The analyzer's prompt is the classic one (entities, topics, relations); the guardian reads messages itself.",
-              "pl": "Prompt analizatora jest klasyczny (encje, tematy, relacje); strażnik czyta wiadomości sam."
+              "en": "The analyzer's prompt is the classic one (entities, topics, relations); the Secretary reads messages itself.",
+              "pl": "Prompt analizatora jest klasyczny (encje, tematy, relacje); Sekretarz czyta wiadomości sam."
             }
           }
         },
@@ -1395,14 +1395,14 @@
           ],
           "meaning": {
             "en": "Overlap first, then one question to the model per candidate when there are candidates (guarded model call).",
-            "pl": "Najpierw wspólne słowa, potem jedno pytanie do modelu na kandydata, gdy są kandydaci (wywołanie pod strażnikami)."
+            "pl": "Najpierw wspólne słowa, potem jedno pytanie do modelu na kandydata, gdy są kandydaci (wywołanie pod bezpiecznikami)."
           }
         },
         "user": {
           "methods": [],
           "meaning": {
-            "en": "Only what you tell the guardian is the same thing (guardian merge); same words still join.",
-            "pl": "Tylko to, co sam powiesz strażnikowi, że jest tym samym (guardian merge); te same słowa nadal się łączą."
+            "en": "Only what you tell the Secretary is the same thing (guardian merge); same words still join.",
+            "pl": "Tylko to, co sam powiesz Sekretarzowi, że jest tym samym (guardian merge); te same słowa nadal się łączą."
           }
         }
       },
@@ -1685,35 +1685,426 @@
           "chain": [
             {
               "type": "explicit",
-              "setting": "guardian_model"
+              "setting": "guardian_model",
+              "meaning": {
+                "pl": "Wprost: pole guardian_model („Model Sekretarza”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja. To jedyne pole modelu, które Sekretarz czyta dla rozmowy.",
+                "en": "Explicit: the field guardian_model (“Secretary model”), read through the scope chain: conversation → units → person → installation. This is the only model field the Secretary reads per conversation."
+              }
             },
             {
               "type": "role",
-              "role": "guardian"
+              "role": "guardian",
+              "meaning": {
+                "pl": "Rola Sekretarz: Twój wybór dla tej roli, a bez niego preset — pole „Model analizy w tle” (semantic_model) z Twoich ustawień. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę. Preset tej roli wskazuje więc to samo pole co Analiza w tle, a nie „Model Sekretarza” (guardian_model) — ten jest krokiem 1.",
+                "en": "Role Secretary: your choice for this role, else the preset — the field “Background analysis model” (semantic_model) from your settings. A role choice saved for this conversation only is not taken into account today. So the preset of this role points at the same field as Background analysis, not “Secretary model” (guardian_model) — that one is step 1."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain."
             },
             {
               "type": "role",
-              "role": "analysis.fast"
+              "role": "analysis.fast",
+              "meaning": {
+                "pl": "Rola Analiza w tle: Twój wybór dla tej roli, a bez niego preset — pole „Model analizy w tle” (semantic_model) z Twoich ustawień. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę.",
+                "en": "Role Background analysis: your choice for this role, else the preset — the field “Background analysis model” (semantic_model) from your settings. A role choice saved for this conversation only is not taken into account today."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain."
             },
             {
-              "type": "none"
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: Sekretarz czyta tylko lokalnie (listy słów i struktura), bez kosztu, i mówi, że modelu nie ma. Model rozmowy nigdy nie jest dziedziczony.",
+                "en": "No model: the Secretary reads locally only (word lists and structure), at no cost, and says there is no model. The conversation model is never inherited."
+              }
             }
+          ],
+          "role": "guardian",
+          "readers": [
+            "loom/src/guardian/matching.cpp choice_for (guardian.observe, guardian.annotate, guardian.model_read)",
+            "loom/src/guardian/actions.cpp (guardian.status; the no-model note of post_pending inside guardian.observe)"
           ]
         },
         "analyzer": {
           "chain": [
             {
               "type": "explicit",
-              "setting": "semantic_model"
+              "setting": "semantic_model",
+              "meaning": {
+                "pl": "Wprost: pole semantic_model („Model analizy w tle”), Twoje ustawienie: osoba → instalacja. Analiza w tle nie zna rozmowy (woła tę politykę bez rozmowy i bez bazy), więc wartości wskazanej dla rozmowy lub projektu nie czyta.",
+                "en": "Explicit: the field semantic_model (“Background analysis model”), your setting: person → installation. The background analysis does not know the conversation (it calls this policy without a conversation and without the database), so a value named for a conversation or project is not read."
+              }
             },
             {
               "type": "role",
-              "role": "analysis.fast"
+              "role": "analysis.fast",
+              "meaning": {
+                "pl": "Rola Analiza w tle: Twój wybór dla tej roli, a bez niego preset — pole „Model analizy w tle” (semantic_model) z Twoich ustawień, czyli to samo co krok 1. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę. Ten krok coś zmienia tylko wtedy, gdy wybierzesz model dla tej roli. Analiza zbiorcza (paczką) bierze jednak pole „Model analizy w tle” wprost — wybór dla roli jej nie dotyczy: przy samym wyborze roli i pustym polu wiadomości po jednej czyta model roli, a paczka poszłaby bez nazwy modelu.",
+                "en": "Role Background analysis: your choice for this role, else the preset — the field “Background analysis model” (semantic_model) from your settings, the same as step 1. A role choice saved for this conversation only is not taken into account today. This step only matters when you choose a model for this role. The batch analysis, however, takes the field “Background analysis model” directly — a choice for the role does not reach it: with only the role chosen and the field empty, single messages are read by the role’s model, while a batch would go out without a model name."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain. The batch path (semantic_worker.cpp submit_batch_api) reads cfg semantic_model directly, without the policy; analysis_modes.cpp makes the batch mode available on llm_ready (the policy) && batch_ready."
             },
             {
-              "type": "none"
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: analiza zostaje lokalna (wyrażenia regularne), bez kosztu. Model rozmowy nigdy nie jest dziedziczony.",
+                "en": "No model: the analysis stays local (regular expressions), at no cost. The conversation model is never inherited."
+              }
             }
+          ],
+          "role": "analysis.fast",
+          "readers": [
+            "loom/src/semantic/semantic_llm.cpp (semantic.analyse)",
+            "loom/src/annotations/analyzer.cpp"
           ]
+        },
+        "chat": {
+          "role": "chat.default",
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "default_model",
+              "meaning": {
+                "pl": "Wprost: pole default_model („Model rozmowy”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field default_model (“Conversation model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
+              }
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: wysłanie wiadomości kończy się błędem, że nie wskazano modelu (preset pola default_model ma wartość, więc zdarza się to tylko po jego wyczyszczeniu).",
+                "en": "No model: sending a message ends with an error that no model is named (the preset of the field default_model has a value, so this happens only after it is cleared)."
+              }
+            }
+          ],
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś rozmowa sama czyta „Model rozmowy” (default_model) dokładnie tym łańcuchem; ta polityka go tylko opisuje.",
+              "en": "Today the conversation reads “Conversation model” (default_model) through exactly this chain itself; this policy only describes it."
+            },
+            "reason": {
+              "pl": "Nikt jeszcze nie wybiera modelu przez tę politykę (annotations::resolve_model wołają dziś tylko Sekretarz i analiza); zmiana łańcucha niczego dziś nie zmienia.",
+              "en": "Nothing chooses a model through this policy yet (annotations::resolve_model is called today only by the Secretary and the analysis); changing the chain changes nothing today."
+            },
+            "readers_today": [
+              "loom/src/chat/chat_engine.cpp scoped_default_model"
+            ],
+            "readers": [
+              "loom/src/chat/chat_engine.cpp scoped_default_model"
+            ]
+          }
+        },
+        "intent": {
+          "role": "intent.routing",
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "intent_routing_model",
+              "meaning": {
+                "pl": "Wprost: pole intent_routing_model („Model rozpoznawania poleceń”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field intent_routing_model (“Command recognition model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
+              }
+            },
+            {
+              "type": "role",
+              "role": "intent.routing",
+              "meaning": {
+                "pl": "Rola Rozpoznanie polecenia: Twój wybór dla tej roli, a bez niego preset — pole „Model rozpoznawania poleceń” (intent_routing_model) z Twoich ustawień. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę.",
+                "en": "Role Command recognition: your choice for this role, else the preset — the field “Command recognition model” (intent_routing_model) from your settings. A role choice saved for this conversation only is not taken into account today."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain."
+            },
+            {
+              "type": "role",
+              "role": "analysis.fast",
+              "meaning": {
+                "pl": "Rola Analiza w tle: Twój wybór dla tej roli, a bez niego preset — pole „Model analizy w tle” (semantic_model) z Twoich ustawień. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę.",
+                "en": "Role Background analysis: your choice for this role, else the preset — the field “Background analysis model” (semantic_model) from your settings. A role choice saved for this conversation only is not taken into account today."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain."
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: rozpoznawanie zostaje lokalne (frazy i reguły), bez kosztu.",
+                "en": "No model: recognition stays local (phrases and rules), at no cost."
+              }
+            }
+          ],
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś rozpoznawanie czyta „Model rozpoznawania poleceń” (intent_routing_model), a gdy jest pusty — „Model rozmowy” (default_model), wprost z Twoich ustawień; ten łańcuch, z rolą Analiza w tle zamiast modelu rozmowy, nie jest jeszcze czytany.",
+              "en": "Today recognition reads “Command recognition model” (intent_routing_model) and, when it is empty, “Conversation model” (default_model), directly from your settings; this chain, with the role Background analysis in place of the conversation model, is not read yet."
+            },
+            "reason": {
+              "pl": "Nikt jeszcze nie wybiera modelu przez tę politykę (annotations::resolve_model wołają dziś tylko Sekretarz i analiza); zmiana łańcucha niczego dziś nie zmienia.",
+              "en": "Nothing chooses a model through this policy yet (annotations::resolve_model is called today only by the Secretary and the analysis); changing the chain changes nothing today."
+            },
+            "readers_today": [
+              "loom/src/actions/route.cpp model_route"
+            ],
+            "readers": [
+              "loom/src/actions/route.cpp model_route (intent_routing.pack method.model_setting, method.model_fallback_setting)"
+            ]
+          }
+        },
+        "image": {
+          "role": "image.generate",
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "image_model",
+              "meaning": {
+                "pl": "Wprost: pole image_model („Model obrazów”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field image_model (“Image model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
+              }
+            },
+            {
+              "type": "role",
+              "role": "image.generate",
+              "meaning": {
+                "pl": "Rola Obraz: Twój wybór dla tej roli, a bez niego preset — pole „Model obrazów” (image_model) z Twoich ustawień. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę. Dostawca: pole „Dostawca obrazów” (image_provider).",
+                "en": "Role Image: your choice for this role, else the preset — the field “Image model” (image_model) from your settings. A role choice saved for this conversation only is not taken into account today. Provider: the field “Image provider” (image_provider)."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain."
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: „Przedstaw obrazem” nie startuje i mówi, że brakuje modelu (w poleceniu albo w polu „Model obrazów”); nic nie jest płatne.",
+                "en": "No model: “Depict as an image” does not start and says the model is missing (in the command or in the field “Image model”); nothing is paid."
+              }
+            }
+          ],
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś „Przedstaw obrazem” bierze model z polecenia albo z pola „Model obrazów” (image_model), wprost z Twoich ustawień.",
+              "en": "Today “Depict as an image” takes the model from the command or from the field “Image model” (image_model), directly from your settings."
+            },
+            "reason": {
+              "pl": "Nikt jeszcze nie wybiera modelu przez tę politykę (annotations::resolve_model wołają dziś tylko Sekretarz i analiza); zmiana łańcucha niczego dziś nie zmienia.",
+              "en": "Nothing chooses a model through this policy yet (annotations::resolve_model is called today only by the Secretary and the analysis); changing the chain changes nothing today."
+            },
+            "readers_today": [
+              "loom/src/actions/runner.cpp (params[].setting of depict)"
+            ],
+            "readers": [
+              "loom/src/actions/runner.cpp (params[].setting of depict)"
+            ]
+          }
+        },
+        "speech": {
+          "role": "speech.synthesize",
+          "chain": [
+            {
+              "type": "explicit",
+              "setting": "speech_model",
+              "meaning": {
+                "pl": "Wprost: pole speech_model („Model mowy”), czytane przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja, gdy czytelnik poda rozmowę.",
+                "en": "Explicit: the field speech_model (“Speech model”), read through the scope chain: conversation → units → person → installation, when the reader names the conversation."
+              }
+            },
+            {
+              "type": "role",
+              "role": "speech.synthesize",
+              "meaning": {
+                "pl": "Rola Głos: Twój wybór dla tej roli, a bez niego preset — pole „Model mowy” (speech_model) z Twoich ustawień. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę. Dostawca: pole „Dostawca mowy” (speech_provider).",
+                "en": "Role Voice: your choice for this role, else the preset — the field “Speech model” (speech_model) from your settings. A role choice saved for this conversation only is not taken into account today. Provider: the field “Speech provider” (speech_provider)."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain."
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: „Opowiedz na głos” oddaje sam tekst narracji, bez dźwięku.",
+                "en": "No model: “Narrate aloud” returns the narration text only, without sound."
+              }
+            }
+          ],
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś „Opowiedz na głos” bierze model z polecenia albo z pola „Model mowy” (speech_model), wprost z Twoich ustawień.",
+              "en": "Today “Narrate aloud” takes the model from the command or from the field “Speech model” (speech_model), directly from your settings."
+            },
+            "reason": {
+              "pl": "Nikt jeszcze nie wybiera modelu przez tę politykę (annotations::resolve_model wołają dziś tylko Sekretarz i analiza); zmiana łańcucha niczego dziś nie zmienia.",
+              "en": "Nothing chooses a model through this policy yet (annotations::resolve_model is called today only by the Secretary and the analysis); changing the chain changes nothing today."
+            },
+            "readers_today": [
+              "loom/src/actions/runner.cpp (params[].setting of narrate)"
+            ],
+            "readers": [
+              "loom/src/actions/runner.cpp (params[].setting of narrate)"
+            ]
+          }
+        },
+        "embed": {
+          "role": "embed.default",
+          "chain": [
+            {
+              "type": "role",
+              "role": "embed.default",
+              "meaning": {
+                "pl": "Rola Osadzenia: Twój wybór dla tej roli, a bez niego preset, który nie nazywa modelu. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę. Żadne pole ustawień nie wskazuje dziś modelu osadzeń, więc nie ma kroku „wprost”.",
+                "en": "Role Embeddings: your choice for this role, else the preset, which names no model. A role choice saved for this conversation only is not taken into account today. No settings field names the embedding model today, so there is no explicit step."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain."
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: wyszukiwanie używa TF-IDF albo słów kluczowych (lokalnie).",
+                "en": "No model: search uses TF-IDF or keywords (locally)."
+              }
+            }
+          ],
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś model osadzeń podaje ten, kto prosi o osadzenie („Osadź teksty”), albo ustawienia wykonania kontekstu (context_execution).",
+              "en": "Today the embedding model is given by whoever asks for the embedding (“Embed texts”) or by the context execution options (context_execution)."
+            },
+            "reason": {
+              "pl": "Nikt jeszcze nie wybiera modelu przez tę politykę (annotations::resolve_model wołają dziś tylko Sekretarz i analiza); zmiana łańcucha niczego dziś nie zmienia.",
+              "en": "Nothing chooses a model through this policy yet (annotations::resolve_model is called today only by the Secretary and the analysis); changing the chain changes nothing today."
+            },
+            "readers_today": [
+              "loom/src/providers/embedding.cpp",
+              "loom/src/context/context_engine.cpp"
+            ],
+            "readers": [
+              "loom/src/providers/embedding.cpp",
+              "loom/src/context/context_engine.cpp (context_execution.embedding)"
+            ]
+          }
+        },
+        "asr": {
+          "role": "asr",
+          "chain": [
+            {
+              "type": "role",
+              "role": "asr",
+              "meaning": {
+                "pl": "Rola Mowa→tekst: Twój wybór dla tej roli, a bez niego preset — lista dostawców bez nazwy modelu; model bierze się z wybranego wpisu. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę.",
+                "en": "Role Speech→text: your choice for this role, else the preset — a list of providers that names no model; the model comes from the chosen entry. A role choice saved for this conversation only is not taken into account today."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain. The model comes from params.model of the chosen entry."
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: dostawca używa swojego modelu domyślnego (z profilu mediów).",
+                "en": "No model: the provider uses its default model (from the media profile)."
+              },
+              "code": "media.pack defaults_by_adapter"
+            }
+          ],
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś transkrypcja bierze dostawcę z Twojego wyboru dla roli Mowa→tekst albo z wyboru tej rozmowy (nigdy z presetu), a bez wyboru — z kolejności w profilu mediów; model z profilu mediów.",
+              "en": "Today transcription takes the provider from your choice for the role Speech→text or from this conversation’s choice (never from the preset), and without a choice from the order of the media profile; the model from the media profile."
+            },
+            "reason": {
+              "pl": "Nikt jeszcze nie wybiera modelu przez tę politykę (annotations::resolve_model wołają dziś tylko Sekretarz i analiza); zmiana łańcucha niczego dziś nie zmienia.",
+              "en": "Nothing chooses a model through this policy yet (annotations::resolve_model is called today only by the Secretary and the analysis); changing the chain changes nothing today."
+            },
+            "readers_today": [
+              "loom/src/actions/runner.cpp run_media",
+              "loom/src/media/media_providers.cpp"
+            ],
+            "readers": [
+              "loom/src/actions/runner.cpp run_media (chosen_role \"asr\")",
+              "loom/src/media/media_providers.cpp (media.pack asr_order)"
+            ]
+          }
+        },
+        "ocr": {
+          "role": "ocr",
+          "chain": [
+            {
+              "type": "role",
+              "role": "ocr",
+              "meaning": {
+                "pl": "Rola Tekst ze zdjęcia: Twój wybór dla tej roli, a bez niego preset — lista dostawców bez nazwy modelu; model bierze się z wybranego wpisu. Wybór roli zapisany tylko dla tej rozmowy nie jest dziś brany pod uwagę.",
+                "en": "Role Text from a picture: your choice for this role, else the preset — a list of providers that names no model; the model comes from the chosen entry. A role choice saved for this conversation only is not taken into account today."
+              },
+              "code": "annotations::resolve_model passes the ports an empty conversation layer (no conversations.metadata.ports); the preset of the role takes its `setting` from config.json (person -> installation), not through the scope chain. The model comes from params.model of the chosen entry."
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: dostawca używa swojego modelu domyślnego (z profilu mediów).",
+                "en": "No model: the provider uses its default model (from the media profile)."
+              },
+              "code": "media.pack defaults_by_adapter"
+            }
+          ],
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś odczyt tekstu ze zdjęcia bierze dostawcę z Twojego wyboru dla roli Tekst ze zdjęcia albo z wyboru tej rozmowy (nigdy z presetu), a bez wyboru — z kolejności w profilu mediów; model z profilu mediów.",
+              "en": "Today reading text from a picture takes the provider from your choice for the role Text from a picture or from this conversation’s choice (never from the preset), and without a choice from the order of the media profile; the model from the media profile."
+            },
+            "reason": {
+              "pl": "Nikt jeszcze nie wybiera modelu przez tę politykę (annotations::resolve_model wołają dziś tylko Sekretarz i analiza); zmiana łańcucha niczego dziś nie zmienia.",
+              "en": "Nothing chooses a model through this policy yet (annotations::resolve_model is called today only by the Secretary and the analysis); changing the chain changes nothing today."
+            },
+            "readers_today": [
+              "loom/src/actions/runner.cpp run_media",
+              "loom/src/media/media_providers.cpp"
+            ],
+            "readers": [
+              "loom/src/actions/runner.cpp run_media (chosen_role \"ocr\")",
+              "loom/src/media/media_providers.cpp (media.pack ocr_order)"
+            ]
+          }
+        },
+        "action": {
+          "chain": [
+            {
+              "type": "role",
+              "role": "action.*",
+              "meaning": {
+                "pl": "Rola Model dla działania: Twój wybór modelu dla tego działania albo wybór tej rozmowy (np. „do streszczeń używaj modelu X”). Preset niczego tu nie wybiera.",
+                "en": "Role Model for an action: your choice of model for this action or this conversation’s choice (e.g. “use model X for summaries”). The preset chooses nothing here."
+              },
+              "code": "runner.cpp chosen_role(\"action.<id>\") reads conversations.metadata.ports and the person overlay, and drops the installation scope."
+            },
+            {
+              "type": "explicit",
+              "setting": "default_model",
+              "meaning": {
+                "pl": "Wprost: pole „Model rozmowy” (default_model) z Twoich ustawień (osoba → instalacja) — nie model wybrany dla tej rozmowy.",
+                "en": "Explicit: the field “Conversation model” (default_model) from your settings (person → installation) — not the model chosen for this conversation."
+              },
+              "code": "runner.cpp run_use_model: rt.config().get(action_run.pack use_model.model_setting), no scopes::Resolver."
+            },
+            {
+              "type": "none",
+              "meaning": {
+                "pl": "Brak modelu: działanie nie startuje i mówi, że trzeba wskazać model.",
+                "en": "No model: the action does not start and says a model is needed."
+              }
+            }
+          ],
+          "role": "action.*",
+          "status": {
+            "state": "planned",
+            "today": {
+              "pl": "Dziś krok modelu w działaniach (streszczenie, tłumaczenie, „Przedstaw obrazem” …) sam robi dokładnie to: najpierw model podany w kroku, potem Twój wybór dla działania albo wybór tej rozmowy, potem „Model rozmowy” z Twoich ustawień; tej polityki nie czyta.",
+              "en": "Today the model step of actions (summary, translation, “Depict as an image” …) does exactly this itself: first the model the step names, then your choice for the action or this conversation’s choice, then “Conversation model” from your settings; it does not read this policy."
+            },
+            "reason": {
+              "pl": "Krok modelu działań (runner.cpp run_use_model) wybiera model sam (chosen_role, potem action_run.pack use_model.model_setting), nie przez annotations::resolve_model.",
+              "en": "The model step of actions (runner.cpp run_use_model) chooses the model itself (chosen_role, then action_run.pack use_model.model_setting), not through annotations::resolve_model."
+            },
+            "readers": [
+              "loom/src/actions/runner.cpp run_use_model"
+            ]
+          }
         }
       },
       "tiers": [
@@ -1727,7 +2118,18 @@
             "lite",
             "small",
             "nano"
-          ]
+          ],
+          "reason": {
+            "pattern": {
+              "pl": "tani, bo nazwa zawiera „{pattern}” (wzorzec to fragment nazwy: „mini” pasuje też do „gemini”)",
+              "en": "cheap, because the name contains “{pattern}” (a pattern is a part of the name: “mini” also matches “gemini”)"
+            },
+            "threshold": {
+              "pl": "tani, bo cena z rejestru modeli ≤ {max} $ za milion tokenów",
+              "en": "cheap, because the registry price is ≤ {max} $ per million tokens"
+            },
+            "threshold_state": "planned"
+          }
         },
         {
           "id": "mid",
@@ -1736,7 +2138,18 @@
             "sonnet",
             "turbo",
             "medium"
-          ]
+          ],
+          "reason": {
+            "pattern": {
+              "pl": "średni, bo nazwa zawiera „{pattern}”",
+              "en": "mid, because the name contains “{pattern}”"
+            },
+            "threshold": {
+              "pl": "średni, bo cena z rejestru modeli ≤ {max} $ za milion tokenów (i powyżej progu klasy taniej)",
+              "en": "mid, because the registry price is ≤ {max} $ per million tokens (and above the cheap threshold)"
+            },
+            "threshold_state": "planned"
+          }
         },
         {
           "id": "frontier",
@@ -1747,7 +2160,18 @@
             "ultra",
             "pro",
             "large"
-          ]
+          ],
+          "reason": {
+            "pattern": {
+              "pl": "frontier, bo nazwa zawiera „{pattern}”",
+              "en": "frontier, because the name contains “{pattern}”"
+            },
+            "threshold": {
+              "pl": "frontier nie ma progu ceny: model droższy niż próg klasy średniej idzie do wzorców nazw wszystkich klas po kolei (tania pierwsza), więc może wyjść tani, średni albo frontier; bez pasującego wzorca jest „nieznany”",
+              "en": "frontier has no price threshold: a model dearer than the mid threshold goes to the name patterns of all classes in order (cheap first), so it may become cheap, mid or frontier; with no matching pattern it is “unknown”"
+            },
+            "threshold_state": "planned"
+          }
         }
       ],
       "tier_models": {
@@ -1803,7 +2227,40 @@
           }
         }
       },
-      "graph_addressable": true
+      "graph_addressable": true,
+      "policies_note": {
+        "pl": "Polityka = łańcuch kroków czytany od góry; pierwszy krok, który da model, wygrywa. Kroki: wprost (pole ustawień, przez łańcuch zakresów, gdy praca zna rozmowę), rola (Twój wybór dla roli albo preset), względem (relative_to — tylko gdy napiszesz go sam), brak. Polityka „planowana” opisuje łańcuch, którego jej praca jeszcze nie czyta; co ta praca robi dziś, mówi jej „dziś”.",
+        "en": "A policy = a chain of steps read from the top; the first step that yields a model wins. Steps: explicit (a settings field, through the scope chain when the job knows the conversation), role (your choice for the role, or the preset), relative_to (only when you write it yourself), none. A “planned” policy describes a chain its job does not read yet; what that job does today is its “today”.",
+        "code": "annotations::resolve_model reads a policy by name; `code` of a step is a note for developers (where the code does what the meaning says)."
+      },
+      "tier_rule": {
+        "pl": "Dziś klasę wybiera tylko nazwa: pierwsza klasa po kolei, której wzorzec jest fragmentem nazwy (bez rozróżniania wielkości liter); kolejność klas ma znaczenie („mini” w klasie taniej łapie „gemini-…-pro”). Planowane (price_path): najpierw cena z rejestru — pierwsza klasa po kolei, której próg max_per_million ≥ cena — a dopiero potem nazwa.",
+        "en": "Today the class comes from the name only: the first class in order with a pattern that is a part of the name (case-insensitive); the order of the classes matters (“mini” of the cheap class catches “gemini-…-pro”). Planned (price_path): first the registry price — the first class in order whose max_per_million ≥ the price — and only then the name."
+      },
+      "unknown_tier": {
+        "reason": {
+          "pl": "nieznana — żaden wzorzec nazwy żadnej klasy nie pasuje (dziś ceny nikt nie podaje; z ceną także wtedy, gdy nie mieści się w progu żadnej klasy) → przepływ unknown = kilka wąskich pytań",
+          "en": "unknown — no name pattern of any class matches (no reader passes a price today; with a price, also when it fits no class threshold) → flow unknown = a few narrow questions"
+        }
+      },
+      "price_path": {
+        "state": "planned",
+        "today": {
+          "pl": "Dziś żadna praca nie podaje ceny modelu, gdy ustala jego klasę, więc klasę wybiera tylko nazwa; progi cenowe klas nie są dziś czytane.",
+          "en": "Today no job passes the price of a model when it settles the model’s class, so the class comes from the name alone; the price thresholds of the classes are not read today."
+        },
+        "reason": {
+          "pl": "Rejestr modeli zna ceny, ale żaden czytelnik klasy ich jeszcze nie przekazuje.",
+          "en": "The model registry knows prices, but no reader of the class passes them yet."
+        },
+        "readers": [
+          "loom/src/guardian/matching.cpp",
+          "loom/src/semantic/semantic_llm.cpp",
+          "loom/src/annotations/analyzer.cpp",
+          "loom/src/chat/context_format.cpp"
+        ],
+        "code": "annotations::resolve_model and model_tier are called with price -1 by every reader above."
+      }
     },
     "context_io": {
       "setting": "chat_flow",
@@ -2052,8 +2509,8 @@
               "top_k": 1
             },
             "note": {
-              "en": "Placement is its own step; the embedder only applies its plan. The planned steps reuse the guardian's matching (guardian_match_method).",
-              "pl": "Umieszczanie to osobny krok; osadzacz tylko stosuje jego plan. Planowane kroki używają dopasowania strażnika (guardian_match_method)."
+              "en": "Placement is its own step; the embedder only applies its plan. The planned steps reuse the Secretary's matching (guardian_match_method).",
+              "pl": "Umieszczanie to osobny krok; osadzacz tylko stosuje jego plan. Planowane kroki używają dopasowania Sekretarza (guardian_match_method)."
             }
           },
           "graph": true,
