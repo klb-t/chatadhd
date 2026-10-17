@@ -18,7 +18,7 @@
    "default": "conversation"
   },
   "field": {
-   "type": "path",
+   "type": "field",
    "required": true
   },
   "value": {

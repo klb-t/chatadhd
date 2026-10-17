@@ -103,6 +103,7 @@ _TYPE_CHECK = {
     "string": lambda v: isinstance(v, str),
     "expr": lambda v: isinstance(v, str) and v.strip() != "",
     "path": lambda v: isinstance(v, str) and v != "",
+    "field": lambda v: isinstance(v, str) and v != "",  # a field name (title, meta.x): never resolved as a file path
     "id": lambda v: isinstance(v, str) and v != "",
     "number": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool),
     "bool": lambda v: isinstance(v, bool),

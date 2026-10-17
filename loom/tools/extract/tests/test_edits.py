@@ -118,6 +118,33 @@ class EditsTest(ExtractTest):
         self.assertEqual(eng2.last_write["reproducible_hash"], w1["reproducible_hash"])
         self.assertNotIn(",tool,", (self.tmp / "b/table/messages.csv").read_text(encoding="utf-8"))
 
+    def test_every_edit_replays_from_a_recipe_file_in_another_directory(self):
+        """F19: a field param (``title``, ``account.label``) is a field name, never a path joined with the recipe's
+        directory; ``przepis uruchom`` from a file elsewhere gives the same package tree as the run that wrote it."""
+        import contextlib
+        import io
+        import shutil
+        from loom.tools.extract import cli
+        for name, params in self.CASES.items():
+            with self.subTest(edit=name):
+                eng = self._eng()
+                eng.op(f"edit.{name}", dict(params))
+                eng.op("write", {"package": str(self.tmp / "a" / name)})
+                rec = json.loads((self.tmp / "a" / name / "recipe.json").read_text(encoding="utf-8"))
+                step = next(s for s in rec["steps"] if s["op"] == f"edit.{name}")
+                if "field" in params:
+                    self.assertEqual(step["params"]["field"], params["field"], "a field name stays a field name")
+                elsewhere = self.tmp / "elsewhere" / name
+                elsewhere.mkdir(parents=True)
+                shutil.copyfile(self.tmp / "a" / name / "recipe.json", elsewhere / "r.json")
+                out, err = io.StringIO(), io.StringIO()
+                with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+                    code = cli.main(["przepis", "uruchom", str(elsewhere / "r.json"), "--pakiet", str(self.tmp / "b" / name)])
+                self.assertEqual(code, 0, err.getvalue() + out.getvalue())
+                a = json.loads((self.tmp / "a" / name / "package.json").read_text(encoding="utf-8"))
+                b = json.loads((self.tmp / "b" / name / "package.json").read_text(encoding="utf-8"))
+                self.assertEqual(b, a, f"edit.{name} replays to the same package tree")
+
     def test_moved_attachments_are_where_the_links_point(self):
         eng = self._eng()
         eng.op("edit.move_attachments", {"where": "conversation[title~/Obrazy/]", "to": "media/{key}"})

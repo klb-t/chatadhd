@@ -19,7 +19,7 @@
    "default": "message"
   },
   "field": {
-   "type": "path",
+   "type": "field",
    "default": "text"
   },
   "pattern": {
