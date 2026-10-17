@@ -25,6 +25,7 @@
 namespace loom {
 class Config;
 class Database;
+class MemoryEngine;
 }
 
 namespace loom::views {
@@ -56,6 +57,7 @@ struct RenderContext {
   Database* db = nullptr;             // the graph (nodes, links)
   const Config* cfg = nullptr;        // for scope-chain perspectives
   std::filesystem::path root;         // data dir
+  const MemoryEngine* memory = nullptr;  // for the catalogue source (the memory notes); null = that source says memory_unavailable
 };
 
 class Perspectives {
@@ -68,8 +70,10 @@ class Perspectives {
   Result<std::set<std::string>> edge_kinds_of(const std::string& id) const;
   // [{id, label, relations, edge_kinds, direction, hops, node_filter, render, source?, traversal, origin, provenance, disabled?}]
   Json list() const;
-  // Applies a perspective to the graph. request: {seeds?: [node ids], hops?, direction?, limit?, key?, conversation_id?, units?}
+  // Applies a perspective to the graph. request: {seeds?: [node ids], hops?, direction?, limit?, key?, conversation_id?, units?, source?, lang?}
   // -> {schema, perspective, edge_kinds, nodes, edges, unclassified?} ; scope_chain perspectives need request.key.
+  // source "catalogue" (the perspective's own `source`, or request.source for any perspective): the edges of the graph projection
+  // (runtime/graph_sources.pack, computed on demand, nothing written) instead of the links table; seeds are projection addresses.
   Result<Json> render(const RenderContext& ctx, const std::string& id, const Json& request) const;
   // Several perspectives over the same request, side by side: {schema, perspectives: {id: result}}
   Result<Json> render_many(const RenderContext& ctx, const std::vector<std::string>& ids, const Json& request) const;

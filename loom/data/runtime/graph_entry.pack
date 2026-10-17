@@ -483,7 +483,13 @@
         },
         "bindings": [
           "rom.catalogue"
-        ]
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:rom"
+          }
+        }
       },
       "interfaces": {
         "order": 3,
@@ -515,7 +521,13 @@
           "profile.domains",
           "data.scopes",
           "data.conflict_rules"
-        ]
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:profiles_settings"
+          }
+        }
       },
       "parties": {
         "order": 5,
@@ -720,6 +732,164 @@
           "security.suites",
           "security.crypto_status",
           "security.threats"
+        ]
+      },
+      "party_self": {
+        "order": 1,
+        "label": {
+          "en": "You",
+          "pl": "Ty"
+        },
+        "axes": {
+          "about": "party",
+          "kind": "knowledge",
+          "time": "state"
+        },
+        "bindings": [
+          "party.slots"
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "party:self"
+          }
+        }
+      },
+      "flows": {
+        "order": 16,
+        "label": {
+          "en": "Flows",
+          "pl": "Przepływy"
+        },
+        "axes": {
+          "about": "application",
+          "kind": "method",
+          "time": "plan"
+        },
+        "bindings": [
+          "actions.flows"
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:flows"
+          }
+        }
+      },
+      "devices_io": {
+        "order": 17,
+        "label": {
+          "en": "Devices and input/output",
+          "pl": "Urządzenia i wejście/wyjście"
+        },
+        "axes": {
+          "about": "world",
+          "kind": "resource",
+          "time": "state"
+        },
+        "bindings": [
+          "data.devices",
+          "data.input_bindings"
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:devices_io"
+          }
+        }
+      },
+      "tools_agent": {
+        "order": 18,
+        "label": {
+          "en": "Tools and the agent",
+          "pl": "Narzędzia i agent"
+        },
+        "axes": {
+          "about": "world",
+          "kind": "method",
+          "time": "state"
+        },
+        "bindings": [
+          "tools.sources"
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:tools_agent"
+          }
+        }
+      },
+      "providers_connectors": {
+        "order": 19,
+        "label": {
+          "en": "Providers and connectors",
+          "pl": "Dostawcy i konektory"
+        },
+        "axes": {
+          "about": "world",
+          "kind": "resource",
+          "time": "plan"
+        },
+        "bindings": [
+          "ports.roles",
+          "data.connectors"
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:providers_connectors"
+          }
+        }
+      },
+      "environments": {
+        "order": 20,
+        "label": {
+          "en": "Environments",
+          "pl": "Środowiska"
+        },
+        "axes": {
+          "about": "world",
+          "kind": "resource",
+          "time": "history"
+        },
+        "bindings": [
+          "data.environments"
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:environments"
+          }
+        }
+      },
+      "automations": {
+        "order": 21,
+        "label": {
+          "en": "Automations and tasks",
+          "pl": "Automatyzacje i zadania"
+        },
+        "axes": {
+          "about": "application",
+          "kind": "method",
+          "time": "history"
+        },
+        "bindings": [
+          "worker.status"
+        ]
+      },
+      "experiments": {
+        "order": 22,
+        "label": {
+          "en": "Experiments and calibration",
+          "pl": "Eksperymenty i kalibracja"
+        },
+        "axes": {
+          "about": "application",
+          "kind": "knowledge",
+          "time": "history"
+        },
+        "bindings": [
+          "calibration.items"
         ]
       }
     },
@@ -926,6 +1096,52 @@
           "pointer": "/devices",
           "platforms_pointer": "/device_platforms"
         }
+      },
+      "party.slots": {
+        "provider": "party.slots",
+        "as": "profile_slots"
+      },
+      "actions.flows": {
+        "provider": "actions.composite",
+        "as": "flows"
+      },
+      "data.input_bindings": {
+        "provider": "profile.items",
+        "as": "input_bindings",
+        "params": {
+          "domain": "graph_views",
+          "pointer": "/interaction_bindings"
+        }
+      },
+      "tools.sources": {
+        "provider": "tools.sources",
+        "as": "tool_sources"
+      },
+      "ports.roles": {
+        "provider": "ports.roles",
+        "as": "roles"
+      },
+      "data.connectors": {
+        "provider": "data.items",
+        "as": "connectors",
+        "params": {
+          "pointer": "/environments/services"
+        }
+      },
+      "data.environments": {
+        "provider": "data.items",
+        "as": "environments",
+        "params": {
+          "pointer": "/environments/runtimes"
+        }
+      },
+      "worker.status": {
+        "provider": "worker.status",
+        "as": "messages_waiting"
+      },
+      "calibration.items": {
+        "provider": "calibration.items",
+        "as": "calibration_items"
       }
     },
     "seed": {
@@ -3034,7 +3250,9 @@
           "POST /api/environments/can_do",
           "POST /api/environments/sync",
           "POST /api/graph-reply",
+          "POST /api/graph/card",
           "POST /api/graph/expand",
+          "POST /api/graph/navigate",
           "POST /api/graph/packets/store",
           "POST /api/graph/reindex",
           "POST /api/groups/define",
@@ -3062,6 +3280,8 @@
           "POST /api/onboarding",
           "POST /api/packet",
           "POST /api/perspectives",
+          "POST /api/roles/resolved",
+          "POST /api/rom/override",
           "POST /api/rules/disable",
           "POST /api/rules/list",
           "POST /api/rules/set",
@@ -3073,6 +3293,7 @@
           "POST /api/semantic/retry-mode",
           "POST /api/semantic/usage-confirm",
           "POST /api/semantic/wake",
+          "POST /api/settings/resolved",
           "POST /api/storage/backup",
           "POST /api/storage/copy",
           "POST /api/storage/move",
@@ -3186,7 +3407,9 @@
           "POST /api/context/select",
           "POST /api/conversations",
           "POST /api/graph-reply",
+          "POST /api/graph/card",
           "POST /api/graph/expand",
+          "POST /api/graph/navigate",
           "POST /api/graph/packets/store",
           "POST /api/graph/reindex",
           "POST /api/groups/define",
@@ -3203,6 +3426,8 @@
           "POST /api/onboarding",
           "POST /api/packet",
           "POST /api/perspectives",
+          "POST /api/roles/resolved",
+          "POST /api/rom/override",
           "POST /api/rules/disable",
           "POST /api/rules/list",
           "POST /api/rules/set",
@@ -3214,6 +3439,7 @@
           "POST /api/semantic/retry-mode",
           "POST /api/semantic/usage-confirm",
           "POST /api/semantic/wake",
+          "POST /api/settings/resolved",
           "POST /api/tasks/:id/cancel",
           "POST /api/tasks/resume",
           "POST /api/usage-policy",

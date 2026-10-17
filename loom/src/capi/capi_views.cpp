@@ -26,6 +26,7 @@ views::RenderContext render_context(LoomContext* ctx) {
   rc.db = &ctx->rt->db();
   rc.cfg = &ctx->rt->config();
   rc.root = ctx->rt->paths().root;
+  rc.memory = &ctx->rt->memory();
   return rc;
 }
 

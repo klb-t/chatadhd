@@ -492,7 +492,10 @@ TEST_SUITE("settings_fields") {
         CHECK_FALSE(f["status"]["today"]["en"].get<std::string>().empty());
         ++planned;
       }
-    CHECK(planned >= 13);
+    // M1-K0 gave navigator_children_limit its reader (graph.navigate takes its children budget from it): it is no longer planned.
+    CHECK(planned >= 12);
+    for (const auto& f : doc["fields"])
+      if (f["key"] == "navigator_children_limit") CHECK_FALSE(f.contains("status"));
     Json nostatus = doc;
     nostatus["fields"][0]["status"] = Json{{"state", "planned"}};
     CHECK(has(settings_fields_problems(nostatus), "status without reason pl+en: config:base_url"));

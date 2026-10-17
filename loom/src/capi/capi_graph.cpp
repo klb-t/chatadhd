@@ -129,6 +129,7 @@ LOOM_API const char* loom_graph_entry(LoomContext* ctx, const char* request_json
     if (!rj) return out_error(rj.error());
     graph_entry::Env env;
     env.db = &ctx->rt->db();
+    env.cfg = &ctx->rt->config();
     env.data_dir = ctx->rt->paths().root;
     auto r = graph_entry::compute(env, *rj);
     if (!r) return out_error(r.error());

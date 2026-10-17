@@ -4555,6 +4555,176 @@
             "kind"
           ],
           "takes_scope": false
+        },
+        {
+          "id": "graph.navigate.root.pl",
+          "action": "graph.navigate",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz|wyswietl)\\s+(?:mi\\s+)?(?:korzen\\s+grafu|caly\\s+graf|wejscie\\s+do\\s+grafu)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.navigate.root.en",
+          "action": "graph.navigate",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open)\\s+(?:me\\s+)?(?:the\\s+)?(?:graph\\s+root|whole\\s+graph|graph\\s+entry)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.navigate.in.pl",
+          "action": "graph.navigate",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz|wyswietl)\\s+(?:mi\\s+)?(.+?)\\s+w\\s+grafie\\s*[.!?]*\\s*$",
+          "args": [
+            "focus"
+          ],
+          "original": [
+            "focus"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.navigate.in.en",
+          "action": "graph.navigate",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open|display)\\s+(?:me\\s+)?(?:the\\s+)?(.+?)\\s+in\\s+the\\s+graph\\s*[.!?]*\\s*$",
+          "args": [
+            "focus"
+          ],
+          "original": [
+            "focus"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.navigate.enter.pl",
+          "action": "graph.navigate",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:wejdz|przejdz)\\s+(?:do|w)\\s+(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "focus"
+          ],
+          "original": [
+            "focus"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.navigate.enter.en",
+          "action": "graph.navigate",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:go|step)\\s+into\\s+(?:the\\s+)?(.+?)\\s*[.!?]*\\s*$",
+          "args": [
+            "focus"
+          ],
+          "original": [
+            "focus"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.card.pl",
+          "action": "graph.card",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|otworz)\\s+(?:mi\\s+)?karte\\s+(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "address"
+          ],
+          "original": [
+            "address"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "graph.card.en",
+          "action": "graph.card",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|open)\\s+(?:me\\s+)?(?:the\\s+)?card\\s+(?:of\\s+)?(\\S+)\\s*[.!?]*\\s*$",
+          "args": [
+            "address"
+          ],
+          "original": [
+            "address"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "settings.resolved.pl",
+          "action": "settings.resolved",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:pokaz|wyswietl)\\s+(?:mi\\s+)?(?:moje\\s+)?ustawienia\\s+(?:po\\s+ludzku|z\\s+pochodzeniem|z\\s+grupami)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "settings.resolved.whence.pl",
+          "action": "settings.resolved",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?skad\\s+sa\\s+moje\\s+ustawienia\\s*\\??\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "settings.resolved.en",
+          "action": "settings.resolved",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show|list)\\s+(?:me\\s+)?(?:my\\s+|the\\s+)?settings\\s+(?:with\\s+their\\s+origin|and\\s+where\\s+they\\s+come\\s+from|by\\s+group)\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "settings.resolved.whence.en",
+          "action": "settings.resolved",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?where\\s+do\\s+my\\s+settings\\s+come\\s+from\\s*\\??\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "roles.resolved.pl",
+          "action": "roles.resolved",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:(?:pokaz|wyswietl)\\s+(?:mi\\s+)?)?kto\\s+wykonuje\\s+ktora\\s+prace\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "roles.resolved.en",
+          "action": "roles.resolved",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?(?:show\\s+(?:me\\s+)?)?who\\s+does\\s+which\\s+job\\s*[.!?]*\\s*$",
+          "args": [],
+          "takes_scope": false
+        },
+        {
+          "id": "rom.override.pl",
+          "action": "rom.override",
+          "lang": "pl",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?przeslon\\s+(?:element\\s+)?rom\\s+([a-z_]+)\\s+(\\{.*\\})\\s*$",
+          "args": [
+            "id",
+            "patch"
+          ],
+          "original": [
+            "patch"
+          ],
+          "takes_scope": false
+        },
+        {
+          "id": "rom.override.en",
+          "action": "rom.override",
+          "lang": "en",
+          "regex": "^[\\s,]*(?:prosze\\s+|please\\s+|can\\s+you\\s+|could\\s+you\\s+|moglbys\\s+|mozesz\\s+)?override\\s+(?:the\\s+)?rom\\s+item\\s+([a-z_]+)\\s+with\\s+(\\{.*\\})\\s*$",
+          "args": [
+            "id",
+            "patch"
+          ],
+          "original": [
+            "patch"
+          ],
+          "takes_scope": false
         }
       ],
       "payload": {

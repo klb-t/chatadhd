@@ -574,6 +574,20 @@
           "en": "Changing a view in your overlay changes how the graph is read from now on; you confirm each change.",
           "pl": "Zmiana widoku w Twojej nakładce zmienia od teraz sposób czytania grafu; każdą zmianę potwierdzasz sam."
         }
+      },
+      "confirm:rom.override": {
+        "id": "confirm:rom.override",
+        "scope": "app_preset",
+        "target": {
+          "kind": "action",
+          "id": "rom.override"
+        },
+        "effect": "confirm",
+        "initiator": "application preset",
+        "reason": {
+          "en": "Your copy of a ROM item changes what the application shows as its read-only memory from now on; you confirm each one (the ROM itself is never written).",
+          "pl": "Twoja kopia elementu ROM zmienia od teraz to, co aplikacja pokazuje jako swoją pamięć tylko do odczytu; każdą potwierdzasz sam (sam ROM nigdy nie jest zapisywany)."
+        }
       }
     },
     "extrapolation": {

@@ -30,6 +30,10 @@
 
 namespace loom {
 class Config;
+class PortProfile;
+namespace scopes {
+class Resolver;
+}
 }
 
 namespace loom::annotations {
@@ -139,6 +143,11 @@ struct ModelChoice {
 ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& data_root, const std::string& policy, const std::string& conv_id,
                           const std::string& conversation_model = std::string(), double price_per_million = -1,
                           Database* db = nullptr);
+// The same, reading the settings through `resolver` and the roles through `ports` when given (a render that resolves many policies opens
+// each once; null = opened by this call as above).
+ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& data_root, const std::string& policy, const std::string& conv_id,
+                          const std::string& conversation_model, double price_per_million, Database* db, const PortProfile* ports,
+                          const scopes::Resolver* resolver);
 // cheap | mid | frontier | unknown (data: models.tiers; prices first, then name patterns).
 std::string model_tier(const Json& models_section, const std::string& model, double price_per_million = -1);
 

@@ -26,10 +26,15 @@
 #include "loom/result.h"
 #include "loom/util/json.h"
 
+namespace loom {
+class Config;
+}
+
 namespace loom::graph_entry {
 
 struct Env {
   Database* db = nullptr;                // nullptr: every database count is unknown
+  const Config* cfg = nullptr;           // the user's settings (tool sources, roles); nullptr: counts that need them are unknown
   std::filesystem::path data_dir;        // overlay location; empty: shipped data only
   std::shared_ptr<const kb::Pack> pack;  // nullptr: the builtin pack is loaded on demand
   Json host_counts = Json::object();     // optional counts a host can enumerate (interfaces...)
@@ -40,6 +45,9 @@ struct Env {
 struct Context {
   const Env& env;
   const Json& values;
+  // The effective runtime profiles read during one compute (domain -> values; null = unreadable), shared by its providers so a profile
+  // is loaded once per view however many providers read it.
+  std::shared_ptr<std::map<std::string, Json>> profiles = std::make_shared<std::map<std::string, Json>>();
 };
 
 // A provider returns an object name -> count. The empty name "" is the

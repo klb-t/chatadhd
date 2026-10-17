@@ -2311,6 +2311,111 @@
           "pl": "zaufaj temu narzędziu",
           "en": "trust this tool"
         }
+      },
+      {
+        "id": "graph_navigate",
+        "title": {
+          "en": "Navigate the graph",
+          "pl": "Pokaż w grafie"
+        },
+        "via": "action",
+        "action": "graph.navigate",
+        "surfaces": {
+          "http": [
+            "POST /api/graph/navigate"
+          ],
+          "invoke": [
+            "actions.graph.navigate"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż ROM w grafie",
+          "en": "show the ROM in the graph"
+        }
+      },
+      {
+        "id": "graph_card",
+        "title": {
+          "en": "Card of a graph node",
+          "pl": "Karta węzła grafu"
+        },
+        "via": "action",
+        "action": "graph.card",
+        "surfaces": {
+          "http": [
+            "POST /api/graph/card"
+          ],
+          "invoke": [
+            "actions.graph.card"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż kartę rom:boot",
+          "en": "show the card of rom:boot"
+        }
+      },
+      {
+        "id": "settings_resolved",
+        "title": {
+          "en": "Settings with their origin",
+          "pl": "Ustawienia z pochodzeniem"
+        },
+        "via": "action",
+        "action": "settings.resolved",
+        "surfaces": {
+          "http": [
+            "POST /api/settings/resolved"
+          ],
+          "invoke": [
+            "actions.settings.resolved"
+          ]
+        },
+        "examples": {
+          "pl": "pokaż ustawienia po ludzku",
+          "en": "show my settings with their origin"
+        }
+      },
+      {
+        "id": "roles_resolved",
+        "title": {
+          "en": "Who does which job",
+          "pl": "Kto wykonuje którą pracę"
+        },
+        "via": "action",
+        "action": "roles.resolved",
+        "surfaces": {
+          "http": [
+            "POST /api/roles/resolved"
+          ],
+          "invoke": [
+            "actions.roles.resolved"
+          ]
+        },
+        "examples": {
+          "pl": "kto wykonuje którą pracę",
+          "en": "who does which job"
+        }
+      },
+      {
+        "id": "rom_override",
+        "title": {
+          "en": "Override a ROM item with your copy",
+          "pl": "Przesłoń element ROM swoją kopią"
+        },
+        "via": "action",
+        "action": "rom.override",
+        "surfaces": {
+          "http": [
+            "POST /api/rom/override"
+          ],
+          "invoke": [
+            "actions.rom.override"
+          ]
+        },
+        "examples": {
+          "pl": "przesłoń element ROM boot {\"note\": \"moja\"}",
+          "en": "override the ROM item boot with {\"note\": \"mine\"}"
+        }
       }
     ],
     "not_from_chat": [

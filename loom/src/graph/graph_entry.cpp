@@ -5,9 +5,14 @@
 #include <functional>
 #include <set>
 
+#include "graph/projection.h"
+#include "loom/action_table.h"
+#include "loom/config.h"
 #include "loom/crypto_suite.h"
 #include "loom/economy.h"
+#include "loom/log.h"
 #include "loom/onboarding_store.h"
+#include "loom/port_profile.h"
 #include "loom/runtime_profile.h"
 #include "loom/storage_backend.h"
 
@@ -140,6 +145,32 @@ Json table_total(const Context& ctx, const char* table) {
 
 Json only(Json value) { return Json{{"", std::move(value)}}; }
 
+// The effective values of a runtime profile, read once per compute (Context::profiles); nullptr when it cannot be read (logged).
+const Json* profile_values(const Context& c, const std::string& domain) {
+  auto& cache = *c.profiles;
+  auto it = cache.find(domain);
+  if (it == cache.end()) {
+    auto p = RuntimeProfile::load(domain, c.env.data_dir);
+    if (!p) log::write(log::Level::Debug, "graph_entry", "profile " + domain + " not readable: " + p.error().message);
+    it = cache.emplace(domain, p ? p->values() : Json(nullptr)).first;
+  }
+  return it->second.is_null() ? nullptr : &it->second;
+}
+
+// The builtin knowledge pack is embedded and never changes while the process runs: parsed and validated once (perf, M1-K0: the entry view
+// read it once per pack.file binding). A failure is deterministic and logged; the counts then say pack_unavailable.
+std::shared_ptr<const kb::Pack> builtin_kb_pack() {
+  static const std::shared_ptr<const kb::Pack> pack = [] {
+    auto loaded = kb::Pack::load_builtin();
+    if (!loaded) {
+      log::write(log::Level::Warning, "graph_entry", "builtin knowledge pack unreadable: " + loaded.error().message);
+      return std::shared_ptr<const kb::Pack>();
+    }
+    return std::shared_ptr<const kb::Pack>(*loaded);
+  }();
+  return pack;
+}
+
 // ── built-in providers (mechanism) ─────────────────────────────────────
 
 void register_builtin(Providers& p) {
@@ -201,7 +232,7 @@ void register_builtin(Providers& p) {
     std::set<std::string> seen;
     Json by = Json::object();
     for (const std::string& domain : RuntimeProfile::domains()) {
-      auto profile = RuntimeProfile::load(domain, c.env.data_dir);
+      const Json* profile = profile_values(c, domain);
       if (!profile) continue;
       std::int64_t here = 0;
       std::function<void(const Json&)> walk = [&](const Json& node) {
@@ -214,7 +245,7 @@ void register_builtin(Providers& p) {
           for (const auto& item : node) walk(item);
         }
       };
-      walk(profile->values());
+      walk(*profile);
       if (here) by[domain] = here;
     }
     return only(known_by(static_cast<std::int64_t>(seen.size()), by));
@@ -312,9 +343,9 @@ void register_builtin(Providers& p) {
     return only(known(static_cast<std::int64_t>(RuntimeProfile::domains().size())));
   });
   p.add("profile.items", [](const Context& c, const Json& params) {
-    auto profile = RuntimeProfile::load(json::get_string(params, "domain"), c.env.data_dir);
+    const Json* profile = profile_values(c, json::get_string(params, "domain"));
     if (!profile) return only(unknown("profile_unavailable"));
-    const Json* v = pointer_at(profile->values(), json::get_string(params, "pointer"));
+    const Json* v = pointer_at(*profile, json::get_string(params, "pointer"));
     return only(v ? known(member_count(*v)) : unknown("pointer_absent"));
   });
   p.add("data.items", [](const Context& c, const Json& params) {
@@ -366,13 +397,149 @@ void register_builtin(Providers& p) {
     out["storage_backends_unprobed"] = known(unprobed);
     return out;
   });
+  // Flows (M1): the actions of the catalogue with the user's overlay. value = composite actions; by = {composite, atomic, implemented,
+  // planned, yours: entries the user's overlay added or changed}; actions_all = every action; flow_proposals = the proposal nodes the
+  // growing catalogue offered (nodes of kind proposal).
+  p.add("actions.composite", [](const Context& c, const Json&) {
+    auto cat = action_catalogue(c.env.data_dir);
+    if (!cat) return only(unknown("action_catalogue_unavailable"));
+    auto shipped_profile = RuntimeProfile::builtin("actions");
+    const Json shipped = shipped_profile ? shipped_profile->values().value("actions", Json::object()) : Json::object();
+    std::int64_t composite = 0, atomic = 0, implemented = 0, planned = 0, yours = 0;
+    const Json actions = cat->value("actions", Json::array());
+    for (const auto& a : actions) {
+      if (json::get_string(a, "kind") == "composite") ++composite;
+      else ++atomic;
+      if (json::get_string(a, "status") == "implemented") ++implemented;
+      else ++planned;
+      const Json* own = json::find(shipped, json::get_string(a, "id"));
+      if (!own || *own != a) ++yours;
+    }
+    Json out = Json::object();
+    out[""] = known_by(composite, Json{{"composite", composite}, {"atomic", atomic}, {"implemented", implemented}, {"planned", planned}, {"yours", yours}});
+    out["actions_all"] = known(composite + atomic);
+    out["flow_proposals"] = grouped(c, "nodes", "kind", "kind='proposal'");
+    return out;
+  });
+  // Tool sources (M1): the sources the user added (config tool_sources), by kind; tool_source_kinds = the kinds the tool_sources
+  // profile knows (mcp ...).
+  p.add("tools.sources", [](const Context& c, const Json&) {
+    Json out = Json::object();
+    if (!c.env.cfg) {
+      out[""] = unknown("config_unavailable");
+    } else {
+      const Json sources = c.env.cfg->get("tool_sources", Json::object());
+      if (!sources.is_object()) {
+        out[""] = unknown("tool_sources_not_an_object");
+      } else {
+        Json by = Json::object();
+        for (const auto& item : sources.items()) {
+          const std::string kind = item.value().is_object() ? json::get_string(item.value(), "kind", "unknown") : std::string("unknown");
+          by[kind] = by.value(kind, static_cast<std::int64_t>(0)) + 1;
+        }
+        out[""] = known_by(static_cast<std::int64_t>(sources.size()), by);
+      }
+    }
+    const Json* profile = profile_values(c, "tool_sources");
+    const Json* kinds = profile ? pointer_at(*profile, "/kinds") : nullptr;
+    out["tool_source_kinds"] = kinds ? known(member_count(*kinds)) : unknown("tool_sources_profile_unavailable");
+    return out;
+  });
+  // Model roles (M1): every role of the ports profile resolved for the person; value = roles; by = {with_model: a model is named,
+  // composed: providers tried in turn (asr, ocr), without_model}.
+  p.add("ports.roles", [](const Context& c, const Json&) {
+    auto prof = PortProfile::load(c.env.data_dir);
+    if (!prof) return only(unknown("ports_profile_unavailable"));
+    const Json settings = c.env.cfg ? c.env.cfg->all() : Json::object();
+    std::int64_t with_model = 0, composed = 0, without = 0;
+    const Json names = prof->roles();
+    for (const auto& name : names) {
+      auto r = prof->resolve(name.get<std::string>(), Json::object(), std::string(), settings);
+      if (!r) {
+        log::write(log::Level::Debug, "graph_entry", "role " + name.get<std::string>() + " not resolved: " + r.error().message);
+        ++without;
+        continue;
+      }
+      const Json params = r->value("params", Json::object());
+      const Json model = params.is_object() ? params.value("model", Json()) : Json();
+      if (model.is_string() && !model.get<std::string>().empty()) ++with_model;
+      else if (r->contains("compose")) ++composed;
+      else ++without;
+    }
+    Json out = Json::object();
+    out[""] = known_by(static_cast<std::int64_t>(names.size()), Json{{"with_model", with_model}, {"composed", composed}, {"without_model", without}});
+    if (!c.env.cfg) out["roles_settings"] = unknown("config_unavailable");
+    return out;
+  });
+  // Background work (M1): messages waiting for the analysis (semantic_status pending or executing; by = every status), the background
+  // tasks by status, and the analysis modes the worker profile offers.
+  p.add("worker.status", [](const Context& c, const Json&) {
+    Json out = Json::object();
+    Json by_status = grouped(c, "messages", "semantic_status");
+    if (by_status.value("known", false)) {
+      const Json by = by_status.value("by", Json::object());
+      by_status["value"] = by.value("pending", static_cast<std::int64_t>(0)) + by.value("executing", static_cast<std::int64_t>(0));
+    }
+    out[""] = by_status;
+    out["background_tasks"] = grouped(c, "loom_tasks", "status");
+    const Json* worker = profile_values(c, "worker");
+    const Json* modes = worker ? pointer_at(*worker, "/analysis_modes") : nullptr;
+    if (modes && modes->is_array()) {
+      Json by = Json::object();
+      for (const auto& m : *modes)
+        if (m.is_string()) by[m.get<std::string>()] = 1;
+      out["analysis_modes"] = known_by(static_cast<std::int64_t>(modes->size()), by);
+    } else {
+      out["analysis_modes"] = unknown("worker_profile_unavailable");
+    }
+    return out;
+  });
+  // Experiments and calibration (M1): every entry of the effective runtime profiles marked as calibration ("status": "calibration",
+  // "status": {"state": "calibration"} or "calibration": true); by = {domain: entries}. Research in progress, never hidden.
+  p.add("calibration.items", [](const Context& c, const Json&) {
+    Json by = Json::object();
+    std::int64_t total = 0;
+    for (const std::string& domain : RuntimeProfile::domains()) {
+      const Json* profile = profile_values(c, domain);
+      if (!profile) continue;
+      std::int64_t here = 0;
+      std::function<void(const Json&)> walk = [&](const Json& node) {
+        if (node.is_object()) {
+          const Json* s = json::find(node, "status");
+          const bool marked = (s && s->is_string() && s->get<std::string>() == "calibration") ||
+                              (s && s->is_object() && json::get_string(*s, "state") == "calibration") ||
+                              json::get_bool(node, "calibration", false);
+          if (marked) ++here;
+          for (const auto& item : node.items()) walk(item.value());
+        } else if (node.is_array()) {
+          for (const auto& item : node) walk(item);
+        }
+      };
+      walk(*profile);
+      if (here) by[domain] = here;
+      total += here;
+    }
+    return only(known_by(total, by));
+  });
+  // You (M1): the slots of the profile interview by state (known, unknown, declined, never) from the stored onboarding profile; with no
+  // interview yet every slot of the shipped scenario is unknown. Several stored profiles and no user named: unknown, never a guess.
+  p.add("party.slots", [](const Context& c, const Json&) {
+    projection::Env pe;
+    pe.root = c.env.data_dir;
+    pe.db = c.env.db;
+    auto slots = projection::profile_slots(pe);
+    if (!slots) return only(unknown(slots.error().message));
+    Json by = Json::object();
+    for (const auto& s : *slots) {
+      const std::string state = json::get_string(s, "state", "unknown");
+      by[state] = by.value(state, static_cast<std::int64_t>(0)) + 1;
+    }
+    return only(known_by(static_cast<std::int64_t>(slots->size()), by));
+  });
   p.add("pack.file", [](const Context& c, const Json& params) {
     std::shared_ptr<const kb::Pack> pack = c.env.pack;
-    if (!pack) {
-      auto loaded = kb::Pack::load_builtin();
-      if (!loaded) return only(unknown("pack_unavailable"));
-      pack = *loaded;
-    }
+    if (!pack) pack = builtin_kb_pack();
+    if (!pack) return only(unknown("pack_unavailable"));
     const Json& doc = pack->file(json::get_string(params, "path"));
     return only(doc.is_null() ? unknown("pack_file_absent") : known(member_count(doc)));
   });

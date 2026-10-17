@@ -644,6 +644,7 @@ int cmd_graph(Runtime& rt, const Args& a) {
   } else if (sub == "entry") {
     graph_entry::Env env;
     env.db = &rt.db();
+    env.cfg = &rt.config();
     env.data_dir = rt.paths().root;
     Json request = Json::object();
     if (!a.get("lang").empty()) request["lang"] = a.get("lang");

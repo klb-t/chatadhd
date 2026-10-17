@@ -15,6 +15,7 @@
 // (inheritance) graph perspective built from it (nodes = levels, edges inherits_from / overrides).
 #pragma once
 
+#include <cstdint>
 #include <filesystem>
 #include <memory>
 #include <string>
@@ -27,6 +28,7 @@ namespace loom {
 class Config;
 class Database;
 }
+
 
 namespace loom::scopes {
 
@@ -63,9 +65,14 @@ class Resolver {
   // The "dziedziczenie" perspective: {schema, key, value, nodes:[{id,kind:"scope_level",label,role,value?}], edges:[{src,dst,type}], supplied_by, overridden}.
   Result<Json> inheritance(const Binding& binding) const;
   const actions::Engine& engine() const { return *engine_; }
+  // How many Resolvers this process has opened (a render opens one and resolves every value through it; tests check the count).
+  static std::uint64_t opens();
 
  private:
   std::shared_ptr<actions::Engine> engine_;
+  // The unit kinds (views `unit_kinds`) as read by the first resolve() (under its own lock); a Resolver is a snapshot of the rules and the kinds.
+  struct UnitKinds;
+  std::shared_ptr<UnitKinds> unit_kinds_;
   const Config* cfg_ = nullptr;
   Database* db_ = nullptr;
   std::filesystem::path root_;

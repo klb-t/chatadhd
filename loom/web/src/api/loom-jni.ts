@@ -142,6 +142,12 @@ export class LoomJniApi implements LoomApi {
     actionsRemove: (request) => this.callAsync("invoke", { port: "actions", action: "actions.remove", request }),
     groupsDefine: (request) => this.callAsync("invoke", { port: "actions", action: "groups.define", request }),
     groupsRemove: (request) => this.callAsync("invoke", { port: "actions", action: "groups.remove", request }),
+    // The graph projection can be large: callAsync runs it through startStream on the native background thread.
+    graphNavigate: (request = {}) => this.callAsync("invoke", { port: "actions", action: "graph.navigate", request }),
+    graphCard: (request) => this.callAsync("invoke", { port: "actions", action: "graph.card", request }),
+    settingsResolved: (request = {}) => this.callAsync("invoke", { port: "actions", action: "settings.resolved", request }),
+    rolesResolved: (request = {}) => this.callAsync("invoke", { port: "actions", action: "roles.resolved", request }),
+    romOverride: (request) => this.callAsync("invoke", { port: "actions", action: "rom.override", request }),
   };
   private bridge(): NativeBridge {
     if (!window.LoomBridge) throw new Error("LoomBridge is not installed (not running inside the Android shell)");

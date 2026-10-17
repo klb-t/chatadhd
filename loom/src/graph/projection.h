@@ -1,0 +1,136 @@
+// The graph projection (M1 §2.2-2.6): everything the application already has - the ROM, the settings and their groups, the levels of
+// the scope chain, the model roles and the models they resolve to, You and your profile, the memory, the conversations and their
+// messages, the units, the flows and their steps, the perspectives, edge kinds, views and input bindings, devices, environments,
+// tool sources and connectors - read on demand as nodes of ONE navigable graph. Nothing is written to the nodes table.
+//
+// Which sources exist, their address prefix, class, reader, parent, edges and default evidence is data (runtime/graph_sources.pack,
+// user overlay <data_dir>/profiles/graph_sources.pack); this file owns only the readers (mechanism id -> function).
+//
+// One render = one Catalogue: every source is read at most once, and the scope-chain Resolver (and the ports profile) is opened at
+// most once, however many settings or roles the render shows (resolver_opens() counts it; the tests check it).
+//
+// A node: {address, label, kind (class), source, parent, order?, value?, value_human?, count? | count_unknown_reason?, status?,
+//          evidence {class, confidence, provenance {layer, source_ref, method, time}}, evidence_overrides? {property: evidence},
+//          provenance {layer, layers[]}, has_children, same_as? [ids], attrs {}}.
+// evidence.class is one of declared | observed | derived | inferred | extrapolated: declared for the ROM and presets, observed for what
+// you said or did, inferred for what an analysis or a model concluded. A property whose provenance.method is model_inferred is never
+// observed (the rule the tests check).
+// Identity: conv:<id> is c_<id>, msg:<id> is m_<id>, a nodes row of kind message that points at m_<id> is msg:<id> (same_as);
+// children and counts are by unique address.
+#pragma once
+
+#include <cstdint>
+#include <filesystem>
+#include <memory>
+#include <optional>
+#include <set>
+#include <string>
+#include <string_view>
+#include <vector>
+
+#include "loom/result.h"
+#include "loom/util/json.h"
+
+namespace loom {
+class Config;
+class Database;
+class MemoryEngine;
+class ModelRegistry;
+class Runtime;
+class Secrets;
+}  // namespace loom
+
+namespace loom::projection {
+
+struct Env {
+  std::filesystem::path root;               // data dir (profiles/, views/, config.json)
+  const Config* cfg = nullptr;              // the person level of values; null = presets only
+  Database* db = nullptr;                   // conversations, messages, nodes; null = those sources say why they are unknown
+  const MemoryEngine* memory = nullptr;     // null = the memory source says memory_unavailable
+  const Secrets* secrets = nullptr;         // only whether a secret is set is ever read
+  const ModelRegistry* models = nullptr;    // prices; null = cost unknown (no registry)
+  std::string lang = "en";
+  std::string conv_id;                      // the conversation the values are resolved for ("" = none)
+  Json profile = nullptr;                   // an onboarding snapshot to show (null = the stored one, see user_id)
+  std::string user_id;                      // which stored onboarding profile ("" = the only one)
+};
+
+// Env from a live runtime (config, database, memory, secrets, registry) and a request ({lang?, conv_id?, user_id?}).
+Env env_of(Runtime& rt, const Json& request);
+
+class Catalogue {
+ public:
+  static Result<Catalogue> open(Env env);
+
+  const Env& env() const;
+  // Effective source rows (hidden rows are not in it; they are in hidden_sources()).
+  const Json& sources() const;
+  const Json& hidden_sources() const;
+  // The source row whose prefix the address starts with (longest prefix wins), or nullptr.
+  const Json* source_of(std::string_view address) const;
+  // c_<id> -> conv:<id>, m_<id> -> msg:<id>, a nodes row of kind message -> msg:<id>; anything else unchanged.
+  std::string canonical(std::string_view address);
+  // The node at an address, or nullopt when no source knows it.
+  Result<std::optional<Json>> node(const std::string& address);
+
+  struct Children {
+    std::vector<Json> nodes;               // unique addresses, in source order
+    std::vector<Json> edges;               // {src, dst, kind} touching these nodes
+    std::int64_t total = 0;                // every child the sources know (paged sources: their full total)
+    Json unknown = Json::array();          // [{source, reason}] sources that could not say
+    Json hidden = Json::array();           // [{source, id, by?}] entries hidden by an overlay
+    Json pages = Json::object();           // {source: {limit, offset, next_offset?, total}} of paged sources
+    std::size_t sources_read = 0;          // child sources that answered (a total of 0 from them is a known 0)
+  };
+  // The direct children of an address ("" = the root). `paging`: {offset?, limit?} for paged sources.
+  Result<Children> children(const std::string& parent, const Json& paging = Json::object());
+  // Every node of one source that is read whole (empty for a paged source or an unknown id).
+  Result<std::vector<Json>> children_of_source(const std::string& source_id);
+  // Every edge of the sources that are read whole (paged sources contribute the nodes read so far).
+  Result<std::vector<Json>> edges();
+
+  // The model roles resolved once for this render: {roles: [{id, label, why, status, policy, model, via, tier, chain, flow, mode?, cost,
+  // flows_reading, settings}]} (the policy chain through this render's Resolver and ports profile).
+  Result<Json> roles();
+  // The meaning of an edge kind in the language of the render (graph_views edge_kinds), or null when no kind describes it.
+  Json edge_meaning(const std::string& kind);
+  // How many times this render opened the scope-chain Resolver (0 or 1).
+  std::size_t resolver_opens() const;
+
+  struct Impl;
+
+ private:
+  std::shared_ptr<Impl> impl_;
+};
+
+// The slots of the profile interview of Env::profile or of the stored onboarding profile (Env::user_id, or the only one): [{id, section,
+// category, state: known | unknown | declined | never, value, provenance, interviewed}]. No interview yet: every slot of the shipped
+// scenario, unknown. Error (the message is the reason): database_unavailable, several_profiles_name_one, onboarding_unavailable.
+Result<std::vector<Json>> profile_slots(const Env& env);
+
+// The address a sentence names: an address or database id that a source knows (canonical form), else the area or node whose name or id
+// is the words (areas first, then the sources read whole: exact name, then a name that contains the words). "" = nothing has that name.
+Result<std::string> find_address(const Env& env, const std::string& words);
+
+// graph.navigate {focus?, perspectives?[], hops=1, limit=navigator_children_limit, query?, offset?, lang, conv_id?}
+//  -> {schema, focus{address,label,kind,evidence,provenance{layer,layers[]}}, children[...], edges[{src,dst,kind,meaning}], breadcrumbs[],
+//      counts{total,shown,collapsed}, hidden_by_you{count,items[]}, unknown[], pages, limit{value,from}, perspectives?[]}
+Result<Json> navigate(const Env& env, const Json& request);
+// graph.card {address, lang, conv_id?} -> the node with every property, why/effect/edit_rule, inheritance[] (the whole chain, with the
+// unit levels that have no unit), relations grouped by edge kind, actions (actions.for on the node's element), evidence per property.
+Result<Json> card(const Env& env, const Json& request);
+// settings.resolved {conv_id?, lang} -> {schema, groups[{id,label,why,order,fields[...]}], hidden_keys[], profile_values[], counts}
+Result<Json> settings_resolved(const Env& env, const Json& request);
+// roles.resolved {conv_id?, lang} -> {schema, roles[{id,label,why,status,chain[],model,tier{id,reason},flow{...},mode?,cost{...},flows_reading[]}]}
+Result<Json> roles_resolved(const Env& env, const Json& request);
+// rom.override {id, patch} -> writes <data_dir>/profiles/graph_entry.pack overrides.rom.items.<id> (rom.h MountRegistry, mount "user").
+Result<Json> rom_override(const std::filesystem::path& root, const Json& request);
+// A perspective rendered over the projection (Perspectives::render, source "catalogue"): the edges whose kind is in `kinds`, from the
+// request's seeds (addresses) through `hops` in `direction`; without seeds, every such edge.
+Result<Json> render_catalogue(const Env& env, const std::set<std::string>& kinds, const Json& request);
+
+// The actions of the catalogue this module carries out ("graph.navigate", "graph.card", "settings.resolved", "roles.resolved", "rom.override").
+bool is_projection_action(std::string_view action);
+Result<Json> invoke(Runtime& rt, std::string_view action, const Json& request);
+
+}  // namespace loom::projection

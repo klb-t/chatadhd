@@ -1,6 +1,8 @@
 // Edge kinds and perspectives as graph data. See include/loom/perspectives.h.
 #include "loom/perspectives.h"
 
+#include "graph/projection.h"
+
 #include <algorithm>
 #include <deque>
 #include <unordered_map>
@@ -205,6 +207,25 @@ Result<Json> Perspectives::render(const RenderContext& ctx, const std::string& i
     if (request.contains("unit_values")) b.unit_values = request["unit_values"];
     LOOM_TRY_ASSIGN(auto out, resolver.inheritance(b));
     out["perspective"] = p->id;
+    out["render"] = p->value.value("render", Json::object());
+    return out;
+  }
+  if (source == "catalogue" || (source.empty() && json::get_string(request, "source") == "catalogue")) {
+    // The graph projection: the ROM, settings, roles, flows ... as nodes, rendered with this perspective's edge kinds (M1-K0).
+    LOOM_TRY_ASSIGN(auto kinds, edge_kinds_of(p->id));
+    projection::Env env;
+    env.root = ctx.root;
+    env.cfg = ctx.cfg;
+    env.db = ctx.db;
+    env.memory = ctx.memory;
+    env.lang = json::get_string(request, "lang", "en");
+    env.conv_id = json::get_string(request, "conversation_id");
+    Json r = request;
+    if (!r.contains("direction")) r["direction"] = p->value.value("direction", Json("out"));
+    if (!r.contains("hops")) r["hops"] = p->value.value("hops", Json(nullptr));
+    LOOM_TRY_ASSIGN(auto out, projection::render_catalogue(env, kinds, r));
+    out["perspective"] = p->id;
+    out["label"] = p->value.value("label", Json(p->id));
     out["render"] = p->value.value("render", Json::object());
     return out;
   }

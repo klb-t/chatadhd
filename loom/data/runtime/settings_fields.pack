@@ -3657,19 +3657,6 @@
         "type": "integer",
         "has_default": true,
         "description": "How many children of one node graph.navigate returns per level when the request names no limit; the rest is collapsed and the navigator says how many (\"K nodes collapsed - change the budget\"). 0 = no limit. Default: 50.",
-        "status": {
-          "state": "planned",
-          "by": "M1-K0",
-          "reader": "kernel action graph.navigate (children limit)",
-          "reason": {
-            "pl": "Część aplikacji, która czyta to pole — pokazywanie dzieci węzła w nawigatorze grafu — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — showing a node's children in the graph navigator — is not built yet; until then the value is stored but nothing reads it."
-          },
-          "today": {
-            "pl": "Dziś nawigatora grafu jeszcze nie ma, więc żaden limit dzieci nie działa.",
-            "en": "Today the graph navigator does not exist yet, so no children limit applies."
-          }
-        },
         "human": {
           "label": {
             "pl": "Budżet węzłów na poziom",

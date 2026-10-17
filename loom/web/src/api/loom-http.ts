@@ -112,6 +112,11 @@ export class LoomHttpApi implements LoomApi {
     actionsRemove: (request) => this.req("POST", "/api/actions/remove", request),
     groupsDefine: (request) => this.req("POST", "/api/groups/define", request),
     groupsRemove: (request) => this.req("POST", "/api/groups/remove", request),
+    graphNavigate: (request = {}) => this.req("POST", "/api/graph/navigate", request),
+    graphCard: (request) => this.req("POST", "/api/graph/card", request),
+    settingsResolved: (request = {}) => this.req("POST", "/api/settings/resolved", request),
+    rolesResolved: (request = {}) => this.req("POST", "/api/roles/resolved", request),
+    romOverride: (request) => this.req("POST", "/api/rom/override", request),
   };
   packet(command: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Packet failures contain the immutable first-response capture. Preserve

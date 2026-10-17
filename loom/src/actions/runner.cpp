@@ -1,6 +1,8 @@
 // The interpreter bound to a Runtime: real executors (use_model, invoke ports, settings), element
 // resolution, durable runs, cancel tokens. Data: runtime profile action_run.
 #include "loom/action_runner.h"
+
+#include "graph/projection.h"
 #include "loom/agent.h"
 #include "loom/tool_sources.h"
 #include "loom/environments.h"
@@ -929,6 +931,11 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   if (action == "preview") return preview(request);
   if (action == "rules.list") return write_overlay(action, request);
   if (is_overlay_action(action)) return run_gated(action, request);
+  // The graph projection (graph/projection.h): read on demand, nothing written to the graph. Your copy of a ROM item is a write of the
+  // user overlay: a run like rules.set, so the rules of the scope and the confirmation (confirm:rom.override) apply.
+  if (action == "rom.override") return run_gated(action, request);
+  if (action == "graph.navigate" || action == "graph.card" || action == "settings.resolved" || action == "roles.resolved")
+    return projection::invoke(rt_, action, request);
   // The context guardian (guardian.h). What changes the user's rules or the representation is a run like rules.set (the rules of the
   // scope and the receipt apply); reading, observing and annotating are the guardian's own work.
   if (action == "guardian.promote" || action == "guardian.undo") return run_gated(action, request);

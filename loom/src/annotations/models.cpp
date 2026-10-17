@@ -40,6 +40,12 @@ std::string model_tier(const Json& models, const std::string& model, double pric
 
 ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, const std::string& policy, const std::string& conv_id,
                           const std::string& conversation_model, double price, Database* db) {
+  return resolve_model(cfg, root, policy, conv_id, conversation_model, price, db, nullptr, nullptr);
+}
+
+ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, const std::string& policy, const std::string& conv_id,
+                          const std::string& conversation_model, double price, Database* db, const PortProfile* given_ports,
+                          const scopes::Resolver* given_resolver) {
   ModelChoice out;
   out.via = "none";
   auto pol = Policy::load_cached(root);
@@ -49,22 +55,31 @@ ModelChoice resolve_model(const Config& cfg, const std::filesystem::path& root, 
   }
   const Json models = pol->models;
   const Json chain = models.value("policies", Json::object()).value(policy, Json::object()).value("chain", Json::array());
-  std::optional<PortProfile> ports;
-  if (auto loaded = PortProfile::load(root)) ports = std::move(*loaded);
+  std::optional<PortProfile> own_ports;
+  if (!given_ports) {
+    if (auto loaded = PortProfile::load(root)) own_ports = std::move(*loaded);
+    else log::write(log::Level::Debug, "annotations", "ports profile not readable, role steps give no model: " + loaded.error().message);
+  }
+  const PortProfile* ports = given_ports ? given_ports : (own_ports ? &*own_ports : nullptr);
   auto role_model = [&](const std::string& role) {
     if (!ports) return std::string();
     auto r = ports->resolve(role, Json::object(), conv_id, cfg.all());
     return r ? param_model(*r) : std::string();
   };
   // A setting is read through the one scope chain (loom/scope_resolver.h): conversation -> units -> user -> installation, rules included.
-  std::optional<scopes::Resolver> resolver;
-  bool resolver_tried = false;
+  std::optional<scopes::Resolver> own_resolver;
+  const scopes::Resolver* resolver = given_resolver;
+  bool resolver_tried = given_resolver != nullptr;
   auto setting_value = [&](const std::string& setting) -> Json {
     if (setting.empty()) return Json();
     if (!resolver_tried) {
       resolver_tried = true;
-      if (auto opened = scopes::Resolver::open(root, &cfg, db)) resolver = std::move(*opened);
-      else log::write(log::Level::Debug, "annotations", "scope chain not readable, settings decide: " + opened.error().message);
+      if (auto opened = scopes::Resolver::open(root, &cfg, db)) {
+        own_resolver = std::move(*opened);
+        resolver = &*own_resolver;
+      } else {
+        log::write(log::Level::Debug, "annotations", "scope chain not readable, settings decide: " + opened.error().message);
+      }
     }
     if (resolver) {
       scopes::Binding b;

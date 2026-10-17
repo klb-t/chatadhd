@@ -6,6 +6,7 @@
 #include "loom/effective_view.h"
 #include "loom/log.h"
 
+#include <atomic>
 #include <map>
 #include <mutex>
 
@@ -74,7 +75,19 @@ Json Resolution::to_json() const {
   return o;
 }
 
+namespace {
+std::atomic<std::uint64_t> g_opens{0};
+}  // namespace
+
+struct Resolver::UnitKinds {
+  std::mutex mu;
+  std::shared_ptr<const views::Effective> kinds;
+};
+
+std::uint64_t Resolver::opens() { return g_opens.load(); }
+
 Result<Resolver> Resolver::open(const std::filesystem::path& data_root, const Config* cfg, Database* db) {
+  g_opens.fetch_add(1);
   LOOM_TRY_ASSIGN(auto engine, cached_engine(data_root));
   if (cfg) engine.set_user_values(cfg->all());
   Resolver r;
@@ -82,6 +95,7 @@ Result<Resolver> Resolver::open(const std::filesystem::path& data_root, const Co
   r.cfg_ = cfg;
   r.db_ = db;
   r.root_ = data_root;
+  r.unit_kinds_ = std::make_shared<UnitKinds>();
   return r;
 }
 
@@ -96,8 +110,18 @@ Result<Resolution> Resolver::resolve(const Binding& b) const {
   Json units = b.units.is_object() ? b.units : conv_meta.value("units", Json::object());
   if (!units.is_object()) units = Json::object();
 
-  // unit kinds are data (views.unit_kinds): kind -> chain level; a key that is already a level of the chain counts as that level
-  LOOM_TRY_ASSIGN(auto kinds, views::effective(root_, "unit_kinds"));
+  // unit kinds are data (views.unit_kinds): kind -> chain level; a key that is already a level of the chain counts as that level.
+  // Read once per Resolver (a render resolves every setting through one Resolver).
+  std::shared_ptr<const views::Effective> kinds_held;
+  {
+    std::lock_guard lk(unit_kinds_->mu);
+    if (!unit_kinds_->kinds) {
+      LOOM_TRY_ASSIGN(auto loaded, views::effective(root_, "unit_kinds"));
+      unit_kinds_->kinds = std::make_shared<const views::Effective>(std::move(loaded));
+    }
+    kinds_held = unit_kinds_->kinds;
+  }
+  const views::Effective& kinds = *kinds_held;
   Resolution out;
   Json context = Json::object();
   for (auto it = units.begin(); it != units.end(); ++it) {

@@ -26,6 +26,14 @@ import type {
 } from "./types";
 import type { KnowledgeApi } from "./knowledge";
 import type { GraphEntryOptions, GraphEntryView } from "./graph-entry";
+import type {
+  GraphCardResult,
+  GraphNavigateRequest,
+  GraphNavigateResult,
+  RolesResolved,
+  RomOverrideRequest,
+  SettingsResolved,
+} from "./graph-projection";
 import type { GraphPacketStoreRequest, GraphPacketStoreResult } from "./graph-packets";
 
 export interface SearchOptions {
@@ -153,6 +161,16 @@ export interface ActionsApi {
   actionsRemove(request: RemoveRequest): Promise<ActionRun>;
   groupsDefine(request: DefineGroupRequest): Promise<ActionRun>;
   groupsRemove(request: RemoveRequest): Promise<ActionRun>;
+  /** M1-K0 graph projection (read only, nothing written to the graph): one level of the navigable graph around a focus. */
+  graphNavigate(request?: GraphNavigateRequest): Promise<GraphNavigateResult>;
+  /** Everything about one node: value and why, inheritance, relations by edge kind, the actions that fit it, evidence per property. */
+  graphCard(request: { address: string; lang?: string; conv_id?: string }): Promise<GraphCardResult>;
+  /** Every setting in its group with the value in words, the level that supplied it and the whole chain. */
+  settingsResolved(request?: { conv_id?: string; lang?: string }): Promise<SettingsResolved>;
+  /** Who does which job: every model role with its policy chain, model, class, flow and cost. */
+  rolesResolved(request?: { conv_id?: string; lang?: string }): Promise<RolesResolved>;
+  /** Your copy of a ROM item in the overlay: a run gated by confirm:rom.override (answer it with `confirm`). */
+  romOverride(request: RomOverrideRequest): Promise<ActionRun>;
 }
 
 export interface LoomApi {

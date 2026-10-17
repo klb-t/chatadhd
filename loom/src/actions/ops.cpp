@@ -2,6 +2,8 @@
 // message.*, export/import, storage.connect, ports.*, usage.*, models.*, semantic.*, tasks.*, help.* and the rest. Each is a thin layer over
 // the engine that does the work (the calls the C ABI makes); what it says back is written from runtime/chat_ops.pack in the language of the run.
 #include "loom/action_ops.h"
+
+#include "graph/projection.h"
 #include "loom/action_spend.h"
 #include "loom/client_blobs.h"
 #include "loom/archive.h"
@@ -490,6 +492,7 @@ StepOutcome graph_related(Ctx& x) {
 StepOutcome graph_overview(Ctx& x) {
   graph_entry::Env env;
   env.db = &x.rt.db();
+  env.cfg = &x.rt.config();
   env.data_dir = x.rt.paths().root;
   auto entry = graph_entry::compute(env, Json::object());
   if (!entry) return fail(entry.error());
@@ -1878,6 +1881,7 @@ StepOutcome perspectives_show(Ctx& x) {
   rc.db = &x.rt.db();
   rc.cfg = &x.rt.config();
   rc.root = x.rt.paths().root;
+  rc.memory = &x.rt.memory();
   auto r = p->render_many(rc, ids, request);
   if (!r) return fail(r.error());
   std::vector<std::string> lines;
@@ -1980,6 +1984,7 @@ StepOutcome view_model_show(Ctx& x) {
   rc.db = &x.rt.db();
   rc.cfg = &x.rt.config();
   rc.root = x.rt.paths().root;
+  rc.memory = &x.rt.memory();
   auto r = engine->evaluate(rc, id, request);
   if (!r) return fail(r.error());
   std::size_t promoted = 0, allowed = 0;
@@ -2050,6 +2055,132 @@ StepOutcome edge_kinds_classify(Ctx& x) {
   return answer(x.say("edge_classify_head", Json{{"known", known}, {"unclassified", lines.size()}}) + "\n" + join_lines(lines), d);
 }
 
+// ── the graph projection from the conversation (M1-K0) ─────────────
+
+projection::Env projection_env(const Ctx& x) {
+  Json request{{"lang", x.lang}};
+  if (const std::string conv = x.conv_id(); !conv.empty()) request["conv_id"] = conv;
+  return projection::env_of(x.rt, request);
+}
+
+std::string nav_suffix(const Ctx& x, const Json& row) {
+  std::string out;
+  if (row.contains("count")) out += x.say("nav_count", Json{{"count", row["count"]}});
+  else if (const std::string why = json::get_string(row, "count_unknown_reason"); !why.empty() && why != "no_projection_source")
+    out += x.say("nav_count_unknown", Json{{"reason", why}});
+  const Json chip = row.value("provenance", Json::object()).value("chip", Json::object());
+  if (const std::string label = json::get_string(chip, "label"); !label.empty()) out += x.say("nav_chip", Json{{"chip", label}});
+  return out;
+}
+
+// The focus the sentence names: an address, or the name of an area or of a node (projection::find_address).
+bool focus_of(const Ctx& x, const projection::Env& env, const char* arg, std::string& out, StepOutcome& failure) {
+  const std::string said = trim_quotes(x.str(arg));
+  out.clear();
+  if (said.empty()) return true;
+  auto found = projection::find_address(env, said);
+  if (!found) {
+    failure = fail(found.error());
+    return false;
+  }
+  if (found->empty()) {
+    failure = fail(Errc::NotFound, x.say("nav_no_focus", Json{{"focus", said}}));
+    return false;
+  }
+  out = *found;
+  return true;
+}
+
+StepOutcome graph_navigate(Ctx& x) {
+  const projection::Env env = projection_env(x);
+  Json request = Json::object();
+  for (const char* k : {"perspectives", "hops", "limit", "query", "offset"})
+    if (x.has(k)) request[k] = json_arg(x, k);
+  std::string focus;
+  StepOutcome failure;
+  if (!focus_of(x, env, "focus", focus, failure)) return failure;
+  if (!focus.empty()) request["focus"] = focus;
+  auto r = projection::navigate(env, request);
+  if (!r) return fail(r.error());
+  const Json counts = r->value("counts", Json::object());
+  std::vector<std::string> lines;
+  for (const auto& c : r->value("children", Json::array()))
+    if (json::get_int(c, "depth", 1) == 1) lines.push_back(x.say("nav_row", Json{{"label", c.value("label", "")}, {"count", nav_suffix(x, c)}, {"chip", ""}}));
+  if (json::get_int(counts, "collapsed", 0) > 0) lines.push_back(x.say("nav_collapsed", Json{{"collapsed", counts["collapsed"]}}));
+  if (const std::int64_t hidden = json::get_int(r->value("hidden_by_you", Json::object()), "count", 0); hidden > 0)
+    lines.push_back(x.say("nav_hidden", Json{{"count", hidden}}));
+  for (const auto& u : r->value("unknown", Json::array()))
+    lines.push_back(x.say("nav_unknown", Json{{"source", u.value("source", "")}, {"reason", u.value("reason", "")}}));
+  const std::string label = json::get_string(r->value("focus", Json::object()), "label");
+  if (lines.empty()) return answer(x.say("nav_empty", Json{{"label", label}}), *r);
+  return answer(x.say("nav_head", Json{{"label", label}, {"shown", counts.value("shown", 0)}, {"total", counts.value("total", 0)}}) + "\n" + join_lines(lines), *r);
+}
+
+StepOutcome graph_card(Ctx& x) {
+  const projection::Env env = projection_env(x);
+  std::string address;
+  StepOutcome failure;
+  if (!focus_of(x, env, "address", address, failure)) return failure;
+  if (address.empty()) return fail(Errc::InvalidArgument, x.say("card_which"));
+  auto r = projection::card(env, Json{{"address", address}});
+  if (!r) return fail(r.error());
+  std::vector<std::string> lines;
+  if (r->contains("value_human"))
+    lines.push_back(x.say("card_value", Json{{"value", r->value("value_human", "")},
+                                             {"chip", json::get_string(r->value("provenance", Json::object()).value("chip", Json::object()), "label",
+                                                                       json::get_string(r->value("provenance", Json::object()), "layer"))}}));
+  if (const std::string why = json::get_string(*r, "why"); !why.empty()) lines.push_back(why);
+  const Json relations = r->value("relations", Json::object());
+  for (const auto& rel : relations.items())
+    lines.push_back(x.say("card_relation", Json{{"kind", rel.key()}, {"count", rel.value().value("out", Json::array()).size() + rel.value().value("in", Json::array()).size()}}));
+  const std::string head = x.say("card_head", Json{{"label", r->value("label", "")}, {"kind", r->value("kind", "")}, {"address", address}});
+  return answer(lines.empty() ? head : head + "\n" + join_lines(lines), *r);
+}
+
+StepOutcome settings_resolved_op(Ctx& x) {
+  const projection::Env env = projection_env(x);
+  auto r = projection::settings_resolved(env, Json::object());
+  if (!r) return fail(r.error());
+  std::vector<std::string> lines;
+  std::int64_t yours_all = 0;
+  for (const auto& g : r->value("groups", Json::array())) {
+    std::int64_t yours = 0;
+    for (const auto& f : g.value("fields", Json::array())) {
+      const std::string scope = json::get_string(f.value("provenance", Json::object()), "scope");
+      if (!scope.empty() && scope != "installation" && scope != "none") ++yours;
+    }
+    yours_all += yours;
+    lines.push_back(x.say("settings_resolved_group", Json{{"label", g.value("label", "")}, {"count", g.value("fields", Json::array()).size()}, {"yours", yours}}));
+  }
+  if (const std::size_t hidden = r->value("hidden_keys", Json::array()).size(); hidden > 0) lines.push_back(x.say("settings_resolved_hidden", Json{{"count", hidden}}));
+  const Json counts = r->value("counts", Json::object());
+  return answer(x.say("settings_resolved_head", Json{{"fields", counts.value("fields", 0)}, {"groups", r->value("groups", Json::array()).size()}, {"yours", yours_all}}) + "\n" +
+                    join_lines(lines),
+                *r);
+}
+
+StepOutcome roles_resolved_op(Ctx& x) {
+  const projection::Env env = projection_env(x);
+  auto r = projection::roles_resolved(env, Json::object());
+  if (!r) return fail(r.error());
+  std::vector<std::string> lines;
+  for (const auto& role : r->value("roles", Json::array())) {
+    const std::string model = json::get_string(role, "model");
+    lines.push_back(x.say("rr_line", Json{{"label", role.value("label", "")}, {"model", model.empty() ? x.say("rr_no_model") : role.value("model_human", model)},
+                                          {"tier", json::get_string(role.value("tier", Json::object()), "id")}}));
+  }
+  return answer(x.say("rr_head") + "\n" + join_lines(lines), *r);
+}
+
+StepOutcome rom_override_op(Ctx& x) {
+  const std::string id = trim_quotes(x.str("id", x.str("address")));
+  const Json patch = json_arg(x, "patch");
+  if (id.empty() || !patch.is_object()) return fail(Errc::InvalidArgument, x.say("rom_which"));
+  auto r = projection::rom_override(x.rt.paths().root, Json{{"id", id}, {"patch", patch}});
+  if (!r) return fail(r.error());
+  return answer(x.say("rom_override_done", Json{{"id", id}, {"file", r->value("file", "")}}), *r);
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -2069,7 +2200,9 @@ const std::map<std::string, Op>& table() {
       {"archive.status", archive_status}, {"archive.cancel", archive_cancel}, {"knowledge.status", knowledge_status}, {"knowledge.cancel", knowledge_cancel},
       {"catalog.status", catalog_status}, {"catalog.cancel", catalog_cancel}, {"catalog.query", catalog_query},
       {"views.effective", views_effective}, {"views.write", views_write}, {"perspectives.show", perspectives_show}, {"scopes.explain", scopes_explain},
-      {"view_model.show", view_model_show}, {"interaction.show", interaction_show}, {"interaction.rebind", interaction_rebind}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify}};
+      {"view_model.show", view_model_show}, {"interaction.show", interaction_show}, {"interaction.rebind", interaction_rebind}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify},
+      {"graph.navigate", graph_navigate}, {"graph.card", graph_card}, {"settings.resolved", settings_resolved_op}, {"roles.resolved", roles_resolved_op},
+      {"rom.override", rom_override_op}};
   return t;
 }
 

@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "graph_sources",
   "revision": 1,
-  "description": "Sources of the graph projection (M1 §2.3): each row says how one kind of thing the application already has becomes nodes of the one navigable graph, on demand and without writing anything to the nodes table. id: the source; prefix: its address form (also an id form of element_resolution.pack, source projection); class: the class of its nodes (graph/classes.pack); reader: the mechanism id in loom/src/graph/projection.cpp; params: what the reader reads; parent: where its nodes hang ({root}, {area: <graph entry area>} or {of: <source>}: under the nodes of that source); contain_edge: the edge kind from a node to its parent; edges: the other edges it emits (meanings in graph_views.pack edge_kinds); epistemic_default: the evidence every node carries unless its own provenance differs (evidence_by_scope: by the scope-chain level that supplied a value; evidence_by_method: by provenance.method — model_inferred is never observed); counts_provider: a graph entry counter that describes the source; page_setting: the config key that pages a large source; same_as_prefix: the database id form of the same node (conv:<id> = c_<id>). Removing a source removes that projection and nothing else (the graph is as before). Everything is data: the user's overlay <data_dir>/profiles/graph_sources.pack may move a source to another area, change the evidence or hide a source (hidden: true).",
+  "description": "Sources of the graph projection (M1 §2.3): each row says how one kind of thing the application already has becomes nodes of the one navigable graph, on demand and without writing anything to the nodes table. id: the source; prefix: its address form (also an id form of element_resolution.pack, source projection); class: the class of its nodes (graph/classes.pack); reader: the mechanism id in loom/src/graph/projection.cpp; params: what the reader reads; parent: where its nodes hang ({root}, {area: <graph entry area>} or {of: <source>}: under the nodes of that source); contain_edge: the edge kind from a node to its parent; edges: the other edges it emits (meanings in graph_views.pack edge_kinds); epistemic_default: the evidence every node carries unless its own provenance differs (evidence_by_scope: by the scope-chain level that supplied a value; evidence_by_method: by provenance.method — model_inferred is never observed); counts_provider: a graph entry counter that describes the source; page_setting: the config key that pages a large source; same_as_prefix: the database id form of the same node (conv:<id> = c_<id>). Removing a source removes that projection and nothing else (the graph is as before). Everything is data: the user's overlay <data_dir>/profiles/graph_sources.pack may move a source to another area, change the evidence or hide a source (hidden: true). value_words: the words of the values in words (value_human) and of the chips; slot_labels: the names of the interview's slots; role_modes: which role shows a background mode (worker profile); proposals_status: why a setting has no proposal yet.",
   "defaults": {
     "schema": "loom.graph_sources/1",
     "sources": [
@@ -108,6 +108,17 @@
             "class": "observed",
             "confidence": 1.0
           }
+        },
+        "proposals_status": {
+          "state": "planned",
+          "today": {
+            "en": "Today no field carries a proposal of the guardian: its hypotheses are keyed by the text of a rule, not by a settings key; they are under You › Rules (guardian.remembered).",
+            "pl": "Dziś żadne pole nie ma propozycji strażnika: jego hipotezy są kluczowane tekstem reguły, nie kluczem ustawienia; widać je pod Ty › Reguły (guardian.remembered)."
+          },
+          "reason": {
+            "en": "The mapping from a hypothesis to a settings key (guardian.pack kinds.<kind>.hypothesis.setting_key) is not in the data yet.",
+            "pl": "Mapowania hipotezy na klucz ustawienia (guardian.pack kinds.<kind>.hypothesis.setting_key) jeszcze nie ma w danych."
+          }
         }
       },
       {
@@ -167,6 +178,15 @@
           "*": {
             "class": "observed",
             "confidence": 1.0
+          }
+        },
+        "role_modes": {
+          "analysis.fast": {
+            "profile": "worker",
+            "pointer": "/analysis_modes",
+            "threshold_pointer": "/batch_threshold",
+            "batch_key": "anthropic_batch_key",
+            "description": "The background mode of this role: the worker's analysis modes (local regex, a model one by one, a batch), the batch threshold and whether the batch key is set."
           }
         }
       },
@@ -242,6 +262,44 @@
             "class": "observed",
             "confidence": 1.0
           }
+        },
+        "slot_labels": {
+          "identity.description": {
+            "en": "Who you are",
+            "pl": "Kim jesteś"
+          },
+          "work.projects": {
+            "en": "What you work on",
+            "pl": "Nad czym pracujesz"
+          },
+          "communication.style": {
+            "en": "How to speak to you",
+            "pl": "Jak do Ciebie mówić"
+          },
+          "communication.length": {
+            "en": "How much detail",
+            "pl": "Ile szczegółów"
+          },
+          "communication.language": {
+            "en": "Language",
+            "pl": "Język"
+          },
+          "communication.attention": {
+            "en": "Attention needs",
+            "pl": "Potrzeby uwagi"
+          },
+          "knowledge.remember": {
+            "en": "What to remember",
+            "pl": "Co zapamiętać"
+          },
+          "knowledge.avoid": {
+            "en": "What to avoid",
+            "pl": "Czego unikać"
+          },
+          "privacy.preferences": {
+            "en": "Privacy preferences",
+            "pl": "Preferencje prywatności"
+          }
         }
       },
       {
@@ -279,6 +337,24 @@
             "en": "No action of the catalogue declares the preferences it reads yet.",
             "pl": "Żadne działanie katalogu nie deklaruje jeszcze, które preferencje czyta."
           }
+        },
+        "labels": {
+          "style": {
+            "en": "Style of the answers",
+            "pl": "Styl odpowiedzi"
+          },
+          "length": {
+            "en": "Length of the answers",
+            "pl": "Długość odpowiedzi"
+          },
+          "language": {
+            "en": "Language",
+            "pl": "Język"
+          },
+          "adhd_needs": {
+            "en": "Attention needs",
+            "pl": "Potrzeby uwagi"
+          }
         }
       },
       {
@@ -299,7 +375,13 @@
           "class": "declared",
           "confidence": 1.0
         },
-        "description": "The rules of onboarding.privacy (what may be stored, inferred, sent to providers, how long it is kept), effective through the onboarding layers."
+        "description": "The rules of onboarding.privacy (what may be stored, inferred, sent to providers, how long it is kept), effective through the onboarding layers.",
+        "labels": {
+          "local-explicit-preset": {
+            "en": "Store locally only what you say outright; infer nothing (preset)",
+            "pl": "Zapisuj lokalnie tylko to, co powiesz wprost; niczego nie wnioskuj (preset)"
+          }
+        }
       },
       {
         "id": "interest",
@@ -713,6 +795,72 @@
         "pl": "Graf"
       },
       "kind": "root"
+    },
+    "value_words": {
+      "true": {
+        "en": "on",
+        "pl": "włączone"
+      },
+      "false": {
+        "en": "off",
+        "pl": "wyłączone"
+      },
+      "null": {
+        "en": "not set",
+        "pl": "nie ustawiono"
+      },
+      "empty": {
+        "en": "empty",
+        "pl": "puste"
+      },
+      "items": {
+        "en": "{{n}} items",
+        "pl": "{{n}} elem."
+      },
+      "decimal_separator": {
+        "en": ".",
+        "pl": ","
+      },
+      "secret_set": {
+        "en": "set",
+        "pl": "ustawiony"
+      },
+      "secret_unset": {
+        "en": "not set",
+        "pl": "nie ustawiony"
+      },
+      "secret_chip": {
+        "en": "secret",
+        "pl": "sekret"
+      },
+      "chip_installation": {
+        "en": "Preset",
+        "pl": "Preset"
+      },
+      "chip_person": {
+        "en": "You",
+        "pl": "Ty"
+      },
+      "problem": {
+        "en": "cannot be read",
+        "pl": "nie da się odczytać"
+      },
+      "no_model": {
+        "en": "no model",
+        "pl": "brak modelu"
+      },
+      "slot_unknown": {
+        "en": "unknown",
+        "pl": "nieznane"
+      },
+      "slot_declined": {
+        "en": "declined",
+        "pl": "odmówiono"
+      },
+      "slot_never": {
+        "en": "never",
+        "pl": "nigdy"
+      }
     }
   },
   "value_schema": {
