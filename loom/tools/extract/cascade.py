@@ -10,6 +10,7 @@ exclude, manual decisions win, and everything lands in ``explain``.
 Grain results propagate up to the conversation with the max score and the
 coverage (share of grains above the include band) — both visible.
 """
+import json
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
@@ -26,7 +27,7 @@ DECISIONS = ("include", "exclude", "ambiguous")
 class Grain:
     id: str
     unit: Unit
-    kind: str                       # conversation | branch | window | message
+    kind: str                       # conversation | branch | window | message | block
     text: str
     message_ids: list[str]
     branch: str = ""
@@ -137,7 +138,32 @@ def grain_text(unit: Unit, message_ids: Optional[list[str]], include_blocks: lis
     return "\n".join(parts)
 
 
-def make_grains(unit: Unit, grain: str, include_blocks: list[str], window: int = 6, step: int = 3) -> list[Grain]:
+def _block_text(unit: Unit, b: Any) -> str:
+    parts = [b.name or "", b.text or ""]
+    if isinstance(b.input, (dict, list)):
+        parts.append(json.dumps(b.input, ensure_ascii=False, sort_keys=True))
+    if b.kind == "attachment" or b.ref:
+        a = next((a for a in unit.attachments if a.ref == b.ref), None)
+        parts += [b.ref or "", (a.name or "") if a is not None else "", (a.mime or b.mime or "") if a is not None else (b.mime or "")]
+    return "\n".join(p for p in parts if p)
+
+
+def make_grains(unit: Unit, grain: str, include_blocks: list[str], window: int = 6, step: int = 3,
+                block_kinds: Optional[list[str]] = None) -> list[Grain]:
+    if grain == "block":
+        # one grain per tool call, tool result, reasoning or attachment block (preset grain_blocks); a decision on a
+        # block selects its message, and the unit's decision is the best of its blocks (with level, source, confidence)
+        kinds = set(block_kinds or ["tool_use", "tool_result", "thinking", "attachment"])
+        out_b: list[Grain] = []
+        for m in unit.messages:
+            for i, b in enumerate(m.blocks):
+                if b.kind in kinds:
+                    out_b.append(Grain(grain_id(unit, "block", message=m.id, block=i), unit, "block", _block_text(unit, b), [m.id]))
+            for a in unit.attachments:  # attachments a message carries only in its metadata
+                if a.message == m.id and not any(b.ref == a.ref for b in m.blocks) and "attachment" in kinds:
+                    out_b.append(Grain(grain_id(unit, "block", message=m.id, block=len(m.blocks)), unit, "block",
+                                       "\n".join(x for x in (a.ref, a.name or "", a.mime or "") if x), [m.id]))
+        return out_b  # a conversation without such blocks has no block grain: it is not decided at this grain
     if grain == "conversation" or not unit.messages:
         return [Grain(grain_id(unit, "conversation"), unit, "conversation", grain_text(unit, None, include_blocks),
                       [m.id for m in unit.messages])]
@@ -323,7 +349,7 @@ class Cascade:
         for u in self.units:
             if has_masks:
                 unit_mask[u.uid] = self._level_masks(u)
-            gs = make_grains(u, self.grain, include_blocks, self.window, self.step)
+            gs = make_grains(u, self.grain, include_blocks, self.window, self.step, self.ds.preset("grain_blocks"))
             unit_grains[u.uid] = gs
             grains.extend(gs)
         vec_level = next((lv for lv in levels if lv["flow"] == "vectors" and lv.get("enabled", True)), None)

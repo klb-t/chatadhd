@@ -267,3 +267,34 @@ class DecisionsIdentityTest(ExtractTest):
         crit = new.op("select.criteria", {"terms": ["nic-takiego-nie-ma"], "cascade": "lexical_only", "mode": "replace"})
         self.assertEqual(new.unit_decisions[c2_new.uid]["decision"], "include", "the cascade applies the carried mark too")
         self.assertIsNotNone(crit)
+
+
+class BlockGrainTest(ExtractTest):
+    def test_block_grain_scores_tool_calls_and_selects_their_messages(self):
+        """F8 (requirement 12): a grain per tool call / result / reasoning / attachment block (id …#msg/bN), its
+        level, confidence and source recorded; the decision propagates to the message and the conversation."""
+        from loom.tools.extract.datafiles import read_json, store
+        cas = read_json(store().shipped / "cascades/lexical_only.json")
+        cas.update({"id": "blocks_low", "bands": {"include": 0.1, "exclude": 0.0}})
+        self.write(store().overlay / "cascades/blocks_low.json", json.dumps(cas))
+        eng = self.engine(EXPORTS / "openai_2026_sharded.zip", EXTRACT / "claude_code/projects/-home-user-proj")
+        eng.ensure_units()
+        r = eng.op("select.criteria", {"terms": ["importer"], "cascade": "blocks_low", "grain": "block"})
+        blocks = [row for row in eng.explain if row.get("grain_kind") == "block" and "/b" in row["grain"]]
+        self.assertTrue(blocks, "block grains are explained")
+        inc = [d for d in eng.cascade.units.values() if d.decision == "include"]
+        self.assertTrue(inc)
+        for d in inc:
+            self.assertIsNotNone(d.selected_messages, "a block decision selects messages, not the whole conversation")
+            self.assertTrue(d.source)
+        sess = next(u for u in eng.units if u.kind == "session" and u.ext_id == "sess-0001")
+        self.assertIn(sess.uid, eng.selection.units)
+        self.assertTrue(eng.selection.units[sess.uid])
+        self.assertTrue(r["counts"]["grains"] > 0)
+
+    def test_attachment_matches_select_their_message(self):
+        eng = self.engine(EXPORTS / "openai_2026_sharded.zip")
+        eng.ensure_units()
+        eng.op("select.expr", {"expr": "name~/schemat/", "kind": "attachment"})
+        c3 = next(u for u in eng.conversations if u.ext_id == "c3-0000-cccc")
+        self.assertEqual(eng.selection.units.get(c3.uid), {"c3-u1"})

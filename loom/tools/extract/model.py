@@ -326,7 +326,7 @@ class Unit:
 
 
 def grain_id(unit: Unit, grain: str, *, message: Optional[str] = None, branch: Optional[str] = None,
-             window: Optional[int] = None) -> str:
+             window: Optional[int] = None, block: Optional[int] = None) -> str:
     if grain == "conversation":
         return unit.uid
     if grain == "branch":
@@ -335,6 +335,8 @@ def grain_id(unit: Unit, grain: str, *, message: Optional[str] = None, branch: O
         return f"{unit.uid}#{message}"
     if grain == "window":
         return f"{unit.uid}#w{window}"
+    if grain == "block":
+        return f"{unit.uid}#{message}/b{block}"
     raise ValueError(f"unknown grain: {grain!r}")
 
 

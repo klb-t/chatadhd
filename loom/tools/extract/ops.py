@@ -280,6 +280,8 @@ def _selection_from_matches(matches: list[tuple[Any, list[str]]], kind: str, lab
             sel.add(item.unit.uid, None, reason)
         else:
             mid = item.message.id if item.message is not None else None
+            if mid is None and getattr(item, "attachment", None) is not None:
+                mid = item.attachment.message  # an attachment selects the message that carries it, when known
             if mid is None:
                 sel.add(item.unit.uid, None, reason)
             else:

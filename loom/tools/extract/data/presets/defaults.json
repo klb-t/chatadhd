@@ -10,6 +10,7 @@
   "thinking": {"full_min_chars": 200},
   "language_detection": {"min_chars": 20, "profiles": "langdetect/profiles.json"},
   "grain": "conversation",
+  "grain_blocks": ["tool_use", "tool_result", "thinking", "attachment"],
   "expand": "conversation",
   "window": {"size": 6, "step": 3},
   "cascade": "default",
