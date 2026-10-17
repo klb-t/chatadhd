@@ -6,8 +6,9 @@
 // Which sources exist, their address prefix, class, reader, parent, edges and default evidence is data (runtime/graph_sources.pack,
 // user overlay <data_dir>/profiles/graph_sources.pack); this file owns only the readers (mechanism id -> function).
 //
-// One render = one Catalogue: every source is read at most once, and the scope-chain Resolver (and the ports profile) is opened at
-// most once, however many settings or roles the render shows (resolver_opens() counts it; the tests check it).
+// One render = one Catalogue: every source read whole is read at most once (the paged ones - conversations, messages, the steps of a
+// flow - are read per parent and page, a page never longer than the level's budget), and the scope-chain Resolver (and the ports
+// profile) is opened at most once, however many settings or roles the render shows (resolver_opens() counts it; the tests check it).
 //
 // A node: {address, label, kind (class), source, parent, order?, value?, value_human?, count? | count_unknown_reason?, status?,
 //          evidence {class, confidence, provenance {layer, source_ref, method, time}}, evidence_overrides? {property: evidence},

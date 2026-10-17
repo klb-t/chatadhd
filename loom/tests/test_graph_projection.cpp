@@ -269,6 +269,11 @@ TEST_SUITE("graph_projection") {
     convs = 0;
     for (const auto& c : next.at("children")) convs += c.at("kind") == "conversation";
     CHECK(convs == 1);
+    // the navigator's budget caps the page read (never more rows than a level can show); the total still counts every conversation
+    const Json budget = f.navigate(Json{{"focus", "area:context_projects"}, {"limit", 1}});
+    CHECK(budget.at("pages").at("conv").at("limit") == 1);
+    CHECK(budget.at("counts").at("shown") == 1);
+    CHECK(budget.at("counts").at("collapsed").get<int>() == budget.at("counts").at("total").get<int>() - 1);
   }
 
   TEST_CASE("an inference is never rendered as observed: interview slots, memory notes and topics carry their own evidence") {

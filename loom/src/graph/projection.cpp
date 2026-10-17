@@ -438,12 +438,16 @@ struct Catalogue::Impl {
 
   std::int64_t page_limit(const Json& src, const Json& paging) const {
     if (paging.contains("page_limit") && paging["page_limit"].is_number_integer()) return paging["page_limit"].get<std::int64_t>();
+    std::int64_t limit = 0;  // 0 = no limit (the setting's own meaning)
     const std::string key = json::get_string(src, "page_setting");
     if (!key.empty() && env.cfg) {
       const Json v = env.cfg->get(key);
-      if (v.is_number_integer()) return v.get<std::int64_t>();
+      if (v.is_number_integer()) limit = v.get<std::int64_t>();
     }
-    return 0;  // 0 = no limit (the setting's own meaning)
+    // A level shows at most the navigator's budget: a page is never read further than what can be shown (the total still counts all).
+    const std::int64_t cap = json::get_int(paging, "page_cap", 0);
+    if (cap > 0 && (limit <= 0 || cap < limit)) limit = cap;
+    return limit;
   }
 };
 
@@ -1517,11 +1521,10 @@ Result<Catalogue::Children> Catalogue::children(const std::string& raw_parent, c
       out.nodes.push_back(n);
       ++mine;
     }
-    for (const auto& h : r->hidden) {
-      // Hidden entries of this parent only (a hidden group hides its fields from that group).
-      if (json::get_string(s.value("parent", Json::object()), "of").empty() || json::get_string(h, "by") == parent || !parent.empty())
-        out.hidden.push_back(h);
-    }
+    // What an overlay hid among the children of this parent: a source placed in this area (or at the root) hides its own entries here;
+    // the entries of a source read under its parent kind (the fields of a hidden group) are not children of any shown node.
+    if (parented && json::get_string(p, "of").empty())
+      for (const auto& h : r->hidden) out.hidden.push_back(h);
     out.total += Impl::paged(s) && r->total >= 0 ? r->total : mine;
     for (const auto& e : r->edges)
       if (addresses.count(json::get_string(e, "src")) || addresses.count(json::get_string(e, "dst"))) out.edges.push_back(e);
@@ -1707,6 +1710,7 @@ Result<Json> navigate(const Env& env, const Json& request) {
   Json paging = Json::object();
   if (request.contains("offset")) paging["offset"] = request["offset"];
   if (request.contains("before")) paging["before"] = request["before"];
+  if (limit > 0 && json::get_string(request, "query").empty()) paging["page_cap"] = limit;  // a query filters the whole page
 
   std::vector<Json> nodes;  // with depth
   std::vector<Json> edges;
