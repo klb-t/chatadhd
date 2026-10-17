@@ -70,6 +70,7 @@ Result<ElementResolver> ElementResolver::from_values(const Json& values) {
     form.prefix = json::get_string(f, "prefix");
     form.source = json::get_string(f, "source");
     form.cls = json::get_string(f, "class");
+    form.same_as_prefix = json::get_string(f, "same_as_prefix");
     form.hex_length = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(f, "hex_length", 0)));
     if (form.prefix.empty() && form.hex_length == 0) return Error(Errc::InvalidArgument, "id form '" + form.id + "' needs a prefix or hex_length");
     r.forms_.push_back(std::move(form));
@@ -203,6 +204,29 @@ Result<Json> ElementResolver::resolve_device(const ElementSources& sources, cons
 Result<Json> ElementResolver::resolve_form(const ElementSources& sources, const Form& form, std::string_view raw_id) const {
   std::string id(raw_id);
   if (form.source == "device") return resolve_device(sources, form, raw_id);
+  if (form.source == "projection") {
+    // An address of the graph projection (runtime/graph_sources.pack). One that is the same node as a database id (conv:<id> = c_<id>,
+    // msg:<id> = m_<id>) is read as that id; any other is an element of its class, read from no store (the projection computes it).
+    const std::string rest = id.substr(form.prefix.size());
+    if (!form.same_as_prefix.empty()) {
+      const std::string db_id = form.same_as_prefix + rest;
+      const Form* same = form_of(db_id);
+      if (!same || same->source == "projection") return Error(Errc::InvalidArgument, "id form '" + form.id + "': no id form reads '" + form.same_as_prefix + "'");
+      LOOM_TRY_ASSIGN(auto resolved, resolve_form(sources, *same, db_id));
+      resolved["attrs"]["address"] = id;
+      return resolved;
+    }
+    // setting:<key> is the settings field <key> when the settings document describes it (a profile value such as setting:worker/batch_threshold
+    // is not a config key and stays a projected element).
+    if (const Json* setting = json::find(values_, "setting"); setting && json::get_string(*setting, "class") == form.cls) {
+      LOOM_TRY_ASSIGN(auto field, resolve_setting(sources, rest));
+      if (!field.is_null()) {
+        field["attrs"]["address"] = id;
+        return field;
+      }
+    }
+    return element_object(id, form.cls, Json::array(), Json{{"address", id}}, form.source, rest);
+  }
   if (form.source == "blob") {
     std::string hash = id;
     if (!form.prefix.empty()) hash = id.substr(form.prefix.size());

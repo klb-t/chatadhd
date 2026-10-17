@@ -68,6 +68,7 @@ class ElementResolver {
  private:
   struct Form {
     std::string id, prefix, source, cls;
+    std::string same_as_prefix;  // a projection form whose address is that database id (conv:<id> = c_<id>)
     std::size_t hex_length = 0;
   };
   const Form* form_of(std::string_view text) const;

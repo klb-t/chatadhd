@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "element_resolution",
   "revision": 1,
-  "description": "How a bare id becomes an element (GRAF_HUB_KOD_SILNIK §5, §8): the id forms of the graph/DB (prefix or hash length -> where the engine reads it and which class it gets), how a stored blob's MIME type maps to a class and traits, how a node kind maps to a class, and what text a conversation or message contributes as content. The engine only knows the SOURCES (message, conversation, version_group, node, link, blob, setting); which prefix means which source, and which class follows, is calibration here and editable in the overlay <data>/profiles/element_resolution.pack. A bare string that is a class id stays a class id; a string that matches no form falls through unchanged (the matching engine then reports the class as unknown).",
+  "description": "How a bare id becomes an element (GRAF_HUB_KOD_SILNIK §5, §8): the id forms of the graph/DB (prefix or hash length -> where the engine reads it and which class it gets), how a stored blob's MIME type maps to a class and traits, how a node kind maps to a class, and what text a conversation or message contributes as content. The engine only knows the SOURCES (message, conversation, version_group, node, link, blob, setting, device, projection: an address of the graph projection, runtime/graph_sources.pack — conv:<id> and msg:<id> are read as the conversation c_<id> and the message m_<id>, every other projection address is an element of its class without a store read); which prefix means which source, and which class follows, is calibration here and editable in the overlay <data>/profiles/element_resolution.pack. A bare string that is a class id stays a class id; a string that matches no form falls through unchanged (the matching engine then reports the class as unknown).",
   "defaults": {
     "id_forms": [
       {"id": "message", "prefix": "m_", "source": "message", "class": "message"},
@@ -12,7 +12,32 @@
       {"id": "link", "prefix": "l_", "source": "link", "class": "edge"},
       {"id": "blob_node", "prefix": "blob:", "source": "blob"},
       {"id": "blob", "hex_length": 64, "source": "blob"},
-      {"id": "device", "prefix": "device:", "source": "device"}
+      {"id": "device", "prefix": "device:", "source": "device"},
+      {"id": "projection_area", "prefix": "area:", "source": "projection", "class": "graph_area"},
+      {"id": "projection_rom", "prefix": "rom:", "source": "projection", "class": "rom_item"},
+      {"id": "projection_group", "prefix": "group:", "source": "projection", "class": "settings_group"},
+      {"id": "projection_setting", "prefix": "setting:", "source": "projection", "class": "settings_field"},
+      {"id": "projection_scope", "prefix": "scope:", "source": "projection", "class": "scope_level"},
+      {"id": "projection_role", "prefix": "role:", "source": "projection", "class": "model_role"},
+      {"id": "projection_model", "prefix": "model:", "source": "projection", "class": "model"},
+      {"id": "projection_connector", "prefix": "connector:", "source": "projection", "class": "connector"},
+      {"id": "projection_party", "prefix": "party:", "source": "projection", "class": "person"},
+      {"id": "projection_preference", "prefix": "preference:", "source": "projection", "class": "preference"},
+      {"id": "projection_policy", "prefix": "policy:", "source": "projection", "class": "privacy_rule"},
+      {"id": "projection_interest", "prefix": "interest:", "source": "projection", "class": "interest"},
+      {"id": "projection_memory", "prefix": "memory:", "source": "projection", "class": "memory_note"},
+      {"id": "projection_conv", "prefix": "conv:", "source": "projection", "class": "conversation", "same_as_prefix": "c_"},
+      {"id": "projection_msg", "prefix": "msg:", "source": "projection", "class": "message", "same_as_prefix": "m_"},
+      {"id": "projection_unit", "prefix": "unit:", "source": "projection", "class": "unit"},
+      {"id": "projection_selector_profile", "prefix": "selector_profile:", "source": "projection", "class": "selector_profile"},
+      {"id": "projection_flow", "prefix": "flow:", "source": "projection", "class": "flow"},
+      {"id": "projection_step", "prefix": "step:", "source": "projection", "class": "flow_step"},
+      {"id": "projection_perspective", "prefix": "perspective:", "source": "projection", "class": "perspective"},
+      {"id": "projection_edge_kind", "prefix": "edge_kind:", "source": "projection", "class": "edge_kind"},
+      {"id": "projection_view", "prefix": "view:", "source": "projection", "class": "view"},
+      {"id": "projection_binding", "prefix": "binding:", "source": "projection", "class": "gesture_binding"},
+      {"id": "projection_env", "prefix": "env:", "source": "projection", "class": "environment"},
+      {"id": "projection_tool_source", "prefix": "tool_source:", "source": "projection", "class": "tool_source"}
     ],
     "setting": {"class": "settings_field", "source": "setting"},
     "node_kind_classes": {"blob": "file", "message": "message", "text_form": "text_form", "image_form": "image_form", "audio_form": "audio_form", "video_form": "video_form", "content": "content", "action_run": "action_run", "proposal": "emergent_proposal"},
@@ -45,8 +70,9 @@
             "id": {"type": "string", "minLength": 1},
             "prefix": {"type": "string"},
             "hex_length": {"type": "integer", "minimum": 1},
-            "source": {"type": "string", "enum": ["message", "conversation", "version_group", "node", "link", "blob", "device"]},
-            "class": {"type": "string"}
+            "source": {"type": "string", "enum": ["message", "conversation", "version_group", "node", "link", "blob", "device", "projection"]},
+            "class": {"type": "string"},
+            "same_as_prefix": {"type": "string", "minLength": 1, "description": "A projection address that is the same node as a database id: the rest of the address after this prefix is that id (conv:<id> = c_<id>), resolved by the id form of that prefix."}
           },
           "additionalProperties": false
         }

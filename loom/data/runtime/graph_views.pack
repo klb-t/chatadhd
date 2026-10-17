@@ -973,6 +973,114 @@
         "perspectives": [
           "environments"
         ]
+      },
+      "grouped_in": {
+        "meaning": {
+          "en": "Source (a setting) is shown in target (a settings group).",
+          "pl": "Źródło (ustawienie) jest pokazane w celu (grupie ustawień)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "reads_setting": {
+        "meaning": {
+          "en": "Source (a flow) reads target (a setting).",
+          "pl": "Źródło (przepływ) czyta cel (ustawienie)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "uses_role": {
+        "meaning": {
+          "en": "Source (a flow) chooses its model through target (a model role).",
+          "pl": "Źródło (przepływ) wybiera model przez cel (rolę modelu)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "bound_to": {
+        "meaning": {
+          "en": "Source (a model role) resolves to target (a model) today.",
+          "pl": "Źródło (rola modelu) wskazuje dziś cel (model)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "step_of": {
+        "meaning": {
+          "en": "Source is a step of target (a flow) as the catalogue describes it; a description, not an execution.",
+          "pl": "Źródło jest krokiem celu (przepływu) w opisie katalogu; opis, nie wykonanie."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "has_default": {
+        "meaning": {
+          "en": "Source (a setting) has its preset in target (the ROM factory presets).",
+          "pl": "Źródło (ustawienie) ma preset w celu (ustawieniach fabrycznych ROM)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "proposed_by": {
+        "meaning": {
+          "en": "Source (a value) was proposed by target (a guardian hypothesis).",
+          "pl": "Źródło (wartość) zaproponował cel (hipoteza strażnika)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "sent_to_model": {
+        "meaning": {
+          "en": "Source (a message) sent target (an element) to the model.",
+          "pl": "Źródło (wiadomość) wysłało cel (element) do modelu."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "applies_to_flow": {
+        "meaning": {
+          "en": "Source (a preference) applies to target (a flow).",
+          "pl": "Źródło (preferencja) dotyczy celu (przepływu)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "interested_in": {
+        "meaning": {
+          "en": "Source (you) writes about target (a topic); an inference of the analysis.",
+          "pl": "Źródło (Ty) pisze o celu (temacie); wniosek analizy."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "member_of": {
+        "meaning": {
+          "en": "Source (you or a conversation) belongs to target (a unit: project, team, organisation).",
+          "pl": "Źródło (Ty lub rozmowa) należy do celu (jednostki: projektu, zespołu, organizacji)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "knows": {
+        "meaning": {
+          "en": "Source (you) knows target (a party).",
+          "pl": "Źródło (Ty) zna cel (podmiot)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
       }
     },
     "node_kinds": {

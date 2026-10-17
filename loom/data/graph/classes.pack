@@ -1314,6 +1314,126 @@
       "traits": [
         "environment_artifact"
       ]
+    },
+    "graph_area": {
+      "label": {
+        "en": "Area of the graph",
+        "pl": "Obszar grafu"
+      }
+    },
+    "rom_item": {
+      "label": {
+        "en": "ROM item",
+        "pl": "Element ROM"
+      }
+    },
+    "settings_group": {
+      "label": {
+        "en": "Settings group",
+        "pl": "Grupa ustawień"
+      }
+    },
+    "scope_level": {
+      "label": {
+        "en": "Level of the scope chain",
+        "pl": "Poziom łańcucha zakresów"
+      }
+    },
+    "model_role": {
+      "label": {
+        "en": "Model role",
+        "pl": "Rola modelu"
+      }
+    },
+    "model": {
+      "label": {
+        "en": "Model",
+        "pl": "Model"
+      }
+    },
+    "preference": {
+      "label": {
+        "en": "Preference",
+        "pl": "Preferencja"
+      }
+    },
+    "privacy_rule": {
+      "label": {
+        "en": "Privacy rule",
+        "pl": "Zasada prywatności"
+      }
+    },
+    "interest": {
+      "label": {
+        "en": "Interest (inferred topic)",
+        "pl": "Zainteresowanie (wywnioskowany temat)"
+      }
+    },
+    "memory_note": {
+      "label": {
+        "en": "Memory note",
+        "pl": "Notatka pamięci"
+      }
+    },
+    "unit": {
+      "label": {
+        "en": "Organisational unit",
+        "pl": "Jednostka organizacyjna"
+      }
+    },
+    "flow": {
+      "label": {
+        "en": "Flow (action of the catalogue)",
+        "pl": "Przepływ (działanie katalogu)"
+      }
+    },
+    "flow_step": {
+      "label": {
+        "en": "Step of a flow",
+        "pl": "Krok przepływu"
+      }
+    },
+    "perspective": {
+      "label": {
+        "en": "Perspective",
+        "pl": "Perspektywa"
+      }
+    },
+    "edge_kind": {
+      "label": {
+        "en": "Edge kind",
+        "pl": "Rodzaj krawędzi"
+      }
+    },
+    "view": {
+      "label": {
+        "en": "View declaration",
+        "pl": "Deklaracja widoku"
+      }
+    },
+    "gesture_binding": {
+      "label": {
+        "en": "Input binding",
+        "pl": "Przypisanie wejścia"
+      }
+    },
+    "selector_profile": {
+      "label": {
+        "en": "Context selector profile",
+        "pl": "Profil selektora kontekstu"
+      }
+    },
+    "connector": {
+      "label": {
+        "en": "Connector (external service)",
+        "pl": "Konektor (usługa zewnętrzna)"
+      }
+    },
+    "tool_source": {
+      "label": {
+        "en": "Tool source",
+        "pl": "Źródło narzędzi"
+      }
     }
   }
 }

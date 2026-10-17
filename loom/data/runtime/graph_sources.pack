@@ -1,0 +1,783 @@
+{
+  "schema": "loom.runtime_profile/1",
+  "domain": "graph_sources",
+  "revision": 1,
+  "description": "Sources of the graph projection (M1 §2.3): each row says how one kind of thing the application already has becomes nodes of the one navigable graph, on demand and without writing anything to the nodes table. id: the source; prefix: its address form (also an id form of element_resolution.pack, source projection); class: the class of its nodes (graph/classes.pack); reader: the mechanism id in loom/src/graph/projection.cpp; params: what the reader reads; parent: where its nodes hang ({root}, {area: <graph entry area>} or {of: <source>}: under the nodes of that source); contain_edge: the edge kind from a node to its parent; edges: the other edges it emits (meanings in graph_views.pack edge_kinds); epistemic_default: the evidence every node carries unless its own provenance differs (evidence_by_scope: by the scope-chain level that supplied a value; evidence_by_method: by provenance.method — model_inferred is never observed); counts_provider: a graph entry counter that describes the source; page_setting: the config key that pages a large source; same_as_prefix: the database id form of the same node (conv:<id> = c_<id>). Removing a source removes that projection and nothing else (the graph is as before). Everything is data: the user's overlay <data_dir>/profiles/graph_sources.pack may move a source to another area, change the evidence or hide a source (hidden: true).",
+  "defaults": {
+    "schema": "loom.graph_sources/1",
+    "sources": [
+      {
+        "id": "area",
+        "prefix": "area:",
+        "class": "graph_area",
+        "reader": "graph_entry.areas",
+        "label": {
+          "en": "Areas of the graph",
+          "pl": "Obszary grafu"
+        },
+        "parent": {
+          "root": true
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The root rows: the areas of the graph entry view (graph/entry.pack with the user's graph_entry overlay), each with its counters."
+      },
+      {
+        "id": "rom",
+        "prefix": "rom:",
+        "class": "rom_item",
+        "reader": "rom.items",
+        "label": {
+          "en": "ROM items",
+          "pl": "Elementy ROM"
+        },
+        "parent": {
+          "area": "rom"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The 13 items of the read-only memory (graph/rom.pack); an item overridden in the user's graph_entry overlay says so (layer overlay)."
+      },
+      {
+        "id": "group",
+        "prefix": "group:",
+        "class": "settings_group",
+        "reader": "settings.groups",
+        "label": {
+          "en": "Settings groups",
+          "pl": "Grupy ustawień"
+        },
+        "parent": {
+          "area": "profiles_settings"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The groups of the settings (settings_fields.pack groups, view kind settings_groups with the view overlays)."
+      },
+      {
+        "id": "setting",
+        "prefix": "setting:",
+        "class": "settings_field",
+        "reader": "settings.fields",
+        "label": {
+          "en": "Settings",
+          "pl": "Ustawienia"
+        },
+        "parent": {
+          "of": "group"
+        },
+        "contain_edge": "grouped_in",
+        "edges": [
+          {
+            "kind": "has_default",
+            "to": "rom:factory_presets",
+            "when": "has_default"
+          }
+        ],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "Every settings field and every profile value (settings_fields.pack fields and profile_values), its value resolved through the one scope chain (scope_resolver, opened once per render). The evidence of the value follows the level that supplied it: a preset is declared, your setting or a conversation's value is what you said (observed).",
+        "evidence_by_scope": {
+          "installation": {
+            "class": "declared",
+            "confidence": 1.0
+          },
+          "person": {
+            "class": "observed",
+            "confidence": 1.0
+          },
+          "conversation": {
+            "class": "observed",
+            "confidence": 1.0
+          },
+          "*": {
+            "class": "observed",
+            "confidence": 1.0
+          }
+        }
+      },
+      {
+        "id": "scope",
+        "prefix": "scope:",
+        "class": "scope_level",
+        "reader": "scopes.chain",
+        "label": {
+          "en": "Levels of the scope chain",
+          "pl": "Poziomy łańcucha zakresów"
+        },
+        "parent": {
+          "area": "profiles_settings"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "inherits_from",
+            "to": "previous_level"
+          }
+        ],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The levels a value can be set at (graph/scopes.pack with the overlay), general first; each more specific level inherits from the one before it."
+      },
+      {
+        "id": "role",
+        "prefix": "role:",
+        "class": "model_role",
+        "reader": "ports.roles",
+        "label": {
+          "en": "Model roles",
+          "pl": "Role modeli"
+        },
+        "parent": {
+          "area": "providers_connectors"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "bound_to",
+            "to": "model"
+          }
+        ],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "Who does which job (ports.pack roles with the user's ports overlay), each resolved for the person; bound_to the model it resolves to.",
+        "evidence_by_scope": {
+          "installation": {
+            "class": "declared",
+            "confidence": 1.0
+          },
+          "*": {
+            "class": "observed",
+            "confidence": 1.0
+          }
+        }
+      },
+      {
+        "id": "model",
+        "prefix": "model:",
+        "class": "model",
+        "reader": "models.bound",
+        "label": {
+          "en": "Models in use",
+          "pl": "Używane modele"
+        },
+        "parent": {
+          "area": "providers_connectors"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The models the roles resolve to today, with the class (guardian.pack models.tiers) and the registry price when the registry knows it."
+      },
+      {
+        "id": "connector",
+        "prefix": "connector:",
+        "class": "connector",
+        "reader": "profile.items",
+        "label": {
+          "en": "Connectors and services",
+          "pl": "Konektory i usługi"
+        },
+        "parent": {
+          "area": "providers_connectors"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "domain": "graph_entry",
+          "pointer": "/environments/services"
+        },
+        "description": "The external services the app can reach (graph/environments.pack services: chat provider, batch provider, GitHub, Groq, Google speech, OCR.space)."
+      },
+      {
+        "id": "party",
+        "prefix": "party:",
+        "class": "person",
+        "reader": "party.self",
+        "label": {
+          "en": "You",
+          "pl": "Ty"
+        },
+        "parent": {
+          "area": "party_self"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": null
+        },
+        "description": "You (party:self) and the slots of the profile interview (party:self/<slot>): a slot you answered is what you said (observed, with the interview's provenance); a slot a model proposed is inferred and never shown as said by you.",
+        "evidence_by_method": {
+          "model_inferred": {
+            "class": "inferred",
+            "confidence": null
+          },
+          "*": {
+            "class": "observed",
+            "confidence": 1.0
+          }
+        }
+      },
+      {
+        "id": "preference",
+        "prefix": "preference:",
+        "class": "preference",
+        "reader": "user.preferences",
+        "label": {
+          "en": "Preferences",
+          "pl": "Preferencje"
+        },
+        "parent": {
+          "of": "party"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "applies_to_flow",
+            "to": "flow",
+            "status": "planned"
+          }
+        ],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The preference.* defaults of the user profile pack (style, length, language, attention needs) as the onboarding layers resolve them: a preset is declared, your override is what you said.",
+        "status": {
+          "state": "partial",
+          "today": {
+            "en": "Today the preferences are listed with their value and origin; which flows read each preference (applies_to_flow) is not in the data yet.",
+            "pl": "Dziś preferencje są pokazane z wartością i pochodzeniem; których przepływów dotyczy każda preferencja (applies_to_flow) — tego jeszcze nie ma w danych."
+          },
+          "reason": {
+            "en": "No action of the catalogue declares the preferences it reads yet.",
+            "pl": "Żadne działanie katalogu nie deklaruje jeszcze, które preferencje czyta."
+          }
+        }
+      },
+      {
+        "id": "policy",
+        "prefix": "policy:",
+        "class": "privacy_rule",
+        "reader": "user.privacy",
+        "label": {
+          "en": "Privacy rules of the profile",
+          "pl": "Zasady prywatności profilu"
+        },
+        "parent": {
+          "of": "party"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The rules of onboarding.privacy (what may be stored, inferred, sent to providers, how long it is kept), effective through the onboarding layers."
+      },
+      {
+        "id": "interest",
+        "prefix": "interest:",
+        "class": "interest",
+        "reader": "db.topics",
+        "label": {
+          "en": "Topics you write about",
+          "pl": "Tematy, o których piszesz"
+        },
+        "parent": {
+          "of": "party"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "interested_in",
+            "from": "party:self"
+          }
+        ],
+        "epistemic_default": {
+          "class": "inferred",
+          "confidence": null
+        },
+        "description": "Topic nodes the analysis found in your messages (nodes of kind topic): an inference from the analysis, never something you said; the confidence is unknown until the analysis records one."
+      },
+      {
+        "id": "memory",
+        "prefix": "memory:",
+        "class": "memory_note",
+        "reader": "memory.notes",
+        "label": {
+          "en": "What I remember",
+          "pl": "Co pamiętam"
+        },
+        "parent": {
+          "of": "party"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": null
+        },
+        "description": "The notes of the memory tree (memory.json); top-level notes hang under You, children under their note. A note's evidence comes from its metadata.provenance (you, an import, a folder, the guardian); without one the method says not_recorded.",
+        "evidence_by_method": {
+          "model_inferred": {
+            "class": "inferred",
+            "confidence": null
+          },
+          "*": {
+            "class": "observed",
+            "confidence": null
+          }
+        }
+      },
+      {
+        "id": "conv",
+        "prefix": "conv:",
+        "class": "conversation",
+        "reader": "db.conversations",
+        "label": {
+          "en": "Conversations",
+          "pl": "Rozmowy"
+        },
+        "parent": {
+          "area": "context_projects"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "member_of",
+            "to": "unit"
+          }
+        ],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": 1.0
+        },
+        "page_setting": "loom_graph_data_limit",
+        "same_as_prefix": "c_",
+        "description": "Every conversation of the database, newest first, paged by loom_graph_data_limit (nothing is cut for good: the next page continues). conv:<id> is the same node as c_<id>."
+      },
+      {
+        "id": "msg",
+        "prefix": "msg:",
+        "class": "message",
+        "reader": "db.messages",
+        "label": {
+          "en": "Messages",
+          "pl": "Wiadomości"
+        },
+        "parent": {
+          "of": "conv"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "reply_to",
+            "to": "parent_message"
+          },
+          {
+            "kind": "same_as",
+            "to": "nodes row of kind message"
+          }
+        ],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": 1.0
+        },
+        "page_setting": "loom_graph_data_limit",
+        "same_as_prefix": "m_",
+        "description": "The messages of one conversation (only under its conversation, paged). msg:<id> is the same node as m_<id>; a nodes row of kind message that points at m_<id> is the same node too (same_as), counted once."
+      },
+      {
+        "id": "unit",
+        "prefix": "unit:",
+        "class": "unit",
+        "reader": "db.units",
+        "label": {
+          "en": "Projects, teams and other units",
+          "pl": "Projekty, zespoły i inne jednostki"
+        },
+        "parent": {
+          "area": "context_projects"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": 1.0
+        },
+        "description": "The organisational units the conversations name (conversations.metadata.units: unit:<kind>/<id>), with the conversations that are members of each."
+      },
+      {
+        "id": "selector_profile",
+        "prefix": "selector_profile:",
+        "class": "selector_profile",
+        "reader": "views.effective",
+        "label": {
+          "en": "Context selector profiles",
+          "pl": "Profile selektora kontekstu"
+        },
+        "parent": {
+          "area": "context_projects"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "kind": "selector_profiles"
+        },
+        "status": {
+          "state": "planned",
+          "by": "M1-D2",
+          "today": {
+            "en": "Today there are no selector profiles in the data, so this source lists nothing and says why.",
+            "pl": "Dziś w danych nie ma profili selektora, więc to źródło nic nie wypisuje i mówi dlaczego."
+          },
+          "reason": {
+            "en": "The view kind selector_profiles and its presets (chat_context.pack) come with work item M1-D2.",
+            "pl": "Rodzaj widoku selector_profiles i jego presety (chat_context.pack) przychodzą z pozycją M1-D2."
+          }
+        },
+        "description": "The presets of the context selector (view kind selector_profiles)."
+      },
+      {
+        "id": "flow",
+        "prefix": "flow:",
+        "class": "flow",
+        "reader": "actions.catalogue",
+        "label": {
+          "en": "Flows and actions",
+          "pl": "Przepływy i działania"
+        },
+        "parent": {
+          "area": "flows"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "uses_role",
+            "to": "role"
+          },
+          {
+            "kind": "reads_setting",
+            "to": "setting"
+          }
+        ],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "Every action of the catalogue (actions.pack with the user's overlay), composite first; uses_role and reads_setting come from the action's uses_role and reads (checked by tools/check_action_reads.py). Your own actions are layer overlay."
+      },
+      {
+        "id": "step",
+        "prefix": "step:",
+        "class": "flow_step",
+        "reader": "actions.steps",
+        "label": {
+          "en": "Steps of a flow",
+          "pl": "Kroki przepływu"
+        },
+        "parent": {
+          "of": "flow"
+        },
+        "contain_edge": "step_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "description": "The steps of a flow as the catalogue describes them (human.steps, else the composite's steps): a description, not an execution."
+      },
+      {
+        "id": "perspective",
+        "prefix": "perspective:",
+        "class": "perspective",
+        "reader": "views.effective",
+        "label": {
+          "en": "Perspectives",
+          "pl": "Perspektywy"
+        },
+        "parent": {
+          "area": "perspectives"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "kind": "perspectives"
+        },
+        "description": "The perspectives (graph_views.pack with the view overlays)."
+      },
+      {
+        "id": "edge_kind",
+        "prefix": "edge_kind:",
+        "class": "edge_kind",
+        "reader": "views.effective",
+        "label": {
+          "en": "Edge kinds",
+          "pl": "Rodzaje krawędzi"
+        },
+        "parent": {
+          "area": "perspectives"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "kind": "edge_kinds"
+        },
+        "description": "The kinds of edges with their meaning (graph_views.pack with the view overlays)."
+      },
+      {
+        "id": "view",
+        "prefix": "view:",
+        "class": "view",
+        "reader": "views.effective",
+        "label": {
+          "en": "View declarations",
+          "pl": "Deklaracje widoków"
+        },
+        "parent": {
+          "area": "perspectives"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "kind": "view_declarations"
+        },
+        "description": "The declared views (graph_views.pack view_declarations with the view overlays)."
+      },
+      {
+        "id": "binding",
+        "prefix": "binding:",
+        "class": "gesture_binding",
+        "reader": "views.effective",
+        "label": {
+          "en": "Input bindings",
+          "pl": "Przypisania wejść"
+        },
+        "parent": {
+          "area": "devices_io"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "kind": "interaction_bindings"
+        },
+        "description": "Which key, gesture or controller input does what (graph_views.pack interaction_bindings with the view overlays)."
+      },
+      {
+        "id": "device",
+        "prefix": "device:",
+        "class": "device",
+        "reader": "profile.items",
+        "label": {
+          "en": "Devices",
+          "pl": "Urządzenia"
+        },
+        "parent": {
+          "area": "devices_io"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "domain": "graph_entry",
+          "pointer": "/devices"
+        },
+        "description": "The input/output devices the app describes (graph/devices.pack); descriptions only, no hardware is touched."
+      },
+      {
+        "id": "env",
+        "prefix": "env:",
+        "class": "environment",
+        "reader": "profile.items",
+        "label": {
+          "en": "Environments",
+          "pl": "Środowiska"
+        },
+        "parent": {
+          "area": "environments"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "domain": "graph_entry",
+          "pointer": "/environments/runtimes"
+        },
+        "description": "The runtimes the app runs in (graph/environments.pack runtimes: android, server, cli, web)."
+      },
+      {
+        "id": "tool_source",
+        "prefix": "tool_source:",
+        "class": "tool_source",
+        "reader": "config.items",
+        "label": {
+          "en": "Tool sources",
+          "pl": "Źródła narzędzi"
+        },
+        "parent": {
+          "area": "tools_agent"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": 1.0
+        },
+        "params": {
+          "key": "tool_sources"
+        },
+        "description": "The tool sources you added (config tool_sources: MCP servers and others), each with its trust."
+      }
+    ],
+    "identity": {
+      "description": "Address forms that name the same node: the projection address is canonical; the database id and a nodes row of kind message pointing at the message are the same node (same_as) and are counted once.",
+      "db_forms": [
+        {
+          "db_prefix": "c_",
+          "address_prefix": "conv:"
+        },
+        {
+          "db_prefix": "m_",
+          "address_prefix": "msg:"
+        }
+      ],
+      "node_rows": [
+        {
+          "kind": "message",
+          "points_with": [
+            "metadata.message_id",
+            "metadata.msg_id",
+            "label"
+          ],
+          "db_prefix": "m_",
+          "address_prefix": "msg:"
+        }
+      ]
+    },
+    "root": {
+      "label": {
+        "en": "Graph",
+        "pl": "Graf"
+      },
+      "kind": "root"
+    }
+  },
+  "value_schema": {
+    "type": "object",
+    "required": [
+      "schema",
+      "sources",
+      "identity",
+      "root"
+    ],
+    "properties": {
+      "schema": {
+        "type": "string"
+      },
+      "sources": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "prefix",
+            "class",
+            "reader",
+            "parent",
+            "epistemic_default"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "prefix": {
+              "type": "string",
+              "minLength": 1
+            },
+            "class": {
+              "type": "string"
+            },
+            "reader": {
+              "type": "string",
+              "minLength": 1
+            },
+            "parent": {
+              "type": "object"
+            },
+            "edges": {
+              "type": "array"
+            },
+            "epistemic_default": {
+              "type": "object"
+            },
+            "hidden": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": true
+        }
+      },
+      "identity": {
+        "type": "object"
+      },
+      "root": {
+        "type": "object"
+      }
+    },
+    "additionalProperties": true
+  }
+}
