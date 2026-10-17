@@ -5,6 +5,8 @@ import io
 import json
 from typing import Any, Iterator, Optional
 
+from ..timestamps import key as _tskey
+
 from ..model import Attachment, Block, Message, Unit, json_pointer
 from ..sources import Member
 from .base import ReadContext, Reader, first_of, getpath, load_member_json, note_unknown, finalize_unit, unknown_block
@@ -55,8 +57,8 @@ class LoomGraphReader(Reader):
         u.flags["collections"] = counts
         u.tree = {"roots": [u.messages[0].id] if u.messages else [], "current_leaf": prev, "forks": [], "linear": True}
         if u.messages:
-            first = min((m.created_utc for m in u.messages if m.created_utc), default=None)
-            last = max((m.created_utc for m in u.messages if m.created_utc), default=None)
+            first = min((m.created_utc for m in u.messages if m.created_utc), default=None, key=_tskey)
+            last = max((m.created_utc for m in u.messages if m.created_utc), default=None, key=_tskey)
             u.created_utc, u.updated_utc = first, last
             if first:
                 u.created_how, u.created_inferred = "first_message", True

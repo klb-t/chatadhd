@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, BinaryIO, Optional
 
 from ..model import Unit
+from ..timestamps import key as _tskey
 
 _SAFE = re.compile(r"[^A-Za-z0-9._-]+")
 ZIP_EPOCH = (1980, 1, 1, 0, 0, 0)
@@ -62,6 +63,7 @@ class Entry:
     origin: str = ""                           # uid of the source unit (preserve looks it up)
     name: Optional[str] = None                 # renamed in the package (title override)
     notes: list[str] = field(default_factory=list)
+    aliases: dict[str, dict[str, str]] = field(default_factory=dict)  # output field renames per kind (edit.rename_key in: "")
 
     def as_ref(self) -> dict[str, Any]:
         return {"key": self.key, "uid": self.unit.uid, "origin": self.origin, "folder": self.folder,
@@ -73,10 +75,10 @@ def entry_sort_key(u: Unit, order: str) -> tuple:
     if order == "source_order":
         return (src.get("archive") or "", src.get("member") or "", str((src.get("locator") or {}).get("json_pointer") or ""), u.uid)
     if order == "updated":
-        return (u.updated_utc or u.created_utc or "", u.uid)
+        return (_tskey(u.updated_utc or u.created_utc), u.uid)
     if order == "title":
         return ((u.title or "").casefold(), u.uid)
-    return (u.created_utc or "", u.service or "", u.uid)
+    return (_tskey(u.created_utc), u.service or "", u.uid)
 
 
 def assign_keys(entries: list[Entry]) -> None:

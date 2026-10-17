@@ -417,7 +417,8 @@ class Views:
         else:
             m = next((m for m in u.messages if m.id == it.attachment.message), None) if it.attachment is not None else None
             t_ = (m.created_utc if m is not None else None) or u.created_utc or ""
-        return (t_ == "", t_, u.service or "", src.get("sha256") or "", u.uid, it.index)
+        from .timestamps import key as _tskey
+        return (t_ == "", _tskey(t_), u.service or "", src.get("sha256") or "", u.uid, it.index)
 
     # -- rows -----------------------------------------------------------------------------
     def fields_of(self, kind: str) -> list[dict[str, Any]]:

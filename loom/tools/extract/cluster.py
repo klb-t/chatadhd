@@ -17,6 +17,7 @@ from .criteria import Criteria, build_criteria
 from .datafiles import DataStore, store as default_store
 from .lexical import Lexicon, lexicon as default_lexicon
 from .model import Unit
+from .timestamps import key as _tskey
 
 SCHEMA = "loom.extract.clusters/1"
 CONV_KINDS = ("conversation", "session")
@@ -116,8 +117,8 @@ def discover(units: list[Unit], ds: Optional[DataStore] = None, lex: Optional[Le
                 terms[t] = terms.get(t, 0.0) + w
         tt = sorted(terms.items(), key=lambda x: (-x[1], x[0]))
         tt = tt[:k] if k > 0 else tt
-        stamps = sorted(c for c in (convs[i].created_utc for i in members) if c)
-        ordered = sorted(members, key=lambda i: (convs[i].created_utc or "", convs[i].uid))
+        stamps = sorted((c for c in (convs[i].created_utc for i in members) if c), key=_tskey)
+        ordered = sorted(members, key=lambda i: (_tskey(convs[i].created_utc), convs[i].uid))
         clusters.append({"size": len(members), "top_terms": [{"term": t, "weight": round(w, 4)} for t, w in tt],
                          "sample_titles": [] if aggregate else [convs[i].title for i in ordered[:3] if convs[i].title],
                          "conversations": [convs[i].uid for i in ordered],

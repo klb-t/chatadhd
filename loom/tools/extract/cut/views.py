@@ -7,6 +7,7 @@ from typing import Any, Optional
 
 from ..i18n import label
 from ..model import Block, Message, Unit
+from ..timestamps import key as _tskey
 from .common import Entry, uid_hex
 
 BRANCH_KEEP = ("tree", "current", "newest", "longest", "marked", "all_paths")
@@ -59,7 +60,7 @@ def choose_paths(unit: Unit, keep: str, marked_leaf: Optional[str] = None) -> tu
         chosen = cur or None
         fallback = "longest" if not cur else None
     elif keep == "newest":
-        best = max(paths, key=lambda p: (p[-1].created_utc or "", -paths.index(p))) if paths else None
+        best = max(paths, key=lambda p: (_tskey(p[-1].created_utc), -paths.index(p))) if paths else None
         chosen = best
     elif keep == "marked":
         leaf = marked_leaf or unit.flags.get("marked_leaf")
@@ -135,13 +136,16 @@ def render_block(b: Block, policy: str, unit: Unit, m: Message, ctx: RenderCtx, 
 
 def _att_ref(b: Block, unit: Unit, m: Message, ctx: RenderCtx) -> dict[str, Any]:
     a = _att_lookup(unit, b.ref, m.id)
-    d: dict[str, Any] = {"ref": b.ref}
+    red = ctx.redactor
+    aw = {"conversation": unit.uid, "message": m.id, "attachment": b.ref}
+    # attachment names often carry personal names: the ref and the file name are a redactable field (file_name)
+    d: dict[str, Any] = {"ref": red.text(b.ref, aw, "file_name") if b.ref else b.ref}
     if a is None:
         d["status"] = "reference"
         return d
     d["status"] = a.status
     if a.name:
-        d["file_name"] = a.name
+        d["file_name"] = red.text(a.name, aw, "file_name")
     if a.mime or b.mime:
         d["mime"] = a.mime or b.mime
     if a.size is not None:
@@ -162,17 +166,31 @@ def _att_ref(b: Block, unit: Unit, m: Message, ctx: RenderCtx) -> dict[str, Any]
 
 
 # ───────────────────────────── fields ─────────────────────────────
-def _pick(full: dict[str, Any], fields: list[str]) -> dict[str, Any]:
+def field_name(f: Any) -> str:
+    """Output name of a profile field entry: ``"text"`` or ``{"field": "text", "as": "content"}``."""
+    return str(f.get("as") or f.get("field")) if isinstance(f, dict) else str(f)
+
+
+def _pick(full: dict[str, Any], fields: list[Any]) -> dict[str, Any]:
     out: dict[str, Any] = {}
     for f in fields:
-        if f in full:
-            out[f] = full[f]
+        src = str(f.get("field")) if isinstance(f, dict) else str(f)
+        name = field_name(f)
+        if src in full:
+            out[name] = full[src]
             continue
         cur: Any = full
-        for part in f.split("."):
+        for part in src.split("."):
             cur = cur.get(part) if isinstance(cur, dict) else None
-        out[f] = cur
+        out[name] = cur
     return out
+
+
+def _alias(row: dict[str, Any], aliases: dict[str, str]) -> dict[str, Any]:
+    """Output names renamed by the package entry (``edit.rename_key`` with ``in: ""``); a copy, order kept."""
+    if not aliases:
+        return row
+    return {aliases.get(k, k): v for k, v in row.items()}
 
 
 def conversation_fields(e: Entry, ctx: RenderCtx, cut: dict[str, Any], messages: list[Message]) -> dict[str, Any]:
@@ -183,7 +201,7 @@ def conversation_fields(e: Entry, ctx: RenderCtx, cut: dict[str, Any], messages:
     src = u.source or {}
     title = e.name if e.name is not None else u.title
     first, last = (None, None)
-    stamps = sorted(m.created_utc for m in messages if m.created_utc)
+    stamps = sorted((m.created_utc for m in messages if m.created_utc), key=_tskey)
     if stamps:
         first, last = stamps[0], stamps[-1]
     st = u.stats or {}
@@ -194,7 +212,7 @@ def conversation_fields(e: Entry, ctx: RenderCtx, cut: dict[str, Any], messages:
         "created_src": u.created, "updated_src": u.updated, "created_utc": u.created_utc,
         "first_message": t.render(None, first), "last_message": t.render(None, last),
         "service": u.account.get("service"), "product": u.account.get("product"),
-        "account": {"id": u.account.get("id"), "label": u.account.get("label")},
+        "account": {"id": red.text(u.account.get("id"), where, "account"), "label": red.text(u.account.get("label"), where, "account")},
         "archive": src.get("archive"), "member": None if ctx.aggregate else src.get("member"), "format": src.get("format"),
         "locator": None if ctx.aggregate else src.get("locator"),
         "messages": len(messages), "messages_total": len(u.messages),
@@ -256,7 +274,7 @@ def conversation_views(e: Entry, profile: dict[str, Any], ctx: RenderCtx) -> lis
             raise ValueError(f"profile {profile.get('id')}: block policy {v!r} (one of {', '.join(BLOCK_POLICY)})")
     fields = profile.get("fields") or {}
     if ctx.time.anonymise == "conversation":
-        stamps = sorted(m.created_utc for m in u.messages if m.created_utc)
+        stamps = sorted((m.created_utc for m in u.messages if m.created_utc), key=_tskey)
         from ..timestamps import from_iso
         ctx.time.conv_origin = from_iso(stamps[0] if stamps else u.created_utc)
     views = []
@@ -273,10 +291,16 @@ def conversation_views(e: Entry, profile: dict[str, Any], ctx: RenderCtx) -> lis
             conv["path"] = pi
         msgs = [message_fields(m, e, policies, ctx, pi) for m in path]
         if profile.get("drop_empty_messages"):
+            before = len(msgs)
             msgs = [mm for mm in msgs if any(b.get("text") or b.get("ref") or b.get("input") is not None or b.get("note") or b.get("summary")
                                              for b in mm["blocks"])]
+            # tool-only and thinking-only turns whose blocks this profile omits are counted, never dropped silently
+            conv["messages_dropped_empty"] = before - len(msgs)
+            conv["messages"] = len(msgs)
         cfields = fields.get("conversation")
         mfields = fields.get("message")
-        views.append({"conversation": _pick(conv, cfields) if cfields else conv, "conversation_full": conv,
-                      "messages": [_pick(mm, mfields) if mfields else mm for mm in msgs], "messages_full": msgs})
+        al = getattr(e, "aliases", None) or {}
+        views.append({"conversation": _alias(_pick(conv, cfields) if cfields else conv, al.get("conversation") or {}), "conversation_full": conv,
+                      "messages": [_alias(_pick(mm, mfields) if mfields else mm, al.get("message") or {}) for mm in msgs],
+                      "messages_full": msgs})
     return views

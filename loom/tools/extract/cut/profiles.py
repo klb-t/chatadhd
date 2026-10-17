@@ -10,7 +10,7 @@ from .. import timeline as _timeline
 from ..datafiles import DataStore
 from ..i18n import label, t
 from .common import Entry, Outputs, deterministic_zip
-from .views import RenderCtx, conversation_views
+from .views import RenderCtx, conversation_views, field_name
 
 PROFILE_KINDS = ("preserve", "restructure", "timeline", "cards")
 OUTPUT_KINDS = ("json", "jsonl", "csv", "markdown", "markdown_index", "markdown_journal", "markdown_cards", "graph", "zip")
@@ -90,6 +90,7 @@ def render_profile(prof: dict[str, Any], entries: list[Entry], ctx: RenderCtx, o
     info["messages"] = sum(len(v["messages"]) for v in views)
     info["branches_cut"] = sum(int(v["conversation_full"].get("branches_cut") or 0) for v in views)
     info["messages_cut"] = sum(int(v["conversation_full"].get("messages_cut") or 0) for v in views)
+    info["messages_dropped_empty"] = sum(int(v["conversation_full"].get("messages_dropped_empty") or 0) for v in views)
     md_links: dict[str, str] = {}
     for spec in prof.get("outputs") or []:
         k, path = spec["kind"], spec["path"]
@@ -111,6 +112,11 @@ def render_profile(prof: dict[str, Any], entries: list[Entry], ctx: RenderCtx, o
             rows = spec.get("rows", "messages")
             cols = spec.get("columns") or ((prof.get("fields") or {}).get("message") if rows == "messages" else
                                            (prof.get("fields") or {}).get("conversation"))
+            if cols:  # output names: a field entry's "as", then the package's aliases (edit.rename_key in: "")
+                al: dict[str, str] = {}
+                for e in entries:
+                    al.update(((getattr(e, "aliases", None) or {}).get("message" if rows == "messages" else "conversation")) or {})
+                cols = [al.get(field_name(c), field_name(c)) for c in cols]
             put(path, out.csv_doc(_rows(views, rows), cols))
         elif k == "markdown":
             if per_conv:

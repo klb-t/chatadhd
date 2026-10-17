@@ -73,7 +73,7 @@ def build_timeline(units: list[Unit], ds: Optional[DataStore] = None, *, key: Op
         parts = []
         for tname in ties:
             if tname == "t":
-                parts.append((r["t"] is None, r["t"] or ""))
+                parts.append((r["t"] is None, ts.key(r["t"])))
             elif tname == "locator":
                 parts.append(ts_json(r.get("locator")))
             else:

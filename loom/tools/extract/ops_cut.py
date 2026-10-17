@@ -16,7 +16,7 @@ from .expand import Selection
 from .ops import OPS, op
 from .package import Package
 from .redact import Redactor
-from .timestamps import TimePolicy, from_iso
+from .timestamps import TimePolicy, from_iso, key as _tskey
 
 log = logging.getLogger(__name__)
 
@@ -316,7 +316,7 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     if red.active and red.attachments == "omit":
         att_mode = "reference_only"
     att_paths, att_info = _copy_attachments(eng, entries, stage, att_mode) if restructure else ({}, None)
-    firsts = sorted(x for e in entries for x in [e.unit.created_utc] + [m.created_utc for m in e.unit.messages] if x)
+    firsts = sorted((x for e in entries for x in [e.unit.created_utc] + [m.created_utc for m in e.unit.messages] if x), key=_tskey)
     infos: list[dict[str, Any]] = []
     preserve_info = None
     tool = eng.tool_info()

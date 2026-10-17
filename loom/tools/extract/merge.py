@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 from typing import Any, Optional
 
 from .model import Unit
+from .timestamps import key as _tskey
 
 
 @dataclass
@@ -30,7 +31,7 @@ class MergeResult:
 
 def _order_key(u: Unit) -> tuple:
     src = u.source or {}
-    return (u.updated_utc or u.created_utc or "", src.get("archive_mtime") or 0, src.get("archive") or "", src.get("member") or "",
+    return (_tskey(u.updated_utc or u.created_utc), src.get("archive_mtime") or 0, src.get("archive") or "", src.get("member") or "",
             str(src.get("locator")))
 
 

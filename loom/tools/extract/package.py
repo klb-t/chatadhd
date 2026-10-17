@@ -21,15 +21,19 @@ def clone_unit(u: Unit) -> Unit:
 
 
 def entry_dict(e: Entry) -> dict[str, Any]:
-    return {"unit": e.unit.as_dict(), "messages": sorted(e.messages) if e.messages is not None else None, "folder": e.folder,
-            "origin": e.origin, "name": e.name, "notes": list(e.notes)}
+    d = {"unit": e.unit.as_dict(), "messages": sorted(e.messages) if e.messages is not None else None, "folder": e.folder,
+         "origin": e.origin, "name": e.name, "notes": list(e.notes)}
+    if e.aliases:  # only when set, so tree hashes of packages without aliases stay what they were
+        d["aliases"] = {k: dict(v) for k, v in sorted(e.aliases.items()) if v}
+    return d
 
 
 def entry_from_dict(d: dict[str, Any]) -> Entry:
     u = Unit.from_dict(copy.deepcopy(d["unit"]))
     u.uid, u.content_sha256 = d["unit"].get("uid", u.uid), d["unit"].get("content_sha256", u.content_sha256)
     return Entry(unit=u, messages=set(d["messages"]) if d.get("messages") is not None else None, folder=d.get("folder", "/"),
-                 origin=d.get("origin", ""), name=d.get("name"), notes=list(d.get("notes") or []))
+                 origin=d.get("origin", ""), name=d.get("name"), notes=list(d.get("notes") or []),
+                 aliases={k: dict(v) for k, v in (d.get("aliases") or {}).items()})
 
 
 class Package:

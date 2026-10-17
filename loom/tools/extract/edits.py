@@ -277,13 +277,13 @@ def e_nest(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng: An
 @edit("split_at_date")
 def e_split(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng: Any) -> dict[str, Any]:
     at = p["at"] if isinstance(p["at"], list) else [p["at"]]
-    bounds = sorted(ts.to_iso(ts.parse_date_bound(str(a))) for a in at)
+    bounds = sorted((ts.to_iso(ts.parse_date_bound(str(a))) for a in at), key=ts.key)
     n = parts_total = 0
     for u in _conv_units(items):
         e = _entry_of(pkg, u)
         groups: list[list[Message]] = [[] for _ in range(len(bounds) + 1)]
         for m in u.messages:
-            gi = sum(1 for b in bounds if (m.created_utc or "") >= b)
+            gi = sum(1 for b in bounds if ts.key(m.created_utc) >= ts.key(b))
             groups[gi].append(m)
         groups = [g for g in groups if g]
         if len(groups) < 2 or e is None:
@@ -300,7 +300,7 @@ def e_split(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng: A
             ne.unit.uid = f"{u.uid}~{gi}"
             ne.unit.title = f"{u.title or ''} ({gi}/{len(groups)})".strip()
             ne.unit.tree = {"roots": [m.id for m in ne.unit.messages if m.parent is None], "current_leaf": None, "forks": []}
-            ne.unit.created_utc = min((m.created_utc for m in g if m.created_utc), default=u.created_utc)
+            ne.unit.created_utc = min((m.created_utc for m in g if m.created_utc), default=u.created_utc, key=ts.key)
             ne.messages = None if e.messages is None else (e.messages & ids)
             ne.notes = list(e.notes) + [f"split_at_date: part {gi} of {len(groups)}"]
             new_entries.append(ne)
@@ -342,9 +342,9 @@ def e_merge(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng: A
     return {"count": len(us)}
 
 
-_SORT_KEYS = {"created": lambda u: u.created_utc or "", "updated": lambda u: u.updated_utc or u.created_utc or "",
-              "title": lambda u: (u.title or "").casefold(), "first_message": lambda u: (u.stats or {}).get("first_message_utc") or "",
-              "last_message": lambda u: (u.stats or {}).get("last_message_utc") or ""}
+_SORT_KEYS = {"created": lambda u: ts.key(u.created_utc), "updated": lambda u: ts.key(u.updated_utc or u.created_utc),
+              "title": lambda u: (u.title or "").casefold(), "first_message": lambda u: ts.key((u.stats or {}).get("first_message_utc")),
+              "last_message": lambda u: ts.key((u.stats or {}).get("last_message_utc"))}
 
 
 @edit("sort")
@@ -355,7 +355,7 @@ def e_sort(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], eng: An
         n = 0
         for u in _conv_units(items):
             before = [m.id for m in u.messages]
-            u.messages = sorted(u.messages, key=lambda m: m.created_utc or "", reverse=rev)
+            u.messages = sorted(u.messages, key=lambda m: ts.key(m.created_utc), reverse=rev)
             n += int(before != [m.id for m in u.messages])
         return {"count": n, "by": "created"}
     scope = {id(u) for u in _conv_units(items)}
@@ -467,7 +467,7 @@ def e_anonymise(pkg: Package, kind: str, items: list[Any], p: dict[str, Any], en
 
     def first_of(u: Unit) -> Any:
         st = [x for x in [u.created_utc] + [m.created_utc for m in u.messages] if x]
-        return ts.from_iso(min(st)) if st else None
+        return ts.from_iso(min(st, key=ts.key)) if st else None
     if p.get("origin", "package") == "package":
         firsts = [f for f in (first_of(u) for u in us) if f is not None]
         if firsts:

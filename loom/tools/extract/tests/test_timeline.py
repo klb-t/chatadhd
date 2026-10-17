@@ -23,6 +23,21 @@ class TimestampsTest(ExtractTest):
 
 
 class TimelineTest(ExtractTest):
+    def test_whole_and_fractional_seconds_in_the_same_second_sort_by_time(self):
+        """F21: ``to_iso`` writes ``…:00Z`` for a whole second and ``…:00.250000Z`` for a fraction; compared as
+        strings the fraction sorted first ('.' < 'Z').  Every order goes through ``ts.key``."""
+        from loom.tools.extract.model import Message, Unit
+        whole = ts.to_iso(ts.parse("2026-01-01T10:00:00Z").utc)
+        frac = ts.to_iso(ts.parse("2026-01-01T10:00:00.250Z").utc)
+        self.assertEqual((whole, frac), ("2026-01-01T10:00:00Z", "2026-01-01T10:00:00.250000Z"))
+        self.assertLess(ts.key(whole), ts.key(frac))
+        u = Unit(kind="conversation", ext_id="x", title="t", created_utc=frac, account={"service": "s"})
+        u.messages = [Message(id="b", parent=None, role="user", created_utc=frac), Message(id="a", parent=None, role="user", created_utc=whole)]
+        u.compute_identity()
+        _, rows = build_timeline([u], key="activity")
+        self.assertEqual([r["t"] for r in rows if r.get("message")], [whole, frac])
+        self.assertEqual(u.first_last_utc(), (whole, frac))
+
     def test_activity_axis_is_utc_sorted_with_originals_kept(self):
         eng, units = self.units(EXTRACT / "mixed_dir", EXTRACT / "claude_code/projects/-home-user-proj")
         tl, rows = build_timeline(units, eng.ds, key="activity", gap_days=0, burst_ratio=0)

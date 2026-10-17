@@ -13,6 +13,8 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Iterator, Optional
 
+from .timestamps import key as _tskey
+
 SCHEMA_UNIT = "loom.extract.unit/1"
 
 UNIT_KINDS = ("conversation", "project", "memory", "account", "feedback", "shared_link",
@@ -268,7 +270,7 @@ class Unit:
                    for m in self.messages)
 
     def first_last_utc(self) -> tuple[Optional[str], Optional[str]]:
-        stamps = sorted(m.created_utc for m in self.messages if m.created_utc)
+        stamps = sorted((m.created_utc for m in self.messages if m.created_utc), key=_tskey)
         if not stamps:
             return None, None
         return stamps[0], stamps[-1]

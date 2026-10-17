@@ -4,6 +4,7 @@ month and per service) — measured from the package, never estimated."""
 from typing import Any
 
 from .cut.common import Entry
+from .timestamps import key as _tskey
 
 
 def _words(text: str) -> int:
@@ -26,7 +27,7 @@ def conversation_stats(e: Entry) -> dict[str, Any]:
             tools[n] = tools.get(n, 0) + 1
         for b in m.blocks:
             kinds[b.kind] = kinds.get(b.kind, 0) + 1
-    stamps = sorted(m.created_utc for m in msgs if m.created_utc)
+    stamps = sorted((m.created_utc for m in msgs if m.created_utc), key=_tskey)
     st = u.stats or {}
     return {"key": e.key, "uid": u.uid, "service": u.service, "messages": len(msgs), "words": words, "chars": chars,
             "roles": dict(sorted(roles.items())), "tools": dict(sorted(tools.items())), "blocks": dict(sorted(kinds.items())),

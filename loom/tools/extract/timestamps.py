@@ -103,6 +103,21 @@ def to_iso(dt: Optional[datetime]) -> Optional[str]:
     return dt.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def key(s: Optional[str]) -> str:
+    """Order key of a ``to_iso`` string: fixed width (``.ffffff`` always present), so a whole-second stamp sorts
+    before a fractional one in the same second ('.' < 'Z' made ``…:00.250000Z`` sort before ``…:00Z``).
+    ``to_iso`` keeps its compact form for display and for the files; every comparison goes through this."""
+    if not s:
+        return ""
+    if not s.endswith("Z") or "T" not in s:
+        return s
+    body = s[:-1]
+    head, dot, frac = body.partition(".")
+    if len(head) < 19:
+        return s
+    return f"{head}.{(frac if dot else '').ljust(6, '0')[:6]}Z"
+
+
 def from_iso(s: Optional[str]) -> Optional[datetime]:
     if not s:
         return None

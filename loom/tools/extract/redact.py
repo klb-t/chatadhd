@@ -43,20 +43,43 @@ def _pesel(digits: str) -> bool:
 CHECKS = {"luhn": _luhn, "pesel": _pesel}
 
 
-def _term_pattern(term: str, fold: bool, inflect: bool) -> str:
-    """A dictionary term as a regex: case- and (optionally) diacritic-insensitive, each word may take a short
-    inflection ending (Polish: Łukasz → Łukasza, Łukaszem) when ``inflect``."""
+_INFLECT_DEFAULT = {"strip_final": "aeiouyąę", "optional_inner": "e", "ending_max": 5, "min_stem": 3}
+_HASHLIKE = re.compile(r"^(?:sha256:)?[0-9a-f]{32,}$")
+
+
+def _char_class(ch: str, fold: bool) -> str:
+    variants = {ch, ch.lower(), ch.upper()}
+    if fold:
+        f = ch.translate(_FOLD)
+        base = unicodedata.normalize("NFKD", f)[:1] or f
+        variants |= {f, f.lower(), f.upper(), base, base.lower(), base.upper()}
+    return "[" + "".join(sorted(re.escape(v) for v in variants if v)) + "]"
+
+
+def _term_pattern(term: str, fold: bool, inflect: bool, rules: Optional[dict[str, Any]] = None) -> str:
+    """A dictionary term as a regex: case- and (optionally) diacritic-insensitive.  With ``inflect`` each word is
+    matched on its stem, not on the full nominative: a final vowel (``strip_final``) is dropped before the ending
+    wildcard, so Polish forms whose ending changes are masked too (Anna → Annę/Anny, Kowalska → Kowalskiej,
+    migracja → migracji), and a fleeting vowel before the last consonant (``optional_inner``) may be absent
+    (Marek → Marka, kupiec → kupca).  The rules are data (preset ``redaction.inflection``, a profile's
+    ``dictionary_inflection``)."""
+    r = dict(_INFLECT_DEFAULT)
+    r.update(rules or {})
+    strip_final = str(r.get("strip_final") or "")
+    inner = str(r.get("optional_inner") or "")
+    ending = int(r.get("ending_max") or 0)
+    min_stem = int(r.get("min_stem") or 1)
     words = []
     for word in term.split():
-        parts = []
-        for ch in word:
-            variants = {ch, ch.lower(), ch.upper()}
-            if fold:
-                f = ch.translate(_FOLD)
-                base = unicodedata.normalize("NFKD", f)[:1] or f
-                variants |= {f, f.lower(), f.upper(), base, base.lower(), base.upper()}
-            parts.append("[" + "".join(sorted(re.escape(v) for v in variants if v)) + "]")
-        words.append("".join(parts) + (r"\w{0,4}" if inflect else ""))
+        stem = word
+        if inflect and len(word) - 1 >= min_stem and word[-1].lower() in strip_final:
+            stem = word[:-1]
+        parts = [_char_class(ch, fold) for ch in stem]
+        if inflect and inner and len(stem) >= min_stem + 1 and stem[-2].lower() in inner \
+                and stem[-1].isalpha() and stem[-1].lower() not in strip_final and stem[-3:-2].isalpha() \
+                and stem[-3].lower() not in strip_final:
+            parts[-2] = parts[-2] + "?"
+        words.append("".join(parts) + (r"\w{0,%d}" % max(ending, 0) if inflect else ""))
     return r"(?<!\w)" + r"\s+".join(words) + r"(?!\w)"
 
 
@@ -79,7 +102,7 @@ class Redactor:
         self.id = str(prof.get("id", "inline"))
         self.mask_tpl = str(prof.get("mask") or "[{KIND}#{n}]")
         self.mode = prof.get("mode", "mask")
-        self.fields = set(prof.get("fields") or ["title", "text", "input", "name", "author"])
+        self.fields = set(prof.get("fields") or ["title", "text", "input", "name", "author", "file_name", "account", "meta", "extra"])
         self.attachments = prof.get("attachments", "copy")
         self.rules: list[tuple[str, str, re.Pattern, Optional[Any], int]] = []
         for r in prof.get("rules") or []:
@@ -90,8 +113,11 @@ class Redactor:
         dkind = prof.get("dictionary_kind", "NAME")
         fold = bool(prof.get("dictionary_fold", True))
         inflect = bool(prof.get("dictionary_inflect", True))
+        rules = dict(ds.preset("redaction.inflection") or {})
+        rules.update(prof.get("dictionary_inflection") or {})
+        self.words = words
         if words:
-            pat = "|".join(f"(?P<t{i}>{_term_pattern(w, fold, inflect)})" for i, w in enumerate(words))
+            pat = "|".join(f"(?P<t{i}>{_term_pattern(w, fold, inflect, rules)})" for i, w in enumerate(words))
             self.rules.append(("dictionary", dkind, re.compile(pat), None, 0))
         self.dictionary_terms = len(words)
         self.keep_map = keep_map
@@ -121,7 +147,9 @@ class Redactor:
                 val = m.group(group)
                 if val is None or (check is not None and not check(re.sub(r"\D", "", val))):
                     return m.group(0)
-                key = f"term:{m.lastgroup}" if rid == "dictionary" and m.lastgroup else val
+                # a dictionary hit is keyed by its term (stable across redactors with other term lists, so a mask
+                # seeded from a batch edit stays the same in preserve and the side files)
+                key = f"term:{self.words[int(m.lastgroup[1:])]}" if rid == "dictionary" and m.lastgroup else val
                 mask = self._mask(kind, key)
                 self.entries.append({"where": where, "field": field, "kind": kind, "rule": rid, "mask": mask,
                                      "at": m.start(group), "length": len(val)})
@@ -134,14 +162,59 @@ class Redactor:
         return out
 
     def value(self, obj: Any, where: dict[str, Any], field: str = "input") -> Any:
-        """Redact every string inside a JSON value (keys stay)."""
+        """Redact every string inside a JSON value (keys stay; content hashes stay)."""
         if isinstance(obj, str):
+            if _HASHLIKE.match(obj):
+                return obj
             return self.text(obj, where, field if field in self.fields else "text")
         if isinstance(obj, list):
             return [self.value(v, where, field) for v in obj]
         if isinstance(obj, dict):
             return {k: self.value(v, where, field) for k, v in obj.items()}
         return obj
+
+    # -- without entries: questions and metadata ---------------------------------------------------------------
+    def would_mask(self, s: Any) -> bool:
+        """Whether ``s`` holds anything a rule or the dictionary masks (no entry, no mask assigned)."""
+        if not self.rules or not isinstance(s, str) or not s:
+            return False
+        for _rid, _kind, rx, check, group in self.rules:
+            for m in rx.finditer(s):
+                val = m.group(group)
+                if val is not None and (check is None or check(re.sub(r"\D", "", val))):
+                    return True
+        return False
+
+    def scrub(self, obj: Any, skip: tuple[str, ...] = ()) -> Any:
+        """Masks in a metadata value (the manifest) with the package's masks, without entries: the entries list
+        the content that was masked, and the manifest is written after them."""
+        if isinstance(obj, str):
+            if _HASHLIKE.match(obj) or not self.would_mask(obj):
+                return obj
+            n_entries, counts, by_rule = len(self.entries), dict(self.counts), dict(self.by_rule)
+            fields, self.fields = self.fields, self.fields | {"text"}
+            try:
+                out = self.text(obj, {"file": "manifest.json"}, "text")
+            finally:
+                self.fields = fields
+                del self.entries[n_entries:]
+                self.counts, self.by_rule = counts, by_rule
+            return out
+        if isinstance(obj, list):
+            return [self.scrub(v, skip) for v in obj]
+        if isinstance(obj, dict):
+            return {k: (v if k in skip else self.scrub(v, skip)) for k, v in obj.items()}
+        return obj
+
+    def maps(self) -> dict[str, dict[str, str]]:
+        """value → mask per kind (in memory only; used to seed the package's redactor so masks stay consistent)."""
+        return {k: dict(v) for k, v in self._maps.items()}
+
+    def seed(self, maps: dict[str, dict[str, str]]) -> None:
+        for kind, m in (maps or {}).items():
+            cur = self._maps.setdefault(kind, {})
+            for val, mask in m.items():
+                cur.setdefault(val, mask)
 
     def report(self) -> dict[str, Any]:
         d: dict[str, Any] = {"profile": self.id, "active": self.active, "entries": len(self.entries),
