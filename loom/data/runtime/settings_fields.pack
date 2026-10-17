@@ -3675,7 +3675,9 @@
           ],
           "group": "interfejs",
           "subgroup": "nawigator",
-          "flows": []
+          "flows": [
+            "graph.navigate"
+          ]
         }
       },
       {

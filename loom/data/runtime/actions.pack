@@ -13116,7 +13116,13 @@
         "result_text": {
           "en": "In the graph:",
           "pl": "W grafie:"
-        }
+        },
+        "reads": [
+          "navigator_children_limit"
+        ],
+        "implemented_in": [
+          "loom/src/graph/projection.cpp"
+        ]
       },
       "graph.card": {
         "id": "graph.card",

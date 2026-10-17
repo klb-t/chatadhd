@@ -4127,7 +4127,16 @@
               "path": "loom/include/loom/rom.h"
             },
             {
+              "path": "loom/src/graph/projection.cpp"
+            },
+            {
+              "path": "loom/src/graph/projection.h"
+            },
+            {
               "path": "loom/src/graph/rom.cpp"
+            },
+            {
+              "path": "loom/tests/test_graph_projection.cpp"
             },
             {
               "path": "loom/tests/test_rom.cpp"

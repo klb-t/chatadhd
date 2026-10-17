@@ -100,7 +100,8 @@ ITEMS = [
     ('catalogue', 13, {'en': 'ROM catalogue', 'pl': 'Katalog ROM'},
      {'en': 'The list of all items above with graph addresses; makes the ROM visible in the graph like any memory.',
       'pl': 'Lista wszystkich pozycji powyżej z adresami w grafie; dzięki niej ROM widać w grafie jak każdą pamięć.'},
-     ['loom/tools/gen_rom_catalogue.py', 'loom/include/loom/rom.h', 'loom/src/graph/rom.cpp', 'loom/tests/test_rom.cpp'],
+     ['loom/tools/gen_rom_catalogue.py', 'loom/include/loom/rom.h', 'loom/src/graph/rom.cpp', 'loom/tests/test_rom.cpp',
+      'loom/src/graph/projection.h', 'loom/src/graph/projection.cpp', 'loom/tests/test_graph_projection.cpp'],
      ['The catalogue pack is pinned in data_domains.pack.']),
 ]
 

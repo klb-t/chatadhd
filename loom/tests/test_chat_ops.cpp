@@ -615,3 +615,30 @@ TEST_SUITE("chat_ops") {
     CHECK_FALSE(unwrap(f.rt->db().get_conv(f.conv_id)).has_value());
   }
 }
+
+TEST_SUITE("chat_ops") {
+  TEST_CASE("M1-K0: the one graph from the conversation - a level of it, a card, the settings with their origin and who does which job, in words") {
+    Fixture f;
+    const auto rom = f.say_and_confirm("pokaż ROM w grafie", "graph.navigate", "tak");
+    const std::string rom_text = f.text_of(rom);
+    INFO(rom_text);
+    CHECK(rom_text.find("ROM") != std::string::npos);
+    CHECK(rom_text.find("13 z 13") != std::string::npos);
+    CHECK(rom_text.find("Rozruch") != std::string::npos);
+    const auto flows = f.say_and_confirm("wejdź w przepływy", "graph.navigate", "tak");
+    CHECK(f.text_of(flows).find("zwinięto") != std::string::npos);  // more flows than the budget of one level: said, not dropped
+    const auto card = f.say_and_confirm("pokaż kartę rom:boot", "graph.card", "tak");
+    CHECK(f.text_of(card).find("rom:boot") != std::string::npos);
+    const auto settings = f.say_and_confirm("pokaż ustawienia po ludzku", "settings.resolved", "tak");
+    const std::string settings_text = f.text_of(settings);
+    CHECK(settings_text.find("ustawień w") != std::string::npos);
+    CHECK(settings_text.find("sk-test-key") == std::string::npos);  // a secret never reaches the conversation
+    const auto roles = f.say_and_confirm("who does which job", "roles.resolved", "yes");
+    const std::string roles_text = f.text_of(roles);
+    INFO(roles_text);
+    CHECK(roles_text.find("Who does which job:") != std::string::npos);
+    CHECK(roles_text.find("Conversation: model") != std::string::npos);  // the registry's name of test/model (id after the last '/')
+    const auto unknown = f.say_and_confirm("pokaż czegoś takiego nie ma w grafie", "graph.navigate", "tak");
+    CHECK(f.text_of(unknown).find("nie ma nic o nazwie") != std::string::npos);
+  }
+}
