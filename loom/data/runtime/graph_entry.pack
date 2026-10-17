@@ -3126,7 +3126,10 @@
             "en": "Boot",
             "pl": "Rozruch"
           },
-          "why": "Finds and opens memories (data-dir resolution order, code != data) before any memory can be read.",
+          "why": {
+            "en": "Finds and opens memories (data-dir resolution order, code != data) before any memory can be read.",
+            "pl": "Znajduje i otwiera pamięci (kolejność szukania katalogu danych, kod ≠ dane), zanim jakąkolwiek pamięć da się przeczytać."
+          },
           "address": "rom:boot",
           "status": "partial",
           "files": [
@@ -3156,7 +3159,10 @@
             "en": "Meta-ontology",
             "pl": "Meta-ontologia"
           },
-          "why": "What a node, edge, action, field, provenance and version are; base types the engine must read in any graph.",
+          "why": {
+            "en": "What a node, edge, action, field, provenance and version are; base types the engine must read in any graph.",
+            "pl": "Czym jest węzeł, krawędź, działanie, pole, pochodzenie i wersja; podstawowe typy, które silnik musi umieć przeczytać w każdym grafie."
+          },
           "address": "rom:meta_ontology",
           "status": "present",
           "files": [
@@ -3214,7 +3220,10 @@
             "en": "Action interpreter",
             "pl": "Interpreter akcji"
           },
-          "why": "The universal engine: apply the action named in the graph to the given nodes.",
+          "why": {
+            "en": "The universal engine: apply the action named in the graph to the given nodes.",
+            "pl": "Uniwersalny silnik: wykonuje działanie nazwane w grafie na podanych węzłach."
+          },
           "address": "rom:action_interpreter",
           "status": "present",
           "files": [
@@ -3293,7 +3302,10 @@
             "en": "Drivers and adapters",
             "pl": "Sterowniki i adaptery"
           },
-          "why": "Executable adapters: provider APIs, storage backends, file formats, devices, cryptography.",
+          "why": {
+            "en": "Executable adapters: provider APIs, storage backends, file formats, devices, cryptography.",
+            "pl": "Wykonywalne adaptery: API dostawców, magazyny danych, formaty plików, urządzenia, kryptografia."
+          },
           "address": "rom:drivers",
           "status": "partial",
           "files": [
@@ -3344,7 +3356,10 @@
             "en": "Factory presets",
             "pl": "Ustawienia fabryczne"
           },
-          "why": "Starting point and \"restore defaults\": preset packs and default runtime profiles/flows.",
+          "why": {
+            "en": "Starting point and \"restore defaults\": preset packs and default runtime profiles/flows.",
+            "pl": "Punkt startowy i „przywróć ustawienia domyślne”: paczki presetów oraz domyślne profile i przepływy działania."
+          },
           "address": "rom:factory_presets",
           "status": "partial",
           "files": [
@@ -3542,7 +3557,10 @@
             "en": "Self-model",
             "pl": "Model samego siebie"
           },
-          "why": "What the application knows about itself regardless of the user: philosophy, requirements, state, costs (R52).",
+          "why": {
+            "en": "What the application knows about itself regardless of the user: philosophy, requirements, state, costs (R52).",
+            "pl": "Co aplikacja wie o sobie niezależnie od użytkownika: filozofia, wymagania, stan, koszty (R52)."
+          },
           "address": "rom:self_model",
           "status": "partial",
           "files": [
@@ -3576,7 +3594,10 @@
             "en": "Safety fuses",
             "pl": "Bezpieczniki"
           },
-          "why": "Confirmation at x10 growth in usage and other guards that must not be switched off by accident.",
+          "why": {
+            "en": "Confirmation at x10 growth in usage and other guards that must not be switched off by accident.",
+            "pl": "Potwierdzenie przy dziesięciokrotnym (×10) wzroście zużycia i inne zabezpieczenia, których nie da się wyłączyć przez przypadek."
+          },
           "address": "rom:safety_fuses",
           "status": "partial",
           "files": [
@@ -3604,7 +3625,10 @@
             "en": "Validators and migrations",
             "pl": "Walidatory i migracje"
           },
-          "why": "How to read old formats and move data between versions.",
+          "why": {
+            "en": "How to read old formats and move data between versions.",
+            "pl": "Jak czytać stare formaty i przenosić dane między wersjami."
+          },
           "address": "rom:validators_migrations",
           "status": "present",
           "files": [
@@ -3632,7 +3656,10 @@
             "en": "Rescue mode",
             "pl": "Tryb ratunkowy"
           },
-          "why": "Minimal interface to settings and memories when everything else failed.",
+          "why": {
+            "en": "Minimal interface to settings and memories when everything else failed.",
+            "pl": "Minimalny dostęp do ustawień i pamięci, gdy wszystko inne zawiodło."
+          },
           "address": "rom:rescue_mode",
           "status": "missing",
           "files": [],
@@ -3646,7 +3673,10 @@
             "en": "Roots of trust",
             "pl": "Korzenie zaufania"
           },
-          "why": "Cryptographic algorithms and keys that verify updates and signatures; must not come from the data they verify.",
+          "why": {
+            "en": "Cryptographic algorithms and keys that verify updates and signatures; must not come from the data they verify.",
+            "pl": "Algorytmy i klucze kryptograficzne, które sprawdzają aktualizacje i podpisy; nie mogą pochodzić z danych, które sprawdzają."
+          },
           "address": "rom:roots_of_trust",
           "status": "partial",
           "files": [
@@ -3685,7 +3715,10 @@
             "en": "Identity and time generators",
             "pl": "Generatory tożsamości i czasu"
           },
-          "why": "Identifier format, clock and versioning, so addresses stay consistent across the ecosystem.",
+          "why": {
+            "en": "Identifier format, clock and versioning, so addresses stay consistent across the ecosystem.",
+            "pl": "Format identyfikatorów, zegar i wersjonowanie, aby adresy były spójne w całym ekosystemie."
+          },
           "address": "rom:id_time",
           "status": "present",
           "files": [
@@ -3707,7 +3740,10 @@
             "en": "Base UI texts",
             "pl": "Podstawowe teksty interfejsu"
           },
-          "why": "Texts (pl, en) the application needs before any memory is loaded.",
+          "why": {
+            "en": "Texts (pl, en) the application needs before any memory is loaded.",
+            "pl": "Teksty (pl, en), których aplikacja potrzebuje, zanim wczyta jakąkolwiek pamięć."
+          },
           "address": "rom:ui_texts",
           "status": "partial",
           "files": [
@@ -3731,7 +3767,10 @@
             "en": "ROM catalogue",
             "pl": "Katalog ROM"
           },
-          "why": "The list of all items above with graph addresses; makes the ROM visible in the graph like any memory.",
+          "why": {
+            "en": "The list of all items above with graph addresses; makes the ROM visible in the graph like any memory.",
+            "pl": "Lista wszystkich pozycji powyżej z adresami w grafie; dzięki niej ROM widać w grafie jak każdą pamięć."
+          },
           "address": "rom:catalogue",
           "status": "partial",
           "files": [
