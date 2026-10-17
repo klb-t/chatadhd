@@ -1,6 +1,8 @@
 // The effective view: ROM + memory overlays -> one list per kind of thing. See include/loom/effective_view.h.
 #include "loom/effective_view.h"
 
+#include <atomic>
+
 #include <algorithm>
 
 #include "loom/log.h"
@@ -323,7 +325,14 @@ Result<Overlay> profile_overlay(std::string_view kind, const Json& source, const
   return ov;
 }
 
+namespace {
+std::atomic<std::uint64_t> g_effective_loads{0};
+}  // namespace
+
+std::uint64_t effective_loads() { return g_effective_loads.load(); }
+
 Result<Effective> effective(const std::filesystem::path& root, std::string_view kind, const std::vector<std::filesystem::path>& extra_dirs) {
+  g_effective_loads.fetch_add(1);
   std::vector<std::filesystem::path> dirs{root};
   dirs.insert(dirs.end(), extra_dirs.begin(), extra_dirs.end());
   LOOM_TRY_ASSIGN(auto overlays, load_overlays(dirs));

@@ -641,5 +641,16 @@ TEST_SUITE("chat_ops") {
     CHECK(roles_text.find("Conversation: model") != std::string::npos);  // the registry's name of test/model (id after the last '/')
     const auto unknown = f.say_and_confirm("pokaż czegoś takiego nie ma w grafie", "graph.navigate", "tak");
     CHECK(f.text_of(unknown).find("nie ma nic o nazwie") != std::string::npos);
+    // sentences that only sound like a way into the graph stay messages: "go into" a name the graph does not have is not a command
+    for (const char* sentence : {"przejdź do rzeczy", "wejdź w szczegóły", "przejdź do konkretów", "wejdź w role sceptyka", "go into more detail about the second point",
+                                 "step into the shoes of a critic"}) {
+      INFO(sentence);
+      CHECK(f.route(sentence).at("kind") == "message");
+    }
+    // ... and a name it has, in any inflection, is one
+    const auto settings_area = f.say_and_confirm("przejdź do ustawień", "graph.navigate", "tak");
+    CHECK(f.text_of(settings_area).find("Profile i ustawienia") != std::string::npos);
+    const auto conversations = f.say_and_confirm("przejdź do rozmów", "graph.navigate", "tak");
+    CHECK(f.text_of(conversations).find("Kontekst i projekty") != std::string::npos);
   }
 }

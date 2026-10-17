@@ -13607,10 +13607,12 @@
           "pl": "W grafie:"
         },
         "reads": [
-          "navigator_children_limit"
+          "navigator_children_limit",
+          "loom_graph_data_limit"
         ],
         "implemented_in": [
-          "loom/src/graph/projection.cpp"
+          "loom/src/graph/projection.cpp",
+          "loom/data/runtime/graph_sources.pack#/defaults/sources"
         ]
       },
       "graph.card": {
@@ -13886,7 +13888,22 @@
         "result_text": {
           "en": "Who does which job:",
           "pl": "Kto wykonuje którą pracę:"
-        }
+        },
+        "reads": [
+          "default_model",
+          "semantic_model",
+          "guardian_model",
+          "intent_routing_model",
+          "image_model",
+          "image_provider",
+          "speech_model",
+          "speech_provider"
+        ],
+        "implemented_in": [
+          "loom/data/runtime/ports.pack#/defaults/roles",
+          "loom/data/runtime/guardian.pack#/defaults/models/policies",
+          "loom/src/graph/projection.cpp"
+        ]
       },
       "rom.override": {
         "id": "rom.override",

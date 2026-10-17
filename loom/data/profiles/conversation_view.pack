@@ -1479,7 +1479,7 @@
             "evidence.method.said": "you said it",
             "evidence.method.model_reply": "a model's reply",
             "evidence.method.message": "a message of the conversation",
-            "evidence.method.import": "imported ({{source}})",
+            "evidence.method.import": "import ({{source}}, {{date}})",
             "evidence.method.conversation": "your conversation",
             "evidence.method.interview": "your answer in the interview",
             "evidence.method.scenario": "a question of the interview — no answer yet",
@@ -1505,7 +1505,11 @@
             "tier.composed": "providers tried in turn — no class of one model",
             "role.no_model": "no model",
             "role.composed": "providers in turn",
-            "collapsed.source": "{{label}}: {{shown}} of {{total}} shown"
+            "collapsed.source": "{{label}}: {{shown}} of {{total}} shown",
+            "area.cell": "Axis cell: {{label}}",
+            "calibration.whole_pack": "{{pack}} (the whole pack)",
+            "evidence.method.task": "recorded by a background task",
+            "reason.setting_absent": "the setting is not in the description of the settings"
           },
           "pl": {
             "title": "Graf",
@@ -1669,7 +1673,7 @@
             "evidence.method.said": "powiedziałeś to",
             "evidence.method.model_reply": "odpowiedź modelu",
             "evidence.method.message": "wiadomość w rozmowie",
-            "evidence.method.import": "zaimportowane ({{source}})",
+            "evidence.method.import": "import ({{source}}, {{date}})",
             "evidence.method.conversation": "Twoja rozmowa",
             "evidence.method.interview": "Twoja odpowiedź w wywiadzie",
             "evidence.method.scenario": "pytanie z wywiadu — bez odpowiedzi",
@@ -1695,7 +1699,11 @@
             "tier.composed": "dostawcy po kolei — bez klasy jednego modelu",
             "role.no_model": "brak modelu",
             "role.composed": "dostawcy po kolei",
-            "collapsed.source": "{{label}}: pokazano {{shown}} z {{total}}"
+            "collapsed.source": "{{label}}: pokazano {{shown}} z {{total}}",
+            "area.cell": "Komórka osi: {{label}}",
+            "calibration.whole_pack": "{{pack}} (cały pakiet)",
+            "evidence.method.task": "zapisane przez zadanie w tle",
+            "reason.setting_absent": "tego ustawienia nie ma w opisie ustawień"
           }
         }
       }

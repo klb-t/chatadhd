@@ -1646,7 +1646,7 @@ R"loom_onboard(                "scene_hint_screen": "Drag: turn · wheel or pinc
                 "evidence.method.said": "you said it",
                 "evidence.method.model_reply": "a model's reply",
                 "evidence.method.message": "a message of the conversation",
-                "evidence.method.import": "imported ({{source}})",
+                "evidence.method.import": "import ({{source}}, {{date}})",
                 "evidence.method.conversation": "your conversation",
                 "evidence.method.interview": "your answer in the interview",
                 "evidence.method.scenario": "a question of the interview — no answer yet",
@@ -1672,7 +1672,11 @@ R"loom_onboard(                "scene_hint_screen": "Drag: turn · wheel or pinc
                 "tier.composed": "providers tried in turn — no class of one model",
                 "role.no_model": "no model",
                 "role.composed": "providers in turn",
-                "collapsed.source": "{{label}}: {{shown}} of {{total}} shown"
+                "collapsed.source": "{{label}}: {{shown}} of {{total}} shown",
+                "area.cell": "Axis cell: {{label}}",
+                "calibration.whole_pack": "{{pack}} (the whole pack)",
+                "evidence.method.task": "recorded by a background task",
+                "reason.setting_absent": "the setting is not in the description of the settings"
               },
               "pl": {
                 "title": "Graf",
@@ -1836,7 +1840,7 @@ R"loom_onboard(                "scene_hint_screen": "Drag: turn · wheel or pinc
                 "evidence.method.said": "powiedziałeś to",
                 "evidence.method.model_reply": "odpowiedź modelu",
                 "evidence.method.message": "wiadomość w rozmowie",
-                "evidence.method.import": "zaimportowane ({{source}})",
+                "evidence.method.import": "import ({{source}}, {{date}})",
                 "evidence.method.conversation": "Twoja rozmowa",
                 "evidence.method.interview": "Twoja odpowiedź w wywiadzie",
                 "evidence.method.scenario": "pytanie z wywiadu — bez odpowiedzi",
@@ -1862,7 +1866,11 @@ R"loom_onboard(                "scene_hint_screen": "Drag: turn · wheel or pinc
                 "tier.composed": "dostawcy po kolei — bez klasy jednego modelu",
                 "role.no_model": "brak modelu",
                 "role.composed": "dostawcy po kolei",
-                "collapsed.source": "{{label}}: pokazano {{shown}} z {{total}}"
+                "collapsed.source": "{{label}}: pokazano {{shown}} z {{total}}",
+                "area.cell": "Komórka osi: {{label}}",
+                "calibration.whole_pack": "{{pack}} (cały pakiet)",
+                "evidence.method.task": "zapisane przez zadanie w tle",
+                "reason.setting_absent": "tego ustawienia nie ma w opisie ustawień"
               }
             }
           }
@@ -2043,14 +2051,14 @@ R"loom_onboard(                "scene_hint_screen": "Drag: turn · wheel or pinc
             "session.pause": "Pause",
             "session.sections": "Onboarding sections",
             "session.section_label": "{{title}} · {{status}}",
-            "conversation.help": "Submit each answer below. The interview method will summarise it and can ask follow-up questions; confirm or correct each proposed fact before it is recorded.",
+)loom_onboard",
+R"loom_onboard(            "conversation.help": "Submit each answer below. The interview method will summarise it and can ask follow-up questions; confirm or correct each proposed fact before it is recorded.",
             "conversation.model": "Interview model",
             "conversation.provider": "Provider",
             "conversation.continue": "Ask model to summarise and continue",
             "conversation.unavailable": "The host must connect native privacy filtering and model transport to enable the interview.",
             "conversation.understood": "What the model understood",
-)loom_onboard",
-R"loom_onboard(            "conversation.confirm_help": "Confirm the proposed facts below, correct them, or reject them.",
+            "conversation.confirm_help": "Confirm the proposed facts below, correct them, or reject them.",
             "section.confirmed": "Confirm this section and continue",
             "section.corrected": "Section needs correction",
             "section.rejected": "Reject section summary",
@@ -3128,7 +3136,8 @@ R"loom_onboard(            "conversation.confirm_help": "Confirm the proposed fa
           "today": {
             "pl": "Dziś żaden ekran nie rysuje jeszcze karty roli; te słowa czekają na ekran Modele › Role (M1-W0).",
             "en": "Today no screen draws the role card yet; these words wait for the screen Models › Roles (M1-W0)."
-          },
+)loom_onboard",
+R"loom_onboard(          },
           "reason": {
             "pl": "Ekran roli należy do pozycji M1-W0 (web); słowa są w katalogu wcześniej, żeby ekran nie wpisywał ich w kod.",
             "en": "The role screen belongs to work item M1-W0 (web); the words are in the catalogue first so the screen never writes them in code."
@@ -3140,8 +3149,7 @@ R"loom_onboard(            "conversation.confirm_help": "Confirm the proposed fa
             "role.model": "Model",
             "role.provider": "Provider",
             "chain": "How the model is chosen",
-)loom_onboard",
-R"loom_onboard(            "chain.step": "{{n}}. {{step}}",
+            "chain.step": "{{n}}. {{step}}",
             "step.explicit": "explicit: {{setting}}",
             "step.role": "role {{role}}",
             "step.relative_to": "relative to the conversation model (one class lower)",
@@ -4025,7 +4033,7 @@ R"loom_onboard(            "chain.step": "{{n}}. {{step}}",
             "evidence.method.said": "you said it",
             "evidence.method.model_reply": "a model's reply",
             "evidence.method.message": "a message of the conversation",
-            "evidence.method.import": "imported ({{source}})",
+            "evidence.method.import": "import ({{source}}, {{date}})",
             "evidence.method.conversation": "your conversation",
             "evidence.method.interview": "your answer in the interview",
             "evidence.method.scenario": "a question of the interview — no answer yet",
@@ -4051,7 +4059,11 @@ R"loom_onboard(            "chain.step": "{{n}}. {{step}}",
             "tier.composed": "providers tried in turn — no class of one model",
             "role.no_model": "no model",
             "role.composed": "providers in turn",
-            "collapsed.source": "{{label}}: {{shown}} of {{total}} shown"
+            "collapsed.source": "{{label}}: {{shown}} of {{total}} shown",
+            "area.cell": "Axis cell: {{label}}",
+            "calibration.whole_pack": "{{pack}} (the whole pack)",
+            "evidence.method.task": "recorded by a background task",
+            "reason.setting_absent": "the setting is not in the description of the settings"
           },
           "pl": {
             "title": "Graf",
@@ -4162,7 +4174,8 @@ R"loom_onboard(            "chain.step": "{{n}}. {{step}}",
             "count.name.messages_waiting": "wiadomości czekające na analizę",
             "count.name.background_tasks": "zadania w tle",
             "count.name.analysis_modes": "tryby analizy",
-            "count.name.calibration_items": "elementy w kalibracji",
+)loom_onboard",
+R"loom_onboard(            "count.name.calibration_items": "elementy w kalibracji",
             "count.name.kb.runs": "przebiegi analizy",
             "reason.no_model": "brak modelu",
             "reason.composed": "dostawcy po kolei, bez jednego modelu",
@@ -4172,8 +4185,7 @@ R"loom_onboard(            "chain.step": "{{n}}. {{step}}",
             "reason.ledger_records_actions_not_roles": "księga zużycia zapisuje działania, nie role",
             "reason.ports_profile_unavailable": "nie da się odczytać ról modeli (profil portów)",
             "reason.onboarding_unavailable": "nie da się odczytać wywiadu profilu",
-)loom_onboard",
-R"loom_onboard(            "reason.scope_chain_unavailable": "nie da się odczytać łańcucha poziomów",
+            "reason.scope_chain_unavailable": "nie da się odczytać łańcucha poziomów",
             "reason.scope_chain_absent": "dane nie mają łańcucha poziomów",
             "reason.view_kind_unavailable": "tego rodzaju widoku jeszcze nie ma",
             "reason.reader_missing": "ta wersja nie ma czytelnika tego źródła",
@@ -4216,7 +4228,7 @@ R"loom_onboard(            "reason.scope_chain_unavailable": "nie da się odczyt
             "evidence.method.said": "powiedziałeś to",
             "evidence.method.model_reply": "odpowiedź modelu",
             "evidence.method.message": "wiadomość w rozmowie",
-            "evidence.method.import": "zaimportowane ({{source}})",
+            "evidence.method.import": "import ({{source}}, {{date}})",
             "evidence.method.conversation": "Twoja rozmowa",
             "evidence.method.interview": "Twoja odpowiedź w wywiadzie",
             "evidence.method.scenario": "pytanie z wywiadu — bez odpowiedzi",
@@ -4242,7 +4254,11 @@ R"loom_onboard(            "reason.scope_chain_unavailable": "nie da się odczyt
             "tier.composed": "dostawcy po kolei — bez klasy jednego modelu",
             "role.no_model": "brak modelu",
             "role.composed": "dostawcy po kolei",
-            "collapsed.source": "{{label}}: pokazano {{shown}} z {{total}}"
+            "collapsed.source": "{{label}}: pokazano {{shown}} z {{total}}",
+            "area.cell": "Komórka osi: {{label}}",
+            "calibration.whole_pack": "{{pack}} (cały pakiet)",
+            "evidence.method.task": "zapisane przez zadanie w tle",
+            "reason.setting_absent": "tego ustawienia nie ma w opisie ustawień"
           }
         }
       }

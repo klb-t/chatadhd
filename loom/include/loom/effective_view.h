@@ -17,6 +17,7 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <filesystem>
 #include <map>
 #include <string>
@@ -98,6 +99,9 @@ Result<Overlay> profile_overlay(std::string_view kind, const Json& source, const
 // view: the shipped entries are composed without it and `issues` names it (code profile_overlay_unreadable). `extra_dirs`: further
 // memories, composed after root. A kind that view_kinds does not know is still composed (emergent): empty ROM layer, default policy.
 Result<Effective> effective(const std::filesystem::path& root, std::string_view kind, const std::vector<std::filesystem::path>& extra_dirs = {});
+// How many effective views this process composed (each reads the overlays): a render that composes one per row is what the counter lets a
+// test see (M1-K0: one unit_kinds per graph render, not one per settings field).
+std::uint64_t effective_loads();
 
 // Writing (the executors behind loom_view_write): put an operation into the overlay <root>/views/<overlay>.json, replacing an earlier operation
 // of the same (view, op, id[, as]); validates the operation. remove_ops takes back every operation of (view, id) from that overlay (the undo).

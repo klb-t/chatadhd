@@ -77,7 +77,7 @@ CODE_SUFFIXES = {'.cpp', '.cc', '.h', '.hpp', '.inc', '.py', '.ts', '.tsx', '.kt
 DATA_SUFFIXES = {'.pack', '.json'}
 # Keys of the data whose value names a setting (a string, a list of strings, or a dict whose values are settings).
 SETTING_KEYS = {'setting', 'model_setting', 'model_fallback_setting', 'model_keys', 'param_settings', 'x-setting',
-                'levels_setting', 'capability_setting', 'person_setting', 'batch_secret_key'}
+                'levels_setting', 'capability_setting', 'person_setting', 'batch_secret_key', 'page_setting'}
 # Keys of the data holding a dict whose KEYS are settings ({setting: accepted values}).
 SETTING_MAP_KEYS = {'when'}
 RUNNER_CONSUMERS = {'', 'loom/src/actions/runner.cpp'}

@@ -1861,7 +1861,10 @@ const Json& role_rows(Impl& c) {
       const auto choice = annotations::resolve_model(*c.env.cfg, c.env.root, policy_id, c.env.conv_id, std::string(), -1, c.env.db, ports, resolver);
       model = choice.model;
       via = choice.via;
-      reason = choice.reason;
+      if (model.empty()) {
+        reason = "no_model";  // the reason code; the policy's own sentence stays as the detail
+        if (!choice.reason.empty()) row["reason_detail"] = choice.reason;
+      }
       tier = choice.tier;
       flow = choice.flow;
     } else if (const Json reads = pol.value("today_reads", Json()); reads.is_array() && !reads.empty()) {
@@ -2841,10 +2844,12 @@ Result<Json> roles_resolved(const Env& env, const Json& request) {
   if (const std::string conv = json::get_string(request, "conv_id"); !conv.empty()) e.conv_id = conv;
   LOOM_TRY_ASSIGN(auto cat, Catalogue::open(e));
   LOOM_TRY_ASSIGN(auto rows, cat.roles());
-  return Json{{"schema", "loom.roles_resolved/1"},
-              {"conv_id", e.conv_id.empty() ? Json(nullptr) : Json(e.conv_id)},
-              {"roles", rows.value("roles", Json::array())},
-              {"resolver_opens", cat.resolver_opens()}};
+  Json out{{"schema", "loom.roles_resolved/1"},
+           {"conv_id", e.conv_id.empty() ? Json(nullptr) : Json(e.conv_id)},
+           {"roles", rows.value("roles", Json::array())},
+           {"resolver_opens", cat.resolver_opens()}};
+  if (rows.contains("issues")) out["issues"] = rows["issues"];  // what could not be read, said (the roles then show less, and why)
+  return out;
 }
 
 Result<Json> rom_override(const std::filesystem::path& root, const Json& request) {

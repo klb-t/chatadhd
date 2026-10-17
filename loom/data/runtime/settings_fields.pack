@@ -591,7 +591,8 @@
             "explain_simply",
             "depict",
             "narrate",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ]
         }
       },
@@ -703,7 +704,8 @@
             "knowledge.propose_semantics",
             "analysis.run",
             "guardian.model_read",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ],
           "technical_only": true
         }
@@ -1527,15 +1529,15 @@
         "group": "loom",
         "type": "integer",
         "has_default": true,
-        "description": "Message nodes per page of GET /api/graph/data?conv_id= when the request gives no limit param. Preset 5000 = the newest 5000 messages per page; the response then carries truncated, next_before and total_messages, and older pages are fetched with before=next_before (nothing is cut for good). 0 = no limit (the whole conversation in one answer). A request's own limit param always wins.",
+        "description": "Message nodes per page of GET /api/graph/data?conv_id= when the request gives no limit param. Preset 5000 = the newest 5000 messages per page; the response then carries truncated, next_before and total_messages, and older pages are fetched with before=next_before (nothing is cut for good). 0 = no limit (the whole conversation in one answer). A request's own limit param always wins. The graph navigator (graph.navigate) reads conversations, their messages and the background tasks in pages of this size too (a page never longer than the level's budget, navigator_children_limit); the totals still count all of them.",
         "human": {
           "label": {
             "pl": "Węzły na stronę danych grafu",
             "en": "Graph data nodes per page"
           },
           "why": {
-            "pl": "Ile najnowszych wiadomości na stronę dostaje widok grafu, gdy sam nie poda limitu; starsze dociąga dalej.",
-            "en": "How many newest messages per page the graph view gets when it names no limit itself; older ones are fetched further on."
+            "pl": "Ile najnowszych wiadomości na stronę dostaje widok grafu, gdy sam nie poda limitu; starsze dociąga dalej. Tyle też rozmów, wiadomości i zadań w tle czyta naraz nawigator grafu (nigdy więcej niż budżet poziomu).",
+            "en": "How many newest messages per page the graph view gets when it names no limit itself; older ones are fetched further on. The graph navigator reads that many conversations, messages and background tasks at a time too (never more than the budget of a level)."
           },
           "effect": {
             "pl": "Więcej = cięższe strony; 0 = bez cięcia. Nic nie jest tracone.",
@@ -1547,7 +1549,8 @@
           "group": "silnik",
           "subgroup": "indeks",
           "flows": [
-            "graph.overview"
+            "graph.overview",
+            "graph.navigate"
           ]
         }
       },
@@ -2021,7 +2024,8 @@
           "role": "intent.routing",
           "flows": [
             "input.route_intent",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ],
           "technical_only": true,
           "when_unset": {
@@ -2417,7 +2421,8 @@
           "role": "image.generate",
           "flows": [
             "depict",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ],
           "technical_only": true,
           "when_unset": {
@@ -2454,7 +2459,8 @@
           "role": "image.generate",
           "flows": [
             "depict",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ],
           "technical_only": true,
           "when_unset": {
@@ -2491,7 +2497,8 @@
           "role": "speech.synthesize",
           "flows": [
             "narrate",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ],
           "technical_only": true,
           "when_unset": {
@@ -2528,7 +2535,8 @@
           "role": "speech.synthesize",
           "flows": [
             "narrate",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ],
           "technical_only": true,
           "when_unset": {
@@ -2643,7 +2651,8 @@
             "guardian.annotate",
             "guardian.status",
             "guardian.model_read",
-            "ports.show"
+            "ports.show",
+            "roles.resolved"
           ],
           "technical_only": true,
           "when_unset": {

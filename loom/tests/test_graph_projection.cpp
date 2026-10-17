@@ -4,6 +4,8 @@
 #include <doctest/doctest.h>
 
 #include <filesystem>
+#include <functional>
+#include <map>
 #include <fstream>
 #include <set>
 
@@ -470,5 +472,317 @@ TEST_SUITE("graph_projection") {
       CHECK_FALSE(entry->at("phrases").at("pl").empty());
       CHECK_FALSE(entry->at("examples").at("en").empty());
     }
+  }
+
+  // ── review of M1-K0 ───────────────────────────────────────────────────────────────
+
+  TEST_CASE("a conversation's count is what opening it lists: its active messages") {
+    Fixture f;
+    const std::string conv = unwrap(f.rt->db().create_conv("Statuses")).id;
+    std::vector<std::string> ids;
+    for (int i = 0; i < 4; ++i) {
+      NewMessage m;
+      m.conv_id = conv;
+      m.role = "user";
+      m.text = "message " + std::to_string(i);
+      ids.push_back(unwrap(f.rt->db().create_msg(m)));
+    }
+    LOOM_REQUIRE_OK(f.rt->db().set_msg_status(ids[1], "deleted"));
+    LOOM_REQUIRE_OK(f.rt->db().set_msg_status(ids[2], "version"));
+    LOOM_REQUIRE_OK(f.rt->db().set_msg_status(ids[3], "excluded"));
+    const std::string gone = unwrap(f.rt->db().create_conv("All deleted")).id;
+    NewMessage m;
+    m.conv_id = gone;
+    m.role = "user";
+    m.text = "deleted";
+    LOOM_REQUIRE_OK(f.rt->db().set_msg_status(unwrap(f.rt->db().create_msg(m)), "deleted"));
+    const Json area = f.navigate(Json{{"focus", "area:context_projects"}});
+    const Json* row = child(area, "conv:" + conv.substr(2));
+    REQUIRE(row);
+    const Json opened = f.navigate(Json{{"focus", "conv:" + conv.substr(2)}});
+    CHECK(row->at("count") == opened.at("counts").at("total"));
+    CHECK(row->at("count") == 1);
+    const Json* empty = child(area, "conv:" + gone.substr(2));
+    REQUIRE(empty);
+    CHECK(empty->at("count") == 0);
+    CHECK(empty->at("has_children") == false);
+  }
+
+  TEST_CASE("hops 2: the budget is per level and parent, no orphans, and the counts are the first level's") {
+    Fixture f;
+    const Json nav = f.navigate(Json{{"focus", "area:profiles_settings"}, {"hops", 2}, {"limit", 5}});
+    std::set<std::string> first;
+    std::map<std::string, int> per_parent;
+    for (const auto& c : nav.at("children"))
+      if (c.at("depth") == 1) first.insert(c.at("address").get<std::string>());
+    CHECK(first.size() == 5);
+    for (const auto& c : nav.at("children")) {
+      if (c.at("depth") != 2) continue;
+      std::string parent;
+      for (const auto& e : nav.at("edges"))
+        if (e.at("src") == c.at("address") && first.count(e.at("dst").get<std::string>())) parent = e.at("dst");
+      INFO(c.at("address"));
+      CHECK_FALSE(parent.empty());  // every deeper node hangs under a node that is shown
+      per_parent[parent] += 1;
+    }
+    for (const auto& [parent, n] : per_parent) CHECK(n <= 5);
+    CHECK(nav.at("counts").at("shown") == 5);
+    CHECK(nav.at("counts").at("collapsed") == nav.at("counts").at("total").get<int>() - 5);
+    // a query looks at the first level: its total is the first level's matches
+    const Json q = f.navigate(Json{{"focus", "area:profiles_settings"}, {"hops", 2}, {"query", "model"}});
+    int matches = 0;
+    for (const auto& c : q.at("children")) matches += c.at("depth") == 1 ? 1 : 0;
+    CHECK(q.at("counts").at("total") == matches);
+    CHECK(q.at("counts").at("collapsed") == 0);
+  }
+
+  TEST_CASE("a large source never crowds the others out of a level: every source keeps a share, the collapsed are said per source") {
+    Fixture f;
+    const Json nav = f.navigate(Json{{"focus", "area:devices_io"}, {"limit", 20}});
+    std::map<std::string, int> by;
+    for (const auto& c : nav.at("children")) by[c.at("source").get<std::string>()] += 1;
+    CHECK(by["device"] > 0);
+    CHECK(by["binding"] > 0);
+    CHECK(nav.at("counts").at("shown") == 20);
+    CHECK(nav.at("counts").at("by_source").contains("binding"));
+    CHECK(nav.at("counts").at("by_source").at("binding").at("shown") == by["binding"]);
+  }
+
+  TEST_CASE("a fresh install: nothing is yours, a preset kept in config.json says so, every chip has words") {
+    Fixture f;
+    const Json r = unwrap(f.rt->actions().invoke("settings.resolved", Json{{"lang", "pl"}}));
+    int yours = 0, preset_copies = 0;
+    for (const auto& g : r.at("groups"))
+      for (const auto& field : g.at("fields")) {
+        const Json prov = field.at("provenance");
+        INFO(field.at("key"));
+        CHECK_FALSE(prov.at("chip").at("label").get<std::string>().empty());
+        const std::string scope = prov.at("scope");
+        if (prov.value("same_as_preset", false)) {
+          ++preset_copies;
+          CHECK(prov.at("chip").at("label") == "preset zapisany w Twoich ustawieniach");
+          CHECK(field.at("evidence").at("class") == "declared");
+        } else if (scope != "installation" && scope != "none") {
+          ++yours;
+        }
+      }
+    CHECK(yours == 0);
+    MESSAGE("presets kept in config.json: " << preset_copies);
+  }
+
+  TEST_CASE("a field whose reader acts on a preset never says it is not set: the profile's preset, or what the code does") {
+    Fixture f;
+    const Json doc = unwrap(settings_fields(f.td.path()));
+    const Json r = unwrap(f.rt->actions().invoke("settings.resolved", Json{{"lang", "pl"}}));
+    std::map<std::string, Json> by_key;
+    for (const auto& g : r.at("groups"))
+      for (const auto& field : g.at("fields")) by_key[field.at("key").get<std::string>()] = field;
+    int presets = 0, in_code = 0;
+    for (const auto& d : doc.at("fields")) {
+      const std::string key = d.at("key");
+      if (!by_key.count(key)) continue;
+      const Json& field = by_key.at(key);
+      INFO(key);
+      if (d.contains("preset_value")) {
+        ++presets;
+        CHECK(field.at("value") == d.at("preset_value"));
+        CHECK(field.at("provenance").at("scope") == "installation");
+      }
+      if (d.value("human", Json::object()).contains("when_unset") && field.at("value").is_null()) {
+        ++in_code;
+        CHECK(field.at("value_human") == d.at("human").at("when_unset").at("pl"));
+        CHECK(field.at("provenance").at("chip").at("id") == "code_preset");
+      }
+      if (d.contains("preset_value") || d.value("human", Json::object()).contains("when_unset")) CHECK(field.at("value_human") != "nie ustawiono");
+    }
+    CHECK(presets > 0);
+    CHECK(in_code > 0);
+    CHECK(by_key.at("tool_loop_max_steps").at("value") == unwrap(RuntimeProfile::builtin("tool_loop")).values().at("max_steps"));
+    CHECK(by_key.at("loom_zip_max_total_bytes").at("value_human").get<std::string>().find("GB") != std::string::npos);  // bytes in words
+    // a profile value has an edit rule and its two levels (the shipped preset, your overlay)
+    const Json& pv = by_key.at("worker/batch_threshold");
+    CHECK(pv.at("edit_rule") == "optional");
+    CHECK(pv.at("inheritance").size() == 2);
+  }
+
+  TEST_CASE("a card offers what can be done in words, with the rules' decision; a ROM item offers your copy") {
+    Fixture f;
+    for (const char* address : {"rom:rescue_mode", "setting:temperature"}) {
+      const Json card = unwrap(f.rt->actions().invoke("graph.card", Json{{"address", address}, {"lang", "pl"}}));
+      INFO(address);
+      REQUIRE_FALSE(card.at("actions").empty());
+      for (const auto& a : card.at("actions")) {
+        CHECK_FALSE(a.at("label").get<std::string>().empty());
+        CHECK(a.at("decision").is_string());
+      }
+    }
+    const Json rom = unwrap(f.rt->actions().invoke("graph.card", Json{{"address", "rom:rescue_mode"}, {"lang", "pl"}}));
+    bool copy = false;
+    for (const auto& a : rom.at("actions"))
+      if (a.at("id") == "rom.override") {
+        copy = true;
+        CHECK(a.at("decision") == "needs_confirmation");
+        CHECK(a.at("label") == "Przesłoń element ROM swoją kopią");
+      }
+    CHECK(copy);
+  }
+
+  TEST_CASE("evidence in words: a model's reply or an import is never what you said; an unanswered slot is a question") {
+    Fixture f;
+    const std::string conv = unwrap(f.rt->db().create_conv("Words")).id;
+    for (const char* role : {"user", "assistant"}) {
+      NewMessage m;
+      m.conv_id = conv;
+      m.role = role;
+      m.text = std::string(role) + " text";
+      unwrap(f.rt->db().create_msg(m));
+    }
+    const Json nav = f.navigate(Json{{"focus", "conv:" + conv.substr(2)}, {"lang", "pl"}});
+    for (const auto& c : nav.at("children")) {
+      const std::string human = c.at("evidence").at("human");
+      if (c.at("label").get<std::string>().rfind("Model:", 0) == 0) {
+        CHECK(human == "odpowiedź modelu");
+        CHECK(human != "powiedziałeś lub zrobiłeś");
+      } else {
+        CHECK(c.at("label").get<std::string>().rfind("Ty:", 0) == 0);
+        CHECK(human == "powiedziałeś to");
+      }
+    }
+    const std::string imported = unwrap(f.rt->db().create_conv("Imported")).id;
+    ConvPatch patch;
+    patch.source = "claude";
+    LOOM_REQUIRE_OK(f.rt->db().update_conv(imported, patch));
+    NewMessage m;
+    m.conv_id = imported;
+    m.role = "user";
+    m.text = "imported text";
+    unwrap(f.rt->db().create_msg(m));
+    const Json in = f.navigate(Json{{"focus", "conv:" + imported.substr(2)}, {"lang", "pl"}});
+    REQUIRE(in.at("children").size() == 1);
+    CHECK(in.at("children").at(0).at("evidence").at("human").get<std::string>().rfind("import (claude", 0) == 0);
+    const Json you = f.navigate(Json{{"focus", "party:self"}, {"lang", "pl"}});
+    const Json* slot = child(you, "party:self/identity.description");
+    REQUIRE(slot);
+    CHECK(slot->at("evidence").at("human") == "pytanie z wywiadu — bez odpowiedzi");
+    // the preferences are named apart from the interview's slots, their values in words
+    const Json* language = child(you, "preference:language");
+    REQUIRE(language);
+    CHECK(language->at("label") != child(you, "party:self/communication.language")->at("label"));
+    CHECK(child(you, "preference:style")->at("value_human") == "neutralny");
+  }
+
+  TEST_CASE("every reason the graph gives has words, and the sources say their names") {
+    Fixture f;
+    std::vector<Json> answers;
+    const Json root = f.navigate(Json{{"lang", "pl"}});
+    answers.push_back(root);
+    for (const auto& c : root.at("children")) answers.push_back(f.navigate(Json{{"focus", c.at("address")}, {"lang", "pl"}}));
+    answers.push_back(unwrap(f.rt->actions().invoke("roles.resolved", Json{{"lang", "pl"}})));
+    answers.push_back(unwrap(f.rt->actions().invoke("settings.resolved", Json{{"lang", "pl"}})));
+    int reasons = 0;
+    std::function<void(const Json&)> walk = [&](const Json& v) {
+      if (v.is_object()) {
+        for (const auto& item : v.items()) {
+          const std::string k = item.key();
+          if (item.value().is_string() && (k == "count_unknown_reason" || k == "per_million_unknown_reason" || k == "last_7d_unknown_reason")) {
+            ++reasons;
+            const std::string human = k == "count_unknown_reason" ? v.value("count_unknown_human", "") : v.value(k.substr(0, k.size() - 6) + "human", "");
+            INFO(k << " = " << item.value());
+            CHECK_FALSE(human.empty());
+            CHECK(human != item.value().get<std::string>());
+          }
+          if (k == "reason" && item.value().is_string() && v.contains("reason_human")) {
+            ++reasons;
+            INFO(item.value());
+            CHECK(v.at("reason_human") != item.value());
+          }
+          walk(item.value());
+        }
+      } else if (v.is_array()) {
+        for (const auto& x : v) walk(x);
+      }
+    };
+    for (const auto& a : answers) walk(a);
+    CHECK(reasons > 0);
+    for (const auto& a : answers)
+      for (const auto& u : a.value("unknown", Json::array())) CHECK(u.at("source_label") != u.at("source"));
+  }
+
+  TEST_CASE("flows say what they are for in the language asked; steps and edge kinds are named in words, never by their ids") {
+    Fixture f;
+    const Json pl = f.navigate(Json{{"focus", "area:flows"}, {"lang", "pl"}, {"limit", 0}});
+    for (const auto& c : pl.at("children")) {
+      INFO(c.at("address"));
+      CHECK_FALSE(c.at("why").get<std::string>().empty());
+      CHECK_FALSE(c.contains("no_translation"));  // every flow has its Polish words
+    }
+    const Json de = f.navigate(Json{{"focus", "flow:chat.send"}, {"lang", "de"}});
+    CHECK(de.at("focus").at("why").is_string());
+    const Json flow_de = unwrap(f.rt->actions().invoke("graph.card", Json{{"address", "flow:chat.send"}, {"lang", "de"}}));
+    REQUIRE(flow_de.contains("no_translation"));  // a language without its words says which one is shown
+    CHECK(flow_de.at("no_translation").at("shown_lang") == "en");
+    const Json steps = f.navigate(Json{{"focus", "flow:import.file"}, {"lang", "pl"}});
+    const Json catalogue = unwrap(RuntimeProfile::builtin("actions")).values().at("actions");
+    for (const auto& c : steps.at("children")) CHECK_FALSE(catalogue.contains(c.at("label").get<std::string>()));  // a title, not an action id
+    const Json persp = f.navigate(Json{{"focus", "area:perspectives"}, {"lang", "pl"}, {"limit", 0}});
+    int kinds = 0;
+    for (const auto& c : persp.at("children"))
+      if (c.at("source") == "edge_kind") {
+        ++kinds;
+        CHECK(c.at("label") != c.at("address").get<std::string>().substr(10));
+      }
+    CHECK(kinds > 0);
+  }
+
+  TEST_CASE("automations, background tasks and items in calibration are listed; tools and the agent are not empty") {
+    Fixture f;
+    const Json root = f.navigate(Json{{"lang", "pl"}});
+    const Json autos = f.navigate(Json{{"focus", "area:automations"}, {"lang", "pl"}});
+    CHECK(child(autos, "automation:semantic_analysis"));
+    CHECK(child(autos, "automation:semantic_analysis")->contains("value_human"));
+    const Json exp = f.navigate(Json{{"focus", "area:experiments"}, {"lang", "pl"}, {"limit", 0}});
+    CHECK(child(exp, "calibration:graph/entry.pack"));
+    std::int64_t counter = -1;
+    for (const auto& c : root.at("children"))
+      if (c.at("address") == "area:experiments") counter = c.at("counts").at("calibration_items").at("value");
+    CHECK(counter == exp.at("counts").at("total"));  // the counter and the list are one walk
+    const Json tools = f.navigate(Json{{"focus", "area:tools_agent"}, {"lang", "pl"}, {"limit", 0}});
+    CHECK(child(tools, "flow:agent.run"));
+    CHECK(child(tools, "setting:tool_loop_max_steps"));
+    CHECK(child(tools, "tool_kind:mcp"));
+    // shown here too, its own place stays its parent
+    const Json card = unwrap(f.rt->actions().invoke("graph.card", Json{{"address", "flow:agent.run"}}));
+    CHECK(card.at("parent") == "area:flows");
+  }
+
+  TEST_CASE("a group, a card and settings.resolved compose the unit kinds once per render, not once per field") {
+    Fixture f;
+    for (const Json& req : {Json{{"focus", "group:interfejs"}}, Json{{"focus", "area:profiles_settings"}}}) {
+      const auto before = views::effective_loads();
+      (void)f.navigate(req);
+      const auto loads = views::effective_loads() - before;
+      MESSAGE("navigate " << req.dump() << ": " << loads << " effective view(s)");
+      CHECK(loads < 10);
+    }
+    const auto before = views::effective_loads();
+    const Json all = unwrap(f.rt->actions().invoke("settings.resolved", Json::object()));
+    const auto loads = views::effective_loads() - before;
+    MESSAGE("settings.resolved: " << loads << " effective view(s) for " << all.at("counts").at("fields") << " fields");
+    CHECK(loads < all.at("counts").at("fields").get<std::uint64_t>() / 4);
+    const auto card_before = views::effective_loads();
+    (void)unwrap(f.rt->actions().invoke("graph.card", Json{{"address", "setting:temperature"}}));
+    CHECK(views::effective_loads() - card_before < 10);
+  }
+
+  TEST_CASE("find_address: names, aliases and stems, never a part of another word") {
+    Fixture f;
+    CHECK(unwrap(projection::find_address(f.env("pl"), "ustawień")) == "area:profiles_settings");
+    CHECK(unwrap(projection::find_address(f.env("pl"), "rozmowy")) == "area:context_projects");
+    CHECK(unwrap(projection::find_address(f.env("pl"), "role")) == "area:providers_connectors");
+    CHECK(unwrap(projection::find_address(f.env("pl"), "przepływów")) == "area:flows");
+    CHECK(unwrap(projection::find_address(f.env("pl"), "rzeczy", true)).empty());
+    CHECK(unwrap(projection::find_address(f.env("pl"), "szczegóły", true)).empty());
+    CHECK(unwrap(projection::find_address(f.env("en"), "more detail about the second point", true)).empty());
+    CHECK(unwrap(projection::find_address(f.env("pl"), "przeczyta")).empty() == false);  // the word itself still finds its node
   }
 }

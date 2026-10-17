@@ -184,6 +184,105 @@
       "key": "guardian_model",
       "reason": "the producer name of the Secretary's model reading (record_run(..., \"guardian_model\", ...), producer == \"guardian_model\"), not a read of the setting; the setting is read through guardian.pack models.policies.guardian",
       "count": 3
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "auto_title",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 2
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "cleanup",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 2
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "emergent_actions",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 2
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "environments_auto_sync",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 1
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "guardian_method",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 1
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "loom_fts_background_build",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 1
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "loom_task_workers",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 1
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "model_registry_autorefresh",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 1
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "semantic_analysis",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 2
+    },
+    {
+      "file": "loom/data/runtime/graph_sources.pack",
+      "key": "usage_ledger_compaction",
+      "actions": [
+        "graph.navigate"
+      ],
+      "reason": "the setting that switches an item of 'What runs without being asked' (source automation): the navigator shows its value, as it shows every setting of a group; showing a value does not change what graph.navigate does",
+      "count": 1
+    },
+    {
+      "file": "loom/src/graph/projection.cpp",
+      "key": "navigator_children_limit",
+      "actions": [
+        "roles.resolved"
+      ],
+      "reason": "projection.cpp carries the five graph actions; the budget of a level is read by graph.navigate, never by roles.resolved",
+      "count": 2
     }
   ],
   "read_elsewhere": [],
