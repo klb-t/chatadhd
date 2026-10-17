@@ -10,6 +10,7 @@
 #include <mutex>
 #include <set>
 
+#include "graph/projection.h"
 #include "loom/action_element.h"
 #include "loom/action_emergent.h"
 #include "loom/guardian.h"
@@ -245,6 +246,8 @@ struct Cand {
   double score = 0;
   Json emergent = nullptr;  // a definition the catalogue could grow by (action_emergent.h); the command writes it
   std::string check_arg;    // a command that is kept only when the text of this argument is itself a command (help.how_to: "how do I ...")
+  std::string graph_arg;    // a command that is kept only when the text of this argument names a node of the graph projection (M1-K0)
+  bool graph_exact = true;  // graph_match exact (the whole name, an alias, the id) or words
 };
 
 struct Conv {
@@ -792,6 +795,8 @@ std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text, bo
     c.action = json::get_string(command, "action");
     c.score = 1.05;  // a scoped statement outranks the plain settings patterns that would swallow its tail
     c.check_arg = json::get_string(command, "check_arg");
+    c.graph_arg = json::get_string(command, "graph_arg");
+    c.graph_exact = json::get_string(command, "graph_match", "exact") != "words";
     if (const std::string effect = json::get_string(command, "effect"); !effect.empty()) c.args["effect"] = effect;
     if (const Json* fixed = json::find(command, "set"); fixed && fixed->is_object())
       for (auto it = fixed->begin(); it != fixed->end(); ++it) c.args[it.key()] = it.value();
@@ -1585,6 +1590,19 @@ Result<Json> route_with(Runtime& rt, Data& d, const Json& request) {
   // P34: read before any routing call, so a sentence the local rule reader settles does not pay for one (model.skip_when_rule_command).
   const bool inner = json::get_bool(request, "no_howto", false);
   auto rule_cands = parse_rule_commands(d, text, inner);
+  // A command whose words must name a node of the graph ("wejdź w ustawienia") that names nothing is not a command: the sentence stays
+  // a message ("przejdź do rzeczy"), and the routing model is asked as for any other message.
+  rule_cands.erase(std::remove_if(rule_cands.begin(), rule_cands.end(),
+                                  [&](const Cand& rc) {
+                                    if (rc.graph_arg.empty()) return false;
+                                    const std::string said = json::get_string(rc.args, rc.graph_arg);
+                                    if (said.empty()) return false;
+                                    const projection::Env env = projection::env_of(rt, Json{{"lang", rc.lang.empty() ? json::get_string(request, "lang", "en") : rc.lang}});
+                                    auto found = projection::find_address(env, said, rc.graph_exact);
+                                    if (!found) log::write(log::Level::Debug, "route", "graph_arg '" + said + "' not looked up: " + found.error().message);
+                                    return !found || found->empty();
+                                  }),
+                   rule_cands.end());
   rule_cands.erase(std::remove_if(rule_cands.begin(), rule_cands.end(),
                                   [&](const Cand& rc) {
                                     if (rc.check_arg.empty()) return false;

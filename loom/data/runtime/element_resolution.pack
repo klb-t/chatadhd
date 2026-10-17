@@ -37,7 +37,13 @@
       {"id": "projection_view", "prefix": "view:", "source": "projection", "class": "view"},
       {"id": "projection_binding", "prefix": "binding:", "source": "projection", "class": "gesture_binding"},
       {"id": "projection_env", "prefix": "env:", "source": "projection", "class": "environment"},
-      {"id": "projection_tool_source", "prefix": "tool_source:", "source": "projection", "class": "tool_source"}
+      {"id": "projection_tool_source", "prefix": "tool_source:", "source": "projection", "class": "tool_source"},
+      {"id": "projection_levels", "prefix": "levels:", "source": "projection", "class": "settings_group"},
+      {"id": "projection_tool_kind", "prefix": "tool_kind:", "source": "projection", "class": "tool_source_kind"},
+      {"id": "projection_tools_also", "prefix": "also:", "source": "projection", "class": "graph_link"},
+      {"id": "projection_automation", "prefix": "automation:", "source": "projection", "class": "automation"},
+      {"id": "projection_task", "prefix": "task:", "source": "projection", "class": "background_task"},
+      {"id": "projection_calibration", "prefix": "calibration:", "source": "projection", "class": "calibration_item"}
     ],
     "setting": {"class": "settings_field", "source": "setting"},
     "node_kind_classes": {"blob": "file", "message": "message", "text_form": "text_form", "image_form": "image_form", "audio_form": "audio_form", "video_form": "video_form", "content": "content", "action_run": "action_run", "proposal": "emergent_proposal"},

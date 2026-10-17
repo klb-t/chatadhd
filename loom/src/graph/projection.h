@@ -22,6 +22,7 @@
 
 #include <cstdint>
 #include <filesystem>
+#include <map>
 #include <memory>
 #include <optional>
 #include <set>
@@ -82,25 +83,40 @@ class Catalogue {
     Json hidden = Json::array();           // [{source, id, by?}] entries hidden by an overlay
     Json pages = Json::object();           // {source: {limit, offset, next_offset?, total}} of paged sources
     std::size_t sources_read = 0;          // child sources that answered (a total of 0 from them is a known 0)
+    std::map<std::string, std::int64_t> totals;  // source id -> its children here (paged sources: their full total)
   };
   // The direct children of an address ("" = the root). `paging`: {offset?, limit?} for paged sources.
   Result<Children> children(const std::string& parent, const Json& paging = Json::object());
   // Every node of one source that is read whole (empty for a paged source or an unknown id).
   Result<std::vector<Json>> children_of_source(const std::string& source_id);
-  // Every edge of the sources that are read whole (paged sources contribute the nodes read so far).
-  Result<std::vector<Json>> edges();
+  // Every edge of the sources that are read whole (paged sources contribute the nodes read so far). A source that cannot be read adds
+  // {source, reason} to `unknown` (when given).
+  Result<std::vector<Json>> edges(Json* unknown = nullptr);
+  // The same for the sources a card of `address` needs: its own source and those whose declared edges (graph_sources edges {to|from})
+  // name its source or its prefix; never every source.
+  Result<std::vector<Json>> edges_touching(const std::string& address, Json* unknown = nullptr);
 
   // The model roles resolved once for this render: {roles: [{id, label, why, status, policy, model, via, tier, chain, flow, mode?, cost,
   // flows_reading, settings}]} (the policy chain through this render's Resolver and ports profile).
   Result<Json> roles();
   // The meaning of an edge kind in the language of the render (graph_views edge_kinds), or null when no kind describes it.
   Json edge_meaning(const std::string& kind);
+  // The name of an edge kind in the language of the render (graph_views edge_kinds label), else the kind's id.
+  Json edge_label(const std::string& kind);
+  // A setting's value for this render: through the scope chain (the conversation in view, its units, rules), else the person level;
+  // null when no level gives one. Read once per key and render.
+  Json setting(const std::string& key);
+  // Why something is unknown, in the words of the screen (reason.<code>); the code itself when no word says it.
+  std::string reason_words(const std::string& reason);
+  // The name of a source in the language of the render (its label), else its id.
+  std::string source_label(const std::string& id);
   // How many times this render opened the scope-chain Resolver (0 or 1).
   std::size_t resolver_opens() const;
 
   struct Impl;
 
  private:
+  Result<std::vector<Json>> edges_of(const std::set<std::string>* only, Json* unknown);
   std::shared_ptr<Impl> impl_;
 };
 
@@ -109,9 +125,11 @@ class Catalogue {
 // scenario, unknown. Error (the message is the reason): database_unavailable, several_profiles_name_one, onboarding_unavailable.
 Result<std::vector<Json>> profile_slots(const Env& env);
 
-// The address a sentence names: an address or database id that a source knows (canonical form), else the area or node whose name or id
-// is the words (areas first, then the sources read whole: exact name, then a name that contains the words). "" = nothing has that name.
-Result<std::string> find_address(const Env& env, const std::string& words);
+// The address a sentence names: an address or database id that a source knows (canonical form), else an alias of the data
+// (graph_sources aliases: rozmowy -> the conversations), else the area or node whose name or id is the words (areas first, then the
+// sources read whole), compared word by word with stems (graph_sources match: ustawień = ustawienia); unless exact_only, then a name
+// that has every word of the sentence as a whole word. "" = nothing has that name (never a part of another word: rzeczy is not przeczyta).
+Result<std::string> find_address(const Env& env, const std::string& words, bool exact_only = false);
 
 // graph.navigate {focus?, perspectives?[], hops=1, limit=navigator_children_limit, query?, offset?, lang, conv_id?}
 //  -> {schema, focus{address,label,kind,evidence,provenance{layer,layers[]}}, children[...], edges[{src,dst,kind,meaning}], breadcrumbs[],

@@ -122,6 +122,42 @@
         }
       },
       {
+        "id": "levels",
+        "prefix": "levels:",
+        "class": "settings_group",
+        "reader": "static.nodes",
+        "label": {
+          "en": "Levels of the settings",
+          "pl": "Poziomy ustawień"
+        },
+        "parent": {
+          "area": "profiles_settings"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "nodes": [
+            {
+              "id": "scope_chain",
+              "label": {
+                "en": "Levels (where a value comes from)",
+                "pl": "Poziomy (skąd jest wartość)"
+              },
+              "why": {
+                "en": "Every value comes from one level of this chain: the preset, you, a project, this conversation… The more specific level wins.",
+                "pl": "Każda wartość pochodzi z jednego poziomu tego łańcucha: preset, Ty, projekt, ta rozmowa… Wygrywa poziom bardziej szczegółowy."
+              },
+              "children_of": "scope"
+            }
+          ]
+        },
+        "description": "One node that holds the levels of the scope chain, so the settings area shows the groups of fields and, apart, the levels a value can come from."
+      },
+      {
         "id": "scope",
         "prefix": "scope:",
         "class": "scope_level",
@@ -131,7 +167,7 @@
           "pl": "Poziomy łańcucha zakresów"
         },
         "parent": {
-          "area": "profiles_settings"
+          "node": "levels:scope_chain"
         },
         "contain_edge": "part_of",
         "edges": [
@@ -317,9 +353,8 @@
         "contain_edge": "part_of",
         "edges": [
           {
-            "kind": "applies_to_flow",
-            "to": "flow",
-            "status": "planned"
+            "kind": "same_as",
+            "to": "party:self/<slot>"
           }
         ],
         "epistemic_default": {
@@ -340,21 +375,55 @@
         },
         "labels": {
           "style": {
-            "en": "Style of the answers",
-            "pl": "Styl odpowiedzi"
+            "en": "Preference: style of the answers",
+            "pl": "Preferencja: styl odpowiedzi"
           },
           "length": {
-            "en": "Length of the answers",
-            "pl": "Długość odpowiedzi"
+            "en": "Preference: length of the answers",
+            "pl": "Preferencja: długość odpowiedzi"
           },
           "language": {
-            "en": "Language",
-            "pl": "Język"
+            "en": "Preference: language",
+            "pl": "Preferencja: język"
           },
           "adhd_needs": {
-            "en": "Attention needs",
-            "pl": "Potrzeby uwagi"
+            "en": "Preference: attention needs",
+            "pl": "Preferencja: potrzeby uwagi"
           }
+        },
+        "value_meanings": {
+          "style": {
+            "neutral": {
+              "en": "neutral",
+              "pl": "neutralny"
+            }
+          },
+          "length": {
+            "concise": {
+              "en": "concise",
+              "pl": "zwięźle"
+            }
+          },
+          "language": {
+            "auto": {
+              "en": "automatic (the language you write in)",
+              "pl": "automatycznie (język, w którym piszesz)"
+            },
+            "pl": {
+              "en": "Polish",
+              "pl": "polski"
+            },
+            "en": {
+              "en": "English",
+              "pl": "angielski"
+            }
+          }
+        },
+        "slot_of": {
+          "style": "communication.style",
+          "length": "communication.length",
+          "language": "communication.language",
+          "adhd_needs": "communication.attention"
         }
       },
       {
@@ -670,29 +739,6 @@
         "description": "The declared views (graph_views.pack view_declarations with the view overlays)."
       },
       {
-        "id": "binding",
-        "prefix": "binding:",
-        "class": "gesture_binding",
-        "reader": "views.effective",
-        "label": {
-          "en": "Input bindings",
-          "pl": "Przypisania wejść"
-        },
-        "parent": {
-          "area": "devices_io"
-        },
-        "contain_edge": "part_of",
-        "edges": [],
-        "epistemic_default": {
-          "class": "declared",
-          "confidence": 1.0
-        },
-        "params": {
-          "kind": "interaction_bindings"
-        },
-        "description": "Which key, gesture or controller input does what (graph_views.pack interaction_bindings with the view overlays)."
-      },
-      {
         "id": "device",
         "prefix": "device:",
         "class": "device",
@@ -715,6 +761,29 @@
           "pointer": "/devices"
         },
         "description": "The input/output devices the app describes (graph/devices.pack); descriptions only, no hardware is touched."
+      },
+      {
+        "id": "binding",
+        "prefix": "binding:",
+        "class": "gesture_binding",
+        "reader": "views.effective",
+        "label": {
+          "en": "Input bindings",
+          "pl": "Przypisania wejść"
+        },
+        "parent": {
+          "area": "devices_io"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "kind": "interaction_bindings"
+        },
+        "description": "Which key, gesture or controller input does what (graph_views.pack interaction_bindings with the view overlays)."
       },
       {
         "id": "env",
@@ -741,6 +810,209 @@
         "description": "The runtimes the app runs in (graph/environments.pack runtimes: android, server, cli, web)."
       },
       {
+        "id": "automation",
+        "prefix": "automation:",
+        "class": "automation",
+        "reader": "automations.declared",
+        "label": {
+          "en": "What runs without being asked",
+          "pl": "Co działa samo"
+        },
+        "parent": {
+          "area": "automations"
+        },
+        "contain_edge": "part_of",
+        "edges": [
+          {
+            "kind": "switched_by",
+            "to": "setting:<setting>"
+          },
+          {
+            "kind": "runs",
+            "to": "flow:<flow>"
+          }
+        ],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "items": [
+            {
+              "id": "semantic_analysis",
+              "label": {
+                "en": "Background analysis of messages",
+                "pl": "Analiza wiadomości w tle"
+              },
+              "why": {
+                "en": "Every new message waits for the analysis (entities, topics, relations); the analysis profile chooses the mode: batch, one by one with a model, or local rules.",
+                "pl": "Każda nowa wiadomość czeka na analizę (encje, tematy, relacje); profil analizy wybiera tryb: zbiorczo, pojedynczo modelem albo lokalnymi regułami."
+              },
+              "setting": "semantic_analysis",
+              "flow": "semantic.analyse"
+            },
+            {
+              "id": "guardian",
+              "label": {
+                "en": "The guardian reads every message",
+                "pl": "Strażnik czyta każdą wiadomość"
+              },
+              "why": {
+                "en": "After each message the guardian looks for corrections and clarifications and keeps its representation beside the messages; it never changes them.",
+                "pl": "Po każdej wiadomości strażnik szuka poprawek i doprecyzowań i prowadzi swój obraz obok wiadomości; nigdy ich nie zmienia."
+              },
+              "setting": "guardian_method",
+              "flow": "guardian.observe"
+            },
+            {
+              "id": "auto_title",
+              "label": {
+                "en": "A title after the first message",
+                "pl": "Tytuł po pierwszej wiadomości"
+              },
+              "why": {
+                "en": "A new conversation gets a title from its first message, without a model call.",
+                "pl": "Nowa rozmowa dostaje tytuł z pierwszej wiadomości, bez wywołania modelu."
+              },
+              "setting": "auto_title",
+              "flow": "chat.send"
+            },
+            {
+              "id": "search_index",
+              "label": {
+                "en": "The search index built in the background",
+                "pl": "Indeks wyszukiwania budowany w tle"
+              },
+              "why": {
+                "en": "The full-text index of the messages is filled in portions in the background, so a search never waits for it.",
+                "pl": "Indeks pełnotekstowy wiadomości wypełnia się porcjami w tle, więc wyszukiwanie na niego nie czeka."
+              },
+              "setting": "loom_fts_background_build",
+              "flow": "search.find"
+            },
+            {
+              "id": "task_workers",
+              "label": {
+                "en": "Threads of the background tasks",
+                "pl": "Wątki zadań w tle"
+              },
+              "why": {
+                "en": "Long work (imports, archives, batches) runs as background tasks; this many at a time.",
+                "pl": "Długie prace (importy, archiwa, partie) idą jako zadania w tle; tyle naraz."
+              },
+              "setting": "loom_task_workers",
+              "flow": "tasks.list"
+            },
+            {
+              "id": "cleanup",
+              "label": {
+                "en": "Housekeeping at start",
+                "pl": "Porządki przy starcie"
+              },
+              "why": {
+                "en": "When the app starts it removes abandoned upload parts and, if you allow it, blobs nothing names.",
+                "pl": "Przy starcie aplikacja usuwa porzucone części wysyłek i, jeśli pozwolisz, bloby, których nic nie wskazuje."
+              },
+              "setting": "cleanup"
+            },
+            {
+              "id": "usage_compaction",
+              "label": {
+                "en": "Compaction of the usage ledger",
+                "pl": "Porządkowanie księgi zużycia"
+              },
+              "why": {
+                "en": "Old completed operations of the usage ledger are folded by the compaction profile; never a spending limit.",
+                "pl": "Stare zakończone operacje księgi zużycia są składane według profilu porządkowania; to nigdy nie jest limit wydatków."
+              },
+              "setting": "usage_ledger_compaction",
+              "flow": "usage.compact"
+            },
+            {
+              "id": "model_list",
+              "label": {
+                "en": "The model list fetched when a price is needed",
+                "pl": "Lista modeli pobierana, gdy potrzebna cena"
+              },
+              "why": {
+                "en": "An estimate that needs a price and finds the model list empty may fetch the provider's public list once.",
+                "pl": "Wycena, która potrzebuje ceny, a lista modeli jest pusta, może raz pobrać publiczną listę dostawcy."
+              },
+              "setting": "model_registry_autorefresh",
+              "flow": "models.refresh"
+            },
+            {
+              "id": "environments_sync",
+              "label": {
+                "en": "Environments refreshed before an answer",
+                "pl": "Środowiska odświeżane przed odpowiedzią"
+              },
+              "why": {
+                "en": "Before answering a question about environments their nodes are brought up to date from their sources.",
+                "pl": "Przed odpowiedzią na pytanie o środowiska ich węzły są uaktualniane ze źródeł."
+              },
+              "setting": "environments_auto_sync",
+              "flow": "environments.sync"
+            },
+            {
+              "id": "emergent_actions",
+              "label": {
+                "en": "New actions proposed from your conversations",
+                "pl": "Nowe działania proponowane z rozmów"
+              },
+              "why": {
+                "en": "A command no action understands, or a sequence you repeat, is offered as a new action — never made silently.",
+                "pl": "Polecenie, którego żadne działanie nie rozumie, albo powtarzana sekwencja jest proponowana jako nowe działanie — nigdy po cichu."
+              },
+              "setting": "emergent_actions",
+              "flow": "actions.define"
+            }
+          ]
+        },
+        "description": "The work the app does on its own (after each message, at start, in the background), each with the setting that switches it and the flow it runs; its value is that setting's value, through the scope chain. A list of examples: an overlay may add more."
+      },
+      {
+        "id": "task",
+        "prefix": "task:",
+        "class": "background_task",
+        "reader": "db.tasks",
+        "label": {
+          "en": "Background tasks",
+          "pl": "Zadania w tle"
+        },
+        "parent": {
+          "area": "automations"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "observed",
+          "confidence": 1.0
+        },
+        "page_setting": "loom_graph_data_limit",
+        "description": "The rows of loom_tasks (imports, archives, batches), newest first, paged by loom_graph_data_limit; each with its kind and status."
+      },
+      {
+        "id": "calibration",
+        "prefix": "calibration:",
+        "class": "calibration_item",
+        "reader": "calibration.items",
+        "label": {
+          "en": "Items in calibration",
+          "pl": "Elementy w kalibracji"
+        },
+        "parent": {
+          "area": "experiments"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": null
+        },
+        "description": "Every entry marked as calibration — research in progress whose values may still change: in the runtime profiles, and the packs whose whole content is calibration (graph/*.pack); the same walk as the counter calibration.items."
+      },
+      {
         "id": "tool_source",
         "prefix": "tool_source:",
         "class": "tool_source",
@@ -762,6 +1034,64 @@
           "key": "tool_sources"
         },
         "description": "The tool sources you added (config tool_sources: MCP servers and others), each with its trust."
+      },
+      {
+        "id": "tool_kind",
+        "prefix": "tool_kind:",
+        "class": "tool_source_kind",
+        "reader": "profile.items",
+        "label": {
+          "en": "Kinds of tool sources",
+          "pl": "Rodzaje źródeł narzędzi"
+        },
+        "parent": {
+          "area": "tools_agent"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "domain": "tool_sources",
+          "pointer": "/kinds"
+        },
+        "description": "The kinds of tool source the app can talk to (runtime/tool_sources.pack kinds: mcp ...)."
+      },
+      {
+        "id": "tools_also",
+        "prefix": "also:",
+        "class": "graph_link",
+        "reader": "nodes.also",
+        "label": {
+          "en": "The agent's flows and settings",
+          "pl": "Przepływy i ustawienia agenta"
+        },
+        "parent": {
+          "area": "tools_agent"
+        },
+        "contain_edge": "part_of",
+        "edges": [],
+        "epistemic_default": {
+          "class": "declared",
+          "confidence": 1.0
+        },
+        "params": {
+          "addresses": [
+            "flow:agent.run",
+            "flow:agent.call",
+            "flow:tool_source.list",
+            "flow:tool_source.sync",
+            "flow:tool_source.add",
+            "flow:tool_source.remove",
+            "flow:tool_source.trust"
+          ],
+          "settings": {
+            "subgroup": "agent"
+          }
+        },
+        "description": "Nodes that live elsewhere (the flows of the agent and of the tool sources, the settings of the agent's loop) shown here too: the same address, the same node; its own place stays its parent (breadcrumbs)."
       }
     ],
     "identity": {
@@ -829,18 +1159,6 @@
         "en": "not set",
         "pl": "nie ustawiony"
       },
-      "secret_chip": {
-        "en": "secret",
-        "pl": "sekret"
-      },
-      "chip_installation": {
-        "en": "Preset",
-        "pl": "Preset"
-      },
-      "chip_person": {
-        "en": "You",
-        "pl": "Ty"
-      },
       "problem": {
         "en": "cannot be read",
         "pl": "nie da się odczytać"
@@ -860,8 +1178,222 @@
       "slot_never": {
         "en": "never",
         "pl": "nigdy"
+      },
+      "byte_units": [
+        "B",
+        "KB",
+        "MB",
+        "GB",
+        "TB",
+        "PB"
+      ]
+    },
+    "match": {
+      "description": "How a name in a sentence is compared with the names of the graph (find_address): folded (lower case and these letters replaced), word by word; two words are the same when equal or when they share a stem of at least min_prefix letters and neither goes on for more than max_suffix letters after it. Calibration, not a limit.",
+      "fold": {
+        "ą": "a",
+        "ć": "c",
+        "ę": "e",
+        "ł": "l",
+        "ń": "n",
+        "ó": "o",
+        "ś": "s",
+        "ź": "z",
+        "ż": "z"
+      },
+      "min_prefix": 4,
+      "max_suffix": 3
+    },
+    "aliases": [
+      {
+        "address": "area:context_projects",
+        "words": {
+          "pl": [
+            "rozmowy",
+            "konwersacje",
+            "czaty",
+            "moje rozmowy"
+          ],
+          "en": [
+            "conversations",
+            "chats",
+            "my conversations"
+          ]
+        }
+      },
+      {
+        "address": "area:providers_connectors",
+        "words": {
+          "pl": [
+            "role",
+            "role modeli",
+            "modele",
+            "kto co robi",
+            "dostawcy"
+          ],
+          "en": [
+            "roles",
+            "model roles",
+            "models",
+            "providers"
+          ]
+        }
+      },
+      {
+        "address": "area:profiles_settings",
+        "words": {
+          "pl": [
+            "ustawienia",
+            "moje ustawienia",
+            "profile"
+          ],
+          "en": [
+            "settings",
+            "my settings",
+            "profiles"
+          ]
+        }
+      },
+      {
+        "address": "area:flows",
+        "words": {
+          "pl": [
+            "przepływy",
+            "działania",
+            "akcje"
+          ],
+          "en": [
+            "flows",
+            "actions"
+          ]
+        }
+      },
+      {
+        "address": "area:rom",
+        "words": {
+          "pl": [
+            "rom",
+            "pamięć tylko do odczytu"
+          ],
+          "en": [
+            "rom",
+            "read-only memory"
+          ]
+        }
+      },
+      {
+        "address": "area:party_self",
+        "words": {
+          "pl": [
+            "ja",
+            "mnie",
+            "mój profil",
+            "ty",
+            "o mnie"
+          ],
+          "en": [
+            "me",
+            "my profile",
+            "you",
+            "about me"
+          ]
+        }
+      },
+      {
+        "address": "area:devices_io",
+        "words": {
+          "pl": [
+            "urządzenia",
+            "gesty",
+            "klawisze"
+          ],
+          "en": [
+            "devices",
+            "gestures",
+            "keys"
+          ]
+        }
+      },
+      {
+        "address": "area:tools_agent",
+        "words": {
+          "pl": [
+            "narzędzia",
+            "agent"
+          ],
+          "en": [
+            "tools",
+            "agent"
+          ]
+        }
+      },
+      {
+        "address": "area:automations",
+        "words": {
+          "pl": [
+            "automatyzacje",
+            "zadania w tle",
+            "co działa samo"
+          ],
+          "en": [
+            "automations",
+            "background tasks"
+          ]
+        }
+      },
+      {
+        "address": "area:experiments",
+        "words": {
+          "pl": [
+            "eksperymenty",
+            "kalibracja"
+          ],
+          "en": [
+            "experiments",
+            "calibration"
+          ]
+        }
+      },
+      {
+        "address": "area:perspectives",
+        "words": {
+          "pl": [
+            "perspektywy",
+            "widoki"
+          ],
+          "en": [
+            "perspectives",
+            "views"
+          ]
+        }
+      },
+      {
+        "address": "area:environments",
+        "words": {
+          "pl": [
+            "środowiska"
+          ],
+          "en": [
+            "environments"
+          ]
+        }
+      },
+      {
+        "address": "levels:scope_chain",
+        "words": {
+          "pl": [
+            "poziomy",
+            "poziomy ustawień",
+            "skąd są wartości"
+          ],
+          "en": [
+            "levels",
+            "levels of the settings"
+          ]
+        }
       }
-    }
+    ],
+    "aliases_description": "Words that name a node besides its own name, per language (find_address, the sentences of the chat: „przejdź do ustawień”). A list of examples: an overlay may add more."
   },
   "value_schema": {
     "type": "object",

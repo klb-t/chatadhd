@@ -612,6 +612,13 @@ TEST_SUITE("settings_fields") {
     CHECK(by_key.at("worker/batch_threshold").at("provenance").at("chip").at("id") == "installation");
     // flows that read a field are the field's own human.flows (one source of the data)
     for (const auto& field : doc.at("fields"))
-      if (field.at("key") == "temperature") CHECK(by_key.at("temperature").at("flows_reading") == field.at("human").at("flows"));
+      if (field.at("key") == "temperature") {
+        Json ids = Json::array();
+        for (const auto& f : by_key.at("temperature").at("flows_reading")) {
+          ids.push_back(f.at("id"));
+          CHECK_FALSE(f.at("title").get<std::string>().empty());  // the flow by its human title, not only its id
+        }
+        CHECK(ids == field.at("human").at("flows"));
+      }
   }
 }

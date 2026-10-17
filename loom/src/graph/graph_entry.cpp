@@ -26,15 +26,6 @@ namespace {
 
 // ── small helpers ──────────────────────────────────────────────────────
 
-const Json* pointer_at(const Json& root, const std::string& pointer) {
-  try {
-    const Json::json_pointer p(pointer);
-    return root.contains(p) ? &root.at(p) : nullptr;
-  } catch (const std::exception&) {
-    return nullptr;
-  }
-}
-
 std::int64_t member_count(const Json& v) { return v.is_array() || v.is_object() ? static_cast<std::int64_t>(v.size()) : 1; }
 
 std::string label_of(const Json& label, const std::string& lang, const std::string& fallback) {
@@ -225,7 +216,7 @@ void register_builtin(Providers& p) {
   // Methods are declared as data (runtime profile entities), so the registry is the union over all profile
   // domains, de-duplicated by entity id; by = {domain: methods declared there}. A host may override the count.
   p.add("methods.registry", [](const Context& c, const Json& params) {
-    const Json* h = pointer_at(c.env.host_counts, "/methods");
+    const Json* h = json::find_pointer(c.env.host_counts, "/methods");
     if (h && h->is_number_integer()) return only(known(h->get<std::int64_t>()));
     const std::string kind = json::get_string(params, "entity_kind");
     if (kind.empty()) return only(unknown("entity_kind_not_configured"));
@@ -254,7 +245,7 @@ void register_builtin(Providers& p) {
   // area is params.area, e.g. "graph/perspectives": structure, resolution, traversal, ...); by = {key: 1}.
   // Saved user perspectives are not counted here. A host may override the count.
   p.add("perspectives.store", [](const Context& c, const Json& params) {
-    const Json* h = pointer_at(c.env.host_counts, "/perspectives");
+    const Json* h = json::find_pointer(c.env.host_counts, "/perspectives");
     if (h && h->is_number_integer()) return only(known(h->get<std::int64_t>()));
     const std::string wanted = json::get_string(params, "area");
     if (wanted.empty()) return only(unknown("area_not_configured"));
@@ -272,14 +263,14 @@ void register_builtin(Providers& p) {
     return only(known_by(static_cast<std::int64_t>(by.size()), by));
   });
   p.add("layers.entries", [](const Context& c, const Json&) {
-    const Json* h = pointer_at(c.env.host_counts, "/layers");
+    const Json* h = json::find_pointer(c.env.host_counts, "/layers");
     return only(h && h->is_number_integer() ? known(h->get<std::int64_t>()) : unknown("layers_not_wired"));
   });
   // Interface registry (data: values at params.pointer): {id: {entries:[...]} | {from:{domain,pointer}}}.
   // value = number of registered interfaces; by = {interface id: entries it exposes}. A host may add counts.
   p.add("interfaces.enumerate", [](const Context& c, const Json& params) {
     Json by = Json::object();
-    if (const Json* reg = pointer_at(c.values, json::get_string(params, "pointer")); reg && reg->is_object()) {
+    if (const Json* reg = json::find_pointer(c.values, json::get_string(params, "pointer")); reg && reg->is_object()) {
       for (const auto& item : reg->items()) {
         const Json& def = item.value();
         if (!def.is_object() || json::get_bool(def, "hidden", false)) continue;
@@ -287,12 +278,12 @@ void register_builtin(Providers& p) {
           by[item.key()] = static_cast<std::int64_t>(e->size());
         } else if (const Json* from = json::find(def, "from"); from && from->is_object()) {
           auto profile = RuntimeProfile::load(json::get_string(*from, "domain"), c.env.data_dir);
-          const Json* v = profile ? pointer_at(profile->values(), json::get_string(*from, "pointer")) : nullptr;
+          const Json* v = profile ? json::find_pointer(profile->values(), json::get_string(*from, "pointer")) : nullptr;
           if (v) by[item.key()] = member_count(*v);
         }
       }
     }
-    if (const Json* h = pointer_at(c.env.host_counts, "/interfaces"); h && h->is_object())
+    if (const Json* h = json::find_pointer(c.env.host_counts, "/interfaces"); h && h->is_object())
       for (const auto& item : h->items())
         if (item.value().is_number_integer()) by[item.key()] = item.value().get<std::int64_t>();
     if (by.empty()) return only(unknown("no_interface_registry"));
@@ -302,7 +293,7 @@ void register_builtin(Providers& p) {
   // by = {status: count} with status present | partial | missing (a missing item is counted, never dropped).
   p.add("rom.catalogue", [](const Context& c, const Json& params) {
     const std::string pointer = json::get_string(params, "pointer", "/rom/items");
-    const Json* items = pointer_at(c.values, pointer);
+    const Json* items = json::find_pointer(c.values, pointer);
     if (!items || !items->is_object() || items->empty()) return only(unknown("rom_catalogue_absent"));
     Json by = Json::object();
     std::int64_t total = 0;
@@ -318,7 +309,7 @@ void register_builtin(Providers& p) {
   // An entry with `instances` {from:{domain,pointer}, class} expands into one node per item of that profile (configured
   // storages...). Descriptions only: no hardware is touched.
   p.add("devices.enumerate", [](const Context& c, const Json& params) {
-    const Json* reg = pointer_at(c.values, json::get_string(params, "pointer"));
+    const Json* reg = json::find_pointer(c.values, json::get_string(params, "pointer"));
     if (!reg || !reg->is_object()) return only(unknown("no_device_registry"));
     Json by = Json::object();
     std::int64_t total = 0;
@@ -331,7 +322,7 @@ void register_builtin(Providers& p) {
         const Json* from = json::find(*inst, "from");
         auto profile = from && from->is_object() ? RuntimeProfile::load(json::get_string(*from, "domain"), c.env.data_dir)
                                                  : Result<RuntimeProfile>(Error(Errc::InvalidArgument, "no source"));
-        const Json* v = profile ? pointer_at(profile->values(), json::get_string(*from, "pointer")) : nullptr;
+        const Json* v = profile ? json::find_pointer(profile->values(), json::get_string(*from, "pointer")) : nullptr;
         if (v) n = static_cast<std::int64_t>(member_count(*v));
       }
       by[json::get_string(def, "class", item.key())] = by.value(json::get_string(def, "class", item.key()), static_cast<std::int64_t>(0)) + n;
@@ -345,11 +336,11 @@ void register_builtin(Providers& p) {
   p.add("profile.items", [](const Context& c, const Json& params) {
     const Json* profile = profile_values(c, json::get_string(params, "domain"));
     if (!profile) return only(unknown("profile_unavailable"));
-    const Json* v = pointer_at(*profile, json::get_string(params, "pointer"));
+    const Json* v = json::find_pointer(*profile, json::get_string(params, "pointer"));
     return only(v ? known(member_count(*v)) : unknown("pointer_absent"));
   });
   p.add("data.items", [](const Context& c, const Json& params) {
-    const Json* v = pointer_at(c.values, json::get_string(params, "pointer"));
+    const Json* v = json::find_pointer(c.values, json::get_string(params, "pointer"));
     return only(v ? known(member_count(*v)) : unknown("pointer_absent"));
   });
   // Crypto primitives (value = available count, by = "<primitive>@<backend>" -> 1/0) and the active suite.
@@ -441,33 +432,37 @@ void register_builtin(Providers& p) {
       }
     }
     const Json* profile = profile_values(c, "tool_sources");
-    const Json* kinds = profile ? pointer_at(*profile, "/kinds") : nullptr;
+    const Json* kinds = profile ? json::find_pointer(*profile, "/kinds") : nullptr;
     out["tool_source_kinds"] = kinds ? known(member_count(*kinds)) : unknown("tool_sources_profile_unavailable");
     return out;
   });
-  // Model roles (M1): every role of the ports profile resolved for the person; value = roles; by = {with_model: a model is named,
-  // composed: providers tried in turn (asr, ocr), without_model}.
+  // Model roles (M1): every role of the ports profile as the role rows of the graph resolve them (projection::Catalogue::roles: the policy a
+  // reader reads, today's reads of a policy no reader reads yet, else the ports); value = roles; by = {with_model, composed, without_model}.
   p.add("ports.roles", [](const Context& c, const Json&) {
-    auto prof = PortProfile::load(c.env.data_dir);
-    if (!prof) return only(unknown("ports_profile_unavailable"));
-    const Json settings = c.env.cfg ? c.env.cfg->all() : Json::object();
+    Result<Json> rows = Error(Errc::Unavailable, "ports_profile_unavailable");
+    if (c.env.roles) {
+      rows = c.env.roles();
+    } else {
+      projection::Env pe;
+      pe.root = c.env.data_dir;
+      pe.db = c.env.db;
+      pe.cfg = c.env.cfg;
+      auto cat = projection::Catalogue::open(pe);
+      rows = cat ? cat->roles() : Result<Json>(cat.error());
+    }
+    if (!rows) {
+      log::write(log::Level::Debug, "graph_entry", "roles not resolved: " + rows.error().message);
+      return only(unknown(rows.error().message));
+    }
     std::int64_t with_model = 0, composed = 0, without = 0;
-    const Json names = prof->roles();
-    for (const auto& name : names) {
-      auto r = prof->resolve(name.get<std::string>(), Json::object(), std::string(), settings);
-      if (!r) {
-        log::write(log::Level::Debug, "graph_entry", "role " + name.get<std::string>() + " not resolved: " + r.error().message);
-        ++without;
-        continue;
-      }
-      const Json params = r->value("params", Json::object());
-      const Json model = params.is_object() ? params.value("model", Json()) : Json();
-      if (model.is_string() && !model.get<std::string>().empty()) ++with_model;
-      else if (r->contains("compose")) ++composed;
+    const Json list = rows->value("roles", Json::array());
+    for (const auto& r : list) {
+      if (!json::get_string(r, "model").empty()) ++with_model;
+      else if (json::get_string(r, "reason") == "composed") ++composed;
       else ++without;
     }
     Json out = Json::object();
-    out[""] = known_by(static_cast<std::int64_t>(names.size()), Json{{"with_model", with_model}, {"composed", composed}, {"without_model", without}});
+    out[""] = known_by(static_cast<std::int64_t>(list.size()), Json{{"with_model", with_model}, {"composed", composed}, {"without_model", without}});
     if (!c.env.cfg) out["roles_settings"] = unknown("config_unavailable");
     return out;
   });
@@ -483,7 +478,7 @@ void register_builtin(Providers& p) {
     out[""] = by_status;
     out["background_tasks"] = grouped(c, "loom_tasks", "status");
     const Json* worker = profile_values(c, "worker");
-    const Json* modes = worker ? pointer_at(*worker, "/analysis_modes") : nullptr;
+    const Json* modes = worker ? json::find_pointer(*worker, "/analysis_modes") : nullptr;
     if (modes && modes->is_array()) {
       Json by = Json::object();
       for (const auto& m : *modes)
@@ -494,32 +489,19 @@ void register_builtin(Providers& p) {
     }
     return out;
   });
-  // Experiments and calibration (M1): every entry of the effective runtime profiles marked as calibration ("status": "calibration",
-  // "status": {"state": "calibration"} or "calibration": true); by = {domain: entries}. Research in progress, never hidden.
+  // Experiments and calibration (M1): every entry marked as calibration (graph_entry::calibration_entries: the runtime profiles and the
+  // source packs whose whole content is calibration); by = {where: entries}. Research in progress, never hidden.
   p.add("calibration.items", [](const Context& c, const Json&) {
+    Json unreadable = Json::array();
+    const Json entries = calibration_entries([&](const std::string& domain) { return profile_values(c, domain); }, &unreadable);
     Json by = Json::object();
-    std::int64_t total = 0;
-    for (const std::string& domain : RuntimeProfile::domains()) {
-      const Json* profile = profile_values(c, domain);
-      if (!profile) continue;
-      std::int64_t here = 0;
-      std::function<void(const Json&)> walk = [&](const Json& node) {
-        if (node.is_object()) {
-          const Json* s = json::find(node, "status");
-          const bool marked = (s && s->is_string() && s->get<std::string>() == "calibration") ||
-                              (s && s->is_object() && json::get_string(*s, "state") == "calibration") ||
-                              json::get_bool(node, "calibration", false);
-          if (marked) ++here;
-          for (const auto& item : node.items()) walk(item.value());
-        } else if (node.is_array()) {
-          for (const auto& item : node) walk(item);
-        }
-      };
-      walk(*profile);
-      if (here) by[domain] = here;
-      total += here;
+    for (const auto& e : entries) {
+      const std::string where = json::get_string(e, "where");
+      by[where] = by.value(where, static_cast<std::int64_t>(0)) + 1;
     }
-    return only(known_by(total, by));
+    Json out = only(known_by(static_cast<std::int64_t>(entries.size()), by));
+    if (!unreadable.empty()) out[""]["unreadable"] = unreadable;
+    return out;
   });
   // You (M1): the slots of the profile interview by state (known, unknown, declined, never) from the stored onboarding profile; with no
   // interview yet every slot of the shipped scenario is unknown. Several stored profiles and no user named: unknown, never a guess.
@@ -619,7 +601,7 @@ Json axes_view(const Json& values, const std::string& lang) {
 }
 
 std::string axis_value_label(const Json& values, const std::string& lang, const char* axis, const std::string& id) {
-  const Json* a = pointer_at(values, std::string("/axes/entry/") + axis + "/values");
+  const Json* a = json::find_pointer(values, std::string("/axes/entry/") + axis + "/values");
   if (a && a->is_array())
     for (const auto& v : *a)
       if (json::get_string(v, "id") == id) return label_of(v.value("label", Json()), lang, id);
@@ -629,7 +611,7 @@ std::string axis_value_label(const Json& values, const std::string& lang, const 
 void check_axes(const Json& values, const Json& axes, const std::string& owner, Json& issues) {
   for (const char* name : {"about", "kind", "time"}) {
     const std::string v = json::get_string(axes, name);
-    const Json* a = pointer_at(values, std::string("/axes/entry/") + name);
+    const Json* a = json::find_pointer(values, std::string("/axes/entry/") + name);
     bool found = false;
     if (a && a->contains("values"))
       for (const auto& x : (*a)["values"]) found = found || json::get_string(x, "id") == v;
@@ -640,7 +622,7 @@ void check_axes(const Json& values, const Json& axes, const std::string& owner, 
 
 Json list_view(const Json& values, const std::string& pointer, const std::string& lang) {
   Json out = Json::array();
-  const Json* v = pointer_at(values, pointer);
+  const Json* v = json::find_pointer(values, pointer);
   if (!v) return out;
   auto add = [&](const std::string& id, const Json& item) {
     Json node{{"id", id}, {"label", label_of(item.is_object() ? item.value("label", Json()) : Json(), lang, id)}};
@@ -660,10 +642,11 @@ Json list_view(const Json& values, const std::string& pointer, const std::string
 
 Json party_node(const Json& values, const std::string& cls, const std::string& lang) {
   Json slots = Json::array();
-  const std::string state = json::get_string(*pointer_at(values, "/ontology"), "default_state");
-  const Json* cl = pointer_at(values, "/ontology/classes/" + cls);
+  const Json* ontology = json::find_pointer(values, "/ontology");
+  const std::string state = ontology ? json::get_string(*ontology, "default_state") : std::string();
+  const Json* cl = json::find_pointer(values, "/ontology/classes/" + cls);
   std::string pkg = cl ? json::get_string(*cl, "package") : std::string();
-  const Json* pk = pkg.empty() ? nullptr : pointer_at(values, "/ontology/packages/" + pkg + "/slots");
+  const Json* pk = pkg.empty() ? nullptr : json::find_pointer(values, "/ontology/packages/" + pkg + "/slots");
   if (pk && pk->is_array())
     for (const auto& s : *pk)
       slots.push_back(Json{{"id", json::get_string(s, "id")}, {"label", label_of(s.value("label", Json()), lang, json::get_string(s, "id"))},
@@ -690,6 +673,55 @@ const ProviderFn* Providers::find(const std::string& id) const {
 std::vector<std::string> Providers::ids() const {
   std::vector<std::string> out;
   for (const auto& e : fns_) out.push_back(e.first);
+  return out;
+}
+
+Json calibration_entries(const std::function<const Json*(const std::string& domain)>& profile, Json* unreadable) {
+  Json out = Json::array();
+  const auto marked = [](const Json& node) {
+    const Json* st = json::find(node, "status");
+    return (st && st->is_string() && st->get<std::string>() == "calibration") || (st && st->is_object() && json::get_string(*st, "state") == "calibration") ||
+           json::get_bool(node, "calibration", false);
+  };
+  const auto label_of_node = [](const Json& node) -> Json {
+    for (const char* k : {"label", "title", "name", "id"})
+      if (const Json* l = json::find(node, k); l && (l->is_string() || l->is_object())) return *l;
+    return nullptr;
+  };
+  for (const std::string& domain : RuntimeProfile::domains()) {
+    const Json* values = profile(domain);
+    if (!values) {
+      if (unreadable) unreadable->push_back(domain);
+      continue;
+    }
+    const std::string where = "runtime/" + domain;
+    std::function<void(const Json&, const std::string&)> walk = [&](const Json& node, const std::string& pointer) {
+      if (node.is_object()) {
+        if (marked(node)) out.push_back(Json{{"where", where}, {"pointer", pointer}, {"label", label_of_node(node)}});
+        for (const auto& item : node.items()) {
+          std::string token = item.key();
+          for (std::size_t i = 0; i < token.size(); ++i)
+            if (token[i] == '~') token.replace(i++, 1, "~0");
+            else if (token[i] == '/') token.replace(i++, 1, "~1");
+          walk(item.value(), pointer + "/" + token);
+        }
+      } else if (node.is_array()) {
+        for (std::size_t i = 0; i < node.size(); ++i) walk(node[i], pointer + "/" + std::to_string(i));
+      }
+    };
+    walk(*values, "");
+    // A source pack whose whole content is calibration (its top-level "calibration": true) and whose flag the profile does not carry (the
+    // recipe projects a part of it): one entry per pack.
+    if (auto shipped = RuntimeProfile::builtin(domain))
+      for (const auto& src : shipped->source_provenance())
+        if (json::get_bool(src, "calibration", false) && !json::get_string(src, "pointer").empty()) {
+          std::string path = json::get_string(src, "path");
+          if (path.rfind("loom/data/", 0) == 0) path = path.substr(10);
+          bool seen = false;
+          for (const auto& e : out) seen = seen || json::get_string(e, "where") == path;
+          if (!seen) out.push_back(Json{{"where", path}, {"pointer", ""}, {"label", nullptr}, {"target", json::get_string(src, "target")}});
+        }
+  }
   return out;
 }
 
@@ -787,7 +819,7 @@ Result<Json> compute(const Env& env, const Json& options, const Providers* custo
 
   // 3. Zero seed (R52): data only, no database.
   Json out_seed = Json::array();
-  const Json* elements = pointer_at(values, "/seed/elements");
+  const Json* elements = json::find_pointer(values, "/seed/elements");
   if (elements && elements->is_object()) {
     std::vector<Slot> order;
     for (const auto& e : elements->items()) order.push_back({order_of(e.value()), e.key()});

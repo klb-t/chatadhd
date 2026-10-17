@@ -84,9 +84,23 @@ TEST_SUITE("graph_projection") {
       if (c.contains("count_unknown_reason")) CHECK_FALSE(c.contains("count"));
     }
     CHECK(child(root, "area:rom")->at("count") == 13);
-    // automations has counters (worker.status) but no source lists its items yet
-    CHECK(child(root, "area:automations")->at("count_unknown_reason") == "no_projection_source");
+    // automations and experiments list their items (what runs on its own, the background tasks, the items in calibration) and keep
+    // their counters; every area the M1 root added opens in the navigator (expand graph.navigate)
+    CHECK(child(root, "area:automations")->at("count").get<int>() > 0);
     CHECK(child(root, "area:automations")->at("counts").contains("messages_waiting"));
+    CHECK(child(root, "area:experiments")->at("count").get<int>() > 0);
+    const Json entry = unwrap(RuntimeProfile::builtin("graph_entry")).values().at("areas");
+    for (const char* a : {"party_self", "flows", "devices_io", "tools_agent", "providers_connectors", "environments", "automations", "experiments"}) {
+      INFO(a);
+      CHECK(entry.at(a).at("expand").at("view") == "graph.navigate");
+      CHECK_FALSE(child(root, std::string("area:") + a)->value("why", "").empty());  // each area says what it is for
+    }
+    // a count the entry view cannot give says why, in words
+    for (const auto& c : root.at("children")) {
+      const Json counts = c.value("counts", Json::object());
+      for (const auto& count : counts.items())
+        if (!count.value().value("known", true)) CHECK_FALSE(count.value().value("reason_human", "").empty());
+    }
     // the root's containment edges carry the meaning of their kind
     for (const auto& e : root.at("edges")) CHECK(e.at("meaning").is_string());
   }
@@ -187,8 +201,11 @@ TEST_SUITE("graph_projection") {
         scopes::Binding b;
         b.key = field.at("key").get<std::string>();
         b.conv_id = conv;
-        for (const auto& d : doc.at("fields"))
-          if (d.at("key") == b.key && d.contains("default_value")) b.installation = d.at("default_value");
+        for (const auto& d : doc.at("fields")) {
+          if (d.at("key") != b.key) continue;
+          if (d.contains("default_value")) b.installation = d.at("default_value");
+          else if (d.contains("preset_value")) b.installation = d.at("preset_value");  // the preset its reader takes from a profile
+        }
         const auto res = unwrap(resolver.resolve(b));
         INFO(b.key);
         const std::string scope = res.defined ? res.scope : std::string("none");

@@ -7,6 +7,7 @@
 #include "loom/adapter_registry.h"
 #include "loom/db.h"
 #include "loom/port_compose.h"
+#include "loom/graph_entry.h"
 #include "loom/port_profile.h"
 #include "../src/context/method_channels.h"
 #include "loom/runtime.h"
@@ -239,10 +240,19 @@ TEST_SUITE("ports") {
       REQUIRE(node);
       CHECK_FALSE((*node)["label"].get<std::string>().empty());
       const std::string policy = row["policy"].is_string() ? row["policy"].get<std::string>() : std::string();
-      if (!policy.empty()) {
+      // a policy a reader reads gives the model resolve_model gives; one no reader reads describes a chain that decides nothing
+      if (!policy.empty() && row.value("chain_status", "") == "read") {
         const auto choice = annotations::resolve_model(cfg, td.path(), policy, "");
         CHECK(row["model"] == (choice.model.empty() ? Json(nullptr) : Json(choice.model)));
-        CHECK(row["tier"]["id"] == (choice.tier.empty() ? std::string("unknown") : choice.tier));
+        if (!choice.model.empty()) CHECK(row["tier"]["id"] == (choice.tier.empty() ? std::string("unknown") : choice.tier));
+      }
+      if (row.value("chain_status", "") == "described_not_read")
+        for (const auto& step : row["chain"]) CHECK(step["decides"] == false);
+      // no model: no class, and never the unknown class's flow
+      if (row["model"].is_null()) {
+        CHECK(row["tier"]["id"] == "none");
+        CHECK(row["flow"].is_null());
+        CHECK(row["tier"]["reason"].get<std::string>().find("przepływ") == std::string::npos);
       }
       bool bound = false;
       for (const auto& e : edges) bound = bound || (e["src"] == "role:" + id && e["kind"] == "bound_to");
@@ -257,5 +267,39 @@ TEST_SUITE("ports") {
         CHECK(row["chain"][1]["decides"] == false);
       }
     CHECK(cat.resolver_opens() == 1);
+    // Command recognition: no reader reads its policy; today's reader takes intent_routing_model, else default_model (route.cpp)
+    for (const auto& row : rows["roles"])
+      if (row["id"] == "intent.routing") {
+        CHECK(row["chain_status"] == "described_not_read");
+        CHECK(row["model"] == cfg.get("default_model"));
+        CHECK(row["via"] == "today:default_model");
+        REQUIRE(row["today_chain"].size() == 2);
+        CHECK(row["today_chain"][0]["setting"] == "intent_routing_model");
+        CHECK(row["today_chain"][1]["decides"] == true);
+      }
+  }
+
+  TEST_CASE("M1-K0: the counter of the roles area counts what the role rows say (guardian_model set, semantic_model empty)") {
+    fsutil::TempDir td;
+    Config cfg(td.path() / "config.json");
+    cfg.set("guardian_model", "openai/gpt-4o-mini");
+    cfg.set("semantic_model", "");
+    projection::Env env;
+    env.root = td.path();
+    env.cfg = &cfg;
+    auto cat = unwrap(projection::Catalogue::open(env));
+    const Json rows = unwrap(cat.roles());
+    std::int64_t with_model = 0;
+    for (const auto& row : rows["roles"]) with_model += row["model"].is_string() ? 1 : 0;
+    graph_entry::Env ge;
+    ge.cfg = &cfg;
+    ge.data_dir = td.path();
+    const Json view = unwrap(graph_entry::compute(ge, Json::object()));
+    Json counter = nullptr;
+    for (const auto& a : view.at("areas"))
+      if (a.at("id") == "providers_connectors") counter = a.at("counts").at("roles");
+    REQUIRE(counter.is_object());
+    CHECK(counter.at("value") == rows["roles"].size());
+    CHECK(counter.at("by").at("with_model") == with_model);
   }
 }

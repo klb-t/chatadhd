@@ -2,6 +2,7 @@
 
 #include <charconv>
 #include <map>
+#include <optional>
 #include <set>
 #include <stdexcept>
 
@@ -255,6 +256,7 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir) {
   const Json& lcfg = loom_config_defaults();
   Placement placement;
   placement.map = json::find(v, "placement");
+  std::map<std::string, std::optional<Json>> preset_profiles;  // preset_from: domain -> effective values (read once per call)
   for (const auto& f : v.at("fields")) {
     const std::string scope_name = f.value("scope", ""), key = f.value("key", "");
     Json o = f;  // `human`, `status`, `values` and the rest of the entry pass through unchanged
@@ -266,6 +268,24 @@ Result<Json> settings_fields(const std::filesystem::path& data_dir) {
     if (scope_name == "config" && has_default) {
       if (cfg.contains(key)) o["default_value"] = cfg.at(key);
       else if (lcfg.contains(key)) o["default_value"] = lcfg.at(key);
+    }
+    // A field whose reader takes its preset from a runtime profile (preset_from) shows that preset, read live from the effective
+    // profile (preset_value / preset_source), never copied into the pack; a pointer that names nothing is a listed problem.
+    if (const Json* from = json::find(f, "preset_from"); from && from->is_object() && !o.contains("default_value")) {
+      const std::string domain = json::get_string(*from, "profile"), pointer = json::get_string(*from, "pointer");
+      auto it = preset_profiles.find(domain);
+      if (it == preset_profiles.end()) {
+        auto prof = RuntimeProfile::load(domain, data_dir);
+        if (!prof) log::write(log::Level::Debug, std::string(kLog), "preset profile " + domain + " not readable: " + prof.error().message);
+        it = preset_profiles.emplace(domain, prof ? std::optional<Json>(prof->values()) : std::nullopt).first;
+      }
+      const Json* at = it->second ? json::find_pointer(*it->second, pointer) : nullptr;
+      if (at) {
+        o["preset_value"] = *at;
+        o["preset_source"] = "profile:" + domain + pointer;
+      } else {
+        o["preset_problem"] = (it->second ? "pointer_absent: " : "profile_unavailable: ") + domain + pointer;
+      }
     }
     actions::Element element;
     element.cls = v.value("element_class", "");
@@ -407,6 +427,7 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
     // the pack's schema requires only key and scope (a hand-written overlay entry still loads); what an entry lacks is listed here
     if (!f.contains("type") || !f["type"].is_string()) out.push_back("no type: " + key);
     if (f.value("group", "").empty()) out.push_back("no technical group: " + key);
+    if (f.contains("preset_problem")) out.push_back("preset_from does not resolve: " + key + " (" + json::get_string(f, "preset_problem") + ")");
     const bool has_default = scope == "config" && (config_defaults().contains(key) || loom_config_defaults().contains(key));
     const std::string declared = f.value("default", "");
     if (declared != "present" && declared != "absent") out.push_back("default must be present|absent: " + key);

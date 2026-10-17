@@ -626,12 +626,13 @@ TEST_SUITE("chat_ops") {
     CHECK(rom_text.find("13 z 13") != std::string::npos);
     CHECK(rom_text.find("Rozruch") != std::string::npos);
     const auto flows = f.say_and_confirm("wejdź w przepływy", "graph.navigate", "tak");
-    CHECK(f.text_of(flows).find("zwinięto") != std::string::npos);  // more flows than the budget of one level: said, not dropped
+    CHECK(f.text_of(flows).find("zwinięte przez budżet poziomu") != std::string::npos);  // more flows than the budget of one level: said, not dropped
     const auto card = f.say_and_confirm("pokaż kartę rom:boot", "graph.card", "tak");
     CHECK(f.text_of(card).find("rom:boot") != std::string::npos);
     const auto settings = f.say_and_confirm("pokaż ustawienia po ludzku", "settings.resolved", "tak");
     const std::string settings_text = f.text_of(settings);
-    CHECK(settings_text.find("ustawień w") != std::string::npos);
+    CHECK(settings_text.find("Ustawienia: ") != std::string::npos);
+    CHECK(settings_text.find(" pól,") != std::string::npos);  // the plural of the language
     CHECK(settings_text.find("sk-test-key") == std::string::npos);  // a secret never reaches the conversation
     const auto roles = f.say_and_confirm("who does which job", "roles.resolved", "yes");
     const std::string roles_text = f.text_of(roles);

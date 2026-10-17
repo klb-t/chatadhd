@@ -50,6 +50,9 @@ bool truthy(const Json& v) noexcept;
 
 // Safe accessors (never throw). `obj` may be any JSON value.
 const Json* find(const Json& obj, std::string_view key) noexcept;
+// The value at an RFC 6901 pointer ("" = the root, "/a/0/b~1c"), walked member by member; nullptr when the pointer is malformed or
+// names nothing (never throws).
+const Json* find_pointer(const Json& root, std::string_view pointer) noexcept;
 std::string get_string(const Json& obj, std::string_view key, std::string_view fallback = "");
 std::optional<std::string> get_opt_string(const Json& obj, std::string_view key);
 double get_number(const Json& obj, std::string_view key, double fallback = 0.0);

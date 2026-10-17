@@ -623,7 +623,11 @@
           "flows": [
             "use_model",
             "chat.send"
-          ]
+          ],
+          "when_unset": {
+            "pl": "OpenRouter",
+            "en": "OpenRouter"
+          }
         }
       },
       {
@@ -653,7 +657,11 @@
           "subgroup": "dostawca",
           "flows": [
             "use_model"
-          ]
+          ],
+          "when_unset": {
+            "pl": "http://127.0.0.1:8080/v1 (llama.cpp na tym urządzeniu)",
+            "en": "http://127.0.0.1:8080/v1 (llama.cpp on this device)"
+          }
         }
       },
       {
@@ -829,7 +837,11 @@
           ],
           "group": "interfejs",
           "subgroup": "wyglad",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "widok, który zostawiłeś, potem ostatnia rozmowa, potem nowy czat",
+            "en": "the view you left, else the latest conversation, else a new chat"
+          }
         }
       },
       {
@@ -887,7 +899,11 @@
           ],
           "group": "interfejs",
           "subgroup": "wyglad",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "czat na pełnym ekranie",
+            "en": "full-screen chat"
+          }
         },
         "on_unlisted": "warn"
       },
@@ -918,7 +934,11 @@
           ],
           "group": "interfejs",
           "subgroup": "animacje",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "▼ rozwija, ▲ zwija",
+            "en": "▼ expands, ▲ collapses"
+          }
         }
       },
       {
@@ -948,7 +968,11 @@
           ],
           "group": "interfejs",
           "subgroup": "animacje",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "tylko zestawy wbudowane",
+            "en": "only the shipped sets"
+          }
         }
       },
       {
@@ -978,7 +1002,11 @@
           ],
           "group": "interfejs",
           "subgroup": "animacje",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "tylko style wbudowane",
+            "en": "only the shipped styles"
+          }
         }
       },
       {
@@ -1008,7 +1036,11 @@
           ],
           "group": "interfejs",
           "subgroup": "animacje",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "presety profilu animacji dla każdego elementu",
+            "en": "the presets of the animation profile for every element"
+          }
         }
       },
       {
@@ -1019,6 +1051,10 @@
         "subsection": "Animacje",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "ui_animation",
+          "pointer": "/reduced_motion_style"
+        },
         "description": "The style used for every element when the system asks for reduced motion (prefers-reduced-motion). Preset: none. Name another style to keep some motion. Default: none.",
         "human": {
           "label": {
@@ -1049,6 +1085,10 @@
         "subsection": "Animacje",
         "type": "number",
         "has_default": false,
+        "preset_from": {
+          "profile": "ui_animation",
+          "pointer": "/refresh_hz"
+        },
         "description": "Display refresh rate in Hz, used to convert a duration given in frames into time (frames / Hz). Preset: 60. Default: 60.",
         "human": {
           "label": {
@@ -1096,7 +1136,11 @@
           ],
           "group": "interfejs",
           "subgroup": "wyglad",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "jak w przeglądarce",
+            "en": "follows the browser"
+          }
         }
       },
       {
@@ -1312,7 +1356,11 @@
           "subgroup": "pamiec",
           "flows": [
             "memory.remember"
-          ]
+          ],
+          "when_unset": {
+            "pl": "cały plik",
+            "en": "the whole file"
+          }
         }
       },
       {
@@ -1343,7 +1391,11 @@
           "subgroup": "pamiec",
           "flows": [
             "memory.remember"
-          ]
+          ],
+          "when_unset": {
+            "pl": "wszystkie pliki",
+            "en": "every file"
+          }
         }
       },
       {
@@ -1374,7 +1426,11 @@
           "subgroup": "pamiec",
           "flows": [
             "memory.remember"
-          ]
+          ],
+          "when_unset": {
+            "pl": "ukryte pliki są pomijane",
+            "en": "hidden files are left out"
+          }
         }
       },
       {
@@ -1611,7 +1667,14 @@
             "usage.spend",
             "chat.send",
             "use_model"
-          ]
+          ],
+          "summary": {
+            "pointer": "/growth_factor",
+            "text": {
+              "pl": "×{{v}} (wzrost zużycia potwierdzasz)",
+              "en": "×{{v}} (you confirm consumption growth)"
+            }
+          }
         }
       },
       {
@@ -1644,7 +1707,11 @@
             "usage.spend",
             "chat.send",
             "use_model"
-          ]
+          ],
+          "when_unset": {
+            "pl": "bez limitu",
+            "en": "no limit"
+          }
         }
       },
       {
@@ -1652,6 +1719,7 @@
         "scope": "config",
         "group": "safety",
         "type": "integer",
+        "unit": "bytes",
         "has_default": true,
         "description": "Most bytes one imported ZIP archive may expand to; the import is refused before writing past it (zip bomb guard). 0 = no limit.",
         "human": {
@@ -1761,7 +1829,11 @@
           "group": "silnik",
           "subgroup": "wszystkie",
           "flows": [],
-          "technical_only": true
+          "technical_only": true,
+          "when_unset": {
+            "pl": "prowadzi ją automatyczna aktualizacja",
+            "en": "kept by the auto-upgrade"
+          }
         }
       },
       {
@@ -1770,6 +1842,10 @@
         "group": "semantic",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "worker",
+          "pointer": "/retry_mode"
+        },
         "description": "Retry policy of failed semantic work (explicit_requeue or automatic).",
         "human": {
           "label": {
@@ -1819,6 +1895,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "intent_routing",
+          "pointer": "/method/active"
+        },
         "description": "How a chat input is told to be a message or a command (R54): heuristic (local and free, preset), hybrid (the local reading first, the model asked only about what it is unsure of: a command the local reading is sure of is never turned into a message by the model; recommended once a provider key exists), model (one guarded model call per input) or off (every input is a message). Runtime profile intent_routing (heuristic.scoring.min_score and confident_score, method.presets.hybrid.ask_when).",
         "human": {
           "label": {
@@ -1851,6 +1931,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "intent_routing",
+          "pointer": "/execution/active"
+        },
         "description": "Whether a command from the chat waits for the user's yes (propose, preset), runs at once when its plan only reads and the rules ask for nothing (read_only), or runs at once (always). The rules and the x10 usage confirmation apply in every case.",
         "human": {
           "label": {
@@ -1881,6 +1965,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "intent_routing",
+          "pointer": "/on_reject/active"
+        },
         "description": "What a no to a proposal from the chat does with the sentence the proposal came from: offer (preset: the reply offers, in the same proposal block and by the words \"send as message\", to send the sentence to the model as an ordinary message), send_as_message (it is sent at once) or drop (it is not sent). Whatever is sent has exactly the request bytes of an ordinary message. Runtime profile intent_routing.",
         "human": {
           "label": {
@@ -1935,7 +2023,11 @@
             "input.route_intent",
             "ports.show"
           ],
-          "technical_only": true
+          "technical_only": true,
+          "when_unset": {
+            "pl": "model rozmowy",
+            "en": "the conversation model"
+          }
         }
       },
       {
@@ -1944,6 +2036,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "action_rules",
+          "pointer": "/extrapolation/active"
+        },
         "description": "Preset of the chain proposals the engine makes when an element lacks what an action needs (off, standard or generous; presets are runtime/action_rules.pack). This is the user's level of a value that the scope chain resolves: a rule on a conversation or a project may set another one, and propose_chain / explain say which scope set the value. Default: the profile's active preset (standard).",
         "human": {
           "label": {
@@ -2001,7 +2097,11 @@
           "subgroup": "polecenia",
           "flows": [
             "actions.propose_chain"
-          ]
+          ],
+          "when_unset": {
+            "pl": "granice presetu",
+            "en": "the bounds of the preset"
+          }
         }
       },
       {
@@ -2010,6 +2110,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "action_results",
+          "pointer": "/target/active"
+        },
         "description": "Where the result of an action run goes: graph (preset: a form node linked to its source element and to the run), run_only (the result stays in the run document) or conversation_message (the text is also posted as a message of the conversation and linked in the graph). Runtime profile action_results. This is the user's level of a value that the scope chain resolves: a rule on a conversation or a project may set another one. Text above the profile's inline_max_bytes goes to the blob store whatever the target is. Default: graph.",
         "human": {
           "label": {
@@ -2043,6 +2147,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "intent_routing",
+          "pointer": "/emergent/active"
+        },
         "description": "Whether the catalogue of actions grows from your conversations (R55): propose (preset: a command no action understands, a sequence you keep repeating, or an action used on several classes is offered as a new action or group, never made silently) or off. Accepting writes only your own overlays (profiles/actions.pack, profiles/intent_routing.pack, profiles/graph_entry.pack). Runtime profile intent_routing (emergent). Default: propose.",
         "human": {
           "label": {
@@ -2074,6 +2182,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "tool_loop",
+          "pointer": "/policy"
+        },
         "description": "What the agent (the tool loop of use_model) may do on its own: a preset of the runtime profile tool_loop - local_reversible (preset: local, reversible actions run, everything else is proposed and waits for you), read_only, confirm_all (every call is a proposal) or apply_all (every call runs; the rules of the interpreter, the x10 guard and the spending limits still apply) - or a policy of your own as an object {id?, rules: [{when?: {effects, actions, prefixes}, mode: run|propose|deny}]}. Default: local_reversible.",
         "human": {
           "label": {
@@ -2106,6 +2218,10 @@
         "group": "chat",
         "type": "integer",
         "has_default": false,
+        "preset_from": {
+          "profile": "tool_loop",
+          "pointer": "/max_steps"
+        },
         "description": "How many model turns one agent loop may take; 0 = no limit. Runtime profile tool_loop (max_steps). Default: 8.",
         "human": {
           "label": {
@@ -2138,6 +2254,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "tool_loop",
+          "pointer": "/on_proposal"
+        },
         "description": "What the agent does when a call it made became a proposal that waits for you: stop (preset: the loop ends and shows the proposals) or continue (the model is told the call was not executed and goes on). Default: stop.",
         "human": {
           "label": {
@@ -2170,6 +2290,10 @@
         "group": "chat",
         "type": "integer",
         "has_default": false,
+        "preset_from": {
+          "profile": "tool_loop",
+          "pointer": "/result_max_chars"
+        },
         "description": "A tool result longer than this many characters is cut when it is handed back to the model (the run keeps all of it); 0 = no cut. Runtime profile tool_loop (result_max_chars). Default: 20000.",
         "human": {
           "label": {
@@ -2223,7 +2347,11 @@
           "subgroup": "polecenia",
           "flows": [
             "chat.send"
-          ]
+          ],
+          "when_unset": {
+            "pl": "wymiana jest pomijana, wynik działania zostaje",
+            "en": "the exchange is left out, the result of an action stays"
+          }
         }
       },
       {
@@ -2232,6 +2360,10 @@
         "group": "chat",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "action_run",
+          "pointer": "/estimate/registry_refresh/active"
+        },
         "description": "Whether an estimate may fetch the provider's public model list when it needs a price and the model registry (models.json) is empty, which it is on a fresh data directory until the list is refreshed: on_demand (preset: the list is fetched once, no user data is sent; if the fetch fails the price stays unknown with the reason, and the next automatic attempt waits the profile's retry_after_seconds) or off (the registry is filled only by refreshing the model list yourself; an estimate without a price says so). Runtime profile action_run (estimate.registry_refresh). A name that is not a preset means on_demand. Default: on_demand.",
         "human": {
           "label": {
@@ -2287,7 +2419,11 @@
             "depict",
             "ports.show"
           ],
-          "technical_only": true
+          "technical_only": true,
+          "when_unset": {
+            "pl": "działanie pyta o model",
+            "en": "the action asks which model"
+          }
         }
       },
       {
@@ -2320,7 +2456,11 @@
             "depict",
             "ports.show"
           ],
-          "technical_only": true
+          "technical_only": true,
+          "when_unset": {
+            "pl": "działanie pyta o dostawcę",
+            "en": "the action asks which provider"
+          }
         }
       },
       {
@@ -2353,7 +2493,11 @@
             "narrate",
             "ports.show"
           ],
-          "technical_only": true
+          "technical_only": true,
+          "when_unset": {
+            "pl": "tylko tekst narracji, bez dźwięku",
+            "en": "only the narration text, no audio"
+          }
         }
       },
       {
@@ -2386,7 +2530,11 @@
             "narrate",
             "ports.show"
           ],
-          "technical_only": true
+          "technical_only": true,
+          "when_unset": {
+            "pl": "brak dostawcy mowy",
+            "en": "no speech provider"
+          }
         }
       },
       {
@@ -2395,6 +2543,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "guardian",
+          "pointer": "/method/active"
+        },
         "description": "How the context guardian recognises signals in your messages (corrections, clarifications): heuristic (preset: word lists and structure, local and free), model (one guarded model call per message that no existing annotation already describes), hybrid (the local reading first, the model only where it found nothing) or off. The guardian is a secretary: it builds a representation of the conversation beside the raw messages and never changes them. Runtime profile guardian (method). Default: heuristic.",
         "human": {
           "label": {
@@ -2429,6 +2581,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "guardian",
+          "pointer": "/promotion/active"
+        },
         "description": "What the guardian does when a hypothesis about you gathers enough weight: ask (ask at the first occurrence), propose (preset: propose a rule with its evidence at the threshold) or apply (write the rule at the higher threshold and say so; always reversible). The thresholds, the escalation curve and the weights are data in the runtime profile guardian. Default: propose.",
         "human": {
           "label": {
@@ -2489,7 +2645,11 @@
             "guardian.model_read",
             "ports.show"
           ],
-          "technical_only": true
+          "technical_only": true,
+          "when_unset": {
+            "pl": "rola Strażnik, potem rola Analiza w tle, potem bez modelu (tylko listy słów)",
+            "en": "the Guardian role, else the background analysis role, else no model (word lists only)"
+          }
         }
       },
       {
@@ -2520,7 +2680,11 @@
           "flows": [
             "chat.send",
             "guardian.compile"
-          ]
+          ],
+          "when_unset": {
+            "pl": "poziomy z profilu strażnika",
+            "en": "the levels of the guardian profile"
+          }
         }
       },
       {
@@ -2529,6 +2693,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "guardian",
+          "pointer": "/annotations/analyzer/active"
+        },
         "description": "Whether the semantic analyzer's one prompt also returns the segment categories of a message (correction, preference, exception, digression, joke, instruction ...) and its topic thread, written to the shared annotation layer: auto (preset: when something reads them - a guardian that uses a model, the lean representation, the thread filter), on or off (the classic prompt: entities, topics, relations). One call per message either way. Runtime profile guardian (annotations.analyzer). Default: auto. The flow follows the class of the analysis model (models.flows, calibration): a frontier-class model gets one call for everything, a cheap one the classic call and one narrow question for the segments.",
         "human": {
           "label": {
@@ -2562,6 +2730,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "guardian",
+          "pointer": "/representation/thread_filter/active"
+        },
         "description": "Whether the context selector leaves out of a request the messages the analyzer put in another topic thread than the one you are in: off (preset: every thread is sent) or current. The messages stay in the conversation; only the request is lighter. Runtime profile guardian (representation.thread_filter). Default: off.",
         "human": {
           "label": {
@@ -2598,6 +2770,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "guardian",
+          "pointer": "/matching/active"
+        },
         "description": "How the guardian recognises that several corrections are the same thing: overlap (preset: shared words and concepts, local and free), embedding (then the embedding tier of the search engine when available), model (then one guarded model question per candidate) or user (only what you declare, guardian merge). A wrong join is separated again with guardian unmerge, or by answering no to its proposal. Runtime profile guardian (matching). Default: overlap.",
         "human": {
           "label": {
@@ -2629,6 +2805,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "guardian",
+          "pointer": "/privacy/visibility/active"
+        },
         "description": "Whether the rules the guardian keeps about you (scope person or wider) go with a request: send (preset) or off. Resolved in the scope chain (R47): a rule of one conversation can set it to off there. Only the normalized text of a rule is sent, never the quotes it was heard in. Runtime profile guardian (privacy.visibility). Default: send.",
         "human": {
           "label": {
@@ -2662,6 +2842,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "guardian",
+          "pointer": "/representation/active"
+        },
         "description": "What the context selector sends of a conversation: raw (preset: the messages as they are, request bytes unchanged), denoised (your messages at level L1, without fillers, repetitions and restarts), lean (level L2), guardian (L1 and a run of clarifications replaced by one compiled instruction) or mixed (the raw messages followed by the compiled instruction); or a preset of your own in the profile guardian (representation.presets). A value that the scope chain resolves: accepting a proposal of the guardian sets guardian for that conversation as a rule you can switch off. The compatibility mode (system prompt and raw conversation only) is unaffected. Default: raw.",
         "human": {
           "label": {
@@ -2725,7 +2909,11 @@
           "group": "rozmowa",
           "flows": [
             "chat.send"
-          ]
+          ],
+          "when_unset": {
+            "pl": "przepływ klasy modelu",
+            "en": "the flow of the model's class"
+          }
         }
       },
       {
@@ -2734,6 +2922,10 @@
         "group": "loom",
         "type": "boolean",
         "has_default": false,
+        "preset_from": {
+          "profile": "graph_entry",
+          "pointer": "/environments/settings/auto_sync/value"
+        },
         "description": "Before answering a question about environments (what can I do on my phone, in this directory), bring the environment, capability and access nodes of the graph up to date from their sources. Off: answer from the nodes as they are (environments.sync does it on request). Runtime profile graph_entry (environments.settings). Default: true.",
         "human": {
           "label": {
@@ -2765,6 +2957,10 @@
         "group": "loom",
         "type": "boolean",
         "has_default": false,
+        "preset_from": {
+          "profile": "graph_entry",
+          "pointer": "/environments/settings/probe_paths/value"
+        },
         "description": "A question about a directory asks the operating system about it (exists, readable, writable); nothing in it is read. Off: only what the graph already holds. Runtime profile graph_entry (environments.settings). Default: true.",
         "human": {
           "label": {
@@ -2818,7 +3014,11 @@
             "tool_source.add",
             "tool_source.sync",
             "tool_source.trust"
-          ]
+          ],
+          "when_unset": {
+            "pl": "brak źródeł narzędzi",
+            "en": "no tool source"
+          }
         }
       },
       {
@@ -2849,7 +3049,11 @@
           "flows": [
             "chat.send",
             "goal.typing"
-          ]
+          ],
+          "when_unset": {
+            "pl": "własne opcje silnika kontekstu",
+            "en": "the context engine's own options"
+          }
         }
       },
       {
@@ -2879,7 +3083,11 @@
           "group": "rozmowa",
           "flows": [
             "chat.send"
-          ]
+          ],
+          "when_unset": {
+            "pl": "profil rozumowania jak wbudowany",
+            "en": "the reasoning profile as shipped"
+          }
         }
       },
       {
@@ -2910,7 +3118,11 @@
           "flows": [
             "knowledge.propose_semantics",
             "analysis.run"
-          ]
+          ],
+          "when_unset": {
+            "pl": "wbudowane prompty",
+            "en": "the shipped prompts"
+          }
         }
       },
       {
@@ -2941,7 +3153,11 @@
           "flows": [
             "knowledge.propose_semantics",
             "analysis.run"
-          ]
+          ],
+          "when_unset": {
+            "pl": "folder prompts w katalogu danych",
+            "en": "the prompts folder of the data directory"
+          }
         }
       },
       {
@@ -2971,7 +3187,11 @@
           "subgroup": "limity",
           "flows": [
             "knowledge.propose_semantics"
-          ]
+          ],
+          "when_unset": {
+            "pl": "bez dopuszczenia przed analizą",
+            "en": "no admission asked before the analysis"
+          }
         }
       },
       {
@@ -3001,7 +3221,11 @@
           "subgroup": "synchronizacja",
           "flows": [
             "github.sync"
-          ]
+          ],
+          "when_unset": {
+            "pl": "synchronizacja GitHub pyta o repozytorium",
+            "en": "GitHub sync asks which repository"
+          }
         }
       },
       {
@@ -3031,7 +3255,11 @@
           "subgroup": "wybor",
           "flows": [
             "goal.typing"
-          ]
+          ],
+          "when_unset": {
+            "pl": "wbudowane słowa sygnałowe",
+            "en": "the shipped cue words"
+          }
         }
       },
       {
@@ -3061,7 +3289,11 @@
           "subgroup": "analiza",
           "flows": [
             "catalog.scan"
-          ]
+          ],
+          "when_unset": {
+            "pl": "własne opcje katalogu",
+            "en": "the catalogue's own options"
+          }
         }
       },
       {
@@ -3092,7 +3324,11 @@
           "flows": [
             "usage.spend",
             "use_model"
-          ]
+          ],
+          "when_unset": {
+            "pl": "wbudowane szablony kluczy",
+            "en": "the shipped key templates"
+          }
         }
       },
       {
@@ -3122,7 +3358,11 @@
           "subgroup": "ksiega",
           "flows": [
             "usage.compact"
-          ]
+          ],
+          "when_unset": {
+            "pl": "profil porządkowania jak wbudowany",
+            "en": "the compaction profile as shipped"
+          }
         }
       },
       {
@@ -3150,7 +3390,11 @@
           ],
           "group": "prywatnosc",
           "subgroup": "porzadki",
-          "flows": []
+          "flows": [],
+          "when_unset": {
+            "pl": "presety porządków (cleanup.h)",
+            "en": "the housekeeping presets (cleanup.h)"
+          }
         }
       },
       {
@@ -3365,6 +3609,10 @@
         "group": "context",
         "type": "string",
         "has_default": false,
+        "preset_from": {
+          "profile": "chat_context",
+          "pointer": "/context_order"
+        },
         "description": "Order of the context sections of a chat request, a name from the runtime profile chat_context (orders, with the user's profile overlay): legacy (system, memory, graph, project, history; the profile's preset) or stable_first (system, memory, project, history, graph: the stable sections first so a provider's prompt cache hits), or any order the user adds to profiles/chat_context.pack. The listed values are that profile's orders (values_from), so a write refuses only a name the effective profile does not know. Empty = the profile's context_order. A request may name its own order (option context_order). Default: none (the profile's preset).",
         "values": [
           {
@@ -3460,7 +3708,11 @@
           "subgroup": "wyglad",
           "flows": [
             "chat.send"
-          ]
+          ],
+          "when_unset": {
+            "pl": "angielski",
+            "en": "English"
+          }
         }
       },
       {
@@ -3492,7 +3744,11 @@
             "use_model",
             "chat.send",
             "agent.run"
-          ]
+          ],
+          "when_unset": {
+            "pl": "to, co mówią adapter i dostawca",
+            "en": "what the adapter and the provider say"
+          }
         }
       },
       {
@@ -3524,7 +3780,11 @@
             "use_model",
             "chat.send",
             "providers.list"
-          ]
+          ],
+          "when_unset": {
+            "pl": "tylko wbudowani dostawcy",
+            "en": "only the built-in providers"
+          }
         }
       },
       {
@@ -4196,6 +4456,7 @@
         "scope": "config",
         "group": "context",
         "type": "integer",
+        "unit": "bytes",
         "has_default": true,
         "description": "Most bytes of a context receipt stored whole in the auto mode of context_receipt_store; a larger receipt is stored as a summary with the reason. 0 = no cap. Default: 65536.",
         "status": {
@@ -4576,6 +4837,57 @@
                 },
                 "technical_only": {
                   "type": "boolean"
+                },
+                "when_unset": {
+                  "type": "object",
+                  "required": [
+                    "pl",
+                    "en"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "pl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "en": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "description": "What the reader does when no level gives a value and no profile holds a preset (the preset in code), in words; shown with the chip Preset (in code)."
+                },
+                "summary": {
+                  "type": "object",
+                  "description": "How an object value is said in words: the member at `pointer` rendered with `text` ({{v}}).",
+                  "required": [
+                    "pointer",
+                    "text"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "pointer": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "object",
+                      "required": [
+                        "pl",
+                        "en"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "pl": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "en": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  }
                 }
               }
             },
@@ -4763,6 +5075,28 @@
                 "warn"
               ],
               "description": "What a write of a value outside a closed `values` list does on every write path (settings.set, PATCH /api/config, loom_set_config, `loom config set`): refuse (the reader rejects unknown values, or the list is the field's contract) or warn (the reader falls back: stored, the write names the list). Absent = warn. Clearing the key (null) is always accepted. Ignored with values_open."
+            },
+            "preset_from": {
+              "type": "object",
+              "description": "Where the reader of a field without a config preset takes its preset (a runtime profile and a JSON pointer in its effective values); read live by settings_fields() into preset_value / preset_source, never copied into this pack.",
+              "required": [
+                "profile",
+                "pointer"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "profile": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "pointer": {
+                  "type": "string"
+                }
+              }
+            },
+            "unit": {
+              "type": "string",
+              "description": "The unit of a number, for saying it in words (bytes: 64 GB); value_words.units of graph_sources.pack says each unit."
             }
           },
           "description": "A settings field. Only key and scope (which identify the entry) are required to load: a hand-written overlay entry missing group, type, has_default, description or human still loads, and settings_fields_problems lists what it lacks (a missing piece is a problem on the list, never a load error)."
@@ -5022,6 +5356,57 @@
                 },
                 "technical_only": {
                   "type": "boolean"
+                },
+                "when_unset": {
+                  "type": "object",
+                  "required": [
+                    "pl",
+                    "en"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "pl": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "en": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "description": "What the reader does when no level gives a value and no profile holds a preset (the preset in code), in words; shown with the chip Preset (in code)."
+                },
+                "summary": {
+                  "type": "object",
+                  "description": "How an object value is said in words: the member at `pointer` rendered with `text` ({{v}}).",
+                  "required": [
+                    "pointer",
+                    "text"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "pointer": {
+                      "type": "string"
+                    },
+                    "text": {
+                      "type": "object",
+                      "required": [
+                        "pl",
+                        "en"
+                      ],
+                      "additionalProperties": false,
+                      "properties": {
+                        "pl": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "en": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

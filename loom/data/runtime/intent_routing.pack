@@ -4609,7 +4609,9 @@
           "original": [
             "focus"
           ],
-          "takes_scope": false
+          "takes_scope": false,
+          "graph_arg": "focus",
+          "graph_match": "exact"
         },
         {
           "id": "graph.navigate.enter.en",
@@ -4622,7 +4624,9 @@
           "original": [
             "focus"
           ],
-          "takes_scope": false
+          "takes_scope": false,
+          "graph_arg": "focus",
+          "graph_match": "exact"
         },
         {
           "id": "graph.card.pl",
@@ -6072,6 +6076,15 @@
                 },
                 "check_arg": {
                   "type": "string"
+                },
+                "graph_arg": {
+                  "type": "string",
+                  "description": "M1-K0: the command is kept only when the text of this argument names a node of the graph projection (find_address); else the sentence stays a message („przejdź do rzeczy”)."
+                },
+                "graph_match": {
+                  "type": "string",
+                  "enum": ["exact", "words"],
+                  "description": "How graph_arg is matched: exact (the whole name, an alias or the id, word by word with stems) or words (a name that has every word)."
                 }
               },
               "additionalProperties": false

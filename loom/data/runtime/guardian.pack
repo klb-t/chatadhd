@@ -1791,7 +1791,17 @@
             "readers": [
               "loom/src/chat/chat_engine.cpp scoped_default_model"
             ]
-          }
+          },
+          "today_reads": [
+            {
+              "setting": "default_model",
+              "level": "chain",
+              "meaning": {
+                "pl": "„Model rozmowy” (default_model) przez łańcuch zakresów: rozmowa → jednostki → osoba → instalacja.",
+                "en": "“Conversation model” (default_model) through the scope chain: conversation → units → person → installation."
+              }
+            }
+          ]
         },
         "intent": {
           "role": "intent.routing",
@@ -1846,7 +1856,27 @@
             "readers": [
               "loom/src/actions/route.cpp model_route (intent_routing.pack method.model_setting, method.model_fallback_setting)"
             ]
-          }
+          },
+          "today_reads": [
+            {
+              "profile": "intent_routing",
+              "pointer": "/method/model_setting",
+              "level": "person",
+              "meaning": {
+                "pl": "Pole wskazane przez intent_routing.pack method.model_setting (dziś „Model rozpoznawania poleceń”, intent_routing_model), wprost z Twoich ustawień.",
+                "en": "The field named by intent_routing.pack method.model_setting (today “Command recognition model”, intent_routing_model), directly from your settings."
+              }
+            },
+            {
+              "profile": "intent_routing",
+              "pointer": "/method/model_fallback_setting",
+              "level": "person",
+              "meaning": {
+                "pl": "Gdy jest puste: pole wskazane przez method.model_fallback_setting (dziś „Model rozmowy”, default_model), wprost z Twoich ustawień.",
+                "en": "When it is empty: the field named by method.model_fallback_setting (today “Conversation model”, default_model), directly from your settings."
+              }
+            }
+          ]
         },
         "image": {
           "role": "image.generate",
@@ -1892,7 +1922,17 @@
             "readers": [
               "loom/src/actions/runner.cpp (params[].setting of depict)"
             ]
-          }
+          },
+          "today_reads": [
+            {
+              "setting": "image_model",
+              "level": "person",
+              "meaning": {
+                "pl": "Model podany w poleceniu, a bez niego „Model obrazów” (image_model) z Twoich ustawień.",
+                "en": "The model the command names, else “Image model” (image_model) from your settings."
+              }
+            }
+          ]
         },
         "speech": {
           "role": "speech.synthesize",
@@ -1938,7 +1978,17 @@
             "readers": [
               "loom/src/actions/runner.cpp (params[].setting of narrate)"
             ]
-          }
+          },
+          "today_reads": [
+            {
+              "setting": "speech_model",
+              "level": "person",
+              "meaning": {
+                "pl": "Model podany w poleceniu, a bez niego „Model mowy” (speech_model) z Twoich ustawień.",
+                "en": "The model the command names, else “Speech model” (speech_model) from your settings."
+              }
+            }
+          ]
         },
         "embed": {
           "role": "embed.default",
@@ -2231,7 +2281,8 @@
       "policies_note": {
         "pl": "Polityka = łańcuch kroków czytany od góry; pierwszy krok, który da model, wygrywa. Kroki: wprost (pole ustawień, przez łańcuch zakresów, gdy praca zna rozmowę), rola (Twój wybór dla roli albo preset), względem (relative_to — tylko gdy napiszesz go sam), brak. Polityka „planowana” opisuje łańcuch, którego jej praca jeszcze nie czyta; co ta praca robi dziś, mówi jej „dziś”.",
         "en": "A policy = a chain of steps read from the top; the first step that yields a model wins. Steps: explicit (a settings field, through the scope chain when the job knows the conversation), role (your choice for the role, or the preset), relative_to (only when you write it yourself), none. A “planned” policy describes a chain its job does not read yet; what that job does today is its “today”.",
-        "code": "annotations::resolve_model reads a policy by name; `code` of a step is a note for developers (where the code does what the meaning says)."
+        "code": "annotations::resolve_model reads a policy by name; `code` of a step is a note for developers (where the code does what the meaning says).",
+        "today_reads": "today_reads of a policy no reader reads yet: the settings today's reader reads, in order (setting, or a runtime profile pointer that names the setting; level person = config, chain = the scope chain); roles.resolved shows the model they give and marks the policy's own chain described, not read."
       },
       "tier_rule": {
         "pl": "Dziś klasę wybiera tylko nazwa: pierwsza klasa po kolei, której wzorzec jest fragmentem nazwy (bez rozróżniania wielkości liter); kolejność klas ma znaczenie („mini” w klasie taniej łapie „gemini-…-pro”). Planowane (price_path): najpierw cena z rejestru — pierwsza klasa po kolei, której próg max_per_million ≥ cena — a dopiero potem nazwa.",
@@ -2239,9 +2290,14 @@
       },
       "unknown_tier": {
         "reason": {
-          "pl": "nieznana — żaden wzorzec nazwy żadnej klasy nie pasuje (dziś ceny nikt nie podaje; z ceną także wtedy, gdy nie mieści się w progu żadnej klasy) → przepływ unknown = kilka wąskich pytań",
-          "en": "unknown — no name pattern of any class matches (no reader passes a price today; with a price, also when it fits no class threshold) → flow unknown = a few narrow questions"
-        }
+          "pl": "nieznana — żaden wzorzec nazwy żadnej klasy nie pasuje (dziś ceny nikt nie podaje; z ceną także wtedy, gdy nie mieści się w progu żadnej klasy)",
+          "en": "unknown — no name pattern of any class matches (no reader passes a price today; with a price, also when it fits no class threshold)"
+        },
+        "flow_note": {
+          "pl": "→ przepływ unknown = kilka wąskich pytań",
+          "en": "→ flow unknown = a few narrow questions"
+        },
+        "flow_note_when": "said only for a policy whose readers act on the class of the model (policies with readers)"
       },
       "price_path": {
         "state": "planned",

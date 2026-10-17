@@ -437,6 +437,10 @@
           "en": "Self-model",
           "pl": "Samomodel"
         },
+        "why": {
+          "en": "What the app says about itself: its principles, operators and inference rules.",
+          "pl": "Co aplikacja mówi o sobie: jej zasady, operatory i reguły wnioskowania."
+        },
         "axes": {
           "about": "application",
           "kind": "knowledge",
@@ -461,6 +465,10 @@
           "en": "Technologies and adapters",
           "pl": "Technologie i adaptery"
         },
+        "why": {
+          "en": "The formats and adapters the app can read and talk to.",
+          "pl": "Formaty i adaptery, które aplikacja umie czytać i z którymi rozmawia."
+        },
         "axes": {
           "about": "application",
           "kind": "resource",
@@ -475,6 +483,10 @@
         "label": {
           "en": "ROM (read-only memory)",
           "pl": "ROM (pamięć tylko do odczytu)"
+        },
+        "why": {
+          "en": "What is mounted first and read-only: the presets everything else starts from.",
+          "pl": "To, co montuje się pierwsze i tylko do odczytu: presety, od których zaczyna się wszystko inne."
         },
         "axes": {
           "about": "application",
@@ -497,6 +509,10 @@
           "en": "Interfaces",
           "pl": "Interfejsy"
         },
+        "why": {
+          "en": "The ways in: the C interface, the HTTP server, the command line, the web screen.",
+          "pl": "Drogi wejścia: interfejs C, serwer HTTP, wiersz poleceń, ekran w przeglądarce."
+        },
         "axes": {
           "about": "application",
           "kind": "resource",
@@ -511,6 +527,10 @@
         "label": {
           "en": "Profiles and settings",
           "pl": "Profile i ustawienia"
+        },
+        "why": {
+          "en": "Every setting in human groups, and the levels a value can come from.",
+          "pl": "Każde ustawienie w ludzkich grupach i poziomy, z których może pochodzić wartość."
         },
         "axes": {
           "about": "application",
@@ -535,6 +555,10 @@
           "en": "Parties",
           "pl": "Podmioty"
         },
+        "why": {
+          "en": "People and organisations: the templates of parties and the entities the analysis found.",
+          "pl": "Ludzie i organizacje: szablony podmiotów i encje, które znalazła analiza."
+        },
         "axes": {
           "about": "party",
           "kind": "data",
@@ -557,6 +581,10 @@
           "en": "Context and projects",
           "pl": "Kontekst i projekty"
         },
+        "why": {
+          "en": "Your conversations, their messages and the projects (units) they belong to.",
+          "pl": "Twoje rozmowy, ich wiadomości i projekty (jednostki), do których należą."
+        },
         "axes": {
           "about": "world",
           "kind": "data",
@@ -576,6 +604,10 @@
           "en": "Methods",
           "pl": "Metody"
         },
+        "why": {
+          "en": "The methods the app knows for doing a kind of work.",
+          "pl": "Metody, które aplikacja zna do danego rodzaju pracy."
+        },
         "axes": {
           "about": "application",
           "kind": "method",
@@ -590,6 +622,10 @@
         "label": {
           "en": "Data and corpora",
           "pl": "Dane i korpusy"
+        },
+        "why": {
+          "en": "What was imported: messages, sources, recognised formats and duplicates.",
+          "pl": "To, co zaimportowano: wiadomości, źródła, rozpoznane formaty i duplikaty."
         },
         "axes": {
           "about": "world",
@@ -616,6 +652,10 @@
           "en": "Knowledge",
           "pl": "Wiedza"
         },
+        "why": {
+          "en": "Claims from the analysis (the evidence layer) and the entities they are about.",
+          "pl": "Twierdzenia z analizy (warstwa dowodów) i encje, których dotyczą."
+        },
         "axes": {
           "about": "world",
           "kind": "knowledge",
@@ -638,6 +678,10 @@
           "en": "Ontology",
           "pl": "Ontologia"
         },
+        "why": {
+          "en": "The classes of things in the graph and the packages of their properties.",
+          "pl": "Klasy rzeczy w grafie i pakiety ich właściwości."
+        },
         "axes": {
           "about": "application",
           "kind": "knowledge",
@@ -654,6 +698,10 @@
           "en": "Provenance and history",
           "pl": "Pochodzenie i historia"
         },
+        "why": {
+          "en": "Where things came from and when: the records of provenance.",
+          "pl": "Skąd się co wzięło i kiedy: zapisy pochodzenia."
+        },
         "axes": {
           "about": "world",
           "kind": "data",
@@ -668,6 +716,10 @@
         "label": {
           "en": "Resource economy",
           "pl": "Ekonomia zasobów"
+        },
+        "why": {
+          "en": "What the work costs: the usage ledger and the bytes kept twice.",
+          "pl": "Ile kosztuje praca: księga zużycia i bajty trzymane podwójnie."
         },
         "axes": {
           "about": "application",
@@ -685,6 +737,10 @@
           "en": "Privacy and consent",
           "pl": "Prywatność i zgody"
         },
+        "why": {
+          "en": "What may be stored, inferred and sent, and to whom.",
+          "pl": "Co wolno zapisać, wywnioskować i wysłać, i komu."
+        },
         "axes": {
           "about": "party",
           "kind": "setting",
@@ -699,6 +755,10 @@
         "label": {
           "en": "Perspectives and views",
           "pl": "Perspektywy i widoki"
+        },
+        "why": {
+          "en": "Ways of looking at the graph: perspectives, kinds of edges and views.",
+          "pl": "Sposoby patrzenia na graf: perspektywy, rodzaje krawędzi i widoki."
         },
         "axes": {
           "about": "application",
@@ -720,6 +780,10 @@
           "en": "Storage and security",
           "pl": "Magazyn i bezpieczeństwo"
         },
+        "why": {
+          "en": "Where the data is kept and how it is protected.",
+          "pl": "Gdzie są dane i jak są chronione."
+        },
         "axes": {
           "about": "application",
           "kind": "data",
@@ -739,6 +803,10 @@
         "label": {
           "en": "You",
           "pl": "Ty"
+        },
+        "why": {
+          "en": "You: the answers of the interview, your preferences, privacy rules, what the app remembers and your interests.",
+          "pl": "Ty: odpowiedzi z wywiadu, Twoje preferencje, zasady prywatności, to, co aplikacja pamięta, i Twoje zainteresowania."
         },
         "axes": {
           "about": "party",
@@ -761,6 +829,10 @@
           "en": "Flows",
           "pl": "Przepływy"
         },
+        "why": {
+          "en": "Everything the app can do, as flows of steps.",
+          "pl": "Wszystko, co aplikacja umie zrobić, jako przepływy kroków."
+        },
         "axes": {
           "about": "application",
           "kind": "method",
@@ -781,6 +853,10 @@
         "label": {
           "en": "Devices and input/output",
           "pl": "Urządzenia i wejście/wyjście"
+        },
+        "why": {
+          "en": "The devices the app can use and the gestures and keys of the navigator.",
+          "pl": "Urządzenia, których aplikacja może używać, oraz gesty i klawisze nawigatora."
         },
         "axes": {
           "about": "world",
@@ -804,6 +880,10 @@
           "en": "Tools and the agent",
           "pl": "Narzędzia i agent"
         },
+        "why": {
+          "en": "The agent and the tools it may call: tool sources, their kinds, the agent's flows and settings.",
+          "pl": "Agent i narzędzia, które może wołać: źródła narzędzi, ich rodzaje, przepływy i ustawienia agenta."
+        },
         "axes": {
           "about": "world",
           "kind": "method",
@@ -824,6 +904,10 @@
         "label": {
           "en": "Providers and connectors",
           "pl": "Dostawcy i konektory"
+        },
+        "why": {
+          "en": "Who does which job: the model roles, the models they resolve to, and the connectors.",
+          "pl": "Kto wykonuje którą pracę: role modeli, modele, które wskazują, i konektory."
         },
         "axes": {
           "about": "world",
@@ -847,6 +931,10 @@
           "en": "Environments",
           "pl": "Środowiska"
         },
+        "why": {
+          "en": "Where the app runs and what it can reach there.",
+          "pl": "Gdzie działa aplikacja i do czego tam sięga."
+        },
         "axes": {
           "about": "world",
           "kind": "resource",
@@ -868,6 +956,10 @@
           "en": "Automations and tasks",
           "pl": "Automatyzacje i zadania"
         },
+        "why": {
+          "en": "What runs without being asked, and the background tasks.",
+          "pl": "Co działa samo, bez proszenia, i zadania w tle."
+        },
         "axes": {
           "about": "application",
           "kind": "method",
@@ -875,13 +967,23 @@
         },
         "bindings": [
           "worker.status"
-        ]
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:automations"
+          }
+        }
       },
       "experiments": {
         "order": 22,
         "label": {
           "en": "Experiments and calibration",
           "pl": "Eksperymenty i kalibracja"
+        },
+        "why": {
+          "en": "Research in progress: everything still in calibration.",
+          "pl": "Badania w toku: wszystko, co jest jeszcze w kalibracji."
         },
         "axes": {
           "about": "application",
@@ -890,7 +992,13 @@
         },
         "bindings": [
           "calibration.items"
-        ]
+        ],
+        "expand": {
+          "view": "graph.navigate",
+          "params": {
+            "focus": "area:experiments"
+          }
+        }
       }
     },
     "bindings": {
@@ -1984,6 +2092,36 @@
           "label": {
             "en": "Tool source",
             "pl": "Źródło narzędzi"
+          }
+        },
+        "automation": {
+          "label": {
+            "en": "Work the app does on its own",
+            "pl": "Praca, którą aplikacja robi sama"
+          }
+        },
+        "background_task": {
+          "label": {
+            "en": "Background task",
+            "pl": "Zadanie w tle"
+          }
+        },
+        "calibration_item": {
+          "label": {
+            "en": "Item in calibration",
+            "pl": "Element w kalibracji"
+          }
+        },
+        "tool_source_kind": {
+          "label": {
+            "en": "Kind of tool source",
+            "pl": "Rodzaj źródła narzędzi"
+          }
+        },
+        "graph_link": {
+          "label": {
+            "en": "Link to a node shown elsewhere",
+            "pl": "Odnośnik do węzła z innego miejsca"
           }
         }
       },

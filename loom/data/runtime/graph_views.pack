@@ -279,6 +279,10 @@
     },
     "edge_kinds": {
       "relation": {
+        "label": {
+          "en": "relation",
+          "pl": "powiązanie"
+        },
         "meaning": {
           "en": "Any relation between two nodes (root of the kind tree).",
           "pl": "Dowolna relacja między dwoma węzłami (korzeń drzewa rodzajów)."
@@ -287,6 +291,10 @@
         "perspectives": []
       },
       "dependency": {
+        "label": {
+          "en": "dependency",
+          "pl": "zależność"
+        },
         "meaning": {
           "en": "Source needs the target to exist or work.",
           "pl": "Źródło potrzebuje celu, by istnieć lub działać."
@@ -298,6 +306,10 @@
         ]
       },
       "depends_on": {
+        "label": {
+          "en": "depends on",
+          "pl": "zależy od"
+        },
         "meaning": {
           "en": "Source depends on target.",
           "pl": "Źródło zależy od celu."
@@ -310,6 +322,10 @@
         ]
       },
       "required_by": {
+        "label": {
+          "en": "required by",
+          "pl": "wymagane przez"
+        },
         "meaning": {
           "en": "Source is needed by target.",
           "pl": "Źródło jest potrzebne celowi."
@@ -322,6 +338,10 @@
         ]
       },
       "imports": {
+        "label": {
+          "en": "imports",
+          "pl": "importuje"
+        },
         "meaning": {
           "en": "Source module imports target module.",
           "pl": "Moduł źródłowy importuje moduł docelowy."
@@ -334,6 +354,10 @@
         ]
       },
       "imported_by": {
+        "label": {
+          "en": "imported by",
+          "pl": "importowane przez"
+        },
         "meaning": {
           "en": "Source module is imported by target.",
           "pl": "Moduł jest importowany przez cel."
@@ -346,6 +370,10 @@
         ]
       },
       "requires": {
+        "label": {
+          "en": "requires",
+          "pl": "wymaga"
+        },
         "meaning": {
           "en": "Source requires target (build, runtime or data).",
           "pl": "Źródło wymaga celu (budowa, działanie lub dane)."
@@ -358,6 +386,10 @@
         ]
       },
       "calls": {
+        "label": {
+          "en": "calls",
+          "pl": "wywołuje"
+        },
         "meaning": {
           "en": "Source function/method calls target.",
           "pl": "Funkcja/metoda źródłowa wywołuje docelową."
@@ -370,6 +402,10 @@
         ]
       },
       "called_by": {
+        "label": {
+          "en": "called by",
+          "pl": "wywoływane przez"
+        },
         "meaning": {
           "en": "Source is called by target.",
           "pl": "Źródło jest wywoływane przez cel."
@@ -382,6 +418,10 @@
         ]
       },
       "defines": {
+        "label": {
+          "en": "defines",
+          "pl": "definiuje"
+        },
         "meaning": {
           "en": "Source file/module defines target symbol.",
           "pl": "Plik/moduł definiuje symbol."
@@ -395,6 +435,10 @@
         ]
       },
       "defined_in": {
+        "label": {
+          "en": "defined in",
+          "pl": "zdefiniowane w"
+        },
         "meaning": {
           "en": "Source symbol is defined in target.",
           "pl": "Symbol jest zdefiniowany w celu."
@@ -405,6 +449,10 @@
         "perspectives": []
       },
       "implements": {
+        "label": {
+          "en": "implements",
+          "pl": "implementuje"
+        },
         "meaning": {
           "en": "Source implements target (interface, requirement, idea).",
           "pl": "Źródło realizuje cel (interfejs, wymaganie, ideę)."
@@ -418,6 +466,10 @@
         ]
       },
       "implemented_by": {
+        "label": {
+          "en": "implemented by",
+          "pl": "implementowane przez"
+        },
         "meaning": {
           "en": "Source is implemented by target.",
           "pl": "Źródło jest realizowane przez cel."
@@ -428,6 +480,10 @@
         "perspectives": []
       },
       "part_of": {
+        "label": {
+          "en": "part of",
+          "pl": "część"
+        },
         "meaning": {
           "en": "Source is a part of target.",
           "pl": "Źródło jest częścią celu."
@@ -440,6 +496,10 @@
         ]
       },
       "contains": {
+        "label": {
+          "en": "contains",
+          "pl": "zawiera"
+        },
         "meaning": {
           "en": "Source contains target.",
           "pl": "Źródło zawiera cel."
@@ -452,6 +512,10 @@
         ]
       },
       "lineage": {
+        "label": {
+          "en": "lineage",
+          "pl": "pochodzenie"
+        },
         "meaning": {
           "en": "Source and target are versions or forks of one another.",
           "pl": "Źródło i cel to wersje lub rozgałęzienia tego samego."
@@ -463,6 +527,10 @@
         ]
       },
       "derived_from": {
+        "label": {
+          "en": "derived from",
+          "pl": "wyprowadzone z"
+        },
         "meaning": {
           "en": "Source was derived from target.",
           "pl": "Źródło powstało z celu."
@@ -475,6 +543,10 @@
         ]
       },
       "source_of": {
+        "label": {
+          "en": "source of",
+          "pl": "źródło dla"
+        },
         "meaning": {
           "en": "Source is what target was derived from.",
           "pl": "Źródło jest tym, z czego powstał cel."
@@ -487,6 +559,10 @@
         ]
       },
       "version_of": {
+        "label": {
+          "en": "version of",
+          "pl": "wersja"
+        },
         "meaning": {
           "en": "Source is a version of target (the thing itself).",
           "pl": "Źródło jest wersją celu (samej rzeczy)."
@@ -499,6 +575,10 @@
         ]
       },
       "has_version": {
+        "label": {
+          "en": "has a version",
+          "pl": "ma wersję"
+        },
         "meaning": {
           "en": "Source has target as a version.",
           "pl": "Źródło ma cel jako wersję."
@@ -511,6 +591,10 @@
         ]
       },
       "previous_version": {
+        "label": {
+          "en": "previous version",
+          "pl": "poprzednia wersja"
+        },
         "meaning": {
           "en": "Target is the version before source.",
           "pl": "Cel jest wersją poprzedzającą źródło."
@@ -523,6 +607,10 @@
         ]
       },
       "next_version": {
+        "label": {
+          "en": "next version",
+          "pl": "następna wersja"
+        },
         "meaning": {
           "en": "Target is the version after source.",
           "pl": "Cel jest wersją następującą po źródle."
@@ -535,6 +623,10 @@
         ]
       },
       "forked_from": {
+        "label": {
+          "en": "forked from",
+          "pl": "odgałęzione od"
+        },
         "meaning": {
           "en": "Source was forked from target.",
           "pl": "Źródło rozgałęziono z celu."
@@ -546,6 +638,10 @@
         ]
       },
       "based_on": {
+        "label": {
+          "en": "based on",
+          "pl": "oparte na"
+        },
         "meaning": {
           "en": "Source is based on target.",
           "pl": "Źródło opiera się na celu."
@@ -557,6 +653,10 @@
         ]
       },
       "evolved_into": {
+        "label": {
+          "en": "evolved into",
+          "pl": "przekształciło się w"
+        },
         "meaning": {
           "en": "Source evolved into target.",
           "pl": "Źródło ewoluowało w cel."
@@ -568,6 +668,10 @@
         ]
       },
       "merged_into": {
+        "label": {
+          "en": "merged into",
+          "pl": "scalone z"
+        },
         "meaning": {
           "en": "Source was merged into target.",
           "pl": "Źródło zostało scalone w cel."
@@ -579,6 +683,10 @@
         ]
       },
       "supersedes": {
+        "label": {
+          "en": "supersedes",
+          "pl": "zastępuje"
+        },
         "meaning": {
           "en": "Source replaces target.",
           "pl": "Źródło zastępuje cel."
@@ -591,6 +699,10 @@
         ]
       },
       "superseded_by": {
+        "label": {
+          "en": "superseded by",
+          "pl": "zastąpione przez"
+        },
         "meaning": {
           "en": "Source is replaced by target.",
           "pl": "Źródło jest zastąpione przez cel."
@@ -603,6 +715,10 @@
         ]
       },
       "teleological": {
+        "label": {
+          "en": "purpose",
+          "pl": "cel"
+        },
         "meaning": {
           "en": "Source has a purpose or goal in target (why).",
           "pl": "Źródło ma cel lub sens w celu (dlaczego)."
@@ -614,6 +730,10 @@
         ]
       },
       "serves_goal": {
+        "label": {
+          "en": "serves the goal",
+          "pl": "służy celowi"
+        },
         "meaning": {
           "en": "Source exists to serve target goal.",
           "pl": "Źródło istnieje, by służyć celowi."
@@ -626,6 +746,10 @@
         ]
       },
       "served_by": {
+        "label": {
+          "en": "served by",
+          "pl": "obsługiwane przez"
+        },
         "meaning": {
           "en": "Source goal is served by target.",
           "pl": "Cel źródła jest realizowany przez cel."
@@ -638,6 +762,10 @@
         ]
       },
       "motivates": {
+        "label": {
+          "en": "motivates",
+          "pl": "motywuje"
+        },
         "meaning": {
           "en": "Source is the reason for target.",
           "pl": "Źródło jest powodem celu."
@@ -650,6 +778,10 @@
         ]
       },
       "motivated_by": {
+        "label": {
+          "en": "motivated by",
+          "pl": "motywowane przez"
+        },
         "meaning": {
           "en": "Source is done because of target.",
           "pl": "Źródło robimy z powodu celu."
@@ -662,6 +794,10 @@
         ]
       },
       "achieves": {
+        "label": {
+          "en": "achieves",
+          "pl": "osiąga"
+        },
         "meaning": {
           "en": "Source achieves target outcome.",
           "pl": "Źródło osiąga rezultat."
@@ -674,6 +810,10 @@
         ]
       },
       "achieved_by": {
+        "label": {
+          "en": "achieved by",
+          "pl": "osiągane przez"
+        },
         "meaning": {
           "en": "Source outcome is achieved by target.",
           "pl": "Rezultat źródła osiąga cel."
@@ -686,6 +826,10 @@
         ]
       },
       "purpose_of": {
+        "label": {
+          "en": "purpose of",
+          "pl": "cel dla"
+        },
         "meaning": {
           "en": "Source is the purpose of target.",
           "pl": "Źródło jest przeznaczeniem celu."
@@ -697,6 +841,10 @@
         ]
       },
       "mentions": {
+        "label": {
+          "en": "mentions",
+          "pl": "wspomina"
+        },
         "meaning": {
           "en": "Source mentions target.",
           "pl": "Źródło wspomina o celu."
@@ -706,6 +854,10 @@
         "perspectives": []
       },
       "references": {
+        "label": {
+          "en": "references",
+          "pl": "odwołuje się do"
+        },
         "meaning": {
           "en": "Source refers to target.",
           "pl": "Źródło odwołuje się do celu."
@@ -715,6 +867,10 @@
         "perspectives": []
       },
       "reply_to": {
+        "label": {
+          "en": "reply to",
+          "pl": "odpowiedź na"
+        },
         "meaning": {
           "en": "Source replies to target.",
           "pl": "Źródło odpowiada na cel."
@@ -724,6 +880,10 @@
         "perspectives": []
       },
       "generated_by": {
+        "label": {
+          "en": "generated by",
+          "pl": "wygenerowane przez"
+        },
         "meaning": {
           "en": "Source was generated by target.",
           "pl": "Źródło wygenerował cel."
@@ -733,6 +893,10 @@
         "perspectives": []
       },
       "tagged_with": {
+        "label": {
+          "en": "tagged with",
+          "pl": "oznaczone tematem"
+        },
         "meaning": {
           "en": "Source is tagged with target topic.",
           "pl": "Źródło ma temat."
@@ -742,6 +906,10 @@
         "perspectives": []
       },
       "contradicts": {
+        "label": {
+          "en": "contradicts",
+          "pl": "przeczy"
+        },
         "meaning": {
           "en": "Source contradicts target.",
           "pl": "Źródło przeczy celowi."
@@ -752,6 +920,10 @@
         "perspectives": []
       },
       "related": {
+        "label": {
+          "en": "related",
+          "pl": "powiązane"
+        },
         "meaning": {
           "en": "Loosely related (default when nothing more is known).",
           "pl": "Luźno powiązane (domyślne, gdy nic więcej nie wiadomo)."
@@ -762,6 +934,10 @@
         "perspectives": []
       },
       "same_as": {
+        "label": {
+          "en": "the same as",
+          "pl": "to samo co"
+        },
         "meaning": {
           "en": "Source and target are the same thing.",
           "pl": "Źródło i cel to to samo."
@@ -772,6 +948,10 @@
         "perspectives": []
       },
       "inherits_from": {
+        "label": {
+          "en": "inherits from",
+          "pl": "dziedziczy z"
+        },
         "meaning": {
           "en": "Source scope level inherits its value from the more general target level.",
           "pl": "Poziom zakresu dziedziczy wartość z ogólniejszego poziomu."
@@ -784,6 +964,10 @@
         ]
       },
       "inherited_by": {
+        "label": {
+          "en": "inherited by",
+          "pl": "dziedziczone przez"
+        },
         "meaning": {
           "en": "Source level hands its value down to the more specific target level.",
           "pl": "Poziom przekazuje wartość bardziej szczegółowemu poziomowi."
@@ -796,6 +980,10 @@
         ]
       },
       "overrides": {
+        "label": {
+          "en": "overrides",
+          "pl": "przesłania"
+        },
         "meaning": {
           "en": "Source level supplied the value and overrides the target level.",
           "pl": "Poziom dostarczył wartość i nadpisuje poziom docelowy."
@@ -808,6 +996,10 @@
         ]
       },
       "overridden_by": {
+        "label": {
+          "en": "overridden by",
+          "pl": "przesłonięte przez"
+        },
         "meaning": {
           "en": "Source level is overridden by the target level.",
           "pl": "Poziom jest nadpisany przez poziom docelowy."
@@ -820,6 +1012,10 @@
         ]
       },
       "environment_link": {
+        "label": {
+          "en": "environment link",
+          "pl": "powiązanie środowiska"
+        },
         "meaning": {
           "en": "Relations of environments and access (S2).",
           "pl": "Relacje środowisk i dostępu (S2)."
@@ -831,6 +1027,10 @@
         ]
       },
       "has_capability": {
+        "label": {
+          "en": "has the capability",
+          "pl": "ma zdolność"
+        },
         "meaning": {
           "en": "Source environment has target capability.",
           "pl": "Środowisko ma zdolność."
@@ -843,6 +1043,10 @@
         ]
       },
       "capability_of": {
+        "label": {
+          "en": "capability of",
+          "pl": "zdolność"
+        },
         "meaning": {
           "en": "Source capability belongs to target environment.",
           "pl": "Zdolność należy do środowiska."
@@ -855,6 +1059,10 @@
         ]
       },
       "accessed_via": {
+        "label": {
+          "en": "accessed via",
+          "pl": "dostęp przez"
+        },
         "meaning": {
           "en": "Source is reached via target access.",
           "pl": "Do źródła dochodzi się przez dostęp."
@@ -867,6 +1075,10 @@
         ]
       },
       "gives_access_to": {
+        "label": {
+          "en": "gives access to",
+          "pl": "daje dostęp do"
+        },
         "meaning": {
           "en": "Source access leads to target.",
           "pl": "Dostęp prowadzi do celu."
@@ -879,6 +1091,10 @@
         ]
       },
       "requires_access": {
+        "label": {
+          "en": "requires access",
+          "pl": "wymaga dostępu"
+        },
         "meaning": {
           "en": "Source needs target access.",
           "pl": "Źródło potrzebuje dostępu."
@@ -891,6 +1107,10 @@
         ]
       },
       "access_needed_by": {
+        "label": {
+          "en": "access needed by",
+          "pl": "dostępu potrzebuje"
+        },
         "meaning": {
           "en": "Source access is needed by target.",
           "pl": "Dostęp jest potrzebny celowi."
@@ -903,6 +1123,10 @@
         ]
       },
       "stored_in": {
+        "label": {
+          "en": "stored in",
+          "pl": "przechowywane w"
+        },
         "meaning": {
           "en": "Source is stored in target.",
           "pl": "Źródło jest przechowywane w celu."
@@ -915,6 +1139,10 @@
         ]
       },
       "stores": {
+        "label": {
+          "en": "stores",
+          "pl": "przechowuje"
+        },
         "meaning": {
           "en": "Source stores target.",
           "pl": "Źródło przechowuje cel."
@@ -927,6 +1155,10 @@
         ]
       },
       "hosted_on": {
+        "label": {
+          "en": "hosted on",
+          "pl": "działa na"
+        },
         "meaning": {
           "en": "Source runs on target host.",
           "pl": "Źródło działa na hoście."
@@ -939,6 +1171,10 @@
         ]
       },
       "hosts": {
+        "label": {
+          "en": "hosts",
+          "pl": "obsługuje"
+        },
         "meaning": {
           "en": "Source hosts target.",
           "pl": "Źródło gości cel."
@@ -951,6 +1187,10 @@
         ]
       },
       "provided_by": {
+        "label": {
+          "en": "provided by",
+          "pl": "dostarczane przez"
+        },
         "meaning": {
           "en": "Source is provided by target.",
           "pl": "Źródło dostarcza cel."
@@ -963,6 +1203,10 @@
         ]
       },
       "provides": {
+        "label": {
+          "en": "provides",
+          "pl": "dostarcza"
+        },
         "meaning": {
           "en": "Source provides target.",
           "pl": "Źródło dostarcza cel."
@@ -975,6 +1219,10 @@
         ]
       },
       "grouped_in": {
+        "label": {
+          "en": "grouped in",
+          "pl": "w grupie"
+        },
         "meaning": {
           "en": "Source (a setting) is shown in target (a settings group).",
           "pl": "Źródło (ustawienie) jest pokazane w celu (grupie ustawień)."
@@ -984,6 +1232,10 @@
         "perspectives": []
       },
       "reads_setting": {
+        "label": {
+          "en": "reads the setting",
+          "pl": "czyta ustawienie"
+        },
         "meaning": {
           "en": "Source (a flow) reads target (a setting).",
           "pl": "Źródło (przepływ) czyta cel (ustawienie)."
@@ -993,6 +1245,10 @@
         "perspectives": []
       },
       "uses_role": {
+        "label": {
+          "en": "chooses its model through the role",
+          "pl": "wybiera model przez rolę"
+        },
         "meaning": {
           "en": "Source (a flow) chooses its model through target (a model role).",
           "pl": "Źródło (przepływ) wybiera model przez cel (rolę modelu)."
@@ -1002,6 +1258,10 @@
         "perspectives": []
       },
       "bound_to": {
+        "label": {
+          "en": "resolves to the model",
+          "pl": "wskazuje model"
+        },
         "meaning": {
           "en": "Source (a model role) resolves to target (a model) today.",
           "pl": "Źródło (rola modelu) wskazuje dziś cel (model)."
@@ -1011,6 +1271,10 @@
         "perspectives": []
       },
       "step_of": {
+        "label": {
+          "en": "step of",
+          "pl": "krok przepływu"
+        },
         "meaning": {
           "en": "Source is a step of target (a flow) as the catalogue describes it; a description, not an execution.",
           "pl": "Źródło jest krokiem celu (przepływu) w opisie katalogu; opis, nie wykonanie."
@@ -1020,6 +1284,10 @@
         "perspectives": []
       },
       "has_default": {
+        "label": {
+          "en": "has a preset",
+          "pl": "ma preset"
+        },
         "meaning": {
           "en": "Source (a setting) has its preset in target (the ROM factory presets).",
           "pl": "Źródło (ustawienie) ma preset w celu (ustawieniach fabrycznych ROM)."
@@ -1029,6 +1297,10 @@
         "perspectives": []
       },
       "proposed_by": {
+        "label": {
+          "en": "proposed by",
+          "pl": "zaproponowane przez"
+        },
         "meaning": {
           "en": "Source (a value) was proposed by target (a guardian hypothesis).",
           "pl": "Źródło (wartość) zaproponował cel (hipoteza strażnika)."
@@ -1038,6 +1310,10 @@
         "perspectives": []
       },
       "sent_to_model": {
+        "label": {
+          "en": "sent to the model",
+          "pl": "wysłane do modelu"
+        },
         "meaning": {
           "en": "Source (a message) sent target (an element) to the model.",
           "pl": "Źródło (wiadomość) wysłało cel (element) do modelu."
@@ -1047,6 +1323,10 @@
         "perspectives": []
       },
       "applies_to_flow": {
+        "label": {
+          "en": "applies to the flow",
+          "pl": "dotyczy przepływu"
+        },
         "meaning": {
           "en": "Source (a preference) applies to target (a flow).",
           "pl": "Źródło (preferencja) dotyczy celu (przepływu)."
@@ -1056,6 +1336,10 @@
         "perspectives": []
       },
       "interested_in": {
+        "label": {
+          "en": "interested in",
+          "pl": "interesuje się"
+        },
         "meaning": {
           "en": "Source (you) writes about target (a topic); an inference of the analysis.",
           "pl": "Źródło (Ty) pisze o celu (temacie); wniosek analizy."
@@ -1065,6 +1349,10 @@
         "perspectives": []
       },
       "member_of": {
+        "label": {
+          "en": "member of",
+          "pl": "należy do"
+        },
         "meaning": {
           "en": "Source (you or a conversation) belongs to target (a unit: project, team, organisation).",
           "pl": "Źródło (Ty lub rozmowa) należy do celu (jednostki: projektu, zespołu, organizacji)."
@@ -1074,9 +1362,39 @@
         "perspectives": []
       },
       "knows": {
+        "label": {
+          "en": "knows",
+          "pl": "zna"
+        },
         "meaning": {
           "en": "Source (you) knows target (a party).",
           "pl": "Źródło (Ty) zna cel (podmiot)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "switched_by": {
+        "label": {
+          "en": "switched by the setting",
+          "pl": "włączane ustawieniem"
+        },
+        "meaning": {
+          "en": "Source (work the app does on its own) is switched or tuned by target (a setting).",
+          "pl": "Źródło (praca, którą aplikacja robi sama) jest włączane albo strojone przez cel (ustawienie)."
+        },
+        "direction": "directed",
+        "parent": "relation",
+        "perspectives": []
+      },
+      "runs": {
+        "label": {
+          "en": "runs the flow",
+          "pl": "uruchamia przepływ"
+        },
+        "meaning": {
+          "en": "Source (work the app does on its own) runs target (a flow).",
+          "pl": "Źródło (praca, którą aplikacja robi sama) uruchamia cel (przepływ)."
         },
         "direction": "directed",
         "parent": "relation",

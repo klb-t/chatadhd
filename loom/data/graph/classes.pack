@@ -1434,6 +1434,36 @@
         "en": "Tool source",
         "pl": "Źródło narzędzi"
       }
+    },
+    "automation": {
+      "label": {
+        "en": "Work the app does on its own",
+        "pl": "Praca, którą aplikacja robi sama"
+      }
+    },
+    "background_task": {
+      "label": {
+        "en": "Background task",
+        "pl": "Zadanie w tle"
+      }
+    },
+    "calibration_item": {
+      "label": {
+        "en": "Item in calibration",
+        "pl": "Element w kalibracji"
+      }
+    },
+    "tool_source_kind": {
+      "label": {
+        "en": "Kind of tool source",
+        "pl": "Rodzaj źródła narzędzi"
+      }
+    },
+    "graph_link": {
+      "label": {
+        "en": "Link to a node shown elsewhere",
+        "pl": "Odnośnik do węzła z innego miejsca"
+      }
     }
   }
 }

@@ -2063,11 +2063,46 @@ projection::Env projection_env(const Ctx& x) {
   return projection::env_of(x.rt, request);
 }
 
+// The plural form of a count in the language of the run (CLDR cardinal rules of the languages the texts have): pl one | few | many,
+// en one | many; a text keyed <id>_<form> is used when there is one, else <id>.
+std::string plural_form(const std::string& lang, std::int64_t n) {
+  if (n == 1) return "one";
+  if (lang == "pl") {
+    const std::int64_t m10 = n % 10, m100 = n % 100;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return "few";
+  }
+  return "many";
+}
+
+std::string say_counted(const Ctx& x, const std::string& id, std::int64_t n, const Json& vars) {
+  const std::string keyed = id + "_" + plural_form(x.lang, n);
+  const std::string text = x.say(keyed, vars);
+  return text == keyed ? x.say(id, vars) : text;
+}
+
+// The count of a row in words: its count, or why it is unknown (in words); an area no source lists yet gives its entry counters by name.
 std::string nav_suffix(const Ctx& x, const Json& row) {
   std::string out;
-  if (row.contains("count")) out += x.say("nav_count", Json{{"count", row["count"]}});
-  else if (const std::string why = json::get_string(row, "count_unknown_reason"); !why.empty() && why != "no_projection_source")
-    out += x.say("nav_count_unknown", Json{{"reason", why}});
+  if (row.contains("count")) {
+    out += x.say("nav_count", Json{{"count", row["count"]}});
+  } else if (const std::string why = json::get_string(row, "count_unknown_reason"); !why.empty()) {
+    std::vector<std::string> named;
+    const Json counts = row.value("counts", Json::object());
+    if (why == "no_projection_source" && counts.is_object())
+      for (const auto& c : counts.items()) {
+        const Json& v = c.value();
+        const std::string name = json::get_string(v, "name", c.key());
+        if (v.value("known", false)) named.push_back(x.say("nav_counter", Json{{"name", name}, {"value", v.value("value", Json(0))}}));
+        else named.push_back(x.say("nav_counter_unknown", Json{{"name", name}, {"reason", json::get_string(v, "reason_human", json::get_string(v, "reason"))}}));
+      }
+    if (!named.empty()) {
+      std::string joined;
+      for (const auto& n : named) joined += (joined.empty() ? "" : ", ") + n;
+      out += x.say("nav_counters", Json{{"counters", joined}});
+    } else {
+      out += x.say("nav_count_unknown", Json{{"reason", json::get_string(row, "count_unknown_human", why)}});
+    }
+  }
   const Json chip = row.value("provenance", Json::object()).value("chip", Json::object());
   if (const std::string label = json::get_string(chip, "label"); !label.empty()) out += x.say("nav_chip", Json{{"chip", label}});
   return out;
@@ -2106,11 +2141,17 @@ StepOutcome graph_navigate(Ctx& x) {
   std::vector<std::string> lines;
   for (const auto& c : r->value("children", Json::array()))
     if (json::get_int(c, "depth", 1) == 1) lines.push_back(x.say("nav_row", Json{{"label", c.value("label", "")}, {"count", nav_suffix(x, c)}, {"chip", ""}}));
-  if (json::get_int(counts, "collapsed", 0) > 0) lines.push_back(x.say("nav_collapsed", Json{{"collapsed", counts["collapsed"]}}));
+  if (const std::int64_t collapsed = json::get_int(counts, "collapsed", 0); collapsed > 0) {
+    lines.push_back(say_counted(x, "nav_collapsed", collapsed, Json{{"collapsed", collapsed}}));
+    const Json by_source = counts.value("by_source", Json::object());
+    for (const auto& b : by_source.items())
+      lines.push_back(x.say("nav_collapsed_source", Json{{"label", b.value().value("label", b.key())}, {"shown", b.value().value("shown", 0)}, {"total", b.value().value("total", 0)}}));
+  }
   if (const std::int64_t hidden = json::get_int(r->value("hidden_by_you", Json::object()), "count", 0); hidden > 0)
     lines.push_back(x.say("nav_hidden", Json{{"count", hidden}}));
   for (const auto& u : r->value("unknown", Json::array()))
-    lines.push_back(x.say("nav_unknown", Json{{"source", u.value("source", "")}, {"reason", u.value("reason", "")}}));
+    lines.push_back(x.say("nav_unknown", Json{{"source", json::get_string(u, "source_label", json::get_string(u, "source"))},
+                                              {"reason", json::get_string(u, "reason_human", json::get_string(u, "reason"))}}));
   const std::string label = json::get_string(r->value("focus", Json::object()), "label");
   if (lines.empty()) return answer(x.say("nav_empty", Json{{"label", label}}), *r);
   return answer(x.say("nav_head", Json{{"label", label}, {"shown", counts.value("shown", 0)}, {"total", counts.value("total", 0)}}) + "\n" + join_lines(lines), *r);
@@ -2132,7 +2173,8 @@ StepOutcome graph_card(Ctx& x) {
   if (const std::string why = json::get_string(*r, "why"); !why.empty()) lines.push_back(why);
   const Json relations = r->value("relations", Json::object());
   for (const auto& rel : relations.items())
-    lines.push_back(x.say("card_relation", Json{{"kind", rel.key()}, {"count", rel.value().value("out", Json::array()).size() + rel.value().value("in", Json::array()).size()}}));
+    lines.push_back(x.say("card_relation", Json{{"kind", json::get_string(rel.value(), "label", rel.key())},
+                                                {"count", rel.value().value("out", Json::array()).size() + rel.value().value("in", Json::array()).size()}}));
   const std::string head = x.say("card_head", Json{{"label", r->value("label", "")}, {"kind", r->value("kind", "")}, {"address", address}});
   return answer(lines.empty() ? head : head + "\n" + join_lines(lines), *r);
 }
@@ -2144,13 +2186,16 @@ StepOutcome settings_resolved_op(Ctx& x) {
   std::vector<std::string> lines;
   std::int64_t yours_all = 0;
   for (const auto& g : r->value("groups", Json::array())) {
+    // Yours: a value a level above the presets supplied (you, a conversation, a unit, a rule) - never a preset kept in config.json.
     std::int64_t yours = 0;
     for (const auto& f : g.value("fields", Json::array())) {
-      const std::string scope = json::get_string(f.value("provenance", Json::object()), "scope");
-      if (!scope.empty() && scope != "installation" && scope != "none") ++yours;
+      const Json prov = f.value("provenance", Json::object());
+      const std::string scope = json::get_string(prov, "scope");
+      if (!scope.empty() && scope != "installation" && scope != "none" && !json::get_bool(prov, "same_as_preset", false)) ++yours;
     }
     yours_all += yours;
-    lines.push_back(x.say("settings_resolved_group", Json{{"label", g.value("label", "")}, {"count", g.value("fields", Json::array()).size()}, {"yours", yours}}));
+    const auto n = static_cast<std::int64_t>(g.value("fields", Json::array()).size());
+    lines.push_back(say_counted(x, "settings_resolved_group", n, Json{{"label", g.value("label", "")}, {"count", n}, {"yours", yours}}));
   }
   if (const std::size_t hidden = r->value("hidden_keys", Json::array()).size(); hidden > 0) lines.push_back(x.say("settings_resolved_hidden", Json{{"count", hidden}}));
   const Json counts = r->value("counts", Json::object());
@@ -2166,8 +2211,13 @@ StepOutcome roles_resolved_op(Ctx& x) {
   std::vector<std::string> lines;
   for (const auto& role : r->value("roles", Json::array())) {
     const std::string model = json::get_string(role, "model");
-    lines.push_back(x.say("rr_line", Json{{"label", role.value("label", "")}, {"model", model.empty() ? x.say("rr_no_model") : role.value("model_human", model)},
-                                          {"tier", json::get_string(role.value("tier", Json::object()), "id")}}));
+    // A role without a model has no class: the line says what it has instead (no model, providers in turn).
+    const Json tier = role.value("tier", Json::object());
+    if (model.empty())
+      lines.push_back(x.say("rr_line_no_model", Json{{"label", role.value("label", "")}, {"model", json::get_string(role, "model_human", x.say("rr_no_model"))}}));
+    else
+      lines.push_back(x.say("rr_line", Json{{"label", role.value("label", "")}, {"model", role.value("model_human", model)},
+                                            {"tier", json::get_string(tier, "label", json::get_string(tier, "id"))}}));
   }
   return answer(x.say("rr_head") + "\n" + join_lines(lines), *r);
 }

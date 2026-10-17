@@ -260,6 +260,45 @@ const Json* find(const Json& obj, std::string_view key) noexcept {
   return &*it;
 }
 
+const Json* find_pointer(const Json& root, std::string_view pointer) noexcept {
+  if (pointer.empty()) return &root;
+  if (pointer.front() != '/') return nullptr;
+  const Json* at = &root;
+  std::size_t pos = 1;
+  while (true) {
+    const std::size_t end = pointer.find('/', pos);
+    const std::string_view raw = pointer.substr(pos, end == std::string_view::npos ? std::string_view::npos : end - pos);
+    std::string token;
+    token.reserve(raw.size());
+    for (std::size_t i = 0; i < raw.size(); ++i) {
+      if (raw[i] != '~') {
+        token.push_back(raw[i]);
+        continue;
+      }
+      if (i + 1 >= raw.size() || (raw[i + 1] != '0' && raw[i + 1] != '1')) return nullptr;
+      token.push_back(raw[i + 1] == '0' ? '~' : '/');
+      ++i;
+    }
+    if (at->is_object()) {
+      at = find(*at, token);
+      if (!at) return nullptr;
+    } else if (at->is_array()) {
+      if (token.empty() || token.size() > 18 || (token.size() > 1 && token[0] == '0')) return nullptr;
+      std::size_t index = 0;
+      for (char ch : token) {
+        if (ch < '0' || ch > '9') return nullptr;
+        index = index * 10 + static_cast<std::size_t>(ch - '0');
+      }
+      if (index >= at->size()) return nullptr;
+      at = &(*at)[index];
+    } else {
+      return nullptr;
+    }
+    if (end == std::string_view::npos) return at;
+    pos = end + 1;
+  }
+}
+
 std::string get_string(const Json& obj, std::string_view key, std::string_view fallback) {
   const Json* v = find(obj, key);
   if (v && v->is_string()) return v->get<std::string>();

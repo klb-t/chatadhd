@@ -12,6 +12,9 @@
         "status": "implemented",
         "title": "Use a model",
         "description": "The one action that calls a language or media model: chosen model(s) with parameters, context and prompt; guarded by the usage policy, with provenance. Implemented by the adapters in code.",
+        "why": {
+          "pl": "Jedyne działanie, które woła model językowy albo medialny: wybrany model z parametrami, kontekstem i poleceniem, pod strażą zużycia i z zapisem pochodzenia."
+        },
         "inputs": [
           "text",
           "json",
@@ -112,6 +115,9 @@
         "status": "planned",
         "title": "Save",
         "description": "Persist the given element in a chosen memory.",
+        "why": {
+          "pl": "Zapisuje wskazany element w wybranej pamięci."
+        },
         "inputs": [
           "text",
           "json",
@@ -151,6 +157,9 @@
         "status": "planned",
         "title": "Share",
         "description": "Hand the given element to another person or service.",
+        "why": {
+          "pl": "Przekazuje wskazany element innej osobie albo usłudze."
+        },
         "inputs": [
           "text",
           "json",
@@ -190,6 +199,9 @@
         "status": "implemented",
         "title": "Send a message",
         "description": "A user message in a conversation, answered by the selected model (buffered or streamed); history, memory and graph context are the input.",
+        "why": {
+          "pl": "Twoja wiadomość w rozmowie, na którą odpowiada wybrany model; wejściem są historia, pamięć i kontekst z grafu."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -303,6 +315,9 @@
         "status": "implemented",
         "title": "Analyse a message in the background",
         "description": "Entities, topics and relations of one message from the semantic model; regex analysis stays the fallback.",
+        "why": {
+          "pl": "Wyciąga z jednej wiadomości encje, tematy i relacje modelem analizy; gdy go nie ma, zostają lokalne reguły."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -394,6 +409,9 @@
         "status": "implemented",
         "title": "Background batch analysis",
         "description": "The worker submits queued messages to the provider's Message Batches, polls the batch and ingests the results.",
+        "why": {
+          "pl": "Analiza w tle wysyła oczekujące wiadomości partią do dostawcy, czeka na wynik i zapisuje go."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -477,6 +495,9 @@
         "status": "implemented",
         "title": "Analyse chosen messages in a batch",
         "description": "Chosen messages analysed as concurrent chat requests, or as native Message Batches when the address names a batch provider.",
+        "why": {
+          "pl": "Analizuje wybrane wiadomości naraz: równoległymi zapytaniami albo partią u dostawcy, który ją obsługuje."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -558,6 +579,9 @@
         "status": "implemented",
         "title": "Refine archive items",
         "description": "Reclassifies low-confidence archive items (idea, decision, rejected option, ...).",
+        "why": {
+          "pl": "Na nowo klasyfikuje niepewne elementy archiwum (pomysł, decyzja, odrzucona opcja…)."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -634,6 +658,9 @@
         "status": "implemented",
         "title": "Type the goal of a prompt",
         "description": "Classifies a prompt into a goal type when the cue classifier is unsure; explicitly budgeted.",
+        "why": {
+          "pl": "Określa rodzaj celu polecenia, gdy lokalny klasyfikator nie jest pewien; z jawnym budżetem."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -711,6 +738,9 @@
         "status": "implemented",
         "title": "Reply in the graph",
         "description": "A graph-native message in a conversation: the reply is a graph packet compiled by a method. The separate-model postprocess is its model step (the primary chat call is chat.send).",
+        "why": {
+          "pl": "Odpowiedź w rozmowie jako pakiet grafu, złożony przez metodę; osobny model jest jej krokiem modelu."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -785,6 +815,9 @@
         "status": "planned",
         "title": "Classify and weigh edges (Jev)",
         "description": "Classification and weighting of graph edges by the Jev analysis.",
+        "why": {
+          "pl": "Klasyfikuje i waży krawędzie grafu analizą Jev."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -848,6 +881,9 @@
         "status": "implemented",
         "title": "Recognise a command",
         "description": "Decides whether user input is a message or an interface command; for a command, finds the action and the element and analyses feasibility, cost and what needs confirmation. Method is a setting (intent_routing_method): heuristic (local and free: explicit command syntax and a phrase lexicon from data, no model call), model (one use_model call with the configured model, guarded like any other) or off. Data: runtime/intent_routing.pack; the phrases of an action are on the action (`phrases`).",
+        "why": {
+          "pl": "Rozstrzyga, czy wpis jest wiadomością, czy poleceniem dla aplikacji; dla polecenia znajduje działanie i element oraz mówi, co kosztuje i o co trzeba zapytać."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -944,6 +980,9 @@
         "status": "planned",
         "title": "Model call from a script",
         "description": "A model call made by an internal script running in the app.",
+        "why": {
+          "pl": "Wywołanie modelu przez wewnętrzny skrypt aplikacji."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -992,6 +1031,9 @@
         "status": "planned",
         "title": "Model call from an agent",
         "description": "A model call made by an agent; the agent's own steps are actions of their own.",
+        "why": {
+          "pl": "Wywołanie modelu przez agenta; własne kroki agenta są osobnymi działaniami."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -1040,6 +1082,9 @@
         "status": "planned",
         "title": "Generate an image",
         "description": "Image generation; adapter openai_images exists, no caller is wired yet.",
+        "why": {
+          "pl": "Tworzy obraz; adapter openai_images istnieje, ale nic go jeszcze nie woła."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -1085,6 +1130,9 @@
         "status": "planned",
         "title": "Generate a video",
         "description": "Video generation from a text or image prompt.",
+        "why": {
+          "pl": "Tworzy film z opisu albo obrazu."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -1130,6 +1178,9 @@
         "status": "planned",
         "title": "Generate music",
         "description": "Music generation from a text or audio prompt.",
+        "why": {
+          "pl": "Tworzy muzykę z opisu albo nagrania."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -1175,6 +1226,9 @@
         "status": "implemented",
         "title": "Backends, placement and state of every category",
         "description": "Backends, placement and state of every category",
+        "why": {
+          "pl": "Pokazuje magazyny, rozmieszczenie danych i stan każdej kategorii."
+        },
         "labels": {
           "pl": "Magazyny, rozmieszczenie i stan kategorii"
         },
@@ -1238,6 +1292,9 @@
         "status": "implemented",
         "title": "Probe every configured backend",
         "description": "Probe every configured backend",
+        "why": {
+          "pl": "Sprawdza każdy skonfigurowany magazyn."
+        },
         "labels": {
           "pl": "Sprawdź każdy skonfigurowany magazyn"
         },
@@ -1291,6 +1348,9 @@
         "status": "implemented",
         "title": "Available backend kinds",
         "description": "Available backend kinds",
+        "why": {
+          "pl": "Wypisuje dostępne rodzaje magazynów."
+        },
         "labels": {
           "pl": "Dostępne rodzaje magazynów"
         },
@@ -1344,6 +1404,9 @@
         "status": "implemented",
         "title": "Placement of one or all categories",
         "description": "Placement of one or all categories",
+        "why": {
+          "pl": "Pokazuje, gdzie trzymana jest jedna albo każda kategoria danych."
+        },
         "labels": {
           "pl": "Rozmieszczenie jednej lub wszystkich kategorii"
         },
@@ -1416,6 +1479,9 @@
         "status": "implemented",
         "title": "Where the graph says an object is held",
         "description": "Where the graph says an object is held",
+        "why": {
+          "pl": "Mówi, gdzie według grafu jest dany obiekt."
+        },
         "labels": {
           "pl": "Gdzie według grafu znajduje się obiekt"
         },
@@ -1479,6 +1545,9 @@
         "status": "implemented",
         "title": "Copy a category to another backend",
         "description": "Copy a category to another backend",
+        "why": {
+          "pl": "Kopiuje kategorię danych do innego magazynu."
+        },
         "labels": {
           "pl": "Skopiuj kategorię do innego magazynu"
         },
@@ -1574,6 +1643,9 @@
         "status": "implemented",
         "title": "Move a category to another backend",
         "description": "Move a category to another backend",
+        "why": {
+          "pl": "Przenosi kategorię danych do innego magazynu."
+        },
         "labels": {
           "pl": "Przenieś kategorię do innego magazynu"
         },
@@ -1673,6 +1745,9 @@
         "status": "implemented",
         "title": "Back up the database to a backend",
         "description": "Back up the database to a backend",
+        "why": {
+          "pl": "Robi kopię zapasową bazy w magazynie."
+        },
         "labels": {
           "pl": "Kopia zapasowa bazy do magazynu"
         },
@@ -1761,6 +1836,9 @@
         "status": "implemented",
         "title": "Propose knowledge structure",
         "description": "The knowledge pipeline's model step: located, grounded proposals (relations, generalizations, candidate graph bundles) for chunks of source observations, from a prompt contract; nothing is accepted without validation.",
+        "why": {
+          "pl": "Krok modelu budowania wiedzy: proponuje relacje, uogólnienia i wiązki grafu z fragmentów źródeł; nic nie jest przyjmowane bez sprawdzenia."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -1842,6 +1920,9 @@
         "status": "implemented",
         "title": "Embed texts",
         "description": "One vector per input text from an embedding model; an embedding is just another output kind of the one model action. The caller's vector policy admits the operation before the call.",
+        "why": {
+          "pl": "Daje jeden wektor na tekst z modelu osadzeń, po dopuszczeniu przez politykę wektorów."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -1913,6 +1994,9 @@
         "status": "implemented",
         "title": "Run a reviewed analysis",
         "description": "A prepared analysis contract request (prompt contract, exact body bytes, reviewed by the owner) executed once, admitted by the usage policy, its first response retained before decoding and bound to a method version in the graph.",
+        "why": {
+          "pl": "Wykonuje raz przygotowaną i przejrzaną analizę (kontrakt polecenia, dokładne bajty), pod polityką zużycia, z wynikiem związanym z wersją metody."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -1993,6 +2077,9 @@
         "status": "implemented",
         "title": "Compact the usage ledger",
         "description": "Folds completed operations older than the preset age into totals per cohort; the baseline of the growth guard is kept. It cannot be undone.",
+        "why": {
+          "pl": "Składa stare zakończone operacje księgi zużycia w sumy; odniesienie bezpiecznika zostaje. Nie da się tego cofnąć."
+        },
         "labels": {
           "pl": "Skompaktuj rejestr zużycia"
         },
@@ -2047,6 +2134,9 @@
         "status": "implemented",
         "title": "Transcribe a recording",
         "description": "Read a sound recording into text (speech recognition) with the speech-recognition provider that has a key; the text is a rendering of the same content. The call goes through use_model (adapter of the provider's family), under the usage guard.",
+        "why": {
+          "pl": "Zamienia nagranie dźwięku na tekst u dostawcy rozpoznawania mowy, który ma klucz; pod strażą zużycia."
+        },
         "labels": {
           "pl": "Zapisz nagranie jako tekst"
         },
@@ -2166,6 +2256,9 @@
         "status": "planned",
         "title": "Describe an image",
         "description": "Read an image into a text description of what it shows.",
+        "why": {
+          "pl": "Opisuje słowami, co jest na obrazie."
+        },
         "labels": {
           "pl": "Opisz obraz"
         },
@@ -2224,6 +2317,9 @@
         "status": "implemented",
         "title": "Read text from an image",
         "description": "Recognise the text printed or written in an image with the text-recognition provider that has a key. The call goes through use_model (adapter of the provider's family), under the usage guard.",
+        "why": {
+          "pl": "Odczytuje tekst napisany albo wydrukowany na zdjęciu u dostawcy, który ma klucz; pod strażą zużycia."
+        },
         "labels": {
           "pl": "Odczytaj tekst ze zdjęcia"
         },
@@ -2345,6 +2441,9 @@
         "status": "implemented",
         "title": "Summarise",
         "description": "Condense a text content, keeping what matters.",
+        "why": {
+          "pl": "Skraca tekst, zostawiając to, co ważne."
+        },
         "labels": {
           "pl": "Streść"
         },
@@ -2445,6 +2544,9 @@
         "status": "implemented",
         "title": "Translate",
         "description": "Carry a text content into another language, keeping its meaning, tone and formatting. The target language is the argument target_language (default: the language the command was written in).",
+        "why": {
+          "pl": "Przenosi tekst na inny język, z zachowaniem sensu, tonu i formatowania."
+        },
         "labels": {
           "pl": "Przetłumacz"
         },
@@ -2570,6 +2672,9 @@
         "status": "implemented",
         "title": "Elaborate",
         "description": "Develop a text content: add detail, examples, the missing steps. What to dwell on is the argument focus.",
+        "why": {
+          "pl": "Rozwija tekst: dodaje szczegóły, przykłady i brakujące kroki."
+        },
         "labels": {
           "pl": "Rozwiń"
         },
@@ -2697,6 +2802,9 @@
         "status": "implemented",
         "title": "Parody",
         "description": "Change the tone or style of a text content while keeping its subject and recognisable structure. The style is the argument style.",
+        "why": {
+          "pl": "Zmienia ton albo styl tekstu, zachowując temat i rozpoznawalną budowę."
+        },
         "labels": {
           "pl": "Sparodiuj"
         },
@@ -2823,6 +2931,9 @@
         "status": "implemented",
         "title": "Critique",
         "description": "Evaluate a text content: strengths, weaknesses, credibility, clarity. What to judge it by is the argument criteria.",
+        "why": {
+          "pl": "Ocenia tekst: mocne i słabe strony, wiarygodność, jasność."
+        },
         "labels": {
           "pl": "Skrytykuj"
         },
@@ -2952,6 +3063,9 @@
         "status": "implemented",
         "title": "Combine",
         "description": "Put several contents side by side and join them into one text: every important point of each kept, repetition removed, disagreements named. Name the elements (ids) to combine; the argument shape says what to make of them.",
+        "why": {
+          "pl": "Łączy kilka treści w jeden tekst: każdy ważny punkt zostaje, powtórzenia znikają, różnice są nazwane."
+        },
         "labels": {
           "pl": "Połącz"
         },
@@ -3080,6 +3194,9 @@
         "status": "implemented",
         "title": "Depict as an image",
         "description": "Express a text content as an image: a chat model first writes an image prompt that depicts the text (in the style given), then the image model paints it (the openai_images adapter). Needs an image model and the provider that serves it: arguments model and provider, or the settings image_model and image_provider.",
+        "why": {
+          "pl": "Przedstawia tekst obrazem: model rozmowy pisze opis obrazu, potem model obrazów go maluje."
+        },
         "labels": {
           "pl": "Przedstaw obrazem"
         },
@@ -3281,6 +3398,9 @@
         "status": "implemented",
         "title": "Narrate aloud",
         "description": "Express a text content as speech: first the text is rewritten as a narration for reading aloud (text), then, when a speech model is set (argument or setting speech_model, with speech_provider), that narration is spoken (audio). Without a speech model the result is the narration text; no speech adapter is registered by default.",
+        "why": {
+          "pl": "Przedstawia tekst głosem: najpierw narracja do czytania na głos, potem — gdy jest model mowy — nagranie."
+        },
         "labels": {
           "pl": "Opowiedz na głos"
         },
@@ -3471,6 +3591,9 @@
         "status": "implemented",
         "title": "Actions that fit an element",
         "description": "Which actions fit the element: traits it has against the traits each action requires, then the rules of the scope. Each row: status (applicable, needs_confirmation, denied with reason, default) and the explanation.",
+        "why": {
+          "pl": "Mówi, które działania pasują do elementu i co o nich mówią reguły."
+        },
         "labels": {
           "pl": "Akcje pasujące do elementu"
         },
@@ -3550,6 +3673,9 @@
         "status": "implemented",
         "title": "Explain one action for an element",
         "description": "Why an action does or does not fit an element: traits matched or missing (and where each came from), every rule considered and the one that decided; when traits are missing, the chain proposals that would supply them. The thresholds of those proposals come through the scope chain (installation, user, conversation like the rules) and the answer says which scope set each (extrapolation.resolved).",
+        "why": {
+          "pl": "Wyjaśnia, dlaczego działanie pasuje albo nie pasuje do elementu, i co by to zmieniło."
+        },
         "labels": {
           "pl": "Wyjaśnij jedną akcję dla elementu"
         },
@@ -3628,6 +3754,9 @@
         "status": "implemented",
         "title": "Propose a chain of actions",
         "description": "Candidate chains of actions that make a missing trait (or the requirements of a target action) available, ranked by declared cost and confidence and bounded by the extrapolation preset. Proposals only: nothing is executed. The preset and every threshold resolve through the same scope chain as the rules (installation preset, the user's settings extrapolation_preset / extrapolation_bounds, rules with effect set_value on a conversation or a project); the answer carries `resolved` (which scope, rule and initiator set each value) and `scope`.",
+        "why": {
+          "pl": "Proponuje łańcuchy działań, które dadzą elementowi to, czego brakuje; niczego nie wykonuje."
+        },
         "labels": {
           "pl": "Zaproponuj łańcuch akcji"
         },
@@ -3772,6 +3901,9 @@
         "status": "implemented",
         "title": "Run an action",
         "description": "Runs an action (or a chain from actions.propose_chain) on an element: the rules of the scope are asked for every action of the plan, a confirmation pauses the run with a receipt, the usage guard's x10 hold pauses the step with its receipt, every step leaves a record with provenance. propose: true stores the plan and waits for the user's go. Answer: the run document (loom.action_run/1). A completed run stores its result as graph data (a form node of the result's modality, a content node shared per source element, an action_run node) where the setting action_result_target says (graph, run_only, conversation_message; scoped like the rules); long text goes to the blob store. The document tells the nodes in result.produced.",
+        "why": {
+          "pl": "Wykonuje działanie albo łańcuch na elemencie; reguły pytają o każdy krok, potwierdzenie i bezpiecznik ×10 wstrzymują przebieg."
+        },
         "labels": {
           "pl": "Wykonaj akcję"
         },
@@ -3929,6 +4061,9 @@
         "status": "implemented",
         "title": "Show the plan and the estimate",
         "description": "The plan of a run without storing or executing anything: steps, gates (allowed / needs confirmation / denied with the rule's reason and initiator), declared cost, effects, what cannot run yet. The answer carries `estimate`: tokens, and money where the model registry lists the price (unknown, never zero, where it does not).",
+        "why": {
+          "pl": "Pokazuje plan przebiegu i szacunek kosztu, niczego nie zapisując ani nie wykonując."
+        },
         "labels": {
           "pl": "Pokaż plan i szacunek"
         },
@@ -4066,6 +4201,9 @@
         "status": "implemented",
         "title": "Answer a pending question of a run",
         "description": "Answers the question a run is paused on (a proposal, a confirmation the rules ask for, or the usage guard's x10 hold). The receipt must be the pending one (pending.receipt_id); a stale or invented receipt is refused. approved: true continues the run, false drops it (and records the refusal with the usage guard).",
+        "why": {
+          "pl": "Odpowiada na pytanie, na którym czeka wstrzymany przebieg."
+        },
         "labels": {
           "pl": "Odpowiedz na pytanie wstrzymanego przebiegu"
         },
@@ -4155,6 +4293,9 @@
         "status": "implemented",
         "title": "Cancel a run",
         "description": "Stops a run: a proposed or paused run becomes cancelled and nothing more runs; a running one stops at the next step boundary or inside its model call.",
+        "why": {
+          "pl": "Zatrzymuje przebieg; nic więcej się nie wykona."
+        },
         "labels": {
           "pl": "Anuluj przebieg"
         },
@@ -4222,6 +4363,9 @@
         "status": "implemented",
         "title": "Status of a run",
         "description": "A run document (steps, outputs, provenance, pending question) by id, or a list of runs: {list: true, status?, conv_id?, limit?}.",
+        "why": {
+          "pl": "Pokazuje przebieg (kroki, wyniki, pochodzenie, pytanie) albo listę przebiegów."
+        },
         "labels": {
           "pl": "Stan przebiegu"
         },
@@ -4333,6 +4477,9 @@
         "status": "implemented",
         "title": "Declare what this client can do",
         "description": "A client (the web page, the Android shell, the command line) declares which device capabilities it can carry out right now - captures_audio, captures_image, plays_audio, shows_notifications, clipboard, picks_files ... - each with its permission state (granted | prompt | denied). The kernel keeps the declaration for this client only (in memory, never in shipped data) and uses it so that the device actions of the catalogue are runnable FOR THIS CLIENT: the step is then carried out by the client itself (a client_step the client answers with actions.client_result). A client that declares nothing sees the device actions as planned, as before. Declaring again replaces the previous declaration; the answer carries client_id for the later calls (actions.run, preview, for, explain, propose_chain, chat.route and the chat request take client_id).",
+        "why": {
+          "pl": "Klient (strona, Android, wiersz poleceń) mówi, co jego urządzenie potrafi teraz zrobić."
+        },
         "labels": {
           "pl": "Zadeklaruj, co potrafi ten klient"
         },
@@ -4411,6 +4558,9 @@
         "status": "implemented",
         "title": "What a client declared",
         "description": "The declaration the kernel holds for a client (capabilities with their permission state, the device actions each makes runnable) and, without client_id, the ids of the clients it knows. A declaration older than the time to live of the client_devices profile is forgotten.",
+        "why": {
+          "pl": "Pokazuje, co zadeklarował klient i które działania urządzeń przez to działają."
+        },
         "labels": {
           "pl": "Co zadeklarował klient"
         },
@@ -4467,6 +4617,9 @@
         "status": "implemented",
         "title": "Answer a step the client carries out",
         "description": "Answers the client_step a run is paused on (a device action the client declared: record, take a picture, pick a file, read the clipboard ...): the receipt must be the pending one. state ok brings the produced parts - media as the blob_hash of bytes uploaded before (POST /api/client/blob/upload; checked against the blob store of this user, with a graph node and an artifact, like any produced media), text as text - and the run continues with the next step (record_audio -> transcribe -> summarise); failed and unavailable fail the step with the reason; declined (the person did not allow it) ends the run as rejected. A client that never answers leaves the run paused, not failed; actions.cancel stops it.",
+        "why": {
+          "pl": "Odpowiada na krok, który przebieg zlecił urządzeniu klienta (nagranie, zdjęcie, plik…)."
+        },
         "labels": {
           "pl": "Odpowiedz na krok wykonywany przez klienta"
         },
@@ -4589,6 +4742,9 @@
         "status": "implemented",
         "title": "What the guardian noticed",
         "description": "The context guardian's hypotheses for a conversation: each claim with its scope, weight, evidence occurrences, stated or inferred exceptions, contradictions and status (observing, ready, proposed, promoted, rejected, undone), the compiled representation if there is one and what the context selector would send (chat_representation). The guardian is a secretary: it builds a representation beside the raw messages and never changes them.",
+        "why": {
+          "pl": "Pokazuje, co strażnik zauważył w rozmowie: hipotezy, ich wagę, dowody i stan."
+        },
         "labels": {
           "pl": "Co zauważył strażnik"
         },
@@ -4689,6 +4845,9 @@
         "status": "implemented",
         "title": "Remember it as a rule",
         "description": "Promotes a hypothesis of the context guardian: a correction becomes a rule written to the user overlay profiles/guardian.pack, a run of clarifications becomes one compiled instruction (the existing active task specification). Either way the conversation's chat_representation is set to guardian by a rule of that conversation, so later sends use the representation. The raw messages are never touched. Undo: guardian.undo.",
+        "why": {
+          "pl": "Zamienia hipotezę strażnika w regułę albo w jedno skompilowane polecenie."
+        },
         "labels": {
           "pl": "Zapamiętaj jako regułę"
         },
@@ -4787,6 +4946,9 @@
         "status": "implemented",
         "title": "Take back what the guardian saved",
         "description": "Takes back a promoted hypothesis (the rule leaves the overlay, the representation is rebuilt without it, the conversation's choice goes back when nothing is left) or retracts one segment annotation (a drop of a lossy level, which is then rebuilt). Nothing the guardian noticed is deleted: the occurrences, the hypothesis and the annotation stay as history.",
+        "why": {
+          "pl": "Cofa to, co strażnik zapisał, albo jedną adnotację fragmentu."
+        },
         "labels": {
           "pl": "Cofnij to, co zapisał strażnik"
         },
@@ -4885,6 +5047,9 @@
         "status": "implemented",
         "title": "Let the guardian read a message",
         "description": "Runs a message of the conversation through the guardian: the cheap segment annotations (fillers, repetitions, retractions), the lossy levels, and the signal (course correction, clarification), as the method guardian_method says. kind declares the signal yourself (this message is a correction) instead of having it read. The occurrence and the hypothesis are graph nodes linked to the message; a proposal is posted in the conversation when the weight reaches the threshold.",
+        "why": {
+          "pl": "Przepuszcza wiadomość przez strażnika: tanie adnotacje fragmentów, poziomy stratne i sygnał (poprawka, doprecyzowanie)."
+        },
         "labels": {
           "pl": "Niech strażnik przeczyta wiadomość"
         },
@@ -5018,6 +5183,9 @@
         "status": "implemented",
         "title": "Show the compiled instruction",
         "description": "Previews the compiled representation of a conversation: the statements (goal, clarifications, rules, exceptions), the one instruction the compiler makes of them and the messages they stand for. Writes nothing. With hypothesis, as if that hypothesis were promoted.",
+        "why": {
+          "pl": "Pokazuje skompilowany obraz rozmowy i jedno polecenie, które z niego powstaje; niczego nie zapisuje."
+        },
         "labels": {
           "pl": "Pokaż skompilowane polecenie"
         },
@@ -5107,6 +5275,9 @@
         "status": "implemented",
         "title": "Show the lossy levels of messages",
         "description": "The levels L0-L3 of a message or of a conversation: for each level the text the context selector could send in place of the raw one and what was dropped (category, span, producer), with the segment annotations of every producer. refresh rebuilds the levels from the annotations (an analyzer's annotations are applied too). The raw text is never touched; guardian.undo with an annotation id takes one drop back.",
+        "why": {
+          "pl": "Pokazuje poziomy L0–L3 wiadomości: co selektor mógłby wysłać zamiast oryginału i co zostało pominięte."
+        },
         "labels": {
           "pl": "Pokaż poziomy stratne wiadomości"
         },
@@ -5207,6 +5378,9 @@
         "status": "implemented",
         "title": "Read a message with a model for the guardian",
         "description": "One guarded model reading of a message (use_model, so the x10 guard and the spending limits apply): the signal kind, a short restatement, the tone, the scope and the exceptions. A message another producer (the semantic analyzer) has already annotated is not sent to a model again. Method: guardian_method model or hybrid; the model: the policy models.policies.guardian of runtime/guardian.pack (guardian_model, the ports role guardian, the role analysis.fast), never the conversation's model; with none the guardian reads with word lists only.",
+        "why": {
+          "pl": "Jedno czytanie wiadomości modelem dla strażnika, pod bezpiecznikiem ×10 i limitami wydatków."
+        },
         "labels": {
           "pl": "Przeczytaj wiadomość modelem dla strażnika"
         },
@@ -5294,6 +5468,9 @@
         "status": "implemented",
         "title": "The Secretary reads a message with a model",
         "description": "The one model call the context guardian makes (method model or hybrid): labels a user message as a course correction, a clarification or neither. A use_model step, guarded like any other (x10 growth, spending limits); the prompt is data in runtime/guardian.pack (method.model_call).",
+        "why": {
+          "pl": "Jedno wywołanie modelu przez strażnika: czy wiadomość jest poprawką kursu, doprecyzowaniem, czy niczym z tych."
+        },
         "steps": [
           {
             "action": "use_model"
@@ -5378,6 +5555,9 @@
         "status": "implemented",
         "title": "Set a rule",
         "description": "Writes a scoped rule or value into the user overlay profiles/action_rules.pack: set_value (a setting's value in a scope), confirm / require_confirmation, deny (with a reason), allow, at conversation, person, installation or any other level of the scope chain. A new rule for the same scope and subject replaces the old one. A rule pinned by a higher scope (locked) refuses with its reason. Writing is an action like any other: the rules of the scope apply and the preset asks you to confirm each write. Undo: rules.disable.",
+        "why": {
+          "pl": "Zapisuje regułę albo wartość w danym zakresie w Twojej nakładce reguł."
+        },
         "labels": {
           "pl": "Zapisz regułę"
         },
@@ -5588,6 +5768,9 @@
         "status": "implemented",
         "title": "Switch a rule off",
         "description": "Switches a rule off: a shipped rule by an override in the user overlay, an own rule in place (the record stays). A locked rule refuses with its reason and initiator. restore: true takes the switch-off back.",
+        "why": {
+          "pl": "Wyłącza regułę: wbudowaną przez nakładkę, własną na miejscu."
+        },
         "labels": {
           "pl": "Wyłącz regułę"
         },
@@ -5699,6 +5882,9 @@
         "status": "implemented",
         "title": "Rules in force",
         "description": "The rules in force (shipped data plus the user overlay), each with where it comes from (shipped, overlay, shipped+overlay) and whether it is switched off.",
+        "why": {
+          "pl": "Pokazuje reguły w mocy i skąd każda pochodzi."
+        },
         "labels": {
           "pl": "Reguły w mocy"
         },
@@ -5799,6 +5985,9 @@
         "status": "implemented",
         "title": "Define an action",
         "description": "Writes a new action of your own into the user overlay profiles/actions.pack (never into the shipped data): a composite with one use_model step whose prompt is your instruction (instruction), or one that chains actions of the catalogue (steps, each step's result feeding the next). The phrases that call it join the lexicon (profiles/intent_routing.pack). It is offered, never made silently: from a command no action understands, from a sequence you keep repeating. Undo: actions.remove.",
+        "why": {
+          "pl": "Zapisuje nowe własne działanie w Twojej nakładce (nigdy w danych wbudowanych)."
+        },
         "labels": {
           "pl": "Zdefiniuj akcję"
         },
@@ -5967,6 +6156,9 @@
         "status": "implemented",
         "title": "Remove an action of your own",
         "description": "Takes an action you defined (or accepted) back out of the user overlay, with its phrases; the node that records where it came from stays as history. A shipped action cannot be removed (switch it off with an overlay), and neither can one that another action of yours uses.",
+        "why": {
+          "pl": "Usuwa z nakładki działanie, które zdefiniowałeś."
+        },
         "labels": {
           "pl": "Usuń własną akcję"
         },
@@ -6066,6 +6258,9 @@
         "status": "implemented",
         "title": "Define a group",
         "description": "Writes a group (a named bundle of traits that rules and actions can refer to) into the user overlay profiles/graph_entry.pack. It is offered when an action of yours is used on several classes that share traits. Undo: groups.remove.",
+        "why": {
+          "pl": "Zapisuje grupę cech, do której mogą się odwoływać reguły i działania."
+        },
         "labels": {
           "pl": "Zdefiniuj grupę"
         },
@@ -6201,6 +6396,9 @@
         "status": "implemented",
         "title": "Remove a group of your own",
         "description": "Takes a group you defined back out of the user overlay.",
+        "why": {
+          "pl": "Usuwa z nakładki grupę, którą zdefiniowałeś."
+        },
         "labels": {
           "pl": "Usuń własną grupę"
         },
@@ -6304,6 +6502,9 @@
         },
         "title": "Record audio",
         "description": "Record sound with a device that captures audio (a microphone). The recording becomes an audio form; transcribe turns it into text.",
+        "why": {
+          "pl": "Nagrywa dźwięk mikrofonem."
+        },
         "labels": {
           "pl": "Nagraj dźwięk"
         },
@@ -6399,6 +6600,9 @@
         },
         "title": "Take a photo",
         "description": "Take a still picture with a device that captures images (a camera). The picture becomes an image form; ocr and describe_image read it.",
+        "why": {
+          "pl": "Robi zdjęcie aparatem."
+        },
         "labels": {
           "pl": "Zrób zdjęcie"
         },
@@ -6475,6 +6679,9 @@
         },
         "title": "Record video",
         "description": "Record video with a device that captures video (a camera).",
+        "why": {
+          "pl": "Nagrywa film aparatem."
+        },
         "labels": {
           "pl": "Nagraj film"
         },
@@ -6538,6 +6745,9 @@
         },
         "title": "Play audio",
         "description": "Play a recording on a device that plays audio (a speaker). Name the recording in the argument audio.",
+        "why": {
+          "pl": "Odtwarza nagranie na głośniku."
+        },
         "labels": {
           "pl": "Odtwórz dźwięk"
         },
@@ -6609,6 +6819,9 @@
         },
         "title": "Show on the screen",
         "description": "Show a text or an image on a device that displays (the screen; on the command line, the terminal).",
+        "why": {
+          "pl": "Pokazuje tekst albo obraz na ekranie."
+        },
         "labels": {
           "pl": "Pokaż na ekranie"
         },
@@ -6672,6 +6885,9 @@
         },
         "title": "Copy to the clipboard",
         "description": "Put a text on the clipboard.",
+        "why": {
+          "pl": "Kładzie tekst do schowka."
+        },
         "labels": {
           "pl": "Skopiuj do schowka"
         },
@@ -6744,6 +6960,9 @@
         },
         "title": "Read the clipboard",
         "description": "Read what is on the clipboard as a text.",
+        "why": {
+          "pl": "Odczytuje tekst ze schowka."
+        },
         "labels": {
           "pl": "Odczytaj schowek"
         },
@@ -6812,6 +7031,9 @@
         },
         "title": "Notify",
         "description": "Raise a notification on a device that notifies (system notifications; on the command line, a line and the bell).",
+        "why": {
+          "pl": "Pokazuje powiadomienie."
+        },
         "labels": {
           "pl": "Powiadom"
         },
@@ -6884,6 +7106,9 @@
         },
         "title": "Pick a file",
         "description": "Let the user pick a file (the browser file picker, Android storage access, the process file system).",
+        "why": {
+          "pl": "Pozwala wybrać plik."
+        },
         "labels": {
           "pl": "Wybierz plik"
         },
@@ -6959,6 +7184,9 @@
         },
         "title": "Pick a folder",
         "description": "Let the user pick a folder (the browser's folder chooser). The client uploads the files of the folder to the kernel, one by one, through the blob upload, and answers with a manifest of them: {schema: loom.folder_manifest/1, name, files: [{path, blob_hash, size, mime}]}.",
+        "why": {
+          "pl": "Pozwala wybrać folder; klient wysyła jego pliki do jądra po kolei."
+        },
         "labels": {
           "pl": "Wybierz folder"
         },
@@ -7030,6 +7258,9 @@
         },
         "title": "Ask for permission",
         "description": "Ask the system for the permission a device needs (microphone, camera, notifications ...) before it is used.",
+        "why": {
+          "pl": "Prosi system o zgodę, której urządzenie potrzebuje (mikrofon, aparat, powiadomienia…)."
+        },
         "labels": {
           "pl": "Poproś o zgodę"
         },
@@ -7103,6 +7334,9 @@
         },
         "title": "Test a connection",
         "description": "Check that a network endpoint (a model provider, a server) answers. Reports the answer only; nothing is sent beyond a probe.",
+        "why": {
+          "pl": "Sprawdza, czy adres w sieci (dostawca modeli, serwer) odpowiada; wysyła tylko próbę."
+        },
         "labels": {
           "pl": "Sprawdź połączenie"
         },
@@ -7150,6 +7384,9 @@
         "status": "implemented",
         "title": "Route a chat input",
         "description": "Decides whether a chat input is a message or a command to the interface (R54) and, for a command, which action on which element, with the plan, cost estimate and what needs confirmation. Nothing is stored or executed. The same decision is made for every input of the chat window before it is sent.",
+        "why": {
+          "pl": "Rozstrzyga, czy wpis w okienku rozmowy jest wiadomością, czy poleceniem, i dla polecenia daje plan; niczego nie zapisuje."
+        },
         "labels": {
           "pl": "Rozpoznaj wejście z okienka rozmowy"
         },
@@ -7239,6 +7476,9 @@
         "status": "implemented",
         "title": "Change a setting",
         "description": "Sets one setting (config.json, or secrets.json for a credential). The value is read as the setting's type. The edit rules of the field apply as for any edit (a deny rule refuses, a confirmation rule asks) and so does the rule that keeps credentials out of the conversation; the x10 usage policy keeps its own confirmation.",
+        "why": {
+          "pl": "Zmienia jedno ustawienie; obowiązują reguły edycji pola."
+        },
         "labels": {
           "pl": "Zmień ustawienie"
         },
@@ -7325,6 +7565,9 @@
         "status": "implemented",
         "title": "Show a setting",
         "description": "The value of one setting with its default and edit rule. A credential is reported as set or not set, never shown.",
+        "why": {
+          "pl": "Pokazuje jedno ustawienie z presetem i regułą edycji; sekret tylko jako ustawiony albo nie."
+        },
         "labels": {
           "pl": "Pokaż ustawienie"
         },
@@ -7398,6 +7641,9 @@
         "status": "implemented",
         "title": "Rephrase",
         "description": "Say the same thing in another tone or at another level of language, keeping the meaning, facts, names and numbers. The tone is the argument tone, the level the argument level.",
+        "why": {
+          "pl": "Mówi to samo innym tonem albo innym rejestrem, z zachowaniem sensu, faktów, nazw i liczb."
+        },
         "labels": {
           "pl": "Przeredaguj"
         },
@@ -7532,6 +7778,9 @@
         "status": "implemented",
         "title": "Explain simply",
         "description": "Explain a text content for a stated level of competence: short sentences, everyday words, a concrete example, nothing false. Any level, down to a beginner and up to an expert: the audience is the argument audience.",
+        "why": {
+          "pl": "Tłumaczy tekst na wskazany poziom: krótkie zdania, codzienne słowa, konkretny przykład."
+        },
         "labels": {
           "pl": "Wytłumacz prościej"
         },
@@ -7647,6 +7896,9 @@
         "status": "implemented",
         "title": "What can be done here",
         "description": "The actions that fit the conversation in front of the user and those of the application as a whole, in plain words and grouped, each with a sentence that does it; and the syntax for those who know it. Nothing is run.",
+        "why": {
+          "pl": "Pokazuje, co można zrobić w tej rozmowie i w całej aplikacji, prostymi słowami i ze zdaniem, które to robi."
+        },
         "labels": {
           "pl": "Co można tu zrobić"
         },
@@ -7685,6 +7937,9 @@
         "status": "implemented",
         "title": "How to do something (explained, not run)",
         "description": "Reads what is asked as a command would be read and explains it: what to say, the steps it takes, whether it asks first, whether it costs, the syntax. Nothing is run.",
+        "why": {
+          "pl": "Wyjaśnia, jak coś zrobić: co powiedzieć, jakie są kroki, czy pyta i czy kosztuje; niczego nie wykonuje."
+        },
         "labels": {
           "pl": "Jak coś zrobić (wyjaśnienie, bez wykonania)"
         },
@@ -7737,6 +7992,9 @@
         "status": "implemented",
         "title": "List conversations",
         "description": "The conversations, newest first.",
+        "why": {
+          "pl": "Wypisuje rozmowy, najnowsze pierwsze."
+        },
         "labels": {
           "pl": "Wypisz rozmowy"
         },
@@ -7790,6 +8048,9 @@
         "status": "implemented",
         "title": "Start a conversation",
         "description": "Creates a conversation with the title given (or \"New Chat\").",
+        "why": {
+          "pl": "Zakłada nową rozmowę."
+        },
         "labels": {
           "pl": "Załóż rozmowę"
         },
@@ -7844,6 +8105,9 @@
         "status": "implemented",
         "title": "Rename a conversation",
         "description": "Gives the conversation a new title.",
+        "why": {
+          "pl": "Zmienia tytuł rozmowy."
+        },
         "labels": {
           "pl": "Zmień nazwę rozmowy"
         },
@@ -7898,6 +8162,9 @@
         "status": "implemented",
         "title": "Delete a conversation",
         "description": "Deletes the conversation with all its messages. It cannot be undone.",
+        "why": {
+          "pl": "Usuwa rozmowę ze wszystkimi wiadomościami. Nie da się tego cofnąć."
+        },
         "labels": {
           "pl": "Usuń rozmowę"
         },
@@ -7938,6 +8205,9 @@
         "status": "implemented",
         "title": "Edit a message (a new version, the old one stays)",
         "description": "Writes the new text as the next version of the message: the old version is kept and a new branch begins from the edited one.",
+        "why": {
+          "pl": "Zapisuje poprawiony tekst jako nową wersję wiadomości; stara zostaje, a od nowej zaczyna się gałąź."
+        },
         "labels": {
           "pl": "Popraw wiadomość (nowa wersja, stara zostaje)"
         },
@@ -7992,6 +8262,9 @@
         "status": "implemented",
         "title": "Show the versions of a message",
         "description": "Every version of the message, with its number and state.",
+        "why": {
+          "pl": "Pokazuje wszystkie wersje wiadomości."
+        },
         "labels": {
           "pl": "Pokaż wersje wiadomości"
         },
@@ -8032,6 +8305,9 @@
         "status": "implemented",
         "title": "Switch to another version of a message",
         "description": "Makes another version of the message the active one: the previous one (default), a version number, or a message id.",
+        "why": {
+          "pl": "Przełącza wiadomość na inną wersję."
+        },
         "labels": {
           "pl": "Przełącz na inną wersję wiadomości"
         },
@@ -8086,6 +8362,9 @@
         "status": "implemented",
         "title": "Exclude, include or delete a message",
         "description": "Sets the state of the message: excluded (kept, left out of the context), active, or deleted.",
+        "why": {
+          "pl": "Wyklucza wiadomość z kontekstu, włącza ją z powrotem albo usuwa."
+        },
         "labels": {
           "pl": "Wyklucz, włącz albo usuń wiadomość"
         },
@@ -8139,6 +8418,9 @@
         "status": "implemented",
         "title": "Say how much a message weighs",
         "description": "The weight of the message in the context selection (1 is ordinary).",
+        "why": {
+          "pl": "Ustawia wagę wiadomości w wyborze kontekstu."
+        },
         "labels": {
           "pl": "Ustaw wagę wiadomości"
         },
@@ -8203,6 +8485,9 @@
         "status": "implemented",
         "title": "Find conversations and messages",
         "description": "Full-text search of the messages; the answer lists the conversations that match, with a snippet.",
+        "why": {
+          "pl": "Szuka w treści wiadomości i pokazuje pasujące rozmowy z fragmentem."
+        },
         "labels": {
           "pl": "Znajdź rozmowy i wiadomości"
         },
@@ -8268,6 +8553,9 @@
         "status": "implemented",
         "title": "What is connected to a name",
         "description": "The nodes of the knowledge graph that carry the name and what is linked to them, one step (or more) away.",
+        "why": {
+          "pl": "Pokazuje węzły grafu wiedzy o danej nazwie i to, co jest z nimi powiązane."
+        },
         "labels": {
           "pl": "Co jest powiązane z nazwą"
         },
@@ -8334,6 +8622,9 @@
         "status": "implemented",
         "title": "The graph at a glance",
         "description": "The areas of the graph entry view with their counts.",
+        "why": {
+          "pl": "Pokazuje obszary wejścia do grafu z ich licznikami."
+        },
         "labels": {
           "pl": "Graf w skrócie"
         },
@@ -8374,6 +8665,9 @@
         "status": "implemented",
         "title": "Rebuild the graph of a conversation",
         "description": "Reads the messages of the conversation again and writes the nodes and links they give (or of all conversations).",
+        "why": {
+          "pl": "Czyta wiadomości rozmowy na nowo i zapisuje węzły i powiązania, które z nich wynikają."
+        },
         "labels": {
           "pl": "Przebuduj graf rozmowy"
         },
@@ -8428,6 +8722,9 @@
         "status": "implemented",
         "title": "Show what is remembered",
         "description": "The memory entries (all, or those that match the words).",
+        "why": {
+          "pl": "Pokazuje wpisy pamięci (wszystkie albo pasujące do słów)."
+        },
         "labels": {
           "pl": "Pokaż, co jest zapamiętane"
         },
@@ -8482,6 +8779,9 @@
         "status": "implemented",
         "title": "Remember something",
         "description": "Adds a memory entry; the memory goes into every prompt.",
+        "why": {
+          "pl": "Dodaje wpis pamięci; pamięć trafia do każdego polecenia dla modelu."
+        },
         "labels": {
           "pl": "Zapamiętaj coś"
         },
@@ -8536,6 +8836,9 @@
         "status": "implemented",
         "title": "Correct a memory entry",
         "description": "Replaces the text of a memory entry.",
+        "why": {
+          "pl": "Poprawia tekst wpisu pamięci."
+        },
         "labels": {
           "pl": "Popraw wpis pamięci"
         },
@@ -8600,6 +8903,9 @@
         "status": "implemented",
         "title": "Forget something",
         "description": "Removes the one memory entry that matches the words (or the id); with several matches it lists them and removes nothing.",
+        "why": {
+          "pl": "Usuwa jeden pasujący wpis pamięci; przy kilku pasujących tylko je wypisuje."
+        },
         "labels": {
           "pl": "Zapomnij coś"
         },
@@ -8654,6 +8960,9 @@
         "status": "implemented",
         "title": "Export a conversation",
         "description": "Writes the conversation as a file (markdown, json, text or html) into the exports folder, and to a storage backend when one is named.",
+        "why": {
+          "pl": "Zapisuje rozmowę do pliku (markdown, json, tekst albo html) w folderze eksportów."
+        },
         "labels": {
           "pl": "Wyeksportuj rozmowę"
         },
@@ -8719,6 +9028,9 @@
         "status": "implemented",
         "title": "Import a file of conversations",
         "description": "Reads the file (a path, or the file a device picked) with the universal importer: ChatGPT and Claude exports, JSON, HTML, Markdown, text, SQLite, archives.",
+        "why": {
+          "pl": "Czyta plik uniwersalnym importerem: eksporty ChatGPT i Claude, JSON, HTML, Markdown, tekst, SQLite, archiwa."
+        },
         "labels": {
           "pl": "Zaimportuj plik z rozmowami"
         },
@@ -8787,6 +9099,9 @@
           "pl": "Zaimportuj plik"
         },
         "description": "Imports a file of conversations: the path given, or - without one - the file the device lets the user pick, then the import runs on it.",
+        "why": {
+          "pl": "Importuje plik z rozmowami: podaną ścieżkę albo plik wybrany na urządzeniu."
+        },
         "steps": [
           {
             "id": "pick",
@@ -8874,6 +9189,9 @@
         "status": "implemented",
         "title": "Connect a storage backend",
         "description": "Describes a backend in your overlay (profiles/storage_security.pack): Google Drive, an S3 bucket, WebDAV. Only what is not secret is written; the keys and tokens are entered in Settings and never in the conversation.",
+        "why": {
+          "pl": "Opisuje magazyn w Twojej nakładce (Google Drive, S3, WebDAV); klucze wpisuje się w Ustawieniach, nigdy tutaj."
+        },
         "labels": {
           "pl": "Podłącz magazyn"
         },
@@ -8993,6 +9311,9 @@
         "status": "implemented",
         "title": "Which model or provider does a job",
         "description": "The adapter and model a job resolves to, and at which level (installation, you, this conversation) the choice was made; without a job, every job.",
+        "why": {
+          "pl": "Pokazuje, który adapter i model wykonuje pracę i na jakim poziomie zapadł wybór."
+        },
         "labels": {
           "pl": "Który model albo dostawca wykonuje pracę"
         },
@@ -9062,6 +9383,9 @@
         "status": "implemented",
         "title": "Choose the model or provider for a job",
         "description": "Writes the choice into the ports profile at the level you name: for this conversation (its metadata) or for you (profiles/ports.pack). The shipped preset is never edited.",
+        "why": {
+          "pl": "Zapisuje wybór modelu albo dostawcy do pracy dla tej rozmowy albo dla Ciebie; presetu nie zmienia."
+        },
         "labels": {
           "pl": "Wybierz model albo dostawcę do pracy"
         },
@@ -9138,6 +9462,9 @@
         "status": "implemented",
         "title": "How much was spent",
         "description": "The requests, tokens and cost the provider reported for the calls of a period (today, this week, this month, the last N days); what no provider reported is said to be unknown, never zero.",
+        "why": {
+          "pl": "Pokazuje zapytania, tokeny i koszt z okresu; czego dostawca nie podał, jest nieznane, nigdy zerem."
+        },
         "labels": {
           "pl": "Ile wydano"
         },
@@ -9192,6 +9519,9 @@
         "status": "implemented",
         "title": "Set a usage limit",
         "description": "Two limits of the usage. (1) The growth factor of the usage policy: how many times above the usual consumption an operation may grow before you are asked (the setting loom_usage_policy; raising expected consumption by an order of magnitude still needs your confirmation). (2) A spending limit per period (day, week or month; the setting usage_spend_limits): before an action run that calls a model, the spend of the period plus the estimate of the run is compared with it, and what you chose happens - confirm (the run waits for your yes), deny (the run does not start) or notify (it goes on and says so). There is no limit until you set one; the limit is yours, nothing is added on top of it. The growth guard is separate and stays.",
+        "why": {
+          "pl": "Ustawia próg bezpiecznika wzrostu zużycia albo limit wydatków na okres."
+        },
         "labels": {
           "pl": "Ustaw limit zużycia lub wydatków"
         },
@@ -9334,6 +9664,9 @@
         "status": "implemented",
         "title": "The economy report of the data",
         "description": "Copies, waste and what could be saved in the stored data; it only reports, nothing is changed.",
+        "why": {
+          "pl": "Pokazuje kopie, marnotrawstwo i możliwe oszczędności w danych; niczego nie zmienia."
+        },
         "labels": {
           "pl": "Raport oszczędności danych"
         },
@@ -9387,6 +9720,9 @@
         "status": "implemented",
         "title": "List the models",
         "description": "The models of the registry (all, or those that match the words).",
+        "why": {
+          "pl": "Wypisuje modele z rejestru."
+        },
         "labels": {
           "pl": "Wypisz modele"
         },
@@ -9452,6 +9788,9 @@
         "status": "implemented",
         "title": "Refresh the model list",
         "description": "Fetches the provider's public model list; nothing of yours is sent besides the key the provider needs.",
+        "why": {
+          "pl": "Pobiera publiczną listę modeli dostawcy; poza potrzebnym kluczem nic Twojego nie wychodzi."
+        },
         "labels": {
           "pl": "Odśwież listę modeli"
         },
@@ -9492,6 +9831,9 @@
         "status": "implemented",
         "title": "Which providers are connected",
         "description": "The providers of models, speech recognition and text from images, and whether each has what it needs (never the keys).",
+        "why": {
+          "pl": "Pokazuje dostawców modeli, mowy i tekstu ze zdjęć oraz czy każdy ma to, czego potrzebuje (nigdy klucze)."
+        },
         "labels": {
           "pl": "Którzy dostawcy są podłączeni"
         },
@@ -9532,6 +9874,9 @@
         "status": "implemented",
         "title": "List the settings",
         "description": "The settings (all, or of one group) with their values; a secret says only whether it is set.",
+        "why": {
+          "pl": "Wypisuje ustawienia z wartościami; sekret mówi tylko, czy jest ustawiony."
+        },
         "labels": {
           "pl": "Wypisz ustawienia"
         },
@@ -9586,6 +9931,9 @@
         "status": "implemented",
         "title": "State of the semantic analysis",
         "description": "What the background analysis has done and has still to do.",
+        "why": {
+          "pl": "Pokazuje, co analiza w tle zrobiła i co jej zostało."
+        },
         "labels": {
           "pl": "Stan analizy semantycznej"
         },
@@ -9626,6 +9974,9 @@
         "status": "implemented",
         "title": "Pause the analysis",
         "description": "Stops the background analysis picking up messages until it is resumed.",
+        "why": {
+          "pl": "Wstrzymuje analizę w tle."
+        },
         "labels": {
           "pl": "Wstrzymaj analizę"
         },
@@ -9666,6 +10017,9 @@
         "status": "implemented",
         "title": "Resume the analysis",
         "description": "Lets the background analysis go on.",
+        "why": {
+          "pl": "Wznawia analizę w tle."
+        },
         "labels": {
           "pl": "Wznów analizę"
         },
@@ -9706,6 +10060,9 @@
         "status": "implemented",
         "title": "Wake the analysis",
         "description": "Tells the background analysis to look for work now.",
+        "why": {
+          "pl": "Każe analizie w tle poszukać pracy teraz."
+        },
         "labels": {
           "pl": "Obudź analizę"
         },
@@ -9746,6 +10103,9 @@
         "status": "implemented",
         "title": "Queue failed analyses again",
         "description": "Puts the failed and interrupted analyses back in the queue (the history of the attempts stays).",
+        "why": {
+          "pl": "Wkłada nieudane i przerwane analizy z powrotem do kolejki; historia prób zostaje."
+        },
         "labels": {
           "pl": "Ponów nieudane analizy"
         },
@@ -9786,6 +10146,9 @@
         "status": "implemented",
         "title": "Background tasks",
         "description": "The tasks the application runs in the background and their state.",
+        "why": {
+          "pl": "Pokazuje zadania w tle i ich stan."
+        },
         "labels": {
           "pl": "Zadania w tle"
         },
@@ -9850,6 +10213,9 @@
         "status": "implemented",
         "title": "Resume interrupted tasks",
         "description": "Takes the tasks a restart interrupted up again from their checkpoints.",
+        "why": {
+          "pl": "Wznawia zadania przerwane restartem od ich punktów kontrolnych."
+        },
         "labels": {
           "pl": "Wznów przerwane zadania"
         },
@@ -9890,6 +10256,9 @@
         "status": "implemented",
         "title": "Cancel a task",
         "description": "Stops a background task.",
+        "why": {
+          "pl": "Zatrzymuje zadanie w tle."
+        },
         "labels": {
           "pl": "Anuluj zadanie"
         },
@@ -9944,6 +10313,9 @@
         "status": "implemented",
         "title": "The application log",
         "description": "The latest lines of the log.",
+        "why": {
+          "pl": "Pokazuje ostatnie wiersze dziennika aplikacji."
+        },
         "labels": {
           "pl": "Dziennik aplikacji"
         },
@@ -9997,6 +10369,9 @@
         "status": "implemented",
         "title": "Where something comes from",
         "description": "The provenance records of a message, a conversation or any element: which source it was read from, when.",
+        "why": {
+          "pl": "Pokazuje, skąd pochodzi wiadomość, rozmowa albo inny element i kiedy go odczytano."
+        },
         "labels": {
           "pl": "Skąd coś pochodzi"
         },
@@ -10049,6 +10424,9 @@
         "status": "implemented",
         "title": "Sources of imports",
         "description": "The sources (files, archives) that were imported.",
+        "why": {
+          "pl": "Wypisuje zaimportowane źródła (pliki, archiwa)."
+        },
         "labels": {
           "pl": "Źródła importów"
         },
@@ -10102,6 +10480,9 @@
         "status": "implemented",
         "title": "About this application",
         "description": "Version, data folder and whether encryption is on.",
+        "why": {
+          "pl": "Pokazuje wersję, folder danych i czy szyfrowanie jest włączone."
+        },
         "labels": {
           "pl": "O aplikacji"
         },
@@ -10142,6 +10523,9 @@
         "status": "implemented",
         "title": "Synchronise with GitHub",
         "description": "Pulls, pushes or syncs the data folder with the repository set in the settings (the token is a secret kept in Settings).",
+        "why": {
+          "pl": "Pobiera, wysyła albo synchronizuje folder danych z repozytorium z ustawień."
+        },
         "labels": {
           "pl": "Synchronizuj z GitHubem"
         },
@@ -10208,6 +10592,9 @@
         "status": "implemented",
         "title": "Start the archive analysis",
         "description": "Starts the Archive Intelligence pipeline (ingest, retrieve, expand, graph, cluster, timeline, items, synthesis) on a path, in the background; ask how it goes, stop it, or start it again to resume. With llm off nothing leaves the device and nothing costs.",
+        "why": {
+          "pl": "Uruchamia w tle analizę archiwum na ścieżce; da się zapytać o postęp, zatrzymać i wznowić."
+        },
         "labels": {
           "pl": "Rozpocznij analizę archiwum"
         },
@@ -10298,6 +10685,9 @@
           "pl": "Przeanalizuj archiwum"
         },
         "description": "Analyses a folder, an archive or a repository: the path said, or the file the device lets you pick. It runs in the background (ask \"how is the archive analysis going\"), local and free unless you allow the model (llm auto).",
+        "why": {
+          "pl": "Analizuje folder, archiwum albo repozytorium w tle; lokalnie i za darmo, chyba że pozwolisz na model."
+        },
         "steps": [
           {
             "id": "pick",
@@ -10507,6 +10897,9 @@
         "status": "implemented",
         "title": "How the archive analysis goes",
         "description": "The state of the archive analysis started from a sentence (stage, counts, result), and the latest run the data holds.",
+        "why": {
+          "pl": "Mówi, jak idzie analiza archiwum."
+        },
         "labels": {
           "pl": "Jak idzie analiza archiwum"
         },
@@ -10548,6 +10941,9 @@
         "status": "implemented",
         "title": "Stop the archive analysis",
         "description": "Asks the running archive analysis to pause at its next checkpoint; the same analysis started again resumes it.",
+        "why": {
+          "pl": "Prosi trwającą analizę archiwum o przerwę w najbliższym punkcie kontrolnym."
+        },
         "labels": {
           "pl": "Przerwij analizę archiwum"
         },
@@ -10589,6 +10985,9 @@
         "status": "implemented",
         "title": "Start the knowledge build",
         "description": "Starts the knowledge pipeline (catalogue, extract, resolve, assess, generalize, materialize) on a path, in the background. With llm off it runs on this device and costs nothing; with llm auto the model may extract candidates, which costs.",
+        "why": {
+          "pl": "Uruchamia w tle budowanie wiedzy na ścieżce; bez modelu działa na tym urządzeniu i nic nie kosztuje."
+        },
         "labels": {
           "pl": "Rozpocznij budowanie wiedzy"
         },
@@ -10668,6 +11067,9 @@
           "pl": "Zbuduj wiedzę ze źródła"
         },
         "description": "Builds the knowledge of a folder, an archive or a repository: the path said, or the file the device lets you pick. It runs in the background (ask \"how is the knowledge build going\"); the proposal says whether the model is used.",
+        "why": {
+          "pl": "Buduje wiedzę z folderu, archiwum albo repozytorium w tle."
+        },
         "steps": [
           {
             "id": "pick",
@@ -10862,6 +11264,9 @@
         "status": "implemented",
         "title": "How the knowledge build goes",
         "description": "The state of the knowledge build started from a sentence (stage, counts, result), and the latest knowledge run the data holds.",
+        "why": {
+          "pl": "Mówi, jak idzie budowanie wiedzy."
+        },
         "labels": {
           "pl": "Jak idzie budowanie wiedzy"
         },
@@ -10903,6 +11308,9 @@
         "status": "implemented",
         "title": "Stop the knowledge build",
         "description": "Asks the running knowledge build to pause at its next checkpoint; the same build started again resumes it.",
+        "why": {
+          "pl": "Prosi trwające budowanie wiedzy o przerwę w najbliższym punkcie kontrolnym."
+        },
         "labels": {
           "pl": "Przerwij budowanie wiedzy"
         },
@@ -10944,6 +11352,9 @@
         "status": "implemented",
         "title": "Start the catalogue scan",
         "description": "Starts the scan of the catalogue on a path, in the background: every export, folder or archive is streamed into units with sketches; nothing is imported and nothing leaves the device.",
+        "why": {
+          "pl": "Uruchamia w tle przeglądanie katalogu na ścieżce; nic nie jest importowane i nic nie wychodzi z urządzenia."
+        },
         "labels": {
           "pl": "Rozpocznij przeglądanie katalogu"
         },
@@ -10992,6 +11403,9 @@
           "pl": "Skataloguj folder lub archiwum"
         },
         "description": "Catalogues a folder, an archive or an export without importing it: the path said, or the file the device lets you pick. It runs in the background (ask \"how is the catalogue scan going\"); local and free.",
+        "why": {
+          "pl": "Kataloguje folder, archiwum albo eksport bez importowania go, w tle."
+        },
         "steps": [
           {
             "id": "pick",
@@ -11145,6 +11559,9 @@
         "status": "implemented",
         "title": "How the catalogue scan goes",
         "description": "The state of the catalogue scan started from a sentence, and what the catalogue holds.",
+        "why": {
+          "pl": "Mówi, jak idzie przeglądanie katalogu i co katalog zawiera."
+        },
         "labels": {
           "pl": "Jak idzie przeglądanie katalogu"
         },
@@ -11186,6 +11603,9 @@
         "status": "implemented",
         "title": "Stop the catalogue scan",
         "description": "Asks the running catalogue scan to pause at its next checkpoint.",
+        "why": {
+          "pl": "Prosi trwające przeglądanie katalogu o przerwę w najbliższym punkcie kontrolnym."
+        },
         "labels": {
           "pl": "Przerwij przeglądanie katalogu"
         },
@@ -11227,6 +11647,9 @@
         "status": "implemented",
         "title": "Search the catalogue",
         "description": "The units of the catalogue about a word (title, first message, terms); read only.",
+        "why": {
+          "pl": "Szuka w katalogu jednostek o danym słowie; tylko czyta."
+        },
         "labels": {
           "pl": "Szukaj w katalogu"
         },
@@ -11292,6 +11715,9 @@
         "status": "implemented",
         "title": "The effective view of a kind of thing",
         "description": "The shipped ROM plus the user's overlays for one kind of thing (edge kinds, perspectives, node kinds, scopes ...): each entry with its origin and whether it is disabled. Read only.",
+        "why": {
+          "pl": "Pokazuje ROM razem z Twoimi nakładkami dla jednego rodzaju rzeczy, każdy wpis z pochodzeniem."
+        },
         "labels": {
           "pl": "Widok efektywny rodzaju rzeczy"
         },
@@ -11346,6 +11772,9 @@
         "status": "implemented",
         "title": "Change a view in my overlay",
         "description": "Writes one operation (add, modify, hide, disable, alias) or takes one back (remove) in the user's overlay of a view; the shipped ROM is never written. Each write is confirmed.",
+        "why": {
+          "pl": "Zapisuje albo cofa jedną zmianę widoku w Twojej nakładce; ROM nie jest zapisywany."
+        },
         "labels": {
           "pl": "Zmień widok w mojej nakładce"
         },
@@ -11454,6 +11883,9 @@
         "status": "implemented",
         "title": "Show perspectives",
         "description": "Without an id: the list of perspectives. With one or more ids: the graph of this conversation (or of the seeds) seen through each, side by side.",
+        "why": {
+          "pl": "Pokazuje perspektywy albo graf tej rozmowy widziany przez każdą z nich."
+        },
         "labels": {
           "pl": "Pokaż perspektywy"
         },
@@ -11541,6 +11973,9 @@
         "status": "implemented",
         "title": "Show a view",
         "description": "Without a declaration: the list of view declarations. With one and a focus: the view declaration evaluated around the focus node into a layout-independent view model (elements with measures, coordinates and channel values; which encodings are promoted and which are allowed with a warning; what is unsupported and why). Read only.",
+        "why": {
+          "pl": "Pokazuje deklaracje widoków albo jedną z nich wyliczoną wokół węzła."
+        },
         "labels": {
           "pl": "Pokaż widok"
         },
@@ -11617,6 +12052,9 @@
         "status": "implemented",
         "title": "Where does a setting come from",
         "description": "The value of a setting through conversation, units, user and installation: which level supplied it and which were overridden (the inheritance resolution). Read only.",
+        "why": {
+          "pl": "Mówi, z którego poziomu (rozmowa, jednostki, Ty, instalacja) pochodzi wartość ustawienia."
+        },
         "labels": {
           "pl": "Skąd jest ustawienie"
         },
@@ -11682,6 +12120,9 @@
         "status": "implemented",
         "title": "Edge kinds",
         "description": "All edge kinds with their ancestors, inverse and perspectives, or one kind. Read only.",
+        "why": {
+          "pl": "Pokazuje rodzaje krawędzi z przodkami, odwrotnościami i perspektywami."
+        },
         "labels": {
           "pl": "Rodzaje krawędzi"
         },
@@ -11736,6 +12177,9 @@
         "status": "implemented",
         "title": "Classify link types",
         "description": "Which link types used in the graph belong to a known edge kind and which are unclassified. Read only.",
+        "why": {
+          "pl": "Mówi, które typy powiązań w grafie należą do znanego rodzaju krawędzi, a które nie."
+        },
         "labels": {
           "pl": "Sklasyfikuj typy powiązań"
         },
@@ -11777,6 +12221,9 @@
         "status": "implemented",
         "title": "What the guardian remembers about you",
         "description": "The rules the guardian keeps about the person across conversations (scope person or wider): their normalized text, since when, when they are reviewed or expire, where they are visible, and what is on the way as a proposal. Nothing of the quotes they were heard in.",
+        "why": {
+          "pl": "Pokazuje reguły, które strażnik pamięta o Tobie między rozmowami."
+        },
         "labels": {
           "pl": "Co strażnik o Tobie pamięta"
         },
@@ -11855,6 +12302,9 @@
         "status": "implemented",
         "title": "Say two things the guardian noticed are the same",
         "description": "Method `user` of the guardian's matching: the occurrences of one hypothesis are joined to another of the same conversation (edges same_as, method user, confidence 1). Nothing is deleted; guardian.unmerge separates them again.",
+        "why": {
+          "pl": "Łączy to, co strażnik zauważył osobno, w jedną hipotezę; nic nie jest usuwane."
+        },
         "labels": {
           "pl": "Połącz to, co strażnik zauważył osobno"
         },
@@ -11942,6 +12392,9 @@
         "status": "implemented",
         "title": "Separate what the guardian joined",
         "description": "Splits the merged occurrences of a hypothesis (those the matching method was not sure of, or the one named) into hypotheses of their own. Nothing is lost: each occurrence keeps its evidence.",
+        "why": {
+          "pl": "Rozdziela to, co strażnik połączył; każde wystąpienie zachowuje swój dowód."
+        },
         "labels": {
           "pl": "Rozdziel to, co strażnik połączył"
         },
@@ -12029,6 +12482,9 @@
         "status": "implemented",
         "title": "What can be done in an environment (phone, server, directory, storage)",
         "description": "Answers from the graph: the environment is found among the environment nodes (a platform such as your phone or this server, a directory, a configured storage, an account at a service), its capabilities and accesses are read through their links, and the action engine says which actions of the catalogue fit them, with their effect flags and whether the rules allow, ask or deny. Accesses are shown as references to the secrets vault (a key name and whether it is set), never as secrets. Without an environment: the one this process runs in. Brings the derived environment nodes up to date first (setting environments_auto_sync).",
+        "why": {
+          "pl": "Odpowiada z grafu, co można zrobić w środowisku (telefon, serwer, katalog, magazyn)."
+        },
         "labels": {
           "pl": "Co można zrobić w środowisku (telefon, serwer, katalog, magazyn)"
         },
@@ -12119,6 +12575,9 @@
         "status": "implemented",
         "title": "The environments, their capabilities and accesses",
         "description": "Every environment node of the graph with its capabilities and its accesses (references to the secrets vault only).",
+        "why": {
+          "pl": "Wypisuje środowiska z ich zdolnościami i dostępami."
+        },
         "labels": {
           "pl": "Środowiska, ich zdolności i dostępy"
         },
@@ -12172,6 +12631,9 @@
         "status": "implemented",
         "title": "Bring the environment nodes up to date",
         "description": "Rewrites the derived environment, capability and access nodes from their sources (device availability per platform, ports and adapters, configured storages, services and the credentials declared in the settings; a directory when named). Only nodes of the environment layer are touched; accesses keep key names, never values.",
+        "why": {
+          "pl": "Uaktualnia węzły środowisk, zdolności i dostępów z ich źródeł."
+        },
         "labels": {
           "pl": "Uaktualnij węzły środowisk"
         },
@@ -12237,6 +12699,9 @@
         "status": "implemented",
         "title": "Run an agent",
         "description": "A model turn loop (kind agent.loop) whose tools are the actions of the catalogue. Every model turn goes through the shared usage guard; every tool call is a run of the interpreter, so the rules, the confirmations, the x10 guard and the spending limits apply. A call the policy does not let run is stored as a proposal and the loop stops (setting tool_loop_on_proposal); the answer carries proposals[] and run_id for each, and the user answer resumes the run (agent.run with resume).",
+        "why": {
+          "pl": "Pętla tur modelu, której narzędziami są działania katalogu; każde wywołanie narzędzia przechodzi przez reguły, potwierdzenia i bezpiecznik."
+        },
         "labels": {
           "pl": "Uruchom agenta"
         },
@@ -12393,6 +12858,9 @@
         "status": "implemented",
         "title": "Tool sources and their actions",
         "description": "Your tool sources (external servers whose tools are actions of the catalogue): transport, the actions each one provided, the tools you have trusted, and the state of its credential reference in the vault (never the key). Contacts nothing.",
+        "why": {
+          "pl": "Pokazuje Twoje źródła narzędzi, ich działania i narzędzia, którym ufasz."
+        },
         "labels": {
           "pl": "Źródła narzędzi i ich akcje"
         },
@@ -12446,6 +12914,9 @@
         "status": "implemented",
         "title": "Refresh the tools of a source",
         "description": "Connects to the source (or every source you added), lists its tools and writes one action per tool into your overlay profiles/actions.pack. Effects of an external tool are unknown, so the rules ask before every run. Contacts the source server; sends nothing of your data.",
+        "why": {
+          "pl": "Łączy się ze źródłem, wypisuje jego narzędzia i zapisuje je jako działania w Twojej nakładce."
+        },
         "labels": {
           "pl": "Odśwież narzędzia źródła"
         },
@@ -12512,6 +12983,9 @@
         "status": "implemented",
         "title": "Add a tool source (MCP server)",
         "description": "Adds a tool source to the setting tool_sources: kind (mcp), transport stdio (command, args) or http (url), access as a reference to a key in the secrets vault (access.secret = key name; never the key), then lists its tools like tool_source.sync. Nothing is contacted before you add it.",
+        "why": {
+          "pl": "Dodaje źródło narzędzi (serwer MCP) do ustawienia tool_sources; klucz tylko jako odniesienie do sejfu."
+        },
         "labels": {
           "pl": "Dodaj źródło narzędzi (serwer MCP)"
         },
@@ -12677,6 +13151,9 @@
         "status": "implemented",
         "title": "Remove a tool source",
         "description": "Removes the source from the setting tool_sources together with its actions (your overlay), its trust rules and its graph nodes. The shipped code and packs are untouched.",
+        "why": {
+          "pl": "Usuwa źródło narzędzi razem z jego działaniami, regułami zaufania i węzłami."
+        },
         "labels": {
           "pl": "Usuń źródło narzędzi"
         },
@@ -12743,6 +13220,9 @@
         "status": "implemented",
         "title": "Change how a tool of a source is confirmed",
         "description": "The preset asks before every run of an external tool. mode allow writes a rule (your overlay profiles/action_rules.pack) that lets one tool - or every tool of the source - run without asking; confirm asks again; reset takes your rule back out.",
+        "why": {
+          "pl": "Zmienia, czy narzędzie źródła pyta przed każdym uruchomieniem."
+        },
         "labels": {
           "pl": "Zmień pytanie o zgodę dla narzędzia źródła"
         },
@@ -12831,6 +13311,9 @@
         "status": "implemented",
         "title": "Show input bindings",
         "description": "The effective input bindings (device, key or gesture, held modifiers, lock state -> an action on the view): the shipped presets plus the user's overlay, with conflicts (a warning, nothing blocked) and what is unsupported. Without a device: every device. Read only.",
+        "why": {
+          "pl": "Pokazuje przypisania wejść (klawisze, gesty) z konfliktami."
+        },
         "labels": {
           "pl": "Pokaż przypisania wejść"
         },
@@ -12885,6 +13368,9 @@
         "status": "implemented",
         "title": "Rebind an input",
         "description": "Rebinds one input binding in the user's overlay (for example a lock to zoom); the shipped presets are never written and the change can be taken back. Each write is confirmed.",
+        "why": {
+          "pl": "Przypisuje wejście do działania w Twojej nakładce; presety zostają."
+        },
         "labels": {
           "pl": "Przypisz wejście do działania"
         },
@@ -12971,6 +13457,9 @@
         "status": "implemented",
         "title": "Navigate the graph",
         "description": "One level of the one navigable graph (the projection of runtime/graph_sources.pack: the ROM, settings, You, conversations, flows, roles, perspectives, devices, environments ...): the focus, its children with their counts, provenance and evidence, the edges between them, the breadcrumbs, how many were collapsed by the budget (navigator_children_limit) and how many you hid. With perspectives, the nodes the perspectives' edges reach from the focus. Read only; nothing is written to the graph.",
+        "why": {
+          "pl": "Jeden poziom jednego grafu: ognisko, jego dzieci z licznikami, pochodzeniem i dowodem, oraz to, co zwinął budżet."
+        },
         "labels": {
           "pl": "Pokaż w grafie"
         },
@@ -13130,6 +13619,9 @@
         "status": "implemented",
         "title": "Card of a graph node",
         "description": "Everything about one node of the graph projection: its value and why, the effect and the edit rule of a setting, the whole inheritance chain (with the levels that have no unit, e.g. no project), the relations grouped by edge kind, the actions that fit it (actions.for) and the evidence of each property. Read only.",
+        "why": {
+          "pl": "Wszystko o jednym węźle grafu: wartość i po co, skąd jest, powiązania i co można z nim zrobić."
+        },
         "labels": {
           "pl": "Karta węzła grafu"
         },
@@ -13226,6 +13718,9 @@
         "status": "implemented",
         "title": "Settings with their origin",
         "description": "Every setting in its group with its human name, the value resolved through the scope chain (one Resolver for the whole list), the value in words, which level supplied it (chip), the whole inheritance chain, the edit rule and the flows that read it; profile values (runtime profiles) are fields too; fields of a group you hid are listed by key. Proposals of the guardian per field are planned (proposals is empty, proposals_status says why). Read only.",
+        "why": {
+          "pl": "Każde ustawienie w swojej grupie, z wartością, słowami i poziomem, z którego pochodzi."
+        },
         "labels": {
           "pl": "Ustawienia z pochodzeniem"
         },
@@ -13312,6 +13807,9 @@
         "status": "implemented",
         "title": "Who does which job",
         "description": "Every model role: its name and why, the policy chain step by step with what each step reads today, the model it resolves to (the same function every reader calls), the class with its reason, the flow of that class for the roles whose readers use it, the background mode where the data names one, the cost (registry price per million or why it is unknown; the last 7 days are unknown because the ledger records actions, not roles) and the flows that use the role. Read only.",
+        "why": {
+          "pl": "Każda rola modelu: po co jest, który model ją wykonuje i dlaczego, ile to kosztuje."
+        },
         "labels": {
           "pl": "Kto wykonuje którą pracę"
         },
@@ -13396,6 +13894,9 @@
         "status": "implemented",
         "title": "Override a ROM item with your copy",
         "description": "The ROM is never written: your copy of a ROM item goes into the overlay <data_dir>/profiles/graph_entry.pack overrides.rom.items.<id> (validated like every overlay before anything is written). The item then says layer overlay; removing the entry from the overlay brings the ROM item back. Confirmed each time (confirm:rom.override).",
+        "why": {
+          "pl": "Zapisuje Twoją kopię elementu ROM w nakładce; sam ROM nigdy nie jest zapisywany."
+        },
         "labels": {
           "pl": "Przesłoń element ROM swoją kopią"
         },
@@ -13818,6 +14319,14 @@
                 "minLength": 1
               },
               "description": "M1-D1: flows this one runs inside it that are not interpreter steps (chat.send runs graph_native.reply when the flow says so); their reads count as reads of this flow."
+            },
+            "why": {
+              "type": "object",
+              "description": "M1-K0: what the flow is for, in the words of each language other than English (the graph navigator's „po co”); English is the description. A language without its words shows the description and says so (no_translation).",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              }
             }
           },
           "additionalProperties": true

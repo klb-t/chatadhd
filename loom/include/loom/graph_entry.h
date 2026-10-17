@@ -38,7 +38,17 @@ struct Env {
   std::filesystem::path data_dir;        // overlay location; empty: shipped data only
   std::shared_ptr<const kb::Pack> pack;  // nullptr: the builtin pack is loaded on demand
   Json host_counts = Json::object();     // optional counts a host can enumerate (interfaces...)
+  // The model roles of the ports profile as one render resolves them (projection::Catalogue::roles: {roles: [{id, model, reason?...}]}), so
+  // the counter of the roles says what the role rows say; empty = resolved here with a render of its own.
+  std::function<Result<Json>()> roles;
 };
+
+// Every entry marked as calibration (research in progress, never hidden): an object with "status": "calibration",
+// "status": {"state": "calibration"} or "calibration": true in the effective runtime profiles, and every source pack of a profile whose
+// top-level "calibration": true the profile does not carry itself (graph/entry.pack ...: source_provenance "calibration").
+// [{where: "runtime/<domain>" | "<pack path under loom/data>", pointer, label (the entry's label/title/id, or null)}]. `profile` gives the
+// effective values of a domain (null = unreadable: skipped and said in `unreadable`).
+Json calibration_entries(const std::function<const Json*(const std::string& domain)>& profile, Json* unreadable = nullptr);
 
 // What a provider sees: the environment, the effective graph_entry profile
 // values, and the binding's own parameters.

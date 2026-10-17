@@ -219,9 +219,14 @@ def validate_definition(document, domain):
     validate_value(document['defaults'], document['value_schema'])
 
 
-def source_metadata(path, pointer, raw, target):
-    return {'path': 'loom/data/' + path, 'pointer': pointer,
-            'raw_sha256': hashlib.sha256(raw).hexdigest(), 'target': target}
+def source_metadata(path, pointer, raw, target, document=None):
+    out = {'path': 'loom/data/' + path, 'pointer': pointer,
+           'raw_sha256': hashlib.sha256(raw).hexdigest(), 'target': target}
+    # A source pack whose whole content is calibration says so (its top-level "calibration": true), so a projection of a part of it
+    # still shows that the part is research in progress (graph_entry calibration_entries).
+    if isinstance(document, dict) and document.get('calibration') is True:
+        out['calibration'] = True
+    return out
 
 
 def literal_entries(name, documents):
@@ -291,7 +296,7 @@ def plan(data_dir=ROOT / 'data', output=OUT):
             targets.append(projection['target'])
             source_doc, raw = read_document(source_path)
             document = replace(document, projection['target'], project(source_doc, projection['pointer']))
-            sources.append(source_metadata(source, projection['pointer'], raw, projection['target']))
+            sources.append(source_metadata(source, projection['pointer'], raw, projection['target'], source_doc))
         validate_definition(document, path.stem)
         definitions[path.stem], provenance[path.stem] = document, sources
         outputs[path] = (json.dumps(document, ensure_ascii=False, allow_nan=False, indent=2) + '\n').encode('utf-8')

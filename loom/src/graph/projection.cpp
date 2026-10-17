@@ -27,6 +27,7 @@
 #include "loom/runtime_profile.h"
 #include "loom/scope_resolver.h"
 #include "loom/settings_fields.h"
+#include "loom/util/unicode.h"
 #include "loom/util/utf8.h"
 
 namespace loom::projection {
@@ -47,17 +48,6 @@ bool starts_with(std::string_view s, std::string_view p) { return s.size() >= p.
 std::string clip(const std::string& s, std::size_t n) {
   const std::string_view head = utf8::prefix(s, n);
   return head.size() < s.size() ? std::string(head) + "…" : s;
-}
-
-const Json* at_pointer(const Json& root, const std::string& pointer) {
-  if (pointer.empty()) return &root;
-  try {
-    const Json::json_pointer p(pointer);
-    return root.contains(p) ? &root.at(p) : nullptr;
-  } catch (const std::exception& e) {
-    log::write(log::Level::Debug, kLog, "pointer '" + pointer + "' is not a JSON pointer: " + e.what());
-    return nullptr;
-  }
 }
 
 std::vector<std::string> strings_in(const Json& v) {
@@ -99,6 +89,9 @@ Json evidence_by_method(const Json& source, const std::string& method, const Jso
 
 }  // namespace
 
+// The value of a setting node, resolved when it leaves the catalogue (defined with the settings reader).
+void resolve_setting_node(Catalogue::Impl& c, Json& n);
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 struct Catalogue::Impl {
@@ -123,12 +116,18 @@ struct Catalogue::Impl {
   std::string fields_error;
   std::optional<Json> conv_meta;
   std::optional<Json> roles_cache;  // role id -> resolution row
+  std::map<std::string, Json> settings_cache;           // setting(): key -> value for this render
+  std::map<std::string, std::pair<const Json*, bool>> field_index;  // settings key -> (its entry in fields(), a profile value?)
+  std::optional<std::set<std::string>> unit_levels_cache;  // unit_levels()
   std::optional<views::EdgeKinds> kinds;
   bool kinds_tried = false;
   std::optional<Json> graph_entry_values;
   std::optional<Json> profile_snapshot;
   std::string profile_error;
   bool profile_tried = false;
+  std::optional<onboarding::DefaultLayers> layers_cache;
+  std::string layers_error;
+  std::optional<Json> screen_cache;
 
   using Reader = std::function<Result<Read>(Impl&, const Json& source, const std::string& parent, const Json& paging)>;
   static const std::map<std::string, Reader>& readers();
@@ -256,27 +255,212 @@ struct Catalogue::Impl {
     return profile_snapshot ? &*profile_snapshot : nullptr;
   }
 
+  // The shipped onboarding layers: embedded, so parsed once per process (a failure is deterministic and logged).
+  static const Result<onboarding::DefaultLayers>& shipped_layers() {
+    static const Result<onboarding::DefaultLayers> shipped = []() -> Result<onboarding::DefaultLayers> {
+      auto pack = onboarding::builtin_pack();
+      if (!pack) {
+        log::write(log::Level::Debug, kLog, "shipped onboarding pack not readable: " + pack.error().message);
+        return pack.error();
+      }
+      return onboarding::DefaultLayers::create(*pack);
+    }();
+    return shipped;
+  }
+
+  // The onboarding layers (the stored profile's pack, else the shipped one): preferences, privacy rules and the words of the screen.
+  Result<const onboarding::DefaultLayers*> layers() {
+    if (!layers_cache && layers_error.empty()) {
+      auto snap = profile();
+      if (snap && *snap && (*snap)->contains("pack") && (*snap)->contains("layers")) {
+        auto made = onboarding::DefaultLayers::create((**snap)["pack"], (**snap)["layers"]);
+        if (made) layers_cache = std::move(*made);
+        else layers_error = made.error().message;
+      } else if (const auto& shipped = shipped_layers(); shipped) {
+        return &*shipped;
+      } else {
+        layers_error = shipped.error().message;
+      }
+      if (!layers_error.empty()) log::write(log::Level::Debug, kLog, "onboarding layers not readable: " + layers_error);
+    }
+    if (!layers_cache) return Error(Errc::Unavailable, layers_error.empty() ? std::string("onboarding_unavailable") : layers_error);
+    return &*layers_cache;
+  }
+
+  // The words of the graph screen (presentation.graph_screen) in the language of the render, English for a word that language lacks;
+  // a stored profile older than these words reads the shipped ones. Read once per render.
+  const Json& screen_words() {
+    if (screen_cache) return *screen_cache;
+    screen_cache = Json::object();
+    Json locales = nullptr;
+    if (auto l = layers(); l)
+      if (auto r = (*l)->resolve("presentation.graph_screen"); r && json::get_string(*r, "status") == "effective") locales = r->value("value", Json::object()).value("locales", Json());
+    if (!locales.is_object()) {
+      const auto& shipped = shipped_layers();
+      if (auto r = shipped ? shipped->resolve("presentation.graph_screen") : Result<Json>(shipped.error()); r)
+        locales = r->value("value", Json::object()).value("locales", Json());
+      else log::write(log::Level::Debug, kLog, "graph screen words not readable: " + r.error().message);
+    }
+    if (locales.is_object()) {
+      for (const std::string& l : {std::string("en"), lang()})
+        if (const Json* words_here = json::find(locales, l); words_here && words_here->is_object())
+          for (const auto& w : words_here->items()) (*screen_cache)[w.key()] = w.value();
+    }
+    return *screen_cache;
+  }
+
+  // One word of the screen ("" when the screen has none), with its {{variables}}.
+  std::string word(const std::string& id, const Json& vars = Json::object()) {
+    const Json* w = json::find(screen_words(), id);
+    if (!w || !w->is_string()) return std::string();
+    if (vars.empty()) return w->get<std::string>();
+    auto text = render_profile_template(w->get<std::string>(), vars);
+    return text ? *text : w->get<std::string>();
+  }
+
+  // Why something is unknown, in words: reason.<code> (the code before ": detail"); the code itself when no word says it.
+  std::string reason_words(const std::string& reason) {
+    const std::string code = reason.substr(0, reason.find(':'));
+    const std::string w = word("reason." + code);
+    return w.empty() ? reason : w;
+  }
+
+  // The evidence in words: what its method says (evidence.method.<method>: "you said it", "a model's reply", "imported (Claude.ai, 2025-03)"),
+  // else what its class says (evidence.<class>; an inference with its confidence). Inference is never worded as something you said.
+  std::string evidence_words(const Json& ev) {
+    const Json prov = ev.value("provenance", Json::object());
+    const std::string method = json::get_string(prov, "method");
+    const std::string cls = json::get_string(ev, "class");
+    if (cls == "inferred") {
+      const Json conf = ev.value("confidence", Json(nullptr));
+      if (method != "model_inferred" && !method.empty())
+        if (const std::string w = word("evidence.method." + method); !w.empty()) return w;
+      return conf.is_number() ? word("evidence.inferred", Json{{"confidence", json::format_float_py(conf.get<double>())}}) : word("evidence.inferred_unknown");
+    }
+    if (starts_with(method, "import:")) {
+      const std::string time = json::get_string(prov, "time");
+      const std::string w = word("evidence.method.import", Json{{"source", method.substr(7)}, {"date", time.substr(0, std::min<std::size_t>(7, time.size()))}});
+      if (!w.empty()) return w;
+    }
+    if (!method.empty())
+      if (const std::string w = word("evidence.method." + method); !w.empty()) return w;
+    return word("evidence." + cls);
+  }
+
+  // A node as it leaves the catalogue: its evidence (and each property's) in words.
+  void finish(Json& n) {
+    if (json::get_bool(n, "value_pending", false)) resolve_setting_node(*this, n);
+    if (Json* ev = n.contains("evidence") ? &n["evidence"] : nullptr; ev && ev->is_object()) (*ev)["human"] = evidence_words(*ev);
+    if (n.contains("evidence_overrides") && n["evidence_overrides"].is_object())
+      for (auto& item : n["evidence_overrides"].items())
+        if (item.value().is_object()) item.value()["human"] = evidence_words(item.value());
+  }
+
+  // One area of the entry profile as a node (label, why, order, expand; no counters): nullopt for an area the profile does not name (a
+  // generated cell of the axes, which only the whole entry view knows).
+  std::optional<Json> area_alone(const Json& src, const std::string& address) {
+    const std::string id = address.substr(5);
+    const Json areas = graph_entry().value("areas", Json::object());
+    const Json* own = json::find(areas, id);
+    if (!own || !own->is_object() || json::get_bool(*own, "hidden", false)) return std::nullopt;
+    auto shipped = RuntimeProfile::builtin("graph_entry");
+    const Json shipped_area = shipped ? shipped->values().value("areas", Json::object()).value(id, Json()) : Json();
+    const std::string layer = *own == shipped_area ? std::string("rom") : std::string("overlay:graph_entry");
+    Json n = make(src, address, say(own->value("label", Json(id))), std::string(), layer, "graph/entry.pack#/areas/" + id, layer == "rom" ? "preset" : "override");
+    n["order"] = own->value("order", 1000);
+    if (const Json* why = json::find(*own, "why"); why) n["why"] = say(*why);
+    n["attrs"] = Json{{"axes", own->value("axes", Json::object())}, {"origin", "area"}, {"expand", own->value("expand", Json(nullptr))}, {"counts_with_the_root", true}};
+    return n;
+  }
+
   // ── nodes ──────────────────────────────────────────────────────────
 
   Json make(const Json& src, const std::string& address, const std::string& label, const std::string& parent, const std::string& layer,
             const std::string& source_ref, const std::string& method, const Json& time = nullptr) {
     Json layers = Json::array();
     layers.push_back(layer);
+    // What your overlay defines or changes is yours (observed, defined_by_you / override), never the ROM's preset.
+    const bool yours = starts_with(layer, "overlay:");
+    const Json cls = yours ? Json{{"class", "observed"}, {"confidence", 1.0}} : src.value("epistemic_default", Json::object());
+    const std::string how = yours && method == "preset" ? std::string("override") : method;
     return Json{{"address", address},
                 {"label", label},
                 {"kind", json::get_string(src, "class")},
                 {"source", json::get_string(src, "id")},
                 {"parent", parent},
-                {"evidence", evidence_of(src.value("epistemic_default", Json::object()), layer, source_ref, method, time)},
+                {"evidence", evidence_of(cls, layer, source_ref, how, time)},
                 {"provenance", Json{{"layer", layer}, {"layers", layers}}},
                 {"has_children", false},
                 {"attrs", Json::object()}};
   }
 
+  // The parent of a source's nodes: {area: <id>} -> area:<id>, {node: <address>} -> that node ({of: <source>} is set per node by its reader).
   std::string parent_of(const Json& src) const {
     const Json p = src.value("parent", Json::object());
     if (const std::string area = json::get_string(p, "area"); !area.empty()) return "area:" + area;
+    if (const std::string node = json::get_string(p, "node"); !node.empty()) return node;
     return std::string();
+  }
+
+  // The node at an address, from the source that knows it (a paged source reads only that node); nullopt when none does.
+  Result<std::optional<Json>> node_at(const std::string& address) {
+    const Json* src = nullptr;
+    std::size_t best_len = 0;
+    for (const auto& s : sources) {
+      const std::string p = json::get_string(s, "prefix");
+      if (!p.empty() && p.size() > best_len && starts_with(address, p) && address.size() > p.size()) {
+        src = &s;
+        best_len = p.size();
+      }
+    }
+    if (!src) return std::optional<Json>();
+    // An area looked up alone (a breadcrumb, a focus) is read from the entry profile, without computing every counter of the entry view;
+    // the counters come with the root's listing.
+    if (json::get_string(*src, "reader") == "graph_entry.areas" && !eager.count(json::get_string(*src, "id")))
+      if (auto alone = area_alone(*src, address); alone) {
+        finish(*alone);
+        return alone;
+      }
+    if (paged(*src)) {
+      LOOM_TRY_ASSIGN(auto r, read_under(*src, std::string(), Json{{"address", address}}));
+      for (auto& e : r.edges) looked_up_edges.push_back(std::move(e));
+      for (auto& n : r.nodes)
+        if (json::get_string(n, "address") == address) {
+          finish(n);
+          return std::optional<Json>(std::move(n));
+        }
+      return std::optional<Json>();
+    }
+    LOOM_TRY_ASSIGN(const Read* r, read_whole(*src));
+    for (const auto& n : r->nodes)
+      if (json::get_string(n, "address") == address) {
+        Json one = n;
+        finish(one);
+        return std::optional<Json>(std::move(one));
+      }
+    return std::optional<Json>();
+  }
+
+  // A number of bytes in words (64 GB): the units of value_words.byte_units, 1024 apart.
+  std::string bytes_human(std::int64_t n) const {
+    const Json units = words.value("byte_units", Json::array({"B", "KB", "MB", "GB", "TB", "PB"}));
+    double v = static_cast<double>(n);
+    std::size_t u = 0;
+    while (v >= 1024.0 && u + 1 < units.size()) {
+      v /= 1024.0;
+      ++u;
+    }
+    std::string num;
+    if (v == static_cast<double>(static_cast<std::int64_t>(v))) {
+      num = std::to_string(static_cast<std::int64_t>(v));
+    } else {
+      num = json::format_float_py(static_cast<double>(static_cast<std::int64_t>(v * 10.0 + 0.5)) / 10.0);
+      const std::string sep = say(words.value("decimal_separator", Json(".")));
+      if (!sep.empty() && sep != ".")
+        if (auto dot = num.find('.'); dot != std::string::npos) num.replace(dot, 1, sep);
+    }
+    const std::string unit = u < units.size() && units[u].is_string() ? units[u].get<std::string>() : std::string();
+    return unit.empty() ? num : num + " " + unit;
   }
 
   std::string human_value(const Json& v, const Json& field) const {
@@ -286,12 +470,21 @@ struct Catalogue::Impl {
         if (!m.empty()) return m;
       }
     const Json w = words;
+    const Json human = field.value("human", Json::object());
+    // An object said by one of its members (human.summary: the ×10 of the usage fuse).
+    if (const Json* summary = json::find(human, "summary"); summary && summary->is_object() && v.is_object())
+      if (const Json* member = json::find_pointer(v, json::get_string(*summary, "pointer")); member) {
+        auto text = render_profile_template(say(summary->value("text", Json())), Json{{"v", human_value(*member, Json::object())}});
+        if (text && !text->empty()) return *text;
+      }
+    if (json::get_string(field, "unit") == "bytes" && (v.is_number_integer() || v.is_number_unsigned())) return bytes_human(v.get<std::int64_t>());
     if (v.is_null()) return say(w.value("null", Json("not set")));
     if (v.is_boolean()) return say(w.value(v.get<bool>() ? "true" : "false", Json(v.get<bool>() ? "on" : "off")));
     if (v.is_string()) return v.get<std::string>().empty() ? say(w.value("empty", Json("empty"))) : v.get<std::string>();
     if (v.is_number_integer() || v.is_number_unsigned()) return json::dump(v);
     if (v.is_number_float()) {
       std::string s = json::format_float_py(v.get<double>());
+      if (s.size() > 2 && s.compare(s.size() - 2, 2, ".0") == 0) s.resize(s.size() - 2);
       const std::string sep = say(w.value("decimal_separator", Json(".")));
       if (!sep.empty() && sep != ".")
         if (auto dot = s.find('.'); dot != std::string::npos) s.replace(dot, 1, sep);
@@ -302,11 +495,27 @@ struct Catalogue::Impl {
     return text ? *text : std::to_string(v.size());
   }
 
-  // The chip of the level that supplied a value: {id, label} with the chain's own label.
-  Json chip_of(const std::string& scope, const Json& chain) const {
-    for (const auto& l : chain)
-      if (json::get_string(l, "level") == scope) return Json{{"id", scope}, {"label", say(l.value("label", Json(scope)))}};
-    return Json{{"id", scope.empty() ? std::string("none") : scope}, {"label", scope}};
+  // The chip of the level that supplied a value: {id, label}, the label the screen's word (chip.<id>), else the chain's own label.
+  Json chip_of(const std::string& scope, const Json& chain) {
+    const std::string id = scope.empty() ? std::string("none") : scope;
+    std::string label = word("chip." + id);
+    if (label.empty())
+      for (const auto& l : chain)
+        if (json::get_string(l, "level") == scope) label = say(l.value("label", Json(scope)));
+    return Json{{"id", id}, {"label", label.empty() ? id : label}};
+  }
+
+  // No level gives a value: what the reader does then (human.when_unset, the preset in code), else "not set anywhere".
+  void unset_words(Json& out, const Json& field, const std::string& key) {
+    const std::string when = say(field.value("human", Json::object()).value("when_unset", Json()));
+    if (when.empty()) {
+      out["provenance"]["chip"] = Json{{"id", "none"}, {"label", word("chip.none").empty() ? std::string("none") : word("chip.none")}};
+      return;
+    }
+    out["value_human"] = when;
+    out["provenance"]["chip"] = Json{{"id", "code_preset"}, {"label", word("chip.code_preset").empty() ? std::string("code_preset") : word("chip.code_preset")}};
+    out["provenance"]["when_unset"] = true;
+    out["evidence"] = evidence_of(Json{{"class", "declared"}, {"confidence", 1.0}}, "code", key, "code_preset");
   }
 
   // One field (config / secret) or profile value through the one scope chain: {value, value_human, provenance, inheritance, evidence}.
@@ -319,19 +528,22 @@ struct Catalogue::Impl {
       out["secret"] = true;
       out["is_set"] = env.secrets ? Json(set) : Json(nullptr);
       out["value_human"] = say(words.value(set ? "secret_set" : "secret_unset", Json(set ? "set" : "not set")));
-      out["provenance"] = Json{{"scope", set ? "person" : "none"}, {"layer", "secrets.json"}, {"chip", Json{{"id", "secret"}, {"label", say(words.value("secret_chip", Json("secret")))}}}};
+      out["provenance"] = Json{{"scope", set ? "person" : "none"}, {"layer", "secrets.json"}, {"chip", Json{{"id", "secret"}, {"label", word("chip.secret").empty() ? std::string("secret") : word("chip.secret")}}}};
       out["inheritance"] = Json::array();
       out["evidence"] = evidence_of(set ? Json{{"class", "observed"}, {"confidence", 1.0}} : src.value("epistemic_default", Json::object()),
                                     "secrets.json", key, set ? "setting" : "preset");
       return out;
     }
+    // The preset: the config preset (default_value), else the runtime profile the reader takes it from (preset_from -> preset_value).
+    const Json preset = field.contains("default_value") ? field["default_value"] : field.value("preset_value", Json(nullptr));
+    const std::string preset_source = field.contains("default_value") ? std::string("preset:settings") : json::get_string(field, "preset_source", "preset:settings");
     const scopes::Resolver* r = get_resolver();
     scopes::Binding b;
     b.key = key;
     b.conv_id = env.conv_id;
-    if (field.contains("default_value")) {
-      b.installation = field["default_value"];
-      b.installation_source = "preset:settings";
+    if (!preset.is_null()) {
+      b.installation = preset;
+      b.installation_source = preset_source;
     }
     std::optional<scopes::Resolution> res;
     if (r) {
@@ -339,23 +551,25 @@ struct Catalogue::Impl {
       if (got) res = std::move(*got);
       else log::write(log::Level::Debug, kLog, "'" + key + "' not resolved through the scope chain: " + got.error().message);
     }
+    const std::string preset_layer = starts_with(preset_source, "profile:") ? preset_source : std::string("rom");
     if (!res) {
       // No chain: what the settings say, else the preset - and the provenance says the chain could not be read.
       const Json mine = env.cfg ? env.cfg->get(key) : Json(nullptr);
       const bool set = !mine.is_null();
-      out["value"] = set ? mine : field.value("default_value", Json(nullptr));
+      out["value"] = set ? mine : preset;
       out["value_human"] = human_value(out["value"], field);
-      out["provenance"] = Json{{"scope", set ? "person" : "installation"}, {"layer", set ? "config.json" : "rom"},
-                               {"chip", Json{{"id", set ? "person" : "installation"}, {"label", set ? "person" : "installation"}}},
+      const std::string scope = set ? "person" : preset.is_null() ? "none" : "installation";
+      out["provenance"] = Json{{"scope", scope}, {"layer", set ? "config.json" : preset.is_null() ? "none" : preset_layer}, {"chip", chip_of(scope == "none" ? std::string() : scope, Json::array())},
                                {"chain_unavailable", resolver_error.empty() ? std::string("scope_chain_unavailable") : resolver_error}};
       out["inheritance"] = Json::array();
       out["evidence"] = evidence_of(set ? Json{{"class", "observed"}, {"confidence", 1.0}} : src.value("epistemic_default", Json::object()),
-                                    set ? "config.json" : "rom", key, set ? "setting" : "preset");
+                                    set ? "config.json" : preset_layer, key, set ? "setting" : "preset");
+      if (!set && preset.is_null()) unset_words(out, field, key);
       return out;
     }
     out["value"] = res->defined ? res->value : Json(nullptr);
     out["value_human"] = human_value(out["value"], field);
-    std::string layer = "rom";
+    std::string layer = preset_layer;
     if (res->scope == "person") layer = "config.json";
     else if (res->scope == "conversation") layer = "conversation.metadata";
     else if (starts_with(res->source, "rule:")) layer = "rules:" + res->source.substr(5);
@@ -364,9 +578,13 @@ struct Catalogue::Impl {
     Json prov{{"scope", res->defined ? res->scope : std::string("none")}, {"layer", layer}, {"source", res->source}, {"chip", chip_of(res->defined ? res->scope : std::string(), res->chain)}};
     if (!res->scope_id.empty()) prov["scope_id"] = res->scope_id;
     // config.json holds the presets too (the auto-upgrade writes them): a person value equal to the preset may be the preset itself, so it is
-    // said, and its evidence stays the preset's (never "you said").
-    const bool preset_copy = res->defined && res->scope == "person" && field.contains("default_value") && field["default_value"] == res->value;
-    if (preset_copy) prov["same_as_preset"] = true;
+    // said (chip: the preset kept in your settings), its evidence stays the preset's (never "you said"), and it is not counted as yours.
+    const bool preset_copy = res->defined && res->scope == "person" && !preset.is_null() && preset == res->value;
+    if (preset_copy) {
+      prov["same_as_preset"] = true;
+      if (const std::string w = word("chip.same_as_preset"); !w.empty()) prov["chip"]["label"] = w;
+      prov["chip"]["same_as_preset"] = true;
+    }
     out["provenance"] = prov;
     out["inheritance"] = inheritance_of(*res);
     const Json by_scope = src.value("evidence_by_scope", Json::object());
@@ -375,15 +593,14 @@ struct Catalogue::Impl {
     else if (const Json* any = json::find(by_scope, "*"); any && any->is_object() && res->scope != "installation" && res->defined) cls = *any;
     if (preset_copy) cls = src.value("epistemic_default", Json::object());
     out["evidence"] = evidence_of(cls, layer, key, res->scope == "installation" ? "preset" : preset_copy ? "preset_in_config" : "setting");
+    if (!res->defined) unset_words(out, field, key);
     return out;
   }
 
   // The whole chain, general first: [{level, label, role, active, scope_id?, value?, unit_level?, no_unit?}]. A unit level of a chain that
   // has no unit of that kind says so (no_unit: the conversation is "bez projektu"), never left out.
   Json inheritance_of(const scopes::Resolution& res) {
-    std::set<std::string> unit_levels;
-    if (auto uk = views::effective(env.root, "unit_kinds"))
-      for (const auto& e : uk->entries) unit_levels.insert(json::get_string(e.value, "level", e.id));
+    const std::set<std::string>& levels = unit_levels();
     Json out = Json::array();
     for (const auto& l : res.chain) {
       const std::string id = json::get_string(l, "level");
@@ -394,7 +611,7 @@ struct Catalogue::Impl {
           row["value"] = c["value"];
           break;
         }
-      if (unit_levels.count(id)) {
+      if (levels.count(id)) {
         row["unit_level"] = true;
         if (!l.contains("scope_id")) row["no_unit"] = true;
       }
@@ -436,14 +653,39 @@ struct Catalogue::Impl {
     return f->second(*this, src, parent, paging);
   }
 
-  std::int64_t page_limit(const Json& src, const Json& paging) const {
+  // A setting's value through the scope chain of this render (a rule, the conversation or its units may set it), else the person level.
+  Json setting(const std::string& key) {
+    if (auto it = settings_cache.find(key); it != settings_cache.end()) return it->second;
+    Json v = nullptr;
+    if (const scopes::Resolver* r = get_resolver()) {
+      scopes::Binding b;
+      b.key = key;
+      b.conv_id = env.conv_id;
+      if (auto got = r->resolve(b); !got) log::write(log::Level::Debug, kLog, "'" + key + "' not resolved through the scope chain: " + got.error().message);
+      else if (got->defined) v = got->value;
+    } else if (env.cfg) {
+      v = env.cfg->get(key);
+    }
+    settings_cache[key] = v;
+    return v;
+  }
+
+  // The levels of the scope chain that are unit kinds (views unit_kinds), read once per render.
+  const std::set<std::string>& unit_levels() {
+    if (!unit_levels_cache) {
+      unit_levels_cache.emplace();
+      if (auto uk = views::effective(env.root, "unit_kinds"))
+        for (const auto& e : uk->entries) unit_levels_cache->insert(json::get_string(e.value, "level", e.id));
+      else log::write(log::Level::Debug, kLog, "unit kinds not readable: " + uk.error().message);
+    }
+    return *unit_levels_cache;
+  }
+
+  std::int64_t page_limit(const Json& src, const Json& paging) {
     if (paging.contains("page_limit") && paging["page_limit"].is_number_integer()) return paging["page_limit"].get<std::int64_t>();
     std::int64_t limit = 0;  // 0 = no limit (the setting's own meaning)
-    const std::string key = json::get_string(src, "page_setting");
-    if (!key.empty() && env.cfg) {
-      const Json v = env.cfg->get(key);
-      if (v.is_number_integer()) limit = v.get<std::int64_t>();
-    }
+    if (const std::string key = json::get_string(src, "page_setting"); !key.empty())
+      if (const Json v = setting(key); v.is_number_integer()) limit = v.get<std::int64_t>();
     // A level shows at most the navigator's budget: a page is never read further than what can be shown (the total still counts all).
     const std::int64_t cap = json::get_int(paging, "page_cap", 0);
     if (cap > 0 && (limit <= 0 || cap < limit)) limit = cap;
@@ -461,11 +703,32 @@ std::string layer_vs_builtin(const Json& effective, const Json& builtin, const s
   return effective == builtin ? std::string("rom") : overlay;
 }
 
+// The model roles, each resolved once per render (the policy chain through the render's Resolver and ports profile).
+const Json& role_rows(Impl& c);
+
+// A count of the entry view in words: its name (count.name.<counter>) and, when unknown, why (reason words).
+void count_words(Impl& c, Json& counts) {
+  if (!counts.is_object()) return;
+  for (auto& item : counts.items()) {
+    Json& v = item.value();
+    if (!v.is_object()) continue;
+    if (const std::string name = c.word("count.name." + item.key()); !name.empty()) v["name"] = name;
+    if (!json::get_bool(v, "known", true))
+      if (const std::string why = json::get_string(v, "reason"); !why.empty()) v["reason_human"] = c.reason_words(why);
+  }
+}
+
 Result<Read> read_areas(Impl& c, const Json& src, const std::string&, const Json&) {
   graph_entry::Env ge;
   ge.db = c.env.db;
   ge.cfg = c.env.cfg;
   ge.data_dir = c.env.root;
+  // The counter of the roles says what the role rows of this render say (one resolution, one Resolver).
+  ge.roles = [&c]() -> Result<Json> {
+    const Json& rows = role_rows(c);
+    if (rows.contains("unknown")) return Error(Errc::Unavailable, json::get_string(rows, "unknown"));
+    return rows;
+  };
   LOOM_TRY_ASSIGN(auto view, graph_entry::compute(ge, Json{{"lang", c.lang()}, {"include_hidden", true}}));
   auto shipped = RuntimeProfile::builtin("graph_entry");
   const Json shipped_areas = shipped ? shipped->values().value("areas", Json::object()) : Json::object();
@@ -480,9 +743,16 @@ Result<Read> read_areas(Impl& c, const Json& src, const std::string&, const Json
     const Json own = effective_areas.value(id, Json());
     const std::string layer = json::get_string(a, "origin") == "cell" ? std::string("rom")
                               : layer_vs_builtin(own, shipped_areas.value(id, Json()), "overlay:graph_entry");
-    Json n = c.make(src, "area:" + id, json::get_string(a, "label"), std::string(), layer, "graph/entry.pack#/areas/" + id, "preset");
+    // A generated cell of the axes (an area no entry names) says so in its label; it stays in the list with its counts.
+    std::string label = json::get_string(a, "label");
+    if (json::get_string(a, "origin") == "cell")
+      if (const std::string w = c.word("area.cell", Json{{"label", label}}); !w.empty()) label = w;
+    Json n = c.make(src, "area:" + id, label, std::string(), layer, "graph/entry.pack#/areas/" + id, layer == "rom" ? "preset" : "override");
     n["order"] = a.value("order", 1000);
-    n["attrs"] = Json{{"counts", a.value("counts", Json::object())}, {"axes", a.value("axes", Json::object())}, {"origin", a.value("origin", "area")},
+    if (const Json* why = json::find(own, "why"); why) n["why"] = c.say(*why);
+    Json counts = a.value("counts", Json::object());
+    count_words(c, counts);
+    n["attrs"] = Json{{"counts", counts}, {"axes", a.value("axes", Json::object())}, {"origin", a.value("origin", "area")},
                       {"expand", a.value("expand", Json(nullptr))}};
     r.nodes.push_back(std::move(n));
   }
@@ -576,7 +846,7 @@ Json profile_value_row(Impl& c, const Json& p, const Json& src) {
     out["value"] = nullptr;
     out["value_human"] = c.say(c.words.value("problem", Json("cannot be read")));
     out["problem"] = p["problem"];
-    out["provenance"] = Json{{"scope", "none"}, {"layer", "none"}, {"chip", Json{{"id", "none"}, {"label", ""}}}};
+    out["provenance"] = Json{{"scope", "none"}, {"layer", "none"}, {"chip", Json{{"id", "none"}, {"label", c.word("chip.none").empty() ? std::string("none") : c.word("chip.none")}}}};
     out["evidence"] = evidence_of(src.value("epistemic_default", Json::object()), "none", profile + pointer, "profile_value");
     out["inheritance"] = Json::array();
     return out;
@@ -584,15 +854,24 @@ Json profile_value_row(Impl& c, const Json& p, const Json& src) {
   out["value"] = p.value("value", Json(nullptr));
   out["value_human"] = c.human_value(out["value"], p);
   auto shipped = RuntimeProfile::builtin(profile);
-  const Json* builtin_value = shipped ? at_pointer(shipped->values(), pointer) : nullptr;
+  if (!shipped) log::write(log::Level::Debug, kLog, "shipped profile " + profile + " not readable: " + shipped.error().message);
+  const Json* builtin_value = shipped ? json::find_pointer(shipped->values(), pointer) : nullptr;
   const bool yours = !builtin_value || *builtin_value != out["value"];
   const std::string layer = yours ? "overlay:profiles/" + profile + ".pack" : std::string("rom");
   const std::string scope = yours ? "person" : "installation";
+  const std::string chip_word = c.word(yours ? "chip.overlay" : "chip.installation");
   out["provenance"] = Json{{"scope", scope}, {"layer", layer}, {"source", "profile:" + profile + pointer},
-                           {"chip", Json{{"id", scope}, {"label", c.say(c.words.value("chip_" + scope, Json(scope)))}}}};
+                           {"chip", Json{{"id", scope}, {"label", chip_word.empty() ? scope : chip_word}}}};
   out["evidence"] = evidence_of(yours ? Json{{"class", "observed"}, {"confidence", 1.0}} : src.value("epistemic_default", Json::object()), layer,
                                 profile + pointer, yours ? "override" : "preset");
-  out["inheritance"] = Json::array();
+  // Two levels: the shipped preset of the profile, and your overlay of it (profiles/<profile>.pack), which you may change or clear.
+  Json shipped_level{{"level", "installation"}, {"label", c.word("chip.installation")}, {"role", yours ? "overridden" : "supplied"}, {"active", true}};
+  if (builtin_value) shipped_level["value"] = *builtin_value;
+  Json overlay_level{{"level", "overlay"}, {"label", c.word("chip.overlay")}, {"role", yours ? "supplied" : "none"}, {"active", true},
+                     {"file", "profiles/" + profile + ".pack"}};
+  if (yours) overlay_level["value"] = out["value"];
+  out["inheritance"] = Json::array({shipped_level, overlay_level});
+  out["edit_rule"] = "optional";
   return out;
 }
 
@@ -605,6 +884,8 @@ Json field_human(Impl& c, const Json& field) {
   return out;
 }
 
+// The settings and profile values, each in its group. Their values are resolved only when a node leaves the catalogue (a group, a card,
+// settings.resolved: resolve_setting_node), never for the fields a render does not show.
 Result<Read> read_settings(Impl& c, const Json& src, const std::string&, const Json&) {
   LOOM_TRY_ASSIGN(const Json* doc, c.fields());
   Read r;
@@ -621,22 +902,13 @@ Result<Read> read_settings(Impl& c, const Json& src, const std::string&, const J
       continue;
     }
     const Json h = field_human(c, field);
-    const Json resolved = f.profile_value ? profile_value_row(c, field, src) : c.resolve_field(field, src);
-    Json n = c.make(src, address, h.value("label", "").empty() ? f.key : h.value("label", ""), "group:" + group,
-                    json::get_string(resolved.value("provenance", Json::object()), "layer"), f.key, "setting");
-    n["value"] = resolved.value("value", Json(nullptr));
-    n["value_human"] = resolved.value("value_human", "");
+    Json n = c.make(src, address, h.value("label", "").empty() ? f.key : h.value("label", ""), "group:" + group, "rom", f.key, "setting");
     n["why"] = h.value("why", "");
-    n["evidence"] = resolved.value("evidence", n["evidence"]);
-    n["provenance"] = Json{{"layer", json::get_string(resolved.value("provenance", Json::object()), "layer")}, {"layers", Json::array()},
-                           {"scope", resolved.value("provenance", Json::object()).value("scope", "")},
-                           {"chip", resolved.value("provenance", Json::object()).value("chip", Json::object())}};
-    for (const auto& l : resolved.value("inheritance", Json::array()))
-      if (json::get_string(l, "role") == "supplied" || json::get_string(l, "role") == "overridden") n["provenance"]["layers"].push_back(json::get_string(l, "level"));
     if (field.contains("status")) n["status"] = field["status"].value("state", "");
-    n["attrs"] = Json{{"key", f.key}, {"profile_value", f.profile_value}, {"type", field.value("type", "")}, {"edit", field.value("edit", "")},
-                      {"human", h}, {"resolved", resolved}};
+    n["attrs"] = Json{{"key", f.key}, {"profile_value", f.profile_value}, {"type", field.value("type", "")}, {"edit", field.value("edit", Json(""))}, {"human", h}};
     if (f.profile_value) n["attrs"]["profile"] = Json{{"profile", field.value("profile", "")}, {"pointer", field.value("pointer", "")}};
+    n["value_pending"] = true;
+    c.field_index[f.key] = std::make_pair(f.field, f.profile_value);
     if (field.value("default", "") == "present" || field.contains("default_value"))
       for (const auto& e : src.value("edges", Json::array()))
         if (json::get_string(e, "kind") == "has_default") r.edges.push_back(Json{{"src", address}, {"dst", json::get_string(e, "to")}, {"kind", "has_default"}});
@@ -645,13 +917,38 @@ Result<Read> read_settings(Impl& c, const Json& src, const std::string&, const J
   return r;
 }
 
+}  // namespace
+
+// The value of one setting node through the render's one Resolver: value, value_human, evidence, provenance {layer, layers, scope, chip},
+// the edit rule of a profile value, and attrs.resolved (the whole resolution, with the inheritance).
+void resolve_setting_node(Catalogue::Impl& c, Json& n) {
+  n.erase("value_pending");
+  const std::string key = json::get_string(n.value("attrs", Json::object()), "key");
+  const auto it = c.field_index.find(key);
+  const Json* src = c.source("setting");
+  if (it == c.field_index.end() || !src) {
+    n["value_unknown_reason"] = "settings_fields_unavailable";
+    return;
+  }
+  const Json& field = *it->second.first;
+  const Json resolved = it->second.second ? profile_value_row(c, field, *src) : c.resolve_field(field, *src);
+  const Json prov = resolved.value("provenance", Json::object());
+  n["value"] = resolved.value("value", Json(nullptr));
+  n["value_human"] = resolved.value("value_human", "");
+  n["evidence"] = resolved.value("evidence", n["evidence"]);
+  n["provenance"] = Json{{"layer", json::get_string(prov, "layer")}, {"layers", Json::array()}, {"scope", prov.value("scope", "")}, {"chip", prov.value("chip", Json::object())}};
+  for (const auto& l : resolved.value("inheritance", Json::array()))
+    if (json::get_string(l, "role") == "supplied" || json::get_string(l, "role") == "overridden") n["provenance"]["layers"].push_back(json::get_string(l, "level"));
+  if (!field.contains("edit")) n["attrs"]["edit"] = resolved.value("edit_rule", Json(""));
+  n["attrs"]["resolved"] = resolved;
+}
+
+namespace {
+
 Result<Read> read_scopes(Impl& c, const Json& src, const std::string&, const Json&) {
-  const Json* chain = at_pointer(c.graph_entry(), "/scopes/chain");
+  const Json* chain = json::find_pointer(c.graph_entry(), "/scopes/chain");
   if (!chain || !chain->is_array()) return Error(Errc::Unavailable, "scope_chain_absent");
-  std::set<std::string> unit_levels;
-  if (auto uk = views::effective(c.env.root, "unit_kinds"))
-    for (const auto& e : uk->entries) unit_levels.insert(json::get_string(e.value, "level", e.id));
-  else log::write(log::Level::Debug, kLog, "unit kinds not readable: " + uk.error().message);
+  const std::set<std::string>& unit_levels = c.unit_levels();
   Read r;
   std::string prev;
   int order = 0;
@@ -666,9 +963,6 @@ Result<Read> read_scopes(Impl& c, const Json& src, const std::string&, const Jso
   }
   return r;
 }
-
-// The model roles, each resolved once per render (the policy chain through the render's Resolver and ports profile).
-const Json& role_rows(Impl& c);
 
 Result<Read> read_roles(Impl& c, const Json& src, const std::string&, const Json&) {
   const Json& rows = role_rows(c);
@@ -713,6 +1007,7 @@ Result<Read> read_models(Impl& c, const Json& src, const std::string&, const Jso
     const std::string label = c.env.models ? c.env.models->name(m) : m;
     Json n = c.make(src, "model:" + m, label.empty() ? m : label, c.parent_of(src), "config.json", m, "role_resolution");
     n["value"] = json::get_string(models[m]["tier"], "id");
+    n["value_human"] = json::get_string(models[m]["tier"], "label", json::get_string(models[m]["tier"], "id"));
     n["attrs"] = models[m];
     r.nodes.push_back(std::move(n));
   }
@@ -725,10 +1020,10 @@ Result<Read> read_profile_items(Impl& c, const Json& src, const std::string&, co
   const std::string domain = json::get_string(params, "domain");
   const std::string pointer = json::get_string(params, "pointer");
   LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load(domain, c.env.root));
-  const Json* items = at_pointer(profile.values(), pointer);
+  const Json* items = json::find_pointer(profile.values(), pointer);
   if (!items) return Error(Errc::Unavailable, "pointer_absent: " + domain + pointer);
   auto shipped = RuntimeProfile::builtin(domain);
-  const Json* shipped_items = shipped ? at_pointer(shipped->values(), pointer) : nullptr;
+  const Json* shipped_items = shipped ? json::find_pointer(shipped->values(), pointer) : nullptr;
   const std::string prefix = json::get_string(src, "prefix");
   Read r;
   auto add = [&](const std::string& id, const Json& v) {
@@ -781,6 +1076,7 @@ Result<Read> read_views(Impl& c, const Json& src, const std::string&, const Json
   const std::string prefix = json::get_string(src, "prefix");
   for (const auto& e : eff->entries) {
     std::string label = c.say(e.value.value("label", Json()));
+    if (label.empty()) label = c.say(e.value.value("meaning", Json()));  // an entry without a label is named by what it means, never its id
     if (label.empty()) label = e.id;
     Json n = c.make(src, prefix + e.id, label, c.parent_of(src), e.origin, "runtime/graph_views.pack#/" + kind + "/" + e.id, "preset");
     n["provenance"]["layers"] = Json::array();
@@ -790,6 +1086,7 @@ Result<Read> read_views(Impl& c, const Json& src, const std::string&, const Json
     if (e.disabled) n["status"] = "disabled";
     for (const char* k : {"device", "source", "parent", "direction"})
       if (e.value.contains(k)) n["attrs"][k] = e.value[k];
+    n["attrs"]["id"] = e.id;
     r.nodes.push_back(std::move(n));
   }
   for (const auto& h : eff->hidden) r.hidden.push_back(Json{{"source", json::get_string(src, "id")}, {"id", prefix + json::get_string(h, "id")}, {"by", h.value("by", Json(nullptr))}});
@@ -871,13 +1168,6 @@ Result<Read> read_party(Impl& c, const Json& src, const std::string&, const Json
   return r;
 }
 
-// The onboarding layers (stored profile, else the shipped pack), for preferences and privacy rules.
-Result<onboarding::DefaultLayers> layers_of(Impl& c) {
-  auto snap = c.profile();
-  if (snap && *snap && (*snap)->contains("pack") && (*snap)->contains("layers")) return onboarding::DefaultLayers::create((**snap)["pack"], (**snap)["layers"]);
-  LOOM_TRY_ASSIGN(auto pack, onboarding::builtin_pack());
-  return onboarding::DefaultLayers::create(pack);
-}
 
 Json layer_evidence(const Json& src, const std::string& layer, const std::string& ref) {
   const bool yours = layer == "user";
@@ -886,18 +1176,26 @@ Json layer_evidence(const Json& src, const std::string& layer, const std::string
 }
 
 Result<Read> read_preferences(Impl& c, const Json& src, const std::string&, const Json&) {
-  LOOM_TRY_ASSIGN(auto layers, layers_of(c));
+  LOOM_TRY_ASSIGN(const onboarding::DefaultLayers* layers, c.layers());
   Read r;
-  for (const auto& e : layers.pack().value("entries", Json::array())) {
+  for (const auto& e : layers->pack().value("entries", Json::array())) {
     const std::string key = json::get_string(e, "key");
     if (!starts_with(key, "preference.")) continue;
-    LOOM_TRY_ASSIGN(auto res, layers.resolve(key));
+    LOOM_TRY_ASSIGN(auto res, layers->resolve(key));
     const std::string layer = json::get_string(res, "layer");
     const std::string name = key.substr(std::string("preference.").size());
     std::string label = c.say(src.value("labels", Json::object()).value(name, Json()));
     Json n = c.make(src, "preference:" + name, label.empty() ? name : label, "party:self", layer == "user" ? "onboarding" : "rom", "profiles/user.pack#" + key, "preset");
     n["value"] = res.value("value", Json(nullptr));
-    n["value_human"] = c.human_value(n["value"], Json::object());
+    // The value in words (value_meanings of the source); a value no meaning names is shown as it is.
+    Json meanings = Json::array();
+    const Json named = src.value("value_meanings", Json::object()).value(name, Json::object());
+    if (named.is_object())
+      for (const auto& m : named.items()) meanings.push_back(Json{{"value", m.key()}, {"meaning", m.value()}});
+    n["value_human"] = c.human_value(n["value"], Json{{"values", meanings}});
+    // The interview's slot that asks about the same thing is the same preference seen from the interview (same_as).
+    if (const std::string slot = json::get_string(src.value("slot_of", Json::object()), name); !slot.empty())
+      r.edges.push_back(Json{{"src", "preference:" + name}, {"dst", "party:self/" + slot}, {"kind", "same_as"}});
     n["status"] = json::get_string(res, "status");
     n["evidence"] = layer_evidence(src, layer, "profiles/user.pack#" + key);
     n["attrs"] = Json{{"key", key}, {"layer", layer}};
@@ -907,8 +1205,8 @@ Result<Read> read_preferences(Impl& c, const Json& src, const std::string&, cons
 }
 
 Result<Read> read_privacy(Impl& c, const Json& src, const std::string&, const Json&) {
-  LOOM_TRY_ASSIGN(auto layers, layers_of(c));
-  LOOM_TRY_ASSIGN(auto res, layers.resolve("onboarding.privacy"));
+  LOOM_TRY_ASSIGN(const onboarding::DefaultLayers* layers, c.layers());
+  LOOM_TRY_ASSIGN(auto res, layers->resolve("onboarding.privacy"));
   const std::string layer = json::get_string(res, "layer");
   Read r;
   for (const auto& rule : res.value("value", Json::object()).value("rules", Json::array())) {
@@ -984,7 +1282,7 @@ Result<Read> read_conversations(Impl& c, const Json& src, const std::string&, co
   {
     auto lock = c.env.db->lock();
     auto& conn = c.env.db->conn();
-    std::string sql = "SELECT c.id, c.title, c.source, c.created, c.updated, c.metadata, (SELECT COUNT(*) FROM messages m WHERE m.conv_id = c.id) FROM conversations c";
+    std::string sql = "SELECT c.id, c.title, c.source, c.created, c.updated, c.metadata, (SELECT COUNT(*) FROM messages m WHERE m.conv_id = c.id AND m.status = 'active') FROM conversations c";
     if (!only.empty()) sql += " WHERE c.id = ?";
     sql += " ORDER BY c.updated DESC, c.rowid DESC";
     if (only.empty() && limit > 0) sql += " LIMIT ? OFFSET ?";
@@ -1078,9 +1376,19 @@ Result<Read> read_messages(Impl& c, const Json& src, const std::string& parent, 
     msgs = std::move(page.messages);
   }
   LOOM_TRY_ASSIGN(auto rows, message_rows(c));
+  // An imported conversation's messages came by import (its source); otherwise yours are what you said, the model's are its replies.
+  std::string imported;
+  if (!conv_id.empty()) {
+    auto conv = c.env.db->get_conv(conv_id);
+    if (!conv) log::write(log::Level::Debug, kLog, "conversation " + conv_id + " not readable: " + conv.error().message);
+    else if (*conv && !(*conv)->source.empty() && (*conv)->source != "user") imported = (*conv)->source;
+  }
   for (const auto& m : msgs) {
     const std::string address = address_of_db(m.id, db_prefix, prefix);
-    Json n = c.make(src, address, m.role + ": " + clip(m.text, 60), address_of_db(m.conv_id, conv_db, conv_prefix), "db", m.id, m.role == "user" ? "said" : "message", m.created);
+    const std::string method = !imported.empty() ? "import:" + imported : m.role == "user" ? "said" : m.role == "assistant" ? "model_reply" : "message";
+    std::string who = c.word("message.role." + m.role);
+    if (who.empty()) who = m.role;
+    Json n = c.make(src, address, who + ": " + clip(m.text, 60), address_of_db(m.conv_id, conv_db, conv_prefix), "db", m.id, method, m.created);
     n["same_as"] = Json::array({m.id});
     if (auto it = rows.find(m.id); it != rows.end())
       for (const auto& nid : it->second) {
@@ -1140,7 +1448,15 @@ Result<Read> read_flows(Impl& c, const Json& src, const std::string&, const Json
     const Json* own = json::find(shipped, id);
     const std::string layer = own && *own == a ? std::string("rom") : std::string("overlay:actions");
     Json n = c.make(src, "flow:" + id, catalogue_title(a, c.lang()), c.parent_of(src), layer, "runtime/actions.pack#/actions/" + id, layer == "rom" ? "preset" : "defined_by_you");
-    n["why"] = json::get_string(a, "description");
+    // What it is for, in the language asked (why.<lang>); English is the description. A language without its words shows the
+    // description and says so (no_translation), never silently another language.
+    if (const std::string mine = json::get_string(a.value("why", Json::object()), c.lang()); !mine.empty()) {
+      n["why"] = mine;
+    } else {
+      n["why"] = json::get_string(a, "description");
+      if (c.lang() != "en")
+        n["no_translation"] = Json{{"lang", c.lang()}, {"shown_lang", "en"}, {"words", c.word("no_translation", Json{{"lang", c.lang()}, {"shown_lang", "en"}})}};
+    }
     n["status"] = json::get_string(a, "status");
     const Json human_steps = a.value("human", Json::object()).value("steps", Json::array());
     const Json steps = a.value("steps", Json::array());
@@ -1173,8 +1489,11 @@ Result<Read> read_steps(Impl& c, const Json& src, const std::string& parent, con
   if (!starts_with(flow, flow_prefix)) return Error(Errc::InvalidArgument, "read_under_flow");
   const std::string id = flow.substr(flow_prefix.size());
   LOOM_TRY_ASSIGN(auto cat, action_catalogue(c.env.root));
+  const Json all_actions = cat.value("actions", Json::array());
+  std::map<std::string, const Json*> by_id;  // pointers into all_actions, which outlives them
+  for (const auto& a : all_actions) by_id[json::get_string(a, "id")] = &a;
   Read r;
-  for (const auto& a : cat.value("actions", Json::array())) {
+  for (const auto& a : all_actions) {
     if (json::get_string(a, "id") != id) continue;
     const Json human_steps = a.value("human", Json::object()).value("steps", Json::array());
     const bool described = human_steps.is_array() && !human_steps.empty();
@@ -1182,13 +1501,214 @@ Result<Read> read_steps(Impl& c, const Json& src, const std::string& parent, con
     for (std::size_t i = 0; i < steps.size(); ++i) {
       if (only_step && only_step != i + 1) continue;
       const Json& s = steps[i];
-      std::string label = described ? c.say(s.value("label", Json())) : json::get_string(s, "action", json::get_string(s, "id"));
+      // A step without words of its own is named by its action's title ("Użyj modelu"); the action id stays in attrs.
+      const std::string step_action = json::get_string(s, "action", json::get_string(s, "id"));
+      std::string label = described ? c.say(s.value("label", Json())) : std::string();
+      if (label.empty() && !step_action.empty())
+        if (const auto it = by_id.find(step_action); it != by_id.end()) label = catalogue_title(*it->second, c.lang()).get<std::string>();
+      if (label.empty()) label = step_action;
       if (label.empty()) label = std::to_string(i + 1);
       Json n = c.make(src, "step:" + id + "/" + std::to_string(i + 1), label, flow, "rom", "runtime/actions.pack#/actions/" + id + "/" + (described ? "human/steps" : "steps"), "description");
       n["order"] = static_cast<std::int64_t>(i + 1);
+      if (!step_action.empty()) n["attrs"]["action"] = step_action;
       if (!described && s.contains("action")) r.edges.push_back(Json{{"src", n["address"]}, {"dst", "flow:" + json::get_string(s, "action")}, {"kind", "uses"}});
       r.nodes.push_back(std::move(n));
     }
+  }
+  return r;
+}
+
+// The layer of a source's own data: rom when the effective row is the shipped one, else the user's overlay of graph_sources.
+std::string source_layer(const Json& src) {
+  static const Json shipped = [] {
+    auto p = RuntimeProfile::builtin("graph_sources");
+    if (!p) log::write(log::Level::Debug, kLog, "shipped graph_sources not readable: " + p.error().message);
+    return p ? p->values().value("sources", Json::array()) : Json::array();
+  }();
+  for (const auto& s : shipped)
+    if (json::get_string(s, "id") == json::get_string(src, "id")) return s == src ? std::string("rom") : std::string("overlay:graph_sources");
+  return "overlay:graph_sources";
+}
+
+// Nodes written in the source's own data (params.nodes [{id, label, why?}]): a node that holds other sources ({parent: {node}}).
+Result<Read> read_static(Impl& c, const Json& src, const std::string&, const Json&) {
+  Read r;
+  const std::string prefix = json::get_string(src, "prefix");
+  const std::string layer = source_layer(src);
+  std::int64_t order = 0;
+  for (const auto& e : src.value("params", Json::object()).value("nodes", Json::array())) {
+    const std::string id = json::get_string(e, "id");
+    if (id.empty()) continue;
+    Json n = c.make(src, prefix + id, c.say(e.value("label", Json(id))), c.parent_of(src), layer,
+                    "runtime/graph_sources.pack#/sources/" + json::get_string(src, "id") + "/params/nodes/" + id, "preset");
+    n["order"] = order++;
+    n["why"] = c.say(e.value("why", Json()));
+    n["has_children"] = true;  // what hangs under it is counted from the sources parented to it
+    r.nodes.push_back(std::move(n));
+  }
+  return r;
+}
+
+// What the app does without being asked (params.items [{id, label, why, setting?, flow?}]): each with the setting that switches it (its
+// value, through the scope chain, is the node's value) and the flow it runs.
+Result<Read> read_automations(Impl& c, const Json& src, const std::string&, const Json&) {
+  std::set<std::string> flows;
+  if (auto cat = action_catalogue(c.env.root))
+    for (const auto& a : cat->value("actions", Json::array())) flows.insert(json::get_string(a, "id"));
+  else log::write(log::Level::Debug, kLog, "automations: action catalogue not readable: " + cat.error().message);
+  Read r;
+  const std::string prefix = json::get_string(src, "prefix");
+  const std::string layer = source_layer(src);
+  std::int64_t order = 0;
+  for (const auto& item : src.value("params", Json::object()).value("items", Json::array())) {
+    const std::string id = json::get_string(item, "id");
+    if (id.empty()) continue;
+    const std::string address = prefix + id;
+    Json n = c.make(src, address, c.say(item.value("label", Json(id))), c.parent_of(src), layer,
+                    "runtime/graph_sources.pack#/sources/" + json::get_string(src, "id") + "/params/items/" + id, "preset");
+    n["order"] = order++;
+    n["why"] = c.say(item.value("why", Json()));
+    Json attrs = Json::object();
+    if (const std::string key = json::get_string(item, "setting"); !key.empty()) {
+      attrs["setting"] = key;
+      LOOM_TRY_ASSIGN(auto field, c.node_at("setting:" + key));
+      if (field) {
+        n["value"] = field->value("value", Json(nullptr));
+        n["value_human"] = field->value("value_human", Json(nullptr));
+        n["provenance"]["chip"] = field->value("provenance", Json::object()).value("chip", Json(nullptr));
+        n["evidence_overrides"] = Json{{"value", field->value("evidence", Json::object())}};
+        r.edges.push_back(Json{{"src", address}, {"dst", "setting:" + key}, {"kind", "switched_by"}});
+      } else {
+        n["value_unknown_reason"] = "setting_absent";
+      }
+    }
+    if (const std::string flow = json::get_string(item, "flow"); !flow.empty()) {
+      attrs["flow"] = flow;
+      if (flows.count(flow)) r.edges.push_back(Json{{"src", address}, {"dst", "flow:" + flow}, {"kind", "runs"}});
+      else attrs["flow_missing"] = true;
+    }
+    n["attrs"] = attrs;
+    r.nodes.push_back(std::move(n));
+  }
+  return r;
+}
+
+// The background tasks (loom_tasks), newest first, paged by the source's page_setting; the total counts all of them.
+Result<Read> read_tasks(Impl& c, const Json& src, const std::string&, const Json& paging) {
+  if (!c.env.db) return Error(Errc::Unavailable, "database_unavailable");
+  const std::string prefix = json::get_string(src, "prefix");
+  const std::int64_t limit = c.page_limit(src, paging);
+  const std::int64_t offset = std::max<std::int64_t>(0, json::get_int(paging, "offset", 0));
+  const std::string only = json::get_string(paging, "address");
+  Read r;
+  struct Row {
+    std::string id, kind, status, created, updated, error;
+    std::int64_t attempts = 0;
+  };
+  std::vector<Row> rows;
+  std::int64_t total = 0;
+  {
+    auto lock = c.env.db->lock();
+    auto& conn = c.env.db->conn();
+    if (!conn.has_table("loom_tasks")) return Error(Errc::Unavailable, "tasks_table_absent");
+    std::string sql = "SELECT id, kind, status, created, updated, COALESCE(error, ''), attempts FROM loom_tasks";
+    if (!only.empty()) sql += " WHERE id = ?";
+    sql += " ORDER BY updated DESC, rowid DESC";
+    if (only.empty() && limit > 0) sql += " LIMIT ? OFFSET ?";
+    LOOM_TRY_ASSIGN(auto st, conn.prepare(sql));
+    if (!only.empty()) st.bind(1, only.substr(prefix.size()));
+    else if (limit > 0) st.bind(1, limit).bind(2, offset);
+    while (true) {
+      LOOM_TRY_ASSIGN(bool more, st.step());
+      if (!more) break;
+      rows.push_back(Row{st.get_text(0), st.get_text(1), st.get_text(2), st.get_text(3), st.get_text(4), st.get_text(5), st.get_int(6)});
+    }
+    if (only.empty()) {
+      LOOM_TRY_ASSIGN(auto n, conn.query_int("SELECT COUNT(*) FROM loom_tasks"));
+      total = n.value_or(0);
+    } else {
+      total = static_cast<std::int64_t>(rows.size());
+    }
+  }
+  for (const auto& row : rows) {
+    Json n = c.make(src, prefix + row.id, row.kind + " — " + row.status, c.parent_of(src), "db", "loom_tasks#" + row.id, "task", row.updated);
+    n["status"] = row.status;
+    n["value"] = row.status;
+    n["attrs"] = Json{{"kind", row.kind}, {"created", row.created}, {"updated", row.updated}, {"attempts", row.attempts}};
+    if (!row.error.empty()) n["attrs"]["error"] = row.error;
+    r.nodes.push_back(std::move(n));
+  }
+  r.total = total;
+  if (only.empty()) {
+    r.page = Json{{"limit", limit}, {"offset", offset}, {"total", total}};
+    if (limit > 0 && offset + limit < total) r.page["next_offset"] = offset + limit;
+  }
+  return r;
+}
+
+// Every entry in calibration (graph_entry::calibration_entries, the same walk as the counter of the area).
+Result<Read> read_calibration(Impl& c, const Json& src, const std::string&, const Json&) {
+  std::map<std::string, Json> values;
+  Json unreadable = Json::array();
+  const Json entries = graph_entry::calibration_entries(
+      [&](const std::string& domain) -> const Json* {
+        auto it = values.find(domain);
+        if (it == values.end()) {
+          auto p = RuntimeProfile::load(domain, c.env.root);
+          if (!p) log::write(log::Level::Debug, kLog, "calibration: profile " + domain + " not readable: " + p.error().message);
+          it = values.emplace(domain, p ? p->values() : Json(nullptr)).first;
+        }
+        return it->second.is_null() ? nullptr : &it->second;
+      },
+      &unreadable);
+  Read r;
+  const std::string prefix = json::get_string(src, "prefix");
+  std::set<std::string> seen;
+  for (const auto& e : entries) {
+    const std::string where = json::get_string(e, "where"), pointer = json::get_string(e, "pointer");
+    std::string address = prefix + where + (pointer.empty() ? std::string() : "#" + pointer);
+    if (!seen.insert(address).second) continue;
+    std::string label = c.say(e.value("label", Json()));
+    if (label.empty() && pointer.empty()) label = c.word("calibration.whole_pack", Json{{"pack", where}});
+    if (label.empty()) label = pointer.substr(pointer.rfind('/') + 1);
+    if (label.empty()) label = where;
+    Json n = c.make(src, address, label, c.parent_of(src), "rom", where + (pointer.empty() ? std::string() : "#" + pointer), "preset");
+    n["value"] = "calibration";
+    n["attrs"] = Json{{"where", where}, {"pointer", pointer}};
+    if (e.contains("target")) n["attrs"]["target"] = e["target"];
+    r.nodes.push_back(std::move(n));
+  }
+  if (!unreadable.empty()) r.page = Json{{"unreadable", unreadable}};
+  return r;
+}
+
+// Nodes that live elsewhere, shown here too (params.addresses, and params.settings {subgroup}): the same address and node; its own
+// place stays its parent for the breadcrumbs (attrs.home).
+Result<Read> read_also(Impl& c, const Json& src, const std::string&, const Json&) {
+  Read r;
+  const std::string here = c.parent_of(src);
+  const Json params = src.value("params", Json::object());
+  std::vector<Json> found;
+  for (const auto& a : strings_in(params.value("addresses", Json::array()))) {
+    LOOM_TRY_ASSIGN(auto n, c.node_at(a));
+    if (n) found.push_back(std::move(*n));
+    else log::write(log::Level::Debug, kLog, "also: no node at " + a);
+  }
+  if (const Json where = params.value("settings", Json::object()); where.is_object() && !where.empty())
+    if (const Json* fields_src = c.source("setting")) {
+      LOOM_TRY_ASSIGN(const Read* all, c.read_whole(*fields_src));
+      for (const auto& n : all->nodes) {
+        const Json human = n.value("attrs", Json::object()).value("human", Json::object());
+        bool fits = true;
+        for (const auto& w : where.items()) fits = fits && human.value(w.key(), Json()) == w.value();
+        if (fits) found.push_back(n);
+      }
+    }
+  for (auto& n : found) {
+    n["attrs"]["home"] = n.value("parent", Json(nullptr));
+    n["parent"] = here;
+    n["shown_also_in"] = here;
+    r.nodes.push_back(std::move(n));
   }
   return r;
 }
@@ -1201,7 +1721,9 @@ const std::map<std::string, Impl::Reader>& Impl::readers() {
       {"scopes.chain", read_scopes},      {"ports.roles", read_roles},      {"models.bound", read_models},     {"profile.items", read_profile_items},
       {"config.items", read_config_items}, {"views.effective", read_views}, {"party.self", read_party},         {"user.preferences", read_preferences},
       {"user.privacy", read_privacy},     {"db.topics", read_topics},       {"memory.notes", read_memory},     {"db.conversations", read_conversations},
-      {"db.messages", read_messages},     {"db.units", read_units},         {"actions.catalogue", read_flows}, {"actions.steps", read_steps}};
+      {"db.messages", read_messages},     {"db.units", read_units},         {"actions.catalogue", read_flows}, {"actions.steps", read_steps},
+      {"static.nodes", read_static},      {"automations.declared", read_automations}, {"db.tasks", read_tasks}, {"calibration.items", read_calibration},
+      {"nodes.also", read_also}};
   return r;
 }
 
@@ -1209,7 +1731,9 @@ const std::map<std::string, Impl::Reader>& Impl::readers() {
 
 namespace {
 
-std::string tier_reason(const Json& models, const std::string& model, const std::string& tier, const std::string& lang) {
+// The class of a model in words: the pattern or threshold that put it there, else the unknown class; the flow a class gets is said
+// only for a policy whose readers act on it (with_flow).
+std::string tier_reason(const Json& models, const std::string& model, const std::string& tier, const std::string& lang, bool with_flow) {
   const std::string m = utf8::to_lower(model);
   for (const auto& t : models.value("tiers", Json::array())) {
     if (json::get_string(t, "id") != tier) continue;
@@ -1220,10 +1744,14 @@ std::string tier_reason(const Json& models, const std::string& model, const std:
         return text;
       }
   }
-  return pick(models.value("unknown_tier", Json::object()).value("reason", Json()), lang);
+  const Json unknown = models.value("unknown_tier", Json::object());
+  std::string text = pick(unknown.value("reason", Json()), lang);
+  if (with_flow)
+    if (const std::string flow = pick(unknown.value("flow_note", Json()), lang); !flow.empty()) text += " " + flow;
+  return text;
 }
 
-Json cost_of(const Impl& c, const std::string& model) {
+Json cost_of(Impl& c, const std::string& model) {
   Json cost = Json::object();
   if (model.empty()) cost["per_million_unknown_reason"] = "no_model";
   else if (!c.env.models) cost["per_million_unknown_reason"] = "no_model_registry";
@@ -1250,6 +1778,8 @@ Json cost_of(const Impl& c, const std::string& model) {
   }
   // The usage ledger records the action of an operation, not the role (runner.cpp); a per-role week needs that mapping.
   cost["last_7d_unknown_reason"] = "ledger_records_actions_not_roles";
+  for (const char* k : {"per_million_unknown_reason", "last_7d_unknown_reason"})
+    if (cost.contains(k)) cost[std::string(k).substr(0, std::string(k).size() - 6) + "human"] = c.reason_words(cost[k].get<std::string>());
   return cost;
 }
 
@@ -1262,21 +1792,46 @@ const Json& role_rows(Impl& c) {
     out["unknown"] = "ports_profile_unavailable";
     return out;
   }
+  // What could not be read is said (issues), never dropped: a role then shows less, and why.
+  Json issues = Json::array();
+  const auto note = [&](const std::string& what, const std::string& reason) {
+    log::write(log::Level::Debug, kLog, "roles: " + what + " not readable: " + reason);
+    issues.push_back(Json{{"what", what}, {"reason", reason}, {"reason_human", c.reason_words(reason)}});
+  };
   auto ports_values = RuntimeProfile::load("ports", c.env.root);
+  if (!ports_values) note("ports_profile_values", ports_values.error().message);
   const Json roles_data = ports_values ? ports_values->values().value("roles", Json::object()) : Json::object();
   auto shipped = RuntimeProfile::builtin("ports");
+  if (!shipped) note("ports_profile_shipped", shipped.error().message);
   const Json shipped_roles = shipped ? shipped->values().value("roles", Json::object()) : Json::object();
   auto policy = annotations::Policy::load_cached(c.env.root);
+  if (!policy) note("policy_unavailable", policy.error().message);
   const Json models = policy ? policy->models : Json::object();
   const Json policies = models.value("policies", Json::object());
   const Json src = c.source("role") ? *c.source("role") : Json::object();
   const Json modes = src.value("role_modes", Json::object());
   auto catalogue = action_catalogue(c.env.root);
+  if (!catalogue) note("action_catalogue_unavailable", catalogue.error().message);
   const Json actions = catalogue ? catalogue->value("actions", Json::array()) : Json::array();
   auto fields = c.fields();
+  if (!fields) note("settings_fields_unavailable", fields.error().message);
   const Json settings = c.env.cfg ? c.env.cfg->all() : Json::object();
   const Json conv_ports = c.conversation_meta().value("ports", Json::object());
   const scopes::Resolver* resolver = c.get_resolver();
+  // A step that names a setting (directly, or through a pointer of a runtime profile) reads it as its reader does: at the person level.
+  const auto setting_of_step = [&](const Json& step) -> std::string {
+    if (const std::string key = json::get_string(step, "setting"); !key.empty()) return key;
+    if (const std::string domain = json::get_string(step, "profile"); !domain.empty()) {
+      auto prof = RuntimeProfile::load(domain, c.env.root);
+      if (!prof) {
+        note("today_reads:" + domain, prof.error().message);
+        return std::string();
+      }
+      const Json* at = json::find_pointer(prof->values(), json::get_string(step, "pointer"));
+      return at && at->is_string() ? at->get<std::string>() : std::string();
+    }
+    return std::string();
+  };
   Json rows = Json::array();
   for (const auto& name_j : ports->roles()) {
     const std::string id = name_j.get<std::string>();
@@ -1296,33 +1851,70 @@ const Json& role_rows(Impl& c) {
     for (const auto& p : policies.items())
       if (json::get_string(p.value(), "role") == id) policy_id = p.key();
     row["policy"] = policy_id.empty() ? Json(nullptr) : Json(policy_id);
-    // The model: the policy's answer (the same function every reader calls), else the ports resolution.
+    const Json pol = policy_id.empty() ? Json::object() : policies[policy_id];
+    // A policy is what decides only when a reader reads it (readers); a policy without one describes a chain no job reads yet, and the
+    // model is what today's reader reads (today_reads: settings in order, at the person level), else the ports resolution.
+    const bool read_by_a_reader = pol.contains("readers") && !pol["readers"].is_null();
     std::string model, via, reason, tier, flow;
-    if (!policy_id.empty() && c.env.cfg) {
+    Json today_chain = nullptr;
+    if (read_by_a_reader && c.env.cfg) {
       const auto choice = annotations::resolve_model(*c.env.cfg, c.env.root, policy_id, c.env.conv_id, std::string(), -1, c.env.db, ports, resolver);
       model = choice.model;
       via = choice.via;
       reason = choice.reason;
       tier = choice.tier;
       flow = choice.flow;
+    } else if (const Json reads = pol.value("today_reads", Json()); reads.is_array() && !reads.empty()) {
+      today_chain = Json::array();
+      for (std::size_t i = 0; i < reads.size(); ++i) {
+        const std::string key = setting_of_step(reads[i]);
+        // level chain: through the scope chain as the reader does (a conversation or a unit may set it); person: config.json.
+        Json v = nullptr;
+        if (!key.empty() && json::get_string(reads[i], "level", "person") == "chain" && resolver) {
+          scopes::Binding b;
+          b.key = key;
+          b.conv_id = c.env.conv_id;
+          if (auto got = resolver->resolve(b); got && got->defined) v = got->value;
+          else if (!got) log::write(log::Level::Debug, kLog, "today's read of " + key + " not resolved: " + got.error().message);
+        } else if (!key.empty() && c.env.cfg) {
+          v = c.env.cfg->get(key);
+        }
+        const bool gives = model.empty() && v.is_string() && !v.get<std::string>().empty();
+        if (gives) {
+          model = v.get<std::string>();
+          via = "today:" + key;
+        }
+        today_chain.push_back(Json{{"step", i + 1}, {"setting", key.empty() ? Json(nullptr) : Json(key)}, {"value", v}, {"decides", gives},
+                                   {"meaning", c.say(reads[i].value("meaning", Json()))}});
+      }
+      if (model.empty()) reason = "no_model";
     } else if (auto res = ports->resolve(id, conv_ports, c.env.conv_id, settings)) {
       const Json m = res->value("params", Json::object()).value("model", Json());
       if (m.is_string()) model = m.get<std::string>();
       via = "ports:" + json::get_string(*res, "scope");
       if (model.empty()) reason = res->contains("compose") ? std::string("composed") : std::string("no_model");
-      if (!model.empty()) tier = annotations::model_tier(models, model);
     } else {
       reason = res.error().message;
     }
     row["model"] = model.empty() ? Json(nullptr) : Json(model);
-    row["model_human"] = model.empty() ? c.say(c.words.value("no_model", Json("no model"))) : (c.env.models ? c.env.models->name(model) : model);
+    row["model_human"] = model.empty() ? c.word(reason == "composed" ? "role.composed" : "role.no_model") : (c.env.models ? c.env.models->name(model) : model);
+    if (json::get_string(row, "model_human").empty()) row["model_human"] = model.empty() ? reason : model;
     row["via"] = via;
-    if (!reason.empty()) row["reason"] = reason;
-    if (tier.empty() && !model.empty()) tier = annotations::model_tier(models, model);
-    row["tier"] = Json{{"id", tier.empty() ? std::string("unknown") : tier}, {"reason", tier_reason(models, model, tier, c.lang())}};
-    // The chain of the policy, step by step, with what each step reads today.
+    if (!reason.empty()) {
+      row["reason"] = reason;
+      row["reason_human"] = c.reason_words(reason);
+    }
+    // No model: no class (never the unknown class of a model that is not there).
+    if (model.empty()) {
+      row["tier"] = Json{{"id", "none"}, {"label", c.word("tier.none")}, {"reason", c.word(reason == "composed" ? "tier.composed" : "tier.none_reason")}};
+    } else {
+      if (tier.empty()) tier = annotations::model_tier(models, model);
+      if (tier.empty()) tier = "unknown";
+      row["tier"] = Json{{"id", tier}, {"label", c.word("tier." + tier)}, {"reason", tier_reason(models, model, tier, c.lang(), read_by_a_reader)}};
+    }
+    // The chain of the policy, step by step, with what each step reads today. A chain no reader reads decides nothing.
     Json chain = Json::array();
-    const Json steps = policy_id.empty() ? Json::array() : policies[policy_id].value("chain", Json::array());
+    const Json steps = pol.value("chain", Json::array());
     for (std::size_t i = 0; i < steps.size(); ++i) {
       const Json& s = steps[i];
       const std::string type = json::get_string(s, "type");
@@ -1335,6 +1927,7 @@ const Json& role_rows(Impl& c) {
           b.key = json::get_string(s, "setting");
           b.conv_id = c.env.conv_id;
           if (auto r = resolver->resolve(b); r && r->defined) value = r->value;
+          else if (!r) log::write(log::Level::Debug, kLog, "step setting not resolved: " + r.error().message);
         }
       } else if (type == "explicit" && s.contains("model")) {
         value = s["model"];
@@ -1345,13 +1938,14 @@ const Json& role_rows(Impl& c) {
       }
       step["value"] = value;
       const std::string mine = type == "explicit" ? "explicit:" + json::get_string(s, "setting", "model") : type == "role" ? "role:" + json::get_string(s, "role") : type;
-      step["decides"] = !via.empty() && (via == mine || (type == "relative_to" && starts_with(via, "relative_to")));
+      step["decides"] = read_by_a_reader && !via.empty() && (via == mine || (type == "relative_to" && starts_with(via, "relative_to")));
       chain.push_back(std::move(step));
     }
     row["chain"] = chain;
+    if (!policy_id.empty()) row["chain_status"] = read_by_a_reader ? "read" : "described_not_read";
+    if (!today_chain.is_null()) row["today_chain"] = today_chain;
     // The flow a class of model gets, for the policies whose readers act on it (policies with readers).
-    const Json pol = policy_id.empty() ? Json::object() : policies[policy_id];
-    if (!flow.empty() && pol.contains("readers")) {
+    if (!flow.empty() && read_by_a_reader) {
       const Json def = models.value("flow_defs", Json::object()).value(flow, Json::object());
       row["flow"] = Json{{"id", flow}, {"status", def.value("status", "")}, {"does", def.value("does", Json::array())}, {"planned", def.value("planned", Json::array())},
                          {"calls", def.value("calls", "")}};
@@ -1362,10 +1956,12 @@ const Json& role_rows(Impl& c) {
       auto worker = RuntimeProfile::load(json::get_string(*mode, "profile", "worker"), c.env.root);
       Json m = Json::object();
       if (worker) {
-        const Json* list = at_pointer(worker->values(), json::get_string(*mode, "pointer"));
-        const Json* threshold = at_pointer(worker->values(), json::get_string(*mode, "threshold_pointer"));
+        const Json* list = json::find_pointer(worker->values(), json::get_string(*mode, "pointer"));
+        const Json* threshold = json::find_pointer(worker->values(), json::get_string(*mode, "threshold_pointer"));
         m["modes"] = list ? *list : Json(nullptr);
         m["batch_threshold"] = threshold ? *threshold : Json(nullptr);
+      } else {
+        note("role_mode:" + id, worker.error().message);
       }
       if (const std::string key = json::get_string(*mode, "batch_key"); !key.empty()) m["batch_key_set"] = c.env.secrets ? Json(c.env.secrets->has(key)) : Json(nullptr);
       row["mode"] = m;
@@ -1384,6 +1980,7 @@ const Json& role_rows(Impl& c) {
     row["settings"] = keys;
     rows.push_back(std::move(row));
   }
+  if (!issues.empty()) out["issues"] = issues;
   out["roles"] = rows;
   return out;
 }
@@ -1454,19 +2051,7 @@ Result<std::optional<Json>> Catalogue::node(const std::string& raw) {
               {"provenance", Json{{"layer", "rom"}, {"layers", Json::array({"rom"})}}}, {"attrs", Json::object()}};
     return std::optional<Json>(std::move(root));
   }
-  const Json* src = source_of(address);
-  if (!src) return std::optional<Json>();
-  if (Impl::paged(*src)) {
-    LOOM_TRY_ASSIGN(auto r, c.read_under(*src, std::string(), Json{{"address", address}}));
-    for (auto& e : r.edges) c.looked_up_edges.push_back(std::move(e));
-    for (auto& n : r.nodes)
-      if (json::get_string(n, "address") == address) return std::optional<Json>(std::move(n));
-    return std::optional<Json>();
-  }
-  LOOM_TRY_ASSIGN(const Read* r, c.read_whole(*src));
-  for (const auto& n : r->nodes)
-    if (json::get_string(n, "address") == address) return std::optional<Json>(n);
-  return std::optional<Json>();
+  return c.node_at(address);
 }
 
 Result<Catalogue::Children> Catalogue::children(const std::string& raw_parent, const Json& paging) {
@@ -1480,9 +2065,11 @@ Result<Catalogue::Children> Catalogue::children(const std::string& raw_parent, c
     const Json p = s.value("parent", Json::object());
     const std::string area = json::get_string(p, "area");
     const std::string of = json::get_string(p, "of");
-    // The sources parented to this area or to the focus's source, and the focus's own source (nodes nested in their own kind: the
-    // slots of You, the notes under a note).
-    const bool parented = parent.empty() ? json::get_bool(p, "root", false) : (!area.empty() && parent == "area:" + area) || (!of.empty() && of == parent_source);
+    const std::string under = json::get_string(p, "node");
+    // The sources parented to this area, to this node or to the focus's source, and the focus's own source (nodes nested in their own
+    // kind: the slots of You, the notes under a note).
+    const bool parented = parent.empty() ? json::get_bool(p, "root", false)
+                                         : (!area.empty() && parent == "area:" + area) || (!under.empty() && parent == under) || (!of.empty() && of == parent_source);
     const bool own = !parent.empty() && !parent_source.empty() && json::get_string(s, "id") == parent_source && !Impl::paged(s);
     const bool here = parented || own;
     if (!here) continue;
@@ -1519,13 +2106,17 @@ Result<Catalogue::Children> Catalogue::children(const std::string& raw_parent, c
       if (!seen.insert(a).second) continue;  // counted by unique address
       addresses.insert(a);
       out.nodes.push_back(n);
+      out.nodes.back()["listed_by"] = sid;  // the source that lists it here (a node shown also elsewhere keeps its own source)
+      c.finish(out.nodes.back());
       ++mine;
     }
     // What an overlay hid among the children of this parent: a source placed in this area (or at the root) hides its own entries here;
     // the entries of a source read under its parent kind (the fields of a hidden group) are not children of any shown node.
-    if (parented && json::get_string(p, "of").empty())
+    if (parented && of.empty())
       for (const auto& h : r->hidden) out.hidden.push_back(h);
-    out.total += Impl::paged(s) && r->total >= 0 ? r->total : mine;
+    const std::int64_t known_here = Impl::paged(s) && r->total >= 0 ? r->total : mine;
+    out.total += known_here;
+    out.totals[sid] += known_here;
     for (const auto& e : r->edges)
       if (addresses.count(json::get_string(e, "src")) || addresses.count(json::get_string(e, "dst"))) out.edges.push_back(e);
   }
@@ -1539,13 +2130,37 @@ Result<std::vector<Json>> Catalogue::children_of_source(const std::string& id) {
   return r->nodes;
 }
 
-Result<std::vector<Json>> Catalogue::edges() {
+Result<std::vector<Json>> Catalogue::edges_touching(const std::string& address, Json* unknown) {
+  const Json* own = source_of(address);
+  std::set<std::string> ids;
+  if (own) {
+    const std::string own_id = json::get_string(*own, "id"), prefix = json::get_string(*own, "prefix");
+    ids.insert(own_id);
+    for (const auto& s : impl_->sources)
+      for (const auto& e : s.value("edges", Json::array())) {
+        const std::string to = json::get_string(e, "to"), from = json::get_string(e, "from");
+        if (to == own_id || (!prefix.empty() && (starts_with(to, prefix) || starts_with(from, prefix)))) ids.insert(json::get_string(s, "id"));
+      }
+  }
+  return edges_of(ids.empty() ? nullptr : &ids, unknown);
+}
+
+Result<std::vector<Json>> Catalogue::edges(Json* unknown) { return edges_of(nullptr, unknown); }
+
+Result<std::vector<Json>> Catalogue::edges_of(const std::set<std::string>* only, Json* unknown) {
   Impl& c = *impl_;
   std::vector<Json> out = c.looked_up_edges;
   for (const auto& s : c.sources) {
     if (Impl::paged(s)) continue;
+    if (only && !only->count(json::get_string(s, "id"))) continue;
     auto got = c.read_whole(s);
-    if (!got) continue;
+    // A source that cannot be read gives no edges, and says why (never silently: the perspectives show it as unknown).
+    const std::string reason = !got ? got.error().message : (*got)->unknown;
+    if (!reason.empty()) {
+      log::write(log::Level::Debug, kLog, "source " + json::get_string(s, "id") + " gives no edges: " + reason);
+      if (unknown && reason != "read_under_parent") unknown->push_back(Json{{"source", json::get_string(s, "id")}, {"reason", reason}});
+      if (!got) continue;
+    }
     const Read* r = *got;
     for (const auto& e : r->edges) out.push_back(e);
     const std::string contain = json::get_string(s, "contain_edge", "part_of");
@@ -1557,10 +2172,26 @@ Result<std::vector<Json>> Catalogue::edges() {
   return out;
 }
 
+Json Catalogue::setting(const std::string& key) { return impl_->setting(key); }
+std::string Catalogue::reason_words(const std::string& reason) { return impl_->reason_words(reason); }
+std::string Catalogue::source_label(const std::string& id) {
+  const Json* s = impl_->source(id);
+  const std::string label = s ? impl_->say(s->value("label", Json())) : std::string();
+  return label.empty() ? id : label;
+}
+
 Result<Json> Catalogue::roles() {
   const Json& rows = role_rows(*impl_);
   if (rows.contains("unknown")) return Error(Errc::Unavailable, json::get_string(rows, "unknown"));
   return rows;
+}
+
+Json Catalogue::edge_label(const std::string& kind) {
+  views::EdgeKinds* k = impl_->edge_kinds();
+  const views::EffectiveEntry* e = k ? k->view().find(kind) : nullptr;
+  if (!e) return kind;
+  std::string label = e->value.contains("label") ? impl_->say(e->value["label"]) : std::string();
+  return label.empty() ? Json(kind) : Json(label);
 }
 
 Json Catalogue::edge_meaning(const std::string& kind) {
@@ -1576,7 +2207,8 @@ Json Catalogue::edge_meaning(const std::string& kind) {
 namespace {
 
 const std::set<std::string> kRowKeys = {"address", "label", "kind", "value", "value_human", "count", "count_unknown_reason", "provenance", "evidence",
-                                        "evidence_overrides", "has_children", "status", "why", "order", "same_as", "source", "empty_reason"};
+                                        "evidence_overrides", "has_children", "status", "why", "order", "same_as", "source", "empty_reason", "no_translation",
+                                        "shown_also_in", "count_unknown_human", "value_unknown_reason"};
 
 Json row_of(const Json& n) {
   Json r = Json::object();
@@ -1585,13 +2217,44 @@ Json row_of(const Json& n) {
   return r;
 }
 
-std::int64_t children_limit(const Env& env, const Json& request) {
+// The budget of one level: the request's, else navigator_children_limit through the scope chain (a rule or the conversation may set it).
+std::int64_t children_limit(Catalogue& cat, const Json& request) {
   if (request.contains("limit") && request["limit"].is_number_integer()) return request["limit"].get<std::int64_t>();
-  if (env.cfg) {
-    const Json v = env.cfg->get("navigator_children_limit");
-    if (v.is_number_integer()) return v.get<std::int64_t>();
-  }
+  if (const Json v = cat.setting("navigator_children_limit"); v.is_number_integer()) return v.get<std::int64_t>();
   return 50;  // the preset of navigator_children_limit when no settings are known (config.cpp DEFAULTS)
+}
+
+// The rows a level shows within its budget: every source keeps a share (one row per source in turn, in source order), so a large source
+// never crowds the others out; the rows keep their order. limit <= 0 = no budget.
+std::vector<const Json*> within_budget(const std::vector<Json>& nodes, std::int64_t limit) {
+  std::vector<std::string> order;
+  std::map<std::string, std::vector<const Json*>> by;
+  for (const auto& n : nodes) {
+    const std::string s = json::get_string(n, "listed_by", json::get_string(n, "source"));
+    if (!by.count(s)) order.push_back(s);
+    by[s].push_back(&n);
+  }
+  std::map<std::string, std::size_t> take;
+  if (limit <= 0 || static_cast<std::int64_t>(nodes.size()) <= limit) {
+    for (const auto& s : order) take[s] = by[s].size();
+  } else {
+    std::int64_t left = limit;
+    for (bool more = true; more && left > 0;) {
+      more = false;
+      for (const auto& s : order) {
+        if (left == 0) break;
+        if (take[s] < by[s].size()) {
+          ++take[s];
+          --left;
+          more = true;
+        }
+      }
+    }
+  }
+  std::vector<const Json*> out;
+  for (const auto& s : order)
+    for (std::size_t i = 0; i < take[s]; ++i) out.push_back(by[s][i]);
+  return out;
 }
 
 std::string folded(const std::string& s) { return utf8::to_lower(s); }
@@ -1640,7 +2303,9 @@ Result<void> fill_count(Catalogue& cat, Json& row, const Json& node) {
   const std::string ps_id = ps ? json::get_string(*ps, "id") : std::string();
   for (const auto& s : cat.sources()) {
     const Json p = s.value("parent", Json::object());
-    if ((starts_with(target, "area:") && "area:" + json::get_string(p, "area") == target) || (!ps_id.empty() && json::get_string(p, "of") == ps_id)) any_source = true;
+    if ((starts_with(target, "area:") && "area:" + json::get_string(p, "area") == target) || (!ps_id.empty() && json::get_string(p, "of") == ps_id) ||
+        json::get_string(p, "node") == target)
+      any_source = true;
   }
   if (!any_source && !ps_id.empty()) any_source = json::get_bool(node, "has_children", false);  // nested in its own source
   if (!any_source) {
@@ -1663,7 +2328,69 @@ Result<void> fill_count(Catalogue& cat, Json& row, const Json& node) {
 
 }  // namespace
 
-Result<std::string> find_address(const Env& env, const std::string& raw) {
+namespace {
+
+// How a name in a sentence is compared with the names of the graph (graph_sources.pack match): folded (lower case, the letters of `fold`
+// replaced: ą -> a), word by word; two words are the same when equal, or when they share a stem of at least min_prefix letters and
+// neither goes on for more than max_suffix letters after it (ustawień = ustawienia, przepływów = przepływy; rzeczy is not przeczyta).
+struct NameMatch {
+  Json fold_map = Json::object();
+  std::size_t min_prefix = 4;
+  std::size_t max_suffix = 3;
+
+  std::u32string fold(const std::string& s) const {
+    std::u32string out;
+    for (char32_t cp : utf8::decode(utf8::to_lower(s))) {
+      const Json* r = json::find(fold_map, utf8::encode(cp));
+      if (r && r->is_string()) {
+        for (char32_t x : utf8::decode(r->get<std::string>())) out.push_back(x);
+      } else {
+        out.push_back(cp);
+      }
+    }
+    return out;
+  }
+  std::vector<std::u32string> words(const std::string& s) const {
+    std::vector<std::u32string> out;
+    std::u32string cur;
+    for (char32_t cp : fold(s)) {
+      if (unicode::is_word(cp)) {
+        cur.push_back(cp);
+      } else if (!cur.empty()) {
+        out.push_back(cur);
+        cur.clear();
+      }
+    }
+    if (!cur.empty()) out.push_back(cur);
+    return out;
+  }
+  bool same_word(const std::u32string& a, const std::u32string& b) const {
+    if (a == b) return true;
+    std::size_t p = 0;
+    while (p < a.size() && p < b.size() && a[p] == b[p]) ++p;
+    return p >= min_prefix && a.size() - p <= max_suffix && b.size() - p <= max_suffix;
+  }
+  bool same_words(const std::vector<std::u32string>& a, const std::vector<std::u32string>& b) const {
+    if (a.empty() || a.size() != b.size()) return false;
+    for (std::size_t i = 0; i < a.size(); ++i)
+      if (!same_word(a[i], b[i])) return false;
+    return true;
+  }
+  // Every word of the query is a word of the name (whole words or their stems, never a part of another word).
+  bool has_words(const std::vector<std::u32string>& name, const std::vector<std::u32string>& query) const {
+    if (query.empty()) return false;
+    for (const auto& q : query) {
+      bool found = false;
+      for (const auto& w : name) found = found || same_word(w, q);
+      if (!found) return false;
+    }
+    return true;
+  }
+};
+
+}  // namespace
+
+Result<std::string> find_address(const Env& env, const std::string& raw, bool exact_only) {
   std::string words = raw;
   while (!words.empty() && (words.back() == ' ' || words.back() == '.')) words.pop_back();
   while (!words.empty() && words.front() == ' ') words.erase(0, 1);
@@ -1674,10 +2401,29 @@ Result<std::string> find_address(const Env& env, const std::string& raw) {
     LOOM_TRY_ASSIGN(auto n, cat.node(direct));
     return n ? direct : std::string();
   }
-  const std::string want = folded(words);
+  LOOM_TRY_ASSIGN(auto profile, RuntimeProfile::load("graph_sources", env.root));
+  const Json match = profile.values().value("match", Json::object());
+  NameMatch m;
+  m.fold_map = match.value("fold", Json::object());
+  m.min_prefix = static_cast<std::size_t>(std::max<std::int64_t>(1, json::get_int(match, "min_prefix", 4)));
+  m.max_suffix = static_cast<std::size_t>(std::max<std::int64_t>(0, json::get_int(match, "max_suffix", 3)));
+  const auto want = m.words(words);
+  const std::string lang = env.lang.empty() ? std::string("en") : env.lang;
+  // The words the data gives a node besides its name (aliases: rozmowy -> the conversations, role -> the model roles), in this language.
+  for (const auto& a : profile.values().value("aliases", Json::array()))
+    for (const auto& w : strings_in(a.value("words", Json::object()).value(lang, Json::array())))
+      if (m.same_words(m.words(w), want)) return json::get_string(a, "address");
+  // The pool: the areas (read from the entry profile, no counters), then every node of the sources read whole.
   std::vector<Json> pool;
-  LOOM_TRY_ASSIGN(auto areas, cat.children(""));
-  for (auto& n : areas.nodes) pool.push_back(std::move(n));
+  if (auto entry = RuntimeProfile::load("graph_entry", env.root)) {
+    const Json areas = entry->values().value("areas", Json::object());
+    for (const auto& a : areas.items()) {
+      LOOM_TRY_ASSIGN(auto n, cat.node("area:" + a.key()));
+      if (n) pool.push_back(std::move(*n));
+    }
+  } else {
+    log::write(log::Level::Debug, kLog, "find_address: graph_entry not readable: " + entry.error().message);
+  }
   for (const auto& s : cat.sources()) {
     if (Impl::paged(s) || json::get_bool(s.value("parent", Json::object()), "root", false)) continue;
     LOOM_TRY_ASSIGN(auto all, cat.children_of_source(json::get_string(s, "id")));
@@ -1685,9 +2431,11 @@ Result<std::string> find_address(const Env& env, const std::string& raw) {
   }
   auto id_of = [](const std::string& address) { return address.substr(address.find(':') + 1); };
   for (const auto& n : pool)
-    if (folded(json::get_string(n, "label")) == want || folded(id_of(json::get_string(n, "address"))) == want) return json::get_string(n, "address");
+    if (m.same_words(m.words(json::get_string(n, "label")), want) || m.same_words(m.words(id_of(json::get_string(n, "address"))), want))
+      return json::get_string(n, "address");
+  if (exact_only) return std::string();
   for (const auto& n : pool)
-    if (folded(json::get_string(n, "label")).find(want) != std::string::npos) return json::get_string(n, "address");
+    if (m.has_words(m.words(json::get_string(n, "label")), want)) return json::get_string(n, "address");
   return std::string();
 }
 
@@ -1703,21 +2451,42 @@ Result<Json> navigate(const Env& env, const Json& request) {
     LOOM_TRY_ASSIGN(focus, cat.node(focus_address));
     if (!focus) return Error(Errc::NotFound, "the area " + handed_from + " opens '" + focus_address + "', which no source knows");
   }
-  const std::int64_t limit = children_limit(env, request);
+  const std::int64_t limit = children_limit(cat, request);
   const std::int64_t hops = std::max<std::int64_t>(1, json::get_int(request, "hops", 1));
   const std::string query = folded(json::get_string(request, "query"));
   const std::vector<std::string> perspectives = strings_in(request.value("perspectives", Json::array()));
   Json paging = Json::object();
   if (request.contains("offset")) paging["offset"] = request["offset"];
   if (request.contains("before")) paging["before"] = request["before"];
-  if (limit > 0 && json::get_string(request, "query").empty()) paging["page_cap"] = limit;  // a query filters the whole page
+  if (limit > 0 && query.empty()) paging["page_cap"] = limit;  // a query filters the whole page
 
+  // The first level within its budget (and the query, which looks at this level); each deeper level only under a parent shown, within
+  // the budget of that parent (the budget is per level and parent).
   std::vector<Json> nodes;  // with depth
   std::vector<Json> edges;
   Json unknown = Json::array(), hidden = Json::array(), pages = Json::object();
-  std::int64_t total = 0;
+  std::int64_t total = 0;        // the first level: every child the sources know, or every match of the query
+  std::int64_t shown_first = 0;  // the first level shown
+  Json by_source = Json::object();  // the first level of the sources the budget collapsed: source -> {label, total, shown}
   std::set<std::string> seen{focus_address};
   Json perspective_info = Json::array();
+  const auto matches = [&](const Json& n) {
+    return query.empty() || folded(json::get_string(n, "label")).find(query) != std::string::npos ||
+           folded(json::get_string(n, "address")).find(query) != std::string::npos;
+  };
+  // The first level's rows per source: what each source has here and what the budget shows of it.
+  const auto collapsed_by_source = [&](const std::map<std::string, std::int64_t>& totals, const std::vector<const Json*>& chosen) {
+    std::map<std::string, std::int64_t> shown_by;
+    for (const Json* n : chosen) shown_by[json::get_string(*n, "listed_by", json::get_string(*n, "source"))] += 1;
+    for (const auto& [sid, t] : totals) {
+      if (t <= shown_by[sid]) continue;
+      const Json* src = nullptr;
+      for (const auto& s : cat.sources())
+        if (json::get_string(s, "id") == sid) src = &s;
+      by_source[sid] = Json{{"label", src ? pick(src->value("label", Json(sid)), env.lang.empty() ? std::string("en") : env.lang) : sid}, {"total", t},
+                            {"shown", shown_by[sid]}};
+    }
+  };
   if (!perspectives.empty()) {
     // The perspectives choose the edges: the nodes they reach from the focus, `hops` far, in both directions.
     LOOM_TRY_ASSIGN(auto persp, views::Perspectives::open(env.root));
@@ -1727,9 +2496,10 @@ Result<Json> navigate(const Env& env, const Json& request) {
       kinds.insert(ks.begin(), ks.end());
       perspective_info.push_back(p);
     }
-    LOOM_TRY_ASSIGN(auto all, cat.edges());
+    LOOM_TRY_ASSIGN(auto all, cat.edges(&unknown));
     LOOM_TRY_ASSIGN(auto here, cat.children(focus_address, paging));
     for (const auto& e : here.edges) all.push_back(e);
+    std::vector<Json> reached;  // breadth first, each with its depth and the node it was reached from (via)
     std::deque<std::pair<std::string, std::int64_t>> todo{{focus_address, 0}};
     while (!todo.empty()) {
       auto [cur, depth] = todo.front();
@@ -1746,59 +2516,83 @@ Result<Json> navigate(const Env& env, const Json& request) {
         if (!n) continue;
         Json one = *n;
         one["depth"] = depth + 1;
-        nodes.push_back(std::move(one));
-        ++total;
+        one["via"] = cur;
+        reached.push_back(std::move(one));
         todo.push_back({next, depth + 1});
       }
     }
+    std::vector<Json> first;
+    std::map<std::string, std::int64_t> totals;
+    for (const auto& n : reached)
+      if (json::get_int(n, "depth", 1) == 1 && matches(n)) {
+        totals[json::get_string(n, "source")] += 1;
+        first.push_back(n);
+      }
+    total = static_cast<std::int64_t>(first.size());
+    const auto chosen = within_budget(first, limit);
+    shown_first = static_cast<std::int64_t>(chosen.size());
+    collapsed_by_source(totals, chosen);
+    std::set<std::string> kept{focus_address};
+    for (const Json* n : chosen) {
+      kept.insert(json::get_string(*n, "address"));
+      nodes.push_back(*n);
+    }
+    std::map<std::string, std::int64_t> per_parent;
+    for (const auto& n : reached) {
+      const std::string via = json::get_string(n, "via");
+      if (json::get_int(n, "depth", 1) == 1 || !kept.count(via) || (limit > 0 && per_parent[via] >= limit)) continue;
+      ++per_parent[via];
+      kept.insert(json::get_string(n, "address"));
+      nodes.push_back(n);
+    }
   } else {
-    // Containment: the children of the focus, and theirs up to `hops`.
-    std::vector<std::pair<std::string, std::int64_t>> level{{focus_address, 0}};
+    // Containment: the children of the focus, and theirs up to `hops`, each level read for the parents shown.
+    std::vector<std::string> level{focus_address};
     for (std::int64_t depth = 0; depth < hops && !level.empty(); ++depth) {
-      std::vector<std::pair<std::string, std::int64_t>> next;
-      for (const auto& [at, d] : level) {
-        LOOM_TRY_ASSIGN(auto kids, cat.children(at, depth == 0 ? paging : Json::object()));
+      std::vector<std::string> next;
+      for (const auto& at : level) {
+        Json level_paging = depth == 0 ? paging : Json::object();
+        if (depth > 0 && limit > 0) level_paging["page_cap"] = limit;
+        LOOM_TRY_ASSIGN(auto kids, cat.children(at, level_paging));
+        std::vector<Json> fresh;
+        std::map<std::string, std::int64_t> matched;
+        for (auto& n : kids.nodes) {
+          if (seen.count(json::get_string(n, "address")) || (depth == 0 && !matches(n))) continue;
+          matched[json::get_string(n, "listed_by", json::get_string(n, "source"))] += 1;
+          fresh.push_back(std::move(n));
+        }
+        const auto chosen = within_budget(fresh, limit);
         if (depth == 0) {
-          total = kids.total;
+          total = query.empty() ? kids.total : static_cast<std::int64_t>(fresh.size());
           unknown = kids.unknown;
           hidden = kids.hidden;
           pages = kids.pages;
+          shown_first = static_cast<std::int64_t>(chosen.size());
+          collapsed_by_source(query.empty() ? kids.totals : matched, chosen);
         }
         for (const auto& e : kids.edges) edges.push_back(e);
-        const Json* src = nullptr;
-        for (auto& n : kids.nodes) {
-          const std::string a = json::get_string(n, "address");
+        for (const Json* p : chosen) {
+          const std::string a = json::get_string(*p, "address");
           if (!seen.insert(a).second) continue;
-          src = cat.source_of(a);
+          const Json* src = cat.source_of(a);
           edges.push_back(Json{{"src", a}, {"dst", at}, {"kind", src ? json::get_string(*src, "contain_edge", "part_of") : std::string("part_of")}});
-          Json one = n;
-          one["depth"] = d + 1;
-          if (json::get_bool(n, "has_children", false) || starts_with(a, "area:")) next.push_back({a, d + 1});
+          Json one = *p;
+          one["depth"] = depth + 1;
+          if (json::get_bool(*p, "has_children", false) || starts_with(a, "area:")) next.push_back(a);
           nodes.push_back(std::move(one));
         }
       }
       level = std::move(next);
     }
   }
-  if (!query.empty()) {
-    std::vector<Json> kept;
-    for (auto& n : nodes)
-      if (folded(json::get_string(n, "label")).find(query) != std::string::npos || folded(json::get_string(n, "address")).find(query) != std::string::npos)
-        kept.push_back(std::move(n));
-    total = static_cast<std::int64_t>(kept.size());
-    nodes = std::move(kept);
-  }
   Json children = Json::array();
   std::set<std::string> shown{focus_address};
-  std::int64_t shown_first = 0;
   for (const auto& n : nodes) {
-    const bool first_level = json::get_int(n, "depth", 1) == 1;
-    if (first_level && limit > 0 && shown_first >= limit) continue;
-    if (first_level) ++shown_first;
     Json row = row_of(n);
     row["depth"] = n.value("depth", 1);
     if (const Json attrs = n.value("attrs", Json::object()); attrs.contains("counts")) row["counts"] = attrs["counts"];
     LOOM_TRY(fill_count(cat, row, n));
+    if (const std::string why = json::get_string(row, "count_unknown_reason"); !why.empty()) row["count_unknown_human"] = cat.reason_words(why);
     shown.insert(json::get_string(n, "address"));
     children.push_back(std::move(row));
   }
@@ -1808,10 +2602,15 @@ Result<Json> navigate(const Env& env, const Json& request) {
     const std::string s = json::get_string(e, "src"), d = json::get_string(e, "dst"), k = json::get_string(e, "kind");
     if (!shown.count(s) || !shown.count(d)) continue;  // both ends drawn; the card lists every relation
     if (!edge_seen.insert(s + "\x1f" + d + "\x1f" + k).second) continue;
-    edge_rows.push_back(Json{{"src", s}, {"dst", d}, {"kind", k}, {"meaning", cat.edge_meaning(k)}});
+    edge_rows.push_back(Json{{"src", s}, {"dst", d}, {"kind", k}, {"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}});
   }
   LOOM_TRY_ASSIGN(auto crumbs, breadcrumbs(cat, *focus));
-  const std::int64_t first_total = perspectives.empty() ? total : total;
+  // What could not be said, in words: the source by its name, the reason by its word.
+  for (auto& u : unknown)
+    if (u.is_object()) {
+      u["source_label"] = cat.source_label(json::get_string(u, "source"));
+      u["reason_human"] = cat.reason_words(json::get_string(u, "reason"));
+    }
   Json out{{"schema", "loom.graph_navigate/1"},
            {"focus", Json{{"address", focus_address},
                           {"label", focus->value("label", "")},
@@ -1824,7 +2623,7 @@ Result<Json> navigate(const Env& env, const Json& request) {
            {"children", children},
            {"edges", edge_rows},
            {"breadcrumbs", crumbs},
-           {"counts", Json{{"total", first_total}, {"shown", shown_first}, {"collapsed", std::max<std::int64_t>(0, first_total - shown_first)}}},
+           {"counts", Json{{"total", total}, {"shown", shown_first}, {"collapsed", std::max<std::int64_t>(0, total - shown_first)}, {"by_source", by_source}}},
            {"hidden_by_you", Json{{"count", hidden.size()}, {"items", hidden}}},
            {"unknown", unknown},
            {"pages", pages},
@@ -1882,36 +2681,75 @@ Result<Json> card(const Env& env, const Json& request) {
     out["can_override"] = Json{{"action", "rom.override"}, {"file", (env.root / "profiles" / "graph_entry.pack").string()},
                                {"pointer", "/overrides/rom/items/" + address.substr(4)}};
   }
-  // Relations grouped by edge kind, both directions.
-  LOOM_TRY_ASSIGN(auto all, cat.edges());
+  // Relations grouped by edge kind, both directions: from the node's own source, the sources whose edges reach it, and its children.
+  Json relations_unknown = Json::array();
+  LOOM_TRY_ASSIGN(auto all, cat.edges_touching(address, &relations_unknown));
   LOOM_TRY_ASSIGN(auto kids, cat.children(address, Json{{"page_limit", 50}}));
   for (const auto& e : kids.edges) all.push_back(e);
+  if (const std::string parent = json::get_string(*node, "parent"); !parent.empty()) {
+    const Json* own = cat.source_of(address);
+    all.push_back(Json{{"src", address}, {"dst", parent}, {"kind", own ? json::get_string(*own, "contain_edge", "part_of") : std::string("part_of")}});
+  }
   Json relations = Json::object();
   std::set<std::string> rel_seen;
   for (const auto& e : all) {
     const std::string s = json::get_string(e, "src"), d = json::get_string(e, "dst"), k = json::get_string(e, "kind");
     if (s != address && d != address) continue;
     if (!rel_seen.insert(s + "\x1f" + d + "\x1f" + k).second) continue;
-    if (!relations.contains(k)) relations[k] = Json{{"meaning", cat.edge_meaning(k)}, {"out", Json::array()}, {"in", Json::array()}};
+    if (!relations.contains(k)) relations[k] = Json{{"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}, {"out", Json::array()}, {"in", Json::array()}};
     const std::string other = s == address ? d : s;
     std::string label = other;
     if (auto n = cat.node(other); n && *n) label = json::get_string(**n, "label", other);
     relations[k][s == address ? "out" : "in"].push_back(Json{{"address", other}, {"label", label}});
   }
   out["relations"] = relations;
+  if (!relations_unknown.empty()) out["relations_unknown"] = relations_unknown;
   out["children_count"] = kids.total;
   // What can be done with it: actions.for on its element.
+  // What can be done with it: actions.for on its element; each action with its decision (the rules' status: applicable, needs_confirmation,
+  // denied, default), its title in the language asked and whether it is implemented. A ROM item also offers your copy (rom.override),
+  // decided by the rules (confirm:rom.override).
+  const std::string lang = env.lang.empty() ? std::string("en") : env.lang;
+  std::map<std::string, const Json*> by_id;  // pointers into all_actions, which outlives them
+  auto catalogue = action_catalogue(env.root);
+  const Json all_actions = catalogue ? catalogue->value("actions", Json::array()) : Json::array();
+  if (catalogue)
+    for (const auto& a : all_actions) by_id[json::get_string(a, "id")] = &a;
+  else log::write(log::Level::Debug, kLog, "card: action catalogue not readable: " + catalogue.error().message);
+  const auto action_row = [&](const std::string& id, const Json& decision, const Json& implementation) {
+    const auto it = by_id.find(id);
+    std::string label = it != by_id.end() ? catalogue_title(*it->second, lang).get<std::string>() : std::string();
+    if (label.empty()) label = id;
+    return Json{{"id", id}, {"decision", decision}, {"label", label},
+                {"implementation", implementation.is_null() && it != by_id.end() ? it->second->value("status", Json(nullptr)) : implementation}};
+  };
   const actions::ElementSources sources{env.db, nullptr, env.root};
   auto fits = actions::invoke(env.root, "for", Json{{"element", address}}, &sources, env.cfg);
+  Json acts = Json::array();
   if (fits) {
-    Json acts = Json::array();
     for (const auto& a : fits->value("actions", Json::array()))
-      acts.push_back(Json{{"id", json::get_string(a, "id", json::get_string(a, "action"))}, {"decision", a.value("decision", Json(nullptr))}, {"label", a.value("label", Json(nullptr))}});
-    out["actions"] = acts;
+      acts.push_back(action_row(json::get_string(a, "action", json::get_string(a, "id")), a.value("status", Json(nullptr)), a.value("implementation", Json(nullptr))));
   } else {
-    out["actions"] = Json::array();
     out["actions_unknown_reason"] = fits.error().message;
   }
+  if (source == "rom") {
+    bool listed = false;
+    for (const auto& a : acts) listed = listed || json::get_string(a, "id") == "rom.override";
+    if (!listed) {
+      Json decision = "needs_confirmation";
+      if (auto engine = actions::Engine::load(env.root)) {
+        actions::Element element;
+        element.id = address;
+        element.cls = json::get_string(*node, "kind");
+        if (auto scope = engine->parse_scope(Json(nullptr)); scope)
+          if (auto d = engine->decide(element, "rom.override", *scope); d) decision = d->status;
+      } else {
+        log::write(log::Level::Debug, kLog, "card: rules not readable: " + engine.error().message);
+      }
+      acts.push_back(action_row("rom.override", decision, Json(nullptr)));
+    }
+  }
+  out["actions"] = acts;
   LOOM_TRY_ASSIGN(auto crumbs, breadcrumbs(cat, *node));
   out["breadcrumbs"] = crumbs;
   return out;
@@ -1928,7 +2766,11 @@ Result<Json> settings_resolved(const Env& env, const Json& request) {
     if (json::get_string(s, "reader") == "settings.groups") groups_parent = "area:" + json::get_string(s.value("parent", Json::object()), "area");
   }
   if (!src || groups_parent == "area:") return Error(Errc::NotFound, "graph_sources has no settings or settings groups source");
-  // Every field through the one Resolver of this render.
+  // Every field through the one Resolver of this render; the flows that read a field named by their titles (the catalogue read once).
+  std::map<std::string, Json> titles;
+  if (auto catalogue = action_catalogue(e.root))
+    for (const auto& a : catalogue->value("actions", Json::array())) titles[json::get_string(a, "id")] = catalogue_title(a, e.lang.empty() ? std::string("en") : e.lang);
+  else log::write(log::Level::Debug, kLog, "settings.resolved: action catalogue not readable: " + catalogue.error().message);
   LOOM_TRY_ASSIGN(auto groups_read, cat.children(groups_parent));
   Json groups = Json::array();
   std::int64_t field_count = 0;
@@ -1942,7 +2784,10 @@ Result<Json> settings_resolved(const Env& env, const Json& request) {
       const Json resolved = attrs.value("resolved", Json::object());
       const Json human = attrs.value("human", Json::object());
       Json flows = Json::array();
-      for (const auto& id : strings_in(human.value("flows", Json::array()))) flows.push_back(id);
+      for (const auto& id : strings_in(human.value("flows", Json::array()))) {
+        const auto it = titles.find(id);
+        flows.push_back(Json{{"id", id}, {"title", it != titles.end() ? it->second : Json(id)}});
+      }
       Json row{{"key", attrs.value("key", "")},
                {"address", f.value("address", "")},
                {"human", human},
@@ -2021,7 +2866,8 @@ Result<Json> rom_override(const std::filesystem::path& root, const Json& request
 
 Result<Json> render_catalogue(const Env& env, const std::set<std::string>& kinds, const Json& request) {
   LOOM_TRY_ASSIGN(auto cat, Catalogue::open(env));
-  LOOM_TRY_ASSIGN(auto all, cat.edges());
+  Json unknown = Json::array();
+  LOOM_TRY_ASSIGN(auto all, cat.edges(&unknown));
   const std::string direction = json::get_string(request, "direction", "both");
   const Json hops_j = request.value("hops", Json(nullptr));
   const bool bounded = hops_j.is_number_integer();
@@ -2077,12 +2923,13 @@ Result<Json> render_catalogue(const Env& env, const std::set<std::string>& kinds
   for (const auto* e : kept) {
     const std::string s = json::get_string(*e, "src"), d = json::get_string(*e, "dst"), k = json::get_string(*e, "kind");
     if (!shown.count(s) || !shown.count(d)) continue;
-    edges.push_back(Json{{"src", s}, {"dst", d}, {"type", k}, {"kind", k}, {"meaning", cat.edge_meaning(k)}});
+    edges.push_back(Json{{"src", s}, {"dst", d}, {"type", k}, {"kind", k}, {"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}});
   }
   Json ks = Json::array();
   for (const auto& k : kinds) ks.push_back(k);
   Json out{{"schema", "loom.perspective_render/1"}, {"source", "catalogue"}, {"edge_kinds", ks}, {"direction", direction}, {"hops", hops_j}, {"nodes", nodes}, {"edges", edges}};
   if (truncated) out["truncated"] = true;
+  if (!unknown.empty()) out["unknown"] = unknown;
   return out;
 }
 
