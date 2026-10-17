@@ -541,5 +541,15 @@
   "json",
   "markdown",
   "raw"
- ]
+ ],
+ "menu_ops": [
+  "inventory",
+  "timeline",
+  "clusters",
+  "stats",
+  "propose",
+  "dry_run",
+  "token_economics"
+ ],
+ "menu_ops_note": "operations the F2 menu runs (with their presets); the result is shown in the viewer — as Markdown when the result carries one (token_economics), else as JSON"
 }

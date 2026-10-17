@@ -230,6 +230,11 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
                             currency=(total or {}).get("currency", "USD")))
     else:
         out.append(f"- {t('report.cost_zero')}")
+    econ = getattr(eng, "economics", None)
+    if econ is not None:  # slice 4: the token economics of the sources (the tables are in economics/)
+        tot = econ.get("totals") or {}
+        out.append("- " + t("report.economics", turns=tot.get("turns", 0), measured=tot.get("turns_measured", 0),
+                            estimated=tot.get("turns_estimated", 0), file=t("economics.file")))
     # -- edits -------------------------------------------------------------------
     out += ["", f"## {t('report.edits')}", ""]
     pkg = getattr(eng, "package", None)

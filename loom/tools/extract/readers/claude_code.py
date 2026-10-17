@@ -13,6 +13,7 @@ housekeeping line types are counted, anything else goes to the unknown bucket
 with an example.  Tool calls and results are kept as blocks."""
 import io
 import json
+from pathlib import Path, PurePosixPath
 from typing import Any, Iterator, Optional
 
 from ..model import Block, Message, Unit
@@ -86,14 +87,28 @@ class ClaudeCodeReader(Reader):
                     internal[ltype] = internal.get(ltype, 0) + 1
                 else:
                     note_unknown(u, f"line:{lineno}", obj, native=ltype or "?")
-        stem = member.name.rsplit("/", 1)[-1]
+        stem = member.name.rsplit("/", 1)[-1] if member.name else Path(member.archive.path).name
         stem = stem[:-len(".jsonl")] if stem.endswith(".jsonl") else stem
-        if session_id and stem != session_id:
+        place = transcript_place(member, fmt)
+        if place is not None:
+            # <session>/subagents/**/x.jsonl or <session>/[subagents/]workflows/<run>/agent-*.jsonl: the directory names
+            # the parent session (a measured link); the id is the path from the session directory, unique across runs
+            u.ext_id = place["ext_id"]
+            u.flags["parent_session"] = place["session"]
+            u.flags["parent_session_how"] = "path"
+            u.flags["transcript_role"] = place["role"]
+            if place.get("run"):
+                u.flags["workflow_run"] = place["run"]
+            if session_id and session_id != place["session"]:
+                u.flags["parent_session_line"] = session_id
+        elif session_id and stem != session_id:
             # an agent transcript or a resumed session in its own file: its own identity, linked to the parent session
             u.ext_id = stem
             u.flags["parent_session"] = session_id
+            u.flags["parent_session_how"] = "sessionId"
         else:
             u.ext_id = session_id or member.name
+            u.flags["transcript_role"] = "main"
         ctx.set_unit_times(u, first_ts, last_ts, mtime=member.mtime)
         leaf_policy = str(fmt.get("leaf") or "last_main")
         main_ids = [x for x in order if x not in sidechain]
@@ -107,6 +122,7 @@ class ClaudeCodeReader(Reader):
             m = Message(id=e.id, parent=e.parent, role=roles.get(role, role), branch=e.branch, on_current_path=e.on_current,
                         raw_pointer=f"line:{lineno}")
             m.model = getpath(obj, lspec.get("model"))
+            read_usage(m, obj, fmt.get("usage"))
             ctx.set_msg_time(m, obj.get(lspec["created"]["path"]), fallback=u.created_utc)
             if obj.get(lspec.get("sidechain", "isSidechain")):
                 m.meta["sidechain"] = True
@@ -127,6 +143,8 @@ class ClaudeCodeReader(Reader):
         u.flags["sidechain_messages"] = sum(1 for m in u.messages if m.meta.get("sidechain"))
         if u.messages and all(m.meta.get("sidechain") for m in u.messages if m.role != "system"):
             u.flags["agent_transcript"] = True
+        if "transcript_role" not in u.flags:  # a file next to the session's, linked by sessionId
+            u.flags["transcript_role"] = "subagent" if u.flags.get("agent_transcript") else "resumed"
         u.flags["compacted_messages"] = sum(1 for m in u.messages if m.meta.get("compacted"))
         if summaries and not u.title:
             u.title = str(summaries[-1].get("summary") or "")[:80] or None
@@ -195,3 +213,65 @@ def _tool_text(inp: Any) -> str:
             if isinstance(inp.get(k), str):
                 return inp[k]
     return ""
+
+
+def transcript_place(member: Member, fmt: dict[str, Any]) -> Optional[dict[str, Any]]:
+    """Where a transcript sits: ``<session>/subagents/**/x.jsonl`` → subagent of <session>; ``<session>/[subagents/]
+    workflows/<run>/agent-*.jsonl`` → agent of workflow run <run>.  Directory names come from the format file
+    (``transcripts.subagent_dirs`` / ``workflow_dirs``); None = not inside such a directory."""
+    tspec = fmt.get("transcripts") or {}
+    subs = set(tspec.get("subagent_dirs") or [])
+    wfs = set(tspec.get("workflow_dirs") or [])
+    if not subs and not wfs:
+        return None
+    parts = list(Path(member.archive.path).parts) if member.archive.kind in ("file",) or not member.name else \
+        list(Path(member.archive.path).parts) + list(PurePosixPath(member.name).parts)
+    dirs = parts[:-1]
+    i_sub = next((i for i, p in enumerate(dirs) if p in subs), None)
+    i_wf = next((i for i in range(len(dirs) - 1, -1, -1) if dirs[i] in wfs), None)
+    if i_wf is not None and i_wf + 1 < len(dirs):
+        anchor = i_sub if i_sub is not None and i_sub < i_wf else i_wf
+        role, run = "workflow_agent", dirs[i_wf + 1]
+    elif i_sub is not None:
+        anchor, role, run = i_sub, "subagent", None
+    else:
+        return None
+    if anchor == 0:
+        return None
+    rel = "/".join(parts[anchor - 1:])
+    rel = rel[:-len(".jsonl")] if rel.endswith(".jsonl") else rel
+    return {"session": parts[anchor - 1], "role": role, "run": run, "ext_id": rel}
+
+
+def read_usage(m: Message, obj: dict[str, Any], uspec: Optional[dict[str, Any]]) -> None:
+    """Measured counters of one line (``usage`` of the format file) → ``m.meta``: ``usage`` (mapped counters, labels,
+    ``extra`` = every unmapped field, never dropped), ``api_id`` / ``request_id`` (one API response may span several
+    lines), ``cost_usd`` when the line carries its own cost."""
+    if not uspec:
+        return
+    raw = getpath(obj, uspec.get("path"))
+    cost = getpath(obj, uspec.get("cost_usd")) if uspec.get("cost_usd") else None
+    if isinstance(cost, (int, float)) and not isinstance(cost, bool):
+        m.meta["cost_usd"] = float(cost)
+    if not isinstance(raw, dict):
+        return
+    out: dict[str, Any] = {}
+    consumed: set[str] = set()
+    for key, path in (uspec.get("fields") or {}).items():
+        consumed.add(str(path).split(".")[0])
+        v = getpath(raw, path)
+        if isinstance(v, (int, float)) and not isinstance(v, bool):
+            out[key] = int(v)
+    for key, path in (uspec.get("labels") or {}).items():
+        consumed.add(str(path).split(".")[0])
+        v = getpath(raw, path)
+        if v is not None:
+            out[key] = v
+    extra = {k: v for k, v in raw.items() if k not in consumed}
+    if extra:
+        out["extra"] = extra
+    m.meta["usage"] = out
+    for key in ("api_id", "request_id"):
+        v = getpath(obj, uspec.get(key)) if uspec.get(key) else None
+        if v:
+            m.meta[key] = str(v)

@@ -624,7 +624,7 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             elif rel.endswith(".jsonl"):
                 text = "".join(json.dumps(red.value(json.loads(line), {"file": rel, "line": i + 1}, "text"), ensure_ascii=False) + "\n"
                                for i, line in enumerate(text.splitlines()) if line.strip())
-            elif rel.endswith(".md"):
+            elif rel.endswith(".md") or rel.endswith(".csv"):
                 text = red.text(text, {"file": rel}, "text")
         sha, n = _write_text(pkg / rel, text)
         outputs.append({"path": rel, "sha256": sha, "bytes": n})
@@ -675,6 +675,10 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             put("oplog.jsonl", "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in oplog_rows(eng.package)))
     if eng.stats is not None:
         put("stats.json", _json_text(eng.stats))
+    if eng.economics is not None:  # slice 4: token economics (JSON, Markdown in the run's language, CSV per table)
+        from .economics import output_files as _econ_files
+        for rel, text in _econ_files(eng.economics, eng.ds):
+            put(rel, text)
 
     if eng.model_runner is not None and eng.model_runner.calls:
         put("log.jsonl", "".join(json.dumps(r, ensure_ascii=False, sort_keys=True) + "\n" for r in eng.model_runner.log_rows()))
@@ -782,3 +786,4 @@ def op_user_call(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
 
 from . import ops_cut  # noqa: E402,F401  (registers the slice B operations)
 from . import ops_views  # noqa: E402,F401  (registers the slice C operations)
+from . import ops_economics  # noqa: E402,F401  (registers the slice 4 operation: token economics)

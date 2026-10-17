@@ -31,6 +31,9 @@ PNG = bytes.fromhex("89504e470d0a1a0a0000000d49484452000000010000000108060000001
 # strings a privacy test may assert never appear in aggregate output
 FORBIDDEN = ["Naprawa importera", "pamięć hierarchiczna", "Grok o ChatADHD", "Eksport Loom", "Analizator archiwów",
              "schemat.png", "brak.pdf", "Migracja pamięci", "Rekurencja po katalogach"]
+# … and what the token-economics report must not carry in aggregate mode (titles, ids, paths, file names)
+ECON_FORBIDDEN = ["Sesja testowa jeden", "Sesja bez transkryptu", "session_TEST1", "session_TEST2", "session_TEST3", "sess-E1", "sess-E2",
+                  "agent-s1", "agent-w1", "run-1", "src/a.py", "src/b.py", "Dodaj licznik tokenów"]
 
 
 # ═════════════════════════ Claude Code sessions ═════════════════════════
@@ -82,6 +85,119 @@ def claude_code_session_2():
         cc_line("v2", "v1", "assistant", "2026-10-11T09:00:30Z", [{"type": "text", "text": "Rekurencja po katalogach: funkcja woła siebie dla podkatalogów."}], session="sess-0002"),
     ]
     return "\n".join(json.dumps(x, ensure_ascii=False) for x in lines) + "\n"
+
+
+# ═════════════════════════ token economics (Claude Code with usage, subagents, workflows, session list) ═════════════════════════
+ECON_TURNS = [
+    # (file, message id, model, timestamp, usage {in, out, cache_creation, cache_read}, lines the response is written in)
+    ("sess-E1", "msg_A1", "claude-x-large", "2026-10-10T08:00:10Z", (10, 120, 1000, 0), 3),
+    ("sess-E1", "msg_A2", "claude-x-large", "2026-10-10T08:02:00Z", (5, 40, 200, 1000), 1),
+    ("sess-E1", "msg_A3", "claude-x-large", "2026-10-11T09:00:00Z", (4, 60, 100, 1200), 1),
+    ("subagents/agent-s1", "msg_S1", "claude-x-small", "2026-10-10T08:05:00Z", (2, 30, 500, 0), 1),
+    ("subagents/workflows/run-1/agent-w1", "msg_W1", "claude-x-small", "2026-10-10T08:06:00Z", (1, 10, 50, 300), 1),
+    ("subagents/workflows/run-1/agent-w2", "msg_W2", "claude-x-small", "2026-10-10T08:07:00Z", (1, 20, 60, 400), 1),
+    ("sess-E2", "msg_B1", "claude-x-small", "2026-10-10T12:00:30Z", (4, 25, 0, 800), 1),
+]
+
+
+def _usage(u, partial=False):
+    i, o, cc, cr = u
+    return {"input_tokens": i, "output_tokens": (o // 4 if partial else o), "cache_creation_input_tokens": cc,
+            "cache_read_input_tokens": cr, "service_tier": "standard",
+            "cache_creation": {"ephemeral_5m_input_tokens": cc, "ephemeral_1h_input_tokens": 0}}
+
+
+def econ_line(uuid, parent, typ, ts, content, *, session, model=None, mid=None, usage=None, sidechain=False, **extra):
+    d = {"uuid": uuid, "parentUuid": parent, "type": typ, "timestamp": ts, "sessionId": session, "cwd": "/home/user/econ",
+         "version": "2.0.0", "gitBranch": "main", "isSidechain": sidechain, "userType": "external",
+         "message": {"role": typ, "content": content}}
+    if typ == "assistant":
+        d["message"].update({"model": model, "id": mid, "type": "message", "usage": usage})
+        d["requestId"] = "req_" + (mid or uuid)
+    d.update(extra)
+    return json.dumps(d, ensure_ascii=False)
+
+
+def economics_files():
+    T = {t[1]: t for t in ECON_TURNS}
+    S = "sess-E1"
+    commit_cmd = "git add -A && git commit -m \"feat: licznik tokenów\n\nClaude-Session: https://claude.ai/code/session_TEST1\""
+    main = [
+        econ_line("e1", None, "user", "2026-10-10T08:00:00Z", "Dodaj licznik tokenów do raportu", session=S),
+        # one API response written in three lines (thinking, text, tool_use), the same message.id; output grows
+        econ_line("e2", "e1", "assistant", "2026-10-10T08:00:10Z", [{"type": "thinking", "thinking": "Plan: licznik w raporcie.", "signature": "x"}],
+                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4], partial=True)),
+        econ_line("e3", "e2", "assistant", "2026-10-10T08:00:11Z", [{"type": "text", "text": "Dodaję licznik."}],
+                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4])),
+        econ_line("e4", "e3", "assistant", "2026-10-10T08:00:12Z",
+                  [{"type": "tool_use", "id": "toolu_e1", "name": "Edit", "input": {"file_path": "src/a.py", "old_string": "x", "new_string": "y"}}],
+                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4])),
+        econ_line("e5", "e4", "user", "2026-10-10T08:01:00Z", [{"type": "tool_result", "tool_use_id": "toolu_e1", "content": "ok"}], session=S),
+        econ_line("e6", "e5", "assistant", "2026-10-10T08:02:00Z",
+                  [{"type": "tool_use", "id": "toolu_b1", "name": "Bash", "input": {"command": commit_cmd, "description": "commit"}}],
+                  session=S, model="claude-x-large", mid="msg_A2", usage=_usage(T["msg_A2"][4])),
+        econ_line("e7", "e6", "user", "2026-10-10T08:02:30Z", [{"type": "tool_result", "tool_use_id": "toolu_b1", "content": "[main abc] feat"}], session=S),
+        econ_line("e8", "e7", "assistant", "2026-10-11T09:00:00Z",
+                  [{"type": "tool_use", "id": "toolu_w1", "name": "Write", "input": {"file_path": "src/b.py", "content": "print(1)\n"}},
+                   {"type": "tool_use", "id": "toolu_e2", "name": "Edit", "input": {"file_path": "src/a.py", "old_string": "q", "new_string": "r"}}],
+                  session=S, model="claude-x-large", mid="msg_A3",
+                  usage=dict(_usage(T["msg_A3"][4]), server_tool_use={"web_search_requests": 0})),
+        econ_line("e9", "e8", "user", "2026-10-11T09:00:05Z", [{"type": "tool_result", "tool_use_id": "toolu_w1", "content": "ok"},
+                                                              {"type": "tool_result", "tool_use_id": "toolu_e2", "content": "old_string not found",
+                                                               "is_error": True}], session=S),
+        # a client-inserted message (no API call) and an assistant line without counters
+        econ_line("e10", "e9", "assistant", "2026-10-11T09:00:06Z", [{"type": "text", "text": "No response requested."}],
+                  session=S, model="<synthetic>", mid="msg_SYN", usage={"input_tokens": 0, "output_tokens": 0,
+                                                                         "cache_creation_input_tokens": 0, "cache_read_input_tokens": 0}),
+        json.dumps({"uuid": "e11", "parentUuid": "e10", "type": "assistant", "timestamp": "2026-10-11T09:00:07Z", "sessionId": S,
+                    "isSidechain": False, "message": {"role": "assistant", "model": "claude-x-large", "content": [{"type": "text", "text": "API Error"}]}},
+                   ensure_ascii=False),
+    ]
+    sub = [econ_line("s1", None, "user", "2026-10-10T08:04:00Z", "Przeczytaj raport", session=S, sidechain=True, agentId="s1"),
+           econ_line("s2", "s1", "assistant", "2026-10-10T08:05:00Z",
+                     [{"type": "tool_use", "id": "toolu_r1", "name": "Read", "input": {"file_path": "src/report.py"}}],
+                     session=S, model="claude-x-small", mid="msg_S1", usage=_usage(T["msg_S1"][4]), sidechain=True, agentId="s1")]
+
+    def wf(agent, mid, text):
+        return [econ_line(agent + "u", None, "user", "2026-10-10T08:05:30Z", "Zadanie przepływu", session=S, sidechain=True, agentId=agent),
+                econ_line(agent + "a", agent + "u", "assistant", T[mid][3], [{"type": "text", "text": text}],
+                          session=S, model="claude-x-small", mid=mid, usage=_usage(T[mid][4]), sidechain=True, agentId=agent)]
+    e2 = [econ_line("b1", None, "user", "2026-10-10T12:00:00Z", "Krótkie pytanie o testy", session="sess-E2"),
+          econ_line("b2", "b1", "assistant", "2026-10-10T12:00:30Z", [{"type": "text", "text": "Testy są w tests/."}],
+                    session="sess-E2", model="claude-x-small", mid="msg_B1", usage=_usage(T["msg_B1"][4]))]
+    files = {"sess-E1.jsonl": main, "sess-E1/subagents/agent-s1.jsonl": sub,
+             "sess-E1/subagents/workflows/run-1/agent-w1.jsonl": wf("w1", "msg_W1", "Wynik w1"),
+             "sess-E1/subagents/workflows/run-1/agent-w2.jsonl": wf("w2", "msg_W2", "Wynik w2 dłuższy"),
+             "sess-E2.jsonl": e2}
+    sessions = {"sessions": [
+        {"id": "session_TEST1", "title": "Sesja testowa jeden", "created_at": "2026-10-10T07:59:00Z", "updated_at": "2026-10-11T09:10:00Z",
+         "configured_model": "claude-x-large", "status": "idle",
+         "external_metadata": {"usage": {"cache_read_tokens": 3000, "cache_write_tokens": 2000, "input_tokens": 30, "output_tokens": 300,
+                                         "cost_usd": 1.5}}},
+        {"id": "session_TEST2", "title": "Sesja bez transkryptu", "created_at": "2026-10-09T10:00:00Z", "updated_at": "2026-10-09T11:00:00Z",
+         "configured_model": "claude-x-small",
+         "external_metadata": {"usage": {"cache_read_tokens": 100, "cache_write_tokens": 50, "input_tokens": 5, "output_tokens": 20,
+                                         "cost_usd": 0.25}}}],
+        "has_more": False}
+    return files, sessions
+
+
+def economics_expected():
+    fam = {"sess-E1": [t for t in ECON_TURNS if t[0] != "sess-E2"], "sess-E2": [t for t in ECON_TURNS if t[0] == "sess-E2"]}
+
+    def sums(ts):
+        return {k: sum(t[4][i] for t in ts) for i, k in enumerate(("input", "output", "cache_creation", "cache_read"))}
+    main_e1 = sums([t for t in ECON_TURNS if t[0] == "sess-E1"])
+    return {"turns": len(ECON_TURNS), "duplicate_lines": sum(t[5] - 1 for t in ECON_TURNS),
+            "totals": sums(ECON_TURNS), "family_E1": sums(fam["sess-E1"]), "main_E1": main_e1, "family_E2": sums(fam["sess-E2"]),
+            "transcripts_E1": 4, "agents_E1": 3, "workflow_agents": 2, "files_touched_E1": ["src/a.py", "src/b.py"],
+            "edit_calls_E1": 3, "edits_failed_E1": 1, "tool_calls": {"Edit": 2, "Write": 1, "Bash": 1, "Read": 1}, "tool_failed": {"Edit": 1},
+            "ignored_synthetic": 1, "assistant_without_counters": 1, "unmapped_usage_fields": ["server_tool_use"],
+            "link_E1": "session_TEST1", "api_cost_TEST1": 1.5, "api_cache_read_TEST1": 3000,
+            "days": {"2026-10-10": len([t for t in ECON_TURNS if t[3].startswith("2026-10-10")]),
+                     "2026-10-11": len([t for t in ECON_TURNS if t[3].startswith("2026-10-11")])},
+            "models": {"claude-x-large": 3, "claude-x-small": 4},
+            "git_note": "the test builds the repository: 2 commits with session_TEST1 on main, 1 with session_TEST3 on a side branch, 1 without a trailer"}
 
 
 # ═════════════════════════ Gemini Takeout ═════════════════════════
@@ -296,6 +412,14 @@ def main() -> None:
     dmg.mkdir(exist_ok=True)
     write_damaged_zip(dmg / "chatgpt_damaged.zip", export_a() + [("file-Broken1-uszkodzony.png", PNG)], "file-Broken1-uszkodzony.png")
 
+    econ = OUT / "economics"
+    files, sessions = economics_files()
+    for rel, lines in files.items():
+        f = econ / "projects" / "-home-user-econ" / rel
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (econ / "sessions.json").write_text(json.dumps(sessions, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
     cont = OUT / "continuation"
     cont.mkdir(exist_ok=True)
     write_zip(cont / "chatgpt_part.zip", continuation_chatgpt())
@@ -336,6 +460,7 @@ def main() -> None:
         "damaged/chatgpt_damaged.zip": {"unreadable": ["file-Broken1-uszkodzony.png"], "conversations": 3,
                                          "note": "one stored member with a flipped byte (CRC error); the rest reads"},
         "forbidden_in_aggregate": FORBIDDEN,
+        "economics": dict(economics_expected(), forbidden_in_aggregate=ECON_FORBIDDEN),
     }
     (OUT / "EXPECTED.json").write_text(json.dumps(expected, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print("wrote fixtures to", OUT)

@@ -202,10 +202,13 @@ def compute_stats(unit: Unit, ctx: ReadContext) -> dict[str, Any]:
     native: dict[str, int] = {}
     tools: dict[str, int] = {}
     chars = 0
-    thinking_blocks = thinking_chars = thinking_full = 0
+    thinking_blocks = thinking_chars = thinking_full = thinking_summary = thinking_redacted = 0
+    usage_messages = 0
     texts: list[str] = []
     for m in unit.messages:
         roles[m.role] = roles.get(m.role, 0) + 1
+        if isinstance(m.meta.get("usage"), dict):
+            usage_messages += 1
         for b in m.blocks:
             kinds[b.kind] = kinds.get(b.kind, 0) + 1
             kind_chars[b.kind] = kind_chars.get(b.kind, 0) + b.chars()
@@ -217,6 +220,10 @@ def compute_stats(unit: Unit, ctx: ReadContext) -> dict[str, Any]:
                 thinking_chars += b.chars()
                 if b.chars() >= ctx.thinking_full_min and b.complete is not False:
                     thinking_full += 1
+                if b.complete is False:
+                    thinking_summary += 1
+                if b.extra.get("redacted"):
+                    thinking_redacted += 1
             if b.kind == "tool_use" and b.name:
                 tools[b.name] = tools.get(b.name, 0) + 1
             if b.kind == "text" and b.text:
@@ -233,7 +240,9 @@ def compute_stats(unit: Unit, ctx: ReadContext) -> dict[str, Any]:
         "tokens_est": int(round(chars / cpt)) if cpt else 0, "tokens_chars_per_token": cpt,
         "blocks": kinds, "block_chars": kind_chars, "blocks_native": native,
         "tools": tools, "tool_calls": sum(tools.values()),
-        "thinking": {"blocks": thinking_blocks, "chars": thinking_chars, "full": thinking_full},
+        "thinking": {"blocks": thinking_blocks, "chars": thinking_chars, "full": thinking_full, "summary": thinking_summary,
+                     "redacted": thinking_redacted},
+        "usage_messages": usage_messages,
         "branches": unit.leaf_count(), "forks": len(unit.tree.get("forks") or []),
         "current_path_messages": sum(1 for m in unit.messages if m.on_current_path),
         "attachments": {"referenced": len(unit.attachments), **att_status},

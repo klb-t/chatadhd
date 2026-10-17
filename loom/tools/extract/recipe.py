@@ -108,6 +108,7 @@ _TYPE_CHECK = {
     "string": lambda v: isinstance(v, str),
     "expr": lambda v: isinstance(v, str) and v.strip() != "",
     "path": lambda v: isinstance(v, str) and v != "",
+    "paths": lambda v: isinstance(v, list) and all(isinstance(x, str) and x != "" for x in v),
     "field": lambda v: isinstance(v, str) and v != "",  # a field name (title, meta.x): never resolved as a file path
     "id": lambda v: isinstance(v, str) and v != "",
     "number": lambda v: isinstance(v, (int, float)) and not isinstance(v, bool),
@@ -240,6 +241,8 @@ def normalise(recipe: dict[str, Any], ds: Optional[DataStore] = None, *, base_di
         for name, ps in (spec.get("params") or {}).items():
             if ps.get("type") == "path" and name in params:
                 params[name] = _norm_path(params[name], base)
+            if ps.get("type") == "paths" and isinstance(params.get(name), list):
+                params[name] = [_norm_path(x, base) for x in params[name]]
             if name == "against" and isinstance(params.get(name), list):
                 params[name] = [_norm_path(x, base) for x in params[name]]
         params = json.loads(canonical_json(params))

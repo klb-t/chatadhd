@@ -1,0 +1,40 @@
+{
+ "schema": "loom.extract.session_source/1",
+ "id": "claude_code.list_sessions",
+ "label": {
+  "pl": "Lista sesji Claude Code (wynik list_sessions zapisany do pliku)",
+  "en": "Claude Code session list (list_sessions result saved to a file)"
+ },
+ "note": {
+  "pl": "Narzędzie nigdy nie woła sieci: plik zapisuje użytkownik (albo Claude) z API sesji. Kształt: tablica sesji albo obiekt z tablicą pod jednym z kluczy wrappers; JSONL = jedna sesja na wiersz; kilka plików (strony) — ta sama sesja liczona raz (najnowsze updated_at).",
+  "en": "The tool never calls the network: the user (or Claude) saves the file from the session API. Shape: an array of sessions or an object with the array under one of the wrappers keys; JSONL = one session per line; several files (pages) — the same session counted once (latest updated_at)."
+ },
+ "wrappers": [
+  "sessions",
+  "data",
+  "items",
+  "result",
+  "results"
+ ],
+ "id_field": "id",
+ "fields": {
+  "id": "id",
+  "title": "title",
+  "created": "created_at",
+  "updated": "updated_at",
+  "model": "configured_model",
+  "status": "status",
+  "input": "external_metadata.usage.input_tokens",
+  "output": "external_metadata.usage.output_tokens",
+  "cache_creation": "external_metadata.usage.cache_write_tokens",
+  "cache_read": "external_metadata.usage.cache_read_tokens",
+  "cost_usd": "external_metadata.usage.cost_usd"
+ },
+ "counters": [
+  "input",
+  "output",
+  "cache_creation",
+  "cache_read"
+ ],
+ "currency": "USD"
+}

@@ -137,6 +137,14 @@ VERBS: list[dict[str, Any]] = [
     {"name": "filtr", "aliases": ["filter"], "help": "cli.verb.filter",
      "opts": [_o("akcja", choices=["zapisz", "save", "lista", "list", "usun", "remove", "delete"], help="cli.opt.filter_action"),
               _o("nazwa", nargs="?", metavar="NAZWA", help="cli.opt.profile_name"), _o("wyrazenie", nargs="?", metavar="WYRAŻENIE", help="cli.opt.expr")]},
+    {"name": "ekonomia", "aliases": ["tokens", "economics", "token-economics", "ekonomia-tokenow"], "help": "cli.verb.economics",
+     "opts": [_o("zrodla", nargs="*", metavar="ŹRÓDŁO", help="cli.opt.sources"), PACKAGE, SAVE_RECIPE,
+              _o("--sesje", "--sessions", action="append", metavar="PLIK", help="cli.opt.sessions"),
+              _o("--repo", action="append", metavar="KATALOG", help="cli.opt.repo"),
+              _o("--polacz", "--link", action="append", metavar="T=S", help="cli.opt.link"),
+              _o("--szacunek", "--estimate", choices=["auto", "chars", "tiktoken"], help="cli.opt.estimate"),
+              _o("--main", "--main-ref", dest="main_ref", metavar="GAŁĄŹ", help="cli.opt.main_ref"),
+              _o("--csv", metavar="TABELA", help="cli.opt.csv_table")] + SELECT_OPTS},
     {"name": "komander", "aliases": ["commander", "tui", "xport"], "help": "cli.verb.commander",
      "opts": [_o("zrodla", nargs="*", metavar="ŹRÓDŁO", help="cli.opt.sources"), PACKAGE,
               _o("--klawisze-profil", "--keymap", dest="profil_klawiszy", metavar="PROFIL", help="cli.opt.keymap"),
@@ -561,6 +569,43 @@ def verb_ops(args: argparse.Namespace) -> int:
     return 0
 
 
+def verb_economics(args: argparse.Namespace) -> int:
+    from .economics import render_csv
+    with _engine(args) as eng:
+        steps = _select_steps(args)
+        params: dict[str, Any] = {}
+        if args.sesje:
+            params["sessions"] = [str(Path(x).expanduser().resolve()) for x in args.sesje]
+        if args.repo:
+            params["repos"] = [str(Path(x).expanduser().resolve()) for x in args.repo]
+        if args.polacz:
+            links: dict[str, str] = {}
+            for x in args.polacz:
+                k, sep, v = x.partition("=")
+                if not sep or not k or not v:
+                    raise ValueError(t("cli.opt.link") + f": {x!r}")
+                links[k] = v
+            params["links"] = links
+        if args.szacunek:
+            params["estimate"] = args.szacunek
+        if args.main_ref:
+            params["main_ref"] = args.main_ref
+        if steps:
+            params["of"] = "selection"
+        steps.append(("token_economics", params))
+        if args.pakiet:
+            steps.append(("write", {"package": args.pakiet}))
+        res = _run_steps(eng, args.zrodla, steps)
+        econ = next(r for r in res if r.get("op") == "token_economics")
+        if args.csv and not args.json:
+            sys.stdout.write(render_csv(econ["economics"], args.csv, eng.ds))
+            return 0
+        lines = econ["markdown"].rstrip("\n").splitlines()
+        if args.pakiet:
+            lines.append(t("cli.economics.written", package=args.pakiet))
+        return _finish(eng, args, res, lines + _write_lines(res))
+
+
 def _prog(args: argparse.Namespace) -> Any:
     return None if args.json else _progress
 
@@ -581,6 +626,7 @@ HANDLERS = {"inwentarz": verb_inventory, "os-czasu": verb_timeline, "roznica": v
             "cofnij": lambda a: _cc.verb_undo(a, _prog(a)),
             "ponow": lambda a: _cc.verb_undo(a, _prog(a), redo=True),
             "filtr": _cc.verb_filter,
+            "ekonomia": verb_economics,
             "komander": lambda a: _cf.verb_commander(a),
             "serwuj": lambda a: _cf.verb_serve(a),
             "api": lambda a: _cf.verb_api(a)}

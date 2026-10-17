@@ -1,0 +1,33 @@
+{
+ "schema": "loom.extract.prices/2",
+ "id": "google",
+ "vendor": "google",
+ "currency": "USD",
+ "unit": "per_million_tokens",
+ "note": {
+  "pl": "Ceny za milion tokenów per wzorzec modelu (fnmatch, bez rozróżniania wielkości liter; najbardziej szczegółowy wzorzec wygrywa), z datą ważności (valid_from, ISO) i źródłem. Wpis bez ceny = koszt „nieznany (brak ceny)”, nigdy zero. Nakładka: <katalog danych>/extract/prices/google.json (te same pola; nowsze valid_from obok starszych).",
+  "en": "Prices per million tokens per model pattern (fnmatch, case-insensitive; the most specific pattern wins), with a validity date (valid_from, ISO) and a source. An entry without a price = cost 'unknown (no price)', never zero. Overlay: <data dir>/extract/prices/google.json (same fields; newer valid_from next to older ones)."
+ },
+ "fields": {
+  "input": "wejście (bez cache)",
+  "output": "wyjście",
+  "cache_write": "zapis cache (5 min)",
+  "cache_write_1h": "zapis cache 1 h (opcjonalnie)",
+  "cache_read": "odczyt cache"
+ },
+ "entries": [
+  {
+   "pattern": "gemini-*",
+   "input": null,
+   "output": null,
+   "cache_write": null,
+   "cache_read": null,
+   "valid_from": null,
+   "source": null,
+   "unknown_reason": {
+    "pl": "brak ceny ze źródłem w repozytorium: loom/data nie ma cennika per model (guardian.pack ma tylko progi klas cheap/mid do klasyfikacji modelu o znanej cenie, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository: loom/data has no per-model price list (guardian.pack only has cheap/mid class ceilings used to classify a model whose price is known, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   }
+  }
+ ]
+}

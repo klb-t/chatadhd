@@ -58,6 +58,84 @@
   "note": "3 conversations + account",
   "with": "versions/chatgpt_2025-06-20.zip"
  },
+ "economics": {
+  "agents_E1": 3,
+  "api_cache_read_TEST1": 3000,
+  "api_cost_TEST1": 1.5,
+  "assistant_without_counters": 1,
+  "days": {
+   "2026-10-10": 6,
+   "2026-10-11": 1
+  },
+  "duplicate_lines": 2,
+  "edit_calls_E1": 3,
+  "edits_failed_E1": 1,
+  "family_E1": {
+   "cache_creation": 1910,
+   "cache_read": 2900,
+   "input": 23,
+   "output": 280
+  },
+  "family_E2": {
+   "cache_creation": 0,
+   "cache_read": 800,
+   "input": 4,
+   "output": 25
+  },
+  "files_touched_E1": [
+   "src/a.py",
+   "src/b.py"
+  ],
+  "forbidden_in_aggregate": [
+   "Sesja testowa jeden",
+   "Sesja bez transkryptu",
+   "session_TEST1",
+   "session_TEST2",
+   "session_TEST3",
+   "sess-E1",
+   "sess-E2",
+   "agent-s1",
+   "agent-w1",
+   "run-1",
+   "src/a.py",
+   "src/b.py",
+   "Dodaj licznik tokenów"
+  ],
+  "git_note": "the test builds the repository: 2 commits with session_TEST1 on main, 1 with session_TEST3 on a side branch, 1 without a trailer",
+  "ignored_synthetic": 1,
+  "link_E1": "session_TEST1",
+  "main_E1": {
+   "cache_creation": 1300,
+   "cache_read": 2200,
+   "input": 19,
+   "output": 220
+  },
+  "models": {
+   "claude-x-large": 3,
+   "claude-x-small": 4
+  },
+  "tool_calls": {
+   "Bash": 1,
+   "Edit": 2,
+   "Read": 1,
+   "Write": 1
+  },
+  "tool_failed": {
+   "Edit": 1
+  },
+  "totals": {
+   "cache_creation": 1910,
+   "cache_read": 3700,
+   "input": 27,
+   "output": 305
+  },
+  "transcripts_E1": 4,
+  "turns": 7,
+  "unmapped_usage_fields": [
+   "server_tool_use"
+  ],
+  "workflow_agents": 2
+ },
  "forbidden_in_aggregate": [
   "Naprawa importera",
   "pamięć hierarchiczna",

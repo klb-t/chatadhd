@@ -43,5 +43,20 @@
   "commander": {"keymap": "fkeys", "colors": "dark", "tick_ms": 100, "bytes_per_char": 1.5,
                 "autosave": {"every": 1, "resume": "ask", "file": "komander.autosave.json"}},
   "serve": {"address": "127.0.0.1", "port": 8741, "token_file": "serve.token", "answer_default": false,
-            "question_timeout_s": 0, "events_keep": 0, "heartbeat_s": 15}
+            "question_timeout_s": 0, "events_keep": 0, "heartbeat_s": 15},
+  "economics": {"of": "all",
+                "usage": {"duplicate_lines": "max", "ignore_models": ["<synthetic>"]},
+                "tool_attribution": "split",
+                "day_zone": "UTC",
+                "estimate": {"method": "auto", "context": "path", "calibration_min_output": 1,
+                             "tiktoken": {"encodings": {"gpt-4o*": "o200k_base", "gpt-4.1*": "o200k_base", "gpt-5*": "o200k_base",
+                                                        "o1*": "o200k_base", "o3*": "o200k_base", "o4*": "o200k_base",
+                                                        "chatgpt-4o*": "o200k_base", "gpt-4*": "cl100k_base", "gpt-3.5*": "cl100k_base"},
+                                          "other_models": "chars", "cache_dir": null}},
+                "outcomes": {"edit_tools": ["Edit", "Write", "MultiEdit", "NotebookEdit"],
+                             "path_keys": ["file_path", "notebook_path", "path"],
+                             "commit_command": "git\\s+(?:-C\\s+\\S+\\s+)?commit\\b"},
+                "git": {"trailer": "Claude-Session", "session_id": "[A-Za-z0-9_][A-Za-z0-9_.-]*", "main_ref": "main", "numstat": true},
+                "links": {"trailer_in_transcripts": true},
+                "report": {"max_rows": 0, "tables": "economics/report.json"}}
 }
