@@ -49,3 +49,22 @@ def overlay_dir(override: Optional[str] = None) -> Optional[Path]:
 
 def shipped_dir() -> Path:
     return DATA_DIR
+
+
+def state_dir(ds: Optional[object] = None) -> Path:
+    """Per-user state outside every repository and every package (commander autosave without a package or an
+    overlay, the local dictionary of redacted packages): ``LOOM_EXTRACT_STATE`` → preset ``state.dir`` →
+    ``$XDG_STATE_HOME/loom-extract`` → ``~/.local/state/loom-extract``."""
+    env = os.environ.get("LOOM_EXTRACT_STATE")
+    if env:
+        return Path(env).expanduser()
+    preset = None
+    if ds is not None:
+        try:
+            preset = ds.preset("state.dir")  # type: ignore[attr-defined]
+        except Exception:  # noqa: BLE001 - a broken preset file is reported where it is loaded
+            log.debug("state.dir preset unreadable", exc_info=True)
+    if preset:
+        return Path(str(preset)).expanduser()
+    xdg = os.environ.get("XDG_STATE_HOME")
+    return (Path(xdg).expanduser() if xdg else Path.home() / ".local" / "state") / "loom-extract"

@@ -126,6 +126,37 @@ class Redactor:
         self.counts: dict[str, int] = {}
         self.by_rule: dict[str, int] = {}
 
+    @classmethod
+    def merged(cls, specs: list[tuple[Any, list[str]]], ds: Optional[DataStore] = None,
+               maps: Optional[list[dict[str, dict[str, str]]]] = None) -> "Redactor":
+        """One redactor for the package: the cut's profile + dictionary and every ``edit.redact`` (profile + terms),
+        rules and dictionaries united, fields united, attachments ``omit`` when any says so; seeded with the edits'
+        value → mask maps so a value masked by an edit gets the same mask in preserve and in the side files."""
+        ds = ds or default_store()
+        parts = [cls(prof, ds, terms=list(terms or [])) for prof, terms in specs]
+        live = [r for r in parts if r.active]
+        if not live:
+            red = parts[0] if parts else cls("none", ds)
+        elif len(live) == 1:
+            red = live[0]
+        else:
+            base = {k: v for k, v in live[0].profile.items() if k not in ("inherits", "only_kinds")}
+            rules: list[dict[str, Any]] = []
+            seen: set[str] = set()
+            for r in live:
+                for rule in r.profile.get("rules") or []:
+                    if rule.get("id") not in seen:
+                        seen.add(rule.get("id"))
+                        rules.append(rule)
+            base.update({"id": "+".join(dict.fromkeys(r.id for r in live)), "rules": rules,
+                         "dictionary": sorted({w for r in live for w in r.words}),
+                         "fields": sorted(set().union(*(r.fields for r in live))),
+                         "attachments": "omit" if any(r.attachments == "omit" for r in live) else base.get("attachments", "copy")})
+            red = cls(base, ds)
+        for m in maps or []:
+            red.seed(m)
+        return red
+
     @property
     def active(self) -> bool:
         return bool(self.rules)
@@ -221,6 +252,7 @@ class Redactor:
                              "by_kind": dict(sorted(self.counts.items())), "by_rule": dict(sorted(self.by_rule.items())),
                              "distinct_values": {k: len(v) for k, v in sorted(self._maps.items())},
                              "dictionary_terms": self.dictionary_terms, "attachments": self.attachments,
+                             "fields": sorted(self.fields),
                              "irreversible": True,
                              "note": "values are never written; masks are consistent within the package"}
         if self.keep_map:

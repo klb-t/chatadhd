@@ -27,6 +27,11 @@ class RecipeError(ValueError):
     pass
 
 
+def _is_secret_ref(v: Any) -> bool:
+    from .sensitive import is_ref
+    return is_ref(v)
+
+
 # ───────────────────────────── registry ─────────────────────────────
 def ops_registry(ds: Optional[DataStore] = None) -> dict[str, Any]:
     reg = (ds or default_store()).file("ops.json")
@@ -161,7 +166,7 @@ def validate(recipe: dict[str, Any], ds: Optional[DataStore] = None) -> list[str
                 continue
             ptype = pspec[name].get("type", "string")
             check = _TYPE_CHECK.get(ptype)
-            if value is None:
+            if value is None or _is_secret_ref(value):  # a redacted package's reference: resolved before a run
                 continue
             if check and not check(value):
                 problems.append(f"{where} ({op}): param {name!r} must be {ptype}, got {type(value).__name__}")
@@ -199,7 +204,9 @@ def normalise(recipe: dict[str, Any], ds: Optional[DataStore] = None, *, base_di
     steps_out: list[dict[str, Any]] = []
     used: set[str] = set()
     for i, step in enumerate(recipe.get("steps") or []):
-        sid = step.get("id") or f"s{i + 1}"
+        # automatic ids are renumbered (an undone step leaves no gap, so a replay gives the same recipe);
+        # an id the user chose is kept
+        sid = step.get("id") if step.get("id") and not _STEP_ID.match(str(step.get("id"))) else f"s{i + 1}"
         while sid in used:
             sid = f"{sid}_"
         used.add(sid)

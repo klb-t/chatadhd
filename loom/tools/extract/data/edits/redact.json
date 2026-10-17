@@ -23,7 +23,8 @@
   },
   "terms": {
    "type": "list",
-   "default": []
+   "default": [],
+   "secret": true
   }
  },
  "invertible": "none",

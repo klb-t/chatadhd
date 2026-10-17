@@ -60,6 +60,7 @@ class ExtractTest(unittest.TestCase):
         socket.create_connection = _guarded_create  # type: ignore[assignment]
         self._env = dict(os.environ)
         os.environ.pop("LOOM_EXTRACT_LANG", None)
+        os.environ["LOOM_EXTRACT_STATE"] = str(self.tmp / "state")  # per-user state (autosave, secret store) stays in the test
         self._engines: list = []
 
     def tearDown(self) -> None:

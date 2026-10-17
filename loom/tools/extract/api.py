@@ -82,7 +82,8 @@ class Job:
 # long operations; the selection and the recipe are mutated in place, so they are copied deeply)
 _RESTORE = ("sources", "archives", "units_raw", "units", "merge_result", "inventory", "timeline", "timeline_rows", "diff",
             "cascade", "criteria", "unit_decisions", "explain", "clusters", "selection_meta", "expand_result", "package",
-            "staged", "cut_info", "handoff_info", "stats", "last_write", "summaries")
+            "staged", "cut_info", "handoff_info", "stats", "last_write", "summaries",
+            "cut_params", "cut_tree_hash", "handoff_params", "handoff_tree_hash")
 _DEEP = ("selection", "recipe", "decisions")
 
 
@@ -327,6 +328,9 @@ class Session:
                 raise ApiError(t("api.no_recipe_in_package", path=str(rp)), "not_found", 404)
             req = dict(req, recipe=str(rp))
             self.package = self.package or str(Path(str(req["package"])).expanduser())
+        if req.get("dictionary_file"):  # the values a redacted package's recipe refers to by hash
+            from .sensitive import load_user_file
+            eng.secret_values.update(load_user_file(str(req["dictionary_file"])))
         if req.get("recipe") is not None:
             rec, base = req["recipe"], (Path(str(req["base"])).expanduser() if req.get("base") else None)
             if isinstance(rec, str):
@@ -607,12 +611,17 @@ class Session:
                                           "time_format", "shift", "anonymise", "granularity") if req.get(k) is not None}
         # cut when asked (explicit cut parameters), when there is no cut yet, or when the package changed after the
         # last one; otherwise the staged cut is written as it is (a replayed recipe exports to the same bytes)
-        steps = self.eng.recipe.get("steps") or []
-        last_cut = max((i for i, st in enumerate(steps) if st.get("op") == "cut"), default=-1)
-        changed = any(st.get("op") not in ("cut", "write", "handoff") and _mutates(st.get("op"), self.ds) for st in steps[last_cut + 1:])
+        # the package changed after the cut when its tree differs from the tree the cut was made from (an edit, but
+        # also an undo or a redo of one made BEFORE the cut); write re-makes a stale cut too, so this only decides
+        # whether the cut is a recorded step of this export
+        pkg_now = self.eng.package.tree_hash() if self.eng.package is not None else None
+        never = self.eng.cut_params is None
+        changed = not never and self.eng.cut_tree_hash != pkg_now
         results = []
-        if cut_params or last_cut < 0 or changed or self.eng.staged is None:
-            results.append(self._op("cut", cut_params))
+        if cut_params or never or changed or self.eng.staged is None:
+            # a changed package is cut again as it was cut (the recorded parameters), not with the presets
+            again = dict(self.eng.cut_params or {}) if changed and not cut_params else cut_params
+            results.append(self._op("cut", again))
         if req.get("handoff"):
             results.append(self._op("handoff", dict(req["handoff"]) if isinstance(req["handoff"], dict) else {}))
         w = self._op("write", {"package": str(pkg)})
@@ -903,13 +912,6 @@ def error_body(exc: BaseException) -> dict[str, Any]:
     if isinstance(exc, ModelRefused):
         return {"error": exc.reason, "code": "refused", "estimate": jsonable(exc.estimate)}
     return {"error": f"{exc}", "code": type(exc).__name__}
-
-
-def _mutates(op: Any, ds: DataStore) -> bool:
-    try:
-        return bool(op_spec(str(op), ds).get("mutates_package"))
-    except RecipeError:
-        return False
 
 
 def _brief(res: Any, keep: tuple[str, ...] = ()) -> dict[str, Any]:

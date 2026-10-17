@@ -23,7 +23,7 @@
  },
  "invertible": "snapshot",
  "preview_lines": {
-  "pl": "usunięto {count} bloków",
-  "en": "{count} block(s) dropped"
+  "pl": "usunięto {blocks} bloków i {attachments} załączników",
+  "en": "{blocks} block(s) and {attachments} attachment(s) removed"
  }
 }

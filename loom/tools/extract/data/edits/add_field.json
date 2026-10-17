@@ -4,8 +4,8 @@
  "module": "edits:add_field",
  "group": "keys",
  "label": {
-  "pl": "Dodaj pole ze stałą",
-  "en": "Add a field with a constant"
+  "pl": "Dodaj pole ze stałą albo z wyrażeniem ({pole} …)",
+  "en": "Add a field with a constant or an expression ({field} …)"
  },
  "scope": [
   "conversation",
@@ -23,6 +23,10 @@
   },
   "value": {
    "type": "any"
+  },
+  "expression": {
+   "type": "string",
+   "help": "template of the item's fields, e.g. {title} ({account.label})"
   }
  },
  "invertible": "snapshot",

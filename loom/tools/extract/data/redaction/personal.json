@@ -21,6 +21,6 @@
  ],
  "dictionary": [],
  "dictionary_kind": "NAME",
- "fields": ["title", "text", "input", "name", "author"],
+ "fields": ["title", "text", "input", "name", "author", "file_name", "account", "meta", "extra"],
  "attachments": "copy",
  "note": {"pl": "Załączniki binarne nie są redagowane (kopiowane bez zmian, raport to mówi); ustaw attachments: omit, by je pominąć.", "en": "Binary attachments are not redacted (copied unchanged, the report says so); set attachments: omit to leave them out."}}

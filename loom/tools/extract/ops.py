@@ -570,12 +570,29 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     pkg = Path(str(p["package"])).expanduser()
     pkg.mkdir(parents=True, exist_ok=True)
     outputs: list[dict[str, Any]] = []
+    from .i18n import t as _t
+    from .ops_cut import package_redactor, redact_edits
+    # the staged cut / hand-off describe the tree they were made from: after an edit, an undo or a redo they are
+    # made again from the current tree (deterministic, so the package still reproduces from its recipe)
+    recut = []
+    if eng.package is not None:
+        now = eng.package.tree_hash()
+        if eng.cut_params is not None and eng.cut_tree_hash != now:
+            OPS["cut"](eng, dict(eng.cut_params))
+            recut.append("cut")
+        if eng.handoff_params is not None and eng.handoff_tree_hash != now:
+            OPS["handoff"](eng, dict(eng.handoff_params))
+            recut.append("handoff")
+        if recut:
+            eng.emit("note", text=_t("write.recut", ops=", ".join(recut)))
 
     red = getattr(eng, "_cut_redactor", None)
+    if eng.cut_params is None and redact_edits(eng):  # no cut, but a redaction edit: the side files are masked too
+        red = package_redactor(eng)
     red = red if red is not None and red.active else None
 
     def put(rel: str, text: str) -> None:
-        if red is not None:
+        if red is not None and rel != "recipe.json":  # the recipe is protected by references, never masked
             # a redacted package leaks nothing through its side files either (units, timeline, explain, report …);
             # JSON is redacted value by value (a mask never eats JSON syntax), Markdown as text
             if rel.endswith(".json"):
@@ -628,7 +645,8 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         from .edits import oplog_rows
         if eng.stats is None:
             eng.op("stats", by="engine")
-        put("package.json", _json_text(eng.package.as_dict()))
+        # the redo stack is session state, not package content: an undone edit leaves no trace in the files
+        put("package.json", _json_text({k: v for k, v in eng.package.as_dict().items() if k != "redo"}))
         if eng.package.oplog:
             put("oplog.jsonl", "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in oplog_rows(eng.package)))
     if eng.stats is not None:
@@ -649,18 +667,32 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     recipe_norm = eng.normalised_recipe()
     # the package's recipe describes the content, not where it is written: whoever replays it names the package
     recipe_norm["steps"] = [st for st in recipe_norm.get("steps") or [] if st.get("op") != "write"]
+    eng.secrets_info = None
+    if red is not None:
+        # a redacted package carries no dictionary term in clear and its recipe still reproduces it: sensitive
+        # values become sha256 references, kept in the local store outside the package (preset redaction.secret_store)
+        from .sensitive import protect_recipe, save_store, store_path
+        recipe_norm, secret_vals = protect_recipe(recipe_norm, red, eng.ds)
+        if secret_vals:
+            kept = bool(eng.ds.preset("redaction.secret_store", True))
+            where = save_store(secret_vals, ds=eng.ds) if kept else None
+            eng.secrets_info = {"values": len(secret_vals), "store": str(where) if where else None,
+                                "default_store": str(store_path(eng.ds))}
     put("recipe.json", _json_text(recipe_norm))
     report = build_report(eng, aggregate=aggregate)
     put("RAPORT.md", report)
     if red is not None:  # last, so the counts include the side files; masks and locations, never values
-        rep = red.report()
-        eng.cut_info["redaction"] = rep
+        rep = {**red.report(), "from_edits": len(redact_edits(eng))}
+        if eng.cut_info is not None:
+            eng.cut_info["redaction"] = rep
         _w = lambda rel, text: outputs.append(dict(zip(("sha256", "bytes"), _write_text(pkg / rel, text)), path=rel))
         _w("redaction.json", _json_text(rep))
         _w("redaction.jsonl", "".join(json.dumps(e, ensure_ascii=False) + "\n" for e in red.entries))
     outputs.sort(key=lambda o: o["path"])
     repro = reproducible_hash(outputs)
     manifest = build_manifest(eng, outputs, repro, recipe_norm, aggregate)
+    if red is not None:  # the manifest is written last: the package's masks, without entries (outputs and hashes stay)
+        manifest = red.scrub(manifest, skip=("outputs", "recipe", "reproducible_hash", "sha256", "tree_hash", "id"))
     old = pkg / "manifest.json"
     if old.exists():  # files of an earlier run that this run did not produce are removed, so the package is exactly the manifest
         try:
@@ -674,7 +706,7 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     _write_text(pkg / "manifest.json", _json_text(manifest))
     eng.last_write = {"package": str(pkg), "reproducible_hash": repro, "outputs": len(outputs)}
     return {"counts": {"outputs": len(outputs) + 1, "bytes": sum(o["bytes"] for o in outputs)}, "package": str(pkg),
-            "reproducible_hash": repro,
+            "reproducible_hash": repro, **({"recut": recut} if recut else {}),
             # aggregate mode: output paths carry attachment and member names, so only their number leaves the engine
             "outputs": len(outputs) + 1 if aggregate else [o["path"] for o in outputs] + ["manifest.json"]}
 

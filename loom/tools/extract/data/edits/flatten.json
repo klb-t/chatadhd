@@ -4,8 +4,8 @@
  "module": "edits:flatten",
  "group": "structure",
  "label": {
-  "pl": "Spłaszcz drzewo do listy po ścieżce (current, newest, longest, marked)",
-  "en": "Flatten the tree to a list along a path (current, newest, longest, marked)"
+  "pl": "Spłaszcz drzewo do listy po ścieżce (current, newest, longest, marked; all_paths = osobna rozmowa na każdą ścieżkę)",
+  "en": "Flatten the tree to a list along a path (current, newest, longest, marked; all_paths = one conversation per path)"
  },
  "scope": [
   "conversation"
@@ -21,7 +21,8 @@
     "current",
     "newest",
     "longest",
-    "marked"
+    "marked",
+    "all_paths"
    ],
    "default": "current"
   }

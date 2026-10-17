@@ -83,6 +83,14 @@ class Engine:
         self.ask: Optional[Callable[[dict[str, Any]], bool]] = None
         self._tmp_stage: Any = None
         self.op_ctx: dict[str, Any] = {}
+        # the staged cut/hand-off describe the package tree they were made from; write re-makes them when it changed
+        self.cut_params: Optional[dict[str, Any]] = None
+        self.cut_tree_hash: Optional[str] = None
+        self.handoff_params: Optional[dict[str, Any]] = None
+        self.handoff_tree_hash: Optional[str] = None
+        # values a redacted package's recipe refers to by hash (``--slownik-plik``; the local store is read too)
+        self.secret_values: dict[str, Any] = {}
+        self.secrets_info: Optional[dict[str, Any]] = None
 
     # -- lifecycle --------------------------------------------------------------
     def close(self) -> None:
@@ -203,6 +211,13 @@ class Engine:
         from .recipe import SCHEMA as _RECIPE_SCHEMA
         recipe = dict(recipe)
         recipe.setdefault("schema", _RECIPE_SCHEMA)  # an inline recipe (API, tests, task files) may omit it
+        from .sensitive import SecretMissing, load_store, refs_in, resolve_recipe, supplied
+        if refs_in(recipe):  # a redacted package's recipe: its dictionary is supplied at run time, or nothing runs
+            try:
+                recipe = resolve_recipe(recipe, {**load_store(ds=self.ds), **supplied(), **self.secret_values})
+            except SecretMissing as exc:
+                from .i18n import t as _t
+                raise RecipeError(_t("recipe.secret_missing", refs=str(exc))) from exc
         norm = normalise(recipe, self.ds, base_dir=base_dir)
         if norm.get("sources"):
             self.set_sources(norm["sources"])

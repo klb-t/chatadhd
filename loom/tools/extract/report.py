@@ -5,7 +5,7 @@ modelu"), changes between exports, how to reproduce.  Sentences come from the
 i18n table; numbers come from the inventory and the engine state (measured).
 In aggregate mode no title, text fragment or file name appears.
 """
-from typing import Any
+from typing import Any, Optional
 
 from .i18n import label, t
 
@@ -16,6 +16,17 @@ def _line(items: list[str]) -> str:
 
 def build_report(eng: Any, *, aggregate: bool = False) -> str:
     inv = eng.inventory or {}
+    max_list = int((eng.ds.preset("report") or {}).get("max_list", 0) or 0)  # preset report.max_list: 0 = no cut
+
+    def cap(items: list[Any], where: str) -> tuple[list[Any], Optional[str]]:
+        """At most ``report.max_list`` items; the rest is said, with where the full list is."""
+        if max_list and len(items) > max_list:
+            return items[:max_list], t("report.and_more", n=len(items) - max_list, where=where)
+        return items, None
+
+    def joined(items: list[Any], where: str) -> str:
+        shown, more = cap(list(items), where)
+        return ", ".join(str(x) for x in shown) + (f", {more}" if more else "")
     out: list[str] = [f"# {t('report.title')}", ""]
     # -- what was found ----------------------------------------------------------
     out += [f"## {t('report.found')}", ""]
@@ -37,7 +48,7 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
         out.append(t("report.date_range", **{"from": dates.get("from") or "?", "to": dates.get("to") or "?"}))
     tools = inv.get("tools") or {}
     if tools.get("calls") is not None:
-        out.append(t("report.tools", calls=tools.get("calls", 0), names=", ".join(sorted((tools.get("names") or {}).keys())[:12]) or "-"))
+        out.append(t("report.tools", calls=tools.get("calls", 0), names=joined(sorted((tools.get("names") or {}).keys()), "inventory.json") or "-"))
     thinking = inv.get("thinking") or {}
     if thinking:
         out.append(t("report.thinking", blocks=thinking.get("blocks", 0), chars=thinking.get("chars", 0), full=thinking.get("full", 0)))
@@ -62,7 +73,7 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
     if eng.clusters:
         out += ["", f"### {t('report.clusters')}", ""]
         for c in eng.clusters.get("clusters") or []:
-            terms = "…" if aggregate else ", ".join(x["term"] for x in (c.get("top_terms") or [])[:6])
+            terms = "…" if aggregate else joined([x["term"] for x in (c.get("top_terms") or [])], "clusters.json")
             out.append(f"- {c['id']}{(' „' + c['name'] + '”') if c.get('name') and not aggregate else ''}: " + t("report.cluster_line", size=c["size"], terms=terms,
                                              period=f"{(c.get('period') or {}).get('from') or '?'} – {(c.get('period') or {}).get('to') or '?'}"))
     # -- timeline ----------------------------------------------------------------
@@ -89,7 +100,7 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
     unk = inv.get("unknown") or {}
     if unk.get("by_native"):
         unreadable.append(t("report.unknown_blocks", n=sum((unk.get("by_native") or {}).values()),
-                            kinds=", ".join(sorted((unk.get("by_native") or {}).keys())[:10]) or "-"))
+                            kinds=joined(sorted((unk.get("by_native") or {}).keys()), "inventory.json") or "-"))
     out.append(_line(unreadable))
     # -- absent ----------------------------------------------------------------
     out += ["", f"## {t('report.absent')}", ""]
@@ -100,8 +111,10 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
             ka = entry.get("known_absent") or {}
             items = (ka.get(language()) or next((v for v in ka.values() if v), [])) if isinstance(ka, dict) else list(ka)
             obs = entry.get("observed") or []
-            absent.append(f"{fmt_id}: " + "; ".join([str(x) for x in items] + [label(o) if isinstance(o, dict) else str(o) for o in obs]))
-        elif isinstance(entry, list):
+            parts = [str(x) for x in items] + [label(o) if isinstance(o, dict) else str(o) for o in obs]
+            if parts:  # a format with nothing known absent is not listed as an empty line
+                absent.append(f"{fmt_id}: " + "; ".join(parts))
+        elif isinstance(entry, list) and entry:
             absent.append(f"{fmt_id}: " + "; ".join(str(x) for x in entry))
     out.append(_line(absent))
     # -- ambiguous ---------------------------------------------------------------
@@ -113,7 +126,8 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
         if pend:
             out.append(t("report.model_pending", flows=", ".join(f"{k}: {v.get('grains', 0)}" for k, v in pend.items())))
         if amb and not aggregate:
-            out.append(_line([f"{d.unit.uid} — {d.unit.title or ''} ({round(d.score, 3)})" for d in amb[:20]]))
+            shown, more = cap(amb, "explain.jsonl")
+            out.append(_line([f"{d.unit.uid} — {d.unit.title or ''} ({round(d.score, 3)})" for d in shown] + ([more] if more else [])))
         out.append(t("report.how_to_resolve"))
     else:
         out.append(f"- {t('report.none')}")
@@ -127,6 +141,8 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
                                 files=pinfo["outputs"] if isinstance(pinfo.get("outputs"), int) else len(pinfo.get("outputs") or [])))
             if pinfo.get("branches_cut"):
                 out.append("  - " + t("report.cut_branches", n=pinfo["branches_cut"], m=pinfo.get("messages_cut", 0)))
+            if pinfo.get("messages_dropped_empty"):
+                out.append("  - " + t("report.cut_dropped_empty", n=pinfo["messages_dropped_empty"]))
         pres = cut.get("preserve")
         if pres:
             out.append("- " + t("report.cut_preserve", conversations=pres.get("conversations", 0),
@@ -145,14 +161,22 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
                     out.append("  - " + t("report.not_redacted", member=nr if not aggregate else "…"))
             if pres.get("partial_whole"):
                 out.append("  - " + t("report.cut_partial", n=pres["partial_whole"]))
+            if pres.get("edits_note"):
+                out.append("  - " + str(pres["edits_note"]))
+            if pres.get("edits_redaction"):
+                out.append("  - " + str(pres["edits_redaction"]))
         att = cut.get("attachments")
         if att:
             miss = att.get("missing")
             out.append("- " + t("report.cut_attachments", referenced=att.get("referenced", 0), copied=att.get("copied", 0),
-                                bytes=att.get("bytes", 0), missing=miss if isinstance(miss, int) else len(miss or [])))
+                                bytes=att.get("bytes", 0), missing=miss if isinstance(miss, int) else len(miss or []),
+                                not_used=att.get("not_used", 0)))
             if not aggregate and isinstance(miss, list):
-                for m in miss[:50]:
+                shown, more = cap(miss, "manifest.json")
+                for m in shown:
                     out.append("  - " + t("report.missing_attachment", ref=m.get("ref"), conversation=m.get("conversation")))
+                if more:
+                    out.append("  - " + more)
     if getattr(eng, "handoff_info", None):
         h = eng.handoff_info
         out += ["", f"## {t('report.handoff')}", "",
@@ -182,6 +206,12 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
         for r in reps:
             out.append("- " + t("report.masked_edit", profile=r.get("profile"), n=r.get("entries", 0),
                                 kinds=", ".join(f"{k}: {v}" for k, v in (r.get("by_kind") or {}).items()) or "-"))
+        if reps:  # an edit's redaction is applied again to preserve and to every side file, not only to the copy
+            out.append("- " + t("report.masked_edit_everywhere"))
+        sec = getattr(eng, "secrets_info", None)
+        if sec:
+            out.append("- " + (t("report.masked_secrets", n=sec["values"], store=sec["store"]) if sec.get("store")
+                               else t("report.masked_secrets_nostore", n=sec["values"])))
     else:
         out.append(f"- {t('report.masked_none')}")
     # -- cost --------------------------------------------------------------------

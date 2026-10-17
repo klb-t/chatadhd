@@ -631,6 +631,22 @@ def _dispatch(argv: list[str], pre_args: argparse.Namespace, rest: list[str]) ->
     return HANDLERS[args.verb](args)
 
 
+def _strip_opt(argv: list[str], names: tuple[str, ...]) -> list[str]:
+    out: list[str] = []
+    skip = False
+    for a in argv:
+        if skip:
+            skip = False
+            continue
+        if a in names:
+            skip = True
+            continue
+        if any(a.startswith(n + "=") for n in names):
+            continue
+        out.append(a)
+    return out
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     """Exit codes: 0 ok; 1 error (message on stderr); 2 usage; 3 nothing recognised in the sources; 4 interrupted
     (run the same command again); 5 a paid step refused (estimate, ×10, limit, no model); 6 a source unreadable."""
@@ -641,12 +657,20 @@ def main(argv: Optional[list[str]] = None) -> int:
     pre.add_argument("--dane", "--data-dir", dest="data_dir")
     pre.add_argument("--debug", action="store_true")
     pre.add_argument("--zadanie", "--task", "--przepis", "--recipe", dest="zadanie")
+    pre.add_argument("--slownik-plik", "--dictionary-file", dest="slownik_plik", action="append", default=[])
     pre_args, rest = pre.parse_known_args(argv)
+    # --slownik-plik FILE (any position, repeatable): the values a redacted package's recipe refers to by hash
+    argv = _strip_opt(argv, ("--slownik-plik", "--dictionary-file"))
+    rest = _strip_opt(rest, ("--slownik-plik", "--dictionary-file"))
     logging.basicConfig(level=logging.DEBUG if pre_args.debug else logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
     if pre_args.data_dir:
         set_store(DataStore(overlay=Path(pre_args.data_dir).expanduser() / "extract"))
     set_language(resolve_language(pre_args.lang))
+    from . import sensitive as _sens
+    _sens.reset_supplied()
     try:
+        for f in pre_args.slownik_plik:
+            _sens.supply(_sens.load_user_file(f))
         return _dispatch(argv, pre_args, rest)
     except ModelRefused as exc:
         print(f"{t('cli.model_refused')}: {exc.reason}", file=sys.stderr)

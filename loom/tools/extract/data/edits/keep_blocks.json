@@ -23,7 +23,7 @@
  },
  "invertible": "snapshot",
  "preview_lines": {
-  "pl": "usunięto {count} bloków spoza listy",
-  "en": "{count} block(s) outside the list dropped"
+  "pl": "zostawiono wskazane rodzaje: usunięto {blocks} bloków i {attachments} załączników",
+  "en": "kept the given kinds: {blocks} block(s) and {attachments} attachment(s) removed"
  }
 }

@@ -73,7 +73,7 @@ def build_manifest(eng: Any, outputs: list[dict[str, Any]], repro: str, recipe_n
                       "entries": len(eng.decisions.entries), "source": eng.decisions.source},
         "selection": eng.selection_summary(),
         "expand": eng.expand_result,
-        "package_tree": pkg.as_dict() if pkg is not None else None,
+        "package_tree": {k: v for k, v in pkg.as_dict().items() if k != "redo"} if pkg is not None else None,
         "cut": {"profiles": cut.get("profiles"), "order": cut.get("order"), "entries": cut.get("entries")} if cut else None,
         "preserve": cut.get("preserve"),
         "attachments": cut.get("attachments"),

@@ -229,18 +229,79 @@ def op_redo(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
 
 
 # ───────────────────────────── cut ─────────────────────────────
-def _redactor(eng: Any, p: dict[str, Any]) -> Redactor:
+def redact_edits(eng: Any) -> list[dict[str, Any]]:
+    """The ``edit.redact`` entries of the package's oplog (irreversible; applied again to preserve and side files)."""
+    pkg = getattr(eng, "package", None)
+    return [e for e in (pkg.oplog if pkg is not None else []) if e.get("op") == "edit.redact"]
+
+
+def package_redactor(eng: Any, redaction: Any = "none", dictionary: Optional[list[str]] = None, *, fresh: bool = False) -> Redactor:
+    """The package's redactor: the cut's profile + dictionary united with every ``edit.redact`` of the oplog, so a
+    redaction made as an edit also covers preserve (source bytes) and every side file (inventory, units, timeline,
+    oplog …), as cut-level redaction does.  ``fresh`` starts new counts (a cut); otherwise the cached one is reused
+    when nothing changed (write and hand-off after the cut: the same masks, counts that include the side files)."""
+    edits = redact_edits(eng)
+    key = (str(redaction or "none"), tuple(dictionary or []), tuple(e["n"] for e in edits))
     red = getattr(eng, "_cut_redactor", None)
-    key = (str(p.get("redaction") or "none"), tuple(p.get("dictionary") or []))
-    if red is None or getattr(eng, "_cut_redactor_key", None) != key:
-        red = Redactor(p.get("redaction") or "none", eng.ds, terms=list(p.get("dictionary") or []))
+    if fresh or red is None or getattr(eng, "_cut_redactor_key", None) != key:
+        specs = [(redaction or "none", list(dictionary or []))] + [(e["params"].get("profile") or "personal", list(e["params"].get("terms") or []))
+                                                                    for e in edits]
+        red = Redactor.merged(specs, eng.ds, maps=[e.get("_maps") or {} for e in edits])
+        red.from_edits = len(edits)  # type: ignore[attr-defined]
         eng._cut_redactor, eng._cut_redactor_key = red, key
     return red
 
 
-def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tuple[dict[tuple[str, str], str], dict[str, Any]]:
+def _redactor(eng: Any, p: dict[str, Any]) -> Redactor:
+    return package_redactor(eng, p.get("redaction") or "none", list(p.get("dictionary") or []), fresh=True)
+
+
+def _used_attachments(eng: Any, entries: list[Any], profiles: list[dict[str, Any]]) -> set[int]:
+    """Attachments the restructuring profiles render: of the kept and selected messages (branch policy ∩ the entry's
+    messages), whose block policy keeps or references them.  Only these are copied under ``copy_used``."""
+    from .cut.views import _att_lookup, block_policy, choose_paths
+    used: set[int] = set()
+    marks = eng.package_marks
+    for prof in profiles:
+        if prof.get("kind", "restructure") != "restructure":
+            continue
+        keep = (prof.get("branches") or {}).get("keep", "current")
+        pol = dict(prof.get("blocks") or {"*": "keep"})
+        att_pol = block_policy(pol, "attachment")
+        for e in entries:
+            u = e.unit
+            paths, _ = choose_paths(u, keep, marks.get(u.uid))
+            for path in paths:
+                for m in path:
+                    if e.messages is not None and m.id not in e.messages:
+                        continue
+                    for b in m.blocks:
+                        if (b.kind == "attachment" or b.ref) and block_policy(pol, b.kind) in ("keep", "reference"):
+                            a = _att_lookup(u, b.ref, m.id)
+                            if a is not None:
+                                used.add(id(a))
+                    if att_pol in ("keep", "reference"):
+                        used.update(id(a) for a in u.attachments if a.message == m.id)
+            if e.messages is None and att_pol in ("keep", "reference"):
+                used.update(id(a) for a in u.attachments if a.message is None)
+    return used
+
+
+def _att_file_name(member: str, red: Optional[Redactor]) -> str:
+    """The copied file's name: the member's, or — when redaction would mask something in it (a personal name in
+    the file name) — an opaque one from its hash, so no output path or manifest entry carries it."""
+    name = member.rsplit("/", 1)[-1]
+    if red is not None and red.active and red.would_mask(member):
+        import hashlib
+        ext = Path(name).suffix if not red.would_mask(Path(name).suffix) else ""
+        return f"att-{hashlib.sha256(member.encode('utf-8')).hexdigest()[:12]}{ext}"
+    return name
+
+
+def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str, used: Optional[set[int]] = None,
+                      red: Optional[Redactor] = None) -> tuple[dict[tuple[str, str], str], dict[str, Any]]:
     paths: dict[tuple[str, str], str] = {}
-    info = {"referenced": 0, "copied": 0, "bytes": 0, "missing": [], "mode": mode}
+    info = {"referenced": 0, "used": 0, "not_used": 0, "copied": 0, "bytes": 0, "missing": [], "mode": mode}
     slugs = archive_slugs(eng.archives)
     for e in entries:
         u = e.unit
@@ -248,6 +309,10 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tu
         arc = find_archive(eng.archives, u)
         for a in u.attachments:
             info["referenced"] += 1
+            if mode != "copy_all" and used is not None and id(a) not in used:
+                info["not_used"] += 1  # its message is not rendered, or the profile omits attachments: not copied, not missing
+                continue
+            info["used"] += 1
             if a.status != "resolved" or not a.member:
                 info["missing"].append({"ref": a.ref, "conversation": u.uid, "message": a.message, "status": a.status})
                 continue
@@ -259,11 +324,14 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tu
                 info["missing"].append({"ref": a.ref, "conversation": u.uid, "message": a.message, "status": "member not found"})
                 continue
             to = (u.flags or {}).get("attachments_to")
+            fname = _att_file_name(a.member, red)
             if to:  # edit.move_attachments: the user's layout; a name already taken gets the archive slug in front
                 d = to.replace("{key}", e.key).replace("{uid}", u.uid.split(":", 1)[-1][:8]).replace("{service}", u.service or "x")
-                rel = f"attachments/{d}/{a.member.rsplit('/', 1)[-1]}"
+                rel = f"attachments/{d}/{fname}"
                 if rel in paths.values():
-                    rel = f"attachments/{d}/{slugs[(arc.label, arc.sha256)]}-{a.member.rsplit('/', 1)[-1]}"
+                    rel = f"attachments/{d}/{slugs[(arc.label, arc.sha256)]}-{fname}"
+            elif fname != a.member.rsplit("/", 1)[-1]:
+                rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{fname}"
             else:
                 rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{a.member}"
             target = stage.root / rel
@@ -278,7 +346,8 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str) -> tu
         for arc in eng.archives:
             for m in arc.members:
                 if m.kind == "asset" and (arc.label, m.name) not in paths:
-                    rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{m.name}"
+                    fname = _att_file_name(m.name, red)
+                    rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{m.name if fname == m.name.rsplit('/', 1)[-1] else fname}"
                     target = stage.root / rel
                     target.parent.mkdir(parents=True, exist_ok=True)
                     with m.open() as fi, open(target, "wb") as fo:
@@ -303,11 +372,28 @@ def _profiles(eng: Any, names: Any) -> list[dict[str, Any]]:
     return out
 
 
+def _reset_cut_stage(eng: Any) -> None:
+    """A cut replaces the previous cut's staged files (a hand-off's stay until the next hand-off)."""
+    if eng.staged is None:
+        return
+    keep = []
+    for o in eng.staged.items:
+        if o.get("profile") == "handoff":
+            keep.append(o)
+            continue
+        try:
+            (eng.stage_dir / o["path"]).unlink()
+        except OSError:
+            log.debug("stale staged file not removed: %s", o["path"], exc_info=True)
+    eng.staged.items = keep
+
+
 @op("cut")
 def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.ensure_units()
     pkg = eng.ensure_package()
     entries = pkg.ordered(p.get("order") or "package")
+    _reset_cut_stage(eng)
     stage = eng.stage()
     profiles = _profiles(eng, p.get("profiles"))
     red = _redactor(eng, p)
@@ -315,7 +401,8 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     att_mode = str(p.get("attachments") or "copy_used")
     if red.active and red.attachments == "omit":
         att_mode = "reference_only"
-    att_paths, att_info = _copy_attachments(eng, entries, stage, att_mode) if restructure else ({}, None)
+    used = _used_attachments(eng, entries, restructure)
+    att_paths, att_info = _copy_attachments(eng, entries, stage, att_mode, used, red) if restructure else ({}, None)
     firsts = sorted((x for e in entries for x in [e.unit.created_utc] + [m.created_utc for m in e.unit.messages] if x), key=_tskey)
     infos: list[dict[str, Any]] = []
     preserve_info = None
@@ -327,7 +414,11 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
                                attachments_mode="reference_only" if att_mode == "reference_only" else att_mode)
             preserve_info = res.as_dict(eng.aggregate)
             if pkg.oplog:
-                preserve_info["edits_note"] = "batch edits change restructuring profiles; preserve is the source bytes"
+                from .i18n import t as _t
+                # preserve = the source bytes: batch edits do not reach it — except a redaction, applied to it too
+                preserve_info["edits_note"] = _t("cut.preserve_edits_note")
+                if redact_edits(eng):
+                    preserve_info["edits_redaction"] = _t("cut.preserve_edits_redacted", n=len(redact_edits(eng)))
             partial = sum(1 for e in entries if e.messages is not None)
             if partial:
                 preserve_info["partial_whole"] = partial
@@ -348,7 +439,11 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
                 i["outputs"] = len(i["outputs"])
     eng.redaction_entries = list(red.entries)
     eng.cut_info = {"profiles": infos, "preserve": preserve_info, "attachments": _public_att(att_info, eng.aggregate),
-                    "redaction": red.report(), "entries": len(entries), "order": p.get("order") or "package"}
+                    "redaction": {**red.report(), "from_edits": len(redact_edits(eng))}, "entries": len(entries),
+                    "order": p.get("order") or "package"}
+    # what write needs to know whether the staged outputs still describe the package (F20): the tree at cut time
+    eng.cut_params = {k: v for k, v in p.items()}
+    eng.cut_tree_hash = pkg.tree_hash()
     return {"counts": {"profiles": len(infos), "conversations": len(entries), "files": len(stage.items),
                        "masked": len(red.entries)}, "cut": eng.cut_info}
 
@@ -368,14 +463,15 @@ def op_handoff(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.ensure_units()
     pkg = eng.ensure_package()
     entries = pkg.ordered(p.get("order") or "package")
-    red = _redactor(eng, {"redaction": p.get("redaction") or getattr(eng, "_cut_redactor_key", ("none",))[0],
-                          "dictionary": list(getattr(eng, "_cut_redactor_key", ("none", ()))[1])})
+    cut_p = getattr(eng, "cut_params", None) or {}
+    red = package_redactor(eng, p.get("redaction") or cut_p.get("redaction") or "none", list(cut_p.get("dictionary") or []))
     from .recipe import recipe_hash
     norm = eng.normalised_recipe()
     norm["steps"] = [st for st in norm.get("steps") or [] if st.get("op") != "write"]
     info = build_handoff(eng, entries, eng.stage(), branches=str(p.get("branches") or "current"), with_graph=bool(p.get("graph")),
                          zip_too=bool(p.get("zip", True)), redactor=red, recipe_sha="sha256:" + recipe_hash(norm, eng.ds))
     eng.handoff_info = info
+    eng.handoff_params, eng.handoff_tree_hash = dict(p), pkg.tree_hash()
     return {"counts": {k: info[k] for k in ("conversations", "messages", "messages_with_text", "attachments")}, "handoff": info}
 
 

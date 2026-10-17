@@ -267,7 +267,7 @@
   "report.cut_omitted_count": "{archive}: {n} member(s) left out (names outside aggregate mode)",
   "report.cut_indivisible": "{member}: copied whole (no conversation boundaries in the format), also holds {n} other conversation(s)",
   "report.cut_partial": "{n} conversation(s) selected partially — the source format holds them whole",
-  "report.cut_attachments": "attachments: {referenced} referenced, {copied} copied ({bytes} B), {missing} missing",
+  "report.cut_attachments": "attachments: {referenced} referenced, {copied} copied ({bytes} B), {missing} missing, {not_used} not used (not copied)",
   "report.not_redacted": "{member}: binary file copied without redaction",
   "report.yes": "yes",
   "report.no_redacted": "no (redaction changes the bytes)",
@@ -474,5 +474,14 @@
   "serve.token": "token (header X-Extract-Token): {token}",
   "serve.unauthorized": "missing or wrong token (header X-Extract-Token)",
   "commander.no_filters": "no saved filters (F saves the current one)",
-  "commander.menu.filters": "Saved filters"
+  "commander.menu.filters": "Saved filters",
+  "cut.preserve_edits_note": "preserve = the source bytes: batch edits do not change it (they change the restructuring profiles)",
+  "cut.preserve_edits_redacted": "except redaction: the redaction edit(s) ({n}) also covered preserve and every side file",
+  "write.recut": "the package changed after the cut (edit, undo, redo) — made again: {ops}",
+  "recipe.secret_missing": "the redacted package's recipe refers to a dictionary that is not here ({refs}); give --dictionary-file FILE (a list of terms or a secrets.json store) — without it nothing runs, so no un-redacted package is made",
+  "report.and_more": "… and {n} more (full list in {where})",
+  "report.cut_dropped_empty": "{n} message(s) without content in this profile left out (e.g. tool-only or reasoning-only turns the profile omits)",
+  "report.masked_edit_everywhere": "the redaction edit was also applied to the source format (preserve) and to the side files (inventory, units, timeline, oplog, report, manifest)",
+  "report.masked_secrets": "the dictionary and {n} recipe value(s) are references (sha256) in recipe.json; the values were saved outside the package: {store} — reproducing elsewhere needs --dictionary-file, without it it is refused",
+  "report.masked_secrets_nostore": "the dictionary and {n} recipe value(s) are references (sha256) in recipe.json and were saved nowhere (redaction.secret_store: false) — reproducing needs --dictionary-file"
 }
