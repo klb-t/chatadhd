@@ -319,14 +319,13 @@ class Parser:
                 m2 = re.fullmatch(r"(.+?)(?:(?:±|\+-|~)(\d+))?", value)
                 return {"t": "near", "uid": m2.group(1), "n": int(m2.group(2)) if m2.group(2) else None, "pos": pos}
             if f == "around":
-                m2 = re.fullmatch(r"([^±+~]+?)\s*(?:(?:±|\+-|~)\s*(\d+(?:\.\d+)?)([dhmw])?)?", value)
-                if not m2:
-                    raise ExprError("around: expected DATE±N[d|h]", pos, self.text)
                 try:
-                    ts.parse_date_bound(m2.group(1))
+                    a = parse_around(value)
                 except ValueError as exc:
                     raise ExprError(f"around: {exc}", pos, self.text) from None
-                return {"t": "around", "date": m2.group(1), "n": m2.group(2), "unit": m2.group(3) or "d", "pos": pos}
+                if a is None:
+                    raise ExprError("around: expected DATE±N[d|h]", pos, self.text)
+                return {"t": "around", **a, "pos": pos}
             if f == "week-of":
                 return {"t": "week_of", "term": value, "pos": pos}
             if f == "gap":
@@ -364,6 +363,20 @@ def _depth(u: Unit) -> int:
         for c in kids.get(nid, []):
             stack.append((c, d + 1))
     return best
+
+
+_AROUND = re.compile(r"([^±+~]+?)\s*(?:(?:±|\+-|~)\s*(\d+(?:\.\d+)?)\s*([dhmw])?)?")
+
+
+def parse_around(value: str) -> Optional[dict[str, Any]]:
+    """``DATE±N[d|h|m|w]`` with ``±``, ``+-`` or ``~`` (the same for the expression language, the commander's T
+    prompt and the API): {"date", "n" (None = the preset window), "unit"}; None when it is not that shape;
+    ValueError when the date part is not a date."""
+    m = _AROUND.fullmatch(str(value).strip())
+    if not m:
+        return None
+    ts.parse_date_bound(m.group(1).strip())
+    return {"date": m.group(1).strip(), "n": m.group(2), "unit": m.group(3) or "d"}
 
 
 _DICT_FIELDS = {"conversation": ("flags", "account"), "message": ("meta",), "block": ("extra", "input"), "attachment": ()}

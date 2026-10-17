@@ -101,6 +101,25 @@ class CommanderTest(ExtractTest):
         self.assertIn("zazn.:", screen, "status line with the selection counter")
         self.assertIn("5Kopiuj", screen.replace(" ", ""), "F-key hints from the keymap")
 
+    def test_time_prompt_accepts_the_expression_language_separators(self):
+        """F14: T takes '±', '+-' and '~' with units d/h/w, as the selection language does ('±' is not on the
+        Polish programmer keyboard); a word that is not a date is a topic (week-of)."""
+        st = self.make()
+        c4 = next(u for u in st.s.eng.conversations if u.ext_id == "c4-0000-dddd")
+        day = c4.created_utc[:10]
+        for text in (f"{day}+-1", f"{day}~1d", f"{day} ± 24h", f"{day}+-1w"):
+            with self.subTest(text=text):
+                self.act("select.clear")
+                self.act("select.time")
+                self.typed(text)
+                last = self.steps(st)[-1]
+                self.assertEqual(last["op"], "select.expr", last)
+                self.assertTrue(last["params"]["expr"].startswith(f"around:{day}±"), last)
+                self.assertIn(c4.uid, st.s.eng.selection.units)
+        self.act("select.time")
+        self.typed("rekurencja")
+        self.assertIn("week-of", self.steps(st)[-1]["params"]["expr"])
+
     def test_live_filter_narrows_after_every_key_and_esc_restores(self):
         st = self.make()
         self.act("mode.flat")  # all conversations

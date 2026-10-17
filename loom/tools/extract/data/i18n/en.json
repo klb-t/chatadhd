@@ -514,5 +514,7 @@
   "cli.unexpected": "unexpected error ({kind}): {detail} — full trace with --debug",
   "serve.bad_request": "bad value of {what}: {value!r}",
   "expr.needs_timeline": "{what} needs a timeline and there is none (no dates in the sources)",
-  "expr.unknown_field": "unknown field {field!r} for {kind}; dict fields: {dicts}; any path: raw.<field>"
+  "expr.unknown_field": "unknown field {field!r} for {kind}; dict fields: {dicts}; any path: raw.<field>",
+  "decisions.carried": "{n} manual decision(s) carried to a newer version of the same conversation (service, ext_id) — the content changed",
+  "decisions.unknown": "{n} manual decision(s) match no conversation in the sources (kept in the file, they change nothing)"
 }

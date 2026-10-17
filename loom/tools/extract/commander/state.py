@@ -773,10 +773,16 @@ class CommanderState:
 
     def a_select_time(self) -> None:
         def go(text: str) -> None:
+            from ..select_expr import parse_around
             text = text.strip()
-            m = re.match(r"^(\d{4}-\d{2}(?:-\d{2})?)\s*±\s*(\d+)\s*d?$", text)
-            if m:
-                req = {"how": "time", "around": m.group(1), "days": int(m.group(2))}
+            try:  # the expression language's own parser: ±, +- or ~ and d/h/m/w (the Polish keyboard has no ±)
+                a = parse_around(text) if ".." not in text else None
+            except ValueError:
+                a = None  # not a date: a topic (week-of)
+            if a is not None:
+                req = {"how": "time", "around": a["date"]}
+                if a["n"] is not None:
+                    req.update(days=float(a["n"]) if "." in a["n"] else int(a["n"]), unit=a["unit"])
             elif ".." in text:
                 lo, hi = text.split("..", 1)
                 req = {"how": "time", "from": lo.strip(), "to": hi.strip()}

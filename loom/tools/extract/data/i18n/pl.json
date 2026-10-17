@@ -514,5 +514,7 @@
   "cli.unexpected": "nieoczekiwany błąd ({kind}): {detail} — pełny ślad z --debug",
   "serve.bad_request": "niepoprawna wartość {what}: {value!r}",
   "expr.needs_timeline": "{what} potrzebuje osi czasu, a jej nie ma (brak dat w źródłach)",
-  "expr.unknown_field": "nieznane pole {field!r} dla {kind}; pola słownikowe: {dicts}; dowolna ścieżka: raw.<pole>"
+  "expr.unknown_field": "nieznane pole {field!r} dla {kind}; pola słownikowe: {dicts}; dowolna ścieżka: raw.<pole>",
+  "decisions.carried": "{n} decyzji ręcznych przeniesiono na nowszą wersję tej samej rozmowy (service, ext_id) — treść się zmieniła",
+  "decisions.unknown": "{n} decyzji ręcznych nie pasuje do żadnej rozmowy w źródłach (zostają w pliku, niczego nie zmieniają)"
 }

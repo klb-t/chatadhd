@@ -4,8 +4,11 @@ with ``manual: wins`` in the cascade.  A mark records what the cascade said
 (``was``) so a correction can be learned from; learning produces PROPOSALS
 (new keywords, exclusions, band changes) once ``decisions.learn_min_corrections``
 corrections agree — nothing becomes a rule without the user accepting it.
-Identity is the content hash (``uid``), so a mark survives a newer export of the
-same conversation.
+A mark is keyed by the content hash (``uid``) AND, when the source has an id,
+by ``(service, ext_id)``: a conversation that continued in a newer export (a new
+message or a new title gives a new ``uid``) gets its mark carried by identity,
+and the run reports it as carried; a mark that matches neither is reported as
+unknown, never dropped silently.
 """
 import logging
 from dataclasses import dataclass, field
@@ -67,10 +70,12 @@ class Decisions:
 
     def mark(self, uid: str, decision: str, reason: str = "", *, grain: str = "conversation",
              message: Optional[str] = None, was: Optional[dict[str, Any]] = None, at: Optional[str] = None,
-             by: str = "cli") -> dict[str, Any]:
+             by: str = "cli", service: Optional[str] = None, ext_id: Optional[str] = None) -> dict[str, Any]:
         if decision not in DECISIONS:
             raise ValueError(f"unknown decision {decision!r} (one of {', '.join(DECISIONS)})")
         entry: dict[str, Any] = {"unit": uid, "grain": grain, "decision": decision, "reason": reason, "by": by}
+        if ext_id:  # the identity a newer export keeps when the content (and so the uid) changes
+            entry["service"], entry["ext_id"] = service or "", ext_id
         if message is not None:
             entry["message"] = message
         if was is not None:
@@ -91,12 +96,31 @@ class Decisions:
         del self.entries[idx]
         return True
 
-    def as_manual(self) -> dict[str, dict[str, Any]]:
-        """uid → entry, for ``Cascade(manual=…)`` (conversation grain only; message marks are applied by the engine)."""
-        out: dict[str, dict[str, Any]] = {}
+    def resolve(self, units: Optional[list[Unit]] = None) -> list[tuple[dict[str, Any], Optional[str], str]]:
+        """(entry, current uid or None, how) for every entry: ``uid`` (the same content), ``identity`` (carried to a
+        newer version of the same conversation by (service, ext_id)) or ``unknown``."""
+        if units is None:
+            return [(e, e["unit"], "uid") for e in self.entries]
+        by_uid = {u.uid for u in units}
+        by_identity = {u.identity_key: u.uid for u in units if u.ext_id}
+        out: list[tuple[dict[str, Any], Optional[str], str]] = []
         for e in self.entries:
-            if e.get("grain", "conversation") == "conversation" and e.get("message") is None:
-                out[e["unit"]] = {"decision": e["decision"], "reason": e.get("reason", ""), "grain": "conversation"}
+            if e["unit"] in by_uid:
+                out.append((e, e["unit"], "uid"))
+            elif e.get("ext_id") and (e.get("service") or "", e["ext_id"]) in by_identity:
+                out.append((e, by_identity[(e.get("service") or "", e["ext_id"])], "identity"))
+            else:
+                out.append((e, None, "unknown"))
+        return out
+
+    def as_manual(self, units: Optional[list[Unit]] = None) -> dict[str, dict[str, Any]]:
+        """current uid → entry, for ``Cascade(manual=…)`` (conversation grain only; message marks are applied by the
+        engine); with ``units``, a mark of an older version is carried to the newer one by identity."""
+        out: dict[str, dict[str, Any]] = {}
+        for e, uid, how in self.resolve(units):
+            if uid is not None and e.get("grain", "conversation") == "conversation" and e.get("message") is None:
+                out[uid] = {"decision": e["decision"], "reason": e.get("reason", ""), "grain": "conversation",
+                            **({"carried": e["unit"]} if how == "identity" else {})}
         return out
 
     def message_marks(self) -> dict[str, dict[str, str]]:

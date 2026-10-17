@@ -244,3 +244,26 @@ class ClustersTest(ExtractTest):
         self.assertTrue(all(c["sample_titles"] == [] for c in agg["clusters"]))
         one = cluster.discover(units, eng.ds, eng.lex, max_clusters=1)
         self.assertEqual(len(one["clusters"]), 1)
+
+
+class DecisionsIdentityTest(ExtractTest):
+    def test_a_mark_is_carried_to_a_newer_export_of_the_same_conversation(self):
+        """F24 (requirement 17): c2 got new messages and a new title in the newer export, so its uid changed; the
+        mark made on the older export is applied by (service, ext_id) and reported as carried."""
+        old = self.engine(EXTRACT / "versions/chatgpt_2025-06-20.zip")
+        old.ensure_units()
+        c2_old = next(u for u in old.conversations if u.ext_id == "c2")
+        old.op("mark", {"unit": c2_old.uid, "decision": "include", "reason": "ważna"})
+        path = old.decisions.save(self.tmp / "decisions.json")
+        new = self.engine(EXTRACT / "versions/chatgpt_2025-10-01.zip")
+        new.ensure_units()
+        c2_new = next(u for u in new.conversations if u.ext_id == "c2")
+        self.assertNotEqual(c2_new.uid, c2_old.uid, "the content changed, so the uid did")
+        r = new.op("select.manual", {"decisions": str(path)})
+        self.assertEqual(r["counts"]["carried"], 1)
+        self.assertEqual(r["counts"]["unknown_units"], 0)
+        self.assertIn(c2_new.uid, new.selection.units)
+        self.assertTrue(any("przeniesiono" in str(ev.get("text")) for ev in new.events if ev["kind"] == "note"))
+        crit = new.op("select.criteria", {"terms": ["nic-takiego-nie-ma"], "cascade": "lexical_only", "mode": "replace"})
+        self.assertEqual(new.unit_decisions[c2_new.uid]["decision"], "include", "the cascade applies the carried mark too")
+        self.assertIsNotNone(crit)

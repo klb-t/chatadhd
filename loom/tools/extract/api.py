@@ -941,8 +941,9 @@ def _cost_words(q: dict[str, Any]) -> dict[str, Any]:
 
 def _time_expr(req: dict[str, Any]) -> str:
     if req.get("around"):
-        n = req.get("days", 3)
-        return f"around:{req['around']}±{n}d"
+        if req.get("days") is None:
+            return f"around:{req['around']}"  # the grammar's preset window (around_default)
+        return f"around:{req['around']}±{req['days']}{req.get('unit') or 'd'}"
     if req.get("week_of"):
         return f'week-of:"{req["week_of"]}"'
     lo, hi = req.get("from") or "", req.get("to") or ""

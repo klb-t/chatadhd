@@ -200,7 +200,7 @@ def op_select_criteria(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.ensure_units()
     crit = _criteria_from_params(eng, p)
     eng.criteria = crit
-    manual = eng.decisions.as_manual()
+    manual = eng.decisions.as_manual(eng.units)
     vectors = eng.vector_index("window") if crit.vectors else None
     if crit.vectors:
         # the cascade indexes its own grains; here the index is created lazily by the cascade helper
@@ -381,11 +381,14 @@ def op_select_manual(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     inc = Selection()
     exc = Selection()
     applied_inc = applied_exc = 0
-    by = eng.by_uid
-    for e in eng.decisions.entries:
-        uid = e["unit"]
-        if uid not in by:
+    carried: list[dict[str, str]] = []
+    unknown = 0
+    for e, uid, how in eng.decisions.resolve(eng.units):
+        if uid is None:
+            unknown += 1
             continue
+        if how == "identity":  # a mark on an older version of a conversation that continued: carried, and said
+            carried.append({"from": e["unit"], "to": uid, "ext_id": e.get("ext_id", "")})
         target = inc if e["decision"] == "include" else exc if e["decision"] == "exclude" else None
         if target is None:
             continue
@@ -402,8 +405,14 @@ def op_select_manual(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     for uid in exc.units:
         if exc.units[uid] is None:
             eng.unit_decisions.setdefault(uid, {}).update({"decision": "exclude", "source": "manual"})
+    if carried:
+        from .i18n import t as _t
+        eng.emit("note", text=_t("decisions.carried", n=len(carried)))
+    if unknown:
+        from .i18n import t as _t
+        eng.emit("note", text=_t("decisions.unknown", n=unknown))
     return {"counts": {"include": applied_inc, "exclude": applied_exc, "entries": len(eng.decisions.entries),
-                       "unknown_units": sum(1 for e in eng.decisions.entries if e["unit"] not in by)},
+                       "unknown_units": unknown, "carried": len(carried)}, "carried": carried,
             "selection": r2, "decisions_source": eng.decisions.source, "after_include": r1}
 
 
@@ -474,12 +483,15 @@ def op_mark(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     d = eng.unit_decisions.get(uid)
     if d:
         was = {"decision": d.get("decision"), "score": d.get("score"), "source": d.get("source"), "level": d.get("best_grain")}
+    u = eng.by_uid.get(uid)
     entry = eng.decisions.mark(uid, p["decision"], p.get("reason") or "", grain=p.get("grain") or "conversation",
-                               message=p.get("message"), was=was, by="engine")
+                               message=p.get("message"), was=was, by="engine",
+                               service=u.service if u is not None else None, ext_id=u.ext_id if u is not None else None)
     manual = eng.recipe.setdefault("manual", {"include": [], "exclude": []})
     bucket = manual.setdefault(p["decision"], [])
     bucket[:] = [e for e in bucket if e.get("unit") != uid]
-    bucket.append({"unit": uid, "reason": p.get("reason") or ""})
+    bucket.append({"unit": uid, "reason": p.get("reason") or "",
+                   **({"service": u.service or "", "ext_id": u.ext_id} if u is not None and u.ext_id else {})})
     sel = Selection()
     sel.add(uid, {p["message"]} if p.get("message") else None, f"manual:{p['decision']}")
     if p["decision"] == "include":

@@ -4,8 +4,10 @@ One intermediate representation for every source, a superset of what passes
 through ``walk_tree`` in ``loom/src/archive/ingest_parse.cpp`` and compatible
 in fields with ``loom.export.v1``.  The raw source object stays reachable by
 ``raw_pointer`` (and ``raw`` when kept), so a 1:1 cut never depends on this
-interpretation.  Identity (``uid``) is a hash of the content, so a manual
-decision survives a newer export of the same conversation.
+interpretation.  ``uid`` is a hash of the content (an exact duplicate in another
+archive has the same one); ``identity_key`` = (service, ext_id) follows a
+conversation into a newer export, where new messages give it a new ``uid`` —
+manual decisions are matched by both (decisions.py).
 """
 import hashlib
 import json
