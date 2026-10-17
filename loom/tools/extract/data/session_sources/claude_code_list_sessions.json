@@ -6,10 +6,12 @@
   "en": "Claude Code session list (list_sessions result saved to a file)"
  },
  "note": {
-  "pl": "Narzędzie nigdy nie woła sieci: plik zapisuje użytkownik (albo Claude) z API sesji. Kształt: tablica sesji albo obiekt z tablicą pod jednym z kluczy wrappers; JSONL = jedna sesja na wiersz; kilka plików (strony) — ta sama sesja liczona raz (najnowsze updated_at).",
-  "en": "The tool never calls the network: the user (or Claude) saves the file from the session API. Shape: an array of sessions or an object with the array under one of the wrappers keys; JSONL = one session per line; several files (pages) — the same session counted once (latest updated_at)."
+  "pl": "Narzędzie nigdy nie woła sieci: plik zapisuje użytkownik (albo Claude) z API sesji. Kształt zmierzony 2026-10-17: list_sessions = {\"ccr\": {\"data\": [sesje…], \"has_more\", \"first_id\", \"last_id\"}}, get_session = {\"ccr\": {sesja}, \"lineage\"}; liczniki w external_metadata.usage. Przyjmowane też: tablica sesji, obiekt z tablicą pod innym kluczem z wrappers, JSONL (sesja na wiersz); kilka plików (strony) — ta sama sesja liczona raz (najnowsze updated_at).",
+  "en": "The tool never calls the network: the user (or Claude) saves the file from the session API. Shape measured 2026-10-17: list_sessions = {\"ccr\": {\"data\": [sessions…], \"has_more\", \"first_id\", \"last_id\"}}, get_session = {\"ccr\": {session}, \"lineage\"}; counters in external_metadata.usage. Also accepted: an array of sessions, an object with the array under another wrappers key, JSONL (a session per line); several files (pages) — the same session counted once (latest updated_at)."
  },
  "wrappers": [
+  "ccr.data",
+  "ccr",
   "sessions",
   "data",
   "items",
@@ -28,7 +30,9 @@
   "output": "external_metadata.usage.output_tokens",
   "cache_creation": "external_metadata.usage.cache_write_tokens",
   "cache_read": "external_metadata.usage.cache_read_tokens",
-  "cost_usd": "external_metadata.usage.cost_usd"
+  "cost_usd": "external_metadata.usage.cost_usd",
+  "parent": "parent_session_id",
+  "last_model": "external_metadata.last_served_model"
  },
  "counters": [
   "input",

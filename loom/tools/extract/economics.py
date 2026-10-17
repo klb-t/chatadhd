@@ -17,8 +17,8 @@ import io
 import json
 import logging
 import re
+import os
 import subprocess
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Optional
 
@@ -35,7 +35,7 @@ log = logging.getLogger(__name__)
 
 SCHEMA = "loom.extract.economics/1"
 MEASURED = ("input", "output", "cache_creation", "cache_read")
-EXTRA_COUNTERS = ("cache_creation_5m", "cache_creation_1h")
+EXTRA_COUNTERS = ("cache_creation_5m", "cache_creation_1h", "output_thinking", "web_search_requests", "web_fetch_requests")
 ESTIMATED = ("est_input", "est_output", "est_context")
 DUPLICATE_MODES = ("max", "last", "sum")
 
@@ -153,8 +153,16 @@ def load_session_lists(paths: list[str], ds: DataStore, source_id: Optional[str]
             if isinstance(doc, list):
                 items = doc
             elif isinstance(doc, dict):
-                wrapped = next((doc[w] for w in spec.get("wrappers") or [] if isinstance(doc.get(w), list)), None)
-                items = wrapped if wrapped is not None else [doc]
+                # a wrapper is a dotted path: a list of sessions (list_sessions: ccr.data) or one session (get_session: ccr)
+                items = [doc]
+                for w in spec.get("wrappers") or []:
+                    v = getpath(doc, w)
+                    if isinstance(v, list):
+                        items = v
+                        break
+                    if isinstance(v, dict) and getpath(v, fields.get("id", "id")):
+                        items = [v]
+                        break
         except json.JSONDecodeError:
             for ln, line in enumerate(text.splitlines(), 1):
                 if not line.strip():
@@ -187,8 +195,7 @@ def git_commits(repo: str, cfg: dict[str, Any]) -> dict[str, Any]:
     and the set reachable from the main ref (None + reason when it does not exist)."""
     rx = trailer_regex(cfg, line=True)
     base = ["git", "-C", str(Path(repo).expanduser()), "-c", "core.fsmonitor=false", "-c", "core.pager=cat", "--no-pager"]
-    env = {"GIT_TERMINAL_PROMPT": "0", "GIT_PAGER": "cat", "LC_ALL": "C", "PATH": "/usr/bin:/bin:/usr/local/bin",
-           "HOME": str(Path.home()), "GIT_CONFIG_NOSYSTEM": "1"}
+    env = {**os.environ, "GIT_TERMINAL_PROMPT": "0", "GIT_PAGER": "cat", "LC_ALL": "C", "GIT_OPTIONAL_LOCKS": "0"}
     fmt = "%x1e%H%x1f%aI%x1f%B%x1f"
     cmd = base + ["log", "--all", "--no-color", "--no-renames", f"--format={fmt}"] + (["--numstat"] if cfg.get("numstat", True) else [])
     out: dict[str, Any] = {"repo": repo, "commits": [], "main": None, "main_reason": None, "error": None}
@@ -449,7 +456,8 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             c["basis"] = "prices×measured"
             g["cost"] = c
         g["method"] = "measured"
-        if not g["thinking"] and g["usage"]["output"] > 0 and int(est_cfg.get("calibration_min_output", 1) or 0) <= g["usage"]["output"]:
+        if not g["thinking"] and not g["usage"]["output_thinking"] and g["usage"]["output"] > 0 \
+                and int(est_cfg.get("calibration_min_output", 1) or 0) <= g["usage"]["output"]:
             est, _how = estimator.count("\n".join(g["texts"]), g["model"], g["lang"])
             calib_pairs.append((est, g["usage"]["output"]))
 
@@ -655,7 +663,8 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             no_api = "no_session_list" if not api_sessions else "not_in_session_list"
             row.update({"model": None, "api_input": None, "api_output": None, "api_cache_creation": None, "api_cache_read": None,
                         "cost_api": {"amount": None, "known": False, "reason": no_api, "currency": "USD"}})
-            row["why"] = {k: no_api for k in ("model", "api_input", "api_output", "api_cache_creation", "api_cache_read", "coverage")}
+            row["why"] = {k: no_api for k in ("model", "api_input", "api_output", "api_cache_creation", "api_cache_read", "coverage",
+                                              "coverage_output", "coverage_cache_creation")}
             row["period"] = f"{(a.first or '?')[:10]} … {(a.last or '?')[:10]}" if a else "?"
         why = row.setdefault("why", {})
         if a is not None:
@@ -671,17 +680,18 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             row["main_share"] = round(mt / r["total"], 4) if r["total"] else None
             if not row.get("model"):
                 row["model"] = r["models"]
-            if api and api.get("cache_read") and r["cache_read"] is not None:
-                row["coverage"] = round(r["cache_read"] / api["cache_read"], 4)
-            else:
-                row["coverage"] = None
-                why.setdefault("coverage", "no_counters" if api else ("no_session_list" if not api_sessions else "not_in_session_list"))
+            for col, kind in (("coverage", "cache_read"), ("coverage_output", "output"), ("coverage_cache_creation", "cache_creation")):
+                if api and api.get(kind) and r[kind] is not None:
+                    row[col] = round(r[kind] / api[kind], 4)
+                else:
+                    row[col] = None
+                    why.setdefault(col, "no_field_in_session_list" if api else ("no_session_list" if not api_sessions else "not_in_session_list"))
             for k in ("api_input", "api_output", "api_cache_creation", "api_cache_read"):
                 if api and row.get(k) is None:
                     why[k] = "no_field_in_session_list"
         else:
             for k in ("tr_turns", "tr_input", "tr_output", "tr_cache_creation", "tr_cache_read", "tr_total", "main_share", "coverage",
-                      "files_touched", "edit_calls"):
+                      "coverage_output", "coverage_cache_creation", "files_touched", "edit_calls"):
                 row[k] = None
                 why[k] = "no_transcript"
             if api is not None:
@@ -710,6 +720,12 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         row["cost_per_commit_main"] = _div_cost(best_cost, row["commits_main"], "no_commits_on_main") if main_known or not p.get("repos") \
             else {"amount": None, "known": False, "reason": "main_ref_unknown", "currency": "USD"}
         sessions.append(row)
+    sid_label = {k[1]: s_labels[k[0]] if aggregate else ((api_sessions.get(k[1]) or {}).get("title") or k[1]) for k in keys if k[1]}
+    for (rk, sid, fam), row in zip(keys, sessions):
+        par = (api_sessions.get(sid) or {}).get("parent") if sid else None
+        row["parent"] = (sid_label.get(par) or (None if aggregate else par)) if par else t("economics.na")
+        if par and par not in sid_label:
+            row.setdefault("why", {})["parent"] = "not_in_session_list"
     for fam in fam_acc:
         if fam not in links:
             note("transcripts_without_session_list" if api_sessions else "transcripts_unlinked")

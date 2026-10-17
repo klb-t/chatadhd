@@ -92,7 +92,8 @@ class ReaderAndInventoryTest(EconTest):
         self.assertEqual(lines_a1[0].meta["usage"]["output"], 30, "the first line carries a partial count")
         self.assertEqual(lines_a1[-1].meta["usage"]["tier"], "standard")
         a3 = next(m for m in main.messages if m.meta.get("api_id") == "msg_A3")
-        self.assertIn("server_tool_use", a3.meta["usage"]["extra"], "an unmapped usage field is kept, not dropped")
+        self.assertIn("future_counter", a3.meta["usage"]["extra"], "an unmapped usage field is kept, not dropped")
+        self.assertEqual(a3.meta["usage"]["web_search_requests"], 1, "server tool requests are counters of the format map")
         self.assertEqual(a3.meta["request_id"], "req_msg_A3")
         sub = by["sess-E1/subagents/agent-s1"]
         self.assertEqual((sub.flags["transcript_role"], sub.flags["parent_session"], sub.flags["parent_session_how"]),
@@ -147,6 +148,7 @@ class MeasuredTest(EconTest):
         self.assertEqual(notes["ignored_model_lines"]["n"], E["ignored_synthetic"])
         self.assertEqual(notes["assistant_without_counters"]["n"], E["assistant_without_counters"])
         self.assertEqual(sorted(notes["usage_fields_unmapped"]["fields"]), E["unmapped_usage_fields"])
+        self.assertEqual(tot["web_search_requests"], E["web_search_requests"])
         self.assertEqual(notes["cost_unknown_turns"]["n"], E["turns"], "no shipped price: every cost unknown, never 0")
         self.assertFalse(tot["cost"]["known"])
         self.assertIsNone(tot["cost"]["amount"])
@@ -204,12 +206,18 @@ class MeasuredTest(EconTest):
         self.assertEqual(set(rows), {"session_TEST1", "session_TEST2"})
         jl = self.tmp / "s.jsonl"
         doc = json.loads(SESSIONS.read_text(encoding="utf-8"))
-        jl.write_text("\n".join(json.dumps(x) for x in doc["sessions"]) + "\nnot json\n", encoding="utf-8")
+        jl.write_text("\n".join(json.dumps(x) for x in doc["ccr"]["data"]) + "\nnot json\n", encoding="utf-8")
         rows2, problems2 = load_session_lists([str(jl), str(SESSIONS)], store())
         self.assertEqual(set(rows2), set(rows))
         keys = [p["key"] for p in problems2]
         self.assertIn("sessions_bad_line", keys)
         self.assertEqual(keys.count("sessions_duplicate"), 2, "the same sessions in two files: counted once, said")
+        one = self.tmp / "one.json"  # get_session: {"ccr": {session}, "lineage": …}
+        one.write_text(json.dumps({"ccr": doc["ccr"]["data"][0], "lineage": {"depth": 0}}), encoding="utf-8")
+        rows1, _ = load_session_lists([str(one)], store())
+        self.assertEqual(list(rows1), ["session_TEST1"])
+        self.assertEqual(rows1["session_TEST1"]["cost_usd"], 1.5)
+        self.assertEqual(load_session_lists([str(SESSIONS)], store())[0]["session_TEST2"]["parent"], "session_TEST1")
         partial = self.tmp / "partial.json"
         partial.write_text(json.dumps([{"id": "session_X", "title": "bez liczników"}]), encoding="utf-8")
         rows3, _ = load_session_lists([str(partial)], store())

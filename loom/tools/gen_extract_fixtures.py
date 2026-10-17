@@ -141,7 +141,8 @@ def economics_files():
                   [{"type": "tool_use", "id": "toolu_w1", "name": "Write", "input": {"file_path": "src/b.py", "content": "print(1)\n"}},
                    {"type": "tool_use", "id": "toolu_e2", "name": "Edit", "input": {"file_path": "src/a.py", "old_string": "q", "new_string": "r"}}],
                   session=S, model="claude-x-large", mid="msg_A3",
-                  usage=dict(_usage(T["msg_A3"][4]), server_tool_use={"web_search_requests": 0})),
+                  usage=dict(_usage(T["msg_A3"][4]), server_tool_use={"web_search_requests": 1, "web_fetch_requests": 0},
+                             output_tokens_details={"thinking_tokens": 0}, future_counter=7)),
         econ_line("e9", "e8", "user", "2026-10-11T09:00:05Z", [{"type": "tool_result", "tool_use_id": "toolu_w1", "content": "ok"},
                                                               {"type": "tool_result", "tool_use_id": "toolu_e2", "content": "old_string not found",
                                                                "is_error": True}], session=S),
@@ -169,7 +170,7 @@ def economics_files():
              "sess-E1/subagents/workflows/run-1/agent-w1.jsonl": wf("w1", "msg_W1", "Wynik w1"),
              "sess-E1/subagents/workflows/run-1/agent-w2.jsonl": wf("w2", "msg_W2", "Wynik w2 dłuższy"),
              "sess-E2.jsonl": e2}
-    sessions = {"sessions": [
+    sessions = {"ccr": {"data": [
         {"id": "session_TEST1", "title": "Sesja testowa jeden", "created_at": "2026-10-10T07:59:00Z", "updated_at": "2026-10-11T09:10:00Z",
          "configured_model": "claude-x-large", "status": "idle",
          "external_metadata": {"usage": {"cache_read_tokens": 3000, "cache_write_tokens": 2000, "input_tokens": 30, "output_tokens": 300,
@@ -177,8 +178,8 @@ def economics_files():
         {"id": "session_TEST2", "title": "Sesja bez transkryptu", "created_at": "2026-10-09T10:00:00Z", "updated_at": "2026-10-09T11:00:00Z",
          "configured_model": "claude-x-small",
          "external_metadata": {"usage": {"cache_read_tokens": 100, "cache_write_tokens": 50, "input_tokens": 5, "output_tokens": 20,
-                                         "cost_usd": 0.25}}}],
-        "has_more": False}
+                                         "cost_usd": 0.25}}, "parent_session_id": "session_TEST1"}],
+        "has_more": False, "first_id": "session_TEST1", "last_id": "session_TEST2"}}  # the shape list_sessions returns
     return files, sessions
 
 
@@ -192,7 +193,7 @@ def economics_expected():
             "totals": sums(ECON_TURNS), "family_E1": sums(fam["sess-E1"]), "main_E1": main_e1, "family_E2": sums(fam["sess-E2"]),
             "transcripts_E1": 4, "agents_E1": 3, "workflow_agents": 2, "files_touched_E1": ["src/a.py", "src/b.py"],
             "edit_calls_E1": 3, "edits_failed_E1": 1, "tool_calls": {"Edit": 2, "Write": 1, "Bash": 1, "Read": 1}, "tool_failed": {"Edit": 1},
-            "ignored_synthetic": 1, "assistant_without_counters": 1, "unmapped_usage_fields": ["server_tool_use"],
+            "ignored_synthetic": 1, "assistant_without_counters": 1, "unmapped_usage_fields": ["future_counter"], "web_search_requests": 1,
             "link_E1": "session_TEST1", "api_cost_TEST1": 1.5, "api_cache_read_TEST1": 3000,
             "days": {"2026-10-10": len([t for t in ECON_TURNS if t[3].startswith("2026-10-10")]),
                      "2026-10-11": len([t for t in ECON_TURNS if t[3].startswith("2026-10-11")])},

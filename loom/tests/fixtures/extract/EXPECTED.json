@@ -132,8 +132,9 @@
   "transcripts_E1": 4,
   "turns": 7,
   "unmapped_usage_fields": [
-   "server_tool_use"
+   "future_counter"
   ],
+  "web_search_requests": 1,
   "workflow_agents": 2
  },
  "forbidden_in_aggregate": [

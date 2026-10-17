@@ -310,6 +310,7 @@ loom/tools/extract/
     driver.py            # sterownik bezgłowy: drive(keys) → stan; testy i odtwarzanie nagrań
     autosave.py          # autozapis przepisu i stanu (atomowo), wznowienie po awarii
   serve.py               # http.server na pętli zwrotnej: JSON API operacji, SSE postępu, token na uruchomienie (§3.18)
+  economics.py prices.py tokencount.py ops_economics.py   # ekonomia tokenów: liczniki, ceny jako dane, szacunek, operacja (§3.19)
   data/                  # presety (§5); użytkownik nadpisuje w <katalog danych>/extract/
     formats/*.json  profiles/*.json  flows/*.json  cascades/*.json  presets/defaults.json
     block_kinds.json  lexicon/pl_inflection.json  lexicon/stop_pl.json  lexicon/stop_en.json
@@ -317,6 +318,7 @@ loom/tools/extract/
     ops.json  edits/*.json  recipes/*.json  select_fields.json  grammar/select.json
     commander/keymap.json  commander/actions.json  commander/layout.json  commander/colors.json
     timeline/presets.json  handoff/profile.json
+    prices/*.json  session_sources/*.json  economics/report.json      # ekonomia tokenów (§3.19, §5.16)
   tests/test_*.py        # unittest, fixture'y syntetyczne (§9)
 loom/tools/gen_extract_fixtures.py   # nowe fixture'y: Gemini, Grok, Claude Code, graf, katalog mieszany, duplikaty
 ```
@@ -551,6 +553,86 @@ powtarzania logiki; do tego czasu `serwuj` służy testom, skryptom i portowi j�
 zmienia reguły z §2: zero sieci wychodzącej; kroki z modelem nadal wymagają jawnego włączenia
 w żądaniu i przechodzą przez szacunek i strażnika.
 
+### 3.19 Ekonomia tokenów (wymaganie 37, plaster 4)
+
+Słowa właściciela (2026-10-16): „pytałem czy przebiegi agentyczne też są w archiwach, to by się zrobiło
+ilościową analizę ekonomii tokenów”; „API żeby te transkrypty pobrać”. Odpowiedź narzędzia: **żadnego
+nowego API** — liczy z tego, co już leży lokalnie, a czego nie ma, mówi wprost.
+
+- **Zmierzone** (`measured`): liczniki per odpowiedź API z transkryptów Claude Code (`message.usage`:
+  `input_tokens`, `output_tokens`, `cache_creation_input_tokens`, `cache_read_input_tokens`, podział
+  zapisu cache 5 min / 1 h, `output_tokens_details.thinking_tokens`, `server_tool_use` — mapa pól
+  w `formats/claude_code.json#usage`; pole spoza mapy trafia do `usage.extra` i do listy „czego nie
+  dało się zmierzyć”, nie ginie) oraz z zapisanej listy sesji (`--sesje PLIK`: kształt
+  `list_sessions` = `{"ccr": {"data": [...]}}` albo `get_session` = `{"ccr": {...}}`, opis kształtu
+  w `data/session_sources/*.json`; narzędzie nigdy nie woła API — plik zapisuje użytkownik albo Claude).
+  Jedna odpowiedź API zapisana w kilku wierszach (ten sam `message.id`) jest liczona raz (preset
+  `economics.usage.duplicate_lines: max`; `last`, `sum` = bez scalania); wiersze modelu `<synthetic>`
+  (wstawione przez klienta) pominięte z licznikiem (`economics.usage.ignore_models`).
+- **Przebiegi i ich rodzice**: plik główny sesji, podagent (`<sesja>/subagents/**/*.jsonl`) i agent
+  przepływu (`<sesja>/[subagents/]workflows/<przebieg>/agent-*.jsonl`) to osobne jednostki z
+  `flags.transcript_role`, `flags.parent_session` (z katalogu — `parent_session_how: path` — albo
+  z `sessionId` wiersza) i `flags.workflow_run`; rodzina = sesja + jej agenci.
+- **Powiązanie transkryptu z sesją API**: jawne (`--polacz T=S`), to samo id, albo stopka
+  `Claude-Session: …/<id>` w poleceniach `git commit` wydanych w transkrypcie (najczęstsza; wiele
+  różnych = „niejednoznaczne”, zgłoszone).
+- **Wyniki**: commity per sesja z `git log --all` repozytoriów `--repo` (tylko odczyt, bez sieci;
+  stopka `Claude-Session`, kształt id w `economics.git.session_id`), commity osiągalne z gałęzi
+  `economics.git.main_ref` (preset `main`; brak gałęzi = „nieznane”), linie +/−; z transkryptów —
+  pliki zmienione przez Edit/Write per tura (`economics.outcomes.edit_tools`), edycje nieudane
+  (wynik narzędzia z `is_error`), polecenia commit. Koszt na commit tylko, gdy znane jest jedno i drugie.
+- **Oszacowane** (`estimated`, źródła bez liczników: ChatGPT, claude.ai, Gemini, Grok, pliki tekstowe):
+  per wiadomość, `tiktoken` tylko gdy zainstalowany **i** kodowanie leży na dysku (ładowanie pod
+  strażnikiem sieci; odmowa = „niedostępne offline”, powód w wyniku), inaczej znaki / `tokens.chars_per_token`
+  (te same stałe co inwentarz). Tura asystenta: wejście nowe, wyjście i **kontekst wysłany** (cała
+  ścieżka rozmowy przed odpowiedzią, bez cache; preset `economics.estimate.context: path`). Spodziewany
+  błąd szacunku jest **zmierzony** na turach z licznikami (mediana i 10–90 percentyl względnego błędu
+  wyjścia); bez takich tur — „nieznany (brak tur z licznikami do kalibracji)”, nigdy liczba z głowy.
+- **Ceny jako dane**: `data/prices/*.json` (wzorzec modelu, cena za milion wejścia/wyjścia/zapisu cache
+  (+1 h)/odczytu cache, waluta, `valid_from`, źródło; najbardziej szczegółowy wzorzec, najnowsza cena
+  ważna w dniu tury), dawny `prices.json` i `models.json` aplikacji — jedna książka cen (`prices.py`) dla
+  ekonomii i przepływów z modelem. W `loom/data` nie ma cennika per model (progi klas w `guardian.pack`
+  służą do klasyfikacji modelu o znanej cenie, `economy.pack token_price_usd_per_million = null`), więc
+  dostarczone wpisy mają ceny `null` z powodem: koszt „nieznany (brak ceny)”, nigdy zero. Koszt z listy
+  sesji (`cost_usd`) jest osobną kolumną „wg API sesji”.
+- **Raport** (`token_economics`, jedna operacja — CLI `ekonomia`/`tokens`, komander: menu F2 i
+  `:op token_economics {…}`, `serwuj`: `POST /api/op`): razem, porównanie źródeł (liczniki,
+  ślady narzędzi, rozumowanie z inwentarza — zmierzone), sesje (liczniki API, transkrypty, pokrycie
+  transkrypty/API per rodzaj tokenów, pętla główna vs agenci, commity, koszt na commit), przebiegi,
+  przebiegi przepływów, modele, narzędzia (tokeny tury dzielone po równo między jej wywołania;
+  `full` = każde dostaje całość, zgłoszone), dni. Układ tabel i kolumn: `data/economics/report.json`;
+  `economics/economics.json`, `economics/ekonomia.md` (`economics.md` po angielsku), `economics/<tabela>.csv`
+  w pakiecie; podsumowanie w manifeście i `RAPORT.md`. Każda pusta komórka ma powód
+  („nieznane (źródło bez liczników)”, „… (commity nieznane — podaj --repo)”). `--zbiorczo`: etykiety
+  `sesja-NN`/`przebieg-NN`/`przepływ-NN` zamiast tytułów, id, ścieżek, nazw plików i hashy; ścieżki
+  i powiązania w przepisie zastąpione numerami.
+- **Inwentarz** (wymaganie 4) mierzy per archiwum, per format i łącznie: `has_usage` (są liczniki),
+  `has_tool_traces` (bloki `tool_use`/`tool_result` albo wiadomości roli `tool`), `reasoning`
+  (`full` | `summary` | `redacted` | `short` | `none` — z bloków `thinking`, próg `thinking.full_min_chars`).
+
+#### 3.19.1 Jak odtworzyć liczby S1 z `EKONOMIA_TOKENOW_2026-10-16.md`
+
+1. Lista sesji: w sesji Claude Code wywołać `list_sessions` (lub `get_session ID` dla jednej) i zapisać
+   wynik bez zmian do pliku, np. `sesje.json` (narzędzie samo nie woła API). Stron może być kilka — każda
+   jako osobny `--sesje`.
+2. `python3 -m loom.tools.extract --zbiorczo ekonomia ~/.claude/projects --wyrazenie kind:session
+   --sesje sesje.json --repo <klon repozytorium> --main origin/main --pakiet /tmp/ekonomia`
+   (bez `--zbiorczo` — z tytułami i id sesji; `--wyrazenie kind:session` pomija pliki tekstowe leżące
+   obok transkryptów).
+3. Tabela „Sesje — liczniki API sesji i wyniki” = tabela S1 (cache read/write, wejście, wyjście, koszt
+   wg API, commity ze stopką, commity na main, koszt / commit); „Sesje — transkrypty” = obserwacja 3
+   (pętla główna vs podagenci i przepływy); „Modele” = obserwacja 4; „Razem” = udział odczytu cache
+   (obserwacja 1).
+
+Przebieg kontrolny 2026-10-17 (agent, `--zbiorczo`, tylko liczby): 574 transkrypty sesji, z turami: 1 główny,
+47 podagentów, 441 agentów w 11 przebiegach przepływów; 17 091 tur zmierzonych w 94 s; sesja S1: koszt wg API 1 532,69 USD,
+461 commitów ze stopką (453 na `origin/main`) → 3,32 USD / commit (3,38 na main; 16.10: 2,94); sesja
+„Port” z tabeli S1: 220 commitów, 18 na main — jak w raporcie S1. **Pokrycie transkryptów względem API
+sesji: odczyt cache 99,2 %, zapis cache 99,97 %, wejście 44 %, wyjście 16,8 %** — liczniki `output_tokens`
+w wierszach transkryptu są niższe od licznika sesji (kalibracja szacunku na 5 518 turach to potwierdza:
+szacunek znakowy wyjścia ma medianę +110 % względem „zmierzonego”); wolumen cache z transkryptów jest
+wiarygodny, wyjście per tura — dolna granica. Udział pętli głównej S1 w tokenach: 15,4 %.
+
 ## 4. CLI
 
 ### 4.1 Czasowniki (polskie, z angielskimi aliasami)
@@ -583,6 +665,7 @@ w żądaniu i przechodzą przez szacunek i strażnika.
 | `statystyki --pakiet KAT [--rozmowa ID]` | `stats` | statystyki per rozmowa i łącznie, oś tematu; streszczenia z `--model` |
 | `filtr zapisz\|list\|usun NAZWA [WYRAŻENIE]` | `filter` | zapisane filtry (komander, `szukaj`, API) |
 | `sprawdz --pakiet KAT` | `check` | walidacja pakietu: schematy, odwołania do załączników, hashe, importowalność `handoff/` |
+| `ekonomia [ŹRÓDŁA…] [--sesje PLIK]… [--repo KAT]… [--polacz T=S]… [--szacunek auto\|chars\|tiktoken] [--main GAŁĄŹ] [--csv TABELA] [--pakiet KAT] [--wyrazenie …]` | `tokens`, `economics` | ekonomia tokenów (wymaganie 37, §3.19): zmierzone i oszacowane tokeny, koszt, wyniki per sesja, przebieg, przebieg przepływu, model, narzędzie, dzień i źródło; Markdown/CSV/JSON |
 
 Wspólne opcje: `--zadanie PLIK|-` (JSON lub TOML — `tomllib` jest w bibliotece standardowej 3.11),
 `--jezyk pl|en`, `--json` (wyjście maszynowe na stdout, komunikaty na stderr), `--cache KAT`,
@@ -1027,6 +1110,24 @@ Kształt `conversations/*.json`: `{"title": "…", "created": "…", "messages":
 (`_import_conversation_obj` / `_import_message_list`) i importer C++ już rozumieją; reszta
 w `metadata`.
 
+### 5.16 Ekonomia tokenów — `economics/` w pakiecie, `prices/*.json`, `session_sources/*.json`
+
+```json
+{"schema": "loom.extract.prices/2", "id": "anthropic", "currency": "USD", "unit": "per_million_tokens",
+ "entries": [{"pattern": "claude-*", "input": null, "output": null, "cache_write": null, "cache_write_1h": null,
+              "cache_read": null, "valid_from": null, "source": null, "unknown_reason": {"pl": "…", "en": "…"}}]}
+```
+
+Wpis z ceną ma `valid_from` (ISO) i `source`; kilka wpisów tego samego wzorca = historia cen (wygrywa
+najnowszy ważny w dniu tury). `session_sources/*.json`: `wrappers` (ścieżki z kropkami: `ccr.data`, `ccr`, …),
+`fields` (id, tytuł, daty, model, `parent_session_id`, liczniki `external_metadata.usage.*`, `cost_usd`).
+`economics/economics.json` (`loom.extract.economics/1`): `settings`, `method` (scalanie wierszy, przypisanie
+narzędzi, strefa dni, kontekst, estymator z metodami i niedostępnymi kodowaniami, `expected_error`),
+`totals`, `providers`, `sessions`, `runs`, `workflow_runs`, `models`, `tools`, `days`, `outcomes`,
+`unknowns` (klucz, liczba, szczegóły — każda rzecz policzona inaczej albo niezmierzona), `prices` (która
+cena obowiązywała dla którego modelu i od–do). Każdy wiersz ma `why` — powód każdej pustej wartości.
+`economics/<tabela>.csv` i `economics/ekonomia.md` mają kolumny z `data/economics/report.json`.
+
 ## 6. Kaskada — semantyka
 
 ### 6.1 Ziarna
@@ -1177,7 +1278,7 @@ rozwidlenia, `leaves_preserved` vs `json_leaves`, wskaźniki załączników rozw
 członkowie nieznani/nieodwołani, `partial`, naprawy) — inwentarz narzędzia podaje te same
 liczniki pod tymi samymi nazwami, żeby dało się je porównać z audytem `loom import`.
 
-## 8. Wymagania 1–36 → mechanizm, preset, odwrócenie
+## 8. Wymagania 1–37 → mechanizm, preset, odwrócenie
 
 Lista rozszerzona przez S1 z list właściciela i filozofii (§0.1); każde wymaganie to preset, nie
 reguła; minimalna konfiguracja = „wskaż archiwum i nazwij temat”.
@@ -1226,8 +1327,14 @@ reguła; minimalna konfiguracja = „wskaż archiwum i nazwij temat”.
 | 34 | determinizm i testy: te same wejścia + przepis → ten sam pakiet; syntetyczne archiwa każdego formatu z przypadkami brzegowymi (gałęzie, narzędzia, brakujące załączniki, duplikaty, mieszane strefy, dwa eksporty jednego konta); prawdziwe eksporty właściciela nigdy w testach ani repo | §9, `reproducible_hash`, strażnik ścieżek, `--zbiorczo` | — | — |
 | 35 | rozszerzalność: nowy format, profil, przepływ, operacja edycji, keymap = pliki danych (dla parsera lub edycji dodatkowo jeden moduł Pythona zarejestrowany wpisem) pod `loom/tools/extract/data/`, bez zmiany rdzenia; nieznane rodzaje bloków do kubełka `unknown` z przykładem; hooki na funkcje użytkownika z przepisu | §3.5, `reader: "user:x"`, `edits/*.json#module`, `op: user.call` (§3.12) | kod użytkownika ładowany tylko po jawnym wskazaniu; raport mówi, że jest użytkownika | — |
 | 36 | raport po polsku, w słowach właściciela: co znaleziono, czego nie dało się odczytać, co zamaskowano, ile kosztowało, co zmieniono | `RAPORT.md`, i18n (§5.9) | `pl` | `--jezyk en` |
+| **Ekonomia** | | | | |
+| 37 | **ekonomia tokenów** (właściciel 2026-10-16: „ilościowa analiza ekonomii tokenów”): tokeny zmierzone (liczniki transkryptów Claude Code per tura, lista sesji API) i oszacowane (eksporty bez liczników, metoda nazwana, błąd zmierzony kalibracją), koszt z cen jako danych (z datą i źródłem; brak ceny = „nieznany”), wyniki (commity per sesja ze stopki, na main, linie; pliki z Edit/Write), per sesja, przebieg, przebieg przepływu, model, narzędzie, dzień i źródło; porównanie dostawców; Markdown/CSV/JSON | `economics.py`, `prices.py`, `tokencount.py`, operacja `token_economics`, czasownik `ekonomia`/`tokens`, `data/prices/*.json`, `data/session_sources/*.json`, `data/economics/report.json`, `formats/claude_code.json#usage`, inwentarz `has_usage`/`has_tool_traces`/`reasoning` (§3.19) | scalanie wierszy jednej odpowiedzi `max`; narzędzia `split`; dni w UTC; kontekst `path`; szacunek `auto` (tiktoken tylko offline, inaczej znaki); `main_ref: main`; stopka `Claude-Session`; ceny dostarczone `null` (brak źródła w `loom/data`); `report.max_rows: 0` = wszystkie | `--polacz`, `--szacunek chars`, `--main GAŁĄŹ`, `economics.usage.duplicate_lines: last\|sum`, `economics.tool_attribution: full`, `economics.day_zone: <IANA>`, `economics.estimate.context: none`, ceny w nakładce `<dane>/extract/prices/*.json`, kolumny w nakładce `economics/report.json` |
 
 ### 8.1 Rozszerzenia z filozofii (37–64; dawne 29–56)
+
+Numeracja tej tabeli i §8.2 to numeracja **rozszerzeń** (od 2026-10-17 tabela główna ma też
+wymaganie 37 — ekonomię tokenów): „wymaganie 37” = ekonomia tokenów, „rozszerzenie 37” = wiele tematów
+w jednym przebiegu. Numery rozszerzeń zostają, żeby nie unieważnić odwołań w raportach.
 
 Wiersze oznaczone *(⊂ §8: n)* są już zawarte w wymaganiu n powyżej i zostają tu jako
 uszczegółowienie mechanizmu.
@@ -1456,6 +1563,16 @@ uszczegółowienie mechanizmu.
 | Przegląd: czytnik użytkownika `reader: "user:<nazwa>"` = `<nakładka>/readers/<nazwa>.py`, tylko z `--kod-uzytkownika`, nazwany w raporcie; nieznany czytnik = jednostka „unknown” z powodem (F9); uszkodzony członek zip = „unreadable” z powodem, ostrzeżenie, reszta czytana (F40) | §8 wiersz 35; jedno uszkodzenie nie może zatrzymać przebiegu | — |
 | Przegląd: `wytnij` bez `--pakiet` = preset zdania `cut.package_default` (`ekstrakt-{topic}` w bieżącym katalogu), wypisany (F11); `report.max_list` dla każdej listy raportu z linią „… i jeszcze N” (F12); powody (`why.*`) i błędy silnika tłumaczone (F13); puste wiersze wymaganej nieobecności pominięte; wiadomości bez treści w profilu policzone (F15) | minimalna konfiguracja; brak wymyślonych limitów; polski raport | `--pakiet`, `report.max_list` |
 | Przegląd: presety vs §8 — `edits.preview_sample: 0` (cały patch) i kontynuacja 240 min / 2 terminy zostają; spec dopasowana (F18) | 0 = bez cięcia; wyrocznia fixture'ów | `edits.preview_sample: 20`; `timeline.continuation.window_minutes: 1440`, `min_shared_terms: 3` |
+| **Plaster 4 (2026-10-17, wymaganie 37):** ekonomia tokenów jako jedna operacja `token_economics` (CLI `ekonomia`/`tokens`, komander menu F2 z `layout.json#menu_ops` i `:op`, `serwuj` `POST /api/op`); wynik w stanie silnika, pliki w pakiecie przez `write` (`economics/`), podsumowanie w manifeście i `RAPORT.md` | jeden silnik, trzy twarze; pakiet odtwarzalny z przepisu (test: ten sam `economics.json` po `przepis uruchom`) | usunąć wpis z `ops.json` |
+| Plaster 4: liczniki per tura zostają na wiadomości (`meta.usage`, `api_id`, `request_id`, `cost_usd` wiersza) — mapa pól w `formats/claude_code.json#usage`, pola spoza mapy w `usage.extra`; jedna odpowiedź API w kilku wierszach scalana przy liczeniu (`max`; zmierzone 2026-10-17: w 393 z 12 220 odpowiedzi wielowierszowych wartości różniły się, zawsze z maksimum w ostatnim wierszu) | czytnik nie traci informacji, ekonomia nie liczy podwójnie | `economics.usage.duplicate_lines: last` (= ostatni wiersz) albo `sum` (bez scalania) |
+| Plaster 4: transkrypty podagentów i agentów przepływów rozpoznawane po katalogu (`subagents/`, `workflows/<przebieg>/` — nazwy w `formats/claude_code.json#transcripts`); `ext_id` = ścieżka od katalogu sesji (unikalna między przebiegami), `parent_session_how: path`; plik obok sesji bez takiego katalogu — jak dotąd po `sessionId` | rodzic zmierzony, nie zgadywany; dwa przebiegi przepływu z agentem o tej samej nazwie nie zlewają się w „wersje” | `transcripts: {}` w nakładce formatu (wtedy tylko `sessionId`) |
+| Plaster 4: lista sesji tylko z pliku (`--sesje`), kształt jako dane (`session_sources/*.json`: `ccr.data`, `ccr`, …); powiązanie transkrypt→sesja: jawne > to samo id > stopka `Claude-Session` w poleceniu `git commit` transkryptu (najczęstsza, wiele = zgłoszone) | zero sieci; stopka to zmierzony ślad, który sesja zostawia w commitach | `--polacz T=S`; `economics.links.trailer_in_transcripts: false` |
+| Plaster 4: commity z `git log --all` (tylko odczyt, `GIT_TERMINAL_PROMPT=0`, `core.fsmonitor=false`), sesja z ostatniego segmentu stopki, „na main” = osiągalne z `economics.git.main_ref`; brak gałęzi = „nieznane”, nie 0 | liczby S1 (`git log --all … grep Claude-Session`) odtworzone tą samą metodą | `--main GAŁĄŹ`, `economics.git.trailer`, `economics.git.session_id` |
+| Plaster 4: ceny jako dane w `data/prices/*.json` z `valid_from` i źródłem, jedna książka cen (`prices.py`) także dla przepływów z modelem; dostarczone wpisy bez cen, bo `loom/data` nie ma cennika per model (progi `guardian.pack` to klasy, nie ceny) | nic nie wymyślone; koszt „nieznany (brak ceny)” z powodem; koszt z API sesji osobno | wpisy z cenami w nakładce `<dane>/extract/prices/<id>.json` |
+| Plaster 4: szacunek dla źródeł bez liczników per wiadomość: `tiktoken` tylko zainstalowany i offline (ładowanie pod strażnikiem sieci), inaczej znaki / `tokens.chars_per_token`; kontekst wysłany = ścieżka rozmowy (bez cache); spodziewany błąd = kalibracja na turach z licznikami albo „nieznany” | metoda i błąd zawsze w wyniku; zero sieci | `--szacunek chars\|tiktoken`, `economics.estimate.context: none`, `economics.estimate.tiktoken.encodings` |
+| Plaster 4: narzędzia dostają tokeny tury po równo między jej wywołania (`split`, sumy narzędzi = całość) | porównywalne udziały | `economics.tool_attribution: full` (zgłoszone: sumy > całość) |
+| Plaster 4: `--zbiorczo` — etykiety numerowane zamiast tytułów, id sesji/transkryptów, ścieżek, nazw plików i hashy commitów; w przepisie parametry typu `path`/`paths` → `nazwa-N`, powiązania (`identifiers: true`) → `{"count": N}` (dotyczy wszystkich operacji, nie tylko ekonomii) | DIP26: tylko liczby | tryb pełny jest presetem |
+| Plaster 4: przebieg bez źródeł (tylko `--sesje` i `--repo`) jest dozwolony — migawka pusta, tabela sesji z API i git | tabela S1 nie wymaga transkryptów | podać źródła |
 
 ## 11. Przyrosty
 
@@ -1556,6 +1673,18 @@ niezaznaczonych rozmów — F33 częściowo: opakowanie `{"conversations": [...]
 pamięci); `preserve` zachowuje nazwy członków źródła (także nazwy plików załączników) i przy redakcji — jak bajty
 załączników binarnych, raport to mówi; katalog `attachments/<archiwum>/` nazwany od pliku archiwum; odwołanie
 `sha256` do krótkiego terminu da się zgadnąć próbując imion — drogą odtworzenia jest magazyn, nie hash.
+
+**Stan 2026-10-17 (S1), plaster 4 — ekonomia tokenów (wymaganie 37):** na tej samej gałęzi — `economics.py`,
+`prices.py`, `tokencount.py`, `ops_economics.py`; czytnik Claude Code trzyma liczniki per tura i miejsce transkryptu
+(podagent, agent przepływu, rodzic); inwentarz `has_usage`/`has_tool_traces`/`reasoning`; dane `data/prices/*.json`,
+`data/session_sources/claude_code_list_sessions.json`, `data/economics/report.json`, presety `economics.*`, typ
+parametru `paths`; czasownik `ekonomia` (`tokens`, `economics`), menu komandera z `layout.json#menu_ops`; fixture
+`economics/` z generatora (transkrypty z `usage`, odpowiedź w trzech wierszach, `<synthetic>`, podagent, dwa agenty
+przepływu, lista sesji w kształcie `list_sessions`), repozytorium git budowane w teście. Testy: `test_token_economics.py`.
+Odtworzenie liczb S1 — §3.19.1. **Nie weszło:** ceny modeli (brak źródła w repozytorium — wpisy w nakładce),
+koszt żądań narzędzi serwera (wyszukiwania www są liczone, nie wyceniane), pole `iterations` w `usage`
+(zostaje w `usage.extra`, zgłoszone), wyjaśnienie zaniżonego `output_tokens` w transkryptach (zmierzone pokrycie
+16,8 % względem API sesji; przyczyna po stronie klienta Claude Code — do sprawdzenia, nie zgadujemy).
 
 Otwarte (do zmierzenia, nie do zgadywania): rzeczywisty kształt eksportów Gemini i Grok;
 pełność `thinking` w bieżących eksportach Claude; czy aplikacje źródłowe importują własny format
