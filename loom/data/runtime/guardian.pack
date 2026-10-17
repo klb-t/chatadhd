@@ -2154,7 +2154,25 @@
             "readers": [
               "loom/src/actions/runner.cpp run_use_model"
             ]
-          }
+          },
+          "today_reads": [
+            {
+              "role": "action.*",
+              "level": "person",
+              "meaning": {
+                "pl": "Po modelu podanym w kroku: Twój wybór dla działania (rola Model dla działania) albo wybór tej rozmowy.",
+                "en": "After the model the step names: your choice for the action (role Model for an action) or this conversation's choice."
+              }
+            },
+            {
+              "setting": "default_model",
+              "level": "person",
+              "meaning": {
+                "pl": "Bez wyboru: „Model rozmowy” (default_model) z Twoich ustawień.",
+                "en": "Without a choice: “Conversation model” (default_model) from your settings."
+              }
+            }
+          ]
         }
       },
       "tiers": [

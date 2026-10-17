@@ -1871,9 +1871,15 @@ const Json& role_rows(Impl& c) {
       today_chain = Json::array();
       for (std::size_t i = 0; i < reads.size(); ++i) {
         const std::string key = setting_of_step(reads[i]);
-        // level chain: through the scope chain as the reader does (a conversation or a unit may set it); person: config.json.
+        const std::string read_role = json::get_string(reads[i], "role");
+        // level chain: through the scope chain as the reader does (a conversation or a unit may set it); person: config.json; a role: your
+        // choice for it or this conversation's (the ports, never the preset's own model).
         Json v = nullptr;
-        if (!key.empty() && json::get_string(reads[i], "level", "person") == "chain" && resolver) {
+        if (!read_role.empty()) {
+          if (auto res = ports->resolve(read_role, conv_ports, c.env.conv_id, settings); res && json::get_string(*res, "scope") != "installation")
+            v = res->value("params", Json::object()).value("model", Json(nullptr));
+          else if (!res) log::write(log::Level::Debug, kLog, "today's read of role " + read_role + " not resolved: " + res.error().message);
+        } else if (!key.empty() && json::get_string(reads[i], "level", "person") == "chain" && resolver) {
           scopes::Binding b;
           b.key = key;
           b.conv_id = c.env.conv_id;
@@ -1885,10 +1891,11 @@ const Json& role_rows(Impl& c) {
         const bool gives = model.empty() && v.is_string() && !v.get<std::string>().empty();
         if (gives) {
           model = v.get<std::string>();
-          via = "today:" + key;
+          via = read_role.empty() ? "today:" + key : "today:role:" + read_role;
         }
-        today_chain.push_back(Json{{"step", i + 1}, {"setting", key.empty() ? Json(nullptr) : Json(key)}, {"value", v}, {"decides", gives},
-                                   {"meaning", c.say(reads[i].value("meaning", Json()))}});
+        Json step{{"step", i + 1}, {"setting", key.empty() ? Json(nullptr) : Json(key)}, {"value", v}, {"decides", gives}, {"meaning", c.say(reads[i].value("meaning", Json()))}};
+        if (!read_role.empty()) step["role"] = read_role;
+        today_chain.push_back(std::move(step));
       }
       if (model.empty()) reason = "no_model";
     } else if (auto res = ports->resolve(id, conv_ports, c.env.conv_id, settings)) {
