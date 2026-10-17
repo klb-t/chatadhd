@@ -57,7 +57,9 @@ try {
     await shot("02-rozmowa");
   });
   await step("5 klucz dostawcy w Ustawieniach", async () => {
-    await page.getByTestId("nav-settings").click();
+    // Since the full-screen chat start view (R56/P20) Settings live in the ⋮ menu; the workbench header still has nav-settings.
+    if (await page.getByTestId("nav-settings").isVisible().catch(() => false)) await page.getByTestId("nav-settings").click();
+    else { await page.getByTestId("shell-menu-toggle").click(); await page.getByTestId("shell-menu-settings").click(); }
     await page.getByTestId("settings-panel").waitFor();
     await page.getByTestId("cfg-base-url").fill(provider);
     await page.getByTestId("cfg-base-url").blur();

@@ -66,7 +66,7 @@ jest okienko rozmowy, a u góry zakładki („Graph”, „Memory”, „Import�
 
 ## 5. Klucz dostawcy w Ustawieniach (sprawdzone w Chromium)
 
-Zakładka „Settings”, sekcja „API KEYS”, pole „OpenRouter API key (chat)”: wklej klucz, „Save”; obok pojawi się
+Menu **⋮** w prawym górnym rogu czatu → „Ustawienia” („Settings”, gdy przeglądarka jest po angielsku; w Warsztacie to zakładka w nagłówku), sekcja „API KEYS”, pole „OpenRouter API key (chat)”: wklej klucz, „Save”; obok pojawi się
 „set”. Wyżej są „Base URL” (domyślnie OpenRouter) i „Default model”. Klucz jest zapisany po stronie serwera, w katalogu
 Twojego konta. Nic nie jest wysyłane, dopóki sam nie wyślesz wiadomości.
 
