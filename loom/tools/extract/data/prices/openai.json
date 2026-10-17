@@ -13,7 +13,9 @@
   "output": "wyjście",
   "cache_write": "zapis cache (5 min)",
   "cache_write_1h": "zapis cache 1 h (opcjonalnie)",
-  "cache_read": "odczyt cache"
+  "cache_read": "odczyt cache",
+  "web_search_per_1000": "wyszukiwania www (za 1000 żądań; null = nieznana — koszt tury z wyszukiwaniem nieznany)",
+  "web_fetch_per_1000": "pobrania www (za 1000 żądań; null = nieznana)"
  },
  "entries": [
   {
@@ -25,9 +27,12 @@
    "valid_from": null,
    "source": null,
    "unknown_reason": {
-    "pl": "brak ceny ze źródłem w repozytorium: loom/data nie ma cennika per model (guardian.pack ma tylko progi klas cheap/mid do klasyfikacji modelu o znanej cenie, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
-    "en": "no price with a source in the repository: loom/data has no per-model price list (guardian.pack only has cheap/mid class ceilings used to classify a model whose price is known, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
-   }
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
   },
   {
    "pattern": "o1*",
@@ -38,9 +43,12 @@
    "valid_from": null,
    "source": null,
    "unknown_reason": {
-    "pl": "brak ceny ze źródłem w repozytorium: loom/data nie ma cennika per model (guardian.pack ma tylko progi klas cheap/mid do klasyfikacji modelu o znanej cenie, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
-    "en": "no price with a source in the repository: loom/data has no per-model price list (guardian.pack only has cheap/mid class ceilings used to classify a model whose price is known, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
-   }
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
   },
   {
    "pattern": "o3*",
@@ -51,9 +59,12 @@
    "valid_from": null,
    "source": null,
    "unknown_reason": {
-    "pl": "brak ceny ze źródłem w repozytorium: loom/data nie ma cennika per model (guardian.pack ma tylko progi klas cheap/mid do klasyfikacji modelu o znanej cenie, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
-    "en": "no price with a source in the repository: loom/data has no per-model price list (guardian.pack only has cheap/mid class ceilings used to classify a model whose price is known, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
-   }
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
   },
   {
    "pattern": "o4*",
@@ -64,9 +75,12 @@
    "valid_from": null,
    "source": null,
    "unknown_reason": {
-    "pl": "brak ceny ze źródłem w repozytorium: loom/data nie ma cennika per model (guardian.pack ma tylko progi klas cheap/mid do klasyfikacji modelu o znanej cenie, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
-    "en": "no price with a source in the repository: loom/data has no per-model price list (guardian.pack only has cheap/mid class ceilings used to classify a model whose price is known, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
-   }
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
   },
   {
    "pattern": "chatgpt-*",
@@ -77,9 +91,12 @@
    "valid_from": null,
    "source": null,
    "unknown_reason": {
-    "pl": "brak ceny ze źródłem w repozytorium: loom/data nie ma cennika per model (guardian.pack ma tylko progi klas cheap/mid do klasyfikacji modelu o znanej cenie, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
-    "en": "no price with a source in the repository: loom/data has no per-model price list (guardian.pack only has cheap/mid class ceilings used to classify a model whose price is known, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
-   }
+    "pl": "brak ceny ze źródłem w repozytorium dla tego dostawcy: jedyny cennik per model (loom/tools/eval/pricing_2026-09-25.json) ma tylko ceny Anthropic i mówi, że innych dostawców trzeba dodać z ich własnych stron cen, nigdy z pamięci; uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source in the repository for this vendor: the one per-model price list (loom/tools/eval/pricing_2026-09-25.json) has Anthropic prices only and says other vendors must be added from their own price pages, never from memory; add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
   }
  ]
 }

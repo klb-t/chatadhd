@@ -28,6 +28,7 @@ def build_inventory(archives: list[Archive], units: list[Unit], merged: Optional
     ds = ds or default_store()
     gap_days = float(ds.preset("timeline.gap_days", 30) or 0)
     thinking_min = int(ds.preset("thinking.full_min_chars", 200))
+    reasoning_share = float(ds.preset("thinking.reasoning_share", 0.5))
     tokens_cfg = ds.preset("tokens.chars_per_token", {})
     examples_n = int(ds.preset("report.examples_per_unknown", 1))
     max_list = int(ds.preset("report.max_list", 0))
@@ -50,7 +51,7 @@ def build_inventory(archives: list[Archive], units: list[Unit], merged: Optional
                             {"name": m.name, "size": m.size, "why": m.sniff_how} for m in (unknown if max_list <= 0 else unknown[:max_list])]},
             "units": _count([u.kind for u in units if u.source.get("sha256") == a.sha256 and u.source.get("archive") == a.label]),
             "economics": economics_fields([u for u in units if u.source.get("sha256") == a.sha256 and u.source.get("archive") == a.label
-                                           and u.kind in ("conversation", "session")], thinking_min),
+                                           and u.kind in ("conversation", "session")], thinking_min, reasoning_share),
         }
         inv["archives"].append(entry)
     inv["how"]["archives"] = "scan: sha256 of every member streamed; format from content (sniff rules named per member)"
@@ -219,24 +220,40 @@ def build_inventory(archives: list[Archive], units: list[Unit], merged: Optional
     inv["how"]["absent"] = "known_absent from the format file + observations over the read units (counts, not guesses)"
     # -- token economics: what each source can tell (measured, per format and in total) ------------------------
     fmts = sorted({str(u.source.get("format")) for u in convs if u.source.get("format")})
-    inv["economics"] = {"by_format": {fid: economics_fields([u for u in convs if u.source.get("format") == fid], thinking_min)
-                                      for fid in fmts},
-                        "total": economics_fields(convs, thinking_min)}
+    inv["economics"] = {"by_format": {fid: economics_fields([u for u in convs if u.source.get("format") == fid], thinking_min,
+                                                            reasoning_share) for fid in fmts},
+                        "total": economics_fields(convs, thinking_min, reasoning_share)}
     inv["how"]["economics"] = ECONOMICS_HOW
     return inv
 
 
 ECONOMICS_HOW = ("has_usage = at least one message carries measured token counters (usage of the format file); "
-                 "has_tool_traces = at least one tool_use/tool_result block or tool-role message; reasoning = full when "
-                 "a thinking block is complete and >= thinking.full_min_chars, summary when thinking blocks are only "
-                 "summaries, redacted when all are redacted, short when present but below the threshold, none when there "
-                 "is no thinking block — counted over the read messages, never inferred from the format name")
+                 "has_tool_traces = at least one tool_use/tool_result block or tool-role message; reasoning = the class "
+                 "of the thinking blocks by share (each block: redacted; empty = the text is withheld, a signature only; "
+                 "summary; full = complete and >= thinking.full_min_chars; short = below the threshold): full when full "
+                 "blocks are at least thinking.reasoning_share of all, else the class that has that share, else mixed; "
+                 "none when there is no thinking block — counted over the read messages, never inferred from the format "
+                 "name; reasoning_blocks has the counts")
+
+REASONING_CLASSES = ("full", "summary", "redacted", "empty", "short")
 
 
-def economics_fields(units: list[Unit], thinking_min: int) -> dict[str, Any]:
-    """Measured: counters present, tool traces present, how much reasoning the export keeps."""
+def reasoning_class(th: dict[str, int], share: float) -> str:
+    """The reasoning a source keeps, from the counts of its thinking blocks: ``full`` when full blocks are at least
+    ``share`` of all (preset ``thinking.reasoning_share``), else the class holding that share, else ``mixed``."""
+    n = th.get("blocks", 0)
+    if not n:
+        return "none"
+    if th.get("full", 0) and th["full"] >= share * n:
+        return "full"
+    best = max(REASONING_CLASSES, key=lambda k: (th.get(k, 0), -REASONING_CLASSES.index(k)))
+    return best if th.get(best, 0) >= share * n else "mixed"
+
+
+def economics_fields(units: list[Unit], thinking_min: int, reasoning_share: float = 0.5) -> dict[str, Any]:
+    """Measured: counters present, tool traces present, how much reasoning the export keeps (counts per class)."""
     usage = assistant = tool_use = tool_result = tool_role = 0
-    th = {"blocks": 0, "full": 0, "summary": 0, "redacted": 0, "short": 0}
+    th = {"blocks": 0, "full": 0, "summary": 0, "redacted": 0, "empty": 0, "short": 0}
     for u in units:
         for m in u.messages:
             if isinstance(m.meta.get("usage"), dict):
@@ -254,26 +271,18 @@ def economics_fields(units: list[Unit], thinking_min: int) -> dict[str, Any]:
                     th["blocks"] += 1
                     if b.extra.get("redacted"):
                         th["redacted"] += 1
+                    elif b.extra.get("withheld") or not (b.text or "").strip():
+                        th["empty"] += 1
                     elif b.complete is False:
                         th["summary"] += 1
                     elif b.chars() >= thinking_min:
                         th["full"] += 1
                     else:
                         th["short"] += 1
-    if not th["blocks"]:
-        reasoning = "none"
-    elif th["full"]:
-        reasoning = "full"
-    elif th["summary"]:
-        reasoning = "summary"
-    elif th["redacted"] == th["blocks"]:
-        reasoning = "redacted"
-    else:
-        reasoning = "short"
     return {"has_usage": usage > 0, "usage_messages": usage, "assistant_messages": assistant,
             "has_tool_traces": (tool_use + tool_result + tool_role) > 0,
             "tool_traces": {"tool_use": tool_use, "tool_result": tool_result, "tool_role_messages": tool_role},
-            "reasoning": reasoning, "reasoning_blocks": th}
+            "reasoning": reasoning_class(th, reasoning_share), "reasoning_blocks": th}
 
 
 def _count(values: list[Any]) -> dict[str, int]:

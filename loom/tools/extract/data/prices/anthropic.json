@@ -13,7 +13,9 @@
   "output": "wyjście",
   "cache_write": "zapis cache (5 min)",
   "cache_write_1h": "zapis cache 1 h (opcjonalnie)",
-  "cache_read": "odczyt cache"
+  "cache_read": "odczyt cache",
+  "web_search_per_1000": "wyszukiwania www (za 1000 żądań; null = nieznana — koszt tury z wyszukiwaniem nieznany)",
+  "web_fetch_per_1000": "pobrania www (za 1000 żądań; null = nieznana)"
  },
  "entries": [
   {
@@ -25,8 +27,75 @@
    "valid_from": null,
    "source": null,
    "unknown_reason": {
-    "pl": "brak ceny ze źródłem w repozytorium: loom/data nie ma cennika per model (guardian.pack ma tylko progi klas cheap/mid do klasyfikacji modelu o znanej cenie, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
-    "en": "no price with a source in the repository: loom/data has no per-model price list (guardian.pack only has cheap/mid class ceilings used to classify a model whose price is known, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+    "pl": "brak ceny ze źródłem dla tego modelu: jedyny cennik per model w repozytorium (loom/tools/eval/pricing_2026-09-25.json, Anthropic, stan 2026-09-25, wpisany obok jako osobne wpisy) nie ma tego modelu (guardian.pack ma tylko progi klas cheap/mid, economy.pack token_price_usd_per_million = null); uzupełnij wpis w nakładce <katalog danych>/extract/prices/<id>.json z datą i źródłem",
+    "en": "no price with a source for this model: the one per-model price list in the repository (loom/tools/eval/pricing_2026-09-25.json, Anthropic, as of 2026-09-25, entered next to this as separate entries) does not list it (guardian.pack only has cheap/mid class ceilings, economy.pack token_price_usd_per_million = null); add an entry in the overlay <data dir>/extract/prices/<id>.json with a date and a source"
+   },
+   "cache_write_1h": null,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null
+  },
+  {
+   "pattern": "claude-fable-5-1",
+   "input": 10.0,
+   "output": 50.0,
+   "cache_write": null,
+   "cache_write_1h": null,
+   "cache_read": 0.25,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null,
+   "valid_from": "2026-09-25",
+   "source": "Anthropic first-party API list prices (Claude API reference cached 2026-09-25). Verify before spending; other providers (e.g. OpenRouter/GPT) must be added from their own price pages, never from memory. — loom/tools/eval/pricing_2026-09-25.json",
+   "note": {
+    "pl": "zapis cache i zapis 1 h: brak ceny w źródle — tura z zapisem cache ma koszt nieznany (brak ceny: zapis cache), nigdy wyliczony z mnożnika",
+    "en": "cache write and 1 h cache write: no price in the source — a turn that writes the cache has an unknown cost (no price: cache write), never derived from a multiplier"
+   }
+  },
+  {
+   "pattern": "claude-haiku-4-5",
+   "input": 1.0,
+   "output": 5.0,
+   "cache_write": null,
+   "cache_write_1h": null,
+   "cache_read": 0.1,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null,
+   "valid_from": "2026-09-25",
+   "source": "Anthropic first-party API list prices (Claude API reference cached 2026-09-25). Verify before spending; other providers (e.g. OpenRouter/GPT) must be added from their own price pages, never from memory. — loom/tools/eval/pricing_2026-09-25.json",
+   "note": {
+    "pl": "zapis cache i zapis 1 h: brak ceny w źródle — tura z zapisem cache ma koszt nieznany (brak ceny: zapis cache), nigdy wyliczony z mnożnika",
+    "en": "cache write and 1 h cache write: no price in the source — a turn that writes the cache has an unknown cost (no price: cache write), never derived from a multiplier"
+   }
+  },
+  {
+   "pattern": "claude-opus-5-5",
+   "input": 4.0,
+   "output": 20.0,
+   "cache_write": null,
+   "cache_write_1h": null,
+   "cache_read": 0.2,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null,
+   "valid_from": "2026-09-25",
+   "source": "Anthropic first-party API list prices (Claude API reference cached 2026-09-25). Verify before spending; other providers (e.g. OpenRouter/GPT) must be added from their own price pages, never from memory. — loom/tools/eval/pricing_2026-09-25.json",
+   "note": {
+    "pl": "zapis cache i zapis 1 h: brak ceny w źródle — tura z zapisem cache ma koszt nieznany (brak ceny: zapis cache), nigdy wyliczony z mnożnika",
+    "en": "cache write and 1 h cache write: no price in the source — a turn that writes the cache has an unknown cost (no price: cache write), never derived from a multiplier"
+   }
+  },
+  {
+   "pattern": "claude-sonnet-5-5",
+   "input": 2.0,
+   "output": 10.0,
+   "cache_write": null,
+   "cache_write_1h": null,
+   "cache_read": 0.2,
+   "web_search_per_1000": null,
+   "web_fetch_per_1000": null,
+   "valid_from": "2026-09-25",
+   "source": "Anthropic first-party API list prices (Claude API reference cached 2026-09-25). Verify before spending; other providers (e.g. OpenRouter/GPT) must be added from their own price pages, never from memory. — loom/tools/eval/pricing_2026-09-25.json",
+   "note": {
+    "pl": "zapis cache i zapis 1 h: brak ceny w źródle — tura z zapisem cache ma koszt nieznany (brak ceny: zapis cache), nigdy wyliczony z mnożnika",
+    "en": "cache write and 1 h cache write: no price in the source — a turn that writes the cache has an unknown cost (no price: cache write), never derived from a multiplier"
    }
   }
  ]

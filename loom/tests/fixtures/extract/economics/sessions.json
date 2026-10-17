@@ -8,6 +8,16 @@
     "updated_at": "2026-10-11T09:10:00Z",
     "configured_model": "claude-x-large",
     "status": "idle",
+    "session_context": {
+     "sources": [
+      {
+       "git_repository": {
+        "url": "https://example.invalid/econ/repo-a",
+        "revision": "refs/heads/main"
+       }
+      }
+     ]
+    },
     "external_metadata": {
      "usage": {
       "cache_read_tokens": 3000,
@@ -24,6 +34,15 @@
     "created_at": "2026-10-09T10:00:00Z",
     "updated_at": "2026-10-09T11:00:00Z",
     "configured_model": "claude-x-small",
+    "session_context": {
+     "sources": [
+      {
+       "git_repository": {
+        "url": "https://example.invalid/other/repo-b"
+       }
+      }
+     ]
+    },
     "external_metadata": {
      "usage": {
       "cache_read_tokens": 100,

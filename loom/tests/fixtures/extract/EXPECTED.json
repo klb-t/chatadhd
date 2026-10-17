@@ -63,18 +63,19 @@
   "api_cache_read_TEST1": 3000,
   "api_cost_TEST1": 1.5,
   "assistant_without_counters": 1,
+  "commit_hash_in_result": "abc1234",
   "days": {
    "2026-10-10": 6,
    "2026-10-11": 1
   },
-  "duplicate_lines": 2,
+  "duplicate_lines": 3,
   "edit_calls_E1": 3,
   "edits_failed_E1": 1,
   "family_E1": {
    "cache_creation": 1910,
    "cache_read": 2900,
    "input": 23,
-   "output": 280
+   "output": 263
   },
   "family_E2": {
    "cache_creation": 0,
@@ -99,7 +100,17 @@
    "run-1",
    "src/a.py",
    "src/b.py",
-   "Dodaj licznik tokenów"
+   "Dodaj licznik tokenów",
+   "Czytanie raportu",
+   "Krok w1",
+   "Przepływ testowy",
+   "general-purpose",
+   "workflow-step",
+   "abc1234",
+   "example.invalid/econ",
+   "example.invalid/other",
+   "repo-a",
+   "repo-b"
   ],
   "git_note": "the test builds the repository: 2 commits with session_TEST1 on main, 1 with session_TEST3 on a side branch, 1 without a trailer",
   "ignored_synthetic": 1,
@@ -114,6 +125,8 @@
    "claude-x-large": 3,
    "claude-x-small": 4
   },
+  "stale_output_tokens": 3,
+  "stale_output_turns": 1,
   "tool_calls": {
    "Bash": 1,
    "Edit": 2,
@@ -127,7 +140,7 @@
    "cache_creation": 1910,
    "cache_read": 3700,
    "input": 27,
-   "output": 305
+   "output": 288
   },
   "transcripts_E1": 4,
   "turns": 7,

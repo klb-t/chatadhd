@@ -210,11 +210,14 @@
                                    "repos": {"type": "paths", "default": []},
                                    "links": {"type": "object", "default": {}, "identifiers": true},
                                    "duplicate_lines": {"type": "enum", "values": ["max", "last", "sum"], "preset": "economics.usage.duplicate_lines"},
+                                   "stale_output": {"type": "enum", "values": ["keep", "estimate"], "preset": "economics.usage.stale_output"},
+                                   "skip_session_side_files": {"type": "bool", "preset": "economics.skip_session_side_files"},
+                                   "per_turn": {"type": "bool", "preset": "economics.outcomes.per_turn"},
                                    "tool_attribution": {"type": "enum", "values": ["split", "full"], "preset": "economics.tool_attribution"},
                                    "day_zone": {"type": "string", "preset": "economics.day_zone"},
                                    "estimate": {"type": "enum", "values": ["auto", "chars", "tiktoken"], "preset": "economics.estimate.method"},
                                    "context": {"type": "enum", "values": ["path", "none"], "preset": "economics.estimate.context"},
-                                   "main_ref": {"type": "string", "preset": "economics.git.main_ref"}},
+                                   "main_ref": {"type": "strings", "preset": "economics.git.main_ref"}},
                         "records": true, "long": true, "needs_model": false, "mutates_package": false, "faces": ["cli", "tui", "api"]}
   }
 }

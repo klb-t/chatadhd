@@ -14,9 +14,11 @@ from .i18n import label
 
 log = logging.getLogger(__name__)
 
-KINDS = ("input", "output", "cache_write", "cache_write_1h", "cache_read")
+KINDS = ("input", "output", "cache_write", "cache_write_1h", "cache_read", "web_search_per_1000", "web_fetch_per_1000")
 # usage counter → price field (cache_creation is written at the 5-minute price unless split into 1 h)
 USAGE_PRICE = {"input": "input", "output": "output", "cache_creation": "cache_write", "cache_read": "cache_read"}
+# server-tool request counter → (price field per 1 000 requests, the name a missing price is reported under)
+REQUEST_PRICE = {"web_search_requests": ("web_search_per_1000", "web_search"), "web_fetch_requests": ("web_fetch_per_1000", "web_fetch")}
 
 
 def _specificity(pattern: str) -> int:
@@ -138,8 +140,10 @@ class PriceBook:
 
 
 def cost_of(tokens: dict[str, int], hit: dict[str, Any]) -> dict[str, Any]:
-    """Cost of measured or estimated ``tokens`` (keys input / output / cache_creation / cache_creation_1h / cache_read)
-    at the price ``hit``.  Every kind with tokens > 0 needs its price; a missing one makes the cost unknown and is named."""
+    """Cost of measured or estimated ``tokens`` (keys input / output / cache_creation / cache_creation_1h / cache_read,
+    and the server-tool request counters web_search_requests / web_fetch_requests) at the price ``hit``.  Every kind
+    with tokens (or requests) > 0 needs its price; a missing one makes the cost unknown and is named — a turn that
+    searched the web is never priced as if the searches were free."""
     if not hit.get("known"):
         return {"amount": None, "known": False, "reason": hit.get("reason", "no_entry"), "missing": []}
     prices = hit["prices"]
@@ -162,6 +166,15 @@ def cost_of(tokens: dict[str, int], hit: dict[str, Any]) -> dict[str, Any]:
             missing.append(field)
             continue
         amount += n * p / 1e6
+    for counter, (field, name) in REQUEST_PRICE.items():
+        n = int(tokens.get(counter) or 0)
+        if n <= 0:
+            continue
+        p = prices.get(field)
+        if p is None:
+            missing.append(name)
+            continue
+        amount += n * p / 1000.0
     if missing:
         return {"amount": None, "known": False, "reason": "price_field_missing", "missing": sorted(set(missing)),
                 "currency": hit.get("currency", "USD")}

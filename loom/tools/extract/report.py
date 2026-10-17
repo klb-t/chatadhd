@@ -235,6 +235,9 @@ def build_report(eng: Any, *, aggregate: bool = False) -> str:
         tot = econ.get("totals") or {}
         out.append("- " + t("report.economics", turns=tot.get("turns", 0), measured=tot.get("turns_measured", 0),
                             estimated=tot.get("turns_estimated", 0), file=t("economics.file")))
+        units = getattr(eng, "units_snapshot_written", None)
+        if units is not None:  # which content files the package holds (units.jsonl = the full text of every transcript)
+            out.append("- " + t("report.economics_units_yes" if units else "report.economics_units_no"))
     # -- edits -------------------------------------------------------------------
     out += ["", f"## {t('report.edits')}", ""]
     pkg = getattr(eng, "package", None)

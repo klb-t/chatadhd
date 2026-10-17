@@ -36,6 +36,7 @@ class ReadContext:
         self.progress = None  # optional callable(dict)
         self.allow_user_code = False  # the face's grant (``--kod-uzytkownika``), set by the engine
         self.user_code_used: list[dict[str, Any]] = []
+        self.sidecars: dict[tuple[str, str], Optional[dict[str, Any]]] = {}  # metadata files next to transcripts, read once
 
     def stamp(self, value: Any, mtime: Optional[float] = None) -> ts.Stamp:
         return ts.parse(value, assume_zone=self.assume_zone, mtime=mtime)
@@ -86,6 +87,25 @@ def getpath(obj: Any, path: Optional[str]) -> Any:
                 return None
             cur = cur[idx]
     return cur
+
+
+def getpath_many(obj: Any, path: Optional[str]) -> list[Any]:
+    """Every value at a dotted path where ``[*]`` stands for each element of a list (``a.b[*].c``); a path without
+    ``[*]`` gives at most one value.  Missing → an empty list, nothing invented."""
+    if not path or obj is None:
+        return []
+    head, star, rest = path.partition("[*]")
+    if not star:
+        v = getpath(obj, path)
+        return [] if v is None else [v]
+    lst = getpath(obj, head) if head else obj
+    if not isinstance(lst, list):
+        return []
+    rest = rest[1:] if rest.startswith(".") else rest
+    out: list[Any] = []
+    for el in lst:
+        out.extend(getpath_many(el, rest) if rest else ([el] if el is not None else []))
+    return out
 
 
 def first_of(obj: Any, paths: Any) -> Any:
@@ -147,12 +167,17 @@ def unknown_block(native: Optional[str], obj: Any) -> Block:
 
 
 def thinking_block(text: str, native: str, modifier: Optional[str], ctx: ReadContext) -> Block:
-    complete = modifier == "full" and len(text or "") >= 0
+    """A reasoning block.  ``complete``: the text is the whole reasoning (``full`` modifier of the format file and the
+    text is there); a ``full`` block whose text is empty (a signature only: the client withheld the text) is not
+    complete and is marked ``withheld`` — present, but nothing of it is in the export."""
+    complete = modifier == "full" and bool(text)
     if modifier == "summary":
         complete = False
     b = Block(kind="thinking", text=text or "", native=native, complete=complete)
     if modifier == "redacted":
         b.extra["redacted"] = True
+    elif modifier == "full" and not text:
+        b.extra["withheld"] = True
     return b
 
 
@@ -220,7 +245,7 @@ def compute_stats(unit: Unit, ctx: ReadContext) -> dict[str, Any]:
                 thinking_chars += b.chars()
                 if b.chars() >= ctx.thinking_full_min and b.complete is not False:
                     thinking_full += 1
-                if b.complete is False:
+                if b.complete is False and not b.extra.get("withheld"):
                     thinking_summary += 1
                 if b.extra.get("redacted"):
                     thinking_redacted += 1

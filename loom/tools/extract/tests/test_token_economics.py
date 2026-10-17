@@ -68,20 +68,24 @@ class EconTest(ExtractTest):
         res = eng.op("token_economics", params, by="api")
         return eng, res["economics"]
 
-    def prices_overlay(self) -> None:
+    def prices_overlay(self, *, web_search: bool = True, small_currency: str = "USD", gpt: bool = False) -> None:
         d = store().overlay / "prices"
         d.mkdir(parents=True, exist_ok=True)
-        (d / "synthetic.json").write_text(json.dumps({"id": "synthetic", "currency": "USD", "entries": [
-            {"pattern": "claude-x-large", "input": 10.0, "output": 50.0, "cache_write": 12.5, "cache_read": 1.0,
-             "valid_from": "2026-01-01", "source": "synthetic test price"},
-            {"pattern": "claude-x-small", "input": 1.0, "output": 5.0, "cache_write": 1.25, "cache_read": 0.1,
-             "valid_from": "2026-01-01", "source": "synthetic test price"}]}), encoding="utf-8")
+        entries = [{"pattern": "claude-x-large", "input": 10.0, "output": 50.0, "cache_write": 12.5, "cache_read": 1.0,
+                    "web_search_per_1000": 10.0 if web_search else None, "valid_from": "2026-01-01", "source": "synthetic test price"},
+                   {"pattern": "claude-x-small", "input": 1.0, "output": 5.0, "cache_write": 1.25, "cache_read": 0.1,
+                    "valid_from": "2026-01-01", "source": "synthetic test price", "currency": small_currency}]
+        if gpt:
+            entries.append({"pattern": "gpt-*", "input": 2.0, "output": 8.0, "valid_from": "2020-01-01", "source": "synthetic test price"})
+        (d / "synthetic.json").write_text(json.dumps({"id": "synthetic", "currency": "USD", "entries": entries}), encoding="utf-8")
+        from loom.tools.extract.datafiles import DataStore, set_store
+        set_store(DataStore(overlay=store().overlay))  # a fresh store: the overlay written now is the one read
 
 
 class ReaderAndInventoryTest(EconTest):
     def test_per_turn_usage_and_transcript_placement(self):
         eng, units = self.units(PROJ)
-        by = {u.ext_id: u for u in units}
+        by = {u.ext_id: u for u in units if u.kind == "session"}  # the meta/run files next to them are other members
         self.assertEqual(set(by), {"sess-E1", "sess-E2", "sess-E1/subagents/agent-s1", "sess-E1/subagents/workflows/run-1/agent-w1",
                                    "sess-E1/subagents/workflows/run-1/agent-w2"})
         main = by["sess-E1"]
@@ -101,6 +105,15 @@ class ReaderAndInventoryTest(EconTest):
         wf = by["sess-E1/subagents/workflows/run-1/agent-w1"]
         self.assertEqual((wf.flags["transcript_role"], wf.flags["workflow_run"], wf.flags["parent_session"]), ("workflow_agent", "run-1", "sess-E1"))
         self.assertEqual(main.stats["usage_messages"], 6, "every line with counters (3 responses + the synthetic + 2 repeated)")
+        # stop_reason: set on the line with the final counters, null while the response streams
+        self.assertEqual([m.meta.get("usage_final") for m in lines_a1], [False, False, True])
+        w2 = by["sess-E1/subagents/workflows/run-1/agent-w2"]
+        self.assertEqual([m.meta.get("usage_final") for m in w2.messages if m.role == "assistant"], [False, False],
+                         "an agent transcript whose every line has stop_reason null: the stream-start snapshot")
+        # measured metadata next to the transcripts: the agent's meta file and the workflow run's file
+        self.assertEqual(sub.flags["agent_meta"], {"agent_type": "general-purpose", "description": "Czytanie raportu"})
+        self.assertEqual(wf.flags["workflow_meta"]["agents"], 2)
+        self.assertEqual(wf.flags["workflow_meta"]["total_tokens"], 1300)
 
     def test_inventory_has_usage_tool_traces_reasoning(self):
         eng = self.engine(PROJ, CHATGPT)
@@ -262,8 +275,11 @@ class GitOutcomesTest(EconTest):
         oc = doc["outcomes"]
         self.assertEqual((oc["commits_all"], oc["commits_with_session"], oc["commits_without_session"]), (4, 3, 1))
         self.assertEqual((doc["totals"]["commits"], doc["totals"]["commits_main"]), (3, 2))
-        days = {d["day"]: d["commits"] for d in doc["days"]}
-        self.assertEqual((days["2026-10-10"], days["2026-10-11"], days["2026-10-12"]), (1, 2, 1))
+        days = {d["day"]: (d["commits"], d["commits_all"]) for d in doc["days"]}
+        self.assertEqual((days["2026-10-10"], days["2026-10-11"], days["2026-10-12"]), ((1, 1), (2, 2), (0, 1)),
+                         "Commits = with a session trailer (as in the totals); all commits in their own column")
+        self.assertEqual(sum(d["commits"] for d in doc["days"]), doc["totals"]["commits"])
+        self.assertEqual(sum(d["commits_all"] for d in doc["days"]), doc["totals"]["commits_all"])
         self.assertIn("commits_session_without_rows", {n["key"] for n in doc["unknowns"]})
         # no main branch: commits on main are unknown with the reason, never 0
         eng2, doc2 = self.econ(PROJ, sessions=[str(SESSIONS)], repos=[str(repo)], main_ref="trunk")
@@ -319,8 +335,9 @@ class PricesTest(EconTest):
         run = next(r for r in doc["runs"] if r["id"] == "sess-E1")
         self.assertTrue(run["cost"]["known"])
         a2 = (5 * 10 + 40 * 50 + 200 * 12.5 + 1000 * 1) / 1e6
-        a3 = (4 * 10 + 60 * 50 + 100 * 12.5 + 1200 * 1) / 1e6
+        a3 = (4 * 10 + 60 * 50 + 100 * 12.5 + 1200 * 1) / 1e6 + 1 * 10.0 / 1000  # + one web search at 10 per 1000
         self.assertAlmostEqual(run["cost"]["amount"], round(a1 + a2 + a3, 6), places=6)
+        self.assertEqual(run["cost"]["basis"], "measured")
         self.assertTrue(doc["totals"]["cost"]["known"])
         models = {m["model"]: m for m in doc["models"]}
         self.assertIn("synthetic test price", models["claude-x-large"]["price"])
@@ -336,11 +353,15 @@ class EstimateTest(EconTest):
         self.assertIsNone(tot["total"], "no counters: the measured total is unknown, not 0")
         self.assertEqual(tot["why"]["total"], "no_counters")
         self.assertGreaterEqual(tot["est_context"], tot["est_input"])
-        self.assertTrue(tot["methods"].startswith("chars/"), tot["methods"])
+        self.assertTrue(all(k.startswith("chars/") for k in tot["methods_raw"]), tot["methods_raw"])
+        if i18n.language() == "pl":
+            self.assertIn("znaki/", tot["methods"], "the method is said in the run's language")
         prov = doc["providers"][0]
         self.assertFalse(prov["has_usage"])
         self.assertTrue(any(m["model"].startswith("gpt-") for m in doc["models"]), "model_slug per message")
-        self.assertEqual(doc["method"]["expected_error"]["basis"], "none", "no measured turns: the error is unknown, said")
+        self.assertTrue(doc["method"]["expected_error"])
+        self.assertTrue(all(e["basis"] == "none" for e in doc["method"]["expected_error"].values()),
+                        "no measured turns: the error is unknown, said")
 
     def test_calibration_and_chars(self):
         cal = calibration([(90, 100), (110, 100), (100, 100)])
@@ -350,7 +371,10 @@ class EstimateTest(EconTest):
         n, how = est.count("a" * 32, "gpt-4o", "pl")
         self.assertEqual((n, how), (10, "chars/3.2 (pl)"))
         eng, doc = self.econ(PROJ)
-        self.assertEqual(doc["method"]["expected_error"]["basis"], "calibration")
+        ee = doc["method"]["expected_error"]
+        self.assertEqual([e["basis"] for e in ee.values()], ["calibration"])
+        # only final, thinking-free responses with output >= economics.estimate.calibration_min_output (50): msg_A3
+        self.assertEqual(next(iter(ee.values()))["turns"], 1)
 
     def test_tiktoken_only_offline(self):
         """A fake tiktoken that would download its encoding: the load runs with the network refused, so the
@@ -403,10 +427,11 @@ class OutputsTest(EconTest):
         self.run_cli(*args, "--pakiet", str(self.tmp / "b"))
         econ = self.tmp / "a" / "economics"
         from loom.tools.extract.economics import layout
-        tables = [t["id"] for t in layout(store())["tables"]]
-        for tid in tables:
-            rows = list(csv.reader(io.StringIO((econ / f"{tid}.csv").read_text(encoding="utf-8"))))
-            self.assertEqual(rows[0], next(t for t in layout(store())["tables"] if t["id"] == tid)["columns"])
+        from loom.tools.extract.economics import csv_header
+        lay = layout(store())
+        for tab in lay["tables"]:
+            rows = list(csv.reader(io.StringIO((econ / f"{tab['id']}.csv").read_text(encoding="utf-8"))))
+            self.assertEqual(rows[0], csv_header(tab, lay["columns"]))
         self.assertTrue((econ / "ekonomia.md").exists())
         doc = json.loads((econ / "economics.json").read_text(encoding="utf-8"))
         self.assertEqual(doc["schema"], "loom.extract.economics/1")
@@ -416,9 +441,10 @@ class OutputsTest(EconTest):
         self.assertIn("economics/economics.json", [o["path"] for o in man_a["outputs"]])
         self.assertEqual(man_a["economics"]["turns_measured"], E["turns"])
         self.assertIn("economics/", (self.tmp / "a" / "RAPORT.md").read_text(encoding="utf-8"))
-        # unknown is visible in every format, never an empty cell or 0
-        csv_text = (econ / "totals.csv").read_text(encoding="utf-8")
-        self.assertIn("nieznane (brak ceny)", csv_text)
+        # unknown is visible in every format, never an empty cell or 0: in CSV the reason code sits in <col>_why
+        tot = next(csv.DictReader(io.StringIO((econ / "totals.csv").read_text(encoding="utf-8"))))
+        self.assertEqual((tot["cost_amount"], tot["cost_why"]), ("", "entry_without_price"))
+        self.assertIn(i18n.t("economics.unknown_cost", why=i18n.t("economics.why.entry_without_price")), (econ / "ekonomia.md").read_text(encoding="utf-8"))
         # the recipe carries the op; replaying it gives the same economics bytes
         rec = json.loads((self.tmp / "a" / "recipe.json").read_text(encoding="utf-8"))
         self.assertIn("token_economics", [s["op"] for s in rec["steps"]])
@@ -508,12 +534,20 @@ class FacesTest(EconTest):
                                        "no_session_list", "not_in_session_list", "no_transcript", "not_measured", "no_column",
                                        "no_calibration", "tiktoken_missing", "tiktoken_offline_missing", "tiktoken_error", "no_counters",
                                        "measured_instead", "no_field_in_session_list", "no_main_ref", "main_ref_off",
-                                       "git_unavailable", "git_log_failed"],
+                                       "git_unavailable", "git_log_failed", "no_turns_measured", "no_turns_estimated", "mixed_currency",
+                                       "api_zero", "git_error", "partial_clone", "no_calibration_for_method", "no_agent_meta",
+                                       "not_an_agent", "no_workflow_file", "no_field_in_workflow_file"],
                     "economics.role.": ["main", "subagent", "workflow_agent", "resumed", "conversation"],
-                    "economics.link.": ["explicit", "same_id", "trailer", "trailer_ambiguous", "none"],
-                    "economics.reasoning.": ["full", "summary", "none", "redacted", "short"],
+                    "economics.link.": ["explicit", "same_id", "trailer", "trailer_ambiguous", "commit", "none"],
+                    "economics.reasoning.": ["full", "summary", "none", "redacted", "short", "empty", "mixed"],
                     "economics.attribution.": ["split", "full"],
-                    "economics.label.": ["session", "run", "workflow", "total"]}
+                    "economics.label.": ["session", "run", "workflow", "total", "repo"],
+                    "economics.qual.": ["lower_bound", "estimated_output", "hidden_reasoning", "commits_lower_bound"],
+                    "economics.basis.": ["estimated", "mixed", "session_api", "transcript_prices", "mixed_sources"],
+                    "economics.price_field.": ["input", "output", "cache_write", "cache_write_1h", "cache_read", "web_search", "web_fetch"],
+                    "economics.stale.": ["keep", "estimate"],
+                    "economics.context.": ["path", "none"],
+                    "economics.note_field.": ["tokens", "tokens_estimated"]}
         for prefix, names in families.items():
             used.update(prefix + n for n in names)
         notes = set(re.findall(r'note\("([a-z_]+)"', src)) | {"no_session_source", "sessions_unreadable", "sessions_bad_line",
@@ -522,6 +556,432 @@ class FacesTest(EconTest):
         self.assertEqual(sorted(k for k in used if k not in pl), [])
         self.assertEqual(sorted(k for k in used if k not in en), [])
 
+
+
+# ───────────────────────── review findings of slice 4 (2026-10-17) ─────────────────────────
+def cc_line(uuid, parent, typ, ts, content, *, session, model=None, mid=None, usage=None, stop="end_turn", sidechain=False):
+    """A synthetic Claude Code transcript line (the shape of gen_extract_fixtures.econ_line)."""
+    d = {"uuid": uuid, "parentUuid": parent, "type": typ, "timestamp": ts, "sessionId": session, "isSidechain": sidechain,
+         "message": {"role": typ, "content": content}}
+    if typ == "assistant":
+        d["message"].update({"model": model, "id": mid, "usage": usage, "stop_reason": stop})
+    return json.dumps(d, ensure_ascii=False)
+
+
+def usage(i, o, cc=0, cr=0):
+    return {"input_tokens": i, "output_tokens": o, "cache_creation_input_tokens": cc, "cache_read_input_tokens": cr}
+
+
+class ReviewFindingsTest(EconTest):
+    def overlay_presets(self, frag: dict) -> None:
+        from loom.tools.extract.datafiles import DataStore, set_store
+        d = self.tmp / "no-overlay" / "presets"
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "defaults.json").write_text(json.dumps(frag), encoding="utf-8")
+        set_store(DataStore(overlay=self.tmp / "no-overlay"))
+
+    def copy_proj(self, *under: str) -> Path:
+        dst = self.tmp.joinpath(*under, "-home-user-econ")
+        shutil.copytree(PROJ, dst)
+        return dst
+
+    # -- the stream-start output counter (blocking) ---------------------------------------------------------------
+    def test_stale_output_is_a_lower_bound_out_of_calibration(self):
+        eng, doc = self.econ(PROJ)
+        notes = {n["key"]: n for n in doc["unknowns"]}
+        self.assertEqual((notes["output_lower_bound"]["n"], notes["output_lower_bound"]["tokens"]),
+                         (E["stale_output_turns"], E["stale_output_tokens"]))
+        tot = doc["totals"]
+        self.assertEqual(tot["output_lower_bound"], E["stale_output_tokens"])
+        self.assertEqual(tot["qual"]["output"]["code"], "lower_bound", "the measured output is labelled a lower bound")
+        w2 = next(r for r in doc["runs"] if r["id"] == "sess-E1/subagents/workflows/run-1/agent-w2")
+        self.assertEqual(w2["qual"]["output"], {"code": "lower_bound", "n": 1, "tokens": E["stale_output_tokens"]})
+        main = next(r for r in doc["runs"] if r["id"] == "sess-E1")
+        self.assertNotIn("output", main["qual"], "responses with a final line carry no qualifier")
+        md = eng.op("token_economics", {})["markdown"]
+        self.assertIn(i18n.t("economics.qual.lower_bound", n="1", tokens=str(E["stale_output_tokens"])), md)
+        # the calibration never uses it: with the minimum output at 1, the five final thinking-free responses count
+        self.overlay_presets({"economics": {"estimate": {"calibration_min_output": 1}}})
+        eng2, doc2 = self.econ(PROJ)
+        ee = next(iter(doc2["method"]["expected_error"].values()))
+        self.assertEqual(ee["turns"], 5, "A2, A3, S1, W1, B1 — not W2 (stream-start), not A1 (thinking)")
+        # economics.usage.stale_output: estimate → the larger of the counter and an estimate, labelled estimated
+        eng3, doc3 = self.econ(PROJ, stale_output="estimate")
+        w2e = next(r for r in doc3["runs"] if r["id"] == "sess-E1/subagents/workflows/run-1/agent-w2")
+        self.assertGreater(w2e["output"], E["stale_output_tokens"])
+        self.assertEqual(w2e["qual"]["output"]["code"], "estimated_output")
+        self.assertIn("output_estimated", {n["key"] for n in doc3["unknowns"]})
+        self.assertEqual(w2e["cost"]["basis"], "estimated", "a cost with an estimated output is not called measured")
+
+    # -- cost bases and currencies (blocking + should) -------------------------------------------------------------
+    def test_mixed_run_never_one_unlabelled_amount(self):
+        self.prices_overlay(gpt=True)
+        eng, doc = self.econ(PROJ, CHATGPT)
+        tot = doc["totals"]
+        self.assertTrue(tot["cost"]["known"])
+        self.assertEqual(tot["cost"]["basis"], "mixed")
+        self.assertAlmostEqual(tot["cost"]["measured"] + tot["cost"]["estimated"], tot["cost"]["amount"], places=5)
+        self.assertEqual((tot["cost_measured"]["basis"], tot["cost_estimated"]["basis"]), ("measured", "estimated"))
+        md = eng.op("token_economics", {})["markdown"]
+        totals_line = next(ln for ln in md.splitlines() if ln.startswith("| " + i18n.t("economics.label.total") + " |"))
+        self.assertIn(i18n.t("economics.basis.mixed", measured="", estimated="").split(":")[0], totals_line)
+        none = next(r for r in doc["tools"] if r["tool"] == i18n.t("economics.no_tool"))
+        self.assertEqual(none["turns"], none["turns_measured"] + none["turns_estimated"])
+        self.assertGreater(none["turns_estimated"], 0)
+        for tab in ("totals", "days", "models", "tools"):
+            from loom.tools.extract.economics import layout
+            cols = next(t for t in layout(store())["tables"] if t["id"] == tab)["columns"]
+            self.assertTrue({"cost_measured", "cost_estimated", "cost"} <= set(cols), tab)
+        # a currency per entry: amounts in different currencies are never added
+        self.prices_overlay(small_currency="PLN")
+        eng2, doc2 = self.econ(PROJ)
+        self.assertFalse(doc2["totals"]["cost"]["known"])
+        self.assertEqual(doc2["totals"]["cost"]["reason"], "mixed_currency")
+        self.assertEqual(set(doc2["totals"]["cost"]["partial_by_currency"]), {"USD", "PLN"})
+        self.assertIn("mixed_currency", {n["key"] for n in doc2["unknowns"]})
+
+    @unittest.skipUnless(HAS_GIT, "git is not installed")
+    def test_cost_per_commit_says_its_basis(self):
+        self.prices_overlay()
+        repo = make_repo(self.tmp / "repo")
+        eng, doc = self.econ(PROJ, repos=[str(repo)])  # no session list: the cost comes from transcript prices
+        t1 = next(r for r in doc["sessions"] if r["id"] == "session_TEST1")
+        self.assertEqual(t1["cost_per_commit"]["basis"], "transcript_prices")
+        md = eng.op("token_economics", {"repos": [str(repo)]})["markdown"]
+        self.assertIn(i18n.t("economics.basis.transcript_prices"), md)
+        eng2, doc2 = self.econ(PROJ, sessions=[str(SESSIONS)], repos=[str(repo)])
+        t1b = next(r for r in doc2["sessions"] if r["id"] == "session_TEST1")
+        self.assertEqual(t1b["cost_per_commit"]["basis"], "session_api")
+
+    def test_web_searches_without_a_price_are_not_free(self):
+        hit = {"known": True, "prices": {"input": 1.0, "output": 1.0, "cache_write": None, "cache_read": None}, "currency": "USD"}
+        c = cost_of({"input": 10, "output": 10, "web_search_requests": 2}, hit)
+        self.assertFalse(c["known"])
+        self.assertEqual(c["missing"], ["web_search"])
+        hit["prices"]["web_search_per_1000"] = 10.0
+        self.assertEqual(cost_of({"input": 0, "output": 0, "web_search_requests": 2}, hit)["amount"], 0.02)
+        self.prices_overlay(web_search=False)
+        eng, doc = self.econ(PROJ)
+        run = next(r for r in doc["runs"] if r["id"] == "sess-E1")
+        self.assertFalse(run["cost"]["known"])
+        self.assertEqual(run["cost"]["missing"], ["web_search"])
+        md = eng.op("token_economics", {})["markdown"]
+        self.assertIn(i18n.t("economics.why.price_field_missing_named", fields=i18n.t("economics.price_field.web_search")), md)
+
+    def test_shipped_anthropic_prices_from_the_repository_source(self):
+        book = PriceBook(store())
+        hit = book.lookup("claude-opus-5-5", "2026-10-10")
+        self.assertTrue(hit["known"])
+        self.assertIn("loom/tools/eval/pricing_2026-09-25.json", hit["source"])
+        self.assertEqual(hit["valid_from"], "2026-09-25")
+        self.assertEqual(book.lookup("claude-opus-5-5", "2026-09-01")["reason"], "not_yet_valid",
+                         "before the source's date: the price is not yet valid, said (never back-dated)")
+        c = cost_of({"input": 10, "output": 10, "cache_creation": 5, "cache_read": 5}, hit)
+        self.assertEqual((c["known"], c["missing"]), (False, ["cache_write"]), "no cache-write price in the source: said, not derived")
+        self.assertTrue(cost_of({"input": 10, "output": 10, "cache_read": 5}, hit)["known"])
+        self.assertEqual(book.lookup("claude-haiku-5-5", "2026-10-10")["reason"], "entry_without_price")
+
+    # -- several transcript families for one API session (blocking) --------------------------------------------------
+    def test_several_families_for_one_session_add_up(self):
+        proj = self.copy_proj("p3")
+        cmd = 'git commit -m "x\n\nClaude-Session: https://claude.ai/code/session_TEST1"'
+        lines = [cc_line("x1", None, "user", "2026-10-11T10:00:00Z", "Trzecia sesja", session="sess-E3"),
+                 cc_line("x2", "x1", "assistant", "2026-10-11T10:00:05Z",
+                         [{"type": "tool_use", "id": "toolu_x", "name": "Bash", "input": {"command": cmd}}],
+                         session="sess-E3", model="claude-x-small", mid="msg_X1", usage=usage(1, 5, 0, 7000), stop="tool_use"),
+                 cc_line("x3", "x2", "user", "2026-10-11T10:00:06Z", [{"type": "tool_result", "tool_use_id": "toolu_x",
+                                                                        "content": "[main 9f9f9f9] x"}], session="sess-E3")]
+        self.write(proj / "sess-E3.jsonl", "\n".join(lines) + "\n")
+        eng, doc = self.econ(proj, sessions=[str(SESSIONS)])
+        tot = doc["totals"]
+        rows = [r for r in doc["sessions"] if r.get("tr_cache_read") is not None]
+        self.assertEqual(sum(r["tr_cache_read"] for r in rows), tot["cache_read"], "the session tables add up to the totals")
+        self.assertEqual(sum(r["tr_turns"] for r in rows), tot["turns"])
+        t1 = next(r for r in doc["sessions"] if r["id"] == "session_TEST1")
+        self.assertEqual(t1["transcript_ids"], ["sess-E1", "sess-E3"])
+        self.assertAlmostEqual(t1["coverage"], round((E["family_E1"]["cache_read"] + 7000) / E["api_cache_read_TEST1"], 4))
+        self.assertIn("several_transcripts_one_session", {n["key"] for n in doc["unknowns"]})
+        self.assertEqual(sum(1 for r in doc["sessions"] if r["id"] == "session_TEST1"), 1)
+        # the same through explicit links (--polacz A=S --polacz B=S)
+        eng2, doc2 = self.econ(proj, sessions=[str(SESSIONS)], links={"sess-E2": "session_TEST2", "sess-E3": "session_TEST2"})
+        t2 = next(r for r in doc2["sessions"] if r["id"] == "session_TEST2")
+        self.assertEqual(t2["transcript_ids"], ["sess-E2", "sess-E3"])
+        self.assertEqual(sum(r["tr_cache_read"] for r in doc2["sessions"] if r.get("tr_cache_read") is not None), doc2["totals"]["cache_read"])
+
+    # -- trailers only from confirmed commit commands (should) -------------------------------------------------------
+    def test_trailers_only_from_confirmed_commit_commands(self):
+        proj = self.tmp / "q" / "-home-user-q"
+        fake = 'git add -A && git commit -m "t\n\nClaude-Session: https://claude.ai/code/session_FAKE"'
+        heredoc = "cat > t.sh <<'EOF'\n" + fake + "\nEOF"
+        lines = [cc_line("q1", None, "user", "2026-10-11T10:00:00Z", "Napisz test", session="sess-Q"),
+                 cc_line("q2", "q1", "assistant", "2026-10-11T10:00:05Z",
+                         [{"type": "tool_use", "id": "toolu_w", "name": "Write", "input": {"file_path": "t.py", "content": fake}},
+                          {"type": "tool_use", "id": "toolu_h", "name": "Bash", "input": {"command": heredoc}}],
+                         session="sess-Q", model="claude-x-small", mid="msg_Q1", usage=usage(1, 5), stop="tool_use"),
+                 cc_line("q3", "q2", "user", "2026-10-11T10:00:06Z",
+                         [{"type": "tool_result", "tool_use_id": "toolu_w", "content": "File created"},
+                          {"type": "tool_result", "tool_use_id": "toolu_h", "content": ""}], session="sess-Q")]
+        self.write(proj / "sess-Q.jsonl", "\n".join(lines) + "\n")
+        eng, doc = self.econ(proj)
+        row = next(r for r in doc["sessions"] if r["transcript_id"] == "sess-Q")
+        self.assertEqual(row["link"], i18n.t("economics.link.none"), "a Write's content and an unconfirmed heredoc link nothing")
+        self.assertEqual(row["commit_commands"], 1, "Write is not a commit tool; the Bash heredoc is a command, not a commit made")
+        self.assertEqual(doc["outcomes"]["commit_commands_confirmed"], 0)
+        self.assertIn("commit_unconfirmed", {n["key"] for n in doc["unknowns"]})
+        self.assertNotIn("session_FAKE", json.dumps(doc))
+
+    # -- side files inside session directories (should) ---------------------------------------------------------------
+    def test_side_files_in_session_directories_are_not_estimated(self):
+        proj = self.copy_proj("side")
+        self.write(proj / "sess-E1" / "tool-results" / "x.txt", "wynik narzędzia\n" * 50)
+        eng, doc = self.econ(proj)
+        self.assertEqual(doc["totals"]["turns_estimated"], 0)
+        self.assertEqual({n["key"]: n["n"] for n in doc["unknowns"]}.get("side_files_skipped"), 1)
+        eng2, doc2 = self.econ(proj, skip_session_side_files=False)
+        self.assertGreater(doc2["totals"]["turns_estimated"], 0, "preset reversed: the side file is estimated as text")
+
+    # -- placement from the path below the source (should) -----------------------------------------------------------
+    def test_ancestor_directories_named_workflows_or_subagents_decide_nothing(self):
+        base = self.copy_proj("workflows", "backup", "subagents", "projects")
+        eng, units = self.units(base)
+        by = {u.ext_id: u for u in units if u.kind == "session"}
+        self.assertEqual(set(by), {"sess-E1", "sess-E2", "sess-E1/subagents/agent-s1", "sess-E1/subagents/workflows/run-1/agent-w1",
+                                   "sess-E1/subagents/workflows/run-1/agent-w2"})
+        self.assertEqual((by["sess-E1"].flags["transcript_role"], by["sess-E2"].flags["transcript_role"]), ("main", "main"))
+        self.assertEqual(by["sess-E1/subagents/workflows/run-1/agent-w1"].flags["workflow_run"], "run-1")
+        eng2, doc = self.econ(base)
+        self.assertEqual({r["transcript_id"] for r in doc["sessions"]}, {"sess-E1", "sess-E2"})
+        # single files: a main transcript stays main; an agent file is placed by its nearest directories, confirmed by sessionId
+        eng3, units3 = self.units(base / "sess-E2.jsonl", base / "sess-E1" / "subagents" / "agent-s1.jsonl")
+        roles = {u.ext_id: (u.flags["transcript_role"], u.flags.get("parent_session")) for u in units3 if u.kind == "session"}
+        self.assertEqual(roles, {"sess-E2": ("main", None), "sess-E1/subagents/agent-s1": ("subagent", "sess-E1")})
+
+    # -- days in one clock (should) -------------------------------------------------------------------------------------
+    def test_commit_days_are_utc_like_turns(self):
+        from loom.tools.extract.economics import _day
+        self.assertEqual(_day("2026-10-12T01:30:00+02:00", "UTC"), "2026-10-11")
+        self.assertEqual(_day("2026-10-11T23:30:00Z", "UTC"), "2026-10-11")
+        if not HAS_GIT:
+            self.skipTest("git is not installed")
+        repo = make_repo(self.tmp / "repo")
+        env = {"GIT_AUTHOR_NAME": "T", "GIT_AUTHOR_EMAIL": "t@example.invalid", "GIT_COMMITTER_NAME": "T",
+               "GIT_COMMITTER_EMAIL": "t@example.invalid", "GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1",
+               "HOME": str(repo), "PATH": os.environ.get("PATH", "/usr/bin:/bin"),
+               "GIT_AUTHOR_DATE": "2026-10-13T01:30:00+02:00", "GIT_COMMITTER_DATE": "2026-10-13T01:30:00+02:00"}
+        (repo / "d.txt").write_text("d\n", encoding="utf-8")
+        subprocess.run(["git", "-C", str(repo), "add", "-A"], check=True, capture_output=True, env=env)
+        subprocess.run(["git", "-C", str(repo), "-c", "commit.gpgsign=false", "commit", "-q", "-m",
+                        "near midnight\n\nClaude-Session: https://claude.ai/code/session_TEST1"], check=True, capture_output=True, env=env)
+        eng, doc = self.econ(repos=[str(repo)])
+        days = {d["day"]: d["commits"] for d in doc["days"]}
+        self.assertEqual(days.get("2026-10-12"), 1, "01:30 +02:00 on the 13th is 23:30 UTC on the 12th")
+        self.assertNotIn("2026-10-13", days)
+
+    # -- git: never silent, never a network fetch, no repository-configured program (should + nit) -------------------
+    @unittest.skipUnless(HAS_GIT, "git is not installed")
+    def test_unreadable_repository_is_unknown_not_zero(self):
+        eng, doc = self.econ(PROJ, sessions=[str(SESSIONS)], repos=[str(self.tmp / "nothing-here")])
+        t1 = next(r for r in doc["sessions"] if r["id"] == "session_TEST1")
+        self.assertIsNone(t1["commits"])
+        self.assertEqual(t1["why"]["commits"], "git_error")
+        self.assertEqual(t1["cost_per_commit"]["reason"], "git_error")
+        self.assertIsNone(doc["totals"]["commits"])
+        self.assertTrue(all(d["commits"] is None for d in doc["days"]))
+        # one readable next to one that is not: counts kept, labelled a lower bound
+        repo = make_repo(self.tmp / "repo")
+        eng2, doc2 = self.econ(PROJ, repos=[str(repo), str(self.tmp / "nothing-here")])
+        self.assertEqual(doc2["totals"]["commits"], 3)
+        self.assertEqual(doc2["totals"]["qual"]["commits"]["code"], "commits_lower_bound")
+        self.assertIn("commits_lower_bound", {n["key"] for n in doc2["unknowns"]})
+
+    @unittest.skipUnless(HAS_GIT, "git is not installed")
+    def test_partial_and_shallow_clones_fetch_nothing(self):
+        from loom.tools.extract.economics import git_commits
+        src = make_repo(self.tmp / "src")
+        subprocess.run(["git", "-C", str(src), "config", "uploadpack.allowFilter", "true"], check=True, capture_output=True)
+        env = {"GIT_CONFIG_GLOBAL": os.devnull, "GIT_CONFIG_NOSYSTEM": "1", "HOME": str(self.tmp), "PATH": os.environ.get("PATH", "/usr/bin:/bin")}
+        part = self.tmp / "partial"
+        r = subprocess.run(["git", "clone", "-q", "--no-local", "--filter=blob:none", "--no-checkout", f"file://{src}", str(part)],
+                           capture_output=True, env=env)
+        if r.returncode != 0:
+            self.skipTest("this git cannot make a partial clone: " + r.stderr.decode()[:100])
+
+        def objects(repo):
+            out = subprocess.run(["git", "-C", str(repo), "count-objects", "-v"], capture_output=True, env=env).stdout.decode()
+            return {k: v for k, v in (ln.split(": ") for ln in out.splitlines())}
+        before = objects(part)
+        res = git_commits(str(part), {"main_ref": ["main", "origin/main"]})
+        self.assertIsNone(res["error"])
+        self.assertTrue(res["partial_clone"])
+        self.assertFalse(res["lines_known"])
+        self.assertEqual(len(res["commits"]), 4)
+        self.assertEqual(objects(part), before, "no lazy fetch: the clone's objects are what they were")
+        eng, doc = self.econ(PROJ, repos=[str(part)])
+        t1 = next(r for r in doc["sessions"] if r["id"] == "session_TEST1")
+        self.assertEqual((t1["lines_added"], t1["why"]["lines_added"]), (None, "partial_clone"))
+        self.assertEqual(doc["outcomes"]["main_ref_used"], ["main"])
+        shallow = self.tmp / "shallow"
+        subprocess.run(["git", "clone", "-q", "--depth", "1", f"file://{src}", str(shallow)], check=True, capture_output=True, env=env)
+        eng2, doc2 = self.econ(PROJ, repos=[str(shallow)])
+        self.assertIn("git_shallow", {n["key"] for n in doc2["unknowns"]})
+        self.assertEqual(doc2["totals"]["qual"]["commits"]["code"], "commits_lower_bound")
+
+    @unittest.skipUnless(HAS_GIT, "git is not installed")
+    def test_git_runs_no_program_the_repository_configures_and_main_ref_list(self):
+        from loom.tools.extract.economics import _first_line, git_commits
+        repo = make_repo(self.tmp / "repo")
+        marker = self.tmp / "textconv-ran"
+        subprocess.run(["git", "-C", str(repo), "config", "diff.x.textconv", f"sh -c 'touch {marker}; cat \"$1\"' -"], check=True)
+        subprocess.run(["git", "-C", str(repo), "config", "log.showSignature", "true"], check=True)
+        (repo / ".gitattributes").write_text("*.txt diff=x\n", encoding="utf-8")
+        res = git_commits(str(repo), {"main_ref": "main"})
+        self.assertIsNone(res["error"])
+        self.assertFalse(marker.exists(), "textconv of the repository's config never runs")
+        self.assertEqual(sum(c["added"] for c in res["commits"]), 7)
+        # the main ref is a preference list: the first that resolves wins and is named
+        subprocess.run(["git", "-C", str(repo), "update-ref", "refs/remotes/origin/main", "main"], check=True)
+        subprocess.run(["git", "-C", str(repo), "branch", "-q", "-m", "main", "trunk"], check=True)
+        res2 = git_commits(str(repo), {"main_ref": ["main", "origin/main"]})
+        self.assertEqual(res2["main_ref"], "origin/main")
+        res3 = git_commits(str(repo), {"main_ref": ["main"]})
+        self.assertEqual(res3["main_reason"], "no_main_ref")
+        md = self.engine(PROJ).op("token_economics", {"repos": [str(repo)], "main_ref": "nope"})["markdown"]
+        self.assertIn(i18n.t("economics.why.main_ref_unknown", ref="nope"), md, "the message names the branch the user chose")
+        self.assertEqual(_first_line(b"\n  \n"), "", "whitespace-only stderr: no crash")
+
+    # -- reasoning by share (should) -----------------------------------------------------------------------------------
+    def test_reasoning_by_share_and_signature_only_blocks(self):
+        from loom.tools.extract.inventory import reasoning_class
+        proj = self.tmp / "r"
+        lines = []
+        for i in range(10):
+            text = "y" * 300 if i == 0 else ""
+            lines.append(json.dumps({"uuid": f"t{i}", "parentUuid": f"t{i - 1}" if i else None, "type": "assistant",
+                                     "timestamp": f"2026-10-10T08:00:{i:02d}Z", "sessionId": "s",
+                                     "message": {"role": "assistant", "content": [{"type": "thinking", "thinking": text, "signature": "sig"}]}}))
+        self.write(proj / "s.jsonl", "\n".join(lines) + "\n")
+        inv = self.engine(proj).op("inventory")["inventory"]
+        tot = inv["economics"]["total"]
+        self.assertEqual(tot["reasoning_blocks"]["empty"], 9, "a signature-only block: the text is withheld, not 'short'")
+        self.assertEqual(tot["reasoning_blocks"]["full"], 1)
+        self.assertEqual(tot["reasoning"], "empty", "one full block among ten does not make the source 'full'")
+        self.assertEqual(reasoning_class({"blocks": 4, "full": 2, "short": 2}, 0.5), "full")
+        self.assertEqual(reasoning_class({"blocks": 4, "full": 1, "short": 1, "empty": 1, "summary": 1}, 0.5), "mixed")
+        eng, doc = self.econ(proj)
+        prov = doc["providers"][0]
+        self.assertEqual(prov["reasoning"], i18n.t("economics.reasoning.empty"))
+        self.assertIn(i18n.t("economics.reasoning.full") + " 1", prov["reasoning_blocks"])
+
+    # -- calibration per method, hidden reasoning (should + nit) ------------------------------------------------------
+    def test_expected_error_only_for_the_method_it_was_measured_with(self):
+        eng, doc = self.econ(PROJ, CHATGPT)
+        ee = doc["method"]["expected_error"]
+        cal = [k for k, v in ee.items() if v["basis"] == "calibration"]
+        self.assertEqual(len(cal), 1)
+        self.assertEqual(ee[cal[0]]["measured_on"], {"anthropic/claude_code": 1})
+        md = eng.op("token_economics", {})["markdown"]
+        for how, v in ee.items():
+            if v["basis"] != "calibration":
+                self.assertEqual(v["reason"], "no_calibration_for_method")
+        # the ChatGPT fixture's model is a thinking model: its estimated output is a lower bound, said
+        tot = doc["totals"]
+        self.assertEqual(tot["qual"]["est_output"]["code"], "hidden_reasoning")
+        self.assertIn("estimated_hidden_reasoning", {n["key"] for n in doc["unknowns"]})
+        self.assertIn(i18n.t("economics.method.hidden_reasoning", patterns="")[:20], md)
+
+    # -- package content (should) ---------------------------------------------------------------------------------------
+    def test_economics_package_has_no_full_text_snapshot_by_default(self):
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            self.assertEqual(cli.main(["ekonomia", str(PROJ), "--pakiet", str(self.tmp / "p1")]), 0, err.getvalue())
+            self.assertEqual(cli.main(["ekonomia", str(PROJ), "--pakiet", str(self.tmp / "p2"), "--z-trescia"]), 0, err.getvalue())
+        self.assertFalse((self.tmp / "p1" / "units.jsonl").exists())
+        self.assertTrue((self.tmp / "p1" / "economics" / "economics.json").exists())
+        self.assertIn(i18n.t("report.economics_units_no"), (self.tmp / "p1" / "RAPORT.md").read_text(encoding="utf-8"))
+        self.assertIn(i18n.t("cli.economics.package_units_no"), out.getvalue())
+        self.assertTrue((self.tmp / "p2" / "units.jsonl").exists())
+
+    # -- per-turn files (should) ------------------------------------------------------------------------------------------
+    def test_touched_files_are_paths_not_only_counts(self):
+        eng, doc = self.econ(PROJ, per_turn=True)
+        e1 = next(r for r in doc["sessions"] if r["transcript_id"] == "sess-E1")
+        self.assertEqual(e1["files"], E["files_touched_E1"])
+        main = next(r for r in doc["runs"] if r["id"] == "sess-E1")
+        self.assertEqual(main["files"], E["files_touched_E1"])
+        self.assertEqual(sorted({f for x in doc["turn_files"] for f in x["files"]}), E["files_touched_E1"])
+        eng2, doc2 = self.econ(PROJ, aggregate=True, per_turn=True)
+        self.assertNotIn("files", doc2["sessions"][0])
+        self.assertNotIn("turn_files", doc2)
+
+    # -- session list: repositories, totals, zero counters (should + nit) -----------------------------------------------
+    def test_totals_carry_session_api_and_repositories_table(self):
+        eng, doc = self.econ(PROJ, sessions=[str(SESSIONS)])
+        tot = doc["totals"]
+        self.assertEqual(tot["cost_api"]["amount"], 1.75)
+        self.assertEqual(tot["api_cache_read"], 3100)
+        from loom.tools.extract.economics import layout
+        cols = next(t for t in layout(store())["tables"] if t["id"] == "totals")["columns"]
+        self.assertTrue({"cost_api", "api_cache_read", "api_cache_creation", "api_input", "api_output"} <= set(cols))
+        repos = {r["repo"]: r for r in doc["repos"]}
+        self.assertEqual(repos["https://example.invalid/econ/repo-a"]["cost_api"]["amount"], 1.5)
+        self.assertEqual(repos["https://example.invalid/other/repo-b"]["sessions"], 1)
+        t1 = next(r for r in doc["sessions"] if r["id"] == "session_TEST1")
+        self.assertEqual(t1["repos"], "https://example.invalid/econ/repo-a")
+        # a counter of 0 on the list is not a missing field
+        d = json.loads(SESSIONS.read_text(encoding="utf-8"))
+        d["ccr"]["data"][0]["external_metadata"]["usage"]["output_tokens"] = 0
+        zero = self.tmp / "zero.json"
+        zero.write_text(json.dumps(d), encoding="utf-8")
+        eng2, doc2 = self.econ(PROJ, sessions=[str(zero)])
+        t1z = next(r for r in doc2["sessions"] if r["id"] == "session_TEST1")
+        self.assertEqual((t1z["coverage_output"], t1z["why"]["coverage_output"]), (None, "api_zero"))
+
+    # -- workflow run and agent metadata (nit) ----------------------------------------------------------------------------
+    def test_agent_and_workflow_run_metadata(self):
+        eng, doc = self.econ(PROJ)
+        sub = next(r for r in doc["runs"] if r["id"] == "sess-E1/subagents/agent-s1")
+        self.assertEqual((sub["label"], sub["agent_type"]), ("Czytanie raportu", "general-purpose"))
+        wr = doc["workflow_runs"][0]
+        self.assertEqual((wr["label"], wr["file_agents"], wr["file_total_tokens"]), ("Przepływ testowy", 2, 1300))
+        eng2, doc2 = self.econ(PROJ, aggregate=True)
+        self.assertNotIn("Czytanie raportu", json.dumps(doc2, ensure_ascii=False))
+        self.assertNotIn("Przepływ testowy", json.dumps(doc2, ensure_ascii=False))
+
+    # -- tool split adds up with odd numbers (nit) --------------------------------------------------------------------------
+    def test_tool_split_adds_up_with_odd_numbers(self):
+        proj = self.tmp / "odd"
+        calls = [{"type": "tool_use", "id": f"toolu_{n}", "name": n, "input": {}} for n in ("Grep", "Bash", "Read")]
+        lines = [cc_line("o1", None, "user", "2026-10-10T08:00:00Z", "x", session="s-odd"),
+                 cc_line("o2", "o1", "assistant", "2026-10-10T08:00:01Z", calls, session="s-odd", model="m", mid="msg_O1",
+                         usage=usage(7, 100, 11, 13), stop="tool_use"),
+                 cc_line("o3", "o2", "user", "2026-10-10T08:00:02Z", "y", session="s-odd"),
+                 cc_line("o4", "o3", "assistant", "2026-10-10T08:00:03Z", calls[:2], session="s-odd", model="m", mid="msg_O2",
+                         usage=usage(3, 61, 5, 9), stop="tool_use")]
+        self.write(proj / "s-odd.jsonl", "\n".join(lines) + "\n")
+        eng, doc = self.econ(proj)
+        for k in ("input", "output", "cache_creation", "cache_read", "total"):
+            self.assertEqual(sum(t[k] for t in doc["tools"]), doc["totals"][k], k)
+
+    # -- CSV for spreadsheets, recipe with --csv, i18n (nit) ----------------------------------------------------------------
+    def test_csv_numbers_are_numbers_and_recipe_saved_with_csv(self):
+        out, err = io.StringIO(), io.StringIO()
+        rec = self.tmp / "rec.json"
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            self.assertEqual(cli.main(["ekonomia", str(PROJ), "--csv", "tools", "--zapisz-przepis", str(rec)]), 0, err.getvalue())
+        self.assertTrue(rec.exists(), "--zapisz-przepis is honoured with --csv")
+        rows = list(csv.DictReader(io.StringIO(out.getvalue())))
+        edit = next(r for r in rows if r["tool"] == "Edit")
+        self.assertEqual(int(edit["calls"]), 2)
+        self.assertEqual((edit["cost_amount"], edit["cost_currency"], edit["cost_why"]), ("", "USD", "entry_without_price"))
+        for r in rows:
+            for k, v in r.items():
+                if k.endswith(("_why", "_basis", "_currency")) or k == "tool" or v == "":
+                    continue
+                float(v)  # every other cell is a number
+        md = self.engine(PROJ).op("token_economics", {})["markdown"]
+        self.assertIn(i18n.t("economics.method_name.measured"), md)
+        self.assertNotIn("measured (", md, "method codes are said in the run's language")
+        self.assertIn(i18n.t("economics.unknown_cost", why=i18n.t("economics.why.entry_without_price")), md)
 
 if __name__ == "__main__":
     unittest.main()

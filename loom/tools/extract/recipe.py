@@ -106,6 +106,7 @@ def add_step(recipe: dict[str, Any], op: str, params: Optional[dict[str, Any]] =
 # ───────────────────────────── validation ─────────────────────────────
 _TYPE_CHECK = {
     "string": lambda v: isinstance(v, str),
+    "strings": lambda v: isinstance(v, str) or (isinstance(v, list) and all(isinstance(x, str) for x in v)),  # a name or a preference list
     "expr": lambda v: isinstance(v, str) and v.strip() != "",
     "path": lambda v: isinstance(v, str) and v != "",
     "paths": lambda v: isinstance(v, list) and all(isinstance(x, str) and x != "" for x in v),

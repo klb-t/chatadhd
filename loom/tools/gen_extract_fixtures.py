@@ -33,7 +33,9 @@ FORBIDDEN = ["Naprawa importera", "pamięć hierarchiczna", "Grok o ChatADHD", "
              "schemat.png", "brak.pdf", "Migracja pamięci", "Rekurencja po katalogach"]
 # … and what the token-economics report must not carry in aggregate mode (titles, ids, paths, file names)
 ECON_FORBIDDEN = ["Sesja testowa jeden", "Sesja bez transkryptu", "session_TEST1", "session_TEST2", "session_TEST3", "sess-E1", "sess-E2",
-                  "agent-s1", "agent-w1", "run-1", "src/a.py", "src/b.py", "Dodaj licznik tokenów"]
+                  "agent-s1", "agent-w1", "run-1", "src/a.py", "src/b.py", "Dodaj licznik tokenów", "Czytanie raportu", "Krok w1",
+                  "Przepływ testowy", "general-purpose", "workflow-step", "abc1234", "example.invalid/econ",
+                  "example.invalid/other", "repo-a", "repo-b"]
 
 
 # ═════════════════════════ Claude Code sessions ═════════════════════════
@@ -95,9 +97,15 @@ ECON_TURNS = [
     ("sess-E1", "msg_A3", "claude-x-large", "2026-10-11T09:00:00Z", (4, 60, 100, 1200), 1),
     ("subagents/agent-s1", "msg_S1", "claude-x-small", "2026-10-10T08:05:00Z", (2, 30, 500, 0), 1),
     ("subagents/workflows/run-1/agent-w1", "msg_W1", "claude-x-small", "2026-10-10T08:06:00Z", (1, 10, 50, 300), 1),
-    ("subagents/workflows/run-1/agent-w2", "msg_W2", "claude-x-small", "2026-10-10T08:07:00Z", (1, 20, 60, 400), 1),
+    # agent-w2: a workflow agent whose lines all carry stop_reason null — the client wrote only the stream-start
+    # snapshot of the counters (output_tokens 3 for a long answer), as real subagent/workflow transcripts do
+    ("subagents/workflows/run-1/agent-w2", "msg_W2", "claude-x-small", "2026-10-10T08:07:00Z", (1, 3, 60, 400), 2),
     ("sess-E2", "msg_B1", "claude-x-small", "2026-10-10T12:00:30Z", (4, 25, 0, 800), 1),
 ]
+
+
+# responses whose every line has stop_reason null (the output counter is a stream-start lower bound)
+ECON_STALE = {"msg_W2"}
 
 
 def _usage(u, partial=False):
@@ -107,12 +115,13 @@ def _usage(u, partial=False):
             "cache_creation": {"ephemeral_5m_input_tokens": cc, "ephemeral_1h_input_tokens": 0}}
 
 
-def econ_line(uuid, parent, typ, ts, content, *, session, model=None, mid=None, usage=None, sidechain=False, **extra):
+def econ_line(uuid, parent, typ, ts, content, *, session, model=None, mid=None, usage=None, sidechain=False, stop="end_turn", **extra):
     d = {"uuid": uuid, "parentUuid": parent, "type": typ, "timestamp": ts, "sessionId": session, "cwd": "/home/user/econ",
          "version": "2.0.0", "gitBranch": "main", "isSidechain": sidechain, "userType": "external",
          "message": {"role": typ, "content": content}}
     if typ == "assistant":
-        d["message"].update({"model": model, "id": mid, "type": "message", "usage": usage})
+        # stop_reason: null on the lines written while the response streams, set on the line with the final counters
+        d["message"].update({"model": model, "id": mid, "type": "message", "usage": usage, "stop_reason": stop})
         d["requestId"] = "req_" + (mid or uuid)
     d.update(extra)
     return json.dumps(d, ensure_ascii=False)
@@ -126,21 +135,23 @@ def economics_files():
         econ_line("e1", None, "user", "2026-10-10T08:00:00Z", "Dodaj licznik tokenów do raportu", session=S),
         # one API response written in three lines (thinking, text, tool_use), the same message.id; output grows
         econ_line("e2", "e1", "assistant", "2026-10-10T08:00:10Z", [{"type": "thinking", "thinking": "Plan: licznik w raporcie.", "signature": "x"}],
-                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4], partial=True)),
+                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4], partial=True), stop=None),
         econ_line("e3", "e2", "assistant", "2026-10-10T08:00:11Z", [{"type": "text", "text": "Dodaję licznik."}],
-                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4])),
+                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4]), stop=None),
         econ_line("e4", "e3", "assistant", "2026-10-10T08:00:12Z",
                   [{"type": "tool_use", "id": "toolu_e1", "name": "Edit", "input": {"file_path": "src/a.py", "old_string": "x", "new_string": "y"}}],
-                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4])),
+                  session=S, model="claude-x-large", mid="msg_A1", usage=_usage(T["msg_A1"][4]), stop="tool_use"),
         econ_line("e5", "e4", "user", "2026-10-10T08:01:00Z", [{"type": "tool_result", "tool_use_id": "toolu_e1", "content": "ok"}], session=S),
         econ_line("e6", "e5", "assistant", "2026-10-10T08:02:00Z",
                   [{"type": "tool_use", "id": "toolu_b1", "name": "Bash", "input": {"command": commit_cmd, "description": "commit"}}],
-                  session=S, model="claude-x-large", mid="msg_A2", usage=_usage(T["msg_A2"][4])),
-        econ_line("e7", "e6", "user", "2026-10-10T08:02:30Z", [{"type": "tool_result", "tool_use_id": "toolu_b1", "content": "[main abc] feat"}], session=S),
+                  session=S, model="claude-x-large", mid="msg_A2", usage=_usage(T["msg_A2"][4]), stop="tool_use"),
+        # what git prints for a commit it made: the tool_result confirms the command created one (and names its hash)
+        econ_line("e7", "e6", "user", "2026-10-10T08:02:30Z", [{"type": "tool_result", "tool_use_id": "toolu_b1",
+                                                               "content": "[main abc1234] feat: licznik tokenów\n 1 file changed"}], session=S),
         econ_line("e8", "e7", "assistant", "2026-10-11T09:00:00Z",
                   [{"type": "tool_use", "id": "toolu_w1", "name": "Write", "input": {"file_path": "src/b.py", "content": "print(1)\n"}},
                    {"type": "tool_use", "id": "toolu_e2", "name": "Edit", "input": {"file_path": "src/a.py", "old_string": "q", "new_string": "r"}}],
-                  session=S, model="claude-x-large", mid="msg_A3",
+                  session=S, model="claude-x-large", mid="msg_A3", stop="tool_use",
                   usage=dict(_usage(T["msg_A3"][4]), server_tool_use={"web_search_requests": 1, "web_fetch_requests": 0},
                              output_tokens_details={"thinking_tokens": 0}, future_counter=7)),
         econ_line("e9", "e8", "user", "2026-10-11T09:00:05Z", [{"type": "tool_result", "tool_use_id": "toolu_w1", "content": "ok"},
@@ -157,26 +168,46 @@ def economics_files():
     sub = [econ_line("s1", None, "user", "2026-10-10T08:04:00Z", "Przeczytaj raport", session=S, sidechain=True, agentId="s1"),
            econ_line("s2", "s1", "assistant", "2026-10-10T08:05:00Z",
                      [{"type": "tool_use", "id": "toolu_r1", "name": "Read", "input": {"file_path": "src/report.py"}}],
-                     session=S, model="claude-x-small", mid="msg_S1", usage=_usage(T["msg_S1"][4]), sidechain=True, agentId="s1")]
+                     session=S, model="claude-x-small", mid="msg_S1", usage=_usage(T["msg_S1"][4]), sidechain=True, agentId="s1",
+                     stop="tool_use")]
 
     def wf(agent, mid, text):
-        return [econ_line(agent + "u", None, "user", "2026-10-10T08:05:30Z", "Zadanie przepływu", session=S, sidechain=True, agentId=agent),
-                econ_line(agent + "a", agent + "u", "assistant", T[mid][3], [{"type": "text", "text": text}],
-                          session=S, model="claude-x-small", mid=mid, usage=_usage(T[mid][4]), sidechain=True, agentId=agent)]
+        stale = mid in ECON_STALE
+        lines = [econ_line(agent + "u", None, "user", "2026-10-10T08:05:30Z", "Zadanie przepływu", session=S, sidechain=True, agentId=agent)]
+        parts = [text] if not stale else [text, " Dalszy ciąg odpowiedzi, której licznik wyjścia jest z początku strumienia." * 4]
+        prev = agent + "u"
+        for i, part in enumerate(parts):
+            uid = agent + "a" + ("" if i == 0 else str(i))
+            lines.append(econ_line(uid, prev, "assistant", T[mid][3], [{"type": "text", "text": part}], session=S, model="claude-x-small",
+                                   mid=mid, usage=_usage(T[mid][4]), sidechain=True, agentId=agent,
+                                   stop=None if stale else "end_turn"))
+            prev = uid
+        return lines
     e2 = [econ_line("b1", None, "user", "2026-10-10T12:00:00Z", "Krótkie pytanie o testy", session="sess-E2"),
           econ_line("b2", "b1", "assistant", "2026-10-10T12:00:30Z", [{"type": "text", "text": "Testy są w tests/."}],
                     session="sess-E2", model="claude-x-small", mid="msg_B1", usage=_usage(T["msg_B1"][4]))]
     files = {"sess-E1.jsonl": main, "sess-E1/subagents/agent-s1.jsonl": sub,
              "sess-E1/subagents/workflows/run-1/agent-w1.jsonl": wf("w1", "msg_W1", "Wynik w1"),
              "sess-E1/subagents/workflows/run-1/agent-w2.jsonl": wf("w2", "msg_W2", "Wynik w2 dłuższy"),
-             "sess-E2.jsonl": e2}
+             "sess-E2.jsonl": e2,
+             # files Claude Code writes next to the transcripts: an agent's meta (type, description) and a workflow run's
+             # summary (name, agent count, its own token total) — read as measured metadata, never estimated as text
+             "sess-E1/subagents/agent-s1.meta.json": json.dumps({"agentType": "general-purpose", "description": "Czytanie raportu",
+                                                                 "spawnDepth": 1}, ensure_ascii=False),
+             "sess-E1/subagents/workflows/run-1/agent-w1.meta.json": json.dumps({"agentType": "workflow-step", "description": "Krok w1",
+                                                                                "workflowPhase": "build"}, ensure_ascii=False),
+             "sess-E1/workflows/run-1.json": json.dumps({"runId": "run-1", "workflowName": "Przepływ testowy", "agentCount": 2,
+                                                         "totalTokens": 1300, "totalToolCalls": 0, "status": "completed",
+                                                         "durationMs": 61000}, ensure_ascii=False)}
     sessions = {"ccr": {"data": [
         {"id": "session_TEST1", "title": "Sesja testowa jeden", "created_at": "2026-10-10T07:59:00Z", "updated_at": "2026-10-11T09:10:00Z",
          "configured_model": "claude-x-large", "status": "idle",
+         "session_context": {"sources": [{"git_repository": {"url": "https://example.invalid/econ/repo-a", "revision": "refs/heads/main"}}]},
          "external_metadata": {"usage": {"cache_read_tokens": 3000, "cache_write_tokens": 2000, "input_tokens": 30, "output_tokens": 300,
                                          "cost_usd": 1.5}}},
         {"id": "session_TEST2", "title": "Sesja bez transkryptu", "created_at": "2026-10-09T10:00:00Z", "updated_at": "2026-10-09T11:00:00Z",
          "configured_model": "claude-x-small",
+         "session_context": {"sources": [{"git_repository": {"url": "https://example.invalid/other/repo-b"}}]},
          "external_metadata": {"usage": {"cache_read_tokens": 100, "cache_write_tokens": 50, "input_tokens": 5, "output_tokens": 20,
                                          "cost_usd": 0.25}}, "parent_session_id": "session_TEST1"}],
         "has_more": False, "first_id": "session_TEST1", "last_id": "session_TEST2"}}  # the shape list_sessions returns
@@ -189,7 +220,10 @@ def economics_expected():
     def sums(ts):
         return {k: sum(t[4][i] for t in ts) for i, k in enumerate(("input", "output", "cache_creation", "cache_read"))}
     main_e1 = sums([t for t in ECON_TURNS if t[0] == "sess-E1"])
+    stale = [t for t in ECON_TURNS if t[1] in ECON_STALE]
     return {"turns": len(ECON_TURNS), "duplicate_lines": sum(t[5] - 1 for t in ECON_TURNS),
+            "stale_output_turns": len(stale), "stale_output_tokens": sum(t[4][1] for t in stale),
+            "commit_hash_in_result": "abc1234",
             "totals": sums(ECON_TURNS), "family_E1": sums(fam["sess-E1"]), "main_E1": main_e1, "family_E2": sums(fam["sess-E2"]),
             "transcripts_E1": 4, "agents_E1": 3, "workflow_agents": 2, "files_touched_E1": ["src/a.py", "src/b.py"],
             "edit_calls_E1": 3, "edits_failed_E1": 1, "tool_calls": {"Edit": 2, "Write": 1, "Bash": 1, "Read": 1}, "tool_failed": {"Edit": 1},
@@ -418,7 +452,7 @@ def main() -> None:
     for rel, lines in files.items():
         f = econ / "projects" / "-home-user-econ" / rel
         f.parent.mkdir(parents=True, exist_ok=True)
-        f.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        f.write_text(lines + "\n" if isinstance(lines, str) else "\n".join(lines) + "\n", encoding="utf-8")
     (econ / "sessions.json").write_text(json.dumps(sessions, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
     cont = OUT / "continuation"

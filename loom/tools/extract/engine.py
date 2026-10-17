@@ -122,6 +122,7 @@ class Engine:
         self.data_provider: Optional[dict[str, Any]] = None
         # slice 4: the last token-economics result (``token_economics``); ``write`` puts its files in the package
         self.economics: Optional[dict[str, Any]] = None
+        self.units_snapshot_written: Optional[bool] = None  # the last write: units.jsonl (full content) in the package or not
 
     # -- lifecycle --------------------------------------------------------------
     def close(self) -> None:

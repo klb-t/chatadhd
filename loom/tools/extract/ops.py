@@ -662,7 +662,8 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     if p.get("explain", True) and not aggregate:
         put("explain.jsonl", "".join(json.dumps(r, ensure_ascii=False) + "\n" for r in eng.explain))
     put("decisions.json", _json_text(eng.decisions.as_dict()))
-    if p.get("units_snapshot", True) and not aggregate:
+    eng.units_snapshot_written = bool(p.get("units_snapshot", True) and not aggregate)  # said in RAPORT.md (full content or not)
+    if eng.units_snapshot_written:
         put("units.jsonl", "".join(json.dumps(u.as_dict(), ensure_ascii=False) + "\n" for u in eng.units))
     # -- slice B: package tree, edits, cut outputs, redaction, statistics, model calls -------------------------
     if eng.package is not None:

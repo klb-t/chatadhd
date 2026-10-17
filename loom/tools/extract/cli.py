@@ -144,6 +144,10 @@ VERBS: list[dict[str, Any]] = [
               _o("--polacz", "--link", action="append", metavar="T=S", help="cli.opt.link"),
               _o("--szacunek", "--estimate", choices=["auto", "chars", "tiktoken"], help="cli.opt.estimate"),
               _o("--main", "--main-ref", dest="main_ref", metavar="GAŁĄŹ", help="cli.opt.main_ref"),
+              _o("--wyjscie-niekoncowe", "--stale-output", dest="stale_output", choices=["keep", "estimate"], help="cli.opt.stale_output"),
+              _o("--pliki-obok", "--side-files", dest="side_files", action="store_true", help="cli.opt.side_files"),
+              _o("--per-tura", "--per-turn", dest="per_turn", action="store_true", help="cli.opt.per_turn"),
+              _o("--z-trescia", "--units-snapshot", dest="units_snapshot", action="store_true", help="cli.opt.units_snapshot"),
               _o("--csv", metavar="TABELA", help="cli.opt.csv_table")] + SELECT_OPTS},
     {"name": "komander", "aliases": ["commander", "tui", "xport"], "help": "cli.verb.commander",
      "opts": [_o("zrodla", nargs="*", metavar="ŹRÓDŁO", help="cli.opt.sources"), PACKAGE,
@@ -590,19 +594,32 @@ def verb_economics(args: argparse.Namespace) -> int:
             params["estimate"] = args.szacunek
         if args.main_ref:
             params["main_ref"] = args.main_ref
+        if args.stale_output:
+            params["stale_output"] = args.stale_output
+        if args.side_files:
+            params["skip_session_side_files"] = False
+        if args.per_turn:
+            params["per_turn"] = True
         if steps:
             params["of"] = "selection"
         steps.append(("token_economics", params))
         if args.pakiet:
-            steps.append(("write", {"package": args.pakiet}))
+            # a token-economics package holds the numbers, not a full-text copy of every transcript (units.jsonl, tool
+            # outputs included) — unless asked (--z-trescia, or the preset economics.package.units_snapshot: true)
+            snap = bool(args.units_snapshot or eng.ds.preset("economics.package.units_snapshot", False))
+            steps.append(("write", {"package": args.pakiet, "units_snapshot": snap}))
         res = _run_steps(eng, args.zrodla, steps)
         econ = next(r for r in res if r.get("op") == "token_economics")
         if args.csv and not args.json:
+            if getattr(args, "zapisz_przepis", None):  # the recipe is saved before the table goes to stdout
+                save_recipe(eng.normalised_recipe(), args.zapisz_przepis)
+                print(t("cli.recipe_saved", path=args.zapisz_przepis), file=sys.stderr)
             sys.stdout.write(render_csv(econ["economics"], args.csv, eng.ds))
             return 0
         lines = econ["markdown"].rstrip("\n").splitlines()
         if args.pakiet:
             lines.append(t("cli.economics.written", package=args.pakiet))
+            lines.append(t("cli.economics.package_units_yes" if eng.units_snapshot_written else "cli.economics.package_units_no"))
         return _finish(eng, args, res, lines + _write_lines(res))
 
 
