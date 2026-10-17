@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 
+#include "graph/projection.h"
 #include "loom/graph_entry.h"
 #include "loom/rom.h"
 #include "loom/runtime_profile.h"
@@ -145,4 +146,40 @@ TEST_CASE("rom: the Runtime mounts the ROM first") {
   CHECK(rt->mounts().mounts()[0].name == "rom");
   CHECK_FALSE(rt->mounts().mounts()[0].writable);
   CHECK(unwrap(rt->mounts().read("rom:boot"))["source"] == "rom");
+}
+
+TEST_SUITE("rom") {
+  TEST_CASE("M1-K0: every ROM item is a node of the graph under area:rom, in number order, its status and why in the language asked") {
+    fsutil::TempDir td;
+    projection::Env env;
+    env.root = td.path();
+    env.lang = "pl";
+    const Json nav = unwrap(projection::navigate(env, Json{{"focus", "area:rom"}, {"limit", 0}}));
+    auto rom = unwrap(rom::Rom::open());
+    const auto ids = rom.ids();
+    REQUIRE(nav["children"].size() == ids.size());
+    for (std::size_t i = 0; i < ids.size(); ++i) {
+      const Json& n = nav["children"][i];
+      const Json item = unwrap(rom.read(ids[i]));
+      INFO(ids[i]);
+      CHECK(n["address"] == "rom:" + ids[i]);
+      CHECK(n["provenance"]["layer"] == "rom");
+      CHECK(n["evidence"]["class"] == "declared");
+      CHECK(n["value"] == item["status"]);
+      CHECK(n["label"] == item["label"]["pl"]);
+      CHECK(n["why"] == item["why"]["pl"]);
+    }
+    CHECK(nav["breadcrumbs"][0]["address"] == "");
+    // an override is your copy in the overlay; the item says overlay, the ROM stays as shipped
+    const Json written = unwrap(projection::rom_override(td.path(), Json{{"id", "rescue_mode"}, {"patch", Json{{"why", Json{{"pl", "Moja notatka"}}}}}}));
+    CHECK(written["file"] == (td.path() / "profiles" / "graph_entry.pack").string());
+    const Json after = unwrap(projection::navigate(env, Json{{"focus", "area:rom"}, {"limit", 0}}));
+    for (const auto& n : after["children"])
+      if (n["address"] == "rom:rescue_mode") {
+        CHECK(n["provenance"]["layer"] == "overlay:graph_entry");
+        CHECK(n["why"] == "Moja notatka");
+      }
+    CHECK(unwrap(rom.read("rescue_mode"))["why"]["pl"] != "Moja notatka");
+    CHECK_FALSE(projection::rom_override(td.path(), Json{{"id", "not_an_item"}, {"patch", Json{{"x", 1}}}}));
+  }
 }

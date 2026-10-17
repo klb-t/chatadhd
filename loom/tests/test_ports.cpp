@@ -1,5 +1,9 @@
 #include <doctest/doctest.h>
 
+#include "graph/projection.h"
+#include "loom/annotation_layer.h"
+#include "loom/config.h"
+
 #include "loom/adapter_registry.h"
 #include "loom/db.h"
 #include "loom/port_compose.h"
@@ -211,5 +215,47 @@ TEST_SUITE("ports") {
     CHECK(fused.at("a") == doctest::Approx(fused.at("b")));  // symmetric ranks
     CHECK(out.produced_by.size() == 2);
     CHECK_FALSE(context::fuse_score_sets(sets, Json{{"operation", "bogus"}, {"signal", "raw_score"}}));
+  }
+}
+
+TEST_SUITE("ports") {
+  TEST_CASE("M1-K0: every role of the profile is a node of the graph, bound_to the model the policy chain gives (the same function every reader calls)") {
+    fsutil::TempDir td;
+    Config cfg(td.path() / "config.json");
+    cfg.set("guardian_model", "openai/gpt-4o-mini");
+    projection::Env env;
+    env.root = td.path();
+    env.cfg = &cfg;
+    env.lang = "pl";
+    auto cat = unwrap(projection::Catalogue::open(env));
+    const Json rows = unwrap(cat.roles());
+    auto prof = unwrap(PortProfile::load(td.path()));
+    REQUIRE(rows["roles"].size() == prof.roles().size());
+    const auto edges = unwrap(cat.edges());
+    for (const auto& row : rows["roles"]) {
+      const std::string id = row["id"];
+      INFO(id);
+      auto node = unwrap(cat.node("role:" + id));
+      REQUIRE(node);
+      CHECK_FALSE((*node)["label"].get<std::string>().empty());
+      const std::string policy = row["policy"].is_string() ? row["policy"].get<std::string>() : std::string();
+      if (!policy.empty()) {
+        const auto choice = annotations::resolve_model(cfg, td.path(), policy, "");
+        CHECK(row["model"] == (choice.model.empty() ? Json(nullptr) : Json(choice.model)));
+        CHECK(row["tier"]["id"] == (choice.tier.empty() ? std::string("unknown") : choice.tier));
+      }
+      bool bound = false;
+      for (const auto& e : edges) bound = bound || (e["src"] == "role:" + id && e["kind"] == "bound_to");
+      CHECK(bound == row["model"].is_string());
+    }
+    // the Secretary: step 1 (guardian_model) decides, and the chain says so step by step
+    for (const auto& row : rows["roles"])
+      if (row["id"] == "guardian") {
+        CHECK(row["model"] == "openai/gpt-4o-mini");
+        CHECK(row["chain"][0]["setting"] == "guardian_model");
+        CHECK(row["chain"][0]["decides"] == true);
+        CHECK(row["chain"][1]["decides"] == false);
+      }
+    CHECK(cat.resolver_opens() == 1);
   }
 }

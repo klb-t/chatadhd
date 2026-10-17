@@ -4,6 +4,7 @@
 #include <map>
 #include <set>
 
+#include "graph/projection.h"
 #include "loom/config.h"
 #include "loom/effective_view.h"
 #include "loom/providers.h"
@@ -575,5 +576,42 @@ TEST_SUITE("settings_fields") {
       CHECK(f["rule"]["action"] == "edit");
       CHECK(f["rule"]["effect"] == "deny");
     }
+  }
+}
+
+TEST_SUITE("settings_fields") {
+  TEST_CASE("M1-K0: settings.resolved shows every field of the pack and every profile value in its group, with the value in words and its chip") {
+    fsutil::TempDir td;
+    Config cfg(td.path() / "config.json");
+    cfg.set("stream", false);
+    projection::Env env;
+    env.root = td.path();
+    env.cfg = &cfg;
+    env.lang = "pl";
+    const Json doc = unwrap(settings_fields(td.path()));
+    const Json r = unwrap(projection::settings_resolved(env, Json::object()));
+    std::size_t shown = 0;
+    std::set<std::string> groups_of_pack;
+    for (auto it = doc.at("groups").begin(); it != doc.at("groups").end(); ++it) groups_of_pack.insert(it.key());
+    std::map<std::string, Json> by_key;
+    for (const auto& g : r.at("groups")) {
+      CHECK(groups_of_pack.count(g.at("id").get<std::string>()));
+      for (const auto& f : g.at("fields")) {
+        ++shown;
+        by_key[f.at("key").get<std::string>()] = f;
+        CHECK(f.at("human").at("group") == g.at("id"));
+        CHECK(f.at("provenance").at("chip").is_object());
+      }
+    }
+    // counted against the pack: fields + profile values (never a literal)
+    CHECK(shown + r.at("hidden_keys").size() == doc.at("fields").size() + doc.at("profile_values").size());
+    CHECK(by_key.at("stream").at("value") == false);
+    CHECK(by_key.at("stream").at("value_human") == "wyłączone");
+    CHECK(by_key.at("stream").at("provenance").at("scope") == "person");
+    CHECK(by_key.at("worker/batch_threshold").at("profile_value").at("profile") == "worker");
+    CHECK(by_key.at("worker/batch_threshold").at("provenance").at("chip").at("id") == "installation");
+    // flows that read a field are the field's own human.flows (one source of the data)
+    for (const auto& field : doc.at("fields"))
+      if (field.at("key") == "temperature") CHECK(by_key.at("temperature").at("flows_reading") == field.at("human").at("flows"));
   }
 }

@@ -111,6 +111,7 @@ struct Catalogue::Impl {
   Json profile_values = Json::object();  // graph_sources values
 
   std::map<std::string, Read> eager;  // source id -> whole read
+  std::vector<Json> looked_up_edges;   // edges of the nodes of paged sources read one by one (node())
 
   std::size_t opens = 0;
   std::optional<scopes::Resolver> resolver;
@@ -595,7 +596,7 @@ Json field_human(Impl& c, const Json& field) {
   const Json h = field.value("human", Json::object());
   Json out{{"label", c.say(h.value("label", Json()))}, {"why", c.say(h.value("why", Json()))}, {"effect", c.say(h.value("effect", Json()))},
            {"levels", h.value("levels", Json::array())}, {"group", h.value("group", "")}};
-  for (const char* k : {"subgroup", "role", "role_status", "placed_from", "technical_only"})
+  for (const char* k : {"subgroup", "role", "role_status", "placed_from", "technical_only", "flows"})
     if (h.contains(k)) out[k] = h[k];
   return out;
 }
@@ -1453,6 +1454,7 @@ Result<std::optional<Json>> Catalogue::node(const std::string& raw) {
   if (!src) return std::optional<Json>();
   if (Impl::paged(*src)) {
     LOOM_TRY_ASSIGN(auto r, c.read_under(*src, std::string(), Json{{"address", address}}));
+    for (auto& e : r.edges) c.looked_up_edges.push_back(std::move(e));
     for (auto& n : r.nodes)
       if (json::get_string(n, "address") == address) return std::optional<Json>(std::move(n));
     return std::optional<Json>();
@@ -1476,9 +1478,9 @@ Result<Catalogue::Children> Catalogue::children(const std::string& raw_parent, c
     const std::string of = json::get_string(p, "of");
     // The sources parented to this area or to the focus's source, and the focus's own source (nodes nested in their own kind: the
     // slots of You, the notes under a note).
-    const bool here = parent.empty() ? json::get_bool(p, "root", false)
-                                     : (!area.empty() && parent == "area:" + area) || (!of.empty() && of == parent_source) ||
-                                           (!parent_source.empty() && json::get_string(s, "id") == parent_source);
+    const bool parented = parent.empty() ? json::get_bool(p, "root", false) : (!area.empty() && parent == "area:" + area) || (!of.empty() && of == parent_source);
+    const bool own = !parent.empty() && !parent_source.empty() && json::get_string(s, "id") == parent_source && !Impl::paged(s);
+    const bool here = parented || own;
     if (!here) continue;
     const std::string sid = json::get_string(s, "id");
     Read paged_read;
@@ -1536,7 +1538,7 @@ Result<std::vector<Json>> Catalogue::children_of_source(const std::string& id) {
 
 Result<std::vector<Json>> Catalogue::edges() {
   Impl& c = *impl_;
-  std::vector<Json> out;
+  std::vector<Json> out = c.looked_up_edges;
   for (const auto& s : c.sources) {
     if (Impl::paged(s)) continue;
     auto got = c.read_whole(s);
