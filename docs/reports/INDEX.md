@@ -1263,3 +1263,4 @@ Spec: `docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md` (§10 wiersze „Przeg
   8. Presety zostają (`edits.preview_sample: 0`, kontynuacja 240 min / 2 terminy), spec dopasowana. Cofnięcie: presety w nakładce.
 - Nie weszło: jednostki w pamięci w całości (indeks + ponowne czytanie niezaznaczonych), nazwy członków źródła w `preserve` przy redakcji, nazwa katalogu archiwum w `attachments/`.
 - Prywatność: tylko fixture'y syntetyczne (nowy `damaged/chatgpt_damaged.zip` z generatora); test `--zbiorczo` czyta każdy plik pakietu, także `manifest.json`.
+- Bramka: `ctest --preset dev` 246/246 (w tym `tools.extract`, 197 testów, 1 pominięty z powodem tam, gdzie brak curses/pty), strażnik CTest 245 + 1 jawnie niewykonany, skrypty, web build i testy web — GATE GREEN przy `a42cee4a` (drugi przebieg na końcowym HEAD; pierwszy, przy `ecd8ea02`, też zielony); zrzuty ekranu e2e przywrócone po bramce.
