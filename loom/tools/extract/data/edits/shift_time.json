@@ -1,0 +1,28 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "shift_time",
+ "module": "edits:shift_time",
+ "group": "time",
+ "label": {
+  "pl": "Przesuń czasy o stałą (np. -3d, 12h)",
+  "en": "Shift times by a constant (e.g. -3d, 12h)"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "by": {
+   "type": "string",
+   "required": true
+  }
+ },
+ "invertible": "inverse_shift",
+ "preview_lines": {
+  "pl": "{count} czasów przesuniętych o {by}",
+  "en": "{count} time(s) shifted by {by}"
+ }
+}

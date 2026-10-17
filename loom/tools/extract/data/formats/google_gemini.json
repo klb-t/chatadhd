@@ -1,0 +1,169 @@
+{
+ "schema": "loom.extract.format/1",
+ "id": "google.gemini.takeout",
+ "vendor": "google",
+ "product": "gemini",
+ "service": "google",
+ "label": {
+  "pl": "Google Takeout — Gemini Apps (Moja aktywność)",
+  "en": "Google Takeout — Gemini Apps (My Activity)"
+ },
+ "hypothesis": true,
+ "hypothesis_note": {
+  "pl": "Kształt z dokumentacji Takeout i narzędzi zewnętrznych; poprawka to edycja tego pliku, nie kodu.",
+  "en": "Shape from Takeout documentation and third-party tools; a correction is an edit of this file, not of code."
+ },
+ "priority": 20,
+ "containers": [
+  "zip",
+  "json",
+  "html"
+ ],
+ "sniff": {
+  "any_of": [
+   {
+    "zip_member_glob": "Takeout/My Activity/Gemini Apps/MyActivity.*"
+   },
+   {
+    "zip_member_glob": "Takeout/Moja aktywność/Gemini Apps/MyActivity.*"
+   },
+   {
+    "json_array_first_keys_all": [
+     "header",
+     "title",
+     "time"
+    ],
+    "json_array_first_value": {
+     "path": "header",
+     "regex": "^(Gemini|Bard)"
+    }
+   },
+   {
+    "html_contains": "Gemini Apps"
+   },
+   {
+    "html_contains": "Aplikacje Gemini"
+   }
+  ]
+ },
+ "reader": "gemini",
+ "entries": {
+  "list": "<root>",
+  "prompt": "title",
+  "prompt_prefix": [
+   "Prompted ",
+   "Zapytano: ",
+   "Pytanie: "
+  ],
+  "response_html": "safeHtmlItem[0].html",
+  "response_text": "details",
+  "subtitles": "subtitles",
+  "time": {
+   "path": "time",
+   "type": "iso"
+  },
+  "attachments": "attachments",
+  "products": "products"
+ },
+ "grouping": {
+  "by": "gap",
+  "gap_minutes": 180,
+  "note": {
+   "pl": "Takeout nie ma identyfikatora rozmowy: wpisy grupowane w rozmowy po przerwie dłuższej niż gap_minutes",
+   "en": "Takeout has no conversation id: entries are grouped into conversations by a pause longer than gap_minutes"
+  }
+ },
+ "roles": {
+  "prompt": "user",
+  "response": "assistant"
+ },
+ "blocks": {
+  "prompt": "text",
+  "response": "text",
+  "*": "unknown"
+ },
+ "members": {
+  "Takeout/My Activity/Gemini Apps/MyActivity.json": "conversations",
+  "Takeout/My Activity/Gemini Apps/MyActivity.html": "conversations",
+  "*": "unknown"
+ },
+ "preserve": {
+  "unit": "activity_entry",
+  "keep_members": [],
+  "attachment_root": "Takeout/My Activity/Gemini Apps"
+ },
+ "known_absent": {
+  "pl": [
+   "identyfikatory rozmów (grupowanie po czasie jest wnioskiem)",
+   "rozumowanie",
+   "gałęzie",
+   "wywołania narzędzi"
+  ],
+  "en": [
+   "conversation ids (time grouping is inferred)",
+   "reasoning",
+   "branches",
+   "tool calls"
+  ]
+ },
+ "dates": {
+  "note": {
+   "pl": "Nazwy miesięcy (po pierwszych literach, dowolny język) i skróty stref w datach HTML Takeout; skrót spoza tabeli = czas lokalny w strefie założonej (oznaczony jako wywnioskowany).",
+   "en": "Month names (by their first letters, any language) and zone abbreviations in Takeout HTML dates; an abbreviation not listed = local time in the assumed zone (flagged inferred)."
+  },
+  "months": {
+   "jan": 1,
+   "feb": 2,
+   "mar": 3,
+   "apr": 4,
+   "may": 5,
+   "jun": 6,
+   "jul": 7,
+   "aug": 8,
+   "sep": 9,
+   "oct": 10,
+   "nov": 11,
+   "dec": 12,
+   "sty": 1,
+   "lut": 2,
+   "kwi": 4,
+   "maj": 5,
+   "cze": 6,
+   "lip": 7,
+   "sie": 8,
+   "wrz": 9,
+   "paź": 10,
+   "paz": 10,
+   "lis": 11,
+   "gru": 12,
+   "mär": 3,
+   "mai": 5,
+   "okt": 10,
+   "dez": 12
+  },
+  "zones": {
+   "UTC": "Z",
+   "GMT": "Z",
+   "WET": "+00:00",
+   "WEST": "+01:00",
+   "BST": "+01:00",
+   "CET": "+01:00",
+   "CEST": "+02:00",
+   "EET": "+02:00",
+   "EEST": "+03:00",
+   "MSK": "+03:00",
+   "IST": "+05:30",
+   "JST": "+09:00",
+   "AEST": "+10:00",
+   "AEDT": "+11:00",
+   "EST": "-05:00",
+   "EDT": "-04:00",
+   "CST": "-06:00",
+   "CDT": "-05:00",
+   "MST": "-07:00",
+   "MDT": "-06:00",
+   "PST": "-08:00",
+   "PDT": "-07:00"
+  }
+ }
+}

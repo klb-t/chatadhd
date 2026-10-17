@@ -1,0 +1,13 @@
+{"schema": "loom.extract.profile/1", "id": "flat", "kind": "restructure",
+ "label": {"pl": "Płaski: rozmowa → wiadomości (bieżąca ścieżka, sam tekst, role, czasy)", "en": "Flat: conversation → messages (current path, text only, roles, times)"},
+ "layout": "conversation>message",
+ "branches": {"keep": "current", "alternatives": "note", "note_text": {"pl": "wycięto {n} gałęzi ({m} wiadomości) w {k} miejscach rozwidlenia", "en": "{n} branch(es) cut ({m} messages) at {k} fork point(s)"}},
+ "fields": {"conversation": ["key", "uid", "title", "created", "service", "account.label", "messages", "branch_note"],
+            "message": ["conversation", "id", "role", "created", "text", "attachments", "notes"]},
+ "blocks": {"text": "keep", "code": "keep", "thinking": "omit", "tool_use": "omit", "tool_result": "omit", "attachment": "reference", "citation": "omit", "unknown": "note", "*": "omit"},
+ "drop_empty_messages": true,
+ "timestamps": {"zone": "source", "format": "iso8601"},
+ "outputs": [{"kind": "jsonl", "path": "flat/conversations.jsonl", "rows": "conversations"},
+             {"kind": "jsonl", "path": "flat/messages.jsonl", "rows": "messages"},
+             {"kind": "markdown", "path": "flat/{conversation.key}.md"}],
+ "sort": "package"}

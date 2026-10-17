@@ -260,6 +260,21 @@
           "profile": "graph_views",
           "pointer": "/view_renderers"
         }
+      },
+      "settings_groups": {
+        "label": {
+          "en": "Settings groups",
+          "pl": "Grupy ustawień"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "settings_fields",
+          "pointer": "/groups"
+        }
       }
     },
     "edge_kinds": {

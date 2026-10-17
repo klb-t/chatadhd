@@ -401,6 +401,30 @@ TEST_SUITE("chat_ops") {
     // the question: which model do I use for summaries
     const auto asked = h.say_and_confirm("jakiego modelu używam do streszczeń", "ports.show", "tak");
     CHECK(h.text_of(asked).find("action.summarise") != std::string::npos);
+    // nobody chose a model for summaries: the shipped preset action.* chooses nothing, so the answer says the action takes the step's model,
+    // else the conversation model from the settings (runner.cpp chosen_role drops the installation scope), and names that model
+    CHECK_MESSAGE(h.text_of(asked).find("nikt nie wybrał modelu") != std::string::npos, h.text_of(asked));
+    CHECK(h.text_of(asked).find("anthropic/claude-haiku-4-5") != std::string::npos);
+    CHECK(h.text_of(asked).find("installation") == std::string::npos);
+    // the jobs M1-D1 names (Sekretarz, Obraz, Głos, Rozpoznanie polecenia): the person's choice is the setting their reader reads first
+    h.say_and_confirm("do sekretarza używaj modelu x/secretary", "ports.set", "tak");
+    CHECK(h.rt->config().get("guardian_model") == "x/secretary");
+    CHECK(h.rt->config().get("semantic_model") != "x/secretary");  // the analysis model is not touched
+    const auto secretary = h.say_and_confirm("jakiego modelu używam do sekretarza", "ports.show", "tak");
+    CHECK_MESSAGE(h.text_of(secretary).find("x/secretary") != std::string::npos, h.text_of(secretary));
+    CHECK(h.text_of(secretary).find("guardian_model") != std::string::npos);
+    h.say_and_confirm("use model x/painter for images", "ports.set", "yes");
+    CHECK(h.rt->config().get("image_model") == "x/painter");
+    h.say_and_confirm("use model x/voice for narration", "ports.set", "yes");
+    CHECK(h.rt->config().get("speech_model") == "x/voice");
+    h.say_and_confirm("use model x/router for command recognition", "ports.set", "yes");
+    CHECK(h.rt->config().get("intent_routing_model") == "x/router");
+    // for one conversation the choice is recorded with the role's own adapter (image.generate: openai_images; speech.synthesize names none)
+    h.say_and_confirm("in this conversation use model x/img for images", "ports.set", "yes");
+    h.say_and_confirm("in this conversation use model x/tts for voice", "ports.set", "yes");
+    const Json conv_ports = unwrap(h.rt->db().get_conv(h.conv_id))->metadata.at("ports");
+    CHECK(conv_ports.at("image.generate").at("adapter") == "openai_images");
+    CHECK_FALSE(conv_ports.at("speech.synthesize").contains("adapter"));
     // a job nobody knows is no command: the sentence goes on to the model as it is
     CHECK_FALSE(h.input("use model a/b for baking").handled);
     CHECK_FALSE(h.input("do tego listu użyj uprzejmego tonu").handled);

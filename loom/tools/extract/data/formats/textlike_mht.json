@@ -1,0 +1,16 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "textlike.mht",
+  "vendor": null, "product": null, "service": "file",
+  "label": {"pl": "Archiwum MHT/MHTML (przez engine.importer)", "en": "MHT/MHTML web archive (via engine.importer)"},
+  "priority": 790,
+  "containers": ["mht"],
+  "sniff": {"any_of": [{"text_regex": "(?im)^(MIME-Version:|Content-Type:\\s*multipart/related)"}, {"text_regex": "(?i)^From:\\s.*\\n(?:.*\\n)*?Content-Type:\\s*multipart/related"}]},
+  "reader": "textlike", "importer_method": "import_mht",
+  "roles": {"user": "user", "assistant": "assistant"},
+  "blocks": {"text": "text"},
+  "members": {"*": "unknown"},
+  "preserve": {"unit": "file", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["identyfikatory i czasy wiadomości", "gałęzie", "narzędzia", "rozumowanie"],
+                   "en": ["message ids and times", "branches", "tools", "reasoning"]}
+}

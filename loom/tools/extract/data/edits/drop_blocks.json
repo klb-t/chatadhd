@@ -1,0 +1,29 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "drop_blocks",
+ "module": "edits:drop_blocks",
+ "group": "structure",
+ "label": {
+  "pl": "Usuń rodzaje bloków (np. bez thinking)",
+  "en": "Drop block kinds (e.g. no thinking)"
+ },
+ "scope": [
+  "conversation",
+  "message"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "kinds": {
+   "type": "list",
+   "required": true
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "usunięto {blocks} bloków i {attachments} załączników",
+  "en": "{blocks} block(s) and {attachments} attachment(s) removed"
+ }
+}

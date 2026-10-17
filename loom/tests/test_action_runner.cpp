@@ -8,6 +8,7 @@
 #include "loom/net/http.h"
 #include "loom/provenance.h"
 #include "loom/runtime.h"
+#include "loom/settings_fields.h"
 #include "loom/util/fs.h"
 #include "test_helpers.h"
 
@@ -155,6 +156,82 @@ TEST_SUITE("action_runner") {
     }
   }
 
+  TEST_CASE("settings.set honours the values a field declares: a listed value is stored; a planned or unlisted one is refused or stored with a warning, as the data says") {
+    Fixture f;
+    // a listed value
+    const Json ok = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "navigator_layout"}, {"value", "list"}}}}));
+    CHECK(ok.at("status") == "completed");
+    CHECK(f.rt->config().get("navigator_layout") == "list");
+    // a value no reader understands never lands in config.json; the message names the values
+    const Json unknown = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "navigator_layout"}, {"value", "nonsense"}}}}));
+    CHECK(unknown.at("status") == "failed");
+    CHECK(unknown.at("error").at("message").get<std::string>().find("\"both\", \"list\", \"map\"") != std::string::npos);
+    CHECK(f.rt->config().get("navigator_layout") == "list");
+    // a planned value whose reader rejects it (on_set: refuse) is refused with the data's own reason (chat.send would fail at the next request)
+    const Json planned = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}}));
+    CHECK(planned.at("status") == "failed");
+    CHECK(planned.at("error").at("message").get<std::string>().find("planned") != std::string::npos);
+    CHECK(planned.at("error").at("message").get<std::string>().find("M1-D2") != std::string::npos);
+    CHECK(f.rt->config().get("chat_context_order").is_null());
+    // the empty value is a value of its own (the profile's order), listed in the data
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", ""}}}})).at("status") == "completed");
+    CHECK(f.rt->config().get("chat_context_order") == "");
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stable_first"}}}})).at("status") == "completed");
+    // a planned value whose reader degrades (on_set: warn) is stored, and the step says it is planned, with the reason in both languages
+    const Json windows = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "windows"}}}}));
+    REQUIRE(windows.at("status") == "completed");
+    CHECK(f.rt->config().get("layout_mode") == "windows");
+    const Json warning = windows.at("result").at("data").at("warning");
+    CHECK(warning.at("status") == "planned");
+    CHECK_FALSE(warning.at("reason").at("pl").get<std::string>().empty());
+    CHECK_FALSE(warning.at("reason").at("en").get<std::string>().empty());
+    // outside a closed list whose reader falls back (on_unlisted: warn): stored, the warning names the list
+    const Json other = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "tiles"}}}}));
+    REQUIRE(other.at("status") == "completed");
+    CHECK(other.at("result").at("data").at("warning").at("status") == "unlisted");
+    CHECK(other.at("result").at("data").at("warning").at("values").size() == 3);
+    // a listed, available value has nothing to say
+    const Json grid = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "layout_mode"}, {"value", "views_grid"}}}}));
+    CHECK_FALSE(grid.at("result").at("data").contains("warning"));
+    // a field without a values list stays open (type only)
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "theme"}, {"value", "anything"}}}})).at("status") == "completed");
+  }
+
+  TEST_CASE("settings.set: chat_context_order lists its reader's orders (values_from), so an order a profile overlay adds is stored and only an unknown name is refused") {
+    Fixture f;
+    const auto root = f.rt->paths().root;
+    // the user's own order and the planned `stability`, added the way the reader (chat_engine) reads orders: profiles/chat_context.pack
+    unwrap(fsutil::write_file(root / "profiles" / "chat_context.pack",
+        Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "chat_context"},
+             {"overrides", Json{{"orders", Json{{"mine", Json::array({"memory", "system", "project", "history", "graph"})},
+                                                {"stability", Json::array({"system", "memory", "project", "history", "graph"})}}}}}}.dump()));
+    const Json mine = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "mine"}}}}));
+    CHECK(mine.at("status") == "completed");
+    CHECK_FALSE(mine.at("result").at("data").contains("warning"));
+    CHECK(f.rt->config().get("chat_context_order") == "mine");
+    // a planned annotation whose value the reader's profile now has is no longer planned
+    CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}})).at("status") == "completed");
+    CHECK(f.rt->config().get("chat_context_order") == "stability");
+    // a name the effective profile does not know is still refused (chat.send would reject it), and nothing is stored
+    const Json unknown = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "no_such_order"}}}}));
+    CHECK(unknown.at("status") == "failed");
+    CHECK(unknown.at("error").at("message").get<std::string>().find("\"mine\"") != std::string::npos);
+    CHECK(f.rt->config().get("chat_context_order") == "stability");
+    // the raw write paths read the same list
+    CHECK(unwrap(check_config_patch(Json{{"chat_context_order", "mine"}}, root)).empty());
+    CHECK_FALSE(check_config_patch(Json{{"chat_context_order", "no_such_order"}}, root));
+    // the document says where the values come from
+    const Json doc = unwrap(settings_fields(root));
+    for (const auto& field : doc.at("fields")) {
+      if (field.at("key") != "chat_context_order") continue;
+      bool listed = false;
+      for (const auto& v : field.at("values"))
+        if (v.at("value") == "mine") { listed = true; CHECK(v.at("from_profile") == "chat_context"); }
+        else if (v.at("value") == "stability") { CHECK(v.at("status_superseded") == "planned"); CHECK_FALSE(v.contains("status")); }
+      CHECK(listed);
+    }
+  }
+
   TEST_CASE("settings.set: the field is the element; the value is typed; edit rules apply; credentials stay out of the conversation") {
     Fixture f;
     const Json set = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "semantic_retry_mode"}, {"value", "automatic"}}}}));
@@ -165,7 +242,8 @@ TEST_SUITE("action_runner") {
     // a value the setting refuses is a failure with the setting's own message
     const Json bad = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "semantic_retry_mode"}, {"value", "sometimes"}}}}));
     CHECK(bad.at("status") == "failed");
-    CHECK(bad.at("error").at("message").get<std::string>().find("explicit_requeue or automatic") != std::string::npos);
+    // (the field's declared values, settings_fields.pack: the same two the worker accepts)
+    CHECK(bad.at("error").at("message").get<std::string>().find("\"explicit_requeue\", \"automatic\"") != std::string::npos);
     CHECK(f.rt->config().get("semantic_retry_mode") == "automatic");
     // types: an integer field takes a number written as text
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "max_tokens"}, {"value", "2048"}}}})).at("status") == "completed");

@@ -1,0 +1,555 @@
+{
+ "schema": "loom.extract.layout/1",
+ "description": "Commander layout as data: roots a pane can show (open list), starting panes, flat-list kinds, columns per node kind (field = any field of the selection language or a view field: label, preview, blocks, chars, folder, size, tags, selected; expr = computed from fields and count(kind)), sort keys per kind, live-filter fields, status-line elements in order.",
+ "roots": [
+  "sources",
+  "package",
+  "selection",
+  "timeline",
+  "attachments",
+  "clusters",
+  "recipe",
+  "inventory",
+  "diff",
+  "bookmarks"
+ ],
+ "root_labels": {
+  "sources": {
+   "pl": "Źródła",
+   "en": "Sources"
+  },
+  "package": {
+   "pl": "Pakiet",
+   "en": "Package"
+  },
+  "selection": {
+   "pl": "Zaznaczenie",
+   "en": "Selection"
+  },
+  "timeline": {
+   "pl": "Oś czasu",
+   "en": "Timeline"
+  },
+  "attachments": {
+   "pl": "Załączniki",
+   "en": "Attachments"
+  },
+  "clusters": {
+   "pl": "Klastry",
+   "en": "Clusters"
+  },
+  "recipe": {
+   "pl": "Przepis",
+   "en": "Recipe"
+  },
+  "inventory": {
+   "pl": "Inwentarz",
+   "en": "Inventory"
+  },
+  "diff": {
+   "pl": "Różnica",
+   "en": "Diff"
+  },
+  "bookmarks": {
+   "pl": "Zakładki",
+   "en": "Bookmarks"
+  }
+ },
+ "panes": [
+  {
+   "root": "sources",
+   "mode": "tree"
+  },
+  {
+   "root": "package",
+   "mode": "tree"
+  }
+ ],
+ "flat_kinds": [
+  "conversation",
+  "message",
+  "block",
+  "attachment"
+ ],
+ "timeline": {
+  "kind": "message"
+ },
+ "filter": {
+  "fields": [
+   "label",
+   "cols"
+  ],
+  "debounce_ms": 0
+ },
+ "columns": {
+  "archive": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "archiwum",
+     "en": "archive"
+    }
+   },
+   {
+    "id": "format",
+    "label": {
+     "pl": "format",
+     "en": "format"
+    },
+    "width": 16
+   },
+   {
+    "id": "units",
+    "label": {
+     "pl": "rozmowy",
+     "en": "conv."
+    },
+    "width": 7,
+    "align": "right"
+   },
+   {
+    "id": "size",
+    "label": {
+     "pl": "bajty",
+     "en": "bytes"
+    },
+    "width": 10,
+    "align": "right"
+   }
+  ],
+  "conversation": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "tytuł",
+     "en": "title"
+    }
+   },
+   {
+    "id": "service",
+    "field": "service",
+    "label": {
+     "pl": "usługa",
+     "en": "service"
+    },
+    "width": 9
+   },
+   {
+    "id": "created",
+    "field": "created",
+    "format": "datetime",
+    "label": {
+     "pl": "utworzona",
+     "en": "created"
+    },
+    "width": 16
+   },
+   {
+    "id": "messages",
+    "field": "messages",
+    "label": {
+     "pl": "wiad.",
+     "en": "msgs"
+    },
+    "width": 5,
+    "align": "right"
+   },
+   {
+    "id": "branches",
+    "field": "branches",
+    "label": {
+     "pl": "gał.",
+     "en": "br."
+    },
+    "width": 4,
+    "align": "right"
+   },
+   {
+    "id": "tools",
+    "expr": "count(tool_use)",
+    "label": {
+     "pl": "narz.",
+     "en": "tools"
+    },
+    "width": 5,
+    "align": "right"
+   },
+   {
+    "id": "attachments",
+    "field": "attachments",
+    "label": {
+     "pl": "zał.",
+     "en": "att."
+    },
+    "width": 4,
+    "align": "right"
+   },
+   {
+    "id": "band",
+    "field": "band",
+    "label": {
+     "pl": "pasmo",
+     "en": "band"
+    },
+    "width": 9
+   }
+  ],
+  "branch": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "gałąź",
+     "en": "branch"
+    }
+   },
+   {
+    "id": "messages",
+    "label": {
+     "pl": "wiad.",
+     "en": "msgs"
+    },
+    "width": 5,
+    "align": "right"
+   },
+   {
+    "id": "created",
+    "format": "datetime",
+    "label": {
+     "pl": "od",
+     "en": "from"
+    },
+    "width": 16
+   },
+   {
+    "id": "last",
+    "format": "datetime",
+    "label": {
+     "pl": "do",
+     "en": "to"
+    },
+    "width": 16
+   },
+   {
+    "id": "current",
+    "label": {
+     "pl": "bieżąca",
+     "en": "current"
+    },
+    "width": 7
+   }
+  ],
+  "message": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "wiadomość",
+     "en": "message"
+    }
+   },
+   {
+    "id": "created",
+    "field": "created",
+    "format": "datetime",
+    "label": {
+     "pl": "czas",
+     "en": "time"
+    },
+    "width": 16
+   },
+   {
+    "id": "blocks",
+    "label": {
+     "pl": "bloki",
+     "en": "blocks"
+    },
+    "width": 5,
+    "align": "right"
+   },
+   {
+    "id": "chars",
+    "label": {
+     "pl": "znaki",
+     "en": "chars"
+    },
+    "width": 7,
+    "align": "right"
+   },
+   {
+    "id": "words",
+    "field": "words",
+    "label": {
+     "pl": "słowa",
+     "en": "words"
+    },
+    "width": 6,
+    "align": "right"
+   }
+  ],
+  "block": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "blok",
+     "en": "block"
+    }
+   },
+   {
+    "id": "kind",
+    "field": "kind",
+    "label": {
+     "pl": "rodzaj",
+     "en": "kind"
+    },
+    "width": 12
+   },
+   {
+    "id": "name",
+    "field": "name",
+    "label": {
+     "pl": "nazwa",
+     "en": "name"
+    },
+    "width": 12
+   },
+   {
+    "id": "chars",
+    "label": {
+     "pl": "znaki",
+     "en": "chars"
+    },
+    "width": 7,
+    "align": "right"
+   }
+  ],
+  "attachment": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "załącznik",
+     "en": "attachment"
+    }
+   },
+   {
+    "id": "mime",
+    "field": "mime",
+    "label": {
+     "pl": "typ",
+     "en": "type"
+    },
+    "width": 16
+   },
+   {
+    "id": "size",
+    "label": {
+     "pl": "bajty",
+     "en": "bytes"
+    },
+    "width": 9,
+    "align": "right"
+   },
+   {
+    "id": "status",
+    "field": "status",
+    "label": {
+     "pl": "stan",
+     "en": "status"
+    },
+    "width": 9
+   }
+  ],
+  "folder": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "katalog",
+     "en": "folder"
+    }
+   },
+   {
+    "id": "entries",
+    "label": {
+     "pl": "rozmowy",
+     "en": "conv."
+    },
+    "width": 7,
+    "align": "right"
+   }
+  ],
+  "group": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "grupa",
+     "en": "group"
+    }
+   },
+   {
+    "id": "entries",
+    "label": {
+     "pl": "pozycje",
+     "en": "items"
+    },
+    "width": 7,
+    "align": "right"
+   }
+  ],
+  "cluster": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "klaster",
+     "en": "cluster"
+    }
+   },
+   {
+    "id": "entries",
+    "label": {
+     "pl": "rozmowy",
+     "en": "conv."
+    },
+    "width": 7,
+    "align": "right"
+   }
+  ],
+  "step": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "krok",
+     "en": "step"
+    }
+   },
+   {
+    "id": "by",
+    "label": {
+     "pl": "twarz",
+     "en": "face"
+    },
+    "width": 8
+   },
+   {
+    "id": "params",
+    "label": {
+     "pl": "parametry",
+     "en": "params"
+    },
+    "width": "50%"
+   }
+  ],
+  "json": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "klucz",
+     "en": "key"
+    }
+   },
+   {
+    "id": "value",
+    "label": {
+     "pl": "wartość",
+     "en": "value"
+    },
+    "width": "50%"
+   }
+  ],
+  "bookmark": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "zakładka",
+     "en": "bookmark"
+    }
+   }
+  ],
+  "view": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "widok",
+     "en": "view"
+    }
+   }
+  ],
+  "tag": [
+   {
+    "id": "label",
+    "label": {
+     "pl": "węzeł",
+     "en": "node"
+    }
+   },
+   {
+    "id": "tags",
+    "label": {
+     "pl": "etykiety",
+     "en": "tags"
+    },
+    "width": 20
+   }
+  ]
+ },
+ "sorts": {
+  "conversation": [
+   "",
+   "created",
+   "-created",
+   "label",
+   "messages",
+   "-messages",
+   "service",
+   "-tools"
+  ],
+  "message": [
+   "",
+   "created",
+   "-created",
+   "chars",
+   "-chars",
+   "role"
+  ],
+  "block": [
+   "",
+   "kind",
+   "-chars"
+  ],
+  "attachment": [
+   "",
+   "-size",
+   "mime",
+   "label",
+   "status"
+  ],
+  "*": [
+   "",
+   "label",
+   "-label"
+  ]
+ },
+ "status": [
+  "view",
+  "selection",
+  "package",
+  "cost",
+  "steps",
+  "job",
+  "last"
+ ],
+ "preview_lines": 40,
+ "min_label": 24,
+ "viewer_formats": [
+  "json",
+  "markdown",
+  "raw"
+ ],
+ "menu_ops": [
+  "inventory",
+  "timeline",
+  "clusters",
+  "stats",
+  "propose",
+  "dry_run",
+  "token_economics"
+ ],
+ "menu_ops_note": "operations the F2 menu runs (with their presets); the result is shown in the viewer — as Markdown when the result carries one (token_economics), else as JSON"
+}

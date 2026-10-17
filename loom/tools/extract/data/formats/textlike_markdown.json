@@ -1,0 +1,17 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "textlike.markdown",
+  "vendor": null, "product": null, "service": "file",
+  "label": {"pl": "Markdown z rozmową (przez engine.importer)", "en": "Markdown chat log (via engine.importer)"},
+  "priority": 900,
+  "containers": ["markdown"],
+  "sniff": {"any_of": [{"text_regex": "(?im)^(##\\s*(human|user|assistant|claude)\\b|\\*\\*(human|user|assistant|claude)\\*\\*)"},
+                       {"extension": [".md", ".markdown"], "text_regex": "(?m)^#"}]},
+  "reader": "textlike", "importer_method": "import_markdown",
+  "roles": {"user": "user", "assistant": "assistant"},
+  "blocks": {"text": "text"},
+  "members": {"*": "unknown"},
+  "preserve": {"unit": "file", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["identyfikatory i czasy wiadomości", "gałęzie", "narzędzia", "rozumowanie", "załączniki"],
+                   "en": ["message ids and times", "branches", "tools", "reasoning", "attachments"]}
+}

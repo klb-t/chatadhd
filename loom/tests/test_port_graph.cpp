@@ -79,6 +79,15 @@ TEST_SUITE("port_graph") {
     CHECK(labels == std::set<std::string>{"adapter:asr:groq", "adapter:asr:google"});
     // same choice = same node; a user overlay = another node with scope "person"
     CHECK(unwrap(port_graph::record_role_choice(*db, resolved)) == choice);
+    // the human texts of the role (ports.pack label, why, status) are not part of the choice: not stored, not in the digest
+    REQUIRE(resolved["entry"].contains("label"));
+    CHECK_FALSE(n.metadata["entry"].contains("label"));
+    CHECK_FALSE(n.metadata["entry"].contains("why"));
+    CHECK_FALSE(n.metadata["entry"].contains("status"));
+    Json retold = resolved;
+    retold["entry"]["why"]["pl"] = "inny opis tej samej pracy";
+    retold["entry"]["status"] = Json{{"state", "planned"}};
+    CHECK(unwrap(port_graph::record_role_choice(*db, retold)) == choice);
     std::filesystem::create_directories(td.path() / "profiles");
     LOOM_REQUIRE_OK(fsutil::write_file(td.path() / "profiles" / "ports.pack",
         R"({"schema":"loom.runtime_profile_overlay/1","domain":"ports","overrides":{"roles":{"asr":{"adapter":"groq","params":{"model":"m"}}}}})"));

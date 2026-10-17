@@ -1,0 +1,59 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "nest",
+ "module": "edits:nest",
+ "group": "structure",
+ "label": {
+  "pl": "Zagnieźdź listę w drzewo: po polu rodzica, co N wiadomości albo po dacie (rozmowy z rozwidleniami: odmowa, pominięcie albo świadome zastąpienie)",
+  "en": "Nest a list into a tree: by a parent field, every N messages or by date (conversations with forks: refuse, skip or replace on purpose)"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "by": {
+   "type": "enum",
+   "values": [
+    "parent",
+    "every_n",
+    "date"
+   ],
+   "default": "parent"
+  },
+  "field": {
+   "type": "field",
+   "default": "meta.parent"
+  },
+  "n": {
+   "type": "number",
+   "default": 0
+  },
+  "bucket": {
+   "type": "enum",
+   "values": [
+    "day",
+    "week",
+    "month"
+   ],
+   "default": "day"
+  },
+  "on_forks": {
+   "type": "enum",
+   "values": [
+    "refuse",
+    "skip",
+    "replace"
+   ],
+   "default": "refuse"
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} rozmów zagnieżdżonych (po: {by}; grup: {groups}; pominięte z rozwidleniami: {skipped_forked})",
+  "en": "{count} conversation(s) nested (by: {by}; groups: {groups}; skipped with forks: {skipped_forked})"
+ }
+}

@@ -1,0 +1,3 @@
+{"schema": "loom.extract.redaction/1", "id": "none",
+ "label": {"pl": "Bez redakcji (preset: pakiet jest dla właściciela)", "en": "No redaction (preset: the package is for the owner)"},
+ "rules": [], "dictionary": [], "fields": [], "attachments": "copy"}

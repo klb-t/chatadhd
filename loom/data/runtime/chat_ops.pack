@@ -429,6 +429,78 @@
         }
       },
       {
+        "role": "guardian",
+        "kind": "model",
+        "setting": "guardian_model",
+        "words": {
+          "en": [
+            "secretary",
+            "the secretary"
+          ],
+          "pl": [
+            "sekretarza",
+            "sekretarz"
+          ]
+        }
+      },
+      {
+        "role": "intent.routing",
+        "kind": "model",
+        "setting": "intent_routing_model",
+        "words": {
+          "en": [
+            "command recognition",
+            "recognising commands",
+            "recognizing commands"
+          ],
+          "pl": [
+            "rozpoznawania polecen",
+            "rozpoznawania poleceń",
+            "rozpoznania polecen"
+          ]
+        }
+      },
+      {
+        "role": "image.generate",
+        "kind": "model",
+        "setting": "image_model",
+        "words": {
+          "en": [
+            "images",
+            "image generation",
+            "pictures",
+            "painting"
+          ],
+          "pl": [
+            "obrazow",
+            "obrazów",
+            "malowania",
+            "generowania obrazow"
+          ]
+        }
+      },
+      {
+        "role": "speech.synthesize",
+        "kind": "model",
+        "setting": "speech_model",
+        "words": {
+          "en": [
+            "voice",
+            "speech synthesis",
+            "text to speech",
+            "reading aloud",
+            "narration"
+          ],
+          "pl": [
+            "glosu",
+            "głosu",
+            "syntezy mowy",
+            "czytania na glos",
+            "narracji"
+          ]
+        }
+      },
+      {
         "role": "embed.default",
         "kind": "model",
         "adapter": "openai_embeddings",
@@ -965,7 +1037,10 @@
         "ia_rebind_need": "Say which binding and to what (for example: bind capslock to zoom).",
         "ia_unknown_binding": "There is no binding \"{{binding}}\".",
         "ia_rebound": "Rebound {{id}} in your overlay: now {{action}}. You can take it back.",
-        "ia_removed": "Took back the rebinding of {{id}} ({{count}})."
+        "ia_removed": "Took back the rebinding of {{id}} ({{count}}).",
+        "role_action_unchosen": "Nobody chose a model for {{role}}: the action takes the model its step names, otherwise your “Conversation model” from the settings ({{model}}).",
+        "role_from_setting": "For {{role}}: {{model}} (the setting {{setting}}, which this job reads before its role).",
+        "role_no_model": "none"
       },
       "pl": {
         "unknown": "nieznane",
@@ -1190,7 +1265,10 @@
         "ia_rebind_need": "Powiedz które przypisanie i do czego (na przykład: przypisz capslock do powiększenia).",
         "ia_unknown_binding": "Nie ma przypisania „{{binding}}”.",
         "ia_rebound": "Przepisano {{id}} w Twojej nakładce: teraz {{action}}. Można to cofnąć.",
-        "ia_removed": "Cofnięto przepisanie {{id}} ({{count}})."
+        "ia_removed": "Cofnięto przepisanie {{id}} ({{count}}).",
+        "role_action_unchosen": "Do pracy {{role}} nikt nie wybrał modelu: działanie bierze model podany w kroku, inaczej Twój „Model rozmowy” z ustawień ({{model}}).",
+        "role_from_setting": "Do pracy {{role}}: {{model}} (ustawienie {{setting}}, które ta praca czyta przed swoją rolą).",
+        "role_no_model": "brak"
       }
     },
     "pipelines": {

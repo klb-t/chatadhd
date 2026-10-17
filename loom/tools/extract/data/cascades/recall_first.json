@@ -1,0 +1,10 @@
+{"schema": "loom.extract.cascade/1", "id": "recall_first",
+ "label": {"pl": "Najpierw pełnia: trafienie w którymkolwiek kanale wchodzi; model tylko weryfikuje wykluczenia", "en": "Recall first: a hit in any channel is in; the model only verifies exclusions"},
+ "levels": [
+   {"id": "L0", "flow": "masks",          "on": "all",      "decides": ["exclude"]},
+   {"id": "L1", "flow": "lexical",        "on": "passed",   "decides": ["include", "ambiguous"]},
+   {"id": "L2", "flow": "vectors",        "on": "passed",   "decides": ["include", "ambiguous"]},
+   {"id": "L3", "flow": "cheap_classify", "on": "ambiguous", "enabled": false},
+   {"id": "L4", "flow": "strong_judge",   "on": "included", "enabled": false}],
+ "combine": "weighted_max", "bands": {"include": 0.4, "exclude": 0.05},
+ "manual": "wins", "unresolved": "include", "shadow": {"lexical_vs_vectors": true}}

@@ -1,0 +1,35 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "map_table",
+ "module": "edits:map_table",
+ "group": "values",
+ "label": {
+  "pl": "Mapuj wartości tabelą (np. nazwy modeli, narzędzi)",
+  "en": "Map values through a table (e.g. model or tool names)"
+ },
+ "scope": [
+  "conversation",
+  "message",
+  "block",
+  "attachment"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "message"
+  },
+  "field": {
+   "type": "field",
+   "required": true
+  },
+  "table": {
+   "type": "object",
+   "required": true
+  }
+ },
+ "invertible": "inverse_table",
+ "preview_lines": {
+  "pl": "{count} wartości zmapowanych w {field}",
+  "en": "{count} value(s) mapped in {field}"
+ }
+}

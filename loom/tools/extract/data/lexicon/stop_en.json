@@ -1,0 +1,8 @@
+{
+  "schema": "loom.extract.stopwords/1",
+  "id": "stop_en",
+  "description": "Extra English stop words for term extraction (clusters, continuations); added on top of the kernel's lists.",
+  "extends": ["loom/data/lexicons/stopwords_base.json", "loom/data/lexicons/stopwords.json"],
+  "words": ["please", "thanks", "thank", "okay", "sure", "maybe", "really", "just", "like", "want", "need", "make", "think",
+            "know", "show", "write", "check", "help", "let", "lets", "also", "well", "good", "great", "fine", "yes", "no"]
+}

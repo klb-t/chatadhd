@@ -1,0 +1,48 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "sort",
+ "module": "edits:sort",
+ "group": "structure",
+ "label": {
+  "pl": "Uporządkuj po kluczu czasu (remisy stabilne)",
+  "en": "Order by a time key (stable ties)"
+ },
+ "scope": [
+  "conversation",
+  "message"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "by": {
+   "type": "enum",
+   "values": [
+    "created",
+    "updated",
+    "title",
+    "first_message",
+    "last_message"
+   ],
+   "default": "created"
+  },
+  "level": {
+   "type": "enum",
+   "values": [
+    "conversations",
+    "messages"
+   ],
+   "default": "conversations"
+  },
+  "reverse": {
+   "type": "bool",
+   "default": false
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "uporządkowano {count} pozycji po {by}",
+  "en": "{count} item(s) ordered by {by}"
+ }
+}

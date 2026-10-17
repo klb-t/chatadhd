@@ -318,6 +318,15 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME research.seeding
       COMMAND ${Python3_EXECUTABLE} -m unittest discover
         -s ${LOOM_ROOT}/tools/seeding -p "test_*.py")
+    # M1-D1: the settings each flow declares it reads (actions.pack reads) are the settings its executor files read,
+    # and settings_fields.pack human.flows agree with them (exceptions with reasons in tools/check_action_reads_allow.json).
+    add_test(NAME data.check_action_reads
+      COMMAND ${Python3_EXECUTABLE} -I ${LOOM_ROOT}/tools/check_action_reads.py)
+    set_tests_properties(data.check_action_reads PROPERTIES TIMEOUT 60)
+    # The check itself fails on mutated copies of the data (a lost read, a false role, a non-read literal ...).
+    add_test(NAME data.check_action_reads_selftest
+      COMMAND ${Python3_EXECUTABLE} -I ${LOOM_ROOT}/tools/check_action_reads.py --self-test)
+    set_tests_properties(data.check_action_reads_selftest PROPERTIES TIMEOUT 120)
     set_tests_properties(research.independent_protocol research.graph_native_protocol research.candidate_graph_protocol research.seeding PROPERTIES
       ENVIRONMENT "${_loom_python_env}" TIMEOUT 60)
     # The contracts suite (~210 cases) takes ~31 s alone on a dev build; under ASan with the other
@@ -331,6 +340,15 @@ if(LOOM_BUILD_TESTS)
     set_tests_properties(research.structure PROPERTIES
       ENVIRONMENT "${_loom_python_env};LOOM_CANDIDATE_GRAPH_NATIVE_TOOL=$<TARGET_FILE:loom_candidate_graph_native_tool>"
       TIMEOUT 300)
+    # X-Port archive-extract tool (loom/tools/extract): stdlib-only unittest suite on synthetic
+    # fixtures (loom/tests/fixtures/extract, exports, import); no network (socket guard in setUp);
+    # optional deps (curses, libloom) make their tests SKIP with a visible reason, never fail.
+    add_test(NAME tools.extract
+      COMMAND ${Python3_EXECUTABLE} -I -m unittest discover
+        -s ${LOOM_ROOT}/tools/extract/tests -p "test_*.py")
+    set_tests_properties(tools.extract PROPERTIES
+      ENVIRONMENT "${_loom_python_env};LOOM_LIBRARY=$<TARGET_FILE:loom>;TERM=xterm-256color"
+      TIMEOUT 600)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
   endif()

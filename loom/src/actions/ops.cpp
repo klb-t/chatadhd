@@ -821,13 +821,53 @@ StepOutcome ports_show(Ctx& x) {
     if (auto cv = x.rt.db().get_conv(conv); cv && *cv) meta = (*cv)->metadata.value("ports", Json::object());
   auto resolved = prof->resolve(role, meta, conv, x.rt.config().all());
   if (!resolved) return fail(resolved.error());
+  // What the reader of the role does today (ports.pack roles.<role>.status.today), said under the answer, not promised.
+  std::string today;
+  if (auto shipped = RuntimeProfile::load("ports", x.rt.paths().root)) {
+    const Json roles = shipped->values().value("roles", Json::object());
+    const Json* doc = json::find(roles, role);
+    for (auto it = roles.begin(); !doc && it != roles.end(); ++it) {
+      const std::string& k = it.key();
+      if (k.size() > 1 && k.compare(k.size() - 2, 2, ".*") == 0 && role.rfind(k.substr(0, k.size() - 1), 0) == 0) doc = &it.value();
+    }
+    if (doc) today = x.pick(doc->value("status", Json::object()).value("today", Json(nullptr)));
+  }
+  auto with_today = [&](std::string text) { return today.empty() ? text : text + "\n" + today; };
+  // A model for one action (action.<id>): the runner honours only a choice of the person or of the conversation, never the shipped preset
+  // (runner.cpp chosen_role); without one the action takes its step's model, else the field of action_run.pack use_model.model_setting.
+  if (role.rfind("action.", 0) == 0 && json::get_string(*resolved, "scope") == "installation" &&
+      resolved->value("params", Json::object()).value("model", "").empty()) {
+    std::string key = "default_model";
+    if (auto run = RuntimeProfile::load("action_run", x.rt.paths().root))
+      key = json::get_string(run->values().value("use_model", Json::object()), "model_setting", key);
+    const Json v = x.rt.config().get(key);
+    const std::string fallback = v.is_string() ? v.get<std::string>() : std::string();
+    Json data = *resolved;
+    data["chosen"] = false;
+    data["fallback_setting"] = key;
+    data["fallback_model"] = fallback;
+    return answer(with_today(x.say("role_action_unchosen", Json{{"role", role}, {"model", fallback.empty() ? x.say("role_no_model") : fallback}})), data);
+  }
+  // A job that reads a setting of its own before its role (the Secretary: guardian_model, then the role guardian): that setting answers when set.
+  if (row && row->value("kind", "model") == "model" && json::get_string(*resolved, "scope") != "conversation") {
+    const std::string setting = row->value("setting", "");
+    const std::string role_setting = json::get_string(resolved->value("entry", Json::object()), "setting");
+    const Json v = setting.empty() || setting == role_setting ? Json(nullptr) : x.rt.config().get(setting);
+    if (v.is_string() && !v.get<std::string>().empty()) {
+      Json data = *resolved;
+      data["from_setting"] = setting;
+      data["model"] = v.get<std::string>();
+      return answer(with_today(x.say("role_from_setting", Json{{"role", role}, {"model", v.get<std::string>()}, {"setting", setting}})), data);
+    }
+  }
   const Json params = resolved->value("params", Json::object());
   std::string model = params.value("model", "");
   if (model.empty() && resolved->contains("members") && (*resolved)["members"].is_array()) {
     for (const auto& m : (*resolved)["members"]) model += (model.empty() ? "" : ", ") + (m.is_string() ? m.get<std::string>() : json::get_string(m, "adapter"));
   }
-  return answer(x.say("role_resolved", Json{{"role", role}, {"adapter", json::get_string(*resolved, "adapter", json::get_string(*resolved, "compose"))},
-                                            {"model", model}, {"scope", json::get_string(*resolved, "scope")}, {"source", json::get_string(*resolved, "source")}}),
+  return answer(with_today(x.say("role_resolved", Json{{"role", role}, {"adapter", json::get_string(*resolved, "adapter", json::get_string(*resolved, "compose"))},
+                                                       {"model", model}, {"scope", json::get_string(*resolved, "scope")},
+                                                       {"source", json::get_string(*resolved, "source")}})),
                 *resolved);
 }
 
@@ -846,7 +886,18 @@ StepOutcome ports_set(Ctx& x) {
   if (kind == "provider") {
     entry = Json{{"compose", "fallback"}, {"members", Json::array({value})}};
   } else {
-    entry = Json{{"adapter", row->value("adapter", "openai_chat")}, {"params", Json{{"model", value}}}};
+    // The adapter: the row's, else the one of the role's own entry (image.generate: openai_images; speech.synthesize names none), else openai_chat.
+    std::string adapter = row->value("adapter", "");
+    bool role_without_adapter = false;
+    if (adapter.empty())
+      if (auto prof = PortProfile::load(x.rt.paths().root))
+        if (auto r = prof->resolve(role); r && r->value("defined", false)) {
+          adapter = json::get_string(*r, "adapter");
+          role_without_adapter = adapter.empty() && !r->contains("compose");
+        }
+    if (adapter.empty() && !role_without_adapter) adapter = "openai_chat";
+    entry = Json{{"params", Json{{"model", value}}}};
+    if (!adapter.empty()) entry["adapter"] = adapter;
   }
   std::string where;
   std::string consumer;  // what reads the choice today (a key of role_consumers)
@@ -869,7 +920,7 @@ StepOutcome ports_set(Ctx& x) {
   } else if (scope == "person" || scope == "installation") {
     if (!setting.empty() && kind == "model") {
       // The role is backed by a setting (the model of the chat, of the analysis): the person's choice is that setting, which the window already reads.
-      if (auto ok = check_config_write(setting, x.rt.paths().root); !ok) return fail(ok.error());
+      if (auto ok = check_config_patch(Json{{setting, value}}, x.rt.paths().root); !ok) return fail(ok.error());
       x.rt.config().set(setting, value);
       if (auto st = x.rt.config().save(); !st) return fail(st.error());
       where = "config.json:" + setting;

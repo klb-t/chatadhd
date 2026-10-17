@@ -1,0 +1,4 @@
+{"schema": "loom.extract.profile/1", "id": "preserve", "kind": "preserve",
+ "label": {"pl": "Format źródłowy 1:1: te same pliki, mniej rozmów, surowe bajty, użyte załączniki w układzie źródła", "en": "Source format 1:1: same files, fewer conversations, raw bytes, used attachments in the source layout"},
+ "other_members": "omit",
+ "note": {"pl": "Ziarno: cała rozmowa (format źródła nie ma pojęcia części rozmowy); edycje seryjne dotyczą profili przebudowy, nie tego.", "en": "Grain: the whole conversation (the source format has no notion of part of one); batch edits apply to restructuring profiles, not this one."}}

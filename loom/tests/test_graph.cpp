@@ -353,6 +353,43 @@ TEST_SUITE("graph_memory") {
     CHECK(ctx.find("Old conversation") != std::string::npos);
   }
 
+  TEST_CASE("select_context: a stored 0 is literal — depth 0 takes no hop, budget 0 is no limit (the profile fallback never applies)") {
+    // The settings texts (settings_fields.pack graph_memory_depth / graph_memory_max_nodes and the graph_memory profile values) say
+    // exactly this; the profile's default_depth / default_max_nodes are only the fallback when config has no value at all.
+    fsutil::TempDir td;
+    auto db = open_db(td.path() / "gm.db");
+    Config cfg(td.path() / "config.json");
+    auto an = unwrap(SemanticAnalyzer::create());
+    GraphMemorySelector gm(*db, cfg, *an);
+    auto old_conv = unwrap(db->create_conv("Old conversation"));
+    auto topic = unwrap(db->get_or_create_node("tech", "topic"));
+    for (int i = 0; i < 25; ++i) {
+      const std::string mid = mk_msg(*db, old_conv.id, "note " + std::to_string(i) + " about the database and the API", "assistant");
+      unwrap(db->create_link(mid, topic, "tagged_with", 0.5));
+    }
+    auto new_conv = unwrap(db->create_conv("New conversation"));
+    GraphSelectOptions opts;
+    opts.current_conv_id = new_conv.id;
+    const std::string query = "tell me about the database and API again";
+    auto rows = [](const std::string& ctx) {
+      std::size_t n = 0;
+      for (auto at = ctx.find("[Old conversation | "); at != std::string::npos; at = ctx.find("[Old conversation | ", at + 1)) ++n;
+      return n;
+    };
+    CHECK(rows(gm.select_context(query, opts)) == 20);  // shipped config: 20
+    cfg.set("graph_memory_max_nodes", 3);
+    CHECK(rows(gm.select_context(query, opts)) == 3);
+    cfg.set("graph_memory_max_nodes", 0);  // no limit, not the profile's 20
+    CHECK(rows(gm.select_context(query, opts)) == 25);
+    cfg.set("graph_memory_depth", 0);  // no hop from the topic seed: no message is reached, not the profile's 2
+    CHECK(gm.select_context(query, opts).empty());
+    GraphSelectOptions turn = opts;
+    turn.depth = 0;  // a request's 0 means "the person's setting" (zero_as_default), which is 0 here
+    CHECK(gm.select_context(query, turn).empty());
+    turn.depth = 1;
+    CHECK(rows(gm.select_context(query, turn)) == 25);
+  }
+
   TEST_CASE("select_context: empty when no seeds or no graph hits") {
     fsutil::TempDir td;
     auto db = open_db(td.path() / "gm.db");

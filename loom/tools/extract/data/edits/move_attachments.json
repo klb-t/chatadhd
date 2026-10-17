@@ -1,0 +1,28 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "move_attachments",
+ "module": "edits:move_attachments",
+ "group": "attachments",
+ "label": {
+  "pl": "Przenieś załączniki do innego układu katalogów (odwołania w wyjściach idą za nimi)",
+  "en": "Move attachments to another directory layout (references in outputs follow)"
+ },
+ "scope": [
+  "conversation"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "conversation"
+  },
+  "to": {
+   "type": "string",
+   "default": "{key}"
+  }
+ },
+ "invertible": "snapshot",
+ "preview_lines": {
+  "pl": "{count} załączników → attachments/{to}/",
+  "en": "{count} attachment(s) → attachments/{to}/"
+ }
+}

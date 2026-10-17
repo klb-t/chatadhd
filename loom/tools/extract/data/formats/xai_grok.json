@@ -1,0 +1,33 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "xai.grok.export",
+  "vendor": "xai", "product": "grok", "service": "xai",
+  "label": {"pl": "Eksport Grok (grok.com) lub archiwum X z rozmowami Grok", "en": "Grok export (grok.com) or X archive with Grok chats"},
+  "hypothesis": true,
+  "hypothesis_note": {"pl": "Dwa kształty z narzędzi zewnętrznych: grok.com ({conversations:[{conversation, responses}]}) i archiwum X (data/grok-chat-item.js). Poprawka = edycja tego pliku.",
+                      "en": "Two shapes from third-party tools: grok.com ({conversations:[{conversation, responses}]}) and the X archive (data/grok-chat-item.js). Correction = an edit of this file."},
+  "priority": 20,
+  "containers": ["zip", "json", "js"],
+  "sniff": {"any_of": [
+    {"json_wrapper_first_keys_all": {"wrapper": "conversations", "keys": ["conversation", "responses"]}},
+    {"json_array_first_keys_all": ["conversation", "responses"]},
+    {"zip_member_glob": "data/grok-chat-item.js"},
+    {"text_regex": "window\\.YTD\\.grok_chat_item"}
+  ]},
+  "reader": "grok",
+  "shapes": {
+    "grok_com": {"list": "conversations", "conversation": "conversation", "responses": "responses", "response": "response",
+                 "ext_id": ["conversation.conversation_id", "conversation.id"], "title": "conversation.title",
+                 "created": {"path": "conversation.create_time", "type": "iso"},
+                 "message": {"text": "message", "role": "sender", "created": {"path": "create_time", "type": "iso"},
+                             "id": "response_id", "parent": "parent_response_id", "model": "model"}},
+    "x_archive": {"js_prefix": "window.YTD.grok_chat_item.part0 = ", "item": "grokChatItem",
+                  "ext_id": "chatId", "message": {"text": "message", "role": "sender", "created": {"path": "createdAt", "type": "iso"}}}
+  },
+  "roles": {"human": "user", "user": "user", "assistant": "assistant", "grok": "assistant", "ASSISTANT": "assistant", "USER": "user"},
+  "blocks": {"message": "text", "*": "unknown"},
+  "members": {"data/grok-chat-item.js": "conversations", "*": "unknown"},
+  "preserve": {"unit": "conversation_object", "lead": "js_assignment", "keep_members": [], "attachment_root": "."},
+  "known_absent": {"pl": ["rozumowanie", "gałęzie (poza parent_response_id, gdy jest)", "załączniki w archiwum X"],
+                   "en": ["reasoning", "branches (beyond parent_response_id when present)", "attachments in the X archive"]}
+}

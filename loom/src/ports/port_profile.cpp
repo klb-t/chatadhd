@@ -88,6 +88,14 @@ Result<Json> PortProfile::run(const std::string& role, const Json& conversation,
       const std::string model = json::get_string(settings, setting);
       if (!model.empty()) params["model"] = model;
     }
+    // param_settings {param: config key}: the other params a setting supplies (image.generate: provider <- image_provider), the
+    // same way as `setting` supplies the model: only a param the entry does not set, only a non-empty value.
+    if (const Json* more = json::find(entry, "param_settings"); more && more->is_object())
+      for (auto it = more->begin(); it != more->end(); ++it) {
+        if (!it.value().is_string() || params.contains(it.key())) continue;
+        const std::string value = json::get_string(settings, it.value().get<std::string>());
+        if (!value.empty()) params[it.key()] = value;
+      }
     out["entry"] = entry;
     out["params"] = params;
     if (entry.contains("adapter")) out["adapter"] = entry["adapter"];

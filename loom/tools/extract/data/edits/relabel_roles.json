@@ -1,0 +1,29 @@
+{
+ "schema": "loom.extract.edit/1",
+ "id": "relabel_roles",
+ "module": "edits:relabel_roles",
+ "group": "roles",
+ "label": {
+  "pl": "Mapa ról (np. tool → assistant, human → user)",
+  "en": "Role map (e.g. tool → assistant, human → user)"
+ },
+ "scope": [
+  "conversation",
+  "message"
+ ],
+ "params": {
+  "where": {
+   "type": "expr",
+   "default": "message"
+  },
+  "map": {
+   "type": "object",
+   "required": true
+  }
+ },
+ "invertible": "inverse_table",
+ "preview_lines": {
+  "pl": "{count} ról zmienionych",
+  "en": "{count} role(s) relabelled"
+ }
+}

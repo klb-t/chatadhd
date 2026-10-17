@@ -1,0 +1,4 @@
+User: Co to Loom?
+Assistant: Jądro C++ dla ChatADHD.
+User: A Kivy?
+Assistant: Klient mobilny.

@@ -1,0 +1,4 @@
+{"schema": "loom.extract.flow/1", "id": "masks", "kind": "local",
+ "label": {"pl": "Maski: daty, usługi, konta, role, narzędzia, tytuł, załączniki, gałęzie, agentowość, języki", "en": "Masks: dates, services, accounts, roles, tools, title, attachments, branches, agentic, languages"},
+ "input": {"grain": "conversation"}, "output": {"schema": "verdict", "values": ["exclude", "pass"], "confidence": false, "reason": true},
+ "cache": false}

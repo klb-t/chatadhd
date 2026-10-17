@@ -1,0 +1,30 @@
+{
+  "schema": "loom.extract.format/1",
+  "id": "anthropic.claude.export",
+  "vendor": "anthropic", "product": "claude", "service": "anthropic",
+  "label": {"pl": "Eksport danych Claude.ai", "en": "Claude.ai data export"},
+  "priority": 10,
+  "containers": ["zip", "json"],
+  "sniff": {"any_of": [
+    {"zip_member_json": {"member": "conversations.json", "array_first_keys_all": ["chat_messages"]}},
+    {"json_object_keys_all": ["chat_messages"]},
+    {"json_array_first_keys_all": ["chat_messages"]}
+  ]},
+  "reader": "claude",
+  "shards": null, "wrappers": [],
+  "conversation": {"ext_id": ["uuid", "conversation_id", "id"], "title": ["name", "title"],
+                   "created": {"path": "created_at", "type": "iso"}, "updated": {"path": "updated_at", "type": "iso"},
+                   "tree": "chat_messages", "parent": "parent_message_uuid", "current": "current_leaf_message_uuid",
+                   "account": "account.uuid", "model": "model"},
+  "message": {"role": "sender", "created": {"path": "created_at", "type": "iso"}, "content": "content", "text": "text"},
+  "roles": {"human": "user", "assistant": "assistant", "system": "system"},
+  "blocks": {"text": "text", "thinking": "thinking:full", "tool_use": "tool_use", "tool_result": "tool_result",
+             "voice_note": "text", "image": "attachment", "document": "attachment", "*": "unknown"},
+  "attachments": {"fields": ["attachments", "files", "files_v2"], "name_fields": ["file_name", "name"],
+                  "layouts": ["{name}", "attachments/{name}", "files/{name}"]},
+  "members": {"conversations.json": "conversations", "users.json": "account", "projects.json": "project",
+              "memories.json": "memory", "*": "unknown"},
+  "preserve": {"unit": "conversation_object", "keep_members": ["users.json"], "attachment_root": "."},
+  "known_absent": {"pl": ["artefakty tylko jako wywołania narzędzi", "prompt systemowy", "pełność rozumowania zależy od wersji eksportu"],
+                   "en": ["artifacts only as tool calls", "system prompt", "thinking completeness depends on export version"]}
+}

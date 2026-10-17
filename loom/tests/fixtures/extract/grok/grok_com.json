@@ -1,0 +1,83 @@
+{
+ "conversations": [
+  {
+   "conversation": {
+    "conversation_id": "g1",
+    "title": "Grok o ChatADHD",
+    "create_time": "2026-02-02T12:00:00Z",
+    "modify_time": "2026-02-02T12:10:00Z"
+   },
+   "responses": [
+    {
+     "response": {
+      "response_id": "r1",
+      "sender": "human",
+      "message": "Co sądzisz o ChatADHD?",
+      "create_time": "2026-02-02T12:00:00Z",
+      "query": "",
+      "partial": false,
+      "shared": false
+     }
+    },
+    {
+     "response": {
+      "response_id": "r2",
+      "sender": "assistant",
+      "message": "Mobilny klient czatu z grafem wiedzy.",
+      "create_time": "2026-02-02T12:01:00Z",
+      "query": "",
+      "partial": false,
+      "shared": false,
+      "parent_response_id": "r1",
+      "model": "grok-3"
+     }
+    },
+    {
+     "response": {
+      "response_id": "r3",
+      "sender": "assistant",
+      "message": "Regeneracja: klient Kivy z pamięcią.",
+      "create_time": "2026-02-02T12:02:00Z",
+      "query": "",
+      "partial": false,
+      "shared": false,
+      "parent_response_id": "r1",
+      "model": "grok-3"
+     }
+    }
+   ]
+  },
+  {
+   "conversation": {
+    "conversation_id": "g2",
+    "title": "Rekurencja po katalogach",
+    "create_time": "2026-02-03T08:00:00Z"
+   },
+   "responses": [
+    {
+     "response": {
+      "response_id": "q1",
+      "sender": "human",
+      "message": "Jak przejść katalog rekurencyjnie?",
+      "create_time": "2026-02-03T08:00:00Z",
+      "query": "",
+      "partial": false,
+      "shared": false
+     }
+    },
+    {
+     "response": {
+      "response_id": "q2",
+      "sender": "assistant",
+      "message": "os.walk albo rglob.",
+      "create_time": "2026-02-03T08:00:20Z",
+      "query": "",
+      "partial": false,
+      "shared": false,
+      "model": "grok-3"
+     }
+    }
+   ]
+  }
+ ]
+}

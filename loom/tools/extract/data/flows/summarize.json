@@ -1,0 +1,9 @@
+{"schema": "loom.extract.flow/1", "id": "summarize", "kind": "model", "class": "cheap",
+ "label": {"pl": "Streszczenie rozmowy do raportu / karty", "en": "Conversation summary for the report / card"},
+ "input": {"grain": "conversation", "max_chars": 0, "fields": ["title", "role", "text"], "include_blocks": ["text"]},
+ "prompt": {"system": {"pl": "Streść rozmowę w 3 zdaniach i wypisz otwarte pytania. Odpowiedz JSON: {\"summary\": \"…\", \"open_questions\": [\"…\"]}.",
+                       "en": "Summarise the conversation in 3 sentences and list open questions. Answer JSON: {\"summary\": \"…\", \"open_questions\": [\"…\"]}."},
+            "user": {"pl": "Tytuł: {title}\n{window}", "en": "Title: {title}\n{window}"}},
+ "output": {"schema": "summary"},
+ "model": {"route": "inherit", "class": "cheap", "parameters": {"temperature": 0.2, "max_tokens": 400}},
+ "cache": true, "enabled": false}

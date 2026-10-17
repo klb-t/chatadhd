@@ -145,6 +145,28 @@ TEST_SUITE("runtime_profile") {
     CHECK(RuntimeProfile::domains() == disk);
   }
 
+  // M1-D0 (7): the embedded .inc (src/model/runtime_profiles_embedded.inc) is a generated copy of the packs; a stale copy is a
+  // red test, per profile, by content hash. (The two neighbouring cases compare the full definition and every source's raw
+  // sha256; this one names the invariant and stays cheap enough to read in a failure line.)
+  TEST_CASE("the embedded runtime profiles match the packs on disk by hash, per profile") {
+    auto dir = std::filesystem::path(LOOM_TEST_FIXTURES).parent_path().parent_path() / "data/runtime";
+    std::size_t compared = 0;
+    for (const auto& entry : std::filesystem::directory_iterator(dir)) {
+      if (entry.path().extension() != ".pack") continue;
+      const auto name = entry.path().stem().string();
+      auto raw = unwrap(fsutil::read_file(entry.path()));
+      auto on_disk = unwrap(RuntimeProfile::from_definition(unwrap(json::parse(raw))));
+      auto embedded = unwrap(RuntimeProfile::builtin(name));
+      INFO("profile ", name, ": regenerate with python3 loom/src/model/gen_runtime_profiles.py");
+      CHECK(embedded.hash() == on_disk.hash());
+      // the recorded source bytes of the pack itself (recipes add their own sources) match the file on disk
+      for (const auto& source : embedded.source_provenance())
+        if (source.at("path") == "loom/data/runtime/" + name + ".pack") CHECK(source.at("raw_sha256") == Sha256::hex(raw));
+      ++compared;
+    }
+    CHECK(compared == RuntimeProfile::domains().size());
+  }
+
   TEST_CASE("inspection exposes defaults and preset sources without changing content identity") {
     auto data = std::filesystem::path(LOOM_TEST_FIXTURES).parent_path().parent_path() / "data";
     for (const auto& domain : RuntimeProfile::domains()) {
