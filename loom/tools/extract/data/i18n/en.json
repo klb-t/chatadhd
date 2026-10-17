@@ -689,5 +689,9 @@
   "cli.opt.stale_output": "output of responses without stop_reason (stream-start counter): keep = a lower bound, estimate = an estimate from the content (preset economics.usage.stale_output)",
   "cli.opt.side_files": "estimate the files inside session directories too (tool results, workflow files; preset economics.skip_session_side_files)",
   "cli.opt.per_turn": "add the files changed in each turn to economics.json (preset economics.outcomes.per_turn)",
-  "cli.opt.units_snapshot": "add units.jsonl with the full text of the transcripts to the package (preset economics.package.units_snapshot: false)"
+  "cli.opt.units_snapshot": "add units.jsonl with the full text of the transcripts to the package (preset economics.package.units_snapshot: false)",
+  "economics.note.commit_failed": "git commit commands whose tool result is an error (no commit; their trailer links no session): {n}",
+  "economics.link.trailer_ambiguous_n": "trailer (ambiguous: the chosen one in {n} of {all} trailers)",
+  "economics.note_field.chosen": "trailers of the chosen session",
+  "economics.note_field.trailers": "all trailers"
 }

@@ -689,5 +689,9 @@
   "cli.opt.stale_output": "wyjście odpowiedzi bez stop_reason (licznik z początku strumienia): keep = dolna granica, estimate = szacunek z treści (preset economics.usage.stale_output)",
   "cli.opt.side_files": "szacuj też pliki leżące w katalogach sesji (wyniki narzędzi, pliki przepływów; preset economics.skip_session_side_files)",
   "cli.opt.per_turn": "dopisz do economics.json pliki zmienione w każdej turze (preset economics.outcomes.per_turn)",
-  "cli.opt.units_snapshot": "dołącz do pakietu units.jsonl z pełną treścią transkryptów (preset economics.package.units_snapshot: false)"
+  "cli.opt.units_snapshot": "dołącz do pakietu units.jsonl z pełną treścią transkryptów (preset economics.package.units_snapshot: false)",
+  "economics.note.commit_failed": "polecenia git commit, których wynik narzędzia jest błędem (bez commitu; ich stopka nie wiąże sesji): {n}",
+  "economics.link.trailer_ambiguous_n": "stopka (niejednoznaczna: wybrana w {n} z {all} stopek)",
+  "economics.note_field.chosen": "stopek wybranej sesji",
+  "economics.note_field.trailers": "wszystkich stopek"
 }

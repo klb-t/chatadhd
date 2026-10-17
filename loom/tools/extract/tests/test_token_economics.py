@@ -684,13 +684,14 @@ class ReviewFindingsTest(EconTest):
     # -- several transcript families for one API session (blocking) --------------------------------------------------
     def test_several_families_for_one_session_add_up(self):
         proj = self.copy_proj("p3")
-        cmd = 'git commit -m "x\n\nClaude-Session: https://claude.ai/code/session_TEST1"'
+        # a quiet commit with its message in a heredoc (what agents write): git prints nothing, the trailer is the message's
+        cmd = "git add -A && git commit -q -F - <<'EOF'\nx\n\nClaude-Session: https://claude.ai/code/session_TEST1\nEOF"
         lines = [cc_line("x1", None, "user", "2026-10-11T10:00:00Z", "Trzecia sesja", session="sess-E3"),
                  cc_line("x2", "x1", "assistant", "2026-10-11T10:00:05Z",
                          [{"type": "tool_use", "id": "toolu_x", "name": "Bash", "input": {"command": cmd}}],
                          session="sess-E3", model="claude-x-small", mid="msg_X1", usage=usage(1, 5, 0, 7000), stop="tool_use"),
                  cc_line("x3", "x2", "user", "2026-10-11T10:00:06Z", [{"type": "tool_result", "tool_use_id": "toolu_x",
-                                                                        "content": "[main 9f9f9f9] x"}], session="sess-E3")]
+                                                                        "content": ""}], session="sess-E3")]
         self.write(proj / "sess-E3.jsonl", "\n".join(lines) + "\n")
         eng, doc = self.econ(proj, sessions=[str(SESSIONS)])
         tot = doc["totals"]
@@ -709,26 +710,44 @@ class ReviewFindingsTest(EconTest):
         self.assertEqual(sum(r["tr_cache_read"] for r in doc2["sessions"] if r.get("tr_cache_read") is not None), doc2["totals"]["cache_read"])
 
     # -- trailers only from confirmed commit commands (should) -------------------------------------------------------
-    def test_trailers_only_from_confirmed_commit_commands(self):
+    def test_trailers_only_from_the_git_commit_invocation(self):
         proj = self.tmp / "q" / "-home-user-q"
         fake = 'git add -A && git commit -m "t\n\nClaude-Session: https://claude.ai/code/session_FAKE"'
         heredoc = "cat > t.sh <<'EOF'\n" + fake + "\nEOF"
+        failed = 'git commit -q -m "u\n\nClaude-Session: https://claude.ai/code/session_FAILED"'
         lines = [cc_line("q1", None, "user", "2026-10-11T10:00:00Z", "Napisz test", session="sess-Q"),
                  cc_line("q2", "q1", "assistant", "2026-10-11T10:00:05Z",
                          [{"type": "tool_use", "id": "toolu_w", "name": "Write", "input": {"file_path": "t.py", "content": fake}},
-                          {"type": "tool_use", "id": "toolu_h", "name": "Bash", "input": {"command": heredoc}}],
+                          {"type": "tool_use", "id": "toolu_h", "name": "Bash", "input": {"command": heredoc}},
+                          {"type": "tool_use", "id": "toolu_f", "name": "Bash", "input": {"command": failed}}],
                          session="sess-Q", model="claude-x-small", mid="msg_Q1", usage=usage(1, 5), stop="tool_use"),
                  cc_line("q3", "q2", "user", "2026-10-11T10:00:06Z",
                          [{"type": "tool_result", "tool_use_id": "toolu_w", "content": "File created"},
-                          {"type": "tool_result", "tool_use_id": "toolu_h", "content": ""}], session="sess-Q")]
+                          {"type": "tool_result", "tool_use_id": "toolu_h", "content": ""},
+                          {"type": "tool_result", "tool_use_id": "toolu_f", "content": "pre-commit hook failed", "is_error": True}],
+                         session="sess-Q")]
         self.write(proj / "sess-Q.jsonl", "\n".join(lines) + "\n")
         eng, doc = self.econ(proj)
         row = next(r for r in doc["sessions"] if r["transcript_id"] == "sess-Q")
-        self.assertEqual(row["link"], i18n.t("economics.link.none"), "a Write's content and an unconfirmed heredoc link nothing")
-        self.assertEqual(row["commit_commands"], 1, "Write is not a commit tool; the Bash heredoc is a command, not a commit made")
+        self.assertEqual(row["link"], i18n.t("economics.link.none"), "a Write's content, a file a heredoc writes, a failed commit: no link")
+        self.assertEqual(row["commit_commands"], 1, "Write is not a commit tool; a heredoc feeding cat is not a commit; the failed one is")
         self.assertEqual(doc["outcomes"]["commit_commands_confirmed"], 0)
-        self.assertIn("commit_unconfirmed", {n["key"] for n in doc["unknowns"]})
+        self.assertIn("commit_failed", {n["key"] for n in doc["unknowns"]})
         self.assertNotIn("session_FAKE", json.dumps(doc))
+        self.assertNotIn("session_FAILED", json.dumps(doc))
+        # the trailer block of the message: a body that mentions another session links only to its own
+        from loom.tools.extract.economics import commit_trailers
+        msg = ("git commit -q -F - <<'EOF'\nfix: trailers\n\nClaude-Session: https://claude.ai/code/session_OTHER is an example\n\n"
+               "Co-Authored-By: X <x@example.invalid>\nClaude-Session: https://claude.ai/code/session_OWN\nEOF")
+        self.assertEqual(commit_trailers(msg, {}), ["session_OWN"])
+        self.assertEqual(commit_trailers('git commit -m "a\\n\\nClaude-Session: https://x/session_ONE"', {}), ["session_ONE"])
+        self.assertEqual(commit_trailers('git commit -q -m x\npython3 -c "print(\'Claude-Session: https://x/session_CODE\')"', {}), [])
+        # economics.outcomes.trailers_need_result: true → only commits the tool result confirms (git printed the hash)
+        self.overlay_presets({"economics": {"outcomes": {"trailers_need_result": True}}})
+        eng2, doc2 = self.econ(PROJ)
+        e1 = next(r for r in doc2["sessions"] if r["transcript_id"] == "sess-E1")
+        self.assertEqual(e1["link"], i18n.t("economics.link.trailer"), "the fixture's commit result names its hash")
+        self.assertEqual(doc2["outcomes"]["commit_commands_confirmed"], 1)
 
     # -- side files inside session directories (should) ---------------------------------------------------------------
     def test_side_files_in_session_directories_are_not_estimated(self):

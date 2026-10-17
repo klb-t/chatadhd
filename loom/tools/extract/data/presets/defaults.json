@@ -60,7 +60,7 @@
                              "commit_tools": {"Bash": ["command"]},
                              "commit_command": "(?:^|[;&|(]|\\$\\()[ \\t]*git[ \\t]+(?:-[Cc][ \\t]+\\S+[ \\t]+)*commit\\b",
                              "commit_result": "^\\[(?:[^\\]\\n]* )?([0-9a-f]{7,40})\\]",
-                             "trailers_need_result": true,
+                             "trailers_need_result": false,
                              "per_turn": false},
                 "git": {"trailer": "Claude-Session", "session_id": "[A-Za-z0-9_][A-Za-z0-9_.-]*", "main_ref": ["main", "origin/main"], "numstat": true},
                 "links": {"trailer_in_transcripts": true},

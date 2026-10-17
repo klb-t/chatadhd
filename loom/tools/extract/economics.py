@@ -426,6 +426,22 @@ def trailer_regex(cfg: dict[str, Any], *, line: bool = False) -> "re.Pattern[str
     return re.compile(rf"{trailer}:[ \t]*(?:[^\s\"']*/)?({sid})", re.I)
 
 
+def commit_trailers(text: str, cfg: dict[str, Any]) -> list[str]:
+    """Session ids of a ``git commit`` invocation's message: the trailer lines (``Claude-Session: …/<id>`` at the start
+    of a line) of the last paragraph that has any — git's trailer block — so a message that mentions another session
+    in its body links only to its own; a one-line invocation (a message with escaped newlines) gives the last trailer
+    of that line; a trailer inside other text further down (code, a script) gives nothing."""
+    trailer = re.escape(str(cfg.get("trailer") or "Claude-Session"))
+    sid = str(cfg.get("session_id") or r"[A-Za-z0-9_][A-Za-z0-9_.-]*")
+    rx = re.compile(rf"^[ \t]*{trailer}:[ \t]*(?:[^\s\"']*/)?({sid})", re.M | re.I)
+    last: list[str] = []
+    for para in re.split(r"\n[ \t]*\n", text):
+        found = rx.findall(para)
+        if found:
+            last = found
+    return last or trailer_regex(cfg).findall(text.split("\n", 1)[0])[-1:]
+
+
 # ───────────────────────────── helpers ─────────────────────────────
 def _day(iso: Optional[str], zone: str) -> Optional[str]:
     """The calendar day of a timestamp in ``zone`` (UTC by default).  A stamp with an offset (git's ``%aI`` keeps the
@@ -491,6 +507,35 @@ def _div_cost(c: dict[str, Any], n: Optional[int], why_zero: str, why_none: str 
             "basis": "session_api" if c.get("basis") == "session_api" else "transcript_prices", "of": c.get("basis")}
 
 
+_HEREDOC = re.compile(r"<<-?[ \t]*(['\"]?)([A-Za-z_][A-Za-z0-9_]*)\1")
+_SEP = re.compile(r"&&|\|\||;|\|")
+
+
+def strip_foreign_heredocs(cmd: str, commit_rx: "re.Pattern[str]") -> str:
+    """A shell command with the bodies of heredocs that feed another command blanked (``cat > t.sh <<'EOF' … EOF``,
+    ``python3 - <<'EOF' … EOF``): a file or a script the command writes is not a commit message, even when it holds
+    ``git commit`` and a trailer.  A heredoc opened by the ``git commit`` invocation itself (``-F - <<'EOF'``,
+    ``-m "$(cat <<'EOF'``) is its message and stays."""
+    lines = cmd.split("\n")
+    out: list[str] = []
+    i = 0
+    while i < len(lines):
+        ln = lines[i]
+        out.append(ln)
+        i += 1
+        for m in _HEREDOC.finditer(ln):
+            seg = _SEP.split(ln[:m.start()])[-1]
+            keep = bool(commit_rx.search(seg))
+            delim = m.group(2)
+            while i < len(lines) and lines[i].strip() != delim:
+                out.append(lines[i] if keep else "")
+                i += 1
+            if i < len(lines):
+                out.append(lines[i])
+                i += 1
+    return "\n".join(out)
+
+
 def _split_ints(usage: dict[str, int], n: int) -> list[dict[str, int]]:
     """A turn's integer counters split between its ``n`` tool calls by the largest remainder (equal remainders go
     to the earlier calls): every share is an integer and the shares add up to the turn."""
@@ -546,11 +591,10 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     commit_rx = re.compile(str(oc.get("commit_command") or r"git\s+commit\b"), re.M)
     commit_tools = {str(k): [str(x) for x in (v or [])] for k, v in (oc.get("commit_tools") or {"Bash": ["command"]}).items()}
     result_rx = re.compile(str(oc.get("commit_result") or r"^\[(?:[^\]\n]* )?([0-9a-f]{7,40})\]"), re.M)
-    need_result = bool(oc.get("trailers_need_result", True))
+    need_result = bool(oc.get("trailers_need_result", False))
     git_cfg = dict(cfg.get("git") or {})
     if p.get("main_ref") is not None:
         git_cfg["main_ref"] = p["main_ref"]
-    trailer_rx = trailer_regex(git_cfg)
     estimator = Estimator(ds, p.get("estimate"))
     book = PriceBook(ds)
     zone_problem = None
@@ -606,13 +650,15 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
 
     def commit_text(b: Any) -> Optional[str]:
         """The text of a commit command from the input keys of a commit tool (data: outcomes.commit_tools), from the
-        ``git commit`` invocation on — file contents written by Edit/Write never count."""
+        ``git commit`` invocation on, with heredocs that feed other commands blanked — file contents written by
+        Edit/Write, and scripts or files a shell command writes, never count."""
         keys = commit_tools.get(str(b.name or ""))
         if not keys or not isinstance(b.input, dict):
             return None
         for k in keys:
             v = b.input.get(k)
-            if isinstance(v, str):
+            if isinstance(v, str) and commit_rx.search(v):
+                v = strip_foreign_heredocs(v, commit_rx)
                 mm = commit_rx.search(v)
                 if mm:
                     return v[mm.start():]
@@ -727,12 +773,15 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
                 txt = commit_use.get(str(tid)) if tid else commit_text(b)
                 if txt is not None:
                     g["commit_cmds"] += 1
-                    h = commit_hash.get(str(tid)) if tid else None
+                    h = commit_hash.get(str(tid)) if tid else None  # None = no result bound, "" = a result without a hash
                     if h:
                         g["commits_confirmed"] += 1
-                    if h or (not need_result and h is None):
-                        # (hash or None, trailers of the command): the repository's commit decides when the hash resolves
-                        g["commit_refs"].append((h or None, trailer_rx.findall(txt)))
+                    if tid and errors.get(str(tid)):
+                        note("commit_failed")  # the tool reported an error: no commit, its trailer links nothing
+                    elif h or not need_result:
+                        # (hash or None, trailers of the git commit invocation): the repository's commit decides when
+                        # the hash the result printed resolves through --repo
+                        g["commit_refs"].append((h or None, commit_trailers(txt, git_cfg)))
                     else:
                         note("commit_unconfirmed")
     stale = {"n": 0, "tokens": 0, "estimated": 0}
@@ -919,6 +968,7 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             for sid in sids:
                 d[sid] = d.get(sid, 0) + 1
     links: dict[str, tuple[str, str]] = {}
+    link_share: dict[str, tuple[int, int]] = {}  # an ambiguous link: (trailers of the chosen id, all trailers)
     for fam in sorted(fam_units):
         exts = {fam} | {str(u.ext_id) for u in fam_units[fam] if u.ext_id}
         hit = next((explicit[x] for x in sorted(exts) if x in explicit), None)
@@ -931,7 +981,8 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
             best = max(tr, key=lambda k: (tr[k], k))
             if len(tr) > 1:
                 links[fam] = (best, "trailer_ambiguous")
-                note("link_ambiguous")
+                link_share[fam] = (tr[best], sum(tr.values()))
+                note("link_ambiguous", chosen=tr[best], trailers=sum(tr.values()))
             else:
                 links[fam] = (best, "commit" if fam_via_repo.get(fam) else "trailer")
     linked_api = {v[0] for v in links.values()}
@@ -1058,12 +1109,18 @@ def build_economics(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
                     edits_failed += g["edits_failed"]
                     cmds += g["commit_cmds"]
             how_set = sorted({links[f][1] for f in fams if f in links})
+
+            def link_text(h: str) -> str:
+                if h == "trailer_ambiguous":
+                    sh = [link_share[f] for f in fams if f in link_share]
+                    return t("economics.link.trailer_ambiguous_n", n=_fmt_int(sum(x[0] for x in sh)), all=_fmt_int(sum(x[1] for x in sh)))
+                return t("economics.link." + h)
             row.update({"tr_turns": r["turns"], "tr_input": r["input"], "tr_output": r["output"], "tr_cache_creation": r["cache_creation"],
                         "tr_cache_read": r["cache_read"], "tr_total": r["total"], "tr_cost": r["cost"],
                         "tr_cost_measured": r["cost_measured"], "tr_cost_estimated": r["cost_estimated"],
                         "tr_output_lower_bound": r["output_lower_bound"],
                         "transcripts": len(members), "agents": sum(1 for x in members if _place(x)["role"] != "main"),
-                        "link": ", ".join(t("economics.link." + h) for h in how_set) if how_set else t("economics.link.none"),
+                        "link": ", ".join(link_text(h) for h in how_set) if how_set else t("economics.link.none"),
                         "files_touched": len(files), "edit_calls": edits, "edits_failed": edits_failed, "commit_commands": cmds})
             if not aggregate:
                 row["files"] = sorted(files)
