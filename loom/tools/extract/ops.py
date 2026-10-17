@@ -574,9 +574,12 @@ def op_write(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     eng.ensure_units()
     aggregate = bool(p.get("aggregate")) or eng.aggregate
     pkg = Path(str(p["package"])).expanduser()
-    pkg.mkdir(parents=True, exist_ok=True)
-    outputs: list[dict[str, Any]] = []
     from .i18n import t as _t
+    try:
+        pkg.mkdir(parents=True, exist_ok=True)
+    except OSError as exc:  # the OUTPUT is the problem (a file in the way, no permission), not a source
+        raise ValueError(_t("write.output_error", path=str(pkg), detail=f"{type(exc).__name__}: {exc}")) from exc
+    outputs: list[dict[str, Any]] = []
     from .ops_cut import package_redactor, redact_edits
     # the staged cut / hand-off describe the tree they were made from: after an edit, an undo or a redo they are
     # made again from the current tree (deterministic, so the package still reproduces from its recipe)

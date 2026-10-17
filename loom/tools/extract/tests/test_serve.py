@@ -78,6 +78,37 @@ class ServeTest(ExtractTest):
         st, res = self.req("GET", "/api/keymap?profile=vim")
         self.assertEqual(res["bindings"]["j"], "cursor.down")
 
+    def _raw(self, method: str, path: str, headers: dict, body: bytes = b""):
+        import socket
+        with socket.create_connection(("127.0.0.1", self.srv.port), timeout=30) as sock:
+            head = f"{method} {path} HTTP/1.1\r\nHost: 127.0.0.1\r\nConnection: close\r\n"
+            for k, v in headers.items():
+                head += f"{k}: {v}\r\n"
+            sock.sendall(head.encode("utf-8") + b"\r\n" + body)
+            data = b""
+            while True:
+                chunk = sock.recv(65536)
+                if not chunk:
+                    break
+                data += chunk
+        status = int(data.split(b" ", 2)[1])
+        return status, json.loads(data.split(b"\r\n\r\n", 1)[1].decode("utf-8"))
+
+    def test_malformed_requests_get_an_answer(self):
+        """F35/F44: a bad Content-Length, a non-number offset/limit, a non-ASCII token: 400/401 with a JSON body,
+        never a traceback and a dropped connection."""
+        st, body = self._raw("POST", "/api/call", {"X-Extract-Token": self.srv.token, "Content-Length": "abc"})
+        self.assertEqual(st, 400)
+        self.assertEqual(body["code"], "bad_request")
+        st, body = self.req("GET", "/api/view?offset=x&limit=y")
+        self.assertEqual(st, 400)
+        self.assertEqual(body["code"], "bad_request")
+        st, body = self._raw("GET", "/api/status", {"X-Extract-Token": "zażółć"})
+        self.assertEqual(st, 401)
+        self.assertEqual(body["code"], "unauthorized")
+        st, body = self.req("GET", "/api/events?after=nope")
+        self.assertEqual(st, 400)
+
     def test_long_op_job_with_sse_progress_busy_and_answer(self):
         gate = threading.Event()
 

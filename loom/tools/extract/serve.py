@@ -110,10 +110,16 @@ def _handler(server: Server) -> type:
 
         def _authorized(self, query: dict[str, list[str]], allow_query: bool = False) -> bool:
             got = self.headers.get("X-Extract-Token") or (query.get("token", [""])[0] if allow_query else "")
-            return bool(got) and hmac.compare_digest(str(got), server.token)
+            try:  # bytes: a non-ASCII header is a wrong token (401), not a TypeError that drops the connection
+                return bool(got) and hmac.compare_digest(str(got).encode("utf-8", "surrogateescape"), server.token.encode("utf-8"))
+            except (TypeError, ValueError):
+                log.debug("token comparison failed", exc_info=True)
+                return False
 
         def _body(self) -> dict[str, Any]:
-            n = int(self.headers.get("Content-Length") or 0)
+            n = _int(self.headers.get("Content-Length") or 0, "Content-Length")
+            if n < 0:
+                raise ApiError(t("serve.bad_request", what="Content-Length", value=str(n)), "bad_request")
             if not n:
                 return {}
             raw = self.rfile.read(n)
@@ -143,10 +149,10 @@ def _handler(server: Server) -> type:
             u = urlparse(self.path)
             q = parse_qs(u.query)
             path = u.path.rstrip("/") or "/"
-            if not self._authorized(q, allow_query=(path == "/api/events")):
-                self._send(401, {"error": t("serve.unauthorized"), "code": "unauthorized"})
-                return
             try:
+                if not self._authorized(q, allow_query=(path == "/api/events")):
+                    self._send(401, {"error": t("serve.unauthorized"), "code": "unauthorized"})
+                    return
                 if method == "GET":
                     self._get(path, q)
                 else:
@@ -155,6 +161,13 @@ def _handler(server: Server) -> type:
                 self._send(exc.status, {"error": str(exc), "code": exc.code})
             except (BrokenPipeError, ConnectionResetError):
                 log.debug("client went away during %s", path)
+            except Exception as exc:  # noqa: BLE001 - every request gets an answer, never a dropped connection
+                log.warning("serve %s %s failed: %s", method, path, exc)
+                log.debug("serve failure", exc_info=True)
+                try:
+                    self._send(500, error_body(exc))
+                except OSError:
+                    log.debug("could not answer the failed request", exc_info=True)
 
         def do_GET(self) -> None:  # noqa: N802 - http.server's naming
             self._route("GET")
@@ -178,10 +191,11 @@ def _handler(server: Server) -> type:
                 self._call({"call": "jobs", "id": path.rsplit("/", 1)[1]})
             elif path == "/api/view":
                 req = {"call": "list", "root": one("root", "sources"), "path": q.get("path") or [], "flat": one("flat"),
-                       "filter": one("filter", ""), "sort": one("sort", ""), "offset": int(one("offset", 0) or 0), "limit": int(one("limit", 0) or 0)}
+                       "filter": one("filter", ""), "sort": one("sort", ""), "offset": _int(one("offset", 0) or 0, "offset"),
+                       "limit": _int(one("limit", 0) or 0, "limit")}
                 self._call(req)
             elif path == "/api/events":
-                self._events(int(one("after", 0) or 0), one("job"))
+                self._events(_int(one("after", 0) or 0, "after"), one("job"))
             else:
                 self._send(404, {"error": t("serve.not_found", path=path), "code": "not_found"})
 
@@ -231,6 +245,14 @@ def _handler(server: Server) -> type:
                         session.cond.wait(timeout=0.25)
 
     return Handler
+
+
+def _int(value: Any, what: str) -> int:
+    """A number from a header or the query; anything else is a 400 with the parameter's name."""
+    try:
+        return int(str(value).strip())
+    except (TypeError, ValueError):
+        raise ApiError(t("serve.bad_request", what=what, value=str(value)[:40]), "bad_request") from None
 
 
 __all__ = ["Server", "LOOPBACK"]

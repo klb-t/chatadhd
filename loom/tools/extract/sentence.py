@@ -136,10 +136,21 @@ def sentence_to_recipe(parsed: dict[str, Any], ds: Optional[DataStore] = None, *
         steps.append({"op": "cut", "params": cut, "by": "sentence"})
         if parsed.get("handoff"):
             steps.append({"op": "handoff", "by": "sentence"})
-        pkg = parsed.get("package") or ("ekstrakt-" + (re.sub(r"[^A-Za-z0-9_-]+", "-", topic).strip("-").lower() if topic else "archiwum"))
+        pkg = parsed.get("package") or default_package(topic)
         steps.append({"op": "write", "params": {"package": pkg}, "by": "sentence"})
     return {"schema": SCHEMA, "id": "sentence", "label": {"pl": sentence, "en": sentence}, "sources": list(parsed.get("sources") or []),
             "settings": {}, "steps": steps}
+
+
+def default_package(topic: Optional[str], ds: Optional[DataStore] = None) -> str:
+    """The package directory when none is named: preset ``cut.package_default`` (``ekstrakt-{topic}``, in the
+    current directory), ``{topic}`` from the topic or ``cut.package_topic_default`` (``archiwum``).  The same for
+    the sentence and the ``wytnij`` verb; ``--pakiet`` overrides it."""
+    from .datafiles import store as _store
+    ds = ds or _store()
+    tpl = str(ds.preset("cut.package_default", "ekstrakt-{topic}") or "ekstrakt-{topic}")
+    slug = re.sub(r"[^A-Za-z0-9_-]+", "-", topic).strip("-").lower() if topic else ""
+    return tpl.replace("{topic}", slug or str(ds.preset("cut.package_topic_default", "archiwum") or "archiwum"))
 
 
 def describe_rules(text: str, ds: Optional[DataStore] = None) -> tuple[dict[str, Any], str]:

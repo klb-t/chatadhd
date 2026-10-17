@@ -211,7 +211,10 @@ def build_cut_steps(args: argparse.Namespace, select_steps: list[tuple[str, dict
     if getattr(args, "przekaz", False):
         steps.append(("handoff", {"graph": bool(getattr(args, "z_grafem", False))}))
     if not args.pakiet:
-        raise ValueError(t("cli.cut.need_package"))
+        # the minimal configuration is minimal here too: the sentence's preset (cut.package_default), said aloud
+        from .sentence import default_package
+        args.pakiet = default_package(getattr(args, "temat", None))
+        print(t("cli.cut.package_default", path=str(Path(args.pakiet).expanduser().resolve())), file=sys.stderr)
     steps.append(("write", {"package": args.pakiet}))
     return steps
 

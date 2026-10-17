@@ -146,9 +146,22 @@ class CutVerbsTest(ExtractTest):
         self.assertEqual(code, 0, err)
         self.assertIn("Szacunek kroków płatnych", out)
         self.assertIn("nieznany", out, "no price → unknown, never zero")
-        code, out, err = run("wytnij", EXPORTS / "openai_2026_sharded.zip", "-e", "kind:conversation")
+        # F11: the minimal configuration — no --pakiet — uses the sentence's preset in the current directory, said aloud
+        cwd = os.getcwd()
+        os.chdir(self.tmp)
+        try:
+            code, out, err = run("wytnij", EXPORTS / "openai_2026_sharded.zip", "-t", "ChatADHD")
+        finally:
+            os.chdir(cwd)
+        self.assertEqual(code, 0, err)
+        self.assertTrue((self.tmp / "ekstrakt-chatadhd" / "manifest.json").exists())
+        self.assertIn("ekstrakt-chatadhd", err)
+        # F41: an output path that is a file is an error about the output, with no traceback
+        blocker = self.write(self.tmp / "zajete", "plik, nie katalog")
+        code, out, err = run("wytnij", EXPORTS / "openai_2026_sharded.zip", "-e", "kind:conversation", "-p", blocker)
         self.assertEqual(code, 1)
-        self.assertIn("--pakiet", err)
+        self.assertIn("pakietu", err)
+        self.assertNotIn("Traceback", err)
 
     def test_small_verbs(self):
         code, out, err = run("zalaczniki", EXPORTS / "openai_2026_sharded.zip", "--brakujace")

@@ -507,5 +507,10 @@
   "error.edit": "edycja odrzucona: {detail}",
   "error.refused": "krok płatny odrzucony: {detail}",
   "scan.unreadable": "{n} uszkodzonych plików w źródłach (pominięte, reszta odczytana): {members}",
-  "report.user_reader": "czytnik {reader} to kod użytkownika ({path})"
+  "report.user_reader": "czytnik {reader} to kod użytkownika ({path})",
+  "cli.cut.package_default": "pakiet (nie podano --pakiet; preset cut.package_default): {path}",
+  "write.output_error": "nie można zapisać pakietu w {path}: {detail} (to problem miejsca zapisu, nie źródeł)",
+  "cli.os_error": "błąd systemu lub sieci ({kind}): {detail}",
+  "cli.unexpected": "nieoczekiwany błąd ({kind}): {detail} — pełny ślad z --debug",
+  "serve.bad_request": "niepoprawna wartość {what}: {value!r}"
 }

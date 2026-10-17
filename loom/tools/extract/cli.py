@@ -702,6 +702,17 @@ def main(argv: Optional[list[str]] = None) -> int:
         if pre_args.debug:
             raise
         return 1
+    except OSError as exc:  # a network error (URLError/HTTPError), a permission, a disk: said, not a traceback
+        print(f"{t('cli.error')}: {t('cli.os_error', kind=type(exc).__name__, detail=str(exc))}", file=sys.stderr)
+        if pre_args.debug:
+            raise
+        return 1
+    except Exception as exc:  # noqa: BLE001 - the last word to the user; the trace only with --debug
+        logging.getLogger(__name__).debug("unexpected error", exc_info=True)
+        print(f"{t('cli.error')}: {t('cli.unexpected', kind=type(exc).__name__, detail=str(exc))}", file=sys.stderr)
+        if pre_args.debug:
+            raise
+        return 1
 
 
 if __name__ == "__main__":  # pragma: no cover

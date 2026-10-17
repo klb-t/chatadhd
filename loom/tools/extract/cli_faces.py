@@ -21,7 +21,8 @@ def _session(args: argparse.Namespace, face: str) -> Session:
 
 
 def autosave_path(args: argparse.Namespace, ds: Any) -> Optional[Path]:
-    """``--autozapis`` → the package → the user's overlay → the current directory (preset file name)."""
+    """``--autozapis`` → the package → the user's overlay → the per-user state directory (``paths.state_dir``:
+    outside every repository, never the current directory — the file holds source paths, criteria and tags)."""
     if getattr(args, "autozapis", None):
         return None if args.autozapis == "off" else Path(args.autozapis).expanduser()
     if int(ds.preset("commander.autosave.every", 1) or 0) == 0:
@@ -30,7 +31,10 @@ def autosave_path(args: argparse.Namespace, ds: Any) -> Optional[Path]:
     if getattr(args, "pakiet", None):
         return Path(args.pakiet).expanduser() / name
     base = overlay_dir()
-    return (base / "commander" / name) if base is not None else Path.cwd() / name
+    if base is not None:
+        return base / "commander" / name
+    from .paths import state_dir
+    return state_dir(ds) / "commander" / name
 
 
 def verb_commander(args: argparse.Namespace) -> int:

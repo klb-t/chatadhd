@@ -507,5 +507,10 @@
   "error.edit": "edit refused: {detail}",
   "error.refused": "paid step refused: {detail}",
   "scan.unreadable": "{n} damaged file(s) in the sources (skipped, the rest was read): {members}",
-  "report.user_reader": "reader {reader} is the user's code ({path})"
+  "report.user_reader": "reader {reader} is the user's code ({path})",
+  "cli.cut.package_default": "package (no --package given; preset cut.package_default): {path}",
+  "write.output_error": "cannot write the package at {path}: {detail} (a problem of the output location, not of the sources)",
+  "cli.os_error": "system or network error ({kind}): {detail}",
+  "cli.unexpected": "unexpected error ({kind}): {detail} — full trace with --debug",
+  "serve.bad_request": "bad value of {what}: {value!r}"
 }

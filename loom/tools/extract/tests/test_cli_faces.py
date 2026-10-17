@@ -71,6 +71,32 @@ class CliFacesTest(ExtractTest):
         self.assertEqual(lines[2]["total"], 1)
         self.assertEqual(lines[3]["code"], "unknown_call")
 
+    def test_autosave_is_never_in_the_repository_without_a_package_or_overlay(self):
+        """F42: without --pakiet and an overlay, the commander's autosave goes to the per-user state directory —
+        never Path.cwd(), which is the repository when run as python3 -m loom.tools.extract."""
+        import argparse
+        import os
+        from _support import REPO
+        from loom.tools.extract.cli_faces import autosave_path
+        os.environ.pop("LOOM_EXTRACT_DATA_DIR", None)
+        os.environ.pop("CHATADHD_DATA", None)
+        cwd = os.getcwd()
+        os.chdir(REPO)
+        try:
+            p = autosave_path(argparse.Namespace(autozapis=None, pakiet=None), store())
+        finally:
+            os.chdir(cwd)
+        self.assertIsNotNone(p)
+        self.assertFalse(p.resolve().is_relative_to(REPO.resolve()), p)
+        self.assertTrue(p.resolve().is_relative_to((self.tmp / "state").resolve()), p)
+        os.environ.pop("LOOM_EXTRACT_STATE")
+        os.environ["XDG_STATE_HOME"] = str(self.tmp / "xdg")
+        p2 = autosave_path(argparse.Namespace(autozapis=None, pakiet=None), store())
+        self.assertTrue(str(p2).startswith(str(self.tmp / "xdg" / "loom-extract")), p2)
+        ignored = (REPO / ".gitignore").read_text(encoding="utf-8")
+        self.assertIn("komander.autosave*.json", ignored)
+        self.assertIn("serve.token", ignored)
+
     def test_i18n_covers_the_faces(self):
         pl, en = i18n.table("pl"), i18n.table("en")
         self.assertEqual(set(pl), set(en))
