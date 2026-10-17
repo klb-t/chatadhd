@@ -83,10 +83,16 @@ try {
   });
   await step("6 nowa rozmowa", async () => {
     // Na telefonie (<= 720 px) lista rozmow jest schowana: najpierw ja otwieramy, potem zamykamy.
-    const narrow = page.viewportSize().width <= 720;
-    if (narrow) await page.getByTestId("toggle-sidebar").click();
-    await page.getByTestId("new-conversation").click();
-    if (narrow) { await page.waitForTimeout(300); if (await page.getByTestId("new-conversation").isVisible()) await page.getByTestId("toggle-sidebar").click(); }
+    // The full-screen chat (R56/P20) starts a conversation from the ☰ drawer; the workbench from its sidebar.
+    if (await page.getByTestId("shell-drawer-toggle").isVisible().catch(() => false)) {
+      await page.getByTestId("shell-drawer-toggle").click();
+      await page.getByTestId("shell-new-chat").click();
+    } else {
+      const narrow = page.viewportSize().width <= 720;
+      if (narrow) await page.getByTestId("toggle-sidebar").click();
+      await page.getByTestId("new-conversation").click();
+      if (narrow) { await page.waitForTimeout(300); if (await page.getByTestId("new-conversation").isVisible()) await page.getByTestId("toggle-sidebar").click(); }
+    }
     await page.getByTestId("chat-input").waitFor();
   });
 
