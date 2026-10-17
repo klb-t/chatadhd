@@ -13,7 +13,7 @@ from typing import Any, Optional
 from . import __version__
 from .datafiles import DataFileError, DataStore, set_store
 from .engine import Engine, EngineError
-from .i18n import label, resolve_language, set_language, t
+from .i18n import label, resolve_language, set_language, t, reason
 from .recipe import RecipeError, load_recipe, normalise, recipe_hash, save_recipe, validate
 from . import cli_cut as _cc
 from . import cli_faces as _cf
@@ -545,7 +545,7 @@ def verb_formats(args: argparse.Namespace) -> int:
         for a in out:
             print(f"{a['label']}: {a['kind']} → {a['format'] or t('cli.unknown')}")
             for m in a["members"]:
-                print(f"   {str(m['name'] or '')[:50]:50} {m['format'] or '-':30} {m['kind'] or '':10} {m['how']}")
+                print(f"   {str(m['name'] or '')[:50]:50} {m['format'] or '-':30} {m['kind'] or '':10} {reason(m['how'])}")
     return 0
 
 
