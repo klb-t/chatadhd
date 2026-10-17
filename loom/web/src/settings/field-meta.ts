@@ -17,7 +17,8 @@ export interface SettingsHuman {
   /** Set when the pack's `placement` (a user overlay, per key) moved the entry: the preset group/subgroup it came from. */
   placed_from?: { group: string; subgroup?: string };
   role?: string;
-  /** Status of `role` when ports.pack does not know the role yet (e.g. "planned"): the chip says so instead of dangling. */
+  /** Status of `role` only when ports.pack does not know the role (an overlay's own role): the chip says so instead of dangling.
+   *  A role ports.pack knows carries its label, why and status there (roles.<id>.status: partial | planned, M1-D1). */
   role_status?: string;
   flows?: string[];
   technical_only?: boolean;
