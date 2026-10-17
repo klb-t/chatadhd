@@ -1,0 +1,157 @@
+{
+  "schema": "loom.check_action_reads_allow/1",
+  "description": "Exceptions of tools/check_action_reads.py, each with its reason. not_a_read: a literal \"<key>\" in a file of implemented_in that is not a read of the setting (a JSON field, a request parameter, a producer name ...); optional `actions` narrows it. read_elsewhere: a declared read the files cannot show. flows: a settings field and a flow that disagree on purpose. An entry nothing needs any more fails the check.",
+  "not_a_read": [
+    {
+      "file": "loom/src/providers/providers.cpp",
+      "key": "github_token",
+      "reason": "the built-in GitHub manifest (resource vcs, repo.sync) is not a model route; github.sync reads the token"
+    },
+    {
+      "file": "loom/src/llm/use_model.cpp",
+      "key": "stream",
+      "reason": "a capability mode name and the request field; whether to stream is the caller's choice (chat.send reads the setting)"
+    },
+    {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "key": "intent_routing_method",
+      "reason": "a per-request option of the send forwarded to routing; the setting is read by input.route_intent"
+    },
+    {
+      "file": "loom/src/chat/chat_engine.cpp",
+      "key": "provider_manifests",
+      "reason": "a key of the graph-reply options (context_execution.graph_reply), not the setting; the setting is read by use_model"
+    },
+    {
+      "file": "loom/src/semantic/semantic_llm.cpp",
+      "key": "max_tokens",
+      "reason": "fixed request parameters of the analysis call (800 or the plan's budget); the setting max_tokens is not read"
+    },
+    {
+      "file": "loom/src/semantic/semantic_llm.cpp",
+      "key": "temperature",
+      "reason": "fixed request parameter of the analysis call (0.1); the setting temperature is not read"
+    },
+    {
+      "file": "loom/src/annotations/analyzer.cpp",
+      "key": "max_tokens",
+      "reason": "the analyzer profile field guardian.pack analyzer.max_tokens; the setting is not read"
+    },
+    {
+      "file": "loom/src/worker/semantic_worker.cpp",
+      "key": "max_tokens",
+      "reason": "the batch request field, from worker.pack batch_output_tokens; the setting is not read"
+    },
+    {
+      "file": "loom/src/chat/batch_api.cpp",
+      "key": "max_tokens",
+      "reason": "fixed request parameter of the batch analysis call (800); the setting is not read"
+    },
+    {
+      "file": "loom/src/chat/batch_api.cpp",
+      "key": "temperature",
+      "reason": "fixed request parameter of the batch analysis call (0.1); the setting is not read"
+    },
+    {
+      "file": "loom/src/archive/pipeline.cpp",
+      "key": "max_tokens",
+      "reason": "request parameter of the refinement call from archive.pack; the setting is not read"
+    },
+    {
+      "file": "loom/src/archive/pipeline.cpp",
+      "key": "temperature",
+      "reason": "request parameter of the refinement call from archive.pack; the setting is not read"
+    },
+    {
+      "file": "loom/src/archive/pipeline.cpp",
+      "key": "theme",
+      "reason": "the theme field of an archive item (a topic), not the UI setting theme"
+    },
+    {
+      "file": "loom/src/context/context_engine.cpp",
+      "key": "base_url",
+      "reason": "a key of the options context_execution.goal_typing, not the setting; the address comes through use_model"
+    },
+    {
+      "file": "loom/src/context/context_engine.cpp",
+      "key": "max_tokens",
+      "reason": "request parameter from the goal-typing budget; the setting is not read"
+    },
+    {
+      "file": "loom/src/context/context_engine.cpp",
+      "key": "temperature",
+      "reason": "a key of the options context_execution.goal_typing and the request parameter; the setting is not read"
+    },
+    {
+      "file": "loom/src/chat/graph_reply.cpp",
+      "key": "stream",
+      "reason": "the request/transport field of the graph-reply call; chat.send reads the setting"
+    },
+    {
+      "file": "loom/src/actions/route.cpp",
+      "key": "language",
+      "reason": "a parameter kind of the action catalogue (\"language\"), not the setting"
+    },
+    {
+      "file": "loom/src/actions/emergent.cpp",
+      "key": "max_tokens",
+      "reason": "the token limit of a command shape (intent_routing.pack emergent.shape.max_tokens), not the setting"
+    },
+    {
+      "file": "loom/src/extract/semantic.cpp",
+      "key": "max_tokens",
+      "reason": "request parameter and finish reason of the knowledge call (prompt contract); the setting is not read"
+    },
+    {
+      "file": "loom/src/extract/semantic.cpp",
+      "key": "stream",
+      "reason": "the transport field of the prepared call; the setting is not read"
+    },
+    {
+      "file": "loom/server/src/analysis-ui-routes.h",
+      "key": "stream",
+      "reason": "the transport field of the reviewed request; the setting is not read"
+    },
+    {
+      "file": "loom/src/actions/runner.cpp",
+      "key": "language",
+      "reason": "the language argument of a media step (with.language), not the setting",
+      "actions": [
+        "actions.preview"
+      ]
+    },
+    {
+      "file": "loom/src/actions/runner.cpp",
+      "key": "loom_usage_policy",
+      "reason": "settings.set validates a write of this key; the preview does not read it",
+      "actions": [
+        "actions.preview"
+      ]
+    },
+    {
+      "file": "loom/src/actions/runner.cpp",
+      "key": "semantic_retry_mode",
+      "reason": "settings.set validates a write of this key; the preview does not read it",
+      "actions": [
+        "actions.preview"
+      ]
+    },
+    {
+      "file": "loom/src/extract/extract.cpp",
+      "key": "language",
+      "reason": "the language of a code block found in a source (an observation attribute), not the setting"
+    },
+    {
+      "file": "loom/src/agent/agent.cpp",
+      "key": "base_url",
+      "reason": "a field of the request route; the address comes through use_model"
+    },
+    {
+      "file": "loom/src/llm/tool_loop.cpp",
+      "key": "stream",
+      "reason": "the loop removes the stream request parameter (turns are not streamed); the setting is not read"
+    }
+  ],
+  "read_elsewhere": [],
+  "flows": []
+}

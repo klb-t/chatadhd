@@ -386,6 +386,9 @@ std::vector<std::string> settings_fields_problems(const Json& doc, const std::fi
     if (const std::string role = json::get_string(*h, "role");
         !role.empty() && !roles.empty() && !roles.count(role) && json::get_string(*h, "role_status").empty())
       out.push_back("role '" + role + "' unknown to ports.pack and without role_status: " + who);
+    // One source (M1-D1): a role ports.pack knows carries its status there (roles.<id>.status), never a second copy on the field.
+    if (const std::string role = json::get_string(*h, "role"); !role.empty() && roles.count(role) && h->contains("role_status"))
+      out.push_back("role_status on role '" + role + "', which ports.pack knows (its status lives in ports.pack): " + who);
     // A field whose key nothing reads yet says so in data (status.planned with its reason), never in the present tense alone.
     if (const Json* status = json::find(entry, "status")) {
       if (!status->is_object() || json::get_string(*status, "state").empty()) out.push_back("status without state: " + who);

@@ -464,12 +464,22 @@ TEST_SUITE("settings_fields") {
     CHECK(has(settings_fields_problems(role), "role 'no.such.role' unknown to ports.pack and without role_status: config:base_url"));
     role["fields"][0]["human"]["role_status"] = "planned";
     CHECK_FALSE(has(settings_fields_problems(role), "role 'no.such.role'"));
-    // the three roles of M1-D1 are declared planned today (ports.pack does not know them)
+    // M1-D1: every role a field names is a role of ports.pack, whose status (planned for the three roles M1-D1 added) lives there;
+    // the field carries no second copy, and one that does is a problem
+    const auto ports = unwrap(RuntimeProfile::builtin("ports"));
     for (const auto& f : doc["fields"])
       if (f["human"].contains("role")) {
         const std::string r = f["human"]["role"].get<std::string>();
-        if (r == "intent.routing" || r == "image.generate" || r == "speech.synthesize") CHECK(f["human"]["role_status"] == "planned");
+        INFO(r);
+        CHECK(ports.values().at("roles").contains(r));
+        CHECK_FALSE(f["human"].contains("role_status"));
+        if (r == "intent.routing" || r == "image.generate" || r == "speech.synthesize")
+          CHECK(ports.values().at("roles").at(r).at("status").at("state") == "planned");
       }
+    Json twice = doc;
+    for (auto& f : twice["fields"])
+      if (f["key"] == "default_model") f["human"]["role_status"] = "planned";
+    CHECK(has(settings_fields_problems(twice), "role_status on role 'chat.default', which ports.pack knows (its status lives in ports.pack): config:default_model"));
     // a field without a reader says so with a reason (never present tense alone); a status without reason is a problem
     std::size_t planned = 0;
     for (const auto& f : doc["fields"])

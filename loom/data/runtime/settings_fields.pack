@@ -1,8 +1,8 @@
 {
   "schema": "loom.runtime_profile/1",
   "domain": "settings_fields",
-  "revision": 4,
-  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack. Review of M1-D0 (rev. 3): `human.levels` = the levels where a reader honours the value, backed by `level_evidence` (chain-resolved keys, per-request wire options); a field whose key no code reads yet carries `status {state: planned, by, reason}`; `values_open` marks an example list; `human.role_status` keeps a role chip honest until ports.pack knows the role; the `group` and `levels` enums are gone (an overlay may add a group of its own; levels are checked against the live scope chain). Review fixes (rev. 4): `values[].on_set` and `on_unlisted` say what a write of a planned or unlisted value does on every write path (refuse: its reader rejects it; warn: stored with a warning); `level_evidence.installation` backs the installation level (a profile value is set only in its profile, never in config.json); `placement` lets an overlay move one field into another group without copying the fields array; a missing `human` is a listed problem, not a load failure; `human.flows` are checked against the action catalogue.",
+  "revision": 5,
+  "description": "Settings field traits (type, has_default, description, values) and the vocabulary of edit labels, plus the human layer (M1-D0): `groups` (the eight human groups with subgroups, id -> {label, why, order, subgroups}), `human` on every field (label, why, effect in pl and en; levels of the scopes chain where it may be set; group/subgroup; role; flows that read it; technical_only) and `profile_values` (values of runtime profiles shown as fields with the chip 'runtime profile: <domain>', never copied into config). Grouping is data: an overlay may regroup, rename or hide (view kind settings_groups in graph_views.pack); the technical key stays under 'technical name' and no field is ever dropped. The edit rules of the fields are general rules {scope, target, action, effect} in the one rule store, runtime/action_rules.pack (target kind settings_field, action edit); no matching rule = allow. Effects map a rule effect to the edit label shown; an unknown effect passes through as its own label (open string). Default values are read from the real defaults (config_defaults / loom_config_defaults), never copied into the pack. Review of M1-D0 (rev. 3): `human.levels` = the levels where a reader honours the value, backed by `level_evidence` (chain-resolved keys, per-request wire options); a field whose key no code reads yet carries `status {state: planned, by, reason}`; `values_open` marks an example list; `human.role_status` keeps a role chip honest until ports.pack knows the role; the `group` and `levels` enums are gone (an overlay may add a group of its own; levels are checked against the live scope chain). Review fixes (rev. 4): `values[].on_set` and `on_unlisted` say what a write of a planned or unlisted value does on every write path (refuse: its reader rejects it; warn: stored with a warning); `level_evidence.installation` backs the installation level (a profile value is set only in its profile, never in config.json); `placement` lets an overlay move one field into another group without copying the fields array; a missing `human` is a listed problem, not a load failure; `human.flows` are checked against the action catalogue. M1-D1: the roles of human.role are all known to ports.pack, which carries each role's label, why and status; `role_status` remains only for a role ports.pack does not know (an overlay's own role). human.flows agree with actions.pack reads (tools/check_action_reads.py, ctest data.check_action_reads): a field names exactly the flows whose own reads list it, plus flows that read it through their steps or subflows.",
   "defaults": {
     "element_class": "settings_field",
     "rule_action": "edit",
@@ -539,7 +539,10 @@
             "semantic.batch",
             "agent.run",
             "use_model",
-            "embedding.embed"
+            "embedding.embed",
+            "batch.chat",
+            "knowledge.propose_semantics",
+            "analysis.run"
           ]
         }
       },
@@ -576,7 +579,10 @@
             "chat.send",
             "actions.run",
             "agent.run",
-            "actions.preview"
+            "actions.preview",
+            "use_model",
+            "archive.refine",
+            "input.route_intent"
           ]
         }
       },
@@ -674,7 +680,13 @@
             "semantic.analyse",
             "semantic.batch",
             "guardian.observe",
-            "actions.preview"
+            "actions.preview",
+            "batch.chat",
+            "archive.refine",
+            "goal.typing",
+            "knowledge.propose_semantics",
+            "analysis.run",
+            "guardian.model_read"
           ],
           "technical_only": true
         }
@@ -1134,7 +1146,8 @@
           "group": "rozmowa",
           "flows": [
             "chat.send",
-            "conversation.rename"
+            "conversation.rename",
+            "input.route_intent"
           ]
         }
       },
@@ -1164,9 +1177,7 @@
           ],
           "group": "rozmowa",
           "flows": [
-            "chat.send",
-            "agent.run",
-            "graph_native.reply"
+            "chat.send"
           ]
         }
       },
@@ -1197,7 +1208,8 @@
           "subgroup": "analiza",
           "flows": [
             "semantic.analyse",
-            "semantic.batch"
+            "semantic.batch",
+            "knowledge.propose_semantics"
           ]
         }
       },
@@ -1587,7 +1599,8 @@
           "flows": [
             "actions.run",
             "usage.spend",
-            "chat.send"
+            "chat.send",
+            "use_model"
           ]
         }
       },
@@ -1619,7 +1632,8 @@
           "flows": [
             "usage.set_limit",
             "usage.spend",
-            "chat.send"
+            "chat.send",
+            "use_model"
           ]
         }
       },
@@ -1767,7 +1781,8 @@
           "subgroup": "analiza",
           "flows": [
             "semantic.requeue",
-            "semantic.analyse"
+            "semantic.analyse",
+            "semantic.batch"
           ]
         },
         "values": [
@@ -1816,8 +1831,7 @@
           "group": "rozmowa",
           "subgroup": "polecenia",
           "flows": [
-            "input.route_intent",
-            "chat.send"
+            "input.route_intent"
           ]
         }
       },
@@ -1907,7 +1921,6 @@
           "group": "modele",
           "subgroup": "role",
           "role": "intent.routing",
-          "role_status": "planned",
           "flows": [
             "input.route_intent"
           ],
@@ -2259,7 +2272,6 @@
           "group": "modele",
           "subgroup": "role",
           "role": "image.generate",
-          "role_status": "planned",
           "flows": [
             "depict",
             "media.generate_image"
@@ -2293,7 +2305,6 @@
           "group": "modele",
           "subgroup": "role",
           "role": "image.generate",
-          "role_status": "planned",
           "flows": [
             "depict"
           ],
@@ -2326,7 +2337,6 @@
           "group": "modele",
           "subgroup": "role",
           "role": "speech.synthesize",
-          "role_status": "planned",
           "flows": [
             "narrate"
           ],
@@ -2359,7 +2369,6 @@
           "group": "modele",
           "subgroup": "role",
           "role": "speech.synthesize",
-          "role_status": "planned",
           "flows": [
             "narrate"
           ],
@@ -2459,7 +2468,8 @@
           "flows": [
             "guardian.observe",
             "guardian.compile",
-            "guardian.merge"
+            "guardian.merge",
+            "guardian.model_read"
           ],
           "technical_only": true
         }
@@ -2685,8 +2695,7 @@
           ],
           "group": "rozmowa",
           "flows": [
-            "chat.send",
-            "graph_native.reply"
+            "chat.send"
           ]
         }
       },
@@ -2809,7 +2818,8 @@
           "group": "kontekst",
           "subgroup": "wybor",
           "flows": [
-            "chat.send"
+            "chat.send",
+            "goal.typing"
           ]
         }
       },
@@ -2856,12 +2866,12 @@
             "en": "Your own analysis prompt texts"
           },
           "why": {
-            "pl": "Twoje wersje poleceń dla modelu analizy, podmienione za wbudowane.",
-            "en": "Your versions of the instructions for the analysis model, swapped for the builtin ones."
+            "pl": "Twoje wersje promptów dla propozycji wiedzy (budowanie wiedzy z modelem) i dla przejrzanych analiz, podmienione za wbudowane; analiza wiadomości w tle ich nie czyta.",
+            "en": "Your versions of the prompts of knowledge proposals (building knowledge with a model) and of reviewed analyses, used instead of the built-in ones; the background analysis of messages does not read them."
           },
           "effect": {
-            "pl": "Działa od następnej analizowanej wiadomości.",
-            "en": "Applies from the next analysed message."
+            "pl": "Działa przy następnej propozycji wiedzy albo następnym uruchomieniu przejrzanej analizy.",
+            "en": "Applies to the next knowledge proposal or the next run of a reviewed analysis."
           },
           "levels": [
             "person"
@@ -2869,8 +2879,8 @@
           "group": "kontekst",
           "subgroup": "analiza",
           "flows": [
-            "semantic.analyse",
-            "semantic.batch"
+            "knowledge.propose_semantics",
+            "analysis.run"
           ]
         }
       },
@@ -2887,8 +2897,8 @@
             "en": "Folder with analysis prompts"
           },
           "why": {
-            "pl": "Folder z plikami promptów, które zastępują wbudowane.",
-            "en": "A folder with prompt files that replace the builtin ones."
+            "pl": "Folder z plikami promptów, które zastępują wbudowane w propozycjach wiedzy i w przejrzanych analizach; analiza wiadomości w tle go nie czyta.",
+            "en": "A folder of prompt files that replace the built-in ones in knowledge proposals and reviewed analyses; the background analysis of messages does not read it."
           },
           "effect": {
             "pl": "Plik o nazwie promptu w tym folderze wygrywa z wbudowanym.",
@@ -2900,8 +2910,8 @@
           "group": "kontekst",
           "subgroup": "analiza",
           "flows": [
-            "semantic.analyse",
-            "semantic.batch"
+            "knowledge.propose_semantics",
+            "analysis.run"
           ]
         }
       },
@@ -2918,12 +2928,12 @@
             "en": "Cost admission before analysis"
           },
           "why": {
-            "pl": "Czy każde wywołanie modelu analizy w tle musi najpierw przejść przez politykę zużycia.",
-            "en": "Whether every background analysis model call must first pass the usage policy."
+            "pl": "Czy każde wywołanie modelu w propozycjach wiedzy (budowanie wiedzy z modelem) musi najpierw przejść przez politykę zużycia.",
+            "en": "Whether every model call of knowledge proposals (building knowledge with a model) must first pass the usage policy."
           },
           "effect": {
-            "pl": "Włączone: analiza bez dopuszczenia czeka, zamiast wydawać.",
-            "en": "On: analysis without admission waits instead of spending."
+            "pl": "Włączone: propozycja bez dopuszczenia czeka, zamiast wydawać.",
+            "en": "On: a proposal without admission waits instead of spending."
           },
           "levels": [
             "person"
@@ -2931,7 +2941,7 @@
           "group": "koszty",
           "subgroup": "limity",
           "flows": [
-            "semantic.analyse"
+            "knowledge.propose_semantics"
           ]
         }
       },
@@ -2991,7 +3001,6 @@
           "group": "kontekst",
           "subgroup": "wybor",
           "flows": [
-            "chat.send",
             "goal.typing"
           ]
         }
@@ -3052,7 +3061,8 @@
           "group": "koszty",
           "subgroup": "ksiega",
           "flows": [
-            "usage.spend"
+            "usage.spend",
+            "use_model"
           ]
         }
       },
@@ -3145,7 +3155,10 @@
             "semantic.analyse",
             "agent.run",
             "use_model",
-            "embedding.embed"
+            "embedding.embed",
+            "batch.chat",
+            "goal.typing",
+            "analysis.run"
           ]
         }
       },
@@ -3177,7 +3190,8 @@
           "subgroup": "klucze",
           "role": "analysis.fast",
           "flows": [
-            "semantic.batch"
+            "semantic.batch",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3241,7 +3255,8 @@
           "subgroup": "klucze",
           "role": "asr",
           "flows": [
-            "transcribe"
+            "transcribe",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3274,7 +3289,8 @@
           "subgroup": "klucze",
           "role": "asr",
           "flows": [
-            "transcribe"
+            "transcribe",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3308,7 +3324,8 @@
           "role": "ocr",
           "flows": [
             "ocr",
-            "import.file"
+            "import.file",
+            "use_model"
           ],
           "technical_only": true
         }
@@ -3413,8 +3430,7 @@
           "group": "interfejs",
           "subgroup": "wyglad",
           "flows": [
-            "chat.send",
-            "graph_native.reply"
+            "chat.send"
           ]
         }
       },
@@ -4531,7 +4547,7 @@
                 "role_status": {
                   "type": "string",
                   "minLength": 1,
-                  "description": "Status of `role` when ports.pack does not know the role yet (e.g. planned): the chip stays honest; a role neither known nor given a status is a problem."
+                  "description": "Status of `role` only while ports.pack does not know the role (e.g. planned): the chip stays honest. A role ports.pack knows carries its status there (roles.<id>.status: partial | planned with today and reason) and the field gives none (one source). A role neither known nor given a status is a problem."
                 },
                 "flows": {
                   "type": "array",
@@ -4977,7 +4993,7 @@
                 "role_status": {
                   "type": "string",
                   "minLength": 1,
-                  "description": "Status of `role` when ports.pack does not know the role yet (e.g. planned): the chip stays honest; a role neither known nor given a status is a problem."
+                  "description": "Status of `role` only while ports.pack does not know the role (e.g. planned): the chip stays honest. A role ports.pack knows carries its status there (roles.<id>.status: partial | planned with today and reason) and the field gives none (one source). A role neither known nor given a status is a problem."
                 },
                 "flows": {
                   "type": "array",

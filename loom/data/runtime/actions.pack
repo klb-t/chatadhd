@@ -47,7 +47,64 @@
         "consumer": "loom/src/llm/use_model.cpp",
         "labels": {
           "pl": "Użyj modelu"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Wywołaj model",
+            "en": "Call a model"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Wybierz model: podany w kroku, Twój wybór dla tego działania (rola action.<id> w profilu ports), inaczej pole default_model",
+                "en": "Choose the model: the one the step names, your choice for this action (role action.<id> in the ports profile), else the field default_model"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wybierz dostawcę i adres (llm_provider, base_url, provider_manifests) oraz klucz dostawcy",
+                "en": "Choose the provider and the address (llm_provider, base_url, provider_manifests) and the provider key"
+              }
+            },
+            {
+              "label": {
+                "pl": "Sprawdź możliwości modelu (model_capabilities), strażnika ×10 i limity wydatków",
+                "en": "Check the model capabilities (model_capabilities), the ×10 guard and the spending limits"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wyślij żądanie i zapisz zużycie w księdze",
+                "en": "Send the request and record the usage in the ledger"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "base_url",
+          "llm_provider",
+          "local_model_base_url",
+          "provider_manifests",
+          "model_capabilities",
+          "default_model",
+          "api_key",
+          "anthropic_batch_key",
+          "groq_api_key",
+          "google_speech_api_key",
+          "ocr_space_api_key",
+          "loom_usage_policy",
+          "usage_baseline_key_templates",
+          "usage_spend_limits"
+        ],
+        "uses_role": "chat.default",
+        "implemented_in": [
+          "loom/src/llm/use_model.cpp",
+          "loom/src/providers/providers.cpp",
+          "loom/data/runtime/action_run.pack#/defaults/use_model",
+          "loom/src/core/config_usage_policy.cpp",
+          "loom/src/actions/spend.cpp"
+        ]
       },
       "save": {
         "id": "save",
@@ -166,7 +223,79 @@
         "consumer": "loom/src/chat/chat_engine.cpp",
         "labels": {
           "pl": "Wyślij wiadomość czatu"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Wyślij wiadomość",
+            "en": "Send a message"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Zbierz kontekst: polecenie systemowe, pamięć, graf, historię (porządek z chat_context_order) i reprezentację Sekretarza",
+                "en": "Gather the context: the system prompt, memory, graph, history (order from chat_context_order) and the Secretary’s representation"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wybierz model rozmowy (default_model przez łańcuch zakresów) i sposób rozumowania (chat_reasoning)",
+                "en": "Choose the conversation model (default_model through the scope chain) and the reasoning recipe (chat_reasoning)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wybierz przepływ odpowiedzi (chat_flow): zwykły tekst albo odpowiedź w grafie",
+                "en": "Choose the reply flow (chat_flow): plain text or a graph-native reply"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wywołaj model (strumieniowo, gdy stream) pod strażnikiem zużycia",
+                "en": "Call the model (streamed when stream is on) under the usage guard"
+              }
+            },
+            {
+              "label": {
+                "pl": "Zapisz odpowiedź; w nowej rozmowie nadaj tytuł (auto_title)",
+                "en": "Store the reply; in a new conversation give it a title (auto_title)"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "default_model",
+          "system_prompt",
+          "temperature",
+          "max_tokens",
+          "stream",
+          "auto_title",
+          "language",
+          "chat_context_order",
+          "chat_history_command_traffic",
+          "chat_reasoning",
+          "context_execution",
+          "chat_flow",
+          "model_capabilities",
+          "graph_memory_depth",
+          "graph_memory_max_nodes",
+          "chat_representation",
+          "chat_thread_filter",
+          "guardian_person_rules",
+          "guardian_levels"
+        ],
+        "uses_role": "chat.default",
+        "subflows": [
+          "graph_native.reply"
+        ],
+        "implemented_in": [
+          "loom/src/chat/chat_engine.cpp",
+          "loom/src/chat/context_format.cpp",
+          "loom/src/guardian/representation.cpp",
+          "loom/src/guardian/data.cpp",
+          "loom/src/graph/graph_memory.cpp",
+          "loom/src/context/unified_context.cpp"
+        ]
       },
       "semantic.analyse": {
         "id": "semantic.analyse",
@@ -206,7 +335,54 @@
         "consumer": "loom/src/semantic/semantic_llm.cpp",
         "labels": {
           "pl": "Analiza semantyczna jednej wiadomości"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Przeanalizuj wiadomość w tle",
+            "en": "Analyse a message in the background"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Wybierz model analizy: polityka analyzer (semantic_model → rola Analiza w tle → brak)",
+                "en": "Choose the analysis model: policy analyzer (semantic_model → role Background analysis → none)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Brak modelu albo analiza wyłączona (semantic_analysis): tylko lokalne wyrażenia regularne",
+                "en": "No model or analysis switched off (semantic_analysis): local regular expressions only"
+              }
+            },
+            {
+              "label": {
+                "pl": "Klasa modelu wybiera przepływ: frontier — jedno wywołanie na wszystko; tani — klasyczne wywołanie i wąskie pytanie o segmenty (semantic_segments)",
+                "en": "The class of the model picks the flow: frontier — one call for everything; cheap — the classic call and a narrow question about segments (semantic_segments)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Zapisz encje, tematy i relacje w grafie",
+                "en": "Store the entities, topics and relations in the graph"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "semantic_model",
+          "semantic_analysis",
+          "semantic_segments",
+          "semantic_retry_mode"
+        ],
+        "uses_role": "analysis.fast",
+        "implemented_in": [
+          "loom/src/semantic/semantic_llm.cpp",
+          "loom/src/annotations/analyzer.cpp",
+          "loom/src/worker/semantic_worker.cpp",
+          "loom/data/runtime/guardian.pack#/defaults/models/policies/analyzer",
+          "loom/data/runtime/ports.pack#/defaults/roles/analysis.fast"
+        ]
       },
       "semantic.batch": {
         "id": "semantic.batch",
@@ -246,7 +422,43 @@
         "consumer": "loom/src/worker/semantic_worker.cpp",
         "labels": {
           "pl": "Analiza semantyczna przez wsad (Message Batches)"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Analiza zbiorcza w tle",
+            "en": "Background batch analysis"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Gdy oczekujących wiadomości jest dużo (worker.batch_threshold) i jest klucz analizy zbiorczej: zbierz je w jedną paczkę",
+                "en": "When many messages wait (worker.batch_threshold) and the batch analysis key is set: gather them into one batch"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wyślij paczkę modelem semantic_model przez Anthropic Message Batches (taniej, wynik później)",
+                "en": "Send the batch with the model semantic_model through Anthropic Message Batches (cheaper, the result comes later)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Odbierz wyniki i zapisz analizę każdej wiadomości; nieudane ponów według semantic_retry_mode",
+                "en": "Collect the results and store the analysis of each message; retry the failed ones per semantic_retry_mode"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "semantic_model",
+          "semantic_analysis",
+          "semantic_retry_mode"
+        ],
+        "uses_role": "analysis.fast",
+        "implemented_in": [
+          "loom/src/worker/semantic_worker.cpp"
+        ]
       },
       "batch.chat": {
         "id": "batch.chat",
@@ -286,7 +498,43 @@
         "consumer": "loom/src/chat/batch_api.cpp",
         "labels": {
           "pl": "Wsadowa analiza wybranych wiadomości"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Przeanalizuj wybrane wiadomości zbiorczo",
+            "en": "Analyse chosen messages in a batch"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Weź wybrane wiadomości",
+                "en": "Take the chosen messages"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wyślij je modelem semantic_model jako równoległe żądania albo jako paczkę, gdy adres wskazuje dostawcę paczek",
+                "en": "Send them with the model semantic_model as concurrent requests, or as a batch when the address names a batch provider"
+              }
+            },
+            {
+              "label": {
+                "pl": "Zapisz analizę każdej wiadomości",
+                "en": "Store the analysis of each message"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "semantic_model",
+          "base_url",
+          "api_key"
+        ],
+        "uses_role": "analysis.fast",
+        "implemented_in": [
+          "loom/src/chat/batch_api.cpp"
+        ]
       },
       "archive.refine": {
         "id": "archive.refine",
@@ -326,7 +574,43 @@
         "consumer": "loom/src/archive/pipeline.cpp",
         "labels": {
           "pl": "Dopracuj elementy archiwum"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Dopracuj elementy archiwum",
+            "en": "Refine archive items"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Weź elementy archiwum o niskiej pewności (pomysł, decyzja, odrzucona opcja …)",
+                "en": "Take the archive items with low confidence (idea, decision, rejected option …)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wybierz model: pierwszy niepusty z archive.pack refinement.model_keys (semantic_model, potem default_model)",
+                "en": "Choose the model: the first non-empty of archive.pack refinement.model_keys (semantic_model, then default_model)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Zapytaj model o rodzaj elementu i zapisz poprawkę",
+                "en": "Ask the model for the item type and store the correction"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "semantic_model",
+          "default_model"
+        ],
+        "uses_role": "analysis.fast",
+        "implemented_in": [
+          "loom/src/archive/pipeline.cpp",
+          "loom/data/runtime/archive.pack#/defaults/refinement"
+        ]
       },
       "goal.typing": {
         "id": "goal.typing",
@@ -366,7 +650,44 @@
         "consumer": "loom/src/context/context_engine.cpp",
         "labels": {
           "pl": "Określ cel promptu"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Określ cel promptu",
+            "en": "Type the goal of a prompt"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Najpierw lokalne wskazówki celu (context_goal_cues)",
+                "en": "Local goal cues first (context_goal_cues)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Gdy wskazówki są niepewne i ustawienia wykonania kontekstu na to pozwalają (context_execution.goal_typing): zapytaj model (podany tam albo semantic_model)",
+                "en": "When the cues are unsure and the context execution options allow it (context_execution.goal_typing): ask a model (the one named there, else semantic_model)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Typ celu decyduje, jaki kontekst trafi do modelu",
+                "en": "The goal type decides what context goes to the model"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "semantic_model",
+          "context_goal_cues",
+          "context_execution",
+          "api_key"
+        ],
+        "uses_role": "analysis.fast",
+        "implemented_in": [
+          "loom/src/context/context_engine.cpp"
+        ]
       },
       "graph_native.reply": {
         "id": "graph_native.reply",
@@ -408,7 +729,39 @@
         "consumer": "loom/src/chat/graph_reply.cpp",
         "labels": {
           "pl": "Odpowiedź natywna dla grafu"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Odpowiedz w grafie",
+            "en": "Reply in the graph"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Gdy przepływ rozmowy to odpowiedź w grafie: model rozmowy zwraca pakiet grafu",
+                "en": "When the conversation flow is the graph-native reply: the conversation model returns a graph packet"
+              }
+            },
+            {
+              "label": {
+                "pl": "Sprawdź pakiet; nieznane odwołanie staje się nowym węzłem, nie błędem",
+                "en": "Check the packet; an unknown reference becomes a new node, not an error"
+              }
+            },
+            {
+              "label": {
+                "pl": "Zapisz węzły i krawędzie z pochodzeniem od wiadomości",
+                "en": "Store the nodes and edges with the message as their provenance"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [],
+        "uses_role": "chat.default",
+        "implemented_in": [
+          "loom/src/chat/graph_reply.cpp"
+        ]
       },
       "jev.edge_classify": {
         "id": "jev.edge_classify",
@@ -453,7 +806,25 @@
         "result_text": {
           "en": "The edges were classified and weighed.",
           "pl": "Krawędzie zostały sklasyfikowane i zważone."
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Sklasyfikuj i zważ krawędzie (Jev)",
+            "en": "Classify and weigh edges (Jev)"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Planowane: model analizy ocenia rodzaj i wagę krawędzi grafu",
+                "en": "Planned: the analysis model judges the kind and weight of graph edges"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [],
+        "uses_role": "analysis.fast",
+        "implemented_in": []
       },
       "input.route_intent": {
         "id": "input.route_intent",
@@ -498,7 +869,58 @@
         "result_text": {
           "en": "The input was read as a message or a command.",
           "pl": "Wejście zostało odczytane jako wiadomość albo polecenie."
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Rozpoznaj polecenie",
+            "en": "Recognise a command"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Najpierw lokalnie: reguły poleceń i frazy z danych (bez kosztu)",
+                "en": "Locally first: command rules and phrases from data (at no cost)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Gdy metoda (intent_routing_method) każe i odczyt lokalny jest niepewny: zapytaj model rozpoznawania (intent_routing_model, a gdy pusty — default_model)",
+                "en": "When the method (intent_routing_method) says so and the local reading is unsure: ask the recognition model (intent_routing_model, else default_model)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Polecenie: zaproponuj działanie albo wykonaj je od razu według intent_routing_run; odrzucenie według intent_routing_on_reject",
+                "en": "A command: propose the action or run it at once per intent_routing_run; a rejection per intent_routing_on_reject"
+              }
+            },
+            {
+              "label": {
+                "pl": "Nieznany kształt polecenia: zaproponuj zdefiniowanie działania (emergent_actions)",
+                "en": "An unknown command shape: offer to define an action (emergent_actions)"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "intent_routing_method",
+          "intent_routing_model",
+          "default_model",
+          "intent_routing_run",
+          "intent_routing_on_reject",
+          "emergent_actions",
+          "auto_title"
+        ],
+        "uses_role": "intent.routing",
+        "implemented_in": [
+          "loom/src/actions/route.cpp",
+          "loom/data/runtime/intent_routing.pack#/defaults/method",
+          "loom/data/runtime/intent_routing.pack#/defaults/execution",
+          "loom/data/runtime/intent_routing.pack#/defaults/on_reject",
+          "loom/data/runtime/intent_routing.pack#/defaults/emergent",
+          "loom/src/actions/emergent.cpp"
+        ]
       },
       "script.call": {
         "id": "script.call",
@@ -1356,7 +1778,47 @@
         "consumer": "loom/src/extract/semantic.cpp",
         "labels": {
           "pl": "Zaproponuj strukturę semantyczną dla obserwacji źródła"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Zaproponuj strukturę wiedzy",
+            "en": "Propose knowledge structure"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Weź fragmenty obserwacji ze źródła",
+                "en": "Take the chunks of observations from the source"
+              }
+            },
+            {
+              "label": {
+                "pl": "Złóż prompt z kontraktu (analysis_prompt_dir, analysis_prompt_overrides) i wywołaj model semantic_model",
+                "en": "Build the prompt from the contract (analysis_prompt_dir, analysis_prompt_overrides) and call the model semantic_model"
+              }
+            },
+            {
+              "label": {
+                "pl": "Sprawdź propozycje (relacje, uogólnienia, pakiety grafu); nic nie jest przyjęte bez walidacji",
+                "en": "Validate the proposals (relations, generalizations, graph bundles); nothing is accepted without validation"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "semantic_model",
+          "semantic_analysis",
+          "analysis_prompt_dir",
+          "analysis_prompt_overrides",
+          "base_url",
+          "loom_semantic_usage_policy_required"
+        ],
+        "uses_role": "analysis.fast",
+        "implemented_in": [
+          "loom/src/extract/semantic.cpp",
+          "loom/src/extract/semantic_usage.h"
+        ]
       },
       "embedding.embed": {
         "id": "embedding.embed",
@@ -1442,7 +1904,45 @@
         "consumer": "loom/server/src/analysis-ui-routes.h",
         "labels": {
           "pl": "Wykonaj sprawdzone żądanie analizy"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Uruchom przejrzaną analizę",
+            "en": "Run a reviewed analysis"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Weź przygotowane żądanie analizy (kontrakt promptu, dokładne bajty), przejrzane przez właściciela",
+                "en": "Take the prepared analysis request (prompt contract, exact bytes), reviewed by the owner"
+              }
+            },
+            {
+              "label": {
+                "pl": "Model: podany w żądaniu albo semantic_model; adres i klucz z base_url i api_key",
+                "en": "The model: the one in the request, else semantic_model; the address and key from base_url and api_key"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wykonaj raz pod strażnikiem zużycia i zapisz pierwszą odpowiedź przed dekodowaniem",
+                "en": "Run it once under the usage guard and keep the first response before decoding"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "semantic_model",
+          "base_url",
+          "api_key",
+          "analysis_prompt_dir",
+          "analysis_prompt_overrides"
+        ],
+        "uses_role": "analysis.fast",
+        "implemented_in": [
+          "loom/server/src/analysis-ui-routes.h"
+        ]
       },
       "usage.compact": {
         "id": "usage.compact",
@@ -2499,7 +2999,36 @@
             "narysuj tę rozmowę"
           ]
         },
-        "default_element": "current_conversation"
+        "default_element": "current_conversation",
+        "human": {
+          "title": {
+            "pl": "Przedstaw obrazem",
+            "en": "Depict as an image"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Model rozmowy pisze prompt obrazu w zadanym stylu",
+                "en": "The conversation model writes an image prompt in the given style"
+              }
+            },
+            {
+              "label": {
+                "pl": "Model obrazów (image_model, dostawca image_provider) maluje obraz",
+                "en": "The image model (image_model, provider image_provider) paints the image"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "image_model",
+          "image_provider"
+        ],
+        "uses_role": "image.generate",
+        "implemented_in": [
+          "loom/data/runtime/actions.pack#/defaults/actions/depict"
+        ]
       },
       "narrate": {
         "id": "narrate",
@@ -2656,7 +3185,36 @@
           "pl": [
             "przeczytaj tę wiadomość na głos"
           ]
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Opowiedz na głos",
+            "en": "Narrate aloud"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Model rozmowy przepisuje tekst jako narrację do czytania na głos",
+                "en": "The conversation model rewrites the text as a narration for reading aloud"
+              }
+            },
+            {
+              "label": {
+                "pl": "Gdy jest model mowy (speech_model, dostawca speech_provider): wypowiedz narrację; bez niego wynikiem jest tekst",
+                "en": "When a speech model is set (speech_model, provider speech_provider): speak the narration; without it the result is the text"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "speech_model",
+          "speech_provider"
+        ],
+        "uses_role": "speech.synthesize",
+        "implemented_in": [
+          "loom/data/runtime/actions.pack#/defaults/actions/narrate"
+        ]
       },
       "actions.for": {
         "id": "actions.for",
@@ -3214,7 +3772,44 @@
         "result_text": {
           "en": "Preview of the run (nothing was executed):",
           "pl": "Podgląd wykonania (nic nie zostało wykonane):"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Pokaż plan i szacunek",
+            "en": "Show the plan and the estimate"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Rozpisz kroki działania i bramki reguł, nic nie zapisując ani nie wykonując",
+                "en": "List the steps of the action and the rule gates, storing and running nothing"
+              }
+            },
+            {
+              "label": {
+                "pl": "Oszacuj tokeny i koszt: model kroku (default_model, gdy krok go nie podaje) i analizę w tle nowych wiadomości (semantic_model)",
+                "en": "Estimate tokens and cost: the model of each step (default_model when the step names none) and the background analysis of new messages (semantic_model)"
+              }
+            },
+            {
+              "label": {
+                "pl": "Cena z rejestru modeli (odświeżanego według model_registry_autorefresh); nieznana cena jest „nieznana”, nigdy zero",
+                "en": "The price from the model registry (refreshed per model_registry_autorefresh); an unknown price is “unknown”, never zero"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "default_model",
+          "semantic_model",
+          "max_tokens",
+          "model_registry_autorefresh"
+        ],
+        "implemented_in": [
+          "loom/src/actions/estimate.cpp",
+          "loom/src/actions/runner.cpp"
+        ]
       },
       "actions.confirm": {
         "id": "actions.confirm",
@@ -4362,7 +4957,7 @@
         "kind": "atomic",
         "status": "implemented",
         "title": "Read a message with a model for the guardian",
-        "description": "One guarded model reading of a message (use_model, so the x10 guard and the spending limits apply): the signal kind, a short restatement, the tone, the scope and the exceptions. A message another producer (the semantic analyzer) has already annotated is not sent to a model again. Method: guardian_method model or hybrid; the model: guardian_model, else the default model.",
+        "description": "One guarded model reading of a message (use_model, so the x10 guard and the spending limits apply): the signal kind, a short restatement, the tone, the scope and the exceptions. A message another producer (the semantic analyzer) has already annotated is not sent to a model again. Method: guardian_method model or hybrid; the model: the policy models.policies.guardian of runtime/guardian.pack (guardian_model, the ports role guardian, the role analysis.fast), never the conversation's model; with none the guardian reads with word lists only.",
         "labels": {
           "pl": "Przeczytaj wiadomość modelem dla strażnika"
         },
@@ -4487,7 +5082,46 @@
         "result_text": {
           "en": "The model labelled the message.",
           "pl": "Model oznaczył wiadomość."
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Sekretarz czyta wiadomość modelem",
+            "en": "The Secretary reads a message with a model"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Wybierz model: polityka guardian (guardian_model → rola Sekretarz → rola Analiza w tle → brak); nigdy model rozmowy",
+                "en": "Choose the model: policy guardian (guardian_model → role Secretary → role Background analysis → none); never the conversation model"
+              }
+            },
+            {
+              "label": {
+                "pl": "Wiadomość już opisana przez analizę w tle nie idzie do modelu drugi raz",
+                "en": "A message the background analysis already annotated is not sent to a model again"
+              }
+            },
+            {
+              "label": {
+                "pl": "Jedno wywołanie: rodzaj sygnału (poprawka kursu, doprecyzowanie, nic), ton, zakres, wyjątki",
+                "en": "One call: the kind of signal (course correction, clarification, none), tone, scope, exceptions"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "guardian_model",
+          "semantic_model"
+        ],
+        "uses_role": "guardian",
+        "implemented_in": [
+          "loom/src/guardian/matching.cpp",
+          "loom/src/guardian/guardian.cpp",
+          "loom/data/runtime/guardian.pack#/defaults/models/policies/guardian",
+          "loom/data/runtime/ports.pack#/defaults/roles/guardian",
+          "loom/data/runtime/ports.pack#/defaults/roles/analysis.fast"
+        ]
       },
       "rules.set": {
         "id": "rules.set",
@@ -9518,7 +10152,42 @@
           ],
           "default": "off",
           "reason": "pipeline_model_use"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Przeanalizuj archiwum",
+            "en": "Analyse an archive"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Wybierz folder, archiwum albo plik (ścieżka albo wybór na urządzeniu)",
+                "en": "Pick a folder, an archive or a file (a path or the device picker)"
+              }
+            },
+            {
+              "label": {
+                "pl": "W tle: wczytaj, wyszukaj, rozszerz hasła, zbuduj graf, skupiska, oś czasu, elementy i syntezę — lokalnie i za darmo",
+                "en": "In the background: ingest, retrieve, expand the terms, build the graph, clusters, the timeline, items and synthesis — locally and free"
+              }
+            },
+            {
+              "label": {
+                "pl": "Tylko z llm auto: dopracuj elementy o niskiej pewności modelem (Dopracuj elementy archiwum)",
+                "en": "Only with llm auto: refine the low-confidence items with a model (Refine archive items)"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [],
+        "uses_role": "analysis.fast",
+        "subflows": [
+          "archive.refine"
+        ],
+        "implemented_in": [
+          "loom/src/archive/pipeline.cpp"
+        ]
       },
       "archive.status": {
         "id": "archive.status",
@@ -9838,7 +10507,42 @@
           ],
           "default": "off",
           "reason": "pipeline_model_use"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Zbuduj wiedzę ze źródła",
+            "en": "Build knowledge from a source"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Wybierz folder, archiwum albo plik",
+                "en": "Pick a folder, an archive or a file"
+              }
+            },
+            {
+              "label": {
+                "pl": "W tle: katalog, wyciąganie, rozstrzyganie, ocena, uogólnianie, zapis — lokalnie i za darmo",
+                "en": "In the background: catalogue, extract, resolve, assess, generalize, materialize — locally and free"
+              }
+            },
+            {
+              "label": {
+                "pl": "Tylko z llm auto: model proponuje strukturę (Zaproponuj strukturę wiedzy)",
+                "en": "Only with llm auto: a model proposes structure (Propose knowledge structure)"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [],
+        "uses_role": "analysis.fast",
+        "subflows": [
+          "knowledge.propose_semantics"
+        ],
+        "implemented_in": [
+          "loom/src/extract/extract.cpp"
+        ]
       },
       "knowledge.status": {
         "id": "knowledge.status",
@@ -10086,7 +10790,42 @@
             "przejrzyj ten katalog /home/ja/eksporty"
           ]
         },
-        "positional_arg": "path"
+        "positional_arg": "path",
+        "human": {
+          "title": {
+            "pl": "Skataloguj folder lub archiwum",
+            "en": "Catalogue a folder or an archive"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Wybierz folder, archiwum albo eksport",
+                "en": "Pick a folder, an archive or an export"
+              }
+            },
+            {
+              "label": {
+                "pl": "W tle: podziel na jednostki ze szkicami, zbuduj profil i oceń trafność — bez importu, nic nie opuszcza urządzenia",
+                "en": "In the background: split into units with sketches, build the profile and score relevance — nothing is imported, nothing leaves the device"
+              }
+            },
+            {
+              "label": {
+                "pl": "Kandydaci semantyczni (catalog_semantic_candidates) tylko wtedy, gdy ich dostarczysz; to działanie nie woła modelu",
+                "en": "Semantic candidates (catalog_semantic_candidates) only when you supply them; this action calls no model"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "catalog_semantic_candidates"
+        ],
+        "implemented_in": [
+          "loom/src/catalog/score.cpp",
+          "loom/src/catalog/catalog.cpp",
+          "loom/src/catalog/scan.cpp"
+        ]
       },
       "catalog.status": {
         "id": "catalog.status",
@@ -11289,7 +12028,52 @@
         "http": {
           "verb": "POST",
           "path": "/api/agent/run"
-        }
+        },
+        "human": {
+          "title": {
+            "pl": "Uruchom agenta",
+            "en": "Run an agent"
+          },
+          "steps": [
+            {
+              "label": {
+                "pl": "Model (podany albo default_model) dostaje zadanie i działania katalogu jako narzędzia",
+                "en": "The model (the given one, else default_model) gets the task and the catalogue actions as tools"
+              }
+            },
+            {
+              "label": {
+                "pl": "Każda tura modelu przechodzi przez strażnika zużycia; każde wywołanie narzędzia to przebieg interpretera z regułami i potwierdzeniami",
+                "en": "Every model turn goes through the usage guard; every tool call is an interpreter run with the rules and confirmations"
+              }
+            },
+            {
+              "label": {
+                "pl": "Pętla kończy się po tool_loop_max_steps krokach albo na propozycji (tool_loop_on_proposal)",
+                "en": "The loop ends after tool_loop_max_steps steps or at a proposal (tool_loop_on_proposal)"
+              }
+            }
+          ],
+          "steps_are": "description"
+        },
+        "reads": [
+          "default_model",
+          "max_tokens",
+          "temperature",
+          "model_capabilities",
+          "tool_loop_policy",
+          "tool_loop_max_steps",
+          "tool_loop_on_proposal",
+          "tool_loop_result_max_chars"
+        ],
+        "uses_role": "chat.default",
+        "subflows": [
+          "use_model"
+        ],
+        "implemented_in": [
+          "loom/src/agent/agent.cpp",
+          "loom/src/llm/tool_loop.cpp"
+        ]
       },
       "tool_source.list": {
         "id": "tool_source.list",
@@ -12146,6 +12930,64 @@
               "type": "object",
               "description": "For an action that starts a pipeline: when the model is used, so the estimate of the proposal can say so instead of counting a plan with no model step as free. `arg` is the argument that decides (llm), `values` the values that mean the model is used (auto), `default` the value when the argument is not said (off), `reason` the code of the text in the profile action_run (estimate.reasons) that says why the cost is not known.",
               "additionalProperties": true
+            },
+            "human": {
+              "type": "object",
+              "required": [
+                "title",
+                "steps",
+                "steps_are"
+              ],
+              "description": "M1-D1: the flow in the owner's words: title {pl, en} and steps [{label {pl, en}}]. steps_are is always \"description\": the steps describe what the flow does, they are not the steps the interpreter runs (P37).",
+              "properties": {
+                "title": {
+                  "type": "object"
+                },
+                "steps": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "label"
+                    ]
+                  }
+                },
+                "steps_are": {
+                  "type": "string",
+                  "enum": [
+                    "description"
+                  ]
+                }
+              }
+            },
+            "reads": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "M1-D1: the settings keys (settings_fields.pack) the executor of this flow reads itself; the reads of its steps and subflows count too. Checked against implemented_in by tools/check_action_reads.py (ctest data.check_action_reads), and against settings_fields.pack human.flows."
+            },
+            "implemented_in": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "M1-D1: the files (repo-relative) that execute the flow; a data file may be narrowed by a JSON pointer after #. Empty for a planned action."
+            },
+            "uses_role": {
+              "type": "string",
+              "minLength": 1,
+              "description": "M1-D1: the model role of ports.pack whose job this flow does; guardian.pack models.policies has a policy for it whose explicit setting the flow reads."
+            },
+            "subflows": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "M1-D1: flows this one runs inside it that are not interpreter steps (chat.send runs graph_native.reply when the flow says so); their reads count as reads of this flow."
             }
           },
           "additionalProperties": true
