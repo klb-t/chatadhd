@@ -257,7 +257,8 @@ def _window_index(eng: Any) -> Any:
     if "window" in eng._vectors:
         return eng._vectors["window"]
     tier = eng.ds.preset("vectors.tier")
-    idx = VectorIndex(tier=int(tier) if tier is not None else None)
+    idx = VectorIndex(tier=int(tier) if tier is not None else None, allow_download=bool(eng.ds.preset("vectors.allow_download", False)),
+                      ask=eng.ask)
     items = []
     for u in eng.conversations:
         for g in make_grains(u, "window", ["text"], int(eng.ds.preset("window.size", 6)), int(eng.ds.preset("window.step", 3))):

@@ -15,7 +15,7 @@
   "cascade": "default",
   "criteria": null,
   "lexical": {"explain_top_k": 10, "saturation": 6.0, "boundary": true, "fold": true, "inflect": "rules"},
-  "vectors": {"threshold": 0.35, "candidates": 0, "engine": "core.selector", "tier": null},
+  "vectors": {"threshold": 0.35, "candidates": 0, "engine": "core.selector", "tier": null, "allow_download": false},
   "similar": {"threshold": 0.5},
   "masks": {"date_tolerance_hours": 14},
   "timeline": {"key": "created", "zone": "source", "assume_zone": "UTC", "ties": ["t", "service", "archive", "locator"],

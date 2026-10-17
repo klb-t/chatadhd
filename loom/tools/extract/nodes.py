@@ -161,6 +161,7 @@ class Views:
                 base = self.eng.expr_context()
                 c.bands, c.scores, c.clusters, c.tags = base.bands, base.scores, base.clusters, base.tags
                 c.vectors_factory = base.vectors_factory
+                c.timeline, c.timeline_rows, c.timeline_factory = base.timeline, base.timeline_rows, base.timeline_factory
             else:
                 c = self.eng.expr_context()
             self._ctx[package] = c

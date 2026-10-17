@@ -126,6 +126,45 @@ class SelectExprTest(ExtractTest):
         week = select('week-of:"rekurencja"', self.items, ctx)
         self.assertTrue(week)
 
+    def test_week_of_works_right_after_opening_from_every_face(self):
+        """F7 (requirement 7): 'the week when X was discussed' needs the timeline; it is built on first use as an
+        implicit, recorded step — from the CLI, the engine and the API, with no prior timeline op."""
+        import contextlib
+        import io
+        from loom.tools.extract import cli
+        from loom.tools.extract.api import Session
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            code = cli.main(["--json", "szukaj", str(EXPORTS / "openai_2026_sharded.zip"), str(EXTRACT / "mixed_dir"),
+                             "-e", 'week-of:"rekurencja"'])
+        self.assertEqual(code, 0, err.getvalue())
+        eng = self.engine(EXPORTS / "openai_2026_sharded.zip", EXTRACT / "mixed_dir")
+        eng.ensure_units()
+        self.assertIsNone(eng.timeline)
+        eng.op("select.expr", {"expr": 'week-of:"rekurencja"'})
+        self.assertIsNotNone(eng.timeline)
+        self.assertIn("timeline", [st["op"] for st in eng.recipe["steps"]], "the implicit timeline is a recorded step")
+        sess = Session(face="api")
+        sess.call({"call": "open", "sources": [str(EXPORTS / "openai_2026_sharded.zip"), str(EXTRACT / "mixed_dir")]})
+        r = sess.call({"call": "select", "how": "expr", "expr": 'week-of:"rekurencja"'})
+        self.assertNotIn("error", r, r)
+        sess.eng.close()
+
+    def test_dotted_dict_fields_written_by_edits_can_be_filtered(self):
+        """F17: flags.x / account.label / meta.x — the names batch edits write — work in selections and filters."""
+        self.eng.op("select.expr", {"expr": "kind:conversation"})
+        self.eng.op("package.copy", {})
+        self.eng.op("edit.add_field", {"where": "conversation[service:anthropic]", "field": "flags.przejrzane", "value": True})
+        units = [e.unit for e in self.eng.package.entries]
+        items = items_of(units, "conversation")
+        hits = select("flags.przejrzane:true", items, self.ctx)
+        self.assertTrue(hits)
+        self.assertTrue(all(it.unit.service == "anthropic" for it, _ in hits))
+        self.assertTrue(select("account.service:anthropic", items, self.ctx))
+        with self.assertRaises(ExprError) as cm:
+            select("no_such.field:1", items, self.ctx)
+        self.assertIn("raw.", str(cm.exception), "the error says how to reach any path")
+
     def test_bands_clusters_tags_after_engine_steps(self):
         self.eng.op("select.criteria", {"terms": ["analizator", "archiwów", "rekurencja", "katalogach", "inwentarz"], "cascade": "lexical_only"})
         self.eng.op("clusters")

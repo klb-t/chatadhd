@@ -63,6 +63,7 @@ def resolve_scope(eng: Any, pkg: Package, where: Any, default_kind: str) -> tupl
     base = eng.expr_context()
     ctx.bands, ctx.scores, ctx.clusters, ctx.tags = base.bands, base.scores, base.clusters, base.tags
     ctx.vectors_factory = base.vectors_factory
+    ctx.timeline, ctx.timeline_rows, ctx.timeline_factory = base.timeline, base.timeline_rows, base.timeline_factory
     return kind, [it for it, _ in expr_select(expr, items, ctx)]
 
 

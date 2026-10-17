@@ -89,6 +89,9 @@ class ExprContext:
         self.timeline: Optional[dict[str, Any]] = None
         self.timeline_rows: Optional[list[dict[str, Any]]] = None
         self.vectors_factory: Optional[Callable[[str], Any]] = None
+        # built on first use (week-of, gap, burst, is:continuation) like the vectors: the engine runs the timeline
+        # op as an implicit, recorded step, so an expression works right after opening an archive
+        self.timeline_factory: Optional[Callable[[], tuple[dict[str, Any], list[dict[str, Any]]]]] = None
         self._vectors: dict[str, Any] = {}
         self._sim_cache: dict[tuple[str, str], dict[str, float]] = {}
         self._like_cache: dict[tuple[str, str], dict[str, float]] = {}
@@ -118,12 +121,18 @@ class ExprContext:
             self._kw_cache[term] = compile_keyword(term, self.lex)
         return self._kw_cache[term]
 
+    def ensure_timeline(self) -> None:
+        if self.timeline is None and self.timeline_factory is not None:
+            self.timeline, self.timeline_rows = self.timeline_factory()
+
     def after_gap(self, min_days: float) -> set[str]:
+        self.ensure_timeline()
         if not self.timeline:
             return set()
         return {g["before"] for g in self.timeline.get("gaps", []) if g.get("days", 0) > min_days}
 
     def in_burst(self) -> set[str]:
+        self.ensure_timeline()
         if not self.timeline or not self.timeline_rows:
             return set()
         buckets = {b["bucket"] for b in self.timeline.get("bursts", [])}
@@ -357,10 +366,22 @@ def _depth(u: Unit) -> int:
     return best
 
 
+_DICT_FIELDS = {"conversation": ("flags", "account"), "message": ("meta",), "block": ("extra", "input"), "attachment": ()}
+
+
 def field_value(item: Item, name: str, ctx: ExprContext) -> tuple[Any, str]:
     """(value, type) for ``name`` on ``item``; raw.<path> digs into the raw object."""
     u = item.unit
     st = u.stats or {}
+    head, dot, rest = name.partition(".")
+    if dot and head in _DICT_FIELDS.get(item.kind, ()):
+        # the dotted dict paths batch edits write (flags.x, meta.x, account.label, extra.x, input.x): the same name
+        # in a filter, without the raw. prefix
+        obj = {"conversation": u, "message": item.message, "block": item.block}.get(item.kind)
+        cur: Any = getattr(obj, head, None) if obj is not None else None
+        for part in rest.split("."):
+            cur = cur.get(part) if isinstance(cur, dict) else None
+        return cur, "any"
     if name.startswith("raw."):
         base: Any = None
         if item.kind == "conversation":
@@ -515,7 +536,9 @@ def field_value(item: Item, name: str, ctx: ExprContext) -> tuple[Any, str]:
             return u.created_utc, "date"
     if name in ftypes:
         return None, ftype
-    raise ExprError(f"unknown field {name!r} for {item.kind}", 0, name)
+    from .i18n import t as _t
+    raise ExprError(_t("expr.unknown_field", field=name, kind=item.kind,
+                       dicts=", ".join(f"{d}.<klucz>" for d in _DICT_FIELDS.get(item.kind, ())) or "-"), 0, name)
 
 
 # ───────────────────────────── evaluation ─────────────────────────────
@@ -684,8 +707,10 @@ def _eval_term(t: dict[str, Any], text: str, item: Item, ctx: ExprContext) -> tu
         ok = abs(dt - centre) <= _dur(n, unit)
         return ok, ([f"{text} → {value}"] if ok else [])
     if kind == "week_of":
+        ctx.ensure_timeline()
         if not ctx.timeline_rows:
-            raise ExprError("week-of needs a timeline (run with timeline)", t.get("pos", 0), text)
+            from .i18n import t as _t
+            raise ExprError(_t("expr.needs_timeline", what="week-of"), t.get("pos", 0), text)
         from .timeline import week_of_term
         weeks = week_of_term(ctx.timeline_rows, ctx.units, t["term"], ctx.lex, ctx.timeline.get("buckets", {}).get("unit", "week") if ctx.timeline else "week")
         value, _ = field_value(item, "created", ctx)
@@ -783,6 +808,7 @@ def _is(item: Item, what: str, ctx: ExprContext) -> bool:
     if what == "version":
         return bool(u.versions) or bool(u.flags.get("superseded_by"))
     if what == "continuation":
+        ctx.ensure_timeline()  # the timeline marks the candidates (flags.continuation_of)
         return bool(u.flags.get("continuation_of") or u.flags.get("continuations"))
     if what == "hypothesis":
         return bool(u.flags.get("format_hypothesis"))

@@ -5,8 +5,10 @@ app's module cannot be imported the tool degrades to its own keyword tier
 with a visible note."""
 import logging
 import math
+import os
 import re
-from typing import Any, Optional
+from pathlib import Path
+from typing import Any, Callable, Optional
 
 from .paths import ensure_repo_on_path
 
@@ -40,14 +42,46 @@ class _KeywordFallback:
         return [{"id": self._ids[i], "text": self._corpus[i], "score": float(s)} for s, i in scored[:top_k] if s > 0]
 
 
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"  # the model core.selector loads for tier 1
+
+
+def model_cached(name: str = EMBEDDING_MODEL) -> bool:
+    """Whether the embedding model is already on this machine (Hugging Face hub cache or the older
+    sentence-transformers cache) — so tier 1 can run without the network."""
+    hub = os.environ.get("HF_HUB_CACHE") or (Path(os.environ["HF_HOME"]) / "hub" if os.environ.get("HF_HOME") else None) \
+        or Path.home() / ".cache" / "huggingface" / "hub"
+    st = os.environ.get("SENTENCE_TRANSFORMERS_HOME") or Path.home() / ".cache" / "torch" / "sentence_transformers"
+    cands = [Path(hub) / f"models--sentence-transformers--{name}", Path(hub) / f"models--{name}",
+             Path(st) / f"sentence-transformers_{name}", Path(st) / name]
+    return any(c.is_dir() for c in cands)
+
+
 class VectorIndex:
-    def __init__(self, tier: Optional[int] = None) -> None:
+    def __init__(self, tier: Optional[int] = None, *, allow_download: bool = False,
+                 ask: Optional[Callable[[dict[str, Any]], bool]] = None) -> None:
+        """Zero network by default: before the app's selector is imported the Hugging Face libraries are put
+        offline (``HF_HUB_OFFLINE``/``TRANSFORMERS_OFFLINE``), and tier 1 runs only when the embedding model is
+        already cached; otherwise TF-IDF (or keywords) with a visible note.  A download happens only with the
+        preset ``vectors.allow_download: true`` AND a yes to the question (no question asked = no)."""
         self.note: Optional[str] = None
         self.engine: Any = None
+        download = False
+        if allow_download:
+            download = bool(ask({"kind": "download", "what": EMBEDDING_MODEL})) if ask is not None else False
+        if not download:
+            os.environ["HF_HUB_OFFLINE"] = "1"
+            os.environ["TRANSFORMERS_OFFLINE"] = "1"
         try:
             ensure_repo_on_path()
+            import core.selector as _sel  # noqa: WPS433
             from core.selector import SelectorEngine  # noqa: WPS433
-            self.engine = SelectorEngine(tier=tier)
+            want = tier or int(getattr(_sel, "_TIER", 3))
+            if want == 1 and not download and not model_cached():
+                fallback = 2 if hasattr(_sel, "TfidfVectorizer") else 3
+                self.note = (f"embedding model {EMBEDDING_MODEL} not cached on this machine; "
+                             f"{TIER_NAMES[fallback]} tier used, no download (preset vectors.allow_download)")
+                want = fallback
+            self.engine = SelectorEngine(tier=want)
             self.tier = int(self.engine.tier)
         except Exception as exc:  # noqa: BLE001 - degrade visibly
             log.debug("core.selector unavailable", exc_info=True)

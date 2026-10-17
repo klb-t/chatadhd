@@ -232,7 +232,7 @@ class Cascade:
         if not self.criteria.vectors or not grains:
             return out
         if self.vectors is None:
-            self.vectors = VectorIndex(tier=self.ds.preset("vectors.tier"))
+            self.vectors = VectorIndex(tier=self.ds.preset("vectors.tier"), allow_download=bool(self.ds.preset("vectors.allow_download", False)))
         self.vectors.index([(g.id, g.text) for g in grains])
         thr_default = float(self.ds.preset("vectors.threshold", 0.35))
         cand_default = int(self.ds.preset("vectors.candidates", 0))

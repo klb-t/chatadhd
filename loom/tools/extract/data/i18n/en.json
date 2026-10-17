@@ -512,5 +512,7 @@
   "write.output_error": "cannot write the package at {path}: {detail} (a problem of the output location, not of the sources)",
   "cli.os_error": "system or network error ({kind}): {detail}",
   "cli.unexpected": "unexpected error ({kind}): {detail} — full trace with --debug",
-  "serve.bad_request": "bad value of {what}: {value!r}"
+  "serve.bad_request": "bad value of {what}: {value!r}",
+  "expr.needs_timeline": "{what} needs a timeline and there is none (no dates in the sources)",
+  "expr.unknown_field": "unknown field {field!r} for {kind}; dict fields: {dicts}; any path: raw.<field>"
 }

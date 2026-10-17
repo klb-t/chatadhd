@@ -426,13 +426,20 @@ class Engine:
             ctx.timeline = self.timeline
             ctx.timeline_rows = self.timeline_rows
         ctx.vectors_factory = self.vector_index
+        ctx.timeline_factory = self._timeline_for_expr
         return ctx
+
+    def _timeline_for_expr(self) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+        if self.timeline is None:
+            self.op("timeline", by="engine")  # implicit and recorded: a replay builds the same axis first
+        return self.timeline or {}, self.timeline_rows or []
 
     def vector_index(self, level: str = "conversation") -> VectorIndex:
         if level in self._vectors:
             return self._vectors[level]
         tier = self.ds.preset("vectors.tier")
-        idx = VectorIndex(tier=int(tier) if tier is not None else None)
+        idx = VectorIndex(tier=int(tier) if tier is not None else None, allow_download=bool(self.ds.preset("vectors.allow_download", False)),
+                          ask=self.ask)
         items: list[tuple[str, str]] = []
         if level == "message":
             for u in self.conversations:

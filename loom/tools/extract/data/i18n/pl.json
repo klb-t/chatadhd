@@ -512,5 +512,7 @@
   "write.output_error": "nie można zapisać pakietu w {path}: {detail} (to problem miejsca zapisu, nie źródeł)",
   "cli.os_error": "błąd systemu lub sieci ({kind}): {detail}",
   "cli.unexpected": "nieoczekiwany błąd ({kind}): {detail} — pełny ślad z --debug",
-  "serve.bad_request": "niepoprawna wartość {what}: {value!r}"
+  "serve.bad_request": "niepoprawna wartość {what}: {value!r}",
+  "expr.needs_timeline": "{what} potrzebuje osi czasu, a jej nie ma (brak dat w źródłach)",
+  "expr.unknown_field": "nieznane pole {field!r} dla {kind}; pola słownikowe: {dicts}; dowolna ścieżka: raw.<pole>"
 }
