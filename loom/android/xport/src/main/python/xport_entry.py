@@ -111,12 +111,25 @@ def timeline_groups():
 
 
 def day_events(day):
+    """Messages of one day in time order, grouped into blocks: a run of consecutive messages of the same conversation is
+    one block, so the switch from one conversation to another is a block boundary."""
     with _lock:
         try:
-            rows = [r for r in (_need().timeline_rows or []) if r.get("kind") == "message" and (r.get("t_utc") or r.get("t") or "?")[:10] == day]
-            return json.dumps({"ok": True, "events": [
-                {"uid": r.get("uid"), "t": r.get("t_utc") or r.get("t"), "role": r.get("role") or "", "provider": r.get("service") or "?",
-                 "title": r.get("title") or ""} for r in rows]}, ensure_ascii=False)
+            eng = _need()
+            by = eng.by_uid
+            rows = [r for r in (eng.timeline_rows or []) if r.get("kind") == "message" and (r.get("t_utc") or r.get("t") or "?")[:10] == day]
+            blocks = []
+            for r in rows:
+                conv = r.get("conversation")
+                if not blocks or blocks[-1]["conversation"] != conv:
+                    blocks.append({"conversation": conv, "title": r.get("title") or "", "provider": r.get("service") or "?", "events": []})
+                u = by.get(conv)
+                m = next((x for x in u.messages if x.id == r.get("message")), None) if u is not None else None
+                blocks[-1]["events"].append({"uid": r.get("uid"), "t": r.get("t_utc") or r.get("t"), "role": r.get("role") or "",
+                                             "preview": " ".join(m.text().split())[:160] if m is not None else ""})
+            for blk in blocks:
+                blk["first"], blk["last"] = blk["events"][0]["t"], blk["events"][-1]["t"]
+            return json.dumps({"ok": True, "blocks": blocks}, ensure_ascii=False)
         except Exception as exc:
             return _fail(exc)
 

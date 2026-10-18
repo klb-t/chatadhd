@@ -31,6 +31,7 @@ class TNode(
     val onOpen: (() -> Unit)? = null,                         // what a tap does on a leaf (or "Otwórz" in the menu)
     val actions: () -> List<Pair<String, () -> Unit>> = { emptyList() },
     val copy: String? = null,                                 // text for "Kopiuj" (default: label + detail)
+    val tint: Int = 0,                                        // row background (0 = none): one colour per conversation
 ) {
     var expanded = false
     var loading = false
@@ -90,6 +91,7 @@ class TreeAdapter(private val act: Activity) : BaseAdapter() {
             sb.setSpan(ForegroundColorSpan(Color.GRAY), start, sb.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         tv.text = sb
+        tv.setBackgroundColor(n.tint)
         return tv
     }
 

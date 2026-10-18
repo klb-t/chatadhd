@@ -217,7 +217,7 @@ class MainActivity : Activity() {
     private fun convNode(c: JSONObject): TNode {
         val uid = c.optString("uid")
         val title = c.optString("title").ifEmpty { "(bez tytułu)" }
-        return TNode(title, "${c.optInt("messages")} wiadomości · ${c.optString("first", "—")} → ${c.optString("last", "—")}", id = uid,
+        return TNode(title, "${c.optInt("messages")} wiadomości · ${c.optString("first", "—")} → ${c.optString("last", "—")}", id = uid, tint = tintOf(uid),
             loader = { _, done -> loadEvents(uid, done) }, actions = { engineActions(uid, title) })
     }
 
@@ -227,16 +227,16 @@ class MainActivity : Activity() {
             runOnUiThread {
                 if (!j.optBoolean("ok")) { done(listOf(TNode(j.optString("error")))); return@runOnUiThread }
                 val ev = j.getJSONArray("events")
-                done((0 until ev.length()).map { msgNode(ev.getJSONObject(it), false) })
+                done((0 until ev.length()).map { msgNode(ev.getJSONObject(it), false, tintOf(uid)) })
             }
         }
     }
 
-    private fun msgNode(e: JSONObject, withTitle: Boolean): TNode {
+    private fun msgNode(e: JSONObject, withTitle: Boolean, tint: Int = 0): TNode {
         val id = e.optString("uid")
         val title = if (withTitle) "  ${e.optString("provider")} · ${e.optString("title")}" else e.optString("preview")
         val label = "${e.optString("role")} · ${e.optString("t")}"
-        return TNode(label, title, id = id, onOpen = { showView(id, label) }, actions = { engineActions(id, label) })
+        return TNode(label, title, id = id, tint = tint, onOpen = { showView(id, label) }, actions = { engineActions(id, label) })
     }
 
     // Global time axis, collapsed: month -> day -> messages of the day (loaded when the day is expanded).
@@ -260,13 +260,30 @@ class MainActivity : Activity() {
         }
     }
 
+    // One colour per conversation, stable: the switch from one conversation to another is visible at a glance.
+    private fun tintOf(uid: String): Int {
+        val h = ((uid.hashCode() % 360) + 360) % 360
+        return android.graphics.Color.HSVToColor(48, floatArrayOf(h.toFloat(), 0.7f, 0.95f))
+    }
+
     private fun loadDay(day: String, done: (List<TNode>) -> Unit) {
         thread {
             val j = try { JSONObject(py.callAttr("day_events", day).toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
             runOnUiThread {
                 if (!j.optBoolean("ok")) { done(listOf(TNode(j.optString("error")))); return@runOnUiThread }
-                val ev = j.getJSONArray("events")
-                done((0 until ev.length()).map { msgNode(ev.getJSONObject(it), true) })
+                val bs = j.getJSONArray("blocks")
+                done((0 until bs.length()).map { bi ->
+                    val b = bs.getJSONObject(bi)
+                    val conv = b.optString("conversation"); val title = b.optString("title").ifEmpty { "(bez tytułu)" }
+                    val tint = tintOf(conv)
+                    val ev = b.getJSONArray("events")
+                    val kids = (0 until ev.length()).map { ei ->
+                        val e = ev.getJSONObject(ei); val id = e.optString("uid"); val lbl = "${e.optString("role")} · ${e.optString("t")}"
+                        TNode(lbl, e.optString("preview"), id = id, tint = tint, onOpen = { showView(id, lbl) }, actions = { engineActions(id, lbl) })
+                    }
+                    TNode("⇄ $title", "${b.optString("provider")} · ${ev.length()} wiadomości · ${b.optString("first").drop(11).take(5)}–${b.optString("last").drop(11).take(5)}",
+                        id = conv, children = kids.toMutableList(), tint = tint, actions = { engineActions(conv, title) })
+                })
             }
         }
     }
@@ -538,7 +555,7 @@ class MainActivity : Activity() {
         selAdapter.setRoots((0 until items.length()).map { i ->
             val it = items.getJSONObject(i)
             val uid = it.optString("uid"); val title = it.optString("title").ifEmpty { "(bez tytułu)" }
-            TNode(title, "${it.optString("provider")} · ${it.optInt("messages")} wiadomości", id = uid,
+            TNode(title, "${it.optString("provider")} · ${it.optInt("messages")} wiadomości", id = uid, tint = tintOf(uid),
                 loader = { _, done -> loadEvents(uid, done) },
                 actions = { engineActions(uid, title) + listOf("Usuń z zaznaczenia" to { runSelectItem(uid) }) })
         })
