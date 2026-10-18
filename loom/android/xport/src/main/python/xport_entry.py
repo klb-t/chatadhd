@@ -29,7 +29,9 @@ def _provider_rows(units):
         st = u.stats or {}
         r = rows.setdefault((u.account or {}).get("service") or "?", {
             "provider": (u.account or {}).get("service") or "?", "conversations": 0, "messages": 0,
-            "first": None, "last": None, "attachments": 0, "has_usage": False, "has_tool_traces": False})
+            "first": None, "last": None, "attachments": 0, "has_usage": False, "has_tool_traces": False, "items": []})
+        r["items"].append({"uid": u.uid, "title": u.title or "", "messages": st.get("messages", len(u.messages)),
+                           "first": st.get("first_message_utc"), "last": st.get("last_message_utc"), "attachments": len(u.attachments)})
         r["conversations"] += 1
         r["messages"] += st.get("messages", 0)
         r["attachments"] += len(u.attachments)
@@ -53,29 +55,70 @@ def _need():
     return _eng
 
 
-def _selection(eng, limit=200):
+def _selection(eng, limit=0):
     by = eng.by_uid
     rows = []
     for uid in eng.selection.units:
         u = by.get(uid)
         if u is not None:
             ms = eng.selection.units[uid]
-            rows.append({"title": u.title or "", "provider": (u.account or {}).get("service") or "?",
+            rows.append({"uid": uid, "title": u.title or "", "provider": (u.account or {}).get("service") or "?",
                          "messages": len(u.messages) if ms is None else len(ms)})
-    return {"summary": eng.selection_summary(), "items": rows[:int(limit)], "total": len(rows)}
+    return {"summary": eng.selection_summary(), "items": rows[:int(limit)] if limit else rows, "total": len(rows)}
 
 
 def _overview(eng):
     inv = eng.op("inventory", {})["inventory"]
     eng.op("timeline", {"key": "activity"})
-    events = [{"t": r.get("t_utc") or r.get("t"), "provider": r.get("service") or "?",
-               "title": r.get("title") or "", "role": r.get("role") or ""}
-              for r in eng.timeline_rows if r.get("kind") == "message"]
     return {"ok": True, "providers": _provider_rows(eng.units),
             "totals": {"conversations": inv.get("conversations", 0),
                        "messages": (inv.get("messages") or {}).get("total", 0)},
-            "sources": [str(p) for p in eng.sources],
-            "events_total": len(events), "events": events[:200]}
+            "sources": [str(p) for p in eng.sources]}
+
+
+def _event(u, m):
+    txt = m.text() if callable(getattr(m, "text", None)) else ""
+    return {"uid": f"{u.uid}#{m.id}", "t": m.created_utc or "", "role": m.role or "", "preview": " ".join(txt.split())[:160]}
+
+
+def events(uid):
+    """All messages of one conversation (loaded when the conversation is expanded)."""
+    with _lock:
+        try:
+            u = _need().by_uid.get(uid)
+            if u is None:
+                raise ValueError("Nie ma takiej rozmowy.")
+            return json.dumps({"ok": True, "events": [_event(u, m) for m in u.messages]}, ensure_ascii=False)
+        except Exception as exc:
+            return _fail(exc)
+
+
+def timeline_groups():
+    """Global time axis, collapsed: month -> day -> count (messages of a day are loaded by day_events)."""
+    with _lock:
+        try:
+            months = {}
+            for r in _need().timeline_rows or []:
+                if r.get("kind") != "message":
+                    continue
+                t = r.get("t_utc") or r.get("t") or "?"
+                months.setdefault(t[:7], {}).setdefault(t[:10], 0)
+                months[t[:7]][t[:10]] += 1
+            out = [{"month": m, "days": [{"day": d, "count": c} for d, c in sorted(ds.items())]} for m, ds in sorted(months.items())]
+            return json.dumps({"ok": True, "months": out}, ensure_ascii=False)
+        except Exception as exc:
+            return _fail(exc)
+
+
+def day_events(day):
+    with _lock:
+        try:
+            rows = [r for r in (_need().timeline_rows or []) if r.get("kind") == "message" and (r.get("t_utc") or r.get("t") or "?")[:10] == day]
+            return json.dumps({"ok": True, "events": [
+                {"uid": r.get("uid"), "t": r.get("t_utc") or r.get("t"), "role": r.get("role") or "", "provider": r.get("service") or "?",
+                 "title": r.get("title") or ""} for r in rows]}, ensure_ascii=False)
+        except Exception as exc:
+            return _fail(exc)
 
 
 def open_sources(paths_json):

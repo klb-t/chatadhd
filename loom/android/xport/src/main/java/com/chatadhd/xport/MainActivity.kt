@@ -16,6 +16,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
@@ -43,6 +44,8 @@ class MainActivity : Activity() {
     // selection
     private lateinit var patternBox: LinearLayout
     private lateinit var selInfo: TextView
+    private lateinit var selAdapter: TreeAdapter
+    private lateinit var overviewAdapter: TreeAdapter
     private lateinit var expr: EditText
     // export
     private lateinit var exportInfo: TextView
@@ -55,7 +58,7 @@ class MainActivity : Activity() {
     private var browsePath = ArrayList<String>()
     private var browseFormat = "markdown"
     private var browseNode: String? = null
-    private lateinit var browseList: LinearLayout
+    private lateinit var browseAdapter: TreeAdapter
     private lateinit var browseCrumb: TextView
     private lateinit var browseView: TextView
     private lateinit var browseListScroll: View
@@ -123,12 +126,15 @@ class MainActivity : Activity() {
         pick = btn("Dodaj źródło (jedno lub kilka plików)") { openPicker() }
         status = label("Nic nie wybrano.")
         result = label("")
-        sourcesBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        return scroll(col().apply {
+        overviewAdapter = TreeAdapter(this)
+        val list = ListView(this)
+        list.addHeaderView(col().apply {
             addView(pick)
             addView(btn("Usuń wszystkie źródła") { clearSources() })
-            addView(sourcesBox); addView(status); addView(result)
-        })
+            addView(status)
+        }, null, false)
+        overviewAdapter.attach(list)
+        return list
     }
 
     private fun openPicker() {
@@ -173,16 +179,129 @@ class MainActivity : Activity() {
     private fun showOverview(j: JSONObject) {
         pick.isEnabled = true
         status.text = ""
-        sourcesBox.removeAllViews()
-        if (j.optBoolean("empty")) { opened = false; result.text = ""; status.text = "Nic nie wybrano."; return }
-        val files = (importDir.listFiles() ?: emptyArray()).filter { it.isFile }.sortedBy { it.name }
-        for (f in files) {
-            sourcesBox.addView(row(label(displayName(f)), btn("Usuń") { removeSource(f) }))
-        }
-        if (!j.optBoolean("ok")) { result.text = "Błąd analizy: ${j.optString("error", "nieznany")}"; return }
-        result.text = render(j)
+        if (j.optBoolean("empty")) { opened = false; overviewAdapter.setRoots(emptyList()); status.text = "Nic nie wybrano."; return }
+        if (!j.optBoolean("ok")) { opened = false; status.text = "Błąd analizy: ${j.optString("error", "nieznany")}"; return }
         opened = true
+        overviewAdapter.setRoots(overviewNodes(j))
         afterOpen()
+    }
+
+    private fun overviewNodes(j: JSONObject): List<TNode> {
+        val roots = ArrayList<TNode>()
+        val files = (importDir.listFiles() ?: emptyArray()).filter { it.isFile }.sortedBy { it.name }
+        roots.add(TNode("Źródła (${files.size})", children = files.map { f ->
+            TNode(displayName(f), "${f.length() / 1024} KB", onOpen = { showText(this, displayName(f), "${displayName(f)}\n${f.length()} bajtów") },
+                actions = { listOf("Usuń źródło" to { removeSource(f) }) })
+        }.toMutableList()).also { it.expanded = files.size <= 3 })
+        val t = j.getJSONObject("totals")
+        roots.add(TNode("Razem: ${t.optInt("conversations")} rozmów, ${t.optInt("messages")} wiadomości"))
+        val ps = j.getJSONArray("providers")
+        val provNodes = (0 until ps.length()).map { providerNode(ps.getJSONObject(it)) }
+        roots.add(TNode("Dostawcy (${provNodes.size})", children = provNodes.toMutableList()).also { it.expanded = true })
+        roots.add(TNode("Oś czasu (wszystkie wiadomości, wg miesięcy)", loader = { _, done -> loadTimeline(done) }))
+        return roots
+    }
+
+    private fun providerNode(p: JSONObject): TNode {
+        val name = p.optString("provider")
+        val items = p.getJSONArray("items")
+        val kids = (0 until items.length()).map { convNode(items.getJSONObject(it)) }.toMutableList()
+        val detail = "rozmowy: ${p.optInt("conversations")}, wiadomości: ${p.optInt("messages")}\n" +
+            "zakres: ${p.optString("first", "—")} → ${p.optString("last", "—")}\n" +
+            "załączniki: ${p.optInt("attachments")}, usage: ${yn(p.optBoolean("has_usage"))}, ślady narzędzi: ${yn(p.optBoolean("has_tool_traces"))}"
+        return TNode(name, detail, children = kids, actions = {
+            listOf("Zaznacz wszystko tego dostawcy" to { runSelect("expr", "service:$name", "add") },
+                "Odznacz wszystko tego dostawcy" to { runSelect("expr", "service:$name", "subtract") },
+                "Zaznacz tylko to (zamień zaznaczenie)" to { runSelect("expr", "service:$name", "replace") })
+        })
+    }
+
+    private fun convNode(c: JSONObject): TNode {
+        val uid = c.optString("uid")
+        val title = c.optString("title").ifEmpty { "(bez tytułu)" }
+        return TNode(title, "${c.optInt("messages")} wiadomości · ${c.optString("first", "—")} → ${c.optString("last", "—")}", id = uid,
+            loader = { _, done -> loadEvents(uid, done) }, actions = { engineActions(uid, title) })
+    }
+
+    private fun loadEvents(uid: String, done: (List<TNode>) -> Unit) {
+        thread {
+            val j = try { JSONObject(py.callAttr("events", uid).toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
+            runOnUiThread {
+                if (!j.optBoolean("ok")) { done(listOf(TNode(j.optString("error")))); return@runOnUiThread }
+                val ev = j.getJSONArray("events")
+                done((0 until ev.length()).map { msgNode(ev.getJSONObject(it), false) })
+            }
+        }
+    }
+
+    private fun msgNode(e: JSONObject, withTitle: Boolean): TNode {
+        val id = e.optString("uid")
+        val title = if (withTitle) "  ${e.optString("provider")} · ${e.optString("title")}" else e.optString("preview")
+        val label = "${e.optString("role")} · ${e.optString("t")}"
+        return TNode(label, title, id = id, onOpen = { showView(id, label) }, actions = { engineActions(id, label) })
+    }
+
+    // Global time axis, collapsed: month -> day -> messages of the day (loaded when the day is expanded).
+    private fun loadTimeline(done: (List<TNode>) -> Unit) {
+        thread {
+            val j = try { JSONObject(py.callAttr("timeline_groups").toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
+            runOnUiThread {
+                if (!j.optBoolean("ok")) { done(listOf(TNode(j.optString("error")))); return@runOnUiThread }
+                val ms = j.getJSONArray("months")
+                done((0 until ms.length()).map { mi ->
+                    val m = ms.getJSONObject(mi)
+                    val days = m.getJSONArray("days")
+                    var total = 0
+                    val dayNodes = (0 until days.length()).map { di ->
+                        val d = days.getJSONObject(di); total += d.optInt("count")
+                        TNode(d.optString("day"), "${d.optInt("count")} wiadomości", loader = { _, cb -> loadDay(d.optString("day"), cb) })
+                    }
+                    TNode(m.optString("month"), "$total wiadomości, ${dayNodes.size} dni", children = dayNodes.toMutableList())
+                })
+            }
+        }
+    }
+
+    private fun loadDay(day: String, done: (List<TNode>) -> Unit) {
+        thread {
+            val j = try { JSONObject(py.callAttr("day_events", day).toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
+            runOnUiThread {
+                if (!j.optBoolean("ok")) { done(listOf(TNode(j.optString("error")))); return@runOnUiThread }
+                val ev = j.getJSONArray("events")
+                done((0 until ev.length()).map { msgNode(ev.getJSONObject(it), true) })
+            }
+        }
+    }
+
+    // The menu every engine object (conversation, message, row) shares: all of it is the engine's own calls.
+    private fun engineActions(id: String, title: String): List<Pair<String, () -> Unit>> = listOf(
+        "Podgląd (tekst)" to { showView(id, title) },
+        "Podgląd (JSON)" to { showView(id, title, "json") },
+        "Zaznacz / odznacz" to { runSelectItem(id) },
+        "Zaznacz podobne" to {
+            call(JSONObject().put("call", "select").put("how", "similar").put("items", JSONArray().put(id))) { j ->
+                toast(if (j.optBoolean("ok")) "Zaznaczono podobne" else j.optString("error")); refreshSelection()
+            }
+        },
+        "Zakładka" to {
+            call(JSONObject().put("call", "bookmark").put("node", id).put("name", title.take(60))) { j -> toast(if (j.optBoolean("ok")) "Dodano zakładkę" else j.optString("error")) }
+        },
+        "Etykieta…" to {
+            val et = EditText(this)
+            android.app.AlertDialog.Builder(this).setTitle("Etykieta").setView(et).setNegativeButton("Anuluj", null)
+                .setPositiveButton("Dodaj") { _, _ ->
+                    call(JSONObject().put("call", "tag").put("node", id).put("tag", et.text.toString())) { j -> toast(if (j.optBoolean("ok")) "Dodano etykietę" else j.optString("error")) }
+                }.show()
+        },
+        "Kopiuj id" to { copyToClipboard(this, id) },
+    )
+
+    private fun toast(t: String) = android.widget.Toast.makeText(this, t, android.widget.Toast.LENGTH_SHORT).show()
+
+    private fun showView(id: String, title: String, format: String = "markdown") {
+        call(JSONObject().put("call", "view").put("node", id).put("format", format)) { j ->
+            showText(this, title, if (j.optBoolean("ok")) j.optString("text") else j.optString("error"))
+        }
     }
 
     // stored as <millis>__<original name>
@@ -254,11 +373,7 @@ class MainActivity : Activity() {
     // After a file is open: fill every screen that depends on the engine's catalog.
     private fun afterOpen() {
         browsePath.clear(); browseNode = null; loadBrowse()
-        call(JSONObject().put("call", "selection").put("limit", 1)) { j ->
-            val sm = j.optJSONObject("summary")
-            selInfo.text = if (j.optBoolean("ok") && sm != null)
-                "Zaznaczono: ${sm.optInt("conversations")} rozmów, ${sm.optInt("messages")} wiadomości" else "Zaznaczono: nic"
-        }
+        refreshSelection()
         thread {
             val pats = try { JSONObject(py.callAttr("patterns").toString()) } catch (e: Throwable) { JSONObject().put("ok", false) }
             val cat = try { JSONObject(py.callAttr("catalog").toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
@@ -268,7 +383,20 @@ class MainActivity : Activity() {
                     val ps = pats.getJSONArray("patterns")
                     for (i in 0 until ps.length()) {
                         val p = ps.getJSONObject(i)
-                        patternBox.addView(btn(p.optString("label")) { runSelect("pattern", p.optString("name")) })
+                        patternBox.addView(btn(p.optString("label")) { runSelect("pattern", p.optString("name"), "add") }.apply {
+                            setOnLongClickListener {
+                                val nm = p.optString("name")
+                                android.app.AlertDialog.Builder(this@MainActivity).setTitle(p.optString("label"))
+                                    .setItems(arrayOf("Dodaj do zaznaczenia", "Odejmij od zaznaczenia", "Zamień zaznaczenie", "Pokaż wyrażenie", "Wstaw wyrażenie do pola")) { _, k ->
+                                        when (k) {
+                                            0 -> runSelect("pattern", nm, "add"); 1 -> runSelect("pattern", nm, "subtract"); 2 -> runSelect("pattern", nm, "replace")
+                                            3 -> showText(this@MainActivity, p.optString("label"), p.optString("expr"))
+                                            else -> expr.setText(p.optString("expr"))
+                                        }
+                                    }.show()
+                                true
+                            }
+                        })
                     }
                 }
                 if (cat.optBoolean("ok")) {
@@ -306,9 +434,9 @@ class MainActivity : Activity() {
             setOnCheckedChangeListener { _, on -> twoPane = on; prefs.edit().putBoolean("two_pane", on).apply(); layoutBrowser() }
         }
         browseCrumb = label("")
-        browseList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        browseAdapter = TreeAdapter(this)
         browseView = label("")
-        browseListScroll = ScrollView(this).apply { (this as ScrollView).addView(browseList) }
+        browseListScroll = ListView(this).also { browseAdapter.attach(it) }
         browseViewBox = ScrollView(this).apply { (this as ScrollView).addView(browseView) }
         browseBack = btn("← Wróć do listy") { browseViewBox.visibility = View.GONE; browseListScroll.visibility = View.VISIBLE }
         val bar = LinearLayout(this).apply {
@@ -342,32 +470,36 @@ class MainActivity : Activity() {
     }
 
     private fun loadBrowse() {
-        browseList.removeAllViews()
-        browseList.addView(label("Ładuję…"))
-        call(JSONObject().put("call", "list").put("root", browseRoot).put("path", JSONArray(browsePath)).put("limit", 300)) { j ->
-            browseList.removeAllViews()
-            if (!j.optBoolean("ok")) { browseList.addView(label(j.optString("error"))); return@call }
+        browseAdapter.setRoots(listOf(TNode("Ładuję…")))
+        call(JSONObject().put("call", "list").put("root", browseRoot).put("path", JSONArray(browsePath)).put("limit", 0)) { j ->
+            if (!j.optBoolean("ok")) { browseAdapter.setRoots(listOf(TNode(j.optString("error")))); return@call }
             val crumbs = j.optJSONArray("breadcrumbs")
             browseCrumb.text = (0 until (crumbs?.length() ?: 0)).joinToString(" › ") { crumbs!!.getJSONObject(it).optString("label") } +
                 "   (${j.optInt("shown")}/${j.optInt("total")})"
             val rows = j.getJSONArray("rows")
-            if (rows.length() == 0) browseList.addView(label(j.optString("hint", "Pusto.")))
+            val nodes = ArrayList<TNode>()
+            if (rows.length() == 0) nodes.add(TNode(j.optString("hint", "Pusto.")))
             for (i in 0 until rows.length()) {
                 val r = rows.getJSONObject(i)
-                val id = r.optString("id")
-                val line = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-                line.addView(btn("${r.optString("kind")}: ${r.optString("label")}") { browseNode = id; loadView(id) },
-                    LinearLayout.LayoutParams(0, -2, 1f))
-                if (r.optBoolean("children")) line.addView(btn("▸") { browsePath.add(id); loadBrowse() })
-                line.addView(btn("✓") { runSelectItem(id) })
-                browseList.addView(line)
+                val id = r.optString("id"); val lbl = "${r.optString("kind")}: ${r.optString("label")}"
+                val cols = r.optJSONObject("cols")
+                val detail = cols?.keys()?.asSequence()?.filter { it != "label" }?.joinToString(" · ") { "$it=${cols.opt(it)}" } ?: ""
+                val deeper = r.optBoolean("children")
+                nodes.add(TNode(lbl, detail, id = id,
+                    onOpen = { if (deeper) { browsePath.add(id); loadBrowse() } else { browseNode = id; loadView(id) } },
+                    actions = {
+                        (if (deeper) listOf("Wejdź głębiej" to { browsePath.add(id); loadBrowse() }) else emptyList()) +
+                            listOf("Pokaż w panelu podglądu" to { browseNode = id; loadView(id) }) + engineActions(id, lbl)
+                    }))
             }
+            browseAdapter.setRoots(nodes)
         }
     }
 
     private fun loadView(id: String) {
         browseView.text = "Ładuję…"
         if (!twoPane) { browseListScroll.visibility = View.GONE; browseViewBox.visibility = View.VISIBLE }
+        browseView.setOnLongClickListener { copyToClipboard(this, browseView.text.toString()); true }
         call(JSONObject().put("call", "view").put("node", id).put("format", browseFormat)) { j ->
             browseView.text = if (j.optBoolean("ok")) clip(j.optString("text")) else j.optString("error")
         }
@@ -375,7 +507,7 @@ class MainActivity : Activity() {
 
     private fun runSelectItem(id: String) {
         call(JSONObject().put("call", "select").put("how", "toggle").put("items", JSONArray().put(id))) { j ->
-            selInfo.text = if (j.optBoolean("ok")) "Zaznaczono: ${j.optJSONObject("selection")?.optInt("conversations") ?: 0} rozmów (przełączono)" else j.optString("error")
+            if (!j.optBoolean("ok")) toast(j.optString("error")) else { toast("Przełączono zaznaczenie"); refreshSelection() }
         }
     }
 
@@ -384,45 +516,57 @@ class MainActivity : Activity() {
         patternBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         expr = EditText(this).apply { hint = "wyrażenie, np. tytuł:\"projekt\" I count(messages) >= 10"; inputType = InputType.TYPE_CLASS_TEXT }
         selInfo = label("Zaznaczono: nic")
-        return scroll(col().apply {
-            addView(label("Wybór według struktury", 18f))
+        selAdapter = TreeAdapter(this)
+        val list = ListView(this)
+        list.addHeaderView(col().apply {
+            addView(label("Wybór według struktury (przytrzymaj wzorzec: odejmij / zamień / wyrażenie)", 16f))
             addView(patternBox)
             addView(expr)
-            addView(row(btn("Zaznacz wyrażeniem") { runSelect("expr", expr.text.toString()) }, btn("Zakodowane dane") { runSelect("encoded", "") }))
-            addView(row(btn("Wszystko") { runSelect("all", "") }, btn("Odwróć") { runSelect("invert", "") }, btn("Wyczyść") { runSelect("clear", "") }))
+            addView(row(btn("Zaznacz wyrażeniem") { runSelect("expr", expr.text.toString(), "add") },
+                btn("Zakodowane dane") { runSelect("encoded", "", "add") }))
+            addView(row(btn("Wszystko") { runSelect("all", "", "add") }, btn("Odwróć") { runSelect("invert", "", "add") },
+                btn("Wyczyść") { runSelect("clear", "", "add") }))
             addView(selInfo)
-        })
+        }, null, false)
+        selAdapter.attach(list)
+        return list
     }
 
     private fun row(vararg v: View) = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; v.forEach { addView(it) } }
 
-    private fun runSelect(how: String, value: String) {
+    private fun runSelect(how: String, value: String, mode: String = "add") {
         selInfo.text = "Liczę…"
         thread {
-            val msg = try {
-                val j = JSONObject(py.callAttr("select", how, value, "add").toString())
-                if (!j.optBoolean("ok")) "Błąd wyboru: ${j.optString("error")}" else renderSelection(j)
-            } catch (e: Throwable) { err(e) }
-            runOnUiThread { selInfo.text = msg }
+            val j = try { JSONObject(py.callAttr("select", how, value, mode).toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
+            runOnUiThread { showSelection(j) }
         }
     }
 
-    private fun renderSelection(j: JSONObject): String {
+    private fun refreshSelection() {
+        call(JSONObject().put("call", "selection").put("limit", 0)) { j ->
+            showSelection(if (j.optBoolean("ok")) JSONObject().put("ok", true).put("selection", j) else j)
+        }
+    }
+
+    private fun showSelection(j: JSONObject) {
+        if (!j.optBoolean("ok")) { selInfo.text = "Błąd wyboru: ${j.optString("error")}"; selAdapter.setRoots(emptyList()); return }
         val sel = j.getJSONObject("selection")
         val s = sel.getJSONObject("summary")
-        val sb = StringBuilder("Zaznaczono: ${s.optInt("conversations")} rozmów, ${s.optInt("messages")} wiadomości\n")
+        val sb = StringBuilder("Zaznaczono: ${s.optInt("conversations")} rozmów, ${s.optInt("messages")} wiadomości")
         j.optJSONObject("encoded")?.let { e ->
             val k = e.optJSONObject("by_kind")
             val parts = k?.keys()?.asSequence()?.map { "$it: ${k.optInt(it)}" }?.joinToString(", ") ?: ""
-            sb.append("Zakodowane dane (${e.optJSONObject("counts")?.optInt("findings") ?: 0}): ${parts.ifEmpty { "brak" }}\n")
+            sb.append("\nZakodowane dane (${e.optJSONObject("counts")?.optInt("findings") ?: 0}): ${parts.ifEmpty { "brak" }}")
         }
+        selInfo.text = sb.toString()
         val items = sel.getJSONArray("items")
-        for (i in 0 until items.length()) {
+        selAdapter.setRoots((0 until items.length()).map { i ->
             val it = items.getJSONObject(i)
-            sb.append("• ${it.optString("provider")}  ${it.optString("title")}  (${it.optInt("messages")})\n")
-        }
-        if (sel.optInt("total") > items.length()) sb.append("… i ${sel.optInt("total") - items.length()} kolejnych\n")
-        return sb.toString()
+            val uid = it.optString("uid"); val title = it.optString("title").ifEmpty { "(bez tytułu)" }
+            TNode(title, "${it.optString("provider")} · ${it.optInt("messages")} wiadomości", id = uid,
+                loader = { _, done -> loadEvents(uid, done) },
+                actions = { engineActions(uid, title) + listOf("Usuń z zaznaczenia" to { runSelectItem(uid) }) })
+        })
     }
 
     // ───────────── Generic form over an engine parameter schema ─────────────
@@ -493,7 +637,8 @@ class MainActivity : Activity() {
 
     // ───────────── Edycje: batch edits with preview, apply, undo, redo ─────────────
     private fun editsPanel(edits: JSONArray): View {
-        val out = label("")
+        val adapter = TreeAdapter(this)
+        val info = label("")
         val formHolder = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         var form: Form? = null
         var current = 0
@@ -507,22 +652,33 @@ class MainActivity : Activity() {
         val sp = picker((0 until edits.length()).map { edits.getJSONObject(it).optString("label") }) { setEdit(it) }
         if (edits.length() > 0) setEdit(0)
         val show = { j: JSONObject ->
-            out.text = if (!j.optBoolean("ok")) j.optString("error")
-            else clip((j.optString("patch_text").ifEmpty { "" }) + "\n" + j.toString(1).take(3000))
+            if (!j.optBoolean("ok")) { info.text = j.optString("error"); adapter.setRoots(emptyList()) }
+            else {
+                info.text = "Gotowe."
+                val roots = ArrayList<TNode>()
+                val patch = j.optString("patch_text")
+                if (patch.isNotEmpty()) roots.add(TNode("Zmiany", patch.lines().size.toString() + " linii", onOpen = { showText(this, "Zmiany", patch) }, copy = patch))
+                roots.add(jsonNode("wynik", j, this).also { it.expanded = true })
+                adapter.setRoots(roots)
+            }
         }
-        return scroll(col().apply {
+        val list = ListView(this)
+        list.addHeaderView(col().apply {
             addView(label("Edycje seryjne (na zaznaczeniu, jeśli jest; inaczej na wszystkim)", 16f))
             addView(sp); addView(formHolder)
-            addView(row(btn("Podgląd") { out.text = "Liczę…"; call(req("edit"), show) },
-                btn("Zastosuj") { out.text = "Stosuję…"; call(req("apply"), show) }))
+            addView(row(btn("Podgląd") { info.text = "Liczę…"; call(req("edit"), show) },
+                btn("Zastosuj") { info.text = "Stosuję…"; call(req("apply"), show) }))
             addView(row(btn("Cofnij") { call(JSONObject().put("call", "undo"), show) }, btn("Ponów") { call(JSONObject().put("call", "redo"), show) }))
-            addView(out)
-        })
+            addView(info)
+        }, null, false)
+        adapter.attach(list)
+        return list
     }
 
     // ───────────── Operacje: any operation of the engine's registry ─────────────
     private fun opsPanel(ops: JSONArray): View {
-        val out = label("")
+        val adapter = TreeAdapter(this)
+        val info = label("")
         val formHolder = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         var form: Form? = null
         var current = 0
@@ -532,18 +688,22 @@ class MainActivity : Activity() {
         }
         val sp = picker((0 until ops.length()).map { ops.getJSONObject(it).optString("label") + "  [" + ops.getJSONObject(it).optString("id") + "]" }) { setOp(it) }
         if (ops.length() > 0) setOp(0)
-        return scroll(col().apply {
+        val list = ListView(this)
+        list.addHeaderView(col().apply {
             addView(label("Operacje silnika", 16f))
             addView(sp); addView(formHolder)
             addView(btn("Uruchom") {
-                out.text = "Pracuję…"
+                info.text = "Pracuję…"
                 call(JSONObject().put("call", "op").put("op", ops.getJSONObject(current).optString("id"))
                     .put("params", form?.collect?.invoke() ?: JSONObject())) { j ->
-                    out.text = if (j.optBoolean("ok")) clip(j.toString(1)) else j.optString("error")
+                    if (!j.optBoolean("ok")) { info.text = j.optString("error"); adapter.setRoots(emptyList()) }
+                    else { info.text = "Gotowe."; adapter.setRoots(listOf(jsonNode("wynik", j, this).also { it.expanded = true })) }
                 }
             })
-            addView(out)
-        })
+            addView(info)
+        }, null, false)
+        adapter.attach(list)
+        return list
     }
 
     // ───────────── Eksport: cut + write -> one zip, with a redaction preset and profiles ─────────────
