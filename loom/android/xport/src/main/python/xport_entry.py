@@ -129,7 +129,18 @@ def day_events(day):
                                              "preview": " ".join(m.text().split())[:160] if m is not None else ""})
             for blk in blocks:
                 blk["first"], blk["last"] = blk["events"][0]["t"], blk["events"][-1]["t"]
-            return json.dumps({"ok": True, "blocks": blocks}, ensure_ascii=False)
+            from loom.tools.extract.workblocks import find_work_blocks
+            cfg = dict(eng.ds.preset("timeline.work_block", {}) or {})
+            items, i = [], 0
+            for wb in sorted(find_work_blocks(blocks, cfg), key=lambda w: w["start"]):
+                items.extend({"type": "run", **blk} for blk in blocks[i:wb["start"]])
+                runs = blocks[wb["start"]:wb["end"] + 1]
+                items.append({"type": "work", "switches": wb["switches"], "conversations": wb["conversations"],
+                              "first": runs[0]["first"], "last": runs[-1]["last"],
+                              "messages": sum(len(r["events"]) for r in runs), "runs": [{"type": "run", **r} for r in runs]})
+                i = wb["end"] + 1
+            items.extend({"type": "run", **blk} for blk in blocks[i:])
+            return json.dumps({"ok": True, "items": items}, ensure_ascii=False)
         except Exception as exc:
             return _fail(exc)
 

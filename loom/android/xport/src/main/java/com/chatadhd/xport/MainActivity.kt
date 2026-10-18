@@ -271,21 +271,44 @@ class MainActivity : Activity() {
             val j = try { JSONObject(py.callAttr("day_events", day).toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
             runOnUiThread {
                 if (!j.optBoolean("ok")) { done(listOf(TNode(j.optString("error")))); return@runOnUiThread }
-                val bs = j.getJSONArray("blocks")
-                done((0 until bs.length()).map { bi ->
-                    val b = bs.getJSONObject(bi)
-                    val conv = b.optString("conversation"); val title = b.optString("title").ifEmpty { "(bez tytułu)" }
-                    val tint = tintOf(conv)
-                    val ev = b.getJSONArray("events")
-                    val kids = (0 until ev.length()).map { ei ->
-                        val e = ev.getJSONObject(ei); val id = e.optString("uid"); val lbl = "${e.optString("role")} · ${e.optString("t")}"
-                        TNode(lbl, e.optString("preview"), id = id, tint = tint, onOpen = { showView(id, lbl) }, actions = { engineActions(id, lbl) })
-                    }
-                    TNode("⇄ $title", "${b.optString("provider")} · ${ev.length()} wiadomości · ${b.optString("first").drop(11).take(5)}–${b.optString("last").drop(11).take(5)}",
-                        id = conv, children = kids.toMutableList(), tint = tint, actions = { engineActions(conv, title) })
+                val items = j.getJSONArray("items")
+                done((0 until items.length()).map { ii ->
+                    val it = items.getJSONObject(ii)
+                    if (it.optString("type") == "work") workNode(it) else runNode(it)
                 })
             }
         }
+    }
+
+    // A run: consecutive messages of one conversation. The header names it, so every switch is visible.
+    private fun runNode(b: JSONObject): TNode {
+        val conv = b.optString("conversation"); val title = b.optString("title").ifEmpty { "(bez tytułu)" }
+        val tint = tintOf(conv)
+        val ev = b.getJSONArray("events")
+        val kids = (0 until ev.length()).map { ei ->
+            val e = ev.getJSONObject(ei); val id = e.optString("uid"); val lbl = "${e.optString("role")} · ${e.optString("t")}"
+            TNode(lbl, e.optString("preview"), id = id, tint = tint, onOpen = { showView(id, lbl) }, actions = { engineActions(id, lbl) })
+        }
+        return TNode("⇄ $title", "${b.optString("provider")} · ${ev.length()} wiadomości · ${b.optString("first").drop(11).take(5)}–${b.optString("last").drop(11).take(5)}",
+            id = conv, children = kids.toMutableList(), tint = tint, actions = { engineActions(conv, title) })
+    }
+
+    // Frequent switching between conversations (more than the engine's min_switches, preset 3) = one block of work
+    // on several conversations at once; its runs are inside.
+    private fun workNode(w: JSONObject): TNode {
+        val runs = w.getJSONArray("runs")
+        val kids = (0 until runs.length()).map { runNode(runs.getJSONObject(it)) }
+        val uids = kids.mapNotNull { it.id }.distinct()
+        return TNode("⧉ Praca na ${w.optInt("conversations")} rozmowach naraz",
+            "${w.optInt("switches")} przełączeń · ${w.optInt("messages")} wiadomości · ${w.optString("first").drop(11).take(5)}–${w.optString("last").drop(11).take(5)}",
+            children = kids.toMutableList(), tint = android.graphics.Color.argb(40, 128, 128, 128),
+            actions = {
+                listOf("Zaznacz wszystkie rozmowy z bloku" to {
+                    call(JSONObject().put("call", "select").put("how", "items").put("items", JSONArray(uids))) { j ->
+                        toast(if (j.optBoolean("ok")) "Zaznaczono ${uids.size} rozmów" else j.optString("error")); refreshSelection()
+                    }
+                })
+            })
     }
 
     // The menu every engine object (conversation, message, row) shares: all of it is the engine's own calls.
