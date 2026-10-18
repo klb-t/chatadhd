@@ -1,0 +1,22 @@
+X-Port — ekstrakt z archiwów czatów (ChatGPT, Claude, Claude Code, Gemini, Grok, tekst)
+
+Wymaga: Python 3.11 lub nowszy. Bez instalacji, bez sieci, nie zmienia plików źródłowych.
+Rozpakuj zip, wejdź do katalogu i uruchamiaj stamtąd:
+
+  cd xport-0.10.00-XXXXXXX
+  python3 -m loom.tools.extract --help
+
+Najczęstsze:
+  python3 -m loom.tools.extract inwentarz SCIEZKA/eksport.zip
+      co jest w archiwum (rozmowy, narzędzia, załączniki, zakres dat) — zmierzone
+  python3 -m loom.tools.extract "wyciągnij z archiwum SCIEZKA/eksport.zip wszystko o ChatADHD w profilu płaskim"
+      pakiet w katalogu ekstrakt-... (RAPORT.md, manifest, wycinek)
+  python3 -m loom.tools.extract os-czasu SCIEZKA/*.zip --kubelek tydzien --pakiet ekstrakt-os
+      jedna oś czasu ponad wszystkimi dostawcami
+  python3 -m loom.tools.extract komander SCIEZKA/*.zip --pakiet ekstrakt-x
+      dwa panele w terminalu: przegląd, zaznaczanie, edycja seryjna (F1 = pomoc)
+  python3 -m loom.tools.extract ekonomia ~/.claude/projects
+      ekonomia tokenów z transkryptów Claude Code
+
+Na Windows zamiast python3 może być: py
+Pełny opis: docs/architecture/EKSTRAKT_ARCHIWOW_2026-10-16.md w repozytorium.

@@ -1,0 +1,52 @@
+name: X-Port (archive export tool, zip)
+
+# Separate from the release build: run by hand, once in a while. Packs loom/tools/extract with
+# the kernel data it reads and a short how-to into one zip, then checks the zip from a clean
+# directory on a synthetic archive from the repository. No secrets, no owner exports.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pack:
+    name: Pack X-Port and check it from a clean directory
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Pack
+        run: |
+          set -euo pipefail
+          N="xport-0.10.00-$(git rev-parse --short=7 HEAD)"
+          rm -rf stage && mkdir -p stage/"$N" dist
+          git archive --format=tar --prefix="$N/" HEAD \
+            loom/tools/extract engine core loom/data/lexicons loom/tools/gen_extract_fixtures.py \
+            | tar -x -C stage
+          cp loom/tools/extract/JAK_UZYC.txt stage/"$N"/JAK_UZYC.txt
+          (cd stage && zip -qr "$GITHUB_WORKSPACE/dist/$N.zip" "$N")
+          echo "N=$N" >> "$GITHUB_ENV"
+
+      - name: Check from a clean directory (synthetic archive only)
+        run: |
+          set -euo pipefail
+          T="$(mktemp -d)"
+          unzip -q "dist/$N.zip" -d "$T"
+          cp loom/tests/fixtures/extract/duplicate/chatgpt_2025-06-20_copy.zip "$T/archiwum.zip"
+          cd "$T/$N"
+          python3 -m loom.tools.extract --wersja
+          python3 -m loom.tools.extract inwentarz "$T/archiwum.zip"
+          python3 -m loom.tools.extract "wyciągnij z archiwum $T/archiwum.zip wszystko o projekt w profilu płaskim" | tail -3
+
+      - name: Upload the zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: xport-zip
+          path: dist/*.zip
+          if-no-files-found: error
