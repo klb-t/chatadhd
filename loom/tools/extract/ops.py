@@ -788,3 +788,4 @@ def op_user_call(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
 from . import ops_cut  # noqa: E402,F401  (registers the slice B operations)
 from . import ops_views  # noqa: E402,F401  (registers the slice C operations)
 from . import ops_economics  # noqa: E402,F401  (registers the slice 4 operation: token economics)
+from . import ops_encoded  # noqa: E402,F401  (registers select.encoded)
