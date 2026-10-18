@@ -650,7 +650,7 @@ class MainActivity : Activity() {
                 val roots = ArrayList<TNode>()
                 val patch = j.optString("patch_text")
                 if (patch.isNotEmpty()) roots.add(TNode("Zmiany", patch.lines().size.toString() + " linii", onOpen = { showText(this, "Zmiany", patch) }, copy = patch))
-                roots.add(jsonNode("wynik", j, this).also { it.expanded = true })
+                roots.add(jsonNode("wynik", j, this@MainActivity).also { it.expanded = true })
                 adapter.setRoots(roots)
             }
         }
@@ -689,7 +689,7 @@ class MainActivity : Activity() {
                 call(JSONObject().put("call", "op").put("op", ops.getJSONObject(current).optString("id"))
                     .put("params", form?.collect?.invoke() ?: JSONObject())) { j ->
                     if (!j.optBoolean("ok")) { info.text = j.optString("error"); adapter.setRoots(emptyList()) }
-                    else { info.text = "Gotowe."; adapter.setRoots(listOf(jsonNode("wynik", j, this).also { it.expanded = true })) }
+                    else { info.text = "Gotowe."; adapter.setRoots(listOf(jsonNode("wynik", j, this@MainActivity).also { it.expanded = true })) }
                 }
             })
             addView(info)
