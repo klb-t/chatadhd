@@ -40,7 +40,6 @@ class MainActivity : Activity() {
     // overview
     private lateinit var pick: Button
     private lateinit var status: TextView
-    private lateinit var result: TextView
     // selection
     private lateinit var patternBox: LinearLayout
     private lateinit var selInfo: TextView
@@ -125,7 +124,6 @@ class MainActivity : Activity() {
     private fun overviewPanel(): View {
         pick = btn("Dodaj źródło (jedno lub kilka plików)") { openPicker() }
         status = label("Nic nie wybrano.")
-        result = label("")
         overviewAdapter = TreeAdapter(this)
         val list = ListView(this)
         list.addHeaderView(col().apply {
@@ -343,29 +341,6 @@ class MainActivity : Activity() {
                 runOnUiThread { showOverview(o) }
             }
         }
-    }
-
-    private fun render(j: JSONObject): String {
-        if (!j.optBoolean("ok")) return "Błąd analizy: ${j.optString("error", "nieznany")}"
-        val sb = StringBuilder()
-        val t = j.getJSONObject("totals")
-        sb.append("Razem: ${t.optInt("conversations")} rozmów, ${t.optInt("messages")} wiadomości\n\n")
-        val ps = j.getJSONArray("providers")
-        for (i in 0 until ps.length()) {
-            val p = ps.getJSONObject(i)
-            sb.append("• ${p.optString("provider")}\n")
-            sb.append("  rozmowy: ${p.optInt("conversations")}, wiadomości: ${p.optInt("messages")}\n")
-            sb.append("  zakres dat: ${p.optString("first", "—")} → ${p.optString("last", "—")}\n")
-            sb.append("  załączniki: ${p.optInt("attachments")}\n")
-            sb.append("  zużycie (usage): ${yn(p.optBoolean("has_usage"))}, ślady narzędzi: ${yn(p.optBoolean("has_tool_traces"))}\n\n")
-        }
-        val ev = j.getJSONArray("events")
-        sb.append("Oś czasu (${ev.length()} z ${j.optInt("events_total")}):\n")
-        for (i in 0 until ev.length()) {
-            val e = ev.getJSONObject(i)
-            sb.append("${e.optString("t")}  ${e.optString("provider")}  ${e.optString("title")}  [${e.optString("role")}]\n")
-        }
-        return sb.toString()
     }
 
     private fun yn(b: Boolean) = if (b) "tak" else "nie"
