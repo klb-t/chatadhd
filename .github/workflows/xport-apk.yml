@@ -58,7 +58,7 @@ jobs:
           touch "$d/loom/__init__.py" "$d/loom/tools/__init__.py"
           cp loom/android/xport/src/main/python/xport_entry.py "$d/"
           cd "$d"
-          python -I -c "import sys,json; sys.path.insert(0,'.'); import xport_entry as x; r=json.loads(x.inventory('$GITHUB_WORKSPACE/loom/tests/fixtures/extract/ours/conversation.json')); assert r['ok'], r; print(r['totals'])"
+          python -I -c "import sys,json; sys.path.insert(0,'.'); import xport_entry as x; r=json.loads(x.open_sources(json.dumps(['$GITHUB_WORKSPACE/loom/tests/fixtures/extract/ours/conversation.json']))); assert r['ok'], r; print(r['totals'])"
 
       - name: Gradle cache
         uses: actions/cache@v4
