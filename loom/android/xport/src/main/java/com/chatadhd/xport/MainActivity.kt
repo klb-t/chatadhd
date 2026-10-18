@@ -86,6 +86,7 @@ class MainActivity : Activity() {
         }
         setContentView(root)
         show("Przegląd")
+        restoreSession()
     }
 
     private fun show(name: String) {
@@ -114,56 +115,115 @@ class MainActivity : Activity() {
 
     private fun clip(s: String, n: Int = 20000) = if (s.length > n) s.substring(0, n) + "\n… (skrócono, ${s.length} znaków)" else s
 
-    // ───────────── Przegląd: pick a file, copy it, run the inventory ─────────────
+    // ───────────── Przegląd: add sources (copied, kept), open them all in one engine session ─────────────
+    private val importDir get() = File(filesDir, "import")
+    private lateinit var sourcesBox: LinearLayout
+
     private fun overviewPanel(): View {
-        pick = btn("Wybierz plik eksportu") { openPicker() }
+        pick = btn("Dodaj źródło (jedno lub kilka plików)") { openPicker() }
         status = label("Nic nie wybrano.")
         result = label("")
-        return scroll(col().apply { addView(pick); addView(status); addView(result) })
+        sourcesBox = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        return scroll(col().apply {
+            addView(pick)
+            addView(btn("Usuń wszystkie źródła") { clearSources() })
+            addView(sourcesBox); addView(status); addView(result)
+        })
     }
 
     private fun openPicker() {
         startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE); type = "*/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
         }, REQ_PICK)
     }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val uri = data?.data
-        if (resultCode != RESULT_OK || uri == null) return
-        if (requestCode == REQ_SAVE) { exportTo(uri); return }
+        if (resultCode != RESULT_OK || data == null) return
+        if (requestCode == REQ_SAVE) { data.data?.let { exportTo(it) }; return }
         if (requestCode != REQ_PICK) return
-        pick.isEnabled = false
-        status.text = "Kopiuję plik do pamięci aplikacji…"
-        result.text = ""
+        val uris = ArrayList<Uri>()
+        data.data?.let { uris.add(it) }
+        data.clipData?.let { c -> for (i in 0 until c.itemCount) uris.add(c.getItemAt(i).uri) }
+        if (uris.isEmpty()) return
+        busy("Kopiuję ${uris.size} plik(ów) do pamięci aplikacji…")
         thread {
-            val msg = try {
-                val copy = copyToPrivate(uri)
-                runOnUiThread { status.text = "Analizuję (${copy.name})…" }
-                render(JSONObject(py.callAttr("inventory", copy.absolutePath).toString()))
-            } catch (e: Throwable) { err(e) }
-            runOnUiThread {
-                status.text = ""; result.text = msg; pick.isEnabled = true
-                opened = !msg.startsWith("Błąd")
-                if (opened) afterOpen()
+            try { uris.forEach { copyToPrivate(it) } } catch (e: Throwable) {
+                runOnUiThread { idle(err(e)) }; return@thread
             }
+            reopenAll()
         }
     }
 
-    // Copy first, never read the document from where it lives; only one copy is kept at a time.
+    private fun busy(msg: String) { pick.isEnabled = false; status.text = msg }
+    private fun idle(msg: String) { pick.isEnabled = true; status.text = msg }
+
+    // All copies in the private directory are the sources; the engine opens them together (and merges duplicates).
+    private fun reopenAll() {
+        val files = (importDir.listFiles() ?: emptyArray()).filter { it.isFile }.sortedBy { it.name }
+        runOnUiThread { status.text = "Analizuję ${files.size} źródeł…" }
+        val msg = try {
+            JSONObject(py.callAttr("open_sources", JSONArray(files.map { it.absolutePath }).toString()).toString())
+        } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
+        runOnUiThread { showOverview(msg) }
+    }
+
+    private fun showOverview(j: JSONObject) {
+        pick.isEnabled = true
+        status.text = ""
+        sourcesBox.removeAllViews()
+        if (j.optBoolean("empty")) { opened = false; result.text = ""; status.text = "Nic nie wybrano."; return }
+        val files = (importDir.listFiles() ?: emptyArray()).filter { it.isFile }.sortedBy { it.name }
+        for (f in files) {
+            sourcesBox.addView(row(label(displayName(f)), btn("Usuń") { removeSource(f) }))
+        }
+        if (!j.optBoolean("ok")) { result.text = "Błąd analizy: ${j.optString("error", "nieznany")}"; return }
+        result.text = render(j)
+        opened = true
+        afterOpen()
+    }
+
+    // stored as <millis>__<original name>
+    private fun displayName(f: File) = f.name.substringAfter("__", f.name)
+
+    private fun removeSource(f: File) {
+        f.delete()
+        busy("Usuwam źródło…")
+        thread { reopenAll() }
+    }
+
+    private fun clearSources() {
+        importDir.listFiles()?.forEach { it.delete() }
+        busy("Usuwam źródła…")
+        thread { reopenAll() }
+    }
+
+    // Copy first, never read the document from where it lives. Earlier copies are kept: they are the other sources.
     private fun copyToPrivate(uri: Uri): File {
         var name = "eksport"
         contentResolver.query(uri, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)?.use {
             if (it.moveToFirst() && !it.isNull(0)) name = it.getString(0)
         }
-        val dir = File(filesDir, "import")
-        dir.deleteRecursively(); dir.mkdirs()
-        val dest = File(dir, name.replace(Regex("[/\\\\]"), "_"))
+        importDir.mkdirs()
+        val dest = File(importDir, "${System.currentTimeMillis()}__" + name.replace(Regex("[/\\]"), "_"))
         val input = contentResolver.openInputStream(uri) ?: throw IllegalStateException("nie można otworzyć pliku")
         input.use { src -> dest.outputStream().use { src.copyTo(it) } }
         return dest
+    }
+
+    // The UI can be recreated (the process can be killed) while the engine session lives on or the copies stay on disk.
+    private fun restoreSession() {
+        thread {
+            val o = try { JSONObject(py.callAttr("overview").toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
+            if (o.optBoolean("empty") && (importDir.listFiles() ?: emptyArray()).any { it.isFile }) {
+                runOnUiThread { status.text = "Przywracam źródła…" }
+                reopenAll()
+            } else if (!o.optBoolean("empty")) {
+                runOnUiThread { showOverview(o) }
+            }
+        }
     }
 
     private fun render(j: JSONObject): String {
@@ -194,7 +254,11 @@ class MainActivity : Activity() {
     // After a file is open: fill every screen that depends on the engine's catalog.
     private fun afterOpen() {
         browsePath.clear(); browseNode = null; loadBrowse()
-        selInfo.text = "Zaznaczono: nic"
+        call(JSONObject().put("call", "selection").put("limit", 1)) { j ->
+            val sm = j.optJSONObject("summary")
+            selInfo.text = if (j.optBoolean("ok") && sm != null)
+                "Zaznaczono: ${sm.optInt("conversations")} rozmów, ${sm.optInt("messages")} wiadomości" else "Zaznaczono: nic"
+        }
         thread {
             val pats = try { JSONObject(py.callAttr("patterns").toString()) } catch (e: Throwable) { JSONObject().put("ok", false) }
             val cat = try { JSONObject(py.callAttr("catalog").toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }

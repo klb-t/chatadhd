@@ -65,32 +65,61 @@ def _selection(eng, limit=200):
     return {"summary": eng.selection_summary(), "items": rows[:int(limit)], "total": len(rows)}
 
 
-def inventory(path, timeline_limit=200):
-    """Open one file in a fresh engine session; run the engine's inventory + per-message timeline; return JSON."""
-    global _eng
+def _overview(eng):
+    inv = eng.op("inventory", {})["inventory"]
+    eng.op("timeline", {"key": "activity"})
+    events = [{"t": r.get("t_utc") or r.get("t"), "provider": r.get("service") or "?",
+               "title": r.get("title") or "", "role": r.get("role") or ""}
+              for r in eng.timeline_rows if r.get("kind") == "message"]
+    return {"ok": True, "providers": _provider_rows(eng.units),
+            "totals": {"conversations": inv.get("conversations", 0),
+                       "messages": (inv.get("messages") or {}).get("total", 0)},
+            "sources": [str(p) for p in eng.sources],
+            "events_total": len(events), "events": events[:200]}
+
+
+def open_sources(paths_json):
+    """(Re)open the session on ALL given files at once (the engine merges duplicates and versions).
+
+    What was already done in the session (selection, edits) is carried over by replaying the engine's own recipe on
+    the new list of sources, so adding a source loses nothing. Returns the overview as JSON."""
+    global _sess, _eng
     with _lock:
         try:
             from loom.tools.extract.api import Session
             from loom.tools.extract.datafiles import store
-            global _sess
+            paths = [str(p) for p in json.loads(paths_json)]
+            if not paths:
+                if _sess is not None:
+                    _sess.close()
+                _sess = _eng = None
+                return json.dumps({"ok": True, "empty": True})
+            recipe = None
+            if _eng is not None:
+                rec = _eng.normalised_recipe()
+                if rec.get("steps"):
+                    recipe = dict(rec, sources=paths)
+            sess = Session(face="api", ds=store())
+            sess.call({"call": "open", "recipe": recipe} if recipe else {"call": "open", "sources": paths})
+            eng = sess.eng
+            if recipe is not None and [str(p) for p in eng.sources] != paths:
+                eng.set_sources(paths)
+                eng.ensure_units()
+            out = _overview(eng)
             if _sess is not None:
                 _sess.close()
-                _sess = _eng = None
-            sess = Session(face="api", ds=store())
-            sess.call({"call": "open", "sources": [path]})
-            eng = sess.eng
-            inv = eng.op("inventory", {})["inventory"]
-            eng.op("timeline", {"key": "activity"})
-            events = [{"t": r.get("t_utc") or r.get("t"), "provider": r.get("service") or "?",
-                       "title": r.get("title") or "", "role": r.get("role") or ""}
-                      for r in eng.timeline_rows if r.get("kind") == "message"]
-            out = {"ok": True, "providers": _provider_rows(eng.units),
-                   "totals": {"conversations": inv.get("conversations", 0),
-                              "messages": (inv.get("messages") or {}).get("total", 0)},
-                   "events_total": len(events), "events": events[:int(timeline_limit)]}
             _sess, _eng = sess, eng
             return json.dumps(out, ensure_ascii=False)
         except Exception as exc:  # shown as text, never a crash; no file content in the message
+            return _fail(exc)
+
+
+def overview():
+    """The overview of the session that is already open (the UI was recreated, the engine session was not)."""
+    with _lock:
+        try:
+            return json.dumps(_overview(_need()), ensure_ascii=False) if _eng is not None else json.dumps({"ok": True, "empty": True})
+        except Exception as exc:
             return _fail(exc)
 
 
