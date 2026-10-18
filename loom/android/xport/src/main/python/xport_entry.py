@@ -13,7 +13,8 @@ import zipfile
 from pathlib import Path
 
 _lock = threading.Lock()
-_eng = None  # the open engine session (one file at a time), kept between calls
+_sess = None  # api.Session of the open file (one at a time), kept between calls
+_eng = None   # its engine
 
 
 def version():
@@ -69,12 +70,15 @@ def inventory(path, timeline_limit=200):
     global _eng
     with _lock:
         try:
-            from loom.tools.extract.engine import Engine
-            if _eng is not None:
-                _eng.close()
-                _eng = None
-            eng = Engine()
-            eng.set_sources([path])
+            from loom.tools.extract.api import Session
+            from loom.tools.extract.datafiles import store
+            global _sess
+            if _sess is not None:
+                _sess.close()
+                _sess = _eng = None
+            sess = Session(face="api", ds=store())
+            sess.call({"call": "open", "sources": [path]})
+            eng = sess.eng
             inv = eng.op("inventory", {})["inventory"]
             eng.op("timeline", {"key": "activity"})
             events = [{"t": r.get("t_utc") or r.get("t"), "provider": r.get("service") or "?",
@@ -84,7 +88,7 @@ def inventory(path, timeline_limit=200):
                    "totals": {"conversations": inv.get("conversations", 0),
                               "messages": (inv.get("messages") or {}).get("total", 0)},
                    "events_total": len(events), "events": events[:int(timeline_limit)]}
-            _eng = eng
+            _sess, _eng = sess, eng
             return json.dumps(out, ensure_ascii=False)
         except Exception as exc:  # shown as text, never a crash; no file content in the message
             return _fail(exc)
@@ -130,7 +134,53 @@ def select(how, value="", mode="add"):
             return _fail(exc)
 
 
-def export_selected(zip_path):
+def _params(spec):
+    out = []
+    for name, ps in (spec or {}).items():
+        if not isinstance(ps, dict):
+            ps = {"type": str(ps)}
+        out.append({"name": name, "type": ps.get("type") or "string", "values": ps.get("values") or [],
+                    "default": ps.get("default"), "required": bool(ps.get("required")), "secret": bool(ps.get("secret"))})
+    return out
+
+
+def _lbl(x, fallback):
+    return (x.get("pl") or x.get("en") or fallback) if isinstance(x, dict) else (x or fallback)
+
+
+def catalog():
+    """Everything the generic screens need: edits, operations, redaction presets and cut profiles (labels in Polish)."""
+    with _lock:
+        try:
+            eng = _need()
+            ds = eng.ds
+            edits = [{"id": k, "label": _lbl(v.get("label"), k), "group": v.get("group") or "", "params": _params(v.get("params"))}
+                     for k, v in sorted(ds.entries("edits").items())]
+            skip = {"scan", "read", "merge", "user.call", "inventory", "timeline"}
+            ops = [{"id": k, "label": _lbl(v.get("label"), k), "long": bool(v.get("long")), "params": _params(v.get("params"))}
+                   for k, v in sorted(_sess.call({"call": "ops"})["ops"].items())
+                   if k not in skip and not k.startswith("edit.") and v.get("implemented", True) and "api" in (v.get("faces") or ["api"])]
+            red = [{"id": k, "label": _lbl(v.get("label"), k)} for k, v in sorted(ds.entries("redaction").items())]
+            prof = [{"id": k, "label": _lbl(v.get("label"), k), "kind": v.get("kind") or ""} for k, v in sorted(ds.entries("profiles").items())]
+            return json.dumps({"ok": True, "edits": edits, "ops": ops, "redaction": red, "profiles": prof}, ensure_ascii=False)
+        except Exception as exc:
+            return _fail(exc)
+
+
+def call(req_json):
+    """Any api.Session call (list, view, edit, apply, undo, redo, op, search, compare, goto, tag, bookmark, status…)."""
+    with _lock:
+        try:
+            _need()
+            req = json.loads(req_json)
+            res = _sess.call(req)
+            res.setdefault("ok", True)
+            return json.dumps(res, ensure_ascii=False, default=str)
+        except Exception as exc:
+            return _fail(exc)
+
+
+def export_selected(zip_path, redaction="", profiles="", handoff=False):
     """Batch operation on the selection: cut (source 1:1 + text) -> package -> one zip at zip_path."""
     with _lock:
         tmp = Path(tempfile.mkdtemp(prefix="xport_out_"))
@@ -138,7 +188,14 @@ def export_selected(zip_path):
             eng = _need()
             if not eng.selection.units:
                 raise ValueError("Nic nie zaznaczono — najpierw wybierz rozmowy.")
-            eng.op("cut", {})
+            cut = {}
+            if redaction:
+                cut["redaction"] = redaction
+            if profiles:
+                cut["profiles"] = [p for p in profiles.split(",") if p]
+            eng.op("cut", cut)
+            if handoff:
+                eng.op("handoff", {})
             eng.op("write", {"package": str(tmp / "pakiet")})
             files = 0
             with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
