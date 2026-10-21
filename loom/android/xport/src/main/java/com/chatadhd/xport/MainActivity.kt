@@ -115,7 +115,7 @@ class MainActivity : Activity() {
         }
     }
 
-    private fun clip(s: String, n: Int = 20000) = if (s.length > n) s.substring(0, n) + "\n… (skrócono, ${s.length} znaków)" else s
+    private fun clip(s: String, n: Int = 20000) = if (s.length > n) s.substring(0, n) + "\n… (skrócono, ${Pl.count(s.length, Nouns.CHAR)})" else s
 
     // ───────────── Przegląd: add sources (copied, kept), open them all in one engine session ─────────────
     private val importDir get() = File(filesDir, "import")
@@ -152,7 +152,7 @@ class MainActivity : Activity() {
         data.data?.let { uris.add(it) }
         data.clipData?.let { c -> for (i in 0 until c.itemCount) uris.add(c.getItemAt(i).uri) }
         if (uris.isEmpty()) return
-        busy("Kopiuję ${uris.size} plik(ów) do pamięci aplikacji…")
+        busy("Kopiuję ${Pl.count(uris.size, Nouns.FILE)} do pamięci aplikacji…")
         thread {
             try { uris.forEach { copyToPrivate(it) } } catch (e: Throwable) {
                 runOnUiThread { idle(err(e)) }; return@thread
@@ -167,7 +167,7 @@ class MainActivity : Activity() {
     // All copies in the private directory are the sources; the engine opens them together (and merges duplicates).
     private fun reopenAll() {
         val files = (importDir.listFiles() ?: emptyArray()).filter { it.isFile }.sortedBy { it.name }
-        runOnUiThread { status.text = "Analizuję ${files.size} źródeł…" }
+        runOnUiThread { status.text = "Analizuję ${Pl.count(files.size, Nouns.SOURCE)}…" }
         val msg = try {
             JSONObject(py.callAttr("open_sources", JSONArray(files.map { it.absolutePath }).toString()).toString())
         } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
@@ -188,11 +188,11 @@ class MainActivity : Activity() {
         val roots = ArrayList<TNode>()
         val files = (importDir.listFiles() ?: emptyArray()).filter { it.isFile }.sortedBy { it.name }
         roots.add(TNode("Źródła (${files.size})", children = files.map { f ->
-            TNode(displayName(f), "${f.length() / 1024} KB", onOpen = { showText(this, displayName(f), "${displayName(f)}\n${f.length()} bajtów") },
+            TNode(displayName(f), Pl.size(f.length()), onOpen = { showText(this, displayName(f), "${displayName(f)}\n${Pl.size(f.length())} (${Pl.count(f.length(), Nouns.BYTE)})") },
                 actions = { listOf("Usuń źródło" to { removeSource(f) }) })
         }.toMutableList()).also { it.expanded = files.size <= 3 })
         val t = j.getJSONObject("totals")
-        roots.add(TNode("Razem: ${t.optInt("conversations")} rozmów, ${t.optInt("messages")} wiadomości"))
+        roots.add(TNode("Razem: ${Pl.count(t.optInt("conversations"), Nouns.CONVERSATION)}, ${Pl.count(t.optInt("messages"), Nouns.MESSAGE)}"))
         val ps = j.getJSONArray("providers")
         val provNodes = (0 until ps.length()).map { providerNode(ps.getJSONObject(it)) }
         roots.add(TNode("Dostawcy (${provNodes.size})", children = provNodes.toMutableList()).also { it.expanded = true })
@@ -217,7 +217,7 @@ class MainActivity : Activity() {
     private fun convNode(c: JSONObject): TNode {
         val uid = c.optString("uid")
         val title = c.optString("title").ifEmpty { "(bez tytułu)" }
-        return TNode(title, "${c.optInt("messages")} wiadomości · ${c.optString("first", "—")} → ${c.optString("last", "—")}", id = uid, tint = tintOf(uid),
+        return TNode(title, "${Pl.count(c.optInt("messages"), Nouns.MESSAGE)} · ${c.optString("first", "—")} → ${c.optString("last", "—")}", id = uid, tint = tintOf(uid),
             loader = { _, done -> loadEvents(uid, done) }, actions = { engineActions(uid, title) })
     }
 
@@ -252,9 +252,9 @@ class MainActivity : Activity() {
                     var total = 0
                     val dayNodes = (0 until days.length()).map { di ->
                         val d = days.getJSONObject(di); total += d.optInt("count")
-                        TNode(d.optString("day"), "${d.optInt("count")} wiadomości", loader = { _, cb -> loadDay(d.optString("day"), cb) })
+                        TNode(d.optString("day"), Pl.count(d.optInt("count"), Nouns.MESSAGE), loader = { _, cb -> loadDay(d.optString("day"), cb) })
                     }
-                    TNode(m.optString("month"), "$total wiadomości, ${dayNodes.size} dni", children = dayNodes.toMutableList())
+                    TNode(m.optString("month"), "${Pl.count(total, Nouns.MESSAGE)}, ${Pl.count(dayNodes.size, Nouns.DAY)}", children = dayNodes.toMutableList())
                 })
             }
         }
@@ -289,7 +289,7 @@ class MainActivity : Activity() {
             val e = ev.getJSONObject(ei); val id = e.optString("uid"); val lbl = "${e.optString("role")} · ${e.optString("t")}"
             TNode(lbl, e.optString("preview"), id = id, tint = tint, onOpen = { showView(id, lbl) }, actions = { engineActions(id, lbl) })
         }
-        return TNode("⇄ $title", "${b.optString("provider")} · ${ev.length()} wiadomości · ${b.optString("first").drop(11).take(5)}–${b.optString("last").drop(11).take(5)}",
+        return TNode("⇄ $title", "${b.optString("provider")} · ${Pl.count(ev.length(), Nouns.MESSAGE)} · ${b.optString("first").drop(11).take(5)}–${b.optString("last").drop(11).take(5)}",
             id = conv, children = kids.toMutableList(), tint = tint, actions = { engineActions(conv, title) })
     }
 
@@ -299,13 +299,13 @@ class MainActivity : Activity() {
         val runs = w.getJSONArray("runs")
         val kids = (0 until runs.length()).map { runNode(runs.getJSONObject(it)) }
         val uids = kids.mapNotNull { it.id }.distinct()
-        return TNode("⧉ Praca na ${w.optInt("conversations")} rozmowach naraz",
-            "${w.optInt("switches")} przełączeń · ${w.optInt("messages")} wiadomości · ${w.optString("first").drop(11).take(5)}–${w.optString("last").drop(11).take(5)}",
+        return TNode("⧉ Praca na ${Pl.count(w.optInt("conversations"), Nouns.CONVERSATION_LOC)} naraz",
+            "${Pl.count(w.optInt("switches"), Nouns.SWITCH)} · ${Pl.count(w.optInt("messages"), Nouns.MESSAGE)} · ${w.optString("first").drop(11).take(5)}–${w.optString("last").drop(11).take(5)}",
             children = kids.toMutableList(), tint = android.graphics.Color.argb(40, 128, 128, 128),
             actions = {
                 listOf("Zaznacz wszystkie rozmowy z bloku" to {
                     call(JSONObject().put("call", "select").put("how", "items").put("items", JSONArray(uids))) { j ->
-                        toast(if (j.optBoolean("ok")) "Zaznaczono ${uids.size} rozmów" else j.optString("error")); refreshSelection()
+                        toast(if (j.optBoolean("ok")) "Zaznaczono ${Pl.count(uids.size, Nouns.CONVERSATION)}" else j.optString("error")); refreshSelection()
                     }
                 })
             })
@@ -567,7 +567,7 @@ class MainActivity : Activity() {
         if (!j.optBoolean("ok")) { selInfo.text = "Błąd wyboru: ${j.optString("error")}"; selAdapter.setRoots(emptyList()); return }
         val sel = j.getJSONObject("selection")
         val s = sel.getJSONObject("summary")
-        val sb = StringBuilder("Zaznaczono: ${s.optInt("conversations")} rozmów, ${s.optInt("messages")} wiadomości")
+        val sb = StringBuilder("Zaznaczono: ${Pl.count(s.optInt("conversations"), Nouns.CONVERSATION)}, ${Pl.count(s.optInt("messages"), Nouns.MESSAGE)}")
         j.optJSONObject("encoded")?.let { e ->
             val k = e.optJSONObject("by_kind")
             val parts = k?.keys()?.asSequence()?.map { "$it: ${k.optInt(it)}" }?.joinToString(", ") ?: ""
@@ -578,7 +578,7 @@ class MainActivity : Activity() {
         selAdapter.setRoots((0 until items.length()).map { i ->
             val it = items.getJSONObject(i)
             val uid = it.optString("uid"); val title = it.optString("title").ifEmpty { "(bez tytułu)" }
-            TNode(title, "${it.optString("provider")} · ${it.optInt("messages")} wiadomości", id = uid, tint = tintOf(uid),
+            TNode(title, "${it.optString("provider")} · ${Pl.count(it.optInt("messages"), Nouns.MESSAGE)}", id = uid, tint = tintOf(uid),
                 loader = { _, done -> loadEvents(uid, done) },
                 actions = { engineActions(uid, title) + listOf("Usuń z zaznaczenia" to { runSelectItem(uid) }) })
         })
@@ -672,7 +672,7 @@ class MainActivity : Activity() {
                 info.text = "Gotowe."
                 val roots = ArrayList<TNode>()
                 val patch = j.optString("patch_text")
-                if (patch.isNotEmpty()) roots.add(TNode("Zmiany", patch.lines().size.toString() + " linii", onOpen = { showText(this, "Zmiany", patch) }, copy = patch))
+                if (patch.isNotEmpty()) roots.add(TNode("Zmiany", Pl.count(patch.lines().size, Nouns.LINE), onOpen = { showText(this, "Zmiany", patch) }, copy = patch))
                 roots.add(jsonNode("wynik", j, this@MainActivity).also { it.expanded = true })
                 adapter.setRoots(roots)
             }
@@ -771,7 +771,7 @@ class MainActivity : Activity() {
                 if (!j.optBoolean("ok")) "Błąd eksportu: ${j.optString("error")}" else {
                     val out = contentResolver.openOutputStream(uri) ?: throw IllegalStateException("nie można zapisać pliku")
                     out.use { o -> tmp.inputStream().use { it.copyTo(o) } }
-                    "Zapisano zip: ${j.optInt("files")} plików."
+                    "Zapisano zip: ${Pl.count(j.optInt("files"), Nouns.FILE)}."
                 }
             } catch (e: Throwable) { err(e) }
             tmp.delete()
