@@ -1,7 +1,12 @@
-# Kolejka S1 — stan 2026-10-21 20:25 UTC
+# Kolejka S1 — stan 2026-10-21 21:05 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## MAIN = `8e05e38f` (K1a, 21:00 UTC) — bramka `k1a` zielona; CI 259 w toku; K1b w toku
+Bieg **259**: https://github.com/klb-t/chatadhd/actions/runs/39675047482 (start 20:59, ≈ 80–100 min, do ok. 22:30). **Nie pushować kodu w `loom/**` na `main` do jego końca.**
+**K1b** (`wf_b0b95e77-a0d`, Sonnet, start 21:00): Binding.turn, nośnik tury + `context.modify`, `context.receipt`, routing „szerzej/głębiej” w `route.cpp`, ×10 w `estimate.cpp`, statusy w packach — push na
+`claude/m1-w0`, nie na `main`. Dalej M1: W1 (web: arkusz „Co wysłaliśmy”, + › Kontekst), K2, W2, W3, A1a (S2). Tempo: tydzień 31 %, cel 22 % (+9), do punktu piątkowego 47 h → ok. 9,7 pkt/dobę.
 
 ## K1a GOTOWE (20:20 UTC, `8e05e38f` na `claude/m1-w0`) — bramka lokalna `k1a` w toku; R38 potwierdzone na emulatorze
 K1a (kontynuacja `wf_1672d15c-6ce`, 85 wywołań, 209 tys. tokenów): klasy profile/rules w `build_messages`, porządek `stability`, deterministyczny prefiks profilu, paragon
