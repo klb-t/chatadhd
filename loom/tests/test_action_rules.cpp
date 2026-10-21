@@ -84,6 +84,8 @@ TEST_SUITE("action_rules") {
     const auto path = fs::path(LOOM_TEST_FIXTURES) / "golden" / "settings_fields.json";
     auto golden = fsutil::read_file(path);
     REQUIRE(golden);
+    if (std::getenv("LOOM_UPDATE_GOLDEN")) REQUIRE(fsutil::write_file(path, unwrap(settings_fields()).dump()));  // a deliberate change of the fields rewrites the pin
+    golden = fsutil::read_file(path);
     CHECK(unwrap(settings_fields()).dump() == *golden);
   }
 

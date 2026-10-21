@@ -731,15 +731,15 @@
             "key": "id"
           },
           "status": {
-            "state": "planned",
-            "by": "M1-K1",
+            "state": "partial",
+            "by": "M1-K1b",
             "today": {
-              "pl": "Dziś nic nie czyta tej wartości: reguła na ten klucz zostanie zapisana, ale nie zmieni żądania.",
-              "en": "Today nothing reads this value: a rule on this key is written but does not change the request."
+              "pl": "Reguła na ten klucz (dla rozmowy, jednostki albo osoby) i ustawienie osoby „selector_profile” zmieniają żądanie. Wartość tylko na jedną turę jądro czyta z nośnika tury, ale nic go jeszcze nie wypełnia.",
+              "en": "A rule on this key (for a conversation, a unit or the person) and the person's setting “selector_profile” change the request. A value for one turn only is read by the kernel from the turn carrier, but nothing fills it yet."
             },
             "reason": {
-              "pl": "Czytanie wartości w turze (nietrwały nośnik tury) i akcja context.modify przychodzą z pozycją M1-K1.",
-              "en": "Reading the value in a turn (the non-persistent turn carrier) and the action context.modify come with work item M1-K1."
+              "pl": "Akcja context.modify, która wypełnia nośnik tury ze zdania, z chipa i z przycisku, przychodzi z pozycją M1-K1b.",
+              "en": "The action context.modify, which fills the turn carrier from a sentence, a chip and a button, comes with work item M1-K1b."
             }
           }
         },
@@ -769,15 +769,15 @@
             }
           },
           "status": {
-            "state": "planned",
-            "by": "M1-K1",
+            "state": "partial",
+            "by": "M1-K1b",
             "today": {
-              "pl": "Dziś nic nie czyta tej wartości: reguła na ten klucz zostanie zapisana, ale nie zmieni żądania.",
-              "en": "Today nothing reads this value: a rule on this key is written but does not change the request."
+              "pl": "Reguła na ten klucz (dla rozmowy, jednostki albo osoby) i ustawienie osoby „context_breadth_delta” zmieniają żądanie. Wartość tylko na jedną turę jądro czyta z nośnika tury, ale nic go jeszcze nie wypełnia.",
+              "en": "A rule on this key (for a conversation, a unit or the person) and the person's setting “context_breadth_delta” change the request. A value for one turn only is read by the kernel from the turn carrier, but nothing fills it yet."
             },
             "reason": {
-              "pl": "Czytanie wartości w turze (nietrwały nośnik tury) i akcja context.modify przychodzą z pozycją M1-K1.",
-              "en": "Reading the value in a turn (the non-persistent turn carrier) and the action context.modify come with work item M1-K1."
+              "pl": "Akcja context.modify, która wypełnia nośnik tury ze zdania, z chipa i z przycisku, przychodzi z pozycją M1-K1b.",
+              "en": "The action context.modify, which fills the turn carrier from a sentence, a chip and a button, comes with work item M1-K1b."
             }
           }
         },
@@ -807,15 +807,15 @@
             }
           },
           "status": {
-            "state": "planned",
-            "by": "M1-K1",
+            "state": "partial",
+            "by": "M1-K1b",
             "today": {
-              "pl": "Dziś nic nie czyta tej wartości: reguła na ten klucz zostanie zapisana, ale nie zmieni żądania.",
-              "en": "Today nothing reads this value: a rule on this key is written but does not change the request."
+              "pl": "Reguła na ten klucz (dla rozmowy, jednostki albo osoby) i ustawienie osoby „context_depth_delta” zmieniają żądanie. Wartość tylko na jedną turę jądro czyta z nośnika tury, ale nic go jeszcze nie wypełnia.",
+              "en": "A rule on this key (for a conversation, a unit or the person) and the person's setting “context_depth_delta” change the request. A value for one turn only is read by the kernel from the turn carrier, but nothing fills it yet."
             },
             "reason": {
-              "pl": "Czytanie wartości w turze (nietrwały nośnik tury) i akcja context.modify przychodzą z pozycją M1-K1.",
-              "en": "Reading the value in a turn (the non-persistent turn carrier) and the action context.modify come with work item M1-K1."
+              "pl": "Akcja context.modify, która wypełnia nośnik tury ze zdania, z chipa i z przycisku, przychodzi z pozycją M1-K1b.",
+              "en": "The action context.modify, which fills the turn carrier from a sentence, a chip and a button, comes with work item M1-K1b."
             }
           }
         }

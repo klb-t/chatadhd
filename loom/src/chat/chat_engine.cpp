@@ -761,7 +761,12 @@ struct SelectorChoice {
 Result<SelectorChoice> choose_selector_profile(Database& db, const Config& cfg, const ChatOptions& opts, const std::string& conv_id, const Json& values) {
   SelectorChoice c;
   const Json table = values.value("selector_profiles", Json::array());
-  if (!table.is_array() || table.empty()) return c;
+  if (!table.is_array() || table.empty()) {
+    // Nothing to choose from: the settings as they are. A profile named by the request itself is refused rather than ignored.
+    if (opts.selector_profile && !opts.selector_profile->empty())
+      return Error(Errc::InvalidArgument, "unknown selector_profile: " + *opts.selector_profile + " (the effective view has no selector_profiles)");
+    return c;
+  }
   std::string wanted;
   if (opts.selector_profile && !opts.selector_profile->empty()) {
     wanted = *opts.selector_profile;
@@ -1296,7 +1301,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   const bool history_on = opts.include_history && choice.source_on("history");
   if (!conv_id.empty() && opts.include_history && !history_on) rc.drop("history", "source_off", {}, 1);
   if (!conv_id.empty() && history_on) {
-    auto msgs = db_.get_msgs(conv_id);
+    auto msgs = db_.get_msgs(conv_id, true);  // all rows: the excluded ones are counted for the receipt, only the active ones are sent
     if (!msgs) return msgs.error();
     for (const auto& m : *msgs) {
       if (m.status == msg_status::kExcluded) hist_dropped["excluded"].push_back(m.id);

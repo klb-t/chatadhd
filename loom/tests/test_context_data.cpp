@@ -29,7 +29,7 @@ bool both(const Json& v) { return v.is_object() && !v.value("pl", "").empty() &&
 }  // namespace
 
 TEST_SUITE("context_data") {
-  TEST_CASE("scoped values context.*: labels in both languages, the turn as the default level, the steps as data, planned until a reader exists") {
+  TEST_CASE("scoped values context.*: labels in both languages, the turn as the default level, the steps as data, partial since the kernel reads them (M1-K1a)") {
     const Json keys = builtin("action_rules").at("scoped_values").at("keys");
     for (const char* key : {"context.profile", "context.breadth_delta", "context.depth_delta"}) {
       INFO(key);
@@ -37,7 +37,7 @@ TEST_SUITE("context_data") {
       const Json& k = keys.at(key);
       CHECK(both(k.at("label")));
       CHECK(k.at("default_level") == "turn");
-      CHECK(k.at("status").at("state") == "planned");
+      CHECK(k.at("status").at("state") == "partial");  // M1-K1a reads the scope chain and the turn carrier; the action that fills the carrier is M1-K1b
       CHECK(both(k.at("status").at("today")));
     }
     const Json& breadth = keys.at("context.breadth_delta").at("steps");

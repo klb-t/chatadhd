@@ -4352,16 +4352,16 @@
           }
         ],
         "status": {
-          "state": "planned",
+          "state": "partial",
           "by": "M1-K2",
-          "reader": "kernel action profile.interview",
+          "reader": "kernel build_messages (profile prefix); K2: kernel action profile.interview",
           "reason": {
-            "pl": "Część aplikacji, która czyta to pole — pytanie o szczegółowość w wywiadzie o Tobie — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — the detail question of the interview about you — is not built yet; until then the value is stored but nothing reads it."
+            "pl": "Wartość jest czytana przy składaniu żądania: wybiera, ile z tego, co sam powiedziałeś o sobie, idzie do modelu (część „Profil”). Część aplikacji, która pyta o ten poziom w wywiadzie o Tobie, jeszcze nie powstała.",
+            "en": "The value is read when the request is compiled: it chooses how much of what you said about yourself goes to the model (the part “Profile”). The part of the app that asks for this level in the interview about you is not built yet."
           },
           "today": {
-            "pl": "Dziś wywiad o Tobie nie bierze tej wartości pod uwagę.",
-            "en": "Today the interview about you does not take this value into account."
+            "pl": "Dziś zmienia tylko to, ile z Twojego profilu dostaje model; wywiad o Tobie nie bierze tej wartości pod uwagę.",
+            "en": "Today it only changes how much of your profile the model gets; the interview about you does not take this value into account."
           }
         },
         "human": {
@@ -4416,19 +4416,6 @@
             }
           }
         ],
-        "status": {
-          "state": "planned",
-          "by": "M1-K1",
-          "reader": "kernel build_messages -> metadata.context_trace.receipt",
-          "reason": {
-            "pl": "Część aplikacji, która czyta to pole — zapis śladu „Co wysłaliśmy” przy każdej wiadomości — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — storing the “What we sent” trail with each message — is not built yet; until then the value is stored but nothing reads it."
-          },
-          "today": {
-            "pl": "Dziś ślad „Co wysłaliśmy” nie jest zapisywany przy wiadomościach, niezależnie od tej wartości.",
-            "en": "Today the “What we sent” trail is not stored with messages, whatever this value is."
-          }
-        },
         "human": {
           "label": {
             "pl": "Zapis śladu „Co wysłaliśmy”",
@@ -4461,19 +4448,6 @@
         "unit": "bytes",
         "has_default": true,
         "description": "Most bytes of a context receipt stored whole in the auto mode of context_receipt_store; a larger receipt is stored as a summary with the reason. 0 = no cap. Default: 65536.",
-        "status": {
-          "state": "planned",
-          "by": "M1-K1",
-          "reader": "kernel build_messages -> metadata.context_trace.receipt",
-          "reason": {
-            "pl": "Część aplikacji, która czyta to pole — zapis śladu „Co wysłaliśmy” przy każdej wiadomości — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — storing the “What we sent” trail with each message — is not built yet; until then the value is stored but nothing reads it."
-          },
-          "today": {
-            "pl": "Dziś ślad „Co wysłaliśmy” nie jest zapisywany przy wiadomościach, niezależnie od tej wartości.",
-            "en": "Today the “What we sent” trail is not stored with messages, whatever this value is."
-          }
-        },
         "human": {
           "label": {
             "pl": "Limit śladu „Co wysłaliśmy”",
