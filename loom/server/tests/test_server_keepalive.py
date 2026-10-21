@@ -90,7 +90,7 @@ class Server:
         full_env.update(env or {})
         self.proc = subprocess.Popen([BINARY, "--host", "127.0.0.1", "--port", str(self.port), "--data-dir", self.dir.name, *extra],
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=full_env)
-        deadline = time.time() + 15
+        deadline = time.time() + 60   # a sanitizer build on a loaded runner needs far longer than a dev build to listen
         while time.time() < deadline:
             assert self.proc.poll() is None, "loom-server exited: " + self.proc.stderr.read().decode(errors="replace")[-600:]
             try:
