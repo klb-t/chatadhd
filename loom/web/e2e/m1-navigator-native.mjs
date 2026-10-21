@@ -461,6 +461,8 @@ try {
       ev("pointermove", 1, 70, 150); ev("pointermove", 2, 270, 150);
       ev("pointerup", 1, 70, 150); ev("pointerup", 2, 270, 150);
     });
+    // the pinch was dispatched synchronously; React renders the new camera on its own turn, so wait for it (CI runners are slower than a dev box: this raced there)
+    await page.waitForFunction(() => document.querySelector('[data-testid="nav-map"]')?.dataset.zoom === "2.000", null, { timeout: 5000 }).catch(() => {});
     assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "2.000", "fingers 100 px apart to 200 px apart doubles the zoom");
     await page.getByTestId("nav-map-home").tap();   // ⌂: the camera home, so no node is lost after a pan or a pinch
     assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "1.000");
