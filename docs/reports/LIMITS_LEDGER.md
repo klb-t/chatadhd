@@ -29,7 +29,6 @@ bez commita przepada, kontekst trzeba cache'ować od nowa), albo zostawić je ni
 | 00:10 | 8 % | 2 % | 3 (+ P39 weryfikacja) + S1 | linia: 7 % |
 | 00:13 | 10 % | 3 % | 3 + S1 | |
 | 00:14 | 11 % | 3 % | 3 + S1 | linia: 8 %; kontekst agentów: W0 276 tys., P39 226 tys., logowanie 107 tys. tokenów |
-
 | 00:30 | 16 % | 5 % | 3 (W0 w pakietach od 00:18, poprawka logowania, P39 projekt) + S1 + naprawa X-Port | linia: 13 %; po zatrzymaniu długiego agenta W0 tempo 00:14→00:30: +5 pkt w 15,5 min ≈ 0,32 pkt/min, czyli dokładnie tyle, ile trzeba do końca okna |
 | 01:28 | 36 % | 10 % | 3 (W0 pakiety P1–P2 gotowe, P3 w toku; poprawka logowania; P39 w sędziowaniu) + S1 | linia: 33 %; 00:30→01:28: +20 pkt w 58 min ≈ 0,34 pkt/min; tydzień +5 pkt (stosunek 5 h : 7 dni ≈ 4 : 1) |
 
