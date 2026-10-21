@@ -17,7 +17,11 @@ powstał w teście, który sprawdza to samo, co widać (`loom/web/e2e/m1-navigat
 Dotknij **⋮** w prawym górnym rogu. Pozycje: **Graf · Ustawienia · Ty · Ta rozmowa w grafie · Widoki i okna · Analiza w tle ·
 Warsztat (narzędzia zaawansowane)**; na Androidzie dochodzi **Połączenie**. Nie ma „Pamięci” ani „Wiedzy” — zgodnie z Twoją
 uwagą, że to mylące: pamięć to graf widziany od węzła **Ty**, a wiedza to warstwa dowodów w grafie. Dawne panele nie zniknęły —
-są w **Warsztacie**. Menu „+” przy polu wiadomości (P33) zostało bez zmian.
+są w **Warsztacie**. Menu „+” przy polu wiadomości (P33) zostało bez zmian. **Graf · Ty · Ta rozmowa w grafie** otwierają
+**ten sam nawigator**, tylko w innym miejscu: Graf od korzenia, Ty od węzła **Ty** (Twój profil, preferencje, zainteresowania,
+„Co pamiętam”), Ta rozmowa od węzła otwartej rozmowy (bez otwartej rozmowy — od korzenia, nigdy od węzła, którego nie ma).
+
+![Ty w grafie](M1_CHECKPOINT_0/m1-navigator-me.png)
 
 ## 2. Graf — korzeń: wiersze z jądra, licznik albo „nieznane (powód)”
 
@@ -39,17 +43,23 @@ widzisz: **„budżet 50 węzłów na poziom · głębia 1 · 25 z 25”** — i
 Dotknij **ROM (pamięć tylko do odczytu)**. Ścieżka u góry: **Graf › ROM…** (dotknięcie członu cofa, **‹** cofa o jeden).
 Pod ścieżką jedno zdanie, po co jest ten obszar. 13 pozycji (Rozruch, Meta-ontologia, Interpreter akcji, Sterowniki i
 adaptery, Ustawienia fabryczne, …) — każda z chipem **Preset (ROM)** i stanem **jest w aplikacji / częściowo w aplikacji / planowane** (czy ta część
-aplikacji już działa) oraz zdaniem, co robi. **⋯** przy wierszu albo dotknięcie liścia otwiera **kartę węzła** pod listą: warstwy, wartość, po co, „Skąd jest
-wartość”, „Powiązania”, „Co możesz zrobić” (działania jądra słowami; te bez wykonawcy mają chip „planowane”).
+aplikacji już działa) oraz zdaniem, co robi. **⋯** przy wierszu albo dotknięcie liścia otwiera **kartę węzła** pod listą: chip pochodzenia i stan
+słowami, po co, „Skąd jest wartość”, „Powiązania”, „Co możesz zrobić” (działania jądra słowami; te bez wykonawcy mają chip „planowane”).
+Karta pozycji ROM nie ma osobnej linii „Wartość” — jej wartością z jądra jest sam stan, a ten mówi chip (nie ma na ekranie
+gołego `partial`).
+
+![karta Rozruchu](M1_CHECKPOINT_0/m1-navigator-card-rom.png)
 
 ## 4. Karta ustawienia — wartość, po co, co zmienia, skąd
 
 ![karta Temperatury](M1_CHECKPOINT_0/m1-navigator-card-setting.png)
 
 Graf › Profile i ustawienia › Rozmowa › **Temperatura (swoboda odpowiedzi)**: chip „preset zapisany w Twoich ustawieniach”,
-**Warstwy: Preset → Ty**, **Wartość: 0,7**, **Po co**, **Co zmienia** (od następnej odpowiedzi; analiza w tle i archiwum mają
+**Wartość: 0,7**, **Po co**, **Co zmienia** (od następnej odpowiedzi; analiza w tle i archiwum mają
 własne wartości), **Zasada edycji** (fakultatywna — możesz zmienić albo zostawić puste), **Czyta to** (przepływy, które
-czytają pole).
+czytają pole). Skąd jest wartość, mówi **jeden** opis — łańcuch poziomów w karcie (pkt 5); nie ma nad nim drugiej linii
+„Warstwy: Preset → Ty” innymi słowami, bo dwie nazwy jednego poziomu czytały się jak sprzeczność („Preset → Ty” nad
+„Preset aplikacji — nic tu nie ustawiono”).
 
 ## 5. Zmień → „Dla kogo?” → cały łańcuch dziedziczenia
 
@@ -69,6 +79,8 @@ Projekt (gałąź) → rozmowa → tura. **„Zdejmij wartość: Ta rozmowa (0,3
 
 Pod listą jest **mapa** tego samego poziomu (rysowana silnikiem widoków, układ sektorowy: ognisko w środku, dzieci wokół).
 Dotknij kółka — pod mapą pojawia się pełna nazwa i chip, a niżej ta sama karta co z listy; **Wejdź ›** schodzi poziom niżej.
+Podpis przy kółku jest tylko tam, gdzie mieści się w mapie i nie zasłania innego podpisu (najpierw ognisko i dotknięte
+kółko, potem kolejne wiersze); kółko bez podpisu nie jest ukryte — jego pełna nazwa jest pod mapą po dotknięciu.
 **+ / −** i gest dwoma palcami powiększają, **⌂** wraca do środka. Każde kółko ma cel dotyku 44 px. Prostokąt mapy jest
 zgłaszany powłoce Androida (`LoomBridge.setGestureExclusion`), żeby przesuwanie mapy nie było brane za gest „wstecz”.
 **Widok ▾** przełącza Lista / Mapa / Razem — wybór zapisuje się jako Twoje ustawienie `navigator_layout`
@@ -146,8 +158,8 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   „planowane” z powodem (klasa wynika ze wzorców nazw i progów cen; nie ma jeszcze pola, które zapisuje Twoje klasy).
   Zmiana modelu roli = ta sama karta pola co w grafie. Bez wybranego modelu karta roli mówi, że przepływu jeszcze nie ma.
 - **Obszary „nieznane (powód)”** w korzeniu grafu (Samomodel, Technologie i adaptery, Interfejsy, …): żadne źródło
-  nie wypisuje jeszcze ich elementów — licznik pojawi się razem ze źródłem, nie wcześniej. Na mapie etykiety są skracane
-  do 12 znaków (cała nazwa pod mapą po dotknięciu).
+  nie wypisuje jeszcze ich elementów — licznik pojawi się razem ze źródłem, nie wcześniej. Na mapie podpisy są skracane
+  do 12 znaków i rysowane tylko tam, gdzie mieszczą się w mapie bez zasłaniania innych (cała nazwa pod mapą po dotknięciu).
 - **Nie na emulatorze Androida.** Powłoka (wstecz przez `OnBackPressedDispatcher`, `adjustResize`, prostokąty gestów,
   pytanie o wyjście) i przebieg `android-smoke` to M1-A0 (sesja S2). Kroki dla sterownika są w bloku `gate0` w
   `docs/reports/M1_W0_TESTIDS.md`.
