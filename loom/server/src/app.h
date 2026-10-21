@@ -42,7 +42,9 @@ struct ServerOptions {
   // A client that cannot run its event loop for longer than this (blocked, suspended, throttled in the background) finds the connection
   // closed under it and cannot tell until it writes: a request that is not safe to repeat then fails ("other side closed"). Every idle
   // connection holds one of worker_threads while it waits, so a long preset is not free. 0 = no persistent connections: every answer
-  // closes its connection.
+  // closes its connection. The same time also bounds how long a NEW connection may wait before it sends its first request (the library
+  // checks it before every request, the first one included), so a very small value resets slow-starting clients too. main.cpp accepts
+  // whole seconds only and clamps to 2147483647: the library counts the idle time in 64-bit nanoseconds.
   size_t keep_alive_timeout_seconds = 5;
   // R20: chunked / unframed request bodies are refused (411) by default. When true they are accepted on the two
   // upload routes only (import, transcribe, a device's blob), streamed to disk and counted against max_upload_bytes; every
