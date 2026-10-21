@@ -181,7 +181,7 @@ TEST_SUITE("capi") {
     CHECK(take(loom_get_config(c.ctx)).value("_config_version", 0) != 9);
     CHECK(loom_set_config_json(c.ctx, R"({"theme": "amoled", "not_described_key": 1})") == LOOM_OK);
     // the declared values of a field: the same rule as settings.set (data: values[].on_set, on_unlisted)
-    CHECK(loom_set_config_json(c.ctx, R"({"chat_context_order": "stability", "theme": "dark"})") == LOOM_E_INVALID_ARGUMENT);
+    CHECK(loom_set_config_json(c.ctx, R"({"chat_context_order": "no_such_order", "theme": "dark"})") == LOOM_E_INVALID_ARGUMENT);
     CHECK(take(loom_get_config(c.ctx))["theme"] == "amoled");  // one refusal = nothing of the patch written
     CHECK(loom_set_config_json(c.ctx, R"({"layout_mode": "windows"})") == LOOM_OK);  // planned, its reader degrades: stored
     CHECK(take(loom_get_config(c.ctx))["layout_mode"] == "windows");

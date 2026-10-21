@@ -167,12 +167,11 @@ TEST_SUITE("action_runner") {
     CHECK(unknown.at("status") == "failed");
     CHECK(unknown.at("error").at("message").get<std::string>().find("\"both\", \"list\", \"map\"") != std::string::npos);
     CHECK(f.rt->config().get("navigator_layout") == "list");
-    // a planned value whose reader rejects it (on_set: refuse) is refused with the data's own reason (chat.send would fail at the next request)
-    const Json planned = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}}));
-    CHECK(planned.at("status") == "failed");
-    CHECK(planned.at("error").at("message").get<std::string>().find("planned") != std::string::npos);
-    CHECK(planned.at("error").at("message").get<std::string>().find("M1-D2") != std::string::npos);
-    CHECK(f.rt->config().get("chat_context_order").is_null());
+    // the order `stability` is in the context data since M1-D2 (it was planned with on_set: refuse before): it is stored like any listed value
+    // (the refuse rule itself is exercised on a synthetic value in test_settings_fields)
+    const Json stability = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}}));
+    CHECK(stability.at("status") == "completed");
+    CHECK(f.rt->config().get("chat_context_order") == "stability");
     // the empty value is a value of its own (the profile's order), listed in the data
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", ""}}}})).at("status") == "completed");
     CHECK(f.rt->config().get("chat_context_order") == "");
@@ -200,16 +199,15 @@ TEST_SUITE("action_runner") {
   TEST_CASE("settings.set: chat_context_order lists its reader's orders (values_from), so an order a profile overlay adds is stored and only an unknown name is refused") {
     Fixture f;
     const auto root = f.rt->paths().root;
-    // the user's own order and the planned `stability`, added the way the reader (chat_engine) reads orders: profiles/chat_context.pack
+    // the user's own order, added the way the reader (chat_engine) reads orders: profiles/chat_context.pack
     unwrap(fsutil::write_file(root / "profiles" / "chat_context.pack",
         Json{{"schema", "loom.runtime_profile_overlay/1"}, {"domain", "chat_context"},
-             {"overrides", Json{{"orders", Json{{"mine", Json::array({"memory", "system", "project", "history", "graph"})},
-                                                {"stability", Json::array({"system", "memory", "project", "history", "graph"})}}}}}}.dump()));
+             {"overrides", Json{{"orders", Json{{"mine", Json::array({"memory", "system", "project", "history", "graph"})}}}}}}.dump()));
     const Json mine = unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "mine"}}}}));
     CHECK(mine.at("status") == "completed");
     CHECK_FALSE(mine.at("result").at("data").contains("warning"));
     CHECK(f.rt->config().get("chat_context_order") == "mine");
-    // a planned annotation whose value the reader's profile now has is no longer planned
+    // a shipped order is stored as well
     CHECK(unwrap(f.runner().run(Json{{"action", "settings.set"}, {"args", Json{{"key", "chat_context_order"}, {"value", "stability"}}}})).at("status") == "completed");
     CHECK(f.rt->config().get("chat_context_order") == "stability");
     // a name the effective profile does not know is still refused (chat.send would reject it), and nothing is stored
@@ -227,7 +225,7 @@ TEST_SUITE("action_runner") {
       bool listed = false;
       for (const auto& v : field.at("values"))
         if (v.at("value") == "mine") { listed = true; CHECK(v.at("from_profile") == "chat_context"); }
-        else if (v.at("value") == "stability") { CHECK(v.at("status_superseded") == "planned"); CHECK_FALSE(v.contains("status")); }
+        else if (v.at("value") == "stability") { CHECK_FALSE(v.contains("status")); CHECK_FALSE(v.contains("status_superseded")); }
       CHECK(listed);
     }
   }

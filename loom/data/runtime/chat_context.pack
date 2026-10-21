@@ -2,9 +2,9 @@
   "schema": "loom.runtime_profile/1",
   "domain": "chat_context",
   "revision": 1,
-  "description": "Order of context classes in the chat prompt. legacy (default preset) reproduces the historical order byte for byte: system, memory, graph, project, history. stable_first puts the slowly changing classes first so provider prompt prefixes stay reusable: S0 system, S1 memory/core facts, S2 project context, S3 history, S4 question-specific graph/selected context, then the active-task block and S5 the question, which always come last. Orders are data: a user can add their own named order. Presets, not rules.",
+  "description": "Order of context classes in the chat prompt and the selector profiles. Orders: legacy reproduces the historical order byte for byte (system, memory, graph, project, history); stable_first puts the slowly changing classes first so provider prompt prefixes stay reusable (system, memory, project, history, graph); stability (the default preset since M1-D2) adds the classes profile (the stable part of what the app knows about the user) and rules (the rules about the user) right after the system instruction: system, profile, rules, memory, project, history, graph. The active-task block and the question always come last. Until the kernel fills the classes profile and rules (work item M1-K1) they are empty, so stability sends the same bytes as stable_first. Orders are data: a user can add their own named order. selector_profiles are the presets of the context selector (a view kind of the same name): each is a bundle of knobs that already exist, not a new engine. In a profile a null number or name means: what the setting says now (graph_memory_max_nodes, graph_memory_depth, chat_representation, chat_flow); a source set to false is not read by that profile; a number of a source that is false is 0 and ignored; history_window null = the whole conversation; budget_tokens null = no limit of its own. Presets, not rules.",
   "defaults": {
-    "context_order": "legacy",
+    "context_order": "stability",
     "orders": {
       "legacy": [
         "system",
@@ -19,8 +19,323 @@
         "project",
         "history",
         "graph"
+      ],
+      "stability": [
+        "system",
+        "profile",
+        "rules",
+        "memory",
+        "project",
+        "history",
+        "graph"
       ]
-    }
+    },
+    "selector_profiles": [
+      {
+        "id": "loom",
+        "label": {
+          "pl": "Loom (preset)",
+          "en": "Loom (preset)"
+        },
+        "why": {
+          "pl": "Zwykły czat z pełnym kontekstem: instrukcja, to, co wiem o Tobie, reguły o Tobie, pamięć, projekt, rozmowa i powiązania z grafu. Początek żądania jest taki sam w każdej turze, więc dostawca może go zapamiętać i bywa taniej.",
+          "en": "A normal chat with the full context: the instruction, what I know about you, the rules about you, memory, project, the conversation and the links from the graph. The start of the request is the same in every turn, so the provider can remember it and it can be cheaper."
+        },
+        "order": "stability",
+        "sources": {
+          "profile": true,
+          "rules": true,
+          "memory": true,
+          "project": true,
+          "history": true,
+          "graph": true,
+          "search": false,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": null,
+          "search_limit": 0,
+          "history_window": null
+        },
+        "depth": {
+          "hops": null
+        },
+        "representation": null,
+        "flow": null,
+        "budget_tokens": null,
+        "status": "preset",
+        "note": {
+          "pl": "Liczba węzłów i głębokość grafu, sposób wysłania rozmowy i przepływ są takie, jak w ustawieniach (preset: 20 węzłów, głębokość 2). Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "The number of graph nodes, the depth, how the conversation is sent and the flow are as in the settings (preset: 20 nodes, depth 2). Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      },
+      {
+        "id": "loom_legacy",
+        "label": {
+          "pl": "Loom (dawny)",
+          "en": "Loom (legacy)"
+        },
+        "why": {
+          "pl": "Tak jak było przed zmianą: dokładnie te same bajty żądania, bez części o Tobie. Do powrotu, gdy coś ma wyglądać jak dawniej.",
+          "en": "As it was before the change: exactly the same request bytes, without the part about you. For going back when something must look as it did."
+        },
+        "order": "legacy",
+        "sources": {
+          "profile": false,
+          "rules": true,
+          "memory": true,
+          "project": true,
+          "history": true,
+          "graph": true,
+          "search": false,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": null,
+          "search_limit": 0,
+          "history_window": null
+        },
+        "depth": {
+          "hops": null
+        },
+        "representation": null,
+        "flow": null,
+        "budget_tokens": null,
+        "status": "preset",
+        "note": {
+          "pl": "Instrukcja, pamięć, graf, projekt, historia; reguły strażnika są w części z instrukcją, bez prefiksu profilu. Ten sam efekt daje dziś ustawienie „Kolejność części żądania” = legacy. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "The instruction, memory, graph, project, history; the guardian rules sit in the instruction part, without the profile prefix. The same effect is given today by the setting “Order of the request parts” = legacy. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      },
+      {
+        "id": "compat",
+        "label": {
+          "pl": "Zgodność",
+          "en": "Compatibility"
+        },
+        "why": {
+          "pl": "Tylko stała instrukcja i cała rozmowa, jak w zwykłym czacie u dostawcy. Bez pamięci, grafu i tego, co wiem o Tobie. Do porównań i gdy dodatki przeszkadzają.",
+          "en": "Only the fixed instruction and the whole conversation, as in a plain provider chat. Without memory, the graph and what I know about you. For comparisons and when the extras get in the way."
+        },
+        "order": "legacy",
+        "sources": {
+          "profile": false,
+          "rules": false,
+          "memory": false,
+          "project": false,
+          "history": true,
+          "graph": false,
+          "search": false,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": 0,
+          "search_limit": 0,
+          "history_window": null
+        },
+        "depth": {
+          "hops": 0
+        },
+        "representation": "raw",
+        "flow": "plain",
+        "budget_tokens": null,
+        "status": "preset",
+        "note": {
+          "pl": "Surowa rozmowa w całości (bez okna historii), bez pamięci, projektu, grafu, profilu i reguł. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "The raw conversation in full (no history window), without memory, project, graph, profile and rules. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      },
+      {
+        "id": "lean",
+        "label": {
+          "pl": "Oszczędny",
+          "en": "Economical"
+        },
+        "why": {
+          "pl": "Jak Loom, ale rozmowa bez wypełniaczy i dygresji, a pamięć z grafu płytsza i mniejsza. Mniej tokenów w każdej turze.",
+          "en": "Like Loom, but the conversation without fillers and digressions, and the graph memory shallower and smaller. Fewer tokens in every turn."
+        },
+        "order": "stability",
+        "sources": {
+          "profile": true,
+          "rules": true,
+          "memory": true,
+          "project": true,
+          "history": true,
+          "graph": true,
+          "search": false,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": 10,
+          "search_limit": 0,
+          "history_window": null
+        },
+        "depth": {
+          "hops": 1
+        },
+        "representation": "lean",
+        "flow": null,
+        "budget_tokens": null,
+        "status": "preset",
+        "note": {
+          "pl": "Twoje wiadomości bez wypełniaczy i dygresji (poziom L2 z analizy, tam gdzie jest). Graf: 10 węzłów i 1 skok to liczby presetu, można je zmienić. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "Your messages without fillers and digressions (level L2 of the analysis, where it exists). Graph: 10 nodes and 1 hop are preset numbers, you can change them. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      },
+      {
+        "id": "graph_in",
+        "label": {
+          "pl": "Graf na wejściu",
+          "en": "Graph in"
+        },
+        "why": {
+          "pl": "Wybrany kontekst idzie do modelu jako pakiet grafu (węzły i powiązania), głębiej niż zwykle. Odpowiedź może być tekstem albo grafem.",
+          "en": "The chosen context goes to the model as a graph packet (nodes and links), deeper than usual. The answer can be text or a graph."
+        },
+        "order": "stability",
+        "sources": {
+          "profile": true,
+          "rules": true,
+          "memory": true,
+          "project": true,
+          "history": true,
+          "graph": true,
+          "search": false,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": null,
+          "search_limit": 0,
+          "history_window": null
+        },
+        "depth": {
+          "hops": 3
+        },
+        "representation": null,
+        "flow": "graph_in",
+        "budget_tokens": null,
+        "status": "calibration",
+        "note": {
+          "pl": "Kalibracja: w 12 wywołaniach mechanika zadziałała 12/12, cel 10/12, pełna adekwatność 9/12, oparcie w źródłach 9/12 (docs/reports/model-research-2026-10-04.md:21). Głębokość 3 to wartość wyjściowa do strojenia. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "Calibration: in 12 calls the mechanics worked 12/12, the goal 10/12, full adequacy 9/12, grounding in the sources 9/12 (docs/reports/model-research-2026-10-04.md:21). Depth 3 is a starting value to tune. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      },
+      {
+        "id": "like_claude",
+        "label": {
+          "pl": "Jak Claude (apka)",
+          "en": "Like Claude (app)"
+        },
+        "why": {
+          "pl": "Na początku to, co wiem o Tobie (styl i preferencje), potem pamięć projektu i rozmowa. Bez grafu.",
+          "en": "First what I know about you (style and preferences), then the project memory and the conversation. Without the graph."
+        },
+        "order": "stability",
+        "sources": {
+          "profile": true,
+          "rules": false,
+          "memory": true,
+          "project": true,
+          "history": true,
+          "graph": false,
+          "search": false,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": 0,
+          "search_limit": 0,
+          "history_window": null
+        },
+        "depth": {
+          "hops": 0
+        },
+        "representation": "raw",
+        "flow": "plain",
+        "budget_tokens": null,
+        "status": "calibration",
+        "note": {
+          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. Artefakty i narzędzia tej aplikacji: planowane. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. The artifacts and tools of that app: planned. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      },
+      {
+        "id": "like_chatgpt",
+        "label": {
+          "pl": "Jak ChatGPT (apka)",
+          "en": "Like ChatGPT (app)"
+        },
+        "why": {
+          "pl": "Własne instrukcje z tego, co wiem o Tobie, odpowiednie wpisy z pamięci, kilka najlepiej pasujących fragmentów dawnych rozmów i bieżąca rozmowa.",
+          "en": "Custom instructions from what I know about you, the fitting memory entries, a few of the best matching passages of past conversations and the current conversation."
+        },
+        "order": "stability",
+        "sources": {
+          "profile": true,
+          "rules": true,
+          "memory": true,
+          "project": false,
+          "history": true,
+          "graph": false,
+          "search": true,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": 0,
+          "search_limit": 10,
+          "history_window": null
+        },
+        "depth": {
+          "hops": 0
+        },
+        "representation": "raw",
+        "flow": "plain",
+        "budget_tokens": null,
+        "status": "calibration",
+        "note": {
+          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. 10 wyników szukania to liczba presetu. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. 10 search results is a preset number. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      },
+      {
+        "id": "like_gemini",
+        "label": {
+          "pl": "Jak Gemini (apka)",
+          "en": "Like Gemini (app)"
+        },
+        "why": {
+          "pl": "Kanał „kontekst osobisty”: najlepiej pasujące fragmenty dawnych rozmów i bieżąca rozmowa. Bez pamięci i grafu.",
+          "en": "A “personal context” channel: the best matching passages of past conversations and the current conversation. Without memory and the graph."
+        },
+        "order": "stability",
+        "sources": {
+          "profile": false,
+          "rules": false,
+          "memory": false,
+          "project": false,
+          "history": true,
+          "graph": false,
+          "search": true,
+          "kb": false
+        },
+        "breadth": {
+          "nodes": 0,
+          "search_limit": 10,
+          "history_window": null
+        },
+        "depth": {
+          "hops": 0
+        },
+        "representation": "raw",
+        "flow": "plain",
+        "budget_tokens": null,
+        "status": "calibration",
+        "note": {
+          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. 10 wyników szukania to liczba presetu. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
+          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. 10 search results is a preset number. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+        }
+      }
+    ]
   },
   "value_schema": {
     "type": "object",
@@ -34,7 +349,7 @@
         "type": "string",
         "x-setting": "/context_order",
         "x-consumer": "chat_engine",
-        "description": "Name of the active order; must be a key of orders. Per-send option context_order and config key chat_context_order override it."
+        "description": "Name of the active order; must be a key of orders. Per-send option context_order and config key chat_context_order override it. Preset: stability."
       },
       "orders": {
         "type": "object",
@@ -46,6 +361,8 @@
             "type": "string",
             "enum": [
               "system",
+              "profile",
+              "rules",
               "memory",
               "project",
               "history",
@@ -53,7 +370,160 @@
             ]
           }
         },
-        "description": "Named orders over the classes system (S0), memory (S1), project (S2), history (S3), graph (S4). Active task and the question (S5) are always last."
+        "description": "Named orders over the classes system (S0), profile (the stable part about the user), rules (the rules about the user), memory (S1), project (S2), history (S3), graph (S4). Active task and the question (S5) are always last."
+      },
+      "selector_profiles": {
+        "type": "array",
+        "x-setting": "/selector_profiles",
+        "x-consumer": "chat_engine",
+        "description": "Presets of the context selector, listed as the view kind selector_profiles (node selector_profile:<id>). A profile is a bundle of existing knobs; the kernel reads the table from work item M1-K1 on.",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "label",
+            "order",
+            "status"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Name of the profile; the address of its node is selector_profile:<id>."
+            },
+            "label": {
+              "type": "object",
+              "required": [
+                "pl",
+                "en"
+              ],
+              "properties": {
+                "pl": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "en": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "why": {
+              "type": "object",
+              "required": [
+                "pl",
+                "en"
+              ],
+              "properties": {
+                "pl": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "en": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "order": {
+              "type": "string",
+              "minLength": 1,
+              "description": "A key of orders."
+            },
+            "sources": {
+              "type": "object",
+              "description": "Which classes of context the profile reads: profile, rules, memory, project, history, graph, search, kb. true = read (the conversation toggles still apply); false = not read.",
+              "additionalProperties": {
+                "type": "boolean"
+              }
+            },
+            "breadth": {
+              "type": "object",
+              "description": "nodes: how many graph nodes (null = setting graph_memory_max_nodes); search_limit: how many search results; history_window: how many last messages (null = the whole conversation).",
+              "properties": {
+                "nodes": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "search_limit": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "history_window": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "depth": {
+              "type": "object",
+              "description": "hops: how many links from the focus the graph selection follows (null = setting graph_memory_depth).",
+              "properties": {
+                "hops": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "representation": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "A preset of the guardian profile representation (raw, denoised, lean, guardian, mixed); null = setting chat_representation."
+            },
+            "flow": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "A flow of the guardian profile context_io (plain, graph_out, graph_in, graph_io); null = setting chat_flow."
+            },
+            "budget_tokens": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "description": "A token budget of the profile’s own; null = none of its own."
+            },
+            "status": {
+              "type": "string",
+              "minLength": 1,
+              "description": "preset or calibration (a user’s own profile may use its own word)."
+            },
+            "note": {
+              "type": "object",
+              "required": [
+                "pl",
+                "en"
+              ],
+              "properties": {
+                "pl": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "en": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": true
+        }
       }
     }
   }

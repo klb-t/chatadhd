@@ -138,6 +138,110 @@
       "value": {
         "$include": "onboarding/ui.pack"
       }
+    },
+    {
+      "id": "profile.subgraphs/v1",
+      "key": "profile.subgraphs",
+      "area": "profiles/subgraphs",
+      "revision": 1,
+      "value": {
+        "schema": "loom.profile_subgraphs/1",
+        "description": "The parts of the node You (party:self) and the order in which the stable ones are rendered into the profile prefix of a request: order_for_prefix (null = not part of the prefix) and stability_rank (1 = changes least). The kernel reads this table from work item M1-K2; today only the data exists.",
+        "subgraphs": [
+          {
+            "id": "identity",
+            "label": {
+              "pl": "Tożsamość",
+              "en": "Identity"
+            },
+            "why": {
+              "pl": "Kim jesteś: imię, rola, strefa czasu. Zmienia się najrzadziej, więc idzie na początek.",
+              "en": "Who you are: name, role, time zone. It changes least, so it goes first."
+            },
+            "order_for_prefix": 1,
+            "stability_rank": 1
+          },
+          {
+            "id": "preferences",
+            "label": {
+              "pl": "Preferencje",
+              "en": "Preferences"
+            },
+            "why": {
+              "pl": "Styl, długość odpowiedzi, język. Mogą być inne dla każdego przepływu.",
+              "en": "Style, answer length, language. They can differ for every flow."
+            },
+            "order_for_prefix": 2,
+            "stability_rank": 2,
+            "per_flow": true
+          },
+          {
+            "id": "policies",
+            "label": {
+              "pl": "Zasady",
+              "en": "Policies"
+            },
+            "why": {
+              "pl": "Co wolno robić z Twoimi danymi i o co pytać: prywatność i to, co strażnik ma zapamiętane.",
+              "en": "What may be done with your data and what to ask about: privacy and what the guardian remembers."
+            },
+            "order_for_prefix": 3,
+            "stability_rank": 3
+          },
+          {
+            "id": "units",
+            "label": {
+              "pl": "Jednostki",
+              "en": "Units"
+            },
+            "why": {
+              "pl": "Projekty, zespoły i organizacje, do których należysz.",
+              "en": "The projects, teams and organisations you belong to."
+            },
+            "order_for_prefix": 4,
+            "stability_rank": 4
+          },
+          {
+            "id": "interests",
+            "label": {
+              "pl": "Zainteresowania",
+              "en": "Interests"
+            },
+            "why": {
+              "pl": "Tematy, o których piszesz; to wnioski z analizy, nie Twoje słowa.",
+              "en": "Topics you write about; these are conclusions of the analysis, not your words."
+            },
+            "order_for_prefix": 5,
+            "stability_rank": 5
+          },
+          {
+            "id": "network",
+            "label": {
+              "pl": "Sieć",
+              "en": "Network"
+            },
+            "why": {
+              "pl": "Osoby i organizacje, które znasz.",
+              "en": "The people and organisations you know."
+            },
+            "order_for_prefix": 6,
+            "stability_rank": 6
+          },
+          {
+            "id": "memory",
+            "label": {
+              "pl": "Co pamiętam",
+              "en": "What I remember"
+            },
+            "why": {
+              "pl": "Wpisy drzewa pamięci. Idą do żądania jako część „Pamięć”, nie jako profil.",
+              "en": "The entries of the memory tree. They go into the request as the part “Memory”, not as the profile."
+            },
+            "order_for_prefix": null,
+            "stability_rank": 7
+          }
+        ]
+      }
     }
   ],
   "vocabulary": {

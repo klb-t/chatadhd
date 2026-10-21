@@ -519,7 +519,7 @@ TEST_SUITE("settings_fields") {
       }
     }
     // the raw write paths (loom_set_config, PATCH /api/config, CLI) share the check
-    CHECK_FALSE(check_config_patch(Json{{"chat_context_order", "stability"}}));
+    CHECK(unwrap(check_config_patch(Json{{"chat_context_order", "stability"}})).empty());  // M1-D2 put the order into the data: no longer planned
     CHECK_FALSE(check_config_patch(Json{{"chat_context_order", "no_such_order"}}));
     CHECK_FALSE(check_config_patch(Json{{"_config_version", 9}}));
     const Json windows = unwrap(check_config_patch(Json{{"layout_mode", "windows"}}));
@@ -532,8 +532,12 @@ TEST_SUITE("settings_fields") {
     // the policy is data: a user overlay may let the planned value through (warn) or close a list (refuse)
     Json field;
     for (const auto& f : doc["fields"]) if (f["key"] == "chat_context_order") field = f;
-    for (auto& v : field["values"]) if (v["value"] == "stability") v["on_set"] = "warn";
-    CHECK(unwrap(check_declared_value(field, "stability"))["status"] == "planned");
+    // no shipped value is planned with on_set refuse any more (stability left that list with M1-D2): the rule is exercised on a value of its own
+    field["values"].push_back(Json{{"value", "future"}, {"status", "planned"}, {"on_set", "refuse"},
+                                   {"reason", Json{{"pl", "jeszcze nie ma"}, {"en", "not yet"}}}, {"meaning", Json{{"pl", "przyszłość"}, {"en", "future"}}}});
+    CHECK_FALSE(check_declared_value(field, "future"));
+    for (auto& v : field["values"]) if (v["value"] == "future") v["on_set"] = "warn";
+    CHECK(unwrap(check_declared_value(field, "future"))["status"] == "planned");
     field["on_unlisted"] = "warn";
     CHECK(unwrap(check_declared_value(field, "mine"))["status"] == "unlisted");
     field["values_open"] = true;

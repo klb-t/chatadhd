@@ -717,6 +717,107 @@
             "en": "Flow of the request (context in, answer out)",
             "pl": "Przepływ żądania (kontekst na wejściu, odpowiedź na wyjściu)"
           }
+        },
+        "context.profile": {
+          "setting": "selector_profile",
+          "label": {
+            "pl": "Profil selektora kontekstu",
+            "en": "Context selector profile"
+          },
+          "default_level": "turn",
+          "values_from": {
+            "profile": "chat_context",
+            "pointer": "/selector_profiles",
+            "key": "id"
+          },
+          "status": {
+            "state": "planned",
+            "by": "M1-K1",
+            "today": {
+              "pl": "Dziś nic nie czyta tej wartości: reguła na ten klucz zostanie zapisana, ale nie zmieni żądania.",
+              "en": "Today nothing reads this value: a rule on this key is written but does not change the request."
+            },
+            "reason": {
+              "pl": "Czytanie wartości w turze (nietrwały nośnik tury) i akcja context.modify przychodzą z pozycją M1-K1.",
+              "en": "Reading the value in a turn (the non-persistent turn carrier) and the action context.modify come with work item M1-K1."
+            }
+          }
+        },
+        "context.breadth_delta": {
+          "setting": "context_breadth_delta",
+          "label": {
+            "pl": "Szerokość kontekstu (zmiana względem profilu)",
+            "en": "Context breadth (change against the profile)"
+          },
+          "default_level": "turn",
+          "steps": {
+            "wider": {
+              "op": "multiply",
+              "by": 2,
+              "label": {
+                "pl": "szerzej",
+                "en": "wider"
+              }
+            },
+            "narrower": {
+              "op": "divide",
+              "by": 2,
+              "label": {
+                "pl": "węziej",
+                "en": "narrower"
+              }
+            }
+          },
+          "status": {
+            "state": "planned",
+            "by": "M1-K1",
+            "today": {
+              "pl": "Dziś nic nie czyta tej wartości: reguła na ten klucz zostanie zapisana, ale nie zmieni żądania.",
+              "en": "Today nothing reads this value: a rule on this key is written but does not change the request."
+            },
+            "reason": {
+              "pl": "Czytanie wartości w turze (nietrwały nośnik tury) i akcja context.modify przychodzą z pozycją M1-K1.",
+              "en": "Reading the value in a turn (the non-persistent turn carrier) and the action context.modify come with work item M1-K1."
+            }
+          }
+        },
+        "context.depth_delta": {
+          "setting": "context_depth_delta",
+          "label": {
+            "pl": "Głębokość kontekstu (zmiana względem profilu)",
+            "en": "Context depth (change against the profile)"
+          },
+          "default_level": "turn",
+          "steps": {
+            "deeper": {
+              "op": "add",
+              "by": 1,
+              "label": {
+                "pl": "głębiej",
+                "en": "deeper"
+              }
+            },
+            "shallower": {
+              "op": "add",
+              "by": -1,
+              "label": {
+                "pl": "płycej",
+                "en": "shallower"
+              }
+            }
+          },
+          "status": {
+            "state": "planned",
+            "by": "M1-K1",
+            "today": {
+              "pl": "Dziś nic nie czyta tej wartości: reguła na ten klucz zostanie zapisana, ale nie zmieni żądania.",
+              "en": "Today nothing reads this value: a rule on this key is written but does not change the request."
+            },
+            "reason": {
+              "pl": "Czytanie wartości w turze (nietrwały nośnik tury) i akcja context.modify przychodzą z pozycją M1-K1.",
+              "en": "Reading the value in a turn (the non-persistent turn carrier) and the action context.modify come with work item M1-K1."
+            }
+          }
         }
       }
     }
@@ -987,7 +1088,7 @@
       },
       "scoped_values": {
         "type": "object",
-        "description": "Settings the scope chain resolves (R47): the key a set_value rule targets, the user's setting that is its person-level baseline, and for a setting that holds an object which field of it. A rule on a setting the table does not list is written all the same, and the answer says that nothing reads it per scope yet.",
+        "description": "Settings the scope chain resolves (R47): the key a set_value rule targets, the user's setting that is its person-level baseline, and for a setting that holds an object which field of it. A rule on a setting the table does not list is written all the same, and the answer says that nothing reads it per scope yet. default_level: the level a rule on the key is written at when the sentence names none (turn = the next request only); steps: how a spoken step changes the value; values_from: where the allowed values are listed; status: planned until a reader exists.",
         "required": [
           "keys"
         ],
@@ -1008,6 +1109,19 @@
                   "type": "string"
                 },
                 "label": {
+                  "type": "object"
+                },
+                "default_level": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "steps": {
+                  "type": "object"
+                },
+                "values_from": {
+                  "type": "object"
+                },
+                "status": {
                   "type": "object"
                 }
               },

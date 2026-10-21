@@ -387,7 +387,13 @@ def main() -> int:
         srv.stop()
 
     # 12. throttling covers registration (account flooding, invite guessing) and the password check
-    write_profile(root, argon2id_preset="owasp_min", registration="invite")
+    #     The delay after the free attempts is a base of 1 s in the preset; under a sanitizer on a loaded runner one Argon2id
+    #     request takes longer than that, so the next attempt came after the delay and was never throttled (CI 257: eight 403 and no
+    #     429). The delay is made longer than any slow request here: this step is about throttling, not about timing.
+    slow_ok_throttle = {"mode": "on", "reset_seconds": 900, "trust_forwarded_for": False,
+                        "per_login": {"free_attempts": 5, "base_delay_seconds": 120, "max_delay_seconds": 900},
+                        "per_ip": {"free_attempts": 20, "base_delay_seconds": 1, "max_delay_seconds": 900}}
+    write_profile(root, argon2id_preset="owasp_min", registration="invite", throttle=slow_ok_throttle)
     srv = Server(root)
     try:
         b = srv.base

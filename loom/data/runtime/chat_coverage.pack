@@ -2807,6 +2807,48 @@
             "POST /api/knowledge/query"
           ]
         }
+      },
+      {
+        "id": "context_modify",
+        "title": {
+          "pl": "Szerzej, węziej, głębiej, płycej, profil selektora",
+          "en": "Wider, narrower, deeper, shallower, selector profile"
+        },
+        "planned_action": "context.modify",
+        "reason": {
+          "pl": "Frazy są już w danych (intent_routing.pack, heuristic.context_modifiers), ale akcja context.modify, która je wykona na następną turę, jeszcze nie istnieje: zdanie „szerzej” jest dziś zwykłą wiadomością.",
+          "en": "The phrases are already in the data (intent_routing.pack, heuristic.context_modifiers), but the action context.modify that would carry them out for the next turn does not exist yet: the sentence “wider” is an ordinary message today."
+        },
+        "plan": {
+          "pl": "Pozycja M1-K1: akcja context.modify (nietrwały modyfikator tury, pod strażnikiem ×10), router czyta frazy; wtedy ta pozycja przechodzi do capabilities.",
+          "en": "Work item M1-K1: the action context.modify (a non-persistent turn modifier, under the ×10 guard) and the router reads the phrases; then this entry moves to capabilities."
+        },
+        "examples": {
+          "pl": "szerzej",
+          "en": "wider"
+        },
+        "surfaces": {}
+      },
+      {
+        "id": "context_receipt",
+        "title": {
+          "pl": "Co wysłaliśmy do modelu",
+          "en": "What we sent to the model"
+        },
+        "planned_action": "context.receipt",
+        "reason": {
+          "pl": "Słowa „Co wysłaliśmy” są już w danych (conversation_view.pack, presentation.context_receipt), ale jądro nie zapisuje jeszcze śladu per wiadomość, więc akcji context.receipt nie ma.",
+          "en": "The words of “What we sent” are already in the data (conversation_view.pack, presentation.context_receipt), but the kernel does not store a receipt per message yet, so there is no action context.receipt."
+        },
+        "plan": {
+          "pl": "Pozycja M1-K1: kontrakt loom.context_receipt/1, zapis w metadata.context_trace.receipt i akcja context.receipt; wtedy ta pozycja przechodzi do capabilities.",
+          "en": "Work item M1-K1: the contract loom.context_receipt/1, stored in metadata.context_trace.receipt, and the action context.receipt; then this entry moves to capabilities."
+        },
+        "examples": {
+          "pl": "co wysłaliśmy",
+          "en": "what we sent"
+        },
+        "surfaces": {}
       }
     ]
   },

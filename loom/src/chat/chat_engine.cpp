@@ -1101,10 +1101,13 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     part_history.insert(part_history.begin(), Json{{"role", "system"}, {"content", chat::formats::packet_block(flow->section, rendered)}});
   }
 
+  // The classes profile and rules (order stability) have no part yet: the kernel fills them with M1-K1. They stay empty here and must
+  // not fall through to the graph part, or the graph would be sent once per class name.
+  const Json no_part = Json::array();
   for (const auto& cls : known_orders.at(order_name)) {
     const auto name = cls.get<std::string>();
     const Json& part = name == "system" ? part_system : name == "memory" ? part_memory : name == "project" ? part_project
-                     : name == "history" ? part_history : part_graph;
+                     : name == "history" ? part_history : name == "graph" ? part_graph : no_part;
     for (const auto& item : part) messages.push_back(item);
   }
 
