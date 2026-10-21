@@ -21,6 +21,12 @@ S2 dołącza go do swojej gałęzi (PR #48) i jego FF `main` ma być jedynym pus
 szczypania z `f2d519dd` zadziałała (m1-navigator przeszedł), `asan`/`server.keepalive` bez zarzutu. Wzór: pierwsze pojawienie się testu
 na wolnym runnerze ujawnia jednorazowe odczyty atrybutów ustawianych z efektów React — przy następnej awarii e2e najpierw sprawdzać to.
 
+**Kontrolny bieg na gałęzi (14:45 UTC):** `loom.yml` przez `workflow_dispatch` na `claude/m1-w0` (`2752f372`), przebieg **255**
+(https://github.com/klb-t/chatadhd/actions/runs/39619628946) — inna grupa współbieżności niż `main`, więc nie anuluje i nie jest
+anulowany przez FF S2. Po co: w 251 job `dev` zatrzymał się na `test:m1-settings`, więc ~10 następnych testów e2e (chat-first …
+product-integration, interface-2) na CI jeszcze **nie biegło** po zmianach W0 — 255 pokaże je, zanim S2 puści `main`. Wynik joba `dev`
+spodziewany ok. 15:30–15:45 UTC, całość ok. 16:30. Sprawdzać tylko `get_workflow_run`; porażkę czytać `get_job_logs failed_only`.
+
 ## Wynik S2 z 13:59 UTC: Bramka 0 na emulatorze ZIELONA (android-smoke 39605980228, `ed380fbb` = main f85a8ddc + sterownik)
 Trzy profile (pixel_5 1,0 / pixel_6 1,0 / pixel_6 1,3): 39 działa, 0 nie, 0 pominięte. Krok 1 (⋮ → Graf → ROM): pierwsza odpowiedź
 nawigatora w ≈ 0,3 s od dotknięcia, `nav-chip=13`; wcześniejszy timeout 30 s na dwóch profilach **nie powtórzył się** (ekran z tamtej
