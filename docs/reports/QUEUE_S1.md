@@ -1,7 +1,16 @@
-# Kolejka S1 — stan 2026-10-21 22:50 UTC
+# Kolejka S1 — stan 2026-10-21 23:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 260 (`9f02ef7b`) = failure (asan, 3 testy K1a) → naprawa na `main` = `59de144c` (K1b + poprawki), CI **261** w toku (start 23:16, koniec ok. 01:10)
+Szczegóły odczytał tani agent (haiku, `wf_4542b027-6a2`): (1) `unit.test_context_receipt` — ASAN heap-use-after-free w teście `test_context_receipt.cpp:226`: `for (… : f.send(legacy)["messages"])`
+= pułapka z CLAUDE.md (pętla po `operator[]` wyniku zwróconego przez wartość; mój skan dodanych linii K1a/K1b znalazł tylko tę jedną); (2) `unit.test_chat_active_task_concurrency` — `REQUIRE(a.ready())`
+nie spełnione: `kWait` 5 s za krótki pod ASAN przy cięższej ścieżce `send` (K1a: paragon zawsze włączony); (3) `server.chat_active_task` — Timeout 90 s (64 s na dev). Poprawki: nazwana zmienna w teście,
+`kWait` 120 s w obu testach `chat_active_task_*` (`wait_for` wraca natychmiast po wyniku — długi termin kosztuje tylko przy błędzie), TIMEOUT 600. **Ryzyko do zmierzenia (P-perf):** paragon „zawsze” spowalnia każdy `send`
+— nie zmierzone; jeśli bieg 261 przejdzie tylko dzięki dłuższym terminom, zmierzyć koszt paragonu (sha256 + dodatkowy SELECT) na Release.
+Pobranie artefaktu CI (`productionresultssa3.blob.core.windows.net`) jest zablokowane polityką sieci — logi tylko przez `get_job_logs` (tani agent czyta, ja dostaję tekst nieudanych testów).
+**W1a** (`wf_e2dce102-ea6`, od 22:56) w toku w `/home/user/wt/m1d0` (push na `claude/m1-w0`); jego bramka lokalna i FF `main` po zielonym 261.
 
 ## K1b GOTOWE (22:00 UTC, `a4d45b12`; po merge main `f9f83a29`) — bramka lokalna `k1b` ZIELONA; FF `main` po końcu CI 260
 K1b (`wf_b0b95e77-a0d`, 167 wywołań, 397 tys. tokenów — 3× plan): Binding.turn, nośnik tury (`TurnCarrier`, tylko następne żądanie, wartości wracają przy nieudanej wysyłce), ops `context.modify` /
