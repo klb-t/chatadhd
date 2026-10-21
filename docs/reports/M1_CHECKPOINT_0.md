@@ -185,6 +185,29 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   `navigator-map`, `settings-human`, `role-card`, `m1-navigator`, `m1-settings`) jest w `loom.yml`.
 - Testy (fakty): `tsc` + `npm run build` czyste; jądro dev przebudowane przyrostowo (po `ports.pack`/`projection.cpp`/`test_ports.cpp`, potem po `builtin.inc`); `ctest -R "ports|graph_projection|onboarding"` 11/11; testy jednostkowe web (0 fail): shell-history 13, shell-menu 8, navigator-state 9, node-card-state 8, navigator-map 9, settings-human 7, shell 9, composer-menu 13, role-card 5; `test:m1-navigator` 12/12, `test:m1-settings` 9/9 (× mierzony w całym `.drawer`, „Dlaczego tak jest” widoczne bez dotknięcia, „Zapis techniczny” złożony do dotknięcia); sonda kroku 5 pierwszych kroków na serwerze dev (1100 × 760 i 390 × 844) zielona, `close-panel` 44 × 44 „Zamknij: Ustawienia”. Nie uruchomione: `first-steps-check.sh --ui` z archiwum, pełne `npm run e2e`, `android-smoke`.
 
+## Co doszło w poprawkach r1:b4 (2026-10-21, fakty z przebiegu)
+
+- **Jeden zapis liczb na karcie:** łańcuch dziedziczenia pisał „Instalacja przesłonięte 0.7”, a „Wartość: 0,7” — teraz wartości
+  poziomów idą przez słowo ekranu `decimal_separator` (pl „,”, en „.”; `presentation.graph_screen`), tak jak jądro pisze
+  `value_human` (`numberText` w `node-card-state.ts`); „Zdejmij wartość: Rozmowa (0,3)” i „wróci: Osoba (0,5)” tak samo. Bez słowa
+  zostaje kropka (nigdy id). Zrzuty: `m1-navigator-card-for-whom.png`, `m1-navigator-card-setting.png`, `m1-navigator-card-unset.png`.
+- **Linia pod paskiem ma rzeczownik:** „budżet 50 węzłów na poziom · głębia 1 · pokazano 25 z 25 wierszy” (było „25 z 25”);
+  słowo `children`, pl/en. Widać na każdym zrzucie nawigatora.
+- **Kontrakt `gate0` dla S2 (`M1_W0_TESTIDS.md`) mówi, co musi być przed blokiem:** `ui_language = pl` w config (preset `auto` =
+  język przeglądarki, WebView emulatora ma `en-US` — bez tego kroki 3 i 4 padały: „In all: 109 fields · 0 yours”, „Background
+  analysis”) i powłoka Androida (`shell-menu-connection` jest tylko z `LoomBridge`). W JSON doszedł klucz `preconditions`
+  (`{"config": {"ui_language": "pl"}, "android_shell": true}`), wzorce `text` są dwujęzyczne (pl|en, z „1 pole”), a oczekiwanie
+  połączenia ma `"android_only": true`. Blok nadal parsuje się jako `{"gate0": [5 kroków]}`.
+- **Dwa zgłoszenia już zrobione wcześniej (sprawdzone w kodzie, bez zmian):** × 44 × 44 px z etykietą ze słów powłoki — r1:b3
+  (`styles.css:136`, e2e mierzą cały `.drawer`); start z `#czat`/`#warsztat` czyta config (`ui_language`, motyw, układ) — r1:b2
+  (`App.tsx:108–110`, krok e2e „karta ustawienia po starcie z `#czat/<id>` po polsku”).
+- Testy (fakty): `tsc` + `npm run build` czyste; `gen_onboarding_pack.py --check` i `gen_runtime_profiles.py --check` czyste; jądro
+  dev przebudowane przyrostowo po `builtin.inc`; jednostkowe web: node-card-state 8/8 (liczby w łańcuchu „0,5”/„0,7”, bez słowa
+  „0.7”), navigator-state 9/9, navigator-map 9/9, settings-human 7/7, role-card 5/5; `test:m1-navigator` 12/12 (porównanie
+  łańcucha i „Zdejmij wartość” przez to samo słowo separatora), `test:m1-settings` 9/9; 18 zrzutów zapisanych ponownie przez te
+  testy. Nie uruchomione: `ctest`, pełne `npm run e2e`, `android-smoke`, sterownik S2 z nowym blokiem (sprawdzony tylko parserem
+  i wzorcami na trzech próbkach tekstu).
+
 ## Czego jeszcze NIE ma (i dlaczego)
 
 - **Przełącznik „Ustawiam dla: mnie / tej rozmowy / projektu…”** nad listą pól — dziś poziom wybierasz w karcie przy
