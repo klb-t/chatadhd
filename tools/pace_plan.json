@@ -2,11 +2,29 @@
   "_comment": "Plan tempa zużycia tygodnia (właściciel, 2026-10-21). To preset, nie prawo: zmień punkty/koszty tutaj, tools/pace.py czyta ten plik. Czas w UTC.",
   "week_start": "2026-10-20T08:00:00Z",
   "waypoints": [
-    {"at": "2026-10-23T20:00:00Z", "target": 50, "note": "połowa tygodnia"},
-    {"at": "2026-10-26T08:00:00Z", "target": 90, "note": "doba przed końcem: zapas na hamowanie agentów i na czaty właściciela"},
-    {"at": "2026-10-27T08:00:00Z", "target": 100, "note": "reset; ostatnia doba to ostatnie 10 % wydane z namysłem"}
+    {
+      "at": "2026-10-23T20:00:00Z",
+      "target": 50,
+      "note": "połowa tygodnia"
+    },
+    {
+      "at": "2026-10-26T08:00:00Z",
+      "target": 90,
+      "note": "doba przed końcem: zapas na hamowanie agentów i na czaty właściciela"
+    },
+    {
+      "at": "2026-10-27T08:00:00Z",
+      "target": 100,
+      "note": "reset; ostatnia doba to ostatnie 10 % wydane z namysłem"
+    }
   ],
-  "cost_per_package": {"default": 0.5, "_note": "punkty tygodnia na jeden pakiet ~50 wywołań narzędzi; GÓRNA granica z pomiaru R38 (pakiet + bramka + moje tury < 1 pkt okna 5 h, a 1 pkt okna 5 h ≈ 0,25 pkt tygodnia, rozdzielczość 1 pkt); skalibrować pomiarami z dziennika", "haiku": null, "sonnet": null, "fable": null},
+  "cost_per_package": {
+    "default": 0.75,
+    "_note": "punkty tygodnia na jeden pakiet ~50 wywołań narzędzi z moją koordynacją; kalibracja 2026-10-21: S1 (566 mln równoważników) + S2 (48 mln) ≈ 614 mln na +27 pkt konta, czyli ≈ 22 mln równoważników na 1 pkt (GÓRNA granica kosztu: czaty właściciela i niewidoczne zapisy sprzed kompresji też są w tych punktach); pakiet R38 = agent 11,3 mln (0,5 pkt) + ok. 20 tur koordynacji po ok. 0,28 mln (0,25 pkt) ≈ 0,75. Haiku: agent czytający log (5 ruchów) ≈ 1,5 mln ≈ 0,07 pkt; pakiet 50 ruchów na Haiku jeszcze niezmierzony",
+    "haiku": null,
+    "sonnet": null,
+    "fable": null
+  },
   "margin": 1.0,
   "lookahead_h": 2.0
 }

@@ -74,6 +74,11 @@ Model (w tokenach, nie w cenie): Sonnet 57,5 %, **Fable 42,5 %** — w tym wszys
 **Narzut, który nie jest pracą: 24 % wydatku agentów** — start agenta (zapis prefiksu ≈ 39 tys. tokenów × 81) 7,3 %, oraz ≈ 39 ruchów po
 wygaśnięciu cache (kontekst ≈ 190 tys. tokenów przepisany od nowa po pauzie > 5 min, zwykle czekanie na build/ctest/e2e wewnątrz agenta) 17,1 %
 (heurystyka: zapis ≥ 50 % kontekstu i > 30 tys.). Odczyt z cache stanowił 57 % równoważników, zapisy 39 %, wyjście 4 %.
+**Udział S2 (jego `usage_report`, 17:49):** 48 mln równoważników (główna sesja Opus 5.5: 27,6 mln, 100 ruchów, śr. kontekst 182 tys.; 14 agentów Haiku:
+20,5 mln, ≈ 1,5 mln na agenta, 5 ruchów po ≈ 54 tys. — każdy czyta cały log CI, więc to świeży zapis cache). Jego zapisy sprzed kompresji też są niepełne.
+Razem S1 + S2 ≈ 614 mln na +27 pkt konta ⇒ **≈ 22 mln równoważników na 1 pkt tygodnia** (górna granica); S2 to ≈ 8 % tego, co widać. Koszt pakietu w `pace_plan.json`
+podniesiony z 0,5 do 0,75 (agent 0,5 + koordynacja 0,25). Pomysły S2 na obniżenie kosztu, przyjęte: jeden agent na bieg zamiast na pytanie, krótsze ogony logów
+(`tail_lines` 60, tylko blok REPORT), mniej tur głównej sesji na jedno zdarzenie.
 Wnioski wprowadzone: reguła „żadne wywołanie narzędzia dłuższe niż ~4 min” (`single-package.js`, `CLAUDE.md` pkt 5), poprawki po przeglądach i
 pakiety mechaniczne na tańszych modelach, jeden proporcjonalny przegląd poprawki błędu.
 
