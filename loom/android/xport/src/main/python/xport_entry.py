@@ -306,43 +306,130 @@ def catalog():
 
 
 def call(req_json):
-    """Any api.Session call (list, view, edit, apply, undo, redo, op, search, compare, goto, tag, bookmark, status…)."""
+    """Any api.Session call (list, view, edit, apply, undo, redo, op, search, compare, goto, tag, bookmark, status…).
+    A ready recipe (macro) and an undo come back with `summary_text` (one plain sentence about what changed) and `summary`
+    (the same numbers as lists); the engine's own answer stays untouched below them."""
     with _lock:
         try:
             _need()
             req = json.loads(req_json)
-            res = _sess.call(req)
+            kind = req.get("call")
+            if kind == "macro" or kind == "undo":
+                res = _call_measured(req)
+            else:
+                res = _sess.call(req)
             res.setdefault("ok", True)
             return json.dumps(res, ensure_ascii=False, default=str)
         except Exception as exc:
             return _fail(exc)
 
 
+def _call_measured(req):
+    """The engine call plus the measured effect on the messages of the working package (loom.tools.extract.effects)."""
+    from loom.tools.extract import effects
+    eng = _eng
+    action = "undo" if req.get("call") == "undo" else ("preview" if req.get("preview") else "apply")
+    pkg = eng.package if action == "undo" else eng.ensure_package()  # an undo never creates a package
+    before, hash_before = effects.snapshot(pkg), (pkg.tree_hash() if pkg is not None else None)
+    limit = int(eng.ds.preset("edits.effect_names", 6) or 0)
+    res = _sess.call(req)
+    if res.get("ok") is False or res.get("error"):
+        return res
+    other = 0
+    try:
+        if action == "undo" and (res.get("result") or {}).get("undone") == []:
+            res["summary_text"] = eng.ds.file("ui_labels.json")["effects"]["undo_none"]["pl"]
+            return res
+        if pkg is None:  # the engine made the package during this call: nothing was in it before, nothing changed
+            before = effects.snapshot(eng.package)
+        if action == "preview":  # the engine previews every step on the untouched package; the whole recipe is measured here
+            steps = eng.ds.entry("macros", str(req.get("name") or "")).get("steps") or []
+            after, other = effects.simulate(eng, steps)
+            changed = True
+        else:
+            after = effects.snapshot(eng.package)
+            changed = eng.package is not None and eng.package.tree_hash() != hash_before
+        d = effects.diff(before, after)
+        res["summary_text"] = effects.sentence(action, d, limit=limit, other_steps=other, tree_changed=changed)
+        res["summary"] = dict(effects.structured(d), action=action, other_steps=other)
+    except Exception as exc:  # the engine's answer is still true; only the sentence is missing, and it says so
+        why = f"{type(exc).__name__}: {str(exc)[:160]}"
+        res["summary_text"] = eng.ds.file("ui_labels.json")["effects"]["failed"]["pl"].format(why=why)
+    return res
+
+
+def _conversation_dirs(eng):
+    """Top-level directories that a profile made per conversation (its output path has `{conversation.dir}`)."""
+    dirs = set()
+    for row in (eng.cut_info or {}).get("profiles") or []:
+        spec = eng.ds.entry("profiles", row.get("profile"))
+        if any("{conversation.dir}" in str(o.get("path")) for o in spec.get("outputs") or []):
+            dirs |= {o.split("/", 1)[0] for o in row.get("outputs") or [] if "/" in o}
+    return dirs
+
+
+def _align_package(eng):
+    """The export is of the selection, the cut works on the working package.  The package is made from the selection
+    the first time anything needs it (an edit, a recipe preview) and is not re-made when the selection changes later,
+    so a package made while nothing was selected is empty and exports a zip of report files only.  Here the selected
+    conversations that the package lacks are copied in (edits already made to the others stay) and the package
+    entries that are not selected are returned so that they are left out of this export, not lost."""
+    pkg = eng.ensure_package()
+    want = set(eng.selection.units)
+    added = len(want - {e.unit.uid for e in pkg.entries})
+    if added:
+        eng.op("package.copy", {"from": "selection"}, by="engine")
+    return pkg, [e for e in pkg.entries if e.unit.uid not in want], added
+
+
 def export_selected(zip_path, redaction="", profiles="", handoff=False):
-    """Batch operation on the selection: cut (source 1:1 + text) -> package -> one zip at zip_path."""
+    """Batch operation on the selection: cut (source 1:1 + text) -> package -> one zip at zip_path.
+    The answer says what was done: `profiles_used` (id + label; empty = the default profile), `package_added` (selected
+    conversations that were not in the working package and were copied in), `package_left_out` (package entries that
+    are not selected, left out), `top_level_entries`, `top_level_dirs` and `conversation_dirs` of the zip."""
     with _lock:
         tmp = Path(tempfile.mkdtemp(prefix="xport_out_"))
+        pkg = None
+        original = None
         try:
             eng = _need()
             if not eng.selection.units:
                 raise ValueError("Nic nie zaznaczono — najpierw wybierz rozmowy.")
+            ids = [p for p in str(profiles or "").split(",") if p]
             cut = {}
             if redaction:
                 cut["redaction"] = redaction
-            if profiles:
-                cut["profiles"] = [p for p in profiles.split(",") if p]
+            if ids:
+                cut["profiles"] = ids
+            pkg, left_out, added = _align_package(eng)
+            original = list(pkg.entries)
+            if left_out:
+                out_ids = {id(e) for e in left_out}
+                pkg.entries = [e for e in original if id(e) not in out_ids]
             eng.op("cut", cut)
             if handoff:
                 eng.op("handoff", {})
             eng.op("write", {"package": str(tmp / "pakiet")})
             files = 0
+            tops, top_dirs = set(), set()
             with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
                 for p in sorted((tmp / "pakiet").rglob("*")):
                     if p.is_file():
-                        z.write(p, p.relative_to(tmp / "pakiet").as_posix())
+                        rel = p.relative_to(tmp / "pakiet").as_posix()
+                        z.write(p, rel)
                         files += 1
-            return json.dumps({"ok": True, "files": files, "selection": eng.selection_summary()}, ensure_ascii=False)
+                        tops.add(rel.split("/", 1)[0])
+                        if "/" in rel:
+                            top_dirs.add(rel.split("/", 1)[0])
+            profs = eng.ds.entries("profiles")
+            used = [{"id": i, "label": _lbl((profs.get(i) or {}).get("label"), i)} for i in ids]
+            return json.dumps({"ok": True, "files": files, "selection": eng.selection_summary(), "profiles_used": used,
+                               "package_added": added, "package_left_out": len(left_out),
+                               "top_level_entries": len(tops), "top_level_dirs": sorted(top_dirs),
+                               "conversation_dirs": len(top_dirs & _conversation_dirs(eng))}, ensure_ascii=False)
         except Exception as exc:
             return _fail(exc)
         finally:
+            if pkg is not None and original is not None:
+                pkg.entries = original  # the entries left out of this export are back in the working package
             shutil.rmtree(tmp, ignore_errors=True)

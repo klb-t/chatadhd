@@ -1,6 +1,6 @@
 {
  "schema": "loom.extract.ui_labels/1",
- "description": "Human labels of the names the engine speaks in (parameter names, enum values, parameter types, node kinds, viewer formats), for forms and lists on a phone: the engine key stays the value that is sent, only the shown text changes. A name missing here is shown as it is. Roots have theirs in commander/layout.json#root_labels.",
+ "description": "Human labels of the names the engine speaks in (parameter names, enum values, parameter types, node kinds, viewer formats), for forms and lists on a phone: the engine key stays the value that is sent, only the shown text changes. A name missing here is shown as it is. Roots have theirs in commander/layout.json#root_labels. `nouns`: the forms of counted nouns (one / few / many; the rule that picks one is plural.py, the same as Pl.kt on the phone). `effects`: the sentences that say in plain words what an edit or a ready recipe changed or would change (effects.py).",
  "params": {
   "against": {
    "pl": "porównaj z",
@@ -851,6 +851,222 @@
   "percent": {
    "pl": "sekwencje %XX (kodowanie procentowe, jak w adresach)",
    "en": "%XX sequences (percent-encoding, as in URLs)"
+  }
+ },
+ "nouns": {
+  "conversation": {
+   "pl": {
+    "one": "rozmowa",
+    "few": "rozmowy",
+    "many": "rozmów"
+   },
+   "en": {
+    "one": "conversation",
+    "few": "conversations",
+    "many": "conversations"
+   }
+  },
+  "message": {
+   "pl": {
+    "one": "wiadomość",
+    "few": "wiadomości",
+    "many": "wiadomości"
+   },
+   "en": {
+    "one": "message",
+    "few": "messages",
+    "many": "messages"
+   }
+  },
+  "message_loc": {
+   "pl": {
+    "one": "wiadomości",
+    "few": "wiadomościach",
+    "many": "wiadomościach"
+   },
+   "en": {
+    "one": "message",
+    "few": "messages",
+    "many": "messages"
+   }
+  },
+  "file": {
+   "pl": {
+    "one": "plik",
+    "few": "pliki",
+    "many": "plików"
+   },
+   "en": {
+    "one": "file",
+    "few": "files",
+    "many": "files"
+   }
+  },
+  "block": {
+   "pl": {
+    "one": "blok",
+    "few": "bloki",
+    "many": "bloków"
+   },
+   "en": {
+    "one": "block",
+    "few": "blocks",
+    "many": "blocks"
+   }
+  },
+  "directory": {
+   "pl": {
+    "one": "katalog",
+    "few": "katalogi",
+    "many": "katalogów"
+   },
+   "en": {
+    "one": "directory",
+    "few": "directories",
+    "many": "directories"
+   }
+  },
+  "profile": {
+   "pl": {
+    "one": "profil",
+    "few": "profile",
+    "many": "profili"
+   },
+   "en": {
+    "one": "profile",
+    "few": "profiles",
+    "many": "profiles"
+   }
+  }
+ },
+ "effects": {
+  "preview_head": {
+   "pl": "Podgląd — nic jeszcze nie zmieniono.",
+   "en": "Preview — nothing has been changed yet."
+  },
+  "preview_nothing": {
+   "pl": "Po zastosowaniu nic by się nie zmieniło w wiadomościach.",
+   "en": "After applying, nothing in the messages would change."
+  },
+  "preview_from": {
+   "pl": "Po zastosowaniu: z {n} wiadomości {pieces}.",
+   "en": "After applying, in {n} messages: {pieces}."
+  },
+  "preview_in": {
+   "pl": "Po zastosowaniu: w {n} {message_loc} {pieces}.",
+   "en": "After applying, in {n} messages: {pieces}."
+  },
+  "apply_head": {
+   "pl": "Zastosowano.",
+   "en": "Applied."
+  },
+  "apply_nothing": {
+   "pl": "Nic się nie zmieniło w wiadomościach (przepis nie miał tu czego zmienić).",
+   "en": "Nothing in the messages changed (the recipe had nothing to change here)."
+  },
+  "apply_in": {
+   "pl": "W {n} {message_loc} {pieces}.",
+   "en": "In {n} messages: {pieces}."
+  },
+  "apply_tail": {
+   "pl": "Można cofnąć przyciskiem Cofnij przepis.",
+   "en": "It can be undone with the Undo recipe button."
+  },
+  "undo_head": {
+   "pl": "Cofnięto:",
+   "en": "Undone:"
+  },
+  "undo_nothing": {
+   "pl": "Cofnięto. Pola ani bloki wiadomości się nie zmieniły (cofnięty krok ich nie dotyczył).",
+   "en": "Undone. No message field or block changed (the undone step did not touch them)."
+  },
+  "undo_in": {
+   "pl": "w {n} {message_loc} {pieces}.",
+   "en": "in {n} messages: {pieces}."
+  },
+  "empty_package": {
+   "pl": "Pakiet roboczy nie ma żadnych wiadomości — najpierw zaznacz rozmowy w zakładce Wybór.",
+   "en": "The working package has no messages — select conversations in the Selection tab first."
+  },
+  "tree_only": {
+   "pl": "Zmiana dotyczy czegoś innego niż pola i bloki wiadomości (np. rozmów albo ich układu) — szczegóły w drzewie poniżej.",
+   "en": "The change concerns something other than message fields and blocks (e.g. conversations or their layout) — details in the tree below."
+  },
+  "gone": {
+   "pl": "zniknęłoby",
+   "en": "would disappear"
+  },
+  "gone_done": {
+   "pl": "usunięto",
+   "en": "removed"
+  },
+  "came": {
+   "pl": "doszłoby",
+   "en": "would be added"
+  },
+  "came_done": {
+   "pl": "dodano",
+   "en": "added"
+  },
+  "stays": {
+   "pl": "zostałyby",
+   "en": "would stay"
+  },
+  "stays_done": {
+   "pl": "zostały",
+   "en": "stay"
+  },
+  "restored": {
+   "pl": "przywrócono",
+   "en": "restored"
+  },
+  "removed_by_undo": {
+   "pl": "usunięto",
+   "en": "removed"
+  },
+  "blocks": {
+   "pl": "bloki",
+   "en": "blocks"
+  },
+  "messages_lost": {
+   "pl": "znikło całych wiadomości",
+   "en": "whole messages gone"
+  },
+  "messages_new": {
+   "pl": "doszło całych wiadomości",
+   "en": "whole messages added"
+  },
+  "unknown": {
+   "pl": "nieznane",
+   "en": "unknown"
+  },
+  "other_steps": {
+   "pl": "Skutek {k} kroków innych niż edycje: nieznany przed zastosowaniem.",
+   "en": "The effect of {k} steps other than edits: unknown before applying."
+  },
+  "failed": {
+   "pl": "Skutek: nieznany ({why}).",
+   "en": "Effect: unknown ({why})."
+  },
+  "more": {
+   "pl": "…",
+   "en": "…"
+  },
+  "preview_plain": {
+   "pl": "Po zastosowaniu: {pieces}.",
+   "en": "After applying: {pieces}."
+  },
+  "apply_plain": {
+   "pl": "{pieces}.",
+   "en": "{pieces}."
+  },
+  "undo_plain": {
+   "pl": "{pieces}.",
+   "en": "{pieces}."
+  },
+  "undo_none": {
+   "pl": "Nie było czego cofać — nic nie zmieniono.",
+   "en": "There was nothing to undo — nothing was changed."
   }
  }
 }
