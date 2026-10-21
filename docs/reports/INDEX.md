@@ -1662,6 +1662,27 @@ budowy cmake nie uruchamiano (dysk zajęty przez bramkę gdzie indziej).
   na `<ul>` z sufiksem podgrupy i zmienić wiersz TESTIDS + asercję e2e. (3) Lista 7 zrzutów jako linki, pliki bez zmian
   (właściciel widzi wszystkie 21 w raporcie); odwrót: backticki jak przed r2:b5.
 
+### S1 / R38 (wynik `agent.run` słowami zamiast JSON-a; odpowiedź po „Akceptuj” trafia do rozmowy; e2e nie brudzi drzewa) (2026-10-21, branch `claude/m1-w0`)
+
+- Pliki: `loom/src/actions/route.cpp` (`body_of`, `agent_loop_text`, `post_agent_answer`), `loom/src/agent/agent.cpp` (wysłanie odpowiedzi
+  wznowionego przebiegu), `loom/include/loom/{agent,chat_route}.h`, `loom/data/runtime/intent_routing.pack` (+ generat
+  `runtime_profiles_embedded.inc`; teksty `agent_*` en/pl), `loom/tests/test_tool_loop.cpp` (3 nowe przypadki), `loom/web/e2e/{m1-navigator-native,run,composer-menu}.mjs`,
+  `loom/web/tests/shell/fixtures/graph-card-temperature.json`, `loom/web/README.md`. Commity `a0490e9e`, `fb604c17`.
+- Co widzi właściciel: wiadomość z wynikiem agenta mówi słowami modelu i listą propozycji („- Tytuł akcji (argument: wartość)”), nie
+  zrzutem JSON; po „Akceptuj” odpowiedź wznowionego przebiegu pojawia się w rozmowie jako „Gotowe: …”. Cały przebieg nadal jest danymi
+  (wynik uruchomienia, `metadata.action_run.agent_loop` dopóki czekają propozycje, krótkie `metadata.action_run.agent`).
+- Decyzje (R1–R53; każda odwracalna): (1) tekst bez JSON-a; odwrót: usunąć gałąź `is_agent_loop` w `body_of`. (2) odpowiedź wznowienia
+  wysyła jądro (`agent::run`), nie web — każdy klient dostaje to samo; preset: włączone, gdy jest `resume` i `conversation_id`;
+  `post_answer:false` wyłącza na jedno wywołanie, usunięcie bloku na końcu `agent::run` na stałe. (3) wznowiony przebieg, który znów
+  staje na propozycjach, wysyła tylko słowa modelu albo nic (propozycje zostają w otwartym bloku wiadomości, nie dublują się). (4) fixture
+  `graph-card-temperature.json` trzyma `c_000000000000` zamiast świeżego id; odwrót: usunąć podmianę w `m1-navigator-native.mjs`. (5) zrzuty
+  `run.mjs` i `composer-menu.mjs` idą do `E2E_SHOTS_DIR` albo do katalogu tymczasowego, nie do śledzonego `e2e/screenshots`;
+  `E2E_SHOTS_DIR=e2e/screenshots` odświeża je celowo. Uwaga: `agent.cpp` zależy teraz od `chat_route.h` (warstwa agent → czat).
+- Testy (fakty, agent pakietu): build dev czysty; 30 testów jądra (akcje, czat, pętla narzędzi, ROM, runtime) przechodzi; 3 nowe przypadki
+  `tool_loop` padają na starym kodzie (21 asercji) i przechodzą na nowym; `gen_runtime_profiles.py --check` czysty; web build, `node-card-state`
+  11/11, `agent-proposal` 2/2 i 3/3 w przeglądarce; `m1-navigator` przeszedł dwa razy bez zmiany drzewa. Nie uruchomione przez agenta: pełna bramka
+  i asan/tsan (robię ja), pełne `npm run e2e` (`run.mjs` tylko `node --check`).
+
 ## S1 — kontrola marnotrawstwa: cztery zasady od GPT + pomiary (2026-10-21)
 
 Właściciel przekazał podsumowanie rozmowy z GPT: (1) trwałe checkpointy, (2) małe samodzielne
