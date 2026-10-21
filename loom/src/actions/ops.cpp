@@ -2363,7 +2363,7 @@ StepOutcome context_modify(Ctx& x) {
       auto policy = UsagePolicy::open(x.rt.paths().root / "usage-policy.sqlite", *settings);
       if (!policy) return fail(policy.error());
       const std::string bytes = std::to_string(json::get_int(guard, "bytes", 0));
-      Json estimate{{"operation_id", "ctxmod_" + Sha256::hex(conv + "|" + key + "|" + json::dump(value) + "|" + json::dump(x.rt.chat().turn_carrier().peek(conv)) + "|" + bytes).substr(0, 24)},
+      Json estimate{{"operation_id", "ctxmod_" + Sha256::hex(x.c.run_id + "|" + conv + "|" + key + "|" + json::dump(value) + "|" + json::dump(x.rt.chat().turn_carrier().peek(conv)) + "|" + bytes).substr(0, 24)},
                     {"baseline_key", json::get_string(guard, "baseline_key")},
                     {"resources", Json{{"requests", 1}, {"input_bytes", json::get_int(guard, "bytes", 0)}, {"output_tokens", nullptr}, {"cost_usd", nullptr}}},
                     {"instrument", "loom.context.modify"}, {"model", json::get_string(guard, "model")},
@@ -2413,13 +2413,21 @@ StepOutcome context_receipt(Ctx& x) {
   std::string id = x.element_class() == "message" ? x.element_id() : std::string();
   if (id.empty()) id = trim_quotes(x.str("msg_id", x.str("id")));
   if (id.empty()) {
-    // Without a message named: the last message the person sent in this conversation.
+    // Without a message named: the last request of this conversation - the last message the person sent that has a record (the sentence that asks
+    // for the record is not a request to the model and has none); when none has, the last message the person sent.
     const std::string conv = x.conv_id();
     if (!conv.empty()) {
       auto msgs = x.rt.db().get_msgs(conv);
-      if (msgs)
-        for (auto it = msgs->rbegin(); it != msgs->rend(); ++it)
-          if (it->role == "user" && it->status == "active") { id = it->id; break; }
+      if (msgs) {
+        std::string last_user;
+        for (auto it = msgs->rbegin(); it != msgs->rend(); ++it) {
+          if (it->role != "user" || it->status != "active") continue;
+          if (last_user.empty()) last_user = it->id;
+          const Json trace = it->metadata.is_object() ? it->metadata.value("context_trace", Json(nullptr)) : Json(nullptr);
+          if (trace.is_object() && trace.value("receipt", Json(nullptr)).is_object()) { id = it->id; break; }
+        }
+        if (id.empty()) id = last_user;
+      }
     }
   }
   if (id.empty()) return fail(Errc::InvalidArgument, x.say("context_receipt_which"));
@@ -2429,9 +2437,21 @@ StepOutcome context_receipt(Ctx& x) {
   Message m = **found;
   // The receipt lives with the message the person sent; asked about the answer, the request that made it is the message before (its parent).
   std::string request_id = m.id;
-  if (m.role != "user" && m.parent_id) {
-    if (auto parent = x.rt.db().get_msg(*m.parent_id); parent && *parent) {
-      m = **parent;
+  if (m.role != "user") {
+    // The message the answer came from: its parent when it has one, else the last message the person sent before it in the conversation.
+    std::optional<Message> source;
+    if (m.parent_id)
+      if (auto parent = x.rt.db().get_msg(*m.parent_id); parent && *parent && (*parent)->role == "user") source = **parent;
+    if (!source)
+      if (auto all = x.rt.db().get_msgs(m.conv_id)) {
+        bool seen = false;
+        for (auto it = all->rbegin(); it != all->rend() && !source; ++it) {
+          if (it->id == m.id) { seen = true; continue; }
+          if (seen && it->role == "user") source = *it;
+        }
+      }
+    if (source) {
+      m = *source;
       request_id = m.id;
     }
   }

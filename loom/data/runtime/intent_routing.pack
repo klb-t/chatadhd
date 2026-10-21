@@ -78,7 +78,9 @@
       },
       "direct": [
         "help.can_do",
-        "help.how_to"
+        "help.how_to",
+        "context.modify",
+        "context.receipt"
       ]
     },
     "on_reject": {
@@ -5447,7 +5449,7 @@
           },
           "direct": {
             "type": "array",
-            "description": "Actions that answer a question about the application (what can be done here, how to do something): they run at once whatever the setting says, because they only describe. The overlay replaces the list; an empty list makes them wait for the yes like the rest.",
+            "description": "Actions that run at once whatever the setting says, because they only describe or change nothing that stays: answers about the application (what can be done here, how to do something), the change of the context for the NEXT message only (context.modify: nothing is written, one word drops it) and the record of what was sent (context.receipt). Rules and the x10 question of the usage guard still apply. The overlay replaces the list; an empty list makes them wait for the yes like the rest.",
             "items": {
               "type": "string",
               "minLength": 1

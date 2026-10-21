@@ -150,6 +150,7 @@ TEST_SUITE("context_modify") {
     // said in the chat: the last request of the conversation
     const auto said = f.input("co wysłaliśmy");
     REQUIRE(said.handled);
+    INFO(f.text_of(said));
     CHECK(f.text_of(said).find("tokenów") != std::string::npos);
   }
 
@@ -215,20 +216,35 @@ TEST_SUITE("context_modify") {
     REQUIRE(run2.value("status", "") == "awaiting_usage");
     const Json done = unwrap(f.rt->actions().invoke_port("actions", "confirm", Json{{"run_id", run2.at("id")}, {"approved", true}, {"receipt_id", run2.at("pending").at("receipt_id")}, {"ref", "test"}}));
     INFO(done.dump());
-    CHECK(done.value("status", "") == "done");
+    CHECK(done.value("status", "") == "completed");
     CHECK(f.rt->chat().turn_carrier().peek(f.conv_id).at("context.breadth_delta").size() == waiting_before.at("context.breadth_delta").size() + 1);
     // the receipt of the request that follows carries the guard: baseline, ratio and that the guard asked (the person confirmed it above)
-    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
     opts.stream = false;
-    unwrap(f.rt->chat().send("and now?", opts));
-    Json trace;
+    const Json waiting_after = f.rt->chat().turn_carrier().peek(f.conv_id);
+    // the request itself is still the guard's to admit: a request ten times the usual one is held again at send time (the question about a
+    // modifier is early notice, the guard of the send is the one that binds), nothing is sent, and the values of the turn wait for the re-send
+    const auto held = unwrap(f.rt->chat().send("and now?", opts));
+    REQUIRE(held.usage_pending.has_value());
+    CHECK((*held.usage_pending)["status"] == "requires_confirmation");
+    CHECK(f.rt->chat().turn_carrier().peek(f.conv_id) == waiting_after);
+    ChatOptions again = opts;
+    again.usage_confirmation = Json{{"approved", true}, {"receipt_id", (*held.usage_pending)["receipt_id"]}, {"ref", "test"}, {"operation_id", (*held.usage_pending)["operation_id"]}};
+    f.transport->expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+    unwrap(f.rt->chat().send("and now?", again));
+    CHECK(f.rt->chat().turn_carrier().peek(f.conv_id).empty());  // spent by the request that went out
+    Json trace = nullptr;
     for (const auto& m : unwrap(f.rt->db().get_msgs(f.conv_id)))
-      if (m.role == "user" && m.text == "and now?") trace = m.metadata.at("context_trace");
-    const Json guard = trace.at("receipt").at("guard");
+      if (m.role == "user" && m.text == "and now?" && m.metadata.is_object() && m.metadata.contains("context_trace")) trace = m.metadata["context_trace"];
+    REQUIRE(trace.is_object());
+    REQUIRE(trace.contains("receipt"));
+    const Json guard = trace["receipt"].value("guard", Json(nullptr));
+    REQUIRE(guard.is_object());
     INFO(guard.dump());
-    CHECK(guard.at("baseline") == base_bytes);
-    CHECK(guard.at("ratio").get<double>() > 10.0);
-    CHECK(guard.at("asked") == true);
+    CHECK(guard["baseline"] == base_bytes);
+    REQUIRE(guard["ratio"].is_number());
+    CHECK(guard["ratio"].get<double>() > 10.0);
+    CHECK(guard["asked"] == true);
+    CHECK(guard["confirmed"] == true);
     CHECK_FALSE(guard.contains("unknown_reason"));
   }
 }
