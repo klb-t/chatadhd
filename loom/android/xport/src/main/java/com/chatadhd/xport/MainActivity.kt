@@ -3,6 +3,7 @@ package com.chatadhd.xport
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -14,7 +15,6 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.ScrollView
@@ -64,6 +64,16 @@ class MainActivity : Activity() {
     private lateinit var browseViewBox: View
     private lateinit var browseBack: Button
     private var twoPane = false
+    private lateinit var rootSpinner: Spinner
+    private lateinit var rootAdapter: ArrayAdapter<String>
+    private lateinit var formatSpinner: Spinner
+    private lateinit var formatAdapter: ArrayAdapter<String>
+    private val browseRoots = listOf("sources", "package", "selection", "timeline", "attachments", "clusters", "recipe", "inventory", "diff", "bookmarks")
+    private val browseFormats = listOf("markdown", "json", "raw")
+    private var uiLabels: JSONObject? = null     // Polish names of roots, node kinds and viewer formats (engine data, ui_labels call)
+    private val tabButtons = LinkedHashMap<String, Button>()
+    // The app stores every added file as "<millis>__<original name>"; people see the original name.
+    private val copyPrefix = Regex("""^\d+__""")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,21 +87,31 @@ class MainActivity : Activity() {
         panels["Edycje"] = placeholder("Otwórz plik, aby zobaczyć edycje.")
         panels["Operacje"] = placeholder("Otwórz plik, aby zobaczyć operacje.")
         panels["Eksport"] = exportPanel()
-        val tabs = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-        for (name in panels.keys) {
-            tabs.addView(Button(this).apply { text = name; isAllCaps = false; setOnClickListener { show(name) } })
+        // Every tab visible at once, whatever the width: two rows of three equal buttons (no scrolling tab bar to discover).
+        val tabs = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        for (names in panels.keys.chunked(3)) {
+            tabs.addView(LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                for (name in names) {
+                    val b = Button(this@MainActivity).apply { text = name; isAllCaps = false; setOnClickListener { show(name) } }
+                    tabButtons[name] = b
+                    addView(b, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+                }
+            })
         }
         val root = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            addView(HorizontalScrollView(this@MainActivity).apply { addView(tabs) })
+            addView(tabs)
             addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
         }
         setContentView(root)
         show("Przegląd")
         restoreSession()
+        loadUiLabels()
     }
 
     private fun show(name: String) {
+        for ((n, b) in tabButtons) b.setTypeface(null, if (n == name) Typeface.BOLD else Typeface.NORMAL)
         content.removeAllViews()
         panels[name]?.let { content.addView(it, FrameLayout.LayoutParams(-1, -1)) }
     }
@@ -343,7 +363,8 @@ class MainActivity : Activity() {
     }
 
     // stored as <millis>__<original name>
-    private fun displayName(f: File) = f.name.substringAfter("__", f.name)
+    private fun originalName(n: String) = n.replaceFirst(copyPrefix, "")
+    private fun displayName(f: File) = originalName(f.name)
 
     private fun removeSource(f: File) {
         f.delete()
@@ -428,16 +449,20 @@ class MainActivity : Activity() {
 
     // ───────────── Przeglądarka: engine views, one pane or two ─────────────
     private fun browserPanel(prefs: android.content.SharedPreferences): View {
-        val roots = listOf("sources", "package", "selection", "timeline", "attachments", "clusters", "recipe", "inventory", "diff", "bookmarks")
-        val rootSpin = Spinner(this).apply { adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, roots) }
+        val roots = browseRoots
+        rootAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roots.map { rootLabel(it) }.toMutableList())
+        val rootSpin = Spinner(this).apply { adapter = rootAdapter }
+        rootSpinner = rootSpin
         rootSpin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, id: Long) {
                 if (roots[pos] != browseRoot) { browseRoot = roots[pos]; browsePath.clear(); browseNode = null; if (opened) loadBrowse() }
             }
             override fun onNothingSelected(p: AdapterView<*>?) {}
         }
-        val fmts = listOf("markdown", "json", "raw")
-        val fmtSpin = Spinner(this).apply { adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, fmts) }
+        val fmts = browseFormats
+        formatAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, fmts.map { formatLabel(it) }.toMutableList())
+        val fmtSpin = Spinner(this).apply { adapter = formatAdapter }
+        formatSpinner = fmtSpin
         fmtSpin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, id: Long) {
                 if (fmts[pos] != browseFormat) { browseFormat = fmts[pos]; browseNode?.let { loadView(it) } }
@@ -473,6 +498,33 @@ class MainActivity : Activity() {
         return frame
     }
 
+    private fun labelOf(group: String, key: String): String =
+        uiLabels?.optJSONObject(group)?.optString(key, "")?.takeIf { it.isNotEmpty() } ?: key
+    private fun rootLabel(r: String) = labelOf("roots", r)
+    private fun formatLabel(f: String) = labelOf("formats", f)
+    private fun kindLabel(k: String) = labelOf("kinds", k)
+
+    // An archive is shown under the name the person gave it, not under the app's stored copy name.
+    private fun shownName(kind: String, label: String) = if (kind == "archive") originalName(label) else label
+
+    // The Polish names come from the engine's data (ui_labels); until they arrive the engine's own keys are shown.
+    private fun loadUiLabels() {
+        thread {
+            val j = try { JSONObject(py.callAttr("ui_labels").toString()) } catch (e: Throwable) { JSONObject().put("ok", false) }
+            if (!j.optBoolean("ok")) return@thread
+            runOnUiThread {
+                uiLabels = j
+                fun refill(a: ArrayAdapter<String>, sp: Spinner, keys: List<String>, current: String, name: (String) -> String) {
+                    a.setNotifyOnChange(false); a.clear(); a.addAll(keys.map(name)); a.notifyDataSetChanged()
+                    sp.setSelection(keys.indexOf(current).coerceAtLeast(0))
+                }
+                refill(rootAdapter, rootSpinner, browseRoots, browseRoot) { rootLabel(it) }
+                refill(formatAdapter, formatSpinner, browseFormats, browseFormat) { formatLabel(it) }
+                if (opened) loadBrowse()
+            }
+        }
+    }
+
     private fun layoutBrowser() {
         val body = browseListScroll.parent as LinearLayout
         body.orientation = if (twoPane) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
@@ -489,16 +541,21 @@ class MainActivity : Activity() {
         call(JSONObject().put("call", "list").put("root", browseRoot).put("path", JSONArray(browsePath)).put("limit", 0)) { j ->
             if (!j.optBoolean("ok")) { browseAdapter.setRoots(listOf(TNode(j.optString("error")))); return@call }
             val crumbs = j.optJSONArray("breadcrumbs")
-            browseCrumb.text = (0 until (crumbs?.length() ?: 0)).joinToString(" › ") { crumbs!!.getJSONObject(it).optString("label") } +
+            browseCrumb.text = (0 until (crumbs?.length() ?: 0)).joinToString(" › ") {
+                val c = crumbs!!.getJSONObject(it)
+                shownName(if (c.optString("id").startsWith("arch:")) "archive" else "", c.optString("label"))
+            } +
                 "   (${j.optInt("shown")}/${j.optInt("total")})"
             val rows = j.getJSONArray("rows")
             val nodes = ArrayList<TNode>()
             if (rows.length() == 0) nodes.add(TNode(j.optString("hint", "Pusto.")))
             for (i in 0 until rows.length()) {
                 val r = rows.getJSONObject(i)
-                val id = r.optString("id"); val lbl = "${r.optString("kind")}: ${r.optString("label")}"
+                val id = r.optString("id"); val kind = r.optString("kind")
+                val lbl = "${kindLabel(kind)}: ${shownName(kind, r.optString("label"))}"
                 val cols = r.optJSONObject("cols")
-                val detail = cols?.keys()?.asSequence()?.filter { it != "label" }?.joinToString(" · ") { "$it=${cols.opt(it)}" } ?: ""
+                val defs = j.optJSONObject("columns")?.optJSONArray(kind)
+                val detail = cols?.keys()?.asSequence()?.filter { it != "label" }?.joinToString(" · ") { "${colLabel(defs, it)}: ${colValue(cols.opt(it))}" } ?: ""
                 val deeper = r.optBoolean("children")
                 nodes.add(TNode(lbl, detail, id = id,
                     onOpen = { if (deeper) { browsePath.add(id); loadBrowse() } else { browseNode = id; loadView(id) } },
@@ -510,6 +567,16 @@ class MainActivity : Activity() {
             browseAdapter.setRoots(nodes)
         }
     }
+
+    // A column is named by the engine's own (Polish) label for the node kind; an empty value is shown as a dash, not as nothing.
+    private fun colLabel(defs: JSONArray?, id: String): String {
+        if (defs != null) for (i in 0 until defs.length()) {
+            val d = defs.getJSONObject(i)
+            if (d.optString("id") == id) return d.optString("label", "").ifEmpty { id }
+        }
+        return id
+    }
+    private fun colValue(v: Any?): String = if (v == null || v == JSONObject.NULL || v.toString().isEmpty()) "—" else v.toString()
 
     private fun loadView(id: String) {
         browseView.text = "Ładuję…"
@@ -593,12 +660,14 @@ class MainActivity : Activity() {
         for (i in 0 until params.length()) {
             val p = params.getJSONObject(i)
             val name = p.optString("name"); val type = p.optString("type")
+            val lab = p.optString("label", "").ifEmpty { name }               // shown text; `name` stays the key that is sent
+            val typeLab = p.optString("type_label", "").ifEmpty { type }
             val def = if (p.isNull("default")) null else p.opt("default")
             val values = p.optJSONArray("values")
             val req = if (p.optBoolean("required")) " *" else ""
             when {
                 type == "bool" -> {
-                    val cb = CheckBox(this).apply { text = name; isChecked = def == true }
+                    val cb = CheckBox(this).apply { text = lab; isChecked = def == true }
                     box.addView(cb)
                     val touched = booleanArrayOf(false)
                     cb.setOnCheckedChangeListener { _, _ -> touched[0] = true }
@@ -606,15 +675,17 @@ class MainActivity : Activity() {
                 }
                 type == "enum" && values != null && values.length() > 0 -> {
                     val opts = (0 until values.length()).map { values.getString(it) }
-                    val sp = Spinner(this).apply { adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, opts) }
+                    val vl = p.optJSONArray("value_labels")
+                    val shown = opts.mapIndexed { k, o -> vl?.optString(k, "")?.ifEmpty { null } ?: o }
+                    val sp = Spinner(this).apply { adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, shown) }
                     if (def != null) sp.setSelection(opts.indexOf(def.toString()).coerceAtLeast(0))
-                    box.addView(label("$name$req"))
+                    box.addView(label("$lab$req"))
                     box.addView(sp)
-                    getters.add(name to { sp.selectedItem?.toString() })
+                    getters.add(name to { opts.getOrNull(sp.selectedItemPosition) })
                 }
                 else -> {
                     val et = EditText(this).apply {
-                        hint = "$name ($type)$req"
+                        hint = "$lab ($typeLab)$req"
                         if (p.optBoolean("secret")) inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                         else if (type == "int" || type == "number") inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL or InputType.TYPE_NUMBER_FLAG_SIGNED
                         else inputType = InputType.TYPE_CLASS_TEXT
