@@ -364,7 +364,7 @@ class MainActivity : Activity() {
             if (it.moveToFirst() && !it.isNull(0)) name = it.getString(0)
         }
         importDir.mkdirs()
-        val dest = File(importDir, "${System.currentTimeMillis()}__" + name.replace(Regex("[/\\]"), "_"))
+        val dest = File(importDir, "${System.currentTimeMillis()}__" + name.replace(Regex("""[/\\]"""), "_"))
         val input = contentResolver.openInputStream(uri) ?: throw IllegalStateException("nie można otworzyć pliku")
         input.use { src -> dest.outputStream().use { src.copyTo(it) } }
         return dest
