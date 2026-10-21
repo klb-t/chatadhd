@@ -472,7 +472,7 @@ function m1GateChecks() {
       for (const a of st.do || []) {
         if (a.click) { await waitTid(a.click, 20); await click(a.click); }
         else if (a.clickText) { await waitTid(a.clickText[0], 20); if (!(await clickText(a.clickText[0], `/${a.clickText[1]}/i`))) throw new Error(`no ${a.clickText[0]} matching /${a.clickText[1]}/`); }
-        else if (a.wait) await waitTid(a.wait, 30);
+        else if (a.wait) { const t0 = Date.now(); await waitTid(a.wait, a.timeout || 30); notes.push(`${a.wait} after ${((Date.now() - t0) / 1000).toFixed(1)}s`); }
         else if (a.back) for (let k = 0; k < a.back; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200); }
         await sleep(300);
       }
@@ -485,7 +485,7 @@ function m1GateChecks() {
         await waitTid(x.tid, 30);
         if (x.count !== undefined) { const n = await countTid(x.tid); if (n !== x.count) throw new Error(`${x.tid}: ${n} on screen, expected ${x.count}`); notes.push(`${x.tid}=${n}`); }
         if (x.min !== undefined) { const n = await countTid(x.tid); if (n < x.min) throw new Error(`${x.tid}: ${n} on screen, expected at least ${x.min}`); notes.push(`${x.tid}>=${x.min} (${n})`); }
-        if (x.text) { const t = await textTid(x.tid); if (!new RegExp(x.text, "i").test(t)) throw new Error(`${x.tid} says "${t.slice(0, 160)}", expected /${x.text}/`); notes.push(`${x.tid} ~ /${x.text}/`); }
+        if (x.text) { const t = await textTid(x.tid); if (!new RegExp(x.text, "i").test(t)) throw new Error(`${x.tid} says "${t.slice(0, 160)}", expected /${x.text}/`); notes.push(`${x.tid} ~ /${x.text}/: "${t.replace(/\s+/g, " ").slice(0, 300)}"`); }
       }
       shot("m1-" + st.name.replace(/\W+/g, "-").slice(0, 40));
       const visible = await m1Visible();
