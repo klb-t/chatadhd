@@ -10,6 +10,8 @@ import { colorFor } from "./kind-colors";
 
 /** The height of the map on a phone (px); the width follows the screen. */
 export const MAP_HEIGHT_PRESET = 300;
+/** Room at the edge of the plane for the labels (px): the ring of children stays this far from the border, so a label fits beside its mark. */
+export const MAP_MARGIN_PRESET = 64;
 /** A touch target is at least this big (px), the mark under it can be smaller. */
 export const HIT_SIZE_PRESET = 44;
 /** One step of + / − (a factor), the pinch is continuous. */

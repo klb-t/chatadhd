@@ -68,7 +68,7 @@ Lista i mapa są jedna pod drugą w `gnav-body`, każda w `Disclosure` (`data-st
 | zwijanie | `nav-list-disclosure`, `nav-map-disclosure` (`data-state`) | „Pokaż/Ukryj listę”, „Pokaż/Ukryj mapę”; dotknięcie `.disclosure-head` przełącza |
 | mapa | `nav-map-wrap`, `nav-map` (`data-zoom` np. `1.000`, `data-marks`, `data-system` = `sector`, `data-exclusion` = JSON prostokątów w CSS px) | płótno 300 px; `data-exclusion` = to, co poszło do `LoomBridge.setGestureExclusion` (`[]` gdy zwinięta albo poza ekranem) |
 | znak | `nav-map-mark` (`data-id`, `data-focus`, `data-selected`) w SVG; przycisk `nav-map-node-<adres>` (`aria-pressed`) | kółko węzła i jego niewidzialny cel 44 px; dotknięcie = linia pod mapą + karta `node-card` (`data-address` = adres) |
-| przyciski | `nav-map-zoom-in`, `nav-map-zoom-out`, `nav-map-home` | `+` ×1,25, `−` ÷1,25, `⌂` środek i 1:1 |
+| przyciski | `nav-map-zoom-in`, `nav-map-zoom-out`, `nav-map-home`, `nav-map-zoom-value` | rząd pod płótnem: `+` ×1,25, `−` ÷1,25, `⌂` środek i 1:1, powiększenie w % |
 | pod mapą | `nav-map-selected` (`data-address`), `nav-map-enter`, `nav-map-hint`, `nav-map-unplaced` | etykieta + licznik + chip dotkniętego węzła; „Wejdź ›” (gdy ma dzieci); podpowiedź gestów (gdy nic nie wybrano); węzły bez położenia (nie zdarza się na układzie `sector`) |
 | Widok ▾ | `nav-bar-view` (`aria-expanded`), `nav-view-menu`, `nav-view-both` / `nav-view-list` / `nav-view-map` (`aria-checked`), `nav-view-note` | menu z trzema wartościami pola `navigator_layout`; wybór działa od razu i zapisuje się (`settings.set`); linia „Zapisane dla Ciebie: …” albo powód |
 

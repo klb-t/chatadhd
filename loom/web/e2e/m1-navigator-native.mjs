@@ -371,6 +371,7 @@ try {
     await page.getByTestId("nav-view-menu").waitFor({ state: "detached" });
     await page.getByTestId("nav-view-note").filter({ hasText: word("view.saved", { layout: word("view.both") }) }).waitFor();   // the save is asynchronous
     assert.equal((await api("GET", "/api/config")).navigator_layout, "both");
+    await page.getByTestId("nav-map").scrollIntoViewIfNeeded();
     await page.screenshot({ path: path.join(SHOTS, "m1-navigator-map.png") });
     await layoutFits(); await noMissingWord();
     assert.deepEqual(errors, [], "no page errors");

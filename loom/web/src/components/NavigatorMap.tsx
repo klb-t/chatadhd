@@ -9,7 +9,7 @@ import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection"
 import type { ShellT } from "../shell/text";
 import { project } from "../view-engine/project";
 import { chipText, countText } from "./navigator-state";
-import { CAMERA_HOME, HIT_SIZE_PRESET, MAP_HEIGHT_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, panBy, pinch,
+import { CAMERA_HOME, HIT_SIZE_PRESET, MAP_HEIGHT_PRESET, MAP_MARGIN_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, panBy, pinch,
   sameRects, screenOf, shortLabel, viewModelFor, zoomBy, type Camera, type Point, type Rect } from "./navigator-map";
 
 interface Props {
@@ -73,7 +73,7 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
   useEffect(() => () => reportExclusion([]), []);
 
   const model = useMemo(() => viewModelFor(result, t("root")), [result, t]);
-  const projection = useMemo(() => width > 0 ? project(model, { width, height, margin: HIT_SIZE_PRESET / 2 + 4 }) : null, [model, width, height]);
+  const projection = useMemo(() => width > 0 ? project(model, { width, height, margin: MAP_MARGIN_PRESET }) : null, [model, width, height]);
   const rowsById = useMemo(() => {
     const m = new Map<string, Pick<GraphNodeRow, "address" | "label" | "has_children"> & Partial<GraphNodeRow>>();
     m.set(elementIdOf(result.focus.address), { address: result.focus.address, label: result.focus.label || t("root"), has_children: true, kind: result.focus.kind, provenance: result.focus.provenance, evidence: result.focus.evidence });
@@ -141,18 +141,20 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
           {edges.map((e, i) => <line key={i} x1={e.a.x} y1={e.a.y} x2={e.b.x} y2={e.b.y} stroke="currentColor" strokeOpacity={0.3} strokeWidth={1} />)}
           {marks.map(m => <g key={m.id} data-testid="nav-map-mark" data-id={m.id} data-focus={m.focus ? "true" : "false"} data-selected={selected === m.id ? "true" : "false"}>
             <circle cx={m.screen.x} cy={m.screen.y} r={m.rScreen} fill={m.fill} stroke="currentColor" strokeWidth={m.focus || selected === m.id ? 2 : 0} />
-            <text x={m.screen.x + m.rScreen + 3} y={m.screen.y + 4} fontSize={11} fill="currentColor" opacity={0.85}>{shortLabel(m.label)}</text>
+            <text x={m.screen.x + (m.screen.x < centre.x ? -1 : 1) * (m.rScreen + 3)} y={m.screen.y + 4} fontSize={11} fill="currentColor" opacity={0.85}
+              textAnchor={m.screen.x < centre.x ? "end" : "start"}>{shortLabel(m.label)}</text>
           </g>)}
         </svg>}
         {marks.filter(m => inside(m.screen)).map(m => <button key={m.id} type="button" className="gnav-map-hit" data-testid={`nav-map-node-${m.id}`}
           aria-label={m.label} aria-pressed={selected === m.id}
           style={{ left: m.screen.x - HIT_SIZE_PRESET / 2, top: m.screen.y - HIT_SIZE_PRESET / 2, width: HIT_SIZE_PRESET, height: HIT_SIZE_PRESET }}
           onClick={() => tap(m.id)} />)}
-        <div className="gnav-map-zoom">
-          <button type="button" className="gnav-map-btn" data-testid="nav-map-zoom-in" aria-label={t("map.zoom_in")} onClick={() => zoomStep(ZOOM_STEP_PRESET)}>+</button>
-          <button type="button" className="gnav-map-btn" data-testid="nav-map-zoom-out" aria-label={t("map.zoom_out")} onClick={() => zoomStep(1 / ZOOM_STEP_PRESET)}>−</button>
-          <button type="button" className="gnav-map-btn gnav-map-home" data-testid="nav-map-home" aria-label={t("map.home")} onClick={() => setCam(CAMERA_HOME)}>⌂</button>
-        </div>
+      </div>
+      <div className="gnav-map-zoom">
+        <button type="button" className="gnav-map-btn" data-testid="nav-map-zoom-in" aria-label={t("map.zoom_in")} onClick={() => zoomStep(ZOOM_STEP_PRESET)}>+</button>
+        <button type="button" className="gnav-map-btn" data-testid="nav-map-zoom-out" aria-label={t("map.zoom_out")} onClick={() => zoomStep(1 / ZOOM_STEP_PRESET)}>−</button>
+        <button type="button" className="gnav-map-btn gnav-map-home" data-testid="nav-map-home" aria-label={t("map.home")} onClick={() => setCam(CAMERA_HOME)}>⌂</button>
+        <span className="gnav-map-zoom-value" data-testid="nav-map-zoom-value">{Math.round(cam.zoom * 100)}%</span>
       </div>
       {selectedRow ? <div className="gnav-map-selected" data-testid="nav-map-selected" data-address={selectedRow.address}>
         <span className="gnav-label">{selectedRow.label}</span>
