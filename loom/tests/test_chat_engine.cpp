@@ -460,16 +460,31 @@ TEST_SUITE("chat_engine") {
 
   TEST_CASE("context_order legacy: system, memory, graph, history, question (historical bytes)") {
     OrderFixture f;
-    auto c = contents(f.send_body(ChatOptions{}));
+    ChatOptions legacy; legacy.context_order = "legacy";  // the preset is stability since M1-D2; the historical order is one setting away
+    auto c = contents(f.send_body(legacy));
     REQUIRE(c.size() == 5);
     CHECK(c[0] == "SYS-S0");
     CHECK(c[1].find("MEM-S1") != std::string::npos);
     CHECK(c[2].find("Relevant context from past conversations:") == 0);
     CHECK(c[3] == "HIST-S3 earlier turn");
     CHECK(c[4] == "tell me about the database and API again");
-    // The explicit name is the same as the default preset: identical request body.
+    // The config key chat_context_order = legacy is the same as the option: identical request body.
     OrderFixture g;
-    ChatOptions named; named.context_order = "legacy";
+    g.env.cfg.set("chat_context_order", "legacy");
+    CHECK(contents(g.send_body(ChatOptions{})) == c);
+  }
+
+  TEST_CASE("context_order stability is the preset: the classes profile and rules are empty until M1-K1, the graph is sent once, at the end") {
+    OrderFixture f;
+    auto c = contents(f.send_body(ChatOptions{}));
+    REQUIRE(c.size() == 5);  // not 7: profile and rules must not fall through to the graph part
+    CHECK(c[0] == "SYS-S0");
+    CHECK(c[1].find("MEM-S1") != std::string::npos);
+    CHECK(c[2] == "HIST-S3 earlier turn");
+    CHECK(c[3].find("Relevant context from past conversations:") == 0);
+    CHECK(c[4] == "tell me about the database and API again");
+    OrderFixture g;
+    ChatOptions named; named.context_order = "stability";
     CHECK(contents(g.send_body(named)) == c);
   }
 

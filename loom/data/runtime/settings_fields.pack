@@ -3622,7 +3622,7 @@
           "profile": "chat_context",
           "pointer": "/context_order"
         },
-        "description": "Order of the context sections of a chat request, a name from the runtime profile chat_context (orders, with the user's profile overlay): legacy (system, memory, graph, project, history; the profile's preset) or stable_first (system, memory, project, history, graph: the stable sections first so a provider's prompt cache hits), or any order the user adds to profiles/chat_context.pack. The listed values are that profile's orders (values_from), so a write refuses only a name the effective profile does not know. Empty = the profile's context_order. A request may name its own order (option context_order). Default: none (the profile's preset).",
+        "description": "Order of the context sections of a chat request, a name from the runtime profile chat_context (orders, with the user's profile overlay): stability (the profile's preset: system, profile, rules, memory, project, history, graph; the stable sections first so a provider's prompt cache hits; the profile and rules sections stay empty until the kernel fills them, work item M1-K1), legacy (system, memory, graph, project, history: the order before M1, the same request bytes), stable_first (system, memory, project, history, graph), or any order the user adds to profiles/chat_context.pack. The listed values are that profile's orders (values_from), so a write refuses only a name the effective profile does not know. Empty = the profile's context_order. A request may name its own order (option context_order). Default: none (the profile's preset).",
         "values": [
           {
             "value": "",
@@ -3634,8 +3634,8 @@
           {
             "value": "legacy",
             "meaning": {
-              "pl": "Klasycznie: instrukcja, pamięć, graf, projekt, historia (preset profilu).",
-              "en": "Classic: instruction, memory, graph, project, history (the profile's preset)."
+              "pl": "Klasycznie: instrukcja, pamięć, graf, projekt, historia (dawny preset; te same bajty żądania co przed zmianą).",
+              "en": "Classic: instruction, memory, graph, project, history (the former preset; the same request bytes as before the change)."
             }
           },
           {
@@ -3647,17 +3647,10 @@
           },
           {
             "value": "stability",
-            "status": "planned",
-            "by": "M1-D2",
-            "reason": {
-              "pl": "Tej kolejności nie ma jeszcze w danych kontekstu; do tego czasu czat odrzuca tę nazwę przy następnym żądaniu.",
-              "en": "This order is not in the context data yet; until then the chat rejects the name at the next request."
-            },
             "meaning": {
-              "pl": "Według stabilności: instrukcja, profil, reguły, pamięć, projekt, historia, graf (planowane).",
-              "en": "By stability: instruction, profile, rules, memory, project, history, graph (planned)."
-            },
-            "on_set": "refuse"
+              "pl": "Według stabilności (preset): instrukcja, profil, reguły, pamięć, projekt, historia, graf. Części „profil” i „reguły” są na razie puste — wypełni je jądro w pozycji K1.",
+              "en": "By stability (preset): instruction, profile, rules, memory, project, history, graph. The parts “profile” and “rules” are empty for now — the kernel fills them with work item K1."
+            }
           }
         ],
         "values_from": {
@@ -3671,8 +3664,8 @@
             "en": "Order of the request parts"
           },
           "why": {
-            "pl": "W jakiej kolejności model dostaje instrukcję, pamięć, graf, projekt i historię: klasycznie (preset profilu) albo najpierw części stałe, żeby pamięć podręczna dostawcy trafiała częściej.",
-            "en": "In which order the model gets the instruction, memory, graph, project and history: classic (the profile's preset) or the stable parts first so the provider's prompt cache hits more often."
+            "pl": "W jakiej kolejności model dostaje instrukcję, profil, reguły, pamięć, projekt, historię i graf: według stabilności (preset: części stałe najpierw, żeby pamięć podręczna dostawcy trafiała częściej) albo klasycznie.",
+            "en": "In which order the model gets the instruction, profile, rules, memory, project, history and graph: by stability (preset: the stable parts first so the provider's prompt cache hits more often) or classically."
           },
           "effect": {
             "pl": "Ta sama treść w innej kolejności; gdy najpierw idą części stałe, powtarzające się żądania bywają tańsze. Puste = kolejność z pola „Kolejność części żądania (preset profilu)”.",
