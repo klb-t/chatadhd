@@ -344,8 +344,18 @@ async function backToChat() {
 const setOnBlur = (tid, v) => page.ev(`(()=>{const e=${q(tid)};if(!e)return false;e.focus();
   Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,${JSON.stringify(v)});
   e.dispatchEvent(new Event('input',{bubbles:true}));e.blur();e.dispatchEvent(new FocusEvent('focusout',{bubbles:true}));return true})()`);
+// M1-W0: ⋮ › Ustawienia shows the human groups; the old field table (cfg-*) sits in the group "silnik" under the "all fields" disclosure
+async function openSettingsField(tid) {
+  await openMenu("settings"); await waitTid("panel-settings");
+  if (!(await has(tid))) {
+    if (await has("shum-group-open-silnik")) await click("shum-group-open-silnik");
+    await waitTid("shum-all-fields", 10);
+    if (!(await has(tid))) await page.ev(`${q("shum-all-fields")}.querySelector('button').click()`);
+  }
+  await waitTid(tid);
+}
 async function setConfigViaUi(tid, key, value) {
-  await openMenu("settings"); await waitTid("panel-settings"); await waitTid(tid);
+  await openSettingsField(tid);
   await setOnBlur(tid, value);
   await until(`config ${key} = ${value}`, async () => (await apiJson("GET", "/api/config")).body?.[key] === value, 15, 300);
   await closePanel();
@@ -617,7 +627,7 @@ const serverChecks = [
     await setConfigViaUi("cfg-semantic-model", "semantic_model", val);
     await page.ev(`location.reload()`);
     await waitTid("chat-input", 60);
-    await openMenu("settings"); await waitTid("cfg-semantic-model");
+    await openSettingsField("cfg-semantic-model");
     const shown = await until("the field shows the saved value", async () => (await page.ev(`${q("cfg-semantic-model")}.value`)) === val && val, 20, 300);
     await closePanel();
     await setConfigViaUi("cfg-semantic-model", "semantic_model", "");   // leave the account as it was
@@ -688,8 +698,10 @@ const serverChecks = [
     return "stored (API, via Warsztat)";
   }],
   ["knowledge: the old sheet opens from the Workshop", async () => {
-    await openWorkshopPanel("knowledge"); await waitTid("panel-knowledge-sheet", 10); await waitTid("knowledge-workbench", 20);
+    // in the Workshop layout Wiedza opens beside the chat (panel-knowledge-sheet is the chat-layout sheet only)
+    await openWorkshopPanel("knowledge"); await waitTid("knowledge-workbench", 20);
     shot("knowledge");
+    await click("nav-knowledge"); await waitGone("knowledge-workbench", 10);
     await backToChat();   // the next steps (paging, connection) start from the chat shell
     return "via Warsztat; back in the chat shell";
   }],
@@ -702,7 +714,8 @@ const serverChecks = [
       const c = await until("the long conversation", () => convTitled("Smoke Long 520"), 20, 500);
       // the import went straight to the API (not through the panel, which refreshes the list): reload the page to list it
       await page.ev("location.reload()").catch(() => {});
-      await waitTid("shell-drawer-toggle", 60);
+      await waitTid("chat-input", 60); await backToChat();   // the layout is remembered: a reload may come back in the Workshop
+      await waitTid("shell-drawer-toggle", 30);
       await click("shell-drawer-toggle"); await waitTid("shell-conv", 10);
       if (!(await clickText("shell-conv", "/Smoke Long 520/"))) throw new Error("the conversation is not in the drawer list");
       await waitTid("chat-older", 30);
