@@ -55,6 +55,8 @@ try {
   const errors = [];
   page.on("pageerror", e => errors.push(String(e)));
   const nav = () => page.getByTestId("graph-navigator");
+  // a screenshot after the fade/slide animations end (opacity mid-animation would show the chat through the menu); viewport, not full page
+  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); };
   const rowsOf = () => page.getByTestId("nav-rows").locator("li").evaluateAll(els => els.map(li => ({
     address: li.querySelector(".gnav-row-main").dataset.testid.replace("nav-row-", ""), label: li.querySelector(".gnav-label").textContent,
     count: li.querySelector('[data-testid="nav-count"]')?.textContent ?? null, chip: li.querySelector('[data-testid="nav-chip"]').textContent,
@@ -78,6 +80,8 @@ try {
     await page.getByTestId("shell-menu-toggle").tap();
     await page.getByTestId("shell-menu-graph").tap();
     await nav().waitFor();
+    await page.getByTestId("nav-rows").locator("li").first().waitFor();
+    await shot("m1-navigator-root-list");   // the root as the owner first sees it: the rows from the top (the map is below the fold)
     await page.getByTestId("nav-rows").waitFor();
     await page.getByTestId("nav-loading").waitFor({ state: "detached" });
     assert.equal(await nav().getAttribute("data-focus"), "");
@@ -96,7 +100,7 @@ try {
     assert.equal(await page.getByTestId("nav-budget").innerText(), `${word(root.limit.value === 0 ? "bar.budget.unlimited" : "bar.budget", { limit: String(root.limit.value), hops: String(root.hops) })} · ${word("children", { shown: String(root.counts.shown), total: String(root.counts.total) })}`);
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-root.png") });
+    await shot("m1-navigator-root");
   });
 
   await step("a tap on ROM drills in: crumbs, the focus's why, the 13 rows with status chips in Polish", async () => {
@@ -115,7 +119,7 @@ try {
     assert.ok(rows.every(r => /[ąćęłńóśźż]/i.test(r.label + r.why) || r.why === ""), "the ROM rows read in Polish");
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-rom.png") });
+    await shot("m1-navigator-rom");
   });
 
   await step("the magnifier searches on the level (graph.navigate query), and closing it restores the level", async () => {
@@ -176,9 +180,10 @@ try {
     const groups = Object.entries(expected.relations).filter(([, g]) => g.out.length + g.in.length > 0);
     for (const [kind, g] of groups) assert.ok((await page.getByTestId(`card-relation-group-${kind}`).innerText()).includes(g.label));
     if (groups.length === 0) assert.equal(await page.getByTestId("card-relations-none").innerText(), words["card.relations.none"]);
+    await page.getByTestId("card-label").scrollIntoViewIfNeeded();   // the report's screenshot shows the card from its top
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-rom.png") });
+    await shot("m1-navigator-card-rom");
     await page.getByTestId(`nav-row-${leaf}`).tap();   // a leaf's row toggles the same card
     await page.getByTestId("node-card").waitFor({ state: "detached" });
   });
@@ -238,9 +243,10 @@ try {
     assert.equal(await page.getByTestId("card-layers").innerText(), word("card.layers", { layers: expected.provenance.layers.map(l => word(`chip.${l}`)).join(" → ") }));
     assert.equal(await page.getByTestId("card-edit-rule").innerText(), `${words["card.edit_rule"]} ${word(`card.edit_rule.${expected.edit_rule}`)}`);
     assert.ok((await page.getByTestId("card-flows").innerText()).includes(expected.flows_reading[0].title), "the flows that read the field");
+    await page.getByTestId("card-label").scrollIntoViewIfNeeded();   // the report's screenshot shows the card from its top
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-setting.png") });
+    await shot("m1-navigator-card-setting");
   });
 
   await step("Zmień → Dla kogo?: the field's own levels, 'więcej poziomów' shows the whole chain with the reason a level cannot be written", async () => {
@@ -260,7 +266,7 @@ try {
     assert.ok((await page.getByTestId("card-level-installation").innerText()).includes(words["card.level.baseline"]));
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-for-whom.png") });
+    await shot("m1-navigator-card-for-whom");
   });
 
   await step("set for 'Ta rozmowa' (rules.set, the kernel asks, confirm) → the chain shows the conversation winning; set for 'Ty' (settings.set) → person", async () => {
@@ -289,7 +295,7 @@ try {
     assert.ok((await unset.innerText()).includes(word("card.unset.returns", { layer: personRow.label, value: String(personRow.value) })));
     assert.equal(await page.getByTestId("card-unset-person").isDisabled(), true);
     assert.ok((await page.getByTestId("card-unset-person").innerText()).includes(words["card.unset.person_planned"]));
-    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-unset.png") });
+    await shot("m1-navigator-card-unset");
     await unset.tap();
     await confirmGate();
     const after = await sameChain("after unset");
@@ -372,7 +378,7 @@ try {
     await page.getByTestId("nav-view-note").filter({ hasText: word("view.saved", { layout: word("view.both") }) }).waitFor();   // the save is asynchronous
     assert.equal((await api("GET", "/api/config")).navigator_layout, "both");
     await page.getByTestId("nav-map").scrollIntoViewIfNeeded();
-    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-map.png") });
+    await shot("m1-navigator-map");
     await layoutFits(); await noMissingWord();
     assert.deepEqual(errors, [], "no page errors");
   });

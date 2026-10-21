@@ -20,8 +20,12 @@ export default function Disclosure({ labels, children, defaultOpen = false, open
   const id = useId();
   const root = useRef<HTMLDivElement>(null);
   const toggle = useCallback(() => { const next = !open; setInner(next); onToggle?.(next); }, [open, onToggle]);
-  // Opening scrolls the content into view when it would land below the visible area.
+  // Opening scrolls the content into view when it would land below the visible area — on a toggle only, never on the first render:
+  // a screen that mounts with an open disclosure (the navigator's map under its list, preset navigator_layout = both) must open at
+  // its top, not scrolled down to the map (P7: the first screenshot of Graf showed the last row and the map, not the rows).
+  const seen = useRef(false);
   useEffect(() => {
+    if (!seen.current) { seen.current = true; return; }
     if (!open || !root.current) return;
     const node = root.current;
     const frame = requestAnimationFrame(() => {

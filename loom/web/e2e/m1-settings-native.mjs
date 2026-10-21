@@ -67,6 +67,8 @@ try {
   const errors = [];
   page.on("pageerror", e => errors.push(String(e)));
   const screen = () => page.getByTestId("settings-human");
+  // a screenshot after the fade/slide animations end (opacity mid-animation would show the chat through the menu); viewport, not full page
+  const shot = async name => { await page.evaluate(() => Promise.all(document.getAnimations().map(a => a.finished.catch(() => {})))); await page.screenshot({ path: path.join(SHOTS, `${name}.png`) }); };
   const back = () => page.evaluate(() => window.__loomBack());
   const noMissingWord = async () => {
     const texts = await screen().locator("button, span, p, b, h3, li").evaluateAll(els => els.map(el => el.textContent.trim()));
@@ -97,7 +99,7 @@ try {
     assert.ok(labels.every(l => !/^menu_/.test(l)), `every entry has its Polish word: ${labels.join(" | ")}`);
     const small = await page.getByRole("menuitem").evaluateAll(els => els.map(el => Math.round(el.getBoundingClientRect().height)).filter(h => h < 44));
     assert.deepEqual(small, [], "every menu row is at least 44 px high");
-    await page.screenshot({ path: path.join(SHOTS, "m1-menu.png") });
+    await shot("m1-menu");
   });
 
   await step("menu ⋮ › Ustawienia: the eight groups of settings.resolved in the order of the data, each 'N pól · M Twoje'; the counts add up to the pack", async () => {
@@ -126,7 +128,7 @@ try {
     assert.equal(await page.getByTestId("shum-filter").getAttribute("aria-checked"), "false", "Pokaż tylko zmienione is off at the start");
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-settings-groups.png") });
+    await shot("m1-settings-groups");
   });
 
   const rozmowa = groupsApi.find(g => g.id === "rozmowa");
@@ -151,7 +153,7 @@ try {
     assert.ok((await page.getByTestId("shum-edit-temperature").textContent()).includes(sh[`edit.${temperature.edit_rule}`]), "the edit rule in words");
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-settings-rozmowa.png") });
+    await shot("m1-settings-rozmowa");
   });
 
   await step("Pokaż tylko zmienione keeps only the fields that are yours (data-shown = Twoje of the group); off again shows them all", async () => {
@@ -194,7 +196,7 @@ try {
     assert.equal(await page.getByTestId("roles-title").textContent(), rl.title);
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-settings-roles.png") });
+    await shot("m1-settings-roles");
     assert.ok(analysis, "the kernel knows the role analysis.fast");
     await page.getByTestId("role-open-analysis.fast").tap();
     await page.getByTestId("role-card").waitFor();
@@ -228,11 +230,11 @@ try {
     assert.ok((await page.getByTestId("role-readers-total").textContent()).includes(String(expected)));
     await noMissingWord();
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-settings-role-card.png") });
+    await shot("m1-settings-role-card");
     await page.getByTestId("role-chain").scrollIntoViewIfNeeded();
-    await page.screenshot({ path: path.join(SHOTS, "m1-settings-role-chain.png") });
+    await shot("m1-settings-role-chain");
     await readers.scrollIntoViewIfNeeded();
-    await page.screenshot({ path: path.join(SHOTS, "m1-settings-role-readers.png") });
+    await shot("m1-settings-role-readers");
   });
 
   await step("Back closes the layers in order: the role card, then the group, then the panel; at the root it falls through", async () => {
@@ -260,7 +262,7 @@ try {
     await page.locator('[data-testid^="cfg-"]').first().waitFor();   // the former screen loads its fields from the server
     assert.ok(await page.locator('[data-testid^="cfg-"]').count() >= 1, "the former fields are there");
     await layoutFits();
-    await page.screenshot({ path: path.join(SHOTS, "m1-settings-all-fields.png") });
+    await shot("m1-settings-all-fields");
     assert.equal(await back(), true);
     await page.getByTestId("shum-groups").waitFor();
     assert.equal(await back(), true);
