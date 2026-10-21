@@ -1,0 +1,101 @@
+{
+  "legacy": {
+    "model": "test/model",
+    "messages": [
+      {
+        "role": "system",
+        "content": "SYS-S0"
+      },
+      {
+        "role": "system",
+        "content": "RULES-R0 never use emoji"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nMEM-S1 core fact"
+      },
+      {
+        "role": "system",
+        "content": "Relevant context from past conversations:\n[Old conversation | assistant]: we discussed the database and the API design"
+      },
+      {
+        "role": "user",
+        "content": "HIST-S3 earlier turn"
+      },
+      {
+        "role": "user",
+        "content": "tell me about the database and API again"
+      }
+    ],
+    "temperature": 0.7,
+    "max_tokens": 4096,
+    "stream": false,
+    "include_reasoning": true
+  },
+  "stable_first": {
+    "model": "test/model",
+    "messages": [
+      {
+        "role": "system",
+        "content": "SYS-S0"
+      },
+      {
+        "role": "system",
+        "content": "RULES-R0 never use emoji"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nMEM-S1 core fact"
+      },
+      {
+        "role": "user",
+        "content": "HIST-S3 earlier turn"
+      },
+      {
+        "role": "system",
+        "content": "Relevant context from past conversations:\n[Old conversation | assistant]: we discussed the database and the API design"
+      },
+      {
+        "role": "user",
+        "content": "tell me about the database and API again"
+      }
+    ],
+    "temperature": 0.7,
+    "max_tokens": 4096,
+    "stream": false,
+    "include_reasoning": true
+  },
+  "stability": {
+    "model": "test/model",
+    "messages": [
+      {
+        "role": "system",
+        "content": "SYS-S0"
+      },
+      {
+        "role": "system",
+        "content": "RULES-R0 never use emoji"
+      },
+      {
+        "role": "system",
+        "content": "User's memory/context:\nMEM-S1 core fact"
+      },
+      {
+        "role": "user",
+        "content": "HIST-S3 earlier turn"
+      },
+      {
+        "role": "system",
+        "content": "Relevant context from past conversations:\n[Old conversation | assistant]: we discussed the database and the API design"
+      },
+      {
+        "role": "user",
+        "content": "tell me about the database and API again"
+      }
+    ],
+    "temperature": 0.7,
+    "max_tokens": 4096,
+    "stream": false,
+    "include_reasoning": true
+  }
+}
