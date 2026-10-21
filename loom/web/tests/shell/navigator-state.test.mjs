@@ -108,5 +108,5 @@ test('the honesty lines: collapsed by the budget, hidden by you, sources that co
 
 test('the bottom bar is the order of the spec; what does not work yet is marked so, never silently', () => {
   assert.deepEqual(nav.BAR_BUTTONS.map(b => b.id), ['perspective', 'wider', 'narrower', 'deeper', 'shallower', 'actions', 'view']);
-  assert.deepEqual(nav.BAR_BUTTONS.filter(b => !b.works).map(b => b.id), ['perspective', 'actions', 'view']);
+  assert.deepEqual(nav.BAR_BUTTONS.filter(b => !b.works).map(b => b.id), ['perspective', 'actions']);   // P4 wired Widok
 });

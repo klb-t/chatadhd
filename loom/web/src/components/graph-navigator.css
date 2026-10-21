@@ -69,3 +69,27 @@
 .ncard-inactive { opacity: 0.55; }
 .ncard-group { margin: 4px 0 8px; }
 .ncard-notice { font-weight: 600; }
+
+/* M1-W0 (2) P4: list and map one under the other, each a Disclosure (shell/Disclosure.tsx, the glyphs of the setting disclosure_glyphs).
+   The map keeps >= 24 px at the sides (8 px of the disclosure + 16 px here) so the system's edge swipes have their strip; its visible
+   rectangle is also reported to the Android shell. Marks are SVG, the touch targets are real 44 px buttons laid over them. */
+.gnav-disclosure { border-bottom: 1px solid var(--border); }
+.gnav-disclosure > .disclosure-head { color: inherit; font-weight: 600; }
+.gnav-map-wrap { padding: 4px 0 8px; }
+.gnav-map { position: relative; margin: 0 16px; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--card);
+  touch-action: none; -webkit-user-select: none; user-select: none; }
+.gnav-map-svg { display: block; width: 100%; height: 100%; }
+.gnav-map-svg text { pointer-events: none; }
+.gnav-map-hit { position: absolute; padding: 0; margin: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; touch-action: manipulation; }
+.gnav-map-hit[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--accent, #7aa2f7); }
+.gnav-map-hit:focus-visible { outline: 2px solid var(--accent, #7aa2f7); }
+.gnav-map-zoom { position: absolute; right: 6px; bottom: 6px; display: flex; flex-direction: column; gap: 4px; }
+.gnav-map-btn { min-width: 44px; min-height: 44px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card);
+  color: inherit; font: inherit; font-size: 20px; line-height: 1; cursor: pointer; touch-action: manipulation; }
+.gnav-map-enter { font-size: 14px; font-weight: 600; }
+.gnav-map-selected { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; margin: 6px 0 0; padding: 0 4px; }
+.gnav-map-hint { margin: 6px 4px 0; }
+.gnav-view-menu { width: 100%; display: flex; flex-direction: column; gap: 4px; padding: 4px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.gnav-view-title { margin: 0 0 2px; font-weight: 600; }
+.gnav-view-option { min-height: 44px; padding: 0 12px; text-align: left; background: none; border: 1px solid var(--border); border-radius: 8px; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
+.gnav-view-option[aria-checked="true"] { border-color: var(--accent, #7aa2f7); color: var(--accent, #7aa2f7); font-weight: 600; }

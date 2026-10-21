@@ -1,18 +1,22 @@
-// M1-W0 (2), package P2: the LIST half of the graph navigator (spec §3.2–3.4). One screen for Graph, Settings and You: the rows
-// are what graph.navigate answers for the focus (never a list of this file), a tap on a row with children goes one step deeper,
-// the path row goes back (each step is a history layer, so Android Back / browser Back / Escape close the last step first), the
-// magnifier searches on the level, the bottom bar changes the budget (Szerzej/Węziej) and the depth (Głębiej/Płycej).
-// Not in this package (their buttons say "planned" with the reason, from the catalogue): the map, Perspektywa, Działania, Widok.
-// A row's ⋯ (or a tap on a leaf) opens the node card (NodeCard.tsx, package P3) under the rows; the card is a history layer, so
-// Back closes it before the path step.
+// M1-W0 (2), packages P2–P4: the graph navigator (spec §3.2–3.4). One screen for Graph, Settings and You: the rows and the map
+// are what graph.navigate answers for the focus (never a list of this file). The LIST (P2): a tap on a row with children goes one
+// step deeper, the path row goes back (each step is a history layer, so Android Back / browser Back / Escape close the last step
+// first), the magnifier searches on the level, the bottom bar changes the budget (Szerzej/Węziej) and the depth (Głębiej/Płycej).
+// The MAP (P4, NavigatorMap.tsx): the same level drawn through the view engine; list and map sit one under the other, each in a
+// Disclosure, which ones start open comes from the setting navigator_layout (preset both; Widok ▾ changes it and saves it for you).
+// A row's ⋯, a tap on a leaf or a tap on a mark opens the node card (NodeCard.tsx, P3) under them; the card is a history layer.
+// Still planned (their buttons say so with the reason, from the catalogue): Perspektywa, Działania.
 import { useEffect, useMemo, useState } from "react";
 import NodeCard from "./NodeCard";
+import NavigatorMap from "./NavigatorMap";
 import { api } from "../api";
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { UserProfileHost } from "../api/onboarding-host";
+import Disclosure from "../shell/Disclosure";
 import { shellTranslator } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
+import { LAYOUTS, layoutOf, openByLayout, type Layout } from "./navigator-map";
 import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
   initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState } from "./navigator-state";
 import "./graph-navigator.css";
@@ -24,6 +28,8 @@ interface Props {
   language: string;
   /** Where the navigator opens ("" = the root of the graph). */
   initialFocus?: string;
+  /** The setting navigator_layout as loaded (both | list | map); anything else is the preset both. */
+  layout?: unknown;
 }
 
 /** One step of the path as one history layer: Back closes the topmost step (the last one). */
@@ -32,7 +38,7 @@ function StepLayer({ index, onClose }: { index: number; onClose: (index: number)
   return null;
 }
 
-export default function GraphNavigator({ profileHost, convId, language, initialFocus = "" }: Props) {
+export default function GraphNavigator({ profileHost, convId, language, initialFocus = "", layout: layoutSetting }: Props) {
   const words = usePresentationFeature(profileHost, "graph_screen");
   const t = useMemo(() => shellTranslator(words.feature, language), [words.feature, language]);
   const [state, setState] = useState<NavigatorState>(() => initialState(initialFocus));
@@ -43,6 +49,12 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [draft, setDraft] = useState("");
   const [card, setCard] = useState<{ address: string; label: string } | null>(null);
   const [planned, setPlanned] = useState<BarButtonId | null>(null);
+  const [layout, setLayout] = useState<Layout>(() => layoutOf(layoutSetting));
+  const [open, setOpen] = useState(() => openByLayout(layoutOf(layoutSetting)));
+  const [viewMenu, setViewMenu] = useState(false);
+  const [viewNote, setViewNote] = useState<string | null>(null);
+  // The setting arrives after the config loads: follow it until the person chooses here.
+  useEffect(() => { const next = layoutOf(layoutSetting); setLayout(next); setOpen(openByLayout(next)); }, [layoutSetting]);
 
   const request = useMemo(() => requestFor(state, language, convId), [state, language, convId]);
   const requestKey = JSON.stringify(request);
@@ -64,17 +76,30 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
     return () => clearTimeout(timer);
   }, [draft]);
   useLayer("navigator-search", searchOpen, () => { setSearchOpen(false); setDraft(""); });
+  useLayer("navigator-view", viewMenu, () => setViewMenu(false));
 
   const closeStep = (index: number) => { setState(s => goBack(s, index)); setCard(null); };
   const drill = (row: Pick<GraphNodeRow, "address" | "label">) => { setState(s => drillInto(s, row)); setCard(null); setDraft(""); setSearchOpen(false); };
   const openCard = (row: Pick<GraphNodeRow, "address" | "label">) => setCard(c => c?.address === row.address ? null : { address: row.address, label: row.label });
+  const showCard = (row: Pick<GraphNodeRow, "address" | "label">) => setCard({ address: row.address, label: row.label });
   const effectiveLimit = result?.limit.value ?? 0, effectiveHops = result?.hops ?? 1, shown = result?.counts.shown ?? 0;
   const onBar = (id: BarButtonId) => {
     if (id === "wider") setState(s => wider(s, effectiveLimit));
     else if (id === "narrower") setState(s => narrower(s, effectiveLimit, shown));
     else if (id === "deeper") setState(s => deeper(s, effectiveHops));
     else if (id === "shallower") setState(s => shallower(s, effectiveHops));
+    else if (id === "view") { setViewMenu(v => !v); setPlanned(null); }
     else setPlanned(p => p === id ? null : id);
+  };
+  // Widok ▾: the choice applies at once and is saved as yours (settings.set navigator_layout); the line under the options says what happened.
+  const chooseLayout = async (next: Layout) => {
+    setLayout(next); setOpen(openByLayout(next)); setViewMenu(false); setViewNote(null);
+    const actions = api.actions;
+    if (!actions) { setViewNote(t("view.save_error", { reason: "actions_api_unavailable" })); return; }
+    try {
+      const run = await actions.run({ action: "settings.set", args: { key: "navigator_layout", value: next } });
+      setViewNote(run.status === "done" ? t("view.saved", { layout: t(`view.${next}`) }) : t("view.save_error", { reason: run.error?.message ?? run.status }));
+    } catch (failure) { setViewNote(t("view.save_error", { reason: failure instanceof Error ? failure.message : String(failure) })); }
   };
   const focus = focusOf(state);
   const crumbs = [{ address: "", label: t("root") }, ...state.path];
@@ -82,7 +107,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const plannedButton = BAR_BUTTONS.find(b => b.id === planned);
 
   return (
-    <div className="gnav" data-testid="graph-navigator" data-focus={focus}>
+    <div className="gnav" data-testid="graph-navigator" data-focus={focus} data-layout={layout}>
       {state.path.map((_, i) => <StepLayer key={i} index={i} onClose={closeStep} />)}
       <div className="gnav-path" data-testid="nav-path" aria-label={t("path")}>
         {state.path.length > 0 && <button className="gnav-back" data-testid="nav-back" aria-label={t("back")}
@@ -104,7 +129,9 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
       <div className="gnav-body">
         {loading && <p className="gnav-note" data-testid="nav-loading">{t("loading")}</p>}
         {error && <p className="gnav-note gnav-error" data-testid="nav-error">{t("error", { reason: error })}</p>}
-        {result && <ul className="gnav-rows" data-testid="nav-rows" data-shown={result.counts.shown} data-total={result.counts.total}>
+        {result && <Disclosure testId="nav-list-disclosure" className="gnav-disclosure" labels={{ show: t("list.show"), hide: t("list.hide") }}
+          open={open.list} onToggle={v => setOpen(o => ({ ...o, list: v }))}>
+          <ul className="gnav-rows" data-testid="nav-rows" data-shown={result.counts.shown} data-total={result.counts.total}>
           {result.children.map(row => {
             const count = countText(row, t), chip = chipText(row, t), evidence = evidenceText(row, t), status = statusText(row, t), noTr = noTranslationText(row, t);
             return <li key={row.address} className="gnav-row" data-kind={row.kind}>
@@ -129,17 +156,29 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
               </div>
             </li>;
           })}
-        </ul>}
+          </ul>
+          {!loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty">{t("no_children")}</p>}
+        </Disclosure>}
+        {result && <Disclosure testId="nav-map-disclosure" className="gnav-disclosure" labels={{ show: t("map.show"), hide: t("map.hide") }}
+          open={open.map} onToggle={v => setOpen(o => ({ ...o, map: v }))}>
+          <NavigatorMap result={result} open={open.map} t={t} onCard={showCard} onDrill={drill} />
+        </Disclosure>}
         {card && <NodeCard key={card.address} address={card.address} language={language} convId={convId} t={t}
           onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}
-        {result && !loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty">{t("no_children")}</p>}
         {lines.map(line => <p key={line.id} className="gnav-note gnav-honesty" data-testid={`nav-${line.id}`}>{line.text}</p>)}
       </div>
 
       <nav className="gnav-bar" data-testid="nav-bar">
+        {viewMenu && <div className="gnav-view-menu" data-testid="nav-view-menu" role="radiogroup" aria-label={t("view.title")}>
+          <p className="gnav-note gnav-view-title">{t("view.title")}</p>
+          {LAYOUTS.map(id => <button key={id} type="button" role="radio" className="gnav-view-option" data-testid={`nav-view-${id}`}
+            aria-checked={layout === id} onClick={() => chooseLayout(id)}>{t(`view.${id}`)}</button>)}
+        </div>}
         {BAR_BUTTONS.map(b => <button key={b.id} className={`gnav-bar-btn${b.works ? "" : " gnav-bar-planned"}`} data-testid={`nav-bar-${b.id}`}
-          aria-pressed={b.works ? undefined : planned === b.id} onClick={() => onBar(b.id)}>{t(b.word)}</button>)}
+          aria-pressed={b.works ? (b.id === "view" ? viewMenu : undefined) : planned === b.id} aria-expanded={b.id === "view" ? viewMenu : undefined}
+          onClick={() => onBar(b.id)}>{t(b.word)}</button>)}
         {plannedButton && <p className="gnav-note gnav-planned" data-testid="nav-bar-planned">{t("bar.planned", { what: t(plannedButton.word) })}</p>}
+        {viewNote && <p className="gnav-note gnav-planned" data-testid="nav-view-note">{viewNote}</p>}
         {result && <p className="gnav-budget" data-testid="nav-budget">
           {effectiveLimit === 0 ? t("bar.budget.unlimited", { hops: String(effectiveHops) }) : t("bar.budget", { limit: String(effectiveLimit), hops: String(effectiveHops) })}
           {" · "}{t("children", { shown: String(result.counts.shown), total: String(result.counts.total) })}

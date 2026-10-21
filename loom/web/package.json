@@ -45,6 +45,7 @@
     "test:shell-menu": "node tests/shell/menu.test.mjs",
     "test:navigator-state": "node tests/shell/navigator-state.test.mjs",
     "test:node-card-state": "node tests/shell/node-card-state.test.mjs",
+    "test:navigator-map": "node tests/shell/navigator-map.test.mjs",
     "test:m1-navigator": "node e2e/m1-navigator-native.mjs",
     "test:graph-labels": "node tests/graph-labels/graph-labels.test.mjs",
     "test:chat-first": "node e2e/chat-first.mjs",

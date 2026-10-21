@@ -100,7 +100,7 @@ export const BAR_BUTTONS = [
   { id: "deeper", word: "bar.deeper", works: true },
   { id: "shallower", word: "bar.shallower", works: true },
   { id: "actions", word: "bar.actions", works: false },
-  { id: "view", word: "bar.view", works: false },
+  { id: "view", word: "bar.view", works: true },
 ] as const;
 export type BarButtonId = typeof BAR_BUTTONS[number]["id"];
 
