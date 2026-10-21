@@ -21,7 +21,7 @@ export const ZOOM_MAX_PRESET = 8;
 /** A finger that moves less than this (px) between down and up is a tap, not a drag. */
 export const TAP_SLOP_PRESET = 8;
 /** How many characters of a label the map draws next to a mark; the line under the map shows the whole label. */
-export const LABEL_CHARS_PRESET = 16;
+export const LABEL_CHARS_PRESET = 12;
 /** The element id of the graph root on the map (its address is the empty string). */
 export const ROOT_ELEMENT_ID = "root";
 
