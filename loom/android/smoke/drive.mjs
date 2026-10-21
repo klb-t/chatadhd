@@ -706,11 +706,15 @@ const serverChecks = [
     const action = await page.ev(`${q("chat-agent-proposal-action")}?.innerText||''`);
     if (!/usage\.compact/.test(action)) throw new Error(`the block proposes "${action}", expected usage.compact`);
     shot("agent-proposal");
+    const before = providerCalls().length;
     await click("chat-agent-proposal-accept");
-    await waitTid("chat-agent-proposal-decided", 120);
-    await until("the agent's final answer", () => assistantSays("Agent testowy: gotowe."), 120, 400);
+    // the answer resumes the run (agent.run with resume): the provider gets the turn with the tool result, then the block gives way
+    await until("the resumed agent turn at the provider", () => providerCalls().slice(before).some(c => c.tools > 0 && !c.tool_calls), 120, 500);
+    await until("the proposals block giving way", async () => !(await has("chat-agent-proposal-accept")), 60, 400);
+    if (await has("chat-agent-proposal") && await page.ev(`!!document.querySelector('[data-testid="chat-agent-proposal"] .error, [data-testid="chat-agent-proposal"] [role=alert]')`))
+      throw new Error("the block shows a failure after Accept: " + await page.ev(`${q("chat-agent-proposal")}.innerText`));
     shot("agent-done");
-    return `proposed ${action.trim()}, accepted, the run finished`;
+    return `proposed ${action.trim()}, accepted, the run resumed at the provider and the block gave way`;
   }],
 ];
 

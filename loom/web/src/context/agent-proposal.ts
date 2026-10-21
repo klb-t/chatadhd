@@ -14,9 +14,18 @@ export interface AgentDecision { run_id: string; approved: boolean }
 
 const str = (value: unknown): string => (typeof value === "string" ? value : "");
 
+/** The stored loop of a message: `agent_loop` at the top (the page writes it there once the user answered), else where the
+ *  router stores it for an agent run started from the chat (`action_run.agent_loop`, route.cpp report_of). */
+export function agentLoopOf(metadata: Meta | undefined): unknown {
+  const top = metadata?.agent_loop;
+  if (top && typeof top === "object") return top;
+  const run = metadata?.action_run;
+  return run && typeof run === "object" ? (run as Meta).agent_loop : undefined;
+}
+
 /** The proposals of a message that carries `agent_loop` (set by the router for an agent run that needs the user), else null. */
 export function agentLoopView(metadata: Meta | undefined): AgentLoopView | null {
-  const loop = metadata?.agent_loop;
+  const loop = agentLoopOf(metadata);
   if (!loop || typeof loop !== "object") return null;
   const record = loop as Meta;
   if (!Array.isArray(record.proposals) || record.proposals.length === 0) return null;
