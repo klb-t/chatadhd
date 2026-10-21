@@ -37,6 +37,7 @@ bez commita przepada, kontekst trzeba cache'ować od nowa), albo zostawić je ni
 | 06:08 | 12 % (nowe okno 04:50–09:50; linia 26 %) | **22 %** | 1 (W0 krok naprawczy r1:b3) + S1; wcześniej 2–3 | tydzień: linia 13,2 % (22 h z 168 h), jesteśmy 9 pkt NAD; 03:07→06:08: +7 pkt w 3 h ≈ 2,3 pkt/h ≈ 56 %/dobę (linia: 14,3 %/dobę); średnio od resetu tygodnia: 24 %/dobę |
 | 11:06 | 0 % (nowe okno) | **29 %** | 0–1 (przerwa: bramka, restarty kontenera) | tydzień: linia 16,1 % (27 h), jesteśmy 13 pkt nad; 06:08→11:06: +7 pkt w 5 h ≈ 34 %/dobę (spadek z 56 %/dobę, bo większość czasu to była przerwa i bramka bez agentów) |
 | 13:19 | 4 % (okno 10:10–15:10; linia 67 %) | **30 %** | 0 (bramka skończona, czekam na CI) + S1 | tydzień: linia 17,6 % (29,5 h), jesteśmy 12 pkt nad; 11:06→13:19: +1 pkt w 2 h, bo prawie nic nie biegło (bieg CI i naprawy testów to praca poza kontem) |
+| 16:20 | 0 % (okno 15:30–20:30) | **30 %** | 0 (czekanie na CI 256, zielone) + S1 | tydzień: linia 20,6 % (32,5 h), jesteśmy ≈ 9 pkt nad; 13:19→16:20: 0 pkt w 3 h (nic nie biegło poza CI) |
 
 **Odczyt z 00:14:** od 00:10 do 00:14 przybyły 3 punkty w około 4 minuty (≈ 0,8 pkt/min),
 od 00:05 średnio ≈ 0,6 pkt/min. Do reszty okna (276 min) zostaje 89 punktów, czyli stać nas
