@@ -222,6 +222,8 @@ try {
   // ---- S1's acceptance asks (2026-10-21): the second recipe, and the per-conversation folder export ----
   const openTab = async (tab) => {
     let nodes = dump(); let t = find(nodes, n => n.text === tab && /Button/.test(n.class || ""));
+    // a drop-down or dialog left open covers the tab bar: Back closes it
+    for (let k = 0; !t && k < 3; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(700); nodes = dump(); t = find(nodes, n => n.text === tab && /Button/.test(n.class || "")); }
     if (!t) throw new Error(`no tab "${tab}"`);
     tap(t); await sleep(1200);
     for (let k = 0; k < 12; k++) adb("shell", "input", "swipe", "500", "700", "500", "1700", "120");   // back to the top
@@ -302,8 +304,13 @@ try {
   const newTexts = (before, after) => texts(after).filter(t => !before.includes(t)).map(t => t.replace(/\s+/g, " ")).join(" | ") || "(nothing new on the screen)";
   const chooseRecipe = async () => {
     await openTab("Edycje");
-    const spinner = find(dump(), n => /Spinner/.test(n.class || "") && n.package === PKG);
-    if (spinner) { tap(spinner); await sleep(900); }
+    // the recipes: a visible list (radio) in the new build, a drop-down under "Gotowe przepisy" in the older one
+    let spinner = null;
+    const head = await scrollFind(n => /^Gotowe przepisy/.test(n.text || ""), "the 'Gotowe przepisy' section");
+    if (!find(dump(), n => /Zostaw w metadanych/.test(n.text || ""))) {
+      spinner = dump().filter(n => /Spinner/.test(n.class || "") && n.package === PKG && n.t >= head.t).sort((a, b) => a.t - b.t)[0] || null;
+      if (spinner) { tap(spinner); await sleep(900); }
+    }
     const options = dump().filter(n => n.package === PKG && /RadioButton|CheckedTextView/.test(n.class || "") && (n.text || "").trim()).map(n => n.text.trim());
     await tapText(/Zostaw w metadanych/, "the recipe 'Zostaw w metadanych tylko znaczniki czasu'");
     const r = find(dump(), n => /Zostaw w metadanych/.test(n.text || ""));
