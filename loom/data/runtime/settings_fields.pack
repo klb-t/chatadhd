@@ -3814,29 +3814,29 @@
           {
             "value": "list",
             "meaning": {
-              "pl": "Tylko lista.",
-              "en": "List only."
+              "pl": "Tylko lista (mapa zwinięta, jedno dotknięcie ją rozwija).",
+              "en": "List only (the map folded, one tap unfolds it)."
             }
           },
           {
             "value": "map",
             "meaning": {
-              "pl": "Tylko mapa.",
-              "en": "Map only."
+              "pl": "Tylko mapa (lista zwinięta, jedno dotknięcie ją rozwija).",
+              "en": "Map only (the list folded, one tap unfolds it)."
             }
           }
         ],
         "status": {
-          "state": "planned",
+          "state": "implemented",
           "by": "M1-W0",
           "reader": "web GraphNavigator",
           "reason": {
-            "pl": "Część aplikacji, która czyta to pole — nawigator grafu (lista i mapa razem) — jeszcze nie powstała; do tego czasu wartość jest zapisywana, ale nic jej nie czyta.",
-            "en": "The part of the app that reads this field — the graph navigator (list and map together) — is not built yet; until then the value is stored but nothing reads it."
+            "pl": "Nawigator grafu (web GraphNavigator, M1-W0 P4) czyta to pole; wartość ma czytelnika i działa.",
+            "en": "The graph navigator (web GraphNavigator, M1-W0 P4) reads this field; the value has a reader and works."
           },
           "today": {
-            "pl": "Dziś tej części ekranu jeszcze nie ma, więc wartość niczego nie zmienia.",
-            "en": "Today this part of the screen does not exist yet, so the value changes nothing."
+            "pl": "Nawigator grafu (menu ⋮ › Graf) czyta to pole przy otwarciu: both = lista i mapa rozwinięte, list = mapa zwinięta, map = lista zwinięta; zwiniętą część rozwiniesz jednym dotknięciem. Przycisk Widok ▾ na dolnym pasku zmienia wartość i zapisuje ją dla Ciebie.",
+            "en": "The graph navigator (menu ⋮ › Graf) reads this field when it opens: both = list and map unfolded, list = the map folded, map = the list folded; one tap unfolds a folded part. The Widok ▾ button on the bottom bar changes the value and saves it for you."
           }
         },
         "human": {

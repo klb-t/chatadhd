@@ -43,6 +43,7 @@ import { sourceHistoryUnavailable } from "../shell/source-notice";
 import { requestOpenPanel as requestPanel } from "../context/open-settings";
 import { createPortal } from "react-dom";
 import ComposerMenu from "../shell/ComposerMenu";
+import { useLayer } from "../shell/use-layer";
 import { attachmentName, attachmentRef, conversationModel, effectiveMenu, MODEL_SETTING, labelText, onSwitches, refusedAttachment, requestFields, switchToggle, withConversationModel, type MenuFlag, type MenuFlags, type MenuIssue } from "../shell/composer-menu";
 import featurePack from "../onboarding/generated/conversation-view.json";
 import { nativeFragmentPrompt, nativeGraphDisplayText, recordedGraphReply } from "../graph/chat-graph";
@@ -459,6 +460,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
   const menuIssues = useMemo<MenuIssue[]>(() => menuSettingsError === null ? composedMenu.issues
     : [...composedMenu.issues, { code: "settings_unread", params: { reason: menuSettingsError } }], [composedMenu, menuSettingsError]);
   const closeMenu = useCallback(() => { setMenuOpen(false); plusRef.current?.focus(); }, []);
+  useLayer("composer-menu", menuOpen, closeMenu);  // Back / Escape close the + menu first
   // P33: in the chat shell a conversation can have a model of its own, through the scope chain (P24). Choosing one (the + menu or the picker
   // above, one state) in an open conversation writes it at the conversation level (conversations.metadata.settings.default_model); with no
   // conversation open it is the person's pick, and the conversation the first message makes keeps it when it differs from what the chain

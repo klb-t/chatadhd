@@ -48,7 +48,8 @@ def check_profile(prof: dict[str, Any]) -> list[str]:
 
 def _expand_path(tpl: str, conv: dict[str, Any], profile_id: str) -> str:
     key = conv["key"] + (f"-p{conv['path']}" if "path" in conv else "")
-    return (tpl.replace("{conversation.key}", key).replace("{conversation.uid_hex}", conv.get("uid_hex", ""))
+    return (tpl.replace("{conversation.dir}", conv.get("dir") or conv["key"]).replace("{conversation.key}", key)
+            .replace("{conversation.uid_hex}", conv.get("uid_hex", ""))
             .replace("{profile}", profile_id))
 
 

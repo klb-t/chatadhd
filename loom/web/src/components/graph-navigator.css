@@ -1,0 +1,101 @@
+/* M1-W0 (2) P2: the list of the graph navigator on a phone (390 px): touch targets >= 44 px, no horizontal scroll, bottom bar with the
+   safe-area inset. Colours come from the theme variables of styles.css. */
+.gnav { display: flex; flex-direction: column; height: 100%; max-width: 100%; }
+.gnav-path { display: flex; align-items: center; gap: 2px; min-height: 44px; border-bottom: 1px solid var(--border); }
+.gnav-crumbs { flex: 1; display: flex; align-items: center; flex-wrap: nowrap; min-width: 0; overflow: hidden; }
+.gnav-crumb-item { display: inline-flex; align-items: center; flex: 0 1 auto; min-width: 56px; max-width: 40%; }   /* earlier crumbs shorten first (ellipsis), never below a few letters */
+.gnav-crumb-item:last-child { flex: 1 1 0; min-width: 40%; max-width: none; }   /* the focus keeps its whole name: it wraps onto a second line */
+.gnav-crumb, .gnav-back, .gnav-search-toggle, .gnav-more, .gnav-bar-btn {
+  min-height: 44px; min-width: 44px; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+.gnav-crumb { padding: 0 6px; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gnav-crumb-item:last-child .gnav-crumb { white-space: normal; overflow-wrap: anywhere; text-overflow: clip; text-align: left; padding: 6px; line-height: 1.25; }   /* r1:b5: the only name of the level is never cut */
+.gnav-crumb[aria-current="page"] { color: var(--accent, #7aa2f7); }
+.gnav-sep { opacity: 0.6; }
+.gnav-back, .gnav-search-toggle { font-size: 22px; line-height: 1; }
+.gnav-search { width: 100%; box-sizing: border-box; min-height: 44px; padding: 0 10px; margin: 6px 0; font: inherit; color: inherit;
+  background: var(--bg, transparent); border: 1px solid var(--border); border-radius: 8px; }
+.gnav-body { flex: 1; min-height: 0; overflow-y: auto; }   /* the list scrolls under the bar; the bar never covers a row */
+.gnav-rows { list-style: none; margin: 0; padding: 0; }
+.gnav-row { border-bottom: 1px solid var(--border); }
+.gnav-row-line { display: flex; align-items: stretch; }
+.gnav-row-main { flex: 1; min-width: 0; min-height: 44px; display: flex; flex-direction: column; gap: 3px; padding: 8px 4px 8px 0; text-align: left;
+  background: none; border: 0; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+.gnav-row-top { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; }
+.gnav-label { flex: 1 0 55%; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.gnav-count { font-variant-numeric: tabular-nums; opacity: 0.8; font-size: 13px; margin-left: auto; text-align: right; overflow-wrap: anywhere; }
+/* "nieznane (powód)" is a sentence, not a number: its own full-width line under the label (after the chevron), read from the left */
+.gnav-count-unknown { flex: 1 0 100%; order: 3; margin-left: 0; text-align: left; }
+.gnav-chevron { opacity: 0.6; }
+.gnav-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.gnav-chip { font-size: 12px; line-height: 18px; padding: 0 7px; border-radius: 9px; border: 1px solid var(--border); opacity: 0.9; white-space: nowrap; }
+.gnav-chip-evidence { border-style: dashed; }
+.gnav-chip-status { font-style: italic; }
+.gnav-why { font-size: 13px; opacity: 0.75; overflow-wrap: anywhere; }
+.gnav-focus-why { margin: 6px 0 2px; }
+.gnav-more { font-size: 20px; line-height: 1; opacity: 0.7; }
+.gnav-note { font-size: 13px; opacity: 0.85; margin: 6px 0; overflow-wrap: anywhere; }
+.gnav-error { color: var(--danger, #f7768e); }
+.gnav-stub { padding: 0 0 8px; }
+.gnav-bar { flex: none; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px 0; padding-bottom: max(6px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border); background: var(--card); }
+.gnav-bar-btn { padding: 0 10px; font-size: 13px; border-radius: 8px; border: 1px solid var(--border); }
+.gnav-bar-planned { opacity: 0.6; }
+.gnav-bar-btn[aria-pressed="true"] { opacity: 1; border-color: var(--accent, #7aa2f7); }
+.gnav-budget, .gnav-planned { width: 100%; margin: 2px 0 0; font-size: 12px; opacity: 0.75; }
+
+/* M1-W0 (2) P3: the node card under the rows (390 px): 44 px targets, long values wrap, no horizontal scroll. */
+.ncard { border-top: 2px solid var(--accent, #7aa2f7); padding: 4px 0 12px; }
+.ncard-head { display: flex; align-items: center; gap: 4px; min-height: 44px; }
+.ncard-title { flex: 1; min-width: 0; margin: 0; font-size: 17px; overflow-wrap: anywhere; }
+.ncard-close { min-height: 44px; min-width: 44px; background: none; border: 0; color: inherit; font: inherit; font-size: 24px; cursor: pointer; touch-action: manipulation; }
+.ncard-line { margin: 4px 0; overflow-wrap: anywhere; }
+.ncard-key { opacity: 0.7; }
+.ncard-value strong { font-size: 16px; }
+.ncard-list { list-style: none; margin: 0; padding: 0; }
+.ncard-row, .ncard-btn { min-height: 44px; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 6px 8px;
+  text-align: left; background: none; border: 0; border-bottom: 1px solid var(--border); color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; overflow-wrap: anywhere; }
+.ncard-row:disabled { cursor: default; opacity: 0.6; }
+.ncard-row-action { font-weight: 600; }
+.ncard-row-label { font-weight: 600; }
+.ncard-action { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-height: 44px; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.ncard-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.ncard-btn { width: auto; flex: 1 1 40%; min-width: 44px; align-items: center; border: 1px solid var(--border); border-radius: 8px; }
+.ncard-btn-primary { border-color: var(--accent, #7aa2f7); color: var(--accent, #7aa2f7); }
+.ncard-input { width: 100%; box-sizing: border-box; min-height: 44px; padding: 8px 10px; font: inherit; color: inherit; background: var(--bg, transparent); border: 1px solid var(--border); border-radius: 8px; }
+.ncard-json { font-family: ui-monospace, monospace; font-size: 13px; }
+.ncard-gate, .ncard-edit, .ncard-levels { margin: 8px 0; padding: 8px; border: 1px solid var(--accent, #7aa2f7); border-radius: 8px; }
+.ncard-chain-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; min-height: 44px; padding: 6px 8px; border-bottom: 1px solid var(--border); border-left: 4px solid transparent; }
+.ncard-chain-row .ncard-chain-role { opacity: 0.75; font-size: 13px; }
+.ncard-chain-row .ncard-chain-value { margin-left: auto; font-variant-numeric: tabular-nums; }
+/* r2:b4: the level's one-line meaning from the kernel's catalogue, a small second line under the label (chain rows and "Dla kogo?" rows). */
+.ncard-chain-meaning { flex-basis: 100%; font-size: 13px; opacity: 0.75; overflow-wrap: anywhere; }
+.ncard-winning { border-left-color: var(--accent, #7aa2f7); background: color-mix(in srgb, var(--accent, #7aa2f7) 12%, transparent); }
+.ncard-winning .ncard-chain-value { font-weight: 700; }
+.ncard-inactive { opacity: 0.55; }
+.ncard-group { margin: 4px 0 8px; }
+.ncard-notice { font-weight: 600; }
+
+/* M1-W0 (2) P4: list and map one under the other, each a Disclosure (shell/Disclosure.tsx, the glyphs of the setting disclosure_glyphs).
+   The map keeps >= 24 px at the sides (8 px of the disclosure + 16 px here) so the system's edge swipes have their strip; its visible
+   rectangle is also reported to the Android shell. Marks are SVG, the touch targets are real 44 px buttons laid over them. */
+.gnav-disclosure { border-bottom: 1px solid var(--border); }
+.gnav-disclosure > .disclosure-head { color: inherit; font-weight: 600; }
+.gnav-map-wrap { padding: 4px 0 8px; }
+.gnav-map { position: relative; margin: 0 16px; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background: var(--card);
+  touch-action: none; -webkit-user-select: none; user-select: none; }
+.gnav-map-svg { display: block; width: 100%; height: 100%; }
+.gnav-map-svg text { pointer-events: none; }
+.gnav-map-hit { position: absolute; padding: 0; margin: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; touch-action: manipulation; }
+.gnav-map-hit[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--accent, #7aa2f7); }
+.gnav-map-hit:focus-visible { outline: 2px solid var(--accent, #7aa2f7); }
+.gnav-map-zoom { display: flex; align-items: center; gap: 6px; margin: 6px 16px 0; }   /* under the canvas, so the buttons never cover a mark */
+.gnav-map-zoom-value { margin-left: auto; font-size: 12px; opacity: 0.7; font-variant-numeric: tabular-nums; }
+.gnav-map-btn { min-width: 44px; min-height: 44px; padding: 0 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--card);
+  color: inherit; font: inherit; font-size: 20px; line-height: 1; cursor: pointer; touch-action: manipulation; }
+.gnav-map-enter { font-size: 14px; font-weight: 600; }
+.gnav-map-selected { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; min-height: 44px; margin: 6px 0 0; padding: 0 4px; }
+.gnav-map-hint { margin: 6px 4px 0; }
+.gnav-view-menu { width: 100%; display: flex; flex-direction: column; gap: 4px; padding: 4px 0 8px; border-bottom: 1px solid var(--border); margin-bottom: 4px; }
+.gnav-view-title { margin: 0 0 2px; font-weight: 600; }
+.gnav-view-option { min-height: 44px; padding: 0 12px; text-align: left; background: none; border: 1px solid var(--border); border-radius: 8px; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
+.gnav-view-option[aria-checked="true"] { border-color: var(--accent, #7aa2f7); color: var(--accent, #7aa2f7); font-weight: 600; }

@@ -325,6 +325,21 @@ async function closePanel() {
   await click("close-panel").catch(() => {});
   await page.ev(`(()=>{const k=document.querySelector('[data-testid="panel-knowledge-sheet"] .icon-btn');if(k)k.click()})()`);
 }
+// M1-W0 (layouts.json since df6a97c2): ⋮ has no "Pamięć" / "Wiedza" entries and ⋮ › Graf opens the navigator (panel-navigator),
+// so the old panels are reached through the Workshop: ⋮ › Warsztat (shell-menu-workshop → layout "workshop", header with
+// toggle-nav + app-nav) → nav-<panel> (nav-graph, nav-memory, nav-graph-entry; nav-knowledge toggles the knowledge sheet).
+// The nav buttons stay in the DOM when app-nav is folded on a phone and click() is element.click(), so the ≡ toggle is not
+// needed; an open panel makes the header inert, hence closePanel() first. nav-chat (workshop_back) brings the chat shell back.
+async function openWorkshopPanel(entry) {
+  await closePanel();
+  if (!(await has("toggle-nav"))) { await openMenu("workshop"); await waitTid("toggle-nav", 10); }
+  await waitTid("nav-" + entry, 10);
+  await click("nav-" + entry);
+}
+async function backToChat() {
+  await closePanel();
+  if (await has("nav-chat")) { await click("nav-chat"); await waitTid("shell-menu-toggle", 10); }
+}
 // a text field that saves on blur (settings): focus, set, leave
 const setOnBlur = (tid, v) => page.ev(`(()=>{const e=${q(tid)};if(!e)return false;e.focus();
   Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,${JSON.stringify(v)});
@@ -647,17 +662,18 @@ const serverChecks = [
     await closePanel();
     return `conversation "${c.title}" imported from a content:// file`;
   }],
-  ["graph: the panel opens and shows nodes", async () => {
-    await openMenu("graph"); await waitTid("panel-graph", 10); await waitTid("graph-view", 20);
+  ["graph: the old panel opens from the Workshop and shows nodes", async () => {
+    // ⋮ › Graf is the navigator since M1-W0 (gate0 block in docs/reports/M1_W0_TESTIDS.md); the force-directed panel sits in the Workshop
+    await openWorkshopPanel("graph"); await waitTid("panel-graph", 10); await waitTid("graph-view", 20);
     const nodes = await until("graph nodes through the API", async () => { const n = listOf((await apiJson("GET", "/api/graph/nodes")).body); return n.length > 0 && n.length; }, 60, 1000);
     const counts = await until("graph counts text", () => page.ev(`(${q("graph-counts")}?.innerText||'').replace(/\\s+/g,' ')`).then(t => /[1-9]/.test(t) && t), 30, 500);
     const canvas = await has("graph-canvas");
     shot("graph");
     await closePanel();
-    return `${nodes} nodes (API); panel says "${counts}"; canvas ${canvas ? "present" : "absent"}`;
+    return `${nodes} nodes (API); panel says "${counts}"; canvas ${canvas ? "present" : "absent"} (via Warsztat)`;
   }],
-  ["memory: the panel opens, a note is added and stored", async () => {
-    await openMenu("memory"); await waitTid("panel-memory", 10); await waitTid("memory-new-content", 20);
+  ["memory: the old panel opens from the Workshop, a note is added and stored", async () => {
+    await openWorkshopPanel("memory"); await waitTid("panel-memory", 10); await waitTid("memory-new-content", 20);
     const text = "Smoke notatka " + Date.now();
     await setVal("memory-new-content", text);
     await click("memory-add");
@@ -665,12 +681,13 @@ const serverChecks = [
     const stored = JSON.stringify((await apiJson("GET", "/api/memory")).body);
     if (!stored.includes(text)) throw new Error("the note is not in /api/memory");
     await closePanel();
-    return "stored (API)";
+    return "stored (API, via Warsztat)";
   }],
-  ["knowledge: the panel opens", async () => {
-    await openMenu("knowledge"); await waitTid("panel-knowledge-sheet", 10); await waitTid("knowledge-workbench", 20);
+  ["knowledge: the old sheet opens from the Workshop", async () => {
+    await openWorkshopPanel("knowledge"); await waitTid("panel-knowledge-sheet", 10); await waitTid("knowledge-workbench", 20);
     shot("knowledge");
-    await closePanel();
+    await backToChat();   // the next steps (paging, connection) start from the chat shell
+    return "via Warsztat; back in the chat shell";
   }],
   ["paging: a 520-message conversation loads in pages", async () => {
     const r = await apiImport("long-claude.json", "long-claude.json");

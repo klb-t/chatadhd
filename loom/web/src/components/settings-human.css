@@ -1,0 +1,26 @@
+/* M1-W0 (3) P5: the human settings screen on a phone (390 px): touch targets >= 44 px, no horizontal page scroll, the former settings
+   screen scrolls sideways inside its own box. Colours come from the theme variables of styles.css; rows reuse graph-navigator.css. */
+.shum { max-width: 100%; padding-bottom: 16px; }
+.shum-total { text-align: left; margin: 4px 0; }
+.shum-filter { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; padding: 6px 0; margin: 4px 0; text-align: left;
+  background: none; border: 0; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+.shum-switch { flex: 0 0 auto; width: 40px; height: 22px; border-radius: 11px; border: 1px solid var(--border); position: relative; box-sizing: border-box; }
+.shum-switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+.shum-filter[aria-checked="true"] .shum-switch { border-color: var(--accent, #7aa2f7); background: color-mix(in srgb, var(--accent, #7aa2f7) 25%, transparent); }
+.shum-filter[aria-checked="true"] .shum-switch::after { left: 20px; background: var(--accent, #7aa2f7); opacity: 1; }
+.shum-filter-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.shum-filter-label { font-weight: 600; }
+.shum-back { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 8px 0 0; background: none; border: 0; color: var(--accent, #7aa2f7); font: inherit; cursor: pointer; touch-action: manipulation; }
+.shum-back::before { content: "\2039"; font-size: 22px; line-height: 1; }
+.shum-group-title { margin: 4px 0; font-size: 20px; }
+.shum-group-count { text-align: left; margin: 2px 0 6px; }
+.shum-sub-title { margin: 14px 0 2px; font-size: 14px; text-transform: none; opacity: 0.9; }
+.shum-field { border-bottom: 1px solid var(--border); }
+.shum-field-main { padding-right: 8px; }
+.shum-value { font-size: 13px; opacity: 0.9; margin-left: auto; text-align: right; overflow-wrap: anywhere; max-width: 60%; }
+.shum-planned { border-left: 3px solid var(--border); padding-left: 8px; }
+.shum-detail { padding: 2px 0 8px 8px; font-size: 13px; }
+.shum-detail p { margin: 4px 0; overflow-wrap: anywhere; }
+.shum-group-main { padding-right: 8px; }
+.shum-disclosure { margin-top: 16px; border-top: 1px solid var(--border); }
+.shum-legacy { max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 8px; }

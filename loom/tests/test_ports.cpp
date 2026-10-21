@@ -89,7 +89,7 @@ TEST_SUITE("ports") {
       if (const Json* st = json::find(it.value(), "status")) {
         const std::string state = json::get_string(*st, "state");
         CHECK((state == "planned" || state == "partial"));
-        for (const char* k : {"today", "reason"}) {
+        for (const char* k : {"today", "reason", "reason_human"}) {  // reason_human: the note in plain words, shown on the screen
           CHECK_FALSE(json::get_string(st->value(k, Json::object()), "pl").empty());
           CHECK_FALSE(json::get_string(st->value(k, Json::object()), "en").empty());
         }

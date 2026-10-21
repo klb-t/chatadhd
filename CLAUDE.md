@@ -455,6 +455,11 @@ firewall), returns caller-freed heap JSON strings, and is covered by
 `test_abi_compat.py` so `libloom.so` never exports more or less than
 `loom.h` declares.
 
+**C++ pitfall that only AddressSanitizer catches** (CI found it after the asan preset had been broken for
+days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value temporary, e.g.
+`for (auto& a : unwrap(f()).at("k"))` — only the last reference is lifetime-extended, the temporary dies
+before the loop. Bind the object to a name first (`const Json x = unwrap(f()); for (... : x.at("k"))`).
+
 > **Update 2026-09-29 (owner):** Python compatibility is no longer required — it was
 > only a minimum plan. The invariant below remains enforced by tests as a regression
 > sentinel until a deliberate schema migration; it does not constrain new work.

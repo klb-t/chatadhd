@@ -140,7 +140,9 @@ TEST_SUITE("graph_projection") {
       REQUIRE_MESSAGE(n, role);
       check_node(*n);
     }
-    for (const auto& a : unwrap(action_catalogue(f.td.path())).at("actions")) {
+    // a named Json: `.at()` on the temporary from unwrap() would hand the range-for a reference into freed memory (ASAN heap-use-after-free)
+    const Json catalogue = unwrap(action_catalogue(f.td.path()));
+    for (const auto& a : catalogue.at("actions")) {
       auto n = unwrap(cat.node("flow:" + a.at("id").get<std::string>()));
       REQUIRE_MESSAGE(n, a.at("id"));
       check_node(*n);
@@ -340,6 +342,11 @@ TEST_SUITE("graph_projection") {
     CHECK(card.at("effect").is_string());
     CHECK(card.at("edit_rule").is_string());
     CHECK_FALSE(card.at("inheritance").empty());
+    // M1-W0 r2:b4: every level of the chain carries its one-line meaning from graph/scopes.pack (the shipped catalogue has one per level).
+    for (const auto& l : card.at("inheritance")) {
+      CHECK(l.contains("meaning"));
+      CHECK(l.value("meaning", std::string()).size() > 0);
+    }
     CHECK(card.at("relations").contains("grouped_in"));
     CHECK(card.at("relations").at("grouped_in").at("out").at(0).at("address") == "group:rozmowa");
     CHECK(card.at("actions").is_array());
@@ -371,6 +378,39 @@ TEST_SUITE("graph_projection") {
     CHECK(analysis->at("tier").at("id") == choice.tier);
     CHECK_FALSE(analysis->at("tier").at("reason").get<std::string>().empty());
     CHECK(analysis->at("flow").at("id") == choice.flow);
+    // the flow of every class (not only the current one) with its words in the language asked: the owner's "why can I choose a model for
+    // the analysis and how do the flows differ" is answered by the data, in Polish and in English
+    const Json by_class = analysis->at("flow_by_class");
+    REQUIRE(by_class.is_array());
+    CHECK(by_class.size() == 4);
+    bool current_among = false;
+    for (const auto& entry : by_class) {
+      CHECK_FALSE(entry.at("tier").at("label").get<std::string>().empty());
+      CHECK_FALSE(entry.at("flow").at("does_human").empty());
+      CHECK_FALSE(entry.at("flow").at("title").get<std::string>().empty());
+      current_among = current_among || entry.at("tier").at("id") == choice.tier;
+    }
+    CHECK(current_among);
+    CHECK(analysis->at("flow").at("does_human").size() == analysis->at("flow").at("does").size());
+    // every other action that reads the role's setting is listed too (with the key it reads), none twice
+    const Json also = analysis->at("flows_reading_setting");
+    REQUIRE(also.is_array());
+    bool estimate = false;
+    for (const auto& a : also) {
+      bool of_the_role = false;  // the key is one of the role's own settings
+      for (const auto& setting : analysis->at("settings")) of_the_role = of_the_role || setting.at("key") == a.at("key");
+      CHECK(of_the_role);
+      CHECK_FALSE(a.at("title").get<std::string>().empty());
+      estimate = estimate || a.at("id") == "actions.preview";
+      for (const auto& reading : analysis->at("flows_reading")) CHECK(reading.at("id") != a.at("id"));
+    }
+    CHECK(estimate);
+    const Json pl = unwrap(f.rt->actions().invoke("roles.resolved", Json{{"lang", "pl"}}));
+    const Json en = unwrap(f.rt->actions().invoke("roles.resolved", Json{{"lang", "en"}}));
+    std::string pl_title, en_title;
+    for (const auto& role : pl.at("roles")) if (role.at("id") == "analysis.fast") pl_title = role.at("flow").at("title").get<std::string>();
+    for (const auto& role : en.at("roles")) if (role.at("id") == "analysis.fast") en_title = role.at("flow").at("title").get<std::string>();
+    CHECK(pl_title != en_title);
     CHECK(analysis->at("chain").at(0).at("setting") == "semantic_model");
     CHECK(analysis->at("chain").at(0).at("decides") == true);
     CHECK(analysis->contains("mode"));

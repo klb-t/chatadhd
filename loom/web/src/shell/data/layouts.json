@@ -7,10 +7,10 @@
       "layout_mode": "full_screen_chat",
       "topbar": ["drawer", "title", "model", "status", "menu"],
       "menu": [
+        { "id": "graph", "label": "menu_graph", "action": "navigator:" },
         { "id": "settings", "label": "menu_settings", "action": "panel:settings" },
-        { "id": "graph", "label": "menu_graph", "action": "panel:graph" },
-        { "id": "memory", "label": "menu_memory", "action": "panel:memory" },
-        { "id": "knowledge", "label": "menu_knowledge", "action": "knowledge" },
+        { "id": "me", "label": "menu_me", "action": "navigator:party:self" },
+        { "id": "this_conversation", "label": "menu_this_conversation", "action": "navigator:conv:current" },
         { "id": "views", "label": "menu_views", "action": "sheet:views" },
         { "id": "semantic", "label": "menu_semantic", "action": "sheet:semantic" },
         { "id": "connection", "label": "menu_connection", "action": "connection", "when": "android_shell" },

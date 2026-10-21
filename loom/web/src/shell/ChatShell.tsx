@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { inertAttr, useDialogFocus } from "./use-dialog-focus";
 import { api } from "../api";
 import type { Conversation } from "../api/types";
 import type { UserProfileHost } from "../api/onboarding-host";
@@ -7,11 +8,14 @@ import SemanticStatus from "../components/SemanticStatus";
 import SemanticDot from "./SemanticDot";
 import Disclosure from "./Disclosure";
 import { useShellText } from "./text";
-import layouts from "./data/layouts.json";
+import { CHAT_MENU, menuEntries, parseMenuAction, resolveNavigatorFocus } from "./menu";
+import { useLayer } from "./use-layer";
 import "./shell.css";
 
 export interface ShellActions {
   panel(id: string): void;
+  /** The graph navigator at a node ("" = root). */
+  navigator(focus: string): void;
   knowledge(): void;
   workshop(): void;
 }
@@ -24,6 +28,8 @@ interface Props {
   onMessagesChanged: () => void;
   actions: ShellActions;
   planned: { windows: boolean };
+  /** A panel or the knowledge sheet of the app lies over the shell: the whole shell is `inert` (no focus, no taps, hidden from a reader). */
+  behindOverlay?: boolean;
 }
 type Sheet = "views" | "semantic" | null;
 
@@ -32,9 +38,8 @@ function bridge(): { openConnection?: () => void } | undefined {
 }
 
 /** The default view (R56): the full-screen standard chat app. Menu entries come from data (shell/data/layouts.json, profile Czat). */
-export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned }: Props) {
+export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned, behindOverlay = false }: Props) {
   const t = useShellText();
-  const layout = layouts.layouts.czat;
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
   const [sheet, setSheet] = useState<Sheet>(null);
@@ -46,15 +51,25 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
   useEffect(() => { setTitle(list.find(c => c.id === convId)?.title ?? ""); }, [list, convId]);
   const shown = useMemo(() => list.filter(c => (c.title || "").toLowerCase().includes(query.toLowerCase())), [list, query]);
 
+  // One history entry per open layer: Android Back / the browser's Back / Escape close the ⋮ menu, the conversation drawer and the sheet.
+  useLayer("shell-menu", menu, () => setMenu(false));
+  useLayer("shell-drawer", drawer, () => setDrawer(false));
+  useLayer("shell-sheet", sheet !== null, () => setSheet(null));
+  const sheetRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(sheet !== null, sheetRef, "shell-menu-toggle");   // a sheet is a dialog: focus enters it, Back returns it to ⋮
+
   const run = useCallback((action: string) => {
     setMenu(false);
-    if (action.startsWith("panel:")) actions.panel(action.slice(6));
-    else if (action === "knowledge") actions.knowledge();
-    else if (action.startsWith("sheet:")) setSheet(action.slice(6) as Sheet);
-    else if (action === "layout:workshop") actions.workshop();
-    else if (action === "connection") bridge()?.openConnection?.();
-  }, [actions]);
-  const entries = layout.menu.filter(e => !("when" in e) || (e.when === "android_shell" && typeof bridge()?.openConnection === "function"));
+    const target = parseMenuAction(action);
+    if (target.kind === "panel") actions.panel(target.panel);
+    else if (target.kind === "navigator") actions.navigator(resolveNavigatorFocus(target.focus, convId));   // "Ta rozmowa w grafie" = conv:<open conversation>, else the root
+    else if (target.kind === "knowledge") actions.knowledge();
+    else if (target.kind === "sheet") setSheet(target.sheet);
+    else if (target.kind === "workshop") actions.workshop();
+    else if (target.kind === "connection") bridge()?.openConnection?.();
+    else console.debug("shell menu: no handler for the action", target.action);
+  }, [actions, convId]);
+  const entries = menuEntries(CHAT_MENU, { androidShell: typeof bridge()?.openConnection === "function" });
 
   let sheetBody: ReactNode = null;
   if (sheet === "views") sheetBody = <>
@@ -66,8 +81,9 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
   if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;
 
   return (
-    <div className="shell-root" data-testid="chat-shell">
-      <header className="shell-bar" data-testid="shell-bar">
+    <div className="shell-root" data-testid="chat-shell" {...inertAttr(behindOverlay)}>
+      {/* while a sheet is open the bar, the drawer and the chat behind it are inert, so Tab, a reader and a stray tap stay in the sheet */}
+      <header className="shell-bar" data-testid="shell-bar" {...inertAttr(sheet !== null)}>
         <button className="icon-btn shell-btn" aria-label={t("drawer_open")} aria-expanded={drawer} data-testid="shell-drawer-toggle" onClick={() => setDrawer(v => !v)}>☰</button>
         <h1 className="shell-title" data-testid="shell-title">{title || t("new_chat")}</h1>
         <span id="shell-model-slot" />
@@ -80,7 +96,7 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
       <div className="shell-body" onClick={() => { if (menu) setMenu(false); }}>
         {drawer && <>
           <div className="drawer-backdrop" style={{ zIndex: 21 }} onClick={() => setDrawer(false)} />
-          <aside className="shell-drawer" data-testid="shell-drawer" aria-label={t("conversations")}>
+          <aside className="shell-drawer" data-testid="shell-drawer" aria-label={t("conversations")} {...inertAttr(sheet !== null)}>
             <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 8 }}>
               <button className="primary shell-btn" data-testid="shell-new-chat" onClick={() => { onSelect(null); setDrawer(false); }}>{t("new_chat")}</button>
               <input type="search" aria-label={t("search")} placeholder={t("search")} value={query} onChange={e => setQuery(e.target.value)} data-testid="shell-search" />
@@ -91,15 +107,16 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
             </div>
           </aside>
         </>}
-        <main className="shell-main">
+        <main className="shell-main" {...inertAttr(sheet !== null)}>
           <ChatView profileHost={profileHost} settingsKey="shell" convId={convId} onConversationCreated={onCreated}
             refreshKey={refreshKey} onMessagesChanged={onMessagesChanged} variant="chat" />
         </main>
         {sheet && <>
           <div className="drawer-backdrop" onClick={() => setSheet(null)} />
-          <div className="drawer" data-testid={`sheet-${sheet}`}>
+          <div className="drawer" data-testid={`sheet-${sheet}`} ref={sheetRef} role="dialog" aria-modal="true" tabIndex={-1}
+            aria-label={t(sheet === "views" ? "views_title" : "menu_semantic")}>
             <div className="drawer-header"><h2>{t(sheet === "views" ? "views_title" : "menu_semantic")}</h2>
-              <button className="icon-btn" aria-label="×" onClick={() => setSheet(null)}>×</button></div>
+              <button className="icon-btn" aria-label={t("panel_close", { screen: t(sheet === "views" ? "views_title" : "menu_semantic") })} onClick={() => setSheet(null)}>×</button></div>
             <div className="drawer-body">{sheetBody}</div>
           </div>
         </>}

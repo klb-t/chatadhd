@@ -21,7 +21,7 @@ def build_handoff(eng: Any, entries: list[Entry], stage: Outputs, *, branches: s
     files: list[dict[str, Any]] = []
     att_copied: dict[tuple[str, str], str] = {}
     missing = 0
-    slugs = archive_slugs(eng.archives)
+    slugs = archive_slugs(eng.archives, eng.ds)
     totals = {"conversations": 0, "conversations_with_messages": 0, "messages": 0, "messages_with_text": 0, "attachments": 0}
     for e in entries:
         u = e.unit

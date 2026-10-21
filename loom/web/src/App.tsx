@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { inertAttr, useDialogFocus } from "./shell/use-dialog-focus";
 import ApplicationProfiles, { profileStyle } from "./components/ApplicationProfiles";
 import { profileAvailability, registerProfile, type ApplicationProfile } from "./profiles/runtime";
 import ConversationList from "./components/ConversationList";
 import GraphView from "./components/GraphView";
+import SettingsHuman from "./components/SettingsHuman";
 import SettingsPanel from "./components/SettingsPanel";
 import { OPEN_PANEL_EVENT, panelOfRequest } from "./context/open-settings";
 import ContextSlider from "./components/ContextSlider";
@@ -16,6 +18,7 @@ import MethodsPanel from "./components/MethodsPanel";
 import AnalysisPanel from "./components/AnalysisPanel";
 import UserProfilePanel from "./components/UserProfilePanel";
 import GraphEntryPanel, { type EntryOpeners } from "./components/GraphEntryPanel";
+import GraphNavigator from "./components/GraphNavigator";
 import { createUserProfileHost } from "./api/onboarding-host";
 import { api } from "./api";
 import { usePresentationFeature } from "./components/ConversationSourceView";
@@ -31,6 +34,7 @@ import { shellLanguage } from "./shell/language";
 import { cssVariables, mergeData } from "./shell/animation";
 import { glyphVariables } from "./shell/disclosure-glyphs";
 import type { PanelId } from "./shell/panels";
+import { useLayer } from "./shell/use-layer";
 
 type Theme = "dark" | "amoled";
 // The panels are one list (shell/panels.ts): the + menu checks the panel an entry names against it.
@@ -66,10 +70,13 @@ const PANEL_LABELS: Record<PanelId, string> = {
   "graph-entry": "Entry",
   perspectives: "Perspectives",
   "view-engine": "View engine",
+  navigator: "Navigator",
 };
 
 // Panels whose name comes from the shell words (data, PL/EN by ui_language); the others keep their English label.
-const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { graph: "menu_graph", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
+// The titles match the labels of the ⋮ menu (menu_graph opens the navigator, menu_this_conversation the graph of this conversation, menu_me what the app knows about you);
+// the old entry to the graph and the old memory panel live in the Workshop under their own words (r1:b5: two buttons named "Graf" were one too many).
+const PANEL_TEXT_IDS: Partial<Record<PanelId, string>> = { settings: "menu_settings", navigator: "menu_graph", "graph-entry": "workshop_graph_entry", memory: "menu_memory", graph: "menu_this_conversation", "user-knowledge": "menu_me", perspectives: "perspectives_title", "view-engine": "view_engine_title" };
 
 export default function App() {
   const account = useAccountSession();
@@ -79,6 +86,8 @@ export default function App() {
   );
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<PanelId | null>(null);
+  const [settingsView, setSettingsView] = useState<"" | "all_fields">("");   // M1-W0 (3): a request to enter a secret opens Settings at Silnik › Wszystkie pola
+  const [navigatorFocus, setNavigatorFocus] = useState("");   // M1-W0: where menu ⋮ › Graf opens the navigator ("" = root)
   const [convRefreshKey, setConvRefreshKey] = useState(0);
   const [knowledgeOpen, setKnowledgeOpen] = useState(false);
   const [chatVisible, setChatVisible] = useState(true);
@@ -96,8 +105,13 @@ export default function App() {
 
   useEffect(() => {
     const link = parseShellHash(window.location.hash);
-    if (link) { if (link.conversationId) setActiveConvId(link.conversationId); return; }
     let live = true;
+    if (link) {
+      // The link states the view; the config still decides the words (ui_language), the theme and the navigator's layout.
+      if (link.conversationId) setActiveConvId(link.conversationId);
+      api.getConfig().then(cfg => { if (live) setConfig(cfg as Record<string, unknown>); }, () => { /* presets */ });
+      return () => { live = false; };
+    }
     (async () => {
       let cfg: Record<string, unknown> = {};
       try { cfg = await api.getConfig() as Record<string, unknown>; } catch { /* presets */ }
@@ -126,7 +140,11 @@ export default function App() {
   useEffect(() => {
     const onRequest = (event: Event) => {
       const panel = panelOfRequest(event);
-      if (panel !== null && Object.prototype.hasOwnProperty.call(PANEL_LABELS, panel)) setActivePanel(panel as PanelId);
+      if (panel !== null && Object.prototype.hasOwnProperty.call(PANEL_LABELS, panel)) {
+        // The secrets (keys, tokens) are entered on the former settings screen, which sits under Silnik › Wszystkie pola.
+        if (panel === "settings") setSettingsView("all_fields");
+        setActivePanel(panel as PanelId);
+      }
     };
     window.addEventListener(OPEN_PANEL_EVENT, onRequest);
     return () => window.removeEventListener(OPEN_PANEL_EVENT, onRequest);
@@ -142,7 +160,7 @@ export default function App() {
   }, []);
 
   const openPanel = useCallback((p: PanelId) => { setActivePanel((cur) => (cur === p ? null : p)); setNavOpen(false); }, []);
-  const closePanel = useCallback(() => setActivePanel(null), []);
+  const closePanel = useCallback(() => { setActivePanel(null); setSettingsView(""); }, []);
 
   const onConversationCreated = useCallback((id: string) => {
     setActiveConvId(id);
@@ -156,16 +174,23 @@ export default function App() {
   }, []);
 
   const onMessagesChanged = useCallback(() => setConvRefreshKey(key => key + 1), []);
+  // M1-W0 r2:b4: one screen for "the graph" — the navigator (the same ⋮ › Graf opens); the old panels stay reachable in the Workshop.
+  const openNavigator = useCallback((focus: string) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, []);
   const profileUi = useMemo(() => ({
     selectConversation: onSelectConversation, conversationCreated: onConversationCreated,
-    openKnowledge: () => setKnowledgeOpen(true), openPanel: (panel: PanelId) => setActivePanel(panel),
-  }), [onSelectConversation, onConversationCreated]);
-  // Existing views that can open an entry area's `expand` descriptor.
+    openKnowledge: () => setKnowledgeOpen(true),
+    // the chat's `graph.open` operation lands where ⋮ › Graf lands (navigator root), not on the old force-directed panel
+    openPanel: (panel: PanelId) => panel === "graph" ? openNavigator("") : setActivePanel(panel),
+  }), [onSelectConversation, onConversationCreated, openNavigator]);
+  // The openers of an entry area's `expand` descriptor (spec M1-W0 "Pliki": kb.policy/kb.query/conversations.list/graph.nodes → the navigator).
+  // The focus is the area the descriptor stands for (graph_entry.pack defaults.areas[].expand): the words then come from graph.navigate.
   const entryOpeners = useMemo<EntryOpeners>(() => ({
-    "conversations.list": () => { setActivePanel(null); setSidebarOpen(true); },
-    "graph.nodes": () => setActivePanel("graph"),
-    "kb.query": () => { setActivePanel(null); setKnowledgeOpen(true); },
-  }), []);
+    "graph.navigate": (params) => openNavigator(typeof params.focus === "string" ? params.focus : ""),
+    "graph.nodes": () => openNavigator(""),
+    "kb.query": (params) => openNavigator(params.what === "entities" ? "area:parties" : "area:knowledge"),
+    "kb.policy": () => openNavigator("area:self_model"),
+    "conversations.list": () => openNavigator("area:context_projects"),
+  }), [openNavigator]);
   // The words of the shell come from data (presentation.app_shell, PL/EN); without a catalog the machine names are shown.
   const shellCatalog = usePresentationFeature(userProfileHost, "app_shell");
   const shellText = (id: string): string => {
@@ -174,30 +199,45 @@ export default function App() {
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
   const uiLanguage = shellLanguage(config.ui_language, undefined, navigator.languages ?? [navigator.language], ["en", "pl"]);
+  // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.
+  useEffect(() => { document.documentElement.lang = uiLanguage; }, [uiLanguage]);
   const t = useMemo(() => shellTranslator(uiShell.feature, uiLanguage), [uiShell.feature, uiLanguage]);
   const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
   const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);
 
+  // Back (Android, browser) and Escape close the panel drawer and the knowledge sheet before anything else; in the workshop the
+  // knowledge view is docked beside the chat, not an overlay, so only the sheet of the chat layout is a layer.
+  useLayer("panel", activePanel !== null, () => setActivePanel(null));
+  useLayer("knowledge-sheet", knowledgeOpen && layout === "chat", () => setKnowledgeOpen(false));
+  // Each overlay is a dialog for a reader of the screen: focus enters it when it opens and returns to the ⋮ button when it closes.
+  const panelRef = useRef<HTMLDivElement>(null), knowledgeRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(activePanel !== null, panelRef, "shell-menu-toggle");
+  useDialogFocus(knowledgeOpen && layout === "chat", knowledgeRef, "shell-menu-toggle");
+
+  const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]) : "";
   const panels = activePanel && (
 
           <>
             <div className="drawer-backdrop" onClick={closePanel} data-testid="drawer-backdrop" />
-            <div className="drawer" data-testid={`panel-${activePanel}`}>
+            <div className="drawer" data-testid={`panel-${activePanel}`} ref={panelRef} role="dialog" aria-modal="true" aria-label={panelTitle} tabIndex={-1}>
               <div className="drawer-header">
-                <h2>{PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]}</h2>
-                <button className="icon-btn" aria-label="Close panel" onClick={closePanel} data-testid="close-panel">
+                <h2>{panelTitle}</h2>
+                <button className="icon-btn" aria-label={t("panel_close", { screen: panelTitle })} onClick={closePanel} data-testid="close-panel">
                   ×
                 </button>
               </div>
               <div className="drawer-body">
                 {activePanel === "graph" && <GraphView convId={activeConvId} />}
                 {activePanel === "graph-entry" && <GraphEntryPanel profileHost={userProfileHost} openers={entryOpeners} />}
+                {activePanel === "navigator" && <GraphNavigator profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} initialFocus={navigatorFocus} layout={config.navigator_layout} />}
                 {activePanel === "perspectives" && <PerspectivesPanel convId={activeConvId} />}
                 {activePanel === "view-engine" && <ViewEnginePanel />}
                 {activePanel === "memory" && <MemoryPanel />}
                 {activePanel === "import" && <ImportPanel onImported={() => setConvRefreshKey((k) => k + 1)} />}
                 {activePanel === "context" && <ContextSlider convId={activeConvId} />}
-                {activePanel === "settings" && <SettingsPanel />}
+                {activePanel === "settings" && layout === "workshop" && <SettingsPanel />}
+                {activePanel === "settings" && layout !== "workshop" && <SettingsHuman profileHost={userProfileHost} convId={activeConvId} language={uiLanguage} view={settingsView}
+                  onNavigate={address => { setNavigatorFocus(address); setActivePanel("navigator"); }} />}
                 {activePanel === "logs" && <LogPanel />}
                 {activePanel === "methods" && <MethodsPanel transport={api} />}
                 {activePanel === "analysis" && <AnalysisPanel />}
@@ -221,7 +261,8 @@ export default function App() {
   const workshop = (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
-      <header className="app-header" onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }}>
+      {/* an open panel is a modal dialog: the header, the sidebar and the main panel behind it are inert (no Tab, no taps, no reader) */}
+      <header className="app-header" onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>
         <button
           className="icon-btn"
           aria-label="Toggle conversation list"
@@ -264,7 +305,7 @@ export default function App() {
       </header>
 
       <div className="app-layout">
-        <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar">
+        <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
           <ConversationList
             key={convRefreshKey}
             activeConvId={activeConvId}
@@ -274,7 +315,7 @@ export default function App() {
           />
         </aside>
 
-        <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`}>
+        <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`} {...inertAttr(activePanel !== null)}>
           <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
             <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
               refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
@@ -291,13 +332,13 @@ export default function App() {
   if (layout === "chat") return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated}
-        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }}
-        actions={{ panel: (id) => setActivePanel(id as PanelId), knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
+        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }} behindOverlay={activePanel !== null || knowledgeOpen}
+        actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
       {panels}
       {knowledgeOpen && <>
         <div className="drawer-backdrop" onClick={() => setKnowledgeOpen(false)} />
-        <div className="drawer" style={{ width: "min(960px, 100vw)" }} data-testid="panel-knowledge-sheet">
-          <div className="drawer-header"><h2>{t("menu_knowledge")}</h2><button className="icon-btn" aria-label="×" onClick={() => setKnowledgeOpen(false)}>×</button></div>
+        <div className="drawer" style={{ width: "min(960px, 100vw)" }} data-testid="panel-knowledge-sheet" ref={knowledgeRef} role="dialog" aria-modal="true" aria-label={t("menu_knowledge")} tabIndex={-1}>
+          <div className="drawer-header"><h2>{t("menu_knowledge")}</h2><button className="icon-btn" aria-label={t("panel_close", { screen: t("menu_knowledge") })} onClick={() => setKnowledgeOpen(false)}>×</button></div>
           <div className="drawer-body"><KnowledgeWorkbench profileHost={userProfileHost} onClose={() => setKnowledgeOpen(false)} onDataChanged={() => setConvRefreshKey((key) => key + 1)} /></div>
         </div>
       </>}

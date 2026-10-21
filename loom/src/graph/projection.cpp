@@ -605,6 +605,8 @@ struct Catalogue::Impl {
     for (const auto& l : res.chain) {
       const std::string id = json::get_string(l, "level");
       Json row{{"level", id}, {"label", say(l.value("label", Json(id)))}, {"role", json::get_string(l, "role")}, {"active", l.value("active", false)}};
+      // M1-W0 r2:b4: the level's one-line meaning in the reader's language (graph/scopes.pack chain[].meaning); a level without one has no key.
+      if (const Json* m = json::find(l, "meaning"); m) if (const std::string s = say(*m); !s.empty()) row["meaning"] = s;
       if (l.contains("scope_id")) row["scope_id"] = l["scope_id"];
       for (const auto& c : l.value("candidates", Json::array()))
         if (c.contains("value") && (json::get_string(c, "role") == "decided" || json::get_string(c, "role") == "overridden")) {
@@ -956,6 +958,8 @@ Result<Read> read_scopes(Impl& c, const Json& src, const std::string&, const Jso
     const std::string id = json::get_string(l, "id");
     Json n = c.make(src, "scope:" + id, c.say(l.value("label", Json(id))), c.parent_of(src), "rom", "graph/scopes.pack#/chain/" + id, "preset");
     n["order"] = order++;
+    // M1-W0 r2:b4: the navigator's "po co" line of a scope level is its catalogue meaning (same words as the card's chain).
+    if (const Json* m = json::find(l, "meaning"); m) if (const std::string s = c.say(*m); !s.empty()) n["why"] = s;
     if (unit_levels.count(id)) n["attrs"]["unit_level"] = true;
     if (!prev.empty()) r.edges.push_back(Json{{"src", "scope:" + id}, {"dst", "scope:" + prev}, {"kind", "inherits_from"}});
     prev = id;
@@ -1843,6 +1847,7 @@ const Json& role_rows(Impl& c) {
       Json shown{{"state", json::get_string(st, "state")}};
       if (st.contains("today")) shown["today"] = c.say(st["today"]);
       if (st.contains("reason")) shown["reason"] = c.say(st["reason"]);
+      if (st.contains("reason_human")) shown["reason_human"] = c.say(st["reason_human"]);  // the same in words, for the screen
       row["status"] = shown;
     } else {
       row["status"] = Json{{"state", "implemented"}};
@@ -1956,9 +1961,31 @@ const Json& role_rows(Impl& c) {
     if (!today_chain.is_null()) row["today_chain"] = today_chain;
     // The flow a class of model gets, for the policies whose readers act on it (policies with readers).
     if (!flow.empty() && read_by_a_reader) {
-      const Json def = models.value("flow_defs", Json::object()).value(flow, Json::object());
-      row["flow"] = Json{{"id", flow}, {"status", def.value("status", "")}, {"does", def.value("does", Json::array())}, {"planned", def.value("planned", Json::array())},
-                         {"calls", def.value("calls", "")}};
+      // The flow of the class the model has now, and (flow_by_class) the flow every class gets: the class of the model decides which
+      // flow runs, so the whole map answers "why can I choose this model and what changes with it" without trying models one by one.
+      const Json defs = models.value("flow_defs", Json::object());
+      const auto flow_row = [&](const std::string& flow_id) {
+        const Json def = defs.value(flow_id, Json::object());
+        Json fr{{"id", flow_id}, {"status", def.value("status", "")}, {"does", def.value("does", Json::array())}, {"planned", def.value("planned", Json::array())},
+                {"calls", def.value("calls", "")}};
+        if (const Json* human = json::find(def, "human"); human && human->is_object()) {  // the words of the flow in the language asked
+          if (human->contains("title")) fr["title"] = c.say((*human)["title"]);
+          for (const char* list : {"does", "planned"}) {
+            Json words = Json::array();
+            for (const auto& item : human->value(list, Json::array())) words.push_back(c.say(item));
+            fr[std::string(list) + "_human"] = words;
+          }
+        }
+        return fr;
+      };
+      row["flow"] = flow_row(flow);
+      Json by_class = Json::array();
+      const Json class_flows = models.value("flows", Json::object());  // a named value: items() of a temporary would dangle
+      for (const auto& entry : class_flows.items()) {
+        if (!entry.value().is_string()) continue;
+        by_class.push_back(Json{{"tier", Json{{"id", entry.key()}, {"label", c.word("tier." + entry.key())}}}, {"flow", flow_row(entry.value().get<std::string>())}});
+      }
+      row["flow_by_class"] = by_class;
     } else {
       row["flow"] = nullptr;
     }
@@ -1988,6 +2015,22 @@ const Json& role_rows(Impl& c) {
         if (json::get_string(f.value("human", Json::object()), "role") == id)
           keys.push_back(Json{{"key", json::get_string(f, "key")}, {"label", c.say(f["human"].value("label", Json()))}});
     row["settings"] = keys;
+    // The other flows that read one of the role's settings without declaring the role (the cost estimate, the Secretary reading
+    // semantic_model through its own policy, the screens that show the roles): the owner asked for EVERY flow that reads the key.
+    // The list is the actions' own `reads`, audited against their executors by tools/check_action_reads.py.
+    Json also = Json::array();
+    for (const auto& a : actions) {
+      const std::string aid = json::get_string(a, "id");
+      bool listed = false;
+      for (const auto& r : readers) listed = listed || json::get_string(r, "id") == aid;
+      if (listed) continue;
+      std::string via_key;
+      for (const auto& read : strings_in(a.value("reads", Json())))
+        for (const auto& k : keys)
+          if (via_key.empty() && json::get_string(k, "key") == read) via_key = read;
+      if (!via_key.empty()) also.push_back(Json{{"id", aid}, {"title", catalogue_title(a, c.lang())}, {"key", via_key}});
+    }
+    row["flows_reading_setting"] = also;
     rows.push_back(std::move(row));
   }
   if (!issues.empty()) out["issues"] = issues;
@@ -2210,6 +2253,12 @@ Json Catalogue::edge_meaning(const std::string& kind) {
   const views::EffectiveEntry* e = k->view().find(kind);
   if (!e || !e->value.contains("meaning")) return nullptr;
   return impl_->say(e->value["meaning"]);
+}
+
+std::string Catalogue::edge_inverse(const std::string& kind) {
+  views::EdgeKinds* k = impl_->edge_kinds();
+  const views::EffectiveEntry* e = k ? k->view().find(kind) : nullptr;
+  return e ? json::get_string(e->value, "inverse") : std::string();
 }
 
 // ── actions ───────────────────────────────────────────────────────────────────────
@@ -2706,7 +2755,12 @@ Result<Json> card(const Env& env, const Json& request) {
     const std::string s = json::get_string(e, "src"), d = json::get_string(e, "dst"), k = json::get_string(e, "kind");
     if (s != address && d != address) continue;
     if (!rel_seen.insert(s + "\x1f" + d + "\x1f" + k).second) continue;
-    if (!relations.contains(k)) relations[k] = Json{{"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}, {"out", Json::array()}, {"in", Json::array()}};
+    if (!relations.contains(k)) {
+      // M1-W0 r1:b5: the card heads the in-rows with the inverse kind's name ("zawiera" for part_of), so a group names the concrete node
+      const std::string inv = cat.edge_inverse(k);
+      relations[k] = Json{{"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}, {"inverse", inv.empty() ? Json(nullptr) : Json(inv)},
+                          {"inverse_label", inv.empty() ? Json(nullptr) : cat.edge_label(inv)}, {"out", Json::array()}, {"in", Json::array()}};
+    }
     const std::string other = s == address ? d : s;
     std::string label = other;
     if (auto n = cat.node(other); n && *n) label = json::get_string(**n, "label", other);

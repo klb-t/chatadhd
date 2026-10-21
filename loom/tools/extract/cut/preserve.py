@@ -88,7 +88,7 @@ def cut_preserve(eng: Any, outputs: Outputs, origins: set[str], *, settings: dic
         src = u.source or {}
         raw_by_archive.setdefault((src.get("archive") or "", src.get("sha256") or ""), []).append(u)
     other_policy = settings.get("other_members", "omit")
-    slugs = archive_slugs(eng.archives)
+    slugs = archive_slugs(eng.archives, eng.ds)
     for a in eng.archives:
         units = raw_by_archive.get((a.label, a.sha256), [])
         kept = [u for u in units if u.uid in origins and u.kind in ("conversation", "session")]

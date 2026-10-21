@@ -27,6 +27,44 @@ std::string env_or(const char* name, const std::string& fallback) {
   return (v && *v) ? std::string(v) : fallback;
 }
 
+// The largest keep-alive time that is a time and not an overflow: the HTTP library compares the idle time in 64-bit nanoseconds, so a
+// larger count of seconds wraps and the connection would be closed at once while "Keep-Alive: timeout=N" still promises N.
+constexpr unsigned long long kMaxKeepAliveSeconds = 2147483647ULL;  // INT32_MAX seconds, about 68 years
+
+// Whole seconds as plain decimal digits. An empty value, a sign, a fraction, a unit or anything else is not a duration (strtoull would turn
+// "-1" into 2^64-1 and "abc" into 0, and the number goes into a response header that every client reads). A number above the largest
+// is clamped to it, and `clamped` says so.
+bool parse_keep_alive_seconds(const std::string& text, unsigned long long& seconds, bool& clamped) {
+  if (text.empty()) return false;
+  unsigned long long value = 0;
+  clamped = false;
+  for (const char c : text) {
+    if (c < '0' || c > '9') return false;
+    if (clamped) continue;
+    value = value * 10 + static_cast<unsigned long long>(c - '0');  // value <= kMax before this, so no wrap
+    if (value > kMaxKeepAliveSeconds) { value = kMaxKeepAliveSeconds; clamped = true; }
+  }
+  seconds = value;
+  return true;
+}
+
+void print_usage(const char* argv0);
+
+// `source` names where the text came from (the flag or the environment variable) for the messages. Exits with 2 on an invalid value.
+size_t keep_alive_seconds_or_exit(const char* source, const std::string& text, const char* argv0) {
+  unsigned long long seconds = 0;
+  bool clamped = false;
+  if (!parse_keep_alive_seconds(text, seconds, clamped)) {
+    std::cerr << "loom-server: " << source << " takes a whole number of seconds (0 = no persistent connections), got '" << text << "'\n";
+    print_usage(argv0);
+    std::exit(2);
+  }
+  if (clamped)
+    std::cerr << "loom-server: " << source << " " << text << " is more than " << kMaxKeepAliveSeconds << " s, the most the HTTP library can count; using "
+              << kMaxKeepAliveSeconds << " s\n";
+  return static_cast<size_t>(seconds);
+}
+
 void print_usage(const char* argv0) {
   std::cerr << "Usage: " << argv0
             << " [--version] [--host H] [--port P] [--data-dir DIR] [--static-dir DIR] [--token TOKEN]\n"
@@ -34,6 +72,8 @@ void print_usage(const char* argv0) {
                "       [--max-body-bytes N (JSON routes, 0 = no limit)] [--max-upload-bytes N (import/transcribe, 0 = no limit)]\n"
                "       [--upload-drain-bytes N (bytes of a too-large upload read and discarded so the 413 arrives; 0 = no limit; preset 64 MiB)]\n"
                "       [--sse-keepalive-ms N (idle event feeds probe their client this often, 0 = never; preset 5000)]\n"
+               "       [--keep-alive-timeout-s N (whole seconds an idle persistent connection is kept, and a new connection may wait before its first request;\n"
+               "        advertised to clients as Keep-Alive: timeout=N; 0 = every answer closes its connection; preset 5; above 2147483647 is clamped to it)]\n"
                "       [--threads N (threads that serve requests; every open page holds one for its event feed; 0 = library default; preset 64)]\n"
                "       [--allow-chunked-uploads (accept chunked/unframed import/transcribe bodies, streamed to disk)]\n"
                "       " << argv0 << " user add|passwd|disable|enable|invite|list --accounts-root DIR [LOGIN]\n"
@@ -141,6 +181,7 @@ int main(int argc, char** argv) {
   if (auto v = env_or("LOOM_SERVER_UPLOAD_DRAIN_BYTES", ""); !v.empty()) opts.upload_drain_bytes = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_SSE_KEEPALIVE_MS", ""); !v.empty()) opts.sse_keepalive_ms = std::strtoull(v.c_str(), nullptr, 10);
   if (auto v = env_or("LOOM_SERVER_THREADS", ""); !v.empty()) opts.worker_threads = std::strtoull(v.c_str(), nullptr, 10);
+  if (auto v = env_or("LOOM_SERVER_KEEP_ALIVE_TIMEOUT_S", ""); !v.empty()) opts.keep_alive_timeout_seconds = keep_alive_seconds_or_exit("LOOM_SERVER_KEEP_ALIVE_TIMEOUT_S", v, argv[0]);
   if (auto v = env_or("LOOM_SERVER_ALLOW_CHUNKED_UPLOADS", ""); !v.empty()) opts.allow_chunked_uploads = v != "0" && v != "false";
   bool allow_public = false;
 
@@ -173,6 +214,8 @@ int main(int argc, char** argv) {
       opts.upload_drain_bytes = std::strtoull(next("--upload-drain-bytes"), nullptr, 10);
     } else if (arg == "--sse-keepalive-ms") {
       opts.sse_keepalive_ms = std::strtoull(next("--sse-keepalive-ms"), nullptr, 10);
+    } else if (arg == "--keep-alive-timeout-s") {
+      opts.keep_alive_timeout_seconds = keep_alive_seconds_or_exit("--keep-alive-timeout-s", next("--keep-alive-timeout-s"), argv[0]);
     } else if (arg == "--threads") {
       opts.worker_threads = std::strtoull(next("--threads"), nullptr, 10);
     } else if (arg == "--allow-chunked-uploads") {

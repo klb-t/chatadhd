@@ -1,0 +1,13 @@
+{"schema": "loom.extract.profile/1", "id": "katalog_rozmowy", "kind": "restructure",
+ "label": {"pl": "Wyciągnij spod zagnieżdżenia: katalog /[znacznik czasu]-[tytuł rozmowy]", "en": "Take out of the nesting: directory /[timestamp]-[conversation title]"},
+ "description": {"pl": "Każda rozmowa to katalog tuż pod korzeniem pakietu, nazwany „czas pierwszej wiadomości-tytuł”; w nim plik rozmowy i jej załączniki.",
+                 "en": "Every conversation is a directory directly under the package root, named \"time of the first message-title\"; inside it the conversation file and its attachments."},
+ "layout": "conversation>message",
+ "attachments_to": "/{dir}",
+ "branches": {"keep": "current", "alternatives": "note", "note_text": {"pl": "wycięto {n} gałęzi ({m} wiadomości) w {k} miejscach rozwidlenia", "en": "{n} branch(es) cut ({m} messages) at {k} fork point(s)"}},
+ "blocks": {"text": "keep", "code": "keep", "thinking": "keep", "tool_use": "keep", "tool_result": "keep", "execution_output": "keep", "attachment": "keep", "citation": "note", "search_result": "note", "unknown": "note", "*": "note"},
+ "timestamps": {"zone": "source", "format": "iso8601"},
+ "outputs": [{"kind": "markdown", "path": "{conversation.dir}/rozmowa.md"}],
+ "sort": "package",
+ "note": {"pl": "Nazwa katalogu: czas pierwszej wiadomości w UTC (RRRR-MM-DDTGG-MM-SSZ, bez dwukropków, więc sortuje się chronologicznie; ułamki sekundy są zawsze pomijane, żeby wszystkie nazwy miały ten sam kształt) + tytuł z oczyszczonymi znakami niedozwolonymi w nazwach plików. Dwie rozmowy o tym samym czasie (z dokładnością do sekundy) i tytule dostają na końcu początek uid. Długość tytułu: preset layout.dir_title_chars (80; 0 = bez cięcia). Strefa i przesunięcie czasu z przebiegu (zone, shift, anonymise) działają też na nazwy katalogów.",
+          "en": "Directory name: time of the first message in UTC (YYYY-MM-DDTHH-MM-SSZ, no colons, so it sorts chronologically; fractions of a second are always dropped so every name has the same shape) + the title with characters file systems refuse removed. Two conversations with the same time (to the second) and title get the start of the uid at the end. Title length: preset layout.dir_title_chars (80; 0 = no cut). The run's zone and time shift (zone, shift, anonymise) apply to the directory names too."}}
