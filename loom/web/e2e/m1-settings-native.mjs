@@ -78,9 +78,9 @@ try {
   const layoutFits = async () => {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
     // the former settings screen (Silnik › Wszystkie pola, shum-legacy) is untouched by M1-W0 and keeps its 35-40 px buttons: excluded
-    const small = await screen().locator("button").evaluateAll(els => els.filter(el => el.offsetParent !== null && !el.closest('[data-testid="shum-legacy"]')).map(el => {
+    const small = await page.locator(".drawer button").evaluateAll(els => els.filter(el => el.offsetParent !== null && !el.closest('[data-testid="shum-legacy"]')).map(el => {
       const r = el.getBoundingClientRect(); return { id: el.dataset.testid ?? el.textContent.trim().slice(0, 30), w: Math.round(r.width), h: Math.round(r.height) }; }).filter(b => b.w < 44 || b.h < 44));
-    assert.deepEqual(small, [], "every tappable of the settings screens is at least 44 x 44 px");
+    assert.deepEqual(small, [], "every tappable of the settings screens (the × included) is at least 44 x 44 px");
   };
   const openGroup = async id => { await page.getByTestId(`shum-group-open-${id}`).tap(); await page.getByTestId(`shum-group-view-${id}`).waitFor(); };
 
@@ -215,14 +215,20 @@ try {
     const card = page.getByTestId("role-card");
     assert.equal(await page.getByTestId("role-card-title").textContent(), analysis.label);
     assert.ok((await page.getByTestId("role-why").textContent()).includes(analysis.why));
-    // "Dziś" answers in words; the kernel's engineering note (files, keys) waits folded under "Szczegóły techniczne", closed until tapped.
+    // "Dziś" and "Dlaczego tak jest" answer in words at once; the kernel's engineering note (files, keys) waits folded under
+    // "Szczegóły techniczne", closed until tapped — nothing with a file name is on the screen before the tap.
     if (analysis.status?.reason) {
+      assert.ok(analysis.status.reason_human, "the kernel sends the plain sentence next to the note");
+      assert.ok((await page.getByTestId("role-status-reason").textContent()).includes(analysis.status.reason_human));
+      assert.ok(await page.getByTestId("role-status-reason").isVisible(), "the plain sentence is visible without a tap");
       const details = page.getByTestId("role-status-details"), head = details.locator("button").first();
       assert.equal(await head.getAttribute("aria-expanded"), "false");
       assert.equal(await head.textContent(), rl["state.details"]);
+      assert.ok(!(await page.getByTestId("role-status-technical").isVisible()), "the engineering note is folded until tapped");
       await head.tap();
       await page.locator('[data-testid="role-status-details"] button[aria-expanded="true"]').waitFor();
-      assert.ok((await page.getByTestId("role-status-reason").textContent()).includes(analysis.status.reason_human ?? analysis.status.reason));
+      assert.ok((await page.getByTestId("role-status-technical").textContent()).includes(analysis.status.reason));
+      assert.ok((await page.getByTestId("role-status-technical").textContent()).startsWith(rl["state.technical"]));
       await head.tap();
       await page.locator('[data-testid="role-status-details"] button[aria-expanded="false"]').waitFor();
     }

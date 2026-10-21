@@ -63,7 +63,7 @@ const roles = lang => post('/api/roles/resolved', { lang });
 const byId = (doc, id) => doc.roles.find(r => r.id === id);
 
 test('every word the card asks for exists in both languages, with the same ids, and the feature says it is present', () => {
-  const ids = ['title', 'intro', 'loading', 'error', 'retry', 'table.aria', 'row.open', 'card.back', 'role.model', 'why', 'today', 'state.reason', 'state.details', 'chips.help', 'planned', 'state.planned',
+  const ids = ['title', 'intro', 'loading', 'error', 'retry', 'table.aria', 'row.open', 'card.back', 'role.model', 'why', 'today', 'state.reason', 'state.details', 'state.technical', 'chips.help', 'planned', 'state.planned',
     'state.partial', 'state.implemented', 'class', 'class.help', 'class.assign', 'class.edit', 'class.planned', 'chain', 'chain.help', 'chain.step', 'chain.today',
     'chain.described_not_read', 'step.explicit', 'step.explicit.plain', 'step.setting', 'step.role', 'step.relative_to', 'step.none', 'step.decides', 'step.value',
     'step.value.empty', 'relative_to.note', 'flow.by_class', 'flow.by_class.help', 'flow.current', 'flow.calibration', 'flow.does', 'flow.planned', 'flow.none',

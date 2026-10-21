@@ -154,6 +154,8 @@ export interface UnsetChoice {
   label: string;
   text: string;
   returnsText: string;
+  /** The engineering note behind a planned reason (file names, action names): folded on the card, never in the row. */
+  technicalText?: string;
   /** The rule to switch off (rules.disable), or null with the reason the layer cannot be taken off today. */
   ruleId: string | null;
   reasonText: string | null;
@@ -167,7 +169,7 @@ export function unsetChoices(card: Pick<GraphCardResult, "inheritance">, key: st
     const returns = rest.length ? rest[rest.length - 1] : null;   // the chain runs engine → turn: the last remaining level wins
     const returnsText = returns ? t("card.unset.returns", { layer: returns.label, value: valueText(returns.value, t) }) : t("card.unset.returns_nothing");
     const text = t("card.unset", { layer: l.label, value: valueText(l.value, t) });
-    if (l.level === "person") return { level: l.level, label: l.label, text, returnsText, ruleId: null, reasonText: t("card.unset.person_planned") };
+    if (l.level === "person") return { level: l.level, label: l.label, text, returnsText, ruleId: null, reasonText: t("card.unset.person_planned"), technicalText: t("card.unset.person_planned_technical") };
     const rule = rules.find(r => !r.disabled && r.effect === "set_value" && r.target?.key === key && r.scope === l.level && (l.scope_id ? r.scope_id === l.scope_id : true));
     if (!rule) return { level: l.level, label: l.label, text, returnsText, ruleId: null, reasonText: t("card.unset.no_rule", { layer: l.label }) };
     return { level: l.level, label: l.label, text, returnsText, ruleId: rule.id, reasonText: null };

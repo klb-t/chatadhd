@@ -59,7 +59,13 @@ try {
   await step("5 klucz dostawcy w Ustawieniach", async () => {
     // Since the full-screen chat start view (R56/P20) Settings live in the ⋮ menu; the workbench header still has nav-settings.
     if (await page.getByTestId("nav-settings").isVisible().catch(() => false)) await page.getByTestId("nav-settings").click();
-    else { await page.getByTestId("shell-menu-toggle").click(); await page.getByTestId("shell-menu-settings").click(); }
+    else {
+      await page.getByTestId("shell-menu-toggle").click(); await page.getByTestId("shell-menu-settings").click();
+      // Since M1-W0 (P5) the menu opens "Ustawienia po ludzku" (settings-human, eight groups); the field panel with the keys
+      // is the group Silnik › "Wszystkie pola" (a Disclosure, closed until tapped). The first-run card goes there directly.
+      await page.getByTestId("shum-group-open-silnik").click();
+      await page.getByTestId("shum-all-fields").locator(".disclosure-head").first().click();
+    }
     await page.getByTestId("settings-panel").waitFor();
     await page.getByTestId("cfg-base-url").fill(provider);
     await page.getByTestId("cfg-base-url").blur();

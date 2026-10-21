@@ -72,9 +72,10 @@ try {
   };
   const layoutFits = async () => {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
-    const small = await nav().locator("button").evaluateAll(els => els.filter(el => el.offsetParent !== null).map(el => {
+    // the whole drawer, so the × that closes the screen (data-testid close-panel) is measured too
+    const small = await page.locator(".drawer button").evaluateAll(els => els.filter(el => el.offsetParent !== null).map(el => {
       const r = el.getBoundingClientRect(); return { id: el.dataset.testid, w: Math.round(r.width), h: Math.round(r.height) }; }).filter(b => b.w < 44 || b.h < 44));
-    assert.deepEqual(small, [], "every tappable of the navigator is at least 44 x 44 px");
+    assert.deepEqual(small, [], "every tappable of the navigator screen (its × included) is at least 44 x 44 px");
   };
 
   await page.goto(base + "/");

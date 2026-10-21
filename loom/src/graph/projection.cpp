@@ -1843,6 +1843,7 @@ const Json& role_rows(Impl& c) {
       Json shown{{"state", json::get_string(st, "state")}};
       if (st.contains("today")) shown["today"] = c.say(st["today"]);
       if (st.contains("reason")) shown["reason"] = c.say(st["reason"]);
+      if (st.contains("reason_human")) shown["reason_human"] = c.say(st["reason_human"]);  // the same in words, for the screen
       row["status"] = shown;
     } else {
       row["status"] = Json{{"state", "implemented"}};

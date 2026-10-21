@@ -153,10 +153,11 @@ export default function RoleCard({ role, roles, t, graphT, language, convId, onB
       </div>
       <p className="gnav-why rolc-why" data-testid="role-why"><b>{t("why")}: </b>{role.why}</p>
       {status?.today && <p className="rolc-lines" data-testid="role-today"><b>{t("today")}: </b>{status.today}</p>}
-      {(status?.reason_human || status?.reason) && (
-        // "Dziś" is the answer in words; the kernel's engineering note (file names, keys) waits folded under it, for whoever wants it.
+      {status?.reason_human && <p className="rolc-lines gnav-why" data-testid="role-status-reason"><b>{t("state.reason")}: </b>{status.reason_human}</p>}
+      {status?.reason && (
+        // "Dziś" and "Dlaczego tak jest" answer in words; the kernel's engineering note (file names, keys) waits folded under them, for whoever wants it.
         <Disclosure testId="role-status-details" labels={{ show: t("state.details"), hide: t("state.details") }}>
-          <p className="rolc-lines gnav-why" data-testid="role-status-reason"><b>{t("state.reason")}: </b>{status.reason_human || status.reason}</p>
+          <p className="rolc-lines gnav-why" data-testid="role-status-technical"><b>{t("state.technical")}: </b>{status.reason}</p>
         </Disclosure>)}
 
       <h4 className="rolc-h">{t("role.model")}</h4>

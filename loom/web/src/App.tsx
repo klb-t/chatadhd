@@ -199,14 +199,15 @@ export default function App() {
   useLayer("panel", activePanel !== null, () => setActivePanel(null));
   useLayer("knowledge-sheet", knowledgeOpen && layout === "chat", () => setKnowledgeOpen(false));
 
+  const panelTitle = activePanel ? (PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]) : "";
   const panels = activePanel && (
 
           <>
             <div className="drawer-backdrop" onClick={closePanel} data-testid="drawer-backdrop" />
             <div className="drawer" data-testid={`panel-${activePanel}`}>
               <div className="drawer-header">
-                <h2>{PANEL_TEXT_IDS[activePanel] ? t(PANEL_TEXT_IDS[activePanel]!) : PANEL_LABELS[activePanel]}</h2>
-                <button className="icon-btn" aria-label="Close panel" onClick={closePanel} data-testid="close-panel">
+                <h2>{panelTitle}</h2>
+                <button className="icon-btn" aria-label={t("panel_close", { screen: panelTitle })} onClick={closePanel} data-testid="close-panel">
                   ×
                 </button>
               </div>

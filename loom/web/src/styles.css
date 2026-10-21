@@ -132,6 +132,8 @@ textarea { resize: vertical; }
   padding: 12px var(--gutter); border-bottom: 1px solid var(--border);
 }
 .drawer-header h2 { font-size: 15px; margin: 0; }
+/* the × of every screen in the drawer is a 44 px touch target (M1-W0 bar); the chat shell keeps its 38 px icon buttons */
+.drawer-header .icon-btn { min-width: 44px; min-height: 44px; }
 .drawer-body { flex: 1; overflow-y: auto; padding: var(--gutter); }
 
 .pill {

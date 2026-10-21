@@ -25,7 +25,7 @@ test('every word the screen asks for exists in both languages, and the feature s
     'no_translation', 'no_children', 'unknown_source', 'query.placeholder', 'search', 'search.close', 'path', 'loading', 'error',
     // the node card (P3, src/components/NodeCard.tsx) asks for these on top of inheritance.*, relations, actions
     'card.close', 'card.layers', 'card.value', 'card.why', 'card.effect', 'card.edit_rule', 'card.change', 'card.for_whom', 'card.more_levels', 'card.cancel',
-    'card.saved', 'card.write_error', 'card.unset', 'card.unset.returns', 'card.unset.person_planned', 'card.level.turn_planned', 'card.level.baseline',
+    'card.saved', 'card.write_error', 'card.unset', 'card.unset.returns', 'card.unset.person_planned_technical', 'card.technical', 'card.unset.person_planned', 'card.level.turn_planned', 'card.level.baseline',
     'card.gate', 'card.gate.yes', 'card.gate.no', 'card.flows_reading', 'card.relations.none', 'card.action.planned', 'inheritance', 'relations', 'actions',
     'bar.budget', 'bar.budget.unlimited', 'chip.rom', ...nav.BAR_BUTTONS.map(b => b.word),
     // Perspektywa ▾ and Działania (r1:b2): the tick list, its states, and where actions live when no node is in focus

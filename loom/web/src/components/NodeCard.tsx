@@ -231,6 +231,11 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
                 <span className="gnav-note">{u.returnsText}{u.reasonText ? ` · ${u.reasonText}` : ""}</span>
               </button>
             </li>)}
+            {unsets.some(u => u.technicalText) && <li className="ncard-action">
+              <Disclosure testId="card-unset-technical" labels={{ show: t("card.technical"), hide: t("card.technical") }}>
+                {unsets.filter(u => u.technicalText).map(u => <p key={u.level} className="gnav-note" data-testid={`card-unset-technical-${u.level}`}>{u.technicalText}</p>)}
+              </Disclosure>
+            </li>}
             {actionList.map(a => <li key={a.id} className="ncard-action" data-testid={`card-action-${a.id}`}>
               <span className="ncard-row-label">{a.label}</span>
               {a.planned && <span className="gnav-chip gnav-chip-status">{t("card.action.planned")}</span>}
