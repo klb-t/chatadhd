@@ -346,12 +346,15 @@ if(LOOM_BUILD_TESTS)
     add_test(NAME tools.extract
       COMMAND ${Python3_EXECUTABLE} -I -m unittest discover
         -s ${LOOM_ROOT}/tools/extract/tests -p "test_*.py")
-    # libloom exists only with LOOM_SHARED (not in asan/tsan/vendored): without it the libloom tests SKIP, as documented.
-    set(_loom_extract_env ${_loom_python_env} "TERM=xterm-256color")
+    # The suite also runs where libloom is not built (asan/tsan/vendored): LOOM_LIBRARY is only
+    # set when the shared target exists, and the libloom-backed tests skip with a visible reason.
+    set(_loom_extract_env "${_loom_python_env};TERM=xterm-256color")
     if(LOOM_SHARED)
       list(APPEND _loom_extract_env "LOOM_LIBRARY=$<TARGET_FILE:loom>")
     endif()
-    set_tests_properties(tools.extract PROPERTIES ENVIRONMENT "${_loom_extract_env}" TIMEOUT 600)
+    set_tests_properties(tools.extract PROPERTIES
+      ENVIRONMENT "${_loom_extract_env}"
+      TIMEOUT 600)
   else()
     message(WARNING "loom: Python3 not found - compat tests disabled")
   endif()

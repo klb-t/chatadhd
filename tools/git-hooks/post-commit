@@ -1,0 +1,34 @@
+#!/bin/sh
+# post-commit: a durable checkpoint after every commit.
+#
+# Pushes the current branch to its own name on the remote, in the background and
+# best effort: it never blocks and never fails a commit. Rule: owner PC15/PC48
+# ("frequent GitHub checkpoints, because conversations vanish") and the
+# 2026-10-21 waste-control rule "durable checkpoints" (docs/reports/INDEX.md).
+#
+# Not pushed: main/master and a detached HEAD (those go through the gate).
+# Never forced: if the remote moved on, the push fails and the log says so.
+# Not published: while any unpushed commit touches the owner's private paths.
+# Off switch: CHATADHD_NO_CHECKPOINT_PUSH=1, or `git config chatadhd.checkpointPush false`.
+# Log: <git common dir>/checkpoint-push.log
+branch=$(git symbolic-ref --quiet --short HEAD) || exit 0
+case "$branch" in main|master) exit 0 ;; esac
+[ "$CHATADHD_NO_CHECKPOINT_PUSH" = 1 ] && exit 0
+[ "$(git config --get chatadhd.checkpointPush)" = false ] && exit 0
+remote=$(git config --get chatadhd.checkpointRemote || echo origin)
+git remote get-url "$remote" >/dev/null 2>&1 || exit 0
+log="$(git rev-parse --git-common-dir)/checkpoint-push.log"
+sha=$(git rev-parse --short HEAD)
+# every commit the push would publish, not only the last one
+if git log --name-only --format= HEAD --not --remotes="$remote" | grep -E -q '^(docs/exports/|eval/real-holdout-key)'; then
+  echo "$(date -u +%FT%TZ) REFUSED $branch $sha: an unpushed commit touches the owner's private paths" >> "$log"
+  exit 0
+fi
+(
+  if out=$(timeout "${CHATADHD_CHECKPOINT_TIMEOUT:-90}" git push --quiet "$remote" "HEAD:refs/heads/$branch" 2>&1); then
+    echo "$(date -u +%FT%TZ) pushed $branch $sha" >> "$log"
+  else
+    echo "$(date -u +%FT%TZ) FAILED $branch $sha: $(echo "$out" | tail -n 1)" >> "$log"
+  fi
+) >/dev/null 2>&1 &
+exit 0
