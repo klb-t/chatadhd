@@ -269,6 +269,9 @@ try {
     await openTab("Eksport");
     const profile = await tapText(/^Wyciągnij spod zagnieżdżenia/, "the profile 'Wyciągnij spod zagnieżdżenia'");
     shot("export-profile");
+    // the state of the profile control after the tap (checkbox / radio / plain text), so the zip can be judged against it
+    const pnode = find(dump(), n => /^Wyciągnij spod zagnieżdżenia/.test(n.text || ""));
+    const pstate = pnode ? `${(pnode.class || "").split(".").pop()} checkable=${pnode.checkable} checked=${pnode.checked}` : "control not found after the tap";
     await tapText(/^Eksportuj zaznaczone/, "the 'Eksportuj zaznaczone (zip)' button");
     // the system save dialog (ACTION_CREATE_DOCUMENT): Save into Downloads
     let saved = false, dialogText = "";
@@ -295,7 +298,7 @@ try {
       if (zip) { execFileSync("adb", ["pull", `/sdcard/Download/${zip}`, path.join(OUT, "export.zip")], { timeout: 60000 });
         listing = execFileSync("unzip", ["-l", path.join(OUT, "export.zip")], { encoding: "utf8" }).split("\n").slice(3, -3).map(l => l.trim().split(/\s+/).slice(3).join(" ")).filter(Boolean).slice(0, 60).join(" ; "); }
     } catch (e) { listing = "could not list the zip: " + e.message; }
-    const report = `selection: ${selection} || profile: ${profile} || app after save: ${seen(after, 40)} || Download: ${files} || inside the zip: ${listing}`;
+    const report = `selection: ${selection} || profile: ${profile} [${pstate}] || app after save: ${seen(after, 40)} || Download: ${files} || inside the zip: ${listing}`;
     if (err) throw new Error(report);
     return report;
   });
