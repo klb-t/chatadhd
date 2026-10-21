@@ -1,7 +1,17 @@
-# Kolejka S1 — stan 2026-10-21 21:05 UTC
+# Kolejka S1 — stan 2026-10-21 22:50 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K1b GOTOWE (22:00 UTC, `a4d45b12`; po merge main `f9f83a29`) — bramka lokalna `k1b` ZIELONA; FF `main` po końcu CI 260
+K1b (`wf_b0b95e77-a0d`, 167 wywołań, 397 tys. tokenów — 3× plan): Binding.turn, nośnik tury (`TurnCarrier`, tylko następne żądanie, wartości wracają przy nieudanej wysyłce), ops `context.modify` /
+`context.receipt` (POST `/api/context/modify`, `/api/context/receipt`), router (całe zdanie „szerzej/głębiej…”, „na stałe w tej rozmowie” = reguła rozmowy), strażnik ×10 w `ChatEngine::context_guard`
+(zamiast `estimate.cpp` — świadome odchylenie od briefu), prawdziwe `receipt.guard`; testy (c)(d)(f)(g) zielone, 92/92 celowanych, złoty plik bajtów bez zmian.
+Kształt dla W1: odpowiedź = dokument uruchomienia (`status` completed|awaiting_usage|rejected|failed; `result.data`), pytanie ×10 przez `POST /api/actions/confirm {run_id, approved, receipt_id, ref}`;
+paragon `loom.context_receipt/1` (order, profile, modifiers, guard, sections[…], dropped[…], sha256, truncated). Bieg CI **260** (`9f02ef7b`, start 21:18) trwa — asan kończy ok. 23:10; **FF `main` z commita `f9f83a29`
+(nie z roboczego stanu W1)** dopiero po nim.
+**W1** (web, dzielę na dwa pakiety: W1a = arkusz „Co wysłaliśmy” + linia pod odpowiedzią + ⋯ › Co wysłaliśmy + API + e2e `m1-context-sent-native.mjs`; W1b = podmenu kontekstu w `+`, ContextStrip, chip modelu
+z pochodzeniem, podgląd z profilem) startuje po regule odstępu (`pace.py`, najwcześniej 22:53).
 
 ## MAIN = `8e05e38f` (K1a, 21:00 UTC) — bramka `k1a` zielona; CI 259 w toku; K1b w toku
 **Aktualizacja 21:18:** S2 zrobił FF `main` → `9f02ef7b` (K1a + jego merge: `android-smoke.yml` serwer na 24.04, `drive.mjs` sprawdza R38), co anulowało bieg 259 (miał 18 min). Docelowy bieg: **260** https://github.com/klb-t/chatadhd/actions/runs/39677626877 (start 21:18, do ok. 22:40). **Nie pushować kodu w `loom/**` na `main` do jego końca.** K1b przed FF: `git merge origin/main` do `claude/m1-w0`.
