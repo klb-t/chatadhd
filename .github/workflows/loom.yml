@@ -244,6 +244,7 @@ jobs:
           npm run test:navigator-map
           npm run test:settings-human
           npm run test:role-card
+          npm run test:context-receipt
           npm run test:testids-doc
           npx playwright install --with-deps chromium
           npm run e2e

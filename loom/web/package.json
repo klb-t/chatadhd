@@ -51,6 +51,7 @@
     "test:navigator-map": "node tests/shell/navigator-map.test.mjs",
     "test:settings-human": "node tests/shell/settings-human-state.test.mjs",
     "test:role-card": "node tests/shell/role-card-state.test.mjs",
+    "test:context-receipt": "node tests/shell/context-receipt-state.test.mjs",
     "test:m1-navigator": "node e2e/m1-navigator-native.mjs",
     "test:m1-settings": "node e2e/m1-settings-native.mjs",
     "test:graph-labels": "node tests/graph-labels/graph-labels.test.mjs",
