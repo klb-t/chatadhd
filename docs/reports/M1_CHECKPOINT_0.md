@@ -118,7 +118,7 @@ słowami**, **chipem klasy** (tani / średni / frontier / brak modelu) i stanem 
 ![karta roli](M1_CHECKPOINT_0/m1-settings-role-chain.png)
 
 Dotknij **Analiza w tle**. Karta mówi **z danych**: **Po co**, **Dziś** (które prace naprawdę wybierają model przez tę rolę),
-**Dziś** (odpowiedź słowami; notatka techniczna jądra „Dlaczego tak jest” jest złożona pod **Szczegóły techniczne**, zamknięte, dopóki jej nie dotkniesz); **Model** i **Klasa** z powodem słowo w słowo z jądra („tani, bo nazwa zawiera „mini” …”); **Jak
+**Dziś** (odpowiedź słowami; „Dlaczego tak jest” to zdanie po ludzku z danych ról (`reason_human`); notatka techniczna jądra — „Zapis techniczny (pliki, klucze)” — jest złożona pod **Szczegóły techniczne**, zamknięte, dopóki jej nie dotkniesz); **Model** i **Klasa** z powodem słowo w słowo z jądra („tani, bo nazwa zawiera „mini” …”); **Jak
 wybieramy model** — łańcuch polityki krok po kroku (1. wprost: pole „Model analizy w tle”; 2. rola; 3. brak — analiza
 lokalna, bez kosztu), z chipem **„ten krok wybiera”** przy tym, który zadecydował; **Przepływ dla każdej klasy modelu** —
 tani/średni/nieznany = „Klasyczne wywołanie i wąskie pytanie”, frontier = „Jedno wywołanie: cała rozmowa naraz”, oba z chipem
@@ -156,13 +156,34 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   ma węzła, więc pasek mówi: „Działania są na karcie węzła: otwórz wiersz przez ⋯ albo wejdź w jeden.” Żaden przycisk paska nie
   mówi już „planowane”. Zrzut: `m1-navigator-actions.png`.
 - **Karta roli:** „Dziś” jest odpowiedzią; notatka techniczna jądra (nazwy plików, klucze) leży zamknięta pod „Szczegóły techniczne”
-  (gdy jądro przyśle `reason_human`, karta woli je). Chipy stanu mówią, czego dotyczą: „wybór przez rolę: planowane / częściowo”,
+  (od r1:b3 jądro przysyła `reason_human` z `ports.pack`: „Dlaczego tak jest” widać od razu po ludzku, pod „Szczegóły techniczne” leży „Zapis techniczny (pliki, klucze)”). Chipy stanu mówią, czego dotyczą: „wybór przez rolę: planowane / częściowo”,
   a nad tabelą ról stoi jedno zdanie, co znaczą chipy. Lista „Kto czyta” nazywa klucz etykietą pola („czyta Model analizy w tle”),
   goły klucz jest tylko w podpowiedzi (`title`).
 - **Słowa bez identyfikatorów:** „planowane — silnik nie ma dziś akcji na wartość jednej tury” i „Zapisane dla Ciebie: Razem” bez
   nawiasów z nazwami akcji, pozycji planu i kluczy (te są w INDEX).
 - **Start z linku** (`#czat/<id>`, `#warsztat`) wczytuje konfigurację jak zwykły start: język słów (`ui_language`), motyw i układ
   nawigatora (`navigator_layout`) są Twoimi ustawieniami, nie językiem przeglądarki. E2E karty ustawień startuje teraz z linku.
+
+## Co doszło w poprawkach r1:b3 (2026-10-21, fakty z przebiegu)
+
+- **× każdego ekranu ma 44 × 44 px** (było 38 × 38 — jedyny element pod progiem w 9 stanach szuflady) i etykietę ze słów powłoki:
+  „Zamknij: Ustawienia” (`panel_close`, pl/en), nie angielskie „Close panel”. Testy e2e mierzą teraz cały `.drawer`, nie tylko
+  korzeń ekranu.
+- **Karta roli bez żargonu na wierzchu, z danych:** każdy z 11 stanów ról w `ports.pack` ma obok notatki inżynierskiej (`reason`)
+  zdanie po ludzku (`reason_human`), np. „Większość prac analizy powstała, zanim były role, i czyta pole „Model analizy w tle”
+  wprost z ustawień zamiast pytać tej roli”. Jądro je przysyła, karta pokazuje „Dlaczego tak jest: …” od razu, a notatkę z nazwami
+  plików jako „Zapis techniczny (pliki, klucze)” pod „Szczegóły techniczne”. Ten sam podział na karcie węzła: „Zdejmij wartość: Ty”
+  mówi „planowane — silnik umie dziś zmienić wartość w Twoich ustawieniach, ale nie umie jej zdjąć”, a `config.json`/`settings.set`
+  leżą pod „Szczegóły techniczne”. Zrzuty odświeżone: `m1-settings-role-card.png`, `m1-navigator-card-unset.png`.
+- **Pierwsze kroki (CI `package.yml/first-steps --ui`, `docs/PIERWSZE_KROKI.md` §5):** krok 5 szedł do dawnego ekranu pól wprost
+  z menu, a od P5 menu ⋮ › Ustawienia otwiera osiem grup; skrypt idzie teraz Ustawienia › Silnik › „Wszystkie pola” › pola, a
+  dokument opisuje tę drogę i kartę pierwszego uruchomienia. Sonda tych samych kliknięć na serwerze dev (1100 × 760 i 390 × 844):
+  `settings-panel` zaraz po menu = false, po Silnik › Wszystkie pola = true (`cfg-base-url`, `cfg-default-model`,
+  `secret-api_key`, `secret-api_key-save` widoczne).
+- **Dwa zgłoszenia już zrobione w r1:b1** (`8c747ce9`): „Ta rozmowa w grafie” otwiera nawigator na `conv:<otwarta rozmowa>`
+  (korzeń, gdy żadna nie jest otwarta), nie dawny `panel:graph`; siedem testów M1 (`navigator-state`, `node-card-state`,
+  `navigator-map`, `settings-human`, `role-card`, `m1-navigator`, `m1-settings`) jest w `loom.yml`.
+- Testy (fakty): `tsc` + `npm run build` czyste; jądro dev przebudowane przyrostowo (po `ports.pack`/`projection.cpp`/`test_ports.cpp`, potem po `builtin.inc`); `ctest -R "ports|graph_projection|onboarding"` 11/11; testy jednostkowe web (0 fail): shell-history 13, shell-menu 8, navigator-state 9, node-card-state 8, navigator-map 9, settings-human 7, shell 9, composer-menu 13, role-card 5; `test:m1-navigator` 12/12, `test:m1-settings` 9/9 (× mierzony w całym `.drawer`, „Dlaczego tak jest” widoczne bez dotknięcia, „Zapis techniczny” złożony do dotknięcia); sonda kroku 5 pierwszych kroków na serwerze dev (1100 × 760 i 390 × 844) zielona, `close-panel` 44 × 44 „Zamknij: Ustawienia”. Nie uruchomione: `first-steps-check.sh --ui` z archiwum, pełne `npm run e2e`, `android-smoke`.
 
 ## Czego jeszcze NIE ma (i dlaczego)
 
@@ -180,9 +201,6 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
 - **Nie na emulatorze Androida.** Powłoka (wstecz przez `OnBackPressedDispatcher`, `adjustResize`, prostokąty gestów,
   pytanie o wyjście) i przebieg `android-smoke` to M1-A0 (sesja S2). Kroki dla sterownika są w bloku `gate0` w
   `docs/reports/M1_W0_TESTIDS.md`.
-- Notatki techniczne jądra („Dlaczego tak jest” na karcie roli, powody „planowane” pól klasy) nadal cytują nazwy plików i akcji
-  (`actions.pack`, `settings.set`); ekran je składa pod „Szczegóły techniczne”, a jądro nie wysyła jeszcze `reason_human` dla
-  stanu roli — przepisanie tych zdań na prostsze bez utraty treści to praca nad danymi (`guardian.pack`), nie nad ekranem.
 - Perspektywa ▾ to lista jądra i jego krawędzie; **sektory / obok siebie** i renderery z `view_renderers` to M1-W3. `actions.for`
   bierze element (klasa, cechy), nie adres grafu — Działania pokazują działania z `graph.card`, które jądro liczy dla węzła.
 
