@@ -473,7 +473,11 @@ function m1GateChecks() {
         if (x.text) { const t = await textTid(x.tid); if (!new RegExp(x.text, "i").test(t)) throw new Error(`${x.tid} says "${t.slice(0, 160)}", expected /${x.text}/`); notes.push(`${x.tid} ~ /${x.text}/`); }
       }
       shot("m1-" + st.name.replace(/\W+/g, "-").slice(0, 40));
-      return notes.join("; ");
+      // what a person sees: the visible text of the page (overlays first: the last dialog/sheet in the DOM is on top)
+      const visible = await page.ev(`(()=>{const v=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden'};
+        const top=[...document.querySelectorAll('[role=dialog],[data-testid$=-sheet],[data-testid=role-card]')].filter(v).pop();
+        return ((top&&top.innerText)||document.body.innerText||'').replace(/\\s+/g,' ').slice(0,900)})()`).catch(() => "");
+      return notes.join("; ") + (visible ? ` || on screen: ${visible}` : "");
     } finally {
       if (st.reset !== false) await m1Reset();
     }
