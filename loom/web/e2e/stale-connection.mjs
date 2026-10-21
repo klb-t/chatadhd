@@ -7,7 +7,7 @@
 //   (UND_ERR_SOCKET); a request that is not safe to repeat is not repeated. Only a stopped loop does this: the server's close is a
 //   normal, advertised event, and the same sequence with a running loop is fine.
 // The server here runs with a lowered time (3 s; undici pools a connection only if the advertised time exceeds its own 2 s margin), so
-// the whole test takes ~15 s.
+// the whole test takes ~28 s (group 5 waits twice for a `user add` made slower than that time; the wrapper is a sh script: Unix only).
 //   1. the server advertises its time, keeps a connection for it and closes the idle one at it (a raw socket)
 //   2. request() of the harness (a connection of its own) survives a loop stopped for longer than the server's time
 //   3. a child run with runChild() (the loop keeps running) does not strand fetch() either
