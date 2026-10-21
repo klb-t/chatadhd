@@ -28,7 +28,9 @@ const REPO_ROOT = path.resolve(LOOM_ROOT, "..");
 const SERVER_BIN = path.join(LOOM_ROOT, "build/dev/server/loom-server");
 const DIST_DIR = path.join(WEB_ROOT, "dist");
 const FIXTURE_MD = path.join(LOOM_ROOT, "tests/fixtures/import/chat.md");
-const SCREENSHOT_DIR = path.join(__dirname, "screenshots");
+// The tracked pictures in e2e/screenshots/ are evidence, not output: a run does not rewrite them (they differ at the pixel level every time and
+// left the tree dirty). Pictures and failure files go to E2E_SHOTS_DIR, else to the temp folder; E2E_SHOTS_DIR=e2e/screenshots refreshes the tracked ones.
+const SCREENSHOT_DIR = process.env.E2E_SHOTS_DIR || path.join(tmpdir(), "loom-e2e-screenshots");
 
 const CHROMIUM_FALLBACK = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 
@@ -116,6 +118,7 @@ async function main() {
     process.exit(2);
   }
   mkdirSync(SCREENSHOT_DIR, { recursive: true });
+  console.log("[e2e] screenshots and failure files: " + SCREENSHOT_DIR);
 
   const dataDir = mkdtempSync(path.join(tmpdir(), "loom-e2e-data-"));
   const mockPort = await freePort();

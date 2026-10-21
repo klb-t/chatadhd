@@ -12,7 +12,8 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
-const SHOTS = path.join(here, "screenshots");
+// The tracked pictures in e2e/screenshots/ are evidence, not output (a run left the tree dirty): pictures go to E2E_SHOTS_DIR, else to the temp folder.
+const SHOTS = process.env.E2E_SHOTS_DIR || path.join(tmpdir(), "loom-e2e-screenshots");
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 if (!existsSync(SERVER_BIN) || !existsSync(DIST)) { console.error("[composer-menu] build loom-server and `npm run build` first"); process.exit(2); }
 mkdirSync(SHOTS, { recursive: true });

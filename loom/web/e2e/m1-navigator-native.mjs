@@ -302,7 +302,8 @@ try {
   assert.ok(conv, `the imported conversation is listed (${JSON.stringify(convList).slice(0, 200)})`);
   const cardOf = () => api("POST", "/api/graph/card", { lang: "pl", address: "setting:temperature", conv_id: conv });
   // The kernel's real card as a fixture of the unit test (tests/shell/node-card-state.test.mjs): the chip, the chain and Ustawienia agree.
-  writeFileSync(path.join(here, "../tests/shell/fixtures/graph-card-temperature.json"), JSON.stringify(await cardOf(), null, 2) + "\n");
+  // The id of the conversation is fresh in every run: the fixture keeps a fixed placeholder (the unit test reads no id from it), so a run does not dirty the tree.
+  writeFileSync(path.join(here, "../tests/shell/fixtures/graph-card-temperature.json"), JSON.stringify(await cardOf(), null, 2).split(conv).join("c_000000000000") + "\n");
   const chainOnScreen = () => page.getByTestId("card-chain-rows").locator("li").evaluateAll(els => els.map(li => ({
     level: li.dataset.testid.replace("card-chain-", ""), winning: li.dataset.winning === "true", role: li.dataset.role,
     value: li.querySelector(".ncard-chain-value")?.textContent ?? "" })));

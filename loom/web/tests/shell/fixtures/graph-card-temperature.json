@@ -142,7 +142,7 @@
           "role": "none",
           "active": true,
           "meaning": "tylko ta rozmowa",
-          "scope_id": "c_a1e1e5b88cd2"
+          "scope_id": "c_000000000000"
         },
         {
           "level": "turn",
@@ -277,7 +277,7 @@
       "role": "none",
       "active": true,
       "meaning": "tylko ta rozmowa",
-      "scope_id": "c_a1e1e5b88cd2"
+      "scope_id": "c_000000000000"
     },
     {
       "level": "turn",

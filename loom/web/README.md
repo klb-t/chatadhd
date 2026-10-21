@@ -17,7 +17,8 @@ analysis runs through the actual C++ catalog and six-stage pipeline using the
 synthetic export fixture. It checks claim provenance, coordinated graph views,
 context budgets, import review and mobile layout as well as existing chat,
 streaming, versions, imports, graph and XSS behavior. Screenshots are written
-under `e2e/screenshots/`. `PLAYWRIGHT_CHROMIUM_EXECUTABLE` can select an installed
+to the temp folder (`loom-e2e-screenshots`), or to `E2E_SHOTS_DIR` when set; the pictures tracked
+in `e2e/screenshots/` are refreshed on purpose with `E2E_SHOTS_DIR=e2e/screenshots`. `PLAYWRIGHT_CHROMIUM_EXECUTABLE` can select an installed
 browser when Playwright's default is unavailable.
 
 ## Knowledge workbench
