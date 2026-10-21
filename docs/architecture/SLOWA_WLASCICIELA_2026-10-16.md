@@ -59,6 +59,34 @@ Wcześniej tego samego dnia: „gpt statystyk narobił na przełomie miesięcy k
 
 Wymaganie (P38 nr 37, „ekonomia tokenów”): inwentarz mierzy per archiwum `has_usage`, `has_tool_traces`, `reasoning: full|summary|none`; raport per przebieg, per model i per narzędzie: tokeny zmierzone (Claude Code JSONL `usage`, ledger OpenRouter, Codex CLI gdy ma liczniki) albo oszacowane (tokenizer + cennik z datą jako dane; metoda i błąd podane, nigdy mieszane bez etykiety), koszt, cache read/write, wynik (commit/plik/decyzja), porównanie między dostawcami, CSV. Estymaty czasu pracy — wyłącznie z miary (historia `main`, brief→main), z podaną podstawą.
 
+## Uzupełnienie 4 — 2026-10-21: ocena APK z K0, „to wszystko zamień na kod”, awatar 3D i dolina niesamowitości
+
+Właściciel dołączył dwa dokumenty (skopiowane do `docs/architecture/`: `GEMINI_GLOS_WYPOWIEDZI_I_WYMAGANIA_2026-10-15.md` — 11 jego wypowiedzi o analizie głosu, oraz `HANDOFF_MULTIMODAL_DUPLEX_JEV_2026-10-21.md` — przekazanie z innej rozmowy: mimika, multimodalność, pełny dupleks, JEV, meta-rozumowanie; to hipotezy i wymagania, nie raport o wdrożeniu) i napisał:
+
+> GPT nie pracuje nad projektem teraz na ciebie liczę, że to wszystko co zebrałeś przełożysz na kod, bo zainstalowałem to APK No i tyle dobrze że cokolwiek sensownego robi, ale nie te 15%, o których mówiłem, tylko bliżej trzech – czterech. nie bierz bezwzględnych liczb za bardzo serio pokazuje tylko orientacyjne relacje między nimi. lecisz Ultra, wykorzystaj fabla gdzie trzeba bo trochę trudnych rzeczy jest kropka wrzucam ci jeszcze co mi się przypomniało, co któryś z Was agentów ponoć zacytował zbierając materiały, ale olał. zobacz swoją dokumentację, czy masz na przykład wideo rozmowę z avatarem 3D asystenta - tego nie było w materiale od GPT który ci dorzucę. wyciągach na ten temat pamiętam że zwracałeś szczególną uwagę na pomysł ominięcia doliny niesamowitości poprzez złamanie hiperrealizmu artefaktami
+
+Co z tego wynika:
+- **Ocena M1:** APK z K0 daje tylko polecenia w czacie (ROM, ustawienia, role jako tekst); ekranów M1 (nawigator, ustawienia po ludzku, karta roli, wywiad, „Co wysłaliśmy”) jeszcze nie ma — właściciel ocenia to na „trzy–cztery” przy celu „15”. Liczby są orientacyjne; kierunek: **pierwsza rzecz do zrobienia to W0 (ekrany)**, nie kolejne jądro.
+- **Kontrola dokumentacji (Claude, 2026-10-21):** w repozytorium i na wszystkich 191 gałęziach nie ma rozmowy wideo z awatarem 3D asystenta ani pomysłu ominięcia doliny niesamowitości przez złamanie hiperrealizmu artefaktami; jest tylko „pitching agent / avatar — presentation/agent UI pack, later” (`MEGA_MASTER_2026-09-16.md:464`, `loom/data/profiles/self.json:387`, `ECOSYSTEM.md:27`) i „full-duplex voice/avatar later” (`MEGA_MASTER:639`). W zebranych 1148 uwagach (805 + 351) też go nie ma. Przekazanie GPT (§10) wspomina rozmowy z grudnia 2025 i czerwca 2026 o agencie-piczerze (awatar z grafu wiedzy, reżyserka, widoczna degradacja złożoności awatara, „celowo widoczna sztuczność”) i zastrzega, że oryginalnego raportu nie sprawdzono. Źródło leży więc w prywatnych eksportach właściciela, które agenci nie czytają (reguła: `docs/exports` poza zasięgiem) — do wyciągnięcia narzędziem X-Port po stronie właściciela albo za jego zgodą.
+- **Wymaganie zapisane z pamięci właściciela (do potwierdzenia na źródle):** AV01 — awatar-asystent 3D w rozmowie wideo; omijanie doliny niesamowitości **nie przez dopracowany hiperrealizm, tylko przez jego świadome łamanie widocznymi artefaktami** (sztuczność jako cecha, nie wada); spójne z „celowo widoczna sztuczność postaci, bez przymusowego antropomorfizmu” i z „widoczną degradacją złożoności awatara” z przekazania GPT §10.
+
+
+## Uzupełnienie 5 — 2026-10-21: zasady ograniczania marnotrawstwa (z rozmowy z GPT) i pytanie o kompresję kontekstu
+
+> w ogóle to z GPT rozmawialiśmy i zastanawialiśmy się jak ograniczyć marnotrawstwo, Tak on to podsumował ja nie pamiętam czy coś jeszcze nie było:
+> Ustaliliśmy kilka zasad:
+> 1. Trwałe checkpointy. Każdy sensowny przyrost powinien być zapisywany na dysku lub w Git, wraz ze stanem zadania, wynikami eksperymentów i instrukcją wznowienia. Nie wolno polegać wyłącznie na kontekście agenta.
+> 2. Małe, samodzielne pakiety pracy. Zadania powinny mieć jasno określone wejście, rezultat i kryteria odbioru. Dzięki temu przerwanie jednego pakietu nie niszczy całej sesji.
+> 3. Adaptacyjna równoległość. Bez arbitralnego limitu liczby podagentów. Ich liczbę, modele i wielkość zadań dobiera się do zmierzonego kosztu, dostępnego budżetu i ryzyka przerwania.
+> 4. Telemetria limitów. Rozważaliśmy wykorzystanie interfejsu codex app-server do odczytywania dostępnych informacji o zużyciu i resetach limitów, zamiast szacowania ich wyłącznie na podstawie liczby tokenów.
+> uwzględnij co się może tyczyć ciebie i się przydać. jeśli masz swój potencjalnie lepszy pomysł, to masz wolną rękę. dopiero odświeżyliśmy sesję, nie będę kompresował kontekstu, bo już jest skierowany, A trochę wartościowych rzeczy ma, dobrze myślę?
+> *zcache'owany
+
+Co z tego wynika:
+- **Zasady 1–4 przyjęte dla S1**, z pomiarami i decyzjami w `docs/reports/INDEX.md` („S1 — kontrola marnotrawstwa”), skrót w `CLAUDE.md` („Working with subagents”), dziennik limitów w `docs/reports/LIMITS_LEDGER.md`. „Nie pamiętam, czy coś jeszcze nie było” — w repozytorium nie ma dalszego ciągu tej rozmowy; jeśli była piąta zasada, potrzebne jest jej brzmienie.
+- **Zasada 3 zmienia dotychczasowe „pojedynczo”** (PC43, 2026-10-10): kryterium jest zmierzony koszt i tempo okna, nie liczba. Zasada ×10 (zgoda właściciela przy wzroście zużycia o rząd wielkości) zostaje.
+- **Pytanie o kompresję kontekstu** — odpowiedź w czacie: słusznie nie kompresować, ale z innego powodu niż „zcache'owany” i „wartościowy”; wartościowe rzeczy powinny leżeć w plikach (zasada 1), nie w kontekście.
+
 ---
 
 # Filozofia (`philosophy`)
