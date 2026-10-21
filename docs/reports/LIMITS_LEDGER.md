@@ -33,6 +33,7 @@ bez commita przepada, kontekst trzeba cache'ować od nowa), albo zostawić je ni
 | 01:28 | 36 % | 10 % | 3 (W0 pakiety P1–P2 gotowe, P3 w toku; poprawka logowania; P39 w sędziowaniu) + S1 | linia: 33 %; 00:30→01:28: +20 pkt w 58 min ≈ 0,34 pkt/min; tydzień +5 pkt (stosunek 5 h : 7 dni ≈ 4 : 1) |
 | 02:00 | 48 % | 13 % | 3 (W0 P1–P4 gotowe, P5 w toku; poprawka logowania; P39 synteza) + S1 | linia: 43,7 %; 01:28→02:00: +12 pkt w 33 min ≈ 0,37 pkt/min (lekko nad linią); tydzień 13 % przy linii 10,7 % |
 | 02:18 | 50 % | 13 % | 2 (W0 P5 w toku; poprawka logowania) + paczki X-Port (2 po kolei, zakończone) + S1 | linia: 49,3 %; 02:00→02:18: +2 pkt w 18 min ≈ 0,11 pkt/min — poniżej potrzebnych 0,33; wolne miejsce w oknie, brak gotowej paczki bez kompilacji jądra (dysk 7 GB, drugi build jądra się nie mieści) |
+| 03:07 | 54 % | 14–15 % | 1–2 (W0 P7 w toku; poprawka logowania w przeglądzie) + S1 | linia 5 h: 65,7 % (jesteśmy 12 pkt pod); 02:18→03:07: +4 pkt w 49 min ≈ 0,08 pkt/min; tydzień: linia 11,4 %, jesteśmy 3–4 pkt nad |
 
 **Odczyt z 00:14:** od 00:10 do 00:14 przybyły 3 punkty w około 4 minuty (≈ 0,8 pkt/min),
 od 00:05 średnio ≈ 0,6 pkt/min. Do reszty okna (276 min) zostaje 89 punktów, czyli stać nas
@@ -51,3 +52,9 @@ okno 5 h ≈ 25 % tygodnia** (stosunek 4 : 1, rozdzielczość 1 pkt, więc ±). 
 wystarcza do ≈ 04:36 UTC, reset 04:50. **Wniosek:** trzy agenci naraz mieszczą się dokładnie w
 budżecie; czwarty w tej chwili by go przekroczył, więc kolejna paczka (poprawki UX X-Port Android)
 czeka na zakończenie jednego z obecnych.
+
+**Wniosek z 03:07 — wiąże okno tygodniowe, nie 5-godzinne.** Okno 5 h ma 12 punktów luzu, ale tydzień
+jest 3–4 punkty NAD swoją linią (15 % po 19 h z 168 h = 11,4 %). Skoro jedno pełne okno 5 h to
+≈ 25 % tygodnia, dosypywanie agentów tylko po to, by „wypełnić” okno 5 h, zjadałoby tydzień, który
+ma starczyć do 27.10 08:00 UTC. Reguła na teraz: nie startuję pracy spekulatywnej (np. projekt P37),
+tylko to, co jest w kolejce i widoczne dla właściciela. Linia tygodniowa to ≈ 14,3 % na dobę.

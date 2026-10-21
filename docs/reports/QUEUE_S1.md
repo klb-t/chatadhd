@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-21 02:25 UTC
+# Kolejka S1 — stan 2026-10-21 03:15 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
@@ -15,6 +15,16 @@ wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu
   `/home/user/wt/extract`, 2 commity; po zakończeniu bramka i FF `main` **przed** bramką W0
   (inaczej bramki bywają losowo czerwone).
 ## Zrobione od ostatniej wersji
+- **CI na `main` czerwone od 17.10 (presety bez libloom) — naprawione** (`9a743b4f`, wersja S1 została na
+  `main` po merge S2, `f3c4adb5`). Przebiegi push 245/246 anulowane przez nowsze; wiążący jest przebieg PR
+  nr 247 (S2) na `f3c4adb5` — wynik sprawdzić; jeśli czerwony, czytać logi.
+- **Poprawka logowania:** przyczyna była w teście, nie w serwerze ani magazynie kont (3 commity na
+  `claude/fix-login-drop`); trwa przegląd. Po nim bramka i FF `main`.
+- **S2 wprowadził na `main`:** R38 na Androidzie, smoke X-Port na emulatorze, kroki Bramki 0 jako dane
+  z `docs/reports/M1_W0_TESTIDS.md` (plik pojawi się na `main` ze scaleniem W0).
+- **X-Port Android:** emulator pixel_5/pixel_6 13/13; zostaje do potwierdzenia przepis „tylko znaczniki czasu”
+  (ukryty na liście rozwijanej — S2 sprawdza) i eksport profilem „katalog rozmowy”; build `5643d84b`
+  (teksty bez flag CLI) w toku. Do kolejki: przepisy w Edycjach widoczne od razu, nie w rozwijanej liście.
 - **X-Port Android, pakiety A i B** (gałąź `claude/xport-android`, head `db469050`, build `xport-apk.yml`
   przebieg 39532408090 = success, artefakt `xport-apk` 12315942830): pięć poprawek UX, polskie etykiety,
   przepisy „zostaw tylko znaczniki czasu” (makro) i „katalog rozmowy” (profil eksportu), wybór po danych
