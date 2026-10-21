@@ -23,3 +23,20 @@ Poniżej pusty blok; P7 go zastępuje, pod nim wypisuje wszystkie testid-y ekran
 ```json
 {"gate0": []}
 ```
+
+## Nawigator — lista (paczka P2, `loom/web/src/components/GraphNavigator.tsx`; e2e `loom/web/e2e/m1-navigator-native.mjs`)
+
+Otwarcie: `shell-menu-toggle` → `shell-menu-graph` → panel `panel-navigator`. Adresy węzłów są częścią testid-u (np. `nav-row-area:rom`, `nav-row-card-rom:boot`).
+
+| ekran | testid | znaczenie |
+|---|---|---|
+| nawigator | `graph-navigator` | korzeń ekranu; atrybut `data-focus` = adres ogniska (`""` = korzeń grafu) |
+| ścieżka | `nav-path`, `nav-crumb-<i>` (0 = Graf), `nav-back` | wiersz ścieżki; człon cofa do kroku `i`; `‹` cofa o jeden (tylko poza korzeniem) |
+| szukanie | `nav-search-toggle`, `nav-search-input` | lupa otwiera/zamyka pole; pole = `graph.navigate query` na tym poziomie |
+| ognisko | `nav-focus-why` | jedno zdanie „po co” ogniska (poza korzeniem) |
+| lista | `nav-rows` (`data-shown`, `data-total`), `nav-loading`, `nav-empty`, `nav-error` | lista `li` wierszy; stany |
+| wiersz | `nav-row-<adres>` (`data-has-children`), `nav-count`, `nav-chip`, `nav-evidence`, `nav-status`, `nav-row-card-<adres>`, `nav-card-stub` | wiersz (dotknięcie: wejście albo zaślepka karty), licznik, chip pochodzenia, chip dowodu, chip stanu, `⋯`, zaślepka karty (adres) |
+| uczciwość | `nav-collapsed`, `nav-hidden`, `nav-unknown-<źródło>` | zwinięte przez budżet, ukryte przez Ciebie, źródło bez odpowiedzi (powód) |
+| pasek | `nav-bar`, `nav-bar-perspective`, `nav-bar-wider`, `nav-bar-narrower`, `nav-bar-deeper`, `nav-bar-shallower`, `nav-bar-actions`, `nav-bar-view`, `nav-bar-planned`, `nav-budget` | pasek dolny; `planned` = linia po dotknięciu przycisku bez obsługi; `budget` = „budżet N na poziom · głębia H · pokazane z wszystkich” |
+
+Wstecz (`window.__loomBack()`): zamyka najpierw pole szukania (jeśli otwarte), potem ostatni krok ścieżki (`navigator-step-<i>`), potem panel (`panel`); w korzeniu czatu zwraca `false`. Krok ROM dla `gate0`: `{"click": "shell-menu-toggle"}, {"click": "shell-menu-graph"}, {"wait": "nav-rows"}, {"click": "nav-row-area:rom"}, {"wait": "nav-focus-why"}` → `{"tid": "nav-status", "min": 1}`, liczba `nav-row-rom:*` = liczba wpisów `rom.pack` (nie literał).
