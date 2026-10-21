@@ -210,6 +210,8 @@ try {
     await page.getByTestId("role-open-analysis.fast").tap();
     await page.getByTestId("role-card").waitFor();
     assert.equal(await page.getByTestId("role-card").getAttribute("data-role"), "analysis.fast");
+    // the table reports "a card is open" to the group from an effect, so the attribute lands a frame after the card (raced on CI, PR 48)
+    await page.locator('[data-testid="shum-group-view-modele"][data-role-open="1"]').waitFor({ timeout: 5000 });
     assert.equal(await page.getByTestId("shum-group-view-modele").getAttribute("data-role-open"), "1", "only the card shows while it is open");
   });
 
