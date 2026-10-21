@@ -182,3 +182,4 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   `test:product-integration`, za pierwszym razem stanął nie na błędzie ekranu, lecz na swojej zasadzie „nie nadpisuję
   wcześniejszego dowodu”: `e2e/onboarding-host.mjs` zastał plik wyników z 16 października w domyślnym katalogu obok
   repozytorium (wszystkie 21/21 grup przeszły); z własnym katalogiem (`ONBOARDING_HOST_EVIDENCE_DIR`) cały skrypt przeszedł.
+  Po poprawce słów cały zestaw powtórzony od nowa na końcowym drzewie: **59/59 zielone, 0 błędów**.
