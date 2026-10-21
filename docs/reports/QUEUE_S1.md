@@ -1,7 +1,19 @@
-# Kolejka S1 — stan 2026-10-21 17:20 UTC
+# Kolejka S1 — stan 2026-10-21 18:20 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## M1-D2 GOTOWE (18:10 UTC, `76c8f441` na `claude/m1-w0`) — bramka lokalna `d2` w toku
+Dane kontekstu i grafu według specyfikacji (3 commity): `chat_context.pack` (klasy profile/rules, porządek `stability` jako preset, 8 `selector_profiles`),
+`graph_views.pack` (rodzaj widoku, 5 perspektyw, wiązanie `touch.drag.hold` = planned), `action_rules.pack` (`context.*` planned), frazy
+szerzej/węziej/głębiej/płycej + słowa „Co wysłaliśmy”, `user.pack` `profile.subgraphs`. Jedna zmiana C++ (3 linie w `chat_engine.cpp`: klasa bez części jest pusta,
+inaczej przy `stability` graf poszedłby trzy razy). Karta pakietu: decyzje i cofnięcie w `INDEX.md` („M1-D2”). **Uwaga dla bramki/e2e:** dodano 5 perspektyw — testy
+e2e, które je liczą, mogą się wysypać (agent ich nie uruchamiał). **Zmiana zachowania do K1:** domyślna kolejność kontekstu to `stability`; przy pustych profile/rules jest
+równa dotychczasowej `stable_first` (graf na końcu) — decyzja 5 właściciela ze specyfikacji; cofnięcie: ustawienie `chat_context_order=legacy`.
+Zostawione: `data/validation/product_literals.pack` (15 wejść było nieaktualnych już przed D2, nie jest w żadnej bramce — świadomie nie ruszane, połowiczna poprawka byłaby gorsza).
+Po bramce: FF `main` dopiero gdy CI 257 się skończy (≈ 18:40). Dalej: **M1-K1** (jądro kontekstu: prefiks profilu deterministyczny, selektor czyta `selector_profiles`,
+`context.modify`/`context.receipt`, kontrakt `loom.context_receipt/1`, ×10) w `/home/user/wt/m1d0` po bramce, jako 2 pakiety (K1a prefiks+selektor, K1b modyfikatory+rachunek);
+start nie wcześniej niż ok. 19:15 (`pace.py`).
 
 ## PLAN TEMPA (decyzja właściciela 17:50 UTC) — zastępuje pytanie A/B
 Połowa tygodnia (pt 23.10 20:00 UTC) → 50 %, pn 26.10 08:00 UTC → 90 %, reset wt 27.10 08:00 UTC → 100 %; agenci krótcy, na słabszych

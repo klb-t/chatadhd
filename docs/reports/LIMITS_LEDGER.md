@@ -59,6 +59,7 @@ poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
 | pakiet | model | okno 5 h przed→po | tydzień przed→po | przyjęty z 1. podejścia? | uwagi |
 |---|---|---|---|---|---|
 | R38 | domyślny (Sonnet) | 0→1 % | 30→30 % | tak | agent + bramka + moje tury razem |
+| M1-D2 | domyślny (Sonnet) | 1→3 % | 30→30 % | tak (1 podejście) | agent 308 tys. tokenów, 111 wywołań (plan ~50), 40 min; w oknie także moje analizy zużycia (lokalne skrypty, bez tokenów) |
 
 ## Na co poszły tokeny S1 dziś (2026-10-21 od 00:00 UTC do 17:50; `tools/usage_report.py`, liczby z pól `usage`, bez treści)
 Tydzień: 3 % (00:14) → 30 % (17:40) = +27 pkt w ≈ 17,5 h na koncie (S1 + S2 + czaty właściciela). Zmierzone dla S1: **566 mln równoważników**
