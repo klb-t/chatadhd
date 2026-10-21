@@ -17,6 +17,8 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.ScrollView
 import android.widget.Spinner
 import android.widget.TextView
@@ -765,16 +767,31 @@ class MainActivity : Activity() {
         val show = { j: JSONObject ->
             if (!j.optBoolean("ok")) { info.text = j.optString("error"); adapter.setRoots(emptyList()) }
             else {
-                info.text = "Gotowe."
+                // A ready recipe and an undo come back with `summary_text`: one plain sentence about what changed (built by the
+                // engine from the data, different for preview / apply / undo). It stands above the list; the raw result is
+                // kept below, collapsed, for the details.
+                val sentence = j.optString("summary_text")
+                info.text = sentence.ifEmpty { "Gotowe." }
                 val roots = ArrayList<TNode>()
                 val patch = j.optString("patch_text")
                 if (patch.isNotEmpty()) roots.add(TNode("Zmiany", Pl.count(patch.lines().size, Nouns.LINE), onOpen = { showText(this, "Zmiany", patch) }, copy = patch))
-                roots.add(jsonNode("wynik", j, this@MainActivity).also { it.expanded = true })
+                roots.add(jsonNode(if (sentence.isEmpty()) "wynik" else "szczegóły wyniku", j, this@MainActivity).also { it.expanded = sentence.isEmpty() })
                 adapter.setRoots(roots)
             }
         }
-        val recipeSp = picker((0 until macros.length()).map { macros.getJSONObject(it).optString("label") }) {
-            recipe = it; recipeText.text = macros.getJSONObject(it).optString("description")
+        // Every ready recipe is visible at once (no drop-down); the description of the chosen one stands under the list.
+        val recipeSp = RadioGroup(this).apply {
+            orientation = RadioGroup.VERTICAL
+            val ids = ArrayList<Int>()
+            for (i in 0 until macros.length()) {
+                val rb = RadioButton(this@MainActivity).apply { id = View.generateViewId(); text = macros.getJSONObject(i).optString("label") }
+                ids.add(rb.id); addView(rb)
+            }
+            setOnCheckedChangeListener { _, checked ->
+                val i = ids.indexOf(checked)
+                if (i >= 0) { recipe = i; recipeText.text = macros.getJSONObject(i).optString("description") }
+            }
+            if (ids.isNotEmpty()) check(ids[0])
         }
         val list = ListView(this)
         list.addHeaderView(col().apply {
@@ -850,27 +867,58 @@ class MainActivity : Activity() {
         redactionSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
             (0 until red.length()).map { red.getJSONObject(it).optString("label") })
         val holder = (panels["Eksport"] as ScrollView).findViewWithTag<LinearLayout>("profiles")
+        // The boxes are rebuilt after every opened file; what was ticked stays ticked (a refill must not silently untick a profile).
+        val ticked = profileChecks.filter { it.second.isChecked }.map { it.first }.toSet()
         holder.removeAllViews(); profileChecks.clear()
         val pr = cat.getJSONArray("profiles")
         for (i in 0 until pr.length()) {
             val p = pr.getJSONObject(i)
-            val cb = CheckBox(this).apply { text = p.optString("label") }
+            // android.widget.CheckBox with the platform theme (the manifest sets none): it draws its own box, ticked or empty.
+            val cb = CheckBox(this).apply { text = p.optString("label"); isChecked = p.optString("id") in ticked }
             profileChecks.add(p.optString("id") to cb); holder.addView(cb)
             p.optString("description").takeIf { it.isNotEmpty() }?.let { holder.addView(label(it, 12f).apply { setPadding(pad * 3, 0, pad, pad) }) }
         }
     }
 
+    // The choices are read when the button is pressed and kept in the preferences: while the system file dialog is open the
+    // activity may be recreated (boxes rebuilt, all empty), and the answer would then be cut with the default profile.
     private fun pickExportTarget() {
+        val redaction = redactionIds.getOrNull(redactionSpinner.selectedItemPosition)?.takeIf { it != "none" } ?: ""
+        getSharedPreferences("xport", Context.MODE_PRIVATE).edit()
+            .putString("export_profiles", profileChecks.filter { it.second.isChecked }.joinToString(",") { it.first })
+            .putString("export_redaction", redaction).putBoolean("export_handoff", handoffCheck.isChecked).apply()
         startActivityForResult(Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE); type = "application/zip"; putExtra(Intent.EXTRA_TITLE, "xport-wynik.zip")
         }, REQ_SAVE)
     }
 
+    // What the export did, in words: which profiles, how many files, how many conversation directories (and what was done to the package).
+    private fun exportReport(j: JSONObject): String {
+        val parts = ArrayList<String>()
+        parts.add("Zapisano zip: ${Pl.count(j.optInt("files"), Nouns.FILE)}")
+        val used = j.optJSONArray("profiles_used")
+        val labels = (0 until (used?.length() ?: 0)).map { used!!.getJSONObject(it).optString("label") }
+        parts.add(if (labels.isEmpty()) "profil: domyślny (żaden nie zaznaczony)" else (if (labels.size == 1) "profil: " else "profile: ") + labels.joinToString(" + "))
+        val convDirs = j.optInt("conversation_dirs")
+        val topDirs = j.optJSONArray("top_level_dirs")?.length() ?: 0
+        parts.add(when {
+            convDirs > 0 -> Pl.count(convDirs, Nouns.CONVERSATION_DIR)
+            topDirs > 0 -> "bez katalogów rozmów (katalogów na górze: $topDirs)"
+            else -> "bez żadnego katalogu (wszystkie pliki leżą w katalogu głównym zipa)"
+        })
+        val added = j.optInt("package_added")
+        if (added > 0) parts.add("do pakietu roboczego dołączono ${Pl.count(added, Nouns.CONVERSATION)} zaznaczone po jego utworzeniu (bez wcześniejszych edycji)")
+        val left = j.optInt("package_left_out")
+        if (left > 0) parts.add("pominięto ${Pl.count(left, Nouns.CONVERSATION)} z pakietu roboczego, których już nie zaznaczono")
+        return parts.joinToString("; ") + "."
+    }
+
     private fun exportTo(uri: Uri) {
         exportInfo.text = "Eksportuję…"
-        val redaction = redactionIds.getOrNull(redactionSpinner.selectedItemPosition)?.takeIf { it != "none" } ?: ""
-        val profiles = profileChecks.filter { it.second.isChecked }.joinToString(",") { it.first }
-        val handoff = handoffCheck.isChecked
+        val prefs = getSharedPreferences("xport", Context.MODE_PRIVATE)
+        val redaction = prefs.getString("export_redaction", "") ?: ""
+        val profiles = prefs.getString("export_profiles", "") ?: ""
+        val handoff = prefs.getBoolean("export_handoff", false)
         thread {
             val tmp = File(cacheDir, "xport-out.zip")
             val msg = try {
@@ -878,7 +926,7 @@ class MainActivity : Activity() {
                 if (!j.optBoolean("ok")) "Błąd eksportu: ${j.optString("error")}" else {
                     val out = contentResolver.openOutputStream(uri) ?: throw IllegalStateException("nie można zapisać pliku")
                     out.use { o -> tmp.inputStream().use { it.copyTo(o) } }
-                    "Zapisano zip: ${Pl.count(j.optInt("files"), Nouns.FILE)}."
+                    exportReport(j)
                 }
             } catch (e: Throwable) { err(e) }
             tmp.delete()

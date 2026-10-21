@@ -36,7 +36,7 @@ class PluralTest(ExtractTest):
         # Pl.kt `Nouns` and ui_labels.json#nouns are two copies of the same words: they must not drift apart
         kt = {m.group(1): m.groups()[1:] for m in re.finditer(r'val (\w+) = Forms\("([^"]+)", "([^"]+)", "([^"]+)"\)', PL_KT.read_text(encoding="utf-8"))}
         data = store().file("ui_labels.json")["nouns"]
-        shared = {"CONVERSATION": "conversation", "MESSAGE": "message", "FILE": "file"}
+        shared = {"CONVERSATION": "conversation", "MESSAGE": "message", "FILE": "file", "BLOCK": "block", "DIRECTORY": "directory"}
         for k, key in shared.items():
             f = data[key]["pl"]
             self.assertEqual((f["one"], f["few"], f["many"]), kt[k], key)
