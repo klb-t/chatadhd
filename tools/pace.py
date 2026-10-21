@@ -12,6 +12,7 @@ import argparse, json, pathlib, sys
 from datetime import datetime, timezone
 
 PLAN = pathlib.Path(__file__).with_name("pace_plan.json")
+STATE = pathlib.Path(__file__).with_name("pace_state.json")
 
 
 def ts(s):
@@ -34,6 +35,7 @@ def main(argv=None):
     ap.add_argument("--inflight", type=int, default=0)
     ap.add_argument("--model", default="default")
     ap.add_argument("--now")
+    ap.add_argument("--start", action="store_true", help="zapisz teraz jako start pakietu w pace_state.json (po werdykcie MOŻNA)")
     a = ap.parse_args(argv)
     plan = json.loads(PLAN.read_text(encoding="utf-8"))
     now = ts(a.now) if a.now else datetime.now(timezone.utc)
@@ -53,10 +55,25 @@ def main(argv=None):
     r2 = (a.inflight + 1) * cost <= need * plan["lookahead_h"]
     print(f"koszt pakietu {cost:g} pkt ({a.model}), w toku {a.inflight}; po starcie zobowiązane {committed:.1f} % "
           f"(punkt kontrolny: {'ok' if r1 else 'PRZEKROCZONY'}); w {plan['lookahead_h']:g} h wolno {need * plan['lookahead_h']:.2f} pkt, trzeba {(a.inflight + 1) * cost:.2f} (tempo: {'ok' if r2 else 'ZA SZYBKO'})")
+    # reguła 3 - odstęp: średnie tempo, nie tylko zryw; jeden pakiet na koszt/potrzebne_tempo godzin od startu poprzedniego
+    starts = sorted(ts(x) for x in json.loads(STATE.read_text(encoding="utf-8")).get("starts", [])) if STATE.exists() else []
+    r3, spacing, earliest = True, 0.0, None
+    if starts and need > 0:
+        spacing = (a.inflight + 1) * cost / need
+        earliest = starts[-1].timestamp() + spacing * 3600
+        r3 = now.timestamp() >= earliest
+        print(f"odstęp od ostatniego startu ({starts[-1]:%H:%M}): potrzebne {spacing:.1f} h, najwcześniej {datetime.fromtimestamp(earliest, timezone.utc):%H:%M} UTC ({'ok' if r3 else 'ZA WCZEŚNIE'})")
     if need <= 0:
         print("WERDYKT: HAMUJ - zużycie jest już powyżej celu następnego punktu planu; nic nowego, aż punkt minie")
-    elif r1 and r2:
+    elif r1 and r2 and r3:
         print("WERDYKT: MOŻNA wystartować jeden pakiet")
+        if a.start:
+            st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {"starts": []}
+            st.setdefault("starts", []).append(now.strftime("%Y-%m-%dT%H:%M:%SZ"))
+            STATE.write_text(json.dumps(st, indent=2) + "\n", encoding="utf-8")
+            print("zapisano start w pace_state.json")
+    elif r1 and r2 and not r3:
+        print(f"WERDYKT: CZEKAJ do {datetime.fromtimestamp(earliest, timezone.utc):%H:%M} UTC - średnie tempo byłoby za szybkie (zryw już mieści się, odstęp nie)")
     elif not r1:
         print(f"WERDYKT: CZEKAJ - pakiet (razem z tymi w toku) przekroczyłby cel punktu kontrolnego; zostaje {float(nxt['target']) - a.used:.1f} pkt do celu, margines {plan['margin']:g}")
     else:

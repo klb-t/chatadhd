@@ -51,7 +51,7 @@ Krótko: nie „przerywam przy 95 %”, tylko nie startuję, jeśli to, co już 
 **Koszt pakietu (preset 0,5 pkt tygodnia, GÓRNA granica):** pakiet R38 (agent 187 tys. tokenów, 66 wywołań, 29 min + bramka lokalna + moje
 tury) przesunął okno 5 h o ≤ 1 pkt (0 → 1 %), a tydzień się nie zmienił w zaokrągleniu (30 %); 1 pkt okna 5 h ≈ 0,25 pkt tygodnia, więc
 ≤ 0,5 pkt (rozdzielczość 1 pkt!). **Do kalibracji:** przy każdym pakiecie zapisuję pomiar przed/po w tabeli niżej, osobno dla modeli.
-Stan 17:33: zużyte 30 %, cel na teraz 20,0 % (+10 pkt), do punktu „połowa tygodnia” 50,5 h, potrzebne tempo +0,40 pkt/h ≈ +9,5 pkt/dobę.
+**Próbka 21:34:** tydzień 32 % (+2 pkt w 4 h = 12 pkt/dobę przy planie ≈ 9,3); dodano regułę odstępu do `pace.py` (jeden pakiet na koszt/potrzebne_tempo godzin od startu poprzedniego, stan w `tools/pace_state.json`). Stan 17:33: zużyte 30 %, cel na teraz 20,0 % (+10 pkt), do punktu „połowa tygodnia” 50,5 h, potrzebne tempo +0,40 pkt/h ≈ +9,5 pkt/dobę.
 **Modele:** pakiety mechaniczne (poprawki testów, dokumenty, etykiety, drobiazgi UX z kontrolą w CI) na `haiku`; praca w jądrze C++ i
 logika na domyślnym modelu sesji; `fable` tylko etapy projektowe (P37-podobne). Kryterium wyboru to koszt **przyjętego** wyniku (pakiet +
 poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
@@ -60,6 +60,8 @@ poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
 |---|---|---|---|---|---|
 | R38 | domyślny (Sonnet) | 0→1 % | 30→30 % | tak | agent + bramka + moje tury razem |
 | M1-D2 | domyślny (Sonnet) | 1→3 % | 30→30 % | tak (1 podejście) | agent 308 tys. tokenów, 111 wywołań (plan ~50), 40 min; w oknie także moje analizy zużycia (lokalne skrypty, bez tokenów) |
+| K1a (2 agenci: przerwany restartem + kontynuacja) | domyślny (Sonnet) | — | 31→31 % | kontynuacja tak (85 wywołań, 209 tys. tokenów ≈ 12,5 mln rów.) | pierwszy agent stracony przy restarcie kontenera (jego commity i WIP uratowane) |
+| M1-K1b | domyślny (Sonnet) | 2→2 % | 31→32 % | tak (167 wywołań — plan ~50; 397 tys. tokenów ≈ 24 mln rów.) | największy pakiet dnia; przekroczył plan ponad 3× |
 
 ## Na co poszły tokeny S1 dziś (2026-10-21 od 00:00 UTC do 17:50; `tools/usage_report.py`, liczby z pól `usage`, bez treści)
 Tydzień: 3 % (00:14) → 30 % (17:40) = +27 pkt w ≈ 17,5 h na koncie (S1 + S2 + czaty właściciela). Zmierzone dla S1: **566 mln równoważników**

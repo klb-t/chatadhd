@@ -1,0 +1,10 @@
+{
+  "_comment": "Starty pakiet\u00f3w agent\u00f3w (UTC), pisane przez `pace.py --start`; regu\u0142a odst\u0119pu liczy od ostatniego.",
+  "starts": [
+    "2026-10-21T16:25:00Z",
+    "2026-10-21T17:21:00Z",
+    "2026-10-21T19:18:00Z",
+    "2026-10-21T19:52:00Z",
+    "2026-10-21T21:00:00Z"
+  ]
+}
