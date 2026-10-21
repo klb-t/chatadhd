@@ -4,6 +4,7 @@ hand-off, statistics, the attachments browser, model steps (cost, flow.run,
 describe).  Registered into ``ops.OPS``; names and parameter schemas are in
 ``data/ops.json`` like every other op."""
 import logging
+import re
 from pathlib import Path
 from typing import Any, Optional
 
@@ -303,7 +304,7 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str, used:
                       default_to: Optional[str] = None) -> tuple[dict[tuple[str, str], str], dict[str, Any]]:
     paths: dict[tuple[str, str], str] = {}
     info = {"referenced": 0, "used": 0, "not_used": 0, "copied": 0, "bytes": 0, "missing": [], "mode": mode}
-    slugs = archive_slugs(eng.archives)
+    slugs = archive_slugs(eng.archives, eng.ds)
     for e in entries:
         u = e.unit
         arc_label = (u.source or {}).get("archive") or ""
@@ -384,7 +385,7 @@ def _layout_dirs(eng: Any, entries: list[Any], restructure: list[dict[str, Any]]
             return "bez-daty"
         if tp.anonymise == "conversation":
             tp.conv_origin = from_iso(first)
-        out = str(tp.render(None, first))
+        out = _SUBSECOND.sub(r"\1", str(tp.render(None, first)))  # every directory name has the same shape: no fractions of a second
         return (out[:-6] + "Z" if out.endswith("+00:00") else out).replace(":", "-")
 
     def title(e: Any) -> Optional[str]:
@@ -397,6 +398,9 @@ def _layout_dirs(eng: Any, entries: list[Any], restructure: list[dict[str, Any]]
             red.counts, red.by_rule = counts, by_rule
 
     return conversation_dirs(entries, stamp, title, max_chars=int(eng.ds.preset("layout.dir_title_chars", 80) or 0)), default_to
+
+
+_SUBSECOND = re.compile(r"(\d{2}:\d{2}:\d{2})[.,]\d+")
 
 
 def _profiles(eng: Any, names: Any) -> list[dict[str, Any]]:

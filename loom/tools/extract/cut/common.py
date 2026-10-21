@@ -55,17 +55,38 @@ def conversation_dirs(entries: list["Entry"], stamp: Any, title: Any, *, max_cha
     return out
 
 
-def archive_slug(label: str) -> str:
-    return safe_name(label.replace("!", "__"), fallback="archive")
+# The phone app copies a picked file to its private storage as "<millis>__<original name>"; people know the file by the
+# original name.  The pattern is data (presets/defaults.json cut.source_copy_prefix; "" = leave names as they are).
+COPY_PREFIX_DEFAULT = r"^\d+__"
 
 
-def archive_slugs(archives: list[Any]) -> dict[tuple[str, str], str]:
-    """(label, sha256) → a directory/file name unique within the package (two exports named alike from different
-    folders never overwrite each other: ``export.zip``, ``export-2.zip`` in scan order)."""
+def original_name(label: str, prefix: Optional[str] = None) -> str:
+    """The name a source file had before the app copied it (``1792554698851__a.zip`` -> ``a.zip``).  The ONE place that
+    strips the copy prefix; a nested archive's label (``<outer>!<member>``) loses the prefix of its outer file only."""
+    pat = COPY_PREFIX_DEFAULT if prefix is None else prefix
+    if not pat:
+        return label
+    stripped = re.sub(pat, "", label, count=1)
+    return stripped or label
+
+
+def archive_slug(label: str, prefix: Optional[str] = None) -> str:
+    return safe_name(original_name(label, prefix).replace("!", "__"), fallback="archive")
+
+
+def copy_prefix(ds: Any) -> Optional[str]:
+    return None if ds is None else ds.preset("cut.source_copy_prefix", COPY_PREFIX_DEFAULT)
+
+
+def archive_slugs(archives: list[Any], ds: Any = None) -> dict[tuple[str, str], str]:
+    """(label, sha256) → a directory/file name unique within the package, made from the file's original name (the app's
+    copy prefix is gone).  Two exports named alike from different folders never overwrite each other: ``export.zip``,
+    ``export-2.zip`` in scan order.  ``ds``: the data store the preset is read from (None = the built-in pattern)."""
     out: dict[tuple[str, str], str] = {}
     used: set[str] = set()
+    prefix = copy_prefix(ds)
     for a in archives:
-        base = archive_slug(a.label)
+        base = archive_slug(a.label, prefix)
         name, n = base, 1
         while name in used:
             n += 1
