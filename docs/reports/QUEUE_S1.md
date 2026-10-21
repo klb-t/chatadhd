@@ -10,7 +10,7 @@ potem ×2 — próby rozdzielone o > 2 s (żądanie Argon2id pod sanitizerem na 
 To trzecia klasa „test zależny od czasu” dziś (szczypanie, m1-settings, server.security) — przy następnej awarii CI najpierw pytać „czy test zależy od szybkości”.
 Bieg **258**: https://github.com/klb-t/chatadhd/actions/runs/39660316270 (≈ 80–100 min, do ok. 20:50 UTC). Bramka lokalna `d2` była zielona (23 min).
 **K1a** (kontekst: klasy profile/rules w `build_messages`, prefiks deterministyczny, paragon `loom.context_receipt/1`, selektor czyta profile) w toku w `/home/user/wt/m1d0`
-(`wf_0202dff5-7ed`, Sonnet, push na `claude/m1-w0`, nie na `main`). K1b (Binding.turn, `context.modify`, `context.receipt`, ×10) po K1a. Tydzień 31 %.
+(`wf_0202dff5-7ed`, Sonnet) — **przerwane restartem kontenera 19:45**; praca zachowana w gitcie (`5854133a` złote bajty, `98daf8b1` klasy profile/rules + paragon, `bc41a5e6` WIP, wszystko na `claude/m1-w0`); kontynuacja `wf_1672d15c-6ce` (nowy agent z briefem „co zrobione, czego szukać”, 19:52). K1b (Binding.turn, `context.modify`, `context.receipt`, ×10) po K1a. Tydzień 31 %.
 
 ## M1-D2 GOTOWE (18:10 UTC, `76c8f441` na `claude/m1-w0`) — bramka lokalna `d2` w toku
 Dane kontekstu i grafu według specyfikacji (3 commity): `chat_context.pack` (klasy profile/rules, porządek `stability` jako preset, 8 `selector_profiles`),
