@@ -141,7 +141,7 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
           {edges.map((e, i) => <line key={i} x1={e.a.x} y1={e.a.y} x2={e.b.x} y2={e.b.y} stroke="currentColor" strokeOpacity={0.3} strokeWidth={1} />)}
           {marks.map(m => <g key={m.id} data-testid="nav-map-mark" data-id={m.id} data-focus={m.focus ? "true" : "false"} data-selected={selected === m.id ? "true" : "false"}>
             <circle cx={m.screen.x} cy={m.screen.y} r={m.rScreen} fill={m.fill} stroke="currentColor" strokeWidth={m.focus || selected === m.id ? 2 : 0} />
-            <text x={m.screen.x + (m.screen.x < centre.x ? -1 : 1) * (m.rScreen + 3)} y={m.screen.y + 4} fontSize={11} fill="currentColor" opacity={0.85}
+            <text x={m.screen.x + (m.screen.x < centre.x ? -1 : 1) * (m.rScreen + 3)} y={m.screen.y + 4} fontSize={10} fill="currentColor" opacity={0.85}
               textAnchor={m.screen.x < centre.x ? "end" : "start"}>{shortLabel(m.label)}</text>
           </g>)}
         </svg>}
