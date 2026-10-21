@@ -266,6 +266,25 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   ponownie (`m1-navigator-root.png`, `m1-navigator-root-list.png`). Jądro bez zmian (`ctest` nie uruchamiany). Nie uruchomione:
   pełne `npm run e2e`, `android-smoke`.
 
+## Co doszło w poprawkach r1:b7 (2026-10-21, fakty z przebiegu)
+
+- **Żadne słowo na telefonie nie nazywa pakietu ani profilu:** zdanie o klasie modelu na karcie roli (`class.planned`) mówi
+  teraz „planowane: dziś klasa wynika z wbudowanych wzorców nazw i progów cen; nie ma jeszcze pola, które zapisuje Twoje
+  klasy ani progi” (było „z profilu guardian” — nazwa pliku, której właściciel nie zna). Gdzie te wzorce leżą (`guardian.pack`,
+  nakładka profilu), zostaje w opisie stanu funkcji w packu (`status.today` — tekst dla raportu, nie dla ekranu) i w INDEX.
+- **`bar.planned` i „(context.modify, M1-K1)” — już ich nie było:** oba zniknęły w r1:b2 (`2ac45ea3`: żaden przycisk paska nie
+  mówi „planowane”, Perspektywa ▾ i Działania działają; `card.level.turn_planned` = „planowane — silnik nie ma dziś akcji na
+  wartość jednej tury”). Uwaga z przeglądu cytowała słowa sprzed r1:b2; sprawdzone grepem po packu i `git log -S`, bez zmiany.
+- **Opis stanu nawigatora mówił nieprawdę:** `status.today` ekranu grafu obiecywał mapę, Perspektywę, Działania i Widok
+  „w kolejnych pakietach M1-W0”; wszystkie cztery są na ekranie (mapa i Widok ▾ od P4, Perspektywa ▾ i Działania od r1:b2).
+  Zdanie zastąpione opisem tego, co jest. Tekst nie jest pokazywany na telefonie (karta roli czyta stan roli z `ports.pack`,
+  nie stan funkcji), ale zasada „teksty mówią, co kod robi DZIŚ” dotyczy też packa.
+- Przebieg: `gen_onboarding_pack.py` i `gen_runtime_profiles.py --check` czyste (`builtin.inc`, `conversation-view.json`
+  zapisane ponownie); jądro `dev` przebudowane przyrostowo; `npm run build` czysty; testy jednostkowe role-card 5/5, shell 10/10;
+  `ctest` (onboarding, presentation store, perspective store, kompat generacji packa) 10/10; `test:m1-settings` 9/9,
+  `test:m1-navigator` 12/12; żaden zrzut się nie zmienił (zdanie o klasie leży pod zgięciem zrzutu `m1-settings-role-card.png`).
+  Nie uruchomione: pełne `npm run e2e`, pełny `ctest`, `android-smoke`.
+
 ## Czego jeszcze NIE ma (i dlaczego)
 
 - **Przełącznik „Ustawiam dla: mnie / tej rozmowy / projektu…”** nad listą pól — dziś poziom wybierasz w karcie przy
