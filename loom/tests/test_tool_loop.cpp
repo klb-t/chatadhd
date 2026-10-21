@@ -8,6 +8,7 @@
 
 #include "loom/action_runner.h"
 #include "loom/agent.h"
+#include "loom/chat_route.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/net/http.h"
@@ -171,6 +172,106 @@ TEST_SUITE("tool_loop") {
     const std::string receipt = run.at("plan_receipt");
     const Json done = unwrap(f.rt->actions().run(Json{{"action", "conversation.delete"}, {"element", f.other_id}, {"confirmed", true}, {"receipt_id", receipt}, {"ref", "test"}}));
     CHECK((done.at("status") == "completed" || done.at("status") == "proposed"));
+  }
+
+  TEST_CASE("R38: the message of an agent run that stopped on proposals says them in words (action title, arguments); the loop stays data, not text") {
+    for (const bool polish : {false, true}) {
+      Fixture f;
+      if (polish) f.add(f.conv_id, "user", "Dzień dobry, mam pytanie o zużycie.");  // the conversation is Polish: so is the answer
+      f.script(call_reply({{"c1", "usage_compact", Json{{"dry_run", true}}}}));
+      ChatOptions opts;
+      opts.conv_id = f.conv_id;
+      opts.stream = false;
+      const std::string ask = polish ? "Uporządkuj zużycie." : "Tidy the usage ledger.";
+      const auto proposed = unwrap(chat_route::handle(*f.rt, ask, opts, Json{{"message", ask}, {"action", "agent.run"}}, nullptr));
+      REQUIRE(proposed.handled);
+      const auto done = unwrap(chat_route::handle(*f.rt, polish ? "tak" : "yes", opts, Json{{"message", polish ? "tak" : "yes"}}, nullptr));
+      REQUIRE(done.handled);
+      const Json message = unwrap(f.rt->db().get_msg(done.assistant_message_id))->to_json();
+      const std::string text = message.at("text");
+      INFO(text);
+      // no raw loop in the text: neither its schema nor the transcript or the settings
+      CHECK(text.find("loom.agent_loop") == std::string::npos);
+      CHECK(text.find("```") == std::string::npos);
+      CHECK(text.find("\"messages\"") == std::string::npos);
+      CHECK(text.find("provenance") == std::string::npos);
+      // the proposal the person decides on is there, with its arguments, in their language
+      CHECK(text.find(polish ? "czeka na Twoją odpowiedź" : "waits for your answer") != std::string::npos);
+      CHECK(text.find("dry_run: true") != std::string::npos);
+      CHECK(text.find("- ") != std::string::npos);
+      // the JSON stays available: the Accept/Reject block's data in the message, the whole loop in the run
+      const Json meta = message.at("metadata").at("action_run");
+      REQUIRE(meta.contains("agent_loop"));
+      CHECK(meta.at("agent_loop").at("proposals").size() == 1);
+      CHECK(meta.at("agent_loop").at("messages").size() == 3);
+      CHECK(meta.at("agent").at("status") == "needs_confirmation");
+      CHECK_FALSE(meta.at("agent").contains("messages"));
+      const Json run = unwrap(f.rt->actions().status(Json{{"run_id", meta.at("run_id")}}));
+      CHECK(run.at("result").at("data").at("schema") == "loom.agent_loop/1");
+      CHECK(run.at("result").at("data").at("messages").size() == 3);
+    }
+  }
+
+  TEST_CASE("R38: an agent run that ended with words or with a failure says that in the message, not the loop's JSON") {
+    Fixture f;
+    f.script(text_reply("Everything is already tidy."));
+    ChatOptions opts;
+    opts.conv_id = f.conv_id;
+    opts.stream = false;
+    const std::string ask = "Tidy the usage ledger.";
+    unwrap(chat_route::handle(*f.rt, ask, opts, Json{{"message", ask}, {"action", "agent.run"}}, nullptr));
+    const auto done = unwrap(chat_route::handle(*f.rt, "yes", opts, Json{{"message", "yes"}}, nullptr));
+    const std::string text = unwrap(f.rt->db().get_msg(done.assistant_message_id))->text;
+    CHECK(text.find("Everything is already tidy.") != std::string::npos);
+    CHECK(text.find("loom.agent_loop") == std::string::npos);
+    CHECK(text.find("```") == std::string::npos);
+    // no scripted reply: the loop fails; the message says so in words
+    Fixture g;
+    ChatOptions og;
+    og.conv_id = g.conv_id;
+    og.stream = false;
+    unwrap(chat_route::handle(*g.rt, ask, og, Json{{"message", ask}, {"action", "agent.run"}}, nullptr));
+    const auto failed = unwrap(chat_route::handle(*g.rt, "yes", og, Json{{"message", "yes"}}, nullptr));
+    const std::string failed_text = unwrap(g.rt->db().get_msg(failed.assistant_message_id))->text;
+    INFO(failed_text);
+    CHECK(failed_text.find("The agent stopped with an error: ") != std::string::npos);
+    CHECK(failed_text.find("loom.agent_loop") == std::string::npos);
+  }
+
+  TEST_CASE("R38: the answer of a resumed agent run lands in the conversation as a message, like any other action result") {
+    Fixture f;
+    f.script(call_reply({{"c1", "conversation_delete", Json{{"element", f.other_id}}}}));
+    const Json a = f.agent(Json{{"prompt", "Delete the holidays conversation."}, {"element", f.other_id}, {"conversation_id", f.conv_id}});
+    REQUIRE(a.at("status") == "needs_confirmation");
+    // the first stop posts nothing by itself (the router's message or the caller shows it): only a resume does
+    CHECK_FALSE(a.contains("message_id"));
+    const std::size_t before = unwrap(f.rt->db().get_msgs(f.conv_id)).size();
+    const std::string run_id = a.at("proposals")[0].at("run_id");
+    f.script(text_reply("Deleted the holidays conversation."));
+    const Json b = f.agent(Json{{"messages", a.at("messages")}, {"resume", Json::array({Json{{"run_id", run_id}, {"approved", true}}})},
+                                {"conversation_id", f.conv_id}});
+    REQUIRE(b.at("status") == "finished");
+    REQUIRE(b.contains("message_id"));
+    const auto msgs = unwrap(f.rt->db().get_msgs(f.conv_id));
+    REQUIRE(msgs.size() == before + 1);
+    const auto& posted = msgs.back();
+    CHECK(posted.id == b.at("message_id").get<std::string>());
+    CHECK(posted.role == "assistant");
+    CHECK(posted.text.find("Deleted the holidays conversation.") != std::string::npos);
+    CHECK(posted.text.find("Done:") == 0);  // the format of the other results: "Done: <title>.", then the words
+    CHECK(posted.metadata.at("routed") == "result");
+    CHECK(posted.metadata.at("action_run").at("status") == "completed");
+    CHECK(posted.metadata.at("action_run").at("agent").at("loop_id") == b.at("loop_id"));
+    // post_answer: false keeps the old behaviour (the caller shows the answer itself); no conversation, no message
+    Fixture g;
+    g.script(call_reply({{"c1", "conversation_delete", Json{{"element", g.other_id}}}}));
+    const Json c = g.agent(Json{{"prompt", "Delete the holidays conversation."}, {"element", g.other_id}});
+    g.script(text_reply("Left it."));
+    const std::size_t g_before = unwrap(g.rt->db().get_msgs(g.conv_id)).size();
+    const Json d = g.agent(Json{{"messages", c.at("messages")}, {"conversation_id", g.conv_id}, {"post_answer", false},
+                                {"resume", Json::array({Json{{"run_id", c.at("proposals")[0].at("run_id")}, {"approved", false}}})}});
+    CHECK_FALSE(d.contains("message_id"));
+    CHECK(unwrap(g.rt->db().get_msgs(g.conv_id)).size() == g_before);
   }
 
   TEST_CASE("resume after a proposal (P26): the user's answer runs or drops the call, the transcript is continued, the model is asked again") {

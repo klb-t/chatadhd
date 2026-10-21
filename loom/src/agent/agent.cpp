@@ -5,6 +5,7 @@
 #include <set>
 
 #include "loom/action_runner.h"
+#include "loom/chat_route.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/log.h"
@@ -393,6 +394,20 @@ Result<Json> run(Runtime& rt, const Json& original, const CancelToken* cancel) {
   answer["loop_node"] = loop_node.empty() ? Json(nullptr) : Json(loop_node);
   answer["settings"] = settings_json(p.settings);
   answer["provenance"] = provenance;
+  // R38: the answer of a run the person resumed (after Akceptuj / Odrzuć) goes where they are reading: a message of the conversation,
+  // like the result of any other action. `post_answer` (true | false) decides either way; the preset is: yes for a resume that names a
+  // conversation. A message that could not be stored does not undo the run - the answer says so.
+  const Json* resumed = json::find(original, "resume");
+  const std::string conv = json::get_string(original, "conversation_id");
+  if (!conv.empty() && json::get_bool(original, "post_answer", resumed && resumed->is_array() && !resumed->empty())) {
+    auto posted = chat_route::post_agent_answer(rt, conv, answer, json::get_string(original, "lang"));
+    if (!posted) {
+      log::warn(kLog, "answer message: {}", posted.error().message);
+      answer["message_error"] = posted.error().message;
+    } else if (!posted->empty()) {
+      answer["message_id"] = *posted;
+    }
+  }
   return answer;
 }
 

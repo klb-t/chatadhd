@@ -9,6 +9,9 @@
 //           ActionRunner::run - the rules, the x10 guard, the spending limits, the receipts and the graph trace of
 //           any other run. A call the policy does not let run is stored as a proposal (`propose`): nothing executes.
 //           Answer: loom.agent_loop/1 {status, text, turns, steps, proposals, usage, messages, loop_node, settings}.
+//           `resume` with a `conversation_id` also posts the answer as a message of that conversation (chat_route::post_agent_answer;
+//           the format of any other action result; the answer gets `message_id`, or `message_error`); `post_answer: true | false`
+//           decides either way (preset: true for a resume that names a conversation).
 //           Trace in the graph: an `action_run` node per loop; each call is an `action_run` node `part_of` it and
 //           so is the run node of the action the interpreter made.
 //   tools   the same request without calling a model: the tools that would be offered, the decision of the policy

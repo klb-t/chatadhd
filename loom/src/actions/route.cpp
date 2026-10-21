@@ -33,6 +33,7 @@
 #include "loom/semantic_worker.h"
 #include "loom/settings_fields.h"
 #include "loom/usage_spend.h"
+#include "loom/tool_loop.h"
 #include "loom/use_model.h"
 #include "loom/util/time.h"
 #include "loom/util/unicode.h"
@@ -2009,6 +2010,50 @@ std::string result_sentence(const Data& d, const Json& run, const std::string& l
   return rendered ? *rendered : std::string();
 }
 
+// What the person decides on, in their language, for the answer of an agent loop (loom.agent_loop/1): the model's own words, then the
+// proposals it stopped on (action title and its arguments) or, when it ended otherwise, why. The loop itself (transcript, settings,
+// provenance) is data: it stays in the run's result (actions.status run_id -> result.data) and, while proposals wait, in the message's
+// metadata (agent_loop) - it is not printed into the text (R38).
+bool is_agent_loop(const Json& data) { return data.is_object() && json::get_string(data, "schema") == std::string(llm::tools::kLoopSchema); }
+
+std::string arguments_text(const Json& args) {
+  std::vector<std::string> parts;
+  if (args.is_object())
+    for (auto it = args.begin(); it != args.end(); ++it) parts.push_back(it.key() + ": " + (it.value().is_string() ? it.value().get<std::string>() : json::dump(it.value())));
+  return join(parts, ", ");
+}
+
+std::string agent_loop_text(const Data& d, const Json& loop, const std::string& lang, bool with_proposals = true) {
+  std::vector<std::string> blocks;
+  if (const std::string text = json::get_string(loop, "text"); text.find_first_not_of(" \t\r\n") != std::string::npos) blocks.push_back(text);
+  const std::string status = json::get_string(loop, "status");
+  const Json proposals = loop.value("proposals", Json::array());
+  if (status == "needs_confirmation") {
+    if (with_proposals && proposals.is_array() && !proposals.empty()) {
+      std::vector<std::string> lines{say(d.cfg, lang, "agent_proposals")};
+      for (const auto& p : proposals) {
+        const std::string action = json::get_string(p, "action");
+        std::string line = "- " + title_in(d, action, action, lang);
+        if (const std::string args = arguments_text(p.value("arguments", Json::object())); !args.empty()) line += " (" + args + ")";
+        lines.push_back(line);
+      }
+      blocks.push_back(join(lines, "\n"));
+    }
+  } else if (status != "finished") {
+    const Json params{{"message", loop.value("error", Json::object()).value("message", "")}, {"turns", loop.value("turns", 0)}, {"status", status}};
+    std::string line = say(d.cfg, lang, "agent_" + status, params);
+    if (line == "agent_" + status) line = say(d.cfg, lang, "agent_status_other", params);
+    blocks.push_back(line);
+  }
+  return join(blocks, "\n\n");
+}
+
+// The loop in short, for the message's metadata: enough to find it again (the loop node, the run), none of the transcript.
+Json agent_summary(const Json& loop) {
+  return Json{{"loop_id", json::get_string(loop, "loop_id")}, {"loop_node", loop.value("loop_node", Json(nullptr))}, {"status", json::get_string(loop, "status")},
+              {"turns", loop.value("turns", 0)}, {"usage", loop.value("usage", Json::object())}};
+}
+
 std::string body_of(Runtime& rt, const Data& d, const Json& run, const std::string& lang) {
   std::string out;
   const Json* result = json::find(run, "result");
@@ -2021,7 +2066,9 @@ std::string body_of(Runtime& rt, const Data& d, const Json& run, const std::stri
       }
     if (out.empty()) {
       const std::string sentence = result_sentence(d, run, lang);
-      if (const Json* data = json::find(*result, "data"); data && !data->is_null())
+      if (const Json* data = json::find(*result, "data"); data && is_agent_loop(*data))
+        out = agent_loop_text(d, *data, lang);
+      else if (data && !data->is_null())
         out = (sentence.empty() ? std::string() : sentence + "\n\n") + "```json\n" + json::dump(*data, 2) + "\n```";
       else
         out = sentence;
@@ -2075,6 +2122,8 @@ Report report_of(Runtime& rt, const Data& d, const Json& run, const std::string&
         r.meta["agent_loop"] = Json{{"status", json::get_string(*data, "status")}, {"loop_id", json::get_string(*data, "loop_id")},
                                    {"proposals", *loop_proposals}, {"messages", data->value("messages", Json::array())}};
     }
+    if (const Json* result = json::find(run, "result"); result && result->is_object())
+      if (const Json* data = json::find(*result, "data"); data && is_agent_loop(*data)) r.meta["agent"] = agent_summary(*data);
     r.text = say(d.cfg, lang, "result_completed", Json{{"title", title}});
     const std::string body = body_of(rt, d, run, lang);
     r.text += "\n\n" + (body.empty() ? say(d.cfg, lang, "result_no_text") : body);
@@ -3087,6 +3136,24 @@ Result<Json> after_pause(Runtime& rt, Json run) {
 }
 
 }  // namespace
+
+// R38: the answer of an agent loop (loom.agent_loop/1) as a message of the conversation, in the format of any other action result
+// (an assistant message of "loom:actions" with metadata.action_run and routed "result"). A loop that stopped on proposals again says only
+// what the model said: the proposals wait in the block of the message that stopped (the page replaces them there).
+Result<std::string> post_agent_answer(Runtime& rt, const std::string& conv_id, const Json& loop, const std::string& lang_hint) {
+  if (conv_id.empty() || !is_agent_loop(loop)) return std::string();
+  LOOM_TRY_ASSIGN(Data d, load_data(rt));
+  std::string lang = lang_hint.empty() ? language_of_conversation(rt, d, conv_id) : lang_hint;
+  if (lang.empty()) lang = json::get_string(d.cfg, "default_language", "en");
+  std::string body = agent_loop_text(d, loop, lang, false);
+  if (body.empty()) {
+    if (json::get_string(loop, "status") == "needs_confirmation") return std::string();  // nothing was said, the open proposals say the rest
+    body = say(d.cfg, lang, "result_no_text");
+  }
+  const std::string text = say(d.cfg, lang, "result_completed", Json{{"title", title_in(d, "agent.run", "agent.run", lang)}}) + "\n\n" + body;
+  const Json meta{{"status", "completed"}, {"lang", lang}, {"agent", agent_summary(loop)}};
+  return add_message(rt, conv_id, "assistant", text, Json{{"action_run", meta}, {"routed", "result"}}, "loom:actions");
+}
 
 void note_rule_switched(Runtime& rt, const std::string& rule_id, bool disabled) {
   auto profile = RuntimeProfile::load("action_rules", rt.paths().root);

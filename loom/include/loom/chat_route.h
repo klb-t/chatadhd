@@ -106,6 +106,11 @@ struct OfferRequest {
 };
 Result<Json> offer(Runtime& rt, const OfferRequest& request);
 
+// The answer of an agent loop (loom.agent_loop/1; agent.run) as a message of the conversation, in the format of any other action result.
+// Returns the id of the message, or "" when there was nothing to say (a loop that stopped on proposals again without words). `lang`
+// empty: the language of the conversation.
+Result<std::string> post_agent_answer(Runtime& rt, const std::string& conv_id, const Json& loop, const std::string& lang = std::string());
+
 // The chat window's entry. `request` is the client's request object (its explicit chat features make an
 // input a message); `emit_start(conv_id, user_message_id)` is called once the user's message is stored.
 Result<Outcome> handle(Runtime& rt, const std::string& text, const ChatOptions& opts, const Json& request,
