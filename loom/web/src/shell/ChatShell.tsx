@@ -13,6 +13,8 @@ import "./shell.css";
 
 export interface ShellActions {
   panel(id: string): void;
+  /** The graph navigator at a node ("" = root). */
+  navigator(focus: string): void;
   knowledge(): void;
   workshop(): void;
 }
@@ -55,6 +57,7 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
     setMenu(false);
     const target = parseMenuAction(action);
     if (target.kind === "panel") actions.panel(target.panel);
+    else if (target.kind === "navigator") actions.navigator(target.focus);
     else if (target.kind === "knowledge") actions.knowledge();
     else if (target.kind === "sheet") setSheet(target.sheet);
     else if (target.kind === "workshop") actions.workshop();

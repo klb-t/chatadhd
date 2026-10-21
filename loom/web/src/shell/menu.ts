@@ -6,6 +6,7 @@ export interface MenuEntry { id: string; label: string; action: string; when?: s
 export interface MenuEnv { androidShell: boolean }
 export type MenuTarget =
   | { kind: "panel"; panel: string }
+  | { kind: "navigator"; focus: string }
   | { kind: "sheet"; sheet: "views" | "semantic" }
   | { kind: "workshop" }
   | { kind: "connection" }
@@ -25,6 +26,8 @@ export function menuEntries(menu: readonly MenuEntry[], env: MenuEnv): MenuEntry
 /** What an action id of the menu data means. An id nothing handles is `unknown` (the test of the data keeps the data free of them). */
 export function parseMenuAction(action: string): MenuTarget {
   if (action.startsWith("panel:")) return { kind: "panel", panel: action.slice(6) };
+  // navigator:<focus> opens the graph navigator at that node ("" = the root of the graph).
+  if (action.startsWith("navigator:")) return { kind: "navigator", focus: action.slice(10) };
   if (action.startsWith("sheet:")) {
     const sheet = action.slice(6);
     if ((SHEETS as readonly string[]).includes(sheet)) return { kind: "sheet", sheet: sheet as "views" | "semantic" };
