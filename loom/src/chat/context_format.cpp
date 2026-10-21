@@ -8,6 +8,7 @@
 #include "loom/annotation_layer.h"
 #include "loom/config.h"
 #include "loom/db.h"
+#include "loom/graph_memory.h"
 #include "loom/log.h"
 #include "loom/selector.h"
 #include "loom/runtime_profile.h"
@@ -568,6 +569,68 @@ Result<Json> embed_packet(Database& db, const Json& section, const std::string& 
     ++created_links;
   }
   return Json{{"unchanged", unchanged}, {"created_nodes", created_nodes}, {"created_links", created_links}, {"created_message_ids", created_ids}, {"orphans", orphans}, {"conflicts", conflicts}};
+}
+
+
+// ---- M1-K1a: the receipt ----------------------------------------------------------------------------------------------------------------------
+long long estimate_tokens(std::string_view text) {
+  if (text.empty()) return 0;
+  return std::max(1, ContextSelector::estimate_tokens(text));
+}
+
+Json receipt_item(const std::string& ref, const std::string& label, const std::string& source_kind, const std::string& why, std::string_view text) {
+  return Json{{"ref", ref}, {"label", label}, {"source_kind", source_kind}, {"why", why}, {"tokens_est", estimate_tokens(text)}};
+}
+
+void Receipt::section(const std::string& cls, Json items) {
+  long long tokens = 0;
+  for (const auto& i : items) tokens += i.value("tokens_est", 0LL);
+  sections.push_back(Json{{"class", cls}, {"items", std::move(items)}, {"tokens_est", tokens}});
+}
+
+void Receipt::drop(const std::string& group, const std::string& reason, const std::vector<std::string>& refs, std::size_t count) {
+  if (count == 0) return;
+  Json list = Json::array();
+  for (const auto& r : refs) list.push_back(r);
+  dropped.push_back(Json{{"ref", group}, {"reason", reason}, {"count", count}, {"refs", std::move(list)}});
+}
+
+Json packet_summary(const Json& selection) {
+  if (!selection.is_object()) return nullptr;
+  const Json inputs = selection.value("inputs", Json::object());
+  return Json{{"packet_id", selection.value("packet_id", Json(nullptr))},
+              {"nodes", selection.value("nodes", Json::array()).size()}, {"links", selection.value("links", Json::array()).size()},
+              {"substituted", inputs.value("substituted", 0)}, {"skipped", inputs.value("skipped", 0)}};
+}
+
+Json receipt_finish(const Receipt& r, Json header, const Json& messages) {
+  Json out = std::move(header);
+  out["schema"] = "loom.context_receipt/1";
+  out["sections"] = r.sections;
+  out["dropped"] = r.dropped;
+  long long total = 0;
+  for (const auto& s : r.sections) total += s.value("tokens_est", 0LL);
+  out["tokens_est"] = total;
+  out["sha256"] = Sha256::hex(json::dump(messages));
+  out["truncated"] = false;
+  return out;
+}
+
+Json receipt_bound(Json receipt, const std::string& store, long long max_bytes) {
+  if (store == "always" || max_bytes <= 0) return receipt;
+  const auto whole = json::dump(receipt).size();
+  if (whole <= static_cast<std::size_t>(max_bytes)) return receipt;
+  // A summary: the sections keep their class, their token sum and how many items they had; the references are the part that grows.
+  for (auto& s : receipt["sections"]) {
+    s["items_omitted"] = s.value("items", Json::array()).size();
+    s["items"] = Json::array();
+  }
+  for (auto& d : receipt["dropped"]) d["refs"] = Json::array();
+  receipt["truncated"] = true;
+  receipt["truncated_reason"] = "context_receipt_max_bytes";
+  receipt["limit_bytes"] = max_bytes;
+  receipt["bytes_whole"] = whole;
+  return receipt;
 }
 
 }  // namespace loom::chat::formats

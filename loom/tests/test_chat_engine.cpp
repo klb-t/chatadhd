@@ -488,6 +488,30 @@ TEST_SUITE("chat_engine") {
     CHECK(contents(g.send_body(named)) == c);
   }
 
+  // M1-K1a (a): the request bytes of the historical order are pinned in a file that was written BEFORE the kernel learned the classes profile
+  // and rules (LOOM_UPDATE_GOLDEN=1 rewrites it; a change of these bytes is a decision, never a side effect). The rules about the person are
+  // part of the request here, so the move of the rules from the system part to their own class is covered too.
+  TEST_CASE("M1-K1a golden: the request of the orders legacy, stable_first and stability with rules about the person is byte-identical to the pinned file") {
+    Json got = Json::object();
+    for (const char* order : {"legacy", "stable_first", "stability"}) {
+      OrderFixture f;
+      ChatOptions o; o.context_order = order; o.guardian_rules = "RULES-R0 never use emoji";
+      got[order] = f.send_body(o);
+    }
+    const auto path = std::filesystem::path(LOOM_TEST_FIXTURES) / "golden" / "chat_request_legacy.json";
+    if (std::getenv("LOOM_UPDATE_GOLDEN")) REQUIRE(fsutil::write_file(path, got.dump(2) + "\n"));
+    auto text = fsutil::read_file(path);
+    REQUIRE(text);
+    auto pinned = json::parse(*text);
+    REQUIRE(pinned);
+    CHECK(got == *pinned);
+    // legacy: the rules sit in the part with the instruction, then memory, graph, project, history, question.
+    auto c = contents(got["legacy"]);
+    REQUIRE(c.size() == 6);
+    CHECK(c[0] == "SYS-S0");
+    CHECK(c[1] == "RULES-R0 never use emoji");
+  }
+
   TEST_CASE("context_order stable_first: S0 system, S1 memory, S3 history, S4 graph, S5 question; trace records it") {
     OrderFixture f;
     ChatOptions opts; opts.context_order = "stable_first"; opts.trace_context = true;

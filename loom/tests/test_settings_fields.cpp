@@ -486,8 +486,9 @@ TEST_SUITE("settings_fields") {
     for (const auto& f : doc["fields"])
       if (f.contains("status")) {
         INFO(f["key"].get<std::string>());
-        // planned (no reader yet) or implemented (a reader exists: M1-W0 P4 gave navigator_layout its reader); both carry the reason and today's behaviour
-        CHECK((f["status"]["state"] == "planned" || f["status"]["state"] == "implemented"));
+        // planned (no reader yet), implemented (a reader exists: M1-W0 P4 gave navigator_layout its reader) or partial (one reader exists, another is
+        // still to come: M1-K1a made build_messages read profile_detail_level, the interview that asks for it is M1-K2); all carry the reason and today's behaviour
+        CHECK((f["status"]["state"] == "planned" || f["status"]["state"] == "implemented" || f["status"]["state"] == "partial"));
         CHECK_FALSE(f["status"]["reason"]["pl"].get<std::string>().empty());
         CHECK_FALSE(f["status"]["by"].get<std::string>().empty());
         CHECK_FALSE(f["status"]["today"]["pl"].get<std::string>().empty());  // what the app does now, next to the planned chip
@@ -495,7 +496,8 @@ TEST_SUITE("settings_fields") {
         if (f["status"]["state"] == "planned") ++planned;
       }
     // M1-K0 gave navigator_children_limit its reader (graph.navigate takes its children budget from it): it is no longer planned.
-    CHECK(planned >= 11);   // 12 before navigator_layout got its reader (M1-W0 P4)
+    // M1-K1a gave profile_detail_level (a reader of the prefix), context_receipt_store and context_receipt_max_bytes (build_messages) their readers.
+    CHECK(planned >= 8);    // 11 before M1-K1a, 12 before navigator_layout got its reader (M1-W0 P4)
     for (const auto& f : doc["fields"])
       if (f["key"] == "navigator_children_limit") CHECK_FALSE(f.contains("status"));
     Json nostatus = doc;

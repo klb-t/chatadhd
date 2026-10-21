@@ -2,7 +2,7 @@
   "schema": "loom.runtime_profile/1",
   "domain": "chat_context",
   "revision": 1,
-  "description": "Order of context classes in the chat prompt and the selector profiles. Orders: legacy reproduces the historical order byte for byte (system, memory, graph, project, history); stable_first puts the slowly changing classes first so provider prompt prefixes stay reusable (system, memory, project, history, graph); stability (the default preset since M1-D2) adds the classes profile (the stable part of what the app knows about the user) and rules (the rules about the user) right after the system instruction: system, profile, rules, memory, project, history, graph. The active-task block and the question always come last. Until the kernel fills the classes profile and rules (work item M1-K1) they are empty, so stability sends the same bytes as stable_first. Orders are data: a user can add their own named order. selector_profiles are the presets of the context selector (a view kind of the same name): each is a bundle of knobs that already exist, not a new engine. In a profile a null number or name means: what the setting says now (graph_memory_max_nodes, graph_memory_depth, chat_representation, chat_flow); a source set to false is not read by that profile; a number of a source that is false is 0 and ignored; history_window null = the whole conversation; budget_tokens null = no limit of its own. Presets, not rules.",
+  "description": "Order of context classes in the chat prompt and the selector profiles. Orders: legacy reproduces the historical order byte for byte (system, memory, graph, project, history); stable_first puts the slowly changing classes first so provider prompt prefixes stay reusable (system, memory, project, history, graph); stability (the default preset since M1-D2) adds the classes profile (the stable part of what the app knows about the user) and rules (the rules about the user) right after the system instruction: system, profile, rules, memory, project, history, graph. The active-task block and the question always come last. Since work item M1-K1a the kernel fills them: rules is the standing rules about the person (under the orders without this class they stay in the instruction part, as before), profile is what the person told about themselves, rendered by profile_prefix. Both are empty when there is nothing to send, and then stability sends the same bytes as stable_first. Orders are data: a user can add their own named order. selector_profiles are the presets of the context selector (a view kind of the same name): each is a bundle of knobs that already exist, not a new engine. In a profile a null number or name means: what the setting says now (graph_memory_max_nodes, graph_memory_depth, chat_representation, chat_flow); a source set to false is not read by that profile; a number of a source that is false is 0 and ignored; history_window null = the whole conversation; budget_tokens null = no limit of its own. profile_prefix is the recipe of the class profile: a fixed header, a fixed line format, the subgraphs of the node You (profile.subgraphs in user.pack, sorted by order_for_prefix) and which of them (and which keys) each profile_detail_level carries. Presets, not rules.",
   "defaults": {
     "context_order": "stability",
     "orders": {
@@ -65,8 +65,8 @@
         "budget_tokens": null,
         "status": "preset",
         "note": {
-          "pl": "Liczba węzłów i głębokość grafu, sposób wysłania rozmowy i przepływ są takie, jak w ustawieniach (preset: 20 węzłów, głębokość 2). Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "The number of graph nodes, the depth, how the conversation is sent and the flow are as in the settings (preset: 20 nodes, depth 2). Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Liczba węzłów i głębokość grafu, sposób wysłania rozmowy i przepływ są takie, jak w ustawieniach (preset: 20 węzłów, głębokość 2). Jądro stosuje ten profil: porządek „stability”, źródła i liczby z tabeli (tu: jak w ustawieniach) oraz sposób wysłania rozmowy. Część „Profil” zawiera tylko to, co sam powiedziałeś o sobie w wywiadzie; bez wywiadu jest pusta i żądanie jest takie jak w porządku „stable_first”.",
+          "en": "The number of graph nodes, the depth, how the conversation is sent and the flow are as in the settings (preset: 20 nodes, depth 2). The kernel applies this profile: the order “stability”, the sources and the numbers of the table (here: as in the settings) and how the conversation is sent. The part “Profile” holds only what you said about yourself in the interview; without an interview it is empty and the request is the same as with the order “stable_first”."
         }
       },
       {
@@ -103,8 +103,8 @@
         "budget_tokens": null,
         "status": "preset",
         "note": {
-          "pl": "Instrukcja, pamięć, graf, projekt, historia; reguły strażnika są w części z instrukcją, bez prefiksu profilu. Ten sam efekt daje dziś ustawienie „Kolejność części żądania” = legacy. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "The instruction, memory, graph, project, history; the guardian rules sit in the instruction part, without the profile prefix. The same effect is given today by the setting “Order of the request parts” = legacy. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Instrukcja, pamięć, graf, projekt, historia; reguły strażnika są w części z instrukcją, bez prefiksu profilu. Ten sam efekt daje dziś ustawienie „Kolejność części żądania” = legacy. Jądro stosuje ten profil: bajty żądania są dokładnie dawne (pilnuje tego test ze złotym plikiem).",
+          "en": "The instruction, memory, graph, project, history; the guardian rules sit in the instruction part, without the profile prefix. The same effect is given today by the setting “Order of the request parts” = legacy. The kernel applies this profile: the request bytes are exactly the old ones (a test with a golden file guards it)."
         }
       },
       {
@@ -141,8 +141,8 @@
         "budget_tokens": null,
         "status": "preset",
         "note": {
-          "pl": "Surowa rozmowa w całości (bez okna historii), bez pamięci, projektu, grafu, profilu i reguł. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "The raw conversation in full (no history window), without memory, project, graph, profile and rules. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Surowa rozmowa w całości (bez okna historii), bez pamięci, projektu, grafu, profilu i reguł. Jądro stosuje ten profil w całości.",
+          "en": "The raw conversation in full (no history window), without memory, project, graph, profile and rules. The kernel applies this profile in full."
         }
       },
       {
@@ -179,8 +179,8 @@
         "budget_tokens": null,
         "status": "preset",
         "note": {
-          "pl": "Twoje wiadomości bez wypełniaczy i dygresji (poziom L2 z analizy, tam gdzie jest). Graf: 10 węzłów i 1 skok to liczby presetu, można je zmienić. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "Your messages without fillers and digressions (level L2 of the analysis, where it exists). Graph: 10 nodes and 1 hop are preset numbers, you can change them. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Twoje wiadomości bez wypełniaczy i dygresji (poziom L2 z analizy, tam gdzie jest). Graf: 10 węzłów i 1 skok to liczby presetu, można je zmienić. Jądro stosuje ten profil w całości; poziom L2 jest użyty tam, gdzie analiza go zapisała, a gdzie nie ma, idzie tekst surowy.",
+          "en": "Your messages without fillers and digressions (level L2 of the analysis, where it exists). Graph: 10 nodes and 1 hop are preset numbers, you can change them. The kernel applies this profile in full; level L2 is used where the analysis wrote it, and the raw text goes where it did not."
         }
       },
       {
@@ -217,8 +217,8 @@
         "budget_tokens": null,
         "status": "calibration",
         "note": {
-          "pl": "Kalibracja: w 12 wywołaniach mechanika zadziałała 12/12, cel 10/12, pełna adekwatność 9/12, oparcie w źródłach 9/12 (docs/reports/model-research-2026-10-04.md:21). Głębokość 3 to wartość wyjściowa do strojenia. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "Calibration: in 12 calls the mechanics worked 12/12, the goal 10/12, full adequacy 9/12, grounding in the sources 9/12 (docs/reports/model-research-2026-10-04.md:21). Depth 3 is a starting value to tune. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Kalibracja: w 12 wywołaniach mechanika zadziałała 12/12, cel 10/12, pełna adekwatność 9/12, oparcie w źródłach 9/12 (docs/reports/model-research-2026-10-04.md:21). Głębokość 3 to wartość wyjściowa do strojenia. Jądro stosuje ten profil w całości (głębokość 3 i przepływ graph_in).",
+          "en": "Calibration: in 12 calls the mechanics worked 12/12, the goal 10/12, full adequacy 9/12, grounding in the sources 9/12 (docs/reports/model-research-2026-10-04.md:21). Depth 3 is a starting value to tune. The kernel applies this profile in full (depth 3 and the flow graph_in)."
         }
       },
       {
@@ -255,8 +255,8 @@
         "budget_tokens": null,
         "status": "calibration",
         "note": {
-          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. Artefakty i narzędzia tej aplikacji: planowane. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. The artifacts and tools of that app: planned. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. Artefakty i narzędzia tej aplikacji: planowane. Jądro stosuje ten profil w całości.",
+          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. The artifacts and tools of that app: planned. The kernel applies this profile in full."
         }
       },
       {
@@ -293,8 +293,8 @@
         "budget_tokens": null,
         "status": "calibration",
         "note": {
-          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. 10 wyników szukania to liczba presetu. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. 10 search results is a preset number. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. 10 wyników szukania to liczba presetu. Jądro stosuje ten profil poza szukaniem w historii rozmów (search_limit), którego jeszcze nie ma; reszta działa.",
+          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. 10 search results is a preset number. The kernel applies this profile except the search through past conversations (search_limit), which does not exist yet; the rest works."
         }
       },
       {
@@ -331,11 +331,54 @@
         "budget_tokens": null,
         "status": "calibration",
         "note": {
-          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. 10 wyników szukania to liczba presetu. Dziś jądro jeszcze nie stosuje tego profilu (dojdzie w pozycji K1); działa tylko porządek „stability”.",
-          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. 10 search results is a preset number. Today the kernel does not apply this profile yet (it comes with work item K1); only the order “stability” works."
+          "pl": "Kalibracja: to nasze przybliżenie, nie odtworzenie; dokładne odtworzenie i testy porównawcze są w etapie replikacji. 10 wyników szukania to liczba presetu. Jądro stosuje ten profil poza szukaniem w historii rozmów (search_limit), którego jeszcze nie ma; reszta działa.",
+          "en": "Calibration: this is our approximation, not a replica; the exact replication and comparative tests belong to the replication stage. 10 search results is a preset number. The kernel applies this profile except the search through past conversations (search_limit), which does not exist yet; the rest works."
         }
       }
-    ]
+    ],
+    "profile_prefix": {
+      "default_level": "normal",
+      "header": "What the user has told about themselves. This block does not change from turn to turn while the profile stays the same.",
+      "subgraph_line": "[{label}]",
+      "item_line": "- {key}: {value}",
+      "regions": {
+        "minimal": {
+          "subgraphs": [
+            "preferences"
+          ],
+          "keys": [
+            "preference.style",
+            "preference.language"
+          ]
+        },
+        "normal": {
+          "subgraphs": [
+            "identity",
+            "preferences",
+            "policies",
+            "units"
+          ],
+          "keys": null
+        },
+        "detailed": {
+          "subgraphs": null,
+          "keys": null
+        }
+      },
+      "subgraph_keys": {
+        "identity": [],
+        "preferences": [
+          "preference.style",
+          "preference.length",
+          "preference.language",
+          "preference.adhd_needs"
+        ],
+        "policies": [],
+        "units": [],
+        "interests": [],
+        "network": []
+      }
+    }
   },
   "value_schema": {
     "type": "object",
@@ -376,7 +419,7 @@
         "type": "array",
         "x-setting": "/selector_profiles",
         "x-consumer": "chat_engine",
-        "description": "Presets of the context selector, listed as the view kind selector_profiles (node selector_profile:<id>). A profile is a bundle of existing knobs; the kernel reads the table from work item M1-K1 on.",
+        "description": "Presets of the context selector, listed as the view kind selector_profiles (node selector_profile:<id>). A profile is a bundle of existing knobs; the kernel applies the table from work item M1-K1a on (search_limit excepted: there is no search over past conversations yet). Chosen by ChatOptions.selector_profile, then the turn value context.profile, then the scope chain (rules and the setting selector_profile); none chosen = the settings as they are.",
         "items": {
           "type": "object",
           "required": [
@@ -523,6 +566,79 @@
             }
           },
           "additionalProperties": true
+        }
+      },
+      "profile_prefix": {
+        "type": "object",
+        "x-setting": "/profile_prefix",
+        "x-consumer": "chat_engine",
+        "description": "Recipe of the class profile: default_level (used when profile_detail_level names none of the regions), header, subgraph_line ({label}), item_line ({key}, {value}), regions {level: {subgraphs: [ids] or null = every subgraph with an order_for_prefix, keys: [keys] or null = every key}} and subgraph_keys {subgraph id: [keys of the onboarding layers that belong to it]}. Only values the person set themselves are rendered, in a fixed order, with no time stamps or counters. Detail levels of a goal (context_goal_cues) are not read: they change from turn to turn and would change the prefix.",
+        "additionalProperties": false,
+        "required": [
+          "default_level",
+          "header",
+          "subgraph_line",
+          "item_line",
+          "regions",
+          "subgraph_keys"
+        ],
+        "properties": {
+          "default_level": {
+            "type": "string",
+            "minLength": 1
+          },
+          "header": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subgraph_line": {
+            "type": "string",
+            "minLength": 1
+          },
+          "item_line": {
+            "type": "string",
+            "minLength": 1
+          },
+          "regions": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "subgraphs",
+                "keys"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "subgraphs": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "keys": {
+                  "type": [
+                    "array",
+                    "null"
+                  ],
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "subgraph_keys": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
         }
       }
     }

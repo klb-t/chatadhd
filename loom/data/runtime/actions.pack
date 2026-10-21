@@ -294,7 +294,10 @@
           "chat_representation",
           "chat_thread_filter",
           "guardian_person_rules",
-          "guardian_levels"
+          "guardian_levels",
+          "profile_detail_level",
+          "context_receipt_store",
+          "context_receipt_max_bytes"
         ],
         "uses_role": "chat.default",
         "subflows": [

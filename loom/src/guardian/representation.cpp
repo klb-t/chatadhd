@@ -323,7 +323,7 @@ Result<Json> materialize(Database& db, const Data& d, const std::string& conv_id
 
 namespace loom::guardian {
 
-Result<Selection> select(Database& db, const Config& cfg, const std::string& conv_id) {
+Result<Selection> select(Database& db, const Config& cfg, const std::string& conv_id, const std::string& representation) {
   Selection sel;
   sel.preset = "raw";
   if (conv_id.empty()) return sel;
@@ -342,6 +342,7 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
     const Json v = scopes::value_or(root, cfg, &db, bind, Json(name));
     if (v.is_string() && !v.get<std::string>().empty()) name = v.get<std::string>();
   }
+  if (!representation.empty()) name = representation;  // the chosen selector profile names its own (M1-K1a)
   if (!section.at("presets").contains(name)) name = json::get_string(section, "unknown", "raw");
   LOOM_TRY_ASSIGN(auto rep, db.find_node("rep:" + conv_id, "guardian_representation"));
   const bool has_rep = rep && json::get_string(rep->metadata, "status") == "accepted";
@@ -369,7 +370,10 @@ Result<Selection> select(Database& db, const Config& cfg, const std::string& con
     LOOM_TRY_ASSIGN(auto msgs, db.get_msgs(conv_id));
     for (const auto& m : msgs) {
       if (m.status != msg_status::kActive || !levels.contains(m.role)) continue;
-      if (auto t = detail::level_text(db, d, m, levels[m.role].get<std::string>())) sel.substitutions[m.id] = *t;
+      if (auto t = detail::level_text(db, d, m, levels[m.role].get<std::string>())) {
+        sel.substitutions[m.id] = *t;
+        sel.levels[m.id] = levels[m.role].get<std::string>();
+      }
     }
   }
   // Standing rules about the person: only their normalized text, only where the scope chain (R47) lets rules about him go with a request
