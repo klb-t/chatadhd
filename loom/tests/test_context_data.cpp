@@ -109,13 +109,13 @@ TEST_SUITE("context_data") {
     }
   }
 
-  TEST_CASE("the words of \"What we sent\": the same keys in Polish and English, the disclaimer and the missing-receipt word are there, planned until the kernel and the sheet exist") {
+  TEST_CASE("the words of \"What we sent\": the same keys in Polish and English, the disclaimer and the missing-receipt word are there, partial since the sheet exists (M1-W1a; the + menu, the strip and the model chip are W1b)") {
     const Json pack = data_file("profiles/conversation_view.pack");
     Json entry;
     for (const auto& e : pack.at("entries")) if (e.at("key") == "presentation.context_receipt") entry = e;
     REQUIRE_FALSE(entry.is_null());
     const Json& value = entry.at("value");
-    CHECK(value.at("status").at("state") == "planned");
+    CHECK(value.at("status").at("state") == "partial");
     const Json& pl = value.at("locales").at("pl");
     const Json& en = value.at("locales").at("en");
     std::set<std::string> pl_keys, en_keys;
