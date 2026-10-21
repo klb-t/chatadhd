@@ -13,3 +13,10 @@ Uruchomienie: `Workflow({scriptPath: "<ścieżka do pliku>", args: {...}})`. Skr
 (nie TS), kończą się `return`, więc nie przechodzą `node --check` bez opakowania w funkcję.
 `m1-w0-packages.js` było sprawdzone składniowo i uruchomione raz; wzorzec pakietów jest tam
 jeszcze niepotwierdzony na pełnym przebiegu.
+
+## Tempo i modele (właściciel, 2026-10-21)
+Przed startem pakietu: `python3 tools/pace.py --used <seven_day %> --inflight <ilu agentów chodzi> --model <haiku|domyślny>`
+(plan w `tools/pace_plan.json`, ledger w `docs/reports/LIMITS_LEDGER.md`). Werdykt MOŻNA / CZEKAJ / HAMUJ jest wiążący dla S1.
+`single-package.js` przyjmuje `model` w `args`: `"haiku"` dla pakietów mechanicznych z twardym kryterium odbioru (build/test/CI),
+domyślny model sesji dla jądra i logiki, `"fable"` tylko dla etapów projektowych. Pakiet zostaje krótki (~50 wywołań narzędzi),
+bo koszt rośnie z kwadratem długości agenta.

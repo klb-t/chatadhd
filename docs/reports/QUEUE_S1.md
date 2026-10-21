@@ -3,6 +3,12 @@
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
+## PLAN TEMPA (decyzja właściciela 17:50 UTC) — zastępuje pytanie A/B
+Połowa tygodnia (pt 23.10 20:00 UTC) → 50 %, pn 26.10 08:00 UTC → 90 %, reset wt 27.10 08:00 UTC → 100 %; agenci krótcy, na słabszych
+modelach tam, gdzie kryterium odbioru jest mechaniczne. Narzędzie: `python3 tools/pace.py --used <%> --inflight <N> --model <m>`; dane:
+`tools/pace_plan.json`; pomiary kosztu pakietu: tabela w `LIMITS_LEDGER.md`. **Przed każdym startem agenta uruchomić `pace.py`.**
+Stan 17:33: 30 % przy celu 20 % → potrzebne tempo ≈ 9,5 pkt/dobę, czyli ok. jeden krótki pakiet na 1–1,5 h, nie kilka naraz.
+
 ## R38 NA `main` (17:18 UTC, `fb604c17`) — bramka lokalna GREEN, bieg CI 257 w toku
 Pakiet R38 (wynik `agent.run` słowami, odpowiedź po „Akceptuj” w rozmowie, e2e bez brudzenia drzewa): decyzje i cofnięcie w `INDEX.md`
 („S1 / R38”). Po pełnej bramce `git status` czyste (hygiene działa). Bieg CI **257**

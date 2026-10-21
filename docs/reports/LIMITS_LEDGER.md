@@ -39,6 +39,27 @@ bez commita przepada, kontekst trzeba cache'ować od nowa), albo zostawić je ni
 | 13:19 | 4 % (okno 10:10–15:10; linia 67 %) | **30 %** | 0 (bramka skończona, czekam na CI) + S1 | tydzień: linia 17,6 % (29,5 h), jesteśmy 12 pkt nad; 11:06→13:19: +1 pkt w 2 h, bo prawie nic nie biegło (bieg CI i naprawy testów to praca poza kontem) |
 | 16:20 | 0 % (okno 15:30–20:30) | **30 %** | 0 (czekanie na CI 256, zielone) + S1 | tydzień: linia 19,2 % (32,3 h), jesteśmy ≈ 11 pkt nad (pierwotnie wpisałem 20,6 % — błąd rachunku, poprawione); 13:19→16:20: 0 pkt w 3 h (nic nie biegło poza CI) |
 
+## DECYZJA WŁAŚCICIELA (2026-10-21 ≈ 17:50 UTC): plan tempa tygodnia zamiast A/B
+Słowa: „ostatnio jak koło 95 % zacząłeś kończyć, to i tak wyjechałeś wszystko z agentami, które już chodziły; zaplanuj agentów na słabych
+modelach z krótkimi zadaniami; pośrodku tygodnia celuj w 50 %, doba przed końcem w 90 %, żeby został zapas na drogę hamowania agentów i
+czaty; ostatnia doba z namysłem te 10 %, żeby nic nie zostało ani nie zabrakło”.
+Zapisane jako dane: `tools/pace_plan.json` (punkty: połowa tygodnia pt 23.10 20:00 UTC → 50 %; pn 26.10 08:00 UTC → 90 %; reset wt 27.10
+08:00 UTC → 100 %), liczone przez `python3 tools/pace.py --used <seven_day %> [--inflight N] [--model haiku]`. Dwie reguły startu agenta:
+(1) punkt kontrolny — `used + (w_toku + 1) × koszt ≤ cel następnego punktu − margines` (droga hamowania agentów już chodzących liczona
+z góry, nie po fakcie); (2) tempo — `(w_toku + 1) × koszt ≤ potrzebne_tempo × 2 h`, żeby nie zużyć puli jednym zrywem.
+Krótko: nie „przerywam przy 95 %”, tylko nie startuję, jeśli to, co już chodzi, plus nowy, przekroczyłoby punkt kontrolny.
+**Koszt pakietu (preset 0,5 pkt tygodnia, GÓRNA granica):** pakiet R38 (agent 187 tys. tokenów, 66 wywołań, 29 min + bramka lokalna + moje
+tury) przesunął okno 5 h o ≤ 1 pkt (0 → 1 %), a tydzień się nie zmienił w zaokrągleniu (30 %); 1 pkt okna 5 h ≈ 0,25 pkt tygodnia, więc
+≤ 0,5 pkt (rozdzielczość 1 pkt!). **Do kalibracji:** przy każdym pakiecie zapisuję pomiar przed/po w tabeli niżej, osobno dla modeli.
+Stan 17:33: zużyte 30 %, cel na teraz 20,0 % (+10 pkt), do punktu „połowa tygodnia” 50,5 h, potrzebne tempo +0,40 pkt/h ≈ +9,5 pkt/dobę.
+**Modele:** pakiety mechaniczne (poprawki testów, dokumenty, etykiety, drobiazgi UX z kontrolą w CI) na `haiku`; praca w jądrze C++ i
+logika na domyślnym modelu sesji; `fable` tylko etapy projektowe (P37-podobne). Kryterium wyboru to koszt **przyjętego** wyniku (pakiet +
+poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
+
+| pakiet | model | okno 5 h przed→po | tydzień przed→po | przyjęty z 1. podejścia? | uwagi |
+|---|---|---|---|---|---|
+| R38 | domyślny (Sonnet) | 0→1 % | 30→30 % | tak | agent + bramka + moje tury razem |
+
 **Odczyt z 00:14:** od 00:10 do 00:14 przybyły 3 punkty w około 4 minuty (≈ 0,8 pkt/min),
 od 00:05 średnio ≈ 0,6 pkt/min. Do reszty okna (276 min) zostaje 89 punktów, czyli stać nas
 na ≈ 0,32 pkt/min. Przy tempie bez zmian okno skończyłoby się około 02:10–02:40 UTC, 2–2,5 h
@@ -70,5 +91,5 @@ ok. czw. 22.10 15:30 UTC, przy średnim tempie od resetu ok. 28 godzin później
 do cache. W „równoważnikach odczytu” (zapis ≈ 20 × odczyt, wagi z cen API — założenie) sesja główna ≈ 15 %,
 agenci ≈ 85 % zużycia S1. Konto jest wspólne z S2 (od 12.10: S1 ≈ 1934 USD wg cen API, S2 ≈ 429 USD, sesja
 „Prompt review i optymalizacja” ≈ 397 USD), więc nie rozdzielę udziału w oknie, tylko w tokenach.
-**Decyzja należy do właściciela** (pytanie w czacie): zostawić X % tygodnia na jego czaty i resztę spalić (preset 5 %),
+**(Zamknięte 17:50: właściciel wybrał plan tempa, patrz niżej.)** Pytanie było: zostawić X % tygodnia na jego czaty i resztę spalić (preset 5 %),
 czy trzymać linię tygodniową.

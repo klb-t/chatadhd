@@ -1,0 +1,12 @@
+{
+  "_comment": "Plan tempa zużycia tygodnia (właściciel, 2026-10-21). To preset, nie prawo: zmień punkty/koszty tutaj, tools/pace.py czyta ten plik. Czas w UTC.",
+  "week_start": "2026-10-20T08:00:00Z",
+  "waypoints": [
+    {"at": "2026-10-23T20:00:00Z", "target": 50, "note": "połowa tygodnia"},
+    {"at": "2026-10-26T08:00:00Z", "target": 90, "note": "doba przed końcem: zapas na hamowanie agentów i na czaty właściciela"},
+    {"at": "2026-10-27T08:00:00Z", "target": 100, "note": "reset; ostatnia doba to ostatnie 10 % wydane z namysłem"}
+  ],
+  "cost_per_package": {"default": 0.5, "_note": "punkty tygodnia na jeden pakiet ~50 wywołań narzędzi; GÓRNA granica z pomiaru R38 (pakiet + bramka + moje tury < 1 pkt okna 5 h, a 1 pkt okna 5 h ≈ 0,25 pkt tygodnia, rozdzielczość 1 pkt); skalibrować pomiarami z dziennika", "haiku": null, "sonnet": null, "fable": null},
+  "margin": 1.0,
+  "lookahead_h": 2.0
+}
