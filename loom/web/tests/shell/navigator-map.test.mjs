@@ -127,7 +127,7 @@ test('navigator_layout: the three values of the field decide which disclosure st
 });
 
 test('every word the map and the view menu ask for exists in both languages (a missing one would show its id on screen)', () => {
-  const ids = ['list.show', 'list.hide', 'map.show', 'map.hide', 'map.aria', 'map.zoom_in', 'map.zoom_out', 'map.hint', 'map.enter', 'map.unplaced',
+  const ids = ['list.show', 'list.hide', 'map.show', 'map.hide', 'map.aria', 'map.zoom_in', 'map.zoom_out', 'map.home', 'map.hint', 'map.enter', 'map.unplaced',
     'view.title', 'view.saved', 'view.save_error', ...map.LAYOUTS.map(l => `view.${l}`)];
   for (const id of ids) { assert.equal(typeof pl[id], 'string', `pl ${id}`); assert.equal(typeof en[id], 'string', `en ${id}`); }
   assert.ok(!pl['bar.planned'].includes('map'), 'bar.planned no longer promises the map (it is here)');

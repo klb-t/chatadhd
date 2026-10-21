@@ -7,7 +7,9 @@
 // with status chips, the focus's why); search on the level; Szerzej/Węziej/Głębiej/Płycej change the budget and depth; the planned
 // buttons say so; the node card (P3): a ROM item's card, Ustawienia › Rozmowa › Temperatura with the whole chain, Zmień → Dla kogo? →
 // set for 'Ta rozmowa' (rules.set + the kernel's confirmation) and for 'Ty' (settings.set), 'Zdejmij wartość' (rules.disable), the chain
-// compared with graph.card after every write; Back closes the layers in order (card → steps → panel) through window.__loomBack. P4 adds the map.
+// compared with graph.card after every write; the map (P4): the same nodes as the list drawn through the view engine, a tap on a mark
+// shows the label line and opens the same card, + / − and a two-finger pinch zoom, the exclusion rectangle for the Android shell,
+// Widok ▾ saves navigator_layout; Back closes the layers in order (card → steps → panel) through window.__loomBack.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
@@ -59,7 +61,7 @@ try {
     status: li.querySelector('[data-testid="nav-status"]')?.textContent ?? null, why: li.querySelector(".gnav-why")?.textContent ?? "" })));
   const noMissingWord = async () => {
     const texts = await nav().locator("button, span, p, input").evaluateAll(els => els.map(el => el.textContent.trim()));
-    const leaked = texts.filter(t => /^(chip|count|bar|status|reason|evidence|card|search|no_|query)\.[a-z_]+/.test(t));
+    const leaked = texts.filter(t => /^(chip|count|bar|status|reason|evidence|card|search|no_|query|map|view|list)\.[a-z_]+/.test(t));
     assert.deepEqual(leaked, [], "no catalogue id on screen (a missing word would show its id)");
   };
   const layoutFits = async () => {
@@ -150,8 +152,8 @@ try {
     assert.ok((await budget()).includes(word("bar.budget", { limit: String(limit * 2), hops: String(rom.hops) })));
   });
 
-  await step("Perspektywa / Działania / Widok say they are planned; ⋯ opens the node card of a ROM item from graph.card", async () => {
-    for (const id of ["perspective", "actions", "view"]) {
+  await step("Perspektywa / Działania say they are planned; ⋯ opens the node card of a ROM item from graph.card", async () => {
+    for (const id of ["perspective", "actions"]) {   // Widok ▾ works since P4 (the map step below)
       await page.getByTestId(`nav-bar-${id}`).tap();
       assert.equal(await page.getByTestId("nav-bar-planned").innerText(), word("bar.planned", { what: word(`bar.${id}`) }));
       await page.getByTestId(`nav-bar-${id}`).tap();
@@ -298,6 +300,80 @@ try {
     assert.ok(rules.rules.every(r => r.disabled), "the rule is switched off, not deleted");
     await noMissingWord();
     await layoutFits();
+  });
+
+  await step("the map (P4): the same nodes as the list, a tap on a mark = label line + the same card, + / − and pinch zoom, the exclusion rect, Widok ▾ saves navigator_layout", async () => {
+    // both disclosures open (preset both), the map drawn through the view engine (sector system) with one mark per list row plus the focus
+    assert.equal(await nav().getAttribute("data-layout"), "both");
+    assert.equal(await page.getByTestId("nav-list-disclosure").getAttribute("data-state"), "expanded");
+    assert.equal(await page.getByTestId("nav-map-disclosure").getAttribute("data-state"), "expanded");
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-system"), "sector");
+    const rows = await rowsOf();
+    const focus = await nav().getAttribute("data-focus");
+    const markIds = await page.getByTestId("nav-map-mark").evaluateAll(els => els.map(el => el.dataset.id));
+    assert.deepEqual(new Set(markIds), new Set([focus, ...rows.map(r => r.address)]), "the map draws exactly the rows of the list and the focus");
+    assert.equal(await page.getByTestId("nav-map-hint").innerText(), word("map.hint"));
+    // the visible rectangle of the map, as reported to the shell (CSS px, inside the phone, with the 24 px side strips free)
+    // below the fold the map reports no rectangle (honest: nothing to protect); scrolled into view it reports its visible box
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-exclusion"), "[]", "off screen = no exclusion");
+    await page.getByTestId("nav-map").scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => JSON.parse(document.querySelector('[data-testid="nav-map"]').dataset.exclusion).length === 1);
+    const rect = JSON.parse(await page.getByTestId("nav-map").getAttribute("data-exclusion"));
+    assert.equal(rect.length, 1, "one rectangle while the map is open");
+    assert.ok(rect[0].x >= 24 && rect[0].x + rect[0].w <= 390 - 24 && rect[0].y >= 0 && rect[0].y + rect[0].h <= 844 && rect[0].h > 100, JSON.stringify(rect));
+    // + / − step the zoom; a two-finger pinch (pointer events, as a WebView delivers them) zooms by the finger distance
+    await page.getByTestId("nav-map-zoom-in").tap();
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "1.250");
+    await page.getByTestId("nav-map-zoom-out").tap();
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "1.000");
+    await page.getByTestId("nav-map").evaluate(el => {
+      const r = el.getBoundingClientRect();
+      const ev = (type, id, x, y) => el.dispatchEvent(new PointerEvent(type, { pointerId: id, pointerType: "touch", clientX: r.left + x, clientY: r.top + y, bubbles: true, isPrimary: id === 1 }));
+      ev("pointerdown", 1, 120, 150); ev("pointerdown", 2, 220, 150);
+      ev("pointermove", 1, 70, 150); ev("pointermove", 2, 270, 150);
+      ev("pointerup", 1, 70, 150); ev("pointerup", 2, 270, 150);
+    });
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "2.000", "fingers 100 px apart to 200 px apart doubles the zoom");
+    await page.getByTestId("nav-map-home").tap();   // ⌂: the camera home, so no node is lost after a pan or a pinch
+    assert.equal(await page.getByTestId("nav-map").getAttribute("data-zoom"), "1.000");
+    // a tap on the mark of the first row: the label line with the row's words and the same card as the row's ⋯ (graph.card of that address)
+    await page.getByTestId("card-close").tap().catch(() => {});
+    await page.getByTestId("node-card").waitFor({ state: "detached" });
+    const first = rows[0];
+    await page.getByTestId(`nav-map-node-${first.address}`).tap();
+    const selected = page.getByTestId("nav-map-selected");
+    assert.equal(await selected.getAttribute("data-address"), first.address);
+    assert.ok((await selected.innerText()).includes(first.label));
+    await page.getByTestId("node-card").waitFor();
+    assert.equal(await page.getByTestId("node-card").getAttribute("data-address"), first.address, "the mark opens the card of the same node as the list row");
+    await page.getByTestId("card-loading").waitFor({ state: "detached" });
+    const expected = await api("POST", "/api/graph/card", { lang: "pl", address: first.address });
+    assert.equal(await page.getByTestId("card-label").innerText(), expected.label);
+    await layoutFits(); await noMissingWord();
+    // Widok ▾: the three values of the field, chosen = applied at once and saved for you (settings.set navigator_layout)
+    await page.getByTestId("nav-bar-view").tap();
+    await page.getByTestId("nav-view-menu").waitFor();
+    for (const id of ["both", "list", "map"]) assert.equal(await page.getByTestId(`nav-view-${id}`).innerText(), word(`view.${id}`));
+    assert.equal(await page.getByTestId("nav-view-both").getAttribute("aria-checked"), "true");
+    await page.getByTestId("nav-view-map").tap();
+    await page.getByTestId("nav-view-menu").waitFor({ state: "detached" });
+    assert.equal(await nav().getAttribute("data-layout"), "map");
+    assert.equal(await page.getByTestId("nav-list-disclosure").getAttribute("data-state"), "collapsed");
+    assert.equal(await page.getByTestId("nav-map-disclosure").getAttribute("data-state"), "expanded");
+    await page.getByTestId("nav-view-note").waitFor();
+    assert.equal(await page.getByTestId("nav-view-note").innerText(), word("view.saved", { layout: word("view.map") }));
+    assert.equal((await api("GET", "/api/config")).navigator_layout, "map", "saved in config.json");
+    // the folded list is one tap away; back to both (restores the preset for the steps after)
+    await page.getByTestId("nav-list-disclosure").locator(".disclosure-head").tap();
+    assert.equal(await page.getByTestId("nav-list-disclosure").getAttribute("data-state"), "expanded");
+    await page.getByTestId("nav-bar-view").tap();
+    await page.getByTestId("nav-view-both").tap();
+    await page.getByTestId("nav-view-menu").waitFor({ state: "detached" });
+    await page.getByTestId("nav-view-note").filter({ hasText: word("view.saved", { layout: word("view.both") }) }).waitFor();   // the save is asynchronous
+    assert.equal((await api("GET", "/api/config")).navigator_layout, "both");
+    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-map.png") });
+    await layoutFits(); await noMissingWord();
+    assert.deepEqual(errors, [], "no page errors");
   });
 
   await step("Back closes the layers in order: the card, then each path step (Rozmowa → Profile i ustawienia → root), then the panel; at the root it falls through", async () => {

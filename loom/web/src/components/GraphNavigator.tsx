@@ -17,6 +17,7 @@ import { shellTranslator } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import { LAYOUTS, layoutOf, openByLayout, type Layout } from "./navigator-map";
+import { runOutcome } from "./node-card-state";
 import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
   initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState } from "./navigator-state";
 import "./graph-navigator.css";
@@ -98,7 +99,8 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
     if (!actions) { setViewNote(t("view.save_error", { reason: "actions_api_unavailable" })); return; }
     try {
       const run = await actions.run({ action: "settings.set", args: { key: "navigator_layout", value: next } });
-      setViewNote(run.status === "done" ? t("view.saved", { layout: t(`view.${next}`) }) : t("view.save_error", { reason: run.error?.message ?? run.status }));
+      // the same reading of a run as the card (completed = saved; anything else, a gate included, is said with the kernel's reason)
+      setViewNote(runOutcome(run, t).ok ? t("view.saved", { layout: t(`view.${next}`) }) : t("view.save_error", { reason: String(run.error?.message ?? run.error?.code ?? run.status) }));
     } catch (failure) { setViewNote(t("view.save_error", { reason: failure instanceof Error ? failure.message : String(failure) })); }
   };
   const focus = focusOf(state);

@@ -58,3 +58,19 @@ Otwarcie: dotknięcie wiersza-liścia `nav-row-<adres>` albo `nav-row-card-<adre
 Wstecz w karcie: zamyka najpierw wybór poziomu (`navigator-card-level`), potem edytor (`navigator-card-edit`), potem kartę (`navigator-card`), dopiero potem krok ścieżki. Krok karty dla `gate0` (po kroku ROM): `{"click": "nav-crumb-0"}, {"click": "nav-row-area:profiles_settings"}, {"click": "nav-row-group:rozmowa"}, {"click": "nav-row-setting:temperature"}, {"expect": "node-card"}, {"expect": "card-chain-person"}, {"click": "card-change"}, {"expect": "card-editor"}, {"click": "card-next"}, {"expect": "card-levels"}, {"back": true}, {"expect": "card-editor"}, {"back": true}, {"expect": "node-card"}, {"back": true}, {"absent": "node-card"}`.
 
 Wstecz (`window.__loomBack()`): zamyka najpierw pole szukania (jeśli otwarte), potem ostatni krok ścieżki (`navigator-step-<i>`), potem panel (`panel`); w korzeniu czatu zwraca `false`. Krok ROM dla `gate0`: `{"click": "shell-menu-toggle"}, {"click": "shell-menu-graph"}, {"wait": "nav-rows"}, {"click": "nav-row-area:rom"}, {"wait": "nav-focus-why"}` → `{"tid": "nav-status", "min": 1}`, liczba `nav-row-rom:*` = liczba wpisów `rom.pack` (nie literał).
+
+## Nawigator — mapa i Widok ▾ (paczka P4, `loom/web/src/components/NavigatorMap.tsx`; e2e `loom/web/e2e/m1-navigator-native.mjs`, krok mapy)
+
+Lista i mapa są jedna pod drugą w `gnav-body`, każda w `Disclosure` (`data-state` = `collapsed`/`expanded`, nagłówek `.disclosure-head` 44 px). Które są otwarte na start mówi `navigator_layout` (`data-layout` nawigatora: `both`/`list`/`map`). Adres węzła jest w testid-zie znaku (korzeń grafu = `root`).
+
+| ekran | testid | znaczenie |
+|---|---|---|
+| zwijanie | `nav-list-disclosure`, `nav-map-disclosure` (`data-state`) | „Pokaż/Ukryj listę”, „Pokaż/Ukryj mapę”; dotknięcie `.disclosure-head` przełącza |
+| mapa | `nav-map-wrap`, `nav-map` (`data-zoom` np. `1.000`, `data-marks`, `data-system` = `sector`, `data-exclusion` = JSON prostokątów w CSS px) | płótno 300 px; `data-exclusion` = to, co poszło do `LoomBridge.setGestureExclusion` (`[]` gdy zwinięta albo poza ekranem) |
+| znak | `nav-map-mark` (`data-id`, `data-focus`, `data-selected`) w SVG; przycisk `nav-map-node-<adres>` (`aria-pressed`) | kółko węzła i jego niewidzialny cel 44 px; dotknięcie = linia pod mapą + karta `node-card` (`data-address` = adres) |
+| przyciski | `nav-map-zoom-in`, `nav-map-zoom-out`, `nav-map-home` | `+` ×1,25, `−` ÷1,25, `⌂` środek i 1:1 |
+| pod mapą | `nav-map-selected` (`data-address`), `nav-map-enter`, `nav-map-hint`, `nav-map-unplaced` | etykieta + licznik + chip dotkniętego węzła; „Wejdź ›” (gdy ma dzieci); podpowiedź gestów (gdy nic nie wybrano); węzły bez położenia (nie zdarza się na układzie `sector`) |
+| Widok ▾ | `nav-bar-view` (`aria-expanded`), `nav-view-menu`, `nav-view-both` / `nav-view-list` / `nav-view-map` (`aria-checked`), `nav-view-note` | menu z trzema wartościami pola `navigator_layout`; wybór działa od razu i zapisuje się (`settings.set`); linia „Zapisane dla Ciebie: …” albo powód |
+
+Wstecz: otwarte menu Widok ▾ jest warstwą `navigator-view` (zamyka się pierwsze), potem karta, potem kroki ścieżki. Krok mapy dla `gate0` (propozycja): `shell-menu-toggle` → `shell-menu-graph` → `nav-row-area:rom` → `nav-map-node-rom:boot` → `expect node-card`, `nav-map-selected text /./`, `nav-map min 1`.
+

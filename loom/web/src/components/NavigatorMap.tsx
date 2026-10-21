@@ -90,8 +90,8 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
     if (e.pointerType === "mouse" && e.button !== 0) return;
     const p = local(e);
     pointers.current.set(e.pointerId, p);
-    box.current?.setPointerCapture?.(e.pointerId);
-    if (pointers.current.size === 1) gesture.current = { kind: "pan", from: p, cam, moved: false };
+    try { box.current?.setPointerCapture(e.pointerId); } catch { /* a synthetic pointer (tests, some WebViews) cannot be captured; the move still arrives by bubbling */ }
+    if (pointers.current.size === 1) { gesture.current = { kind: "pan", from: p, cam, moved: false }; dragged.current = false; }
     else if (pointers.current.size === 2) {
       const [ia, ib] = [...pointers.current.keys()] as [number, number];
       gesture.current = { kind: "pinch", a0: pointers.current.get(ia)!, b0: pointers.current.get(ib)!, ids: [ia, ib], cam };
@@ -151,6 +151,7 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
         <div className="gnav-map-zoom">
           <button type="button" className="gnav-map-btn" data-testid="nav-map-zoom-in" aria-label={t("map.zoom_in")} onClick={() => zoomStep(ZOOM_STEP_PRESET)}>+</button>
           <button type="button" className="gnav-map-btn" data-testid="nav-map-zoom-out" aria-label={t("map.zoom_out")} onClick={() => zoomStep(1 / ZOOM_STEP_PRESET)}>−</button>
+          <button type="button" className="gnav-map-btn gnav-map-home" data-testid="nav-map-home" aria-label={t("map.home")} onClick={() => setCam(CAMERA_HOME)}>⌂</button>
         </div>
       </div>
       {selectedRow ? <div className="gnav-map-selected" data-testid="nav-map-selected" data-address={selectedRow.address}>

@@ -1586,7 +1586,7 @@
             "map.aria": "The map of this level: the focus in the middle, its items around it",
             "map.zoom_in": "Zoom the map in",
             "map.zoom_out": "Zoom the map out",
-            "map.hint": "Tap a circle to see its name and card. One finger moves the map, two fingers (or + / −) zoom.",
+            "map.hint": "Tap a circle to see its name and card. One finger moves the map, two fingers (or + / −) zoom, ⌂ returns to the centre.",
             "map.enter": "Enter",
             "map.unplaced": "{{count}} with no place on the map (the layout gave them no position) — they are on the list",
             "view.title": "View: what to draw on this screen",
@@ -1594,7 +1594,8 @@
             "view.list": "List only (the map folded, one tap unfolds it)",
             "view.map": "Map only (the list folded, one tap unfolds it)",
             "view.saved": "Saved for you: {{layout}} (the setting navigator_layout)",
-            "view.save_error": "The choice could not be saved: {{reason}} — it works on this screen, but the preset returns when you open it again"
+            "view.save_error": "The choice could not be saved: {{reason}} — it works on this screen, but the preset returns when you open it again",
+            "map.home": "Back to the centre of the map (zoom 1:1)"
           },
           "pl": {
             "title": "Graf",
@@ -1861,7 +1862,7 @@
             "map.aria": "Mapa tego poziomu: ognisko w środku, jego elementy dookoła",
             "map.zoom_in": "Powiększ mapę",
             "map.zoom_out": "Pomniejsz mapę",
-            "map.hint": "Dotknij kółka, by zobaczyć nazwę i kartę. Jeden palec przesuwa mapę, dwa palce (albo + / −) powiększają.",
+            "map.hint": "Dotknij kółka, by zobaczyć nazwę i kartę. Jeden palec przesuwa mapę, dwa palce (albo + / −) powiększają, ⌂ wraca do środka.",
             "map.enter": "Wejdź",
             "map.unplaced": "{{count}} bez miejsca na mapie (układ nie dał im położenia) — są na liście",
             "view.title": "Widok: co rysować na tym ekranie",
@@ -1869,7 +1870,8 @@
             "view.list": "Tylko lista (mapa zwinięta, rozwiniesz ją jednym dotknięciem)",
             "view.map": "Tylko mapa (lista zwinięta, rozwiniesz ją jednym dotknięciem)",
             "view.saved": "Zapisane dla Ciebie: {{layout}} (ustawienie navigator_layout)",
-            "view.save_error": "Nie udało się zapisać wyboru: {{reason}} — na tym ekranie działa, ale po ponownym otwarciu wróci preset"
+            "view.save_error": "Nie udało się zapisać wyboru: {{reason}} — na tym ekranie działa, ale po ponownym otwarciu wróci preset",
+            "map.home": "Wróć do środka mapy (powiększenie 1:1)"
           }
         }
       }
