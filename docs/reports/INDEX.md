@@ -1487,3 +1487,58 @@ budowy cmake nie uruchamiano (dysk zajęty przez bramkę gdzie indziej).
 ### S1 — na wtorek: przerywane zerwanie połączenia przy logowaniu nowego konta (2026-10-17)
 
 - `loom/web/e2e/first-steps-ui.mjs` (grupa „390x800: the first message after the sign-in…”): po `loom-server user add` przy działającym serwerze `POST /api/auth/login` czasem kończy się „SocketError: other side closed” (serwer zamyka połączenie bez odpowiedzi). Odtworzone 1/3 na drzewie M1-K0 i 3/4 na kompilacji sprzed D1/K0 (worktree extract, binarka z 5d854605) — błąd wcześniejszy, nie K0. Bramka K0 była zielona poza tym testem; K0 wszedł na main z tym zapisem. Do zbadania: wyścig między procesem CLI `user add` a serwerem na magazynie kont, albo zamknięcie gniazda przy błędzie w obsłudze logowania (brak wpisu w logu serwera w teście).
+
+## S1 — kontrola marnotrawstwa: cztery zasady od GPT + pomiary (2026-10-21)
+
+Właściciel przekazał podsumowanie rozmowy z GPT: (1) trwałe checkpointy, (2) małe samodzielne
+pakiety pracy, (3) adaptacyjna równoległość bez arbitralnego limitu, (4) telemetria limitów;
+słowa dosłownie w `SLOWA_WLASCICIELA_2026-10-16.md`, Uzupełnienie 5. Dał wolną rękę w tym,
+co dotyczy S1. Zmierzone (z zapisów agentów workflow K0, sesja S1 i zdarzeń limitów):
+
+- **Koszt agenta rośnie z kwadratem jego długości**, bo każdy ruch czyta cały kontekst. Stały
+  przedrostek świeżego agenta ≈ 60 tys. tokenów (≈ 40,5 tys. z cache + ≈ 19,5 tys. nowych);
+  agent K0 `impl` miał 501 ruchów i średnio 365 tys. kontekstu (183 mln odczytów z cache),
+  `fix:r1` 549 ruchów i 214 mln, każdy z trzech recenzentów 28–38 mln; 30 agentów
+  „refute” (3–18 ruchów) razem ≈ 9 mln. **98 % odczytów całego workflow siedziało w pięciu
+  długich agentach, nie w liczbie agentów.** Kontekst rósł liniowo, 1,2–1,5 tys./ruch (agent
+  W0 w pierwszym podejściu: ≈ 4 tys./ruch, 276 tys. po 54 ruchach i zero commitów).
+- **Model (nie pomiar):** gdyby ten sam agent z 319 ruchami restartować co N ruchów z kartą
+  wznowienia (25 tys. na odczyt karty i plików), „równoważniki odczytów” spadają o 35 % przy
+  N = 150, 45 % przy 100, ok. 50 % przy 25–75; optimum blisko 50. Założenia: wzrost kontekstu
+  w pakiecie taki jak zmierzony, zapis do cache 1 h = 20 × odczyt (stosunek cen API; wagi
+  limitu subskrypcji nie znam), restart nie traci jakości. Do sprawdzenia na pierwszym pełnym
+  przebiegu pakietowym.
+- **Telemetria istnieje:** zdarzenie `rate_limit_event` ma wprost zużycie okna 5 h i tygodnia
+  (`docs/reports/LIMITS_LEDGER.md`). Pierwszy odczyt: 11 % okna po 24 minutach, tempo
+  ≈ 0,6–0,8 pkt/min przy trzech agentach, a do końca okna stać nas na ≈ 0,32 pkt/min.
+- **Luka w checkpointach:** gałęzie robocze `claude/m1-w0`, `claude/fix-login-drop`,
+  `claude/p39-design` istniały tylko w kontenerze sesji (kontener jest ulotny); `claude/p39-design`
+  wypchnięta (równa `main`), reszta czeka na pierwsze commity agentów.
+
+Decyzje (dla każdej: jak cofnąć):
+
+1. **Checkpointy** — agenci commitują po każdym kawałku (już w RULES skryptów); skrypty
+   workflow są kopiowane do `tools/workflows/` (brief = wejście pakietu). **Automatyczne
+   wypychanie po każdym commicie (hak `post-commit`) jest w repo, ale NIEAKTYWNE:** zainstalowałem
+   je i przetestowałem na lokalnym repozytorium (gałąź robocza i drugi worktree wypychane,
+   `main` nie, commit ze ścieżką prywatną odmówiony i blokuje kolejne, brak wymuszania),
+   po czym system uprawnień uznał automatyczne wypychanie za nieautoryzowaną trwałość, więc
+   usunąłem aktywną kopię. Włączenie = decyzja właściciela (tak/nie, pytanie w czacie):
+   `sh tools/install_checkpoint_hook.sh`; wyłączenie: usunąć `.git/hooks/post-commit` lub
+   `git config chatadhd.checkpointPush false`. Do czasu odpowiedzi wypycham gałęzie robocze
+   ręcznie przy każdym powiadomieniu o zakończeniu agenta.
+2. **Małe pakiety** — M1-W0 zatrzymane w pierwszym podejściu (jeden agent, 276 tys. kontekstu,
+   brak commita po 13 min; jego zmiany zachowane jako commit WIP `4198dd88`) i puszczone od nowa
+   jako 7 pakietów po ~50 wywołań narzędzi z kartą wznowienia (`tools/workflows/m1-w0-packages.js`);
+   recenzenci po kolei, naprawy w paczkach po 5 znalezisk. Preset „~50 wywołań” to preset.
+   Cofnięcie: stary skrypt `m1-w0-screens.js` (nie ma go w repo, bo został zastąpiony).
+3. **Równoległość** — bez stałego limitu liczby agentów: kryterium to linia tempa okna 5 h
+   i zmierzony koszt agenta (`LIMITS_LEDGER.md`). Do czasu kalibracji preset: do 3 agentów,
+   recenzenci jeden po drugim (agenci jednego workflow z tym samym przedrostkiem czytają go
+   z cache, równoległa salwa płaci zapis N razy — hipoteza do zmierzenia). Zasada ×10
+   zostaje. Cofnięcie: wrócić do „pojedynczo” z CLAUDE.md (PC43).
+4. **Telemetria** — dziennik próbek w `LIMITS_LEDGER.md`, dopisywany przy powiadomieniach.
+   Ograniczenie: odczyt tylko z sesji, nie ze skryptów.
+5. **Własne pomysły** — dwie formy marnotrawstwa (przepalenie okna i niewykorzystanie go);
+   które okno wiąże (5 h czy tydzień) rozstrzygają kolejne próbki; długość agenta, nie jego
+   liczba, jest główną dźwignią kosztu.

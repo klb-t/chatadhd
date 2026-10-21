@@ -70,6 +70,23 @@ Co z tego wynika:
 - **Kontrola dokumentacji (Claude, 2026-10-21):** w repozytorium i na wszystkich 191 gałęziach nie ma rozmowy wideo z awatarem 3D asystenta ani pomysłu ominięcia doliny niesamowitości przez złamanie hiperrealizmu artefaktami; jest tylko „pitching agent / avatar — presentation/agent UI pack, later” (`MEGA_MASTER_2026-09-16.md:464`, `loom/data/profiles/self.json:387`, `ECOSYSTEM.md:27`) i „full-duplex voice/avatar later” (`MEGA_MASTER:639`). W zebranych 1148 uwagach (805 + 351) też go nie ma. Przekazanie GPT (§10) wspomina rozmowy z grudnia 2025 i czerwca 2026 o agencie-piczerze (awatar z grafu wiedzy, reżyserka, widoczna degradacja złożoności awatara, „celowo widoczna sztuczność”) i zastrzega, że oryginalnego raportu nie sprawdzono. Źródło leży więc w prywatnych eksportach właściciela, które agenci nie czytają (reguła: `docs/exports` poza zasięgiem) — do wyciągnięcia narzędziem X-Port po stronie właściciela albo za jego zgodą.
 - **Wymaganie zapisane z pamięci właściciela (do potwierdzenia na źródle):** AV01 — awatar-asystent 3D w rozmowie wideo; omijanie doliny niesamowitości **nie przez dopracowany hiperrealizm, tylko przez jego świadome łamanie widocznymi artefaktami** (sztuczność jako cecha, nie wada); spójne z „celowo widoczna sztuczność postaci, bez przymusowego antropomorfizmu” i z „widoczną degradacją złożoności awatara” z przekazania GPT §10.
 
+
+## Uzupełnienie 5 — 2026-10-21: zasady ograniczania marnotrawstwa (z rozmowy z GPT) i pytanie o kompresję kontekstu
+
+> w ogóle to z GPT rozmawialiśmy i zastanawialiśmy się jak ograniczyć marnotrawstwo, Tak on to podsumował ja nie pamiętam czy coś jeszcze nie było:
+> Ustaliliśmy kilka zasad:
+> 1. Trwałe checkpointy. Każdy sensowny przyrost powinien być zapisywany na dysku lub w Git, wraz ze stanem zadania, wynikami eksperymentów i instrukcją wznowienia. Nie wolno polegać wyłącznie na kontekście agenta.
+> 2. Małe, samodzielne pakiety pracy. Zadania powinny mieć jasno określone wejście, rezultat i kryteria odbioru. Dzięki temu przerwanie jednego pakietu nie niszczy całej sesji.
+> 3. Adaptacyjna równoległość. Bez arbitralnego limitu liczby podagentów. Ich liczbę, modele i wielkość zadań dobiera się do zmierzonego kosztu, dostępnego budżetu i ryzyka przerwania.
+> 4. Telemetria limitów. Rozważaliśmy wykorzystanie interfejsu codex app-server do odczytywania dostępnych informacji o zużyciu i resetach limitów, zamiast szacowania ich wyłącznie na podstawie liczby tokenów.
+> uwzględnij co się może tyczyć ciebie i się przydać. jeśli masz swój potencjalnie lepszy pomysł, to masz wolną rękę. dopiero odświeżyliśmy sesję, nie będę kompresował kontekstu, bo już jest skierowany, A trochę wartościowych rzeczy ma, dobrze myślę?
+> *zcache'owany
+
+Co z tego wynika:
+- **Zasady 1–4 przyjęte dla S1**, z pomiarami i decyzjami w `docs/reports/INDEX.md` („S1 — kontrola marnotrawstwa”), skrót w `CLAUDE.md` („Working with subagents”), dziennik limitów w `docs/reports/LIMITS_LEDGER.md`. „Nie pamiętam, czy coś jeszcze nie było” — w repozytorium nie ma dalszego ciągu tej rozmowy; jeśli była piąta zasada, potrzebne jest jej brzmienie.
+- **Zasada 3 zmienia dotychczasowe „pojedynczo”** (PC43, 2026-10-10): kryterium jest zmierzony koszt i tempo okna, nie liczba. Zasada ×10 (zgoda właściciela przy wzroście zużycia o rząd wielkości) zostaje.
+- **Pytanie o kompresję kontekstu** — odpowiedź w czacie: słusznie nie kompresować, ale z innego powodu niż „zcache'owany” i „wartościowy”; wartościowe rzeczy powinny leżeć w plikach (zasada 1), nie w kontekście.
+
 ---
 
 # Filozofia (`philosophy`)
