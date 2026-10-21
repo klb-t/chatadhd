@@ -1,0 +1,1080 @@
+{
+ "schema": "loom.extract.ui_labels/1",
+ "description": "Human labels of the names the engine speaks in (parameter names, enum values, parameter types, node kinds, viewer formats), for forms and lists on a phone: the engine key stays the value that is sent, only the shown text changes. A name missing here is shown as it is. Roots have theirs in commander/layout.json#root_labels. `nouns`: the forms of counted nouns (one / few / many; the rule that picks one is plural.py, the same as Pl.kt on the phone). `effects`: the sentences that say in plain words what an edit or a ready recipe changed or would change (effects.py).",
+ "params": {
+  "against": {
+   "pl": "porównaj z",
+   "en": "compare against"
+  },
+  "aggregate": {
+   "pl": "tylko zbiorczo (bez ścieżek)",
+   "en": "aggregate only (no paths)"
+  },
+  "anonymise": {
+   "pl": "anonimizuj",
+   "en": "anonymise"
+  },
+  "args": {
+   "pl": "argumenty",
+   "en": "arguments"
+  },
+  "at": {
+   "pl": "w (data lub czas)",
+   "en": "at (date or time)"
+  },
+  "attachments": {
+   "pl": "załączniki",
+   "en": "attachments"
+  },
+  "branches": {
+   "pl": "gałęzie",
+   "en": "branches"
+  },
+  "bucket": {
+   "pl": "przedział czasu",
+   "en": "time bucket"
+  },
+  "burst_ratio": {
+   "pl": "próg serii (stosunek)",
+   "en": "burst ratio"
+  },
+  "by": {
+   "pl": "według",
+   "en": "by"
+  },
+  "candidates": {
+   "pl": "liczba kandydatów",
+   "en": "candidates"
+  },
+  "cascade": {
+   "pl": "kaskada",
+   "en": "cascade"
+  },
+  "cluster": {
+   "pl": "klaster",
+   "en": "cluster"
+  },
+  "combine": {
+   "pl": "sposób łączenia",
+   "en": "combine"
+  },
+  "context": {
+   "pl": "kontekst",
+   "en": "context"
+  },
+  "continuations": {
+   "pl": "kontynuacje",
+   "en": "continuations"
+  },
+  "conversation": {
+   "pl": "rozmowa",
+   "en": "conversation"
+  },
+  "criteria": {
+   "pl": "kryteria",
+   "en": "criteria"
+  },
+  "day_zone": {
+   "pl": "strefa dnia",
+   "en": "day zone"
+  },
+  "decision": {
+   "pl": "decyzja",
+   "en": "decision"
+  },
+  "decisions": {
+   "pl": "decyzje",
+   "en": "decisions"
+  },
+  "dictionary": {
+   "pl": "słownik",
+   "en": "dictionary"
+  },
+  "duplicate_lines": {
+   "pl": "powtórzone linie",
+   "en": "duplicate lines"
+  },
+  "edit": {
+   "pl": "edycja",
+   "en": "edit"
+  },
+  "estimate": {
+   "pl": "szacunek",
+   "en": "estimate"
+  },
+  "explain": {
+   "pl": "wyjaśnienia",
+   "en": "explanations"
+  },
+  "expr": {
+   "pl": "wyrażenie",
+   "en": "expression"
+  },
+  "expression": {
+   "pl": "szablon wyrażenia",
+   "en": "expression template"
+  },
+  "extract_text": {
+   "pl": "wyciągnij tekst",
+   "en": "extract text"
+  },
+  "field": {
+   "pl": "pole",
+   "en": "field"
+  },
+  "flags": {
+   "pl": "flagi (np. i, m)",
+   "en": "flags"
+  },
+  "flow": {
+   "pl": "przepływ",
+   "en": "flow"
+  },
+  "from": {
+   "pl": "z",
+   "en": "from"
+  },
+  "function": {
+   "pl": "funkcja",
+   "en": "function"
+  },
+  "gap_days": {
+   "pl": "przerwa (dni)",
+   "en": "gap (days)"
+  },
+  "grain": {
+   "pl": "ziarnistość",
+   "en": "grain"
+  },
+  "granularity": {
+   "pl": "ziarnistość",
+   "en": "granularity"
+  },
+  "graph": {
+   "pl": "graf",
+   "en": "graph"
+  },
+  "identity": {
+   "pl": "tożsamość",
+   "en": "identity"
+  },
+  "in": {
+   "pl": "w",
+   "en": "in"
+  },
+  "into": {
+   "pl": "do",
+   "en": "into"
+  },
+  "item": {
+   "pl": "element",
+   "en": "item"
+  },
+  "items": {
+   "pl": "elementy",
+   "en": "items"
+  },
+  "keep_raw": {
+   "pl": "zachowaj surowe dane",
+   "en": "keep raw data"
+  },
+  "key": {
+   "pl": "klucz",
+   "en": "key"
+  },
+  "kind": {
+   "pl": "rodzaj",
+   "en": "kind"
+  },
+  "kinds": {
+   "pl": "rodzaje",
+   "en": "kinds"
+  },
+  "leaf": {
+   "pl": "liść (końcowa nazwa)",
+   "en": "leaf"
+  },
+  "level": {
+   "pl": "poziom",
+   "en": "level"
+  },
+  "links": {
+   "pl": "powiązania",
+   "en": "links"
+  },
+  "main_ref": {
+   "pl": "główny odnośnik",
+   "en": "main reference"
+  },
+  "map": {
+   "pl": "mapa zamian",
+   "en": "map"
+  },
+  "max_clusters": {
+   "pl": "maks. klastrów",
+   "en": "max clusters"
+  },
+  "message": {
+   "pl": "wiadomość",
+   "en": "message"
+  },
+  "messages_only": {
+   "pl": "tylko wiadomości",
+   "en": "messages only"
+  },
+  "mime": {
+   "pl": "typ pliku (MIME)",
+   "en": "type (MIME)"
+  },
+  "min_base64": {
+   "pl": "min. długość base64",
+   "en": "min. base64 length"
+  },
+  "min_conversations": {
+   "pl": "min. rozmów",
+   "en": "min. conversations"
+  },
+  "min_corrections": {
+   "pl": "min. poprawek",
+   "en": "min. corrections"
+  },
+  "min_escapes": {
+   "pl": "min. sekwencji ucieczki",
+   "en": "min. escapes"
+  },
+  "min_hex": {
+   "pl": "min. długość hex",
+   "en": "min. hex length"
+  },
+  "min_percent": {
+   "pl": "min. procent",
+   "en": "min. percent"
+  },
+  "min_similarity": {
+   "pl": "min. podobieństwo",
+   "en": "min. similarity"
+  },
+  "min_size": {
+   "pl": "min. rozmiar",
+   "en": "min. size"
+  },
+  "missing": {
+   "pl": "brakujące",
+   "en": "missing"
+  },
+  "mode": {
+   "pl": "tryb",
+   "en": "mode"
+  },
+  "model": {
+   "pl": "model",
+   "en": "model"
+  },
+  "model_count": {
+   "pl": "liczba modeli",
+   "en": "model count"
+  },
+  "module": {
+   "pl": "moduł",
+   "en": "module"
+  },
+  "n": {
+   "pl": "liczba (n)",
+   "en": "n"
+  },
+  "name": {
+   "pl": "nazwa",
+   "en": "name"
+  },
+  "nested_limit": {
+   "pl": "limit zagnieżdżenia (bajty)",
+   "en": "nested limit (bytes)"
+  },
+  "newest_wins": {
+   "pl": "wygrywa najnowsze",
+   "en": "newest wins"
+  },
+  "of": {
+   "pl": "w",
+   "en": "of"
+  },
+  "on_forks": {
+   "pl": "przy rozgałęzieniach",
+   "en": "on forks"
+  },
+  "order": {
+   "pl": "kolejność",
+   "en": "order"
+  },
+  "origin": {
+   "pl": "początek odliczania",
+   "en": "origin"
+  },
+  "package": {
+   "pl": "pakiet",
+   "en": "package"
+  },
+  "params": {
+   "pl": "parametry",
+   "en": "parameters"
+  },
+  "path": {
+   "pl": "ścieżka",
+   "en": "path"
+  },
+  "pattern": {
+   "pl": "wzorzec",
+   "en": "pattern"
+  },
+  "per_turn": {
+   "pl": "na turę",
+   "en": "per turn"
+  },
+  "preset": {
+   "pl": "preset",
+   "en": "preset"
+  },
+  "preview": {
+   "pl": "tylko podgląd",
+   "en": "preview only"
+  },
+  "profile": {
+   "pl": "profil",
+   "en": "profile"
+  },
+  "profiles": {
+   "pl": "profile",
+   "en": "profiles"
+  },
+  "reason": {
+   "pl": "powód",
+   "en": "reason"
+  },
+  "redaction": {
+   "pl": "redakcja",
+   "en": "redaction"
+  },
+  "regex": {
+   "pl": "wyrażenia regularne",
+   "en": "regular expressions"
+  },
+  "remove": {
+   "pl": "usuń",
+   "en": "remove"
+  },
+  "replacement": {
+   "pl": "zamiennik",
+   "en": "replacement"
+  },
+  "repos": {
+   "pl": "repozytoria",
+   "en": "repositories"
+  },
+  "reverse": {
+   "pl": "odwrotnie",
+   "en": "reverse"
+  },
+  "session_source": {
+   "pl": "źródło sesji",
+   "en": "session source"
+  },
+  "sessions": {
+   "pl": "sesje",
+   "en": "sessions"
+  },
+  "shift": {
+   "pl": "przesunięcie",
+   "en": "shift"
+  },
+  "skip_session_side_files": {
+   "pl": "pomiń pliki boczne sesji",
+   "en": "skip session side files"
+  },
+  "stale_output": {
+   "pl": "nieaktualne wyniki",
+   "en": "stale output"
+  },
+  "state": {
+   "pl": "stan",
+   "en": "state"
+  },
+  "steps": {
+   "pl": "kroki",
+   "en": "steps"
+  },
+  "summaries": {
+   "pl": "podsumowania",
+   "en": "summaries"
+  },
+  "summary_only": {
+   "pl": "tylko podsumowanie",
+   "en": "summary only"
+  },
+  "table": {
+   "pl": "tabela",
+   "en": "table"
+  },
+  "tag": {
+   "pl": "etykieta",
+   "en": "tag"
+  },
+  "terms": {
+   "pl": "frazy",
+   "en": "terms"
+  },
+  "text": {
+   "pl": "tekst",
+   "en": "text"
+  },
+  "threshold": {
+   "pl": "próg",
+   "en": "threshold"
+  },
+  "time_format": {
+   "pl": "format czasu",
+   "en": "time format"
+  },
+  "title": {
+   "pl": "tytuł",
+   "en": "title"
+  },
+  "to": {
+   "pl": "do",
+   "en": "to"
+  },
+  "tool_attribution": {
+   "pl": "przypisanie narzędzi",
+   "en": "tool attribution"
+  },
+  "top_terms": {
+   "pl": "najczęstsze frazy",
+   "en": "top terms"
+  },
+  "unit": {
+   "pl": "rozmowa (id)",
+   "en": "unit (conversation id)"
+  },
+  "units_snapshot": {
+   "pl": "migawka rozmów",
+   "en": "units snapshot"
+  },
+  "value": {
+   "pl": "wartość",
+   "en": "value"
+  },
+  "where": {
+   "pl": "gdzie",
+   "en": "where"
+  },
+  "zip": {
+   "pl": "spakuj do zip",
+   "en": "zip"
+  },
+  "zone": {
+   "pl": "strefa czasowa",
+   "en": "time zone"
+  }
+ },
+ "values": {
+  "all": {
+   "pl": "wszystkie",
+   "en": "all"
+  },
+  "all_paths": {
+   "pl": "wszystkie ścieżki",
+   "en": "all paths"
+  },
+  "ambiguous": {
+   "pl": "niejednoznaczne",
+   "en": "ambiguous"
+  },
+  "attachment": {
+   "pl": "załącznik",
+   "en": "attachment"
+  },
+  "auto": {
+   "pl": "automatycznie",
+   "en": "auto"
+  },
+  "block": {
+   "pl": "blok",
+   "en": "block"
+  },
+  "changed": {
+   "pl": "zmienione",
+   "en": "changed"
+  },
+  "chars": {
+   "pl": "znaki",
+   "en": "characters"
+  },
+  "content_hash": {
+   "pl": "skrót treści",
+   "en": "content hash"
+  },
+  "conversation": {
+   "pl": "rozmowa",
+   "en": "conversation"
+  },
+  "conversations": {
+   "pl": "rozmowy",
+   "en": "conversations"
+  },
+  "copy_all": {
+   "pl": "kopiuj wszystkie",
+   "en": "copy all"
+  },
+  "copy_used": {
+   "pl": "kopiuj użyte",
+   "en": "copy used"
+  },
+  "created": {
+   "pl": "utworzenia",
+   "en": "created"
+  },
+  "current": {
+   "pl": "bieżąca",
+   "en": "current"
+  },
+  "date": {
+   "pl": "data",
+   "en": "date"
+  },
+  "day": {
+   "pl": "dzień",
+   "en": "day"
+  },
+  "estimate": {
+   "pl": "szacunek",
+   "en": "estimate"
+  },
+  "every_n": {
+   "pl": "co n-ty",
+   "en": "every n"
+  },
+  "exclude": {
+   "pl": "wyklucz",
+   "en": "exclude"
+  },
+  "ext_id": {
+   "pl": "id zewnętrzne",
+   "en": "external id"
+  },
+  "first_message": {
+   "pl": "pierwszej wiadomości",
+   "en": "first message"
+  },
+  "full": {
+   "pl": "pełne",
+   "en": "full"
+  },
+  "include": {
+   "pl": "włącz",
+   "en": "include"
+  },
+  "keep": {
+   "pl": "zachowaj",
+   "en": "keep"
+  },
+  "last": {
+   "pl": "ostatnie",
+   "en": "last"
+  },
+  "last_message": {
+   "pl": "ostatniej wiadomości",
+   "en": "last message"
+  },
+  "longest": {
+   "pl": "najdłuższa",
+   "en": "longest"
+  },
+  "marked": {
+   "pl": "oznaczona",
+   "en": "marked"
+  },
+  "max": {
+   "pl": "maksimum",
+   "en": "max"
+  },
+  "message": {
+   "pl": "wiadomość",
+   "en": "message"
+  },
+  "messages": {
+   "pl": "wiadomości",
+   "en": "messages"
+  },
+  "month": {
+   "pl": "miesiąc",
+   "en": "month"
+  },
+  "newest": {
+   "pl": "najnowsza",
+   "en": "newest"
+  },
+  "none": {
+   "pl": "brak",
+   "en": "none"
+  },
+  "only_new": {
+   "pl": "tylko nowe",
+   "en": "only new"
+  },
+  "package": {
+   "pl": "pakiet",
+   "en": "package"
+  },
+  "parent": {
+   "pl": "rodzic",
+   "en": "parent"
+  },
+  "path": {
+   "pl": "ścieżka",
+   "en": "path"
+  },
+  "reference_only": {
+   "pl": "tylko odnośniki",
+   "en": "reference only"
+  },
+  "refuse": {
+   "pl": "odmów",
+   "en": "refuse"
+  },
+  "remove": {
+   "pl": "usuń",
+   "en": "remove"
+  },
+  "removed": {
+   "pl": "usunięte",
+   "en": "removed"
+  },
+  "replace": {
+   "pl": "zastąp",
+   "en": "replace"
+  },
+  "selection": {
+   "pl": "zaznaczenie",
+   "en": "selection"
+  },
+  "skip": {
+   "pl": "pomiń",
+   "en": "skip"
+  },
+  "split": {
+   "pl": "podziel",
+   "en": "split"
+  },
+  "sum": {
+   "pl": "suma",
+   "en": "sum"
+  },
+  "tiktoken": {
+   "pl": "tiktoken",
+   "en": "tiktoken"
+  },
+  "title": {
+   "pl": "tytułu",
+   "en": "title"
+  },
+  "tree": {
+   "pl": "drzewo",
+   "en": "tree"
+  },
+  "unchanged": {
+   "pl": "bez zmian",
+   "en": "unchanged"
+  },
+  "updated": {
+   "pl": "aktualizacji",
+   "en": "updated"
+  },
+  "week": {
+   "pl": "tydzień",
+   "en": "week"
+  }
+ },
+ "types": {
+  "any": {
+   "pl": "dowolna wartość",
+   "en": "any value"
+  },
+  "bool": {
+   "pl": "tak / nie",
+   "en": "yes / no"
+  },
+  "enum": {
+   "pl": "wybór",
+   "en": "choice"
+  },
+  "expr": {
+   "pl": "wyrażenie",
+   "en": "expression"
+  },
+  "field": {
+   "pl": "pole",
+   "en": "field"
+  },
+  "id": {
+   "pl": "identyfikator",
+   "en": "id"
+  },
+  "int": {
+   "pl": "liczba całkowita",
+   "en": "integer"
+  },
+  "list": {
+   "pl": "lista, po przecinku",
+   "en": "list, comma-separated"
+  },
+  "mode": {
+   "pl": "tryb",
+   "en": "mode"
+  },
+  "number": {
+   "pl": "liczba",
+   "en": "number"
+  },
+  "object": {
+   "pl": "obiekt JSON",
+   "en": "JSON object"
+  },
+  "path": {
+   "pl": "ścieżka",
+   "en": "path"
+  },
+  "paths": {
+   "pl": "lista ścieżek",
+   "en": "list of paths"
+  },
+  "regex": {
+   "pl": "wyrażenie regularne",
+   "en": "regular expression"
+  },
+  "string": {
+   "pl": "tekst",
+   "en": "text"
+  },
+  "strings": {
+   "pl": "lista, po przecinku",
+   "en": "list, comma-separated"
+  }
+ },
+ "kinds": {
+  "archive": {
+   "pl": "archiwum",
+   "en": "archive"
+  },
+  "attachment": {
+   "pl": "załącznik",
+   "en": "attachment"
+  },
+  "block": {
+   "pl": "blok",
+   "en": "block"
+  },
+  "bookmark": {
+   "pl": "zakładka",
+   "en": "bookmark"
+  },
+  "branch": {
+   "pl": "gałąź",
+   "en": "branch"
+  },
+  "cluster": {
+   "pl": "klaster",
+   "en": "cluster"
+  },
+  "conversation": {
+   "pl": "rozmowa",
+   "en": "conversation"
+  },
+  "folder": {
+   "pl": "folder",
+   "en": "folder"
+  },
+  "group": {
+   "pl": "grupa",
+   "en": "group"
+  },
+  "json": {
+   "pl": "dane JSON",
+   "en": "JSON data"
+  },
+  "message": {
+   "pl": "wiadomość",
+   "en": "message"
+  },
+  "step": {
+   "pl": "krok",
+   "en": "step"
+  },
+  "tag": {
+   "pl": "etykieta",
+   "en": "tag"
+  },
+  "view": {
+   "pl": "widok",
+   "en": "view"
+  }
+ },
+ "formats": {
+  "json": {
+   "pl": "JSON",
+   "en": "JSON"
+  },
+  "markdown": {
+   "pl": "tekst (markdown)",
+   "en": "text (markdown)"
+  },
+  "raw": {
+   "pl": "surowe",
+   "en": "raw"
+  }
+ },
+ "encoded_kinds": {
+  "data_uri": {
+   "pl": "adresy data: (plik osadzony w tekście, np. obraz)",
+   "en": "data: URIs (a file embedded in text, e.g. an image)"
+  },
+  "base64": {
+   "pl": "base64 (długie ciągi liter i cyfr kodujące bajty)",
+   "en": "base64 (long runs of letters and digits encoding bytes)"
+  },
+  "hex": {
+   "pl": "szesnastkowe (hex: pary znaków 0-9 a-f)",
+   "en": "hex (pairs of characters 0-9 a-f)"
+  },
+  "unicode_escape": {
+   "pl": "sekwencje \\uXXXX (znaki zapisane kodami)",
+   "en": "\\uXXXX sequences (characters written as codes)"
+  },
+  "percent": {
+   "pl": "sekwencje %XX (kodowanie procentowe, jak w adresach)",
+   "en": "%XX sequences (percent-encoding, as in URLs)"
+  }
+ },
+ "nouns": {
+  "conversation": {
+   "pl": {
+    "one": "rozmowa",
+    "few": "rozmowy",
+    "many": "rozmów"
+   },
+   "en": {
+    "one": "conversation",
+    "few": "conversations",
+    "many": "conversations"
+   }
+  },
+  "message": {
+   "pl": {
+    "one": "wiadomość",
+    "few": "wiadomości",
+    "many": "wiadomości"
+   },
+   "en": {
+    "one": "message",
+    "few": "messages",
+    "many": "messages"
+   }
+  },
+  "message_loc": {
+   "pl": {
+    "one": "wiadomości",
+    "few": "wiadomościach",
+    "many": "wiadomościach"
+   },
+   "en": {
+    "one": "message",
+    "few": "messages",
+    "many": "messages"
+   }
+  },
+  "file": {
+   "pl": {
+    "one": "plik",
+    "few": "pliki",
+    "many": "plików"
+   },
+   "en": {
+    "one": "file",
+    "few": "files",
+    "many": "files"
+   }
+  },
+  "block": {
+   "pl": {
+    "one": "blok",
+    "few": "bloki",
+    "many": "bloków"
+   },
+   "en": {
+    "one": "block",
+    "few": "blocks",
+    "many": "blocks"
+   }
+  },
+  "directory": {
+   "pl": {
+    "one": "katalog",
+    "few": "katalogi",
+    "many": "katalogów"
+   },
+   "en": {
+    "one": "directory",
+    "few": "directories",
+    "many": "directories"
+   }
+  },
+  "profile": {
+   "pl": {
+    "one": "profil",
+    "few": "profile",
+    "many": "profili"
+   },
+   "en": {
+    "one": "profile",
+    "few": "profiles",
+    "many": "profiles"
+   }
+  }
+ },
+ "effects": {
+  "preview_head": {
+   "pl": "Podgląd — nic jeszcze nie zmieniono.",
+   "en": "Preview — nothing has been changed yet."
+  },
+  "preview_nothing": {
+   "pl": "Po zastosowaniu nic by się nie zmieniło w wiadomościach.",
+   "en": "After applying, nothing in the messages would change."
+  },
+  "preview_from": {
+   "pl": "Po zastosowaniu: z {n} wiadomości {pieces}.",
+   "en": "After applying, in {n} messages: {pieces}."
+  },
+  "preview_in": {
+   "pl": "Po zastosowaniu: w {n} {message_loc} {pieces}.",
+   "en": "After applying, in {n} messages: {pieces}."
+  },
+  "apply_head": {
+   "pl": "Zastosowano.",
+   "en": "Applied."
+  },
+  "apply_nothing": {
+   "pl": "Nic się nie zmieniło w wiadomościach (przepis nie miał tu czego zmienić).",
+   "en": "Nothing in the messages changed (the recipe had nothing to change here)."
+  },
+  "apply_in": {
+   "pl": "W {n} {message_loc} {pieces}.",
+   "en": "In {n} messages: {pieces}."
+  },
+  "apply_tail": {
+   "pl": "Można cofnąć przyciskiem Cofnij przepis.",
+   "en": "It can be undone with the Undo recipe button."
+  },
+  "undo_head": {
+   "pl": "Cofnięto:",
+   "en": "Undone:"
+  },
+  "undo_nothing": {
+   "pl": "Cofnięto. Pola ani bloki wiadomości się nie zmieniły (cofnięty krok ich nie dotyczył).",
+   "en": "Undone. No message field or block changed (the undone step did not touch them)."
+  },
+  "undo_in": {
+   "pl": "w {n} {message_loc} {pieces}.",
+   "en": "in {n} messages: {pieces}."
+  },
+  "empty_package": {
+   "pl": "Pakiet roboczy nie ma żadnych wiadomości — najpierw zaznacz rozmowy w zakładce Wybór.",
+   "en": "The working package has no messages — select conversations in the Selection tab first."
+  },
+  "package_added": {
+   "pl": "do pakietu roboczego dołączono to, co zaznaczono po jego utworzeniu: {count} (bez wcześniejszych edycji)",
+   "en": "added to the working package what was selected after it was made: {count} (without earlier edits)"
+  },
+  "package_left_out": {
+   "pl": "z pakietu roboczego pominięto to, czego już nie zaznaczono: {count}",
+   "en": "left out of the working package what is no longer selected: {count}"
+  },
+  "tree_only": {
+   "pl": "Zmiana dotyczy czegoś innego niż pola i bloki wiadomości (np. rozmów albo ich układu) — szczegóły w drzewie poniżej.",
+   "en": "The change concerns something other than message fields and blocks (e.g. conversations or their layout) — details in the tree below."
+  },
+  "gone": {
+   "pl": "zniknęłoby",
+   "en": "would disappear"
+  },
+  "gone_done": {
+   "pl": "usunięto",
+   "en": "removed"
+  },
+  "came": {
+   "pl": "doszłoby",
+   "en": "would be added"
+  },
+  "came_done": {
+   "pl": "dodano",
+   "en": "added"
+  },
+  "stays": {
+   "pl": "zostałyby",
+   "en": "would stay"
+  },
+  "stays_done": {
+   "pl": "zostały",
+   "en": "stay"
+  },
+  "restored": {
+   "pl": "przywrócono",
+   "en": "restored"
+  },
+  "removed_by_undo": {
+   "pl": "usunięto",
+   "en": "removed"
+  },
+  "blocks": {
+   "pl": "bloki",
+   "en": "blocks"
+  },
+  "messages_lost": {
+   "pl": "znikło całych wiadomości",
+   "en": "whole messages gone"
+  },
+  "messages_new": {
+   "pl": "doszło całych wiadomości",
+   "en": "whole messages added"
+  },
+  "unknown": {
+   "pl": "nieznane",
+   "en": "unknown"
+  },
+  "other_steps": {
+   "pl": "Skutek {k} kroków innych niż edycje: nieznany przed zastosowaniem.",
+   "en": "The effect of {k} steps other than edits: unknown before applying."
+  },
+  "failed": {
+   "pl": "Skutek: nieznany ({why}).",
+   "en": "Effect: unknown ({why})."
+  },
+  "more": {
+   "pl": "…",
+   "en": "…"
+  },
+  "preview_plain": {
+   "pl": "Po zastosowaniu: {pieces}.",
+   "en": "After applying: {pieces}."
+  },
+  "apply_plain": {
+   "pl": "{pieces}.",
+   "en": "{pieces}."
+  },
+  "undo_plain": {
+   "pl": "{pieces}.",
+   "en": "{pieces}."
+  },
+  "undo_none": {
+   "pl": "Nie było czego cofać — nic nie zmieniono.",
+   "en": "There was nothing to undo — nothing was changed."
+  }
+ }
+}

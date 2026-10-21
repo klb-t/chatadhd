@@ -140,7 +140,9 @@ TEST_SUITE("graph_projection") {
       REQUIRE_MESSAGE(n, role);
       check_node(*n);
     }
-    for (const auto& a : unwrap(action_catalogue(f.td.path())).at("actions")) {
+    // a named Json: `.at()` on the temporary from unwrap() would hand the range-for a reference into freed memory (ASAN heap-use-after-free)
+    const Json catalogue = unwrap(action_catalogue(f.td.path()));
+    for (const auto& a : catalogue.at("actions")) {
       auto n = unwrap(cat.node("flow:" + a.at("id").get<std::string>()));
       REQUIRE_MESSAGE(n, a.at("id"));
       check_node(*n);

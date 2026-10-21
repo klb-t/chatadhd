@@ -10,7 +10,7 @@ import { chatSendGate, SEND_BLOCK_DEFAULT_KEY, SEND_GATE_FEATURE, sendGateTexts,
 import { queueReason, queueStep, useCreationInFlight, VIEW_LOADING_REASON, type QueuedSend } from "../context/send-queue";
 import UsagePendingBlock from "./UsagePendingBlock";
 import AgentProposalBlock from "./AgentProposalBlock";
-import { agentLoopView, resumeRequest } from "../context/agent-proposal";
+import { agentLoopOf, agentLoopView, resumeRequest } from "../context/agent-proposal";
 import ActionProposalBlock, { ProposalOffer, ProposalWritten } from "./ActionProposalBlock";
 import ClientStepBlock from "./ClientStepBlock";
 import { CLIENT_STEP_FEATURE, type BlobLoader, type BlobUploader } from "../context/client-device";
@@ -876,7 +876,7 @@ export default function ChatView({ profileHost, settingsKey = "default", convId,
     setAgentFailure(null);
     try {
       const outcome = await api.agent.run(resumeRequest(view, decided, convId));
-      const loop = message.metadata?.agent_loop as Record<string, unknown>;
+      const loop = agentLoopOf(message.metadata) as Record<string, unknown>;
       const finished = outcome.status === "finished" || !Array.isArray(outcome.proposals) || outcome.proposals.length === 0;
       const metadata = { ...message.metadata, agent_loop: { ...loop, answered: { ...view.answered, ...decided },
         status: finished ? "answered" : String(outcome.status ?? "needs_confirmation"),

@@ -35,9 +35,15 @@ def build_manifest(eng: Any, outputs: list[dict[str, Any]], repro: str, recipe_n
     started, finished = run_times(eng.started)
     tool = eng.tool_info()
     sources = []
+    from .cut.common import archive_slugs, original_name, copy_prefix
+    slugs = archive_slugs(eng.archives, eng.ds)
     for a in eng.archives:
         unknown = [m.name for m in a.members if not m.format and m.kind not in ("asset", "container")]
-        sources.append({"path": None if aggregate else a.path, "label": a.label, "sha256": a.sha256, "size": a.size,
+        # label = the name of the copy the tool read; original_name = what the person's file was called; output_name = the
+        # unique name this source has in the package (preserve/<output_name>, attachments): the copy is traceable both ways
+        sources.append({"path": None if aggregate else a.path, "label": a.label,
+                        "original_name": original_name(a.label, copy_prefix(eng.ds)), "output_name": slugs[(a.label, a.sha256)],
+                        "sha256": a.sha256, "size": a.size,
                         "mtime": _ts.to_iso(datetime.fromtimestamp(a.mtime, timezone.utc)) if getattr(a, "mtime", None) else None,
                         "format": a.format, "units": sum(1 for u in eng.units_raw if u.source.get("sha256") == a.sha256),
                         "members_unknown": [] if aggregate else unknown, "members_unknown_count": len(unknown)})

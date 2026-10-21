@@ -427,6 +427,59 @@ function wantDone(st, messages) {
 }
 
 // ---- the checks ----
+// ---------- M1 Gate 0: declarative steps from the W0 testid file ----------
+// Format (first ```json block of docs/reports/M1_W0_TESTIDS.md):
+//   {"gate0": [{"name": "Graf > ROM: 13 rows, chips 4/8/1",
+//               "do":     [{"click": "<tid>"}, {"clickText": ["<tid>", "<regex source>"]}, {"wait": "<tid>"}, {"back": 1}],
+//               "expect": [{"tid": "<tid>", "count": 13} | {"tid", "min": 1} | {"tid", "text": "<regex source>"} |
+//                          {"tid", "absent": true} | {"exitQuestion": true}],
+//               "reset": true}]}          // reset (default true): window.__loomBack() until nothing is left open
+// No file or no block = every Gate 0 step is "skipped" with the reason (W0 has not published its testids yet).
+function m1GateSpec() {
+  const file = process.env.SMOKE_M1_TESTIDS || path.join(import.meta.dirname, "../../../docs/reports/M1_W0_TESTIDS.md");
+  let text;
+  try { text = readFileSync(file, "utf8"); } catch { return { missing: `no ${path.basename(file)} yet (W0 publishes it)` }; }
+  const m = /```json\s*\n([\s\S]*?)\n```/.exec(text);
+  if (!m) return { missing: `${path.basename(file)} has no json block` };
+  try { return { steps: JSON.parse(m[1]).gate0 || [] }; } catch (e) { return { missing: `${path.basename(file)}: ${e.message}` }; }
+}
+const countTid = tid => page.ev(`document.querySelectorAll('[data-testid="${tid}"]').length`);
+const textTid = tid => page.ev(`[...document.querySelectorAll('[data-testid="${tid}"]')].map(e=>e.innerText).join(' | ')`);
+async function m1Reset() {
+  for (let k = 0; k < 8; k++) if (!(await page.ev(`!!(window.__loomBack&&window.__loomBack())`).catch(() => false))) return;
+}
+function m1GateChecks() {
+  const spec = m1GateSpec();
+  if (spec.missing) return [["M1 Gate 0 (screens of W0)", async () => { const e = new Error(spec.missing); e.skip = true; throw e; }]];
+  return spec.steps.map(st => [`M1 Gate 0: ${st.name}`, async () => {
+    const notes = [];
+    try {
+      for (const a of st.do || []) {
+        if (a.click) { await waitTid(a.click, 20); await click(a.click); }
+        else if (a.clickText) { await waitTid(a.clickText[0], 20); if (!(await clickText(a.clickText[0], `/${a.clickText[1]}/i`))) throw new Error(`no ${a.clickText[0]} matching /${a.clickText[1]}/`); }
+        else if (a.wait) await waitTid(a.wait, 30);
+        else if (a.back) for (let k = 0; k < a.back; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200); }
+        await sleep(300);
+      }
+      for (const x of st.expect || []) {
+        if (x.exitQuestion) {
+          const d = await until("the exit question", () => find(dump(), n => n["resource-id"] === "android:id/button2"), 15, 600);
+          tap(d); await sleep(800); notes.push("exit question shown, Stay"); continue;
+        }
+        if (x.absent) { await until(`[data-testid=${x.tid}] gone`, async () => !(await has(x.tid)), 15); notes.push(`${x.tid} gone`); continue; }
+        await waitTid(x.tid, 30);
+        if (x.count !== undefined) { const n = await countTid(x.tid); if (n !== x.count) throw new Error(`${x.tid}: ${n} on screen, expected ${x.count}`); notes.push(`${x.tid}=${n}`); }
+        if (x.min !== undefined) { const n = await countTid(x.tid); if (n < x.min) throw new Error(`${x.tid}: ${n} on screen, expected at least ${x.min}`); notes.push(`${x.tid}>=${x.min} (${n})`); }
+        if (x.text) { const t = await textTid(x.tid); if (!new RegExp(x.text, "i").test(t)) throw new Error(`${x.tid} says "${t.slice(0, 160)}", expected /${x.text}/`); notes.push(`${x.tid} ~ /${x.text}/`); }
+      }
+      shot("m1-" + st.name.replace(/\W+/g, "-").slice(0, 40));
+      return notes.join("; ");
+    } finally {
+      if (st.reset !== false) await m1Reset();
+    }
+  }]);
+}
+
 const localChecks = [
   ["local: import a ChatGPT conversations.json by path (JNI import_file)", async () => {
     const st = await awaitBridge(await startBridge("import_file", { path: `${DEV}/chatgpt-conversations.json` }), 90);
@@ -475,6 +528,9 @@ const localChecks = [
     if (!st.last.error || st.last.error.code !== "cancelled") throw new Error("expected a cancelled error, got " + JSON.stringify(st.last).slice(0, 200));
     return st.last.error.message;
   }],
+  // M1 Gate 0 (spec §3.14, M1-A0): the steps are DATA from docs/reports/M1_W0_TESTIDS.md (its first ```json block),
+  // written by the web side (W0) with its data-testid values, so new screens get smoke steps without a driver change.
+  ...m1GateChecks(),
   // M1 §3.14: system Back never ends the app silently. The page closes its own overlays first (window.__loomBack),
   // then the WebView history; at the root the shell asks (android_back_exit_confirm, preset ask). "Stay" keeps the
   // app and the draft; Back again while asked leaves (the task goes to the back, the draft stays in the WebView).
@@ -655,8 +711,27 @@ const serverChecks = [
       await apiJson("PATCH", "/api/config", { loom_web_message_window: 500 });
     }
   }],
-  ["agent proposals", async () => {
-    throw skip("not reachable from the chat UI without an agent scenario (AgentProposalBlock renders only for agent runs); not driven here");
+  // R38: the fake provider (deploy/first-steps-provider.py) routes "agent" to agent.run and, offered tools, asks for one
+  // irreversible tool (usage_compact): the policy local_reversible proposes it, the run stops, the chat shows the block;
+  // Accept resumes the run with the transcript, and the provider then answers with text.
+  ["agent proposals: the run stops on a proposal, Accept resumes it to the end", async () => {
+    await send("poproś agenta żeby uporządkował moje notatki");   // the example phrase of agent.run: a rule routes it locally
+    const proposed = await until("the action proposal or the agent block",
+      async () => (await has("chat-agent-proposal")) ? "agent" : (await has("chat-action-proposal")) ? "action" : false, 90, 300);
+    if (proposed === "action") await send("tak");
+    await waitTid("chat-agent-proposal", 120);
+    const action = await page.ev(`${q("chat-agent-proposal-action")}?.innerText||''`);
+    if (!/usage\.compact/.test(action)) throw new Error(`the block proposes "${action}", expected usage.compact`);
+    shot("agent-proposal");
+    const before = providerCalls().length;
+    await click("chat-agent-proposal-accept");
+    // the answer resumes the run (agent.run with resume): the provider gets the turn with the tool result, then the block gives way
+    await until("the resumed agent turn at the provider", () => providerCalls().slice(before).some(c => c.tools > 0 && !c.tool_calls), 120, 500);
+    await until("the proposals block giving way", async () => !(await has("chat-agent-proposal-accept")), 60, 400);
+    if (await has("chat-agent-proposal") && await page.ev(`!!document.querySelector('[data-testid="chat-agent-proposal"] .error, [data-testid="chat-agent-proposal"] [role=alert]')`))
+      throw new Error("the block shows a failure after Accept: " + await page.ev(`${q("chat-agent-proposal")}.innerText`));
+    shot("agent-done");
+    return `proposed ${action.trim()}, accepted, the run resumed at the provider and the block gave way`;
   }],
 ];
 

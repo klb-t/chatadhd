@@ -32,6 +32,7 @@
     "test:p28-xr-input": "node tests/view-engine/xr-input.test.mjs",
     "test:p28-webxr": "node e2e/p28-webxr-native.mjs",
     "test:action-proposal": "node tests/conversation-view/action-proposal.test.mjs",
+    "test:agent-proposal": "node tests/conversation-view/agent-proposal.test.mjs",
     "test:action-proposal-browser": "node e2e/action-proposal-ui.mjs",
     "test:agent-proposal-browser": "node e2e/agent-proposal-ui.mjs",
     "test:rules-transport": "node tests/conversation-view/rules-transport.test.mjs",

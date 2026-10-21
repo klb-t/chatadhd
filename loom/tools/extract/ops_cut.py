@@ -4,11 +4,12 @@ hand-off, statistics, the attachments browser, model steps (cost, flow.run,
 describe).  Registered into ``ops.OPS``; names and parameter schemas are in
 ``data/ops.json`` like every other op."""
 import logging
+import re
 from pathlib import Path
 from typing import Any, Optional
 
 from . import edits as _edits
-from .cut.common import archive_slugs, copy_stream, find_archive
+from .cut.common import archive_slugs, conversation_dirs, copy_stream, find_archive
 from .cut.preserve import cut_preserve
 from .cut.profiles import render_profile
 from .cut.views import RenderCtx
@@ -299,10 +300,11 @@ def _att_file_name(member: str, red: Optional[Redactor]) -> str:
 
 
 def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str, used: Optional[set[int]] = None,
-                      red: Optional[Redactor] = None) -> tuple[dict[tuple[str, str], str], dict[str, Any]]:
+                      red: Optional[Redactor] = None, dirs: Optional[dict[str, str]] = None,
+                      default_to: Optional[str] = None) -> tuple[dict[tuple[str, str], str], dict[str, Any]]:
     paths: dict[tuple[str, str], str] = {}
     info = {"referenced": 0, "used": 0, "not_used": 0, "copied": 0, "bytes": 0, "missing": [], "mode": mode}
-    slugs = archive_slugs(eng.archives)
+    slugs = archive_slugs(eng.archives, eng.ds)
     for e in entries:
         u = e.unit
         arc_label = (u.source or {}).get("archive") or ""
@@ -323,13 +325,15 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str, used:
             if mem is None:
                 info["missing"].append({"ref": a.ref, "conversation": u.uid, "message": a.message, "status": "member not found"})
                 continue
-            to = (u.flags or {}).get("attachments_to")
+            to = (u.flags or {}).get("attachments_to") or default_to  # the edit wins over the profile's own layout
             fname = _att_file_name(a.member, red)
-            if to:  # edit.move_attachments: the user's layout; a name already taken gets the archive slug in front
-                d = to.replace("{key}", e.key).replace("{uid}", u.uid.split(":", 1)[-1][:8]).replace("{service}", u.service or "x")
-                rel = f"attachments/{d}/{fname}"
+            if to:  # edit.move_attachments / profile attachments_to: the layout; a name already taken gets the archive slug in front
+                d = (to.replace("{key}", e.key).replace("{uid}", u.uid.split(":", 1)[-1][:8]).replace("{service}", u.service or "x")
+                     .replace("{dir}", (dirs or {}).get(e.key) or e.key))
+                base = d.strip("/") if d.startswith("/") else f"attachments/{d}"  # a leading "/" = from the package root
+                rel = f"{base}/{fname}"
                 if rel in paths.values():
-                    rel = f"attachments/{d}/{slugs[(arc.label, arc.sha256)]}-{fname}"
+                    rel = f"{base}/{slugs[(arc.label, arc.sha256)]}-{fname}"
             elif fname != a.member.rsplit("/", 1)[-1]:
                 rel = f"attachments/{slugs[(arc.label, arc.sha256)]}/{fname}"
             else:
@@ -356,6 +360,47 @@ def _copy_attachments(eng: Any, entries: list[Any], stage: Any, mode: str, used:
                     paths[(arc.label, m.name)] = rel
                     info["copied"] += 1
     return paths, info
+
+
+def _layout_dirs(eng: Any, entries: list[Any], restructure: list[dict[str, Any]], p: dict[str, Any], red: Redactor,
+                 origin: Any) -> tuple[dict[str, str], Optional[str]]:
+    """``<stamp>-<title>`` directory names (once per cut: the profile's files and the attachments use the same ones) and
+    the profile's own attachments layout.  Only when a profile asks for them, so other outputs stay byte-identical.
+    The stamp is the first message's time, UTC unless the run sets a zone, shift/anonymise/granularity as in the run,
+    written ``YYYY-MM-DDTHH-MM-SSZ`` (no colons: Android and FAT refuse them) so a plain sort is chronological."""
+    default_to = next((str(pr["attachments_to"]) for pr in restructure if pr.get("attachments_to")), None)
+    uses = default_to is not None and "{dir}" in default_to or any(
+        "{conversation.dir}" in str(o.get("path", "")) for pr in restructure for o in pr.get("outputs") or [])
+    if not uses:
+        return {}, default_to
+    tp = TimePolicy({"zone": "UTC", "format": "iso8601"}, zone=p.get("zone"), shift=p.get("shift"),
+                    anonymise=p.get("anonymise"), granularity=p.get("granularity"))
+    tp.origin = origin
+
+    def stamp(e: Any) -> str:
+        u = e.unit
+        ms = [m.created_utc for m in u.messages if m.created_utc and (e.messages is None or m.id in e.messages)]
+        first = min(ms, key=_tskey) if ms else u.created_utc
+        if not first:
+            return "bez-daty"
+        if tp.anonymise == "conversation":
+            tp.conv_origin = from_iso(first)
+        out = _SUBSECOND.sub(r"\1", str(tp.render(None, first)))  # every directory name has the same shape: no fractions of a second
+        return (out[:-6] + "Z" if out.endswith("+00:00") else out).replace(":", "-")
+
+    def title(e: Any) -> Optional[str]:
+        u = e.unit
+        n_entries, counts, by_rule = len(red.entries), dict(red.counts), dict(red.by_rule)
+        try:
+            return red.text(e.name if e.name is not None else u.title, {"conversation": u.uid}, "title")
+        finally:  # naming a directory is not a second masking pass: the report counts each value once
+            del red.entries[n_entries:]
+            red.counts, red.by_rule = counts, by_rule
+
+    return conversation_dirs(entries, stamp, title, max_chars=int(eng.ds.preset("layout.dir_title_chars", 80) or 0)), default_to
+
+
+_SUBSECOND = re.compile(r"(\d{2}:\d{2}:\d{2})[.,]\d+")
 
 
 def _profiles(eng: Any, names: Any) -> list[dict[str, Any]]:
@@ -413,8 +458,9 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
     if red.active and red.attachments == "omit":
         att_mode = "reference_only"
     used = _used_attachments(eng, entries, restructure)
-    att_paths, att_info = _copy_attachments(eng, entries, stage, att_mode, used, red) if restructure else ({}, None)
     firsts = sorted((x for e in entries for x in [e.unit.created_utc] + [m.created_utc for m in e.unit.messages] if x), key=_tskey)
+    dirs, default_to = _layout_dirs(eng, entries, restructure, p, red, from_iso(firsts[0]) if firsts else None)
+    att_paths, att_info = _copy_attachments(eng, entries, stage, att_mode, used, red, dirs, default_to) if restructure else ({}, None)
     infos: list[dict[str, Any]] = []
     preserve_info = None
     tool = eng.tool_info()
@@ -440,6 +486,7 @@ def op_cut(eng: Any, p: dict[str, Any]) -> dict[str, Any]:
         tp.origin = from_iso(firsts[0]) if firsts else None
         ctx = RenderCtx(eng, time=tp, redactor=red, att_paths=att_paths, aggregate=eng.aggregate, summaries=eng.summaries,
                         extract_text=bool(p.get("extract_text")))
+        ctx.dirs = dirs
         info = render_profile(prof, entries, ctx, stage, ds=eng.ds, tool=tool, sources=sources,
                               clusters=None if eng.aggregate else eng.clusters)
         info["timestamps"] = tp.as_dict()

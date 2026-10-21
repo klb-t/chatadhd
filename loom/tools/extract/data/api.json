@@ -408,7 +408,8 @@
    "mutates": true,
    "during_job": false,
    "params": {
-    "name": "id"
+    "name": "id",
+    "preview": "bool"
    }
   },
   "manifest": {

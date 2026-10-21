@@ -51,6 +51,24 @@ cannot be resumed at all, so their work is lost.
   files or logs; native builds serialized and run once per change.
 - **Owner, 2026-10-13:** the parallel session S2 (`docs/reports/PLAN_S2_2026-10-13.md`) may run
   several agents at once (preset 4; the owner raises it in one word). S1 stays single-track.
+- **Waste control (owner + GPT, 2026-10-21; measurements in `docs/reports/INDEX.md`, window
+  telemetry in `docs/reports/LIMITS_LEDGER.md`).** Supersedes "one at a time" as a hard rule;
+  the ×10 confirmation rule stays.
+  1. *Durable checkpoints:* every meaningful increment goes into git (and to the remote for
+     work branches) with a resume note; the session context is never the only record.
+     Workflow scripts (= package briefs) are kept in `tools/workflows/`. An auto-push
+     `post-commit` hook exists in `tools/` but is **not installed** until the owner says yes.
+  2. *Small self-contained packages:* input, result, acceptance check, resume card. Cost grows
+     with the **square** of an agent's length (every turn re-reads its whole context; measured:
+     98 % of one workflow's cache reads sat in five 100–550-turn agents), so a package is
+     about 50 tool calls, then a commit and a card; the next agent reads cards + `git log`.
+  3. *Adaptive parallelism:* no fixed agent cap. Concurrency follows the measured pace of the
+     five-hour window (utilization against the straight line to the reset) and the measured
+     cost per agent. Preset until the ledger calibrates: up to 3 agents, reviewers one after
+     another. Running dry early and leaving the window unused are both waste.
+  4. *Limit telemetry:* the session's `rate_limit_event` (via `list_events`, kinds
+     `["rate_limit_event"]`) carries `five_hour`/`seven_day` utilization and `resetsAt`; sample
+     it into the ledger at every notification instead of estimating from token counts.
 
 ## Project Overview
 
@@ -436,6 +454,11 @@ the boundary (every `capi_*.cpp` function is wrapped by an exception
 firewall), returns caller-freed heap JSON strings, and is covered by
 `test_abi_compat.py` so `libloom.so` never exports more or less than
 `loom.h` declares.
+
+**C++ pitfall that only AddressSanitizer catches** (CI found it after the asan preset had been broken for
+days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value temporary, e.g.
+`for (auto& a : unwrap(f()).at("k"))` — only the last reference is lifetime-extended, the temporary dies
+before the loop. Bind the object to a name first (`const Json x = unwrap(f()); for (... : x.at("k"))`).
 
 > **Update 2026-09-29 (owner):** Python compatibility is no longer required — it was
 > only a minimum plan. The invariant below remains enforced by tests as a regression

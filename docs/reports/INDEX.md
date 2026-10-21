@@ -1661,3 +1661,81 @@ budowy cmake nie uruchamiano (dysk zajęty przez bramkę gdzie indziej).
   `shum-fields-<grupa>-<podgrupa>` na każdym `<ul>` — e2e zbiera wszystkie pola grupy jednym lokatorem; odwrót: przenieść id
   na `<ul>` z sufiksem podgrupy i zmienić wiersz TESTIDS + asercję e2e. (3) Lista 7 zrzutów jako linki, pliki bez zmian
   (właściciel widzi wszystkie 21 w raporcie); odwrót: backticki jak przed r2:b5.
+
+## S1 — kontrola marnotrawstwa: cztery zasady od GPT + pomiary (2026-10-21)
+
+Właściciel przekazał podsumowanie rozmowy z GPT: (1) trwałe checkpointy, (2) małe samodzielne
+pakiety pracy, (3) adaptacyjna równoległość bez arbitralnego limitu, (4) telemetria limitów;
+słowa dosłownie w `SLOWA_WLASCICIELA_2026-10-16.md`, Uzupełnienie 5. Dał wolną rękę w tym,
+co dotyczy S1. Zmierzone (z zapisów agentów workflow K0, sesja S1 i zdarzeń limitów):
+
+- **Koszt agenta rośnie z kwadratem jego długości**, bo każdy ruch czyta cały kontekst. Stały
+  przedrostek świeżego agenta ≈ 60 tys. tokenów (≈ 40,5 tys. z cache + ≈ 19,5 tys. nowych);
+  agent K0 `impl` miał 501 ruchów i średnio 365 tys. kontekstu (183 mln odczytów z cache),
+  `fix:r1` 549 ruchów i 214 mln, każdy z trzech recenzentów 28–38 mln; 30 agentów
+  „refute” (3–18 ruchów) razem ≈ 9 mln. **98 % odczytów całego workflow siedziało w pięciu
+  długich agentach, nie w liczbie agentów.** Kontekst rósł liniowo, 1,2–1,5 tys./ruch (agent
+  W0 w pierwszym podejściu: ≈ 4 tys./ruch, 276 tys. po 54 ruchach i zero commitów).
+- **Model (nie pomiar):** gdyby ten sam agent z 319 ruchami restartować co N ruchów z kartą
+  wznowienia (25 tys. na odczyt karty i plików), „równoważniki odczytów” spadają o 35 % przy
+  N = 150, 45 % przy 100, ok. 50 % przy 25–75; optimum blisko 50. Założenia: wzrost kontekstu
+  w pakiecie taki jak zmierzony, zapis do cache 1 h = 20 × odczyt (stosunek cen API; wagi
+  limitu subskrypcji nie znam), restart nie traci jakości. Do sprawdzenia na pierwszym pełnym
+  przebiegu pakietowym.
+- **Telemetria istnieje:** zdarzenie `rate_limit_event` ma wprost zużycie okna 5 h i tygodnia
+  (`docs/reports/LIMITS_LEDGER.md`). Pierwszy odczyt: 11 % okna po 24 minutach, tempo
+  ≈ 0,6–0,8 pkt/min przy trzech agentach, a do końca okna stać nas na ≈ 0,32 pkt/min.
+- **Luka w checkpointach:** gałęzie robocze `claude/m1-w0`, `claude/fix-login-drop`,
+  `claude/p39-design` istniały tylko w kontenerze sesji (kontener jest ulotny); `claude/p39-design`
+  wypchnięta (równa `main`), reszta czeka na pierwsze commity agentów.
+
+Decyzje (dla każdej: jak cofnąć):
+
+1. **Checkpointy** — agenci commitują po każdym kawałku (już w RULES skryptów); skrypty
+   workflow są kopiowane do `tools/workflows/` (brief = wejście pakietu). **Automatyczne
+   wypychanie po każdym commicie (hak `post-commit`) jest w repo, ale NIEAKTYWNE:** zainstalowałem
+   je i przetestowałem na lokalnym repozytorium (gałąź robocza i drugi worktree wypychane,
+   `main` nie, commit ze ścieżką prywatną odmówiony i blokuje kolejne, brak wymuszania),
+   po czym system uprawnień uznał automatyczne wypychanie za nieautoryzowaną trwałość, więc
+   usunąłem aktywną kopię. Włączenie = decyzja właściciela (tak/nie, pytanie w czacie):
+   `sh tools/install_checkpoint_hook.sh`; wyłączenie: usunąć `.git/hooks/post-commit` lub
+   `git config chatadhd.checkpointPush false`. Do czasu odpowiedzi wypycham gałęzie robocze
+   ręcznie przy każdym powiadomieniu o zakończeniu agenta.
+2. **Małe pakiety** — M1-W0 zatrzymane w pierwszym podejściu (jeden agent, 276 tys. kontekstu,
+   brak commita po 13 min; jego zmiany zachowane jako commit WIP `4198dd88`) i puszczone od nowa
+   jako 7 pakietów po ~50 wywołań narzędzi z kartą wznowienia (`tools/workflows/m1-w0-packages.js`);
+   recenzenci po kolei, naprawy w paczkach po 5 znalezisk. Preset „~50 wywołań” to preset.
+   Cofnięcie: stary skrypt `m1-w0-screens.js` (nie ma go w repo, bo został zastąpiony).
+3. **Równoległość** — bez stałego limitu liczby agentów: kryterium to linia tempa okna 5 h
+   i zmierzony koszt agenta (`LIMITS_LEDGER.md`). Do czasu kalibracji preset: do 3 agentów,
+   recenzenci jeden po drugim (agenci jednego workflow z tym samym przedrostkiem czytają go
+   z cache, równoległa salwa płaci zapis N razy — hipoteza do zmierzenia). Zasada ×10
+   zostaje. Cofnięcie: wrócić do „pojedynczo” z CLAUDE.md (PC43).
+4. **Telemetria** — dziennik próbek w `LIMITS_LEDGER.md`, dopisywany przy powiadomieniach.
+   Ograniczenie: odczyt tylko z sesji, nie ze skryptów.
+5. **Własne pomysły** — dwie formy marnotrawstwa (przepalenie okna i niewykorzystanie go);
+   które okno wiąże (5 h czy tydzień) rozstrzygają kolejne próbki; długość agenta, nie jego
+   liczba, jest główną dźwignią kosztu.
+
+## P39 — specyfikacja: interakcja multimodalna (trajektoria z tekstu, pełny dupleks, głos i twarz) (2026-10-21, branch `claude/p39-design`)
+
+Spec: `docs/architecture/P39_INTERAKCJA_MULTIMODALNA_2026-10-21.md`; pozycje maszynowo: `docs/reports/P39_WORK_ITEMS.json` (26 pozycji, trzy tory T/D/E, zależności bez cykli — sprawdzone `python3 -I`). Scala trzy projekty (A trajektoria, B dupleks + symulator, C ekspresja) i poprawia 33 problemy sędziów (każdy nazwany w spec §2.2, §3.1–3.3). Kolejność: M1-W0 pierwsze (właściciel 2026-10-21), potem T-A1 → T-K1 → T-K2 → T-K3 (Brama T0: propozycja „Dokończyć przerwaną odpowiedź?” w rozmowie), T-K7 → T-W1 (Brama T1: ekran w nawigatorze M1 / Warsztat), T-K4 → T-K5 → T-K6 (Brama T2), reszta; tory D i E jako osobne programy badawcze jednym agentem w budżecie S2. Nakład z tempa `main` (3–6 h pracy + 1–5 h przeglądów na pozycję; M1-D0/D1/K0 = 3,5/10,5/7 h zegarowych): tor T 52–78 h, D 20–29 h, E 24–36 h.
+
+- Decyzje (cofnięcie w spec §12):
+  1. Jeden strumień `loom.dialogue_events/1` dla wszystkich torów (segmenty zamknięte z hashem, `prev_sha256`); czas `int64 + skala` w `attrs.time`, `Locator.time_*` tylko do wyświetlania. Cofnięcie: konwerter per producent; brak konsumenta `attrs.time` nic nie psuje.
+  2. Żadnych zmian w `model.h`: `ObservationKind` zamknięty (rodzaj zdarzenia w `attrs.event_kind`), `Observation.ordinal` zostaje `int` (indeks w segmencie), Q per wymiar × horyzont w `DecisionAlternative.value` jako punkty bazowe (int, stabilne x86/arm64), `ValueImpact` tylko dla zasad. Cofnięcie: nic do cofania w nagłówkach.
+  3. Trajektoria = GraphPacket w `loom_kb_*` (CAS, replay), nigdy wiersze `nodes`; T-K2 minimalny pakiet, T-K4 pełny. Cofnięcie: usunąć źródło `trajectory:` i `loom/src/trajectory/`.
+  4. Hak na żywo bez zapisu bazy w wątku wysyłki (kolejka w pamięci + wątek tła); `trajectory_live_flush` preset `background`, `inline` do wyboru; znana strata przy awarii zapisana. Cofnięcie: `trajectory_live = off`.
+  5. Handler `trajectory.deferred` bez wyzwalacza zwraca `Paused` (bo `recover_interrupted` daje `pending`, `tasks.h:15-17`). Cofnięcie: zwykłe zadanie ponawiane + zmiana testu P0.3.
+  6. Preset `always_yield`; `explicit_rule`, `estimator` do wyboru; rola `turn_policy.estimate` bez adaptera; model estymatora nigdy dziedziczony z rozmowy, zawsze ustawialny ręcznie (GL12 dosłownie). Cofnięcie: nakładka `profiles/trajectory.pack`.
+  7. Diagnoza po każdej decyzji bez progu licznikowego; progi Sekretarza tylko dla promocji hipotezy do reguły po osądzie właściciela. Cofnięcie: `trajectory_diagnosis_budget = off` (zapis `diagnosis_skipped` zostaje).
+  8. Pierwszy ekran = nawigator M1 (karta węzła + perspektywa `timeline`); ten sam komponent w Warsztacie do scalenia W0. Cofnięcie: usunąć panel `trajectory`.
+  9. Eksperymenty i kalibracja z jednym dostawcą (`calibration.items`): polityki, sesje symulatora, sondy, testy głosu/twarzy jako wiersze z datowanych twierdzeń. Cofnięcie: osobne źródło `research:` (nieplanowane).
+  10. Prawdziwe dane właściciela lokalnie (D3/DIP26) po jego tak/nie: T-R2 na rozmowach i eksportach, E-A1 wyciąg słów o awatarze X-Portem; w repozytorium tylko liczby zbiorcze i zaakceptowane cytaty. Cofnięcie: `--bez-prawdziwych`.
+  11. Pierwszy głos = `speechSynthesis` przeglądarki jako adapter `speech.synthesize` (koszt wiadomy 0, granice słów → `P_played`); dostawcy po sondach z `duplex_probe_network` preset off. Cofnięcie: adapter `disabled`.
+  12. Narzędzie głosu: sieć jako ustawienie `voice_tool_network` (preset off), test „żadne twierdzenie o stanie psychicznym bez pochodzenia `user`”, bez czarnej listy słów i bez „nigdy”. Cofnięcie: `voice_tool_network = on`.
+  13. Awatar: stany, przejścia i artefakty w `avatar.pack` (otwarte), reduktor z danych, wynik A/B zawsze z `n` i niepewnością, preset właściciela nietknięty. Cofnięcie: `avatar_renderer = none`.
+  14. Brak trzeciej sesji otwieranej przez agenta: tory D/E w budżecie S2; S3 = pytanie tak/nie do właściciela. Cofnięcie: jego „tak”.
+- Odrzucone z projektów: progi strażnika jako bramka hipotez (B), Q jako suma ważona (B), `learned_small` uczony na symulatorze (B), `uint64` (B), osobna tabela zdarzeń dupleksu i drugi komplet kontraktów (B), osobny ekran laboratorium (B), czarna lista słów i „nigdy” dla stresu (C), „nieznana, nigdy 0” dla kosztu bez wywołań (C), zamknięta maszyna stanów w TS (C), zmiana presetu po A/B n=1 i wynik wstrzymany za licznikiem (C), S3 otwierane przez agenta (C), twardy blok sieci (C), poszerzenie `Observation.ordinal` (A), „1,5 dnia do ekranu” (A: uczciwie 4 pozycje do rozmowy, +2 do ekranu), „agenci nie czytają eksportów” (A/B/C: D3 pozwala lokalnie).
+- Pytania do właściciela (spec §9): wgląd w eksporty lokalnie (tak/nie), S3 (tak/nie), plik `face_embedding_research_master_prompt_2026-10-19.md`, model estymatora.
+- Nie zrobione tu: kod (żadna pozycja nie ruszyła), zmiany `docs/STATE.md` i `LUKI` (T-D1), `M1-W0` (osobna gałąź).

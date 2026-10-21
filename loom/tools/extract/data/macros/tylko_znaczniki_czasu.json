@@ -1,0 +1,21 @@
+{
+ "schema": "loom.extract.macro/1",
+ "id": "tylko_znaczniki_czasu",
+ "label": {
+  "pl": "Zostaw w metadanych tylko znaczniki czasu",
+  "en": "Keep only the timestamps in the metadata"
+ },
+ "description": {
+  "pl": "W każdej wiadomości usuwa autora, model i wszystkie pozostałe metadane; zostają treść, rola, powiązania i czasy (created, created_utc, created_how, created_inferred).",
+  "en": "In every message removes the author, the model and all other metadata; the content, role, links and the times (created, created_utc, created_how, created_inferred) stay."
+ },
+ "note": {
+  "pl": "Lista pól pochodzi z modelu: czasy to pola typu date z data/select_fields.json (message.created) razem z ich pochodnymi created_*; metadane to author, model i słownik meta (readers ustawiają tam status, narzędzia, zużycie…, nigdy czas — pilnuje tego test). Struktura (id, parent, role, branch, on_current_path, blocks) i raw_pointer (ślad do źródła) zostają.",
+  "en": "The list comes from the model: the times are the date-typed fields of data/select_fields.json (message.created) with their derived created_*; the metadata are author, model and the meta dict (the readers put status, tools, usage… there, never a time — a test guards that). The structure (id, parent, role, branch, on_current_path, blocks) and raw_pointer (the trace to the source) stay."
+ },
+ "steps": [
+  {"op": "edit.delete_field", "params": {"where": "message", "field": "meta"}},
+  {"op": "edit.delete_field", "params": {"where": "message", "field": "author"}},
+  {"op": "edit.delete_field", "params": {"where": "message", "field": "model"}}
+ ]
+}

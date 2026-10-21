@@ -5,6 +5,10 @@
   "pl": "Bez rozumowania i narzędzi (na pakiecie)",
   "en": "Without reasoning and tools (on the package)"
  },
+ "description": {
+  "pl": "Usuwa z każdej wiadomości bloki rozumowania (thinking) i narzędzi (wywołania i wyniki); zostaje reszta treści.",
+  "en": "Removes the reasoning (thinking) and tool (calls and results) blocks from every message; the rest of the content stays."
+ },
  "steps": [
   {
    "op": "edit.drop_blocks",

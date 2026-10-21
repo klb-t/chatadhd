@@ -410,6 +410,26 @@ test('over HTTP the client calls are POSTs of their request; over the native bri
   } finally { delete globalThis.window; }
 });
 
+test('R38: in the Android shell the agent runs through loom_invoke (port agent, action run) off the page thread, and a stopped run resumes the same way', async () => {
+  const streamed = [];
+  globalThis.window = { LoomBridge: {
+    call: () => { throw new Error('agent.run must not block the page on the synchronous bridge call'); },
+    startStream: (method, json, id) => {
+      streamed.push({ method, args: JSON.parse(json) });
+      queueMicrotask(() => globalThis.window.__loomCallbacks[id](JSON.stringify({ status: 'proposals', run_id: 'ag_1' }), 1));
+    },
+  } };
+  try {
+    const api = new LoomJniApi();
+    const request = { prompt: 'uporządkuj notatki', conv_id: 'c_1' };
+    assert.deepEqual(await api.agent.run(request), { status: 'proposals', run_id: 'ag_1' });
+    assert.deepEqual(streamed.at(-1), { method: 'invoke', args: { port: 'agent', action: 'run', request } });
+    const resume = { conv_id: 'c_1', resume: [{ run_id: 'ag_1', approved: true }], messages: [] };
+    await api.agent.run(resume);
+    assert.deepEqual(streamed.at(-1).args, { port: 'agent', action: 'run', request: resume });
+  } finally { delete globalThis.window; }
+});
+
 test('the declaration the Android shell sends has the shape the kernel reads: capabilities with permission and how', async () => {
   const sent = [];
   globalThis.window = { LoomBridge: { call: (method, json) => { sent.push(JSON.parse(json)); return JSON.stringify({ client_id: 'web-9', capabilities: {}, runnable_actions: [], refused: {} }); } } };
