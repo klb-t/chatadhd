@@ -179,7 +179,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
       {doc && group && groupView(group)}
       {doc && !group && (
         <section>
-          <p className="gnav-why" data-testid="shum-intro">{t("intro")}</p>
+          <p className="gnav-why" data-testid="shum-intro">{t("intro", { groups: countWord("groups", doc.groups.length, language, t) })}</p>
           <p className="gnav-count shum-total" data-testid="shum-total" data-fields={all.fields} data-yours={all.yours}>{t("total.line", { fields: countWord("fields", all.fields, language, t), yours: countWord("yours", all.yours, language, t) })}</p>
           <p className="gnav-why" data-testid="shum-yours-help">{t("yours.help")}</p>
           {filterButton}

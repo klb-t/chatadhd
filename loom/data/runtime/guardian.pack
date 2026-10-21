@@ -2181,7 +2181,7 @@
           "max_per_million": 1.0,
           "patterns": [
             "haiku",
-            "mini",
+            "-mini",
             "flash",
             "lite",
             "small",
@@ -2189,8 +2189,8 @@
           ],
           "reason": {
             "pattern": {
-              "pl": "tani, bo nazwa zawiera „{pattern}” (wzorzec to fragment nazwy: „mini” pasuje też do „gemini”)",
-              "en": "cheap, because the name contains “{pattern}” (a pattern is a part of the name: “mini” also matches “gemini”)"
+              "pl": "tani, bo nazwa zawiera „{pattern}” (wzorzec to fragment nazwy; „-mini” ma myślnik, żeby nie łapać „gemini”)",
+              "en": "cheap, because the name contains “{pattern}” (a pattern is a part of the name; “-mini” carries the hyphen so that “gemini” is not caught)"
             },
             "threshold": {
               "pl": "tani, bo cena z rejestru modeli ≤ {max} $ za milion tokenów",
@@ -2331,8 +2331,8 @@
         "today_reads": "today_reads of a policy no reader reads yet: the settings today's reader reads, in order (setting, or a runtime profile pointer that names the setting; level person = config, chain = the scope chain); roles.resolved shows the model they give and marks the policy's own chain described, not read."
       },
       "tier_rule": {
-        "pl": "Dziś klasę wybiera tylko nazwa: pierwsza klasa po kolei, której wzorzec jest fragmentem nazwy (bez rozróżniania wielkości liter); kolejność klas ma znaczenie („mini” w klasie taniej łapie „gemini-…-pro”). Planowane (price_path): najpierw cena z rejestru — pierwsza klasa po kolei, której próg max_per_million ≥ cena — a dopiero potem nazwa.",
-        "en": "Today the class comes from the name only: the first class in order with a pattern that is a part of the name (case-insensitive); the order of the classes matters (“mini” of the cheap class catches “gemini-…-pro”). Planned (price_path): first the registry price — the first class in order whose max_per_million ≥ the price — and only then the name."
+        "pl": "Dziś klasę wybiera tylko nazwa: pierwsza klasa po kolei, której wzorzec jest fragmentem nazwy (bez rozróżniania wielkości liter); kolejność klas ma znaczenie („gpt-5-mini” łapie najpierw „-mini” klasy taniej, nie „gpt-5” klasy frontier); „-mini” ma myślnik, żeby „gemini” nie wychodziło tanie przez „mini”. Planowane (price_path): najpierw cena z rejestru — pierwsza klasa po kolei, której próg max_per_million ≥ cena — a dopiero potem nazwa.",
+        "en": "Today the class comes from the name only: the first class in order with a pattern that is a part of the name (case-insensitive); the order of the classes matters (“gpt-5-mini” is caught first by “-mini” of the cheap class, not by “gpt-5” of the frontier class); “-mini” carries the hyphen so that “gemini” does not come out cheap through “mini”. Planned (price_path): first the registry price — the first class in order whose max_per_million ≥ the price — and only then the name."
       },
       "unknown_tier": {
         "reason": {

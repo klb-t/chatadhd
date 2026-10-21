@@ -2251,6 +2251,12 @@ Json Catalogue::edge_meaning(const std::string& kind) {
   return impl_->say(e->value["meaning"]);
 }
 
+std::string Catalogue::edge_inverse(const std::string& kind) {
+  views::EdgeKinds* k = impl_->edge_kinds();
+  const views::EffectiveEntry* e = k ? k->view().find(kind) : nullptr;
+  return e ? json::get_string(e->value, "inverse") : std::string();
+}
+
 // ── actions ───────────────────────────────────────────────────────────────────────
 
 namespace {
@@ -2745,7 +2751,12 @@ Result<Json> card(const Env& env, const Json& request) {
     const std::string s = json::get_string(e, "src"), d = json::get_string(e, "dst"), k = json::get_string(e, "kind");
     if (s != address && d != address) continue;
     if (!rel_seen.insert(s + "\x1f" + d + "\x1f" + k).second) continue;
-    if (!relations.contains(k)) relations[k] = Json{{"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}, {"out", Json::array()}, {"in", Json::array()}};
+    if (!relations.contains(k)) {
+      // M1-W0 r1:b5: the card heads the in-rows with the inverse kind's name ("zawiera" for part_of), so a group names the concrete node
+      const std::string inv = cat.edge_inverse(k);
+      relations[k] = Json{{"label", cat.edge_label(k)}, {"meaning", cat.edge_meaning(k)}, {"inverse", inv.empty() ? Json(nullptr) : Json(inv)},
+                          {"inverse_label", inv.empty() ? Json(nullptr) : cat.edge_label(inv)}, {"out", Json::array()}, {"in", Json::array()}};
+    }
     const std::string other = s == address ? d : s;
     std::string label = other;
     if (auto n = cat.node(other); n && *n) label = json::get_string(**n, "label", other);

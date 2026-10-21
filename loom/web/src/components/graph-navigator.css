@@ -3,11 +3,12 @@
 .gnav { display: flex; flex-direction: column; height: 100%; max-width: 100%; }
 .gnav-path { display: flex; align-items: center; gap: 2px; min-height: 44px; border-bottom: 1px solid var(--border); }
 .gnav-crumbs { flex: 1; display: flex; align-items: center; flex-wrap: nowrap; min-width: 0; overflow: hidden; }
-.gnav-crumb-item { display: inline-flex; align-items: center; flex: 0 0 auto; max-width: 40%; }   /* earlier crumbs keep their word */
-.gnav-crumb-item:last-child { flex: 1 1 auto; min-width: 0; max-width: none; }   /* only the focus truncates */
+.gnav-crumb-item { display: inline-flex; align-items: center; flex: 0 1 auto; min-width: 56px; max-width: 40%; }   /* earlier crumbs shorten first (ellipsis), never below a few letters */
+.gnav-crumb-item:last-child { flex: 1 1 0; min-width: 40%; max-width: none; }   /* the focus keeps its whole name: it wraps onto a second line */
 .gnav-crumb, .gnav-back, .gnav-search-toggle, .gnav-more, .gnav-bar-btn {
   min-height: 44px; min-width: 44px; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
 .gnav-crumb { padding: 0 6px; font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gnav-crumb-item:last-child .gnav-crumb { white-space: normal; overflow-wrap: anywhere; text-overflow: clip; text-align: left; padding: 6px; line-height: 1.25; }   /* r1:b5: the only name of the level is never cut */
 .gnav-crumb[aria-current="page"] { color: var(--accent, #7aa2f7); }
 .gnav-sep { opacity: 0.6; }
 .gnav-back, .gnav-search-toggle { font-size: 22px; line-height: 1; }

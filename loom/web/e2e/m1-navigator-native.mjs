@@ -239,7 +239,14 @@ try {
       if (a.implementation && a.implementation !== "implemented") assert.ok((await row.innerText()).includes(words["card.action.planned"]), `${a.id} says planned`);
     }
     const groups = Object.entries(expected.relations).filter(([, g]) => g.out.length + g.in.length > 0);
-    for (const [kind, g] of groups) assert.ok((await page.getByTestId(`card-relation-group-${kind}`).innerText()).includes(g.label));
+    for (const [kind, g] of groups) {
+      // r1:b5: each direction is headed by its verb and names the concrete nodes; the generic meaning sentence stays off the card
+      const text = await page.getByTestId(`card-relation-group-${kind}`).innerText();
+      if (g.out.length > 0) assert.ok(text.includes(`${g.label}:`), `${kind}: the out-rows are headed by the kind's name`);
+      if (g.in.length > 0) assert.ok(text.includes(`${g.inverse_label ?? g.label}:`), `${kind}: the in-rows are headed by the inverse kind's name`);
+      for (const n of [...g.out, ...g.in]) assert.ok(text.includes(n.label), `${kind}: names the concrete node ${n.label}`);
+      if (g.meaning) assert.ok(!text.includes(g.meaning), `${kind}: no generic meaning sentence on the card`);
+    }
     if (groups.length === 0) assert.equal(await page.getByTestId("card-relations-none").innerText(), words["card.relations.none"]);
     await page.getByTestId("card-label").scrollIntoViewIfNeeded();   // the report's screenshot shows the card from its top
     await noMissingWord();

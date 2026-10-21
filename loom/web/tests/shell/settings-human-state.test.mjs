@@ -37,7 +37,7 @@ test('every word the screen asks for exists in both languages, and the feature s
     'hidden.line', 'proposals.title', 'all_fields.show', 'all_fields.hide', 'all_fields.why'];
   for (const id of ids) { assert.equal(typeof en[id], 'string', `en ${id}`); assert.equal(typeof pl[id], 'string', `pl ${id}`); }
   assert.equal(feature.status.state, 'present');
-  assert.deepEqual(Object.keys(en).filter(k => !k.startsWith('count.fields.')).sort(), Object.keys(pl).filter(k => !k.startsWith('count.fields.')).sort(), 'en and pl have the same ids');
+  assert.deepEqual(Object.keys(en).filter(k => !/^count\.(fields|groups)\./.test(k)).sort(), Object.keys(pl).filter(k => !/^count\.(fields|groups)\./.test(k)).sort(), 'en and pl have the same ids');
   // the edit rules the kernel sends all have a word (the pack's edit_rules are the ones the field can carry)
   for (const rule of ['optional', 'required', 'requires_confirmation', 'read_only']) assert.equal(typeof pl[`edit.${rule}`], 'string', rule);
 });
@@ -76,6 +76,8 @@ test('"N pól · M Twoje": the plural form comes from the language, the word fro
   assert.deepEqual(forms, ['1 pole', '2 pola', '4 pola', '5 pól', '12 pól', '22 pola', '25 pól']);
   assert.equal(st.countWord('fields', 1, 'en', translator(en)), '1 field');
   assert.equal(st.countWord('fields', 3, 'en', translator(en)), '3 fields');
+  assert.deepEqual([1, 2, 5, 8, 22].map(n => st.countWord('groups', n, 'pl', t)), ['1 grupa', '2 grupy', '5 grup', '8 grup', '22 grupy'], 'the intro counts the groups it draws (r1:b5)');
+  assert.equal(st.countWord('groups', 8, 'en', translator(en)), '8 groups');
   assert.equal(st.countLine({ fields: 6, yours: 2 }, 'pl', t), '6 pól · 2 Twoje');
   assert.equal(st.countLine({ fields: 0, yours: 0 }, 'pl', t), '0 pól · 0 Twoje');
   assert.equal(st.countWord('fields', 5, 'pl', () => 'count.fields.many'), 'count.fields.many', 'a missing word shows its id');

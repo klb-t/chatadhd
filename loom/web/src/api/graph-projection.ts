@@ -248,7 +248,7 @@ export interface GraphCardResult extends GraphNodeRow {
   edit_rule?: string;
   inheritance?: InheritanceLevel[];
   flows_reading?: { id: string; title: string }[];
-  relations: Record<string, { label: string; meaning: string | null; out: { address: string; label: string }[]; in: { address: string; label: string }[] }>;
+  relations: Record<string, { label: string; meaning: string | null; inverse?: string | null; inverse_label?: string | null; out: { address: string; label: string }[]; in: { address: string; label: string }[] }>;
   relations_unknown?: { source: string; reason: string }[];
   /** decision: the rules' status (applicable | needs_confirmation | denied | default); label: the action's title in the language asked. */
   actions: { id: string; decision: string | null; label: string; implementation: string | null }[];

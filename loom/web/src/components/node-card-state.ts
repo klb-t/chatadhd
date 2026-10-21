@@ -204,10 +204,11 @@ export function runOutcome(run: ActionRun, t: ShellT): { ok: true } | { ok: fals
   return { ok: false, text: t("card.write_error", { reason: String(message) }) };
 }
 
-/** The relations grouped by edge kind, out and in, as the kernel grouped them; a group with nothing is not drawn. */
+/** The relations grouped by edge kind, out and in, as the kernel grouped them; a group with nothing is not drawn. The in-rows are headed by
+ *  the inverse kind's name (the kernel's inverse_label: "zawiera" for part_of), so a heading names the concrete node, not "source" and "target". */
 export function relationGroups(card: Pick<GraphCardResult, "relations">) {
   return Object.entries(card.relations ?? {}).filter(([, g]) => g.out.length + g.in.length > 0)
-    .map(([kind, g]) => ({ kind, label: g.label, meaning: g.meaning, out: g.out, in: g.in }));
+    .map(([kind, g]) => ({ kind, label: g.label, meaning: g.meaning, inverseLabel: g.inverse_label ?? null, out: g.out, in: g.in }));
 }
 
 /** The actions of the card in words: the kernel's label, "planowane" when its implementation says so, the rules' decision. */

@@ -481,8 +481,8 @@
       },
       "part_of": {
         "label": {
-          "en": "part of",
-          "pl": "część"
+          "en": "is part of",
+          "pl": "jest częścią"
         },
         "meaning": {
           "en": "Source is a part of target.",

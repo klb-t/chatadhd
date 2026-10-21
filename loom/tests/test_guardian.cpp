@@ -1081,12 +1081,16 @@ TEST_SUITE("guardian") {
   TEST_CASE("M1-D1: the class of a model as guardian.pack says it today - the name decides, a price above the mid threshold too") {
     Fixture f;
     const Json models = unwrap(annotations::Policy::load(f.td.path())).models;
-    // no reader passes a price today (models.price_path planned): the name patterns decide, cheap first ("mini" is in "gemini")
-    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro") == "cheap");
+    // no reader passes a price today (models.price_path planned): the name patterns decide, cheap first; "-mini" carries its hyphen
+    // (M1-W0 r1:b5), so "gemini" is not cheap by accident: gemini-2.5-pro is frontier by "pro", gemini-2.5-flash cheap by "flash"
+    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro") == "frontier");
+    CHECK(annotations::model_tier(models, "google/gemini-2.5-flash") == "cheap");
+    CHECK(annotations::model_tier(models, "openai/gpt-4o-mini") == "cheap");
+    CHECK(annotations::model_tier(models, "openai/gpt-5-mini") == "cheap");   // the order of the classes: cheap's "-mini" before frontier's "gpt-5"
     CHECK(annotations::model_tier(models, "vendor/brand-x") == "unknown");
     // with a price above the mid threshold (frontier has no threshold) the patterns of all classes decide, in order: cheap, mid
     // or frontier, else unknown (tiers[frontier].reason.threshold, unknown_tier.reason)
-    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro", 10) == "cheap");
+    CHECK(annotations::model_tier(models, "google/gemini-2.5-pro", 10) == "frontier");
     CHECK(annotations::model_tier(models, "anthropic/claude-sonnet-4", 10) == "mid");
     CHECK(annotations::model_tier(models, "anthropic/claude-opus-4", 10) == "frontier");
     CHECK(annotations::model_tier(models, "vendor/brand-x", 10) == "unknown");

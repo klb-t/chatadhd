@@ -108,6 +108,9 @@ test('a run that waits for a confirmation becomes a gate with the reason in the 
 test('relations keep only groups with members; actions say planned from the kernel\'s implementation', () => {
   const groups = card.relationGroups({ relations: { a: { label: 'A', meaning: null, out: [], in: [] }, b: { label: 'B', meaning: 'm', out: [{ address: 'x', label: 'X' }], in: [] } } });
   assert.deepEqual(groups.map(g => g.kind), ['b']);
+  assert.equal(groups[0].inverseLabel, null, 'a kind without an inverse name: one heading, arrows mark the direction');
+  const named = card.relationGroups({ relations: { part_of: { label: 'jest częścią', meaning: 'm', inverse: 'contains', inverse_label: 'zawiera', out: [], in: [{ address: 'y', label: 'Y' }] } } });
+  assert.equal(named[0].inverseLabel, 'zawiera', 'the in-rows are headed by the inverse kind\'s name (r1:b5)');
   const rows = card.actionRows({ actions: [{ id: 's', decision: 'applicable', label: 'Zmień', implementation: 'implemented' }, { id: 'p', decision: 'needs_confirmation', label: 'Zapisz', implementation: 'planned' }] }, t);
   assert.deepEqual(rows.map(r => r.planned), [false, true]);
   assert.equal(rows[1].decisionText, pl['card.decision.needs_confirmation']);

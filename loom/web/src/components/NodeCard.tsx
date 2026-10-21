@@ -212,13 +212,21 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
 
         <Disclosure testId="card-relations" labels={{ show: t("relations"), hide: t("relations") }} defaultOpen>
           {relations.length === 0 && <p className="gnav-note" data-testid="card-relations-none">{t("card.relations.none")}</p>}
-          {relations.map(g => <div key={g.kind} className="ncard-group" data-testid={`card-relation-group-${g.kind}`}>
-            <p className="ncard-line"><strong>{g.label}</strong>{g.meaning && <span className="gnav-note"> — {g.meaning}</span>}</p>
-            <ul className="ncard-list">
-              {g.out.map(n => <li key={`out-${n.address}`}><button className="ncard-row" data-testid={`card-relation-${n.address}`} onClick={() => onNavigate(n.address, n.label)}>→ {n.label}</button></li>)}
-              {g.in.map(n => <li key={`in-${n.address}`}><button className="ncard-row" data-testid={`card-relation-${n.address}`} onClick={() => onNavigate(n.address, n.label)}>← {n.label}</button></li>)}
-            </ul>
-          </div>)}
+          {relations.map(g => {
+            // M1-W0 r1:b5: a heading is a verb naming the concrete nodes ("jest częścią: ROM", "zawiera: Rozruch"), never the edge kind's generic
+            // meaning ("source is a part of target"); the in-heading is the kernel's inverse_label. A kind without an inverse name keeps one
+            // heading and marks the direction of each row with an arrow.
+            const named = g.inverseLabel !== null;
+            const row = (n: { address: string; label: string }, dir: "out" | "in") =>
+              <li key={`${dir}-${n.address}`}><button className="ncard-row" data-testid={`card-relation-${n.address}`} onClick={() => onNavigate(n.address, n.label)}>
+                {named ? "" : dir === "out" ? "→ " : "← "}{n.label}</button></li>;
+            return <div key={g.kind} className="ncard-group" data-testid={`card-relation-group-${g.kind}`}>
+              {(g.out.length > 0 || !named) && <p className="ncard-line"><strong data-testid={`card-relation-head-out-${g.kind}`}>{g.label}:</strong></p>}
+              {g.out.length > 0 && <ul className="ncard-list">{g.out.map(n => row(n, "out"))}</ul>}
+              {named && g.in.length > 0 && <p className="ncard-line"><strong data-testid={`card-relation-head-in-${g.kind}`}>{g.inverseLabel}:</strong></p>}
+              {g.in.length > 0 && <ul className="ncard-list">{g.in.map(n => row(n, "in"))}</ul>}
+            </div>;
+          })}
           {(card.relations_unknown ?? []).map(u => <p key={u.source} className="gnav-note gnav-honesty">{t("unknown_source", { source: u.source, reason: u.reason })}</p>)}
         </Disclosure>
 

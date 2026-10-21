@@ -36,12 +36,12 @@ export function totals(doc: Pick<SettingsResolved, "groups">): { fields: number;
   return summaries(doc).reduce((sum, g) => ({ fields: sum.fields + g.fields, yours: sum.yours + g.yours }), { fields: 0, yours: 0 });
 }
 
-/** "5 pól": the plural form comes from the language (Intl.PluralRules), the word of the form from the catalogue. */
-export function countWord(kind: "fields" | "yours", n: number, language: string, t: ShellT): string {
+/** "5 pól", "8 grup": the plural form comes from the language (Intl.PluralRules), the word of the form from the catalogue. */
+export function countWord(kind: "fields" | "yours" | "groups", n: number, language: string, t: ShellT): string {
   if (kind === "yours") return t("count.yours", { n: String(n) });
   let category = "other";
   try { category = new Intl.PluralRules(language).select(n); } catch { /* an unknown language: the word for "other" */ }
-  return t(`count.fields.${category}`, { n: String(n) });
+  return t(`count.${kind}.${category}`, { n: String(n) });
 }
 
 /** "N pól · M Twoje". */
