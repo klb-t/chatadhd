@@ -100,6 +100,19 @@ export function viewModelFor(result: Pick<GraphNavigateResult, "focus" | "childr
 export const screenOf = (p: Point, cam: Camera, centre: Point): Point =>
   ({ x: centre.x + (p.x - centre.x) * cam.zoom + cam.panX, y: centre.y + (p.y - centre.y) * cam.zoom + cam.panY });
 
+/** The mark whose screen centre is nearest to a point of the map (CSS px inside the map box), or null without marks. On a dense
+ * level (the root: 25 children about 21 px apart at 390 px) the 44 px touch targets overlap and the one later in the DOM would win
+ * a tap on the centre of its neighbour; the nearest centre decides instead, so the label and the card belong to the circle under
+ * the finger. Ties keep the first mark in order (stable). */
+export function nearestMark<M extends { id: string; screen: Point }>(marks: readonly M[], p: Point): M | null {
+  let best: M | null = null, bestD = Infinity;
+  for (const m of marks) {
+    const d = (m.screen.x - p.x) ** 2 + (m.screen.y - p.y) ** 2;
+    if (d < bestD) { best = m; bestD = d; }
+  }
+  return best;
+}
+
 const clampZoom = (z: number) => Math.max(ZOOM_MIN_PRESET, Math.min(ZOOM_MAX_PRESET, z));
 
 /** Zoom by a factor so that the screen point `around` (preset: the centre) stays where it is. */

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useDialogFocus } from "./shell/use-dialog-focus";
+import { inertAttr, useDialogFocus } from "./shell/use-dialog-focus";
 import ApplicationProfiles, { profileStyle } from "./components/ApplicationProfiles";
 import { profileAvailability, registerProfile, type ApplicationProfile } from "./profiles/runtime";
 import ConversationList from "./components/ConversationList";
@@ -252,7 +252,8 @@ export default function App() {
   const workshop = (
     <div className="app-root" data-sidebar-side={primaryProfile?.presentation.sidebar.side ?? "left"}
       style={primaryProfile ? profileStyle(primaryProfile) : undefined}>
-      <header className="app-header" onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }}>
+      {/* an open panel is a modal dialog: the header, the sidebar and the main panel behind it are inert (no Tab, no taps, no reader) */}
+      <header className="app-header" onKeyDown={(event) => { if (event.key === "Escape") setNavOpen(false); }} {...inertAttr(activePanel !== null)}>
         <button
           className="icon-btn"
           aria-label="Toggle conversation list"
@@ -295,7 +296,7 @@ export default function App() {
       </header>
 
       <div className="app-layout">
-        <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar">
+        <aside className={`sidebar${sidebarOpen ? "" : " collapsed"}`} data-testid="sidebar" {...inertAttr(activePanel !== null)}>
           <ConversationList
             key={convRefreshKey}
             activeConvId={activeConvId}
@@ -305,7 +306,7 @@ export default function App() {
           />
         </aside>
 
-        <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`}>
+        <div className={`main-panel${knowledgeOpen ? " with-workbench" : ""}`} {...inertAttr(activePanel !== null)}>
           <div className={`chat-host${knowledgeOpen ? " beside-workbench" : ""}`} hidden={knowledgeOpen && !chatVisible}>
             <ApplicationProfiles profileHost={userProfileHost} convId={activeConvId} onConversationCreated={onConversationCreated}
               refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} ui={profileUi}
@@ -322,7 +323,7 @@ export default function App() {
   if (layout === "chat") return (
     <ShellText.Provider value={t}><ShellLanguage.Provider value={uiLanguage}>
       <ChatShell profileHost={userProfileHost} convId={activeConvId} onSelect={setActiveConvId} onCreated={onConversationCreated}
-        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }}
+        refreshKey={convRefreshKey} onMessagesChanged={onMessagesChanged} planned={{ windows: true }} behindOverlay={activePanel !== null || knowledgeOpen}
         actions={{ panel: (id) => { if (id === "settings") setSettingsView(""); setActivePanel(id as PanelId); }, navigator: (focus) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, knowledge: () => setKnowledgeOpen(true), workshop: () => setLayout("workshop") }} />
       {panels}
       {knowledgeOpen && <>

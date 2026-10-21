@@ -159,6 +159,14 @@ try {
       assert.deepEqual(await layers(), ["panel"]);
       await page.waitForTimeout(150);
       assert.equal(await page.getByTestId("panel-settings").isVisible(), true, "the panel is not undone by the menu's history entry");
+      // a panel is a modal dialog: the shell behind it is inert and Tab / Shift+Tab never leave the panel (they wrap inside it)
+      assert.equal(await page.getByTestId("chat-shell").getAttribute("inert"), "", "the chat shell behind an open panel is inert");
+      const focusHome = async () => page.evaluate(() => {
+        const a = document.activeElement;
+        return a?.closest('[data-testid="panel-settings"]') ? "panel" : `${a?.tagName ?? "?"}#${a?.getAttribute("data-testid") ?? ""}`;
+      });
+      for (let i = 0; i < 40; i++) { await page.keyboard.press("Tab"); assert.equal(await focusHome(), "panel", `Tab ${i + 1} stays in the panel`); }
+      for (let i = 0; i < 12; i++) { await page.keyboard.press("Shift+Tab"); assert.equal(await focusHome(), "panel", `Shift+Tab ${i + 1} stays in the panel`); }
       await page.goBack();
       await page.getByTestId("panel-settings").waitFor({ state: "detached" });
       assert.deepEqual(await layers(), []);
@@ -166,14 +174,17 @@ try {
       await page.getByTestId("shell-menu-toggle").click();
       await page.getByTestId("shell-menu-views").click();
       await page.getByTestId("sheet-views").waitFor();
+      assert.equal(await page.getByTestId("shell-bar").getAttribute("inert"), "", "the bar behind an open sheet is inert");
+      assert.equal(await page.locator(".shell-main").getAttribute("inert"), "", "the chat behind an open sheet is inert");
       await page.keyboard.press("Escape");
       await page.getByTestId("sheet-views").waitFor({ state: "detached" });
       // closing by the × button gives the entry back: Back then does not land on a closed layer
       await page.getByTestId("shell-menu-toggle").click();
-      await page.getByTestId("shell-menu-this_conversation").click();
-      await page.getByTestId("panel-graph").waitFor();
+      await page.getByTestId("shell-menu-this_conversation").click();   // layouts.json: navigator:conv:current → the navigator panel on the open conversation
+      await page.getByTestId("panel-navigator").waitFor();
+      assert.match(await page.getByTestId("graph-navigator").getAttribute("data-focus"), /^conv:/, "focus = the open conversation (conv:<id>)");
       await page.getByTestId("close-panel").click();
-      await page.getByTestId("panel-graph").waitFor({ state: "detached" });
+      await page.getByTestId("panel-navigator").waitFor({ state: "detached" });
       await page.waitForFunction(() => window.__loomLayers.size === 0 && (history.state?.loomDepth ?? 0) === 0);
       assert.equal(await back(), false);
     });

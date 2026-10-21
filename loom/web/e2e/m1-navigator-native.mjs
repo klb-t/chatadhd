@@ -575,6 +575,43 @@ try {
     await nav().waitFor({ state: "detached" });
     assert.deepEqual(errors, [], "no page errors");
   });
+
+  await step("the dense root map (r2:b2): a tap on the centre of EVERY mark selects that mark, not its neighbour in DOM order (44 px targets overlap)", async () => {
+    await page.getByTestId("shell-menu-toggle").tap();
+    await page.getByTestId("shell-menu-graph").tap();
+    await nav().waitFor();
+    await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+    assert.equal(await nav().getAttribute("data-focus"), "", "the root");
+    const ids = await page.getByTestId("nav-map-mark").evaluateAll(els => els.map(el => el.dataset.id));
+    assert.ok(ids.length >= 20, `a dense level (${ids.length} marks)`);
+    const overlapping = await page.locator(".gnav-map-hit").evaluateAll(els => {
+      const r = els.map(e => e.getBoundingClientRect()); let n = 0;
+      for (let i = 0; i < r.length; i++) for (let j = i + 1; j < r.length; j++) if (r[i].left < r[j].right && r[j].left < r[i].right && r[i].top < r[j].bottom && r[j].top < r[i].bottom) n++;
+      return n;
+    });
+    assert.ok(overlapping > 0, `the hit buttons overlap on this level (${overlapping} pairs) — the case the finding describes`);
+    let tapped = 0;
+    for (const id of ids) {
+      // a mark outside the plane has no button; the others are tapped at the centre of their circle, measured right before the tap
+      if (await page.getByTestId(`nav-map-node-${id}`).count() === 0) continue;
+      await page.getByTestId("nav-map").scrollIntoViewIfNeeded();
+      const box = await page.locator(`[data-testid="nav-map-mark"][data-id="${id}"] circle`).boundingBox();
+      await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+      assert.equal(await page.locator(`[data-testid="nav-map-mark"][data-id="${id}"]`).getAttribute("data-selected"), "true", `tap on the centre of ${id} selects ${id}`);
+      assert.equal(await page.getByTestId("nav-map-mark").evaluateAll(els => els.filter(el => el.dataset.selected === "true").length), 1, "exactly one mark selected");
+      if (id !== "root") {
+        assert.equal(await page.getByTestId("nav-map-selected").getAttribute("data-address"), id, `the line under the map is ${id}`);
+        await page.getByTestId("node-card").waitFor();
+        assert.equal(await page.getByTestId("node-card").getAttribute("data-address"), id, `the card is ${id}`);
+        await page.getByTestId("card-loading").waitFor({ state: "detached" });
+      }
+      tapped++;
+    }
+    assert.ok(tapped >= 20, `${tapped} marks tapped`);
+    await page.getByTestId("close-panel").tap();
+    await nav().waitFor({ state: "detached" });
+    assert.deepEqual(errors, [], "no page errors");
+  });
 } finally {
   await browser?.close();
   server.kill("SIGTERM");

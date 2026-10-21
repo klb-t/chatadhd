@@ -4,13 +4,13 @@
 // button, so Back/keyboard/tests see it); a tap shows the whole label in the line under the map and opens the same card as the
 // list's ⋯. One finger drags the plane, two fingers pinch, + / − step the zoom. The visible rectangle of the map is reported to
 // the Android shell (window.LoomBridge.setGestureExclusion, CSS px) so the system's edge swipes do not eat the drag.
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent } from "react";
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { ShellT } from "../shell/text";
 import { project } from "../view-engine/project";
 import { chipText, countText } from "./navigator-state";
-import { CAMERA_HOME, HIT_SIZE_PRESET, LABEL_FONT_PX_PRESET, MAP_HEIGHT_PRESET, MAP_MARGIN_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, panBy, pinch,
-  placeLabels, sameRects, screenOf, viewModelFor, zoomBy, type Camera, type Point, type Rect } from "./navigator-map";
+import { CAMERA_HOME, HIT_SIZE_PRESET, LABEL_FONT_PX_PRESET, MAP_HEIGHT_PRESET, MAP_MARGIN_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, nearestMark, panBy,
+  pinch, placeLabels, sameRects, screenOf, viewModelFor, zoomBy, type Camera, type Point, type Rect } from "./navigator-map";
 
 interface Props {
   result: GraphNavigateResult;
@@ -88,7 +88,11 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
   // line under the map carries the whole label of the tapped mark, so a mark without a label on the plane is one tap away, not lost.
   const labels = useMemo(() => placeLabels(marks, { width, height }, selected), [marks, width, height, selected]);
 
-  const local = (e: ReactPointerEvent): Point => { const r = box.current!.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  const local = (e: { clientX: number; clientY: number }): Point => { const r = box.current!.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  // A tap on a hit button goes to the mark whose centre is nearest to the finger, not to the button on top (on a dense level the
+  // 44 px targets overlap and DOM order would pick the neighbour); a keyboard activation (Enter/Space: detail 0, no coordinates)
+  // keeps the button's own mark.
+  const tapAt = (e: ReactMouseEvent, own: string) => tap(e.detail === 0 ? own : (nearestMark(marks, local(e))?.id ?? own));
   const onPointerDown = (e: ReactPointerEvent) => {
     if (e.pointerType === "mouse" && e.button !== 0) return;
     const p = local(e);
@@ -151,7 +155,7 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
         {marks.filter(m => inside(m.screen)).map(m => <button key={m.id} type="button" className="gnav-map-hit" data-testid={`nav-map-node-${m.id}`}
           aria-label={m.label} aria-pressed={selected === m.id}
           style={{ left: m.screen.x - HIT_SIZE_PRESET / 2, top: m.screen.y - HIT_SIZE_PRESET / 2, width: HIT_SIZE_PRESET, height: HIT_SIZE_PRESET }}
-          onClick={() => tap(m.id)} />)}
+          onClick={(e) => tapAt(e, m.id)} />)}
       </div>
       <div className="gnav-map-zoom">
         <button type="button" className="gnav-map-btn" data-testid="nav-map-zoom-in" aria-label={t("map.zoom_in")} onClick={() => zoomStep(ZOOM_STEP_PRESET)}>+</button>

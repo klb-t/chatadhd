@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { useDialogFocus } from "./use-dialog-focus";
+import { inertAttr, useDialogFocus } from "./use-dialog-focus";
 import { api } from "../api";
 import type { Conversation } from "../api/types";
 import type { UserProfileHost } from "../api/onboarding-host";
@@ -28,6 +28,8 @@ interface Props {
   onMessagesChanged: () => void;
   actions: ShellActions;
   planned: { windows: boolean };
+  /** A panel or the knowledge sheet of the app lies over the shell: the whole shell is `inert` (no focus, no taps, hidden from a reader). */
+  behindOverlay?: boolean;
 }
 type Sheet = "views" | "semantic" | null;
 
@@ -36,7 +38,7 @@ function bridge(): { openConnection?: () => void } | undefined {
 }
 
 /** The default view (R56): the full-screen standard chat app. Menu entries come from data (shell/data/layouts.json, profile Czat). */
-export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned }: Props) {
+export default function ChatShell({ profileHost, convId, onSelect, onCreated, refreshKey, onMessagesChanged, actions, planned, behindOverlay = false }: Props) {
   const t = useShellText();
   const [drawer, setDrawer] = useState(false);
   const [menu, setMenu] = useState(false);
@@ -79,8 +81,9 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
   if (sheet === "semantic") sheetBody = <SemanticStatus profileHost={profileHost} />;
 
   return (
-    <div className="shell-root" data-testid="chat-shell">
-      <header className="shell-bar" data-testid="shell-bar">
+    <div className="shell-root" data-testid="chat-shell" {...inertAttr(behindOverlay)}>
+      {/* while a sheet is open the bar, the drawer and the chat behind it are inert, so Tab, a reader and a stray tap stay in the sheet */}
+      <header className="shell-bar" data-testid="shell-bar" {...inertAttr(sheet !== null)}>
         <button className="icon-btn shell-btn" aria-label={t("drawer_open")} aria-expanded={drawer} data-testid="shell-drawer-toggle" onClick={() => setDrawer(v => !v)}>☰</button>
         <h1 className="shell-title" data-testid="shell-title">{title || t("new_chat")}</h1>
         <span id="shell-model-slot" />
@@ -93,7 +96,7 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
       <div className="shell-body" onClick={() => { if (menu) setMenu(false); }}>
         {drawer && <>
           <div className="drawer-backdrop" style={{ zIndex: 21 }} onClick={() => setDrawer(false)} />
-          <aside className="shell-drawer" data-testid="shell-drawer" aria-label={t("conversations")}>
+          <aside className="shell-drawer" data-testid="shell-drawer" aria-label={t("conversations")} {...inertAttr(sheet !== null)}>
             <div style={{ padding: 8, display: "flex", flexDirection: "column", gap: 8 }}>
               <button className="primary shell-btn" data-testid="shell-new-chat" onClick={() => { onSelect(null); setDrawer(false); }}>{t("new_chat")}</button>
               <input type="search" aria-label={t("search")} placeholder={t("search")} value={query} onChange={e => setQuery(e.target.value)} data-testid="shell-search" />
@@ -104,7 +107,7 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
             </div>
           </aside>
         </>}
-        <main className="shell-main">
+        <main className="shell-main" {...inertAttr(sheet !== null)}>
           <ChatView profileHost={profileHost} settingsKey="shell" convId={convId} onConversationCreated={onCreated}
             refreshKey={refreshKey} onMessagesChanged={onMessagesChanged} variant="chat" />
         </main>

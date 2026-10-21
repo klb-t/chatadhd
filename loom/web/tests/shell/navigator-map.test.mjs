@@ -163,3 +163,13 @@ test('labels on the plane are drawn only where they can be read: inside the map,
   assert.equal(map.placeLabels(edge, { width: 342, height: 300 }, null)[0].anchor, 'start');
   assert.deepEqual(map.placeLabels([{ id: 'c', label: 'Za długa etykieta na mapę', screen: { x: 171, y: 150 }, rScreen: 170 }], { width: 342, height: 300 }, null), []);
 });
+
+test('a tap goes to the nearest mark, not to the hit button on top (r2:b2: dense levels, 44 px targets overlapping)', () => {
+  // three marks 20 px apart (the root level at 390 px: 25 children about 21 px apart); the 44 px buttons of neighbours overlap
+  const marks = [{ id: 'a', screen: { x: 100, y: 150 } }, { id: 'b', screen: { x: 120, y: 150 } }, { id: 'c', screen: { x: 140, y: 150 } }];
+  assert.equal(map.nearestMark(marks, { x: 100, y: 150 }).id, 'a', 'the centre of a: a (DOM order would give c, the last button over that point)');
+  assert.equal(map.nearestMark(marks, { x: 121, y: 149 }).id, 'b');
+  assert.equal(map.nearestMark(marks, { x: 139, y: 160 }).id, 'c');
+  assert.equal(map.nearestMark(marks, { x: 110, y: 150 }).id, 'a', 'a tie keeps the first mark in order');
+  assert.equal(map.nearestMark([], { x: 0, y: 0 }), null);
+});
