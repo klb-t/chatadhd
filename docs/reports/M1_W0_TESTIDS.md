@@ -402,6 +402,46 @@ systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-
      "count": 1
     }
    ]
+  },
+  {
+   "name": "Karta pozycji ROM (Rozruch): bez nagłówka „Skąd jest wartość”, jedno zdanie zamiast niego",
+   "do": [
+    {
+     "click": "shell-menu-toggle"
+    },
+    {
+     "click": "shell-menu-graph"
+    },
+    {
+     "wait": "nav-rows"
+    },
+    {
+     "click": "nav-row-area:rom"
+    },
+    {
+     "wait": "nav-focus-why"
+    },
+    {
+     "click": "nav-row-card-rom:boot"
+    },
+    {
+     "wait": "card-label"
+    }
+   ],
+   "expect": [
+    {
+     "tid": "node-card",
+     "count": 1
+    },
+    {
+     "tid": "card-chain",
+     "absent": true
+    },
+    {
+     "tid": "card-no-chain",
+     "count": 1
+    }
+   ]
   }
  ]
 }
