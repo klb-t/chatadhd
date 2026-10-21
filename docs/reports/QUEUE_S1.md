@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-21 13:35 UTC
+# Kolejka S1 — stan 2026-10-21 14:50 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
@@ -11,6 +11,15 @@ więc to wyścig, nie błąd mapy; lokalnie nie dało się go odtworzyć nawet p
 i 60 s na start serwera. Przebieg CI **251** (`f2d519dd`, https://github.com/klb-t/chatadhd/actions/runs/39608733048) w toku, ≈ 60–100 min
 (250 trwał 98 min). **Nie pushować kodu na `main`, dopóki trwa.** Jeśli `test:m1-navigator` padnie znowu na zoomie: sprawdzić efekt
 `setCam(CAMERA_HOME)` przy zmianie `result.focus.address` (`NavigatorMap.tsx:56`) — drugie możliwe wyjaśnienie.
+
+## CI 251 (main `f2d519dd`) = failure, jedna przyczyna: kolejny wyścig w e2e (14:50 UTC)
+Zepsuty tylko job `dev (g++)`, krok `test:m1-settings`, „Modele › Role": `data-role-open` było `null` zamiast `'1'`
+(`m1-settings-native.mjs:213`). Przyczyna (znaleziona przez S2 na CI jego PR #48, potwierdzona w kodzie): `RolesTable` zgłasza otwarcie
+karty z `useEffect` (`RoleCard.tsx:57`), a `SettingsHuman.tsx:145` ustawia atrybut klatkę później — test czytał go raz, zaraz po karcie.
+Poprawka: `waitFor` na `[data-role-open="1"]` — commit `2752f372` na `claude/m1-w0` (2× zielony lokalnie), **jeszcze nie na `main`**:
+S2 dołącza go do swojej gałęzi (PR #48) i jego FF `main` ma być jedynym pushem, żeby nie anulować kolejnego biegu. Poprawka
+szczypania z `f2d519dd` zadziałała (m1-navigator przeszedł), `asan`/`server.keepalive` bez zarzutu. Wzór: pierwsze pojawienie się testu
+na wolnym runnerze ujawnia jednorazowe odczyty atrybutów ustawianych z efektów React — przy następnej awarii e2e najpierw sprawdzać to.
 
 ## Wynik S2 z 13:59 UTC: Bramka 0 na emulatorze ZIELONA (android-smoke 39605980228, `ed380fbb` = main f85a8ddc + sterownik)
 Trzy profile (pixel_5 1,0 / pixel_6 1,0 / pixel_6 1,3): 39 działa, 0 nie, 0 pominięte. Krok 1 (⋮ → Graf → ROM): pierwsza odpowiedź
