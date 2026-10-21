@@ -12,6 +12,15 @@ i 60 s na start serwera. Przebieg CI **251** (`f2d519dd`, https://github.com/klb
 (250 trwał 98 min). **Nie pushować kodu na `main`, dopóki trwa.** Jeśli `test:m1-navigator` padnie znowu na zoomie: sprawdzić efekt
 `setCam(CAMERA_HOME)` przy zmianie `result.focus.address` (`NavigatorMap.tsx:56`) — drugie możliwe wyjaśnienie.
 
+## Wynik S2 z 13:59 UTC: Bramka 0 na emulatorze ZIELONA (android-smoke 39605980228, `ed380fbb` = main f85a8ddc + sterownik)
+Trzy profile (pixel_5 1,0 / pixel_6 1,0 / pixel_6 1,3): 39 działa, 0 nie, 0 pominięte. Krok 1 (⋮ → Graf → ROM): pierwsza odpowiedź
+nawigatora w ≈ 0,3 s od dotknięcia, `nav-chip=13`; wcześniejszy timeout 30 s na dwóch profilach **nie powtórzył się** (ekran z tamtej
+awarii przepadł, bo bieg został zastąpiony) — S2 zgaduje jednorazową niegotowość. Cztery stare kroki (model, zapis ustawienia, wiedza,
+stronicowanie) działają; to były zmiany sterownika po W0, nie błędy aplikacji. Wniosek dla P-perf: **niski priorytet, nie blokuje
+bramki 0**; zostają moje pomiary 1,1–1,9 s na `graph.navigate` w Debug (brak bufora źródeł projekcji). S2 puszcza teraz własną bramkę
++ draft PR + FF `main`. **Uwaga:** jego pliki `loom/android/smoke/*.mjs` pasują do `paths: loom/**` w `loom.yml`, więc FF `main`
+zanim 251 się skończy anuluje 251 — poprosiłem S2, żeby poczekał.
+
 ## Wyniki S2 z emulatora (13:10 UTC, android-smoke 39598360743, pixel_5/pixel_6/pixel_6+font 1,3)
 Kroki 2–8 Bramki 0 działają na wszystkich trzech profilach (menu, ustawienia, karta roli, Wstecz, dolny pasek, menu perspektyw,
 karta ROM bez łańcucha). **Krok 1 (⋮ → Graf → ROM) pada na pixel_5 i pixel_6 przy czcionce 1,0: timeout 30 s na `nav-rows`** (przy 1,3
