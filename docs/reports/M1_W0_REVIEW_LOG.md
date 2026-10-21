@@ -310,3 +310,43 @@ Przebieg: `node --test tests/shell/*.test.mjs` 89/89 (`testids-doc` 2/2 z nową 
 `graph-card-temperature.json` nadpisany nowym `scope_id` i przywrócony `git checkout`, jak w r2:b2). `npm run build` nie uruchamiany
 (żadne źródło web nie zmienione; e2e szły na istniejącym `dist`). Nie uruchomione: `android-smoke`, pozostałe `test:*`, `ctest`
 (jądro i packi nietknięte). Żaden zrzut nie zmieniony.
+
+## Co doszło w poprawkach r2:b4 (2026-10-21, fakty z przebiegu)
+
+Pięć ustaleń przeglądu (partia 4): jedno „should”, cztery drobne. Wszystkie poprawione, żadnego nie odrzucono. Brak WIP-u z
+przerwanego przebiegu: HEAD był gotowym commitem r2:b3 (docs, `ee16b624`), drzewo czyste — paczka zaczęta od zera.
+
+- **Otwieracze obszarów wejścia → nawigator (App.tsx:183–185).** `entryOpeners` prowadziły do dawnych ekranów (`graph.nodes` →
+  stary panel grafu, `kb.query` → arkusz „Wiedza”, `conversations.list` → szuflada), a `graph.navigate` (sześć obszarów
+  graph_entry.pack: rom, profiles_settings, party_self, flows, devices_io, tools_agent) nie było zarejestrowane, więc ich
+  „Rozwiń” mówiło `expand_unavailable`. Teraz (`18d2f6cf`): `graph.navigate{focus}` → nawigator w tym ognisku; `graph.nodes` →
+  korzeń; `kb.query` → `area:knowledge` (claims) albo `area:parties` (entities); `kb.policy` → `area:self_model`;
+  `conversations.list` → `area:context_projects`. Ogniska sprawdzone na żywym serwerze (graph.navigate odpowiada etykietami
+  „Wiedza”, „Podmioty”, „Samomodel”, „Kontekst i projekty”). Operacja czatu `graph.open` (profil, `openPanel("graph")`) ląduje
+  tam, gdzie ⋮ › Graf (korzeń nawigatora); dawne panele dalej w Warsztacie. Nowy krok e2e (14.): Warsztat › graph-entry ›
+  „Rozwiń” obszaru Wiedza → `panel-navigator[data-focus="area:knowledge"]`, `nav-knowledge[aria-pressed=false]` (stary widok
+  się nie otworzył).
+- **Wiersz roli ucinał zdanie po dwóch linijkach „…”.** `role-card.css` bez `-webkit-line-clamp`; zdanie zawija się w całości
+  (wiersz i tak ma ≥ 44 px). Zrzuty `m1-settings-roles.png`, `m1-settings-role-readers.png` odświeżone: „…Od jego klasy zależy
+  przepływ, gdy analiza czyta fragmenty…” w całości.
+- **Poziomy łańcucha jako terminy („Instalacja”, „Grupa grup”, „Rola w kontekście”).** Katalog `loom/data/graph/scopes.pack`
+  nie miał żadnego tekstu poza etykietą (ustalenie mówiło, że ma — nie miał; dodane). Każdy z 11 poziomów dostał
+  `meaning` {en, pl} (kalibracja, właściciel może zmienić): „Instalacja — ten telefon albo ta kopia aplikacji”, „Grupa grup —
+  jednostka nadrzędna, która zbiera kilka zespołów”, „Rola w kontekście — rola, w jakiej teraz występujesz (autor, recenzent…)”…
+  Jądro: `scope_resolver.cpp` kopiuje `meaning` do wierszy łańcucha i węzłów perspektywy dziedziczenia; `projection.cpp`
+  mówi je w języku czytelnika w `graph.card` (`inheritance[].meaning`, brak klucza = brak linii) i jako „po co” węzłów
+  `scope:<poziom>` nawigatora. Web: `ncard-chain-meaning` jako mała druga linia wiersza łańcucha i wiersza „Dla kogo?”
+  (`node-card-state.ts` `meaningText`, nic na sztywno). Runtime packi + `runtime_profiles_embedded.inc` przegenerowane
+  (`--check` czysty). Zrzuty `m1-navigator-card-for-whom.png`, `m1-navigator-card-unset.png` odświeżone.
+- **„Sklasyfikuj i zważ krawędzie (Jev)”.** `actions.pack` `jev.edge_classify`: tytuł, opis, `why`, `labels.pl`, `human.title`
+  bez kryptonimu — „(ocena krawędzi)” / „(edge scoring)”; id przepływu bez zmian. `grep Jev` w packu i w `.inc`: 0.
+- **`<html lang="en">`.** `App.tsx`: `document.documentElement.lang = uiLanguage` (efekt przy zmianie języka powłoki);
+  e2e nawigatora sprawdza `lang === "pl"` przy `ui_language=pl`. `index.html` zostaje z „en” jako start przed konfiguracją.
+
+Przebiegi: `cmake --build --preset dev` (przyrostowo) czysty; `ctest -R graph_projection` 1/1 (nowy CHECK: każdy poziom karty
+ma niepuste `meaning`); `npm run build` czysty; node-card-state 11/11 (nowy przypadek r2:b4; fixture
+`graph-card-temperature.json` odświeżony przez e2e — teraz z `meaning`; dalsza zmiana tylko `scope_id` rozmowy = churn,
+przywrócona `git checkout` jak w r2:b2/b3); shell 10/10; testids-doc 2/2; role-card 5/5; `test:m1-navigator` 14/14 (13 +
+nowy krok; wiersze łańcucha i „Dla kogo?” porównane słowo w słowo z `graph.card`, brak `meaning` = brak linii);
+`test:m1-settings` 9/9; `test:chat-first` zielony (bez FAIL). Nie uruchomione: pełny `ctest`, pełny `npm run e2e`,
+`android-smoke`, test ABI. Zrzuty: 4 PNG zmienione (wymienione wyżej), reszta bajt w bajt.

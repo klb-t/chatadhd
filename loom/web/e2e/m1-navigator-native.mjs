@@ -90,6 +90,8 @@ try {
     await page.getByTestId("shell-menu-toggle").tap();
     await page.getByTestId("shell-menu-graph").tap();
     await nav().waitFor();
+    // r2:b4: the document speaks the shell's language (index.html ships lang="en"; a screen reader picks its voice from here)
+    assert.equal(await page.evaluate(() => document.documentElement.lang), "pl", "html lang follows ui_language");
     await page.getByTestId("nav-rows").locator("li").first().waitFor();
     await shot("m1-navigator-root-list");   // the root as the owner first sees it: the rows from the top (the map is below the fold)
     await page.getByTestId("nav-rows").waitFor();
@@ -616,6 +618,25 @@ try {
     assert.ok(tapped >= 20, `${tapped} marks tapped`);
     await page.getByTestId("close-panel").tap();
     await nav().waitFor({ state: "detached" });
+    assert.deepEqual(errors, [], "no page errors");
+  });
+  await step("r2:b4: Rozwiń of an entry area in the Workshop opens the navigator at that area (kb.query → area:knowledge), not the old Wiedza sheet", async () => {
+    await page.getByTestId("shell-menu-toggle").tap();
+    await page.getByTestId("shell-menu-workshop").tap();
+    if (!(await page.getByTestId("nav-graph-entry").isVisible())) await page.getByTestId("toggle-nav").tap();
+    await page.getByTestId("nav-graph-entry").tap();
+    await page.getByTestId("graph-entry-panel").waitFor();
+    const expand = page.getByTestId("graph-entry-area-knowledge").locator(".graph-entry-expand");
+    assert.equal(await expand.count(), 1, "the knowledge area has its Rozwiń (the opener kb.query is registered)");
+    await expand.tap();
+    await nav().waitFor();
+    assert.equal(await nav().getAttribute("data-focus"), "area:knowledge", "the navigator opens at the evidence area");
+    assert.equal(await page.getByTestId("nav-knowledge").getAttribute("aria-pressed"), "false", "the old Wiedza view did not open (its own state stays off)");
+    await page.getByTestId("close-panel").tap();
+    await nav().waitFor({ state: "detached" });
+    if (!(await page.getByTestId("nav-chat").isVisible())) await page.getByTestId("toggle-nav").tap();   // the phone hides the Workshop nav behind ☰
+    await page.getByTestId("nav-chat").tap();
+    await page.getByTestId("chat-shell").waitFor();
     assert.deepEqual(errors, [], "no page errors");
   });
 } finally {

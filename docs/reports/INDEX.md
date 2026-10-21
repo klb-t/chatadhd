@@ -1610,3 +1610,25 @@ budowy cmake nie uruchamiano (dysk zajęty przez bramkę gdzie indziej).
 - Co jest (5 ustaleń: 2 poprawione, 3 już zrobione w r2:b1/r2:b2 i sprawdzone świeżym przebiegiem; brak WIP-u — HEAD był docs r2:b2 `f8345662`, drzewo czyste): (1) `loom/android/smoke/drive.mjs` kroki graph / memory / knowledge przez `openWorkshopPanel` (closePanel → ⋮ › `shell-menu-workshop` → `nav-<panel>`) i `backToChat` (`nav-chat`, bo układ jest zapamiętywany, a krok paging robi reload). (2) `docs/reports/M1_W0_TESTIDS.md` tabela „Dawne panele przez Warsztat” z prawdziwymi napisami przycisków (`test:testids-doc` zielony). (3) `M1_CHECKPOINT_0.md`: `m1-settings-all-fields.png` w §11 (14 w tekście, 7 wymienionych), wpis „Ta rozmowa w grafie pokazuje dziś węzeł + wiadomości; reszta M1-W3; dawny graf w Warsztacie” w „Czego jeszcze NIE ma”. (4) Sprostowania: r1:b7 „żaden zrzut się nie zmienił” było nieprawdziwe (PNG odświeżył r2:b1 `11e49097`) — dopisek w `M1_W0_REVIEW_LOG.md` i w tym pliku; „11 kroków” → „dziś 13”; P7 „12 PNG” → „dziś 21”. Szczegóły: `docs/reports/M1_W0_REVIEW_LOG.md` sekcja r2:b3.
 - Testy (fakty): `node --test tests/shell/*.test.mjs` 89/89; `test:chat-first` 18/18 (oba widoki; ustalenie „czerwony na HEAD” było już naprawione w r2:b2); `test:m1-settings` 9/9 i `test:m1-navigator` 13/13 do katalogu roboczego — 20/20 PNG bajt w bajt równe plikom w `docs/reports/M1_CHECKPOINT_0/`; `node --check drive.mjs` czysty. Nie uruchomione: `android-smoke` (brak emulatora; trzy przepisane kroki wykona S2 w M1-A0), `npm run build` (źródła web bez zmian), `ctest`, pozostałe `test:*`.
 - Decyzje i jak cofnąć: (a) kroki smoke przepisane na Warsztat, nie usunięte (dawne panele dalej są funkcją) — cofnięcie: `openMenu("graph"|"memory"|"knowledge")`, gdy ⋮ znów je dostanie. (b) `nav-*` klikane bez ≡ (`element.click()`), `closePanel()` przed każdym wejściem (nagłówek `inert`) — gdyby sterownik przeszedł na dotyk z współrzędnymi, dodać `click("toggle-nav")`. (c) Wpisy historyczne (r1:b7, P7) dostają dopisek z datą, nie są przepisywane. (d) Brak słowa „dlaczego pusto” przy pustym węźle — jądro nie podaje powodu; jak dodać: w sekcji r2:b3 dziennika. (e) Zrzuty niezmienione, licznik 21 zostaje.
+
+### S1 / M1-W0 (poprawki po przeglądzie r2:b4: otwieracze obszarów → nawigator, zdanie roli bez ucięcia, znaczenie poziomów łańcucha z katalogu, bez kryptonimu „Jev”, `html lang`) (2026-10-21, branch `claude/m1-w0`)
+
+- Pliki: `loom/web/src/App.tsx` (entryOpeners → nawigator; `graph.open` → korzeń nawigatora; efekt `documentElement.lang`),
+  `loom/web/src/components/{role-card.css, node-card-state.ts, NodeCard.tsx, graph-navigator.css}`, `loom/web/src/api/graph-projection.ts`
+  (`InheritanceLevel.meaning?`), `loom/data/graph/scopes.pack` (`chain[].meaning` {en,pl}, kalibracja), `loom/data/runtime/actions.pack`
+  (`jev.edge_classify` bez kryptonimu), `loom/src/views/scope_resolver.cpp`, `loom/src/graph/projection.cpp` (karta + węzły `scope:`),
+  `loom/tests/test_graph_projection.cpp`, generaty `loom/data/runtime/graph_entry.pack` + `loom/src/model/runtime_profiles_embedded.inc`,
+  testy `loom/web/tests/shell/node-card-state.test.mjs` (+fixture), `loom/web/e2e/m1-navigator-native.mjs` (asercje `meaning`, `lang`, krok 14).
+  Dziennik: `docs/reports/M1_W0_REVIEW_LOG.md` sekcja r2:b4. Commity `18d2f6cf` + ten (docs + krok e2e).
+- Testy (fakty): build dev czysty; `ctest -R graph_projection` 1/1; web build czysty; node-card-state 11/11, shell 10/10, testids-doc 2/2,
+  role-card 5/5; `test:m1-navigator` 14/14; `test:m1-settings` 9/9; `test:chat-first` zielony. Nie uruchomione: pełny `ctest`, pełny
+  `npm run e2e`, `android-smoke`, test ABI. 4 PNG odświeżone (`m1-navigator-card-for-whom`, `m1-navigator-card-unset`,
+  `m1-settings-roles`, `m1-settings-role-readers`).
+- Decyzje (R1–R53; każda odwracalna): (1) wszystkie `expand` obszarów prowadzą do nawigatora, ognisko = obszar opisu
+  (`kb.query what=entities` → `area:parties`, inaczej `area:knowledge`); odwrót: wpisy `entryOpeners` w `App.tsx`. (2) `graph.open`
+  czatu = korzeń nawigatora (jeden ekran „graf”), stary panel w Warsztacie; odwrót: `openPanel` w `profileUi`. (3) `meaning` to
+  słowa z katalogu `graph/scopes.pack` (kalibracja, nadpisywalne przez nakładkę graph_entry jak reszta łańcucha); brak klucza =
+  brak linii, nigdy słowo wymyślone w web; odwrót: usunąć klucze w packu (kod toleruje brak). (4) Kryptonim „Jev” tylko w id
+  przepływu; odwrót: edycja tekstów w `actions.pack` + regeneracja. (5) `lang` z `shellLanguage` w efekcie React, `index.html`
+  dalej „en” do wczytania konfiguracji; odwrót: usunąć efekt. (6) Dodatkowy krok e2e chroni `toggle-nav` na telefonie (Warsztat
+  chowa nawigację); odwrót: usunąć krok 14.
