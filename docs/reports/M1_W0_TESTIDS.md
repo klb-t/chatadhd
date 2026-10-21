@@ -1,6 +1,8 @@
 # M1-W0 — testid-y ekranów dla smoke Androida (kontrakt z S2)
 
-Stan: SZKIELET, wypełnia go ostatni pakiet W0 (P7) prawdziwymi testid-ami po zbudowaniu ekranów.
+Stan: WYPEŁNIONY (P7, 2026-10-21). Blok `gate0` niżej i tabele testid-ów pochodzą z prawdziwych ekranów; każdy testid z bloku
+jest sprawdzany w `loom/web/e2e/m1-navigator-native.mjs` albo `m1-settings-native.mjs` (390×844, dotyk, prawdziwy `loom-server`).
+Zrzuty tych ekranów: `docs/reports/M1_CHECKPOINT_0/`, opis: `docs/reports/M1_CHECKPOINT_0.md`.
 
 Kontrakt z S2 (wiadomość z 2026-10-21): sterownik `drive.mjs` czyta **pierwszy blok kodu `json`
 w tym pliku**, o kształcie `{"gate0": [kroki]}`. Krok: `{"name", "do": [akcje], "expect": [oczekiwania],
@@ -18,11 +20,51 @@ Kroki, które blok ma pokryć (testid-y i liczby z prawdziwych ekranów i danych
 4. Modele › Role: karta roli z łańcuchem polityki i flowami czytającymi klucz.
 5. Wstecz: arkusz → karta → nawigator → czat → pytanie o wyjście (`android_back_exit_confirm`), `reset: false` tam, gdzie krok ma zostać na stosie.
 
-Poniżej pusty blok; P7 go zastępuje, pod nim wypisuje wszystkie testid-y ekranów w tabeli (ekran, testid, znaczenie).
+Blok kroków (P7). Liczby: ROM ma 13 pozycji w `loom/data/graph/rom.pack` (każda z chipem `nav-chip`); grup ustawień jest 8
+(`shum-group-<id>`); liczniki pól są sprawdzane wzorcem, bo ich wartość zależy od packa w danej wersji (dziś 109). Uwaga do
+kroku 1 z listy wyżej: „Tryb ratunkowy” to **pozycja ROM** (wiersz jak każdy inny), nie ekran powłoki — w webie nie ma
+ekranu o tej nazwie, więc blok nie sprawdza jego braku. Krok 5 zostaje na stosie (`reset: false`) i kończy się
+systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-A0).
 
 ```json
-{"gate0": []}
+{"gate0": [
+  {"name": "Menu ⋮ → Graf → ROM: 13 pozycji po polsku, chip pochodzenia na każdej",
+   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-graph"}, {"wait": "nav-rows"}, {"click": "nav-row-area:rom"}, {"wait": "nav-focus-why"}],
+   "expect": [{"tid": "nav-crumb-1", "text": "ROM"}, {"tid": "nav-chip", "count": 13}, {"tid": "nav-status", "min": 1}, {"tid": "nav-bar-view", "count": 1}]},
+  {"name": "Menu ⋮: osiem pozycji z layouts.json, bez Pamięci i Wiedzy",
+   "do": [{"click": "shell-menu-toggle"}, {"wait": "shell-menu"}],
+   "expect": [{"tid": "shell-menu-graph", "count": 1}, {"tid": "shell-menu-settings", "count": 1}, {"tid": "shell-menu-me", "count": 1},
+              {"tid": "shell-menu-this_conversation", "count": 1}, {"tid": "shell-menu-views", "count": 1}, {"tid": "shell-menu-semantic", "count": 1},
+              {"tid": "shell-menu-connection", "count": 1}, {"tid": "shell-menu-workshop", "count": 1},
+              {"tid": "shell-menu-memory", "absent": true}, {"tid": "shell-menu-knowledge", "absent": true}]},
+  {"name": "Ustawienia: 8 grup z „N pól · M Twoje” i suma",
+   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}],
+   "expect": [{"tid": "shum-total", "text": "^Razem: \\d+ p(ól|ola) · \\d+ Twoje"},
+              {"tid": "shum-group-ty", "count": 1}, {"tid": "shum-group-rozmowa", "count": 1}, {"tid": "shum-group-modele", "count": 1}, {"tid": "shum-group-kontekst", "count": 1},
+              {"tid": "shum-group-interfejs", "count": 1}, {"tid": "shum-group-prywatnosc", "count": 1}, {"tid": "shum-group-koszty", "count": 1}, {"tid": "shum-group-silnik", "count": 1},
+              {"tid": "shum-group-count-rozmowa", "text": "^\\d+ p(ól|ola) · \\d+ Twoje"}, {"tid": "shum-filter", "count": 1}]},
+  {"name": "Modele › Role: karta Analiza w tle z łańcuchem polityki i przepływami czytającymi klucz",
+   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}, {"click": "shum-group-open-modele"}, {"wait": "roles-table"},
+          {"click": "role-open-analysis.fast"}, {"wait": "role-card"}],
+   "expect": [{"tid": "role-card-title", "text": "Analiza w tle"}, {"tid": "role-chain", "count": 1}, {"tid": "role-chain-step-1", "count": 1},
+              {"tid": "role-chain-meaning-1", "text": "semantic_model"}, {"tid": "role-tier-reason", "count": 1},
+              {"tid": "role-readers", "count": 1}, {"tid": "role-reader-actions.preview", "count": 1}, {"tid": "role-readers-total", "text": "\\d+"}]},
+  {"name": "Wstecz: karta roli → grupa → panel → czat → pytanie o wyjście", "reset": false,
+   "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}, {"click": "shum-group-open-modele"}, {"wait": "roles-table"},
+          {"click": "role-open-analysis.fast"}, {"wait": "role-card"},
+          {"back": 1}, {"wait": "roles-table"}, {"back": 1}, {"wait": "shum-groups"}, {"back": 1}, {"wait": "chat-shell"}, {"back": 1}],
+   "expect": [{"tid": "role-card", "absent": true}, {"tid": "panel-settings", "absent": true}, {"exitQuestion": true}]}
+]}
 ```
+
+## Powłoka czatu — menu ⋮ i panel (paczka P1, `loom/web/src/shell/ChatShell.tsx`, `shell/history.ts`; e2e `chat-first.mjs`, `m1-settings-native.mjs`)
+
+| ekran | testid | znaczenie |
+|---|---|---|
+| czat | `chat-shell` | korzeń układu czatu (zawsze obecny) |
+| menu ⋮ | `shell-menu-toggle` (`aria-expanded`), `shell-menu` (`role=menu`), `shell-menu-<id>` (`role=menuitem`) | `<id>` = id pozycji z `layouts.json`: `graph`, `settings`, `me`, `this_conversation`, `views`, `semantic`, `connection` (tylko `when: android_shell`), `workshop`; **nie ma** `shell-menu-memory` ani `shell-menu-knowledge` |
+| panel | `panel-<id>` (szuflada; `panel-settings`, `panel-navigator`, `panel-user-knowledge`, `panel-graph`), `close-panel` (×) | jeden wpis historii na otwarty panel; `×` = to samo co Wstecz |
+| wstecz | `window.__loomBack()` → `true` gdy zamknął warstwę (menu, szufladę, arkusz, kartę, krok ścieżki, panel), `false` na dnie stosu | synchroniczne; Escape na komputerze robi to samo |
 
 ## Nawigator — lista (paczka P2, `loom/web/src/components/GraphNavigator.tsx`; e2e `loom/web/e2e/m1-navigator-native.mjs`)
 
