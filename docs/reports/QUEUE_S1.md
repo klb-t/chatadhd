@@ -1,7 +1,16 @@
-# Kolejka S1 — stan 2026-10-21 13:20 UTC
+# Kolejka S1 — stan 2026-10-21 13:35 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## CI 250 padł na dwóch testach (nie na kodzie produktu) — naprawa na `main` (13:31 UTC, `f2d519dd`)
+Przebieg 250 (`7ff9231c`): (a) `dev (g++)` `test:m1-navigator`, krok mapy: szczypanie dwoma palcami dało zoom 1.000 zamiast 2.000 —
+test czytał `data-zoom` zaraz po syntetycznym zdarzeniu, a React renderuje kamerę w następnej turze (przebieg 249 przeszedł ten sam test,
+więc to wyścig, nie błąd mapy; lokalnie nie dało się go odtworzyć nawet przy 2× obciążeniu CPU, więc to **założenie, nie dowód**);
+(b) `asan (g++)` `server.keepalive`: limit 120 s (na szybkiej maszynie 26 s). Poprawka: test czeka na kamerę (do 5 s), `TIMEOUT 600`
+i 60 s na start serwera. Przebieg CI **251** (`f2d519dd`, https://github.com/klb-t/chatadhd/actions/runs/39608733048) w toku, ≈ 60–100 min
+(250 trwał 98 min). **Nie pushować kodu na `main`, dopóki trwa.** Jeśli `test:m1-navigator` padnie znowu na zoomie: sprawdzić efekt
+`setCam(CAMERA_HOME)` przy zmianie `result.focus.address` (`NavigatorMap.tsx:56`) — drugie możliwe wyjaśnienie.
 
 ## Wyniki S2 z emulatora (13:10 UTC, android-smoke 39598360743, pixel_5/pixel_6/pixel_6+font 1,3)
 Kroki 2–8 Bramki 0 działają na wszystkich trzech profilach (menu, ustawienia, karta roli, Wstecz, dolny pasek, menu perspektyw,
