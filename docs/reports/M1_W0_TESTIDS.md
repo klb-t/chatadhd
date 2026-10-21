@@ -373,7 +373,8 @@ systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-
     },
     {
      "tid": "nav-actions-note",
-     "count": 1
+     "count": 1,
+     "text": "."
     }
    ]
   },

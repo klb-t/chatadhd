@@ -52,7 +52,7 @@ const inApp = nodes => nodes.some(n => n.package === PKG);
 // What a person sees on the screen: the app's own texts, top to bottom, without repeats (the report quotes them).
 const TABS = ["Przegląd", "Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport"];
 const seen = (nodes, max = 14) => [...new Set(nodes.filter(n => n.package === PKG && (n.text || "").trim())
-  .sort((a, b) => (a.t ?? 0) - (b.t ?? 0) || (a.l ?? 0) - (b.l ?? 0)).map(n => n.text.trim().replace(/\s+/g, " ").slice(0, 70)))]
+  .sort((a, b) => (a.t ?? 0) - (b.t ?? 0) || (a.l ?? 0) - (b.l ?? 0)).map(n => n.text.trim().replace(/\s+/g, " ").slice(0, 160)))]
   .slice(0, max).join(" | ");
 const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${PKG.replace(/\./g, "\\.")}/`).test(adb("shell", "dumpsys", "activity", "activities"));
 const crashes = () => { try { return adb("logcat", "-d", "-b", "crash").split("\n").filter(l => l.includes(PKG)); } catch { return []; } };
@@ -70,7 +70,7 @@ function dismissSystemDialogs(nodes) {
 
 // The system picker (ACTION_OPEN_DOCUMENT): tap the named file; go to Downloads when it is not listed where it opened.
 async function pick(target) {
-  let seen = false, taps = 0, last = "";
+  let seen = false, taps = 0, last = "", wentDl = false;
   for (let i = 0; i < 60; i++) {
     await sleep(1000);
     let nodes;
@@ -90,7 +90,9 @@ async function pick(target) {
       continue;
     }
     const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar/i.test(n["resource-id"] || ""));
-    if (dl && i % 3 === 0) { log("picker: Downloads"); tap(dl); continue; }
+    // the picker may open at the device root (a "Download" folder in the list) or in Recent: go to Downloads at once
+    if (dl && !wentDl) { log("picker: Downloads"); tap(dl); wentDl = true; continue; }
+    if (dl && i % 3 === 0) { log("picker: Downloads again"); tap(dl); continue; }
     const roots = find(nodes, n => /show roots|open drawer|navigate up/i.test(n["content-desc"] || ""));
     if (roots && i % 3 === 1) { log("picker: roots"); tap(roots); continue; }
   }
@@ -168,7 +170,7 @@ try {
     return `${layout} (screen ${w} px)`;
   });
   for (const tab of ["Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport", "Przegląd"]) {
-    const deep = tab === "Edycje";   // the recipes section: quote all of it
+    const scrollAll = ["Edycje", "Eksport"];   // panels quoted to the end (recipes, export profiles)
     await check(`tab ${tab} opens without an error`, async () => {
       // the tabs sit in a horizontal scroll: a tab off the screen edge is brought in by swiping the row
       let nodes = dump(); dismissSystemDialogs(nodes);
@@ -188,7 +190,17 @@ try {
       shot("tab-" + tab);
       const err = texts(after).find(x => /^Błąd/.test(x));
       if (err) throw new Error(err);
-      return `on screen: ${seen(after, deep ? 40 : 14)}`;
+      if (!scrollAll.includes(tab)) return `on screen: ${seen(after, 14)}`;
+      // whole panel: swipe up until nothing new appears, then report every text in order (and swipe back)
+      const all = [...seen(after, 200).split(" | ")];
+      for (let k = 0; k < 12; k++) {
+        adb("shell", "input", "swipe", "500", "1700", "500", "700", "250"); await sleep(600);
+        const more = seen(dump(), 200).split(" | ").filter(t => t && !all.includes(t));
+        if (!more.length) break;
+        all.push(...more);
+      }
+      for (let k = 0; k < 12; k++) adb("shell", "input", "swipe", "500", "700", "500", "1700", "150");
+      return `whole panel (${all.length} texts): ${all.join(" | ")}`;
     });
     if (tab === "Wybór") await check("Wybór: the pattern for encoded data (base64, hex…) opens its window", async () => {
       let nodes = dump();
@@ -207,6 +219,130 @@ try {
       return report;
     });
   }
+  // ---- S1's acceptance asks (2026-10-21): the second recipe, and the per-conversation folder export ----
+  const openTab = async (tab) => {
+    let nodes = dump(); let t = find(nodes, n => n.text === tab && /Button/.test(n.class || ""));
+    // a drop-down or dialog left open covers the tab bar: Back closes it
+    for (let k = 0; !t && k < 3; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(700); nodes = dump(); t = find(nodes, n => n.text === tab && /Button/.test(n.class || "")); }
+    if (!t) throw new Error(`no tab "${tab}"`);
+    tap(t); await sleep(1200);
+    for (let k = 0; k < 12; k++) adb("shell", "input", "swipe", "500", "700", "500", "1700", "120");   // back to the top
+    await sleep(500);
+  };
+  const scrollFind = async (pred, what, max = 10) => {
+    for (let k = 0; k <= max; k++) {
+      const nodes = dump(); const n = find(nodes, pred);
+      if (n) return n;
+      adb("shell", "input", "swipe", "500", "1500", "500", "900", "250"); await sleep(600);
+    }
+    throw new Error(`not found after scrolling: ${what}; screen: ${seen(dump(), 40)}`);
+  };
+  const settle = () => until("the panel to settle", () => { const n = dump(); return !n.some(x => /^(Liczę|Ładuję|Pracuję|Stosuję|Eksportuję)/.test(x.text || "")) && n; }, 90, 1000);
+  const tapText = async (re, what) => { const n = await scrollFind(x => re.test(x.text || ""), what); tap(n); await sleep(800); return n.text; };
+
+
+  // Export twice (S1's ask): with no profile, then with only "Wyciągnij spod zagnieżdżenia"; every checkbox state before each
+  // export and the FULL list of entries of each zip. The selection is Wybór -> Wszystko after the same three sources.
+  const PROFILE = /^Wyciągnij spod zagnieżdżenia/;
+  const exportBoxes = async () => {   // every checkbox of the Eksport panel, top to bottom: [{text, checked, node}]
+    for (let k = 0; k < 12; k++) adb("shell", "input", "swipe", "500", "700", "500", "1700", "120");
+    await sleep(400);
+    const boxes = new Map();
+    for (let k = 0; k < 12; k++) {
+      for (const n of dump()) if (n.package === PKG && /CheckBox/.test(n.class || "") && (n.text || "").trim() && !boxes.has(n.text)) boxes.set(n.text, n.checked === "true");
+      adb("shell", "input", "swipe", "500", "1500", "500", "900", "250"); await sleep(500);
+    }
+    return boxes;
+  };
+  const setBox = async (re, want) => {
+    for (let k = 0; k < 12; k++) adb("shell", "input", "swipe", "500", "700", "500", "1700", "120");
+    for (let k = 0; k < 14; k++) {
+      const n = find(dump(), x => /CheckBox/.test(x.class || "") && re.test(x.text || ""));
+      if (n) { if ((n.checked === "true") !== want) { tap(n); await sleep(500); } return; }
+      adb("shell", "input", "swipe", "500", "1500", "500", "900", "250"); await sleep(500);
+    }
+  };
+  const saveAndList = async () => {
+    await tapText(/^Eksportuj zaznaczone/, "the 'Eksportuj zaznaczone (zip)' button");
+    let saved = false, dialogText = "";
+    for (let i = 0; i < 40 && !saved; i++) {
+      await sleep(1000);
+      const nodes = dump(); if (dismissSystemDialogs(nodes)) continue;
+      if (!nodes.some(n => /documentsui/i.test(n.package || ""))) { if (i > 3) break; continue; }
+      dialogText = texts(nodes).slice(0, 30).join(" | ");
+      const save = find(nodes, n => /Button/.test(n.class || "") && /^(save|zapisz)$/i.test(n.text || ""));
+      if (save) { tap(save); saved = true; break; }
+      const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar/i.test(n["resource-id"] || ""));
+      if (dl && i % 3 === 0) tap(dl);
+    }
+    if (!saved) throw new Error(`no Save in the system dialog; it showed: ${dialogText || "(no dialog)"}`);
+    const after = await until("the export result", () => { const n = dump(); return n.some(x => /^Zapisano|^Błąd/.test(x.text || "")) && n; }, 120, 1500);
+    const message = texts(after).filter(t => /^Zapisano|^Błąd|katalog|profil/i.test(t)).join(" | ");
+    const zip = adb("shell", "ls", "-t", "/sdcard/Download").split("\n").map(x => x.trim()).find(x => x.endsWith(".zip") && x.startsWith("xport-wynik"));
+    const local = path.join(OUT, `export-${Date.now()}.zip`);
+    execFileSync("adb", ["pull", `/sdcard/Download/${zip}`, local], { timeout: 60000 });
+    const entries = execFileSync("unzip", ["-Z1", local], { encoding: "utf8" }).split("\n").filter(Boolean);
+    const dirs = [...new Set(entries.filter(e => e.includes("/")).map(e => e.split("/")[0] + "/"))];
+    return { zip, message, entries, dirs, error: texts(after).find(t => /^Błąd/.test(t)) };
+  };
+  const exportRun = (label, profileOn) => check(`Export ${label}: Wybór Wszystko -> checkboxes -> Eksportuj zaznaczone (zip) -> save -> every zip entry`, async () => {
+    await openTab("Wybór");
+    await tapText(/^Wszystko$/, "the 'Wszystko' button");
+    const sel = texts(await settle()).find(t => /^Zaznaczono/.test(t)) || "(no 'Zaznaczono' line)";
+    await openTab("Eksport");
+    for (const [text, on] of await exportBoxes()) if (on) await setBox(new RegExp("^" + text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), false);
+    if (profileOn) await setBox(PROFILE, true);
+    const before = [...(await exportBoxes())].map(([t, on]) => `${on ? "[x]" : "[ ]"} ${t.slice(0, 60)}`);
+    shot("export-" + label.replace(/\W+/g, "-"));
+    const r = await saveAndList();
+    const report = `selection: ${sel} || checkboxes before export: ${before.join(" ; ")} || app: ${r.message} || ${r.zip}: ${r.entries.length} entries, folders: ${r.dirs.join(" ") || "(none)"} || entries: ${r.entries.join(" ; ")}`;
+    if (r.error) throw new Error(report);
+    return report;
+  });
+  // S1's order (2026-10-21, the one that once exported an empty package): recipe preview BEFORE any selection, then
+  // Wybór -> Wszystko, preview / apply / undo, then the export with the folder profile, then one without a profile.
+  const newTexts = (before, after) => texts(after).filter(t => !before.includes(t)).map(t => t.replace(/\s+/g, " ")).join(" | ") || "(nothing new on the screen)";
+  const chooseRecipe = async () => {
+    await openTab("Edycje");
+    // the recipes: a visible list (radio) in the new build, a drop-down under "Gotowe przepisy" in the older one
+    let spinner = null;
+    const head = await scrollFind(n => /^Gotowe przepisy/.test(n.text || ""), "the 'Gotowe przepisy' section");
+    if (!find(dump(), n => /Zostaw w metadanych/.test(n.text || ""))) {
+      spinner = dump().filter(n => /Spinner/.test(n.class || "") && n.package === PKG && n.t >= head.t).sort((a, b) => a.t - b.t)[0] || null;
+      if (spinner) { tap(spinner); await sleep(900); }
+    }
+    const options = dump().filter(n => n.package === PKG && /RadioButton|CheckedTextView/.test(n.class || "") && (n.text || "").trim()).map(n => n.text.trim());
+    await tapText(/Zostaw w metadanych/, "the recipe 'Zostaw w metadanych tylko znaczniki czasu'");
+    const r = find(dump(), n => /Zostaw w metadanych/.test(n.text || ""));
+    return `${spinner ? "drop-down" : "list"} (${options.length} options): ${options.join(" | ") || "(no radio/check items)"}; chosen: ${r ? `${(r.class || "").split(".").pop()} checked=${r.checked}` : "?"}`;
+  };
+  const recipeButton = async (re, label) => {
+    const before = texts(dump());
+    await tapText(re, label);
+    const after = await settle();
+    shot("recipe-" + label.replace(/\W+/g, "-"));
+    return `${label}: ${newTexts(before, after)}`;
+  };
+  await check("1 Edycje: choose 'Zostaw w metadanych tylko znaczniki czasu', Podgląd przepisu BEFORE any selection", async () => {
+    const chosen = await chooseRecipe();
+    return `${chosen} || ${await recipeButton(/^Podgląd przepisu$/, "Podgląd (nothing selected)")}`;
+  });
+  await check("2 Wybór -> Wszystko", async () => {
+    await openTab("Wybór");
+    await tapText(/^Wszystko$/, "the 'Wszystko' button");
+    return texts(await settle()).find(t => /^Zaznaczono/.test(t)) || "(no 'Zaznaczono' line)";
+  });
+  await check("3 Edycje: Podgląd, Zastosuj, Cofnij of the recipe on the selection", async () => {
+    const chosen = await chooseRecipe();
+    const out = [chosen];
+    for (const [re, label] of [[/^Podgląd przepisu$/, "Podgląd"], [/^Zastosuj przepis$/, "Zastosuj"], [/^Cofnij przepis$/, "Cofnij"]]) out.push(await recipeButton(re, label));
+    const bad = out.find(x => /Błąd/.test(x));
+    if (bad) throw new Error(out.join(" || "));
+    return out.join(" || ");
+  });
+  await exportRun("A (no profile)", false);
+  await exportRun("B (only 'Wyciągnij spod zagnieżdżenia')", true);
+
   await check("the process never crashed", async () => {
     const c = crashes();
     if (c.length) throw new Error(c.slice(0, 5).join(" / "));

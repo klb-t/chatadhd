@@ -344,8 +344,19 @@ async function backToChat() {
 const setOnBlur = (tid, v) => page.ev(`(()=>{const e=${q(tid)};if(!e)return false;e.focus();
   Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(e,${JSON.stringify(v)});
   e.dispatchEvent(new Event('input',{bubbles:true}));e.blur();e.dispatchEvent(new FocusEvent('focusout',{bubbles:true}));return true})()`);
+// M1-W0: ⋮ › Ustawienia shows the human groups; the old field table (cfg-*) sits in the group "silnik" under the "all fields" disclosure
+async function openSettingsField(tid) {
+  await openMenu("settings"); await waitTid("panel-settings");
+  if (!(await has(tid))) {
+    await waitTid("shum-groups", 30);   // the groups come from the kernel after the panel opens
+    if (await has("shum-group-open-silnik")) await click("shum-group-open-silnik");
+    await waitTid("shum-all-fields", 10);
+    if (!(await has(tid))) await page.ev(`${q("shum-all-fields")}.querySelector('button').click()`);
+  }
+  await waitTid(tid);
+}
 async function setConfigViaUi(tid, key, value) {
-  await openMenu("settings"); await waitTid("panel-settings"); await waitTid(tid);
+  await openSettingsField(tid);
   await setOnBlur(tid, value);
   await until(`config ${key} = ${value}`, async () => (await apiJson("GET", "/api/config")).body?.[key] === value, 15, 300);
   await closePanel();
@@ -448,6 +459,10 @@ const textTid = tid => page.ev(`[...document.querySelectorAll('[data-testid="${t
 async function m1Reset() {
   for (let k = 0; k < 8; k++) if (!(await page.ev(`!!(window.__loomBack&&window.__loomBack())`).catch(() => false))) return;
 }
+// what a person sees: the visible text of the page (overlays first: the last dialog/sheet in the DOM is on top)
+const m1Visible = () => page.ev(`(()=>{const v=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden'};
+  const top=[...document.querySelectorAll('[role=dialog],[data-testid$=-sheet],[data-testid=role-card]')].filter(v).pop();
+  return ((top&&top.innerText)||document.body.innerText||'').replace(/\\s+/g,' ').slice(0,900)})()`).catch(() => "");
 function m1GateChecks() {
   const spec = m1GateSpec();
   if (spec.missing) return [["M1 Gate 0 (screens of W0)", async () => { const e = new Error(spec.missing); e.skip = true; throw e; }]];
@@ -457,7 +472,7 @@ function m1GateChecks() {
       for (const a of st.do || []) {
         if (a.click) { await waitTid(a.click, 20); await click(a.click); }
         else if (a.clickText) { await waitTid(a.clickText[0], 20); if (!(await clickText(a.clickText[0], `/${a.clickText[1]}/i`))) throw new Error(`no ${a.clickText[0]} matching /${a.clickText[1]}/`); }
-        else if (a.wait) await waitTid(a.wait, 30);
+        else if (a.wait) { const t0 = Date.now(); await waitTid(a.wait, a.timeout || 30); notes.push(`${a.wait} after ${((Date.now() - t0) / 1000).toFixed(1)}s`); }
         else if (a.back) for (let k = 0; k < a.back; k++) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(1200); }
         await sleep(300);
       }
@@ -470,10 +485,17 @@ function m1GateChecks() {
         await waitTid(x.tid, 30);
         if (x.count !== undefined) { const n = await countTid(x.tid); if (n !== x.count) throw new Error(`${x.tid}: ${n} on screen, expected ${x.count}`); notes.push(`${x.tid}=${n}`); }
         if (x.min !== undefined) { const n = await countTid(x.tid); if (n < x.min) throw new Error(`${x.tid}: ${n} on screen, expected at least ${x.min}`); notes.push(`${x.tid}>=${x.min} (${n})`); }
-        if (x.text) { const t = await textTid(x.tid); if (!new RegExp(x.text, "i").test(t)) throw new Error(`${x.tid} says "${t.slice(0, 160)}", expected /${x.text}/`); notes.push(`${x.tid} ~ /${x.text}/`); }
+        if (x.text) { const t = await textTid(x.tid); if (!new RegExp(x.text, "i").test(t)) throw new Error(`${x.tid} says "${t.slice(0, 160)}", expected /${x.text}/`); notes.push(`${x.tid} ~ /${x.text}/: "${t.replace(/\s+/g, " ").slice(0, 300)}"`); }
       }
       shot("m1-" + st.name.replace(/\W+/g, "-").slice(0, 40));
-      return notes.join("; ");
+      const visible = await m1Visible();
+      return notes.join("; ") + (visible ? ` || on screen: ${visible}` : "");
+    } catch (e) {
+      // a failed step says what the screen showed, so the cause (app or driver) is readable from the report
+      shot("m1-fail-" + st.name.replace(/\W+/g, "-").slice(0, 40));
+      const visible = await m1Visible();
+      if (visible) e.message += ` || on screen: ${visible}`;
+      throw e;
     } finally {
       if (st.reset !== false) await m1Reset();
     }
@@ -613,7 +635,7 @@ const serverChecks = [
     await setConfigViaUi("cfg-semantic-model", "semantic_model", val);
     await page.ev(`location.reload()`);
     await waitTid("chat-input", 60);
-    await openMenu("settings"); await waitTid("cfg-semantic-model");
+    await openSettingsField("cfg-semantic-model");
     const shown = await until("the field shows the saved value", async () => (await page.ev(`${q("cfg-semantic-model")}.value`)) === val && val, 20, 300);
     await closePanel();
     await setConfigViaUi("cfg-semantic-model", "semantic_model", "");   // leave the account as it was
@@ -684,8 +706,10 @@ const serverChecks = [
     return "stored (API, via Warsztat)";
   }],
   ["knowledge: the old sheet opens from the Workshop", async () => {
-    await openWorkshopPanel("knowledge"); await waitTid("panel-knowledge-sheet", 10); await waitTid("knowledge-workbench", 20);
+    // in the Workshop layout Wiedza opens beside the chat (panel-knowledge-sheet is the chat-layout sheet only)
+    await openWorkshopPanel("knowledge"); await waitTid("knowledge-workbench", 20);
     shot("knowledge");
+    await click("nav-knowledge"); await waitGone("knowledge-workbench", 10);
     await backToChat();   // the next steps (paging, connection) start from the chat shell
     return "via Warsztat; back in the chat shell";
   }],
@@ -698,7 +722,8 @@ const serverChecks = [
       const c = await until("the long conversation", () => convTitled("Smoke Long 520"), 20, 500);
       // the import went straight to the API (not through the panel, which refreshes the list): reload the page to list it
       await page.ev("location.reload()").catch(() => {});
-      await waitTid("shell-drawer-toggle", 60);
+      await waitTid("chat-input", 60); await backToChat();   // the layout is remembered: a reload may come back in the Workshop
+      await waitTid("shell-drawer-toggle", 30);
       await click("shell-drawer-toggle"); await waitTid("shell-conv", 10);
       if (!(await clickText("shell-conv", "/Smoke Long 520/"))) throw new Error("the conversation is not in the drawer list");
       await waitTid("chat-older", 30);
