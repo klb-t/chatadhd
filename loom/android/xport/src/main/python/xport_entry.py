@@ -230,12 +230,20 @@ def select(how, value="", mode="add"):
             return _fail(exc)
 
 
-def _params(spec):
+def _params(spec, ui=None):
+    """Parameters of an edit / operation for the generic form. `name` is the engine key (what is sent back); `label`,
+    `type_label` and `value_labels` are only the shown text (data/ui_labels.json); a name without a label is shown as it is."""
+    ui = ui or {}
     out = []
     for name, ps in (spec or {}).items():
         if not isinstance(ps, dict):
             ps = {"type": str(ps)}
-        out.append({"name": name, "type": ps.get("type") or "string", "values": ps.get("values") or [],
+        typ = ps.get("type") or "string"
+        values = ps.get("values") or []
+        out.append({"name": name, "type": typ, "values": values,
+                    "label": _lbl((ui.get("params") or {}).get(name), name),
+                    "type_label": _lbl((ui.get("types") or {}).get(typ), typ),
+                    "value_labels": [_lbl((ui.get("values") or {}).get(str(v)), str(v)) for v in values],
                     "default": ps.get("default"), "required": bool(ps.get("required")), "secret": bool(ps.get("secret"))})
     return out
 
@@ -244,16 +252,40 @@ def _lbl(x, fallback):
     return (x.get("pl") or x.get("en") or fallback) if isinstance(x, dict) else (x or fallback)
 
 
+def _ui(ds):
+    try:
+        return ds.file("ui_labels.json")
+    except Exception:  # a missing label file only means English names, never a broken screen
+        return {}
+
+
+def ui_labels():
+    """Polish labels for the browser screen (roots, node kinds, viewer formats); the keys stay the engine's own."""
+    with _lock:
+        try:
+            from loom.tools.extract.datafiles import store
+            ds = store()
+            layout = ds.file("commander/layout.json")
+            ui = _ui(ds)
+            roots = {r: _lbl((layout.get("root_labels") or {}).get(r), r) for r in layout.get("roots") or []}
+            kinds = {k: _lbl(v, k) for k, v in (ui.get("kinds") or {}).items()}
+            formats = {k: _lbl(v, k) for k, v in (ui.get("formats") or {}).items()}
+            return json.dumps({"ok": True, "roots": roots, "kinds": kinds, "formats": formats}, ensure_ascii=False)
+        except Exception as exc:
+            return _fail(exc)
+
+
 def catalog():
     """Everything the generic screens need: edits, operations, redaction presets and cut profiles (labels in Polish)."""
     with _lock:
         try:
             eng = _need()
             ds = eng.ds
-            edits = [{"id": k, "label": _lbl(v.get("label"), k), "group": v.get("group") or "", "params": _params(v.get("params"))}
+            ui = _ui(ds)
+            edits = [{"id": k, "label": _lbl(v.get("label"), k), "group": v.get("group") or "", "params": _params(v.get("params"), ui)}
                      for k, v in sorted(ds.entries("edits").items())]
             skip = {"scan", "read", "merge", "user.call", "inventory", "timeline"}
-            ops = [{"id": k, "label": _lbl(v.get("label"), k), "long": bool(v.get("long")), "params": _params(v.get("params"))}
+            ops = [{"id": k, "label": _lbl(v.get("label"), k), "long": bool(v.get("long")), "params": _params(v.get("params"), ui)}
                    for k, v in sorted(_sess.call({"call": "ops"})["ops"].items())
                    if k not in skip and not k.startswith("edit.") and v.get("implemented", True) and "api" in (v.get("faces") or ["api"])]
             red = [{"id": k, "label": _lbl(v.get("label"), k)} for k, v in sorted(ds.entries("redaction").items())]
