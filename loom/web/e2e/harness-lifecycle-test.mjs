@@ -4,12 +4,12 @@ import assert from "node:assert/strict";
 import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
 import { createServer } from "node:http";
-import { connect } from "node:net";
-import { assertSuiteOutput, closeHttpFixture, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { connect, createServer as createTcpServer } from "node:net";
+import { assertSuiteOutput, closeHttpFixture, request, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
 
 const moduleUrl = new URL("./harness-lifecycle.mjs", import.meta.url).href;
 const results = [];
-const completion = suiteCompletionGuard("harness-lifecycle", 11, results);
+const completion = suiteCompletionGuard("harness-lifecycle", 12, results);
 async function check(name, run) {
   await run(); results.push(name); console.log(`[harness-lifecycle] PASS ${name}`);
 }
@@ -85,5 +85,26 @@ await check("live native-style child shutdown waits for the close event", async 
   await once(child, "spawn"); await stopChild(child);
   assert.equal(child.signalCode, "SIGTERM");
 });
+await check("request() fails with its deadline on a server that accepts and never answers, and a prompt answer is not delayed", async () => {
+  const silent = createTcpServer(socket => { socket.on("data", () => {}); socket.on("error", () => {}); });  // reads, never replies
+  await new Promise(resolve => silent.listen(0, "127.0.0.1", resolve));
+  const prompt = createServer((_request, response) => { response.writeHead(200, { "Content-Type": "application/json" }); response.end('{"ok":true}'); });
+  await new Promise(resolve => prompt.listen(0, "127.0.0.1", resolve));
+  try {
+    const url = `http://127.0.0.1:${silent.address().port}/never`;
+    const started = Date.now();
+    await assert.rejects(request(url, { method: "POST", body: "{}", timeoutMs: 300 }), error => {
+      assert.match(error.message, /^request timed out after 300 ms: POST http:\/\/127\.0\.0\.1:\d+\/never$/);
+      return true;
+    });
+    assert.ok(Date.now() - started < 3000, "gave up at the deadline, not at some library default");
+    const answer = await request(`http://127.0.0.1:${prompt.address().port}/ok`, { timeoutMs: 5000 });
+    assert.equal(answer.status, 200); assert.deepEqual(answer.json(), { ok: true });
+    assert.equal(answer.headers.connection, "close", "one connection per call");
+  } finally {
+    silent.close(); silent.closeAllConnections?.();
+    await closeHttpFixture(prompt);
+  }
+});
 completion.complete();
-console.log(`[harness-lifecycle] ${results.length}/11 groups passed; standard library, zero provider calls`);
+console.log(`[harness-lifecycle] ${results.length}/12 groups passed; standard library, zero provider calls`);

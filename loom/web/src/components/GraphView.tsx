@@ -5,6 +5,7 @@ import { useShellLanguage, useShellText } from "../shell/text";
 import { graphText } from "../graph/graph-text";
 import { degreeMap, graphLabelOptions, planLabels, type PlacedLabel } from "../graph/graph-labels";
 import type { GraphEdge, GraphNode } from "../api/types";
+import { colorFor } from "./kind-colors";
 
 interface Props {
   convId: string | null;
@@ -17,20 +18,8 @@ interface SimNode extends GraphNode {
   vy: number;
 }
 
-const KIND_COLORS: Record<string, string> = {
-  entity: "#4d8cf2",
-  topic: "#f2a94d",
-  concept: "#7ed957",
-  code_ref: "#d957c8",
-  file: "#57d9c8",
-  person: "#f25d5d",
-  org: "#c8d957",
-  message: "#8c8c99",
-};
-
-export function colorFor(kind: string): string {
-  return KIND_COLORS[kind] ?? "#9d9dff";
-}
+// The colours by kind live in kind-colors.ts (shared with the navigator's map, M1-W0 P4); re-exported so nothing else moves.
+export { colorFor };
 
 // The regex-based analyzer (core/semantic.py, ported byte-for-byte to
 // include/loom/semantic_analyzer.h) is intentionally loose: its CODE_REF

@@ -195,7 +195,7 @@
     {
       "path": "graph/scopes.pack",
       "schema": "loom.graph_scopes/1",
-      "sha256": "9dad7d2a2a711e37d6c0afe4d819c845e014ed27abc3ca964179b3e15535c837",
+      "sha256": "7a6b244ce9ccffc1432420118010820994a77d739481b39e8ab8a0c166dd688c",
       "domain": "graph_entry",
       "role": "configuration",
       "validation_refs": [

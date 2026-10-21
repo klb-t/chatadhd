@@ -9,6 +9,10 @@
       "label": {
         "en": "Engine invariants",
         "pl": "Silnik (niezmienniki)"
+      },
+      "meaning": {
+        "en": "what the app never lets anyone change",
+        "pl": "to, czego aplikacja nikomu nie pozwala zmienić"
       }
     },
     {
@@ -16,6 +20,10 @@
       "label": {
         "en": "Application preset",
         "pl": "Preset aplikacji"
+      },
+      "meaning": {
+        "en": "the values the app ships with",
+        "pl": "wartości, z którymi aplikacja przychodzi"
       }
     },
     {
@@ -23,6 +31,10 @@
       "label": {
         "en": "Installation",
         "pl": "Instalacja"
+      },
+      "meaning": {
+        "en": "this phone or this copy of the app",
+        "pl": "ten telefon albo ta kopia aplikacji"
       }
     },
     {
@@ -30,6 +42,10 @@
       "label": {
         "en": "Organization",
         "pl": "Organizacja"
+      },
+      "meaning": {
+        "en": "the company or institution you belong to",
+        "pl": "firma albo instytucja, do której należysz"
       }
     },
     {
@@ -37,6 +53,10 @@
       "label": {
         "en": "Group of groups",
         "pl": "Grupa grup"
+      },
+      "meaning": {
+        "en": "a parent unit that gathers several teams",
+        "pl": "jednostka nadrzędna, która zbiera kilka zespołów"
       }
     },
     {
@@ -44,6 +64,10 @@
       "label": {
         "en": "Team",
         "pl": "Zespół"
+      },
+      "meaning": {
+        "en": "the team you work in",
+        "pl": "zespół, w którym pracujesz"
       }
     },
     {
@@ -51,6 +75,10 @@
       "label": {
         "en": "Person",
         "pl": "Osoba"
+      },
+      "meaning": {
+        "en": "you: your own settings",
+        "pl": "Ty: Twoje własne ustawienia"
       }
     },
     {
@@ -58,6 +86,10 @@
       "label": {
         "en": "Role in context",
         "pl": "Rola w kontekście"
+      },
+      "meaning": {
+        "en": "the role you act in right now (author, reviewer…)",
+        "pl": "rola, w jakiej teraz występujesz (autor, recenzent…)"
       }
     },
     {
@@ -65,6 +97,10 @@
       "label": {
         "en": "Project (branch)",
         "pl": "Projekt (gałąź)"
+      },
+      "meaning": {
+        "en": "one project or one branch of work",
+        "pl": "jeden projekt albo jedna gałąź pracy"
       }
     },
     {
@@ -72,6 +108,10 @@
       "label": {
         "en": "Conversation",
         "pl": "Rozmowa"
+      },
+      "meaning": {
+        "en": "this conversation only",
+        "pl": "tylko ta rozmowa"
       }
     },
     {
@@ -79,6 +119,10 @@
       "label": {
         "en": "Turn / single call",
         "pl": "Tura / wywołanie"
+      },
+      "meaning": {
+        "en": "one single call to the model",
+        "pl": "jedno pojedyncze wywołanie modelu"
       }
     }
   ],

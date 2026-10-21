@@ -66,9 +66,13 @@ jest okienko rozmowy, a u góry zakładki („Graph”, „Memory”, „Import�
 
 ## 5. Klucz dostawcy w Ustawieniach (sprawdzone w Chromium)
 
-Menu **⋮** w prawym górnym rogu czatu → „Ustawienia” („Settings”, gdy przeglądarka jest po angielsku; w Warsztacie to zakładka w nagłówku), sekcja „API KEYS”, pole „OpenRouter API key (chat)”: wklej klucz, „Save”; obok pojawi się
+Menu **⋮** w prawym górnym rogu czatu → „Ustawienia” („Settings”, gdy przeglądarka jest po angielsku) otwiera ekran
+„Ustawienia po ludzku”: osiem grup (Ty, Rozmowa, Modele, Kontekst, Interfejs, Prywatność, Koszty, Silnik). Klucz
+jest w grupie **Silnik** → na dole rozwijane **„Wszystkie pola”** (dawny ekran pól; w Warsztacie to zakładka
+„Settings” w nagłówku). Tam sekcja „API KEYS”, pole „OpenRouter API key (chat)”: wklej klucz, „Save”; obok pojawi się
 „set”. Wyżej są „Base URL” (domyślnie OpenRouter) i „Default model”. Klucz jest zapisany po stronie serwera, w katalogu
-Twojego konta. Nic nie jest wysyłane, dopóki sam nie wyślesz wiadomości.
+Twojego konta. Nic nie jest wysyłane, dopóki sam nie wyślesz wiadomości. Przy pierwszym uruchomieniu, gdy klucza
+nie ma, karta „Otwórz Ustawienia przy kluczu” na ekranie czatu prowadzi do „Wszystkie pola” od razu.
 
 Test robiłem na lokalnym fałszywym dostawcy. Uwaga: serwer z kontami **nie łączy się z adresami prywatnymi**
 (127.0.0.1, 192.168.x.x) jako z dostawcą. To ochrona; jeśli chcesz własny model w sieci, dopisz jego adres do

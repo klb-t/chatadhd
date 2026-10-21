@@ -103,6 +103,8 @@ class Catalogue {
   Json edge_meaning(const std::string& kind);
   // The name of an edge kind in the language of the render (graph_views edge_kinds label), else the kind's id.
   Json edge_label(const std::string& kind);
+  // The id of the inverse edge kind (graph_views edge_kinds inverse), else "" when the kind names none or no kind describes it.
+  std::string edge_inverse(const std::string& kind);
   // A setting's value for this render: through the scope chain (the conversation in view, its units, rules), else the person level;
   // null when no level gives one. Read once per key and render.
   Json setting(const std::string& key);

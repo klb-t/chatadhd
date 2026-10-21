@@ -143,6 +143,20 @@ test('labels: the shell words are data in PL and EN with the same keys; the tran
   assert.equal(text.shellTranslator(null, 'pl')('new_chat'), 'new_chat');
 });
 
+test('a word a language lacks shows its id on that screen — never the English word, never the whole screen in English (brief 6)', () => {
+  const whole = p.resolvePresentationFeature(p.resolvePresentation(), 'ui_shell');
+  const { new_chat: _gone, ...plWithoutOne } = whole.locales.pl;
+  const gap = { ...whole, locales: { ...whole.locales, pl: plWithoutOne } };
+  const t = text.shellTranslator(gap, 'pl');
+  assert.equal(t('new_chat'), 'new_chat', 'the missing word is its id');
+  assert.equal(t('menu_workshop'), 'Warsztat (narzędzia zaawansowane)', 'the other words stay Polish');
+  assert.equal(text.shellTranslator(gap, 'en')('new_chat'), 'New conversation');
+  assert.equal(text.shellTranslator(gap, 'de')('new_chat'), 'New conversation', 'a language the catalog has not at all stays the base language');
+  // The proposals of the chat keep the other rule (one language per answer): without the option the whole base catalog answers.
+  assert.equal(p.featureInLanguage(gap, 'pl').locale, whole.locale);
+  assert.equal(p.featureInLanguage(gap, 'pl', { partial: true }).locale, 'pl');
+});
+
 test('first run: the card shows only when the key is known to be missing', () => {
   assert.equal(text.needsProviderKey(false), true);
   assert.equal(text.needsProviderKey(true), false);

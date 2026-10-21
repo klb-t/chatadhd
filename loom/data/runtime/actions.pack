@@ -813,10 +813,10 @@
         "id": "jev.edge_classify",
         "kind": "composite",
         "status": "planned",
-        "title": "Classify and weigh edges (Jev)",
-        "description": "Classification and weighting of graph edges by the Jev analysis.",
+        "title": "Classify and weigh edges (edge scoring)",
+        "description": "Classification and weighting of graph edges by the edge-scoring analysis (flow id jev.*; the codename stays out of the human texts, M1-W0 r2:b4).",
         "why": {
-          "pl": "Klasyfikuje i waży krawędzie grafu analizą Jev."
+          "pl": "Klasyfikuje i waży krawędzie grafu (ocena krawędzi)."
         },
         "steps": [
           {
@@ -850,7 +850,7 @@
         },
         "consumer": "",
         "labels": {
-          "pl": "Sklasyfikuj i zważ krawędzie (Jev)"
+          "pl": "Sklasyfikuj i zważ krawędzie (ocena krawędzi)"
         },
         "result_text": {
           "en": "The edges were classified and weighed.",
@@ -858,8 +858,8 @@
         },
         "human": {
           "title": {
-            "pl": "Sklasyfikuj i zważ krawędzie (Jev)",
-            "en": "Classify and weigh edges (Jev)"
+            "pl": "Sklasyfikuj i zważ krawędzie (ocena krawędzi)",
+            "en": "Classify and weigh edges (edge scoring)"
           },
           "steps": [
             {
