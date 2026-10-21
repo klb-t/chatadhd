@@ -68,7 +68,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
     let alive = true;
     setLoading(true); setError(null);
     const actions = api.actions;
-    if (!actions) { setError("actions_api_unavailable"); setLoading(false); return; }
+    if (!actions) { setError(t("error.no_actions")); setLoading(false); return; }   // a catalogue sentence, never a developer id
     actions.graphNavigate(request).then(
       answer => { if (alive) { setResult(answer); setState(s => withFocusLabel(s, answer.focus)); setLoading(false); } },   // a focus from the menu gets its name
       failure => { if (alive) { setError(failure instanceof Error ? failure.message : String(failure)); setLoading(false); } });
@@ -118,7 +118,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const chooseLayout = async (next: Layout) => {
     setLayout(next); setOpen(openByLayout(next)); setViewMenu(false); setViewNote(null);
     const actions = api.actions;
-    if (!actions) { setViewNote(t("view.save_error", { reason: "actions_api_unavailable" })); return; }
+    if (!actions) { setViewNote(t("view.save_error", { reason: t("error.no_actions") })); return; }
     try {
       const run = await actions.run({ action: "settings.set", args: { key: "navigator_layout", value: next } });
       // the same reading of a run as the card (completed = saved; anything else, a gate included, is said with the kernel's reason)

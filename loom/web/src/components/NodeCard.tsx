@@ -55,7 +55,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
     let alive = true;
     setLoading(true); setError(null);
     const actions = api.actions;
-    if (!actions) { setError("actions_api_unavailable"); setLoading(false); return; }
+    if (!actions) { setError(t("error.no_actions")); setLoading(false); return; }   // a catalogue sentence, never a developer id
     const request: { address: string; lang: string; conv_id?: string } = { address, lang: language };
     if (convId) request.conv_id = convId;
     Promise.all([actions.graphCard(request), actions.rulesList({ user_only: true }).catch(() => ({ rules: [] }))]).then(

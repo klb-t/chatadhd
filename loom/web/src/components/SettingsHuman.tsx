@@ -51,7 +51,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   useEffect(() => {
     let alive = true;
     const actions = api.actions;
-    if (!actions) { setError("actions_api_unavailable"); return; }
+    if (!actions) { setError(t("error.no_actions")); return; }   // a catalogue sentence, never a developer id
     Promise.all([
       actions.settingsResolved({ lang: language, ...(convId ? { conv_id: convId } : {}) }),
       api.getSettingsFields().catch(() => null),   // only the labels of the subgroups come from here; without them the ids show
@@ -154,13 +154,14 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
         {filterButton}
         {g.fields.length === 0 && <p className="gnav-note" data-testid="shum-empty">{t("group.empty")}</p>}
         {g.fields.length > 0 && shown.length === 0 && <p className="gnav-note" data-testid="shum-empty">{t("filter.empty")}</p>}
-        {blocks.map(block => (
+        {/* one shum-fields-<group> per group view (all its field rows; the subgroups sit inside as shum-sub-<subgroup>), so a test id locates one element */}
+        <div className="shum-blocks" data-testid={`shum-fields-${g.id}`}>{blocks.map(block => (
           <div key={block.id ?? "_"} className="shum-block" data-testid={`shum-sub-${block.id ?? "none"}`}>
             {block.label && <h4 className="shum-sub-title">{block.label}</h4>}
             {block.why && <p className="gnav-why">{block.why}</p>}
-            <ul className="gnav-rows" data-testid={`shum-fields-${g.id}`}>{block.fields.map(renderField)}</ul>
+            <ul className="gnav-rows">{block.fields.map(renderField)}</ul>
           </div>
-        ))}
+        ))}</div>
         {legacyHere && legacy}
         </>)}
       </section>

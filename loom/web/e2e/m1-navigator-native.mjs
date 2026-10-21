@@ -77,8 +77,9 @@ try {
   };
   const layoutFits = async () => {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
-    // the whole drawer, so the × that closes the screen (data-testid close-panel) is measured too
-    const small = await page.locator(".drawer button").evaluateAll(els => els.filter(el => el.offsetParent !== null).map(el => {
+    // the whole drawer, so the × that closes the screen (data-testid close-panel) is measured too; every tappable kind, not only buttons
+    // (the search input nav-search-input, the editor's textarea card-editor-input, selects, role=button/switch, disclosure summaries)
+    const small = await page.locator(".drawer button, .drawer input, .drawer textarea, .drawer select, .drawer [role=button], .drawer [role=switch], .drawer summary").evaluateAll(els => els.filter(el => el.offsetParent !== null).map(el => {
       const r = el.getBoundingClientRect(); return { id: el.dataset.testid, w: Math.round(r.width), h: Math.round(r.height) }; }).filter(b => b.w < 44 || b.h < 44));
     assert.deepEqual(small, [], "every tappable of the navigator screen (its × included) is at least 44 x 44 px");
   };

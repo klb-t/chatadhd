@@ -78,7 +78,8 @@ try {
   const layoutFits = async () => {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
     // the former settings screen (Silnik › Wszystkie pola, shum-legacy) is untouched by M1-W0 and keeps its 35-40 px buttons: excluded
-    const small = await page.locator(".drawer button").evaluateAll(els => els.filter(el => el.offsetParent !== null && !el.closest('[data-testid="shum-legacy"]')).map(el => {
+    // every tappable kind, not only buttons (inputs, textareas, selects, role=button/switch, disclosure summaries)
+    const small = await page.locator(".drawer button, .drawer input, .drawer textarea, .drawer select, .drawer [role=button], .drawer [role=switch], .drawer summary").evaluateAll(els => els.filter(el => el.offsetParent !== null && !el.closest('[data-testid="shum-legacy"]')).map(el => {
       const r = el.getBoundingClientRect(); return { id: el.dataset.testid ?? el.textContent.trim().slice(0, 30), w: Math.round(r.width), h: Math.round(r.height) }; }).filter(b => b.w < 44 || b.h < 44));
     assert.deepEqual(small, [], "every tappable of the settings screens (the × included) is at least 44 x 44 px");
   };
@@ -143,6 +144,7 @@ try {
     assert.equal(await page.getByTestId("shum-value-temperature").textContent(), temperature.value_human);
     assert.equal(await page.getByTestId("shum-chip-provenance-temperature").textContent(), temperature.provenance.chip.label, "the chip is the kernel's");
     assert.equal(await page.getByTestId("shum-why-temperature").textContent(), temperature.human.why);
+    assert.equal(await page.getByTestId("shum-fields-rozmowa").count(), 1, "shum-fields-<group> is one element per group view (its subgroups sit inside), so a strict locator finds it");
     const fieldsShown = await page.getByTestId("shum-fields-rozmowa").locator("li[data-testid^='shum-field-']").evaluateAll(els => els.map(li => li.dataset.testid.replace("shum-field-", "")));
     assert.deepEqual(fieldsShown.sort(), rozmowa.fields.map(f => f.key).sort(), "every field of the group is a row");
     await page.getByTestId("shum-field-main-temperature").tap();

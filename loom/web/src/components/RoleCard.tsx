@@ -45,7 +45,7 @@ export function RolesTable({ profileHost, convId, language, onNavigate, onOpenCh
   useEffect(() => {
     let alive = true;
     const actions = api.actions;
-    if (!actions) { setError("actions_api_unavailable"); return; }
+    if (!actions) { setError(t("error.no_actions")); return; }   // a catalogue sentence, never a developer id
     actions.rolesResolved({ lang: language, ...(convId ? { conv_id: convId } : {}) })
       .then(resolved => { if (alive) { setDoc(resolved); setError(null); } })
       .catch(failure => { if (alive) setError(failure instanceof Error ? failure.message : String(failure)); });
