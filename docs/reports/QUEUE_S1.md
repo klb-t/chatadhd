@@ -1,7 +1,17 @@
-# Kolejka S1 — stan 2026-10-21 19:25 UTC
+# Kolejka S1 — stan 2026-10-21 20:25 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## K1a GOTOWE (20:20 UTC, `8e05e38f` na `claude/m1-w0`) — bramka lokalna `k1a` w toku; R38 potwierdzone na emulatorze
+K1a (kontynuacja `wf_1672d15c-6ce`, 85 wywołań, 209 tys. tokenów): klasy profile/rules w `build_messages`, porządek `stability`, deterministyczny prefiks profilu, paragon
+`loom.context_receipt/1` w `metadata.context_trace.receipt`, selektor czyta profile; złote bajty `legacy` bez zmian (diff pliku względem `5854133a` = 0 bajtów); 78/78 testów celowanych.
+Znalezione i naprawione po restarcie: test ABA historii (zmiana zapytania SQL), 3 ustawienia czytane przez `chat.send` nie zadeklarowane, opis `profile_detail_level` twierdził za dużo,
+test pól ustawień nie znał stanu `partial`, test różnicowy Python↔Loom (Loom pisze paragon, Python nie → w teście paragon wyłączony). **Zostaje dla K1b:** testy (c) złoty test dwóch żądań z nośnikiem tury,
+(d) „szerzej” jako zdanie → `context.modify`, (f) ×10 nad modyfikatorami (strażnik dziś `unknown_reason: not_computed_before_m1_k1b`), (g) `context.receipt` dla starych rekordów; Binding.turn w `scope_resolver`,
+routing w `route.cpp`, `ops.cpp`, `estimate.cpp`, `actions.pack`. Uwaga: „Co wysłaliśmy” slim trace nie niesie `messages`, więc dzisiejsza sieć (`recordedContext`) go ignoruje — W1 to uwzględni.
+**S2 potwierdził R38 na emulatorze** (android-smoke 39657173259, 3 profile, 39/0/0): odpowiedź agenta raz, słowami, bez JSON-a; serwer na 24.04 bez PPA działa.
+FF `main` dopiero po końcu CI 258 (ok. 20:50) i zielonej bramce `k1a`.
 
 ## CI 257 (R38) padł na `server.security` w asan; naprawione; `main` = `ac50b60e` (D2 + poprawka), CI 258 w toku (19:17 UTC)
 `assert 429 in codes` — osiem razy 403 w kroku 12 testu (limit prób rejestracji). Przyczyna (odtworzona lokalnie): opóźnienie po darmowych próbach w presecie to 1 s,
