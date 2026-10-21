@@ -63,3 +63,4 @@ loom/web/node_modules/
 # X-Port (loom/tools/extract): commander autosave and the serve token never belong in the tree
 komander.autosave*.json
 serve.token
+tools/gate-*/

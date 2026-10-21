@@ -1,7 +1,17 @@
-# Kolejka S1 — stan 2026-10-21 23:25 UTC
+# Kolejka S1 — stan 2026-10-21 23:55 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## W1a GOTOWE (23:50 UTC, `1a3233f2` na `claude/m1-w0`) — bramka lokalna `w1a` w toku (po merge `59de144c`); FF `main` po zielonym CI 261
+Arkusz „Co wyświetliśmy/Co wysłaliśmy” (`wf_e2dce102-ea6`, 123 wywołania, 318 tys. tokenów): API `context.receipt`/`context.modify` w `loom-api/http/jni`, `ContextReceipt.tsx` + stan + słowa w
+`conversation_view.pack` (`presentation.context_receipt` rev 2, status `partial`), linia „Kontekst: profil · pozycji N · ~T tok. — zobacz” pod odpowiedzią (ustawienie `receipt_link`: visible/menu_only), wpis „Co wysłaliśmy”
+w menu wiadomości, surowy JSON śladu tylko w trybie eksperckim; testy: `test:context-receipt` 11/11, e2e `m1-context-sent-native.mjs` 8 kroków dwa razy z rzędu, sąsiedzi zielone. Zrzut tekstu z e2e (profil Zgodność):
+„Instrukcja 19 tok. · Rozmowa 103 tok. (8 pozycji) · Pytanie 9 tok. · Puste sekcje: Pamięć, Graf, Projekt · prefiks stały: nie — ten porządek nie ma sekcji profilu · strażnik ×10: 1,4× bazy — bez pytania · koszt nieznany — brak ceny”.
+**Luki jądra odkryte przez W1a (do pakietu K-następnego, nie ukryte):** (1) „Pokaż w grafie” — przycisk WIDOCZNY, ale WYŁĄCZONY z powodem słowami: `graph.navigate focus=msg:… perspectives=[sent_to_model]` zwraca `not_found`
+(perspektywa i relacja `sent_to_model` istnieją w `graph_views.pack`, ale nic nie produkuje węzłów/krawędzi z paragonu); (2) paragon nie niesie ceny → „koszt nieznany — brak ceny”; (3) sekcja Graf ma jedną zagregowaną
+pozycję (`graph_memory`), więc „liczba pozycji rośnie przy szerzej” nie jest mierzalna — e2e mierzy `tokens_est` sekcji (spec M1-W1 do poprawienia); (4) angielskie `why` jądra widać tylko dla pozycji bez słów w packu.
+Zostaje **W1b**: podmenu kontekstu w `+` (chipy szerzej/głębiej…, lista profili, flow_text_graph, podgląd wysyłki), ContextStrip, chip modelu z pochodzeniem (`model-provenance`), retrieval-plan/ContextSlider.
 
 ## CI 260 (`9f02ef7b`) = failure (asan, 3 testy K1a) → naprawa na `main` = `59de144c` (K1b + poprawki), CI **261** w toku (start 23:16, koniec ok. 01:10)
 Szczegóły odczytał tani agent (haiku, `wf_4542b027-6a2`): (1) `unit.test_context_receipt` — ASAN heap-use-after-free w teście `test_context_receipt.cpp:226`: `for (… : f.send(legacy)["messages"])`
