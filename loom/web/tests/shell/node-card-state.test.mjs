@@ -33,7 +33,11 @@ test('the chain keeps every level, highlights the supplier and says "bez projekt
   assert.deepEqual(rows.filter(r => r.winning).map(r => r.level), ['conversation']);
   assert.equal(rows.find(r => r.level === 'project').noUnitText, pl['inheritance.no_unit.project']);
   assert.equal(rows.find(r => r.level === 'person').roleText, pl['inheritance.role.overridden']);
-  assert.equal(rows.find(r => r.level === 'person').valueText, '0.5');
+  // numbers in the chain are written as the kernel's value_human writes them: the decimal separator is the screen's word (pl ",")
+  assert.equal(rows.find(r => r.level === 'person').valueText, '0,5');
+  assert.equal(rows.find(r => r.level === 'installation').valueText, '0,7');
+  assert.equal(card.numberText(4096, t), '4096');
+  assert.equal(card.numberText(0.7, (id) => id), '0.7', 'without the word the point stays');
   assert.equal(rows.find(r => r.level === 'turn').active, false);
 });
 
@@ -82,13 +86,13 @@ test('"Zdejmij wartość" names the layer and its value, says what returns, and 
   const choices = card.unsetChoices(field, 'temperature', rules, t);
   assert.deepEqual(choices.map(c => c.level), ['person', 'conversation'], 'the installation baseline is not a layer of yours');
   const conv = choices.find(c => c.level === 'conversation');
-  assert.equal(conv.text, t('card.unset', { layer: 'Rozmowa', value: '0.3' }));
-  assert.equal(conv.returnsText, t('card.unset.returns', { layer: 'Osoba', value: '0.5' }));
+  assert.equal(conv.text, t('card.unset', { layer: 'Rozmowa', value: '0,3' }));
+  assert.equal(conv.returnsText, t('card.unset.returns', { layer: 'Osoba', value: '0,5' }));
   assert.equal(conv.ruleId, rules[0].id);
   const person = choices.find(c => c.level === 'person');
   assert.equal(person.ruleId, null);
   assert.equal(person.reasonText, pl['card.unset.person_planned']);
-  assert.equal(person.returnsText, t('card.unset.returns', { layer: 'Rozmowa', value: '0.3' }));
+  assert.equal(person.returnsText, t('card.unset.returns', { layer: 'Rozmowa', value: '0,3' }));
   assert.equal(card.unsetChoices(field, 'temperature', [], t).find(c => c.level === 'conversation').reasonText, t('card.unset.no_rule', { layer: 'Rozmowa' }));
 });
 
@@ -115,7 +119,7 @@ test('"Wartość:" never shows a raw status id: a ROM item (value = status) leav
   // The card of a ROM item as the server answers it (probe of 2026-10-21): value and status carry the same id.
   assert.equal(card.valueLine({ value: 'partial', status: 'partial' }, t), null);
   assert.equal(card.valueLine({ value: 'partial', status: 'partial', value_human: 'częściowo' }, t), 'częściowo');
-  assert.equal(card.valueLine({ value: 0.3 }, t), '0.3');
+  assert.equal(card.valueLine({ value: 0.3 }, t), '0,3');
   assert.equal(card.valueLine({ value: true }, t), pl['card.value.on']);
   assert.equal(card.valueLine({ value: 'present', status: 'partial' }, t), 'present');   // a real string value that only looks like a status id
   assert.equal(card.valueLine({}, t), null);

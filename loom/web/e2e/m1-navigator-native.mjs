@@ -29,6 +29,9 @@ mkdirSync(SHOTS, { recursive: true });
 const pack = JSON.parse(readFileSync(path.join(LOOM, "data/profiles/conversation_view.pack"), "utf8"));
 const words = pack.entries.find(r => r.key === "presentation.graph_screen").value.locales.pl;
 const word = (id, params = {}) => words[id].replace(/\{\{(\w+)\}\}/g, (_, k) => params[k] ?? "");
+// A number as the card writes it (node-card-state.ts numberText): the point replaced by the screen's word decimal_separator (pl ","),
+// the same way the kernel's value_human writes "Wartość:" — one format on one card (r1:b4).
+const num = v => { const s = String(v); const sep = words.decimal_separator; return sep && sep.length === 1 && sep !== "." ? s.replace(".", sep) : s; };
 
 const freePort = () => new Promise((res, rej) => { const s = net.createServer(); s.listen(0, "127.0.0.1", () => { const { port } = s.address(); s.close(() => res(port)); }); s.on("error", rej); });
 async function waitUp(url) { for (const end = Date.now() + 20000; Date.now() < end;) { try { if ((await fetch(url)).ok) return; } catch {} await new Promise(r => setTimeout(r, 150)); } throw new Error("never up " + url); }
@@ -260,7 +263,7 @@ try {
     for (const l of expected.inheritance) {
       const row = shown.find(r => r.level === l.level);
       assert.equal(row.role, l.role, `${tag}: role of ${l.level}`);
-      if (l.value !== undefined) assert.equal(row.value, String(l.value), `${tag}: value of ${l.level}`);
+      if (l.value !== undefined) assert.equal(row.value, num(l.value), `${tag}: value of ${l.level}`);
       if (l.no_unit) assert.ok((await page.getByTestId(`card-chain-${l.level}`).innerText()).includes(word(`inheritance.no_unit.${l.level}`)), `${tag}: ${l.level} says it has no unit`);
     }
     assert.equal(await page.getByTestId("card-value").innerText(), `${words["card.value"]} ${expected.value_human}`, `${tag}: the value in words`);
@@ -353,8 +356,8 @@ try {
     const before = await cardOf();
     const convRow = before.inheritance.find(l => l.level === "conversation"), personRow = before.inheritance.find(l => l.level === "person");
     const unset = page.getByTestId("card-unset-conversation");
-    assert.ok((await unset.innerText()).includes(word("card.unset", { layer: convRow.label, value: String(convRow.value) })));
-    assert.ok((await unset.innerText()).includes(word("card.unset.returns", { layer: personRow.label, value: String(personRow.value) })));
+    assert.ok((await unset.innerText()).includes(word("card.unset", { layer: convRow.label, value: num(convRow.value) })));
+    assert.ok((await unset.innerText()).includes(word("card.unset.returns", { layer: personRow.label, value: num(personRow.value) })));
     assert.equal(await page.getByTestId("card-unset-person").isDisabled(), true);
     assert.ok((await page.getByTestId("card-unset-person").innerText()).includes(words["card.unset.person_planned"]));
     await shot("m1-navigator-card-unset");

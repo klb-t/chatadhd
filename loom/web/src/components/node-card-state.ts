@@ -39,8 +39,16 @@ export function valueText(value: unknown, t: ShellT): string {
   if (value === null) return t("card.value.none");
   if (typeof value === "boolean") return t(value ? "card.value.on" : "card.value.off");
   if (typeof value === "string") return value === "" ? t("card.value.empty") : value;
-  if (typeof value === "number") return String(value);
+  if (typeof value === "number") return numberText(value, t);
   return JSON.stringify(value);
+}
+
+/** A number the way the kernel's value_human writes it: the shortest form, the decimal point replaced by the word
+ *  `decimal_separator` of the screen (pl ","), so the chain and the "Wartość:" line agree. A missing word keeps the point. */
+export function numberText(value: number, t: ShellT): string {
+  const s = String(value);
+  const sep = t("decimal_separator");
+  return sep.length === 1 && sep !== "." ? s.replace(".", sep) : s;
 }
 
 /** The "Wartość:" line in words: the kernel's value_human first, else the value by type. null when the line would only repeat the

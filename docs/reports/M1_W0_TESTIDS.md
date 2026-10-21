@@ -12,6 +12,17 @@ w tym pliku**, o kształcie `{"gate0": [kroki]}`. Krok: `{"name", "do": [akcje],
   `{"exitQuestion": true}`.
 - Po każdym kroku sterownik woła `window.__loomBack()` aż zwróci false; `"reset": false` to wyłącza.
 - Bez bloku lub z pustą listą kroki są „pominięte” z powodem — S2 nie czeka na nas.
+- Klucz `preconditions` obok `gate0` (dodany po przeglądzie r1:b4, 2026-10-21): `{"config": {klucz: wartość}, "android_shell": true}` —
+  co sterownik ma zapewnić **przed** pierwszym krokiem. Oczekiwanie z `"android_only": true` obowiązuje tylko w powłoce Androida
+  (w przeglądarce bez `LoomBridge` ten testid ma liczność 0 i sterownik desktopowy może je pominąć).
+
+**Warunki wstępne bloku `gate0`** (sprawdzone sondą 390×844 na prawdziwym serwerze, 2026-10-21; bez nich kroki 3 i 4 padają):
+1. `ui_language = pl` w config **przed** blokiem (`PUT /api/config/ui_language {"value": "pl"}`, tak jak robią to
+   `m1-navigator-native.mjs:47` i `m1-settings-native.mjs:51`, albo `settings.set`). Preset to `auto` = język przeglądarki,
+   a WebView emulatora ma `en-US`, więc bez tego ekrany mówią po angielsku („In all: 109 fields · 0 yours”, „Background
+   analysis”). Wzorce `text` niżej są dwujęzyczne (pl|en) jako siatka bezpieczeństwa, ale Gate 0 ocenia ekrany **po polsku**.
+2. Blok jest dla powłoki Androida: `shell-menu-connection` istnieje tylko z `LoomBridge` (`layouts.json`: `when: android_shell`),
+   dlatego to oczekiwanie ma `"android_only": true`; w Chromium bez mostka ma liczność 0 (to stan oczekiwany, nie błąd).
 
 Kroki, które blok ma pokryć (testid-y i liczby z prawdziwych ekranów i danych, nie z tego opisu):
 1. Menu ⋮ → Graf → wiersz ROM: liczba wierszy ROM z danych (spec: 13), chipy pochodzenia, brak „Trybu ratunkowego”.
@@ -27,7 +38,8 @@ ekranu o tej nazwie, więc blok nie sprawdza jego braku. Krok 5 zostaje na stosi
 systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-A0).
 
 ```json
-{"gate0": [
+{"preconditions": {"config": {"ui_language": "pl"}, "android_shell": true},
+ "gate0": [
   {"name": "Menu ⋮ → Graf → ROM: 13 pozycji po polsku, chip pochodzenia na każdej",
    "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-graph"}, {"wait": "nav-rows"}, {"click": "nav-row-area:rom"}, {"wait": "nav-focus-why"}],
    "expect": [{"tid": "nav-crumb-1", "text": "ROM"}, {"tid": "nav-chip", "count": 13}, {"tid": "nav-status", "min": 1}, {"tid": "nav-bar-view", "count": 1}]},
@@ -35,18 +47,18 @@ systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-
    "do": [{"click": "shell-menu-toggle"}, {"wait": "shell-menu"}],
    "expect": [{"tid": "shell-menu-graph", "count": 1}, {"tid": "shell-menu-settings", "count": 1}, {"tid": "shell-menu-me", "count": 1},
               {"tid": "shell-menu-this_conversation", "count": 1}, {"tid": "shell-menu-views", "count": 1}, {"tid": "shell-menu-semantic", "count": 1},
-              {"tid": "shell-menu-connection", "count": 1}, {"tid": "shell-menu-workshop", "count": 1},
+              {"tid": "shell-menu-connection", "count": 1, "android_only": true}, {"tid": "shell-menu-workshop", "count": 1},
               {"tid": "shell-menu-memory", "absent": true}, {"tid": "shell-menu-knowledge", "absent": true}]},
   {"name": "Ustawienia: 8 grup z „N pól · M Twoje” i suma",
    "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}],
-   "expect": [{"tid": "shum-total", "text": "^Razem: \\d+ p(ól|ola) · \\d+ Twoje"},
+   "expect": [{"tid": "shum-total", "text": "^(Razem: \\d+ p(ole|ól|ola)|In all: \\d+ fields?) · \\d+ (Twoje|yours)"},
               {"tid": "shum-group-ty", "count": 1}, {"tid": "shum-group-rozmowa", "count": 1}, {"tid": "shum-group-modele", "count": 1}, {"tid": "shum-group-kontekst", "count": 1},
               {"tid": "shum-group-interfejs", "count": 1}, {"tid": "shum-group-prywatnosc", "count": 1}, {"tid": "shum-group-koszty", "count": 1}, {"tid": "shum-group-silnik", "count": 1},
-              {"tid": "shum-group-count-rozmowa", "text": "^\\d+ p(ól|ola) · \\d+ Twoje"}, {"tid": "shum-filter", "count": 1}]},
+              {"tid": "shum-group-count-rozmowa", "text": "^\\d+ (p(ole|ól|ola)|fields?) · \\d+ (Twoje|yours)"}, {"tid": "shum-filter", "count": 1}]},
   {"name": "Modele › Role: karta Analiza w tle z łańcuchem polityki i przepływami czytającymi klucz",
    "do": [{"click": "shell-menu-toggle"}, {"click": "shell-menu-settings"}, {"wait": "shum-groups"}, {"click": "shum-group-open-modele"}, {"wait": "roles-table"},
           {"click": "role-open-analysis.fast"}, {"wait": "role-card"}],
-   "expect": [{"tid": "role-card-title", "text": "Analiza w tle"}, {"tid": "role-chain", "count": 1}, {"tid": "role-chain-step-1", "count": 1},
+   "expect": [{"tid": "role-card-title", "text": "^(Analiza w tle|Background analysis)$"}, {"tid": "role-chain", "count": 1}, {"tid": "role-chain-step-1", "count": 1},
               {"tid": "role-chain-meaning-1", "text": "semantic_model"}, {"tid": "role-tier-reason", "count": 1},
               {"tid": "role-readers", "count": 1}, {"tid": "role-reader-actions.preview", "count": 1}, {"tid": "role-readers-total", "text": "\\d+"}]},
   {"name": "Wstecz: karta roli → grupa → panel → czat → pytanie o wyjście", "reset": false,
