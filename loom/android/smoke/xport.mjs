@@ -238,28 +238,6 @@ try {
   const settle = () => until("the panel to settle", () => { const n = dump(); return !n.some(x => /^(Liczę|Ładuję|Pracuję|Stosuję|Eksportuję)/.test(x.text || "")) && n; }, 90, 1000);
   const tapText = async (re, what) => { const n = await scrollFind(x => re.test(x.text || ""), what); tap(n); await sleep(800); return n.text; };
 
-  await check("Edycje: the recipe list (a drop-down) and the recipe 'Zostaw w metadanych tylko znaczniki czasu': Podgląd, Zastosuj, Cofnij", async () => {
-    await openTab("Edycje");
-    const spinner = await scrollFind(n => /Spinner/.test(n.class || "") && n.package === PKG, "the recipe drop-down");
-    tap(spinner); await sleep(1000);
-    const items = dump().filter(n => /CheckedTextView|TextView/.test(n.class || "") && (n.text || "").trim() && n.cx !== undefined && n.t >= 0);
-    const listed = [...new Set(items.map(n => n.text.trim()))];
-    const pickIt = find(dump(), n => /Zostaw w metadanych/.test(n.text || ""));
-    if (!pickIt) throw new Error("the drop-down does not list 'Zostaw w metadanych…'; it shows: " + listed.join(" | "));
-    tap(pickIt); await sleep(1000);
-    shot("recipe-chosen");
-    const chosen = seen(dump(), 60);
-    const out = [`drop-down: ${listed.join(" | ")}`, `after choosing: ${chosen}`];
-    for (const [btn, label] of [[/^Podgląd przepisu$/, "Podgląd"], [/^Zastosuj przepis$/, "Zastosuj"], [/^Cofnij przepis$/, "Cofnij"]]) {
-      await tapText(btn, label);
-      const after = await settle();
-      shot("recipe-" + label);
-      const err = texts(after).find(x => /^Błąd/.test(x));
-      out.push(`${label}: ${seen(after, 60)}`);
-      if (err) throw new Error(out.join(" || "));
-    }
-    return out.join(" || ");
-  });
 
   // Export twice (S1's ask): with no profile, then with only "Wyciągnij spod zagnieżdżenia"; every checkbox state before each
   // export and the FULL list of entries of each zip. The selection is Wybór -> Wszystko after the same three sources.
@@ -319,8 +297,44 @@ try {
     if (r.error) throw new Error(report);
     return report;
   });
-  await exportRun("A (no profile)", false);
+  // S1's order (2026-10-21, the one that once exported an empty package): recipe preview BEFORE any selection, then
+  // Wybór -> Wszystko, preview / apply / undo, then the export with the folder profile, then one without a profile.
+  const newTexts = (before, after) => texts(after).filter(t => !before.includes(t)).map(t => t.replace(/\s+/g, " ")).join(" | ") || "(nothing new on the screen)";
+  const chooseRecipe = async () => {
+    await openTab("Edycje");
+    const spinner = find(dump(), n => /Spinner/.test(n.class || "") && n.package === PKG);
+    if (spinner) { tap(spinner); await sleep(900); }
+    const options = dump().filter(n => n.package === PKG && /RadioButton|CheckedTextView/.test(n.class || "") && (n.text || "").trim()).map(n => n.text.trim());
+    await tapText(/Zostaw w metadanych/, "the recipe 'Zostaw w metadanych tylko znaczniki czasu'");
+    const r = find(dump(), n => /Zostaw w metadanych/.test(n.text || ""));
+    return `${spinner ? "drop-down" : "list"}: ${options.join(" | ") || "(no radio/check items)"}; chosen: ${r ? `${(r.class || "").split(".").pop()} checked=${r.checked}` : "?"}`;
+  };
+  const recipeButton = async (re, label) => {
+    const before = texts(dump());
+    await tapText(re, label);
+    const after = await settle();
+    shot("recipe-" + label.replace(/\W+/g, "-"));
+    return `${label}: ${newTexts(before, after)}`;
+  };
+  await check("1 Edycje: choose 'Zostaw w metadanych tylko znaczniki czasu', Podgląd przepisu BEFORE any selection", async () => {
+    const chosen = await chooseRecipe();
+    return `${chosen} || ${await recipeButton(/^Podgląd przepisu$/, "Podgląd (nothing selected)")}`;
+  });
+  await check("2 Wybór -> Wszystko", async () => {
+    await openTab("Wybór");
+    await tapText(/^Wszystko$/, "the 'Wszystko' button");
+    return texts(await settle()).find(t => /^Zaznaczono/.test(t)) || "(no 'Zaznaczono' line)";
+  });
+  await check("3 Edycje: Podgląd, Zastosuj, Cofnij of the recipe on the selection", async () => {
+    const chosen = await chooseRecipe();
+    const out = [chosen];
+    for (const [re, label] of [[/^Podgląd przepisu$/, "Podgląd"], [/^Zastosuj przepis$/, "Zastosuj"], [/^Cofnij przepis$/, "Cofnij"]]) out.push(await recipeButton(re, label));
+    const bad = out.find(x => /Błąd/.test(x));
+    if (bad) throw new Error(out.join(" || "));
+    return out.join(" || ");
+  });
   await exportRun("B (only 'Wyciągnij spod zagnieżdżenia')", true);
+  await exportRun("A (no profile)", false);
 
   await check("the process never crashed", async () => {
     const c = crashes();
