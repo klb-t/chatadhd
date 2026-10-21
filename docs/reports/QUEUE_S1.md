@@ -1,7 +1,16 @@
-# Kolejka S1 — stan 2026-10-21 12:15 UTC
+# Kolejka S1 — stan 2026-10-21 13:20 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## Wyniki S2 z emulatora (13:10 UTC, android-smoke 39598360743, pixel_5/pixel_6/pixel_6+font 1,3)
+Kroki 2–8 Bramki 0 działają na wszystkich trzech profilach (menu, ustawienia, karta roli, Wstecz, dolny pasek, menu perspektyw,
+karta ROM bez łańcucha). **Krok 1 (⋮ → Graf → ROM) pada na pixel_5 i pixel_6 przy czcionce 1,0: timeout 30 s na `nav-rows`** (przy 1,3
+przechodzi) — czekamy na widoczny ekran z nieudanego kroku (S2: 79ea5299). Moje pomiary: `graph.navigate` ≈ 1,1–1,9 s na szybkiej maszynie
+w Debug, **każde wywołanie**, także ciepłe (brak buforowania źródeł projekcji); na emulatorze x86_64 może być wielokrotnie wolniej.
+**Do zrobienia (pakiet P-perf, po decyzji z limitem tygodniowym):** profil `graph.navigate` (które źródła są czytane przy każdym
+wywołaniu: pakiety danych, sumy kontrolne spisu domen?), bufor źródeł projekcji, pomiar na Release; w teście S2 pierwszy czas odpowiedzi
+w raporcie. Uwaga UX: nazwa „Self-model" występuje w korzeniu (obszar) i w ROM (pozycja katalogu) — do rozstrzygnięcia z właścicielem.
 
 ## WYDANIE M1-W0 GOTOWE (12:15 UTC): `package.yml` przebieg 39593331749 = success (Android + serwer + first_steps)
 APK (klucz testowy): artefakt `chatadhd-android-apk-TEST-KEY` 12342808211; pełny zip `chatadhd-0.10.00-ci.22.7ff9231` 12342868186;
