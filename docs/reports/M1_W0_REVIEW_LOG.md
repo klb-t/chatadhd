@@ -270,3 +270,43 @@ pack nie ruszony. Zrzuty nie zmienione (poprawki nie zmieniają pikseli: najbli�
 e2e `m1-navigator` zapisuje przy każdym przebiegu `tests/shell/fixtures/graph-card-temperature.json` z nowym `scope_id` rozmowy
 (`c_…`) — plik przywrócony `git checkout`, bo zmiana to tylko id z tego przebiegu; następny pakiet może znormalizować id przy
 zapisie.
+
+## Co doszło w poprawkach r2:b3 (2026-10-21, fakty z przebiegu)
+
+Pięć ustaleń przeglądu (partia 3). Dwa poprawione teraz, trzy były już zrobione w r2:b1/r2:b2 i zostały **sprawdzone świeżym
+przebiegiem**, a ich resztki (fałszywe zdania w dziennikach, brakujący zrzut w §11, brak wpisu w „Czego NIE ma”) domknięte.
+Żadnego nie odrzucono. Brak WIP-u z przerwanego przebiegu: HEAD był gotowym commitem r2:b2 (docs, `f8345662`), drzewo czyste;
+jedyny ślad przerwanego przebiegu to katalog roboczy z 41 PNG poza repozytorium.
+
+- **`test:chat-first` czerwony na HEAD (blokujące).** Już poprawione w r2:b2 (`68e974d0`: `panel-navigator` + `data-focus`
+  `^conv:`); ustalenie cytowało drzewo sprzed tej paczki. Sprawdzone: świeży `npm run test:chat-first` 18/18 (390×844 i 1280×800).
+- **Trzy kroki `android-smoke` (graph, memory, knowledge) szły przez ⋮, którego pozycji nie ma.** `loom/android/smoke/drive.mjs`:
+  `openWorkshopPanel(entry)` = `closePanel()` (nagłówek Warsztatu jest `inert` przy otwartym panelu) → gdy nie ma `toggle-nav`,
+  `openMenu("workshop")` → `nav-<entry>` (przyciski są w DOM także przy zwiniętym `app-nav`, a `click` sterownika to
+  `element.click()`, więc ≡ nie jest potrzebne); `backToChat()` = `closePanel()` → `nav-chat` → `shell-menu-toggle`, wywołane po
+  kroku knowledge, bo układ jest zapamiętywany (`loom.shell.last/1`) i krok paging robi `location.reload()`, który inaczej
+  wróciłby do Warsztatu. Nazwy kroków mówią „from the Workshop”. `docs/reports/M1_W0_TESTIDS.md`: nowa tabela „Dawne panele przez
+  Warsztat” (`shell-menu-workshop`, `toggle-nav`, `app-nav`, `nav-graph` / `nav-memory` / `nav-knowledge` / `nav-graph-entry`,
+  ich panele i elementy, `close-panel`, `nav-chat`) z prawdziwymi napisami przycisków (dawny panel grafu w Warsztacie nazywa się
+  „Ta rozmowa w grafie” od r1:b5 — ten sam napis co pozycja ⋮, inny ekran). `test:testids-doc` potwierdza każdy id.
+  **Nie wykonane:** same kroki smoke (brak emulatora tutaj) — `node --check` czysty; przebieg należy do S2 (M1-A0).
+- **Zrzuty `m1-settings-role-card.png` i `-role-chain.png` z „z profilu guardian”.** Oba odświeżył już przebieg `test:m1-settings`
+  w r2:b1 (`11e49097`; dziennik tej paczki tego nie wymienił). Sprawdzone: `M1_SHOTS_DIR=<katalog roboczy> npm run test:m1-settings`
+  9/9 — 7/7 PNG bajt w bajt równe plikom w repozytorium. Zdanie r1:b7 „żaden zrzut się nie zmienił (… pod zgięciem)” było
+  nieprawdziwe: dopisane **sprostowanie** w sekcji r1:b7 tego dziennika i we wpisie r1:b7 w `INDEX.md`.
+- **Licznik zrzutów i kroków.** Raport mówi 21 PNG od r2:b2; teraz `m1-settings-all-fields.png` jest osadzony w §11 (14 w tekście,
+  7 wymienionych zdaniem), dawna linia faktów „11 kroków” ma dopisek „dziś 13 — zob. r2:b2”, a wpis P7 w `INDEX.md` „12 PNG”
+  dopisek „stan P7; dziś 21”. Wpisy historyczne nie są przepisywane — dostają dopisek z datą paczki.
+- **„Ta rozmowa w grafie” na pustej rozmowie.** Od r2:b1 e2e importuje rozmowę z 3 wiadomościami i §1 mówi, co jest pod rozmową.
+  Dopisane do „Czego jeszcze NIE ma”: węzeł rozmowy + wiadomości jako wiersze to wszystko; wątki, gałęzie, wersje i encje
+  w nawigatorze — M1-W3; pusta rozmowa pokazuje „Nic pod tym węzłem.” (prawda, nie błąd); dawny graf siłowy rozmowy w Warsztacie.
+  **Decyzja:** bez nowego słowa „dlaczego pusto” na ekranie — `no_children` jest prawdziwe i zrozumiałe; powód wymagałby słowa
+  w `presentation.graph_screen` (`conversation_view.pack`) + `gen_onboarding_pack` + przebudowy jądra, a jądro nie mówi dziś,
+  *dlaczego* węzeł nie ma dzieci (pusta rozmowa vs. źródło bez listy). Jak dodać: słowo `no_children_reason` w packu, render obok
+  `nav-empty` w `GraphNavigator.tsx`, powód z `graph.navigate` gdy jądro go da.
+
+Przebieg: `node --test tests/shell/*.test.mjs` 89/89 (`testids-doc` 2/2 z nową tabelą); `test:chat-first` 18/18; `test:m1-settings`
+9/9 (7/7 PNG identyczne); `test:m1-navigator` 13/13 (13/13 PNG identyczne z `docs/reports/M1_CHECKPOINT_0/`; fixture
+`graph-card-temperature.json` nadpisany nowym `scope_id` i przywrócony `git checkout`, jak w r2:b2). `npm run build` nie uruchamiany
+(żadne źródło web nie zmienione; e2e szły na istniejącym `dist`). Nie uruchomione: `android-smoke`, pozostałe `test:*`, `ctest`
+(jądro i packi nietknięte). Żaden zrzut nie zmieniony.
