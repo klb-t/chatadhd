@@ -110,3 +110,13 @@ test('the bottom bar is the order of the spec; what does not work yet is marked 
   assert.deepEqual(nav.BAR_BUTTONS.map(b => b.id), ['perspective', 'wider', 'narrower', 'deeper', 'shallower', 'actions', 'view']);
   assert.deepEqual(nav.BAR_BUTTONS.filter(b => !b.works).map(b => b.id), ['perspective', 'actions']);   // P4 wired Widok
 });
+
+test('a focus opened from the menu (no label yet) takes the kernel\'s label when the answer arrives; a labelled step keeps its own', () => {
+  const opened = nav.initialState('conv:e8805303646a');
+  assert.deepEqual(opened.path, [{ address: 'conv:e8805303646a', label: '' }]);
+  const named = nav.withFocusLabel(opened, { address: 'conv:e8805303646a', label: 'M1 card' });
+  assert.deepEqual(named.path, [{ address: 'conv:e8805303646a', label: 'M1 card' }]);
+  assert.equal(nav.withFocusLabel(named, { address: 'conv:e8805303646a', label: 'Other' }), named, 'a labelled step keeps its label');
+  assert.equal(nav.withFocusLabel(opened, { address: 'area:rom', label: 'ROM' }), opened, 'an answer for another node changes nothing');
+  assert.equal(nav.withFocusLabel(nav.initialState(), { address: '', label: 'Graf' }).path.length, 0, 'the root has no step');
+});

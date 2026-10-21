@@ -26,7 +26,7 @@ export function menuEntries(menu: readonly MenuEntry[], env: MenuEnv): MenuEntry
 /** What an action id of the menu data means. An id nothing handles is `unknown` (the test of the data keeps the data free of them). */
 export function parseMenuAction(action: string): MenuTarget {
   if (action.startsWith("panel:")) return { kind: "panel", panel: action.slice(6) };
-  // navigator:<focus> opens the graph navigator at that node ("" = the root of the graph).
+  // navigator:<focus> opens the graph navigator at that node ("" = the root of the graph; conv:current = the open conversation, see resolveNavigatorFocus).
   if (action.startsWith("navigator:")) return { kind: "navigator", focus: action.slice(10) };
   if (action.startsWith("sheet:")) {
     const sheet = action.slice(6);
@@ -36,4 +36,19 @@ export function parseMenuAction(action: string): MenuTarget {
   if (action === "connection") return { kind: "connection" };
   if (action === "knowledge") return { kind: "knowledge" };
   return { kind: "unknown", action };
+}
+
+/** The focus of the menu entry "Ta rozmowa w grafie" in the data: resolved to the open conversation when the menu is tapped. */
+export const CURRENT_CONVERSATION_FOCUS = "conv:current";
+/** The graph address of a conversation: the id form of the projection source `conv` (loom/data/runtime/element_resolution.pack,
+ *  projection_conv: prefix "conv:", same_as_prefix "c_"), so the database id c_<hex> is the node conv:<hex>. The unit test of the
+ *  menu reads both strings from that pack, so a change of the data shows up here. */
+export const CONVERSATION_ADDRESS = { prefix: "conv:", dbPrefix: "c_" } as const;
+export const conversationAddress = (convId: string): string =>
+  CONVERSATION_ADDRESS.prefix + (convId.startsWith(CONVERSATION_ADDRESS.dbPrefix) ? convId.slice(CONVERSATION_ADDRESS.dbPrefix.length) : convId);
+/** A navigator focus of the data as the kernel takes it: conv:current becomes the address of the open conversation; with no
+ *  conversation open the navigator opens at the root (the whole graph), never at a node that does not exist. Any other focus is passed as it is. */
+export function resolveNavigatorFocus(focus: string, convId: string | null): string {
+  if (focus !== CURRENT_CONVERSATION_FOCUS) return focus;
+  return convId ? conversationAddress(convId) : "";
 }

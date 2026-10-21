@@ -134,3 +134,31 @@ test('every word the map and the view menu ask for exists in both languages (a m
   assert.equal(map.shortLabel('x'.repeat(40)).length, map.LABEL_CHARS_PRESET);
   assert.equal(map.shortLabel('krótka'), 'krótka');
 });
+
+test('labels on the plane are drawn only where they can be read: inside the map, never on top of another label; the focus and the tapped mark first; a mark near an edge flips its side; the rest keep the line under the map', () => {
+  // A crowded level like the root (24 rows with long Polish labels) on the 342 x 300 phone map.
+  const labels = ['Rozumowanie modelu', 'Model rozmowy', 'Temperatura odpowiedzi', 'Polecenia w czacie', 'Cięcie wyników', 'Odpowiedź na głos', 'Rozpoznawanie mowy',
+    'Nowe działania', 'Gdzie trafiają pliki', 'Własne granice', 'Pamięć rozmowy', 'Analiza w tle', 'Koszty i limity', 'Eksport', 'Import rozmów', 'Połączenie',
+    'Widoki', 'Role modeli', 'Prywatność', 'Silnik', 'Interfejs', 'Kontekst', 'Profil', 'Ustawienia'];
+  const crowded = { ...result, children: labels.map((label, i) => row(`n:${i}`, 'setting', { label, count: i })) };
+  const projection = project(map.viewModelFor(crowded, 'Graf'), { width: 342, height: 300, margin: map.MAP_MARGIN_PRESET });
+  const cam = map.CAMERA_HOME, centre = { x: 171, y: 150 };
+  const marks = projection.marks.map(m => ({ id: m.id, label: m.label, focus: m.focus, screen: map.screenOf({ x: m.x, y: m.y }, cam, centre), rScreen: Math.max(3, m.r) }));
+  const placed = map.placeLabels(marks, { width: 342, height: 300 }, null);
+  assert.ok(placed.length >= 1 && placed.length < marks.length, `some labels wait for a tap (${placed.length} of ${marks.length} drawn)`);
+  assert.ok(placed.some(p => p.id === marks.find(m => m.focus).id), 'the focus always has its label');
+  for (const p of placed) assert.ok(p.box.left >= 0 && p.box.top >= 0 && p.box.left + p.box.width <= 342 && p.box.top + p.box.height <= 300, `${p.id} inside the map`);
+  for (const a of placed) for (const b of placed) if (a !== b) {
+    const apart = a.box.left + a.box.width <= b.box.left || b.box.left + b.box.width <= a.box.left || a.box.top + a.box.height <= b.box.top || b.box.top + b.box.height <= a.box.top;
+    assert.ok(apart, `${a.id} and ${b.id} do not cover each other`);
+  }
+  for (const p of placed) assert.equal(p.text, map.shortLabel(marks.find(m => m.id === p.id).label));
+  // The tapped mark goes before the others: its label is drawn even when a neighbour's would have taken the room.
+  const last = marks[marks.length - 1];
+  const withSelected = map.placeLabels(marks, { width: 342, height: 300 }, last.id);
+  assert.ok(withSelected.some(p => p.id === last.id), 'the tapped mark has its label');
+  // A mark at the left edge cannot hold a label on its outer side: the side flips; one that fits nowhere is left to the line under the map.
+  const edge = [{ id: 'e', label: 'Krótka', screen: { x: 4, y: 150 }, rScreen: 4 }];
+  assert.equal(map.placeLabels(edge, { width: 342, height: 300 }, null)[0].anchor, 'start');
+  assert.deepEqual(map.placeLabels([{ id: 'c', label: 'Za długa etykieta na mapę', screen: { x: 171, y: 150 }, rScreen: 170 }], { width: 342, height: 300 }, null), []);
+});

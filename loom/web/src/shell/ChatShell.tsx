@@ -7,7 +7,7 @@ import SemanticStatus from "../components/SemanticStatus";
 import SemanticDot from "./SemanticDot";
 import Disclosure from "./Disclosure";
 import { useShellText } from "./text";
-import { CHAT_MENU, menuEntries, parseMenuAction } from "./menu";
+import { CHAT_MENU, menuEntries, parseMenuAction, resolveNavigatorFocus } from "./menu";
 import { useLayer } from "./use-layer";
 import "./shell.css";
 
@@ -57,13 +57,13 @@ export default function ChatShell({ profileHost, convId, onSelect, onCreated, re
     setMenu(false);
     const target = parseMenuAction(action);
     if (target.kind === "panel") actions.panel(target.panel);
-    else if (target.kind === "navigator") actions.navigator(target.focus);
+    else if (target.kind === "navigator") actions.navigator(resolveNavigatorFocus(target.focus, convId));   // "Ta rozmowa w grafie" = conv:<open conversation>, else the root
     else if (target.kind === "knowledge") actions.knowledge();
     else if (target.kind === "sheet") setSheet(target.sheet);
     else if (target.kind === "workshop") actions.workshop();
     else if (target.kind === "connection") bridge()?.openConnection?.();
     else console.debug("shell menu: no handler for the action", target.action);
-  }, [actions]);
+  }, [actions, convId]);
   const entries = menuEntries(CHAT_MENU, { androidShell: typeof bridge()?.openConnection === "function" });
 
   let sheetBody: ReactNode = null;

@@ -13,8 +13,8 @@ import Disclosure from "../shell/Disclosure";
 import type { ShellT } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { chipText, evidenceText } from "./navigator-state";
-import { actionRows, chainRows, draftOf, editorKind, levelChoices, parseDraft, pendingGate, relationGroups, runOutcome, unsetChoices,
-  valueText, writeRequest, type CardStep, type LevelChoice, type PendingGate, type ScopedRule, type UnsetChoice } from "./node-card-state";
+import { actionRows, chainRows, draftOf, editorKind, layersLine, levelChoices, parseDraft, pendingGate, relationGroups, runOutcome, unsetChoices,
+  valueLine, writeRequest, type CardStep, type LevelChoice, type PendingGate, type ScopedRule, type UnsetChoice } from "./node-card-state";
 
 interface Props {
   address: string;
@@ -134,12 +134,11 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
         <div className="gnav-chips">
           <span className="gnav-chip" data-testid="card-chip">{chipText(card, t)}</span>
           {evidenceText(card, t) && <span className="gnav-chip gnav-chip-evidence" data-testid="card-evidence">{evidenceText(card, t)}</span>}
-          {card.status && <span className="gnav-chip gnav-chip-status">{t(`status.${card.status}`)}</span>}
+          {card.status && <span className="gnav-chip gnav-chip-status" data-testid="card-status">{t(`status.${card.status}`)}</span>}
         </div>
-        {card.provenance.layers && card.provenance.layers.length > 0 &&
-          <p className="ncard-line ncard-layers" data-testid="card-layers">{t("card.layers", { layers: card.provenance.layers.map(l => t(`chip.${l}`)).join(" → ") })}</p>}
-        {card.value !== undefined && <p className="ncard-line ncard-value" data-testid="card-value">
-          <span className="ncard-key">{t("card.value")}</span> <strong>{card.value_human ?? valueText(card.value, t)}</strong></p>}
+        {layersLine(card, t) !== null && <p className="ncard-line ncard-layers" data-testid="card-layers">{layersLine(card, t)}</p>}
+        {valueLine(card, t) !== null && <p className="ncard-line ncard-value" data-testid="card-value">
+          <span className="ncard-key">{t("card.value")}</span> <strong>{valueLine(card, t)}</strong></p>}
         {card.why && <p className="ncard-line" data-testid="card-why"><span className="ncard-key">{t("card.why")}</span> {card.why}</p>}
         {card.effect && <p className="ncard-line" data-testid="card-effect"><span className="ncard-key">{t("card.effect")}</span> {card.effect}</p>}
         {card.edit_rule && <p className="ncard-line" data-testid="card-edit-rule"><span className="ncard-key">{t("card.edit_rule")}</span> {t(`card.edit_rule.${card.edit_rule}`)}</p>}

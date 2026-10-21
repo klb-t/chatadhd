@@ -43,6 +43,26 @@ export function valueText(value: unknown, t: ShellT): string {
   return JSON.stringify(value);
 }
 
+/** The "Wartość:" line in words: the kernel's value_human first, else the value by type. null when the line would only repeat the
+ *  status chip in English — a ROM item's `value` IS its status id (projection.cpp: n["value"] = item.status), and the chip already
+ *  says it in words (status.<id>); nothing is hidden, the chip is the value. */
+export function valueLine(card: Pick<GraphCardResult, "value" | "value_human" | "status">, t: ShellT): string | null {
+  if (card.value === undefined) return null;
+  if (card.value_human) return card.value_human;
+  if (typeof card.value === "string" && card.status !== undefined && card.value === card.status) return null;
+  return valueText(card.value, t);
+}
+
+/** The "Warstwy:" line: the layers that give or lose the value, in the chip words. null when the inheritance chain is on the card —
+ *  the chain names the same levels in the kernel's words (Instalacja, Osoba …) with their roles, and two vocabularies for one thing
+ *  ("Preset → Ty" over "Preset aplikacji — nic tu nie ustawiono") read as a contradiction — and null for a single layer, which the
+ *  provenance chip already names. A layer id with a suffix (overlay:graph_entry) takes the word of its family (chip.overlay). */
+export function layersLine(card: Pick<GraphCardResult, "provenance" | "inheritance">, t: ShellT): string | null {
+  const layers = card.provenance.layers ?? [];
+  if (layers.length < 2 || (card.inheritance !== undefined && card.inheritance.length > 0)) return null;
+  return t("card.layers", { layers: layers.map(l => t(`chip.${l.split(":")[0]}`)).join(" → ") });
+}
+
 export function chainRows(inheritance: InheritanceLevel[] | undefined, t: ShellT): ChainRow[] {
   return (inheritance ?? []).map(l => ({
     level: l.level, label: l.label, role: l.role, roleText: t(`inheritance.role.${l.role}`),

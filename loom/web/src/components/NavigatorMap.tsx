@@ -9,8 +9,8 @@ import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection"
 import type { ShellT } from "../shell/text";
 import { project } from "../view-engine/project";
 import { chipText, countText } from "./navigator-state";
-import { CAMERA_HOME, HIT_SIZE_PRESET, MAP_HEIGHT_PRESET, MAP_MARGIN_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, panBy, pinch,
-  sameRects, screenOf, shortLabel, viewModelFor, zoomBy, type Camera, type Point, type Rect } from "./navigator-map";
+import { CAMERA_HOME, HIT_SIZE_PRESET, LABEL_FONT_PX_PRESET, MAP_HEIGHT_PRESET, MAP_MARGIN_PRESET, TAP_SLOP_PRESET, ZOOM_STEP_PRESET, elementIdOf, exclusionRects, panBy, pinch,
+  placeLabels, sameRects, screenOf, viewModelFor, zoomBy, type Camera, type Point, type Rect } from "./navigator-map";
 
 interface Props {
   result: GraphNavigateResult;
@@ -84,6 +84,9 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
   const marks = useMemo(() => (projection?.marks ?? []).map(m => ({ ...m, screen: screenOf({ x: m.x, y: m.y }, cam, centre), rScreen: Math.max(3, m.r * cam.zoom) })), [projection, cam, centre.x, centre.y]); // eslint-disable-line react-hooks/exhaustive-deps
   const edges = useMemo(() => (projection?.edges ?? []).map(e => ({ a: screenOf({ x: e.x1, y: e.y1 }, cam, centre), b: screenOf({ x: e.x2, y: e.y2 }, cam, centre) })), [projection, cam, centre.x, centre.y]); // eslint-disable-line react-hooks/exhaustive-deps
   const inside = (p: Point) => p.x >= 0 && p.x <= width && p.y >= 0 && p.y <= height;
+  // Only the labels that can be read are drawn (inside the map, never over another one; the focus and the tapped mark first) — the
+  // line under the map carries the whole label of the tapped mark, so a mark without a label on the plane is one tap away, not lost.
+  const labels = useMemo(() => placeLabels(marks, { width, height }, selected), [marks, width, height, selected]);
 
   const local = (e: ReactPointerEvent): Point => { const r = box.current!.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
   const onPointerDown = (e: ReactPointerEvent) => {
@@ -141,9 +144,9 @@ export default function NavigatorMap({ result, open, t, onCard, onDrill }: Props
           {edges.map((e, i) => <line key={i} x1={e.a.x} y1={e.a.y} x2={e.b.x} y2={e.b.y} stroke="currentColor" strokeOpacity={0.3} strokeWidth={1} />)}
           {marks.map(m => <g key={m.id} data-testid="nav-map-mark" data-id={m.id} data-focus={m.focus ? "true" : "false"} data-selected={selected === m.id ? "true" : "false"}>
             <circle cx={m.screen.x} cy={m.screen.y} r={m.rScreen} fill={m.fill} stroke="currentColor" strokeWidth={m.focus || selected === m.id ? 2 : 0} />
-            <text x={m.screen.x + (m.screen.x < centre.x ? -1 : 1) * (m.rScreen + 3)} y={m.screen.y + 4} fontSize={10} fill="currentColor" opacity={0.85}
-              textAnchor={m.screen.x < centre.x ? "end" : "start"}>{shortLabel(m.label)}</text>
           </g>)}
+          {labels.map(l => <text key={l.id} data-testid="nav-map-label" data-id={l.id} x={l.x} y={l.y} fontSize={LABEL_FONT_PX_PRESET} fill="currentColor" opacity={0.85}
+            textAnchor={l.anchor}>{l.text}</text>)}
         </svg>}
         {marks.filter(m => inside(m.screen)).map(m => <button key={m.id} type="button" className="gnav-map-hit" data-testid={`nav-map-node-${m.id}`}
           aria-label={m.label} aria-pressed={selected === m.id}

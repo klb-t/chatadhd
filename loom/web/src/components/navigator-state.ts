@@ -113,3 +113,11 @@ export function honestyLines(result: Pick<GraphNavigateResult, "counts" | "hidde
     lines.push({ id: `unknown-${u.source}`, text: t("unknown_source", { source: u.source_label || u.source, reason: u.reason_human || t(`reason.${u.reason}`) }) });
   return lines;
 }
+
+/** A step opened from outside (menu ⋮ › Ty, › Ta rozmowa w grafie: initialState(focus) with no label) takes the kernel's label of
+ *  the focus when the answer arrives — the crumb says "M1 card", not "conv:e880…". A step that has a label keeps it. */
+export function withFocusLabel(s: NavigatorState, focus: { address: string; label: string }): NavigatorState {
+  const last = s.path[s.path.length - 1];
+  if (!last || last.label || last.address !== focus.address || !focus.label) return s;
+  return { ...s, path: [...s.path.slice(0, -1), { address: last.address, label: focus.label }] };
+}

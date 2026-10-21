@@ -65,6 +65,10 @@ try {
     const texts = await nav().locator("button, span, p, input").evaluateAll(els => els.map(el => el.textContent.trim()));
     const leaked = texts.filter(t => /^(chip|count|bar|status|reason|evidence|card|search|no_|query|map|view|list)\.[a-z_]+/.test(t));
     assert.deepEqual(leaked, [], "no catalogue id on screen (a missing word would show its id)");
+    // A bare status id as the value ("Wartość: partial") is English on an owner's screen: the status ids are the pack's status.* keys.
+    const statusIds = Object.keys(words).filter(k => k.startsWith("status.")).map(k => k.slice("status.".length));
+    const values = await nav().locator('[data-testid="card-value"] strong').evaluateAll(els => els.map(el => el.textContent.trim()));
+    assert.deepEqual(values.filter(v => statusIds.includes(v) || v === "unknown"), [], "no raw status id as a card's value");
   };
   const layoutFits = async () => {
     assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390, "no horizontal page scroll");
@@ -171,6 +175,10 @@ try {
     assert.equal(await page.getByTestId("card-label").innerText(), expected.label);
     assert.equal(await page.getByTestId("card-chip").innerText(), expected.provenance.chip?.label ?? word(`chip.${expected.provenance.layer}`));
     if (expected.why) assert.ok((await page.getByTestId("card-why").innerText()).includes(expected.why));
+    // A ROM item's value IS its status id (the kernel sends value = status): the status chip says it in words, no "Wartość: partial".
+    assert.equal(await page.getByTestId("card-status").innerText(), word(`status.${expected.status}`), "the status chip in Polish");
+    if (expected.value === expected.status) assert.equal(await page.getByTestId("card-value").count(), 0, "no value line that would repeat the status in English");
+    assert.equal(await page.getByTestId("card-layers").count(), 0, "one layer (rom) = the chip; no Warstwy line repeating it");
     assert.equal(await page.getByTestId("card-chain-rows").locator("li").count(), expected.inheritance?.length ?? 0, "the chain is the kernel's, row for row");
     for (const a of expected.actions) {
       const row = page.getByTestId(`card-action-${a.id}`);
@@ -240,7 +248,12 @@ try {
     const expected = await sameChain("fresh");
     assert.ok((await page.getByTestId("card-why").innerText()).includes(expected.why));
     assert.ok((await page.getByTestId("card-effect").innerText()).includes(expected.effect));
-    assert.equal(await page.getByTestId("card-layers").innerText(), word("card.layers", { layers: expected.provenance.layers.map(l => word(`chip.${l}`)).join(" → ") }));
+    // One vocabulary for the provenance: the chain below names the levels in the kernel's words with their roles, so no "Warstwy:
+    // Preset → Ty" above a chain that says "Preset aplikacji — nic tu nie ustawiono" (two names for one level read as a contradiction).
+    assert.ok(expected.provenance.layers.length >= 2 && expected.inheritance.length > 0, "the kernel sends layers and a chain for a setting");
+    assert.equal(await page.getByTestId("card-layers").count(), 0, "the chain is the single statement of the layers");
+    const chainLabels = await page.getByTestId("card-chain-rows").locator(".ncard-row-label").evaluateAll(els => els.map(el => el.textContent));
+    assert.deepEqual(chainLabels, expected.inheritance.map(l => l.label), "the levels in the kernel's words, in its order");
     assert.equal(await page.getByTestId("card-edit-rule").innerText(), `${words["card.edit_rule"]} ${word(`card.edit_rule.${expected.edit_rule}`)}`);
     assert.ok((await page.getByTestId("card-flows").innerText()).includes(expected.flows_reading[0].title), "the flows that read the field");
     await page.getByTestId("card-label").scrollIntoViewIfNeeded();   // the report's screenshot shows the card from its top
@@ -396,6 +409,34 @@ try {
     assert.equal(await back(), true);
     await nav().waitFor({ state: "detached" });
     assert.equal(await back(), false);
+    assert.deepEqual(errors, [], "no page errors");
+  });
+
+  await step("⋮ › Ta rozmowa w grafie and ⋮ › Ty open the same navigator at conv:<open conversation> and party:self (spec 3.1: four foci, one screen)", async () => {
+    const back = () => page.evaluate(() => window.__loomBack());
+    const openAt = async (menuId, focus) => {
+      await page.getByTestId("shell-menu-toggle").tap();
+      await page.getByTestId(`shell-menu-${menuId}`).tap();
+      await page.locator(`[data-testid="graph-navigator"][data-focus="${focus}"]`).waitFor();
+      await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+      const expected = await navigate({ focus });
+      await shot(`m1-navigator-${menuId}`);
+      const crumbs = await page.locator('[data-testid^="nav-crumb-"]').evaluateAll(els => els.map(el => el.textContent));
+      assert.equal(crumbs[crumbs.length - 1], expected.focus.label, `${menuId}: the focus is the kernel's node (crumbs ${JSON.stringify(crumbs)}, focus ${JSON.stringify(expected.focus)})`);
+      assert.deepEqual((await rowsOf()).map(r => r.address), expected.children.map(c => c.address), `${menuId}: the rows of the focus, in the kernel's order`);
+      await noMissingWord();
+      await layoutFits();
+      return expected;
+    };
+    // The page is open on the conversation `conv` (saved view); its graph address is conv:<hex> for the database id c_<hex>
+    // (loom/data/runtime/element_resolution.pack, projection_conv: prefix "conv:", same_as_prefix "c_").
+    await openAt("this_conversation", "conv:" + conv.replace(/^c_/, ""));
+    assert.equal(await back(), true);
+    await nav().waitFor({ state: "detached" });
+    const me = await openAt("me", "party:self");
+    assert.ok(me.children.length > 0, "Ty has rows (the profile, preferences, interests, memory)");
+    assert.equal(await back(), true);
+    await nav().waitFor({ state: "detached" });
     assert.deepEqual(errors, [], "no page errors");
   });
 } finally {

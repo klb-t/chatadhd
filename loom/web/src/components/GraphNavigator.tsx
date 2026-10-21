@@ -19,7 +19,7 @@ import { usePresentationFeature } from "./ConversationSourceView";
 import { LAYOUTS, layoutOf, openByLayout, type Layout } from "./navigator-map";
 import { runOutcome } from "./node-card-state";
 import { BAR_BUTTONS, SEARCH_DEBOUNCE_PRESET_MS, chipText, countText, deeper, drillInto, evidenceText, focusOf, goBack, honestyLines,
-  initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState } from "./navigator-state";
+  initialState, narrower, noTranslationText, requestFor, setQuery, shallower, statusText, wider, type BarButtonId, type NavigatorState, withFocusLabel } from "./navigator-state";
 import "./graph-navigator.css";
 
 interface Props {
@@ -65,7 +65,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
     const actions = api.actions;
     if (!actions) { setError("actions_api_unavailable"); setLoading(false); return; }
     actions.graphNavigate(request).then(
-      answer => { if (alive) { setResult(answer); setLoading(false); } },
+      answer => { if (alive) { setResult(answer); setState(s => withFocusLabel(s, answer.focus)); setLoading(false); } },   // a focus from the menu gets its name
       failure => { if (alive) { setError(failure instanceof Error ? failure.message : String(failure)); setLoading(false); } });
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps

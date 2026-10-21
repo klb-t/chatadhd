@@ -110,3 +110,18 @@ test('relations keep only groups with members; actions say planned from the kern
   assert.equal(card.valueText(true, t), pl['card.value.on']);
   assert.equal(card.valueText('', t), pl['card.value.empty']);
 });
+
+test('"Wartość:" never shows a raw status id: a ROM item (value = status) leaves the line to the status chip; value_human wins; "Warstwy:" yields to the chain and to a single layer', () => {
+  // The card of a ROM item as the server answers it (probe of 2026-10-21): value and status carry the same id.
+  assert.equal(card.valueLine({ value: 'partial', status: 'partial' }, t), null);
+  assert.equal(card.valueLine({ value: 'partial', status: 'partial', value_human: 'częściowo' }, t), 'częściowo');
+  assert.equal(card.valueLine({ value: 0.3 }, t), '0.3');
+  assert.equal(card.valueLine({ value: true }, t), pl['card.value.on']);
+  assert.equal(card.valueLine({ value: 'present', status: 'partial' }, t), 'present');   // a real string value that only looks like a status id
+  assert.equal(card.valueLine({}, t), null);
+  const prov = (...layers) => ({ provenance: { layer: layers[0], layers } });
+  assert.equal(card.layersLine({ ...prov('installation', 'person'), inheritance: chain }, t), null, 'the chain is the one statement of provenance');
+  assert.equal(card.layersLine(prov('rom'), t), null, 'one layer = the chip');
+  assert.equal(card.layersLine({ ...prov('installation', 'person'), inheritance: [] }, t), `${pl['card.layers'].replace('{{layers}}', `${pl['chip.installation']} → ${pl['chip.person']}`)}`);
+  assert.equal(card.layersLine(prov('rom', 'overlay:graph_entry'), t), pl['card.layers'].replace('{{layers}}', `${pl['chip.rom']} → ${pl['chip.overlay']}`), 'a suffixed layer takes the word of its family, never its id');
+});

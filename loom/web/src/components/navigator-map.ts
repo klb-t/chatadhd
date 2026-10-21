@@ -134,3 +134,42 @@ export const sameRects = (a: Rect[], b: Rect[]): boolean => JSON.stringify(a) ==
 
 /** A label short enough for the plane; the line under the map has the whole one. */
 export const shortLabel = (label: string): string => label.length > LABEL_CHARS_PRESET ? label.slice(0, LABEL_CHARS_PRESET - 1) + "…" : label;
+
+/** The font of a label on the plane (px). */
+export const LABEL_FONT_PX_PRESET = 10;
+/** The width one character takes at that font (px): an estimate, the map has no text measurer; the box is a little generous on purpose. */
+export const LABEL_CHAR_PX_PRESET = 5.8;
+/** The gap between a mark and its label (px). */
+export const LABEL_GAP_PRESET = 3;
+
+export interface LabelMark { id: string; label: string; screen: Point; rScreen: number; focus?: boolean }
+export interface PlacedLabel { id: string; text: string; x: number; y: number; anchor: "start" | "end"; box: Box }
+
+const labelBox = (m: LabelMark, anchor: "start" | "end", width: number): Box => ({
+  left: anchor === "start" ? m.screen.x + m.rScreen + LABEL_GAP_PRESET : m.screen.x - m.rScreen - LABEL_GAP_PRESET - width,
+  top: m.screen.y - LABEL_FONT_PX_PRESET / 2 - 1, width, height: LABEL_FONT_PX_PRESET + 2,
+});
+const fits = (b: Box, size: { width: number; height: number }) => b.left >= 0 && b.top >= 0 && b.left + b.width <= size.width && b.top + b.height <= size.height;
+const overlaps = (a: Box, b: Box) => a.left < b.left + b.width && b.left < a.left + a.width && a.top < b.top + b.height && b.top < a.top + a.height;
+
+/** Which marks get a label on the plane and where. A label is drawn only where it can be read: its box must lie inside the map
+ *  (the side away from the centre first, the other side when that one would leave the map) and must not cover a label placed
+ *  before it — the focus first, then the tapped mark, then the marks in their order. A mark that gets no label keeps its touch
+ *  target: a tap shows the whole label in the line under the map (the brief's "label on tap"); nothing is clipped or drawn over. */
+export function placeLabels(marks: readonly LabelMark[], size: { width: number; height: number }, selectedId: string | null): PlacedLabel[] {
+  const centreX = size.width / 2;
+  const order = [...marks.filter(m => m.focus), ...marks.filter(m => !m.focus && m.id === selectedId), ...marks.filter(m => !m.focus && m.id !== selectedId)];
+  const placed: PlacedLabel[] = [];
+  for (const m of order) {
+    const text = shortLabel(m.label);
+    const width = text.length * LABEL_CHAR_PX_PRESET;
+    const preferred: "start" | "end" = m.screen.x < centreX ? "end" : "start";
+    for (const anchor of [preferred, preferred === "end" ? "start" : "end"] as const) {
+      const box = labelBox(m, anchor, width);
+      if (!fits(box, size) || placed.some(p => overlaps(p.box, box))) continue;
+      placed.push({ id: m.id, text, x: anchor === "start" ? box.left : box.left + width, y: m.screen.y + LABEL_FONT_PX_PRESET * 0.4, anchor, box });
+      break;
+    }
+  }
+  return placed;
+}

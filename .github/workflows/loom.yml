@@ -239,8 +239,15 @@ jobs:
           npm run test:shell-history
           npm run test:shell-menu
           npm run test:composer-menu
+          npm run test:navigator-state
+          npm run test:node-card-state
+          npm run test:navigator-map
+          npm run test:settings-human
+          npm run test:role-card
           npx playwright install --with-deps chromium
           npm run e2e
+          npm run test:m1-navigator
+          npm run test:m1-settings
           npm run test:composer-menu-browser
           npm run test:workspace
           npm run test:chat-context
