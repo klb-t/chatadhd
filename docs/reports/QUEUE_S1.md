@@ -14,7 +14,7 @@ ma build dev i node_modules — wystarcza), X-Port pakiet E (UX drobiazgi), P-pe
 Pierwszy zielony bieg po W0 (249 był przed W0; 250 padł na `data_domains`/szczypaniu/keepalive, 251 na wyścigu w `m1-settings`).
 W 256 doszły do głosu także ~10 testów e2e po `m1-settings` — przeszły. `main` wolny: wolno pushować kod (każdy push uruchamia nowy
 bieg ≈ 80 min i anuluje poprzedni). Próbka limitu 16:20: 5 h 0 % (okno 15:30–20:30), tydzień 30 % — bez zmiany od 13:19, bo od
-godzin biegło tylko CI (poza kontem). Tydzień: linia 20,6 % (≈ 32,5 h), jesteśmy ≈ 9 pkt nad.
+godzin biegło tylko CI (poza kontem). Tydzień: linia 19,2 % (32,3 h), jesteśmy ≈ 11 pkt nad (wcześniej błędnie 20,6 %).
 
 ## CI 250 padł na dwóch testach (nie na kodzie produktu) — naprawa na `main` (13:31 UTC, `f2d519dd`)
 Przebieg 250 (`7ff9231c`): (a) `dev (g++)` `test:m1-navigator`, krok mapy: szczypanie dwoma palcami dało zoom 1.000 zamiast 2.000 —
