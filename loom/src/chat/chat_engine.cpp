@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cmath>
 #include <map>
 #include <limits>
 #include <set>
@@ -39,6 +40,7 @@
 #include "graph_reply.h"
 #include "reasoning_profile.h"
 #include "context_format.h"
+#include "profile_prefix.h"
 #include "loom/runtime_profile.h"
 #include "loom/scope_resolver.h"
 
@@ -597,6 +599,9 @@ Result<ChatOptions> ChatOptions::from_json(const Json& j) {
     } else if (k == "flow") {
       if (!v.is_string()) return bad();
       o.flow = v.get<std::string>();
+    } else if (k == "selector_profile") {
+      if (!v.is_string()) return bad();
+      o.selector_profile = v.get<std::string>();
     } else if (k == "send_as_message") {
       if (!v.is_string()) return bad();
       o.send_as_message = v.get<std::string>();
@@ -733,13 +738,130 @@ Result<Json> selection_packet(Database& db, const Json& section, const std::stri
   return chat::formats::packet(section, conv_id, entries, links, Json{{"substituted", substituted}, {"skipped", opts.history_skip.size()}});
 }
 
+// ---- M1-K1a: the selector profile of a request and the modifiers on it ----
+struct SelectorChoice {
+  bool chosen = false;
+  std::string id;
+  std::string source;   // request | turn | scope_chain
+  Json row = nullptr;   // the entry of chat_context.pack selector_profiles
+  std::string problem;  // an id of the turn or the chain that names no profile: ignored, and the receipt says so
+  // A source set to false is not read; a class the profile does not mention is read. No profile: everything is read.
+  bool source_on(const char* cls) const { return !chosen || json::get_bool(row.value("sources", Json::object()), cls, true); }
+  // null = what the setting says now.
+  Json knob(const char* group, const char* name) const {
+    if (!chosen) return nullptr;
+    const Json g = row.value(group, Json::object());
+    return g.is_object() && g.contains(name) ? g.at(name) : Json(nullptr);
+  }
+};
+
+// Order of choice: the request (ChatOptions.selector_profile), the value of this turn (turn_values context.profile), the scope chain (rules on
+// context.profile at conversation / unit / user level, then the setting selector_profile). No selector_profiles in the effective view, or none
+// chosen: no profile, the settings as they are (today's request bytes).
+Result<SelectorChoice> choose_selector_profile(Database& db, const Config& cfg, const ChatOptions& opts, const std::string& conv_id, const Json& values) {
+  SelectorChoice c;
+  const Json table = values.value("selector_profiles", Json::array());
+  if (!table.is_array() || table.empty()) return c;
+  std::string wanted;
+  if (opts.selector_profile && !opts.selector_profile->empty()) {
+    wanted = *opts.selector_profile;
+    c.source = "request";
+  } else if (opts.turn_values.is_object() && opts.turn_values.contains("context.profile") && opts.turn_values.at("context.profile").is_string() &&
+             !opts.turn_values.at("context.profile").get<std::string>().empty()) {
+    wanted = opts.turn_values.at("context.profile").get<std::string>();
+    c.source = "turn";
+  } else {
+    scopes::Binding bind;
+    bind.key = "context.profile";
+    bind.person_setting = "selector_profile";
+    bind.conv_id = conv_id;
+    const Json v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(nullptr));
+    if (v.is_string() && !v.get<std::string>().empty()) {
+      wanted = v.get<std::string>();
+      c.source = "scope_chain";
+    }
+  }
+  if (wanted.empty()) return c;
+  for (const auto& row : table)
+    if (row.is_object() && json::get_string(row, "id") == wanted) {
+      c.chosen = true;
+      c.id = wanted;
+      c.row = row;
+      return c;
+    }
+  if (c.source == "request") return Error(Errc::InvalidArgument, "unknown selector_profile: " + wanted);
+  c.problem = "no selector profile '" + wanted + "' (from " + c.source + "); the settings are used";
+  log::warn("loom.chat_engine", "{}", c.problem);
+  c.source.clear();
+  return c;
+}
+
+// A modifier (szerzej / węziej / głębiej / płycej): a step id, or a list of them, from this turn or from the scope chain.
+struct Delta {
+  Json steps = Json::array();
+  std::string scope;  // turn | scope_chain | "" (none)
+  Json applied = Json::array();
+};
+
+Delta read_delta(Database& db, const Config& cfg, const ChatOptions& opts, const std::string& conv_id, const char* key, const char* person_setting) {
+  Delta d;
+  Json v = opts.turn_values.is_object() && opts.turn_values.contains(key) ? opts.turn_values.at(key) : Json(nullptr);
+  if (!v.is_null()) {
+    d.scope = "turn";
+  } else {
+    scopes::Binding bind;
+    bind.key = key;
+    bind.person_setting = person_setting;
+    bind.conv_id = conv_id;
+    v = scopes::value_or(cfg.path().parent_path(), cfg, &db, bind, Json(nullptr));
+    if (!v.is_null()) d.scope = "scope_chain";
+  }
+  if (v.is_string() && !v.get<std::string>().empty()) d.steps.push_back(v);
+  else if (v.is_array())
+    for (const auto& e : v)
+      if (e.is_string()) d.steps.push_back(e);
+  return d;
+}
+
+// The steps are data (action_rules.pack scoped_values.keys.<key>.steps: op multiply | divide | add, by). An unknown step changes nothing.
+long long apply_steps(long long base, Delta& d, const Json& defs) {
+  for (const auto& id : d.steps) {
+    const Json def = defs.is_object() ? defs.value(id.get<std::string>(), Json::object()) : Json::object();
+    const std::string op = json::get_string(def, "op");
+    const double by = json::get_number(def, "by", 0.0);
+    if (op == "multiply") base = std::llround(static_cast<double>(base) * by);
+    else if (op == "divide" && by != 0.0) base = base == 0 ? 0 : std::max<long long>(1, std::llround(static_cast<double>(base) / by));
+    else if (op == "add") base = std::max<long long>(0, base + std::llround(by));
+    else continue;
+    d.applied.push_back(id);
+  }
+  return base;
+}
+
+long long cfg_integer(const Config& cfg, const char* key, long long fallback) {
+  const Json v = cfg.get(key, Json(fallback));
+  return v.is_number() ? static_cast<long long>(v.get<double>()) : fallback;
+}
+
+long long json_tokens(const Json& content) {
+  return chat::formats::estimate_tokens(content.is_string() ? content.get<std::string>() : json::dump(content));
+}
+
 }  // namespace
 
 ChatOptions ChatEngine::select_representation(const ChatOptions& in_raw, const std::string& conv_id) {
   ChatOptions in = in_raw;
   if (in.history_command_traffic.empty()) in.history_command_traffic = cfg_string(cfg_, "chat_history_command_traffic", "skip_exchange");
+  // The selector profile (M1-K1a) names its own flow and representation; a flow named by the request itself stays.
+  std::string profile_representation;
+  if (auto cc = RuntimeProfile::load("chat_context", cfg_.path().parent_path()); cc) {
+    if (auto choice = choose_selector_profile(db_, cfg_, in, conv_id, cc->values()); choice && choice->chosen) {
+      profile_representation = json::get_string(choice->row, "representation");
+      if (!in.flow) if (const auto f = json::get_string(choice->row, "flow"); !f.empty()) in.flow = f;
+    }
+  }
   if (conv_id.empty() || !in.include_history || in.active_task_spec) return in;
-  auto sel = guardian::select(db_, cfg_, conv_id);
+  auto sel = guardian::select(db_, cfg_, conv_id, profile_representation);
   if (!sel) {
     log::debug("loom.chat_engine", "guardian selection ignored: {}", sel.error().message);
     return in;
@@ -747,8 +869,12 @@ ChatOptions ChatEngine::select_representation(const ChatOptions& in_raw, const s
   if (sel->empty()) return in;
   ChatOptions out = in;
   out.history_text = sel->substitutions;
+  out.history_level = sel->levels;
   out.guardian_rules = sel->rules;
-  for (const auto& id : sel->skip) out.history_skip.push_back(id);
+  for (const auto& id : sel->skip) {
+    out.history_skip.push_back(id);
+    out.history_skip_reason[id] = "thread_filter";
+  }
   if (sel->spec) {
     out.active_task_spec = *sel->spec;
     out.active_task_bindings = sel->bindings;
@@ -964,14 +1090,87 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   // Context classes are collected, then ordered by the chat_context preset
   // (S0 system, S1 memory, S2 project, S3 history, S4 question-specific graph).
   Json part_system = Json::array(), part_memory = Json::array(), part_project = Json::array(),
-       part_history = Json::array(), part_graph = Json::array();
+       part_history = Json::array(), part_graph = Json::array(), part_profile = Json::array(), part_rules = Json::array();
   LOOM_TRY_ASSIGN(auto order_profile, RuntimeProfile::load("chat_context", cfg_.path().parent_path()));
-  std::string order_name = opts.context_order ? *opts.context_order : cfg_string(cfg_, "chat_context_order");
-  if (order_name.empty()) order_name = order_profile.values().at("context_order").get<std::string>();
-  const Json& known_orders = order_profile.values().at("orders");
+  const Json& chat_context_values = order_profile.values();
+  const std::string conv_s(conv_id);
+  // The selector profile (M1-K1a): order of precedence for the order of the parts is the request, the chosen profile, the setting, the pack.
+  LOOM_TRY_ASSIGN(auto choice, choose_selector_profile(db_, cfg_, opts, conv_s, chat_context_values));
+  std::string order_name = opts.context_order ? *opts.context_order : choice.chosen ? json::get_string(choice.row, "order") : std::string();
+  if (order_name.empty()) order_name = cfg_string(cfg_, "chat_context_order");
+  if (order_name.empty()) order_name = chat_context_values.at("context_order").get<std::string>();
+  const Json& known_orders = chat_context_values.at("orders");
   if (!known_orders.contains(order_name)) return Error(Errc::InvalidArgument, "unknown context_order: " + order_name);
-  if (!sys_prompt.empty()) part_system.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
-  if (!opts.guardian_rules.empty()) part_system.push_back(Json{{"role", "system"}, {"content", opts.guardian_rules}});
+  const auto order_has = [&](const char* cls) {
+    for (const auto& c : known_orders.at(order_name)) if (c == cls) return true;
+    return false;
+  };
+  // The receipt (loom.context_receipt/1) is compiled from the same parts as the request: items per class, and what was left out.
+  const std::string receipt_store = [&] { const auto m = cfg_string(cfg_, "context_receipt_store", "auto"); return m == "always" || m == "never" ? m : std::string("auto"); }();
+  const bool want_receipt = context_trace != nullptr && receipt_store != "never";
+  chat::formats::Receipt rc;
+  std::map<std::string, Json> ritems;
+  const auto note = [&](const std::string& cls, Json item) {
+    if (!want_receipt) return;
+    auto& list = ritems[cls];
+    if (list.is_null()) list = Json::array();
+    list.push_back(std::move(item));
+  };
+  // The numbers: a null knob of the profile is what the setting says; a modifier acts on the number the request would have had.
+  std::optional<long long> nodes_eff, window_eff, hops_eff;
+  if (opts.context_depth) hops_eff = *opts.context_depth;
+  if (const Json k = choice.knob("breadth", "nodes"); k.is_number_integer()) nodes_eff = k.get<long long>();
+  if (const Json k = choice.knob("breadth", "history_window"); k.is_number_integer()) window_eff = k.get<long long>();
+  if (const Json k = choice.knob("depth", "hops"); !hops_eff && k.is_number_integer()) hops_eff = k.get<long long>();
+  Delta breadth_delta = read_delta(db_, cfg_, opts, conv_s, "context.breadth_delta", "context_breadth_delta");
+  Delta depth_delta = read_delta(db_, cfg_, opts, conv_s, "context.depth_delta", "context_depth_delta");
+  if (!breadth_delta.steps.empty() || !depth_delta.steps.empty()) {
+    Json keys = Json::object();
+    if (auto ar = RuntimeProfile::load("action_rules", cfg_.path().parent_path()); ar)
+      keys = ar->values().value("scoped_values", Json::object()).value("keys", Json::object());
+    const auto steps_of = [&](const char* key) { return keys.is_object() && keys.contains(key) ? keys.at(key).value("steps", Json::object()) : Json::object(); };
+    if (!breadth_delta.steps.empty()) {
+      const Json defs = steps_of("context.breadth_delta");
+      nodes_eff = apply_steps(nodes_eff ? *nodes_eff : cfg_integer(cfg_, "graph_memory_max_nodes", 20), breadth_delta, defs);
+      if (window_eff) window_eff = apply_steps(*window_eff, breadth_delta, defs);
+    }
+    if (!depth_delta.steps.empty())
+      hops_eff = apply_steps(hops_eff ? *hops_eff : cfg_integer(cfg_, "graph_memory_depth", 2), depth_delta, steps_of("context.depth_delta"));
+  }
+  const bool has_rules_class = order_has("rules"), has_profile_class = order_has("profile");
+  if (!sys_prompt.empty()) {
+    part_system.push_back(Json{{"role", "system"}, {"content", sys_prompt}});
+    note("system", chat::formats::receipt_item("system_prompt", "instruction", "instruction", "the instruction of the application or of the conversation", sys_prompt));
+  }
+  // The rules about the person: with an order that has the class they are their own part; with an order that does not (legacy, stable_first) they
+  // stay in the part with the instruction, exactly where they always were.
+  if (!opts.guardian_rules.empty()) {
+    if (!choice.source_on("rules")) {
+      rc.drop("rules", "source_off", {"guardian_rules"}, 1);
+    } else {
+      (has_rules_class ? part_rules : part_system).push_back(Json{{"role", "system"}, {"content", opts.guardian_rules}});
+      note(has_rules_class ? "rules" : "system", chat::formats::receipt_item("guardian_rules", "rules about the person", "rule", "standing rules the guardian was allowed to send", opts.guardian_rules));
+    }
+  }
+  // The profile (M1-K1a): what the person told the app about themselves, one deterministic block, only with an order that has the class.
+  Json profile_prefix_info = nullptr;
+  if (has_profile_class && choice.source_on("profile")) {
+    const Json recipe = chat_context_values.value("profile_prefix", Json::object());
+    if (recipe.is_object() && !recipe.empty()) {
+      const auto gathered = chat::prefix::gather(db_, recipe);
+      const auto rendered = chat::prefix::render(recipe, gathered.subgraphs, cfg_string(cfg_, "profile_detail_level", json::get_string(recipe, "default_level", "normal")), gathered.facts);
+      profile_prefix_info = Json{{"level", rendered.level}, {"slots", rendered.items.size()}};
+      if (!gathered.unavailable.empty()) profile_prefix_info["unavailable"] = gathered.unavailable;
+      if (!rendered.text.empty()) {
+        part_profile.push_back(Json{{"role", "system"}, {"content", rendered.text}});
+        for (const auto& it : rendered.items)
+          note("profile", Json{{"ref", it.at("ref")}, {"label", it.at("label")}, {"source_kind", "profile_slot"},
+                               {"why", "said by the person; part " + it.value("subgraph", "") + ", detail level " + rendered.level}, {"tokens_est", it.at("tokens_est")}});
+      }
+    }
+  } else if (has_profile_class) {
+    rc.drop("profile", "source_off", {}, 1);
+  }
 
   // The configured modern recipe is explicit; historical callers retain their
   // compatible message order. Preview compilation never creates an execution
@@ -987,7 +1186,11 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
   // The flow: how the selection (read from the graph) is rendered for this model and what form of answer is asked for. Preset plain = today's bytes.
   const std::string flow_model = opts.model ? *opts.model : scoped_default_model(db_, cfg_, std::string(conv_id));
   const bool graph_off = json::get_string(execution.value("graph_reply", Json::object()), "mode", "off") == "off";
-  const auto flow = resolve_flow(db_, cfg_, opts, std::string(conv_id), flow_model, graph_off);
+  ChatOptions flow_opts;
+  const ChatOptions* flow_source = &opts;
+  if (!opts.flow && choice.chosen)
+    if (const auto f = json::get_string(choice.row, "flow"); !f.empty()) { flow_opts = opts; flow_opts.flow = f; flow_source = &flow_opts; }
+  const auto flow = resolve_flow(db_, cfg_, *flow_source, std::string(conv_id), flow_model, graph_off);
   Json selection = nullptr;
   if (flow && (flow->packet || flow->reply_graph)) {
     auto sp = selection_packet(db_, flow->section, std::string(conv_id), opts, exclude_message_id, refinement_ids);
@@ -995,27 +1198,39 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     selection = *sp;
   }
 
-  if (!unified && memory_ && opts.include_memory) {
+  const bool memory_on = opts.include_memory && choice.source_on("memory");
+  if (!unified && memory_ && opts.include_memory && !memory_on) rc.drop("memory", "source_off", {}, 1);
+  if (!unified && memory_ && memory_on) {
     std::string mem_ctx = memory_->get_active_context();
     if (!mem_ctx.empty()) {
       part_memory.push_back(Json{{"role", "system"}, {"content", "User's memory/context:\n" + mem_ctx}});
+      note("memory", chat::formats::receipt_item("memory_tree", "active memory", "memory_node", "the active nodes of the memory tree", mem_ctx));
     }
   }
 
-  bool graph_disabled = opts.context_depth.has_value() && *opts.context_depth == 0;
-  if (!unified && graph_memory_ && opts.include_graph_memory && !graph_disabled) {
+  // A depth or a width of 0 (a profile, a modifier or the request) switches the graph memory off.
+  bool graph_disabled = (hops_eff && *hops_eff == 0) || (nodes_eff && *nodes_eff == 0);
+  const bool graph_on = opts.include_graph_memory && !graph_disabled && choice.source_on("graph");
+  if (!unified && graph_memory_ && opts.include_graph_memory && !graph_disabled && !graph_on) rc.drop("graph", "source_off", {}, 1);
+  if (!unified && graph_memory_ && graph_on) {
     try {
       GraphSelectOptions gopts;
-      if (opts.context_depth && *opts.context_depth > 0) gopts.depth = *opts.context_depth;
+      if (hops_eff && *hops_eff > 0) gopts.depth = static_cast<int>(*hops_eff);
+      if (nodes_eff && *nodes_eff > 0) gopts.max_nodes = static_cast<int>(*nodes_eff);
       if (!conv_id.empty()) gopts.current_conv_id = std::string(conv_id);
       std::string graph_ctx = graph_memory_->select_context(current_text, gopts);
-      if (!graph_ctx.empty()) part_graph.push_back(Json{{"role", "system"}, {"content", graph_ctx}});
+      if (!graph_ctx.empty()) {
+        part_graph.push_back(Json{{"role", "system"}, {"content", graph_ctx}});
+        note("graph", chat::formats::receipt_item("graph_memory", "graph context", "graph_node", "nodes of the graph related to the question", graph_ctx));
+      }
     } catch (const std::exception& e) {
       log::debug("loom.chat_engine", "Graph memory selection failed: {}", e.what());
     }
   }
 
-  if (opts.knowledge_context || unified) {
+  const bool project_on = choice.source_on("project");
+  if ((opts.knowledge_context || unified) && !project_on && !unified) rc.drop("project", "source_off", {}, 1);
+  if ((opts.knowledge_context || unified) && (project_on || unified)) {
     context::ContextRequest request;
     if (opts.knowledge_context) request = *opts.knowledge_context;
     else if (const auto* configured = json::find(execution, "request")) {
@@ -1030,7 +1245,7 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
       std::lock_guard lk(mu_);
       builder = knowledge_context_builder_;
     }
-    const bool include_knowledge = !unified || unified_options.value("include_knowledge", true);
+    const bool include_knowledge = (!unified || unified_options.value("include_knowledge", true)) && project_on;
     if (include_knowledge) {
       if (!builder && (!unified || opts.knowledge_context))
         return Error(Errc::NotImplemented, "knowledge context is unavailable on this ChatEngine");
@@ -1054,71 +1269,149 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     resolved_context_request = compiled_context.is_object() ? compiled_context.value("request", request.to_json()) : request.to_json();
     if (unified) {
       Json settings = unified_options;
-      if (opts.context_depth) settings["legacy_relation_hops"] = *opts.context_depth;
+      if (hops_eff) settings["legacy_relation_hops"] = *hops_eff;
       else if (!settings.contains("legacy_relation_hops")) settings["legacy_relation_hops"] = cfg_.get("graph_memory_depth", 2);
       auto selected = context::compile_unified_context(db_, cfg_, graph_memory_, memory_, request,
-          compiled_context, conv_id, opts.include_memory, opts.include_graph_memory && !graph_disabled, settings);
+          compiled_context, conv_id, memory_on, graph_on, settings);
       if (!selected) return selected.error();
       unified_context = *selected;
       const auto prompt = json::get_string(unified_context, "prompt");
-      if (!prompt.empty()) part_project.push_back(Json{{"role", "system"}, {"content", prompt}});
+      if (!prompt.empty()) {
+        part_project.push_back(Json{{"role", "system"}, {"content", prompt}});
+        note("project", chat::formats::receipt_item("unified_context", "project context", "kb_claim", "memory, graph and knowledge compiled together (context_execution.unified)", prompt));
+      }
     } else {
       const auto prompt = json::get_string(compiled_context, "prompt");
-      if (!prompt.empty()) part_project.push_back(Json{{"role", "system"}, {"content", prompt}});
+      if (!prompt.empty()) {
+        part_project.push_back(Json{{"role", "system"}, {"content", prompt}});
+        note("project", chat::formats::receipt_item("knowledge_context", "project context", "kb_claim", "selected by the knowledge context request", prompt));
+      }
     }
   }
 
-  if (!conv_id.empty() && opts.include_history) {
+  // The conversation: rows are collected first, so that the profile's window and budget can cut the oldest before the parts are filled.
+  struct HistRow { std::string id, role, content, level; };
+  std::vector<HistRow> hist;
+  std::map<std::string, std::vector<std::string>> hist_dropped;  // reason -> message ids (the receipt)
+  const bool history_on = opts.include_history && choice.source_on("history");
+  if (!conv_id.empty() && opts.include_history && !history_on) rc.drop("history", "source_off", {}, 1);
+  if (!conv_id.empty() && history_on) {
     auto msgs = db_.get_msgs(conv_id);
     if (!msgs) return msgs.error();
     for (const auto& m : *msgs) {
+      if (m.status == msg_status::kExcluded) hist_dropped["excluded"].push_back(m.id);
       if (m.status != msg_status::kActive) continue;
       if (capture_native_history) captured_native_history.push_back(native_history_row(m));
       if (!exclude_message_id.empty() && m.id == exclude_message_id) continue;
       // The guardian's own exchange (a proposal, the answer to it, a notice) is traffic of the application, not conversation content.
-      if (m.metadata.is_object() && m.metadata.contains("guardian") && json::get_bool(m.metadata["guardian"], "traffic", false)) continue;
-      if (command_traffic_skipped(opts, m)) continue;
-      if (!opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), m.id) != opts.history_skip.end()) continue;
+      if (m.metadata.is_object() && m.metadata.contains("guardian") && json::get_bool(m.metadata["guardian"], "traffic", false)) { hist_dropped["command_traffic"].push_back(m.id); continue; }
+      if (command_traffic_skipped(opts, m)) { hist_dropped["command_traffic"].push_back(m.id); continue; }
+      if (!opts.history_skip.empty() && std::find(opts.history_skip.begin(), opts.history_skip.end(), m.id) != opts.history_skip.end()) {
+        const auto why = opts.history_skip_reason.find(m.id);
+        hist_dropped[why != opts.history_skip_reason.end() ? why->second : std::string("history_skip")].push_back(m.id);
+        continue;
+      }
       if (refinement_ids.count(m.id)) {
         replaced_ids.push_back(m.id);
+        hist_dropped["replaced_by_task"].push_back(m.id);
         continue;
       }
       std::string content = m.text;
+      std::string level_name = "L0";
       if (!opts.history_text.empty())
-        if (auto level = opts.history_text.find(m.id); level != opts.history_text.end()) content = level->second;
+        if (auto level = opts.history_text.find(m.id); level != opts.history_text.end()) {
+          content = level->second;
+          const auto named = opts.history_level.find(m.id);
+          level_name = named != opts.history_level.end() ? named->second : std::string("L1");
+          hist_dropped["representation_level"].push_back(m.id);
+        }
       if (m.weight > 1.5) {
         content = "[IMPORTANT] " + content;
       } else if (m.weight < 0.5) {
         content = "[low priority] " + content;
       }
-      if (!flow || flow->turns) part_history.push_back(Json{{"role", m.role}, {"content", content}});
-      history_ids.push_back(m.id);
+      hist.push_back({m.id, m.role, std::move(content), std::move(level_name)});
     }
+  }
+  // The profile's window (the last N messages; a modifier "szerzej" widens it) and its own budget.
+  if (window_eff && *window_eff >= 0 && hist.size() > static_cast<std::size_t>(*window_eff)) {
+    const std::size_t cut = hist.size() - static_cast<std::size_t>(*window_eff);
+    for (std::size_t i = 0; i < cut; ++i) hist_dropped["history_window"].push_back(hist[i].id);
+    hist.erase(hist.begin(), hist.begin() + static_cast<std::ptrdiff_t>(cut));
+  }
+  Json budget_info = nullptr;
+  if (const Json b = choice.chosen ? choice.row.value("budget_tokens", Json()) : Json(); b.is_number_integer() && b.get<long long>() > 0) {
+    // Over the budget the graph goes first, then the oldest messages of the conversation (the last one always stays). The instruction, the profile,
+    // the rules and the question are never cut.
+    const long long limit = b.get<long long>();
+    const auto tokens_of = [](const Json& part) { long long n = 0; for (const auto& m : part) n += json_tokens(m.value("content", Json(""))); return n; };
+    long long fixed = tokens_of(part_system) + tokens_of(part_profile) + tokens_of(part_rules) + tokens_of(part_memory) + tokens_of(part_project) +
+                      chat::formats::estimate_tokens(current_text);
+    long long graph = tokens_of(part_graph), hist_tokens = 0;
+    for (const auto& h : hist) hist_tokens += chat::formats::estimate_tokens(h.content);
+    if (fixed + graph + hist_tokens > limit && graph > 0) {
+      rc.drop("graph", "budget", {"graph_memory"}, 1);
+      part_graph = Json::array();
+      ritems.erase("graph");
+      graph = 0;
+    }
+    while (fixed + graph + hist_tokens > limit && hist.size() > 1) {
+      hist_tokens -= chat::formats::estimate_tokens(hist.front().content);
+      hist_dropped["budget"].push_back(hist.front().id);
+      hist.erase(hist.begin());
+    }
+    budget_info = Json{{"limit", limit}, {"tokens_est", fixed + graph + hist_tokens}, {"met", fixed + graph + hist_tokens <= limit}};
+  }
+  for (const auto& [reason, ids] : hist_dropped) {
+    // Substituted messages are still sent (at a lossy level); the receipt counts them under their reason so that "what was left out" is whole.
+    rc.drop("history", reason, ids, ids.size());
+  }
+  for (const auto& h : hist) {
+    if (!flow || flow->turns) part_history.push_back(Json{{"role", h.role}, {"content", h.content}});
+    history_ids.push_back(h.id);
+    if (want_receipt)
+      note("history", chat::formats::receipt_item(h.id, h.role, "message:" + h.level,
+           h.level == "L0" ? "a message of the conversation, as written" : "a message of the conversation at the lossy level " + h.level + " chosen by the secretary", h.content));
   }
 
   if (flow && flow->packet && !selection.is_null()) {
     const Json rendered = chat::formats::render_packet(flow->section, flow->renderer, selection);
-    part_history.insert(part_history.begin(), Json{{"role", "system"}, {"content", chat::formats::packet_block(flow->section, rendered)}});
+    const std::string block = chat::formats::packet_block(flow->section, rendered);
+    part_history.insert(part_history.begin(), Json{{"role", "system"}, {"content", block}});
+    if (want_receipt) {
+      // selection_packet -> receipt: the packet stands for the messages it carries; it is one item at the head of the class history.
+      auto& list = ritems["history"];
+      if (list.is_null()) list = Json::array();
+      Json item = chat::formats::receipt_item(json::get_string(selection, "packet_id"), "graph packet", "graph_packet", "the selection as a graph packet (flow " + flow->flow + ")", block);
+      item["packet"] = chat::formats::packet_summary(selection);
+      list.insert(list.begin(), std::move(item));
+    }
   }
 
-  // The classes profile and rules (order stability) have no part yet: the kernel fills them with M1-K1. They stay empty here and must
-  // not fall through to the graph part, or the graph would be sent once per class name.
+  // A class this kernel does not know sends nothing: it must not fall through to the graph part, or the graph would be sent once per class name.
   const Json no_part = Json::array();
   for (const auto& cls : known_orders.at(order_name)) {
     const auto name = cls.get<std::string>();
-    const Json& part = name == "system" ? part_system : name == "memory" ? part_memory : name == "project" ? part_project
+    const Json& part = name == "system" ? part_system : name == "profile" ? part_profile : name == "rules" ? part_rules
+                     : name == "memory" ? part_memory : name == "project" ? part_project
                      : name == "history" ? part_history : name == "graph" ? part_graph : no_part;
     for (const auto& item : part) messages.push_back(item);
   }
 
+  Json tail_items = Json::object();  // task | reply_instruction | question -> item (the receipt)
   if (opts.active_task_spec) {
-    messages.push_back(Json{{"role", "user"},
-      {"content", "[Active task specification; derived from the selected source messages]\n" +
-        (*active_task)["compiled_spec"]["compiled_instruction"]["text"].get<std::string>()}});
+    const std::string task_text = "[Active task specification; derived from the selected source messages]\n" +
+        (*active_task)["compiled_spec"]["compiled_instruction"]["text"].get<std::string>();
+    messages.push_back(Json{{"role", "user"}, {"content", task_text}});
+    tail_items["task"] = chat::formats::receipt_item("active_task", "active task", "task", "the instruction compiled from the selected source messages", task_text);
   }
-  if (flow && flow->reply_graph && !selection.is_null())
-    messages.push_back(Json{{"role", "system"}, {"content", chat::formats::reply_instruction(flow->section, flow->mode, json::get_string(selection, "packet_id"))}});
+  if (flow && flow->reply_graph && !selection.is_null()) {
+    const std::string reply_text = chat::formats::reply_instruction(flow->section, flow->mode, json::get_string(selection, "packet_id"));
+    messages.push_back(Json{{"role", "system"}, {"content", reply_text}});
+    tail_items["reply_instruction"] = chat::formats::receipt_item("graph_reply_instruction", "graph reply", "instruction", "asks for the answer as a graph (flow " + flow->flow + ")", reply_text);
+  }
   messages.push_back(Json{{"role", "user"}, {"content", build_content(current_text, attachments)}});
+  tail_items["question"] = chat::formats::receipt_item("question", "the question", "question", "what the person wrote in this turn", current_text);
   if (context_trace) {
     *context_trace = Json{{"kind", "compiled_messages"}, {"version", 1},
                          {"context_order", {{"name", order_name}, {"classes", known_orders.at(order_name)}}},
@@ -1138,6 +1431,42 @@ Result<Json> ChatEngine::build_messages(std::string_view conv_id, std::string_vi
     if (opts.active_task_spec) {
       (*context_trace)["active_task"] = *active_task;
       (*context_trace)["replaced_history_message_ids"] = replaced_ids;
+    }
+    if (want_receipt) {
+      for (const auto& cls : known_orders.at(order_name)) {
+        const auto name = cls.get<std::string>();
+        rc.section(name, ritems.count(name) && ritems[name].is_array() ? ritems[name] : Json::array());
+      }
+      for (const char* tail : {"task", "reply_instruction", "question"})
+        if (tail_items.contains(tail)) rc.section(tail, Json::array({tail_items.at(tail)}));
+      Json unapplied = Json::array();
+      if (choice.chosen) {
+        if (json::get_bool(choice.row.value("sources", Json::object()), "search", false)) unapplied.push_back("search");
+        if (json::get_bool(choice.row.value("sources", Json::object()), "kb", false)) unapplied.push_back("kb");
+      }
+      Json profile_info = choice.chosen
+          ? Json{{"id", choice.id}, {"label", choice.row.value("label", Json(nullptr))}, {"source", choice.source}, {"status", json::get_string(choice.row, "status")},
+                 {"applied", Json{{"order", order_name}, {"nodes", nodes_eff ? Json(*nodes_eff) : Json(nullptr)},
+                                  {"history_window", window_eff ? Json(*window_eff) : Json(nullptr)}, {"hops", hops_eff ? Json(*hops_eff) : Json(nullptr)},
+                                  {"representation", choice.row.value("representation", Json(nullptr))},
+                                  {"flow", flow ? Json(flow->flow) : Json("plain")}, {"budget", budget_info}}},
+                 {"unapplied", unapplied}}
+          : Json{{"id", nullptr}, {"source", "settings"}};
+      if (!choice.problem.empty()) profile_info["ignored"] = choice.problem;
+      Json header = Json::object();
+      header["order"] = Json{{"name", order_name}, {"classes", known_orders.at(order_name)}};
+      header["profile"] = std::move(profile_info);
+      header["profile_prefix"] = profile_prefix_info.is_null() && !has_profile_class ? Json{{"state", "order_without_profile_class"}} : profile_prefix_info;
+      header["modifiers"] = Json{{"profile", choice.chosen ? Json(choice.id) : Json(nullptr)},
+                                 {"breadth_delta", breadth_delta.applied.empty() ? Json(nullptr) : breadth_delta.applied},
+                                 {"depth_delta", depth_delta.applied.empty() ? Json(nullptr) : depth_delta.applied},
+                                 {"scope", !breadth_delta.applied.empty() ? Json(breadth_delta.scope) : !depth_delta.applied.empty() ? Json(depth_delta.scope) : Json(nullptr)}};
+      header["guard"] = Json{{"baseline", nullptr}, {"ratio", nullptr}, {"asked", false}, {"unknown_reason", "not_computed_before_m1_k1b"}};
+      header["flow"] = flow ? Json{{"flow", flow->flow}, {"renderer", flow->renderer}, {"output", flow->output}, {"mode", flow->mode}, {"model_class", flow->model_class}, {"why", flow->reason}}
+                            : Json{{"flow", "plain"}, {"renderer", "chat_turns"}, {"output", "text"}};
+      header["renderer"] = flow ? flow->renderer : std::string("chat_turns");
+      long long max_bytes = cfg_integer(cfg_, "context_receipt_max_bytes", 65536);
+      (*context_trace)["receipt"] = chat::formats::receipt_bound(chat::formats::receipt_finish(rc, std::move(header), messages), receipt_store, max_bytes);
     }
     if (capture_native_history) (*context_trace)["_native_history_snapshot"] = std::move(captured_native_history);
   }
@@ -1219,12 +1548,25 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   // Compile a task against a stable native source selection before accepting
   // the current turn. The same snapshot becomes both the request and its
   // retained provenance; callbacks cannot change it between those operations.
-  const bool record_context = opts.trace_context.value_or(opts.active_task_spec.has_value() ||
+  // The whole trace (compiled messages and everything the flags ask for) is kept as it always was. M1-K1a: besides it, every chat request leaves the
+  // receipt (loom.context_receipt/1: references, not contents) with the user message, unless context_receipt_store is "never" or the request opted out
+  // with trace_context = false. That is the preset "always in chat mode"; the slim trace holds nothing but the receipt and what identifies the request.
+  const bool trace_full = opts.trace_context.value_or(opts.active_task_spec.has_value() ||
       opts.knowledge_context.has_value() || !opts.include_memory ||
       !opts.include_graph_memory || !opts.include_history ||
       execution.value("unified", Json::object()).value("enabled", false) ||
       execution.value("goal_typing", Json::object()).value("enabled", false) ||
       execution.value("embedding", Json::object()).value("enabled", false) || graph_enabled);
+  const bool opted_out_of_trace = opts.trace_context.has_value() && !*opts.trace_context;
+  const bool record_context = trace_full || (!opted_out_of_trace && cfg_string(cfg_, "context_receipt_store", "auto") != "never");
+  // What is written to the message: the whole trace, or the slim one.
+  const auto stored_trace = [&](const Json& t) -> Json {
+    if (trace_full || !t.is_object()) return t;
+    Json slim = Json::object();
+    for (const char* k : {"kind", "version", "context_order", "messages_sha256", "pre_graph_messages_sha256", "selection", "flow", "receipt"})
+      if (t.contains(k)) slim[k] = t.at(k);
+    return slim;
+  };
   Json context_trace;
   Json task_messages;
   Json accepted_active_task;
@@ -1311,7 +1653,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   nm.role = "user";
   if (opts.active_task_spec) {
     nm.metadata = Json{{"active_task", accepted_active_task}};
-    if (record_context) nm.metadata["context_trace"] = context_trace;
+    if (record_context) nm.metadata["context_trace"] = stored_trace(context_trace);
     else context_trace = nullptr;
   }
   if (!opts.attachments.empty()) {
@@ -1360,7 +1702,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
       metadata["loom_active_task_metadata_recovery"] = std::move(recovery);
       metadata["active_task"] = accepted_active_task;
     }
-    if (record_context) metadata["context_trace"] = context_trace;
+    if (record_context) metadata["context_trace"] = stored_trace(context_trace);
     MsgPatch patch;
     patch.metadata = std::move(metadata);
     auto saved = db_.update_msg(user_mid, patch);
@@ -1461,6 +1803,11 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
           context_trace["pre_graph_messages_sha256"] = context_trace["messages_sha256"];
           context_trace["messages"] = payload["messages"];
           context_trace["messages_sha256"] = Sha256::hex(json::dump(payload["messages"]));
+          // The receipt names the request that went out: the sha256 follows the messages; the compiled ones before the graph recipe stay named.
+          if (context_trace.contains("receipt") && context_trace["receipt"].is_object()) {
+            context_trace["receipt"]["pre_graph_sha256"] = context_trace["pre_graph_messages_sha256"];
+            context_trace["receipt"]["sha256"] = context_trace["messages_sha256"];
+          }
           LOOM_TRY(retain_request_metadata());
         }
       }
@@ -1744,7 +2091,7 @@ Result<ChatResult> ChatEngine::send(std::string_view text, const ChatOptions& op
   result.model = model;
   result.usage = usage;
   result.cancelled = cancelled;
-  result.context_trace = std::move(context_trace);
+  result.context_trace = trace_full ? std::move(context_trace) : Json(nullptr);
   result.usage_notices = sent.notices;
 
   // 8. Auto-title from the first exchange.

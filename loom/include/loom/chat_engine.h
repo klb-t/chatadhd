@@ -122,6 +122,10 @@ struct ChatOptions {
   // Message id -> the text sent in its place (a lossy level of the guardian's representation, chosen by the context selector). Not a wire
   // field; empty = every message is sent as it is.
   std::map<std::string, std::string> history_text;
+  // Message id -> the level its text was substituted at (L1, L2) and, for the ids in history_skip, why they are left out (thread_filter; an id that is
+  // not here was left out by history_skip itself). Only the receipt reads them. Not wire fields.
+  std::map<std::string, std::string> history_level;
+  std::map<std::string, std::string> history_skip_reason;
   // Standing rules about the person (the guardian's, normalized text only, allowed by the scope chain for this conversation); sent as one system message after the
   // system prompt. Not a wire field; empty = nothing is added.
   std::string guardian_rules;
@@ -129,6 +133,14 @@ struct ChatOptions {
   // asked for and taken back. Wire field "flow". Unset: the scope chain (setting chat_flow), else the flow of the model's class (preset plain =
   // chat turns in, text out, request bytes unchanged).
   std::optional<std::string> flow;
+  // The selector profile of this request (chat_context.pack selector_profiles: loom, loom_legacy, compat, lean, graph_in, ... or one of the
+  // person's own). Wire field "selector_profile". Unset: the turn value context.profile, then the scope chain (rules on context.profile and the
+  // setting selector_profile), else none: the request is compiled from the settings as they are (M1-K1a).
+  std::optional<std::string> selector_profile;
+  // Values that hold for THIS request only, keyed like the scoped values (context.profile, context.breadth_delta, context.depth_delta); a step id
+  // of the value ("wider", "deeper") or a list of them. Not a wire field and never persisted: the next request starts empty. This kernel only READS
+  // them (M1-K1a); what puts values here is the turn carrier of M1-K1b.
+  Json turn_values = Json::object();
   // The proposal message whose offer to send the rejected sentence as a message the user takes (chat request field
   // send_as_message; chat_route.h). The conversation window reads it; the engine ignores it.
   std::string send_as_message;

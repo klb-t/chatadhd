@@ -97,4 +97,27 @@ Result<Json> embed(Database& db, const Json& section, const std::string& message
 // origin}. So select(embed(select(G))) == select(G) and embedding twice adds nothing. Parsers that need a model are not part of this guarantee.
 Result<Json> embed_packet(Database& db, const Json& section, const std::string& conv_id, const Json& packet);
 
+// ---- M1-K1a: the receipt of a request, contract loom.context_receipt/1 --------------------------------------------------------------------
+// What the selector put into ONE request, as references: sections in the order the request has them, items {ref, label, source_kind, why,
+// tokens_est} (never the text of an item), what was left out and why (dropped: {ref, reason, count, refs}), the modifiers, the guard, the order,
+// the flow, the renderer and the sha256 of the messages. It is compiled from the same parts as the request, not read back from a provider.
+struct Receipt {
+  Json sections = Json::array();
+  Json dropped = Json::array();
+  // `cls` is the class of the order (system, profile, rules, memory, project, history, graph) or one of task, reply_instruction, question.
+  void section(const std::string& cls, Json items);
+  // `group` is the section the dropped elements belonged to; reason: thread_filter | representation_level | budget | history_window | excluded |
+  // source_off | option_off | command_traffic | replaced_by_task.
+  void drop(const std::string& group, const std::string& reason, const std::vector<std::string>& refs, std::size_t count);
+};
+// tokens_est: the estimator of graph_memory.pack (codepoints_per_token), at least 1 for a text that is not empty.
+long long estimate_tokens(std::string_view text);
+Json receipt_item(const std::string& ref, const std::string& label, const std::string& source_kind, const std::string& why, std::string_view text);
+// selection_packet -> what the receipt says about a graph packet: {packet_id, nodes, links, substituted, skipped}.
+Json packet_summary(const Json& selection);
+// header: {order, profile, modifiers, guard, flow, renderer, ...}; sha256 is that of the messages as sent.
+Json receipt_finish(const Receipt& r, Json header, const Json& messages);
+// store: "auto" (whole when it fits max_bytes, else a summary with the reason; max_bytes 0 = no cap), "always" (whole, no cap).
+Json receipt_bound(Json receipt, const std::string& store, long long max_bytes);
+
 }  // namespace loom::chat::formats

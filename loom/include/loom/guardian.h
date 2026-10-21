@@ -48,6 +48,7 @@ struct Selection {
   Json bindings = Json::object();                      // event id -> {message_id, text_sha256}
   std::string history = "replace_refinement";          // or "append" (preset mixed)
   std::map<std::string, std::string> substitutions;    // message id -> its text at the chosen level (L1, L2)
+  std::map<std::string, std::string> levels;           // message id -> the level it was substituted at ("L1", "L2"); the receipt names it
   std::string rules;                                   // the standing rules about the person that may go with this request (normalized text only), "" = none
   std::vector<std::string> skip;                       // messages of another topic thread (setting chat_thread_filter), left out of this request only
   Json notes = Json::array();                          // what was left raw and why (a changed message, no goal ...)
@@ -56,7 +57,9 @@ struct Selection {
 
 // The selector's reading. Cheap when nothing is chosen (no rule, no representation, setting raw). Errors never stop a send: the caller
 // uses the raw messages.
-Result<Selection> select(Database& db, const Config& cfg, const std::string& conv_id);
+// `representation` (M1-K1a): a preset named by the chosen selector profile (chat_context.pack selector_profiles[].representation); it replaces the
+// answer of the scope chain for chat_representation, because choosing a profile is choosing that bundle. "" = the chain decides, as always.
+Result<Selection> select(Database& db, const Config& cfg, const std::string& conv_id, const std::string& representation = "");
 
 // Has the user refused this proposal (by its title) so often in this conversation that the router should not offer it again? The consumer of the
 // do_not_propose rules the guardian records from rejected proposals (data: kinds.proposal_rejection.suppress_at).
