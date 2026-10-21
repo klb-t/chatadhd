@@ -67,10 +67,10 @@ główna 28 mln od 13:00 (5 %). **Czego nie ma:** sesja główna sprzed 13:00 �
 15 % zużycia S1); udział S2 i czatów — niewidoczny z tej sesji (S2 poproszony o ten sam raport). Gdyby S1 było całym zużyciem: ≈ 21 mln
 równoważników na 1 pkt tygodnia (górna granica kosztu; prawdziwy jest niższy).
 Rodzaj pracy (agenci): wdrożenie 35,4 %, poprawki po przeglądach i diagnoza 29,1 %, przeglądy 24,5 %, projekt P39 11,0 %.
-Temat: M1-W0 54 % (wdrożenie 21,4 + poprawki 19,8 + przeglądy 13,2), poprawka logowania 21 % (diagnoza+poprawka 9,4 + przegląd 11,3),
+Temat (% wydatku agentów): M1-W0 54 % (wdrożenie 21,4 + poprawki 19,8 + przeglądy 13,2), poprawka logowania 21 % (diagnoza+poprawka 9,4 + przegląd 11,3),
 P39 11 %, pakiety pojedyncze (R38 itd.) 6,4 %, X-Port 3,7 %, zatrzymany długi agent ekranów W0 2,7 %, D2 1,1 % (w toku).
 Model (w tokenach, nie w cenie): Sonnet 57,5 %, **Fable 42,5 %** — w tym wszystkie 13 pakietów poprawek po przeglądach W0 (≈ 106 mln,
-19,6 % S1) i 4 z 7 pakietów wdrożeniowych; cena tokena Fable jest wyższa (mnożnik nieznany), więc udział w limicie jest większy niż 42,5 %.
+19,6 % wydatku agentów) i 4 z 7 pakietów wdrożeniowych; cena tokena Fable jest wyższa (mnożnik nieznany), więc udział w limicie jest większy niż 42,5 %.
 **Narzut, który nie jest pracą: 24 % wydatku agentów** — start agenta (zapis prefiksu ≈ 39 tys. tokenów × 81) 7,3 %, oraz ≈ 39 ruchów po
 wygaśnięciu cache (kontekst ≈ 190 tys. tokenów przepisany od nowa po pauzie > 5 min, zwykle czekanie na build/ctest/e2e wewnątrz agenta) 17,1 %
 (heurystyka: zapis ≥ 50 % kontekstu i > 30 tys.). Odczyt z cache stanowił 57 % równoważników, zapisy 39 %, wyjście 4 %.
