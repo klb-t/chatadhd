@@ -755,8 +755,17 @@ const serverChecks = [
     await until("the proposals block giving way", async () => !(await has("chat-agent-proposal-accept")), 60, 400);
     if (await has("chat-agent-proposal") && await page.ev(`!!document.querySelector('[data-testid="chat-agent-proposal"] .error, [data-testid="chat-agent-proposal"] [role=alert]')`))
       throw new Error("the block shows a failure after Accept: " + await page.ev(`${q("chat-agent-proposal")}.innerText`));
+    // R38: the kernel posts the resumed run's answer to the conversation once, in words (not the run's JSON)
+    const done = "Agent testowy: gotowe.";
+    const count = () => page.ev(`[...document.querySelectorAll('.msg.assistant .body')].filter(b=>b.innerText.includes(${JSON.stringify(done)})).length`);
+    await until("the agent's answer in the conversation", async () => (await count()) >= 1, 60, 400);
+    await sleep(3000);   // a second writer of the same answer would show up by now
+    const n = await count();
+    if (n !== 1) throw new Error(`the agent's answer is in the conversation ${n} times, expected once`);
+    const last = await page.ev(`(()=>{const b=[...document.querySelectorAll('.msg.assistant .body')].pop();return (b&&b.innerText||'').replace(/\\s+/g,' ').slice(0,200)})()`);
+    if (/^\s*[{\[]|"(agent_loop|status|steps)"\s*:/.test(last)) throw new Error(`the last assistant message is JSON: ${last}`);
     shot("agent-done");
-    return `proposed ${action.trim()}, accepted, the run resumed at the provider and the block gave way`;
+    return `proposed ${action.trim()}, accepted, the run resumed at the provider, the block gave way; the answer once: "${last}"`;
   }],
 ];
 
