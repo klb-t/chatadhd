@@ -28,7 +28,9 @@ W wierszu: nazwa, **licznik** (ROM 13, Ty 14) albo uczciwe **„nieznane (żadne
 obszaru)”** — nigdy „0”, gdy aplikacja po prostu nie umie policzyć; **chip pochodzenia** („Preset (ROM)”); jedno zdanie
 **po co**. Na dole pasek: **Perspektywa ▾ · Szerzej · Węziej · Głębiej · Płycej · Działania · Widok ▾** (nad paskiem gestów
 Androida — `safe-area-inset-bottom`). Szerzej/Węziej podwaja/dzieli budżet wierszy na poziom (zwinięte wiersze są wymienione,
-nie ukryte), Głębiej/Płycej zmienia głębokość. Lupa w wierszu ścieżki szuka na bieżącym poziomie.
+nie ukryte), Głębiej/Płycej zmienia głębokość. Lupa w wierszu ścieżki szuka na bieżącym poziomie. Linia pod paskiem mówi, co
+widzisz: **„budżet 50 węzłów na poziom · głębia 1 · 25 z 25”** — ile wierszy mieści się na jednym poziomie (to ustawienie
+„Budżet węzłów na poziom” w Ustawienia › Interfejs), ile poziomów w głąb i ile z wszystkich wierszy jest na ekranie.
 
 ## 3. ROM — 13 pozycji po polsku, ze stanem
 
@@ -36,8 +38,8 @@ nie ukryte), Głębiej/Płycej zmienia głębokość. Lupa w wierszu ścieżki s
 
 Dotknij **ROM (pamięć tylko do odczytu)**. Ścieżka u góry: **Graf › ROM…** (dotknięcie członu cofa, **‹** cofa o jeden).
 Pod ścieżką jedno zdanie, po co jest ten obszar. 13 pozycji (Rozruch, Meta-ontologia, Interpreter akcji, Sterowniki i
-adaptery, Ustawienia fabryczne, …) — każda z chipem **Preset (ROM)** i stanem **jest / częściowo / planowane** oraz zdaniem,
-co robi. **⋯** przy wierszu albo dotknięcie liścia otwiera **kartę węzła** pod listą: warstwy, wartość, po co, „Skąd jest
+adaptery, Ustawienia fabryczne, …) — każda z chipem **Preset (ROM)** i stanem **jest w aplikacji / częściowo w aplikacji / planowane** (czy ta część
+aplikacji już działa) oraz zdaniem, co robi. **⋯** przy wierszu albo dotknięcie liścia otwiera **kartę węzła** pod listą: warstwy, wartość, po co, „Skąd jest
 wartość”, „Powiązania”, „Co możesz zrobić” (działania jądra słowami; te bez wykonawcy mają chip „planowane”).
 
 ## 4. Karta ustawienia — wartość, po co, co zmienia, skąd
@@ -97,7 +99,7 @@ Pole bez czytelnika w kodzie ma chip **planowane** i zdanie, dlaczego (z danych)
 
 Na górze grupy **Modele** stoi tabela ról z jądra (`roles.resolved`): Rozmowa, Analiza w tle, Sekretarz, Rozpoznanie
 polecenia, Obraz, Głos, Osadzenia, Mowa→tekst, Tekst ze zdjęcia, Model dla działania, Formaty plików — każda z **modelem
-słowami**, **chipem klasy** (tani / średni / frontier / brak modelu) i stanem (jest / częściowo / planowane) oraz zdaniem, co ta rola robi.
+słowami**, **chipem klasy** (tani / średni / frontier / brak modelu) i stanem (częściowo / planowane — bez chipu, gdy rola działa w całości) oraz zdaniem, co ta rola robi.
 
 ## 10. Karta roli — odpowiedź na „dlaczego jest do wyboru model do analizy, jak są różne flowy”
 
@@ -171,4 +173,12 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   te testy z `M1_SHOTS_DIR=docs/reports/M1_CHECKPOINT_0`.
 - Poprawki po obejrzeniu zrzutów (P7): Graf otwierał się **przewinięty do mapy** (ostatni wiersz na górze) — zwijany blok
   przewijał się do siebie przy pierwszym rysowaniu; teraz robi to tylko po dotknięciu „Pokaż …”. Zrzut menu ⋮ łapał animację
-  w połowie (menu półprzezroczyste nad kartą klucza) — zrzuty czekają na koniec animacji.
+  w połowie (menu półprzezroczyste nad kartą klucza) — zrzuty czekają na koniec animacji. Chipy stanu w wierszach ROM mówiły
+  samo **„jest”** i **„częściowo”** (jest — co?); teraz mówią **„jest w aplikacji” / „częściowo w aplikacji”**, a linia pod
+  paskiem **„budżet 50 węzłów na poziom”** zamiast „budżet 50 na poziom” (to samo słowo, co nazwa ustawienia). Tylko słowa
+  w katalogu (`presentation.graph_screen`, `presentation.settings_human`), żaden kod ekranu nie zmieniony.
+- Przebieg końcowy (2026-10-21, po tej poprawce): `npm run build` czysty; **wszystkie 56 skryptów `test:*`** z `package.json`
+  zielone (w tym oba m1: 11/11 i 9/9, z nowymi zrzutami) i **`npm run e2e`** (`run.mjs`) zielony. Jeden skrypt,
+  `test:product-integration`, za pierwszym razem stanął nie na błędzie ekranu, lecz na swojej zasadzie „nie nadpisuję
+  wcześniejszego dowodu”: `e2e/onboarding-host.mjs` zastał plik wyników z 16 października w domyślnym katalogu obok
+  repozytorium (wszystkie 21/21 grup przeszły); z własnym katalogiem (`ONBOARDING_HOST_EVIDENCE_DIR`) cały skrypt przeszedł.

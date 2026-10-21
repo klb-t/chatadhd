@@ -79,7 +79,7 @@ Otwarcie: `shell-menu-toggle` → `shell-menu-graph` → panel `panel-navigator`
 | lista | `nav-rows` (`data-shown`, `data-total`), `nav-loading`, `nav-empty`, `nav-error` | lista `li` wierszy; stany |
 | wiersz | `nav-row-<adres>` (`data-has-children`), `nav-count`, `nav-chip`, `nav-evidence`, `nav-status`, `nav-row-card-<adres>` | wiersz (dotknięcie: wejście albo karta liścia), licznik, chip pochodzenia, chip dowodu, chip stanu, `⋯` (otwiera/zamyka kartę węzła, `aria-expanded`) |
 | uczciwość | `nav-collapsed`, `nav-hidden`, `nav-unknown-<źródło>` | zwinięte przez budżet, ukryte przez Ciebie, źródło bez odpowiedzi (powód) |
-| pasek | `nav-bar`, `nav-bar-perspective`, `nav-bar-wider`, `nav-bar-narrower`, `nav-bar-deeper`, `nav-bar-shallower`, `nav-bar-actions`, `nav-bar-view`, `nav-bar-planned`, `nav-budget` | pasek dolny; `planned` = linia po dotknięciu przycisku bez obsługi; `budget` = „budżet N na poziom · głębia H · pokazane z wszystkich” |
+| pasek | `nav-bar`, `nav-bar-perspective`, `nav-bar-wider`, `nav-bar-narrower`, `nav-bar-deeper`, `nav-bar-shallower`, `nav-bar-actions`, `nav-bar-view`, `nav-bar-planned`, `nav-budget` | pasek dolny; `planned` = linia po dotknięciu przycisku bez obsługi; `budget` = „budżet N węzłów na poziom · głębia H · pokazane z wszystkich” |
 
 ## Karta węzła (paczka P3, `loom/web/src/components/NodeCard.tsx`; e2e `loom/web/e2e/m1-navigator-native.mjs`, kroki karty)
 
