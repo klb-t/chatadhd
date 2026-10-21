@@ -606,19 +606,7 @@
         "params": {
           "kind": "selector_profiles"
         },
-        "status": {
-          "state": "planned",
-          "by": "M1-D2",
-          "today": {
-            "en": "Today there are no selector profiles in the data, so this source lists nothing and says why.",
-            "pl": "Dziś w danych nie ma profili selektora, więc to źródło nic nie wypisuje i mówi dlaczego."
-          },
-          "reason": {
-            "en": "The view kind selector_profiles and its presets (chat_context.pack) come with work item M1-D2.",
-            "pl": "Rodzaj widoku selector_profiles i jego presety (chat_context.pack) przychodzą z pozycją M1-D2."
-          }
-        },
-        "description": "The presets of the context selector (view kind selector_profiles)."
+        "description": "The presets of the context selector (view kind selector_profiles, data in chat_context.pack)."
       },
       {
         "id": "flow",

@@ -260,4 +260,60 @@ TEST_SUITE("views") {
       if (e["id"] == "calls") { found = true; CHECK(e["traversal"]["direction"] == "out"); CHECK(e["traversal"]["hops"] == 3); }
     CHECK(found);
   }
+  TEST_CASE("M1-D2: the selector profiles, the new edge kinds, perspectives and the long-press binding are in the effective views with their origin rom") {
+    fsutil::TempDir td;
+    // the view kind selector_profiles reads chat_context /selector_profiles; each preset has labels, a why, a note and a status
+    const auto profiles = unwrap(views::effective(td.path(), "selector_profiles"));
+    CHECK(profiles.entries.size() == 8);
+    for (const char* id : {"loom", "loom_legacy", "compat", "lean", "graph_in", "like_claude", "like_chatgpt", "like_gemini"}) {
+      INFO(id);
+      const auto* e = profiles.find(id);
+      REQUIRE(e);
+      CHECK(e->origin == "rom");
+      for (const char* field : {"label", "why", "note"}) {
+        CHECK_FALSE(e->value.at(field).at("pl").get<std::string>().empty());
+        CHECK_FALSE(e->value.at(field).at("en").get<std::string>().empty());
+      }
+      const std::string status = e->value.at("status").get<std::string>();
+      CHECK((status == "preset" || status == "calibration"));
+      for (const char* source : {"profile", "rules", "memory", "project", "history", "graph", "search", "kb"}) CHECK(e->value.at("sources").at(source).is_boolean());
+    }
+    CHECK(profiles.find("loom")->value.at("order") == "stability");
+    CHECK(profiles.find("loom_legacy")->value.at("order") == "legacy");
+    CHECK(profiles.find("loom_legacy")->value.at("sources").at("profile") == false);  // today's bytes: no profile prefix
+    for (const char* id : {"graph_in", "like_claude", "like_chatgpt", "like_gemini"}) CHECK(profiles.find(id)->value.at("status") == "calibration");
+    // the view kind itself is listed
+    const auto kinds = unwrap(views::effective(td.path(), "view_kinds"));
+    REQUIRE(kinds.find("selector_profiles"));
+    CHECK(kinds.find("selector_profiles")->value.at("source").at("pointer") == "/selector_profiles");
+    // the edge kinds say what they mean in both languages and hang under relation
+    const auto edges = unwrap(views::effective(td.path(), "edge_kinds"));
+    for (const char* id : {"grouped_in", "reads_setting", "uses_role", "bound_to", "step_of", "has_default", "proposed_by", "sent_to_model", "applies_to_flow", "interested_in", "member_of", "knows"}) {
+      INFO(id);
+      const auto* e = edges.find(id);
+      REQUIRE(e);
+      CHECK(e->value.at("parent") == "relation");
+      CHECK_FALSE(e->value.at("meaning").at("pl").get<std::string>().empty());
+      CHECK_FALSE(e->value.at("meaning").at("en").get<std::string>().empty());
+    }
+    // the perspectives: every one is reachable (its edge kinds exist), the receipt one needs a message and says it is planned
+    const auto persp = unwrap(views::effective(td.path(), "perspectives"));
+    for (const char* id : {"settings_structure", "flow", "sent_to_model", "evidence", "me_and_surroundings"}) {
+      INFO(id);
+      const auto* e = persp.find(id);
+      REQUIRE(e);
+      CHECK(e->origin == "rom");
+      CHECK_FALSE(e->value.at("label").at("pl").get<std::string>().empty());
+      CHECK_FALSE(e->value.at("relations").empty());
+      for (const auto& r : e->value.at("relations")) CHECK(edges.find(r.get<std::string>()));
+    }
+    CHECK(persp.find("sent_to_model")->value.at("source") == "receipt");
+    CHECK(persp.find("sent_to_model")->value.at("params").at("msg_id").at("required") == true);
+    CHECK(persp.find("sent_to_model")->value.at("status").at("state") == "planned");
+    CHECK(persp.find("evidence")->value.at("render").at("color_by") == "evidence.class");
+    // the binding is recorded, and it says it is planned
+    const auto bindings = unwrap(views::effective(td.path(), "interaction_bindings"));
+    REQUIRE(bindings.find("touch.drag.hold"));
+    CHECK(bindings.find("touch.drag.hold")->value.at("status").at("state") == "planned");
+  }
 }

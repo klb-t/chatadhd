@@ -275,6 +275,21 @@
           "profile": "settings_fields",
           "pointer": "/groups"
         }
+      },
+      "selector_profiles": {
+        "label": {
+          "en": "Context selector profiles",
+          "pl": "Profile selektora kontekstu"
+        },
+        "policy": {
+          "modify": "deep",
+          "add_existing": "replace",
+          "layer": "name"
+        },
+        "source": {
+          "profile": "chat_context",
+          "pointer": "/selector_profiles"
+        }
       }
     },
     "edge_kinds": {
@@ -1692,6 +1707,125 @@
             }
           }
         }
+      },
+      "settings_structure": {
+        "label": {
+          "en": "Settings structure",
+          "pl": "Struktura ustawień"
+        },
+        "relations": [
+          "grouped_in",
+          "has_default",
+          "part_of"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "tree",
+          "edge_style": "line"
+        },
+        "source": "catalogue"
+      },
+      "flow": {
+        "label": {
+          "en": "Flow",
+          "pl": "Przepływ"
+        },
+        "relations": [
+          "step_of",
+          "reads_setting",
+          "uses_role",
+          "bound_to"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "layered",
+          "orientation": "top-down",
+          "edge_style": "arrow"
+        },
+        "source": "catalogue"
+      },
+      "sent_to_model": {
+        "label": {
+          "en": "Sent to the model",
+          "pl": "Wysłane do modelu"
+        },
+        "relations": [
+          "sent_to_model"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "layered",
+          "orientation": "top-down",
+          "edge_style": "arrow"
+        },
+        "source": "receipt",
+        "params": {
+          "msg_id": {
+            "required": true,
+            "description": {
+              "en": "The message whose “What we sent” receipt to show.",
+              "pl": "Wiadomość, której ślad „Co wysłaliśmy” pokazać."
+            }
+          }
+        },
+        "status": {
+          "state": "planned",
+          "by": "M1-K1",
+          "today": {
+            "en": "Today the kernel does not store a “What we sent” receipt per message, so this perspective has nothing to draw from.",
+            "pl": "Dziś jądro nie zapisuje śladu „Co wysłaliśmy” per wiadomość, więc ta perspektywa nie ma z czego rysować."
+          },
+          "reason": {
+            "en": "The receipt (contract loom.context_receipt/1) and the source “receipt” come with work item M1-K1.",
+            "pl": "Ślad (kontrakt loom.context_receipt/1) i źródło „receipt” przychodzą z pozycją M1-K1."
+          }
+        }
+      },
+      "evidence": {
+        "label": {
+          "en": "Certainty and provenance",
+          "pl": "Pewność i pochodzenie"
+        },
+        "relations": [
+          "proposed_by",
+          "derived_from",
+          "generated_by"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "tree",
+          "edge_style": "line",
+          "color_by": "evidence.class"
+        },
+        "source": "catalogue"
+      },
+      "me_and_surroundings": {
+        "label": {
+          "en": "Me and my surroundings",
+          "pl": "Ja i otoczenie"
+        },
+        "relations": [
+          "interested_in",
+          "member_of",
+          "knows",
+          "applies_to_flow"
+        ],
+        "direction": "out",
+        "hops": null,
+        "node_filter": {},
+        "render": {
+          "layout": "tree",
+          "edge_style": "line"
+        },
+        "source": "catalogue"
       }
     },
     "unit_kinds": {
@@ -4138,6 +4272,35 @@
         "action": {
           "kind": "change_focus",
           "target": "selected"
+        }
+      },
+      "touch.drag.hold": {
+        "label": {
+          "en": "Depth and time: long press and drag",
+          "pl": "Głębia i czas: długie przytrzymanie i przeciągnięcie"
+        },
+        "device": "touch",
+        "input": {
+          "gesture": "long_press_drag",
+          "modifiers": []
+        },
+        "action": {
+          "kind": "move",
+          "pair": "depth_time",
+          "drag": true,
+          "step": 1
+        },
+        "status": {
+          "state": "planned",
+          "by": "M1-W3",
+          "today": {
+            "en": "Today this binding is only recorded in the data: the screen does not recognise a long press with a drag yet.",
+            "pl": "Dziś to przypisanie jest tylko zapisane w danych: ekran nie rozpoznaje jeszcze długiego przytrzymania z przeciągnięciem."
+          },
+          "reason": {
+            "en": "Recognising the gesture comes with work item M1-W3 (map gestures).",
+            "pl": "Rozpoznawanie gestu dochodzi z pozycją M1-W3 (gesty mapy)."
+          }
         }
       }
     },
