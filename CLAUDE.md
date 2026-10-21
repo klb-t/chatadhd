@@ -469,7 +469,8 @@ neighbour's `first-steps-ui` run fail at random). Record the pid you started, or
 **C++ pitfall that only AddressSanitizer catches** (CI found it after the asan preset had been broken for
 days): never range-for over `.at()` / `.value()` / `operator[]` of a by-value temporary, e.g.
 `for (auto& a : unwrap(f()).at("k"))` — only the last reference is lifetime-extended, the temporary dies
-before the loop. Bind the object to a name first (`const Json x = unwrap(f()); for (... : x.at("k"))`).
+before the loop. Bind the object to a name first (`const Json x = unwrap(f()); for (... : x.at("k"))`). Seen again 2026-10-21 in a new test
+(CI 260, `f.send(legacy)["messages"]`); `tools/lint_asan_range_for.py [base]` lists suspicious added lines and `tools/gate.sh` runs it first.
 
 > **Update 2026-09-29 (owner):** Python compatibility is no longer required — it was
 > only a minimum plan. The invariant below remains enforced by tests as a regression
