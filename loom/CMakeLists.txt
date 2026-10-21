@@ -405,6 +405,6 @@ if(LOOM_BUILD_TESTS)
       COMMAND ${Python3_EXECUTABLE} ${LOOM_ROOT}/server/tests/test_chat_active_task_server.py)
     set_tests_properties(server.chat_active_task PROPERTIES
       ENVIRONMENT "LOOM_SERVER_BIN=$<TARGET_FILE:loom-server>;PYTHONDONTWRITEBYTECODE=1"
-      TIMEOUT 90)
+      TIMEOUT 600)   # 64 s on a dev build; timed out at 90 s under ASAN on a loaded runner (CI 260)
   endif()
 endif()

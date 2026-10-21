@@ -25,7 +25,9 @@ using loom::test::unwrap;
 
 namespace {
 
-constexpr auto kWait = std::chrono::seconds(5);
+// A deadline only matters when something is stuck (wait_for returns as soon as the result is there), so it is long: under a sanitizer on a
+// loaded runner one chat send takes far longer than 5 s (CI 260: REQUIRE(a.ready()) failed with the heavier send path of K1a).
+constexpr auto kWait = std::chrono::seconds(120);
 
 // std::async futures can block on destruction precisely when a locking
 // regression is under test. A timed-out worker instead keeps its shared-owned

@@ -223,7 +223,9 @@ TEST_SUITE("context_receipt") {
     CHECK(prefix_of(f.send(ChatOptions{}))[1]["content"].get<std::string>() == profile);
     // legacy: the profile class is not in the order, nothing of it is sent
     ChatOptions legacy; legacy.context_order = "legacy";
-    for (const auto& m : f.send(legacy)["messages"]) CHECK(m["content"].get<std::string>().find("preference.") == std::string::npos);
+    // bound to a name first: ranging over operator[] of the by-value result of send() read freed memory (ASAN, CI 260)
+    const auto sent_legacy = f.send(legacy);
+    for (const auto& m : sent_legacy["messages"]) CHECK(m["content"].get<std::string>().find("preference.") == std::string::npos);
     // Without anything the person set themselves, there is no profile message (stability = stable_first).
     Fixture empty;
     const auto bare = prefix_of(empty.send(ChatOptions{}));
