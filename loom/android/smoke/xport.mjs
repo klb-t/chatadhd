@@ -50,6 +50,7 @@ const tap = n => adb("shell", "input", "tap", String(n.cx), String(n.cy));
 const texts = nodes => nodes.map(n => n.text || n["content-desc"]).filter(Boolean);
 const inApp = nodes => nodes.some(n => n.package === PKG);
 // What a person sees on the screen: the app's own texts, top to bottom, without repeats (the report quotes them).
+const TABS = ["Przegląd", "Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport"];
 const seen = (nodes, max = 14) => [...new Set(nodes.filter(n => n.package === PKG && (n.text || "").trim())
   .sort((a, b) => (a.t ?? 0) - (b.t ?? 0) || (a.l ?? 0) - (b.l ?? 0)).map(n => n.text.trim().replace(/\s+/g, " ").slice(0, 70)))]
   .slice(0, max).join(" | ");
@@ -151,13 +152,29 @@ try {
   await check("adds a source: our conversation.json (picker -> engine on the phone)", async () => { const r = await addSource("xport-ours-conversation.json"); shot("ours"); return r; });
   await check("adds a second source: grok_com.json", async () => { const r = await addSource("xport-grok.json"); shot("grok"); return r; });
   await check("adds a third source: a Gemini takeout.zip", async () => { const r = await addSource("xport-gemini-takeout.zip"); shot("gemini"); return r; });
+  // The tab bar as a person sees it: rows, and whether a tab is cut off by the screen edge or overlaps another one.
+  await check("tab bar: every tab visible, none cut off or overlapping", async () => {
+    const nodes = dump();
+    const w = Number(adb("shell", "wm", "size").match(/(\d+)x\d+/)?.[1] || 1080);
+    const tabs = nodes.filter(n => n.package === PKG && /Button/.test(n.class || "") && TABS.includes(n.text) && n.cx !== undefined);
+    const rows = [...new Set(tabs.map(n => n.t))].sort((a, b) => a - b).map(top => tabs.filter(n => n.t === top).sort((a, b) => a.l - b.l).map(n => n.text));
+    const problems = [];
+    for (const t of TABS) if (!tabs.some(n => n.text === t)) problems.push(`"${t}" not on screen`);
+    for (const n of tabs) if (n.r > w || n.l < 0) problems.push(`"${n.text}" cut by the screen edge (${n.bounds}, screen ${w} px wide)`);
+    for (const a of tabs) for (const b of tabs) if (a !== b && a.text < b.text && a.l < b.r && b.l < a.r && a.t < b.b && b.t < a.b) problems.push(`"${a.text}" overlaps "${b.text}"`);
+    shot("tab-bar");
+    const layout = rows.map((r, i) => `row ${i + 1}: ${r.join(" | ")}`).join("; ");
+    if (problems.length) throw new Error(problems.join("; ") + " — " + layout);
+    return `${layout} (screen ${w} px)`;
+  });
   for (const tab of ["Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport", "Przegląd"]) {
+    const deep = tab === "Edycje";   // the recipes section: quote all of it
     await check(`tab ${tab} opens without an error`, async () => {
       // the tabs sit in a horizontal scroll: a tab off the screen edge is brought in by swiping the row
       let nodes = dump(); dismissSystemDialogs(nodes);
       let t = find(nodes, n => n.text === tab && /Button/.test(n.class || ""));
       for (let k = 0; !t && k < 4; k++) {
-        const row = find(nodes, n => /Button/.test(n.class || "") && ["Przegląd", "Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport"].includes(n.text));
+        const row = find(nodes, n => /Button/.test(n.class || "") && TABS.includes(n.text));
         if (!row) break;
         const w = Number(adb("shell", "wm", "size").match(/(\d+)x\d+/)?.[1] || 1080);
         const [from, to] = tab === "Przegląd" ? [w * 0.2, w * 0.9] : [w * 0.9, w * 0.2];
@@ -171,7 +188,23 @@ try {
       shot("tab-" + tab);
       const err = texts(after).find(x => /^Błąd/.test(x));
       if (err) throw new Error(err);
-      return `on screen: ${seen(after)}`;
+      return `on screen: ${seen(after, deep ? 40 : 14)}`;
+    });
+    if (tab === "Wybór") await check("Wybór: the pattern for encoded data (base64, hex…) opens its window", async () => {
+      let nodes = dump();
+      let p = find(nodes, n => /dane kodowane/i.test(n.text || ""));
+      for (let k = 0; !p && k < 6; k++) { adb("shell", "input", "swipe", "500", "1500", "500", "700", "300"); await sleep(600); nodes = dump(); p = find(nodes, n => /dane kodowane/i.test(n.text || "")); }
+      if (!p) throw new Error("no pattern mentioning encoded data on the Wybór tab: " + seen(nodes, 30));
+      const label = p.text;
+      tap(p);
+      const after = await until("the window of the pattern", () => { const n = dump(); return !n.some(x => /^(Liczę|Ładuję)/.test(x.text || "")) && n; }, 60, 1000);
+      shot("encoded-pattern");
+      const err = texts(after).find(x => /^Błąd/.test(x));
+      if (err) throw new Error(err);
+      const dialog = after.some(n => /alertTitle|android:id\/message|parentPanel/.test(n["resource-id"] || ""));
+      const report = `tapped "${label}"; ${dialog ? "a dialog" : "the screen"} shows: ${seen(after, 30) || texts(after).slice(0, 30).join(" | ")}`;
+      if (dialog) { adb("shell", "input", "keyevent", "KEYCODE_BACK"); await sleep(800); }
+      return report;
     });
   }
   await check("the process never crashed", async () => {

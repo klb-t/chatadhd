@@ -358,8 +358,13 @@ jobs:
           if-no-files-found: warn
 
   xport:
-    name: X-Port on the emulator (API ${{ inputs.api_level }}, x86_64, synthetic sources)
+    name: X-Port on the emulator (API ${{ inputs.api_level }}, x86_64, ${{ matrix.profile }}, synthetic sources)
     if: ${{ inputs.xport_run_id != '' }}
+    # the 390 px class (pixel_5) and the 412 px class (pixel_6)
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [ pixel_5, pixel_6 ]
     runs-on: ubuntu-24.04
     timeout-minutes: 40
     env:
@@ -405,7 +410,7 @@ jobs:
           api-level: ${{ inputs.api_level }}
           target: google_apis
           arch: x86_64
-          profile: pixel_6
+          profile: ${{ matrix.profile }}
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
           disable-animations: true
           script: bash loom/android/smoke/xport.sh "$(ls ${{ github.workspace }}/xport-apk/*.apk | head -n 1)" ${{ github.workspace }}/xport-out
@@ -418,6 +423,6 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: xport-smoke
+          name: xport-smoke-${{ matrix.profile }}
           path: xport-out/
           if-no-files-found: warn
