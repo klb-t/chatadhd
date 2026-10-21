@@ -38,6 +38,10 @@ on:
         description: "Fail the job when any function check of the report says 'doesn't' (default: the report is printed and only the set-up steps fail the job)."
         type: boolean
         default: false
+      xport_run_id:
+        description: "Only the X-Port app (module :xport): install and drive the xport-apk artifact of this xport-apk.yml run with synthetic sources; the chat app jobs are skipped. Empty = the chat app smoke."
+        type: string
+        default: ""
       cmake_version:
         description: "Android SDK CMake package, e.g. 3.31.5. Empty = the newest 3.x the SDK offers."
         type: string
@@ -54,7 +58,7 @@ concurrency:
 jobs:
   apk:
     name: Build the debug APK (x86_64)
-    if: ${{ inputs.apk_run_id == '' }}
+    if: ${{ inputs.apk_run_id == '' && inputs.xport_run_id == '' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     env:
@@ -170,7 +174,7 @@ jobs:
 
   server:
     name: Build the server archive (linux x64)
-    if: ${{ inputs.server_run_id == '' }}
+    if: ${{ inputs.server_run_id == '' && inputs.xport_run_id == '' }}
     # Ubuntu 22.04 + GCC 13 (PPA) with libstdc++ linked statically: the same archive package.yml builds.
     runs-on: ubuntu-22.04
     timeout-minutes: 60
@@ -238,7 +242,7 @@ jobs:
           - { profile: pixel_5, font_scale: "1.0" }
           - { profile: pixel_6, font_scale: "1.3" }
     # a skipped build job (artifact reused from an earlier run) is fine, a failed one is not
-    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') }}
+    if: ${{ !cancelled() && !contains(needs.*.result, 'failure') && inputs.xport_run_id == '' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     env:
@@ -351,4 +355,74 @@ jobs:
             !smoke-out/opt/**
             !smoke-out/data/**
             !smoke-out/cookies.txt
+          if-no-files-found: warn
+
+  xport:
+    name: X-Port on the emulator (API ${{ inputs.api_level }}, x86_64, ${{ matrix.profile }}, synthetic sources)
+    if: ${{ inputs.xport_run_id != '' }}
+    # the 390 px class (pixel_5) and the 412 px class (pixel_6)
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [ pixel_5, pixel_6 ]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      OUT: ${{ github.workspace }}/xport-out
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+
+      - name: Download the X-Port APK
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: xport-apk
+          path: xport-apk
+          run-id: ${{ inputs.xport_run_id }}
+          github-token: ${{ github.token }}
+
+      - name: Set up Node (the UI driver)
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+
+      - name: Enable KVM
+        run: |
+          set -euo pipefail
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Syntax of the scripts
+        run: |
+          set -euo pipefail
+          bash -n loom/android/smoke/xport.sh
+          node --check loom/android/smoke/xport.mjs
+          ls -l xport-apk
+
+      - name: Run X-Port on the emulator
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2.38.0
+        env:
+          SMOKE_TIMEOUT_S: ${{ inputs.speed_factor }}
+        with:
+          api-level: ${{ inputs.api_level }}
+          target: google_apis
+          arch: x86_64
+          profile: ${{ matrix.profile }}
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none -camera-front none
+          disable-animations: true
+          script: bash loom/android/smoke/xport.sh "$(ls ${{ github.workspace }}/xport-apk/*.apk | head -n 1)" ${{ github.workspace }}/xport-out
+
+      - name: Print the report (also in the job log)
+        if: ${{ always() }}
+        run: cat "$OUT/report.txt" 2>/dev/null || echo "no report.txt (the scenario did not get as far as the end)"
+
+      - name: Upload screenshots and logcat
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xport-smoke-${{ matrix.profile }}
+          path: xport-out/
           if-no-files-found: warn

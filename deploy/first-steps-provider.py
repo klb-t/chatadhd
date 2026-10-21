@@ -3,12 +3,16 @@
 Tylko biblioteka standardowa. Uzycie: first-steps-provider.py PORT [PLIK_DZIENNIKA]
 Odpowiada na POST .../chat/completions (strumieniem SSE albo zwykla odpowiedzia) i zapisuje kazde
 zapytanie (jedna linia JSON: czy byl naglowek Authorization, jaki klucz, czy stream, ostatnie zdanie)
-do PLIKU_DZIENNIKA. Rozpoznanie intencji ("- summarise:" w tresci) odpowiada JSON-em polecenia."""
+do PLIKU_DZIENNIKA. Rozpoznanie intencji ("- summarise:" w tresci) odpowiada JSON-em polecenia.
+Agent (zapytanie z "tools"): pierwsza tura prosi o jedno narzedzie (AGENT_TOOL, nieodwracalne, wiec polityka
+local_reversible go proponuje i przebieg staje na propozycji); tura z wynikami narzedzi odpowiada tekstem."""
 import http.server
 import json
 import sys
 
 LOG = sys.argv[2] if len(sys.argv) > 2 else None
+AGENT_TOOL = ("usage_compact", {"dry_run": True})
+AGENT_DONE = "Agent testowy: gotowe."
 RULES = ((("boil", "streść", "streszcz", "summar"), "summarise"),
          (("wytłumacz", "wytlumacz", "explain"), "explain_simply"),
          (("tłumacz", "tlumacz", "translat"), "translate"))
@@ -37,19 +41,30 @@ class H(http.server.BaseHTTPRequestHandler):
         text = json.dumps(body, ensure_ascii=False)
         last = last_text(body)
         reply = "Odpowiedz testowego dostawcy."
-        classify = "- summarise:" in text
+        tool_calls = None
+        classify = "- summarise:" in text and not body.get("tools")
         if classify:
             low = last.strip().splitlines()[-1].lower() if last.strip() else ""
             action = next((a for words, a in RULES if any(w in low for w in words)), None)
             reply = json.dumps({"kind": "command" if action else "message", "action": action,
                                 "reference": "conversation" if action else None, "args": {},
                                 "confidence": 0.9 if action else 0.5})
+        elif body.get("tools"):
+            msgs = body.get("messages") or []
+            offered = {(t.get("function") or {}).get("name") for t in body["tools"] if isinstance(t, dict)}
+            if any(m.get("role") == "tool" for m in msgs if isinstance(m, dict)) or AGENT_TOOL[0] not in offered:
+                reply = AGENT_DONE
+            else:
+                reply = ""
+                tool_calls = [{"id": "call_smoke_1", "type": "function",
+                               "function": {"name": AGENT_TOOL[0], "arguments": json.dumps(AGENT_TOOL[1])}}]
         elif "Summarise" in text or "Streść" in text or "summar" in text.lower():
             reply = "Streszczenie testowe: rozmowa dotyczy planu wydania wersji 2.0."
         if LOG:
             with open(LOG, "a", encoding="utf-8") as f:
                 f.write(json.dumps({"path": self.path, "authorization": self.headers.get("Authorization", ""),
                                     "stream": bool(body.get("stream")), "classify": classify, "model": body.get("model"),
+                                    "tools": len(body.get("tools") or []), "tool_calls": bool(tool_calls),
                                     "last": last[-120:]}, ensure_ascii=False) + "\n")
         # Zuzycie ma byc wiarygodne: rozmiar zapytania / 4. Stale "20 tokenow" tworzylo mikroskopijny punkt odniesienia, wiec
         # kolejne, dluzsze zapytanie (rosnaca historia) przekraczalo x10 i serwer slusznie czekal na potwierdzenie (usage_pending).
@@ -58,13 +73,15 @@ class H(http.server.BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "text/event-stream")
             self.end_headers()
-            for chunk in ({"choices": [{"delta": {"content": reply}}]},
-                          {"choices": [{"delta": {}, "finish_reason": "stop"}], "usage": usage}):
+            delta = {"tool_calls": [dict(c, index=i) for i, c in enumerate(tool_calls)]} if tool_calls else {"content": reply}
+            for chunk in ({"choices": [{"delta": delta}]},
+                          {"choices": [{"delta": {}, "finish_reason": "tool_calls" if tool_calls else "stop"}], "usage": usage}):
                 self.wfile.write(("data: " + json.dumps(chunk, ensure_ascii=False) + "\n\n").encode())
             self.wfile.write(b"data: [DONE]\n\n")
         else:
-            data = json.dumps({"id": "t", "choices": [{"message": {"role": "assistant", "content": reply},
-                                                       "finish_reason": "stop"}], "usage": usage}, ensure_ascii=False).encode()
+            message = {"role": "assistant", "content": reply or None, "tool_calls": tool_calls} if tool_calls else {"role": "assistant", "content": reply}
+            data = json.dumps({"id": "t", "choices": [{"message": message, "finish_reason": "tool_calls" if tool_calls else "stop"}],
+                               "usage": usage}, ensure_ascii=False).encode()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(data)))
