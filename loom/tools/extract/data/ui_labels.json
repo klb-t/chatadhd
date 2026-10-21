@@ -830,5 +830,27 @@
    "pl": "surowe",
    "en": "raw"
   }
+ },
+ "encoded_kinds": {
+  "data_uri": {
+   "pl": "adresy data: (plik osadzony w tekście, np. obraz)",
+   "en": "data: URIs (a file embedded in text, e.g. an image)"
+  },
+  "base64": {
+   "pl": "base64 (długie ciągi liter i cyfr kodujące bajty)",
+   "en": "base64 (long runs of letters and digits encoding bytes)"
+  },
+  "hex": {
+   "pl": "szesnastkowe (hex: pary znaków 0-9 a-f)",
+   "en": "hex (pairs of characters 0-9 a-f)"
+  },
+  "unicode_escape": {
+   "pl": "sekwencje \\uXXXX (znaki zapisane kodami)",
+   "en": "\\uXXXX sequences (characters written as codes)"
+  },
+  "percent": {
+   "pl": "sekwencje %XX (kodowanie procentowe, jak w adresach)",
+   "en": "%XX sequences (percent-encoding, as in URLs)"
+  }
  }
 }

@@ -184,3 +184,48 @@ class CatalogTest(ExtractTest):
                 spec = store().entry(kind, i)
                 for key in ("label", "description"):
                     self.assertTrue(spec[key].get("pl") and spec[key].get("en"), (kind, i, key))
+
+
+class EncodedPatternTest(ExtractTest):
+    """Wybór offers "zawiera dane kodowane" next to the other patterns, with the kinds as sub-choices."""
+
+    def _file(self):
+        import base64
+        png = base64.b64encode(b"\x89PNG\r\n\x1a\n" + bytes(range(256))).decode()
+        f = self.tmp / "kodowane.json"
+        f.write_text(json.dumps({"title": "z obrazem", "messages": [{"role": "user", "content": "zobacz " + png}, {"role": "assistant", "content": "ok"}]}))
+        g = self.tmp / "zwykla.json"
+        g.write_text(json.dumps({"title": "zwykła", "messages": [{"role": "user", "content": "cześć"}, {"role": "assistant", "content": "witaj"}]}))
+        return [str(f), str(g)]
+
+    def test_patterns_carry_every_engine_kind_with_a_polish_label(self):
+        from loom.tools.extract.encoded import KINDS
+        entry = load_entry()
+        try:
+            self.assertTrue(json.loads(entry.open_sources(json.dumps(self._file())))["ok"])
+            pats = json.loads(entry.patterns())
+            self.assertTrue(pats["ok"], pats)
+            self.assertEqual([k["id"] for k in pats["encoded_kinds"]], list(KINDS))
+            for k in pats["encoded_kinds"]:
+                self.assertNotEqual(k["label"], k["id"], k)
+            self.assertTrue(pats["patterns"], "the expression patterns are still there")
+        finally:
+            entry.open_sources("[]")
+
+    def test_kinds_and_modes_are_honoured(self):
+        entry = load_entry()
+        try:
+            self.assertTrue(json.loads(entry.open_sources(json.dumps(self._file())))["ok"])
+            only_hex = json.loads(entry.select("encoded", "hex", "add"))
+            self.assertTrue(only_hex["ok"], only_hex)
+            self.assertEqual(only_hex["encoded"]["counts"]["findings"], 0)
+            self.assertEqual(only_hex["selection"]["summary"]["conversations"], 0)
+            b64 = json.loads(entry.select("encoded", "base64,hex", "add"))
+            self.assertEqual(b64["encoded"]["by_kind"], {"base64": 1})
+            self.assertEqual(b64["selection"]["summary"]["conversations"], 1)
+            every = json.loads(entry.select("encoded", "", "replace"))
+            self.assertEqual(every["selection"]["summary"]["conversations"], 1)
+            gone = json.loads(entry.select("encoded", "base64", "subtract"))
+            self.assertEqual(gone["selection"]["summary"]["conversations"], 0)
+        finally:
+            entry.open_sources("[]")

@@ -198,13 +198,17 @@ def patterns():
             pats = eng.ds.file("select_fields.json").get("patterns") or {}
             rows = [{"name": k, "label": (v.get("label") or {}).get("pl") or k, "expr": v.get("expr")}
                     for k, v in sorted(pats.items())]
-            return json.dumps({"ok": True, "patterns": rows}, ensure_ascii=False)
+            # not an expression but a pattern the owner picks like the others: "contains encoded data", kinds as sub-choices
+            from loom.tools.extract.encoded import KINDS
+            labels = _ui(eng.ds).get("encoded_kinds") or {}
+            kinds = [{"id": k, "label": _lbl(labels.get(k), k)} for k in KINDS]
+            return json.dumps({"ok": True, "patterns": rows, "encoded_kinds": kinds}, ensure_ascii=False)
         except Exception as exc:
             return _fail(exc)
 
 
 def select(how, value="", mode="add"):
-    """how: pattern (value = name) | expr (value = selection expression) | encoded | all | invert | clear."""
+    """how: pattern (value = name) | expr (value = selection expression) | encoded (value = kinds, comma separated) | all | invert | clear."""
     with _lock:
         try:
             eng = _need()
@@ -213,8 +217,9 @@ def select(how, value="", mode="add"):
                 res = eng.op("select.structural", {"pattern": value, "mode": mode})
             elif how == "expr":
                 res = eng.op("select.expr", {"expr": value, "mode": mode})
-            elif how == "encoded":
-                res = eng.op("select.encoded", {"mode": mode})
+            elif how == "encoded":  # value = kinds, comma separated ("" = every kind the engine knows)
+                kinds = [k for k in str(value or "").split(",") if k]
+                res = eng.op("select.encoded", dict({"mode": mode}, **({"kinds": kinds} if kinds else {})))
                 extra = {"encoded": {"by_kind": res.get("by_kind"), "counts": res.get("counts")}}
             elif how == "all":
                 res = eng.op("select.expr", {"expr": "uid~/./", "mode": mode})

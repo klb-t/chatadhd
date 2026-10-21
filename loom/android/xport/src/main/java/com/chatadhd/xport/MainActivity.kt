@@ -417,6 +417,7 @@ class MainActivity : Activity() {
                 patternBox.removeAllViews()
                 if (pats.optBoolean("ok")) {
                     val ps = pats.getJSONArray("patterns")
+                    patternBox.addView(btn("Zawiera dane kodowane (base64, hex…)") { chooseEncoded(pats.optJSONArray("encoded_kinds")) })
                     for (i in 0 until ps.length()) {
                         val p = ps.getJSONObject(i)
                         patternBox.addView(btn(p.optString("label")) { runSelect("pattern", p.optString("name"), "add") }.apply {
@@ -437,7 +438,7 @@ class MainActivity : Activity() {
                 }
                 if (cat.optBoolean("ok")) {
                     catalog = cat
-                    panels["Edycje"] = editsPanel(cat.getJSONArray("edits"))
+                    panels["Edycje"] = editsPanel(cat.getJSONArray("edits"), cat.optJSONArray("macros") ?: JSONArray())
                     panels["Operacje"] = opsPanel(cat.getJSONArray("ops"))
                     fillExport(cat)
                 } else {
@@ -604,8 +605,7 @@ class MainActivity : Activity() {
             addView(label("Wybór według struktury (przytrzymaj wzorzec: odejmij / zamień / wyrażenie)", 16f))
             addView(patternBox)
             addView(expr)
-            addView(row(btn("Zaznacz wyrażeniem") { runSelect("expr", expr.text.toString(), "add") },
-                btn("Zakodowane dane") { runSelect("encoded", "", "add") }))
+            addView(row(btn("Zaznacz wyrażeniem") { runSelect("expr", expr.text.toString(), "add") }))
             addView(row(btn("Wszystko") { runSelect("all", "", "add") }, btn("Odwróć") { runSelect("invert", "", "add") },
                 btn("Wyczyść") { runSelect("clear", "", "add") }))
             addView(selInfo)
@@ -622,6 +622,27 @@ class MainActivity : Activity() {
             val j = try { JSONObject(py.callAttr("select", how, value, mode).toString()) } catch (e: Throwable) { JSONObject().put("ok", false).put("error", err(e)) }
             runOnUiThread { showSelection(j) }
         }
+    }
+
+    // "Zawiera dane kodowane": the kinds the engine detects are sub-choices (all on by default); the mode is picked like for
+    // the other patterns. Thresholds (min. długość…) are the parameters of the operation "select.encoded" in the Operacje tab.
+    private fun chooseEncoded(kinds: JSONArray?) {
+        val ids = ArrayList<String>()
+        val names = ArrayList<String>()
+        if (kinds != null) for (i in 0 until kinds.length()) { ids.add(kinds.getJSONObject(i).optString("id")); names.add(kinds.getJSONObject(i).optString("label")) }
+        if (ids.isEmpty()) { runSelect("encoded", "", "add"); return }
+        val checked = BooleanArray(ids.size) { true }
+        fun go(mode: String) {
+            val chosen = ids.filterIndexed { i, _ -> checked[i] }
+            if (chosen.isEmpty()) { selInfo.text = "Zaznacz co najmniej jeden rodzaj danych kodowanych."; return }
+            runSelect("encoded", chosen.joinToString(","), mode)
+        }
+        android.app.AlertDialog.Builder(this).setTitle("Zawiera dane kodowane")
+            .setMultiChoiceItems(names.toTypedArray(), checked) { _, i, on -> checked[i] = on }
+            .setPositiveButton("Dodaj do zaznaczenia") { _, _ -> go("add") }
+            .setNeutralButton("Odejmij") { _, _ -> go("subtract") }
+            .setNegativeButton("Zamień") { _, _ -> go("replace") }
+            .show()
     }
 
     private fun refreshSelection() {
@@ -722,9 +743,13 @@ class MainActivity : Activity() {
     }
 
     // ───────────── Edycje: batch edits with preview, apply, undo, redo ─────────────
-    private fun editsPanel(edits: JSONArray): View {
+    private fun editsPanel(edits: JSONArray, macros: JSONArray): View {
         val adapter = TreeAdapter(this)
         val info = label("")
+        var recipe = 0
+        var recipeSteps = 0
+        val recipeText = label(if (macros.length() > 0) macros.getJSONObject(0).optString("description") else "", 13f)
+        fun recipeReq(preview: Boolean): JSONObject = JSONObject().put("call", "macro").put("name", macros.getJSONObject(recipe).optString("id")).put("preview", preview)
         val formHolder = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
         var form: Form? = null
         var current = 0
@@ -748,8 +773,18 @@ class MainActivity : Activity() {
                 adapter.setRoots(roots)
             }
         }
+        val recipeSp = picker((0 until macros.length()).map { macros.getJSONObject(it).optString("label") }) {
+            recipe = it; recipeText.text = macros.getJSONObject(it).optString("description")
+        }
         val list = ListView(this)
         list.addHeaderView(col().apply {
+            if (macros.length() > 0) {
+                addView(label("Gotowe przepisy", 16f))
+                addView(recipeSp); addView(recipeText)
+                addView(row(btn("Podgląd przepisu") { info.text = "Liczę…"; call(recipeReq(true), show) },
+                    btn("Zastosuj przepis") { info.text = "Stosuję…"; call(recipeReq(false)) { j -> if (j.optBoolean("ok")) recipeSteps = j.optInt("steps"); show(j) } }))
+                addView(btn("Cofnij przepis") { call(JSONObject().put("call", "undo").put("steps", maxOf(recipeSteps, 1)), show); recipeSteps = 0 })
+            }
             addView(label("Edycje seryjne (na zaznaczeniu, jeśli jest; inaczej na wszystkim)", 16f))
             addView(sp); addView(formHolder)
             addView(row(btn("Podgląd") { info.text = "Liczę…"; call(req("edit"), show) },
@@ -821,6 +856,7 @@ class MainActivity : Activity() {
             val p = pr.getJSONObject(i)
             val cb = CheckBox(this).apply { text = p.optString("label") }
             profileChecks.add(p.optString("id") to cb); holder.addView(cb)
+            p.optString("description").takeIf { it.isNotEmpty() }?.let { holder.addView(label(it, 12f).apply { setPadding(pad * 3, 0, pad, pad) }) }
         }
     }
 
