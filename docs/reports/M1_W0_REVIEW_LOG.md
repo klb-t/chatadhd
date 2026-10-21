@@ -350,3 +350,33 @@ przywrócona `git checkout` jak w r2:b2/b3); shell 10/10; testids-doc 2/2; role-
 nowy krok; wiersze łańcucha i „Dla kogo?” porównane słowo w słowo z `graph.card`, brak `meaning` = brak linii);
 `test:m1-settings` 9/9; `test:chat-first` zielony (bez FAIL). Nie uruchomione: pełny `ctest`, pełny `npm run e2e`,
 `android-smoke`, test ABI. Zrzuty: 4 PNG zmienione (wymienione wyżej), reszta bajt w bajt.
+
+## Co doszło w poprawkach r2:b5 (2026-10-21, fakty z przebiegu)
+
+Cztery ustalenia przeglądu (partia 5), wszystkie drobne („nit”). Trzy poprawione, jedno odrzucone z dowodem. Brak WIP-u z
+przerwanego przebiegu: HEAD był gotowym commitem r2:b4 (docs + e2e, `b1d828e4`), drzewo czyste — paczka zaczęta od zera.
+
+- **Id dewelopera na ekranie telefonu (`actions_api_unavailable`).** Gdy web nie ma API działań (ani serwer, ani powłoka
+  Android go nie dały), nawigator, karta węzła, Ustawienia i karta roli pokazywały „Nie udało się: actions_api_unavailable”.
+  Teraz (`b6cc5a88`): słowo katalogowe `error.no_actions` {en, pl} w `presentation.graph_screen`, `settings_human` i `roles`
+  („aplikacja nie ma połączenia z działaniami silnika (nie dał go ani serwer, ani powłoka Android)”); komponenty wołają
+  `t("error.no_actions")` — także w notce zapisu Widok ▾ (`view.save_error`). `builtin.inc` i web `generated/conversation-view.json`
+  przegenerowane (`gen_runtime_profiles.py --check`, `gen_onboarding_pack.py --check` czyste), jądro dev przebudowane. Ścieżki
+  nie wywołano na żywo (wymaga powłoki bez API) — sprawdzenie statyczne: `grep actions_api_unavailable loom/web/src` = 0.
+- **`shum-fields-<grupa>` kilka razy w jednym widoku grupy.** Id siedziało na `<ul>` każdej podgrupy (Rozmowa: 3 elementy —
+  ścisły lokator Playwright rzucał). Teraz jeden element na widok grupy: wrapper `div.shum-blocks` obejmujący bloki podgrup
+  (`shum-sub-<podgrupa>` zostają w środku); e2e `m1-settings` asercja `count() === 1`; `M1_W0_TESTIDS.md` wiersz „widok
+  grupy” mówi, który element to jest. CSS bez zmian (wrapper bez stylu).
+- **Pomiar 44 px tylko dla `button`.** `layoutFits` w obu e2e M1 mierzy teraz każdy widoczny `button, input, textarea, select,
+  [role=button], [role=switch], summary` w `.drawer` (pole szukania `nav-search-input`, `card-editor-input`…). Oba zestawy
+  zielone bez zmiany CSS — luka była w pokryciu, nie w ekranie.
+- **„Siedem zrzutów-sierot” — odrzucone.** Katalog ma 21 PNG (nie 20), a raport nazywa wszystkie 21: 14 osadzonych w §1–11
+  (`![…](M1_CHECKPOINT_0/…)`) i 7 wymienionych w „Co sprawdzają testy (w skrócie)” zdaniem każdy (od r2:b2). Grep przeglądu
+  (`M1_CHECKPOINT_0/*.png`) nie widział nazw w backtickach. Żeby i taki grep je znalazł, siedem wpisów listy to teraz linki
+  markdown do `M1_CHECKPOINT_0/<nazwa>.png`; żadnego pliku nie usunięto, żadnego nie dodano.
+
+Przebiegi: `cmake --build --preset dev` (przyrostowo) czysty; `npm run build` czysty; shell 10/10, testids-doc 2/2,
+settings-human 7/7, node-card-state 11/11, role-card 5/5, navigator-state 11/11; `test:m1-settings` 9/9;
+`test:m1-navigator` 14/14. Zrzuty: żaden PNG nie zmieniony (bajt w bajt — brak w `git status`); churn fixture
+`graph-card-temperature.json` (`scope_id` rozmowy) przywrócony `git checkout` jak w r2:b2–b4. Nie uruchomione: `ctest`
+(brak testu dla `builtin.inc`; zmiana to tylko słowa katalogu), pełny `npm run e2e`, `test:chat-first`, `android-smoke`, test ABI.

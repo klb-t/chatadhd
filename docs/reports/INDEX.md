@@ -1632,3 +1632,20 @@ budowy cmake nie uruchamiano (dysk zajęty przez bramkę gdzie indziej).
   przepływu; odwrót: edycja tekstów w `actions.pack` + regeneracja. (5) `lang` z `shellLanguage` w efekcie React, `index.html`
   dalej „en” do wczytania konfiguracji; odwrót: usunąć efekt. (6) Dodatkowy krok e2e chroni `toggle-nav` na telefonie (Warsztat
   chowa nawigację); odwrót: usunąć krok 14.
+
+### S1 / M1-W0 (poprawki po przeglądzie r2:b5: słowo katalogu zamiast `actions_api_unavailable`, jeden `shum-fields-<grupa>` na widok, pomiar 44 px dla każdego rodzaju dotyku, „sieroty” zrzutów odrzucone) (2026-10-21, branch `claude/m1-w0`)
+
+- Pliki: `loom/data/profiles/conversation_view.pack` (`error.no_actions` {en,pl} w `graph_screen`, `settings_human`, `roles`),
+  generaty `loom/src/onboarding/builtin.inc` + `loom/web/src/onboarding/generated/conversation-view.json`,
+  `loom/web/src/components/{GraphNavigator,NodeCard,SettingsHuman,RoleCard}.tsx` (`t("error.no_actions")`; wrapper `shum-fields-<grupa>`),
+  `loom/web/e2e/{m1-navigator,m1-settings}-native.mjs` (`layoutFits` dla każdego rodzaju dotyku; `count() === 1`),
+  `docs/reports/M1_W0_TESTIDS.md` (wiersz „widok grupy”), `docs/reports/M1_CHECKPOINT_0.md` (7 wpisów listy jako linki).
+  Dziennik: `docs/reports/M1_W0_REVIEW_LOG.md` sekcja r2:b5. Commity `b6cc5a88` + ten (docs).
+- Testy (fakty): build dev czysty; web build czysty; shell 10/10, testids-doc 2/2, settings-human 7/7, node-card-state 11/11,
+  role-card 5/5, navigator-state 11/11; `test:m1-settings` 9/9; `test:m1-navigator` 14/14; żaden PNG nie zmieniony. Nie
+  uruchomione: `ctest`, pełny `npm run e2e`, `test:chat-first`, `android-smoke`, test ABI; ścieżka „brak API działań” nie wywołana na żywo.
+- Decyzje (R1–R53; każda odwracalna): (1) to samo zdanie `error.no_actions` w trzech katalogach (jedna przyczyna, jedno
+  zdanie); odwrót: inne słowa w packu + regeneracja. (2) `shum-fields-<grupa>` = wrapper na cały widok grupy, nie
+  `shum-fields-<grupa>-<podgrupa>` na każdym `<ul>` — e2e zbiera wszystkie pola grupy jednym lokatorem; odwrót: przenieść id
+  na `<ul>` z sufiksem podgrupy i zmienić wiersz TESTIDS + asercję e2e. (3) Lista 7 zrzutów jako linki, pliki bez zmian
+  (właściciel widzi wszystkie 21 w raporcie); odwrót: backticki jak przed r2:b5.
