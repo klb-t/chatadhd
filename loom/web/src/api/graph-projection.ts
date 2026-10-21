@@ -243,6 +243,8 @@ export interface GraphCardResult extends GraphNodeRow {
   item?: Record<string, unknown>;
   rom_item?: Record<string, unknown>;
   can_override?: { action: "rom.override"; file: string; pointer: string };
+  /** The source's own attributes of the node (a settings field: key, type, edit, human ...); the card reads `key` and `type` from it. */
+  attrs?: Record<string, unknown>;
 }
 
 export interface RomOverrideRequest {

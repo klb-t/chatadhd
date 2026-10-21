@@ -2,9 +2,11 @@
 // are what graph.navigate answers for the focus (never a list of this file), a tap on a row with children goes one step deeper,
 // the path row goes back (each step is a history layer, so Android Back / browser Back / Escape close the last step first), the
 // magnifier searches on the level, the bottom bar changes the budget (Szerzej/Węziej) and the depth (Głębiej/Płycej).
-// Not in this package (their buttons say "planned" with the reason, from the catalogue): the map, the node card, Perspektywa,
-// Działania, Widok. A row's ⋯ (or a tap on a leaf) shows the card stub: the node's address, which the node card (P3) replaces.
+// Not in this package (their buttons say "planned" with the reason, from the catalogue): the map, Perspektywa, Działania, Widok.
+// A row's ⋯ (or a tap on a leaf) opens the node card (NodeCard.tsx, package P3) under the rows; the card is a history layer, so
+// Back closes it before the path step.
 import { useEffect, useMemo, useState } from "react";
+import NodeCard from "./NodeCard";
 import { api } from "../api";
 import type { GraphNavigateResult, GraphNodeRow } from "../api/graph-projection";
 import type { UserProfileHost } from "../api/onboarding-host";
@@ -39,7 +41,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   const [error, setError] = useState<string | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [draft, setDraft] = useState("");
-  const [stub, setStub] = useState<string | null>(null);
+  const [card, setCard] = useState<{ address: string; label: string } | null>(null);
   const [planned, setPlanned] = useState<BarButtonId | null>(null);
 
   const request = useMemo(() => requestFor(state, language, convId), [state, language, convId]);
@@ -63,8 +65,9 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
   }, [draft]);
   useLayer("navigator-search", searchOpen, () => { setSearchOpen(false); setDraft(""); });
 
-  const closeStep = (index: number) => { setState(s => goBack(s, index)); setStub(null); };
-  const drill = (row: GraphNodeRow) => { setState(s => drillInto(s, row)); setStub(null); setDraft(""); setSearchOpen(false); };
+  const closeStep = (index: number) => { setState(s => goBack(s, index)); setCard(null); };
+  const drill = (row: Pick<GraphNodeRow, "address" | "label">) => { setState(s => drillInto(s, row)); setCard(null); setDraft(""); setSearchOpen(false); };
+  const openCard = (row: Pick<GraphNodeRow, "address" | "label">) => setCard(c => c?.address === row.address ? null : { address: row.address, label: row.label });
   const effectiveLimit = result?.limit.value ?? 0, effectiveHops = result?.hops ?? 1, shown = result?.counts.shown ?? 0;
   const onBar = (id: BarButtonId) => {
     if (id === "wider") setState(s => wider(s, effectiveLimit));
@@ -107,7 +110,7 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
             return <li key={row.address} className="gnav-row" data-kind={row.kind}>
               <div className="gnav-row-line">
                 <button className="gnav-row-main" data-testid={`nav-row-${row.address}`} data-has-children={row.has_children}
-                  onClick={() => row.has_children ? drill(row) : setStub(s => s === row.address ? null : row.address)}>
+                  onClick={() => row.has_children ? drill(row) : openCard(row)}>
                   <span className="gnav-row-top">
                     <span className="gnav-label">{row.label}</span>
                     {count && <span className="gnav-count" data-testid="nav-count">{count}</span>}
@@ -122,12 +125,13 @@ export default function GraphNavigator({ profileHost, convId, language, initialF
                   {row.why && <span className="gnav-why">{row.why}</span>}
                 </button>
                 <button className="gnav-more" data-testid={`nav-row-card-${row.address}`} aria-label={t("card")}
-                  onClick={() => setStub(s => s === row.address ? null : row.address)}>⋯</button>
+                  aria-expanded={card?.address === row.address} onClick={() => openCard(row)}>⋯</button>
               </div>
-              {stub === row.address && <p className="gnav-note gnav-stub" data-testid="nav-card-stub">{t("card.stub", { address: row.address })}</p>}
             </li>;
           })}
         </ul>}
+        {card && <NodeCard key={card.address} address={card.address} language={language} convId={convId} t={t}
+          onClose={() => setCard(null)} onNavigate={(address, label) => drill({ address, label })} />}
         {result && !loading && result.children.length === 0 && <p className="gnav-note" data-testid="nav-empty">{t("no_children")}</p>}
         {lines.map(line => <p key={line.id} className="gnav-note gnav-honesty" data-testid={`nav-${line.id}`}>{line.text}</p>)}
       </div>

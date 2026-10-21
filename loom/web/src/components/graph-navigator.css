@@ -39,3 +39,33 @@
 .gnav-bar-planned { opacity: 0.6; }
 .gnav-bar-btn[aria-pressed="true"] { opacity: 1; border-color: var(--accent, #7aa2f7); }
 .gnav-budget, .gnav-planned { width: 100%; margin: 2px 0 0; font-size: 12px; opacity: 0.75; }
+
+/* M1-W0 (2) P3: the node card under the rows (390 px): 44 px targets, long values wrap, no horizontal scroll. */
+.ncard { border-top: 2px solid var(--accent, #7aa2f7); padding: 4px 0 12px; }
+.ncard-head { display: flex; align-items: center; gap: 4px; min-height: 44px; }
+.ncard-title { flex: 1; min-width: 0; margin: 0; font-size: 17px; overflow-wrap: anywhere; }
+.ncard-close { min-height: 44px; min-width: 44px; background: none; border: 0; color: inherit; font: inherit; font-size: 24px; cursor: pointer; touch-action: manipulation; }
+.ncard-line { margin: 4px 0; overflow-wrap: anywhere; }
+.ncard-key { opacity: 0.7; }
+.ncard-value strong { font-size: 16px; }
+.ncard-list { list-style: none; margin: 0; padding: 0; }
+.ncard-row, .ncard-btn { min-height: 44px; width: 100%; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 6px 8px;
+  text-align: left; background: none; border: 0; border-bottom: 1px solid var(--border); color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; overflow-wrap: anywhere; }
+.ncard-row:disabled { cursor: default; opacity: 0.6; }
+.ncard-row-action { font-weight: 600; }
+.ncard-row-label { font-weight: 600; }
+.ncard-action { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-height: 44px; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+.ncard-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.ncard-btn { width: auto; flex: 1 1 40%; min-width: 44px; align-items: center; border: 1px solid var(--border); border-radius: 8px; }
+.ncard-btn-primary { border-color: var(--accent, #7aa2f7); color: var(--accent, #7aa2f7); }
+.ncard-input { width: 100%; box-sizing: border-box; min-height: 44px; padding: 8px 10px; font: inherit; color: inherit; background: var(--bg, transparent); border: 1px solid var(--border); border-radius: 8px; }
+.ncard-json { font-family: ui-monospace, monospace; font-size: 13px; }
+.ncard-gate, .ncard-edit, .ncard-levels { margin: 8px 0; padding: 8px; border: 1px solid var(--accent, #7aa2f7); border-radius: 8px; }
+.ncard-chain-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; min-height: 44px; padding: 6px 8px; border-bottom: 1px solid var(--border); border-left: 4px solid transparent; }
+.ncard-chain-row .ncard-chain-role { opacity: 0.75; font-size: 13px; }
+.ncard-chain-row .ncard-chain-value { margin-left: auto; font-variant-numeric: tabular-nums; }
+.ncard-winning { border-left-color: var(--accent, #7aa2f7); background: color-mix(in srgb, var(--accent, #7aa2f7) 12%, transparent); }
+.ncard-winning .ncard-chain-value { font-weight: 700; }
+.ncard-inactive { opacity: 0.55; }
+.ncard-group { margin: 4px 0 8px; }
+.ncard-notice { font-weight: 600; }
