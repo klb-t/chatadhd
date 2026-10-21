@@ -60,6 +60,23 @@ poprawki po nieudanym podejściu), nie cena tokena — dlatego pomiary w tabeli.
 |---|---|---|---|---|---|
 | R38 | domyślny (Sonnet) | 0→1 % | 30→30 % | tak | agent + bramka + moje tury razem |
 
+## Na co poszły tokeny S1 dziś (2026-10-21 od 00:00 UTC do 17:50; `tools/usage_report.py`, liczby z pól `usage`, bez treści)
+Tydzień: 3 % (00:14) → 30 % (17:40) = +27 pkt w ≈ 17,5 h na koncie (S1 + S2 + czaty właściciela). Zmierzone dla S1: **566 mln równoważników**
+(wagi założone: odczyt cache 1, wejście 10, zapis 5 min 12,5, zapis 1 h 20, wyjście 50): agenci 538 mln (**95 %**, 81 agentów, 2270 ruchów), sesja
+główna 28 mln od 13:00 (5 %). **Czego nie ma:** sesja główna sprzed 13:00 — zapis został przepisany przy kompresji kontekstu (pomiar z 06:08:
+15 % zużycia S1); udział S2 i czatów — niewidoczny z tej sesji (S2 poproszony o ten sam raport). Gdyby S1 było całym zużyciem: ≈ 21 mln
+równoważników na 1 pkt tygodnia (górna granica kosztu; prawdziwy jest niższy).
+Rodzaj pracy (agenci): wdrożenie 35,4 %, poprawki po przeglądach i diagnoza 29,1 %, przeglądy 24,5 %, projekt P39 11,0 %.
+Temat: M1-W0 54 % (wdrożenie 21,4 + poprawki 19,8 + przeglądy 13,2), poprawka logowania 21 % (diagnoza+poprawka 9,4 + przegląd 11,3),
+P39 11 %, pakiety pojedyncze (R38 itd.) 6,4 %, X-Port 3,7 %, zatrzymany długi agent ekranów W0 2,7 %, D2 1,1 % (w toku).
+Model (w tokenach, nie w cenie): Sonnet 57,5 %, **Fable 42,5 %** — w tym wszystkie 13 pakietów poprawek po przeglądach W0 (≈ 106 mln,
+19,6 % S1) i 4 z 7 pakietów wdrożeniowych; cena tokena Fable jest wyższa (mnożnik nieznany), więc udział w limicie jest większy niż 42,5 %.
+**Narzut, który nie jest pracą: 24 % wydatku agentów** — start agenta (zapis prefiksu ≈ 39 tys. tokenów × 81) 7,3 %, oraz ≈ 39 ruchów po
+wygaśnięciu cache (kontekst ≈ 190 tys. tokenów przepisany od nowa po pauzie > 5 min, zwykle czekanie na build/ctest/e2e wewnątrz agenta) 17,1 %
+(heurystyka: zapis ≥ 50 % kontekstu i > 30 tys.). Odczyt z cache stanowił 57 % równoważników, zapisy 39 %, wyjście 4 %.
+Wnioski wprowadzone: reguła „żadne wywołanie narzędzia dłuższe niż ~4 min” (`single-package.js`, `CLAUDE.md` pkt 5), poprawki po przeglądach i
+pakiety mechaniczne na tańszych modelach, jeden proporcjonalny przegląd poprawki błędu.
+
 **Odczyt z 00:14:** od 00:10 do 00:14 przybyły 3 punkty w około 4 minuty (≈ 0,8 pkt/min),
 od 00:05 średnio ≈ 0,6 pkt/min. Do reszty okna (276 min) zostaje 89 punktów, czyli stać nas
 na ≈ 0,32 pkt/min. Przy tempie bez zmian okno skończyłoby się około 02:10–02:40 UTC, 2–2,5 h

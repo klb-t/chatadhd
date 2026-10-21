@@ -69,6 +69,12 @@ cannot be resumed at all, so their work is lost.
   4. *Limit telemetry:* the session's `rate_limit_event` (via `list_events`, kinds
      `["rate_limit_event"]`) carries `five_hour`/`seven_day` utilization and `resetsAt`; sample
      it into the ledger at every notification instead of estimating from token counts.
+  5. *Cache TTL and model choice (measured 2026-10-21, `tools/usage_report.py`):* 24 % of agent spend was not work — 7 % the start
+     of each agent (prompt prefix), 17 % whole contexts rewritten after a pause over 5 minutes (a tool call that blocks for a build,
+     a test run or a CI wait). Rules: no single tool call longer than ~4 minutes (background + short polls); fixes after reviews,
+     mechanical packages and log reading run on the cheaper models (Haiku/Sonnet), Fable only for design stages; a review of a bug fix
+     is one reviewer, proportional to the fix. The weekly pace is `tools/pace_plan.json` (owner, 2026-10-21) — run `tools/pace.py`
+     before starting an agent.
 
 ## Project Overview
 
