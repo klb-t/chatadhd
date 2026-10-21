@@ -694,8 +694,23 @@ const serverChecks = [
       await apiJson("PATCH", "/api/config", { loom_web_message_window: 500 });
     }
   }],
-  ["agent proposals", async () => {
-    throw skip("not reachable from the chat UI without an agent scenario (AgentProposalBlock renders only for agent runs); not driven here");
+  // R38: the fake provider (deploy/first-steps-provider.py) routes "agent" to agent.run and, offered tools, asks for one
+  // irreversible tool (usage_compact): the policy local_reversible proposes it, the run stops, the chat shows the block;
+  // Accept resumes the run with the transcript, and the provider then answers with text.
+  ["agent proposals: the run stops on a proposal, Accept resumes it to the end", async () => {
+    await send("agent: skompaktuj dziennik zużycia");
+    const proposed = await until("the action proposal or the agent block",
+      async () => (await has("chat-agent-proposal")) ? "agent" : (await has("chat-action-proposal")) ? "action" : false, 90, 300);
+    if (proposed === "action") await send("tak");
+    await waitTid("chat-agent-proposal", 120);
+    const action = await page.ev(`${q("chat-agent-proposal-action")}?.innerText||''`);
+    if (!/usage\.compact/.test(action)) throw new Error(`the block proposes "${action}", expected usage.compact`);
+    shot("agent-proposal");
+    await click("chat-agent-proposal-accept");
+    await waitTid("chat-agent-proposal-decided", 120);
+    await until("the agent's final answer", () => assistantSays("Agent testowy: gotowe."), 120, 400);
+    shot("agent-done");
+    return `proposed ${action.trim()}, accepted, the run finished`;
   }],
 ];
 
