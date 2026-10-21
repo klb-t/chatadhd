@@ -1,7 +1,14 @@
-# Kolejka S1 — stan 2026-10-21 16:25 UTC
+# Kolejka S1 — stan 2026-10-21 17:20 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
+
+## R38 NA `main` (17:18 UTC, `fb604c17`) — bramka lokalna GREEN, bieg CI 257 w toku
+Pakiet R38 (wynik `agent.run` słowami, odpowiedź po „Akceptuj” w rozmowie, e2e bez brudzenia drzewa): decyzje i cofnięcie w `INDEX.md`
+(„S1 / R38”). Po pełnej bramce `git status` czyste (hygiene działa). Bieg CI **257**
+(https://github.com/klb-t/chatadhd/actions/runs/39642577946) ≈ 80 min, koniec ok. 18:40 UTC; **nie pushować kodu w `loom/**` na `main`
+do jego końca** (S2 uprzedzony). Zadanie z kolejki „R38” zamknięte. Dalej w kolejności: M1-D2 → K1 (worktree `/home/user/wt/m1d0`
+ma build dev i node_modules — wystarcza), X-Port pakiet E (UX drobiazgi), P-perf (niski priorytet), #24 `memory.attach_folder`.
 
 ## CI na `main` ZIELONY: bieg 256 (`6fa81839`) = success o 16:08 UTC (78 min) — to jest stan W0 + poprawki + sterownik smoke
 Pierwszy zielony bieg po W0 (249 był przed W0; 250 padł na `data_domains`/szczypaniu/keepalive, 251 na wyścigu w `m1-settings`).
