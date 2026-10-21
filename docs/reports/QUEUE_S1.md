@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-21 02:00 UTC
+# Kolejka S1 — stan 2026-10-21 02:05 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
@@ -14,31 +14,38 @@ wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu
 - **Poprawka przerywanego zrywania logowania** — gałąź `claude/fix-login-drop`, worktree
   `/home/user/wt/extract`, 2 commity; po zakończeniu bramka i FF `main` **przed** bramką W0
   (inaczej bramki bywają losowo czerwone).
-- **P39 projekt** (multimodalny dupleks / JEV / głos / awatar) — gałąź `claude/p39-design`, worktree
-  `/home/user/wt/p39`, etap syntezy; wynik: `docs/architecture/P39_INTERAKCJA_MULTIMODALNA_2026-10-21.md`
-  + `docs/reports/P39_WORK_ITEMS.json`; po zakończeniu scalić dokumenty na `main`.
+- **X-Port Android — pakiety poprawek** (workflow `tools/workflows/xport-android-polish.js`, worktree
+  `/home/user/wt/xport`, lokalna gałąź `xport-polish` → `origin/claude/xport-android`; build `xport-apk.yml`
+  na push): A = pięć usterek UX od S2 (liczba mnoga, bajty zamiast „0 KB”, nazwy kopii i etykiety po
+  polsku w Przeglądarce, polskie nazwy pól w Operacjach, widoczna zakładka Eksport); B = gotowe przepisy
+  „zostaw tylko znaczniki czasu” i „katalog /[timestamp]-[tytuł]”, sprawdzenie, że wybór po danych
+  kodowanych jest w zakładce Wybór (silnik już ma wykrywanie: commit `98bd66a8`, baza64/data:/hex/ucieczki),
+  merge `main` do gałęzi. **Po zakończeniu:** numer przebiegu do S2 (ponowny test na emulatorze), link dla
+  właściciela, potem scalenie `claude/xport-android` do `main` przez bramkę (testy `tools.extract`).
+
+## Zrobione od ostatniej wersji
+- **P39 projekt gotowy i na `main`** (`bbdaca7f`): `docs/architecture/P39_INTERAKCJA_MULTIMODALNA_2026-10-21.md`
+  (specyfikacja po weryfikacji handoffu, trzy tory T/D/E, bramki T0–E2, 14 ryzyk, hipotezy H1–H9) i
+  `docs/reports/P39_WORK_ITEMS.json` (26 pozycji z zależnościami). Pierwsza dotykalna rzecz: **T0** (cztery
+  pozycje: T-A1 → T-K1 → T-K2 → T-K3, „Dokończyć przerwaną odpowiedź?”), ale dopiero po M1-W0. Następne
+  pozycje P39 startują po scaleniu W0, nie wcześniej.
 
 ## Czeka na miejsce w oknie (start, gdy skończy się któryś z trzech)
-1. **X-Port Android — pakiet poprawek** (gałąź `claude/xport-android`, worktree `/home/user/wt/xport`,
-   build `xport-apk.yml` na push, numer przebiegu do S2): (a) odmiana „1 rozmowa / 3 rozmowy / 5 rozmów”;
-   (b) „0 KB” → bajty lub „<1 KB”; (c) w Przeglądarce bez wewnętrznych prefiksów czasu i bez
-   angielskich „sources | markdown | archive | format=”; (d) polskie nazwy pól w Operacjach
-   (of, all, mime, min_size, missing); (e) zakładka Eksport widoczna bez zgadywania (np. zawijany
-   pasek albo strzałka); (f) gotowe przepisy „zostaw w metadanych tylko znaczniki czasu” i
-   „wyciągnij spod zagnieżdżenia do `/[timestamp]-[tytuł]`”; (g) silnik: wykrywanie danych
-   kodowanych/hex jako kryterium zaznaczania. Źródło: S2 na emulatorze (przebieg 39524948848) i słowa
-   właściciela.
-2. **R38 — dwie uwagi S2** (pliki S1): (1) wiadomość wyniku `agent.run` niesie cały JSON pętli
+1. **R38 — dwie uwagi S2** (pliki S1): (1) wiadomość wyniku `agent.run` niesie cały JSON pętli
    w treści obok bloku Akceptuj/Odrzuć — `body_of` ma pokazać tekst/propozycje; (2) po „Akceptuj”
    końcowa odpowiedź agenta (tekst wznowionego przebiegu) nigdzie nie trafia do rozmowy. Poprawka
    po stronie web już u S2 (`50239c94` na `claude/s2-parallel`).
-3. Zadanie #24 `memory.attach_folder` (po retargetowaniu R39 na graf), #19 P37 „jeden silnik”,
+2. Zadanie #24 `memory.attach_folder` (po retargetowaniu R39 na graf), #19 P37 „jeden silnik”,
    M1: D2, K1, W1, K2, W2, W3, A1 (S2), T1, DOC; etap replikacji dostawców po M1.
 
 ## Czeka na właściciela (tak/nie)
 - Hak automatycznego wypychania gałęzi po commicie: `tools/install_checkpoint_hook.sh` (nieaktywny).
 - Bezpośrednie połączenie z Google/Lyria.
 - Publikacja GitHub Release.
+- P39 §9: (1) wgląd w Twoje eksporty lokalnie dla E-A1 i T-R2 (do repozytorium tylko cytaty do Twojej
+  akceptacji i liczby zbiorcze) — tak/nie; (2) trzecia sesja S3 dla torów D/E — tak/nie; (3) plik
+  `face_embedding_research_master_prompt_2026-10-19.md` do `docs/architecture/`; (4) model estymatora
+  `turn_policy_estimator_model`, jeśli chcesz trzecią politykę (koszt pokazany przed wywołaniem).
 
 ## Odnośniki
 Zasady kontroli marnotrawstwa: `docs/reports/INDEX.md` („S1 — kontrola marnotrawstwa”), dziennik
