@@ -74,6 +74,9 @@ test('a receipt of the first message: the sheet names the empty sections in one 
   assert.equal(m.sections[0].items[0].text, 'Instrukcja aplikacji lub rozmowy');
   assert.equal(m.sections[0].items[0].chip, 'instrukcja');
   assert.equal(m.sections[0].items[0].tokens, 19);
+  assert.equal(m.sections[0].items[0].why, '', 'the kernel\'s English sentence is not shown for an item the pack names');
+  const slot = st.sheetModel({ ...base, sections: [{ class: 'profile', items: [{ ref: 'slot_1', label: 'Język odpowiedzi', source_kind: 'profile_slot', why: 'said by the person', tokens_est: 3 }], tokens_est: 3 }] }, t, 'pl');
+  assert.deepEqual([slot.sections[0].items[0].text, slot.sections[0].items[0].chip, slot.sections[0].items[0].why], ['Język odpowiedzi', 'z profilu', 'said by the person']);
   assert.equal(m.profileLine, 'Profil: żaden nie wybrany — działają ustawienia');
   assert.equal(m.modifiersLine, 'Zmiany tej tury: brak');
   assert.equal(m.guardState, 'unknown');

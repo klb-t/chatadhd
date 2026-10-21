@@ -250,6 +250,7 @@ jobs:
           npm run e2e
           npm run test:m1-navigator
           npm run test:m1-settings
+          npm run test:m1-context-sent
           npm run test:chat-first
           npm run test:composer-menu-browser
           npm run test:workspace

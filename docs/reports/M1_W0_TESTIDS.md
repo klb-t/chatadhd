@@ -561,3 +561,24 @@ Tabela ról stoi na górze widoku grupy `modele` (stała `ROLES_GROUP_PRESET` w 
 | nazwa techniczna | `role-settings`, `role-setting-<klucz>`, `role-setting-key-<klucz>`, `role-change-<klucz>` (rozwija kartę pola `node-card` w tym samym miejscu) | zmiana modelu roli = ta sama karta pola co w nawigatorze |
 
 Wstecz (`window.__loomBack()`): zamyka najpierw kartę pola otwartą z roli, potem kartę roli (`role-card`, wraca do tabeli), potem widok grupy, potem panel. Krok dla Androida (propozycja): `shell-menu-toggle` → `shell-menu-settings` → `shum-group-open-modele` → `role-open-analysis.fast` → `role-flow-by-class`, `role-readers`.
+
+## Co wysłaliśmy — arkusz i linia pod odpowiedzią (paczka M1-W1a, `loom/web/src/components/ContextReceipt.tsx`, `ChatView.tsx`; e2e `loom/web/e2e/m1-context-sent-native.mjs`)
+
+Arkusz otwiera linia pod odpowiedzią albo `⋯` wiadomości › Co wysłaliśmy; zamyka go `context-receipt-close`, tło `context-receipt-backdrop` i systemowe Wstecz (`window.__loomBack()`). Atrybut `data-state` arkusza to `loading` / `receipt` / `missing` / `failed` — czytaj dopiero po `receipt`.
+
+| ekran | testid | uwagi |
+|---|---|---|
+| linia pod odpowiedzią | `context-line` (`data-msg`), `context-line-open` | tekst „Kontekst: profil · pozycji: N · ~T tok. — zobacz” albo „Kontekst: Brak śladu (zapisane przed M1) — zobacz”; ustawienie `receipt_link` = `menu_only` chowa linię (wpis w menu zostaje) |
+| menu wiadomości | `msg-receipt` | w `shell-msg-actions` każdej wiadomości (chowane do najechania/przytrzymania jak reszta) |
+| arkusz | `context-receipt` (`data-state`, `data-request-msg`), `context-receipt-title`, `context-receipt-close`, `context-receipt-backdrop`, `context-receipt-loading`, `context-receipt-error`, `context-receipt-retry` | słowa z `presentation.context_receipt` |
+| nagłówek | `context-receipt-header`, `context-receipt-profile`, `context-receipt-modifiers`, `context-receipt-order`, `context-receipt-flow`, `context-receipt-prefix`, `context-receipt-guard` (`data-state` = `ok` / `asked` / `unknown`), `context-receipt-tokens`, `context-receipt-cost`, `context-receipt-truncated` | koszt to „koszt nieznany — brak ceny”, bo ślad nie niesie ceny |
+| sekcje | `context-receipt-sections`, `receipt-section-<klasa>` (`data-class`, `data-items`, `data-tokens`), `receipt-section-title-<klasa>`, `receipt-section-tokens-<klasa>`, `receipt-item`, `receipt-item-text`, `receipt-item-chip`, `receipt-item-tokens`, `receipt-item-why`, `receipt-item-omitted`, `context-receipt-empty` | sekcje bez pozycji są wymienione w jednej linii `context-receipt-empty`, nie ukryte |
+| pominięte | `context-receipt-dropped-title`, `context-receipt-dropped`, `receipt-dropped`, `context-receipt-dropped-none` | powód słowami z paczki, z nazwą sekcji |
+| napis | `context-receipt-disclaimer` | „Skompilowane żądanie, nie dowód odbioru przez dostawcę.” |
+| brak śladu | `context-receipt-missing`, `context-receipt-missing-word` | „Brak śladu (zapisane przed M1)” |
+| Pokaż w grafie | `receipt-show-in-graph` (`disabled`, `data-graph` = `checking` / `yes` / `no`), `receipt-show-in-graph-reason` (`data-kernel-answer`) | wyłączony z powodem, dopóki jądro nie ma źródła perspektywy „Wysłane do modelu” |
+| Następnym razem | `receipt-next-time-title`, `receipt-steps`, `receipt-step-wider`, `receipt-step-deeper`, `receipt-step-narrower`, `receipt-step-shallower`, `receipt-reset`, `receipt-modify-busy`, `receipt-modify-result` (`data-kind` = `applied` / `declined` / `failed`) | kroki z danych (`action.steps`); zmiana dotyczy tylko następnej wiadomości |
+| pytanie ×10 | `receipt-usage-pending` (w środku wiersze z końcówką `-line` oraz przyciski z końcówkami `-confirm` i `-reject`, jak w `chat-usage-pending`) | pytanie zadaje jądro (`awaiting_usage`), odpowiedź to `actions.confirm` |
+| Zmień profil | `receipt-change-profile`, `receipt-profile-list`, `receipt-profile-<id>` (`data-status`, `aria-current`), `receipt-profile-status-<id>` | lista z widoku efektywnego `selector_profiles`, status preset / kalibracja / dawny słowami |
+
+Krok dla Androida (propozycja): `context-line-open` → `context-receipt` (`data-state` = `receipt`) → `receipt-step-wider` → `receipt-modify-result` → `context-receipt-close`.

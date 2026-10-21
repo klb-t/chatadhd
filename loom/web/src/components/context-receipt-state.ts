@@ -71,6 +71,11 @@ export function itemText(item: { ref: string; label?: string; source_kind?: stri
   return item.label || item.ref;
 }
 
+/** True when the pack names this item (a fixed ref, or a history message by its role): the kernel's English "why" is then not needed. */
+function hasWords(item: { ref: string; label?: string; source_kind?: string }, t: ShellT): boolean {
+  return t(`ref.${item.ref}`) !== `ref.${item.ref}` || Boolean(item.source_kind?.startsWith("message:"));
+}
+
 export function itemChip(kind: string | undefined, t: ShellT): string {
   if (!kind) return "";
   const word = t(`chip.${kind.replace(":", ".")}`);
@@ -147,8 +152,10 @@ export function sheetModel(receipt: ContextReceipt, t: ShellT, language: string)
   const filled: SheetSection[] = [];
   const emptyNames: string[] = [];
   for (const s of receipt.sections) {
+    // The kernel's own "why" is an English sentence: it is shown only for an item the pack has no words for (a profile slot, a memory node ...);
+    // a fixed ref (the instruction, the question, the graph context) and a history message are already named and explained by the words.
     const items = (s.items ?? []).map((it, i) => ({
-      key: `${it.ref}:${i}`, text: itemText(it, t), chip: itemChip(it.source_kind, t), why: it.why ?? "", tokens: typeof it.tokens_est === "number" ? it.tokens_est : null,
+      key: `${it.ref}:${i}`, text: itemText(it, t), chip: itemChip(it.source_kind, t), why: hasWords(it, t) ? "" : it.why ?? "", tokens: typeof it.tokens_est === "number" ? it.tokens_est : null,
     }));
     const omitted = typeof s.items_omitted === "number" ? s.items_omitted : 0;
     if (items.length || omitted) filled.push({ id: s.class, title: sectionTitle(s.class, t), items, omitted, tokens: s.tokens_est ?? 0 });

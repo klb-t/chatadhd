@@ -54,6 +54,7 @@
     "test:context-receipt": "node tests/shell/context-receipt-state.test.mjs",
     "test:m1-navigator": "node e2e/m1-navigator-native.mjs",
     "test:m1-settings": "node e2e/m1-settings-native.mjs",
+    "test:m1-context-sent": "node e2e/m1-context-sent-native.mjs",
     "test:graph-labels": "node tests/graph-labels/graph-labels.test.mjs",
     "test:chat-first": "node e2e/chat-first.mjs",
     "test:composer-menu": "node tests/shell/composer-menu.test.mjs",
