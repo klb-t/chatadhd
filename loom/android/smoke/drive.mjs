@@ -348,6 +348,7 @@ const setOnBlur = (tid, v) => page.ev(`(()=>{const e=${q(tid)};if(!e)return fals
 async function openSettingsField(tid) {
   await openMenu("settings"); await waitTid("panel-settings");
   if (!(await has(tid))) {
+    await waitTid("shum-groups", 30);   // the groups come from the kernel after the panel opens
     if (await has("shum-group-open-silnik")) await click("shum-group-open-silnik");
     await waitTid("shum-all-fields", 10);
     if (!(await has(tid))) await page.ev(`${q("shum-all-fields")}.querySelector('button').click()`);
@@ -458,6 +459,10 @@ const textTid = tid => page.ev(`[...document.querySelectorAll('[data-testid="${t
 async function m1Reset() {
   for (let k = 0; k < 8; k++) if (!(await page.ev(`!!(window.__loomBack&&window.__loomBack())`).catch(() => false))) return;
 }
+// what a person sees: the visible text of the page (overlays first: the last dialog/sheet in the DOM is on top)
+const m1Visible = () => page.ev(`(()=>{const v=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden'};
+  const top=[...document.querySelectorAll('[role=dialog],[data-testid$=-sheet],[data-testid=role-card]')].filter(v).pop();
+  return ((top&&top.innerText)||document.body.innerText||'').replace(/\\s+/g,' ').slice(0,900)})()`).catch(() => "");
 function m1GateChecks() {
   const spec = m1GateSpec();
   if (spec.missing) return [["M1 Gate 0 (screens of W0)", async () => { const e = new Error(spec.missing); e.skip = true; throw e; }]];
@@ -483,11 +488,14 @@ function m1GateChecks() {
         if (x.text) { const t = await textTid(x.tid); if (!new RegExp(x.text, "i").test(t)) throw new Error(`${x.tid} says "${t.slice(0, 160)}", expected /${x.text}/`); notes.push(`${x.tid} ~ /${x.text}/`); }
       }
       shot("m1-" + st.name.replace(/\W+/g, "-").slice(0, 40));
-      // what a person sees: the visible text of the page (overlays first: the last dialog/sheet in the DOM is on top)
-      const visible = await page.ev(`(()=>{const v=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden'};
-        const top=[...document.querySelectorAll('[role=dialog],[data-testid$=-sheet],[data-testid=role-card]')].filter(v).pop();
-        return ((top&&top.innerText)||document.body.innerText||'').replace(/\\s+/g,' ').slice(0,900)})()`).catch(() => "");
+      const visible = await m1Visible();
       return notes.join("; ") + (visible ? ` || on screen: ${visible}` : "");
+    } catch (e) {
+      // a failed step says what the screen showed, so the cause (app or driver) is readable from the report
+      shot("m1-fail-" + st.name.replace(/\W+/g, "-").slice(0, 40));
+      const visible = await m1Visible();
+      if (visible) e.message += ` || on screen: ${visible}`;
+      throw e;
     } finally {
       if (st.reset !== false) await m1Reset();
     }
