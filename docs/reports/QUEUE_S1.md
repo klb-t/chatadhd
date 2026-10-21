@@ -11,7 +11,7 @@ Kształt dla W1: odpowiedź = dokument uruchomienia (`status` completed|awaiting
 paragon `loom.context_receipt/1` (order, profile, modifiers, guard, sections[…], dropped[…], sha256, truncated). Bieg CI **260** (`9f02ef7b`, start 21:18) trwa — asan kończy ok. 23:10; **FF `main` z commita `f9f83a29`
 (nie z roboczego stanu W1)** dopiero po nim.
 **W1** (web, dzielę na dwa pakiety: W1a = arkusz „Co wysłaliśmy” + linia pod odpowiedzią + ⋯ › Co wysłaliśmy + API + e2e `m1-context-sent-native.mjs`; W1b = podmenu kontekstu w `+`, ContextStrip, chip modelu
-z pochodzeniem, podgląd z profilem) startuje po regule odstępu (`pace.py`, najwcześniej 22:53).
+z pochodzeniem, podgląd z profilem) **W1a wystartowało 22:56 UTC** (`wf_e2dce102-ea6`, Sonnet, push na `claude/m1-w0`; start zapisany w `tools/pace_state.json`).
 
 ## MAIN = `8e05e38f` (K1a, 21:00 UTC) — bramka `k1a` zielona; CI 259 w toku; K1b w toku
 **Aktualizacja 21:18:** S2 zrobił FF `main` → `9f02ef7b` (K1a + jego merge: `android-smoke.yml` serwer na 24.04, `drive.mjs` sprawdza R38), co anulowało bieg 259 (miał 18 min). Docelowy bieg: **260** https://github.com/klb-t/chatadhd/actions/runs/39677626877 (start 21:18, do ok. 22:40). **Nie pushować kodu w `loom/**` na `main` do jego końca.** K1b przed FF: `git merge origin/main` do `claude/m1-w0`.
