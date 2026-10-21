@@ -78,6 +78,24 @@ systemowym Wstecz na czacie, gdzie powłoka Androida ma zapytać o wyjście (M1-
 | panel | `panel-<id>` (szuflada; `panel-settings`, `panel-navigator`, `panel-user-knowledge`, `panel-graph`; `role="dialog"`, `aria-modal="true"`, `aria-label` = tytuł), `close-panel` (×) | jeden wpis historii na otwarty panel; `×` = to samo co Wstecz; po otwarciu fokus jest w szufladzie (`document.activeElement` w środku), po zamknięciu wraca na `shell-menu-toggle` |
 | wstecz | `window.__loomBack()` → `true` gdy zamknął warstwę (menu, szufladę, arkusz, kartę, krok ścieżki, panel), `false` na dnie stosu | synchroniczne; Escape na komputerze robi to samo |
 
+## Dawne panele przez Warsztat (po M1-W0; `loom/web/src/App.tsx`; android-smoke `loom/android/smoke/drive.mjs` kroki graph / memory / knowledge)
+
+⋮ nie ma już „Pamięci” ani „Wiedzy”, a ⋮ › Graf otwiera nawigator (`panel-navigator`), nie dawny panel grafu. Dawne panele są
+w Warsztacie: `shell-menu-toggle` → `shell-menu-workshop` → układ Warsztat (nagłówek z `toggle-nav` ≡ i `app-nav`) → `nav-<panel>`.
+Przyciski `nav-*` są w DOM także przy zwiniętym `app-nav` na telefonie (`element.click()` działa bez ≡); przy otwartym panelu
+nagłówek jest `inert` — najpierw `close-panel`. Układ jest zapamiętywany (`loom.shell.last/1`): po `location.reload()` wraca
+Warsztat, więc po tych krokach `nav-chat`.
+
+| ekran | testid | znaczenie |
+|---|---|---|
+| wejście | `shell-menu-toggle` → `shell-menu-workshop` → `toggle-nav`, `app-nav` | układ `workshop`; `toggle-nav` (`aria-expanded`, `aria-controls=app-nav`) widoczny tylko na wąskim ekranie |
+| graf (dawny, siłowy) | `nav-graph` → `panel-graph`, `graph-view`, `graph-counts`, `graph-canvas` | ⋮ › Graf = nawigator; ten panel to dawny rysunek encji i tematów rozmowy (napis przycisku: `menu_this_conversation` = „Ta rozmowa w grafie”, od r1:b5) |
+| pamięć | `nav-memory` → `panel-memory`, `memory-new-content`, `memory-add`, `memory-node` | dawny panel notatek pamięci (`/api/memory`); napis `menu_memory` = „Pamięć” |
+| wiedza | `nav-knowledge` (`aria-pressed`) → `panel-knowledge-sheet` (`role=dialog`), `knowledge-workbench` | arkusz; zamknięcie: `.icon-btn` w arkuszu albo `window.__loomBack()` |
+| wejście do grafu | `nav-graph-entry` → `panel-graph-entry` | dawny ekran wejścia do grafu (e2e `graph-entry-native.mjs`) |
+| zamknięcie | `close-panel` (×) | zamyka panel Warsztatu; nagłówek przestaje być `inert` |
+| powrót do czatu | `nav-chat` → `shell-menu-toggle` | `workshop_back`; układ `chat` zapisany, kolejne kroki zaczynają od powłoki czatu |
+
 ## Nawigator — lista (paczka P2, `loom/web/src/components/GraphNavigator.tsx`; e2e `loom/web/e2e/m1-navigator-native.mjs`)
 
 Otwarcie: `shell-menu-toggle` → `shell-menu-graph` → panel `panel-navigator`. Adresy węzłów są częścią testid-u (np. `nav-row-area:rom`, `nav-row-card-rom:boot`).

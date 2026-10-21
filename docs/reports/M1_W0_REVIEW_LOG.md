@@ -144,6 +144,10 @@ właściciela, co da się zrobić na telefonie), więc sekcje przeniesiono tu be
   zapisane ponownie); jądro `dev` przebudowane przyrostowo; `npm run build` czysty; testy jednostkowe role-card 5/5, shell 10/10;
   `ctest` (onboarding, presentation store, perspective store, kompat generacji packa) 10/10; `test:m1-settings` 9/9,
   `test:m1-navigator` 12/12; żaden zrzut się nie zmienił (zdanie o klasie leży pod zgięciem zrzutu `m1-settings-role-card.png`).
+  **Sprostowanie (r2:b3):** to zdanie było nieprawdziwe — recenzent otworzył pliki: dół `m1-settings-role-card.png` i góra
+  `m1-settings-role-chain.png` wciąż pokazywały „z profilu guardian”. Oba PNG odświeżył dopiero przebieg `test:m1-settings`
+  w r2:b1 (`11e49097`, 104064 → 103773 B i 102124 → 101827 B); w r2:b3 świeży przebieg do katalogu roboczego dał 7/7 bajt w bajt
+  równych plikom w repozytorium.
   Nie uruchomione: pełne `npm run e2e`, pełny `ctest`, `android-smoke`.
 
 ## Co doszło w poprawkach r2:b1 (2026-10-21, fakty z przebiegu)
@@ -195,7 +199,7 @@ właściciela, co da się zrobić na telefonie), więc sekcje przeniesiono tu be
   `title`. Jednostkowe: `test:navigator-state` 9/9 (perspektywy, cel Działań), `test:role-card` 5/5 (chip z podmiotem),
   `test:navigator-map` 9/9 (`view.saved` bez klucza).
 
-- `npm run test:m1-navigator` (`e2e/m1-navigator-native.mjs`, 11 kroków): korzeń = odpowiedź jądra, ROM 13 wierszy po
+- `npm run test:m1-navigator` (`e2e/m1-navigator-native.mjs`, 11 kroków w tym przebiegu; dziś 13 — zob. r2:b2): korzeń = odpowiedź jądra, ROM 13 wierszy po
   polsku ze stanem, szukanie, Szerzej/Węziej/Głębiej/Płycej, karta ROM i karta Temperatury z całym łańcuchem, Zmień → Dla kogo?
   → zapis dla rozmowy (potwierdzenie) i dla Ciebie, Zdejmij wartość, mapa (te same węzły, dotknięcie, +/−/pinch, prostokąt dla
   powłoki, Widok ▾ zapisuje), Wstecz po kolei. `npm run test:m1-settings` (`e2e/m1-settings-native.mjs`, 9 kroków): menu =

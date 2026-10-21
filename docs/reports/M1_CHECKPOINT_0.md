@@ -139,6 +139,8 @@ W grupie **Silnik** na dole jest zwijane **„Pokaż Wszystkie pola”**: dawny 
 technicznymi, połączenie, modele, klucze, JSON). Prośba o wpisanie klucza (karta na starcie, podpowiedzi w czacie) otwiera
 Ustawienia od razu tutaj.
 
+![Silnik › Wszystkie pola](M1_CHECKPOINT_0/m1-settings-all-fields.png)
+
 ## 12. Wstecz
 
 Przycisk **wstecz** (Androida, przeglądarki, Escape na komputerze) zamyka **jedną warstwę na raz**, od góry: kartę →
@@ -147,6 +149,12 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
 
 ## Czego jeszcze NIE ma (i dlaczego)
 
+- **Ta rozmowa w grafie pokazuje dziś węzeł rozmowy i jej wiadomości jako wiersze** — nic więcej: wątki, gałęzie, wersje
+  wiadomości i to, co z rozmowy weszło do grafu (encje, tematy), w nawigatorze dochodzą w M1-W3. Rozmowa bez wiadomości
+  (nowa, pusta) pokazuje tylko „Nic pod tym węzłem.” — jedno kółko na mapie, „pokazano 0 z 0 wierszy”; to prawda, nie błąd.
+  Dawny, pełny graf rozmowy (siłowy rysunek encji i tematów) nie zniknął: ⋮ › **Warsztat** › przycisk „Ta rozmowa w grafie”
+  (ten sam napis co w ⋮, inny ekran — dawny panel; nazwa z r1:b5, żeby w Warsztacie nie było dwóch „Graf”). Zrzut
+  `m1-navigator-this_conversation.png` (rozmowa z trzema wiadomościami).
 - **Pola profilu pod Ty (r2:b1):** jądro nie daje jeszcze „po co” z treści pytania wywiadu ani działania „Odpowiedz (wywiad)”
   na karcie pola (`party:self/*` w `loom/src/graph/projection.cpp` zna tylko etykietę, stan i dowód); karta mówi drogę
   („⋮ › Warsztat › Onboarding”), a nie otwiera wywiadu — szuflada nawigatora nie ma dojścia do paneli Warsztatu. Działania
@@ -183,12 +191,12 @@ przeciw prawdziwemu jądru. Testy sprawdzają, że:
   (korzeń grafu, 25 węzłów);
 - dokument dla sterownika Androida (`docs/reports/M1_W0_TESTIDS.md`) wymienia tylko elementy, które naprawdę są na ekranie.
 
-Zrzuty: **21 plików PNG** 390×844 (widok, nie cała strona; każdy < 110 KB) w `docs/reports/M1_CHECKPOINT_0/`. Trzynaście z nich
-jest w tym tekście (§1–11); osiem pozostałych zapisały te same testy, przy innych krokach: `m1-navigator-root.png` (korzeń
+Zrzuty: **21 plików PNG** 390×844 (widok, nie cała strona; każdy < 110 KB) w `docs/reports/M1_CHECKPOINT_0/`. Czternaście z nich
+jest w tym tekście (§1–11); siedem pozostałych zapisały te same testy, przy innych krokach: `m1-navigator-root.png` (korzeń
 przewinięty do mapy), `m1-navigator-perspective.png` (Perspektywa ▾ z zaznaczeniem), `m1-navigator-actions.png` (Działania
 w ROM: karta otwarta na działaniach), `m1-navigator-card-unset.png` (karta pola po zdjęciu wartości rozmowy),
 `m1-navigator-card-profile.png` (karta pola profilu pod Ty), `m1-navigator-this_conversation.png` (Ta rozmowa w grafie:
-wiadomości jako wiersze), `m1-settings-role-card.png` (karta roli od góry), `m1-settings-all-fields.png` (Silnik › Wszystkie pola).
+wiadomości jako wiersze), `m1-settings-role-card.png` (karta roli od góry).
 
 Dziennik techniczny poprawek po przeglądach (nazwy plików, testów, liczby, decyzje) jest osobno:
 `docs/reports/M1_W0_REVIEW_LOG.md`. Ten raport mówi tylko, co możesz zrobić na telefonie i czego jeszcze nie ma.
