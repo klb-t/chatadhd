@@ -70,7 +70,7 @@ function dismissSystemDialogs(nodes) {
 
 // The system picker (ACTION_OPEN_DOCUMENT): tap the named file; go to Downloads when it is not listed where it opened.
 async function pick(target) {
-  let seen = false, taps = 0, last = "";
+  let seen = false, taps = 0, last = "", wentDl = false;
   for (let i = 0; i < 60; i++) {
     await sleep(1000);
     let nodes;
@@ -90,7 +90,9 @@ async function pick(target) {
       continue;
     }
     const dl = find(nodes, n => /^downloads?$/i.test(n.text || "") && !/toolbar/i.test(n["resource-id"] || ""));
-    if (dl && i % 3 === 0) { log("picker: Downloads"); tap(dl); continue; }
+    // the picker may open at the device root (a "Download" folder in the list) or in Recent: go to Downloads at once
+    if (dl && !wentDl) { log("picker: Downloads"); tap(dl); wentDl = true; continue; }
+    if (dl && i % 3 === 0) { log("picker: Downloads again"); tap(dl); continue; }
     const roots = find(nodes, n => /show roots|open drawer|navigate up/i.test(n["content-desc"] || ""));
     if (roots && i % 3 === 1) { log("picker: roots"); tap(roots); continue; }
   }
