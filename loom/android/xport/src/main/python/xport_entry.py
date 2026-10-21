@@ -308,20 +308,71 @@ def catalog():
 def call(req_json):
     """Any api.Session call (list, view, edit, apply, undo, redo, op, search, compare, goto, tag, bookmark, status…).
     A ready recipe (macro) and an undo come back with `summary_text` (one plain sentence about what changed) and `summary`
-    (the same numbers as lists); the engine's own answer stays untouched below them."""
+    (the same numbers as lists); the engine's own answer stays untouched below them.
+    A call that works on the working package first brings the package in line with the selection (see `_package_phase`);
+    its answer then carries `package_added` (selected conversations copied in) and, when there were some,
+    `package_added_text` (the plain clause for the screen)."""
     with _lock:
         try:
-            _need()
+            eng = _need()
             req = json.loads(req_json)
             kind = req.get("call")
+            phase, create = _package_phase(eng, req)
+            added = 0
+            if phase == "before":
+                added = _align_package(eng, create)[2]
             if kind == "macro" or kind == "undo":
                 res = _call_measured(req)
             else:
                 res = _sess.call(req)
+            if phase == "after":  # undo / redo put an older snapshot of the whole tree back: align after it, not before it
+                added = _align_package(eng, False)[2]
+            if phase:
+                res["package_added"] = added
+                if added:
+                    res["package_added_text"] = _package_note(eng, "package_added", added)
             res.setdefault("ok", True)
             return json.dumps(res, ensure_ascii=False, default=str)
         except Exception as exc:
             return _fail(exc)
+
+
+# Operations that arrange the package tree by hand: the person is in charge of what is in the package, so they do not
+# add the selection to it (an explicit `package.remove` must not be undone by the next call).  Everything else that
+# changes or reads the package (the ops marked `mutates_package` in data/ops.json: edits, cut, write, handoff…) does.
+_HAND_PACKAGE_OPS = frozenset({"package.copy", "package.move", "package.mkdir", "package.remove", "package.rename",
+                               "package.mark", "undo", "redo"})
+
+
+def _package_phase(eng, req):
+    """(`before` | `after` | None, whether the package may be created for this call).  `before`: the package is brought
+    in line with the selection first (edits, recipes, previews, ops that change or write the package; reads of the
+    package in the browser only when a package already exists - looking never makes one).  `after`: undo and redo, whose
+    restore of an older snapshot would take the copied-in conversations away again."""
+    kind = req.get("call")
+    if kind in ("macro", "edit"):
+        return "before", True
+    if kind in ("undo", "redo"):
+        return "after", False
+    if kind in ("apply", "op"):
+        if kind == "apply" and req.get("edit"):
+            return "before", True
+        op = str(req.get("op") or "")
+        if op and op not in _HAND_PACKAGE_OPS and (eng.ops_available().get(op) or {}).get("mutates_package"):
+            return "before", True
+        return None, False
+    if kind in ("list", "view", "search", "goto", "compare", "explain", "stats"):
+        roots = req.get("roots") if isinstance(req.get("roots"), list) else [req.get("root")]
+        if "package" in roots or str(req.get("node") or "").startswith(("pkg:", "dir:")):
+            return "before", False
+    return None, False
+
+
+def _package_note(eng, key, n):
+    """One clause from data/ui_labels.json#effects (`package_added`, `package_left_out`) with a counted noun that needs
+    no adjective to agree with it: 'do pakietu roboczego dołączono to, co zaznaczono po jego utworzeniu: 5 rozmów'."""
+    from loom.tools.extract import plural
+    return eng.ds.file("ui_labels.json")["effects"][key]["pl"].format(count=plural.count("conversation", n, "pl"))
 
 
 def _call_measured(req):
@@ -368,12 +419,16 @@ def _conversation_dirs(eng):
     return dirs
 
 
-def _align_package(eng):
+def _align_package(eng, create=True):
     """The export is of the selection, the cut works on the working package.  The package is made from the selection
     the first time anything needs it (an edit, a recipe preview) and is not re-made when the selection changes later,
-    so a package made while nothing was selected is empty and exports a zip of report files only.  Here the selected
-    conversations that the package lacks are copied in (edits already made to the others stay) and the package
-    entries that are not selected are returned so that they are left out of this export, not lost."""
+    so a package made while nothing was selected is empty and every later edit, recipe and export worked on nothing.
+    Here the selected conversations that the package lacks are copied in (the whole conversation, as at the package's
+    creation; edits already made to the other entries stay) and the package entries that are not selected are returned
+    so that the export can leave them out, not lose them.  Nothing is removed from the package.  `create` False: no
+    package yet means nothing to align (a read never makes one).  Returns (package | None, left out, added)."""
+    if eng.package is None and not create:
+        return None, [], 0
     pkg = eng.ensure_package()
     want = set(eng.selection.units)
     added = len(want - {e.unit.uid for e in pkg.entries})
@@ -425,6 +480,8 @@ def export_selected(zip_path, redaction="", profiles="", handoff=False):
             used = [{"id": i, "label": _lbl((profs.get(i) or {}).get("label"), i)} for i in ids]
             return json.dumps({"ok": True, "files": files, "selection": eng.selection_summary(), "profiles_used": used,
                                "package_added": added, "package_left_out": len(left_out),
+                               "package_added_text": _package_note(eng, "package_added", added) if added else "",
+                               "package_left_out_text": _package_note(eng, "package_left_out", len(left_out)) if left_out else "",
                                "top_level_entries": len(tops), "top_level_dirs": sorted(top_dirs),
                                "conversation_dirs": len(top_dirs & _conversation_dirs(eng))}, ensure_ascii=False)
         except Exception as exc:

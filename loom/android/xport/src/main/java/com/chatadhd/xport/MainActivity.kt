@@ -453,7 +453,7 @@ class MainActivity : Activity() {
     // ───────────── Przeglądarka: engine views, one pane or two ─────────────
     private fun browserPanel(prefs: android.content.SharedPreferences): View {
         val roots = browseRoots
-        rootAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roots.map { rootLabel(it) }.toMutableList())
+        rootAdapter = spinnerAdapter(roots.map { rootLabel(it) })
         val rootSpin = Spinner(this).apply { adapter = rootAdapter }
         rootSpinner = rootSpin
         rootSpin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -463,7 +463,7 @@ class MainActivity : Activity() {
             override fun onNothingSelected(p: AdapterView<*>?) {}
         }
         val fmts = browseFormats
-        formatAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, fmts.map { formatLabel(it) }.toMutableList())
+        formatAdapter = spinnerAdapter(fmts.map { formatLabel(it) })
         val fmtSpin = Spinner(this).apply { adapter = formatAdapter }
         formatSpinner = fmtSpin
         fmtSpin.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -700,7 +700,7 @@ class MainActivity : Activity() {
                     val opts = (0 until values.length()).map { values.getString(it) }
                     val vl = p.optJSONArray("value_labels")
                     val shown = opts.mapIndexed { k, o -> vl?.optString(k, "")?.ifEmpty { null } ?: o }
-                    val sp = Spinner(this).apply { adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, shown) }
+                    val sp = Spinner(this).apply { adapter = spinnerAdapter(shown) }
                     if (def != null) sp.setSelection(opts.indexOf(def.toString()).coerceAtLeast(0))
                     box.addView(label("$lab$req"))
                     box.addView(sp)
@@ -736,8 +736,19 @@ class MainActivity : Activity() {
         }
     }
 
+    // A closed drop-down is one plain line of text; only the open list uses the checkable row, which draws a radio mark
+    // (the closed one used it too, so a batch-edit chooser looked like one more radio under the recipes).
+    private fun spinnerAdapter(items: List<String>): ArrayAdapter<String> =
+        ArrayAdapter(this, android.R.layout.simple_spinner_item, items.toMutableList()).also { it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+
+    // "Do pakietu roboczego dołączono …" - the engine's own clause (counted noun without an adjective), as the first sentence.
+    private fun packageLead(j: JSONObject): String {
+        val note = j.optString("package_added_text")
+        return if (note.isEmpty()) "" else note.replaceFirstChar { it.uppercase() } + ". "
+    }
+
     private fun picker(labels: List<String>, onPick: (Int) -> Unit): Spinner = Spinner(this).apply {
-        adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_spinner_dropdown_item, labels)
+        adapter = spinnerAdapter(labels)
         onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p: AdapterView<*>?, v: View?, pos: Int, id: Long) = onPick(pos)
             override fun onNothingSelected(p: AdapterView<*>?) {}
@@ -771,7 +782,7 @@ class MainActivity : Activity() {
                 // engine from the data, different for preview / apply / undo). It stands above the list; the raw result is
                 // kept below, collapsed, for the details.
                 val sentence = j.optString("summary_text")
-                info.text = sentence.ifEmpty { "Gotowe." }
+                info.text = packageLead(j) + sentence.ifEmpty { "Gotowe." }
                 val roots = ArrayList<TNode>()
                 val patch = j.optString("patch_text")
                 if (patch.isNotEmpty()) roots.add(TNode("Zmiany", Pl.count(patch.lines().size, Nouns.LINE), onOpen = { showText(this, "Zmiany", patch) }, copy = patch))
@@ -796,13 +807,22 @@ class MainActivity : Activity() {
         val list = ListView(this)
         list.addHeaderView(col().apply {
             if (macros.length() > 0) {
-                addView(label("Gotowe przepisy", 16f))
-                addView(recipeSp); addView(recipeText)
-                addView(row(btn("Podgląd przepisu") { info.text = "Liczę…"; call(recipeReq(true), show) },
-                    btn("Zastosuj przepis") { info.text = "Stosuję…"; call(recipeReq(false)) { j -> if (j.optBoolean("ok")) recipeSteps = j.optInt("steps"); show(j) } }))
-                addView(btn("Cofnij przepis") { call(JSONObject().put("call", "undo").put("steps", maxOf(recipeSteps, 1)), show); recipeSteps = 0 })
+                // The recipes are a group of their own (the only RadioGroup on this screen); the batch-edit chooser below is a
+                // drop-down and is not part of it.
+                addView(LinearLayout(this@MainActivity).apply {
+                    orientation = LinearLayout.VERTICAL
+                    addView(label("Gotowe przepisy", 16f))
+                    addView(recipeSp); addView(recipeText)
+                    addView(row(btn("Podgląd przepisu") { info.text = "Liczę…"; call(recipeReq(true), show) },
+                        btn("Zastosuj przepis") { info.text = "Stosuję…"; call(recipeReq(false)) { j -> if (j.optBoolean("ok")) recipeSteps = j.optInt("steps"); show(j) } }))
+                    addView(btn("Cofnij przepis") { call(JSONObject().put("call", "undo").put("steps", maxOf(recipeSteps, 1)), show); recipeSteps = 0 })
+                })
+                addView(View(this@MainActivity).apply {
+                    setBackgroundColor(0x44888888)
+                    layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 2).apply { setMargins(0, pad, 0, pad) }
+                })
             }
-            addView(label("Edycje seryjne (na zaznaczeniu, jeśli jest; inaczej na wszystkim)", 16f))
+            addView(label("Edycje seryjne (na rozmowach zaznaczonych w zakładce Wybór)", 16f))
             addView(sp); addView(formHolder)
             addView(row(btn("Podgląd") { info.text = "Liczę…"; call(req("edit"), show) },
                 btn("Zastosuj") { info.text = "Stosuję…"; call(req("apply"), show) }))
@@ -835,7 +855,7 @@ class MainActivity : Activity() {
                 call(JSONObject().put("call", "op").put("op", ops.getJSONObject(current).optString("id"))
                     .put("params", form?.collect?.invoke() ?: JSONObject())) { j ->
                     if (!j.optBoolean("ok")) { info.text = j.optString("error"); adapter.setRoots(emptyList()) }
-                    else { info.text = "Gotowe."; adapter.setRoots(listOf(jsonNode("wynik", j, this@MainActivity).also { it.expanded = true })) }
+                    else { info.text = packageLead(j) + "Gotowe."; adapter.setRoots(listOf(jsonNode("wynik", j, this@MainActivity).also { it.expanded = true })) }
                 }
             })
             addView(info)
@@ -864,8 +884,7 @@ class MainActivity : Activity() {
     private fun fillExport(cat: JSONObject) {
         val red = cat.getJSONArray("redaction")
         redactionIds = (0 until red.length()).map { red.getJSONObject(it).optString("id") }
-        redactionSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item,
-            (0 until red.length()).map { red.getJSONObject(it).optString("label") })
+        redactionSpinner.adapter = spinnerAdapter((0 until red.length()).map { red.getJSONObject(it).optString("label") })
         val holder = (panels["Eksport"] as ScrollView).findViewWithTag<LinearLayout>("profiles")
         // The boxes are rebuilt after every opened file; what was ticked stays ticked (a refill must not silently untick a profile).
         val ticked = profileChecks.filter { it.second.isChecked }.map { it.first }.toSet()
@@ -906,10 +925,9 @@ class MainActivity : Activity() {
             topDirs > 0 -> "bez katalogów rozmów (katalogów na górze: $topDirs)"
             else -> "bez żadnego katalogu (wszystkie pliki leżą w katalogu głównym zipa)"
         })
-        val added = j.optInt("package_added")
-        if (added > 0) parts.add("do pakietu roboczego dołączono ${Pl.count(added, Nouns.CONVERSATION)} zaznaczone po jego utworzeniu (bez wcześniejszych edycji)")
-        val left = j.optInt("package_left_out")
-        if (left > 0) parts.add("pominięto ${Pl.count(left, Nouns.CONVERSATION)} z pakietu roboczego, których już nie zaznaczono")
+        // The two clauses about the working package are the engine's (data/ui_labels.json#effects): the counted noun stands
+        // after a colon, so no adjective has to agree with it ("… po jego utworzeniu: 5 rozmów").
+        for (k in listOf("package_added_text", "package_left_out_text")) j.optString(k).takeIf { it.isNotEmpty() }?.let { parts.add(it) }
         return parts.joinToString("; ") + "."
     }
 

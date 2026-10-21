@@ -988,6 +988,14 @@
    "pl": "Pakiet roboczy nie ma żadnych wiadomości — najpierw zaznacz rozmowy w zakładce Wybór.",
    "en": "The working package has no messages — select conversations in the Selection tab first."
   },
+  "package_added": {
+   "pl": "do pakietu roboczego dołączono to, co zaznaczono po jego utworzeniu: {count} (bez wcześniejszych edycji)",
+   "en": "added to the working package what was selected after it was made: {count} (without earlier edits)"
+  },
+  "package_left_out": {
+   "pl": "z pakietu roboczego pominięto to, czego już nie zaznaczono: {count}",
+   "en": "left out of the working package what is no longer selected: {count}"
+  },
   "tree_only": {
    "pl": "Zmiana dotyczy czegoś innego niż pola i bloki wiadomości (np. rozmów albo ich układu) — szczegóły w drzewie poniżej.",
    "en": "The change concerns something other than message fields and blocks (e.g. conversations or their layout) — details in the tree below."
