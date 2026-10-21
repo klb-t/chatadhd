@@ -49,6 +49,10 @@ const find = (nodes, pred) => nodes.find(n => n.cx !== undefined && pred(n));
 const tap = n => adb("shell", "input", "tap", String(n.cx), String(n.cy));
 const texts = nodes => nodes.map(n => n.text || n["content-desc"]).filter(Boolean);
 const inApp = nodes => nodes.some(n => n.package === PKG);
+// What a person sees on the screen: the app's own texts, top to bottom, without repeats (the report quotes them).
+const seen = (nodes, max = 14) => [...new Set(nodes.filter(n => n.package === PKG && (n.text || "").trim())
+  .sort((a, b) => (a.t ?? 0) - (b.t ?? 0) || (a.l ?? 0) - (b.l ?? 0)).map(n => n.text.trim().replace(/\s+/g, " ").slice(0, 70)))]
+  .slice(0, max).join(" | ");
 const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${PKG.replace(/\./g, "\\.")}/`).test(adb("shell", "dumpsys", "activity", "activities"));
 const crashes = () => { try { return adb("logcat", "-d", "-b", "crash").split("\n").filter(l => l.includes(PKG)); } catch { return []; } };
 
@@ -131,7 +135,7 @@ async function addSource(file) {
   if (/^Błąd/.test(status)) throw new Error(status);
   const err = texts(after).find(t => /^Błąd/.test(t));
   if (err) throw new Error(err);
-  return `screen texts ${before} -> ${texts(after).length}${status ? `; status "${status}"` : ""}`;
+  return `${status ? `status "${status}"; ` : ""}on screen: ${seen(after)}`;
 }
 
 let exitCode = 0;
@@ -167,7 +171,7 @@ try {
       shot("tab-" + tab);
       const err = texts(after).find(x => /^Błąd/.test(x));
       if (err) throw new Error(err);
-      return `${texts(after).length} texts`;
+      return `on screen: ${seen(after)}`;
     });
   }
   await check("the process never crashed", async () => {
