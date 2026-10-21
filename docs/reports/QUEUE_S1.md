@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-21 03:15 UTC
+# Kolejka S1 — stan 2026-10-21 03:35 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
@@ -22,20 +22,14 @@ wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu
   `claude/fix-login-drop`); trwa przegląd. Po nim bramka i FF `main`.
 - **S2 wprowadził na `main`:** R38 na Androidzie, smoke X-Port na emulatorze, kroki Bramki 0 jako dane
   z `docs/reports/M1_W0_TESTIDS.md` (plik pojawi się na `main` ze scaleniem W0).
-- **X-Port Android:** emulator pixel_5/pixel_6 13/13; zostaje do potwierdzenia przepis „tylko znaczniki czasu”
-  (ukryty na liście rozwijanej — S2 sprawdza) i eksport profilem „katalog rozmowy”; build `5643d84b`
-  (teksty bez flag CLI) w toku. Do kolejki: przepisy w Edycjach widoczne od razu, nie w rozwijanej liście.
-- **X-Port Android, pakiety A i B** (gałąź `claude/xport-android`, head `db469050`, build `xport-apk.yml`
-  przebieg 39532408090 = success, artefakt `xport-apk` 12315942830): pięć poprawek UX, polskie etykiety,
-  przepisy „zostaw tylko znaczniki czasu” (makro) i „katalog rozmowy” (profil eksportu), wybór po danych
-  kodowanych w zakładce Wybór, `main` scalone do gałęzi. Niesprawdzone na emulatorze — S2 dostał numer
-  przebiegu i ma opisać układ. **Do zrobienia:** wynik S2; scalenie `claude/xport-android` do `main`
-  przez bramkę (testy `tools.extract`) — dopiero po wyniku S2.
-- **P39 projekt gotowy i na `main`** (`bbdaca7f`): `docs/architecture/P39_INTERAKCJA_MULTIMODALNA_2026-10-21.md`
-  (specyfikacja po weryfikacji handoffu, trzy tory T/D/E, bramki T0–E2, 14 ryzyk, hipotezy H1–H9) i
-  `docs/reports/P39_WORK_ITEMS.json` (26 pozycji z zależnościami). Pierwsza dotykalna rzecz: **T0** (cztery
-  pozycje: T-A1 → T-K1 → T-K2 → T-K3, „Dokończyć przerwaną odpowiedź?”), ale dopiero po M1-W0. Następne
-  pozycje P39 startują po scaleniu W0, nie wcześniej.
+- **X-Port Android, paczka C** (gałąź `claude/xport-android`, head `fbe55b85`, build `xport-apk.yml` przebieg
+  39538587463 = success, artefakt `xport-apk` 12318204849). **Przyczyna błędu „zip bez katalogów":** pakiet roboczy
+  powstawał z zaznaczenia przy pierwszym użyciu (np. Podgląd przepisu przed zaznaczeniem = pusty pakiet), późniejsze
+  zaznaczenie do niego nie trafiało, eksport ciął pusty pakiet; poprawka `_align_package`. Zdanie po polsku
+  „co zniknie / co zostanie" przy przepisach (mierzone, nie zgadywane), przepisy jako widoczna lista, komunikat
+  po eksporcie z użytymi profilami i liczbą katalogów rozmów. S2 ma powtórzyć dokładnie kolejność, która dała błąd.
+  **Znane luki:** zaznaczenie częściowe (część wiadomości rozmowy) eksportuje całą rozmowę, jeśli była w pakiecie;
+  Ponów i zwykła edycja seryjna nie mają jeszcze zdania po polsku; lista kluczy w zdaniu ograniczona presetem 6.
 
 ## Czeka na wolny worktree z buildem jądra (dysk 7 GB: drugi build jądra się nie mieści)
 Kolejność po zakończeniu poprawki logowania i jej bramce: worktree `/home/user/wt/extract` (build 2,1 GB)
