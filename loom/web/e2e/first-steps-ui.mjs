@@ -338,6 +338,11 @@ try {
 
   complete.complete();
   console.log(`[first-steps-ui] ${groups.length}/6 groups passed`);
+} catch (error) {
+  // A request that fails against a server that is gone (killed, crashed) is another failure than one against a server that answers.
+  const gone = server && (server.exitCode !== null || server.signalCode !== null);
+  console.error(`[first-steps-ui] FAILED after ${groups.length} groups: ${error.message.split("\n")[0]}; server ${gone ? `EXITED (code ${server.exitCode}, signal ${server.signalCode})` : "still running"}; server log tail:\n${serverLog.slice(-1500)}`);
+  throw error;
 } finally {
   if (browser) await browser.close().catch(() => undefined);
   await stopChild(server).catch(() => undefined);
