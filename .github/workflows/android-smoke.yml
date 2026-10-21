@@ -175,8 +175,11 @@ jobs:
   server:
     name: Build the server archive (linux x64)
     if: ${{ inputs.server_run_id == '' && inputs.xport_run_id == '' }}
-    # Ubuntu 22.04 + GCC 13 (PPA) with libstdc++ linked statically: the same archive package.yml builds.
-    runs-on: ubuntu-22.04
+    # GCC 13 with libstdc++ linked statically: the build package.yml makes, on another runner (below).
+    # ubuntu-24.04 on purpose, unlike package.yml (22.04 + toolchain PPA for the glibc 2.35 of target machines, unchanged):
+    # this archive only runs the smoke server on the 24.04 runner below, and 24.04 has gcc-13 in its own archive, so a
+    # Launchpad outage (PPA 503, 2026-10-21) no longer blocks the smoke. Reverse: runs-on ubuntu-22.04 + the PPA lines.
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
@@ -190,11 +193,8 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install build dependencies (GCC 13 from the toolchain PPA)
+      - name: Install build dependencies (GCC 13 from the Ubuntu 24.04 archive)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends software-properties-common
-          sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends gcc-13 g++-13 ninja-build ccache libssl-dev
 
