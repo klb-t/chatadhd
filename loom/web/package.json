@@ -17,6 +17,7 @@
     "test:graph-entry": "node tests/graph-entry/headless.test.mjs",
     "test:auth-state": "node tests/conversation-view/auth-state.test.mjs",
     "test:first-steps-ui": "node e2e/first-steps-ui.mjs",
+    "test:stale-connection": "node e2e/stale-connection.mjs",
     "test:chat-outcomes": "node e2e/chat-outcomes.mjs",
     "test:usage-pending": "node tests/conversation-view/usage-pending.test.mjs",
     "test:usage-pending-browser": "node e2e/usage-pending-ui.mjs",
