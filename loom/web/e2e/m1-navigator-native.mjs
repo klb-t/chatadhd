@@ -22,7 +22,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const LOOM = path.resolve(here, "../..");
 const SERVER_BIN = process.env.LOOM_SERVER_BIN || path.join(LOOM, "build/dev/server/loom-server");
 const DIST = path.join(LOOM, "web/dist");
-const SHOTS = path.join(here, "screenshots");
+const SHOTS = process.env.M1_SHOTS_DIR || path.join(here, "screenshots");   // M1_SHOTS_DIR = the report's folder (docs/reports/M1_CHECKPOINT_0/)
 const CHROMIUM = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 if (!existsSync(SERVER_BIN) || !existsSync(path.join(DIST, "index.html"))) { console.error("[m1-navigator] build loom-server and `npm run build` first"); process.exit(2); }
 mkdirSync(SHOTS, { recursive: true });
