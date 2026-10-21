@@ -183,6 +183,18 @@ export interface RoleTodayStep {
   meaning: string;
 }
 
+/** A flow a class of model gets: `does`/`planned` are the data's own lines (English), `title`/`does_human`/`planned_human` the same in the language asked. */
+export interface RoleFlow {
+  id: string;
+  status: string;
+  does: string[];
+  planned: string[];
+  calls: string;
+  title?: string;
+  does_human?: string[];
+  planned_human?: string[];
+}
+
 export interface RoleResolved {
   id: string;
   label: string;
@@ -202,7 +214,9 @@ export interface RoleResolved {
   chain_status?: "read" | "described_not_read";
   /** What today's reader of a policy no reader reads yet reads, in order (guardian.pack policies.<id>.today_reads). */
   today_chain?: RoleTodayStep[];
-  flow: { id: string; status: string; does: string[]; planned: string[]; calls: string } | null;
+  flow: RoleFlow | null;
+  /** The flow of every class of model (the class decides which flow runs); the class the role has now is `tier.id`. Absent when no flow depends on the class. */
+  flow_by_class?: { tier: { id: string; label: string }; flow: RoleFlow }[];
   mode?: { modes: unknown; batch_threshold: unknown; batch_key_set?: boolean | null };
   cost: {
     per_million?: { input: number; output: number | null; currency: string };
@@ -213,6 +227,8 @@ export interface RoleResolved {
     last_7d_unknown_human?: string;
   };
   flows_reading: { id: string; title: string }[];
+  /** The other flows that read one of the role's settings without declaring the role (cost estimate, Secretary, screens that show roles), with the key they read. */
+  flows_reading_setting?: { id: string; title: string; key: string }[];
   settings: { key: string; label: string }[];
 }
 

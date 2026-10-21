@@ -1,0 +1,27 @@
+/* M1-W0 (4) P6: the role table and the role card on a phone (390 px): touch targets >= 44 px, no horizontal page scroll, long sentences wrap.
+   Colours come from the theme variables of styles.css; rows, chips and buttons reuse graph-navigator.css. */
+.rolc { max-width: 100%; margin: 8px 0 16px; }
+.rolc-title { margin: 4px 0; font-size: 20px; }
+.rolc-h { margin: 16px 0 4px; font-size: 15px; }
+.rolc-h-sub { font-size: 14px; opacity: 0.9; }
+.rolc-row-main { padding-right: 8px; }
+.rolc-model { font-size: 14px; overflow-wrap: anywhere; }
+.rolc-key { opacity: 0.7; }
+.rolc-why-line { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }   /* the whole sentence is on the card */
+.rolc-card { max-width: 100%; overflow-wrap: anywhere; }
+.rolc-card p { margin: 4px 0; }
+.rolc-lines { font-size: 13px; }
+.rolc-model-name { font-weight: 600; }
+.rolc-chain, .rolc-classes, .rolc-readers, .rolc-settings, .rolc-planned-list { margin: 4px 0; padding-left: 0; list-style: none; }
+.rolc-step, .rolc-class { border-left: 3px solid var(--border); padding: 2px 0 6px 10px; margin: 8px 0; }
+.rolc-step[data-decides="1"], .rolc-class[data-current="1"] { border-left-color: var(--accent, #7aa2f7); }
+.rolc-chain-described .rolc-step { opacity: 0.8; }
+.rolc-step-head, .rolc-flow-head, .rolc-class-head { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.rolc-step-title, .rolc-flow-title { font-weight: 600; }
+.rolc-decides { border-color: var(--accent, #7aa2f7); color: var(--accent, #7aa2f7); }
+.rolc-planned { opacity: 0.8; }
+.rolc-planned-list li { padding: 2px 0; font-size: 13px; }
+.rolc-readers li { padding: 4px 0 4px 10px; border-left: 3px solid var(--border); margin: 4px 0; }
+.rolc-setting { padding: 4px 0 8px; border-bottom: 1px solid var(--border); }
+.rolc-setting-line code { font-size: 12px; opacity: 0.85; }
+.rolc-change { border: 1px solid var(--border); border-radius: 8px; padding: 0 10px; font-size: 13px; text-align: left; max-width: 100%; }

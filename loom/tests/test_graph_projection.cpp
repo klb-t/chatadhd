@@ -385,6 +385,19 @@ TEST_SUITE("graph_projection") {
     }
     CHECK(current_among);
     CHECK(analysis->at("flow").at("does_human").size() == analysis->at("flow").at("does").size());
+    // every other action that reads the role's setting is listed too (with the key it reads), none twice
+    const Json also = analysis->at("flows_reading_setting");
+    REQUIRE(also.is_array());
+    bool estimate = false;
+    for (const auto& a : also) {
+      bool of_the_role = false;  // the key is one of the role's own settings
+      for (const auto& setting : analysis->at("settings")) of_the_role = of_the_role || setting.at("key") == a.at("key");
+      CHECK(of_the_role);
+      CHECK_FALSE(a.at("title").get<std::string>().empty());
+      estimate = estimate || a.at("id") == "actions.preview";
+      for (const auto& reading : analysis->at("flows_reading")) CHECK(reading.at("id") != a.at("id"));
+    }
+    CHECK(estimate);
     const Json pl = unwrap(f.rt->actions().invoke("roles.resolved", Json{{"lang", "pl"}}));
     const Json en = unwrap(f.rt->actions().invoke("roles.resolved", Json{{"lang", "en"}}));
     std::string pl_title, en_title;

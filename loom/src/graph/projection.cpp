@@ -2010,6 +2010,22 @@ const Json& role_rows(Impl& c) {
         if (json::get_string(f.value("human", Json::object()), "role") == id)
           keys.push_back(Json{{"key", json::get_string(f, "key")}, {"label", c.say(f["human"].value("label", Json()))}});
     row["settings"] = keys;
+    // The other flows that read one of the role's settings without declaring the role (the cost estimate, the Secretary reading
+    // semantic_model through its own policy, the screens that show the roles): the owner asked for EVERY flow that reads the key.
+    // The list is the actions' own `reads`, audited against their executors by tools/check_action_reads.py.
+    Json also = Json::array();
+    for (const auto& a : actions) {
+      const std::string aid = json::get_string(a, "id");
+      bool listed = false;
+      for (const auto& r : readers) listed = listed || json::get_string(r, "id") == aid;
+      if (listed) continue;
+      std::string via_key;
+      for (const auto& read : strings_in(a.value("reads", Json())))
+        for (const auto& k : keys)
+          if (via_key.empty() && json::get_string(k, "key") == read) via_key = read;
+      if (!via_key.empty()) also.push_back(Json{{"id", aid}, {"title", catalogue_title(a, c.lang())}, {"key", via_key}});
+    }
+    row["flows_reading_setting"] = also;
     rows.push_back(std::move(row));
   }
   if (!issues.empty()) out["issues"] = issues;

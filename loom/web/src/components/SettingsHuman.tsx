@@ -14,6 +14,8 @@ import { shellTranslator } from "../shell/text";
 import { useLayer } from "../shell/use-layer";
 import { usePresentationFeature } from "./ConversationSourceView";
 import NodeCard from "./NodeCard";
+import { RolesTable } from "./RoleCard";
+import { ROLES_GROUP_PRESET } from "./role-card-state";
 import SettingsPanel from "./SettingsPanel";
 import { ALL_FIELDS_GROUP_PRESET, countLine, countWord, editText, fieldChips, fieldsToShow, flowTitles, isPlanned, subgroupBlocks, subgroupLabels, summaries, totals } from "./settings-human-state";
 import "./graph-navigator.css";
@@ -44,6 +46,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   const [detail, setDetail] = useState<string | null>(null);
   const [cardKey, setCardKey] = useState<string | null>(null);
   const [allFields, setAllFields] = useState(view === "all_fields");
+  const [roleOpen, setRoleOpen] = useState(false);   // a role card is open: the group's fields wait under it
 
   useEffect(() => {
     let alive = true;
@@ -70,6 +73,8 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
   const all = useMemo(() => doc ? totals(doc) : { fields: 0, yours: 0 }, [doc]);
   const group = doc && openGroup !== null ? doc.groups.find(g => g.id === openGroup) ?? null : null;
   const legacyHere = group !== null && group.id === ALL_FIELDS_GROUP_PRESET;
+  // No group has the id of the roles (an overlay renamed or hid it): the roles are drawn under the group list, so the table never disappears.
+  const rolesBelow = doc !== null && openGroup === null && !doc.groups.some(g => g.id === ROLES_GROUP_PRESET);
   const legacyBelow = doc !== null && openGroup === null && !doc.groups.some(g => g.id === ALL_FIELDS_GROUP_PRESET);
 
   const legacy = (
@@ -133,12 +138,15 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
     const shown = fieldsToShow(g.fields, onlyChanged);
     const blocks = subgroupBlocks(shown, subgroupLabels(fieldsDoc, g.id, language), t);
     const summary = groups.find(s => s.id === g.id)!;
+    const roles = g.id === ROLES_GROUP_PRESET ? <RolesTable profileHost={profileHost} convId={convId} language={language} onNavigate={address => onNavigate?.(address)} onOpenChange={setRoleOpen} /> : null;
+    if (roles && roleOpen) return <section data-testid={`shum-group-view-${g.id}`} data-role-open="1">{roles}</section>;
     return (
       <section data-testid={`shum-group-view-${g.id}`} data-shown={shown.length} data-fields={g.fields.length}>
         <button type="button" className="shum-back" data-testid="shum-back" onClick={() => { setOpenGroup(null); setCardKey(null); setDetail(null); }}>{t("group.back")}</button>
         <h3 className="shum-group-title">{g.label}</h3>
         <p className="gnav-why" data-testid="shum-group-why">{g.why}</p>
         <p className="gnav-count shum-group-count" data-testid="shum-group-view-count">{countLine(summary, language, t)}</p>
+        {roles}
         {filterButton}
         {g.fields.length === 0 && <p className="gnav-note" data-testid="shum-empty">{t("group.empty")}</p>}
         {g.fields.length > 0 && shown.length === 0 && <p className="gnav-note" data-testid="shum-empty">{t("filter.empty")}</p>}
@@ -187,6 +195,7 @@ export default function SettingsHuman({ profileHost, convId, language, onNavigat
           {doc.hidden_keys.length > 0 && <p className="gnav-note" data-testid="shum-hidden">{t("hidden.line", { count: String(doc.hidden_keys.length) })}</p>}
           {doc.proposals_status?.today && (
             <p className="gnav-why" data-testid="shum-proposals"><b>{t("proposals.title")}: </b>{doc.proposals_status.today}{doc.proposals_status.reason ? ` ${doc.proposals_status.reason}` : ""}</p>)}
+          {rolesBelow && <RolesTable profileHost={profileHost} convId={convId} language={language} onNavigate={address => onNavigate?.(address)} />}
           {legacyBelow && legacy}
         </section>
       )}
