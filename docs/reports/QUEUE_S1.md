@@ -1,4 +1,4 @@
-# Kolejka S1 — stan 2026-10-21 14:50 UTC
+# Kolejka S1 — stan 2026-10-21 14:55 UTC
 
 Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerwie sesji, ma tu
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
@@ -11,6 +11,15 @@ więc to wyścig, nie błąd mapy; lokalnie nie dało się go odtworzyć nawet p
 i 60 s na start serwera. Przebieg CI **251** (`f2d519dd`, https://github.com/klb-t/chatadhd/actions/runs/39608733048) w toku, ≈ 60–100 min
 (250 trwał 98 min). **Nie pushować kodu na `main`, dopóki trwa.** Jeśli `test:m1-navigator` padnie znowu na zoomie: sprawdzić efekt
 `setCam(CAMERA_HOME)` przy zmianie `result.focus.address` (`NavigatorMap.tsx:56`) — drugie możliwe wyjaśnienie.
+
+## MAIN = `6fa81839` (14:50 UTC, FF przez S2): zawiera poprawkę `2752f372` + sterownik smoke + gate0 `nav-actions-note`
+Bieg CI `loom.yml` na `main`: **256** (https://github.com/klb-t/chatadhd/actions/runs/39620297084), obok niego 254 (PR #48 S2, ten sam
+SHA). Mój kontrolny bieg 255 na gałęzi anulowałem jako duplikat. **Nie pushować kodu na `main` do końca 256** (spodziewane ok. 16:30 UTC,
+job `dev` z końcówką e2e ok. 15:35–15:50). Pierwszy bieg po W0, w którym dojdą do głosu ~10 testów e2e po `m1-settings`.
+**Drobiazg do wejścia przy najbliższym pushu kodu (propozycja S2, słuszna):** e2e w bramce przepisuje wersjonowany
+`loom/web/tests/shell/fixtures/graph-card-temperature.json` (zmienia się tylko `scope_id`: świeże `c_…` w każdym biegu) i
+`e2e/screenshots/*.png` — drzewo po bramce jest brudne. Poprawka: maskować `scope_id` przy zapisie fixture albo zapisywać go tylko za
+flagą środowiskową; zrzuty pisać do `M1_SHOTS_DIR`/katalogu poza drzewem, gdy ustawiony.
 
 ## CI 251 (main `f2d519dd`) = failure, jedna przyczyna: kolejny wyścig w e2e (14:50 UTC)
 Zepsuty tylko job `dev (g++)`, krok `test:m1-settings`, „Modele › Role": `data-role-open` było `null` zamiast `'1'`
