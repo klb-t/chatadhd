@@ -461,4 +461,66 @@ TEST_SUITE("context_receipt") {
     CHECK(unwrap(guardian::select(*f.db, f.cfg, f.conv_id)).preset == "lean");
     CHECK(unwrap(guardian::select(*f.db, f.cfg, f.conv_id, "raw")).preset == "raw");
   }
+
+  // M1-K1b (c): "a modifier of the turn acts on the next request only (a golden test of two consecutive requests)".
+  // Three identical conversations: A says "szerzej" through the turn carrier and sends twice; B names the same step in the request itself;
+  // C never says it. The first request of A is byte for byte the one of B (the carrier is the same as the request's own value) and differs from C
+  // (the window of the profile is wider); the SECOND request of A is byte for byte the second request of C (the modifier left nothing behind).
+  TEST_CASE("M1-K1b (c): a modifier of the turn acts on the next request only - two consecutive real requests through the turn carrier") {
+    const auto setup = [](Fixture& f) {
+      f.add_selector_profiles({own_profile("window2", Json{{"nodes", nullptr}, {"search_limit", 0}, {"history_window", 2}})});
+      f.cfg.set("selector_profile", "window2");
+    };
+    Fixture a, b, c;
+    setup(a); setup(b); setup(c);
+    ChatEngine engine_a = a.engine();
+    ChatOptions oa; oa.conv_id = a.conv_id; oa.stream = false;
+    engine_a.turn_carrier().add(a.conv_id, "context.breadth_delta", "wider", true);
+    CHECK(engine_a.turn_carrier().peek(a.conv_id) == Json{{"context.breadth_delta", Json::array({"wider"})}});
+    // looking at the request (the preview) consumes nothing
+    unwrap(engine_a.preview_usage("first question"));
+    CHECK(engine_a.turn_carrier().peek(a.conv_id) == Json{{"context.breadth_delta", Json::array({"wider"})}});
+    // another conversation is not touched
+    CHECK(engine_a.turn_carrier().peek("c_other").empty());
+
+    const auto send = [](Fixture& f, ChatEngine& e, const ChatOptions& o, const std::string& text) {
+      f.transport.expect("POST", "https://api.test/chat/completions", net::ScriptedTransport::Reply::json(200, openai_reply("ok")));
+      unwrap(e.send(text, o));
+      return f.transport.requests().back().body;
+    };
+    const std::string a1 = send(a, engine_a, oa, "first question");
+    CHECK(engine_a.turn_carrier().peek(a.conv_id).empty());  // spent by the request
+    CHECK(engine_a.turn_carrier().waiting() == 0);
+    const std::string a2 = send(a, engine_a, oa, "second question");
+
+    ChatEngine engine_b = b.engine();
+    ChatOptions ob; ob.conv_id = b.conv_id; ob.stream = false; ob.turn_values = Json{{"context.breadth_delta", Json::array({"wider"})}};
+    const std::string b1 = send(b, engine_b, ob, "first question");
+
+    ChatEngine engine_c = c.engine();
+    ChatOptions oc; oc.conv_id = c.conv_id; oc.stream = false;
+    const std::string c1 = send(c, engine_c, oc, "first question");
+    const std::string c2 = send(c, engine_c, oc, "second question");
+
+    CHECK(a1 == b1);  // the carrier and the request's own value make the same request
+    CHECK(a1 != c1);  // and it is wider than the one without it
+    CHECK(a2 == c2);  // the modifier acted once
+    // the receipts say so: wider, from the turn, on the first request only
+    const Json t1 = a.stored_trace("first question"), t2 = a.stored_trace("second question");
+    CHECK(t1["receipt"]["modifiers"]["breadth_delta"][0] == "wider");
+    CHECK(t1["receipt"]["modifiers"]["scope"] == "turn");
+    CHECK(section(t1["receipt"], "history")["items"].size() == 4);
+    CHECK(t2["receipt"]["modifiers"]["breadth_delta"].is_null());
+    CHECK(section(t2["receipt"], "history")["items"].size() == 2);
+    // a request that does not go out gives the values back: a missing key is refused before anything is stored
+    engine_a.turn_carrier().add(a.conv_id, "context.profile", "window2", false);
+    ChatOptions bad = oa; bad.attachments = {"/no/such/file.png"};
+    CHECK_FALSE(engine_a.send("never sent", bad).has_value());
+    CHECK(engine_a.turn_carrier().peek(a.conv_id) == Json{{"context.profile", "window2"}});
+    // a value said for a conversation that is not open yet waits under "" and goes with the next send that starts one
+    engine_a.turn_carrier().clear(a.conv_id);
+    engine_a.turn_carrier().add("", "context.breadth_delta", "narrower", true);
+    CHECK(engine_a.turn_carrier().take("") == Json{{"context.breadth_delta", Json::array({"narrower"})}});
+    CHECK(engine_a.turn_carrier().take("").empty());
+  }
 }

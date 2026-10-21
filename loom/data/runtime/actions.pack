@@ -13994,6 +13994,209 @@
           "en": "Your copy of the ROM item:",
           "pl": "Twoja kopia elementu ROM:"
         }
+      },
+      "context.modify": {
+        "id": "context.modify",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "Change the context of the next message",
+        "description": "Widens, narrows, deepens or flattens the context, or names a selector profile, for the NEXT request of the conversation only (the turn carrier in memory: it is not written to the data directory, a restart forgets it, the request that follows empties it). Before it applies the change, the request is compiled as the next send would compile it and its size is put to the shared usage guard against the baseline of its kind (usage_baseline_key_templates): a jump of ten times or more is asked of the person first, anything below is not. For the change to stay, say 'permanently in this conversation': that is a rule (rules.set at the conversation level), not this action.",
+        "why": {
+          "pl": "Zmienia kontekst tylko dla następnej wiadomości: szerzej, węziej, głębiej, płycej albo inny profil selektora. Po jej wysłaniu wszystko wraca."
+        },
+        "labels": {
+          "pl": "Zmień kontekst następnej wiadomości"
+        },
+        "inputs": [],
+        "outputs": [
+          "text"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": false,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "context.modify",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "step",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The change: wider, narrower, deeper or shallower (the steps of action_rules.pack, scoped_values).",
+              "pl": "Zmiana: wider (szerzej), narrower (węziej), deeper (głębiej) albo shallower (płycej) - kroki z action_rules.pack, scoped_values."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "profile",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "A selector profile for the next message (chat_context.pack, selector_profiles).",
+              "pl": "Profil selektora dla następnej wiadomości (chat_context.pack, selector_profiles)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          },
+          {
+            "name": "reset",
+            "type": "boolean",
+            "required": false,
+            "description": {
+              "en": "Drop what waits for the next message.",
+              "pl": "Odrzuć to, co czeka na następną wiadomość."
+            },
+            "has_default": false,
+            "edit": "toggle"
+          },
+          {
+            "name": "conversation_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The conversation (default: the current one).",
+              "pl": "Rozmowa (domyślnie bieżąca)."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/context/modify"
+        },
+        "phrases": {
+          "en": [
+            "wider",
+            "narrower",
+            "deeper",
+            "shallower",
+            "change the context of the next message"
+          ],
+          "pl": [
+            "szerzej",
+            "węziej",
+            "głębiej",
+            "płycej",
+            "zmień kontekst następnej wiadomości"
+          ]
+        },
+        "examples": {
+          "en": [
+            "wider",
+            "one level deeper",
+            "selector profile lean"
+          ],
+          "pl": [
+            "szerzej",
+            "głębiej o jeden",
+            "profil selektora lean"
+          ]
+        },
+        "positional_arg": "step",
+        "result_text": {
+          "en": "Context of the next message:",
+          "pl": "Kontekst następnej wiadomości:"
+        }
+      },
+      "context.receipt": {
+        "id": "context.receipt",
+        "kind": "atomic",
+        "status": "implemented",
+        "title": "What we sent to the model",
+        "description": "The record of one request: the sections in the order they were sent, what each held (references, labels, tokens - not the contents), what was left out and why, the profile, the modifiers (szerzej, głębiej), the order, the flow and the guard values (the baseline of its kind and the ratio), and the sha256 of the request. Read from messages.metadata.context_trace.receipt (schema loom.context_receipt/1); asked about an answer, it gives the record of the request that made it. A message saved before the records existed (or whose record was switched off) answers missing_reason: before_m1. Read only; the record is not proof that the provider received the request as it stands.",
+        "why": {
+          "pl": "Pokazuje, co dokładnie poszło do modelu przy danej wiadomości: sekcje, co pominięto i dlaczego."
+        },
+        "labels": {
+          "pl": "Co wysłaliśmy do modelu"
+        },
+        "inputs": [],
+        "outputs": [
+          "json"
+        ],
+        "requires": [
+          "application"
+        ],
+        "produces": [],
+        "content_op": "none",
+        "form_op": "none",
+        "cost": 0.0,
+        "confidence": 1.0,
+        "effects": {
+          "reads_only": true,
+          "writes": false,
+          "sends_off_device": false,
+          "costs_money": false,
+          "irreversible": false,
+          "touches_private_data": false
+        },
+        "consumer": "loom/src/actions/ops.cpp",
+        "port": "actions",
+        "action": "context.receipt",
+        "stores_result": false,
+        "params": [
+          {
+            "name": "msg_id",
+            "type": "string",
+            "required": false,
+            "description": {
+              "en": "The message (a message you sent, or the answer to it). Default: the last message you sent in the current conversation.",
+              "pl": "Wiadomość (Twoja albo odpowiedź na nią). Domyślnie ostatnia Twoja wiadomość w bieżącej rozmowie."
+            },
+            "has_default": false,
+            "edit": "free_text"
+          }
+        ],
+        "http": {
+          "verb": "POST",
+          "path": "/api/context/receipt"
+        },
+        "phrases": {
+          "en": [
+            "what we sent",
+            "what did we send to the model",
+            "what went to the model",
+            "what did the model get",
+            "show the context you sent"
+          ],
+          "pl": [
+            "co wysłaliśmy",
+            "co wysłaliśmy do modelu",
+            "co poszło do modelu",
+            "co dostał model",
+            "pokaż wysłany kontekst"
+          ]
+        },
+        "examples": {
+          "en": [
+            "what did we send to the model"
+          ],
+          "pl": [
+            "co wysłaliśmy do modelu"
+          ]
+        },
+        "positional_arg": "msg_id",
+        "result_text": {
+          "en": "What was sent:",
+          "pl": "Co wysłaliśmy:"
+        }
       }
     }
   },

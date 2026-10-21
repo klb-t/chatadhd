@@ -81,6 +81,7 @@ struct Data {
   Json results = Json::object();  // runtime profile action_results (link names, ...)
   std::string client_id;          // the client that asks (client_devices.h): the device actions it declared are runnable in what it is shown
   Json estimate_reasons = Json::object();  // profile action_run, estimate.reasons: why money is unknown, by code, per language
+  Json scoped_keys = Json::object();       // profile action_rules, scoped_values.keys: which keys have a value for one turn (default_level turn)
 };
 
 Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()) {
@@ -100,7 +101,11 @@ Result<Data> load_data(Runtime& rt, const std::string& client_id = std::string()
   if (auto p = RuntimeProfile::load("action_run", root))
     if (const Json* est = json::find(p->values(), "estimate"))
       if (const Json* r = json::find(*est, "reasons"); r && r->is_object()) reasons = *r;
-  return Data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results), client_id, std::move(reasons)};
+  Data data{profile.values(), std::move(engine), std::move(resolver), std::move(keys), root, std::move(results), client_id, std::move(reasons)};
+  if (auto p = RuntimeProfile::load("action_rules", root))
+    if (const Json* sv = json::find(p->values(), "scoped_values"); sv && sv->is_object())
+      if (const Json* k = json::find(*sv, "keys"); k && k->is_object()) data.scoped_keys = *k;
+  return data;
 }
 
 ElementSources sources_of(Runtime& rt) { return ElementSources{&rt.db(), &rt.blobs(), rt.paths().root}; }
@@ -734,6 +739,130 @@ std::string resolve_action_word(const Data& d, const std::string& word) {
   return found.size() == 1 ? found[0] : std::string();
 }
 
+// M1-K1b: the short sentences of heuristic.context_modifiers. "szerzej", "głębiej o jeden", "profil selektora lean" change the NEXT request only: the action
+// context.modify (the turn carrier), and no rule is written. The sentence must be the whole message (a phrase, nothing else): "opisz to szerzej" stays a
+// message to the model. "na stałe" / a scope phrase ("w tej rozmowie") makes it a rule instead (rules.set at that level, conversation by default).
+// "co wysłaliśmy" asks for the record of the last request (context.receipt). The phrases are NOT among heuristic.rules.commands: a rule command without
+// context.modify would bypass the routing model and turn the plain message "szerzej" into a rule nobody asked for.
+void append_context_modifiers(const Data& d, const Json& h, const std::u32string& folded_blanked, const std::string& scope, std::vector<Cand>& out) {
+  const Json* cm = json::find(h, "context_modifiers");
+  if (!cm || !cm->is_object()) return;
+  const Json& fold_map = h.at("fold");
+  const auto joined = [](const std::vector<std::string>& tokens) {
+    std::string s;
+    for (const auto& t : tokens) s += (s.empty() ? "" : " ") + t;
+    return s;
+  };
+  std::string sentence = " " + joined(word_tokens(utf8::encode(folded_blanked))) + " ";
+  bool permanent = false;
+  std::string permanent_scope = "conversation";
+  if (const Json* perm = json::find(*cm, "permanent"); perm && perm->is_object()) {
+    permanent_scope = json::get_string(*perm, "default_scope", "conversation");
+    if (const Json* words = json::find(*perm, "words"); words && words->is_object())
+      for (auto l = words->begin(); l != words->end(); ++l)
+        for (const auto& w : strings_of(&l.value())) {
+          const std::string needle = " " + joined(word_tokens(fold(w, fold_map))) + " ";
+          if (needle.size() <= 2) continue;
+          if (const auto at = sentence.find(needle); at != std::string::npos) {
+            sentence.replace(at, needle.size(), " ");
+            permanent = true;
+          }
+        }
+  }
+  while (!sentence.empty() && sentence.front() == ' ') sentence.erase(0, 1);
+  while (!sentence.empty() && sentence.back() == ' ') sentence.pop_back();
+  if (sentence.empty()) return;
+  const auto phrase_form = [&](const std::string& phrase) { return joined(word_tokens(fold(phrase, fold_map))); };
+
+  const auto rule_cand = [&](const std::string& matched, const std::string& lang, const std::string& key, const std::string& value) {
+    Cand c;
+    c.source = "rule_command";
+    c.matched = matched;
+    c.lang = lang;
+    c.score = 1.05;
+    c.element = Json{{"id", "application"}};
+    c.action = "rules.set";
+    c.args["effect"] = "set_value";
+    c.args["key"] = key;
+    c.args["value"] = value;
+    c.args["scope"] = scope.empty() ? permanent_scope : scope;
+    return c;
+  };
+
+  if (const Json* modifiers = json::find(*cm, "modifiers"); modifiers && modifiers->is_array())
+    for (const auto& m : *modifiers) {
+      const std::string key = json::get_string(m, "key"), step = json::get_string(m, "step");
+      const Json* phrases = json::find(m, "phrases");
+      if (key.empty() || step.empty() || !phrases || !phrases->is_object()) continue;
+      for (auto l = phrases->begin(); l != phrases->end(); ++l)
+        for (const auto& phrase : strings_of(&l.value())) {
+          if (phrase_form(phrase) != sentence) continue;
+          const std::string matched = "context_modifier." + json::get_string(m, "id");
+          if (d.scoped_keys.contains(key) && json::get_string(d.scoped_keys.at(key), "default_level") == "turn" && scope.empty() && !permanent) {
+            Cand c;
+            c.source = "rule_command";
+            c.matched = matched;
+            c.lang = l.key();
+            c.score = 1.05;
+            c.element = Json{{"id", "application"}};
+            c.action = "context.modify";
+            c.args["step"] = step;
+            out.push_back(std::move(c));
+          } else {
+            out.push_back(rule_cand(matched, l.key(), key, step));
+          }
+          return;
+        }
+    }
+  if (const Json* profile = json::find(*cm, "profile"); profile && profile->is_object()) {
+    const std::string key = json::get_string(*profile, "key", "context.profile");
+    const std::string placeholder = json::get_string(*profile, "placeholder", "{profile}");
+    if (const Json* phrases = json::find(*profile, "phrases"); phrases && phrases->is_object())
+      for (auto l = phrases->begin(); l != phrases->end(); ++l)
+        for (const auto& phrase : strings_of(&l.value())) {
+          const std::size_t at = phrase.find(placeholder);
+          if (at == std::string::npos) continue;
+          const std::string prefix = phrase_form(phrase.substr(0, at));
+          if (prefix.empty() || sentence.size() <= prefix.size() + 1 || sentence.compare(0, prefix.size(), prefix) != 0 || sentence[prefix.size()] != ' ') continue;
+          std::string id = sentence.substr(prefix.size() + 1);
+          std::replace(id.begin(), id.end(), ' ', '_');
+          if (id.empty()) continue;
+          const std::string matched = "context_modifier.profile";
+          if (d.scoped_keys.contains(key) && json::get_string(d.scoped_keys.at(key), "default_level") == "turn" && scope.empty() && !permanent) {
+            Cand c;
+            c.source = "rule_command";
+            c.matched = matched;
+            c.lang = l.key();
+            c.score = 1.05;
+            c.element = Json{{"id", "application"}};
+            c.action = "context.modify";
+            c.args["profile"] = id;
+            out.push_back(std::move(c));
+          } else {
+            out.push_back(rule_cand(matched, l.key(), key, id));
+          }
+          return;
+        }
+  }
+  if (const Json* receipt = json::find(*cm, "receipt"); receipt && receipt->is_object() && scope.empty() && !permanent) {
+    const std::string action = json::get_string(*receipt, "action", "context.receipt");
+    if (const Json* phrases = json::find(*receipt, "phrases"); phrases && phrases->is_object())
+      for (auto l = phrases->begin(); l != phrases->end(); ++l)
+        for (const auto& phrase : strings_of(&l.value())) {
+          if (phrase_form(phrase) != sentence) continue;
+          Cand c;
+          c.source = "rule_command";
+          c.matched = "context_modifier.receipt";
+          c.lang = l.key();
+          c.score = 1.05;
+          c.element = Json{{"id", "application"}};
+          c.action = action;
+          out.push_back(std::move(c));
+          return;
+        }
+  }
+}
+
 // `inner`: the text is read as the topic of a how-to: commands that ask for another command's explanation, and the growth of the
 // catalogue, are not part of that reading.
 std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text, bool inner = false) {
@@ -776,6 +905,7 @@ std::vector<Cand> parse_rule_commands(const Data& d, const std::string& text, bo
   if (best_len > 0) {
     for (std::size_t i = best_at; i < best_at + best_len; ++i) folded[i] = original[i] = U' ';
   }
+  if (!inner) append_context_modifiers(d, h, folded, scope, out);  // M1-K1b: whole-sentence turn modifiers (heuristic.context_modifiers)
   for (const auto& command : commands) {
     const bool takes_scope = command.value("takes_scope", true);  // the scope phrase is part of the sentence only for the commands that take one
     if (json::get_bool(command, "needs_scope", false) && scope.empty()) continue;

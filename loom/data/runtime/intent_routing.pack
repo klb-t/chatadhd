@@ -4787,20 +4787,23 @@
       },
         "context_modifiers": {
           "status": {
-            "state": "planned",
-            "by": "M1-K1",
+            "state": "implemented",
+            "by": "M1-K1b",
             "today": {
-              "pl": "Dziś router nie czyta tej tabeli: zdanie „szerzej” jest zwykłą wiadomością do modelu.",
-              "en": "Today the router does not read this table: the sentence “wider” is an ordinary message to the model."
-            },
-            "reason": {
-              "pl": "Akcje context.modify i context.receipt oraz czytanie tej tabeli przez router przychodzą z pozycją M1-K1; wcześniej te frazy nie mogłyby trafić do żadnej akcji.",
-              "en": "The actions context.modify and context.receipt and the router reading this table come with work item M1-K1; before that these phrases could not reach any action."
+              "pl": "Router czyta tę tabelę: całe zdanie „szerzej”, „węziej”, „głębiej”, „płycej” albo „profil selektora …” zmienia tylko następną wiadomość (akcja context.modify, bez zapisu reguły); „co wysłaliśmy” pokazuje ślad ostatniego żądania (akcja context.receipt). Zdanie z „na stałe” albo z zakresem („w tej rozmowie”) zapisuje regułę (rules.set).",
+              "en": "The router reads this table: the whole sentence “wider”, “narrower”, “deeper”, “shallower” or “selector profile …” changes the next message only (the action context.modify, no rule is written); “what we sent” shows the record of the last request (the action context.receipt). A sentence with “permanently” or a scope (“in this conversation”) writes a rule (rules.set)."
             }
           },
           "note": {
             "pl": "Frazy to całe zdania (krótkie polecenia), nie słowa w środku wiadomości: „opisz to szerzej” zostaje wiadomością. Zmiana dotyczy następnej tury, chyba że powiesz „na stałe w tej rozmowie”. Kroki (×2, ÷2, +1, −1) są w action_rules.pack, scoped_values.",
             "en": "The phrases are whole sentences (short commands), not words inside a message: “describe it wider” stays a message. The change applies to the next turn unless you say “permanently in this conversation”. The steps (×2, ÷2, +1, −1) are in action_rules.pack, scoped_values."
+          },
+          "permanent": {
+            "default_scope": "conversation",
+            "words": {
+              "pl": ["na stałe", "na zawsze"],
+              "en": ["permanently", "for good", "from now on"]
+            }
           },
           "modifiers": [
             {
@@ -6284,10 +6287,11 @@
           },
           "context_modifiers": {
             "type": "object",
-            "description": "Short sentences that widen, narrow, deepen or flatten the context of the next turn, name a selector profile, or ask what was sent to the model (M1-D2 data; the router reads it from work item M1-K1). status says so.",
+            "description": "Short sentences that widen, narrow, deepen or flatten the context of the next turn, name a selector profile, or ask what was sent to the model (M1-D2 data; the router reads it since M1-K1b). status says so.",
             "properties": {
               "status": {"type": "object"},
               "note": {"type": "object"},
+              "permanent": {"type": "object", "description": "Words that make a modifier a rule instead of a change for the next turn (\"na stałe\", \"permanently\"); default_scope: the level the rule is written at when the sentence names none."},
               "modifiers": {"type": "array", "items": {"type": "object", "required": ["id", "key", "step", "phrases"], "properties": {"id": {"type": "string", "minLength": 1}, "key": {"type": "string", "minLength": 1}, "step": {"type": "string", "minLength": 1}, "phrases": {"type": "object"}}}},
               "profile": {"type": "object"},
               "receipt": {"type": "object"}

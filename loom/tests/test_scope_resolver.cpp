@@ -70,6 +70,46 @@ TEST_SUITE("scope_resolver") {
     CHECK(unwrap(r.resolve(b)).value == "user");
   }
 
+  TEST_CASE("M1-K1b: the value of this turn is the most specific level: it wins against the conversation, the inheritance shows `turn`, and nothing is kept") {
+    Fixture f;
+    f.cfg.set("my_setting", "user");
+    f.conv_meta(Json{{"settings", Json{{"my_setting", "conversation-value"}}}});
+    auto r = unwrap(scopes::Resolver::open(f.td.path(), &f.cfg, f.db.get()));
+    scopes::Binding b;
+    b.key = "my_setting";
+    b.installation = "preset";
+    b.conv_id = f.conv;
+    auto without = unwrap(r.resolve(b));
+    CHECK(without.value == "conversation-value");
+    CHECK(without.scope == "conversation");
+    CHECK(role_of(without.chain, "turn") == "inactive");
+    b.turn = "this-turn";
+    auto with = unwrap(r.resolve(b));
+    CHECK(with.value == "this-turn");
+    CHECK(with.scope == "turn");
+    CHECK(role_of(with.chain, "turn") == "supplied");
+    CHECK(role_of(with.chain, "conversation") == "overridden");
+    CHECK(role_of(with.chain, "person") == "overridden");
+    // the inheritance perspective shows the level and its value
+    const Json inh = unwrap(r.inheritance(b));
+    CHECK(inh["supplied_by"] == "turn");
+    bool turn_node = false;
+    for (const auto& n : inh["nodes"])
+      if (n["level"] == "turn") { turn_node = true; CHECK(n["value"] == "this-turn"); }
+    CHECK(turn_node);
+    // value_or tells which level supplied the value; without a turn value the answer is what it always was
+    std::string level;
+    CHECK(scopes::value_or(f.td.path(), f.cfg, f.db.get(), b, Json("fallback"), &level) == "this-turn");
+    CHECK(level == "turn");
+    b.turn = nullptr;
+    CHECK(scopes::value_or(f.td.path(), f.cfg, f.db.get(), b, Json("fallback"), &level) == "conversation-value");
+    CHECK(level == "conversation");
+    scopes::Binding none;
+    none.key = "no_such_setting";
+    CHECK(scopes::value_or(f.td.path(), f.cfg, f.db.get(), none, Json("fallback"), &level) == "fallback");
+    CHECK(level.empty());
+  }
+
   TEST_CASE("unit kinds are data: a new kind maps to a chain level by an overlay; an unknown unit is reported, not dropped silently") {
     Fixture f;
     LOOM_REQUIRE_OK(views::put_op(f.td.path(), "u", Json{{"view", "unit_kinds"}, {"op", "add"}, {"id", "workstream"}, {"entry", Json{{"level", "team"}}}}));

@@ -20,7 +20,10 @@
 
 #include "loom/action_overlay.h"
 #include "loom/action_runner.h"
+#include "loom/chat_engine.h"
 #include "loom/chat_route.h"
+#include "loom/usage_policy.h"
+#include "loom/util/sha256.h"
 #include "loom/config.h"
 #include "loom/db.h"
 #include "loom/economy.h"
@@ -2231,6 +2234,222 @@ StepOutcome rom_override_op(Ctx& x) {
   return answer(x.say("rom_override_done", Json{{"id", id}, {"file", r->value("file", "")}}), *r);
 }
 
+
+// ── what was sent to the model, and what the next request will be (M1-K1b) ──────────────────────────────────────────────────
+
+// The scoped keys (action_rules.pack scoped_values.keys) whose value is for one turn: default_level turn.
+Json turn_keys(Ctx& x) {
+  auto rules = RuntimeProfile::load("action_rules", x.rt.paths().root);
+  Json keys = Json::object();
+  if (!rules) return keys;
+  const Json all = rules->values().value("scoped_values", Json::object()).value("keys", Json::object());
+  if (!all.is_object()) return keys;
+  for (auto it = all.begin(); it != all.end(); ++it)
+    if (it.value().is_object() && json::get_string(it.value(), "default_level") == "turn") keys[it.key()] = it.value();
+  return keys;
+}
+
+// What waits in the turn carrier, in words: "szerzej ×2, profil lean".
+std::string turn_words(Ctx& x, const Json& keys, const Json& waiting) {
+  std::vector<std::string> parts;
+  if (!waiting.is_object()) return std::string();
+  for (auto it = waiting.begin(); it != waiting.end(); ++it) {
+    const Json def = keys.is_object() && keys.contains(it.key()) ? keys.at(it.key()) : Json::object();
+    const Json steps = def.value("steps", Json::object());
+    std::map<std::string, int> counted;
+    std::vector<std::string> order;
+    const auto add_step = [&](const std::string& id) {
+      if (!counted.count(id)) order.push_back(id);
+      ++counted[id];
+    };
+    if (it.value().is_array()) {
+      for (const auto& v : it.value()) if (v.is_string()) add_step(v.get<std::string>());
+    } else if (it.value().is_string() && steps.is_object() && !steps.empty()) {
+      add_step(it.value().get<std::string>());
+    } else if (it.value().is_string()) {
+      parts.push_back(x.say("context_modify_profile_word", Json{{"profile", it.value().get<std::string>()}}));
+      continue;
+    }
+    for (const auto& id : order) {
+      const std::string label = steps.contains(id) ? x.pick(steps.at(id).value("label", Json::object())) : id;
+      parts.push_back(counted[id] > 1 ? label + " ×" + std::to_string(counted[id]) : label);
+    }
+  }
+  std::string out;
+  for (const auto& p : parts) out += (out.empty() ? "" : ", ") + p;
+  return out;
+}
+
+StepOutcome context_modify(Ctx& x) {
+  const std::string conv = [&] {
+    const std::string named = trim_quotes(x.str("conversation_id"));
+    return named.empty() ? x.conv_id() : named;
+  }();
+  TurnCarrier& carrier = x.rt.chat().turn_carrier();
+  const Json keys = turn_keys(x);
+
+  const Json reset = x.arg("reset");
+  if (json::truthy(reset)) {
+    const bool had = carrier.clear(conv);
+    return answer(x.say(had ? "context_modify_cleared" : "context_modify_nothing"), Json{{"conv_id", conv}, {"cleared", had}, {"waiting", Json::object()}});
+  }
+
+  // What is being said: a profile of the selector, or a step (szerzej, węziej, głębiej, płycej) of a key whose value is for one turn.
+  std::string key, value;
+  const std::string profile = trim_quotes(x.str("profile"));
+  const std::string step = trim_quotes(x.str("step", x.str("value")));
+  if (!profile.empty()) {
+    key = "context.profile";
+    value = profile;
+    auto cc = RuntimeProfile::load("chat_context", x.rt.paths().root);
+    std::vector<std::string> ids;
+    if (cc)
+      for (const auto& row : cc->values().value("selector_profiles", Json::array()))
+        if (row.is_object() && !json::get_string(row, "id").empty()) ids.push_back(json::get_string(row, "id"));
+    if (std::find(ids.begin(), ids.end(), value) == ids.end()) {
+      std::string list;
+      for (const auto& id : ids) list += (list.empty() ? "" : ", ") + id;
+      return fail(Errc::InvalidArgument, x.say("context_modify_unknown_profile", Json{{"profile", value}, {"profiles", list}}));
+    }
+  } else if (!step.empty()) {
+    std::string known;
+    for (auto it = keys.begin(); it != keys.end(); ++it) {
+      const Json steps = it.value().value("steps", Json::object());
+      if (!steps.is_object()) continue;
+      for (auto st = steps.begin(); st != steps.end(); ++st) {
+        known += (known.empty() ? "" : ", ") + st.key();
+        if (st.key() == step && key.empty()) key = it.key();
+      }
+    }
+    if (key.empty()) return fail(Errc::InvalidArgument, x.say("context_modify_unknown_step", Json{{"step", step}, {"steps", known}}));
+    value = step;
+  } else {
+    return fail(Errc::InvalidArgument, x.say("context_modify_which"));
+  }
+  const bool append = keys.at(key).contains("steps") && keys.at(key).at("steps").is_object() && !keys.at(key).at("steps").empty();
+
+  // The estimate after the change (the request is compiled as the next send would compile it) against the baseline of its kind; a jump of ten
+  // times or more is the shared usage guard's question (the owner's rule: only a x10 jump is asked). Numbers the guard cannot give stay unknown.
+  Json guard = nullptr;
+  {
+    ChatOptions probe;
+    if (!conv.empty()) probe.conv_id = conv;
+    auto g = x.rt.chat().context_guard(conv, "", probe, Json{{key, value}});
+    if (g) {
+      guard = *g;
+    } else {
+      guard = Json{{"resource", "input_bytes"}, {"asked", false}, {"unknown_reason", "guard_not_computed"}, {"why", g.error().message}};
+      log::write(log::Level::Debug, "loom.actions.ops", "context.modify: the request could not be compiled for the guard: " + g.error().message);
+    }
+  }
+  bool confirmed = false;
+  if (json::get_bool(guard, "asked", false)) {
+    const Json& conf = x.c.usage_confirmation;
+    if (conf.is_object() && !conf.empty()) {
+      if (!json::get_bool(conf, "approved", false)) {
+        // The refusal is the ledger's record too; nothing was changed and nothing waits in the carrier.
+        auto settings = effective_usage_policy_options(x.rt.config());
+        if (settings)
+          if (auto policy = UsagePolicy::open(x.rt.paths().root / "usage-policy.sqlite", *settings))
+            if (auto c = (*policy)->confirm(json::get_string(conf, "operation_id"), json::get_string(conf, "receipt_id"), false, json::get_string(conf, "ref")); !c)
+              log::write(log::Level::Debug, "loom.actions.ops", "context.modify: the refusal was not recorded: " + c.error().message);
+        return fail(Errc::Cancelled, x.say("context_modify_declined"));
+      }
+      confirmed = true;
+    } else {
+      // The question goes through the guard of the usage ledger like every other: the decision is recorded and its receipt is what the answer binds to.
+      auto settings = effective_usage_policy_options(x.rt.config());
+      if (!settings) return fail(settings.error());
+      auto policy = UsagePolicy::open(x.rt.paths().root / "usage-policy.sqlite", *settings);
+      if (!policy) return fail(policy.error());
+      const std::string bytes = std::to_string(json::get_int(guard, "bytes", 0));
+      Json estimate{{"operation_id", "ctxmod_" + Sha256::hex(conv + "|" + key + "|" + json::dump(value) + "|" + json::dump(x.rt.chat().turn_carrier().peek(conv)) + "|" + bytes).substr(0, 24)},
+                    {"baseline_key", json::get_string(guard, "baseline_key")},
+                    {"resources", Json{{"requests", 1}, {"input_bytes", json::get_int(guard, "bytes", 0)}, {"output_tokens", nullptr}, {"cost_usd", nullptr}}},
+                    {"instrument", "loom.context.modify"}, {"model", json::get_string(guard, "model")},
+                    {"estimate_basis", "compiled_request_body_bytes_after_the_turn_modifier"}};
+      auto decision = (*policy)->request(estimate);
+      if (!decision) return fail(decision.error());
+      if (json::get_string(*decision, "status") == "denied") return fail(Errc::Conflict, x.say("context_modify_denied"));
+      if (json::get_string(*decision, "status") == "requires_confirmation") {
+        StepOutcome held;
+        held.state = StepOutcome::State::Held;
+        held.hold = Json{{"schema", "loom.action_usage_pending/1"}, {"stage", "context_modify"}, {"status", "requires_confirmation"},
+                         {"operation_id", decision->value("operation_id", Json(nullptr))}, {"receipt_id", decision->value("receipt_id", Json(nullptr))},
+                         {"baseline_key", decision->value("baseline_key", Json(nullptr))}, {"projected", decision->value("resources", Json::object())},
+                         {"guard", guard}, {"sent", false}};
+        return held;
+      }
+      // The ledger sees nothing to ask about after all (the baseline moved between the look and the request): the reservation it made is let go.
+      (void)(*policy)->cancel(json::get_string(*decision, "operation_id"), "context.modify only prepares the request");
+    }
+  }
+  if (confirmed) {
+    // The person said yes to the question of the guard: the ledger records it and the reservation it made is let go - this action sends nothing,
+    // the request itself is admitted again when it is sent.
+    const Json& conf = x.c.usage_confirmation;
+    auto settings = effective_usage_policy_options(x.rt.config());
+    if (settings)
+      if (auto policy = UsagePolicy::open(x.rt.paths().root / "usage-policy.sqlite", *settings)) {
+        const std::string op = json::get_string(conf, "operation_id");
+        if (auto c = (*policy)->confirm(op, json::get_string(conf, "receipt_id"), true, json::get_string(conf, "ref")); !c)
+          log::write(log::Level::Debug, "loom.actions.ops", "context.modify: the confirmation was not recorded: " + c.error().message);
+        else
+          (void)(*policy)->cancel(op, "context.modify only prepares the request");
+      }
+  }
+
+  carrier.add(conv, key, value, append);
+  const Json waiting = carrier.peek(conv);
+  Json data{{"conv_id", conv}, {"key", key}, {"value", value}, {"applies_to", "next_request"}, {"persistent", false}, {"waiting", waiting}, {"guard", guard}};
+  if (confirmed) data["confirmed"] = true;
+  std::string text = x.say("context_modify_applied", Json{{"what", turn_words(x, keys, waiting)}});
+  if (json::get_bool(guard, "asked", false)) text += "\n" + x.say("context_modify_guard_asked", Json{{"ratio", number_text(std::round(json::get_number(guard, "ratio", 0.0) * 10) / 10)}});
+  else if (guard.value("ratio", Json(nullptr)).is_number()) text += "\n" + x.say("context_modify_guard_ratio", Json{{"ratio", number_text(std::round(json::get_number(guard, "ratio", 0.0) * 10) / 10)}});
+  return answer(text, data);
+}
+
+StepOutcome context_receipt(Ctx& x) {
+  std::string id = x.element_class() == "message" ? x.element_id() : std::string();
+  if (id.empty()) id = trim_quotes(x.str("msg_id", x.str("id")));
+  if (id.empty()) {
+    // Without a message named: the last message the person sent in this conversation.
+    const std::string conv = x.conv_id();
+    if (!conv.empty()) {
+      auto msgs = x.rt.db().get_msgs(conv);
+      if (msgs)
+        for (auto it = msgs->rbegin(); it != msgs->rend(); ++it)
+          if (it->role == "user" && it->status == "active") { id = it->id; break; }
+    }
+  }
+  if (id.empty()) return fail(Errc::InvalidArgument, x.say("context_receipt_which"));
+  auto found = x.rt.db().get_msg(id);
+  if (!found) return fail(found.error());
+  if (!*found) return fail(Errc::NotFound, "message not found: " + id);
+  Message m = **found;
+  // The receipt lives with the message the person sent; asked about the answer, the request that made it is the message before (its parent).
+  std::string request_id = m.id;
+  if (m.role != "user" && m.parent_id) {
+    if (auto parent = x.rt.db().get_msg(*m.parent_id); parent && *parent) {
+      m = **parent;
+      request_id = m.id;
+    }
+  }
+  const Json trace = m.metadata.is_object() ? m.metadata.value("context_trace", Json(nullptr)) : Json(nullptr);
+  const Json receipt = trace.is_object() ? trace.value("receipt", Json(nullptr)) : Json(nullptr);
+  if (!receipt.is_object())
+    return answer(x.say("context_receipt_missing"), Json{{"msg_id", id}, {"request_msg_id", request_id}, {"missing_reason", "before_m1"},
+                                                          {"also_when", Json::array({"context_receipt_store=never", "trace_context=false"})}});
+  std::vector<std::string> lines;
+  lines.push_back(x.say("context_receipt_head", Json{{"tokens", receipt.value("tokens_est", 0)}, {"sections", receipt.value("sections", Json::array()).size()}}));
+  for (const auto& s : receipt.value("sections", Json::array()))
+    lines.push_back("• " + x.say("context_receipt_section", Json{{"class", s.value("class", "")}, {"items", s.contains("items") && !s["items"].empty() ? s["items"].size() : s.value("items_omitted", 0)}, {"tokens", s.value("tokens_est", 0)}}));
+  for (const auto& d : receipt.value("dropped", Json::array()))
+    lines.push_back("• " + x.say("context_receipt_dropped", Json{{"reason", d.value("reason", "")}, {"count", d.value("count", 0)}, {"what", d.value("ref", "")}}));
+  lines.push_back(x.say("context_receipt_note"));
+  return answer(join_lines(lines), Json{{"msg_id", id}, {"request_msg_id", request_id}, {"receipt", receipt}});
+}
+
 using Op = StepOutcome (*)(Ctx&);
 
 const std::map<std::string, Op>& table() {
@@ -2252,7 +2471,7 @@ const std::map<std::string, Op>& table() {
       {"views.effective", views_effective}, {"views.write", views_write}, {"perspectives.show", perspectives_show}, {"scopes.explain", scopes_explain},
       {"view_model.show", view_model_show}, {"interaction.show", interaction_show}, {"interaction.rebind", interaction_rebind}, {"edge_kinds.list", edge_kinds_list}, {"edge_kinds.classify", edge_kinds_classify},
       {"graph.navigate", graph_navigate}, {"graph.card", graph_card}, {"settings.resolved", settings_resolved_op}, {"roles.resolved", roles_resolved_op},
-      {"rom.override", rom_override_op}};
+      {"rom.override", rom_override_op}, {"context.modify", context_modify}, {"context.receipt", context_receipt}};
   return t;
 }
 

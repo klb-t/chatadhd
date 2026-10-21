@@ -934,6 +934,9 @@ Result<Json> ActionRunner::invoke(std::string_view action, const Json& request) 
   // The graph projection (graph/projection.h): read on demand, nothing written to the graph. Your copy of a ROM item is a write of the
   // user overlay: a run like rules.set, so the rules of the scope and the confirmation (confirm:rom.override) apply.
   if (action == "rom.override") return run_gated(action, request);
+  // The context of the next message and the record of what was sent (M1-K1b): a call from HTTP or the C ABI is a run like any other, so a change that
+  // the usage guard asks about (a jump of ten times) waits for the answer as a run does (actions.confirm).
+  if (action == "context.modify" || action == "context.receipt") return run_gated(action, request);
   if (action == "graph.navigate" || action == "graph.card" || action == "settings.resolved" || action == "roles.resolved")
     return projection::invoke(rt_, action, request);
   // The context guardian (guardian.h). What changes the user's rules or the representation is a run like rules.set (the rules of the

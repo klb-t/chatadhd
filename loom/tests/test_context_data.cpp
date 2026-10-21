@@ -29,7 +29,7 @@ bool both(const Json& v) { return v.is_object() && !v.value("pl", "").empty() &&
 }  // namespace
 
 TEST_SUITE("context_data") {
-  TEST_CASE("scoped values context.*: labels in both languages, the turn as the default level, the steps as data, partial since the kernel reads them (M1-K1a)") {
+  TEST_CASE("scoped values context.*: labels in both languages, the turn as the default level, the steps as data, implemented since the kernel reads them and context.modify fills them (M1-K1b)") {
     const Json keys = builtin("action_rules").at("scoped_values").at("keys");
     for (const char* key : {"context.profile", "context.breadth_delta", "context.depth_delta"}) {
       INFO(key);
@@ -37,7 +37,8 @@ TEST_SUITE("context_data") {
       const Json& k = keys.at(key);
       CHECK(both(k.at("label")));
       CHECK(k.at("default_level") == "turn");
-      CHECK(k.at("status").at("state") == "partial");  // M1-K1a reads the scope chain and the turn carrier; the action that fills the carrier is M1-K1b
+      CHECK(k.at("status").at("state") == "implemented");  // M1-K1a reads the scope chain and the turn carrier; M1-K1b fills the carrier (context.modify)
+      CHECK(k.at("status").at("by") == "M1-K1b");
       CHECK(both(k.at("status").at("today")));
     }
     const Json& breadth = keys.at("context.breadth_delta").at("steps");
@@ -54,10 +55,15 @@ TEST_SUITE("context_data") {
     CHECK_FALSE(keys.at("chat_flow").contains("default_level"));
   }
 
-  TEST_CASE("the phrases of the context modifiers exist in Polish and English and the router does not read them yet (status planned)") {
+  TEST_CASE("the phrases of the context modifiers exist in Polish and English and the router reads them (status implemented, M1-K1b)") {
     const Json cm = builtin("intent_routing").at("heuristic").at("context_modifiers");
-    CHECK(cm.at("status").at("state") == "planned");
+    CHECK(cm.at("status").at("state") == "implemented");
+    CHECK(both(cm.at("status").at("today")));
     CHECK(both(cm.at("note")));
+    // the words that make a modifier a rule instead of a change for the next turn
+    CHECK(cm.at("permanent").at("default_scope") == "conversation");
+    CHECK_FALSE(cm.at("permanent").at("words").at("pl").empty());
+    CHECK_FALSE(cm.at("permanent").at("words").at("en").empty());
     std::set<std::string> ids;
     for (const auto& m : cm.at("modifiers")) {
       ids.insert(m.at("id").get<std::string>());
@@ -83,20 +89,24 @@ TEST_SUITE("context_data") {
     CHECK(has(cm.at("receipt").at("phrases"), "en", "what we sent"));
   }
 
-  TEST_CASE("coverage: the modifiers and the receipt are open entries (no action yet) with a plan, not a covered capability") {
+  TEST_CASE("coverage: the modifiers and the receipt are capabilities now (actions context.modify and context.receipt with their http routes), no longer open entries") {
     const Json coverage = builtin("chat_coverage");
-    std::set<std::string> open;
     for (const auto& o : coverage.at("open")) {
-      open.insert(o.at("id").get<std::string>());
-      if (o.at("id") == "context_modify" || o.at("id") == "context_receipt") {
-        CHECK(both(o.at("title")));
-        CHECK(both(o.at("reason")));
-        CHECK(both(o.at("plan")));
-        CHECK_FALSE(o.at("examples").at("pl").get<std::string>().empty());
-      }
+      CHECK(o.at("id") != "context_modify");
+      CHECK(o.at("id") != "context_receipt");
     }
-    CHECK(open.count("context_modify") == 1);
-    CHECK(open.count("context_receipt") == 1);
+    std::map<std::string, Json> caps;
+    for (const auto& c : coverage.at("capabilities")) caps[c.at("id").get<std::string>()] = c;
+    REQUIRE(caps.count("context_modify") == 1);
+    REQUIRE(caps.count("context_receipt") == 1);
+    CHECK(caps.at("context_modify").at("action") == "context.modify");
+    CHECK(caps.at("context_modify").at("surfaces").at("http").at(0) == "POST /api/context/modify");
+    CHECK(caps.at("context_receipt").at("action") == "context.receipt");
+    CHECK(caps.at("context_receipt").at("surfaces").at("http").at(0) == "POST /api/context/receipt");
+    for (const char* id : {"context_modify", "context_receipt"}) {
+      CHECK(both(caps.at(id).at("title")));
+      CHECK_FALSE(caps.at(id).at("examples").at("pl").get<std::string>().empty());
+    }
   }
 
   TEST_CASE("the words of \"What we sent\": the same keys in Polish and English, the disclaimer and the missing-receipt word are there, planned until the kernel and the sheet exist") {

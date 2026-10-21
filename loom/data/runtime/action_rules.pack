@@ -731,15 +731,11 @@
             "key": "id"
           },
           "status": {
-            "state": "partial",
+            "state": "implemented",
             "by": "M1-K1b",
             "today": {
-              "pl": "Reguła na ten klucz (dla rozmowy, jednostki albo osoby) i ustawienie osoby „selector_profile” zmieniają żądanie. Wartość tylko na jedną turę jądro czyta z nośnika tury, ale nic go jeszcze nie wypełnia.",
-              "en": "A rule on this key (for a conversation, a unit or the person) and the person's setting “selector_profile” change the request. A value for one turn only is read by the kernel from the turn carrier, but nothing fills it yet."
-            },
-            "reason": {
-              "pl": "Akcja context.modify, która wypełnia nośnik tury ze zdania, z chipa i z przycisku, przychodzi z pozycją M1-K1b.",
-              "en": "The action context.modify, which fills the turn carrier from a sentence, a chip and a button, comes with work item M1-K1b."
+              "pl": "Profil wybierasz regułą na ten klucz (dla rozmowy, jednostki albo osoby), ustawieniem osoby „selector_profile” albo zdaniem „profil selektora …”, które działa tylko na następną wiadomość (akcja context.modify, bez zapisu reguły).",
+              "en": "You choose the profile with a rule on this key (for a conversation, a unit or the person), with the person's setting “selector_profile”, or with the sentence “selector profile …”, which works for the next message only (the action context.modify, no rule is written)."
             }
           }
         },
@@ -769,15 +765,11 @@
             }
           },
           "status": {
-            "state": "partial",
+            "state": "implemented",
             "by": "M1-K1b",
             "today": {
-              "pl": "Reguła na ten klucz (dla rozmowy, jednostki albo osoby) i ustawienie osoby „context_breadth_delta” zmieniają żądanie. Wartość tylko na jedną turę jądro czyta z nośnika tury, ale nic go jeszcze nie wypełnia.",
-              "en": "A rule on this key (for a conversation, a unit or the person) and the person's setting “context_breadth_delta” change the request. A value for one turn only is read by the kernel from the turn carrier, but nothing fills it yet."
-            },
-            "reason": {
-              "pl": "Akcja context.modify, która wypełnia nośnik tury ze zdania, z chipa i z przycisku, przychodzi z pozycją M1-K1b.",
-              "en": "The action context.modify, which fills the turn carrier from a sentence, a chip and a button, comes with work item M1-K1b."
+              "pl": "Szerokość zmieniasz regułą na ten klucz (dla rozmowy, jednostki albo osoby), ustawieniem osoby „context_breadth_delta” albo zdaniem „szerzej”/„węziej”, które działa tylko na następną wiadomość (akcja context.modify, bez zapisu reguły); powtórzone kroki się mnożą, a skok dziesięciokrotny albo większy potwierdzasz Ty.",
+              "en": "You change the breadth with a rule on this key (for a conversation, a unit or the person), with the person's setting “context_breadth_delta”, or with the sentence “wider”/“narrower”, which works for the next message only (the action context.modify, no rule is written); repeated steps multiply, and a jump of ten times or more is confirmed by you."
             }
           }
         },
@@ -807,15 +799,11 @@
             }
           },
           "status": {
-            "state": "partial",
+            "state": "implemented",
             "by": "M1-K1b",
             "today": {
-              "pl": "Reguła na ten klucz (dla rozmowy, jednostki albo osoby) i ustawienie osoby „context_depth_delta” zmieniają żądanie. Wartość tylko na jedną turę jądro czyta z nośnika tury, ale nic go jeszcze nie wypełnia.",
-              "en": "A rule on this key (for a conversation, a unit or the person) and the person's setting “context_depth_delta” change the request. A value for one turn only is read by the kernel from the turn carrier, but nothing fills it yet."
-            },
-            "reason": {
-              "pl": "Akcja context.modify, która wypełnia nośnik tury ze zdania, z chipa i z przycisku, przychodzi z pozycją M1-K1b.",
-              "en": "The action context.modify, which fills the turn carrier from a sentence, a chip and a button, comes with work item M1-K1b."
+              "pl": "Głębokość zmieniasz regułą na ten klucz (dla rozmowy, jednostki albo osoby), ustawieniem osoby „context_depth_delta” albo zdaniem „głębiej”/„płycej”, które działa tylko na następną wiadomość (akcja context.modify, bez zapisu reguły).",
+              "en": "You change the depth with a rule on this key (for a conversation, a unit or the person), with the person's setting “context_depth_delta”, or with the sentence “deeper”/“shallower”, which works for the next message only (the action context.modify, no rule is written)."
             }
           }
         }
