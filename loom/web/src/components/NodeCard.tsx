@@ -181,7 +181,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
           </ul>
           <div className="ncard-buttons">
             {!moreLevels && levels.some(l => !l.declared) && <button className="ncard-btn" data-testid="card-more-levels" onClick={() => setMoreLevels(true)}>{t("card.more_levels")}</button>}
-            <button className="ncard-btn" data-testid="card-level-back" onClick={() => setStep("edit")}>{t("back")}</button>
+            <button className="ncard-btn" data-testid="card-levels-back" onClick={() => setStep("edit")}>{t("back")}</button>
           </div>
         </div>}
 

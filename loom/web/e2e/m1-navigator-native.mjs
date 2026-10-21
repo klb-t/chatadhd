@@ -5,7 +5,9 @@
 // Checks: menu ⋮ › Graf opens the navigator; the root rows are the kernel's rows with Polish labels, counts or "nieznane (powód)",
 // provenance chips, "po co"; no page scroll wider than 390; every tappable >= 44 px; a tap on ROM drills in (crumbs, 13 Polish rows
 // with status chips, the focus's why); search on the level; Szerzej/Węziej/Głębiej/Płycej change the budget and depth; the planned
-// buttons say so; the card stub; Back closes the layers in order (step → panel) through window.__loomBack. P3/P4 add the card and the map.
+// buttons say so; the node card (P3): a ROM item's card, Ustawienia › Rozmowa › Temperatura with the whole chain, Zmień → Dla kogo? →
+// set for 'Ta rozmowa' (rules.set + the kernel's confirmation) and for 'Ty' (settings.set), 'Zdejmij wartość' (rules.disable), the chain
+// compared with graph.card after every write; Back closes the layers in order (card → steps → panel) through window.__loomBack. P4 adds the map.
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync } from "node:fs";
@@ -148,7 +150,7 @@ try {
     assert.ok((await budget()).includes(word("bar.budget", { limit: String(limit * 2), hops: String(rom.hops) })));
   });
 
-  await step("Perspektywa / Działania / Widok say they are planned; ⋯ shows the card stub with the node's address", async () => {
+  await step("Perspektywa / Działania / Widok say they are planned; ⋯ opens the node card of a ROM item from graph.card", async () => {
     for (const id of ["perspective", "actions", "view"]) {
       await page.getByTestId(`nav-bar-${id}`).tap();
       assert.equal(await page.getByTestId("nav-bar-planned").innerText(), word("bar.planned", { what: word(`bar.${id}`) }));
@@ -156,14 +158,155 @@ try {
       await page.getByTestId("nav-bar-planned").waitFor({ state: "detached" });
     }
     const leaf = rom.children[0].address;
+    const expected = await api("POST", "/api/graph/card", { lang: "pl", address: leaf });
     await page.getByTestId(`nav-row-card-${leaf}`).tap();
-    assert.equal(await page.getByTestId("nav-card-stub").innerText(), word("card.stub", { address: leaf }));
-    await page.getByTestId(`nav-row-${leaf}`).tap();   // a leaf's row toggles the same stub
-    await page.getByTestId("nav-card-stub").waitFor({ state: "detached" });
+    await page.getByTestId("node-card").waitFor();
+    await page.getByTestId("card-loading").waitFor({ state: "detached" });
+    assert.equal(await page.getByTestId("card-label").innerText(), expected.label);
+    assert.equal(await page.getByTestId("card-chip").innerText(), expected.provenance.chip?.label ?? word(`chip.${expected.provenance.layer}`));
+    if (expected.why) assert.ok((await page.getByTestId("card-why").innerText()).includes(expected.why));
+    assert.equal(await page.getByTestId("card-chain-rows").locator("li").count(), expected.inheritance?.length ?? 0, "the chain is the kernel's, row for row");
+    for (const a of expected.actions) {
+      const row = page.getByTestId(`card-action-${a.id}`);
+      assert.ok((await row.innerText()).includes(a.label), `action ${a.id} in the kernel's words`);
+      if (a.implementation && a.implementation !== "implemented") assert.ok((await row.innerText()).includes(words["card.action.planned"]), `${a.id} says planned`);
+    }
+    const groups = Object.entries(expected.relations).filter(([, g]) => g.out.length + g.in.length > 0);
+    for (const [kind, g] of groups) assert.ok((await page.getByTestId(`card-relation-group-${kind}`).innerText()).includes(g.label));
+    if (groups.length === 0) assert.equal(await page.getByTestId("card-relations-none").innerText(), words["card.relations.none"]);
+    await noMissingWord();
+    await layoutFits();
+    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-rom.png") });
+    await page.getByTestId(`nav-row-${leaf}`).tap();   // a leaf's row toggles the same card
+    await page.getByTestId("node-card").waitFor({ state: "detached" });
   });
 
-  await step("Back closes the layers in order: the step (ROM → root), then the panel; at the root it falls through", async () => {
+  // The settings card needs an open conversation for the level "Ta rozmowa": the page is reopened on one (saved view).
+  const conv = (await api("POST", "/api/conversations", { title: "M1 card" })).id;
+  const cardOf = () => api("POST", "/api/graph/card", { lang: "pl", address: "setting:temperature", conv_id: conv });
+  const chainOnScreen = () => page.getByTestId("card-chain-rows").locator("li").evaluateAll(els => els.map(li => ({
+    level: li.dataset.testid.replace("card-chain-", ""), winning: li.dataset.winning === "true", role: li.dataset.role,
+    value: li.querySelector(".ncard-chain-value")?.textContent ?? "" })));
+  const sameChain = async (tag) => {
+    const expected = await cardOf();
+    const shown = await chainOnScreen();
+    assert.deepEqual(shown.map(r => r.level), expected.inheritance.map(l => l.level), `${tag}: every level of the chain, in the kernel's order`);
+    assert.deepEqual(shown.filter(r => r.winning).map(r => r.level), expected.inheritance.filter(l => l.role === "supplied").map(l => l.level), `${tag}: the winning level`);
+    for (const l of expected.inheritance) {
+      const row = shown.find(r => r.level === l.level);
+      assert.equal(row.role, l.role, `${tag}: role of ${l.level}`);
+      if (l.value !== undefined) assert.equal(row.value, String(l.value), `${tag}: value of ${l.level}`);
+      if (l.no_unit) assert.ok((await page.getByTestId(`card-chain-${l.level}`).innerText()).includes(word(`inheritance.no_unit.${l.level}`)), `${tag}: ${l.level} says it has no unit`);
+    }
+    assert.equal(await page.getByTestId("card-value").innerText(), `${words["card.value"]} ${expected.value_human}`, `${tag}: the value in words`);
+    assert.equal(await page.getByTestId("card-chip").innerText(), expected.provenance.chip?.label ?? word(`chip.${expected.provenance.layer}`), `${tag}: the chip`);
+    return expected;
+  };
+  const confirmGate = async () => {
+    await page.getByTestId("card-gate").waitFor();
+    assert.ok((await page.getByTestId("card-gate-reason").first().innerText()).length > 0, "the kernel's reason is shown");
+    await page.getByTestId("card-gate-confirm").tap();
+    await page.getByTestId("card-gate").waitFor({ state: "detached" });
+    await page.getByTestId("card-notice").waitFor();
+    assert.equal(await page.getByTestId("card-notice").innerText(), words["card.saved"]);
+    await page.getByTestId("card-loading").waitFor({ state: "detached" });
+  };
+
+  await step("Ustawienia › Rozmowa › Temperatura: the card shows the value, why, effect, the chip with layers and the whole chain", async () => {
+    // The shell opens the saved view (start_view preset: last_saved → last_conversation → new_conversation): it names the conversation, then the page reloads.
+    // (Not a #czat/<id> link: App.tsx skips loading the config on a link start, so the words would be the browser's English — noted for the shell.)
+    await page.evaluate(id => localStorage.setItem("loom.shell.last.v1", JSON.stringify({ schema: "loom.shell.last/1", layout: "chat", conversation_id: id })), conv);
+    await page.goto("about:blank");
+    await page.goto(base + "/");
+    await page.getByTestId("chat-shell").waitFor();
+    await page.getByTestId("shell-menu-toggle").tap();
+    await page.getByTestId("shell-menu-graph").tap();
+    await nav().waitFor();
+    for (const focus of ["area:profiles_settings", "group:rozmowa"]) {
+      await page.getByTestId(`nav-row-${focus}`).tap();
+      await page.locator(`[data-testid="graph-navigator"][data-focus="${focus}"]`).waitFor();
+      await page.getByTestId("nav-loading").waitFor({ state: "detached" });
+    }
+    await page.getByTestId("nav-row-setting:temperature").tap();
+    await page.getByTestId("node-card").waitFor();
+    await page.getByTestId("card-loading").waitFor({ state: "detached" });
+    const expected = await sameChain("fresh");
+    assert.ok((await page.getByTestId("card-why").innerText()).includes(expected.why));
+    assert.ok((await page.getByTestId("card-effect").innerText()).includes(expected.effect));
+    assert.equal(await page.getByTestId("card-layers").innerText(), word("card.layers", { layers: expected.provenance.layers.map(l => word(`chip.${l}`)).join(" → ") }));
+    assert.equal(await page.getByTestId("card-edit-rule").innerText(), `${words["card.edit_rule"]} ${word(`card.edit_rule.${expected.edit_rule}`)}`);
+    assert.ok((await page.getByTestId("card-flows").innerText()).includes(expected.flows_reading[0].title), "the flows that read the field");
+    await noMissingWord();
+    await layoutFits();
+    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-setting.png") });
+  });
+
+  await step("Zmień → Dla kogo?: the field's own levels, 'więcej poziomów' shows the whole chain with the reason a level cannot be written", async () => {
+    const expected = await cardOf();
+    await page.getByTestId("card-change").tap();
+    await page.getByTestId("card-editor-input").fill("0,3");
+    await page.getByTestId("card-next").tap();
+    await page.getByTestId("card-levels").waitFor();
+    const shown = () => page.getByTestId("card-levels").locator("button[data-testid^='card-level-']").evaluateAll(els => els.map(el => el.dataset.testid.replace("card-level-", "")));
+    assert.deepEqual(await shown(), expected.levels, "first the levels the field declares (human.levels)");
+    assert.equal(await page.getByTestId("card-level-turn").getAttribute("data-writable"), "false");
+    assert.ok((await page.getByTestId("card-level-turn").innerText()).includes(words["card.level.turn_planned"]));
+    await page.getByTestId("card-more-levels").tap();
+    assert.deepEqual(await shown(), expected.inheritance.map(l => l.level), "'więcej poziomów' = the whole chain");
+    assert.equal(await page.getByTestId("card-level-conversation").getAttribute("data-writable"), "true");
+    assert.ok((await page.getByTestId("card-level-project").innerText()).includes(word("inheritance.no_unit.project")));
+    assert.ok((await page.getByTestId("card-level-installation").innerText()).includes(words["card.level.baseline"]));
+    await noMissingWord();
+    await layoutFits();
+    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-for-whom.png") });
+  });
+
+  await step("set for 'Ta rozmowa' (rules.set, the kernel asks, confirm) → the chain shows the conversation winning; set for 'Ty' (settings.set) → person", async () => {
+    await page.getByTestId("card-level-conversation").tap();
+    await confirmGate();
+    const after = await sameChain("conversation 0.3");
+    assert.equal(after.value, 0.3);
+    assert.equal(after.provenance.scope, "conversation");
+    await page.getByTestId("card-change").tap();
+    await page.getByTestId("card-editor-input").fill("0.4");
+    await page.getByTestId("card-next").tap();
+    await page.getByTestId("card-level-person").tap();
+    await page.getByTestId("card-notice").waitFor();
+    await page.getByTestId("card-loading").waitFor({ state: "detached" });
+    const person = await sameChain("person 0.4");
+    assert.equal(person.inheritance.find(l => l.level === "person").value, 0.4, "config.json holds 0.4");
+    assert.equal(person.value, 0.3, "the conversation still wins");
+    assert.equal((await api("GET", "/api/config")).temperature, 0.4);
+  });
+
+  await step("'Zdejmij wartość: Ta rozmowa' (rules.disable, confirm) → the chain returns to 'Ty'; the person layer says why it cannot be taken off yet", async () => {
+    const before = await cardOf();
+    const convRow = before.inheritance.find(l => l.level === "conversation"), personRow = before.inheritance.find(l => l.level === "person");
+    const unset = page.getByTestId("card-unset-conversation");
+    assert.ok((await unset.innerText()).includes(word("card.unset", { layer: convRow.label, value: String(convRow.value) })));
+    assert.ok((await unset.innerText()).includes(word("card.unset.returns", { layer: personRow.label, value: String(personRow.value) })));
+    assert.equal(await page.getByTestId("card-unset-person").isDisabled(), true);
+    assert.ok((await page.getByTestId("card-unset-person").innerText()).includes(words["card.unset.person_planned"]));
+    await page.screenshot({ path: path.join(SHOTS, "m1-navigator-card-unset.png") });
+    await unset.tap();
+    await confirmGate();
+    const after = await sameChain("after unset");
+    assert.equal(after.value, 0.4);
+    assert.equal(after.provenance.scope, "person");
+    assert.equal(await page.getByTestId("card-unset-conversation").count(), 0, "the conversation layer holds nothing now");
+    const rules = await api("POST", "/api/rules/list", { scope: "conversation", scope_id: conv, include_disabled: true });
+    assert.ok(rules.rules.every(r => r.disabled), "the rule is switched off, not deleted");
+    await noMissingWord();
+    await layoutFits();
+  });
+
+  await step("Back closes the layers in order: the card, then each path step (Rozmowa → Profile i ustawienia → root), then the panel; at the root it falls through", async () => {
     const back = () => page.evaluate(() => window.__loomBack());
+    assert.equal(await back(), true);
+    await page.getByTestId("node-card").waitFor({ state: "detached" });
+    assert.equal(await nav().getAttribute("data-focus"), "group:rozmowa", "the card closed, the path did not");
+    assert.equal(await back(), true);
+    await page.locator('[data-testid="graph-navigator"][data-focus="area:profiles_settings"]').waitFor();
     assert.equal(await back(), true);
     await page.locator('[data-testid="graph-navigator"][data-focus=""]').waitFor();
     assert.equal(await page.getByTestId("nav-crumb-1").count(), 0);

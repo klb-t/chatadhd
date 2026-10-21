@@ -22,7 +22,11 @@ const t = translator(pl);
 
 test('every word the screen asks for exists in both languages, and the feature says it is present (the screen exists)', () => {
   const ids = ['root', 'back', 'card', 'children', 'count.value', 'count.unknown', 'count.unknown_reason', 'collapsed', 'hidden_by_you',
-    'no_translation', 'no_children', 'unknown_source', 'query.placeholder', 'search', 'search.close', 'path', 'loading', 'error', 'card.stub',
+    'no_translation', 'no_children', 'unknown_source', 'query.placeholder', 'search', 'search.close', 'path', 'loading', 'error',
+    // the node card (P3, src/components/NodeCard.tsx) asks for these on top of inheritance.*, relations, actions
+    'card.close', 'card.layers', 'card.value', 'card.why', 'card.effect', 'card.edit_rule', 'card.change', 'card.for_whom', 'card.more_levels', 'card.cancel',
+    'card.saved', 'card.write_error', 'card.unset', 'card.unset.returns', 'card.unset.person_planned', 'card.level.turn_planned', 'card.level.baseline',
+    'card.gate', 'card.gate.yes', 'card.gate.no', 'card.flows_reading', 'card.relations.none', 'card.action.planned', 'inheritance', 'relations', 'actions',
     'bar.planned', 'bar.budget', 'bar.budget.unlimited', 'chip.rom', ...nav.BAR_BUTTONS.map(b => b.word),
     ...['present', 'partial', 'missing', 'calibration', 'planned'].map(s => `status.${s}`)];
   for (const id of ids) { assert.equal(typeof en[id], 'string', `en ${id}`); assert.equal(typeof pl[id], 'string', `pl ${id}`); }
