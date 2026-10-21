@@ -112,7 +112,10 @@ class ChatEngineCompatTest(CompatTestCase):
 
     def _run_loom(self, server, db_path):
         args = {
-            "config": {"base_url": server.base_url, "default_model": "test/model"},
+            # M1-K1a: Loom leaves the receipt "Co wysłaliśmy" (metadata.context_trace.receipt) with every chat message (preset
+            # context_receipt_store = auto); the Python app has no such field. This test compares what both write for the same chat, so the
+            # Loom side switches the receipt off here - the receipt itself is tested in tests/test_context_receipt.cpp.
+            "config": {"base_url": server.base_url, "default_model": "test/model", "context_receipt_store": "never"},
             "secrets": {"api_key": "sk-test-key"},
             "request": {"message": USER_MESSAGE, "stream": False},
         }
