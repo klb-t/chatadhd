@@ -111,14 +111,14 @@ Pole bez czytelnika w kodzie ma chip **planowane** i zdanie, dlaczego (z danych)
 
 Na górze grupy **Modele** stoi tabela ról z jądra (`roles.resolved`): Rozmowa, Analiza w tle, Sekretarz, Rozpoznanie
 polecenia, Obraz, Głos, Osadzenia, Mowa→tekst, Tekst ze zdjęcia, Model dla działania, Formaty plików — każda z **modelem
-słowami**, **chipem klasy** (tani / średni / frontier / brak modelu) i stanem (częściowo / planowane — bez chipu, gdy rola działa w całości) oraz zdaniem, co ta rola robi.
+słowami**, **chipem klasy** (tani / średni / frontier / brak modelu) i stanem („wybór przez rolę: częściowo / planowane” — bez chipu, gdy rola już wybiera model; jedno zdanie nad tabelą mówi, co znaczą chipy) oraz zdaniem, co ta rola robi.
 
 ## 10. Karta roli — odpowiedź na „dlaczego jest do wyboru model do analizy, jak są różne flowy”
 
 ![karta roli](M1_CHECKPOINT_0/m1-settings-role-chain.png)
 
 Dotknij **Analiza w tle**. Karta mówi **z danych**: **Po co**, **Dziś** (które prace naprawdę wybierają model przez tę rolę),
-**Dlaczego tak jest**; **Model** i **Klasa** z powodem słowo w słowo z jądra („tani, bo nazwa zawiera „mini” …”); **Jak
+**Dziś** (odpowiedź słowami; notatka techniczna jądra „Dlaczego tak jest” jest złożona pod **Szczegóły techniczne**, zamknięte, dopóki jej nie dotkniesz); **Model** i **Klasa** z powodem słowo w słowo z jądra („tani, bo nazwa zawiera „mini” …”); **Jak
 wybieramy model** — łańcuch polityki krok po kroku (1. wprost: pole „Model analizy w tle”; 2. rola; 3. brak — analiza
 lokalna, bez kosztu), z chipem **„ten krok wybiera”** przy tym, który zadecydował; **Przepływ dla każdej klasy modelu** —
 tani/średni/nieznany = „Klasyczne wywołanie i wąskie pytanie”, frontier = „Jedno wywołanie: cała rozmowa naraz”, oba z chipem
@@ -144,11 +144,28 @@ Przycisk **wstecz** (Androida, przeglądarki, Escape na komputerze) zamyka **jed
 krok ścieżki (Rozmowa → Profile i ustawienia → Graf) → panel; w Ustawieniach: kartę roli → grupę → panel. Na dole stosu
 oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android pyta, czy wyjść; to pozycja M1-A0).
 
+## Co doszło w poprawkach r1:b2 (2026-10-21, fakty z przebiegu)
+
+- **Perspektywa ▾** na pasku otwiera listę perspektyw jądra (`GET perspectives` / `loom_perspectives`: Zależności, Wywołania,
+  Historia wersji, Teleologia, Struktura, Środowiska i dostęp, Dziedziczenie ustawienia — tyle, ile jądro ma, w jego kolejności i po
+  polsku). Zaznaczasz jedną lub kilka; wiersze są wtedy tym, dokąd te relacje prowadzą z ogniska (`graph.navigate` z `perspectives`,
+  tak głęboko, jak mówi głębia). Zaznaczenie zostaje, gdy wchodzisz głębiej i wracasz; „żadna — własne dzieci węzła” wraca do
+  zwykłej listy. Linia pod paskiem mówi, które perspektywy są włączone; pusta odpowiedź mówi „Żadna relacja z wybranych
+  perspektyw nie wychodzi z tego węzła.” Zrzut: `m1-navigator-perspective.png`.
+- **Działania** otwiera kartę ogniska przewiniętą do „Co możesz zrobić” (działania jądra z `graph.card`, słowami). W korzeniu nie
+  ma węzła, więc pasek mówi: „Działania są na karcie węzła: otwórz wiersz przez ⋯ albo wejdź w jeden.” Żaden przycisk paska nie
+  mówi już „planowane”. Zrzut: `m1-navigator-actions.png`.
+- **Karta roli:** „Dziś” jest odpowiedzią; notatka techniczna jądra (nazwy plików, klucze) leży zamknięta pod „Szczegóły techniczne”
+  (gdy jądro przyśle `reason_human`, karta woli je). Chipy stanu mówią, czego dotyczą: „wybór przez rolę: planowane / częściowo”,
+  a nad tabelą ról stoi jedno zdanie, co znaczą chipy. Lista „Kto czyta” nazywa klucz etykietą pola („czyta Model analizy w tle”),
+  goły klucz jest tylko w podpowiedzi (`title`).
+- **Słowa bez identyfikatorów:** „planowane — silnik nie ma dziś akcji na wartość jednej tury” i „Zapisane dla Ciebie: Razem” bez
+  nawiasów z nazwami akcji, pozycji planu i kluczy (te są w INDEX).
+- **Start z linku** (`#czat/<id>`, `#warsztat`) wczytuje konfigurację jak zwykły start: język słów (`ui_language`), motyw i układ
+  nawigatora (`navigator_layout`) są Twoimi ustawieniami, nie językiem przeglądarki. E2E karty ustawień startuje teraz z linku.
+
 ## Czego jeszcze NIE ma (i dlaczego)
 
-- **Perspektywa ▾** i **Działania** na pasku mówią „planowane — …” po dotknięciu. Perspektywa potrzebuje składania
-  perspektyw (sektory / obok siebie) i rendererów z `view_renderers`; Działania = `actions.for` z pola ogniska. Są na
-  pasku już teraz, żeby pasek nie zmieniał kształtu między paczkami.
 - **Przełącznik „Ustawiam dla: mnie / tej rozmowy / projektu…”** nad listą pól — dziś poziom wybierasz w karcie przy
   każdej zmianie („Dla kogo?”). **Chip „Propozycja modelu”** — jądro mówi wprost: „Dziś żadne pole nie ma propozycji
   strażnika …” (brak mapowania hipotezy na klucz w `guardian.pack`).
@@ -163,13 +180,22 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
 - **Nie na emulatorze Androida.** Powłoka (wstecz przez `OnBackPressedDispatcher`, `adjustResize`, prostokąty gestów,
   pytanie o wyjście) i przebieg `android-smoke` to M1-A0 (sesja S2). Kroki dla sterownika są w bloku `gate0` w
   `docs/reports/M1_W0_TESTIDS.md`.
-- Niektóre zdania **„Dlaczego tak jest”** na karcie roli i **powody „planowane”** cytują nazwy plików i akcji
-  (`actions.pack`, `settings.set`) — to słowa z danych jądra, pokazane uczciwie; przepisanie ich na prostsze bez utraty
-  treści to osobna praca nad danymi, nie nad ekranem.
-- Chip **„planowane”** w wierszu roli **Rozmowa** nie znaczy, że czat nie działa: znaczy, że łańcuch polityki tej roli
-  opisuje wybór, którego dziś nie czyta żaden wykonawca (czat czyta pole „Model rozmowy” wprost). Karta roli mówi to w „Dziś”.
+- Notatki techniczne jądra („Dlaczego tak jest” na karcie roli, powody „planowane” pól klasy) nadal cytują nazwy plików i akcji
+  (`actions.pack`, `settings.set`); ekran je składa pod „Szczegóły techniczne”, a jądro nie wysyła jeszcze `reason_human` dla
+  stanu roli — przepisanie tych zdań na prostsze bez utraty treści to praca nad danymi (`guardian.pack`), nie nad ekranem.
+- Perspektywa ▾ to lista jądra i jego krawędzie; **sektory / obok siebie** i renderery z `view_renderers` to M1-W3. `actions.for`
+  bierze element (klasa, cechy), nie adres grafu — Działania pokazują działania z `graph.card`, które jądro liczy dla węzła.
 
 ## Co sprawdzają testy (fakty z tego przebiegu)
+
+- **r1:b2 (2026-10-21):** `test:m1-navigator` 12/12 — w korzeniu Działania mówi, gdzie są działania (bez karty); Perspektywa ▾ = opcje
+  równe `GET /api/perspectives` (kolejność, polskie nazwy), dwie zaznaczone → wiersze równe `graph.navigate` z `perspectives`
+  (ten sam budżet i głębia), linia „Perspektywy: Struktura · Zależności”, „żadna” → wiersze równe zwykłej odpowiedzi; Działania w
+  ROM → karta `area:rom` z `data-section=actions`, sekcja działań w oknie, działania jądra słowami; karta ustawienia po starcie z
+  `#czat/<id>` po polsku. `test:m1-settings` 9/9 — zdanie o chipach nad tabelą, chip stanu = słowo z katalogu z dwukropkiem,
+  „Szczegóły techniczne” zamknięte → otwarte → notatka jądra, „Kto czyta” z etykietą pola, bez gołego klucza w tekście, klucz w
+  `title`. Jednostkowe: `test:navigator-state` 9/9 (perspektywy, cel Działań), `test:role-card` 5/5 (chip z podmiotem),
+  `test:navigator-map` 9/9 (`view.saved` bez klucza).
 
 - `npm run test:m1-navigator` (`e2e/m1-navigator-native.mjs`, 11 kroków): korzeń = odpowiedź jądra, ROM 13 wierszy po
   polsku ze stanem, szukanie, Szerzej/Węziej/Głębiej/Płycej, karta ROM i karta Temperatury z całym łańcuchem, Zmień → Dla kogo?
