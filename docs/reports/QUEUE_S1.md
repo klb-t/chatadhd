@@ -4,7 +4,7 @@ Po co ten plik: zasada 1 (trwałe checkpointy) — kto przejmie pracę po przerw
 wszystko, czego kontekst nie przeniesie. Aktualizowany przy każdym zakończeniu pakietu.
 
 ## MAIN = `8e05e38f` (K1a, 21:00 UTC) — bramka `k1a` zielona; CI 259 w toku; K1b w toku
-Bieg **259**: https://github.com/klb-t/chatadhd/actions/runs/39675047482 (start 20:59, ≈ 80–100 min, do ok. 22:30). **Nie pushować kodu w `loom/**` na `main` do jego końca.**
+**Aktualizacja 21:18:** S2 zrobił FF `main` → `9f02ef7b` (K1a + jego merge: `android-smoke.yml` serwer na 24.04, `drive.mjs` sprawdza R38), co anulowało bieg 259 (miał 18 min). Docelowy bieg: **260** https://github.com/klb-t/chatadhd/actions/runs/39677626877 (start 21:18, do ok. 22:40). **Nie pushować kodu w `loom/**` na `main` do jego końca.** K1b przed FF: `git merge origin/main` do `claude/m1-w0`.
 **K1b** (`wf_b0b95e77-a0d`, Sonnet, start 21:00): Binding.turn, nośnik tury + `context.modify`, `context.receipt`, routing „szerzej/głębiej” w `route.cpp`, ×10 w `estimate.cpp`, statusy w packach — push na
 `claude/m1-w0`, nie na `main`. Dalej M1: W1 (web: arkusz „Co wysłaliśmy”, + › Kontekst), K2, W2, W3, A1a (S2). Tempo: tydzień 31 %, cel 22 % (+9), do punktu piątkowego 47 h → ok. 9,7 pkt/dobę.
 
