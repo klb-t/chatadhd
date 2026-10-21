@@ -208,6 +208,33 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   testy. Nie uruchomione: `ctest`, pełne `npm run e2e`, `android-smoke`, sterownik S2 z nowym blokiem (sprawdzony tylko parserem
   i wzorcami na trzech próbkach tekstu).
 
+## Co doszło w poprawkach r1:b5 (2026-10-21, fakty z przebiegu)
+
+- **Ścieżka nie ucina jedynej nazwy poziomu:** ostatni okruszek („ROM (pamięć tylko do odczytu)”, „Profile i ustawienia”) zawija
+  się na drugą linię (`white-space: normal`, `graph-navigator.css`); wcześniejsze okruszki skracają się pierwsze (wielokropek, nie
+  poniżej 56 px). Zrzuty: `m1-navigator-rom.png`, `m1-navigator-card-rom.png`, `m1-navigator-card-setting.png`.
+- **Klasa modelu bez przypadku:** wzorzec klasy taniej „mini” łapał „gemini” (gemini-2.5-pro wychodził „tani”, a powód na karcie
+  roli to przyznawał). Wzorzec to teraz „-mini” z myślnikiem (`guardian.pack`): gemini-2.5-flash jest tani przez „flash” (wzorce
+  „flash” i „lite” już były), gemini-2.5-pro jest frontier przez „pro”, gpt-4o-mini i gpt-5-mini tanie przez „-mini” (klasa tania
+  pierwsza). Powód na karcie: „tani, bo nazwa zawiera „flash” (wzorzec to fragment nazwy; „-mini” ma myślnik, żeby nie łapać
+  „gemini”)”; `tier_rule` mówi to samo. `test_guardian` (M1-D1) oczekuje nowych klas. Zrzut: `m1-settings-role-card.png`.
+- **Powiązania mówią o konkretnym węźle:** nagłówek grupy to czasownik i węzły („jest częścią: ROM (pamięć tylko do odczytu)”, a od
+  strony ROM „zawiera: Rozruch…”), nie znaczenie rodzaju krawędzi („Źródło jest częścią celu.”). Jądro dosyła w `graph.card`
+  `inverse` i `inverse_label` rodzaju (`graph_views` `edge_kinds.inverse`, nowe `Catalogue::edge_inverse`); etykieta `part_of` to
+  „jest częścią” / „is part of” (była „część”). Rodzaj bez odwrotności ma jeden nagłówek i strzałki kierunku przy wierszach.
+  Zrzut: `m1-navigator-card-rom.png`.
+- **Wstęp Ustawień liczy grupy, które rysuje:** „8 grup. W każdej pola z opisem…” — `{{groups}}` z `doc.groups.length` przez formy
+  liczby mnogiej `count.groups.*` (pl one/few/many/other, en one/other), tak jak `count.fields`. Zrzut: `m1-settings-groups.png`.
+- **Warsztat bez dwóch „Graf”:** stare wejście do grafu nazywa się „Wejście do grafu (stare)” (słowo `workshop_graph_entry`), „Graf”
+  zostaje nawigatorowi; stary panel pamięci bierze słowo `menu_memory` („Pamięć”), które już było. Pozostałe etykiety Warsztatu
+  (Logs, Operations, Import, Context, Methods, Analysis, Onboarding) nadal po angielsku — nie mają słów w katalogu; osobna paczka.
+- Testy (fakty): `tsc` + `npm run build` czyste; `gen_runtime_profiles.py --check` i `gen_onboarding_pack.py --check` czyste; jądro
+  dev przebudowane przyrostowo (`projection.h/.cpp`, `test_guardian.cpp`, oba `.inc`); `ctest -R "guardian|graph_projection|onboarding|ports|graph_views|annotations"` 13/13 (M1-D1 klasy modelu z nowymi oczekiwaniami); jednostkowe web: node-card-state
+  8/8 (`inverseLabel`), settings-human 7/7 (formy „1 grupa / 2 grupy / 5 grup / 22 grupy”, „8 groups”), navigator-state 9/9,
+  navigator-map 9/9, role-card 5/5, shell 9/9, composer-menu 13/13; `test:m1-navigator` 12/12 (krok karty sprawdza nagłówki per
+  kierunek, nazwy węzłów i brak zdania znaczenia), `test:m1-settings` 9/9; 12 zrzutów zapisanych ponownie przez te testy. Nie
+  uruchomione: pełny `ctest`, pełne `npm run e2e`, `android-smoke`, sonda Warsztatu w przeglądarce (słowo sprawdzone w bundlu).
+
 ## Czego jeszcze NIE ma (i dlaczego)
 
 - **Przełącznik „Ustawiam dla: mnie / tej rozmowy / projektu…”** nad listą pól — dziś poziom wybierasz w karcie przy
