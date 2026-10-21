@@ -121,6 +121,8 @@ export interface InheritanceLevel {
   /** A level of an organisational unit (project, team ...); no_unit: the conversation has none of that kind ("bez projektu"). */
   unit_level?: boolean;
   no_unit?: boolean;
+  /** M1-W0 r2:b4: the level's one-line meaning in the reader's language (graph/scopes.pack chain[].meaning); absent when the catalogue has none. */
+  meaning?: string;
 }
 
 export interface FieldProvenance {

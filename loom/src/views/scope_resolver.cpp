@@ -177,6 +177,8 @@ Result<Resolution> Resolver::resolve(const Binding& b) const {
   for (std::size_t i = 0; i < chain.size(); ++i) {
     const std::string id = json::get_string(chain[i], "id");
     Json level{{"level", id}, {"label", chain[i].value("label", Json(id))}, {"active", i <= scope.depth}};
+    // M1-W0 r2:b4: the level's one-line meaning from the catalogue (graph/scopes.pack chain[].meaning, {en,pl}); absent = no line.
+    if (chain[i].contains("meaning")) level["meaning"] = chain[i]["meaning"];
     if (context.contains(id)) level["scope_id"] = context[id];
     Json cands = Json::array();
     std::string role = i <= scope.depth ? "none" : "inactive";
@@ -209,6 +211,7 @@ Result<Json> Resolver::inheritance(const Binding& b) const {
     const std::string id = json::get_string(l, "level");
     const std::string role = json::get_string(l, "role");
     Json n{{"id", "scope:" + id}, {"kind", "scope_level"}, {"level", id}, {"label", l.value("label", Json(id))}, {"role", role}, {"active", l.value("active", false)}};
+    if (l.contains("meaning")) n["meaning"] = l["meaning"];
     if (l.contains("scope_id")) n["scope_id"] = l["scope_id"];
     for (const auto& c : l.value("candidates", Json::array()))
       if (c.contains("value") && (json::get_string(c, "role") == "decided" || json::get_string(c, "role") == "overridden")) { n["value"] = c["value"]; break; }

@@ -7,7 +7,7 @@
 .rolc-row-main { padding-right: 8px; }
 .rolc-model { font-size: 14px; overflow-wrap: anywhere; }
 .rolc-key { opacity: 0.7; }
-.rolc-why-line { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }   /* the whole sentence is on the card */
+.rolc-why-line { overflow-wrap: anywhere; }   /* r2:b4: the whole sentence wraps in the row (a 2-line clamp cut three of four roles mid-word at 390 px); the card repeats it */
 .rolc-card { max-width: 100%; overflow-wrap: anywhere; }
 .rolc-card p { margin: 4px 0; }
 .rolc-lines { font-size: 13px; }

@@ -67,6 +67,8 @@
 .ncard-chain-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; min-height: 44px; padding: 6px 8px; border-bottom: 1px solid var(--border); border-left: 4px solid transparent; }
 .ncard-chain-row .ncard-chain-role { opacity: 0.75; font-size: 13px; }
 .ncard-chain-row .ncard-chain-value { margin-left: auto; font-variant-numeric: tabular-nums; }
+/* r2:b4: the level's one-line meaning from the kernel's catalogue, a small second line under the label (chain rows and "Dla kogo?" rows). */
+.ncard-chain-meaning { flex-basis: 100%; font-size: 13px; opacity: 0.75; overflow-wrap: anywhere; }
 .ncard-winning { border-left-color: var(--accent, #7aa2f7); background: color-mix(in srgb, var(--accent, #7aa2f7) 12%, transparent); }
 .ncard-winning .ncard-chain-value { font-weight: 700; }
 .ncard-inactive { opacity: 0.55; }

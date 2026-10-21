@@ -605,6 +605,8 @@ struct Catalogue::Impl {
     for (const auto& l : res.chain) {
       const std::string id = json::get_string(l, "level");
       Json row{{"level", id}, {"label", say(l.value("label", Json(id)))}, {"role", json::get_string(l, "role")}, {"active", l.value("active", false)}};
+      // M1-W0 r2:b4: the level's one-line meaning in the reader's language (graph/scopes.pack chain[].meaning); a level without one has no key.
+      if (const Json* m = json::find(l, "meaning"); m) if (const std::string s = say(*m); !s.empty()) row["meaning"] = s;
       if (l.contains("scope_id")) row["scope_id"] = l["scope_id"];
       for (const auto& c : l.value("candidates", Json::array()))
         if (c.contains("value") && (json::get_string(c, "role") == "decided" || json::get_string(c, "role") == "overridden")) {
@@ -956,6 +958,8 @@ Result<Read> read_scopes(Impl& c, const Json& src, const std::string&, const Jso
     const std::string id = json::get_string(l, "id");
     Json n = c.make(src, "scope:" + id, c.say(l.value("label", Json(id))), c.parent_of(src), "rom", "graph/scopes.pack#/chain/" + id, "preset");
     n["order"] = order++;
+    // M1-W0 r2:b4: the navigator's "po co" line of a scope level is its catalogue meaning (same words as the card's chain).
+    if (const Json* m = json::find(l, "meaning"); m) if (const std::string s = c.say(*m); !s.empty()) n["why"] = s;
     if (unit_levels.count(id)) n["attrs"]["unit_level"] = true;
     if (!prev.empty()) r.edges.push_back(Json{{"src", "scope:" + id}, {"dst", "scope:" + prev}, {"kind", "inherits_from"}});
     prev = id;

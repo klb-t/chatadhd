@@ -174,16 +174,23 @@ export default function App() {
   }, []);
 
   const onMessagesChanged = useCallback(() => setConvRefreshKey(key => key + 1), []);
+  // M1-W0 r2:b4: one screen for "the graph" — the navigator (the same ⋮ › Graf opens); the old panels stay reachable in the Workshop.
+  const openNavigator = useCallback((focus: string) => { setNavigatorFocus(focus); setActivePanel("navigator"); }, []);
   const profileUi = useMemo(() => ({
     selectConversation: onSelectConversation, conversationCreated: onConversationCreated,
-    openKnowledge: () => setKnowledgeOpen(true), openPanel: (panel: PanelId) => setActivePanel(panel),
-  }), [onSelectConversation, onConversationCreated]);
-  // Existing views that can open an entry area's `expand` descriptor.
+    openKnowledge: () => setKnowledgeOpen(true),
+    // the chat's `graph.open` operation lands where ⋮ › Graf lands (navigator root), not on the old force-directed panel
+    openPanel: (panel: PanelId) => panel === "graph" ? openNavigator("") : setActivePanel(panel),
+  }), [onSelectConversation, onConversationCreated, openNavigator]);
+  // The openers of an entry area's `expand` descriptor (spec M1-W0 "Pliki": kb.policy/kb.query/conversations.list/graph.nodes → the navigator).
+  // The focus is the area the descriptor stands for (graph_entry.pack defaults.areas[].expand): the words then come from graph.navigate.
   const entryOpeners = useMemo<EntryOpeners>(() => ({
-    "conversations.list": () => { setActivePanel(null); setSidebarOpen(true); },
-    "graph.nodes": () => setActivePanel("graph"),
-    "kb.query": () => { setActivePanel(null); setKnowledgeOpen(true); },
-  }), []);
+    "graph.navigate": (params) => openNavigator(typeof params.focus === "string" ? params.focus : ""),
+    "graph.nodes": () => openNavigator(""),
+    "kb.query": (params) => openNavigator(params.what === "entities" ? "area:parties" : "area:knowledge"),
+    "kb.policy": () => openNavigator("area:self_model"),
+    "conversations.list": () => openNavigator("area:context_projects"),
+  }), [openNavigator]);
   // The words of the shell come from data (presentation.app_shell, PL/EN); without a catalog the machine names are shown.
   const shellCatalog = usePresentationFeature(userProfileHost, "app_shell");
   const shellText = (id: string): string => {
@@ -192,6 +199,8 @@ export default function App() {
   };
   const uiShell = usePresentationFeature(userProfileHost, "ui_shell");
   const uiLanguage = shellLanguage(config.ui_language, undefined, navigator.languages ?? [navigator.language], ["en", "pl"]);
+  // r2:b4: the document speaks the shell's language (index.html ships lang="en"); a screen reader (TalkBack) then picks the Polish voice.
+  useEffect(() => { document.documentElement.lang = uiLanguage; }, [uiLanguage]);
   const t = useMemo(() => shellTranslator(uiShell.feature, uiLanguage), [uiShell.feature, uiLanguage]);
   const installedAdapters = useMemo(() => createLoomProfileRegistry(api, profileUi), [profileUi]);
   const installedProfile = useMemo(() => primaryProfile ? registerProfile(installedAdapters, primaryProfile) : null, [installedAdapters, primaryProfile]);

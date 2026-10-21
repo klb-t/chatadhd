@@ -32,6 +32,8 @@ export interface ChainRow {
   noUnitText: string | null;
   active: boolean;
   scopeId: string | null;
+  /** M1-W0 r2:b4: the level's one-line meaning from the kernel's catalogue („Instalacja — ten telefon…”); null = the catalogue gave none. */
+  meaningText: string | null;
 }
 
 export function valueText(value: unknown, t: ShellT): string {
@@ -88,6 +90,7 @@ export function chainRows(inheritance: InheritanceLevel[] | undefined, t: ShellT
     winning: l.role === "supplied",
     noUnitText: l.no_unit ? t(`inheritance.no_unit.${l.level}`) : null,
     active: l.active, scopeId: l.scope_id ?? null,
+    meaningText: typeof l.meaning === "string" && l.meaning.length > 0 ? l.meaning : null,
   }));
 }
 
@@ -129,6 +132,8 @@ export interface LevelChoice {
   /** From the field's own list (human.levels); the rest show under "więcej poziomów". */
   declared: boolean;
   write: { kind: "settings.set" } | { kind: "rules.set"; scope: string; scope_id?: string } | { kind: "unavailable"; reasonText: string };
+  /** M1-W0 r2:b4: the level's one-line meaning (same words as the chain); null when the chain does not draw the level or the catalogue has none. */
+  meaningText: string | null;
 }
 
 export function levelChoices(card: Pick<GraphCardResult, "levels" | "inheritance">, convId: string | null, t: ShellT): LevelChoice[] {
@@ -150,7 +155,7 @@ export function levelChoices(card: Pick<GraphCardResult, "levels" | "inheritance
     } else if (level === "turn") write = { kind: "unavailable", reasonText: t("card.level.turn_planned") };
     else if (BASELINE_LEVELS.has(level)) write = { kind: "unavailable", reasonText: t("card.level.baseline") };
     else write = { kind: "unavailable", reasonText: t("card.level.unknown", { level }) };
-    return { level, label, declared: isDeclared, write };
+    return { level, label, declared: isDeclared, write, meaningText: typeof row?.meaning === "string" && row.meaning.length > 0 ? row.meaning : null };
   });
 }
 

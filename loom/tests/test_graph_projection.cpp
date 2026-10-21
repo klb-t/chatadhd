@@ -340,6 +340,11 @@ TEST_SUITE("graph_projection") {
     CHECK(card.at("effect").is_string());
     CHECK(card.at("edit_rule").is_string());
     CHECK_FALSE(card.at("inheritance").empty());
+    // M1-W0 r2:b4: every level of the chain carries its one-line meaning from graph/scopes.pack (the shipped catalogue has one per level).
+    for (const auto& l : card.at("inheritance")) {
+      CHECK(l.contains("meaning"));
+      CHECK(l.value("meaning", std::string()).size() > 0);
+    }
     CHECK(card.at("relations").contains("grouped_in"));
     CHECK(card.at("relations").at("grouped_in").at("out").at(0).at("address") == "group:rozmowa");
     CHECK(card.at("actions").is_array());

@@ -162,3 +162,17 @@ test('"Wartość:" never shows a raw status id: a ROM item (value = status) leav
   assert.equal(card.layersLine({ ...prov('installation', 'person'), inheritance: [] }, t), `${pl['card.layers'].replace('{{layers}}', `${pl['chip.installation']} → ${pl['chip.person']}`)}`);
   assert.equal(card.layersLine(prov('rom', 'overlay:graph_entry'), t), pl['card.layers'].replace('{{layers}}', `${pl['chip.rom']} → ${pl['chip.overlay']}`), 'a suffixed layer takes the word of its family, never its id');
 });
+
+test('r2:b4: the level meaning from the kernel catalogue is the second line of a chain row and of a "Dla kogo?" row; absent = null, never a made-up word', async () => {
+  const withMeaning = chain.map(l => l.level === 'installation' ? { ...l, meaning: 'ten telefon albo ta kopia aplikacji' } : l);
+  const rows = card.chainRows(withMeaning, t);
+  assert.equal(rows.find(r => r.level === 'installation').meaningText, 'ten telefon albo ta kopia aplikacji');
+  assert.equal(rows.find(r => r.level === 'person').meaningText, null, 'no meaning in the data → no line');
+  assert.equal(card.chainRows(withMeaning.map(l => ({ ...l, meaning: '' })), t).find(r => r.level === 'installation').meaningText, null, 'an empty string is no meaning');
+  const levels = card.levelChoices({ ...field, inheritance: withMeaning }, 'c_1', t);
+  assert.equal(levels.find(l => l.level === 'installation').meaningText, 'ten telefon albo ta kopia aplikacji', 'the same words on the "Dla kogo?" row');
+  assert.equal(levels.find(l => l.level === 'turn').meaningText, null);
+  // the real card of the kernel (fixture written by e2e/m1-navigator-native.mjs): every level of the shipped catalogue has one line
+  const real = JSON.parse(await readFile(new URL('./fixtures/graph-card-temperature.json', import.meta.url), 'utf8'));
+  for (const r of card.chainRows(real.inheritance, t, real.provenance)) assert.ok(r.meaningText && r.meaningText.length > 0, `${r.level} has its meaning in the fixture`);
+});

@@ -313,6 +313,10 @@ try {
       assert.equal(row.role, l.role, `${tag}: role of ${l.level}`);
       if (l.value !== undefined) assert.equal(row.value, num(l.value), `${tag}: value of ${l.level}`);
       if (l.no_unit) assert.ok((await page.getByTestId(`card-chain-${l.level}`).innerText()).includes(word(`inheritance.no_unit.${l.level}`)), `${tag}: ${l.level} says it has no unit`);
+      // r2:b4: the level's meaning (graph/scopes.pack chain[].meaning, through graph.card) is the row's second line — a term with its explanation
+      const meaning = await page.getByTestId(`card-chain-${l.level}`).locator(".ncard-chain-meaning").allInnerTexts();
+      if (l.meaning) assert.deepEqual(meaning, [l.meaning], `${tag}: ${l.level} explains itself with the kernel's words`);
+      else assert.deepEqual(meaning, [], `${tag}: ${l.level} has no meaning line when the kernel sends none`);
     }
     assert.equal(await page.getByTestId("card-value").innerText(), `${words["card.value"]} ${expected.value_human}`, `${tag}: the value in words`);
     assert.equal(await page.getByTestId("card-chip").innerText(), expected.provenance.chip?.label ?? word(`chip.${expected.provenance.layer}`), `${tag}: the chip`);
@@ -377,6 +381,8 @@ try {
     assert.equal(await page.getByTestId("card-level-conversation").getAttribute("data-writable"), "true");
     assert.ok((await page.getByTestId("card-level-project").innerText()).includes(word("inheritance.no_unit.project")));
     assert.ok((await page.getByTestId("card-level-installation").innerText()).includes(words["card.level.baseline"]));
+    // r2:b4: every level of the whole chain explains itself on the "Dla kogo?" row with the kernel's meaning (the same words as the chain)
+    for (const l of (await cardOf()).inheritance) if (l.meaning) assert.deepEqual(await page.getByTestId(`card-level-${l.level}`).locator(".ncard-chain-meaning").allInnerTexts(), [l.meaning], `${l.level}: meaning on the "Dla kogo?" row`);
     await noMissingWord();
     await layoutFits();
     await shot("m1-navigator-card-for-whom");

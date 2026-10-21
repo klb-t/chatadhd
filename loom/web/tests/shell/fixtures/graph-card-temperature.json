@@ -67,19 +67,22 @@
           "level": "engine",
           "label": "Silnik (niezmienniki)",
           "role": "none",
-          "active": true
+          "active": true,
+          "meaning": "to, czego aplikacja nikomu nie pozwala zmienić"
         },
         {
           "level": "app_preset",
           "label": "Preset aplikacji",
           "role": "none",
-          "active": true
+          "active": true,
+          "meaning": "wartości, z którymi aplikacja przychodzi"
         },
         {
           "level": "installation",
           "label": "Instalacja",
           "role": "overridden",
           "active": true,
+          "meaning": "ten telefon albo ta kopia aplikacji",
           "value": 0.7
         },
         {
@@ -87,6 +90,7 @@
           "label": "Organizacja",
           "role": "none",
           "active": true,
+          "meaning": "firma albo instytucja, do której należysz",
           "unit_level": true,
           "no_unit": true
         },
@@ -94,13 +98,15 @@
           "level": "group_of_groups",
           "label": "Grupa grup",
           "role": "none",
-          "active": true
+          "active": true,
+          "meaning": "jednostka nadrzędna, która zbiera kilka zespołów"
         },
         {
           "level": "team",
           "label": "Zespół",
           "role": "none",
           "active": true,
+          "meaning": "zespół, w którym pracujesz",
           "unit_level": true,
           "no_unit": true
         },
@@ -109,6 +115,7 @@
           "label": "Osoba",
           "role": "supplied",
           "active": true,
+          "meaning": "Ty: Twoje własne ustawienia",
           "value": 0.7
         },
         {
@@ -116,6 +123,7 @@
           "label": "Rola w kontekście",
           "role": "none",
           "active": true,
+          "meaning": "rola, w jakiej teraz występujesz (autor, recenzent…)",
           "unit_level": true,
           "no_unit": true
         },
@@ -124,6 +132,7 @@
           "label": "Projekt (gałąź)",
           "role": "none",
           "active": true,
+          "meaning": "jeden projekt albo jedna gałąź pracy",
           "unit_level": true,
           "no_unit": true
         },
@@ -132,13 +141,15 @@
           "label": "Rozmowa",
           "role": "none",
           "active": true,
-          "scope_id": "c_2b6da102712b"
+          "meaning": "tylko ta rozmowa",
+          "scope_id": "c_a1e1e5b88cd2"
         },
         {
           "level": "turn",
           "label": "Tura / wywołanie",
           "role": "inactive",
-          "active": false
+          "active": false,
+          "meaning": "jedno pojedyncze wywołanie modelu"
         }
       ],
       "evidence": {
@@ -191,19 +202,22 @@
       "level": "engine",
       "label": "Silnik (niezmienniki)",
       "role": "none",
-      "active": true
+      "active": true,
+      "meaning": "to, czego aplikacja nikomu nie pozwala zmienić"
     },
     {
       "level": "app_preset",
       "label": "Preset aplikacji",
       "role": "none",
-      "active": true
+      "active": true,
+      "meaning": "wartości, z którymi aplikacja przychodzi"
     },
     {
       "level": "installation",
       "label": "Instalacja",
       "role": "overridden",
       "active": true,
+      "meaning": "ten telefon albo ta kopia aplikacji",
       "value": 0.7
     },
     {
@@ -211,6 +225,7 @@
       "label": "Organizacja",
       "role": "none",
       "active": true,
+      "meaning": "firma albo instytucja, do której należysz",
       "unit_level": true,
       "no_unit": true
     },
@@ -218,13 +233,15 @@
       "level": "group_of_groups",
       "label": "Grupa grup",
       "role": "none",
-      "active": true
+      "active": true,
+      "meaning": "jednostka nadrzędna, która zbiera kilka zespołów"
     },
     {
       "level": "team",
       "label": "Zespół",
       "role": "none",
       "active": true,
+      "meaning": "zespół, w którym pracujesz",
       "unit_level": true,
       "no_unit": true
     },
@@ -233,6 +250,7 @@
       "label": "Osoba",
       "role": "supplied",
       "active": true,
+      "meaning": "Ty: Twoje własne ustawienia",
       "value": 0.7
     },
     {
@@ -240,6 +258,7 @@
       "label": "Rola w kontekście",
       "role": "none",
       "active": true,
+      "meaning": "rola, w jakiej teraz występujesz (autor, recenzent…)",
       "unit_level": true,
       "no_unit": true
     },
@@ -248,6 +267,7 @@
       "label": "Projekt (gałąź)",
       "role": "none",
       "active": true,
+      "meaning": "jeden projekt albo jedna gałąź pracy",
       "unit_level": true,
       "no_unit": true
     },
@@ -256,13 +276,15 @@
       "label": "Rozmowa",
       "role": "none",
       "active": true,
-      "scope_id": "c_2b6da102712b"
+      "meaning": "tylko ta rozmowa",
+      "scope_id": "c_a1e1e5b88cd2"
     },
     {
       "level": "turn",
       "label": "Tura / wywołanie",
       "role": "inactive",
-      "active": false
+      "active": false,
+      "meaning": "jedno pojedyncze wywołanie modelu"
     }
   ],
   "flows_reading": [

@@ -190,6 +190,7 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
               <button className="ncard-row" data-testid={`card-level-${l.level}`} data-writable={l.write.kind !== "unavailable"} disabled={busy || l.write.kind === "unavailable"}
                 onClick={() => writeTo(l)}>
                 <span className="ncard-row-label">{l.label}</span>
+                {l.meaningText && <span className="ncard-chain-meaning">{l.meaningText}</span>}
                 {l.write.kind === "unavailable" && <span className="gnav-note">{l.write.reasonText}</span>}
               </button>
             </li>)}
@@ -210,6 +211,8 @@ export default function NodeCard({ address, language, convId, t, onClose, onNavi
               <span className="ncard-row-label">{row.label}</span>
               <span className="ncard-chain-role">{row.noUnitText ?? row.roleText}</span>
               {row.valueText && <span className="ncard-chain-value">{row.valueText}</span>}
+              {/* r2:b4: the level's meaning from the catalogue as the small second line („Instalacja — ten telefon…”); nothing hard-coded here */}
+              {row.meaningText && <span className="ncard-chain-meaning">{row.meaningText}</span>}
             </li>)}
           </ul>
         </Disclosure>}
