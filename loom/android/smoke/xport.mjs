@@ -52,7 +52,7 @@ const inApp = nodes => nodes.some(n => n.package === PKG);
 // What a person sees on the screen: the app's own texts, top to bottom, without repeats (the report quotes them).
 const TABS = ["Przegląd", "Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport"];
 const seen = (nodes, max = 14) => [...new Set(nodes.filter(n => n.package === PKG && (n.text || "").trim())
-  .sort((a, b) => (a.t ?? 0) - (b.t ?? 0) || (a.l ?? 0) - (b.l ?? 0)).map(n => n.text.trim().replace(/\s+/g, " ").slice(0, 70)))]
+  .sort((a, b) => (a.t ?? 0) - (b.t ?? 0) || (a.l ?? 0) - (b.l ?? 0)).map(n => n.text.trim().replace(/\s+/g, " ").slice(0, 160)))]
   .slice(0, max).join(" | ");
 const resumed = () => new RegExp(`(mResumedActivity|topResumedActivity)[^\\n]*${PKG.replace(/\./g, "\\.")}/`).test(adb("shell", "dumpsys", "activity", "activities"));
 const crashes = () => { try { return adb("logcat", "-d", "-b", "crash").split("\n").filter(l => l.includes(PKG)); } catch { return []; } };
@@ -168,7 +168,7 @@ try {
     return `${layout} (screen ${w} px)`;
   });
   for (const tab of ["Przeglądarka", "Wybór", "Edycje", "Operacje", "Eksport", "Przegląd"]) {
-    const deep = tab === "Edycje";   // the recipes section: quote all of it
+    const scrollAll = ["Edycje", "Eksport"];   // panels quoted to the end (recipes, export profiles)
     await check(`tab ${tab} opens without an error`, async () => {
       // the tabs sit in a horizontal scroll: a tab off the screen edge is brought in by swiping the row
       let nodes = dump(); dismissSystemDialogs(nodes);
@@ -188,7 +188,17 @@ try {
       shot("tab-" + tab);
       const err = texts(after).find(x => /^Błąd/.test(x));
       if (err) throw new Error(err);
-      return `on screen: ${seen(after, deep ? 40 : 14)}`;
+      if (!scrollAll.includes(tab)) return `on screen: ${seen(after, 14)}`;
+      // whole panel: swipe up until nothing new appears, then report every text in order (and swipe back)
+      const all = [...seen(after, 200).split(" | ")];
+      for (let k = 0; k < 12; k++) {
+        adb("shell", "input", "swipe", "500", "1700", "500", "700", "250"); await sleep(600);
+        const more = seen(dump(), 200).split(" | ").filter(t => t && !all.includes(t));
+        if (!more.length) break;
+        all.push(...more);
+      }
+      for (let k = 0; k < 12; k++) adb("shell", "input", "swipe", "500", "700", "500", "1700", "150");
+      return `whole panel (${all.length} texts): ${all.join(" | ")}`;
     });
     if (tab === "Wybór") await check("Wybór: the pattern for encoded data (base64, hex…) opens its window", async () => {
       let nodes = dump();
