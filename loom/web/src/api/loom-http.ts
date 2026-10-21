@@ -117,6 +117,8 @@ export class LoomHttpApi implements LoomApi {
     settingsResolved: (request = {}) => this.req("POST", "/api/settings/resolved", request),
     rolesResolved: (request = {}) => this.req("POST", "/api/roles/resolved", request),
     romOverride: (request) => this.req("POST", "/api/rom/override", request),
+    contextReceipt: (request) => this.req("POST", "/api/context/receipt", request),
+    contextModify: (request) => this.req("POST", "/api/context/modify", request),
   };
   packet(command: Record<string, unknown>): Promise<Record<string, unknown>> {
     // Packet failures contain the immutable first-response capture. Preserve

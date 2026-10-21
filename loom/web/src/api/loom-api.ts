@@ -2,6 +2,7 @@
 // implementations satisfy it: loom-http.ts (fetch + SSE, used on the web,
 // talking to loom-server) and loom-jni.ts (Android WebView -> window.LoomBridge,
 // used when the app is embedded). src/api/index.ts picks one at runtime.
+import type { ContextModifyRequest, ContextReceiptRequest } from "./context-receipt";
 import type { SettingsFieldsDoc } from "../settings/field-meta";
 import type {
   ActionAnswer,
@@ -171,6 +172,11 @@ export interface ActionsApi {
   rolesResolved(request?: { conv_id?: string; lang?: string }): Promise<RolesResolved>;
   /** Your copy of a ROM item in the overlay: a run gated by confirm:rom.override (answer it with `confirm`). */
   romOverride(request: RomOverrideRequest): Promise<ActionRun>;
+  /** M1-K1b: the receipt of one request ("Co wysłaliśmy"); read only. The answer is a run: read it with readReceiptRun (./context-receipt). */
+  contextReceipt(request: ContextReceiptRequest): Promise<ActionRun>;
+  /** M1-K1b: a change of the context for the NEXT message only (szerzej, węziej, głębiej, płycej, a selector profile, or a reset). May wait for the
+   *  x10 question of the usage guard (status awaiting_usage; answer with `confirm`). Read it with readModifyRun (./context-receipt). */
+  contextModify(request: ContextModifyRequest): Promise<ActionRun>;
 }
 
 export interface LoomApi {

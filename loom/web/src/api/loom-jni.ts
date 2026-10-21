@@ -153,6 +153,8 @@ export class LoomJniApi implements LoomApi {
     settingsResolved: (request = {}) => this.callAsync("invoke", { port: "actions", action: "settings.resolved", request }),
     rolesResolved: (request = {}) => this.callAsync("invoke", { port: "actions", action: "roles.resolved", request }),
     romOverride: (request) => this.callAsync("invoke", { port: "actions", action: "rom.override", request }),
+    contextReceipt: (request) => this.callAsync("invoke", { port: "actions", action: "context.receipt", request }),
+    contextModify: (request) => this.callAsync("invoke", { port: "actions", action: "context.modify", request }),
   };
   private bridge(): NativeBridge {
     if (!window.LoomBridge) throw new Error("LoomBridge is not installed (not running inside the Android shell)");
