@@ -101,7 +101,9 @@ Otwarcie: dotknięcie wiersza-liścia `nav-row-<adres>` albo `nav-row-card-<adre
 |---|---|---|
 | karta | `node-card` (`data-address`, `data-step` = `card`/`edit`/`level`, `aria-busy`), `card-close`, `card-loading`, `card-error` | korzeń karty; `×`; stany |
 | nagłówek | `card-label`, `card-chip`, `card-evidence`, `card-layers`, `card-value`, `card-why`, `card-effect`, `card-edit-rule`, `card-flows` | etykieta, chip pochodzenia, chip dowodu, „Warstwy: …”, „Wartość: …”, „Po co”, „Co zmienia”, zasada edycji, „Czyta to: …” |
-| łańcuch | `card-chain` (Disclosure), `card-chain-rows`, `card-chain-<poziom>` (`data-role`, `data-winning`) | „Skąd jest wartość”: jeden `li` na poziom łańcucha jądra; `data-winning="true"` = poziom, który daje wartość |
+| łańcuch | `card-chain` (Disclosure), `card-chain-rows`, `card-chain-<poziom>` (`data-role`, `data-winning`) | „Skąd jest wartość”: jeden `li` na poziom łańcucha jądra; `data-winning="true"` = poziom, który daje wartość; **tylko gdy jądro narysowało łańcuch** (r2:b1) |
+| bez łańcucha | `card-no-chain` | r2:b1: węzeł bez łańcucha poziomów (pozycja ROM, pole profilu): jedno zdanie `card.no_value` zamiast nagłówka `card-chain` |
+| pole profilu | `card-profile-interview` | r2:b1: karta `kind: profile_slot` — „Odpowiesz w wywiadzie: ⋮ › Warsztat › Onboarding” (stan `known`: „Twoja odpowiedź z wywiadu — zmienisz ją tam”), przed działaniami |
 | powiązania | `card-relations` (Disclosure), `card-relations-none`, `card-relation-group-<rodzaj>`, `card-relation-<adres>` | grupy rodzaju krawędzi; dotknięcie węzła = krok ścieżki nawigatora (karta się zamyka) |
 | działania | `card-actions` (Disclosure), `card-action-rows`, `card-change`, `card-unset-<poziom>`, `card-action-<id>` | „Zmień”; „Zdejmij wartość: <warstwa> (<wartość>) — wróci: …” (wyłączony, gdy nie ma reguły albo warstwa Ty: powód w tekście); akcje jądra słowami |
 | edytor | `card-editor`, `card-editor-input` (liczba/tekst/JSON), `card-editor-true`/`card-editor-false` (przełącznik), `card-editor-error`, `card-next`, `card-cancel` | krok `edit`; `card-next` = „Dla kogo?” |

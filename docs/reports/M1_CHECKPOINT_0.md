@@ -20,6 +20,7 @@ uwagą, że to mylące: pamięć to graf widziany od węzła **Ty**, a wiedza to
 są w **Warsztacie**. Menu „+” przy polu wiadomości (P33) zostało bez zmian. **Graf · Ty · Ta rozmowa w grafie** otwierają
 **ten sam nawigator**, tylko w innym miejscu: Graf od korzenia, Ty od węzła **Ty** (Twój profil, preferencje, zainteresowania,
 „Co pamiętam”), Ta rozmowa od węzła otwartej rozmowy (bez otwartej rozmowy — od korzenia, nigdy od węzła, którego nie ma).
+Pod rozmową są jej wiadomości, każda jako wiersz („Ty: …” / „Model: …”, chip „z bazy rozmów”), w kolejności rozmowy.
 
 ![Ty w grafie](M1_CHECKPOINT_0/m1-navigator-me.png)
 
@@ -285,8 +286,51 @@ oddaje decyzję powłoce (`window.__loomBack()` zwraca `false` — tam Android p
   `test:m1-navigator` 12/12; żaden zrzut się nie zmienił (zdanie o klasie leży pod zgięciem zrzutu `m1-settings-role-card.png`).
   Nie uruchomione: pełne `npm run e2e`, pełny `ctest`, `android-smoke`.
 
+## Co doszło w poprawkach r2:b1 (2026-10-21, fakty z przebiegu)
+
+- **Karta bez pustego nagłówka „Skąd jest wartość”:** nagłówek i łańcuch pokazują się tylko, gdy jądro narysowało łańcuch
+  poziomów (`inheritance`). Pozycja ROM („Rozruch”) i pole profilu (Ty › „Kim jesteś”) dostają jedno zdanie: „To nie jest
+  ustawienie — nie ma tu łańcucha poziomów, z którego dziedziczy się wartość.” (`card.no_value`, testid `card-no-chain`).
+  Zrzut `m1-navigator-card-rom.png` i nowy `m1-navigator-card-profile.png`.
+- **„Ta rozmowa w grafie” na rozmowie z wiadomościami:** e2e importuje rozmowę z trzema wiadomościami (`POST /api/import`,
+  importer nazywa ją „[Import] M1 card”) i sprawdza, że pod rozmową są jej wiadomości jako wiersze, w kolejności jądra:
+  „Ty: Jak zaplanować tydzień?”, „Model: Zacznij od trzech priorytetów.”, „Ty: Dzięki, a co z budżetem?” — każda z chipem
+  „z bazy rozmów” (nowe słowo `chip.db`; dotąd na ekranie stałoby `chip.db` — e2e to wyłapało, bo rozmowa była pusta), chipem
+  dowodu („powiedziałeś to” / „odpowiedź modelu”) i stanem („aktywne”). Zrzut `m1-navigator-this_conversation.png` wymieniony;
+  zdanie o tym w §1. Przy okazji słowa dla warstw, które jądro wysyła bez chipa: `chip.onboarding` „z wywiadu”,
+  `chip.memory.json` „z Twojej pamięci” (mechanizm, nie plik — zasada r1:b7).
+- **Ty › pola profilu bez „Preset (ROM)” i z drogą do odpowiedzi:** wiersz i karta pola profilu (`kind: profile_slot`) mają
+  chip z dowodu, który jądro wysyła (`evidence.human`: „pytanie z wywiadu — bez odpowiedzi” / „Twoja odpowiedź w wywiadzie”),
+  a nie słowo warstwy `rom`; drugi chip dowodu znika (te same słowa raz). Karta mówi, zanim wypisze działania ogólne:
+  „Odpowiesz w wywiadzie: ⋮ › Warsztat › Onboarding” (po odpowiedzi: „Twoja odpowiedź z wywiadu — zmienisz ją tam: …”),
+  testid `card-profile-interview`. Czego jądro jeszcze nie daje (wpis niżej w „Czego jeszcze NIE ma”): „po co” z treści
+  pytania wywiadu, działanie „Odpowiedz (wywiad)” na karcie, przycisk otwierający wywiad z karty (szuflada nawigatora nie ma
+  dziś dojścia do paneli Warsztatu — stąd zdanie z drogą, nie przycisk).
+- **Liczby w formie zależnej od języka:** jeden pomocnik (`loom/web/src/shell/plural.ts`, `Intl.PluralRules`) dla nawigatora i
+  Ustawień; słowa `count.nodes.*` / `count.rows.*` (pl one/few/many/other, en one/other). Na ekranie: „zwinięto 1 węzeł — zmień
+  budżet”, „zwinięto 2 węzły”, „zwinięto 5 węzłów”; pasek: „budżet na poziom: 1 węzeł · głębia 1 · 1 wiersz, pokazano 1”,
+  „… 22 wiersze, pokazano 4”. Test jednostkowy 1 / 2 / 5 / 22 (pl) i 1 / 2 / 5 (en); niepoprawny tag języka → forma „other”.
+- **Jedna odpowiedź na „moje czy preset?”:** gdy chip karty mówi „preset zapisany w Twoich ustawieniach”
+  (`provenance.chip.same_as_preset`), wiersz zwycięski łańcucha mówi te same słowa (nie „daje wartość”), a niższy poziom z tą
+  samą liczbą — „ta sama wartość” (nie „przesłonięte”; `data-role` zachowuje rolę jądra). Test jednostkowy na prawdziwej
+  karcie jądra dla `temperature`, zapisanej przez e2e do `loom/web/tests/shell/fixtures/graph-card-temperature.json`:
+  chip = wiersz „Osoba”, „Instalacja 0,7” = „ta sama wartość”; Ustawienia liczą „Twoje” bez takich pól (ta sama reguła
+  `isYours`). Zrzuty `m1-navigator-card-setting.png`, `m1-navigator-card-for-whom.png`.
+- Przebieg: `gen_onboarding_pack.py` i `gen_runtime_profiles.py --check` czyste (`builtin.inc`, `conversation-view.json`
+  zapisane ponownie); jądro `dev` przebudowane przyrostowo; `npm run build` czysty; testy jednostkowe shell 86/86 (w tym
+  navigator-state 18, node-card-state z fixture); `ctest -R "onboarding|presentation|graph_projection|perspective"` 12/12;
+  `test:m1-navigator` 12/12 (nowe kroki: import + wiersze rozmowy, chipy i karta pola profilu, brak nagłówka łańcucha na ROM),
+  `test:m1-settings` 9/9; 12 zrzutów nawigatora odświeżonych, 1 nowy. Zauważone, nie zmienione (poza zakresem partii): karta
+  pola profilu bez odpowiedzi pokazuje „Wartość: nieznane” obok chipa stanu „jeszcze nieznane” (jądro wysyła `value_human`
+  = słowo stanu). Nie uruchomione: pełne `npm run e2e`, pełny `ctest`, `android-smoke`.
+
 ## Czego jeszcze NIE ma (i dlaczego)
 
+- **Pola profilu pod Ty (r2:b1):** jądro nie daje jeszcze „po co” z treści pytania wywiadu ani działania „Odpowiedz (wywiad)”
+  na karcie pola (`party:self/*` w `loom/src/graph/projection.cpp` zna tylko etykietę, stan i dowód); karta mówi drogę
+  („⋮ › Warsztat › Onboarding”), a nie otwiera wywiadu — szuflada nawigatora nie ma dojścia do paneli Warsztatu. Działania
+  ogólne (Użyj modelu, Zapisz, Udostępnij…) dalej są wypisane z katalogu pod tym zdaniem, bo jądro je dopasowuje do każdego
+  węzła; które z nich mają wykonawcę dla pola profilu, jądro jeszcze nie mówi.
 - **Przełącznik „Ustawiam dla: mnie / tej rozmowy / projektu…”** nad listą pól — dziś poziom wybierasz w karcie przy
   każdej zmianie („Dla kogo?”). **Chip „Propozycja modelu”** — jądro mówi wprost: „Dziś żadne pole nie ma propozycji
   strażnika …” (brak mapowania hipotezy na klucz w `guardian.pack`).
