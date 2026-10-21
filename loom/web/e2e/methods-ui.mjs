@@ -2,7 +2,7 @@
 // Actual React + retained native synthetic method graph artifacts. --native
 // repeats the UI through the real registry/packet store; never dispatches a model.
 import assert from "node:assert/strict";
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
 import { createServer } from "node:http";
 import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -13,7 +13,7 @@ import { gunzipSync } from "node:zlib";
 import { build } from "esbuild";
 import { chromium } from "playwright";
 import ts from "typescript";
-import { closeHttpFixture, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
+import { closeHttpFixture, runChild, stopChild, suiteCompletionGuard } from "./harness-lifecycle.mjs";
 
 const web = fileURLToPath(new URL("../", import.meta.url)), loom = path.resolve(web, "..");
 const nativeMode = process.argv.includes("--native"), groups = [], expected = nativeMode ? 14 : 11;
@@ -291,9 +291,9 @@ try {
 
   if (nativeMode) {
     nativeDir = mkdtempSync(path.join(tmpdir(), "loom-method-ui-native-")); await startNative();
-    const seed = spawnSync("python3", ["-c", `import json,gzip,sys
+    const seed = await runChild("python3", ["-c", `import json,gzip,sys
 f=json.load(gzip.open(sys.argv[1],'rt'));p={k:f['packet'][k] for k in ['entities','claims','sources']};p['vocabulary']=f['contract']['vocabulary'];p['selection']={'members':[{'combination_version_id':f['contract']['bindings']['combination_version_id']}],'parameter_layers':['method','combination','member','selection','user']}
-print(json.dumps({'method_registry':{'profile':p,'receipt_ids':[],'selection':{'parameters':{'retained_owner_overlay':314}},'preserve':{'sibling':'Żółć','native_float':1.0}},'graph_reply':{'mode':'off','untouched':True}},ensure_ascii=False))`, path.join(loom, "src/packet/tests/method-registry-variants/nested-combination.json.gz")], { encoding: "utf8" });
+print(json.dumps({'method_registry':{'profile':p,'receipt_ids':[],'selection':{'parameters':{'retained_owner_overlay':314}},'preserve':{'sibling':'Żółć','native_float':1.0}},'graph_reply':{'mode':'off','untouched':True}},ensure_ascii=False))`, path.join(loom, "src/packet/tests/method-registry-variants/nested-combination.json.gz")]);
     assert.equal(seed.status, 0, seed.stderr);
     // Seed through the native opaque/CAS boundary: the generic config JSON
     // endpoint parses into unordered objects and cannot preserve DTO key order.
@@ -361,9 +361,9 @@ print(json.dumps({'method_registry':{'profile':p,'receipt_ids':[],'selection':{'
       const produced = read.receipt.packet.claims.filter(row => row.predicate === profile.vocabulary.predicates.produced_by_method_version);
       assert.equal(produced.length, 3); assert.ok(produced.every(row => row.object === initialDefinition.id));
       const catalogBefore = await native("POST", "/api/methods", { operation: "catalog" });
-      const tampered = spawnSync("python3", ["-c", `import json,sys
+      const tampered = await runChild("python3", ["-c", `import json,sys
 d=json.load(sys.stdin);p=json.loads(d['profile_json']);edited=json.loads(d['edited_profile_json']);old=next(e for e in p['entities'] if e['id']==d['old_id']);new=next(e for e in edited['entities'] if e['id']==d['new_id']);old['attrs']=new['attrs'];print(json.dumps(p,ensure_ascii=False))`], {
-        input: JSON.stringify({ profile_json: catalogBefore.profiles.find(row => row.id === record.id).profile_json, edited_profile_json: nativePreview.profile_json, old_id: initialDefinition.id, new_id: nativeVersionId }), encoding: "utf8" });
+        input: JSON.stringify({ profile_json: catalogBefore.profiles.find(row => row.id === record.id).profile_json, edited_profile_json: nativePreview.profile_json, old_id: initialDefinition.id, new_id: nativeVersionId }) });
       assert.equal(tampered.status, 0, tampered.stderr);
       const rejectedRequest = JSON.stringify({ operation: "profile_preview", profile_json: tampered.stdout, receipt_ids: [], target: "synthetic/UI/native-methods", actor: "synthetic-owner", known_at: "2026-10-05T11:01:00Z" });
       const rejected = await fetch(nativeBase + "/api/methods", { method: "POST", headers: { "Content-Type": "application/json" }, body: rejectedRequest });

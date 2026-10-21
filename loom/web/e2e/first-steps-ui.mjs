@@ -19,7 +19,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
-import { suiteCompletionGuard, stopChild, request, runChild } from "./harness-lifecycle.mjs";
+import { suiteCompletionGuard, stopChild, request, createAccount } from "./harness-lifecycle.mjs";
 
 const web = fileURLToPath(new URL("../", import.meta.url));
 const loom = path.resolve(web, "..");
@@ -102,12 +102,10 @@ try {
   // closes an idle connection after its Keep-Alive time, 5 s) closed a pooled socket unseen and the next POST failed with "other side closed".
   await until(async () => { try { return (await request(base + "/api/healthz")).ok; } catch { return false; } }, "the server");
 
-  // An account made the way an operator makes it (loom-server user add ...), whose provider is the test double.
+  // An account made the way an operator makes it (loom-server user add ...), whose provider is the test double. createAccount() of the
+  // harness runs the child without stopping the loop and signs in over request(); e2e/stale-connection.mjs runs it against a slow `user add`.
   async function provision(name) {
-    const made = await runChild(serverBin, ["user", "add", "--accounts-root", accounts, "--password-stdin", name], { input: password + "\n" });
-    assert.equal(made.status, 0, "user add: " + made.stderr);
-    const session = await (await request(base + "/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ login: name, password }) })).json();
-    const authed = { "Content-Type": "application/json", Cookie: "loom_session=" + session.token };
+    const { headers: authed } = await createAccount({ serverBin, accountsRoot: accounts, base, login: name, password });
     assert.equal((await request(base + "/api/config", { method: "PATCH", headers: authed, body: JSON.stringify({ base_url: "http://127.0.0.1:" + mockPort, default_model: "mock/e2e-model" }) })).status, 200);
     assert.equal((await request(base + "/api/secrets/api_key", { method: "POST", headers: authed, body: JSON.stringify({ value: "sk-e2e-mock-key" }) })).status, 200);
   }
@@ -340,8 +338,12 @@ try {
   console.log(`[first-steps-ui] ${groups.length}/6 groups passed`);
 } catch (error) {
   // A request that fails against a server that is gone (killed, crashed) is another failure than one against a server that answers.
+  // Only the finally block below stops the server from here, so an exit before it was not ours: code 0 with no signal is loom-server's
+  // graceful end on SIGTERM, i.e. another process on this machine sent it (typically `kill $(pgrep -x loom-server)`, which stops every
+  // loom-server there is; stop a server by the pid it was started with, or by its whole command line: pkill -f "[l]oom-server --host 127.0.0.1 --port N").
   const gone = server && (server.exitCode !== null || server.signalCode !== null);
-  console.error(`[first-steps-ui] FAILED after ${groups.length} groups: ${error.message.split("\n")[0]}; server ${gone ? `EXITED (code ${server.exitCode}, signal ${server.signalCode})` : "still running"}; server log tail:\n${serverLog.slice(-1500)}`);
+  const foreign = gone && server.exitCode === 0 && server.signalCode === null ? " - stopped by a SIGTERM this test did not send (another process on this machine stopped it)" : "";
+  console.error(`[first-steps-ui] FAILED after ${groups.length} groups: ${error.message.split("\n")[0]}; server ${gone ? `EXITED (code ${server.exitCode}, signal ${server.signalCode})${foreign}` : "still running"}; server log tail:\n${serverLog.slice(-1500)}`);
   throw error;
 } finally {
   if (browser) await browser.close().catch(() => undefined);

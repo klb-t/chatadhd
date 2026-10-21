@@ -74,21 +74,28 @@ export function stopChild(child, timeoutMs = 5000) {
  * longer than the server keeps them, that timer has not run, the next POST is written onto the closed socket and fails with
  * "fetch failed / other side closed" (UND_ERR_SOCKET); undici does not repeat a request that is not safe to repeat.
  * The answer has fetch's shape where the e2e suites use it: status, ok, headers (lower-case names), text, json().
+ * timeoutMs (preset 60000; 0 = none) is a deadline for the whole exchange: a server that accepts and never answers must fail the
+ * suite with a message, not hang it (fetch() would give up after undici's 300 s headersTimeout, this has no pool and no such default).
  */
-export function request(url, { method = "GET", headers = {}, body } = {}) {
+export const REQUEST_TIMEOUT_MS = 60000;
+export function request(url, { method = "GET", headers = {}, body, timeoutMs = REQUEST_TIMEOUT_MS } = {}) {
   return new Promise((resolve, reject) => {
     const sent = { ...headers, Connection: "close" };
     if (body !== undefined) sent["Content-Length"] = Buffer.byteLength(body);
+    let timer, timedOut = null;
+    const fail = error => { clearTimeout(timer); reject(timedOut ?? error); };  // destroy() surfaces as "aborted" on the response too: report the deadline
     const call = httpRequest(url, { method, headers: sent, agent: false }, response => {
       const chunks = [];
       response.on("data", chunk => chunks.push(chunk));
-      response.once("error", reject);
+      response.once("error", fail);
       response.once("end", () => {
+        clearTimeout(timer);
         const text = Buffer.concat(chunks).toString("utf8");
         resolve({ status: response.statusCode, ok: response.statusCode >= 200 && response.statusCode < 300, headers: response.headers, text, json: () => JSON.parse(text) });
       });
     });
-    call.once("error", reject);
+    call.once("error", fail);
+    if (timeoutMs > 0) timer = setTimeout(() => { timedOut = new Error(`request timed out after ${timeoutMs} ms: ${method} ${url}`); call.destroy(timedOut); }, timeoutMs);
     call.end(body);
   });
 }
@@ -110,4 +117,22 @@ export function runChild(command, args, { input = "", timeoutMs = 120000 } = {})
     child.once("close", (status, signal) => { clearTimeout(timer); resolve({ status, signal, stdout, stderr: timedOut ? `${stderr}killed after ${timeoutMs} ms\n` : stderr, timedOut }); });
     child.stdin.end(input);
   });
+}
+
+/**
+ * An account made the way an operator makes it (`loom-server user add --password-stdin`) and signed in over the API.
+ * The child runs with runChild() (the event loop keeps running) and the sign-in goes over request() (a connection of its own): this is
+ * the sequence that used to fail now and then with "fetch failed / other side closed" (S1), because spawnSync stopped the loop for
+ * the seconds `user add` takes while fetch() still pooled a socket the server had closed meanwhile. e2e/stale-connection.mjs runs
+ * this very function against a `user add` that is slower than the server's keep-alive time; suites make accounts with it.
+ * Returns { token, headers } where headers are the JSON + session-cookie headers for the account's own requests.
+ */
+export async function createAccount({ serverBin, accountsRoot, base, login, password }) {
+  const made = await runChild(serverBin, ["user", "add", "--accounts-root", accountsRoot, "--password-stdin", login], { input: password + "\n" });
+  assert.equal(made.status, 0, "user add: " + made.stderr);
+  const signedIn = await request(base + "/api/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ login, password }) });
+  assert.equal(signedIn.status, 200, "sign-in of " + login + ": " + signedIn.text);
+  const { token } = signedIn.json();
+  assert.ok(token, "sign-in of " + login + " returned no token: " + signedIn.text);
+  return { token, headers: { "Content-Type": "application/json", Cookie: "loom_session=" + token } };
 }
