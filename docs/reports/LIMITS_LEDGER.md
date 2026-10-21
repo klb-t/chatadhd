@@ -35,6 +35,7 @@ bez commita przepada, kontekst trzeba cache'ować od nowa), albo zostawić je ni
 | 02:18 | 50 % | 13 % | 2 (W0 P5 w toku; poprawka logowania) + paczki X-Port (2 po kolei, zakończone) + S1 | linia: 49,3 %; 02:00→02:18: +2 pkt w 18 min ≈ 0,11 pkt/min — poniżej potrzebnych 0,33; wolne miejsce w oknie, brak gotowej paczki bez kompilacji jądra (dysk 7 GB, drugi build jądra się nie mieści) |
 | 03:07 | 54 % | 14–15 % | 1–2 (W0 P7 w toku; poprawka logowania w przeglądzie) + S1 | linia 5 h: 65,7 % (jesteśmy 12 pkt pod); 02:18→03:07: +4 pkt w 49 min ≈ 0,08 pkt/min; tydzień: linia 11,4 %, jesteśmy 3–4 pkt nad |
 | 06:08 | 12 % (nowe okno 04:50–09:50; linia 26 %) | **22 %** | 1 (W0 krok naprawczy r1:b3) + S1; wcześniej 2–3 | tydzień: linia 13,2 % (22 h z 168 h), jesteśmy 9 pkt NAD; 03:07→06:08: +7 pkt w 3 h ≈ 2,3 pkt/h ≈ 56 %/dobę (linia: 14,3 %/dobę); średnio od resetu tygodnia: 24 %/dobę |
+| 11:06 | 0 % (nowe okno) | **29 %** | 0–1 (przerwa: bramka, restarty kontenera) | tydzień: linia 16,1 % (27 h), jesteśmy 13 pkt nad; 06:08→11:06: +7 pkt w 5 h ≈ 34 %/dobę (spadek z 56 %/dobę, bo większość czasu to była przerwa i bramka bez agentów) |
 
 **Odczyt z 00:14:** od 00:10 do 00:14 przybyły 3 punkty w około 4 minuty (≈ 0,8 pkt/min),
 od 00:05 średnio ≈ 0,6 pkt/min. Do reszty okna (276 min) zostaje 89 punktów, czyli stać nas
